@@ -1,0 +1,5 @@
+.translation-first-use{box-sizing:border-box;width:min(30rem,calc(100% - 2rem));max-height:calc(100dvh - 2rem);overflow:auto;padding:24px;color:var(--ink);background:var(--panel);border:1px solid var(--line-control);border-radius:12px;font:14px/1.65 var(--interface)}
+.translation-first-use::backdrop{background:rgb(0 0 0 / .28)}
+.translation-first-use h2{margin:0 0 12px;font-size:18px;line-height:1.4}.translation-first-use p{margin:0 0 16px}.translation-first-use>a{color:inherit;text-underline-offset:3px}
+.translation-first-use-actions{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:10px;margin-top:24px}.translation-first-use-actions button{min-height:44px;padding:9px 14px;border:1px solid var(--line-control);border-radius:6px;color:var(--ink);background:var(--wash);font:inherit}.translation-first-use-actions button:last-child{color:var(--panel);background:var(--ink)}
+.translation-first-use :is(button,a):focus-visible{outline:var(--focus-ring-width,2px) solid var(--focus-ring);outline-offset:3px}

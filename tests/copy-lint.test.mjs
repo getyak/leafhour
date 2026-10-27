@@ -385,7 +385,7 @@ test('only explicitly reviewed static literals join the lint corpus',{skip:realC
   const inventory=fixtureRoot.inventory;
   const reviewed=inventory.candidates.find(entry=>entry.value==='Save your receipt');
   const unknown=inventory.candidates.find(entry=>entry.value==='retry the receipt now');
-  await exportCopy({inventory,outDir:path.dirname(fixtureRoot.manifest),reviews:[{candidateId:reviewed.id,locale:'en',valueSha256:reviewed.sha256,surface:'reader toolbar',trigger:'after an AI translation saves',rationale:'Adjudicated as visible toolbar copy in GET-202 batch A review record.',state:'reviewed'}]});
+  await exportCopy({inventory,outDir:path.dirname(fixtureRoot.manifest),reviews:[{candidateId:reviewed.id,locale:'en',valueSha256:reviewed.sha256,by:'agent',sourceSha256:inventory.source.inputs.find(input=>input.file===reviewed.file).sha256,surface:'reader toolbar',trigger:'after an AI translation saves',rationale:'Adjudicated as visible toolbar copy in GET-202 batch A review record.',state:'reviewed'}]});
   const report=await lintCopy(lintOptions({root:fixtureRoot.root,manifest:fixtureRoot.manifest,frozen:frozenFrom(values)}));
   assert.equal(report.ok,false,'the reviewed literal carries a planted T1 and must be linted');
   assert.ok(report.newErrors.some(entry=>entry.itemId===reviewed.id&&entry.rule==='Leafhour.DevSpeak'),JSON.stringify(report.newErrors));

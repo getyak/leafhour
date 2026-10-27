@@ -262,7 +262,7 @@
       },
       {
         "file": "app/index.html",
-        "sha256": "097c46c56e3ef1e77b4187f2093a073b5f38e379aa314d9f36bd8e604e3c872e"
+        "sha256": "37ced534d9c609260e8310b33104aab46092a5604a5fbcd04f496518dae0a113"
       },
       {
         "file": "app/interaction-craft.mjs",
@@ -586,7 +586,7 @@
       },
       {
         "file": "app/reader-translation.js",
-        "sha256": "5d52f82a8147eb46d0188b95cc95d0482592ec18cf3463a52bb5cffa4139e570"
+        "sha256": "5d6e491f119b2b194cf848bb6a7987bbeba8b98e1619b687d6c7d94969e1c705"
       },
       {
         "file": "app/reader.js",
@@ -773,24 +773,28 @@
         "sha256": "d7c5b45abb3d16f6d680f7ec2e03921556b1fabd520eb1769a4984042c0cfd3d"
       },
       {
+        "file": "app/translation-first-use.mjs",
+        "sha256": "f5f2a96ce00a00fd6fbf4c59a69a4be17a96d304c5da6a932c8e4d41e2e0f38d"
+      },
+      {
         "file": "app/translation-state.mjs",
         "sha256": "e344f67ba3944a412f297402ff9449a89e1aa4e99dee2c0888a8185149d8da15"
       },
       {
         "file": "app/ui-catalogs/en.mjs",
-        "sha256": "6527b967b9f2116657740db795a762f8b62287272092f1c6aa04074fe33f04e9"
+        "sha256": "a3d48dd89f77db2d4b88b70b6a229eb06239cfa95869577628aa8ee9002de19a"
       },
       {
         "file": "app/ui-catalogs/ja.mjs",
-        "sha256": "f6cbe84525bc97584e1782d14478b88b746d522ca15a30065727cd077b239de8"
+        "sha256": "6ed2819bd71bfae844591a4838e8a88eb4f5d6dbe0779caf5745e14eb65e84c7"
       },
       {
         "file": "app/ui-catalogs/zh-Hans.mjs",
-        "sha256": "2900289c6c58dc999f45f4f5c18aa1b81e9a34b7003c30573b536b588c29b9ad"
+        "sha256": "e1bd46c87f56631cd467cd5d78bad413a46668344965fd8ee6374e7c748e3704"
       },
       {
         "file": "app/ui-catalogs/zh-Hant.mjs",
-        "sha256": "a65db31f93d0ccea623974889477d5b094c6afb41247ac1402093e93ac0ff80d"
+        "sha256": "32280d4375b8aee0b10659d431ae01d8e3c7bef801193d79cd3a45049b72bd7c"
       },
       {
         "file": "app/ui-locale-codec.mjs",
@@ -1070,7 +1074,7 @@
       },
       {
         "file": "server/portal.mjs",
-        "sha256": "8786954f6959857fbc1d28bc0f8189feafe515bef867ba9e5b323e9609805b13"
+        "sha256": "0701c5f68c36b0614613a38a553e1e29faf1eadfce19f8087d3b8498a6446625"
       },
       {
         "file": "server/preference-memory.mjs",
@@ -1134,7 +1138,7 @@
       },
       {
         "file": "server/server.mjs",
-        "sha256": "502e8a63fb264b03974bd99c4adb795a32afc26943538b1c2e62310f8018ef65"
+        "sha256": "833bf4b338002638e150d70ca924089207f06bd8ff1d433fbd75d991327fc4de"
       },
       {
         "file": "server/source-revisions.mjs",
@@ -1157,7 +1161,7 @@
         "sha256": "531202f1814314b6c76bfef38b2ea66636425b1ca9b445db349e70ebb8bcd00e"
       }
     ],
-    "inputDigest": "4727aa60ec3b29a2ad2f2d801a041a553250d74ef713d556c0462299ac38b624"
+    "inputDigest": "e4a326111267eb89bffbe0f52c1328bc33ac13d917ab737a27c7c3a2d70224ea"
   },
   "locales": [
     "en",
@@ -1171,25 +1175,25 @@
       "locale": "en",
       "file": "app/ui-catalogs/en.mjs",
       "missing": false,
-      "entries": 2221
+      "entries": 2226
     },
     {
       "locale": "zh-Hans",
       "file": "app/ui-catalogs/zh-Hans.mjs",
       "missing": false,
-      "entries": 2221
+      "entries": 2226
     },
     {
       "locale": "zh-Hant",
       "file": "app/ui-catalogs/zh-Hant.mjs",
       "missing": false,
-      "entries": 2221
+      "entries": 2226
     },
     {
       "locale": "ja",
       "file": "app/ui-catalogs/ja.mjs",
       "missing": false,
-      "entries": 2221
+      "entries": 2226
     }
   ],
   "items": [
@@ -3859,7 +3863,7 @@
         },
         {
           "file": "app/reader-translation.js",
-          "line": 52,
+          "line": 47,
           "column": 85
         }
       ],
@@ -3921,7 +3925,7 @@
         },
         {
           "file": "app/reader-translation.js",
-          "line": 52,
+          "line": 47,
           "column": 42
         }
       ],
@@ -16381,13 +16385,18 @@
           "column": 32
         },
         {
+          "file": "app/translation-first-use.mjs",
+          "line": 63,
+          "column": 91
+        },
+        {
           "file": "server/library-service.mjs",
           "line": 373,
           "column": 239
         },
         {
           "file": "server/server.mjs",
-          "line": 98,
+          "line": 100,
           "column": 37
         }
       ],
@@ -16631,6 +16640,11 @@
           "file": "app/site-appearance.mjs",
           "line": 113,
           "column": 32
+        },
+        {
+          "file": "app/translation-first-use.mjs",
+          "line": 52,
+          "column": 29
         },
         {
           "file": "server/mcp-http.mjs",
@@ -17366,7 +17380,7 @@
         },
         {
           "file": "server/server.mjs",
-          "line": 152,
+          "line": 154,
           "column": 131
         }
       ],
@@ -25654,11 +25668,135 @@
         }
       ],
       "review": {
-        "state": "unreviewed",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
+        "state": "reviewed",
+        "by": "agent",
+        "classification": "A+D+E",
+        "surface": "library reading settings",
+        "trigger": "open preferences",
+        "decision": "preserve",
+        "scope": "delivered wording and bound source context; no human-language or current-browser acceptance"
+      },
+      "localeReviews": {
+        "en": {
+          "state": "reviewed",
+          "by": "agent",
+          "surface": "library reading settings",
+          "trigger": "open preferences",
+          "classifications": [
+            "A",
+            "D",
+            "E"
+          ],
+          "decision": "preserve",
+          "rationale": "Remove storage narration while retaining effect, missing-translation and review boundaries.",
+          "exposure": "source-inspected; historical GET-218 browser evidence only",
+          "evidence": {
+            "file": "docs/verification/get-218/copy-decisions.json",
+            "index": 48,
+            "recordSha256": "8721f8ce786150de73f69a706aa72448b68828e2e7f4ef5828eaf2e577945008"
+          },
+          "context": {
+            "consumersSha256": "bb9fb0dfdb5f96e3a1f3e3bc672943852bd7561b7a8df6f3c4720ee026bc7d83",
+            "files": [
+              {
+                "file": "app/library-reading-preferences.mjs",
+                "sha256": "0bb016d58c1cc7d50125522dd7343eae93001f25adf8de4ae602449c24ab01c6"
+              }
+            ]
+          },
+          "valueSha256": "71368c8b83d8fef33df5c435540756d6393f1619cb34d1e74d26b569301b5b4a",
+          "file": "app/ui-catalogs/en.mjs"
+        },
+        "zh-Hans": {
+          "state": "reviewed",
+          "by": "agent",
+          "surface": "library reading settings",
+          "trigger": "open preferences",
+          "classifications": [
+            "A",
+            "D",
+            "E"
+          ],
+          "decision": "preserve",
+          "rationale": "Remove storage narration while retaining effect, missing-translation and review boundaries.",
+          "exposure": "source-inspected; historical GET-218 browser evidence only",
+          "evidence": {
+            "file": "docs/verification/get-218/copy-decisions.json",
+            "index": 49,
+            "recordSha256": "97c32ff166a60bbbf308cac370527130b3655ac4ae654c9da9b3043bf7fbc266"
+          },
+          "context": {
+            "consumersSha256": "bb9fb0dfdb5f96e3a1f3e3bc672943852bd7561b7a8df6f3c4720ee026bc7d83",
+            "files": [
+              {
+                "file": "app/library-reading-preferences.mjs",
+                "sha256": "0bb016d58c1cc7d50125522dd7343eae93001f25adf8de4ae602449c24ab01c6"
+              }
+            ]
+          },
+          "valueSha256": "cc21c601a7772f8d94f146b7a6fee585e5000af65bf4eb9f893ef6df78c7872d",
+          "file": "app/ui-catalogs/zh-Hans.mjs"
+        },
+        "zh-Hant": {
+          "state": "reviewed",
+          "by": "agent",
+          "surface": "library reading settings",
+          "trigger": "open preferences",
+          "classifications": [
+            "A",
+            "D",
+            "E"
+          ],
+          "decision": "preserve",
+          "rationale": "Remove storage narration while retaining effect, missing-translation and review boundaries.",
+          "exposure": "source-inspected; historical GET-218 browser evidence only",
+          "evidence": {
+            "file": "docs/verification/get-218/copy-decisions.json",
+            "index": 50,
+            "recordSha256": "75bc84e1a09fe6fe890b440d94c080db9e050d677418184b7504fa77edcc79bd"
+          },
+          "context": {
+            "consumersSha256": "bb9fb0dfdb5f96e3a1f3e3bc672943852bd7561b7a8df6f3c4720ee026bc7d83",
+            "files": [
+              {
+                "file": "app/library-reading-preferences.mjs",
+                "sha256": "0bb016d58c1cc7d50125522dd7343eae93001f25adf8de4ae602449c24ab01c6"
+              }
+            ]
+          },
+          "valueSha256": "75fcd88dee6d23dc556152a86655d88764809714833ece1e5e8ac074603e8c2d",
+          "file": "app/ui-catalogs/zh-Hant.mjs"
+        },
+        "ja": {
+          "state": "reviewed",
+          "by": "agent",
+          "surface": "library reading settings",
+          "trigger": "open preferences",
+          "classifications": [
+            "A",
+            "D",
+            "E"
+          ],
+          "decision": "preserve",
+          "rationale": "Remove storage narration while retaining effect, missing-translation and review boundaries.",
+          "exposure": "source-inspected; historical GET-218 browser evidence only",
+          "evidence": {
+            "file": "docs/verification/get-218/copy-decisions.json",
+            "index": 51,
+            "recordSha256": "64c91324636d3db67d67a2ba9ec1d29bf06453df27ca2c1360e0c84ec6b353a4"
+          },
+          "context": {
+            "consumersSha256": "bb9fb0dfdb5f96e3a1f3e3bc672943852bd7561b7a8df6f3c4720ee026bc7d83",
+            "files": [
+              {
+                "file": "app/library-reading-preferences.mjs",
+                "sha256": "0bb016d58c1cc7d50125522dd7343eae93001f25adf8de4ae602449c24ab01c6"
+              }
+            ]
+          },
+          "valueSha256": "9c020f70b73bb6c9f00dce982a26642bbb5b019f51b01d4e56590302c682134c",
+          "file": "app/ui-catalogs/ja.mjs"
+        }
       }
     },
     {
@@ -50159,7 +50297,7 @@
       "consumers": [
         {
           "file": "app/reader-translation.js",
-          "line": 37,
+          "line": 33,
           "column": 112
         },
         {
@@ -50248,11 +50386,131 @@
         }
       ],
       "review": {
-        "state": "unreviewed",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
+        "state": "reviewed",
+        "by": "agent",
+        "classification": "A+E",
+        "surface": "existing translation action",
+        "trigger": "both saved variants exist, including reviewed ones",
+        "decision": "preserve",
+        "scope": "delivered wording and bound source context; no human-language or current-browser acceptance"
+      },
+      "localeReviews": {
+        "en": {
+          "state": "reviewed",
+          "by": "agent",
+          "surface": "existing translation action",
+          "trigger": "both saved variants exist, including reviewed ones",
+          "classifications": [
+            "A",
+            "E"
+          ],
+          "decision": "preserve",
+          "rationale": "The action must not call reviewed translations drafts. Variant selectors and actual review metadata retain the distinction.",
+          "exposure": "source-inspected; historical GET-218 browser evidence only",
+          "evidence": {
+            "file": "docs/verification/get-218/copy-decisions.json",
+            "index": 104,
+            "recordSha256": "84161bb1f26297bc22e29a16278591ace15f6c7a2ffa6f9cd5e3d6a93f44336d"
+          },
+          "context": {
+            "consumersSha256": "c53b8145ac5ea2af16b08c0096c472cf2fd95b0c70d4e1d45143ca46cd2ca8cd",
+            "files": [
+              {
+                "file": "app/translation-state.mjs",
+                "sha256": "e344f67ba3944a412f297402ff9449a89e1aa4e99dee2c0888a8185149d8da15"
+              }
+            ]
+          },
+          "valueSha256": "785a296a73a9645539d64c59080f549194c811928eab2ca14fe49396a13169f2",
+          "file": "app/ui-catalogs/en.mjs"
+        },
+        "zh-Hans": {
+          "state": "reviewed",
+          "by": "agent",
+          "surface": "existing translation action",
+          "trigger": "both saved variants exist, including reviewed ones",
+          "classifications": [
+            "A",
+            "E"
+          ],
+          "decision": "preserve",
+          "rationale": "The action must not call reviewed translations drafts. Variant selectors and actual review metadata retain the distinction.",
+          "exposure": "source-inspected; historical GET-218 browser evidence only",
+          "evidence": {
+            "file": "docs/verification/get-218/copy-decisions.json",
+            "index": 105,
+            "recordSha256": "107ef53b5cd10b5cf7e504f7542609d89739883bfc10b2250593735c9db794af"
+          },
+          "context": {
+            "consumersSha256": "c53b8145ac5ea2af16b08c0096c472cf2fd95b0c70d4e1d45143ca46cd2ca8cd",
+            "files": [
+              {
+                "file": "app/translation-state.mjs",
+                "sha256": "e344f67ba3944a412f297402ff9449a89e1aa4e99dee2c0888a8185149d8da15"
+              }
+            ]
+          },
+          "valueSha256": "c936981218c2c27d5c1b2df720998e11b126434df0d4ec28e24551523f7ba79e",
+          "file": "app/ui-catalogs/zh-Hans.mjs"
+        },
+        "zh-Hant": {
+          "state": "reviewed",
+          "by": "agent",
+          "surface": "existing translation action",
+          "trigger": "both saved variants exist, including reviewed ones",
+          "classifications": [
+            "A",
+            "E"
+          ],
+          "decision": "preserve",
+          "rationale": "The action must not call reviewed translations drafts. Variant selectors and actual review metadata retain the distinction.",
+          "exposure": "source-inspected; historical GET-218 browser evidence only",
+          "evidence": {
+            "file": "docs/verification/get-218/copy-decisions.json",
+            "index": 106,
+            "recordSha256": "c8bbb7d689d480333bb666e3915a3a96e0a305612b251f8cda1695e961fbbf84"
+          },
+          "context": {
+            "consumersSha256": "c53b8145ac5ea2af16b08c0096c472cf2fd95b0c70d4e1d45143ca46cd2ca8cd",
+            "files": [
+              {
+                "file": "app/translation-state.mjs",
+                "sha256": "e344f67ba3944a412f297402ff9449a89e1aa4e99dee2c0888a8185149d8da15"
+              }
+            ]
+          },
+          "valueSha256": "75f80ef25fcb3d2ad2209451c6c5748364513b59a917a194e55db0076578277f",
+          "file": "app/ui-catalogs/zh-Hant.mjs"
+        },
+        "ja": {
+          "state": "reviewed",
+          "by": "agent",
+          "surface": "existing translation action",
+          "trigger": "both saved variants exist, including reviewed ones",
+          "classifications": [
+            "A",
+            "E"
+          ],
+          "decision": "preserve",
+          "rationale": "The action must not call reviewed translations drafts. Variant selectors and actual review metadata retain the distinction.",
+          "exposure": "source-inspected; historical GET-218 browser evidence only",
+          "evidence": {
+            "file": "docs/verification/get-218/copy-decisions.json",
+            "index": 107,
+            "recordSha256": "f3b786ddfd3f2543b5d9e6b94df565291e1055dd5f196d0f99cdbe09d4d06a5f"
+          },
+          "context": {
+            "consumersSha256": "c53b8145ac5ea2af16b08c0096c472cf2fd95b0c70d4e1d45143ca46cd2ca8cd",
+            "files": [
+              {
+                "file": "app/translation-state.mjs",
+                "sha256": "e344f67ba3944a412f297402ff9449a89e1aa4e99dee2c0888a8185149d8da15"
+              }
+            ]
+          },
+          "valueSha256": "c79dbce35e781dddb29164132a3dd1db0c9315fbb19874ba05dfcd9cb73dad35",
+          "file": "app/ui-catalogs/ja.mjs"
+        }
       }
     },
     {
@@ -50372,11 +50630,131 @@
         }
       ],
       "review": {
-        "state": "unreviewed",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
+        "state": "reviewed",
+        "by": "agent",
+        "classification": "A+D",
+        "surface": "reader feedback",
+        "trigger": "translation in progress",
+        "decision": "preserve",
+        "scope": "delivered wording and bound source context; no human-language or current-browser acceptance"
+      },
+      "localeReviews": {
+        "en": {
+          "state": "reviewed",
+          "by": "agent",
+          "surface": "reader feedback",
+          "trigger": "translation in progress",
+          "classifications": [
+            "A",
+            "D"
+          ],
+          "decision": "preserve",
+          "rationale": "Report progress without promising a future save.",
+          "exposure": "source-inspected; historical GET-218 browser evidence only",
+          "evidence": {
+            "file": "docs/verification/get-218/copy-decisions.json",
+            "index": 24,
+            "recordSha256": "552b828d1ab7c125bb7e060db6ef89624b72eb1b4741cb73fadcbdebe397066e"
+          },
+          "context": {
+            "consumersSha256": "f9c8dbf454131f67eb94fa8fec104e034391568e9916e2b56af8b6a6f08e7db1",
+            "files": [
+              {
+                "file": "app/translation-state.mjs",
+                "sha256": "e344f67ba3944a412f297402ff9449a89e1aa4e99dee2c0888a8185149d8da15"
+              }
+            ]
+          },
+          "valueSha256": "b7634ce66a4333ffc19cdd8dba08d14f369525c573228242362e001f87aba0fe",
+          "file": "app/ui-catalogs/en.mjs"
+        },
+        "zh-Hans": {
+          "state": "reviewed",
+          "by": "agent",
+          "surface": "reader feedback",
+          "trigger": "translation in progress",
+          "classifications": [
+            "A",
+            "D"
+          ],
+          "decision": "preserve",
+          "rationale": "Report progress without promising a future save.",
+          "exposure": "source-inspected; historical GET-218 browser evidence only",
+          "evidence": {
+            "file": "docs/verification/get-218/copy-decisions.json",
+            "index": 25,
+            "recordSha256": "62ac1bb6e0e019733279fd7ddd62c334a7d9754442896cca3d70d8cc34a4d219"
+          },
+          "context": {
+            "consumersSha256": "f9c8dbf454131f67eb94fa8fec104e034391568e9916e2b56af8b6a6f08e7db1",
+            "files": [
+              {
+                "file": "app/translation-state.mjs",
+                "sha256": "e344f67ba3944a412f297402ff9449a89e1aa4e99dee2c0888a8185149d8da15"
+              }
+            ]
+          },
+          "valueSha256": "926d7611251ffb370e4fdca7d2bae23c241c5041a3d667b3b496f5398953cb99",
+          "file": "app/ui-catalogs/zh-Hans.mjs"
+        },
+        "zh-Hant": {
+          "state": "reviewed",
+          "by": "agent",
+          "surface": "reader feedback",
+          "trigger": "translation in progress",
+          "classifications": [
+            "A",
+            "D"
+          ],
+          "decision": "preserve",
+          "rationale": "Report progress without promising a future save.",
+          "exposure": "source-inspected; historical GET-218 browser evidence only",
+          "evidence": {
+            "file": "docs/verification/get-218/copy-decisions.json",
+            "index": 26,
+            "recordSha256": "7b2df78c979c4cf2e5a64f76821d673a710a3e57b7a7af961c267a2566d988c3"
+          },
+          "context": {
+            "consumersSha256": "f9c8dbf454131f67eb94fa8fec104e034391568e9916e2b56af8b6a6f08e7db1",
+            "files": [
+              {
+                "file": "app/translation-state.mjs",
+                "sha256": "e344f67ba3944a412f297402ff9449a89e1aa4e99dee2c0888a8185149d8da15"
+              }
+            ]
+          },
+          "valueSha256": "98475773d113f1db6ecf1a5b0e143154f2b8ab4a7c820acc88d4adabbbe7ed03",
+          "file": "app/ui-catalogs/zh-Hant.mjs"
+        },
+        "ja": {
+          "state": "reviewed",
+          "by": "agent",
+          "surface": "reader feedback",
+          "trigger": "translation in progress",
+          "classifications": [
+            "A",
+            "D"
+          ],
+          "decision": "preserve",
+          "rationale": "Report progress without promising a future save.",
+          "exposure": "source-inspected; historical GET-218 browser evidence only",
+          "evidence": {
+            "file": "docs/verification/get-218/copy-decisions.json",
+            "index": 27,
+            "recordSha256": "9f0238fae87903fa393529fc09dc7e1c701ec97eac1e562f66c4ec20c8094af4"
+          },
+          "context": {
+            "consumersSha256": "f9c8dbf454131f67eb94fa8fec104e034391568e9916e2b56af8b6a6f08e7db1",
+            "files": [
+              {
+                "file": "app/translation-state.mjs",
+                "sha256": "e344f67ba3944a412f297402ff9449a89e1aa4e99dee2c0888a8185149d8da15"
+              }
+            ]
+          },
+          "valueSha256": "08f079c6fc7eb010585f8ec45a4a68d8a2630ca8a3fe4c6edcd9499bec59f97e",
+          "file": "app/ui-catalogs/ja.mjs"
+        }
       }
     },
     {
@@ -50434,11 +50812,127 @@
         }
       ],
       "review": {
-        "state": "unreviewed",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
+        "state": "reviewed",
+        "by": "agent",
+        "classification": "D",
+        "surface": "reader feedback",
+        "trigger": "pending task after selection changes",
+        "decision": "preserve",
+        "scope": "delivered wording and bound source context; no human-language or current-browser acceptance"
+      },
+      "localeReviews": {
+        "en": {
+          "state": "reviewed",
+          "by": "agent",
+          "surface": "reader feedback",
+          "trigger": "pending task after selection changes",
+          "classifications": [
+            "D"
+          ],
+          "decision": "preserve",
+          "rationale": "Keep background task visible; remove permission-to-continue filler.",
+          "exposure": "source-inspected; historical GET-218 browser evidence only",
+          "evidence": {
+            "file": "docs/verification/get-218/copy-decisions.json",
+            "index": 28,
+            "recordSha256": "394b21a0de28b2ef8a7bd895a5e359e7a05c08e58eba6d7d5aa0187faed668b0"
+          },
+          "context": {
+            "consumersSha256": "aba36fa68432bf060130fcd2320d8ecf8dab811e7ecaae0b4f3a2a58507bebc0",
+            "files": [
+              {
+                "file": "app/translation-state.mjs",
+                "sha256": "e344f67ba3944a412f297402ff9449a89e1aa4e99dee2c0888a8185149d8da15"
+              }
+            ]
+          },
+          "valueSha256": "13d9b234ac32569a0a6fab29f2250eca9a852c1eed5bf62c088bb2f80ee0e4a8",
+          "file": "app/ui-catalogs/en.mjs"
+        },
+        "zh-Hans": {
+          "state": "reviewed",
+          "by": "agent",
+          "surface": "reader feedback",
+          "trigger": "pending task after selection changes",
+          "classifications": [
+            "D"
+          ],
+          "decision": "preserve",
+          "rationale": "Keep background task visible; remove permission-to-continue filler.",
+          "exposure": "source-inspected; historical GET-218 browser evidence only",
+          "evidence": {
+            "file": "docs/verification/get-218/copy-decisions.json",
+            "index": 29,
+            "recordSha256": "c0ea96ba27586886094afd0ed5a7c457a174a09017b7916ee055524602a2419b"
+          },
+          "context": {
+            "consumersSha256": "aba36fa68432bf060130fcd2320d8ecf8dab811e7ecaae0b4f3a2a58507bebc0",
+            "files": [
+              {
+                "file": "app/translation-state.mjs",
+                "sha256": "e344f67ba3944a412f297402ff9449a89e1aa4e99dee2c0888a8185149d8da15"
+              }
+            ]
+          },
+          "valueSha256": "ad38683adf242e6d2773568b690586250cb8c8b0d626e40e292c570f60e34abb",
+          "file": "app/ui-catalogs/zh-Hans.mjs"
+        },
+        "zh-Hant": {
+          "state": "reviewed",
+          "by": "agent",
+          "surface": "reader feedback",
+          "trigger": "pending task after selection changes",
+          "classifications": [
+            "D"
+          ],
+          "decision": "preserve",
+          "rationale": "Keep background task visible; remove permission-to-continue filler.",
+          "exposure": "source-inspected; historical GET-218 browser evidence only",
+          "evidence": {
+            "file": "docs/verification/get-218/copy-decisions.json",
+            "index": 30,
+            "recordSha256": "b8c2ed4ff6cb4217b1c8be37f8fb4da44c0a2cd7566e82fe32d7370dfabcf128"
+          },
+          "context": {
+            "consumersSha256": "aba36fa68432bf060130fcd2320d8ecf8dab811e7ecaae0b4f3a2a58507bebc0",
+            "files": [
+              {
+                "file": "app/translation-state.mjs",
+                "sha256": "e344f67ba3944a412f297402ff9449a89e1aa4e99dee2c0888a8185149d8da15"
+              }
+            ]
+          },
+          "valueSha256": "76651fa6cd1d1244c289cdae86f38610eb854f1178381cd74240dc8ec011b7a7",
+          "file": "app/ui-catalogs/zh-Hant.mjs"
+        },
+        "ja": {
+          "state": "reviewed",
+          "by": "agent",
+          "surface": "reader feedback",
+          "trigger": "pending task after selection changes",
+          "classifications": [
+            "D"
+          ],
+          "decision": "preserve",
+          "rationale": "Keep background task visible; remove permission-to-continue filler.",
+          "exposure": "source-inspected; historical GET-218 browser evidence only",
+          "evidence": {
+            "file": "docs/verification/get-218/copy-decisions.json",
+            "index": 31,
+            "recordSha256": "1d47a6a24ee3b0cdafabc3d1a08da6187b95cd8f94cae4fcad2ac46a1345daa2"
+          },
+          "context": {
+            "consumersSha256": "aba36fa68432bf060130fcd2320d8ecf8dab811e7ecaae0b4f3a2a58507bebc0",
+            "files": [
+              {
+                "file": "app/translation-state.mjs",
+                "sha256": "e344f67ba3944a412f297402ff9449a89e1aa4e99dee2c0888a8185149d8da15"
+              }
+            ]
+          },
+          "valueSha256": "7fa7bf99feecbca2f8cccf2d9092c21351d453c2d4357c0e0ed5e024a18f598c",
+          "file": "app/ui-catalogs/ja.mjs"
+        }
       }
     },
     {
@@ -50496,11 +50990,131 @@
         }
       ],
       "review": {
-        "state": "unreviewed",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
+        "state": "reviewed",
+        "by": "agent",
+        "classification": "A+E",
+        "surface": "reader feedback",
+        "trigger": "confirmed background save",
+        "decision": "preserve",
+        "scope": "delivered wording and bound source context; no human-language or current-browser acceptance"
+      },
+      "localeReviews": {
+        "en": {
+          "state": "reviewed",
+          "by": "agent",
+          "surface": "reader feedback",
+          "trigger": "confirmed background save",
+          "classifications": [
+            "A",
+            "E"
+          ],
+          "decision": "preserve",
+          "rationale": "Describe the confirmed outcome without internal two-draft jargon.",
+          "exposure": "source-inspected; historical GET-218 browser evidence only",
+          "evidence": {
+            "file": "docs/verification/get-218/copy-decisions.json",
+            "index": 32,
+            "recordSha256": "804431fa0acba0a8f698357dd4d4009182e131dd236e79400852ab0c6daa53b5"
+          },
+          "context": {
+            "consumersSha256": "593484e641c42ed95af5b90480905ba34bb52a610e73a77c0fd511521c728c8d",
+            "files": [
+              {
+                "file": "app/translation-state.mjs",
+                "sha256": "e344f67ba3944a412f297402ff9449a89e1aa4e99dee2c0888a8185149d8da15"
+              }
+            ]
+          },
+          "valueSha256": "888cfef4d3f4c79be90c4fe844735a28be3682285f7270444ec8a46ed066d631",
+          "file": "app/ui-catalogs/en.mjs"
+        },
+        "zh-Hans": {
+          "state": "reviewed",
+          "by": "agent",
+          "surface": "reader feedback",
+          "trigger": "confirmed background save",
+          "classifications": [
+            "A",
+            "E"
+          ],
+          "decision": "preserve",
+          "rationale": "Describe the confirmed outcome without internal two-draft jargon.",
+          "exposure": "source-inspected; historical GET-218 browser evidence only",
+          "evidence": {
+            "file": "docs/verification/get-218/copy-decisions.json",
+            "index": 33,
+            "recordSha256": "2ac15790dcb7730063252d05e92a4a3e7761cba2d9bc152b586de2c51d22b25e"
+          },
+          "context": {
+            "consumersSha256": "593484e641c42ed95af5b90480905ba34bb52a610e73a77c0fd511521c728c8d",
+            "files": [
+              {
+                "file": "app/translation-state.mjs",
+                "sha256": "e344f67ba3944a412f297402ff9449a89e1aa4e99dee2c0888a8185149d8da15"
+              }
+            ]
+          },
+          "valueSha256": "b1e7406cb7561a38727b5660cbee90007a884f1429f101d779e0d0303cf2faf6",
+          "file": "app/ui-catalogs/zh-Hans.mjs"
+        },
+        "zh-Hant": {
+          "state": "reviewed",
+          "by": "agent",
+          "surface": "reader feedback",
+          "trigger": "confirmed background save",
+          "classifications": [
+            "A",
+            "E"
+          ],
+          "decision": "preserve",
+          "rationale": "Describe the confirmed outcome without internal two-draft jargon.",
+          "exposure": "source-inspected; historical GET-218 browser evidence only",
+          "evidence": {
+            "file": "docs/verification/get-218/copy-decisions.json",
+            "index": 34,
+            "recordSha256": "9a7997f4ed37b6aeb9bc6c7aa3dd15768d7c3c287b58afb3cd7dea5e4db2c5cc"
+          },
+          "context": {
+            "consumersSha256": "593484e641c42ed95af5b90480905ba34bb52a610e73a77c0fd511521c728c8d",
+            "files": [
+              {
+                "file": "app/translation-state.mjs",
+                "sha256": "e344f67ba3944a412f297402ff9449a89e1aa4e99dee2c0888a8185149d8da15"
+              }
+            ]
+          },
+          "valueSha256": "b9df28587ba25053169f755306864118cba234ba634ef7436d8ddad683b3a1ed",
+          "file": "app/ui-catalogs/zh-Hant.mjs"
+        },
+        "ja": {
+          "state": "reviewed",
+          "by": "agent",
+          "surface": "reader feedback",
+          "trigger": "confirmed background save",
+          "classifications": [
+            "A",
+            "E"
+          ],
+          "decision": "preserve",
+          "rationale": "Describe the confirmed outcome without internal two-draft jargon.",
+          "exposure": "source-inspected; historical GET-218 browser evidence only",
+          "evidence": {
+            "file": "docs/verification/get-218/copy-decisions.json",
+            "index": 35,
+            "recordSha256": "e6a7bebed52c91bf992748ad836e5f2a2ec84aa43d4c8ce2236bfaca77baec48"
+          },
+          "context": {
+            "consumersSha256": "593484e641c42ed95af5b90480905ba34bb52a610e73a77c0fd511521c728c8d",
+            "files": [
+              {
+                "file": "app/translation-state.mjs",
+                "sha256": "e344f67ba3944a412f297402ff9449a89e1aa4e99dee2c0888a8185149d8da15"
+              }
+            ]
+          },
+          "valueSha256": "3b1d8c1459d16b06e76baf4a06b9209e2eab9d0783980be71d2a7266867cec9b",
+          "file": "app/ui-catalogs/ja.mjs"
+        }
       }
     },
     {
@@ -50558,11 +51172,135 @@
         }
       ],
       "review": {
-        "state": "unreviewed",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
+        "state": "reviewed",
+        "by": "agent",
+        "classification": "A+D+E",
+        "surface": "reader feedback",
+        "trigger": "background failure or unconfirmed outcome after selection changes",
+        "decision": "preserve",
+        "scope": "delivered wording and bound source context; no human-language or current-browser acceptance"
+      },
+      "localeReviews": {
+        "en": {
+          "state": "reviewed",
+          "by": "agent",
+          "surface": "reader feedback",
+          "trigger": "background failure or unconfirmed outcome after selection changes",
+          "classifications": [
+            "A",
+            "D",
+            "E"
+          ],
+          "decision": "preserve",
+          "rationale": "Keep an actionable background notice without equating missing confirmation with a proven generation failure.",
+          "exposure": "source-inspected; historical GET-218 browser evidence only",
+          "evidence": {
+            "file": "docs/verification/get-218/copy-decisions.json",
+            "index": 90,
+            "recordSha256": "0fbf7e8f80e8f5340e1b9514c2dc2160aab6539873ffc405b3d556ffbaf6d804"
+          },
+          "context": {
+            "consumersSha256": "23a098c150a5c131f4e6e44af5d0c58e27a96165d40faa060d558f687fa63939",
+            "files": [
+              {
+                "file": "app/translation-state.mjs",
+                "sha256": "e344f67ba3944a412f297402ff9449a89e1aa4e99dee2c0888a8185149d8da15"
+              }
+            ]
+          },
+          "valueSha256": "d33ba321c8d6759ad8d7a6ce9c365193475bc59a33d2b95fd18db8e9ff0fe89f",
+          "file": "app/ui-catalogs/en.mjs"
+        },
+        "zh-Hans": {
+          "state": "reviewed",
+          "by": "agent",
+          "surface": "reader feedback",
+          "trigger": "background failure or unconfirmed outcome after selection changes",
+          "classifications": [
+            "A",
+            "D",
+            "E"
+          ],
+          "decision": "preserve",
+          "rationale": "Keep an actionable background notice without equating missing confirmation with a proven generation failure.",
+          "exposure": "source-inspected; historical GET-218 browser evidence only",
+          "evidence": {
+            "file": "docs/verification/get-218/copy-decisions.json",
+            "index": 91,
+            "recordSha256": "a7364e2648b823f030b6c03285d835e5e24ffcc6ac47069ea5b74725dd48e7e4"
+          },
+          "context": {
+            "consumersSha256": "23a098c150a5c131f4e6e44af5d0c58e27a96165d40faa060d558f687fa63939",
+            "files": [
+              {
+                "file": "app/translation-state.mjs",
+                "sha256": "e344f67ba3944a412f297402ff9449a89e1aa4e99dee2c0888a8185149d8da15"
+              }
+            ]
+          },
+          "valueSha256": "17f913e4c4ab73336f99034f5e23acd771f43bafe5058b3a7a498ac78d4caefa",
+          "file": "app/ui-catalogs/zh-Hans.mjs"
+        },
+        "zh-Hant": {
+          "state": "reviewed",
+          "by": "agent",
+          "surface": "reader feedback",
+          "trigger": "background failure or unconfirmed outcome after selection changes",
+          "classifications": [
+            "A",
+            "D",
+            "E"
+          ],
+          "decision": "preserve",
+          "rationale": "Keep an actionable background notice without equating missing confirmation with a proven generation failure.",
+          "exposure": "source-inspected; historical GET-218 browser evidence only",
+          "evidence": {
+            "file": "docs/verification/get-218/copy-decisions.json",
+            "index": 92,
+            "recordSha256": "97c6ad7ffe1ab4c5cbfdafa3e9e3540e4cce28144ada5753e5b82ae88cdfd76d"
+          },
+          "context": {
+            "consumersSha256": "23a098c150a5c131f4e6e44af5d0c58e27a96165d40faa060d558f687fa63939",
+            "files": [
+              {
+                "file": "app/translation-state.mjs",
+                "sha256": "e344f67ba3944a412f297402ff9449a89e1aa4e99dee2c0888a8185149d8da15"
+              }
+            ]
+          },
+          "valueSha256": "6528bf6d2276ba6afda13c51cd85ec25cb0cc41a31a79ba04a85ee78d9088966",
+          "file": "app/ui-catalogs/zh-Hant.mjs"
+        },
+        "ja": {
+          "state": "reviewed",
+          "by": "agent",
+          "surface": "reader feedback",
+          "trigger": "background failure or unconfirmed outcome after selection changes",
+          "classifications": [
+            "A",
+            "D",
+            "E"
+          ],
+          "decision": "preserve",
+          "rationale": "Keep an actionable background notice without equating missing confirmation with a proven generation failure.",
+          "exposure": "source-inspected; historical GET-218 browser evidence only",
+          "evidence": {
+            "file": "docs/verification/get-218/copy-decisions.json",
+            "index": 93,
+            "recordSha256": "43d21c875077337c97a201d93e77514055c45e9b1c26cc4d7ae41e95b26438d6"
+          },
+          "context": {
+            "consumersSha256": "23a098c150a5c131f4e6e44af5d0c58e27a96165d40faa060d558f687fa63939",
+            "files": [
+              {
+                "file": "app/translation-state.mjs",
+                "sha256": "e344f67ba3944a412f297402ff9449a89e1aa4e99dee2c0888a8185149d8da15"
+              }
+            ]
+          },
+          "valueSha256": "ee2d94dc2b6813025ac9fab3cca2e7dcb66439bbcc926011281271d2de68b5b8",
+          "file": "app/ui-catalogs/ja.mjs"
+        }
       }
     },
     {
@@ -50620,11 +51358,135 @@
         }
       ],
       "review": {
-        "state": "unreviewed",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
+        "state": "reviewed",
+        "by": "agent",
+        "classification": "A+D+E",
+        "surface": "passage action",
+        "trigger": "existing translations",
+        "decision": "preserve",
+        "scope": "delivered wording and bound source context; no human-language or current-browser acceptance"
+      },
+      "localeReviews": {
+        "en": {
+          "state": "reviewed",
+          "by": "agent",
+          "surface": "passage action",
+          "trigger": "existing translations",
+          "classifications": [
+            "A",
+            "D",
+            "E"
+          ],
+          "decision": "preserve",
+          "rationale": "Remove repeated local-opening and original-checking instructions; normal heading notice is suppressed.",
+          "exposure": "source-inspected; historical GET-218 browser evidence only",
+          "evidence": {
+            "file": "docs/verification/get-218/copy-decisions.json",
+            "index": 36,
+            "recordSha256": "c9f3c2e90b5c12fb913686c3a1c8a08b380480545c743508426a1e2fcc7f4fa5"
+          },
+          "context": {
+            "consumersSha256": "344f879823702357d16e9bf8199313741fae57620faa36f6e7f18a8228abe210",
+            "files": [
+              {
+                "file": "app/translation-state.mjs",
+                "sha256": "e344f67ba3944a412f297402ff9449a89e1aa4e99dee2c0888a8185149d8da15"
+              }
+            ]
+          },
+          "valueSha256": "4609b0616167b8bfb230c372f76384b8ebccb28fe9db7e575ef2ce747c9aa5ab",
+          "file": "app/ui-catalogs/en.mjs"
+        },
+        "zh-Hans": {
+          "state": "reviewed",
+          "by": "agent",
+          "surface": "passage action",
+          "trigger": "existing translations",
+          "classifications": [
+            "A",
+            "D",
+            "E"
+          ],
+          "decision": "preserve",
+          "rationale": "Remove repeated local-opening and original-checking instructions; normal heading notice is suppressed.",
+          "exposure": "source-inspected; historical GET-218 browser evidence only",
+          "evidence": {
+            "file": "docs/verification/get-218/copy-decisions.json",
+            "index": 37,
+            "recordSha256": "d43525cecd1ee7d3d0ec9996c57141a117ea87aea0783d2c7c1781250fa00fa2"
+          },
+          "context": {
+            "consumersSha256": "344f879823702357d16e9bf8199313741fae57620faa36f6e7f18a8228abe210",
+            "files": [
+              {
+                "file": "app/translation-state.mjs",
+                "sha256": "e344f67ba3944a412f297402ff9449a89e1aa4e99dee2c0888a8185149d8da15"
+              }
+            ]
+          },
+          "valueSha256": "dabad8bfa83aa29da790300f60058ba9d4a45f2bf522990473125f8d4a5813fd",
+          "file": "app/ui-catalogs/zh-Hans.mjs"
+        },
+        "zh-Hant": {
+          "state": "reviewed",
+          "by": "agent",
+          "surface": "passage action",
+          "trigger": "existing translations",
+          "classifications": [
+            "A",
+            "D",
+            "E"
+          ],
+          "decision": "preserve",
+          "rationale": "Remove repeated local-opening and original-checking instructions; normal heading notice is suppressed.",
+          "exposure": "source-inspected; historical GET-218 browser evidence only",
+          "evidence": {
+            "file": "docs/verification/get-218/copy-decisions.json",
+            "index": 38,
+            "recordSha256": "fa0170bef9fbd7e8203f549742e091e404843f510b2664ad172012f99aea6204"
+          },
+          "context": {
+            "consumersSha256": "344f879823702357d16e9bf8199313741fae57620faa36f6e7f18a8228abe210",
+            "files": [
+              {
+                "file": "app/translation-state.mjs",
+                "sha256": "e344f67ba3944a412f297402ff9449a89e1aa4e99dee2c0888a8185149d8da15"
+              }
+            ]
+          },
+          "valueSha256": "6b0afaa76c25009a592c3c49f34c2f836a5bea8cc36ac86a7105cc7898f081e9",
+          "file": "app/ui-catalogs/zh-Hant.mjs"
+        },
+        "ja": {
+          "state": "reviewed",
+          "by": "agent",
+          "surface": "passage action",
+          "trigger": "existing translations",
+          "classifications": [
+            "A",
+            "D",
+            "E"
+          ],
+          "decision": "preserve",
+          "rationale": "Remove repeated local-opening and original-checking instructions; normal heading notice is suppressed.",
+          "exposure": "source-inspected; historical GET-218 browser evidence only",
+          "evidence": {
+            "file": "docs/verification/get-218/copy-decisions.json",
+            "index": 39,
+            "recordSha256": "a3de86a1dd3dad7be4a32597901eb312f39d811c661da1822be0ff270099629b"
+          },
+          "context": {
+            "consumersSha256": "344f879823702357d16e9bf8199313741fae57620faa36f6e7f18a8228abe210",
+            "files": [
+              {
+                "file": "app/translation-state.mjs",
+                "sha256": "e344f67ba3944a412f297402ff9449a89e1aa4e99dee2c0888a8185149d8da15"
+              }
+            ]
+          },
+          "valueSha256": "e93a40d88cca001b51ae5df4f9ff16b0a46f926d4a480f90739eb0b162e47beb",
+          "file": "app/ui-catalogs/ja.mjs"
+        }
       }
     },
     {
@@ -51037,7 +51899,7 @@
       "consumers": [
         {
           "file": "app/reader-translation.js",
-          "line": 40,
+          "line": 36,
           "column": 41
         },
         {
@@ -51166,7 +52028,7 @@
       "consumers": [
         {
           "file": "app/reader-translation.js",
-          "line": 37,
+          "line": 33,
           "column": 136
         },
         {
@@ -51233,8 +52095,8 @@
       "consumers": [
         {
           "file": "app/reader-translation.js",
-          "line": 140,
-          "column": 84
+          "line": 147,
+          "column": 109
         },
         {
           "file": "app/translation-state.mjs",
@@ -51260,6 +52122,36 @@
         "surface": "unknown",
         "trigger": "unknown",
         "decision": "unknown"
+      },
+      "localeReviews": {
+        "en": {
+          "state": "unknown",
+          "classification": "unknown",
+          "surface": "unknown",
+          "trigger": "unknown",
+          "decision": "unknown"
+        },
+        "zh-Hans": {
+          "state": "unknown",
+          "classification": "unknown",
+          "surface": "unknown",
+          "trigger": "unknown",
+          "decision": "unknown"
+        },
+        "zh-Hant": {
+          "state": "unknown",
+          "classification": "unknown",
+          "surface": "unknown",
+          "trigger": "unknown",
+          "decision": "unknown"
+        },
+        "ja": {
+          "state": "unknown",
+          "classification": "unknown",
+          "surface": "unknown",
+          "trigger": "unknown",
+          "decision": "unknown"
+        }
       }
     },
     {
@@ -51362,7 +52254,7 @@
       "consumers": [
         {
           "file": "app/reader-translation.js",
-          "line": 45,
+          "line": 41,
           "column": 31
         },
         {
@@ -51429,7 +52321,7 @@
       "consumers": [
         {
           "file": "app/reader-translation.js",
-          "line": 132,
+          "line": 139,
           "column": 82
         }
       ],
@@ -51446,6 +52338,36 @@
         "surface": "unknown",
         "trigger": "unknown",
         "decision": "unknown"
+      },
+      "localeReviews": {
+        "en": {
+          "state": "unknown",
+          "classification": "unknown",
+          "surface": "unknown",
+          "trigger": "unknown",
+          "decision": "unknown"
+        },
+        "zh-Hans": {
+          "state": "unknown",
+          "classification": "unknown",
+          "surface": "unknown",
+          "trigger": "unknown",
+          "decision": "unknown"
+        },
+        "zh-Hant": {
+          "state": "unknown",
+          "classification": "unknown",
+          "surface": "unknown",
+          "trigger": "unknown",
+          "decision": "unknown"
+        },
+        "ja": {
+          "state": "unknown",
+          "classification": "unknown",
+          "surface": "unknown",
+          "trigger": "unknown",
+          "decision": "unknown"
+        }
       }
     },
     {
@@ -52395,11 +53317,147 @@
         }
       ],
       "review": {
-        "state": "unreviewed",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
+        "state": "reviewed",
+        "by": "agent",
+        "classification": "A+D",
+        "surface": "legacy routine notice descriptor",
+        "trigger": "open book details",
+        "decision": "preserve",
+        "scope": "delivered wording and bound source context; no human-language or current-browser acceptance"
+      },
+      "localeReviews": {
+        "en": {
+          "state": "reviewed",
+          "by": "agent",
+          "surface": "legacy routine notice descriptor",
+          "trigger": "open book details",
+          "classifications": [
+            "A",
+            "D"
+          ],
+          "decision": "preserve",
+          "rationale": "Shorten the legacy descriptor; the ordinary chapter notice is suppressed. Actual book details use reader.b1.sampleNotice.",
+          "exposure": "source-inspected; historical GET-218 browser evidence only",
+          "evidence": {
+            "file": "docs/verification/get-218/copy-decisions.json",
+            "index": 0,
+            "recordSha256": "8c84fba968789f473dbe3889406a0fc55ff5751c4477198341e4ab93eccf34af"
+          },
+          "context": {
+            "consumersSha256": "834b0fee12f1810cd211e2a6232cad0221f515b5604111fa95f57454db692375",
+            "files": [
+              {
+                "file": "app/catalog-sample.mjs",
+                "sha256": "0cc276ae4c0e488771c40f8a1b08aa14cf0c20bb0e286a761fdec6d33ba4eb8a"
+              },
+              {
+                "file": "app/reader-navigation.mjs",
+                "sha256": "08a7618e48821145044eda229908ab2f955d92e72ad71a9ddfce855eec7c49cb"
+              }
+            ]
+          },
+          "valueSha256": "027310fa9ca1d124a563c09877fecc468e9e8baad2e6cb64befc4f655a8d7789",
+          "file": "app/ui-catalogs/en.mjs"
+        },
+        "zh-Hans": {
+          "state": "reviewed",
+          "by": "agent",
+          "surface": "legacy routine notice descriptor",
+          "trigger": "open book details",
+          "classifications": [
+            "A",
+            "D"
+          ],
+          "decision": "preserve",
+          "rationale": "Shorten the legacy descriptor; the ordinary chapter notice is suppressed. Actual book details use reader.b1.sampleNotice.",
+          "exposure": "source-inspected; historical GET-218 browser evidence only",
+          "evidence": {
+            "file": "docs/verification/get-218/copy-decisions.json",
+            "index": 1,
+            "recordSha256": "67093c85a95060743a1089189010a06dab7dedbb338e0e1f900b17f7812c48fb"
+          },
+          "context": {
+            "consumersSha256": "834b0fee12f1810cd211e2a6232cad0221f515b5604111fa95f57454db692375",
+            "files": [
+              {
+                "file": "app/catalog-sample.mjs",
+                "sha256": "0cc276ae4c0e488771c40f8a1b08aa14cf0c20bb0e286a761fdec6d33ba4eb8a"
+              },
+              {
+                "file": "app/reader-navigation.mjs",
+                "sha256": "08a7618e48821145044eda229908ab2f955d92e72ad71a9ddfce855eec7c49cb"
+              }
+            ]
+          },
+          "valueSha256": "04e5e185f1e93a148bd1b2fe06ee35dcecda1104d4e89e8e1422a774fdaedb27",
+          "file": "app/ui-catalogs/zh-Hans.mjs"
+        },
+        "zh-Hant": {
+          "state": "reviewed",
+          "by": "agent",
+          "surface": "legacy routine notice descriptor",
+          "trigger": "open book details",
+          "classifications": [
+            "A",
+            "D"
+          ],
+          "decision": "preserve",
+          "rationale": "Shorten the legacy descriptor; the ordinary chapter notice is suppressed. Actual book details use reader.b1.sampleNotice.",
+          "exposure": "source-inspected; historical GET-218 browser evidence only",
+          "evidence": {
+            "file": "docs/verification/get-218/copy-decisions.json",
+            "index": 2,
+            "recordSha256": "4e5fb29f43b5c67af9cbcad35722a85b8f47c3cb8b6289811c1598f0ce52ce41"
+          },
+          "context": {
+            "consumersSha256": "834b0fee12f1810cd211e2a6232cad0221f515b5604111fa95f57454db692375",
+            "files": [
+              {
+                "file": "app/catalog-sample.mjs",
+                "sha256": "0cc276ae4c0e488771c40f8a1b08aa14cf0c20bb0e286a761fdec6d33ba4eb8a"
+              },
+              {
+                "file": "app/reader-navigation.mjs",
+                "sha256": "08a7618e48821145044eda229908ab2f955d92e72ad71a9ddfce855eec7c49cb"
+              }
+            ]
+          },
+          "valueSha256": "a07048a497befc255c1c4f84cd9486d49e74f8fd181c3e987ff597d50289dbe0",
+          "file": "app/ui-catalogs/zh-Hant.mjs"
+        },
+        "ja": {
+          "state": "reviewed",
+          "by": "agent",
+          "surface": "legacy routine notice descriptor",
+          "trigger": "open book details",
+          "classifications": [
+            "A",
+            "D"
+          ],
+          "decision": "preserve",
+          "rationale": "Shorten the legacy descriptor; the ordinary chapter notice is suppressed. Actual book details use reader.b1.sampleNotice.",
+          "exposure": "source-inspected; historical GET-218 browser evidence only",
+          "evidence": {
+            "file": "docs/verification/get-218/copy-decisions.json",
+            "index": 3,
+            "recordSha256": "fefed7201e6210ea8f1eb81bd90be138abf6753f08642f52305f9c1666c38064"
+          },
+          "context": {
+            "consumersSha256": "834b0fee12f1810cd211e2a6232cad0221f515b5604111fa95f57454db692375",
+            "files": [
+              {
+                "file": "app/catalog-sample.mjs",
+                "sha256": "0cc276ae4c0e488771c40f8a1b08aa14cf0c20bb0e286a761fdec6d33ba4eb8a"
+              },
+              {
+                "file": "app/reader-navigation.mjs",
+                "sha256": "08a7618e48821145044eda229908ab2f955d92e72ad71a9ddfce855eec7c49cb"
+              }
+            ]
+          },
+          "valueSha256": "e74521785223687e4d09f866a44a33e07cd83fe7bc224f6ae0a1c1b88a19aa97",
+          "file": "app/ui-catalogs/ja.mjs"
+        }
       }
     },
     {
@@ -52457,6 +53515,36 @@
         "surface": "unknown",
         "trigger": "unknown",
         "decision": "unknown"
+      },
+      "localeReviews": {
+        "en": {
+          "state": "unknown",
+          "classification": "unknown",
+          "surface": "unknown",
+          "trigger": "unknown",
+          "decision": "unknown"
+        },
+        "zh-Hans": {
+          "state": "unknown",
+          "classification": "unknown",
+          "surface": "unknown",
+          "trigger": "unknown",
+          "decision": "unknown"
+        },
+        "zh-Hant": {
+          "state": "unknown",
+          "classification": "unknown",
+          "surface": "unknown",
+          "trigger": "unknown",
+          "decision": "unknown"
+        },
+        "ja": {
+          "state": "unknown",
+          "classification": "unknown",
+          "surface": "unknown",
+          "trigger": "unknown",
+          "decision": "unknown"
+        }
       }
     },
     {
@@ -52508,6 +53596,36 @@
         "surface": "unknown",
         "trigger": "unknown",
         "decision": "unknown"
+      },
+      "localeReviews": {
+        "en": {
+          "state": "unknown",
+          "classification": "unknown",
+          "surface": "unknown",
+          "trigger": "unknown",
+          "decision": "unknown"
+        },
+        "zh-Hans": {
+          "state": "unknown",
+          "classification": "unknown",
+          "surface": "unknown",
+          "trigger": "unknown",
+          "decision": "unknown"
+        },
+        "zh-Hant": {
+          "state": "unknown",
+          "classification": "unknown",
+          "surface": "unknown",
+          "trigger": "unknown",
+          "decision": "unknown"
+        },
+        "ja": {
+          "state": "unknown",
+          "classification": "unknown",
+          "surface": "unknown",
+          "trigger": "unknown",
+          "decision": "unknown"
+        }
       }
     },
     {
@@ -52548,7 +53666,7 @@
       "consumers": [
         {
           "file": "app/reader-translation.js",
-          "line": 70,
+          "line": 67,
           "column": 103
         }
       ],
@@ -52605,7 +53723,7 @@
       "consumers": [
         {
           "file": "app/reader-translation.js",
-          "line": 77,
+          "line": 74,
           "column": 95
         }
       ],
@@ -52662,7 +53780,7 @@
       "consumers": [
         {
           "file": "app/reader-translation.js",
-          "line": 77,
+          "line": 74,
           "column": 134
         }
       ],
@@ -52719,7 +53837,7 @@
       "consumers": [
         {
           "file": "app/reader-translation.js",
-          "line": 79,
+          "line": 76,
           "column": 174
         }
       ],
@@ -52776,7 +53894,7 @@
       "consumers": [
         {
           "file": "app/reader-translation.js",
-          "line": 81,
+          "line": 78,
           "column": 91
         }
       ],
@@ -52833,7 +53951,7 @@
       "consumers": [
         {
           "file": "app/reader-translation.js",
-          "line": 90,
+          "line": 87,
           "column": 74
         }
       ],
@@ -52890,7 +54008,7 @@
       "consumers": [
         {
           "file": "app/reader-translation.js",
-          "line": 95,
+          "line": 92,
           "column": 138
         }
       ],
@@ -52947,7 +54065,7 @@
       "consumers": [
         {
           "file": "app/reader-translation.js",
-          "line": 96,
+          "line": 93,
           "column": 48
         }
       ],
@@ -53004,7 +54122,7 @@
       "consumers": [
         {
           "file": "app/reader-translation.js",
-          "line": 99,
+          "line": 96,
           "column": 47
         }
       ],
@@ -53061,7 +54179,7 @@
       "consumers": [
         {
           "file": "app/reader-translation.js",
-          "line": 109,
+          "line": 106,
           "column": 68
         }
       ],
@@ -53118,7 +54236,7 @@
       "consumers": [
         {
           "file": "app/reader-translation.js",
-          "line": 109,
+          "line": 106,
           "column": 115
         }
       ],
@@ -53175,7 +54293,7 @@
       "consumers": [
         {
           "file": "app/reader-translation.js",
-          "line": 109,
+          "line": 106,
           "column": 164
         }
       ],
@@ -53232,7 +54350,7 @@
       "consumers": [
         {
           "file": "app/reader-translation.js",
-          "line": 109,
+          "line": 106,
           "column": 184
         }
       ],
@@ -53289,7 +54407,7 @@
       "consumers": [
         {
           "file": "app/reader-translation.js",
-          "line": 112,
+          "line": 109,
           "column": 109
         }
       ],
@@ -59983,11 +61101,131 @@
         }
       ],
       "review": {
-        "state": "unreviewed",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
+        "state": "reviewed",
+        "by": "agent",
+        "classification": "C+D",
+        "surface": "reading calendar",
+        "trigger": "empty today",
+        "decision": "preserve",
+        "scope": "delivered wording and bound source context; no human-language or current-browser acceptance"
+      },
+      "localeReviews": {
+        "en": {
+          "state": "reviewed",
+          "by": "agent",
+          "surface": "reading calendar",
+          "trigger": "empty today",
+          "classifications": [
+            "C",
+            "D"
+          ],
+          "decision": "preserve",
+          "rationale": "Delete encouragement that provides no next action or state information.",
+          "exposure": "source-inspected; historical GET-218 browser evidence only",
+          "evidence": {
+            "file": "docs/verification/get-218/copy-decisions.json",
+            "index": 52,
+            "recordSha256": "5baef2f7d4f3f5413d264280c6430e89e446802539a255926205dab7528e55a8"
+          },
+          "context": {
+            "consumersSha256": "d60baf21b9b8fbb6547a7b1ee9961e87099bc216f1a8f81006973f478f673650",
+            "files": [
+              {
+                "file": "app/reading-dashboard.mjs",
+                "sha256": "e1a3b25d9a72c05ed46555d69713da11d0aed30832db5966e40dce3c96cf0107"
+              }
+            ]
+          },
+          "valueSha256": "e5a5b9af142158cae5ed255b6f6d85a41df4d44c544c988e4237f76ec66e127b",
+          "file": "app/ui-catalogs/en.mjs"
+        },
+        "zh-Hans": {
+          "state": "reviewed",
+          "by": "agent",
+          "surface": "reading calendar",
+          "trigger": "empty today",
+          "classifications": [
+            "C",
+            "D"
+          ],
+          "decision": "preserve",
+          "rationale": "Delete encouragement that provides no next action or state information.",
+          "exposure": "source-inspected; historical GET-218 browser evidence only",
+          "evidence": {
+            "file": "docs/verification/get-218/copy-decisions.json",
+            "index": 53,
+            "recordSha256": "3e8ba37f110bc1f4d8a2320787aca7f4dad892108888049d1131c7564a372dc5"
+          },
+          "context": {
+            "consumersSha256": "d60baf21b9b8fbb6547a7b1ee9961e87099bc216f1a8f81006973f478f673650",
+            "files": [
+              {
+                "file": "app/reading-dashboard.mjs",
+                "sha256": "e1a3b25d9a72c05ed46555d69713da11d0aed30832db5966e40dce3c96cf0107"
+              }
+            ]
+          },
+          "valueSha256": "04ed42f6393910338dee06db98876e0d742c41e2c22c52053a57ec80bad50418",
+          "file": "app/ui-catalogs/zh-Hans.mjs"
+        },
+        "zh-Hant": {
+          "state": "reviewed",
+          "by": "agent",
+          "surface": "reading calendar",
+          "trigger": "empty today",
+          "classifications": [
+            "C",
+            "D"
+          ],
+          "decision": "preserve",
+          "rationale": "Delete encouragement that provides no next action or state information.",
+          "exposure": "source-inspected; historical GET-218 browser evidence only",
+          "evidence": {
+            "file": "docs/verification/get-218/copy-decisions.json",
+            "index": 54,
+            "recordSha256": "db480283a8824a5f753ec927f055c40285f1c4850cd84df0bc03cb4e56d25c7d"
+          },
+          "context": {
+            "consumersSha256": "d60baf21b9b8fbb6547a7b1ee9961e87099bc216f1a8f81006973f478f673650",
+            "files": [
+              {
+                "file": "app/reading-dashboard.mjs",
+                "sha256": "e1a3b25d9a72c05ed46555d69713da11d0aed30832db5966e40dce3c96cf0107"
+              }
+            ]
+          },
+          "valueSha256": "062b2eccc1a346668cf4173bca6ab908e344a52a0560d47a0f980ea5e9bba11c",
+          "file": "app/ui-catalogs/zh-Hant.mjs"
+        },
+        "ja": {
+          "state": "reviewed",
+          "by": "agent",
+          "surface": "reading calendar",
+          "trigger": "empty today",
+          "classifications": [
+            "C",
+            "D"
+          ],
+          "decision": "preserve",
+          "rationale": "Delete encouragement that provides no next action or state information.",
+          "exposure": "source-inspected; historical GET-218 browser evidence only",
+          "evidence": {
+            "file": "docs/verification/get-218/copy-decisions.json",
+            "index": 55,
+            "recordSha256": "ba2da813fd70c9c91b32447e22d42298d8dc69a452e106bca88c4e1f6623169d"
+          },
+          "context": {
+            "consumersSha256": "d60baf21b9b8fbb6547a7b1ee9961e87099bc216f1a8f81006973f478f673650",
+            "files": [
+              {
+                "file": "app/reading-dashboard.mjs",
+                "sha256": "e1a3b25d9a72c05ed46555d69713da11d0aed30832db5966e40dce3c96cf0107"
+              }
+            ]
+          },
+          "valueSha256": "a6733f614b0e7fd8796bc6171da26a764d4f51874ad2ad82b58b08a053d54b17",
+          "file": "app/ui-catalogs/ja.mjs"
+        }
       }
     },
     {
@@ -65428,11 +66666,127 @@
         }
       ],
       "review": {
-        "state": "unreviewed",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
+        "state": "reviewed",
+        "by": "agent",
+        "classification": "D",
+        "surface": "empty library",
+        "trigger": "signed-out empty state",
+        "decision": "preserve",
+        "scope": "delivered wording and bound source context; no human-language or current-browser acceptance"
+      },
+      "localeReviews": {
+        "en": {
+          "state": "reviewed",
+          "by": "agent",
+          "surface": "empty library",
+          "trigger": "signed-out empty state",
+          "classifications": [
+            "D"
+          ],
+          "decision": "preserve",
+          "rationale": "State the sign-in result once.",
+          "exposure": "source-inspected; historical GET-218 browser evidence only",
+          "evidence": {
+            "file": "docs/verification/get-218/copy-decisions.json",
+            "index": 56,
+            "recordSha256": "b47e3691b377bd1d10aa2039e8a55aae8591983327d7b92fa10da859b64e3899"
+          },
+          "context": {
+            "consumersSha256": "619aeaad96612628b6d0b05fb1643bca5e22f9115ad1e41b4993464156639473",
+            "files": [
+              {
+                "file": "app/portal.js",
+                "sha256": "2671496965f41cf8eac1e9c734aab8e206a084f16b9ac2fb6ec4ce60fd613b4a"
+              }
+            ]
+          },
+          "valueSha256": "7c8fa1adc087e50f164a79b17d135670e8d9ceed68b4fce02206e0a853a40a12",
+          "file": "app/ui-catalogs/en.mjs"
+        },
+        "zh-Hans": {
+          "state": "reviewed",
+          "by": "agent",
+          "surface": "empty library",
+          "trigger": "signed-out empty state",
+          "classifications": [
+            "D"
+          ],
+          "decision": "preserve",
+          "rationale": "State the sign-in result once.",
+          "exposure": "source-inspected; historical GET-218 browser evidence only",
+          "evidence": {
+            "file": "docs/verification/get-218/copy-decisions.json",
+            "index": 57,
+            "recordSha256": "2cfa149c655556e3f1bba0b9a6509638e3e99647b2206e5ed6bbb5aa238d8805"
+          },
+          "context": {
+            "consumersSha256": "619aeaad96612628b6d0b05fb1643bca5e22f9115ad1e41b4993464156639473",
+            "files": [
+              {
+                "file": "app/portal.js",
+                "sha256": "2671496965f41cf8eac1e9c734aab8e206a084f16b9ac2fb6ec4ce60fd613b4a"
+              }
+            ]
+          },
+          "valueSha256": "51d40c05269f68afc078ebd667e30f64bff00bfdf1ee052c18bf37e67db8449a",
+          "file": "app/ui-catalogs/zh-Hans.mjs"
+        },
+        "zh-Hant": {
+          "state": "reviewed",
+          "by": "agent",
+          "surface": "empty library",
+          "trigger": "signed-out empty state",
+          "classifications": [
+            "D"
+          ],
+          "decision": "preserve",
+          "rationale": "State the sign-in result once.",
+          "exposure": "source-inspected; historical GET-218 browser evidence only",
+          "evidence": {
+            "file": "docs/verification/get-218/copy-decisions.json",
+            "index": 58,
+            "recordSha256": "9ccf415a15012b0eedff85ad6c090df8cededac7b93ba4d03699d1a6cfd512b0"
+          },
+          "context": {
+            "consumersSha256": "619aeaad96612628b6d0b05fb1643bca5e22f9115ad1e41b4993464156639473",
+            "files": [
+              {
+                "file": "app/portal.js",
+                "sha256": "2671496965f41cf8eac1e9c734aab8e206a084f16b9ac2fb6ec4ce60fd613b4a"
+              }
+            ]
+          },
+          "valueSha256": "0c4b5cae25046a8d41e4b6b32a76f3aca3c648dcc86c151d5ba39ca88a203ecd",
+          "file": "app/ui-catalogs/zh-Hant.mjs"
+        },
+        "ja": {
+          "state": "reviewed",
+          "by": "agent",
+          "surface": "empty library",
+          "trigger": "signed-out empty state",
+          "classifications": [
+            "D"
+          ],
+          "decision": "preserve",
+          "rationale": "State the sign-in result once.",
+          "exposure": "source-inspected; historical GET-218 browser evidence only",
+          "evidence": {
+            "file": "docs/verification/get-218/copy-decisions.json",
+            "index": 59,
+            "recordSha256": "ba5e11d702bf784d2ab6777d559daade3ff4c41a21e7ef3cd6be72922f4a4bd6"
+          },
+          "context": {
+            "consumersSha256": "619aeaad96612628b6d0b05fb1643bca5e22f9115ad1e41b4993464156639473",
+            "files": [
+              {
+                "file": "app/portal.js",
+                "sha256": "2671496965f41cf8eac1e9c734aab8e206a084f16b9ac2fb6ec4ce60fd613b4a"
+              }
+            ]
+          },
+          "valueSha256": "b4302f9d4e61b471fa6adef8f8e1297268ed33f83de89565d3e8d86e7ee9d29e",
+          "file": "app/ui-catalogs/ja.mjs"
+        }
       }
     },
     {
@@ -65490,11 +66844,147 @@
         }
       ],
       "review": {
-        "state": "unreviewed",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
+        "state": "reviewed",
+        "by": "agent",
+        "classification": "C+D",
+        "surface": "empty library",
+        "trigger": "signed-in empty state",
+        "decision": "preserve",
+        "scope": "delivered wording and bound source context; no human-language or current-browser acceptance"
+      },
+      "localeReviews": {
+        "en": {
+          "state": "reviewed",
+          "by": "agent",
+          "surface": "empty library",
+          "trigger": "signed-in empty state",
+          "classifications": [
+            "C",
+            "D"
+          ],
+          "decision": "preserve",
+          "rationale": "Keep the supported files and concrete next action; remove reading encouragement.",
+          "exposure": "source-inspected; historical GET-218 browser evidence only",
+          "evidence": {
+            "file": "docs/verification/get-218/copy-decisions.json",
+            "index": 60,
+            "recordSha256": "d2ebaa58e91faf28eb6401097e1187dbe1fb3eaee9aa02fa668762a6dc59f607"
+          },
+          "context": {
+            "consumersSha256": "249c52bdf430eb33a39925fd651ca7e5b6dc2dc003bf2e659ead773060e6dd01",
+            "files": [
+              {
+                "file": "app/library-chat.mjs",
+                "sha256": "e2acd4fd9a6bf2114debc64b6c313faca0051371989ed960d2ab2fd8336893a2"
+              },
+              {
+                "file": "app/portal.js",
+                "sha256": "2671496965f41cf8eac1e9c734aab8e206a084f16b9ac2fb6ec4ce60fd613b4a"
+              }
+            ]
+          },
+          "valueSha256": "396e345cbe77c090e2f6e1be89c8baca6ab6c99194d5914759ce60f31f858d79",
+          "file": "app/ui-catalogs/en.mjs"
+        },
+        "zh-Hans": {
+          "state": "reviewed",
+          "by": "agent",
+          "surface": "empty library",
+          "trigger": "signed-in empty state",
+          "classifications": [
+            "C",
+            "D"
+          ],
+          "decision": "preserve",
+          "rationale": "Keep the supported files and concrete next action; remove reading encouragement.",
+          "exposure": "source-inspected; historical GET-218 browser evidence only",
+          "evidence": {
+            "file": "docs/verification/get-218/copy-decisions.json",
+            "index": 61,
+            "recordSha256": "231343f1199acb3171e8488bd188ffeed31276708c3c35d74ce62ad1bcff9b68"
+          },
+          "context": {
+            "consumersSha256": "249c52bdf430eb33a39925fd651ca7e5b6dc2dc003bf2e659ead773060e6dd01",
+            "files": [
+              {
+                "file": "app/library-chat.mjs",
+                "sha256": "e2acd4fd9a6bf2114debc64b6c313faca0051371989ed960d2ab2fd8336893a2"
+              },
+              {
+                "file": "app/portal.js",
+                "sha256": "2671496965f41cf8eac1e9c734aab8e206a084f16b9ac2fb6ec4ce60fd613b4a"
+              }
+            ]
+          },
+          "valueSha256": "6ecc26240e6863a24da2c55f8c761afa98c0a601614312f536172cca0567e24e",
+          "file": "app/ui-catalogs/zh-Hans.mjs"
+        },
+        "zh-Hant": {
+          "state": "reviewed",
+          "by": "agent",
+          "surface": "empty library",
+          "trigger": "signed-in empty state",
+          "classifications": [
+            "C",
+            "D"
+          ],
+          "decision": "preserve",
+          "rationale": "Keep the supported files and concrete next action; remove reading encouragement.",
+          "exposure": "source-inspected; historical GET-218 browser evidence only",
+          "evidence": {
+            "file": "docs/verification/get-218/copy-decisions.json",
+            "index": 62,
+            "recordSha256": "96e4804e5e52859dad805d5c78e8628d7e9d8a6015ee02c6428a905d66afb154"
+          },
+          "context": {
+            "consumersSha256": "249c52bdf430eb33a39925fd651ca7e5b6dc2dc003bf2e659ead773060e6dd01",
+            "files": [
+              {
+                "file": "app/library-chat.mjs",
+                "sha256": "e2acd4fd9a6bf2114debc64b6c313faca0051371989ed960d2ab2fd8336893a2"
+              },
+              {
+                "file": "app/portal.js",
+                "sha256": "2671496965f41cf8eac1e9c734aab8e206a084f16b9ac2fb6ec4ce60fd613b4a"
+              }
+            ]
+          },
+          "valueSha256": "f391de8d00299eeb66b95d505bbc4da254803c1aae63a56d0691155e5e79d510",
+          "file": "app/ui-catalogs/zh-Hant.mjs"
+        },
+        "ja": {
+          "state": "reviewed",
+          "by": "agent",
+          "surface": "empty library",
+          "trigger": "signed-in empty state",
+          "classifications": [
+            "C",
+            "D"
+          ],
+          "decision": "preserve",
+          "rationale": "Keep the supported files and concrete next action; remove reading encouragement.",
+          "exposure": "source-inspected; historical GET-218 browser evidence only",
+          "evidence": {
+            "file": "docs/verification/get-218/copy-decisions.json",
+            "index": 63,
+            "recordSha256": "2672637401db5cab51c3308f60870486a4df4b186d053025447dab14dfe46ad5"
+          },
+          "context": {
+            "consumersSha256": "249c52bdf430eb33a39925fd651ca7e5b6dc2dc003bf2e659ead773060e6dd01",
+            "files": [
+              {
+                "file": "app/library-chat.mjs",
+                "sha256": "e2acd4fd9a6bf2114debc64b6c313faca0051371989ed960d2ab2fd8336893a2"
+              },
+              {
+                "file": "app/portal.js",
+                "sha256": "2671496965f41cf8eac1e9c734aab8e206a084f16b9ac2fb6ec4ce60fd613b4a"
+              }
+            ]
+          },
+          "valueSha256": "53db48491499682e8c5cdfb8e10d0844ecfb190b23b386f4759a365e3e0a9791",
+          "file": "app/ui-catalogs/ja.mjs"
+        }
       }
     },
     {
@@ -70564,6 +72054,36 @@
         "surface": "unknown",
         "trigger": "unknown",
         "decision": "unknown"
+      },
+      "localeReviews": {
+        "en": {
+          "state": "unknown",
+          "classification": "unknown",
+          "surface": "unknown",
+          "trigger": "unknown",
+          "decision": "unknown"
+        },
+        "zh-Hans": {
+          "state": "unknown",
+          "classification": "unknown",
+          "surface": "unknown",
+          "trigger": "unknown",
+          "decision": "unknown"
+        },
+        "zh-Hant": {
+          "state": "unknown",
+          "classification": "unknown",
+          "surface": "unknown",
+          "trigger": "unknown",
+          "decision": "unknown"
+        },
+        "ja": {
+          "state": "unknown",
+          "classification": "unknown",
+          "surface": "unknown",
+          "trigger": "unknown",
+          "decision": "unknown"
+        }
       }
     },
     {
@@ -87239,13 +88759,7 @@
       },
       "missingLocales": [],
       "duplicates": [],
-      "consumers": [
-        {
-          "file": "app/reader-translation.js",
-          "line": 50,
-          "column": 173
-        }
-      ],
+      "consumers": [],
       "hints": [
         {
           "kind": "key-namespace",
@@ -87259,6 +88773,36 @@
         "surface": "unknown",
         "trigger": "unknown",
         "decision": "unknown"
+      },
+      "localeReviews": {
+        "en": {
+          "state": "unknown",
+          "classification": "unknown",
+          "surface": "unknown",
+          "trigger": "unknown",
+          "decision": "unknown"
+        },
+        "zh-Hans": {
+          "state": "unknown",
+          "classification": "unknown",
+          "surface": "unknown",
+          "trigger": "unknown",
+          "decision": "unknown"
+        },
+        "zh-Hant": {
+          "state": "unknown",
+          "classification": "unknown",
+          "surface": "unknown",
+          "trigger": "unknown",
+          "decision": "unknown"
+        },
+        "ja": {
+          "state": "unknown",
+          "classification": "unknown",
+          "surface": "unknown",
+          "trigger": "unknown",
+          "decision": "unknown"
+        }
       }
     },
     {
@@ -88739,11 +90283,135 @@
         }
       ],
       "review": {
-        "state": "unreviewed",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
+        "state": "reviewed",
+        "by": "agent",
+        "classification": "A+D+E",
+        "surface": "book details",
+        "trigger": "open book information",
+        "decision": "preserve",
+        "scope": "delivered wording and bound source context; no human-language or current-browser acceptance"
+      },
+      "localeReviews": {
+        "en": {
+          "state": "reviewed",
+          "by": "agent",
+          "surface": "book details",
+          "trigger": "open book information",
+          "classifications": [
+            "A",
+            "D",
+            "E"
+          ],
+          "decision": "preserve",
+          "rationale": "Show actual public sample coverage briefly; full provenance remains in Source and translations. Do not claim all later personal translations are absent.",
+          "exposure": "source-inspected; historical GET-218 browser evidence only",
+          "evidence": {
+            "file": "docs/verification/get-218/copy-decisions.json",
+            "index": 95,
+            "recordSha256": "48553c8b5e182370890fc32410c2ee0c4c6129eb17ee4ade9c891b787a676d78"
+          },
+          "context": {
+            "consumersSha256": "8b07ba2da6d32f02a97e09800408dc9bdff994f0b36c25dc7b7eebc2f16a5144",
+            "files": [
+              {
+                "file": "app/reader-navigation.mjs",
+                "sha256": "08a7618e48821145044eda229908ab2f955d92e72ad71a9ddfce855eec7c49cb"
+              }
+            ]
+          },
+          "valueSha256": "027310fa9ca1d124a563c09877fecc468e9e8baad2e6cb64befc4f655a8d7789",
+          "file": "app/ui-catalogs/en.mjs"
+        },
+        "zh-Hans": {
+          "state": "reviewed",
+          "by": "agent",
+          "surface": "book details",
+          "trigger": "open book information",
+          "classifications": [
+            "A",
+            "D",
+            "E"
+          ],
+          "decision": "preserve",
+          "rationale": "Show actual public sample coverage briefly; full provenance remains in Source and translations. Do not claim all later personal translations are absent.",
+          "exposure": "source-inspected; historical GET-218 browser evidence only",
+          "evidence": {
+            "file": "docs/verification/get-218/copy-decisions.json",
+            "index": 96,
+            "recordSha256": "15dd43629cf837d3a4e69224e59fdd228d2a64708d4b3bc28287d2feae19f501"
+          },
+          "context": {
+            "consumersSha256": "8b07ba2da6d32f02a97e09800408dc9bdff994f0b36c25dc7b7eebc2f16a5144",
+            "files": [
+              {
+                "file": "app/reader-navigation.mjs",
+                "sha256": "08a7618e48821145044eda229908ab2f955d92e72ad71a9ddfce855eec7c49cb"
+              }
+            ]
+          },
+          "valueSha256": "04e5e185f1e93a148bd1b2fe06ee35dcecda1104d4e89e8e1422a774fdaedb27",
+          "file": "app/ui-catalogs/zh-Hans.mjs"
+        },
+        "zh-Hant": {
+          "state": "reviewed",
+          "by": "agent",
+          "surface": "book details",
+          "trigger": "open book information",
+          "classifications": [
+            "A",
+            "D",
+            "E"
+          ],
+          "decision": "preserve",
+          "rationale": "Show actual public sample coverage briefly; full provenance remains in Source and translations. Do not claim all later personal translations are absent.",
+          "exposure": "source-inspected; historical GET-218 browser evidence only",
+          "evidence": {
+            "file": "docs/verification/get-218/copy-decisions.json",
+            "index": 97,
+            "recordSha256": "24aa8c5daeefafa520014130f833e4e98a8fb6caf4ac3736feb97cb7bb6f72d0"
+          },
+          "context": {
+            "consumersSha256": "8b07ba2da6d32f02a97e09800408dc9bdff994f0b36c25dc7b7eebc2f16a5144",
+            "files": [
+              {
+                "file": "app/reader-navigation.mjs",
+                "sha256": "08a7618e48821145044eda229908ab2f955d92e72ad71a9ddfce855eec7c49cb"
+              }
+            ]
+          },
+          "valueSha256": "a07048a497befc255c1c4f84cd9486d49e74f8fd181c3e987ff597d50289dbe0",
+          "file": "app/ui-catalogs/zh-Hant.mjs"
+        },
+        "ja": {
+          "state": "reviewed",
+          "by": "agent",
+          "surface": "book details",
+          "trigger": "open book information",
+          "classifications": [
+            "A",
+            "D",
+            "E"
+          ],
+          "decision": "preserve",
+          "rationale": "Show actual public sample coverage briefly; full provenance remains in Source and translations. Do not claim all later personal translations are absent.",
+          "exposure": "source-inspected; historical GET-218 browser evidence only",
+          "evidence": {
+            "file": "docs/verification/get-218/copy-decisions.json",
+            "index": 98,
+            "recordSha256": "251027fc9d3a4f3bb48c65635c47331450de28993c473ba14cd7b8e6a335fa36"
+          },
+          "context": {
+            "consumersSha256": "8b07ba2da6d32f02a97e09800408dc9bdff994f0b36c25dc7b7eebc2f16a5144",
+            "files": [
+              {
+                "file": "app/reader-navigation.mjs",
+                "sha256": "08a7618e48821145044eda229908ab2f955d92e72ad71a9ddfce855eec7c49cb"
+              }
+            ]
+          },
+          "valueSha256": "e74521785223687e4d09f866a44a33e07cd83fe7bc224f6ae0a1c1b88a19aa97",
+          "file": "app/ui-catalogs/ja.mjs"
+        }
       }
     },
     {
@@ -109342,11 +111010,131 @@
         }
       ],
       "review": {
-        "state": "unreviewed",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
+        "state": "reviewed",
+        "by": "agent",
+        "classification": "C+D",
+        "surface": "listening records",
+        "trigger": "empty listening history",
+        "decision": "preserve",
+        "scope": "delivered wording and bound source context; no human-language or current-browser acceptance"
+      },
+      "localeReviews": {
+        "en": {
+          "state": "reviewed",
+          "by": "agent",
+          "surface": "listening records",
+          "trigger": "empty listening history",
+          "classifications": [
+            "C",
+            "D"
+          ],
+          "decision": "preserve",
+          "rationale": "Remove generic encouragement; creation action remains in the listening controls.",
+          "exposure": "source-inspected; historical GET-218 browser evidence only",
+          "evidence": {
+            "file": "docs/verification/get-218/copy-decisions.json",
+            "index": 68,
+            "recordSha256": "8099c1b3e90327c20fd04e63a579fa4df65f785ce78edb7040ed01906f77a52a"
+          },
+          "context": {
+            "consumersSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "files": [
+              {
+                "file": "app/reader-audio.js",
+                "sha256": "1ad92de34e5132717bc2caa94ee23b1690f0122f2e70ae9460d30a1853753024"
+              }
+            ]
+          },
+          "valueSha256": "5ade781917c4a8625596d7fa10753fdfcaed88e4ca5ef79dd66d927b1f77867b",
+          "file": "app/ui-catalogs/en.mjs"
+        },
+        "zh-Hans": {
+          "state": "reviewed",
+          "by": "agent",
+          "surface": "listening records",
+          "trigger": "empty listening history",
+          "classifications": [
+            "C",
+            "D"
+          ],
+          "decision": "preserve",
+          "rationale": "Remove generic encouragement; creation action remains in the listening controls.",
+          "exposure": "source-inspected; historical GET-218 browser evidence only",
+          "evidence": {
+            "file": "docs/verification/get-218/copy-decisions.json",
+            "index": 69,
+            "recordSha256": "a91a0e99876600d2d792c9440d2a6486be4a69ffdd219a1a64f0da1443585001"
+          },
+          "context": {
+            "consumersSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "files": [
+              {
+                "file": "app/reader-audio.js",
+                "sha256": "1ad92de34e5132717bc2caa94ee23b1690f0122f2e70ae9460d30a1853753024"
+              }
+            ]
+          },
+          "valueSha256": "3fff4394290c1c7fcceec4131cb4f085cd835ebd2d24b9b67d90a9a9d725b952",
+          "file": "app/ui-catalogs/zh-Hans.mjs"
+        },
+        "zh-Hant": {
+          "state": "reviewed",
+          "by": "agent",
+          "surface": "listening records",
+          "trigger": "empty listening history",
+          "classifications": [
+            "C",
+            "D"
+          ],
+          "decision": "preserve",
+          "rationale": "Remove generic encouragement; creation action remains in the listening controls.",
+          "exposure": "source-inspected; historical GET-218 browser evidence only",
+          "evidence": {
+            "file": "docs/verification/get-218/copy-decisions.json",
+            "index": 70,
+            "recordSha256": "3bc4eaacaa8f82d5dc5070894d909c05ee149c764e82dcc6107fde7cc25fb525"
+          },
+          "context": {
+            "consumersSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "files": [
+              {
+                "file": "app/reader-audio.js",
+                "sha256": "1ad92de34e5132717bc2caa94ee23b1690f0122f2e70ae9460d30a1853753024"
+              }
+            ]
+          },
+          "valueSha256": "0fbfaeecf8ff6ed9e5e75173b92e0fe77c5f0838ef888973741ae8193351900d",
+          "file": "app/ui-catalogs/zh-Hant.mjs"
+        },
+        "ja": {
+          "state": "reviewed",
+          "by": "agent",
+          "surface": "listening records",
+          "trigger": "empty listening history",
+          "classifications": [
+            "C",
+            "D"
+          ],
+          "decision": "preserve",
+          "rationale": "Remove generic encouragement; creation action remains in the listening controls.",
+          "exposure": "source-inspected; historical GET-218 browser evidence only",
+          "evidence": {
+            "file": "docs/verification/get-218/copy-decisions.json",
+            "index": 71,
+            "recordSha256": "cd5d9939e4e5153f5d72e75090037d05a64580ff29c3e521eb6bb79b46730488"
+          },
+          "context": {
+            "consumersSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "files": [
+              {
+                "file": "app/reader-audio.js",
+                "sha256": "1ad92de34e5132717bc2caa94ee23b1690f0122f2e70ae9460d30a1853753024"
+              }
+            ]
+          },
+          "valueSha256": "48fa2f2bedce100281fb96e9442c2d18eb95bf7886ddd0ff9636107f4ea0ca72",
+          "file": "app/ui-catalogs/ja.mjs"
+        }
       }
     },
     {
@@ -113678,11 +115466,131 @@
         }
       ],
       "review": {
-        "state": "unreviewed",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
+        "state": "reviewed",
+        "by": "agent",
+        "classification": "C+D",
+        "surface": "gift compose",
+        "trigger": "compose gift",
+        "decision": "preserve",
+        "scope": "delivered wording and bound source context; no human-language or current-browser acceptance"
+      },
+      "localeReviews": {
+        "en": {
+          "state": "reviewed",
+          "by": "agent",
+          "surface": "gift compose",
+          "trigger": "compose gift",
+          "classifications": [
+            "C",
+            "D"
+          ],
+          "decision": "preserve",
+          "rationale": "Retain optionality and preview; remove subjective approval coaching.",
+          "exposure": "source-inspected; historical GET-218 browser evidence only",
+          "evidence": {
+            "file": "docs/verification/get-218/copy-decisions.json",
+            "index": 64,
+            "recordSha256": "145250aad9c5b10b9b91bd664c8c45c75b23515685be9c88d7d41faa8f693f39"
+          },
+          "context": {
+            "consumersSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "files": [
+              {
+                "file": "app/gift-compose.mjs",
+                "sha256": "947f8ccfb21ad4fa7f3697a1cfc5c131085a5ff4f39aafacf5961a02d56d1b42"
+              }
+            ]
+          },
+          "valueSha256": "caa299c0b97af42d96b64c721c6e016e6442bdf5dda1a5ae734302a8957a40e6",
+          "file": "app/ui-catalogs/en.mjs"
+        },
+        "zh-Hans": {
+          "state": "reviewed",
+          "by": "agent",
+          "surface": "gift compose",
+          "trigger": "compose gift",
+          "classifications": [
+            "C",
+            "D"
+          ],
+          "decision": "preserve",
+          "rationale": "Retain optionality and preview; remove subjective approval coaching.",
+          "exposure": "source-inspected; historical GET-218 browser evidence only",
+          "evidence": {
+            "file": "docs/verification/get-218/copy-decisions.json",
+            "index": 65,
+            "recordSha256": "2e2b219b2216d519e6f5f74c0b4436b8c46a0449dd44ee397148af66777cf845"
+          },
+          "context": {
+            "consumersSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "files": [
+              {
+                "file": "app/gift-compose.mjs",
+                "sha256": "947f8ccfb21ad4fa7f3697a1cfc5c131085a5ff4f39aafacf5961a02d56d1b42"
+              }
+            ]
+          },
+          "valueSha256": "3b5682133f577f855393e73cb72f3dd39b8810e76fe3d7c4797dc4f0705d9afe",
+          "file": "app/ui-catalogs/zh-Hans.mjs"
+        },
+        "zh-Hant": {
+          "state": "reviewed",
+          "by": "agent",
+          "surface": "gift compose",
+          "trigger": "compose gift",
+          "classifications": [
+            "C",
+            "D"
+          ],
+          "decision": "preserve",
+          "rationale": "Retain optionality and preview; remove subjective approval coaching.",
+          "exposure": "source-inspected; historical GET-218 browser evidence only",
+          "evidence": {
+            "file": "docs/verification/get-218/copy-decisions.json",
+            "index": 66,
+            "recordSha256": "5e2bea92902f9b7a64e7993286682d83407b66c875af525a7900f15817cbfff6"
+          },
+          "context": {
+            "consumersSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "files": [
+              {
+                "file": "app/gift-compose.mjs",
+                "sha256": "947f8ccfb21ad4fa7f3697a1cfc5c131085a5ff4f39aafacf5961a02d56d1b42"
+              }
+            ]
+          },
+          "valueSha256": "b99b595309c42e16f640ff53dad27b408d3ea64bfd957a2e9e57b9d83b78de6f",
+          "file": "app/ui-catalogs/zh-Hant.mjs"
+        },
+        "ja": {
+          "state": "reviewed",
+          "by": "agent",
+          "surface": "gift compose",
+          "trigger": "compose gift",
+          "classifications": [
+            "C",
+            "D"
+          ],
+          "decision": "preserve",
+          "rationale": "Retain optionality and preview; remove subjective approval coaching.",
+          "exposure": "source-inspected; historical GET-218 browser evidence only",
+          "evidence": {
+            "file": "docs/verification/get-218/copy-decisions.json",
+            "index": 67,
+            "recordSha256": "80fcdd1161adb2bc818ee18d6a3580f556a3d7ad0a248854ee501e830785da0a"
+          },
+          "context": {
+            "consumersSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "files": [
+              {
+                "file": "app/gift-compose.mjs",
+                "sha256": "947f8ccfb21ad4fa7f3697a1cfc5c131085a5ff4f39aafacf5961a02d56d1b42"
+              }
+            ]
+          },
+          "valueSha256": "2775d036d869cc2cff4c29d4b818413b11a0d7d8a02fe485f26aab6b659d388b",
+          "file": "app/ui-catalogs/ja.mjs"
+        }
       }
     },
     {
@@ -119120,11 +121028,131 @@
         }
       ],
       "review": {
-        "state": "unreviewed",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
+        "state": "reviewed",
+        "by": "agent",
+        "classification": "C+D",
+        "surface": "empty-library reading setup",
+        "trigger": "the existing onboarding panel has no available book (preference-memory-ui.mjs)",
+        "decision": "preserve",
+        "scope": "delivered wording and bound source context; no human-language or current-browser acceptance"
+      },
+      "localeReviews": {
+        "en": {
+          "state": "reviewed",
+          "by": "agent",
+          "surface": "empty-library reading setup",
+          "trigger": "the existing onboarding panel has no available book (preference-memory-ui.mjs)",
+          "classifications": [
+            "C",
+            "D"
+          ],
+          "decision": "preserve",
+          "rationale": "Replace the observed whenever-ready coaching with the concrete import action. Existing privacy/no-generation explanation and optional setup controls remain unchanged.",
+          "exposure": "source-inspected; historical GET-218 browser evidence only",
+          "evidence": {
+            "file": "docs/verification/get-218/copy-decisions.json",
+            "index": 100,
+            "recordSha256": "b9c09547290f694e0d674cc9a2b7ce40add7d264653b3cc44785480ea2519137"
+          },
+          "context": {
+            "consumersSha256": "c6d1b54e3917a3b9ae177f38040680945975b4aa32fa9cbc5835b5d00d17d67f",
+            "files": [
+              {
+                "file": "app/preference-memory-ui.mjs",
+                "sha256": "9b162cf446211a16b939fb886b889f3303dfa0d211436b5c6d970a48a596100c"
+              }
+            ]
+          },
+          "valueSha256": "5d18d37e2a48a5efb54434fc2f6ae9c266a52519ea7004f07c0edf73426b9845",
+          "file": "app/ui-catalogs/en.mjs"
+        },
+        "zh-Hans": {
+          "state": "reviewed",
+          "by": "agent",
+          "surface": "empty-library reading setup",
+          "trigger": "the existing onboarding panel has no available book (preference-memory-ui.mjs)",
+          "classifications": [
+            "C",
+            "D"
+          ],
+          "decision": "preserve",
+          "rationale": "Replace the observed whenever-ready coaching with the concrete import action. Existing privacy/no-generation explanation and optional setup controls remain unchanged.",
+          "exposure": "source-inspected; historical GET-218 browser evidence only",
+          "evidence": {
+            "file": "docs/verification/get-218/copy-decisions.json",
+            "index": 101,
+            "recordSha256": "edf05e9fef66ed5bb37f3b0051feb6c5de582925c05cf5d7ac28d931854052aa"
+          },
+          "context": {
+            "consumersSha256": "c6d1b54e3917a3b9ae177f38040680945975b4aa32fa9cbc5835b5d00d17d67f",
+            "files": [
+              {
+                "file": "app/preference-memory-ui.mjs",
+                "sha256": "9b162cf446211a16b939fb886b889f3303dfa0d211436b5c6d970a48a596100c"
+              }
+            ]
+          },
+          "valueSha256": "089291805dea1ab44efc72b1ffbf090252177672e21e89d6fa0053d6fb6ff9b4",
+          "file": "app/ui-catalogs/zh-Hans.mjs"
+        },
+        "zh-Hant": {
+          "state": "reviewed",
+          "by": "agent",
+          "surface": "empty-library reading setup",
+          "trigger": "the existing onboarding panel has no available book (preference-memory-ui.mjs)",
+          "classifications": [
+            "C",
+            "D"
+          ],
+          "decision": "preserve",
+          "rationale": "Replace the observed whenever-ready coaching with the concrete import action. Existing privacy/no-generation explanation and optional setup controls remain unchanged.",
+          "exposure": "source-inspected; historical GET-218 browser evidence only",
+          "evidence": {
+            "file": "docs/verification/get-218/copy-decisions.json",
+            "index": 102,
+            "recordSha256": "af64f3f8bfdc6db9c2c13499cf6aa76fa36a9ac31562eedbe9d5033b6fb7bac9"
+          },
+          "context": {
+            "consumersSha256": "c6d1b54e3917a3b9ae177f38040680945975b4aa32fa9cbc5835b5d00d17d67f",
+            "files": [
+              {
+                "file": "app/preference-memory-ui.mjs",
+                "sha256": "9b162cf446211a16b939fb886b889f3303dfa0d211436b5c6d970a48a596100c"
+              }
+            ]
+          },
+          "valueSha256": "81e77f9633b964a97928404f70e8d8892f9654233c53178317b29fc20c04d858",
+          "file": "app/ui-catalogs/zh-Hant.mjs"
+        },
+        "ja": {
+          "state": "reviewed",
+          "by": "agent",
+          "surface": "empty-library reading setup",
+          "trigger": "the existing onboarding panel has no available book (preference-memory-ui.mjs)",
+          "classifications": [
+            "C",
+            "D"
+          ],
+          "decision": "preserve",
+          "rationale": "Replace the observed whenever-ready coaching with the concrete import action. Existing privacy/no-generation explanation and optional setup controls remain unchanged.",
+          "exposure": "source-inspected; historical GET-218 browser evidence only",
+          "evidence": {
+            "file": "docs/verification/get-218/copy-decisions.json",
+            "index": 103,
+            "recordSha256": "7addeb2031bd047c646560c93b86672f2cbccbc1e9fada8b7494f34480f3fe35"
+          },
+          "context": {
+            "consumersSha256": "c6d1b54e3917a3b9ae177f38040680945975b4aa32fa9cbc5835b5d00d17d67f",
+            "files": [
+              {
+                "file": "app/preference-memory-ui.mjs",
+                "sha256": "9b162cf446211a16b939fb886b889f3303dfa0d211436b5c6d970a48a596100c"
+              }
+            ]
+          },
+          "valueSha256": "8a7047031c647b2d6da4daab6ee9a004e14cb713a304d896c2db8f63c8435819",
+          "file": "app/ui-catalogs/ja.mjs"
+        }
       }
     },
     {
@@ -121662,6 +123690,36 @@
         "surface": "unknown",
         "trigger": "unknown",
         "decision": "unknown"
+      },
+      "localeReviews": {
+        "en": {
+          "state": "unknown",
+          "classification": "unknown",
+          "surface": "unknown",
+          "trigger": "unknown",
+          "decision": "unknown"
+        },
+        "zh-Hans": {
+          "state": "unknown",
+          "classification": "unknown",
+          "surface": "unknown",
+          "trigger": "unknown",
+          "decision": "unknown"
+        },
+        "zh-Hant": {
+          "state": "unknown",
+          "classification": "unknown",
+          "surface": "unknown",
+          "trigger": "unknown",
+          "decision": "unknown"
+        },
+        "ja": {
+          "state": "unknown",
+          "classification": "unknown",
+          "surface": "unknown",
+          "trigger": "unknown",
+          "decision": "unknown"
+        }
       }
     },
     {
@@ -121719,6 +123777,36 @@
         "surface": "unknown",
         "trigger": "unknown",
         "decision": "unknown"
+      },
+      "localeReviews": {
+        "en": {
+          "state": "unknown",
+          "classification": "unknown",
+          "surface": "unknown",
+          "trigger": "unknown",
+          "decision": "unknown"
+        },
+        "zh-Hans": {
+          "state": "unknown",
+          "classification": "unknown",
+          "surface": "unknown",
+          "trigger": "unknown",
+          "decision": "unknown"
+        },
+        "zh-Hant": {
+          "state": "unknown",
+          "classification": "unknown",
+          "surface": "unknown",
+          "trigger": "unknown",
+          "decision": "unknown"
+        },
+        "ja": {
+          "state": "unknown",
+          "classification": "unknown",
+          "surface": "unknown",
+          "trigger": "unknown",
+          "decision": "unknown"
+        }
       }
     },
     {
@@ -123420,6 +125508,291 @@
         {
           "kind": "key-namespace",
           "evidence": "key-namespace:audio",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unreviewed",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "translation.firstUse.title",
+      "kind": "catalogue",
+      "values": {
+        "en": {
+          "file": "app/ui-catalogs/en.mjs",
+          "line": 2234,
+          "column": 3,
+          "value": "Translate this paragraph?",
+          "sha256": "88772366a9aaff008373ed9040af82dac91ceefba7a2581de6263e7b1c8f142f"
+        },
+        "zh-Hans": {
+          "file": "app/ui-catalogs/zh-Hans.mjs",
+          "line": 2233,
+          "column": 3,
+          "value": "翻译这一段？",
+          "sha256": "64d6f53db40a18bb88fabc0245769605b6bd055f7d72dffe9be31b78b0f7e00b"
+        },
+        "zh-Hant": {
+          "file": "app/ui-catalogs/zh-Hant.mjs",
+          "line": 2233,
+          "column": 3,
+          "value": "翻譯這一段？",
+          "sha256": "c6298f2020419235a02cef15f2c570c9bc4194e97dc04a1ec8f19f4347a406e4"
+        },
+        "ja": {
+          "file": "app/ui-catalogs/ja.mjs",
+          "line": 2233,
+          "column": 3,
+          "value": "この段落を翻訳しますか？",
+          "sha256": "b939679a7953789858f2874ceac97176101469867fcc224d46f3d8079d69d8a0"
+        }
+      },
+      "missingLocales": [],
+      "duplicates": [],
+      "consumers": [
+        {
+          "file": "app/translation-first-use.mjs",
+          "line": 87,
+          "column": 28
+        }
+      ],
+      "hints": [
+        {
+          "kind": "key-namespace",
+          "evidence": "key-namespace:translation",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unreviewed",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "translation.firstUse.body",
+      "kind": "catalogue",
+      "values": {
+        "en": {
+          "file": "app/ui-catalogs/en.mjs",
+          "line": 2235,
+          "column": 3,
+          "value": "Translating sends this paragraph and up to one paragraph before and after it to an AI. Your notes are not included.",
+          "sha256": "e03fa0f13c01a753f2acdd6d56de07f25eeded77587a56f8b719d051f7f26674"
+        },
+        "zh-Hans": {
+          "file": "app/ui-catalogs/zh-Hans.mjs",
+          "line": 2234,
+          "column": 3,
+          "value": "翻译会把这一段和前后各一段（如有）发给 AI，不会带上你的笔记。",
+          "sha256": "04bfc743678772d1baf759f50f0e4cfd36c281c4f8cdd9067c803c208e5db610"
+        },
+        "zh-Hant": {
+          "file": "app/ui-catalogs/zh-Hant.mjs",
+          "line": 2234,
+          "column": 3,
+          "value": "翻譯會把這一段和前後各一段（如有）傳給 AI，不會附上你的筆記。",
+          "sha256": "b0839f00ccd9b185adac64f8e3cfadc8e4d134dec40998af151e324c7f0d131c"
+        },
+        "ja": {
+          "file": "app/ui-catalogs/ja.mjs",
+          "line": 2234,
+          "column": 3,
+          "value": "翻訳のため、この段落と前後の段落（各1段落まで）をAIに送ります。ノートは送りません。",
+          "sha256": "f96c5c0d8f5f90bf60c66324cd89accb4f0c173b28bc6cf3e62631b020413a6e"
+        }
+      },
+      "missingLocales": [],
+      "duplicates": [],
+      "consumers": [
+        {
+          "file": "app/translation-first-use.mjs",
+          "line": 87,
+          "column": 65
+        }
+      ],
+      "hints": [
+        {
+          "kind": "key-namespace",
+          "evidence": "key-namespace:translation",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unreviewed",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "translation.firstUse.accept",
+      "kind": "catalogue",
+      "values": {
+        "en": {
+          "file": "app/ui-catalogs/en.mjs",
+          "line": 2236,
+          "column": 3,
+          "value": "Translate this paragraph",
+          "sha256": "e703bc426bad7e7cb712b13f8ec607d372e47e2f29e6b1dc5ed5d0592b6ef6d4"
+        },
+        "zh-Hans": {
+          "file": "app/ui-catalogs/zh-Hans.mjs",
+          "line": 2235,
+          "column": 3,
+          "value": "翻译这一段",
+          "sha256": "122d4fc6784717beaec5368310c1b4f336ddfe55a809d5ae5f4040ce73b700c9"
+        },
+        "zh-Hant": {
+          "file": "app/ui-catalogs/zh-Hant.mjs",
+          "line": 2235,
+          "column": 3,
+          "value": "翻譯這一段",
+          "sha256": "648f53b8be96f096bea2e961d1a5c5c3ebdec438e656a3c7ba9ef9368e67e2d9"
+        },
+        "ja": {
+          "file": "app/ui-catalogs/ja.mjs",
+          "line": 2235,
+          "column": 3,
+          "value": "この段落を翻訳",
+          "sha256": "8ae577be1c0c3e6976b38f547d44e42fd4719f4c775e25ac0f84959f54d00a0c"
+        }
+      },
+      "missingLocales": [],
+      "duplicates": [],
+      "consumers": [
+        {
+          "file": "app/translation-first-use.mjs",
+          "line": 87,
+          "column": 103
+        }
+      ],
+      "hints": [
+        {
+          "kind": "key-namespace",
+          "evidence": "key-namespace:translation",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unreviewed",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "translation.firstUse.cancel",
+      "kind": "catalogue",
+      "values": {
+        "en": {
+          "file": "app/ui-catalogs/en.mjs",
+          "line": 2237,
+          "column": 3,
+          "value": "Keep reading",
+          "sha256": "b4b02d9f43fff131ef44a07e6a294159bfffcd77203b451fa82fb58acc31904a"
+        },
+        "zh-Hans": {
+          "file": "app/ui-catalogs/zh-Hans.mjs",
+          "line": 2236,
+          "column": 3,
+          "value": "继续阅读",
+          "sha256": "4ec2a77b1ae3ba08753b5c02920f12189e3142329430ea10052dcc2d9e78c487"
+        },
+        "zh-Hant": {
+          "file": "app/ui-catalogs/zh-Hant.mjs",
+          "line": 2236,
+          "column": 3,
+          "value": "繼續閱讀",
+          "sha256": "217d775e8c9014c44a3f60f084489d339868f0e08aefea6a31bad05c649e1748"
+        },
+        "ja": {
+          "file": "app/ui-catalogs/ja.mjs",
+          "line": 2236,
+          "column": 3,
+          "value": "読書を続ける",
+          "sha256": "96ebec7a3e357003aae5e04f671c992e9c00d8a5b3ecffe479228509307c8cdc"
+        }
+      },
+      "missingLocales": [],
+      "duplicates": [],
+      "consumers": [
+        {
+          "file": "app/translation-first-use.mjs",
+          "line": 87,
+          "column": 143
+        }
+      ],
+      "hints": [
+        {
+          "kind": "key-namespace",
+          "evidence": "key-namespace:translation",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unreviewed",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "translation.firstUse.privacy",
+      "kind": "catalogue",
+      "values": {
+        "en": {
+          "file": "app/ui-catalogs/en.mjs",
+          "line": 2238,
+          "column": 3,
+          "value": "Privacy details",
+          "sha256": "445de1d2d283877c18d443fc9c549128b0613078ce95481be69a1adfd1817db5"
+        },
+        "zh-Hans": {
+          "file": "app/ui-catalogs/zh-Hans.mjs",
+          "line": 2237,
+          "column": 3,
+          "value": "隐私说明",
+          "sha256": "9d06d61ee41fcd3ea716903c4fc7328645e93e05bdfc855feeaa437c5deae323"
+        },
+        "zh-Hant": {
+          "file": "app/ui-catalogs/zh-Hant.mjs",
+          "line": 2237,
+          "column": 3,
+          "value": "隱私說明",
+          "sha256": "7ffac0e6bfe234906a149f4c5b611100133d993850684654c65cdfed24756466"
+        },
+        "ja": {
+          "file": "app/ui-catalogs/ja.mjs",
+          "line": 2237,
+          "column": 3,
+          "value": "プライバシーについて",
+          "sha256": "ddf566f1e66164d275bab12b25f995764a93f4299d8018031be4ce4bd45d6077"
+        }
+      },
+      "missingLocales": [],
+      "duplicates": [],
+      "consumers": [
+        {
+          "file": "app/translation-first-use.mjs",
+          "line": 87,
+          "column": 184
+        }
+      ],
+      "hints": [
+        {
+          "kind": "key-namespace",
+          "evidence": "key-namespace:translation",
           "confidence": "low"
         }
       ],
@@ -148080,11 +150453,14 @@
         }
       ],
       "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
+        "by": "agent",
+        "surface": "privacy-page header search button",
+        "trigger": "open the English privacy page; activate Search & commands",
+        "rationale": "Plain visible button label opens the existing command palette; no legal text, book content or technical payload is admitted.",
+        "sourceSha256": "b0003297eca200d981ba0440f61833d458836dfba8092822beb8912efbee86be",
+        "state": "reviewed",
+        "classification": "checked-no-A-F-finding",
+        "decision": "preserve"
       }
     },
     {
@@ -148132,11 +150508,14 @@
         }
       ],
       "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
+        "by": "agent",
+        "surface": "privacy-page header reading-room link",
+        "trigger": "open the English privacy page; follow its library navigation",
+        "rationale": "Visible header link names the destination and preserves its arrow; only the link label enters lint, never its URL or legal paragraphs.",
+        "sourceSha256": "b0003297eca200d981ba0440f61833d458836dfba8092822beb8912efbee86be",
+        "state": "reviewed",
+        "classification": "checked-no-A-F-finding",
+        "decision": "preserve"
       }
     },
     {
@@ -148990,11 +151369,14 @@
         }
       ],
       "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
+        "by": "agent",
+        "surface": "privacy-page content return link",
+        "trigger": "reach the end of the English privacy notice; return to library",
+        "rationale": "Visible return action after the notice is ordinary navigation copy; the notice body and contact/source data remain unknown candidates.",
+        "sourceSha256": "b0003297eca200d981ba0440f61833d458836dfba8092822beb8912efbee86be",
+        "state": "reviewed",
+        "classification": "checked-no-A-F-finding",
+        "decision": "preserve"
       }
     },
     {
@@ -176696,6 +179078,58 @@
       }
     },
     {
+      "id": "candidate:app/index.html:139:496",
+      "file": "app/index.html",
+      "line": 139,
+      "column": 496,
+      "kind": "html-text",
+      "property": null,
+      "value": "Translating sends this paragraph and up to one paragraph before and after it to an AI. Your notes are not included.",
+      "sha256": "e03fa0f13c01a753f2acdd6d56de07f25eeded77587a56f8b719d051f7f26674",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [
+        {
+          "kind": "dom-text",
+          "evidence": "html-text-node",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/index.html:139:703",
+      "file": "app/index.html",
+      "line": 139,
+      "column": 703,
+      "kind": "html-text",
+      "property": null,
+      "value": "Privacy details",
+      "sha256": "445de1d2d283877c18d443fc9c549128b0613078ce95481be69a1adfd1817db5",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [
+        {
+          "kind": "dom-text",
+          "evidence": "html-text-node",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
       "id": "candidate:app/index.html:143:125",
       "file": "app/index.html",
       "line": 143,
@@ -191674,9 +194108,9 @@
       }
     },
     {
-      "id": "candidate:app/reader-translation.js:14:115",
+      "id": "candidate:app/reader-translation.js:16:115",
       "file": "app/reader-translation.js",
-      "line": 14,
+      "line": 16,
       "column": 115,
       "kind": "js-attribute",
       "property": "role",
@@ -191694,9 +194128,9 @@
       }
     },
     {
-      "id": "candidate:app/reader-translation.js:79:220",
+      "id": "candidate:app/reader-translation.js:76:220",
       "file": "app/reader-translation.js",
-      "line": 79,
+      "line": 76,
       "column": 220,
       "kind": "js-attribute",
       "property": "role",
@@ -196886,6 +199320,26 @@
       "property": null,
       "value": "阅读对话 · 可拖动调整位置",
       "sha256": "d71e9163943366ab4eb7af96f30e2660a234b87edd6871163c6cf8dfebb1745d",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/translation-first-use.mjs:32:132",
+      "file": "app/translation-first-use.mjs",
+      "line": 32,
+      "column": 132,
+      "kind": "js-attribute",
+      "property": "aria-modal",
+      "value": "true",
+      "sha256": "b5bea41b6c623f7c09f1bf24dcae58ebab3c0cdd90ad966bc43a45b44867e12b",
       "protected": false,
       "protectionReason": null,
       "hints": [],
@@ -227762,9 +230216,9 @@
       }
     },
     {
-      "id": "candidate:server/server.mjs:83:168",
+      "id": "candidate:server/server.mjs:85:168",
       "file": "server/server.mjs",
-      "line": 83,
+      "line": 85,
       "column": 168,
       "kind": "js-cjk-literal",
       "property": null,
@@ -227782,9 +230236,9 @@
       }
     },
     {
-      "id": "candidate:server/server.mjs:84:188",
+      "id": "candidate:server/server.mjs:86:188",
       "file": "server/server.mjs",
-      "line": 84,
+      "line": 86,
       "column": 188,
       "kind": "js-cjk-literal",
       "property": null,
@@ -227802,9 +230256,9 @@
       }
     },
     {
-      "id": "candidate:server/server.mjs:85:81",
+      "id": "candidate:server/server.mjs:87:81",
       "file": "server/server.mjs",
-      "line": 85,
+      "line": 87,
       "column": 81,
       "kind": "js-cjk-literal",
       "property": null,
@@ -227822,9 +230276,9 @@
       }
     },
     {
-      "id": "candidate:server/server.mjs:89:155",
+      "id": "candidate:server/server.mjs:91:155",
       "file": "server/server.mjs",
-      "line": 89,
+      "line": 91,
       "column": 155,
       "kind": "js-cjk-literal",
       "property": null,
@@ -227842,9 +230296,9 @@
       }
     },
     {
-      "id": "candidate:server/server.mjs:90:52",
+      "id": "candidate:server/server.mjs:92:52",
       "file": "server/server.mjs",
-      "line": 90,
+      "line": 92,
       "column": 52,
       "kind": "js-cjk-literal",
       "property": null,
@@ -227862,9 +230316,9 @@
       }
     },
     {
-      "id": "candidate:server/server.mjs:91:47",
+      "id": "candidate:server/server.mjs:93:47",
       "file": "server/server.mjs",
-      "line": 91,
+      "line": 93,
       "column": 47,
       "kind": "js-cjk-literal",
       "property": null,
@@ -227882,9 +230336,9 @@
       }
     },
     {
-      "id": "candidate:server/server.mjs:93:109",
+      "id": "candidate:server/server.mjs:95:109",
       "file": "server/server.mjs",
-      "line": 93,
+      "line": 95,
       "column": 109,
       "kind": "js-cjk-literal",
       "property": null,
@@ -227902,9 +230356,9 @@
       }
     },
     {
-      "id": "candidate:server/server.mjs:94:74",
+      "id": "candidate:server/server.mjs:96:74",
       "file": "server/server.mjs",
-      "line": 94,
+      "line": 96,
       "column": 74,
       "kind": "js-cjk-literal",
       "property": null,
@@ -227922,9 +230376,9 @@
       }
     },
     {
-      "id": "candidate:server/server.mjs:101:80",
+      "id": "candidate:server/server.mjs:103:80",
       "file": "server/server.mjs",
-      "line": 101,
+      "line": 103,
       "column": 80,
       "kind": "js-cjk-literal",
       "property": null,
@@ -227942,9 +230396,9 @@
       }
     },
     {
-      "id": "candidate:server/server.mjs:102:106",
+      "id": "candidate:server/server.mjs:104:106",
       "file": "server/server.mjs",
-      "line": 102,
+      "line": 104,
       "column": 106,
       "kind": "js-cjk-literal",
       "property": null,
@@ -227962,9 +230416,9 @@
       }
     },
     {
-      "id": "candidate:server/server.mjs:102:219",
+      "id": "candidate:server/server.mjs:104:219",
       "file": "server/server.mjs",
-      "line": 102,
+      "line": 104,
       "column": 219,
       "kind": "js-cjk-literal",
       "property": null,
@@ -227982,9 +230436,9 @@
       }
     },
     {
-      "id": "candidate:server/server.mjs:111:40",
+      "id": "candidate:server/server.mjs:113:40",
       "file": "server/server.mjs",
-      "line": 111,
+      "line": 113,
       "column": 40,
       "kind": "js-cjk-literal",
       "property": null,
@@ -228002,9 +230456,9 @@
       }
     },
     {
-      "id": "candidate:server/server.mjs:117:159",
+      "id": "candidate:server/server.mjs:119:159",
       "file": "server/server.mjs",
-      "line": 117,
+      "line": 119,
       "column": 159,
       "kind": "js-cjk-literal",
       "property": null,
@@ -228022,9 +230476,9 @@
       }
     },
     {
-      "id": "candidate:server/server.mjs:120:72",
+      "id": "candidate:server/server.mjs:122:72",
       "file": "server/server.mjs",
-      "line": 120,
+      "line": 122,
       "column": 72,
       "kind": "js-cjk-literal",
       "property": null,
@@ -228042,9 +230496,9 @@
       }
     },
     {
-      "id": "candidate:server/server.mjs:127:246",
+      "id": "candidate:server/server.mjs:129:246",
       "file": "server/server.mjs",
-      "line": 127,
+      "line": 129,
       "column": 246,
       "kind": "js-cjk-literal",
       "property": null,
@@ -228062,9 +230516,9 @@
       }
     },
     {
-      "id": "candidate:server/server.mjs:129:195",
+      "id": "candidate:server/server.mjs:131:195",
       "file": "server/server.mjs",
-      "line": 129,
+      "line": 131,
       "column": 195,
       "kind": "js-cjk-literal",
       "property": null,
@@ -228082,9 +230536,9 @@
       }
     },
     {
-      "id": "candidate:server/server.mjs:132:175",
+      "id": "candidate:server/server.mjs:134:175",
       "file": "server/server.mjs",
-      "line": 132,
+      "line": 134,
       "column": 175,
       "kind": "js-cjk-literal",
       "property": null,
@@ -228102,9 +230556,9 @@
       }
     },
     {
-      "id": "candidate:server/server.mjs:136:131",
+      "id": "candidate:server/server.mjs:138:131",
       "file": "server/server.mjs",
-      "line": 136,
+      "line": 138,
       "column": 131,
       "kind": "js-cjk-literal",
       "property": null,
@@ -228122,9 +230576,9 @@
       }
     },
     {
-      "id": "candidate:server/server.mjs:137:90",
+      "id": "candidate:server/server.mjs:139:90",
       "file": "server/server.mjs",
-      "line": 137,
+      "line": 139,
       "column": 90,
       "kind": "js-cjk-literal",
       "property": null,
@@ -228142,9 +230596,9 @@
       }
     },
     {
-      "id": "candidate:server/server.mjs:139:118",
+      "id": "candidate:server/server.mjs:141:118",
       "file": "server/server.mjs",
-      "line": 139,
+      "line": 141,
       "column": 118,
       "kind": "js-cjk-literal",
       "property": null,
@@ -228162,9 +230616,9 @@
       }
     },
     {
-      "id": "candidate:server/server.mjs:140:96",
+      "id": "candidate:server/server.mjs:142:96",
       "file": "server/server.mjs",
-      "line": 140,
+      "line": 142,
       "column": 96,
       "kind": "js-cjk-literal",
       "property": null,
@@ -228182,9 +230636,9 @@
       }
     },
     {
-      "id": "candidate:server/server.mjs:141:331",
+      "id": "candidate:server/server.mjs:143:331",
       "file": "server/server.mjs",
-      "line": 141,
+      "line": 143,
       "column": 331,
       "kind": "js-cjk-literal",
       "property": null,
@@ -228202,9 +230656,9 @@
       }
     },
     {
-      "id": "candidate:server/server.mjs:145:20",
+      "id": "candidate:server/server.mjs:147:20",
       "file": "server/server.mjs",
-      "line": 145,
+      "line": 147,
       "column": 20,
       "kind": "js-cjk-literal",
       "property": null,
@@ -228222,9 +230676,9 @@
       }
     },
     {
-      "id": "candidate:server/server.mjs:147:61",
+      "id": "candidate:server/server.mjs:149:61",
       "file": "server/server.mjs",
-      "line": 147,
+      "line": 149,
       "column": 61,
       "kind": "js-cjk-literal",
       "property": null,
@@ -228242,9 +230696,9 @@
       }
     },
     {
-      "id": "candidate:server/server.mjs:157:18",
+      "id": "candidate:server/server.mjs:159:18",
       "file": "server/server.mjs",
-      "line": 157,
+      "line": 159,
       "column": 18,
       "kind": "js-cjk-literal",
       "property": null,
@@ -228262,9 +230716,9 @@
       }
     },
     {
-      "id": "candidate:server/server.mjs:158:60",
+      "id": "candidate:server/server.mjs:160:60",
       "file": "server/server.mjs",
-      "line": 158,
+      "line": 160,
       "column": 60,
       "kind": "js-cjk-literal",
       "property": null,
@@ -228282,9 +230736,9 @@
       }
     },
     {
-      "id": "candidate:server/server.mjs:175:119",
+      "id": "candidate:server/server.mjs:177:119",
       "file": "server/server.mjs",
-      "line": 175,
+      "line": 177,
       "column": 119,
       "kind": "js-cjk-literal",
       "property": null,
@@ -243147,19 +245601,17 @@
       "unresolved": true
     },
     {
-      "kind": "concatenation",
+      "kind": "computed-member",
       "file": "app/reader-translation.js",
       "line": 27,
-      "expression": "'marginalia-translation-intent:v1:'+JSON.stringify([capturedOwner,bookId,bookVersion,passageId])",
-      "fragments": [
-        "marginalia-translation-intent:v1:"
-      ],
+      "expression": "getUiLocale()",
+      "fragments": [],
       "unresolved": true
     },
     {
       "kind": "concatenation",
       "file": "app/reader-translation.js",
-      "line": 41,
+      "line": 37,
       "expression": "' · '+creditActionLabel('translation',getUiLocale())",
       "fragments": [
         " · "
@@ -243169,7 +245621,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader-translation.js",
-      "line": 88,
+      "line": 85,
       "expression": "'/api/original/range?sha256='+info.sha256+'&offset='+offset+'&length='",
       "fragments": [
         "/api/original/range?sha256=",
@@ -243181,7 +245633,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader-translation.js",
-      "line": 88,
+      "line": 85,
       "expression": "'/api/original/range?sha256='+info.sha256+'&offset='",
       "fragments": [
         "/api/original/range?sha256=",
@@ -243192,7 +245644,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader-translation.js",
-      "line": 88,
+      "line": 85,
       "expression": "'/api/original/range?sha256='+info.sha256",
       "fragments": [
         "/api/original/range?sha256="
@@ -243202,7 +245654,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader-translation.js",
-      "line": 112,
+      "line": 109,
       "expression": "'/source-review?book='+encodeURIComponent(bookId)",
       "fragments": [
         "/source-review?book="
@@ -248765,6 +251217,34 @@
       "line": 46,
       "expression": "event.key",
       "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "app/translation-first-use.mjs",
+      "line": 12,
+      "expression": "'marginalia-translation-disclosure:v1:'+JSON.stringify(fields)",
+      "fragments": [
+        "marginalia-translation-disclosure:v1:"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "app/translation-first-use.mjs",
+      "line": 57,
+      "expression": "(at+(event.shiftKey?-1:1)+order.length)%order.length",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "app/translation-first-use.mjs",
+      "line": 75,
+      "expression": "'marginalia-translation-intent:v1:'+JSON.stringify([owner,bookId,contentVersion,passageId])",
+      "fragments": [
+        "marginalia-translation-intent:v1:"
+      ],
       "unresolved": true
     },
     {
@@ -256808,7 +259288,7 @@
     {
       "kind": "concatenation",
       "file": "server/server.mjs",
-      "line": 42,
+      "line": 44,
       "expression": "'/'+file",
       "fragments": [
         "/"
@@ -256818,7 +259298,7 @@
     {
       "kind": "concatenation",
       "file": "server/server.mjs",
-      "line": 42,
+      "line": 44,
       "expression": "'app/'+file",
       "fragments": [
         "app/"
@@ -256828,7 +259308,7 @@
     {
       "kind": "concatenation",
       "file": "server/server.mjs",
-      "line": 43,
+      "line": 45,
       "expression": "'/'+file",
       "fragments": [
         "/"
@@ -256838,27 +259318,7 @@
     {
       "kind": "concatenation",
       "file": "server/server.mjs",
-      "line": 43,
-      "expression": "'app/'+file",
-      "fragments": [
-        "app/"
-      ],
-      "unresolved": true
-    },
-    {
-      "kind": "concatenation",
-      "file": "server/server.mjs",
-      "line": 50,
-      "expression": "'/'+file",
-      "fragments": [
-        "/"
-      ],
-      "unresolved": true
-    },
-    {
-      "kind": "concatenation",
-      "file": "server/server.mjs",
-      "line": 50,
+      "line": 45,
       "expression": "'app/'+file",
       "fragments": [
         "app/"
@@ -256888,7 +259348,27 @@
     {
       "kind": "concatenation",
       "file": "server/server.mjs",
-      "line": 58,
+      "line": 54,
+      "expression": "'/'+file",
+      "fragments": [
+        "/"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "server/server.mjs",
+      "line": 54,
+      "expression": "'app/'+file",
+      "fragments": [
+        "app/"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "server/server.mjs",
+      "line": 60,
       "expression": "'app/'+asset.file",
       "fragments": [
         "app/"
@@ -256898,26 +259378,6 @@
     {
       "kind": "concatenation",
       "file": "server/server.mjs",
-      "line": 59,
-      "expression": "'/'+file",
-      "fragments": [
-        "/"
-      ],
-      "unresolved": true
-    },
-    {
-      "kind": "concatenation",
-      "file": "server/server.mjs",
-      "line": 59,
-      "expression": "'app/'+file",
-      "fragments": [
-        "app/"
-      ],
-      "unresolved": true
-    },
-    {
-      "kind": "concatenation",
-      "file": "server/server.mjs",
       "line": 61,
       "expression": "'/'+file",
       "fragments": [
@@ -256938,7 +259398,27 @@
     {
       "kind": "concatenation",
       "file": "server/server.mjs",
-      "line": 62,
+      "line": 63,
+      "expression": "'/'+file",
+      "fragments": [
+        "/"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "server/server.mjs",
+      "line": 63,
+      "expression": "'app/'+file",
+      "fragments": [
+        "app/"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "server/server.mjs",
+      "line": 64,
       "expression": "'/assets/atmospheres/'+name+'.jpg'",
       "fragments": [
         "/assets/atmospheres/",
@@ -256949,7 +259429,7 @@
     {
       "kind": "concatenation",
       "file": "server/server.mjs",
-      "line": 62,
+      "line": 64,
       "expression": "'/assets/atmospheres/'+name",
       "fragments": [
         "/assets/atmospheres/"
@@ -256959,7 +259439,7 @@
     {
       "kind": "concatenation",
       "file": "server/server.mjs",
-      "line": 62,
+      "line": 64,
       "expression": "'app/assets/atmospheres/'+name+'.jpg'",
       "fragments": [
         "app/assets/atmospheres/",
@@ -256970,7 +259450,7 @@
     {
       "kind": "concatenation",
       "file": "server/server.mjs",
-      "line": 62,
+      "line": 64,
       "expression": "'app/assets/atmospheres/'+name",
       "fragments": [
         "app/assets/atmospheres/"
@@ -256980,7 +259460,7 @@
     {
       "kind": "concatenation",
       "file": "server/server.mjs",
-      "line": 63,
+      "line": 65,
       "expression": "'/assets/atmospheres/'+name+'.mp3'",
       "fragments": [
         "/assets/atmospheres/",
@@ -256991,7 +259471,7 @@
     {
       "kind": "concatenation",
       "file": "server/server.mjs",
-      "line": 63,
+      "line": 65,
       "expression": "'/assets/atmospheres/'+name",
       "fragments": [
         "/assets/atmospheres/"
@@ -257001,7 +259481,7 @@
     {
       "kind": "concatenation",
       "file": "server/server.mjs",
-      "line": 63,
+      "line": 65,
       "expression": "'app/assets/atmospheres/'+name+'.mp3'",
       "fragments": [
         "app/assets/atmospheres/",
@@ -257012,7 +259492,7 @@
     {
       "kind": "concatenation",
       "file": "server/server.mjs",
-      "line": 63,
+      "line": 65,
       "expression": "'app/assets/atmospheres/'+name",
       "fragments": [
         "app/assets/atmospheres/"
@@ -257022,7 +259502,7 @@
     {
       "kind": "concatenation",
       "file": "server/server.mjs",
-      "line": 81,
+      "line": 83,
       "expression": "recordsPath+'.pending'",
       "fragments": [
         ".pending"
@@ -257032,7 +259512,7 @@
     {
       "kind": "concatenation",
       "file": "server/server.mjs",
-      "line": 107,
+      "line": 109,
       "expression": "type+'; charset=utf-8'",
       "fragments": [
         "; charset=utf-8"
@@ -257042,7 +259522,7 @@
     {
       "kind": "concatenation",
       "file": "server/server.mjs",
-      "line": 110,
+      "line": 112,
       "expression": "'127.0.0.1:'+port",
       "fragments": [
         "127.0.0.1:"
@@ -257052,7 +259532,7 @@
     {
       "kind": "concatenation",
       "file": "server/server.mjs",
-      "line": 110,
+      "line": 112,
       "expression": "'localhost:'+port",
       "fragments": [
         "localhost:"
@@ -257062,7 +259542,7 @@
     {
       "kind": "concatenation",
       "file": "server/server.mjs",
-      "line": 110,
+      "line": 112,
       "expression": "'[::1]:'+port",
       "fragments": [
         "[::1]:"
@@ -257072,7 +259552,7 @@
     {
       "kind": "concatenation",
       "file": "server/server.mjs",
-      "line": 112,
+      "line": 114,
       "expression": "'http://'+host",
       "fragments": [
         "http://"
@@ -257082,7 +259562,7 @@
     {
       "kind": "concatenation",
       "file": "server/server.mjs",
-      "line": 120,
+      "line": 122,
       "expression": "'http://'+host",
       "fragments": [
         "http://"
@@ -257092,14 +259572,6 @@
     {
       "kind": "computed-member",
       "file": "server/server.mjs",
-      "line": 127,
-      "expression": "1",
-      "fragments": [],
-      "unresolved": true
-    },
-    {
-      "kind": "computed-member",
-      "file": "server/server.mjs",
       "line": 129,
       "expression": "1",
       "fragments": [],
@@ -257108,7 +259580,15 @@
     {
       "kind": "computed-member",
       "file": "server/server.mjs",
-      "line": 129,
+      "line": 131,
+      "expression": "1",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/server.mjs",
+      "line": 131,
       "expression": "2",
       "fragments": [],
       "unresolved": true
@@ -257116,7 +259596,7 @@
     {
       "kind": "computed-member",
       "file": "server/server.mjs",
-      "line": 129,
+      "line": 131,
       "expression": "key",
       "fragments": [],
       "unresolved": true
@@ -257124,7 +259604,7 @@
     {
       "kind": "computed-member",
       "file": "server/server.mjs",
-      "line": 132,
+      "line": 134,
       "expression": "key",
       "fragments": [],
       "unresolved": true
@@ -257132,7 +259612,7 @@
     {
       "kind": "computed-member",
       "file": "server/server.mjs",
-      "line": 132,
+      "line": 134,
       "expression": "key",
       "fragments": [],
       "unresolved": true
@@ -257140,7 +259620,7 @@
     {
       "kind": "concatenation",
       "file": "server/server.mjs",
-      "line": 156,
+      "line": 158,
       "expression": "'attachment; filename=\"'+filename+'\"'",
       "fragments": [
         "attachment; filename=\"",
@@ -257151,7 +259631,7 @@
     {
       "kind": "concatenation",
       "file": "server/server.mjs",
-      "line": 156,
+      "line": 158,
       "expression": "'attachment; filename=\"'+filename",
       "fragments": [
         "attachment; filename=\""
@@ -257161,7 +259641,7 @@
     {
       "kind": "computed-member",
       "file": "server/server.mjs",
-      "line": 167,
+      "line": 169,
       "expression": "1",
       "fragments": [],
       "unresolved": true
@@ -257169,7 +259649,7 @@
     {
       "kind": "computed-member",
       "file": "server/server.mjs",
-      "line": 167,
+      "line": 169,
       "expression": "1",
       "fragments": [],
       "unresolved": true
@@ -257177,7 +259657,7 @@
     {
       "kind": "concatenation",
       "file": "server/server.mjs",
-      "line": 175,
+      "line": 177,
       "expression": "'Leafhour 已启动：http://'+host+':'",
       "fragments": [
         "Leafhour 已启动：http://",
@@ -257188,7 +259668,7 @@
     {
       "kind": "concatenation",
       "file": "server/server.mjs",
-      "line": 175,
+      "line": 177,
       "expression": "'Leafhour 已启动：http://'+host",
       "fragments": [
         "Leafhour 已启动：http://"
@@ -257491,19 +259971,620 @@
   },
   "counts": {
     "catalogueFiles": 4,
-    "catalogueKeys": 2221,
-    "localeValues": 8884,
-    "itemsComplete": 2221,
+    "catalogueKeys": 2226,
+    "localeValues": 8904,
+    "itemsComplete": 2226,
     "itemsWithMissingLocales": 0,
     "duplicateKeys": 0,
-    "reviewedItems": 0,
-    "unreviewedItems": 2221,
-    "candidates": 4863,
+    "reviewedItems": 15,
+    "unreviewedItems": 2211,
+    "candidates": 4866,
     "candidatesUnreviewed": 4863,
     "candidatesProtected": 132,
     "itemsProtected": 9,
-    "dynamicConsumers": 3131,
-    "consumerReferences": 1589,
-    "keysWithoutStaticConsumers": 1199
+    "dynamicConsumers": 3134,
+    "consumerReferences": 1595,
+    "keysWithoutStaticConsumers": 1200,
+    "reviewedLocaleValues": 60,
+    "unreviewedLocaleValues": 8844,
+    "reviewedStaticItems": 3
+  },
+  "auditLedger": {
+    "schemaVersion": 1,
+    "by": "agent",
+    "humanReviewed": false,
+    "reopened": [
+      {
+        "index": 4,
+        "key": "sample.disclosure",
+        "locale": "en",
+        "state": "unknown",
+        "reasons": [
+          "source context changed or incomplete"
+        ]
+      },
+      {
+        "index": 5,
+        "key": "sample.disclosure",
+        "locale": "zh-Hans",
+        "state": "unknown",
+        "reasons": [
+          "source context changed or incomplete"
+        ]
+      },
+      {
+        "index": 6,
+        "key": "sample.disclosure",
+        "locale": "zh-Hant",
+        "state": "unknown",
+        "reasons": [
+          "source context changed or incomplete"
+        ]
+      },
+      {
+        "index": 7,
+        "key": "sample.disclosure",
+        "locale": "ja",
+        "state": "unknown",
+        "reasons": [
+          "source context changed or incomplete"
+        ]
+      },
+      {
+        "index": 8,
+        "key": "sample.disclosureGeneral",
+        "locale": "en",
+        "state": "unknown",
+        "reasons": [
+          "source context changed or incomplete"
+        ]
+      },
+      {
+        "index": 9,
+        "key": "sample.disclosureGeneral",
+        "locale": "zh-Hans",
+        "state": "unknown",
+        "reasons": [
+          "source context changed or incomplete"
+        ]
+      },
+      {
+        "index": 10,
+        "key": "sample.disclosureGeneral",
+        "locale": "zh-Hant",
+        "state": "unknown",
+        "reasons": [
+          "source context changed or incomplete"
+        ]
+      },
+      {
+        "index": 11,
+        "key": "sample.disclosureGeneral",
+        "locale": "ja",
+        "state": "unknown",
+        "reasons": [
+          "source context changed or incomplete"
+        ]
+      },
+      {
+        "index": 12,
+        "key": "sample.disclosureNone",
+        "locale": "en",
+        "state": "unknown",
+        "reasons": [
+          "source context changed or incomplete"
+        ]
+      },
+      {
+        "index": 13,
+        "key": "sample.disclosureNone",
+        "locale": "zh-Hans",
+        "state": "unknown",
+        "reasons": [
+          "source context changed or incomplete"
+        ]
+      },
+      {
+        "index": 14,
+        "key": "sample.disclosureNone",
+        "locale": "zh-Hant",
+        "state": "unknown",
+        "reasons": [
+          "source context changed or incomplete"
+        ]
+      },
+      {
+        "index": 15,
+        "key": "sample.disclosureNone",
+        "locale": "ja",
+        "state": "unknown",
+        "reasons": [
+          "source context changed or incomplete"
+        ]
+      },
+      {
+        "index": 16,
+        "key": "sample.disclosureMetadata",
+        "locale": "en",
+        "state": "unknown",
+        "reasons": [
+          "source context changed or incomplete"
+        ]
+      },
+      {
+        "index": 17,
+        "key": "sample.disclosureMetadata",
+        "locale": "zh-Hans",
+        "state": "unknown",
+        "reasons": [
+          "source context changed or incomplete"
+        ]
+      },
+      {
+        "index": 18,
+        "key": "sample.disclosureMetadata",
+        "locale": "zh-Hant",
+        "state": "unknown",
+        "reasons": [
+          "source context changed or incomplete"
+        ]
+      },
+      {
+        "index": 19,
+        "key": "sample.disclosureMetadata",
+        "locale": "ja",
+        "state": "unknown",
+        "reasons": [
+          "source context changed or incomplete"
+        ]
+      },
+      {
+        "index": 20,
+        "key": "translation.scopeBrief",
+        "locale": "en",
+        "state": "unknown",
+        "reasons": [
+          "consumer locations changed",
+          "source context changed or incomplete"
+        ]
+      },
+      {
+        "index": 21,
+        "key": "translation.scopeBrief",
+        "locale": "zh-Hans",
+        "state": "unknown",
+        "reasons": [
+          "consumer locations changed",
+          "source context changed or incomplete"
+        ]
+      },
+      {
+        "index": 22,
+        "key": "translation.scopeBrief",
+        "locale": "zh-Hant",
+        "state": "unknown",
+        "reasons": [
+          "consumer locations changed",
+          "source context changed or incomplete"
+        ]
+      },
+      {
+        "index": 23,
+        "key": "translation.scopeBrief",
+        "locale": "ja",
+        "state": "unknown",
+        "reasons": [
+          "consumer locations changed",
+          "source context changed or incomplete"
+        ]
+      },
+      {
+        "index": 40,
+        "key": "translation.incomplete",
+        "locale": "en",
+        "state": "unknown",
+        "reasons": [
+          "consumer locations changed",
+          "source context changed or incomplete"
+        ]
+      },
+      {
+        "index": 41,
+        "key": "translation.incomplete",
+        "locale": "zh-Hans",
+        "state": "unknown",
+        "reasons": [
+          "consumer locations changed",
+          "source context changed or incomplete"
+        ]
+      },
+      {
+        "index": 42,
+        "key": "translation.incomplete",
+        "locale": "zh-Hant",
+        "state": "unknown",
+        "reasons": [
+          "consumer locations changed",
+          "source context changed or incomplete"
+        ]
+      },
+      {
+        "index": 43,
+        "key": "translation.incomplete",
+        "locale": "ja",
+        "state": "unknown",
+        "reasons": [
+          "consumer locations changed",
+          "source context changed or incomplete"
+        ]
+      },
+      {
+        "index": 44,
+        "key": "translation.failed",
+        "locale": "en",
+        "state": "unknown",
+        "reasons": [
+          "consumer locations changed",
+          "source context changed or incomplete"
+        ]
+      },
+      {
+        "index": 45,
+        "key": "translation.failed",
+        "locale": "zh-Hans",
+        "state": "unknown",
+        "reasons": [
+          "consumer locations changed",
+          "source context changed or incomplete"
+        ]
+      },
+      {
+        "index": 46,
+        "key": "translation.failed",
+        "locale": "zh-Hant",
+        "state": "unknown",
+        "reasons": [
+          "consumer locations changed",
+          "source context changed or incomplete"
+        ]
+      },
+      {
+        "index": 47,
+        "key": "translation.failed",
+        "locale": "ja",
+        "state": "unknown",
+        "reasons": [
+          "consumer locations changed",
+          "source context changed or incomplete"
+        ]
+      },
+      {
+        "index": 72,
+        "key": "reader.shell.aboutTranslation",
+        "locale": "en",
+        "state": "unknown",
+        "reasons": [
+          "source context changed or incomplete"
+        ]
+      },
+      {
+        "index": 73,
+        "key": "reader.shell.aboutTranslation",
+        "locale": "zh-Hans",
+        "state": "unknown",
+        "reasons": [
+          "source context changed or incomplete"
+        ]
+      },
+      {
+        "index": 74,
+        "key": "reader.shell.aboutTranslation",
+        "locale": "zh-Hant",
+        "state": "unknown",
+        "reasons": [
+          "source context changed or incomplete"
+        ]
+      },
+      {
+        "index": 75,
+        "key": "reader.shell.aboutTranslation",
+        "locale": "ja",
+        "state": "unknown",
+        "reasons": [
+          "source context changed or incomplete"
+        ]
+      }
+    ],
+    "structuralDecisions": [
+      {
+        "id": "get218-structure-72",
+        "evidence": {
+          "file": "docs/verification/get-218/copy-decisions.json",
+          "index": 72,
+          "recordSha256": "f70993cf7a95a70ba52d0fe1a8454f795f996ed3e9060cbc773acd43928add3c"
+        },
+        "by": "agent",
+        "surface": "reader dialogs and settings",
+        "trigger": "open the corresponding dialog",
+        "rationale": "The dialog heading already identifies reading records.",
+        "historicalEvidence": "verified",
+        "currentState": "unknown",
+        "currentReason": "Historical GET-218 decision retained separately; this batch does not re-run its interaction or visual acceptance."
+      },
+      {
+        "id": "get218-structure-73",
+        "evidence": {
+          "file": "docs/verification/get-218/copy-decisions.json",
+          "index": 73,
+          "recordSha256": "ada718fcd4bc3c9852c94f46a6076a2d5828055c0ddbb63655d357bff04ab614"
+        },
+        "by": "agent",
+        "surface": "reader dialogs and settings",
+        "trigger": "open the corresponding dialog",
+        "rationale": "The reading guide already has a heading.",
+        "historicalEvidence": "verified",
+        "currentState": "unknown",
+        "currentReason": "Historical GET-218 decision retained separately; this batch does not re-run its interaction or visual acceptance."
+      },
+      {
+        "id": "get218-structure-74",
+        "evidence": {
+          "file": "docs/verification/get-218/copy-decisions.json",
+          "index": 74,
+          "recordSha256": "9caaa637cf7fffb46c951208ad068175d4a3dc8f823554db9eb6b3a7971b064d"
+        },
+        "by": "agent",
+        "surface": "reader dialogs and settings",
+        "trigger": "open the corresponding dialog",
+        "rationale": "Remove the decorative draft kicker; draft location and unsaved status remain in the actual records and help.",
+        "historicalEvidence": "verified",
+        "currentState": "unknown",
+        "currentReason": "Historical GET-218 decision retained separately; this batch does not re-run its interaction or visual acceptance."
+      },
+      {
+        "id": "get218-structure-75",
+        "evidence": {
+          "file": "docs/verification/get-218/copy-decisions.json",
+          "index": 75,
+          "recordSha256": "d8592cff5caa57c8d95631d8dca305a68ef88c4119a6f863faf59f66f8514321"
+        },
+        "by": "agent",
+        "surface": "reader dialogs and settings",
+        "trigger": "open the corresponding dialog",
+        "rationale": "Remove encouragement above the stop-reading heading.",
+        "historicalEvidence": "verified",
+        "currentState": "unknown",
+        "currentReason": "Historical GET-218 decision retained separately; this batch does not re-run its interaction or visual acceptance."
+      },
+      {
+        "id": "get218-structure-76",
+        "evidence": {
+          "file": "docs/verification/get-218/copy-decisions.json",
+          "index": 76,
+          "recordSha256": "3776164206115d93a44b1ac0fba29c0ae91a0719cbdec9677bbbdf5c88a0fbef"
+        },
+        "by": "agent",
+        "surface": "reader dialogs and settings",
+        "trigger": "open the corresponding dialog",
+        "rationale": "The live preview shows the layout; no additional narrow-screen instruction is needed.",
+        "historicalEvidence": "verified",
+        "currentState": "unknown",
+        "currentReason": "Historical GET-218 decision retained separately; this batch does not re-run its interaction or visual acceptance."
+      },
+      {
+        "id": "get218-structure-77",
+        "evidence": {
+          "file": "docs/verification/get-218/copy-decisions.json",
+          "index": 77,
+          "recordSha256": "cdf626a76eb4b09ab0d433f748b8b113bfd4340048f5f9a17b39dd5b11eb7588"
+        },
+        "by": "agent",
+        "surface": "home bookshelf",
+        "trigger": "browse the public shelf",
+        "rationale": "Name the next action without generic encouragement; all four homepage languages retain their own expression.",
+        "historicalEvidence": "verified",
+        "currentState": "unknown",
+        "currentReason": "Historical GET-218 decision retained separately; this batch does not re-run its interaction or visual acceptance."
+      },
+      {
+        "id": "get218-structure-78",
+        "evidence": {
+          "file": "docs/verification/get-218/copy-decisions.json",
+          "index": 78,
+          "recordSha256": "ef7cc08b6ad4d9bb2659627a4f1d8e804d6fbd2224bd382fd9c0fbe9fddc293d"
+        },
+        "by": "agent",
+        "surface": "chapter heading",
+        "trigger": "ordinary reading without actionable task outcome",
+        "rationale": "Move full sample facts to explicit details; the sample boundary and per-passage missing labels remain.",
+        "historicalEvidence": "verified",
+        "currentState": "unknown",
+        "currentReason": "Historical GET-218 decision retained separately; this batch does not re-run its interaction or visual acceptance."
+      },
+      {
+        "id": "get218-structure-79",
+        "evidence": {
+          "file": "docs/verification/get-218/copy-decisions.json",
+          "index": 79,
+          "recordSha256": "d3c75761e787060de91ecd4324d132c05a32fb533f981fab9852203bbe9ed2e4"
+        },
+        "by": "agent",
+        "surface": "chapter heading",
+        "trigger": "ordinary reading without actionable task outcome",
+        "rationale": "Delete the whole collapsed routine help shell from the chapter heading; sending scope remains beside the translation action.",
+        "historicalEvidence": "verified",
+        "currentState": "unknown",
+        "currentReason": "Historical GET-218 decision retained separately; this batch does not re-run its interaction or visual acceptance."
+      },
+      {
+        "id": "get218-structure-80",
+        "evidence": {
+          "file": "docs/verification/get-218/copy-decisions.json",
+          "index": 80,
+          "recordSha256": "f84762855f584a58711255b460b20f9927926e87d1707063850d8063f80d0d2c"
+        },
+        "by": "agent",
+        "surface": "chapter heading",
+        "trigger": "ordinary reading without actionable task outcome",
+        "rationale": "Remove the existing-translation statement from the heading; the action and translation style identify available content.",
+        "historicalEvidence": "verified",
+        "currentState": "unknown",
+        "currentReason": "Historical GET-218 decision retained separately; this batch does not re-run its interaction or visual acceptance."
+      },
+      {
+        "id": "get218-structure-81",
+        "evidence": {
+          "file": "docs/verification/get-218/copy-decisions.json",
+          "index": 81,
+          "recordSha256": "f5b25dfd3821bc3ca5a09359febf4846bb44583a8bbb9024c9940a6b7ff670b3"
+        },
+        "by": "agent",
+        "surface": "chapter heading",
+        "trigger": "ordinary reading without actionable task outcome",
+        "rationale": "Remove routine whole-book instruction from the heading; the book content and paragraph action retain original-language identity.",
+        "historicalEvidence": "verified",
+        "currentState": "unknown",
+        "currentReason": "Historical GET-218 decision retained separately; this batch does not re-run its interaction or visual acceptance."
+      },
+      {
+        "id": "get218-structure-82",
+        "evidence": {
+          "file": "docs/verification/get-218/copy-decisions.json",
+          "index": 82,
+          "recordSha256": "5e2842b22f036b664fe641db0911feb3f733526f9a5373aacd77dcce5ed10e4e"
+        },
+        "by": "agent",
+        "surface": "chapter heading",
+        "trigger": "ordinary reading without actionable task outcome",
+        "rationale": "Remove default service configuration narration before selection; the disabled translation action explains availability when relevant.",
+        "historicalEvidence": "verified",
+        "currentState": "unknown",
+        "currentReason": "Historical GET-218 decision retained separately; this batch does not re-run its interaction or visual acceptance."
+      },
+      {
+        "id": "get218-structure-83",
+        "evidence": {
+          "file": "docs/verification/get-218/copy-decisions.json",
+          "index": 83,
+          "recordSha256": "28d9ad2ddd58696ead20f2c6bb98f684a8ef2665704b6cc64c082f6a369f19bb"
+        },
+        "by": "agent",
+        "surface": "chapter heading",
+        "trigger": "ordinary reading without actionable task outcome",
+        "rationale": "Remove routine usage instructions between chapter and text; action scope remains visible before generation.",
+        "historicalEvidence": "verified",
+        "currentState": "unknown",
+        "currentReason": "Historical GET-218 decision retained separately; this batch does not re-run its interaction or visual acceptance."
+      },
+      {
+        "id": "get218-structure-88",
+        "evidence": {
+          "file": "docs/verification/get-218/copy-decisions.json",
+          "index": 88,
+          "recordSha256": "a63effbeda776b1f4f20a616fa83e88fa7ff2c1832e07ee06e690e5f4f90247e"
+        },
+        "by": "agent",
+        "surface": "reader settings",
+        "trigger": "static fallback before locale initialization",
+        "rationale": "Keep the static fallback consistent with the owned English interface key.",
+        "historicalEvidence": "verified",
+        "currentState": "unknown",
+        "currentReason": "Historical GET-218 decision retained separately; this batch does not re-run its interaction or visual acceptance."
+      },
+      {
+        "id": "get218-structure-89",
+        "evidence": {
+          "file": "docs/verification/get-218/copy-decisions.json",
+          "index": 89,
+          "recordSha256": "3f4dbc4429b72b7f46473fdf90d8fc759b346713f0b7d8d4e54eff1f03143975"
+        },
+        "by": "agent",
+        "surface": "reader settings",
+        "trigger": "explicit source and translation details",
+        "rationale": "Keep provenance and original download accessible without routine furniture before the text.",
+        "historicalEvidence": "verified",
+        "currentState": "unknown",
+        "currentReason": "Historical GET-218 decision retained separately; this batch does not re-run its interaction or visual acceptance."
+      },
+      {
+        "id": "get218-structure-94",
+        "evidence": {
+          "file": "docs/verification/get-218/copy-decisions.json",
+          "index": 94,
+          "recordSha256": "364ad29a0c9c278f237629d7bfaa1de85a2bb8e727ce7147543c7655707efcee"
+        },
+        "by": "agent",
+        "surface": "reader feedback",
+        "trigger": "confirmed saved result",
+        "rationale": "Remove permanent success furniture while retaining pending, failure and unknown outcome feedback.",
+        "historicalEvidence": "verified",
+        "currentState": "unknown",
+        "currentReason": "Historical GET-218 decision retained separately; this batch does not re-run its interaction or visual acceptance."
+      },
+      {
+        "id": "get218-structure-99",
+        "evidence": {
+          "file": "docs/verification/get-218/copy-decisions.json",
+          "index": 99,
+          "recordSha256": "62b41aca8a6ef2fa13b084a45c936fd446e626eacd730ee796e506b95594de41"
+        },
+        "by": "agent",
+        "surface": "book details legacy fallback",
+        "trigger": "metadata without the locale formatter",
+        "rationale": "Keep the fallback consistent with the actual short sample coverage and avoid stale claims about personal translations.",
+        "historicalEvidence": "verified",
+        "currentState": "unknown",
+        "currentReason": "Historical GET-218 decision retained separately; this batch does not re-run its interaction or visual acceptance."
+      },
+      {
+        "id": "get218-structure-108",
+        "evidence": {
+          "file": "docs/verification/get-218/copy-decisions.json",
+          "index": 108,
+          "recordSha256": "34eb495611cc3e0042cec1df617523b044c8b95ba6f5c6fdb91f2d3831f3f9ba"
+        },
+        "by": "agent",
+        "surface": "viewport reading dock",
+        "trigger": "pending, background result, failure or unconfirmed translation",
+        "rationale": "Real screenshots showed background status present only outside the viewport. Retain one live region and make actionable feedback visible without routine chapter furniture.",
+        "historicalEvidence": "verified",
+        "currentState": "unknown",
+        "currentReason": "Historical GET-218 decision retained separately; this batch does not re-run its interaction or visual acceptance."
+      },
+      {
+        "id": "get218-structure-109",
+        "evidence": {
+          "file": "docs/verification/get-218/copy-decisions.json",
+          "index": 109,
+          "recordSha256": "d89268ae4d5d86354c416d4756459519f3f40e1a0494e86a62747a183fe607f6"
+        },
+        "by": "agent",
+        "surface": "translation task feedback",
+        "trigger": "consent dismissed before submission",
+        "rationale": "A cancelled new attempt does not prove an earlier unknown/failed attempt was resolved.",
+        "historicalEvidence": "verified",
+        "currentState": "unknown",
+        "currentReason": "Historical GET-218 decision retained separately; this batch does not re-run its interaction or visual acceptance."
+      },
+      {
+        "id": "get218-structure-110",
+        "evidence": {
+          "file": "docs/verification/get-218/copy-decisions.json",
+          "index": 110,
+          "recordSha256": "feabf82ecb7ae9bc335a65a6ea2f8c03f2e8801665ff5a13e60ea65c6aff0a8d"
+        },
+        "by": "agent",
+        "surface": "translation point recovery link",
+        "trigger": "locale repaint while link is focused",
+        "rationale": "Locale changes must retain a keyboard path to recovery and not submit work.",
+        "historicalEvidence": "verified",
+        "currentState": "unknown",
+        "currentReason": "Historical GET-218 decision retained separately; this batch does not re-run its interaction or visual acceptance."
+      }
+    ],
+    "registry": {
+      "file": "docs/copy/copy-ledger.json",
+      "sha256": "351fff059a849e2ffeba5e750f90b51ddfd7ad333e76b337a5d43f3531bd5335"
+    }
   }
 }
