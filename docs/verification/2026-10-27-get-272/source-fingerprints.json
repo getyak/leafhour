@@ -1,0 +1,11 @@
+{
+  "app/index.html": "0668a973266a221c46c98a4e7da0e4e634c512d3848a4015a16db4583246852c",
+  "app/reader-location.mjs": "0447a0d4422fa1931338776800f0c49c248ad1ea7985838579b38df28e1cbad1",
+  "app/reading-toolbar.mjs": "7fa6b9187f31c9ce7d661c8b0ee8e83900629ced2f17f71505dad8bc36cfad8c",
+  "app/reader-quiet.css": "bb4d967bcfe28738237c7cf187e95b5e5e74e695244647299a93df8d59bb40bc",
+  "apps/ios/Leafhour/ReaderScreen.swift": "b44d194be1eda176d3203e368090091fb2f8252ca0f19ff01dc9e1271723a273",
+  "apps/ios/Leafhour/TextReadingView.swift": "2f953b8c36ac9c51305a7de1cf41ba2d364f9c16455e465499054fa0d0883a44",
+  "apps/ios/Leafhour/PDFReadingView.swift": "cfce82283cda152a10f8f41309601a94f087efce5b3bc073f413182f4b705809",
+  "apps/ios/LeafhourUITests/ReadingUITests.swift": "ccf89cf8dcbf7df980d35b49558b6a4ec473bd7cd633b69559fd1f8a85c68edc",
+  "tools/build-reader-web.mjs": "4812b81c4b4323b309afe4d42b8914e2e8b38d548b0cec44976645fc470b5f93"
+}

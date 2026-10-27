@@ -1,0 +1,138 @@
+Command line invocation:
+    /Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild -project apps/ios/Leafhour.xcodeproj -scheme Leafhour -configuration Debug -sdk iphonesimulator -destination "platform=iOS Simulator,id=02B4F0C1-A92F-469D-9DCC-5ED13F119507" -derivedDataPath /private/tmp/ai-test-GET-272.m1Sjnu/DerivedData -resultBundlePath /private/tmp/ai-test-GET-272.m1Sjnu/native-quiet-final.xcresult -jobs 2 -parallel-testing-enabled NO "-only-testing:LeafhourUITests/ReadingUITests/testQuietChromeEdgesAndTenSecondIdle" CODE_SIGNING_ALLOWED=NO test-without-building
+
+Build settings from command line:
+    CODE_SIGNING_ALLOWED = NO
+    SDKROOT = iphonesimulator26.5
+
+Resolve Package Graph
+
+
+Resolved source packages:
+  ZIPFoundation: /Users/cubxxw/ops/symphony/runtime/workspaces/GET-272/apps/ios/Vendor/ZIPFoundation @ local
+  LeafhourCore: /Users/cubxxw/ops/symphony/runtime/workspaces/GET-272/apps/ios/LeafhourCore
+
+Writing result bundle at path:
+	/private/tmp/ai-test-GET-272.m1Sjnu/native-quiet-final.xcresult
+
+2026-10-27 22:45:14.295078+0800 LeafhourUITests-Runner[9888:262004586] [Default] Running tests...
+2026-10-27 22:45:14.428271+0800 LeafhourUITests-Runner[9888:262006922] [General] Failed to send CA Event for app launch measurements for ca_event_type: 0 event_name: com.apple.app_launch_measurement.FirstFramePresentationMetric
+2026-10-27 22:45:15.385735+0800 LeafhourUITests-Runner[9888:262006929] [General] Failed to send CA Event for app launch measurements for ca_event_type: 1 event_name: com.apple.app_launch_measurement.ExtendedLaunchMetrics
+objc[9888]: Class UIAccessibilityLoaderWebShared is implemented in both /Library/Developer/CoreSimulator/Volumes/iOS_23F77/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS 26.5.simruntime/Contents/Resources/RuntimeRoot/System/Library/AccessibilityBundles/WebCore.axbundle/WebCore (0x109fb8310) and /Library/Developer/CoreSimulator/Volumes/iOS_23F77/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS 26.5.simruntime/Contents/Resources/RuntimeRoot/System/Library/AccessibilityBundles/WebKit.axbundle/WebKit (0x109e98398). This may cause spurious casting failures and mysterious crashes. One of the duplicates must be removed or renamed.
+    t =      nans Interface orientation changed to Portrait
+Test Suite 'Selected tests' started at 2026-10-27 22:45:20.004.
+Test Suite 'LeafhourUITests.xctest' started at 2026-10-27 22:45:20.006.
+Test Suite 'ReadingUITests' started at 2026-10-27 22:45:20.008.
+Test Case '-[LeafhourUITests.ReadingUITests testQuietChromeEdgesAndTenSecondIdle]' started.
+    t =     0.00s Start Test at 2026-10-27 22:45:20.012
+    t =     0.12s Set Up
+    t =     0.12s     Terminate org.leafhour.get272:0
+    t =     0.12s     Open org.leafhour.get272
+    t =     0.12s         Launch org.leafhour.get272
+2026-10-27 22:45:20.434 xcodebuild[65707:261960286] [MT] IDELaunchParametersSnapshot: The operation couldn’t be completed. (DebuggerLLDB.DebuggerVersionStore.StoreError error 0.)
+2026-10-27 22:45:20.434 xcodebuild[65707:261960286] [MT] IDELaunchParametersSnapshot: no debugger version
+    t =     1.91s             Setting up automation session
+    t =     3.06s             Wait for org.leafhour.get272 to idle
+    t =     5.49s Waiting 15.0s for "leafhour-epub-reader" TextView to exist
+    t =     6.51s     Checking `Expect predicate `existsNoRetry == 1` for object "leafhour-epub-reader" TextView`
+    t =     6.51s         Checking existence of `"leafhour-epub-reader" TextView`
+    t =     6.69s Find the "leafhour-epub-reader" TextView
+    t =     6.77s Tap "leafhour-epub-reader" TextView[0.50, 0.01]
+    t =     6.77s     Wait for org.leafhour.get272 to idle
+    t =     6.78s     Find the "leafhour-epub-reader" TextView
+    t =     6.85s     Check for interrupting elements affecting "leafhour-epub-reader" TextView
+    t =     6.93s     Synthesize event
+    t =     6.93s         Find the "leafhour-epub-reader" TextView
+    t =     7.00s         Find the "leafhour-epub-reader" TextView
+    t =     7.07s         Find the "leafhour-epub-reader" TextView
+    t =     7.44s     Wait for org.leafhour.get272 to idle
+    t =     7.45s Waiting 3.0s for "返回书房" Button to exist
+    t =     8.48s     Checking `Expect predicate `existsNoRetry == 1` for object "返回书房" Button`
+    t =     8.48s         Checking existence of `"返回书房" Button`
+    t =     8.54s Find the Target Application 'org.leafhour.get272'
+    t =     8.73s Added attachment named 'GET272-native-top-awake'
+    t =    18.74s Checking existence of `"返回书房" Button`
+    t =    18.80s Checking existence of `"目录" Button`
+    t =    18.86s Checking existence of `"阅读设置" Button`
+    t =    18.92s Find the "leafhour-epub-reader" TextView
+    t =    18.98s Find the Target Application 'org.leafhour.get272'
+    t =    19.17s Added attachment named 'GET272-native-idle-ten-seconds'
+    t =    19.17s Tap "leafhour-epub-reader" TextView[0.50, 0.99]
+    t =    19.17s     Wait for org.leafhour.get272 to idle
+    t =    19.17s     Find the "leafhour-epub-reader" TextView
+    t =    19.25s     Check for interrupting elements affecting "leafhour-epub-reader" TextView
+    t =    19.30s     Synthesize event
+    t =    19.31s         Find the "leafhour-epub-reader" TextView
+    t =    19.39s         Find the "leafhour-epub-reader" TextView
+    t =    19.49s         Find the "leafhour-epub-reader" TextView
+    t =    19.89s     Wait for org.leafhour.get272 to idle
+    t =    19.90s Waiting 3.0s for "目录" Button to exist
+    t =    20.91s     Checking `Expect predicate `existsNoRetry == 1` for object "目录" Button`
+    t =    20.91s         Checking existence of `"目录" Button`
+    t =    20.99s Find the Target Application 'org.leafhour.get272'
+    t =    21.15s Added attachment named 'GET272-native-bottom-awake'
+    t =    21.16s Swipe up "leafhour-epub-reader" TextView
+    t =    21.16s     Wait for org.leafhour.get272 to idle
+    t =    21.16s     Find the "leafhour-epub-reader" TextView
+    t =    21.23s     Check for interrupting elements affecting "leafhour-epub-reader" TextView
+    t =    21.28s     Synthesize event
+    t =    21.72s     Wait for org.leafhour.get272 to idle
+    t =    23.86s Waiting 0.3s for "目录" Button to exist
+    t =    24.16s     Checking existence of `"目录" Button`
+    t =    24.23s Collecting debug information to assist test failure triage
+    t =    24.23s     Requesting snapshot of accessibility hierarchy for app with pid 37295
+    t =    24.34s Find the Target Application 'org.leafhour.get272'
+    t =    24.52s Added attachment named 'GET272-native-scroll-asleep'
+    t =    24.52s Tap "leafhour-epub-reader" TextView[0.50, 0.50]
+    t =    24.52s     Wait for org.leafhour.get272 to idle
+    t =    24.53s     Find the "leafhour-epub-reader" TextView
+    t =    24.60s     Check for interrupting elements affecting "leafhour-epub-reader" TextView
+    t =    24.66s     Synthesize event
+    t =    24.67s         Find the "leafhour-epub-reader" TextView
+    t =    24.74s         Find the "leafhour-epub-reader" TextView
+    t =    24.82s         Find the "leafhour-epub-reader" TextView
+    t =    25.17s     Wait for org.leafhour.get272 to idle
+    t =    25.18s Checking existence of `"目录" Button`
+    t =    25.24s Tap "leafhour-epub-reader" TextView[0.50, 0.01]
+    t =    25.24s     Wait for org.leafhour.get272 to idle
+    t =    25.25s     Find the "leafhour-epub-reader" TextView
+    t =    25.31s     Check for interrupting elements affecting "leafhour-epub-reader" TextView
+    t =    25.35s     Synthesize event
+    t =    25.36s         Find the "leafhour-epub-reader" TextView
+    t =    25.44s         Find the "leafhour-epub-reader" TextView
+    t =    25.63s         Find the "leafhour-epub-reader" TextView
+    t =    25.99s     Wait for org.leafhour.get272 to idle
+    t =    26.00s Waiting 3.0s for "返回书房" Button to exist
+    t =    27.03s     Checking `Expect predicate `existsNoRetry == 1` for object "返回书房" Button`
+    t =    27.03s         Checking existence of `"返回书房" Button`
+    t =    31.11s Terminate org.leafhour.get272:37295
+    t =    32.18s Open org.leafhour.get272
+    t =    32.18s     Launch org.leafhour.get272
+2026-10-27 22:45:52.194 xcodebuild[65707:261960286] [MT] IDELaunchParametersSnapshot: The operation couldn’t be completed. (DebuggerLLDB.DebuggerVersionStore.StoreError error 0.)
+2026-10-27 22:45:52.194 xcodebuild[65707:261960286] [MT] IDELaunchParametersSnapshot: no debugger version
+    t =    32.52s         Setting up automation session
+    t =    34.03s         Wait for org.leafhour.get272 to idle
+    t =    36.16s Waiting 10.0s for "leafhour-epub-reader" TextView to exist
+    t =    37.19s     Checking `Expect predicate `existsNoRetry == 1` for object "leafhour-epub-reader" TextView`
+    t =    37.19s         Checking existence of `"leafhour-epub-reader" TextView`
+    t =    37.32s Checking existence of `"目录" Button`
+    t =    37.38s Find the Target Application 'org.leafhour.get272'
+    t =    37.54s Added attachment named 'GET272-native-cold-resume-asleep'
+    t =    37.54s Tear Down
+Test Case '-[LeafhourUITests.ReadingUITests testQuietChromeEdgesAndTenSecondIdle]' passed (37.839 seconds).
+Test Suite 'ReadingUITests' passed at 2026-10-27 22:45:57.851.
+	 Executed 1 test, with 0 failures (0 unexpected) in 37.839 (37.844) seconds
+Test Suite 'LeafhourUITests.xctest' passed at 2026-10-27 22:45:57.852.
+	 Executed 1 test, with 0 failures (0 unexpected) in 37.839 (37.846) seconds
+Test Suite 'Selected tests' passed at 2026-10-27 22:45:57.853.
+	 Executed 1 test, with 0 failures (0 unexpected) in 37.839 (37.849) seconds
+2026-10-27 22:45:58.223 xcodebuild[65707:261960286] [MT] IDETestOperationsObserverDebug: 48.471 elapsed -- Testing started completed.
+2026-10-27 22:45:58.223 xcodebuild[65707:261960286] [MT] IDETestOperationsObserverDebug: 0.000 sec, +0.000 sec -- start
+2026-10-27 22:45:58.223 xcodebuild[65707:261960286] [MT] IDETestOperationsObserverDebug: 48.471 sec, +48.471 sec -- end
+
+Test session results, code coverage, and logs:
+	/tmp/ai-test-GET-272.m1Sjnu/native-quiet-final.xcresult
+
+** TEST EXECUTE SUCCEEDED **
+
+Testing started

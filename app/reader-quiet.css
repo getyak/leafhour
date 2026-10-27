@@ -1,0 +1,19 @@
+/* GET-272: explicit, silent edge targets. Chrome overlays a stable text frame. */
+.reader-wake-edge{display:none}
+body.is-focused #reader-top-edge{display:block;position:fixed;inset:0 0 auto;height:max(44px,env(safe-area-inset-top));z-index:3;pointer-events:none;background:transparent;border:0;padding:0;color:var(--ink)}
+body.is-focused #reading-header{display:grid;opacity:0;visibility:hidden;pointer-events:none;transform:translateY(-8px);transition:opacity 180ms ease,transform 180ms ease,visibility 180ms}
+body.is-focused[data-reading-tools=open] #reading-header{opacity:1;visibility:visible;pointer-events:auto;transform:none}
+body.is-focused[data-reading-tools=open] #reader-top-edge{display:none}
+body.is-focused .reading-session[data-expanded=false] #reading-tools-trigger{position:fixed;inset:auto env(safe-area-inset-right) 0 env(safe-area-inset-left);width:auto;height:max(44px,env(safe-area-inset-bottom));padding:0;border:0;border-radius:0;background:transparent;box-shadow:none;color:transparent;pointer-events:none}
+body.is-focused .reading-session[data-expanded=false] #reading-tools-trigger>*{opacity:0;pointer-events:none}
+body.is-focused .reading-session[data-expanded=false] #reading-tools-trigger::after{display:none}
+body.is-focused .reading-session[data-expanded=false] #reading-tools-chat-slot{visibility:hidden;pointer-events:none}
+body.is-focused #reader-top-edge:focus-visible,body.is-focused .reading-session[data-expanded=false] #reading-tools-trigger:focus-visible{background:var(--paper);color:var(--ink);outline:var(--focus-ring-width) solid var(--focus-ring);outline-offset:calc(-1 * var(--focus-ring-offset))}
+body.is-focused #reader-top-edge:focus-visible::after,body.is-focused .reading-session[data-expanded=false] #reading-tools-trigger:focus-visible::after{display:block;content:attr(aria-label);font:12px/1.5 var(--interface);color:var(--ink)}
+body.is-focused:not([data-paginated=true]) #book-page{padding-top:max(44px,env(safe-area-inset-top));padding-bottom:max(44px,env(safe-area-inset-bottom))}
+@media(prefers-reduced-motion:reduce){body.is-focused #reading-header{transition:none;transform:none}}
+
+/* The existing page navigation wakes inside the same tools panel. */
+body.is-focused[data-paginated=true] #book-page{height:100dvh;margin-block:0;padding-top:max(44px,env(safe-area-inset-top));padding-bottom:max(44px,env(safe-area-inset-bottom))}
+#reading-tools-panel #page-turner{position:static;inset:auto;transform:none;height:auto;min-height:44px;width:100%;flex-wrap:wrap;justify-content:space-between;gap:4px}
+#reading-tools-panel #page-position{order:-1;flex-basis:100%;min-width:0}

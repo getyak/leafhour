@@ -1,4 +1,5 @@
 import {t,onUiLocaleChange,uiReady} from './ui-locale.mjs';
+import {overlayOpen} from './popover-controls.mjs';
 
 // Display only. Read the current reader and measured page label; never save a
 // position, fetch a chapter, or infer a whole-book percentage from chapter size.
@@ -41,7 +42,33 @@ export function mountReaderLocation({document,tools,getReader=()=>document.defau
  listen(view,'scroll',schedule,{passive:true});listen(view,'resize',schedule);listen(pages,'scroll',schedule,{passive:true});
  // The existing coordinator owns reveal, holds, timeout, dismissal and Escape.
  // The persistent pill is also the native keyboard and touch reveal target.
- listen(document,'pointermove',event=>{if(event.pointerType==='mouse'&&!event.buttons&&event.clientY<=16&&document.body.classList.contains('is-focused')&&!document.querySelector('dialog[open],[popover][data-popover-open],.experience-surface')&&!document.getSelection?.()?.toString())tools.toolbar.reveal(false);},{passive:true});
+ // GET-272 uses the existing tools owner and timer. Mere hover never wakes chrome.
+ const edge=document.getElementById('reader-top-edge'),session=document.getElementById('reading-session');
+ let keyboard=false,edgeGesture=null;
+ listen(document,'keydown',event=>{if(['Tab','Enter',' '].includes(event.key))keyboard=true;});
+ listen(document,'pointerdown',event=>{
+   keyboard=false;
+   edgeGesture=event.button===0&&event.isPrimary!==false?{id:event.pointerId,x:event.clientX,y:event.clientY,time:event.timeStamp}:null;
+ },true);
+ listen(document,'pointermove',event=>{if(edgeGesture&&event.pointerId===edgeGesture.id&&Math.hypot(event.clientX-edgeGesture.x,event.clientY-edgeGesture.y)>8)edgeGesture=null;},true);
+ listen(document,'pointercancel',()=>{edgeGesture=null;},true);
+ listen(document,'pointerup',event=>{if(edgeGesture&&event.pointerId===edgeGesture.id)edgeGesture.complete=true;},true);
+ listen(document,'click',event=>{
+   const gesture=edgeGesture;edgeGesture=null;
+   if(event.detail!==1||!gesture?.complete||event.timeStamp-gesture.time>500||!document.body.classList.contains('is-focused')||tools.toolbar.expanded||overlayOpen(document)||document.getSelection?.()?.toString()||event.target?.closest?.('a,button,input,textarea,select,[contenteditable],summary')||event.ctrlKey||event.metaKey||event.altKey||event.shiftKey)return;
+   if(event.clientY>44&&event.clientY<view.innerHeight-44)return;
+   // Only the completed click is consumed. Pointer/selection/long-press defaults remain native.
+   event.preventDefault();event.stopImmediatePropagation();tools.toolbar.reveal(false);
+ },true);
+ if(edge)listen(edge,'click',event=>{if(!overlayOpen(document)){keyboard=event.detail!==1;tools.toolbar.reveal(keyboard);}});
+ function readingScroll(){
+   const active=document.activeElement,selection=document.getSelection?.();
+   if(!document.body.classList.contains('is-focused')||!tools.toolbar.expanded||overlayOpen(document)||keyboard&&(header.contains(active)||session?.contains(active))||active?.closest?.('input,textarea,select,[contenteditable=true]')||selection&&!selection.isCollapsed)return;
+   tools.toolbar.conceal();
+ }
+ listen(view,'scroll',readingScroll,{passive:true});
+ listen(document,'scroll',event=>{if(event.target===document)readingScroll();},{passive:true});
+ listen(pages,'scroll',readingScroll,{passive:true});
  const observer=new view.ResizeObserver(schedule);observer.observe(text);observer.observe(pages);observer.observe(header);
  const offLocale=onUiLocaleChange(paint);void uiReady.then(()=>{if(!disposed)schedule();});void document.fonts?.ready.then(()=>{if(!disposed)schedule();});
  function unmount(){if(disposed)return;disposed=true;view.cancelAnimationFrame(frame);observer.disconnect();offLocale();for(const release of listeners)release();badge.remove();if(described===null)trigger.removeAttribute('aria-describedby');else trigger.setAttribute('aria-describedby',described);}

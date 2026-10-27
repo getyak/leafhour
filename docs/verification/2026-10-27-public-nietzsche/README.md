@@ -28,7 +28,7 @@ The frozen thirty-book regression rows are unchanged. New rows pin the two editi
 
 ## Delivery gates
 
-Local release verification completed: 3,652 tests, 3,638 passed, 14 environment/platform skips, zero failures. The isolated reading runtime initialized without model requests; the public build, release allowlist and source-provenance checks passed. See [the complete local verification log](release-check.log.gz).
+Local release verification completed: 3,659 tests, 3,645 passed, 14 environment/platform skips, zero failures. The isolated reading runtime initialized without model requests; the public build, release allowlist and source-provenance checks passed. See [the complete local verification log](release-check.log.gz).
 
 Independent review identified the poem’s separate translator credit and missing blank stanza separators in preformatted songs. Both were fixed with regressions observed failing before the fix and passing afterward; the reviewer verified all twenty original separators and reported no remaining blockers.
 
