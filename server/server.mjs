@@ -30,6 +30,8 @@ assets.set('/personal-record-editor.mjs',['app/personal-record-editor.mjs','text
 assets.set('/toolbar-placement.mjs',['app/toolbar-placement.mjs','text/javascript']);
 assets.set('/note-drafts.mjs',['app/note-drafts.mjs','text/javascript']);
 assets.set('/translation-state.mjs',['app/translation-state.mjs','text/javascript']);
+assets.set('/translation-first-use.mjs',['app/translation-first-use.mjs','text/javascript']);
+assets.set('/translation-first-use.css',['app/translation-first-use.css','text/css']);
 assets.set('/reader-return.mjs',['app/reader-return.mjs','text/javascript']);
 assets.set('/passage-layers.mjs',['app/passage-layers.mjs','text/javascript']);
 assets.set('/source-emphasis.mjs',['app/source-emphasis.mjs','text/javascript']);

@@ -6,8 +6,10 @@ import {createTranslationPresentation,hasDualDrafts} from './translation-state.m
 import {readerLoginUrl} from './reader-return.mjs';
 import {translationDisclosureMessage} from './catalog-sample.mjs';
 import {creditActionLabel,creditErrorId} from './credit-labels.mjs';
+import {readerTools} from './reader-tools.mjs';
+import {focusableTrigger,overlayOpen} from './popover-controls.mjs';
 
-export function mountReaderTranslation({bookId,session,document:doc=globalThis.document,getReader=()=>globalThis.window?.marginaliaReader,request=readerFetch,navigate=url=>globalThis.location.assign(url),urlApi=globalThis.URL,timers=globalThis,intentStorage}={}){
+export function mountReaderTranslation({bookId,session,document:doc=globalThis.document,getReader=()=>globalThis.window?.marginaliaReader,request=readerFetch,navigate=url=>globalThis.location.assign(url),urlApi=globalThis.URL,timers=globalThis,intentStorage,disclosureStorage,confirmDisclosure,getDisclosurePolicy,loadDisclosure=()=>import('./translation-first-use.mjs')}={}){
   if(!bookId||!doc)return null;
   const tools=doc.getElementById('paragraph-tools'),button=doc.createElement('button');button.id='translate-passage';button.type='button';tools.prepend(button);
   const scope=doc.createElement('small');scope.id='translation-action-scope';scope.className='translation-action-scope';scope.hidden=true;
@@ -21,16 +23,10 @@ export function mountReaderTranslation({bookId,session,document:doc=globalThis.d
   const message=value=>typeof value==='string'?value:value?.id?t(value.id,value.params):'';
   const sourceHref=(link,target)=>{links.set(link,target);link.href=uiHref(target);};
   const selectedPassage=()=>book?.sections.flatMap(s=>s.paragraphs).find(p=>p.id===tasks.selectedId());
-  const capturedOwner=session?.user?.id;
-  const paidIntent=passageId=>{
-    if(typeof capturedOwner!=='string'||!capturedOwner)throw Error('Translation request owner unavailable');
-    const key='marginalia-translation-intent:v1:'+JSON.stringify([capturedOwner,bookId,bookVersion,passageId]);
-    let storage;try{storage=intentStorage===undefined?globalThis.sessionStorage:intentStorage;}catch{}
-    if(!storage||typeof storage.getItem!=='function'||typeof storage.setItem!=='function')throw Error('Translation request identity unavailable');
-    let id=storage.getItem(key);if(typeof id!=='string'||!/^[A-Za-z0-9_-]{1,128}$/.test(id)){id=globalThis.crypto.randomUUID();storage.setItem(key,id);}
-    return {id,clear:()=>{try{storage.removeItem(key);}catch{}}};
-  };
-  const knownTerminal=result=>/^credit-[a-f0-9]{64}$/.test(result?.billingOperation?.id||'')&&['released','cancelled','reversed','not_started'].includes(result.billingOperation.status);
+  const capturedOwner=session?.user?.id,privacyLink=doc.getElementById('translation-privacy-link');
+  const privacyHref=()=>uiHref(({'zh-Hans':'/zh-hans/privacy','zh-Hant':'/zh-hant/privacy',ja:'/ja/privacy'})[getUiLocale()]||'/privacy');
+  let decisionRevision=0,pendingDecision=null;
+  const invalidateDecision=()=>{decisionRevision++;const pending=pendingDecision;pendingDecision=null;pending?.abort();};
   function paintLabels(){
     if(disposed)return;
     if(cachedView){
@@ -46,18 +42,18 @@ export function mountReaderTranslation({bookId,session,document:doc=globalThis.d
       const focused=doc.activeElement===billingLink,destination=notices.some(value=>/\.(background|translatingNotice|originalRemains)/.test(value?.id))?doc.getElementById('reading-session'):tools;
       if(hint.parentElement!==destination)destination.append(hint);
       hint.textContent=notices.map(message).join(' ');hint.hidden=!hint.textContent;
-      const actionable=/^translation\.(translate|retry|translating)$/.test(cachedView.label?.id);
-      scope.hidden=!(tasks.selectedId()&&(gate||actionable&&session?.user&&session?.translationAvailable));scope.textContent=gate?cachedView.notice.map(message).join(''):t('translation.scopeBrief');
+      scope.hidden=!(tasks.selectedId()&&gate);scope.textContent=scope.hidden?'':cachedView.notice.map(message).join('');
       if(scope.hidden)button.removeAttribute('aria-describedby');else button.setAttribute('aria-describedby',scope.id);
       if(notices.some(value=>value?.id==='credit.funds')){billingLink.textContent=t('billing.accountLink');billingLink.href=uiHref('/billing');hint.append(billingLink);if(focused)billingLink.focus({preventScroll:true});}
     }
     if(about)doc.getElementById('translation-about').textContent=message(about);
+    if(privacyLink)privacyLink.href=privacyHref();
     labels.refresh();for(const [link,target]of links)link.href=uiHref(target);
   }
   function renderTranslation(){
     if(disposed)return;
     cachedView=tasks.view(selectedPassage(),{authenticated:!!session?.user,available:!!session?.translationAvailable,loginAvailable:!!(session?.passwordAvailable||session?.emailAvailable||session?.localAvailable||session?.providers?.google||session?.providers?.apple)});
-    button.disabled=cachedView.disabled;paintLabels();
+    button.disabled=cachedView.disabled||!!pendingDecision;paintLabels();
   }
   // Every request belongs to the current book view. Cancelling this UI never
   // changes a server job or the saved result of an already authorized request.
@@ -66,6 +62,7 @@ export function mountReaderTranslation({bookId,session,document:doc=globalThis.d
     return request(target,{...options,signal:options.signal||controller.signal});
   }
   async function originalFile(container,ticket){
+    let policy;
     const current=()=>active(ticket)&&container.isConnected,read=(target,options)=>{if(!current())return Promise.reject(Error('Original view disposed'));return scopedRequest(ticket,target,options);};
     const checking=doc.createElement('span');container.replaceChildren(checking);labels.text(checking,'source.checking');
     try{
@@ -101,7 +98,7 @@ export function mountReaderTranslation({bookId,session,document:doc=globalThis.d
   function ready(){
     if(disposed)return;const next=getReader()?.getBook?.();if(!next)return;if(next.bookId!==bookId){dispose();return;}
     const changed=!book||bookVersion!==next.contentVersion;
-    book=next;bookVersion=next.contentVersion;if(changed){epoch++;controller.abort();controller=new AbortController();tasks=createTranslationPresentation();}
+    book=next;bookVersion=next.contentVersion;if(changed){invalidateDecision();epoch++;controller.abort();controller=new AbortController();tasks=createTranslationPresentation();}
     // This rebuild belongs to an explicit book-ready event, never to locale.
     const ticket=epoch;for(const remove of fileListeners.splice(0))remove();labels.clear();links.clear();sourceReview.replaceChildren();sourceReview.hidden=book.visibility!=='private';about=translationDisclosureMessage(book);
     if(!sourceReview.hidden){
@@ -117,17 +114,27 @@ export function mountReaderTranslation({bookId,session,document:doc=globalThis.d
     const invitation=doc.getElementById('chapter-invitations')?.closest('.settings-habit');if(invitation)invitation.hidden=true;
   }
   on(doc,'reader:ready',ready);
-  on(doc,'reader:selection',()=>{if(disposed)return;tasks.select(getReader()?.getSelectedId?.()||null);renderTranslation();});
-  for(const event of ['reader:chapter','reader:selection-end'])on(doc,event,()=>{if(disposed)return;tasks.select(null);renderTranslation();});
+  on(doc,'reader:selection',()=>{if(disposed)return;invalidateDecision();tasks.select(getReader()?.getSelectedId?.()||null);renderTranslation();});
+  for(const event of ['reader:chapter','reader:selection-end'])on(doc,event,()=>{if(disposed)return;invalidateDecision();tasks.select(null);renderTranslation();});
   on(button,'click',async()=>{
     if(disposed)return;const passage=selectedPassage();if(!passage)return;
     if(hasDualDrafts(passage)){doc.dispatchEvent(new CustomEvent('reader:translation',{detail:{...passage,reveal:true}}));renderTranslation();return;}
     if(!session?.user){if(!button.disabled)navigate(readerLoginUrl({bookId,passageId:passage.id,action:'translate',ui:getUiLinkLocale()}));return;}
-    if(button.disabled)return;const passageId=passage.id,ticket=epoch;tasks.begin(passageId);renderTranslation();
+    if(button.disabled||pendingDecision)return;
+    const passageId=passage.id,ticket=epoch,version=bookVersion,revision=++decisionRevision,decision=new AbortController();
+    let policy;
+    const current=()=>active(ticket)&&revision===decisionRevision&&session?.user?.id===capturedOwner&&(policy===undefined||!getDisclosurePolicy||getDisclosurePolicy()===policy)&&tasks.selectedId()===passageId&&getReader()?.getBook?.()?.bookId===bookId&&getReader()?.getBook?.()?.contentVersion===version;
+    pendingDecision=decision;renderTranslation();let dispatched=false;
     try{
-      const intent=session?.billing?.enabled===true?paidIntent(passageId):null;
-      const response=await scopedRequest(ticket,'/api/translate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({passageId,...(intent?{id:intent.id,contentVersion:bookVersion}:{})})}),result=await response.json();if(!active(ticket))return;
-      if(intent&&knownTerminal(result))intent.clear();
+      const disclosure=await loadDisclosure();if(!current())return;
+      policy=getDisclosurePolicy?.()??disclosure.TRANSLATION_DISCLOSURE_POLICY;
+      const acknowledged=await disclosure.acknowledgeTranslation({scope:{owner:capturedOwner,bookId,contentVersion:version,policy},storage:disclosureStorage,signal:decision.signal,isCurrent:current,
+        document:doc,opener:button,t,onLocaleChange:onUiLocaleChange,privacyHref,readerTools,focusableTrigger,overlayOpen,confirmDisclosure});
+      if(!acknowledged||!current())return;
+      const intent=session?.billing?.enabled===true?disclosure.translationIntent({owner:capturedOwner,bookId,contentVersion:version,passageId,storage:intentStorage}):null;
+      const response=await scopedRequest(ticket,'/api/translate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({passageId,contentVersion:version,...(intent?{id:intent.id}:{})}),
+        onDispatch:()=>{if(!current())throw Object.assign(Error('Translation selection changed'),{preSubmit:true});dispatched=true;if(pendingDecision===decision)pendingDecision=null;tasks.begin(passageId);renderTranslation();}}),result=await response.json();if(!active(ticket))return;
+      if(intent&&disclosure.knownTerminal(result))intent.clear();
       if(!response.ok)throw Object.assign(Error('Translation unavailable'),{status:response.status});
       if(result.id!==passageId||!hasDualDrafts(result)){tasks.fail(passageId,{id:'translation.incomplete'});return;}
       intent?.clear();
@@ -137,11 +144,11 @@ export function mountReaderTranslation({bookId,session,document:doc=globalThis.d
       book=getReader()?.getBook?.()||book;about=translationDisclosureMessage(book);
       if(successTimer!=null)timers.clearTimeout(successTimer);
       successTimer=timers.setTimeout(()=>{successTimer=null;if(active(ticket)&&tasks.acknowledgeSaved(passageId))renderTranslation();},6000);
-    }catch(error){if(active(ticket))tasks.fail(passageId,{id:creditErrorId(error)||'translation.failed'});}
-    finally{if(active(ticket))renderTranslation();}
+    }catch(error){if(active(ticket)&&(dispatched||current()))tasks.fail(passageId,{id:creditErrorId(error)||'translation.failed'});}
+    finally{if(pendingDecision===decision)pendingDecision=null;if(active(ticket))renderTranslation();}
   });
   const unsubscribe=onUiLocaleChange(paintLabels);
-  const dispose=()=>{if(disposed)return;disposed=true;epoch++;controller.abort();if(successTimer!=null)timers.clearTimeout(successTimer);unsubscribe();for(const remove of [...listeners,...fileListeners])remove();for(const [url,timer]of urls){timers.clearTimeout(timer);urlApi.revokeObjectURL(url);}urls.clear();labels.clear();links.clear();button.remove();scope.remove();hint.remove();billingLink.remove();sourceReview.remove();};
+  const dispose=()=>{if(disposed)return;disposed=true;invalidateDecision();epoch++;controller.abort();if(successTimer!=null)timers.clearTimeout(successTimer);unsubscribe();for(const remove of [...listeners,...fileListeners])remove();for(const [url,timer]of urls){timers.clearTimeout(timer);urlApi.revokeObjectURL(url);}urls.clear();labels.clear();links.clear();button.remove();scope.remove();hint.remove();billingLink.remove();sourceReview.remove();};
   on(doc,'reader:session-changed',dispose);renderTranslation();if(getReader()?.getBook?.())ready();
   return {dispose};
 }
