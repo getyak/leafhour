@@ -6,33 +6,33 @@
       "candidateId": "candidate:app/en/privacy.html:19:91",
       "locale": "en",
       "valueSha256": "22ae744e7a995d5813f92a06db3e0c551719a621a3b297efbb6b077994e0da7f",
-      "sourceSha256": "b0003297eca200d981ba0440f61833d458836dfba8092822beb8912efbee86be",
+      "sourceSha256": "773a877940bce20fc6b7eef22510e71019cb2012ca293dcb197cdd671dcf3655",
       "by": "agent",
       "surface": "privacy-page header search button",
       "trigger": "open the English privacy page; activate Search & commands",
-      "rationale": "Plain visible button label opens the existing command palette; no legal text, book content or technical payload is admitted.",
+      "rationale": "Plain visible button label opens the existing command palette; no legal text, book content or technical payload is admitted. Re-inspected on 2026-10-28 after the observability notice/date insertion: this exact navigation label and action are unchanged; no notice text was admitted or reviewed.",
       "state": "reviewed"
     },
     {
       "candidateId": "candidate:app/en/privacy.html:19:605",
       "locale": "en",
       "valueSha256": "c81de5d022d3790f7a1914b3d45221a94a9f5232581dbe50b81ea90f9b9a3c95",
-      "sourceSha256": "b0003297eca200d981ba0440f61833d458836dfba8092822beb8912efbee86be",
+      "sourceSha256": "773a877940bce20fc6b7eef22510e71019cb2012ca293dcb197cdd671dcf3655",
       "by": "agent",
       "surface": "privacy-page header reading-room link",
       "trigger": "open the English privacy page; follow its library navigation",
-      "rationale": "Visible header link names the destination and preserves its arrow; only the link label enters lint, never its URL or legal paragraphs.",
+      "rationale": "Visible header link names the destination and preserves its arrow; only the link label enters lint, never its URL or legal paragraphs. Re-inspected on 2026-10-28 after the observability notice/date insertion: this exact navigation label and action are unchanged; no notice text was admitted or reviewed.",
       "state": "reviewed"
     },
     {
-      "candidateId": "candidate:app/en/privacy.html:39:31",
+      "candidateId": "candidate:app/en/privacy.html:41:31",
       "locale": "en",
       "valueSha256": "682ed177a8ef262bf1b114dcf346b5729320488dd7f7730eff7db12bcde22adb",
-      "sourceSha256": "b0003297eca200d981ba0440f61833d458836dfba8092822beb8912efbee86be",
+      "sourceSha256": "773a877940bce20fc6b7eef22510e71019cb2012ca293dcb197cdd671dcf3655",
       "by": "agent",
       "surface": "privacy-page content return link",
       "trigger": "reach the end of the English privacy notice; return to library",
-      "rationale": "Visible return action after the notice is ordinary navigation copy; the notice body and contact/source data remain unknown candidates.",
+      "rationale": "Visible return action after the notice is ordinary navigation copy; the notice body and contact/source data remain unknown candidates. Re-inspected on 2026-10-28 after the observability notice/date insertion: this exact navigation label and action are unchanged; no notice text was admitted or reviewed.",
       "state": "reviewed"
     }
   ]

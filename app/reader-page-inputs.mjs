@@ -6,13 +6,13 @@ export function pageKeyDirection(event,{blocked=false,selection=''}={}){
 // Basic input remains available even when the optional visual assets fail.
 export function mountReaderPageInputs({document,viewport,text,getGeometry,isBlocked=()=>false,onTurn,loadSurface=()=>import('./reader-page-surface.mjs')}){
   let surface,loading=false,disposed=false;
-  function turn(direction){
+  function turn(direction,provenance={}){
     if(disposed||!getGeometry()?.active||isBlocked()||document.defaultView.getSelection()?.toString())return false;
-    return surface?surface.turn(direction):onTurn(direction);
+    const source={trusted:provenance.trusted===true};return surface?surface.turn(direction,source):onTurn(direction,source);
   }
   const key=event=>{
     const direction=pageKeyDirection(event,{blocked:disposed||!getGeometry()?.active||isBlocked(event.target),selection:document.defaultView.getSelection()?.toString()});
-    if(direction){event.preventDefault();turn(direction);}
+    if(direction){event.preventDefault();turn(direction,{trusted:event.isTrusted===true});}
   };
   document.addEventListener('keydown',key);
   async function enhance(){

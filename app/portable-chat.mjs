@@ -17,6 +17,10 @@ function recommendations(value,sources){
   return out;
  });
 }
+function personCitations(value){
+ if(!Array.isArray(value)||new TextEncoder().encode(JSON.stringify(value)).length>96000)fail('人物引用超过备份范围');
+ return value.map(ref=>{if(!plain(ref)||Object.keys(ref).some(k=>!['personId','revision','sourceId','title','url','quote','digest'].includes(k))||!id(ref.personId)||!id(ref.sourceId)||!Number.isSafeInteger(ref.revision)||ref.revision<1||!text(ref.title,2000)||typeof ref.url!=='string'||ref.url.length>2048||ref.quote!==undefined&&!text(ref.quote,6000)||ref.digest!==undefined&&!/^[a-f0-9]{64}$/.test(ref.digest))fail('人物引用格式不正确');let url;try{url=new URL(ref.url);}catch{fail('人物引用链接不正确');}if(!['https:','http:'].includes(url.protocol)||url.username||url.password)fail('人物引用链接不正确');return {...ref};});
+}
 // Only trusted stored history uses this adapter. Incoming archives stay strict.
 export function exportChatTurn(turn,book){
  const a=turn?.answer;
@@ -45,7 +49,7 @@ export function portableChatTurns(chat,book,books=[book]){
     if(!source||source.contentVersion!==(r.contentVersion??(companion?t.contentVersion:null))||!section||section.chapterId!==(r.chapterId??(companion?section?.chapterId:null))||!['original','literal','interpretive'].includes(layer)||!text(r.quote,12000)||!(layer==='original'?p.original:p.translations?.[layer]?.text||'').includes(r.quote))fail('备份对话引用无法对应来源原文');
     return {bookId:r.bookId,chapterId:section.chapterId,...(r.chapterTitle!==undefined?{chapterTitle:structuredClone(r.chapterTitle)}:{}),contentVersion:source.contentVersion,passageId:r.passageId,quote:r.quote,layer,url:'/read?book='+encodeURIComponent(r.bookId)+'&passage='+encodeURIComponent(r.passageId),...(layer!=='original'?{translationStatus:p.translations[layer].status}:{})};
    });
-   if(new TextEncoder().encode(JSON.stringify(a)).length>96000)fail('备份 AI 回答超过容量限制');answer={kind:a.kind,summary:a.summary,origin:'ai',sourceRefs:refs,recommendations:recommendations(a.recommendations,sources)};
+   if(new TextEncoder().encode(JSON.stringify(a)).length>96000)fail('备份 AI 回答超过容量限制');answer={kind:a.kind,summary:a.summary,origin:'ai',sourceRefs:refs,recommendations:recommendations(a.recommendations,sources),...(a.personSources!==undefined?{personSources:personCitations(a.personSources)}:{})};
   }else if(t.answer!==null&&t.answer!==undefined)fail('未完成对话不能携带回答');
   return {id:t.id,passageId:t.passageId,contentVersion:t.contentVersion,...(t.scopeRevision!==undefined?{scopeRevision:t.scopeRevision}:{}),text:companion?null:t.text,...(quote?{quote}:{}),origin:companion?'ai':'user',...(companion?{kind:'companion'}:{}),createdAt:t.createdAt,status:t.status==='running'?'failed':t.status,answer,activity:[],...(t.status==='running'?{error:'导入前的回答已中断，未恢复生成。'}:t.error?{error:String(t.error).slice(0,2000)}:{})};
  });

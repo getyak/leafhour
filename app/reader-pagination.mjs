@@ -57,26 +57,26 @@ export function mountReaderPagination({document,isBlocked=()=>false,onTurn=()=>{
     const {step,count}=geometry(),left=rect.left-viewport.getBoundingClientRect().left+viewport.scrollLeft;
     const target=Math.max(0,Math.min(count-1,Math.floor((left+.5)/step)));sync();viewport.scrollLeft=target*step;sync();lastAnchor={passageId:position.passageId,offset:Number.isFinite(position.offset)?position.offset:rect.top,...(position.withinParagraph!==undefined?{withinParagraph:position.withinParagraph}:{})};
   }
-  function turn(direction){
+  function turn(direction,source={}){
     // Paging remains immediate if its optional visual module is still loading.
-    return inputs.turn(direction);
+    return inputs.turn(direction,source);
   }
-  function commitTurn(direction){
+  function commitTurn(direction,source={}){
     if(!active||isBlocked()||view.getSelection()?.toString())return false;
     cancelResize();
     const {count,step}=geometry(),target=page+direction;
-    if(target<0||target>=count){if(!onBoundary(direction))return false;sync();return true;}
+    if(target<0||target>=count){if(!onBoundary(direction,{trusted:source.trusted===true}))return false;sync();return true;}
     page=target;viewport.scrollLeft=page*step;sync();lastAnchor=visibleAnchor();
     if(text.contains(document.activeElement))document.getElementById('book-page').focus({preventScroll:true});
-    onTurn();return true;
+    onTurn({trusted:source.trusted===true});return true;
   }
-  listen(previous,'click',()=>turn(-1));listen(next,'click',()=>turn(1));
+  listen(previous,'click',event=>turn(-1,{trusted:event.isTrusted===true}));listen(next,'click',event=>turn(1,{trusted:event.isTrusted===true}));
   listen(viewport,'scroll',()=>{if(active)sync();},{passive:true});
   listen(text,'pointerdown',event=>{if(active){pointerFocus=true;try{event.target.closest('.passage')?.focus({preventScroll:true});}finally{pointerFocus=false;}}});
   listen(text,'focusin',event=>{
     if(!active||pointerFocus||!event.target.matches('.passage'))return;
     const rects=[...event.target.getClientRects()],visible=visibleRect(event.target),index=visible?rects.findIndex(r=>r.left===visible.left&&r.top===visible.top):0;
-    restore({passageId:event.target.dataset.id,...(visible?{offset:visible.top,withinParagraph:fragmentProgress(rects,index)}:{})});onTurn();
+    restore({passageId:event.target.dataset.id,...(visible?{offset:visible.top,withinParagraph:fragmentProgress(rects,index)}:{})});onTurn({trusted:false});
   });
   const observer=new view.ResizeObserver(()=>{
     if(!active||disposed)return;cancelResize();const position=lastAnchor,epoch=resizeEpoch;

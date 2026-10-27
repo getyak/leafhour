@@ -3,6 +3,8 @@ import {StreamableHTTPServerTransport} from '@modelcontextprotocol/sdk/server/st
 import {ListToolsRequestSchema} from '@modelcontextprotocol/sdk/types.js';
 import {z} from 'zod';
 import {createMcpOAuth} from './mcp-oauth.mjs';
+import {createMcpPeopleServer} from './people-mcp.mjs';
+import {peopleConsentHTML,peopleConsentLocale} from './people-consent.mjs';
 import {createLockedJsonStore} from './locked-json-store.mjs';
 import {validateAgentReadInput,scopedAgentRead} from './scoped-agent-reading.mjs';
 
@@ -17,7 +19,7 @@ async function body(req,kind){
  if(Buffer.byteLength(value)>32768)throw failure('Request too large.',413);
  try{return kind==='form'?new URLSearchParams(String(value)):JSON.parse(String(value));}catch{throw failure('Invalid request.');}
 }
-const consentScript=`const form=document.querySelector('form');form?.addEventListener('submit',async event=>{event.preventDefault();const button=event.submitter;const data=new FormData(form);for(const b of form.querySelectorAll('button'))b.disabled=true;try{const response=await fetch('/api/mcp/oauth/consent',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({request:data.get('request'),csrf:data.get('csrf'),bookId:data.get('bookId'),scopes:data.getAll('scope'),allow:button?.value==='allow'})});const result=await response.json();if(!response.ok)throw Error(result.error_description||result.error||'Authorization failed.');location.assign(result.location);}catch(error){document.querySelector('[role=status]').textContent=error.message;for(const b of form.querySelectorAll('button'))b.disabled=false;}});`;
+const consentScript=`const form=document.querySelector('form');form?.addEventListener('submit',async event=>{event.preventDefault();const button=event.submitter;const data=new FormData(form);for(const b of form.querySelectorAll('button'))b.disabled=true;try{const response=await fetch('/api/mcp/oauth/consent',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({request:data.get('request'),csrf:data.get('csrf'),...(form.dataset.kind==='people'?{personIds:data.getAll('personId')}:{bookId:data.get('bookId')}),scopes:data.getAll('scope'),allow:button?.value==='allow'})});const result=await response.json();if(!response.ok)throw Error(result.error_description||result.error||'Authorization failed.');location.assign(result.location);}catch(error){document.querySelector('[role=status]').textContent=form.dataset.kind==='people'?form.dataset.error:error.message;for(const b of form.querySelectorAll('button'))b.disabled=false;}});`;
 function consentHTML({request,csrf,clientName,redirectUri,user,books,requestedScopes}){
  const labels={annotations:'Read existing AI annotations (excludes your private replies)', 'highlight:write':'Save highlights on exact selected text', 'annotation:write':'Save AI annotations, clearly labeled External Agent'};
  const permissions=requestedScopes.filter(s=>s!=='content').map(scope=>`<p><label><input type="checkbox" name="scope" value="${esc(scope)}"> ${esc(labels[scope])}</label></p>`).join('');
@@ -69,47 +71,48 @@ export function createMcpReadingServer({oauth,identity,token,library,annotations
  // extension. Override only the public list handler, keeping SDK call validation.
  server.server.setRequestHandler(ListToolsRequestSchema,async()=>({tools:definitions}));return server;
 }
-export function createRemoteMcp({origin,dataDir,dataStore,library,auth,annotations}){
+export function createRemoteMcp({origin,dataDir,dataStore,library,auth,annotations,people,peopleGrants,generation}){
  if(!origin?.startsWith('https://'))return {handle:async()=>false};
- const oauth=createMcpOAuth({origin,store:dataStore||createLockedJsonStore({dataDir}),library});
+ const oauth=createMcpOAuth({origin,store:dataStore||createLockedJsonStore({dataDir}),library,peopleGrants});
  async function handle({req,res,url,send}){
   const p=url.pathname;
-  const metadata=['/.well-known/oauth-protected-resource','/.well-known/oauth-protected-resource/api/mcp','/.well-known/oauth-authorization-server'];
-  if(!metadata.includes(p)&&p!=='/api/mcp'&&!p.startsWith('/api/mcp/'))return false;
+  const metadata=['/.well-known/oauth-protected-resource','/.well-known/oauth-protected-resource/api/mcp','/.well-known/oauth-protected-resource/api/people/mcp','/.well-known/oauth-authorization-server'];
+  if(!metadata.includes(p)&&p!=='/api/mcp'&&p!=='/api/people/mcp'&&!p.startsWith('/api/mcp/'))return false;
   const json=(status,data)=>{res.setHeader('Content-Type','application/json; charset=utf-8');send(status,data);};
   const redirect=location=>{res.statusCode=303;res.setHeader('Location',location);res.end();};
   res.setHeader('Cache-Control','private, no-store');res.setHeader('Referrer-Policy','no-referrer');res.setHeader('X-Robots-Tag','noindex, nofollow, noarchive');
   try{
    if(req.headers.origin&&req.headers.origin!==origin)throw failure('This request origin is not allowed.',403);
-   const meta=metadata.includes(p)||p==='/api/mcp/metadata'||p==='/api/mcp/authorization-server';
-   if(meta){if(req.method!=='GET')throw failure('Use GET.',405);json(200,p.includes('authorization-server')?oauth.serverMetadata():oauth.resourceMetadata());return true;}
+   const meta=metadata.includes(p)||p==='/api/mcp/metadata'||p==='/api/mcp/people-metadata'||p==='/api/mcp/authorization-server';
+   if(meta){if(req.method!=='GET')throw failure('Use GET.',405);json(200,p.includes('authorization-server')?oauth.serverMetadata():oauth.resourceMetadata(origin+(p.includes('/api/people/mcp')||p==='/api/mcp/people-metadata'?'/api/people/mcp':'/api/mcp')));return true;}
    if(['/api/mcp/consent-script','/api/mcp/consent','/api/mcp/consent.js'].includes(p)){if(req.method!=='GET')throw failure('Use GET.',405);res.statusCode=200;res.setHeader('Content-Type','text/javascript; charset=utf-8');res.end(consentScript);return true;}
    if(p==='/api/mcp/oauth/register'){if(req.method!=='POST')throw failure('Use POST.',405);json(201,await oauth.register(await body(req,'json')));return true;}
    if(p==='/api/mcp/oauth/token'||p==='/api/mcp/oauth/revoke'){if(req.method!=='POST')throw failure('Use POST.',405);if(req.headers.authorization)throw failure('This endpoint accepts public PKCE clients only.',400);const form=await body(req,'form');if(p.endsWith('/token'))json(200,await oauth.exchange(form));else{await oauth.revoke(form);json(200,{});}return true;}
    if(p==='/api/mcp/oauth/authorize'){
     if(req.method!=='GET')throw failure('Use GET.',405);
     if(!url.searchParams.has('request')){const request=await oauth.begin(url.searchParams);redirect(origin+'/api/mcp/oauth/authorize?'+new URLSearchParams({request}));return true;}
-    if(url.searchParams.getAll('request').length!==1||[...url.searchParams.keys()].some(k=>!['request','ui'].includes(k))||!/^[A-Za-z0-9_-]{43}$/.test(url.searchParams.get('request')))throw failure('Invalid authorization request.');
+    if(url.searchParams.getAll('request').length!==1||url.searchParams.getAll('ui').length>1||[...url.searchParams.keys()].some(k=>!['request','ui'].includes(k))||!/^[A-Za-z0-9_-]{43}$/.test(url.searchParams.get('request')))throw failure('Invalid authorization request.');
     const request=url.searchParams.get('request'),session=cookie(req),user=await auth.userFor(session);
     if(!user){redirect(origin+'/library?'+new URLSearchParams({login:'1',next:'/api/mcp/oauth/authorize?'+new URLSearchParams({request})}));return true;}
-    const view=await oauth.consent(request,user,session),books=(await library.list(user)).slice(0,200);
-    res.statusCode=200;res.setHeader('Content-Type','text/html; charset=utf-8');res.setHeader('Content-Security-Policy',"default-src 'none'; script-src 'self'; style-src 'self'; font-src 'self'; connect-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'");res.end(consentHTML({request,...view,user,books}));return true;
+    const view=await oauth.consent(request,user,session),books=view.kind==='people'?[]:(await library.list(user)).slice(0,200),personRows=view.kind==='people'?(await people.list(user,{limit:20})).people:[];
+    res.statusCode=200;res.setHeader('Content-Type','text/html; charset=utf-8');res.setHeader('Content-Security-Policy',"default-src 'none'; script-src 'self'; style-src 'self'; font-src 'self'; connect-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'");res.end(view.kind==='people'?peopleConsentHTML({request,...view,user,people:personRows,locale:peopleConsentLocale({ui:url.searchParams.get('ui'),uiLocales:view.uiLocales,acceptLanguage:req.headers['accept-language']})}):consentHTML({request,...view,user,books}));return true;
    }
    if(p==='/api/mcp/oauth/consent'){
     if(req.method!=='POST'||req.headers.origin!==origin)throw failure('Confirm access on the Leafhour page.',403);
     const session=cookie(req),user=await auth.userFor(session);json(200,{location:await oauth.approve(await body(req,'json'),user,session)});return true;
    }
-   if(p!=='/api/mcp')throw failure('Unknown MCP endpoint.',404);
-   const token=req.headers.authorization?.match(/^Bearer ([A-Za-z0-9_-]{43})$/)?.[1],identity=await oauth.authenticate(token);
+   if(p!=='/api/mcp'&&p!=='/api/people/mcp')throw failure('Unknown MCP endpoint.',404);
+   const expectedResource=origin+p,boundOAuth={...oauth,authenticate:value=>oauth.authenticate(value,expectedResource)};
+   const token=req.headers.authorization?.match(/^Bearer ([A-Za-z0-9_-]{43})$/)?.[1],identity=await boundOAuth.authenticate(token);
    await oauth.rate('mcp:'+token,60);
    if(req.method!=='POST'){res.setHeader('Allow','POST');throw failure('This stateless MCP endpoint accepts POST.',405);}
    const input=await body(req,'json');if(Array.isArray(input)||!input||typeof input!=='object')throw failure('Use one JSON-RPC request.');
-   const server=createMcpReadingServer({oauth,identity,token,library,annotations}),transport=new StreamableHTTPServerTransport({sessionIdGenerator:undefined,enableJsonResponse:true});
+   const server=identity.kind==='people'?createMcpPeopleServer({oauth:boundOAuth,identity,token,people,peopleGrants,generation}):createMcpReadingServer({oauth:boundOAuth,identity,token,library,annotations}),transport=new StreamableHTTPServerTransport({sessionIdGenerator:undefined,enableJsonResponse:true});
    const close=()=>{void server.close().catch(()=>{});};res.once('close',close);
    try{await server.connect(transport);await transport.handleRequest(req,res,input);}catch(error){await server.close();throw error;}return true;
   }catch(error){
    if(res.headersSent)throw error;
-   if(error.status===401)res.setHeader('WWW-Authenticate',`Bearer resource_metadata="${origin}/.well-known/oauth-protected-resource/api/mcp", scope="content", error="invalid_token"`);
+   if(error.status===401)res.setHeader('WWW-Authenticate',`Bearer resource_metadata="${origin}/.well-known/oauth-protected-resource${p==='/api/people/mcp'?'/api/people/mcp':'/api/mcp'}"${p==='/api/people/mcp'?'':', scope="content"'}, error="invalid_token"`);
    if(error.retryAfter)res.setHeader('Retry-After',String(error.retryAfter));
    json(error.status||500,{error:error.oauthError||(error.status===429?'temporarily_unavailable':'invalid_request'),error_description:error.status?error.message:'Leafhour is temporarily unavailable. Try again later.'});return true;
   }

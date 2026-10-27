@@ -133,7 +133,7 @@ function realMount(t,{integration=null,requests=[]}={}){
   return {...f,instance,requests,book,opened};
 }
 
-test('injected conversation creates one AI trigger in the tools surface and no generated launcher',async t=>{
+test('injected conversation creates one reading-chat trigger in the tools surface and no generated launcher',async t=>{
   const seams={triggerHost:null,companionAnchor:null,focusReturn:null,onUnread:null,onOpen:null};
   const calls={unread:[],opened:0,returned:0};
   const f=realFixture(t);
@@ -146,16 +146,16 @@ test('injected conversation creates one AI trigger in the tools surface and no g
   const reader={getBook:()=>book,isSelectionActive:()=>false,getAnchor:()=>({passageId:'p1'})};
   const integration={triggerHost,companionAnchor:pill,focusReturn:()=>{calls.returned++;pill.focus();},onUnread:value=>calls.unread.push(value),onOpen:()=>{calls.opened++;}};
   Object.assign(seams,{triggerHost,companionAnchor:pill,focusReturn:integration.focusReturn,onUnread:integration.onUnread,onOpen:integration.onOpen});
-  mountReaderConversation({renderMarkdown:renderChatMarkdown,bookId:'book-one',session:{user:{id:'reader-one'}},getReader:()=>reader,root:f.dialog,api,integration});
-  await flush();
+  const instance=mountReaderConversation({renderMarkdown:renderChatMarkdown,bookId:'book-one',session:{user:{id:'reader-one'}},getReader:()=>reader,root:f.dialog,api,integration});
+  await instance.companionReady;await flush();
   const all=f.all;
   assert.equal(all(f.doc.body).filter(n=>n.className==='library-chat-launcher').length,0,'injected mode generates no hidden launcher');
   assert.equal(all(f.doc.body).filter(n=>n.className==='squirrel-companion-toggle').length,1,'exactly one companion toggle mounts');
   const trigger=all(triggerHost).find(n=>n.tagName==='BUTTON');
   assert.ok(trigger,'the AI trigger lives in the tools surface');
-  assert.match(trigger.getAttribute('aria-label')||trigger.textContent||'',/对话|Ask AI/);
-  await requestUiRoute('en');assert.equal(trigger.textContent,'Ask AI');
-  await requestUiRoute('zh-Hans');assert.equal(trigger.textContent,'问 AI');
+  assert.match(trigger.getAttribute('aria-label')||trigger.textContent||'',/对话|Reading chat/);
+  await requestUiRoute('en');assert.equal(trigger.textContent,'Reading chat');
+  await requestUiRoute('zh-Hans');assert.equal(trigger.textContent,'阅读对话');
   trigger.click();await flush();
   assert.equal(f.dialog.open,true,'the injected trigger opens the conversation');
   assert.equal(calls.opened,1,'opening chat performs the focus handoff to close tools');

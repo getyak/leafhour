@@ -20,11 +20,13 @@ import {configurationSummary} from './model-config.mjs';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 // The verification page reads the same private, local observations as the book page.
 const assets=new Map([['/',['app/index.html','text/html']],['/styles.css',['app/styles.css','text/css']],['/reader.js',['app/reader.js','text/javascript']],['/experiences.js',['app/experiences.js','text/javascript']],['/experiences.css',['app/experiences.css','text/css']],['/typography.css',['app/typography.css','text/css']],['/fonts/newsreader/newsreader-var.woff2',['app/fonts/newsreader/newsreader-var.woff2','font/woff2']],['/fonts/newsreader/newsreader-italic-var.woff2',['app/fonts/newsreader/newsreader-italic-var.woff2','font/woff2']],['/fonts/newsreader/OFL.txt',['app/fonts/newsreader/OFL.txt','text/plain']]]);
+for(const file of ['observability-contract.mjs','observability.mjs','observability-settings.mjs','observability-bridge.mjs','paper-companion.mjs','reader-style-ready.mjs','reader-loading.mjs'])assets.set('/'+file,['app/'+file,'text/javascript']);
 for(const file of ['interaction-craft.css','interface-tokens.css','interaction-craft.mjs','action-focus.mjs'])assets.set('/'+file,['app/'+file,file.endsWith('.css')?'text/css':'text/javascript']);
 for(const file of ['reader-annotations.mjs','reader-annotation-margins.mjs','reader-annotation-pending.mjs','reader-annotation-records.mjs','reader-annotations.css','library-chat-markdown.mjs'])assets.set('/'+file,['app/'+file,file.endsWith('.css')?'text/css':'text/javascript']);
 assets.set('/preference-memory-codec.mjs',['app/preference-memory-codec.mjs','text/javascript']);
 assets.set('/reading-preferences.mjs',['app/reading-preferences.mjs','text/javascript']);
 assets.set('/personal-records.mjs',['app/personal-records.mjs','text/javascript']);
+for(const file of ['library-notebook.mjs', 'library-notebook-state.mjs', 'library-notebook.css', 'reading-journal.mjs', 'reading-journal.css', 'paper-companion.mjs', 'reading-hub.mjs', 'reading-hub.css', 'reader-style-ready.mjs', 'reader-loading.mjs'])assets.set('/'+file,['app/'+file,file.endsWith('.css')?'text/css':'text/javascript']);
 assets.set('/reading-chat-scope.mjs',['app/reading-chat-scope.mjs','text/javascript']);
 for(const file of ['reading-chat-quote.mjs','reading-chat-input.mjs','reader-chat-workspace.mjs','reader-chat-workspace.css'])assets.set('/'+file,['app/'+file,file.endsWith('.css')?'text/css':'text/javascript']);
 assets.set('/personal-record-editor.mjs',['app/personal-record-editor.mjs','text/javascript']);
@@ -46,6 +48,7 @@ assets.set('/reader-navigation.mjs',['app/reader-navigation.mjs','text/javascrip
 // GET-173 shared popover boundary plus its real user-open bookplate bootstrap.
 for(const file of ['popover-controls.mjs','reader-book-actions-bootstrap.mjs'])assets.set('/'+file,['app/'+file,'text/javascript']);
 for(const file of ['book-introduction.mjs','book-introduction-controller.mjs','reader-book-actions.mjs','reader-book-actions.css'])assets.set('/'+file,['app/'+file,file.endsWith('.css')?'text/css':'text/javascript']);
+for(const file of ['paper-companion.mjs','reader-style-ready.mjs','reader-loading.mjs'])assets.set('/'+file,['app/'+file,'text/javascript']);
 assets.set('/reader-immersion.mjs',['app/reader-immersion.mjs','text/javascript']);
 assets.set('/reader-quiet.css',['app/reader-quiet.css','text/css']);
 assets.set('/reader-location.mjs',['app/reader-location.mjs','text/javascript']);

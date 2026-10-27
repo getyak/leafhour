@@ -6,7 +6,8 @@ export const readerSession=selectedBookId?await fetch('/api/auth/session').then(
 // the same captured ID instead of reinterpreting a mutable session object.
 export const readerOwner=readerSession?.user?.id||null;
 let sessionCurrent=true;
-document.addEventListener('reader:session-changed',()=>{sessionCurrent=false;});
+export const readerObservability={operationId:crypto.randomUUID(),requestFailed(){},dispose(){},syncOwner(){this.dispose();this.operationId=crypto.randomUUID();}};
+document.addEventListener('reader:session-changed',()=>{sessionCurrent=false;readerObservability.syncOwner();});
 void adoptUiOwner(readerOwner);
 export function readerApiUrl(url){
   // Explicit library, gift, account and auth routes keep their original scope.
@@ -16,8 +17,9 @@ export function readerApiUrl(url){
 export const readerStorageKey=name=>name+(selectedBookId?'|'+(readerOwner||'guest')+'|'+selectedBookId:'');
 const leaveChangedSession=()=>{sessionCurrent=false;document.dispatchEvent(new Event('reader:session-changed'));location.replace('/library');};
 async function checkedFetch(url,options){
-  const response=await fetch(url,options);
+  let response;try{response=await fetch(url,options);}catch(error){readerObservability.requestFailed({error});throw error;}
   if(response.headers.get('X-Reader-Session-Changed')==='1'){leaveChangedSession();throw Error('账户已切换，请重新进入书房。');}
+  if(!response.ok)readerObservability.requestFailed({status:response.status});
   return response;
 }
 export async function readerFetch(url,options={}){
@@ -32,7 +34,7 @@ export async function readerFetch(url,options={}){
   }
   if(options.signal?.aborted)throw options.signal.reason||new DOMException('Request aborted','AbortError');
   const {onDispatch,...fetchOptions}=options;onDispatch?.();
-  const response=await checkedFetch(target,{...fetchOptions,headers:{...(options.headers||{}),...(url==='/api/book'?{'X-Reader-Book-Transfer':'1'}:{}),...(selectedBookId?{'X-Reader-Owner':readerOwner||'guest'}:{})}});
+  const response=await checkedFetch(target,{...fetchOptions,headers:{...(options.headers||{}),'X-Leafhour-Operation':readerObservability.operationId,...(url==='/api/book'?{'X-Reader-Book-Transfer':'1'}:{}),...(selectedBookId?{'X-Reader-Owner':readerOwner||'guest'}:{})}});
   if(response.ok&&response.headers.get('X-Reader-Book-Transfer')==='parts'){const manifest=await response.json(),book=await assembleBookTransfer(manifest,async(offset,snapshot)=>{const partUrl=new URL(url,location.origin);partUrl.searchParams.set('offset',offset);partUrl.searchParams.set('snapshot',snapshot);const r=await readerFetch(url==='/api/book'?'/api/content-part?offset='+offset+'&snapshot='+snapshot:partUrl.pathname+partUrl.search);if(!r.ok)throw Error('正文已更新或传输中断，请重新载入。');return r.json();});return new Response(JSON.stringify(book),{headers:{'Content-Type':'application/json'}});}return response;
 }
 let identityCheck=null;

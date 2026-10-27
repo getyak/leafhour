@@ -1,3 +1,4 @@
+import {mountReadingHub,loadReadingHubStyles} from './reading-hub.mjs';
 import {t,onUiLocaleChange,uiReady} from './ui-locale.mjs';
 import {overlayOpen} from './popover-controls.mjs';
 
@@ -19,7 +20,8 @@ export function mountReaderLocation({document,tools,getReader=()=>document.defau
  const view=document.defaultView,trigger=document.getElementById('reading-tools-trigger'),header=document.getElementById('reading-header'),text=document.getElementById('chapter-text'),pages=document.getElementById('reading-pages'),running=document.getElementById('running-progress');
  const badge=document.createElement('span'),chapterText=document.createElement('span'),positionText=document.createElement('span');badge.id='reading-location';badge.className='reading-location';badge.hidden=true;badge.append(chapterText,positionText);trigger.append(badge);
  const described=trigger.getAttribute('aria-describedby');trigger.setAttribute('aria-describedby',[described,badge.id].filter(Boolean).join(' '));
- let disposed=false,frame=null;const listeners=[];
+ let disposed=false,frame=null,hub=null;const listeners=[];
+ void loadReadingHubStyles(document).then(ready=>{if(ready&&!disposed)hub=mountReadingHub({document,panel:document.getElementById('reading-tools-panel'),toolbar:tools.toolbar});});
  const listen=(target,name,fn,options)=>{const owned=e=>{if(!disposed)fn(e);};target.addEventListener(name,owned,options);listeners.push(()=>target.removeEventListener(name,owned,options));};
  const write=(node,value)=>{if(node&&node.textContent!==value)node.textContent=value;};
  function paint(){
@@ -71,6 +73,6 @@ export function mountReaderLocation({document,tools,getReader=()=>document.defau
  listen(pages,'scroll',readingScroll,{passive:true});
  const observer=new view.ResizeObserver(schedule);observer.observe(text);observer.observe(pages);observer.observe(header);
  const offLocale=onUiLocaleChange(paint);void uiReady.then(()=>{if(!disposed)schedule();});void document.fonts?.ready.then(()=>{if(!disposed)schedule();});
- function unmount(){if(disposed)return;disposed=true;view.cancelAnimationFrame(frame);observer.disconnect();offLocale();for(const release of listeners)release();badge.remove();if(described===null)trigger.removeAttribute('aria-describedby');else trigger.setAttribute('aria-describedby',described);}
+ function unmount(){if(disposed)return;disposed=true;hub?.unmount();view.cancelAnimationFrame(frame);observer.disconnect();offLocale();for(const release of listeners)release();badge.remove();if(described===null)trigger.removeAttribute('aria-describedby');else trigger.setAttribute('aria-describedby',described);}
  listen(document,'reader:session-changed',unmount);listen(view,'pagehide',event=>{if(!event.persisted)unmount();});listen(view,'pageshow',schedule);schedule();return {unmount};
 }
