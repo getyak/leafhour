@@ -49,3 +49,13 @@
 
 
 第三轮最终 27 项计算与55项浏览器检查通过（上下文18、手势14、续读12、原回归11）。21组截图与可编辑矢量、源码哈希、直接打开的单文件另验。关闭抓取采用受控退出帧与真实鼠标输入，其余手势保留实时检查；本轮宿主负载高，驱动等待上限显式设为90秒，这不是性能验收。
+
+## 从记录继续自己的想法
+
+“自己的笔记”只在有内容时显示“未保存的笔记”。点开可继续原选句的草稿，从记录进入就返回记录；原来的讨论和阅读位置各自保留。保存后有8秒撤销，按钮获得键盘焦点时保留反馈。撤销恢复原始编辑文字；同一句已有不同新草稿时两份内容都保留，不覆盖。
+
+[Figma 第四轮](https://www.figma.com/proto/zjkapX58kUJZZh0la8F4Nw/Leafhour?node-id=9-4111&starting-point-node-id=9%3A4111&page-id=1%3A2) 增补在 y=8700，之前版本保留。四个画面和四个跳转只表达一致的固定状态；8秒计时、输入、焦点与冲突行为由网页验证。
+
+本轮针对性验证：38项计算、10项笔记恢复、4项相关笔记/原文回归和原有11项基线；重建25组截图与矢量，并直接从单文件完成保存/撤销。没有重复未改动的手势与续读套件，也不把这些检查当作原生 iPhone 或性能验收。证据见 `evidence/note-recovery-verification.json`、`evidence/note-related-context-verification.json`、`verification.json` 和 `figma-note-manifest.json`。
+
+单独复核本轮可运行 `node --test tests/ios-design-interaction.test.mjs`、`node verify-note-recovery.mjs`，再运行所需相关检查。完整 `build.mjs` 仍能顺序运行全部套件；已有结果未变时不必为微调反复运行全套。

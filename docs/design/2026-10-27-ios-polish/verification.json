@@ -1,5 +1,5 @@
 {
-  "at": "2026-10-26T23:50:04.064Z",
+  "at": "2026-10-27T01:19:54.112Z",
   "timeZone": "Asia/Singapore",
   "kind": "design-prototype",
   "checks": [
@@ -138,12 +138,13 @@
   },
   "status": "pass",
   "sourceHashes": {
-    "prototype/app.js": "29149dc2e97eff017c19a9f0bd78f06bd580eac13aeff7b8a19abb6379a46bb6",
+    "prototype/app.js": "54c15b498d6bc2d4e26b463f950454c53b7686d9f2896db934ab1493173cfc3e",
     "prototype/motion.mjs": "53fd5df37f2034bcdf9fa47e7ae5d2bca1a11fff46bae63e77a30f2691ffd9ee",
     "prototype/selection-position.mjs": "ffd097f46090c18b411f18b3891fc5fe73733242f7e0c2bba7f0f9c8b97cacf8",
     "prototype/reading-position.mjs": "26c1c49866f01a7324c77e8b5c6db3845114bc1fc419d07bbb92b59f2eddf3ed",
     "prototype/companion-context.mjs": "59a43939064c9f68d734c3b88d0066d9c4c55c85b2aa97d5b55f3867958ae4cb",
-    "prototype/style.css": "ca1951672ed1d2f7fce6d6c0d41a4acff55d14d2246aa3d5f8193b378d327d15",
+    "prototype/note-recovery.mjs": "0fb780af51f63b1e3947406f45f34c1d096a3588e51dc2f0651a65b0f4b520e8",
+    "prototype/style.css": "6d279a7a03f456f18df7205b9fa5ab92d00621b9fca48cc3956b6cd7f3f135e8",
     "prototype/index.html": "f609165da4c50d0f1284b727c38b5c4cf4e14a0555e1c30488293cc77a47ef1b"
   },
   "artifactRendering": [
@@ -169,6 +170,7 @@
   "standalone": {
     "status": "pass",
     "opensDirectlyFromLocalFile": true,
-    "externalCSSOrScriptDependencies": 0
+    "externalCSSOrScriptDependencies": 0,
+    "noteSaveAndUndo": "pass"
   }
 }
