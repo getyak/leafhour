@@ -7,6 +7,7 @@ Raw cache filenames are PG_ID.html, room.html and ivan.xml.
 import argparse,json,re,hashlib,sys
 from pathlib import Path
 from bs4 import BeautifulSoup
+from classic_catalog import compile_document
 root=Path(__file__).resolve().parents[1]
 parser=argparse.ArgumentParser(description=__doc__)
 parser.add_argument('source_cache')
@@ -155,6 +156,13 @@ for entry in entries:
  if args.only and entry['id'] not in args.only:continue
  if entry.get('format')!='structured':continue
  target=root/'catalog'/entry['file'];prior=json.loads(target.read_text())
+ if prior.get('extraction'):
+  result=compile_document(prior,source_dir)
+  if sum(c['kind']=='body' for c in result['chapters'])!=entry['bodyChapters']:raise ValueError('Classic chapter boundary mismatch: '+entry['id'])
+  encoded=json.dumps(result,ensure_ascii=False,indent=2)+'\n'
+  if args.write:target.write_text(encoded)
+  elif encoded!=target.read_text():raise ValueError('Classic reproduction mismatch: '+entry['id'])
+  print(entry['id'],len(result['chapters']),'classic reading sections verified');continue
  url=prior['downloadUrl']
  n=int(re.search(r'/epub/(\d+)/',url)[1]) if '/epub/' in url else 'room' if 'gutenberg.net.au' in url else 'ivan'
  raw,chapters,notices=build(n)

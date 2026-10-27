@@ -27,7 +27,7 @@ export async function buildArrivalCatalog(root){
   if(!paragraph)throw Error('Audited arrival passage is missing: '+book.bookId);
   const original=paragraph.original.trim();
   const chapter=book.chapters.find(row=>row.id===section.chapterId);
-  result[book.bookId]={bookId:book.bookId,title:entry.title,author:entry.author,chapter:chapter.title.zh,sourceUrl:entry.sourceUrl,original:arrivalExcerpt(original),translation:null,sourceLanguage:'en',context:'书中一段',passageId:paragraph.id,contentVersion:book.contentVersion};
+  result[book.bookId]={bookId:book.bookId,title:entry.title,author:entry.author,chapter:chapter.title.zh,sourceUrl:entry.sourceUrl,original:arrivalExcerpt(original),translation:null,sourceLanguage:entry.sourceLanguage||'en',context:'书中一段',passageId:paragraph.id,contentVersion:book.contentVersion};
  }
  return result;
 }

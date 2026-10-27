@@ -9,74 +9,186 @@ candidate:app/arrival-catalog.mjs:6:15,js-cjk-literal,app/arrival-catalog.mjs,6,
 candidate:app/arrival-catalog.mjs:12:16,js-cjk-literal,app/arrival-catalog.mjs,12,,unknown,reviewable,,书中一段
 candidate:app/arrival-catalog.mjs:18:14,js-cjk-literal,app/arrival-catalog.mjs,18,,unknown,reviewable,,非洲农场的故事
 candidate:app/arrival-catalog.mjs:25:16,js-cjk-literal,app/arrival-catalog.mjs,25,,unknown,reviewable,,书中一段
-candidate:app/arrival-catalog.mjs:31:14,js-cjk-literal,app/arrival-catalog.mjs,31,,unknown,reviewable,,一千零一夜选编
-candidate:app/arrival-catalog.mjs:32:15,js-cjk-literal,app/arrival-catalog.mjs,32,,unknown,reviewable,,Traditional stories · 选编 Andrew Lang · 英译者未逐一署名
+candidate:app/arrival-catalog.mjs:31:14,js-cjk-literal,app/arrival-catalog.mjs,31,,unknown,reviewable,,论语（中文原典）
+candidate:app/arrival-catalog.mjs:32:15,js-cjk-literal,app/arrival-catalog.mjs,32,,unknown,reviewable,,孔子及其弟子（Confucius and disciples）
+candidate:app/arrival-catalog.mjs:33:16,js-cjk-literal,app/arrival-catalog.mjs,33,,unknown,reviewable,,學而第一
+candidate:app/arrival-catalog.mjs:35:17,js-cjk-literal,app/arrival-catalog.mjs,35,,unknown,reviewable,,1. 子曰：「學而時習之，不亦說乎？
 candidate:app/arrival-catalog.mjs:38:16,js-cjk-literal,app/arrival-catalog.mjs,38,,unknown,reviewable,,书中一段
-candidate:app/arrival-catalog.mjs:44:14,js-cjk-literal,app/arrival-catalog.mjs,44,,unknown,reviewable,,一间自己的房间
+candidate:app/arrival-catalog.mjs:44:14,js-cjk-literal,app/arrival-catalog.mjs,44,,unknown,reviewable,,一千零一夜选编
+candidate:app/arrival-catalog.mjs:45:15,js-cjk-literal,app/arrival-catalog.mjs,45,,unknown,reviewable,,Traditional stories · 选编 Andrew Lang · 英译者未逐一署名
 candidate:app/arrival-catalog.mjs:51:16,js-cjk-literal,app/arrival-catalog.mjs,51,,unknown,reviewable,,书中一段
-candidate:app/arrival-catalog.mjs:57:14,js-cjk-literal,app/arrival-catalog.mjs,57,,unknown,reviewable,,觉醒及短篇选
+candidate:app/arrival-catalog.mjs:57:14,js-cjk-literal,app/arrival-catalog.mjs,57,,unknown,reviewable,,孙子兵法（中文原典）
+candidate:app/arrival-catalog.mjs:58:15,js-cjk-literal,app/arrival-catalog.mjs,58,,unknown,reviewable,,孙武（传统归属）
+candidate:app/arrival-catalog.mjs:59:16,js-cjk-literal,app/arrival-catalog.mjs,59,,unknown,reviewable,,始計第一
+candidate:app/arrival-catalog.mjs:61:17,js-cjk-literal,app/arrival-catalog.mjs,61,,unknown,reviewable,,孫子曰：兵者，國之大事，死生之地，存亡之道，不可不察也。
 candidate:app/arrival-catalog.mjs:64:16,js-cjk-literal,app/arrival-catalog.mjs,64,,unknown,reviewable,,书中一段
-candidate:app/arrival-catalog.mjs:70:14,js-cjk-literal,app/arrival-catalog.mjs,70,,unknown,reviewable,,超越善恶（善恶的彼岸）
-candidate:app/arrival-catalog.mjs:71:15,js-cjk-literal,app/arrival-catalog.mjs,71,,unknown,reviewable,,弗里德里希·尼采（Friedrich Nietzsche）
+candidate:app/arrival-catalog.mjs:70:14,js-cjk-literal,app/arrival-catalog.mjs,70,,unknown,reviewable,,一间自己的房间
 candidate:app/arrival-catalog.mjs:77:16,js-cjk-literal,app/arrival-catalog.mjs,77,,unknown,reviewable,,书中一段
-candidate:app/arrival-catalog.mjs:83:14,js-cjk-literal,app/arrival-catalog.mjs,83,,unknown,reviewable,,薄伽梵歌
-candidate:app/arrival-catalog.mjs:84:15,js-cjk-literal,app/arrival-catalog.mjs,84,,unknown,reviewable,,Vyasa (traditional attribution) · 英译 Edwin Arnold · 英语诗译
+candidate:app/arrival-catalog.mjs:83:14,js-cjk-literal,app/arrival-catalog.mjs,83,,unknown,reviewable,,觉醒及短篇选
 candidate:app/arrival-catalog.mjs:90:16,js-cjk-literal,app/arrival-catalog.mjs,90,,unknown,reviewable,,书中一段
-candidate:app/arrival-catalog.mjs:96:14,js-cjk-literal,app/arrival-catalog.mjs,96,,unknown,reviewable,,茶之书
+candidate:app/arrival-catalog.mjs:96:14,js-cjk-literal,app/arrival-catalog.mjs,96,,unknown,reviewable,,超越善恶（善恶的彼岸）
+candidate:app/arrival-catalog.mjs:97:15,js-cjk-literal,app/arrival-catalog.mjs,97,,unknown,reviewable,,弗里德里希·尼采（Friedrich Nietzsche）
 candidate:app/arrival-catalog.mjs:103:16,js-cjk-literal,app/arrival-catalog.mjs,103,,unknown,reviewable,,书中一段
-candidate:app/arrival-catalog.mjs:109:14,js-cjk-literal,app/arrival-catalog.mjs,109,,unknown,reviewable,,巴西短篇小说选
-candidate:app/arrival-catalog.mjs:110:15,js-cjk-literal,app/arrival-catalog.mjs,110,,unknown,reviewable,,Machado de Assis; Medeiros e Albuquerque; Henrique Coelho Netto; Carmen Dolores · 英译 Isaac Goldberg
+candidate:app/arrival-catalog.mjs:109:14,js-cjk-literal,app/arrival-catalog.mjs,109,,unknown,reviewable,,薄伽梵歌
+candidate:app/arrival-catalog.mjs:110:15,js-cjk-literal,app/arrival-catalog.mjs,110,,unknown,reviewable,,Vyasa (traditional attribution) · 英译 Edwin Arnold · 英语诗译
 candidate:app/arrival-catalog.mjs:116:16,js-cjk-literal,app/arrival-catalog.mjs,116,,unknown,reviewable,,书中一段
-candidate:app/arrival-catalog.mjs:122:14,js-cjk-literal,app/arrival-catalog.mjs,122,,unknown,reviewable,,老实人
-candidate:app/arrival-catalog.mjs:123:15,js-cjk-literal,app/arrival-catalog.mjs,123,,unknown,reviewable,,Voltaire · 英译 The Modern Library · 1918 edition; translator unnamed
+candidate:app/arrival-catalog.mjs:122:14,js-cjk-literal,app/arrival-catalog.mjs,122,,unknown,reviewable,,茶之书
 candidate:app/arrival-catalog.mjs:129:16,js-cjk-literal,app/arrival-catalog.mjs,129,,unknown,reviewable,,书中一段
-candidate:app/arrival-catalog.mjs:135:14,js-cjk-literal,app/arrival-catalog.mjs,135,,unknown,reviewable,,法句经
-candidate:app/arrival-catalog.mjs:136:15,js-cjk-literal,app/arrival-catalog.mjs,136,,unknown,reviewable,,Buddhist canon · 英译 F. Max Müller
+candidate:app/arrival-catalog.mjs:135:14,js-cjk-literal,app/arrival-catalog.mjs,135,,unknown,reviewable,,巴西短篇小说选
+candidate:app/arrival-catalog.mjs:136:15,js-cjk-literal,app/arrival-catalog.mjs,136,,unknown,reviewable,,Machado de Assis; Medeiros e Albuquerque; Henrique Coelho Netto; Carmen Dolores · 英译 Isaac Goldberg
 candidate:app/arrival-catalog.mjs:142:16,js-cjk-literal,app/arrival-catalog.mjs,142,,unknown,reviewable,,书中一段
-candidate:app/arrival-catalog.mjs:148:14,js-cjk-literal,app/arrival-catalog.mjs,148,,unknown,reviewable,,堂吉诃德
-candidate:app/arrival-catalog.mjs:149:15,js-cjk-literal,app/arrival-catalog.mjs,149,,unknown,reviewable,,Miguel de Cervantes · 英译 John Ormsby
+candidate:app/arrival-catalog.mjs:148:14,js-cjk-literal,app/arrival-catalog.mjs,148,,unknown,reviewable,,老实人
+candidate:app/arrival-catalog.mjs:149:15,js-cjk-literal,app/arrival-catalog.mjs,149,,unknown,reviewable,,Voltaire · 英译 The Modern Library · 1918 edition; translator unnamed
 candidate:app/arrival-catalog.mjs:155:16,js-cjk-literal,app/arrival-catalog.mjs,155,,unknown,reviewable,,书中一段
-candidate:app/arrival-catalog.mjs:161:14,js-cjk-literal,app/arrival-catalog.mjs,161,,unknown,reviewable,,弗雷德里克·道格拉斯自传
+candidate:app/arrival-catalog.mjs:161:14,js-cjk-literal,app/arrival-catalog.mjs,161,,unknown,reviewable,,忏悔录（奥古斯丁）
+candidate:app/arrival-catalog.mjs:162:15,js-cjk-literal,app/arrival-catalog.mjs,162,,unknown,reviewable,,奥古斯丁（Augustine of Hippo）
 candidate:app/arrival-catalog.mjs:168:16,js-cjk-literal,app/arrival-catalog.mjs,168,,unknown,reviewable,,书中一段
-candidate:app/arrival-catalog.mjs:174:14,js-cjk-literal,app/arrival-catalog.mjs,174,,unknown,reviewable,,埃奎亚诺自传
+candidate:app/arrival-catalog.mjs:174:14,js-cjk-literal,app/arrival-catalog.mjs,174,,unknown,reviewable,,罪与罚
+candidate:app/arrival-catalog.mjs:175:15,js-cjk-literal,app/arrival-catalog.mjs,175,,unknown,reviewable,,陀思妥耶夫斯基（Fyodor Dostoyevsky）
 candidate:app/arrival-catalog.mjs:181:16,js-cjk-literal,app/arrival-catalog.mjs,181,,unknown,reviewable,,书中一段
-candidate:app/arrival-catalog.mjs:187:14,js-cjk-literal,app/arrival-catalog.mjs,187,,unknown,reviewable,,埃瑞璜
+candidate:app/arrival-catalog.mjs:187:14,js-cjk-literal,app/arrival-catalog.mjs,187,,unknown,reviewable,,法句经
+candidate:app/arrival-catalog.mjs:188:15,js-cjk-literal,app/arrival-catalog.mjs,188,,unknown,reviewable,,Buddhist canon · 英译 F. Max Müller
 candidate:app/arrival-catalog.mjs:194:16,js-cjk-literal,app/arrival-catalog.mjs,194,,unknown,reviewable,,书中一段
-candidate:app/arrival-catalog.mjs:200:14,js-cjk-literal,app/arrival-catalog.mjs,200,,unknown,reviewable,,平面国
+candidate:app/arrival-catalog.mjs:200:14,js-cjk-literal,app/arrival-catalog.mjs,200,,unknown,reviewable,,谈谈方法（方法谈）
+candidate:app/arrival-catalog.mjs:201:15,js-cjk-literal,app/arrival-catalog.mjs,201,,unknown,reviewable,,勒内·笛卡尔（René Descartes）
 candidate:app/arrival-catalog.mjs:207:16,js-cjk-literal,app/arrival-catalog.mjs,207,,unknown,reviewable,,书中一段
-candidate:app/arrival-catalog.mjs:213:14,js-cjk-literal,app/arrival-catalog.mjs,213,,unknown,reviewable,,弗兰肯斯坦
+candidate:app/arrival-catalog.mjs:213:14,js-cjk-literal,app/arrival-catalog.mjs,213,,unknown,reviewable,,堂吉诃德
+candidate:app/arrival-catalog.mjs:214:15,js-cjk-literal,app/arrival-catalog.mjs,214,,unknown,reviewable,,Miguel de Cervantes · 英译 John Ormsby
 candidate:app/arrival-catalog.mjs:220:16,js-cjk-literal,app/arrival-catalog.mjs,220,,unknown,reviewable,,书中一段
-candidate:app/arrival-catalog.mjs:226:14,js-cjk-literal,app/arrival-catalog.mjs,226,,unknown,reviewable,,家庭与世界
-candidate:app/arrival-catalog.mjs:227:15,js-cjk-literal,app/arrival-catalog.mjs,227,,unknown,reviewable,,Rabindranath Tagore · 英译 Surendranath Tagore
+candidate:app/arrival-catalog.mjs:226:14,js-cjk-literal,app/arrival-catalog.mjs,226,,unknown,reviewable,,弗雷德里克·道格拉斯自传
 candidate:app/arrival-catalog.mjs:233:16,js-cjk-literal,app/arrival-catalog.mjs,233,,unknown,reviewable,,书中一段
-candidate:app/arrival-catalog.mjs:239:14,js-cjk-literal,app/arrival-catalog.mjs,239,,unknown,reviewable,,地下室手记
-candidate:app/arrival-catalog.mjs:240:15,js-cjk-literal,app/arrival-catalog.mjs,240,,unknown,reviewable,,Fyodor Dostoyevsky · 英译 Constance Garnett
+candidate:app/arrival-catalog.mjs:239:14,js-cjk-literal,app/arrival-catalog.mjs,239,,unknown,reviewable,,红楼梦（第1册：1—40回）
+candidate:app/arrival-catalog.mjs:240:15,js-cjk-literal,app/arrival-catalog.mjs,240,,unknown,reviewable,,曹雪芹（Cao Xueqin）
+candidate:app/arrival-catalog.mjs:241:16,js-cjk-literal,app/arrival-catalog.mjs,241,,unknown,reviewable,,第一回 甄士隱夢幻識通靈 賈雨村風塵怀閨秀
+candidate:app/arrival-catalog.mjs:243:17,js-cjk-literal,app/arrival-catalog.mjs,243,,unknown,protected,quotation,"此開卷第一回也．作者自云：因曾歷過一番夢幻之后，故將真事隱去， 而借""通靈""之說，撰此《石頭記》一書也．故曰""甄士隱""云云．但書中所記 何事何人？"
 candidate:app/arrival-catalog.mjs:246:16,js-cjk-literal,app/arrival-catalog.mjs,246,,unknown,reviewable,,书中一段
-candidate:app/arrival-catalog.mjs:252:14,js-cjk-literal,app/arrival-catalog.mjs,252,,unknown,reviewable,,论自由
+candidate:app/arrival-catalog.mjs:252:14,js-cjk-literal,app/arrival-catalog.mjs,252,,unknown,reviewable,,红楼梦（第2册：41—80回）
+candidate:app/arrival-catalog.mjs:253:15,js-cjk-literal,app/arrival-catalog.mjs,253,,unknown,reviewable,,曹雪芹（Cao Xueqin）
+candidate:app/arrival-catalog.mjs:254:16,js-cjk-literal,app/arrival-catalog.mjs,254,,unknown,reviewable,,第四十一回 櫳翠庵茶品梅花雪 怡紅院劫遇母蝗虫
+candidate:app/arrival-catalog.mjs:256:17,js-cjk-literal,app/arrival-catalog.mjs,256,,unknown,protected,quotation,"話說劉姥姥兩只手比著說道：“花儿落了結個大倭瓜． ""眾人 听了哄堂大笑起來．于是吃過門杯，因又逗趣笑道：“實告 訴說罷，我的手腳子粗笨， 又喝了酒，仔細失手打了這瓷杯． 有木頭的杯取個子來，我便失了手，掉了地下也無礙。”"
 candidate:app/arrival-catalog.mjs:259:16,js-cjk-literal,app/arrival-catalog.mjs,259,,unknown,reviewable,,书中一段
-candidate:app/arrival-catalog.mjs:265:14,js-cjk-literal,app/arrival-catalog.mjs,265,,unknown,reviewable,,傲慢与偏见
+candidate:app/arrival-catalog.mjs:265:14,js-cjk-literal,app/arrival-catalog.mjs,265,,unknown,reviewable,,红楼梦（第3册：81—120回）
+candidate:app/arrival-catalog.mjs:266:15,js-cjk-literal,app/arrival-catalog.mjs,266,,unknown,reviewable,,后四十回续作者未详（原卷题署曹雪芹）
+candidate:app/arrival-catalog.mjs:267:16,js-cjk-literal,app/arrival-catalog.mjs,267,,unknown,reviewable,,第八十一回 占旺相四美釣游魚 奉嚴詞兩番入家塾
+candidate:app/arrival-catalog.mjs:269:17,js-cjk-literal,app/arrival-catalog.mjs,269,,unknown,protected,quotation,"且說迎春歸去之后，邢夫人象沒有這事，倒是王夫人撫養了一場，卻甚實傷 感，在房中自己歎息了一回．只見寶玉走來請安，看見王夫人臉上似有淚痕，也 不敢坐，只在旁邊站著．王夫人叫他坐下，寶玉才捱上炕來，就在王夫人身旁坐 了．王夫人見他呆呆的瞅著，似有欲言不言的光景，便道：“你又為什么這樣呆 呆的？"""
 candidate:app/arrival-catalog.mjs:272:16,js-cjk-literal,app/arrival-catalog.mjs,272,,unknown,reviewable,,书中一段
-candidate:app/arrival-catalog.mjs:278:14,js-cjk-literal,app/arrival-catalog.mjs,278,,unknown,reviewable,,先知
+candidate:app/arrival-catalog.mjs:278:14,js-cjk-literal,app/arrival-catalog.mjs,278,,unknown,reviewable,,人类理解研究
+candidate:app/arrival-catalog.mjs:279:15,js-cjk-literal,app/arrival-catalog.mjs,279,,unknown,reviewable,,大卫·休谟（David Hume）
 candidate:app/arrival-catalog.mjs:285:16,js-cjk-literal,app/arrival-catalog.mjs,285,,unknown,reviewable,,书中一段
-candidate:app/arrival-catalog.mjs:291:14,js-cjk-literal,app/arrival-catalog.mjs,291,,unknown,reviewable,,鲁拜集
-candidate:app/arrival-catalog.mjs:292:15,js-cjk-literal,app/arrival-catalog.mjs,292,,unknown,reviewable,,Omar Khayyam · 英译 Edward FitzGerald · 英语译写
+candidate:app/arrival-catalog.mjs:291:14,js-cjk-literal,app/arrival-catalog.mjs,291,,unknown,reviewable,,爱比克泰德论说选与手册
+candidate:app/arrival-catalog.mjs:292:15,js-cjk-literal,app/arrival-catalog.mjs,292,,unknown,reviewable,,爱比克泰德（Epictetus）
 candidate:app/arrival-catalog.mjs:298:16,js-cjk-literal,app/arrival-catalog.mjs,298,,unknown,reviewable,,书中一段
-candidate:app/arrival-catalog.mjs:304:14,js-cjk-literal,app/arrival-catalog.mjs,304,,unknown,reviewable,,西科尔夫人历险记
+candidate:app/arrival-catalog.mjs:304:14,js-cjk-literal,app/arrival-catalog.mjs,304,,unknown,reviewable,,埃奎亚诺自传
 candidate:app/arrival-catalog.mjs:311:16,js-cjk-literal,app/arrival-catalog.mjs,311,,unknown,reviewable,,书中一段
-candidate:app/arrival-catalog.mjs:317:14,js-cjk-literal,app/arrival-catalog.mjs,317,,unknown,reviewable,,道德经
-candidate:app/arrival-catalog.mjs:318:15,js-cjk-literal,app/arrival-catalog.mjs,318,,unknown,reviewable,,Laozi · 英译 James Legge
+candidate:app/arrival-catalog.mjs:317:14,js-cjk-literal,app/arrival-catalog.mjs,317,,unknown,reviewable,,埃瑞璜
 candidate:app/arrival-catalog.mjs:324:16,js-cjk-literal,app/arrival-catalog.mjs,324,,unknown,reviewable,,书中一段
-candidate:app/arrival-catalog.mjs:330:14,js-cjk-literal,app/arrival-catalog.mjs,330,,unknown,reviewable,,时间机器
+candidate:app/arrival-catalog.mjs:330:14,js-cjk-literal,app/arrival-catalog.mjs,330,,unknown,reviewable,,蒙田随笔（第1卷）
+candidate:app/arrival-catalog.mjs:331:15,js-cjk-literal,app/arrival-catalog.mjs,331,,unknown,reviewable,,米歇尔·德·蒙田（Michel de Montaigne）
 candidate:app/arrival-catalog.mjs:337:16,js-cjk-literal,app/arrival-catalog.mjs,337,,unknown,reviewable,,书中一段
-candidate:app/arrival-catalog.mjs:343:14,js-cjk-literal,app/arrival-catalog.mjs,343,,unknown,reviewable,,底层的人们
-candidate:app/arrival-catalog.mjs:344:15,js-cjk-literal,app/arrival-catalog.mjs,344,,unknown,reviewable,,"Mariano Azuela · 英译 Enrique Munguía (E. Munguia, Jr.)"
+candidate:app/arrival-catalog.mjs:343:14,js-cjk-literal,app/arrival-catalog.mjs,343,,unknown,reviewable,,蒙田随笔（第2卷）
+candidate:app/arrival-catalog.mjs:344:15,js-cjk-literal,app/arrival-catalog.mjs,344,,unknown,reviewable,,米歇尔·德·蒙田（Michel de Montaigne）
 candidate:app/arrival-catalog.mjs:350:16,js-cjk-literal,app/arrival-catalog.mjs,350,,unknown,reviewable,,书中一段
-candidate:app/arrival-catalog.mjs:356:14,js-cjk-literal,app/arrival-catalog.mjs,356,,unknown,reviewable,,少年维特之烦恼
-candidate:app/arrival-catalog.mjs:357:15,js-cjk-literal,app/arrival-catalog.mjs,357,,unknown,reviewable,,Johann Wolfgang von Goethe · 英译 R. Dillon Boylan
+candidate:app/arrival-catalog.mjs:356:14,js-cjk-literal,app/arrival-catalog.mjs,356,,unknown,reviewable,,蒙田随笔（第3卷）
+candidate:app/arrival-catalog.mjs:357:15,js-cjk-literal,app/arrival-catalog.mjs,357,,unknown,reviewable,,米歇尔·德·蒙田（Michel de Montaigne）
 candidate:app/arrival-catalog.mjs:363:16,js-cjk-literal,app/arrival-catalog.mjs,363,,unknown,reviewable,,书中一段
-candidate:app/arrival-catalog.mjs:369:14,js-cjk-literal,app/arrival-catalog.mjs,369,,unknown,reviewable,,查拉图斯特拉如是说
-candidate:app/arrival-catalog.mjs:370:15,js-cjk-literal,app/arrival-catalog.mjs,370,,unknown,reviewable,,弗里德里希·尼采（Friedrich Nietzsche）
+candidate:app/arrival-catalog.mjs:369:14,js-cjk-literal,app/arrival-catalog.mjs,369,,unknown,reviewable,,伦理学（斯宾诺莎）
+candidate:app/arrival-catalog.mjs:370:15,js-cjk-literal,app/arrival-catalog.mjs,370,,unknown,reviewable,,斯宾诺莎（Benedict de Spinoza）
 candidate:app/arrival-catalog.mjs:376:16,js-cjk-literal,app/arrival-catalog.mjs,376,,unknown,reviewable,,书中一段
+candidate:app/arrival-catalog.mjs:382:14,js-cjk-literal,app/arrival-catalog.mjs,382,,unknown,reviewable,,平面国
+candidate:app/arrival-catalog.mjs:389:16,js-cjk-literal,app/arrival-catalog.mjs,389,,unknown,reviewable,,书中一段
+candidate:app/arrival-catalog.mjs:395:14,js-cjk-literal,app/arrival-catalog.mjs,395,,unknown,reviewable,,弗兰肯斯坦
+candidate:app/arrival-catalog.mjs:402:16,js-cjk-literal,app/arrival-catalog.mjs,402,,unknown,reviewable,,书中一段
+candidate:app/arrival-catalog.mjs:408:14,js-cjk-literal,app/arrival-catalog.mjs,408,,unknown,reviewable,,论道德的谱系
+candidate:app/arrival-catalog.mjs:409:15,js-cjk-literal,app/arrival-catalog.mjs,409,,unknown,reviewable,,弗里德里希·尼采（Friedrich Nietzsche）
+candidate:app/arrival-catalog.mjs:415:16,js-cjk-literal,app/arrival-catalog.mjs,415,,unknown,reviewable,,书中一段
+candidate:app/arrival-catalog.mjs:421:14,js-cjk-literal,app/arrival-catalog.mjs,421,,unknown,reviewable,,哈姆雷特
+candidate:app/arrival-catalog.mjs:422:15,js-cjk-literal,app/arrival-catalog.mjs,422,,unknown,reviewable,,威廉·莎士比亚（William Shakespeare）
+candidate:app/arrival-catalog.mjs:428:16,js-cjk-literal,app/arrival-catalog.mjs,428,,unknown,reviewable,,书中一段
+candidate:app/arrival-catalog.mjs:434:14,js-cjk-literal,app/arrival-catalog.mjs,434,,unknown,reviewable,,家庭与世界
+candidate:app/arrival-catalog.mjs:435:15,js-cjk-literal,app/arrival-catalog.mjs,435,,unknown,reviewable,,Rabindranath Tagore · 英译 Surendranath Tagore
+candidate:app/arrival-catalog.mjs:441:16,js-cjk-literal,app/arrival-catalog.mjs,441,,unknown,reviewable,,书中一段
+candidate:app/arrival-catalog.mjs:447:14,js-cjk-literal,app/arrival-catalog.mjs,447,,unknown,reviewable,,孟子（中文原典）
+candidate:app/arrival-catalog.mjs:448:15,js-cjk-literal,app/arrival-catalog.mjs,448,,unknown,reviewable,,孟轲及其后学（Mencius and his school）
+candidate:app/arrival-catalog.mjs:449:16,js-cjk-literal,app/arrival-catalog.mjs,449,,unknown,reviewable,,卷之一梁惠王上
+candidate:app/arrival-catalog.mjs:451:17,js-cjk-literal,app/arrival-catalog.mjs,451,,unknown,reviewable,,一
+candidate:app/arrival-catalog.mjs:454:16,js-cjk-literal,app/arrival-catalog.mjs,454,,unknown,reviewable,,书中一段
+candidate:app/arrival-catalog.mjs:460:14,js-cjk-literal,app/arrival-catalog.mjs,460,,unknown,reviewable,,尼各马可伦理学
+candidate:app/arrival-catalog.mjs:461:15,js-cjk-literal,app/arrival-catalog.mjs,461,,unknown,reviewable,,亚里士多德（Aristotle）
+candidate:app/arrival-catalog.mjs:467:16,js-cjk-literal,app/arrival-catalog.mjs,467,,unknown,reviewable,,书中一段
+candidate:app/arrival-catalog.mjs:473:14,js-cjk-literal,app/arrival-catalog.mjs,473,,unknown,reviewable,,地下室手记
+candidate:app/arrival-catalog.mjs:474:15,js-cjk-literal,app/arrival-catalog.mjs,474,,unknown,reviewable,,Fyodor Dostoyevsky · 英译 Constance Garnett
+candidate:app/arrival-catalog.mjs:480:16,js-cjk-literal,app/arrival-catalog.mjs,480,,unknown,reviewable,,书中一段
+candidate:app/arrival-catalog.mjs:486:14,js-cjk-literal,app/arrival-catalog.mjs,486,,unknown,reviewable,,新工具
+candidate:app/arrival-catalog.mjs:487:15,js-cjk-literal,app/arrival-catalog.mjs,487,,unknown,reviewable,,弗朗西斯·培根（Francis Bacon）
+candidate:app/arrival-catalog.mjs:493:16,js-cjk-literal,app/arrival-catalog.mjs,493,,unknown,reviewable,,书中一段
+candidate:app/arrival-catalog.mjs:499:14,js-cjk-literal,app/arrival-catalog.mjs,499,,unknown,reviewable,,奥德赛
+candidate:app/arrival-catalog.mjs:500:15,js-cjk-literal,app/arrival-catalog.mjs,500,,unknown,reviewable,,荷马（Homer，传统署名）
+candidate:app/arrival-catalog.mjs:506:16,js-cjk-literal,app/arrival-catalog.mjs,506,,unknown,reviewable,,书中一段
+candidate:app/arrival-catalog.mjs:512:14,js-cjk-literal,app/arrival-catalog.mjs,512,,unknown,reviewable,,论自由
+candidate:app/arrival-catalog.mjs:519:16,js-cjk-literal,app/arrival-catalog.mjs,519,,unknown,reviewable,,书中一段
+candidate:app/arrival-catalog.mjs:525:14,js-cjk-literal,app/arrival-catalog.mjs,525,,unknown,reviewable,,物种起源（第六版）
+candidate:app/arrival-catalog.mjs:526:15,js-cjk-literal,app/arrival-catalog.mjs,526,,unknown,reviewable,,查尔斯·达尔文（Charles Darwin）
+candidate:app/arrival-catalog.mjs:532:16,js-cjk-literal,app/arrival-catalog.mjs,532,,unknown,reviewable,,书中一段
+candidate:app/arrival-catalog.mjs:538:14,js-cjk-literal,app/arrival-catalog.mjs,538,,unknown,reviewable,,伯罗奔尼撒战争史
+candidate:app/arrival-catalog.mjs:539:15,js-cjk-literal,app/arrival-catalog.mjs,539,,unknown,reviewable,,修昔底德（Thucydides）
+candidate:app/arrival-catalog.mjs:545:16,js-cjk-literal,app/arrival-catalog.mjs,545,,unknown,reviewable,,书中一段
+candidate:app/arrival-catalog.mjs:551:14,js-cjk-literal,app/arrival-catalog.mjs,551,,unknown,reviewable,,傲慢与偏见
+candidate:app/arrival-catalog.mjs:558:16,js-cjk-literal,app/arrival-catalog.mjs,558,,unknown,reviewable,,书中一段
+candidate:app/arrival-catalog.mjs:564:14,js-cjk-literal,app/arrival-catalog.mjs,564,,unknown,reviewable,,君主论（附两篇短著）
+candidate:app/arrival-catalog.mjs:565:15,js-cjk-literal,app/arrival-catalog.mjs,565,,unknown,reviewable,,尼科洛·马基雅维利（Niccolò Machiavelli）
+candidate:app/arrival-catalog.mjs:571:16,js-cjk-literal,app/arrival-catalog.mjs,571,,unknown,reviewable,,书中一段
+candidate:app/arrival-catalog.mjs:577:14,js-cjk-literal,app/arrival-catalog.mjs,577,,unknown,reviewable,,先知
+candidate:app/arrival-catalog.mjs:584:16,js-cjk-literal,app/arrival-catalog.mjs,584,,unknown,reviewable,,书中一段
+candidate:app/arrival-catalog.mjs:590:14,js-cjk-literal,app/arrival-catalog.mjs,590,,unknown,reviewable,,理想国
+candidate:app/arrival-catalog.mjs:591:15,js-cjk-literal,app/arrival-catalog.mjs,591,,unknown,reviewable,,柏拉图（Plato）
+candidate:app/arrival-catalog.mjs:597:16,js-cjk-literal,app/arrival-catalog.mjs,597,,unknown,reviewable,,书中一段
+candidate:app/arrival-catalog.mjs:603:14,js-cjk-literal,app/arrival-catalog.mjs,603,,unknown,reviewable,,鲁拜集
+candidate:app/arrival-catalog.mjs:604:15,js-cjk-literal,app/arrival-catalog.mjs,604,,unknown,reviewable,,Omar Khayyam · 英译 Edward FitzGerald · 英语译写
+candidate:app/arrival-catalog.mjs:610:16,js-cjk-literal,app/arrival-catalog.mjs,610,,unknown,reviewable,,书中一段
+candidate:app/arrival-catalog.mjs:616:14,js-cjk-literal,app/arrival-catalog.mjs,616,,unknown,reviewable,,西科尔夫人历险记
+candidate:app/arrival-catalog.mjs:623:16,js-cjk-literal,app/arrival-catalog.mjs,623,,unknown,reviewable,,书中一段
+candidate:app/arrival-catalog.mjs:629:14,js-cjk-literal,app/arrival-catalog.mjs,629,,unknown,reviewable,,道德经
+candidate:app/arrival-catalog.mjs:630:15,js-cjk-literal,app/arrival-catalog.mjs,630,,unknown,reviewable,,Laozi · 英译 James Legge
+candidate:app/arrival-catalog.mjs:636:16,js-cjk-literal,app/arrival-catalog.mjs,636,,unknown,reviewable,,书中一段
+candidate:app/arrival-catalog.mjs:642:14,js-cjk-literal,app/arrival-catalog.mjs,642,,unknown,reviewable,,道德经（中文原典）
+candidate:app/arrival-catalog.mjs:643:15,js-cjk-literal,app/arrival-catalog.mjs,643,,unknown,reviewable,,老子（传统归属）
+candidate:app/arrival-catalog.mjs:644:16,js-cjk-literal,app/arrival-catalog.mjs,644,,unknown,reviewable,,第一章
+candidate:app/arrival-catalog.mjs:646:17,js-cjk-literal,app/arrival-catalog.mjs,646,,unknown,reviewable,,道可道，非常道。
+candidate:app/arrival-catalog.mjs:649:16,js-cjk-literal,app/arrival-catalog.mjs,649,,unknown,reviewable,,书中一段
+candidate:app/arrival-catalog.mjs:655:14,js-cjk-literal,app/arrival-catalog.mjs,655,,unknown,reviewable,,时间机器
+candidate:app/arrival-catalog.mjs:662:16,js-cjk-literal,app/arrival-catalog.mjs,662,,unknown,reviewable,,书中一段
+candidate:app/arrival-catalog.mjs:668:14,js-cjk-literal,app/arrival-catalog.mjs,668,,unknown,reviewable,,底层的人们
+candidate:app/arrival-catalog.mjs:669:15,js-cjk-literal,app/arrival-catalog.mjs,669,,unknown,reviewable,,"Mariano Azuela · 英译 Enrique Munguía (E. Munguia, Jr.)"
+candidate:app/arrival-catalog.mjs:675:16,js-cjk-literal,app/arrival-catalog.mjs,675,,unknown,reviewable,,书中一段
+candidate:app/arrival-catalog.mjs:681:14,js-cjk-literal,app/arrival-catalog.mjs,681,,unknown,reviewable,,国富论
+candidate:app/arrival-catalog.mjs:682:15,js-cjk-literal,app/arrival-catalog.mjs,682,,unknown,reviewable,,亚当·斯密（Adam Smith）
+candidate:app/arrival-catalog.mjs:688:16,js-cjk-literal,app/arrival-catalog.mjs,688,,unknown,reviewable,,书中一段
+candidate:app/arrival-catalog.mjs:694:14,js-cjk-literal,app/arrival-catalog.mjs,694,,unknown,reviewable,,人生的智慧（上册）
+candidate:app/arrival-catalog.mjs:695:15,js-cjk-literal,app/arrival-catalog.mjs,695,,unknown,reviewable,,阿图尔·叔本华（Arthur Schopenhauer）
+candidate:app/arrival-catalog.mjs:701:16,js-cjk-literal,app/arrival-catalog.mjs,701,,unknown,reviewable,,书中一段
+candidate:app/arrival-catalog.mjs:707:14,js-cjk-literal,app/arrival-catalog.mjs,707,,unknown,reviewable,,人生的智慧（下册：建议与格言）
+candidate:app/arrival-catalog.mjs:708:15,js-cjk-literal,app/arrival-catalog.mjs,708,,unknown,reviewable,,阿图尔·叔本华（Arthur Schopenhauer）
+candidate:app/arrival-catalog.mjs:714:16,js-cjk-literal,app/arrival-catalog.mjs,714,,unknown,reviewable,,书中一段
+candidate:app/arrival-catalog.mjs:720:14,js-cjk-literal,app/arrival-catalog.mjs,720,,unknown,reviewable,,作为意志和表象的世界（英译第1册）
+candidate:app/arrival-catalog.mjs:721:15,js-cjk-literal,app/arrival-catalog.mjs,721,,unknown,reviewable,,阿图尔·叔本华（Arthur Schopenhauer）
+candidate:app/arrival-catalog.mjs:727:16,js-cjk-literal,app/arrival-catalog.mjs,727,,unknown,reviewable,,书中一段
+candidate:app/arrival-catalog.mjs:733:14,js-cjk-literal,app/arrival-catalog.mjs,733,,unknown,reviewable,,作为意志和表象的世界（英译第2册）
+candidate:app/arrival-catalog.mjs:734:15,js-cjk-literal,app/arrival-catalog.mjs,734,,unknown,reviewable,,阿图尔·叔本华（Arthur Schopenhauer）
+candidate:app/arrival-catalog.mjs:740:16,js-cjk-literal,app/arrival-catalog.mjs,740,,unknown,reviewable,,书中一段
+candidate:app/arrival-catalog.mjs:746:14,js-cjk-literal,app/arrival-catalog.mjs,746,,unknown,reviewable,,作为意志和表象的世界（英译第3册）
+candidate:app/arrival-catalog.mjs:747:15,js-cjk-literal,app/arrival-catalog.mjs,747,,unknown,reviewable,,阿图尔·叔本华（Arthur Schopenhauer）
+candidate:app/arrival-catalog.mjs:753:16,js-cjk-literal,app/arrival-catalog.mjs,753,,unknown,reviewable,,书中一段
+candidate:app/arrival-catalog.mjs:759:14,js-cjk-literal,app/arrival-catalog.mjs,759,,unknown,reviewable,,少年维特之烦恼
+candidate:app/arrival-catalog.mjs:760:15,js-cjk-literal,app/arrival-catalog.mjs,760,,unknown,reviewable,,Johann Wolfgang von Goethe · 英译 R. Dillon Boylan
+candidate:app/arrival-catalog.mjs:766:16,js-cjk-literal,app/arrival-catalog.mjs,766,,unknown,reviewable,,书中一段
+candidate:app/arrival-catalog.mjs:772:14,js-cjk-literal,app/arrival-catalog.mjs,772,,unknown,reviewable,,查拉图斯特拉如是说
+candidate:app/arrival-catalog.mjs:773:15,js-cjk-literal,app/arrival-catalog.mjs,773,,unknown,reviewable,,弗里德里希·尼采（Friedrich Nietzsche）
+candidate:app/arrival-catalog.mjs:779:16,js-cjk-literal,app/arrival-catalog.mjs,779,,unknown,reviewable,,书中一段
+candidate:app/arrival-catalog.mjs:785:14,js-cjk-literal,app/arrival-catalog.mjs,785,,unknown,reviewable,,庄子（中文原典）
+candidate:app/arrival-catalog.mjs:786:15,js-cjk-literal,app/arrival-catalog.mjs,786,,unknown,reviewable,,庄周及其后学（传统归属）
+candidate:app/arrival-catalog.mjs:787:16,js-cjk-literal,app/arrival-catalog.mjs,787,,unknown,reviewable,,逍遙遊第一
+candidate:app/arrival-catalog.mjs:789:17,js-cjk-literal,app/arrival-catalog.mjs,789,,unknown,reviewable,,北冥有魚，其名為鯤。
+candidate:app/arrival-catalog.mjs:792:16,js-cjk-literal,app/arrival-catalog.mjs,792,,unknown,reviewable,,书中一段
 candidate:app/atmosphere-audio.mjs:34:39,js-cjk-literal,app/atmosphere-audio.mjs,34,,unknown,reviewable,,这个浏览器暂不支持氛围声音，可以继续使用阅读主题。
 candidate:app/atmosphere-audio.mjs:48:35,js-cjk-literal,app/atmosphere-audio.mjs,48,,unknown,reviewable,,环境声暂时无法载入，请重试。
 candidate:app/atmosphere-audio.mjs:62:77,js-cjk-literal,app/atmosphere-audio.mjs,62,,unknown,reviewable,,请选择一种阅读氛围。
@@ -3195,25 +3307,25 @@ candidate:app/reader-settings.mjs:57:132,js-attribute,app/reader-settings.mjs,57
 candidate:app/reader-tools.mjs:48:36,js-attribute,app/reader-tools.mjs,48,role,unknown,reviewable,,group
 candidate:app/reader-translation.js:16:115,js-attribute,app/reader-translation.js,16,role,unknown,reviewable,,status
 candidate:app/reader-translation.js:76:220,js-attribute,app/reader-translation.js,76,role,unknown,reviewable,,status
-candidate:app/reader.js:130:36,js-attribute,app/reader.js,130,aria-busy,unknown,reviewable,,true
-candidate:app/reader.js:209:282,js-attribute,app/reader.js,209,aria-describedby,unknown,protected,identifier,reading-instructions
-candidate:app/reader.js:263:188,js-attribute,app/reader.js,263,aria-expanded,unknown,reviewable,,false
-candidate:app/reader.js:348:395,js-attribute,app/reader.js,348,role,unknown,reviewable,,status
-candidate:app/reader.js:352:124,js-cjk-literal,app/reader.js,352,,unknown,reviewable,,记录格式不完整
-candidate:app/reader.js:385:139,js-attribute,app/reader.js,385,aria-live,unknown,reviewable,,polite
-candidate:app/reader.js:392:153,js-cjk-literal,app/reader.js,392,,unknown,reviewable,,服务尚未确认这次提交。
-candidate:app/reader.js:392:350,js-attribute,app/reader.js,392,role,unknown,reviewable,,status
-candidate:app/reader.js:393:85,js-attribute,app/reader.js,393,role,unknown,reviewable,,alert
-candidate:app/reader.js:518:129,js-attribute,app/reader.js,518,aria-busy,unknown,reviewable,,true
-candidate:app/reader.js:519:41,js-cjk-literal,app/reader.js,519,,unknown,reviewable,,请先重新读取个人记录，再导出。
-candidate:app/reader.js:519:122,js-cjk-literal,app/reader.js,519,,unknown,reviewable,,请先选择从哪里继续，再导出当前阅读记录。
-candidate:app/reader.js:519:311,js-cjk-literal,app/reader.js,519,,unknown,reviewable,,阅读位置正在确认，请确认后再导出。
-candidate:app/reader.js:519:669,js-attribute,app/reader.js,519,role,unknown,reviewable,,status
-candidate:app/reader.js:520:106,js-attribute,app/reader.js,520,role,unknown,reviewable,,alert
-candidate:app/reader.js:522:224,js-cjk-literal,app/reader.js,522,,unknown,reviewable,,记录包过大
-candidate:app/reader.js:522:648,js-attribute,app/reader.js,522,role,unknown,reviewable,,status
-candidate:app/reader.js:522:809,js-attribute,app/reader.js,522,role,unknown,reviewable,,alert
-candidate:app/reader.js:531:166,js-cjk-literal,app/reader.js,531,,unknown,reviewable,,较新的位置暂时无法对应原文，请继续读这里。
+candidate:app/reader.js:131:36,js-attribute,app/reader.js,131,aria-busy,unknown,reviewable,,true
+candidate:app/reader.js:211:282,js-attribute,app/reader.js,211,aria-describedby,unknown,protected,identifier,reading-instructions
+candidate:app/reader.js:265:188,js-attribute,app/reader.js,265,aria-expanded,unknown,reviewable,,false
+candidate:app/reader.js:350:395,js-attribute,app/reader.js,350,role,unknown,reviewable,,status
+candidate:app/reader.js:354:124,js-cjk-literal,app/reader.js,354,,unknown,reviewable,,记录格式不完整
+candidate:app/reader.js:387:139,js-attribute,app/reader.js,387,aria-live,unknown,reviewable,,polite
+candidate:app/reader.js:394:153,js-cjk-literal,app/reader.js,394,,unknown,reviewable,,服务尚未确认这次提交。
+candidate:app/reader.js:394:350,js-attribute,app/reader.js,394,role,unknown,reviewable,,status
+candidate:app/reader.js:395:85,js-attribute,app/reader.js,395,role,unknown,reviewable,,alert
+candidate:app/reader.js:520:129,js-attribute,app/reader.js,520,aria-busy,unknown,reviewable,,true
+candidate:app/reader.js:521:41,js-cjk-literal,app/reader.js,521,,unknown,reviewable,,请先重新读取个人记录，再导出。
+candidate:app/reader.js:521:122,js-cjk-literal,app/reader.js,521,,unknown,reviewable,,请先选择从哪里继续，再导出当前阅读记录。
+candidate:app/reader.js:521:311,js-cjk-literal,app/reader.js,521,,unknown,reviewable,,阅读位置正在确认，请确认后再导出。
+candidate:app/reader.js:521:669,js-attribute,app/reader.js,521,role,unknown,reviewable,,status
+candidate:app/reader.js:522:106,js-attribute,app/reader.js,522,role,unknown,reviewable,,alert
+candidate:app/reader.js:524:224,js-cjk-literal,app/reader.js,524,,unknown,reviewable,,记录包过大
+candidate:app/reader.js:524:648,js-attribute,app/reader.js,524,role,unknown,reviewable,,status
+candidate:app/reader.js:524:809,js-attribute,app/reader.js,524,role,unknown,reviewable,,alert
+candidate:app/reader.js:533:166,js-cjk-literal,app/reader.js,533,,unknown,reviewable,,较新的位置暂时无法对应原文，请继续读这里。
 candidate:app/reading-arrival.mjs:7:35,js-cjk-literal,app/reading-arrival.mjs,7,,unknown,reviewable,,爱丽丝梦游仙境
 candidate:app/reading-arrival.mjs:7:52,js-cjk-literal,app/reading-arrival.mjs,7,,unknown,reviewable,,刘易斯·卡罗尔
 candidate:app/reading-arrival.mjs:7:70,js-cjk-literal,app/reading-arrival.mjs,7,,unknown,reviewable,,第一章
@@ -4889,33 +5001,33 @@ candidate:server/scoped-agent-reading.mjs:94:172,js-cjk-literal,server/scoped-ag
 candidate:server/scoped-agent-reading.mjs:94:241,js-cjk-literal,server/scoped-agent-reading.mjs,94,,unknown,reviewable,,找不到当前授权段落
 candidate:server/scoped-agent-reading.mjs:102:238,js-cjk-literal,server/scoped-agent-reading.mjs,102,,unknown,reviewable,,阅读记录只记录投入和用户自己的标记，Agent 访问不计入阅读时间，时长不证明理解
 candidate:server/scoped-agent-reading.mjs:107:13,js-cjk-literal,server/scoped-agent-reading.mjs,107,,unknown,reviewable,,找不到这个读取操作
-candidate:server/server.mjs:86:168,js-cjk-literal,server/server.mjs,86,,unknown,reviewable,,阅读位置无法对应当前章节
-candidate:server/server.mjs:87:188,js-cjk-literal,server/server.mjs,87,,unknown,reviewable,,阅读偏好格式不正确
-candidate:server/server.mjs:88:81,js-cjk-literal,server/server.mjs,88,,unknown,reviewable,,阅读偏好格式不正确
-candidate:server/server.mjs:92:155,js-cjk-literal,server/server.mjs,92,,unknown,reviewable,,记录无法安全对应原文
-candidate:server/server.mjs:93:52,js-cjk-literal,server/server.mjs,93,,unknown,reviewable,,记录不属于这本书
-candidate:server/server.mjs:94:47,js-cjk-literal,server/server.mjs,94,,unknown,reviewable,,用户原话与其他内容需要分开
-candidate:server/server.mjs:96:109,js-cjk-literal,server/server.mjs,96,,unknown,reviewable,,记录的来源版本不兼容
-candidate:server/server.mjs:97:74,js-cjk-literal,server/server.mjs,97,,unknown,reviewable,,记录日期不正确
-candidate:server/server.mjs:104:80,js-cjk-literal,server/server.mjs,104,,unknown,reviewable,,需要JSON记录
-candidate:server/server.mjs:105:106,js-cjk-literal,server/server.mjs,105,,unknown,reviewable,,记录包过大
-candidate:server/server.mjs:105:219,js-cjk-literal,server/server.mjs,105,,unknown,reviewable,,记录包不是有效JSON
-candidate:server/server.mjs:114:40,js-cjk-literal,server/server.mjs,114,,unknown,reviewable,,当前地址未授权
-candidate:server/server.mjs:120:159,js-cjk-literal,server/server.mjs,120,,unknown,reviewable,,旧样书入口仅用于本机；请从自己的书房进入
-candidate:server/server.mjs:123:72,js-cjk-literal,server/server.mjs,123,,unknown,reviewable,,请求来源未授权
-candidate:server/server.mjs:130:246,js-cjk-literal,server/server.mjs,130,,unknown,reviewable,,找不到这条高亮
-candidate:server/server.mjs:132:195,js-cjk-literal,server/server.mjs,132,,unknown,reviewable,,找不到自己的这条记录
-candidate:server/server.mjs:135:175,js-cjk-literal,server/server.mjs,135,,unknown,reviewable,,记录ID冲突
-candidate:server/server.mjs:139:131,js-cjk-literal,server/server.mjs,139,,unknown,reviewable,,请选择这本书的个人记录包
-candidate:server/server.mjs:140:90,js-cjk-literal,server/server.mjs,140,,unknown,reviewable,,记录数量或格式不正确
-candidate:server/server.mjs:142:118,js-cjk-literal,server/server.mjs,142,,unknown,reviewable,,高亮格式不正确
-candidate:server/server.mjs:143:96,js-cjk-literal,server/server.mjs,143,,unknown,reviewable,,时段格式不正确
-candidate:server/server.mjs:144:331,js-cjk-literal,server/server.mjs,144,,unknown,reviewable,,时段格式不正确
-candidate:server/server.mjs:148:20,js-cjk-literal,server/server.mjs,148,,unknown,reviewable,,找不到这个操作
-candidate:server/server.mjs:150:61,js-cjk-literal,server/server.mjs,150,,unknown,reviewable,,不支持这个请求
-candidate:server/server.mjs:160:18,js-cjk-literal,server/server.mjs,160,,unknown,reviewable,,找不到这个页面
-candidate:server/server.mjs:161:60,js-cjk-literal,server/server.mjs,161,,unknown,reviewable,,服务暂时无法完成操作
-candidate:server/server.mjs:178:119,js-cjk-literal,server/server.mjs,178,,unknown,reviewable,,Leafhour 已启动：http://
+candidate:server/server.mjs:89:168,js-cjk-literal,server/server.mjs,89,,unknown,reviewable,,阅读位置无法对应当前章节
+candidate:server/server.mjs:90:188,js-cjk-literal,server/server.mjs,90,,unknown,reviewable,,阅读偏好格式不正确
+candidate:server/server.mjs:91:81,js-cjk-literal,server/server.mjs,91,,unknown,reviewable,,阅读偏好格式不正确
+candidate:server/server.mjs:95:155,js-cjk-literal,server/server.mjs,95,,unknown,reviewable,,记录无法安全对应原文
+candidate:server/server.mjs:96:52,js-cjk-literal,server/server.mjs,96,,unknown,reviewable,,记录不属于这本书
+candidate:server/server.mjs:97:47,js-cjk-literal,server/server.mjs,97,,unknown,reviewable,,用户原话与其他内容需要分开
+candidate:server/server.mjs:99:109,js-cjk-literal,server/server.mjs,99,,unknown,reviewable,,记录的来源版本不兼容
+candidate:server/server.mjs:100:74,js-cjk-literal,server/server.mjs,100,,unknown,reviewable,,记录日期不正确
+candidate:server/server.mjs:107:80,js-cjk-literal,server/server.mjs,107,,unknown,reviewable,,需要JSON记录
+candidate:server/server.mjs:108:106,js-cjk-literal,server/server.mjs,108,,unknown,reviewable,,记录包过大
+candidate:server/server.mjs:108:219,js-cjk-literal,server/server.mjs,108,,unknown,reviewable,,记录包不是有效JSON
+candidate:server/server.mjs:117:40,js-cjk-literal,server/server.mjs,117,,unknown,reviewable,,当前地址未授权
+candidate:server/server.mjs:123:159,js-cjk-literal,server/server.mjs,123,,unknown,reviewable,,旧样书入口仅用于本机；请从自己的书房进入
+candidate:server/server.mjs:126:72,js-cjk-literal,server/server.mjs,126,,unknown,reviewable,,请求来源未授权
+candidate:server/server.mjs:133:246,js-cjk-literal,server/server.mjs,133,,unknown,reviewable,,找不到这条高亮
+candidate:server/server.mjs:135:195,js-cjk-literal,server/server.mjs,135,,unknown,reviewable,,找不到自己的这条记录
+candidate:server/server.mjs:138:175,js-cjk-literal,server/server.mjs,138,,unknown,reviewable,,记录ID冲突
+candidate:server/server.mjs:142:131,js-cjk-literal,server/server.mjs,142,,unknown,reviewable,,请选择这本书的个人记录包
+candidate:server/server.mjs:143:90,js-cjk-literal,server/server.mjs,143,,unknown,reviewable,,记录数量或格式不正确
+candidate:server/server.mjs:145:118,js-cjk-literal,server/server.mjs,145,,unknown,reviewable,,高亮格式不正确
+candidate:server/server.mjs:146:96,js-cjk-literal,server/server.mjs,146,,unknown,reviewable,,时段格式不正确
+candidate:server/server.mjs:147:331,js-cjk-literal,server/server.mjs,147,,unknown,reviewable,,时段格式不正确
+candidate:server/server.mjs:151:20,js-cjk-literal,server/server.mjs,151,,unknown,reviewable,,找不到这个操作
+candidate:server/server.mjs:153:61,js-cjk-literal,server/server.mjs,153,,unknown,reviewable,,不支持这个请求
+candidate:server/server.mjs:163:18,js-cjk-literal,server/server.mjs,163,,unknown,reviewable,,找不到这个页面
+candidate:server/server.mjs:164:60,js-cjk-literal,server/server.mjs,164,,unknown,reviewable,,服务暂时无法完成操作
+candidate:server/server.mjs:181:119,js-cjk-literal,server/server.mjs,181,,unknown,reviewable,,Leafhour 已启动：http://
 candidate:server/source-revisions.mjs:9:141,js-cjk-literal,server/source-revisions.mjs,9,,unknown,reviewable,,原文版本已变化，请重新打开后校对
 candidate:server/source-revisions.mjs:10:134,js-cjk-literal,server/source-revisions.mjs,10,,unknown,reviewable,,校对操作或修改数量无效
 candidate:server/source-revisions.mjs:11:100,js-cjk-literal,server/source-revisions.mjs,11,,unknown,reviewable,,重提取与人工修改须分别生成修订

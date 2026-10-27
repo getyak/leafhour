@@ -56,8 +56,8 @@ test('actual default catalog exports including front matter and appendices resto
   const dir=await mkdtemp(path.join(tmpdir(),'marginalia-catalog-backup-'));t.after(()=>rm(dir,{recursive:true,force:true}));
   const source=await createLibraryService({dataDir:path.join(dir,'source')}),user={id:'owner'};
   const backup=await source.exportLibrary(user),target=await createLibraryService({dataDir:path.join(dir,'target')});
-  assert.equal(backup.books.length,32);assert.ok(backup.books.some(e=>e.book.chapters.some(c=>c.number===0)));
-  assert.equal((await target.restoreLibrary(user,backup)).restored,32);
+  assert.equal(backup.books.length,64);assert.ok(backup.books.some(e=>e.book.chapters.some(c=>c.number===0)));
+  assert.equal((await target.restoreLibrary(user,backup)).restored,64);
   assert.equal((await target.getBook(user,'gutenberg-alice')).readingStart.chapterId,'ch01');
 });
 

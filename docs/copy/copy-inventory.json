@@ -34,7 +34,7 @@
       },
       {
         "file": "app/arrival-catalog.mjs",
-        "sha256": "3c48f495379f0cd3449f8d46ea190630d6cfdfa0dcf2efa37f3d3f40c28a617a"
+        "sha256": "7678bd211dbfffdae00a489a085dd3bddfb56158c878d06c0ccb78813236ca33"
       },
       {
         "file": "app/arrival-excerpt.mjs",
@@ -394,7 +394,7 @@
       },
       {
         "file": "app/passage-layers.mjs",
-        "sha256": "1aa5e2cba9985f61457629702c17f2ea6608390c1517f6b1d21bfe1f9451681a"
+        "sha256": "2e7943cd3cdbb7248883439fe002b88b0c82f5d68608ceb0603950204ed87f49"
       },
       {
         "file": "app/pdf-ingestion.mjs",
@@ -546,7 +546,7 @@
       },
       {
         "file": "app/reader-page-inputs.mjs",
-        "sha256": "63b6dfe7c1fd4f850036a8201af187d3c2f6eaf92e505e9dec179d8d702d64c9"
+        "sha256": "008a413098dbe86240f027cfd58bc8fb42c7cd324f7370f3a0bdc2bc27f56268"
       },
       {
         "file": "app/reader-page-surface.mjs",
@@ -590,7 +590,7 @@
       },
       {
         "file": "app/reader.js",
-        "sha256": "da3aa447ffbb98053626a3cb355412b497fe08df8fb803d8afe139a09f3d5f1b"
+        "sha256": "7340c5a8ac4e5abfe7a2547d956f945d8b4a90d136d02ba643768f79a3d16e66"
       },
       {
         "file": "app/reading-arrival.mjs",
@@ -747,6 +747,10 @@
       {
         "file": "app/source-language.mjs",
         "sha256": "227a6678523ab8291adcccb827685f4306c0019acf56606a3d47806319aa75d9"
+      },
+      {
+        "file": "app/source-resources.mjs",
+        "sha256": "54d58533a20d4a48ef48156ec86e842cd8ea933c6140f081dde758b7eb84c804"
       },
       {
         "file": "app/source-review.html",
@@ -923,6 +927,10 @@
       {
         "file": "server/book-transfer.mjs",
         "sha256": "07e8f6623c1dd044a087a63c6b8089d4f2ba883b3fd1e6b9934e8b9f18ed41ac"
+      },
+      {
+        "file": "server/catalog-book-assets.mjs",
+        "sha256": "cff3ec2ff240f1f0b363d74c95c8615b818a1e8f395239112291062d6f9b2d6e"
       },
       {
         "file": "server/catalog-chapters.mjs",
@@ -1138,7 +1146,7 @@
       },
       {
         "file": "server/server.mjs",
-        "sha256": "6ae055efbeabaaa0e1e6e5dd4a76b8ebef3fa6fc82a4b9c3727338c622cf7dfe"
+        "sha256": "e84794caff329eaf861084778bc7c8dad3e22393136641bb61396c0f2222e135"
       },
       {
         "file": "server/source-revisions.mjs",
@@ -1146,7 +1154,7 @@
       },
       {
         "file": "server/structured-catalog.mjs",
-        "sha256": "b6c012cabd3346c9913a829d8db85e83021a198928dc4fff5c98a1f0d47700d8"
+        "sha256": "ec62c16844f121f2bd709dddad57407bb58616a45c93c97eb186792680b66378"
       },
       {
         "file": "server/translation-batch.mjs",
@@ -1161,7 +1169,7 @@
         "sha256": "531202f1814314b6c76bfef38b2ea66636425b1ca9b445db349e70ebb8bcd00e"
       }
     ],
-    "inputDigest": "e9290c5247d0e80a8418847171547377f400faa3710d9619989ed6404d71d147"
+    "inputDigest": "3edc3331a6564c39479e42a0497f085e39d9f61e9d82af4fee896bfc102e50b4"
   },
   "locales": [
     "en",
@@ -11944,7 +11952,7 @@
         },
         {
           "file": "app/reader.js",
-          "line": 136,
+          "line": 137,
           "column": 58
         }
       ],
@@ -16396,7 +16404,7 @@
         },
         {
           "file": "server/server.mjs",
-          "line": 101,
+          "line": 104,
           "column": 37
         }
       ],
@@ -16603,7 +16611,7 @@
         },
         {
           "file": "app/reader.js",
-          "line": 539,
+          "line": 541,
           "column": 121
         },
         {
@@ -16983,6 +16991,166 @@
           "column": 5
         },
         {
+          "file": "app/arrival-catalog.mjs",
+          "line": 382,
+          "column": 5
+        },
+        {
+          "file": "app/arrival-catalog.mjs",
+          "line": 395,
+          "column": 5
+        },
+        {
+          "file": "app/arrival-catalog.mjs",
+          "line": 408,
+          "column": 5
+        },
+        {
+          "file": "app/arrival-catalog.mjs",
+          "line": 421,
+          "column": 5
+        },
+        {
+          "file": "app/arrival-catalog.mjs",
+          "line": 434,
+          "column": 5
+        },
+        {
+          "file": "app/arrival-catalog.mjs",
+          "line": 447,
+          "column": 5
+        },
+        {
+          "file": "app/arrival-catalog.mjs",
+          "line": 460,
+          "column": 5
+        },
+        {
+          "file": "app/arrival-catalog.mjs",
+          "line": 473,
+          "column": 5
+        },
+        {
+          "file": "app/arrival-catalog.mjs",
+          "line": 486,
+          "column": 5
+        },
+        {
+          "file": "app/arrival-catalog.mjs",
+          "line": 499,
+          "column": 5
+        },
+        {
+          "file": "app/arrival-catalog.mjs",
+          "line": 512,
+          "column": 5
+        },
+        {
+          "file": "app/arrival-catalog.mjs",
+          "line": 525,
+          "column": 5
+        },
+        {
+          "file": "app/arrival-catalog.mjs",
+          "line": 538,
+          "column": 5
+        },
+        {
+          "file": "app/arrival-catalog.mjs",
+          "line": 551,
+          "column": 5
+        },
+        {
+          "file": "app/arrival-catalog.mjs",
+          "line": 564,
+          "column": 5
+        },
+        {
+          "file": "app/arrival-catalog.mjs",
+          "line": 577,
+          "column": 5
+        },
+        {
+          "file": "app/arrival-catalog.mjs",
+          "line": 590,
+          "column": 5
+        },
+        {
+          "file": "app/arrival-catalog.mjs",
+          "line": 603,
+          "column": 5
+        },
+        {
+          "file": "app/arrival-catalog.mjs",
+          "line": 616,
+          "column": 5
+        },
+        {
+          "file": "app/arrival-catalog.mjs",
+          "line": 629,
+          "column": 5
+        },
+        {
+          "file": "app/arrival-catalog.mjs",
+          "line": 642,
+          "column": 5
+        },
+        {
+          "file": "app/arrival-catalog.mjs",
+          "line": 655,
+          "column": 5
+        },
+        {
+          "file": "app/arrival-catalog.mjs",
+          "line": 668,
+          "column": 5
+        },
+        {
+          "file": "app/arrival-catalog.mjs",
+          "line": 681,
+          "column": 5
+        },
+        {
+          "file": "app/arrival-catalog.mjs",
+          "line": 694,
+          "column": 5
+        },
+        {
+          "file": "app/arrival-catalog.mjs",
+          "line": 707,
+          "column": 5
+        },
+        {
+          "file": "app/arrival-catalog.mjs",
+          "line": 720,
+          "column": 5
+        },
+        {
+          "file": "app/arrival-catalog.mjs",
+          "line": 733,
+          "column": 5
+        },
+        {
+          "file": "app/arrival-catalog.mjs",
+          "line": 746,
+          "column": 5
+        },
+        {
+          "file": "app/arrival-catalog.mjs",
+          "line": 759,
+          "column": 5
+        },
+        {
+          "file": "app/arrival-catalog.mjs",
+          "line": 772,
+          "column": 5
+        },
+        {
+          "file": "app/arrival-catalog.mjs",
+          "line": 785,
+          "column": 5
+        },
+        {
           "file": "app/chat-book-upload.mjs",
           "line": 35,
           "column": 346
@@ -17293,7 +17461,7 @@
         },
         {
           "file": "app/reader.js",
-          "line": 384,
+          "line": 386,
           "column": 297
         },
         {
@@ -17390,7 +17558,7 @@
         },
         {
           "file": "server/server.mjs",
-          "line": 155,
+          "line": 158,
           "column": 131
         }
       ],
@@ -23620,17 +23788,17 @@
         },
         {
           "file": "app/reader.js",
-          "line": 288,
+          "line": 290,
           "column": 327
         },
         {
           "file": "app/reader.js",
-          "line": 432,
+          "line": 434,
           "column": 373
         },
         {
           "file": "app/reader.js",
-          "line": 500,
+          "line": 502,
           "column": 379
         }
       ],
@@ -45300,12 +45468,12 @@
         },
         {
           "file": "app/reader.js",
-          "line": 386,
+          "line": 388,
           "column": 180
         },
         {
           "file": "app/reader.js",
-          "line": 391,
+          "line": 393,
           "column": 438
         },
         {
@@ -45372,7 +45540,7 @@
       "consumers": [
         {
           "file": "app/reader.js",
-          "line": 386,
+          "line": 388,
           "column": 204
         },
         {
@@ -46159,7 +46327,7 @@
       "consumers": [
         {
           "file": "app/reader.js",
-          "line": 391,
+          "line": 393,
           "column": 454
         }
       ],
@@ -48326,7 +48494,7 @@
         },
         {
           "file": "app/reader.js",
-          "line": 115,
+          "line": 116,
           "column": 104
         }
       ],
@@ -126023,8 +126191,8 @@
       "column": 14,
       "kind": "js-cjk-literal",
       "property": null,
-      "value": "一千零一夜选编",
-      "sha256": "239ff55bd249766f694562fe46afeed6a42fe9e2af0e27bb419471fea5a7f9ab",
+      "value": "论语（中文原典）",
+      "sha256": "1821f819721f92df1ee9330195b6e65189aef1875e0dd889776e19b9ca40ebe2",
       "protected": false,
       "protectionReason": null,
       "hints": [],
@@ -126043,8 +126211,48 @@
       "column": 15,
       "kind": "js-cjk-literal",
       "property": null,
-      "value": "Traditional stories · 选编 Andrew Lang · 英译者未逐一署名",
-      "sha256": "f3661e2b0016b32f542304a0199b518d2586c7d0374cd1d93fc756c3a505ecf7",
+      "value": "孔子及其弟子（Confucius and disciples）",
+      "sha256": "283c44e0293621b40ad4c9407bd78d86eac0cdf52582ff34ae1a577dac0f346d",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/arrival-catalog.mjs:33:16",
+      "file": "app/arrival-catalog.mjs",
+      "line": 33,
+      "column": 16,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "學而第一",
+      "sha256": "f5f75014ebe442af359a3e3c4e4ac5a3f6a0f812b7772a42355a9ef2544544a6",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/arrival-catalog.mjs:35:17",
+      "file": "app/arrival-catalog.mjs",
+      "line": 35,
+      "column": 17,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "1. 子曰：「學而時習之，不亦說乎？",
+      "sha256": "5e3e5b6450c2b5a5a1505428fff6e8b7b345bbe1fb002a44ec8f5e5332ffddee",
       "protected": false,
       "protectionReason": null,
       "hints": [],
@@ -126083,8 +126291,28 @@
       "column": 14,
       "kind": "js-cjk-literal",
       "property": null,
-      "value": "一间自己的房间",
-      "sha256": "4c573e789d11fefe53f75668f541f7396dae8cd42349eb57997b32be2dfc7350",
+      "value": "一千零一夜选编",
+      "sha256": "239ff55bd249766f694562fe46afeed6a42fe9e2af0e27bb419471fea5a7f9ab",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/arrival-catalog.mjs:45:15",
+      "file": "app/arrival-catalog.mjs",
+      "line": 45,
+      "column": 15,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "Traditional stories · 选编 Andrew Lang · 英译者未逐一署名",
+      "sha256": "f3661e2b0016b32f542304a0199b518d2586c7d0374cd1d93fc756c3a505ecf7",
       "protected": false,
       "protectionReason": null,
       "hints": [],
@@ -126123,8 +126351,68 @@
       "column": 14,
       "kind": "js-cjk-literal",
       "property": null,
-      "value": "觉醒及短篇选",
-      "sha256": "ccbc119544ebf1e4223d9cf1583fb0133c6c6ee6fbd3ef1ad804594a48d6ff55",
+      "value": "孙子兵法（中文原典）",
+      "sha256": "d0b7f4328f14d815d8f4c05d0683c43fd5708afb6f0db3fcd8c951f073f4adb7",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/arrival-catalog.mjs:58:15",
+      "file": "app/arrival-catalog.mjs",
+      "line": 58,
+      "column": 15,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "孙武（传统归属）",
+      "sha256": "14ce0cd2a6dbd1a9406fe61a46090063548ca0e5e17797771580b50ef7eb76d9",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/arrival-catalog.mjs:59:16",
+      "file": "app/arrival-catalog.mjs",
+      "line": 59,
+      "column": 16,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "始計第一",
+      "sha256": "16f3ba654dc7fb1105e0e18cffbe12ed1c4c6dc3149ff48da2e31e41c120449a",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/arrival-catalog.mjs:61:17",
+      "file": "app/arrival-catalog.mjs",
+      "line": 61,
+      "column": 17,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "孫子曰：兵者，國之大事，死生之地，存亡之道，不可不察也。",
+      "sha256": "b938b5f3b376f3d472c15eaaea60cd5d91e43e20d7f37329dddd71c00f7c5bcb",
       "protected": false,
       "protectionReason": null,
       "hints": [],
@@ -126163,28 +126451,8 @@
       "column": 14,
       "kind": "js-cjk-literal",
       "property": null,
-      "value": "超越善恶（善恶的彼岸）",
-      "sha256": "ae9c5120efa2c52a0885d47762a96ceed31a637f277bea1f7ff2a79d4a023cde",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/arrival-catalog.mjs:71:15",
-      "file": "app/arrival-catalog.mjs",
-      "line": 71,
-      "column": 15,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "弗里德里希·尼采（Friedrich Nietzsche）",
-      "sha256": "273129383a016c04b752e5216722e3106a5356f782cdf4604ec4d86337c5e5dc",
+      "value": "一间自己的房间",
+      "sha256": "4c573e789d11fefe53f75668f541f7396dae8cd42349eb57997b32be2dfc7350",
       "protected": false,
       "protectionReason": null,
       "hints": [],
@@ -126223,28 +126491,8 @@
       "column": 14,
       "kind": "js-cjk-literal",
       "property": null,
-      "value": "薄伽梵歌",
-      "sha256": "90c76b5632da9f1380fbbee4b2b1088ce14789d348b93c4a276a4301321f44b9",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/arrival-catalog.mjs:84:15",
-      "file": "app/arrival-catalog.mjs",
-      "line": 84,
-      "column": 15,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "Vyasa (traditional attribution) · 英译 Edwin Arnold · 英语诗译",
-      "sha256": "064d0d8bb7929f322fd25facf515a4a6597aea56489ee4a8a687ce106cc586d7",
+      "value": "觉醒及短篇选",
+      "sha256": "ccbc119544ebf1e4223d9cf1583fb0133c6c6ee6fbd3ef1ad804594a48d6ff55",
       "protected": false,
       "protectionReason": null,
       "hints": [],
@@ -126283,8 +126531,28 @@
       "column": 14,
       "kind": "js-cjk-literal",
       "property": null,
-      "value": "茶之书",
-      "sha256": "333c60d98dfc45f2e2f9361dbb2a046acff7f3881b5d0a95363cd07312042717",
+      "value": "超越善恶（善恶的彼岸）",
+      "sha256": "ae9c5120efa2c52a0885d47762a96ceed31a637f277bea1f7ff2a79d4a023cde",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/arrival-catalog.mjs:97:15",
+      "file": "app/arrival-catalog.mjs",
+      "line": 97,
+      "column": 15,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "弗里德里希·尼采（Friedrich Nietzsche）",
+      "sha256": "273129383a016c04b752e5216722e3106a5356f782cdf4604ec4d86337c5e5dc",
       "protected": false,
       "protectionReason": null,
       "hints": [],
@@ -126323,8 +126591,8 @@
       "column": 14,
       "kind": "js-cjk-literal",
       "property": null,
-      "value": "巴西短篇小说选",
-      "sha256": "17e2a512e1369277ffa8a48416c2e4089dcb143e0a8b6989c7f72d635ee39865",
+      "value": "薄伽梵歌",
+      "sha256": "90c76b5632da9f1380fbbee4b2b1088ce14789d348b93c4a276a4301321f44b9",
       "protected": false,
       "protectionReason": null,
       "hints": [],
@@ -126343,8 +126611,8 @@
       "column": 15,
       "kind": "js-cjk-literal",
       "property": null,
-      "value": "Machado de Assis; Medeiros e Albuquerque; Henrique Coelho Netto; Carmen Dolores · 英译 Isaac Goldberg",
-      "sha256": "6a8d54ac9ec567ca4b7968c1cf32900f7615e86c21ae62a9981f3e03c7c61ab5",
+      "value": "Vyasa (traditional attribution) · 英译 Edwin Arnold · 英语诗译",
+      "sha256": "064d0d8bb7929f322fd25facf515a4a6597aea56489ee4a8a687ce106cc586d7",
       "protected": false,
       "protectionReason": null,
       "hints": [],
@@ -126383,28 +126651,8 @@
       "column": 14,
       "kind": "js-cjk-literal",
       "property": null,
-      "value": "老实人",
-      "sha256": "fcb614f066640986f59ffb0940966bf3d0855cbd3742d3d28dacd5b054eaa92f",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/arrival-catalog.mjs:123:15",
-      "file": "app/arrival-catalog.mjs",
-      "line": 123,
-      "column": 15,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "Voltaire · 英译 The Modern Library · 1918 edition; translator unnamed",
-      "sha256": "0bc6c86ee171d771570bb5b1871915ddd8d47c00493630cf0540976f0a9fa282",
+      "value": "茶之书",
+      "sha256": "333c60d98dfc45f2e2f9361dbb2a046acff7f3881b5d0a95363cd07312042717",
       "protected": false,
       "protectionReason": null,
       "hints": [],
@@ -126443,8 +126691,8 @@
       "column": 14,
       "kind": "js-cjk-literal",
       "property": null,
-      "value": "法句经",
-      "sha256": "359421ae229c4626dbf234b8bd8e5a868b9e8744901f67c4a278a0f45ae2c321",
+      "value": "巴西短篇小说选",
+      "sha256": "17e2a512e1369277ffa8a48416c2e4089dcb143e0a8b6989c7f72d635ee39865",
       "protected": false,
       "protectionReason": null,
       "hints": [],
@@ -126463,8 +126711,8 @@
       "column": 15,
       "kind": "js-cjk-literal",
       "property": null,
-      "value": "Buddhist canon · 英译 F. Max Müller",
-      "sha256": "d66ad32e28562c56c0b863984d0d310f45745954456dfcc52273f11235dbc017",
+      "value": "Machado de Assis; Medeiros e Albuquerque; Henrique Coelho Netto; Carmen Dolores · 英译 Isaac Goldberg",
+      "sha256": "6a8d54ac9ec567ca4b7968c1cf32900f7615e86c21ae62a9981f3e03c7c61ab5",
       "protected": false,
       "protectionReason": null,
       "hints": [],
@@ -126503,8 +126751,8 @@
       "column": 14,
       "kind": "js-cjk-literal",
       "property": null,
-      "value": "堂吉诃德",
-      "sha256": "a03a94d5e9af321229657f7f95e42e0b426515ad6f5bd3f022342ebd1185aef8",
+      "value": "老实人",
+      "sha256": "fcb614f066640986f59ffb0940966bf3d0855cbd3742d3d28dacd5b054eaa92f",
       "protected": false,
       "protectionReason": null,
       "hints": [],
@@ -126523,8 +126771,8 @@
       "column": 15,
       "kind": "js-cjk-literal",
       "property": null,
-      "value": "Miguel de Cervantes · 英译 John Ormsby",
-      "sha256": "f7860a2419f2bc23d7da3d8dfaa6935424912507e16414e49532dd3d775d9652",
+      "value": "Voltaire · 英译 The Modern Library · 1918 edition; translator unnamed",
+      "sha256": "0bc6c86ee171d771570bb5b1871915ddd8d47c00493630cf0540976f0a9fa282",
       "protected": false,
       "protectionReason": null,
       "hints": [],
@@ -126563,8 +126811,28 @@
       "column": 14,
       "kind": "js-cjk-literal",
       "property": null,
-      "value": "弗雷德里克·道格拉斯自传",
-      "sha256": "51b011932ab0477308ea451f150e53c472ae968e99006b0af22fb3a3a1d81a4f",
+      "value": "忏悔录（奥古斯丁）",
+      "sha256": "70db6ecd8e00258f2b77742ec75445658a40cd31adbde4bccd802ddf7455d73a",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/arrival-catalog.mjs:162:15",
+      "file": "app/arrival-catalog.mjs",
+      "line": 162,
+      "column": 15,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "奥古斯丁（Augustine of Hippo）",
+      "sha256": "50c355b70b3f1c32e4eb29c97e75388350477ce37062645638f8022005c23734",
       "protected": false,
       "protectionReason": null,
       "hints": [],
@@ -126603,8 +126871,28 @@
       "column": 14,
       "kind": "js-cjk-literal",
       "property": null,
-      "value": "埃奎亚诺自传",
-      "sha256": "a5e6cde7330174642e1af9d399fcd2270763ef5d554b1e5b43628bcbd9ecb0d0",
+      "value": "罪与罚",
+      "sha256": "c62d20a299d3964e48a7b4d46d2c16d2c4cc2a073cf67f7ca692cc8208a8d6d4",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/arrival-catalog.mjs:175:15",
+      "file": "app/arrival-catalog.mjs",
+      "line": 175,
+      "column": 15,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "陀思妥耶夫斯基（Fyodor Dostoyevsky）",
+      "sha256": "20177587e075fbdd2a87c35e55f3dfeb57c67036cfb68c9c790a270663ac3bf9",
       "protected": false,
       "protectionReason": null,
       "hints": [],
@@ -126643,8 +126931,28 @@
       "column": 14,
       "kind": "js-cjk-literal",
       "property": null,
-      "value": "埃瑞璜",
-      "sha256": "5a54d37df9481c01563a4ae2e7b5f1de25506038509608b689857da2a544c8db",
+      "value": "法句经",
+      "sha256": "359421ae229c4626dbf234b8bd8e5a868b9e8744901f67c4a278a0f45ae2c321",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/arrival-catalog.mjs:188:15",
+      "file": "app/arrival-catalog.mjs",
+      "line": 188,
+      "column": 15,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "Buddhist canon · 英译 F. Max Müller",
+      "sha256": "d66ad32e28562c56c0b863984d0d310f45745954456dfcc52273f11235dbc017",
       "protected": false,
       "protectionReason": null,
       "hints": [],
@@ -126683,8 +126991,28 @@
       "column": 14,
       "kind": "js-cjk-literal",
       "property": null,
-      "value": "平面国",
-      "sha256": "e631a98d2a82c9707968bfa811765f69ceeef3116aac8b0c2516a643f790eb8b",
+      "value": "谈谈方法（方法谈）",
+      "sha256": "3cafe8afe40905348dea10fcbc0e603979fd79b930980a9058c20a617ae7de8b",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/arrival-catalog.mjs:201:15",
+      "file": "app/arrival-catalog.mjs",
+      "line": 201,
+      "column": 15,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "勒内·笛卡尔（René Descartes）",
+      "sha256": "c94a58a22f0cdc5b4dd192b60c01621f0a312e24825d87a30ff396577580d66b",
       "protected": false,
       "protectionReason": null,
       "hints": [],
@@ -126723,8 +127051,28 @@
       "column": 14,
       "kind": "js-cjk-literal",
       "property": null,
-      "value": "弗兰肯斯坦",
-      "sha256": "a45da8e1001e5268477558b50db96cd35c7c3b2c39dab25b7c43aaf60faf656a",
+      "value": "堂吉诃德",
+      "sha256": "a03a94d5e9af321229657f7f95e42e0b426515ad6f5bd3f022342ebd1185aef8",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/arrival-catalog.mjs:214:15",
+      "file": "app/arrival-catalog.mjs",
+      "line": 214,
+      "column": 15,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "Miguel de Cervantes · 英译 John Ormsby",
+      "sha256": "f7860a2419f2bc23d7da3d8dfaa6935424912507e16414e49532dd3d775d9652",
       "protected": false,
       "protectionReason": null,
       "hints": [],
@@ -126763,28 +127111,8 @@
       "column": 14,
       "kind": "js-cjk-literal",
       "property": null,
-      "value": "家庭与世界",
-      "sha256": "140ea956e728a4d3c5a569dedb545ead13c179714ea29f123352f36581b03c4f",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/arrival-catalog.mjs:227:15",
-      "file": "app/arrival-catalog.mjs",
-      "line": 227,
-      "column": 15,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "Rabindranath Tagore · 英译 Surendranath Tagore",
-      "sha256": "435027d92b62ba2ea3f994b4858ffd274a77b3353f5dfbf2bd444e4de72f73a5",
+      "value": "弗雷德里克·道格拉斯自传",
+      "sha256": "51b011932ab0477308ea451f150e53c472ae968e99006b0af22fb3a3a1d81a4f",
       "protected": false,
       "protectionReason": null,
       "hints": [],
@@ -126823,8 +127151,8 @@
       "column": 14,
       "kind": "js-cjk-literal",
       "property": null,
-      "value": "地下室手记",
-      "sha256": "3704aa27ee5914d87511038afeb5fec57ccf0b0c71447c46f6ff72b83c085026",
+      "value": "红楼梦（第1册：1—40回）",
+      "sha256": "06254426376fdbadab51c4c845c6c5dc85bc2b2c67d7bdb36a74e2fddfbbb8da",
       "protected": false,
       "protectionReason": null,
       "hints": [],
@@ -126843,10 +127171,50 @@
       "column": 15,
       "kind": "js-cjk-literal",
       "property": null,
-      "value": "Fyodor Dostoyevsky · 英译 Constance Garnett",
-      "sha256": "ba64f71615c3934d916771d52e0df42724b938bbc1f215c66c4aa7306386b6f3",
+      "value": "曹雪芹（Cao Xueqin）",
+      "sha256": "e344d25e776d011c28783aa9011cf06ce563fb2c948e02f51d9f1aec90d84c25",
       "protected": false,
       "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/arrival-catalog.mjs:241:16",
+      "file": "app/arrival-catalog.mjs",
+      "line": 241,
+      "column": 16,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "第一回 甄士隱夢幻識通靈 賈雨村風塵怀閨秀",
+      "sha256": "19c31784295fdabf2e8ab57127fd35229eb985b27f1380d1380df5e6dba8c396",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/arrival-catalog.mjs:243:17",
+      "file": "app/arrival-catalog.mjs",
+      "line": 243,
+      "column": 17,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "此開卷第一回也．作者自云：因曾歷過一番夢幻之后，故將真事隱去， 而借\"通靈\"之說，撰此《石頭記》一書也．故曰\"甄士隱\"云云．但書中所記 何事何人？",
+      "sha256": "cfaf657aedb54fe35dbb4aa76048017c57e2332bd23c65bcec3a501e269f68a6",
+      "protected": true,
+      "protectionReason": "quotation",
       "hints": [],
       "review": {
         "state": "unknown",
@@ -126883,10 +127251,70 @@
       "column": 14,
       "kind": "js-cjk-literal",
       "property": null,
-      "value": "论自由",
-      "sha256": "73b4daabab532d79db2f2f9b9809d3dcbacbbde29377242b839377ce1e0299a2",
+      "value": "红楼梦（第2册：41—80回）",
+      "sha256": "8c3effb454e91d9b47d5f0885a44ea9fe27e8e6d21df4071d224837631aa87d8",
       "protected": false,
       "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/arrival-catalog.mjs:253:15",
+      "file": "app/arrival-catalog.mjs",
+      "line": 253,
+      "column": 15,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "曹雪芹（Cao Xueqin）",
+      "sha256": "e344d25e776d011c28783aa9011cf06ce563fb2c948e02f51d9f1aec90d84c25",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/arrival-catalog.mjs:254:16",
+      "file": "app/arrival-catalog.mjs",
+      "line": 254,
+      "column": 16,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "第四十一回 櫳翠庵茶品梅花雪 怡紅院劫遇母蝗虫",
+      "sha256": "9d7004274491cef2f9aaf3124920b7c7b14fefbcb6eb26c616dcde7d38d4b2c9",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/arrival-catalog.mjs:256:17",
+      "file": "app/arrival-catalog.mjs",
+      "line": 256,
+      "column": 17,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "話說劉姥姥兩只手比著說道：“花儿落了結個大倭瓜． \"眾人 听了哄堂大笑起來．于是吃過門杯，因又逗趣笑道：“實告 訴說罷，我的手腳子粗笨， 又喝了酒，仔細失手打了這瓷杯． 有木頭的杯取個子來，我便失了手，掉了地下也無礙。”",
+      "sha256": "f90812c66b60b46f57388ee05966262fec119bcc9a18a46942fc873e0c249c14",
+      "protected": true,
+      "protectionReason": "quotation",
       "hints": [],
       "review": {
         "state": "unknown",
@@ -126923,10 +127351,70 @@
       "column": 14,
       "kind": "js-cjk-literal",
       "property": null,
-      "value": "傲慢与偏见",
-      "sha256": "835f82f3ca2701340c2f5f97a5549745ab3459cf2d7b315e3477006cc6368053",
+      "value": "红楼梦（第3册：81—120回）",
+      "sha256": "1bed04e944b07495bb4226378d7bfdb1789f6ceb7838275908e3c089c061a246",
       "protected": false,
       "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/arrival-catalog.mjs:266:15",
+      "file": "app/arrival-catalog.mjs",
+      "line": 266,
+      "column": 15,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "后四十回续作者未详（原卷题署曹雪芹）",
+      "sha256": "0691e7a3533fdb0c136f928d8083e2db2cdce2bcf0e33194dc4999dbabd1f049",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/arrival-catalog.mjs:267:16",
+      "file": "app/arrival-catalog.mjs",
+      "line": 267,
+      "column": 16,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "第八十一回 占旺相四美釣游魚 奉嚴詞兩番入家塾",
+      "sha256": "19650e7d0cffc04f4478d8f41875913204465317b76d1c62c510f032fd764ecc",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/arrival-catalog.mjs:269:17",
+      "file": "app/arrival-catalog.mjs",
+      "line": 269,
+      "column": 17,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "且說迎春歸去之后，邢夫人象沒有這事，倒是王夫人撫養了一場，卻甚實傷 感，在房中自己歎息了一回．只見寶玉走來請安，看見王夫人臉上似有淚痕，也 不敢坐，只在旁邊站著．王夫人叫他坐下，寶玉才捱上炕來，就在王夫人身旁坐 了．王夫人見他呆呆的瞅著，似有欲言不言的光景，便道：“你又為什么這樣呆 呆的？\"",
+      "sha256": "5e36365f59aed86f4212329d221002493ca21f4e172c03b75b50a342b60630cb",
+      "protected": true,
+      "protectionReason": "quotation",
       "hints": [],
       "review": {
         "state": "unknown",
@@ -126963,8 +127451,28 @@
       "column": 14,
       "kind": "js-cjk-literal",
       "property": null,
-      "value": "先知",
-      "sha256": "3a5307749fe930ca3ad6d04176618c861be4d0408258b58a8c59bb5cf1fedaea",
+      "value": "人类理解研究",
+      "sha256": "080524ca5476fa668a634f4707c80d5c887f175a52b0e2b75d96f685c9ccbb6c",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/arrival-catalog.mjs:279:15",
+      "file": "app/arrival-catalog.mjs",
+      "line": 279,
+      "column": 15,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "大卫·休谟（David Hume）",
+      "sha256": "1347942539dffe997d7df6128145097db57b55ae1f0d77797af361d2423075b6",
       "protected": false,
       "protectionReason": null,
       "hints": [],
@@ -127003,8 +127511,8 @@
       "column": 14,
       "kind": "js-cjk-literal",
       "property": null,
-      "value": "鲁拜集",
-      "sha256": "2fe3eaf1d057d8c812508cb3ebae4030e90ecee69f831f1acd31f1c29d477aff",
+      "value": "爱比克泰德论说选与手册",
+      "sha256": "dad1b6ca838ad23d95d71338f56602fca66de69c026569d69ac764b3f34236be",
       "protected": false,
       "protectionReason": null,
       "hints": [],
@@ -127023,8 +127531,8 @@
       "column": 15,
       "kind": "js-cjk-literal",
       "property": null,
-      "value": "Omar Khayyam · 英译 Edward FitzGerald · 英语译写",
-      "sha256": "1f4ad2aa75ae272d479f8ad11926536fd2b230789e73af59fe8754a249129a82",
+      "value": "爱比克泰德（Epictetus）",
+      "sha256": "e0667a13a361c97fa05af922eef4250743fc4b51a2e9dec5437977d5dc134be0",
       "protected": false,
       "protectionReason": null,
       "hints": [],
@@ -127063,8 +127571,8 @@
       "column": 14,
       "kind": "js-cjk-literal",
       "property": null,
-      "value": "西科尔夫人历险记",
-      "sha256": "baada42e34c15d94f706bdf84fd8934bf426b37a6535f9d315322bdfad4efbbb",
+      "value": "埃奎亚诺自传",
+      "sha256": "a5e6cde7330174642e1af9d399fcd2270763ef5d554b1e5b43628bcbd9ecb0d0",
       "protected": false,
       "protectionReason": null,
       "hints": [],
@@ -127103,28 +127611,8 @@
       "column": 14,
       "kind": "js-cjk-literal",
       "property": null,
-      "value": "道德经",
-      "sha256": "559c550ded2a77863498cfadd9c95ffc61cd48e347e8c3a88031343dc0a7ee69",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/arrival-catalog.mjs:318:15",
-      "file": "app/arrival-catalog.mjs",
-      "line": 318,
-      "column": 15,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "Laozi · 英译 James Legge",
-      "sha256": "2e9558f2e82afe55576c12f2d69f8f057a2093218d3cd43cbf60bb1186f0a5d2",
+      "value": "埃瑞璜",
+      "sha256": "5a54d37df9481c01563a4ae2e7b5f1de25506038509608b689857da2a544c8db",
       "protected": false,
       "protectionReason": null,
       "hints": [],
@@ -127163,8 +127651,28 @@
       "column": 14,
       "kind": "js-cjk-literal",
       "property": null,
-      "value": "时间机器",
-      "sha256": "e20b3f2437f0d5761a7d2d03b87e65628e9e4d1d0aad4bfd828b28b58506a0d7",
+      "value": "蒙田随笔（第1卷）",
+      "sha256": "d3d6e23bb93faa5ab59ef624acabd07502ebffdd5e92d1a3aa7799f30de55707",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/arrival-catalog.mjs:331:15",
+      "file": "app/arrival-catalog.mjs",
+      "line": 331,
+      "column": 15,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "米歇尔·德·蒙田（Michel de Montaigne）",
+      "sha256": "714080623e8c2276265e584e44b8977254dd7baa2dd93ed9a254e09df723fe94",
       "protected": false,
       "protectionReason": null,
       "hints": [],
@@ -127203,8 +127711,8 @@
       "column": 14,
       "kind": "js-cjk-literal",
       "property": null,
-      "value": "底层的人们",
-      "sha256": "b697f8ecac694da7e323c2f7ca2f3b595c49d42c6ae61e86d28bec4e7de0b991",
+      "value": "蒙田随笔（第2卷）",
+      "sha256": "e71913fab56ea1b3584f150d79ced6ae0622c63e86de75049eb0c33f269af31b",
       "protected": false,
       "protectionReason": null,
       "hints": [],
@@ -127223,8 +127731,8 @@
       "column": 15,
       "kind": "js-cjk-literal",
       "property": null,
-      "value": "Mariano Azuela · 英译 Enrique Munguía (E. Munguia, Jr.)",
-      "sha256": "bca1b9d6e6252a94cadba28e25edf513aa9284a42c96d3e7bd920b28d985a1e0",
+      "value": "米歇尔·德·蒙田（Michel de Montaigne）",
+      "sha256": "714080623e8c2276265e584e44b8977254dd7baa2dd93ed9a254e09df723fe94",
       "protected": false,
       "protectionReason": null,
       "hints": [],
@@ -127263,8 +127771,8 @@
       "column": 14,
       "kind": "js-cjk-literal",
       "property": null,
-      "value": "少年维特之烦恼",
-      "sha256": "61d866ba61f79718d85e50fe9d18040f16c6c58b1e5df3937c4e90f5e879b56b",
+      "value": "蒙田随笔（第3卷）",
+      "sha256": "6ea9594fb4cb4d4b31e7ec660042abba0b5cf0bf3c6aadb894eb6e657cd63537",
       "protected": false,
       "protectionReason": null,
       "hints": [],
@@ -127283,8 +127791,8 @@
       "column": 15,
       "kind": "js-cjk-literal",
       "property": null,
-      "value": "Johann Wolfgang von Goethe · 英译 R. Dillon Boylan",
-      "sha256": "597d6e17daa2812ed330de7aa5404cc92001b31f17d0849e9daef86bd974b4d4",
+      "value": "米歇尔·德·蒙田（Michel de Montaigne）",
+      "sha256": "714080623e8c2276265e584e44b8977254dd7baa2dd93ed9a254e09df723fe94",
       "protected": false,
       "protectionReason": null,
       "hints": [],
@@ -127323,8 +127831,8 @@
       "column": 14,
       "kind": "js-cjk-literal",
       "property": null,
-      "value": "查拉图斯特拉如是说",
-      "sha256": "990ca521c26c24908b5e7c0042fbba37a9ddd3af6761b523164d322e4433017b",
+      "value": "伦理学（斯宾诺莎）",
+      "sha256": "ce0cea0e94d6230a4f750cfa7ea97879ba99b4c7eb5ce88510cead59af58cf3d",
       "protected": false,
       "protectionReason": null,
       "hints": [],
@@ -127343,8 +127851,8 @@
       "column": 15,
       "kind": "js-cjk-literal",
       "property": null,
-      "value": "弗里德里希·尼采（Friedrich Nietzsche）",
-      "sha256": "273129383a016c04b752e5216722e3106a5356f782cdf4604ec4d86337c5e5dc",
+      "value": "斯宾诺莎（Benedict de Spinoza）",
+      "sha256": "b55ebfd278765267eb37403cccd096149dd5dd5ba7f0844bcd92d78d224a9857",
       "protected": false,
       "protectionReason": null,
       "hints": [],
@@ -127360,6 +127868,1906 @@
       "id": "candidate:app/arrival-catalog.mjs:376:16",
       "file": "app/arrival-catalog.mjs",
       "line": 376,
+      "column": 16,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "书中一段",
+      "sha256": "3cef274dd59fe171ba8473f56f2f45c2a93b125f19149c555a0b7ae765f2764f",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/arrival-catalog.mjs:382:14",
+      "file": "app/arrival-catalog.mjs",
+      "line": 382,
+      "column": 14,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "平面国",
+      "sha256": "e631a98d2a82c9707968bfa811765f69ceeef3116aac8b0c2516a643f790eb8b",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/arrival-catalog.mjs:389:16",
+      "file": "app/arrival-catalog.mjs",
+      "line": 389,
+      "column": 16,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "书中一段",
+      "sha256": "3cef274dd59fe171ba8473f56f2f45c2a93b125f19149c555a0b7ae765f2764f",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/arrival-catalog.mjs:395:14",
+      "file": "app/arrival-catalog.mjs",
+      "line": 395,
+      "column": 14,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "弗兰肯斯坦",
+      "sha256": "a45da8e1001e5268477558b50db96cd35c7c3b2c39dab25b7c43aaf60faf656a",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/arrival-catalog.mjs:402:16",
+      "file": "app/arrival-catalog.mjs",
+      "line": 402,
+      "column": 16,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "书中一段",
+      "sha256": "3cef274dd59fe171ba8473f56f2f45c2a93b125f19149c555a0b7ae765f2764f",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/arrival-catalog.mjs:408:14",
+      "file": "app/arrival-catalog.mjs",
+      "line": 408,
+      "column": 14,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "论道德的谱系",
+      "sha256": "d2ac1e0a93fbb796b9e45346f88bbaf3eca58e26fe2f0d2e8fe57dd86554a676",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/arrival-catalog.mjs:409:15",
+      "file": "app/arrival-catalog.mjs",
+      "line": 409,
+      "column": 15,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "弗里德里希·尼采（Friedrich Nietzsche）",
+      "sha256": "273129383a016c04b752e5216722e3106a5356f782cdf4604ec4d86337c5e5dc",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/arrival-catalog.mjs:415:16",
+      "file": "app/arrival-catalog.mjs",
+      "line": 415,
+      "column": 16,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "书中一段",
+      "sha256": "3cef274dd59fe171ba8473f56f2f45c2a93b125f19149c555a0b7ae765f2764f",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/arrival-catalog.mjs:421:14",
+      "file": "app/arrival-catalog.mjs",
+      "line": 421,
+      "column": 14,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "哈姆雷特",
+      "sha256": "e1d56b833fbec769a683062fb15a50939f70f05ffb2d99a05e81cdae73b4b20c",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/arrival-catalog.mjs:422:15",
+      "file": "app/arrival-catalog.mjs",
+      "line": 422,
+      "column": 15,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "威廉·莎士比亚（William Shakespeare）",
+      "sha256": "27f5df9e4ac419bc53e7ede683b8715902d2e9aea0629e6b983b3366c237f34a",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/arrival-catalog.mjs:428:16",
+      "file": "app/arrival-catalog.mjs",
+      "line": 428,
+      "column": 16,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "书中一段",
+      "sha256": "3cef274dd59fe171ba8473f56f2f45c2a93b125f19149c555a0b7ae765f2764f",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/arrival-catalog.mjs:434:14",
+      "file": "app/arrival-catalog.mjs",
+      "line": 434,
+      "column": 14,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "家庭与世界",
+      "sha256": "140ea956e728a4d3c5a569dedb545ead13c179714ea29f123352f36581b03c4f",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/arrival-catalog.mjs:435:15",
+      "file": "app/arrival-catalog.mjs",
+      "line": 435,
+      "column": 15,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "Rabindranath Tagore · 英译 Surendranath Tagore",
+      "sha256": "435027d92b62ba2ea3f994b4858ffd274a77b3353f5dfbf2bd444e4de72f73a5",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/arrival-catalog.mjs:441:16",
+      "file": "app/arrival-catalog.mjs",
+      "line": 441,
+      "column": 16,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "书中一段",
+      "sha256": "3cef274dd59fe171ba8473f56f2f45c2a93b125f19149c555a0b7ae765f2764f",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/arrival-catalog.mjs:447:14",
+      "file": "app/arrival-catalog.mjs",
+      "line": 447,
+      "column": 14,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "孟子（中文原典）",
+      "sha256": "4bf551ea65ef69b89cbc1c231047f2ee017ed87f84e7388327313e9824011f38",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/arrival-catalog.mjs:448:15",
+      "file": "app/arrival-catalog.mjs",
+      "line": 448,
+      "column": 15,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "孟轲及其后学（Mencius and his school）",
+      "sha256": "5b51baf48adac0d8a47fc47b0d004f6383e35eb6eac4be4b276eb677e33e0848",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/arrival-catalog.mjs:449:16",
+      "file": "app/arrival-catalog.mjs",
+      "line": 449,
+      "column": 16,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "卷之一梁惠王上",
+      "sha256": "79993d40a6ea5059230eba4df870fd3087ec0adbeda15bb605704cd6c82e14da",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/arrival-catalog.mjs:451:17",
+      "file": "app/arrival-catalog.mjs",
+      "line": 451,
+      "column": 17,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "一",
+      "sha256": "51a75f4634dfa8598a0a1436da0b7764830edd1f3a97661222387da2fe2b38d1",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/arrival-catalog.mjs:454:16",
+      "file": "app/arrival-catalog.mjs",
+      "line": 454,
+      "column": 16,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "书中一段",
+      "sha256": "3cef274dd59fe171ba8473f56f2f45c2a93b125f19149c555a0b7ae765f2764f",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/arrival-catalog.mjs:460:14",
+      "file": "app/arrival-catalog.mjs",
+      "line": 460,
+      "column": 14,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "尼各马可伦理学",
+      "sha256": "5544593bb2e166087a939d64cba0b8d92b893789d38951475bce5a3ada93d5d1",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/arrival-catalog.mjs:461:15",
+      "file": "app/arrival-catalog.mjs",
+      "line": 461,
+      "column": 15,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "亚里士多德（Aristotle）",
+      "sha256": "3e83a097425bc8a73870ef9473a31f56e5c346982dec7c1152712b8e9c95fdf9",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/arrival-catalog.mjs:467:16",
+      "file": "app/arrival-catalog.mjs",
+      "line": 467,
+      "column": 16,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "书中一段",
+      "sha256": "3cef274dd59fe171ba8473f56f2f45c2a93b125f19149c555a0b7ae765f2764f",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/arrival-catalog.mjs:473:14",
+      "file": "app/arrival-catalog.mjs",
+      "line": 473,
+      "column": 14,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "地下室手记",
+      "sha256": "3704aa27ee5914d87511038afeb5fec57ccf0b0c71447c46f6ff72b83c085026",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/arrival-catalog.mjs:474:15",
+      "file": "app/arrival-catalog.mjs",
+      "line": 474,
+      "column": 15,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "Fyodor Dostoyevsky · 英译 Constance Garnett",
+      "sha256": "ba64f71615c3934d916771d52e0df42724b938bbc1f215c66c4aa7306386b6f3",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/arrival-catalog.mjs:480:16",
+      "file": "app/arrival-catalog.mjs",
+      "line": 480,
+      "column": 16,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "书中一段",
+      "sha256": "3cef274dd59fe171ba8473f56f2f45c2a93b125f19149c555a0b7ae765f2764f",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/arrival-catalog.mjs:486:14",
+      "file": "app/arrival-catalog.mjs",
+      "line": 486,
+      "column": 14,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "新工具",
+      "sha256": "6258086a22f5b5f1882401063d4db4a39cf51a44071d421c2815f0c28d1afadd",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/arrival-catalog.mjs:487:15",
+      "file": "app/arrival-catalog.mjs",
+      "line": 487,
+      "column": 15,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "弗朗西斯·培根（Francis Bacon）",
+      "sha256": "00a862aeea965675a8e3e2f33a54c70b513672e9738a3255c0489194be62a222",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/arrival-catalog.mjs:493:16",
+      "file": "app/arrival-catalog.mjs",
+      "line": 493,
+      "column": 16,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "书中一段",
+      "sha256": "3cef274dd59fe171ba8473f56f2f45c2a93b125f19149c555a0b7ae765f2764f",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/arrival-catalog.mjs:499:14",
+      "file": "app/arrival-catalog.mjs",
+      "line": 499,
+      "column": 14,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "奥德赛",
+      "sha256": "b933aadaeec114d0d256f7e463ec52cb656a31abbdeeea0ff3c6add9c0edb3aa",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/arrival-catalog.mjs:500:15",
+      "file": "app/arrival-catalog.mjs",
+      "line": 500,
+      "column": 15,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "荷马（Homer，传统署名）",
+      "sha256": "8bf884ab88b4d63b3e05d32b6945eabb1131e9e2a6746189bd2dfbeff3c6b865",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/arrival-catalog.mjs:506:16",
+      "file": "app/arrival-catalog.mjs",
+      "line": 506,
+      "column": 16,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "书中一段",
+      "sha256": "3cef274dd59fe171ba8473f56f2f45c2a93b125f19149c555a0b7ae765f2764f",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/arrival-catalog.mjs:512:14",
+      "file": "app/arrival-catalog.mjs",
+      "line": 512,
+      "column": 14,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "论自由",
+      "sha256": "73b4daabab532d79db2f2f9b9809d3dcbacbbde29377242b839377ce1e0299a2",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/arrival-catalog.mjs:519:16",
+      "file": "app/arrival-catalog.mjs",
+      "line": 519,
+      "column": 16,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "书中一段",
+      "sha256": "3cef274dd59fe171ba8473f56f2f45c2a93b125f19149c555a0b7ae765f2764f",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/arrival-catalog.mjs:525:14",
+      "file": "app/arrival-catalog.mjs",
+      "line": 525,
+      "column": 14,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "物种起源（第六版）",
+      "sha256": "2f06d8527747cc5dbf7bf2f23c158aad044e3e2bf43a92abae0e6f8d8f16549b",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/arrival-catalog.mjs:526:15",
+      "file": "app/arrival-catalog.mjs",
+      "line": 526,
+      "column": 15,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "查尔斯·达尔文（Charles Darwin）",
+      "sha256": "0581ce923938504e0b3f95529378183405d9272aa2571f5e6d4c0b6d50b6fbe3",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/arrival-catalog.mjs:532:16",
+      "file": "app/arrival-catalog.mjs",
+      "line": 532,
+      "column": 16,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "书中一段",
+      "sha256": "3cef274dd59fe171ba8473f56f2f45c2a93b125f19149c555a0b7ae765f2764f",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/arrival-catalog.mjs:538:14",
+      "file": "app/arrival-catalog.mjs",
+      "line": 538,
+      "column": 14,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "伯罗奔尼撒战争史",
+      "sha256": "1a354e140c92e7958ba91fdf6fbcffea6457137a942f65368b2e85a3532e9891",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/arrival-catalog.mjs:539:15",
+      "file": "app/arrival-catalog.mjs",
+      "line": 539,
+      "column": 15,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "修昔底德（Thucydides）",
+      "sha256": "b962c7f82d58a8f43c9b7cffa97a873d9d64484e86290b373781aa92bc0d1ec7",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/arrival-catalog.mjs:545:16",
+      "file": "app/arrival-catalog.mjs",
+      "line": 545,
+      "column": 16,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "书中一段",
+      "sha256": "3cef274dd59fe171ba8473f56f2f45c2a93b125f19149c555a0b7ae765f2764f",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/arrival-catalog.mjs:551:14",
+      "file": "app/arrival-catalog.mjs",
+      "line": 551,
+      "column": 14,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "傲慢与偏见",
+      "sha256": "835f82f3ca2701340c2f5f97a5549745ab3459cf2d7b315e3477006cc6368053",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/arrival-catalog.mjs:558:16",
+      "file": "app/arrival-catalog.mjs",
+      "line": 558,
+      "column": 16,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "书中一段",
+      "sha256": "3cef274dd59fe171ba8473f56f2f45c2a93b125f19149c555a0b7ae765f2764f",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/arrival-catalog.mjs:564:14",
+      "file": "app/arrival-catalog.mjs",
+      "line": 564,
+      "column": 14,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "君主论（附两篇短著）",
+      "sha256": "6f3b4a778fc838c83e1b8012a0dce9b47b878eafa4632e8f2efa15fb22363495",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/arrival-catalog.mjs:565:15",
+      "file": "app/arrival-catalog.mjs",
+      "line": 565,
+      "column": 15,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "尼科洛·马基雅维利（Niccolò Machiavelli）",
+      "sha256": "41199f02c0224f9c2b41ac63349a39350f0264feddc2807655720091c01f6960",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/arrival-catalog.mjs:571:16",
+      "file": "app/arrival-catalog.mjs",
+      "line": 571,
+      "column": 16,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "书中一段",
+      "sha256": "3cef274dd59fe171ba8473f56f2f45c2a93b125f19149c555a0b7ae765f2764f",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/arrival-catalog.mjs:577:14",
+      "file": "app/arrival-catalog.mjs",
+      "line": 577,
+      "column": 14,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "先知",
+      "sha256": "3a5307749fe930ca3ad6d04176618c861be4d0408258b58a8c59bb5cf1fedaea",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/arrival-catalog.mjs:584:16",
+      "file": "app/arrival-catalog.mjs",
+      "line": 584,
+      "column": 16,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "书中一段",
+      "sha256": "3cef274dd59fe171ba8473f56f2f45c2a93b125f19149c555a0b7ae765f2764f",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/arrival-catalog.mjs:590:14",
+      "file": "app/arrival-catalog.mjs",
+      "line": 590,
+      "column": 14,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "理想国",
+      "sha256": "6c7c6c8b9adeea58f2a3a21bee75aa9c12998b1597319ccf4b0d900761eb5b1c",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/arrival-catalog.mjs:591:15",
+      "file": "app/arrival-catalog.mjs",
+      "line": 591,
+      "column": 15,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "柏拉图（Plato）",
+      "sha256": "846e421b9b65e49346f3871f19a3da814b1a3edaa667df74a3909f3df0fa4943",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/arrival-catalog.mjs:597:16",
+      "file": "app/arrival-catalog.mjs",
+      "line": 597,
+      "column": 16,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "书中一段",
+      "sha256": "3cef274dd59fe171ba8473f56f2f45c2a93b125f19149c555a0b7ae765f2764f",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/arrival-catalog.mjs:603:14",
+      "file": "app/arrival-catalog.mjs",
+      "line": 603,
+      "column": 14,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "鲁拜集",
+      "sha256": "2fe3eaf1d057d8c812508cb3ebae4030e90ecee69f831f1acd31f1c29d477aff",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/arrival-catalog.mjs:604:15",
+      "file": "app/arrival-catalog.mjs",
+      "line": 604,
+      "column": 15,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "Omar Khayyam · 英译 Edward FitzGerald · 英语译写",
+      "sha256": "1f4ad2aa75ae272d479f8ad11926536fd2b230789e73af59fe8754a249129a82",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/arrival-catalog.mjs:610:16",
+      "file": "app/arrival-catalog.mjs",
+      "line": 610,
+      "column": 16,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "书中一段",
+      "sha256": "3cef274dd59fe171ba8473f56f2f45c2a93b125f19149c555a0b7ae765f2764f",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/arrival-catalog.mjs:616:14",
+      "file": "app/arrival-catalog.mjs",
+      "line": 616,
+      "column": 14,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "西科尔夫人历险记",
+      "sha256": "baada42e34c15d94f706bdf84fd8934bf426b37a6535f9d315322bdfad4efbbb",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/arrival-catalog.mjs:623:16",
+      "file": "app/arrival-catalog.mjs",
+      "line": 623,
+      "column": 16,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "书中一段",
+      "sha256": "3cef274dd59fe171ba8473f56f2f45c2a93b125f19149c555a0b7ae765f2764f",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/arrival-catalog.mjs:629:14",
+      "file": "app/arrival-catalog.mjs",
+      "line": 629,
+      "column": 14,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "道德经",
+      "sha256": "559c550ded2a77863498cfadd9c95ffc61cd48e347e8c3a88031343dc0a7ee69",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/arrival-catalog.mjs:630:15",
+      "file": "app/arrival-catalog.mjs",
+      "line": 630,
+      "column": 15,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "Laozi · 英译 James Legge",
+      "sha256": "2e9558f2e82afe55576c12f2d69f8f057a2093218d3cd43cbf60bb1186f0a5d2",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/arrival-catalog.mjs:636:16",
+      "file": "app/arrival-catalog.mjs",
+      "line": 636,
+      "column": 16,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "书中一段",
+      "sha256": "3cef274dd59fe171ba8473f56f2f45c2a93b125f19149c555a0b7ae765f2764f",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/arrival-catalog.mjs:642:14",
+      "file": "app/arrival-catalog.mjs",
+      "line": 642,
+      "column": 14,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "道德经（中文原典）",
+      "sha256": "fd84cd93dc4b48c8272a0f5e04548b052255c34cd6f4a61cefa6a203eb990edb",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/arrival-catalog.mjs:643:15",
+      "file": "app/arrival-catalog.mjs",
+      "line": 643,
+      "column": 15,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "老子（传统归属）",
+      "sha256": "f620a114851a7632401432a0703790cf3f01bf670ef9738bedf521b9a2aad0a2",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/arrival-catalog.mjs:644:16",
+      "file": "app/arrival-catalog.mjs",
+      "line": 644,
+      "column": 16,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "第一章",
+      "sha256": "9134b008252f267ca0728ab30ffbe577efb573baa06e54cb3338e2d277860ce0",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/arrival-catalog.mjs:646:17",
+      "file": "app/arrival-catalog.mjs",
+      "line": 646,
+      "column": 17,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "道可道，非常道。",
+      "sha256": "ed4d1f8d3ba3903c18699af38c5e5bfa42463566465b678fc009f2425105a250",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/arrival-catalog.mjs:649:16",
+      "file": "app/arrival-catalog.mjs",
+      "line": 649,
+      "column": 16,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "书中一段",
+      "sha256": "3cef274dd59fe171ba8473f56f2f45c2a93b125f19149c555a0b7ae765f2764f",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/arrival-catalog.mjs:655:14",
+      "file": "app/arrival-catalog.mjs",
+      "line": 655,
+      "column": 14,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "时间机器",
+      "sha256": "e20b3f2437f0d5761a7d2d03b87e65628e9e4d1d0aad4bfd828b28b58506a0d7",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/arrival-catalog.mjs:662:16",
+      "file": "app/arrival-catalog.mjs",
+      "line": 662,
+      "column": 16,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "书中一段",
+      "sha256": "3cef274dd59fe171ba8473f56f2f45c2a93b125f19149c555a0b7ae765f2764f",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/arrival-catalog.mjs:668:14",
+      "file": "app/arrival-catalog.mjs",
+      "line": 668,
+      "column": 14,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "底层的人们",
+      "sha256": "b697f8ecac694da7e323c2f7ca2f3b595c49d42c6ae61e86d28bec4e7de0b991",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/arrival-catalog.mjs:669:15",
+      "file": "app/arrival-catalog.mjs",
+      "line": 669,
+      "column": 15,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "Mariano Azuela · 英译 Enrique Munguía (E. Munguia, Jr.)",
+      "sha256": "bca1b9d6e6252a94cadba28e25edf513aa9284a42c96d3e7bd920b28d985a1e0",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/arrival-catalog.mjs:675:16",
+      "file": "app/arrival-catalog.mjs",
+      "line": 675,
+      "column": 16,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "书中一段",
+      "sha256": "3cef274dd59fe171ba8473f56f2f45c2a93b125f19149c555a0b7ae765f2764f",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/arrival-catalog.mjs:681:14",
+      "file": "app/arrival-catalog.mjs",
+      "line": 681,
+      "column": 14,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "国富论",
+      "sha256": "147f1020323b2e25455117b02fef6918082381b674a3909a5b80fb3c7b453845",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/arrival-catalog.mjs:682:15",
+      "file": "app/arrival-catalog.mjs",
+      "line": 682,
+      "column": 15,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "亚当·斯密（Adam Smith）",
+      "sha256": "dcc43df224d3c6d3d1dce762ace54aaeb03d2dcfd503c6b474d5dfbc11513039",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/arrival-catalog.mjs:688:16",
+      "file": "app/arrival-catalog.mjs",
+      "line": 688,
+      "column": 16,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "书中一段",
+      "sha256": "3cef274dd59fe171ba8473f56f2f45c2a93b125f19149c555a0b7ae765f2764f",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/arrival-catalog.mjs:694:14",
+      "file": "app/arrival-catalog.mjs",
+      "line": 694,
+      "column": 14,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "人生的智慧（上册）",
+      "sha256": "043ed774b065505b3ebf62f2485256c8426fd03fc362ee3771acc6f3b49957f3",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/arrival-catalog.mjs:695:15",
+      "file": "app/arrival-catalog.mjs",
+      "line": 695,
+      "column": 15,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "阿图尔·叔本华（Arthur Schopenhauer）",
+      "sha256": "989e6c2da406265e66f632b7ce1bd4275facc16362e5515915fdc7217d08fefd",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/arrival-catalog.mjs:701:16",
+      "file": "app/arrival-catalog.mjs",
+      "line": 701,
+      "column": 16,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "书中一段",
+      "sha256": "3cef274dd59fe171ba8473f56f2f45c2a93b125f19149c555a0b7ae765f2764f",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/arrival-catalog.mjs:707:14",
+      "file": "app/arrival-catalog.mjs",
+      "line": 707,
+      "column": 14,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "人生的智慧（下册：建议与格言）",
+      "sha256": "db2947b0108e6434473c365c51efc0106c86d4b1c6fdf55ca6865dd406a2b9f7",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/arrival-catalog.mjs:708:15",
+      "file": "app/arrival-catalog.mjs",
+      "line": 708,
+      "column": 15,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "阿图尔·叔本华（Arthur Schopenhauer）",
+      "sha256": "989e6c2da406265e66f632b7ce1bd4275facc16362e5515915fdc7217d08fefd",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/arrival-catalog.mjs:714:16",
+      "file": "app/arrival-catalog.mjs",
+      "line": 714,
+      "column": 16,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "书中一段",
+      "sha256": "3cef274dd59fe171ba8473f56f2f45c2a93b125f19149c555a0b7ae765f2764f",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/arrival-catalog.mjs:720:14",
+      "file": "app/arrival-catalog.mjs",
+      "line": 720,
+      "column": 14,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "作为意志和表象的世界（英译第1册）",
+      "sha256": "4e43aa21b7da5e86cece60fda13872644f29dde4652fb35a659d33a1d9d6ea2c",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/arrival-catalog.mjs:721:15",
+      "file": "app/arrival-catalog.mjs",
+      "line": 721,
+      "column": 15,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "阿图尔·叔本华（Arthur Schopenhauer）",
+      "sha256": "989e6c2da406265e66f632b7ce1bd4275facc16362e5515915fdc7217d08fefd",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/arrival-catalog.mjs:727:16",
+      "file": "app/arrival-catalog.mjs",
+      "line": 727,
+      "column": 16,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "书中一段",
+      "sha256": "3cef274dd59fe171ba8473f56f2f45c2a93b125f19149c555a0b7ae765f2764f",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/arrival-catalog.mjs:733:14",
+      "file": "app/arrival-catalog.mjs",
+      "line": 733,
+      "column": 14,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "作为意志和表象的世界（英译第2册）",
+      "sha256": "92f6e458b47a496733f50c89e5b799255234dd3a9e78a2c511ff0f8e274e584c",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/arrival-catalog.mjs:734:15",
+      "file": "app/arrival-catalog.mjs",
+      "line": 734,
+      "column": 15,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "阿图尔·叔本华（Arthur Schopenhauer）",
+      "sha256": "989e6c2da406265e66f632b7ce1bd4275facc16362e5515915fdc7217d08fefd",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/arrival-catalog.mjs:740:16",
+      "file": "app/arrival-catalog.mjs",
+      "line": 740,
+      "column": 16,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "书中一段",
+      "sha256": "3cef274dd59fe171ba8473f56f2f45c2a93b125f19149c555a0b7ae765f2764f",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/arrival-catalog.mjs:746:14",
+      "file": "app/arrival-catalog.mjs",
+      "line": 746,
+      "column": 14,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "作为意志和表象的世界（英译第3册）",
+      "sha256": "fd37192225108a851e8a9521256fcb8d696aa7c0f46bae7b35c7a56e37ec02e3",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/arrival-catalog.mjs:747:15",
+      "file": "app/arrival-catalog.mjs",
+      "line": 747,
+      "column": 15,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "阿图尔·叔本华（Arthur Schopenhauer）",
+      "sha256": "989e6c2da406265e66f632b7ce1bd4275facc16362e5515915fdc7217d08fefd",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/arrival-catalog.mjs:753:16",
+      "file": "app/arrival-catalog.mjs",
+      "line": 753,
+      "column": 16,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "书中一段",
+      "sha256": "3cef274dd59fe171ba8473f56f2f45c2a93b125f19149c555a0b7ae765f2764f",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/arrival-catalog.mjs:759:14",
+      "file": "app/arrival-catalog.mjs",
+      "line": 759,
+      "column": 14,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "少年维特之烦恼",
+      "sha256": "61d866ba61f79718d85e50fe9d18040f16c6c58b1e5df3937c4e90f5e879b56b",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/arrival-catalog.mjs:760:15",
+      "file": "app/arrival-catalog.mjs",
+      "line": 760,
+      "column": 15,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "Johann Wolfgang von Goethe · 英译 R. Dillon Boylan",
+      "sha256": "597d6e17daa2812ed330de7aa5404cc92001b31f17d0849e9daef86bd974b4d4",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/arrival-catalog.mjs:766:16",
+      "file": "app/arrival-catalog.mjs",
+      "line": 766,
+      "column": 16,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "书中一段",
+      "sha256": "3cef274dd59fe171ba8473f56f2f45c2a93b125f19149c555a0b7ae765f2764f",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/arrival-catalog.mjs:772:14",
+      "file": "app/arrival-catalog.mjs",
+      "line": 772,
+      "column": 14,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "查拉图斯特拉如是说",
+      "sha256": "990ca521c26c24908b5e7c0042fbba37a9ddd3af6761b523164d322e4433017b",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/arrival-catalog.mjs:773:15",
+      "file": "app/arrival-catalog.mjs",
+      "line": 773,
+      "column": 15,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "弗里德里希·尼采（Friedrich Nietzsche）",
+      "sha256": "273129383a016c04b752e5216722e3106a5356f782cdf4604ec4d86337c5e5dc",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/arrival-catalog.mjs:779:16",
+      "file": "app/arrival-catalog.mjs",
+      "line": 779,
+      "column": 16,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "书中一段",
+      "sha256": "3cef274dd59fe171ba8473f56f2f45c2a93b125f19149c555a0b7ae765f2764f",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/arrival-catalog.mjs:785:14",
+      "file": "app/arrival-catalog.mjs",
+      "line": 785,
+      "column": 14,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "庄子（中文原典）",
+      "sha256": "67acd4cfd53aadf279f18ea31859fe3b7fda7490076adcce6927053b68d83e90",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/arrival-catalog.mjs:786:15",
+      "file": "app/arrival-catalog.mjs",
+      "line": 786,
+      "column": 15,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "庄周及其后学（传统归属）",
+      "sha256": "b6cf35ee8dd434d5e3814a007fd2726fa19814c0bf86d84e4d5db7c97e40ffc2",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/arrival-catalog.mjs:787:16",
+      "file": "app/arrival-catalog.mjs",
+      "line": 787,
+      "column": 16,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "逍遙遊第一",
+      "sha256": "de7af215b6f648ce2a024f01bebf65f57d0ec392e8e90272dcb144f357f7a857",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/arrival-catalog.mjs:789:17",
+      "file": "app/arrival-catalog.mjs",
+      "line": 789,
+      "column": 17,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "北冥有魚，其名為鯤。",
+      "sha256": "85f336b6815aa9f9b13fda101359a2510bb812c3b7da0452764bdc40ae47f52c",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/arrival-catalog.mjs:792:16",
+      "file": "app/arrival-catalog.mjs",
+      "line": 792,
       "column": 16,
       "kind": "js-cjk-literal",
       "property": null,
@@ -194304,9 +196712,9 @@
       }
     },
     {
-      "id": "candidate:app/reader.js:130:36",
+      "id": "candidate:app/reader.js:131:36",
       "file": "app/reader.js",
-      "line": 130,
+      "line": 131,
       "column": 36,
       "kind": "js-attribute",
       "property": "aria-busy",
@@ -194324,9 +196732,9 @@
       }
     },
     {
-      "id": "candidate:app/reader.js:209:282",
+      "id": "candidate:app/reader.js:211:282",
       "file": "app/reader.js",
-      "line": 209,
+      "line": 211,
       "column": 282,
       "kind": "js-attribute",
       "property": "aria-describedby",
@@ -194344,9 +196752,9 @@
       }
     },
     {
-      "id": "candidate:app/reader.js:263:188",
+      "id": "candidate:app/reader.js:265:188",
       "file": "app/reader.js",
-      "line": 263,
+      "line": 265,
       "column": 188,
       "kind": "js-attribute",
       "property": "aria-expanded",
@@ -194364,9 +196772,9 @@
       }
     },
     {
-      "id": "candidate:app/reader.js:348:395",
+      "id": "candidate:app/reader.js:350:395",
       "file": "app/reader.js",
-      "line": 348,
+      "line": 350,
       "column": 395,
       "kind": "js-attribute",
       "property": "role",
@@ -194384,9 +196792,9 @@
       }
     },
     {
-      "id": "candidate:app/reader.js:352:124",
+      "id": "candidate:app/reader.js:354:124",
       "file": "app/reader.js",
-      "line": 352,
+      "line": 354,
       "column": 124,
       "kind": "js-cjk-literal",
       "property": null,
@@ -194404,9 +196812,9 @@
       }
     },
     {
-      "id": "candidate:app/reader.js:385:139",
+      "id": "candidate:app/reader.js:387:139",
       "file": "app/reader.js",
-      "line": 385,
+      "line": 387,
       "column": 139,
       "kind": "js-attribute",
       "property": "aria-live",
@@ -194424,9 +196832,9 @@
       }
     },
     {
-      "id": "candidate:app/reader.js:392:153",
+      "id": "candidate:app/reader.js:394:153",
       "file": "app/reader.js",
-      "line": 392,
+      "line": 394,
       "column": 153,
       "kind": "js-cjk-literal",
       "property": null,
@@ -194444,9 +196852,9 @@
       }
     },
     {
-      "id": "candidate:app/reader.js:392:350",
+      "id": "candidate:app/reader.js:394:350",
       "file": "app/reader.js",
-      "line": 392,
+      "line": 394,
       "column": 350,
       "kind": "js-attribute",
       "property": "role",
@@ -194464,9 +196872,9 @@
       }
     },
     {
-      "id": "candidate:app/reader.js:393:85",
+      "id": "candidate:app/reader.js:395:85",
       "file": "app/reader.js",
-      "line": 393,
+      "line": 395,
       "column": 85,
       "kind": "js-attribute",
       "property": "role",
@@ -194484,9 +196892,9 @@
       }
     },
     {
-      "id": "candidate:app/reader.js:518:129",
+      "id": "candidate:app/reader.js:520:129",
       "file": "app/reader.js",
-      "line": 518,
+      "line": 520,
       "column": 129,
       "kind": "js-attribute",
       "property": "aria-busy",
@@ -194504,9 +196912,9 @@
       }
     },
     {
-      "id": "candidate:app/reader.js:519:41",
+      "id": "candidate:app/reader.js:521:41",
       "file": "app/reader.js",
-      "line": 519,
+      "line": 521,
       "column": 41,
       "kind": "js-cjk-literal",
       "property": null,
@@ -194524,9 +196932,9 @@
       }
     },
     {
-      "id": "candidate:app/reader.js:519:122",
+      "id": "candidate:app/reader.js:521:122",
       "file": "app/reader.js",
-      "line": 519,
+      "line": 521,
       "column": 122,
       "kind": "js-cjk-literal",
       "property": null,
@@ -194544,9 +196952,9 @@
       }
     },
     {
-      "id": "candidate:app/reader.js:519:311",
+      "id": "candidate:app/reader.js:521:311",
       "file": "app/reader.js",
-      "line": 519,
+      "line": 521,
       "column": 311,
       "kind": "js-cjk-literal",
       "property": null,
@@ -194564,9 +196972,9 @@
       }
     },
     {
-      "id": "candidate:app/reader.js:519:669",
+      "id": "candidate:app/reader.js:521:669",
       "file": "app/reader.js",
-      "line": 519,
+      "line": 521,
       "column": 669,
       "kind": "js-attribute",
       "property": "role",
@@ -194584,9 +196992,9 @@
       }
     },
     {
-      "id": "candidate:app/reader.js:520:106",
+      "id": "candidate:app/reader.js:522:106",
       "file": "app/reader.js",
-      "line": 520,
+      "line": 522,
       "column": 106,
       "kind": "js-attribute",
       "property": "role",
@@ -194604,9 +197012,9 @@
       }
     },
     {
-      "id": "candidate:app/reader.js:522:224",
+      "id": "candidate:app/reader.js:524:224",
       "file": "app/reader.js",
-      "line": 522,
+      "line": 524,
       "column": 224,
       "kind": "js-cjk-literal",
       "property": null,
@@ -194624,9 +197032,9 @@
       }
     },
     {
-      "id": "candidate:app/reader.js:522:648",
+      "id": "candidate:app/reader.js:524:648",
       "file": "app/reader.js",
-      "line": 522,
+      "line": 524,
       "column": 648,
       "kind": "js-attribute",
       "property": "role",
@@ -194644,9 +197052,9 @@
       }
     },
     {
-      "id": "candidate:app/reader.js:522:809",
+      "id": "candidate:app/reader.js:524:809",
       "file": "app/reader.js",
-      "line": 522,
+      "line": 524,
       "column": 809,
       "kind": "js-attribute",
       "property": "role",
@@ -194664,9 +197072,9 @@
       }
     },
     {
-      "id": "candidate:app/reader.js:531:166",
+      "id": "candidate:app/reader.js:533:166",
       "file": "app/reader.js",
-      "line": 531,
+      "line": 533,
       "column": 166,
       "kind": "js-cjk-literal",
       "property": null,
@@ -230372,9 +232780,9 @@
       }
     },
     {
-      "id": "candidate:server/server.mjs:86:168",
+      "id": "candidate:server/server.mjs:89:168",
       "file": "server/server.mjs",
-      "line": 86,
+      "line": 89,
       "column": 168,
       "kind": "js-cjk-literal",
       "property": null,
@@ -230392,9 +232800,9 @@
       }
     },
     {
-      "id": "candidate:server/server.mjs:87:188",
+      "id": "candidate:server/server.mjs:90:188",
       "file": "server/server.mjs",
-      "line": 87,
+      "line": 90,
       "column": 188,
       "kind": "js-cjk-literal",
       "property": null,
@@ -230412,9 +232820,9 @@
       }
     },
     {
-      "id": "candidate:server/server.mjs:88:81",
+      "id": "candidate:server/server.mjs:91:81",
       "file": "server/server.mjs",
-      "line": 88,
+      "line": 91,
       "column": 81,
       "kind": "js-cjk-literal",
       "property": null,
@@ -230432,9 +232840,9 @@
       }
     },
     {
-      "id": "candidate:server/server.mjs:92:155",
+      "id": "candidate:server/server.mjs:95:155",
       "file": "server/server.mjs",
-      "line": 92,
+      "line": 95,
       "column": 155,
       "kind": "js-cjk-literal",
       "property": null,
@@ -230452,9 +232860,9 @@
       }
     },
     {
-      "id": "candidate:server/server.mjs:93:52",
+      "id": "candidate:server/server.mjs:96:52",
       "file": "server/server.mjs",
-      "line": 93,
+      "line": 96,
       "column": 52,
       "kind": "js-cjk-literal",
       "property": null,
@@ -230472,9 +232880,9 @@
       }
     },
     {
-      "id": "candidate:server/server.mjs:94:47",
+      "id": "candidate:server/server.mjs:97:47",
       "file": "server/server.mjs",
-      "line": 94,
+      "line": 97,
       "column": 47,
       "kind": "js-cjk-literal",
       "property": null,
@@ -230492,9 +232900,9 @@
       }
     },
     {
-      "id": "candidate:server/server.mjs:96:109",
+      "id": "candidate:server/server.mjs:99:109",
       "file": "server/server.mjs",
-      "line": 96,
+      "line": 99,
       "column": 109,
       "kind": "js-cjk-literal",
       "property": null,
@@ -230512,9 +232920,9 @@
       }
     },
     {
-      "id": "candidate:server/server.mjs:97:74",
+      "id": "candidate:server/server.mjs:100:74",
       "file": "server/server.mjs",
-      "line": 97,
+      "line": 100,
       "column": 74,
       "kind": "js-cjk-literal",
       "property": null,
@@ -230532,9 +232940,9 @@
       }
     },
     {
-      "id": "candidate:server/server.mjs:104:80",
+      "id": "candidate:server/server.mjs:107:80",
       "file": "server/server.mjs",
-      "line": 104,
+      "line": 107,
       "column": 80,
       "kind": "js-cjk-literal",
       "property": null,
@@ -230552,9 +232960,9 @@
       }
     },
     {
-      "id": "candidate:server/server.mjs:105:106",
+      "id": "candidate:server/server.mjs:108:106",
       "file": "server/server.mjs",
-      "line": 105,
+      "line": 108,
       "column": 106,
       "kind": "js-cjk-literal",
       "property": null,
@@ -230572,9 +232980,9 @@
       }
     },
     {
-      "id": "candidate:server/server.mjs:105:219",
+      "id": "candidate:server/server.mjs:108:219",
       "file": "server/server.mjs",
-      "line": 105,
+      "line": 108,
       "column": 219,
       "kind": "js-cjk-literal",
       "property": null,
@@ -230592,9 +233000,9 @@
       }
     },
     {
-      "id": "candidate:server/server.mjs:114:40",
+      "id": "candidate:server/server.mjs:117:40",
       "file": "server/server.mjs",
-      "line": 114,
+      "line": 117,
       "column": 40,
       "kind": "js-cjk-literal",
       "property": null,
@@ -230612,9 +233020,9 @@
       }
     },
     {
-      "id": "candidate:server/server.mjs:120:159",
+      "id": "candidate:server/server.mjs:123:159",
       "file": "server/server.mjs",
-      "line": 120,
+      "line": 123,
       "column": 159,
       "kind": "js-cjk-literal",
       "property": null,
@@ -230632,9 +233040,9 @@
       }
     },
     {
-      "id": "candidate:server/server.mjs:123:72",
+      "id": "candidate:server/server.mjs:126:72",
       "file": "server/server.mjs",
-      "line": 123,
+      "line": 126,
       "column": 72,
       "kind": "js-cjk-literal",
       "property": null,
@@ -230652,9 +233060,9 @@
       }
     },
     {
-      "id": "candidate:server/server.mjs:130:246",
+      "id": "candidate:server/server.mjs:133:246",
       "file": "server/server.mjs",
-      "line": 130,
+      "line": 133,
       "column": 246,
       "kind": "js-cjk-literal",
       "property": null,
@@ -230672,9 +233080,9 @@
       }
     },
     {
-      "id": "candidate:server/server.mjs:132:195",
+      "id": "candidate:server/server.mjs:135:195",
       "file": "server/server.mjs",
-      "line": 132,
+      "line": 135,
       "column": 195,
       "kind": "js-cjk-literal",
       "property": null,
@@ -230692,9 +233100,9 @@
       }
     },
     {
-      "id": "candidate:server/server.mjs:135:175",
+      "id": "candidate:server/server.mjs:138:175",
       "file": "server/server.mjs",
-      "line": 135,
+      "line": 138,
       "column": 175,
       "kind": "js-cjk-literal",
       "property": null,
@@ -230712,9 +233120,9 @@
       }
     },
     {
-      "id": "candidate:server/server.mjs:139:131",
+      "id": "candidate:server/server.mjs:142:131",
       "file": "server/server.mjs",
-      "line": 139,
+      "line": 142,
       "column": 131,
       "kind": "js-cjk-literal",
       "property": null,
@@ -230732,9 +233140,9 @@
       }
     },
     {
-      "id": "candidate:server/server.mjs:140:90",
+      "id": "candidate:server/server.mjs:143:90",
       "file": "server/server.mjs",
-      "line": 140,
+      "line": 143,
       "column": 90,
       "kind": "js-cjk-literal",
       "property": null,
@@ -230752,9 +233160,9 @@
       }
     },
     {
-      "id": "candidate:server/server.mjs:142:118",
+      "id": "candidate:server/server.mjs:145:118",
       "file": "server/server.mjs",
-      "line": 142,
+      "line": 145,
       "column": 118,
       "kind": "js-cjk-literal",
       "property": null,
@@ -230772,9 +233180,9 @@
       }
     },
     {
-      "id": "candidate:server/server.mjs:143:96",
+      "id": "candidate:server/server.mjs:146:96",
       "file": "server/server.mjs",
-      "line": 143,
+      "line": 146,
       "column": 96,
       "kind": "js-cjk-literal",
       "property": null,
@@ -230792,9 +233200,9 @@
       }
     },
     {
-      "id": "candidate:server/server.mjs:144:331",
+      "id": "candidate:server/server.mjs:147:331",
       "file": "server/server.mjs",
-      "line": 144,
+      "line": 147,
       "column": 331,
       "kind": "js-cjk-literal",
       "property": null,
@@ -230812,9 +233220,9 @@
       }
     },
     {
-      "id": "candidate:server/server.mjs:148:20",
+      "id": "candidate:server/server.mjs:151:20",
       "file": "server/server.mjs",
-      "line": 148,
+      "line": 151,
       "column": 20,
       "kind": "js-cjk-literal",
       "property": null,
@@ -230832,9 +233240,9 @@
       }
     },
     {
-      "id": "candidate:server/server.mjs:150:61",
+      "id": "candidate:server/server.mjs:153:61",
       "file": "server/server.mjs",
-      "line": 150,
+      "line": 153,
       "column": 61,
       "kind": "js-cjk-literal",
       "property": null,
@@ -230852,9 +233260,9 @@
       }
     },
     {
-      "id": "candidate:server/server.mjs:160:18",
+      "id": "candidate:server/server.mjs:163:18",
       "file": "server/server.mjs",
-      "line": 160,
+      "line": 163,
       "column": 18,
       "kind": "js-cjk-literal",
       "property": null,
@@ -230872,9 +233280,9 @@
       }
     },
     {
-      "id": "candidate:server/server.mjs:161:60",
+      "id": "candidate:server/server.mjs:164:60",
       "file": "server/server.mjs",
-      "line": 161,
+      "line": 164,
       "column": 60,
       "kind": "js-cjk-literal",
       "property": null,
@@ -230892,9 +233300,9 @@
       }
     },
     {
-      "id": "candidate:server/server.mjs:178:119",
+      "id": "candidate:server/server.mjs:181:119",
       "file": "server/server.mjs",
-      "line": 178,
+      "line": 181,
       "column": 119,
       "kind": "js-cjk-literal",
       "property": null,
@@ -245820,7 +248228,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 63,
+      "line": 64,
       "expression": "READER_SHELL+'bookText'",
       "fragments": [
         "bookText"
@@ -245830,7 +248238,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 82,
+      "line": 83,
       "expression": "book.chapters.findIndex(c=>c.id===state.chapterId)+direction",
       "fragments": [],
       "unresolved": true
@@ -245838,7 +248246,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 82,
+      "line": 83,
       "expression": "book.chapters.findIndex(c=>c.id===state.chapterId)+direction",
       "fragments": [],
       "unresolved": true
@@ -245846,7 +248254,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 97,
+      "line": 98,
       "expression": "READER_UI+'unknownError'",
       "fragments": [
         "unknownError"
@@ -245856,7 +248264,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 100,
+      "line": 101,
       "expression": "key",
       "fragments": [],
       "unresolved": true
@@ -245864,7 +248272,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 100,
+      "line": 101,
       "expression": "index",
       "fragments": [],
       "unresolved": true
@@ -245872,7 +248280,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 100,
+      "line": 101,
       "expression": "key",
       "fragments": [],
       "unresolved": true
@@ -245880,7 +248288,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 100,
+      "line": 101,
       "expression": "index",
       "fragments": [],
       "unresolved": true
@@ -245888,7 +248296,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 100,
+      "line": 101,
       "expression": "key",
       "fragments": [],
       "unresolved": true
@@ -245896,7 +248304,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 110,
+      "line": 111,
       "expression": "READER_UI+'progressConflict'",
       "fragments": [
         "progressConflict"
@@ -245906,7 +248314,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 111,
+      "line": 112,
       "expression": "READER_UI+'progressLocal'",
       "fragments": [
         "progressLocal"
@@ -245916,7 +248324,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 111,
+      "line": 112,
       "expression": "READER_UI+'progressMemory'",
       "fragments": [
         "progressMemory"
@@ -245926,7 +248334,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 115,
+      "line": 116,
       "expression": "READER_UI+'fragment'",
       "fragments": [
         "fragment"
@@ -245936,7 +248344,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 148,
+      "line": 149,
       "expression": "'[data-id=\"'+a.passageId+'\"]'",
       "fragments": [
         "[data-id=\"",
@@ -245947,7 +248355,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 148,
+      "line": 149,
       "expression": "'[data-id=\"'+a.passageId",
       "fragments": [
         "[data-id=\""
@@ -245957,7 +248365,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 170,
+      "line": 171,
       "expression": "state.font+'px'",
       "fragments": [
         "px"
@@ -245967,7 +248375,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 170,
+      "line": 171,
       "expression": "state.fontFamily",
       "fragments": [],
       "unresolved": true
@@ -245975,7 +248383,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 171,
+      "line": 172,
       "expression": "key",
       "fragments": [],
       "unresolved": true
@@ -245983,7 +248391,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 177,
+      "line": 178,
       "expression": "'setting-'+key",
       "fragments": [
         "setting-"
@@ -245993,7 +248401,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 177,
+      "line": 178,
       "expression": "key",
       "fragments": [],
       "unresolved": true
@@ -246001,7 +248409,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 177,
+      "line": 178,
       "expression": "'[data-adjust=\"'+key+'\"]'",
       "fragments": [
         "[data-adjust=\"",
@@ -246012,7 +248420,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 177,
+      "line": 178,
       "expression": "'[data-adjust=\"'+key",
       "fragments": [
         "[data-adjust=\""
@@ -246022,7 +248430,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 177,
+      "line": 178,
       "expression": "key",
       "fragments": [],
       "unresolved": true
@@ -246030,7 +248438,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 177,
+      "line": 178,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -246038,7 +248446,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 177,
+      "line": 178,
       "expression": "key",
       "fragments": [],
       "unresolved": true
@@ -246046,7 +248454,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 177,
+      "line": 178,
       "expression": "key",
       "fragments": [],
       "unresolved": true
@@ -246054,7 +248462,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 177,
+      "line": 178,
       "expression": "1",
       "fragments": [],
       "unresolved": true
@@ -246062,7 +248470,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 177,
+      "line": 178,
       "expression": "key",
       "fragments": [],
       "unresolved": true
@@ -246070,7 +248478,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 186,
+      "line": 187,
       "expression": "READER_UI+'type.'",
       "fragments": [
         "type."
@@ -246080,7 +248488,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 186,
+      "line": 187,
       "expression": "'label-'+key",
       "fragments": [
         "label-"
@@ -246090,7 +248498,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 187,
+      "line": 188,
       "expression": "'setting-'+key",
       "fragments": [
         "setting-"
@@ -246100,7 +248508,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 188,
+      "line": 189,
       "expression": "key",
       "fragments": [],
       "unresolved": true
@@ -246108,7 +248516,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 188,
+      "line": 189,
       "expression": "key",
       "fragments": [],
       "unresolved": true
@@ -246116,7 +248524,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 189,
+      "line": 190,
       "expression": "READER_UI+'type.'",
       "fragments": [
         "type."
@@ -246126,7 +248534,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 192,
+      "line": 193,
       "expression": "p.id",
       "fragments": [],
       "unresolved": true
@@ -246134,7 +248542,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 192,
+      "line": 193,
       "expression": "p.id",
       "fragments": [],
       "unresolved": true
@@ -246142,7 +248550,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 199,
+      "line": 200,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -246150,7 +248558,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 204,
+      "line": 206,
       "expression": "READER_UI+'chapterName'",
       "fragments": [
         "chapterName"
@@ -246160,7 +248568,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 207,
+      "line": 209,
       "expression": "'section-'+s.number",
       "fragments": [
         "section-"
@@ -246170,7 +248578,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 207,
+      "line": 209,
       "expression": "'§'+s.number",
       "fragments": [
         "§"
@@ -246180,7 +248588,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 210,
+      "line": 212,
       "expression": "READER_UI+'sampleEnd'",
       "fragments": [
         "sampleEnd"
@@ -246190,7 +248598,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 210,
+      "line": 212,
       "expression": "READER_UI+'sampleHelp'",
       "fragments": [
         "sampleHelp"
@@ -246200,7 +248608,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 213,
+      "line": 215,
       "expression": "READER_UI+'chapterEndNumber'",
       "fragments": [
         "chapterEndNumber"
@@ -246210,7 +248618,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 214,
+      "line": 216,
       "expression": "READER_UI+'markChapter'",
       "fragments": [
         "markChapter"
@@ -246220,7 +248628,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 219,
+      "line": 221,
       "expression": "chapter.title.zh+' · Leafhour'",
       "fragments": [
         " · Leafhour"
@@ -246230,7 +248638,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 220,
+      "line": 222,
       "expression": "chapter.number+' / '",
       "fragments": [
         " / "
@@ -246240,7 +248648,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 220,
+      "line": 222,
       "expression": "(index+1)+' / '",
       "fragments": [
         " / "
@@ -246250,7 +248658,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 257,
+      "line": 259,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -246258,7 +248666,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 270,
+      "line": 272,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -246266,7 +248674,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 279,
+      "line": 281,
       "expression": "Math.min(nodeRect.width,innerWidth-24)+'px'",
       "fragments": [
         "px"
@@ -246276,7 +248684,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 283,
+      "line": 285,
       "expression": "placement.left+'px'",
       "fragments": [
         "px"
@@ -246286,7 +248694,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 283,
+      "line": 285,
       "expression": "placement.top+'px'",
       "fragments": [
         "px"
@@ -246296,7 +248704,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 284,
+      "line": 286,
       "expression": "(at.left-tools.getBoundingClientRect().left)+'px'",
       "fragments": [
         "px"
@@ -246306,7 +248714,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 284,
+      "line": 286,
       "expression": "(at.top-tools.getBoundingClientRect().top)+'px'",
       "fragments": [
         "px"
@@ -246316,7 +248724,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 284,
+      "line": 286,
       "expression": "at.maxHeight+'px'",
       "fragments": [
         "px"
@@ -246326,7 +248734,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 287,
+      "line": 289,
       "expression": "id+':'",
       "fragments": [
         ":"
@@ -246336,7 +248744,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 287,
+      "line": 289,
       "expression": "'[data-id=\"'+id+'\"]'",
       "fragments": [
         "[data-id=\"",
@@ -246347,7 +248755,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 287,
+      "line": 289,
       "expression": "'[data-id=\"'+id",
       "fragments": [
         "[data-id=\""
@@ -246357,7 +248765,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 288,
+      "line": 290,
       "expression": "READER_UI+'translation'",
       "fragments": [
         "translation"
@@ -246367,7 +248775,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 295,
+      "line": 297,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -246375,7 +248783,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 300,
+      "line": 302,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -246383,7 +248791,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 301,
+      "line": 303,
       "expression": "part.variant",
       "fragments": [],
       "unresolved": true
@@ -246391,7 +248799,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 301,
+      "line": 303,
       "expression": "READER_UI+'highlightChanged'",
       "fragments": [
         "highlightChanged"
@@ -246401,7 +248809,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 305,
+      "line": 307,
       "expression": "'[data-id=\"'+selectedId+'\"]'",
       "fragments": [
         "[data-id=\"",
@@ -246412,7 +248820,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 305,
+      "line": 307,
       "expression": "'[data-id=\"'+selectedId",
       "fragments": [
         "[data-id=\""
@@ -246422,7 +248830,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 321,
+      "line": 323,
       "expression": "'[data-id=\"'+part.passageId+'\"]'",
       "fragments": [
         "[data-id=\"",
@@ -246433,7 +248841,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 321,
+      "line": 323,
       "expression": "'[data-id=\"'+part.passageId",
       "fragments": [
         "[data-id=\""
@@ -246443,7 +248851,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 326,
+      "line": 328,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -246451,7 +248859,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 326,
+      "line": 328,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -246459,7 +248867,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 327,
+      "line": 329,
       "expression": "READER_UI+'sourceLabel.'+(excerpt?'excerpt':'passage')+'.'",
       "fragments": [
         "sourceLabel.",
@@ -246470,7 +248878,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 327,
+      "line": 329,
       "expression": "READER_UI+'sourceLabel.'",
       "fragments": [
         "sourceLabel."
@@ -246480,7 +248888,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 332,
+      "line": 334,
       "expression": "variant",
       "fragments": [],
       "unresolved": true
@@ -246488,7 +248896,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 332,
+      "line": 334,
       "expression": "READER_UI+'missing.'",
       "fragments": [
         "missing."
@@ -246498,7 +248906,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 336,
+      "line": 338,
       "expression": "READER_UI+'returnQuote'",
       "fragments": [
         "returnQuote"
@@ -246508,7 +248916,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 339,
+      "line": 341,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -246516,7 +248924,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 339,
+      "line": 341,
       "expression": "'[data-id=\"'+id+'\"]'",
       "fragments": [
         "[data-id=\"",
@@ -246527,7 +248935,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 339,
+      "line": 341,
       "expression": "'[data-id=\"'+id",
       "fragments": [
         "[data-id=\""
@@ -246537,7 +248945,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 344,
+      "line": 346,
       "expression": "READER_UI+'loginPreparing'",
       "fragments": [
         "loginPreparing"
@@ -246547,7 +248955,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 345,
+      "line": 347,
       "expression": "READER_UI+'loginNotes'",
       "fragments": [
         "loginNotes"
@@ -246557,7 +248965,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 345,
+      "line": 347,
       "expression": "READER_UI+'loginPassage'",
       "fragments": [
         "loginPassage"
@@ -246567,7 +248975,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 347,
+      "line": 349,
       "expression": "READER_UI+'recordsLoading'",
       "fragments": [
         "recordsLoading"
@@ -246577,7 +248985,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 348,
+      "line": 350,
       "expression": "READER_UI+'recordsUnavailable'",
       "fragments": [
         "recordsUnavailable"
@@ -246587,7 +248995,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 348,
+      "line": 350,
       "expression": "READER_UI+'recordsReading'",
       "fragments": [
         "recordsReading"
@@ -246597,7 +249005,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 348,
+      "line": 350,
       "expression": "READER_UI+'recordsRetry'",
       "fragments": [
         "recordsRetry"
@@ -246607,27 +249015,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 348,
-      "expression": "READER_UI+'recordsFailed'",
-      "fragments": [
-        "recordsFailed"
-      ],
-      "unresolved": true
-    },
-    {
-      "kind": "concatenation",
-      "file": "app/reader.js",
-      "line": 352,
-      "expression": "READER_UI+'progressConflict'",
-      "fragments": [
-        "progressConflict"
-      ],
-      "unresolved": true
-    },
-    {
-      "kind": "concatenation",
-      "file": "app/reader.js",
-      "line": 353,
+      "line": 350,
       "expression": "READER_UI+'recordsFailed'",
       "fragments": [
         "recordsFailed"
@@ -246638,6 +249026,26 @@
       "kind": "concatenation",
       "file": "app/reader.js",
       "line": 354,
+      "expression": "READER_UI+'progressConflict'",
+      "fragments": [
+        "progressConflict"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "app/reader.js",
+      "line": 355,
+      "expression": "READER_UI+'recordsFailed'",
+      "fragments": [
+        "recordsFailed"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "app/reader.js",
+      "line": 356,
       "expression": "'[data-panel-tab=\"'+panelTab+'\"]'",
       "fragments": [
         "[data-panel-tab=\"",
@@ -246648,7 +249056,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 354,
+      "line": 356,
       "expression": "'[data-panel-tab=\"'+panelTab",
       "fragments": [
         "[data-panel-tab=\""
@@ -246658,7 +249066,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 359,
+      "line": 361,
       "expression": "READER_SHELL+'myRecords'",
       "fragments": [
         "myRecords"
@@ -246668,7 +249076,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 359,
+      "line": 361,
       "expression": "READER_UI+'annotationTitle'",
       "fragments": [
         "annotationTitle"
@@ -246678,7 +249086,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 359,
+      "line": 361,
       "expression": "READER_SHELL+'leaveQuestion'",
       "fragments": [
         "leaveQuestion"
@@ -246688,7 +249096,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 359,
+      "line": 361,
       "expression": "READER_UI+'writeThought'",
       "fragments": [
         "writeThought"
@@ -246698,7 +249106,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 364,
+      "line": 366,
       "expression": "'panel-tab-'+panelTab",
       "fragments": [
         "panel-tab-"
@@ -246708,7 +249116,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 368,
+      "line": 370,
       "expression": "READER_SHELL+'myRecords'",
       "fragments": [
         "myRecords"
@@ -246718,7 +249126,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 371,
+      "line": 373,
       "expression": "READER_UI+'noRecords'",
       "fragments": [
         "noRecords"
@@ -246728,7 +249136,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 375,
+      "line": 377,
       "expression": "READER_UI+'annotation.'+(['difficulty','paradox','example','context','cross_reference','term'].includes(n.kind)?n.kind:'note')+'.'",
       "fragments": [
         "annotation.",
@@ -246739,7 +249147,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 375,
+      "line": 377,
       "expression": "READER_UI+'annotation.'",
       "fragments": [
         "annotation."
@@ -246749,7 +249157,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 376,
+      "line": 378,
       "expression": "READER_UI+'keyTerms'",
       "fragments": [
         "keyTerms"
@@ -246759,7 +249167,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 376,
+      "line": 378,
       "expression": "t.zh+' · '",
       "fragments": [
         " · "
@@ -246769,7 +249177,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 377,
+      "line": 379,
       "expression": "READER_UI+'noAnnotations'",
       "fragments": [
         "noAnnotations"
@@ -246779,7 +249187,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 379,
+      "line": 381,
       "expression": "type+':'",
       "fragments": [
         ":"
@@ -246789,7 +249197,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 383,
+      "line": 385,
       "expression": "key",
       "fragments": [],
       "unresolved": true
@@ -246797,7 +249205,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 384,
+      "line": 386,
       "expression": "READER_UI+'questionLabel'",
       "fragments": [
         "questionLabel"
@@ -246807,7 +249215,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 384,
+      "line": 386,
       "expression": "READER_UI+'thoughtLabel'",
       "fragments": [
         "thoughtLabel"
@@ -246817,7 +249225,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 384,
+      "line": 386,
       "expression": "READER_UI+'questionPlaceholder'",
       "fragments": [
         "questionPlaceholder"
@@ -246827,7 +249235,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 384,
+      "line": 386,
       "expression": "READER_UI+'thoughtPlaceholder'",
       "fragments": [
         "thoughtPlaceholder"
@@ -246837,7 +249245,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 386,
+      "line": 388,
       "expression": "READER_SHELL+'saveQuestion'",
       "fragments": [
         "saveQuestion"
@@ -246847,7 +249255,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 386,
+      "line": 388,
       "expression": "READER_UI+'saveThought'",
       "fragments": [
         "saveThought"
@@ -246857,7 +249265,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 386,
+      "line": 388,
       "expression": "READER_UI+'pendingNote'",
       "fragments": [
         "pendingNote"
@@ -246867,7 +249275,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 386,
+      "line": 388,
       "expression": "READER_UI+'empty'",
       "fragments": [
         "empty"
@@ -246877,7 +249285,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 392,
+      "line": 394,
       "expression": "'/api/'+key",
       "fragments": [
         "/api/"
@@ -246887,7 +249295,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 392,
+      "line": 394,
       "expression": "key",
       "fragments": [],
       "unresolved": true
@@ -246895,7 +249303,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 392,
+      "line": 394,
       "expression": "key",
       "fragments": [],
       "unresolved": true
@@ -246903,7 +249311,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 396,
+      "line": 398,
       "expression": "key",
       "fragments": [],
       "unresolved": true
@@ -246911,7 +249319,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 399,
+      "line": 401,
       "expression": "'[data-panel-tab=\"'+tab+'\"]'",
       "fragments": [
         "[data-panel-tab=\"",
@@ -246922,7 +249330,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 399,
+      "line": 401,
       "expression": "'[data-panel-tab=\"'+tab",
       "fragments": [
         "[data-panel-tab=\""
@@ -246932,7 +249340,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 411,
+      "line": 413,
       "expression": "'/api/reading?'+query",
       "fragments": [
         "/api/reading?"
@@ -246942,7 +249350,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 417,
+      "line": 419,
       "expression": "READER_UI+'draftUnavailable'",
       "fragments": [
         "draftUnavailable"
@@ -246952,7 +249360,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 417,
+      "line": 419,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -246960,7 +249368,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 418,
+      "line": 420,
       "expression": "'/api/chapters/'+encodeURIComponent(id)+'?contentVersion='",
       "fragments": [
         "/api/chapters/",
@@ -246971,7 +249379,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 418,
+      "line": 420,
       "expression": "'/api/chapters/'+encodeURIComponent(id)",
       "fragments": [
         "/api/chapters/"
@@ -246981,7 +249389,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 419,
+      "line": 421,
       "expression": "READER_UI+'chapterLoading'",
       "fragments": [
         "chapterLoading"
@@ -246991,7 +249399,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 419,
+      "line": 421,
       "expression": "READER_UI+'chapterFailed'",
       "fragments": [
         "chapterFailed"
@@ -247001,7 +249409,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 431,
+      "line": 433,
       "expression": "location.pathname+'?'",
       "fragments": [
         "?"
@@ -247011,7 +249419,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 432,
+      "line": 434,
       "expression": "READER_UI+'chineseOriginal'",
       "fragments": [
         "chineseOriginal"
@@ -247021,7 +249429,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 432,
+      "line": 434,
       "expression": "READER_SHELL+'englishOriginal'",
       "fragments": [
         "englishOriginal"
@@ -247031,7 +249439,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 432,
+      "line": 434,
       "expression": "READER_SHELL+'chineseTranslation'",
       "fragments": [
         "chineseTranslation"
@@ -247041,7 +249449,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 432,
+      "line": 434,
       "expression": "READER_SHELL+'bilingual'",
       "fragments": [
         "bilingual"
@@ -247051,7 +249459,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 432,
+      "line": 434,
       "expression": "READER_UI+'sourceAndTranslation'",
       "fragments": [
         "sourceAndTranslation"
@@ -247061,7 +249469,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 434,
+      "line": 436,
       "expression": "location.pathname+'?'",
       "fragments": [
         "?"
@@ -247071,7 +249479,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 435,
+      "line": 437,
       "expression": "READER_UI+'citationInvalid'",
       "fragments": [
         "citationInvalid"
@@ -247081,7 +249489,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 435,
+      "line": 437,
       "expression": "READER_SHELL+'loadError'",
       "fragments": [
         "loadError"
@@ -247091,7 +249499,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 435,
+      "line": 437,
       "expression": "READER_UI+'loginCitation'",
       "fragments": [
         "loginCitation"
@@ -247101,7 +249509,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 446,
+      "line": 448,
       "expression": "READER_UI+'savedSourceFailed'",
       "fragments": [
         "savedSourceFailed"
@@ -247111,7 +249519,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 448,
+      "line": 450,
       "expression": "READER_UI+'savedPositionReady'",
       "fragments": [
         "savedPositionReady"
@@ -247121,7 +249529,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 466,
+      "line": 468,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -247129,7 +249537,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 467,
+      "line": 469,
       "expression": "READER_UI+'selectAgain'",
       "fragments": [
         "selectAgain"
@@ -247139,7 +249547,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 476,
+      "line": 478,
       "expression": "'[data-id=\"'+selectedId+'\"]'",
       "fragments": [
         "[data-id=\"",
@@ -247150,7 +249558,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 476,
+      "line": 478,
       "expression": "'[data-id=\"'+selectedId",
       "fragments": [
         "[data-id=\""
@@ -247160,7 +249568,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 497,
+      "line": 499,
       "expression": "READER_UI+'appearanceReset'",
       "fragments": [
         "appearanceReset"
@@ -247170,7 +249578,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 500,
+      "line": 502,
       "expression": "selectedId",
       "fragments": [],
       "unresolved": true
@@ -247178,7 +249586,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 500,
+      "line": 502,
       "expression": "selectedId",
       "fragments": [],
       "unresolved": true
@@ -247186,7 +249594,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 500,
+      "line": 502,
       "expression": "'[data-id=\"'+selectedId+'\"]'",
       "fragments": [
         "[data-id=\"",
@@ -247197,7 +249605,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 500,
+      "line": 502,
       "expression": "'[data-id=\"'+selectedId",
       "fragments": [
         "[data-id=\""
@@ -247207,7 +249615,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 500,
+      "line": 502,
       "expression": "READER_UI+'translation'",
       "fragments": [
         "translation"
@@ -247217,7 +249625,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 504,
+      "line": 506,
       "expression": "selectedId",
       "fragments": [],
       "unresolved": true
@@ -247225,7 +249633,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 504,
+      "line": 506,
       "expression": "'[data-id=\"'+selectedId+'\"]'",
       "fragments": [
         "[data-id=\"",
@@ -247236,7 +249644,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 504,
+      "line": 506,
       "expression": "'[data-id=\"'+selectedId",
       "fragments": [
         "[data-id=\""
@@ -247246,7 +249654,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 511,
+      "line": 513,
       "expression": "next",
       "fragments": [],
       "unresolved": true
@@ -247254,7 +249662,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 511,
+      "line": 513,
       "expression": "next",
       "fragments": [],
       "unresolved": true
@@ -247262,7 +249670,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 515,
+      "line": 517,
       "expression": "'[data-id=\"'+selectedId+'\"]'",
       "fragments": [
         "[data-id=\"",
@@ -247273,7 +249681,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 515,
+      "line": 517,
       "expression": "'[data-id=\"'+selectedId",
       "fragments": [
         "[data-id=\""
@@ -247283,7 +249691,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 516,
+      "line": 518,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -247291,7 +249699,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 516,
+      "line": 518,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -247299,7 +249707,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 519,
+      "line": 521,
       "expression": "READER_UI+'exported'",
       "fragments": [
         "exported"
@@ -247309,7 +249717,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 520,
+      "line": 522,
       "expression": "READER_UI+'exportFailed'",
       "fragments": [
         "exportFailed"
@@ -247319,7 +249727,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 522,
+      "line": 524,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -247327,7 +249735,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 522,
+      "line": 524,
       "expression": "READER_UI+'imported'",
       "fragments": [
         "imported"
@@ -247337,7 +249745,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 522,
+      "line": 524,
       "expression": "READER_UI+'importFailed'",
       "fragments": [
         "importFailed"
@@ -247347,7 +249755,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 523,
+      "line": 525,
       "expression": "n",
       "fragments": [],
       "unresolved": true
@@ -247355,7 +249763,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 523,
+      "line": 525,
       "expression": "n",
       "fragments": [],
       "unresolved": true
@@ -247363,7 +249771,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 523,
+      "line": 525,
       "expression": "n",
       "fragments": [],
       "unresolved": true
@@ -247371,7 +249779,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 523,
+      "line": 525,
       "expression": "n",
       "fragments": [],
       "unresolved": true
@@ -247379,7 +249787,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 532,
+      "line": 534,
       "expression": "READER_UI+'positionReturned'",
       "fragments": [
         "positionReturned"
@@ -247389,7 +249797,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 533,
+      "line": 535,
       "expression": "READER_UI+'positionKept'",
       "fragments": [
         "positionKept"
@@ -247399,7 +249807,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 535,
+      "line": 537,
       "expression": "READER_UI+'progressConflict'",
       "fragments": [
         "progressConflict"
@@ -247409,7 +249817,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 543,
+      "line": 545,
       "expression": "READER_UI+'translationSaved'",
       "fragments": [
         "translationSaved"
@@ -247419,7 +249827,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 543,
+      "line": 545,
       "expression": "READER_UI+'previousTranslationSaved'",
       "fragments": [
         "previousTranslationSaved"
@@ -247429,7 +249837,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 549,
+      "line": 551,
       "expression": "field",
       "fragments": [],
       "unresolved": true
@@ -247437,7 +249845,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 549,
+      "line": 551,
       "expression": "field",
       "fragments": [],
       "unresolved": true
@@ -259384,26 +261792,6 @@
     {
       "kind": "concatenation",
       "file": "server/server.mjs",
-      "line": 22,
-      "expression": "'/'+file",
-      "fragments": [
-        "/"
-      ],
-      "unresolved": true
-    },
-    {
-      "kind": "concatenation",
-      "file": "server/server.mjs",
-      "line": 22,
-      "expression": "'app/'+file",
-      "fragments": [
-        "app/"
-      ],
-      "unresolved": true
-    },
-    {
-      "kind": "concatenation",
-      "file": "server/server.mjs",
       "line": 23,
       "expression": "'/'+file",
       "fragments": [
@@ -259424,7 +261812,7 @@
     {
       "kind": "concatenation",
       "file": "server/server.mjs",
-      "line": 28,
+      "line": 24,
       "expression": "'/'+file",
       "fragments": [
         "/"
@@ -259434,7 +261822,7 @@
     {
       "kind": "concatenation",
       "file": "server/server.mjs",
-      "line": 28,
+      "line": 24,
       "expression": "'app/'+file",
       "fragments": [
         "app/"
@@ -259444,7 +261832,7 @@
     {
       "kind": "concatenation",
       "file": "server/server.mjs",
-      "line": 44,
+      "line": 29,
       "expression": "'/'+file",
       "fragments": [
         "/"
@@ -259454,7 +261842,7 @@
     {
       "kind": "concatenation",
       "file": "server/server.mjs",
-      "line": 44,
+      "line": 29,
       "expression": "'app/'+file",
       "fragments": [
         "app/"
@@ -259464,67 +261852,7 @@
     {
       "kind": "concatenation",
       "file": "server/server.mjs",
-      "line": 45,
-      "expression": "'/'+file",
-      "fragments": [
-        "/"
-      ],
-      "unresolved": true
-    },
-    {
-      "kind": "concatenation",
-      "file": "server/server.mjs",
-      "line": 45,
-      "expression": "'app/'+file",
-      "fragments": [
-        "app/"
-      ],
-      "unresolved": true
-    },
-    {
-      "kind": "concatenation",
-      "file": "server/server.mjs",
-      "line": 53,
-      "expression": "'/'+file",
-      "fragments": [
-        "/"
-      ],
-      "unresolved": true
-    },
-    {
-      "kind": "concatenation",
-      "file": "server/server.mjs",
-      "line": 53,
-      "expression": "'app/'+file",
-      "fragments": [
-        "app/"
-      ],
-      "unresolved": true
-    },
-    {
-      "kind": "concatenation",
-      "file": "server/server.mjs",
-      "line": 55,
-      "expression": "'/'+file",
-      "fragments": [
-        "/"
-      ],
-      "unresolved": true
-    },
-    {
-      "kind": "concatenation",
-      "file": "server/server.mjs",
-      "line": 55,
-      "expression": "'app/'+file",
-      "fragments": [
-        "app/"
-      ],
-      "unresolved": true
-    },
-    {
-      "kind": "concatenation",
-      "file": "server/server.mjs",
-      "line": 61,
+      "line": 39,
       "expression": "'app/'+asset.file",
       "fragments": [
         "app/"
@@ -259534,7 +261862,7 @@
     {
       "kind": "concatenation",
       "file": "server/server.mjs",
-      "line": 62,
+      "line": 47,
       "expression": "'/'+file",
       "fragments": [
         "/"
@@ -259544,7 +261872,67 @@
     {
       "kind": "concatenation",
       "file": "server/server.mjs",
-      "line": 62,
+      "line": 47,
+      "expression": "'app/'+file",
+      "fragments": [
+        "app/"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "server/server.mjs",
+      "line": 48,
+      "expression": "'/'+file",
+      "fragments": [
+        "/"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "server/server.mjs",
+      "line": 48,
+      "expression": "'app/'+file",
+      "fragments": [
+        "app/"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "server/server.mjs",
+      "line": 56,
+      "expression": "'/'+file",
+      "fragments": [
+        "/"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "server/server.mjs",
+      "line": 56,
+      "expression": "'app/'+file",
+      "fragments": [
+        "app/"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "server/server.mjs",
+      "line": 58,
+      "expression": "'/'+file",
+      "fragments": [
+        "/"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "server/server.mjs",
+      "line": 58,
       "expression": "'app/'+file",
       "fragments": [
         "app/"
@@ -259555,17 +261943,7 @@
       "kind": "concatenation",
       "file": "server/server.mjs",
       "line": 64,
-      "expression": "'/'+file",
-      "fragments": [
-        "/"
-      ],
-      "unresolved": true
-    },
-    {
-      "kind": "concatenation",
-      "file": "server/server.mjs",
-      "line": 64,
-      "expression": "'app/'+file",
+      "expression": "'app/'+asset.file",
       "fragments": [
         "app/"
       ],
@@ -259575,6 +261953,46 @@
       "kind": "concatenation",
       "file": "server/server.mjs",
       "line": 65,
+      "expression": "'/'+file",
+      "fragments": [
+        "/"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "server/server.mjs",
+      "line": 65,
+      "expression": "'app/'+file",
+      "fragments": [
+        "app/"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "server/server.mjs",
+      "line": 67,
+      "expression": "'/'+file",
+      "fragments": [
+        "/"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "server/server.mjs",
+      "line": 67,
+      "expression": "'app/'+file",
+      "fragments": [
+        "app/"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "server/server.mjs",
+      "line": 68,
       "expression": "'/assets/atmospheres/'+name+'.jpg'",
       "fragments": [
         "/assets/atmospheres/",
@@ -259585,7 +262003,7 @@
     {
       "kind": "concatenation",
       "file": "server/server.mjs",
-      "line": 65,
+      "line": 68,
       "expression": "'/assets/atmospheres/'+name",
       "fragments": [
         "/assets/atmospheres/"
@@ -259595,7 +262013,7 @@
     {
       "kind": "concatenation",
       "file": "server/server.mjs",
-      "line": 65,
+      "line": 68,
       "expression": "'app/assets/atmospheres/'+name+'.jpg'",
       "fragments": [
         "app/assets/atmospheres/",
@@ -259606,7 +262024,7 @@
     {
       "kind": "concatenation",
       "file": "server/server.mjs",
-      "line": 65,
+      "line": 68,
       "expression": "'app/assets/atmospheres/'+name",
       "fragments": [
         "app/assets/atmospheres/"
@@ -259616,7 +262034,7 @@
     {
       "kind": "concatenation",
       "file": "server/server.mjs",
-      "line": 66,
+      "line": 69,
       "expression": "'/assets/atmospheres/'+name+'.mp3'",
       "fragments": [
         "/assets/atmospheres/",
@@ -259627,7 +262045,7 @@
     {
       "kind": "concatenation",
       "file": "server/server.mjs",
-      "line": 66,
+      "line": 69,
       "expression": "'/assets/atmospheres/'+name",
       "fragments": [
         "/assets/atmospheres/"
@@ -259637,7 +262055,7 @@
     {
       "kind": "concatenation",
       "file": "server/server.mjs",
-      "line": 66,
+      "line": 69,
       "expression": "'app/assets/atmospheres/'+name+'.mp3'",
       "fragments": [
         "app/assets/atmospheres/",
@@ -259648,7 +262066,7 @@
     {
       "kind": "concatenation",
       "file": "server/server.mjs",
-      "line": 66,
+      "line": 69,
       "expression": "'app/assets/atmospheres/'+name",
       "fragments": [
         "app/assets/atmospheres/"
@@ -259658,7 +262076,7 @@
     {
       "kind": "concatenation",
       "file": "server/server.mjs",
-      "line": 84,
+      "line": 87,
       "expression": "recordsPath+'.pending'",
       "fragments": [
         ".pending"
@@ -259668,7 +262086,7 @@
     {
       "kind": "concatenation",
       "file": "server/server.mjs",
-      "line": 110,
+      "line": 113,
       "expression": "type+'; charset=utf-8'",
       "fragments": [
         "; charset=utf-8"
@@ -259678,7 +262096,7 @@
     {
       "kind": "concatenation",
       "file": "server/server.mjs",
-      "line": 113,
+      "line": 116,
       "expression": "'127.0.0.1:'+port",
       "fragments": [
         "127.0.0.1:"
@@ -259688,7 +262106,7 @@
     {
       "kind": "concatenation",
       "file": "server/server.mjs",
-      "line": 113,
+      "line": 116,
       "expression": "'localhost:'+port",
       "fragments": [
         "localhost:"
@@ -259698,7 +262116,7 @@
     {
       "kind": "concatenation",
       "file": "server/server.mjs",
-      "line": 113,
+      "line": 116,
       "expression": "'[::1]:'+port",
       "fragments": [
         "[::1]:"
@@ -259708,7 +262126,7 @@
     {
       "kind": "concatenation",
       "file": "server/server.mjs",
-      "line": 115,
+      "line": 118,
       "expression": "'http://'+host",
       "fragments": [
         "http://"
@@ -259718,7 +262136,7 @@
     {
       "kind": "concatenation",
       "file": "server/server.mjs",
-      "line": 123,
+      "line": 126,
       "expression": "'http://'+host",
       "fragments": [
         "http://"
@@ -259728,7 +262146,7 @@
     {
       "kind": "computed-member",
       "file": "server/server.mjs",
-      "line": 130,
+      "line": 133,
       "expression": "1",
       "fragments": [],
       "unresolved": true
@@ -259736,7 +262154,7 @@
     {
       "kind": "computed-member",
       "file": "server/server.mjs",
-      "line": 132,
+      "line": 135,
       "expression": "1",
       "fragments": [],
       "unresolved": true
@@ -259744,7 +262162,7 @@
     {
       "kind": "computed-member",
       "file": "server/server.mjs",
-      "line": 132,
+      "line": 135,
       "expression": "2",
       "fragments": [],
       "unresolved": true
@@ -259752,14 +262170,6 @@
     {
       "kind": "computed-member",
       "file": "server/server.mjs",
-      "line": 132,
-      "expression": "key",
-      "fragments": [],
-      "unresolved": true
-    },
-    {
-      "kind": "computed-member",
-      "file": "server/server.mjs",
       "line": 135,
       "expression": "key",
       "fragments": [],
@@ -259768,7 +262178,15 @@
     {
       "kind": "computed-member",
       "file": "server/server.mjs",
-      "line": 135,
+      "line": 138,
+      "expression": "key",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/server.mjs",
+      "line": 138,
       "expression": "key",
       "fragments": [],
       "unresolved": true
@@ -259776,7 +262194,7 @@
     {
       "kind": "concatenation",
       "file": "server/server.mjs",
-      "line": 159,
+      "line": 162,
       "expression": "'attachment; filename=\"'+filename+'\"'",
       "fragments": [
         "attachment; filename=\"",
@@ -259787,7 +262205,7 @@
     {
       "kind": "concatenation",
       "file": "server/server.mjs",
-      "line": 159,
+      "line": 162,
       "expression": "'attachment; filename=\"'+filename",
       "fragments": [
         "attachment; filename=\""
@@ -259797,7 +262215,7 @@
     {
       "kind": "computed-member",
       "file": "server/server.mjs",
-      "line": 170,
+      "line": 173,
       "expression": "1",
       "fragments": [],
       "unresolved": true
@@ -259805,7 +262223,7 @@
     {
       "kind": "computed-member",
       "file": "server/server.mjs",
-      "line": 170,
+      "line": 173,
       "expression": "1",
       "fragments": [],
       "unresolved": true
@@ -259813,7 +262231,7 @@
     {
       "kind": "concatenation",
       "file": "server/server.mjs",
-      "line": 178,
+      "line": 181,
       "expression": "'Leafhour 已启动：http://'+host+':'",
       "fragments": [
         "Leafhour 已启动：http://",
@@ -259824,7 +262242,7 @@
     {
       "kind": "concatenation",
       "file": "server/server.mjs",
-      "line": 178,
+      "line": 181,
       "expression": "'Leafhour 已启动：http://'+host",
       "fragments": [
         "Leafhour 已启动：http://"
@@ -259978,6 +262396,90 @@
       "kind": "concatenation",
       "file": "server/structured-catalog.mjs",
       "line": 11,
+      "expression": "'Invalid catalog source layout: '+entry.id",
+      "fragments": [
+        "Invalid catalog source layout: "
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/structured-catalog.mjs",
+      "line": 13,
+      "expression": "Number(match[1])",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/structured-catalog.mjs",
+      "line": 13,
+      "expression": "1",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/structured-catalog.mjs",
+      "line": 14,
+      "expression": "1",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/structured-catalog.mjs",
+      "line": 14,
+      "expression": "1",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/structured-catalog.mjs",
+      "line": 14,
+      "expression": "2",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/structured-catalog.mjs",
+      "line": 14,
+      "expression": "2",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/structured-catalog.mjs",
+      "line": 14,
+      "expression": "Number(match[2])",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/structured-catalog.mjs",
+      "line": 14,
+      "expression": "2",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "server/structured-catalog.mjs",
+      "line": 14,
+      "expression": "'Invalid catalog source layout: '+entry.id",
+      "fragments": [
+        "Invalid catalog source layout: "
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "server/structured-catalog.mjs",
+      "line": 17,
       "expression": "'Invalid catalog chapter: '+entry.id",
       "fragments": [
         "Invalid catalog chapter: "
@@ -259987,7 +262489,7 @@
     {
       "kind": "concatenation",
       "file": "server/structured-catalog.mjs",
-      "line": 12,
+      "line": 18,
       "expression": "'ch'+String(index+1).padStart(2,'0')",
       "fragments": [
         "ch"
@@ -259997,7 +262499,7 @@
     {
       "kind": "concatenation",
       "file": "server/structured-catalog.mjs",
-      "line": 12,
+      "line": 18,
       "expression": "hash.slice(0,16)+'-p'",
       "fragments": [
         "-p"
@@ -260007,7 +262509,37 @@
     {
       "kind": "computed-member",
       "file": "server/structured-catalog.mjs",
-      "line": 14,
+      "line": 18,
+      "expression": "index+':'+paragraphIndex",
+      "fragments": [
+        ":"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "server/structured-catalog.mjs",
+      "line": 18,
+      "expression": "index+':'",
+      "fragments": [
+        ":"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "server/structured-catalog.mjs",
+      "line": 20,
+      "expression": "'Invalid catalog source headings: '+entry.id",
+      "fragments": [
+        "Invalid catalog source headings: "
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/structured-catalog.mjs",
+      "line": 21,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -260015,7 +262547,7 @@
     {
       "kind": "computed-member",
       "file": "server/structured-catalog.mjs",
-      "line": 16,
+      "line": 23,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -260023,10 +262555,46 @@
     {
       "kind": "concatenation",
       "file": "server/structured-catalog.mjs",
-      "line": 18,
+      "line": 25,
       "expression": "'Catalog has no body: '+entry.id",
       "fragments": [
         "Catalog has no body: "
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "server/structured-catalog.mjs",
+      "line": 27,
+      "expression": "'Invalid catalog source resources: '+entry.id",
+      "fragments": [
+        "Invalid catalog source resources: "
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/structured-catalog.mjs",
+      "line": 29,
+      "expression": "item.paragraphIndex",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/structured-catalog.mjs",
+      "line": 29,
+      "expression": "item.chapterIndex",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "server/structured-catalog.mjs",
+      "line": 30,
+      "expression": "'Invalid catalog source resource: '+entry.id",
+      "fragments": [
+        "Invalid catalog source resource: "
       ],
       "unresolved": true
     },
@@ -260134,12 +262702,12 @@
     "duplicateKeys": 0,
     "reviewedItems": 15,
     "unreviewedItems": 2211,
-    "candidates": 4873,
-    "candidatesUnreviewed": 4870,
-    "candidatesProtected": 132,
+    "candidates": 4985,
+    "candidatesUnreviewed": 4982,
+    "candidatesProtected": 135,
     "itemsProtected": 9,
-    "dynamicConsumers": 3134,
-    "consumerReferences": 1597,
+    "dynamicConsumers": 3152,
+    "consumerReferences": 1629,
     "keysWithoutStaticConsumers": 1200,
     "reviewedLocaleValues": 60,
     "unreviewedLocaleValues": 8844,

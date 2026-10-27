@@ -4,7 +4,7 @@
 
 环境变量统一在 [`.env.example`](../.env.example) 的“托管部署”一节；旧的 `.env.hosted.example` 已合并并移除。在 Vercel 的 Environment Variables 逐项填写四个必填值，需要 AI 文字功能时再填 `DEEPSEEK_API_KEY`。模板中的托管项默认注释，不会被本机直接加载。函数只读取平台环境变量，不读取本机 `.env`；初始化只打印配置状态，不验证或输出密钥。高级选项与旧配置兼容见 [配置说明](../docs/configuration.md)。
 
-官网 `/`、书房 `/library` 和阅读页 `/read?book=ID` 使用同一套网页与领域服务。默认 32 本英文阅读版可匿名阅读；原有三本保留中文开篇试读，许可与出处见 `catalog/manifest.json`。私人样书不会迁移到公开入口；旧单书 `/api/book`、`/api/records` 等接口返回 404。
+官网 `/`、书房 `/library` 和阅读页 `/read?book=ID` 使用同一套网页与领域服务。默认 64 册／版本（中文原典、英文原著或旧英译）可匿名阅读；原有三本保留中文开篇试读，许可与出处见 `catalog/manifest.json`。私人样书不会迁移到公开入口；旧单书 `/api/book`、`/api/records` 等接口返回 404。
 
 应用先执行 `supabase/migrations/202610130001_hosted_library.sql`。它新增 `reader_documents` 与只供服务端调用的比较写入函数，并创建 20 MB 限制的私人 `reader-originals` 存储桶；不修改现有 `reader_books` 和 `reader_states`。RLS 开启，匿名和普通认证角色无数据表权限。
 

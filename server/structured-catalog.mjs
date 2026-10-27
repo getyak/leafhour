@@ -7,18 +7,33 @@ export function structuredCatalogBook(entry,bytes){
  if(document.schemaVersion!==1||!Array.isArray(document.chapters)||!document.chapters.length)throw Error('Invalid structured catalog: '+entry.id);
  const hash=digest(bytes),book=makeBook({bookId:entry.id,filename:entry.file,sourceHash:hash,extracted:{format:'json',review:'extracted_unreviewed',pages:[{page:null,text:document.chapters[0].paragraphs.join('\n\n')}]},title:entry.title,author:entry.author,visibility:'public',sourceUrl:entry.sourceUrl,license:document.license});
  book.chapters=[];book.sections=[];let count=0,number=0;
+ const layouts=document.layouts||{};
+ if(!layouts||typeof layouts!=='object'||Array.isArray(layouts))throw Error('Invalid catalog source layout: '+entry.id);
+ for(const [key,layout] of Object.entries(layouts)){
+  const match=/^(\d+):(\d+)$/.exec(key),chapter=match&&document.chapters[Number(match[1])];
+  if(!match||String(Number(match[1]))!==match[1]||String(Number(match[2]))!==match[2]||!chapter?.paragraphs?.[Number(match[2])]||!layout||layout.presentation!=='preformatted'||Object.keys(layout).some(k=>k!=='presentation'))throw Error('Invalid catalog source layout: '+entry.id);
+ }
  for(const [index,chapter] of document.chapters.entries()){
   if(!chapter.title||!['body','frontmatter','appendix'].includes(chapter.kind)||!Array.isArray(chapter.paragraphs)||!chapter.paragraphs.length||chapter.paragraphs.some(p=>typeof p!=='string'||!p.trim()||p.length>100000))throw Error('Invalid catalog chapter: '+entry.id);
-  const id='ch'+String(index+1).padStart(2,'0'),paragraphs=chapter.paragraphs.map(original=>({id:hash.slice(0,16)+'-p'+String(++count).padStart(5,'0'),original,translations:{},source:{pdfPage:null,printedPage:null,review:'extracted_unreviewed'},annotationIds:[],termIds:[]}));
+  const id='ch'+String(index+1).padStart(2,'0'),paragraphs=chapter.paragraphs.map((original,paragraphIndex)=>({id:hash.slice(0,16)+'-p'+String(++count).padStart(5,'0'),original,translations:{},source:{pdfPage:null,printedPage:null,review:'extracted_unreviewed',...(layouts[index+':'+paragraphIndex]?{presentation:'preformatted'}:{})},annotationIds:[],termIds:[]}));
   const title={zh:chapter.title,en:chapter.title};
-  book.chapters.push({id,number:chapter.kind==='body'?++number:0,kind:chapter.kind,title,titleAttribution:'source',startPassageId:paragraphs[0].id});
+  if(chapter.sourceHeadings!==undefined&&(!Array.isArray(chapter.sourceHeadings)||chapter.sourceHeadings.some(value=>typeof value!=='string'||!value.trim()||value.length>10000)))throw Error('Invalid catalog source headings: '+entry.id);
+  book.chapters.push({id,number:chapter.kind==='body'?++number:0,kind:chapter.kind,title,titleAttribution:chapter.titleAttribution||'source',startPassageId:paragraphs[0].id,...(chapter.sourceHeadings?{sourceHeadings:chapter.sourceHeadings}:{})});
   book.sections.push({number:index+1,chapterId:id,title:chapter.title,paragraphs});
   if(chapter.kind==='body'&&!book.readingStart)book.readingStart={chapterId:id,passageId:paragraphs[0].id};
  }
  if(!book.readingStart)throw Error('Catalog has no body: '+entry.id);
- book.source={...book.source,structure:'source_chapters',structureVersion:'structured-catalog-1',chapterBoundaryReview:'source_headings_checked',downloadUrl:document.downloadUrl,downloadSha256:document.downloadSha256,translation:entry.translation||null,originalLanguage:entry.originalLanguage||'en',edition:document.edition,scope:document.scope,illustrations:'not_included'};
+ const resources=[];
+ if(document.resources!==undefined&&(!Array.isArray(document.resources)||document.resources.length>100))throw Error('Invalid catalog source resources: '+entry.id);
+ for(const item of document.resources||[]){
+  const paragraph=Number.isSafeInteger(item.chapterIndex)&&Number.isSafeInteger(item.paragraphIndex)&&book.sections[item.chapterIndex]?.paragraphs[item.paragraphIndex];
+  if(!paragraph||!/^\/book-assets\/[a-z0-9][a-z0-9_.-]*\.(?:png|jpe?g|gif|webp)$/.test(item.url||'')||typeof item.title!=='string'||!item.title.trim()||item.title.length>500||!/^[a-f0-9]{64}$/.test(item.sha256||'')||!/^image\/(?:png|jpeg|gif|webp)$/.test(item.mime||'')||!Number.isSafeInteger(item.bytes)||item.bytes<1||item.anchorSha256&&digest(paragraph.original)!==item.anchorSha256)throw Error('Invalid catalog source resource: '+entry.id);
+  const resource={url:item.url,title:item.title,sha256:item.sha256,mime:item.mime,bytes:item.bytes,...(item.originalUrl?{originalUrl:item.originalUrl}:{}),...(item.width?{width:item.width,height:item.height}:{})};
+  (paragraph.source.resources??=[]).push(resource);resources.push(resource);
+ }
+ book.source={...book.source,structure:'source_chapters',structureVersion:'structured-catalog-1',chapterBoundaryReview:'source_headings_checked',downloadUrl:document.downloadUrl,downloadSha256:document.downloadSha256,translation:entry.translation||null,originalLanguage:entry.originalLanguage||'en',edition:document.edition,scope:document.scope,illustrations:resources.length?'linked_originals':'not_included',...(resources.length?{resources}:{})};
  book.licenseNotices=document.notices;
- book.title.en=entry.originalTitle;book.description=entry.description;book.cover=entry.cover;book.topics=entry.topics;book.sourceLanguage='en';
+ book.title.en=entry.originalTitle;book.description=entry.description;book.cover=entry.cover;book.topics=entry.topics;book.sourceLanguage=entry.sourceLanguage||'en';
  book.createdAt=document.importedAt;
  return book;
 }

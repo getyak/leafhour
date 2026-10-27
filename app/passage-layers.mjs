@@ -8,10 +8,10 @@ export function visibleQuoteLanguage(passage,{mode,variant='interpretive',transl
   return mode==='en'||translationHidden||!translatedText(passage,variant)?'en':'zh';
 }
 export function passagePresentation(passage,{mode='zh',variant='interpretive',sourceLanguage='en',sourceEmphasis=false}={}){
-  const original={kind:'original',text:passage.original,lang:sourceLanguage==='zh'?'zh-Hans':sourceLanguage||'und',label:'原文',...(Array.isArray(passage.source?.lineBreaks)?{lineBreaks:passage.source.lineBreaks}:{}),...(sourceEmphasis?{emphasis:sourceEmphasisRanges(passage.original)}:{})};
+  const original={kind:'original',text:passage.original,lang:sourceLanguage==='zh'?'zh-Hans':sourceLanguage||'und',label:'原文',...(passage.source?.presentation==='preformatted'?{preformatted:true}:{}),...(Array.isArray(passage.source?.lineBreaks)?{lineBreaks:passage.source.lineBreaks}:{}),...(sourceEmphasis?{emphasis:sourceEmphasisRanges(passage.original)}:{})};
   if(mode==='en'||passage.kind==='source_heading')return {layers:[original],notice:null};
   const text=translatedText(passage,variant),label=variantLabel(variant);
-  if(!text)return {layers:[mode==='parallel'?original:{...original,fallback:true}],notice:null};
+  if(!text)return {layers:[mode==='parallel'||sourceLanguage==='zh'?original:{...original,fallback:true}],notice:null};
   const translation={kind:'translation',text,lang:'zh-Hans',label};
   return {layers:mode==='parallel'?[original,translation]:[translation],notice:null};
 }

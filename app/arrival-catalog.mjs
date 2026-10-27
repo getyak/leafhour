@@ -26,6 +26,19 @@ export const arrivalCatalog=Object.freeze({
     "passageId": "c24e2b5f86aa4634-p00002",
     "contentVersion": "c24e2b5f86aa46340fd891e7cc26217c692f418c6097044218267e235fde3905"
   },
+  "gutenberg-analects-zh": {
+    "bookId": "gutenberg-analects-zh",
+    "title": "论语（中文原典）",
+    "author": "孔子及其弟子（Confucius and disciples）",
+    "chapter": "學而第一",
+    "sourceUrl": "https://www.gutenberg.org/ebooks/23839",
+    "original": "1. 子曰：「學而時習之，不亦說乎？",
+    "translation": null,
+    "sourceLanguage": "zh",
+    "context": "书中一段",
+    "passageId": "6d8d1cfb7fc3d3c5-p00001",
+    "contentVersion": "6d8d1cfb7fc3d3c5036c3b3a6ecb415174c3965489ca8c23f39ee3db336e5e6e"
+  },
   "gutenberg-arabian-nights": {
     "bookId": "gutenberg-arabian-nights",
     "title": "一千零一夜选编",
@@ -38,6 +51,19 @@ export const arrivalCatalog=Object.freeze({
     "context": "书中一段",
     "passageId": "8ad53ad6c81129e5-p00007",
     "contentVersion": "8ad53ad6c81129e51eef40624ed4a04a35fa1e61b205156c719a1433d16b64e2"
+  },
+  "gutenberg-art-of-war-zh": {
+    "bookId": "gutenberg-art-of-war-zh",
+    "title": "孙子兵法（中文原典）",
+    "author": "孙武（传统归属）",
+    "chapter": "始計第一",
+    "sourceUrl": "https://www.gutenberg.org/ebooks/23864",
+    "original": "孫子曰：兵者，國之大事，死生之地，存亡之道，不可不察也。",
+    "translation": null,
+    "sourceLanguage": "zh",
+    "context": "书中一段",
+    "passageId": "320edf22f0079233-p00001",
+    "contentVersion": "320edf22f0079233502104817deaccd0e3d428907aa2f5b141b5d7734922f634"
   },
   "gutenberg-au-room-of-ones-own": {
     "bookId": "gutenberg-au-room-of-ones-own",
@@ -130,6 +156,32 @@ export const arrivalCatalog=Object.freeze({
     "passageId": "35a0415f40c38c2c-p00002",
     "contentVersion": "35a0415f40c38c2ca2358915ab8345df0f8b153402142e5e21e6103ef811807b"
   },
+  "gutenberg-confessions-augustine": {
+    "bookId": "gutenberg-confessions-augustine",
+    "title": "忏悔录（奥古斯丁）",
+    "author": "奥古斯丁（Augustine of Hippo）",
+    "chapter": "BOOK I",
+    "sourceUrl": "https://www.gutenberg.org/ebooks/3296",
+    "original": "Great art Thou, O Lord, and greatly to be praised; great is Thy power, and Thy wisdom infinite.",
+    "translation": null,
+    "sourceLanguage": "en",
+    "context": "书中一段",
+    "passageId": "36a5abf3794e2f03-p00001",
+    "contentVersion": "36a5abf3794e2f0300eab955570506769b977a98fa024a643ae98fb58c121341"
+  },
+  "gutenberg-crime-and-punishment": {
+    "bookId": "gutenberg-crime-and-punishment",
+    "title": "罪与罚",
+    "author": "陀思妥耶夫斯基（Fyodor Dostoyevsky）",
+    "chapter": "PART I · CHAPTER I",
+    "sourceUrl": "https://www.gutenberg.org/ebooks/2554",
+    "original": "On an exceptionally hot evening early in July a young man came out of the garret in which he lodged in S.",
+    "translation": null,
+    "sourceLanguage": "en",
+    "context": "书中一段",
+    "passageId": "1b38f2309b31b960-p00015",
+    "contentVersion": "1b38f2309b31b960542b39928ea7549ad353416862f8870a8453150b9ed565f0"
+  },
   "gutenberg-dhammapada": {
     "bookId": "gutenberg-dhammapada",
     "title": "法句经",
@@ -142,6 +194,19 @@ export const arrivalCatalog=Object.freeze({
     "context": "书中一段",
     "passageId": "9846ddf7b69fd6ac-p00001",
     "contentVersion": "9846ddf7b69fd6ace4ecab08eb69aef86c9d2aa84bfebfd48fe6f7c73c48e829"
+  },
+  "gutenberg-discourse-on-method": {
+    "bookId": "gutenberg-discourse-on-method",
+    "title": "谈谈方法（方法谈）",
+    "author": "勒内·笛卡尔（René Descartes）",
+    "chapter": "PART I",
+    "sourceUrl": "https://www.gutenberg.org/ebooks/59",
+    "original": "Good sense is, of all things among men, the most equally distributed; for every one thinks himself so abundantly provided with it, that those even who are the…",
+    "translation": null,
+    "sourceLanguage": "en",
+    "context": "书中一段",
+    "passageId": "3812d9bee10cdfc9-p00002",
+    "contentVersion": "3812d9bee10cdfc9c3488e9e2c36f657c670ae46d2a22d816f1b391271fb7e60"
   },
   "gutenberg-don-quixote": {
     "bookId": "gutenberg-don-quixote",
@@ -169,6 +234,71 @@ export const arrivalCatalog=Object.freeze({
     "passageId": "ca232c39e000830d-p00001",
     "contentVersion": "ca232c39e000830d259fa7bfbca39caa3bc0e75aa045f5fbaa489ed1a7721de5"
   },
+  "gutenberg-dream-red-chamber-1": {
+    "bookId": "gutenberg-dream-red-chamber-1",
+    "title": "红楼梦（第1册：1—40回）",
+    "author": "曹雪芹（Cao Xueqin）",
+    "chapter": "第一回 甄士隱夢幻識通靈 賈雨村風塵怀閨秀",
+    "sourceUrl": "https://www.gutenberg.org/ebooks/24264",
+    "original": "此開卷第一回也．作者自云：因曾歷過一番夢幻之后，故將真事隱去， 而借\"通靈\"之說，撰此《石頭記》一書也．故曰\"甄士隱\"云云．但書中所記 何事何人？",
+    "translation": null,
+    "sourceLanguage": "zh",
+    "context": "书中一段",
+    "passageId": "e50f9fdde16de703-p00001",
+    "contentVersion": "e50f9fdde16de703c5386deea8e6716791a7f132e9d75ebd4c8891baa11cbc7e"
+  },
+  "gutenberg-dream-red-chamber-2": {
+    "bookId": "gutenberg-dream-red-chamber-2",
+    "title": "红楼梦（第2册：41—80回）",
+    "author": "曹雪芹（Cao Xueqin）",
+    "chapter": "第四十一回 櫳翠庵茶品梅花雪 怡紅院劫遇母蝗虫",
+    "sourceUrl": "https://www.gutenberg.org/ebooks/24264",
+    "original": "話說劉姥姥兩只手比著說道：“花儿落了結個大倭瓜． \"眾人 听了哄堂大笑起來．于是吃過門杯，因又逗趣笑道：“實告 訴說罷，我的手腳子粗笨， 又喝了酒，仔細失手打了這瓷杯． 有木頭的杯取個子來，我便失了手，掉了地下也無礙。”",
+    "translation": null,
+    "sourceLanguage": "zh",
+    "context": "书中一段",
+    "passageId": "2aa272de7ff23753-p00001",
+    "contentVersion": "2aa272de7ff23753afa855707749e1ac4bad356392b33c6e6cf6d7ddadfcd460"
+  },
+  "gutenberg-dream-red-chamber-3": {
+    "bookId": "gutenberg-dream-red-chamber-3",
+    "title": "红楼梦（第3册：81—120回）",
+    "author": "后四十回续作者未详（原卷题署曹雪芹）",
+    "chapter": "第八十一回 占旺相四美釣游魚 奉嚴詞兩番入家塾",
+    "sourceUrl": "https://www.gutenberg.org/ebooks/24264",
+    "original": "且說迎春歸去之后，邢夫人象沒有這事，倒是王夫人撫養了一場，卻甚實傷 感，在房中自己歎息了一回．只見寶玉走來請安，看見王夫人臉上似有淚痕，也 不敢坐，只在旁邊站著．王夫人叫他坐下，寶玉才捱上炕來，就在王夫人身旁坐 了．王夫人見他呆呆的瞅著，似有欲言不言的光景，便道：“你又為什么這樣呆 呆的？\"",
+    "translation": null,
+    "sourceLanguage": "zh",
+    "context": "书中一段",
+    "passageId": "263be03640e9a383-p00001",
+    "contentVersion": "263be03640e9a383e2688e81cc7e856641dba1e147e217893b02a2cca352aab9"
+  },
+  "gutenberg-enquiry-human-understanding": {
+    "bookId": "gutenberg-enquiry-human-understanding",
+    "title": "人类理解研究",
+    "author": "大卫·休谟（David Hume）",
+    "chapter": "OF THE DIFFERENT SPECIES OF PHILOSOPHY.",
+    "sourceUrl": "https://www.gutenberg.org/ebooks/9662",
+    "original": "1. Moral philosophy, or the science of human nature, may be treated after two different manners; each of which has its peculiar merit, and may contribute to…",
+    "translation": null,
+    "sourceLanguage": "en",
+    "context": "书中一段",
+    "passageId": "42d6305f693fb747-p00001",
+    "contentVersion": "42d6305f693fb747cb35403efb1e76b0fffeda1a183c4520976835c6c5f03bd1"
+  },
+  "gutenberg-epictetus-discourses-handbook": {
+    "bookId": "gutenberg-epictetus-discourses-handbook",
+    "title": "爱比克泰德论说选与手册",
+    "author": "爱比克泰德（Epictetus）",
+    "chapter": "OF THE THINGS WHICH ARE IN OUR POWER AND NOT IN OUR POWER",
+    "sourceUrl": "https://www.gutenberg.org/ebooks/10661",
+    "original": "OF THE THINGS WHICH ARE IN OUR POWER AND NOT IN OUR POWER.—Of all the faculties (except that which I shall soon mention), you will find not one which is…",
+    "translation": null,
+    "sourceLanguage": "en",
+    "context": "书中一段",
+    "passageId": "c710655da8b7dad6-p00001",
+    "contentVersion": "c710655da8b7dad649792003a89eb21d3cbe1576069f1b5f3d3131bd74192f6b"
+  },
   "gutenberg-equiano": {
     "bookId": "gutenberg-equiano",
     "title": "埃奎亚诺自传",
@@ -194,6 +324,58 @@ export const arrivalCatalog=Object.freeze({
     "context": "书中一段",
     "passageId": "8bbcb3dbf3cdfcc9-p00001",
     "contentVersion": "8bbcb3dbf3cdfcc9e87a67d214242e56f4bbc2eca4f6f46a880adb8fda63fa6e"
+  },
+  "gutenberg-essays-montaigne-1": {
+    "bookId": "gutenberg-essays-montaigne-1",
+    "title": "蒙田随笔（第1卷）",
+    "author": "米歇尔·德·蒙田（Michel de Montaigne）",
+    "chapter": "CHAPTER I——THAT MEN BY VARIOUS WAYS ARRIVE AT THE SAME END.",
+    "sourceUrl": "https://www.gutenberg.org/ebooks/3600",
+    "original": "The most usual way of appeasing the indignation of such as we have any way offended, when we see them in possession of the power of revenge, and find that we…",
+    "translation": null,
+    "sourceLanguage": "en",
+    "context": "书中一段",
+    "passageId": "064f59e61e7784dd-p00086",
+    "contentVersion": "064f59e61e7784dd2bf4120ac9801461f2f00c29ebf3f0b80851dd1688b2b4e7"
+  },
+  "gutenberg-essays-montaigne-2": {
+    "bookId": "gutenberg-essays-montaigne-2",
+    "title": "蒙田随笔（第2卷）",
+    "author": "米歇尔·德·蒙田（Michel de Montaigne）",
+    "chapter": "CHAPTER I——OF THE INCONSTANCY OF OUR ACTIONS",
+    "sourceUrl": "https://www.gutenberg.org/ebooks/3600",
+    "original": "Such as make it their business to oversee human actions, do not find themselves in anything so much perplexed as to reconcile them and bring them into the…",
+    "translation": null,
+    "sourceLanguage": "en",
+    "context": "书中一段",
+    "passageId": "e7c1bb4c8711d09f-p00001",
+    "contentVersion": "e7c1bb4c8711d09fc22384dde766d993e9b5533de909f7632bd5243fc28ea9ee"
+  },
+  "gutenberg-essays-montaigne-3": {
+    "bookId": "gutenberg-essays-montaigne-3",
+    "title": "蒙田随笔（第3卷）",
+    "author": "米歇尔·德·蒙田（Michel de Montaigne）",
+    "chapter": "CHAPTER I——OF PROFIT AND HONESTY",
+    "sourceUrl": "https://www.gutenberg.org/ebooks/3600",
+    "original": "No man is free from speaking foolish things; but the worst on’t is, when a man labours to play the fool:",
+    "translation": null,
+    "sourceLanguage": "en",
+    "context": "书中一段",
+    "passageId": "789c3c7908e60106-p00001",
+    "contentVersion": "789c3c7908e601064f1c30d6807ef669f95bd8a89c993dfa722e23be77c7999c"
+  },
+  "gutenberg-ethics-spinoza": {
+    "bookId": "gutenberg-ethics-spinoza",
+    "title": "伦理学（斯宾诺莎）",
+    "author": "斯宾诺莎（Benedict de Spinoza）",
+    "chapter": "DEFINITIONS.",
+    "sourceUrl": "https://www.gutenberg.org/ebooks/3800",
+    "original": "I. By that which is self—caused, I mean that of which the essence involves existence, or that of which the nature is only conceivable as existent.",
+    "translation": null,
+    "sourceLanguage": "en",
+    "context": "书中一段",
+    "passageId": "ea633e031d17f226-p00001",
+    "contentVersion": "ea633e031d17f226d4c4f5b2a41e3a1b29a3d1d2d2ba943cc769e8d496f03319"
   },
   "gutenberg-flatland": {
     "bookId": "gutenberg-flatland",
@@ -221,6 +403,32 @@ export const arrivalCatalog=Object.freeze({
     "passageId": "50ff55785f190ba3-p00001",
     "contentVersion": "50ff55785f190ba3d548930fa850f99f1aa9f2e98e5de2fc2f127173dc5dd5b6"
   },
+  "gutenberg-genealogy-of-morals": {
+    "bookId": "gutenberg-genealogy-of-morals",
+    "title": "论道德的谱系",
+    "author": "弗里德里希·尼采（Friedrich Nietzsche）",
+    "chapter": "FIRST ESSAY. · \"GOOD AND EVIL,\" \"GOOD AND BAD.\"",
+    "sourceUrl": "https://www.gutenberg.org/ebooks/52319",
+    "original": "1. Those English psychologists, who up to the present are the only philosophers who are to be thanked for any endeavour to get as far as a history of the…",
+    "translation": null,
+    "sourceLanguage": "en",
+    "context": "书中一段",
+    "passageId": "baf2a53d79dde634-p00012",
+    "contentVersion": "baf2a53d79dde6340de0ff5461f0b082e2778e18ff14ca2d5185d4baa7fc582c"
+  },
+  "gutenberg-hamlet": {
+    "bookId": "gutenberg-hamlet",
+    "title": "哈姆雷特",
+    "author": "威廉·莎士比亚（William Shakespeare）",
+    "chapter": "ACT I · SCENE I. Elsinore. A platform before the Castle.",
+    "sourceUrl": "https://www.gutenberg.org/ebooks/1524",
+    "original": "Enter Francisco and Barnardo, two sentinels.",
+    "translation": null,
+    "sourceLanguage": "en",
+    "context": "书中一段",
+    "passageId": "9125e0650999275b-p00005",
+    "contentVersion": "9125e0650999275b3325f7882397550cdf4899d808eb069c8570f8600c2ecea7"
+  },
   "gutenberg-home-and-world": {
     "bookId": "gutenberg-home-and-world",
     "title": "家庭与世界",
@@ -233,6 +441,32 @@ export const arrivalCatalog=Object.freeze({
     "context": "书中一段",
     "passageId": "d2d1ae6bce21a95d-p00003",
     "contentVersion": "d2d1ae6bce21a95d86121d60b7e32584da79efb309d2aed8cdd00971950ff63b"
+  },
+  "gutenberg-mencius-zh": {
+    "bookId": "gutenberg-mencius-zh",
+    "title": "孟子（中文原典）",
+    "author": "孟轲及其后学（Mencius and his school）",
+    "chapter": "卷之一梁惠王上",
+    "sourceUrl": "https://www.gutenberg.org/ebooks/24178",
+    "original": "一",
+    "translation": null,
+    "sourceLanguage": "zh",
+    "context": "书中一段",
+    "passageId": "b3379a295f5c813e-p00001",
+    "contentVersion": "b3379a295f5c813e394722b72efec43d4289689ea72eb44bea47c5905a6c4a66"
+  },
+  "gutenberg-nicomachean-ethics": {
+    "bookId": "gutenberg-nicomachean-ethics",
+    "title": "尼各马可伦理学",
+    "author": "亚里士多德（Aristotle）",
+    "chapter": "Chapter I.",
+    "sourceUrl": "https://www.gutenberg.org/ebooks/8438",
+    "original": "Every art, and every science reduced to a teachable form, and in like manner every action and moral choice, aims, it is thought, at some good: for which reason…",
+    "translation": null,
+    "sourceLanguage": "en",
+    "context": "书中一段",
+    "passageId": "c4b85208c4786a06-p00001",
+    "contentVersion": "c4b85208c4786a06fe03291ea127bceab6f07781b0109d9a2f59d86f83e281ac"
   },
   "gutenberg-notes-underground": {
     "bookId": "gutenberg-notes-underground",
@@ -247,6 +481,32 @@ export const arrivalCatalog=Object.freeze({
     "passageId": "7def971e8ffe8a58-p00001",
     "contentVersion": "7def971e8ffe8a58335b9567fb549ce4f6367b6e09ccace52a8e79db77c89f98"
   },
+  "gutenberg-novum-organum": {
+    "bookId": "gutenberg-novum-organum",
+    "title": "新工具",
+    "author": "弗朗西斯·培根（Francis Bacon）",
+    "chapter": "Book I — I",
+    "sourceUrl": "https://www.gutenberg.org/ebooks/45988",
+    "original": "I. Man, as the minister and interpreter of nature, does and understands as much as his observations on the order of nature, either with regard to things or the…",
+    "translation": null,
+    "sourceLanguage": "en",
+    "context": "书中一段",
+    "passageId": "0a2e4396711f06fb-p00008",
+    "contentVersion": "0a2e4396711f06fb854316503e436f27da2b81d63239466c2bd304ce55a4f3fc"
+  },
+  "gutenberg-odyssey": {
+    "bookId": "gutenberg-odyssey",
+    "title": "奥德赛",
+    "author": "荷马（Homer，传统署名）",
+    "chapter": "BOOK I",
+    "sourceUrl": "https://www.gutenberg.org/ebooks/1727",
+    "original": "THE GODS IN COUNCIL—MINERVA’S VISIT TO ITHACA—THE CHALLENGE FROM TELEMACHUS TO THE SUITORS.",
+    "translation": null,
+    "sourceLanguage": "en",
+    "context": "书中一段",
+    "passageId": "d45b3742949e403e-p00034",
+    "contentVersion": "d45b3742949e403e820275d035ab28b51541f5715620f07e5f518882e6842e2d"
+  },
   "gutenberg-on-liberty": {
     "bookId": "gutenberg-on-liberty",
     "title": "论自由",
@@ -259,6 +519,32 @@ export const arrivalCatalog=Object.freeze({
     "context": "书中一段",
     "passageId": "81d4b1eb66e9c615-p00001",
     "contentVersion": "81d4b1eb66e9c61548bea9554262950a451e5f70481c2c5e50e64e933f7b7582"
+  },
+  "gutenberg-origin-of-species": {
+    "bookId": "gutenberg-origin-of-species",
+    "title": "物种起源（第六版）",
+    "author": "查尔斯·达尔文（Charles Darwin）",
+    "chapter": "CHAPTER I. VARIATION UNDER DOMESTICATION.",
+    "sourceUrl": "https://www.gutenberg.org/ebooks/2009",
+    "original": "Causes of Variability—Effects of Habit and the use and disuse of Parts—Correlated Variation—Inheritance—Character of Domestic Varieties—Difficulty of…",
+    "translation": null,
+    "sourceLanguage": "en",
+    "context": "书中一段",
+    "passageId": "c29a9949c04e9141-p00070",
+    "contentVersion": "c29a9949c04e9141148a5b22ce0638c8d6a63d1d3f43d7ec5e84cedfb81f5984"
+  },
+  "gutenberg-peloponnesian-war": {
+    "bookId": "gutenberg-peloponnesian-war",
+    "title": "伯罗奔尼撒战争史",
+    "author": "修昔底德（Thucydides）",
+    "chapter": "BOOK I · CHAPTER I",
+    "sourceUrl": "https://www.gutenberg.org/ebooks/7142",
+    "original": "The State of Greece from the earliest Times to the Commencement of the Peloponnesian War",
+    "translation": null,
+    "sourceLanguage": "en",
+    "context": "书中一段",
+    "passageId": "c19045ef406da849-p00005",
+    "contentVersion": "c19045ef406da849551e408af8fe0bfee41d19588438f3a4bc4c48cf94e2268a"
   },
   "gutenberg-pride-prejudice": {
     "bookId": "gutenberg-pride-prejudice",
@@ -273,6 +559,19 @@ export const arrivalCatalog=Object.freeze({
     "passageId": "2ab5b00b3feb86cb-p00001",
     "contentVersion": "2ab5b00b3feb86cbd7af22a0d6a2de2e8eb40f1e84e30dd8d942b8a8a22647f4"
   },
+  "gutenberg-prince": {
+    "bookId": "gutenberg-prince",
+    "title": "君主论（附两篇短著）",
+    "author": "尼科洛·马基雅维利（Niccolò Machiavelli）",
+    "chapter": "CHAPTER I. HOW MANY KINDS OF PRINCIPALITIES THERE ARE, AND BY WHAT MEANS THEY ARE ACQUIRED",
+    "sourceUrl": "https://www.gutenberg.org/ebooks/1232",
+    "original": "All states, all powers, that have held and hold rule over men have been and are either republics or principalities.",
+    "translation": null,
+    "sourceLanguage": "en",
+    "context": "书中一段",
+    "passageId": "db4a155675088745-p00007",
+    "contentVersion": "db4a155675088745f00cafaaab225f5a0b8db79b9fb1e6e99fb3bde423ae40a9"
+  },
   "gutenberg-prophet": {
     "bookId": "gutenberg-prophet",
     "title": "先知",
@@ -285,6 +584,19 @@ export const arrivalCatalog=Object.freeze({
     "context": "书中一段",
     "passageId": "c7a36cac406f525d-p00001",
     "contentVersion": "c7a36cac406f525d23d5940bb6250be5f3fa565b6b047779b507486b7f232193"
+  },
+  "gutenberg-republic": {
+    "bookId": "gutenberg-republic",
+    "title": "理想国",
+    "author": "柏拉图（Plato）",
+    "chapter": "BOOK I.",
+    "sourceUrl": "https://www.gutenberg.org/ebooks/1497",
+    "original": "I went down yesterday to the Piraeus with Glaucon the son of Ariston, that I might offer up my prayers to the goddess (Bendis, the Thracian Artemis.); and also…",
+    "translation": null,
+    "sourceLanguage": "en",
+    "context": "书中一段",
+    "passageId": "f7555cb8337e63b4-p00010",
+    "contentVersion": "f7555cb8337e63b40195aadfb8f54b6ee17291bfc7f126cf98750ce1dc6e4631"
   },
   "gutenberg-rubaiyat": {
     "bookId": "gutenberg-rubaiyat",
@@ -325,6 +637,19 @@ export const arrivalCatalog=Object.freeze({
     "passageId": "2645bca82104b6fa-p00002",
     "contentVersion": "2645bca82104b6fa609fad484d1e7c085f0dc35fa4b5beed46e6a90a2122da84"
   },
+  "gutenberg-tao-te-ching-zh": {
+    "bookId": "gutenberg-tao-te-ching-zh",
+    "title": "道德经（中文原典）",
+    "author": "老子（传统归属）",
+    "chapter": "第一章",
+    "sourceUrl": "https://www.gutenberg.org/ebooks/7337",
+    "original": "道可道，非常道。",
+    "translation": null,
+    "sourceLanguage": "zh",
+    "context": "书中一段",
+    "passageId": "5cf18c66f57352f3-p00001",
+    "contentVersion": "5cf18c66f57352f32f7f431a56ffc0f5429f633625d609d80eb240bcf50f9b43"
+  },
   "gutenberg-time-machine": {
     "bookId": "gutenberg-time-machine",
     "title": "时间机器",
@@ -351,6 +676,84 @@ export const arrivalCatalog=Object.freeze({
     "passageId": "5e79587102c63e3f-p00001",
     "contentVersion": "5e79587102c63e3f0a47ef229d5785e063dd60e006dbc60fcb77a5d7d8560d5d"
   },
+  "gutenberg-wealth-of-nations": {
+    "bookId": "gutenberg-wealth-of-nations",
+    "title": "国富论",
+    "author": "亚当·斯密（Adam Smith）",
+    "chapter": "BOOK I. OF THE CAUSES OF IMPROVEMENT IN THE PRODUCTIVE POWERS OF LABOUR, AND OF THE ORDER ACCORDING TO WHICH ITS PRODUCE IS NATURALLY DISTRIBUTED AMONG THE DIFFERENT RANKS OF THE PEOPLE. · CHAPTER I. OF THE DIVISION OF LABOUR.",
+    "sourceUrl": "https://www.gutenberg.org/ebooks/3300",
+    "original": "The greatest improvements in the productive powers of labour, and the greater part of the skill, dexterity, and judgment, with which it is anywhere directed,…",
+    "translation": null,
+    "sourceLanguage": "en",
+    "context": "书中一段",
+    "passageId": "fa1485aad379b088-p00012",
+    "contentVersion": "fa1485aad379b088640daeba26128f020267d54bbeecfb2221e0ae02c5b22783"
+  },
+  "gutenberg-wisdom-of-life-1": {
+    "bookId": "gutenberg-wisdom-of-life-1",
+    "title": "人生的智慧（上册）",
+    "author": "阿图尔·叔本华（Arthur Schopenhauer）",
+    "chapter": "CHAPTER I. — DIVISION OF THE SUBJECT.",
+    "sourceUrl": "https://www.gutenberg.org/ebooks/10741",
+    "original": "Aristotle{1} divides the blessings of life into three classes—those which come to us from without, those of the soul, and those of the body.",
+    "translation": null,
+    "sourceLanguage": "en",
+    "context": "书中一段",
+    "passageId": "4930e6968f24cac6-p00005",
+    "contentVersion": "4930e6968f24cac6fa7d6f71835d7e8997f3e49c94599583926c9df41e14e487"
+  },
+  "gutenberg-wisdom-of-life-2": {
+    "bookId": "gutenberg-wisdom-of-life-2",
+    "title": "人生的智慧（下册：建议与格言）",
+    "author": "阿图尔·叔本华（Arthur Schopenhauer）",
+    "chapter": "CHAPTER I. — GENERAL RULES.",
+    "sourceUrl": "https://www.gutenberg.org/ebooks/10715",
+    "original": "SECTION 1.",
+    "translation": null,
+    "sourceLanguage": "en",
+    "context": "书中一段",
+    "passageId": "7ae569797e7e7aab-p00006",
+    "contentVersion": "7ae569797e7e7aab60d1bac73b5376edaabf2197fd30fe3ec311100cfade92dc"
+  },
+  "gutenberg-world-will-idea-1": {
+    "bookId": "gutenberg-world-will-idea-1",
+    "title": "作为意志和表象的世界（英译第1册）",
+    "author": "阿图尔·叔本华（Arthur Schopenhauer）",
+    "chapter": "First Book. The World As Idea.",
+    "sourceUrl": "https://www.gutenberg.org/ebooks/38427",
+    "original": "First Aspect.",
+    "translation": null,
+    "sourceLanguage": "en",
+    "context": "书中一段",
+    "passageId": "e29c85e30dbc1893-p00031",
+    "contentVersion": "e29c85e30dbc1893f9d955ae478f762bf6bea4ae6f90ca8911ad9a5d19ca6284"
+  },
+  "gutenberg-world-will-idea-2": {
+    "bookId": "gutenberg-world-will-idea-2",
+    "title": "作为意志和表象的世界（英译第2册）",
+    "author": "阿图尔·叔本华（Arthur Schopenhauer）",
+    "chapter": "Appendix: Criticism of the Kantian Philosophy.",
+    "sourceUrl": "https://www.gutenberg.org/ebooks/40097",
+    "original": "C'est le privilège du vrai génie, et surtout du génie qui ouvre une carrière,",
+    "translation": null,
+    "sourceLanguage": "en",
+    "context": "书中一段",
+    "passageId": "53778d8c71179281-p00001",
+    "contentVersion": "53778d8c71179281ac6f8766905fd3edff9f8d6de079782c89881eb9c23255fc"
+  },
+  "gutenberg-world-will-idea-3": {
+    "bookId": "gutenberg-world-will-idea-3",
+    "title": "作为意志和表象的世界（英译第3册）",
+    "author": "阿图尔·叔本华（Arthur Schopenhauer）",
+    "chapter": "Supplements To The Second Book. · Chapter XXI. Retrospect and More General View.",
+    "sourceUrl": "https://www.gutenberg.org/ebooks/40868",
+    "original": "If the intellect were not of a subordinate nature, as the two preceding chapters show, then everything which takes place without it, i.e., without intervention…",
+    "translation": null,
+    "sourceLanguage": "en",
+    "context": "书中一段",
+    "passageId": "95165d8afe7c9192-p00001",
+    "contentVersion": "95165d8afe7c919249ac4eccb1c9229df448f50a9e23153bd3a50622e21ca369"
+  },
   "gutenberg-young-werther": {
     "bookId": "gutenberg-young-werther",
     "title": "少年维特之烦恼",
@@ -376,5 +779,18 @@ export const arrivalCatalog=Object.freeze({
     "context": "书中一段",
     "passageId": "0429d315f5d90046-p00001",
     "contentVersion": "0429d315f5d90046c051b09327b7665a83f3732b7a1e455319c173c78a4af5c1"
+  },
+  "gutenberg-zhuangzi-zh": {
+    "bookId": "gutenberg-zhuangzi-zh",
+    "title": "庄子（中文原典）",
+    "author": "庄周及其后学（传统归属）",
+    "chapter": "逍遙遊第一",
+    "sourceUrl": "https://www.gutenberg.org/ebooks/23913",
+    "original": "北冥有魚，其名為鯤。",
+    "translation": null,
+    "sourceLanguage": "zh",
+    "context": "书中一段",
+    "passageId": "2a64b1134cb89889-p00001",
+    "contentVersion": "2a64b1134cb8988910584313540d8322c1e0681c9e27166e8a55f8e958463b54"
   }
 });

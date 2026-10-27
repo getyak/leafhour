@@ -2,8 +2,12 @@ import {readdir,readFile,lstat} from 'node:fs/promises';
 import {createHash} from 'node:crypto';
 import path from 'node:path';
 import {pathToFileURL} from 'node:url';
+import {catalogBookAssets} from '../server/catalog-book-assets.mjs';
 
 const approvedAssets=new Set(['forest.jpg','rain.jpg','hearth.jpg','sea.jpg','wind.mp3','birds.mp3','rain.mp3','fire.mp3','waves.mp3']);
+// Original book illustrations are approved by this immutable source registry,
+// never by a caller-controlled book JSON or build-directory manifest.
+const approvedBookAssets=new Map(catalogBookAssets.map(({file,bytes,sha256})=>[file,{bytes,sha256}]));
 // GET-167: the self-hosted Newsreader faces may exceed the generic large-file
 // limit only while every byte matches these independently reviewed assets.
 // A changed distribution manifest cannot authorize a new large-file exemption.
@@ -98,6 +102,16 @@ export async function checkPublicBuild(directory){
         await walk(file);
       }else{
         files++;const info=await lstat(file);
+        const bookRelative=relative.split(path.sep).join('/');
+        if(bookRelative.startsWith('book-assets/')){
+          const approved=approvedBookAssets.get(bookRelative);
+          if(!approved&&bookRelative!=='book-assets/README.md')throw Error('Unregistered book illustration: '+relative);
+          if(approved){
+            if(!info.isFile()||info.size!==approved.bytes||createHash('sha256').update(await readFile(file)).digest('hex')!==approved.sha256)throw Error('Book illustration integrity mismatch: '+relative);
+            if(info.size>limit)largeAssets++;
+            continue;
+          }
+        }
         if(path.dirname(file)===assetRoot&&entry.name.endsWith('.mp3')&&!registered.has(file))throw Error('公开构建包含未登记的录音：'+relative);
         const pdfSoftware=approvedPdfSoftware.get(relative);if(pdfSoftware){if(info.size!==pdfSoftware.bytes||createHash('sha256').update(await readFile(file)).digest('hex')!==pdfSoftware.sha256)throw Error('PDF software integrity mismatch: '+relative);continue;}
         if(entry.name.endsWith('.woff2')&&!registeredFonts.has(file))throw Error('公开构建包含未登记的字体文件：'+relative);
