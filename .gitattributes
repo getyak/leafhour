@@ -4,3 +4,5 @@ catalog/world/*.json -text -diff
 # Preserve the upstream license text, including its original line-end spaces.
 app/fonts/newsreader/OFL.txt whitespace=-blank-at-eol
 app/fonts/noto-serif-sc/OFL.txt -text whitespace=-blank-at-eol
+# Keep the independently byte-verified upstream native dependency unchanged.
+apps/ios/Vendor/ZIPFoundation/** -text whitespace=-blank-at-eol

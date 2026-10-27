@@ -1,0 +1,5 @@
+// Supply the verified EXISTING app identity in the ignored local signing file.
+// An empty value intentionally prevents an accidental distribution to a guessed app.
+LEAFHOUR_BUNDLE_ID =
+PRODUCT_BUNDLE_IDENTIFIER = $(LEAFHOUR_BUNDLE_ID)
+#include? "Signing.local.xcconfig"

@@ -1,0 +1,3 @@
+// Local-only unsigned development identity; no Apple app is registered by this project.
+PRODUCT_BUNDLE_IDENTIFIER = org.leafhour.local
+#include? "Signing.local.xcconfig"

@@ -1,0 +1,82 @@
+import XCTest
+
+/// Runs against the task-owned unsigned local app and public-domain acceptance documents.
+/// Seed Alice-complete.epub/pdf into this app's Documents through the guarded setup first.
+final class ReadingUITests: XCTestCase {
+    let app = XCUIApplication()
+    override func setUpWithError() throws { continueAfterFailure = false; app.terminate(); app.launch() }
+    func capture(_ name: String) {
+        let attachment = XCTAttachment(screenshot: app.screenshot()); attachment.name = name; attachment.lifetime = .keepAlways; add(attachment)
+    }
+    func progress() {
+        let wake = app.buttons["显示阅读进度、目录、搜索与记录"]
+        XCTAssertTrue(wake.waitForExistence(timeout: 10)); wake.tap()
+    }
+    func library() {
+        let wake = app.buttons["显示书名、返回与阅读设置"]
+        if wake.waitForExistence(timeout: 3) { wake.tap(); app.buttons["返回书房"].tap() }
+    }
+    func testCompleteEPUBLastChapterAndColdResume() {
+        library()
+        let book = app.buttons["阅读，Alice’s Adventures in Wonderland"]
+        XCTAssertTrue(book.waitForExistence(timeout: 10)); book.tap()
+        XCTAssertTrue(app.textViews["leafhour-epub-reader"].waitForExistence(timeout: 10))
+        progress(); app.buttons["目录"].tap()
+        let last = app.buttons["CHAPTER XII."]
+        for _ in 0..<8 where !last.isHittable {
+            app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.86)).press(forDuration: 0.15, thenDragTo: app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.54)))
+        }
+        XCTAssertTrue(last.isHittable, app.debugDescription); last.tap()
+        let text = app.textViews["leafhour-epub-reader"]
+        XCTAssertTrue((text.value as? String)?.contains("CHAPTER XII.") == true)
+        capture("EPUB-last-chapter")
+        app.terminate(); app.launch()
+        XCTAssertTrue(text.waitForExistence(timeout: 10))
+        XCTAssertTrue((text.value as? String)?.contains("CHAPTER XII.") == true)
+        XCTAssertFalse(app.buttons["我的记录"].exists)
+        capture("EPUB-cold-resume-pure")
+    }
+    func testNativeSelectionDraftAndRelaunch() {
+        library()
+        let book = app.buttons["阅读，Alice’s Adventures in Wonderland"]
+        XCTAssertTrue(book.waitForExistence(timeout: 10)); book.tap()
+        progress(); app.buttons["目录"].tap(); app.buttons["CHAPTER I."].tap()
+        let reader = app.textViews["leafhour-epub-reader"]
+        XCTAssertTrue(reader.waitForExistence(timeout: 10))
+        reader.coordinate(withNormalizedOffset: CGVector(dx: 0.45, dy: 0.48)).press(forDuration: 1.2)
+        let note = app.menuItems["记笔记"]
+        XCTAssertTrue(note.waitForExistence(timeout: 5), app.debugDescription); note.tap()
+        let editor = app.textViews["我的笔记正文"], draft = "Native draft " + UUID().uuidString
+        XCTAssertTrue(editor.waitForExistence(timeout: 5))
+        editor.tap(); editor.typeText(draft)
+        let expected = editor.value as? String ?? ""
+        XCTAssertTrue(expected.contains(draft))
+        app.buttons["保留草稿"].tap()
+        app.terminate(); app.launch()
+        progress(); app.buttons["我的记录"].tap()
+        let recovered = app.buttons.matching(NSPredicate(format: "label CONTAINS %@", draft)).firstMatch
+        XCTAssertTrue(recovered.waitForExistence(timeout: 8), app.debugDescription); recovered.tap()
+        XCTAssertTrue(editor.waitForExistence(timeout: 5)); XCTAssertEqual(editor.value as? String, expected)
+        capture("Native-selected-quote-draft-restored")
+    }
+    func testPDFSystemImportAndLastPage() {
+        library()
+        let importButton = app.buttons["导入书籍"]
+        XCTAssertTrue(importButton.waitForExistence(timeout: 10)); importButton.tap()
+        if app.buttons["Browse"].exists { app.buttons["Browse"].tap() }
+        let file = app.cells["Alice-complete, pdf"]
+        XCTAssertTrue(file.waitForExistence(timeout: 10), app.debugDescription)
+        file.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.25)).tap()
+        XCTAssertTrue(app.otherElements["leafhour-pdf-reader"].waitForExistence(timeout: 15), app.debugDescription)
+        progress()
+        let slider = app.sliders["页码"]
+        XCTAssertTrue(slider.exists); slider.adjust(toNormalizedSliderPosition: 1)
+        // XCUI normalized slider adjustment is approximate for a stepped 73-page range.
+        // Use the actual enabled next-page control to reach the final boundary exactly.
+        if !app.buttons["下一页"].exists { progress() }
+        let next = app.buttons["下一页"]
+        if next.isEnabled { next.tap() }
+        XCTAssertTrue(app.staticTexts.matching(NSPredicate(format: "label CONTAINS %@", "73 / 73")).firstMatch.waitForExistence(timeout: 5), app.debugDescription)
+        capture("PDF-page-73-of-73")
+    }
+}

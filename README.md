@@ -190,3 +190,5 @@ Reading time supports explicitly chosen active focus, foreground estimates and m
 ## Reading skill and remote MCP
 
 Install `skills/leafhour-reading` for a skills-compatible host. Connect ChatGPT to `https://leafhour.com/api/mcp` with OAuth/DCR, sign in on Leafhour, and approve one book for one hour. Call `reader_get_connection` to identify that book. The remote connection is read-only. See [installation, permissions and real-host acceptance](docs/mcp-oauth.md); existing stdio configurations remain supported.
+
+Native iOS source (device-local EPUB/PDF and offline reading): [build and scope](apps/ios/README.md). TestFlight and physical acceptance are tracked separately.

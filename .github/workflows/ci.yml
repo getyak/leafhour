@@ -94,3 +94,34 @@ jobs:
             docs/copy/copy-candidates.csv
           if-no-files-found: warn
           include-hidden-files: true
+
+  native-ios:
+    defaults:
+      run:
+        shell: bash
+    runs-on: macos-15
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Verify the pinned native archive dependency without network
+        run: node tools/verify-ios-vendor.mjs
+      - name: Test complete book import, offline integrity and recovery on the host
+        env:
+          LEAFHOUR_TEST_ROOT: ${{ runner.temp }}/leafhour-native-fixtures
+        run: |
+          swift test --package-path apps/ios/LeafhourCore --scratch-path "$RUNNER_TEMP/leafhour-swift" --jobs 2 2>&1 | tee "$RUNNER_TEMP/leafhour-core.log"
+      - name: Build native iOS app without Apple account or signing
+        run: |
+          xcodebuild -project apps/ios/Leafhour.xcodeproj -scheme Leafhour -configuration Debug -sdk iphonesimulator -destination 'generic/platform=iOS Simulator' -derivedDataPath "$RUNNER_TEMP/leafhour-ios" -jobs 2 ARCHS=arm64 ONLY_ACTIVE_ARCH=YES CODE_SIGNING_ALLOWED=NO build 2>&1 | tee "$RUNNER_TEMP/leafhour-ios.log"
+      - name: Preserve native validation evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: native-ios-evidence
+          path: |
+            ${{ runner.temp }}/leafhour-core.log
+            ${{ runner.temp }}/leafhour-ios.log
+          if-no-files-found: warn
