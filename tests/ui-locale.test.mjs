@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {mkdtemp,writeFile,mkdir,rm} from 'node:fs/promises';
+import {mkdtemp,writeFile,mkdir,rm,readFile} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
 import path from 'node:path';
 import {createUiLocale,browserCatalogueLoader,formatUiMessage,validateUiCatalogue,UI_LOCALE_ATTEMPT_MS} from '../app/ui-locale.mjs';
@@ -424,6 +424,7 @@ const catalogueFiles={'app/ui-catalogs/en.mjs':'export default {};','app/ui-cata
 const backing=['app/ui-locale.mjs','app/ui-locale-codec.mjs','app/account-ui-preferences-browser.mjs','app/account-ui-preferences.mjs','app/account-ui-preferences-transport.mjs','app/authored-ui-choice.mjs','app/ui-catalogs/en.mjs','app/ui-catalogs/zh-Hans.mjs','app/ui-catalogs/zh-Hant.mjs','app/ui-catalogs/ja.mjs'];
 const readerHtml='<head><script type="module" src="/reader.js"></script><script type="module" src="/reader-translation.js"></script><script type="module" src="/palette-bootstrap.mjs"></script><link rel="stylesheet" href="/styles.css"></head>';
 async function graphFixture(t,files,release){
+  files={...files,'app/browser-globals.mjs':await readFile(new URL('../app/browser-globals.mjs',import.meta.url),'utf8')};release=[...new Set([...release,'app/browser-globals.mjs'])];
   const root=await mkdtemp(path.join(tmpdir(),'ui-locale-graph-'));
   t.after(()=>rm(root,{recursive:true,force:true}));
   for(const [file,contents]of Object.entries(files)){await mkdir(path.dirname(path.join(root,file)),{recursive:true});await writeFile(path.join(root,file),contents);}

@@ -18,7 +18,7 @@
 <a class="skip" href="#main">本文へスキップ</a>
 <header class="site-header"><button class="palette-entry" data-palette-open type="button">検索とコマンド <kbd data-palette-keycap></kbd></button><a class="brand" href="/ja" aria-label="Leafhour ホーム"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 32V20A13 13 0 0 1 21 7h11v11a14 14 0 0 1-14 14H8Z"/><path d="M16 23h7v-9"/></svg></span><span class="brand-name" lang="en">Leafhour</span></a><nav aria-label="メインナビゲーション"><a href="/library?ui=ja">書斎へ戻る ↗</a><a href="https://github.com/getyak/leafhour">GitHub</a><div class="home-languages" role="group" aria-label="表示言語"><a href="/privacy" lang="en" hreflang="en">English</a><a href="/zh-hans/privacy" lang="zh-Hans" hreflang="zh-Hans">简体中文</a><a href="/zh-hant/privacy" lang="zh-Hant" hreflang="zh-Hant">繁體中文</a><a aria-current="true" href="/ja/privacy" lang="ja" hreflang="ja">日本語</a><a href="/library?settings=appearance" data-ui="ui.language.settings">表示言語の設定</a></div></nav></header>
 <main id="main" class="privacy-document">
-  <h1>ログインと個人データ</h1><p class="privacy-date">leafhour.com に適用 · 2026 年 10 月 22 日更新</p>
+  <h1>ログインと個人データ</h1><p class="privacy-date">leafhour.com に適用 · 2026 年 10 月 28 日更新</p>
   <p>Leafhour はログイン身分で書斎の持ち主を確認し、あなたがアップロードした本と読書記録を保存します。公開サンプルは匿名で読めます。この文書は、このオンラインインスタンスのデータの扱いを説明します。自分で配備したインスタンスは、その運営者の責任です。</p>
   <h2>ログインで使うもの</h2>
   <p>メールログインは入力したメールアドレスを使い、Supabase Auth がパスワードまたはコードを確認し、Resend が確認メールを届けます。登録とパスワード再設定は、先にメールを確認してからパスワードを設定します。Google または Apple のログインを選ぶと、各プロバイダーが身分を確認し、Supabase はアカウント識別子、メールアドレス、プロバイダーが共有する名前やアイコンなどの基本情報を受け取ります。Leafhour はこの情報でアカウントを識別し、ログインを維持します。メール本文、連絡先、クラウドドライブ、カレンダーの権限は要求しません。</p>
@@ -32,6 +32,8 @@
   <p>月額または年額プランを選ぶと、Creem が決済画面、各支払いの処理、認証後の契約管理ポータルを提供します。Leafhour はアカウント ID に注文・決済・取引・定期契約・顧客・返金の識別子を紐付け、商品、通貨、金額、支払いと契約の状態、請求期間と変更不可のポイント台帳を保存します。Creem は決済に必要な連絡先と支払い情報を処理します。Leafhour はカードの完全な情報を受け取らず、保存もしません。個人の本、質問、回答、ノートを Creem に送ることはありません。</p>
   <p>モデル提供者の利用記録は読書本文と分け、操作・試行 ID、機能、モデル、報告された token 使用量と取得できた費用見積もりを保存します。報告がない使用量は不明のままです。運営の請求レポートには必要な財務・利用情報を使い、個人の本文やノートは表示しません。読書データやアカウントの削除後も、決済照合、紛争対応、法的義務のために一部の財務記録を保存する場合があり、その削除依頼は別に確認します。無料の読書と書き出しにポイント購入は必要ありません。</p>
   <p><a href="/ja/pricing">料金</a> · <a href="/ja/terms">利用規約</a> · <a href="/ja/refunds">返金ポリシー</a></p>
+  <h2>利用状況の分析と障害診断</h2>
+  <p>書斎のデータ設定で、利用状況の分析と障害診断を個別に有効にできます。どちらも初期状態では無効です。PostHog には操作の結果と所要時間、Sentry には障害の種類を送ります。本の本文や書名、ノート、選択した文字、会話、ログイン情報は含めず、ページのリプレイも記録しません。サービス停止時には、アカウントを特定しない障害記録を Sentry に送る場合があります。</p>
   <h2>保存、書き出し、削除</h2>
   <p>書斎のデータは、読み続けたり書き出したりできるよう保存されます。読書の対話は対話ウィンドウから書き出せ、AI の回答とあなたの言葉は別々に印が付きます。書斎の「設定 → データと移行」では、読書書庫全体の ZIP バックアップと復元、個人記録の Markdown/JSON 書き出し、選択内容の共有プレビューが使えます。購読は不要です。同期済みの原文、訳文、コメント、対話、引用、位置と時間記録を保持します。元ファイルは任意で同梱できます。認証情報、Agent の権限、未完了のモデル処理は含めません。音声と聴読履歴は別の音声エクスポートを使います。未同期の読書記録と未保存の下書きは元のブラウザに残るため、先に同期または保存を完了してください。アカウントやプライベートデータの削除は、下記の連絡先までご依頼ください。アカウントの持ち主を確認してから対応します。ホスティングサービスが運用・セキュリティ・障害対応のために作るログやバックアップは、各サービスの保存方針に従って扱われます。</p>
   <p>ログインデータは認証、セッション、セキュリティ、あなたが求めた読書機能のために使われ、広告には使わず、売ることもありません。Supabase、Resend、Vercel、身分プロバイダー、あなたが明示的に呼び出すモデルサービスは、それぞれの機能に必要なデータを処理し、各社のプライバシーポリシーが適用されます。</p>
