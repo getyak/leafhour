@@ -24,7 +24,7 @@ test('opening a saved view restores its chosen manual mode and variant without l
   // A missing translation never borrows another variant: the original stays readable.
   const fallback=passagePresentation({original:'Original prose.',translations:{interpretive:{text:'Only interpretive exists.'}}},preferences.openingReadingPreferences({mode:'zh',variant:'literal'}));
   assert.deepEqual(fallback.layers.map(layer=>layer.kind),['original']);
-  assert.match(fallback.notice,/尚未翻译/);
+  assert.equal(fallback.notice,null);
 });
 
 test('reading appearance travels with exported records, rejects invalid imports atomically, and accepts old positions',async t=>{
@@ -57,7 +57,7 @@ test('reading appearance travels with exported records, rejects invalid imports 
   assert.equal((await post(other,'/api/progress',legacy)).status,200);
   const migrated=await (await fetch(other+'/api/records')).json();
   assert.equal(migrated.position.pageLayout,'scroll');assert.equal(migrated.position.fontFamily,'song');assert.equal(migrated.position.lineHeight,1.98);assert.equal(migrated.position.indent,false);
-  assert.equal(migrated.position.parallelLayout,'columns');assert.equal(migrated.position.parallelStyle,'plain');
+  assert.equal(migrated.position.parallelLayout,'stack');assert.equal(migrated.position.parallelStyle,'plain');
   assert.equal(migrated.position.readingPurpose,'manual');assert.equal(migrated.position.preferredLanguage,'source');
 });
 
@@ -89,7 +89,7 @@ test('parallel settings restore independently of the opening language and safely
   for(const [key,value]of Object.entries(chosen))assert.equal(reopened[key],value);
   assert.equal(openingReadingPreferences(chosen).mode,'en','older records without a saved mode still open in the original');
   const old=normalizeAppearance({parallelLayout:'invalid',parallelStyle:17});
-  assert.equal(old.parallelLayout,'columns');assert.equal(old.parallelStyle,'plain');assert.equal(old.parallelColor,'auto');assert.equal(old.parallelBackground,'auto');
+  assert.equal(old.parallelLayout,'stack');assert.equal(old.parallelStyle,'plain');assert.equal(old.parallelColor,'auto');assert.equal(old.parallelBackground,'auto');
   for(const style of ['plain','muted','quote','tint','reveal'])assert.equal(normalizeAppearance({parallelStyle:style},true).parallelStyle,style);
 });
 
@@ -129,4 +129,10 @@ test('new books use normal tracking while saved and account spacing choices surv
   const restored=openingReadingView({account,saved});
   assert.equal(restored.letterSpacing,0.04);assert.equal(restored.fontFamily,'sans');
   assert.deepEqual(saved,before,'opening does not rewrite stored typography');
+});
+
+test('fresh bilingual reading follows each original with its translation while preserving an explicit columns choice',async()=>{
+ const {openingReadingPreferences}=await import('../app/reading-preferences.mjs');
+ assert.equal(openingReadingPreferences({mode:'parallel'}).parallelLayout,'stack');
+ assert.equal(openingReadingPreferences({mode:'parallel',parallelLayout:'columns'}).parallelLayout,'columns');
 });

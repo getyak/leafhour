@@ -8,6 +8,7 @@ body[data-parallel-color=amber]{--parallel-tone:#77522b;--parallel-ink:#77522b}
 :root[data-theme=night] body[data-parallel-color=amber]{--parallel-tone:#dfc49e;--parallel-ink:#dfc49e}
 .parallel-pair{column-gap:clamp(24px,4vw,48px);align-items:start}
 .parallel-column{min-width:0}
+.parallel-source-only>.parallel-original{grid-column:1/-1;width:100%;max-width:650px;justify-self:center}
 .parallel-translation{color:var(--parallel-ink)}
 body[data-parallel-layout=stack] .parallel-pair{grid-template-columns:minmax(0,1fr);gap:20px}
 body[data-mode=parallel][data-parallel-layout=stack]{--page-width:650px}
@@ -30,3 +31,5 @@ body[data-parallel-style=reveal] .parallel-translation[data-revealed=true] .para
 @media(max-width:767px){.book-page .parallel-pair,.parallel-preview>.parallel-pair{grid-template-columns:minmax(0,1fr);gap:20px}}
 @media(forced-colors:active){.parallel-translation{color:CanvasText!important}.parallel-style-options>button[aria-pressed=true]{outline:2px solid Highlight}.parallel-reveal{border-color:ButtonText!important}}
 @media print{body[data-parallel-style=reveal] .parallel-translation-text{display:block!important}.parallel-reveal{display:none!important}}
+
+body[data-mode=en] .sample-boundary{display:none}

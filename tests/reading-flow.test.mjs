@@ -70,6 +70,9 @@ test('only typographic dividers are compacted, not prose or untranslated sentenc
   assert.equal(typeof flowModule.isReadingDivider,'function');
   assert.equal(flowModule.isReadingDivider('* * * * * * *'),true);
   assert.equal(flowModule.isReadingDivider('***'),true);
+  assert.equal(flowModule.isReadingDivider('···'),true);
+  assert.equal(flowModule.isReadingDivider('· · ·'),true);
+  assert.equal(flowModule.isReadingDivider('Wait · before continuing.'),false);
   assert.equal(flowModule.isReadingDivider('Never *just* assume.'),false);
   assert.equal(flowModule.isReadingDivider('A missing translation.'),false);
 });

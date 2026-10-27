@@ -11,9 +11,9 @@ export function passagePresentation(passage,{mode='zh',variant='interpretive',so
   const original={kind:'original',text:passage.original,lang:sourceLanguage==='zh'?'zh-Hans':sourceLanguage||'und',label:'原文',...(Array.isArray(passage.source?.lineBreaks)?{lineBreaks:passage.source.lineBreaks}:{}),...(sourceEmphasis?{emphasis:sourceEmphasisRanges(passage.original)}:{})};
   if(mode==='en'||passage.kind==='source_heading')return {layers:[original],notice:null};
   const text=translatedText(passage,variant),label=variantLabel(variant);
-  const translation=text?{kind:'translation',text,lang:'zh-Hans',label}:{kind:'missing',text:null,lang:null,label:label+' · 尚未翻译',message:'这份'+label+'尚未准备好。可继续阅读原文。'};
-  if(mode==='parallel')return {layers:[original,translation],notice:null};
-  return text?{layers:[translation],notice:null}:{layers:[{...original,fallback:true}],notice:label+'尚未翻译 · 显示原文'};
+  if(!text)return {layers:[mode==='parallel'?original:{...original,fallback:true}],notice:null};
+  const translation={kind:'translation',text,lang:'zh-Hans',label};
+  return {layers:mode==='parallel'?[original,translation]:[translation],notice:null};
 }
 
 // A BR adds a visual line boundary without inserting characters into quoted text.

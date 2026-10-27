@@ -11,7 +11,7 @@ export const parallelStyleIds=Object.freeze(['plain','muted','quote','tint','rev
 
 // Every pair keeps its original paragraph anchor; revealing only changes local display.
 export function createParallelPair({document,layers,variant,prose,passageId,revealed=new Set(),onReveal=change=>change(),example=false}){
-  const pair=document.createElement('div');pair.className='parallel-pair';
+  const pair=document.createElement('div');pair.className='parallel-pair'+(layers.some(layer=>layer.kind==='translation')?'':' parallel-source-only');
   for(const layer of layers){
     const column=document.createElement('div');column.className='parallel-column parallel-'+layer.kind;
     const labelId=layer.kind==='original'?'lo':layer.kind==='missing'?'parallel.missing.'+(variant==='literal'?'literal':'interpretive'):example?'parallel.example':variant==='literal'?'ll':'li';
