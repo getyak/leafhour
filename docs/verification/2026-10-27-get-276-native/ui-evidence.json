@@ -1,0 +1,41 @@
+{
+  "native_ui_tests": 3,
+  "passed": 3,
+  "platform": "iOS Simulator 26.5, allowlisted Primary iPhone",
+  "physical_device": false,
+  "testflight": false,
+  "screenshots": [
+    {
+      "file": "screenshots/epub-cold-resume.png",
+      "test": "ReadingUITests/testCompleteEPUBLastChapterAndColdResume()",
+      "sha256": "aa181ab7aeb930e7e6571c67710eec69f9ea6c136ea5c93a7f8ea2d94b416a1a",
+      "device": "iPhone 17 Pro",
+      "timestamp": 1793101162.696,
+      "failure": false
+    },
+    {
+      "file": "screenshots/epub-last-chapter.png",
+      "test": "ReadingUITests/testCompleteEPUBLastChapterAndColdResume()",
+      "sha256": "aa181ab7aeb930e7e6571c67710eec69f9ea6c136ea5c93a7f8ea2d94b416a1a",
+      "device": "iPhone 17 Pro",
+      "timestamp": 1793101153.457,
+      "failure": false
+    },
+    {
+      "file": "screenshots/native-draft-restored.png",
+      "test": "ReadingUITests/testNativeSelectionDraftAndRelaunch()",
+      "sha256": "4cd5418d68e589ccee4ffa482b1eb6c22ebbd4beddd64e0f905ae7fd0e40c112",
+      "device": "iPhone 17 Pro",
+      "timestamp": 1793101202.28,
+      "failure": false
+    },
+    {
+      "file": "screenshots/pdf-last-page.png",
+      "test": "ReadingUITests/testPDFSystemImportAndLastPage()",
+      "sha256": "1f2d1f0939d71748c727e5f4c8fe531d318c17d6659f6139e3e0f43d04d5fbe7",
+      "device": "iPhone 17 Pro",
+      "timestamp": 1793101223.256,
+      "failure": false
+    }
+  ]
+}

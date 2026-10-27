@@ -190,3 +190,5 @@ PDF 支持最多 256 MB、1200 页，EPUB 与文本最多 20 MB。PDF 优先提�
 ## 阅读 skill 与远程 MCP
 
 兼容 skills 的宿主可安装 `skills/leafhour-reading`。在 ChatGPT 添加 `https://leafhour.com/api/mcp`，通过 OAuth/DCR 登录 Leafhour，为一本书授予一小时只读权限；调用 `reader_get_connection` 核对该书。详见[安装、权限与真实宿主验收](docs/mcp-oauth.md)。已有 stdio 配置继续受支持。
+
+原生 iOS 本机阅读源码（EPUB/PDF 导入与离线阅读）：[构建与范围](apps/ios/README.md)。TestFlight 与真机验收单独跟踪。

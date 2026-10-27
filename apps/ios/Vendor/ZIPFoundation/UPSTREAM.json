@@ -1,0 +1,164 @@
+{
+  "repository": "https://github.com/weichsel/ZIPFoundation",
+  "version": "0.9.20",
+  "commit": "22787ffb59de99e5dc1fbfe80b19c97a904ad48d",
+  "license": "MIT",
+  "files": [
+    {
+      "path": "LICENSE",
+      "git_blob": "07362ff83b449ee7e78129b28a030e2d5902c13d",
+      "sha256": "93a5b6f4c4fcfbca71aaf17f5758d249cf205d5d1c237becc37f14e43af09f6b",
+      "bytes": 1105
+    },
+    {
+      "path": "Package.swift",
+      "git_blob": "26c76d064603d2674bd4357e91d739e7876c7c81",
+      "sha256": "2dd90c2f70b1f3d17a4d73bd32ac97e5fc002eecd5797586edaf170def789fff",
+      "bytes": 844
+    },
+    {
+      "path": "Sources/CZLib/module.modulemap",
+      "git_blob": "9d402b04ab8921326d38cfab5d6040f4647f37da",
+      "sha256": "1d6577e0f4ac0ce32cd158f426e0a337a777e8e1722bd51330514b98877a200f",
+      "bytes": 356
+    },
+    {
+      "path": "Sources/CZLib/shim.h",
+      "git_blob": "a04f44214b4cd2d636a420cab6e6eff8fd351dfd",
+      "sha256": "1d3b804c8ff494bbd1305ddd5e3290e24397694b1d241bc43efa98cce4e66cb2",
+      "bytes": 795
+    },
+    {
+      "path": "Sources/ZIPFoundation/Archive+BackingConfiguration.swift",
+      "git_blob": "01dbbc91cff9f451b3f901993003d482c1b690c3",
+      "sha256": "d9ebf96a0080d2b79207f85bcd3e46812baa94e35d35ea66114153fd4dc5f49d",
+      "bytes": 6396
+    },
+    {
+      "path": "Sources/ZIPFoundation/Archive+Deprecated.swift",
+      "git_blob": "e325f884dbc60223a58dcf3fa2b200eb32eae601",
+      "sha256": "1824adfa6e318fcdcc5c43431633ed42c4de845f3d8575807b24bc626addc63e",
+      "bytes": 739
+    },
+    {
+      "path": "Sources/ZIPFoundation/Archive+Helpers.swift",
+      "git_blob": "e1ab5277e44e93c33567f637ffaac48ebc18bb66",
+      "sha256": "2b660b56fcdc8a57de59b6ae0527894dfe2cd895a5037795f827763ea56be6c8",
+      "bytes": 17351
+    },
+    {
+      "path": "Sources/ZIPFoundation/Archive+MemoryFile.swift",
+      "git_blob": "72786090814c157f92197d085024f244fbb6ba0d",
+      "sha256": "c480fa8e999604787bebfba3ae5eb9e0dea0b8bced7063c93f853f252d4828a7",
+      "bytes": 6151
+    },
+    {
+      "path": "Sources/ZIPFoundation/Archive+Progress.swift",
+      "git_blob": "51e331a24f512f6db94c51473073201a07025674",
+      "sha256": "c8b26546f4183d127bb5fca7612cb87b18253d4a1788cbc0dd222280e7e1b9bf",
+      "bytes": 2334
+    },
+    {
+      "path": "Sources/ZIPFoundation/Archive+Reading.swift",
+      "git_blob": "8423bd986713b689da8992e4b223ed25ef3f39de",
+      "sha256": "14f4c1c9ffbe45fb4618625be15105507010110680e7e4a90c9061e222ec8b03",
+      "bytes": 6726
+    },
+    {
+      "path": "Sources/ZIPFoundation/Archive+ReadingDeprecated.swift",
+      "git_blob": "e0cd363671fa7ab07a784095760f81c4f391fe6a",
+      "sha256": "a5036f209dc6609c17adf64cdd1682cd6fc319f405e709a147cea087172a6dfe",
+      "bytes": 1129
+    },
+    {
+      "path": "Sources/ZIPFoundation/Archive+Writing.swift",
+      "git_blob": "6b821cdec788e7a96e6066e26969545943f08616",
+      "sha256": "6081d702339396741e85e0b430f66b5f3c4443e2e13164e69758857429fd5996",
+      "bytes": 19248
+    },
+    {
+      "path": "Sources/ZIPFoundation/Archive+WritingDeprecated.swift",
+      "git_blob": "52fd336fd2bccb2e0021e968d10bda145a66f493",
+      "sha256": "2f2046af246e02648db773e3e36133a96e7ab4a72942f39a87e6e29ddf51310b",
+      "bytes": 2477
+    },
+    {
+      "path": "Sources/ZIPFoundation/Archive+ZIP64.swift",
+      "git_blob": "8b94b7c3713efed7d61e242d1b49d255da59b656",
+      "sha256": "21465808aa72245ecf5e1c69231d187a133d0a86f180148828de86431fce424a",
+      "bytes": 7698
+    },
+    {
+      "path": "Sources/ZIPFoundation/Archive.swift",
+      "git_blob": "5fc11d2add62d2ea49aae52941dc7e23a873bbb0",
+      "sha256": "a36fb6c28dc61665003d0de996eeeccf3ddd829c1c5a3ff0a375ec86a302e912",
+      "bytes": 18790
+    },
+    {
+      "path": "Sources/ZIPFoundation/Data+Compression.swift",
+      "git_blob": "900233cf75b18b5b1fb55414808c519af92a7037",
+      "sha256": "88c2b802cc903d48987cd3808cd9212226e889948c76f0790a01572bdaab1d2d",
+      "bytes": 18324
+    },
+    {
+      "path": "Sources/ZIPFoundation/Data+CompressionDeprecated.swift",
+      "git_blob": "05b33dc45fb87dc4b2699f1470ece4a48b9d9865",
+      "sha256": "b76157d54942ae30f9e6b3a460222725602e6f60cdf8f51020d511e04674347a",
+      "bytes": 1410
+    },
+    {
+      "path": "Sources/ZIPFoundation/Data+Serialization.swift",
+      "git_blob": "4fe794f0a7c8afbabb5a6d9c08d8fbabc31f1289",
+      "sha256": "0582aa3a7f58bf20b214eabfd6f7c41b78684780b5dbea663e09025d829bbd82",
+      "bytes": 4751
+    },
+    {
+      "path": "Sources/ZIPFoundation/Date+ZIP.swift",
+      "git_blob": "429a06c75e1e6b3cebec73d1458b8e879bfc26ef",
+      "sha256": "88edc8e6b839309df32f03b5a387cff4ba3f5151be4cf154b33810d7e235d02f",
+      "bytes": 3197
+    },
+    {
+      "path": "Sources/ZIPFoundation/Entry+Serialization.swift",
+      "git_blob": "cd87eb28e7392ea6cc663c7628da5e9c1f853011",
+      "sha256": "31b5f2a1b9e91b9f4dd0ee3dedefaa3f3b0efafb96e6d3815a6b3c2dbd34c87f",
+      "bytes": 10500
+    },
+    {
+      "path": "Sources/ZIPFoundation/Entry+ZIP64.swift",
+      "git_blob": "a65afcbe600ee37873b8ce2e102bb1918c423316",
+      "sha256": "ec1664c6ad88acb387344fe8faf3159641476feb99c75a5d47e1a11bc81636dd",
+      "bytes": 6379
+    },
+    {
+      "path": "Sources/ZIPFoundation/Entry.swift",
+      "git_blob": "a6370c643e2376b3997fccfa4d7b12fce68add8f",
+      "sha256": "d6f5570877afa147db0235479d4bdf18c7489af79fcbb20f022d0eee2bc42212",
+      "bytes": 17563
+    },
+    {
+      "path": "Sources/ZIPFoundation/FileManager+ZIP.swift",
+      "git_blob": "6cd5571c993f31ec4aa6a9c89af97a6c175945ef",
+      "sha256": "e299de3ad3615a315ee033169fbbb965bab8f0256f36b7acd101f71ce9b947e4",
+      "bytes": 18826
+    },
+    {
+      "path": "Sources/ZIPFoundation/FileManager+ZIPDeprecated.swift",
+      "git_blob": "0b2ab5aacd04cd4c28d36c311845798d49d1e1be",
+      "sha256": "dbc4082819be0af06e942396152d584e010740b798da2ead51117e3094fbcd4e",
+      "bytes": 603
+    },
+    {
+      "path": "Sources/ZIPFoundation/Resources/PrivacyInfo.xcprivacy",
+      "git_blob": "2ed80999130a580cf1fe2f44eedef1dc135f8049",
+      "sha256": "9a2f930cedb8d58309a581b9bf9bf3673685ec02ae2197d9f1c56828b718dffd",
+      "bytes": 599
+    },
+    {
+      "path": "Sources/ZIPFoundation/URL+ZIP.swift",
+      "git_blob": "49e841c23282386150874c26520a6ab89831c0ab",
+      "sha256": "89f4a8cb15a21ac1cb55d0c5f251546d254abe8a7f4aab0645a4470e57052206",
+      "bytes": 929
+    }
+  ]
+}

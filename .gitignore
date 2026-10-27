@@ -1,7 +1,7 @@
 .DS_Store
-node_modules/
+node_modules
 dist/
-build/
+build
 .superpowers/
 .env
 .env.*
@@ -20,3 +20,9 @@ __pycache__/
 
 .reader-runtime/
 .copy-tools/
+
+# Native build output and local signing identity
+apps/ios/**/.build
+apps/ios/**/.swiftpm/
+apps/ios/**/xcuserdata/
+apps/ios/Config/Signing.local.xcconfig
