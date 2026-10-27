@@ -1,4 +1,4 @@
-export const isReadingDivider=text=>typeof text==='string'&&/^\s*(?:\*\s*){3,}$/.test(text);
+export const isReadingDivider=text=>typeof text==='string'&&/^\s*(?:(?:\*\s*){3,}|(?:·\s*){3,})$/.test(text);
 
 export function createChapterFlow({chapters,render}) {
   const nodes=new Map();let rendered=[];

@@ -21,7 +21,6 @@
 body[data-continuous=false] .flow-chapter-end{display:none}
 .flow-chapter .reading-divider{margin:3px 0!important;min-height:0}
 .flow-chapter .reading-divider p{font:12px/1.4 var(--english)!important;letter-spacing:.15em!important;color:var(--muted);text-align:center;text-indent:0!important;margin:0}
-.flow-chapter .reading-divider .translation-status{display:none}
 .settings-hint{font:12px/1.8 var(--interface);color:var(--muted);margin:-5px 0 18px}
 .flow-chapter:last-child .flow-chapter-end{margin-bottom:0}
 body[data-continuous=true] .chapter-footer{display:none}

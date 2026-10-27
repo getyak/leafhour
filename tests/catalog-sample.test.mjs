@@ -24,7 +24,7 @@ test('guests can read independent Chinese openings without an account or model c
       assert.notEqual(p.translations.literal.text,p.translations.interpretive.text);
       for(const variant of ['literal','interpretive']){const draft=p.translations[variant];assert.equal(draft.status,'draft');assert.equal(draft.origin,'ai');assert.equal(draft.variant,variant);assert.equal(draft.sourceVersion,book.contentVersion);assert.ok(draft.translator);assert.equal(passagePresentation(p,{variant}).layers[0].kind,'translation');}
     }
-    const next=rows[start+expected[book.bookId]];assert.deepEqual(next.translations,{});assert.match(passagePresentation(next).notice,/尚未翻译/);
+    const next=rows[start+expected[book.bookId]];assert.deepEqual(next.translations,{});assert.equal(passagePresentation(next).notice,null);assert.equal(passagePresentation(next).layers[0].text,next.original);
     await assert.rejects(service.translate(null,book.bookId,rows[start].id),{status:401});
     const changed=await service.getBook(null,book.bookId);changed.sections.flatMap(s=>s.paragraphs)[start].translations.literal.text='Changed';assert.notEqual((await service.getBook(null,book.bookId)).sections.flatMap(s=>s.paragraphs)[start].translations.literal.text,'Changed');
   }

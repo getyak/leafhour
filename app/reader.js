@@ -190,7 +190,7 @@ for(const [key,unit] of typographyFields){
   controls.append(minus,value,plus);row.append(name,controls);$('typography-controls').append(row);
 }
 function passageView(p){return {mode:overrides[p.id]?.mode||(state.mode==='en'?'en':'zh'),variant:overrides[p.id]?.variant||state.variant};}
-function prose(layer,variant){if(layer.kind==='missing')return fixed('div','translation-placeholder',READER_UI+'missing.'+variant);const n=el('p',layer.fallback?'untranslated-original':'',layer.text);if(layer.kind==='original')applySourceLineation(n,layer.lineBreaks,document,layer.emphasis);n.lang=layer.lang;n.dataset.readingLayer=layer.kind;n.dataset.variant=variant;return n;}
+function prose(layer,variant){const n=el('p',layer.fallback?'untranslated-original':'',layer.text);if(layer.kind==='original')applySourceLineation(n,layer.lineBreaks,document,layer.emphasis);n.lang=layer.lang;n.dataset.readingLayer=layer.kind;n.dataset.variant=variant;return n;}
 function fillPassage(node,p){
   if(node.contains($('note-panel')))document.body.append($('note-panel'));
   node.replaceChildren();const v=passageView(p),view=passagePresentation(p,{...v,mode:state.mode==='parallel'?'parallel':v.mode,sourceLanguage:book.sourceLanguage,sourceEmphasis:sourceEmphasisEligible(book)});
@@ -198,7 +198,6 @@ function fillPassage(node,p){
     node.append(createParallelPair({document,layers:view.layers,variant:v.variant,prose,passageId:p.id,revealed:revealedTranslations,onReveal:change=>{const a=anchor();change();restoreAnchor(a);dispatchReaderEvent('reader:layout');}}));
   }else node.append(prose(view.layers[0],v.variant));
   if(p.source?.labelBefore)node.prepend(el('span','source-passage-label',p.source.labelBefore));
-  if(view.notice)node.append(fixed('span','translation-status',READER_UI+'fallback.'+v.variant));
   for(const text of node.querySelectorAll('p[data-reading-layer]'))highlights.paint(text,p.id);
 }
 function buildChapter(chapter){
