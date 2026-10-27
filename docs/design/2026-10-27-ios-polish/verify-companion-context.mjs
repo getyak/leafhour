@@ -33,7 +33,7 @@ async function check(name,fn,options={}){
   await c.route('**/*',r=>{const u=r.request().url();if(u.startsWith(base)||u.startsWith('data:'))return r.continue();report.externalRequests.push(u);return r.abort();});
   const seed={size:28,layer:'interpretive',readingPosition:position,...options.saved};
   await c.addInitScript(({key,seed})=>{if(sessionStorage.getItem(key)===null)sessionStorage.setItem(key,JSON.stringify(seed));},{key,seed});
-  const p=await c.newPage();p.setDefaultTimeout(10000);p.on('pageerror',e=>report.errors.push(e.message));
+  const p=await c.newPage();p.setDefaultTimeout(Number(process.env.LEAFHOUR_BROWSER_TIMEOUT_MS) || 10000);p.on('pageerror',e=>report.errors.push(e.message));
   try{await p.goto(base+'/prototype/');await p.evaluate(()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r))));await fn(p);report.checks.push({name,status:'pass'});console.log('PASS',name);}
   catch(e){report.checks.push({name,status:'fail',message:e.message});console.log('FAIL',name,e.message);}
   finally{await c.close();}
@@ -79,6 +79,40 @@ try{
     await p.locator('#companion-button').click();await settle(p);await p.locator('[data-quote="walden-2-002"]').click();
     const s=await snapshot(p);assert.equal(s.quote.passageId,'walden-2-001');assert.equal(s.draft,'保留第一段的问题');
   },{saved:{quote:firstQuote,draft:'保留第一段的问题'}});
+  await check('sending-a-new-question-keeps-the-old-pending-request-recoverable',async p=>{
+    await p.locator('#companion-button').click();await settle(p);await p.locator('[data-action="ask-current"]').click();await settle(p);
+    await p.locator('#question-input').fill('第二段的新问题');await p.locator('#question-form').evaluate(n=>n.requestSubmit());await settle(p);
+    let saved=await storage(p);const old=saved.turns.find(t=>t.id==='pending-first');
+    assert.equal(old?.question,'第一段未完成的问题');assert.equal(old.quote.passageId,'walden-2-001');assert.equal(old.answered,false);
+    assert.equal(saved.turns.find(t=>t.question==='第二段的新问题')?.answered,true);
+    await p.getByRole('button',{name:'继续读',exact:true}).click();await p.locator('#reader-sheet').waitFor({state:'hidden'});
+    await p.locator('#library-button').click();await settle(p);await p.locator('[data-action="records"]').click();await settle(p);await p.locator('[data-record-tab="discussion"]').click();
+    const row=p.locator('[data-turn]').filter({hasText:'第一段未完成的问题'});assert.match(await row.innerText(),/未完成提问/);
+    await capture(p,'20-pending-history','20 · 未完成问题单独保留');await row.click();await settle(p);
+    let s=await snapshot(p);saved=await storage(p);assert.equal(s.quote.passageId,'walden-2-001');assert.equal(s.question,'第一段未完成的问题');assert.equal(saved.pendingTurn.id,'pending-first');assert.equal(saved.answered,false);assert.equal(await p.locator('.answer').count(),0);
+    await capture(p,'21-pending-recovery','21 · 恢复原问题并显式重试');
+    await p.reload();await p.locator('#companion-button').click();await settle(p);
+    assert.equal((await storage(p)).pendingTurn.id,'pending-first');assert.equal((await snapshot(p)).quote.passageId,'walden-2-001');assert.equal(await p.locator('.answer').count(),0);
+    await p.locator('[data-action="retry"]').click();assert.equal((await storage(p)).turns.find(t=>t.id==='pending-first').answered,true);assert.equal(await p.locator('.answer').count(),1);
+  },{saved:{quote:firstQuote,pendingTurn:{id:'pending-first',quote:firstQuote,question:'第一段未完成的问题',answered:false}}});
+  await check('offline-new-question-and-history-switch-keep-both-pending-requests',async p=>{
+    await p.locator('#companion-button').click();await settle(p);await p.locator('[data-action="ask-current"]').click();await settle(p);
+    await p.evaluate(()=>window.leafhourPrototype.scenario('offline'));await settle(p);await p.locator('#question-input').fill('第二段也未完成的问题');await p.locator('#question-form').evaluate(n=>n.requestSubmit());await settle(p);
+    let saved=await storage(p);assert.equal(saved.pendingTurn.quote.passageId,'walden-2-002');assert.equal(saved.turns.find(t=>t.id==='pending-first')?.answered,false);
+    await p.getByRole('button',{name:'继续读',exact:true}).click();await p.locator('#reader-sheet').waitFor({state:'hidden'});
+    await p.locator('#library-button').click();await settle(p);await p.locator('[data-action="records"]').click();await settle(p);await p.locator('[data-record-tab="discussion"]').click();
+    await p.locator('[data-turn]').filter({hasText:'第一段未完成的问题'}).click();await settle(p);
+    saved=await storage(p);assert.equal(saved.pendingTurn.id,'pending-first');assert.equal(saved.pendingTurn.quote.passageId,'walden-2-001');assert.equal(saved.turns.find(t=>t.question==='第二段也未完成的问题')?.answered,false);assert.equal(saved.answered,false);
+  },{saved:{quote:firstQuote,pendingTurn:{id:'pending-first',quote:firstQuote,question:'第一段未完成的问题',answered:false}}});
+  await check('completed-history-trimming-does-not-discard-an-unfinished-request',async p=>{
+    await p.locator('#companion-button').click();await settle(p);await p.locator('#question-input').fill('新的已完成问题');await p.locator('#question-form').evaluate(n=>n.requestSubmit());await settle(p);
+    const saved=await storage(p);assert.equal(saved.turns.find(t=>t.id==='parked-pending')?.answered,false);assert.equal(saved.turns.filter(t=>t.answered!==false).length,6);
+  },{saved:{quote:firstQuote,discussionStarted:true,turns:[{id:'parked-pending',quote:firstQuote,question:'仍未完成',answered:false},...Array.from({length:5},(_,i)=>({id:'completed-'+i,quote:firstQuote,question:'合成旧问题 '+i,answered:true}))]}});
+  await check('a-new-offline-question-does-not-inherit-the-previous-answer-status',async p=>{
+    await p.locator('#companion-button').click();await settle(p);await p.evaluate(()=>window.leafhourPrototype.scenario('offline'));await settle(p);
+    await p.locator('#question-input').fill('同一句新提交但未完成的问题');await p.locator('#question-form').evaluate(n=>n.requestSubmit());await settle(p);
+    const saved=await storage(p);assert.equal(saved.pendingTurn.question,'同一句新提交但未完成的问题');assert.equal(saved.answered,false);assert.equal(await p.locator('.answer').count(),0);
+  },{saved:{quote:firstQuote,question:'上一条已完成的问题',answered:true,turns:[{id:'answered-first',quote:firstQuote,question:'上一条已完成的问题',answered:true}]}});
   await check('an-explicit-word-explanation-survives-close-and-reentry-without-typed-text',async p=>{
     await p.locator('#walden-2-002 .passage-text').evaluate(n=>{const range=document.createRange();range.setStart(n.firstChild,0);range.setEnd(n.firstChild,6);const s=getSelection();s.removeAllRanges();s.addRange(range);});
     await p.locator('#selection-menu').waitFor();await p.getByRole('button',{name:'解释这句',exact:true}).click();await settle(p);

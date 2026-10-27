@@ -1,0 +1,12 @@
+{
+  "at": "2026-10-26T22:52:33.922Z",
+  "checks": [
+    {
+      "name": "a-new-offline-question-does-not-inherit-the-previous-answer-status",
+      "status": "pass"
+    }
+  ],
+  "errors": [],
+  "externalRequests": [],
+  "status": "pass"
+}

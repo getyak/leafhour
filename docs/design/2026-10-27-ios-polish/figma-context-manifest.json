@@ -23,6 +23,14 @@
     "19-layer-identity": {
       "id": "6:3799",
       "name": "19 · 阅读层与讨论层各自清楚"
+    },
+    "20-pending-history": {
+      "id": "8:3910",
+      "name": "20 · 未完成问题单独保留"
+    },
+    "21-pending-recovery": {
+      "id": "8:4009",
+      "name": "21 · 恢复原问题并显式重试"
     }
   },
   "connections": [
@@ -46,6 +54,13 @@
       "control": "draft-return",
       "to": "17-existing-discussion",
       "destinationId": "6:3582"
+    },
+    {
+      "nodeId": "8:3988",
+      "from": "20-pending-history",
+      "control": "unfinished question",
+      "to": "21-pending-recovery",
+      "destinationId": "8:4009"
     }
   ],
   "flows": [
@@ -60,17 +75,21 @@
     {
       "nodeId": "6:3799",
       "name": "版本校对 · 正文与讨论"
+    },
+    {
+      "nodeId": "8:3910",
+      "name": "未完成 · 按原引用找回"
     }
   ],
   "previousFramesPreserved": [
     "1:1869",
     "3:3346"
   ],
-  "textStyleApplyCalls": 91,
-  "nativeTextStyleBindingsReported": 91,
-  "boundColorNodes": 155,
+  "textStyleApplyCalls": 128,
+  "nativeTextStyleBindingsReported": 128,
+  "boundColorNodes": 216,
   "limitations": [
-    "Five fixed specimens; only the three exact-state transitions listed here are connected. Closing and other controls stay in the existing full v2 flow or Web prototype.",
+    "Seven fixed specimens; only the exact-state transitions listed here are connected. Closing and other controls stay in the existing full v2 flow or Web prototype.",
     "No text input, adaptive discussion state or generation in Figma. Source and draft states are fixed samples.",
     "Web/Figma checks do not establish native iPhone, SwiftUI, Safari, system keyboard, VoiceOver or haptic acceptance."
   ]

@@ -1,5 +1,5 @@
 {
-  "at": "2026-10-26T22:12:39.502Z",
+  "at": "2026-10-26T23:32:26.591Z",
   "checks": [
     {
       "name": "handle-has-a-44-pixel-touch-target",
@@ -60,5 +60,12 @@
   ],
   "errors": [],
   "externalRequests": [],
+  "closingInput": {
+    "captured": true,
+    "hidden": false,
+    "inert": null,
+    "top": 472.66094970703125,
+    "target": ""
+  },
   "status": "pass"
 }

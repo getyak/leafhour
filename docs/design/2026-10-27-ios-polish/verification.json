@@ -1,5 +1,5 @@
 {
-  "at": "2026-10-26T22:21:33.225Z",
+  "at": "2026-10-26T23:50:04.064Z",
   "timeZone": "Asia/Singapore",
   "kind": "design-prototype",
   "checks": [
@@ -138,7 +138,7 @@
   },
   "status": "pass",
   "sourceHashes": {
-    "prototype/app.js": "93aae707f02b464ebb58cb4dbea577ddc34239204356d4c0e441590303bf350f",
+    "prototype/app.js": "29149dc2e97eff017c19a9f0bd78f06bd580eac13aeff7b8a19abb6379a46bb6",
     "prototype/motion.mjs": "53fd5df37f2034bcdf9fa47e7ae5d2bca1a11fff46bae63e77a30f2691ffd9ee",
     "prototype/selection-position.mjs": "ffd097f46090c18b411f18b3891fc5fe73733242f7e0c2bba7f0f9c8b97cacf8",
     "prototype/reading-position.mjs": "26c1c49866f01a7324c77e8b5c6db3845114bc1fc419d07bbb92b59f2eddf3ed",

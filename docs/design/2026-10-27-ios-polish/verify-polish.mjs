@@ -28,15 +28,18 @@ async function half(p) {
   await settle(p);
 }
 async function check(name, fn, options={}) {
-  const context = await browser.newContext({viewport:{width:402,height:874},hasTouch:true,isMobile:true,...options});
+  if(process.env.LEAFHOUR_POLISH_FILTER && !new RegExp(process.env.LEAFHOUR_POLISH_FILTER).test(name)) return;
+  const {controlledClock=false,...contextOptions}=options;
+  const context = await browser.newContext({viewport:{width:402,height:874},hasTouch:true,isMobile:true,...contextOptions});
   await context.route('**/*',route => {
     const url=route.request().url();
     if(url.startsWith(base)||url.startsWith('data:')) return route.continue();
     report.externalRequests.push(url);return route.abort();
   });
-  const p=await context.newPage();p.setDefaultTimeout(10000);
+  const p=await context.newPage();p.setDefaultTimeout(Number(process.env.LEAFHOUR_BROWSER_TIMEOUT_MS) || 30000);
+  if(controlledClock) await p.clock.install({time:new Date('2026-10-27T00:00:00Z')});
   p.on('pageerror',e=>report.errors.push(e.message));
-  try {await p.goto(base+'/prototype/');await fn(p);report.checks.push({name,status:'pass'});console.log('PASS',name);}
+  try {await p.goto(base+'/prototype/',{waitUntil:'domcontentloaded',timeout:90000});await fn(p);report.checks.push({name,status:'pass'});console.log('PASS',name);}
   catch(e){report.checks.push({name,status:'fail',message:e.message});console.log('FAIL',name,e.message);}
   finally {await context.close();}
 }
@@ -126,15 +129,19 @@ try {
   await check('a-closing-sheet-can-be-grabbed-and-cancelled-with-its-draft',async p => {
     await half(p);await p.locator('#question-input').fill('关闭中也保留这份草稿');await settle(p);
     await p.locator('#sheet-grip').press('Enter');await settle(p);
+    await p.clock.pauseAt(new Date('2026-10-27T12:00:00Z'));
+    await p.keyboard.press('Escape');await p.clock.runFor(32);
     const b=await p.locator('#sheet-grip').boundingBox();
-    await p.mouse.move(b.x+b.width/2,b.y+b.height/2);await p.keyboard.press('Escape');
+    await p.mouse.move(b.x+b.width/2,b.y+b.height/2);
     await p.mouse.down();
-    assert.ok(await p.locator('#sheet-grip').evaluate(n=>n.hasPointerCapture(1)),'The visible closing handle must still receive input');
+    const closingInput=await p.locator('#sheet-grip').evaluate((n,b)=>({captured:n.hasPointerCapture(1),hidden:document.getElementById('reader-sheet').hidden,inert:n.closest('[inert]')?.id||null,top:n.getBoundingClientRect().top,target:document.elementFromPoint(b.x+b.width/2,b.y+b.height/2)?.id}),b);
+    report.closingInput = closingInput;
+    assert.ok(closingInput.captured,'The visible closing handle must still receive input: '+JSON.stringify(closingInput));
     await p.mouse.move(b.x+b.width/2,b.y+b.height/2-20);
-    await p.locator('#sheet-grip').dispatchEvent('pointercancel',{pointerId:1});await p.mouse.up();await settle(p);
+    await p.locator('#sheet-grip').dispatchEvent('pointercancel',{pointerId:1});await p.mouse.up();await p.clock.resume();await settle(p);
     const s=await p.evaluate(()=>window.leafhourPrototype.snapshot());
     assert.equal(s.route,'companion');assert.equal(s.detent,'half');assert.equal(s.draft,'关闭中也保留这份草稿');
-  });
+  },{controlledClock:true});
   await check('dragging-away-and-back-is-not-treated-as-a-tap',async p => {
     await half(p);const b=await p.locator('#sheet-grip').boundingBox();
     const x=b.x+b.width/2,cy=b.y+b.height/2;

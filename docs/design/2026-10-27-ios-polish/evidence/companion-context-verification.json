@@ -1,5 +1,5 @@
 {
-  "at": "2026-10-26T22:17:53.470Z",
+  "at": "2026-10-26T23:44:37.823Z",
   "checks": [
     {
       "name": "fresh-entry-uses-the-logical-reading-paragraph",
@@ -23,6 +23,22 @@
     },
     {
       "name": "selecting-text-alone-does-not-change-the-existing-discussion",
+      "status": "pass"
+    },
+    {
+      "name": "sending-a-new-question-keeps-the-old-pending-request-recoverable",
+      "status": "pass"
+    },
+    {
+      "name": "offline-new-question-and-history-switch-keep-both-pending-requests",
+      "status": "pass"
+    },
+    {
+      "name": "completed-history-trimming-does-not-discard-an-unfinished-request",
+      "status": "pass"
+    },
+    {
+      "name": "a-new-offline-question-does-not-inherit-the-previous-answer-status",
       "status": "pass"
     },
     {

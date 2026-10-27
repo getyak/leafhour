@@ -83,7 +83,7 @@ async function context(options = {}) {
     return route.abort();
   });
   const p = await c.newPage();
-  p.setDefaultTimeout(10000);
+  p.setDefaultTimeout(Number(process.env.LEAFHOUR_BROWSER_TIMEOUT_MS) || 10000);
   p.on("pageerror", (error) => report.errors.push(error.message));
   await p.goto(base + "/prototype/");
   return { c, p };

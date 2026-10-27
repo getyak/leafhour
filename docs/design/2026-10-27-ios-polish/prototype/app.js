@@ -316,9 +316,16 @@ function captureQuote(id, text, startOffset = null) {
   };
 }
 function rememberTurn(turn) {
-  if (!state.turns.some((item) => item.id === turn.id))
-    state.turns.push({ ...turn, quote: { ...turn.quote } });
-  state.turns = state.turns.slice(-6);
+  const snapshot = { ...turn, quote: { ...turn.quote } };
+  const index = state.turns.findIndex((item) => item.id === turn.id);
+  if (index < 0) state.turns.push(snapshot);
+  else state.turns[index] = snapshot;
+  const completed = state.turns.filter((item) => item.answered !== false).slice(-6);
+  state.turns = state.turns.filter((item) => item.answered === false || completed.includes(item));
+}
+function rememberPendingTurn(exceptId = null) {
+  if (state.pendingTurn && state.pendingTurn.id !== exceptId)
+    rememberTurn({ ...state.pendingTurn, answered: false });
 }
 function takeQuote(next, { open = true } = {}) {
   captureComposer();
@@ -479,7 +486,7 @@ function renderBody() {
         ? state.turns
             .map(
               (turn, index) =>
-                `<button class="list-row" data-turn="${index}"><span><span class="record-kind">阅读讨论 · 原型演示</span><strong>${escape(turn.question)}</strong><small>瓦尔登湖 · ${escape(turn.quote.text.slice(0, 24))}…</small></span>${icon("right")}</button>`,
+                `<button class="list-row" data-turn="${index}"><span><span class="record-kind">${turn.answered === false ? "未完成提问" : "阅读讨论"} · 原型演示</span><strong>${escape(turn.question)}</strong><small>瓦尔登湖 · ${escape(turn.quote.text.slice(0, 24))}…</small></span>${icon("right")}</button>`,
             )
             .join("")
         : `<button class="list-row" data-action="expand"><span><span class="record-kind">阅读讨论 · 示例</span><strong>deliberately 为什么不只是“刻意”？</strong><small>瓦尔登湖 · 绑定提问原句</small></span>${icon("right")}</button>`;
@@ -882,10 +889,13 @@ document.addEventListener("click", (event) => {
   }
   if (button.dataset.turn !== undefined) {
     const turn = state.turns[Number(button.dataset.turn)];
+    if (turn.answered === false) rememberPendingTurn(turn.id);
     takeQuote({ ...turn.quote }, { open: false });
     state.question = turn.question;
     state.answered = turn.answered !== false;
+    if (turn.answered === false) state.pendingTurn = { ...turn, quote: { ...turn.quote } };
     state.discussionStarted = true;
+    persist();
     openRoute("discussion", "full", { capture: false });
     return;
   }
@@ -935,6 +945,7 @@ $("question-form").onsubmit = (event) => {
   const question = $("question-input").value.trim();
   if (!question) return;
   state.question = question;
+  state.answered = false;
   state.discussionStarted = true;
   const turn = {
     id: "prototype-" + Date.now(),
@@ -942,6 +953,7 @@ $("question-form").onsubmit = (event) => {
     quote: { ...state.quote },
     answered: !state.offline,
   };
+  rememberPendingTurn();
   state.pendingTurn = turn;
   if (!state.offline) {
     rememberTurn(turn);

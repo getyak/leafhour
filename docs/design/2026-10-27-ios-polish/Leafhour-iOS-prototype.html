@@ -1711,9 +1711,16 @@ svg.icon {
     };
   }
   function rememberTurn(turn) {
-    if (!state.turns.some((item) => item.id === turn.id))
-      state.turns.push({ ...turn, quote: { ...turn.quote } });
-    state.turns = state.turns.slice(-6);
+    const snapshot = { ...turn, quote: { ...turn.quote } };
+    const index = state.turns.findIndex((item) => item.id === turn.id);
+    if (index < 0) state.turns.push(snapshot);
+    else state.turns[index] = snapshot;
+    const completed = state.turns.filter((item) => item.answered !== false).slice(-6);
+    state.turns = state.turns.filter((item) => item.answered === false || completed.includes(item));
+  }
+  function rememberPendingTurn(exceptId = null) {
+    if (state.pendingTurn && state.pendingTurn.id !== exceptId)
+      rememberTurn({ ...state.pendingTurn, answered: false });
   }
   function takeQuote(next, { open = true } = {}) {
     captureComposer();
@@ -1843,7 +1850,7 @@ svg.icon {
         ).join("") : '<div class="empty-records"><h3>\u8FD8\u6CA1\u6709\u7B14\u8BB0</h3><p>\u8BFB\u5230\u60F3\u7559\u4E0B\u7684\u8BDD\uFF0C\u53EF\u4EE5\u8BB0\u4E00\u53E5\u3002</p><button class="secondary-button" data-action="continue">\u56DE\u5230\u4E66\u91CC</button></div>';
       } else {
         html += state.turns.length ? state.turns.map(
-          (turn, index) => `<button class="list-row" data-turn="${index}"><span><span class="record-kind">\u9605\u8BFB\u8BA8\u8BBA \xB7 \u539F\u578B\u6F14\u793A</span><strong>${escape(turn.question)}</strong><small>\u74E6\u5C14\u767B\u6E56 \xB7 ${escape(turn.quote.text.slice(0, 24))}\u2026</small></span>${icon("right")}</button>`
+          (turn, index) => `<button class="list-row" data-turn="${index}"><span><span class="record-kind">${turn.answered === false ? "\u672A\u5B8C\u6210\u63D0\u95EE" : "\u9605\u8BFB\u8BA8\u8BBA"} \xB7 \u539F\u578B\u6F14\u793A</span><strong>${escape(turn.question)}</strong><small>\u74E6\u5C14\u767B\u6E56 \xB7 ${escape(turn.quote.text.slice(0, 24))}\u2026</small></span>${icon("right")}</button>`
         ).join("") : `<button class="list-row" data-action="expand"><span><span class="record-kind">\u9605\u8BFB\u8BA8\u8BBA \xB7 \u793A\u4F8B</span><strong>deliberately \u4E3A\u4EC0\u4E48\u4E0D\u53EA\u662F\u201C\u523B\u610F\u201D\uFF1F</strong><small>\u74E6\u5C14\u767B\u6E56 \xB7 \u7ED1\u5B9A\u63D0\u95EE\u539F\u53E5</small></span>${icon("right")}</button>`;
       }
     }
@@ -2216,10 +2223,13 @@ svg.icon {
     }
     if (button.dataset.turn !== void 0) {
       const turn = state.turns[Number(button.dataset.turn)];
+      if (turn.answered === false) rememberPendingTurn(turn.id);
       takeQuote({ ...turn.quote }, { open: false });
       state.question = turn.question;
       state.answered = turn.answered !== false;
+      if (turn.answered === false) state.pendingTurn = { ...turn, quote: { ...turn.quote } };
       state.discussionStarted = true;
+      persist();
       openRoute("discussion", "full", { capture: false });
       return;
     }
@@ -2267,6 +2277,7 @@ svg.icon {
     const question = $("question-input").value.trim();
     if (!question) return;
     state.question = question;
+    state.answered = false;
     state.discussionStarted = true;
     const turn = {
       id: "prototype-" + Date.now(),
@@ -2274,6 +2285,7 @@ svg.icon {
       quote: { ...state.quote },
       answered: !state.offline
     };
+    rememberPendingTurn();
     state.pendingTurn = turn;
     if (!state.offline) {
       rememberTurn(turn);

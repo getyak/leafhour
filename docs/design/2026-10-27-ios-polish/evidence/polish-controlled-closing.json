@@ -1,0 +1,19 @@
+{
+  "at": "2026-10-26T23:28:45.954Z",
+  "checks": [
+    {
+      "name": "a-closing-sheet-can-be-grabbed-and-cancelled-with-its-draft",
+      "status": "pass"
+    }
+  ],
+  "errors": [],
+  "externalRequests": [],
+  "closingInput": {
+    "captured": true,
+    "hidden": false,
+    "inert": null,
+    "top": 472.6772766113281,
+    "target": ""
+  },
+  "status": "pass"
+}

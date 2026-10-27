@@ -42,4 +42,10 @@
 
 正文导航持续显示原文、示例直译或示例意译；讨论卡显示自己的版本。看原文与记笔记使用临时出处，不改写讨论。笔记从阅读发起就回阅读，从讨论发起就回原讨论；在笔记面板换选另一段也保留原来的返回位置。
 
-[第三轮 Figma 对照](https://www.figma.com/proto/zjkapX58kUJZZh0la8F4Nw/Leafhour?node-id=6-3582&starting-point-node-id=6%3A3582&page-id=1%3A2) 位于画布 y=7000，原有设计保留。五个新增状态只连接三个引用、草稿状态严格一致的跳转；其他输入和恢复以网页原型为准。规范见 [COMPANION-CONTEXT.md](COMPANION-CONTEXT.md)，读回与导出见 `figma-context-manifest.json` 和 `evidence/figma-context/`。
+[第三轮 Figma 对照](https://www.figma.com/proto/zjkapX58kUJZZh0la8F4Nw/Leafhour?node-id=6-3582&starting-point-node-id=6%3A3582&page-id=1%3A2) 位于画布 y=7000，原有设计保留。七个新增状态只连接四个引用、草稿和完成状态严格一致的跳转；其他输入和恢复以网页原型为准。规范见 [COMPANION-CONTEXT.md](COMPANION-CONTEXT.md)，读回与导出见 `figma-context-manifest.json` 和 `evidence/figma-context/`。
+
+
+未完成提问会在“我的记录 → 讨论”保留，标明状态与原句；新的在线或离线问题不会覆盖它。恢复后仍需主动重试；已完成的讨论只展示最近六条，未完成问题不随这六条一起裁剪。[未完成问题的 Figma 对照](https://www.figma.com/proto/zjkapX58kUJZZh0la8F4Nw/Leafhour?node-id=8-3910&starting-point-node-id=8%3A3910&page-id=1%3A2) 同属本轮。
+
+
+第三轮最终 27 项计算与55项浏览器检查通过（上下文18、手势14、续读12、原回归11）。21组截图与可编辑矢量、源码哈希、直接打开的单文件另验。关闭抓取采用受控退出帧与真实鼠标输入，其余手势保留实时检查；本轮宿主负载高，驱动等待上限显式设为90秒，这不是性能验收。

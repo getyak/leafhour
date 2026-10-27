@@ -76,5 +76,31 @@
         ]
       }
     ]
+  },
+  {
+    "nodeId": "8:3988",
+    "reactions": [
+      {
+        "trigger": {
+          "type": "ON_CLICK"
+        },
+        "actions": [
+          {
+            "type": "NODE",
+            "destinationId": "8:4009",
+            "navigation": "NAVIGATE",
+            "transition": {
+              "type": "SMART_ANIMATE",
+              "easing": {
+                "type": "EASE_OUT"
+              },
+              "duration": 0.2199999988079071
+            },
+            "resetVideoPosition": false,
+            "resetScrollPosition": false
+          }
+        ]
+      }
+    ]
   }
 ]

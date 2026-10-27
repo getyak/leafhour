@@ -172,6 +172,24 @@
       "source": "captures/19-layer-identity.json",
       "svg": "exports/19-layer-identity.svg",
       "png": "exports/19-layer-identity.png"
+    },
+    {
+      "slug": "20-pending-history",
+      "name": "20 · 未完成问题单独保留",
+      "width": 402,
+      "height": 874,
+      "source": "captures/20-pending-history.json",
+      "svg": "exports/20-pending-history.svg",
+      "png": "exports/20-pending-history.png"
+    },
+    {
+      "slug": "21-pending-recovery",
+      "name": "21 · 恢复原问题并显式重试",
+      "width": 402,
+      "height": 874,
+      "source": "captures/21-pending-recovery.json",
+      "svg": "exports/21-pending-recovery.svg",
+      "png": "exports/21-pending-recovery.png"
     }
   ]
 }
