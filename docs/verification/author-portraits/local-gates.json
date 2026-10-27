@@ -1,0 +1,41 @@
+{
+  "at": "2026-10-27T19:30:42.521335+00:00",
+  "sourceHead": "2bb327859e6af6c71a8ec53b07c63000e2c83d83",
+  "node": "v22.22.0",
+  "tests": {
+    "command": "node --test --test-concurrency=2 tests/*.test.mjs",
+    "passed": 3811,
+    "failed": 0,
+    "cancelled": 0,
+    "skipped": 1,
+    "skippedCase": "Modified Node license rejection is platform-skipped on this local macOS run; Linux CI remains a separate gate."
+  },
+  "copy": {
+    "lint": "passed",
+    "newT1": 0,
+    "historicalDebt": 371,
+    "retainedWarnings": 2087,
+    "realCliCanaries": "12 passed"
+  },
+  "build": {
+    "isolatedRuntime": {
+      "files": 928,
+      "megabytes": 9.0
+    },
+    "public": {
+      "files": 545,
+      "registeredMediaAssets": 11
+    },
+    "softwareReleaseAllowlist": 1128,
+    "status": "passed"
+  },
+  "review": {
+    "previousFindings": "closed",
+    "peopleResource": "approved; 9 independent targeted tests passed"
+  },
+  "limits": [
+    "Not a production receipt",
+    "Not reader research or a nine-dimension score",
+    "No model calls or real account writes in this verification"
+  ]
+}

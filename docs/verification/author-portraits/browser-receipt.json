@@ -1,0 +1,57 @@
+{
+  "at": "2026-10-27T19:28:02.071Z",
+  "scope": "actual merged application; public seeds; isolated local fixture; no model keys",
+  "checks": [
+    {
+      "name": "real hero 1440",
+      "status": "passed",
+      "nameRows": [
+        "弗吉尼亚·伍尔夫"
+      ]
+    },
+    {
+      "name": "real hero 768",
+      "status": "passed",
+      "nameRows": [
+        "弗吉尼亚·",
+        "伍尔夫"
+      ]
+    },
+    {
+      "name": "real hero 390",
+      "status": "passed",
+      "nameRows": [
+        "弗吉尼亚·",
+        "伍尔夫"
+      ]
+    },
+    {
+      "name": "real hero 320",
+      "status": "passed",
+      "nameRows": [
+        "弗吉尼亚·",
+        "伍尔夫"
+      ]
+    },
+    {
+      "name": "local instance assistant connection explains HTTPS requirement",
+      "status": "passed"
+    },
+    {
+      "name": "publish, close, reload, reopen and independently revoke",
+      "status": "passed"
+    },
+    {
+      "name": "unfamiliar author discovery, private creation and return to the exact original book",
+      "status": "passed"
+    }
+  ],
+  "errors": [],
+  "status": "passed",
+  "sourceHead": "2bb327859e6af6c71a8ec53b07c63000e2c83d83",
+  "limits": [
+    "No real cloud account writes",
+    "No paid model calls",
+    "Not a Safari, physical device, screen-reader or third-party host result"
+  ]
+}
