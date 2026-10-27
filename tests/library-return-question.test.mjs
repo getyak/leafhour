@@ -26,14 +26,18 @@ test('a question remains user wording, including resolved status, and links to i
 // Exercise the actual dashboard's async preview ownership without a browser dependency.
 import {mountReadingDashboard} from '../app/reading-dashboard.mjs';
 function dashboardDocument(){
-  const doc={defaultView:{location:{search:''}}};
+  const doc={defaultView:{location:{search:''}},activeElement:null};
   class Element{
     constructor(tag){this.tagName=tag;this.children=[];this.dataset={};this.attributes={};this.events={};this.hidden=false;this.open=false;this.textContent='';this.value='';this.className='';this.ownerDocument=doc;this.classList={add(){},remove(){},toggle(){}};}
     append(...children){this.children.push(...children);}
     replaceChildren(...children){this.children=[...children];}
     setAttribute(key,value){this.attributes[key]=value;}
+    getAttribute(key){return this.attributes[key];}
+    contains(node){return node===this||this.children.some(child=>child.contains?.(node));}
+    focus(){doc.activeElement=this;}
     removeAttribute(key){delete this.attributes[key];if(key==='href')delete this.href;}
     addEventListener(name,fn){this.events[name]=fn;}
+    removeEventListener(name,fn){if(this.events[name]===fn)delete this.events[name];}
     querySelector(selector){const all=this.children.flatMap(child=>[child,...(child.all?.()||[])]);return all.find(child=>selector.startsWith('.')?child.className.split(' ').includes(selector.slice(1)):selector==='[data-reading-arrival]'&&child.dataset.readingArrival)||null;}
     all(){return this.children.flatMap(child=>[child,...(child.all?.()||[])]);}
   }
@@ -44,17 +48,19 @@ test('dashboard hides stale questions while switching, ignores late previews, an
   const doc=dashboardDocument(),previous=globalThis.document;globalThis.document=doc;t.after(()=>{globalThis.document=previous;});
   const root=doc.createElement('div'),overviewRoot=doc.createElement('div'),historyRoot=doc.createElement('dialog');overviewRoot.hidden=true;
   let owner='alice',session={user:{id:owner}},books=[{bookId:'a',contentVersion:'v1',title:{zh:'A'},resume:{passageId:'a1'}},{bookId:'b',contentVersion:'v1',title:{zh:'B'},resume:{passageId:'b1'}}];
-  const pending=[],api=url=>new Promise(resolve=>pending.push({url,resolve}));
+  const pending=[],api=url=>new Promise(resolve=>pending.push({url,resolve})),previewFor=id=>pending.filter(row=>row.url.includes('/books/'+id+'/preview')).at(-1);
   const dashboard=mountReadingDashboard({root,overviewRoot,historyRoot,api,getSession:()=>session,getBooks:()=>books,getOwner:()=>owner,openAuth:()=>assert.fail('should not open auth'),refresh:async()=>{}});
+  t.after(()=>dashboard.dispose());
   dashboard.update(dashboard.begin());
   const slip=root.querySelector('.room-question'),text=root.querySelector('.room-question-text'),link=root.querySelector('.room-question-link'),choice=root.querySelector('.today-book-choice');
   const data=(id,wording)=>({bookId:id,original:'Source excerpt.',translationStatus:{},question:{id:'q',passageId:id+'2',text:wording}});
   assert.deepEqual(root.querySelector('.today-copy').children.map(child=>child.className),['today-heading','room-excerpt','today-actions','room-question']);
-  assert.equal(slip.hidden,true);pending[0].resolve(data('a','Actual A question'));await new Promise(resolve=>setImmediate(resolve));
+  assert.equal(slip.hidden,true);previewFor('a').resolve(data('a','Actual A question'));await new Promise(resolve=>setImmediate(resolve));
   assert.equal(slip.hidden,false);assert.equal(text.textContent,'Actual A question');assert.equal(link.href,'/read?book=a&passage=a2&note=question');assert.equal(historyRoot.open,false);
   choice.value='b';choice.events.change();assert.equal(slip.hidden,true);assert.equal(text.textContent,'');assert.equal(link.href,undefined);
-  choice.value='a';choice.events.change();pending[2].resolve(data('a','Current A question'));await new Promise(resolve=>setImmediate(resolve));
-  pending[1].resolve(data('b','Stale B question'));await new Promise(resolve=>setImmediate(resolve));
+  const staleB=previewFor('b');
+  choice.value='a';choice.events.change();previewFor('a').resolve(data('a','Current A question'));await new Promise(resolve=>setImmediate(resolve));
+  staleB.resolve(data('b','Stale B question'));await new Promise(resolve=>setImmediate(resolve));
   assert.equal(text.textContent,'Current A question');assert.equal(link.href,'/read?book=a&passage=a2&note=question');
   owner='guest';session=null;books=[];dashboard.clear();assert.equal(slip.hidden,true);assert.equal(text.textContent,'');assert.equal(link.href,undefined);
 });

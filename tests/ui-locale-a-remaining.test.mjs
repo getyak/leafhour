@@ -5,6 +5,7 @@ import vm from 'node:vm';
 import {parse} from 'acorn';
 import * as locale from '../app/ui-locale.mjs';
 import * as calendar from '../app/reading-calendar.mjs';
+import * as journal from '../app/reading-journal.mjs';
 import * as workspace from '../app/library-workspace.mjs';
 import * as policy from '../app/reading-time-policy.mjs';
 import {inferSourceLanguage} from '../app/source-language.mjs';
@@ -28,7 +29,7 @@ const dashboardSource=await readFile(new URL('../app/reading-dashboard.mjs',impo
 function dashboardFixture(runtime={}){
  const doc=new EventTarget();doc.defaultView={location:{search:'',reload(){assert.fail('no arrival reload');}}};doc.createElement=tag=>new Element(tag,doc);doc.body=doc.createElement('body');const roots=Array.from({length:3},()=>doc.createElement('section'));doc.body.append(...roots);let calls=0;const reads={session:0,owner:0,books:0,view:0},preview=deferred(),activity=deferred();
  const book={bookId:'synthetic',contentVersion:'v1',title:{zh:'阅读 · Source title'},author:'Literal author',resume:{passageId:'p1',label:'Literal resume',variant:'interpretive'},journey:{dailyGoalMinutes:15,status:'reading'}};
- const context={...locale,...runtime,...calendar,...workspace,...policy,document:doc,Intl,Date,Event,inferSourceLanguage,paintBookCover,mountReadingArrival,trackActionFocus,crypto:globalThis.crypto,createCalendarRequestState(){const r=calendar.createCalendarRequestState();return {...r,view(){reads.view++;return r.view();}};}};vm.createContext(context);
+ const context={...locale,...runtime,...calendar,...journal,...workspace,...policy,document:doc,Intl,Date,Event,inferSourceLanguage,paintBookCover,mountReadingArrival,trackActionFocus,crypto:globalThis.crypto,createCalendarRequestState(){const r=calendar.createCalendarRequestState();return {...r,view(){reads.view++;return r.view();}};}};vm.createContext(context);
  const executable=dashboardAst.body.map(n=>n.type==='ImportDeclaration'?'':n.type==='ExportNamedDeclaration'?dashboardSource.slice(n.declaration.start,n.end):dashboardSource.slice(n.start,n.end)).join('\n');vm.runInContext(executable+'\nthis.mount=mountReadingDashboard;',context);
  const ui=context.mount({root:roots[0],overviewRoot:roots[1],historyRoot:roots[2],api(url){calls++;return url.includes('/preview')?preview.promise:activity.promise;},getSession(){reads.session++;return {user:{id:'a'}};},getOwner(){reads.owner++;return 'a';},getBooks(){reads.books++;return [book];},openAuth(){assert.fail('no auth from locale');},refresh(){assert.fail('no refresh from locale');}});
  return {doc,ui,roots,preview,activity,reads,calls:()=>calls,find:cls=>all(doc.body).find(n=>n.className.split(' ').includes(cls))};

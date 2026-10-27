@@ -6,6 +6,7 @@ import {withUiParam} from './ui-locale-codec.mjs';
 // other public languages next to it, so one source document serves all locales:
 // [source, English, Traditional Chinese, Japanese].
 const strings=[
+  ['我的笔记','My notes','我的筆記','マイノート'],
   ['界面语言设置','Interface language settings','介面語言設定','表示言語の設定'],
   // Document metadata and navigation
   ['Leafhour — AI 辅助的私人阅读书房','Leafhour — Your personal AI reading room','Leafhour — AI 輔助的私人閱讀書房','Leafhour — AI と読む、自分だけの読書室'],
