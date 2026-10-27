@@ -1,0 +1,320 @@
+{
+  "schemaVersion": 1,
+  "evidenceKind": "live-ab-real-provider",
+  "phase": "intent-frozen-before-any-provider-call",
+  "frozenAt": "2026-10-27T03:14:08.602Z",
+  "model": "PaddleOCR-VL-1.6",
+  "sdkPackage": "@paddleocr/api-sdk@0.2.3",
+  "providerOptionsFrozenFromRepo": {
+    "useDocOrientationClassify": false,
+    "useDocUnwarping": false,
+    "markdownIgnoreLabels": [
+      "header",
+      "footer",
+      "number",
+      "header_image",
+      "footer_image"
+    ]
+  },
+  "batchPages": 2,
+  "worstCaseRecognizedPages": 12,
+  "hardCapRecognizedPages": 12,
+  "samples": [
+    {
+      "id": "zh-single",
+      "kind": "text",
+      "layout": "single-column",
+      "sha256": "841a3642f3a1b9cfa13ef95d24bfb8fc54dfcbf6cd8e4f9e7735223bb30fb75d",
+      "bytes": 155935,
+      "totalPages": 2,
+      "rights": {
+        "kind": "synthetic",
+        "license": "CC0-1.0",
+        "source": "composed-in-tools/evaluate-pdf-routes-live.mjs",
+        "privateInputs": false
+      },
+      "pages": [
+        {
+          "page": 1,
+          "referenceBlocks": [
+            {
+              "id": "H1",
+              "kind": "heading",
+              "text": "第一章 清晨的图书馆"
+            },
+            {
+              "id": "P1",
+              "kind": "body",
+              "text": "清晨六点，图书馆的木门准时打开。守馆人林伯把昨夜归还的书一本本放回书架，动作又轻又慢，生怕惊动了满室的安静。"
+            },
+            {
+              "id": "P2",
+              "kind": "body",
+              "text": "靠窗的位置最先有人坐下。读语言学的姑娘摊开笔记，先把昨天没有读完的章节读完，才去碰那杯已经凉了的茶。"
+            },
+            {
+              "id": "P3",
+              "kind": "body",
+              "text": "这里的规矩不多：书可以借走，座位不能久占；可以小声讨论，不能高声喧哗。几十年下来，人人都自觉遵守。"
+            },
+            {
+              "id": "P4",
+              "kind": "body",
+              "text": "林伯常说，图书馆最要紧的不是藏书多少，而是每天有人来，把书翻开。书只有被人读，才算真正活着。"
+            }
+          ],
+          "expectedOrder": [
+            "H1",
+            "P1",
+            "P2",
+            "P3",
+            "P4"
+          ],
+          "referenceText": "第一章 清晨的图书馆\n\n清晨六点，图书馆的木门准时打开。守馆人林伯把昨夜归还的书一本本放回书架，动作又轻又慢，生怕惊动了满室的安静。\n\n靠窗的位置最先有人坐下。读语言学的姑娘摊开笔记，先把昨天没有读完的章节读完，才去碰那杯已经凉了的茶。\n\n这里的规矩不多：书可以借走，座位不能久占；可以小声讨论，不能高声喧哗。几十年下来，人人都自觉遵守。\n\n林伯常说，图书馆最要紧的不是藏书多少，而是每天有人来，把书翻开。书只有被人读，才算真正活着。"
+        },
+        {
+          "page": 2,
+          "referenceBlocks": [
+            {
+              "id": "P5",
+              "kind": "body",
+              "text": "午后下起小雨，屋檐的水线连成一片。几个孩子躲在门廊下背课文，声音压得低低的，像是怕被雨听见。"
+            },
+            {
+              "id": "P6",
+              "kind": "body",
+              "text": "雨停的时候，夕阳把湿漉漉的石板路照得发亮。林伯锁好大门，把钥匙放回口袋，沿着河边慢慢走回家。"
+            },
+            {
+              "id": "P7",
+              "kind": "body",
+              "text": "他想起年轻时第一次走进这间图书馆的情形：也是这样的雨天，也是这样的安静，连翻页的声音都清清楚楚。"
+            },
+            {
+              "id": "P8",
+              "kind": "body",
+              "text": "明天还会有人来。书还在架上等着，茶还会有人泡好又忘记喝。这就是这间小图书馆普通的一天。"
+            }
+          ],
+          "expectedOrder": [
+            "P5",
+            "P6",
+            "P7",
+            "P8"
+          ],
+          "referenceText": "午后下起小雨，屋檐的水线连成一片。几个孩子躲在门廊下背课文，声音压得低低的，像是怕被雨听见。\n\n雨停的时候，夕阳把湿漉漉的石板路照得发亮。林伯锁好大门，把钥匙放回口袋，沿着河边慢慢走回家。\n\n他想起年轻时第一次走进这间图书馆的情形：也是这样的雨天，也是这样的安静，连翻页的声音都清清楚楚。\n\n明天还会有人来。书还在架上等着，茶还会有人泡好又忘记喝。这就是这间小图书馆普通的一天。"
+        }
+      ]
+    },
+    {
+      "id": "zh-scan",
+      "kind": "scan",
+      "layout": "raster-only",
+      "sha256": "31bc037ce5d9ebb8d649724da443ead15be7fcd66398e4dee83fb88fa2688ff6",
+      "bytes": 111776,
+      "totalPages": 2,
+      "rights": {
+        "kind": "synthetic",
+        "license": "CC0-1.0",
+        "source": "composed-in-tools/evaluate-pdf-routes-live.mjs",
+        "privateInputs": false
+      },
+      "pages": [
+        {
+          "page": 1,
+          "referenceBlocks": [
+            {
+              "id": "S1",
+              "kind": "line",
+              "text": "扫描样本第一页。这一页没有文字层，只有纸张的影像。"
+            },
+            {
+              "id": "S2",
+              "kind": "line",
+              "text": "老陈把借书证放在柜台上，说这本书他年轻时读过三遍。"
+            },
+            {
+              "id": "S3",
+              "kind": "line",
+              "text": "纸页已经发黄，边角微微卷起，可是字迹依然清楚可辨。"
+            }
+          ],
+          "expectedOrder": [
+            "S1",
+            "S2",
+            "S3"
+          ],
+          "referenceText": "扫描样本第一页。这一页没有文字层，只有纸张的影像。\n\n老陈把借书证放在柜台上，说这本书他年轻时读过三遍。\n\n纸页已经发黄，边角微微卷起，可是字迹依然清楚可辨。"
+        },
+        {
+          "page": 2,
+          "referenceBlocks": [
+            {
+              "id": "S4",
+              "kind": "line",
+              "text": "扫描样本第二页。雨水顺着窗玻璃往下淌，像没写完的字。"
+            },
+            {
+              "id": "S5",
+              "kind": "line",
+              "text": "管理员把登记簿推过来，让他在最后一栏签上名字和日期。"
+            },
+            {
+              "id": "S6",
+              "kind": "line",
+              "text": "他写得很慢，一笔一画，像是在完成一件郑重的事情。"
+            }
+          ],
+          "expectedOrder": [
+            "S4",
+            "S5",
+            "S6"
+          ],
+          "referenceText": "扫描样本第二页。雨水顺着窗玻璃往下淌，像没写完的字。\n\n管理员把登记簿推过来，让他在最后一栏签上名字和日期。\n\n他写得很慢，一笔一画，像是在完成一件郑重的事情。"
+        }
+      ]
+    },
+    {
+      "id": "zh-columns-footnote",
+      "kind": "text",
+      "layout": "two-columns-footnote",
+      "sha256": "73ae84e64d6e8e77b6f2bb20aa385c144e872c97515da4eb0386ec97ca528548",
+      "bytes": 155997,
+      "totalPages": 2,
+      "rights": {
+        "kind": "synthetic",
+        "license": "CC0-1.0",
+        "source": "composed-in-tools/evaluate-pdf-routes-live.mjs",
+        "privateInputs": false
+      },
+      "pages": [
+        {
+          "page": 1,
+          "referenceBlocks": [
+            {
+              "id": "L1",
+              "kind": "line",
+              "text": "左栏一：河流从山间来，先经过松林，再经过村庄。"
+            },
+            {
+              "id": "L2",
+              "kind": "line",
+              "text": "左栏二：村民在河边洗衣，也在河边交换一天的新闻。"
+            },
+            {
+              "id": "L3",
+              "kind": "line",
+              "text": "左栏三：桥是去年新修的，桥头刻着捐资人的名字。①"
+            },
+            {
+              "id": "L4",
+              "kind": "line",
+              "text": "左栏四：孩子们放学后爱在桥上看船，直到天色变暗。"
+            },
+            {
+              "id": "R1",
+              "kind": "line",
+              "text": "右栏一：镇上的集市逢三逢八，卖菜的摊位排到巷口。"
+            },
+            {
+              "id": "R2",
+              "kind": "line",
+              "text": "右栏二：老中医的铺子在集市尽头，门口挂着晒干的草药。"
+            },
+            {
+              "id": "R3",
+              "kind": "line",
+              "text": "右栏三：逢集的日子，铺子里总有人排队，号脉免费。"
+            },
+            {
+              "id": "R4",
+              "kind": "line",
+              "text": "右栏四：散集之后，街道恢复安静，只剩下落叶和尘土。"
+            },
+            {
+              "id": "F1",
+              "kind": "footnote",
+              "belongsTo": "L3",
+              "text": "① 注：桥头碑文记为旧桥重修，与正文所说去年新修，指同一座桥的两次修缮。"
+            }
+          ],
+          "expectedOrder": [
+            "L1",
+            "L2",
+            "L3",
+            "L4",
+            "R1",
+            "R2",
+            "R3",
+            "R4",
+            "F1"
+          ],
+          "referenceText": "左栏一：河流从山间来，先经过松林，再经过村庄。\n\n左栏二：村民在河边洗衣，也在河边交换一天的新闻。\n\n左栏三：桥是去年新修的，桥头刻着捐资人的名字。①\n\n左栏四：孩子们放学后爱在桥上看船，直到天色变暗。\n\n右栏一：镇上的集市逢三逢八，卖菜的摊位排到巷口。\n\n右栏二：老中医的铺子在集市尽头，门口挂着晒干的草药。\n\n右栏三：逢集的日子，铺子里总有人排队，号脉免费。\n\n右栏四：散集之后，街道恢复安静，只剩下落叶和尘土。\n\n① 注：桥头碑文记为旧桥重修，与正文所说去年新修，指同一座桥的两次修缮。"
+        },
+        {
+          "page": 2,
+          "referenceBlocks": [
+            {
+              "id": "L1",
+              "kind": "line",
+              "text": "左栏一：茶园在山坡上，一层一层，像绿色的台阶。"
+            },
+            {
+              "id": "L2",
+              "kind": "line",
+              "text": "左栏二：采茶人天不亮就上山，竹篓里先装满了露水。①"
+            },
+            {
+              "id": "L3",
+              "kind": "line",
+              "text": "左栏三：新茶要在清明前采完，迟了，香气就淡了。"
+            },
+            {
+              "id": "L4",
+              "kind": "line",
+              "text": "左栏四：炒茶的手艺传了四代，铁锅的温度全凭手感。"
+            },
+            {
+              "id": "R1",
+              "kind": "line",
+              "text": "右栏一：山脚下有个小邮局，负责十里八村的信件。"
+            },
+            {
+              "id": "R2",
+              "kind": "line",
+              "text": "右栏二：邮递员老周骑车三十年，闭着眼也认得每条路。"
+            },
+            {
+              "id": "R3",
+              "kind": "line",
+              "text": "右栏三：谁家孩子考上大学，报喜的信总是他先送到。"
+            },
+            {
+              "id": "R4",
+              "kind": "line",
+              "text": "右栏四：如今写信的人少了，邮包却比从前多了三倍。"
+            },
+            {
+              "id": "F1",
+              "kind": "footnote",
+              "belongsTo": "L2",
+              "text": "① 注：采茶人所说的露水，指清晨凝在芽尖的水珠；炒茶前需阴干，不可暴晒。"
+            }
+          ],
+          "expectedOrder": [
+            "L1",
+            "L2",
+            "L3",
+            "L4",
+            "R1",
+            "R2",
+            "R3",
+            "R4",
+            "F1"
+          ],
+          "referenceText": "左栏一：茶园在山坡上，一层一层，像绿色的台阶。\n\n左栏二：采茶人天不亮就上山，竹篓里先装满了露水。①\n\n左栏三：新茶要在清明前采完，迟了，香气就淡了。\n\n左栏四：炒茶的手艺传了四代，铁锅的温度全凭手感。\n\n右栏一：山脚下有个小邮局，负责十里八村的信件。\n\n右栏二：邮递员老周骑车三十年，闭着眼也认得每条路。\n\n右栏三：谁家孩子考上大学，报喜的信总是他先送到。\n\n右栏四：如今写信的人少了，邮包却比从前多了三倍。\n\n① 注：采茶人所说的露水，指清晨凝在芽尖的水珠；炒茶前需阴干，不可暴晒。"
+        }
+      ]
+    }
+  ]
+}
