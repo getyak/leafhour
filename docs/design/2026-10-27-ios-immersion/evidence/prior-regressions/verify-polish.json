@@ -1,5 +1,5 @@
 {
-  "at": "2026-10-27T06:13:58.084Z",
+  "at": "2026-10-27T06:26:52.555Z",
   "checks": [
     {
       "name": "handle-has-a-44-pixel-touch-target",
@@ -64,7 +64,7 @@
     "captured": true,
     "hidden": false,
     "inert": null,
-    "top": 472.66888427734375,
+    "top": 472.6280212402344,
     "target": ""
   },
   "status": "pass"

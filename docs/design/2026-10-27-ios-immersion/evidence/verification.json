@@ -1,5 +1,5 @@
 {
-  "at": "2026-10-27T06:16:56.727Z",
+  "at": "2026-10-27T06:26:26.134Z",
   "checks": [
     {
       "name": "ten-seconds-of-reading-has-no-chrome-or-paragraph-controls",
@@ -60,6 +60,14 @@
     {
       "name": "waking-progress-refreshes-an-explicit-directory-jump",
       "status": "pass"
+    },
+    {
+      "name": "a-second-long-press-keeps-the-new-selection-after-release",
+      "status": "pass"
+    },
+    {
+      "name": "right-clicking-selected-text-preserves-the-native-copy-range",
+      "status": "pass"
     }
   ],
   "errors": [],
@@ -73,7 +81,7 @@
   },
   "sourceRoot": "../2026-10-27-ios-polish",
   "sourceHashes": {
-    "prototype/app.js": "832ff9307643d251f6ae988f03427b92fc7607cb0d8cb2a6a4b156a49012b053",
+    "prototype/app.js": "b702e544cc2d8bb39b0c7f90cb5afe765737e7761f7db6dbeb25164fb9e8bf97",
     "prototype/style.css": "5d749ba5876df36804a5ceb4278a75e9e371a75ee871dacd6ccb969402a43b48",
     "prototype/index.html": "abdf05674d951f7e1415c75c4c58cfd2c248ca26523cbf00f8bc5ddba5fa758b",
     "prototype/motion.mjs": "53fd5df37f2034bcdf9fa47e7ae5d2bca1a11fff46bae63e77a30f2691ffd9ee",

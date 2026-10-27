@@ -39,6 +39,6 @@
 
 [六个画面](exports/screen-board.png) · [核心对照](exports/core-preview.png) · [状态机](exports/intent-flow.svg) · [内容关系](exports/relationships.svg) · [可直接打开的单文件](Leafhour-iOS-prototype.html)。当前本机入口保持 `http://127.0.0.1:8937/prototype/`。
 
-真实结果见 [执行记录](WORKLOG.md) 与 `evidence/verification.json`、`evidence/prior-regressions/`。本轮60项计算、15项沉浸及67项既有浏览器检查通过；单文件和10个源文件摘要另验。Figma旧版本保留，本轮未同步。
+真实结果见 [执行记录](WORKLOG.md) 与 `evidence/verification.json`、`evidence/prior-regressions/`。本轮60项计算、17项沉浸及67项既有浏览器检查通过；独立审阅的两条手势问题修复后重验受影响的42项浏览器检查，详见执行记录。单文件和10个源文件摘要另验。Figma旧版本保留，本轮未同步。
 
 设置 `LEAFHOUR_PLAYWRIGHT_MODULE` 指向已有Playwright，再运行本目录 `node build.mjs`，会顺序检查、生成6张截图/矢量、状态图、对照板和单文件。原有源码仍在前一设计目录，旧轮次的截图/记录不被重写。

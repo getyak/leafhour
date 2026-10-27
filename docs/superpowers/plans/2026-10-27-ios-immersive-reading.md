@@ -38,5 +38,5 @@
 ### Task 3: 真实画面与交付
 **Files:** design docs, diagrams, captures and verification; existing prototype exports/bundle.
 - [x] Review actual normal/narrow/night/large/reduced states and complete requested eval.
-- [ ] One fresh whole-branch review; fix material issues RED→GREEN, no re-review.
+- [x] One fresh whole-branch review; fix material issues RED→GREEN, no re-review.
 - [ ] Sequential target sync/revalidation/current-head CI/normal merge; verify main/production exact source. No preview, force push or automation restart.
