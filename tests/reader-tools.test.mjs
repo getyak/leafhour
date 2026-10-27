@@ -224,9 +224,9 @@ test('composed tools keep hover reveals from stealing focus while explicit click
     const activeBefore=f.document.activeElement;
     const hover=new Event('pointerenter');Object.defineProperty(hover,'pointerType',{value:'mouse'});
     f.elements.get('#reading-tools-trigger').dispatchEvent(hover);
-    assert.equal(tools.toolbar.expanded,true,'hover preview reveals the tools');
+    assert.equal(tools.toolbar.expanded,false,'pure reading ignores hover');
     assert.equal(f.document.activeElement,activeBefore,'hover reveal never moves activeElement');
-    assert.equal(f.document.body.dataset.readingTools,'closed','hover only previews the card');
+    assert.equal(f.document.body.dataset.readingTools,'closed','hover does not open navigation');
     tools.toolbar.conceal();
     f.elements.get('#reading-tools-trigger').dispatchEvent(new Event('click'));
     assert.equal(tools.toolbar.expanded,true);
@@ -235,7 +235,7 @@ test('composed tools keep hover reveals from stealing focus while explicit click
   }finally{await Promise.resolve();f.cleanup();}
 });
 
-test('composed tools hold concealment while the focused header is hovered or focused',async t=>{
+test('focused chrome sleeps under a stationary pointer but preserves keyboard focus',async t=>{
   t.mock.timers.enable({apis:['setTimeout']});
   const f=compositionFixture();
   try{
@@ -245,7 +245,7 @@ test('composed tools hold concealment while the focused header is hovered or foc
     const hover=new Event('pointerenter');Object.defineProperty(hover,'pointerType',{value:'mouse'});
     f.header.dispatchEvent(hover);
     t.mock.timers.tick(10000);
-    assert.equal(tools.toolbar.expanded,true,'header hover holds the single conceal timer');
+    assert.equal(tools.toolbar.expanded,false,'stationary hover does not prevent pure reading');
     const leave=new Event('pointerleave');Object.defineProperty(leave,'pointerType',{value:'mouse'});
     f.header.dispatchEvent(leave);
     t.mock.timers.tick(5000);assert.equal(tools.toolbar.expanded,false);
@@ -336,10 +336,10 @@ test('outside completed click and pill click keep one tools state across both su
     const immersion=mountReaderImmersion({document:f.document,onToolsCloseRequest:target=>f.tools?.closeRequest?.(target)});
     f.tools=mountReaderTools({sessionRoot:f.sessionRoot,immersion,document:f.document});
     const tools=f.tools,pill=f.trigger;
-    // hover reveal
-    f.fire(pill,'pointerenter',{pointerType:'mouse'});
+    // Explicit activation opens both surfaces in pure reading.
+    f.fire(pill,'click',{detail:1});
     assert.equal(tools.toolbar.expanded,true);
-    assert.equal(f.document.body.dataset.readingTools,'closed','hover only previews the card');
+    assert.equal(f.document.body.dataset.readingTools,'open','explicit activation opens navigation');
     assert.equal(pill.getAttribute('aria-expanded'),'true');
     // Closing needs the completed gesture, without consuming its action.
     f.fire(f.outside,'pointerdown',{button:0});f.fire(f.outside,'pointerup',{button:0});f.fire(f.outside,'click',{button:0,detail:1});
@@ -426,7 +426,7 @@ function composed(t){
 const mouse={pointerType:'mouse',pointerId:1,button:0,isPrimary:true};
 
 test('hover preview stays available on the tucked-away AI sibling and conceals after leaving',t=>{
-  t.mock.timers.enable({apis:['setTimeout']});const f=composed(t);
+  t.mock.timers.enable({apis:['setTimeout']});const f=composed(t);f.tools.toolbar.setControlMode('unfocused');
   f.fire(f.sessionRoot,'pointerenter',mouse);f.fire(f.trigger,'pointerenter',mouse);
   f.fire(f.trigger,'pointerleave',mouse);f.fire(f.elements.get('#reading-tools-chat-slot'),'pointerenter',mouse);
   t.mock.timers.tick(1000);assert.equal(f.tools.toolbar.expanded,true);
@@ -436,15 +436,15 @@ test('hover preview stays available on the tucked-away AI sibling and conceals a
 });
 
 test('hover reveals only the card and explicit activation adds the navigation surface',t=>{
-  const f=composed(t);f.fire(f.trigger,'pointerenter',mouse);
+  const f=composed(t);f.tools.toolbar.setControlMode('unfocused');f.fire(f.trigger,'pointerenter',mouse);
   assert.equal(f.tools.toolbar.expanded,true);assert.equal(f.body.dataset.readingTools,'closed');assert.equal(f.document.activeElement,f.body);
   assert.doesNotMatch(f.trigger.getAttribute('aria-label'),/导航/,'preview does not claim the closed navigation is expanded');
-  f.fire(f.trigger,'click',{detail:1});assert.equal(f.body.dataset.readingTools,'open');
+  f.tools.toolbar.setControlMode('focused');f.fire(f.trigger,'click',{detail:1});assert.equal(f.body.dataset.readingTools,'open');
   assert.match(f.trigger.getAttribute('aria-label'),/导航/);
 });
 
 test('button and card gap crossings and reentry cancel the sole old preview deadline',t=>{
-  t.mock.timers.enable({apis:['setTimeout']});const f=composed(t);
+  t.mock.timers.enable({apis:['setTimeout']});const f=composed(t);f.tools.toolbar.setControlMode('unfocused');
   f.fire(f.trigger,'pointerenter',mouse);f.fire(f.trigger,'pointerleave',mouse);t.mock.timers.tick(150);
   f.fire(f.panel,'pointerenter',mouse);t.mock.timers.tick(1000);assert.equal(f.tools.toolbar.expanded,true);
   f.fire(f.panel,'pointerleave',mouse);t.mock.timers.tick(200);assert.equal(f.tools.toolbar.expanded,false);
@@ -559,7 +559,7 @@ test('a passive layout scroll cannot promote or reopen a hover preview',t=>{
 });
 
 test('a wheel operation promotes preview and gets explicit idle time',t=>{
-  t.mock.timers.enable({apis:['setTimeout']});const f=composed(t);f.fire(f.trigger,'pointerenter',mouse);f.fire(f.trigger,'pointerleave',mouse);f.fire(f.panel,'wheel');
+  t.mock.timers.enable({apis:['setTimeout']});const f=composed(t);f.tools.toolbar.setControlMode('unfocused');f.fire(f.trigger,'pointerenter',mouse);f.fire(f.trigger,'pointerleave',mouse);f.fire(f.panel,'wheel');
   t.mock.timers.tick(201);assert.equal(f.tools.toolbar.expanded,true);assert.equal(f.body.dataset.readingTools,'open');
 });
 

@@ -8,15 +8,18 @@ struct TextReadingView: UIViewRepresentable {
     let session: ReaderSession
     let onNote: (SelectedQuote) -> Void
     let onSource: (SelectedQuote) -> Void
+    let onWake: (ReaderChrome) -> Void
+    let onReadingScroll: () -> Void
     func makeCoordinator() -> Coordinator { Coordinator(parent: self) }
     func makeUIView(context: Context) -> UITextView {
         let view = UITextView(usingTextLayoutManager: false)
         view.isEditable = false; view.isSelectable = true; view.backgroundColor = .clear
-        view.textContainerInset = UIEdgeInsets(top: 60, left: 24, bottom: 72, right: 24)
+        view.textContainerInset = UIEdgeInsets(top: 20, left: 24, bottom: 24, right: 24)
         view.textContainer.lineFragmentPadding = 0
         view.adjustsFontForContentSizeCategory = true; view.alwaysBounceVertical = true
         view.delegate = context.coordinator; view.accessibilityIdentifier = "leafhour-epub-reader"
         context.coordinator.view = view
+        context.coordinator.edgeTap = ReaderEdgeTapHandler(view: view, blocked: { [weak view] in (view?.selectedRange.length ?? 0) > 0 }, onWake: { [weak coordinator = context.coordinator] edge in coordinator?.parent.onWake(edge) })
         return view
     }
     func updateUIView(_ view: UITextView, context: Context) {
@@ -66,6 +69,7 @@ struct TextReadingView: UIViewRepresentable {
         var signature = ""
         var navigationID: UUID?
         var restoring = false
+        var edgeTap: ReaderEdgeTapHandler?
         private var delayed: DispatchWorkItem?
         private var resignObserver: NSObjectProtocol?
         init(parent: TextReadingView) {
@@ -74,6 +78,7 @@ struct TextReadingView: UIViewRepresentable {
             resignObserver = NotificationCenter.default.addObserver(forName: UIApplication.willResignActiveNotification, object: nil, queue: .main) { [weak self] _ in MainActor.assumeIsolated { self?.capture() } }
         }
         deinit { delayed?.cancel(); if let resignObserver { NotificationCenter.default.removeObserver(resignObserver) } }
+        func scrollViewWillBeginDragging(_ scrollView: UIScrollView) { parent.onReadingScroll() }
         func scrollViewDidScroll(_ scrollView: UIScrollView) {
             guard !restoring else { return }
             delayed?.cancel()
