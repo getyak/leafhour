@@ -1004,5 +1004,8 @@
   "tools/verify-command-palette-browser.mjs",
   "tests/helpers/process-result.mjs",
   "tests/process-result.test.mjs",
-  "tests/fixtures/inherited-stderr-child.mjs"
+  "tests/fixtures/inherited-stderr-child.mjs",
+  "scripts/copy-ledger.mjs",
+  "tests/copy-ledger.test.mjs",
+  "docs/copy/copy-ledger.json"
 ]
