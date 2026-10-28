@@ -1,0 +1,29 @@
+{
+  "baseline": "0c646f4",
+  "date": "2026-10-29",
+  "timezone": "Asia/Shanghai",
+  "device": "Primary iPhone / iPhone 17 Pro / iOS 26.5",
+  "isolatedAppID": "org.leafhour.craft297",
+  "probes": {
+    "testCraft297EmptyLibrary": "passed; native picker open/cancel",
+    "testCraft297ReadingControls": "passed; night settings, progress controls, records and paper settings"
+  },
+  "appearance": "host light \u2192 dark \u2192 light, original restored",
+  "nativeSourceSHA256": {
+    "apps/ios/Leafhour/LeafhourApp.swift": "33a10a7d3ef3120ac812d61be82ddae4a9fd8186bf9ff5f832c546d0b3d7125e",
+    "apps/ios/Leafhour/TextReadingView.swift": "2f953b8c36ac9c51305a7de1cf41ba2d364f9c16455e465499054fa0d0883a44",
+    "apps/ios/Leafhour/LibraryScreen.swift": "f32d9f7edbc63ad99f3142fcc75c0e2964889d0ad3e6d1d9a0da618dbd147289",
+    "apps/ios/Leafhour/PDFReadingView.swift": "cfce82283cda152a10f8f41309601a94f087efce5b3bc073f413182f4b705809",
+    "apps/ios/Leafhour/BookDetailScreen.swift": "784e703165a3cf826ece512b3aedee911c3fbb908f081df1adb4921099f99029",
+    "apps/ios/Leafhour/ReaderPanels.swift": "f8b3fbb5c70ba0b581cff3344e0196f17ce16d9a5598d37626539d52f02c6f05",
+    "apps/ios/Leafhour/ReaderScreen.swift": "b44d194be1eda176d3203e368090091fb2f8252ca0f19ff01dc9e1271723a273"
+  },
+  "screenshotsSHA256": {
+    "docs/verification/2026-10-29-get-297-dark-controls/screenshots/03-settings-night.png": "dd395d45634d680f5211674a05e83ffb25f62981b46dc74500a5f38151b6d664",
+    "docs/verification/2026-10-29-get-297-dark-controls/screenshots/02-library-light.png": "9bc5c1b040b2018e580a44f555314f455dda46c783d5ae1f82d53b5d3af8e6cd",
+    "docs/verification/2026-10-29-get-297-dark-controls/screenshots/04-controls-night.png": "a6e9f135cad7d9be366a8288ae6d3475589729cb5304823528f87c9516a8fec9",
+    "docs/verification/2026-10-29-get-297-dark-controls/screenshots/01-library-dark.png": "3279bb2bba017c35fe6fd9c78f82e054ba3fb45b332b42215d82158e50fb0f1d",
+    "docs/verification/2026-10-29-get-297-dark-controls/screenshots/05-settings-paper.png": "c77ef73cafbf9dd71b738484a94db703641cebd095cc5a32e1569d319828f08f"
+  },
+  "boundary": "source and simulator, not physical-device or TestFlight acceptance"
+}

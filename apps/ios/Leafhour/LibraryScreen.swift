@@ -15,7 +15,7 @@ struct LibraryScreen: View {
                         Image(systemName: "leaf").font(.system(size: 52, weight: .light)).foregroundStyle(Color.leafInk).accessibilityHidden(true)
                         Text("给自己留一页安静").font(.title2).fontWeight(.medium)
                         Text("带一本自己的书来。\n保存在这台设备，断网也能继续读。").multilineTextAlignment(.center).foregroundStyle(.secondary)
-                        Button("选择一本书", systemImage: "plus") { importing = true }.buttonStyle(.borderedProminent).controlSize(.large).disabled(model.busy)
+                        Button("选择一本书", systemImage: "plus") { importing = true }.buttonStyle(.borderedProminent).tint(.leafFill).foregroundStyle(.white).controlSize(.large).disabled(model.busy)
                         Text("EPUB · PDF · TXT · Markdown").font(.footnote).foregroundStyle(.secondary)
                     }.padding(28).frame(maxWidth: .infinity, maxHeight: .infinity)
                 } else {
