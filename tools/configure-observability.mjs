@@ -7,10 +7,11 @@ const properties=()=>[
 const events=names=>names.map((id,order)=>({id,name:id,type:'events',order}));
 const trend=(name,names,extra={})=>({name,filters:{insight:'TRENDS',date_from:'-30d',interval:'day',display:'ActionsLineGraph',events:events(names).map(e=>({...e,math:'total'})),properties:properties(),...extra}});
 export function observabilityDashboards(){
+ const faults=['request_failed','reader_load_failed','client_error','ingestion_failed','chat_failed','companion_failed'];
  return [
   {name:'Leafhour · 故障',description:'仅记录脱敏后的故障类别与步骤。排除验收事件；详细问题见 Sentry。',insights:[
-   trend('故障次数与类别',['request_failed','reader_load_failed','client_error','ingestion_failed','chat_failed']),
-   trend('遇到故障的人数',['request_failed','reader_load_failed','client_error'],{events:events(['request_failed','reader_load_failed','client_error']).map(e=>({...e,math:'dau'}))}),
+   trend('故障次数与类别',faults),
+   trend('遇到故障的人数',faults,{events:events(faults).map(e=>({...e,math:'dau'}))}),
   ]},
   {name:'Leafhour · 首次阅读',description:'已开启使用情况统计的登录读者；正文可见才算打开。采集缺失不能直接推断流失。',insights:[
    {name:'从书房到正文',filters:{insight:'FUNNELS',date_from:'-30d',events:events(['library_opened','reader_open_requested','reader_content_visible']),properties:properties(),funnel_window_interval:1,funnel_window_interval_unit:'day',funnel_order_type:'ordered',display:'FunnelViz'}},

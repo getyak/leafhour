@@ -44,7 +44,7 @@ function conversationHistory(turns,scope={mode:'book'},contentVersion){
   return pairs.flat();
 }
 
-export async function createReaderChatService({library,people=null,dataDir,dataStore=null,generator=null,clock=Date.now,onError=()=>{},companionGenerator=null,annotationGenerator=null}){
+export async function createReaderChatService({library,people=null,dataDir,dataStore=null,generator=null,clock=Date.now,onError=()=>{},companionGenerator=null,annotationGenerator=null,onCompanionOutcome=()=>{}}){
   if(!library?.getBook||!library?.records||!library?.addComment||!dataDir)throw new TypeError('Reader chat requires a library and data directory');
   let closed=false;const queues=new Map(),active=new Map();
   const ownerDir=user=>path.join(dataDir,'users',digest(identity(user).id),'chat');
@@ -278,7 +278,7 @@ export async function createReaderChatService({library,people=null,dataDir,dataS
     const turns=await validateHistory(user,book,history,books),storedBook=await bookFor(user,book.bookId);
     return mutateBook(user,book.bookId,data=>{const added=mergeHistory(data,turns,book,books,storedBook);data.turns.push(...added);return {restored:added.length};});
   }
-  const companion=createReaderCompanionService({bookFor,mutateBook,clock,generator:companionGenerator,quota,reserveGlobal,releaseGlobal,watchRun,active,publicTurn,conversationHistory,cancel,getClosed:()=>closed});
+  const companion=createReaderCompanionService({bookFor,mutateBook,clock,generator:companionGenerator,quota,reserveGlobal,releaseGlobal,watchRun,active,publicTurn,conversationHistory,cancel,getClosed:()=>closed,onOutcome:onCompanionOutcome});
   // GET-195: the child chat.annotations service reuses these exact closures for
   // identity, paths, transactions and quotas; it keeps its own active map.
   const annotations=createReaderAnnotationsService({library,bookFor,identity,dataDir,read,mutate,quota,reserveGlobal,releaseGlobal,clock,generator:annotationGenerator,onError,getClosed:()=>closed});

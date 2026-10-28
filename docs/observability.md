@@ -22,6 +22,19 @@ Product-event v1 covers the signed-in web reader. Native iOS frontend visibility
 
 Production views exclude synthetic events and verification accounts. Consent-off visitors and missed delivery are outside observed samples; absence of an event alone does not prove abandonment. No synthetic adoption history is generated to fill dashboards. Fresh retention cohorts require real elapsed time.
 
+Companion generation reports a server-only `companion_failed` outcome at the
+`companion` stage after an unexpected failed result is persisted, including when
+the request returns HTTP 200. A random run receipt deduplicates the attempt and
+the trusted request operation ID correlates it without exporting book, passage
+or turn identifiers. Silence, successful messages, ordinary admission limits,
+source invalidation and cancelled/revoked work are excluded. Authorization is
+checked again even after a provider rejects. Callback rejection or a stalled
+receiver does not change the saved companion result. Browser ingestion cannot
+claim this event or stage. Both fault charts include the same diagnostic event
+set; first-reading and return-reading definitions retain their existing scope.
+This remains best-effort diagnostics and does not reconstruct a process killed
+before it could persist an outcome.
+
 ## Operations
 
 Use the random operation ID to correlate a browser diagnostic and its domain request. Telemetry transport is bounded and fails independently of the reader. This is best-effort delivery, not a transactional audit log; it does not replace authorization or financial records. Existing Vercel/Supabase logs remain platform-owned. No new log-drain subscription is required.
