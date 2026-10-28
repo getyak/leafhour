@@ -180,7 +180,7 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
     // GET-169 shared interface foundation: hairlines, shadows, focus rings,
     // action vocabulary and the appearance popover chrome.
     files['/leafhour-surfaces.css']='leafhour-surfaces.css';
-    files['/commerce.css']='commerce.css';files['/public-navigation.mjs']='public-navigation.mjs';
+    files['/commerce.css']='commerce.css';files['/public-navigation.mjs']='public-navigation.mjs';files['/public-page.mjs']='public-page.mjs';
     files['/interface-tokens.css']='interface-tokens.css';files['/share-fonts.mjs']='share-fonts.mjs';
     for(const file of ['settings-controls.mjs','settings-appearance.mjs'])files['/'+file]=file;
     // GET-178 command palette: the small shared trigger is bundled with each
@@ -191,7 +191,7 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
     for(const file of ['popover-controls.mjs','reader-book-actions-bootstrap.mjs'])files['/'+file]=file;
     if(!isAPI&&!files[p])return false;
     if(isAPI||p==='/billing'||p==='/admin/billing'||p==='/source-review'||p==='/library'||p==='/gift-preview'||safeGiftReturn(p))res.setHeader('X-Robots-Tag','noindex, nofollow, noarchive');
-    if(!isAPI){if(req.method!=='GET'&&req.method!=='HEAD')throw fail('不支持这个请求',405);const type=p==="/robots.txt"?"text/plain":p==="/sitemap.xml"?"application/xml":p.endsWith('.ttf')?'font/ttf':p.endsWith('.json')?'application/json':p.endsWith('.woff2')?'font/woff2':p.endsWith('.txt')?'text/plain':p.endsWith('.webp')?'image/webp':p.endsWith('.png')?'image/png':p.endsWith('.jpg')||p.endsWith('.jpeg')?'image/jpeg':p.endsWith('.svg')?'image/svg+xml':p.endsWith('.css')?'text/css':p.endsWith('.js')||p.endsWith('.mjs')?'text/javascript':'text/html';const file=await readFile(path.join(root,'app',files[p]));if(type.startsWith('font/')||type==='application/json'){res.writeHead(200,{'Content-Type':type,'Content-Length':file.length});res.end(req.method==='HEAD'?undefined:file);return true;}send(200,files[p]==='home.html'?portalDocument(file.toString('utf8'),p):file,type);return true;}
+    if(!isAPI){if(req.method!=='GET'&&req.method!=='HEAD')throw fail('不支持这个请求',405);const type=p==="/robots.txt"?"text/plain":p==="/sitemap.xml"?"application/xml":p.endsWith('.ttf')?'font/ttf':p.endsWith('.json')?'application/json':p.endsWith('.woff2')?'font/woff2':p.endsWith('.txt')?'text/plain':p.endsWith('.webp')?'image/webp':p.endsWith('.png')?'image/png':p.endsWith('.jpg')||p.endsWith('.jpeg')?'image/jpeg':p.endsWith('.svg')?'image/svg+xml':p.endsWith('.css')?'text/css':p.endsWith('.js')||p.endsWith('.mjs')?'text/javascript':'text/html';const file=await readFile(path.join(root,'app',files[p]));if(type.startsWith('font/')||type==='application/json'){res.writeHead(200,{'Content-Type':type,'Content-Length':file.length});res.end(req.method==='HEAD'?undefined:file);return true;}send(200,type==='text/html'?portalDocument(file.toString('utf8'),p):file,type);return true;}
     if(req.method!=='GET'&&req.method!=='POST')throw fail('不支持这个请求',405);
     // Hosted clients must be configured explicitly; Host only describes a local HTTP instance.
     const originAllowed=webOrigins.has(req.headers.origin)||!publicOrigin&&req.headers.origin==='http://'+req.headers.host;

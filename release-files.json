@@ -405,6 +405,7 @@
   "app/pricing-checkout.mjs",
   "app/progress-sync.mjs",
   "app/public-navigation.mjs",
+  "app/public-page.mjs",
   "app/reader-account.mjs",
   "app/reader-annotation-margins.mjs",
   "app/reader-annotation-pending.mjs",

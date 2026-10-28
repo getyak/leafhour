@@ -43,6 +43,22 @@ body:not(.library-page) > .site-header .home-menu-trigger {
   background: transparent;
 }
 .home-menu-trigger svg { width: 19px; height: 19px; }
+.public-account-compact { display: none; }
+body > .public-document-header .public-search {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 44px;
+  height: 44px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+}
+.public-search svg { width: 19px; height: 19px; }
+.public-document-header .public-search:hover { color: var(--ink); }
 .home-navigation .home-nav { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 0 8px; color: var(--muted); text-decoration: none; white-space: nowrap; }
 .home-navigation .home-nav:hover, .home-navigation .home-nav[aria-current=page] { color: var(--ink); }
 .home-navigation .public-github { min-width: 44px; padding-inline: 10px; }
@@ -119,8 +135,12 @@ body:not(.library-page) > .site-footer .site-theme { margin-left: auto; flex: no
 #home-view .ownership-copy > p:last-child { margin-bottom: 0; }
 @media (max-width: 980px) {
   body:not(.library-page) > .site-header .home-navigation { display: none; }
+  body:not(.library-page) > .public-document-header #account-button { margin-left: auto; }
 }
 @media (max-width: 700px) {
+  .public-account-full { display: none; }
+  .public-account-compact { display: inline; }
+  body > .public-document-header .public-search { margin-inline: -4px; }
   body:not(.library-page) > .site-header { height: 76px; gap: 12px; padding-inline: 24px; }
   body:not(.library-page) > .site-header .home-navigation { display: none; }
   body:not(.library-page) > .site-header #account-button { margin-left: auto; font-size: 12px; }

@@ -34,7 +34,19 @@ export const githubLink="<a class=\"home-nav public-github\" href=\"https://gith
 export const navigationGlobe='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><circle cx="12" cy="12" r="8"/><ellipse cx="12" cy="12" rx="3.5" ry="8"/><path d="M4 12h16"/></svg>';
 export function publicNavigation({locale='en',methodHref='#how',current=null}={}){
  const c=publicNavigationCopy(locale);
- return `<nav class="home-navigation" data-ui-aria-label="nav.main" aria-label="${c.main}"><a class="home-nav" data-ui="nav.method" href="${methodHref}">${c.method}</a><a class="home-nav" data-ui="nav.agent" data-public-page="mcp" href="${publicPageHref('mcp',locale)}">${c.agent}</a><a class="home-nav" data-ui="nav.pricing" data-public-page="pricing" href="${publicPageHref('pricing',locale)}"${current==='pricing'?' aria-current="page"':''}>${c.pricing}</a>${githubLink}</nav>`;
+ return `<nav class="home-navigation" data-ui-aria-label="nav.main" aria-label="${c.main}"><a class="home-nav" data-ui="nav.method" href="${methodHref}">${c.method}</a><a class="home-nav" data-ui="nav.agent" data-public-page="mcp" href="${publicPageHref('mcp',locale)}"${current==='mcp'?' aria-current="page"':''}>${c.agent}</a><a class="home-nav" data-ui="nav.pricing" data-public-page="pricing" href="${publicPageHref('pricing',locale)}"${current==='pricing'?' aria-current="page"':''}>${c.pricing}</a>${githubLink}</nav>`;
+}
+const documentCopy={
+ en:{home:'Leafhour home',room:'My reading room',compact:'Library',search:'Search & commands'},
+ 'zh-Hans':{home:'Leafhour 首页',room:'我的书房',compact:'书房',search:'搜索与命令'},
+ 'zh-Hant':{home:'Leafhour 首頁',room:'我的書房',compact:'書房',search:'搜尋與指令'},
+ ja:{home:'Leafhour ホーム',room:'自分の書斎',compact:'書斎',search:'検索とコマンド'},
+};
+// Authored support documents keep their own content; the local server and
+// hosted build both render this header from the current public destinations.
+export function publicDocumentHeader({locale='en',current=null}={}){
+ const c=documentCopy[locale]||documentCopy.en,nav=publicNavigationCopy(locale),home='/'+(slugs[locale]||'en');
+ return `<header class="site-header public-document-header"><a class="brand" href="${home}" aria-label="${c.home}"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 32V20A13 13 0 0 1 21 7h11v11a14 14 0 0 1-14 14H8Z"/><path d="M16 23h7v-9"/></svg></span><span class="brand-name" lang="en">Leafhour</span></a>${publicNavigation({locale,methodHref:home+'#how',current})}<a class="home-account" id="account-button" href="/library?ui=${locale}" aria-label="${c.room}"><span class="public-account-full">${c.room}</span><span class="public-account-compact" aria-hidden="true">${c.compact}</span><span aria-hidden="true">↗</span></a><button class="public-search palette-entry" data-palette-open type="button" aria-label="${c.search}" title="${c.search}"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><circle cx="8.5" cy="8.5" r="5.5"/><path d="m13 13 4 4"/></svg></button><button class="home-menu-trigger" id="home-menu-trigger" type="button" aria-haspopup="dialog" aria-controls="home-menu" aria-expanded="false" aria-label="${nav.open}">${navigationGlobe}</button></header>`;
 }
 export function publicNavigationMenu({locale='en',languages=''}){
  const settings={en:'Interface language settings','zh-Hans':'界面语言设置','zh-Hant':'介面語言設定',ja:'表示言語の設定'}[locale]||'Interface language settings';
