@@ -22,8 +22,7 @@ import {mountShelfFilters} from './library-filter-controls.mjs';
 import {mountLibraryShell,roomIcons} from './library-shell.mjs';
 import {mountPreferenceMemory} from './preference-memory-ui.mjs';
 import {mountLibraryChat} from './library-chat.mjs';
-import {paintBookCover,paintBookIdentity} from './book-cover-ui.mjs';
-import {bookCoverLabel} from './book-binding.mjs';
+import {paintBookCover,paintBookIdentity,bookCoverLabel,bookCoverSearchText} from './book-cover-ui.mjs';
 import {mountLibraryBookActions} from './library-book-actions.mjs';
 import {mountShelfDrag,moveShelfBook} from './shelf-order.mjs';
 import {mountIncrementalShelf} from './library-incremental.mjs';
@@ -227,7 +226,7 @@ function renderHomeBooks(){
   const visible=books.filter(book=>book.visibility==='public');
   shelfControls?.update(visible);
   if(!bootstrapped&&!visible.length)return;
-  const filters=shelfControls?.read()||{},matches=libraryShelf(visible,filters);
+  const filters=shelfControls?.read()||{},matches=libraryShelf(visible,filters,{searchText:bookCoverSearchText});
   $('search-clear').hidden=!filters.query;
   if(matches.length){$('featured-books').replaceChildren(...(hasShelfFilters(filters)?matches:matches.slice(0,3)).map(landingBookCard));return;}
   const empty=make('div','home-shelf-empty'),title=own(make('h3'),{id:'portal.empty.filtered'}),help=own(make('p'),{id:shelfEmptyHelpId(filters)}),clear=own(make('button','outline'),{id:'filter.clearAll'});
@@ -235,7 +234,7 @@ function renderHomeBooks(){
 }
 function renderBooks(){
   if(!isLibrary){renderHomeBooks();return;}
-  const filters=shelfControls?.read()||{query:$('book-search').value},query=filters.query.trim(),filtered=hasShelfFilters(filters),shelf=libraryShelf(books,filters),room={featured:null,books:shelf,total:shelf.length};shelfControls?.update(books);shelfControls?.setPending(personalizationPending);
+  const filters=shelfControls?.read()||{query:$('book-search').value},query=filters.query.trim(),filtered=hasShelfFilters(filters),shelf=libraryShelf(books,filters,{searchText:bookCoverSearchText}),room={featured:null,books:shelf,total:shelf.length};shelfControls?.update(books);shelfControls?.setPending(personalizationPending);
   const anchorId=document.activeElement?.closest('[data-book-id]')?.dataset.bookId;
   if(shelfList)shelfList.setItems(room.books,{key:JSON.stringify([getOwner(),filters]),anchorId});else $('library-books').replaceChildren();
   $('library-books').setAttribute('aria-busy','false');$('reading-dashboard').hidden=!dashboard?.isLoading();$('shelf-title').hidden=!room.books.length;own($('shelf-title'),{render:()=>room.featured?t('portal.shelf.titleMore'):t('portal.shelf.title')});$('shelf-title').classList.toggle('sr-only',!room.featured);$('library-shelf').classList.toggle('with-current',!!room.featured);$('library-shelf').hidden=dashboard?.isLoading()||!!room.featured&&!room.books.length;

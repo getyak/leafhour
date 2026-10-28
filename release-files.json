@@ -1356,5 +1356,6 @@
   "tests/book-cover-about.test.mjs",
   "tests/book-cover-http.test.mjs",
   "tests/book-cover-ui.test.mjs",
-  "tools/book-cover-layout-fixture.mjs"
+  "tools/book-cover-layout-fixture.mjs",
+  "tests/book-cover-search.test.mjs"
 ]

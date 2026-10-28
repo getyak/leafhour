@@ -150,5 +150,20 @@
         "意志と表象としての世界 · 英訳版・第 3 冊（全 3 冊）"
       ]
     }
+  },
+  "compiledPortal": {
+    "kind": "compiled shared cover entry; native distinct preference commit",
+    "languageCommit": {
+      "sameCover": true,
+      "sameImage": true,
+      "sameTitle": true,
+      "title": "爱丽丝梦游仙境"
+    },
+    "nameSearchMatched": "gutenberg-walden",
+    "authorSearchMatched": "gutenberg-walden",
+    "chunks": [
+      "/book-cover-ui.mjs"
+    ],
+    "uncaughtErrors": []
   }
 }

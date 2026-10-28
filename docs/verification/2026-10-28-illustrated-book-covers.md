@@ -1,6 +1,6 @@
 # Illustrated multilingual covers — acceptance record
 
-Date: 2026-10-28. Repository: getyak/leafhour. User direction: approved four printmaking samples, then requested all online public books and Japanese users. Current implementation is based on main 3c4c70cc6062b9de4246add0279779eee0d16998, preserving the books-first library update.
+Date: 2026-10-28. Repository: getyak/leafhour. User direction: approved four printmaking samples, then requested all online public books and Japanese users. Final integration includes main 92e036b, preserving both the books-first library and portal-startup compiler updates.
 
 ## Scope and assets
 
@@ -37,11 +37,19 @@ browser-local.json stores measured results. The isolated full typography fixture
 
 The raw local source reader emitted 22 inline-style CSP console violations at unchanged index.html/reader-atmosphere.js locations. Its cover still loaded. This record does not claim a clean console or certify unrelated source-reader styling; compiled Production evidence is separate.
 
+## Final startup and search integration
+
+The newly merged portal compiler exposed a real existing 200 KiB per-entry limit failure (247,063 bytes). The limit was retained. A shared compiled cover entry now owns renderer and data: portal.js is 184,476 bytes, library-shell.mjs is 74,687 bytes and book-cover-ui.mjs is 64,352 bytes. The language singleton stays external at one /ui-locale.mjs URL; eager reader inputs still exclude cover modules.
+
+A real compiled-browser check loaded only the shared cover entry, found Walden by both 森の生活 and ヘンリー, and preserved cover/image/title nodes on a distinct native language-preference commit with no uncaught script errors. Display aliases are public-table-only; private or unknown books gain no public aliases and source metadata is unchanged.
+
+One intermediate full run encountered an existing audio-test temporary-directory ENOTEMPTY cleanup race. The unchanged audio module then passed all 16 checks, and the final clean full run passed. No audio assertion or application code was changed.
+
 ## Verification and delivery status
 
 Real pinned Vale 3.24.0/textlint copy lint passed; existing documented copy debt and warnings remain visible. Copy export was regenerated without expanding review decisions or weakening lint rules.
 
-An initial full local run under bundled Node 24 reported 3,988 tests: 3,986 passed, one existing reporter-format assertion failed, one platform skip. Its exact failing assertion passed under the official isolated Node 22.22.0 binary after verifying the upstream archive SHA-256. No application test was weakened. Final full Node 22 verification passed: 3,993 tests, 3,992 passed, zero failures and one pre-existing platform skip. The isolated runtime, hosted build, public-build checks, software release allowlist and release verification also passed.
+An initial full local run under bundled Node 24 reported 3,988 tests: 3,986 passed, one existing reporter-format assertion failed, one platform skip. Its exact failing assertion passed under the official isolated Node 22.22.0 binary after verifying the upstream archive SHA-256. No application test was weakened. Final full Node 22 verification passed: 4,000 tests, 3,999 passed, zero failures and one pre-existing platform skip. The isolated runtime, hosted build, public-build checks, software release allowlist and release verification also passed (1,359 software files).
 
 - Complete asset and four-language metadata validation: passed.
 - Final local full tests/build/release checks: passed.

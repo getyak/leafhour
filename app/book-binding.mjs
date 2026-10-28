@@ -27,6 +27,14 @@ function paintIdentity(node,book,field,locale){
   const value=bookCoverLabel(book,locale)[field]||'',language=book?.visibility==='public'&&Object.hasOwn(bookCoverLabels,String(book?.bookId||''))?locale:'und';node.textContent=value;node.lang=language;node.setAttribute?.('lang',language);return node;
 }
 
+// Search the identities people can actually see, without rewriting source data
+// or tying an existing query to a later interface-language change.
+export function bookCoverSearchText(book){
+  const key=String(book?.bookId||'');
+  if(book?.visibility!=='public'||!Object.hasOwn(bookCoverLabels,key))return '';
+  return [...locales].map(locale=>{const label=bookCoverLabel(book,locale);return [label.title,label.author,label.subtitle].filter(Boolean).join(' ');}).join('\n');
+}
+
 function artworkFor(id){
   if(!Object.hasOwn(bookCoverArtwork,id))return null;
   const artwork=bookCoverArtwork[id];

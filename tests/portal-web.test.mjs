@@ -23,3 +23,20 @@ test('unlisted lazy backing and opaque imports fail the build instead of silentl
  const f=await fixture(t);await writeFile(path.join(f.root,'release-files.json'),JSON.stringify(['app/portal.js','app/sibling.mjs','app/shared.mjs','app/only.mjs','app/late-shared.mjs']));await assert.rejects(build(f),/release|public/i);
  await writeFile(path.join(f.root,'app','portal.js'),'export const open=name=>import(name);');await assert.rejects(build(f),/literal/i);
 });
+
+test('the real cover entry folds its renderer and edition tables into one bounded chunk with a shared locale owner',async t=>{
+ const root=path.resolve(import.meta.dirname,'..'),outputDir=await mkdtemp(path.join(tmpdir(),'leafhour-cover-web-'));
+ t.after(()=>rm(outputDir,{recursive:true,force:true}));
+ const result=await build({root,outputDir,html:await readFile(path.join(root,'app/home.html'),'utf8'),additionalEntries:['library-shell.mjs','book-cover-ui.mjs']});
+ const cover=result.bundles.find(bundle=>bundle.file==='book-cover-ui.mjs');assert.ok(cover);
+ for(const file of ['book-cover-ui.mjs','book-binding.mjs','book-cover-labels.mjs','book-cover-artwork.mjs'])assert.ok(cover.inputs.includes('app/'+file),file+' belongs to the one cover chunk');
+ for(const bundle of result.bundles){
+  assert.ok(bundle.bytes<=200*1024,bundle.file+' keeps the existing public JavaScript budget');
+  assert.ok(!bundle.inputs.includes('app/ui-locale.mjs'),bundle.file+' must reuse the physical locale owner');
+  if(bundle!==cover)for(const file of ['book-binding.mjs','book-cover-labels.mjs','book-cover-artwork.mjs'])assert.ok(!bundle.inputs.includes('app/'+file),file+' must not be copied into '+bundle.file);
+ }
+ const coverCode=await readFile(path.join(outputDir,'book-cover-ui.mjs'),'utf8'),portalCode=await readFile(path.join(outputDir,'portal.js'),'utf8');
+ assert.match(coverCode,/from["']\/ui-locale\.mjs["']/);
+ assert.doesNotMatch(coverCode,/from["'][^"']*book-(?:binding|cover-(?:labels|artwork))\.mjs["']/,'cover data must not create a second source-module waterfall');
+ assert.match(portalCode,/from["']\/book-cover-ui\.mjs["']/);
+});

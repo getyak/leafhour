@@ -1,5 +1,4 @@
-import {paintBookCover,paintBookIdentity} from './book-cover-ui.mjs';
-import {bookCoverLabel} from './book-binding.mjs';
+import {paintBookCover,paintBookIdentity,bookCoverLabel} from './book-cover-ui.mjs';
 import {trackActionFocus} from './action-focus.mjs';
 import {createGiftSpring} from './gift-ritual.mjs';
 import {createGiftWavesController,createGiftWaveScene} from './gift-waves.mjs';

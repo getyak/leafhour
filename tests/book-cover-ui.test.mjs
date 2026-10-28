@@ -4,10 +4,11 @@ import vm from 'node:vm';
 import {readFile} from 'node:fs/promises';
 import {parse} from 'acorn';
 import {fixture} from './annotation-dom-fixture.mjs';
-import {paintBookCover,paintBookIdentity} from '../app/book-cover-ui.mjs';
+import {paintBookCover,paintBookIdentity,bookCoverLabel,bookCoverSearchText} from '../app/book-cover-ui.mjs';
+import * as workspace from '../app/library-workspace.mjs';
+import {mountIncrementalShelf} from '../app/library-incremental.mjs';
 import {requestUiRoute,getUiLocale,t,onUiLocaleChange} from '../app/ui-locale.mjs';
 import {homeText} from '../app/home-locale.mjs';
-import {bookCoverLabel} from '../app/book-binding.mjs';
 
 const source=await readFile(new URL('../app/portal.js',import.meta.url),'utf8'),ast=parse(source,{ecmaVersion:'latest',sourceType:'module'});
 const declaration=ast.body.find(node=>node.type==='FunctionDeclaration'&&node.id.name==='landingBookCard');
@@ -20,8 +21,28 @@ function publicShelfFixture(){
   const context={make,paintBookCover,paintBookIdentity,bookCoverLabel,getUiLocale,t,readingBookUrl:book=>'/read?book='+book.bookId,ownedHref:(node,href)=>{node.href=href;},bookActions:null,shelfDrag:null,roomIcons(){},scheduleCardPrune(){},registerCardNode(node,spec){labels.set(node,spec);apply(node,spec);}};
   vm.createContext(context);for(const name of ['cardLabel','mountCardLabels','bookCard']){const declaration=ast.body.find(node=>node.id?.name===name||node.declarations?.some(row=>row.id.name===name));vm.runInContext(source.slice(declaration.start,declaration.end),context);}vm.runInContext('this.makeCard=bookCard;',context);
   const off=onUiLocaleChange(()=>{for(const [node,spec]of labels)if(node.isConnected)apply(node,spec);});
-  return {document,makeCard:book=>{const card=context.makeCard(book);document.body.append(card);return card;},dispose(){off();document.body.replaceChildren();}};
+  return {document,context,makeCard:book=>{const card=context.makeCard(book);document.body.append(card);return card;},dispose(){off();document.body.replaceChildren();}};
 }
+
+test('actual home and library queries find the displayed Japanese cover and preserve source metadata',async()=>{
+ await requestUiRoute('ja');const f=publicShelfFixture(),{document,context}=f;
+ const ids=['book-search','search-clear','featured-books','library-books','reading-dashboard','shelf-title','library-shelf','room-title','room-count','sidebar-book-count','empty-shelf','empty-upload','empty-clear','shelf-more'];
+ for(const id of ids){const node=document.createElement('div');node.id=id;document.body.append(node);}
+ const $=id=>document.getElementById(id);for(const tag of ['h2','p'])$('empty-shelf').append(document.createElement(tag));
+ const books=[{bookId:'gutenberg-walden',visibility:'public',title:{en:'Walden',zh:'瓦尔登湖'},author:'Henry David Thoreau',sourceLanguage:'en',source:{format:'txt'}},{bookId:'gutenberg-alice',visibility:'public',title:{en:'Alice'},author:'Lewis Carroll',sourceLanguage:'en',source:{format:'txt'}}],before=JSON.stringify(books);
+ let query='森の生活';Object.assign(context,workspace,{document,$,books,bookCoverSearchText,bootstrapped:true,personalizationPending:false,session:{user:{id:'synthetic'}},homeText,Intl,getOwner:()=> 'synthetic',dashboard:null,chat:null,shelfControls:{read:()=>({query}),update(){},setPending(){},clearAll(){query='';}}});
+ for(const name of ['chromeLabels','specText','num','applySpec','own','landingBookCard','shelfEmptyHelpId','renderHomeBooks','renderBooks']){const n=ast.body.find(n=>n.id?.name===name||n.declarations?.some(row=>row.id.name===name));vm.runInContext(source.slice(n.start,n.end),context);}
+ context.shelfList=mountIncrementalShelf({grid:$('library-books'),controls:$('shelf-more'),renderItem:context.makeCard});
+ try{
+  for(const isLibrary of [false,true]){
+   context.isLibrary=isLibrary;context.renderBooks();const grid=$(isLibrary?'library-books':'featured-books');
+   assert.equal(grid.querySelectorAll('.book-card').length,1,(isLibrary?'library':'home')+' query must find the Japanese title');
+   assert.equal(grid.querySelector('.cover-title').textContent,'森の生活');assert.equal(grid.querySelector('.book-author').textContent,'ヘンリー・デイヴィッド・ソロー');
+  }
+  query='ヘンリー・デイヴィッド・ソロー';context.renderBooks();assert.equal($('library-books').querySelectorAll('.book-card').length,1,'the visible Japanese author is searchable');
+  assert.equal(JSON.stringify(books),before);
+ }finally{context.shelfList.destroy();f.dispose();await requestUiRoute('en');}
+});
 
 test('real shelf titles and accessible action names distinguish public volumes in every committed language',async()=>{
   await requestUiRoute('en');const f=publicShelfFixture(),books=[1,2].map(volume=>({bookId:'gutenberg-dream-red-chamber-'+volume,visibility:'public',title:{zh:'原始书名 '+volume},author:'Source author',source:{format:'txt'}})),original=JSON.stringify(books),cards=books.map(f.makeCard);

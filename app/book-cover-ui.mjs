@@ -1,5 +1,6 @@
 import {createBookCoverPainter} from './book-binding.mjs';
 import {getUiLocale,onUiLocaleChange} from './ui-locale.mjs';
+export {bookCoverLabel,bookCoverSearchText} from './book-binding.mjs';
 
 // One page owner for the shared renderer. Weak references let shelf refresh,
 // account changes and closed gift dialogs discard their old nodes normally.

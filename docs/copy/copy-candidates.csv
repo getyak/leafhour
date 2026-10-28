@@ -682,10 +682,10 @@ candidate:app/billing.mjs:28:793,js-cjk-literal,app/billing.mjs,28,,unknown,revi
 candidate:app/billing.mjs:28:841,js-cjk-literal,app/billing.mjs,28,,unknown,reviewable,,月額の支払済み注文
 candidate:app/billing.mjs:28:873,js-cjk-literal,app/billing.mjs,28,,unknown,reviewable,,1 回限りの支払済み注文
 candidate:app/billing.mjs:28:910,js-cjk-literal,app/billing.mjs,28,,unknown,reviewable,,有効な定期契約
-candidate:app/book-binding.mjs:44:31,js-attribute,app/book-binding.mjs,44,lang,unknown,reviewable,,und
-candidate:app/book-binding.mjs:62:174,js-dom-literal,app/book-binding.mjs,62,textContent,unknown,reviewable,,leafhour
-candidate:app/book-binding.mjs:62:213,js-attribute,app/book-binding.mjs,62,lang,unknown,reviewable,,en
-candidate:app/book-binding.mjs:65:129,js-attribute,app/book-binding.mjs,65,aria-hidden,unknown,reviewable,,true
+candidate:app/book-binding.mjs:52:31,js-attribute,app/book-binding.mjs,52,lang,unknown,reviewable,,und
+candidate:app/book-binding.mjs:70:174,js-dom-literal,app/book-binding.mjs,70,textContent,unknown,reviewable,,leafhour
+candidate:app/book-binding.mjs:70:213,js-attribute,app/book-binding.mjs,70,lang,unknown,reviewable,,en
+candidate:app/book-binding.mjs:73:129,js-attribute,app/book-binding.mjs,73,aria-hidden,unknown,reviewable,,true
 candidate:app/book-cover-labels.mjs:11:16,js-cjk-literal,app/book-cover-labels.mjs,11,,unknown,reviewable,,爱丽丝梦游仙境
 candidate:app/book-cover-labels.mjs:12:17,js-cjk-literal,app/book-cover-labels.mjs,12,,unknown,reviewable,,刘易斯·卡罗尔
 candidate:app/book-cover-labels.mjs:13:19,js-cjk-literal,app/book-cover-labels.mjs,13,,unknown,reviewable,,英文
@@ -1262,7 +1262,7 @@ candidate:app/book-cover-labels.mjs:1404:19,js-cjk-literal,app/book-cover-labels
 candidate:app/book-cover-labels.mjs:1407:16,js-cjk-literal,app/book-cover-labels.mjs,1407,,unknown,reviewable,,意志と表象としての世界
 candidate:app/book-cover-labels.mjs:1408:17,js-cjk-literal,app/book-cover-labels.mjs,1408,,unknown,reviewable,,アルトゥール・ショーペンハウアー · 英訳 R. B. Haldane & J. Kemp
 candidate:app/book-cover-labels.mjs:1409:19,js-cjk-literal,app/book-cover-labels.mjs,1409,,unknown,reviewable,,英訳版・第 3 冊（全 3 冊）
-candidate:app/book-cover-ui.mjs:22:146,js-attribute,app/book-cover-ui.mjs,22,aria-hidden,unknown,reviewable,,true
+candidate:app/book-cover-ui.mjs:23:146,js-attribute,app/book-cover-ui.mjs,23,aria-hidden,unknown,reviewable,,true
 candidate:app/book-gift.html:22:48,html-attribute,app/book-gift.html,22,aria-label,unknown,reviewable,,Leafhour home
 candidate:app/book-gift.html:23:248,html-attribute,app/book-gift.html,23,aria-label,unknown,reviewable,,Page appearance
 candidate:app/book-gift.html:51:177,html-attribute,app/book-gift.html,51,aria-label,unknown,reviewable,,Fold the letter
@@ -1301,27 +1301,27 @@ candidate:app/book-gift.html:65:597,html-text,app/book-gift.html,65,,unknown,rev
 candidate:app/book-gift.html:71:63,html-text,app/book-gift.html,71,,unknown,reviewable,,Enable JavaScript to open the book letter.
 candidate:app/book-gift.html:73:58,html-text,app/book-gift.html,73,,unknown,reviewable,,Leafhour
 candidate:app/book-gift.html:73:98,html-text,app/book-gift.html,73,,unknown,reviewable,,"A book, from one reader to another."
-candidate:app/book-gift.mjs:33:78,js-cjk-literal,app/book-gift.mjs,33,,unknown,reviewable,,赠书链接不完整，未下载阅读包。
-candidate:app/book-gift.mjs:38:416,js-cjk-literal,app/book-gift.mjs,38,,unknown,reviewable,,阅读包分段或版本无法对应，请重新下载。
-candidate:app/book-gift.mjs:40:164,js-cjk-literal,app/book-gift.mjs,40,,unknown,reviewable,,阅读包分段无法读取，请重新下载。
-candidate:app/book-gift.mjs:42:153,js-cjk-literal,app/book-gift.mjs,42,,unknown,reviewable,,阅读包分段校验未通过，请重新下载。
-candidate:app/book-gift.mjs:46:52,js-cjk-literal,app/book-gift.mjs,46,,unknown,reviewable,,阅读包校验未通过，请重新下载。
-candidate:app/book-gift.mjs:47:111,js-cjk-literal,app/book-gift.mjs,47,,unknown,reviewable,,阅读包内容无法读取，请重新下载。
-candidate:app/book-gift.mjs:48:139,js-cjk-literal,app/book-gift.mjs,48,,unknown,reviewable,,阅读包格式无法核验，请重新下载。
-candidate:app/book-gift.mjs:52:15,js-cjk-literal,app/book-gift.mjs,52,,unknown,reviewable,,阅读包分段过多，未生成不完整的下载。
-candidate:app/book-gift.mjs:79:26,js-cjk-literal,app/book-gift.mjs,79,,unknown,reviewable,,收信预览不会创建分享或收取书籍。
-candidate:app/book-gift.mjs:80:316,js-cjk-literal,app/book-gift.mjs,80,,unknown,reviewable,,网络暂时无法连接，请稍后再试。
-candidate:app/book-gift.mjs:81:87,js-cjk-literal,app/book-gift.mjs,81,,unknown,reviewable,,账户已切换，请重新打开信笺再收书。
-candidate:app/book-gift.mjs:82:62,js-cjk-literal,app/book-gift.mjs,82,,unknown,reviewable,,信笺暂时无法读取，请稍后再试。
-candidate:app/book-gift.mjs:83:57,js-cjk-literal,app/book-gift.mjs,83,,unknown,reviewable,,暂时无法完成，请稍后再试。
-candidate:app/book-gift.mjs:139:106,js-attribute,app/book-gift.mjs,139,aria-disabled,unknown,reviewable,,true
-candidate:app/book-gift.mjs:157:43,js-cjk-literal,app/book-gift.mjs,157,,unknown,reviewable,,链接不完整
-candidate:app/book-gift.mjs:166:130,js-cjk-literal,app/book-gift.mjs,166,,unknown,reviewable,,收书结果无法核验，请回到书房确认。
-candidate:app/book-gift.mjs:180:37,js-attribute,app/book-gift.mjs,180,aria-disabled,unknown,reviewable,,true
-candidate:app/book-gift.mjs:180:75,js-attribute,app/book-gift.mjs,180,aria-busy,unknown,reviewable,,true
-candidate:app/book-gift.mjs:189:86,js-attribute,app/book-gift.mjs,189,aria-disabled,unknown,reviewable,,true
-candidate:app/book-gift.mjs:189:142,js-attribute,app/book-gift.mjs,189,aria-disabled,unknown,reviewable,,true
-candidate:app/book-gift.mjs:190:39,js-cjk-literal,app/book-gift.mjs,190,,unknown,reviewable,,请从书房的赠书窗口打开收信预览。
+candidate:app/book-gift.mjs:32:78,js-cjk-literal,app/book-gift.mjs,32,,unknown,reviewable,,赠书链接不完整，未下载阅读包。
+candidate:app/book-gift.mjs:37:416,js-cjk-literal,app/book-gift.mjs,37,,unknown,reviewable,,阅读包分段或版本无法对应，请重新下载。
+candidate:app/book-gift.mjs:39:164,js-cjk-literal,app/book-gift.mjs,39,,unknown,reviewable,,阅读包分段无法读取，请重新下载。
+candidate:app/book-gift.mjs:41:153,js-cjk-literal,app/book-gift.mjs,41,,unknown,reviewable,,阅读包分段校验未通过，请重新下载。
+candidate:app/book-gift.mjs:45:52,js-cjk-literal,app/book-gift.mjs,45,,unknown,reviewable,,阅读包校验未通过，请重新下载。
+candidate:app/book-gift.mjs:46:111,js-cjk-literal,app/book-gift.mjs,46,,unknown,reviewable,,阅读包内容无法读取，请重新下载。
+candidate:app/book-gift.mjs:47:139,js-cjk-literal,app/book-gift.mjs,47,,unknown,reviewable,,阅读包格式无法核验，请重新下载。
+candidate:app/book-gift.mjs:51:15,js-cjk-literal,app/book-gift.mjs,51,,unknown,reviewable,,阅读包分段过多，未生成不完整的下载。
+candidate:app/book-gift.mjs:78:26,js-cjk-literal,app/book-gift.mjs,78,,unknown,reviewable,,收信预览不会创建分享或收取书籍。
+candidate:app/book-gift.mjs:79:316,js-cjk-literal,app/book-gift.mjs,79,,unknown,reviewable,,网络暂时无法连接，请稍后再试。
+candidate:app/book-gift.mjs:80:87,js-cjk-literal,app/book-gift.mjs,80,,unknown,reviewable,,账户已切换，请重新打开信笺再收书。
+candidate:app/book-gift.mjs:81:62,js-cjk-literal,app/book-gift.mjs,81,,unknown,reviewable,,信笺暂时无法读取，请稍后再试。
+candidate:app/book-gift.mjs:82:57,js-cjk-literal,app/book-gift.mjs,82,,unknown,reviewable,,暂时无法完成，请稍后再试。
+candidate:app/book-gift.mjs:138:106,js-attribute,app/book-gift.mjs,138,aria-disabled,unknown,reviewable,,true
+candidate:app/book-gift.mjs:156:43,js-cjk-literal,app/book-gift.mjs,156,,unknown,reviewable,,链接不完整
+candidate:app/book-gift.mjs:165:130,js-cjk-literal,app/book-gift.mjs,165,,unknown,reviewable,,收书结果无法核验，请回到书房确认。
+candidate:app/book-gift.mjs:179:37,js-attribute,app/book-gift.mjs,179,aria-disabled,unknown,reviewable,,true
+candidate:app/book-gift.mjs:179:75,js-attribute,app/book-gift.mjs,179,aria-busy,unknown,reviewable,,true
+candidate:app/book-gift.mjs:188:86,js-attribute,app/book-gift.mjs,188,aria-disabled,unknown,reviewable,,true
+candidate:app/book-gift.mjs:188:142,js-attribute,app/book-gift.mjs,188,aria-disabled,unknown,reviewable,,true
+candidate:app/book-gift.mjs:189:39,js-cjk-literal,app/book-gift.mjs,189,,unknown,reviewable,,请从书房的赠书窗口打开收信预览。
 candidate:app/book-introduction.mjs:2:39,js-cjk-literal,app/book-introduction.mjs,2,,unknown,reviewable,,AI 简介的来源或格式不完整
 candidate:app/book-transfer.mjs:1:25,js-cjk-literal,app/book-transfer.mjs,1,,unknown,reviewable,,正文传输未完整通过校验，请重新载入；原文件仍保留。
 candidate:app/catalog-sample.mjs:6:59,js-cjk-literal,app/catalog-sample.mjs,6,,unknown,reviewable,,"中文试读 · "
@@ -1915,18 +1915,18 @@ candidate:app/experiences.js:59:882,js-cjk-literal,app/experiences.js,59,,unknow
 candidate:app/experiences.js:68:92,js-cjk-literal,app/experiences.js,68,,unknown,reviewable,,请解释这段的论证与限定。
 candidate:app/experiences.js:73:132,js-cjk-literal,app/experiences.js,73,,unknown,reviewable,,解释标识无法对应当前请求
 candidate:app/experiences.js:94:429,js-cjk-literal,app/experiences.js,94,,unknown,reviewable,,记录包过大
-candidate:app/gift-compose.mjs:31:149,js-attribute,app/gift-compose.mjs,31,lang,unknown,reviewable,,und
-candidate:app/gift-compose.mjs:41:268,js-attribute,app/gift-compose.mjs,41,aria-describedby,unknown,protected,identifier,gift-message-help
-candidate:app/gift-compose.mjs:42:217,js-attribute,app/gift-compose.mjs,42,lang,unknown,reviewable,,und
-candidate:app/gift-compose.mjs:43:35,js-attribute,app/gift-compose.mjs,43,lang,unknown,reviewable,,und
-candidate:app/gift-compose.mjs:43:68,js-attribute,app/gift-compose.mjs,43,lang,unknown,reviewable,,und
-candidate:app/gift-compose.mjs:43:104,js-attribute,app/gift-compose.mjs,43,lang,unknown,reviewable,,und
-candidate:app/gift-compose.mjs:49:35,js-attribute,app/gift-compose.mjs,49,lang,unknown,reviewable,,und
-candidate:app/gift-compose.mjs:49:79,js-attribute,app/gift-compose.mjs,49,aria-live,unknown,reviewable,,polite
-candidate:app/gift-compose.mjs:63:223,js-attribute,app/gift-compose.mjs,63,lang,unknown,reviewable,,und
-candidate:app/gift-compose.mjs:88:309,js-attribute,app/gift-compose.mjs,88,aria-current,unknown,reviewable,,step
-candidate:app/gift-compose.mjs:126:78,js-attribute,app/gift-compose.mjs,126,aria-busy,unknown,reviewable,,true
-candidate:app/gift-compose.mjs:154:184,js-attribute,app/gift-compose.mjs,154,aria-busy,unknown,reviewable,,true
+candidate:app/gift-compose.mjs:30:149,js-attribute,app/gift-compose.mjs,30,lang,unknown,reviewable,,und
+candidate:app/gift-compose.mjs:40:268,js-attribute,app/gift-compose.mjs,40,aria-describedby,unknown,protected,identifier,gift-message-help
+candidate:app/gift-compose.mjs:41:217,js-attribute,app/gift-compose.mjs,41,lang,unknown,reviewable,,und
+candidate:app/gift-compose.mjs:42:35,js-attribute,app/gift-compose.mjs,42,lang,unknown,reviewable,,und
+candidate:app/gift-compose.mjs:42:68,js-attribute,app/gift-compose.mjs,42,lang,unknown,reviewable,,und
+candidate:app/gift-compose.mjs:42:104,js-attribute,app/gift-compose.mjs,42,lang,unknown,reviewable,,und
+candidate:app/gift-compose.mjs:48:35,js-attribute,app/gift-compose.mjs,48,lang,unknown,reviewable,,und
+candidate:app/gift-compose.mjs:48:79,js-attribute,app/gift-compose.mjs,48,aria-live,unknown,reviewable,,polite
+candidate:app/gift-compose.mjs:62:223,js-attribute,app/gift-compose.mjs,62,lang,unknown,reviewable,,und
+candidate:app/gift-compose.mjs:87:309,js-attribute,app/gift-compose.mjs,87,aria-current,unknown,reviewable,,step
+candidate:app/gift-compose.mjs:125:78,js-attribute,app/gift-compose.mjs,125,aria-busy,unknown,reviewable,,true
+candidate:app/gift-compose.mjs:153:184,js-attribute,app/gift-compose.mjs,153,aria-busy,unknown,reviewable,,true
 candidate:app/gift-identity.mjs:4:108,js-cjk-literal,app/gift-identity.mjs,4,,unknown,reviewable,,一位读者
 candidate:app/gift-preview.mjs:19:190,js-cjk-literal,app/gift-preview.mjs,19,,unknown,reviewable,,一位读者
 candidate:app/gift-quote.mjs:5:71,js-cjk-literal,app/gift-quote.mjs,5,,unknown,reviewable,,从这本书的原文中由 AI 选出
@@ -3455,17 +3455,17 @@ candidate:app/library-backup.mjs:67:126,js-cjk-literal,app/library-backup.mjs,67
 candidate:app/library-backup.mjs:68:58,js-cjk-literal,app/library-backup.mjs,68,,unknown,reviewable,,待确认私人记录无法恢复
 candidate:app/library-backup.mjs:70:441,js-cjk-literal,app/library-backup.mjs,70,,unknown,reviewable,,阅读位置不完整
 candidate:app/library-backup.mjs:70:505,js-cjk-literal,app/library-backup.mjs,70,,unknown,reviewable,,阅读排版设置不正确
-candidate:app/library-book-actions.mjs:12:89,js-attribute,app/library-book-actions.mjs,12,aria-hidden,unknown,reviewable,,true
-candidate:app/library-book-actions.mjs:16:83,js-cjk-literal,app/library-book-actions.mjs,16,,unknown,reviewable,,读书日程
-candidate:app/library-book-actions.mjs:24:101,js-attribute,app/library-book-actions.mjs,24,popover,unknown,reviewable,,auto
-candidate:app/library-book-actions.mjs:24:134,js-attribute,app/library-book-actions.mjs,24,role,unknown,reviewable,,menu
-candidate:app/library-book-actions.mjs:25:122,js-attribute,app/library-book-actions.mjs,25,aria-labelledby,unknown,protected,identifier,book-action-title
-candidate:app/library-book-actions.mjs:27:110,js-attribute,app/library-book-actions.mjs,27,role,unknown,reviewable,,status
-candidate:app/library-book-actions.mjs:42:101,js-attribute,app/library-book-actions.mjs,42,aria-hidden,unknown,reviewable,,true
-candidate:app/library-book-actions.mjs:59:483,js-cjk-literal,app/library-book-actions.mjs,59,,unknown,reviewable,,·读书日程.ics
-candidate:app/library-book-actions.mjs:85:154,js-attribute,app/library-book-actions.mjs,85,role,unknown,reviewable,,menuitem
-candidate:app/library-book-actions.mjs:89:220,js-attribute,app/library-book-actions.mjs,89,aria-haspopup,unknown,reviewable,,menu
-candidate:app/library-book-actions.mjs:89:265,js-attribute,app/library-book-actions.mjs,89,aria-expanded,unknown,reviewable,,false
+candidate:app/library-book-actions.mjs:11:89,js-attribute,app/library-book-actions.mjs,11,aria-hidden,unknown,reviewable,,true
+candidate:app/library-book-actions.mjs:15:83,js-cjk-literal,app/library-book-actions.mjs,15,,unknown,reviewable,,读书日程
+candidate:app/library-book-actions.mjs:23:101,js-attribute,app/library-book-actions.mjs,23,popover,unknown,reviewable,,auto
+candidate:app/library-book-actions.mjs:23:134,js-attribute,app/library-book-actions.mjs,23,role,unknown,reviewable,,menu
+candidate:app/library-book-actions.mjs:24:122,js-attribute,app/library-book-actions.mjs,24,aria-labelledby,unknown,protected,identifier,book-action-title
+candidate:app/library-book-actions.mjs:26:110,js-attribute,app/library-book-actions.mjs,26,role,unknown,reviewable,,status
+candidate:app/library-book-actions.mjs:41:101,js-attribute,app/library-book-actions.mjs,41,aria-hidden,unknown,reviewable,,true
+candidate:app/library-book-actions.mjs:58:483,js-cjk-literal,app/library-book-actions.mjs,58,,unknown,reviewable,,·读书日程.ics
+candidate:app/library-book-actions.mjs:84:154,js-attribute,app/library-book-actions.mjs,84,role,unknown,reviewable,,menuitem
+candidate:app/library-book-actions.mjs:88:220,js-attribute,app/library-book-actions.mjs,88,aria-haspopup,unknown,reviewable,,menu
+candidate:app/library-book-actions.mjs:88:265,js-attribute,app/library-book-actions.mjs,88,aria-expanded,unknown,reviewable,,false
 candidate:app/library-chat-markdown.mjs:90:331,js-attribute,app/library-chat-markdown.mjs,90,aria-expanded,unknown,reviewable,,true
 candidate:app/library-chat.mjs:44:81,js-attribute,app/library-chat.mjs,44,aria-labelledby,unknown,protected,identifier,library-chat-title
 candidate:app/library-chat.mjs:45:34,js-attribute,app/library-chat.mjs,45,aria-modal,unknown,reviewable,,false
@@ -4137,16 +4137,16 @@ candidate:app/portable-chat.mjs:49:346,js-cjk-literal,app/portable-chat.mjs,49,,
 candidate:app/portable-chat.mjs:52:69,js-cjk-literal,app/portable-chat.mjs,52,,unknown,reviewable,,备份 AI 回答超过容量限制
 candidate:app/portable-chat.mjs:53:55,js-cjk-literal,app/portable-chat.mjs,53,,unknown,reviewable,,未完成对话不能携带回答
 candidate:app/portable-chat.mjs:54:375,js-cjk-literal,app/portable-chat.mjs,54,,unknown,reviewable,,导入前的回答已中断，未恢复生成。
-candidate:app/portal.js:88:528,js-cjk-literal,app/portal.js,88,,unknown,reviewable,,网络暂时无法连接，请稍后重试。
-candidate:app/portal.js:179:111,js-attribute,app/portal.js,179,aria-hidden,unknown,reviewable,,true
-candidate:app/portal.js:189:160,js-cjk-literal,app/portal.js,189,,unknown,reviewable,,"第 "
-candidate:app/portal.js:189:176,js-cjk-literal,app/portal.js,189,,unknown,reviewable,," 章 · "
-candidate:app/portal.js:208:165,js-attribute,app/portal.js,208,lang,unknown,reviewable,,und
-candidate:app/portal.js:211:412,js-cjk-literal,app/portal.js,211,,unknown,reviewable,,文本
-candidate:app/portal.js:214:161,js-attribute,app/portal.js,214,aria-describedby,unknown,protected,identifier,shelf-order-help
-candidate:app/portal.js:214:277,js-attribute,app/portal.js,214,aria-hidden,unknown,reviewable,,true
-candidate:app/portal.js:241:47,js-attribute,app/portal.js,241,aria-busy,unknown,reviewable,,false
-candidate:app/portal.js:280:184,js-attribute,app/portal.js,280,aria-busy,unknown,reviewable,,false
+candidate:app/portal.js:87:528,js-cjk-literal,app/portal.js,87,,unknown,reviewable,,网络暂时无法连接，请稍后重试。
+candidate:app/portal.js:178:111,js-attribute,app/portal.js,178,aria-hidden,unknown,reviewable,,true
+candidate:app/portal.js:188:160,js-cjk-literal,app/portal.js,188,,unknown,reviewable,,"第 "
+candidate:app/portal.js:188:176,js-cjk-literal,app/portal.js,188,,unknown,reviewable,," 章 · "
+candidate:app/portal.js:207:165,js-attribute,app/portal.js,207,lang,unknown,reviewable,,und
+candidate:app/portal.js:210:412,js-cjk-literal,app/portal.js,210,,unknown,reviewable,,文本
+candidate:app/portal.js:213:161,js-attribute,app/portal.js,213,aria-describedby,unknown,protected,identifier,shelf-order-help
+candidate:app/portal.js:213:277,js-attribute,app/portal.js,213,aria-hidden,unknown,reviewable,,true
+candidate:app/portal.js:240:47,js-attribute,app/portal.js,240,aria-busy,unknown,reviewable,,false
+candidate:app/portal.js:279:184,js-attribute,app/portal.js,279,aria-busy,unknown,reviewable,,false
 candidate:app/pricing-checkout-markup.mjs:2:48,js-cjk-literal,app/pricing-checkout-markup.mjs,2,,unknown,protected,path+quotation,"<dialog autofocus id=""auth-dialog"" class=""auth-dialog"" aria-labelledby=""auth-title"" aria-describedby=""auth-intro"">
   <button class=""dialog-close"" id=""billing-auth-close"" data-close=""auth-dialog"" data-ui-aria-label=""auth.close"" aria-label=""关闭登录"">×</button>
   <div class=""auth-brand"" aria-hidden=""true""><svg viewBox=""0 0 40 40"" fill=""none"" stroke=""currentColor"" stroke-width=""2"" stroke-linecap=""round"" stroke-linejoin=""round"" aria-hidden=""true""><path d=""M8 32V20A13 13 0 0 1 21 7h11v11a14 14 0 0 1-14 14H8Z""/><path d=""M16 23h7v-9""/></svg><span lang=""en"">Leafhour</span></div>
@@ -4410,15 +4410,15 @@ candidate:app/reading-clock.mjs:8:68,js-cjk-literal,app/reading-clock.mjs,8,,unk
 candidate:app/reading-clock.mjs:37:41,js-cjk-literal,app/reading-clock.mjs,37,,unknown,reviewable,,请先结束当前这次阅读
 candidate:app/reading-clock.mjs:38:284,js-cjk-literal,app/reading-clock.mjs,38,,unknown,reviewable,,请先打开一本书并选择实时计时口径
 candidate:app/reading-clock.mjs:43:48,js-cjk-literal,app/reading-clock.mjs,43,,unknown,reviewable,,请开始新的阅读时段
-candidate:app/reading-dashboard.mjs:38:242,js-attribute,app/reading-dashboard.mjs,38,role,unknown,reviewable,,status
-candidate:app/reading-dashboard.mjs:42:450,js-attribute,app/reading-dashboard.mjs,42,aria-hidden,unknown,reviewable,,true
-candidate:app/reading-dashboard.mjs:69:275,js-attribute,app/reading-dashboard.mjs,69,role,unknown,reviewable,,group
-candidate:app/reading-dashboard.mjs:70:232,js-attribute,app/reading-dashboard.mjs,70,aria-live,unknown,reviewable,,polite
-candidate:app/reading-dashboard.mjs:70:811,js-attribute,app/reading-dashboard.mjs,70,role,unknown,reviewable,,status
-candidate:app/reading-dashboard.mjs:75:139,js-attribute,app/reading-dashboard.mjs,75,role,unknown,reviewable,,img
-candidate:app/reading-dashboard.mjs:75:178,js-attribute,app/reading-dashboard.mjs,75,role,unknown,reviewable,,status
-candidate:app/reading-dashboard.mjs:115:695,js-attribute,app/reading-dashboard.mjs,115,aria-current,unknown,reviewable,,date
-candidate:app/reading-dashboard.mjs:172:55,js-attribute,app/reading-dashboard.mjs,172,aria-current,unknown,reviewable,,date
+candidate:app/reading-dashboard.mjs:37:242,js-attribute,app/reading-dashboard.mjs,37,role,unknown,reviewable,,status
+candidate:app/reading-dashboard.mjs:41:450,js-attribute,app/reading-dashboard.mjs,41,aria-hidden,unknown,reviewable,,true
+candidate:app/reading-dashboard.mjs:68:275,js-attribute,app/reading-dashboard.mjs,68,role,unknown,reviewable,,group
+candidate:app/reading-dashboard.mjs:69:232,js-attribute,app/reading-dashboard.mjs,69,aria-live,unknown,reviewable,,polite
+candidate:app/reading-dashboard.mjs:69:811,js-attribute,app/reading-dashboard.mjs,69,role,unknown,reviewable,,status
+candidate:app/reading-dashboard.mjs:74:139,js-attribute,app/reading-dashboard.mjs,74,role,unknown,reviewable,,img
+candidate:app/reading-dashboard.mjs:74:178,js-attribute,app/reading-dashboard.mjs,74,role,unknown,reviewable,,status
+candidate:app/reading-dashboard.mjs:114:695,js-attribute,app/reading-dashboard.mjs,114,aria-current,unknown,reviewable,,date
+candidate:app/reading-dashboard.mjs:171:55,js-attribute,app/reading-dashboard.mjs,171,aria-current,unknown,reviewable,,date
 candidate:app/reading-draft-store.mjs:7:88,js-cjk-literal,app/reading-draft-store.mjs,7,,unknown,reviewable,,草稿无法对应这本书的原文，原数据已保留。
 candidate:app/reading-draft-store.mjs:11:101,js-cjk-literal,app/reading-draft-store.mjs,11,,unknown,reviewable,,本机阅读草稿格式不完整。
 candidate:app/reading-draft-store.mjs:15:234,js-cjk-literal,app/reading-draft-store.mjs,15,,unknown,reviewable,,本机阅读草稿的标识、文字或时间不完整。
