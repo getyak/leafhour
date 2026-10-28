@@ -4,6 +4,7 @@ import LeafhourCore
 
 struct LibraryScreen: View {
     @Bindable var model: LibraryModel
+    @Environment(\.colorScheme) private var systemColorScheme
     @State private var importing = false
     @State private var info = false
     @State private var path: [String] = []
@@ -75,7 +76,7 @@ struct LibraryScreen: View {
             }
             .onOpenURL { model.importFile($0) }
             .task { await model.reload(restore: true) }
-            .fullScreenCover(item: $model.reader, onDismiss: { Task { await model.reload() } }) { session in ReaderScreen(session: session) }
+            .fullScreenCover(item: $model.reader, onDismiss: { Task { await model.reload() } }) { session in ReaderScreen(session: session, systemColorScheme: systemColorScheme) }
             .sheet(isPresented: $info) { LocalLibraryInfo() }
             .alert("书房提示", isPresented: Binding(get: { model.message != nil }, set: { if !$0 { model.message = nil } })) { Button("知道了") { model.message = nil } } message: { Text(model.message ?? "") }
         }
