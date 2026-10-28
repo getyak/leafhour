@@ -22,3 +22,7 @@ Independent read-only review found no confirmed issue in the semantic provider o
 [Dark library](screenshots/01-library-dark.png) · [Light library](screenshots/02-library-light.png) · [Night settings](screenshots/03-settings-night.png) · [Night controls](screenshots/04-controls-night.png) · [Paper settings](screenshots/05-settings-paper.png).
 
 Every retained image was inspected. Disabled controls remain visibly disabled; screenshots and specified color pairs are not a VoiceOver, high-contrast, maximum Dynamic Type or real-device accessibility certification. Compact/iPad and physical TestFlight installation/update remain outside this small source-and-simulator acceptance.
+
+## Combined-source follow-up
+
+After PR #242 merged as `2e340c8`, this branch synchronized that main commit without conflicts. The combined native build and two focused probes passed: GET-296 preview/units/reset/cold-night persistence, and GET-297 night settings/progress/records/paper controls. The combined hashes are recorded separately in evidence.json. [Combined night preview](screenshots/06-combined-night-preview.png) is a fresh screenshot of that integrated source; the earlier empty-library captures remain explicitly scoped to the earlier color run.

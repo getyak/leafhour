@@ -25,5 +25,23 @@
     "docs/verification/2026-10-29-get-297-dark-controls/screenshots/01-library-dark.png": "3279bb2bba017c35fe6fd9c78f82e054ba3fb45b332b42215d82158e50fb0f1d",
     "docs/verification/2026-10-29-get-297-dark-controls/screenshots/05-settings-paper.png": "c77ef73cafbf9dd71b738484a94db703641cebd095cc5a32e1569d319828f08f"
   },
-  "boundary": "source and simulator, not physical-device or TestFlight acceptance"
+  "boundary": "source and simulator, not physical-device or TestFlight acceptance",
+  "combined": {
+    "base": "2e340c894d14e7a9b8f633ed7f2ed68dca246523",
+    "testedMergeCommit": "98b4c3b89d73ba6fa50de445bd533dca20af1dce",
+    "probes": {
+      "testCraft296Preferences": "passed: preview, units, reset, cold night persistence",
+      "testCraft297ReadingControls": "passed: night controls, records and paper settings"
+    },
+    "nativeSourceSHA256": {
+      "apps/ios/Leafhour/LeafhourApp.swift": "ab277d7848ba28d05864223993b197db971e8abb31056cedd957531a21e29a0d",
+      "apps/ios/Leafhour/TextReadingView.swift": "2f953b8c36ac9c51305a7de1cf41ba2d364f9c16455e465499054fa0d0883a44",
+      "apps/ios/Leafhour/LibraryScreen.swift": "fae3a3aa2453010238c1ee60e5c12346460f69f09fa8e7d953f290f6d95c9c11",
+      "apps/ios/Leafhour/PDFReadingView.swift": "cfce82283cda152a10f8f41309601a94f087efce5b3bc073f413182f4b705809",
+      "apps/ios/Leafhour/BookDetailScreen.swift": "784e703165a3cf826ece512b3aedee911c3fbb908f081df1adb4921099f99029",
+      "apps/ios/Leafhour/ReaderPanels.swift": "3dd69a7e3b2b81c3aab3822ce92ee86d0ff02025fcab052f699206664cc0d6e7",
+      "apps/ios/Leafhour/ReaderScreen.swift": "48e32d87b966125de4c03cb7bfbbdc7762b467b12a649c43a14d14150e06d627"
+    },
+    "screenshotSHA256": "86c0fadfa75fed0547ff517f599b4a422d525890c8ef193703088bf4da838e3d"
+  }
 }
