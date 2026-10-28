@@ -1,0 +1,56 @@
+{
+  "date": "2026-10-29",
+  "timezone": "Asia/Singapore",
+  "testedHead": "f830e1745cefb76a6f29a62fb9995f03c1499b77",
+  "dataScope": "Anonymous public Alice; isolated temporary local services; no model requests.",
+  "localChecks": {
+    "command": "npm run verify:deploy",
+    "exitCode": 0,
+    "tests": 4156,
+    "passed": 4155,
+    "failed": 0,
+    "skipped": 1,
+    "runtimeFiles": 928,
+    "runtimeMB": 9.0,
+    "releaseFiles": 1381
+  },
+  "publicResources": {
+    "checked": 220,
+    "bytes": 11941989,
+    "containsApiOrAudio": false,
+    "mismatches": 0
+  },
+  "warmBrowser": {
+    "samplesMs": [
+      668,
+      189,
+      184,
+      162,
+      160
+    ],
+    "medianMs": 184,
+    "manifestResponse": 304,
+    "manifestBodyBytes": 0,
+    "chapterRequests": 0,
+    "scope": "Local Chromium; same book and viewport; concurrent verification workload; not a universal latency guarantee."
+  },
+  "offlineBrowser": {
+    "bookId": "gutenberg-alice",
+    "catalogEntries": 13,
+    "includesFrontMatter": true,
+    "applicationContentBytes": 375663,
+    "closeAndReopenChapter": "ch02",
+    "width390Overflow": false,
+    "partialSourceChapter": "ch01",
+    "missingResumeChapter": "ch02",
+    "originalConfirmedGuestResumeRetained": true,
+    "recoveryCopies": 1,
+    "clearButtonRemainingBooks": 0,
+    "scopeAfterClear": null
+  },
+  "limitations": [
+    "Safari and physical iPhone not exercised for this web change.",
+    "Existing inline-style CSP console diagnostics retained; policy was not relaxed.",
+    "Production evidence is recorded on the associated pull request and verified against release.json."
+  ]
+}
