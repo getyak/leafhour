@@ -412,6 +412,21 @@ test('explicit quotation uses a removable chip, keeps the own question and never
 });
 
 const uiQuote=(passageId='p1')=>({kind:'leafhour-reading-quote',schemaVersion:1,bookId:'one',contentVersion:'v1',chapterId:'ch1',parts:[{passageId,layer:'original',start:0,end:6,text:'Source'}]});
+test('a historical selected quote returns to its own source while preserving the current draft',async t=>{
+ const navigated=[],quote=uiQuote('p2'),s=setup(t,{navigate:(...args)=>{navigated.push(args);return true;}});
+ s.setTurns([{id:'quoted-answer',status:'completed',text:'Explain this.',quote,answer:{summary:'An answer about the selected source.',sourceRefs:[]}}]);
+ s.chat.open();await flush();type(s.input(),'Keep this unsent question.');
+ const snapshot=s.find('library-chat-selected-snapshot'),link=snapshot.children.find(node=>node.className==='library-chat-source-link');
+ assert.ok(link,'historical quote has a source-return action');assert.match(link.href,/book=one/);assert.match(link.href,/passage=p2/);
+ const click=new Event('click',{cancelable:true});link.dispatchEvent(click);assert.equal(click.defaultPrevented,true);
+ assert.deepEqual(navigated,[['one','p2']]);assert.equal(s.input().value,'Keep this unsent question.');assert.equal(plain(snapshot).includes('Source'),true);
+ assert.equal(s.calls.filter(call=>call.payload).length,0,'source return does not send a question');
+});
+test('modified historical source links retain normal browser navigation',async t=>{
+ const s=setup(t,{navigate:()=>assert.fail('modifier navigation belongs to browser')});s.setTurns([{id:'quote',status:'completed',text:'Question',quote:uiQuote(),answer:{summary:'Answer',sourceRefs:[]}}]);
+ s.chat.open();await flush();const link=s.find('library-chat-selected-snapshot').children.find(node=>node.className==='library-chat-source-link');assert.ok(link);
+ const event=new Event('click',{cancelable:true});Object.defineProperty(event,'metaKey',{value:true});link.dispatchEvent(event);assert.equal(event.defaultPrevented,false);
+});
 test('explicit quote on a newer passage fences an older in-flight context read immediately',async t=>{
  let release;const old=new Promise(resolve=>{release=resolve;});const s=setup(t,{handler:async url=>{const passageId=new URL(url,'http://local').searchParams.get('passageId');if(passageId==='p1')await old;return {bookId:'one',available:true,contentVersion:'v1',scope:{mode:'book',revision:0},context:{passageId,original:'Source'},turns:[]};}});s.chat.open();await flush();type(s.input(),'Question');assert.equal(s.chat.quote(uiQuote('p2')),true);await flush();assert.ok(s.calls.some(call=>call.url.includes('passageId=p2')));release();await flush();assert.equal(s.find('library-chat-send').disabled,false);assert.equal(s.find('library-chat-quote-stale').hidden,true);
 });

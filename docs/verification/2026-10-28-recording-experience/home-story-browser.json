@@ -1,0 +1,529 @@
+{
+  "results": [
+    {
+      "width": 1440,
+      "height": 900,
+      "locale": "zh-hans",
+      "dark": false,
+      "js": true,
+      "passed": true,
+      "initial": {
+        "overflow": false,
+        "hero": {
+          "x": 0,
+          "y": 80,
+          "width": 1440,
+          "height": 820,
+          "top": 80,
+          "right": 1440,
+          "bottom": 900,
+          "left": 0
+        },
+        "head": {
+          "x": 310,
+          "y": 195,
+          "width": 820,
+          "height": 237.46875,
+          "top": 195,
+          "right": 1130,
+          "bottom": 432.46875,
+          "left": 310
+        },
+        "cta": {
+          "x": 603.140625,
+          "y": 558.25,
+          "width": 144.71875,
+          "height": 48.390625,
+          "top": 558.25,
+          "right": 747.859375,
+          "bottom": 606.640625,
+          "left": 603.140625
+        },
+        "photo": {
+          "x": 30.351646423339844,
+          "y": 245.0072784423828,
+          "width": 313.67169189453125,
+          "height": 376.3604736328125,
+          "top": 245.0072784423828,
+          "right": 344.0233383178711,
+          "bottom": 621.3677520751953,
+          "left": 30.351646423339844
+        },
+        "page": {
+          "x": 1174.9820556640625,
+          "y": 177.52047729492188,
+          "width": 213.254638671875,
+          "height": 277.33404541015625,
+          "top": 177.52047729492188,
+          "right": 1388.2366943359375,
+          "bottom": 454.8545227050781,
+          "left": 1174.9820556640625
+        },
+        "headline": "给一本书，多一点时间。",
+        "animation": 0,
+        "copyDisplay": "block"
+      }
+    },
+    {
+      "width": 1440,
+      "height": 900,
+      "locale": "en",
+      "dark": false,
+      "js": true,
+      "passed": true,
+      "initial": {
+        "overflow": false,
+        "hero": {
+          "x": 0,
+          "y": 80,
+          "width": 1440,
+          "height": 820,
+          "top": 80,
+          "right": 1440,
+          "bottom": 900,
+          "left": 0
+        },
+        "head": {
+          "x": 310,
+          "y": 195,
+          "width": 820,
+          "height": 237.46875,
+          "top": 195,
+          "right": 1130,
+          "bottom": 432.46875,
+          "left": 310
+        },
+        "cta": {
+          "x": 555.484375,
+          "y": 558.25,
+          "width": 204.890625,
+          "height": 48.390625,
+          "top": 558.25,
+          "right": 760.375,
+          "bottom": 606.640625,
+          "left": 555.484375
+        },
+        "photo": {
+          "x": 30.351646423339844,
+          "y": 245.0072784423828,
+          "width": 313.67169189453125,
+          "height": 376.3604736328125,
+          "top": 245.0072784423828,
+          "right": 344.0233383178711,
+          "bottom": 621.3677520751953,
+          "left": 30.351646423339844
+        },
+        "page": {
+          "x": 1174.9820556640625,
+          "y": 177.52047729492188,
+          "width": 213.254638671875,
+          "height": 277.33404541015625,
+          "top": 177.52047729492188,
+          "right": 1388.2366943359375,
+          "bottom": 454.8545227050781,
+          "left": 1174.9820556640625
+        },
+        "headline": "Stay with a book.A little longer.",
+        "animation": 0,
+        "copyDisplay": "block"
+      }
+    },
+    {
+      "width": 1100,
+      "height": 800,
+      "locale": "en",
+      "dark": false,
+      "js": true,
+      "passed": true,
+      "initial": {
+        "overflow": false,
+        "hero": {
+          "x": 0,
+          "y": 80,
+          "width": 1100,
+          "height": 740,
+          "top": 80,
+          "right": 1100,
+          "bottom": 820,
+          "left": 0
+        },
+        "head": {
+          "x": 210,
+          "y": 190,
+          "width": 680,
+          "height": 188.46875,
+          "top": 190,
+          "right": 890,
+          "bottom": 378.46875,
+          "left": 210
+        },
+        "cta": {
+          "x": 385.484375,
+          "y": 504.25,
+          "width": 204.890625,
+          "height": 48.390625,
+          "top": 504.25,
+          "right": 590.375,
+          "bottom": 552.640625,
+          "left": 385.484375
+        },
+        "photo": {
+          "x": -81.95574951171875,
+          "y": 326.9239501953125,
+          "width": 246.9114990234375,
+          "height": 299.152099609375,
+          "top": 326.9239501953125,
+          "right": 164.95574951171875,
+          "bottom": 626.0760498046875,
+          "left": -81.95574951171875
+        },
+        "page": {
+          "x": 978.2056274414062,
+          "y": 198.752685546875,
+          "width": 164.58868408203125,
+          "height": 209.08837890625,
+          "top": 198.752685546875,
+          "right": 1142.7943115234375,
+          "bottom": 407.841064453125,
+          "left": 978.2056274414062
+        },
+        "headline": "Stay with a book.A little longer.",
+        "animation": 0,
+        "copyDisplay": "block"
+      }
+    },
+    {
+      "width": 768,
+      "height": 1024,
+      "locale": "zh-hant",
+      "dark": false,
+      "js": true,
+      "passed": true,
+      "initial": {
+        "overflow": false,
+        "hero": {
+          "x": 0,
+          "y": 80,
+          "width": 768,
+          "height": 944,
+          "top": 80,
+          "right": 768,
+          "bottom": 1024,
+          "left": 0
+        },
+        "head": {
+          "x": 44,
+          "y": 190,
+          "width": 680,
+          "height": 188.46875,
+          "top": 190,
+          "right": 724,
+          "bottom": 378.46875,
+          "left": 44
+        },
+        "cta": {
+          "x": 272.140625,
+          "y": 504.25,
+          "width": 144.71875,
+          "height": 48.390625,
+          "top": 504.25,
+          "right": 416.859375,
+          "bottom": 552.640625,
+          "left": 272.140625
+        },
+        "photo": {
+          "x": -62.033870697021484,
+          "y": 398.3145751953125,
+          "width": 246.9114990234375,
+          "height": 299.152099609375,
+          "top": 398.3145751953125,
+          "right": 184.87762832641602,
+          "bottom": 697.4666748046875,
+          "left": -62.033870697021484
+        },
+        "page": {
+          "x": 636.2368774414062,
+          "y": 233.42454528808594,
+          "width": 164.5887451171875,
+          "height": 209.08839416503906,
+          "top": 233.42454528808594,
+          "right": 800.8256225585938,
+          "bottom": 442.512939453125,
+          "left": 636.2368774414062
+        },
+        "headline": "給一本書，多一點時間。",
+        "animation": 0,
+        "copyDisplay": "block"
+      }
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "locale": "zh-hans",
+      "dark": false,
+      "js": true,
+      "passed": true,
+      "initial": {
+        "overflow": false,
+        "hero": {
+          "x": 0,
+          "y": 72,
+          "width": 390,
+          "height": 610,
+          "top": 72,
+          "right": 390,
+          "bottom": 682,
+          "left": 0
+        },
+        "head": {
+          "x": 24,
+          "y": 144,
+          "width": 342,
+          "height": 113.375,
+          "top": 144,
+          "right": 366,
+          "bottom": 257.375,
+          "left": 24
+        },
+        "cta": {
+          "x": 80.140625,
+          "y": 367.375,
+          "width": 144.71875,
+          "height": 48.390625,
+          "top": 367.375,
+          "right": 224.859375,
+          "bottom": 415.765625,
+          "left": 80.140625
+        },
+        "photo": {
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0,
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        },
+        "page": {
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0,
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        },
+        "headline": "给一本书，多一点时间。",
+        "animation": 0,
+        "copyDisplay": "block"
+      }
+    },
+    {
+      "width": 320,
+      "height": 700,
+      "locale": "ja",
+      "dark": false,
+      "js": true,
+      "passed": true,
+      "initial": {
+        "overflow": false,
+        "hero": {
+          "x": 0,
+          "y": 72,
+          "width": 320,
+          "height": 580,
+          "top": 72,
+          "right": 320,
+          "bottom": 652,
+          "left": 0
+        },
+        "head": {
+          "x": 18,
+          "y": 144,
+          "width": 284,
+          "height": 162,
+          "top": 144,
+          "right": 302,
+          "bottom": 306,
+          "left": 18
+        },
+        "cta": {
+          "x": 27.640625,
+          "y": 412.1875,
+          "width": 172.71875,
+          "height": 48.390625,
+          "top": 412.1875,
+          "right": 200.359375,
+          "bottom": 460.578125,
+          "left": 27.640625
+        },
+        "photo": {
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0,
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        },
+        "page": {
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0,
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        },
+        "headline": "一冊の本に、もう少し時間を。",
+        "animation": 0,
+        "copyDisplay": "block"
+      }
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "locale": "ja",
+      "dark": true,
+      "js": true,
+      "passed": true,
+      "initial": {
+        "overflow": false,
+        "hero": {
+          "x": 0,
+          "y": 72,
+          "width": 390,
+          "height": 610,
+          "top": 72,
+          "right": 390,
+          "bottom": 682,
+          "left": 0
+        },
+        "head": {
+          "x": 24,
+          "y": 144,
+          "width": 342,
+          "height": 113.375,
+          "top": 144,
+          "right": 366,
+          "bottom": 257.375,
+          "left": 24
+        },
+        "cta": {
+          "x": 59.640625,
+          "y": 367.375,
+          "width": 172.71875,
+          "height": 48.390625,
+          "top": 367.375,
+          "right": 232.359375,
+          "bottom": 415.765625,
+          "left": 59.640625
+        },
+        "photo": {
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0,
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        },
+        "page": {
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0,
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        },
+        "headline": "一冊の本に、もう少し時間を。",
+        "animation": 0,
+        "copyDisplay": "block"
+      }
+    },
+    {
+      "width": 1440,
+      "height": 900,
+      "locale": "en",
+      "dark": false,
+      "js": false,
+      "passed": true,
+      "initial": {
+        "overflow": false,
+        "hero": {
+          "x": 0,
+          "y": 80,
+          "width": 1440,
+          "height": 820,
+          "top": 80,
+          "right": 1440,
+          "bottom": 900,
+          "left": 0
+        },
+        "head": {
+          "x": 310,
+          "y": 195,
+          "width": 820,
+          "height": 237.46875,
+          "top": 195,
+          "right": 1130,
+          "bottom": 432.46875,
+          "left": 310
+        },
+        "cta": {
+          "x": 555.484375,
+          "y": 558.25,
+          "width": 204.890625,
+          "height": 48.390625,
+          "top": 558.25,
+          "right": 760.375,
+          "bottom": 606.640625,
+          "left": 555.484375
+        },
+        "photo": {
+          "x": 30.351646423339844,
+          "y": 245.0072784423828,
+          "width": 313.67169189453125,
+          "height": 376.3604736328125,
+          "top": 245.0072784423828,
+          "right": 344.0233383178711,
+          "bottom": 621.3677520751953,
+          "left": 30.351646423339844
+        },
+        "page": {
+          "x": 1174.9820556640625,
+          "y": 177.52047729492188,
+          "width": 213.254638671875,
+          "height": 277.33404541015625,
+          "top": 177.52047729492188,
+          "right": 1388.2366943359375,
+          "bottom": 454.8545227050781,
+          "left": 1174.9820556640625
+        },
+        "headline": "Stay with a book.A little longer.",
+        "animation": 0,
+        "copyDisplay": "block"
+      }
+    },
+    {
+      "check": "untouched visible sample does not auto-rotate under ordinary motion",
+      "passed": true
+    },
+    {
+      "check": "private shell excludes home CSS and illustration downloads",
+      "passed": true
+    }
+  ],
+  "passed": true,
+  "limits": [
+    "Chromium layouts; existing brand illustrations, no fabricated account state.",
+    "No physical-device or screen-reader certification."
+  ]
+}

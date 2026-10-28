@@ -28,3 +28,8 @@
 @media (prefers-reduced-motion: reduce) {
   #home-view .sample-languages button { transition: none; }
 }
+
+#home-view .sample-languages button { min-height: 36px; }
+@media (pointer: coarse) {
+  #home-view .sample-languages button { min-height: 44px; }
+}

@@ -23,7 +23,7 @@ export const sampleLabel=(entry,uiLocale)=>entry?.labels?.[uiLocale]||entry?.lab
 export const nextSampleIndex=(current,count)=>count>0?((current+1)%count+count)%count:0;
 
 export function mountHomeSample(root,win=root?.ownerDocument?.defaultView){
-  const block=root?.querySelector?.('.home-hero .sample-translation');
+  const block=root?.querySelector?.('.sample-sheet .sample-translation');
   const label=block?.querySelector?.('span'),text=block?.querySelector?.('p');
   const doc=root?.ownerDocument,card=block?.closest?.('.sample-sheet');
   if(root?.hidden||!label||!text||!card||!doc?.createElement||!win?.setTimeout||!block.prepend||!card.addEventListener)return ()=>{};
@@ -34,7 +34,7 @@ export function mountHomeSample(root,win=root?.ownerDocument?.defaultView){
   content.className='sample-interpretation';
   block.insertBefore(content,label);content.append(label,text);block.prepend(group);
   const preference=win.matchMedia?.('(prefers-reduced-motion: reduce)');
-  let index=0,timer=0,disposed=false,manual=false,hover=false,focused=card.contains(doc.activeElement);
+  let index=Math.max(0,sampleInterpretations.findIndex(entry=>entry.code===homeLocale(doc))),timer=0,disposed=false,manual=card.dataset?.rotation==='manual',hover=false,focused=card.contains(doc.activeElement);
   let visible=!win.IntersectionObserver,animations=[];
   const listeners=[];
   const listen=(target,type,handler)=>{target?.addEventListener?.(type,handler);listeners.push(()=>target?.removeEventListener?.(type,handler));};
@@ -85,7 +85,7 @@ export function mountHomeSample(root,win=root?.ownerDocument?.defaultView){
       visible=entries.some(entry=>entry.isIntersecting);schedule();
     });observer.observe(card);
   }
-  select(0,false);schedule();
+  select(index,false);schedule();
   return ()=>{
     disposed=true;clearTimer();stopAnimation();observer?.disconnect();listeners.forEach(off=>off());
     group.remove();content.before(label,text);content.remove();

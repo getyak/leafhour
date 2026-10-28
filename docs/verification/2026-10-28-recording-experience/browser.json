@@ -1,0 +1,94 @@
+{
+  "checks": [
+    {
+      "name": "reading wheel dismisses paragraph tools without altering the book",
+      "passed": true
+    },
+    {
+      "name": "programmatic paragraph layout restoration keeps its action available",
+      "passed": true
+    },
+    {
+      "name": "Escape returns keyboard focus to the passage and closes More first",
+      "passed": true
+    },
+    {
+      "name": "global reading tools replace paragraph actions",
+      "passed": true
+    },
+    {
+      "name": "new drag selection dismisses old controls and preserves exact source text",
+      "passed": true
+    },
+    {
+      "name": "reading within the selection debounce does not reopen dismissed controls",
+      "passed": true
+    },
+    {
+      "name": "keyboard reading closes tools while Shift extension retains native selection",
+      "passed": true
+    },
+    {
+      "name": "320px ja: base controls wrap, fit and exclude interface text from selection",
+      "passed": true
+    },
+    {
+      "name": "320px ja: nested menu scroll does not dismiss paragraph tools",
+      "passed": true
+    },
+    {
+      "name": "390px zh-Hans: base controls wrap, fit and exclude interface text from selection",
+      "passed": true
+    },
+    {
+      "name": "390px zh-Hans: nested menu scroll does not dismiss paragraph tools",
+      "passed": true
+    },
+    {
+      "name": "768px zh-Hant: base controls wrap, fit and exclude interface text from selection",
+      "passed": true
+    },
+    {
+      "name": "768px zh-Hant: nested menu scroll does not dismiss paragraph tools",
+      "passed": true
+    },
+    {
+      "name": "1440px en: base controls wrap, fit and exclude interface text from selection",
+      "passed": true
+    },
+    {
+      "name": "1440px en: nested menu scroll does not dismiss paragraph tools",
+      "passed": true
+    },
+    {
+      "name": "320px Japanese controls work with audio styling disabled",
+      "passed": true
+    },
+    {
+      "name": "1440px: real historical quote link returns to the source and retains an unsent draft",
+      "passed": true
+    },
+    {
+      "name": "390px: real historical quote link returns to the source and retains an unsent draft",
+      "passed": true
+    },
+    {
+      "name": "1440px zh-hans: visible sample action opens the exact real source",
+      "passed": true
+    },
+    {
+      "name": "390px ja: visible sample action opens the exact real source",
+      "passed": true
+    },
+    {
+      "name": "hidden paragraph controls do not emit repeated selection-end events while reading",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "limits": [
+    "Synthetic local account and public Alice; no model calls or production writes.",
+    "Chromium only; provider audio, physical devices and screen-reader speech are not exercised."
+  ],
+  "passed": true
+}

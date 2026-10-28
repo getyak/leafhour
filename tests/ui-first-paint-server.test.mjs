@@ -73,7 +73,7 @@ test('hosted HTML handler keeps current URL query, uses exact templates and reje
 
 test('root entry is localized without private indexing metadata and authored paths remain authoritative',async()=>{
  const {portalDocument}=await import('../server/portal-document.mjs'),source=await readFile(new URL('../app/home.html',import.meta.url),'utf8');
- const root=portalDocument(source,'/',{locale:'ja',source:'browser',preference:null,deviceHint:''});assert.match(root,/<html[^>]*lang="ja"/);assert.ok(root.includes('少しの時間をとって'));assert.match(root,/data-ui-first-paint/);assert.ok(root.includes('application/ld+json'));assert.ok(!root.includes('noindex,nofollow'));
+ const root=portalDocument(source,'/',{locale:'ja',source:'browser',preference:null,deviceHint:''});assert.match(root,/<html[^>]*lang="ja"/);assert.ok(root.includes('一冊の本に、<br>もう少し時間を。'));assert.match(root,/data-ui-first-paint/);assert.ok(root.includes('application/ld+json'));assert.ok(!root.includes('noindex,nofollow'));
  const authored=portalDocument(source,'/en',{locale:'ja',source:'page',preference:'ja'});assert.match(authored,/<html lang="en">/);assert.ok(!authored.includes('data-ui-first-paint'));
 });
 test('route normalization preserves literal business query bytes and rejects conflicting framework fields',async()=>{

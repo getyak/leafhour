@@ -1,0 +1,70 @@
+{
+  "checks": [
+    {
+      "name": "reading wheel dismisses paragraph tools without altering the book",
+      "passed": false,
+      "error": "Expected values to be strictly equal:\n\ntrue !== false\n"
+    },
+    {
+      "name": "programmatic paragraph layout restoration keeps its action available",
+      "passed": true
+    },
+    {
+      "name": "Escape returns keyboard focus to the passage and closes More first",
+      "passed": false,
+      "error": "Expected values to be strictly equal:\n\nfalse !== true\n"
+    },
+    {
+      "name": "global reading tools replace paragraph actions",
+      "passed": false,
+      "error": "Expected values to be strictly equal:\n\ntrue !== false\n"
+    },
+    {
+      "name": "new drag selection dismisses old controls and preserves exact source text",
+      "passed": false,
+      "error": "Expected values to be strictly equal:\n\ntrue !== false\n"
+    },
+    {
+      "name": "320px ja: base controls wrap, fit and exclude interface text from selection",
+      "passed": false,
+      "error": "Expected values to be strictly equal:\n\n'auto' !== 'none'\n"
+    },
+    {
+      "name": "320px ja: nested menu scroll does not dismiss paragraph tools",
+      "passed": true
+    },
+    {
+      "name": "390px zh-Hans: base controls wrap, fit and exclude interface text from selection",
+      "passed": false,
+      "error": "Expected values to be strictly equal:\n\n'auto' !== 'none'\n"
+    },
+    {
+      "name": "390px zh-Hans: nested menu scroll does not dismiss paragraph tools",
+      "passed": true
+    },
+    {
+      "name": "768px zh-Hant: base controls wrap, fit and exclude interface text from selection",
+      "passed": false,
+      "error": "Expected values to be strictly equal:\n\n'auto' !== 'none'\n"
+    },
+    {
+      "name": "768px zh-Hant: nested menu scroll does not dismiss paragraph tools",
+      "passed": true
+    },
+    {
+      "name": "1440px en: base controls wrap, fit and exclude interface text from selection",
+      "passed": false,
+      "error": "Expected values to be strictly equal:\n\n'auto' !== 'none'\n"
+    },
+    {
+      "name": "1440px en: nested menu scroll does not dismiss paragraph tools",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "limits": [
+    "Synthetic local account and public Alice; no model calls or production writes.",
+    "Chromium only; provider audio, physical devices and screen-reader speech are not exercised."
+  ],
+  "passed": false
+}

@@ -57,6 +57,19 @@ test('source navigation stays within the same book and a real passage',()=>{
   assert.equal(f.hooks.onNavigateToPassage('book-one','p1'),true);assert.deepEqual(visits,['dismiss','p1']);
   assert.equal(f.hooks.onNavigateToPassage('other','p1'),false);assert.equal(f.hooks.onNavigateToPassage('book-one','unknown'),false);assert.equal(visits.length,2);
 });
+test('source return focuses its destination only after successful navigation and fences late completion',async()=>{
+ let complete,focused=0;const current={...reader(),dismissTools(){},goToPassage:()=>new Promise(resolve=>{complete=resolve;})};
+ const f=mount({getReader:()=>current});f.events.getElementById=id=>id==='p1'?{focus:()=>focused++}:null;
+ assert.equal(f.hooks.onNavigateToPassage('book-one','p1'),true);assert.equal(focused,0);complete(true);await Promise.resolve();assert.equal(focused,1);
+ f.hooks.onNavigateToPassage('book-one','p1');complete(false);await Promise.resolve();assert.equal(focused,1,'failed chapter load does not claim focus on a destination');
+ f.hooks.onNavigateToPassage('book-one','p1');f.instance.dispose();complete(true);await Promise.resolve();assert.equal(focused,1,'disposed view cannot steal focus');
+});
+test('a delayed source return preserves a newer typing focus in the open desktop conversation',async()=>{
+ let complete,focused=0;const current={...reader(),dismissTools(){},goToPassage:()=>new Promise(resolve=>{complete=resolve;})};
+ const f=mount({getReader:()=>current});f.events.getElementById=()=>({focus:()=>focused++});f.events.activeElement={kind:'source-link'};
+ f.hooks.onNavigateToPassage('book-one','p1');f.events.activeElement={kind:'chat-input'};complete(true);await Promise.resolve();
+ assert.equal(focused,0,'completed chapter loading must not interrupt newer typing');
+});
 
 test('reader chat requests keep owner guards without remapping library URLs',async()=>{
   const requests=[],f=mount({request:async(url,options)=>{requests.push({url,options});return new Response(JSON.stringify({ok:true}),{status:200});}});

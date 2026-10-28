@@ -6,6 +6,14 @@ import {withUiParam} from './ui-locale-codec.mjs';
 // other public languages next to it, so one source document serves all locales:
 // [source, English, Traditional Chinese, Japanese].
 const strings=[
+  ["给一本书，<br>多一点时间。", "Stay with a book.<br>A little longer.", "給一本書，<br>多一點時間。", "一冊の本に、<br>もう少し時間を。"],
+  ["读原文，对照译文，<br>把想法留在原句旁。", "Read the words. Compare a translation.<br>Keep your thoughts beside the passage.", "讀原文，對照譯文，<br>把想法留在原句旁。", "原文を読み、訳文と見比べる。<br>考えたことは、その一節のそばに。"],
+  ["看看怎么读", "See how it reads", "看看怎麼讀", "読み方を見る"],
+  ["《爱丽丝梦游仙境》", "Alice’s Adventures in Wonderland", "《愛麗絲夢遊仙境》", "『不思議の国のアリス』"],
+  ["读到难句，<br>也不用离开书页。", "Stay with the sentence.<br>Find your way through.", "讀到難句，<br>也不用離開書頁。", "難しい文に出会っても、<br>本を離れなくていい。"],
+  ["今天读到这里。<br>明天，接着读。", "Put the book down.<br>Come back to your page.", "今天讀到這裡。<br>明天，接著讀。", "今日は、ここまで。<br>明日は、この続きから。"],
+  ["下次打开，回到读到的那一段。<br>笔记和问题，仍跟着那句话。", "Return to the passage where you left off.<br>Your notes and questions stay with the words.", "下次打開，回到讀到的那一段。<br>筆記和問題，仍跟著那句話。", "次に開くと、読みかけの一節へ。<br>メモや疑問も、その言葉と一緒に。"],
+  ["你的书，<br>你的书房。", "Your books.<br>Your reading room.", "你的書，<br>你的書房。", "自分の本。<br>自分の書斎。"],
   ['我的笔记','My notes','我的筆記','マイノート'],
   ['界面语言设置','Interface language settings','介面語言設定','表示言語の設定'],
   // Document metadata and navigation
@@ -23,7 +31,8 @@ const strings=[
   ['关闭菜单','Close menu','關閉選單','メニューを閉じる'],
   // Hero and reading promise
   ['留一点时间，读进一本书。','Make a little time. Settle into a book.','留一點時間，讀進一本書。','少しの時間をとって、一冊の本に向き合う。'],
-  ['原文、译文和自己的思考，<br>各有自己的位置。','The original, the translation, your thoughts.<br>Each has a place of its own.','原文、譯文和自己的思考，<br>各有自己的位置。','原文、訳文、そして自分の考え。<br>それぞれの居場所があります。'],
+  ['读到难句，对照译文。<br>有了疑问，留在原句旁。','Compare a difficult sentence with its translation.<br>Keep your questions beside the words.','讀到難句，對照譯文。<br>有了疑問，留在原句旁。','難しい文は訳文と見比べる。<br>浮かんだ疑問は、原文のそばに。'],
+  ['读这一页','Read this page','讀這一頁','この頁を読む'],
   ['公版书可直接试读。登录后保存自己的书与记录。','Read public samples freely. Sign in to save your own books and records.','公版書可直接試讀。登入後保存自己的書與記錄。','公開サンプルはそのまま読めます。ログインすると自分の本と記録を保存できます。'],
   ['阳光穿过绿叶和窗户，落在展开的书与浅色桌面上，Leafhour 品牌插画','Sunlight through leaves and a window falls on an open book and a pale desk, a Leafhour illustration','陽光穿過綠葉和窗戶，落在展開的書與淺色桌面上，Leafhour 品牌插畫','緑の葉と窓から差す光が、開いた本と淡い机に落ちる Leafhour のブランドイラスト'],
   ['一页，再一页。','One page, then another.','一頁，再一頁。','一頁、また一頁。'],

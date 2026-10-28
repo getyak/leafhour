@@ -53,7 +53,9 @@ export function mountReaderConversation({bookId,session,getReader,root,request=f
     openAuth,dismissOnOutside:()=>workspace?.isMobile()!==false,onViewChange:opened=>{if(opened)getReader()?.dismissTools?.({preserveSelection:true});workspace?.setOpen(opened);},
     onNavigateToPassage:(targetBook,passageId)=>{
       const current=context();if(targetBook!==bookId||!current?.passages.has(passageId))return false;
-      const reader=getReader();if(workspace?.isMobile())chat.close();reader.dismissTools?.();reader.goToPassage(passageId);return true;
+      const reader=getReader();if(workspace?.isMobile())chat.close();reader.dismissTools?.();
+      const navigationCurrent=()=>!disposed&&getReader()===reader,focusAtStart=events.activeElement;
+      Promise.resolve(reader.goToPassage(passageId,{validate:navigationCurrent})).then(changed=>{if(changed&&navigationCurrent()&&events.activeElement===focusAtStart)events.getElementById?.(passageId)?.focus({preventScroll:true});}).catch(()=>{if(navigationCurrent())announce(t('reader.b1.chapterFailed'));});return true;
     }
   });
   chat.quoteSelection=()=>{

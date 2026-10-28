@@ -200,7 +200,7 @@ const readerEventSource=await readFile(new URL('../app/reader.js',import.meta.ur
 const readerEventAst=parse(readerEventSource,{ecmaVersion:'latest',sourceType:'module'});
 function readerRecoveryEvents(f){
  const effects={dismiss:0,closed:0,captured:0,fullscreen:0};
- const context=vm.createContext({document:f.document,$:f.$,book:f.book,getSelection:()=>null,selectedExcerpt:null,selectionKind:'passage',highlights:{updateTools(){effects.dismiss++;}},clearPanelTextHighlight(){},closePanel(){effects.closed++;},captureExcerpt(){effects.captured++;},readerInteractionBlocked:()=>false,readerTools:{toolbar:{conceal(){}}},immersion:{handleKeydown(){effects.fullscreen++;}},CustomEvent:class extends Event{constructor(name){super(name);}}});
+ const context=vm.createContext({clearTimeout,excerptTimer:undefined,document:f.document,$:f.$,book:f.book,getSelection:()=>null,selectedExcerpt:null,selectionKind:'passage',highlights:{updateTools(){effects.dismiss++;}},clearPanelTextHighlight(){},closePanel(){effects.closed++;},captureExcerpt(){effects.captured++;},readerInteractionBlocked:()=>false,readerTools:{toolbar:{conceal(){}}},immersion:{handleKeydown(){effects.fullscreen++;}},CustomEvent:class extends Event{constructor(name){super(name);}}});
  const dismiss=readerEventAst.body.find(n=>n.type==='FunctionDeclaration'&&n.id.name==='dismissTools');
  const dispatch=readerEventAst.body.find(n=>n.type==='VariableDeclaration'&&n.declarations.some(d=>d.id.name==='dispatchReaderEvent'));
   vm.runInContext(readerEventSource.slice(dispatch.start,dispatch.end)+'\n'+readerEventSource.slice(dismiss.start,dismiss.end),context);f.reader.dismissTools=context.dismissTools;
