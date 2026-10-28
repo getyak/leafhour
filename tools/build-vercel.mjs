@@ -3,6 +3,7 @@ import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import {buildPortalWeb} from './build-portal-web.mjs';
 import {buildReaderWeb} from './build-reader-web.mjs';
+import {buildOfflineReading} from './build-offline-reading.mjs';
 import {portalDocument} from '../server/portal-document.mjs';
 import {homeDocument,homeLocales} from '../app/home-locale.mjs';
 import {releaseCommit} from './release-policy.mjs';
@@ -80,9 +81,10 @@ await writeFile(
 
 const sourceCommit=await releaseCommit(root,{sourceCommit:process.env.VERCEL_GIT_COMMIT_SHA||process.env.GITHUB_SHA});
 await writeFile(path.join(outputDir,'release.json'),JSON.stringify({sourceCommit})+'\n');
+const offline=await buildOfflineReading({root,outputDir,readerHtml:readerWeb.html,readerFiles:readerWeb.files});
 
 console.log(`Built hosted library and reader at ${outputDir}; private content stays in Supabase.`);
-return {outputDir,uiTemplateDir};
+return {outputDir,uiTemplateDir,offline};
 }
 
 if(process.argv[1]&&import.meta.url===pathToFileURL(path.resolve(process.argv[1])).href)await buildVercel();

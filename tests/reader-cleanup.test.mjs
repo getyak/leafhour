@@ -54,9 +54,9 @@ test('Thought hides generated section identifiers while keeping real source page
  const {document}=fixture('<body><div id="panel-content"></div><p id="panel-title"></p><span id="panel-anchor"></span></body>');
  const start=reader.indexOf('function renderPanel(){'),end=reader.indexOf('  for(const tab of',start),code=reader.slice(start,end)+'}';
  const p={id:'p',section:'B2',original:'B2 is part of the original text.',source:{}};
- const run=new Function('pruneLabels','ownedLabels','$','paragraphMap','selectedId','label','allRecords','panelTab','READER_SHELL','READER_UI',code+';renderPanel();');
+ const run=new Function('pruneLabels','ownedLabels','$','paragraphMap','selectedId','label','allRecords','panelTab','READER_SHELL','READER_UI','records',code+';renderPanel();');
  const label=(node,id,params)=>{node.textContent=t(id,params);};
- const render=()=>run(()=>{},{forget(){}},id=>document.getElementById(id),new Map([['p',p]]),'p',label,false,'comment','reader.shell.','reader.b1.');
+ const render=()=>run(()=>{},{forget(){}},id=>document.getElementById(id),new Map([['p',p]]),'p',label,false,'comment','reader.shell.','reader.b1.',{offline:false});
  render();assert.equal(document.getElementById('panel-anchor').hidden,true);assert.equal(document.getElementById('panel-anchor').textContent,'');
  for(const source of [{printedPage:12},{pdfPage:12}]){p.source=source;render();assert.equal(document.getElementById('panel-anchor').hidden,false);assert.match(document.getElementById('panel-anchor').textContent,/12/);assert.doesNotMatch(document.getElementById('panel-anchor').textContent,/B2|§/);}
  assert.equal(p.section,'B2');assert.equal(p.original,'B2 is part of the original text.');

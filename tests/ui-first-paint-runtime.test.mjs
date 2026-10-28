@@ -34,7 +34,7 @@ test('the legacy reader never declares an unverified guest to the UI owner bridg
  const {readFile}=await import('node:fs/promises');const {parse}=await import('acorn');const vm=await import('node:vm');
  const source=await readFile(new URL('../app/reader-api.mjs',import.meta.url),'utf8'),ast=parse(source,{ecmaVersion:'latest',sourceType:'module'});
  const statement=ast.body.find(n=>n.type==='ExpressionStatement'&&n.expression.type==='UnaryExpression'&&n.expression.argument?.callee?.name==='adoptUiOwner');
- let captured;vm.runInNewContext(source.slice(statement.start,statement.end),{readerOwner:null,selectedBookId:null,readerSession:null,adoptUiOwner:(owner,options)=>captured={owner,options}});assert.equal(captured.options?.verified,false);
+ let captured;vm.runInNewContext(source.slice(statement.start,statement.end),{readerOwner:null,selectedBookId:null,readerSession:null,liveSession:null,offlineContext:{verified:false},adoptUiOwner:(owner,options)=>captured={owner,options}});assert.equal(captured.options?.verified,false);
 });
 
 test('only a successful valid session response can declare a guest or account',async()=>{

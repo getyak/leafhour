@@ -6,6 +6,7 @@ import {uiAuthoredPath} from './ui-locale-codec.mjs';
 import {authEntryReturn,safeMcpReturn} from './auth-return.mjs';
 import {homeLocale,homeText} from './home-locale.mjs';
 import {positionStorageKey} from './reading-progress.mjs';
+import {deviceBookStore,prepareOfflineResources} from './offline-reading.mjs';
 import {createUploadState} from './upload-state.mjs';
 import {createOwnerScope,readOwnerResponse} from './owner-scope.mjs';
 import {invalidatePaletteLibraries} from './palette-library.mjs';
@@ -259,7 +260,7 @@ async function refresh(knownSession){
   try{
   const next=knownSession||await api('/api/auth/session');if(generation!==refreshGeneration)return;
   const firstIdentity=!identityResolved;identityResolved=true;
-  const continueUpload=!session?.user&&next.user&&pendingUpload,continueChat=!session?.user&&next.user&&pendingChat,changed=ownerScope.adopt(next.user?.id||'guest');session=next;void adoptUiOwner(next.user?.id||null);
+  const continueUpload=!session?.user&&next.user&&pendingUpload,continueChat=!session?.user&&next.user&&pendingChat,changed=ownerScope.adopt(next.user?.id||'guest');session=next;void deviceBookStore().adopt(next.user?.id||'guest').catch(()=>{});if(globalThis.requestIdleCallback)requestIdleCallback(()=>{void prepareOfflineResources();},{timeout:15000});void adoptUiOwner(next.user?.id||null);
   // GET-188: identity rows follow the settled session immediately, independent
   // of the optional library request below.
   homeMenu?.updateIdentity(ownerScope.capture());
@@ -292,7 +293,7 @@ async function hydrateLibrary(generation,ticket){
   }catch(error){if(generation!==refreshGeneration||!ownerScope.isCurrent(ticket))return;status('library-status',{id:'arrival.pending'},true);$('library-retry').hidden=false;libraryArrival?.update();}
 }
 async function signOut(){
-  const ticket=ownerScope.capture();await api('/api/auth/logout',{},ticket);session={...session,user:null};ownerScope.adopt('guest');void adoptUiOwner(null);clearPrivateUI();
+  const ticket=ownerScope.capture();await deviceBookStore().clear().catch(()=>{});await api('/api/auth/logout',{},ticket);session={...session,user:null};ownerScope.adopt('guest');void adoptUiOwner(null);clearPrivateUI();
   try{await refresh();}catch{status('library-status',{id:'portal.status.signedOut'},true);$('library-retry').hidden=false;}
 }
 $('account-button').addEventListener('click',()=>{if(!session?.user){openAuth();return;}if(isLibrary)shell.openSettings('account');else location.href=uiHref('/library');});

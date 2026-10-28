@@ -114,16 +114,26 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
     if(user){const introduction=await introductions.get(user,book);if(introduction)book.introduction=introduction;}
     return book;
   }
-  async function readingView(user,id,{chapterId,passageId}={}){
-    const snapshot=await chapterReads.manifest(user,id),book=structuredClone(snapshot.book);
+  const readingCache=snapshot=>({schemaVersion:1,snapshotId:snapshot.id,chapters:structuredClone(snapshot.chapters)});
+  async function readingMetadata(user,snapshot){
+    const book=structuredClone(snapshot.book);
     if(user){const introduction=await introductions.get(user,{...book,sections:snapshot.introductionSections});if(introduction)book.introduction=introduction;}
+    return book;
+  }
+  async function readingManifest(user,id){
+    const snapshot=await chapterReads.manifest(user,id),book=await readingMetadata(user,snapshot);
+    book.reading={partial:true,loadedChapters:[],hasTranslations:snapshot.hasTranslations};book.readingCache=readingCache(snapshot);
+    await chapterReads.assertCurrent(user,id,snapshot);return book;
+  }
+  async function readingView(user,id,{chapterId,passageId}={}){
+    const snapshot=await chapterReads.manifest(user,id),book=await readingMetadata(user,snapshot);
     const partial=snapshot.byteLength+(book.introduction?Buffer.byteLength(JSON.stringify(book.introduction))+16:0)>256*1024;
-    if(!partial){Object.assign(book,await chapterReads.complete(user,id,snapshot));await chapterReads.assertCurrent(user,id,snapshot);return book;}
+    if(!partial){Object.assign(book,await chapterReads.complete(user,id,snapshot));book.readingCache=readingCache(snapshot);await chapterReads.assertCurrent(user,id,snapshot);return book;}
     const selected=book.sections.find(s=>s.paragraphs.some(p=>p.id===passageId))?.chapterId||(book.chapters.some(c=>c.id===chapterId)?chapterId:null)||book.readingStart?.chapterId||book.chapters[0].id;
     const ids=[selected],loaded=new Map();
     for(const chapterId of ids)loaded.set(chapterId,(await chapterReads.chapter(user,id,snapshot,chapterId)).sections);
     const offsets=new Map();book.sections=book.sections.map(section=>{const rows=loaded.get(section.chapterId);if(!rows)return section;const offset=offsets.get(section.chapterId)||0;offsets.set(section.chapterId,offset+1);return rows[offset];});
-    if(partial)book.reading={partial:true,loadedChapters:[selected],hasTranslations:snapshot.hasTranslations};
+    if(partial)book.reading={partial:true,loadedChapters:[selected],hasTranslations:snapshot.hasTranslations};book.readingCache=readingCache(snapshot);
     await chapterReads.assertCurrent(user,id,snapshot);return book;
   }
   async function readingChapter(user,id,chapterId,contentVersion){
@@ -655,5 +665,5 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
     await chapterReads.manifest(user,incoming.bookId);
     return {bookId:incoming.bookId,alreadyOwned:!claim.created};
   }
-  return {introductions,sourceEvidence,sourceReview,createSourceRevision,resolveSourceAnchor,bookTransfer:async(user,id,offset,snapshot)=>transferBook(await getBook(user,id),offset,snapshot),list,shelfState,reorderShelf,archiveBook,restoreBook,trash,getBook,readingView,readingChapter,importDocument,importExtracted,originalInfo,getOriginal,originalDownload,originalParts,originalRange,records,notebookPage,getReadingPreferences,saveReadingPreferences,getPreferenceMemory,changePreferenceMemory,addComment,editComment,addHighlight,addAgentHighlight,removeHighlight,saveProgress,saveReadingSession,recordReadingMilestone,setReadingGoal,readingActivity,arrival,translate,createGrant,createMcpGrant,createDailyGrant,authorize,authorizeDaily,isGrantActive,registerGrantRevocation:listener=>{grantRevocationListeners.add(listener);return()=>grantRevocationListeners.delete(listener);},registerSourceMutation:listener=>{sourceMutationListeners.add(listener);return()=>sourceMutationListeners.delete(listener);},grants,revokeGrant,exportLibrary,exportManifest,exportBookPart,exportBookEntry,restoreOriginal,validateRestore,previewRestoreBooks,restoreLibrary,receiveGift,translationAvailable:!!translator};
+  return {introductions,sourceEvidence,sourceReview,createSourceRevision,resolveSourceAnchor,bookTransfer:async(user,id,offset,snapshot)=>transferBook(await getBook(user,id),offset,snapshot),list,shelfState,reorderShelf,archiveBook,restoreBook,trash,getBook,readingView,readingManifest,readingChapter,importDocument,importExtracted,originalInfo,getOriginal,originalDownload,originalParts,originalRange,records,notebookPage,getReadingPreferences,saveReadingPreferences,getPreferenceMemory,changePreferenceMemory,addComment,editComment,addHighlight,addAgentHighlight,removeHighlight,saveProgress,saveReadingSession,recordReadingMilestone,setReadingGoal,readingActivity,arrival,translate,createGrant,createMcpGrant,createDailyGrant,authorize,authorizeDaily,isGrantActive,registerGrantRevocation:listener=>{grantRevocationListeners.add(listener);return()=>grantRevocationListeners.delete(listener);},registerSourceMutation:listener=>{sourceMutationListeners.add(listener);return()=>sourceMutationListeners.delete(listener);},grants,revokeGrant,exportLibrary,exportManifest,exportBookPart,exportBookEntry,restoreOriginal,validateRestore,previewRestoreBooks,restoreLibrary,receiveGift,translationAvailable:!!translator};
 }
