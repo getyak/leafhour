@@ -203,11 +203,11 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
     for(const file of ['popover-controls.mjs','reader-book-actions-bootstrap.mjs'])files['/'+file]=file;
     for(const file of ['offline-reading.mjs','offline-reading.css','offline-position.mjs','offline-book-store.mjs','offline-book-codec.mjs','offline-idb.mjs','offline-shelf.mjs'])files['/'+file]=file;
     files['/offline']='offline.html';files['/offline.html']='offline.html';
-    if(['/reading-worker.js','/offline-resources.json','/offline-reader.html'].includes(p)||/^\/reader-web\/(?:reader|style)-[a-f0-9]{16}\.(?:js|css)$/.test(p)){
+    if(['/reading-worker.js','/offline-resources.json','/offline-reader.html','/offline-reader'].includes(p)||/^\/reader-web\/(?:reader|style)-[a-f0-9]{16}\.(?:js|css)$/.test(p)){
       if(!['GET','HEAD'].includes(req.method))throw fail('不支持这个请求',405);
       if(!compiledWeb)throw fail('Offline reading resources unavailable',503);
-      const bytes=await readFile(path.join(webDir,p.slice(1))),type=p.endsWith('.json')?'application/json':p.endsWith('.html')?'text/html':p.endsWith('.css')?'text/css':'text/javascript';
-      res.setHeader('Cache-Control',p.startsWith('/reader-web/')?'public, max-age=31536000, immutable':'no-cache');if(p==='/reading-worker.js')res.setHeader('Service-Worker-Allowed','/');if(p==='/offline-reader.html')res.setHeader('Content-Security-Policy',contentSecurityPolicy('/read'));
+      const generatedFile=p==='/offline-reader'?'offline-reader.html':p.slice(1),bytes=await readFile(path.join(webDir,generatedFile)),type=generatedFile.endsWith('.json')?'application/json':generatedFile.endsWith('.html')?'text/html':generatedFile.endsWith('.css')?'text/css':'text/javascript';
+      res.setHeader('Cache-Control',p.startsWith('/reader-web/')?'public, max-age=31536000, immutable':'no-cache');if(p==='/reading-worker.js')res.setHeader('Service-Worker-Allowed','/');if(generatedFile==='offline-reader.html')res.setHeader('Content-Security-Policy',contentSecurityPolicy('/read'));
       res.statusCode=200;res.setHeader('Content-Type',type+'; charset=utf-8');res.setHeader('Content-Length',bytes.length);res.end(req.method==='HEAD'?undefined:bytes);return true;
     }
     if(!isAPI&&!files[p])return false;

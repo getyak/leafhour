@@ -23,9 +23,9 @@ async function fixture(t){
 test('offline build follows public read dependencies and binds every byte to one release',async t=>{
  const {buildOfflineReading}=await import('../tools/build-offline-reading.mjs');const f=await fixture(t),result=await buildOfflineReading(f);
  const manifest=JSON.parse(await readFile(path.join(f.outputDir,'offline-resources.json'),'utf8')),urls=manifest.resources.map(resource=>resource.url);
- for(const url of ['/lazy.mjs','/nested.mjs','/lazy.css','/offline-book-store.mjs','/ui-locale.mjs','/offline-reader.html','/offline.html',...['en','zh-Hans','zh-Hant','ja'].map(code=>'/ui-catalogs/'+code+'.mjs')])assert.ok(urls.includes(url),url+' must work without network');
+ for(const url of ['/lazy.mjs','/nested.mjs','/lazy.css','/offline-book-store.mjs','/ui-locale.mjs','/offline-reader','/offline',...['en','zh-Hans','zh-Hant','ja'].map(code=>'/ui-catalogs/'+code+'.mjs')])assert.ok(urls.includes(url),url+' must work without network');
  assert.ok(!urls.includes('/private.mjs'),'an output file never authorizes itself');assert.ok(!urls.some(url=>url.startsWith('/api/')));
- for(const entry of manifest.resources){const bytes=await readFile(path.join(f.outputDir,entry.url.slice(1)));assert.equal(entry.sha256,digest(bytes));assert.equal(entry.bytes,bytes.length);}
+ for(const entry of manifest.resources){const bytes=await readFile(path.join(f.outputDir,entry.url==='/offline-reader'?'offline-reader.html':entry.url==='/offline'?'offline.html':entry.url.slice(1)));assert.equal(entry.sha256,digest(bytes));assert.equal(entry.bytes,bytes.length);}
  assert.equal(result.version,manifest.version);assert.match(manifest.version,/^[a-f0-9]{64}$/);
  const shell=await readFile(path.join(f.outputDir,'offline-reader.html'),'utf8');assert.doesNotMatch(shell,/location\.replace|data-ui-first-paint/);assert.match(shell,/data-leafhour-offline-shell/);
  assert.match(await readFile(path.join(f.outputDir,'reading-worker.js'),'utf8'),new RegExp(manifest.version));
@@ -48,4 +48,9 @@ test('offline build retains compact and url-form CSS imports with their font dep
  await writeFile(path.join(f.outputDir,'offline.css'),'@import url("./font-entry.css");body{color:#123}');
  const allowed=JSON.parse(await readFile(path.join(f.root,'release-files.json'),'utf8'));await writeFile(path.join(f.root,'release-files.json'),JSON.stringify([...allowed,...Object.keys(extra).map(name=>'app/'+name)]));await buildOfflineReading(f);
  const manifest=JSON.parse(await readFile(path.join(f.outputDir,'offline-resources.json'),'utf8'));for(const url of ['/font-entry.css','/font-face.css','/glyphs.woff2'])assert.ok(manifest.resources.some(entry=>entry.url===url),url+' remains in the complete public graph');
+});
+
+test('offline HTML resources use canonical public URLs for cleanUrls hosting',async t=>{
+ const {buildOfflineReading}=await import('../tools/build-offline-reading.mjs');const f=await fixture(t);await buildOfflineReading(f);const manifest=JSON.parse(await readFile(path.join(f.outputDir,'offline-resources.json'),'utf8'));
+ assert.equal(manifest.readerShell,'/offline-reader');assert.equal(manifest.offlineShelf,'/offline');assert.ok(manifest.resources.some(r=>r.url==='/offline-reader'));assert.ok(manifest.resources.some(r=>r.url==='/offline'));assert.ok(!manifest.resources.some(r=>r.url.endsWith('.html')),'cleanUrls HTML aliases must not enter strict no-redirect fetches');assert.ok(manifest.resources.some(r=>r.url==='/offline.css'),'canonical HTML still contributes its stylesheet dependencies');
 });

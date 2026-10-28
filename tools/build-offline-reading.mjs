@@ -11,9 +11,9 @@ const generatedReader=/^reader-web\/(?:reader-([a-f0-9]{16})\.js|style-([a-f0-9]
 
 // Only literal module edges and literal stylesheet/image references are read.
 // A file being present in dist is never enough to authorize it for caching.
-function references(source,url){
+function references(source,url,file=url){
  const values=[];
- if(/\.m?js$/.test(url)){
+ if(/\.m?js$/.test(file)){
   const visit=node=>{
    if(!node||typeof node!=='object')return;
    if(['ImportDeclaration','ExportNamedDeclaration','ExportAllDeclaration'].includes(node.type)&&node.source)values.push(node.source.value);
@@ -22,10 +22,10 @@ function references(source,url){
    for(const value of Object.values(node))if(Array.isArray(value))value.forEach(visit);else if(value&&typeof value==='object')visit(value);
   };
   visit(parse(source,{ecmaVersion:'latest',sourceType:'module'}));
- }else if(/\.css$/.test(url)){
+ }else if(/\.css$/.test(file)){
   for(const match of source.matchAll(/url\(\s*["']?([^\s"'()]+)["']?\s*\)/g))values.push(match[1]);
   for(const match of source.matchAll(/@import\s*["']([^"']+)["']/g))values.push(match[1]);
- }else if(/\.html$/.test(url)){
+ }else if(/\.html$/.test(file)){
   for(const match of source.matchAll(/<(?:script|link)\b[^>]*\b(?:src|href)=["']([^"']+)["'][^>]*>/g))values.push(match[1]);
  }
  return values.filter(value=>typeof value==='string').map(value=>new URL(value,new URL(url,origin))).filter(value=>value.origin===origin&&publicExtension.test(value.pathname)).map(value=>value.pathname);
@@ -43,19 +43,20 @@ export async function buildOfflineReading({root,outputDir,readerHtml,readerFiles
  // The online first-paint handoff must not retry itself when the network is absent.
  const shell=readerHtml.replace(/<script\b(?![^>]*\btype=["']module["'])[^>]*>[\s\S]*?<\/script>/gi,'').replace(/<html\b/,'<html data-leafhour-offline-shell');
  await writeFile(path.join(outputDir,'offline-reader.html'),shell);
- const queue=['/offline-reader.html','/offline.html','/offline-shelf.mjs','/ui-locale.mjs',...['en','zh-Hans','zh-Hant','ja'].map(locale=>'/ui-catalogs/'+locale+'.mjs'),...readerFiles.map(file=>'/'+file)],seen=new Set(),resources=[];
+ const shellFiles=new Map([['/offline-reader','offline-reader.html'],['/offline','offline.html']]);
+ const queue=['/offline-reader','/offline','/offline-shelf.mjs','/ui-locale.mjs',...['en','zh-Hans','zh-Hant','ja'].map(locale=>'/ui-catalogs/'+locale+'.mjs'),...readerFiles.map(file=>'/'+file)],seen=new Set(),resources=[];
  while(queue.length){
   const url=queue.shift();if(seen.has(url))continue;seen.add(url);
-  const relative=url.slice(1);
-  if(url!=='/offline-reader.html'&&!generated.has(relative)&&!allowed.has('app/'+relative))throw Error('Non-public offline resource: '+url);
-  if(url.includes('..')||url.startsWith('/api/')||(!publicExtension.test(url)&&!['/offline-reader.html','/offline.html'].includes(url)))throw Error('Unsafe offline resource: '+url);
+  const relative=shellFiles.get(url)||url.slice(1);
+  if(relative!=='offline-reader.html'&&!generated.has(relative)&&!allowed.has('app/'+relative))throw Error('Non-public offline resource: '+url);
+  if(url.includes('..')||url.startsWith('/api/')||(!publicExtension.test(url)&&!shellFiles.has(url)))throw Error('Unsafe offline resource: '+url);
   const file=path.join(outputDir,relative),info=await lstat(file);if(!info.isFile()||info.isSymbolicLink())throw Error('Offline resource must be a regular file: '+url);
   const bytes=await readFile(file);resources.push({url,bytes:bytes.length,sha256:hash(bytes)});
-  if(/\.(?:m?js|css|html)$/.test(url))queue.push(...references(bytes.toString('utf8'),url));
+  if(/\.(?:m?js|css|html)$/.test(relative))queue.push(...references(bytes.toString('utf8'),url,relative));
  }
  resources.sort((a,b)=>a.url.localeCompare(b.url,'en'));
  const template=await readFile(path.join(root,'app/reading-worker.js'),'utf8');
- const descriptor={readerShell:'/offline-reader.html',offlineShelf:'/offline.html',readerEntries:readerFiles.filter(file=>/^reader-web\/reader-/.test(file)).map(file=>'/'+file),readerPolicy:contentSecurityPolicy('/read'),resources};
+ const descriptor={readerShell:'/offline-reader',offlineShelf:'/offline',readerEntries:readerFiles.filter(file=>/^reader-web\/reader-/.test(file)).map(file=>'/'+file),readerPolicy:contentSecurityPolicy('/read'),resources};
  const version=hash(JSON.stringify(descriptor)+'\n'+template),manifest={version,...descriptor};
  if(!template.includes('null/* LEAFHOUR_OFFLINE_RELEASE */'))throw Error('Offline worker release marker is missing');
  await writeFile(path.join(outputDir,'offline-resources.json'),JSON.stringify(manifest)+'\n');
