@@ -7,7 +7,11 @@ body.is-focused[data-reading-tools=open] #reader-top-edge{display:none}
 body.is-focused .reading-session[data-expanded=false] #reading-tools-trigger{position:fixed;inset:auto env(safe-area-inset-right) 0 env(safe-area-inset-left);width:auto;height:max(44px,env(safe-area-inset-bottom));padding:0;border:0;border-radius:0;background:transparent;box-shadow:none;color:transparent;pointer-events:none}
 body.is-focused .reading-session[data-expanded=false] #reading-tools-trigger>*{opacity:0;pointer-events:none}
 body.is-focused .reading-session[data-expanded=false] #reading-tools-trigger::after{display:none}
-body.is-focused .reading-session[data-expanded=false] #reading-tools-chat-slot{visibility:visible;pointer-events:auto}
+/* The shell sleeps too; hiding only the pill leaves a floating empty card. */
+body.is-focused .reading-session[data-expanded=false]{background:transparent;border-color:transparent;box-shadow:none;pointer-events:none}
+/* Opacity preserves the existing programmatic/Tab focus-return contract. */
+body.is-focused .reading-session[data-expanded=false] #reading-tools-chat-slot{opacity:0;pointer-events:none}
+body.is-focused .reading-session[data-expanded=false] #reading-tools-chat-slot:is(.has-companion-message,:focus-within){opacity:1;pointer-events:auto;background:var(--panel);border-radius:24px;box-shadow:var(--shadow-popover)}
 body.is-focused #reader-top-edge:focus-visible,body.is-focused .reading-session[data-expanded=false] #reading-tools-trigger:focus-visible{background:var(--paper);color:var(--ink);outline:var(--focus-ring-width) solid var(--focus-ring);outline-offset:calc(-1 * var(--focus-ring-offset))}
 body.is-focused #reader-top-edge:focus-visible::after,body.is-focused .reading-session[data-expanded=false] #reading-tools-trigger:focus-visible::after{display:block;content:attr(aria-label);font:12px/1.5 var(--interface);color:var(--ink)}
 body.is-focused:not([data-paginated=true]) #book-page{padding-top:max(44px,env(safe-area-inset-top));padding-bottom:max(44px,env(safe-area-inset-bottom))}

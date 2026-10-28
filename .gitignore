@@ -33,3 +33,7 @@ __pycache__/
 
 # Private generated canonical HTML; never publish over language-aware routes.
 .ui-entry/
+
+# Downloaded, checksum-verified Impeccable engine; install on each machine.
+.cursor/skills/impeccable/scripts/bin/
+.cursor/skills/impeccable/scripts/.cache/
