@@ -5,6 +5,7 @@ import {mkdtemp,rm} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
 import path from 'node:path';
 import {createReaderCompanionService} from '../server/reader-companion.mjs';
+import {createReaderChatService} from '../server/reader-chat.mjs';
 import {createReaderServer} from '../server/server.mjs';
 import {createObservability} from '../server/observability.mjs';
 import {validateObservabilityEvent} from '../app/observability-contract.mjs';
@@ -45,6 +46,51 @@ test('source invalidation after generation is not reported as a provider fault',
 test('late provider rejection after authorization revocation stays cancelled and silent',async()=>{
  let authorized=true;const f=await fixture({generator:async()=>{authorized=false;throw Error('PRIVATE_LATE_FAILURE');}});
  assert.equal((await f.send({authorize:async()=>authorized})).status,'cancelled');assert.deepEqual(f.outcomes,[]);
+});
+test('the service deadline persists a timeout failure once while user cancellation stays silent',async t=>{
+ t.mock.timers.enable({apis:['setTimeout']});
+ for(const action of ['deadline','disable']){
+  let started;const ready=new Promise(resolve=>started=resolve);
+  const f=await fixture({generator:()=>{started();return new Promise(()=>{});}});
+  const response=f.send();await ready;
+  if(action==='disable')await f.service.configure(owner,book.bookId,{enabled:false,contentVersion:'v1'});
+  t.mock.timers.tick(90000);
+  assert.equal((await response).status,action==='deadline'?'failed':'cancelled');
+  if(action==='deadline'){
+   assert.equal(f.outcomes.length,1);assert.equal(f.outcomes[0]?.event.properties.errorKind,'timeout');
+   assert.equal((await f.send()).status,'failed');assert.equal(f.outcomes.length,1);
+  }else assert.deepEqual(f.outcomes,[]);
+ }
+});
+test('a deadline during post-generation authorization cannot publish a late answer',async t=>{
+ t.mock.timers.enable({apis:['setTimeout']});
+ for(const authorized of [true,false]){
+  let entered,release,calls=0;const reached=new Promise(resolve=>entered=resolve),waiting=new Promise(resolve=>release=resolve);
+  const f=await fixture({generator:async()=>({kind:'message',text:'A controlled fixture message.',sourcePassageIds:['p1']})});
+  const pending=f.send({authorize:async()=>{if(++calls===2){entered();await waiting;return authorized;}return true;}});
+  await reached;t.mock.timers.tick(90000);release();
+  const result=await pending;assert.equal(result.status,authorized?'failed':'cancelled');assert.equal(result.answer,null);
+  assert.equal(f.outcomes.length,authorized?1:0);
+  if(authorized)assert.equal(f.outcomes[0]?.event.properties.errorKind,'timeout');
+ }
+});
+test('real chat expiry preserves deadline reporting and companion-disable exclusion',async t=>{
+ t.mock.timers.enable({apis:['setTimeout']});
+ for(const disable of [false,true]){
+  const dir=await mkdtemp(path.join(tmpdir(),'companion-expiry-'));let now=1800000000000,entered,release,calls=0;
+  const reached=new Promise(resolve=>entered=resolve),waiting=new Promise(resolve=>release=resolve),outcomes=[];
+  const chat=await createReaderChatService({dataDir:dir,library:{getBook:async()=>structuredClone(book),records:async()=>{throw Error('Unexpected records access');},addComment:async()=>{throw Error('Unexpected comment write');}},clock:()=>now,companionGenerator:async()=>({kind:'message',text:'A controlled fixture message.',sourcePassageIds:['p1']}),onCompanionOutcome:(_u,event)=>outcomes.push(event)});
+  try{
+   let meta=await chat.companion.view(owner,book.bookId);
+   for(const passageId of ['p1','p2'])for(let n=0;n<7;n++){now+=8000;meta=await chat.companion.observe(owner,book.bookId,{...meta,passageId,active:true});}
+   const pending=chat.companion.generate(owner,book.bookId,{id:'expiry-fixture',revision:meta.revision,contentVersion:'v1',sessionId:meta.sessionId,passageId:'p2'},{authorize:async()=>{if(++calls===2){entered();await waiting;}return true;}});
+   await reached;now+=90000;t.mock.timers.tick(90000);
+   if(disable)await chat.companion.configure(owner,book.bookId,{enabled:false,contentVersion:'v1'});
+   release();const result=await pending;assert.equal(result.answer,null);
+   assert.equal(outcomes.length,disable?0:1);
+   if(!disable){assert.equal(result.status,'failed');assert.equal(outcomes[0]?.properties.errorKind,'timeout');}
+  }finally{await chat.close();await rm(dir,{recursive:true,force:true});}
+ }
 });
 test('silence and completed messages never become fault outcomes',async()=>{
  for(const candidate of [{kind:'silence'},{kind:'message',text:'Continue reading.',sourcePassageIds:['p1']}]){

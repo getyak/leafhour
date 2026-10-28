@@ -1282,7 +1282,7 @@
       },
       {
         "file": "server/reader-companion.mjs",
-        "sha256": "a3193fb78447a4d3138933937224a6459cb895c4dff5b8802962a265304e7e5c"
+        "sha256": "44cacf3bda687dde10d1ee0ad1a15b5e4954e70f4e44c248e3e82c232fa70968"
       },
       {
         "file": "server/reader-shell.mjs",
@@ -1341,7 +1341,7 @@
         "sha256": "531202f1814314b6c76bfef38b2ea66636425b1ca9b445db349e70ebb8bcd00e"
       }
     ],
-    "inputDigest": "68a1056f72eae725a104b09847609b8bba9e47561188a9f317f44c0f64041442"
+    "inputDigest": "e096ce959aa2b6f937e9b2e9a1e909189c12c84dfb7b2e1517c28d60caccf090"
   },
   "locales": [
     "en",
@@ -258926,10 +258926,10 @@
       }
     },
     {
-      "id": "candidate:server/reader-companion.mjs:89:140",
+      "id": "candidate:server/reader-companion.mjs:93:29",
       "file": "server/reader-companion.mjs",
-      "line": 89,
-      "column": 140,
+      "line": 93,
+      "column": 29,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "找不到陪读消息",
@@ -258946,9 +258946,9 @@
       }
     },
     {
-      "id": "candidate:server/reader-companion.mjs:96:111",
+      "id": "candidate:server/reader-companion.mjs:112:111",
       "file": "server/reader-companion.mjs",
-      "line": 96,
+      "line": 112,
       "column": 111,
       "kind": "js-cjk-literal",
       "property": null,
@@ -258966,9 +258966,9 @@
       }
     },
     {
-      "id": "candidate:server/reader-companion.mjs:102:171",
+      "id": "candidate:server/reader-companion.mjs:118:171",
       "file": "server/reader-companion.mjs",
-      "line": 102,
+      "line": 118,
       "column": 171,
       "kind": "js-cjk-literal",
       "property": null,
@@ -293758,7 +293758,7 @@
     {
       "kind": "concatenation",
       "file": "server/reader-companion.mjs",
-      "line": 116,
+      "line": 134,
       "expression": "'companion-failed:'+runId",
       "fragments": [
         "companion-failed:"

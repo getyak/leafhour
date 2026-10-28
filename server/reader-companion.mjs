@@ -85,8 +85,24 @@ export function createReaderCompanionService({bookFor,mutateBook,clock,generator
       const payload=contextFor(book,m,input.passageId,conversationHistory(data.turns,{mode:'book'},book.contentVersion));data.turns.push(turn);return {created:true,turn:publicTurn(turn),...payload};
     });
     if(!claimed.created)return claimed.turn;
-    const controller=new AbortController();active.set(runId,{controller,user,bookId,id:input.id,runId,companion:true});let ticket,timer,stopWatching=()=>{},phase='admission',timedOut=false;
-    const finish=changes=>mutateBook(user,bookId,data=>{const m=state(data,book),t=data.turns.find(t=>t.id===input.id);if(!t)throw invalid('找不到陪读消息',404);if(t.status==='running'&&t.runId===runId){if(!m.enabled||m.revision!==input.revision||m.sessionId!==input.sessionId||controller.signal.aborted)Object.assign(t,{status:'cancelled',answer:null});else Object.assign(t,changes);}return publicTurn(t);});
+    const controller=new AbortController();active.set(runId,{controller,user,bookId,id:input.id,runId,companion:true});let ticket,timer,stopWatching=()=>{},phase='admission',timedOut=false,faultEligible=false;
+    const finish=changes=>{
+      faultEligible=false;
+      return mutateBook(user,bookId,data=>{
+        const m=state(data,book),t=data.turns.find(t=>t.id===input.id);
+        if(!t)throw invalid('找不到陪读消息',404);
+        const current=m.enabled&&m.revision===input.revision&&m.sessionId===input.sessionId;
+        const externallyAborted=controller.signal.aborted&&!timedOut;
+        if(t.status==='running'&&t.runId===runId){
+          if(changes.status==='cancelled'||!current||externallyAborted)Object.assign(t,{status:'cancelled',answer:null});
+          else Object.assign(t,timedOut?{status:'failed',answer:null}:changes);
+        }
+        // Recompute on every mutation/CAS attempt, including an expired turn
+        // already marked failed by the shared chat wrapper. This is not saved.
+        faultEligible=current&&!getClosed()&&!externallyAborted&&changes.status!=='cancelled'&&t.runId===runId&&t.status==='failed';
+        return publicTurn(t);
+      });
+    };
     try{
       await quota(user,runId,{kind:'companion'});ticket=await reserveGlobal(runId);
       phase='authorization';
@@ -94,13 +110,15 @@ export function createReaderCompanionService({bookFor,mutateBook,clock,generator
       const mayStart=await mutateBook(user,bookId,data=>{const m=state(data,book),t=data.turns.find(t=>t.id===input.id);return m.enabled&&m.revision===input.revision&&m.sessionId===input.sessionId&&t?.status==='running'&&t.runId===runId&&t.expiresAt>clock()&&!getClosed();});
       if(!mayStart||controller.signal.aborted)return await finish({status:'cancelled',answer:null});
       const interrupted=new Promise((_,reject)=>controller.signal.addEventListener('abort',()=>reject(invalid('陪读已停止',408)),{once:true}));
-      phase='generation';timer=setTimeout(()=>{timedOut=true;controller.abort();},90000);timer.unref?.();stopWatching=watchRun(user,bookId,input.id,runId,controller);
+      phase='generation';timer=setTimeout(()=>{if(!controller.signal.aborted){timedOut=true;controller.abort();}},90000);timer.unref?.();stopWatching=watchRun(user,bookId,input.id,runId,controller);
       const candidate=await Promise.race([Promise.resolve().then(()=>generator({kind:'companion',book:{bookId:book.bookId,contentVersion:book.contentVersion,title:book.title},passageId:input.passageId,chapterId:index.byId.get(input.passageId).chapterId,context:claimed.context,history:claimed.history,signal:controller.signal,runId})),interrupted]);
       phase='authorization';if(!await authorize())return await finish({status:'cancelled',answer:null});
       phase='validation';const answer=answerFor(candidate,claimed.context,bookId);
       phase='source';const fresh=await bookFor(user,bookId),freshIndex=sourceIndex(fresh);
       if(fresh.contentVersion!==book.contentVersion||claimed.context.passages.some(p=>freshIndex.byId.get(p.id)?.original!==index.byId.get(p.id)?.original))throw invalid('原文版本已变化',409);
-      phase='commit';return await finish({status:answer?'completed':'silent',answer});
+      phase='commit';const result=await finish({status:answer?'completed':'silent',answer});
+      if(timedOut&&result.status==='failed')throw Object.assign(Error(),{name:'TimeoutError'});
+      return result;
     }catch(error){
       // A rejected provider still crosses the authorization boundary: the
       // request may have been revoked while that provider was pending.
@@ -108,7 +126,7 @@ export function createReaderCompanionService({bookFor,mutateBook,clock,generator
       const result=await finish({status:authorized?'failed':'cancelled',answer:null});
       const expectedLimit=['admission','authorization','source'].includes(phase)&&Number.isInteger(error?.status)&&error.status>=400&&error.status<500;
       const cancelled=!timedOut&&(controller.signal.aborted||error?.name==='AbortError'||error?.code==='ABORT_ERR');
-      if(authorized&&result.status==='failed'&&!expectedLimit&&!cancelled){
+      if(authorized&&faultEligible&&result.status==='failed'&&!expectedLimit&&!cancelled){
         const errorKind=timedOut||error?.name==='TimeoutError'||['ETIMEDOUT','UND_ERR_CONNECT_TIMEOUT'].includes(error?.code)?'timeout':phase==='validation'?'parse':phase==='commit'?'storage':['ECONNRESET','ECONNREFUSED','ENOTFOUND'].includes(error?.code)?'network':'internal';
         // Only a persisted outcome and fixed categories reach the observer.
         // Run IDs provide private-free deduplication; no turn/context/error is copied.

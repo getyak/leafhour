@@ -12,6 +12,17 @@ The account's usage-analysis switch defaults off. Diagnostic collection has a se
 
 Only closed event names, random event/operation UUIDs, canonical time, deployed source commit, enumerated page/stage/outcome/error category, HTTP status, and bounded durations. Server-generated environment/synthetic classification cannot be overwritten by a browser. No book or passage IDs, book titles, selected text, original/translated content, annotations, questions/answers, raw exceptions, arbitrary URLs, network bodies, IP, cookies, email, authorization or download tokens leave through this integration. The Sentry client has default instrumentation disabled and reconstructs safe events before sending. Request failures retain a category and operation ID, not raw request context.
 
+Receiver settings must also prevent enrichment. PostHog receives `$ip: null`
+and `$geoip_disable: true`; keep replay off, autocapture opted out and IP
+anonymization on. Sentry can derive the sending server's location even when IP
+storage is disabled. In this project's advanced data scrubbing, apply an
+`anything` rule with `redaction.method: remove` to `user.geo` and `user.geo.**`,
+while retaining the existing default and IP scrubbers. The
+[project API's `relayPiiConfig`](https://docs.sentry.io/api/projects/update-a-project/)
+replaces that configuration, so preserve any existing rules when adding it.
+Verify a newly indexed synthetic event has no geographic fields; old events do
+not prove the new receiver policy.
+
 Product-event v1 covers the signed-in web reader. Native iOS frontend visibility/interaction events are not added by this release; shared backend fault outcomes can still be observed under the account diagnostic setting. Do not interpret the web cohort as all-platform retention.
 
 ## Dashboard definitions
@@ -32,6 +43,8 @@ checked again even after a provider rejects. Callback rejection or a stalled
 receiver does not change the saved companion result. Browser ingestion cannot
 claim this event or stage. Both fault charts include the same diagnostic event
 set; first-reading and return-reading definitions retain their existing scope.
+The service's own generation deadline persists a timeout failure; an earlier
+user cancellation retains its cancelled state and produces no fault event.
 This remains best-effort diagnostics and does not reconstruct a process killed
 before it could persist an outcome.
 
