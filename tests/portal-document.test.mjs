@@ -2,6 +2,12 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 import {portalDocument} from '../server/portal-document.mjs';
+test('the expanded reading story is public-only and keeps its exact source entry',async()=>{
+ const source=await readFile(new URL('../app/home.html',import.meta.url),'utf8');
+ assert.match(source,/href="\/home-story\.css"/);assert.match(source,/class="story-continuity"/);
+ assert.match(source,/book=gutenberg-alice&amp;passage=01b38ea4c710a84b-p00008&amp;layer=original/);
+ const library=portalDocument(source,'/library');assert.doesNotMatch(library,/href="\/home-story\.css"/);assert.match(library,/<div id="home-view" hidden>/);
+});
 test('the library response presents a complete safe English shell before JavaScript loads',async()=>{
   const source=await readFile(new URL('../app/home.html',import.meta.url),'utf8'),library=portalDocument(source,'/library');
   assert.match(library,/<title>My reading room · Leafhour<\/title>/);
@@ -20,11 +26,11 @@ test('the library response presents a complete safe English shell before JavaScr
 });
 test('the default homepage renders in English and every language keeps its own URL',async()=>{
   const source=await readFile(new URL('../app/home.html',import.meta.url),'utf8'),english=portalDocument(source,'/');
-  assert.match(english,/<html lang="en"(?:\s[^>]*)?>/);assert.match(english,/<link rel="canonical" href="https:\/\/leafhour.com\/">/);assert.match(english,/Make a little time\. Settle into a book\./);
+  assert.match(english,/<html lang="en"(?:\s[^>]*)?>/);assert.match(english,/<link rel="canonical" href="https:\/\/leafhour.com\/">/);assert.match(english,/Stay with a book\.<br>A little longer\./);
   const alias=portalDocument(source,'/en');assert.match(alias,/<link rel="canonical" href="https:\/\/leafhour.com\/">/);
   const simplified=portalDocument(source,'/zh-hans');
-  assert.match(simplified,/<html lang="zh-Hans">/);assert.match(simplified,/<link rel="canonical" href="https:\/\/leafhour.com\/zh-hans">/);assert.match(simplified,/留一点时间，读进一本书。/);
-  for(const [route,lang,label]of [['/zh-hant','zh-Hant','留一點時間，讀進一本書。'],['/ja','ja','少しの時間をとって、一冊の本に向き合う。']]){
+  assert.match(simplified,/<html lang="zh-Hans">/);assert.match(simplified,/<link rel="canonical" href="https:\/\/leafhour.com\/zh-hans">/);assert.match(simplified,/给一本书，<br>多一点时间。/);
+  for(const [route,lang,label]of [['/zh-hant','zh-Hant','給一本書，<br>多一點時間。'],['/ja','ja','一冊の本に、<br>もう少し時間を。']]){
     const html=portalDocument(source,route);assert.match(html,new RegExp('<html lang="'+lang+'">'));assert.match(html,new RegExp('<link rel="canonical" href="https://leafhour\\.com'+route+'">'));assert.ok(html.includes(label));
   }
 });

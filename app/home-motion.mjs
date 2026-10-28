@@ -1,6 +1,7 @@
 // Progressive enhancement: content is visible before and without this module.
 // The library shares the document but must never mount the homepage motion.
 export function mountHomeMotion(root,win=root?.ownerDocument?.defaultView){
+  if(root?.querySelector?.('.home-hero')?.dataset?.visualStyle==='clear')return ()=>{};
   if(!root||root.hidden||!win?.IntersectionObserver||!win.Element?.prototype.animate)return ()=>{};
   const doc=root.ownerDocument,preference=win.matchMedia('(prefers-reduced-motion: reduce)');
   const seen=new WeakSet(),active=new Map();

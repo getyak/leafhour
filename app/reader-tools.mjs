@@ -31,6 +31,7 @@ export function mountReaderTools({sessionRoot,immersion=null,document=globalThis
   // chat applies mobile inert. Closing a view never cancels its underlying job.
   const prepareOverlay=id=>{
     if(disposed)return null;
+    if(id==='tools')document.dispatchEvent(new Event('reader:tools-open'));
     overlayRevision++;
     const active=document.activeElement;
     const safe=focusableTrigger(active)&&!active.closest?.('dialog,#reading-tools-panel,#reading-header,[popover]')?active:pill;

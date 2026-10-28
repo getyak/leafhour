@@ -174,7 +174,7 @@ body:not(.library-page) > .site-header .site-theme { margin-left: 0; }
 #home-view .sample-translation > span { font: 12px/1.6 var(--sans); color: var(--muted); }
 #home-view .sample-translation p { font: 16px/1.85 var(--sans); margin-top: 7px; color: var(--ink); }
 #home-view .sample-footer { margin-top: 20px; padding-top: 16px; border-color: var(--line-hairline); align-items: center; font-size: 12px; }
-#home-view .sample-footer > a { display: grid; place-items: center; width: 44px; height: 44px; border: 1px solid var(--line); border-radius: var(--lh-radius-sm); background: var(--panel); }
+#home-view .sample-footer > a { display: inline-flex; align-items: center; justify-content: center; gap: 10px; width: auto; min-width: 44px; min-height: 44px; padding: 8px 12px; flex-shrink: 0; white-space: nowrap; font: 13px/1.5 var(--sans); text-decoration: none; border: 1px solid var(--line); border-radius: var(--lh-radius-sm); background: var(--panel); }
 #home-view :is(.home-section,.public-faq,.reading-promise) { width: min(1120px,88%); max-width: none; margin-inline: auto; padding: 72px 0; }
 #home-view .reading-promise { display: flex; justify-content: space-between; gap: 24px; padding-block: 22px; border-block: 1px solid var(--line-hairline); font-size: 14px; color: var(--muted); }
 #home-view .reading-demo { display: block; }
