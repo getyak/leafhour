@@ -1,10 +1,10 @@
 export function createReadingBook({book,readChapter,onContent=()=>{}}){
  const loaded=new Set(book.reading?.loadedChapters||book.chapters.map(c=>c.id)),pending=new Map();
- function ensure(id){
+ function ensure(id,options={}){
   if(!book.chapters.some(c=>c.id===id))return Promise.reject(Error('找不到这一章'));
   if(loaded.has(id))return Promise.resolve();
   if(pending.has(id))return pending.get(id);
-  const task=Promise.resolve().then(()=>readChapter(id,book.contentVersion)).then(result=>{
+  const task=Promise.resolve().then(()=>readChapter(id,book.contentVersion,options)).then(result=>{
    const expected=book.sections.filter(s=>s.chapterId===id);
    if(result?.bookId!==book.bookId||result.contentVersion!==book.contentVersion||result.chapterId!==id||!Array.isArray(result.sections)||result.sections.length!==expected.length)throw Error('章节版本无法核对，请重新打开这本书');
    for(let i=0;i<expected.length;i++){

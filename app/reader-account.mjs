@@ -1,3 +1,4 @@
+import {deviceBookStore} from './offline-reading.mjs';
 import {t,onUiLocaleChange,uiHref} from './ui-locale.mjs';
 import {focusableTrigger} from './popover-controls.mjs';
 
@@ -39,6 +40,7 @@ export function mountReaderAccount({document,trigger,session,request,loginHref,o
   if(!confirming){confirming=true;failed=false;paint();cancel.focus({preventScroll:true});return;}
   busy=true;failed=false;paint();
   try{
+   await deviceBookStore().clear().catch(()=>{});
    const response=await request('/api/auth/logout',{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'});
    if(!response.ok||(await response.json()).signedOut!==true)throw Error('LOGOUT_UNCONFIRMED');
    if(!disposed)onSignedOut();

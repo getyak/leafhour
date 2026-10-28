@@ -1,3 +1,4 @@
+import {contentSecurityPolicy} from './content-security.mjs';
 import {createPeopleService} from './people-service.mjs';
 import {createPeopleRoutes} from './people-routes.mjs';
 import {loadPeopleSeeds,createSourceReader,searchPeople} from './people-sources.mjs';
@@ -40,7 +41,7 @@ import {authFailureReturn} from '../app/auth-return.mjs';
 import {createAccountProfile} from './account-profile.mjs';
 import {createAccountUiPreferences} from './account-ui-preferences.mjs';
 import {createObservability} from './observability.mjs';
-import {randomUUID} from 'node:crypto';
+import {randomUUID,createHash} from 'node:crypto';
 import {createPaddleProvider} from './paddleocr.mjs';
 import {createBookIngestion} from './book-ingestion.mjs';
 import {createIngestionStorage} from './ingestion-storage.mjs';
@@ -65,7 +66,7 @@ const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const publicCoverPaths=new Set(Object.values(bookCoverArtwork).flatMap(artwork=>[artwork.src,...String(artwork.srcSet||'').split(',').map(source=>source.trim().split(/\s+/)[0])]).map(url=>String(url).split('?')[0]).filter(url=>/^\/book-covers\/[a-z0-9-]+-(320|640)\.webp$/.test(url)));
 const cookieToken=req=>(req.headers.cookie||'').split(';').map(s=>s.trim()).find(s=>s.startsWith('marginalia_session='))?.slice('marginalia_session='.length);
 const jsonBody=async(req,limit=29*1024*1024)=>{if(!req.headers['content-type']?.startsWith('application/json'))throw fail('请使用 JSON 请求',415);if(req.body&&typeof req.body==='object'){if(Buffer.byteLength(JSON.stringify(req.body))>limit)throw fail('这次导入内容过大，请分书恢复',413);return req.body;}let size=0;const chunks=[];for await(const chunk of req){size+=chunk.length;if(size>limit)throw fail('这次导入内容过大，请分书恢复',413);chunks.push(chunk);}try{return JSON.parse(Buffer.concat(chunks).toString('utf8'));}catch{throw fail('请求格式不正确');}};
-export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigins=[],sendCode,translator,catalogDir=path.join(root,'catalog'),allowLocal=true,dataStore=null,authService=null,hostedMcp=false,speechProvider,dialogueGenerator,guideGenerator,chatGenerator,companionGenerator,introductionGenerator,schedule=()=>{},paddleProvider,env=process.env,giftQuoteGenerator=null,annotationGenerator,billingService=null}={}){
+export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigins=[],sendCode,translator,catalogDir=path.join(root,'catalog'),allowLocal=true,dataStore=null,authService=null,hostedMcp=false,speechProvider,dialogueGenerator,guideGenerator,chatGenerator,companionGenerator,introductionGenerator,schedule=()=>{},paddleProvider,env=process.env,giftQuoteGenerator=null,annotationGenerator,billingService=null,compiledWeb=false,webDir=path.join(root,'dist')}={}){
   const webOrigins=new Set(publicOrigin?[publicOrigin]:[]);
   if(!Array.isArray(additionalWebOrigins))throw fail('额外网页来源配置无效',503);
   for(const value of additionalWebOrigins){
@@ -200,6 +201,15 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
     // GET-173 shared popover controller and the reader's lazy bookplate
     // bootstrap share the same fixed public URLs on every surface.
     for(const file of ['popover-controls.mjs','reader-book-actions-bootstrap.mjs'])files['/'+file]=file;
+    for(const file of ['offline-reading.mjs','offline-reading.css','offline-position.mjs','offline-book-store.mjs','offline-book-codec.mjs','offline-idb.mjs','offline-shelf.mjs'])files['/'+file]=file;
+    files['/offline']='offline.html';files['/offline.html']='offline.html';
+    if(['/reading-worker.js','/offline-resources.json','/offline-reader.html'].includes(p)||/^\/reader-web\/(?:reader|style)-[a-f0-9]{16}\.(?:js|css)$/.test(p)){
+      if(!['GET','HEAD'].includes(req.method))throw fail('不支持这个请求',405);
+      if(!compiledWeb)throw fail('Offline reading resources unavailable',503);
+      const bytes=await readFile(path.join(webDir,p.slice(1))),type=p.endsWith('.json')?'application/json':p.endsWith('.html')?'text/html':p.endsWith('.css')?'text/css':'text/javascript';
+      res.setHeader('Cache-Control',p.startsWith('/reader-web/')?'public, max-age=31536000, immutable':'no-cache');if(p==='/reading-worker.js')res.setHeader('Service-Worker-Allowed','/');if(p==='/offline-reader.html')res.setHeader('Content-Security-Policy',contentSecurityPolicy('/read'));
+      res.statusCode=200;res.setHeader('Content-Type',type+'; charset=utf-8');res.setHeader('Content-Length',bytes.length);res.end(req.method==='HEAD'?undefined:bytes);return true;
+    }
     if(!isAPI&&!files[p])return false;
     if(isAPI||p==='/billing'||p==='/admin/billing'||p==='/source-review'||p==='/library'||p==='/gift-preview'||safeGiftReturn(p))res.setHeader('X-Robots-Tag','noindex, nofollow, noarchive');
     if(!isAPI&&(p==='/'||p==='/library')){
@@ -210,7 +220,7 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
       catch{res.setHeader('Retry-After','5');send(503,initialRetryDocument(documentUrl,fallbackInitialUiLanguage({url:documentUrl,cookie:req.headers.cookie,acceptLanguage:req.headers['accept-language']})),'text/html');}
       return true;
     }
-    if(!isAPI){if(req.method!=='GET'&&req.method!=='HEAD')throw fail('不支持这个请求',405);const type=p==="/robots.txt"?"text/plain":p==="/sitemap.xml"?"application/xml":p.endsWith('.ttf')?'font/ttf':p.endsWith('.json')?'application/json':p.endsWith('.woff2')?'font/woff2':p.endsWith('.txt')?'text/plain':p.endsWith('.webp')?'image/webp':p.endsWith('.png')?'image/png':p.endsWith('.jpg')||p.endsWith('.jpeg')?'image/jpeg':p.endsWith('.svg')?'image/svg+xml':p.endsWith('.css')?'text/css':p.endsWith('.js')||p.endsWith('.mjs')?'text/javascript':'text/html';const file=await readFile(path.join(root,'app',files[p]));if(type.startsWith('font/')||type==='application/json'){res.writeHead(200,{'Content-Type':type,'Content-Length':file.length});res.end(req.method==='HEAD'?undefined:file);return true;}send(200,type==='text/html'?portalDocument(file.toString('utf8'),p):file,type);return true;}
+    if(!isAPI){if(req.method!=='GET'&&req.method!=='HEAD')throw fail('不支持这个请求',405);const type=p==="/robots.txt"?"text/plain":p==="/sitemap.xml"?"application/xml":p.endsWith('.ttf')?'font/ttf':p.endsWith('.json')?'application/json':p.endsWith('.woff2')?'font/woff2':p.endsWith('.txt')?'text/plain':p.endsWith('.webp')?'image/webp':p.endsWith('.png')?'image/png':p.endsWith('.jpg')||p.endsWith('.jpeg')?'image/jpeg':p.endsWith('.svg')?'image/svg+xml':p.endsWith('.css')?'text/css':p.endsWith('.js')||p.endsWith('.mjs')?'text/javascript':'text/html';const file=await readFile(path.join(compiledWeb?webDir:path.join(root,'app'),files[p])).catch(error=>{if(error.code!=='ENOENT'||!compiledWeb)throw error;return readFile(path.join(root,'app',files[p]));});if(type.startsWith('font/')||type==='application/json'){res.writeHead(200,{'Content-Type':type,'Content-Length':file.length});res.end(req.method==='HEAD'?undefined:file);return true;}send(200,type==='text/html'?portalDocument(file.toString('utf8'),p):file,type);return true;}
     if(req.method!=='GET'&&req.method!=='POST')throw fail('不支持这个请求',405);
     // Hosted clients must be configured explicitly; Host only describes a local HTTP instance.
     const originAllowed=webOrigins.has(req.headers.origin)||!publicOrigin&&req.headers.origin==='http://'+req.headers.host;
@@ -443,6 +453,12 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
       if(action==='portability-original'&&req.method==='GET'){send(200,await portability.originalPart(user,id,{offset:Number(url.searchParams.get('offset')||0),sha256:url.searchParams.get('sha256')}));return true;}
       if(action==='export-part'&&req.method==='GET'){send(200,await portability.exportPart(user,id,{offset:Number(url.searchParams.get('offset')||0),snapshot:url.searchParams.get('snapshot')}));return true;}
       const sendReading=payload=>{if(url.searchParams.has('offset'))send(200,transferReading(payload,Number(url.searchParams.get('offset')),url.searchParams.get('snapshot')));else if(Buffer.byteLength(JSON.stringify(payload))>3000000){res.setHeader('X-Reader-Book-Transfer','parts');send(200,transferReading(payload));}else send(200,payload);};
+      if(action==='reading-manifest'&&req.method==='GET'){
+        res.setHeader('Cache-Control','private, no-store');const manifest=await library.readingManifest(user,id);
+        const tag='W/"'+createHash('sha256').update(JSON.stringify(manifest,(_key,value)=>value&&typeof value==='object'&&!Array.isArray(value)?Object.fromEntries(Object.entries(value).sort(([a],[b])=>a<b?-1:a>b?1:0)):value)).digest('hex')+'"';res.setHeader('ETag',tag);
+        const matches=String(req.headers['if-none-match']||'').split(',').map(value=>value.trim());if(matches.some(value=>value.replace(/^W\//,'')===tag.replace(/^W\//,''))||matches.includes('*')){res.statusCode=304;res.end();return true;}
+        sendReading(manifest);return true;
+      }
       if(action==='reading'&&req.method==='GET'){sendReading(await library.readingView(user,id,{chapterId:url.searchParams.get('chapterId'),passageId:url.searchParams.get('passageId')}));return true;}
       const chapterRead=action?.match(/^chapters\/([A-Za-z0-9_.:-]{1,128})$/);
       if(chapterRead&&req.method==='GET'){sendReading(await library.readingChapter(user,id,chapterRead[1],url.searchParams.get('contentVersion')));return true;}

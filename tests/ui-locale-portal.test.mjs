@@ -169,7 +169,7 @@ test('opening and refreshing an account never replaces the explicit shelf view w
   const explicit={query:'kept',topic:'history',language:'en',form:'translated'},session={user:{id:'reader'},readingPreferences:{preferences:{preferredLanguage:'zh'}},preferenceMemory:{revision:2,memory:{topic:'philosophy',sources:{mode:{source:'settings'}}},preferences:{mode:'en'}}};
   let renders=0;
   const context={libraryArrival:null,personalizationPending:false,requestAnimationFrame(){},refreshGeneration:0,isLibrary:true,identityResolved:!firstEntry,ownerScope:createOwnerScope(firstEntry?'guest':'reader'),session,books:[],shelfRevision:0,pendingUpload:false,pendingChat:false,bootstrapped:false,
-   dashboard:{begin:()=>1,update(){},fail(){}},homeMenu:null,adoptUiOwner(){},
+   dashboard:{begin:()=>1,update(){},fail(){}},homeMenu:null,adoptUiOwner(){},deviceBookStore:()=>({adopt:async()=>{}}),prepareOfflineResources:async()=>false,
    authDialog:{updateCapabilities(){},isSettingPasswordFor:()=>false},clearPrivateUI(options){assert.equal(options.preserveView,true,'first identity keeps the incoming explicit URL');},
    shell:{update(){},refreshDaily(){}},setupInvite:{update(){}},
    shelfControls:{applyReadingPreferences(){assert.fail('account language cannot filter the shelf');},applyMemoryPreferences(){assert.fail('account topic or mode cannot filter the shelf');}},

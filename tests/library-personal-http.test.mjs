@@ -25,7 +25,7 @@ async function setup(t){
   t.after(async()=>{await new Promise(resolve=>{server.close(resolve);server.closeAllConnections();});await rm(dataDir,{recursive:true,force:true});});
   const base='http://127.0.0.1:'+server.address().port;
   const post=(route,body={},identity=null,owner=identity?.user.id)=>fetch(base+route,{method:'POST',headers:{Origin:fixture.env.READER_PUBLIC_ORIGIN,'Content-Type':'application/json',...(identity?{Cookie:identity.cookie}:{}),...(owner?{'X-Reader-Owner':owner}:{})},body:JSON.stringify(body)});
-  const get=(route,identity=null)=>fetch(base+route,{headers:identity?{Cookie:identity.cookie,'X-Reader-Owner':identity.user.id}:{}});
+  const get=(route,identity=null,headers={})=>fetch(base+route,{headers:{...(identity?{Cookie:identity.cookie,'X-Reader-Owner':identity.user.id}:{}),...headers}});
   const login=async user=>{const response=await post('/api/auth/password',{email:user.email,password:'fixture-password'});assert.equal(response.status,200);return {user,cookie:response.headers.get('set-cookie').split(';')[0]};};
   return {portal,fixture,dataStore,post,get,base,a:await login(sender),b:await login(receiver)};
 }
@@ -148,6 +148,12 @@ test('large reading HTTP views retain private anchors while chapter reads enforc
  const response=await get(base+'/reading?passageId=p3',a);assert.equal(response.status,200);const view=await response.json();assert.deepEqual(view.reading.loadedChapters,['ch02']);assert.deepEqual(view.sections[0].paragraphs[0],{id:'p1',unloaded:true});assert.equal(view.sections[1].paragraphs[0].original,'Continue from here.');assert.equal(view.sections.flatMap(s=>s.paragraphs).length,16);
  assert.equal((await get(base+'/reading')).status,404);assert.equal((await get(base+'/reading',b)).status,404);const route=base+'/chapters/ch01?contentVersion=edition-1';assert.equal((await get(route)).status,404);assert.equal((await get(route,b)).status,404);assert.equal((await get(base+'/chapters/ch01?contentVersion=old',a)).status,409);assert.equal((await get(base+'/chapters/missing?contentVersion=edition-1',a)).status,404);const chapter=await (await get(route,a)).json();assert.equal(chapter.sections[0].paragraphs.at(-1).original.length,10000);assert.deepEqual(await portal.library.getBook(sender,book.bookId),before);
 });
+test('HTTP reading manifests expose unloaded metadata through the existing owner checks',async t=>{
+ const {get,portal,a,b}=await setup(t),book=await seed(portal.library,sender,'private-reading-manifest'),base='/api/library/books/'+book.bookId;
+ const response=await get(base+'/reading-manifest',a);assert.equal(response.status,200);assert.equal(response.headers.get('cache-control'),'private, no-store');const manifest=await response.json();
+ assert.deepEqual(manifest.reading,{partial:true,loadedChapters:[],hasTranslations:true});assert.deepEqual(manifest.sections[1].paragraphs[0],{id:'p3',unloaded:true});assert.equal(manifest.readingCache.schemaVersion,1);assert.deepEqual(Object.keys(manifest.readingCache.chapters),['ch01','ch02']);assert.deepEqual((await (await get(base+'/reading',a)).json()).readingCache,manifest.readingCache);
+ assert.equal((await get(base+'/reading-manifest')).status,404);assert.equal((await get(base+'/reading-manifest',b)).status,404);
+});
 test('oversized reading views and later chapters retain snapshot-checked chunk transfer',async t=>{
  const {assembleBookTransfer}=await import('../app/book-transfer.mjs');const {get,portal,a}=await setup(t),book=structuredClone(readingBook);book.bookId='private-large-chapter';book.visibility='private';
  for(let i=0;i<315;i++)book.sections[0].paragraphs.push({id:'wide-'+i,original:'x'.repeat(10000),translations:{},annotationIds:[],termIds:[]});
@@ -159,4 +165,11 @@ test('oversized reading views and later chapters retain snapshot-checked chunk t
 test('same-origin original ranges return bounded binary data only for the owning account and source hash',async t=>{
  const {get,portal,dataStore,a,b}=await setup(t),book=structuredClone(readingBook),sha='1'.repeat(64);book.bookId='private-original-range';book.visibility='private';book.source={...book.source,sha256:sha};await portal.library.restoreLibrary(sender,{kind:'marginalia-library',schemaVersion:1,books:[{book,records:{...readingRecords(),bookId:book.bookId}}]});let reads=0;dataStore.blobRange=async(file,{offset,length,sha256})=>{reads++;assert.ok(file.endsWith('/'+sha));assert.equal(sha256,sha);return {bytes:Buffer.from('abcdefgh').subarray(offset,offset+length),offset,total:8};};
  const path='/api/library/books/'+book.bookId+'/original/range?sha256='+sha+'&offset=2&length=4';assert.equal((await get(path)).status,401);assert.equal((await get(path,b)).status,404);assert.equal((await get(path.replace(sha,'2'.repeat(64)),a)).status,409);assert.equal((await get(path.replace('length=4','length=1048577'),a)).status,400);assert.equal(reads,0);const r=await get(path,a);assert.equal(r.status,206);assert.equal(r.headers.get('content-range'),'bytes 2-5/8');assert.equal(r.headers.get('cache-control'),'private, no-store');assert.equal(await r.text(),'cdef');assert.equal(reads,1);
+});
+
+test('conditional reading metadata revalidates after authorization and retains private no-store headers',async t=>{
+ const {get,portal,a,b}=await setup(t),book=await seed(portal.library,sender,'conditional-reading'),route='/api/library/books/'+book.bookId+'/reading-manifest';
+ const first=await get(route,a),tag=first.headers.get('etag');assert.match(tag,/^W\/"[a-f0-9]{64}"$/);
+ const hit=await get(route,a,{'If-None-Match':tag});assert.equal(hit.status,304);assert.equal(await hit.text(),'');assert.equal(hit.headers.get('cache-control'),'private, no-store');
+ assert.equal((await get(route,b,{'If-None-Match':tag})).status,404);assert.equal((await get(route,null,{'If-None-Match':tag})).status,404);
 });

@@ -76,7 +76,7 @@ test('a note entry opens its paragraph while sample entry opens the translated s
 
 test('reader boot consumes the real entry policy and opens fresh books at chapter top',async()=>{
   const source=await readFile(path.join(root,'app/reader.js'),'utf8');
-  assert.match(source,/import\s*{[^}]*resolveReaderOpening[^}]*}\s*from\s*'\.\/reader-entry\.mjs'/);
+  assert.match(source,/import\s*{[^}]*resolveReaderOpening[^}]*}\s*from\s*'\.\/offline-position\.mjs'/);
   assert.match(source,/resolveReaderOpening\(/);
   assert.doesNotMatch(source,/readingStart,\s*offset:\s*\d+/,'the no-position branch must not clip the generated chapter heading');
 });
