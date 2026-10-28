@@ -410,7 +410,7 @@
       },
       {
         "file": "app/observability-contract.mjs",
-        "sha256": "0bc36f83c002590d10a2e1c265de371f93f669ffa68c329672250b0fa16f5895"
+        "sha256": "534da293c1be728cc61143238a3fafd1558a9da1f4e1ef641d796d20549f7a2a"
       },
       {
         "file": "app/observability-settings.mjs",
@@ -1186,7 +1186,7 @@
       },
       {
         "file": "server/observability.mjs",
-        "sha256": "75cd03c86d2688265a5609a8855739c93d4cabe3ae7585320cf3c6c48f3be9e4"
+        "sha256": "0953fd990163d17ae4646c108a0d69ff4f1c35820939d807dffab76ceeef2246"
       },
       {
         "file": "server/paddleocr.mjs",
@@ -1246,7 +1246,7 @@
       },
       {
         "file": "server/portal.mjs",
-        "sha256": "c13a3b5bb31f9407f773e73e4517695ad051e66c655988fba0e38802e8fcb518"
+        "sha256": "3f648cc412395bf75a3e3f8880eb754da1d14fe9ad59284f0de84b8d3194aa4d"
       },
       {
         "file": "server/preference-memory.mjs",
@@ -1278,11 +1278,11 @@
       },
       {
         "file": "server/reader-chat.mjs",
-        "sha256": "1ee7f771d8d246fd1c64cb3677f5a291381642cf15aa0e955739b245bda355de"
+        "sha256": "951cfba518d87d4b2c0522eaa30e64d24322e2601575ddfaa29aa82a495f3a39"
       },
       {
         "file": "server/reader-companion.mjs",
-        "sha256": "8fddc5fe7ad1c9868d4824acdfe6277c9e5930f79900c0941a779dc369a4de1c"
+        "sha256": "44cacf3bda687dde10d1ee0ad1a15b5e4954e70f4e44c248e3e82c232fa70968"
       },
       {
         "file": "server/reader-shell.mjs",
@@ -1341,7 +1341,7 @@
         "sha256": "531202f1814314b6c76bfef38b2ea66636425b1ca9b445db349e70ebb8bcd00e"
       }
     ],
-    "inputDigest": "ba66fb649214497c7d82b4f0ee70630396147962b46113c20a51a036114e875c"
+    "inputDigest": "e096ce959aa2b6f937e9b2e9a1e909189c12c84dfb7b2e1517c28d60caccf090"
   },
   "locales": [
     "en",
@@ -258926,10 +258926,10 @@
       }
     },
     {
-      "id": "candidate:server/reader-companion.mjs:89:140",
+      "id": "candidate:server/reader-companion.mjs:93:29",
       "file": "server/reader-companion.mjs",
-      "line": 89,
-      "column": 140,
+      "line": 93,
+      "column": 29,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "找不到陪读消息",
@@ -258946,9 +258946,9 @@
       }
     },
     {
-      "id": "candidate:server/reader-companion.mjs:95:111",
+      "id": "candidate:server/reader-companion.mjs:112:111",
       "file": "server/reader-companion.mjs",
-      "line": 95,
+      "line": 112,
       "column": 111,
       "kind": "js-cjk-literal",
       "property": null,
@@ -258966,9 +258966,9 @@
       }
     },
     {
-      "id": "candidate:server/reader-companion.mjs:100:171",
+      "id": "candidate:server/reader-companion.mjs:118:171",
       "file": "server/reader-companion.mjs",
-      "line": 100,
+      "line": 118,
       "column": 171,
       "kind": "js-cjk-literal",
       "property": null,
@@ -293756,6 +293756,16 @@
       "unresolved": true
     },
     {
+      "kind": "concatenation",
+      "file": "server/reader-companion.mjs",
+      "line": 134,
+      "expression": "'companion-failed:'+runId",
+      "fragments": [
+        "companion-failed:"
+      ],
+      "unresolved": true
+    },
+    {
       "kind": "computed-member",
       "file": "server/reading-activity.mjs",
       "line": 6,
@@ -295950,7 +295960,7 @@
     "candidatesUnreviewed": 6071,
     "candidatesProtected": 141,
     "itemsProtected": 9,
-    "dynamicConsumers": 3764,
+    "dynamicConsumers": 3765,
     "consumerReferences": 2001,
     "keysWithoutStaticConsumers": 1214,
     "reviewedLocaleValues": 44,

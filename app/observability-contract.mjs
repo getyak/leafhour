@@ -1,9 +1,9 @@
 // Shared closed metadata contract. Unknown fields are discarded rather than
 // copied; recognized fields with invalid values reject the complete event.
-export const OBSERVABILITY_EVENT_NAMES=Object.freeze(['library_opened','reader_open_requested','reader_content_visible','reader_active','reader_resume_result','reader_load_failed','client_error','request_failed','ingestion_completed','ingestion_failed','chat_failed']);
+export const OBSERVABILITY_EVENT_NAMES=Object.freeze(['library_opened','reader_open_requested','reader_content_visible','reader_active','reader_resume_result','reader_load_failed','client_error','request_failed','ingestion_completed','ingestion_failed','chat_failed','companion_failed']);
 export const OBSERVABILITY_LIMITS=Object.freeze({events:20,bytes:16*1024,durationMs:86400000});
 const analytics=new Set(['library_opened','reader_open_requested','reader_content_visible','reader_active','reader_resume_result']);
-const enums={page:['library','reader','other'],stage:['library','reader_open','reader_load','reader_visible','reader_active','reader_resume','ingestion','chat','request','client'],outcome:['success','failure','cancelled','restored','fresh','missing','skipped'],resume:['restored','fresh','missing','failed','none'],client:['browser','server'],errorKind:['network','timeout','aborted','http','parse','render','storage','internal','unknown']};
+const enums={page:['library','reader','other'],stage:['library','reader_open','reader_load','reader_visible','reader_active','reader_resume','ingestion','chat','companion','request','client'],outcome:['success','failure','cancelled','restored','fresh','missing','skipped'],resume:['restored','fresh','missing','failed','none'],client:['browser','server'],errorKind:['network','timeout','aborted','http','parse','render','storage','internal','unknown']};
 const uuid=/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const record=value=>value!==null&&typeof value==='object'&&!Array.isArray(value);
 const fail=status=>Object.assign(new Error('Invalid observability metadata'),{status});
