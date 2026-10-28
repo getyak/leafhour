@@ -421,7 +421,7 @@ const runtimeStub=[
  " return null;};"
 ].join('\n');
 const catalogueFiles={'app/ui-catalogs/en.mjs':'export default {};','app/ui-catalogs/zh-Hans.mjs':'export default {};','app/ui-catalogs/zh-Hant.mjs':'export default {};','app/ui-catalogs/ja.mjs':'export default {};'};
-const backing=['app/ui-locale.mjs','app/ui-locale-codec.mjs','app/account-ui-preferences-browser.mjs','app/account-ui-preferences.mjs','app/account-ui-preferences-transport.mjs','app/authored-ui-choice.mjs','app/ui-catalogs/en.mjs','app/ui-catalogs/zh-Hans.mjs','app/ui-catalogs/zh-Hant.mjs','app/ui-catalogs/ja.mjs'];
+const backing=['app/ui-first-paint-codec.mjs','app/ui-first-paint-bootstrap.mjs','app/ui-locale.mjs','app/ui-locale-codec.mjs','app/account-ui-preferences-browser.mjs','app/account-ui-preferences.mjs','app/account-ui-preferences-transport.mjs','app/authored-ui-choice.mjs','app/ui-catalogs/en.mjs','app/ui-catalogs/zh-Hans.mjs','app/ui-catalogs/zh-Hant.mjs','app/ui-catalogs/ja.mjs'];
 const readerHtml='<head><script type="module" src="/reader.js"></script><script type="module" src="/reader-translation.js"></script><script type="module" src="/palette-bootstrap.mjs"></script><link rel="stylesheet" href="/styles.css"></head>';
 async function graphFixture(t,files,release){
   files={...files,'app/browser-globals.mjs':await readFile(new URL('../app/browser-globals.mjs',import.meta.url),'utf8')};release=[...new Set([...release,'app/browser-globals.mjs'])];

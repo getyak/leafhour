@@ -33,7 +33,7 @@ await homeEntryReady;
 // If the replacement is cancelled or interaction keeps this document open,
 // retain its English prose and usable controllers. This route activation
 // never records an explicit device or account preference.
-if(location.pathname==='/')await requestUiRoute('en');
+if(location.pathname==='/'&&!document.documentElement.hasAttribute('data-ui-initial-locale'))await requestUiRoute('en');
 const $=id=>document.getElementById(id);
 const make=(tag,cls,text)=>{const n=document.createElement(tag);if(cls)n.className=cls;if(text!==undefined)n.textContent=text;return n;};
 // Owned UI label registry (page chrome) and per-physical-node book-card label

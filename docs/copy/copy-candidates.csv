@@ -4041,9 +4041,19 @@ candidate:app/translation-state.mjs:22:25,js-cjk-literal,app/translation-state.m
 candidate:app/translation-state.mjs:23:34,js-cjk-literal,app/translation-state.mjs,23,,unknown,reviewable,," 原文仍可继续阅读。"
 candidate:app/translation-state.mjs:24:31,js-cjk-literal,app/translation-state.mjs,24,,unknown,reviewable,,当前段落尚未翻译，原文保留。
 candidate:app/translation-state.mjs:41:63,js-cjk-literal,app/translation-state.mjs,41,,unknown,reviewable,,这一段正在翻译
+candidate:app/ui-first-paint-bootstrap.mjs:6:20,js-cjk-literal,app/ui-first-paint-bootstrap.mjs,6,,unknown,reviewable,,所选语言暂时无法加载。
+candidate:app/ui-first-paint-bootstrap.mjs:6:40,js-cjk-literal,app/ui-first-paint-bootstrap.mjs,6,,unknown,reviewable,,重新载入
+candidate:app/ui-first-paint-bootstrap.mjs:6:52,js-cjk-literal,app/ui-first-paint-bootstrap.mjs,6,,unknown,reviewable,,返回书房
+candidate:app/ui-first-paint-bootstrap.mjs:7:20,js-cjk-literal,app/ui-first-paint-bootstrap.mjs,7,,unknown,reviewable,,所選語言暫時無法載入。
+candidate:app/ui-first-paint-bootstrap.mjs:7:40,js-cjk-literal,app/ui-first-paint-bootstrap.mjs,7,,unknown,reviewable,,重新載入
+candidate:app/ui-first-paint-bootstrap.mjs:7:52,js-cjk-literal,app/ui-first-paint-bootstrap.mjs,7,,unknown,reviewable,,返回書房
+candidate:app/ui-first-paint-bootstrap.mjs:8:13,js-cjk-literal,app/ui-first-paint-bootstrap.mjs,8,,unknown,reviewable,,選択した言語を読み込めませんでした。
+candidate:app/ui-first-paint-bootstrap.mjs:8:40,js-cjk-literal,app/ui-first-paint-bootstrap.mjs,8,,unknown,reviewable,,再読み込み
+candidate:app/ui-first-paint-bootstrap.mjs:8:53,js-cjk-literal,app/ui-first-paint-bootstrap.mjs,8,,unknown,reviewable,,書斎へ戻る
+candidate:app/ui-first-paint-bootstrap.mjs:31:120,js-attribute,app/ui-first-paint-bootstrap.mjs,31,role,unknown,reviewable,,alert
 candidate:app/ui-locale-controls.mjs:69:69,js-attribute,app/ui-locale-controls.mjs,69,role,unknown,reviewable,,status
 candidate:app/ui-locale-controls.mjs:71:66,js-attribute,app/ui-locale-controls.mjs,71,role,unknown,reviewable,,status
-candidate:app/ui-locale.mjs:570:101,js-attribute,app/ui-locale.mjs,570,role,unknown,reviewable,,status
+candidate:app/ui-locale.mjs:574:101,js-attribute,app/ui-locale.mjs,574,role,unknown,reviewable,,status
 candidate:app/upload-state.mjs:7:86,js-cjk-literal,app/upload-state.mjs,7,,unknown,reviewable,,文件中没有内容，请选择另一份文件。
 candidate:app/upload-state.mjs:8:87,js-cjk-literal,app/upload-state.mjs,8,,unknown,reviewable,,PDF 最多 256 MB，EPUB 与文本最多 20 MB，请按章节拆分。
 candidate:app/upload-state.mjs:9:153,js-cjk-literal,app/upload-state.mjs,9,,unknown,reviewable,,目前支持 PDF、EPUB、TXT 和 Markdown。请重新选择文件。
@@ -5209,68 +5219,69 @@ candidate:server/people-runtime-routes.mjs:24:101,js-cjk-literal,server/people-r
 candidate:server/people-runtime-routes.mjs:26:82,js-cjk-literal,server/people-runtime-routes.mjs,26,,unknown,reviewable,,找不到这次整理。
 candidate:server/people-runtime-routes.mjs:27:46,js-cjk-literal,server/people-runtime-routes.mjs,27,,unknown,reviewable,,请使用取消入口。
 candidate:server/people-runtime-routes.mjs:28:41,js-cjk-literal,server/people-runtime-routes.mjs,28,,unknown,reviewable,,请使用查看入口。
-candidate:server/portal-document.mjs:9:50,js-cjk-literal,server/portal-document.mjs,9,,unknown,reviewable,,简体中文
-candidate:server/portal-document.mjs:9:69,js-cjk-literal,server/portal-document.mjs,9,,unknown,reviewable,,繁體中文
-candidate:server/portal-document.mjs:9:83,js-cjk-literal,server/portal-document.mjs,9,,unknown,reviewable,,日本語
-candidate:server/portal.mjs:61:123,js-cjk-literal,server/portal.mjs,61,,unknown,reviewable,,请使用 JSON 请求
-candidate:server/portal.mjs:61:247,js-cjk-literal,server/portal.mjs,61,,unknown,reviewable,,这次导入内容过大，请分书恢复
-candidate:server/portal.mjs:61:387,js-cjk-literal,server/portal.mjs,61,,unknown,reviewable,,这次导入内容过大，请分书恢复
-candidate:server/portal.mjs:61:509,js-cjk-literal,server/portal.mjs,61,,unknown,reviewable,,请求格式不正确
-candidate:server/portal.mjs:64:54,js-cjk-literal,server/portal.mjs,64,,unknown,reviewable,,额外网页来源配置无效
-candidate:server/portal.mjs:66:116,js-cjk-literal,server/portal.mjs,66,,unknown,reviewable,,额外网页来源配置无效
-candidate:server/portal.mjs:67:91,js-cjk-literal,server/portal.mjs,67,,unknown,reviewable,,额外网页来源配置无效
-candidate:server/portal.mjs:101:16,js-cjk-literal,server/portal.mjs,101,,unknown,reviewable,,书架正在另一处更新，请稍后刷新
-candidate:server/portal.mjs:125:69,js-cjk-literal,server/portal.mjs,125,,unknown,reviewable,,不支持这个请求
-candidate:server/portal.mjs:126:134,js-cjk-literal,server/portal.mjs,126,,unknown,reviewable,,找不到这个操作
-candidate:server/portal.mjs:195:70,js-cjk-literal,server/portal.mjs,195,,unknown,reviewable,,不支持这个请求
-candidate:server/portal.mjs:196:59,js-cjk-literal,server/portal.mjs,196,,unknown,reviewable,,不支持这个请求
-candidate:server/portal.mjs:199:54,js-cjk-literal,server/portal.mjs,199,,unknown,reviewable,,请求来源未授权
-candidate:server/portal.mjs:200:85,js-cjk-literal,server/portal.mjs,200,,unknown,reviewable,,请求来源未授权
-candidate:server/portal.mjs:201:111,js-cjk-literal,server/portal.mjs,201,,unknown,reviewable,,"请在 "
-candidate:server/portal.mjs:201:130,js-cjk-literal,server/portal.mjs,201,,unknown,reviewable,," 使用 Google 或 Apple 登录。当前页面仍可使用邮箱或密码登录。"
-candidate:server/portal.mjs:205:79,js-cjk-literal,server/portal.mjs,205,,unknown,reviewable,,这个登录入口尚未开放
-candidate:server/portal.mjs:220:162,js-cjk-literal,server/portal.mjs,220,,unknown,reviewable,,账户已切换，请重新进入书房。原账户草稿仍留在原处。
-candidate:server/portal.mjs:227:52,js-cjk-literal,server/portal.mjs,227,,unknown,reviewable,,请先进入自己的书房。
-candidate:server/portal.mjs:228:82,js-cjk-literal,server/portal.mjs,228,,unknown,reviewable,,请重新核对当前书房账户。
-candidate:server/portal.mjs:231:18,js-cjk-literal,server/portal.mjs,231,,unknown,reviewable,,找不到这个人物操作。
-candidate:server/portal.mjs:241:27,js-cjk-literal,server/portal.mjs,241,,unknown,reviewable,,请先进入自己的书房
-candidate:server/portal.mjs:243:41,js-cjk-literal,server/portal.mjs,243,,unknown,reviewable,,不支持这个请求
-candidate:server/portal.mjs:244:61,js-cjk-literal,server/portal.mjs,244,,unknown,reviewable,,请重新核对当前书房账户
-candidate:server/portal.mjs:258:27,js-cjk-literal,server/portal.mjs,258,,unknown,reviewable,,请先进入自己的书房
-candidate:server/portal.mjs:260:94,js-cjk-literal,server/portal.mjs,260,,unknown,reviewable,,请重新核对当前书房账户
-candidate:server/portal.mjs:263:41,js-cjk-literal,server/portal.mjs,263,,unknown,reviewable,,不支持这个请求
-candidate:server/portal.mjs:264:61,js-cjk-literal,server/portal.mjs,264,,unknown,reviewable,,请重新核对当前书房账户
+candidate:server/portal-document.mjs:11:50,js-cjk-literal,server/portal-document.mjs,11,,unknown,reviewable,,简体中文
+candidate:server/portal-document.mjs:11:69,js-cjk-literal,server/portal-document.mjs,11,,unknown,reviewable,,繁體中文
+candidate:server/portal-document.mjs:11:83,js-cjk-literal,server/portal-document.mjs,11,,unknown,reviewable,,日本語
+candidate:server/portal.mjs:63:123,js-cjk-literal,server/portal.mjs,63,,unknown,reviewable,,请使用 JSON 请求
+candidate:server/portal.mjs:63:247,js-cjk-literal,server/portal.mjs,63,,unknown,reviewable,,这次导入内容过大，请分书恢复
+candidate:server/portal.mjs:63:387,js-cjk-literal,server/portal.mjs,63,,unknown,reviewable,,这次导入内容过大，请分书恢复
+candidate:server/portal.mjs:63:509,js-cjk-literal,server/portal.mjs,63,,unknown,reviewable,,请求格式不正确
+candidate:server/portal.mjs:66:54,js-cjk-literal,server/portal.mjs,66,,unknown,reviewable,,额外网页来源配置无效
+candidate:server/portal.mjs:68:116,js-cjk-literal,server/portal.mjs,68,,unknown,reviewable,,额外网页来源配置无效
+candidate:server/portal.mjs:69:91,js-cjk-literal,server/portal.mjs,69,,unknown,reviewable,,额外网页来源配置无效
+candidate:server/portal.mjs:103:16,js-cjk-literal,server/portal.mjs,103,,unknown,reviewable,,书架正在另一处更新，请稍后刷新
+candidate:server/portal.mjs:128:69,js-cjk-literal,server/portal.mjs,128,,unknown,reviewable,,不支持这个请求
+candidate:server/portal.mjs:129:134,js-cjk-literal,server/portal.mjs,129,,unknown,reviewable,,找不到这个操作
+candidate:server/portal.mjs:199:61,js-cjk-literal,server/portal.mjs,199,,unknown,reviewable,,不支持这个请求
+candidate:server/portal.mjs:206:70,js-cjk-literal,server/portal.mjs,206,,unknown,reviewable,,不支持这个请求
+candidate:server/portal.mjs:207:59,js-cjk-literal,server/portal.mjs,207,,unknown,reviewable,,不支持这个请求
+candidate:server/portal.mjs:210:54,js-cjk-literal,server/portal.mjs,210,,unknown,reviewable,,请求来源未授权
+candidate:server/portal.mjs:211:85,js-cjk-literal,server/portal.mjs,211,,unknown,reviewable,,请求来源未授权
+candidate:server/portal.mjs:212:111,js-cjk-literal,server/portal.mjs,212,,unknown,reviewable,,"请在 "
+candidate:server/portal.mjs:212:130,js-cjk-literal,server/portal.mjs,212,,unknown,reviewable,," 使用 Google 或 Apple 登录。当前页面仍可使用邮箱或密码登录。"
+candidate:server/portal.mjs:216:79,js-cjk-literal,server/portal.mjs,216,,unknown,reviewable,,这个登录入口尚未开放
+candidate:server/portal.mjs:231:162,js-cjk-literal,server/portal.mjs,231,,unknown,reviewable,,账户已切换，请重新进入书房。原账户草稿仍留在原处。
+candidate:server/portal.mjs:238:52,js-cjk-literal,server/portal.mjs,238,,unknown,reviewable,,请先进入自己的书房。
+candidate:server/portal.mjs:239:82,js-cjk-literal,server/portal.mjs,239,,unknown,reviewable,,请重新核对当前书房账户。
+candidate:server/portal.mjs:242:18,js-cjk-literal,server/portal.mjs,242,,unknown,reviewable,,找不到这个人物操作。
+candidate:server/portal.mjs:252:27,js-cjk-literal,server/portal.mjs,252,,unknown,reviewable,,请先进入自己的书房
+candidate:server/portal.mjs:254:41,js-cjk-literal,server/portal.mjs,254,,unknown,reviewable,,不支持这个请求
+candidate:server/portal.mjs:255:61,js-cjk-literal,server/portal.mjs,255,,unknown,reviewable,,请重新核对当前书房账户
 candidate:server/portal.mjs:269:27,js-cjk-literal,server/portal.mjs,269,,unknown,reviewable,,请先进入自己的书房
-candidate:server/portal.mjs:271:41,js-cjk-literal,server/portal.mjs,271,,unknown,reviewable,,不支持这个请求
-candidate:server/portal.mjs:272:61,js-cjk-literal,server/portal.mjs,272,,unknown,reviewable,,请重新核对当前书房账户
-candidate:server/portal.mjs:279:95,js-cjk-literal,server/portal.mjs,279,,unknown,reviewable,,这个登录方式正在准备中
-candidate:server/portal.mjs:283:146,js-cjk-literal,server/portal.mjs,283,,unknown,reviewable,,此书房尚未开启密码登录，可以使用验证码或本机书房
-candidate:server/portal.mjs:284:146,js-cjk-literal,server/portal.mjs,284,,unknown,reviewable,,此书房尚未开启密码设置
-candidate:server/portal.mjs:286:151,js-cjk-literal,server/portal.mjs,286,,unknown,reviewable,,此书房尚未开启密码设置
-candidate:server/portal.mjs:290:80,js-cjk-literal,server/portal.mjs,290,,unknown,reviewable,,本机书房只在本机模式可用
-candidate:server/portal.mjs:296:27,js-cjk-literal,server/portal.mjs,296,,unknown,reviewable,,请先进入自己的书房
-candidate:server/portal.mjs:297:149,js-cjk-literal,server/portal.mjs,297,,unknown,reviewable,,线上版本尚未准备好，请稍后重新读取接入配置。
-candidate:server/portal.mjs:298:35,js-cjk-literal,server/portal.mjs,298,,unknown,reviewable,,本机接入配置只能在运行 Leafhour 的电脑上读取。远程接入尚未支持。
-candidate:server/portal.mjs:307:446,js-cjk-literal,server/portal.mjs,307,,unknown,reviewable,,不支持这个请求
-candidate:server/portal.mjs:309:45,js-cjk-literal,server/portal.mjs,309,,unknown,reviewable,,此书房使用本机上传
-candidate:server/portal.mjs:313:48,js-cjk-literal,server/portal.mjs,313,,unknown,reviewable,,此书房使用本机上传
-candidate:server/portal.mjs:317:27,js-cjk-literal,server/portal.mjs,317,,unknown,reviewable,,请先进入自己的书房
-candidate:server/portal.mjs:317:187,js-cjk-literal,server/portal.mjs,317,,unknown,reviewable,,文件编码不正确
-candidate:server/portal.mjs:331:27,js-cjk-literal,server/portal.mjs,331,,unknown,reviewable,,请先进入自己的书房
-candidate:server/portal.mjs:331:98,js-cjk-literal,server/portal.mjs,331,,unknown,reviewable,,请重新核对当前书房账户
-candidate:server/portal.mjs:333:41,js-cjk-literal,server/portal.mjs,333,,unknown,reviewable,,不支持这个请求
-candidate:server/portal.mjs:346:164,js-cjk-literal,server/portal.mjs,346,,unknown,reviewable,,这份阅读包较大，请从赠书信页面分段下载
-candidate:server/portal.mjs:360:25,js-cjk-literal,server/portal.mjs,360,,unknown,reviewable,,不支持这个请求
-candidate:server/portal.mjs:446:120,js-cjk-literal,server/portal.mjs,446,,unknown,reviewable,,本书尚未开启探索体验统计
-candidate:server/portal.mjs:447:175,js-cjk-literal,server/portal.mjs,447,,unknown,reviewable,,请选择这本书的记录包
-candidate:server/portal.mjs:448:99,js-cjk-literal,server/portal.mjs,448,,unknown,reviewable,,这本书的探索体验尚未接入，可以按段翻译并保存自己的笔记
-candidate:server/portal.mjs:455:43,js-cjk-literal,server/portal.mjs,455,,unknown,reviewable,,不支持这个请求
-candidate:server/portal.mjs:460:430,js-cjk-literal,server/portal.mjs,460,,unknown,reviewable,,找不到这个工具
-candidate:server/portal.mjs:463:30,js-cjk-literal,server/portal.mjs,463,,unknown,reviewable,,此实例暂未开启听读，请在本机书房使用。
-candidate:server/portal.mjs:469:20,js-cjk-literal,server/portal.mjs,469,,unknown,reviewable,,不支持这个听读操作
-candidate:server/portal.mjs:478:86,js-cjk-literal,server/portal.mjs,478,,unknown,reviewable,,只保存用户明确提供的原话
-candidate:server/portal.mjs:479:18,js-cjk-literal,server/portal.mjs,479,,unknown,reviewable,,不支持这个请求
-candidate:server/portal.mjs:481:16,js-cjk-literal,server/portal.mjs,481,,unknown,reviewable,,找不到这个操作
+candidate:server/portal.mjs:271:94,js-cjk-literal,server/portal.mjs,271,,unknown,reviewable,,请重新核对当前书房账户
+candidate:server/portal.mjs:274:41,js-cjk-literal,server/portal.mjs,274,,unknown,reviewable,,不支持这个请求
+candidate:server/portal.mjs:275:61,js-cjk-literal,server/portal.mjs,275,,unknown,reviewable,,请重新核对当前书房账户
+candidate:server/portal.mjs:280:27,js-cjk-literal,server/portal.mjs,280,,unknown,reviewable,,请先进入自己的书房
+candidate:server/portal.mjs:282:41,js-cjk-literal,server/portal.mjs,282,,unknown,reviewable,,不支持这个请求
+candidate:server/portal.mjs:283:61,js-cjk-literal,server/portal.mjs,283,,unknown,reviewable,,请重新核对当前书房账户
+candidate:server/portal.mjs:290:95,js-cjk-literal,server/portal.mjs,290,,unknown,reviewable,,这个登录方式正在准备中
+candidate:server/portal.mjs:294:146,js-cjk-literal,server/portal.mjs,294,,unknown,reviewable,,此书房尚未开启密码登录，可以使用验证码或本机书房
+candidate:server/portal.mjs:295:146,js-cjk-literal,server/portal.mjs,295,,unknown,reviewable,,此书房尚未开启密码设置
+candidate:server/portal.mjs:297:151,js-cjk-literal,server/portal.mjs,297,,unknown,reviewable,,此书房尚未开启密码设置
+candidate:server/portal.mjs:301:80,js-cjk-literal,server/portal.mjs,301,,unknown,reviewable,,本机书房只在本机模式可用
+candidate:server/portal.mjs:307:27,js-cjk-literal,server/portal.mjs,307,,unknown,reviewable,,请先进入自己的书房
+candidate:server/portal.mjs:308:149,js-cjk-literal,server/portal.mjs,308,,unknown,reviewable,,线上版本尚未准备好，请稍后重新读取接入配置。
+candidate:server/portal.mjs:309:35,js-cjk-literal,server/portal.mjs,309,,unknown,reviewable,,本机接入配置只能在运行 Leafhour 的电脑上读取。远程接入尚未支持。
+candidate:server/portal.mjs:318:446,js-cjk-literal,server/portal.mjs,318,,unknown,reviewable,,不支持这个请求
+candidate:server/portal.mjs:320:45,js-cjk-literal,server/portal.mjs,320,,unknown,reviewable,,此书房使用本机上传
+candidate:server/portal.mjs:324:48,js-cjk-literal,server/portal.mjs,324,,unknown,reviewable,,此书房使用本机上传
+candidate:server/portal.mjs:328:27,js-cjk-literal,server/portal.mjs,328,,unknown,reviewable,,请先进入自己的书房
+candidate:server/portal.mjs:328:187,js-cjk-literal,server/portal.mjs,328,,unknown,reviewable,,文件编码不正确
+candidate:server/portal.mjs:342:27,js-cjk-literal,server/portal.mjs,342,,unknown,reviewable,,请先进入自己的书房
+candidate:server/portal.mjs:342:98,js-cjk-literal,server/portal.mjs,342,,unknown,reviewable,,请重新核对当前书房账户
+candidate:server/portal.mjs:344:41,js-cjk-literal,server/portal.mjs,344,,unknown,reviewable,,不支持这个请求
+candidate:server/portal.mjs:357:164,js-cjk-literal,server/portal.mjs,357,,unknown,reviewable,,这份阅读包较大，请从赠书信页面分段下载
+candidate:server/portal.mjs:371:25,js-cjk-literal,server/portal.mjs,371,,unknown,reviewable,,不支持这个请求
+candidate:server/portal.mjs:457:120,js-cjk-literal,server/portal.mjs,457,,unknown,reviewable,,本书尚未开启探索体验统计
+candidate:server/portal.mjs:458:175,js-cjk-literal,server/portal.mjs,458,,unknown,reviewable,,请选择这本书的记录包
+candidate:server/portal.mjs:459:99,js-cjk-literal,server/portal.mjs,459,,unknown,reviewable,,这本书的探索体验尚未接入，可以按段翻译并保存自己的笔记
+candidate:server/portal.mjs:466:43,js-cjk-literal,server/portal.mjs,466,,unknown,reviewable,,不支持这个请求
+candidate:server/portal.mjs:471:430,js-cjk-literal,server/portal.mjs,471,,unknown,reviewable,,找不到这个工具
+candidate:server/portal.mjs:474:30,js-cjk-literal,server/portal.mjs,474,,unknown,reviewable,,此实例暂未开启听读，请在本机书房使用。
+candidate:server/portal.mjs:480:20,js-cjk-literal,server/portal.mjs,480,,unknown,reviewable,,不支持这个听读操作
+candidate:server/portal.mjs:489:86,js-cjk-literal,server/portal.mjs,489,,unknown,reviewable,,只保存用户明确提供的原话
+candidate:server/portal.mjs:490:18,js-cjk-literal,server/portal.mjs,490,,unknown,reviewable,,不支持这个请求
+candidate:server/portal.mjs:492:16,js-cjk-literal,server/portal.mjs,492,,unknown,reviewable,,找不到这个操作
 candidate:server/preference-memory.mjs:5:97,js-cjk-literal,server/preference-memory.mjs,5,,unknown,reviewable,,阅读偏好记录无法识别，已保持原样
 candidate:server/preference-memory.mjs:15:245,js-cjk-literal,server/preference-memory.mjs,15,,unknown,reviewable,,阅读偏好请求格式不正确
 candidate:server/preference-memory.mjs:16:56,js-cjk-literal,server/preference-memory.mjs,16,,unknown,reviewable,,阅读偏好已在另一处更新，请读取最新版本
@@ -5498,33 +5509,33 @@ candidate:server/scoped-agent-reading.mjs:94:172,js-cjk-literal,server/scoped-ag
 candidate:server/scoped-agent-reading.mjs:94:241,js-cjk-literal,server/scoped-agent-reading.mjs,94,,unknown,reviewable,,找不到当前授权段落
 candidate:server/scoped-agent-reading.mjs:102:238,js-cjk-literal,server/scoped-agent-reading.mjs,102,,unknown,reviewable,,阅读记录只记录投入和用户自己的标记，Agent 访问不计入阅读时间，时长不证明理解
 candidate:server/scoped-agent-reading.mjs:107:13,js-cjk-literal,server/scoped-agent-reading.mjs,107,,unknown,reviewable,,找不到这个读取操作
-candidate:server/server.mjs:93:168,js-cjk-literal,server/server.mjs,93,,unknown,reviewable,,阅读位置无法对应当前章节
-candidate:server/server.mjs:94:188,js-cjk-literal,server/server.mjs,94,,unknown,reviewable,,阅读偏好格式不正确
-candidate:server/server.mjs:95:81,js-cjk-literal,server/server.mjs,95,,unknown,reviewable,,阅读偏好格式不正确
-candidate:server/server.mjs:99:155,js-cjk-literal,server/server.mjs,99,,unknown,reviewable,,记录无法安全对应原文
-candidate:server/server.mjs:100:52,js-cjk-literal,server/server.mjs,100,,unknown,reviewable,,记录不属于这本书
-candidate:server/server.mjs:101:47,js-cjk-literal,server/server.mjs,101,,unknown,reviewable,,用户原话与其他内容需要分开
-candidate:server/server.mjs:103:109,js-cjk-literal,server/server.mjs,103,,unknown,reviewable,,记录的来源版本不兼容
-candidate:server/server.mjs:104:74,js-cjk-literal,server/server.mjs,104,,unknown,reviewable,,记录日期不正确
-candidate:server/server.mjs:111:80,js-cjk-literal,server/server.mjs,111,,unknown,reviewable,,需要JSON记录
-candidate:server/server.mjs:112:106,js-cjk-literal,server/server.mjs,112,,unknown,reviewable,,记录包过大
-candidate:server/server.mjs:112:219,js-cjk-literal,server/server.mjs,112,,unknown,reviewable,,记录包不是有效JSON
-candidate:server/server.mjs:121:40,js-cjk-literal,server/server.mjs,121,,unknown,reviewable,,当前地址未授权
-candidate:server/server.mjs:127:159,js-cjk-literal,server/server.mjs,127,,unknown,reviewable,,旧样书入口仅用于本机；请从自己的书房进入
-candidate:server/server.mjs:130:72,js-cjk-literal,server/server.mjs,130,,unknown,reviewable,,请求来源未授权
-candidate:server/server.mjs:137:246,js-cjk-literal,server/server.mjs,137,,unknown,reviewable,,找不到这条高亮
-candidate:server/server.mjs:139:195,js-cjk-literal,server/server.mjs,139,,unknown,reviewable,,找不到自己的这条记录
-candidate:server/server.mjs:142:175,js-cjk-literal,server/server.mjs,142,,unknown,reviewable,,记录ID冲突
-candidate:server/server.mjs:146:131,js-cjk-literal,server/server.mjs,146,,unknown,reviewable,,请选择这本书的个人记录包
-candidate:server/server.mjs:147:90,js-cjk-literal,server/server.mjs,147,,unknown,reviewable,,记录数量或格式不正确
-candidate:server/server.mjs:149:118,js-cjk-literal,server/server.mjs,149,,unknown,reviewable,,高亮格式不正确
-candidate:server/server.mjs:150:96,js-cjk-literal,server/server.mjs,150,,unknown,reviewable,,时段格式不正确
-candidate:server/server.mjs:151:331,js-cjk-literal,server/server.mjs,151,,unknown,reviewable,,时段格式不正确
-candidate:server/server.mjs:155:20,js-cjk-literal,server/server.mjs,155,,unknown,reviewable,,找不到这个操作
-candidate:server/server.mjs:157:61,js-cjk-literal,server/server.mjs,157,,unknown,reviewable,,不支持这个请求
-candidate:server/server.mjs:167:18,js-cjk-literal,server/server.mjs,167,,unknown,reviewable,,找不到这个页面
-candidate:server/server.mjs:168:60,js-cjk-literal,server/server.mjs,168,,unknown,reviewable,,服务暂时无法完成操作
-candidate:server/server.mjs:185:119,js-cjk-literal,server/server.mjs,185,,unknown,reviewable,,Leafhour 已启动：http://
+candidate:server/server.mjs:95:168,js-cjk-literal,server/server.mjs,95,,unknown,reviewable,,阅读位置无法对应当前章节
+candidate:server/server.mjs:96:188,js-cjk-literal,server/server.mjs,96,,unknown,reviewable,,阅读偏好格式不正确
+candidate:server/server.mjs:97:81,js-cjk-literal,server/server.mjs,97,,unknown,reviewable,,阅读偏好格式不正确
+candidate:server/server.mjs:101:155,js-cjk-literal,server/server.mjs,101,,unknown,reviewable,,记录无法安全对应原文
+candidate:server/server.mjs:102:52,js-cjk-literal,server/server.mjs,102,,unknown,reviewable,,记录不属于这本书
+candidate:server/server.mjs:103:47,js-cjk-literal,server/server.mjs,103,,unknown,reviewable,,用户原话与其他内容需要分开
+candidate:server/server.mjs:105:109,js-cjk-literal,server/server.mjs,105,,unknown,reviewable,,记录的来源版本不兼容
+candidate:server/server.mjs:106:74,js-cjk-literal,server/server.mjs,106,,unknown,reviewable,,记录日期不正确
+candidate:server/server.mjs:113:80,js-cjk-literal,server/server.mjs,113,,unknown,reviewable,,需要JSON记录
+candidate:server/server.mjs:114:106,js-cjk-literal,server/server.mjs,114,,unknown,reviewable,,记录包过大
+candidate:server/server.mjs:114:219,js-cjk-literal,server/server.mjs,114,,unknown,reviewable,,记录包不是有效JSON
+candidate:server/server.mjs:123:40,js-cjk-literal,server/server.mjs,123,,unknown,reviewable,,当前地址未授权
+candidate:server/server.mjs:129:159,js-cjk-literal,server/server.mjs,129,,unknown,reviewable,,旧样书入口仅用于本机；请从自己的书房进入
+candidate:server/server.mjs:132:72,js-cjk-literal,server/server.mjs,132,,unknown,reviewable,,请求来源未授权
+candidate:server/server.mjs:139:246,js-cjk-literal,server/server.mjs,139,,unknown,reviewable,,找不到这条高亮
+candidate:server/server.mjs:141:195,js-cjk-literal,server/server.mjs,141,,unknown,reviewable,,找不到自己的这条记录
+candidate:server/server.mjs:144:175,js-cjk-literal,server/server.mjs,144,,unknown,reviewable,,记录ID冲突
+candidate:server/server.mjs:148:131,js-cjk-literal,server/server.mjs,148,,unknown,reviewable,,请选择这本书的个人记录包
+candidate:server/server.mjs:149:90,js-cjk-literal,server/server.mjs,149,,unknown,reviewable,,记录数量或格式不正确
+candidate:server/server.mjs:151:118,js-cjk-literal,server/server.mjs,151,,unknown,reviewable,,高亮格式不正确
+candidate:server/server.mjs:152:96,js-cjk-literal,server/server.mjs,152,,unknown,reviewable,,时段格式不正确
+candidate:server/server.mjs:153:331,js-cjk-literal,server/server.mjs,153,,unknown,reviewable,,时段格式不正确
+candidate:server/server.mjs:157:20,js-cjk-literal,server/server.mjs,157,,unknown,reviewable,,找不到这个操作
+candidate:server/server.mjs:159:61,js-cjk-literal,server/server.mjs,159,,unknown,reviewable,,不支持这个请求
+candidate:server/server.mjs:176:18,js-cjk-literal,server/server.mjs,176,,unknown,reviewable,,找不到这个页面
+candidate:server/server.mjs:177:60,js-cjk-literal,server/server.mjs,177,,unknown,reviewable,,服务暂时无法完成操作
+candidate:server/server.mjs:194:119,js-cjk-literal,server/server.mjs,194,,unknown,reviewable,,Leafhour 已启动：http://
 candidate:server/source-revisions.mjs:9:141,js-cjk-literal,server/source-revisions.mjs,9,,unknown,reviewable,,原文版本已变化，请重新打开后校对
 candidate:server/source-revisions.mjs:10:134,js-cjk-literal,server/source-revisions.mjs,10,,unknown,reviewable,,校对操作或修改数量无效
 candidate:server/source-revisions.mjs:11:100,js-cjk-literal,server/source-revisions.mjs,11,,unknown,reviewable,,重提取与人工修改须分别生成修订
@@ -5556,5 +5567,130 @@ candidate:server/translation.mjs:10:167,js-cjk-literal,server/translation.mjs,10
 candidate:server/translation.mjs:17:56,js-cjk-literal,server/translation.mjs,17,,unknown,reviewable,,翻译服务繁忙，请稍后重试
 candidate:server/translation.mjs:17:71,js-cjk-literal,server/translation.mjs,17,,unknown,reviewable,,翻译暂时失败，原文仍可阅读
 candidate:server/translation.mjs:18:184,js-cjk-literal,server/translation.mjs,18,,unknown,reviewable,,翻译格式未通过检查，请重试
+candidate:server/ui-first-paint-script.mjs:2:36,js-cjk-literal,server/ui-first-paint-script.mjs,2,,unknown,protected,path+quotation,"(()=>{const UI_LOCALES=[""en"",""zh-Hans"",""zh-Hant"",""ja""];const UI_PREFERENCES=[""system"",""en"",""zh-Hans"",""zh-Hant"",""ja""];const DEFAULT_UI_LOCALE=""en"";const UI_PARAM=""ui"";const UI_PREFERENCE_KEY=""leafhour.ui.locale.v1"";const UI_SESSION_PREFERENCE_KEY=""leafhour.ui.locale.session.v1"";const UI_HINT_COOKIE=""leafhour.ui.hint.v1"";const UI_ENTRY_PATHS={""/"":""/_ui/home"",""/library"":""/_ui/library"",""/read"":""/_ui/read""};const UI_FIRST_PAINT_COPY={""en"":{""failed"":""The selected language could not load."",""retry"":""Reload"",""back"":""Reading room""},""zh-Hans"":{""failed"":""所选语言暂时无法加载。"",""retry"":""重新载入"",""back"":""返回书房""},""zh-Hant"":{""failed"":""所選語言暫時無法載入。"",""retry"":""重新載入"",""back"":""返回書房""},""ja"":{""failed"":""選択した言語を読み込めませんでした。"",""retry"":""再読み込み"",""back"":""書斎へ戻る""}};const isUiLocale=function isUiLocale(value){
+  return typeof value==='string'&&UI_LOCALES.includes(value);
+};
+const isUiPreference=value=>value==='system'||isUiLocale(value);
+const normalizeUiLocale=function normalizeUiLocale(value){
+  if(typeof value!=='string')return null;
+  // Validate BCP-47 before mapping: scripts/regions belong to navigator only,
+  // never to the four-code URL grammar. Explicit Chinese script wins region.
+  try{
+    const locale=new Intl.Locale(value);
+    if(!/^(?:en|ja|zh)(?:-[A-Z][a-z]{3})?(?:-(?:[A-Z]{2}|\d{3}))?$/.test(locale.baseName))return null;
+    if(locale.language==='en'||locale.language==='ja')return locale.language;
+    if(locale.language==='zh'){
+      if(locale.script)return locale.script==='Hant'?'zh-Hant':locale.script==='Hans'?'zh-Hans':null;
+      return ['TW','HK','MO'].includes(locale.region)?'zh-Hant':'zh-Hans';
+    }
+  }catch{}
+  return null;
+};
+const browserUiLocale=function browserUiLocale(languages){
+  if(typeof languages==='string')languages=[languages];
+  if(!Array.isArray(languages))return DEFAULT_UI_LOCALE;
+  for(const candidate of languages){
+    const code=normalizeUiLocale(candidate);
+    if(code)return code;
+  }
+  return DEFAULT_UI_LOCALE;
+};
+const parseUiParam=function parseUiParam(search){
+  let params;
+  try{params=typeof search==='string'?new URLSearchParams(search):search&&typeof search.entries==='function'?search:null;}catch{return {status:'invalid',code:null};}
+  if(!params)return {status:'invalid',code:null};
+  const all=[];
+  try{for(const [key,value] of params.entries())if(key===UI_PARAM)all.push(value);}catch{return {status:'invalid',code:null};}
+  if(!all.length)return {status:'absent',code:null};
+  const codes=all.map(value=>isUiLocale(value)?value:null);
+  if(all.length>1){
+    const unique=new Set(codes.map(code=>code||'\u0000'));
+    return {status:unique.size>1?'conflict':'duplicate',code:null};
+  }
+  if(!codes[0])return {status:'unsupported',code:null};
+  return {status:'valid',code:codes[0]};
+};
+const encodeUiLanguageHint=function encodeUiLanguageHint({preference=null,browserLocale}={}){
+ if(preference!==null&&!isUiPreference(preference)||!isUiLocale(browserLocale))return null;
+ return '1.'+(preference||'-')+'.'+browserLocale;
+};
+const parseUiLanguageHint=function parseUiLanguageHint(value){
+ if(typeof value!=='string'||value.length>48)return null;
+ const match=/^1\.(system|en|zh-Hans|zh-Hant|ja|-)\.(en|zh-Hans|zh-Hant|ja)$/.exec(value);
+ return match?{preference:match[1]==='-'?null:match[1],browserLocale:match[2]}:null;
+};
+const readInitialUiDecision=function readInitialUiDecision(document){
+ const root=document?.documentElement;if(!root?.getAttribute)return null;
+ const locale=root.getAttribute('data-ui-initial-locale'),source=root.getAttribute('data-ui-initial-source'),raw=root.getAttribute('data-ui-initial-preference'),preference=raw||null;
+ if(!isUiLocale(locale)||!['page','account','device','browser'].includes(source)||preference!==null&&!isUiPreference(preference))return null;
+ if(source==='account'&&preference===null||source==='device'&&preference===null||source==='page'&&preference!==locale||source==='browser'&&preference!==null)return null;
+ if(preference!==null&&preference!=='system'&&preference!==locale)return null;
+ const owner=source==='account'?root.getAttribute('data-ui-initial-owner'):null;
+ if(source==='account'&&(typeof owner!=='string'||!owner||owner.length>512||/[\u0000-\u001f\u007f]/.test(owner)))return null;
+ const rawHint=root.getAttribute('data-ui-device-hint');
+ return {locale,source,preference,ownerId:owner||null,deviceHint:parseUiLanguageHint(rawHint)?rawHint:null};
+};
+const canonicalUiEntryPath=function canonicalUiEntryPath(pathname){if(typeof pathname!=='string')return null;if(Object.hasOwn(UI_ENTRY_PATHS,pathname))return pathname;return Object.keys(UI_ENTRY_PATHS).find(key=>UI_ENTRY_PATHS[key]===pathname)||null;};
+const internalUiEntryPath=function internalUiEntryPath(pathname){const canonical=canonicalUiEntryPath(pathname);return canonical===null?null:UI_ENTRY_PATHS[canonical];};
+const readHintCookie=function readHintCookie(document){
+ try{const rows=String(document.cookie||'').split(';').map(row=>row.trim()).filter(row=>row.startsWith(UI_HINT_COOKIE+'='));return rows.length===1?parseUiLanguageHint(rows[0].slice(UI_HINT_COOKIE.length+1)):null;}catch{return null;}
+};
+const mirrorUiLanguageHint=function mirrorUiLanguageHint({document=globalThis.document,location=globalThis.location,storage,languages}={}){
+ if(!document)return {hint:null,preference:null,browserLocale:'en',written:false};
+ const previous=readHintCookie(document)||parseUiLanguageHint(readInitialUiDecision(document)?.deviceHint);
+ let preference=null;
+ try{const value=(storage===undefined?globalThis.localStorage:storage)?.getItem?.(UI_PREFERENCE_KEY);preference=isUiPreference(value)?value:null;}catch{preference=previous?.preference||null;}
+ const browserLocale=browserUiLocale(languages??(globalThis.navigator?.languages?.length?globalThis.navigator.languages:[globalThis.navigator?.language].filter(Boolean)));
+ const hint=encodeUiLanguageHint({preference,browserLocale});
+ try{document.cookie=UI_HINT_COOKIE+'='+hint+'; Path=/; Max-Age=31536000; SameSite=Lax'+(location?.protocol==='https:'?'; Secure':'');}catch{}
+ const saved=readHintCookie(document);
+ return {hint,preference,browserLocale,written:!!saved&&encodeUiLanguageHint(saved)===hint};
+};
+const showUiStartFailure=function showUiStartFailure(document,locale,target){
+ const root=document?.documentElement;if(!root)return;
+ const copy=UI_FIRST_PAINT_COPY[locale]||UI_FIRST_PAINT_COPY.en;
+ root.hidden=false;root.lang=locale;
+ const render=()=>{
+  if(!document.body){setTimeout(render,0);return;}
+  let section=document.getElementById?.('ui-first-paint-error');
+  if(!section){section=document.createElement('section');section.id='ui-first-paint-error';section.setAttribute('role','alert');section.className='loading-state';const p=document.createElement('p'),retry=document.createElement('a'),back=document.createElement('a');p.textContent=copy.failed;retry.textContent=copy.retry;retry.href=target;back.textContent=copy.back;back.href='/library?ui='+locale;section.append(p,retry,document.createElement('br'),back);const host=document.getElementById?.('book-page')||document.getElementById?.('library-view')||document.body;host.replaceChildren(section);}
+ };
+ render();
+};
+const navigateUiDocument=function navigateUiDocument(options,document,location,locale,target){
+ const root=document.documentElement;root.setAttribute('data-ui-handoff','');root.hidden=true;
+ const schedule=options.setTimeout||globalThis.setTimeout,cancel=options.clearTimeout||globalThis.clearTimeout;
+ const timer=schedule(()=>showUiStartFailure(document,locale,target),8000);
+ (options.view??globalThis.window)?.addEventListener?.('pagehide',()=>cancel(timer),{once:true});
+ try{location.replace(target);}catch{cancel(timer);showUiStartFailure(document,locale,target);return {kind:'failed',reason:'navigation',locale};}
+ return {kind:'handoff',locale,target};
+};
+const runUiFirstPaintHandoff=function runUiFirstPaintHandoff(options={}){
+ const document=options.document??globalThis.document,location=options.location??globalThis.location,initial=readInitialUiDecision(document);
+ if(!initial)return {kind:'continue',reason:'no-initial-decision'};
+ let address;try{address=new URL(location.href);}catch{return {kind:'continue',reason:'no-location'};}
+ const canonical=canonicalUiEntryPath(address.pathname);
+ if(canonical!==null&&canonical!==address.pathname){const target=new URL(address.href);target.pathname=canonical;try{const history=options.history??globalThis.history;history.replaceState(history.state??null,'',target.href);}catch{return navigateUiDocument(options,document,location,initial.locale,target.href);}}
+ const hint=mirrorUiLanguageHint({...options,document,location});
+ if(document.documentElement.getAttribute('data-ui-session-handoff')==='true'){
+  const target=new URL(location.href),path=internalUiEntryPath(target.pathname);if(!path)return {kind:'continue',reason:'unknown-entry'};target.pathname=path;return navigateUiDocument(options,document,location,initial.locale,target.href);
+ }
+ if(initial.source==='page'||initial.source==='account'&&initial.preference!=='system')return {kind:'continue',locale:initial.locale};
+ let session=null;
+ try{const value=(options.sessionStorage===undefined?globalThis.sessionStorage:options.sessionStorage)?.getItem?.(UI_SESSION_PREFERENCE_KEY);if(isUiPreference(value))session=value;}catch{}
+ const preference=initial.source==='account'?initial.preference:session||hint.preference;
+ const locale=preference&&preference!=='system'?preference:hint.browserLocale;
+ if(locale===initial.locale)return {kind:'continue',locale};
+ let next;try{next=new URL(location.href);if(!['http:','https:'].includes(next.protocol))return {kind:'continue',reason:'non-web'};}catch{return {kind:'continue',reason:'no-location'};}
+ const query=parseUiParam(next.search);
+ const root=document.documentElement;root.setAttribute('data-ui-handoff','');root.hidden=true;
+ if(query.status==='valid'&&query.code===locale){showUiStartFailure(document,locale,next.href);return {kind:'failed',reason:'stale-document',locale};}
+ let repeated=false;
+ const guard=next.origin+next.pathname+'|'+locale+'|'+hint.hint;
+ try{const store=options.sessionStorage===undefined?globalThis.sessionStorage:options.sessionStorage;repeated=store?.getItem?.('leafhour.ui.hint.handoff.v1')===guard;store?.setItem?.('leafhour.ui.hint.handoff.v1',guard);}catch{}
+ if(!hint.written||session||repeated){next.searchParams.delete('ui');next.searchParams.append('ui',locale);}
+ const path=internalUiEntryPath(next.pathname);if(!path){showUiStartFailure(document,locale,next.href);return {kind:'failed',reason:'unknown-entry',locale};}next.pathname=path;
+ return navigateUiDocument(options,document,location,locale,next.href);
+};;runUiFirstPaintHandoff();})();"
 candidate:server/verified-source.mjs:6:143,js-cjk-literal,server/verified-source.mjs,6,,unknown,reviewable,,原文件引用无法核验
 candidate:server/verified-source.mjs:11:67,js-cjk-literal,server/verified-source.mjs,11,,unknown,reviewable,,原文件引用无法核验

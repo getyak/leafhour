@@ -28,6 +28,8 @@
 // only its own pending request and can never tear down a newer picker.
 import {UI_LOCALES,DEFAULT_UI_LOCALE,UI_PREFERENCE_KEY,UI_SESSION_PREFERENCE_KEY,isUiLocale,isUiPreference,resolveUiPreference,browserUiLocale,parseUiParam,withUiParam,withoutUiParam,readUiParam,mergeOwnedUi,classifyUiRoute,uiNavigationContext,sameUiNavigationContext} from './ui-locale-codec.mjs';
 import englishCatalogue from './ui-catalogs/en.mjs';
+import {readInitialUiDecision} from './ui-first-paint-codec.mjs';
+import {settleInitialUi,mirrorUiLanguageHint,readVerifiedUiSession} from './ui-first-paint-bootstrap.mjs';
 import {createBrowserAccountUiPreferences} from './account-ui-preferences-browser.mjs';
 
 export const UI_LOCALE_ATTEMPT_MS=3000;
@@ -135,7 +137,9 @@ export function createUiLocale({
   setDocumentLang=null,
   timers={setTimeout:(fn,ms)=>setTimeout(fn,ms),clearTimeout:id=>clearTimeout(id)},
   reportFault=()=>{},
-  english=englishCatalogue
+  english=englishCatalogue,
+  initialAccountPreference=null,
+  initialDevicePreference=null
 }={}){
   if(typeof loadCatalogue!=='function')throw Error('createUiLocale requires a catalogue loader');
   const englishData=validateUiCatalogue(english,'en',english);
@@ -145,7 +149,7 @@ export function createUiLocale({
   const languageListeners=new Set(),stateListeners=new Set(),faultListeners=new Set(),beforePopListeners=new Set(),manualIntentListeners=new Set(),manualCommitListeners=new Set(),roots=new Set();
   let generation=0,currentRequest=null,firstSettled=false,uiReadyResolve=null,started=false,startPromise=null;
   let intentToken=0,retryIntentToken=null;
-  let accountPreference=null,manualPreference=null,retryDecision=null,pendingChoice=null,pickerPromise=null,sessionRetry=null,lastPickerPreference=null;
+  let accountPreference=isUiPreference(initialAccountPreference)?initialAccountPreference:null,manualPreference=null,retryDecision=null,pendingChoice=null,pickerPromise=null,sessionRetry=null,lastPickerPreference=null;
   const uiReady=new Promise(resolve=>{uiReadyResolve=resolve;});
   const state={
     preference:'system',preferenceSource:'default',source:'default',pendingPreference:null,persistenceScope:null,
@@ -226,7 +230,7 @@ export function createUiLocale({
   const readSessionPreference=()=>{try{const value=sessionStorage?.getItem?.(UI_SESSION_PREFERENCE_KEY);return isUiPreference(value)?value:null;}catch{return null;}};
   const readPreference=()=>{
     const session=readSessionPreference();if(session)return session;
-    try{const value=storage?.getItem?.(UI_PREFERENCE_KEY);return isUiPreference(value)?value:null;}catch{return null;}
+    try{if(!storage||typeof storage.getItem!=='function')return isUiPreference(initialDevicePreference)?initialDevicePreference:null;const value=storage.getItem(UI_PREFERENCE_KEY);return isUiPreference(value)?value:null;}catch{return isUiPreference(initialDevicePreference)?initialDevicePreference:null;}
   };
   const resolveTarget=({account=accountPreference,manual=manualPreference,page=true}={})=>{
     const choice=resolveUiPreference({manual,account,device:readPreference()});
@@ -604,19 +608,26 @@ function browserLanguages(){
   const nav=globalThis.navigator;
   return nav?.languages?.length?nav.languages:[nav?.language].filter(Boolean);
 }
+const stampedInitialUi=readInitialUiDecision(globalThis.document);
+const initialRoute=classifyUiRoute(globalThis.location?.pathname||'/');
+const initialUi=stampedInitialUi||(initialRoute.kind!=='canonical'?{locale:initialRoute.code,source:'page',preference:initialRoute.code,ownerId:null,deviceHint:null}:null);
+let initialUiSettled=!initialUi;
 export const uiLocale=createUiLocale({
   loadCatalogue:browserCatalogueLoader(),
+  initialAccountPreference:stampedInitialUi?.source==='account'?stampedInitialUi.preference:null,
+  initialDevicePreference:stampedInitialUi?.source==='device'?stampedInitialUi.preference:null,
   storage:browserStorage(),
   sessionStorage:browserSessionStorage(),
   getLanguages:browserLanguages,
   history:globalThis.history||null,
   getLocation:()=>({href:globalThis.location?.href||''}),
   getHistoryState:()=>globalThis.history?.state,
-  setDocumentLang:code=>{if(globalThis.document?.documentElement)globalThis.document.documentElement.lang=code;}
+  setDocumentLang:code=>{if(globalThis.document?.documentElement&&(initialUiSettled||!initialUi||code===initialUi.locale))globalThis.document.documentElement.lang=code;}
 });
 
-const browserAccountUi=createBrowserAccountUiPreferences({runtime:uiLocale});
-export const adoptUiOwner=owner=>browserAccountUi.adoptOwner(owner);
+const browserAccountUi=createBrowserAccountUiPreferences({runtime:uiLocale,initialDecision:stampedInitialUi});
+export const readUiSession=options=>readVerifiedUiSession(options);
+export const adoptUiOwner=(owner,{verified=true}={})=>verified?browserAccountUi.adoptOwner(owner):Promise.resolve({adopted:false});
 
 export const t=(id,params)=>uiLocale.t(id,params);
 export const createUiLabels=(translate=t)=>uiLocale.createUiLabels(translate);
@@ -642,7 +653,9 @@ export const requestUiRoute=code=>uiLocale.requestUiRoute(code);
 // same uiReady (or falls back to the statically complete English catalogue),
 // and the initial transaction runs exactly once per document.
 if(globalThis.document&&globalThis.location){
-  uiLocale.initializeOnce();
+  if(initialUi){await settleInitialUi(uiLocale,{initialDecision:initialUi});initialUiSettled=true;document.documentElement.lang=uiLocale.getUiLocale();}
+  else uiLocale.initializeOnce();
+  mirrorUiLanguageHint();uiLocale.onUiLocaleStateChange(()=>mirrorUiLanguageHint());
   if(classifyUiRoute(globalThis.location.pathname||uiNavigationContext(String(globalThis.location.href||'')).pathname).kind==='support')void browserAccountUi.verifySupportOwner();
   globalThis.addEventListener?.('popstate',()=>{void uiLocale.handlePopstate();});
   globalThis.addEventListener?.('languagechange',()=>{void uiLocale.handleLanguagechange();});

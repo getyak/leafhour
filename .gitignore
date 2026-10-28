@@ -30,3 +30,6 @@ apps/ios/Config/Signing.local.xcconfig
 # Offline source-parser caches
 __pycache__/
 *.py[cod]
+
+# Private generated canonical HTML; never publish over language-aware routes.
+.ui-entry/

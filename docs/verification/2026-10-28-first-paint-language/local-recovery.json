@@ -1,0 +1,21 @@
+{
+  "pass": true,
+  "results": [
+    {
+      "name": "blocked-cookie-legacy-device",
+      "pass": true
+    },
+    {
+      "name": "blocked-storage-cookie-seed",
+      "pass": true
+    },
+    {
+      "name": "failed-catalogue-keeps-selected-native-retry",
+      "pass": true
+    },
+    {
+      "name": "manual-selection-account-and-fresh-device-reentry",
+      "pass": true
+    }
+  ]
+}

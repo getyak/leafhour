@@ -1,0 +1,77 @@
+{
+  "pass": true,
+  "results": [
+    {
+      "name": "explicit-en",
+      "expected": "en",
+      "paintSamples": 37,
+      "wrongLanguageSamples": 0,
+      "firstPaintMs": 141,
+      "refresh": true
+    },
+    {
+      "name": "explicit-zh-Hans",
+      "expected": "zh-Hans",
+      "paintSamples": 179,
+      "wrongLanguageSamples": 0,
+      "firstPaintMs": 89,
+      "refresh": true
+    },
+    {
+      "name": "explicit-zh-Hant",
+      "expected": "zh-Hant",
+      "paintSamples": 183,
+      "wrongLanguageSamples": 0,
+      "firstPaintMs": 154,
+      "refresh": true
+    },
+    {
+      "name": "explicit-ja",
+      "expected": "ja",
+      "paintSamples": 177,
+      "wrongLanguageSamples": 0,
+      "firstPaintMs": 114,
+      "refresh": true
+    },
+    {
+      "name": "legacy-device-ja",
+      "expected": "ja",
+      "paintSamples": 193,
+      "wrongLanguageSamples": 0,
+      "firstPaintMs": 176,
+      "refresh": true
+    },
+    {
+      "name": "account-ja-over-device-en",
+      "expected": "ja",
+      "paintSamples": 182,
+      "wrongLanguageSamples": 0,
+      "firstPaintMs": 107,
+      "refresh": true
+    },
+    {
+      "name": "system-traditional",
+      "expected": "zh-Hant",
+      "paintSamples": 178,
+      "wrongLanguageSamples": 0,
+      "firstPaintMs": 86,
+      "refresh": true
+    },
+    {
+      "name": "reader-ja",
+      "expected": "ja",
+      "paintSamples": 177,
+      "wrongLanguageSamples": 0,
+      "firstPaintMs": 78,
+      "refresh": true
+    },
+    {
+      "name": "root-account-ja",
+      "expected": "ja",
+      "paintSamples": 113,
+      "wrongLanguageSamples": 0,
+      "firstPaintMs": 126,
+      "refresh": false
+    }
+  ]
+}

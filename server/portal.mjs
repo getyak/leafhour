@@ -25,6 +25,8 @@ import {createDialogueGenerator} from './dialogue-generator.mjs';
 import {createGuideGenerator} from './listening-guide-generator.mjs';
 import {createAudioRoutes} from './audio-routes.mjs';
 import {portalDocument} from './portal-document.mjs';
+import {selectInitialUiLanguage,fallbackInitialUiLanguage,initialRetryDocument,needsUiSessionHandoff,sessionUiHandoffDocument} from './ui-first-paint.mjs';
+import {canonicalUiEntryPath} from '../app/ui-first-paint-codec.mjs';
 import {roomExcerpt,latestRoomQuestion} from '../app/library-workspace.mjs';
 import {createReaderChatService} from './reader-chat.mjs';
 import {createReaderChatGenerator,createReaderAnnotationGenerator} from './reader-chat-generator.mjs';
@@ -119,7 +121,8 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
   async function handleRequest({req,res,url,send,requestState}){
     if(await remoteMcp.handle({req,res,url,send}))return true;
     const presenceReceivedAt=url.pathname==='/api/library/daily-reading/presence'?Date.now():null;
-    const p=url.pathname;
+    const entryPath=canonicalUiEntryPath(url.pathname),internalEntry=entryPath!==null&&entryPath!==url.pathname,p=entryPath||url.pathname,documentUrl=new URL(url);if(entryPath)documentUrl.pathname=entryPath;if(internalEntry)res.setHeader('X-Robots-Tag','noindex, nofollow, noarchive');
+    if((p==='/library.html'||p==='/read.html')&&['GET','HEAD'].includes(req.method)){res.statusCode=308;res.setHeader('Location',p.slice(0,-5)+url.search);res.end();return true;}
     if(p==='/api/webhooks/creem')return billingRoutes.webhook({req,send});
     const commerce=p.match(/^\/(?:(en|zh-hans|zh-hant|ja)\/)?(pricing|terms|refunds)$/);
     if(commerce){if(!['GET','HEAD'].includes(req.method))throw fail('不支持这个请求',405);send(200,commercePage({kind:commerce[2],locale:({'zh-hans':'zh-Hans','zh-hant':'zh-Hant'})[commerce[1]]||commerce[1]||'en',billingEnabled:billing.enabled}),'text/html');return true;}
@@ -137,7 +140,7 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
     // Query variants reuse the same backing catalogue; the browser runtime
     // owns its fixed base/retry import policy.
     for(const file of ['reader-audio.js','reader-audio-bootstrap.mjs','reader-audio-metadata.mjs','audio-state.mjs','listening-guide-state.mjs','action-focus.mjs'])files['/'+file]=file;
-    for(const file of ['ui-locale.mjs','ui-locale-codec.mjs','ui-locale-controls.mjs','ui-catalogs/en.mjs','ui-catalogs/zh-Hans.mjs','ui-catalogs/zh-Hant.mjs','ui-catalogs/ja.mjs'])files['/'+file]=file;
+    for(const file of ['ui-first-paint-codec.mjs','ui-first-paint-bootstrap.mjs','ui-locale.mjs','ui-locale-codec.mjs','ui-locale-controls.mjs','ui-catalogs/en.mjs','ui-catalogs/zh-Hans.mjs','ui-catalogs/zh-Hant.mjs','ui-catalogs/ja.mjs'])files['/'+file]=file;
     for(const file of ['library-portability.mjs','portable-chat.mjs','library-data.mjs','library-data.css','fflate.mjs','fflate-LICENSE.txt'])files['/'+file]=file;
     files['/document-source.mjs']='document-source.mjs';files['/pdf-ingestion.mjs']='pdf-ingestion.mjs';files['/pdf-onboarding.mjs']='pdf-onboarding.mjs';files['/pdf-onboarding-state.mjs']='pdf-onboarding-state.mjs';files['/book-transfer.mjs']='book-transfer.mjs';files['/book-upload-controller.mjs']='book-upload-controller.mjs';files['/chat-book-upload.mjs']='chat-book-upload.mjs';
     files['/source-review']='source-review.html';for(const file of ['source-review.mjs','source-review.css','source-revisions.mjs'])files['/'+file]=file;
@@ -192,6 +195,14 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
     for(const file of ['popover-controls.mjs','reader-book-actions-bootstrap.mjs'])files['/'+file]=file;
     if(!isAPI&&!files[p])return false;
     if(isAPI||p==='/billing'||p==='/admin/billing'||p==='/source-review'||p==='/library'||p==='/gift-preview'||safeGiftReturn(p))res.setHeader('X-Robots-Tag','noindex, nofollow, noarchive');
+    if(!isAPI&&(p==='/'||p==='/library')){
+      if(req.method!=='GET'&&req.method!=='HEAD')throw fail('不支持这个请求',405);
+      res.setHeader('Cache-Control','private, no-store');res.setHeader('Vary','Cookie, Accept-Language, Sec-Fetch-Site');
+      if(!internalEntry&&needsUiSessionHandoff({url,cookie:req.headers.cookie,secFetchSite:req.headers['sec-fetch-site']})){res.setHeader('X-Robots-Tag','noindex, nofollow, noarchive');send(200,sessionUiHandoffDocument(documentUrl,fallbackInitialUiLanguage({url:documentUrl,cookie:req.headers.cookie,acceptLanguage:req.headers['accept-language']})),'text/html');return true;}
+      try{const decision=await selectInitialUiLanguage({url:documentUrl,cookie:req.headers.cookie,acceptLanguage:req.headers['accept-language'],getUser:token=>auth.userFor(token),getAccountPreference:user=>uiPreferences.get(user)}),source=await readFile(path.join(root,'app/home.html'),'utf8');send(200,portalDocument(source,p,decision),'text/html');}
+      catch{res.setHeader('Retry-After','5');send(503,initialRetryDocument(documentUrl,fallbackInitialUiLanguage({url:documentUrl,cookie:req.headers.cookie,acceptLanguage:req.headers['accept-language']})),'text/html');}
+      return true;
+    }
     if(!isAPI){if(req.method!=='GET'&&req.method!=='HEAD')throw fail('不支持这个请求',405);const type=p==="/robots.txt"?"text/plain":p==="/sitemap.xml"?"application/xml":p.endsWith('.ttf')?'font/ttf':p.endsWith('.json')?'application/json':p.endsWith('.woff2')?'font/woff2':p.endsWith('.txt')?'text/plain':p.endsWith('.webp')?'image/webp':p.endsWith('.png')?'image/png':p.endsWith('.jpg')||p.endsWith('.jpeg')?'image/jpeg':p.endsWith('.svg')?'image/svg+xml':p.endsWith('.css')?'text/css':p.endsWith('.js')||p.endsWith('.mjs')?'text/javascript':'text/html';const file=await readFile(path.join(root,'app',files[p]));if(type.startsWith('font/')||type==='application/json'){res.writeHead(200,{'Content-Type':type,'Content-Length':file.length});res.end(req.method==='HEAD'?undefined:file);return true;}send(200,type==='text/html'?portalDocument(file.toString('utf8'),p):file,type);return true;}
     if(req.method!=='GET'&&req.method!=='POST')throw fail('不支持这个请求',405);
     // Hosted clients must be configured explicitly; Host only describes a local HTTP instance.

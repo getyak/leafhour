@@ -59,6 +59,8 @@ To keep personal data outside the source directory, set `READER_DATA_DIR` and ke
 
 Reading settings independently choose a close-reading or language-learning goal, a preferred language, a display mode and literal/interpretive translations; switching keeps your passage position and old records stay source-first. See [Reading goals and language](docs/reading-preferences.md).
 
+The opening screen uses the selected interface language on refresh and re-entry. This stays separate from a book’s reading language. See [interface-language preferences](docs/interface-language.md) and [initial-page loading and recovery](docs/i18n.md#application-interface-language).
+
 Saved thoughts and questions can be edited individually while keeping their creation time, quote and source position; when another edit conflicts, the newer words are read before an explicit save. Failed retries keep the new draft, and uncertain sources never guess a jump target. Behavior and draft backup boundaries are in [Editing your thoughts and questions](docs/personal-records.md).
 
 When you want AI, copy the single template [`.env.example`](.env.example) to `.env` and fill in the keys you need: `DEEPSEEK_API_KEY` for translation, reading conversation and lecture scripts, `GEMINI_API_KEY` for local speech. Models are preselected and reading alone needs no configuration. `npm start` reads the configuration and its startup message states what is configured, what still needs verification, and whether speech works in the current deployment. The same template holds commented-out hosting and advanced options; see [Configuration](docs/configuration.md).
