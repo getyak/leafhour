@@ -5,7 +5,7 @@ import {t,getUiLocale,uiHref,onUiLocaleChange,uiReady} from './ui-locale.mjs';
 const timeLabels=()=>Object.fromEntries([...Object.entries(READING_TIME_SOURCE_IDS).map(([key,id])=>[key,t(id)])]);
 const timeSourceLabel=value=>readingTimeSourceLabel(value,timeLabels());
 import {inferSourceLanguage} from './source-language.mjs';
-import {paintBookCover} from './book-binding.mjs';
+import {paintBookCover,paintBookIdentity,bookCoverLabel} from './book-cover-ui.mjs';
 import {mountReadingArrival} from './reading-arrival.mjs';
 import {calendarMonth,shiftReadingMonth,createCalendarRequestState,localReadingDate,readingTimeLabel} from './reading-calendar.mjs';
 import {readingBookUrl,readingWeek,latestReadingEntry,workspaceCurrentBook,loadWorkspaceActivity,roomQuestionUrl} from './library-workspace.mjs';
@@ -89,8 +89,8 @@ export function mountReadingDashboard({root,overviewRoot,historyRoot,api,getSess
   function activeBook(){return getBooks().find(b=>b.bookId===selectedBook)||null;}
   function renderToday(){
     const books=getBooks(),current=workspaceCurrentBook(books);if(!books.some(b=>b.bookId===selectedBook))selectedBook=current?.bookId||null;const book=activeBook();todayBook=book;todayPanel.hidden=!book;
-    choice.replaceChildren(...books.map(b=>{const o=own(node('option'),{render:()=>b.title.zh+(b.journey?.status==='finished'?' · '+t('dash.choice.finishedSuffix'):'')});o.value=b.bookId;return o;}));choice.value=selectedBook||'';choice.hidden=books.length<2;
-    title.textContent=book?.title.zh||'';author.textContent=book?.author||'';
+    choice.replaceChildren(...books.map(b=>{const o=own(node('option'),{render:()=>bookCoverLabel(b,getUiLocale()).title+(b.journey?.status==='finished'?' · '+t('dash.choice.finishedSuffix'):'')});o.value=b.bookId;return o;}));choice.value=selectedBook||'';choice.hidden=books.length<2;
+    paintBookIdentity(title,book);paintBookIdentity(author,book,'author');
     own(label,{render:()=>todayBook?.journey?.status==='finished'?t('dash.today.label.finished'):todayBook?.resume?t('dash.today.label.resume'):t('dash.today.label.start')});
     description.textContent=book?.resume?.label||'';read.hidden=!book;
     own(read,{render:()=>todayBook?.resume?t('dash.read.continue'):t('dash.read.open')});

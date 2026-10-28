@@ -22,7 +22,7 @@ import {mountShelfFilters} from './library-filter-controls.mjs';
 import {mountLibraryShell,roomIcons} from './library-shell.mjs';
 import {mountPreferenceMemory} from './preference-memory-ui.mjs';
 import {mountLibraryChat} from './library-chat.mjs';
-import {paintBookCover} from './book-binding.mjs';
+import {paintBookCover,paintBookIdentity,bookCoverLabel,bookCoverSearchText} from './book-cover-ui.mjs';
 import {mountLibraryBookActions} from './library-book-actions.mjs';
 import {mountShelfDrag,moveShelfBook} from './shelf-order.mjs';
 import {mountIncrementalShelf} from './library-incremental.mjs';
@@ -171,14 +171,14 @@ function landingBookCard(book){
   // Only bundled editorial metadata is translated. Imported titles, prose and
   // unknown saved labels remain literal; no source or progress is rewritten.
   const catalog=book.visibility==='public'&&['gutenberg-alice','gutenberg-meditations','gutenberg-walden'].includes(book.bookId);
-  const titleText=()=>getUiLocale()==='en'?(book.title.en||book.title.zh):book.title.zh;
+  const titleText=()=>bookCoverLabel(book,getUiLocale()).title;
   const catalogText=value=>catalog?homeText(value,getUiLocale()):value;
   const contentLabel=(node,render)=>{node.textContent=render();if(typeof registerCardNode==='function')registerCardNode(node,{render});return node;};
   const card=make('article','book-card'),art=make('a','book-art '+(book.cover||'private'));art.href='/read?book='+encodeURIComponent(book.bookId);
-  const cover=make('div','book-cover'),inner=make('div','cover-inner'),light=make('span','book-scene-light');light.setAttribute('aria-hidden','true');
-  inner.append(make('small','','Leafhour'),contentLabel(make('strong'),()=>catalog&&book.bookId==='gutenberg-walden'&&getUiLocale()==='en'?'Walden':titleText()),make('span','cover-ornament',book.cover==='alice'?'❦':book.cover==='walden'?'⌁':'☼'));cover.append(inner);art.append(cover,light);
+  const cover=make('div','book-cover'),light=make('span','book-scene-light');light.setAttribute('aria-hidden','true');
+  paintBookCover(cover,book);art.append(cover,light);
   const meta=make('div','book-meta'),label=make('div','book-label');label.append(cardLabel(make('span'),book.visibility==='public'?'portal.card.public':'portal.card.private',book.visibility==='public'?null:{format:String(book.source.format||'').toUpperCase()}));
-  meta.append(label,contentLabel(make('h3'),titleText),contentLabel(make('p','book-author'),()=>catalogText(book.author||book.source.filename)),book.description?contentLabel(make('p','book-description'),()=>catalogText(book.description)):cardLabel(make('p','book-description'),'books.descriptionFallback'));
+  meta.append(label,contentLabel(make('h3'),titleText),contentLabel(make('p','book-author'),()=>bookCoverLabel(book,getUiLocale()).author||book.source.filename),book.description?contentLabel(make('p','book-description'),()=>catalogText(book.description)):cardLabel(make('p','book-description'),'books.descriptionFallback'));
   let resume=book.resume;if(!session?.user){try{const local=JSON.parse(localStorage.getItem(positionStorageKey(book.bookId))||'null');if(local?.passageId&&local.chapterLabel&&local.contentVersion===book.source.sha256)resume={chapterId:local.chapterId,label:local.chapterLabel,passageId:local.passageId};}catch{}}
   const readerTarget=readingBookUrl(book,resume);art.href=readerTarget;typeof ownedHref==='function'&&ownedHref(art,readerTarget);
   if(resume){meta.append(contentLabel(make('p','book-resume'),()=>{
@@ -199,14 +199,18 @@ function landingBookCard(book){
   meta.append(bottom);card.append(art,meta);return card;
 }
 function bookCard(book){
-  const card=make('article','book-card'),art=make('a','book-art '+(book.cover||'private')),readerTarget=readingBookUrl(book);art.href=readerTarget;ownedHref(art,readerTarget);cardLabel(art,book.resume?'portal.card.continueAria':'portal.card.readAria',{title:book.title.zh},'aria-label');
+  const identityLabel=(node,id)=>{const spec={attr:'aria-label',render:()=>t(id,{title:bookCoverLabel(book,getUiLocale()).title})};node.setAttribute(spec.attr,spec.render());if(typeof registerCardNode==='function')registerCardNode(node,spec);};
+  const card=make('article','book-card'),art=make('a','book-art '+(book.cover||'private')),readerTarget=readingBookUrl(book);art.href=readerTarget;ownedHref(art,readerTarget);identityLabel(art,book.resume?'portal.card.continueAria':'portal.card.readAria');
   const cover=make('div','book-cover');paintBookCover(cover,book);art.append(cover);
-  const meta=make('div','book-meta'),heading=make('h3'),title=make('a','book-title-link',book.title.zh),author=make('p','book-author',book.author||book.source?.filename||'');title.href=readerTarget;ownedHref(title,readerTarget);heading.append(title);author.title=author.textContent;meta.append(heading,author);
+  const meta=make('div','book-meta'),heading=make('h3'),title=make('a','book-title-link'),author=make('p','book-author');paintBookIdentity(title,book);
+  // A source filename is literal fallback text, not an author to relocalize.
+  if(bookCoverLabel(book,getUiLocale()).author)paintBookIdentity(author,book,'author');else{author.textContent=book.source?.filename||'';author.setAttribute('lang','und');}
+  title.href=readerTarget;ownedHref(title,readerTarget);heading.append(title);author.title=book.author||author.textContent;meta.append(heading,author);
   const label=make('p','book-label');
   if(book.chineseSample){const sampleTarget=chineseTrialUrl(book);const trial=cardLabel(make('a','source-link'),'portal.card.sampleShort',{count:book.chineseSample.paragraphs});trial.href=sampleTarget;ownedHref(trial,sampleTarget);label.append(trial);}else cardLabel(label,book.visibility==='public'?'portal.card.public':'portal.card.private',book.visibility==='public'?null:{format:String(book.source?.format||'文本').toUpperCase()});meta.append(label);
   const bottom=make('div','book-bottom'),read=cardLabel(make('a','book-read'),book.personalizationPending?'arrival.open':book.resume?'portal.card.continue':'portal.card.start');read.href=readerTarget;ownedHref(read,readerTarget);
   bottom.append(read);meta.append(bottom);card.append(art,meta);bookActions?.decorate(card,book);
-  const grip=make('button','book-drag-handle');grip.type='button';cardLabel(grip,'portal.drag.aria',{title:book.title.zh},'aria-label');cardLabel(grip,'portal.drag.hint',null,'data-drag-hint');grip.setAttribute('aria-describedby','shelf-order-help');const symbol=make('span');symbol.dataset.icon='grip-vertical';symbol.setAttribute('aria-hidden','true');grip.append(symbol);card.append(grip);mountCardLabels(card);grip.addEventListener('keydown',event=>{if(!['ArrowLeft','ArrowRight'].includes(event.key))return;event.preventDefault();const ids=libraryShelf(books).map(b=>b.bookId),index=ids.indexOf(book.bookId),target=ids[index+(event.key==='ArrowLeft'?-1:1)];if(target)saveShelfOrder(moveShelfBook(ids,book.bookId,target,event.key==='ArrowLeft'?'before':'after')).catch(error=>status('library-status',{id:'ui.generic.error'},true));});grip.addEventListener('click',event=>{if(event.detail===0)card.querySelector('.book-action-trigger').click();});shelfDrag?.decorate(card);roomIcons(card);return card;
+  const grip=make('button','book-drag-handle');grip.type='button';cardLabel(grip,'portal.drag.hint',null,'data-drag-hint');grip.setAttribute('aria-describedby','shelf-order-help');const symbol=make('span');symbol.dataset.icon='grip-vertical';symbol.setAttribute('aria-hidden','true');grip.append(symbol);card.append(grip);mountCardLabels(card);identityLabel(grip,'portal.drag.aria');grip.addEventListener('keydown',event=>{if(!['ArrowLeft','ArrowRight'].includes(event.key))return;event.preventDefault();const ids=libraryShelf(books).map(b=>b.bookId),index=ids.indexOf(book.bookId),target=ids[index+(event.key==='ArrowLeft'?-1:1)];if(target)saveShelfOrder(moveShelfBook(ids,book.bookId,target,event.key==='ArrowLeft'?'before':'after')).catch(error=>status('library-status',{id:'ui.generic.error'},true));});grip.addEventListener('click',event=>{if(event.detail===0)card.querySelector('.book-action-trigger').click();});shelfDrag?.decorate(card);roomIcons(card);return card;
 }
 async function saveShelfOrder(ids){
   if(orderOperation)return;const owner=getOwner(),operation={owner},previousOrder=libraryShelf(books).map(book=>book.bookId),focused=document.activeElement,focusBook=focused?.closest('[data-book-id]')?.dataset.bookId,focusClass=focused?.classList.contains('book-drag-handle')?'book-drag-handle':focused?.classList.contains('book-action-trigger')?'book-action-trigger':null;orderOperation=operation;bookActions?.closeMenu();const rank=new Map(ids.map((id,index)=>[id,index]));books=books.map(b=>({...b,shelfPosition:rank.get(b.bookId)}));renderBooks();if(focusBook&&focusClass){const restored=[...document.querySelectorAll('[data-book-id]')].find(card=>card.dataset.bookId===focusBook);restored?.querySelector('.'+focusClass)?.focus({preventScroll:true});}status('library-status',{id:'portal.order.saving'});const focus=focusBook&&focusClass?trackActionFocus(document,document.activeElement):null;
@@ -222,7 +226,7 @@ function renderHomeBooks(){
   const visible=books.filter(book=>book.visibility==='public');
   shelfControls?.update(visible);
   if(!bootstrapped&&!visible.length)return;
-  const filters=shelfControls?.read()||{},matches=libraryShelf(visible,filters);
+  const filters=shelfControls?.read()||{},matches=libraryShelf(visible,filters,{searchText:bookCoverSearchText});
   $('search-clear').hidden=!filters.query;
   if(matches.length){$('featured-books').replaceChildren(...(hasShelfFilters(filters)?matches:matches.slice(0,3)).map(landingBookCard));return;}
   const empty=make('div','home-shelf-empty'),title=own(make('h3'),{id:'portal.empty.filtered'}),help=own(make('p'),{id:shelfEmptyHelpId(filters)}),clear=own(make('button','outline'),{id:'filter.clearAll'});
@@ -230,7 +234,7 @@ function renderHomeBooks(){
 }
 function renderBooks(){
   if(!isLibrary){renderHomeBooks();return;}
-  const filters=shelfControls?.read()||{query:$('book-search').value},query=filters.query.trim(),filtered=hasShelfFilters(filters),shelf=libraryShelf(books,filters),room={featured:null,books:shelf,total:shelf.length};shelfControls?.update(books);shelfControls?.setPending(personalizationPending);
+  const filters=shelfControls?.read()||{query:$('book-search').value},query=filters.query.trim(),filtered=hasShelfFilters(filters),shelf=libraryShelf(books,filters,{searchText:bookCoverSearchText}),room={featured:null,books:shelf,total:shelf.length};shelfControls?.update(books);shelfControls?.setPending(personalizationPending);
   const anchorId=document.activeElement?.closest('[data-book-id]')?.dataset.bookId;
   if(shelfList)shelfList.setItems(room.books,{key:JSON.stringify([getOwner(),filters]),anchorId});else $('library-books').replaceChildren();
   $('library-books').setAttribute('aria-busy','false');$('reading-dashboard').hidden=!dashboard?.isLoading();$('shelf-title').hidden=!room.books.length;own($('shelf-title'),{render:()=>room.featured?t('portal.shelf.titleMore'):t('portal.shelf.title')});$('shelf-title').classList.toggle('sr-only',!room.featured);$('library-shelf').classList.toggle('with-current',!!room.featured);$('library-shelf').hidden=dashboard?.isLoading()||!!room.featured&&!room.books.length;

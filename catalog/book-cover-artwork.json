@@ -1,0 +1,1610 @@
+{
+  "version": 1,
+  "createdAt": "2026-10-28",
+  "complete": true,
+  "expected": 64,
+  "mode": "built-in-image_gen",
+  "promptSet": "docs/design/2026-10-28-book-covers/prompts.json",
+  "entries": [
+    {
+      "id": "gutenberg-alice",
+      "title": "爱丽丝梦游仙境",
+      "originalSha256": "7e258185dabdd757e19807dfb1527bf02739bc77bfceed2d57195d32918699ef",
+      "originalWidth": 1024,
+      "originalHeight": 1536,
+      "origin": "built-in-image_gen",
+      "approvedSample": null,
+      "variants": [
+        {
+          "url": "/book-covers/alice-320.webp?v=bbf0273041a9",
+          "width": 320,
+          "height": 480,
+          "bytes": 45740,
+          "sha256": "bbf0273041a92cb66d529ba37b15c5ea73e2e3957fa216437b8ad00e1089b260"
+        },
+        {
+          "url": "/book-covers/alice-640.webp?v=e19ffa5cee6b",
+          "width": 640,
+          "height": 960,
+          "bytes": 151814,
+          "sha256": "e19ffa5cee6b64bdd5268e72edccbf0613a019b8be4be1d841182231bbf733fd"
+        }
+      ]
+    },
+    {
+      "id": "gutenberg-meditations",
+      "title": "沉思录",
+      "originalSha256": "2efff123e3759e3bda3a80afc4c378228e390c44d2b9550e7c2b59b99ee527b0",
+      "originalWidth": 1024,
+      "originalHeight": 1536,
+      "origin": "user-approved-sample",
+      "approvedSample": "meditations",
+      "variants": [
+        {
+          "url": "/book-covers/meditations-320.webp?v=2c4cf7a1ae51",
+          "width": 320,
+          "height": 480,
+          "bytes": 29870,
+          "sha256": "2c4cf7a1ae5176f7f96687c1a10ec0e73707711433aa7aece8b306bca54346e1"
+        },
+        {
+          "url": "/book-covers/meditations-640.webp?v=bd83ce7e87c7",
+          "width": 640,
+          "height": 960,
+          "bytes": 101526,
+          "sha256": "bd83ce7e87c7e1caaac66de9593f4469f4ea0524de3f9a8ad4e35b72c3695c1a"
+        }
+      ]
+    },
+    {
+      "id": "gutenberg-walden",
+      "title": "瓦尔登湖",
+      "originalSha256": "bb4f5e795f5995097223cb369d9dc7f2d2615e05a952b6c5fd01cdc426bb90d0",
+      "originalWidth": 1024,
+      "originalHeight": 1536,
+      "origin": "user-approved-sample",
+      "approvedSample": "walden",
+      "variants": [
+        {
+          "url": "/book-covers/walden-320.webp?v=e6793bd75d82",
+          "width": 320,
+          "height": 480,
+          "bytes": 35992,
+          "sha256": "e6793bd75d82a43fdea49f4739083d2c0f2c24708f2501c3a938ea000dc86bec"
+        },
+        {
+          "url": "/book-covers/walden-640.webp?v=919b5be49c20",
+          "width": 640,
+          "height": 960,
+          "bytes": 120096,
+          "sha256": "919b5be49c20d044bd56317fcc6e8b6b83ab990076e3a7df85fde3675aeed1b9"
+        }
+      ]
+    },
+    {
+      "id": "gutenberg-flatland",
+      "title": "平面国",
+      "originalSha256": "483edd661b5c338d1158799d0c3c2060aed62d69f8a18037351c3107bb57d010",
+      "originalWidth": 1024,
+      "originalHeight": 1536,
+      "origin": "user-approved-sample",
+      "approvedSample": "flatland",
+      "variants": [
+        {
+          "url": "/book-covers/flatland-320.webp?v=4ad1e302bc5c",
+          "width": 320,
+          "height": 480,
+          "bytes": 17054,
+          "sha256": "4ad1e302bc5ce9ab474c0fc0bf804d8b903736276db46397198682f15f41af18"
+        },
+        {
+          "url": "/book-covers/flatland-640.webp?v=06a58938de60",
+          "width": 640,
+          "height": 960,
+          "bytes": 55918,
+          "sha256": "06a58938de60f6bf939237ff69603aaa1fd63f0733c3f116d0b0d4ab28b7fe57"
+        }
+      ]
+    },
+    {
+      "id": "gutenberg-frankenstein",
+      "title": "弗兰肯斯坦",
+      "originalSha256": "96844555b4c034c3a8a5054b04607a3d372574c267fc9d266c0c432c331a399c",
+      "originalWidth": 1024,
+      "originalHeight": 1536,
+      "origin": "built-in-image_gen",
+      "approvedSample": null,
+      "variants": [
+        {
+          "url": "/book-covers/frankenstein-320.webp?v=7f542d59934f",
+          "width": 320,
+          "height": 480,
+          "bytes": 39006,
+          "sha256": "7f542d59934f201db815dae799ba4766b04e56a75b34301f03f541c34c4bc680"
+        },
+        {
+          "url": "/book-covers/frankenstein-640.webp?v=0474c980afab",
+          "width": 640,
+          "height": 960,
+          "bytes": 122792,
+          "sha256": "0474c980afab8b7837ff43a847bf2fbe01d284055886e4ec07ff65319f4f5cf8"
+        }
+      ]
+    },
+    {
+      "id": "gutenberg-erewhon",
+      "title": "埃瑞璜",
+      "originalSha256": "3d0ce18a9973b77ba4ee98cabf532dc8b67b49d7426f2956c627605b1e1c24cd",
+      "originalWidth": 1024,
+      "originalHeight": 1536,
+      "origin": "built-in-image_gen",
+      "approvedSample": null,
+      "variants": [
+        {
+          "url": "/book-covers/erewhon-320.webp?v=981a1641612e",
+          "width": 320,
+          "height": 480,
+          "bytes": 42310,
+          "sha256": "981a1641612ea6320367c59080329e54a4e7f80b7fc3030112137c989a93a24e"
+        },
+        {
+          "url": "/book-covers/erewhon-640.webp?v=4dc4fd81a6ae",
+          "width": 640,
+          "height": 960,
+          "bytes": 143684,
+          "sha256": "4dc4fd81a6ae794d71f47d91a988c5fafd985be18972f76b083b8e27d68fe753"
+        }
+      ]
+    },
+    {
+      "id": "gutenberg-time-machine",
+      "title": "时间机器",
+      "originalSha256": "b73554c0a5185dc5a33014de85a0e9810e7b6e59611d212a7583ae163295413a",
+      "originalWidth": 1024,
+      "originalHeight": 1536,
+      "origin": "built-in-image_gen",
+      "approvedSample": null,
+      "variants": [
+        {
+          "url": "/book-covers/time-machine-320.webp?v=41c1deb1a43e",
+          "width": 320,
+          "height": 480,
+          "bytes": 35870,
+          "sha256": "41c1deb1a43e5fb0b2a9dfb824f9be0cdcc05202ebea64f864b4ff90fa33f6ba"
+        },
+        {
+          "url": "/book-covers/time-machine-640.webp?v=534e3f412988",
+          "width": 640,
+          "height": 960,
+          "bytes": 124236,
+          "sha256": "534e3f412988e33b873924df4141b19a8cfc8fd499a75b64f98661a97af74efb"
+        }
+      ]
+    },
+    {
+      "id": "gutenberg-au-room-of-ones-own",
+      "title": "一间自己的房间",
+      "originalSha256": "fdaa61031ec96cbc292d6e88dc7ff0da251b522c8b36cc211cd3b0eaeb67671a",
+      "originalWidth": 1024,
+      "originalHeight": 1536,
+      "origin": "user-approved-sample",
+      "approvedSample": "room",
+      "variants": [
+        {
+          "url": "/book-covers/au-room-of-ones-own-320.webp?v=3718a0710c80",
+          "width": 320,
+          "height": 480,
+          "bytes": 24124,
+          "sha256": "3718a0710c803fa07b050f066b73959640c0ac27fdf590b880fd53484c240023"
+        },
+        {
+          "url": "/book-covers/au-room-of-ones-own-640.webp?v=220e85152025",
+          "width": 640,
+          "height": 960,
+          "bytes": 78982,
+          "sha256": "220e8515202550b3990c4fa86d973da71d6828dfad34016858978b33328f0de2"
+        }
+      ]
+    },
+    {
+      "id": "gutenberg-on-liberty",
+      "title": "论自由",
+      "originalSha256": "62d485d276de8105351dd64d8626908430bda21ff92ed763ad89f9c64e0db143",
+      "originalWidth": 1024,
+      "originalHeight": 1536,
+      "origin": "built-in-image_gen",
+      "approvedSample": null,
+      "variants": [
+        {
+          "url": "/book-covers/on-liberty-320.webp?v=8eba468883bd",
+          "width": 320,
+          "height": 480,
+          "bytes": 35754,
+          "sha256": "8eba468883bdf54099843a742f8e8dc7220394505f35e7f7026c05c79a9e2d8b"
+        },
+        {
+          "url": "/book-covers/on-liberty-640.webp?v=49b22fc2668b",
+          "width": 640,
+          "height": 960,
+          "bytes": 112970,
+          "sha256": "49b22fc2668b3d3de3028d99c6061f277893e1ff46dae802198e86c830322e3e"
+        }
+      ]
+    },
+    {
+      "id": "ccel-ivan-ilych",
+      "title": "伊凡·伊里奇之死",
+      "originalSha256": "63a9687e3e61635f6f30cce04c48aae0191d26c68e91bd2ca9ace7a2edd30afc",
+      "originalWidth": 1024,
+      "originalHeight": 1536,
+      "origin": "built-in-image_gen",
+      "approvedSample": null,
+      "variants": [
+        {
+          "url": "/book-covers/ivan-ilych-320.webp?v=47d7f232834f",
+          "width": 320,
+          "height": 480,
+          "bytes": 35108,
+          "sha256": "47d7f232834f3d77ed56b41ed187e3a8fa748142297838b87fb1f0f03991c3a8"
+        },
+        {
+          "url": "/book-covers/ivan-ilych-640.webp?v=45cba494d7da",
+          "width": 640,
+          "height": 960,
+          "bytes": 114990,
+          "sha256": "45cba494d7dad6c41f7ce114b145bac71eb01d80b3d623a7b29d053d0d0768c1"
+        }
+      ]
+    },
+    {
+      "id": "gutenberg-awakening",
+      "title": "觉醒及短篇选",
+      "originalSha256": "caa97ac2259a2ee4aff3536ace02cf5adcf1aa65c909cff18aa9c4e9f460bf97",
+      "originalWidth": 1024,
+      "originalHeight": 1536,
+      "origin": "built-in-image_gen",
+      "approvedSample": null,
+      "variants": [
+        {
+          "url": "/book-covers/awakening-320.webp?v=399b5e121ac2",
+          "width": 320,
+          "height": 480,
+          "bytes": 37774,
+          "sha256": "399b5e121ac2031e04cc840e6abc0696a1f45d8670db155510a8e672ba7ab9ad"
+        },
+        {
+          "url": "/book-covers/awakening-640.webp?v=567f9899dd2d",
+          "width": 640,
+          "height": 960,
+          "bytes": 117532,
+          "sha256": "567f9899dd2d0ad0cbab41ccdff6686a9a259ef2a48f045147386b25e621679f"
+        }
+      ]
+    },
+    {
+      "id": "gutenberg-home-and-world",
+      "title": "家庭与世界",
+      "originalSha256": "944eeb92da32a118f4eb47756ceb72b2ca073c9abbd01c6b8686effb0d25fb29",
+      "originalWidth": 1024,
+      "originalHeight": 1536,
+      "origin": "built-in-image_gen",
+      "approvedSample": null,
+      "variants": [
+        {
+          "url": "/book-covers/home-and-world-320.webp?v=cae612b6885f",
+          "width": 320,
+          "height": 480,
+          "bytes": 43990,
+          "sha256": "cae612b6885f46cbccde70ef604538aea183c9a35c6ad2ff8c6d76e0dcbc03ed"
+        },
+        {
+          "url": "/book-covers/home-and-world-640.webp?v=a825343fea1f",
+          "width": 640,
+          "height": 960,
+          "bytes": 131334,
+          "sha256": "a825343fea1f39758f869949b2c1287fda7f6546cc227a006893d73c85752b69"
+        }
+      ]
+    },
+    {
+      "id": "gutenberg-brazilian-tales",
+      "title": "巴西短篇小说选",
+      "originalSha256": "2f98376b0397316d8bf30b4a19ff5bb1b6e31765909d63fc17a90a13b1fbfea1",
+      "originalWidth": 1024,
+      "originalHeight": 1536,
+      "origin": "built-in-image_gen",
+      "approvedSample": null,
+      "variants": [
+        {
+          "url": "/book-covers/brazilian-tales-320.webp?v=2d2d8db9bd31",
+          "width": 320,
+          "height": 480,
+          "bytes": 38858,
+          "sha256": "2d2d8db9bd31a6e912b78c612be97cd744d5b2a6a709281f86997a9f5e17f961"
+        },
+        {
+          "url": "/book-covers/brazilian-tales-640.webp?v=a1bd7ab729e4",
+          "width": 640,
+          "height": 960,
+          "bytes": 125136,
+          "sha256": "a1bd7ab729e4c691c08cbd4b7ccebd508e5da2f268ffd3e3a1b4a5fe46cba14d"
+        }
+      ]
+    },
+    {
+      "id": "gutenberg-book-of-tea",
+      "title": "茶之书",
+      "originalSha256": "8acef0bb274adf6dd1fb85f18d749eefbaf225d1b06f6c8b0faa0b0d8ef5f397",
+      "originalWidth": 1024,
+      "originalHeight": 1536,
+      "origin": "built-in-image_gen",
+      "approvedSample": null,
+      "variants": [
+        {
+          "url": "/book-covers/book-of-tea-320.webp?v=27a7d6a9ea6e",
+          "width": 320,
+          "height": 480,
+          "bytes": 32658,
+          "sha256": "27a7d6a9ea6e0370c687ef54f9d3826b985cb83cd79074f77b90e4a0d671f4b5"
+        },
+        {
+          "url": "/book-covers/book-of-tea-640.webp?v=0767531814c0",
+          "width": 640,
+          "height": 960,
+          "bytes": 111638,
+          "sha256": "0767531814c018e0ab4df5bfc1972ff6804f32bd1f3296561dc27b5ace53af49"
+        }
+      ]
+    },
+    {
+      "id": "gutenberg-prophet",
+      "title": "先知",
+      "originalSha256": "15077940e85939b00977f015821c96ad01ce062b9377555aaa366383aaf419d3",
+      "originalWidth": 1024,
+      "originalHeight": 1536,
+      "origin": "built-in-image_gen",
+      "approvedSample": null,
+      "variants": [
+        {
+          "url": "/book-covers/prophet-320.webp?v=58ae6156833a",
+          "width": 320,
+          "height": 480,
+          "bytes": 41738,
+          "sha256": "58ae6156833a76a0ec326dfa4fda389ed430385e5cda4223e1c11735fa41cf49"
+        },
+        {
+          "url": "/book-covers/prophet-640.webp?v=b3de09b1a537",
+          "width": 640,
+          "height": 960,
+          "bytes": 142386,
+          "sha256": "b3de09b1a537bf2863f510cb5eaf941b409e523998b4d8c3a09d7d01ecbe1e3f"
+        }
+      ]
+    },
+    {
+      "id": "gutenberg-tao-te-ching",
+      "title": "道德经",
+      "originalSha256": "ab1a53120d4da6e68117502dd0324729282837720839fcca21e4e78c5ac0e8e1",
+      "originalWidth": 1024,
+      "originalHeight": 1536,
+      "origin": "built-in-image_gen",
+      "approvedSample": null,
+      "variants": [
+        {
+          "url": "/book-covers/tao-te-ching-320.webp?v=7bfeffa17b3d",
+          "width": 320,
+          "height": 480,
+          "bytes": 36178,
+          "sha256": "7bfeffa17b3d989e014542bb23a808f2176e2554e2485239f11932e9f726b5f2"
+        },
+        {
+          "url": "/book-covers/tao-te-ching-640.webp?v=b381849d43d1",
+          "width": 640,
+          "height": 960,
+          "bytes": 113390,
+          "sha256": "b381849d43d16c139ae4b6c726fe9ff97a2b0feb34c66e3352cbd8cb5cb6c0e7"
+        }
+      ]
+    },
+    {
+      "id": "gutenberg-dhammapada",
+      "title": "法句经",
+      "originalSha256": "612c738a53d6a87b029833f6c34011c7a036d7d713cecb463ca16876cd341cf4",
+      "originalWidth": 1024,
+      "originalHeight": 1536,
+      "origin": "built-in-image_gen",
+      "approvedSample": null,
+      "variants": [
+        {
+          "url": "/book-covers/dhammapada-320.webp?v=e0f2e44e8704",
+          "width": 320,
+          "height": 480,
+          "bytes": 34388,
+          "sha256": "e0f2e44e8704049358f370aaf880c66c7d68631b0093da0652c879bb9df1b1f4"
+        },
+        {
+          "url": "/book-covers/dhammapada-640.webp?v=8f96c446b8a4",
+          "width": 640,
+          "height": 960,
+          "bytes": 111778,
+          "sha256": "8f96c446b8a44c24ae87acbb2289070a49429bfda9958483a7b87f338cb2c594"
+        }
+      ]
+    },
+    {
+      "id": "gutenberg-bhagavad-gita",
+      "title": "薄伽梵歌",
+      "originalSha256": "6cacfc6f283fbcc453ad4fcfc6802b8f3de3e89c40a4117fc6890a48ef798f06",
+      "originalWidth": 1024,
+      "originalHeight": 1536,
+      "origin": "built-in-image_gen",
+      "approvedSample": null,
+      "variants": [
+        {
+          "url": "/book-covers/bhagavad-gita-320.webp?v=740201c320a4",
+          "width": 320,
+          "height": 480,
+          "bytes": 38732,
+          "sha256": "740201c320a48245a85123845355229f2f8ba2850a794cfb33ecc5be06867ae9"
+        },
+        {
+          "url": "/book-covers/bhagavad-gita-640.webp?v=da4617342077",
+          "width": 640,
+          "height": 960,
+          "bytes": 134556,
+          "sha256": "da4617342077a6f0b14c7c2b175192c494cf489f7f7149c7ec7251d3f01d66b3"
+        }
+      ]
+    },
+    {
+      "id": "gutenberg-rubaiyat",
+      "title": "鲁拜集",
+      "originalSha256": "096fe7bedcb0d4d860c2923a2e042f46fb482862bd62b0bfca53d2d877a40575",
+      "originalWidth": 1024,
+      "originalHeight": 1536,
+      "origin": "built-in-image_gen",
+      "approvedSample": null,
+      "variants": [
+        {
+          "url": "/book-covers/rubaiyat-320.webp?v=52bf8d652f0d",
+          "width": 320,
+          "height": 480,
+          "bytes": 33404,
+          "sha256": "52bf8d652f0dc35cceb424536e4487c7e260e62b6d8c101ef3edf698fa2622a5"
+        },
+        {
+          "url": "/book-covers/rubaiyat-640.webp?v=2576e5ab1f3a",
+          "width": 640,
+          "height": 960,
+          "bytes": 105836,
+          "sha256": "2576e5ab1f3a61e3c69151012755477f68f405d1d14495a7e9c02fe0b4c966bb"
+        }
+      ]
+    },
+    {
+      "id": "gutenberg-notes-underground",
+      "title": "地下室手记",
+      "originalSha256": "7c4a2b5fc030d0265ce7f5a8c3157b4b0af86a744fd4097874f3f3989edea0cd",
+      "originalWidth": 1024,
+      "originalHeight": 1536,
+      "origin": "built-in-image_gen",
+      "approvedSample": null,
+      "variants": [
+        {
+          "url": "/book-covers/notes-underground-320.webp?v=420e3704e9a9",
+          "width": 320,
+          "height": 480,
+          "bytes": 29872,
+          "sha256": "420e3704e9a988a9e0b029245270c30f9182cd1802e1628d424f3406a229bd15"
+        },
+        {
+          "url": "/book-covers/notes-underground-640.webp?v=b744915297d2",
+          "width": 640,
+          "height": 960,
+          "bytes": 108938,
+          "sha256": "b744915297d2815734d548836dc59d77d39d7d3a73f9a74f46db602eabf9e47e"
+        }
+      ]
+    },
+    {
+      "id": "gutenberg-young-werther",
+      "title": "少年维特之烦恼",
+      "originalSha256": "4e08cc4229c46ee61c850ba746455110d45c0690c82ed9c877b139c5f84a654a",
+      "originalWidth": 1024,
+      "originalHeight": 1536,
+      "origin": "built-in-image_gen",
+      "approvedSample": null,
+      "variants": [
+        {
+          "url": "/book-covers/young-werther-320.webp?v=f61e14e05324",
+          "width": 320,
+          "height": 480,
+          "bytes": 41456,
+          "sha256": "f61e14e0532488b84d5c280afd563b8d6087a085a29f2d1aba99c97ff9644714"
+        },
+        {
+          "url": "/book-covers/young-werther-640.webp?v=c98c03c3ee62",
+          "width": 640,
+          "height": 960,
+          "bytes": 133110,
+          "sha256": "c98c03c3ee62e058f4d0266b6c09f024a2dd9e357a2665a1a6292959d9619039"
+        }
+      ]
+    },
+    {
+      "id": "gutenberg-pride-prejudice",
+      "title": "傲慢与偏见",
+      "originalSha256": "5430a6924621e954bed5d2e014c7d136f0fa03fdd2624100aca36c8a2726bce2",
+      "originalWidth": 1024,
+      "originalHeight": 1536,
+      "origin": "built-in-image_gen",
+      "approvedSample": null,
+      "variants": [
+        {
+          "url": "/book-covers/pride-prejudice-320.webp?v=e24b5684a5f3",
+          "width": 320,
+          "height": 480,
+          "bytes": 45102,
+          "sha256": "e24b5684a5f3668ba239fd8cd7a12b8d0af96caa51cb04d0be5c1e5478bd3267"
+        },
+        {
+          "url": "/book-covers/pride-prejudice-640.webp?v=c4ca9466e55a",
+          "width": 640,
+          "height": 960,
+          "bytes": 155614,
+          "sha256": "c4ca9466e55af3d755075aa1c008c79494326283c128c2b7eca5b1d5012bee44"
+        }
+      ]
+    },
+    {
+      "id": "gutenberg-don-quixote",
+      "title": "堂吉诃德",
+      "originalSha256": "57c519ba930cdbc7c860c0e80c67f45017700aab0ca3e096e4c48a10862b519c",
+      "originalWidth": 1024,
+      "originalHeight": 1536,
+      "origin": "built-in-image_gen",
+      "approvedSample": null,
+      "variants": [
+        {
+          "url": "/book-covers/don-quixote-320.webp?v=2f0a08c9971c",
+          "width": 320,
+          "height": 480,
+          "bytes": 33686,
+          "sha256": "2f0a08c9971c3d8f83c1471aa18acd3a8d515ffb027ecc102eccdb3ac008e8e9"
+        },
+        {
+          "url": "/book-covers/don-quixote-640.webp?v=2cfb787acab3",
+          "width": 640,
+          "height": 960,
+          "bytes": 114804,
+          "sha256": "2cfb787acab393409f929b6a54356f575df0734533079b24f2c5a8559d3f92d3"
+        }
+      ]
+    },
+    {
+      "id": "gutenberg-candide",
+      "title": "老实人",
+      "originalSha256": "5684c29f7297cbf4ca3c76475b53613a8fab7b1b2001b25924b6f2556a8d44e1",
+      "originalWidth": 1024,
+      "originalHeight": 1536,
+      "origin": "built-in-image_gen",
+      "approvedSample": null,
+      "variants": [
+        {
+          "url": "/book-covers/candide-320.webp?v=8c413a30d00a",
+          "width": 320,
+          "height": 480,
+          "bytes": 40568,
+          "sha256": "8c413a30d00a75838c23f8479b240d3ef8e97b12b9d263ce0b6afdaffa562acb"
+        },
+        {
+          "url": "/book-covers/candide-640.webp?v=3263d1907fc3",
+          "width": 640,
+          "height": 960,
+          "bytes": 139060,
+          "sha256": "3263d1907fc345dd1b089c7edbe429ba00ad96d330f23689920cc1da043492eb"
+        }
+      ]
+    },
+    {
+      "id": "gutenberg-arabian-nights",
+      "title": "一千零一夜选编",
+      "originalSha256": "65017e7724595cc7bd6983e09d1a51f5bab5da86dd4eefeed25e245d2a14a8fa",
+      "originalWidth": 1024,
+      "originalHeight": 1536,
+      "origin": "built-in-image_gen",
+      "approvedSample": null,
+      "variants": [
+        {
+          "url": "/book-covers/arabian-nights-320.webp?v=e0f4ab25b68c",
+          "width": 320,
+          "height": 480,
+          "bytes": 32552,
+          "sha256": "e0f4ab25b68c021ce38aace13a9b2ee6ec23dee45a5745faac414bf3cf9e9d9c"
+        },
+        {
+          "url": "/book-covers/arabian-nights-640.webp?v=98037393b1c1",
+          "width": 640,
+          "height": 960,
+          "bytes": 106400,
+          "sha256": "98037393b1c1199c6d707c3577d1c4c382a92e8996aa7d9a97d5a3150bab65dc"
+        }
+      ]
+    },
+    {
+      "id": "gutenberg-underdogs",
+      "title": "底层的人们",
+      "originalSha256": "2834735ec60e10cc09750e5e93d528fa02a148182dbfff1821dfe30d2b9653c9",
+      "originalWidth": 1024,
+      "originalHeight": 1536,
+      "origin": "built-in-image_gen",
+      "approvedSample": null,
+      "variants": [
+        {
+          "url": "/book-covers/underdogs-320.webp?v=2efff4e52bc7",
+          "width": 320,
+          "height": 480,
+          "bytes": 49854,
+          "sha256": "2efff4e52bc7ee503964b8f97f261bb1dfced9858622d96a226a7eb838a1b4e5"
+        },
+        {
+          "url": "/book-covers/underdogs-640.webp?v=5756fad80c5e",
+          "width": 640,
+          "height": 960,
+          "bytes": 164674,
+          "sha256": "5756fad80c5e3ece2442f0f5562b4e612052d08b5401803c3bed60f7f8dcdbc5"
+        }
+      ]
+    },
+    {
+      "id": "gutenberg-equiano",
+      "title": "埃奎亚诺自传",
+      "originalSha256": "2574986fcbb34747ac2a0c0b5857a0d500c83d3be15a1dde9d17686d2c9cb6b7",
+      "originalWidth": 1024,
+      "originalHeight": 1536,
+      "origin": "built-in-image_gen",
+      "approvedSample": null,
+      "variants": [
+        {
+          "url": "/book-covers/equiano-320.webp?v=76fe5131c4da",
+          "width": 320,
+          "height": 480,
+          "bytes": 34240,
+          "sha256": "76fe5131c4dacf0c765db1b576a2990b6d4b251f7c71f2d0b28dc53a9d7a19d1"
+        },
+        {
+          "url": "/book-covers/equiano-640.webp?v=950d178c48cf",
+          "width": 640,
+          "height": 960,
+          "bytes": 111092,
+          "sha256": "950d178c48cf5fac37181a47c483629d2dc08b412c246572edbfd20843febb0a"
+        }
+      ]
+    },
+    {
+      "id": "gutenberg-african-farm",
+      "title": "非洲农场的故事",
+      "originalSha256": "2273cc9328afe36edb2e59b4b0b38beaca7aae718a7ddc4d55bc94db75399b67",
+      "originalWidth": 1024,
+      "originalHeight": 1536,
+      "origin": "built-in-image_gen",
+      "approvedSample": null,
+      "variants": [
+        {
+          "url": "/book-covers/african-farm-320.webp?v=1d62da2e7a6c",
+          "width": 320,
+          "height": 480,
+          "bytes": 36866,
+          "sha256": "1d62da2e7a6ce96993584fca3cefa95891093b3f39dd5301ee206626632595dc"
+        },
+        {
+          "url": "/book-covers/african-farm-640.webp?v=5d131fa09e3d",
+          "width": 640,
+          "height": 960,
+          "bytes": 124348,
+          "sha256": "5d131fa09e3defbdfbc90a3bb1e3dd33eb0bfe8ea4724247b6cd6d1074b9aa99"
+        }
+      ]
+    },
+    {
+      "id": "gutenberg-douglass",
+      "title": "弗雷德里克·道格拉斯自传",
+      "originalSha256": "6fd653f8e284538103395357f03e65063f53588693efab2cf95189285e0503f2",
+      "originalWidth": 1024,
+      "originalHeight": 1536,
+      "origin": "built-in-image_gen",
+      "approvedSample": null,
+      "variants": [
+        {
+          "url": "/book-covers/douglass-320.webp?v=c778ff0c2101",
+          "width": 320,
+          "height": 480,
+          "bytes": 35744,
+          "sha256": "c778ff0c21018c21ebbd6e5bf46e47f7b3218a70d9a2cc78829c9e260bae0620"
+        },
+        {
+          "url": "/book-covers/douglass-640.webp?v=9ed8d21f8bb2",
+          "width": 640,
+          "height": 960,
+          "bytes": 114666,
+          "sha256": "9ed8d21f8bb280d7aa163d0124a7c535e749fa3dfd63b717467763ea3295d94a"
+        }
+      ]
+    },
+    {
+      "id": "gutenberg-seacole",
+      "title": "西科尔夫人历险记",
+      "originalSha256": "3f157ede47fbaab6cb1172c2383e2fb04ae950b91ce0a4474d506e5f7c710953",
+      "originalWidth": 1024,
+      "originalHeight": 1536,
+      "origin": "built-in-image_gen",
+      "approvedSample": null,
+      "variants": [
+        {
+          "url": "/book-covers/seacole-320.webp?v=7354fc3c655f",
+          "width": 320,
+          "height": 480,
+          "bytes": 54068,
+          "sha256": "7354fc3c655f6dfd86915b0123546eb5d7b9b02fbafe70920390e4f345ee2b43"
+        },
+        {
+          "url": "/book-covers/seacole-640.webp?v=5154bab27bc6",
+          "width": 640,
+          "height": 960,
+          "bytes": 184298,
+          "sha256": "5154bab27bc63ab2a12bfb99a93b77ff78758b919d14e2e756bd2e114d7561f5"
+        }
+      ]
+    },
+    {
+      "id": "gutenberg-beyond-good-and-evil",
+      "title": "超越善恶（善恶的彼岸）",
+      "originalSha256": "bdd4c5ea181cd3490602a3274c4671511dab2365a0f54f0be4f8d315ab39921d",
+      "originalWidth": 1024,
+      "originalHeight": 1536,
+      "origin": "built-in-image_gen",
+      "approvedSample": null,
+      "variants": [
+        {
+          "url": "/book-covers/beyond-good-and-evil-320.webp?v=0e1acbb8858a",
+          "width": 320,
+          "height": 480,
+          "bytes": 36258,
+          "sha256": "0e1acbb8858a12c57745bef367adcb475c5043ba3da597c90a16be2857cc367e"
+        },
+        {
+          "url": "/book-covers/beyond-good-and-evil-640.webp?v=aea55194298f",
+          "width": 640,
+          "height": 960,
+          "bytes": 127064,
+          "sha256": "aea55194298f2891a321e6cf9637bacd68d36c12a978b95448767565fe86e0ae"
+        }
+      ]
+    },
+    {
+      "id": "gutenberg-zarathustra",
+      "title": "查拉图斯特拉如是说",
+      "originalSha256": "ff2f8769f1575c0d52ce386d0f810d844276d285a2df2916a013d3b88fc1a6b7",
+      "originalWidth": 1024,
+      "originalHeight": 1536,
+      "origin": "built-in-image_gen",
+      "approvedSample": null,
+      "variants": [
+        {
+          "url": "/book-covers/zarathustra-320.webp?v=a34c85e87555",
+          "width": 320,
+          "height": 480,
+          "bytes": 39028,
+          "sha256": "a34c85e87555fac1a33762ce608587161f1c078dbcfc9e31ee07abfd86bc18f0"
+        },
+        {
+          "url": "/book-covers/zarathustra-640.webp?v=c3cc74093014",
+          "width": 640,
+          "height": 960,
+          "bytes": 123506,
+          "sha256": "c3cc74093014dc2725312f8329ca7375a494e0edf83806453d9219918be12ff3"
+        }
+      ]
+    },
+    {
+      "id": "gutenberg-analects-zh",
+      "title": "论语（中文原典）",
+      "originalSha256": "00340aae876caa1d44d382b9ca4a9c901b4cbd47b5a3e581b43666cc33eda05e",
+      "originalWidth": 1024,
+      "originalHeight": 1536,
+      "origin": "built-in-image_gen",
+      "approvedSample": null,
+      "variants": [
+        {
+          "url": "/book-covers/analects-zh-320.webp?v=31ec5a3a98e2",
+          "width": 320,
+          "height": 480,
+          "bytes": 40944,
+          "sha256": "31ec5a3a98e21ed4c2f8c23a9ce23a685c59040dfcf565b1e571c847bb0fdb81"
+        },
+        {
+          "url": "/book-covers/analects-zh-640.webp?v=8c3131aabe5e",
+          "width": 640,
+          "height": 960,
+          "bytes": 127948,
+          "sha256": "8c3131aabe5e2eba271752ca36d281a79b0a5c76e159f1966c4f8b7c134ddf69"
+        }
+      ]
+    },
+    {
+      "id": "gutenberg-mencius-zh",
+      "title": "孟子（中文原典）",
+      "originalSha256": "394bc11709742d490fec943a3c0ac447e96e7670b4bd5b6a294602ea969dbdce",
+      "originalWidth": 1024,
+      "originalHeight": 1536,
+      "origin": "built-in-image_gen",
+      "approvedSample": null,
+      "variants": [
+        {
+          "url": "/book-covers/mencius-zh-320.webp?v=34ff77645fbe",
+          "width": 320,
+          "height": 480,
+          "bytes": 52800,
+          "sha256": "34ff77645fbe459df56659c70f416f93f58f9ce3441b07454cf3dd4bc1e31614"
+        },
+        {
+          "url": "/book-covers/mencius-zh-640.webp?v=3554c9a462d8",
+          "width": 640,
+          "height": 960,
+          "bytes": 186360,
+          "sha256": "3554c9a462d8266963e390ca146b5a9eee3013fa47aa49dcfd8b3942cc285695"
+        }
+      ]
+    },
+    {
+      "id": "gutenberg-zhuangzi-zh",
+      "title": "庄子（中文原典）",
+      "originalSha256": "a7c0703370433a5f20be42ae9f5cdaaaf29db89723fc6c99ecaadccf62a21eb4",
+      "originalWidth": 1024,
+      "originalHeight": 1536,
+      "origin": "built-in-image_gen",
+      "approvedSample": null,
+      "variants": [
+        {
+          "url": "/book-covers/zhuangzi-zh-320.webp?v=0b7db862cc84",
+          "width": 320,
+          "height": 480,
+          "bytes": 33706,
+          "sha256": "0b7db862cc843dc84014b27e27f6a99e354ce664f507843798e04f267c2dcec0"
+        },
+        {
+          "url": "/book-covers/zhuangzi-zh-640.webp?v=344dd29bd89f",
+          "width": 640,
+          "height": 960,
+          "bytes": 107418,
+          "sha256": "344dd29bd89f35b3f7ff1addfaeea1de1c75537ddca115ff17a27dc079ca0ecc"
+        }
+      ]
+    },
+    {
+      "id": "gutenberg-art-of-war-zh",
+      "title": "孙子兵法（中文原典）",
+      "originalSha256": "43f0ebe4a14ed9660a36bf07f02c8c606578754cc6ec3106a92c5239fa539d9d",
+      "originalWidth": 1024,
+      "originalHeight": 1536,
+      "origin": "built-in-image_gen",
+      "approvedSample": null,
+      "variants": [
+        {
+          "url": "/book-covers/art-of-war-zh-320.webp?v=724f2c5d6218",
+          "width": 320,
+          "height": 480,
+          "bytes": 35722,
+          "sha256": "724f2c5d621899c512a8b5b3ca0f486601c91ebdfff278133f437300af88c582"
+        },
+        {
+          "url": "/book-covers/art-of-war-zh-640.webp?v=f6f83c65d191",
+          "width": 640,
+          "height": 960,
+          "bytes": 123638,
+          "sha256": "f6f83c65d191b39c6be5ccbbc5e93e3a25b54e48aed01fcc4bd7bc9e3267cbbc"
+        }
+      ]
+    },
+    {
+      "id": "gutenberg-tao-te-ching-zh",
+      "title": "道德经（中文原典）",
+      "originalSha256": "00cfc225e48617c0a99ddddb891a75c3f9da928a7038a59e30ca47950ca5782f",
+      "originalWidth": 1024,
+      "originalHeight": 1536,
+      "origin": "built-in-image_gen",
+      "approvedSample": null,
+      "variants": [
+        {
+          "url": "/book-covers/tao-te-ching-zh-320.webp?v=df16da0c64ce",
+          "width": 320,
+          "height": 480,
+          "bytes": 35646,
+          "sha256": "df16da0c64cee5e37634cd8acb78f7c02eeac2db178b50817782b1c9b92953a2"
+        },
+        {
+          "url": "/book-covers/tao-te-ching-zh-640.webp?v=625505be1a2c",
+          "width": 640,
+          "height": 960,
+          "bytes": 114818,
+          "sha256": "625505be1a2cf23a7d5f8123c85da568b4d941ccfa9c7fb1fbe234310be7bb0f"
+        }
+      ]
+    },
+    {
+      "id": "gutenberg-republic",
+      "title": "理想国",
+      "originalSha256": "23992824b7ad1b7060f7f21411060c3852258feb4570a70a20bdd119902c0bc9",
+      "originalWidth": 1024,
+      "originalHeight": 1536,
+      "origin": "built-in-image_gen",
+      "approvedSample": null,
+      "variants": [
+        {
+          "url": "/book-covers/republic-320.webp?v=8efb36ded4e4",
+          "width": 320,
+          "height": 480,
+          "bytes": 29564,
+          "sha256": "8efb36ded4e4bc7b82480221d19d34828cca7af0525ef7f7cba7c58578e678e6"
+        },
+        {
+          "url": "/book-covers/republic-640.webp?v=5859fe111e42",
+          "width": 640,
+          "height": 960,
+          "bytes": 101912,
+          "sha256": "5859fe111e42a1e8aedf27d0f7b46aac559c771ffa9309f91a695ecf8f4979fa"
+        }
+      ]
+    },
+    {
+      "id": "gutenberg-nicomachean-ethics",
+      "title": "尼各马可伦理学",
+      "originalSha256": "eb4b999c9e5b244114e357894a495e416cc2094c76f154c35d4f85d8e8a6bbf6",
+      "originalWidth": 1024,
+      "originalHeight": 1536,
+      "origin": "built-in-image_gen",
+      "approvedSample": null,
+      "variants": [
+        {
+          "url": "/book-covers/nicomachean-ethics-320.webp?v=3e126ebb78ad",
+          "width": 320,
+          "height": 480,
+          "bytes": 44364,
+          "sha256": "3e126ebb78ad6773483ea80301e1116a48c2ad562fae373b11a66c42d5806076"
+        },
+        {
+          "url": "/book-covers/nicomachean-ethics-640.webp?v=ea98344337af",
+          "width": 640,
+          "height": 960,
+          "bytes": 141010,
+          "sha256": "ea98344337af07b1de6389671260ef997a2c6c200e4411590868eb15f9245e87"
+        }
+      ]
+    },
+    {
+      "id": "gutenberg-epictetus-discourses-handbook",
+      "title": "爱比克泰德论说选与手册",
+      "originalSha256": "57e010ee29dfa18bc18e197313a48b4a46156ec013e07282f2661e56b2c324ad",
+      "originalWidth": 1024,
+      "originalHeight": 1536,
+      "origin": "built-in-image_gen",
+      "approvedSample": null,
+      "variants": [
+        {
+          "url": "/book-covers/epictetus-discourses-handbook-320.webp?v=a09296e4ea06",
+          "width": 320,
+          "height": 480,
+          "bytes": 38346,
+          "sha256": "a09296e4ea06db7591ec78c1f5ffaabfe5d34b8ab556c2a832ae98a9cbae2fd0"
+        },
+        {
+          "url": "/book-covers/epictetus-discourses-handbook-640.webp?v=330a0401a9a2",
+          "width": 640,
+          "height": 960,
+          "bytes": 128728,
+          "sha256": "330a0401a9a219624f96bfdd3b7ebf8bafd755f65617f49bdcf466db05712144"
+        }
+      ]
+    },
+    {
+      "id": "gutenberg-confessions-augustine",
+      "title": "忏悔录（奥古斯丁）",
+      "originalSha256": "52f57b41900e43147afc681ef4d5df7bbf428a631d3010d32a12776043b1b110",
+      "originalWidth": 1024,
+      "originalHeight": 1536,
+      "origin": "built-in-image_gen",
+      "approvedSample": null,
+      "variants": [
+        {
+          "url": "/book-covers/confessions-augustine-320.webp?v=ebd3de5a667a",
+          "width": 320,
+          "height": 480,
+          "bytes": 37764,
+          "sha256": "ebd3de5a667af407ebdd3c0c7ce87e9c9245203315a80cc1c0351df6ed6682a1"
+        },
+        {
+          "url": "/book-covers/confessions-augustine-640.webp?v=ee03b83865ee",
+          "width": 640,
+          "height": 960,
+          "bytes": 124152,
+          "sha256": "ee03b83865eef32a13ac93667dfb4da05c36320e783260e30f51fb139d48534b"
+        }
+      ]
+    },
+    {
+      "id": "gutenberg-prince",
+      "title": "君主论（附两篇短著）",
+      "originalSha256": "bb4470747ed86d17d77e0d1d0f75f5d936f677723aa8ad47384f793685b04466",
+      "originalWidth": 1024,
+      "originalHeight": 1536,
+      "origin": "built-in-image_gen",
+      "approvedSample": null,
+      "variants": [
+        {
+          "url": "/book-covers/prince-320.webp?v=949c995e6a18",
+          "width": 320,
+          "height": 480,
+          "bytes": 35094,
+          "sha256": "949c995e6a188de74d7a7c103753a03ced31567ce1c976016b81e678021e3176"
+        },
+        {
+          "url": "/book-covers/prince-640.webp?v=2e0e5e44bc57",
+          "width": 640,
+          "height": 960,
+          "bytes": 110904,
+          "sha256": "2e0e5e44bc577fc155caa83cd6b94ddc1e4fe8a623d1a9d7eb0d0e51ee468627"
+        }
+      ]
+    },
+    {
+      "id": "gutenberg-discourse-on-method",
+      "title": "谈谈方法（方法谈）",
+      "originalSha256": "fe39e24ff3b06a8eecedcb8e69fc53922c887493c4fa583c0a9c72659a0b1f2c",
+      "originalWidth": 1024,
+      "originalHeight": 1536,
+      "origin": "built-in-image_gen",
+      "approvedSample": null,
+      "variants": [
+        {
+          "url": "/book-covers/discourse-on-method-320.webp?v=47ca3aa0421a",
+          "width": 320,
+          "height": 480,
+          "bytes": 24734,
+          "sha256": "47ca3aa0421a31bc0611fe2ef27520dc1c1e203f5221d102327e5e0c434c970a"
+        },
+        {
+          "url": "/book-covers/discourse-on-method-640.webp?v=4c6f02ea3519",
+          "width": 640,
+          "height": 960,
+          "bytes": 83880,
+          "sha256": "4c6f02ea351932b9475a0ee1cf395cf046656a0c0c4eaba27b3ed5b58fca3f01"
+        }
+      ]
+    },
+    {
+      "id": "gutenberg-ethics-spinoza",
+      "title": "伦理学（斯宾诺莎）",
+      "originalSha256": "a0b92163e5bb4b287600f7b832093ac189bf348a40f10f3b46a563bdfa3a1385",
+      "originalWidth": 1024,
+      "originalHeight": 1536,
+      "origin": "built-in-image_gen",
+      "approvedSample": null,
+      "variants": [
+        {
+          "url": "/book-covers/ethics-spinoza-320.webp?v=ebefd354e013",
+          "width": 320,
+          "height": 480,
+          "bytes": 37260,
+          "sha256": "ebefd354e01394e2c703be6b6225cae990eddc3a8e6ac32d81194e367c497358"
+        },
+        {
+          "url": "/book-covers/ethics-spinoza-640.webp?v=852cf8456ded",
+          "width": 640,
+          "height": 960,
+          "bytes": 120148,
+          "sha256": "852cf8456dedf6271f42d9d8e97a65dbc6f522b30f439f2997bb0589e0ff59e7"
+        }
+      ]
+    },
+    {
+      "id": "gutenberg-enquiry-human-understanding",
+      "title": "人类理解研究",
+      "originalSha256": "d60d028d2a64fbf14e44e88de50ce5010aa4d4d513550a03fd4e933153d2305b",
+      "originalWidth": 1024,
+      "originalHeight": 1536,
+      "origin": "built-in-image_gen",
+      "approvedSample": null,
+      "variants": [
+        {
+          "url": "/book-covers/enquiry-human-understanding-320.webp?v=719b14568c12",
+          "width": 320,
+          "height": 480,
+          "bytes": 39372,
+          "sha256": "719b14568c120174835939a8abf483c757d57aa338798df23ce165441afb3253"
+        },
+        {
+          "url": "/book-covers/enquiry-human-understanding-640.webp?v=640b7e8ab9d0",
+          "width": 640,
+          "height": 960,
+          "bytes": 129394,
+          "sha256": "640b7e8ab9d0493daf1a773a3fca734b6a3e003036c44c03debb5aa30e497574"
+        }
+      ]
+    },
+    {
+      "id": "gutenberg-novum-organum",
+      "title": "新工具",
+      "originalSha256": "5d63d41516068ae0657da367c638904482523b31da780270873e2bccde3ca888",
+      "originalWidth": 1024,
+      "originalHeight": 1536,
+      "origin": "built-in-image_gen",
+      "approvedSample": null,
+      "variants": [
+        {
+          "url": "/book-covers/novum-organum-320.webp?v=40dd79c28f27",
+          "width": 320,
+          "height": 480,
+          "bytes": 43498,
+          "sha256": "40dd79c28f2736afe9a3995de53224753c5613777e14dd11b6fd9e9701ea0ae4"
+        },
+        {
+          "url": "/book-covers/novum-organum-640.webp?v=3d33809ced7e",
+          "width": 640,
+          "height": 960,
+          "bytes": 144896,
+          "sha256": "3d33809ced7e7696756e9b13eaf97f30867b3870e79cc24704575d974ddaf92c"
+        }
+      ]
+    },
+    {
+      "id": "gutenberg-hamlet",
+      "title": "哈姆雷特",
+      "originalSha256": "7ec6a8f4333ee566684604a837597e17ddecba0bf59474171fe16ef55fb39320",
+      "originalWidth": 1024,
+      "originalHeight": 1536,
+      "origin": "built-in-image_gen",
+      "approvedSample": null,
+      "variants": [
+        {
+          "url": "/book-covers/hamlet-320.webp?v=a5d06fcbd34d",
+          "width": 320,
+          "height": 480,
+          "bytes": 23124,
+          "sha256": "a5d06fcbd34dad7070a5a372fd624acc5a1326a718eb31aa49260b931b389d35"
+        },
+        {
+          "url": "/book-covers/hamlet-640.webp?v=e58732f2dc98",
+          "width": 640,
+          "height": 960,
+          "bytes": 77392,
+          "sha256": "e58732f2dc98b00074a1367b596b59e6210d75a9002bc4135cb89c9fb156074d"
+        }
+      ]
+    },
+    {
+      "id": "gutenberg-odyssey",
+      "title": "奥德赛",
+      "originalSha256": "4497e70dbe22e68965bcc8919b19752b4a74e4e19f0cc5b5c088d5c0f5c3450f",
+      "originalWidth": 1024,
+      "originalHeight": 1536,
+      "origin": "built-in-image_gen",
+      "approvedSample": null,
+      "variants": [
+        {
+          "url": "/book-covers/odyssey-320.webp?v=c6aa6c72d2b4",
+          "width": 320,
+          "height": 480,
+          "bytes": 39412,
+          "sha256": "c6aa6c72d2b424af634b3dda7f423c1340fc63d61cb43bf2064c4150492a5a72"
+        },
+        {
+          "url": "/book-covers/odyssey-640.webp?v=c9cefc5bf812",
+          "width": 640,
+          "height": 960,
+          "bytes": 126836,
+          "sha256": "c9cefc5bf812ddb43533dac308c78813c217dfd310bb289fb57c1d387093ae15"
+        }
+      ]
+    },
+    {
+      "id": "gutenberg-crime-and-punishment",
+      "title": "罪与罚",
+      "originalSha256": "98871bc01b9568f13749e1981ea406dc53b2906b987f292a936f26484b654c39",
+      "originalWidth": 1024,
+      "originalHeight": 1536,
+      "origin": "built-in-image_gen",
+      "approvedSample": null,
+      "variants": [
+        {
+          "url": "/book-covers/crime-and-punishment-320.webp?v=99eb74d50c7e",
+          "width": 320,
+          "height": 480,
+          "bytes": 40066,
+          "sha256": "99eb74d50c7eb888ddba53335c284c50727d17e2288f9a69edb83a9a817ca53b"
+        },
+        {
+          "url": "/book-covers/crime-and-punishment-640.webp?v=2c9ae307b3c6",
+          "width": 640,
+          "height": 960,
+          "bytes": 136428,
+          "sha256": "2c9ae307b3c6066a5c25f52fc9153c6aa8dab602e668d1374c0f381c9858b032"
+        }
+      ]
+    },
+    {
+      "id": "gutenberg-wealth-of-nations",
+      "title": "国富论",
+      "originalSha256": "8ee97b7b13f19b784a5560359b726ac2f9b2e12565be854174dd3726593c14ca",
+      "originalWidth": 1024,
+      "originalHeight": 1536,
+      "origin": "built-in-image_gen",
+      "approvedSample": null,
+      "variants": [
+        {
+          "url": "/book-covers/wealth-of-nations-320.webp?v=b79459fab082",
+          "width": 320,
+          "height": 480,
+          "bytes": 37980,
+          "sha256": "b79459fab08235644a007b27eeff34f28db4075606bdd400dd349743937b7342"
+        },
+        {
+          "url": "/book-covers/wealth-of-nations-640.webp?v=7fe353916738",
+          "width": 640,
+          "height": 960,
+          "bytes": 129140,
+          "sha256": "7fe353916738c978f05fa49d868caa59b1043e5760fd3052c956566df7bbc3c1"
+        }
+      ]
+    },
+    {
+      "id": "gutenberg-origin-of-species",
+      "title": "物种起源（第六版）",
+      "originalSha256": "744a3eca1e10dfef8f1b6c9602042de1dfa99bcae5f2380e530cf8f593a1a5ad",
+      "originalWidth": 1024,
+      "originalHeight": 1536,
+      "origin": "built-in-image_gen",
+      "approvedSample": null,
+      "variants": [
+        {
+          "url": "/book-covers/origin-of-species-320.webp?v=ed83e6089cfb",
+          "width": 320,
+          "height": 480,
+          "bytes": 33388,
+          "sha256": "ed83e6089cfb768c0c5289d873cebe6c561a094bd0f4d36e60c66c8da3ee110b"
+        },
+        {
+          "url": "/book-covers/origin-of-species-640.webp?v=f5e6898ff536",
+          "width": 640,
+          "height": 960,
+          "bytes": 116246,
+          "sha256": "f5e6898ff53637d4e61cc4ead1cf01fbec32f4b1c71c0b3d36ba75e67b9d197a"
+        }
+      ]
+    },
+    {
+      "id": "gutenberg-peloponnesian-war",
+      "title": "伯罗奔尼撒战争史",
+      "originalSha256": "d32b438f0a299a5a6665193127cc9a20c9400cbdfae78a0977f5c3b0248107ef",
+      "originalWidth": 1024,
+      "originalHeight": 1536,
+      "origin": "built-in-image_gen",
+      "approvedSample": null,
+      "variants": [
+        {
+          "url": "/book-covers/peloponnesian-war-320.webp?v=eb103e0d0e6a",
+          "width": 320,
+          "height": 480,
+          "bytes": 41918,
+          "sha256": "eb103e0d0e6a6e6b1ad5e167d96d022e565069eea0ed9ebef3bb51aa12163e4a"
+        },
+        {
+          "url": "/book-covers/peloponnesian-war-640.webp?v=bdb859dc08d1",
+          "width": 640,
+          "height": 960,
+          "bytes": 137882,
+          "sha256": "bdb859dc08d1d8294fb862b72210b67562fc82f015628777154589d6f35a9fce"
+        }
+      ]
+    },
+    {
+      "id": "gutenberg-wisdom-of-life-1",
+      "title": "人生的智慧（上册）",
+      "originalSha256": "742e03a87df9f9ee4963d0e5083b844a0a12568361a4a92a8ce5762a4c5ee420",
+      "originalWidth": 1024,
+      "originalHeight": 1536,
+      "origin": "built-in-image_gen",
+      "approvedSample": null,
+      "variants": [
+        {
+          "url": "/book-covers/wisdom-of-life-1-320.webp?v=ecc4a87ac8ed",
+          "width": 320,
+          "height": 480,
+          "bytes": 40882,
+          "sha256": "ecc4a87ac8ed7cee62488b597273f83ceecc0c7a5951ebbc2211f42ddb266fcc"
+        },
+        {
+          "url": "/book-covers/wisdom-of-life-1-640.webp?v=8df6a046039d",
+          "width": 640,
+          "height": 960,
+          "bytes": 138594,
+          "sha256": "8df6a046039d16e5a54c160dc8bb5b4fb43a064e6499dad22ce511090ffb0cc4"
+        }
+      ]
+    },
+    {
+      "id": "gutenberg-wisdom-of-life-2",
+      "title": "人生的智慧（下册：建议与格言）",
+      "originalSha256": "d5597e1a7537be8daaf05ad4bc9f7f50e6639c3687bd611f0b8ce0c62f947117",
+      "originalWidth": 1024,
+      "originalHeight": 1536,
+      "origin": "built-in-image_gen",
+      "approvedSample": null,
+      "variants": [
+        {
+          "url": "/book-covers/wisdom-of-life-2-320.webp?v=b26d0e86a420",
+          "width": 320,
+          "height": 480,
+          "bytes": 55698,
+          "sha256": "b26d0e86a4202a08433590d27828a79bc2b04ba743806053cc52ac160463a457"
+        },
+        {
+          "url": "/book-covers/wisdom-of-life-2-640.webp?v=e53d7a2b8b5c",
+          "width": 640,
+          "height": 960,
+          "bytes": 186436,
+          "sha256": "e53d7a2b8b5c8dc8243a1351550c53abdad536e95a7d909d651cbae4c71d7acd"
+        }
+      ]
+    },
+    {
+      "id": "gutenberg-genealogy-of-morals",
+      "title": "论道德的谱系",
+      "originalSha256": "04e047004620a348095c0deeb38780ceac5e2b9a10abd808633d8afb836af15e",
+      "originalWidth": 1024,
+      "originalHeight": 1536,
+      "origin": "built-in-image_gen",
+      "approvedSample": null,
+      "variants": [
+        {
+          "url": "/book-covers/genealogy-of-morals-320.webp?v=b8da138c7229",
+          "width": 320,
+          "height": 480,
+          "bytes": 37888,
+          "sha256": "b8da138c72294d0f62a9be8423d2e05463669e4ff4d8a30ffce6a8438458a310"
+        },
+        {
+          "url": "/book-covers/genealogy-of-morals-640.webp?v=99023fcad126",
+          "width": 640,
+          "height": 960,
+          "bytes": 132702,
+          "sha256": "99023fcad12648da8178d9c4c1e99ab5df1ecc418688dac1dc8dcedff0bca8ea"
+        }
+      ]
+    },
+    {
+      "id": "gutenberg-dream-red-chamber-1",
+      "title": "红楼梦（第1册：1—40回）",
+      "originalSha256": "0c715066dbb5ab3f79ca0f247fb75eb5c00a1caf9038d2712c505901b35ae4be",
+      "originalWidth": 1024,
+      "originalHeight": 1536,
+      "origin": "built-in-image_gen",
+      "approvedSample": null,
+      "variants": [
+        {
+          "url": "/book-covers/dream-red-chamber-1-320.webp?v=67589d112f85",
+          "width": 320,
+          "height": 480,
+          "bytes": 41840,
+          "sha256": "67589d112f85609b9fb2168155f2111582229c2031acf542d9ffe1c47f035f68"
+        },
+        {
+          "url": "/book-covers/dream-red-chamber-1-640.webp?v=81aaccc0058a",
+          "width": 640,
+          "height": 960,
+          "bytes": 141384,
+          "sha256": "81aaccc0058accefe389aa1a5c014d38474014df12497929748a1f69d703bdee"
+        }
+      ]
+    },
+    {
+      "id": "gutenberg-dream-red-chamber-2",
+      "title": "红楼梦（第2册：41—80回）",
+      "originalSha256": "49edf3e5b9ad57ead35a360e29b01e5773b968913544eaf780e448eaeec9af33",
+      "originalWidth": 1024,
+      "originalHeight": 1536,
+      "origin": "built-in-image_gen",
+      "approvedSample": null,
+      "variants": [
+        {
+          "url": "/book-covers/dream-red-chamber-2-320.webp?v=251f491f695c",
+          "width": 320,
+          "height": 480,
+          "bytes": 40282,
+          "sha256": "251f491f695c7b214b023ab05a7bc8da729ff8515fd7e6e795bfe094c392dfa8"
+        },
+        {
+          "url": "/book-covers/dream-red-chamber-2-640.webp?v=3ec7ea18f343",
+          "width": 640,
+          "height": 960,
+          "bytes": 134262,
+          "sha256": "3ec7ea18f3437efe61599ed0575cb4ae3e491e9733d8a868089887ed2a6a09b5"
+        }
+      ]
+    },
+    {
+      "id": "gutenberg-dream-red-chamber-3",
+      "title": "红楼梦（第3册：81—120回）",
+      "originalSha256": "84f0cf3a531684f1be07b8ead66326c5ad1994eecab4706ff2f204e9660fcfe0",
+      "originalWidth": 1024,
+      "originalHeight": 1536,
+      "origin": "built-in-image_gen",
+      "approvedSample": null,
+      "variants": [
+        {
+          "url": "/book-covers/dream-red-chamber-3-320.webp?v=90d0891376fe",
+          "width": 320,
+          "height": 480,
+          "bytes": 37478,
+          "sha256": "90d0891376fee0b04e909ad1468792ad65a5577e778cde447dfea5ecff91fb22"
+        },
+        {
+          "url": "/book-covers/dream-red-chamber-3-640.webp?v=b8a4eb9c0574",
+          "width": 640,
+          "height": 960,
+          "bytes": 114138,
+          "sha256": "b8a4eb9c0574d15381e2b34c8295ce2f775336a0d9b53192890c1060b2cdd57f"
+        }
+      ]
+    },
+    {
+      "id": "gutenberg-essays-montaigne-1",
+      "title": "蒙田随笔（第1卷）",
+      "originalSha256": "0a5846260b57edde95389357fbd6298e0343f9439695c5036dc66d93d01e9c32",
+      "originalWidth": 1024,
+      "originalHeight": 1536,
+      "origin": "built-in-image_gen",
+      "approvedSample": null,
+      "variants": [
+        {
+          "url": "/book-covers/essays-montaigne-1-320.webp?v=37ebc3b96741",
+          "width": 320,
+          "height": 480,
+          "bytes": 38844,
+          "sha256": "37ebc3b967412ce0c8b921f9f3064b7ace643c87a546c84931266799ffed70e0"
+        },
+        {
+          "url": "/book-covers/essays-montaigne-1-640.webp?v=af42a1f39b75",
+          "width": 640,
+          "height": 960,
+          "bytes": 128450,
+          "sha256": "af42a1f39b75287a145861974f83f3054d788c16da733043c153303841356acd"
+        }
+      ]
+    },
+    {
+      "id": "gutenberg-essays-montaigne-2",
+      "title": "蒙田随笔（第2卷）",
+      "originalSha256": "bebaed716d0b83aaa73cf1b77335c95c6828f68fdf9924059f95f1cc85f7720b",
+      "originalWidth": 1024,
+      "originalHeight": 1536,
+      "origin": "built-in-image_gen",
+      "approvedSample": null,
+      "variants": [
+        {
+          "url": "/book-covers/essays-montaigne-2-320.webp?v=5d27cca4ddcd",
+          "width": 320,
+          "height": 480,
+          "bytes": 35098,
+          "sha256": "5d27cca4ddcdb7c19b17fa375327e5710d0843f0e36fd38c704bc26afa4f66cf"
+        },
+        {
+          "url": "/book-covers/essays-montaigne-2-640.webp?v=cf545033379a",
+          "width": 640,
+          "height": 960,
+          "bytes": 117708,
+          "sha256": "cf545033379aa08b0309cebc743d7bc83eb9e487b0a38bb84950473642d2651d"
+        }
+      ]
+    },
+    {
+      "id": "gutenberg-essays-montaigne-3",
+      "title": "蒙田随笔（第3卷）",
+      "originalSha256": "ee3e69c9d27530e3dbf41fc3d21ee5161a47616a96c741c0c1c57b7da6d10090",
+      "originalWidth": 1024,
+      "originalHeight": 1536,
+      "origin": "built-in-image_gen",
+      "approvedSample": null,
+      "variants": [
+        {
+          "url": "/book-covers/essays-montaigne-3-320.webp?v=89e018dcf426",
+          "width": 320,
+          "height": 480,
+          "bytes": 42484,
+          "sha256": "89e018dcf4267309f8d8e636b21acb758765702e1a77ce38ff655df033421fab"
+        },
+        {
+          "url": "/book-covers/essays-montaigne-3-640.webp?v=2a01464d6058",
+          "width": 640,
+          "height": 960,
+          "bytes": 139026,
+          "sha256": "2a01464d60589ad3a12591dbedb96dba9e30065e1d6323d298c82464e5e379d8"
+        }
+      ]
+    },
+    {
+      "id": "gutenberg-world-will-idea-1",
+      "title": "作为意志和表象的世界（英译第1册）",
+      "originalSha256": "8e59cdf6233c0fa97d2a88b33bc6cb81e3a0ede9fe448a70ee89ea3d02fbf9db",
+      "originalWidth": 1024,
+      "originalHeight": 1536,
+      "origin": "built-in-image_gen",
+      "approvedSample": null,
+      "variants": [
+        {
+          "url": "/book-covers/world-will-idea-1-320.webp?v=1ab5dc14cf65",
+          "width": 320,
+          "height": 480,
+          "bytes": 33452,
+          "sha256": "1ab5dc14cf65e53b69c889ea9456f94897dce90a2bdd1494741ab20526a0f996"
+        },
+        {
+          "url": "/book-covers/world-will-idea-1-640.webp?v=71c347603d0a",
+          "width": 640,
+          "height": 960,
+          "bytes": 108982,
+          "sha256": "71c347603d0ad6a49bf8bb0b2ee88805f5f806fac044f916885aa228be38d223"
+        }
+      ]
+    },
+    {
+      "id": "gutenberg-world-will-idea-2",
+      "title": "作为意志和表象的世界（英译第2册）",
+      "originalSha256": "51cb23691b787a45883f102e4f847a7eb45f84e358c322a07e7f5e1894b44677",
+      "originalWidth": 1024,
+      "originalHeight": 1536,
+      "origin": "built-in-image_gen",
+      "approvedSample": null,
+      "variants": [
+        {
+          "url": "/book-covers/world-will-idea-2-320.webp?v=60ff102cbeeb",
+          "width": 320,
+          "height": 480,
+          "bytes": 41844,
+          "sha256": "60ff102cbeeba603202e342cc2a31ac35cd6f505b4ab28ab043a9c93cb74349f"
+        },
+        {
+          "url": "/book-covers/world-will-idea-2-640.webp?v=4e3371264a9d",
+          "width": 640,
+          "height": 960,
+          "bytes": 144644,
+          "sha256": "4e3371264a9d4a2009884097fdb2ee9a5e031941ed7d50b5d08fd0ebb00a9433"
+        }
+      ]
+    },
+    {
+      "id": "gutenberg-world-will-idea-3",
+      "title": "作为意志和表象的世界（英译第3册）",
+      "originalSha256": "0dab91cd5d9440d9f4f0477594400f51664031a0489c24ffbd5ca092c4aeb63b",
+      "originalWidth": 1024,
+      "originalHeight": 1536,
+      "origin": "built-in-image_gen",
+      "approvedSample": null,
+      "variants": [
+        {
+          "url": "/book-covers/world-will-idea-3-320.webp?v=b69bd6459a83",
+          "width": 320,
+          "height": 480,
+          "bytes": 33290,
+          "sha256": "b69bd6459a830f77bc3db2e9c71e85aaf635bf52c66f425dc948f0f4e90a073c"
+        },
+        {
+          "url": "/book-covers/world-will-idea-3-640.webp?v=f8e064fdb51c",
+          "width": 640,
+          "height": 960,
+          "bytes": 110606,
+          "sha256": "f8e064fdb51c5498d14ade9c170a65e3f7f5fd6ddf876c6ee14a60231d1031e5"
+        }
+      ]
+    }
+  ]
+}

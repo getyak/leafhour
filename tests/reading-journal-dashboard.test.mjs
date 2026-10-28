@@ -10,7 +10,8 @@ import * as calendar from '../app/reading-calendar.mjs';
 import * as workspace from '../app/library-workspace.mjs';
 import * as policy from '../app/reading-time-policy.mjs';
 import {inferSourceLanguage} from '../app/source-language.mjs';
-import {paintBookCover} from '../app/book-binding.mjs';
+import {paintBookCover,bookCoverLabel} from '../app/book-binding.mjs';
+import {paintBookIdentity} from '../app/book-cover-ui.mjs';
 import {mountReadingArrival} from '../app/reading-arrival.mjs';
 import {trackActionFocus} from '../app/action-focus.mjs';
 class Element extends EventTarget{
@@ -32,7 +33,7 @@ function fixture({pending=false,timeZone=null,shelfOnly=false}={}){
  const intl=timeZone?Object.create(Intl):Intl;if(timeZone)intl.DateTimeFormat=function(language,options={}){return new Intl.DateTimeFormat(language,{timeZone,...options});};
  const doc=new EventTarget();doc.defaultView={location:{search:''}};doc.createElement=tag=>new Element(tag,doc);doc.body=doc.createElement('body');const roots=Array.from({length:3},()=>doc.createElement('section'));doc.body.append(...roots);roots[1].hidden=true;let owner='a',resolve,calls=0;
  const date=calendar.localReadingDate(Intl.DateTimeFormat().resolvedOptions().timeZone||'UTC'),month=date.slice(0,7),day={date,durationSeconds:600,sourceDurationSeconds:{reader_focus:600},notes:1,questions:1,chapterMarks:0,books:[{bookId:'book',title:{zh:'Literal title'},durationSeconds:600,notes:1,questions:1,chapterMarks:0,source:{bookId:'book',passageId:'p1',type:'reading'}}],totalDetails:1,details:[{id:'s1',bookId:'book',passageId:'p1',type:'reading',title:{zh:'Literal title'},source:'reader_focus'}]};const data={month,days:[day],durationSeconds:600,readingDays:1,notes:1,questions:1};
- const promise=new Promise(r=>resolve=r);const context={...locale,...journal,...calendar,...workspace,...policy,document:doc,Intl:intl,Date,Event,inferSourceLanguage,paintBookCover,mountReadingArrival,trackActionFocus,crypto:globalThis.crypto};vm.createContext(context);vm.runInContext(executable+'\nthis.mount=mountReadingDashboard;',context);
+ const promise=new Promise(r=>resolve=r);const context={...locale,...journal,...calendar,...workspace,...policy,document:doc,Intl:intl,Date,Event,inferSourceLanguage,paintBookCover,bookCoverLabel,paintBookIdentity,mountReadingArrival,trackActionFocus,crypto:globalThis.crypto};vm.createContext(context);vm.runInContext(executable+'\nthis.mount=mountReadingDashboard;',context);
  const ui=context.mount({shelfOnly,root:roots[0],overviewRoot:roots[1],historyRoot:roots[2],api(){calls++;return pending?promise:Promise.resolve(data);},getSession:()=>({user:{id:owner}}),getOwner:()=>owner,getBooks:()=>[],openAuth(){},refresh(){}});
  return {doc,ui,roots,day,date,data,resolve,calls:()=>calls,setOwner:value=>owner=value,find:cls=>all(doc.body).find(n=>n.className.split(' ').includes(cls)),days:()=>all(roots[1]).filter(n=>n.className==='journal-day')};
 }

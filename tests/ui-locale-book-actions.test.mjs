@@ -2,6 +2,11 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {mountLibraryBookActions} from '../app/library-book-actions.mjs';
 import {requestUiRoute,t as uiText,onUiLocaleFault} from '../app/ui-locale.mjs';
+test('public action trigger names retain the localized edition and volume through language commits',async t=>{
+ const f=await fixture(t),card=f.doc.createElement('article'),book={...f.book,bookId:'gutenberg-dream-red-chamber-1',visibility:'public',title:{zh:'原始书名第一册',en:'Original volume one'}};f.doc.body.append(card);const trigger=f.controller.decorate(card,book),source=JSON.stringify(book);
+ await requestUiRoute('ja');assert.match(trigger.getAttribute('aria-label'),/紅楼夢/);assert.match(trigger.getAttribute('aria-label'),/第 1 冊/);
+ await requestUiRoute('en');assert.match(trigger.getAttribute('aria-label'),/Dream of the Red Chamber/);assert.match(trigger.getAttribute('aria-label'),/1/);assert.equal(JSON.stringify(book),source);assert.equal(f.calls.length,0);
+});
 
 class Node extends EventTarget{
  constructor(tag,doc){super();this.tagName=tag.toUpperCase();this.ownerDocument=doc;this.children=[];this.attrs=new Map();this.dataset={};this.style={};this.className='';this.textContent='';this.hidden=false;this.disabled=false;this.open=false;this.offsetWidth=200;this.offsetHeight=200;this._value='';this.classList={add:()=>{},remove:()=>{},toggle:()=>{}};}

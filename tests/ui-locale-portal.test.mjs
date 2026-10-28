@@ -1,3 +1,5 @@
+import {bookCoverLabel} from '../app/book-binding.mjs';
+import {paintBookIdentity} from '../app/book-cover-ui.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
@@ -24,7 +26,7 @@ const formatter=(id,params)=>id+(params?JSON.stringify(params):'');
 
 test('actual public and private shelf cards use complete message IDs and preserve their source titles',async()=>{
  const make=(tag,className='',text)=>({tag,className,textContent:text??'',children:[],dataset:{},setAttribute(){},addEventListener(){},append(...children){this.children.push(...children);}});
- const context={make,paintBookCover(){},readingBookUrl:()=>'/read?book=synthetic',ownedHref(){},bookActions:null,notebook:null,shelfDrag:null,mountCardLabels(){},roomIcons(){},cardLabel(node,id,params){assert.ok(Object.hasOwn(english,id),'shelf message exists: '+id);node.textContent=t(id,params);return node;}};
+ const context={make,bookCoverLabel,paintBookIdentity,getUiLocale,t,paintBookCover(){},readingBookUrl:()=>'/read?book=synthetic',ownedHref(){},bookActions:null,notebook:null,shelfDrag:null,mountCardLabels(){},roomIcons(){},cardLabel(node,id,params){assert.ok(Object.hasOwn(english,id),'shelf message exists: '+id);node.textContent=t(id,params);return node;}};
  vm.createContext(context);vm.runInContext(declaration('bookCard')+'\nthis.cardFactory=bookCard;',context);
  try{for(const locale of ['en','zh-Hans','zh-Hant','ja']){
   await requestUiRoute(locale);
@@ -81,18 +83,18 @@ test('owner reset drops account translation availability even for shared public 
 
 test('home cover title and stored resume label remain content even when equal to a UI phrase',()=>{
   const make=(tag,className='',text)=>({tag,className,textContent:text??'',children:[],setAttribute(){},append(...children){this.children.push(...children);}});
-  const context={document:{},getUiLocale,homeLocale:()=> 'en',homeText,isLibrary:false,make,session:{user:{id:'synthetic'}},readingBookUrl:()=>'/read?book=synthetic',t:formatter,chineseTrialUrl:()=>'/read',positionStorageKey:()=>'',localStorage:{getItem:()=>null}};
+  const context={document:{},bookCoverLabel,paintBookCover(){},getUiLocale,homeLocale:()=> 'en',homeText,isLibrary:false,make,session:{user:{id:'synthetic'}},readingBookUrl:()=>'/read?book=synthetic',t:formatter,chineseTrialUrl:()=>'/read',positionStorageKey:()=>'',localStorage:{getItem:()=>null}};
   vm.createContext(context);vm.runInContext(declaration('landingBookCard')+'\nthis.cardFactory=landingBookCard;',context);
   const book={bookId:'synthetic',title:{en:'阅读',zh:'阅读'},author:'Author',description:'Source description',visibility:'public',source:{format:'txt',filename:'source.txt',sha256:'v'},paragraphs:1,resume:{label:'阅读',passageId:'p1'}};
   const card=context.cardFactory(book),all=node=>[node,...node.children.flatMap(all)],nodes=all(card);
-  assert.equal(nodes.find(x=>x.tag==='h3').textContent,'阅读');assert.equal(nodes.find(x=>x.tag==='strong').textContent,'阅读');
+  assert.equal(nodes.find(x=>x.tag==='h3').textContent,'阅读');
   assert.equal(nodes.find(x=>x.className==='book-resume').textContent,'阅读');assert.equal(book.resume.label,'阅读');
 });
 
 test('homepage catalog metadata and cached chapter positions follow the committed UI language in place',async()=>{
  const make=(tag,className='',text)=>({tag,className,textContent:text??'',children:[],attrs:{},setAttribute(k,v){this.attrs[k]=v;},append(...children){this.children.push(...children);}});
  const labels=new Map(),local={passageId:'p7',chapterLabel:'第 1 章 · 掉进兔子洞',contentVersion:'v'};
- const context={getUiLocale,homeText,isLibrary:false,make,session:null,readingBookUrl:(_book,resume)=>'/read?book=gutenberg-alice'+(resume?'&passage='+resume.passageId:''),t,chineseTrialUrl:()=>'/read?sample=zh',positionStorageKey:()=>'',localStorage:{getItem:()=>JSON.stringify(local)},registerCardNode(node,spec){labels.set(node,spec);}};
+ const context={bookCoverLabel,paintBookCover(){},getUiLocale,homeText,isLibrary:false,make,session:null,readingBookUrl:(_book,resume)=>'/read?book=gutenberg-alice'+(resume?'&passage='+resume.passageId:''),t,chineseTrialUrl:()=>'/read?sample=zh',positionStorageKey:()=>'',localStorage:{getItem:()=>JSON.stringify(local)},registerCardNode(node,spec){labels.set(node,spec);}};
  vm.createContext(context);vm.runInContext(declaration('landingBookCard')+'\nthis.cardFactory=landingBookCard;',context);
  const book={bookId:'gutenberg-alice',title:{en:'Alice’s Adventures in Wonderland',zh:'爱丽丝梦游仙境'},author:'Lewis Carroll',description:'跟着白兔进入一个熟悉的陌生世界。',visibility:'public',cover:'alice',source:{format:'txt',sha256:'v'},paragraphs:20,chapterIndex:[{id:'ch01',kind:'body',number:1,title:{zh:'掉进兔子洞',en:'Down the Rabbit-Hole'}}]};
  const original=JSON.stringify({book,local});
@@ -111,7 +113,7 @@ test('homepage catalog metadata and cached chapter positions follow the committe
   }
   assert.equal(JSON.stringify({book,local}),original,'formatting never changes source metadata or persisted progress');
   const meditation=context.cardFactory({...book,bookId:'gutenberg-meditations',author:'Marcus Aurelius · 英译 Meric Casaubon',resume:{chapterId:'ch01',passageId:'p7',label:local.chapterLabel}});
-  assert.equal(all(meditation).find(node=>node.className==='book-author').textContent,'Marcus Aurelius · translated by Meric Casaubon');
+  assert.equal(all(meditation).find(node=>node.className==='book-author').textContent,'Marcus Aurelius · English translation: Meric Casaubon');
  }finally{await requestUiRoute('en');}
 });
 

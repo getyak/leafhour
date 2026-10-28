@@ -10,7 +10,7 @@ import {personCopy} from './people-copy.mjs';
 // injected with the page's one shared popover handle; this module never
 // imports or mounts popover-controls.mjs itself, so a second registry copy
 // cannot exist beside the eagerly bundled controller.
-export function mountReaderBookActions({document,info,getBook,getReader=()=>null,api,session,bookId,loadGiftComposer=()=>Promise.all([import('./gift-compose.mjs'),import('./book-binding.mjs')]).then(modules=>Object.assign({},...modules))}){
+export function mountReaderBookActions({document,info,getBook,getReader=()=>null,api,session,bookId,loadGiftComposer=()=>Promise.all([import('./gift-compose.mjs'),import('./book-cover-ui.mjs')]).then(modules=>Object.assign({},...modules)),loadCoverLabels=()=>import('./book-cover-ui.mjs')}){
   const $=id=>document.getElementById(id),trigger=$('open-book-info'),generate=$('book-intro-generate'),login=$('book-intro-login'),share=$('book-info-share'),status=$('book-intro-status'),note=$('book-intro-provenance'),scope=$('book-intro-scope');
   const exportButton=$('book-info-export'),retry=$('book-intro-retry');
   const make=(tag,cls,text)=>{const node=document.createElement(tag);if(cls)node.className=cls;if(text!==undefined)node.textContent=text;return node;};
@@ -18,6 +18,14 @@ export function mountReaderBookActions({document,info,getBook,getReader=()=>null
   const authorEntry=make('div','book-author-entry');$('book-info-author')?.after?.(authorEntry);
   const authorMap={'gutenberg-au-room-of-ones-own':{personId:'virginia-woolf',workId:'woolf-room'},'gutenberg-frankenstein':{personId:'mary-shelley',workId:'shelley-frankenstein'}};
   let authorBook=null;
+  let coverModule=null,coverLoading=null;
+  const renderCover=book=>{
+    if(!document.getElementById('book-info-cover-title'))return;
+    const paint=module=>{if(!disposed&&authorBook===book)module.paintBookAbout(document,book);};
+    if(coverModule){paint(coverModule);return;}
+    coverLoading??=Promise.resolve(loadCoverLabels()).then(module=>(coverModule=module)).catch(()=>{coverLoading=null;return null;});
+    void coverLoading.then(module=>{if(module)paint(module);});
+  };
   const renderAuthor=(book=authorBook)=>{if(disposed)return;authorBook=book;authorEntry.replaceChildren();const current=authorBook,mapping=authorMap[current?.bookId]||((String(current?.author||'').toLowerCase().replace(/[^a-z]/g,'')==='jamespcarse'||String(current?.author||'').toLowerCase().replace(/[^a-z]/g,'')==='jamescarse')?{personId:'james-p-carse',...(/finite.*infinite|有限.*无限/i.test(JSON.stringify(current?.title||''))?{workId:'carse-finite-infinite'}:{})}:null),entry=make('a','',personCopy(getUiLocale(),mapping?'authorProfile':'browseAuthors'));entry.href=mapping?personHref({...mapping,locale:getUiLocale()}):'/people?ui='+getUiLocale();if(mapping){const context=make('a','',personCopy(getUiLocale(),'context'));context.href=entry.href;for(const link of [entry,context])link.addEventListener('click',event=>{if(event.button>0||event.metaKey||event.ctrlKey||event.altKey||event.shiftKey)return;const reader=getReader(),anchor=reader?.getAnchor?.()?.passageId,selected=reader?.isSelectionActive?.()?reader.getSelectedId?.():null;let storage=null;try{storage=document.defaultView.sessionStorage;}catch{}capturePersonReturn({storage,owner:session?.user?.id||'guest',bookId:current.bookId,personId:mapping.personId,passageId:selected||anchor||null,contentVersion:current.contentVersion||null,locale:getUiLocale()});});authorEntry.append(entry,context);}else{entry.addEventListener('click',event=>{if(!current||event.button>0||event.metaKey||event.ctrlKey||event.altKey||event.shiftKey)return;const reader=getReader();let storage=null;try{storage=document.defaultView.sessionStorage;}catch{}capturePersonReturn({storage,owner:session?.user?.id||'guest',bookId:current.bookId,passageId:reader?.getAnchor?.()?.passageId||null,contentVersion:current.contentVersion||null,personId:'pending-author',searchQuery:String(current.author||'').slice(0,500),locale:getUiLocale()});});authorEntry.append(entry);}};
   const signedIn=!!(bookId&&session?.user),loginUrl=()=>readerLoginUrl({bookId,ui:getUiLinkLocale()});
   let disposed=false,unsubscribe=()=>{},sequence=0,activeBookId=null,activeVersion=null,composer=null,giftModule=null,openingTicket=null;
@@ -31,7 +39,7 @@ export function mountReaderBookActions({document,info,getBook,getReader=()=>null
   function render(value){
     if(disposed)return;
     const book=getBook();if(!book)return;
-    renderAuthor(book);labels.clear();
+    renderAuthor(book);renderCover(book);labels.clear();
     const display=value||{...introductionFor(book),introduction:book.introduction||null,phase:'idle',available:null};
     const working=['generating','loading'].includes(display.phase),failed=display.phase==='error',missing=display.source==='missing';
     descriptionLabels.clear();descriptionFallback=!display.text&&!working&&!failed;
@@ -102,6 +110,7 @@ export function mountReaderBookActions({document,info,getBook,getReader=()=>null
   const dispose=()=>{
     if(disposed)return;
     disposed=true;
+    coverModule?.clearBookAbout(document);
     unsubscribe();offLocale();
     generate.removeEventListener('click',onGenerate);retry?.removeEventListener('click',onRetry);
     share.removeEventListener('click',onShare);

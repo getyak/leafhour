@@ -21,14 +21,14 @@ export function shelfReadingStatus(book){
 export const shelfLanguage=book=>contentLanguage(book.sourceLanguage);
 export const hasShelfFilters=({scope='all',status='all',topic='all',language='all',form='all',query=''}={})=>scope!=='all'||status!=='all'||topic!=='all'||language!=='all'||form!=='all'||!!query.trim();
 
-export function libraryShelf(books,{scope='all',query='',status='all',topic='all',language='all',form='all'}={}){
+export function libraryShelf(books,{scope='all',query='',status='all',topic='all',language='all',form='all'}={},{searchText=()=>''}={}){
   const needle=query.trim().toLocaleLowerCase();
-  return books.filter(book=>(scope==='all'||book.visibility===scope)&&(status==='all'||book.personalizationPending||shelfReadingStatus(book)===status)&&(topic==='all'||Array.isArray(book.topics)&&book.topics.includes(topic))&&(book.personalizationPending||matchesReadingLanguage(book,{language,form}))&&(!needle||[book.title?.zh,book.title?.en,book.author].filter(Boolean).join(' ').toLocaleLowerCase().includes(needle)))
+  return books.filter(book=>(scope==='all'||book.visibility===scope)&&(status==='all'||book.personalizationPending||shelfReadingStatus(book)===status)&&(topic==='all'||Array.isArray(book.topics)&&book.topics.includes(topic))&&(book.personalizationPending||matchesReadingLanguage(book,{language,form}))&&(!needle||[book.title?.zh,book.title?.en,book.author,searchText(book)].filter(Boolean).join(' ').toLocaleLowerCase().includes(needle)))
     .sort((a,b)=>(Number.isFinite(a.shelfPosition)||Number.isFinite(b.shelfPosition)?(a.shelfPosition??Number.MAX_SAFE_INTEGER)-(b.shelfPosition??Number.MAX_SAFE_INTEGER):0)||Number(b.visibility==='private')-Number(a.visibility==='private')||activityAt(b).localeCompare(activityAt(a)));
 }
 
-export function roomShelf(books,{selectedBookId,...filters}={}){
-  const filtered=libraryShelf(books,filters);
+export function roomShelf(books,{selectedBookId,...filters}={},options={}){
+  const filtered=libraryShelf(books,filters,options);
   const current=books.find(book=>book.bookId===selectedBookId)||workspaceCurrentBook(books);
   const featured=!hasShelfFilters(filters)&&filtered.some(book=>book.bookId===current?.bookId)?current:null;
   return {featured,books:filtered.filter(book=>book!==featured),total:filtered.length};

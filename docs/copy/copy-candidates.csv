@@ -682,44 +682,625 @@ candidate:app/billing.mjs:28:793,js-cjk-literal,app/billing.mjs,28,,unknown,revi
 candidate:app/billing.mjs:28:841,js-cjk-literal,app/billing.mjs,28,,unknown,reviewable,,月額の支払済み注文
 candidate:app/billing.mjs:28:873,js-cjk-literal,app/billing.mjs,28,,unknown,reviewable,,1 回限りの支払済み注文
 candidate:app/billing.mjs:28:910,js-cjk-literal,app/billing.mjs,28,,unknown,reviewable,,有効な定期契約
-candidate:app/book-gift.html:21:48,html-attribute,app/book-gift.html,21,aria-label,unknown,reviewable,,Leafhour home
-candidate:app/book-gift.html:22:248,html-attribute,app/book-gift.html,22,aria-label,unknown,reviewable,,Page appearance
-candidate:app/book-gift.html:50:177,html-attribute,app/book-gift.html,50,aria-label,unknown,reviewable,,Fold the letter
+candidate:app/book-binding.mjs:52:31,js-attribute,app/book-binding.mjs,52,lang,unknown,reviewable,,und
+candidate:app/book-binding.mjs:70:174,js-dom-literal,app/book-binding.mjs,70,textContent,unknown,reviewable,,leafhour
+candidate:app/book-binding.mjs:70:213,js-attribute,app/book-binding.mjs,70,lang,unknown,reviewable,,en
+candidate:app/book-binding.mjs:73:129,js-attribute,app/book-binding.mjs,73,aria-hidden,unknown,reviewable,,true
+candidate:app/book-cover-labels.mjs:11:16,js-cjk-literal,app/book-cover-labels.mjs,11,,unknown,reviewable,,爱丽丝梦游仙境
+candidate:app/book-cover-labels.mjs:12:17,js-cjk-literal,app/book-cover-labels.mjs,12,,unknown,reviewable,,刘易斯·卡罗尔
+candidate:app/book-cover-labels.mjs:13:19,js-cjk-literal,app/book-cover-labels.mjs,13,,unknown,reviewable,,英文
+candidate:app/book-cover-labels.mjs:16:16,js-cjk-literal,app/book-cover-labels.mjs,16,,unknown,reviewable,,愛麗絲夢遊仙境
+candidate:app/book-cover-labels.mjs:17:17,js-cjk-literal,app/book-cover-labels.mjs,17,,unknown,reviewable,,路易斯·卡洛爾
+candidate:app/book-cover-labels.mjs:18:19,js-cjk-literal,app/book-cover-labels.mjs,18,,unknown,reviewable,,英文
+candidate:app/book-cover-labels.mjs:21:16,js-cjk-literal,app/book-cover-labels.mjs,21,,unknown,reviewable,,不思議の国のアリス
+candidate:app/book-cover-labels.mjs:22:17,js-cjk-literal,app/book-cover-labels.mjs,22,,unknown,reviewable,,ルイス・キャロル
+candidate:app/book-cover-labels.mjs:23:19,js-cjk-literal,app/book-cover-labels.mjs,23,,unknown,reviewable,,英語本文
+candidate:app/book-cover-labels.mjs:33:16,js-cjk-literal,app/book-cover-labels.mjs,33,,unknown,reviewable,,沉思录
+candidate:app/book-cover-labels.mjs:34:17,js-cjk-literal,app/book-cover-labels.mjs,34,,unknown,reviewable,,马可·奥勒留 · 英译 Meric Casaubon
+candidate:app/book-cover-labels.mjs:35:19,js-cjk-literal,app/book-cover-labels.mjs,35,,unknown,reviewable,,Casaubon 英译整理本
+candidate:app/book-cover-labels.mjs:38:16,js-cjk-literal,app/book-cover-labels.mjs,38,,unknown,reviewable,,沉思錄
+candidate:app/book-cover-labels.mjs:39:17,js-cjk-literal,app/book-cover-labels.mjs,39,,unknown,reviewable,,馬可·奧勒留 · 英譯 Meric Casaubon
+candidate:app/book-cover-labels.mjs:40:19,js-cjk-literal,app/book-cover-labels.mjs,40,,unknown,reviewable,,Casaubon 英譯整理本
+candidate:app/book-cover-labels.mjs:43:16,js-cjk-literal,app/book-cover-labels.mjs,43,,unknown,reviewable,,自省録
+candidate:app/book-cover-labels.mjs:44:17,js-cjk-literal,app/book-cover-labels.mjs,44,,unknown,reviewable,,マルクス・アウレーリウス · 英訳 Meric Casaubon
+candidate:app/book-cover-labels.mjs:45:19,js-cjk-literal,app/book-cover-labels.mjs,45,,unknown,reviewable,,Casaubon 英訳・編集本文
+candidate:app/book-cover-labels.mjs:55:16,js-cjk-literal,app/book-cover-labels.mjs,55,,unknown,reviewable,,瓦尔登湖
+candidate:app/book-cover-labels.mjs:56:17,js-cjk-literal,app/book-cover-labels.mjs,56,,unknown,reviewable,,亨利·戴维·梭罗
+candidate:app/book-cover-labels.mjs:57:19,js-cjk-literal,app/book-cover-labels.mjs,57,,unknown,reviewable,,附《论公民的不服从义务》
+candidate:app/book-cover-labels.mjs:60:16,js-cjk-literal,app/book-cover-labels.mjs,60,,unknown,reviewable,,瓦爾登湖
+candidate:app/book-cover-labels.mjs:61:17,js-cjk-literal,app/book-cover-labels.mjs,61,,unknown,reviewable,,亨利·大衛·梭羅
+candidate:app/book-cover-labels.mjs:62:19,js-cjk-literal,app/book-cover-labels.mjs,62,,unknown,reviewable,,附《論公民的不服從義務》
+candidate:app/book-cover-labels.mjs:65:16,js-cjk-literal,app/book-cover-labels.mjs,65,,unknown,reviewable,,森の生活
+candidate:app/book-cover-labels.mjs:66:17,js-cjk-literal,app/book-cover-labels.mjs,66,,unknown,reviewable,,ヘンリー・デイヴィッド・ソロー
+candidate:app/book-cover-labels.mjs:67:19,js-cjk-literal,app/book-cover-labels.mjs,67,,unknown,reviewable,,「市民の不服従」を併録
+candidate:app/book-cover-labels.mjs:77:16,js-cjk-literal,app/book-cover-labels.mjs,77,,unknown,reviewable,,平面国
+candidate:app/book-cover-labels.mjs:78:17,js-cjk-literal,app/book-cover-labels.mjs,78,,unknown,reviewable,,埃德温·A. 艾勃特
+candidate:app/book-cover-labels.mjs:79:19,js-cjk-literal,app/book-cover-labels.mjs,79,,unknown,reviewable,,英文
+candidate:app/book-cover-labels.mjs:82:16,js-cjk-literal,app/book-cover-labels.mjs,82,,unknown,reviewable,,平面國
+candidate:app/book-cover-labels.mjs:83:17,js-cjk-literal,app/book-cover-labels.mjs,83,,unknown,reviewable,,艾德溫·A. 艾勃特
+candidate:app/book-cover-labels.mjs:84:19,js-cjk-literal,app/book-cover-labels.mjs,84,,unknown,reviewable,,英文
+candidate:app/book-cover-labels.mjs:87:16,js-cjk-literal,app/book-cover-labels.mjs,87,,unknown,reviewable,,フラットランド
+candidate:app/book-cover-labels.mjs:88:17,js-cjk-literal,app/book-cover-labels.mjs,88,,unknown,reviewable,,エドウィン・A・アボット
+candidate:app/book-cover-labels.mjs:89:19,js-cjk-literal,app/book-cover-labels.mjs,89,,unknown,reviewable,,英語本文
+candidate:app/book-cover-labels.mjs:99:16,js-cjk-literal,app/book-cover-labels.mjs,99,,unknown,reviewable,,弗兰肯斯坦
+candidate:app/book-cover-labels.mjs:100:17,js-cjk-literal,app/book-cover-labels.mjs,100,,unknown,reviewable,,玛丽·雪莱
+candidate:app/book-cover-labels.mjs:101:19,js-cjk-literal,app/book-cover-labels.mjs,101,,unknown,reviewable,,英文
+candidate:app/book-cover-labels.mjs:104:16,js-cjk-literal,app/book-cover-labels.mjs,104,,unknown,reviewable,,科學怪人
+candidate:app/book-cover-labels.mjs:105:17,js-cjk-literal,app/book-cover-labels.mjs,105,,unknown,reviewable,,瑪麗·雪萊
+candidate:app/book-cover-labels.mjs:106:19,js-cjk-literal,app/book-cover-labels.mjs,106,,unknown,reviewable,,英文
+candidate:app/book-cover-labels.mjs:109:16,js-cjk-literal,app/book-cover-labels.mjs,109,,unknown,reviewable,,フランケンシュタイン
+candidate:app/book-cover-labels.mjs:110:17,js-cjk-literal,app/book-cover-labels.mjs,110,,unknown,reviewable,,メアリー・シェリー
+candidate:app/book-cover-labels.mjs:111:19,js-cjk-literal,app/book-cover-labels.mjs,111,,unknown,reviewable,,英語本文
+candidate:app/book-cover-labels.mjs:121:16,js-cjk-literal,app/book-cover-labels.mjs,121,,unknown,reviewable,,埃瑞璜
+candidate:app/book-cover-labels.mjs:122:17,js-cjk-literal,app/book-cover-labels.mjs,122,,unknown,reviewable,,塞缪尔·巴特勒
+candidate:app/book-cover-labels.mjs:123:19,js-cjk-literal,app/book-cover-labels.mjs,123,,unknown,reviewable,,英文
+candidate:app/book-cover-labels.mjs:126:16,js-cjk-literal,app/book-cover-labels.mjs,126,,unknown,reviewable,,埃瑞璜
+candidate:app/book-cover-labels.mjs:127:17,js-cjk-literal,app/book-cover-labels.mjs,127,,unknown,reviewable,,山繆·巴特勒
+candidate:app/book-cover-labels.mjs:128:19,js-cjk-literal,app/book-cover-labels.mjs,128,,unknown,reviewable,,英文
+candidate:app/book-cover-labels.mjs:131:16,js-cjk-literal,app/book-cover-labels.mjs,131,,unknown,reviewable,,エレホン
+candidate:app/book-cover-labels.mjs:132:17,js-cjk-literal,app/book-cover-labels.mjs,132,,unknown,reviewable,,サミュエル・バトラー
+candidate:app/book-cover-labels.mjs:133:19,js-cjk-literal,app/book-cover-labels.mjs,133,,unknown,reviewable,,英語本文
+candidate:app/book-cover-labels.mjs:143:16,js-cjk-literal,app/book-cover-labels.mjs,143,,unknown,reviewable,,时间机器
+candidate:app/book-cover-labels.mjs:144:17,js-cjk-literal,app/book-cover-labels.mjs,144,,unknown,reviewable,,H. G. 威尔斯
+candidate:app/book-cover-labels.mjs:145:19,js-cjk-literal,app/book-cover-labels.mjs,145,,unknown,reviewable,,英文
+candidate:app/book-cover-labels.mjs:148:16,js-cjk-literal,app/book-cover-labels.mjs,148,,unknown,reviewable,,時間機器
+candidate:app/book-cover-labels.mjs:149:17,js-cjk-literal,app/book-cover-labels.mjs,149,,unknown,reviewable,,H. G. 威爾斯
+candidate:app/book-cover-labels.mjs:150:19,js-cjk-literal,app/book-cover-labels.mjs,150,,unknown,reviewable,,英文
+candidate:app/book-cover-labels.mjs:153:16,js-cjk-literal,app/book-cover-labels.mjs,153,,unknown,reviewable,,タイム・マシン
+candidate:app/book-cover-labels.mjs:154:17,js-cjk-literal,app/book-cover-labels.mjs,154,,unknown,reviewable,,H・G・ウェルズ
+candidate:app/book-cover-labels.mjs:155:19,js-cjk-literal,app/book-cover-labels.mjs,155,,unknown,reviewable,,英語本文
+candidate:app/book-cover-labels.mjs:165:16,js-cjk-literal,app/book-cover-labels.mjs,165,,unknown,reviewable,,一间自己的房间
+candidate:app/book-cover-labels.mjs:166:17,js-cjk-literal,app/book-cover-labels.mjs,166,,unknown,reviewable,,弗吉尼亚·伍尔夫
+candidate:app/book-cover-labels.mjs:167:19,js-cjk-literal,app/book-cover-labels.mjs,167,,unknown,reviewable,,英文
+candidate:app/book-cover-labels.mjs:170:16,js-cjk-literal,app/book-cover-labels.mjs,170,,unknown,reviewable,,自己的房間
+candidate:app/book-cover-labels.mjs:171:17,js-cjk-literal,app/book-cover-labels.mjs,171,,unknown,reviewable,,維吉尼亞·吳爾芙
+candidate:app/book-cover-labels.mjs:172:19,js-cjk-literal,app/book-cover-labels.mjs,172,,unknown,reviewable,,英文
+candidate:app/book-cover-labels.mjs:175:16,js-cjk-literal,app/book-cover-labels.mjs,175,,unknown,reviewable,,自分ひとりの部屋
+candidate:app/book-cover-labels.mjs:176:17,js-cjk-literal,app/book-cover-labels.mjs,176,,unknown,reviewable,,ヴァージニア・ウルフ
+candidate:app/book-cover-labels.mjs:177:19,js-cjk-literal,app/book-cover-labels.mjs,177,,unknown,reviewable,,英語本文
+candidate:app/book-cover-labels.mjs:187:16,js-cjk-literal,app/book-cover-labels.mjs,187,,unknown,reviewable,,论自由
+candidate:app/book-cover-labels.mjs:188:17,js-cjk-literal,app/book-cover-labels.mjs,188,,unknown,reviewable,,约翰·斯图尔特·密尔
+candidate:app/book-cover-labels.mjs:189:19,js-cjk-literal,app/book-cover-labels.mjs,189,,unknown,reviewable,,英文
+candidate:app/book-cover-labels.mjs:192:16,js-cjk-literal,app/book-cover-labels.mjs,192,,unknown,reviewable,,論自由
+candidate:app/book-cover-labels.mjs:193:17,js-cjk-literal,app/book-cover-labels.mjs,193,,unknown,reviewable,,約翰·斯圖亞特·彌爾
+candidate:app/book-cover-labels.mjs:194:19,js-cjk-literal,app/book-cover-labels.mjs,194,,unknown,reviewable,,英文
+candidate:app/book-cover-labels.mjs:197:16,js-cjk-literal,app/book-cover-labels.mjs,197,,unknown,reviewable,,自由論
+candidate:app/book-cover-labels.mjs:198:17,js-cjk-literal,app/book-cover-labels.mjs,198,,unknown,reviewable,,ジョン・スチュアート・ミル
+candidate:app/book-cover-labels.mjs:199:19,js-cjk-literal,app/book-cover-labels.mjs,199,,unknown,reviewable,,英語本文
+candidate:app/book-cover-labels.mjs:209:16,js-cjk-literal,app/book-cover-labels.mjs,209,,unknown,reviewable,,伊凡·伊里奇之死
+candidate:app/book-cover-labels.mjs:210:17,js-cjk-literal,app/book-cover-labels.mjs,210,,unknown,reviewable,,列夫·托尔斯泰 · 英译 Louise 与 Aylmer Maude
+candidate:app/book-cover-labels.mjs:211:19,js-cjk-literal,app/book-cover-labels.mjs,211,,unknown,reviewable,,英文
+candidate:app/book-cover-labels.mjs:214:16,js-cjk-literal,app/book-cover-labels.mjs,214,,unknown,reviewable,,伊凡·伊里奇之死
+candidate:app/book-cover-labels.mjs:215:17,js-cjk-literal,app/book-cover-labels.mjs,215,,unknown,reviewable,,列夫·托爾斯泰 · 英譯 Louise 與 Aylmer Maude
+candidate:app/book-cover-labels.mjs:216:19,js-cjk-literal,app/book-cover-labels.mjs,216,,unknown,reviewable,,英文
+candidate:app/book-cover-labels.mjs:219:16,js-cjk-literal,app/book-cover-labels.mjs,219,,unknown,reviewable,,イワン・イリイチの死
+candidate:app/book-cover-labels.mjs:220:17,js-cjk-literal,app/book-cover-labels.mjs,220,,unknown,reviewable,,レフ・トルストイ · 英訳 Louise & Aylmer Maude
+candidate:app/book-cover-labels.mjs:221:19,js-cjk-literal,app/book-cover-labels.mjs,221,,unknown,reviewable,,英語本文
+candidate:app/book-cover-labels.mjs:231:16,js-cjk-literal,app/book-cover-labels.mjs,231,,unknown,reviewable,,觉醒及短篇选
+candidate:app/book-cover-labels.mjs:232:17,js-cjk-literal,app/book-cover-labels.mjs,232,,unknown,reviewable,,凯特·肖邦
+candidate:app/book-cover-labels.mjs:233:19,js-cjk-literal,app/book-cover-labels.mjs,233,,unknown,reviewable,,英文
+candidate:app/book-cover-labels.mjs:236:16,js-cjk-literal,app/book-cover-labels.mjs,236,,unknown,reviewable,,覺醒及短篇選
+candidate:app/book-cover-labels.mjs:237:17,js-cjk-literal,app/book-cover-labels.mjs,237,,unknown,reviewable,,凱特·蕭邦
+candidate:app/book-cover-labels.mjs:238:19,js-cjk-literal,app/book-cover-labels.mjs,238,,unknown,reviewable,,英文
+candidate:app/book-cover-labels.mjs:241:16,js-cjk-literal,app/book-cover-labels.mjs,241,,unknown,reviewable,,めざめと短篇選
+candidate:app/book-cover-labels.mjs:242:17,js-cjk-literal,app/book-cover-labels.mjs,242,,unknown,reviewable,,ケイト・ショパン
+candidate:app/book-cover-labels.mjs:243:19,js-cjk-literal,app/book-cover-labels.mjs,243,,unknown,reviewable,,英語本文
+candidate:app/book-cover-labels.mjs:253:16,js-cjk-literal,app/book-cover-labels.mjs,253,,unknown,reviewable,,家庭与世界
+candidate:app/book-cover-labels.mjs:254:17,js-cjk-literal,app/book-cover-labels.mjs,254,,unknown,reviewable,,拉宾德拉纳特·泰戈尔 · 英译 Surendranath Tagore
+candidate:app/book-cover-labels.mjs:255:19,js-cjk-literal,app/book-cover-labels.mjs,255,,unknown,reviewable,,英文
+candidate:app/book-cover-labels.mjs:258:16,js-cjk-literal,app/book-cover-labels.mjs,258,,unknown,reviewable,,家庭與世界
+candidate:app/book-cover-labels.mjs:259:17,js-cjk-literal,app/book-cover-labels.mjs,259,,unknown,reviewable,,羅賓德拉納特·泰戈爾 · 英譯 Surendranath Tagore
+candidate:app/book-cover-labels.mjs:260:19,js-cjk-literal,app/book-cover-labels.mjs,260,,unknown,reviewable,,英文
+candidate:app/book-cover-labels.mjs:263:16,js-cjk-literal,app/book-cover-labels.mjs,263,,unknown,reviewable,,家と世界
+candidate:app/book-cover-labels.mjs:264:17,js-cjk-literal,app/book-cover-labels.mjs,264,,unknown,reviewable,,ラビンドラナート・タゴール · 英訳 Surendranath Tagore
+candidate:app/book-cover-labels.mjs:265:19,js-cjk-literal,app/book-cover-labels.mjs,265,,unknown,reviewable,,英語本文
+candidate:app/book-cover-labels.mjs:275:16,js-cjk-literal,app/book-cover-labels.mjs,275,,unknown,reviewable,,巴西短篇小说选
+candidate:app/book-cover-labels.mjs:276:17,js-cjk-literal,app/book-cover-labels.mjs,276,,unknown,reviewable,,马查多·德·阿西斯等四位作者 · 英译 Isaac Goldberg
+candidate:app/book-cover-labels.mjs:277:19,js-cjk-literal,app/book-cover-labels.mjs,277,,unknown,reviewable,,英文
+candidate:app/book-cover-labels.mjs:280:16,js-cjk-literal,app/book-cover-labels.mjs,280,,unknown,reviewable,,巴西短篇小說選
+candidate:app/book-cover-labels.mjs:281:17,js-cjk-literal,app/book-cover-labels.mjs,281,,unknown,reviewable,,馬查多·德·阿西斯等四位作者 · 英譯 Isaac Goldberg
+candidate:app/book-cover-labels.mjs:282:19,js-cjk-literal,app/book-cover-labels.mjs,282,,unknown,reviewable,,英文
+candidate:app/book-cover-labels.mjs:285:16,js-cjk-literal,app/book-cover-labels.mjs,285,,unknown,reviewable,,ブラジル短篇集
+candidate:app/book-cover-labels.mjs:286:17,js-cjk-literal,app/book-cover-labels.mjs,286,,unknown,reviewable,,マシャード・デ・アシスほか 3 名 · 英訳 Isaac Goldberg
+candidate:app/book-cover-labels.mjs:287:19,js-cjk-literal,app/book-cover-labels.mjs,287,,unknown,reviewable,,英語本文
+candidate:app/book-cover-labels.mjs:297:16,js-cjk-literal,app/book-cover-labels.mjs,297,,unknown,reviewable,,茶之书
+candidate:app/book-cover-labels.mjs:298:17,js-cjk-literal,app/book-cover-labels.mjs,298,,unknown,reviewable,,冈仓天心
+candidate:app/book-cover-labels.mjs:299:19,js-cjk-literal,app/book-cover-labels.mjs,299,,unknown,reviewable,,英文
+candidate:app/book-cover-labels.mjs:302:16,js-cjk-literal,app/book-cover-labels.mjs,302,,unknown,reviewable,,茶之書
+candidate:app/book-cover-labels.mjs:303:17,js-cjk-literal,app/book-cover-labels.mjs,303,,unknown,reviewable,,岡倉天心
+candidate:app/book-cover-labels.mjs:304:19,js-cjk-literal,app/book-cover-labels.mjs,304,,unknown,reviewable,,英文
+candidate:app/book-cover-labels.mjs:307:16,js-cjk-literal,app/book-cover-labels.mjs,307,,unknown,reviewable,,茶の本
+candidate:app/book-cover-labels.mjs:308:17,js-cjk-literal,app/book-cover-labels.mjs,308,,unknown,reviewable,,岡倉天心
+candidate:app/book-cover-labels.mjs:309:19,js-cjk-literal,app/book-cover-labels.mjs,309,,unknown,reviewable,,英語本文
+candidate:app/book-cover-labels.mjs:319:16,js-cjk-literal,app/book-cover-labels.mjs,319,,unknown,reviewable,,先知
+candidate:app/book-cover-labels.mjs:320:17,js-cjk-literal,app/book-cover-labels.mjs,320,,unknown,reviewable,,纪伯伦
+candidate:app/book-cover-labels.mjs:321:19,js-cjk-literal,app/book-cover-labels.mjs,321,,unknown,reviewable,,英文
+candidate:app/book-cover-labels.mjs:324:16,js-cjk-literal,app/book-cover-labels.mjs,324,,unknown,reviewable,,先知
+candidate:app/book-cover-labels.mjs:325:17,js-cjk-literal,app/book-cover-labels.mjs,325,,unknown,reviewable,,紀伯倫
+candidate:app/book-cover-labels.mjs:326:19,js-cjk-literal,app/book-cover-labels.mjs,326,,unknown,reviewable,,英文
+candidate:app/book-cover-labels.mjs:329:16,js-cjk-literal,app/book-cover-labels.mjs,329,,unknown,reviewable,,預言者
+candidate:app/book-cover-labels.mjs:330:17,js-cjk-literal,app/book-cover-labels.mjs,330,,unknown,reviewable,,カリール・ジブラン
+candidate:app/book-cover-labels.mjs:331:19,js-cjk-literal,app/book-cover-labels.mjs,331,,unknown,reviewable,,英語本文
+candidate:app/book-cover-labels.mjs:341:16,js-cjk-literal,app/book-cover-labels.mjs,341,,unknown,reviewable,,道德经
+candidate:app/book-cover-labels.mjs:342:17,js-cjk-literal,app/book-cover-labels.mjs,342,,unknown,reviewable,,老子（传统归属） · 英译 James Legge
+candidate:app/book-cover-labels.mjs:343:19,js-cjk-literal,app/book-cover-labels.mjs,343,,unknown,reviewable,,英文
+candidate:app/book-cover-labels.mjs:346:16,js-cjk-literal,app/book-cover-labels.mjs,346,,unknown,reviewable,,道德經
+candidate:app/book-cover-labels.mjs:347:17,js-cjk-literal,app/book-cover-labels.mjs,347,,unknown,reviewable,,老子（傳統歸屬） · 英譯 James Legge
+candidate:app/book-cover-labels.mjs:348:19,js-cjk-literal,app/book-cover-labels.mjs,348,,unknown,reviewable,,英文
+candidate:app/book-cover-labels.mjs:351:16,js-cjk-literal,app/book-cover-labels.mjs,351,,unknown,reviewable,,老子
+candidate:app/book-cover-labels.mjs:352:17,js-cjk-literal,app/book-cover-labels.mjs,352,,unknown,reviewable,,老子（伝） · 英訳 James Legge
+candidate:app/book-cover-labels.mjs:353:19,js-cjk-literal,app/book-cover-labels.mjs,353,,unknown,reviewable,,英語本文
+candidate:app/book-cover-labels.mjs:363:16,js-cjk-literal,app/book-cover-labels.mjs,363,,unknown,reviewable,,法句经
+candidate:app/book-cover-labels.mjs:364:17,js-cjk-literal,app/book-cover-labels.mjs,364,,unknown,reviewable,,佛教经典 · 英译 F. Max Müller
+candidate:app/book-cover-labels.mjs:365:19,js-cjk-literal,app/book-cover-labels.mjs,365,,unknown,reviewable,,英文
+candidate:app/book-cover-labels.mjs:368:16,js-cjk-literal,app/book-cover-labels.mjs,368,,unknown,reviewable,,法句經
+candidate:app/book-cover-labels.mjs:369:17,js-cjk-literal,app/book-cover-labels.mjs,369,,unknown,reviewable,,佛教經典 · 英譯 F. Max Müller
+candidate:app/book-cover-labels.mjs:370:19,js-cjk-literal,app/book-cover-labels.mjs,370,,unknown,reviewable,,英文
+candidate:app/book-cover-labels.mjs:373:16,js-cjk-literal,app/book-cover-labels.mjs,373,,unknown,reviewable,,ダンマパダ
+candidate:app/book-cover-labels.mjs:374:17,js-cjk-literal,app/book-cover-labels.mjs,374,,unknown,reviewable,,仏教経典 · 英訳 F. Max Müller
+candidate:app/book-cover-labels.mjs:375:19,js-cjk-literal,app/book-cover-labels.mjs,375,,unknown,reviewable,,英語本文
+candidate:app/book-cover-labels.mjs:385:16,js-cjk-literal,app/book-cover-labels.mjs,385,,unknown,reviewable,,薄伽梵歌
+candidate:app/book-cover-labels.mjs:386:17,js-cjk-literal,app/book-cover-labels.mjs,386,,unknown,reviewable,,毗耶娑（传统归属） · 英语诗译 Edwin Arnold
+candidate:app/book-cover-labels.mjs:387:19,js-cjk-literal,app/book-cover-labels.mjs,387,,unknown,reviewable,,Edwin Arnold 英语诗译
+candidate:app/book-cover-labels.mjs:390:16,js-cjk-literal,app/book-cover-labels.mjs,390,,unknown,reviewable,,薄伽梵歌
+candidate:app/book-cover-labels.mjs:391:17,js-cjk-literal,app/book-cover-labels.mjs,391,,unknown,reviewable,,毗耶娑（傳統歸屬） · 英語詩譯 Edwin Arnold
+candidate:app/book-cover-labels.mjs:392:19,js-cjk-literal,app/book-cover-labels.mjs,392,,unknown,reviewable,,Edwin Arnold 英語詩譯
+candidate:app/book-cover-labels.mjs:395:16,js-cjk-literal,app/book-cover-labels.mjs,395,,unknown,reviewable,,バガヴァッド・ギーター
+candidate:app/book-cover-labels.mjs:396:17,js-cjk-literal,app/book-cover-labels.mjs,396,,unknown,reviewable,,ヴヤーサ（伝） · 英語詩訳 Edwin Arnold
+candidate:app/book-cover-labels.mjs:397:19,js-cjk-literal,app/book-cover-labels.mjs,397,,unknown,reviewable,,Edwin Arnold 英語詩訳
+candidate:app/book-cover-labels.mjs:407:16,js-cjk-literal,app/book-cover-labels.mjs,407,,unknown,reviewable,,鲁拜集
+candidate:app/book-cover-labels.mjs:408:17,js-cjk-literal,app/book-cover-labels.mjs,408,,unknown,reviewable,,欧玛尔·海亚姆 · 英语译写 Edward FitzGerald
+candidate:app/book-cover-labels.mjs:409:19,js-cjk-literal,app/book-cover-labels.mjs,409,,unknown,reviewable,,第 1 版与第 5 版 · 英语译写
+candidate:app/book-cover-labels.mjs:412:16,js-cjk-literal,app/book-cover-labels.mjs,412,,unknown,reviewable,,魯拜集
+candidate:app/book-cover-labels.mjs:413:17,js-cjk-literal,app/book-cover-labels.mjs,413,,unknown,reviewable,,奧瑪·海亞姆 · 英語譯寫 Edward FitzGerald
+candidate:app/book-cover-labels.mjs:414:19,js-cjk-literal,app/book-cover-labels.mjs,414,,unknown,reviewable,,第 1 版與第 5 版 · 英語譯寫
+candidate:app/book-cover-labels.mjs:417:16,js-cjk-literal,app/book-cover-labels.mjs,417,,unknown,reviewable,,ルバイヤート
+candidate:app/book-cover-labels.mjs:418:17,js-cjk-literal,app/book-cover-labels.mjs,418,,unknown,reviewable,,オマル・ハイヤーム · 英語翻案 Edward FitzGerald
+candidate:app/book-cover-labels.mjs:419:19,js-cjk-literal,app/book-cover-labels.mjs,419,,unknown,reviewable,,初版・第 5 版 · 英語翻案
+candidate:app/book-cover-labels.mjs:429:16,js-cjk-literal,app/book-cover-labels.mjs,429,,unknown,reviewable,,地下室手记
+candidate:app/book-cover-labels.mjs:430:17,js-cjk-literal,app/book-cover-labels.mjs,430,,unknown,reviewable,,费奥多尔·陀思妥耶夫斯基 · 英译 Constance Garnett
+candidate:app/book-cover-labels.mjs:431:19,js-cjk-literal,app/book-cover-labels.mjs,431,,unknown,reviewable,,英文
+candidate:app/book-cover-labels.mjs:434:16,js-cjk-literal,app/book-cover-labels.mjs,434,,unknown,reviewable,,地下室手記
+candidate:app/book-cover-labels.mjs:435:17,js-cjk-literal,app/book-cover-labels.mjs,435,,unknown,reviewable,,費奧多爾·杜斯妥也夫斯基 · 英譯 Constance Garnett
+candidate:app/book-cover-labels.mjs:436:19,js-cjk-literal,app/book-cover-labels.mjs,436,,unknown,reviewable,,英文
+candidate:app/book-cover-labels.mjs:439:16,js-cjk-literal,app/book-cover-labels.mjs,439,,unknown,reviewable,,地下室の手記
+candidate:app/book-cover-labels.mjs:440:17,js-cjk-literal,app/book-cover-labels.mjs,440,,unknown,reviewable,,フョードル・ドストエフスキー · 英訳 Constance Garnett
+candidate:app/book-cover-labels.mjs:441:19,js-cjk-literal,app/book-cover-labels.mjs,441,,unknown,reviewable,,英語本文
+candidate:app/book-cover-labels.mjs:451:16,js-cjk-literal,app/book-cover-labels.mjs,451,,unknown,reviewable,,少年维特之烦恼
+candidate:app/book-cover-labels.mjs:452:17,js-cjk-literal,app/book-cover-labels.mjs,452,,unknown,reviewable,,约翰·沃尔夫冈·冯·歌德 · 英译 R. Dillon Boylan
+candidate:app/book-cover-labels.mjs:453:19,js-cjk-literal,app/book-cover-labels.mjs,453,,unknown,reviewable,,英文
+candidate:app/book-cover-labels.mjs:456:16,js-cjk-literal,app/book-cover-labels.mjs,456,,unknown,reviewable,,少年維特的煩惱
+candidate:app/book-cover-labels.mjs:457:17,js-cjk-literal,app/book-cover-labels.mjs,457,,unknown,reviewable,,約翰·沃爾夫岡·馮·歌德 · 英譯 R. Dillon Boylan
+candidate:app/book-cover-labels.mjs:458:19,js-cjk-literal,app/book-cover-labels.mjs,458,,unknown,reviewable,,英文
+candidate:app/book-cover-labels.mjs:461:16,js-cjk-literal,app/book-cover-labels.mjs,461,,unknown,reviewable,,若きウェルテルの悩み
+candidate:app/book-cover-labels.mjs:462:17,js-cjk-literal,app/book-cover-labels.mjs,462,,unknown,reviewable,,ヨハン・ヴォルフガング・フォン・ゲーテ · 英訳 R. Dillon Boylan
+candidate:app/book-cover-labels.mjs:463:19,js-cjk-literal,app/book-cover-labels.mjs,463,,unknown,reviewable,,英語本文
+candidate:app/book-cover-labels.mjs:473:16,js-cjk-literal,app/book-cover-labels.mjs,473,,unknown,reviewable,,傲慢与偏见
+candidate:app/book-cover-labels.mjs:474:17,js-cjk-literal,app/book-cover-labels.mjs,474,,unknown,reviewable,,简·奥斯丁
+candidate:app/book-cover-labels.mjs:475:19,js-cjk-literal,app/book-cover-labels.mjs,475,,unknown,reviewable,,英文
+candidate:app/book-cover-labels.mjs:478:16,js-cjk-literal,app/book-cover-labels.mjs,478,,unknown,reviewable,,傲慢與偏見
+candidate:app/book-cover-labels.mjs:479:17,js-cjk-literal,app/book-cover-labels.mjs,479,,unknown,reviewable,,珍·奧斯汀
+candidate:app/book-cover-labels.mjs:480:19,js-cjk-literal,app/book-cover-labels.mjs,480,,unknown,reviewable,,英文
+candidate:app/book-cover-labels.mjs:483:16,js-cjk-literal,app/book-cover-labels.mjs,483,,unknown,reviewable,,高慢と偏見
+candidate:app/book-cover-labels.mjs:484:17,js-cjk-literal,app/book-cover-labels.mjs,484,,unknown,reviewable,,ジェイン・オースティン
+candidate:app/book-cover-labels.mjs:485:19,js-cjk-literal,app/book-cover-labels.mjs,485,,unknown,reviewable,,英語本文
+candidate:app/book-cover-labels.mjs:495:16,js-cjk-literal,app/book-cover-labels.mjs,495,,unknown,reviewable,,堂吉诃德
+candidate:app/book-cover-labels.mjs:496:17,js-cjk-literal,app/book-cover-labels.mjs,496,,unknown,reviewable,,米格尔·德·塞万提斯 · 英译 John Ormsby
+candidate:app/book-cover-labels.mjs:497:19,js-cjk-literal,app/book-cover-labels.mjs,497,,unknown,reviewable,,英文
+candidate:app/book-cover-labels.mjs:500:16,js-cjk-literal,app/book-cover-labels.mjs,500,,unknown,reviewable,,唐吉訶德
+candidate:app/book-cover-labels.mjs:501:17,js-cjk-literal,app/book-cover-labels.mjs,501,,unknown,reviewable,,米格爾·德·塞萬提斯 · 英譯 John Ormsby
+candidate:app/book-cover-labels.mjs:502:19,js-cjk-literal,app/book-cover-labels.mjs,502,,unknown,reviewable,,英文
+candidate:app/book-cover-labels.mjs:505:16,js-cjk-literal,app/book-cover-labels.mjs,505,,unknown,reviewable,,ドン・キホーテ
+candidate:app/book-cover-labels.mjs:506:17,js-cjk-literal,app/book-cover-labels.mjs,506,,unknown,reviewable,,ミゲル・デ・セルバンテス · 英訳 John Ormsby
+candidate:app/book-cover-labels.mjs:507:19,js-cjk-literal,app/book-cover-labels.mjs,507,,unknown,reviewable,,英語本文
+candidate:app/book-cover-labels.mjs:517:16,js-cjk-literal,app/book-cover-labels.mjs,517,,unknown,reviewable,,老实人
+candidate:app/book-cover-labels.mjs:518:17,js-cjk-literal,app/book-cover-labels.mjs,518,,unknown,reviewable,,伏尔泰 · 英译者未署名
+candidate:app/book-cover-labels.mjs:519:19,js-cjk-literal,app/book-cover-labels.mjs,519,,unknown,reviewable,,The Modern Library · 1918 年英译本
+candidate:app/book-cover-labels.mjs:522:16,js-cjk-literal,app/book-cover-labels.mjs,522,,unknown,reviewable,,憨第德
+candidate:app/book-cover-labels.mjs:523:17,js-cjk-literal,app/book-cover-labels.mjs,523,,unknown,reviewable,,伏爾泰 · 英譯者未署名
+candidate:app/book-cover-labels.mjs:524:19,js-cjk-literal,app/book-cover-labels.mjs,524,,unknown,reviewable,,The Modern Library · 1918 年英譯本
+candidate:app/book-cover-labels.mjs:527:16,js-cjk-literal,app/book-cover-labels.mjs,527,,unknown,reviewable,,カンディード
+candidate:app/book-cover-labels.mjs:528:17,js-cjk-literal,app/book-cover-labels.mjs,528,,unknown,reviewable,,ヴォルテール · 英訳者不詳
+candidate:app/book-cover-labels.mjs:529:19,js-cjk-literal,app/book-cover-labels.mjs,529,,unknown,reviewable,,The Modern Library・1918 年英訳版
+candidate:app/book-cover-labels.mjs:539:16,js-cjk-literal,app/book-cover-labels.mjs,539,,unknown,reviewable,,一千零一夜选编
+candidate:app/book-cover-labels.mjs:540:17,js-cjk-literal,app/book-cover-labels.mjs,540,,unknown,reviewable,,传统故事 · Andrew Lang 选编；英译者未逐一署名
+candidate:app/book-cover-labels.mjs:541:19,js-cjk-literal,app/book-cover-labels.mjs,541,,unknown,reviewable,,Andrew Lang 选编 · 英文
+candidate:app/book-cover-labels.mjs:544:16,js-cjk-literal,app/book-cover-labels.mjs,544,,unknown,reviewable,,一千零一夜選編
+candidate:app/book-cover-labels.mjs:545:17,js-cjk-literal,app/book-cover-labels.mjs,545,,unknown,reviewable,,傳統故事 · Andrew Lang 選編；英譯者未逐一署名
+candidate:app/book-cover-labels.mjs:546:19,js-cjk-literal,app/book-cover-labels.mjs,546,,unknown,reviewable,,Andrew Lang 選編 · 英文
+candidate:app/book-cover-labels.mjs:549:16,js-cjk-literal,app/book-cover-labels.mjs,549,,unknown,reviewable,,アラビアン・ナイト選集
+candidate:app/book-cover-labels.mjs:550:17,js-cjk-literal,app/book-cover-labels.mjs,550,,unknown,reviewable,,伝承物語 · Andrew Lang 選・編；英訳者の個別表記なし
+candidate:app/book-cover-labels.mjs:551:19,js-cjk-literal,app/book-cover-labels.mjs,551,,unknown,reviewable,,Andrew Lang 選集・英語本文
+candidate:app/book-cover-labels.mjs:561:16,js-cjk-literal,app/book-cover-labels.mjs,561,,unknown,reviewable,,底层的人们
+candidate:app/book-cover-labels.mjs:562:17,js-cjk-literal,app/book-cover-labels.mjs,562,,unknown,reviewable,,马里亚诺·阿苏埃拉 · 英译 Enrique Munguía
+candidate:app/book-cover-labels.mjs:563:19,js-cjk-literal,app/book-cover-labels.mjs,563,,unknown,reviewable,,英文
+candidate:app/book-cover-labels.mjs:566:16,js-cjk-literal,app/book-cover-labels.mjs,566,,unknown,reviewable,,底層的人們
+candidate:app/book-cover-labels.mjs:567:17,js-cjk-literal,app/book-cover-labels.mjs,567,,unknown,reviewable,,馬里亞諾·阿蘇埃拉 · 英譯 Enrique Munguía
+candidate:app/book-cover-labels.mjs:568:19,js-cjk-literal,app/book-cover-labels.mjs,568,,unknown,reviewable,,英文
+candidate:app/book-cover-labels.mjs:571:16,js-cjk-literal,app/book-cover-labels.mjs,571,,unknown,reviewable,,虐げられし人々
+candidate:app/book-cover-labels.mjs:572:17,js-cjk-literal,app/book-cover-labels.mjs,572,,unknown,reviewable,,マリアノ・アスエラ · 英訳 Enrique Munguía
+candidate:app/book-cover-labels.mjs:573:19,js-cjk-literal,app/book-cover-labels.mjs,573,,unknown,reviewable,,英語本文
+candidate:app/book-cover-labels.mjs:583:16,js-cjk-literal,app/book-cover-labels.mjs,583,,unknown,reviewable,,埃奎亚诺自传
+candidate:app/book-cover-labels.mjs:584:17,js-cjk-literal,app/book-cover-labels.mjs,584,,unknown,reviewable,,奥劳达·埃奎亚诺
+candidate:app/book-cover-labels.mjs:585:19,js-cjk-literal,app/book-cover-labels.mjs,585,,unknown,reviewable,,英文
+candidate:app/book-cover-labels.mjs:588:16,js-cjk-literal,app/book-cover-labels.mjs,588,,unknown,reviewable,,埃奎亞諾自傳
+candidate:app/book-cover-labels.mjs:589:17,js-cjk-literal,app/book-cover-labels.mjs,589,,unknown,reviewable,,奧勞達·埃奎亞諾
+candidate:app/book-cover-labels.mjs:590:19,js-cjk-literal,app/book-cover-labels.mjs,590,,unknown,reviewable,,英文
+candidate:app/book-cover-labels.mjs:593:16,js-cjk-literal,app/book-cover-labels.mjs,593,,unknown,reviewable,,イクイアーノ自伝
+candidate:app/book-cover-labels.mjs:594:17,js-cjk-literal,app/book-cover-labels.mjs,594,,unknown,reviewable,,オラウダ・イクイアーノ
+candidate:app/book-cover-labels.mjs:595:19,js-cjk-literal,app/book-cover-labels.mjs,595,,unknown,reviewable,,英語本文
+candidate:app/book-cover-labels.mjs:605:16,js-cjk-literal,app/book-cover-labels.mjs,605,,unknown,reviewable,,非洲农场的故事
+candidate:app/book-cover-labels.mjs:606:17,js-cjk-literal,app/book-cover-labels.mjs,606,,unknown,reviewable,,奥莉芙·施赖纳
+candidate:app/book-cover-labels.mjs:607:19,js-cjk-literal,app/book-cover-labels.mjs,607,,unknown,reviewable,,英文
+candidate:app/book-cover-labels.mjs:610:16,js-cjk-literal,app/book-cover-labels.mjs,610,,unknown,reviewable,,非洲農場的故事
+candidate:app/book-cover-labels.mjs:611:17,js-cjk-literal,app/book-cover-labels.mjs,611,,unknown,reviewable,,奧莉芙·施賴納
+candidate:app/book-cover-labels.mjs:612:19,js-cjk-literal,app/book-cover-labels.mjs,612,,unknown,reviewable,,英文
+candidate:app/book-cover-labels.mjs:615:16,js-cjk-literal,app/book-cover-labels.mjs,615,,unknown,reviewable,,アフリカ農場物語
+candidate:app/book-cover-labels.mjs:616:17,js-cjk-literal,app/book-cover-labels.mjs,616,,unknown,reviewable,,オリーヴ・シュライナー
+candidate:app/book-cover-labels.mjs:617:19,js-cjk-literal,app/book-cover-labels.mjs,617,,unknown,reviewable,,英語本文
+candidate:app/book-cover-labels.mjs:627:16,js-cjk-literal,app/book-cover-labels.mjs,627,,unknown,reviewable,,弗雷德里克·道格拉斯自传
+candidate:app/book-cover-labels.mjs:628:17,js-cjk-literal,app/book-cover-labels.mjs,628,,unknown,reviewable,,弗雷德里克·道格拉斯
+candidate:app/book-cover-labels.mjs:629:19,js-cjk-literal,app/book-cover-labels.mjs,629,,unknown,reviewable,,英文
+candidate:app/book-cover-labels.mjs:632:16,js-cjk-literal,app/book-cover-labels.mjs,632,,unknown,reviewable,,弗雷德里克·道格拉斯自傳
+candidate:app/book-cover-labels.mjs:633:17,js-cjk-literal,app/book-cover-labels.mjs,633,,unknown,reviewable,,弗雷德里克·道格拉斯
+candidate:app/book-cover-labels.mjs:634:19,js-cjk-literal,app/book-cover-labels.mjs,634,,unknown,reviewable,,英文
+candidate:app/book-cover-labels.mjs:637:16,js-cjk-literal,app/book-cover-labels.mjs,637,,unknown,reviewable,,フレデリック・ダグラス自伝
+candidate:app/book-cover-labels.mjs:638:17,js-cjk-literal,app/book-cover-labels.mjs,638,,unknown,reviewable,,フレデリック・ダグラス
+candidate:app/book-cover-labels.mjs:639:19,js-cjk-literal,app/book-cover-labels.mjs,639,,unknown,reviewable,,英語本文
+candidate:app/book-cover-labels.mjs:649:16,js-cjk-literal,app/book-cover-labels.mjs,649,,unknown,reviewable,,西科尔夫人历险记
+candidate:app/book-cover-labels.mjs:650:17,js-cjk-literal,app/book-cover-labels.mjs,650,,unknown,reviewable,,玛丽·西科尔
+candidate:app/book-cover-labels.mjs:651:19,js-cjk-literal,app/book-cover-labels.mjs,651,,unknown,reviewable,,英文
+candidate:app/book-cover-labels.mjs:654:16,js-cjk-literal,app/book-cover-labels.mjs,654,,unknown,reviewable,,西科爾夫人歷險記
+candidate:app/book-cover-labels.mjs:655:17,js-cjk-literal,app/book-cover-labels.mjs,655,,unknown,reviewable,,瑪麗·西科爾
+candidate:app/book-cover-labels.mjs:656:19,js-cjk-literal,app/book-cover-labels.mjs,656,,unknown,reviewable,,英文
+candidate:app/book-cover-labels.mjs:659:16,js-cjk-literal,app/book-cover-labels.mjs,659,,unknown,reviewable,,メアリー・シーコール自伝
+candidate:app/book-cover-labels.mjs:660:17,js-cjk-literal,app/book-cover-labels.mjs,660,,unknown,reviewable,,メアリー・シーコール
+candidate:app/book-cover-labels.mjs:661:19,js-cjk-literal,app/book-cover-labels.mjs,661,,unknown,reviewable,,英語本文
+candidate:app/book-cover-labels.mjs:671:16,js-cjk-literal,app/book-cover-labels.mjs,671,,unknown,reviewable,,超越善恶
+candidate:app/book-cover-labels.mjs:672:17,js-cjk-literal,app/book-cover-labels.mjs,672,,unknown,reviewable,,弗里德里希·尼采 · 英语散文译者 Helen Zimmern；末诗译者 L. A. Magnus
+candidate:app/book-cover-labels.mjs:673:19,js-cjk-literal,app/book-cover-labels.mjs,673,,unknown,reviewable,,英文
+candidate:app/book-cover-labels.mjs:676:16,js-cjk-literal,app/book-cover-labels.mjs,676,,unknown,reviewable,,善惡的彼岸
+candidate:app/book-cover-labels.mjs:677:17,js-cjk-literal,app/book-cover-labels.mjs,677,,unknown,reviewable,,弗里德里希·尼采 · 英語散文譯者 Helen Zimmern；末詩譯者 L. A. Magnus
+candidate:app/book-cover-labels.mjs:678:19,js-cjk-literal,app/book-cover-labels.mjs,678,,unknown,reviewable,,英文
+candidate:app/book-cover-labels.mjs:681:16,js-cjk-literal,app/book-cover-labels.mjs,681,,unknown,reviewable,,善悪の彼岸
+candidate:app/book-cover-labels.mjs:682:17,js-cjk-literal,app/book-cover-labels.mjs,682,,unknown,reviewable,,フリードリヒ・ニーチェ · 散文英訳 Helen Zimmern；結尾詩英訳 L. A. Magnus
+candidate:app/book-cover-labels.mjs:683:19,js-cjk-literal,app/book-cover-labels.mjs,683,,unknown,reviewable,,英語本文
+candidate:app/book-cover-labels.mjs:693:16,js-cjk-literal,app/book-cover-labels.mjs,693,,unknown,reviewable,,查拉图斯特拉如是说
+candidate:app/book-cover-labels.mjs:694:17,js-cjk-literal,app/book-cover-labels.mjs,694,,unknown,reviewable,,弗里德里希·尼采 · 英译 Thomas Common
+candidate:app/book-cover-labels.mjs:695:19,js-cjk-literal,app/book-cover-labels.mjs,695,,unknown,reviewable,,英文
+candidate:app/book-cover-labels.mjs:698:16,js-cjk-literal,app/book-cover-labels.mjs,698,,unknown,reviewable,,查拉圖斯特拉如是說
+candidate:app/book-cover-labels.mjs:699:17,js-cjk-literal,app/book-cover-labels.mjs,699,,unknown,reviewable,,弗里德里希·尼采 · 英譯 Thomas Common
+candidate:app/book-cover-labels.mjs:700:19,js-cjk-literal,app/book-cover-labels.mjs,700,,unknown,reviewable,,英文
+candidate:app/book-cover-labels.mjs:703:16,js-cjk-literal,app/book-cover-labels.mjs,703,,unknown,reviewable,,ツァラトゥストラはこう語った
+candidate:app/book-cover-labels.mjs:704:17,js-cjk-literal,app/book-cover-labels.mjs,704,,unknown,reviewable,,フリードリヒ・ニーチェ · 英訳 Thomas Common
+candidate:app/book-cover-labels.mjs:705:19,js-cjk-literal,app/book-cover-labels.mjs,705,,unknown,reviewable,,英語本文
+candidate:app/book-cover-labels.mjs:715:16,js-cjk-literal,app/book-cover-labels.mjs,715,,unknown,reviewable,,论语
+candidate:app/book-cover-labels.mjs:716:17,js-cjk-literal,app/book-cover-labels.mjs,716,,unknown,reviewable,,孔子及其弟子
+candidate:app/book-cover-labels.mjs:717:19,js-cjk-literal,app/book-cover-labels.mjs,717,,unknown,reviewable,,中文原典
+candidate:app/book-cover-labels.mjs:720:16,js-cjk-literal,app/book-cover-labels.mjs,720,,unknown,reviewable,,論語
+candidate:app/book-cover-labels.mjs:721:17,js-cjk-literal,app/book-cover-labels.mjs,721,,unknown,reviewable,,孔子及其弟子
+candidate:app/book-cover-labels.mjs:722:19,js-cjk-literal,app/book-cover-labels.mjs,722,,unknown,reviewable,,中文原典
+candidate:app/book-cover-labels.mjs:725:16,js-cjk-literal,app/book-cover-labels.mjs,725,,unknown,reviewable,,論語
+candidate:app/book-cover-labels.mjs:726:17,js-cjk-literal,app/book-cover-labels.mjs,726,,unknown,reviewable,,孔子とその弟子たち
+candidate:app/book-cover-labels.mjs:727:19,js-cjk-literal,app/book-cover-labels.mjs,727,,unknown,reviewable,,中国語本文
+candidate:app/book-cover-labels.mjs:737:16,js-cjk-literal,app/book-cover-labels.mjs,737,,unknown,reviewable,,孟子
+candidate:app/book-cover-labels.mjs:738:17,js-cjk-literal,app/book-cover-labels.mjs,738,,unknown,reviewable,,孟轲及其后学
+candidate:app/book-cover-labels.mjs:739:19,js-cjk-literal,app/book-cover-labels.mjs,739,,unknown,reviewable,,中文原典
+candidate:app/book-cover-labels.mjs:742:16,js-cjk-literal,app/book-cover-labels.mjs,742,,unknown,reviewable,,孟子
+candidate:app/book-cover-labels.mjs:743:17,js-cjk-literal,app/book-cover-labels.mjs,743,,unknown,reviewable,,孟軻及其後學
+candidate:app/book-cover-labels.mjs:744:19,js-cjk-literal,app/book-cover-labels.mjs,744,,unknown,reviewable,,中文原典
+candidate:app/book-cover-labels.mjs:747:16,js-cjk-literal,app/book-cover-labels.mjs,747,,unknown,reviewable,,孟子
+candidate:app/book-cover-labels.mjs:748:17,js-cjk-literal,app/book-cover-labels.mjs,748,,unknown,reviewable,,孟子とその学派
+candidate:app/book-cover-labels.mjs:749:19,js-cjk-literal,app/book-cover-labels.mjs,749,,unknown,reviewable,,中国語本文
+candidate:app/book-cover-labels.mjs:759:16,js-cjk-literal,app/book-cover-labels.mjs,759,,unknown,reviewable,,庄子
+candidate:app/book-cover-labels.mjs:760:17,js-cjk-literal,app/book-cover-labels.mjs,760,,unknown,reviewable,,庄周及其后学（传统归属）
+candidate:app/book-cover-labels.mjs:761:19,js-cjk-literal,app/book-cover-labels.mjs,761,,unknown,reviewable,,中文原典
+candidate:app/book-cover-labels.mjs:764:16,js-cjk-literal,app/book-cover-labels.mjs,764,,unknown,reviewable,,莊子
+candidate:app/book-cover-labels.mjs:765:17,js-cjk-literal,app/book-cover-labels.mjs,765,,unknown,reviewable,,莊周及其後學（傳統歸屬）
+candidate:app/book-cover-labels.mjs:766:19,js-cjk-literal,app/book-cover-labels.mjs,766,,unknown,reviewable,,中文原典
+candidate:app/book-cover-labels.mjs:769:16,js-cjk-literal,app/book-cover-labels.mjs,769,,unknown,reviewable,,荘子
+candidate:app/book-cover-labels.mjs:770:17,js-cjk-literal,app/book-cover-labels.mjs,770,,unknown,reviewable,,荘周とその学派（伝）
+candidate:app/book-cover-labels.mjs:771:19,js-cjk-literal,app/book-cover-labels.mjs,771,,unknown,reviewable,,中国語本文
+candidate:app/book-cover-labels.mjs:781:16,js-cjk-literal,app/book-cover-labels.mjs,781,,unknown,reviewable,,孙子兵法
+candidate:app/book-cover-labels.mjs:782:17,js-cjk-literal,app/book-cover-labels.mjs,782,,unknown,reviewable,,孙武（传统归属）
+candidate:app/book-cover-labels.mjs:783:19,js-cjk-literal,app/book-cover-labels.mjs,783,,unknown,reviewable,,中文原典
+candidate:app/book-cover-labels.mjs:786:16,js-cjk-literal,app/book-cover-labels.mjs,786,,unknown,reviewable,,孫子兵法
+candidate:app/book-cover-labels.mjs:787:17,js-cjk-literal,app/book-cover-labels.mjs,787,,unknown,reviewable,,孫武（傳統歸屬）
+candidate:app/book-cover-labels.mjs:788:19,js-cjk-literal,app/book-cover-labels.mjs,788,,unknown,reviewable,,中文原典
+candidate:app/book-cover-labels.mjs:791:16,js-cjk-literal,app/book-cover-labels.mjs,791,,unknown,reviewable,,孫子
+candidate:app/book-cover-labels.mjs:792:17,js-cjk-literal,app/book-cover-labels.mjs,792,,unknown,reviewable,,孫武（伝）
+candidate:app/book-cover-labels.mjs:793:19,js-cjk-literal,app/book-cover-labels.mjs,793,,unknown,reviewable,,中国語本文
+candidate:app/book-cover-labels.mjs:803:16,js-cjk-literal,app/book-cover-labels.mjs,803,,unknown,reviewable,,道德经
+candidate:app/book-cover-labels.mjs:804:17,js-cjk-literal,app/book-cover-labels.mjs,804,,unknown,reviewable,,老子（传统归属）
+candidate:app/book-cover-labels.mjs:805:19,js-cjk-literal,app/book-cover-labels.mjs,805,,unknown,reviewable,,中文原典
+candidate:app/book-cover-labels.mjs:808:16,js-cjk-literal,app/book-cover-labels.mjs,808,,unknown,reviewable,,道德經
+candidate:app/book-cover-labels.mjs:809:17,js-cjk-literal,app/book-cover-labels.mjs,809,,unknown,reviewable,,老子（傳統歸屬）
+candidate:app/book-cover-labels.mjs:810:19,js-cjk-literal,app/book-cover-labels.mjs,810,,unknown,reviewable,,中文原典
+candidate:app/book-cover-labels.mjs:813:16,js-cjk-literal,app/book-cover-labels.mjs,813,,unknown,reviewable,,老子
+candidate:app/book-cover-labels.mjs:814:17,js-cjk-literal,app/book-cover-labels.mjs,814,,unknown,reviewable,,老子（伝）
+candidate:app/book-cover-labels.mjs:815:19,js-cjk-literal,app/book-cover-labels.mjs,815,,unknown,reviewable,,中国語本文
+candidate:app/book-cover-labels.mjs:825:16,js-cjk-literal,app/book-cover-labels.mjs,825,,unknown,reviewable,,理想国
+candidate:app/book-cover-labels.mjs:826:17,js-cjk-literal,app/book-cover-labels.mjs,826,,unknown,reviewable,,柏拉图 · 英译 Benjamin Jowett
+candidate:app/book-cover-labels.mjs:827:19,js-cjk-literal,app/book-cover-labels.mjs,827,,unknown,reviewable,,英文
+candidate:app/book-cover-labels.mjs:830:16,js-cjk-literal,app/book-cover-labels.mjs,830,,unknown,reviewable,,理想國
+candidate:app/book-cover-labels.mjs:831:17,js-cjk-literal,app/book-cover-labels.mjs,831,,unknown,reviewable,,柏拉圖 · 英譯 Benjamin Jowett
+candidate:app/book-cover-labels.mjs:832:19,js-cjk-literal,app/book-cover-labels.mjs,832,,unknown,reviewable,,英文
+candidate:app/book-cover-labels.mjs:835:16,js-cjk-literal,app/book-cover-labels.mjs,835,,unknown,reviewable,,国家
+candidate:app/book-cover-labels.mjs:836:17,js-cjk-literal,app/book-cover-labels.mjs,836,,unknown,reviewable,,プラトン · 英訳 Benjamin Jowett
+candidate:app/book-cover-labels.mjs:837:19,js-cjk-literal,app/book-cover-labels.mjs,837,,unknown,reviewable,,英語本文
+candidate:app/book-cover-labels.mjs:847:16,js-cjk-literal,app/book-cover-labels.mjs,847,,unknown,reviewable,,尼各马可伦理学
+candidate:app/book-cover-labels.mjs:848:17,js-cjk-literal,app/book-cover-labels.mjs,848,,unknown,reviewable,,亚里士多德 · 英译 D. P. Chase
+candidate:app/book-cover-labels.mjs:849:19,js-cjk-literal,app/book-cover-labels.mjs,849,,unknown,reviewable,,英文
+candidate:app/book-cover-labels.mjs:852:16,js-cjk-literal,app/book-cover-labels.mjs,852,,unknown,reviewable,,尼各馬可倫理學
+candidate:app/book-cover-labels.mjs:853:17,js-cjk-literal,app/book-cover-labels.mjs,853,,unknown,reviewable,,亞里斯多德 · 英譯 D. P. Chase
+candidate:app/book-cover-labels.mjs:854:19,js-cjk-literal,app/book-cover-labels.mjs,854,,unknown,reviewable,,英文
+candidate:app/book-cover-labels.mjs:857:16,js-cjk-literal,app/book-cover-labels.mjs,857,,unknown,reviewable,,ニコマコス倫理学
+candidate:app/book-cover-labels.mjs:858:17,js-cjk-literal,app/book-cover-labels.mjs,858,,unknown,reviewable,,アリストテレス · 英訳 D. P. Chase
+candidate:app/book-cover-labels.mjs:859:19,js-cjk-literal,app/book-cover-labels.mjs,859,,unknown,reviewable,,英語本文
+candidate:app/book-cover-labels.mjs:869:16,js-cjk-literal,app/book-cover-labels.mjs,869,,unknown,reviewable,,爱比克泰德论说选与手册
+candidate:app/book-cover-labels.mjs:870:17,js-cjk-literal,app/book-cover-labels.mjs,870,,unknown,reviewable,,爱比克泰德 · 英译 George Long
+candidate:app/book-cover-labels.mjs:871:19,js-cjk-literal,app/book-cover-labels.mjs,871,,unknown,reviewable,,英文
+candidate:app/book-cover-labels.mjs:874:16,js-cjk-literal,app/book-cover-labels.mjs,874,,unknown,reviewable,,愛比克泰德論說選與手冊
+candidate:app/book-cover-labels.mjs:875:17,js-cjk-literal,app/book-cover-labels.mjs,875,,unknown,reviewable,,愛比克泰德 · 英譯 George Long
+candidate:app/book-cover-labels.mjs:876:19,js-cjk-literal,app/book-cover-labels.mjs,876,,unknown,reviewable,,英文
+candidate:app/book-cover-labels.mjs:879:16,js-cjk-literal,app/book-cover-labels.mjs,879,,unknown,reviewable,,語録選・要録
+candidate:app/book-cover-labels.mjs:880:17,js-cjk-literal,app/book-cover-labels.mjs,880,,unknown,reviewable,,エピクテトス · 英訳 George Long
+candidate:app/book-cover-labels.mjs:881:19,js-cjk-literal,app/book-cover-labels.mjs,881,,unknown,reviewable,,英語本文
+candidate:app/book-cover-labels.mjs:891:16,js-cjk-literal,app/book-cover-labels.mjs,891,,unknown,reviewable,,忏悔录
+candidate:app/book-cover-labels.mjs:892:17,js-cjk-literal,app/book-cover-labels.mjs,892,,unknown,reviewable,,希波的奥古斯丁 · 英译 E. B. Pusey
+candidate:app/book-cover-labels.mjs:893:19,js-cjk-literal,app/book-cover-labels.mjs,893,,unknown,reviewable,,英文
+candidate:app/book-cover-labels.mjs:896:16,js-cjk-literal,app/book-cover-labels.mjs,896,,unknown,reviewable,,懺悔錄
+candidate:app/book-cover-labels.mjs:897:17,js-cjk-literal,app/book-cover-labels.mjs,897,,unknown,reviewable,,希波的奧古斯丁 · 英譯 E. B. Pusey
+candidate:app/book-cover-labels.mjs:898:19,js-cjk-literal,app/book-cover-labels.mjs,898,,unknown,reviewable,,英文
+candidate:app/book-cover-labels.mjs:901:16,js-cjk-literal,app/book-cover-labels.mjs,901,,unknown,reviewable,,告白録
+candidate:app/book-cover-labels.mjs:902:17,js-cjk-literal,app/book-cover-labels.mjs,902,,unknown,reviewable,,アウグスティヌス · 英訳 E. B. Pusey
+candidate:app/book-cover-labels.mjs:903:19,js-cjk-literal,app/book-cover-labels.mjs,903,,unknown,reviewable,,英語本文
+candidate:app/book-cover-labels.mjs:913:16,js-cjk-literal,app/book-cover-labels.mjs,913,,unknown,reviewable,,君主论
+candidate:app/book-cover-labels.mjs:914:17,js-cjk-literal,app/book-cover-labels.mjs,914,,unknown,reviewable,,尼科洛·马基雅维利 · 英译 W. K. Marriott
+candidate:app/book-cover-labels.mjs:915:19,js-cjk-literal,app/book-cover-labels.mjs,915,,unknown,reviewable,,附两篇短著 · 英译本
+candidate:app/book-cover-labels.mjs:918:16,js-cjk-literal,app/book-cover-labels.mjs,918,,unknown,reviewable,,君主論
+candidate:app/book-cover-labels.mjs:919:17,js-cjk-literal,app/book-cover-labels.mjs,919,,unknown,reviewable,,尼可羅·馬基維利 · 英譯 W. K. Marriott
+candidate:app/book-cover-labels.mjs:920:19,js-cjk-literal,app/book-cover-labels.mjs,920,,unknown,reviewable,,附兩篇短著 · 英譯本
+candidate:app/book-cover-labels.mjs:923:16,js-cjk-literal,app/book-cover-labels.mjs,923,,unknown,reviewable,,君主論
+candidate:app/book-cover-labels.mjs:924:17,js-cjk-literal,app/book-cover-labels.mjs,924,,unknown,reviewable,,ニッコロ・マキアヴェッリ · 英訳 W. K. Marriott
+candidate:app/book-cover-labels.mjs:925:19,js-cjk-literal,app/book-cover-labels.mjs,925,,unknown,reviewable,,短著 2 篇併録・英訳本文
+candidate:app/book-cover-labels.mjs:935:16,js-cjk-literal,app/book-cover-labels.mjs,935,,unknown,reviewable,,谈谈方法
+candidate:app/book-cover-labels.mjs:936:17,js-cjk-literal,app/book-cover-labels.mjs,936,,unknown,reviewable,,勒内·笛卡尔 · 英译 John Veitch
+candidate:app/book-cover-labels.mjs:937:19,js-cjk-literal,app/book-cover-labels.mjs,937,,unknown,reviewable,,英文
+candidate:app/book-cover-labels.mjs:940:16,js-cjk-literal,app/book-cover-labels.mjs,940,,unknown,reviewable,,方法論
+candidate:app/book-cover-labels.mjs:941:17,js-cjk-literal,app/book-cover-labels.mjs,941,,unknown,reviewable,,勒內·笛卡兒 · 英譯 John Veitch
+candidate:app/book-cover-labels.mjs:942:19,js-cjk-literal,app/book-cover-labels.mjs,942,,unknown,reviewable,,英文
+candidate:app/book-cover-labels.mjs:945:16,js-cjk-literal,app/book-cover-labels.mjs,945,,unknown,reviewable,,方法序説
+candidate:app/book-cover-labels.mjs:946:17,js-cjk-literal,app/book-cover-labels.mjs,946,,unknown,reviewable,,ルネ・デカルト · 英訳 John Veitch
+candidate:app/book-cover-labels.mjs:947:19,js-cjk-literal,app/book-cover-labels.mjs,947,,unknown,reviewable,,英語本文
+candidate:app/book-cover-labels.mjs:957:16,js-cjk-literal,app/book-cover-labels.mjs,957,,unknown,reviewable,,伦理学
+candidate:app/book-cover-labels.mjs:958:17,js-cjk-literal,app/book-cover-labels.mjs,958,,unknown,reviewable,,斯宾诺莎 · 英译 R. H. M. Elwes
+candidate:app/book-cover-labels.mjs:959:19,js-cjk-literal,app/book-cover-labels.mjs,959,,unknown,reviewable,,英文
+candidate:app/book-cover-labels.mjs:962:16,js-cjk-literal,app/book-cover-labels.mjs,962,,unknown,reviewable,,倫理學
+candidate:app/book-cover-labels.mjs:963:17,js-cjk-literal,app/book-cover-labels.mjs,963,,unknown,reviewable,,史賓諾沙 · 英譯 R. H. M. Elwes
+candidate:app/book-cover-labels.mjs:964:19,js-cjk-literal,app/book-cover-labels.mjs,964,,unknown,reviewable,,英文
+candidate:app/book-cover-labels.mjs:967:16,js-cjk-literal,app/book-cover-labels.mjs,967,,unknown,reviewable,,エチカ
+candidate:app/book-cover-labels.mjs:968:17,js-cjk-literal,app/book-cover-labels.mjs,968,,unknown,reviewable,,バールーフ・スピノザ · 英訳 R. H. M. Elwes
+candidate:app/book-cover-labels.mjs:969:19,js-cjk-literal,app/book-cover-labels.mjs,969,,unknown,reviewable,,英語本文
+candidate:app/book-cover-labels.mjs:979:16,js-cjk-literal,app/book-cover-labels.mjs,979,,unknown,reviewable,,人类理解研究
+candidate:app/book-cover-labels.mjs:980:17,js-cjk-literal,app/book-cover-labels.mjs,980,,unknown,reviewable,,大卫·休谟
+candidate:app/book-cover-labels.mjs:981:19,js-cjk-literal,app/book-cover-labels.mjs,981,,unknown,reviewable,,英文
+candidate:app/book-cover-labels.mjs:984:16,js-cjk-literal,app/book-cover-labels.mjs,984,,unknown,reviewable,,人類理解研究
+candidate:app/book-cover-labels.mjs:985:17,js-cjk-literal,app/book-cover-labels.mjs,985,,unknown,reviewable,,大衛·休謨
+candidate:app/book-cover-labels.mjs:986:19,js-cjk-literal,app/book-cover-labels.mjs,986,,unknown,reviewable,,英文
+candidate:app/book-cover-labels.mjs:989:16,js-cjk-literal,app/book-cover-labels.mjs,989,,unknown,reviewable,,人間知性研究
+candidate:app/book-cover-labels.mjs:990:17,js-cjk-literal,app/book-cover-labels.mjs,990,,unknown,reviewable,,デイヴィッド・ヒューム
+candidate:app/book-cover-labels.mjs:991:19,js-cjk-literal,app/book-cover-labels.mjs,991,,unknown,reviewable,,英語本文
+candidate:app/book-cover-labels.mjs:1001:16,js-cjk-literal,app/book-cover-labels.mjs,1001,,unknown,reviewable,,新工具
+candidate:app/book-cover-labels.mjs:1002:17,js-cjk-literal,app/book-cover-labels.mjs,1002,,unknown,reviewable,,弗朗西斯·培根 · 英译书志归属 W. Wood；编者 Joseph Devey
+candidate:app/book-cover-labels.mjs:1003:19,js-cjk-literal,app/book-cover-labels.mjs,1003,,unknown,reviewable,,英文
+candidate:app/book-cover-labels.mjs:1006:16,js-cjk-literal,app/book-cover-labels.mjs,1006,,unknown,reviewable,,新工具
+candidate:app/book-cover-labels.mjs:1007:17,js-cjk-literal,app/book-cover-labels.mjs,1007,,unknown,reviewable,,法蘭西斯·培根 · 英譯書志歸屬 W. Wood；編者 Joseph Devey
+candidate:app/book-cover-labels.mjs:1008:19,js-cjk-literal,app/book-cover-labels.mjs,1008,,unknown,reviewable,,英文
+candidate:app/book-cover-labels.mjs:1011:16,js-cjk-literal,app/book-cover-labels.mjs,1011,,unknown,reviewable,,ノヴム・オルガヌム
+candidate:app/book-cover-labels.mjs:1012:17,js-cjk-literal,app/book-cover-labels.mjs,1012,,unknown,reviewable,,フランシス・ベーコン · 英訳の書誌上の帰属 W. Wood；編 Joseph Devey
+candidate:app/book-cover-labels.mjs:1013:19,js-cjk-literal,app/book-cover-labels.mjs,1013,,unknown,reviewable,,英語本文
+candidate:app/book-cover-labels.mjs:1023:16,js-cjk-literal,app/book-cover-labels.mjs,1023,,unknown,reviewable,,哈姆雷特
+candidate:app/book-cover-labels.mjs:1024:17,js-cjk-literal,app/book-cover-labels.mjs,1024,,unknown,reviewable,,威廉·莎士比亚
+candidate:app/book-cover-labels.mjs:1025:19,js-cjk-literal,app/book-cover-labels.mjs,1025,,unknown,reviewable,,英文
+candidate:app/book-cover-labels.mjs:1028:16,js-cjk-literal,app/book-cover-labels.mjs,1028,,unknown,reviewable,,哈姆雷特
+candidate:app/book-cover-labels.mjs:1029:17,js-cjk-literal,app/book-cover-labels.mjs,1029,,unknown,reviewable,,威廉·莎士比亞
+candidate:app/book-cover-labels.mjs:1030:19,js-cjk-literal,app/book-cover-labels.mjs,1030,,unknown,reviewable,,英文
+candidate:app/book-cover-labels.mjs:1033:16,js-cjk-literal,app/book-cover-labels.mjs,1033,,unknown,reviewable,,ハムレット
+candidate:app/book-cover-labels.mjs:1034:17,js-cjk-literal,app/book-cover-labels.mjs,1034,,unknown,reviewable,,ウィリアム・シェイクスピア
+candidate:app/book-cover-labels.mjs:1035:19,js-cjk-literal,app/book-cover-labels.mjs,1035,,unknown,reviewable,,英語本文
+candidate:app/book-cover-labels.mjs:1045:16,js-cjk-literal,app/book-cover-labels.mjs,1045,,unknown,reviewable,,奥德赛
+candidate:app/book-cover-labels.mjs:1046:17,js-cjk-literal,app/book-cover-labels.mjs,1046,,unknown,reviewable,,荷马（传统署名） · 英语散文译者 Samuel Butler；本版序作者 Henry Festing Jones
+candidate:app/book-cover-labels.mjs:1047:19,js-cjk-literal,app/book-cover-labels.mjs,1047,,unknown,reviewable,,英文
+candidate:app/book-cover-labels.mjs:1050:16,js-cjk-literal,app/book-cover-labels.mjs,1050,,unknown,reviewable,,奧德賽
+candidate:app/book-cover-labels.mjs:1051:17,js-cjk-literal,app/book-cover-labels.mjs,1051,,unknown,reviewable,,荷馬（傳統署名） · 英語散文譯者 Samuel Butler；本版序作者 Henry Festing Jones
+candidate:app/book-cover-labels.mjs:1052:19,js-cjk-literal,app/book-cover-labels.mjs,1052,,unknown,reviewable,,英文
+candidate:app/book-cover-labels.mjs:1055:16,js-cjk-literal,app/book-cover-labels.mjs,1055,,unknown,reviewable,,オデュッセイア
+candidate:app/book-cover-labels.mjs:1056:17,js-cjk-literal,app/book-cover-labels.mjs,1056,,unknown,reviewable,,ホメロス（伝） · 散文英訳 Samuel Butler；本版序文 Henry Festing Jones
+candidate:app/book-cover-labels.mjs:1057:19,js-cjk-literal,app/book-cover-labels.mjs,1057,,unknown,reviewable,,英語本文
+candidate:app/book-cover-labels.mjs:1067:16,js-cjk-literal,app/book-cover-labels.mjs,1067,,unknown,reviewable,,罪与罚
+candidate:app/book-cover-labels.mjs:1068:17,js-cjk-literal,app/book-cover-labels.mjs,1068,,unknown,reviewable,,费奥多尔·陀思妥耶夫斯基 · 英译 Constance Garnett
+candidate:app/book-cover-labels.mjs:1069:19,js-cjk-literal,app/book-cover-labels.mjs,1069,,unknown,reviewable,,英文
+candidate:app/book-cover-labels.mjs:1072:16,js-cjk-literal,app/book-cover-labels.mjs,1072,,unknown,reviewable,,罪與罰
+candidate:app/book-cover-labels.mjs:1073:17,js-cjk-literal,app/book-cover-labels.mjs,1073,,unknown,reviewable,,費奧多爾·杜斯妥也夫斯基 · 英譯 Constance Garnett
+candidate:app/book-cover-labels.mjs:1074:19,js-cjk-literal,app/book-cover-labels.mjs,1074,,unknown,reviewable,,英文
+candidate:app/book-cover-labels.mjs:1077:16,js-cjk-literal,app/book-cover-labels.mjs,1077,,unknown,reviewable,,罪と罰
+candidate:app/book-cover-labels.mjs:1078:17,js-cjk-literal,app/book-cover-labels.mjs,1078,,unknown,reviewable,,フョードル・ドストエフスキー · 英訳 Constance Garnett
+candidate:app/book-cover-labels.mjs:1079:19,js-cjk-literal,app/book-cover-labels.mjs,1079,,unknown,reviewable,,英語本文
+candidate:app/book-cover-labels.mjs:1089:16,js-cjk-literal,app/book-cover-labels.mjs,1089,,unknown,reviewable,,国富论
+candidate:app/book-cover-labels.mjs:1090:17,js-cjk-literal,app/book-cover-labels.mjs,1090,,unknown,reviewable,,亚当·斯密
+candidate:app/book-cover-labels.mjs:1091:19,js-cjk-literal,app/book-cover-labels.mjs,1091,,unknown,reviewable,,英文
+candidate:app/book-cover-labels.mjs:1094:16,js-cjk-literal,app/book-cover-labels.mjs,1094,,unknown,reviewable,,國富論
+candidate:app/book-cover-labels.mjs:1095:17,js-cjk-literal,app/book-cover-labels.mjs,1095,,unknown,reviewable,,亞當·斯密
+candidate:app/book-cover-labels.mjs:1096:19,js-cjk-literal,app/book-cover-labels.mjs,1096,,unknown,reviewable,,英文
+candidate:app/book-cover-labels.mjs:1099:16,js-cjk-literal,app/book-cover-labels.mjs,1099,,unknown,reviewable,,国富論
+candidate:app/book-cover-labels.mjs:1100:17,js-cjk-literal,app/book-cover-labels.mjs,1100,,unknown,reviewable,,アダム・スミス
+candidate:app/book-cover-labels.mjs:1101:19,js-cjk-literal,app/book-cover-labels.mjs,1101,,unknown,reviewable,,英語本文
+candidate:app/book-cover-labels.mjs:1111:16,js-cjk-literal,app/book-cover-labels.mjs,1111,,unknown,reviewable,,物种起源
+candidate:app/book-cover-labels.mjs:1112:17,js-cjk-literal,app/book-cover-labels.mjs,1112,,unknown,reviewable,,查尔斯·达尔文
+candidate:app/book-cover-labels.mjs:1113:19,js-cjk-literal,app/book-cover-labels.mjs,1113,,unknown,reviewable,,第六版 · 英文
+candidate:app/book-cover-labels.mjs:1116:16,js-cjk-literal,app/book-cover-labels.mjs,1116,,unknown,reviewable,,物種起源
+candidate:app/book-cover-labels.mjs:1117:17,js-cjk-literal,app/book-cover-labels.mjs,1117,,unknown,reviewable,,查爾斯·達爾文
+candidate:app/book-cover-labels.mjs:1118:19,js-cjk-literal,app/book-cover-labels.mjs,1118,,unknown,reviewable,,第六版 · 英文
+candidate:app/book-cover-labels.mjs:1121:16,js-cjk-literal,app/book-cover-labels.mjs,1121,,unknown,reviewable,,種の起源
+candidate:app/book-cover-labels.mjs:1122:17,js-cjk-literal,app/book-cover-labels.mjs,1122,,unknown,reviewable,,チャールズ・ダーウィン
+candidate:app/book-cover-labels.mjs:1123:19,js-cjk-literal,app/book-cover-labels.mjs,1123,,unknown,reviewable,,第 6 版・英語本文
+candidate:app/book-cover-labels.mjs:1133:16,js-cjk-literal,app/book-cover-labels.mjs,1133,,unknown,reviewable,,伯罗奔尼撒战争史
+candidate:app/book-cover-labels.mjs:1134:17,js-cjk-literal,app/book-cover-labels.mjs,1134,,unknown,reviewable,,修昔底德 · 英译 Richard Crawley
+candidate:app/book-cover-labels.mjs:1135:19,js-cjk-literal,app/book-cover-labels.mjs,1135,,unknown,reviewable,,英译本
+candidate:app/book-cover-labels.mjs:1138:16,js-cjk-literal,app/book-cover-labels.mjs,1138,,unknown,reviewable,,伯羅奔尼撒戰爭史
+candidate:app/book-cover-labels.mjs:1139:17,js-cjk-literal,app/book-cover-labels.mjs,1139,,unknown,reviewable,,修昔底德 · 英譯 Richard Crawley
+candidate:app/book-cover-labels.mjs:1140:19,js-cjk-literal,app/book-cover-labels.mjs,1140,,unknown,reviewable,,英譯本
+candidate:app/book-cover-labels.mjs:1143:16,js-cjk-literal,app/book-cover-labels.mjs,1143,,unknown,reviewable,,戦史
+candidate:app/book-cover-labels.mjs:1144:17,js-cjk-literal,app/book-cover-labels.mjs,1144,,unknown,reviewable,,トゥキュディデス · 英訳 Richard Crawley
+candidate:app/book-cover-labels.mjs:1145:19,js-cjk-literal,app/book-cover-labels.mjs,1145,,unknown,reviewable,,ペロポネソス戦争・英訳本文
+candidate:app/book-cover-labels.mjs:1155:16,js-cjk-literal,app/book-cover-labels.mjs,1155,,unknown,reviewable,,人生的智慧
+candidate:app/book-cover-labels.mjs:1156:17,js-cjk-literal,app/book-cover-labels.mjs,1156,,unknown,reviewable,,阿图尔·叔本华 · 英译 T. Bailey Saunders
+candidate:app/book-cover-labels.mjs:1157:19,js-cjk-literal,app/book-cover-labels.mjs,1157,,unknown,reviewable,,上册 · 英译本
+candidate:app/book-cover-labels.mjs:1160:16,js-cjk-literal,app/book-cover-labels.mjs,1160,,unknown,reviewable,,人生的智慧
+candidate:app/book-cover-labels.mjs:1161:17,js-cjk-literal,app/book-cover-labels.mjs,1161,,unknown,reviewable,,阿圖爾·叔本華 · 英譯 T. Bailey Saunders
+candidate:app/book-cover-labels.mjs:1162:19,js-cjk-literal,app/book-cover-labels.mjs,1162,,unknown,reviewable,,上冊 · 英譯本
+candidate:app/book-cover-labels.mjs:1165:16,js-cjk-literal,app/book-cover-labels.mjs,1165,,unknown,reviewable,,人生の知恵
+candidate:app/book-cover-labels.mjs:1166:17,js-cjk-literal,app/book-cover-labels.mjs,1166,,unknown,reviewable,,アルトゥール・ショーペンハウアー · 英訳 T. Bailey Saunders
+candidate:app/book-cover-labels.mjs:1167:19,js-cjk-literal,app/book-cover-labels.mjs,1167,,unknown,reviewable,,上篇・英訳本文
+candidate:app/book-cover-labels.mjs:1177:16,js-cjk-literal,app/book-cover-labels.mjs,1177,,unknown,reviewable,,人生的智慧
+candidate:app/book-cover-labels.mjs:1178:17,js-cjk-literal,app/book-cover-labels.mjs,1178,,unknown,reviewable,,阿图尔·叔本华 · 英译 T. Bailey Saunders
+candidate:app/book-cover-labels.mjs:1179:19,js-cjk-literal,app/book-cover-labels.mjs,1179,,unknown,reviewable,,下册：建议与格言 · 英译本
+candidate:app/book-cover-labels.mjs:1182:16,js-cjk-literal,app/book-cover-labels.mjs,1182,,unknown,reviewable,,人生的智慧
+candidate:app/book-cover-labels.mjs:1183:17,js-cjk-literal,app/book-cover-labels.mjs,1183,,unknown,reviewable,,阿圖爾·叔本華 · 英譯 T. Bailey Saunders
+candidate:app/book-cover-labels.mjs:1184:19,js-cjk-literal,app/book-cover-labels.mjs,1184,,unknown,reviewable,,下冊：建議與格言 · 英譯本
+candidate:app/book-cover-labels.mjs:1187:16,js-cjk-literal,app/book-cover-labels.mjs,1187,,unknown,reviewable,,助言と箴言
+candidate:app/book-cover-labels.mjs:1188:17,js-cjk-literal,app/book-cover-labels.mjs,1188,,unknown,reviewable,,アルトゥール・ショーペンハウアー · 英訳 T. Bailey Saunders
+candidate:app/book-cover-labels.mjs:1189:19,js-cjk-literal,app/book-cover-labels.mjs,1189,,unknown,reviewable,,下篇・英訳本文
+candidate:app/book-cover-labels.mjs:1199:16,js-cjk-literal,app/book-cover-labels.mjs,1199,,unknown,reviewable,,论道德的谱系
+candidate:app/book-cover-labels.mjs:1200:17,js-cjk-literal,app/book-cover-labels.mjs,1200,,unknown,reviewable,,弗里德里希·尼采 · 正文英译 Horace B. Samuel；附篇英译 J. M. Kennedy
+candidate:app/book-cover-labels.mjs:1201:19,js-cjk-literal,app/book-cover-labels.mjs,1201,,unknown,reviewable,,英文
+candidate:app/book-cover-labels.mjs:1204:16,js-cjk-literal,app/book-cover-labels.mjs,1204,,unknown,reviewable,,道德的系譜
+candidate:app/book-cover-labels.mjs:1205:17,js-cjk-literal,app/book-cover-labels.mjs,1205,,unknown,reviewable,,弗里德里希·尼采 · 正文英譯 Horace B. Samuel；附篇英譯 J. M. Kennedy
+candidate:app/book-cover-labels.mjs:1206:19,js-cjk-literal,app/book-cover-labels.mjs,1206,,unknown,reviewable,,英文
+candidate:app/book-cover-labels.mjs:1209:16,js-cjk-literal,app/book-cover-labels.mjs,1209,,unknown,reviewable,,道徳の系譜
+candidate:app/book-cover-labels.mjs:1210:17,js-cjk-literal,app/book-cover-labels.mjs,1210,,unknown,reviewable,,フリードリヒ・ニーチェ · 本文英訳 Horace B. Samuel；付篇英訳 J. M. Kennedy
+candidate:app/book-cover-labels.mjs:1211:19,js-cjk-literal,app/book-cover-labels.mjs,1211,,unknown,reviewable,,英語本文
+candidate:app/book-cover-labels.mjs:1221:16,js-cjk-literal,app/book-cover-labels.mjs,1221,,unknown,reviewable,,红楼梦
+candidate:app/book-cover-labels.mjs:1222:17,js-cjk-literal,app/book-cover-labels.mjs,1222,,unknown,reviewable,,曹雪芹
+candidate:app/book-cover-labels.mjs:1223:19,js-cjk-literal,app/book-cover-labels.mjs,1223,,unknown,reviewable,,第 1 册 · 第 1—40 回 · 中文原典
+candidate:app/book-cover-labels.mjs:1226:16,js-cjk-literal,app/book-cover-labels.mjs,1226,,unknown,reviewable,,紅樓夢
+candidate:app/book-cover-labels.mjs:1227:17,js-cjk-literal,app/book-cover-labels.mjs,1227,,unknown,reviewable,,曹雪芹
+candidate:app/book-cover-labels.mjs:1228:19,js-cjk-literal,app/book-cover-labels.mjs,1228,,unknown,reviewable,,第 1 冊 · 第 1—40 回 · 中文原典
+candidate:app/book-cover-labels.mjs:1231:16,js-cjk-literal,app/book-cover-labels.mjs,1231,,unknown,reviewable,,紅楼夢
+candidate:app/book-cover-labels.mjs:1232:17,js-cjk-literal,app/book-cover-labels.mjs,1232,,unknown,reviewable,,曹雪芹
+candidate:app/book-cover-labels.mjs:1233:19,js-cjk-literal,app/book-cover-labels.mjs,1233,,unknown,reviewable,,第 1 冊 · 第 1–40 回 · 中国語本文
+candidate:app/book-cover-labels.mjs:1243:16,js-cjk-literal,app/book-cover-labels.mjs,1243,,unknown,reviewable,,红楼梦
+candidate:app/book-cover-labels.mjs:1244:17,js-cjk-literal,app/book-cover-labels.mjs,1244,,unknown,reviewable,,曹雪芹
+candidate:app/book-cover-labels.mjs:1245:19,js-cjk-literal,app/book-cover-labels.mjs,1245,,unknown,reviewable,,第 2 册 · 第 41—80 回 · 中文原典
+candidate:app/book-cover-labels.mjs:1248:16,js-cjk-literal,app/book-cover-labels.mjs,1248,,unknown,reviewable,,紅樓夢
+candidate:app/book-cover-labels.mjs:1249:17,js-cjk-literal,app/book-cover-labels.mjs,1249,,unknown,reviewable,,曹雪芹
+candidate:app/book-cover-labels.mjs:1250:19,js-cjk-literal,app/book-cover-labels.mjs,1250,,unknown,reviewable,,第 2 冊 · 第 41—80 回 · 中文原典
+candidate:app/book-cover-labels.mjs:1253:16,js-cjk-literal,app/book-cover-labels.mjs,1253,,unknown,reviewable,,紅楼夢
+candidate:app/book-cover-labels.mjs:1254:17,js-cjk-literal,app/book-cover-labels.mjs,1254,,unknown,reviewable,,曹雪芹
+candidate:app/book-cover-labels.mjs:1255:19,js-cjk-literal,app/book-cover-labels.mjs,1255,,unknown,reviewable,,第 2 冊 · 第 41–80 回 · 中国語本文
+candidate:app/book-cover-labels.mjs:1265:16,js-cjk-literal,app/book-cover-labels.mjs,1265,,unknown,reviewable,,红楼梦
+candidate:app/book-cover-labels.mjs:1266:17,js-cjk-literal,app/book-cover-labels.mjs,1266,,unknown,reviewable,,后四十回续作者未详（原卷题署曹雪芹）
+candidate:app/book-cover-labels.mjs:1267:19,js-cjk-literal,app/book-cover-labels.mjs,1267,,unknown,reviewable,,第 3 册 · 第 81—120 回 · 中文原典
+candidate:app/book-cover-labels.mjs:1270:16,js-cjk-literal,app/book-cover-labels.mjs,1270,,unknown,reviewable,,紅樓夢
+candidate:app/book-cover-labels.mjs:1271:17,js-cjk-literal,app/book-cover-labels.mjs,1271,,unknown,reviewable,,後四十回續作者未詳（原卷題署曹雪芹）
+candidate:app/book-cover-labels.mjs:1272:19,js-cjk-literal,app/book-cover-labels.mjs,1272,,unknown,reviewable,,第 3 冊 · 第 81—120 回 · 中文原典
+candidate:app/book-cover-labels.mjs:1275:16,js-cjk-literal,app/book-cover-labels.mjs,1275,,unknown,reviewable,,紅楼夢
+candidate:app/book-cover-labels.mjs:1276:17,js-cjk-literal,app/book-cover-labels.mjs,1276,,unknown,reviewable,,続作者不詳（原巻の署名：曹雪芹）
+candidate:app/book-cover-labels.mjs:1277:19,js-cjk-literal,app/book-cover-labels.mjs,1277,,unknown,reviewable,,第 3 冊 · 第 81–120 回 · 中国語本文
+candidate:app/book-cover-labels.mjs:1287:16,js-cjk-literal,app/book-cover-labels.mjs,1287,,unknown,reviewable,,蒙田随笔
+candidate:app/book-cover-labels.mjs:1288:17,js-cjk-literal,app/book-cover-labels.mjs,1288,,unknown,reviewable,,米歇尔·德·蒙田 · 英译 Charles Cotton；编者 W. C. Hazlitt
+candidate:app/book-cover-labels.mjs:1289:19,js-cjk-literal,app/book-cover-labels.mjs,1289,,unknown,reviewable,,第 1 卷 · 英译本
+candidate:app/book-cover-labels.mjs:1292:16,js-cjk-literal,app/book-cover-labels.mjs,1292,,unknown,reviewable,,蒙田隨筆
+candidate:app/book-cover-labels.mjs:1293:17,js-cjk-literal,app/book-cover-labels.mjs,1293,,unknown,reviewable,,米歇爾·德·蒙田 · 英譯 Charles Cotton；編者 W. C. Hazlitt
+candidate:app/book-cover-labels.mjs:1294:19,js-cjk-literal,app/book-cover-labels.mjs,1294,,unknown,reviewable,,第 1 卷 · 英譯本
+candidate:app/book-cover-labels.mjs:1297:16,js-cjk-literal,app/book-cover-labels.mjs,1297,,unknown,reviewable,,エセー
+candidate:app/book-cover-labels.mjs:1298:17,js-cjk-literal,app/book-cover-labels.mjs,1298,,unknown,reviewable,,ミシェル・ド・モンテーニュ · 英訳 Charles Cotton；編 W. C. Hazlitt
+candidate:app/book-cover-labels.mjs:1299:19,js-cjk-literal,app/book-cover-labels.mjs,1299,,unknown,reviewable,,第 1 巻 · 英訳本文
+candidate:app/book-cover-labels.mjs:1309:16,js-cjk-literal,app/book-cover-labels.mjs,1309,,unknown,reviewable,,蒙田随笔
+candidate:app/book-cover-labels.mjs:1310:17,js-cjk-literal,app/book-cover-labels.mjs,1310,,unknown,reviewable,,米歇尔·德·蒙田 · 英译 Charles Cotton；编者 W. C. Hazlitt
+candidate:app/book-cover-labels.mjs:1311:19,js-cjk-literal,app/book-cover-labels.mjs,1311,,unknown,reviewable,,第 2 卷 · 英译本
+candidate:app/book-cover-labels.mjs:1314:16,js-cjk-literal,app/book-cover-labels.mjs,1314,,unknown,reviewable,,蒙田隨筆
+candidate:app/book-cover-labels.mjs:1315:17,js-cjk-literal,app/book-cover-labels.mjs,1315,,unknown,reviewable,,米歇爾·德·蒙田 · 英譯 Charles Cotton；編者 W. C. Hazlitt
+candidate:app/book-cover-labels.mjs:1316:19,js-cjk-literal,app/book-cover-labels.mjs,1316,,unknown,reviewable,,第 2 卷 · 英譯本
+candidate:app/book-cover-labels.mjs:1319:16,js-cjk-literal,app/book-cover-labels.mjs,1319,,unknown,reviewable,,エセー
+candidate:app/book-cover-labels.mjs:1320:17,js-cjk-literal,app/book-cover-labels.mjs,1320,,unknown,reviewable,,ミシェル・ド・モンテーニュ · 英訳 Charles Cotton；編 W. C. Hazlitt
+candidate:app/book-cover-labels.mjs:1321:19,js-cjk-literal,app/book-cover-labels.mjs,1321,,unknown,reviewable,,第 2 巻 · 英訳本文
+candidate:app/book-cover-labels.mjs:1331:16,js-cjk-literal,app/book-cover-labels.mjs,1331,,unknown,reviewable,,蒙田随笔
+candidate:app/book-cover-labels.mjs:1332:17,js-cjk-literal,app/book-cover-labels.mjs,1332,,unknown,reviewable,,米歇尔·德·蒙田 · 英译 Charles Cotton；编者 W. C. Hazlitt
+candidate:app/book-cover-labels.mjs:1333:19,js-cjk-literal,app/book-cover-labels.mjs,1333,,unknown,reviewable,,第 3 卷 · 英译本
+candidate:app/book-cover-labels.mjs:1336:16,js-cjk-literal,app/book-cover-labels.mjs,1336,,unknown,reviewable,,蒙田隨筆
+candidate:app/book-cover-labels.mjs:1337:17,js-cjk-literal,app/book-cover-labels.mjs,1337,,unknown,reviewable,,米歇爾·德·蒙田 · 英譯 Charles Cotton；編者 W. C. Hazlitt
+candidate:app/book-cover-labels.mjs:1338:19,js-cjk-literal,app/book-cover-labels.mjs,1338,,unknown,reviewable,,第 3 卷 · 英譯本
+candidate:app/book-cover-labels.mjs:1341:16,js-cjk-literal,app/book-cover-labels.mjs,1341,,unknown,reviewable,,エセー
+candidate:app/book-cover-labels.mjs:1342:17,js-cjk-literal,app/book-cover-labels.mjs,1342,,unknown,reviewable,,ミシェル・ド・モンテーニュ · 英訳 Charles Cotton；編 W. C. Hazlitt
+candidate:app/book-cover-labels.mjs:1343:19,js-cjk-literal,app/book-cover-labels.mjs,1343,,unknown,reviewable,,第 3 巻 · 英訳本文
+candidate:app/book-cover-labels.mjs:1353:16,js-cjk-literal,app/book-cover-labels.mjs,1353,,unknown,reviewable,,作为意志和表象的世界
+candidate:app/book-cover-labels.mjs:1354:17,js-cjk-literal,app/book-cover-labels.mjs,1354,,unknown,reviewable,,阿图尔·叔本华 · 英译 R. B. Haldane 与 J. Kemp
+candidate:app/book-cover-labels.mjs:1355:19,js-cjk-literal,app/book-cover-labels.mjs,1355,,unknown,reviewable,,英译第 1 册 · 共 3 册
+candidate:app/book-cover-labels.mjs:1358:16,js-cjk-literal,app/book-cover-labels.mjs,1358,,unknown,reviewable,,作為意志和表象的世界
+candidate:app/book-cover-labels.mjs:1359:17,js-cjk-literal,app/book-cover-labels.mjs,1359,,unknown,reviewable,,阿圖爾·叔本華 · 英譯 R. B. Haldane 與 J. Kemp
+candidate:app/book-cover-labels.mjs:1360:19,js-cjk-literal,app/book-cover-labels.mjs,1360,,unknown,reviewable,,英譯第 1 冊 · 共 3 冊
+candidate:app/book-cover-labels.mjs:1363:16,js-cjk-literal,app/book-cover-labels.mjs,1363,,unknown,reviewable,,意志と表象としての世界
+candidate:app/book-cover-labels.mjs:1364:17,js-cjk-literal,app/book-cover-labels.mjs,1364,,unknown,reviewable,,アルトゥール・ショーペンハウアー · 英訳 R. B. Haldane & J. Kemp
+candidate:app/book-cover-labels.mjs:1365:19,js-cjk-literal,app/book-cover-labels.mjs,1365,,unknown,reviewable,,英訳版・第 1 冊（全 3 冊）
+candidate:app/book-cover-labels.mjs:1375:16,js-cjk-literal,app/book-cover-labels.mjs,1375,,unknown,reviewable,,作为意志和表象的世界
+candidate:app/book-cover-labels.mjs:1376:17,js-cjk-literal,app/book-cover-labels.mjs,1376,,unknown,reviewable,,阿图尔·叔本华 · 英译 R. B. Haldane 与 J. Kemp
+candidate:app/book-cover-labels.mjs:1377:19,js-cjk-literal,app/book-cover-labels.mjs,1377,,unknown,reviewable,,英译第 2 册 · 共 3 册
+candidate:app/book-cover-labels.mjs:1380:16,js-cjk-literal,app/book-cover-labels.mjs,1380,,unknown,reviewable,,作為意志和表象的世界
+candidate:app/book-cover-labels.mjs:1381:17,js-cjk-literal,app/book-cover-labels.mjs,1381,,unknown,reviewable,,阿圖爾·叔本華 · 英譯 R. B. Haldane 與 J. Kemp
+candidate:app/book-cover-labels.mjs:1382:19,js-cjk-literal,app/book-cover-labels.mjs,1382,,unknown,reviewable,,英譯第 2 冊 · 共 3 冊
+candidate:app/book-cover-labels.mjs:1385:16,js-cjk-literal,app/book-cover-labels.mjs,1385,,unknown,reviewable,,意志と表象としての世界
+candidate:app/book-cover-labels.mjs:1386:17,js-cjk-literal,app/book-cover-labels.mjs,1386,,unknown,reviewable,,アルトゥール・ショーペンハウアー · 英訳 R. B. Haldane & J. Kemp
+candidate:app/book-cover-labels.mjs:1387:19,js-cjk-literal,app/book-cover-labels.mjs,1387,,unknown,reviewable,,英訳版・第 2 冊（全 3 冊）
+candidate:app/book-cover-labels.mjs:1397:16,js-cjk-literal,app/book-cover-labels.mjs,1397,,unknown,reviewable,,作为意志和表象的世界
+candidate:app/book-cover-labels.mjs:1398:17,js-cjk-literal,app/book-cover-labels.mjs,1398,,unknown,reviewable,,阿图尔·叔本华 · 英译 R. B. Haldane 与 J. Kemp
+candidate:app/book-cover-labels.mjs:1399:19,js-cjk-literal,app/book-cover-labels.mjs,1399,,unknown,reviewable,,英译第 3 册 · 共 3 册
+candidate:app/book-cover-labels.mjs:1402:16,js-cjk-literal,app/book-cover-labels.mjs,1402,,unknown,reviewable,,作為意志和表象的世界
+candidate:app/book-cover-labels.mjs:1403:17,js-cjk-literal,app/book-cover-labels.mjs,1403,,unknown,reviewable,,阿圖爾·叔本華 · 英譯 R. B. Haldane 與 J. Kemp
+candidate:app/book-cover-labels.mjs:1404:19,js-cjk-literal,app/book-cover-labels.mjs,1404,,unknown,reviewable,,英譯第 3 冊 · 共 3 冊
+candidate:app/book-cover-labels.mjs:1407:16,js-cjk-literal,app/book-cover-labels.mjs,1407,,unknown,reviewable,,意志と表象としての世界
+candidate:app/book-cover-labels.mjs:1408:17,js-cjk-literal,app/book-cover-labels.mjs,1408,,unknown,reviewable,,アルトゥール・ショーペンハウアー · 英訳 R. B. Haldane & J. Kemp
+candidate:app/book-cover-labels.mjs:1409:19,js-cjk-literal,app/book-cover-labels.mjs,1409,,unknown,reviewable,,英訳版・第 3 冊（全 3 冊）
+candidate:app/book-cover-ui.mjs:23:146,js-attribute,app/book-cover-ui.mjs,23,aria-hidden,unknown,reviewable,,true
+candidate:app/book-gift.html:22:48,html-attribute,app/book-gift.html,22,aria-label,unknown,reviewable,,Leafhour home
+candidate:app/book-gift.html:23:248,html-attribute,app/book-gift.html,23,aria-label,unknown,reviewable,,Page appearance
+candidate:app/book-gift.html:51:177,html-attribute,app/book-gift.html,51,aria-label,unknown,reviewable,,Fold the letter
 candidate:app/book-gift.html:9:10,html-text,app/book-gift.html,9,,unknown,reviewable,,"A book, with a letter · Leafhour"
-candidate:app/book-gift.html:19:62,html-text,app/book-gift.html,19,,unknown,reviewable,,Open the book letter
-candidate:app/book-gift.html:21:349,html-text,app/book-gift.html,21,,unknown,reviewable,,Leafhour
-candidate:app/book-gift.html:22:131,html-text,app/book-gift.html,22,,unknown,reviewable,,Search and commands
-candidate:app/book-gift.html:22:306,html-text,app/book-gift.html,22,,unknown,reviewable,,◐
-candidate:app/book-gift.html:22:358,html-text,app/book-gift.html,22,,unknown,reviewable,,My reading room
-candidate:app/book-gift.html:25:142,html-text,app/book-gift.html,25,,unknown,reviewable,,Opening your letter…
-candidate:app/book-gift.html:27:54,html-text,app/book-gift.html,27,,unknown,reviewable,,"A book, with a letter"
-candidate:app/book-gift.html:27:131,html-text,app/book-gift.html,27,,unknown,reviewable,,This letter cannot be opened right now
-candidate:app/book-gift.html:28:133,html-text,app/book-gift.html,28,,unknown,reviewable,,Try again
-candidate:app/book-gift.html:28:197,html-text,app/book-gift.html,28,,unknown,reviewable,,Back to the reading room
-candidate:app/book-gift.html:30:123,html-text,app/book-gift.html,30,,unknown,reviewable,,sent you a letter
-candidate:app/book-gift.html:31:94,html-text,app/book-gift.html,31,,unknown,reviewable,,Recipient preview · No sharing link yet
-candidate:app/book-gift.html:37:83,html-text,app/book-gift.html,37,,unknown,reviewable,,"A note, just for you"
-candidate:app/book-gift.html:41:309,html-text,app/book-gift.html,41,,unknown,reviewable,,Leafhour
-candidate:app/book-gift.html:42:310,html-text,app/book-gift.html,42,,unknown,reviewable,,Leafhour
-candidate:app/book-gift.html:43:83,html-text,app/book-gift.html,43,,unknown,reviewable,,To
-candidate:app/book-gift.html:43:162,html-text,app/book-gift.html,43,,unknown,reviewable,,You
-candidate:app/book-gift.html:43:228,html-text,app/book-gift.html,43,,unknown,reviewable,,From
-candidate:app/book-gift.html:44:451,html-text,app/book-gift.html,44,,unknown,reviewable,,Open this letter
-candidate:app/book-gift.html:45:86,html-text,app/book-gift.html,45,,unknown,reviewable,,Between books
-candidate:app/book-gift.html:50:84,html-text,app/book-gift.html,50,,unknown,reviewable,,Leafhour
-candidate:app/book-gift.html:50:253,html-text,app/book-gift.html,50,,unknown,reviewable,,Fold the letter
-candidate:app/book-gift.html:50:301,html-text,app/book-gift.html,50,,unknown,reviewable,,⌃
-candidate:app/book-gift.html:59:87,html-text,app/book-gift.html,59,,unknown,reviewable,,This book is for you
-candidate:app/book-gift.html:64:128,html-text,app/book-gift.html,64,,unknown,reviewable,,Add to my shelf
-candidate:app/book-gift.html:64:176,html-text,app/book-gift.html,64,,unknown,reviewable,,↗
-candidate:app/book-gift.html:64:271,html-text,app/book-gift.html,64,,unknown,reviewable,,Open this book
-candidate:app/book-gift.html:64:318,html-text,app/book-gift.html,64,,unknown,reviewable,,↗
-candidate:app/book-gift.html:64:447,html-text,app/book-gift.html,64,,unknown,reviewable,,Download reading package
-candidate:app/book-gift.html:64:504,html-text,app/book-gift.html,64,,unknown,reviewable,,↓
-candidate:app/book-gift.html:64:597,html-text,app/book-gift.html,64,,unknown,reviewable,,Read a few pages
-candidate:app/book-gift.html:70:63,html-text,app/book-gift.html,70,,unknown,reviewable,,Enable JavaScript to open the book letter.
-candidate:app/book-gift.html:72:58,html-text,app/book-gift.html,72,,unknown,reviewable,,Leafhour
-candidate:app/book-gift.html:72:98,html-text,app/book-gift.html,72,,unknown,reviewable,,"A book, from one reader to another."
+candidate:app/book-gift.html:20:62,html-text,app/book-gift.html,20,,unknown,reviewable,,Open the book letter
+candidate:app/book-gift.html:22:349,html-text,app/book-gift.html,22,,unknown,reviewable,,Leafhour
+candidate:app/book-gift.html:23:131,html-text,app/book-gift.html,23,,unknown,reviewable,,Search and commands
+candidate:app/book-gift.html:23:306,html-text,app/book-gift.html,23,,unknown,reviewable,,◐
+candidate:app/book-gift.html:23:358,html-text,app/book-gift.html,23,,unknown,reviewable,,My reading room
+candidate:app/book-gift.html:26:142,html-text,app/book-gift.html,26,,unknown,reviewable,,Opening your letter…
+candidate:app/book-gift.html:28:54,html-text,app/book-gift.html,28,,unknown,reviewable,,"A book, with a letter"
+candidate:app/book-gift.html:28:131,html-text,app/book-gift.html,28,,unknown,reviewable,,This letter cannot be opened right now
+candidate:app/book-gift.html:29:133,html-text,app/book-gift.html,29,,unknown,reviewable,,Try again
+candidate:app/book-gift.html:29:197,html-text,app/book-gift.html,29,,unknown,reviewable,,Back to the reading room
+candidate:app/book-gift.html:31:123,html-text,app/book-gift.html,31,,unknown,reviewable,,sent you a letter
+candidate:app/book-gift.html:32:94,html-text,app/book-gift.html,32,,unknown,reviewable,,Recipient preview · No sharing link yet
+candidate:app/book-gift.html:38:83,html-text,app/book-gift.html,38,,unknown,reviewable,,"A note, just for you"
+candidate:app/book-gift.html:42:309,html-text,app/book-gift.html,42,,unknown,reviewable,,Leafhour
+candidate:app/book-gift.html:43:310,html-text,app/book-gift.html,43,,unknown,reviewable,,Leafhour
+candidate:app/book-gift.html:44:83,html-text,app/book-gift.html,44,,unknown,reviewable,,To
+candidate:app/book-gift.html:44:162,html-text,app/book-gift.html,44,,unknown,reviewable,,You
+candidate:app/book-gift.html:44:228,html-text,app/book-gift.html,44,,unknown,reviewable,,From
+candidate:app/book-gift.html:45:451,html-text,app/book-gift.html,45,,unknown,reviewable,,Open this letter
+candidate:app/book-gift.html:46:86,html-text,app/book-gift.html,46,,unknown,reviewable,,Between books
+candidate:app/book-gift.html:51:84,html-text,app/book-gift.html,51,,unknown,reviewable,,Leafhour
+candidate:app/book-gift.html:51:253,html-text,app/book-gift.html,51,,unknown,reviewable,,Fold the letter
+candidate:app/book-gift.html:51:301,html-text,app/book-gift.html,51,,unknown,reviewable,,⌃
+candidate:app/book-gift.html:60:87,html-text,app/book-gift.html,60,,unknown,reviewable,,This book is for you
+candidate:app/book-gift.html:65:128,html-text,app/book-gift.html,65,,unknown,reviewable,,Add to my shelf
+candidate:app/book-gift.html:65:176,html-text,app/book-gift.html,65,,unknown,reviewable,,↗
+candidate:app/book-gift.html:65:271,html-text,app/book-gift.html,65,,unknown,reviewable,,Open this book
+candidate:app/book-gift.html:65:318,html-text,app/book-gift.html,65,,unknown,reviewable,,↗
+candidate:app/book-gift.html:65:447,html-text,app/book-gift.html,65,,unknown,reviewable,,Download reading package
+candidate:app/book-gift.html:65:504,html-text,app/book-gift.html,65,,unknown,reviewable,,↓
+candidate:app/book-gift.html:65:597,html-text,app/book-gift.html,65,,unknown,reviewable,,Read a few pages
+candidate:app/book-gift.html:71:63,html-text,app/book-gift.html,71,,unknown,reviewable,,Enable JavaScript to open the book letter.
+candidate:app/book-gift.html:73:58,html-text,app/book-gift.html,73,,unknown,reviewable,,Leafhour
+candidate:app/book-gift.html:73:98,html-text,app/book-gift.html,73,,unknown,reviewable,,"A book, from one reader to another."
 candidate:app/book-gift.mjs:32:78,js-cjk-literal,app/book-gift.mjs,32,,unknown,reviewable,,赠书链接不完整，未下载阅读包。
 candidate:app/book-gift.mjs:37:416,js-cjk-literal,app/book-gift.mjs,37,,unknown,reviewable,,阅读包分段或版本无法对应，请重新下载。
 candidate:app/book-gift.mjs:39:164,js-cjk-literal,app/book-gift.mjs,39,,unknown,reviewable,,阅读包分段无法读取，请重新下载。
@@ -1334,19 +1915,18 @@ candidate:app/experiences.js:59:882,js-cjk-literal,app/experiences.js,59,,unknow
 candidate:app/experiences.js:68:92,js-cjk-literal,app/experiences.js,68,,unknown,reviewable,,请解释这段的论证与限定。
 candidate:app/experiences.js:73:132,js-cjk-literal,app/experiences.js,73,,unknown,reviewable,,解释标识无法对应当前请求
 candidate:app/experiences.js:94:429,js-cjk-literal,app/experiences.js,94,,unknown,reviewable,,记录包过大
-candidate:app/gift-compose.mjs:29:149,js-attribute,app/gift-compose.mjs,29,lang,unknown,reviewable,,und
-candidate:app/gift-compose.mjs:36:174,js-attribute,app/gift-compose.mjs,36,lang,unknown,reviewable,,und
-candidate:app/gift-compose.mjs:39:268,js-attribute,app/gift-compose.mjs,39,aria-describedby,unknown,protected,identifier,gift-message-help
-candidate:app/gift-compose.mjs:40:217,js-attribute,app/gift-compose.mjs,40,lang,unknown,reviewable,,und
-candidate:app/gift-compose.mjs:41:35,js-attribute,app/gift-compose.mjs,41,lang,unknown,reviewable,,und
-candidate:app/gift-compose.mjs:41:68,js-attribute,app/gift-compose.mjs,41,lang,unknown,reviewable,,und
-candidate:app/gift-compose.mjs:41:104,js-attribute,app/gift-compose.mjs,41,lang,unknown,reviewable,,und
-candidate:app/gift-compose.mjs:47:35,js-attribute,app/gift-compose.mjs,47,lang,unknown,reviewable,,und
-candidate:app/gift-compose.mjs:47:79,js-attribute,app/gift-compose.mjs,47,aria-live,unknown,reviewable,,polite
-candidate:app/gift-compose.mjs:61:223,js-attribute,app/gift-compose.mjs,61,lang,unknown,reviewable,,und
-candidate:app/gift-compose.mjs:86:309,js-attribute,app/gift-compose.mjs,86,aria-current,unknown,reviewable,,step
-candidate:app/gift-compose.mjs:124:78,js-attribute,app/gift-compose.mjs,124,aria-busy,unknown,reviewable,,true
-candidate:app/gift-compose.mjs:152:184,js-attribute,app/gift-compose.mjs,152,aria-busy,unknown,reviewable,,true
+candidate:app/gift-compose.mjs:30:149,js-attribute,app/gift-compose.mjs,30,lang,unknown,reviewable,,und
+candidate:app/gift-compose.mjs:40:268,js-attribute,app/gift-compose.mjs,40,aria-describedby,unknown,protected,identifier,gift-message-help
+candidate:app/gift-compose.mjs:41:217,js-attribute,app/gift-compose.mjs,41,lang,unknown,reviewable,,und
+candidate:app/gift-compose.mjs:42:35,js-attribute,app/gift-compose.mjs,42,lang,unknown,reviewable,,und
+candidate:app/gift-compose.mjs:42:68,js-attribute,app/gift-compose.mjs,42,lang,unknown,reviewable,,und
+candidate:app/gift-compose.mjs:42:104,js-attribute,app/gift-compose.mjs,42,lang,unknown,reviewable,,und
+candidate:app/gift-compose.mjs:48:35,js-attribute,app/gift-compose.mjs,48,lang,unknown,reviewable,,und
+candidate:app/gift-compose.mjs:48:79,js-attribute,app/gift-compose.mjs,48,aria-live,unknown,reviewable,,polite
+candidate:app/gift-compose.mjs:62:223,js-attribute,app/gift-compose.mjs,62,lang,unknown,reviewable,,und
+candidate:app/gift-compose.mjs:87:309,js-attribute,app/gift-compose.mjs,87,aria-current,unknown,reviewable,,step
+candidate:app/gift-compose.mjs:125:78,js-attribute,app/gift-compose.mjs,125,aria-busy,unknown,reviewable,,true
+candidate:app/gift-compose.mjs:153:184,js-attribute,app/gift-compose.mjs,153,aria-busy,unknown,reviewable,,true
 candidate:app/gift-identity.mjs:4:108,js-cjk-literal,app/gift-identity.mjs,4,,unknown,reviewable,,一位读者
 candidate:app/gift-preview.mjs:19:190,js-cjk-literal,app/gift-preview.mjs,19,,unknown,reviewable,,一位读者
 candidate:app/gift-quote.mjs:5:71,js-cjk-literal,app/gift-quote.mjs,5,,unknown,reviewable,,从这本书的原文中由 AI 选出
@@ -2160,189 +2740,189 @@ candidate:app/home-sample.mjs:32:32,js-cjk-literal,app/home-sample.mjs,32,,unkno
 candidate:app/home-sample.mjs:32:78,js-cjk-literal,app/home-sample.mjs,32,,unknown,reviewable,,譯文語言
 candidate:app/home-sample.mjs:32:88,js-cjk-literal,app/home-sample.mjs,32,,unknown,reviewable,,訳文の言語
 candidate:app/home-sample.mjs:33:64,js-attribute,app/home-sample.mjs,33,role,unknown,reviewable,,group
-candidate:app/home.html:32:68,html-attribute,app/home.html,32,aria-label,unknown,reviewable,,Leafhour 首页
-candidate:app/home.html:32:511,html-attribute,app/home.html,32,aria-label,unknown,reviewable,,收起侧栏
-candidate:app/home.html:33:74,html-attribute,app/home.html,33,aria-label,unknown,reviewable,,主导航
-candidate:app/home.html:33:415,html-attribute,app/home.html,33,aria-label,unknown,reviewable,,GitHub
-candidate:app/home.html:35:128,html-attribute,app/home.html,35,aria-label,unknown,reviewable,,搜索与命令
-candidate:app/home.html:36:41,html-attribute,app/home.html,36,aria-label,unknown,reviewable,,书籍筛选
-candidate:app/home.html:39:135,html-attribute,app/home.html,39,aria-label,unknown,reviewable,,回收站
-candidate:app/home.html:40:256,html-attribute,app/home.html,40,aria-label,unknown,reviewable,,打开导航菜单
-candidate:app/home.html:46:78,html-attribute,app/home.html,46,aria-label,unknown,reviewable,,暂停光影
-candidate:app/home.html:49:501,html-attribute,app/home.html,49,aria-label,unknown,reviewable,,打开爱丽丝梦游仙境
-candidate:app/home.html:61:73,html-attribute,app/home.html,61,aria-label,unknown,reviewable,,Leafhour 首页
-candidate:app/home.html:61:551,html-attribute,app/home.html,61,aria-label,unknown,reviewable,,打开书房导航
-candidate:app/home.html:63:53,html-attribute,app/home.html,63,aria-label,unknown,reviewable,,筛选书架
-candidate:app/home.html:65:101,html-attribute,app/home.html,65,aria-label,unknown,reviewable,,阅读状态
-candidate:app/home.html:66:276,html-attribute,app/home.html,66,placeholder,unknown,reviewable,,搜索书名或作者
-candidate:app/home.html:66:413,html-attribute,app/home.html,66,aria-label,unknown,reviewable,,清空搜索
-candidate:app/home.html:66:564,html-attribute,app/home.html,66,aria-label,unknown,reviewable,,筛选书籍
-candidate:app/home.html:72:77,html-attribute,app/home.html,72,aria-label,unknown,reviewable,,阅读习惯
-candidate:app/home.html:73:308,html-attribute,app/home.html,73,aria-label,unknown,reviewable,,每日陪读纸条
-candidate:app/home.html:73:395,html-attribute,app/home.html,73,aria-label,unknown,reviewable,,书架
-candidate:app/home.html:73:889,html-attribute,app/home.html,73,aria-label,unknown,reviewable,,阅读近况
-candidate:app/home.html:76:607,html-attribute,app/home.html,76,aria-label,unknown,reviewable,,切换页面外观
-candidate:app/home.html:77:83,html-attribute,app/home.html,77,aria-label,unknown,reviewable,,阅读日历
-candidate:app/home.html:78:82,html-attribute,app/home.html,78,aria-label,unknown,reviewable,,书房导航
-candidate:app/home.html:82:101,html-attribute,app/home.html,82,aria-label,unknown,reviewable,,关闭登录
-candidate:app/home.html:87:185,html-attribute,app/home.html,87,placeholder,unknown,reviewable,,you@example.com
-candidate:app/home.html:88:383,html-attribute,app/home.html,88,aria-label,unknown,reviewable,,显示登录密码
-candidate:app/home.html:97:418,html-attribute,app/home.html,97,aria-label,unknown,reviewable,,显示新密码
-candidate:app/home.html:101:116,html-attribute,app/home.html,101,aria-label,unknown,reviewable,,使用 Google 登录
-candidate:app/home.html:102:114,html-attribute,app/home.html,102,aria-label,unknown,reviewable,,使用 Apple 登录
-candidate:app/home.html:107:159,html-attribute,app/home.html,107,aria-label,unknown,reviewable,,关闭上传
-candidate:app/home.html:107:351,html-attribute,app/home.html,107,aria-label,unknown,reviewable,,选择 PDF、EPUB、TXT 或 Markdown 文件
-candidate:app/home.html:109:98,html-attribute,app/home.html,109,aria-label,unknown,reviewable,,关闭菜单
-candidate:app/home.html:111:95,html-attribute,app/home.html,111,aria-label,unknown,reviewable,,主导航
-candidate:app/home.html:112:102,html-attribute,app/home.html,112,aria-label,unknown,reviewable,,切换界面语言
+candidate:app/home.html:33:68,html-attribute,app/home.html,33,aria-label,unknown,reviewable,,Leafhour 首页
+candidate:app/home.html:33:511,html-attribute,app/home.html,33,aria-label,unknown,reviewable,,收起侧栏
+candidate:app/home.html:34:74,html-attribute,app/home.html,34,aria-label,unknown,reviewable,,主导航
+candidate:app/home.html:34:415,html-attribute,app/home.html,34,aria-label,unknown,reviewable,,GitHub
+candidate:app/home.html:36:128,html-attribute,app/home.html,36,aria-label,unknown,reviewable,,搜索与命令
+candidate:app/home.html:37:41,html-attribute,app/home.html,37,aria-label,unknown,reviewable,,书籍筛选
+candidate:app/home.html:40:135,html-attribute,app/home.html,40,aria-label,unknown,reviewable,,回收站
+candidate:app/home.html:41:256,html-attribute,app/home.html,41,aria-label,unknown,reviewable,,打开导航菜单
+candidate:app/home.html:47:78,html-attribute,app/home.html,47,aria-label,unknown,reviewable,,暂停光影
+candidate:app/home.html:50:501,html-attribute,app/home.html,50,aria-label,unknown,reviewable,,打开爱丽丝梦游仙境
+candidate:app/home.html:62:73,html-attribute,app/home.html,62,aria-label,unknown,reviewable,,Leafhour 首页
+candidate:app/home.html:62:551,html-attribute,app/home.html,62,aria-label,unknown,reviewable,,打开书房导航
+candidate:app/home.html:64:53,html-attribute,app/home.html,64,aria-label,unknown,reviewable,,筛选书架
+candidate:app/home.html:66:101,html-attribute,app/home.html,66,aria-label,unknown,reviewable,,阅读状态
+candidate:app/home.html:67:276,html-attribute,app/home.html,67,placeholder,unknown,reviewable,,搜索书名或作者
+candidate:app/home.html:67:413,html-attribute,app/home.html,67,aria-label,unknown,reviewable,,清空搜索
+candidate:app/home.html:67:564,html-attribute,app/home.html,67,aria-label,unknown,reviewable,,筛选书籍
+candidate:app/home.html:73:77,html-attribute,app/home.html,73,aria-label,unknown,reviewable,,阅读习惯
+candidate:app/home.html:74:308,html-attribute,app/home.html,74,aria-label,unknown,reviewable,,每日陪读纸条
+candidate:app/home.html:74:395,html-attribute,app/home.html,74,aria-label,unknown,reviewable,,书架
+candidate:app/home.html:74:889,html-attribute,app/home.html,74,aria-label,unknown,reviewable,,阅读近况
+candidate:app/home.html:77:607,html-attribute,app/home.html,77,aria-label,unknown,reviewable,,切换页面外观
+candidate:app/home.html:78:83,html-attribute,app/home.html,78,aria-label,unknown,reviewable,,阅读日历
+candidate:app/home.html:79:82,html-attribute,app/home.html,79,aria-label,unknown,reviewable,,书房导航
+candidate:app/home.html:83:101,html-attribute,app/home.html,83,aria-label,unknown,reviewable,,关闭登录
+candidate:app/home.html:88:185,html-attribute,app/home.html,88,placeholder,unknown,reviewable,,you@example.com
+candidate:app/home.html:89:383,html-attribute,app/home.html,89,aria-label,unknown,reviewable,,显示登录密码
+candidate:app/home.html:98:418,html-attribute,app/home.html,98,aria-label,unknown,reviewable,,显示新密码
+candidate:app/home.html:102:116,html-attribute,app/home.html,102,aria-label,unknown,reviewable,,使用 Google 登录
+candidate:app/home.html:103:114,html-attribute,app/home.html,103,aria-label,unknown,reviewable,,使用 Apple 登录
+candidate:app/home.html:108:159,html-attribute,app/home.html,108,aria-label,unknown,reviewable,,关闭上传
+candidate:app/home.html:108:351,html-attribute,app/home.html,108,aria-label,unknown,reviewable,,选择 PDF、EPUB、TXT 或 Markdown 文件
+candidate:app/home.html:110:98,html-attribute,app/home.html,110,aria-label,unknown,reviewable,,关闭菜单
+candidate:app/home.html:112:95,html-attribute,app/home.html,112,aria-label,unknown,reviewable,,主导航
+candidate:app/home.html:113:102,html-attribute,app/home.html,113,aria-label,unknown,reviewable,,切换界面语言
 candidate:app/home.html:12:10,html-text,app/home.html,12,,unknown,reviewable,,Leafhour — AI 辅助的私人阅读书房
-candidate:app/home.html:30:30,html-text,app/home.html,30,,unknown,reviewable,,跳到正文
-candidate:app/home.html:32:402,html-text,app/home.html,32,,unknown,reviewable,,Leafhour
-candidate:app/home.html:33:132,html-text,app/home.html,33,,unknown,reviewable,,阅读的方法
-candidate:app/home.html:33:216,html-text,app/home.html,33,,unknown,reviewable,,Agent 接入
-candidate:app/home.html:33:321,html-text,app/home.html,33,,unknown,reviewable,,价格
-candidate:app/home.html:33:1339,html-text,app/home.html,33,,unknown,reviewable,,GitHub
-candidate:app/home.html:35:232,html-text,app/home.html,35,,unknown,reviewable,,搜索与命令
-candidate:app/home.html:36:203,html-text,app/home.html,36,,unknown,reviewable,,我的书房
-candidate:app/home.html:36:452,html-text,app/home.html,36,,unknown,reviewable,,我上传的
-candidate:app/home.html:37:183,html-text,app/home.html,37,,unknown,reviewable,,阅读日历
-candidate:app/home.html:37:410,html-text,app/home.html,37,,unknown,reviewable,,我的笔记
-candidate:app/home.html:37:579,html-text,app/home.html,37,,unknown,reviewable,,阅读对话
-candidate:app/home.html:37:735,html-text,app/home.html,37,,unknown,reviewable,,带来一本书
-candidate:app/home.html:39:220,html-text,app/home.html,39,,unknown,reviewable,,回收站
-candidate:app/home.html:39:406,html-text,app/home.html,39,,unknown,reviewable,,设置
-candidate:app/home.html:40:52,html-text,app/home.html,40,,unknown,reviewable,,登录 / 注册
-candidate:app/home.html:40:85,html-text,app/home.html,40,,unknown,reviewable,,↗
-candidate:app/home.html:46:145,html-text,app/home.html,46,,unknown,reviewable,,光影
-candidate:app/home.html:48:66,html-text,app/home.html,48,,unknown,reviewable,,Stay with
-candidate:app/home.html:48:106,html-text,app/home.html,48,,unknown,reviewable,,a book.
-candidate:app/home.html:48:153,html-text,app/home.html,48,,unknown,reviewable,,留一点时间，读进一本书。
-candidate:app/home.html:48:192,html-text,app/home.html,48,,unknown,reviewable,,原文、译文和自己的思考，
-candidate:app/home.html:48:208,html-text,app/home.html,48,,unknown,reviewable,,各有自己的位置。
-candidate:app/home.html:48:299,html-text,app/home.html,48,,unknown,reviewable,,先读几页
-candidate:app/home.html:48:329,html-text,app/home.html,48,,unknown,reviewable,,→
-candidate:app/home.html:48:372,html-text,app/home.html,48,,unknown,reviewable,,公版书可直接试读。登录后保存自己的书与记录。
-candidate:app/home.html:49:89,html-text,app/home.html,49,,unknown,reviewable,,LEWIS CARROLL
-candidate:app/home.html:49:115,html-text,app/home.html,49,,unknown,reviewable,,《爱丽丝梦游仙境》· 阅读示例
-candidate:app/home.html:49:180,html-text,app/home.html,49,,unknown,protected,quotation,"“What is the use of a book,” thought Alice, “without pictures or conversations?”"
-candidate:app/home.html:49:302,html-text,app/home.html,49,,unknown,reviewable,,中文意译 · 页面示例
-candidate:app/home.html:49:338,html-text,app/home.html,49,,unknown,protected,quotation,“一本书如果没有图画，也没有对话，那有什么用呢？”爱丽丝想。
-candidate:app/home.html:49:433,html-text,app/home.html,49,,unknown,reviewable,,读到这里，你想起了什么？
-candidate:app/home.html:49:512,html-text,app/home.html,49,,unknown,reviewable,,↗
-candidate:app/home.html:51:85,html-text,app/home.html,51,,unknown,reviewable,,读过之后，
-candidate:app/home.html:51:94,html-text,app/home.html,51,,unknown,reviewable,,留一点自己的理解。
-candidate:app/home.html:51:111,html-text,app/home.html,51,,unknown,reviewable,,在一句话旁边停一停，用自己的话记下理解。还没想通的，就先留成问题，下一次回到原页。
-candidate:app/home.html:51:173,html-text,app/home.html,51,,unknown,reviewable,,遇见难句，可以对照原文、直译与意译。AI 译文标为草稿；没有译文的地方，原文始终保留。
-candidate:app/home.html:51:275,html-text,app/home.html,51,,unknown,reviewable,,打开这本书
-candidate:app/home.html:51:306,html-text,app/home.html,51,,unknown,reviewable,,→
-candidate:app/home.html:52:92,html-text,app/home.html,52,,unknown,reviewable,,选一本书
-candidate:app/home.html:52:178,html-text,app/home.html,52,,unknown,reviewable,,正在载入书架…
-candidate:app/home.html:52:219,html-text,app/home.html,52,,unknown,reviewable,,默认书籍来自 Project Gutenberg，原文在美国属于公版；各书保留来源和许可说明，使用时请核对所在地规则。
-candidate:app/home.html:53:62,html-text,app/home.html,53,,unknown,reviewable,,一本书，
-candidate:app/home.html:53:70,html-text,app/home.html,53,,unknown,reviewable,,一间自己的书房。
-candidate:app/home.html:53:120,html-text,app/home.html,53,,unknown,reviewable,,带来自己的 PDF、EPUB、Markdown 或纯文本。原文和译文各自保留，你写下的笔记也有自己的位置。
-candidate:app/home.html:53:180,html-text,app/home.html,53,,unknown,reviewable,,Leafhour 以 AGPL-3.0 开源，可在本地运行或自行托管。
-candidate:app/home.html:54:119,html-text,app/home.html,54,,unknown,reviewable,,开始之前，你也许想知道。
-candidate:app/home.html:55:23,html-text,app/home.html,55,,unknown,reviewable,,可以导入哪些格式？
-candidate:app/home.html:55:45,html-text,app/home.html,55,,unknown,reviewable,,目前支持 PDF、EPUB、Markdown（.md）和纯文本（.txt）。PDF 提取的文字需要与原稿核对；扫描页会在你确认后自动识别。EPUB 按内置阅读顺序提取，暂不支持加密或 DRM 版本。
-candidate:app/home.html:56:23,html-text,app/home.html,56,,unknown,reviewable,,书籍与记录可以带走吗？
-candidate:app/home.html:56:47,html-text,app/home.html,56,,unknown,protected,quotation,服务支持整库导出和恢复，不要求订阅。登录后在书房“设置 → 数据与迁移”下载 ZIP 备份、恢复书房或导出选定记录，原文件可自行选择是否纳入。未同步的记录与草稿仍留在原浏览器，处理方式见
-candidate:app/home.html:56:160,html-text,app/home.html,56,,unknown,reviewable,,隐私与数据说明
-candidate:app/home.html:56:171,html-text,app/home.html,56,,unknown,reviewable,,。
-candidate:app/home.html:57:23,html-text,app/home.html,57,,unknown,reviewable,,使用 AI 和朋友共读有哪些限制？
-candidate:app/home.html:57:53,html-text,app/home.html,57,,unknown,reviewable,,直接阅读公版样书不需要调用模型。翻译与对话需要配置模型服务，自托管时由运营者承担供应商费用。赠书信可以分享所选阅读材料；在线好友的实时共读仍是后续设想。
-candidate:app/home.html:61:407,html-text,app/home.html,61,,unknown,reviewable,,Leafhour
-candidate:app/home.html:62:49,html-text,app/home.html,62,,unknown,reviewable,,我的书房
-candidate:app/home.html:62:156,html-text,app/home.html,62,,unknown,reviewable,,自己的书与阅读记录。
-candidate:app/home.html:62:211,html-text,app/home.html,62,,unknown,reviewable,,拖动整本书调整位置，触屏可长按后移动。键盘聚焦调整位置按钮后使用左右方向键；更多操作中也可向前或向后移动。
-candidate:app/home.html:65:175,html-text,app/home.html,65,,unknown,reviewable,,全部
-candidate:app/home.html:65:259,html-text,app/home.html,65,,unknown,reviewable,,在读
-candidate:app/home.html:65:342,html-text,app/home.html,65,,unknown,reviewable,,未读
-candidate:app/home.html:65:427,html-text,app/home.html,65,,unknown,reviewable,,读完
-candidate:app/home.html:66:174,html-text,app/home.html,66,,unknown,reviewable,,搜索书名或作者
-candidate:app/home.html:66:426,html-text,app/home.html,66,,unknown,reviewable,,×
-candidate:app/home.html:66:676,html-text,app/home.html,66,,unknown,reviewable,,筛选
-candidate:app/home.html:68:237,html-text,app/home.html,68,,unknown,reviewable,,清除筛选
-candidate:app/home.html:69:177,html-text,app/home.html,69,,unknown,reviewable,,筛选书籍
-candidate:app/home.html:69:293,html-text,app/home.html,69,,unknown,reviewable,,主题
-candidate:app/home.html:69:348,html-text,app/home.html,69,,unknown,reviewable,,全部主题
-candidate:app/home.html:69:484,html-text,app/home.html,69,,unknown,reviewable,,来源
-candidate:app/home.html:69:540,html-text,app/home.html,69,,unknown,reviewable,,全部来源
-candidate:app/home.html:69:576,html-text,app/home.html,69,,unknown,reviewable,,内置书
-candidate:app/home.html:69:612,html-text,app/home.html,69,,unknown,reviewable,,我上传的
-candidate:app/home.html:69:753,html-text,app/home.html,69,,unknown,reviewable,,阅读语言
-candidate:app/home.html:69:813,html-text,app/home.html,69,,unknown,reviewable,,全部阅读语言
-candidate:app/home.html:69:948,html-text,app/home.html,69,,unknown,reviewable,,阅读形态
-candidate:app/home.html:69:1004,html-text,app/home.html,69,,unknown,reviewable,,全部形态
-candidate:app/home.html:69:1042,html-text,app/home.html,69,,unknown,reviewable,,原版
-candidate:app/home.html:69:1080,html-text,app/home.html,69,,unknown,reviewable,,有译本
-candidate:app/home.html:69:1118,html-text,app/home.html,69,,unknown,reviewable,,双语对照
-candidate:app/home.html:69:1204,html-text,app/home.html,69,,unknown,reviewable,,有译本也可能只有部分段落，缺译处保留原文。
-candidate:app/home.html:71:125,html-text,app/home.html,71,,unknown,reviewable,,重新打开书房
-candidate:app/home.html:72:94,html-text,app/home.html,72,,unknown,reviewable,,设置阅读习惯
-candidate:app/home.html:72:108,html-text,app/home.html,72,,unknown,reviewable,,选好新书默认的阅读方式、译文与文字，之后打开的新书都从这里开始。每本书自己的选择仍然保留。
-candidate:app/home.html:72:254,html-text,app/home.html,72,,unknown,reviewable,,设置阅读习惯
-candidate:app/home.html:72:333,html-text,app/home.html,72,,unknown,reviewable,,暂不设置
-candidate:app/home.html:73:219,html-text,app/home.html,73,,unknown,reviewable,,正在打开书房…
-candidate:app/home.html:73:427,html-text,app/home.html,73,,unknown,reviewable,,书架上的其他书
-candidate:app/home.html:73:623,html-text,app/home.html,73,,unknown,reviewable,,还没有自己的书
-candidate:app/home.html:73:638,html-text,app/home.html,73,,unknown,reviewable,,带来一份 PDF、EPUB、TXT 或 Markdown。
-candidate:app/home.html:73:727,html-text,app/home.html,73,,unknown,reviewable,,带来第一本书
-candidate:app/home.html:73:806,html-text,app/home.html,73,,unknown,reviewable,,清空搜索
-candidate:app/home.html:76:376,html-text,app/home.html,76,,unknown,reviewable,,Leafhour
-candidate:app/home.html:76:408,html-text,app/home.html,76,,unknown,reviewable,,Stay with a book.
-candidate:app/home.html:76:444,html-text,app/home.html,76,,unknown,reviewable,,MCP 接入指南
-candidate:app/home.html:76:475,html-text,app/home.html,76,,unknown,reviewable,,隐私说明
-candidate:app/home.html:76:528,html-text,app/home.html,76,,unknown,reviewable,,GitHub
-candidate:app/home.html:76:615,html-text,app/home.html,76,,unknown,reviewable,,◐
-candidate:app/home.html:82:107,html-text,app/home.html,82,,unknown,reviewable,,×
-candidate:app/home.html:83:297,html-text,app/home.html,83,,unknown,reviewable,,Leafhour
-candidate:app/home.html:84:23,html-text,app/home.html,84,,unknown,reviewable,,回到你的书房
-candidate:app/home.html:84:53,html-text,app/home.html,84,,unknown,reviewable,,从上次停下的地方继续。
-candidate:app/home.html:87:53,html-text,app/home.html,87,,unknown,reviewable,,邮箱
-candidate:app/home.html:88:122,html-text,app/home.html,88,,unknown,reviewable,,密码
-candidate:app/home.html:88:412,html-text,app/home.html,88,,unknown,reviewable,,显示
-candidate:app/home.html:89:69,html-text,app/home.html,89,,unknown,reviewable,,进入书房
-candidate:app/home.html:93:143,html-text,app/home.html,93,,unknown,reviewable,,更换邮箱
-candidate:app/home.html:94:78,html-text,app/home.html,94,,unknown,reviewable,,登录验证码
-candidate:app/home.html:94:325,html-text,app/home.html,94,,unknown,reviewable,,进入书房
-candidate:app/home.html:95:122,html-text,app/home.html,95,,unknown,reviewable,,重新发送
-candidate:app/home.html:97:126,html-text,app/home.html,97,,unknown,reviewable,,新密码
-candidate:app/home.html:97:446,html-text,app/home.html,97,,unknown,reviewable,,显示
-candidate:app/home.html:97:518,html-text,app/home.html,97,,unknown,reviewable,,至少 8 个字符。
-candidate:app/home.html:97:588,html-text,app/home.html,97,,unknown,reviewable,,保存并进入书房
-candidate:app/home.html:98:127,html-text,app/home.html,98,,unknown,reviewable,,登录服务准备中，可以先试读。
-candidate:app/home.html:99:129,html-text,app/home.html,99,,unknown,reviewable,,验证码登录
-candidate:app/home.html:99:228,html-text,app/home.html,99,,unknown,reviewable,,返回密码登录
-candidate:app/home.html:99:319,html-text,app/home.html,99,,unknown,reviewable,,忘记密码？
-candidate:app/home.html:100:81,html-text,app/home.html,100,,unknown,reviewable,,或
-candidate:app/home.html:101:201,html-text,app/home.html,101,,unknown,reviewable,,Google
-candidate:app/home.html:101:277,html-text,app/home.html,101,,unknown,reviewable,,准备中
-candidate:app/home.html:102:197,html-text,app/home.html,102,,unknown,reviewable,,Apple
-candidate:app/home.html:102:272,html-text,app/home.html,102,,unknown,reviewable,,准备中
-candidate:app/home.html:104:91,html-text,app/home.html,104,,unknown,reviewable,,本机使用
-candidate:app/home.html:104:181,html-text,app/home.html,104,,unknown,reviewable,,进入本机书房 ↗
-candidate:app/home.html:104:246,html-text,app/home.html,104,,unknown,reviewable,,仅在这台电脑使用，无需邮箱；与邮箱账户分开保存。
-candidate:app/home.html:105:97,html-text,app/home.html,105,,unknown,reviewable,,第一次来？
-candidate:app/home.html:105:184,html-text,app/home.html,105,,unknown,reviewable,,创建书房
-candidate:app/home.html:105:284,html-text,app/home.html,105,,unknown,reviewable,,先试读几页
-candidate:app/home.html:105:322,html-text,app/home.html,105,,unknown,reviewable,,↗
-candidate:app/home.html:107:165,html-text,app/home.html,107,,unknown,reviewable,,×
-candidate:app/home.html:107:197,html-text,app/home.html,107,,unknown,reviewable,,这次，你想读什么？
-candidate:app/home.html:107:232,html-text,app/home.html,107,,unknown,reviewable,,原文件保存在自己的书房，提取后即可阅读。
-candidate:app/home.html:107:427,html-text,app/home.html,107,,unknown,reviewable,,↥
-candidate:app/home.html:107:466,html-text,app/home.html,107,,unknown,reviewable,,拖放一本书，或点击选择
-candidate:app/home.html:107:511,html-text,app/home.html,107,,unknown,reviewable,,PDF 最多 256 MB · EPUB、TXT、Markdown 最多 20 MB
-candidate:app/home.html:107:729,html-text,app/home.html,107,,unknown,reviewable,,自动整理文字版与扫描版。需要借助外部识别时，再由你确认；原文件始终保留。
-candidate:app/home.html:107:919,html-text,app/home.html,107,,unknown,reviewable,,放进我的书房
-candidate:app/home.html:107:932,html-text,app/home.html,107,,unknown,reviewable,,→
-candidate:app/home.html:109:104,html-text,app/home.html,109,,unknown,reviewable,,×
-candidate:app/home.html:110:47,html-text,app/home.html,110,,unknown,reviewable,,主导航
-candidate:app/home.html:112:163,html-text,app/home.html,112,,unknown,reviewable,,English
-candidate:app/home.html:112:244,html-text,app/home.html,112,,unknown,reviewable,,简体中文
-candidate:app/home.html:112:322,html-text,app/home.html,112,,unknown,reviewable,,繁體中文
-candidate:app/home.html:112:385,html-text,app/home.html,112,,unknown,reviewable,,日本語
-candidate:app/home.html:112:462,html-text,app/home.html,112,,unknown,reviewable,,界面语言设置
+candidate:app/home.html:31:30,html-text,app/home.html,31,,unknown,reviewable,,跳到正文
+candidate:app/home.html:33:402,html-text,app/home.html,33,,unknown,reviewable,,Leafhour
+candidate:app/home.html:34:132,html-text,app/home.html,34,,unknown,reviewable,,阅读的方法
+candidate:app/home.html:34:216,html-text,app/home.html,34,,unknown,reviewable,,Agent 接入
+candidate:app/home.html:34:321,html-text,app/home.html,34,,unknown,reviewable,,价格
+candidate:app/home.html:34:1339,html-text,app/home.html,34,,unknown,reviewable,,GitHub
+candidate:app/home.html:36:232,html-text,app/home.html,36,,unknown,reviewable,,搜索与命令
+candidate:app/home.html:37:203,html-text,app/home.html,37,,unknown,reviewable,,我的书房
+candidate:app/home.html:37:452,html-text,app/home.html,37,,unknown,reviewable,,我上传的
+candidate:app/home.html:38:183,html-text,app/home.html,38,,unknown,reviewable,,阅读日历
+candidate:app/home.html:38:410,html-text,app/home.html,38,,unknown,reviewable,,我的笔记
+candidate:app/home.html:38:579,html-text,app/home.html,38,,unknown,reviewable,,阅读对话
+candidate:app/home.html:38:735,html-text,app/home.html,38,,unknown,reviewable,,带来一本书
+candidate:app/home.html:40:220,html-text,app/home.html,40,,unknown,reviewable,,回收站
+candidate:app/home.html:40:406,html-text,app/home.html,40,,unknown,reviewable,,设置
+candidate:app/home.html:41:52,html-text,app/home.html,41,,unknown,reviewable,,登录 / 注册
+candidate:app/home.html:41:85,html-text,app/home.html,41,,unknown,reviewable,,↗
+candidate:app/home.html:47:145,html-text,app/home.html,47,,unknown,reviewable,,光影
+candidate:app/home.html:49:66,html-text,app/home.html,49,,unknown,reviewable,,Stay with
+candidate:app/home.html:49:106,html-text,app/home.html,49,,unknown,reviewable,,a book.
+candidate:app/home.html:49:153,html-text,app/home.html,49,,unknown,reviewable,,留一点时间，读进一本书。
+candidate:app/home.html:49:192,html-text,app/home.html,49,,unknown,reviewable,,原文、译文和自己的思考，
+candidate:app/home.html:49:208,html-text,app/home.html,49,,unknown,reviewable,,各有自己的位置。
+candidate:app/home.html:49:299,html-text,app/home.html,49,,unknown,reviewable,,先读几页
+candidate:app/home.html:49:329,html-text,app/home.html,49,,unknown,reviewable,,→
+candidate:app/home.html:49:372,html-text,app/home.html,49,,unknown,reviewable,,公版书可直接试读。登录后保存自己的书与记录。
+candidate:app/home.html:50:89,html-text,app/home.html,50,,unknown,reviewable,,LEWIS CARROLL
+candidate:app/home.html:50:115,html-text,app/home.html,50,,unknown,reviewable,,《爱丽丝梦游仙境》· 阅读示例
+candidate:app/home.html:50:180,html-text,app/home.html,50,,unknown,protected,quotation,"“What is the use of a book,” thought Alice, “without pictures or conversations?”"
+candidate:app/home.html:50:302,html-text,app/home.html,50,,unknown,reviewable,,中文意译 · 页面示例
+candidate:app/home.html:50:338,html-text,app/home.html,50,,unknown,protected,quotation,“一本书如果没有图画，也没有对话，那有什么用呢？”爱丽丝想。
+candidate:app/home.html:50:433,html-text,app/home.html,50,,unknown,reviewable,,读到这里，你想起了什么？
+candidate:app/home.html:50:512,html-text,app/home.html,50,,unknown,reviewable,,↗
+candidate:app/home.html:52:85,html-text,app/home.html,52,,unknown,reviewable,,读过之后，
+candidate:app/home.html:52:94,html-text,app/home.html,52,,unknown,reviewable,,留一点自己的理解。
+candidate:app/home.html:52:111,html-text,app/home.html,52,,unknown,reviewable,,在一句话旁边停一停，用自己的话记下理解。还没想通的，就先留成问题，下一次回到原页。
+candidate:app/home.html:52:173,html-text,app/home.html,52,,unknown,reviewable,,遇见难句，可以对照原文、直译与意译。AI 译文标为草稿；没有译文的地方，原文始终保留。
+candidate:app/home.html:52:275,html-text,app/home.html,52,,unknown,reviewable,,打开这本书
+candidate:app/home.html:52:306,html-text,app/home.html,52,,unknown,reviewable,,→
+candidate:app/home.html:53:92,html-text,app/home.html,53,,unknown,reviewable,,选一本书
+candidate:app/home.html:53:178,html-text,app/home.html,53,,unknown,reviewable,,正在载入书架…
+candidate:app/home.html:53:219,html-text,app/home.html,53,,unknown,reviewable,,默认书籍来自 Project Gutenberg，原文在美国属于公版；各书保留来源和许可说明，使用时请核对所在地规则。
+candidate:app/home.html:54:62,html-text,app/home.html,54,,unknown,reviewable,,一本书，
+candidate:app/home.html:54:70,html-text,app/home.html,54,,unknown,reviewable,,一间自己的书房。
+candidate:app/home.html:54:120,html-text,app/home.html,54,,unknown,reviewable,,带来自己的 PDF、EPUB、Markdown 或纯文本。原文和译文各自保留，你写下的笔记也有自己的位置。
+candidate:app/home.html:54:180,html-text,app/home.html,54,,unknown,reviewable,,Leafhour 以 AGPL-3.0 开源，可在本地运行或自行托管。
+candidate:app/home.html:55:119,html-text,app/home.html,55,,unknown,reviewable,,开始之前，你也许想知道。
+candidate:app/home.html:56:23,html-text,app/home.html,56,,unknown,reviewable,,可以导入哪些格式？
+candidate:app/home.html:56:45,html-text,app/home.html,56,,unknown,reviewable,,目前支持 PDF、EPUB、Markdown（.md）和纯文本（.txt）。PDF 提取的文字需要与原稿核对；扫描页会在你确认后自动识别。EPUB 按内置阅读顺序提取，暂不支持加密或 DRM 版本。
+candidate:app/home.html:57:23,html-text,app/home.html,57,,unknown,reviewable,,书籍与记录可以带走吗？
+candidate:app/home.html:57:47,html-text,app/home.html,57,,unknown,protected,quotation,服务支持整库导出和恢复，不要求订阅。登录后在书房“设置 → 数据与迁移”下载 ZIP 备份、恢复书房或导出选定记录，原文件可自行选择是否纳入。未同步的记录与草稿仍留在原浏览器，处理方式见
+candidate:app/home.html:57:160,html-text,app/home.html,57,,unknown,reviewable,,隐私与数据说明
+candidate:app/home.html:57:171,html-text,app/home.html,57,,unknown,reviewable,,。
+candidate:app/home.html:58:23,html-text,app/home.html,58,,unknown,reviewable,,使用 AI 和朋友共读有哪些限制？
+candidate:app/home.html:58:53,html-text,app/home.html,58,,unknown,reviewable,,直接阅读公版样书不需要调用模型。翻译与对话需要配置模型服务，自托管时由运营者承担供应商费用。赠书信可以分享所选阅读材料；在线好友的实时共读仍是后续设想。
+candidate:app/home.html:62:407,html-text,app/home.html,62,,unknown,reviewable,,Leafhour
+candidate:app/home.html:63:49,html-text,app/home.html,63,,unknown,reviewable,,我的书房
+candidate:app/home.html:63:156,html-text,app/home.html,63,,unknown,reviewable,,自己的书与阅读记录。
+candidate:app/home.html:63:211,html-text,app/home.html,63,,unknown,reviewable,,拖动整本书调整位置，触屏可长按后移动。键盘聚焦调整位置按钮后使用左右方向键；更多操作中也可向前或向后移动。
+candidate:app/home.html:66:175,html-text,app/home.html,66,,unknown,reviewable,,全部
+candidate:app/home.html:66:259,html-text,app/home.html,66,,unknown,reviewable,,在读
+candidate:app/home.html:66:342,html-text,app/home.html,66,,unknown,reviewable,,未读
+candidate:app/home.html:66:427,html-text,app/home.html,66,,unknown,reviewable,,读完
+candidate:app/home.html:67:174,html-text,app/home.html,67,,unknown,reviewable,,搜索书名或作者
+candidate:app/home.html:67:426,html-text,app/home.html,67,,unknown,reviewable,,×
+candidate:app/home.html:67:676,html-text,app/home.html,67,,unknown,reviewable,,筛选
+candidate:app/home.html:69:237,html-text,app/home.html,69,,unknown,reviewable,,清除筛选
+candidate:app/home.html:70:177,html-text,app/home.html,70,,unknown,reviewable,,筛选书籍
+candidate:app/home.html:70:293,html-text,app/home.html,70,,unknown,reviewable,,主题
+candidate:app/home.html:70:348,html-text,app/home.html,70,,unknown,reviewable,,全部主题
+candidate:app/home.html:70:484,html-text,app/home.html,70,,unknown,reviewable,,来源
+candidate:app/home.html:70:540,html-text,app/home.html,70,,unknown,reviewable,,全部来源
+candidate:app/home.html:70:576,html-text,app/home.html,70,,unknown,reviewable,,内置书
+candidate:app/home.html:70:612,html-text,app/home.html,70,,unknown,reviewable,,我上传的
+candidate:app/home.html:70:753,html-text,app/home.html,70,,unknown,reviewable,,阅读语言
+candidate:app/home.html:70:813,html-text,app/home.html,70,,unknown,reviewable,,全部阅读语言
+candidate:app/home.html:70:948,html-text,app/home.html,70,,unknown,reviewable,,阅读形态
+candidate:app/home.html:70:1004,html-text,app/home.html,70,,unknown,reviewable,,全部形态
+candidate:app/home.html:70:1042,html-text,app/home.html,70,,unknown,reviewable,,原版
+candidate:app/home.html:70:1080,html-text,app/home.html,70,,unknown,reviewable,,有译本
+candidate:app/home.html:70:1118,html-text,app/home.html,70,,unknown,reviewable,,双语对照
+candidate:app/home.html:70:1204,html-text,app/home.html,70,,unknown,reviewable,,有译本也可能只有部分段落，缺译处保留原文。
+candidate:app/home.html:72:125,html-text,app/home.html,72,,unknown,reviewable,,重新打开书房
+candidate:app/home.html:73:94,html-text,app/home.html,73,,unknown,reviewable,,设置阅读习惯
+candidate:app/home.html:73:108,html-text,app/home.html,73,,unknown,reviewable,,选好新书默认的阅读方式、译文与文字，之后打开的新书都从这里开始。每本书自己的选择仍然保留。
+candidate:app/home.html:73:254,html-text,app/home.html,73,,unknown,reviewable,,设置阅读习惯
+candidate:app/home.html:73:333,html-text,app/home.html,73,,unknown,reviewable,,暂不设置
+candidate:app/home.html:74:219,html-text,app/home.html,74,,unknown,reviewable,,正在打开书房…
+candidate:app/home.html:74:427,html-text,app/home.html,74,,unknown,reviewable,,书架上的其他书
+candidate:app/home.html:74:623,html-text,app/home.html,74,,unknown,reviewable,,还没有自己的书
+candidate:app/home.html:74:638,html-text,app/home.html,74,,unknown,reviewable,,带来一份 PDF、EPUB、TXT 或 Markdown。
+candidate:app/home.html:74:727,html-text,app/home.html,74,,unknown,reviewable,,带来第一本书
+candidate:app/home.html:74:806,html-text,app/home.html,74,,unknown,reviewable,,清空搜索
+candidate:app/home.html:77:376,html-text,app/home.html,77,,unknown,reviewable,,Leafhour
+candidate:app/home.html:77:408,html-text,app/home.html,77,,unknown,reviewable,,Stay with a book.
+candidate:app/home.html:77:444,html-text,app/home.html,77,,unknown,reviewable,,MCP 接入指南
+candidate:app/home.html:77:475,html-text,app/home.html,77,,unknown,reviewable,,隐私说明
+candidate:app/home.html:77:528,html-text,app/home.html,77,,unknown,reviewable,,GitHub
+candidate:app/home.html:77:615,html-text,app/home.html,77,,unknown,reviewable,,◐
+candidate:app/home.html:83:107,html-text,app/home.html,83,,unknown,reviewable,,×
+candidate:app/home.html:84:297,html-text,app/home.html,84,,unknown,reviewable,,Leafhour
+candidate:app/home.html:85:23,html-text,app/home.html,85,,unknown,reviewable,,回到你的书房
+candidate:app/home.html:85:53,html-text,app/home.html,85,,unknown,reviewable,,从上次停下的地方继续。
+candidate:app/home.html:88:53,html-text,app/home.html,88,,unknown,reviewable,,邮箱
+candidate:app/home.html:89:122,html-text,app/home.html,89,,unknown,reviewable,,密码
+candidate:app/home.html:89:412,html-text,app/home.html,89,,unknown,reviewable,,显示
+candidate:app/home.html:90:69,html-text,app/home.html,90,,unknown,reviewable,,进入书房
+candidate:app/home.html:94:143,html-text,app/home.html,94,,unknown,reviewable,,更换邮箱
+candidate:app/home.html:95:78,html-text,app/home.html,95,,unknown,reviewable,,登录验证码
+candidate:app/home.html:95:325,html-text,app/home.html,95,,unknown,reviewable,,进入书房
+candidate:app/home.html:96:122,html-text,app/home.html,96,,unknown,reviewable,,重新发送
+candidate:app/home.html:98:126,html-text,app/home.html,98,,unknown,reviewable,,新密码
+candidate:app/home.html:98:446,html-text,app/home.html,98,,unknown,reviewable,,显示
+candidate:app/home.html:98:518,html-text,app/home.html,98,,unknown,reviewable,,至少 8 个字符。
+candidate:app/home.html:98:588,html-text,app/home.html,98,,unknown,reviewable,,保存并进入书房
+candidate:app/home.html:99:127,html-text,app/home.html,99,,unknown,reviewable,,登录服务准备中，可以先试读。
+candidate:app/home.html:100:129,html-text,app/home.html,100,,unknown,reviewable,,验证码登录
+candidate:app/home.html:100:228,html-text,app/home.html,100,,unknown,reviewable,,返回密码登录
+candidate:app/home.html:100:319,html-text,app/home.html,100,,unknown,reviewable,,忘记密码？
+candidate:app/home.html:101:81,html-text,app/home.html,101,,unknown,reviewable,,或
+candidate:app/home.html:102:201,html-text,app/home.html,102,,unknown,reviewable,,Google
+candidate:app/home.html:102:277,html-text,app/home.html,102,,unknown,reviewable,,准备中
+candidate:app/home.html:103:197,html-text,app/home.html,103,,unknown,reviewable,,Apple
+candidate:app/home.html:103:272,html-text,app/home.html,103,,unknown,reviewable,,准备中
+candidate:app/home.html:105:91,html-text,app/home.html,105,,unknown,reviewable,,本机使用
+candidate:app/home.html:105:181,html-text,app/home.html,105,,unknown,reviewable,,进入本机书房 ↗
+candidate:app/home.html:105:246,html-text,app/home.html,105,,unknown,reviewable,,仅在这台电脑使用，无需邮箱；与邮箱账户分开保存。
+candidate:app/home.html:106:97,html-text,app/home.html,106,,unknown,reviewable,,第一次来？
+candidate:app/home.html:106:184,html-text,app/home.html,106,,unknown,reviewable,,创建书房
+candidate:app/home.html:106:284,html-text,app/home.html,106,,unknown,reviewable,,先试读几页
+candidate:app/home.html:106:322,html-text,app/home.html,106,,unknown,reviewable,,↗
+candidate:app/home.html:108:165,html-text,app/home.html,108,,unknown,reviewable,,×
+candidate:app/home.html:108:197,html-text,app/home.html,108,,unknown,reviewable,,这次，你想读什么？
+candidate:app/home.html:108:232,html-text,app/home.html,108,,unknown,reviewable,,原文件保存在自己的书房，提取后即可阅读。
+candidate:app/home.html:108:427,html-text,app/home.html,108,,unknown,reviewable,,↥
+candidate:app/home.html:108:466,html-text,app/home.html,108,,unknown,reviewable,,拖放一本书，或点击选择
+candidate:app/home.html:108:511,html-text,app/home.html,108,,unknown,reviewable,,PDF 最多 256 MB · EPUB、TXT、Markdown 最多 20 MB
+candidate:app/home.html:108:729,html-text,app/home.html,108,,unknown,reviewable,,自动整理文字版与扫描版。需要借助外部识别时，再由你确认；原文件始终保留。
+candidate:app/home.html:108:919,html-text,app/home.html,108,,unknown,reviewable,,放进我的书房
+candidate:app/home.html:108:932,html-text,app/home.html,108,,unknown,reviewable,,→
+candidate:app/home.html:110:104,html-text,app/home.html,110,,unknown,reviewable,,×
+candidate:app/home.html:111:47,html-text,app/home.html,111,,unknown,reviewable,,主导航
+candidate:app/home.html:113:163,html-text,app/home.html,113,,unknown,reviewable,,English
+candidate:app/home.html:113:244,html-text,app/home.html,113,,unknown,reviewable,,简体中文
+candidate:app/home.html:113:322,html-text,app/home.html,113,,unknown,reviewable,,繁體中文
+candidate:app/home.html:113:385,html-text,app/home.html,113,,unknown,reviewable,,日本語
+candidate:app/home.html:113:462,html-text,app/home.html,113,,unknown,reviewable,,界面语言设置
 candidate:app/index.html:12:48,html-attribute,app/index.html,12,aria-label,unknown,reviewable,,Reading navigation
 candidate:app/index.html:12:287,html-attribute,app/index.html,12,aria-label,unknown,reviewable,,Account
 candidate:app/index.html:12:527,html-attribute,app/index.html,12,aria-label,unknown,reviewable,,Back to library
@@ -2884,8 +3464,8 @@ candidate:app/library-book-actions.mjs:26:110,js-attribute,app/library-book-acti
 candidate:app/library-book-actions.mjs:41:101,js-attribute,app/library-book-actions.mjs,41,aria-hidden,unknown,reviewable,,true
 candidate:app/library-book-actions.mjs:58:483,js-cjk-literal,app/library-book-actions.mjs,58,,unknown,reviewable,,·读书日程.ics
 candidate:app/library-book-actions.mjs:84:154,js-attribute,app/library-book-actions.mjs,84,role,unknown,reviewable,,menuitem
-candidate:app/library-book-actions.mjs:88:258,js-attribute,app/library-book-actions.mjs,88,aria-haspopup,unknown,reviewable,,menu
-candidate:app/library-book-actions.mjs:88:303,js-attribute,app/library-book-actions.mjs,88,aria-expanded,unknown,reviewable,,false
+candidate:app/library-book-actions.mjs:88:220,js-attribute,app/library-book-actions.mjs,88,aria-haspopup,unknown,reviewable,,menu
+candidate:app/library-book-actions.mjs:88:265,js-attribute,app/library-book-actions.mjs,88,aria-expanded,unknown,reviewable,,false
 candidate:app/library-chat-markdown.mjs:90:331,js-attribute,app/library-chat-markdown.mjs,90,aria-expanded,unknown,reviewable,,true
 candidate:app/library-chat.mjs:44:81,js-attribute,app/library-chat.mjs,44,aria-labelledby,unknown,protected,identifier,library-chat-title
 candidate:app/library-chat.mjs:45:34,js-attribute,app/library-chat.mjs,45,aria-modal,unknown,reviewable,,false
@@ -3558,14 +4138,15 @@ candidate:app/portable-chat.mjs:52:69,js-cjk-literal,app/portable-chat.mjs,52,,u
 candidate:app/portable-chat.mjs:53:55,js-cjk-literal,app/portable-chat.mjs,53,,unknown,reviewable,,未完成对话不能携带回答
 candidate:app/portable-chat.mjs:54:375,js-cjk-literal,app/portable-chat.mjs,54,,unknown,reviewable,,导入前的回答已中断，未恢复生成。
 candidate:app/portal.js:87:528,js-cjk-literal,app/portal.js,87,,unknown,reviewable,,网络暂时无法连接，请稍后重试。
-candidate:app/portal.js:178:143,js-attribute,app/portal.js,178,aria-hidden,unknown,reviewable,,true
+candidate:app/portal.js:178:111,js-attribute,app/portal.js,178,aria-hidden,unknown,reviewable,,true
 candidate:app/portal.js:188:160,js-cjk-literal,app/portal.js,188,,unknown,reviewable,,"第 "
 candidate:app/portal.js:188:176,js-cjk-literal,app/portal.js,188,,unknown,reviewable,," 章 · "
-candidate:app/portal.js:206:412,js-cjk-literal,app/portal.js,206,,unknown,reviewable,,文本
-candidate:app/portal.js:209:231,js-attribute,app/portal.js,209,aria-describedby,unknown,protected,identifier,shelf-order-help
-candidate:app/portal.js:209:347,js-attribute,app/portal.js,209,aria-hidden,unknown,reviewable,,true
-candidate:app/portal.js:236:47,js-attribute,app/portal.js,236,aria-busy,unknown,reviewable,,false
-candidate:app/portal.js:275:184,js-attribute,app/portal.js,275,aria-busy,unknown,reviewable,,false
+candidate:app/portal.js:207:165,js-attribute,app/portal.js,207,lang,unknown,reviewable,,und
+candidate:app/portal.js:210:412,js-cjk-literal,app/portal.js,210,,unknown,reviewable,,文本
+candidate:app/portal.js:213:161,js-attribute,app/portal.js,213,aria-describedby,unknown,protected,identifier,shelf-order-help
+candidate:app/portal.js:213:277,js-attribute,app/portal.js,213,aria-hidden,unknown,reviewable,,true
+candidate:app/portal.js:240:47,js-attribute,app/portal.js,240,aria-busy,unknown,reviewable,,false
+candidate:app/portal.js:279:184,js-attribute,app/portal.js,279,aria-busy,unknown,reviewable,,false
 candidate:app/pricing-checkout-markup.mjs:2:48,js-cjk-literal,app/pricing-checkout-markup.mjs,2,,unknown,protected,path+quotation,"<dialog autofocus id=""auth-dialog"" class=""auth-dialog"" aria-labelledby=""auth-title"" aria-describedby=""auth-intro"">
   <button class=""dialog-close"" id=""billing-auth-close"" data-close=""auth-dialog"" data-ui-aria-label=""auth.close"" aria-label=""关闭登录"">×</button>
   <div class=""auth-brand"" aria-hidden=""true""><svg viewBox=""0 0 40 40"" fill=""none"" stroke=""currentColor"" stroke-width=""2"" stroke-linecap=""round"" stroke-linejoin=""round"" aria-hidden=""true""><path d=""M8 32V20A13 13 0 0 1 21 7h11v11a14 14 0 0 1-14 14H8Z""/><path d=""M16 23h7v-9""/></svg><span lang=""en"">Leafhour</span></div>
@@ -3729,11 +4310,11 @@ candidate:app/reader-audio.js:105:88,js-attribute,app/reader-audio.js,105,aria-b
 candidate:app/reader-audio.js:106:562,js-attribute,app/reader-audio.js,106,aria-busy,unknown,reviewable,,false
 candidate:app/reader-audio.js:146:225,js-attribute,app/reader-audio.js,146,aria-hidden,unknown,reviewable,,true
 candidate:app/reader-audio.js:231:187,js-cjk-literal,app/reader-audio.js,231,,unknown,reviewable,,读到这里，可以停一会儿。把一句话听完整，再回到原文，慢慢想。
-candidate:app/reader-book-actions.mjs:38:178,js-attribute,app/reader-book-actions.mjs,38,lang,unknown,reviewable,,und
-candidate:app/reader-book-actions.mjs:49:123,js-attribute,app/reader-book-actions.mjs,49,aria-describedby,unknown,protected,identifier,book-intro-scope
-candidate:app/reader-book-actions.mjs:64:93,js-attribute,app/reader-book-actions.mjs,64,aria-hidden,unknown,reviewable,,true
-candidate:app/reader-book-actions.mjs:117:136,js-attribute,app/reader-book-actions.mjs,117,aria-labelledby,unknown,protected,identifier,reader-gift-title
-candidate:app/reader-book-actions.mjs:119:120,js-attribute,app/reader-book-actions.mjs,119,role,unknown,reviewable,,status
+candidate:app/reader-book-actions.mjs:46:178,js-attribute,app/reader-book-actions.mjs,46,lang,unknown,reviewable,,und
+candidate:app/reader-book-actions.mjs:57:123,js-attribute,app/reader-book-actions.mjs,57,aria-describedby,unknown,protected,identifier,book-intro-scope
+candidate:app/reader-book-actions.mjs:72:93,js-attribute,app/reader-book-actions.mjs,72,aria-hidden,unknown,reviewable,,true
+candidate:app/reader-book-actions.mjs:126:136,js-attribute,app/reader-book-actions.mjs,126,aria-labelledby,unknown,protected,identifier,reader-gift-title
+candidate:app/reader-book-actions.mjs:128:120,js-attribute,app/reader-book-actions.mjs,128,role,unknown,reviewable,,status
 candidate:app/reader-chat-workspace.mjs:25:122,js-attribute,app/reader-chat-workspace.mjs,25,role,unknown,reviewable,,separator
 candidate:app/reader-chat-workspace.mjs:25:177,js-attribute,app/reader-chat-workspace.mjs,25,aria-orientation,unknown,reviewable,,vertical
 candidate:app/reader-chat-workspace.mjs:25:223,js-attribute,app/reader-chat-workspace.mjs,25,tabindex,unknown,reviewable,,0
@@ -5225,66 +5806,66 @@ candidate:server/people-runtime-routes.mjs:28:41,js-cjk-literal,server/people-ru
 candidate:server/portal-document.mjs:11:50,js-cjk-literal,server/portal-document.mjs,11,,unknown,reviewable,,简体中文
 candidate:server/portal-document.mjs:11:69,js-cjk-literal,server/portal-document.mjs,11,,unknown,reviewable,,繁體中文
 candidate:server/portal-document.mjs:11:83,js-cjk-literal,server/portal-document.mjs,11,,unknown,reviewable,,日本語
-candidate:server/portal.mjs:63:123,js-cjk-literal,server/portal.mjs,63,,unknown,reviewable,,请使用 JSON 请求
-candidate:server/portal.mjs:63:247,js-cjk-literal,server/portal.mjs,63,,unknown,reviewable,,这次导入内容过大，请分书恢复
-candidate:server/portal.mjs:63:387,js-cjk-literal,server/portal.mjs,63,,unknown,reviewable,,这次导入内容过大，请分书恢复
-candidate:server/portal.mjs:63:509,js-cjk-literal,server/portal.mjs,63,,unknown,reviewable,,请求格式不正确
-candidate:server/portal.mjs:66:54,js-cjk-literal,server/portal.mjs,66,,unknown,reviewable,,额外网页来源配置无效
-candidate:server/portal.mjs:68:116,js-cjk-literal,server/portal.mjs,68,,unknown,reviewable,,额外网页来源配置无效
-candidate:server/portal.mjs:69:91,js-cjk-literal,server/portal.mjs,69,,unknown,reviewable,,额外网页来源配置无效
-candidate:server/portal.mjs:103:16,js-cjk-literal,server/portal.mjs,103,,unknown,reviewable,,书架正在另一处更新，请稍后刷新
-candidate:server/portal.mjs:128:69,js-cjk-literal,server/portal.mjs,128,,unknown,reviewable,,不支持这个请求
-candidate:server/portal.mjs:129:134,js-cjk-literal,server/portal.mjs,129,,unknown,reviewable,,找不到这个操作
-candidate:server/portal.mjs:200:61,js-cjk-literal,server/portal.mjs,200,,unknown,reviewable,,不支持这个请求
-candidate:server/portal.mjs:207:70,js-cjk-literal,server/portal.mjs,207,,unknown,reviewable,,不支持这个请求
-candidate:server/portal.mjs:208:59,js-cjk-literal,server/portal.mjs,208,,unknown,reviewable,,不支持这个请求
-candidate:server/portal.mjs:211:54,js-cjk-literal,server/portal.mjs,211,,unknown,reviewable,,请求来源未授权
-candidate:server/portal.mjs:212:85,js-cjk-literal,server/portal.mjs,212,,unknown,reviewable,,请求来源未授权
-candidate:server/portal.mjs:213:111,js-cjk-literal,server/portal.mjs,213,,unknown,reviewable,,"请在 "
-candidate:server/portal.mjs:213:130,js-cjk-literal,server/portal.mjs,213,,unknown,reviewable,," 使用 Google 或 Apple 登录。当前页面仍可使用邮箱或密码登录。"
-candidate:server/portal.mjs:217:79,js-cjk-literal,server/portal.mjs,217,,unknown,reviewable,,这个登录入口尚未开放
-candidate:server/portal.mjs:232:162,js-cjk-literal,server/portal.mjs,232,,unknown,reviewable,,账户已切换，请重新进入书房。原账户草稿仍留在原处。
-candidate:server/portal.mjs:239:52,js-cjk-literal,server/portal.mjs,239,,unknown,reviewable,,请先进入自己的书房。
-candidate:server/portal.mjs:240:82,js-cjk-literal,server/portal.mjs,240,,unknown,reviewable,,请重新核对当前书房账户。
-candidate:server/portal.mjs:243:18,js-cjk-literal,server/portal.mjs,243,,unknown,reviewable,,找不到这个人物操作。
-candidate:server/portal.mjs:253:27,js-cjk-literal,server/portal.mjs,253,,unknown,reviewable,,请先进入自己的书房
-candidate:server/portal.mjs:255:41,js-cjk-literal,server/portal.mjs,255,,unknown,reviewable,,不支持这个请求
-candidate:server/portal.mjs:256:61,js-cjk-literal,server/portal.mjs,256,,unknown,reviewable,,请重新核对当前书房账户
-candidate:server/portal.mjs:270:27,js-cjk-literal,server/portal.mjs,270,,unknown,reviewable,,请先进入自己的书房
-candidate:server/portal.mjs:272:94,js-cjk-literal,server/portal.mjs,272,,unknown,reviewable,,请重新核对当前书房账户
-candidate:server/portal.mjs:275:41,js-cjk-literal,server/portal.mjs,275,,unknown,reviewable,,不支持这个请求
-candidate:server/portal.mjs:276:61,js-cjk-literal,server/portal.mjs,276,,unknown,reviewable,,请重新核对当前书房账户
-candidate:server/portal.mjs:281:27,js-cjk-literal,server/portal.mjs,281,,unknown,reviewable,,请先进入自己的书房
-candidate:server/portal.mjs:283:41,js-cjk-literal,server/portal.mjs,283,,unknown,reviewable,,不支持这个请求
-candidate:server/portal.mjs:284:61,js-cjk-literal,server/portal.mjs,284,,unknown,reviewable,,请重新核对当前书房账户
-candidate:server/portal.mjs:291:95,js-cjk-literal,server/portal.mjs,291,,unknown,reviewable,,这个登录方式正在准备中
-candidate:server/portal.mjs:295:146,js-cjk-literal,server/portal.mjs,295,,unknown,reviewable,,此书房尚未开启密码登录，可以使用验证码或本机书房
-candidate:server/portal.mjs:296:146,js-cjk-literal,server/portal.mjs,296,,unknown,reviewable,,此书房尚未开启密码设置
-candidate:server/portal.mjs:298:151,js-cjk-literal,server/portal.mjs,298,,unknown,reviewable,,此书房尚未开启密码设置
-candidate:server/portal.mjs:302:80,js-cjk-literal,server/portal.mjs,302,,unknown,reviewable,,本机书房只在本机模式可用
-candidate:server/portal.mjs:309:27,js-cjk-literal,server/portal.mjs,309,,unknown,reviewable,,请先进入自己的书房
-candidate:server/portal.mjs:310:149,js-cjk-literal,server/portal.mjs,310,,unknown,reviewable,,线上版本尚未准备好，请稍后重新读取接入配置。
-candidate:server/portal.mjs:311:35,js-cjk-literal,server/portal.mjs,311,,unknown,reviewable,,本机接入配置只能在运行 Leafhour 的电脑上读取。远程接入尚未支持。
-candidate:server/portal.mjs:320:446,js-cjk-literal,server/portal.mjs,320,,unknown,reviewable,,不支持这个请求
-candidate:server/portal.mjs:322:45,js-cjk-literal,server/portal.mjs,322,,unknown,reviewable,,此书房使用本机上传
-candidate:server/portal.mjs:326:48,js-cjk-literal,server/portal.mjs,326,,unknown,reviewable,,此书房使用本机上传
-candidate:server/portal.mjs:330:27,js-cjk-literal,server/portal.mjs,330,,unknown,reviewable,,请先进入自己的书房
-candidate:server/portal.mjs:330:187,js-cjk-literal,server/portal.mjs,330,,unknown,reviewable,,文件编码不正确
-candidate:server/portal.mjs:344:27,js-cjk-literal,server/portal.mjs,344,,unknown,reviewable,,请先进入自己的书房
-candidate:server/portal.mjs:344:98,js-cjk-literal,server/portal.mjs,344,,unknown,reviewable,,请重新核对当前书房账户
-candidate:server/portal.mjs:346:41,js-cjk-literal,server/portal.mjs,346,,unknown,reviewable,,不支持这个请求
-candidate:server/portal.mjs:359:164,js-cjk-literal,server/portal.mjs,359,,unknown,reviewable,,这份阅读包较大，请从赠书信页面分段下载
-candidate:server/portal.mjs:373:25,js-cjk-literal,server/portal.mjs,373,,unknown,reviewable,,不支持这个请求
-candidate:server/portal.mjs:459:120,js-cjk-literal,server/portal.mjs,459,,unknown,reviewable,,本书尚未开启探索体验统计
-candidate:server/portal.mjs:460:175,js-cjk-literal,server/portal.mjs,460,,unknown,reviewable,,请选择这本书的记录包
-candidate:server/portal.mjs:461:99,js-cjk-literal,server/portal.mjs,461,,unknown,reviewable,,这本书的探索体验尚未接入，可以按段翻译并保存自己的笔记
-candidate:server/portal.mjs:468:43,js-cjk-literal,server/portal.mjs,468,,unknown,reviewable,,不支持这个请求
-candidate:server/portal.mjs:473:430,js-cjk-literal,server/portal.mjs,473,,unknown,reviewable,,找不到这个工具
-candidate:server/portal.mjs:476:30,js-cjk-literal,server/portal.mjs,476,,unknown,reviewable,,此实例暂未开启听读，请在本机书房使用。
-candidate:server/portal.mjs:482:20,js-cjk-literal,server/portal.mjs,482,,unknown,reviewable,,不支持这个听读操作
-candidate:server/portal.mjs:491:86,js-cjk-literal,server/portal.mjs,491,,unknown,reviewable,,只保存用户明确提供的原话
-candidate:server/portal.mjs:492:18,js-cjk-literal,server/portal.mjs,492,,unknown,reviewable,,不支持这个请求
-candidate:server/portal.mjs:494:16,js-cjk-literal,server/portal.mjs,494,,unknown,reviewable,,找不到这个操作
+candidate:server/portal.mjs:67:123,js-cjk-literal,server/portal.mjs,67,,unknown,reviewable,,请使用 JSON 请求
+candidate:server/portal.mjs:67:247,js-cjk-literal,server/portal.mjs,67,,unknown,reviewable,,这次导入内容过大，请分书恢复
+candidate:server/portal.mjs:67:387,js-cjk-literal,server/portal.mjs,67,,unknown,reviewable,,这次导入内容过大，请分书恢复
+candidate:server/portal.mjs:67:509,js-cjk-literal,server/portal.mjs,67,,unknown,reviewable,,请求格式不正确
+candidate:server/portal.mjs:70:54,js-cjk-literal,server/portal.mjs,70,,unknown,reviewable,,额外网页来源配置无效
+candidate:server/portal.mjs:72:116,js-cjk-literal,server/portal.mjs,72,,unknown,reviewable,,额外网页来源配置无效
+candidate:server/portal.mjs:73:91,js-cjk-literal,server/portal.mjs,73,,unknown,reviewable,,额外网页来源配置无效
+candidate:server/portal.mjs:107:16,js-cjk-literal,server/portal.mjs,107,,unknown,reviewable,,书架正在另一处更新，请稍后刷新
+candidate:server/portal.mjs:132:69,js-cjk-literal,server/portal.mjs,132,,unknown,reviewable,,不支持这个请求
+candidate:server/portal.mjs:133:134,js-cjk-literal,server/portal.mjs,133,,unknown,reviewable,,找不到这个操作
+candidate:server/portal.mjs:205:61,js-cjk-literal,server/portal.mjs,205,,unknown,reviewable,,不支持这个请求
+candidate:server/portal.mjs:212:70,js-cjk-literal,server/portal.mjs,212,,unknown,reviewable,,不支持这个请求
+candidate:server/portal.mjs:213:59,js-cjk-literal,server/portal.mjs,213,,unknown,reviewable,,不支持这个请求
+candidate:server/portal.mjs:216:54,js-cjk-literal,server/portal.mjs,216,,unknown,reviewable,,请求来源未授权
+candidate:server/portal.mjs:217:85,js-cjk-literal,server/portal.mjs,217,,unknown,reviewable,,请求来源未授权
+candidate:server/portal.mjs:218:111,js-cjk-literal,server/portal.mjs,218,,unknown,reviewable,,"请在 "
+candidate:server/portal.mjs:218:130,js-cjk-literal,server/portal.mjs,218,,unknown,reviewable,," 使用 Google 或 Apple 登录。当前页面仍可使用邮箱或密码登录。"
+candidate:server/portal.mjs:222:79,js-cjk-literal,server/portal.mjs,222,,unknown,reviewable,,这个登录入口尚未开放
+candidate:server/portal.mjs:237:162,js-cjk-literal,server/portal.mjs,237,,unknown,reviewable,,账户已切换，请重新进入书房。原账户草稿仍留在原处。
+candidate:server/portal.mjs:244:52,js-cjk-literal,server/portal.mjs,244,,unknown,reviewable,,请先进入自己的书房。
+candidate:server/portal.mjs:245:82,js-cjk-literal,server/portal.mjs,245,,unknown,reviewable,,请重新核对当前书房账户。
+candidate:server/portal.mjs:248:18,js-cjk-literal,server/portal.mjs,248,,unknown,reviewable,,找不到这个人物操作。
+candidate:server/portal.mjs:258:27,js-cjk-literal,server/portal.mjs,258,,unknown,reviewable,,请先进入自己的书房
+candidate:server/portal.mjs:260:41,js-cjk-literal,server/portal.mjs,260,,unknown,reviewable,,不支持这个请求
+candidate:server/portal.mjs:261:61,js-cjk-literal,server/portal.mjs,261,,unknown,reviewable,,请重新核对当前书房账户
+candidate:server/portal.mjs:275:27,js-cjk-literal,server/portal.mjs,275,,unknown,reviewable,,请先进入自己的书房
+candidate:server/portal.mjs:277:94,js-cjk-literal,server/portal.mjs,277,,unknown,reviewable,,请重新核对当前书房账户
+candidate:server/portal.mjs:280:41,js-cjk-literal,server/portal.mjs,280,,unknown,reviewable,,不支持这个请求
+candidate:server/portal.mjs:281:61,js-cjk-literal,server/portal.mjs,281,,unknown,reviewable,,请重新核对当前书房账户
+candidate:server/portal.mjs:286:27,js-cjk-literal,server/portal.mjs,286,,unknown,reviewable,,请先进入自己的书房
+candidate:server/portal.mjs:288:41,js-cjk-literal,server/portal.mjs,288,,unknown,reviewable,,不支持这个请求
+candidate:server/portal.mjs:289:61,js-cjk-literal,server/portal.mjs,289,,unknown,reviewable,,请重新核对当前书房账户
+candidate:server/portal.mjs:296:95,js-cjk-literal,server/portal.mjs,296,,unknown,reviewable,,这个登录方式正在准备中
+candidate:server/portal.mjs:300:146,js-cjk-literal,server/portal.mjs,300,,unknown,reviewable,,此书房尚未开启密码登录，可以使用验证码或本机书房
+candidate:server/portal.mjs:301:146,js-cjk-literal,server/portal.mjs,301,,unknown,reviewable,,此书房尚未开启密码设置
+candidate:server/portal.mjs:303:151,js-cjk-literal,server/portal.mjs,303,,unknown,reviewable,,此书房尚未开启密码设置
+candidate:server/portal.mjs:307:80,js-cjk-literal,server/portal.mjs,307,,unknown,reviewable,,本机书房只在本机模式可用
+candidate:server/portal.mjs:314:27,js-cjk-literal,server/portal.mjs,314,,unknown,reviewable,,请先进入自己的书房
+candidate:server/portal.mjs:315:149,js-cjk-literal,server/portal.mjs,315,,unknown,reviewable,,线上版本尚未准备好，请稍后重新读取接入配置。
+candidate:server/portal.mjs:316:35,js-cjk-literal,server/portal.mjs,316,,unknown,reviewable,,本机接入配置只能在运行 Leafhour 的电脑上读取。远程接入尚未支持。
+candidate:server/portal.mjs:325:446,js-cjk-literal,server/portal.mjs,325,,unknown,reviewable,,不支持这个请求
+candidate:server/portal.mjs:327:45,js-cjk-literal,server/portal.mjs,327,,unknown,reviewable,,此书房使用本机上传
+candidate:server/portal.mjs:331:48,js-cjk-literal,server/portal.mjs,331,,unknown,reviewable,,此书房使用本机上传
+candidate:server/portal.mjs:335:27,js-cjk-literal,server/portal.mjs,335,,unknown,reviewable,,请先进入自己的书房
+candidate:server/portal.mjs:335:187,js-cjk-literal,server/portal.mjs,335,,unknown,reviewable,,文件编码不正确
+candidate:server/portal.mjs:349:27,js-cjk-literal,server/portal.mjs,349,,unknown,reviewable,,请先进入自己的书房
+candidate:server/portal.mjs:349:98,js-cjk-literal,server/portal.mjs,349,,unknown,reviewable,,请重新核对当前书房账户
+candidate:server/portal.mjs:351:41,js-cjk-literal,server/portal.mjs,351,,unknown,reviewable,,不支持这个请求
+candidate:server/portal.mjs:364:164,js-cjk-literal,server/portal.mjs,364,,unknown,reviewable,,这份阅读包较大，请从赠书信页面分段下载
+candidate:server/portal.mjs:378:25,js-cjk-literal,server/portal.mjs,378,,unknown,reviewable,,不支持这个请求
+candidate:server/portal.mjs:464:120,js-cjk-literal,server/portal.mjs,464,,unknown,reviewable,,本书尚未开启探索体验统计
+candidate:server/portal.mjs:465:175,js-cjk-literal,server/portal.mjs,465,,unknown,reviewable,,请选择这本书的记录包
+candidate:server/portal.mjs:466:99,js-cjk-literal,server/portal.mjs,466,,unknown,reviewable,,这本书的探索体验尚未接入，可以按段翻译并保存自己的笔记
+candidate:server/portal.mjs:473:43,js-cjk-literal,server/portal.mjs,473,,unknown,reviewable,,不支持这个请求
+candidate:server/portal.mjs:478:430,js-cjk-literal,server/portal.mjs,478,,unknown,reviewable,,找不到这个工具
+candidate:server/portal.mjs:481:30,js-cjk-literal,server/portal.mjs,481,,unknown,reviewable,,此实例暂未开启听读，请在本机书房使用。
+candidate:server/portal.mjs:487:20,js-cjk-literal,server/portal.mjs,487,,unknown,reviewable,,不支持这个听读操作
+candidate:server/portal.mjs:496:86,js-cjk-literal,server/portal.mjs,496,,unknown,reviewable,,只保存用户明确提供的原话
+candidate:server/portal.mjs:497:18,js-cjk-literal,server/portal.mjs,497,,unknown,reviewable,,不支持这个请求
+candidate:server/portal.mjs:499:16,js-cjk-literal,server/portal.mjs,499,,unknown,reviewable,,找不到这个操作
 candidate:server/preference-memory.mjs:5:97,js-cjk-literal,server/preference-memory.mjs,5,,unknown,reviewable,,阅读偏好记录无法识别，已保持原样
 candidate:server/preference-memory.mjs:15:245,js-cjk-literal,server/preference-memory.mjs,15,,unknown,reviewable,,阅读偏好请求格式不正确
 candidate:server/preference-memory.mjs:16:56,js-cjk-literal,server/preference-memory.mjs,16,,unknown,reviewable,,阅读偏好已在另一处更新，请读取最新版本
