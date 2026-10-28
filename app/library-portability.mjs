@@ -2,7 +2,8 @@ import {zipSync,unzipSync,Unzip,UnzipInflate,strToU8} from './fflate.mjs';
 import {validateLibraryBackup} from './library-backup.mjs';
 import {portableChatTurns} from './portable-chat.mjs';
 
-export const MAX_ARCHIVE_BYTES=512*1024*1024,PART_BYTES=1048576;
+import {PART_BYTES,MAX_ARCHIVE_BYTES} from './library-transfer-limits.mjs';
+export {PART_BYTES,MAX_ARCHIVE_BYTES};
 const fail=(m,status=400)=>{throw Object.assign(Error(m),{status});};
 export const portableHash=async bytes=>[...new Uint8Array(await crypto.subtle.digest('SHA-256',bytes))].map(n=>n.toString(16).padStart(2,'0')).join('');
 const privateKeys=new Set(['token','accesstoken','refreshtoken','apikey','secret','password','credentials','authorization','cookie','sessiontoken','tokenhash','runid','lease','authoritykey','ownerid','userid','mcpgrants','grants','agentgrants','privatekey','secretkey','clientsecret','mcpconfig','auth','sessionid','expiresat','requestbudgets','giftreceive']);

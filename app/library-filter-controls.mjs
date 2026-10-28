@@ -146,6 +146,7 @@ export function mountShelfFilters({root,onChange,onOpenChange=()=>{}}){
   const offLocale=onUiLocaleChange(updateLabels);void uiReady.then(updateLabels);updateLabels();
   return {
     read,set,clear,clearAll,update,updateLabels,close,open,choices,
+    setPending(value){for(const b of states)b.disabled=value&&b.dataset.readingStatus!=='all';for(const key of ['language','form']){fields[key].disabled=value;choices[key]?.sync();}},
     dispose(){if(disposed)return;disposed=true;offLocale();unbind();for(const off of listeners)off();for(const choice of Object.values(choices))choice?.destroy();offPopover();popover.close({focus:false});if(typeof window!=='undefined'){window.removeEventListener('resize',reposition);window.removeEventListener('scroll',reposition);}},
     apply(view){
       values={scope:view.scope||'all',status:view.status||'all',topic:view.topic||'all',language:view.language||'all',form:view.form||'all'};
