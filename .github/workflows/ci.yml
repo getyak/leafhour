@@ -142,3 +142,21 @@ jobs:
             ${{ runner.temp }}/leafhour-core.log
             ${{ runner.temp }}/leafhour-ios.log
           if-no-files-found: warn
+
+  ios-release-contracts:
+    name: Validate dormant TestFlight automation
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Test authorization, Apple states, artifact binding and signing guards offline
+        run: |
+          node --test tests/ios-*.test.mjs
+          python3 -m unittest discover -s tests -p 'test_ios_*.py'
+          bash -n scripts/ios/archive.sh scripts/ios/upload.sh
+      - name: Lint workflow contracts with the pinned official actionlint module
+        run: go run github.com/rhysd/actionlint/cmd/actionlint@v1.7.12 -shellcheck= -pyflakes= .github/workflows/release-ios.yml .github/workflows/refresh-ios-signing.yml .github/workflows/testflight-access.yml
+

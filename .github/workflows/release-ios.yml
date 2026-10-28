@@ -1,0 +1,198 @@
+name: Release iOS
+
+on:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      publish_testflight:
+        description: Explicitly publish the verified current main build (channel must also be enabled)
+        required: true
+        type: boolean
+        default: false
+      version_override:
+        description: Optional X.Y.Z marketing version; verify the existing ASC version first
+        type: string
+        required: false
+
+permissions:
+  contents: read
+
+# Shared with signing maintenance. Never cancel an in-flight Apple upload.
+# GitHub keeps one pending run by default; a newer pending run replaces it.
+concurrency:
+  group: leafhour-ios-publish
+  cancel-in-progress: false
+
+jobs:
+  prepare:
+    name: Decide and freeze verified source
+    if: github.repository == 'getyak/leafhour' && github.ref == 'refs/heads/main' && (github.event_name == 'workflow_dispatch' || (github.event.workflow_run.event == 'push' && github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_repository.full_name == github.repository))
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      actions: read
+    outputs:
+      publish: ${{ steps.plan.outputs.publish }}
+      sha: ${{ steps.plan.outputs.sha }}
+      tag: ${{ steps.plan.outputs.tag }}
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 22
+      - name: Evaluate disabled-by-default release policy
+        id: plan
+        uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea9 # v7.0.1
+        env:
+          IOS_TESTFLIGHT_ENABLED: ${{ vars.IOS_TESTFLIGHT_ENABLED }}
+          IOS_AUTOMATIC_TESTFLIGHT: ${{ vars.IOS_AUTOMATIC_TESTFLIGHT }}
+          IOS_APP_ID: ${{ vars.IOS_APP_ID }}
+          IOS_BUNDLE_ID: ${{ vars.IOS_BUNDLE_ID }}
+          IOS_BUILD_NUMBER_OFFSET: ${{ vars.IOS_BUILD_NUMBER_OFFSET }}
+          PUBLISH_TESTFLIGHT: ${{ inputs.publish_testflight || false }}
+          VERSION_OVERRIDE: ${{ inputs.version_override || '' }}
+        with:
+          script: |
+            const {prepare} = await import(`${process.env.GITHUB_WORKSPACE}/scripts/ios/prepare.mjs`);
+            await prepare({github, context, core});
+      - name: Preserve frozen release plan
+        if: steps.plan.outputs.publish == 'true'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: ios-release-plan
+          path: release-plan.json
+          if-no-files-found: error
+          retention-days: 14
+
+  archive:
+    name: Archive exact signed IPA
+    needs: prepare
+    if: needs.prepare.outputs.publish == 'true'
+    runs-on: macos-26
+    timeout-minutes: 45
+    environment: testflight
+    permissions:
+      contents: read
+      id-token: write
+      attestations: write
+    env:
+      IOS_TEAM_ID: ${{ vars.IOS_TEAM_ID }}
+      ASC_API_KEY_ID: ${{ secrets.ASC_API_KEY_ID }}
+      ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+      ASC_PRIVATE_KEY_P8: ${{ secrets.ASC_PRIVATE_KEY_P8 }}
+      IOS_DISTRIBUTION_P12_BASE64: ${{ secrets.IOS_DISTRIBUTION_P12_BASE64 }}
+      IOS_DISTRIBUTION_P12_PASSWORD: ${{ secrets.IOS_DISTRIBUTION_P12_PASSWORD }}
+      IOS_APP_STORE_PROFILE_BASE64: ${{ secrets.IOS_APP_STORE_PROFILE_BASE64 }}
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          ref: ${{ needs.prepare.outputs.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 22
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: ios-release-plan
+      - name: Verify exact existing ASC application (no repair)
+        run: node scripts/ios/release.mjs preflight
+      - name: Verify pinned native dependency and release helpers
+        run: |
+          node tools/verify-ios-vendor.mjs
+          node --test tests/ios-*.test.mjs
+          python3 -m unittest discover -s tests -p 'test_ios_*.py'
+          test "$(xcodebuild -version | head -1 | awk '{print $2}' | cut -d. -f1)" -ge 26
+      - name: Install scoped signing material, archive, verify and remove material
+        run: bash scripts/ios/archive.sh
+      - name: Attest exact IPA provenance
+        uses: actions/attest-build-provenance@e8998f949152b193b063cb0ec769d69d929409be # v2.4.0
+        with:
+          subject-path: build/ios/Leafhour.ipa
+      - name: Preserve exact IPA and its digest-bound plan before transport
+        # Both files share one directory so the restored artifact has a flat layout.
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: ios-signed-package
+          path: |
+            build/ios/Leafhour.ipa
+            build/ios/release-plan.json
+          if-no-files-found: error
+          retention-days: 14
+
+  upload:
+    name: Upload exact IPA and confirm Apple processing
+    needs: [prepare, archive]
+    runs-on: macos-26
+    timeout-minutes: 85
+    environment: testflight
+    env:
+      ASC_API_KEY_ID: ${{ secrets.ASC_API_KEY_ID }}
+      ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+      ASC_PRIVATE_KEY_P8: ${{ secrets.ASC_PRIVATE_KEY_P8 }}
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          ref: ${{ needs.prepare.outputs.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 22
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: ios-signed-package
+          path: build/ios
+      - name: Restore and verify archived digest
+        run: |
+          cp build/ios/release-plan.json release-plan.json
+          node scripts/ios/release.mjs check-package
+      - name: Probe, submit at most once, and wait for exact Apple VALID state
+        run: bash scripts/ios/upload.sh
+      - name: Preserve independent Apple confirmation
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: ios-apple-validation
+          path: build/ios/apple-validation.json
+          if-no-files-found: error
+          retention-days: 14
+
+  finalize:
+    name: Publish trusted TestFlight receipt
+    needs: [prepare, archive, upload]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment: testflight
+    permissions:
+      contents: write
+      actions: read
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          ref: ${{ needs.prepare.outputs.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 22
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: ios-signed-package
+          path: build/ios
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: ios-apple-validation
+          path: build/ios
+      - name: Recheck exact IPA and construct receipt
+        run: |
+          cp build/ios/release-plan.json release-plan.json
+          node scripts/ios/release.mjs check-package
+          node scripts/ios/release.mjs receipt
+      - name: Publish receipt only after Apple confirmation; never overwrite an existing release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: node scripts/ios/finalize.mjs
