@@ -25,7 +25,8 @@ export function portalDocument(source,pathname,decision){
 // renderer serves hosted/self-hosted HTML, with private metadata removed.
 function libraryDocument(source,decision={locale:'en',source:'browser',preference:null}){
   if(!decision)decision={locale:'en',source:'browser',preference:null};
-  const localized=homeDocument(source,decision.locale);
+  const librarySource=source.replace(/<script\s+type="module"\s+src="\/home-(?:motion|atmosphere|sample)\.mjs"\s*><\/script>/g,'').replace(/<link\s+rel="stylesheet"\s+href="\/home-(?:motion|atmosphere|sample)\.css"\s*>/g,'');
+  const localized=homeDocument(librarySource,decision.locale);
   const privateMetadata=localized.replace(/<script type="application\/ld\+json">[\s\S]*?<\/script>/g,'').replace(/<link rel="alternate" hreflang="[^"]+" href="[^"]+">/g,'').replaceAll(' aria-current="true"','');
   const withRobots=privateMetadata.includes('<meta name="robots"')?privateMetadata.replace(/<meta name="robots"[^>]*>/,'<meta name="robots" content="noindex,nofollow">'):privateMetadata.replace('</head>','<meta name="robots" content="noindex,nofollow"></head>');
   const rendered=withRobots.replace(/<title>[^<]*<\/title>/,'<title>'+firstPaintCatalogue(decision.locale)['portal.title.library']+'</title>')
