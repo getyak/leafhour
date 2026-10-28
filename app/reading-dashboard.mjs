@@ -121,9 +121,13 @@ export function mountReadingDashboard({root,overviewRoot,historyRoot,api,getSess
     if(!summary.readingDays&&!summary.notes&&!summary.questions)overviewBody.append(ui('p','muted','journal.empty'));
   }
   function renderDetail(data){
-    detail.replaceChildren();const day=data?.days.find(d=>d.date===selectedDate);
+    detail.replaceChildren();const day=data?.days.find(d=>d.date===selectedDate),state=requests.view();
+    detail.setAttribute('aria-busy',String(calendarSignedIn&&state.status==='loading'));
     detail.append(own(node('h3'),{render:dayHeading}));
-    if(!day){detail.append(own(node('p','muted'),{render:()=>calendarSignedIn?t('dash.detail.hint'):t('dash.detail.guest')}));return;}
+    if(!calendarSignedIn||state.status==='loading'||state.status==='error'||!day){
+      const key=!calendarSignedIn?'dash.detail.guest':state.status==='loading'?'dash.calendar.loading':state.status==='error'?'dash.calendar.error':selectedDate===today()?'dash.detail.empty.today':'dash.detail.empty.day';
+      detail.append(ui('p','day-empty',key));return;
+    }
     detail.append(own(node('p','day-total'),{render:()=>duration(day.durationSeconds)}),own(node('p','day-counts'),{render:()=>t('dash.detail.counts',{notes:num(day.notes),questions:num(day.questions),marks:num(day.chapterMarks)})}));
     const measurement=node('details','journal-measurement'),measurementSummary=ui('summary','','journal.measurement');measurement.append(measurementSummary,own(node('p','reading-time-breakdown'),{render:()=>READING_TIME_SOURCES.map(source=>timeSourceLabel(source)+' '+duration(day.sourceDurationSeconds?.[source]||0)).join(' · ')}),ui('p','day-overlap','dash.detail.overlap'));detail.append(measurement);
     if(day.durationSeconds>0){const share=ui('button','text-link journal-day-share','journal.share.open');share.addEventListener('click',()=>openShare(day,share));detail.append(share);}

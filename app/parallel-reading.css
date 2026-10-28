@@ -33,3 +33,6 @@ body[data-parallel-style=reveal] .parallel-translation[data-revealed=true] .para
 @media print{body[data-parallel-style=reveal] .parallel-translation-text{display:block!important}.parallel-reveal{display:none!important}}
 
 body[data-mode=en] .sample-boundary{display:none}
+
+/* Keep translation identifiable across long pairs and the narrow stacked layout. */
+.book-page .parallel-translation{border-inline-start:1px solid var(--line-hairline);padding-inline-start:16px}

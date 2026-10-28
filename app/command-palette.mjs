@@ -162,13 +162,22 @@ export function openCommandPalette({document=globalThis.document,page='home',ada
     const reopen=bookView?.phase==='error'?[{id:'palette-book-retry',label:t('reader.shell.retryOpen'),handoff:true,run:()=>document.getElementById('retry-load')?.click()}]:[];
     return [...passages,...commands,...found,...retry,...reopen];
   }
+  function paintEntry(item,entry){
+    item.dataset.kind=entry.id.startsWith('book:')?'book':entry.id.startsWith('chapter:')?'chapter':entry.id.startsWith('passage:')?'passage':'command';
+    item.dataset.command=entry.id;
+    item.setAttribute('aria-label',entry.label+(entry.hint?' · '+entry.hint:''));
+    const title=document.createElement('span');title.className='palette-result-title';title.textContent=entry.label;
+    const nodes=[title];
+    if(entry.hint){const detail=document.createElement('span');detail.className='palette-result-detail';detail.textContent=entry.hint;nodes.push(detail);}
+    item.replaceChildren(...nodes);
+  }
   function refresh(){
     if(disposed)return;
     results=visibleEntries();
     if(activeIndex>=results.length)activeIndex=Math.max(0,results.length-1);
     list.replaceChildren();
     results.forEach((entry,index)=>{
-      const item=document.createElement('li');item.id='command-palette-option-'+index;item.setAttribute('role','option');item.setAttribute('aria-selected',String(index===activeIndex));item.textContent=entry.label+(entry.hint?' · '+entry.hint:'');
+      const item=document.createElement('li');item.id='command-palette-option-'+index;item.setAttribute('role','option');item.setAttribute('aria-selected',String(index===activeIndex));paintEntry(item,entry);
       item.addEventListener('click',()=>{activeIndex=index;runActive();});
       list.append(item);
     });
@@ -243,7 +252,7 @@ export function openCommandPalette({document=globalThis.document,page='home',ada
       else if(entry.chapter)entry.hint=t(entry.id.startsWith('chapter:')?'palette.chapterHit':'palette.passageHit',{chapter:entry.chapter});
       // Keep the same option, active identity and scroll position. Actual book
       // titles/authors remain data, even when equal to an interface label.
-      const item=list.children[index];if(item)item.textContent=entry.label+(entry.hint?' · '+entry.hint:'');
+      const item=list.children[index];if(item)paintEntry(item,entry);
     }
     paintStatus();
   };

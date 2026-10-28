@@ -309,6 +309,7 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
     if(p==='/api/library'&&req.method==='GET'){const view=await shelfView(user,owner=>library.list(owner,{metadataOnly:url.searchParams.get('view')==='books'}));send(200,{books:view.books,user:await visibleUser(user),shelfRevision:view.revision});return true;}
     if(p==='/api/library/order'&&req.method==='POST'){send(200,await library.reorderShelf(user,body));return true;}
     if(p==='/api/library/trash'&&req.method==='GET'){send(200,await shelfView(user,library.trash));return true;}
+    if(p==='/api/library/notebook'&&req.method==='GET'){res.setHeader('Cache-Control','private, no-store');send(200,await library.notebookPage(user,{cursor:url.searchParams.get('cursor'),limit:url.searchParams.has('limit')?Number(url.searchParams.get('limit')):12}));return true;}
     if(p==='/api/library/arrival'&&req.method==='GET'){res.setHeader('Cache-Control','private, no-store');send(200,await library.arrival(user,{timeZone:url.searchParams.get('timeZone')}));return true;}
     if(p==='/api/library/activity'&&req.method==='GET'){send(200,await library.readingActivity(user,{month:url.searchParams.get('month'),timeZone:url.searchParams.get('timeZone')}));return true;}
     if(p==='/api/library/mcp-setup'&&req.method==='GET'){

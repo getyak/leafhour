@@ -36,18 +36,49 @@ export function notebookMarkdown(entries,{title='My notebook',labels={},baseUrl=
 
 // At most three record documents in flight. Every publication rechecks both
 // the request generation and the caller's identity; owner IDs never enter URLs.
-export function createNotebookLoader({api,getOwner,onUpdate=()=>{},concurrency=3}){
-  let generation=0,owner=null,disposed=false,state={entries:[],failed:[],loading:false,completed:0,total:0,books:[],archiveFailed:false};
+export function createNotebookLoader({api,getOwner,onUpdate=()=>{},concurrency=3,paged=false}){
+  let generation=0,owner=null,disposed=false,inflight=null,pendingPublication=null,state={entries:[],failed:[],loading:false,completed:0,total:0,books:[],archiveFailed:false};
   const snapshot=()=>({...state,entries:[...state.entries],failed:[...state.failed]});
   const current=(stamp,identity)=>!disposed&&generation===stamp&&getOwner()===identity;
   const publish=(stamp,identity)=>{if(current(stamp,identity))onUpdate(snapshot());};
+  const schedulePublish=(stamp,identity)=>{
+    if(pendingPublication?.stamp===stamp)return;
+    const pending={stamp};pendingPublication=pending;
+    queueMicrotask(()=>{if(pendingPublication!==pending)return;pendingPublication=null;publish(stamp,identity);});
+  };
   return {
     view(){return getOwner()===owner?snapshot():{entries:[],failed:[],loading:false,completed:0,total:0};},
-    clear(){generation++;owner=getOwner();state={entries:[],failed:[],loading:false,completed:0,total:0,books:[],archiveFailed:false};if(!disposed)onUpdate(snapshot());},
-    async load(books,{includeArchived=false}={}){
+    clear(){inflight=null;pendingPublication=null;generation++;owner=getOwner();state={entries:[],failed:[],loading:false,completed:0,total:0,books:[],archiveFailed:false};if(!disposed)onUpdate(snapshot());},
+    load(books,{includeArchived=false}={}){
+      const identity=getOwner(),key=JSON.stringify([includeArchived,rows(books)]);
+      if(inflight&&inflight.identity===identity&&inflight.key===key)return inflight.promise;
+      const operation={identity,key,promise:null};
+      operation.promise=this.run(books,{includeArchived}).finally(()=>{if(inflight===operation)inflight=null;});
+      inflight=operation;return operation.promise;
+    },
+    async run(books,{includeArchived=false}={}){
       if(disposed)return snapshot();const stamp=++generation,identity=getOwner();owner=identity;
       let unique=[...new Map(rows(books).filter(book=>text(book?.bookId)).map(book=>[book.bookId,book])).values()];
       state={entries:[],failed:[],loading:unique.length>0||includeArchived,completed:0,total:unique.length,books:unique,archiveFailed:false};publish(stamp,identity);
+      if(paged){
+        state.loading=true;state.books=[];state.total=0;state.completed=0;publish(stamp,identity);
+        let cursor=null;const seen=new Set();
+        try{do{
+          const page=await api('/api/library/notebook?limit=12'+(cursor?'&cursor='+encodeURIComponent(cursor):''));if(!current(stamp,identity))return this.view();
+          if(!Array.isArray(page?.books)||!Array.isArray(page.entries)||!Array.isArray(page.failed)||!Number.isSafeInteger(page.completed)||!Number.isSafeInteger(page.total)||page.completed<state.completed||page.total<page.completed||page.nextCursor!==null&&(typeof page.nextCursor!=='string'||page.nextCursor.length>256||seen.has(page.nextCursor)))throw Error('Invalid notebook page');
+          state.books.push(...page.books);state.total=page.total;
+          for(const {book,records} of page.entries)state.entries.push(...collectNotebookEntries(book,records));
+          const fallback=page.failed.filter(book=>book.fallback===true);state.failed.push(...page.failed.filter(book=>book.fallback!==true));let next=0;
+          async function recover(){while(current(stamp,identity)&&next<fallback.length){const book=fallback[next++];try{const records=await api('/api/library/books/'+encodeURIComponent(book.bookId)+'/records');if(!current(stamp,identity))return;if(records?.bookId!==book.bookId)throw Error('Unmatched personal records');state.entries.push(...collectNotebookEntries(book,records));}catch{if(!current(stamp,identity))return;state.failed.push(book);}}}
+          await Promise.all(Array.from({length:Math.min(3,fallback.length)},recover));if(!current(stamp,identity))return this.view();
+          state.completed=page.completed;cursor=page.nextCursor;if(cursor)seen.add(cursor);publish(stamp,identity);
+        }while(cursor);}catch{
+          if(!current(stamp,identity))return this.view();
+          const failedIds=new Set(state.failed.map(book=>book.bookId));for(const book of unique)if(!failedIds.has(book.bookId)){state.failed.push(book);failedIds.add(book.bookId);}
+          if(!state.failed.length)state.archiveFailed=true;
+        }
+        if(current(stamp,identity)){state.loading=false;publish(stamp,identity);}return this.view();
+      }
       if(includeArchived){try{const archived=await api('/api/library/trash');if(!current(stamp,identity))return this.view();if(!Array.isArray(archived?.books))throw Error('Archived books unavailable');const combined=new Map(unique.map(book=>[book.bookId,book]));for(const book of archived.books)if(text(book?.bookId)&&!combined.has(book.bookId))combined.set(book.bookId,book);unique=[...combined.values()];state.books=unique;state.total=unique.length;}catch{if(!current(stamp,identity))return this.view();state.archiveFailed=true;}publish(stamp,identity);}
       let cursor=0;
       async function worker(){
@@ -55,12 +86,12 @@ export function createNotebookLoader({api,getOwner,onUpdate=()=>{},concurrency=3
           const records=await api('/api/library/books/'+encodeURIComponent(book.bookId)+'/records');if(!current(stamp,identity))return;
           if(records?.bookId!==book.bookId)throw Error('Unmatched personal records');state.entries.push(...collectNotebookEntries(book,records));
         }catch{if(!current(stamp,identity))return;state.failed.push(book);}
-        state.completed++;publish(stamp,identity);
+        state.completed++;schedulePublish(stamp,identity);
         }
       }
       await Promise.all(Array.from({length:Math.min(Math.max(1,Math.min(3,concurrency)),unique.length)},worker));
-      if(current(stamp,identity)){state.loading=false;publish(stamp,identity);}return getOwner()===owner?snapshot():{entries:[],failed:[],loading:false,completed:0,total:0};
+      if(current(stamp,identity)){state.loading=false;pendingPublication=null;publish(stamp,identity);}return getOwner()===owner?snapshot():{entries:[],failed:[],loading:false,completed:0,total:0};
     },
-    dispose(){disposed=true;generation++;state={entries:[],failed:[],loading:false,completed:0,total:0,books:[],archiveFailed:false};}
+    dispose(){inflight=null;pendingPublication=null;disposed=true;generation++;state={entries:[],failed:[],loading:false,completed:0,total:0,books:[],archiveFailed:false};}
   };
 }
