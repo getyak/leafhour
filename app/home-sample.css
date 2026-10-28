@@ -1,0 +1,30 @@
+#home-view .sample-sheet .sample-languages {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 5px 0 10px;
+}
+#home-view .sample-languages button {
+  min-height: 28px;
+  padding: 3px 9px;
+  border: 1px solid var(--line-control, var(--line));
+  border-radius: 999px;
+  background: var(--paper);
+  color: var(--muted);
+  font: 12px/1.5 var(--sans);
+  cursor: pointer;
+  transition: color 160ms ease, border-color 160ms ease;
+}
+#home-view .sample-languages button[aria-pressed=true] {
+  color: var(--accent);
+  border-color: var(--accent);
+  background: var(--surface-soft);
+}
+#home-view .sample-interpretation > span {
+  font: 12px/1.6 var(--sans);
+  color: var(--muted);
+}
+#home-view .sample-interpretation { display: flow-root; }
+@media (prefers-reduced-motion: reduce) {
+  #home-view .sample-languages button { transition: none; }
+}
