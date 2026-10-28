@@ -44,22 +44,35 @@ struct BookSearchPanel: View {
     @Bindable var session: ReaderSession
     let onJump: (Int, ReadingAnchor?) -> Void
     @State private var query = ""
-    private var matches: [(Int, Passage)] {
-        guard !query.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return [] }
+    private struct Match: Identifiable {
+        let chapterIndex: Int
+        let passage: Passage
+        let excerpt: SearchExcerpt
+        var id: String { "\(chapterIndex):\(passage.id)" }
+    }
+    private var normalizedQuery: String { query.trimmingCharacters(in: .whitespacesAndNewlines) }
+    private var matches: [Match] {
+        guard !normalizedQuery.isEmpty else { return [] }
         return session.book.chapters.enumerated().flatMap { index, chapter in
-            chapter.passages.filter { $0.text.localizedStandardContains(query) }.map { (index, $0) }
+            chapter.passages.compactMap { passage in
+                SearchExcerpt.find(in: passage.text, query: normalizedQuery).map { Match(chapterIndex: index, passage: passage, excerpt: $0) }
+            }
         }
     }
     var body: some View {
+        let results = matches
         List {
-            if query.isEmpty { ContentUnavailableView("在整本书中找一句话", systemImage: "magnifyingglass", description: Text("本机检索全部已导入章节。扫描 PDF 可能没有可检索文字。")) }
-            else if matches.isEmpty { ContentUnavailableView.search(text: query) }
-            ForEach(matches, id: \.1.id) { index, passage in
+            if normalizedQuery.isEmpty { ContentUnavailableView("在整本书中找一句话", systemImage: "magnifyingglass", description: Text("本机检索全部已导入章节。扫描 PDF 可能没有可检索文字。")) }
+            else if results.isEmpty { ContentUnavailableView.search(text: normalizedQuery) }
+            ForEach(results) { result in
                 Button {
-                    let offset = passage.text.range(of: query, options: [.caseInsensitive, .diacriticInsensitive]).map { passage.text[..<$0.lowerBound].unicodeScalars.count } ?? 0
-                    onJump(index, ReadingAnchor(chapterID: session.book.chapters[index].id, passageID: passage.id, characterOffset: offset))
+                    onJump(result.chapterIndex, ReadingAnchor(chapterID: session.book.chapters[result.chapterIndex].id, passageID: result.passage.id, characterOffset: result.excerpt.characterOffset))
                 } label: {
-                    VStack(alignment: .leading, spacing: 6) { Text(session.book.chapters[index].title).font(.caption).foregroundStyle(.secondary); Text(passage.text).lineLimit(4).foregroundStyle(.primary) }.padding(.vertical, 6)
+                    VStack(alignment: .leading, spacing: 6) {
+                        Text(session.book.chapters[result.chapterIndex].title).font(.caption).foregroundStyle(.secondary)
+                        (Text(result.excerpt.before) + Text(result.excerpt.match).bold() + Text(result.excerpt.after))
+                            .fixedSize(horizontal: false, vertical: true).foregroundStyle(.primary)
+                    }.padding(.vertical, 6)
                 }
             }
         }.searchable(text: $query, prompt: "搜索原文").navigationTitle("书内搜索")
