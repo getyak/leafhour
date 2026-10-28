@@ -70,6 +70,36 @@ export function mountReaderConversation({bookId,session,getReader,root,request=f
       reader.dismissTools?.();return true;
     }catch{announce(t(snapshot?.parts?.reduce((n,part)=>n+(part.text?.length||0),0)>2000?'chat.quote.tooLong':snapshot?'chat.quote.changed':'chat.quote.unavailable'));return false;}
   };
+  // Selection notifications precede the reader's final excerpt assignment.
+  // Follow after that synchronous edit, without reopening the workspace,
+  // dismissing the passage tools or taking focus away from selected text.
+  let followSelection=0;
+  const selectedCandidate=()=>{
+    try{
+      if(disposed||!session?.user)return null;
+      const reader=getReader(),book=reader?.getBook?.();
+      if(book?.bookId!==bookId||!reader?.isSelectionActive?.())return null;
+      const snapshot=reader.getExcerpt?.()||reader.getAudioSelection?.();
+      if(!Array.isArray(snapshot?.parts)||reader.isQuoteVisible&&!reader.isQuoteVisible(snapshot)||snapshot.parts.some(part=>!reader.isPassageVisible?.(part.passageId)))return null;
+      return {reader,book,snapshot};
+    }catch{return null;}
+  };
+  const followCandidate=candidate=>{
+    if(!candidate||disposed||!root.open||getReader()!==candidate.reader||candidate.reader.getBook?.()!==candidate.book)return;
+    try{
+      if(candidate.reader.isQuoteVisible&&!candidate.reader.isQuoteVisible(candidate.snapshot))return;
+      chat.followQuote?.(readingChatQuoteFromExcerpt(candidate.snapshot,candidate.book));
+    }catch{announce(t(candidate.snapshot.parts.reduce((n,part)=>n+part.text.length,0)>2000?'chat.quote.tooLong':'chat.quote.changed'));}
+  };
+  on('reader:selection',()=>{
+    if(!root.open)return;const revision=++followSelection;
+    queueMicrotask(()=>{if(disposed||revision!==followSelection||!root.open)return;followCandidate(selectedCandidate());});
+  });
+  const followOnOpen=()=>{
+    const candidate=selectedCandidate(),revision=++followSelection;
+    queueMicrotask(()=>{if(!disposed&&revision===followSelection)followCandidate(candidate);});
+  };
+  root.addEventListener?.('reading-chat-open',followOnOpen);listeners.push(()=>root.removeEventListener?.('reading-chat-open',followOnOpen));
   workspace=mountReaderChatWorkspace({root,getReader,labels:{resize:t('chat.resize')}});
   listeners.push(onUiLocaleChange(()=>workspace.setLabels({resize:t('chat.resize')})));
   if(typeof chat.surface==='function'){const options={bookId,getOwner:()=>session?.user?.id||null,getReader,api,chat,openAuth,integration:integration?{anchor:integration.companionAnchor,onUnread:integration.onUnread,onFocusReturn:integration.focusReturn}:null};if(mountCompanion)companion=mountCompanion(options);else chat.companionReady=import('./reader-companion-loader.mjs').then(m=>{if(!disposed)companion=m.mountReaderCompanion(options);}).catch(()=>{});}

@@ -231,6 +231,20 @@ test('real mounted selection capture quotes exact source before opening and neve
  const chat=mountReaderConversation({renderMarkdown:renderChatMarkdown,bookId:'book-one',session:{user:{id:'reader-one'}},getReader:()=>reader,root:f.dialog,mountCompanion:()=>({dispose(){}}),integration:{triggerHost:f.triggerHost,companionAnchor:f.pill,onOpen(){},focusReturn(){}},request:async(url,options)=>{requests.push({url,options});return new Response(JSON.stringify({bookId:'book-one',available:true,contentVersion:'v1',scope:{mode:'book',revision:0},context:{passageId:'p1',original:'Visible source.'},turns:[]}));}});
  f.onCleanup(()=>chat.dispose());assert.equal(chat.quoteSelection(),true);await flush();assert.equal(f.dialog.open,true);assert.equal(selected,false);assert.equal(f.all(f.dialog).find(node=>node.className==='library-chat-quote-text').textContent,'Visible');assert.equal(requests.some(call=>call.options.method==='POST'),false);
 });
+test('an open reader conversation follows the completed selection without losing draft or reading focus',async t=>{
+ const f=realFixture(t),requests=[];let selected='p1',active=true,range=null,dismissed=0;
+ const book={bookId:'book-one',contentVersion:'v1',title:{en:'Book'},sections:[{chapterId:'ch1',paragraphs:[{id:'p1',original:'First source.'},{id:'p2',original:'Second source.'}]}]};
+ const snapshot=()=>{const p=book.sections[0].paragraphs.find(p=>p.id===selected),start=range?.start||0,end=range?.end||6;return {bookId:book.bookId,contentVersion:book.contentVersion,chapterId:'ch1',parts:[{passageId:selected,language:'en',variant:'literal',start,end,text:p.original.slice(start,end)}]};};
+ const reader={getBook:()=>book,isSelectionActive:()=>active,getSelectedId:()=>selected,getExcerpt:snapshot,isQuoteVisible:()=>true,isPassageVisible:()=>true,getAnchor:()=>({passageId:selected}),dismissTools:({preserveSelection}={})=>{dismissed++;if(!preserveSelection)active=false;}};
+ const chat=mountReaderConversation({renderMarkdown:renderChatMarkdown,bookId:book.bookId,session:{user:{id:'reader-one'}},getReader:()=>reader,root:f.dialog,mountCompanion:()=>({dispose(){}}),request:async(url,options)=>{requests.push({url,options});const id=new URL(url,'http://local').searchParams.get('passageId')||'p1';return Response.json({bookId:book.bookId,available:true,contentVersion:'v1',scope:{mode:'book',revision:0},context:{passageId:id,original:book.sections[0].paragraphs.find(p=>p.id===id).original},turns:[]});}});f.onCleanup(()=>chat.dispose());
+ const quote=()=>f.all(f.dialog).find(n=>n.className==='library-chat-quote-text'),input=()=>f.doc.getElementById('library-chat-input');
+ chat.open();await flush();assert.equal(quote().textContent,'First ');
+ input().value='Keep my unsent question.';input().dispatchEvent(new Event('input'));const readerFocus=f.doc.createElement('p');f.doc.body.append(readerFocus);readerFocus.focus();const beforeDismiss=dismissed;
+ selected='p2';active=true;f.doc.dispatchEvent(new Event('reader:selection'));range={start:7,end:13};await flush();
+ assert.equal(quote().textContent,'source','capture runs after the reader finishes updating its exact range');assert.equal(input().value,'Keep my unsent question.');assert.equal(f.doc.activeElement,readerFocus);assert.equal(dismissed,beforeDismiss,'automatic following does not dismiss passage tools');
+ selected='p1';range=null;f.doc.dispatchEvent(new Event('reader:selection'));chat.close();const calls=requests.length;await flush();assert.equal(f.dialog.open,false);assert.equal(requests.length,calls,'a closed view cannot be reopened by a late selection');
+ chat.open();await flush();assert.equal(quote().textContent,'First ');assert.equal(input().value,'Keep my unsent question.');assert.equal(requests.some(call=>call.options.method==='POST'),false);
+});
 
 test('a hidden old layer snapshot is rejected before opening and is never replaced by its whole paragraph',async t=>{
  const f=realFixture(t),notices=[],book={bookId:'book-one',contentVersion:'v1',title:{en:'A book'},sections:[{chapterId:'ch1',paragraphs:[{id:'p1',original:'Visible source.'}]}]};let opens=0;

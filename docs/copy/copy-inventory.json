@@ -330,7 +330,7 @@
       },
       {
         "file": "app/library-chat.mjs",
-        "sha256": "e9b097e1fb58c7d874d7f0e31e0f83cff9485fff90a3a9bf49a11836ea0c7997"
+        "sha256": "5432f20a36a48fed3b5a4ed9d54bec9f3b78d59db151fa9fdad009e8f279b7d8"
       },
       {
         "file": "app/library-daily-reading.mjs",
@@ -622,7 +622,7 @@
       },
       {
         "file": "app/reader-conversation.mjs",
-        "sha256": "69e0d64198ff530691ef22d791d59dddf0e8d5258ecc32753a3756d415e46183"
+        "sha256": "7ef106b1977c03ba505c921a31e3a456cc05d692d9098bcc053194220f91a890"
       },
       {
         "file": "app/reader-entry.mjs",
@@ -1345,7 +1345,7 @@
         "sha256": "531202f1814314b6c76bfef38b2ea66636425b1ca9b445db349e70ebb8bcd00e"
       }
     ],
-    "inputDigest": "d74f3e9ec4ecdbb093c5198e288222f508730eb50e12013c8e0843b41c7377b2"
+    "inputDigest": "ac716fa88401df35fe513badcd19e934c73ce7ada393f2af532e790bcf8f0830"
   },
   "locales": [
     "en",
@@ -4050,7 +4050,7 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 102,
+          "line": 103,
           "column": 67
         }
       ],
@@ -4231,7 +4231,7 @@
         },
         {
           "file": "app/library-chat.mjs",
-          "line": 142,
+          "line": 143,
           "column": 130
         }
       ],
@@ -4969,7 +4969,7 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 192,
+          "line": 193,
           "column": 80
         }
       ],
@@ -5026,7 +5026,7 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 85,
+          "line": 86,
           "column": 56
         }
       ],
@@ -5083,7 +5083,7 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 83,
+          "line": 84,
           "column": 197
         }
       ],
@@ -5140,7 +5140,7 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 83,
+          "line": 84,
           "column": 90
         }
       ],
@@ -5197,7 +5197,7 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 76,
+          "line": 77,
           "column": 235
         }
       ],
@@ -5368,7 +5368,7 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 69,
+          "line": 70,
           "column": 36
         }
       ],
@@ -8077,7 +8077,7 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 75,
+          "line": 76,
           "column": 320
         }
       ],
@@ -8185,12 +8185,12 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 75,
+          "line": 76,
           "column": 376
         },
         {
           "file": "app/library-chat.mjs",
-          "line": 75,
+          "line": 76,
           "column": 424
         }
       ],
@@ -8247,7 +8247,7 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 183,
+          "line": 184,
           "column": 366
         }
       ],
@@ -8304,7 +8304,7 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 75,
+          "line": 76,
           "column": 255
         }
       ],
@@ -8482,6 +8482,11 @@
           "file": "app/reader-conversation.mjs",
           "line": 71,
           "column": 120
+        },
+        {
+          "file": "app/reader-conversation.mjs",
+          "line": 92,
+          "column": 113
         }
       ],
       "hints": [
@@ -8539,6 +8544,11 @@
           "file": "app/reader-conversation.mjs",
           "line": 71,
           "column": 90
+        },
+        {
+          "file": "app/reader-conversation.mjs",
+          "line": 92,
+          "column": 92
         }
       ],
       "hints": [
@@ -8651,12 +8661,12 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 8,
+          "line": 9,
           "column": 48
         },
         {
           "file": "app/library-chat.mjs",
-          "line": 58,
+          "line": 59,
           "column": 48
         },
         {
@@ -8718,12 +8728,12 @@
       "consumers": [
         {
           "file": "app/reader-conversation.mjs",
-          "line": 73,
+          "line": 103,
           "column": 71
         },
         {
           "file": "app/reader-conversation.mjs",
-          "line": 74,
+          "line": 104,
           "column": 69
         }
       ],
@@ -15395,7 +15405,7 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 235,
+          "line": 247,
           "column": 73
         }
       ],
@@ -15452,7 +15462,7 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 235,
+          "line": 247,
           "column": 82
         }
       ],
@@ -15509,7 +15519,7 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 238,
+          "line": 250,
           "column": 56
         }
       ],
@@ -15566,12 +15576,12 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 163,
+          "line": 164,
           "column": 79
         },
         {
           "file": "app/library-chat.mjs",
-          "line": 239,
+          "line": 251,
           "column": 50
         }
       ],
@@ -15628,12 +15638,12 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 232,
+          "line": 244,
           "column": 49
         },
         {
           "file": "app/library-chat.mjs",
-          "line": 240,
+          "line": 252,
           "column": 49
         }
       ],
@@ -15690,7 +15700,7 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 230,
+          "line": 242,
           "column": 335
         }
       ],
@@ -15747,7 +15757,7 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 230,
+          "line": 242,
           "column": 344
         }
       ],
@@ -15804,12 +15814,12 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 230,
+          "line": 242,
           "column": 514
         },
         {
           "file": "app/library-chat.mjs",
-          "line": 320,
+          "line": 332,
           "column": 162
         }
       ],
@@ -15866,12 +15876,12 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 230,
+          "line": 242,
           "column": 507
         },
         {
           "file": "app/library-chat.mjs",
-          "line": 320,
+          "line": 332,
           "column": 155
         }
       ],
@@ -15928,12 +15938,12 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 167,
+          "line": 168,
           "column": 79
         },
         {
           "file": "app/library-chat.mjs",
-          "line": 231,
+          "line": 243,
           "column": 89
         }
       ],
@@ -15990,7 +16000,7 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 90,
+          "line": 91,
           "column": 90
         }
       ],
@@ -16104,7 +16114,7 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 139,
+          "line": 140,
           "column": 91
         }
       ],
@@ -16161,7 +16171,7 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 139,
+          "line": 140,
           "column": 103
         }
       ],
@@ -16218,7 +16228,7 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 160,
+          "line": 161,
           "column": 39
         }
       ],
@@ -16275,7 +16285,7 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 162,
+          "line": 163,
           "column": 137
         }
       ],
@@ -16332,7 +16342,7 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 164,
+          "line": 165,
           "column": 77
         }
       ],
@@ -16389,7 +16399,7 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 167,
+          "line": 168,
           "column": 99
         }
       ],
@@ -16446,7 +16456,7 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 167,
+          "line": 168,
           "column": 106
         }
       ],
@@ -16503,7 +16513,7 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 169,
+          "line": 170,
           "column": 24
         }
       ],
@@ -16560,7 +16570,7 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 169,
+          "line": 170,
           "column": 50
         }
       ],
@@ -16617,13 +16627,13 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 228,
+          "line": 240,
           "column": 133
         },
         {
           "file": "app/library-chat.mjs",
-          "line": 278,
-          "column": 331
+          "line": 290,
+          "column": 353
         }
       ],
       "hints": [
@@ -16679,12 +16689,12 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 74,
+          "line": 75,
           "column": 219
         },
         {
           "file": "app/library-chat.mjs",
-          "line": 231,
+          "line": 243,
           "column": 96
         }
       ],
@@ -16792,7 +16802,7 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 90,
+          "line": 91,
           "column": 119
         }
       ],
@@ -16849,7 +16859,7 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 90,
+          "line": 91,
           "column": 126
         }
       ],
@@ -16906,7 +16916,7 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 91,
+          "line": 92,
           "column": 32
         }
       ],
@@ -16963,7 +16973,7 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 91,
+          "line": 92,
           "column": 67
         }
       ],
@@ -17020,7 +17030,7 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 91,
+          "line": 92,
           "column": 116
         }
       ],
@@ -17077,7 +17087,7 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 91,
+          "line": 92,
           "column": 124
         }
       ],
@@ -17310,7 +17320,7 @@
         },
         {
           "file": "app/library-chat.mjs",
-          "line": 136,
+          "line": 137,
           "column": 324
         }
       ],
@@ -17719,12 +17729,12 @@
         },
         {
           "file": "app/library-chat.mjs",
-          "line": 136,
+          "line": 137,
           "column": 346
         },
         {
           "file": "app/library-chat.mjs",
-          "line": 237,
+          "line": 249,
           "column": 45
         }
       ],
@@ -17878,32 +17888,32 @@
         },
         {
           "file": "app/library-chat.mjs",
-          "line": 8,
+          "line": 9,
           "column": 92
         },
         {
           "file": "app/library-chat.mjs",
-          "line": 58,
+          "line": 59,
           "column": 112
         },
         {
           "file": "app/library-chat.mjs",
-          "line": 62,
+          "line": 63,
           "column": 78
         },
         {
           "file": "app/library-chat.mjs",
-          "line": 228,
+          "line": 240,
           "column": 138
         },
         {
           "file": "app/library-chat.mjs",
-          "line": 278,
-          "column": 336
+          "line": 290,
+          "column": 358
         },
         {
           "file": "app/library-chat.mjs",
-          "line": 326,
+          "line": 338,
           "column": 83
         },
         {
@@ -18075,22 +18085,22 @@
         },
         {
           "file": "app/library-chat.mjs",
-          "line": 50,
+          "line": 51,
           "column": 86
         },
         {
           "file": "app/library-chat.mjs",
-          "line": 50,
+          "line": 51,
           "column": 122
         },
         {
           "file": "app/library-chat.mjs",
-          "line": 228,
+          "line": 240,
           "column": 112
         },
         {
           "file": "app/library-chat.mjs",
-          "line": 318,
+          "line": 330,
           "column": 112
         },
         {
@@ -18327,7 +18337,7 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 14,
+          "line": 15,
           "column": 81
         }
       ],
@@ -18384,7 +18394,7 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 49,
+          "line": 50,
           "column": 119
         }
       ],
@@ -20096,27 +20106,27 @@
         },
         {
           "file": "app/library-chat.mjs",
-          "line": 50,
+          "line": 51,
           "column": 114
         },
         {
           "file": "app/library-chat.mjs",
-          "line": 62,
+          "line": 63,
           "column": 196
         },
         {
           "file": "app/library-chat.mjs",
-          "line": 70,
+          "line": 71,
           "column": 119
         },
         {
           "file": "app/library-chat.mjs",
-          "line": 75,
+          "line": 76,
           "column": 416
         },
         {
           "file": "app/library-chat.mjs",
-          "line": 102,
+          "line": 103,
           "column": 201
         },
         {
@@ -20313,12 +20323,12 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 73,
+          "line": 74,
           "column": 67
         },
         {
           "file": "app/library-chat.mjs",
-          "line": 232,
+          "line": 244,
           "column": 82
         }
       ],
@@ -20385,17 +20395,17 @@
         },
         {
           "file": "app/library-chat.mjs",
-          "line": 74,
+          "line": 75,
           "column": 83
         },
         {
           "file": "app/library-chat.mjs",
-          "line": 74,
+          "line": 75,
           "column": 205
         },
         {
           "file": "app/library-chat.mjs",
-          "line": 231,
+          "line": 243,
           "column": 51
         },
         {
@@ -20507,7 +20517,7 @@
         },
         {
           "file": "app/library-chat.mjs",
-          "line": 80,
+          "line": 81,
           "column": 61
         },
         {
@@ -20716,27 +20726,27 @@
         },
         {
           "file": "app/library-chat.mjs",
-          "line": 138,
+          "line": 139,
           "column": 31
         },
         {
           "file": "app/library-chat.mjs",
-          "line": 138,
+          "line": 139,
           "column": 51
         },
         {
           "file": "app/library-chat.mjs",
-          "line": 229,
+          "line": 241,
           "column": 80
         },
         {
           "file": "app/library-chat.mjs",
-          "line": 230,
+          "line": 242,
           "column": 251
         },
         {
           "file": "app/library-chat.mjs",
-          "line": 235,
+          "line": 247,
           "column": 62
         }
       ],
@@ -20793,7 +20803,7 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 160,
+          "line": 161,
           "column": 30
         }
       ],
@@ -20850,7 +20860,7 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 162,
+          "line": 163,
           "column": 86
         }
       ],
@@ -20907,7 +20917,7 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 163,
+          "line": 164,
           "column": 67
         }
       ],
@@ -20964,7 +20974,7 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 164,
+          "line": 165,
           "column": 63
         }
       ],
@@ -21021,7 +21031,7 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 167,
+          "line": 168,
           "column": 86
         }
       ],
@@ -21078,7 +21088,7 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 169,
+          "line": 170,
           "column": 31
         }
       ],
@@ -21135,7 +21145,7 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 169,
+          "line": 170,
           "column": 43
         }
       ],
@@ -21192,7 +21202,7 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 185,
+          "line": 186,
           "column": 618
         }
       ],
@@ -21254,7 +21264,7 @@
         },
         {
           "file": "app/library-chat.mjs",
-          "line": 183,
+          "line": 184,
           "column": 722
         }
       ],
@@ -21413,7 +21423,7 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 227,
+          "line": 239,
           "column": 141
         }
       ],
@@ -21470,12 +21480,12 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 284,
+          "line": 296,
           "column": 222
         },
         {
           "file": "app/library-chat.mjs",
-          "line": 284,
+          "line": 296,
           "column": 251
         }
       ],
@@ -26272,7 +26282,7 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 13,
+          "line": 14,
           "column": 59
         },
         {
@@ -26334,12 +26344,12 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 47,
+          "line": 48,
           "column": 69
         },
         {
           "file": "app/library-chat.mjs",
-          "line": 62,
+          "line": 63,
           "column": 204
         }
       ],
@@ -26396,7 +26406,7 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 48,
+          "line": 49,
           "column": 84
         }
       ],
@@ -26504,7 +26514,7 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 72,
+          "line": 73,
           "column": 80
         }
       ],
@@ -26561,12 +26571,12 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 73,
+          "line": 74,
           "column": 35
         },
         {
           "file": "app/library-chat.mjs",
-          "line": 232,
+          "line": 244,
           "column": 98
         }
       ],
@@ -26623,7 +26633,7 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 76,
+          "line": 77,
           "column": 405
         }
       ],
@@ -26680,7 +26690,7 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 122,
+          "line": 123,
           "column": 66
         }
       ],
@@ -26757,12 +26767,12 @@
         },
         {
           "file": "app/library-chat.mjs",
-          "line": 183,
+          "line": 184,
           "column": 438
         },
         {
           "file": "app/library-chat.mjs",
-          "line": 218,
+          "line": 230,
           "column": 70
         },
         {
@@ -26854,12 +26864,12 @@
         },
         {
           "file": "app/library-chat.mjs",
-          "line": 183,
+          "line": 184,
           "column": 451
         },
         {
           "file": "app/library-chat.mjs",
-          "line": 218,
+          "line": 230,
           "column": 83
         },
         {
@@ -26951,12 +26961,12 @@
         },
         {
           "file": "app/library-chat.mjs",
-          "line": 183,
+          "line": 184,
           "column": 469
         },
         {
           "file": "app/library-chat.mjs",
-          "line": 218,
+          "line": 230,
           "column": 101
         },
         {
@@ -27053,12 +27063,12 @@
         },
         {
           "file": "app/library-chat.mjs",
-          "line": 183,
+          "line": 184,
           "column": 624
         },
         {
           "file": "app/library-chat.mjs",
-          "line": 218,
+          "line": 230,
           "column": 232
         }
       ],
@@ -27537,7 +27547,7 @@
         },
         {
           "file": "app/library-chat.mjs",
-          "line": 142,
+          "line": 143,
           "column": 157
         },
         {
@@ -27827,7 +27837,7 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 160,
+          "line": 161,
           "column": 93
         }
       ],
@@ -27884,7 +27894,7 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 183,
+          "line": 184,
           "column": 226
         }
       ],
@@ -27941,7 +27951,7 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 185,
+          "line": 186,
           "column": 174
         }
       ],
@@ -27998,7 +28008,7 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 185,
+          "line": 186,
           "column": 782
         }
       ],
@@ -28310,7 +28320,7 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 227,
+          "line": 239,
           "column": 157
         }
       ],
@@ -28367,7 +28377,7 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 227,
+          "line": 239,
           "column": 162
         }
       ],
@@ -28424,12 +28434,12 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 283,
+          "line": 295,
           "column": 101
         },
         {
           "file": "app/library-chat.mjs",
-          "line": 283,
+          "line": 295,
           "column": 130
         }
       ],
@@ -58630,7 +58640,7 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 222,
+          "line": 234,
           "column": 75
         }
       ],
@@ -58687,7 +58697,7 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 222,
+          "line": 234,
           "column": 57
         }
       ],
@@ -59469,7 +59479,7 @@
         },
         {
           "file": "app/library-chat.mjs",
-          "line": 137,
+          "line": 138,
           "column": 43
         }
       ],
@@ -59526,7 +59536,7 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 140,
+          "line": 141,
           "column": 36
         }
       ],
@@ -67714,12 +67724,12 @@
         },
         {
           "file": "app/library-chat.mjs",
-          "line": 102,
+          "line": 103,
           "column": 168
         },
         {
           "file": "app/library-chat.mjs",
-          "line": 102,
+          "line": 103,
           "column": 209
         },
         {
@@ -69342,7 +69352,7 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 162,
+          "line": 163,
           "column": 60
         },
         {
@@ -69786,7 +69796,7 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 162,
+          "line": 163,
           "column": 111
         },
         {
@@ -123567,7 +123577,7 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 82,
+          "line": 83,
           "column": 220
         }
       ],
@@ -123624,7 +123634,7 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 81,
+          "line": 82,
           "column": 248
         }
       ],
@@ -207691,9 +207701,9 @@
       }
     },
     {
-      "id": "candidate:app/library-chat.mjs:44:81",
+      "id": "candidate:app/library-chat.mjs:45:81",
       "file": "app/library-chat.mjs",
-      "line": 44,
+      "line": 45,
       "column": 81,
       "kind": "js-attribute",
       "property": "aria-labelledby",
@@ -207711,9 +207721,9 @@
       }
     },
     {
-      "id": "candidate:app/library-chat.mjs:45:34",
+      "id": "candidate:app/library-chat.mjs:46:34",
       "file": "app/library-chat.mjs",
-      "line": 45,
+      "line": 46,
       "column": 34,
       "kind": "js-attribute",
       "property": "aria-modal",
@@ -207731,9 +207741,9 @@
       }
     },
     {
-      "id": "candidate:app/library-chat.mjs:58:157",
+      "id": "candidate:app/library-chat.mjs:59:157",
       "file": "app/library-chat.mjs",
-      "line": 58,
+      "line": 59,
       "column": 157,
       "kind": "js-attribute",
       "property": "aria-haspopup",
@@ -207751,9 +207761,9 @@
       }
     },
     {
-      "id": "candidate:app/library-chat.mjs:58:250",
+      "id": "candidate:app/library-chat.mjs:59:250",
       "file": "app/library-chat.mjs",
-      "line": 58,
+      "line": 59,
       "column": 250,
       "kind": "js-attribute",
       "property": "aria-expanded",
@@ -207771,9 +207781,9 @@
       }
     },
     {
-      "id": "candidate:app/library-chat.mjs:62:171",
+      "id": "candidate:app/library-chat.mjs:63:171",
       "file": "app/library-chat.mjs",
-      "line": 62,
+      "line": 63,
       "column": 171,
       "kind": "js-attribute",
       "property": "aria-expanded",
@@ -207791,9 +207801,9 @@
       }
     },
     {
-      "id": "candidate:app/library-chat.mjs:70:83",
+      "id": "candidate:app/library-chat.mjs:71:83",
       "file": "app/library-chat.mjs",
-      "line": 70,
+      "line": 71,
       "column": 83,
       "kind": "js-attribute",
       "property": "role",
@@ -207811,9 +207821,9 @@
       }
     },
     {
-      "id": "candidate:app/library-chat.mjs:70:162",
+      "id": "candidate:app/library-chat.mjs:71:162",
       "file": "app/library-chat.mjs",
-      "line": 70,
+      "line": 71,
       "column": 162,
       "kind": "js-attribute",
       "property": "aria-live",
@@ -207831,9 +207841,9 @@
       }
     },
     {
-      "id": "candidate:app/library-chat.mjs:70:210",
+      "id": "candidate:app/library-chat.mjs:71:210",
       "file": "app/library-chat.mjs",
-      "line": 70,
+      "line": 71,
       "column": 210,
       "kind": "js-attribute",
       "property": "aria-relevant",
@@ -207851,9 +207861,9 @@
       }
     },
     {
-      "id": "candidate:app/library-chat.mjs:71:155",
+      "id": "candidate:app/library-chat.mjs:72:155",
       "file": "app/library-chat.mjs",
-      "line": 71,
+      "line": 72,
       "column": 155,
       "kind": "js-attribute",
       "property": "role",
@@ -207871,9 +207881,9 @@
       }
     },
     {
-      "id": "candidate:app/library-chat.mjs:74:266",
+      "id": "candidate:app/library-chat.mjs:75:266",
       "file": "app/library-chat.mjs",
-      "line": 74,
+      "line": 75,
       "column": 266,
       "kind": "js-attribute",
       "property": "aria-describedby",
@@ -207891,9 +207901,9 @@
       }
     },
     {
-      "id": "candidate:app/library-chat.mjs:153:374",
+      "id": "candidate:app/library-chat.mjs:154:374",
       "file": "app/library-chat.mjs",
-      "line": 153,
+      "line": 154,
       "column": 374,
       "kind": "js-attribute",
       "property": "aria-busy",
@@ -207911,9 +207921,9 @@
       }
     },
     {
-      "id": "candidate:app/library-chat.mjs:153:414",
+      "id": "candidate:app/library-chat.mjs:154:414",
       "file": "app/library-chat.mjs",
-      "line": 153,
+      "line": 154,
       "column": 414,
       "kind": "js-attribute",
       "property": "aria-live",
@@ -207931,10 +207941,10 @@
       }
     },
     {
-      "id": "candidate:app/library-chat.mjs:278:212",
+      "id": "candidate:app/library-chat.mjs:290:234",
       "file": "app/library-chat.mjs",
-      "line": 278,
-      "column": 212,
+      "line": 290,
+      "column": 234,
       "kind": "js-attribute",
       "property": "aria-expanded",
       "value": "false",
@@ -207951,10 +207961,10 @@
       }
     },
     {
-      "id": "candidate:app/library-chat.mjs:278:272",
+      "id": "candidate:app/library-chat.mjs:290:294",
       "file": "app/library-chat.mjs",
-      "line": 278,
-      "column": 272,
+      "line": 290,
+      "column": 294,
       "kind": "js-attribute",
       "property": "aria-expanded",
       "value": "false",
@@ -207971,9 +207981,9 @@
       }
     },
     {
-      "id": "candidate:app/library-chat.mjs:288:159",
+      "id": "candidate:app/library-chat.mjs:300:159",
       "file": "app/library-chat.mjs",
-      "line": 288,
+      "line": 300,
       "column": 159,
       "kind": "js-cjk-literal",
       "property": null,
@@ -207991,10 +208001,10 @@
       }
     },
     {
-      "id": "candidate:app/library-chat.mjs:318:241",
+      "id": "candidate:app/library-chat.mjs:330:263",
       "file": "app/library-chat.mjs",
-      "line": 318,
-      "column": 241,
+      "line": 330,
+      "column": 263,
       "kind": "js-attribute",
       "property": "aria-expanded",
       "value": "false",
@@ -208011,9 +208021,9 @@
       }
     },
     {
-      "id": "candidate:app/library-chat.mjs:344:168",
+      "id": "candidate:app/library-chat.mjs:356:168",
       "file": "app/library-chat.mjs",
-      "line": 344,
+      "line": 356,
       "column": 168,
       "kind": "js-attribute",
       "property": "aria-expanded",
@@ -270340,7 +270350,7 @@
     {
       "kind": "concatenation",
       "file": "app/library-chat.mjs",
-      "line": 15,
+      "line": 16,
       "expression": "'/read?book='+encodeURIComponent(bookId)",
       "fragments": [
         "/read?book="
@@ -270350,7 +270360,7 @@
     {
       "kind": "concatenation",
       "file": "app/library-chat.mjs",
-      "line": 15,
+      "line": 16,
       "expression": "'&passage='+encodeURIComponent(passageId)",
       "fragments": [
         "&passage="
@@ -270360,7 +270370,7 @@
     {
       "kind": "concatenation",
       "file": "app/library-chat.mjs",
-      "line": 16,
+      "line": 17,
       "expression": "'marginalia:chat-draft:'+encodeURIComponent(owner)+':'",
       "fragments": [
         "marginalia:chat-draft:",
@@ -270371,7 +270381,7 @@
     {
       "kind": "concatenation",
       "file": "app/library-chat.mjs",
-      "line": 16,
+      "line": 17,
       "expression": "'marginalia:chat-draft:'+encodeURIComponent(owner)",
       "fragments": [
         "marginalia:chat-draft:"
@@ -270381,7 +270391,7 @@
     {
       "kind": "concatenation",
       "file": "app/library-chat.mjs",
-      "line": 17,
+      "line": 18,
       "expression": "'marginalia:chat-quote:'+encodeURIComponent(owner)+':'",
       "fragments": [
         "marginalia:chat-quote:",
@@ -270392,7 +270402,7 @@
     {
       "kind": "concatenation",
       "file": "app/library-chat.mjs",
-      "line": 17,
+      "line": 18,
       "expression": "'marginalia:chat-quote:'+encodeURIComponent(owner)",
       "fragments": [
         "marginalia:chat-quote:"
@@ -270402,7 +270412,7 @@
     {
       "kind": "concatenation",
       "file": "app/library-chat.mjs",
-      "line": 18,
+      "line": 19,
       "expression": "'marginalia:chat-quote-ack:'+encodeURIComponent(owner)+':'+encodeURIComponent(book)+':'",
       "fragments": [
         "marginalia:chat-quote-ack:",
@@ -270414,7 +270424,7 @@
     {
       "kind": "concatenation",
       "file": "app/library-chat.mjs",
-      "line": 18,
+      "line": 19,
       "expression": "'marginalia:chat-quote-ack:'+encodeURIComponent(owner)+':'",
       "fragments": [
         "marginalia:chat-quote-ack:",
@@ -270425,7 +270435,7 @@
     {
       "kind": "concatenation",
       "file": "app/library-chat.mjs",
-      "line": 18,
+      "line": 19,
       "expression": "'marginalia:chat-quote-ack:'+encodeURIComponent(owner)",
       "fragments": [
         "marginalia:chat-quote-ack:"
@@ -270435,7 +270445,7 @@
     {
       "kind": "concatenation",
       "file": "app/library-chat.mjs",
-      "line": 19,
+      "line": 20,
       "expression": "'marginalia:chat-pending:'+encodeURIComponent(owner)+':'",
       "fragments": [
         "marginalia:chat-pending:",
@@ -270446,7 +270456,7 @@
     {
       "kind": "concatenation",
       "file": "app/library-chat.mjs",
-      "line": 19,
+      "line": 20,
       "expression": "'marginalia:chat-pending:'+encodeURIComponent(owner)",
       "fragments": [
         "marginalia:chat-pending:"
@@ -270456,7 +270466,7 @@
     {
       "kind": "concatenation",
       "file": "app/library-chat.mjs",
-      "line": 35,
+      "line": 36,
       "expression": "'data-ui-'+attr",
       "fragments": [
         "data-ui-"
@@ -270466,15 +270476,7 @@
     {
       "kind": "computed-member",
       "file": "app/library-chat.mjs",
-      "line": 111,
-      "expression": "0",
-      "fragments": [],
-      "unresolved": true
-    },
-    {
-      "kind": "computed-member",
-      "file": "app/library-chat.mjs",
-      "line": 118,
+      "line": 112,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -270490,7 +270492,15 @@
     {
       "kind": "computed-member",
       "file": "app/library-chat.mjs",
-      "line": 136,
+      "line": 120,
+      "expression": "0",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "app/library-chat.mjs",
+      "line": 137,
       "expression": "turn.failureCode",
       "fragments": [],
       "unresolved": true
@@ -270498,7 +270508,7 @@
     {
       "kind": "concatenation",
       "file": "app/library-chat.mjs",
-      "line": 136,
+      "line": 137,
       "expression": "'chat.failure.'+kind",
       "fragments": [
         "chat.failure."
@@ -270508,7 +270518,7 @@
     {
       "kind": "concatenation",
       "file": "app/library-chat.mjs",
-      "line": 142,
+      "line": 143,
       "expression": "decorations.activityLabel(active.tool,t)+' · '",
       "fragments": [
         " · "
@@ -270518,7 +270528,7 @@
     {
       "kind": "computed-member",
       "file": "app/library-chat.mjs",
-      "line": 183,
+      "line": 184,
       "expression": "turn.quote.parts[0].layer",
       "fragments": [],
       "unresolved": true
@@ -270526,7 +270536,7 @@
     {
       "kind": "computed-member",
       "file": "app/library-chat.mjs",
-      "line": 183,
+      "line": 184,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -270534,7 +270544,7 @@
     {
       "kind": "computed-member",
       "file": "app/library-chat.mjs",
-      "line": 183,
+      "line": 184,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -270542,7 +270552,7 @@
     {
       "kind": "computed-member",
       "file": "app/library-chat.mjs",
-      "line": 200,
+      "line": 201,
       "expression": "index",
       "fragments": [],
       "unresolved": true
@@ -270550,7 +270560,7 @@
     {
       "kind": "computed-member",
       "file": "app/library-chat.mjs",
-      "line": 200,
+      "line": 201,
       "expression": "index",
       "fragments": [],
       "unresolved": true
@@ -270558,7 +270568,31 @@
     {
       "kind": "computed-member",
       "file": "app/library-chat.mjs",
-      "line": 218,
+      "line": 220,
+      "expression": "0",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "app/library-chat.mjs",
+      "line": 220,
+      "expression": "0",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "app/library-chat.mjs",
+      "line": 221,
+      "expression": "0",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "app/library-chat.mjs",
+      "line": 230,
       "expression": "view.quote.parts[0].layer",
       "fragments": [],
       "unresolved": true
@@ -270566,7 +270600,7 @@
     {
       "kind": "computed-member",
       "file": "app/library-chat.mjs",
-      "line": 218,
+      "line": 230,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -270574,7 +270608,7 @@
     {
       "kind": "concatenation",
       "file": "app/library-chat.mjs",
-      "line": 220,
+      "line": 232,
       "expression": "Math.min(128,Math.max(36,input.scrollHeight||36))+'px'",
       "fragments": [
         "px"
@@ -270584,7 +270618,7 @@
     {
       "kind": "concatenation",
       "file": "app/library-chat.mjs",
-      "line": 252,
+      "line": 264,
       "expression": "'/api/library/books/'+encodeURIComponent(bookId)+'/chat'",
       "fragments": [
         "/api/library/books/",
@@ -270595,7 +270629,7 @@
     {
       "kind": "concatenation",
       "file": "app/library-chat.mjs",
-      "line": 252,
+      "line": 264,
       "expression": "'/api/library/books/'+encodeURIComponent(bookId)",
       "fragments": [
         "/api/library/books/"
@@ -270605,7 +270639,7 @@
     {
       "kind": "concatenation",
       "file": "app/library-chat.mjs",
-      "line": 252,
+      "line": 264,
       "expression": "'?passageId='+encodeURIComponent(passageId)",
       "fragments": [
         "?passageId="
@@ -270615,7 +270649,7 @@
     {
       "kind": "concatenation",
       "file": "app/library-chat.mjs",
-      "line": 261,
+      "line": 273,
       "expression": "'/api/library/books/'+encodeURIComponent(bookId)+'/chat'",
       "fragments": [
         "/api/library/books/",
@@ -270626,7 +270660,7 @@
     {
       "kind": "concatenation",
       "file": "app/library-chat.mjs",
-      "line": 261,
+      "line": 273,
       "expression": "'/api/library/books/'+encodeURIComponent(bookId)",
       "fragments": [
         "/api/library/books/"
@@ -270636,7 +270670,7 @@
     {
       "kind": "concatenation",
       "file": "app/library-chat.mjs",
-      "line": 268,
+      "line": 280,
       "expression": "'/api/library/books/'+encodeURIComponent(bookId)+'/chat/scope'",
       "fragments": [
         "/api/library/books/",
@@ -270647,7 +270681,7 @@
     {
       "kind": "concatenation",
       "file": "app/library-chat.mjs",
-      "line": 268,
+      "line": 280,
       "expression": "'/api/library/books/'+encodeURIComponent(bookId)",
       "fragments": [
         "/api/library/books/"
@@ -270657,7 +270691,7 @@
     {
       "kind": "concatenation",
       "file": "app/library-chat.mjs",
-      "line": 274,
+      "line": 286,
       "expression": "'/api/library/books/'+encodeURIComponent(bookId)+'/chat/'+encodeURIComponent(ticket.id)+'/cancel'",
       "fragments": [
         "/api/library/books/",
@@ -270669,7 +270703,7 @@
     {
       "kind": "concatenation",
       "file": "app/library-chat.mjs",
-      "line": 274,
+      "line": 286,
       "expression": "'/api/library/books/'+encodeURIComponent(bookId)+'/chat/'",
       "fragments": [
         "/api/library/books/",
@@ -270680,7 +270714,7 @@
     {
       "kind": "concatenation",
       "file": "app/library-chat.mjs",
-      "line": 274,
+      "line": 286,
       "expression": "'/api/library/books/'+encodeURIComponent(bookId)",
       "fragments": [
         "/api/library/books/"
@@ -270690,7 +270724,7 @@
     {
       "kind": "computed-member",
       "file": "app/library-chat.mjs",
-      "line": 279,
+      "line": 291,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -270698,7 +270732,7 @@
     {
       "kind": "concatenation",
       "file": "app/library-chat.mjs",
-      "line": 288,
+      "line": 300,
       "expression": "'Leafhour-对话-'+selectedBook+'.json'",
       "fragments": [
         "Leafhour-对话-",
@@ -270709,7 +270743,7 @@
     {
       "kind": "concatenation",
       "file": "app/library-chat.mjs",
-      "line": 288,
+      "line": 300,
       "expression": "'Leafhour-对话-'+selectedBook",
       "fragments": [
         "Leafhour-对话-"
@@ -270719,7 +270753,7 @@
     {
       "kind": "concatenation",
       "file": "app/library-chat.mjs",
-      "line": 315,
+      "line": 327,
       "expression": "viewport.height+'px'",
       "fragments": [
         "px"
@@ -270729,7 +270763,7 @@
     {
       "kind": "concatenation",
       "file": "app/library-chat.mjs",
-      "line": 315,
+      "line": 327,
       "expression": "viewport.offsetTop+'px'",
       "fragments": [
         "px"
@@ -270739,7 +270773,7 @@
     {
       "kind": "computed-member",
       "file": "app/library-chat.mjs",
-      "line": 340,
+      "line": 352,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -270747,7 +270781,7 @@
     {
       "kind": "computed-member",
       "file": "app/library-chat.mjs",
-      "line": 340,
+      "line": 352,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -270755,7 +270789,7 @@
     {
       "kind": "computed-member",
       "file": "app/library-chat.mjs",
-      "line": 348,
+      "line": 361,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -270763,7 +270797,7 @@
     {
       "kind": "computed-member",
       "file": "app/library-chat.mjs",
-      "line": 348,
+      "line": 361,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -270771,7 +270805,7 @@
     {
       "kind": "computed-member",
       "file": "app/library-chat.mjs",
-      "line": 355,
+      "line": 376,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -296799,8 +296833,8 @@
     "candidatesUnreviewed": 6108,
     "candidatesProtected": 142,
     "itemsProtected": 9,
-    "dynamicConsumers": 3768,
-    "consumerReferences": 2003,
+    "dynamicConsumers": 3771,
+    "consumerReferences": 2005,
     "keysWithoutStaticConsumers": 1213,
     "reviewedLocaleValues": 44,
     "unreviewedLocaleValues": 9212,
