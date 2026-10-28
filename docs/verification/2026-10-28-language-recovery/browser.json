@@ -1,0 +1,27 @@
+{
+  "cases": [
+    {
+      "route": "/zh-hans",
+      "host": "home-view",
+      "visibleError": true,
+      "nativeRetryRecovered": true
+    },
+    {
+      "route": "/library?ui=zh-Hans",
+      "host": "library-view",
+      "visibleError": true,
+      "nativeRetryRecovered": true
+    },
+    {
+      "route": "/read?book=gutenberg-alice&ui=zh-Hans",
+      "host": "book-page",
+      "visibleError": true,
+      "nativeRetryRecovered": true
+    }
+  ],
+  "limits": [
+    "Isolated local service and anonymous public book; no model calls.",
+    "Explicit catalogue transport failure; no changes to the existing language deadline or ownership gate."
+  ],
+  "passed": true
+}

@@ -37,6 +37,15 @@ test('a failed initial catalogue keeps the selected shell and a native retry ins
  let released=false;settleInitialUi({initializeOnce:async()=>{},getUiLocaleState:()=>({phase:'error',initialFallback:true})},{document:f.document,location:f.location}).then(()=>released=true);
  await new Promise(setImmediate);assert.equal(released,false);assert.equal(f.document.documentElement.lang,'ja');const panel=f.document.body.children[0];assert.equal(panel.children[0].textContent,'選択した言語を読み込めませんでした。');assert.equal(panel.children[1].href,f.location.href);
 });
+for(const visible of ['home-view','library-view','book-page'])test('initial language recovery uses the visible '+visible+' without replacing hidden views',async()=>{
+ const {settleInitialUi}=await import('../app/ui-first-paint-bootstrap.mjs');
+ const nodes=new Map(),make=tag=>({tagName:tag,children:[],hidden:false,setAttribute(){},append(...children){this.children.push(...children);},replaceChildren(...children){this.children=children;}});
+ const f=fixture({source:'page',locale:'ja',preference:'ja'});f.document.body=make('body');f.document.createElement=make;f.document.getElementById=id=>nodes.get(id)||null;
+ for(const id of ['book-page','library-view','home-view']){const node=make('div');node.id=id;node.hidden=id!==visible;node.children=[{kept:id}];nodes.set(id,node);}
+ let released=false;settleInitialUi({initializeOnce:async()=>{},getUiLocaleState:()=>({phase:'error',initialFallback:true})},{document:f.document,location:f.location}).then(()=>released=true);await new Promise(setImmediate);
+ assert.equal(released,false,'failed language must not release owners in a fallback language');
+ for(const [id,node]of nodes){if(id===visible){assert.equal(node.children[0].id,'ui-first-paint-error');assert.equal(node.children[0].children[1].href,f.location.href);}else assert.deepEqual(node.children,[{kept:id}],'hidden view remains untouched');}
+});
 
 test('legacy hints with fragments force a distinct document and restore the canonical address before owners',()=>{
  const f=fixture({device:'ja'});runUiFirstPaintHandoff(f);const target=new URL(f.targets[0]);assert.equal(target.pathname,'/_ui/library');assert.equal(target.hash,'#p1');
