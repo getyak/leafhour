@@ -270,7 +270,7 @@
       },
       {
         "file": "app/home-motion.mjs",
-        "sha256": "66ddffec005f3ba85c1859243d2ce01abc6b8907404552391a9bb85d0e9a0006"
+        "sha256": "a4f7b0fa3cd95da05471a0e1e06d2f53beea6646457dcbe983c596c0743c0946"
       },
       {
         "file": "app/home-navigation.mjs",
@@ -281,8 +281,12 @@
         "sha256": "a94fdfbfabd97597ffc31468bf0108565043479cad25a684078362c2891e7600"
       },
       {
+        "file": "app/home-scroll-story.mjs",
+        "sha256": "a2659394bb7579036b4632eb6f79f42560da06099d6376b807d7de1e1c0b9f8d"
+      },
+      {
         "file": "app/home.html",
-        "sha256": "a4d16a337e2fbf5cb5d9f789054545d0d52e4568182bb76e869e5a13f8fb900b"
+        "sha256": "b024dd24bf6b51336dad0ec5383071991f0ad4b3e71dbdad368c49565c9ee43d"
       },
       {
         "file": "app/index.html",
@@ -326,7 +330,7 @@
       },
       {
         "file": "app/library-chat.mjs",
-        "sha256": "e9b097e1fb58c7d874d7f0e31e0f83cff9485fff90a3a9bf49a11836ea0c7997"
+        "sha256": "5432f20a36a48fed3b5a4ed9d54bec9f3b78d59db151fa9fdad009e8f279b7d8"
       },
       {
         "file": "app/library-daily-reading.mjs",
@@ -618,7 +622,7 @@
       },
       {
         "file": "app/reader-conversation.mjs",
-        "sha256": "69e0d64198ff530691ef22d791d59dddf0e8d5258ecc32753a3756d415e46183"
+        "sha256": "7ef106b1977c03ba505c921a31e3a456cc05d692d9098bcc053194220f91a890"
       },
       {
         "file": "app/reader-entry.mjs",
@@ -1246,7 +1250,7 @@
       },
       {
         "file": "server/portal.mjs",
-        "sha256": "959743a9b1e4cd47f79384faf00b716f6b27a36fd7438d146a7c6e103d633a61"
+        "sha256": "95900f2c51106bd8ac5b9cac9698dfeabddf936d6e52ff3878c7714fa15c0567"
       },
       {
         "file": "server/preference-memory.mjs",
@@ -1341,7 +1345,7 @@
         "sha256": "531202f1814314b6c76bfef38b2ea66636425b1ca9b445db349e70ebb8bcd00e"
       }
     ],
-    "inputDigest": "89d96fccb1c87c408098b03c09aa47d023acd5014d3a6ce159c636e7e6818b54"
+    "inputDigest": "ac716fa88401df35fe513badcd19e934c73ce7ada393f2af532e790bcf8f0830"
   },
   "locales": [
     "en",
@@ -4046,7 +4050,7 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 102,
+          "line": 103,
           "column": 67
         }
       ],
@@ -4227,7 +4231,7 @@
         },
         {
           "file": "app/library-chat.mjs",
-          "line": 142,
+          "line": 143,
           "column": 130
         }
       ],
@@ -4965,7 +4969,7 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 192,
+          "line": 193,
           "column": 80
         }
       ],
@@ -5022,7 +5026,7 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 85,
+          "line": 86,
           "column": 56
         }
       ],
@@ -5079,7 +5083,7 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 83,
+          "line": 84,
           "column": 197
         }
       ],
@@ -5136,7 +5140,7 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 83,
+          "line": 84,
           "column": 90
         }
       ],
@@ -5193,7 +5197,7 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 76,
+          "line": 77,
           "column": 235
         }
       ],
@@ -5364,7 +5368,7 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 69,
+          "line": 70,
           "column": 36
         }
       ],
@@ -8073,7 +8077,7 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 75,
+          "line": 76,
           "column": 320
         }
       ],
@@ -8181,12 +8185,12 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 75,
+          "line": 76,
           "column": 376
         },
         {
           "file": "app/library-chat.mjs",
-          "line": 75,
+          "line": 76,
           "column": 424
         }
       ],
@@ -8243,7 +8247,7 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 183,
+          "line": 184,
           "column": 366
         }
       ],
@@ -8300,7 +8304,7 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 75,
+          "line": 76,
           "column": 255
         }
       ],
@@ -8478,6 +8482,11 @@
           "file": "app/reader-conversation.mjs",
           "line": 71,
           "column": 120
+        },
+        {
+          "file": "app/reader-conversation.mjs",
+          "line": 92,
+          "column": 113
         }
       ],
       "hints": [
@@ -8535,6 +8544,11 @@
           "file": "app/reader-conversation.mjs",
           "line": 71,
           "column": 90
+        },
+        {
+          "file": "app/reader-conversation.mjs",
+          "line": 92,
+          "column": 92
         }
       ],
       "hints": [
@@ -8647,12 +8661,12 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 8,
+          "line": 9,
           "column": 48
         },
         {
           "file": "app/library-chat.mjs",
-          "line": 58,
+          "line": 59,
           "column": 48
         },
         {
@@ -8714,12 +8728,12 @@
       "consumers": [
         {
           "file": "app/reader-conversation.mjs",
-          "line": 73,
+          "line": 103,
           "column": 71
         },
         {
           "file": "app/reader-conversation.mjs",
-          "line": 74,
+          "line": 104,
           "column": 69
         }
       ],
@@ -15391,7 +15405,7 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 235,
+          "line": 247,
           "column": 73
         }
       ],
@@ -15448,7 +15462,7 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 235,
+          "line": 247,
           "column": 82
         }
       ],
@@ -15505,7 +15519,7 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 238,
+          "line": 250,
           "column": 56
         }
       ],
@@ -15562,12 +15576,12 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 163,
+          "line": 164,
           "column": 79
         },
         {
           "file": "app/library-chat.mjs",
-          "line": 239,
+          "line": 251,
           "column": 50
         }
       ],
@@ -15624,12 +15638,12 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 232,
+          "line": 244,
           "column": 49
         },
         {
           "file": "app/library-chat.mjs",
-          "line": 240,
+          "line": 252,
           "column": 49
         }
       ],
@@ -15686,7 +15700,7 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 230,
+          "line": 242,
           "column": 335
         }
       ],
@@ -15743,7 +15757,7 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 230,
+          "line": 242,
           "column": 344
         }
       ],
@@ -15800,12 +15814,12 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 230,
+          "line": 242,
           "column": 514
         },
         {
           "file": "app/library-chat.mjs",
-          "line": 320,
+          "line": 332,
           "column": 162
         }
       ],
@@ -15862,12 +15876,12 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 230,
+          "line": 242,
           "column": 507
         },
         {
           "file": "app/library-chat.mjs",
-          "line": 320,
+          "line": 332,
           "column": 155
         }
       ],
@@ -15924,12 +15938,12 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 167,
+          "line": 168,
           "column": 79
         },
         {
           "file": "app/library-chat.mjs",
-          "line": 231,
+          "line": 243,
           "column": 89
         }
       ],
@@ -15986,7 +16000,7 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 90,
+          "line": 91,
           "column": 90
         }
       ],
@@ -16100,7 +16114,7 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 139,
+          "line": 140,
           "column": 91
         }
       ],
@@ -16157,7 +16171,7 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 139,
+          "line": 140,
           "column": 103
         }
       ],
@@ -16214,7 +16228,7 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 160,
+          "line": 161,
           "column": 39
         }
       ],
@@ -16271,7 +16285,7 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 162,
+          "line": 163,
           "column": 137
         }
       ],
@@ -16328,7 +16342,7 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 164,
+          "line": 165,
           "column": 77
         }
       ],
@@ -16385,7 +16399,7 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 167,
+          "line": 168,
           "column": 99
         }
       ],
@@ -16442,7 +16456,7 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 167,
+          "line": 168,
           "column": 106
         }
       ],
@@ -16499,7 +16513,7 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 169,
+          "line": 170,
           "column": 24
         }
       ],
@@ -16556,7 +16570,7 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 169,
+          "line": 170,
           "column": 50
         }
       ],
@@ -16613,13 +16627,13 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 228,
+          "line": 240,
           "column": 133
         },
         {
           "file": "app/library-chat.mjs",
-          "line": 278,
-          "column": 331
+          "line": 290,
+          "column": 353
         }
       ],
       "hints": [
@@ -16675,12 +16689,12 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 74,
+          "line": 75,
           "column": 219
         },
         {
           "file": "app/library-chat.mjs",
-          "line": 231,
+          "line": 243,
           "column": 96
         }
       ],
@@ -16788,7 +16802,7 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 90,
+          "line": 91,
           "column": 119
         }
       ],
@@ -16845,7 +16859,7 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 90,
+          "line": 91,
           "column": 126
         }
       ],
@@ -16902,7 +16916,7 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 91,
+          "line": 92,
           "column": 32
         }
       ],
@@ -16959,7 +16973,7 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 91,
+          "line": 92,
           "column": 67
         }
       ],
@@ -17016,7 +17030,7 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 91,
+          "line": 92,
           "column": 116
         }
       ],
@@ -17073,7 +17087,7 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 91,
+          "line": 92,
           "column": 124
         }
       ],
@@ -17306,7 +17320,7 @@
         },
         {
           "file": "app/library-chat.mjs",
-          "line": 136,
+          "line": 137,
           "column": 324
         }
       ],
@@ -17715,12 +17729,12 @@
         },
         {
           "file": "app/library-chat.mjs",
-          "line": 136,
+          "line": 137,
           "column": 346
         },
         {
           "file": "app/library-chat.mjs",
-          "line": 237,
+          "line": 249,
           "column": 45
         }
       ],
@@ -17874,32 +17888,32 @@
         },
         {
           "file": "app/library-chat.mjs",
-          "line": 8,
+          "line": 9,
           "column": 92
         },
         {
           "file": "app/library-chat.mjs",
-          "line": 58,
+          "line": 59,
           "column": 112
         },
         {
           "file": "app/library-chat.mjs",
-          "line": 62,
+          "line": 63,
           "column": 78
         },
         {
           "file": "app/library-chat.mjs",
-          "line": 228,
+          "line": 240,
           "column": 138
         },
         {
           "file": "app/library-chat.mjs",
-          "line": 278,
-          "column": 336
+          "line": 290,
+          "column": 358
         },
         {
           "file": "app/library-chat.mjs",
-          "line": 326,
+          "line": 338,
           "column": 83
         },
         {
@@ -18071,22 +18085,22 @@
         },
         {
           "file": "app/library-chat.mjs",
-          "line": 50,
+          "line": 51,
           "column": 86
         },
         {
           "file": "app/library-chat.mjs",
-          "line": 50,
+          "line": 51,
           "column": 122
         },
         {
           "file": "app/library-chat.mjs",
-          "line": 228,
+          "line": 240,
           "column": 112
         },
         {
           "file": "app/library-chat.mjs",
-          "line": 318,
+          "line": 330,
           "column": 112
         },
         {
@@ -18323,7 +18337,7 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 14,
+          "line": 15,
           "column": 81
         }
       ],
@@ -18380,7 +18394,7 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 49,
+          "line": 50,
           "column": 119
         }
       ],
@@ -20092,27 +20106,27 @@
         },
         {
           "file": "app/library-chat.mjs",
-          "line": 50,
+          "line": 51,
           "column": 114
         },
         {
           "file": "app/library-chat.mjs",
-          "line": 62,
+          "line": 63,
           "column": 196
         },
         {
           "file": "app/library-chat.mjs",
-          "line": 70,
+          "line": 71,
           "column": 119
         },
         {
           "file": "app/library-chat.mjs",
-          "line": 75,
+          "line": 76,
           "column": 416
         },
         {
           "file": "app/library-chat.mjs",
-          "line": 102,
+          "line": 103,
           "column": 201
         },
         {
@@ -20309,12 +20323,12 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 73,
+          "line": 74,
           "column": 67
         },
         {
           "file": "app/library-chat.mjs",
-          "line": 232,
+          "line": 244,
           "column": 82
         }
       ],
@@ -20381,17 +20395,17 @@
         },
         {
           "file": "app/library-chat.mjs",
-          "line": 74,
+          "line": 75,
           "column": 83
         },
         {
           "file": "app/library-chat.mjs",
-          "line": 74,
+          "line": 75,
           "column": 205
         },
         {
           "file": "app/library-chat.mjs",
-          "line": 231,
+          "line": 243,
           "column": 51
         },
         {
@@ -20503,7 +20517,7 @@
         },
         {
           "file": "app/library-chat.mjs",
-          "line": 80,
+          "line": 81,
           "column": 61
         },
         {
@@ -20712,27 +20726,27 @@
         },
         {
           "file": "app/library-chat.mjs",
-          "line": 138,
+          "line": 139,
           "column": 31
         },
         {
           "file": "app/library-chat.mjs",
-          "line": 138,
+          "line": 139,
           "column": 51
         },
         {
           "file": "app/library-chat.mjs",
-          "line": 229,
+          "line": 241,
           "column": 80
         },
         {
           "file": "app/library-chat.mjs",
-          "line": 230,
+          "line": 242,
           "column": 251
         },
         {
           "file": "app/library-chat.mjs",
-          "line": 235,
+          "line": 247,
           "column": 62
         }
       ],
@@ -20789,7 +20803,7 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 160,
+          "line": 161,
           "column": 30
         }
       ],
@@ -20846,7 +20860,7 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 162,
+          "line": 163,
           "column": 86
         }
       ],
@@ -20903,7 +20917,7 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 163,
+          "line": 164,
           "column": 67
         }
       ],
@@ -20960,7 +20974,7 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 164,
+          "line": 165,
           "column": 63
         }
       ],
@@ -21017,7 +21031,7 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 167,
+          "line": 168,
           "column": 86
         }
       ],
@@ -21074,7 +21088,7 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 169,
+          "line": 170,
           "column": 31
         }
       ],
@@ -21131,7 +21145,7 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 169,
+          "line": 170,
           "column": 43
         }
       ],
@@ -21188,7 +21202,7 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 185,
+          "line": 186,
           "column": 618
         }
       ],
@@ -21250,7 +21264,7 @@
         },
         {
           "file": "app/library-chat.mjs",
-          "line": 183,
+          "line": 184,
           "column": 722
         }
       ],
@@ -21409,7 +21423,7 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 227,
+          "line": 239,
           "column": 141
         }
       ],
@@ -21466,12 +21480,12 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 284,
+          "line": 296,
           "column": 222
         },
         {
           "file": "app/library-chat.mjs",
-          "line": 284,
+          "line": 296,
           "column": 251
         }
       ],
@@ -26268,7 +26282,7 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 13,
+          "line": 14,
           "column": 59
         },
         {
@@ -26330,12 +26344,12 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 47,
+          "line": 48,
           "column": 69
         },
         {
           "file": "app/library-chat.mjs",
-          "line": 62,
+          "line": 63,
           "column": 204
         }
       ],
@@ -26392,7 +26406,7 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 48,
+          "line": 49,
           "column": 84
         }
       ],
@@ -26500,7 +26514,7 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 72,
+          "line": 73,
           "column": 80
         }
       ],
@@ -26557,12 +26571,12 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 73,
+          "line": 74,
           "column": 35
         },
         {
           "file": "app/library-chat.mjs",
-          "line": 232,
+          "line": 244,
           "column": 98
         }
       ],
@@ -26619,7 +26633,7 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 76,
+          "line": 77,
           "column": 405
         }
       ],
@@ -26676,7 +26690,7 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 122,
+          "line": 123,
           "column": 66
         }
       ],
@@ -26753,12 +26767,12 @@
         },
         {
           "file": "app/library-chat.mjs",
-          "line": 183,
+          "line": 184,
           "column": 438
         },
         {
           "file": "app/library-chat.mjs",
-          "line": 218,
+          "line": 230,
           "column": 70
         },
         {
@@ -26850,12 +26864,12 @@
         },
         {
           "file": "app/library-chat.mjs",
-          "line": 183,
+          "line": 184,
           "column": 451
         },
         {
           "file": "app/library-chat.mjs",
-          "line": 218,
+          "line": 230,
           "column": 83
         },
         {
@@ -26947,12 +26961,12 @@
         },
         {
           "file": "app/library-chat.mjs",
-          "line": 183,
+          "line": 184,
           "column": 469
         },
         {
           "file": "app/library-chat.mjs",
-          "line": 218,
+          "line": 230,
           "column": 101
         },
         {
@@ -27049,12 +27063,12 @@
         },
         {
           "file": "app/library-chat.mjs",
-          "line": 183,
+          "line": 184,
           "column": 624
         },
         {
           "file": "app/library-chat.mjs",
-          "line": 218,
+          "line": 230,
           "column": 232
         }
       ],
@@ -27533,7 +27547,7 @@
         },
         {
           "file": "app/library-chat.mjs",
-          "line": 142,
+          "line": 143,
           "column": 157
         },
         {
@@ -27823,7 +27837,7 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 160,
+          "line": 161,
           "column": 93
         }
       ],
@@ -27880,7 +27894,7 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 183,
+          "line": 184,
           "column": 226
         }
       ],
@@ -27937,7 +27951,7 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 185,
+          "line": 186,
           "column": 174
         }
       ],
@@ -27994,7 +28008,7 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 185,
+          "line": 186,
           "column": 782
         }
       ],
@@ -28306,7 +28320,7 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 227,
+          "line": 239,
           "column": 157
         }
       ],
@@ -28363,7 +28377,7 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 227,
+          "line": 239,
           "column": 162
         }
       ],
@@ -28420,12 +28434,12 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 283,
+          "line": 295,
           "column": 101
         },
         {
           "file": "app/library-chat.mjs",
-          "line": 283,
+          "line": 295,
           "column": 130
         }
       ],
@@ -58626,7 +58640,7 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 222,
+          "line": 234,
           "column": 75
         }
       ],
@@ -58683,7 +58697,7 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 222,
+          "line": 234,
           "column": 57
         }
       ],
@@ -59465,7 +59479,7 @@
         },
         {
           "file": "app/library-chat.mjs",
-          "line": 137,
+          "line": 138,
           "column": 43
         }
       ],
@@ -59522,7 +59536,7 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 140,
+          "line": 141,
           "column": 36
         }
       ],
@@ -67710,12 +67724,12 @@
         },
         {
           "file": "app/library-chat.mjs",
-          "line": 102,
+          "line": 103,
           "column": 168
         },
         {
           "file": "app/library-chat.mjs",
-          "line": 102,
+          "line": 103,
           "column": 209
         },
         {
@@ -69338,7 +69352,7 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 162,
+          "line": 163,
           "column": 60
         },
         {
@@ -69782,7 +69796,7 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 162,
+          "line": 163,
           "column": 111
         },
         {
@@ -123563,7 +123577,7 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 82,
+          "line": 83,
           "column": 220
         }
       ],
@@ -123620,7 +123634,7 @@
       "consumers": [
         {
           "file": "app/library-chat.mjs",
-          "line": 81,
+          "line": 82,
           "column": 248
         }
       ],
@@ -189277,9 +189291,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:55:579",
+      "id": "candidate:app/home.html:56:579",
       "file": "app/home.html",
-      "line": 55,
+      "line": 56,
       "column": 579,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -189303,9 +189317,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:70:73",
+      "id": "candidate:app/home.html:71:73",
       "file": "app/home.html",
-      "line": 70,
+      "line": 71,
       "column": 73,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -189329,9 +189343,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:70:551",
+      "id": "candidate:app/home.html:71:551",
       "file": "app/home.html",
-      "line": 70,
+      "line": 71,
       "column": 551,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -189355,9 +189369,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:72:53",
+      "id": "candidate:app/home.html:73:53",
       "file": "app/home.html",
-      "line": 72,
+      "line": 73,
       "column": 53,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -189381,9 +189395,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:74:101",
+      "id": "candidate:app/home.html:75:101",
       "file": "app/home.html",
-      "line": 74,
+      "line": 75,
       "column": 101,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -189407,9 +189421,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:75:276",
+      "id": "candidate:app/home.html:76:276",
       "file": "app/home.html",
-      "line": 75,
+      "line": 76,
       "column": 276,
       "kind": "html-attribute",
       "property": "placeholder",
@@ -189433,9 +189447,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:75:413",
+      "id": "candidate:app/home.html:76:413",
       "file": "app/home.html",
-      "line": 75,
+      "line": 76,
       "column": 413,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -189459,9 +189473,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:75:564",
+      "id": "candidate:app/home.html:76:564",
       "file": "app/home.html",
-      "line": 75,
+      "line": 76,
       "column": 564,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -189485,9 +189499,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:81:77",
+      "id": "candidate:app/home.html:82:77",
       "file": "app/home.html",
-      "line": 81,
+      "line": 82,
       "column": 77,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -189511,9 +189525,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:82:308",
+      "id": "candidate:app/home.html:83:308",
       "file": "app/home.html",
-      "line": 82,
+      "line": 83,
       "column": 308,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -189537,9 +189551,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:82:395",
+      "id": "candidate:app/home.html:83:395",
       "file": "app/home.html",
-      "line": 82,
+      "line": 83,
       "column": 395,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -189563,9 +189577,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:82:889",
+      "id": "candidate:app/home.html:83:889",
       "file": "app/home.html",
-      "line": 82,
+      "line": 83,
       "column": 889,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -189589,9 +189603,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:85:607",
+      "id": "candidate:app/home.html:86:607",
       "file": "app/home.html",
-      "line": 85,
+      "line": 86,
       "column": 607,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -189615,9 +189629,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:86:83",
+      "id": "candidate:app/home.html:87:83",
       "file": "app/home.html",
-      "line": 86,
+      "line": 87,
       "column": 83,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -189641,9 +189655,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:87:82",
+      "id": "candidate:app/home.html:88:82",
       "file": "app/home.html",
-      "line": 87,
+      "line": 88,
       "column": 82,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -189667,9 +189681,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:91:101",
+      "id": "candidate:app/home.html:92:101",
       "file": "app/home.html",
-      "line": 91,
+      "line": 92,
       "column": 101,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -189693,9 +189707,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:96:185",
+      "id": "candidate:app/home.html:97:185",
       "file": "app/home.html",
-      "line": 96,
+      "line": 97,
       "column": 185,
       "kind": "html-attribute",
       "property": "placeholder",
@@ -189719,9 +189733,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:97:383",
+      "id": "candidate:app/home.html:98:383",
       "file": "app/home.html",
-      "line": 97,
+      "line": 98,
       "column": 383,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -189745,9 +189759,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:106:418",
+      "id": "candidate:app/home.html:107:418",
       "file": "app/home.html",
-      "line": 106,
+      "line": 107,
       "column": 418,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -189771,9 +189785,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:110:116",
+      "id": "candidate:app/home.html:111:116",
       "file": "app/home.html",
-      "line": 110,
+      "line": 111,
       "column": 116,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -189797,9 +189811,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:111:114",
+      "id": "candidate:app/home.html:112:114",
       "file": "app/home.html",
-      "line": 111,
+      "line": 112,
       "column": 114,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -189823,9 +189837,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:116:159",
+      "id": "candidate:app/home.html:117:159",
       "file": "app/home.html",
-      "line": 116,
+      "line": 117,
       "column": 159,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -189849,9 +189863,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:116:351",
+      "id": "candidate:app/home.html:117:351",
       "file": "app/home.html",
-      "line": 116,
+      "line": 117,
       "column": 351,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -189875,9 +189889,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:118:98",
+      "id": "candidate:app/home.html:119:98",
       "file": "app/home.html",
-      "line": 118,
+      "line": 119,
       "column": 98,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -189901,9 +189915,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:120:95",
+      "id": "candidate:app/home.html:121:95",
       "file": "app/home.html",
-      "line": 120,
+      "line": 121,
       "column": 95,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -189927,9 +189941,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:121:102",
+      "id": "candidate:app/home.html:122:102",
       "file": "app/home.html",
-      "line": 121,
+      "line": 122,
       "column": 102,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -190837,9 +190851,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:55:112",
+      "id": "candidate:app/home.html:56:112",
       "file": "app/home.html",
-      "line": 55,
+      "line": 56,
       "column": 112,
       "kind": "html-text",
       "property": null,
@@ -190863,9 +190877,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:55:138",
+      "id": "candidate:app/home.html:56:138",
       "file": "app/home.html",
-      "line": 55,
+      "line": 56,
       "column": 138,
       "kind": "html-text",
       "property": null,
@@ -190889,9 +190903,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:55:203",
+      "id": "candidate:app/home.html:56:203",
       "file": "app/home.html",
-      "line": 55,
+      "line": 56,
       "column": 203,
       "kind": "html-text",
       "property": null,
@@ -190915,9 +190929,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:55:325",
+      "id": "candidate:app/home.html:56:325",
       "file": "app/home.html",
-      "line": 55,
+      "line": 56,
       "column": 325,
       "kind": "html-text",
       "property": null,
@@ -190941,9 +190955,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:55:361",
+      "id": "candidate:app/home.html:56:361",
       "file": "app/home.html",
-      "line": 55,
+      "line": 56,
       "column": 361,
       "kind": "html-text",
       "property": null,
@@ -190967,9 +190981,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:55:456",
+      "id": "candidate:app/home.html:56:456",
       "file": "app/home.html",
-      "line": 55,
+      "line": 56,
       "column": 456,
       "kind": "html-text",
       "property": null,
@@ -190993,9 +191007,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:55:590",
+      "id": "candidate:app/home.html:56:590",
       "file": "app/home.html",
-      "line": 55,
+      "line": 56,
       "column": 590,
       "kind": "html-text",
       "property": null,
@@ -191019,9 +191033,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:55:620",
+      "id": "candidate:app/home.html:56:620",
       "file": "app/home.html",
-      "line": 55,
+      "line": 56,
       "column": 620,
       "kind": "html-text",
       "property": null,
@@ -191045,9 +191059,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:58:44",
+      "id": "candidate:app/home.html:59:44",
       "file": "app/home.html",
-      "line": 58,
+      "line": 59,
       "column": 44,
       "kind": "html-text",
       "property": null,
@@ -191071,9 +191085,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:58:55",
+      "id": "candidate:app/home.html:59:55",
       "file": "app/home.html",
-      "line": 58,
+      "line": 59,
       "column": 55,
       "kind": "html-text",
       "property": null,
@@ -191097,9 +191111,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:58:70",
+      "id": "candidate:app/home.html:59:70",
       "file": "app/home.html",
-      "line": 58,
+      "line": 59,
       "column": 70,
       "kind": "html-text",
       "property": null,
@@ -191123,9 +191137,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:58:88",
+      "id": "candidate:app/home.html:59:88",
       "file": "app/home.html",
-      "line": 58,
+      "line": 59,
       "column": 88,
       "kind": "html-text",
       "property": null,
@@ -191149,9 +191163,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:58:142",
+      "id": "candidate:app/home.html:59:142",
       "file": "app/home.html",
-      "line": 58,
+      "line": 59,
       "column": 142,
       "kind": "html-text",
       "property": null,
@@ -191175,9 +191189,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:58:174",
+      "id": "candidate:app/home.html:59:174",
       "file": "app/home.html",
-      "line": 58,
+      "line": 59,
       "column": 174,
       "kind": "html-text",
       "property": null,
@@ -191201,9 +191215,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:61:92",
+      "id": "candidate:app/home.html:62:92",
       "file": "app/home.html",
-      "line": 61,
+      "line": 62,
       "column": 92,
       "kind": "html-text",
       "property": null,
@@ -191227,9 +191241,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:61:178",
+      "id": "candidate:app/home.html:62:178",
       "file": "app/home.html",
-      "line": 61,
+      "line": 62,
       "column": 178,
       "kind": "html-text",
       "property": null,
@@ -191253,9 +191267,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:61:219",
+      "id": "candidate:app/home.html:62:219",
       "file": "app/home.html",
-      "line": 61,
+      "line": 62,
       "column": 219,
       "kind": "html-text",
       "property": null,
@@ -191279,9 +191293,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:62:62",
+      "id": "candidate:app/home.html:63:62",
       "file": "app/home.html",
-      "line": 62,
+      "line": 63,
       "column": 62,
       "kind": "html-text",
       "property": null,
@@ -191305,9 +191319,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:62:70",
+      "id": "candidate:app/home.html:63:70",
       "file": "app/home.html",
-      "line": 62,
+      "line": 63,
       "column": 70,
       "kind": "html-text",
       "property": null,
@@ -191331,9 +191345,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:62:117",
+      "id": "candidate:app/home.html:63:117",
       "file": "app/home.html",
-      "line": 62,
+      "line": 63,
       "column": 117,
       "kind": "html-text",
       "property": null,
@@ -191357,9 +191371,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:62:177",
+      "id": "candidate:app/home.html:63:177",
       "file": "app/home.html",
-      "line": 62,
+      "line": 63,
       "column": 177,
       "kind": "html-text",
       "property": null,
@@ -191383,66 +191397,14 @@
       }
     },
     {
-      "id": "candidate:app/home.html:63:119",
+      "id": "candidate:app/home.html:64:119",
       "file": "app/home.html",
-      "line": 63,
+      "line": 64,
       "column": 119,
       "kind": "html-text",
       "property": null,
       "value": "开始之前，你也许想知道。",
       "sha256": "08f4f1cad2f7470f2cb68475bd863b1bb0cd9cd27219069b4443e55a10d16995",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [
-        {
-          "kind": "dom-text",
-          "evidence": "html-text-node",
-          "confidence": "low"
-        }
-      ],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/home.html:64:23",
-      "file": "app/home.html",
-      "line": 64,
-      "column": 23,
-      "kind": "html-text",
-      "property": null,
-      "value": "可以导入哪些格式？",
-      "sha256": "6e8ebed6d8a8a2e09f5ef32fec495a4ab25ad5a7e6d216cef97d7292e3de6e56",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [
-        {
-          "kind": "dom-text",
-          "evidence": "html-text-node",
-          "confidence": "low"
-        }
-      ],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/home.html:64:45",
-      "file": "app/home.html",
-      "line": 64,
-      "column": 45,
-      "kind": "html-text",
-      "property": null,
-      "value": "目前支持 PDF、EPUB、Markdown（.md）和纯文本（.txt）。PDF 提取的文字需要与原稿核对；扫描页会在你确认后自动识别。EPUB 按内置阅读顺序提取，暂不支持加密或 DRM 版本。",
-      "sha256": "4af87146dbcf40adbb5c95810e0e6ac81667bb62e418f9ff1ab8efd98670d511",
       "protected": false,
       "protectionReason": null,
       "hints": [
@@ -191467,8 +191429,8 @@
       "column": 23,
       "kind": "html-text",
       "property": null,
-      "value": "书籍与记录可以带走吗？",
-      "sha256": "640031dbb13b25ed7b0270a5f5f24ab181581caca469e1ba1567e4ab5a0badb0",
+      "value": "可以导入哪些格式？",
+      "sha256": "6e8ebed6d8a8a2e09f5ef32fec495a4ab25ad5a7e6d216cef97d7292e3de6e56",
       "protected": false,
       "protectionReason": null,
       "hints": [
@@ -191487,66 +191449,14 @@
       }
     },
     {
-      "id": "candidate:app/home.html:65:47",
+      "id": "candidate:app/home.html:65:45",
       "file": "app/home.html",
       "line": 65,
-      "column": 47,
+      "column": 45,
       "kind": "html-text",
       "property": null,
-      "value": "服务支持整库导出和恢复，不要求订阅。登录后在书房“设置 → 数据与迁移”下载 ZIP 备份、恢复书房或导出选定记录，原文件可自行选择是否纳入。未同步的记录与草稿仍留在原浏览器，处理方式见",
-      "sha256": "087f3eab298867f71512bc3e6e182c2471b8328996a6a0d9dcbec78de9dc8738",
-      "protected": true,
-      "protectionReason": "quotation",
-      "hints": [
-        {
-          "kind": "dom-text",
-          "evidence": "html-text-node",
-          "confidence": "low"
-        }
-      ],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/home.html:65:160",
-      "file": "app/home.html",
-      "line": 65,
-      "column": 160,
-      "kind": "html-text",
-      "property": null,
-      "value": "隐私与数据说明",
-      "sha256": "e5d783e35dad634d562ea86629e0582722008586cc38ab55f78624ae0e281660",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [
-        {
-          "kind": "dom-text",
-          "evidence": "html-text-node",
-          "confidence": "low"
-        }
-      ],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/home.html:65:171",
-      "file": "app/home.html",
-      "line": 65,
-      "column": 171,
-      "kind": "html-text",
-      "property": null,
-      "value": "。",
-      "sha256": "eb0d5884569b398e475b89e77a068c6c575a0064ff6a72fafc173102c4cfcd57",
+      "value": "目前支持 PDF、EPUB、Markdown（.md）和纯文本（.txt）。PDF 提取的文字需要与原稿核对；扫描页会在你确认后自动识别。EPUB 按内置阅读顺序提取，暂不支持加密或 DRM 版本。",
+      "sha256": "4af87146dbcf40adbb5c95810e0e6ac81667bb62e418f9ff1ab8efd98670d511",
       "protected": false,
       "protectionReason": null,
       "hints": [
@@ -191571,6 +191481,110 @@
       "column": 23,
       "kind": "html-text",
       "property": null,
+      "value": "书籍与记录可以带走吗？",
+      "sha256": "640031dbb13b25ed7b0270a5f5f24ab181581caca469e1ba1567e4ab5a0badb0",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [
+        {
+          "kind": "dom-text",
+          "evidence": "html-text-node",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/home.html:66:47",
+      "file": "app/home.html",
+      "line": 66,
+      "column": 47,
+      "kind": "html-text",
+      "property": null,
+      "value": "服务支持整库导出和恢复，不要求订阅。登录后在书房“设置 → 数据与迁移”下载 ZIP 备份、恢复书房或导出选定记录，原文件可自行选择是否纳入。未同步的记录与草稿仍留在原浏览器，处理方式见",
+      "sha256": "087f3eab298867f71512bc3e6e182c2471b8328996a6a0d9dcbec78de9dc8738",
+      "protected": true,
+      "protectionReason": "quotation",
+      "hints": [
+        {
+          "kind": "dom-text",
+          "evidence": "html-text-node",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/home.html:66:160",
+      "file": "app/home.html",
+      "line": 66,
+      "column": 160,
+      "kind": "html-text",
+      "property": null,
+      "value": "隐私与数据说明",
+      "sha256": "e5d783e35dad634d562ea86629e0582722008586cc38ab55f78624ae0e281660",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [
+        {
+          "kind": "dom-text",
+          "evidence": "html-text-node",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/home.html:66:171",
+      "file": "app/home.html",
+      "line": 66,
+      "column": 171,
+      "kind": "html-text",
+      "property": null,
+      "value": "。",
+      "sha256": "eb0d5884569b398e475b89e77a068c6c575a0064ff6a72fafc173102c4cfcd57",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [
+        {
+          "kind": "dom-text",
+          "evidence": "html-text-node",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/home.html:67:23",
+      "file": "app/home.html",
+      "line": 67,
+      "column": 23,
+      "kind": "html-text",
+      "property": null,
       "value": "使用 AI 和朋友共读有哪些限制？",
       "sha256": "27ceba34fb7464096ff886df840f9280e827945876f73bb93836ea2ccaaf3a70",
       "protected": false,
@@ -191591,9 +191605,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:66:53",
+      "id": "candidate:app/home.html:67:53",
       "file": "app/home.html",
-      "line": 66,
+      "line": 67,
       "column": 53,
       "kind": "html-text",
       "property": null,
@@ -191617,9 +191631,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:70:407",
+      "id": "candidate:app/home.html:71:407",
       "file": "app/home.html",
-      "line": 70,
+      "line": 71,
       "column": 407,
       "kind": "html-text",
       "property": null,
@@ -191643,9 +191657,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:71:49",
+      "id": "candidate:app/home.html:72:49",
       "file": "app/home.html",
-      "line": 71,
+      "line": 72,
       "column": 49,
       "kind": "html-text",
       "property": null,
@@ -191669,9 +191683,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:71:156",
+      "id": "candidate:app/home.html:72:156",
       "file": "app/home.html",
-      "line": 71,
+      "line": 72,
       "column": 156,
       "kind": "html-text",
       "property": null,
@@ -191695,9 +191709,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:71:211",
+      "id": "candidate:app/home.html:72:211",
       "file": "app/home.html",
-      "line": 71,
+      "line": 72,
       "column": 211,
       "kind": "html-text",
       "property": null,
@@ -191721,9 +191735,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:74:175",
+      "id": "candidate:app/home.html:75:175",
       "file": "app/home.html",
-      "line": 74,
+      "line": 75,
       "column": 175,
       "kind": "html-text",
       "property": null,
@@ -191747,9 +191761,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:74:259",
+      "id": "candidate:app/home.html:75:259",
       "file": "app/home.html",
-      "line": 74,
+      "line": 75,
       "column": 259,
       "kind": "html-text",
       "property": null,
@@ -191773,9 +191787,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:74:342",
+      "id": "candidate:app/home.html:75:342",
       "file": "app/home.html",
-      "line": 74,
+      "line": 75,
       "column": 342,
       "kind": "html-text",
       "property": null,
@@ -191799,9 +191813,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:74:427",
+      "id": "candidate:app/home.html:75:427",
       "file": "app/home.html",
-      "line": 74,
+      "line": 75,
       "column": 427,
       "kind": "html-text",
       "property": null,
@@ -191825,9 +191839,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:75:174",
+      "id": "candidate:app/home.html:76:174",
       "file": "app/home.html",
-      "line": 75,
+      "line": 76,
       "column": 174,
       "kind": "html-text",
       "property": null,
@@ -191851,9 +191865,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:75:426",
+      "id": "candidate:app/home.html:76:426",
       "file": "app/home.html",
-      "line": 75,
+      "line": 76,
       "column": 426,
       "kind": "html-text",
       "property": null,
@@ -191877,9 +191891,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:75:676",
+      "id": "candidate:app/home.html:76:676",
       "file": "app/home.html",
-      "line": 75,
+      "line": 76,
       "column": 676,
       "kind": "html-text",
       "property": null,
@@ -191903,9 +191917,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:77:237",
+      "id": "candidate:app/home.html:78:237",
       "file": "app/home.html",
-      "line": 77,
+      "line": 78,
       "column": 237,
       "kind": "html-text",
       "property": null,
@@ -191929,9 +191943,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:78:177",
+      "id": "candidate:app/home.html:79:177",
       "file": "app/home.html",
-      "line": 78,
+      "line": 79,
       "column": 177,
       "kind": "html-text",
       "property": null,
@@ -191955,9 +191969,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:78:293",
+      "id": "candidate:app/home.html:79:293",
       "file": "app/home.html",
-      "line": 78,
+      "line": 79,
       "column": 293,
       "kind": "html-text",
       "property": null,
@@ -191981,9 +191995,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:78:348",
+      "id": "candidate:app/home.html:79:348",
       "file": "app/home.html",
-      "line": 78,
+      "line": 79,
       "column": 348,
       "kind": "html-text",
       "property": null,
@@ -192007,9 +192021,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:78:484",
+      "id": "candidate:app/home.html:79:484",
       "file": "app/home.html",
-      "line": 78,
+      "line": 79,
       "column": 484,
       "kind": "html-text",
       "property": null,
@@ -192033,9 +192047,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:78:540",
+      "id": "candidate:app/home.html:79:540",
       "file": "app/home.html",
-      "line": 78,
+      "line": 79,
       "column": 540,
       "kind": "html-text",
       "property": null,
@@ -192059,9 +192073,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:78:576",
+      "id": "candidate:app/home.html:79:576",
       "file": "app/home.html",
-      "line": 78,
+      "line": 79,
       "column": 576,
       "kind": "html-text",
       "property": null,
@@ -192085,9 +192099,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:78:612",
+      "id": "candidate:app/home.html:79:612",
       "file": "app/home.html",
-      "line": 78,
+      "line": 79,
       "column": 612,
       "kind": "html-text",
       "property": null,
@@ -192111,9 +192125,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:78:753",
+      "id": "candidate:app/home.html:79:753",
       "file": "app/home.html",
-      "line": 78,
+      "line": 79,
       "column": 753,
       "kind": "html-text",
       "property": null,
@@ -192137,9 +192151,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:78:813",
+      "id": "candidate:app/home.html:79:813",
       "file": "app/home.html",
-      "line": 78,
+      "line": 79,
       "column": 813,
       "kind": "html-text",
       "property": null,
@@ -192163,9 +192177,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:78:948",
+      "id": "candidate:app/home.html:79:948",
       "file": "app/home.html",
-      "line": 78,
+      "line": 79,
       "column": 948,
       "kind": "html-text",
       "property": null,
@@ -192189,9 +192203,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:78:1004",
+      "id": "candidate:app/home.html:79:1004",
       "file": "app/home.html",
-      "line": 78,
+      "line": 79,
       "column": 1004,
       "kind": "html-text",
       "property": null,
@@ -192215,9 +192229,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:78:1042",
+      "id": "candidate:app/home.html:79:1042",
       "file": "app/home.html",
-      "line": 78,
+      "line": 79,
       "column": 1042,
       "kind": "html-text",
       "property": null,
@@ -192241,9 +192255,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:78:1080",
+      "id": "candidate:app/home.html:79:1080",
       "file": "app/home.html",
-      "line": 78,
+      "line": 79,
       "column": 1080,
       "kind": "html-text",
       "property": null,
@@ -192267,9 +192281,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:78:1118",
+      "id": "candidate:app/home.html:79:1118",
       "file": "app/home.html",
-      "line": 78,
+      "line": 79,
       "column": 1118,
       "kind": "html-text",
       "property": null,
@@ -192293,9 +192307,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:78:1204",
+      "id": "candidate:app/home.html:79:1204",
       "file": "app/home.html",
-      "line": 78,
+      "line": 79,
       "column": 1204,
       "kind": "html-text",
       "property": null,
@@ -192319,9 +192333,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:80:125",
+      "id": "candidate:app/home.html:81:125",
       "file": "app/home.html",
-      "line": 80,
+      "line": 81,
       "column": 125,
       "kind": "html-text",
       "property": null,
@@ -192345,9 +192359,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:81:94",
+      "id": "candidate:app/home.html:82:94",
       "file": "app/home.html",
-      "line": 81,
+      "line": 82,
       "column": 94,
       "kind": "html-text",
       "property": null,
@@ -192371,9 +192385,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:81:108",
+      "id": "candidate:app/home.html:82:108",
       "file": "app/home.html",
-      "line": 81,
+      "line": 82,
       "column": 108,
       "kind": "html-text",
       "property": null,
@@ -192397,9 +192411,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:81:254",
+      "id": "candidate:app/home.html:82:254",
       "file": "app/home.html",
-      "line": 81,
+      "line": 82,
       "column": 254,
       "kind": "html-text",
       "property": null,
@@ -192423,9 +192437,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:81:333",
+      "id": "candidate:app/home.html:82:333",
       "file": "app/home.html",
-      "line": 81,
+      "line": 82,
       "column": 333,
       "kind": "html-text",
       "property": null,
@@ -192449,9 +192463,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:82:219",
+      "id": "candidate:app/home.html:83:219",
       "file": "app/home.html",
-      "line": 82,
+      "line": 83,
       "column": 219,
       "kind": "html-text",
       "property": null,
@@ -192475,9 +192489,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:82:427",
+      "id": "candidate:app/home.html:83:427",
       "file": "app/home.html",
-      "line": 82,
+      "line": 83,
       "column": 427,
       "kind": "html-text",
       "property": null,
@@ -192501,9 +192515,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:82:623",
+      "id": "candidate:app/home.html:83:623",
       "file": "app/home.html",
-      "line": 82,
+      "line": 83,
       "column": 623,
       "kind": "html-text",
       "property": null,
@@ -192527,9 +192541,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:82:638",
+      "id": "candidate:app/home.html:83:638",
       "file": "app/home.html",
-      "line": 82,
+      "line": 83,
       "column": 638,
       "kind": "html-text",
       "property": null,
@@ -192553,9 +192567,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:82:727",
+      "id": "candidate:app/home.html:83:727",
       "file": "app/home.html",
-      "line": 82,
+      "line": 83,
       "column": 727,
       "kind": "html-text",
       "property": null,
@@ -192579,9 +192593,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:82:806",
+      "id": "candidate:app/home.html:83:806",
       "file": "app/home.html",
-      "line": 82,
+      "line": 83,
       "column": 806,
       "kind": "html-text",
       "property": null,
@@ -192605,9 +192619,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:85:376",
+      "id": "candidate:app/home.html:86:376",
       "file": "app/home.html",
-      "line": 85,
+      "line": 86,
       "column": 376,
       "kind": "html-text",
       "property": null,
@@ -192631,9 +192645,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:85:408",
+      "id": "candidate:app/home.html:86:408",
       "file": "app/home.html",
-      "line": 85,
+      "line": 86,
       "column": 408,
       "kind": "html-text",
       "property": null,
@@ -192657,9 +192671,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:85:444",
+      "id": "candidate:app/home.html:86:444",
       "file": "app/home.html",
-      "line": 85,
+      "line": 86,
       "column": 444,
       "kind": "html-text",
       "property": null,
@@ -192683,9 +192697,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:85:475",
+      "id": "candidate:app/home.html:86:475",
       "file": "app/home.html",
-      "line": 85,
+      "line": 86,
       "column": 475,
       "kind": "html-text",
       "property": null,
@@ -192709,9 +192723,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:85:528",
+      "id": "candidate:app/home.html:86:528",
       "file": "app/home.html",
-      "line": 85,
+      "line": 86,
       "column": 528,
       "kind": "html-text",
       "property": null,
@@ -192735,9 +192749,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:85:615",
+      "id": "candidate:app/home.html:86:615",
       "file": "app/home.html",
-      "line": 85,
+      "line": 86,
       "column": 615,
       "kind": "html-text",
       "property": null,
@@ -192761,9 +192775,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:91:107",
+      "id": "candidate:app/home.html:92:107",
       "file": "app/home.html",
-      "line": 91,
+      "line": 92,
       "column": 107,
       "kind": "html-text",
       "property": null,
@@ -192787,9 +192801,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:92:297",
+      "id": "candidate:app/home.html:93:297",
       "file": "app/home.html",
-      "line": 92,
+      "line": 93,
       "column": 297,
       "kind": "html-text",
       "property": null,
@@ -192813,9 +192827,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:93:23",
+      "id": "candidate:app/home.html:94:23",
       "file": "app/home.html",
-      "line": 93,
+      "line": 94,
       "column": 23,
       "kind": "html-text",
       "property": null,
@@ -192839,9 +192853,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:93:53",
+      "id": "candidate:app/home.html:94:53",
       "file": "app/home.html",
-      "line": 93,
+      "line": 94,
       "column": 53,
       "kind": "html-text",
       "property": null,
@@ -192865,9 +192879,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:96:53",
+      "id": "candidate:app/home.html:97:53",
       "file": "app/home.html",
-      "line": 96,
+      "line": 97,
       "column": 53,
       "kind": "html-text",
       "property": null,
@@ -192891,9 +192905,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:97:122",
+      "id": "candidate:app/home.html:98:122",
       "file": "app/home.html",
-      "line": 97,
+      "line": 98,
       "column": 122,
       "kind": "html-text",
       "property": null,
@@ -192917,9 +192931,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:97:412",
+      "id": "candidate:app/home.html:98:412",
       "file": "app/home.html",
-      "line": 97,
+      "line": 98,
       "column": 412,
       "kind": "html-text",
       "property": null,
@@ -192943,9 +192957,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:98:69",
+      "id": "candidate:app/home.html:99:69",
       "file": "app/home.html",
-      "line": 98,
+      "line": 99,
       "column": 69,
       "kind": "html-text",
       "property": null,
@@ -192969,9 +192983,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:102:143",
+      "id": "candidate:app/home.html:103:143",
       "file": "app/home.html",
-      "line": 102,
+      "line": 103,
       "column": 143,
       "kind": "html-text",
       "property": null,
@@ -192995,9 +193009,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:103:78",
+      "id": "candidate:app/home.html:104:78",
       "file": "app/home.html",
-      "line": 103,
+      "line": 104,
       "column": 78,
       "kind": "html-text",
       "property": null,
@@ -193021,9 +193035,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:103:325",
+      "id": "candidate:app/home.html:104:325",
       "file": "app/home.html",
-      "line": 103,
+      "line": 104,
       "column": 325,
       "kind": "html-text",
       "property": null,
@@ -193047,9 +193061,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:104:122",
+      "id": "candidate:app/home.html:105:122",
       "file": "app/home.html",
-      "line": 104,
+      "line": 105,
       "column": 122,
       "kind": "html-text",
       "property": null,
@@ -193073,9 +193087,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:106:126",
+      "id": "candidate:app/home.html:107:126",
       "file": "app/home.html",
-      "line": 106,
+      "line": 107,
       "column": 126,
       "kind": "html-text",
       "property": null,
@@ -193099,9 +193113,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:106:446",
+      "id": "candidate:app/home.html:107:446",
       "file": "app/home.html",
-      "line": 106,
+      "line": 107,
       "column": 446,
       "kind": "html-text",
       "property": null,
@@ -193125,9 +193139,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:106:518",
+      "id": "candidate:app/home.html:107:518",
       "file": "app/home.html",
-      "line": 106,
+      "line": 107,
       "column": 518,
       "kind": "html-text",
       "property": null,
@@ -193151,9 +193165,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:106:588",
+      "id": "candidate:app/home.html:107:588",
       "file": "app/home.html",
-      "line": 106,
+      "line": 107,
       "column": 588,
       "kind": "html-text",
       "property": null,
@@ -193177,9 +193191,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:107:127",
+      "id": "candidate:app/home.html:108:127",
       "file": "app/home.html",
-      "line": 107,
+      "line": 108,
       "column": 127,
       "kind": "html-text",
       "property": null,
@@ -193203,9 +193217,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:108:129",
+      "id": "candidate:app/home.html:109:129",
       "file": "app/home.html",
-      "line": 108,
+      "line": 109,
       "column": 129,
       "kind": "html-text",
       "property": null,
@@ -193229,9 +193243,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:108:228",
+      "id": "candidate:app/home.html:109:228",
       "file": "app/home.html",
-      "line": 108,
+      "line": 109,
       "column": 228,
       "kind": "html-text",
       "property": null,
@@ -193255,9 +193269,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:108:319",
+      "id": "candidate:app/home.html:109:319",
       "file": "app/home.html",
-      "line": 108,
+      "line": 109,
       "column": 319,
       "kind": "html-text",
       "property": null,
@@ -193281,9 +193295,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:109:81",
+      "id": "candidate:app/home.html:110:81",
       "file": "app/home.html",
-      "line": 109,
+      "line": 110,
       "column": 81,
       "kind": "html-text",
       "property": null,
@@ -193307,9 +193321,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:110:201",
+      "id": "candidate:app/home.html:111:201",
       "file": "app/home.html",
-      "line": 110,
+      "line": 111,
       "column": 201,
       "kind": "html-text",
       "property": null,
@@ -193333,9 +193347,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:110:277",
+      "id": "candidate:app/home.html:111:277",
       "file": "app/home.html",
-      "line": 110,
+      "line": 111,
       "column": 277,
       "kind": "html-text",
       "property": null,
@@ -193359,9 +193373,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:111:197",
+      "id": "candidate:app/home.html:112:197",
       "file": "app/home.html",
-      "line": 111,
+      "line": 112,
       "column": 197,
       "kind": "html-text",
       "property": null,
@@ -193385,9 +193399,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:111:272",
+      "id": "candidate:app/home.html:112:272",
       "file": "app/home.html",
-      "line": 111,
+      "line": 112,
       "column": 272,
       "kind": "html-text",
       "property": null,
@@ -193411,9 +193425,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:113:91",
+      "id": "candidate:app/home.html:114:91",
       "file": "app/home.html",
-      "line": 113,
+      "line": 114,
       "column": 91,
       "kind": "html-text",
       "property": null,
@@ -193437,9 +193451,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:113:181",
+      "id": "candidate:app/home.html:114:181",
       "file": "app/home.html",
-      "line": 113,
+      "line": 114,
       "column": 181,
       "kind": "html-text",
       "property": null,
@@ -193463,9 +193477,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:113:246",
+      "id": "candidate:app/home.html:114:246",
       "file": "app/home.html",
-      "line": 113,
+      "line": 114,
       "column": 246,
       "kind": "html-text",
       "property": null,
@@ -193489,9 +193503,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:114:97",
+      "id": "candidate:app/home.html:115:97",
       "file": "app/home.html",
-      "line": 114,
+      "line": 115,
       "column": 97,
       "kind": "html-text",
       "property": null,
@@ -193515,9 +193529,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:114:184",
+      "id": "candidate:app/home.html:115:184",
       "file": "app/home.html",
-      "line": 114,
+      "line": 115,
       "column": 184,
       "kind": "html-text",
       "property": null,
@@ -193541,9 +193555,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:114:284",
+      "id": "candidate:app/home.html:115:284",
       "file": "app/home.html",
-      "line": 114,
+      "line": 115,
       "column": 284,
       "kind": "html-text",
       "property": null,
@@ -193567,9 +193581,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:114:322",
+      "id": "candidate:app/home.html:115:322",
       "file": "app/home.html",
-      "line": 114,
+      "line": 115,
       "column": 322,
       "kind": "html-text",
       "property": null,
@@ -193593,9 +193607,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:116:165",
+      "id": "candidate:app/home.html:117:165",
       "file": "app/home.html",
-      "line": 116,
+      "line": 117,
       "column": 165,
       "kind": "html-text",
       "property": null,
@@ -193619,9 +193633,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:116:197",
+      "id": "candidate:app/home.html:117:197",
       "file": "app/home.html",
-      "line": 116,
+      "line": 117,
       "column": 197,
       "kind": "html-text",
       "property": null,
@@ -193645,9 +193659,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:116:232",
+      "id": "candidate:app/home.html:117:232",
       "file": "app/home.html",
-      "line": 116,
+      "line": 117,
       "column": 232,
       "kind": "html-text",
       "property": null,
@@ -193671,9 +193685,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:116:427",
+      "id": "candidate:app/home.html:117:427",
       "file": "app/home.html",
-      "line": 116,
+      "line": 117,
       "column": 427,
       "kind": "html-text",
       "property": null,
@@ -193697,9 +193711,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:116:466",
+      "id": "candidate:app/home.html:117:466",
       "file": "app/home.html",
-      "line": 116,
+      "line": 117,
       "column": 466,
       "kind": "html-text",
       "property": null,
@@ -193723,9 +193737,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:116:511",
+      "id": "candidate:app/home.html:117:511",
       "file": "app/home.html",
-      "line": 116,
+      "line": 117,
       "column": 511,
       "kind": "html-text",
       "property": null,
@@ -193749,9 +193763,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:116:729",
+      "id": "candidate:app/home.html:117:729",
       "file": "app/home.html",
-      "line": 116,
+      "line": 117,
       "column": 729,
       "kind": "html-text",
       "property": null,
@@ -193775,9 +193789,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:116:919",
+      "id": "candidate:app/home.html:117:919",
       "file": "app/home.html",
-      "line": 116,
+      "line": 117,
       "column": 919,
       "kind": "html-text",
       "property": null,
@@ -193801,9 +193815,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:116:932",
+      "id": "candidate:app/home.html:117:932",
       "file": "app/home.html",
-      "line": 116,
+      "line": 117,
       "column": 932,
       "kind": "html-text",
       "property": null,
@@ -193827,9 +193841,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:118:104",
+      "id": "candidate:app/home.html:119:104",
       "file": "app/home.html",
-      "line": 118,
+      "line": 119,
       "column": 104,
       "kind": "html-text",
       "property": null,
@@ -193853,9 +193867,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:119:47",
+      "id": "candidate:app/home.html:120:47",
       "file": "app/home.html",
-      "line": 119,
+      "line": 120,
       "column": 47,
       "kind": "html-text",
       "property": null,
@@ -193879,9 +193893,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:121:163",
+      "id": "candidate:app/home.html:122:163",
       "file": "app/home.html",
-      "line": 121,
+      "line": 122,
       "column": 163,
       "kind": "html-text",
       "property": null,
@@ -193905,9 +193919,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:121:244",
+      "id": "candidate:app/home.html:122:244",
       "file": "app/home.html",
-      "line": 121,
+      "line": 122,
       "column": 244,
       "kind": "html-text",
       "property": null,
@@ -193931,9 +193945,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:121:322",
+      "id": "candidate:app/home.html:122:322",
       "file": "app/home.html",
-      "line": 121,
+      "line": 122,
       "column": 322,
       "kind": "html-text",
       "property": null,
@@ -193957,9 +193971,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:121:385",
+      "id": "candidate:app/home.html:122:385",
       "file": "app/home.html",
-      "line": 121,
+      "line": 122,
       "column": 385,
       "kind": "html-text",
       "property": null,
@@ -193983,9 +193997,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:121:462",
+      "id": "candidate:app/home.html:122:462",
       "file": "app/home.html",
-      "line": 121,
+      "line": 122,
       "column": 462,
       "kind": "html-text",
       "property": null,
@@ -207687,9 +207701,9 @@
       }
     },
     {
-      "id": "candidate:app/library-chat.mjs:44:81",
+      "id": "candidate:app/library-chat.mjs:45:81",
       "file": "app/library-chat.mjs",
-      "line": 44,
+      "line": 45,
       "column": 81,
       "kind": "js-attribute",
       "property": "aria-labelledby",
@@ -207707,9 +207721,9 @@
       }
     },
     {
-      "id": "candidate:app/library-chat.mjs:45:34",
+      "id": "candidate:app/library-chat.mjs:46:34",
       "file": "app/library-chat.mjs",
-      "line": 45,
+      "line": 46,
       "column": 34,
       "kind": "js-attribute",
       "property": "aria-modal",
@@ -207727,9 +207741,9 @@
       }
     },
     {
-      "id": "candidate:app/library-chat.mjs:58:157",
+      "id": "candidate:app/library-chat.mjs:59:157",
       "file": "app/library-chat.mjs",
-      "line": 58,
+      "line": 59,
       "column": 157,
       "kind": "js-attribute",
       "property": "aria-haspopup",
@@ -207747,9 +207761,9 @@
       }
     },
     {
-      "id": "candidate:app/library-chat.mjs:58:250",
+      "id": "candidate:app/library-chat.mjs:59:250",
       "file": "app/library-chat.mjs",
-      "line": 58,
+      "line": 59,
       "column": 250,
       "kind": "js-attribute",
       "property": "aria-expanded",
@@ -207767,9 +207781,9 @@
       }
     },
     {
-      "id": "candidate:app/library-chat.mjs:62:171",
+      "id": "candidate:app/library-chat.mjs:63:171",
       "file": "app/library-chat.mjs",
-      "line": 62,
+      "line": 63,
       "column": 171,
       "kind": "js-attribute",
       "property": "aria-expanded",
@@ -207787,9 +207801,9 @@
       }
     },
     {
-      "id": "candidate:app/library-chat.mjs:70:83",
+      "id": "candidate:app/library-chat.mjs:71:83",
       "file": "app/library-chat.mjs",
-      "line": 70,
+      "line": 71,
       "column": 83,
       "kind": "js-attribute",
       "property": "role",
@@ -207807,9 +207821,9 @@
       }
     },
     {
-      "id": "candidate:app/library-chat.mjs:70:162",
+      "id": "candidate:app/library-chat.mjs:71:162",
       "file": "app/library-chat.mjs",
-      "line": 70,
+      "line": 71,
       "column": 162,
       "kind": "js-attribute",
       "property": "aria-live",
@@ -207827,9 +207841,9 @@
       }
     },
     {
-      "id": "candidate:app/library-chat.mjs:70:210",
+      "id": "candidate:app/library-chat.mjs:71:210",
       "file": "app/library-chat.mjs",
-      "line": 70,
+      "line": 71,
       "column": 210,
       "kind": "js-attribute",
       "property": "aria-relevant",
@@ -207847,9 +207861,9 @@
       }
     },
     {
-      "id": "candidate:app/library-chat.mjs:71:155",
+      "id": "candidate:app/library-chat.mjs:72:155",
       "file": "app/library-chat.mjs",
-      "line": 71,
+      "line": 72,
       "column": 155,
       "kind": "js-attribute",
       "property": "role",
@@ -207867,9 +207881,9 @@
       }
     },
     {
-      "id": "candidate:app/library-chat.mjs:74:266",
+      "id": "candidate:app/library-chat.mjs:75:266",
       "file": "app/library-chat.mjs",
-      "line": 74,
+      "line": 75,
       "column": 266,
       "kind": "js-attribute",
       "property": "aria-describedby",
@@ -207887,9 +207901,9 @@
       }
     },
     {
-      "id": "candidate:app/library-chat.mjs:153:374",
+      "id": "candidate:app/library-chat.mjs:154:374",
       "file": "app/library-chat.mjs",
-      "line": 153,
+      "line": 154,
       "column": 374,
       "kind": "js-attribute",
       "property": "aria-busy",
@@ -207907,9 +207921,9 @@
       }
     },
     {
-      "id": "candidate:app/library-chat.mjs:153:414",
+      "id": "candidate:app/library-chat.mjs:154:414",
       "file": "app/library-chat.mjs",
-      "line": 153,
+      "line": 154,
       "column": 414,
       "kind": "js-attribute",
       "property": "aria-live",
@@ -207927,10 +207941,10 @@
       }
     },
     {
-      "id": "candidate:app/library-chat.mjs:278:212",
+      "id": "candidate:app/library-chat.mjs:290:234",
       "file": "app/library-chat.mjs",
-      "line": 278,
-      "column": 212,
+      "line": 290,
+      "column": 234,
       "kind": "js-attribute",
       "property": "aria-expanded",
       "value": "false",
@@ -207947,10 +207961,10 @@
       }
     },
     {
-      "id": "candidate:app/library-chat.mjs:278:272",
+      "id": "candidate:app/library-chat.mjs:290:294",
       "file": "app/library-chat.mjs",
-      "line": 278,
-      "column": 272,
+      "line": 290,
+      "column": 294,
       "kind": "js-attribute",
       "property": "aria-expanded",
       "value": "false",
@@ -207967,9 +207981,9 @@
       }
     },
     {
-      "id": "candidate:app/library-chat.mjs:288:159",
+      "id": "candidate:app/library-chat.mjs:300:159",
       "file": "app/library-chat.mjs",
-      "line": 288,
+      "line": 300,
       "column": 159,
       "kind": "js-cjk-literal",
       "property": null,
@@ -207987,10 +208001,10 @@
       }
     },
     {
-      "id": "candidate:app/library-chat.mjs:318:241",
+      "id": "candidate:app/library-chat.mjs:330:263",
       "file": "app/library-chat.mjs",
-      "line": 318,
-      "column": 241,
+      "line": 330,
+      "column": 263,
       "kind": "js-attribute",
       "property": "aria-expanded",
       "value": "false",
@@ -208007,9 +208021,9 @@
       }
     },
     {
-      "id": "candidate:app/library-chat.mjs:344:168",
+      "id": "candidate:app/library-chat.mjs:356:168",
       "file": "app/library-chat.mjs",
-      "line": 344,
+      "line": 356,
       "column": 168,
       "kind": "js-attribute",
       "property": "aria-expanded",
@@ -269536,6 +269550,28 @@
       "unresolved": true
     },
     {
+      "kind": "template",
+      "file": "app/home-scroll-story.mjs",
+      "line": 56,
+      "expression": "`translate3d(0,${-travel}px,0) rotate(-13deg) scale(1.08)`",
+      "fragments": [
+        "translate3d(0,",
+        "px,0) rotate(-13deg) scale(1.08)"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "template",
+      "file": "app/home-scroll-story.mjs",
+      "line": 57,
+      "expression": "`translate3d(-12px,${travel*.7}px,0) rotate(14deg) scale(.94)`",
+      "fragments": [
+        "translate3d(-12px,",
+        "px,0) rotate(14deg) scale(.94)"
+      ],
+      "unresolved": true
+    },
+    {
       "kind": "concatenation",
       "file": "app/interaction-craft.mjs",
       "line": 31,
@@ -270314,7 +270350,7 @@
     {
       "kind": "concatenation",
       "file": "app/library-chat.mjs",
-      "line": 15,
+      "line": 16,
       "expression": "'/read?book='+encodeURIComponent(bookId)",
       "fragments": [
         "/read?book="
@@ -270324,7 +270360,7 @@
     {
       "kind": "concatenation",
       "file": "app/library-chat.mjs",
-      "line": 15,
+      "line": 16,
       "expression": "'&passage='+encodeURIComponent(passageId)",
       "fragments": [
         "&passage="
@@ -270334,7 +270370,7 @@
     {
       "kind": "concatenation",
       "file": "app/library-chat.mjs",
-      "line": 16,
+      "line": 17,
       "expression": "'marginalia:chat-draft:'+encodeURIComponent(owner)+':'",
       "fragments": [
         "marginalia:chat-draft:",
@@ -270345,7 +270381,7 @@
     {
       "kind": "concatenation",
       "file": "app/library-chat.mjs",
-      "line": 16,
+      "line": 17,
       "expression": "'marginalia:chat-draft:'+encodeURIComponent(owner)",
       "fragments": [
         "marginalia:chat-draft:"
@@ -270355,7 +270391,7 @@
     {
       "kind": "concatenation",
       "file": "app/library-chat.mjs",
-      "line": 17,
+      "line": 18,
       "expression": "'marginalia:chat-quote:'+encodeURIComponent(owner)+':'",
       "fragments": [
         "marginalia:chat-quote:",
@@ -270366,7 +270402,7 @@
     {
       "kind": "concatenation",
       "file": "app/library-chat.mjs",
-      "line": 17,
+      "line": 18,
       "expression": "'marginalia:chat-quote:'+encodeURIComponent(owner)",
       "fragments": [
         "marginalia:chat-quote:"
@@ -270376,7 +270412,7 @@
     {
       "kind": "concatenation",
       "file": "app/library-chat.mjs",
-      "line": 18,
+      "line": 19,
       "expression": "'marginalia:chat-quote-ack:'+encodeURIComponent(owner)+':'+encodeURIComponent(book)+':'",
       "fragments": [
         "marginalia:chat-quote-ack:",
@@ -270388,7 +270424,7 @@
     {
       "kind": "concatenation",
       "file": "app/library-chat.mjs",
-      "line": 18,
+      "line": 19,
       "expression": "'marginalia:chat-quote-ack:'+encodeURIComponent(owner)+':'",
       "fragments": [
         "marginalia:chat-quote-ack:",
@@ -270399,7 +270435,7 @@
     {
       "kind": "concatenation",
       "file": "app/library-chat.mjs",
-      "line": 18,
+      "line": 19,
       "expression": "'marginalia:chat-quote-ack:'+encodeURIComponent(owner)",
       "fragments": [
         "marginalia:chat-quote-ack:"
@@ -270409,7 +270445,7 @@
     {
       "kind": "concatenation",
       "file": "app/library-chat.mjs",
-      "line": 19,
+      "line": 20,
       "expression": "'marginalia:chat-pending:'+encodeURIComponent(owner)+':'",
       "fragments": [
         "marginalia:chat-pending:",
@@ -270420,7 +270456,7 @@
     {
       "kind": "concatenation",
       "file": "app/library-chat.mjs",
-      "line": 19,
+      "line": 20,
       "expression": "'marginalia:chat-pending:'+encodeURIComponent(owner)",
       "fragments": [
         "marginalia:chat-pending:"
@@ -270430,7 +270466,7 @@
     {
       "kind": "concatenation",
       "file": "app/library-chat.mjs",
-      "line": 35,
+      "line": 36,
       "expression": "'data-ui-'+attr",
       "fragments": [
         "data-ui-"
@@ -270440,15 +270476,7 @@
     {
       "kind": "computed-member",
       "file": "app/library-chat.mjs",
-      "line": 111,
-      "expression": "0",
-      "fragments": [],
-      "unresolved": true
-    },
-    {
-      "kind": "computed-member",
-      "file": "app/library-chat.mjs",
-      "line": 118,
+      "line": 112,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -270464,7 +270492,15 @@
     {
       "kind": "computed-member",
       "file": "app/library-chat.mjs",
-      "line": 136,
+      "line": 120,
+      "expression": "0",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "app/library-chat.mjs",
+      "line": 137,
       "expression": "turn.failureCode",
       "fragments": [],
       "unresolved": true
@@ -270472,7 +270508,7 @@
     {
       "kind": "concatenation",
       "file": "app/library-chat.mjs",
-      "line": 136,
+      "line": 137,
       "expression": "'chat.failure.'+kind",
       "fragments": [
         "chat.failure."
@@ -270482,7 +270518,7 @@
     {
       "kind": "concatenation",
       "file": "app/library-chat.mjs",
-      "line": 142,
+      "line": 143,
       "expression": "decorations.activityLabel(active.tool,t)+' · '",
       "fragments": [
         " · "
@@ -270492,7 +270528,7 @@
     {
       "kind": "computed-member",
       "file": "app/library-chat.mjs",
-      "line": 183,
+      "line": 184,
       "expression": "turn.quote.parts[0].layer",
       "fragments": [],
       "unresolved": true
@@ -270500,7 +270536,7 @@
     {
       "kind": "computed-member",
       "file": "app/library-chat.mjs",
-      "line": 183,
+      "line": 184,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -270508,7 +270544,7 @@
     {
       "kind": "computed-member",
       "file": "app/library-chat.mjs",
-      "line": 183,
+      "line": 184,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -270516,7 +270552,7 @@
     {
       "kind": "computed-member",
       "file": "app/library-chat.mjs",
-      "line": 200,
+      "line": 201,
       "expression": "index",
       "fragments": [],
       "unresolved": true
@@ -270524,7 +270560,7 @@
     {
       "kind": "computed-member",
       "file": "app/library-chat.mjs",
-      "line": 200,
+      "line": 201,
       "expression": "index",
       "fragments": [],
       "unresolved": true
@@ -270532,7 +270568,31 @@
     {
       "kind": "computed-member",
       "file": "app/library-chat.mjs",
-      "line": 218,
+      "line": 220,
+      "expression": "0",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "app/library-chat.mjs",
+      "line": 220,
+      "expression": "0",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "app/library-chat.mjs",
+      "line": 221,
+      "expression": "0",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "app/library-chat.mjs",
+      "line": 230,
       "expression": "view.quote.parts[0].layer",
       "fragments": [],
       "unresolved": true
@@ -270540,7 +270600,7 @@
     {
       "kind": "computed-member",
       "file": "app/library-chat.mjs",
-      "line": 218,
+      "line": 230,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -270548,7 +270608,7 @@
     {
       "kind": "concatenation",
       "file": "app/library-chat.mjs",
-      "line": 220,
+      "line": 232,
       "expression": "Math.min(128,Math.max(36,input.scrollHeight||36))+'px'",
       "fragments": [
         "px"
@@ -270558,7 +270618,7 @@
     {
       "kind": "concatenation",
       "file": "app/library-chat.mjs",
-      "line": 252,
+      "line": 264,
       "expression": "'/api/library/books/'+encodeURIComponent(bookId)+'/chat'",
       "fragments": [
         "/api/library/books/",
@@ -270569,7 +270629,7 @@
     {
       "kind": "concatenation",
       "file": "app/library-chat.mjs",
-      "line": 252,
+      "line": 264,
       "expression": "'/api/library/books/'+encodeURIComponent(bookId)",
       "fragments": [
         "/api/library/books/"
@@ -270579,7 +270639,7 @@
     {
       "kind": "concatenation",
       "file": "app/library-chat.mjs",
-      "line": 252,
+      "line": 264,
       "expression": "'?passageId='+encodeURIComponent(passageId)",
       "fragments": [
         "?passageId="
@@ -270589,7 +270649,7 @@
     {
       "kind": "concatenation",
       "file": "app/library-chat.mjs",
-      "line": 261,
+      "line": 273,
       "expression": "'/api/library/books/'+encodeURIComponent(bookId)+'/chat'",
       "fragments": [
         "/api/library/books/",
@@ -270600,7 +270660,7 @@
     {
       "kind": "concatenation",
       "file": "app/library-chat.mjs",
-      "line": 261,
+      "line": 273,
       "expression": "'/api/library/books/'+encodeURIComponent(bookId)",
       "fragments": [
         "/api/library/books/"
@@ -270610,7 +270670,7 @@
     {
       "kind": "concatenation",
       "file": "app/library-chat.mjs",
-      "line": 268,
+      "line": 280,
       "expression": "'/api/library/books/'+encodeURIComponent(bookId)+'/chat/scope'",
       "fragments": [
         "/api/library/books/",
@@ -270621,7 +270681,7 @@
     {
       "kind": "concatenation",
       "file": "app/library-chat.mjs",
-      "line": 268,
+      "line": 280,
       "expression": "'/api/library/books/'+encodeURIComponent(bookId)",
       "fragments": [
         "/api/library/books/"
@@ -270631,7 +270691,7 @@
     {
       "kind": "concatenation",
       "file": "app/library-chat.mjs",
-      "line": 274,
+      "line": 286,
       "expression": "'/api/library/books/'+encodeURIComponent(bookId)+'/chat/'+encodeURIComponent(ticket.id)+'/cancel'",
       "fragments": [
         "/api/library/books/",
@@ -270643,7 +270703,7 @@
     {
       "kind": "concatenation",
       "file": "app/library-chat.mjs",
-      "line": 274,
+      "line": 286,
       "expression": "'/api/library/books/'+encodeURIComponent(bookId)+'/chat/'",
       "fragments": [
         "/api/library/books/",
@@ -270654,7 +270714,7 @@
     {
       "kind": "concatenation",
       "file": "app/library-chat.mjs",
-      "line": 274,
+      "line": 286,
       "expression": "'/api/library/books/'+encodeURIComponent(bookId)",
       "fragments": [
         "/api/library/books/"
@@ -270664,7 +270724,7 @@
     {
       "kind": "computed-member",
       "file": "app/library-chat.mjs",
-      "line": 279,
+      "line": 291,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -270672,7 +270732,7 @@
     {
       "kind": "concatenation",
       "file": "app/library-chat.mjs",
-      "line": 288,
+      "line": 300,
       "expression": "'Leafhour-对话-'+selectedBook+'.json'",
       "fragments": [
         "Leafhour-对话-",
@@ -270683,7 +270743,7 @@
     {
       "kind": "concatenation",
       "file": "app/library-chat.mjs",
-      "line": 288,
+      "line": 300,
       "expression": "'Leafhour-对话-'+selectedBook",
       "fragments": [
         "Leafhour-对话-"
@@ -270693,7 +270753,7 @@
     {
       "kind": "concatenation",
       "file": "app/library-chat.mjs",
-      "line": 315,
+      "line": 327,
       "expression": "viewport.height+'px'",
       "fragments": [
         "px"
@@ -270703,7 +270763,7 @@
     {
       "kind": "concatenation",
       "file": "app/library-chat.mjs",
-      "line": 315,
+      "line": 327,
       "expression": "viewport.offsetTop+'px'",
       "fragments": [
         "px"
@@ -270713,7 +270773,7 @@
     {
       "kind": "computed-member",
       "file": "app/library-chat.mjs",
-      "line": 340,
+      "line": 352,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -270721,7 +270781,7 @@
     {
       "kind": "computed-member",
       "file": "app/library-chat.mjs",
-      "line": 340,
+      "line": 352,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -270729,7 +270789,7 @@
     {
       "kind": "computed-member",
       "file": "app/library-chat.mjs",
-      "line": 348,
+      "line": 361,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -270737,7 +270797,7 @@
     {
       "kind": "computed-member",
       "file": "app/library-chat.mjs",
-      "line": 348,
+      "line": 361,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -270745,7 +270805,7 @@
     {
       "kind": "computed-member",
       "file": "app/library-chat.mjs",
-      "line": 355,
+      "line": 376,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -296773,8 +296833,8 @@
     "candidatesUnreviewed": 6108,
     "candidatesProtected": 142,
     "itemsProtected": 9,
-    "dynamicConsumers": 3766,
-    "consumerReferences": 2003,
+    "dynamicConsumers": 3771,
+    "consumerReferences": 2005,
     "keysWithoutStaticConsumers": 1213,
     "reviewedLocaleValues": 44,
     "unreviewedLocaleValues": 9212,

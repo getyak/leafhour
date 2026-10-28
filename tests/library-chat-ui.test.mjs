@@ -412,6 +412,24 @@ test('explicit quotation uses a removable chip, keeps the own question and never
 });
 
 const uiQuote=(passageId='p1')=>({kind:'leafhour-reading-quote',schemaVersion:1,bookId:'one',contentVersion:'v1',chapterId:'ch1',parts:[{passageId,layer:'original',start:0,end:6,text:'Source'}]});
+test('following a new reader quote keeps draft, reader focus and historical snapshots without sending',async t=>{
+ const s=setup(t);s.setTurns([{id:'old',status:'completed',text:'Old question',quote:uiQuote('p1'),answer:{summary:'Old answer',sourceRefs:[]}}]);s.chat.open();await flush();type(s.input(),'Keep my unsent question.');s.external.focus();
+ assert.equal(typeof s.chat.followQuote,'function');assert.equal(s.chat.followQuote(uiQuote('p2')),true);assert.equal(s.chat.followQuote(uiQuote('p2')),true);await flush();
+ assert.equal(s.input().value,'Keep my unsent question.');assert.equal(s.doc.activeElement,s.external);assert.ok(s.calls.some(call=>call.url.includes('passageId=p2')));assert.equal(s.calls.filter(call=>call.payload).length,0);
+ const old=s.find('library-chat-selected-snapshot').children.find(n=>n.className==='library-chat-source-link');assert.match(old.href,/passage=p1/,'historical attribution is not retargeted');
+ s.chat.close();const calls=s.calls.length;assert.equal(s.chat.followQuote(uiQuote('p3')),false);await flush();assert.equal(s.root.open,false);assert.equal(s.calls.length,calls);
+});
+test('the latest followed quote waits for an in-flight answer and never mutates its frozen request',async t=>{
+ let submitted;const s=setup(t,{handler:async(url,payload,{turns,setTurns})=>{if(payload){submitted=structuredClone(payload);const turn={...payload,status:'running',answer:null};setTurns([turn]);return turn;}const id=new URL(url,'http://local').searchParams.get('passageId')||'p1';return {bookId:'one',available:true,contentVersion:'v1',scope:{mode:'book',revision:0},context:{passageId:id,original:'Source'},turns};}});
+ s.chat.open();await flush();s.chat.quote(uiQuote('p1'));await flush();type(s.input(),'Explain this.');s.find('library-chat-composer').dispatchEvent(new Event('submit',{cancelable:true}));await flush();
+ assert.equal(typeof s.chat.followQuote,'function');assert.equal(s.chat.followQuote(uiQuote('p2')),true);assert.equal(s.chat.followQuote(uiQuote('p3')),true);assert.equal(submitted.quote.parts[0].passageId,'p1');
+ s.complete();await s.chat.refresh();await flush();assert.ok(s.calls.some(call=>call.url.includes('passageId=p3')));assert.equal(s.calls.some(call=>call.url.includes('passageId=p2')),false);assert.equal(submitted.quote.parts[0].passageId,'p1');assert.equal(s.calls.filter(call=>call.payload).length,1);
+});
+test('native dialog closure discards a queued selection before completion and reopening',async t=>{
+ const s=setup(t);s.chat.open();await flush();s.chat.quote(uiQuote('p1'));await flush();type(s.input(),'Explain this.');s.find('library-chat-composer').dispatchEvent(new Event('submit',{cancelable:true}));await flush();
+ s.chat.followQuote(uiQuote('p2'));s.root.close();s.complete();s.chat.open();await flush();
+ assert.equal(s.calls.some(call=>call.url.includes('passageId=p2')),false);assert.equal(s.calls.filter(call=>call.payload).length,1);
+});
 test('a historical selected quote returns to its own source while preserving the current draft',async t=>{
  const navigated=[],quote=uiQuote('p2'),s=setup(t,{navigate:(...args)=>{navigated.push(args);return true;}});
  s.setTurns([{id:'quoted-answer',status:'completed',text:'Explain this.',quote,answer:{summary:'An answer about the selected source.',sourceRefs:[]}}]);

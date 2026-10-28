@@ -79,3 +79,54 @@
 }
 @media(max-width:360px){#home-view .home-hero{min-height:580px;padding-inline:18px}#home-view .hero-copy h1{font-size:40px}#home-view .hero-description{font-size:14px}#home-view .hero-actions{gap:14px}#home-view .story-reading{padding-inline:18px}#home-view .story-demo .sample-sheet{padding:24px 18px}#home-view .story-reading h2,#home-view .story-continuity h2{font-size:29px}}
 @media(prefers-reduced-motion:reduce){#home-view *,#home-view *::before,#home-view *::after{scroll-behavior:auto;animation:none;transition:none}}
+
+/* The static page remains the fallback. Only a live scroll owner enables
+   these scene layouts; controls and source/translation text never animate. */
+#home-view .story-reading-art{display:none}
+#home-view .story-line{display:inline-block;max-width:100%;vertical-align:baseline}
+#home-view .story-line-ink{display:inline-block;max-width:100%}
+@media(prefers-reduced-motion:no-preference){
+ #home-view.is-scroll-story .home-hero{perspective:1400px}
+ #home-view.is-scroll-story .story-window,#home-view.is-scroll-story .story-page{backface-visibility:hidden}
+ #home-view.is-scroll-story .story-reading{position:relative;isolation:isolate;align-items:start}
+ #home-view.is-scroll-story .story-reading-art{display:block;position:absolute;inset:0 auto 0 0;width:54%;overflow:hidden;pointer-events:none;z-index:0;opacity:.76;mask-image:linear-gradient(to right,#000 88%,transparent)}
+ #home-view.is-scroll-story .story-reading-art img{display:block;width:100%;height:100%;object-fit:cover;object-position:56% 50%}
+ #home-view.is-scroll-story .story-demo,#home-view.is-scroll-story .story-reading .section-copy{position:relative;z-index:1}
+ #home-view.is-scroll-story .story-demo{isolation:isolate}
+ #home-view.is-scroll-story .story-demo::before{content:'';position:absolute;inset:-10px -6px;z-index:-1;background:var(--surface-soft);border:1px solid var(--line-hairline);border-radius:3px;transform:rotate(-2deg);pointer-events:none}
+ #home-view.is-scroll-story .story-demo .sample-sheet{box-shadow:0 22px 64px #16261b19}
+ #home-view.is-scroll-story .story-reading[data-scroll-pinned=true]{min-height:148svh;padding-block:18svh}
+ #home-view.is-scroll-story .story-reading[data-scroll-pinned=true] .story-demo{position:sticky;top:104px;align-self:start;margin-top:8svh}
+ #home-view.is-scroll-story .story-reading[data-scroll-pinned=true] .section-copy{padding-top:8svh;padding-bottom:30svh}
+ #home-view.is-scroll-story .story-continuity figure{isolation:isolate}
+ #home-view.is-scroll-story .story-continuity figure img{backface-visibility:hidden}
+}
+@media(prefers-reduced-motion:no-preference) and (min-width:640px) and (max-width:950px){
+ #home-view.is-scroll-story .story-reading{grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);grid-template-areas:"demo copy";gap:6%;padding-inline:5%}
+ #home-view.is-scroll-story .story-reading h2{font-size:28px}
+ #home-view.is-scroll-story .story-demo .sample-sheet{padding:25px 20px}
+ #home-view.is-scroll-story .story-demo .sample-original{font-size:24px}
+ #home-view.is-scroll-story .story-demo .sample-translation{padding:16px}
+ #home-view.is-scroll-story .story-demo .sample-translation p{font-size:15px}
+}
+@media(prefers-reduced-motion:no-preference) and (max-width:760px){
+ #home-view.is-scroll-story .home-hero{min-height:780px;height:calc(100svh - 72px);padding-top:92px}
+ #home-view.is-scroll-story .story-window{display:block;left:-45px;top:53%;width:155px;height:210px}
+ #home-view.is-scroll-story .story-page{display:block;right:-28px;top:9%;width:116px;height:168px}
+}
+@media(prefers-reduced-motion:no-preference) and (max-width:639px){
+ #home-view.is-scroll-story .home-hero{height:auto;min-height:700px;padding-top:72px}
+ #home-view.is-scroll-story .story-window{left:-36px;top:auto;bottom:30px;width:128px;height:165px}
+ #home-view.is-scroll-story .story-page{right:-34px;top:auto;bottom:95px;width:100px;height:130px}
+ #home-view.is-scroll-story .story-reading-art{inset:auto 0 0;width:100%;height:58%;mask-image:linear-gradient(to bottom,transparent,#000 18%)}
+ #home-view.is-scroll-story .story-demo::before{inset:-9px -5px}
+}
+@media(prefers-reduced-motion:reduce){
+ #home-view .story-line-ink{filter:none;opacity:1;transform:none}
+}
+/* Scroll choreography owns this surface; legacy timed entrances must not
+   conceal the real actions when motion preferences change or JS is late. */
+#home-view .home-hero[data-scroll-story=true] .hero-description,
+#home-view .home-hero[data-scroll-story=true] .hero-actions,
+#home-view .home-hero[data-scroll-story=true] .hero-footnote{animation:none;opacity:1;transform:none}
+@media(max-width:360px){html[lang=ja] #home-view .home-hero[data-scroll-story=true] .hero-copy h1{font-size:34px}}
