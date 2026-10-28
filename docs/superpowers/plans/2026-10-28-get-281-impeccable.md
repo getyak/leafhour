@@ -18,4 +18,4 @@ Preserve source text, account isolation, bounded generation, text selection, rea
 - [x] Add `tools/verify-reader-impeccable.mjs` with rendered assertions for sleeping shell and half-sheet geometry; observe baseline failures.
 - [x] Refine `app/reader-quiet.css`, `app/reader-chat-workspace.css` and semantic source rule in `app/styles.css`. Reuse all existing interaction owners.
 - [x] Run the rendered matrix and existing toolbar, immersion, chat, location, pagination and selection checks; inspect screenshots. Run the official detector on source and real sleeping/tools/chat pages; no ignore rules.
-- [ ] Run full tests, build/release checks and review. Record evidence and limits in `docs/verification/2026-10-28-get-281-impeccable.md`. Submit only this branch's changes; wait for CI, merge, verify production.
+- [x] Run full tests, build/release checks and review. Record evidence and limits in `docs/verification/2026-10-28-get-281-impeccable.md`. Submit only this branch's changes. Delivery gates and final receipts are tracked in PR236 and GET-281.

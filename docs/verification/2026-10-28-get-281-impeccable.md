@@ -45,10 +45,14 @@ Baseline visual loading produces 22 inline-style CSP console messages in B's iso
 
 Answer/unread/annotation specimens are labelled layout fixtures; the source quote uses the actual reader selection flow. There is no physical iPhone keyboard, Safari, screen-reader speech, live generation or long-term reading acceptance in this task. Chinese progress/final copy is below the tone detector's minimum length and is reviewed sentence by sentence against `docs/writing.md` and the current lieflat-less-ai-tone whitelist; no invented statistics or gratuitous prose rewrites.
 
-Merge, current-head CI and production evidence are appended when actually available.
+Delivery status and the final merge/production receipts are tracked in [PR236](https://github.com/getyak/leafhour/pull/236) and GET-281; this checked-in record is the pre-merge verification snapshot.
 
 ## Final detector receipts
 
 No ignore rules. Source scan has zero primary findings; the raw source receipt retains design-token/radius advisories for linked surfaces and the optional weather-texture advisory. Six final CDP passes (desktop sleep/conversation; mobile paper/leaf/night conversation and sleep) each have zero primary findings and zero advisories. The independent B tools pass was held open through native keyboard focus and had zero findings; the final dialog/color/type fixes do not change that tool surface. The final recheck avoids claiming a timed-out tools scan as valid. See `detector-source.json`, `detector-rendered.json` and B's state receipt.
 
 The full suite's 14 local skips include pinned copy-tool paths; the actual pinned tools were then supplied to the independent copy lint/canary commands, which passed. Final reader CSS is within 200 KiB and quiet chrome remains below 4 KiB.
+
+## Integration with current main
+
+After the initial PR CI passed (catalog, native iOS and full test/build job), main advanced to `c9958b72a03b5fe0a7f7d08e16df9ff922ef1ba8` for companion fault observability. It was merged normally without conflicts. Another 61 Node22 reader/build/companion-observability checks passed, both runtime and hosted builds passed, and the full packaged five-size/quote/guest-palette matrix passed again. Current-head GitHub CI remains a merge gate.
