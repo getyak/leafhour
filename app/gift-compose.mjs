@@ -4,10 +4,12 @@ import {createGiftDrafts} from './gift-compose-state.mjs';
 import {publicGiftSender} from './gift-identity.mjs';
 import {readGiftQuote} from './gift-quote.mjs';
 import {trackActionFocus} from './action-focus.mjs';
+import {paintBookIdentity} from './book-cover-ui.mjs';
+import {bookCoverLabel} from './book-binding.mjs';
 const node=(tag,cls,text)=>{const n=document.createElement(tag);if(cls)n.className=cls;if(text!==undefined)n.textContent=text;return n;};
 const button=(text,cls='')=>{const n=node('button',cls,text);n.type='button';return n;};
 let localeInitialized=false;void uiReady.then(()=>{localeInitialized=true;});
-const title=book=>book.title?.zh||book.title?.en||t('giftCompose.book');
+const title=book=>bookCoverLabel(book,getUiLocale()).title||t('giftCompose.book');
 
 export function mountGiftComposer({api,dialog,body,getSession,getOwner,show,current,message,cover}){
   const state=createGiftDrafts();let lifecycle=null;
@@ -33,8 +35,8 @@ export function mountGiftComposer({api,dialog,body,getSession,getOwner,show,curr
     const intro=uiNode('p','gift-writing-intro','intro'),steps=node('ol','gift-writing-steps');attr(steps,'aria-label','steps');
     for(const id of ['stepWrite','stepPreview','stepSeal'])steps.append(uiNode('li','',id));
     const writing=node('section','gift-writing-stage'),preview=node('section','gift-preview-stage'),result=node('section','gift-sealed-stage');preview.hidden=result.hidden=true;
-    const bookName=(tag,cls='')=>{const literal=book.title?.zh||book.title?.en;if(!literal)return uiNode(tag,cls,'book');const n=node(tag,cls,literal);n.setAttribute('lang','und');return n;};
-    const paper=node('div','gift-writing-paper'),bookSlip=node('div','gift-writing-book'),bookCopy=node('div');bookCopy.append(bookName('strong'));if(book.author)bookCopy.append(node('small','',book.author));bookSlip.append(cover(book),bookCopy);
+    const bookName=(tag,cls='')=>{if(!book.title?.zh&&!book.title?.en)return uiNode(tag,cls,'book');return paintBookIdentity(node(tag,cls),book);};
+    const paper=node('div','gift-writing-paper'),bookSlip=node('div','gift-writing-book'),bookCopy=node('div');bookCopy.append(bookName('strong'));if(book.author)bookCopy.append(paintBookIdentity(node('small'),book,'author'));bookSlip.append(cover(book),bookCopy);
     const address=node('label','gift-writing-address'),recipient=node('input');recipient.id='gift-recipient';recipient.maxLength=80;attr(recipient,'placeholder','recipient');attr(recipient,'aria-label','recipient');recipient.autocomplete='off';address.htmlFor=recipient.id;address.append(uiNode('span','','to'),recipient);
     const wordsLabel=uiNode('label','sr-only','words'),words=node('textarea','gift-writing-words');words.id='gift-message';words.maxLength=500;words.rows=5;attr(words,'placeholder','wordsPlaceholder');wordsLabel.htmlFor=words.id;words.setAttribute('aria-describedby','gift-message-help');
     const sender=publicGiftSender(getSession().user),signature=node('div','gift-writing-signature');const senderNode=node('span','',sender),dateNode=node('small'),createdDay=Date.now();senderNode.setAttribute('lang','und');const paintDate=()=>{dateNode.textContent=new Intl.DateTimeFormat(getUiLocale(),{year:'numeric',month:'long',day:'numeric'}).format(new Date(createdDay));};paintDate();signature.append(senderNode,dateNode);

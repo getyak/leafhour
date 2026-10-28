@@ -1130,7 +1130,7 @@ export default Object.freeze({
   "portal.card.extracted": "已提取",
   "portal.card.paragraphs": "{count} 段",
   "portal.card.private": "自己的书 · {format}",
-  "portal.card.public": "公版 · 英文原文",
+  "portal.card.public": "公版书",
   "portal.card.readAria": "阅读{title}",
   "portal.card.sample": "双译开篇 · {count} 段",
   "portal.card.sampleLink": "中文试读 ↗",

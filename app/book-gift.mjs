@@ -1,4 +1,5 @@
-import {paintBookCover} from './book-binding.mjs';
+import {paintBookCover,paintBookIdentity} from './book-cover-ui.mjs';
+import {bookCoverLabel} from './book-binding.mjs';
 import {trackActionFocus} from './action-focus.mjs';
 import {createGiftSpring} from './gift-ritual.mjs';
 import {createGiftWavesController,createGiftWaveScene} from './gift-waves.mjs';
@@ -65,7 +66,7 @@ const literal=(id,text)=>{const n=$(id);labels.delete(n);n.removeAttribute('data
 const ownedLink=(id,target)=>{const n=$(id);links.set(n,target);n.href=uiHref(target);};
 const homeLinks=[...document.querySelectorAll('a[href="/"]')];
 const unbind=bindUi(document.documentElement);
-const updateLabels=()=>{for(const [n,spec]of labels){if(n.isConnected===false){labels.delete(n);continue;}paint(n,spec);}for(const [n,target]of links)n.href=uiHref(target);for(const n of homeLinks)n.href=uiAuthoredPath('/',getUiLocale());document.title=titleModel?t('gift.documentTitle',{title:titleModel.title||t('gift.book')}):t('gift.pageTitle');};
+const updateLabels=()=>{for(const [n,spec]of labels){if(n.isConnected===false){labels.delete(n);continue;}paint(n,spec);}for(const [n,target]of links)n.href=uiHref(target);for(const n of homeLinks)n.href=uiAuthoredPath('/',getUiLocale());document.title=titleModel?t('gift.documentTitle',{title:bookCoverLabel(titleModel,getUiLocale()).title||t('gift.book')}):t('gift.pageTitle');};
 const offLocale=onUiLocaleChange(updateLabels);
 window.addEventListener('pagehide',event=>{if(event.persisted)return;offLocale();unbind();labels.clear();links.clear();});
 for(const n of document.querySelectorAll('a[href="/library"]')){links.set(n,'/library');n.href=uiHref('/library');}
@@ -121,15 +122,15 @@ function showError(error){
   $('gift-retry').hidden=error.status===404;
 }
 function present(data){
-  gift=data;const bookTitle=data.title?.zh||data.title?.en||null,recipient=data.recipient||null,sender=data.sender||null;titleModel={title:bookTitle};
+  gift=data;const bookTitle=data.title?.zh||data.title?.en||null,recipient=data.recipient||null,sender=data.sender||null,coverBook={...data,visibility:data.publicRead===true||data.readUrl==='/read?book='+encodeURIComponent(data.bookId)?'public':'private'};titleModel=coverBook;
   if(recipient){literal('envelope-recipient',recipient).title=recipient;}else{own('envelope-recipient','gift.you');$('envelope-recipient').title='';}for(const id of ['envelope-sender','arrival-sender','letter-sender']){if(sender)literal(id,sender);else own(id,'gift.reader');}
   const salutation=$('letter-salutation'),before=document.createElement('span'),name=document.createElement('span'),after=document.createElement('span');name.className='gift-salutation-name';if(recipient){name.textContent=recipient;name.lang='und';}else own(name,'gift.you');own(before,'gift.salutation.before');own(after,'gift.salutation.after');salutation.replaceChildren(before,name,after);
   $('gift-message').textContent=data.message;$('gift-message').hidden=!data.message;
-  if(bookTitle)literal('gift-title',bookTitle);else own('gift-title','gift.book');$('gift-original-title').textContent=data.title?.en!==bookTitle?data.title?.en||'':'';
+  if(bookTitle)paintBookIdentity(literal('gift-title',bookTitle),coverBook);else own('gift-title','gift.book');$('gift-original-title').textContent=data.title?.en!==bookTitle?data.title?.en||'':'';
   $('gift-original-title').hidden=!$('gift-original-title').textContent;
-  $('gift-author').textContent=data.author;$('gift-author').hidden=!data.author;
+  paintBookIdentity($('gift-author'),coverBook,'author');$('gift-author').hidden=!data.author;
   $('gift-description').textContent=data.description;$('gift-description').hidden=!data.description;
-  paintBookCover($('gift-cover'),data);
+  paintBookCover($('gift-cover'),coverBook);
   const date=new Date(data.createdAt);own('gift-date',{render:()=>Number.isFinite(date.getTime())?new Intl.DateTimeFormat(getUiLocale(),{year:'numeric',month:'long',day:'numeric'}).format(date):''});
   $('gift-date').dateTime=data.createdAt;
   own('envelope-date',{render:()=>Number.isFinite(date.getTime())?new Intl.DateTimeFormat(getUiLocale(),{year:'numeric',month:'2-digit',day:'2-digit'}).format(date).replaceAll('/','.') :''});
@@ -145,8 +146,8 @@ function present(data){
   $('gift-loading').hidden=true;$('gift-error').hidden=true;$('gift-scene').hidden=false;$('gift-arrival').hidden=false;
   // The DOM shows the scene before the renderer is rebuilt: it measures the
   // real visible surface instead of a hidden 1x1 placeholder.
-  for(const id of ['gift-message','gift-title','gift-author','gift-description','envelope-recipient','envelope-sender','arrival-sender','letter-sender'])$(id).lang='und';
-  $('gift-original-title').lang='en';$('gift-description').lang='und';$('gift-author').lang='und';
+  for(const id of ['gift-message','gift-description','envelope-recipient','envelope-sender','arrival-sender','letter-sender'])$(id).lang='und';
+  $('gift-original-title').lang='en';$('gift-description').lang='und';
   updateLabels();resize();
   waveScene.presented();
   if(!preview)resumeReturn();

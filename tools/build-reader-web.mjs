@@ -14,6 +14,7 @@ export const UI_LOCALE_OWNERS=Object.freeze([
  'app/preference-memory-ui.mjs',
  'app/auth-dialog.mjs',
  'app/book-gift.mjs',
+ 'app/book-cover-ui.mjs',
  'app/billing.mjs',
  'app/command-palette.mjs',
  'app/evals.js',
@@ -398,7 +399,7 @@ export async function buildReaderWeb({root,outputDir,html}){
   'person-return-controller.mjs':{kind:'dynamic-import',importer:'reader-conversation.mjs'},
   'reader-companion-loader.mjs':{kind:'dynamic-import',importer:'reader-conversation.mjs'},
   'gift-compose.mjs':{kind:'dynamic-import',importer:'reader-book-actions.mjs'},
-  'book-binding.mjs':{kind:'dynamic-import',importer:'reader-book-actions.mjs'},
+  'book-cover-ui.mjs':{kind:'dynamic-import',importer:'reader-book-actions.mjs'},
   'arrival-catalog.mjs':{kind:'import-statement',importer:'reading-arrival.mjs'},
   'share-fonts.mjs':{kind:'dynamic-import',importer:'share.js'},
   'reader-settings-choices.mjs':{kind:'dynamic-import',importer:'reader-settings.mjs'},
@@ -457,7 +458,7 @@ export async function buildReaderWeb({root,outputDir,html}){
    if(!candidates.some(file=>file&&file.startsWith('app/ui-catalogs/')))return undefined;
    throw Error('Non-public ui-catalogue bundle edge: '+args.path);
   });
-  b.onResolve({filter:/^\.\/(?:observability-bridge|reader-account|atmosphere-audio|original-download|translation-first-use|credit-client|chat-book-upload|library-chat-markdown|reader-book-actions|gift-compose|book-binding|arrival-catalog|share-fonts|share-model|reader-settings-choices|reader-page-inputs|reader-page-surface|reader-location|person-return-controller|reader-companion-loader|command-palette)\.mjs(?:\?.*)?$/},args=>{
+  b.onResolve({filter:/^\.\/(?:observability-bridge|reader-account|atmosphere-audio|original-download|translation-first-use|credit-client|chat-book-upload|library-chat-markdown|reader-book-actions|gift-compose|book-cover-ui|arrival-catalog|share-fonts|share-model|reader-settings-choices|reader-page-inputs|reader-page-surface|reader-location|person-return-controller|reader-companion-loader|command-palette)\.mjs(?:\?.*)?$/},args=>{
   const at=args.path.indexOf('?'),query=at<0?'':args.path.slice(at);
   if(query&&args.path!==paletteRetry&&args.path!==accountRetry)throw Error('Non-public lazy reader module: '+args.path);
   const entry=lazyModules[args.path.slice(2,query?at:undefined)];

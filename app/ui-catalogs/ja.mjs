@@ -1130,7 +1130,7 @@ export default Object.freeze({
   "portal.card.extracted": "抽出済み",
   "portal.card.paragraphs": "{count} 段",
   "portal.card.private": "自分の本 · {format}",
-  "portal.card.public": "パブリックドメイン · 英語原文",
+  "portal.card.public": "パブリックドメイン",
   "portal.card.readAria": "{title}を読む",
   "portal.card.sample": "二つの訳 · 冒頭{count}段",
   "portal.card.sampleLink": "中国語の試し読み ↗",

@@ -1,6 +1,7 @@
 import {t,getUiLocale,uiHref,onUiLocaleChange,uiReady,createUiMessage} from './ui-locale.mjs';
 import {trackActionFocus} from './action-focus.mjs';
-import {paintBookCover} from './book-binding.mjs';
+import {paintBookCover,paintBookIdentity} from './book-cover-ui.mjs';
+import {bookCoverLabel} from './book-binding.mjs';
 import {roomIcons} from './library-shell.mjs';
 import {buildReadingCalendar} from './reading-schedule.mjs';
 import {moveShelfBook} from './shelf-order.mjs';
@@ -9,7 +10,7 @@ import {mountPopover} from './popover-controls.mjs';
 const node=(tag,cls,text)=>{const n=document.createElement(tag);if(cls)n.className=cls;if(text!==undefined)n.textContent=text;return n;};
 const button=(text,cls='')=>{const n=node('button',cls,text);n.type='button';return n;};
 const icon=name=>{const n=node('span');n.dataset.icon=name;n.setAttribute('aria-hidden','true');return n;};
-const title=book=>book.title?.zh||book.title?.en||t('book.fallback');
+const title=book=>bookCoverLabel(book,getUiLocale()).title||t('book.fallback');
 const localInput=date=>new Date(date.getTime()-date.getTimezoneOffset()*60000).toISOString().slice(0,16);
 function download(text,name,type){const url=URL.createObjectURL(new Blob([text],{type})),link=node('a');link.href=url;link.download=name;link.click();setTimeout(()=>URL.revokeObjectURL(url),10000);}
 const filename=value=>value.replace(/[\\/:*?"<>|\u0000-\u001f]/g,'').slice(0,70)||'读书日程';
@@ -40,7 +41,7 @@ export function mountLibraryBookActions({api,getSession,getBooks,getOwner,getRev
   function authenticated(){if(disposed)return false;if(getSession()?.user)return true;closeMenu();if(dialog.open)dialog.close();openAuth();return false;}
   function cover(book,cls='action-book-cover'){const c=node('div',cls);c.setAttribute('aria-hidden','true');paintBookCover(c,book);return c;}
   function bookInfo(book){
-    const ticket=show(book,{id:'book.info'},'info'),owner=getOwner(),description=book.description?node('p','',book.description):uiNode('p','','book.description.empty'),provenance=node('p','action-scope');provenance.hidden=true;const info=node('div','action-book-information'),copy=node('div');copy.append(node('h3','',title(book)));if(book.author)copy.append(node('p','action-author',book.author));if(book.title?.en&&book.title.en!==book.title.zh)copy.append(node('p','action-original',book.title.en));copy.append(description,provenance,uiNode('p','action-scope',book.visibility==='public'?'book.public':'book.private'));
+    const ticket=show(book,{id:'book.info'},'info'),owner=getOwner(),description=book.description?node('p','',book.description):uiNode('p','','book.description.empty'),provenance=node('p','action-scope');provenance.hidden=true;const info=node('div','action-book-information'),copy=node('div');copy.append(paintBookIdentity(node('h3'),book));if(book.author)copy.append(paintBookIdentity(node('p','action-author'),book,'author'));if(book.title?.en&&book.title.en!==book.title.zh)copy.append(node('p','action-original',book.title.en));if(book.visibility==='public'&&book.author)copy.append(node('p','action-original',book.author));copy.append(description,provenance,uiNode('p','action-scope',book.visibility==='public'?'book.public':'book.private'));
     if(book.source?.url){try{const url=new URL(book.source.url);if(['https:','http:'].includes(url.protocol)&&!url.username&&!url.password){const link=uiNode('a','text-link','book.source');link.href=url.href;link.target='_blank';link.rel='noopener noreferrer';copy.append(link);}}catch{}}
     if(book.visibility==='private'){const review=uiNode('a','text-link','book.review');review.href=uiHref('/source-review?book='+encodeURIComponent(book.bookId));review.dataset.uiOwnedHref='/source-review?book='+encodeURIComponent(book.bookId);copy.append(review);}
     info.append(cover(book),copy);body.append(info);
@@ -85,13 +86,13 @@ export function mountLibraryBookActions({api,getSession,getBooks,getOwner,getRev
   }
   function decorate(card,book){
     const previous=card.querySelector(':scope > .book-action-trigger');if(previous){triggers.delete(previous);previous.remove();}scheduleTriggerPrune();
-    card.dataset.bookId=book.bookId;const trigger=button('','book-action-trigger');trigger.setAttribute('aria-label',t('book.more',{title:title(book)}));triggers.set(trigger,{title:book.title?.zh||book.title?.en||null});trigger.setAttribute('aria-haspopup','menu');trigger.setAttribute('aria-expanded','false');trigger.setAttribute('aria-controls',menu.id);trigger.append(icon('ellipsis'));trigger.addEventListener('click',event=>{event.preventDefault();event.stopPropagation();if(menuControl.isOpen()&&menuControl.trigger===trigger)closeMenu();else openMenu(book,trigger);});card.append(trigger);roomIcons(trigger);return trigger;
+    card.dataset.bookId=book.bookId;const trigger=button('','book-action-trigger');trigger.setAttribute('aria-label',t('book.more',{title:title(book)}));triggers.set(trigger,{book});trigger.setAttribute('aria-haspopup','menu');trigger.setAttribute('aria-expanded','false');trigger.setAttribute('aria-controls',menu.id);trigger.append(icon('ellipsis'));trigger.addEventListener('click',event=>{event.preventDefault();event.stopPropagation();if(menuControl.isOpen()&&menuControl.trigger===trigger)closeMenu();else openMenu(book,trigger);});card.append(trigger);roomIcons(trigger);return trigger;
   }
   function updateLabels(){
     if(disposed)return;menu.setAttribute('lang',getUiLocale());dialog.setAttribute('lang',getUiLocale());menu.setAttribute('aria-label',t('book.actions'));close.setAttribute('aria-label',t('book.actions.close'));
     if(headingId)heading.textContent=t(headingId);
     for(const scope of [menuLabels,labels])for(const [node,{id,params}]of scope)node.textContent=t(id,params);
-    for(const [trigger,{title}]of triggers){if(!trigger.isConnected){triggers.delete(trigger);continue;}trigger.setAttribute('aria-label',t('book.more',{title:title||t('book.fallback')}));}
+    for(const [trigger,{book}]of triggers){if(!trigger.isConnected){triggers.delete(trigger);continue;}trigger.setAttribute('aria-label',t('book.more',{title:title(book)}));}
     for(const link of body.querySelectorAll('[data-ui-owned-href]'))link.href=uiHref(link.dataset.uiOwnedHref);
     statusMessage.refresh();
   }
