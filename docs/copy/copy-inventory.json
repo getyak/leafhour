@@ -1230,7 +1230,7 @@
       },
       {
         "file": "server/portal-document.mjs",
-        "sha256": "bb2e033ea8666c782d5644798803653294da68577eb081269d7a4a479495ea74"
+        "sha256": "a1adb6e87d25968a7768639cbd1c15da629f5bbdc554b10cdc0784a77df02b68"
       },
       {
         "file": "server/portal.mjs",
@@ -1329,7 +1329,7 @@
         "sha256": "531202f1814314b6c76bfef38b2ea66636425b1ca9b445db349e70ebb8bcd00e"
       }
     ],
-    "inputDigest": "e0127af5706caa7f00326f4cdb8b7d3d7b9933badea98c294c88647b798fadae"
+    "inputDigest": "f3a19973449c1af2a6e69d9f6c1d596c6bffdfff681a453162d20a5df376bb25"
   },
   "locales": [
     "en",
@@ -69475,7 +69475,7 @@
         },
         {
           "file": "server/portal-document.mjs",
-          "line": 31,
+          "line": 32,
           "column": 108
         }
       ],
@@ -279469,7 +279469,7 @@
     {
       "kind": "concatenation",
       "file": "server/portal-document.mjs",
-      "line": 31,
+      "line": 32,
       "expression": "'<title>'+firstPaintCatalogue(decision.locale)['portal.title.library']+'</title>'",
       "fragments": [
         "<title>",
@@ -279480,7 +279480,7 @@
     {
       "kind": "concatenation",
       "file": "server/portal-document.mjs",
-      "line": 31,
+      "line": 32,
       "expression": "'<title>'+firstPaintCatalogue(decision.locale)['portal.title.library']",
       "fragments": [
         "<title>"
