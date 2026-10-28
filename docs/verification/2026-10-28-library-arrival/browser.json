@@ -1,0 +1,33 @@
+{
+  "archiveToolsDeferredUntilExplicitAction": true,
+  "firstShelfMs": 650,
+  "personalDataDelayMs": 1600,
+  "cardsInitially": 24,
+  "calendarFetchedOnlyAfterOpen": true,
+  "dailyInboxDeferred": true,
+  "recapFromIsolatedRecordedIntervals": true,
+  "focusPreserved": true,
+  "phoneBubbleFits": true,
+  "sameDayReloadQuiet": true,
+  "errors": [],
+  "calls": [
+    "/api/auth/session",
+    "/api/account/ui-preferences",
+    "/api/account/observability",
+    "/api/library?view=books",
+    "/api/library/ingestion",
+    "/api/library",
+    "/api/auth/session",
+    "/api/library/arrival?timeZone=Asia%2FSingapore",
+    "/api/auth/session",
+    "/api/account/ui-preferences",
+    "/api/account/observability",
+    "/api/library?view=books",
+    "/api/library/ingestion",
+    "/api/library",
+    "/api/library/activity?month=2026-10&timeZone=Asia%2FSingapore",
+    "/api/library/activity?month=2026-11&timeZone=Asia%2FSingapore",
+    "/api/library/activity?month=2026-10&timeZone=Asia%2FSingapore",
+    "/api/library/activity?month=2026-11&timeZone=Asia%2FSingapore"
+  ]
+}

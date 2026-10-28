@@ -14,6 +14,7 @@ import {mountAuthDialog} from './auth-dialog.mjs';
 import {safeReaderReturn,safeGiftReturn} from './reader-return.mjs';
 import {createLibraryViewHistory,safeLibraryReturn,writeLibraryView,authReturnTarget} from './library-view-state.mjs';
 import {chineseTrialUrl} from './catalog-sample.mjs';
+import {mountLibraryArrival} from './library-arrival.mjs';
 import {mountReadingDashboard} from './reading-dashboard.mjs';
 import {mountLibraryNotebook} from './library-notebook.mjs';
 import {roomShelf,readingBookUrl,libraryShelf,hasShelfFilters} from './library-workspace.mjs';
@@ -56,6 +57,7 @@ function mountCardLabels(card){for(const node of card.querySelectorAll('[data-ui
 const cardLabel=(node,id,params,attrName=null)=>{const value=t(id,params);if(attrName)node.setAttribute(attrName,value);else{node.textContent=value;node.setAttribute('lang',getUiLocale());}node.setAttribute(attrName?'data-ui-aria':'data-ui-message',id);if(params)node.setAttribute('data-ui-message-params',JSON.stringify(params));if(typeof registerCardNode==='function')registerCardNode(node,{id,params,attr:attrName});return node;};
 own($('confirm-upload'),{id:'portal.upload.save'});
 const ownerScope=createOwnerScope();
+let libraryArrival=null,personalizationPending=false;
 let refreshGeneration=0,pdfOnboarding=null,followedPdfId=null;
 let session=null,books=[],shelfControls=null,selectedCurrent=null,pendingUpload=false,pendingChat=false,pendingNotebook=false,upload=createUploadState(),shell=null,chat=null,dashboard=null,notebook=null,bookActions=null,shelfDrag=null,setupInvite=null,shelfRevision=0,orderOperation=null,homeMenu=null,squirrelPosition=null;
 // GET-179: one pure view codec plus one explicit lifecycle adapter own the
@@ -131,13 +133,14 @@ window.marginaliaPaletteAdapter={getOwner:()=>session?.user?.id||null,getOwnerTo
 // routes; the canonical library keeps its own shell. The palette handoff is the
 // explicit document port into the one existing bootstrap instance.
 if(isHomeNavRoute(location.pathname))homeMenu=mountHomeNavigation({document,getSession:()=>session,getBooks:()=>books,getOwner:()=>ownerScope.capture(),openAuth,openPalette:opener=>{document.dispatchEvent(new CustomEvent('palette:open',{detail:opener}));}});
-dashboard=mountReadingDashboard({root:$('reading-dashboard'),overviewRoot:$('reading-overview'),historyRoot:$('reading-history'),api,getSession:()=>session,getBooks:()=>books,getOwner,openAuth,refresh,onCurrentBook:book=>{selectedCurrent=book?.bookId||null;renderBooks();},onOverlay:overlay=>openOverlayFor(overlay),onClose:kind=>closeOverlayFor(kind,'user')});
+dashboard=mountReadingDashboard({shelfOnly:true,root:$('reading-dashboard'),overviewRoot:$('reading-overview'),historyRoot:$('reading-history'),api,getSession:()=>session,getBooks:()=>books,getOwner,openAuth,refresh,onCurrentBook:book=>{selectedCurrent=book?.bookId||null;renderBooks();},onOverlay:overlay=>openOverlayFor(overlay),onClose:kind=>closeOverlayFor(kind,'user')});
 if(isLibrary){notebook=mountLibraryNotebook({api,getSession:()=>session,getOwner,getBooks:()=>books,openAuth:()=>{pendingNotebook=true;openAuth();},onOpen:()=>openOverlayFor({kind:'notebook'}),onClose:()=>closeOverlayFor('notebook','user')});$('library-notebook-open').addEventListener('click',()=>{shell?.closeNavigation();notebook.open();});}
 let taskStorage=null;try{taskStorage=localStorage;}catch{}
 const bookUploads=createBookUploadController({api,getOwner:()=>session?.user?.id||null,getSession:()=>session,storage:taskStorage,onReady:()=>{void refresh().catch(()=>status('library-status',{id:'ui.generic.error'},true));}});
 if(!isLibrary){const controls=$('library-filter-controls');controls.classList.add('home-shelf-filters');$('featured-books').before(controls);}
 shelfControls=mountShelfFilters({root:$('library-filter-controls'),onOpenChange:open=>{if(!isLibrary)return;if(open)openOverlayFor({kind:'filter'});else closeOverlayFor('filter','dismiss');},onChange:action=>{shelfDrag?.reset();if(!viewHistory){renderBooks();return;}if(action.patch)viewHistory.setView(action.patch,{source:action.source||'user'});else if(action.clear)viewHistory.clearView(action.clear);else if(action.clearAll)viewHistory.clearAll();}});
-if(isLibrary){chat=mountLibraryChat({root:$('library-chat'),api,uploadController:bookUploads,mountUpload:mountChatBookUpload,getSession:()=>session,getBooks:()=>books,getOwner:()=>ownerScope.capture().owner,openAuth:message=>{pendingChat=true;openAuth(message);},getCurrentBook:()=>dashboard.getCurrentBook(),positionLauncher:launcher=>{squirrelPosition=mountSquirrelPosition({launcher,labels:{ariaDescription:t('squirrel.drag.description'),title:t('squirrel.title')}});return squirrelPosition;}});shell=mountLibraryShell({getSession:()=>session,api,getBooks:()=>books,getCurrentBook:()=>dashboard.getCurrentBook(),inboxRoot:$('daily-reading-inbox'),onRestored:()=>refresh(),onProfileUpdated:(profile,userId)=>{if(session?.user?.id!==userId)return;Object.assign(session.user,profile);shell.update();},onPreferenceMemorySaved:adoptPreferenceMemory,onReadingPreferencesSaved:saved=>{if(session)session.readingPreferences=saved;void setupInvite?.refresh({changed:true,keys:['mode','preferredLanguage','theme']});},openAuth,onLogout:signOut,onHistory:()=>dashboard.openHistory(),onOpenChat:()=>chat.open(),onSettingsOpen:tab=>openOverlayFor({kind:'settings',tab}),onSettingsClose:()=>closeOverlayFor('settings','user'),onSettingsTab:tab=>{const current=viewHistory?.snapshot().overlay;if(current?.kind==='settings'&&current.tab!==tab)openOverlayFor({kind:'settings',tab});}});$('reading-setup-invite').hidden=true;setupInvite=mountPreferenceMemory({root:chat.surface().onboardingHost,kind:'onboarding',isReady:()=>bootstrapped,api,getSession:()=>session,getBooks:()=>books,open:()=>chat.open(),onSaved:adoptPreferenceMemory});$('library-chat').addEventListener('reading-preferences-changed',()=>{void setupInvite.refresh();});bookActions=mountLibraryBookActions({api,getSession:()=>session,getBooks:()=>libraryShelf(books),getOwner,getRevision:()=>shelfRevision,setRevision:value=>{shelfRevision=value;},onReorder:saveShelfOrder,onChanged:()=>refresh(),openAuth,onOverlay:overlay=>openOverlayFor(overlay),onClose:(kind,reason)=>{if(kind==='trash')closeOverlayFor('trash',reason);}});shelfDrag=mountShelfDrag({grid:$('library-books'),getBooks:()=>libraryShelf(books),getOwner,onReorder:saveShelfOrder,onError:error=>status('library-status',{id:'ui.generic.error'},true)});$('library-trash').addEventListener('click',()=>{shell.closeNavigation();bookActions.trash();});}else roomIcons();
+if(isLibrary){chat=mountLibraryChat({root:$('library-chat'),api,uploadController:bookUploads,mountUpload:mountChatBookUpload,getSession:()=>session,getBooks:()=>books,getOwner:()=>ownerScope.capture().owner,openAuth:message=>{pendingChat=true;openAuth(message);},getCurrentBook:()=>dashboard.getCurrentBook(),onViewChange:open=>{if(open){libraryArrival?.suspend();setupInvite?.update();}else libraryArrival?.update();},positionLauncher:launcher=>{squirrelPosition=mountSquirrelPosition({launcher,labels:{ariaDescription:t('squirrel.drag.description'),title:t('squirrel.title')}});return squirrelPosition;}});shell=mountLibraryShell({getSession:()=>session,api,getBooks:()=>books,getCurrentBook:()=>dashboard.getCurrentBook(),inboxRoot:$('daily-reading-inbox'),onRestored:()=>refresh(),onProfileUpdated:(profile,userId)=>{if(session?.user?.id!==userId)return;Object.assign(session.user,profile);shell.update();},onPreferenceMemorySaved:adoptPreferenceMemory,onReadingPreferencesSaved:saved=>{if(session)session.readingPreferences=saved;void setupInvite?.refresh({changed:true,keys:['mode','preferredLanguage','theme']});},openAuth,onLogout:signOut,onHistory:()=>dashboard.openHistory(),onOpenChat:()=>chat.open(),onSettingsOpen:tab=>openOverlayFor({kind:'settings',tab}),onSettingsClose:()=>closeOverlayFor('settings','user'),onSettingsTab:tab=>{const current=viewHistory?.snapshot().overlay;if(current?.kind==='settings'&&current.tab!==tab)openOverlayFor({kind:'settings',tab});}});$('reading-setup-invite').hidden=true;setupInvite=mountPreferenceMemory({root:chat.surface().onboardingHost,kind:'onboarding',isReady:()=>bootstrapped&&chat.surface().root.open,api,getSession:()=>session,getBooks:()=>books,open:()=>chat.open(),onSaved:adoptPreferenceMemory});$('library-chat').addEventListener('reading-preferences-changed',()=>{void setupInvite.refresh();});bookActions=mountLibraryBookActions({api,getSession:()=>session,getBooks:()=>libraryShelf(books),getOwner,getRevision:()=>shelfRevision,setRevision:value=>{shelfRevision=value;},onReorder:saveShelfOrder,onChanged:()=>refresh(),openAuth,onOverlay:overlay=>openOverlayFor(overlay),onClose:(kind,reason)=>{if(kind==='trash')closeOverlayFor('trash',reason);}});shelfDrag=mountShelfDrag({grid:$('library-books'),getBooks:()=>libraryShelf(books),getOwner,onReorder:saveShelfOrder,onError:error=>status('library-status',{id:'ui.generic.error'},true)});$('library-trash').addEventListener('click',()=>{shell.closeNavigation();bookActions.trash();});}else roomIcons();
+if(isLibrary)libraryArrival=mountLibraryArrival({api,getOwner,getSession:()=>session,surface:chat.surface(),onOpenChat:()=>chat.open(),storage:taskStorage});
 if(isLibrary)viewHistory=createLibraryViewHistory({window,getUiLocale,onBeforeUiPopstate,onChange:(snapshot,meta)=>{
   shelfControls?.apply(snapshot.view);
   renderBooks();
@@ -155,6 +158,7 @@ function clearPrivateUI({keepAuthDialog=false,preserveView=false}={}){
   // command-palette cache and rendered private results synchronously.
   invalidatePaletteLibraries();
   if(!preserveView)viewHistory?.adoptOwner();
+  libraryArrival?.clear();personalizationPending=false;
   notebook?.clear();bookActions?.clear();shelfDrag?.reset();shelfRevision=0;orderOperation=null;
   for(const id of ['upload-status','library-status','upload-filename'])status(id,'');
   for(const id of preserveView?['book-file']:['book-file','book-search'])$(id).value='';if(!keepAuthDialog){status('auth-status','');authDialog.reset();if($('auth-dialog').open)$('auth-dialog').close();}
@@ -200,7 +204,7 @@ function bookCard(book){
   const meta=make('div','book-meta'),heading=make('h3'),title=make('a','book-title-link',book.title.zh),author=make('p','book-author',book.author||book.source?.filename||'');title.href=readerTarget;ownedHref(title,readerTarget);heading.append(title);author.title=author.textContent;meta.append(heading,author);
   const label=make('p','book-label');
   if(book.chineseSample){const sampleTarget=chineseTrialUrl(book);const trial=cardLabel(make('a','source-link'),'portal.card.sampleShort',{count:book.chineseSample.paragraphs});trial.href=sampleTarget;ownedHref(trial,sampleTarget);label.append(trial);}else cardLabel(label,book.visibility==='public'?'portal.card.public':'portal.card.private',book.visibility==='public'?null:{format:String(book.source?.format||'文本').toUpperCase()});meta.append(label);
-  const bottom=make('div','book-bottom'),read=cardLabel(make('a','book-read'),book.resume?'portal.card.continue':'portal.card.start');read.href=readerTarget;ownedHref(read,readerTarget);
+  const bottom=make('div','book-bottom'),read=cardLabel(make('a','book-read'),book.personalizationPending?'arrival.open':book.resume?'portal.card.continue':'portal.card.start');read.href=readerTarget;ownedHref(read,readerTarget);
   bottom.append(read);meta.append(bottom);card.append(art,meta);bookActions?.decorate(card,book);
   const grip=make('button','book-drag-handle');grip.type='button';cardLabel(grip,'portal.drag.aria',{title:book.title.zh},'aria-label');cardLabel(grip,'portal.drag.hint',null,'data-drag-hint');grip.setAttribute('aria-describedby','shelf-order-help');const symbol=make('span');symbol.dataset.icon='grip-vertical';symbol.setAttribute('aria-hidden','true');grip.append(symbol);card.append(grip);mountCardLabels(card);grip.addEventListener('keydown',event=>{if(!['ArrowLeft','ArrowRight'].includes(event.key))return;event.preventDefault();const ids=libraryShelf(books).map(b=>b.bookId),index=ids.indexOf(book.bookId),target=ids[index+(event.key==='ArrowLeft'?-1:1)];if(target)saveShelfOrder(moveShelfBook(ids,book.bookId,target,event.key==='ArrowLeft'?'before':'after')).catch(error=>status('library-status',{id:'ui.generic.error'},true));});grip.addEventListener('click',event=>{if(event.detail===0)card.querySelector('.book-action-trigger').click();});shelfDrag?.decorate(card);roomIcons(card);return card;
 }
@@ -226,10 +230,10 @@ function renderHomeBooks(){
 }
 function renderBooks(){
   if(!isLibrary){renderHomeBooks();return;}
-  const filters=shelfControls?.read()||{query:$('book-search').value},query=filters.query.trim(),filtered=hasShelfFilters(filters),room=roomShelf(books,{...filters,selectedBookId:selectedCurrent});shelfControls?.update(books);
+  const filters=shelfControls?.read()||{query:$('book-search').value},query=filters.query.trim(),filtered=hasShelfFilters(filters),shelf=libraryShelf(books,filters),room={featured:null,books:shelf,total:shelf.length};shelfControls?.update(books);shelfControls?.setPending(personalizationPending);
   const anchorId=document.activeElement?.closest('[data-book-id]')?.dataset.bookId;
   if(shelfList)shelfList.setItems(room.books,{key:JSON.stringify([getOwner(),filters]),anchorId});else $('library-books').replaceChildren();
-  $('library-books').setAttribute('aria-busy','false');$('reading-dashboard').hidden=!room.featured&&!dashboard?.isLoading();$('shelf-title').hidden=!room.books.length;own($('shelf-title'),{render:()=>room.featured?t('portal.shelf.titleMore'):t('portal.shelf.title')});$('shelf-title').classList.toggle('sr-only',!room.featured);$('library-shelf').classList.toggle('with-current',!!room.featured);$('library-shelf').hidden=dashboard?.isLoading()||!!room.featured&&!room.books.length;
+  $('library-books').setAttribute('aria-busy','false');$('reading-dashboard').hidden=!dashboard?.isLoading();$('shelf-title').hidden=!room.books.length;own($('shelf-title'),{render:()=>room.featured?t('portal.shelf.titleMore'):t('portal.shelf.title')});$('shelf-title').classList.toggle('sr-only',!room.featured);$('library-shelf').classList.toggle('with-current',!!room.featured);$('library-shelf').hidden=dashboard?.isLoading()||!!room.featured&&!room.books.length;
   const roomLoading=!!dashboard?.isLoading(),bookCount=books.length;
   const currentBook=dashboard?.getCurrentBook(),todayHeading=$('reading-dashboard').querySelector('.today-heading');if(currentBook&&todayHeading)bookActions?.decorate(todayHeading,currentBook);
   own($('room-title'),{render:()=>query?t('portal.room.search'):filters.scope==='private'?t('portal.room.private'):t('portal.room.library')});own($('room-count'),{render:()=>roomLoading?'':filtered?t('portal.count.filtered',{shown:num(room.total),total:num(bookCount)}):t('portal.count.books',{count:num(room.total)})});$('sidebar-book-count').textContent=num(books.length);$('search-clear').hidden=!query;
@@ -257,7 +261,7 @@ async function refresh(knownSession){
   homeMenu?.updateIdentity(ownerScope.capture());
   if(changed){clearPrivateUI({keepAuthDialog:authDialog.isSettingPasswordFor(next.user?.id),preserveView:firstIdentity});pendingUpload=!!continueUpload;pendingChat=!!continueChat;}authDialog.updateCapabilities();shell?.update();
   own($('account-button'),{id:session?.user?'portal.account.library':'portal.account.signIn'});own($('library-description'),{id:session?.user?'portal.description.user':'portal.description.guest'});
-  const library=await api('/api/library');if(generation!==refreshGeneration)return;books=library.books;shelfRevision=library.shelfRevision||0;
+  const library=await api(isLibrary?'/api/library?view=books':'/api/library');if(generation!==refreshGeneration)return;books=library.books;personalizationPending=isLibrary&&!!session.user;shelfRevision=library.shelfRevision||0;
   if(!session.user){try{const order=JSON.parse(localStorage.getItem('marginalia-shelf-order:guest')||'null');if(Array.isArray(order)&&order.length<=1000){const rank=new Map(order.filter(id=>typeof id==='string').map((id,index)=>[id,index]));if(rank.size)books=books.map((book,index)=>({...book,shelfPosition:rank.get(book.bookId)??order.length+index}));}}catch{}}
   if(!session.user)for(const book of books){try{const local=JSON.parse(localStorage.getItem(positionStorageKey(book.bookId))||'null');if(local?.passageId&&local.chapterLabel&&local.contentVersion===book.source.sha256)book.resume={label:local.chapterLabel,passageId:local.passageId,updatedAt:local.updatedAt,mode:local.mode,variant:local.variant};}catch{}}
   // GET-188: the menu rows render only after the current refresh generation,
@@ -266,9 +270,22 @@ async function refresh(knownSession){
   homeMenu?.update(ownerScope.capture());
   bootstrapped=true;setupInvite?.update();
   $('library-retry').hidden=true;status('library-status','');renderBooks();
-  pdfOnboarding.refresh();if(isLibrary){dashboard.update(arrivalTicket);shell.refreshDaily();}
+  pdfOnboarding.refresh();if(isLibrary){dashboard.update(arrivalTicket);renderBooks();if(personalizationPending){const ticket=ownerScope.capture();requestAnimationFrame(()=>setTimeout(()=>hydrateLibrary(generation,ticket),0));}else libraryArrival?.update();}
   bootstrapped=true;
   }catch(error){if(generation!==refreshGeneration)return;if(isLibrary){dashboard.fail(error,arrivalTicket);$('library-retry').hidden=false;$('library-books').setAttribute('aria-busy','false');}throw error;}
+}
+async function hydrateLibrary(generation,ticket){
+  try{
+    const result=await api('/api/library',undefined,ticket);
+    if(generation!==refreshGeneration||!ownerScope.isCurrent(ticket))return;
+    const fresh=new Map(result.books.map(book=>[book.bookId,book]));
+    const active=document.activeElement,focused=active?.closest('[data-book-id]'),focusId=focused?.dataset.bookId,focusClass=active?.className?.split?.(' ').find(Boolean),visible=[...$('library-books').children].find(n=>n.getBoundingClientRect().bottom>0),anchorId=visible?.dataset.bookId,anchorTop=visible?.getBoundingClientRect().top;
+    books=books.map(book=>fresh.has(book.bookId)?{...fresh.get(book.bookId),shelfPosition:book.shelfPosition}:book);
+    personalizationPending=false;dashboard.update(null);renderBooks();
+    if(focusId&&focusClass){const card=[...$('library-books').children].find(n=>n.dataset.bookId===focusId);card?.querySelector('.'+CSS.escape(focusClass))?.focus({preventScroll:true});}
+    if(anchorId){const anchor=[...$('library-books').children].find(n=>n.dataset.bookId===anchorId);if(anchor)window.scrollBy(0,anchor.getBoundingClientRect().top-anchorTop);}
+    libraryArrival?.update();
+  }catch(error){if(generation!==refreshGeneration||!ownerScope.isCurrent(ticket))return;status('library-status',{id:'arrival.pending'},true);$('library-retry').hidden=false;libraryArrival?.update();}
 }
 async function signOut(){
   const ticket=ownerScope.capture();await api('/api/auth/logout',{},ticket);session={...session,user:null};ownerScope.adopt('guest');void adoptUiOwner(null);clearPrivateUI();

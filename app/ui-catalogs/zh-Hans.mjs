@@ -1,6 +1,23 @@
 // GET-192 immutable zh-Hans UI catalogue. Fixed public stateless ID→string
 // data with the same keys as app/ui-catalogs/en.mjs. No logic lives here.
 export default Object.freeze({
+  "arrival.title": "回来接着读",
+  "arrival.close": "收起今天的阅读回顾",
+  "arrival.talk": "聊聊这本书",
+  "arrival.continue": "接着读 →",
+  "arrival.preference": "每天第一次进入时显示阅读回顾",
+  "arrival.lessMinute": "不足 1 分钟",
+  "arrival.bookSeparator": "、",
+  "arrival.yesterday": "昨天记录了 {time}阅读（{sources}）。",
+  "arrival.noYesterday": "昨天没有记录到阅读。",
+  "arrival.activity": "还留下了 {notes} 条笔记和 {questions} 个问题。",
+  "arrival.last": "最近一次阅读记录在 {at}：《{title}》，{time}。",
+  "arrival.firstRead": "选一本书，从几页开始。",
+  "arrival.source.reader_focus": "自动计时",
+  "arrival.source.reader_estimate": "阅读估算",
+  "arrival.source.manual": "手动补记",
+  "arrival.pending": "书籍已打开，阅读进度暂时无法读取，请重试。",
+  "arrival.open": "打开书籍",
   "observability.title": "改进 Leafhour",
   "observability.description": "可随时关闭，不含书中内容和个人记录。",
   "observability.analytics": "使用统计",
