@@ -398,7 +398,7 @@
       },
       {
         "file": "app/observability-contract.mjs",
-        "sha256": "0bc36f83c002590d10a2e1c265de371f93f669ffa68c329672250b0fa16f5895"
+        "sha256": "534da293c1be728cc61143238a3fafd1558a9da1f4e1ef641d796d20549f7a2a"
       },
       {
         "file": "app/observability-settings.mjs",
@@ -1174,7 +1174,7 @@
       },
       {
         "file": "server/observability.mjs",
-        "sha256": "75cd03c86d2688265a5609a8855739c93d4cabe3ae7585320cf3c6c48f3be9e4"
+        "sha256": "0953fd990163d17ae4646c108a0d69ff4f1c35820939d807dffab76ceeef2246"
       },
       {
         "file": "server/paddleocr.mjs",
@@ -1234,7 +1234,7 @@
       },
       {
         "file": "server/portal.mjs",
-        "sha256": "70abfd10a8c371001a4d0914a78c9f666a454178ab7899adf318534f3f91e457"
+        "sha256": "95a10a9e841bba0813de9e73737faa0fa8014c4f9250b0e154341aa87e5d4c51"
       },
       {
         "file": "server/preference-memory.mjs",
@@ -1266,11 +1266,11 @@
       },
       {
         "file": "server/reader-chat.mjs",
-        "sha256": "1ee7f771d8d246fd1c64cb3677f5a291381642cf15aa0e955739b245bda355de"
+        "sha256": "951cfba518d87d4b2c0522eaa30e64d24322e2601575ddfaa29aa82a495f3a39"
       },
       {
         "file": "server/reader-companion.mjs",
-        "sha256": "8fddc5fe7ad1c9868d4824acdfe6277c9e5930f79900c0941a779dc369a4de1c"
+        "sha256": "a3193fb78447a4d3138933937224a6459cb895c4dff5b8802962a265304e7e5c"
       },
       {
         "file": "server/reader-shell.mjs",
@@ -1329,7 +1329,7 @@
         "sha256": "531202f1814314b6c76bfef38b2ea66636425b1ca9b445db349e70ebb8bcd00e"
       }
     ],
-    "inputDigest": "e0127af5706caa7f00326f4cdb8b7d3d7b9933badea98c294c88647b798fadae"
+    "inputDigest": "9f9d3d2a92e912a0588b51c4e3e1b3a33f150d33185188d692b1ef205f241d07"
   },
   "locales": [
     "en",
@@ -246099,9 +246099,9 @@
       }
     },
     {
-      "id": "candidate:server/reader-companion.mjs:95:111",
+      "id": "candidate:server/reader-companion.mjs:96:111",
       "file": "server/reader-companion.mjs",
-      "line": 95,
+      "line": 96,
       "column": 111,
       "kind": "js-cjk-literal",
       "property": null,
@@ -246119,9 +246119,9 @@
       }
     },
     {
-      "id": "candidate:server/reader-companion.mjs:100:171",
+      "id": "candidate:server/reader-companion.mjs:102:171",
       "file": "server/reader-companion.mjs",
-      "line": 100,
+      "line": 102,
       "column": 171,
       "kind": "js-cjk-literal",
       "property": null,
@@ -280801,6 +280801,16 @@
       "unresolved": true
     },
     {
+      "kind": "concatenation",
+      "file": "server/reader-companion.mjs",
+      "line": 116,
+      "expression": "'companion-failed:'+runId",
+      "fragments": [
+        "companion-failed:"
+      ],
+      "unresolved": true
+    },
+    {
       "kind": "computed-member",
       "file": "server/reading-activity.mjs",
       "line": 6,
@@ -282995,7 +283005,7 @@
     "candidatesUnreviewed": 5490,
     "candidatesProtected": 141,
     "itemsProtected": 9,
-    "dynamicConsumers": 3751,
+    "dynamicConsumers": 3752,
     "consumerReferences": 1740,
     "keysWithoutStaticConsumers": 1214,
     "reviewedLocaleValues": 48,
