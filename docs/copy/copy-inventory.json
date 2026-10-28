@@ -662,7 +662,7 @@
       },
       {
         "file": "app/reading-arrival.mjs",
-        "sha256": "d67de936870d70038e429929885f8032d4de966a8fc9ae594146f7968293e3c5"
+        "sha256": "3297e61ebc1d3f18659c2d69e26e0e462f17a344a3ecb547a49987f7f7d785db"
       },
       {
         "file": "app/reading-book.mjs",
@@ -1289,7 +1289,7 @@
         "sha256": "531202f1814314b6c76bfef38b2ea66636425b1ca9b445db349e70ebb8bcd00e"
       }
     ],
-    "inputDigest": "d1fcfa6f24e25912e8622ae9b9f66c029d087ab2b2c51a13b602cc6113251f96"
+    "inputDigest": "3c9102c7c0c5d76609ff796a9be879da8e27a09a51bee3a1f5df62826eb2b6c7"
   },
   "locales": [
     "en",
@@ -55607,8 +55607,8 @@
       "consumers": [
         {
           "file": "app/reading-arrival.mjs",
-          "line": 81,
-          "column": 148
+          "line": 92,
+          "column": 169
         }
       ],
       "hints": [
@@ -209757,9 +209757,49 @@
       }
     },
     {
-      "id": "candidate:app/reading-arrival.mjs:91:70",
+      "id": "candidate:app/reading-arrival.mjs:85:52",
       "file": "app/reading-arrival.mjs",
-      "line": 91,
+      "line": 85,
+      "column": 52,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "書裡連圖畫和對話都沒有，讀它有什麼意思？",
+      "sha256": "49004ae34c092237c4eba57280531ca738cdc6ee45d00db4f40e4e7960b620cc",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/reading-arrival.mjs:89:50",
+      "file": "app/reading-arrival.mjs",
+      "line": 89,
+      "column": 50,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "劉易斯·卡羅爾 《愛麗絲夢遊仙境》 · 第一章",
+      "sha256": "b4148e88ee2600be96637e4847449b1c247aacf450dc3b5fa7664dad22446926",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/reading-arrival.mjs:102:70",
+      "file": "app/reading-arrival.mjs",
+      "line": 102,
       "column": 70,
       "kind": "js-attribute",
       "property": "role",
@@ -209777,9 +209817,9 @@
       }
     },
     {
-      "id": "candidate:app/reading-arrival.mjs:91:112",
+      "id": "candidate:app/reading-arrival.mjs:102:112",
       "file": "app/reading-arrival.mjs",
-      "line": 91,
+      "line": 102,
       "column": 112,
       "kind": "js-attribute",
       "property": "aria-live",
@@ -264742,18 +264782,8 @@
     {
       "kind": "concatenation",
       "file": "app/reading-arrival.mjs",
-      "line": 81,
-      "expression": "'arrival.provenance.'+(quote.variant==='literal'?'literal':'interpretive')",
-      "fragments": [
-        "arrival.provenance."
-      ],
-      "unresolved": true
-    },
-    {
-      "kind": "concatenation",
-      "file": "app/reading-arrival.mjs",
       "line": 85,
-      "expression": "'“'+(quote.translation||quote.original)+'”'",
+      "expression": "'“'+(traditional?'書裡連圖畫和對話都沒有，讀它有什麼意思？':quote.translation)+'”'",
       "fragments": [
         "“",
         "”"
@@ -264764,6 +264794,58 @@
       "kind": "concatenation",
       "file": "app/reading-arrival.mjs",
       "line": 85,
+      "expression": "'“'+(traditional?'書裡連圖畫和對話都沒有，讀它有什麼意思？':quote.translation)",
+      "fragments": [
+        "“"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "app/reading-arrival.mjs",
+      "line": 89,
+      "expression": "quote.author+' 《'+quote.title+'》 · '",
+      "fragments": [
+        " 《",
+        "》 · "
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "app/reading-arrival.mjs",
+      "line": 89,
+      "expression": "quote.author+' 《'",
+      "fragments": [
+        " 《"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "app/reading-arrival.mjs",
+      "line": 92,
+      "expression": "'arrival.provenance.'+(quote.variant==='literal'?'literal':'interpretive')",
+      "fragments": [
+        "arrival.provenance."
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "app/reading-arrival.mjs",
+      "line": 96,
+      "expression": "'“'+(quote.translation||quote.original)+'”'",
+      "fragments": [
+        "“",
+        "”"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "app/reading-arrival.mjs",
+      "line": 96,
       "expression": "'“'+(quote.translation||quote.original)",
       "fragments": [
         "“"
@@ -264773,7 +264855,7 @@
     {
       "kind": "concatenation",
       "file": "app/reading-arrival.mjs",
-      "line": 87,
+      "line": 98,
       "expression": "(quote.author?quote.author+' ':'')+'《'+quote.title+'》'",
       "fragments": [
         "《",
@@ -264784,7 +264866,7 @@
     {
       "kind": "concatenation",
       "file": "app/reading-arrival.mjs",
-      "line": 87,
+      "line": 98,
       "expression": "(quote.author?quote.author+' ':'')+'《'",
       "fragments": [
         "《"
@@ -264794,7 +264876,7 @@
     {
       "kind": "concatenation",
       "file": "app/reading-arrival.mjs",
-      "line": 87,
+      "line": 98,
       "expression": "quote.author+' '",
       "fragments": [
         " "
@@ -264804,7 +264886,7 @@
     {
       "kind": "concatenation",
       "file": "app/reading-arrival.mjs",
-      "line": 87,
+      "line": 98,
       "expression": "' · '+quote.chapter",
       "fragments": [
         " · "
@@ -280025,11 +280107,11 @@
     "duplicateKeys": 0,
     "reviewedItems": 12,
     "unreviewedItems": 2285,
-    "candidates": 5447,
-    "candidatesUnreviewed": 5446,
+    "candidates": 5449,
+    "candidatesUnreviewed": 5448,
     "candidatesProtected": 136,
     "itemsProtected": 9,
-    "dynamicConsumers": 3644,
+    "dynamicConsumers": 3648,
     "consumerReferences": 1719,
     "keysWithoutStaticConsumers": 1211,
     "reviewedLocaleValues": 48,
