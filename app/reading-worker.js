@@ -94,8 +94,10 @@ async function staticResponse(request,release,entry){
  const sanitized=await publicResponse(response);await cache.put(absolute(entry.url),sanitized.clone());return sanitized;
 }
 
-self.addEventListener('install',event=>{
- event.waitUntil((async()=>{
+let preparation=null;
+async function prepareRelease(){
+ if(preparation)return preparation;
+ preparation=(async()=>{
   if(!validRelease(OFFLINE_RELEASE))throw Error('Offline release is not built');
   const cache=await caches.open(groupName(OFFLINE_RELEASE.version));
   try{
@@ -106,6 +108,7 @@ self.addEventListener('install',event=>{
     while(!failure&&cursor<OFFLINE_RELEASE.resources.length){
      const entry=OFFLINE_RELEASE.resources[cursor++];
      try{
+      if(await verified(await cache.match(absolute(entry.url)),entry))continue;
       const response=await fetch(absolute(entry.url),{credentials:'omit',cache:'no-store',redirect:'error'});
       if(!await verified(response,entry))throw Error('Offline resource digest mismatch: '+entry.url);
       await cache.put(absolute(entry.url),await publicResponse(response));
@@ -118,8 +121,10 @@ self.addEventListener('install',event=>{
    if(failure)throw failure;
    await cache.put(absolute(DESCRIPTOR),new Response(JSON.stringify(OFFLINE_RELEASE),{headers:{'Content-Type':'application/json'}}));
   }catch(error){await caches.delete(groupName(OFFLINE_RELEASE.version));throw error;}
- })());
-});
+ })();
+ try{return await preparation;}finally{preparation=null;}
+}
+self.addEventListener('install',event=>{event.waitUntil(prepareRelease());});
 // Cleanup happens only on natural activation. Enumerate live clients before
 // removing stale pins, and keep any release one of those pages still uses.
 // A concurrently installing/waiting worker owns a group we cannot identify
@@ -141,6 +146,10 @@ self.addEventListener('activate',event=>{event.waitUntil((async()=>{
 self.addEventListener('message',event=>{
  if(event.data?.type!=='LEAFHOUR_OFFLINE_STATUS')return;
  event.waitUntil((async()=>{
+  let matchingReader=false;try{matchingReader=Boolean(event.source?.id&&new URL(event.source.url).origin===self.location.origin&&OFFLINE_RELEASE?.readerEntries.includes(event.data.readerEntry));}catch{}
+  // Cache eviction does not reinstall an unchanged active worker. Only the
+  // explicit Save action may rebuild its exact public group; status stays read-only.
+  if(event.data.repair===true&&matchingReader&&!await prepared(OFFLINE_RELEASE))try{await prepareRelease();}catch{}
   const checksEntry=Object.hasOwn(event.data,'readerEntry')||event.data.claimUncontrolled===true;
   const release=checksEntry?await compatibleClient(event.source,event.data.readerEntry,event.data.claimUncontrolled===true):await clientRelease(event.source?.id),ready=Boolean(release&&await prepared(release));
   const reply={type:'LEAFHOUR_OFFLINE_STATUS',requestId:event.data.requestId,ready,...(release?{version:release.version}:{})};

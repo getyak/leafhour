@@ -157,3 +157,30 @@ test('canonical shell resources install and reopen offline when HTML-suffix rout
  const w=await worker({manifest:canonical,files,network:async request=>{const url=new URL(request.url||request,origin);if(offline)throw TypeError('offline');if(url.pathname.endsWith('.html'))return new Response(null,{status:308,headers:{Location:url.pathname.slice(0,-5)}});return new Response(files[url.pathname]||'missing',{status:files[url.pathname]?200:404});}});
  await w.install();assert.equal((await w.status()).ready,true);assert.ok(!w.fetches.some(r=>new URL(r.url).pathname.endsWith('.html')));offline=true;assert.equal(await(await w.fetch('/read',{navigate:true})).text(),bodies['/offline-reader.html']);assert.equal(await(await w.fetch('/library',{navigate:true})).text(),bodies['/offline.html']);
 });
+
+test('explicit preparation restores evicted public resources without reinstalling the active worker',async()=>{
+ let offline=false;const w=await worker({network:async request=>{if(offline)throw TypeError('offline');return new Response(bodies[new URL(request.url||request,origin).pathname]);}});await w.install();
+ for(const rows of w.caches.stores.values())rows.clear();w.fetches.length=0;
+ assert.equal((await w.status('page',{readerEntry:release.readerEntries[0]})).ready,false);assert.equal(w.fetches.length,0,'ordinary status never downloads a resource group');
+ assert.equal((await w.status('page',{readerEntry:release.readerEntries[0],repair:true})).ready,true);
+ assert.equal(w.fetches.length,release.resources.length);for(const request of w.fetches){assert.equal(request.options.credentials,'omit');assert.equal(request.options.redirect,'error');assert.ok(!new URL(request.url).pathname.startsWith('/api/'));}
+ offline=true;assert.equal(await(await w.fetch('/read',{navigate:true,resultingClientId:'reopened'})).text(),bodies[release.readerShell]);
+});
+
+test('concurrent explicit retries repair only missing or damaged bytes and publish the descriptor last',async()=>{
+ const w=await worker();await w.install();const cache=await w.caches.open('leafhour-reading-static-v1:'+release.version);await cache.delete(origin+'/__leafhour-offline__/release');await cache.put(origin+'/lazy.mjs',new Response('damaged'));w.fetches.length=0;
+ const replies=await Promise.all([w.status('one',{readerEntry:release.readerEntries[0],repair:true}),w.status('two',{readerEntry:release.readerEntries[0],repair:true})]);
+ assert.ok(replies.every(reply=>reply.ready));assert.deepEqual(w.fetches.map(request=>new URL(request.url).pathname),['/lazy.mjs'],'coalesced retries retain every already-verified resource');assert.equal((await w.status()).ready,true);
+});
+
+test('resource repair fails closed on digest mismatch and can retry after the network is corrected',async()=>{
+ let damaged=false;const w=await worker({network:async request=>{const pathname=new URL(request.url||request,origin).pathname;return new Response(damaged&&pathname==='/lazy.mjs'?'wrong version':bodies[pathname]);}});await w.install();for(const rows of w.caches.stores.values())rows.clear();damaged=true;
+ const request={readerEntry:release.readerEntries[0],repair:true};assert.equal((await w.status('page',request)).ready,false);assert.equal((await w.status()).ready,false);
+ damaged=false;assert.equal((await w.status('page',request)).ready,true,'a failed repair does not permanently poison subsequent explicit attempts');
+});
+
+test('resource repair rejects foreign pages and mismatched reader entries without network activity',async()=>{
+ const w=await worker({clients:[{id:'foreign',url:'https://other.invalid/read'}]});
+ for(const [clientId,readerEntry]of [['page',undefined],['page','/reader-web/reader-9999999999999999.js'],['foreign',release.readerEntries[0]]])assert.equal((await w.status(clientId,{readerEntry,repair:true})).ready,false);
+ assert.equal(w.fetches.length,0);
+});

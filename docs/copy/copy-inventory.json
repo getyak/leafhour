@@ -442,7 +442,7 @@
       },
       {
         "file": "app/offline-reading.mjs",
-        "sha256": "e3d00b176db0b048719f9defa3d4ac09b2e3f854a8d4678f58b78f7a02f93f81"
+        "sha256": "df8694173123644c83fb2b8b0f9e073729a295e1d3c988465f512e3090bdedcb"
       },
       {
         "file": "app/offline-shelf.mjs",
@@ -850,7 +850,7 @@
       },
       {
         "file": "app/reading-worker.js",
-        "sha256": "ca2741c1ed6ba35aac06db08bc3acdd14bb2f4d1f171f94966711bd03e9a8bd8"
+        "sha256": "4eea6d0ce2112dcfa17d58ff0ed9269c4153adaa14e6fd358d0a5b732f33e6c9"
       },
       {
         "file": "app/save-receipts.mjs",
@@ -1381,7 +1381,7 @@
         "sha256": "531202f1814314b6c76bfef38b2ea66636425b1ca9b445db349e70ebb8bcd00e"
       }
     ],
-    "inputDigest": "1290d6aa3c8c6c1cda3f08308ca6b24db7769c204da2f2814059dbc48aec1f1c"
+    "inputDigest": "a6972ea87bf37973e915b3db89d608004a7b49212eded41803b15033dd71f621"
   },
   "locales": [
     "en",
@@ -286311,7 +286311,7 @@
     {
       "kind": "computed-member",
       "file": "app/reading-worker.js",
-      "line": 107,
+      "line": 109,
       "expression": "cursor++",
       "fragments": [],
       "unresolved": true
@@ -286319,7 +286319,7 @@
     {
       "kind": "concatenation",
       "file": "app/reading-worker.js",
-      "line": 110,
+      "line": 113,
       "expression": "'Offline resource digest mismatch: '+entry.url",
       "fragments": [
         "Offline resource digest mismatch: "
@@ -286329,7 +286329,7 @@
     {
       "kind": "computed-member",
       "file": "app/reading-worker.js",
-      "line": 147,
+      "line": 156,
       "expression": "0",
       "fragments": [],
       "unresolved": true
