@@ -16,4 +16,6 @@ Browser verification used a disposable local synthetic identity and shared publi
 
 [Desktop evidence](2026-10-28-selection-follow/desktop.jpg), [narrow-layout evidence](2026-10-28-selection-follow/mobile.jpg), [measured state and request observations](2026-10-28-selection-follow/browser.json).
 
+The screenshot surfaces used 150% browser zoom. Final captures use the complete physical viewport and its current scroll offset, so the right-hand desktop conversation and the fixed narrow-layout dialog are included; an initial capture clipped them. Measurements above are CSS viewport dimensions. No image content was edited.
+
 Fresh independent review initially passed 94 owner/adapter tests and identified the native-close issue above. The reviewer then confirmed its fix, reran the expanded 95 owner/adapter tests successfully and reported no remaining review blocker. Runtime/build/release checks and real pinned copy lint pass. No real account, private notes, cloud records or model requests were used. Physical touch selection, Safari and screen-reader speech remain unverified. Current-head CI, merge and exact Production acceptance remain separate delivery gates.
