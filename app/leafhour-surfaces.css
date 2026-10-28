@@ -87,7 +87,7 @@ body.library-page .book-details-body {
 }
 body.library-page :is(.sidebar-secondary,.library-footer,.sidebar-account,.library-shelf.with-current)::before,
 #home-view .sample-sheet::before { content: none; }
-#home-view :is(.home-atmosphere,.sunlight-overlay,.light-toggle,.book-light) { display: none !important; }
+#home-view .book-light { display: none !important; }
 body :is(h1,h2,h3),
 body.library-page :is(.room-heading h1,.today-copy h2,.settings-panel h3,.settings-heading h2) {
   font-family: var(--sans);

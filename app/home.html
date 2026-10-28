@@ -13,6 +13,7 @@
   <link rel="stylesheet" href="/reading-arrival.css"><script type="module" src="/reading-arrival.mjs"></script>
   <link rel="stylesheet" href="/home-motion.css"><script type="module" src="/home-motion.mjs"></script>
   <link rel="stylesheet" href="/home-atmosphere.css"><script type="module" src="/home-atmosphere.mjs"></script>
+  <link rel="stylesheet" href="/home-sample.css"><script type="module" src="/home-sample.mjs"></script>
   <link rel="stylesheet" href="/library-craft.css">
   <link rel="stylesheet" href="/library-personal.css">
 <link rel="stylesheet" href="/library-notebook.css"><link rel="stylesheet" href="/reading-journal.css">
@@ -40,7 +41,10 @@
 </header>
 <main id="main" tabindex="-1">
 <div id="home-view">
-  <section class="home-hero" data-visual-style="clear">
+  <div class="home-atmosphere" aria-hidden="true"><div class="ambient-wash"></div><div class="ambient-canopy"><img src="/brand-assets/foliage-canopy.webp" alt="" width="1536" height="1024" loading="lazy" decoding="async"></div><div class="ambient-near"><img src="/brand-assets/foliage-canopy.webp" alt="" width="1536" height="1024" loading="lazy" decoding="async"></div></div>
+  <div class="sunlight-overlay" aria-hidden="true"><div class="sunlight-plane"><div class="sunlight-rays"></div><div class="sunlight-shadow"></div></div></div>
+  <button class="light-toggle" type="button" aria-pressed="true" aria-label="暂停光影" hidden><span data-icon="sun" aria-hidden="true"></span><span>光影</span></button>
+  <section class="home-hero">
     <div class="hero-copy"><h1 lang="en"><span class="hero-line">Stay with</span><span class="hero-line">a book.</span></h1><p class="hero-description">留一点时间，读进一本书。</p><p class="hero-detail">原文、译文和自己的思考，<br>各有自己的位置。</p><div class="hero-actions"><a class="primary" href="/read?book=gutenberg-alice">先读几页 <span aria-hidden="true">→</span></a></div><p class="hero-footnote">公版书可直接试读。登录后保存自己的书与记录。</p></div>
     <div class="hero-stage"><div class="sample-sheet"><div class="sample-heading"><span>LEWIS CARROLL</span><span>《爱丽丝梦游仙境》· 阅读示例</span></div><p class="sample-original" lang="en">“What is the use of a book,” thought Alice, “without pictures or conversations?”</p><div class="sample-translation"><span>中文意译 · 页面示例</span><p lang="zh-Hans">“一本书如果没有图画，也没有对话，那有什么用呢？”爱丽丝想。</p></div><div class="sample-footer"><span class="sample-anchor">读到这里，你想起了什么？</span><a href="/read?book=gutenberg-alice" aria-label="打开爱丽丝梦游仙境">↗</a></div></div></div>
   </section>

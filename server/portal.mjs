@@ -149,6 +149,7 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
     for(const file of ['reader-companion.mjs','reader-companion-state.mjs','reader-companion.css'])files['/'+file]=file;
     files['/reading-arrival.css']='reading-arrival.css';files['/reading-arrival.mjs']='reading-arrival.mjs';files['/arrival-catalog.mjs']='arrival-catalog.mjs';files['/arrival-excerpt.mjs']='arrival-excerpt.mjs';files['/save-receipts.mjs']='save-receipts.mjs';
     files['/home-motion.css']='home-motion.css';files['/home-motion.mjs']='home-motion.mjs';
+    files['/home-sample.css']='home-sample.css';files['/home-sample.mjs']='home-sample.mjs';
     files['/home-books.css']='home-books.css';
     // GET-188 authored-home mobile navigation: exactly one module and one
     // stylesheet, mounted by portal.js on the authored home routes only.
