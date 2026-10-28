@@ -1,5 +1,5 @@
 /* One visible entry, one reading tray. Actual controls retain their owners. */
-body.is-focused .reading-session[data-expanded=false] #reading-tools-trigger{position:relative;inset:auto;display:flex;width:auto;min-width:88px;height:auto;min-height:46px;padding:10px 16px;border:1px solid var(--line-control);border-radius:28px;background:var(--paper);box-shadow:var(--shadow-popover);color:var(--ink);pointer-events:auto}
+body.is-focused .reading-session[data-expanded=false] #reading-tools-trigger{position:relative;inset:auto;display:flex;width:auto;min-width:44px;height:auto;min-height:44px;padding:10px 11px;border:1px solid transparent;border-radius:24px;background:transparent;box-shadow:none;color:var(--ink);pointer-events:auto}
 body.is-focused .reading-session[data-expanded=false] #reading-tools-trigger>*{opacity:1;pointer-events:none}
 body.is-focused .reading-session[data-expanded=false] #reading-tools-trigger:focus-visible{outline-offset:var(--focus-ring-offset)}
 body.is-focused .reading-session[data-expanded=false] #reading-tools-trigger:focus-visible::after{display:none}
@@ -17,8 +17,6 @@ body.is-focused .reading-session[data-expanded=false] #reading-tools-trigger:foc
 #reading-tools-panel .listening-entry{display:flex;align-items:stretch;gap:0;min-width:0;width:100%;margin:0;position:relative}
 #reading-tools-panel .listening-entry .listen-chapter{flex:1;min-width:0;padding-right:30px}
 #reading-tools-panel .listening-entry .listen-options{position:absolute;inset:0 0 0 auto;width:30px;min-width:30px;padding:0;min-height:44px;background:transparent}
-#reading-tools-panel .reading-tools-chat-slot{order:2;width:100%;padding:0 0 12px;display:block;visibility:visible;pointer-events:auto}
-#reading-tools-panel .reading-tools-chat-slot .library-chat-trigger{justify-content:flex-start;width:100%;min-height:46px;border:1px solid var(--line-hairline);border-radius:7px;padding:10px 12px;background:transparent;box-shadow:none;color:var(--accent);font:13px/1.5 var(--interface);white-space:normal}
 #reading-tools-panel .reading-controls{order:3;margin:0 0 5px;padding:12px 0;gap:8px;border-top:1px solid var(--line-hairline);border-bottom:0}
 #reading-tools-panel #page-turner{order:4;padding:6px 0 10px;border-bottom:1px solid var(--line-hairline);margin-bottom:4px}
 #reading-tools-panel #reading-login{order:5;padding:10px 0}
@@ -45,5 +43,3 @@ body.is-focused[data-reading-tools=open] #reading-header{grid-template-columns:a
 @media(max-width:767px){#reading-header,body.is-focused[data-reading-tools=open] #reading-header{grid-template-columns:auto minmax(0,1fr);min-height:62px;height:auto;padding:8px 12px;gap:8px}#reading-header .running-entries,body.is-focused[data-reading-tools=open] #reading-header .running-entries{grid-column:2;grid-row:1;justify-self:stretch;max-width:100%}#reading-tools-panel{right:0;width:360px;max-width:calc(100vw - 24px)}.reading-session{right:max(12px,env(safe-area-inset-right));bottom:max(12px,env(safe-area-inset-bottom))}#reading-tools-panel .reading-hub-primary{gap:5px}}
 @media(max-width:380px){#reading-tools-panel{padding-inline:12px}#reading-tools-panel .reading-hub-primary>button,#reading-tools-panel .reading-hub-primary .listen-chapter{font-size:12px;padding-left:8px}#reading-header .reader-home-label{display:none}#reading-header .running-entries{flex-direction:column;align-items:stretch}#reading-header .running-title,#reading-header .chapter-chooser{padding-block:0;min-height:32px}}
 @media(prefers-reduced-motion:reduce){#reading-tools-panel,#reading-tools-trigger{transition:none}}
-/* An unread companion message is a quiet mark on the same entry. */
-.reading-session:has(.reading-tools-chat-slot.has-companion-message) #reading-tools-trigger::before{content:'';position:absolute;top:7px;right:9px;width:5px;height:5px;border-radius:50%;background:var(--accent);pointer-events:none}

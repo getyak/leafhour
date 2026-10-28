@@ -22,7 +22,7 @@ export const chatRetryMatchesDraft=view=>{
  return view.draft.trim()===old.text&&view.data?.context?.passageId===old.passageId&&view.data?.contentVersion===old.contentVersion&&JSON.stringify(view.quote??null)===JSON.stringify(old.quote??null)&&(view.data?.scope?.revision??0)===(old.scopeRevision??0);
 };
 
-export function mountLibraryChat({root,api,getSession,getBooks,getOwner,openAuth,getCurrentBook=()=>null,getCurrentPassage=()=>null,onNavigateToPassage=null,externalLauncher=null,positionLauncher=null,onViewChange=()=>{},uploadController=null,mountUpload=null,uploadOptions=null,loadUpload=()=>import('./chat-book-upload.mjs'),renderMarkdown=null,loadMarkdown=()=>import('./library-chat-markdown.mjs')}){
+export function mountLibraryChat({root,api,getSession,getBooks,getOwner,openAuth,getCurrentBook=()=>null,getCurrentPassage=()=>null,onNavigateToPassage=null,externalLauncher=null,positionLauncher=null,onViewChange=()=>{},dismissOnOutside=()=>true,uploadController=null,mountUpload=null,uploadOptions=null,loadUpload=()=>import('./chat-book-upload.mjs'),renderMarkdown=null,loadMarkdown=()=>import('./library-chat-markdown.mjs')}){
   let markdownRenderer=renderMarkdown,decorations=renderMarkdown?.decorations,markdownLoad=null;
   const ensureMarkdown=()=>markdownRenderer&&decorations?Promise.resolve():markdownLoad||(markdownLoad=loadMarkdown().then(module=>{if(!disposed){markdownRenderer??=module.renderChatMarkdown;decorations=module.renderChatMarkdown.decorations;if(!decorations)throw Error('Missing chat presentation');}}).finally(()=>{markdownLoad=null;}));
   const state=createLibraryChatState({readQuoteHead:(owner,book)=>JSON.parse(localStorage.getItem(quoteHeadKey(owner,book))||'null'),writeQuoteHead:(owner,book,head)=>localStorage.setItem(quoteHeadKey(owner,book),JSON.stringify(head)),readQuoteAck:(owner,book,revision)=>JSON.parse(localStorage.getItem(quoteAckKey(owner,book,revision))||'null'),writeQuoteAck:(owner,book,revision,ack)=>localStorage.setItem(quoteAckKey(owner,book,revision),JSON.stringify(ack)),readDraft:(owner,book)=>localStorage.getItem(draftKey(owner,book))||'',writeDraft:(owner,book,text)=>{if(text)localStorage.setItem(draftKey(owner,book),text);else localStorage.removeItem(draftKey(owner,book));},readPending:(owner,book)=>JSON.parse(localStorage.getItem(pendingKey(owner,book))||'null'),writePending:(owner,book,record)=>{if(record)localStorage.setItem(pendingKey(owner,book),JSON.stringify(record));else localStorage.removeItem(pendingKey(owner,book));}});
@@ -55,7 +55,7 @@ export function mountLibraryChat({root,api,getSession,getBooks,getOwner,openAuth
   // is never handed to this mutable launcher implementation.
   let launcher=null,trigger=null,characterPosition=null;
   if(externalLauncher){
-    trigger=ui('button','library-chat-trigger','chat.entry');trigger.type='button';uiAttr(trigger,'aria-label','open');trigger.setAttribute('aria-haspopup','dialog');trigger.setAttribute('aria-controls',root.id);
+    trigger=ui('button','library-chat-trigger','chat.entry');trigger.type='button';uiAttr(trigger,'aria-label','open');trigger.setAttribute('aria-haspopup','dialog');trigger.setAttribute('aria-controls',root.id);trigger.setAttribute('aria-expanded','false');
     externalLauncher.triggerHost?.append(trigger);
     characterPosition=externalLauncher.position||null;
   }else{
@@ -275,7 +275,7 @@ export function mountLibraryChat({root,api,getSession,getBooks,getOwner,openAuth
     catch(error){if(isCurrent(captured)){state.rejectCancel(ticket,error);render();await load();}}
     finally{if(isCurrent(captured)){render();if(root.open)focus.restore(!input.disabled&&!form.hidden?input:stopButton.hidden?refreshButton.hidden?closeButton:refreshButton:stopButton);else focus.stop();}else focus.stop();}
   }
-  function close({focus=true}={}){if(disposed||!viewOpen)return;viewOpen=false;clearPoll();focusComposer=false;menu.open=false;if(root.open)root.close();onViewChange(false);if(launcher){launcher.setAttribute('aria-expanded','false');uiAttr(launcher,'aria-label',state.view().pending?'op':'open');}if(focus)returnFocus();}
+  function close({focus=true}={}){if(disposed||!viewOpen)return;viewOpen=false;clearPoll();focusComposer=false;menu.open=false;if(root.open)root.close();onViewChange(false);trigger?.setAttribute('aria-expanded','false');if(launcher){launcher.setAttribute('aria-expanded','false');uiAttr(launcher,'aria-label',state.view().pending?'op':'open');}if(focus)returnFocus();}
   function choose(bookId,passageId=null){if(state.view().pending||state.view().retry?.uncertain||state.view().scopePending)return false;clearPoll();loadInFlight=null;pollCount=0;pollStarted=0;selectedBook=bookId;requestedPassage=passageId;historySignature='';context.open=false;state.setContext(owner,selectedBook);requestedPassage=state.view().retry?.payload.passageId||state.view().quote?.parts[0].passageId||requestedPassage;return true;}
   async function copyAnswer(text,element,control){
     // Async copy feedback keeps a stable descriptor and is localized with the
@@ -297,6 +297,7 @@ export function mountLibraryChat({root,api,getSession,getBooks,getOwner,openAuth
     if(nested){nested.open=false;(nested.querySelector('summary')||menuSummary).focus();return;}close();
   }
   listen(root,'keydown',escape);listen(launcher||trigger,'keydown',escape);
+  listen(document,'keydown',event=>{if(!dismissOnOutside()&&!root.contains(event.target)&&(launcher||trigger)!==event.target&&!document.querySelector('dialog[open]:not(.library-chat-dialog),[popover][data-popover-open]'))escape(event);},true);
   // Capture survives stopped bubbling. A complete primary gesture owns its
   // origin; pointer exit, cancelled gestures and inside drags never dismiss.
   let gesture=null,openingRevision=0;
@@ -308,13 +309,13 @@ export function mountLibraryChat({root,api,getSession,getBooks,getOwner,openAuth
     if(!root.open||event.button>0)return;
     if(menu.open&&!menu.contains(event.target)){menu.open=false;settings.open=false;explanation.open=false;}
     const keyboard=event.detail===0;
-    if(!inside(event.target)&&(keyboard||!previous||!previous.inside&&!previous.cancelled&&previous.revision===openingRevision))close({focus:false});
+    if(dismissOnOutside()&&!inside(event.target)&&(keyboard||!previous||!previous.inside&&!previous.cancelled&&previous.revision===openingRevision))close({focus:false});
   },true);
   // Match the visible viewport when a mobile keyboard reduces or pans it.
   function fitViewport(){const viewport=window.visualViewport;if(!viewport)return;root.style.setProperty('--chat-viewport-height',viewport.height+'px');root.style.setProperty('--chat-viewport-top',viewport.offsetTop+'px');root.classList.toggle('is-compact-viewport',viewport.height<=500);if(root.open&&viewport.height<=500&&document.activeElement===input)frame.scrollTop+=Math.max(0,form.getBoundingClientRect().bottom-Math.min(frame.getBoundingClientRect().bottom,viewport.offsetTop+viewport.height-8));}
   if(window.visualViewport){listen(window.visualViewport,'resize',fitViewport);listen(window.visualViewport,'scroll',fitViewport);}fitViewport();
   listen(input,'focus',fitViewport);
-  listen(closeButton,'click',close);listen(root,'cancel',event=>{event.preventDefault();close();});listen(root,'close',()=>{if(root.open||!viewOpen)return;viewOpen=false;clearPoll();onViewChange(false);returnFocus();});
+  listen(closeButton,'click',close);listen(root,'cancel',event=>{event.preventDefault();close();});listen(root,'close',()=>{if(root.open||!viewOpen)return;viewOpen=false;clearPoll();onViewChange(false);trigger?.setAttribute('aria-expanded','false');returnFocus();});
   listen(scopeChoice,'change',saveScope);
   listen(chooser,'change',()=>{if(choose(chooser.value)){render();load();}});listen(context,'toggle',()=>{contextHint.setAttribute('data-ui',context.open?'x.cl':'x.op');contextHint.textContent=t(contextHint.getAttribute('data-ui'));});
   listen(quoteRemove,'click',()=>{if(state.setQuote(null)){render();input.focus();}});
@@ -340,7 +341,7 @@ export function mountLibraryChat({root,api,getSession,getBooks,getOwner,openAuth
       const currentPassage=canFollow?(passageId||getCurrentPassage()||null):requestedPassage;
       if(!view.pending&&!view.retry?.uncertain&&(selectedBook!==valid||canFollow&&currentPassage!==requestedPassage))choose(valid,currentPassage);
       if(typeof draft==='string'&&draft.length<=2000&&!state.view().draft&&!state.view().pending&&!state.view().retry?.uncertain)state.setDraft(draft);
-      if(!root.open){viewOpen=true;opener=document.activeElement;root.show();onViewChange(true);closeButton.focus();}if(launcher)launcher.setAttribute('aria-expanded','true');focusComposer=!!messageId;render();pollCount=0;load();
+      if(!root.open){viewOpen=true;opener=document.activeElement;root.show();onViewChange(true);closeButton.focus();}(launcher||trigger)?.setAttribute('aria-expanded','true');focusComposer=!!messageId;render();pollCount=0;load();
     },
     quote(value){
       if(disposed||syncOwner()||!signedIn()||value?.bookId!==selectedBook||!state.setQuote(value))return false;

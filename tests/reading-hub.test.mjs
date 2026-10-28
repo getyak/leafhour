@@ -11,7 +11,8 @@ test('hub keeps the original live actions while grouping tools and secondary con
  const hub=mountReadingHub({document,panel});
  const primary=document.getElementById('reading-hub-primary'),advanced=document.getElementById('reading-hub-more');
  assert.equal(primary.contains(contents),true);assert.equal(primary.contains(settings),true);assert.equal(primary.contains(notes),true);
- assert.equal(panel.contains(chat),true,'reading conversation belongs to the same opened surface');
+ assert.equal(panel.contains(chat),false,'conversation entry remains outside the collapsed inert tools');
+ assert.equal(chat.parentElement,document.getElementById('reading-session'));
  for(const id of ['open-atmosphere','enter-focus','open-reader-account','manual-reading-open','reading-timer-settings','reading-guide-open'])assert.equal(advanced.contains(document.getElementById(id)),true,id);
  assert.equal(advanced.open,false,'occasional controls do not compete with the four reading actions');
  contents.dispatchEvent(new Event('click'));assert.equal(calls,1,'reparenting preserves the action owner and one listener');

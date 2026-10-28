@@ -298,7 +298,7 @@
       },
       {
         "file": "app/library-chat.mjs",
-        "sha256": "129b73667e7fa5a601c7850724894bf62b21a79b0c043f21e6672e1edcea7c36"
+        "sha256": "1ae88b2f1f25d29d6c5a3c40cca803afcc29cb7927a2e88983ca54f63e3d64e2"
       },
       {
         "file": "app/library-daily-reading.mjs",
@@ -566,7 +566,7 @@
       },
       {
         "file": "app/reader-chat-workspace.mjs",
-        "sha256": "b303c3097c4cb4c40370c17399f4b19ea92f8476dd82ce46f95ac8c48cb195e5"
+        "sha256": "679d52f2fb1d4faef15062bec628993002fecd6394bcf49c372dabe81e677710"
       },
       {
         "file": "app/reader-companion-loader.mjs",
@@ -582,7 +582,7 @@
       },
       {
         "file": "app/reader-conversation.mjs",
-        "sha256": "50b2f03a884c93eaac8526ef7a185bc08551ff7455a008e91d03df2f9a561555"
+        "sha256": "1c93568366c2adbd963647ea34ac593eabe809f9f338164124e0bdfa33fc3017"
       },
       {
         "file": "app/reader-entry.mjs",
@@ -702,7 +702,7 @@
       },
       {
         "file": "app/reading-hub.mjs",
-        "sha256": "b97a7d690e1279d553d7ba583b826dd9aa942aa23ff257b091a55caa016499bb"
+        "sha256": "d213a27ee36debe1b97ac1d78a36595b6ce366df28dc5a87d497b0afe12b0e75"
       },
       {
         "file": "app/reading-journal.mjs",
@@ -1285,7 +1285,7 @@
         "sha256": "531202f1814314b6c76bfef38b2ea66636425b1ca9b445db349e70ebb8bcd00e"
       }
     ],
-    "inputDigest": "44e34d72c4884a9277c76fcc610f4f2bf5feb422f4d2594aa186badd185eb415"
+    "inputDigest": "a8824bb627f919df9315965dbdafac26e13c9695104c67696e47807282ad83e2"
   },
   "locales": [
     "en",
@@ -14783,7 +14783,7 @@
         },
         {
           "file": "app/library-chat.mjs",
-          "line": 319,
+          "line": 320,
           "column": 162
         }
       ],
@@ -14845,7 +14845,7 @@
         },
         {
           "file": "app/library-chat.mjs",
-          "line": 319,
+          "line": 320,
           "column": 155
         }
       ],
@@ -15597,7 +15597,7 @@
         {
           "file": "app/library-chat.mjs",
           "line": 278,
-          "column": 284
+          "column": 331
         }
       ],
       "hints": [
@@ -16873,11 +16873,11 @@
         {
           "file": "app/library-chat.mjs",
           "line": 278,
-          "column": 289
+          "column": 336
         },
         {
           "file": "app/library-chat.mjs",
-          "line": 325,
+          "line": 326,
           "column": 83
         },
         {
@@ -17064,7 +17064,7 @@
         },
         {
           "file": "app/library-chat.mjs",
-          "line": 317,
+          "line": 318,
           "column": 112
         },
         {
@@ -193807,6 +193807,26 @@
       }
     },
     {
+      "id": "candidate:app/library-chat.mjs:58:250",
+      "file": "app/library-chat.mjs",
+      "line": 58,
+      "column": 250,
+      "kind": "js-attribute",
+      "property": "aria-expanded",
+      "value": "false",
+      "sha256": "fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
       "id": "candidate:app/library-chat.mjs:62:171",
       "file": "app/library-chat.mjs",
       "line": 62,
@@ -193967,10 +193987,30 @@
       }
     },
     {
-      "id": "candidate:app/library-chat.mjs:278:225",
+      "id": "candidate:app/library-chat.mjs:278:212",
       "file": "app/library-chat.mjs",
       "line": 278,
-      "column": 225,
+      "column": 212,
+      "kind": "js-attribute",
+      "property": "aria-expanded",
+      "value": "false",
+      "sha256": "fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/library-chat.mjs:278:272",
+      "file": "app/library-chat.mjs",
+      "line": 278,
+      "column": 272,
       "kind": "js-attribute",
       "property": "aria-expanded",
       "value": "false",
@@ -194007,9 +194047,29 @@
       }
     },
     {
-      "id": "candidate:app/library-chat.mjs:343:168",
+      "id": "candidate:app/library-chat.mjs:318:241",
       "file": "app/library-chat.mjs",
-      "line": 343,
+      "line": 318,
+      "column": 241,
+      "kind": "js-attribute",
+      "property": "aria-expanded",
+      "value": "false",
+      "sha256": "fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/library-chat.mjs:344:168",
+      "file": "app/library-chat.mjs",
+      "line": 344,
       "column": 168,
       "kind": "js-attribute",
       "property": "aria-expanded",
@@ -209367,9 +209427,9 @@
       }
     },
     {
-      "id": "candidate:app/reader-chat-workspace.mjs:12:122",
+      "id": "candidate:app/reader-chat-workspace.mjs:25:122",
       "file": "app/reader-chat-workspace.mjs",
-      "line": 12,
+      "line": 25,
       "column": 122,
       "kind": "js-attribute",
       "property": "role",
@@ -209387,9 +209447,9 @@
       }
     },
     {
-      "id": "candidate:app/reader-chat-workspace.mjs:12:177",
+      "id": "candidate:app/reader-chat-workspace.mjs:25:177",
       "file": "app/reader-chat-workspace.mjs",
-      "line": 12,
+      "line": 25,
       "column": 177,
       "kind": "js-attribute",
       "property": "aria-orientation",
@@ -209407,9 +209467,9 @@
       }
     },
     {
-      "id": "candidate:app/reader-chat-workspace.mjs:12:223",
+      "id": "candidate:app/reader-chat-workspace.mjs:25:223",
       "file": "app/reader-chat-workspace.mjs",
-      "line": 12,
+      "line": 25,
       "column": 223,
       "kind": "js-attribute",
       "property": "tabindex",
@@ -209427,9 +209487,9 @@
       }
     },
     {
-      "id": "candidate:app/reader-chat-workspace.mjs:28:42",
+      "id": "candidate:app/reader-chat-workspace.mjs:43:42",
       "file": "app/reader-chat-workspace.mjs",
-      "line": 28,
+      "line": 43,
       "column": 42,
       "kind": "js-attribute",
       "property": "aria-valuemin",
@@ -209447,9 +209507,9 @@
       }
     },
     {
-      "id": "candidate:app/reader-chat-workspace.mjs:29:111",
+      "id": "candidate:app/reader-chat-workspace.mjs:44:111",
       "file": "app/reader-chat-workspace.mjs",
-      "line": 29,
+      "line": 44,
       "column": 111,
       "kind": "js-attribute",
       "property": "aria-modal",
@@ -209467,9 +209527,9 @@
       }
     },
     {
-      "id": "candidate:app/reader-chat-workspace.mjs:29:191",
+      "id": "candidate:app/reader-chat-workspace.mjs:44:191",
       "file": "app/reader-chat-workspace.mjs",
-      "line": 29,
+      "line": 44,
       "column": 191,
       "kind": "js-attribute",
       "property": "tabindex",
@@ -209487,9 +209547,9 @@
       }
     },
     {
-      "id": "candidate:app/reader-chat-workspace.mjs:30:54",
+      "id": "candidate:app/reader-chat-workspace.mjs:45:54",
       "file": "app/reader-chat-workspace.mjs",
-      "line": 30,
+      "line": 45,
       "column": 54,
       "kind": "js-attribute",
       "property": "aria-modal",
@@ -257031,7 +257091,7 @@
     {
       "kind": "concatenation",
       "file": "app/library-chat.mjs",
-      "line": 314,
+      "line": 315,
       "expression": "viewport.height+'px'",
       "fragments": [
         "px"
@@ -257041,7 +257101,7 @@
     {
       "kind": "concatenation",
       "file": "app/library-chat.mjs",
-      "line": 314,
+      "line": 315,
       "expression": "viewport.offsetTop+'px'",
       "fragments": [
         "px"
@@ -257051,7 +257111,7 @@
     {
       "kind": "computed-member",
       "file": "app/library-chat.mjs",
-      "line": 339,
+      "line": 340,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -257059,7 +257119,7 @@
     {
       "kind": "computed-member",
       "file": "app/library-chat.mjs",
-      "line": 339,
+      "line": 340,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -257067,7 +257127,7 @@
     {
       "kind": "computed-member",
       "file": "app/library-chat.mjs",
-      "line": 347,
+      "line": 348,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -257075,7 +257135,7 @@
     {
       "kind": "computed-member",
       "file": "app/library-chat.mjs",
-      "line": 347,
+      "line": 348,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -257083,7 +257143,7 @@
     {
       "kind": "computed-member",
       "file": "app/library-chat.mjs",
-      "line": 354,
+      "line": 355,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -264321,7 +264381,27 @@
     {
       "kind": "concatenation",
       "file": "app/reader-chat-workspace.mjs",
-      "line": 27,
+      "line": 39,
+      "expression": "width()+'px'",
+      "fragments": [
+        "px"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "app/reader-chat-workspace.mjs",
+      "line": 40,
+      "expression": "width()+'px'",
+      "fragments": [
+        "px"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "app/reader-chat-workspace.mjs",
+      "line": 42,
       "expression": "width()+'px'",
       "fragments": [
         "px"
@@ -264331,7 +264411,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader-chat-workspace.mjs",
-      "line": 38,
+      "line": 53,
       "expression": "event.key",
       "fragments": [],
       "unresolved": true
@@ -264339,7 +264419,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader-chat-workspace.mjs",
-      "line": 47,
+      "line": 62,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -282097,11 +282177,11 @@
     "duplicateKeys": 0,
     "reviewedItems": 12,
     "unreviewedItems": 2285,
-    "candidates": 5528,
-    "candidatesUnreviewed": 5525,
+    "candidates": 5531,
+    "candidatesUnreviewed": 5528,
     "candidatesProtected": 136,
     "itemsProtected": 9,
-    "dynamicConsumers": 3632,
+    "dynamicConsumers": 3634,
     "consumerReferences": 1719,
     "keysWithoutStaticConsumers": 1211,
     "reviewedLocaleValues": 48,
