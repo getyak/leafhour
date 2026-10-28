@@ -1,6 +1,7 @@
 import { cp, mkdir, rm, writeFile, readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
+import {buildPortalWeb} from './build-portal-web.mjs';
 import {buildReaderWeb} from './build-reader-web.mjs';
 import {portalDocument} from '../server/portal-document.mjs';
 import {homeDocument,homeLocales} from '../app/home-locale.mjs';
@@ -50,6 +51,8 @@ await mkdir(uiTemplateDir,{recursive:true});
 await writeFile(path.join(uiTemplateDir,'read.html'),readerWeb.html);
 await rm(path.join(outputDir,'index.html'),{force:true});
 const home = await readFile(path.join(appDir, 'home.html'), 'utf8');
+const portalWeb=await buildPortalWeb({root,outputDir,html:home,additionalEntries:['library-shell.mjs']});
+console.log('Built portal entry: '+portalWeb.inputs.length+' bundled modules, '+portalWeb.bytes+' bytes; shared and lazy modules retain public URLs.');
 // The root is a safe automatic entry; authored language pages have stable URLs.
 // Canonical /, /library and /read are served by the localized HTML function.
 // Public flat files here would win filesystem routing and shadow its rewrites.
