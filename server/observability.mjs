@@ -4,7 +4,7 @@ import {createHash,createHmac,randomUUID} from 'node:crypto';
 import {validateObservabilityBatch,validateObservabilityEvent,observabilityCategory} from '../app/observability-contract.mjs';
 
 const queues=new Map(),MAX_PENDING=100,MAX_SEEN=256,RETENTION_MS=86400000,TIMEOUT_MS=1800;
-const serverNames=new Set(['ingestion_completed','ingestion_failed','chat_failed']);
+const serverNames=new Set(['ingestion_completed','ingestion_failed','chat_failed','companion_failed']);
 let sentryActive=0;const sentryWaiting=[];
 async function sentrySlot(execute){if(sentryActive>=4)await new Promise(resolve=>sentryWaiting.push(resolve));else sentryActive++;try{return await execute();}finally{const next=sentryWaiting.shift();if(next)next();else sentryActive--;}}
 const fail=status=>Object.assign(new Error('Observability request unavailable'),{status});
@@ -65,7 +65,7 @@ export function createObservability({dataDir,dataStore=null,env=process.env,sche
   }
   async function sentry(...args){if(!dsn||observabilityCategory(args[2].name)!=='diagnostics'||args[2].name==='ingestion_completed'||suppressed(args[2].properties))return;return sentrySlot(()=>sendSentry(...args));}
   async function accept(user,input,trusted={}){
-    identity(user);const events=validateObservabilityBatch(input);if(trusted.internal!==true&&events.some(event=>event.properties.client==='server'||serverNames.has(event.name)))throw fail(400);if(!enabled||pending>=MAX_PENDING)return {accepted:0};
+    identity(user);const events=validateObservabilityBatch(input);if(trusted.internal!==true&&events.some(event=>event.properties.client==='server'||event.properties.stage==='companion'||serverNames.has(event.name)))throw fail(400);if(!enabled||pending>=MAX_PENDING)return {accepted:0};
     let value;try{value=await consent(user);}catch{return {accepted:0};}
     const selected=events.filter(event=>value[observabilityCategory(event.name)]&&!(observabilityCategory(event.name)==='analytics'&&excluded(user,value))&&!(observabilityCategory(event.name)==='diagnostics'&&suppressed(event.properties)));
     if(!selected.length)return {accepted:0};
@@ -89,8 +89,8 @@ export function createObservability({dataDir,dataStore=null,env=process.env,sche
     if(!user?.id||error?.name==='AbortError'||error?.code==='ABORT_ERR'||Number.isInteger(error?.status)&&error.status<500)return false;
     const status=Number.isInteger(error?.status)&&error.status>=500&&error.status<=599?error.status:500;
     const errorKind=['ETIMEDOUT','UND_ERR_CONNECT_TIMEOUT'].includes(error?.code)?'timeout':['ECONNRESET','ECONNREFUSED','ENOTFOUND'].includes(error?.code)?'network':'internal';
-    const page=['reader','library','other'].includes(context.page)?context.page:'other',stage=['reader_load','ingestion','chat','request'].includes(context.stage)?context.stage:'request';
-    return event(user,stage==='chat'?'chat_failed':stage==='ingestion'?'ingestion_failed':'request_failed',{page,stage,status,errorKind,outcome:'failure'},context);
+    const page=['reader','library','other'].includes(context.page)?context.page:'other',stage=['reader_load','ingestion','chat','companion','request'].includes(context.stage)?context.stage:'request';
+    return event(user,stage==='companion'?'companion_failed':stage==='chat'?'chat_failed':stage==='ingestion'?'ingestion_failed':'request_failed',{page,stage,status,errorKind,outcome:'failure'},context);
   }
   async function reportSystemError(error,context={}){
     if(!globallyEnabled||!dsn||pending>=MAX_PENDING||error?.name==='AbortError'||error?.code==='ABORT_ERR'||Number.isInteger(error?.status)&&error.status<500)return false;

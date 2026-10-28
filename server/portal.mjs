@@ -109,7 +109,7 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
   const readingGenerator=chatGenerator===undefined?createReaderChatGenerator():chatGenerator;
   const bookIntroductions=createBookIntroductionService({library,generator:introductionGenerator===undefined?createReaderChatGenerator({env,makeGenerator:createIntroductionGenerator}):introductionGenerator});
   const proactiveGenerator=companionGenerator===undefined?createReaderChatGenerator({makeGenerator:createCompanionGenerator}):companionGenerator;
-  const chat=await createReaderChatService({companionGenerator:proactiveGenerator,library,people,dataDir:path.join(dataDir,'library'),dataStore,generator:readingGenerator,annotationGenerator:annotationGenerator===undefined?createReaderAnnotationGenerator({env}):annotationGenerator,onError:(error,context)=>readingGenerator?.reportFailure?.(error,context)});
+  const chat=await createReaderChatService({companionGenerator:proactiveGenerator,library,people,dataDir:path.join(dataDir,'library'),dataStore,generator:readingGenerator,annotationGenerator:annotationGenerator===undefined?createReaderAnnotationGenerator({env}):annotationGenerator,onError:(error,context)=>readingGenerator?.reportFailure?.(error,context),onCompanionOutcome:domainOutcome});
   const creditGate=createCreditGate({billing,library,chat,record:facts=>billing.recordProviderCall(facts)});
   const billingRoutes=createBillingRoutes({billing,publicOrigin,gate:creditGate,verifyEmail:({req})=>typeof auth.emailVerifiedFor==='function'?auth.emailVerifiedFor(cookieToken(req)):false});
   // One quiet daily companion plan per account; no schedule, model job or
@@ -402,7 +402,7 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
       if(action==='companion'&&req.method==='GET'){send(200,await chat.companion.view(user,id));return true;}
       if(action==='companion'&&req.method==='POST'){send(200,await chat.companion.configure(user,id,body));return true;}
       if(action==='companion/observe'&&req.method==='POST'){send(200,await chat.companion.observe(user,id,body));return true;}
-      if(action==='companion/messages'&&req.method==='POST'){send(200,await sponsored(user,'companion',()=>chat.companion.generate(user,id,body,{authorize:async()=>(await auth.userFor(token))?.id===user?.id})));return true;}
+      if(action==='companion/messages'&&req.method==='POST'){send(200,await sponsored(user,'companion',()=>chat.companion.generate(user,id,body,{authorize:async()=>(await auth.userFor(token))?.id===user?.id,operationId:requestState.operationId})));return true;}
       if(action==='chat/scope'&&req.method==='POST'){send(200,await chat.configureScope(user,id,body));return true;}
       if(action==='chat'&&req.method==='GET'){send(200,await chat.view(user,id,{passageId:url.searchParams.get('passageId')||undefined}));return true;}
       if(action==='chat'&&req.method==='POST'){
@@ -505,7 +505,7 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
   }
   async function handle(context){
     const p=context.url.pathname,operation=context.req.headers['x-leafhour-operation']||context.req.headers['x-reader-operation'];
-    const requestState={operationId:typeof operation==='string'&&/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(operation)?operation:randomUUID(),page:p.startsWith('/api/library/books/')?'reader':p.startsWith('/api/library')?'library':'other',stage:/\/chat(?:\/|$)/.test(p)?'chat':/\/(?:ingestion|pdf-upload|upload)(?:\/|$)/.test(p)?'ingestion':/\/(?:reading|chapters)(?:\/|$)/.test(p)?'reader_load':'request',observabilityRoute:p.startsWith('/api/account/observability')};
+    const requestState={operationId:typeof operation==='string'&&/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(operation)?operation:randomUUID(),page:p.startsWith('/api/library/books/')?'reader':p.startsWith('/api/library')?'library':'other',stage:/\/companion(?:\/|$)/.test(p)?'companion':/\/chat(?:\/|$)/.test(p)?'chat':/\/(?:ingestion|pdf-upload|upload)(?:\/|$)/.test(p)?'ingestion':/\/(?:reading|chapters)(?:\/|$)/.test(p)?'reader_load':'request',observabilityRoute:p.startsWith('/api/account/observability')};
     try{return await handleRequest({...context,requestState});}catch(error){queueFault(requestState,error);throw error;}
   }
   return {handle,observability,library,people,peopleGeneration,peopleGrants,portability,auth,billing,creditGate,profile,uiPreferences,gifts,giftQuotes,audio,audioRoutes,chat,bookIntroductions,dailyReading,ingestionRunner,setLegacyBook:book=>{legacyBook=book;}};
