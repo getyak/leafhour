@@ -23,18 +23,16 @@ export function releaseMetadata({version,runNumber,offset='0',sha}) {
   // Stable for every attempt of one run; increases across this workflow's runs.
   // https://developer.apple.com/documentation/bundleresources/information-property-list/cfbundleversion
   const buildNumber=`${1+Math.floor(n/10000)}.${Math.floor(n%10000/100)}.${n%100}`;
-  return {version,buildNumber,commitSha:sha,tag:`ios/v${version}-build${buildNumber}`};
+  return {version,buildNumber,commitSha:sha};
 }
 
-export function trustedReceipt(release,receipt,identity) {
-  if (release?.draft || !release?.prerelease || release?.author?.login!=='github-actions[bot]') return false;
-  if (receipt?.schemaVersion!==1 || receipt.repository!=='getyak/leafhour' || !/^[a-f0-9]{40}$/.test(receipt.commitSha??'') || !/^[a-f0-9]{64}$/.test(receipt.ipaSha256??'')) return false;
+export function trustedReceipt(artifact,receipt,identity) {
+  if (artifact?.name!=='ios-testflight-receipt' || artifact.expired || !Number.isSafeInteger(artifact.id) || artifact.size_in_bytes>65536 || !/^sha256:[a-f0-9]{64}$/.test(artifact.digest??'')) return false;
+  if (receipt?.schemaVersion!==2 || receipt.repository!=='getyak/leafhour' || !/^[a-f0-9]{40}$/.test(receipt.commitSha??'') || !/^[a-f0-9]{64}$/.test(receipt.ipaSha256??'')) return false;
   if (!versionPattern.test(receipt.version??'') || !/^[1-9]\d{0,3}\.\d{1,2}\.\d{1,2}$/.test(receipt.buildNumber??'')) return false;
-  if (release.tag_name!==`ios/v${receipt.version}-build${receipt.buildNumber}` || release.target_commitish!==receipt.commitSha) return false;
+  if (String(artifact.workflow_run?.id)!==receipt.runId || artifact.workflow_run?.head_sha!==receipt.commitSha || artifact.workflow_run?.head_branch!=='main') return false;
   if (receipt.bundleId!==identity.bundleId || receipt.appId!==identity.appId || !/^\d+$/.test(receipt.runId??'') || !/^\d+$/.test(receipt.ciRunId??'')) return false;
   if (!receipt.apple?.buildId || !receipt.apple?.uploadId || receipt.apple.uploadState!=='COMPLETE' || receipt.apple.processingState!=='VALID') return false;
   for(const key of ['appId','bundleId','version','buildNumber']) if(receipt.apple[key]!==receipt[key]) return false;
-  const assets=new Set((release.assets??[]).map(a=>a.name));
-  const ipa=(release.assets??[]).find(a=>a.name==='Leafhour.ipa');
-  return assets.has('testflight-receipt.json') && ipa?.state==='uploaded' && ipa.size>0 && ipa.digest===`sha256:${receipt.ipaSha256}`;
+  return true;
 }

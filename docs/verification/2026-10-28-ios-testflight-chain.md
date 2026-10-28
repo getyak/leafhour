@@ -1,6 +1,6 @@
 # iOS TestFlight automation verification checkpoint
 
-Date: 2026-10-28. Scope: source implementation and offline validation before the draft PR. This is **not** a signed archive, Apple upload, TestFlight distribution or device acceptance record.
+Date: 2026-10-28. Scope: source implementation and validation for draft PR #240. This is **not** a signed archive, Apple upload, TestFlight distribution or device acceptance record. The follow-up controlled-upload revision below supersedes the initial public-release/IPA-artifact design.
 
 ## Source and account audit
 
@@ -11,13 +11,13 @@ Date: 2026-10-28. Scope: source implementation and offline validation before the
 - `getyak/capir` reference workflows were read at reference main `235282ecf176d1caaa6c0202d58d25455426e12c`. No Capri files, credentials, signing resources or deployments were changed.
 - Read-only GitHub configuration audit found no Leafhour Actions release secret/variable entries and no `testflight`/`signing-maintenance` environments. Existing Preview/Production environments were untouched.
 - An existing Chrome ASC session reached the app list. Searching `Leafhour` returned no results in that selected account. No app ID or developer team was inferred from another app, URL UUID or local debug identifier. A follow-up old-brand search was interrupted by user control and was not relied on.
-- ASC displayed a membership expiration of 2026-11-24 and an updated Paid Applications Schedule notice. No agreement was accepted or renewal/payment initiated. The exact impact on this app's TestFlight eligibility remains unverified.
+- Fresh ASC verification at approximately 2026-10-28 15:51 UTC: Chrome profile `bell`, `https://appstoreconnect.apple.com/apps`, selected account menu display name **Xiong Xinwei**. After Reload, the current page still displayed a membership banner stating its validity would end on **2026-11-24 GMT**, with conditional wording about automatic renewal, and a **Review the updated Paid Applications Schedule** banner directing the Legal/Account Holder role to Business and the developer account. The login address was checked privately and is omitted from public evidence. These are current page observations, not an independently verified developer-team/renewal or agreement-status audit. They do not by themselves prove that this Leafhour app's TestFlight upload is blocked. No agreement, security setting or renewal/payment was changed.
 
 ## Executed verification
 
 | Check | Actual result |
 | --- | --- |
-| `node --test tests/ios-*.test.mjs` | 17 passed, 0 failed after the review fixes |
+| `node --test tests/ios-*.test.mjs` | 20 passed, 0 failed after the controlled-upload revision |
 | `python3 -m unittest discover -s tests -p 'test_ios_*.py'` | 3 passed, 0 failed |
 | `bash -n scripts/ios/archive.sh scripts/ios/upload.sh` | Passed |
 | Ruby/Psych parse of all four changed/new YAML workflows | Passed |
@@ -36,14 +36,18 @@ A fresh read-only reviewer found three Important issues and no Critical issues:
 2. Nested Apple identity and actual provenance were incomplete in historical receipt selection. Fixed: require complete matching app/bundle/version/build, GitHub's IPA asset digest, actual tag target and successful exact-source CI/release workflow records.
 3. Finalization checked the local receipt instead of all published evidence. Fixed: download and validate the published receipt, complete Apple evidence, asset digest and actual tag before new/idempotent success. A partial or mismatched release stops for review.
 
-New/expanded tests cover all three findings. All 17 Node and 3 Python tests and actionlint passed after the fixes. Historical receipt selection requires a completed successful release run; finalization alone permits its own currently executing release run to be in progress.
+At the initial review checkpoint, 17 Node and 3 Python tests and actionlint passed after those fixes. The subsequent user-directed sharing-boundary revision removes public Release/tag creation, all IPA artifacts, binary attestations and the finalize job entirely. Archive and ASC upload now share one ephemeral runner; only a schema-2 allowlisted metadata receipt survives. Receipt ZIP server-digest verification and actual successful exact-source workflow/CI provenance replace tag/asset checks. Read-only recovery verifies the original plan and stores only a separately named observation; a failed source run cannot become a trusted baseline.
+
+The privacy regression was first reproduced as a failing test on the previous split-job/public-artifact design. The revised tests prove that the IPA never appears in an artifact upload path, archive and upload share a job, no contents-write permission exists, arbitrary plan/API fields are removed from persisted JSON, and malformed/digest-mismatched receipt archives are rejected. Current local results are 20 Node and 3 Python tests plus actionlint passing.
+
+The original PR head `cd7facf1fa441fdb9021c977e7330efbdeb35a63` reached CI success: `test`, `native-ios`, `catalog-sources`, and `Validate dormant TestFlight automation` all passed in [run 40718214629](https://github.com/getyak/leafhour/actions/runs/40718214629). The revised head must independently pass its own CI; the original result is not reused as proof for changed code.
 
 ## Remaining gates
 
-- Current draft-PR commit's complete GitHub CI/native simulator build result; this checkpoint precedes that run.
+- Revised draft-PR commit's complete GitHub CI/native simulator build result.
 - Verify the existing Leafhour app ID, exact Bundle ID, developer team, current version/build history and intended certificate in the correct Apple account.
 - Confirm candidate environment secrets, separate maintenance permissions and environment protections before configuring any persistent access.
-- Separately confirm the first upload scope, including public IPA/receipt prerelease assets; then separately confirm automatic updates.
+- Separately confirm the first controlled ASC upload and then automatic updates. Public GitHub binary distribution is excluded from this implementation.
 - Real signed archive/export, exact Apple processing, approved group availability, tester installation and two-build retained-data device update remain unexecuted.
 - Account holder must handle any applicable membership renewal or legal agreement through explicit confirmation.
 

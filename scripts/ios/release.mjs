@@ -15,10 +15,15 @@ export function makeReceipt(plan,apple) {
   if (apple.uploadState!=='COMPLETE' || apple.processingState!=='VALID' || !apple.buildId || !apple.uploadId) throw Error('An exact VALID Apple build is required');
   for (const key of ['appId','bundleId','version','buildNumber']) if (plan[key]!==apple[key]) throw Error(`Apple proof differs from plan: ${key}`);
   if (!/^[a-f0-9]{64}$/.test(plan.ipaSha256??'') || !/^[a-f0-9]{40}$/.test(plan.commitSha??'')) throw Error('Receipt requires source and IPA digests');
-  return {schemaVersion:1,...plan,apple,confirmedAt:new Date().toISOString()};
+  // Explicit allowlists keep arbitrary plan/API fields, tokens and binary material out of artifacts.
+  const receipt={schemaVersion:2};
+  for(const key of ['repository','appId','bundleId','commitSha','ipaSha256','version','buildNumber','runId','ciRunId'])receipt[key]=plan[key];
+  receipt.apple={};
+  for(const key of ['appId','bundleId','version','buildNumber','buildId','uploadId','uploadState','processingState'])receipt.apple[key]=apple[key];
+  return receipt;
 }
 export async function requireUnusedBuild(client,plan) {
-  if(await lookupBuild(client,plan)) throw Error('This Apple version/build already exists before archive; use the original signed artifact and rerun only failed upload/finalize jobs');
+  if(await lookupBuild(client,plan)) throw Error('This Apple version/build already exists before archive; reconcile the original run without rebuilding or resubmitting');
 }
 
 async function main() {

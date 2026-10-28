@@ -1,6 +1,6 @@
 import {readFileSync,writeFileSync} from 'node:fs';
 import {releaseDecision,releaseMetadata} from './release-policy.mjs';
-import {verifyReceiptProvenance} from './receipt-provenance.mjs';
+import {verifyReceiptProvenance,decodeReceiptArchive} from './receipt-provenance.mjs';
 
 export async function prepare({github,context,core,env=process.env}) {
   const repository=context.payload.repository.full_name;
@@ -19,16 +19,17 @@ export async function prepare({github,context,core,env=process.env}) {
   }
   const decision=releaseDecision({event:context.eventName,ref:context.ref,sha,tip,ci,repository,enabled:env.IOS_TESTFLIGHT_ENABLED==='true',automatic:env.IOS_AUTOMATIC_TESTFLIGHT==='true',publish:env.PUBLISH_TESTFLIGHT==='true',ciVerified});
   if(decision.publish && context.eventName==='workflow_run') {
-    const releases=await github.paginate(github.rest.repos.listReleases,{owner,repo,per_page:100});
-    for(const release of releases) {
-      if(release.draft || !release.prerelease || release.author?.login!=='github-actions[bot]' || !release.tag_name.startsWith('ios/v'))continue;
-      const asset=release.assets?.find(a=>a.name==='testflight-receipt.json');
-      if(!asset || asset.size>65536)continue;
-      const result=await github.rest.repos.getReleaseAsset({owner,repo,asset_id:asset.id,headers:{accept:'application/octet-stream'}});
+    const runs=await github.paginate(github.rest.actions.listWorkflowRuns,{owner,repo,workflow_id:'release-ios.yml',branch:'main',status:'success',per_page:100});
+    for(const run of runs.sort((a,b)=>b.id-a.id)) {
+      if(String(run.id)===String(context.runId))continue;
+      const artifacts=await github.rest.actions.listWorkflowRunArtifacts({owner,repo,run_id:run.id,per_page:100});
+      const artifact=artifacts.data.artifacts.find(item=>item.name==='ios-testflight-receipt' && !item.expired && item.size_in_bytes<=65536);
+      if(!artifact)continue;
+      const result=await github.rest.actions.downloadArtifact({owner,repo,artifact_id:artifact.id,archive_format:'zip'});
       let receipt;
-      try {receipt=JSON.parse(typeof result.data==='string'?result.data:Buffer.from(result.data).toString('utf8'));}catch{continue;}
-      const proof={getRun:async id=>(await github.rest.actions.getWorkflowRun({owner,repo,run_id:Number(id)})).data,getTag:async name=>(await github.rest.git.getRef({owner,repo,ref:`tags/${name}`})).data.object};
-      if(!await verifyReceiptProvenance(release,receipt,{appId:env.IOS_APP_ID,bundleId:env.IOS_BUNDLE_ID},proof))continue;
+      try {receipt=decodeReceiptArchive(Buffer.from(result.data),artifact);}catch{continue;}
+      const proof={getRun:async id=>(await github.rest.actions.getWorkflowRun({owner,repo,run_id:Number(id)})).data};
+      if(!await verifyReceiptProvenance(artifact,receipt,{appId:env.IOS_APP_ID,bundleId:env.IOS_BUNDLE_ID},proof))continue;
       const comparison=await github.rest.repos.compareCommitsWithBasehead({owner,repo,basehead:`${receipt.commitSha}...${sha}`,per_page:100});
       const files=comparison.data.files??[];
       const relevant=path=>/^(apps\/ios\/|scripts\/ios\/|tests\/(?:ios-|test_ios_)|\.github\/workflows\/(?:release-ios|refresh-ios-signing)\.yml$)/.test(path);
@@ -45,7 +46,6 @@ export async function prepare({github,context,core,env=process.env}) {
   const version=env.VERSION_OVERRIDE || JSON.parse(readFileSync('apps/ios/release.json','utf8')).marketingVersion;
   const metadata=releaseMetadata({version,runNumber:String(context.runNumber),offset:env.IOS_BUILD_NUMBER_OFFSET||'0',sha});
   if(!/^\d+$/.test(env.IOS_APP_ID??'') || !/^[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)+$/.test(env.IOS_BUNDLE_ID??''))throw Error('Verified IOS_APP_ID and IOS_BUNDLE_ID are required');
-  const plan={...metadata,repository,appId:env.IOS_APP_ID,bundleId:env.IOS_BUNDLE_ID,runId:String(context.runId),ciRunId:String(ciRunId),workflowRunUrl:`https://github.com/${repository}/actions/runs/${context.runId}`};
+  const plan={...metadata,repository,appId:env.IOS_APP_ID,bundleId:env.IOS_BUNDLE_ID,runId:String(context.runId),ciRunId:String(ciRunId)};
   writeFileSync('release-plan.json',JSON.stringify(plan,null,2)+'\n');
-  core.setOutput('tag',plan.tag);
 }

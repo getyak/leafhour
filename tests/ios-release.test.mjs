@@ -22,21 +22,21 @@ test('versions are strict and build numbers are monotonic, Apple-sized, and stab
   const meta = releaseMetadata({version:'0.1.0',runNumber:'10000',offset:'0',sha});
   assert.equal(meta.buildNumber,'2.0.0');
   assert.equal(releaseMetadata({version:'0.1.0',runNumber:'9999',offset:'0',sha}).buildNumber,'1.99.99');
-  assert.equal(meta.tag,'ios/v0.1.0-build2.0.0');
+  assert.equal(meta.tag,undefined,'no GitHub release/tag is created for a TestFlight package');
   for (const input of [{version:'1.2.3;touch bad'}, {version:'01.2.3'}, {runNumber:'1e3'}, {offset:'-1'}, {runNumber:'99990000'}, {sha:'short'}]) {
     assert.throws(() => releaseMetadata({version:'0.1.0',runNumber:'1',offset:'0',sha,...input}));
   }
 });
 test('a trusted receipt binds source, artifact, workflow, Apple app and exact valid build', () => {
-  const receipt={schemaVersion:1,repository:'getyak/leafhour',commitSha:sha,version:'0.1.0',buildNumber:'1.0.1',bundleId:'example.verified',appId:'123',ipaSha256:'b'.repeat(64),runId:'100',ciRunId:'99',apple:{appId:'123',bundleId:'example.verified',version:'0.1.0',buildNumber:'1.0.1',buildId:'abc',uploadId:'def',uploadState:'COMPLETE',processingState:'VALID'}};
-  const release={draft:false,prerelease:true,author:{login:'github-actions[bot]'},tag_name:'ios/v0.1.0-build1.0.1',target_commitish:sha,assets:[{name:'testflight-receipt.json'},{name:'Leafhour.ipa',size:10,state:'uploaded',digest:'sha256:'+receipt.ipaSha256}]};
+  const receipt={schemaVersion:2,repository:'getyak/leafhour',commitSha:sha,version:'0.1.0',buildNumber:'1.0.1',bundleId:'example.verified',appId:'123',ipaSha256:'b'.repeat(64),runId:'100',ciRunId:'99',apple:{appId:'123',bundleId:'example.verified',version:'0.1.0',buildNumber:'1.0.1',buildId:'abc',uploadId:'def',uploadState:'COMPLETE',processingState:'VALID'}};
+  const release={id:500,name:'ios-testflight-receipt',expired:false,size_in_bytes:1000,digest:'sha256:'+'c'.repeat(64),workflow_run:{id:100,head_sha:sha,head_branch:'main'}};
   assert.equal(trustedReceipt(release,receipt,{bundleId:'example.verified',appId:'123'}),true);
   for (const change of [{commitSha:'short'}, {ipaSha256:'fake'}, {apple:{...receipt.apple,processingState:'PROCESSING'}}, {bundleId:'other.app'}, {runId:''}]) {
     assert.equal(trustedReceipt(release,{...receipt,...change},{bundleId:'example.verified',appId:'123'}),false);
   }
-  assert.equal(trustedReceipt({...release,author:{login:'human'}},receipt,{bundleId:'example.verified',appId:'123'}),false);
+  assert.equal(trustedReceipt({...release,name:'other-artifact'},receipt,{bundleId:'example.verified',appId:'123'}),false);
   for(const change of [{appId:'OTHER_APP'},{bundleId:'other.app'},{version:'9.0.0'},{buildNumber:'9.0.0'},{appId:undefined}]) assert.equal(trustedReceipt(release,{...receipt,apple:{...receipt.apple,...change}},{bundleId:'example.verified',appId:'123'}),false);
-  assert.equal(trustedReceipt({...release,assets:release.assets.map(a=>a.name==='Leafhour.ipa'?{...a,digest:'sha256:'+'c'.repeat(64)}:a)},receipt,{bundleId:'example.verified',appId:'123'}),false);
+  assert.equal(trustedReceipt({...release,digest:null},receipt,{bundleId:'example.verified',appId:'123'}),false);
 });
 
 const upload = (state='COMPLETE',processing='VALID') => ({data:[{id:'up',attributes:{cfBundleVersion:'1.0.1',cfBundleShortVersionString:'0.1.0',platform:'IOS',state:{state}},relationships:{build:{data:{type:'builds',id:'build'}}}}],included:[{type:'builds',id:'build',attributes:{version:'1.0.1',processingState:processing}}]});

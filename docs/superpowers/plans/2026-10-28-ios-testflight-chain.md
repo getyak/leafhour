@@ -4,7 +4,7 @@
 
 **Goal:** Provide a repeatable Leafhour native iOS archive → upload → Apple processing → trusted receipt chain and safe signing maintenance.
 
-**Architecture:** GitHub CI verifies source without signing. A disabled-by-default release workflow freezes a successful current-main CI revision and its version/build identity, archives one signed IPA, restores that exact digest for upload, independently polls Apple, and records success only after an exact VALID build. Signing maintenance and access audit remain separate from ordinary release.
+**Architecture:** GitHub CI verifies source without signing. A disabled-by-default release workflow freezes a successful current-main CI revision and its version/build identity, archives and uploads one exact IPA to ASC on the same ephemeral runner, independently polls Apple, and retains only a minimal non-sensitive receipt after an exact VALID build. Signing maintenance, read-only recovery and access audit remain separate. No TestFlight binary is hosted by GitHub.
 
 **Tech stack:** GitHub Actions, Node 22 standard library, Python standard library, Bash, Xcode 26+, existing committed Xcode project. No Fastlane, new backend or paid service is required.
 
@@ -16,6 +16,7 @@
 - Preserve all unrelated work; publish only to `getyak/leafhour`, as a draft PR at this stage.
 - Default release, automatic updates, profile refresh and access repair/invitation remain disabled.
 - No live credentials, books, private reading data or signing bytes in Git, Notion, logs or artifacts.
+- No public GitHub Release or IPA artifact. Archive/upload share one runner; only explicitly allowlisted non-sensitive JSON may leave it for GitHub.
 - Credential grants, security settings, agreement acceptance, first upload and enabling automatic release require parent/user confirmation.
 - A successful simulator build does not establish signed distribution, Apple processing, tester installation or update retention.
 
@@ -38,19 +39,19 @@ Files: `scripts/ios/{release-policy,app-store-connect,release,prepare}.mjs`, `ap
 
 ## Task 2: Signed artifact and maintenance boundaries
 
-Files: `scripts/ios/{archive,upload}.sh`, `scripts/ios/{signing,verify-ipa}.py`, `scripts/ios/{signing-audit,access-audit,finalize}.mjs`, workflows and signing tests.
+Files: `scripts/ios/{archive,upload}.sh`, `scripts/ios/{signing,verify-ipa}.py`, `scripts/ios/{signing-audit,access-audit,receipt-provenance}.mjs`, workflows and signing tests.
 
 - [x] Validate the exact supplied profile and its P12 certificate, archive with manual signing and remove temporary material.
-- [x] Restore only the original signed IPA, check its digest and reconcile Apple state before a single submission.
+- [x] Keep the original IPA on the same runner, check its digest before/after controlled ASC upload, and reconcile Apple state without a second submission.
 - [x] Audit existing resources by default. Explicit maintenance creates one exact profile, validates it and stores it in the existing environment; preserve old resources.
 - [x] Implement metadata-only access audit with no invitation/repair mode.
-- [x] Wire independent prepare/archive/upload/finalize jobs and offline CI contract tests.
+- [x] Wire prepare, combined archive/upload and separate read-only reconciliation jobs with no binary artifact/release; add offline sharing-boundary tests.
 
 ## Task 3: Reviewable delivery and operations evidence
 
 Files: `docs/ios-testflight-release.md`, `docs/verification/2026-10-28-ios-testflight-chain.md`, iOS README.
 
 - [x] Document candidate credentials/settings, versioning, concurrency, retries, rotation, rollback and device update acceptance.
-- [x] Fresh review, resolve material findings, run current tests and workflow lint (17 Node, 3 Python, actionlint v1.7.12).
-- [ ] Create a draft PR from the latest public main; do not merge or dispatch publication in this task.
+- [x] Fresh review, resolve material findings, run current tests and workflow lint (20 Node, 3 Python, actionlint v1.7.12 after the controlled-upload revision).
+- [x] Create draft PR #240 from current public main; keep draft and do not merge or dispatch publication.
 - [ ] Report exact verified results and pending Apple/security decisions to the parent.
