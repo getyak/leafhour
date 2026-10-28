@@ -44,3 +44,27 @@
 #command-palette-list [role=option][aria-selected=true]{background:var(--palette-soft);outline:1px solid var(--line-hairline,#e4e7e0)}
 @media(prefers-reduced-motion:reduce){.command-palette{transition:none}}
 @media(forced-colors:active){.command-palette{border:1px solid CanvasText}#command-palette-list [role=option][aria-selected=true]{outline:1px solid Highlight}}
+
+/* A room index: the search is the heading, with book and author on separate lines. */
+.command-palette{box-sizing:border-box;max-width:none;width:min(640px,calc(100vw - 32px));max-height:min(680px,calc(100dvh - 64px));margin:clamp(24px,14vh,140px) auto auto;border-radius:16px;box-shadow:0 24px 80px color-mix(in srgb,var(--palette-ink) 16%,transparent)}
+.command-palette::backdrop{background:color-mix(in srgb,var(--palette-ink) 20%,transparent);backdrop-filter:blur(4px)}
+#command-palette-input{box-sizing:border-box;width:100%;margin:0;min-height:78px;padding:20px 64px 20px 26px;border:0;border-bottom:1px solid var(--line-hairline);border-radius:0;font-size:18px;background:var(--palette-surface)}
+#command-palette-input:focus-visible{outline-offset:-5px;border-radius:12px 12px 0 0}
+.command-palette-close{top:17px;right:12px;border-radius:9px}
+#command-palette-status{margin:14px 26px 4px;font-size:12px;min-height:20px}
+#command-palette-list{max-height:min(420px,calc(100dvh - 240px));margin:8px 12px 14px;scroll-padding:4px}
+#command-palette-list [role=option]{position:relative;display:grid;grid-template-columns:28px minmax(0,1fr) 20px;column-gap:12px;align-items:center;min-height:56px;padding:12px 14px;border:1px solid transparent;border-radius:9px;box-sizing:border-box;overflow-wrap:anywhere}
+#command-palette-list [role=option]::before{content:'↗';grid-column:1;grid-row:1/3;text-align:center;font-size:19px;color:var(--palette-muted)}
+#command-palette-list [data-kind=book]::before{content:'▤'}
+#command-palette-list [data-kind=chapter]::before{content:'§'}
+#command-palette-list [data-kind=passage]::before{content:'¶'}
+#command-palette-list [data-command=calendar]::before{content:'▦'}
+#command-palette-list [data-command=settings]::before{content:'⚙'}
+#command-palette-list [data-command=library]::before{content:'▥'}
+#command-palette-list [role=option]::after{content:'↵';grid-column:3;grid-row:1/3;opacity:0;color:var(--palette-muted);font-size:16px}
+#command-palette-list [role=option][aria-selected=true]{background:var(--palette-soft);border-color:var(--line-hairline);outline:0}
+#command-palette-list [role=option][aria-selected=true]::after{opacity:1}
+.palette-result-title{grid-column:2;grid-row:1;font:15px/1.6 var(--interface,system-ui)}
+.palette-result-detail{grid-column:2;grid-row:2;font:12px/1.6 var(--interface,system-ui);color:var(--palette-muted);margin-top:2px}
+@media(max-width:620px){.command-palette{width:calc(100vw - 20px);margin-top:16px;max-height:calc(100dvh - 32px);border-radius:12px}#command-palette-input{min-height:70px;padding-left:20px;font-size:16px}#command-palette-status{margin-left:20px}.command-palette-close{top:13px}#command-palette-list{max-height:calc(100dvh - 190px)}}
+@media(forced-colors:active){#command-palette-list [role=option][aria-selected=true]{outline:2px solid Highlight}.command-palette::backdrop{backdrop-filter:none}}

@@ -236,7 +236,8 @@ dialog .status:empty { display: none; }
 .term-definition > summary, .source-review > summary, .source-review a { display: inline-flex; align-items: center; min-height: 44px; }
 
 .gift-page :is(.gift-brand, .gift-site-footer a, .gift-error > a) { display: inline-flex; align-items: center; min-width: 44px; min-height: 44px; }
-.reading-history-dialog > .dialog-close { position: sticky; top: 0; right: auto; left: calc(100% - 44px); display: flex; margin: -20px 0 0 calc(100% - 44px); z-index: 5; background: var(--paper); }
+.reading-history-dialog > .dialog-close { position: absolute; top: 20px; right: 20px; left: auto; display: flex; margin: 0; z-index: 5; background: var(--paper); }
+@media(max-width:800px){.reading-history-dialog > .dialog-close{top:16px;right:12px}}
 .reading-history-dialog > .reading-calendar { margin-top: 0; }
 
 .library-page :is(.room-excerpt-toggle, .room-excerpt-retry, .room-question-link) { display: inline-flex; align-items: center; min-height: 44px; }
