@@ -28,7 +28,7 @@ export function showUiStartFailure(document,locale,target){
  const render=()=>{
   if(!document.body){setTimeout(render,0);return;}
   let section=document.getElementById?.('ui-first-paint-error');
-  if(!section){section=document.createElement('section');section.id='ui-first-paint-error';section.setAttribute('role','alert');section.className='loading-state';const p=document.createElement('p'),retry=document.createElement('a'),back=document.createElement('a');p.textContent=copy.failed;retry.textContent=copy.retry;retry.href=target;back.textContent=copy.back;back.href='/library?ui='+locale;section.append(p,retry,document.createElement('br'),back);const host=document.getElementById?.('book-page')||document.getElementById?.('library-view')||document.body;host.replaceChildren(section);}
+  if(!section){section=document.createElement('section');section.id='ui-first-paint-error';section.setAttribute('role','alert');section.className='loading-state';const p=document.createElement('p'),retry=document.createElement('a'),back=document.createElement('a');p.textContent=copy.failed;retry.textContent=copy.retry;retry.href=target;back.textContent=copy.back;back.href='/library?ui='+locale;section.append(p,retry,document.createElement('br'),back);const host=['book-page','library-view','home-view'].map(id=>document.getElementById?.(id)).find(node=>node&&!node.hidden&&!node.closest?.('[hidden]'))||document.body;host.replaceChildren(section);}
  };
  render();
 }
