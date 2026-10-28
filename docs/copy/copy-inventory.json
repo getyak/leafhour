@@ -261,8 +261,12 @@
         "sha256": "b2cd51f7c58326238362177f99e43486d95b1f4aaa78fb63f1afba9b580e2272"
       },
       {
+        "file": "app/home-sample.mjs",
+        "sha256": "3f90f74e875aefbe36a3ebebe401f4da6c28f779c46846f0bcc39811b3d37477"
+      },
+      {
         "file": "app/home.html",
-        "sha256": "4422a79fe478a6217624aa2e9576876cce3921ccb6503f38ac912b7fa57ec28a"
+        "sha256": "78c3bbb80ee7c298cec273e04274d109e200f8c9e466834a4f67c6f940750b54"
       },
       {
         "file": "app/index.html",
@@ -1202,7 +1206,7 @@
       },
       {
         "file": "server/portal.mjs",
-        "sha256": "896ef02ff1ac99efcc9c78dd20fa57165577c36534d8fd1834b817975449b5c6"
+        "sha256": "a9fc58ad4c6e66c05c78fcdb9ed59711ac14bc8146ef636afe20f90fc835aa38"
       },
       {
         "file": "server/preference-memory.mjs",
@@ -1289,7 +1293,7 @@
         "sha256": "531202f1814314b6c76bfef38b2ea66636425b1ca9b445db349e70ebb8bcd00e"
       }
     ],
-    "inputDigest": "025aeec256b46ff1e0b165e05fe81af090c46caf06edd9c1a9a70dc0f162e47b"
+    "inputDigest": "d67da2eb3ee0d948a1f81d374b554a4f2a707cec3cae995d41e5139b3e0f6d32"
   },
   "locales": [
     "en",
@@ -17233,22 +17237,22 @@
         },
         {
           "file": "server/portal.mjs",
-          "line": 356,
+          "line": 357,
           "column": 114
         },
         {
           "file": "server/portal.mjs",
-          "line": 357,
+          "line": 358,
           "column": 224
         },
         {
           "file": "server/portal.mjs",
-          "line": 414,
+          "line": 415,
           "column": 110
         },
         {
           "file": "server/portal.mjs",
-          "line": 416,
+          "line": 417,
           "column": 290
         }
       ],
@@ -28593,7 +28597,7 @@
         },
         {
           "file": "server/portal.mjs",
-          "line": 278,
+          "line": 279,
           "column": 64
         }
       ],
@@ -28774,7 +28778,7 @@
         },
         {
           "file": "server/portal.mjs",
-          "line": 282,
+          "line": 283,
           "column": 116
         }
       ],
@@ -28836,12 +28840,12 @@
         },
         {
           "file": "server/portal.mjs",
-          "line": 283,
+          "line": 284,
           "column": 119
         },
         {
           "file": "server/portal.mjs",
-          "line": 285,
+          "line": 286,
           "column": 124
         }
       ],
@@ -174173,9 +174177,449 @@
       }
     },
     {
-      "id": "candidate:app/home.html:31:68",
+      "id": "candidate:app/home-sample.mjs:4:24",
+      "file": "app/home-sample.mjs",
+      "line": 4,
+      "column": 24,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "简体中文",
+      "sha256": "9937e365aaf3a0854053a3179584ad9cd82e1164ea8535b50c1e6ae7102b373c",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/home-sample.mjs:5:15",
+      "file": "app/home-sample.mjs",
+      "line": 5,
+      "column": 15,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "中文意译 · 页面示例",
+      "sha256": "5fc4477acf6c0fe9f6bee912a71fe89fd8d83704c2a8a1bc0f88706426b16704",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/home-sample.mjs:6:15",
+      "file": "app/home-sample.mjs",
+      "line": 6,
+      "column": 15,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "中文意譯 · 頁面範例",
+      "sha256": "92b11371c0634b08dc514ecfcba11f770d9ccd540c4f4dc1e108424823a1cb34",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/home-sample.mjs:6:32",
+      "file": "app/home-sample.mjs",
+      "line": 6,
+      "column": 32,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "中国語の意訳 · ページ例",
+      "sha256": "5d2df959ec28c1b5cf90d7bd2cafa54bcb2887c626dc4e76bb62638e5e35aa76",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/home-sample.mjs:7:10",
+      "file": "app/home-sample.mjs",
+      "line": 7,
+      "column": 10,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "“一本书如果没有图画，也没有对话，那有什么用呢？”爱丽丝想。",
+      "sha256": "76c4b77466f4a00b1fe9c6889ccaec93cf170f458e2f8d29516971ed047bfab6",
+      "protected": true,
+      "protectionReason": "quotation",
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/home-sample.mjs:8:24",
+      "file": "app/home-sample.mjs",
+      "line": 8,
+      "column": 24,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "繁體中文",
+      "sha256": "1c95ab9b144ea2f5b3bbf3635472e3274e8995c31a8a783f283e38790ec63ad9",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/home-sample.mjs:9:15",
+      "file": "app/home-sample.mjs",
+      "line": 9,
+      "column": 15,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "中文意译（繁体） · 页面示例",
+      "sha256": "74b75d107dd5497a5897df9c5f8f5b00b6d618ff414d90ae2affabed6267a660",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/home-sample.mjs:10:15",
+      "file": "app/home-sample.mjs",
+      "line": 10,
+      "column": 15,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "中文意譯（繁體） · 頁面範例",
+      "sha256": "dd755cfc82a2b462136fbf620ad849d740771e48fd3e4d7df0d6abce64d25002",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/home-sample.mjs:10:36",
+      "file": "app/home-sample.mjs",
+      "line": 10,
+      "column": 36,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "中国語（繁体字）の意訳 · ページ例",
+      "sha256": "32dcab4257fac2d4bf74b5e248fc4f33702430e25f9074ef156167fa5fb088ff",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/home-sample.mjs:11:10",
+      "file": "app/home-sample.mjs",
+      "line": 11,
+      "column": 10,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "「一本書如果沒有圖畫，也沒有對話，那有什麼用呢？」愛麗絲想。",
+      "sha256": "67d30d4174cedddbc792b3bea396abbe5ff8345c5eee0f2a424e777aba192ce6",
+      "protected": true,
+      "protectionReason": "quotation",
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/home-sample.mjs:12:19",
+      "file": "app/home-sample.mjs",
+      "line": 12,
+      "column": 19,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "日本語",
+      "sha256": "77710aedc74ecfa33685e33a6c7df5cc83004da1bdcef7fb280f5c2b2e97e0a5",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/home-sample.mjs:13:15",
+      "file": "app/home-sample.mjs",
+      "line": 13,
+      "column": 15,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "日语意译 · 页面示例",
+      "sha256": "469725649509b7c62660a60803e1f1b127eb5ad55d68e66c5f6615f9aec187cb",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/home-sample.mjs:14:15",
+      "file": "app/home-sample.mjs",
+      "line": 14,
+      "column": 15,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "日語意譯 · 頁面範例",
+      "sha256": "f82b13b6eb45bcf3c1b87dd4ab193031d43f4530c51ee5452de401e63c4c5e77",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/home-sample.mjs:14:32",
+      "file": "app/home-sample.mjs",
+      "line": 14,
+      "column": 32,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "日本語の意訳 · ページ例",
+      "sha256": "02a3547f16d712a4d822ec7dda2d289dd9b98ba596c60ec68c1402d34eea30ac",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/home-sample.mjs:15:10",
+      "file": "app/home-sample.mjs",
+      "line": 15,
+      "column": 10,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "「絵も会話もない本なんて、いったい何の役に立つのかしら」とアリスは思った。",
+      "sha256": "e48e19d3a6e578c099522605df4144c8f3e31341b8def099b49797a3f1c1fbca",
+      "protected": true,
+      "protectionReason": "quotation",
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/home-sample.mjs:17:15",
+      "file": "app/home-sample.mjs",
+      "line": 17,
+      "column": 15,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "西班牙语意译 · 页面示例",
+      "sha256": "6279606df51de766a038f8dd13f9a4bbee345fc89c4eafa7a86f647ce770bd07",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/home-sample.mjs:18:15",
+      "file": "app/home-sample.mjs",
+      "line": 18,
+      "column": 15,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "西班牙語意譯 · 頁面範例",
+      "sha256": "4dfc66f52f256f5f58af9deff624e60a6bcb83d870aebf5d5eeb0f879a0bc969",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/home-sample.mjs:18:34",
+      "file": "app/home-sample.mjs",
+      "line": 18,
+      "column": 34,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "スペイン語の意訳 · ページ例",
+      "sha256": "5369a55c781c04b82cbcad568895f6cfa7ea578e33a0c88116aad820f13cb9e2",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/home-sample.mjs:32:32",
+      "file": "app/home-sample.mjs",
+      "line": 32,
+      "column": 32,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "译文语言",
+      "sha256": "41739ed3283d776e212bdac27dc3ba008e5ab03f97e2ece7b32f6155e2db0152",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/home-sample.mjs:32:78",
+      "file": "app/home-sample.mjs",
+      "line": 32,
+      "column": 78,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "譯文語言",
+      "sha256": "7804b1c6ac0954b5d8d3f4140b2ad382d08aca3dcd29afadb2dd8461efedf372",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/home-sample.mjs:32:88",
+      "file": "app/home-sample.mjs",
+      "line": 32,
+      "column": 88,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "訳文の言語",
+      "sha256": "95b7e1a59e63b1b5bbbf785bbf2c3b503f7bc09eaa7ad385cea20905fc640c81",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/home-sample.mjs:33:64",
+      "file": "app/home-sample.mjs",
+      "line": 33,
+      "column": 64,
+      "kind": "js-attribute",
+      "property": "role",
+      "value": "group",
+      "sha256": "ad936fcbed631fa67e05c3ea03953905221c9d46af0616b70badf105a966fb11",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/home.html:32:68",
       "file": "app/home.html",
-      "line": 31,
+      "line": 32,
       "column": 68,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -174199,9 +174643,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:31:511",
+      "id": "candidate:app/home.html:32:511",
       "file": "app/home.html",
-      "line": 31,
+      "line": 32,
       "column": 511,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -174225,9 +174669,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:32:74",
+      "id": "candidate:app/home.html:33:74",
       "file": "app/home.html",
-      "line": 32,
+      "line": 33,
       "column": 74,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -174251,9 +174695,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:32:415",
+      "id": "candidate:app/home.html:33:415",
       "file": "app/home.html",
-      "line": 32,
+      "line": 33,
       "column": 415,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -174277,9 +174721,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:34:128",
+      "id": "candidate:app/home.html:35:128",
       "file": "app/home.html",
-      "line": 34,
+      "line": 35,
       "column": 128,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -174303,9 +174747,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:35:41",
+      "id": "candidate:app/home.html:36:41",
       "file": "app/home.html",
-      "line": 35,
+      "line": 36,
       "column": 41,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -174329,9 +174773,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:38:135",
+      "id": "candidate:app/home.html:39:135",
       "file": "app/home.html",
-      "line": 38,
+      "line": 39,
       "column": 135,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -174355,9 +174799,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:39:256",
+      "id": "candidate:app/home.html:40:256",
       "file": "app/home.html",
-      "line": 39,
+      "line": 40,
       "column": 256,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -174381,9 +174825,35 @@
       }
     },
     {
-      "id": "candidate:app/home.html:45:501",
+      "id": "candidate:app/home.html:46:78",
       "file": "app/home.html",
-      "line": 45,
+      "line": 46,
+      "column": 78,
+      "kind": "html-attribute",
+      "property": "aria-label",
+      "value": "暂停光影",
+      "sha256": "7b86cc1572b22090596f5235e8c1cc742847670dc209f76274c7b0884deaf004",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [
+        {
+          "kind": "dom-property",
+          "evidence": "html-attribute:aria-label",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/home.html:49:501",
+      "file": "app/home.html",
+      "line": 49,
       "column": 501,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -174407,9 +174877,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:57:73",
+      "id": "candidate:app/home.html:61:73",
       "file": "app/home.html",
-      "line": 57,
+      "line": 61,
       "column": 73,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -174433,9 +174903,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:57:551",
+      "id": "candidate:app/home.html:61:551",
       "file": "app/home.html",
-      "line": 57,
+      "line": 61,
       "column": 551,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -174459,9 +174929,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:59:53",
+      "id": "candidate:app/home.html:63:53",
       "file": "app/home.html",
-      "line": 59,
+      "line": 63,
       "column": 53,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -174485,9 +174955,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:61:101",
+      "id": "candidate:app/home.html:65:101",
       "file": "app/home.html",
-      "line": 61,
+      "line": 65,
       "column": 101,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -174511,9 +174981,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:62:276",
+      "id": "candidate:app/home.html:66:276",
       "file": "app/home.html",
-      "line": 62,
+      "line": 66,
       "column": 276,
       "kind": "html-attribute",
       "property": "placeholder",
@@ -174537,9 +175007,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:62:413",
+      "id": "candidate:app/home.html:66:413",
       "file": "app/home.html",
-      "line": 62,
+      "line": 66,
       "column": 413,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -174563,9 +175033,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:62:564",
+      "id": "candidate:app/home.html:66:564",
       "file": "app/home.html",
-      "line": 62,
+      "line": 66,
       "column": 564,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -174589,9 +175059,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:68:77",
+      "id": "candidate:app/home.html:72:77",
       "file": "app/home.html",
-      "line": 68,
+      "line": 72,
       "column": 77,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -174615,9 +175085,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:69:308",
+      "id": "candidate:app/home.html:73:308",
       "file": "app/home.html",
-      "line": 69,
+      "line": 73,
       "column": 308,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -174641,9 +175111,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:69:395",
+      "id": "candidate:app/home.html:73:395",
       "file": "app/home.html",
-      "line": 69,
+      "line": 73,
       "column": 395,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -174667,9 +175137,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:69:889",
+      "id": "candidate:app/home.html:73:889",
       "file": "app/home.html",
-      "line": 69,
+      "line": 73,
       "column": 889,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -174693,9 +175163,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:72:607",
+      "id": "candidate:app/home.html:76:607",
       "file": "app/home.html",
-      "line": 72,
+      "line": 76,
       "column": 607,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -174719,9 +175189,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:73:83",
+      "id": "candidate:app/home.html:77:83",
       "file": "app/home.html",
-      "line": 73,
+      "line": 77,
       "column": 83,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -174745,9 +175215,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:74:82",
+      "id": "candidate:app/home.html:78:82",
       "file": "app/home.html",
-      "line": 74,
+      "line": 78,
       "column": 82,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -174771,9 +175241,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:78:101",
+      "id": "candidate:app/home.html:82:101",
       "file": "app/home.html",
-      "line": 78,
+      "line": 82,
       "column": 101,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -174797,9 +175267,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:83:185",
+      "id": "candidate:app/home.html:87:185",
       "file": "app/home.html",
-      "line": 83,
+      "line": 87,
       "column": 185,
       "kind": "html-attribute",
       "property": "placeholder",
@@ -174823,9 +175293,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:84:383",
+      "id": "candidate:app/home.html:88:383",
       "file": "app/home.html",
-      "line": 84,
+      "line": 88,
       "column": 383,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -174849,9 +175319,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:93:418",
+      "id": "candidate:app/home.html:97:418",
       "file": "app/home.html",
-      "line": 93,
+      "line": 97,
       "column": 418,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -174875,9 +175345,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:97:116",
+      "id": "candidate:app/home.html:101:116",
       "file": "app/home.html",
-      "line": 97,
+      "line": 101,
       "column": 116,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -174901,9 +175371,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:98:114",
+      "id": "candidate:app/home.html:102:114",
       "file": "app/home.html",
-      "line": 98,
+      "line": 102,
       "column": 114,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -174927,9 +175397,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:103:159",
+      "id": "candidate:app/home.html:107:159",
       "file": "app/home.html",
-      "line": 103,
+      "line": 107,
       "column": 159,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -174953,9 +175423,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:103:351",
+      "id": "candidate:app/home.html:107:351",
       "file": "app/home.html",
-      "line": 103,
+      "line": 107,
       "column": 351,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -174979,9 +175449,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:105:98",
+      "id": "candidate:app/home.html:109:98",
       "file": "app/home.html",
-      "line": 105,
+      "line": 109,
       "column": 98,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -175005,9 +175475,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:107:95",
+      "id": "candidate:app/home.html:111:95",
       "file": "app/home.html",
-      "line": 107,
+      "line": 111,
       "column": 95,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -175031,9 +175501,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:108:102",
+      "id": "candidate:app/home.html:112:102",
       "file": "app/home.html",
-      "line": 108,
+      "line": 112,
       "column": 102,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -175083,9 +175553,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:29:30",
+      "id": "candidate:app/home.html:30:30",
       "file": "app/home.html",
-      "line": 29,
+      "line": 30,
       "column": 30,
       "kind": "html-text",
       "property": null,
@@ -175109,9 +175579,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:31:402",
+      "id": "candidate:app/home.html:32:402",
       "file": "app/home.html",
-      "line": 31,
+      "line": 32,
       "column": 402,
       "kind": "html-text",
       "property": null,
@@ -175135,9 +175605,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:32:132",
+      "id": "candidate:app/home.html:33:132",
       "file": "app/home.html",
-      "line": 32,
+      "line": 33,
       "column": 132,
       "kind": "html-text",
       "property": null,
@@ -175161,9 +175631,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:32:216",
+      "id": "candidate:app/home.html:33:216",
       "file": "app/home.html",
-      "line": 32,
+      "line": 33,
       "column": 216,
       "kind": "html-text",
       "property": null,
@@ -175187,9 +175657,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:32:321",
+      "id": "candidate:app/home.html:33:321",
       "file": "app/home.html",
-      "line": 32,
+      "line": 33,
       "column": 321,
       "kind": "html-text",
       "property": null,
@@ -175213,9 +175683,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:32:1339",
+      "id": "candidate:app/home.html:33:1339",
       "file": "app/home.html",
-      "line": 32,
+      "line": 33,
       "column": 1339,
       "kind": "html-text",
       "property": null,
@@ -175239,9 +175709,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:34:232",
+      "id": "candidate:app/home.html:35:232",
       "file": "app/home.html",
-      "line": 34,
+      "line": 35,
       "column": 232,
       "kind": "html-text",
       "property": null,
@@ -175265,9 +175735,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:35:203",
+      "id": "candidate:app/home.html:36:203",
       "file": "app/home.html",
-      "line": 35,
+      "line": 36,
       "column": 203,
       "kind": "html-text",
       "property": null,
@@ -175291,9 +175761,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:35:452",
+      "id": "candidate:app/home.html:36:452",
       "file": "app/home.html",
-      "line": 35,
+      "line": 36,
       "column": 452,
       "kind": "html-text",
       "property": null,
@@ -175317,9 +175787,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:36:183",
+      "id": "candidate:app/home.html:37:183",
       "file": "app/home.html",
-      "line": 36,
+      "line": 37,
       "column": 183,
       "kind": "html-text",
       "property": null,
@@ -175343,9 +175813,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:36:410",
+      "id": "candidate:app/home.html:37:410",
       "file": "app/home.html",
-      "line": 36,
+      "line": 37,
       "column": 410,
       "kind": "html-text",
       "property": null,
@@ -175369,9 +175839,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:36:579",
+      "id": "candidate:app/home.html:37:579",
       "file": "app/home.html",
-      "line": 36,
+      "line": 37,
       "column": 579,
       "kind": "html-text",
       "property": null,
@@ -175395,9 +175865,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:36:735",
+      "id": "candidate:app/home.html:37:735",
       "file": "app/home.html",
-      "line": 36,
+      "line": 37,
       "column": 735,
       "kind": "html-text",
       "property": null,
@@ -175421,9 +175891,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:38:220",
+      "id": "candidate:app/home.html:39:220",
       "file": "app/home.html",
-      "line": 38,
+      "line": 39,
       "column": 220,
       "kind": "html-text",
       "property": null,
@@ -175447,9 +175917,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:38:406",
+      "id": "candidate:app/home.html:39:406",
       "file": "app/home.html",
-      "line": 38,
+      "line": 39,
       "column": 406,
       "kind": "html-text",
       "property": null,
@@ -175473,9 +175943,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:39:52",
+      "id": "candidate:app/home.html:40:52",
       "file": "app/home.html",
-      "line": 39,
+      "line": 40,
       "column": 52,
       "kind": "html-text",
       "property": null,
@@ -175499,9 +175969,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:39:85",
+      "id": "candidate:app/home.html:40:85",
       "file": "app/home.html",
-      "line": 39,
+      "line": 40,
       "column": 85,
       "kind": "html-text",
       "property": null,
@@ -175525,9 +175995,35 @@
       }
     },
     {
-      "id": "candidate:app/home.html:44:66",
+      "id": "candidate:app/home.html:46:145",
       "file": "app/home.html",
-      "line": 44,
+      "line": 46,
+      "column": 145,
+      "kind": "html-text",
+      "property": null,
+      "value": "光影",
+      "sha256": "a191b203c99e5c25d4812e05e3ab849ada6254097dfd0425e92197bbd103c3d9",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [
+        {
+          "kind": "dom-text",
+          "evidence": "html-text-node",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/home.html:48:66",
+      "file": "app/home.html",
+      "line": 48,
       "column": 66,
       "kind": "html-text",
       "property": null,
@@ -175551,9 +176047,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:44:106",
+      "id": "candidate:app/home.html:48:106",
       "file": "app/home.html",
-      "line": 44,
+      "line": 48,
       "column": 106,
       "kind": "html-text",
       "property": null,
@@ -175577,9 +176073,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:44:153",
+      "id": "candidate:app/home.html:48:153",
       "file": "app/home.html",
-      "line": 44,
+      "line": 48,
       "column": 153,
       "kind": "html-text",
       "property": null,
@@ -175603,9 +176099,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:44:192",
+      "id": "candidate:app/home.html:48:192",
       "file": "app/home.html",
-      "line": 44,
+      "line": 48,
       "column": 192,
       "kind": "html-text",
       "property": null,
@@ -175629,9 +176125,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:44:208",
+      "id": "candidate:app/home.html:48:208",
       "file": "app/home.html",
-      "line": 44,
+      "line": 48,
       "column": 208,
       "kind": "html-text",
       "property": null,
@@ -175655,9 +176151,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:44:299",
+      "id": "candidate:app/home.html:48:299",
       "file": "app/home.html",
-      "line": 44,
+      "line": 48,
       "column": 299,
       "kind": "html-text",
       "property": null,
@@ -175681,9 +176177,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:44:329",
+      "id": "candidate:app/home.html:48:329",
       "file": "app/home.html",
-      "line": 44,
+      "line": 48,
       "column": 329,
       "kind": "html-text",
       "property": null,
@@ -175707,9 +176203,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:44:372",
+      "id": "candidate:app/home.html:48:372",
       "file": "app/home.html",
-      "line": 44,
+      "line": 48,
       "column": 372,
       "kind": "html-text",
       "property": null,
@@ -175733,9 +176229,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:45:89",
+      "id": "candidate:app/home.html:49:89",
       "file": "app/home.html",
-      "line": 45,
+      "line": 49,
       "column": 89,
       "kind": "html-text",
       "property": null,
@@ -175759,456 +176255,14 @@
       }
     },
     {
-      "id": "candidate:app/home.html:45:115",
+      "id": "candidate:app/home.html:49:115",
       "file": "app/home.html",
-      "line": 45,
+      "line": 49,
       "column": 115,
       "kind": "html-text",
       "property": null,
       "value": "《爱丽丝梦游仙境》· 阅读示例",
       "sha256": "37911226ebaf145765ba07b6c48465219f90d7b6cec36f1aa3bdfeb24352ac22",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [
-        {
-          "kind": "dom-text",
-          "evidence": "html-text-node",
-          "confidence": "low"
-        }
-      ],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/home.html:45:180",
-      "file": "app/home.html",
-      "line": 45,
-      "column": 180,
-      "kind": "html-text",
-      "property": null,
-      "value": "“What is the use of a book,” thought Alice, “without pictures or conversations?”",
-      "sha256": "9c9aeabd332c1199efa817ec63cf07ebb56488b9d5e059264e7ca4421ec0f995",
-      "protected": true,
-      "protectionReason": "quotation",
-      "hints": [
-        {
-          "kind": "dom-text",
-          "evidence": "html-text-node",
-          "confidence": "low"
-        }
-      ],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/home.html:45:302",
-      "file": "app/home.html",
-      "line": 45,
-      "column": 302,
-      "kind": "html-text",
-      "property": null,
-      "value": "中文意译 · 页面示例",
-      "sha256": "5fc4477acf6c0fe9f6bee912a71fe89fd8d83704c2a8a1bc0f88706426b16704",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [
-        {
-          "kind": "dom-text",
-          "evidence": "html-text-node",
-          "confidence": "low"
-        }
-      ],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/home.html:45:338",
-      "file": "app/home.html",
-      "line": 45,
-      "column": 338,
-      "kind": "html-text",
-      "property": null,
-      "value": "“一本书如果没有图画，也没有对话，那有什么用呢？”爱丽丝想。",
-      "sha256": "76c4b77466f4a00b1fe9c6889ccaec93cf170f458e2f8d29516971ed047bfab6",
-      "protected": true,
-      "protectionReason": "quotation",
-      "hints": [
-        {
-          "kind": "dom-text",
-          "evidence": "html-text-node",
-          "confidence": "low"
-        }
-      ],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/home.html:45:433",
-      "file": "app/home.html",
-      "line": 45,
-      "column": 433,
-      "kind": "html-text",
-      "property": null,
-      "value": "读到这里，你想起了什么？",
-      "sha256": "0c07e6a0c35f77b70eee39d32b8d8a786346e7375b5e67ca7ba6af9538afe9b9",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [
-        {
-          "kind": "dom-text",
-          "evidence": "html-text-node",
-          "confidence": "low"
-        }
-      ],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/home.html:45:512",
-      "file": "app/home.html",
-      "line": 45,
-      "column": 512,
-      "kind": "html-text",
-      "property": null,
-      "value": "↗",
-      "sha256": "ca29edb4680a64bc14bf4cf0d03860419a2754c2d5a9765c5fd8357cf7f4219c",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [
-        {
-          "kind": "dom-text",
-          "evidence": "html-text-node",
-          "confidence": "low"
-        }
-      ],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/home.html:47:85",
-      "file": "app/home.html",
-      "line": 47,
-      "column": 85,
-      "kind": "html-text",
-      "property": null,
-      "value": "读过之后，",
-      "sha256": "86bf515a0bcb0989823570534a6873a4528b4d203c3c0671e24d1c223a8fb249",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [
-        {
-          "kind": "dom-text",
-          "evidence": "html-text-node",
-          "confidence": "low"
-        }
-      ],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/home.html:47:94",
-      "file": "app/home.html",
-      "line": 47,
-      "column": 94,
-      "kind": "html-text",
-      "property": null,
-      "value": "留一点自己的理解。",
-      "sha256": "89a1d5dfaee7ed27bd7990c25ae71f6fd3b48a982652e3d0f548a92987133f78",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [
-        {
-          "kind": "dom-text",
-          "evidence": "html-text-node",
-          "confidence": "low"
-        }
-      ],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/home.html:47:111",
-      "file": "app/home.html",
-      "line": 47,
-      "column": 111,
-      "kind": "html-text",
-      "property": null,
-      "value": "在一句话旁边停一停，用自己的话记下理解。还没想通的，就先留成问题，下一次回到原页。",
-      "sha256": "b94c755be8972f445374c8bb3a9de7eb9169aefe4c80bd263cde666cc204b578",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [
-        {
-          "kind": "dom-text",
-          "evidence": "html-text-node",
-          "confidence": "low"
-        }
-      ],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/home.html:47:173",
-      "file": "app/home.html",
-      "line": 47,
-      "column": 173,
-      "kind": "html-text",
-      "property": null,
-      "value": "遇见难句，可以对照原文、直译与意译。AI 译文标为草稿；没有译文的地方，原文始终保留。",
-      "sha256": "17732ab656d211da06db58b9a7490565820c8dab9a7cf37e6ce2a27314f8d700",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [
-        {
-          "kind": "dom-text",
-          "evidence": "html-text-node",
-          "confidence": "low"
-        }
-      ],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/home.html:47:275",
-      "file": "app/home.html",
-      "line": 47,
-      "column": 275,
-      "kind": "html-text",
-      "property": null,
-      "value": "打开这本书",
-      "sha256": "04b1a11807c95988c55a769aad28d4daee0a46bd30603c590b3c8ec168d66e28",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [
-        {
-          "kind": "dom-text",
-          "evidence": "html-text-node",
-          "confidence": "low"
-        }
-      ],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/home.html:47:306",
-      "file": "app/home.html",
-      "line": 47,
-      "column": 306,
-      "kind": "html-text",
-      "property": null,
-      "value": "→",
-      "sha256": "161660030aa6c9e32470cc1c023dab32dc748d80b0e61882b368cb775d12638e",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [
-        {
-          "kind": "dom-text",
-          "evidence": "html-text-node",
-          "confidence": "low"
-        }
-      ],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/home.html:48:92",
-      "file": "app/home.html",
-      "line": 48,
-      "column": 92,
-      "kind": "html-text",
-      "property": null,
-      "value": "选一本书",
-      "sha256": "393d3a30b0a9cfa675742d1624fd493e5a94811570168a3189b2000438e03a32",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [
-        {
-          "kind": "dom-text",
-          "evidence": "html-text-node",
-          "confidence": "low"
-        }
-      ],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/home.html:48:178",
-      "file": "app/home.html",
-      "line": 48,
-      "column": 178,
-      "kind": "html-text",
-      "property": null,
-      "value": "正在载入书架…",
-      "sha256": "17ee7b1395b183682a6cb225fcfc688bda55dcce11bc8092ddef127864f42b72",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [
-        {
-          "kind": "dom-text",
-          "evidence": "html-text-node",
-          "confidence": "low"
-        }
-      ],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/home.html:48:219",
-      "file": "app/home.html",
-      "line": 48,
-      "column": 219,
-      "kind": "html-text",
-      "property": null,
-      "value": "默认书籍来自 Project Gutenberg，原文在美国属于公版；各书保留来源和许可说明，使用时请核对所在地规则。",
-      "sha256": "a69d872a76cde1d03530d72c5c2615fb503bb99db12b2bce518a00ce07538108",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [
-        {
-          "kind": "dom-text",
-          "evidence": "html-text-node",
-          "confidence": "low"
-        }
-      ],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/home.html:49:62",
-      "file": "app/home.html",
-      "line": 49,
-      "column": 62,
-      "kind": "html-text",
-      "property": null,
-      "value": "一本书，",
-      "sha256": "f575daf867ae0b1a9fbd0126519f4c037b5c08b7627bd9a12604fea6aea62441",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [
-        {
-          "kind": "dom-text",
-          "evidence": "html-text-node",
-          "confidence": "low"
-        }
-      ],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/home.html:49:70",
-      "file": "app/home.html",
-      "line": 49,
-      "column": 70,
-      "kind": "html-text",
-      "property": null,
-      "value": "一间自己的书房。",
-      "sha256": "64007a902c1c9226be1e2d017e14c1f947da456218f0462f0307ab7589a91d85",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [
-        {
-          "kind": "dom-text",
-          "evidence": "html-text-node",
-          "confidence": "low"
-        }
-      ],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/home.html:49:120",
-      "file": "app/home.html",
-      "line": 49,
-      "column": 120,
-      "kind": "html-text",
-      "property": null,
-      "value": "带来自己的 PDF、EPUB、Markdown 或纯文本。原文和译文各自保留，你写下的笔记也有自己的位置。",
-      "sha256": "5c898f1e90857601cd7c77db47a38bcdd85da2393b4fc8d4d602a6a618302aff",
       "protected": false,
       "protectionReason": null,
       "hints": [
@@ -176233,6 +176287,448 @@
       "column": 180,
       "kind": "html-text",
       "property": null,
+      "value": "“What is the use of a book,” thought Alice, “without pictures or conversations?”",
+      "sha256": "9c9aeabd332c1199efa817ec63cf07ebb56488b9d5e059264e7ca4421ec0f995",
+      "protected": true,
+      "protectionReason": "quotation",
+      "hints": [
+        {
+          "kind": "dom-text",
+          "evidence": "html-text-node",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/home.html:49:302",
+      "file": "app/home.html",
+      "line": 49,
+      "column": 302,
+      "kind": "html-text",
+      "property": null,
+      "value": "中文意译 · 页面示例",
+      "sha256": "5fc4477acf6c0fe9f6bee912a71fe89fd8d83704c2a8a1bc0f88706426b16704",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [
+        {
+          "kind": "dom-text",
+          "evidence": "html-text-node",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/home.html:49:338",
+      "file": "app/home.html",
+      "line": 49,
+      "column": 338,
+      "kind": "html-text",
+      "property": null,
+      "value": "“一本书如果没有图画，也没有对话，那有什么用呢？”爱丽丝想。",
+      "sha256": "76c4b77466f4a00b1fe9c6889ccaec93cf170f458e2f8d29516971ed047bfab6",
+      "protected": true,
+      "protectionReason": "quotation",
+      "hints": [
+        {
+          "kind": "dom-text",
+          "evidence": "html-text-node",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/home.html:49:433",
+      "file": "app/home.html",
+      "line": 49,
+      "column": 433,
+      "kind": "html-text",
+      "property": null,
+      "value": "读到这里，你想起了什么？",
+      "sha256": "0c07e6a0c35f77b70eee39d32b8d8a786346e7375b5e67ca7ba6af9538afe9b9",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [
+        {
+          "kind": "dom-text",
+          "evidence": "html-text-node",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/home.html:49:512",
+      "file": "app/home.html",
+      "line": 49,
+      "column": 512,
+      "kind": "html-text",
+      "property": null,
+      "value": "↗",
+      "sha256": "ca29edb4680a64bc14bf4cf0d03860419a2754c2d5a9765c5fd8357cf7f4219c",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [
+        {
+          "kind": "dom-text",
+          "evidence": "html-text-node",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/home.html:51:85",
+      "file": "app/home.html",
+      "line": 51,
+      "column": 85,
+      "kind": "html-text",
+      "property": null,
+      "value": "读过之后，",
+      "sha256": "86bf515a0bcb0989823570534a6873a4528b4d203c3c0671e24d1c223a8fb249",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [
+        {
+          "kind": "dom-text",
+          "evidence": "html-text-node",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/home.html:51:94",
+      "file": "app/home.html",
+      "line": 51,
+      "column": 94,
+      "kind": "html-text",
+      "property": null,
+      "value": "留一点自己的理解。",
+      "sha256": "89a1d5dfaee7ed27bd7990c25ae71f6fd3b48a982652e3d0f548a92987133f78",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [
+        {
+          "kind": "dom-text",
+          "evidence": "html-text-node",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/home.html:51:111",
+      "file": "app/home.html",
+      "line": 51,
+      "column": 111,
+      "kind": "html-text",
+      "property": null,
+      "value": "在一句话旁边停一停，用自己的话记下理解。还没想通的，就先留成问题，下一次回到原页。",
+      "sha256": "b94c755be8972f445374c8bb3a9de7eb9169aefe4c80bd263cde666cc204b578",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [
+        {
+          "kind": "dom-text",
+          "evidence": "html-text-node",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/home.html:51:173",
+      "file": "app/home.html",
+      "line": 51,
+      "column": 173,
+      "kind": "html-text",
+      "property": null,
+      "value": "遇见难句，可以对照原文、直译与意译。AI 译文标为草稿；没有译文的地方，原文始终保留。",
+      "sha256": "17732ab656d211da06db58b9a7490565820c8dab9a7cf37e6ce2a27314f8d700",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [
+        {
+          "kind": "dom-text",
+          "evidence": "html-text-node",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/home.html:51:275",
+      "file": "app/home.html",
+      "line": 51,
+      "column": 275,
+      "kind": "html-text",
+      "property": null,
+      "value": "打开这本书",
+      "sha256": "04b1a11807c95988c55a769aad28d4daee0a46bd30603c590b3c8ec168d66e28",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [
+        {
+          "kind": "dom-text",
+          "evidence": "html-text-node",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/home.html:51:306",
+      "file": "app/home.html",
+      "line": 51,
+      "column": 306,
+      "kind": "html-text",
+      "property": null,
+      "value": "→",
+      "sha256": "161660030aa6c9e32470cc1c023dab32dc748d80b0e61882b368cb775d12638e",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [
+        {
+          "kind": "dom-text",
+          "evidence": "html-text-node",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/home.html:52:92",
+      "file": "app/home.html",
+      "line": 52,
+      "column": 92,
+      "kind": "html-text",
+      "property": null,
+      "value": "选一本书",
+      "sha256": "393d3a30b0a9cfa675742d1624fd493e5a94811570168a3189b2000438e03a32",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [
+        {
+          "kind": "dom-text",
+          "evidence": "html-text-node",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/home.html:52:178",
+      "file": "app/home.html",
+      "line": 52,
+      "column": 178,
+      "kind": "html-text",
+      "property": null,
+      "value": "正在载入书架…",
+      "sha256": "17ee7b1395b183682a6cb225fcfc688bda55dcce11bc8092ddef127864f42b72",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [
+        {
+          "kind": "dom-text",
+          "evidence": "html-text-node",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/home.html:52:219",
+      "file": "app/home.html",
+      "line": 52,
+      "column": 219,
+      "kind": "html-text",
+      "property": null,
+      "value": "默认书籍来自 Project Gutenberg，原文在美国属于公版；各书保留来源和许可说明，使用时请核对所在地规则。",
+      "sha256": "a69d872a76cde1d03530d72c5c2615fb503bb99db12b2bce518a00ce07538108",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [
+        {
+          "kind": "dom-text",
+          "evidence": "html-text-node",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/home.html:53:62",
+      "file": "app/home.html",
+      "line": 53,
+      "column": 62,
+      "kind": "html-text",
+      "property": null,
+      "value": "一本书，",
+      "sha256": "f575daf867ae0b1a9fbd0126519f4c037b5c08b7627bd9a12604fea6aea62441",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [
+        {
+          "kind": "dom-text",
+          "evidence": "html-text-node",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/home.html:53:70",
+      "file": "app/home.html",
+      "line": 53,
+      "column": 70,
+      "kind": "html-text",
+      "property": null,
+      "value": "一间自己的书房。",
+      "sha256": "64007a902c1c9226be1e2d017e14c1f947da456218f0462f0307ab7589a91d85",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [
+        {
+          "kind": "dom-text",
+          "evidence": "html-text-node",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/home.html:53:120",
+      "file": "app/home.html",
+      "line": 53,
+      "column": 120,
+      "kind": "html-text",
+      "property": null,
+      "value": "带来自己的 PDF、EPUB、Markdown 或纯文本。原文和译文各自保留，你写下的笔记也有自己的位置。",
+      "sha256": "5c898f1e90857601cd7c77db47a38bcdd85da2393b4fc8d4d602a6a618302aff",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [
+        {
+          "kind": "dom-text",
+          "evidence": "html-text-node",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/home.html:53:180",
+      "file": "app/home.html",
+      "line": 53,
+      "column": 180,
+      "kind": "html-text",
+      "property": null,
       "value": "Leafhour 以 AGPL-3.0 开源，可在本地运行或自行托管。",
       "sha256": "67d62dc6acad7c28bf1951792f324cfff5dd94045075a5cb4257c886bf824b96",
       "protected": false,
@@ -176253,9 +176749,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:50:119",
+      "id": "candidate:app/home.html:54:119",
       "file": "app/home.html",
-      "line": 50,
+      "line": 54,
       "column": 119,
       "kind": "html-text",
       "property": null,
@@ -176279,9 +176775,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:51:23",
+      "id": "candidate:app/home.html:55:23",
       "file": "app/home.html",
-      "line": 51,
+      "line": 55,
       "column": 23,
       "kind": "html-text",
       "property": null,
@@ -176305,9 +176801,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:51:45",
+      "id": "candidate:app/home.html:55:45",
       "file": "app/home.html",
-      "line": 51,
+      "line": 55,
       "column": 45,
       "kind": "html-text",
       "property": null,
@@ -176331,9 +176827,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:52:23",
+      "id": "candidate:app/home.html:56:23",
       "file": "app/home.html",
-      "line": 52,
+      "line": 56,
       "column": 23,
       "kind": "html-text",
       "property": null,
@@ -176357,9 +176853,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:52:47",
+      "id": "candidate:app/home.html:56:47",
       "file": "app/home.html",
-      "line": 52,
+      "line": 56,
       "column": 47,
       "kind": "html-text",
       "property": null,
@@ -176383,9 +176879,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:52:160",
+      "id": "candidate:app/home.html:56:160",
       "file": "app/home.html",
-      "line": 52,
+      "line": 56,
       "column": 160,
       "kind": "html-text",
       "property": null,
@@ -176409,9 +176905,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:52:171",
+      "id": "candidate:app/home.html:56:171",
       "file": "app/home.html",
-      "line": 52,
+      "line": 56,
       "column": 171,
       "kind": "html-text",
       "property": null,
@@ -176435,9 +176931,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:53:23",
+      "id": "candidate:app/home.html:57:23",
       "file": "app/home.html",
-      "line": 53,
+      "line": 57,
       "column": 23,
       "kind": "html-text",
       "property": null,
@@ -176461,9 +176957,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:53:53",
+      "id": "candidate:app/home.html:57:53",
       "file": "app/home.html",
-      "line": 53,
+      "line": 57,
       "column": 53,
       "kind": "html-text",
       "property": null,
@@ -176487,9 +176983,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:57:407",
+      "id": "candidate:app/home.html:61:407",
       "file": "app/home.html",
-      "line": 57,
+      "line": 61,
       "column": 407,
       "kind": "html-text",
       "property": null,
@@ -176513,9 +177009,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:58:49",
+      "id": "candidate:app/home.html:62:49",
       "file": "app/home.html",
-      "line": 58,
+      "line": 62,
       "column": 49,
       "kind": "html-text",
       "property": null,
@@ -176539,9 +177035,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:58:156",
+      "id": "candidate:app/home.html:62:156",
       "file": "app/home.html",
-      "line": 58,
+      "line": 62,
       "column": 156,
       "kind": "html-text",
       "property": null,
@@ -176565,9 +177061,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:58:211",
+      "id": "candidate:app/home.html:62:211",
       "file": "app/home.html",
-      "line": 58,
+      "line": 62,
       "column": 211,
       "kind": "html-text",
       "property": null,
@@ -176591,9 +177087,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:61:175",
+      "id": "candidate:app/home.html:65:175",
       "file": "app/home.html",
-      "line": 61,
+      "line": 65,
       "column": 175,
       "kind": "html-text",
       "property": null,
@@ -176617,9 +177113,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:61:259",
+      "id": "candidate:app/home.html:65:259",
       "file": "app/home.html",
-      "line": 61,
+      "line": 65,
       "column": 259,
       "kind": "html-text",
       "property": null,
@@ -176643,9 +177139,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:61:342",
+      "id": "candidate:app/home.html:65:342",
       "file": "app/home.html",
-      "line": 61,
+      "line": 65,
       "column": 342,
       "kind": "html-text",
       "property": null,
@@ -176669,9 +177165,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:61:427",
+      "id": "candidate:app/home.html:65:427",
       "file": "app/home.html",
-      "line": 61,
+      "line": 65,
       "column": 427,
       "kind": "html-text",
       "property": null,
@@ -176695,9 +177191,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:62:174",
+      "id": "candidate:app/home.html:66:174",
       "file": "app/home.html",
-      "line": 62,
+      "line": 66,
       "column": 174,
       "kind": "html-text",
       "property": null,
@@ -176721,9 +177217,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:62:426",
+      "id": "candidate:app/home.html:66:426",
       "file": "app/home.html",
-      "line": 62,
+      "line": 66,
       "column": 426,
       "kind": "html-text",
       "property": null,
@@ -176747,9 +177243,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:62:676",
+      "id": "candidate:app/home.html:66:676",
       "file": "app/home.html",
-      "line": 62,
+      "line": 66,
       "column": 676,
       "kind": "html-text",
       "property": null,
@@ -176773,9 +177269,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:64:237",
+      "id": "candidate:app/home.html:68:237",
       "file": "app/home.html",
-      "line": 64,
+      "line": 68,
       "column": 237,
       "kind": "html-text",
       "property": null,
@@ -176799,9 +177295,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:65:177",
+      "id": "candidate:app/home.html:69:177",
       "file": "app/home.html",
-      "line": 65,
+      "line": 69,
       "column": 177,
       "kind": "html-text",
       "property": null,
@@ -176825,9 +177321,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:65:293",
+      "id": "candidate:app/home.html:69:293",
       "file": "app/home.html",
-      "line": 65,
+      "line": 69,
       "column": 293,
       "kind": "html-text",
       "property": null,
@@ -176851,9 +177347,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:65:348",
+      "id": "candidate:app/home.html:69:348",
       "file": "app/home.html",
-      "line": 65,
+      "line": 69,
       "column": 348,
       "kind": "html-text",
       "property": null,
@@ -176877,9 +177373,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:65:484",
+      "id": "candidate:app/home.html:69:484",
       "file": "app/home.html",
-      "line": 65,
+      "line": 69,
       "column": 484,
       "kind": "html-text",
       "property": null,
@@ -176903,9 +177399,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:65:540",
+      "id": "candidate:app/home.html:69:540",
       "file": "app/home.html",
-      "line": 65,
+      "line": 69,
       "column": 540,
       "kind": "html-text",
       "property": null,
@@ -176929,9 +177425,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:65:576",
+      "id": "candidate:app/home.html:69:576",
       "file": "app/home.html",
-      "line": 65,
+      "line": 69,
       "column": 576,
       "kind": "html-text",
       "property": null,
@@ -176955,9 +177451,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:65:612",
+      "id": "candidate:app/home.html:69:612",
       "file": "app/home.html",
-      "line": 65,
+      "line": 69,
       "column": 612,
       "kind": "html-text",
       "property": null,
@@ -176981,9 +177477,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:65:753",
+      "id": "candidate:app/home.html:69:753",
       "file": "app/home.html",
-      "line": 65,
+      "line": 69,
       "column": 753,
       "kind": "html-text",
       "property": null,
@@ -177007,9 +177503,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:65:813",
+      "id": "candidate:app/home.html:69:813",
       "file": "app/home.html",
-      "line": 65,
+      "line": 69,
       "column": 813,
       "kind": "html-text",
       "property": null,
@@ -177033,9 +177529,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:65:948",
+      "id": "candidate:app/home.html:69:948",
       "file": "app/home.html",
-      "line": 65,
+      "line": 69,
       "column": 948,
       "kind": "html-text",
       "property": null,
@@ -177059,9 +177555,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:65:1004",
+      "id": "candidate:app/home.html:69:1004",
       "file": "app/home.html",
-      "line": 65,
+      "line": 69,
       "column": 1004,
       "kind": "html-text",
       "property": null,
@@ -177085,9 +177581,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:65:1042",
+      "id": "candidate:app/home.html:69:1042",
       "file": "app/home.html",
-      "line": 65,
+      "line": 69,
       "column": 1042,
       "kind": "html-text",
       "property": null,
@@ -177111,9 +177607,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:65:1080",
+      "id": "candidate:app/home.html:69:1080",
       "file": "app/home.html",
-      "line": 65,
+      "line": 69,
       "column": 1080,
       "kind": "html-text",
       "property": null,
@@ -177137,9 +177633,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:65:1118",
+      "id": "candidate:app/home.html:69:1118",
       "file": "app/home.html",
-      "line": 65,
+      "line": 69,
       "column": 1118,
       "kind": "html-text",
       "property": null,
@@ -177163,9 +177659,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:65:1204",
+      "id": "candidate:app/home.html:69:1204",
       "file": "app/home.html",
-      "line": 65,
+      "line": 69,
       "column": 1204,
       "kind": "html-text",
       "property": null,
@@ -177189,9 +177685,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:67:125",
+      "id": "candidate:app/home.html:71:125",
       "file": "app/home.html",
-      "line": 67,
+      "line": 71,
       "column": 125,
       "kind": "html-text",
       "property": null,
@@ -177215,9 +177711,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:68:94",
+      "id": "candidate:app/home.html:72:94",
       "file": "app/home.html",
-      "line": 68,
+      "line": 72,
       "column": 94,
       "kind": "html-text",
       "property": null,
@@ -177241,9 +177737,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:68:108",
+      "id": "candidate:app/home.html:72:108",
       "file": "app/home.html",
-      "line": 68,
+      "line": 72,
       "column": 108,
       "kind": "html-text",
       "property": null,
@@ -177267,9 +177763,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:68:254",
+      "id": "candidate:app/home.html:72:254",
       "file": "app/home.html",
-      "line": 68,
+      "line": 72,
       "column": 254,
       "kind": "html-text",
       "property": null,
@@ -177293,9 +177789,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:68:333",
+      "id": "candidate:app/home.html:72:333",
       "file": "app/home.html",
-      "line": 68,
+      "line": 72,
       "column": 333,
       "kind": "html-text",
       "property": null,
@@ -177319,9 +177815,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:69:219",
+      "id": "candidate:app/home.html:73:219",
       "file": "app/home.html",
-      "line": 69,
+      "line": 73,
       "column": 219,
       "kind": "html-text",
       "property": null,
@@ -177345,9 +177841,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:69:427",
+      "id": "candidate:app/home.html:73:427",
       "file": "app/home.html",
-      "line": 69,
+      "line": 73,
       "column": 427,
       "kind": "html-text",
       "property": null,
@@ -177371,9 +177867,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:69:623",
+      "id": "candidate:app/home.html:73:623",
       "file": "app/home.html",
-      "line": 69,
+      "line": 73,
       "column": 623,
       "kind": "html-text",
       "property": null,
@@ -177397,9 +177893,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:69:638",
+      "id": "candidate:app/home.html:73:638",
       "file": "app/home.html",
-      "line": 69,
+      "line": 73,
       "column": 638,
       "kind": "html-text",
       "property": null,
@@ -177423,9 +177919,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:69:727",
+      "id": "candidate:app/home.html:73:727",
       "file": "app/home.html",
-      "line": 69,
+      "line": 73,
       "column": 727,
       "kind": "html-text",
       "property": null,
@@ -177449,9 +177945,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:69:806",
+      "id": "candidate:app/home.html:73:806",
       "file": "app/home.html",
-      "line": 69,
+      "line": 73,
       "column": 806,
       "kind": "html-text",
       "property": null,
@@ -177475,9 +177971,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:72:376",
+      "id": "candidate:app/home.html:76:376",
       "file": "app/home.html",
-      "line": 72,
+      "line": 76,
       "column": 376,
       "kind": "html-text",
       "property": null,
@@ -177501,9 +177997,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:72:408",
+      "id": "candidate:app/home.html:76:408",
       "file": "app/home.html",
-      "line": 72,
+      "line": 76,
       "column": 408,
       "kind": "html-text",
       "property": null,
@@ -177527,9 +178023,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:72:444",
+      "id": "candidate:app/home.html:76:444",
       "file": "app/home.html",
-      "line": 72,
+      "line": 76,
       "column": 444,
       "kind": "html-text",
       "property": null,
@@ -177553,9 +178049,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:72:475",
+      "id": "candidate:app/home.html:76:475",
       "file": "app/home.html",
-      "line": 72,
+      "line": 76,
       "column": 475,
       "kind": "html-text",
       "property": null,
@@ -177579,9 +178075,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:72:528",
+      "id": "candidate:app/home.html:76:528",
       "file": "app/home.html",
-      "line": 72,
+      "line": 76,
       "column": 528,
       "kind": "html-text",
       "property": null,
@@ -177605,9 +178101,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:72:615",
+      "id": "candidate:app/home.html:76:615",
       "file": "app/home.html",
-      "line": 72,
+      "line": 76,
       "column": 615,
       "kind": "html-text",
       "property": null,
@@ -177631,9 +178127,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:78:107",
+      "id": "candidate:app/home.html:82:107",
       "file": "app/home.html",
-      "line": 78,
+      "line": 82,
       "column": 107,
       "kind": "html-text",
       "property": null,
@@ -177657,9 +178153,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:79:297",
+      "id": "candidate:app/home.html:83:297",
       "file": "app/home.html",
-      "line": 79,
+      "line": 83,
       "column": 297,
       "kind": "html-text",
       "property": null,
@@ -177683,9 +178179,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:80:23",
+      "id": "candidate:app/home.html:84:23",
       "file": "app/home.html",
-      "line": 80,
+      "line": 84,
       "column": 23,
       "kind": "html-text",
       "property": null,
@@ -177709,9 +178205,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:80:53",
+      "id": "candidate:app/home.html:84:53",
       "file": "app/home.html",
-      "line": 80,
+      "line": 84,
       "column": 53,
       "kind": "html-text",
       "property": null,
@@ -177735,9 +178231,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:83:53",
+      "id": "candidate:app/home.html:87:53",
       "file": "app/home.html",
-      "line": 83,
+      "line": 87,
       "column": 53,
       "kind": "html-text",
       "property": null,
@@ -177761,9 +178257,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:84:122",
+      "id": "candidate:app/home.html:88:122",
       "file": "app/home.html",
-      "line": 84,
+      "line": 88,
       "column": 122,
       "kind": "html-text",
       "property": null,
@@ -177787,9 +178283,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:84:412",
+      "id": "candidate:app/home.html:88:412",
       "file": "app/home.html",
-      "line": 84,
+      "line": 88,
       "column": 412,
       "kind": "html-text",
       "property": null,
@@ -177813,9 +178309,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:85:69",
+      "id": "candidate:app/home.html:89:69",
       "file": "app/home.html",
-      "line": 85,
+      "line": 89,
       "column": 69,
       "kind": "html-text",
       "property": null,
@@ -177839,9 +178335,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:89:143",
+      "id": "candidate:app/home.html:93:143",
       "file": "app/home.html",
-      "line": 89,
+      "line": 93,
       "column": 143,
       "kind": "html-text",
       "property": null,
@@ -177865,9 +178361,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:90:78",
+      "id": "candidate:app/home.html:94:78",
       "file": "app/home.html",
-      "line": 90,
+      "line": 94,
       "column": 78,
       "kind": "html-text",
       "property": null,
@@ -177891,9 +178387,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:90:325",
+      "id": "candidate:app/home.html:94:325",
       "file": "app/home.html",
-      "line": 90,
+      "line": 94,
       "column": 325,
       "kind": "html-text",
       "property": null,
@@ -177917,9 +178413,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:91:122",
+      "id": "candidate:app/home.html:95:122",
       "file": "app/home.html",
-      "line": 91,
+      "line": 95,
       "column": 122,
       "kind": "html-text",
       "property": null,
@@ -177943,9 +178439,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:93:126",
+      "id": "candidate:app/home.html:97:126",
       "file": "app/home.html",
-      "line": 93,
+      "line": 97,
       "column": 126,
       "kind": "html-text",
       "property": null,
@@ -177969,9 +178465,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:93:446",
+      "id": "candidate:app/home.html:97:446",
       "file": "app/home.html",
-      "line": 93,
+      "line": 97,
       "column": 446,
       "kind": "html-text",
       "property": null,
@@ -177995,9 +178491,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:93:518",
+      "id": "candidate:app/home.html:97:518",
       "file": "app/home.html",
-      "line": 93,
+      "line": 97,
       "column": 518,
       "kind": "html-text",
       "property": null,
@@ -178021,9 +178517,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:93:588",
+      "id": "candidate:app/home.html:97:588",
       "file": "app/home.html",
-      "line": 93,
+      "line": 97,
       "column": 588,
       "kind": "html-text",
       "property": null,
@@ -178047,9 +178543,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:94:127",
+      "id": "candidate:app/home.html:98:127",
       "file": "app/home.html",
-      "line": 94,
+      "line": 98,
       "column": 127,
       "kind": "html-text",
       "property": null,
@@ -178073,9 +178569,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:95:129",
+      "id": "candidate:app/home.html:99:129",
       "file": "app/home.html",
-      "line": 95,
+      "line": 99,
       "column": 129,
       "kind": "html-text",
       "property": null,
@@ -178099,9 +178595,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:95:228",
+      "id": "candidate:app/home.html:99:228",
       "file": "app/home.html",
-      "line": 95,
+      "line": 99,
       "column": 228,
       "kind": "html-text",
       "property": null,
@@ -178125,9 +178621,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:95:319",
+      "id": "candidate:app/home.html:99:319",
       "file": "app/home.html",
-      "line": 95,
+      "line": 99,
       "column": 319,
       "kind": "html-text",
       "property": null,
@@ -178151,9 +178647,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:96:81",
+      "id": "candidate:app/home.html:100:81",
       "file": "app/home.html",
-      "line": 96,
+      "line": 100,
       "column": 81,
       "kind": "html-text",
       "property": null,
@@ -178177,9 +178673,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:97:201",
+      "id": "candidate:app/home.html:101:201",
       "file": "app/home.html",
-      "line": 97,
+      "line": 101,
       "column": 201,
       "kind": "html-text",
       "property": null,
@@ -178203,9 +178699,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:97:277",
+      "id": "candidate:app/home.html:101:277",
       "file": "app/home.html",
-      "line": 97,
+      "line": 101,
       "column": 277,
       "kind": "html-text",
       "property": null,
@@ -178229,9 +178725,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:98:197",
+      "id": "candidate:app/home.html:102:197",
       "file": "app/home.html",
-      "line": 98,
+      "line": 102,
       "column": 197,
       "kind": "html-text",
       "property": null,
@@ -178255,9 +178751,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:98:272",
+      "id": "candidate:app/home.html:102:272",
       "file": "app/home.html",
-      "line": 98,
+      "line": 102,
       "column": 272,
       "kind": "html-text",
       "property": null,
@@ -178281,9 +178777,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:100:91",
+      "id": "candidate:app/home.html:104:91",
       "file": "app/home.html",
-      "line": 100,
+      "line": 104,
       "column": 91,
       "kind": "html-text",
       "property": null,
@@ -178307,9 +178803,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:100:181",
+      "id": "candidate:app/home.html:104:181",
       "file": "app/home.html",
-      "line": 100,
+      "line": 104,
       "column": 181,
       "kind": "html-text",
       "property": null,
@@ -178333,9 +178829,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:100:246",
+      "id": "candidate:app/home.html:104:246",
       "file": "app/home.html",
-      "line": 100,
+      "line": 104,
       "column": 246,
       "kind": "html-text",
       "property": null,
@@ -178359,9 +178855,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:101:97",
+      "id": "candidate:app/home.html:105:97",
       "file": "app/home.html",
-      "line": 101,
+      "line": 105,
       "column": 97,
       "kind": "html-text",
       "property": null,
@@ -178385,9 +178881,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:101:184",
+      "id": "candidate:app/home.html:105:184",
       "file": "app/home.html",
-      "line": 101,
+      "line": 105,
       "column": 184,
       "kind": "html-text",
       "property": null,
@@ -178411,9 +178907,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:101:284",
+      "id": "candidate:app/home.html:105:284",
       "file": "app/home.html",
-      "line": 101,
+      "line": 105,
       "column": 284,
       "kind": "html-text",
       "property": null,
@@ -178437,9 +178933,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:101:322",
+      "id": "candidate:app/home.html:105:322",
       "file": "app/home.html",
-      "line": 101,
+      "line": 105,
       "column": 322,
       "kind": "html-text",
       "property": null,
@@ -178463,9 +178959,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:103:165",
+      "id": "candidate:app/home.html:107:165",
       "file": "app/home.html",
-      "line": 103,
+      "line": 107,
       "column": 165,
       "kind": "html-text",
       "property": null,
@@ -178489,9 +178985,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:103:197",
+      "id": "candidate:app/home.html:107:197",
       "file": "app/home.html",
-      "line": 103,
+      "line": 107,
       "column": 197,
       "kind": "html-text",
       "property": null,
@@ -178515,9 +179011,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:103:232",
+      "id": "candidate:app/home.html:107:232",
       "file": "app/home.html",
-      "line": 103,
+      "line": 107,
       "column": 232,
       "kind": "html-text",
       "property": null,
@@ -178541,9 +179037,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:103:427",
+      "id": "candidate:app/home.html:107:427",
       "file": "app/home.html",
-      "line": 103,
+      "line": 107,
       "column": 427,
       "kind": "html-text",
       "property": null,
@@ -178567,9 +179063,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:103:466",
+      "id": "candidate:app/home.html:107:466",
       "file": "app/home.html",
-      "line": 103,
+      "line": 107,
       "column": 466,
       "kind": "html-text",
       "property": null,
@@ -178593,9 +179089,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:103:511",
+      "id": "candidate:app/home.html:107:511",
       "file": "app/home.html",
-      "line": 103,
+      "line": 107,
       "column": 511,
       "kind": "html-text",
       "property": null,
@@ -178619,9 +179115,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:103:729",
+      "id": "candidate:app/home.html:107:729",
       "file": "app/home.html",
-      "line": 103,
+      "line": 107,
       "column": 729,
       "kind": "html-text",
       "property": null,
@@ -178645,9 +179141,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:103:919",
+      "id": "candidate:app/home.html:107:919",
       "file": "app/home.html",
-      "line": 103,
+      "line": 107,
       "column": 919,
       "kind": "html-text",
       "property": null,
@@ -178671,9 +179167,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:103:932",
+      "id": "candidate:app/home.html:107:932",
       "file": "app/home.html",
-      "line": 103,
+      "line": 107,
       "column": 932,
       "kind": "html-text",
       "property": null,
@@ -178697,9 +179193,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:105:104",
+      "id": "candidate:app/home.html:109:104",
       "file": "app/home.html",
-      "line": 105,
+      "line": 109,
       "column": 104,
       "kind": "html-text",
       "property": null,
@@ -178723,9 +179219,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:106:47",
+      "id": "candidate:app/home.html:110:47",
       "file": "app/home.html",
-      "line": 106,
+      "line": 110,
       "column": 47,
       "kind": "html-text",
       "property": null,
@@ -178749,9 +179245,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:108:163",
+      "id": "candidate:app/home.html:112:163",
       "file": "app/home.html",
-      "line": 108,
+      "line": 112,
       "column": 163,
       "kind": "html-text",
       "property": null,
@@ -178775,9 +179271,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:108:244",
+      "id": "candidate:app/home.html:112:244",
       "file": "app/home.html",
-      "line": 108,
+      "line": 112,
       "column": 244,
       "kind": "html-text",
       "property": null,
@@ -178801,9 +179297,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:108:322",
+      "id": "candidate:app/home.html:112:322",
       "file": "app/home.html",
-      "line": 108,
+      "line": 112,
       "column": 322,
       "kind": "html-text",
       "property": null,
@@ -178827,9 +179323,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:108:385",
+      "id": "candidate:app/home.html:112:385",
       "file": "app/home.html",
-      "line": 108,
+      "line": 112,
       "column": 385,
       "kind": "html-text",
       "property": null,
@@ -178853,9 +179349,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:108:462",
+      "id": "candidate:app/home.html:112:462",
       "file": "app/home.html",
-      "line": 108,
+      "line": 112,
       "column": 462,
       "kind": "html-text",
       "property": null,
@@ -240161,9 +240657,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:194:70",
+      "id": "candidate:server/portal.mjs:195:70",
       "file": "server/portal.mjs",
-      "line": 194,
+      "line": 195,
       "column": 70,
       "kind": "js-cjk-literal",
       "property": null,
@@ -240181,9 +240677,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:195:59",
+      "id": "candidate:server/portal.mjs:196:59",
       "file": "server/portal.mjs",
-      "line": 195,
+      "line": 196,
       "column": 59,
       "kind": "js-cjk-literal",
       "property": null,
@@ -240201,9 +240697,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:198:54",
+      "id": "candidate:server/portal.mjs:199:54",
       "file": "server/portal.mjs",
-      "line": 198,
+      "line": 199,
       "column": 54,
       "kind": "js-cjk-literal",
       "property": null,
@@ -240221,9 +240717,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:199:85",
+      "id": "candidate:server/portal.mjs:200:85",
       "file": "server/portal.mjs",
-      "line": 199,
+      "line": 200,
       "column": 85,
       "kind": "js-cjk-literal",
       "property": null,
@@ -240241,9 +240737,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:200:111",
+      "id": "candidate:server/portal.mjs:201:111",
       "file": "server/portal.mjs",
-      "line": 200,
+      "line": 201,
       "column": 111,
       "kind": "js-cjk-literal",
       "property": null,
@@ -240261,9 +240757,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:200:130",
+      "id": "candidate:server/portal.mjs:201:130",
       "file": "server/portal.mjs",
-      "line": 200,
+      "line": 201,
       "column": 130,
       "kind": "js-cjk-literal",
       "property": null,
@@ -240281,9 +240777,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:204:79",
+      "id": "candidate:server/portal.mjs:205:79",
       "file": "server/portal.mjs",
-      "line": 204,
+      "line": 205,
       "column": 79,
       "kind": "js-cjk-literal",
       "property": null,
@@ -240301,9 +240797,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:219:162",
+      "id": "candidate:server/portal.mjs:220:162",
       "file": "server/portal.mjs",
-      "line": 219,
+      "line": 220,
       "column": 162,
       "kind": "js-cjk-literal",
       "property": null,
@@ -240321,9 +240817,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:226:52",
+      "id": "candidate:server/portal.mjs:227:52",
       "file": "server/portal.mjs",
-      "line": 226,
+      "line": 227,
       "column": 52,
       "kind": "js-cjk-literal",
       "property": null,
@@ -240341,9 +240837,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:227:82",
+      "id": "candidate:server/portal.mjs:228:82",
       "file": "server/portal.mjs",
-      "line": 227,
+      "line": 228,
       "column": 82,
       "kind": "js-cjk-literal",
       "property": null,
@@ -240361,9 +240857,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:230:18",
+      "id": "candidate:server/portal.mjs:231:18",
       "file": "server/portal.mjs",
-      "line": 230,
+      "line": 231,
       "column": 18,
       "kind": "js-cjk-literal",
       "property": null,
@@ -240381,9 +240877,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:240:27",
+      "id": "candidate:server/portal.mjs:241:27",
       "file": "server/portal.mjs",
-      "line": 240,
+      "line": 241,
       "column": 27,
       "kind": "js-cjk-literal",
       "property": null,
@@ -240401,9 +240897,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:242:41",
+      "id": "candidate:server/portal.mjs:243:41",
       "file": "server/portal.mjs",
-      "line": 242,
+      "line": 243,
       "column": 41,
       "kind": "js-cjk-literal",
       "property": null,
@@ -240421,9 +240917,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:243:61",
+      "id": "candidate:server/portal.mjs:244:61",
       "file": "server/portal.mjs",
-      "line": 243,
+      "line": 244,
       "column": 61,
       "kind": "js-cjk-literal",
       "property": null,
@@ -240441,9 +240937,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:257:27",
+      "id": "candidate:server/portal.mjs:258:27",
       "file": "server/portal.mjs",
-      "line": 257,
+      "line": 258,
       "column": 27,
       "kind": "js-cjk-literal",
       "property": null,
@@ -240461,9 +240957,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:259:94",
+      "id": "candidate:server/portal.mjs:260:94",
       "file": "server/portal.mjs",
-      "line": 259,
+      "line": 260,
       "column": 94,
       "kind": "js-cjk-literal",
       "property": null,
@@ -240481,9 +240977,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:262:41",
+      "id": "candidate:server/portal.mjs:263:41",
       "file": "server/portal.mjs",
-      "line": 262,
+      "line": 263,
       "column": 41,
       "kind": "js-cjk-literal",
       "property": null,
@@ -240501,9 +240997,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:263:61",
+      "id": "candidate:server/portal.mjs:264:61",
       "file": "server/portal.mjs",
-      "line": 263,
+      "line": 264,
       "column": 61,
       "kind": "js-cjk-literal",
       "property": null,
@@ -240521,9 +241017,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:268:27",
+      "id": "candidate:server/portal.mjs:269:27",
       "file": "server/portal.mjs",
-      "line": 268,
+      "line": 269,
       "column": 27,
       "kind": "js-cjk-literal",
       "property": null,
@@ -240541,9 +241037,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:270:41",
+      "id": "candidate:server/portal.mjs:271:41",
       "file": "server/portal.mjs",
-      "line": 270,
+      "line": 271,
       "column": 41,
       "kind": "js-cjk-literal",
       "property": null,
@@ -240561,9 +241057,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:271:61",
+      "id": "candidate:server/portal.mjs:272:61",
       "file": "server/portal.mjs",
-      "line": 271,
+      "line": 272,
       "column": 61,
       "kind": "js-cjk-literal",
       "property": null,
@@ -240581,34 +241077,14 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:278:95",
+      "id": "candidate:server/portal.mjs:279:95",
       "file": "server/portal.mjs",
-      "line": 278,
+      "line": 279,
       "column": 95,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "这个登录方式正在准备中",
       "sha256": "5b1fd335876a2e8b42a701e36503a6bb4154b66568cb51b0acd4b9089b6add4b",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:server/portal.mjs:282:146",
-      "file": "server/portal.mjs",
-      "line": 282,
-      "column": 146,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "此书房尚未开启密码登录，可以使用验证码或本机书房",
-      "sha256": "2eff97a40c8dca56027b2c36d573bed634fb9108a04d68017e818f68aaae66f8",
       "protected": false,
       "protectionReason": null,
       "hints": [],
@@ -240627,6 +241103,26 @@
       "column": 146,
       "kind": "js-cjk-literal",
       "property": null,
+      "value": "此书房尚未开启密码登录，可以使用验证码或本机书房",
+      "sha256": "2eff97a40c8dca56027b2c36d573bed634fb9108a04d68017e818f68aaae66f8",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/portal.mjs:284:146",
+      "file": "server/portal.mjs",
+      "line": 284,
+      "column": 146,
+      "kind": "js-cjk-literal",
+      "property": null,
       "value": "此书房尚未开启密码设置",
       "sha256": "32a8eb4db3aec2b39822519b6c143fd981ac6faa92382b8fd5f64f917fd6f73f",
       "protected": false,
@@ -240641,9 +241137,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:285:151",
+      "id": "candidate:server/portal.mjs:286:151",
       "file": "server/portal.mjs",
-      "line": 285,
+      "line": 286,
       "column": 151,
       "kind": "js-cjk-literal",
       "property": null,
@@ -240661,9 +241157,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:289:80",
+      "id": "candidate:server/portal.mjs:290:80",
       "file": "server/portal.mjs",
-      "line": 289,
+      "line": 290,
       "column": 80,
       "kind": "js-cjk-literal",
       "property": null,
@@ -240681,9 +241177,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:295:27",
+      "id": "candidate:server/portal.mjs:296:27",
       "file": "server/portal.mjs",
-      "line": 295,
+      "line": 296,
       "column": 27,
       "kind": "js-cjk-literal",
       "property": null,
@@ -240701,9 +241197,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:296:149",
+      "id": "candidate:server/portal.mjs:297:149",
       "file": "server/portal.mjs",
-      "line": 296,
+      "line": 297,
       "column": 149,
       "kind": "js-cjk-literal",
       "property": null,
@@ -240721,9 +241217,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:297:35",
+      "id": "candidate:server/portal.mjs:298:35",
       "file": "server/portal.mjs",
-      "line": 297,
+      "line": 298,
       "column": 35,
       "kind": "js-cjk-literal",
       "property": null,
@@ -240741,9 +241237,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:306:446",
+      "id": "candidate:server/portal.mjs:307:446",
       "file": "server/portal.mjs",
-      "line": 306,
+      "line": 307,
       "column": 446,
       "kind": "js-cjk-literal",
       "property": null,
@@ -240761,9 +241257,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:308:45",
+      "id": "candidate:server/portal.mjs:309:45",
       "file": "server/portal.mjs",
-      "line": 308,
+      "line": 309,
       "column": 45,
       "kind": "js-cjk-literal",
       "property": null,
@@ -240781,9 +241277,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:312:48",
+      "id": "candidate:server/portal.mjs:313:48",
       "file": "server/portal.mjs",
-      "line": 312,
+      "line": 313,
       "column": 48,
       "kind": "js-cjk-literal",
       "property": null,
@@ -240801,9 +241297,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:316:27",
+      "id": "candidate:server/portal.mjs:317:27",
       "file": "server/portal.mjs",
-      "line": 316,
+      "line": 317,
       "column": 27,
       "kind": "js-cjk-literal",
       "property": null,
@@ -240821,9 +241317,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:316:187",
+      "id": "candidate:server/portal.mjs:317:187",
       "file": "server/portal.mjs",
-      "line": 316,
+      "line": 317,
       "column": 187,
       "kind": "js-cjk-literal",
       "property": null,
@@ -240841,9 +241337,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:330:27",
+      "id": "candidate:server/portal.mjs:331:27",
       "file": "server/portal.mjs",
-      "line": 330,
+      "line": 331,
       "column": 27,
       "kind": "js-cjk-literal",
       "property": null,
@@ -240861,9 +241357,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:330:98",
+      "id": "candidate:server/portal.mjs:331:98",
       "file": "server/portal.mjs",
-      "line": 330,
+      "line": 331,
       "column": 98,
       "kind": "js-cjk-literal",
       "property": null,
@@ -240881,9 +241377,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:332:41",
+      "id": "candidate:server/portal.mjs:333:41",
       "file": "server/portal.mjs",
-      "line": 332,
+      "line": 333,
       "column": 41,
       "kind": "js-cjk-literal",
       "property": null,
@@ -240901,9 +241397,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:345:164",
+      "id": "candidate:server/portal.mjs:346:164",
       "file": "server/portal.mjs",
-      "line": 345,
+      "line": 346,
       "column": 164,
       "kind": "js-cjk-literal",
       "property": null,
@@ -240921,9 +241417,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:359:25",
+      "id": "candidate:server/portal.mjs:360:25",
       "file": "server/portal.mjs",
-      "line": 359,
+      "line": 360,
       "column": 25,
       "kind": "js-cjk-literal",
       "property": null,
@@ -240941,9 +241437,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:445:120",
+      "id": "candidate:server/portal.mjs:446:120",
       "file": "server/portal.mjs",
-      "line": 445,
+      "line": 446,
       "column": 120,
       "kind": "js-cjk-literal",
       "property": null,
@@ -240961,9 +241457,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:446:175",
+      "id": "candidate:server/portal.mjs:447:175",
       "file": "server/portal.mjs",
-      "line": 446,
+      "line": 447,
       "column": 175,
       "kind": "js-cjk-literal",
       "property": null,
@@ -240981,9 +241477,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:447:99",
+      "id": "candidate:server/portal.mjs:448:99",
       "file": "server/portal.mjs",
-      "line": 447,
+      "line": 448,
       "column": 99,
       "kind": "js-cjk-literal",
       "property": null,
@@ -241001,9 +241497,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:454:43",
+      "id": "candidate:server/portal.mjs:455:43",
       "file": "server/portal.mjs",
-      "line": 454,
+      "line": 455,
       "column": 43,
       "kind": "js-cjk-literal",
       "property": null,
@@ -241021,9 +241517,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:459:430",
+      "id": "candidate:server/portal.mjs:460:430",
       "file": "server/portal.mjs",
-      "line": 459,
+      "line": 460,
       "column": 430,
       "kind": "js-cjk-literal",
       "property": null,
@@ -241041,9 +241537,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:462:30",
+      "id": "candidate:server/portal.mjs:463:30",
       "file": "server/portal.mjs",
-      "line": 462,
+      "line": 463,
       "column": 30,
       "kind": "js-cjk-literal",
       "property": null,
@@ -241061,9 +241557,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:468:20",
+      "id": "candidate:server/portal.mjs:469:20",
       "file": "server/portal.mjs",
-      "line": 468,
+      "line": 469,
       "column": 20,
       "kind": "js-cjk-literal",
       "property": null,
@@ -241081,9 +241577,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:477:86",
+      "id": "candidate:server/portal.mjs:478:86",
       "file": "server/portal.mjs",
-      "line": 477,
+      "line": 478,
       "column": 86,
       "kind": "js-cjk-literal",
       "property": null,
@@ -241101,9 +241597,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:478:18",
+      "id": "candidate:server/portal.mjs:479:18",
       "file": "server/portal.mjs",
-      "line": 478,
+      "line": 479,
       "column": 18,
       "kind": "js-cjk-literal",
       "property": null,
@@ -241121,9 +241617,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:480:16",
+      "id": "candidate:server/portal.mjs:481:16",
       "file": "server/portal.mjs",
-      "line": 480,
+      "line": 481,
       "column": 16,
       "kind": "js-cjk-literal",
       "property": null,
@@ -253850,6 +254346,68 @@
       "expression": "'<script type=\"application/ld+json\">'+JSON.stringify(data)",
       "fragments": [
         "<script type=\"application/ld+json\">"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "app/home-sample.mjs",
+      "line": 22,
+      "expression": "uiLocale",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "app/home-sample.mjs",
+      "line": 33,
+      "expression": "homeLocale(doc)",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "app/home-sample.mjs",
+      "line": 46,
+      "expression": "index",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "app/home-sample.mjs",
+      "line": 57,
+      "expression": "key",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "app/home-sample.mjs",
+      "line": 58,
+      "expression": "(after-extra)+'px'",
+      "fragments": [
+        "px"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "app/home-sample.mjs",
+      "line": 59,
+      "expression": "(before-extra)+'px'",
+      "fragments": [
+        "px"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "app/home-sample.mjs",
+      "line": 59,
+      "expression": "(after-extra)+'px'",
+      "fragments": [
+        "px"
       ],
       "unresolved": true
     },
@@ -277256,16 +277814,6 @@
     {
       "kind": "computed-member",
       "file": "server/portal.mjs",
-      "line": 155,
-      "expression": "'/'+file",
-      "fragments": [
-        "/"
-      ],
-      "unresolved": true
-    },
-    {
-      "kind": "computed-member",
-      "file": "server/portal.mjs",
       "line": 156,
       "expression": "'/'+file",
       "fragments": [
@@ -277286,7 +277834,7 @@
     {
       "kind": "computed-member",
       "file": "server/portal.mjs",
-      "line": 159,
+      "line": 158,
       "expression": "'/'+file",
       "fragments": [
         "/"
@@ -277296,7 +277844,7 @@
     {
       "kind": "computed-member",
       "file": "server/portal.mjs",
-      "line": 161,
+      "line": 160,
       "expression": "'/'+file",
       "fragments": [
         "/"
@@ -277306,7 +277854,7 @@
     {
       "kind": "computed-member",
       "file": "server/portal.mjs",
-      "line": 163,
+      "line": 162,
       "expression": "'/'+file",
       "fragments": [
         "/"
@@ -277316,7 +277864,7 @@
     {
       "kind": "computed-member",
       "file": "server/portal.mjs",
-      "line": 166,
+      "line": 164,
       "expression": "'/'+file",
       "fragments": [
         "/"
@@ -277326,7 +277874,7 @@
     {
       "kind": "computed-member",
       "file": "server/portal.mjs",
-      "line": 168,
+      "line": 167,
       "expression": "'/'+file",
       "fragments": [
         "/"
@@ -277367,18 +277915,18 @@
       "kind": "computed-member",
       "file": "server/portal.mjs",
       "line": 172,
-      "expression": "p",
-      "fragments": [],
+      "expression": "'/'+file",
+      "fragments": [
+        "/"
+      ],
       "unresolved": true
     },
     {
       "kind": "computed-member",
       "file": "server/portal.mjs",
-      "line": 176,
-      "expression": "'/'+file",
-      "fragments": [
-        "/"
-      ],
+      "line": 173,
+      "expression": "p",
+      "fragments": [],
       "unresolved": true
     },
     {
@@ -277395,7 +277943,7 @@
       "kind": "computed-member",
       "file": "server/portal.mjs",
       "line": 178,
-      "expression": "'/'+asset",
+      "expression": "'/'+file",
       "fragments": [
         "/"
       ],
@@ -277405,6 +277953,16 @@
       "kind": "computed-member",
       "file": "server/portal.mjs",
       "line": 179,
+      "expression": "'/'+asset",
+      "fragments": [
+        "/"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/portal.mjs",
+      "line": 180,
       "expression": "asset.url",
       "fragments": [],
       "unresolved": true
@@ -277412,7 +277970,7 @@
     {
       "kind": "computed-member",
       "file": "server/portal.mjs",
-      "line": 185,
+      "line": 186,
       "expression": "'/'+file",
       "fragments": [
         "/"
@@ -277422,17 +277980,7 @@
     {
       "kind": "computed-member",
       "file": "server/portal.mjs",
-      "line": 188,
-      "expression": "'/'+file",
-      "fragments": [
-        "/"
-      ],
-      "unresolved": true
-    },
-    {
-      "kind": "computed-member",
-      "file": "server/portal.mjs",
-      "line": 191,
+      "line": 189,
       "expression": "'/'+file",
       "fragments": [
         "/"
@@ -277443,6 +277991,16 @@
       "kind": "computed-member",
       "file": "server/portal.mjs",
       "line": 192,
+      "expression": "'/'+file",
+      "fragments": [
+        "/"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/portal.mjs",
+      "line": 193,
       "expression": "p",
       "fragments": [],
       "unresolved": true
@@ -277450,7 +278008,7 @@
     {
       "kind": "computed-member",
       "file": "server/portal.mjs",
-      "line": 194,
+      "line": 195,
       "expression": "p",
       "fragments": [],
       "unresolved": true
@@ -277458,7 +278016,7 @@
     {
       "kind": "concatenation",
       "file": "server/portal.mjs",
-      "line": 197,
+      "line": 198,
       "expression": "'http://'+req.headers.host",
       "fragments": [
         "http://"
@@ -277468,7 +278026,7 @@
     {
       "kind": "concatenation",
       "file": "server/portal.mjs",
-      "line": 200,
+      "line": 201,
       "expression": "'请在 '+publicOrigin+' 使用 Google 或 Apple 登录。当前页面仍可使用邮箱或密码登录。'",
       "fragments": [
         "请在 ",
@@ -277479,7 +278037,7 @@
     {
       "kind": "concatenation",
       "file": "server/portal.mjs",
-      "line": 200,
+      "line": 201,
       "expression": "'请在 '+publicOrigin",
       "fragments": [
         "请在 "
@@ -277489,7 +278047,7 @@
     {
       "kind": "template",
       "file": "server/portal.mjs",
-      "line": 202,
+      "line": 203,
       "expression": "`marginalia_auth_flow=${value}; HttpOnly; Secure; SameSite=Lax; Path=/api/auth; Max-Age=${value?600:0}`",
       "fragments": [
         "marginalia_auth_flow=",
@@ -277500,7 +278058,7 @@
     {
       "kind": "template",
       "file": "server/portal.mjs",
-      "line": 211,
+      "line": 212,
       "expression": "`marginalia_session=${session.token}; HttpOnly; SameSite=Strict; Path=/; Max-Age=604800; Secure`",
       "fragments": [
         "marginalia_session=",
@@ -277511,7 +278069,7 @@
     {
       "kind": "template",
       "file": "server/portal.mjs",
-      "line": 215,
+      "line": 216,
       "expression": "`marginalia_session=; HttpOnly; SameSite=Strict; Path=/; Max-Age=0${publicOrigin?.startsWith('https:')?'; Secure':''}`",
       "fragments": [
         "marginalia_session=; HttpOnly; SameSite=Strict; Path=/; Max-Age=0"
@@ -277521,7 +278079,7 @@
     {
       "kind": "template",
       "file": "server/portal.mjs",
-      "line": 224,
+      "line": 225,
       "expression": "`marginalia_session=${value}; HttpOnly; SameSite=Strict; Path=/; Max-Age=${value?604800:0}${publicOrigin?.startsWith('https:')?'; Secure':''}`",
       "fragments": [
         "marginalia_session=",
@@ -277532,7 +278090,7 @@
     {
       "kind": "concatenation",
       "file": "server/portal.mjs",
-      "line": 299,
+      "line": 300,
       "expression": "'http://'+loopback+':'",
       "fragments": [
         "http://",
@@ -277543,7 +278101,7 @@
     {
       "kind": "concatenation",
       "file": "server/portal.mjs",
-      "line": 299,
+      "line": 300,
       "expression": "'http://'+loopback",
       "fragments": [
         "http://"
@@ -277553,7 +278111,7 @@
     {
       "kind": "computed-member",
       "file": "server/portal.mjs",
-      "line": 303,
+      "line": 304,
       "expression": "2",
       "fragments": [],
       "unresolved": true
@@ -277561,7 +278119,7 @@
     {
       "kind": "computed-member",
       "file": "server/portal.mjs",
-      "line": 303,
+      "line": 304,
       "expression": "1",
       "fragments": [],
       "unresolved": true
@@ -277569,7 +278127,7 @@
     {
       "kind": "computed-member",
       "file": "server/portal.mjs",
-      "line": 303,
+      "line": 304,
       "expression": "partUpload[2]",
       "fragments": [],
       "unresolved": true
@@ -277577,7 +278135,7 @@
     {
       "kind": "computed-member",
       "file": "server/portal.mjs",
-      "line": 303,
+      "line": 304,
       "expression": "2",
       "fragments": [],
       "unresolved": true
@@ -277585,7 +278143,7 @@
     {
       "kind": "computed-member",
       "file": "server/portal.mjs",
-      "line": 303,
+      "line": 304,
       "expression": "1",
       "fragments": [],
       "unresolved": true
@@ -277593,7 +278151,7 @@
     {
       "kind": "computed-member",
       "file": "server/portal.mjs",
-      "line": 303,
+      "line": 304,
       "expression": "2",
       "fragments": [],
       "unresolved": true
@@ -277601,7 +278159,7 @@
     {
       "kind": "computed-member",
       "file": "server/portal.mjs",
-      "line": 306,
+      "line": 307,
       "expression": "action",
       "fragments": [],
       "unresolved": true
@@ -277609,7 +278167,7 @@
     {
       "kind": "computed-member",
       "file": "server/portal.mjs",
-      "line": 321,
+      "line": 322,
       "expression": "action",
       "fragments": [],
       "unresolved": true
@@ -277617,7 +278175,7 @@
     {
       "kind": "computed-member",
       "file": "server/portal.mjs",
-      "line": 327,
+      "line": 328,
       "expression": "1",
       "fragments": [],
       "unresolved": true
@@ -277625,7 +278183,7 @@
     {
       "kind": "concatenation",
       "file": "server/portal.mjs",
-      "line": 394,
+      "line": 395,
       "expression": "JSON.stringify(value)+'\\n'",
       "fragments": [
         "\n"
@@ -277635,7 +278193,7 @@
     {
       "kind": "concatenation",
       "file": "server/portal.mjs",
-      "line": 398,
+      "line": 399,
       "expression": "'chat-failed:'+result.id",
       "fragments": [
         "chat-failed:"
@@ -277645,7 +278203,7 @@
     {
       "kind": "computed-member",
       "file": "server/portal.mjs",
-      "line": 407,
+      "line": 408,
       "expression": "1",
       "fragments": [],
       "unresolved": true
@@ -277653,23 +278211,7 @@
     {
       "kind": "computed-member",
       "file": "server/portal.mjs",
-      "line": 407,
-      "expression": "1",
-      "fragments": [],
-      "unresolved": true
-    },
-    {
-      "kind": "computed-member",
-      "file": "server/portal.mjs",
-      "line": 419,
-      "expression": "1",
-      "fragments": [],
-      "unresolved": true
-    },
-    {
-      "kind": "computed-member",
-      "file": "server/portal.mjs",
-      "line": 419,
+      "line": 408,
       "expression": "1",
       "fragments": [],
       "unresolved": true
@@ -277685,7 +278227,23 @@
     {
       "kind": "computed-member",
       "file": "server/portal.mjs",
-      "line": 427,
+      "line": 420,
+      "expression": "1",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/portal.mjs",
+      "line": 421,
+      "expression": "1",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/portal.mjs",
+      "line": 428,
       "expression": "1",
       "fragments": [],
       "unresolved": true
@@ -277693,7 +278251,7 @@
     {
       "kind": "concatenation",
       "file": "server/portal.mjs",
-      "line": 428,
+      "line": 429,
       "expression": "'bytes '+part.offset+'-'+(part.offset+part.bytes.length-1)+'/'",
       "fragments": [
         "bytes ",
@@ -277705,7 +278263,7 @@
     {
       "kind": "concatenation",
       "file": "server/portal.mjs",
-      "line": 428,
+      "line": 429,
       "expression": "'bytes '+part.offset+'-'",
       "fragments": [
         "bytes ",
@@ -277716,7 +278274,7 @@
     {
       "kind": "concatenation",
       "file": "server/portal.mjs",
-      "line": 428,
+      "line": 429,
       "expression": "'bytes '+part.offset",
       "fragments": [
         "bytes "
@@ -277726,7 +278284,7 @@
     {
       "kind": "concatenation",
       "file": "server/portal.mjs",
-      "line": 431,
+      "line": 432,
       "expression": "file.url+'&download=original.'",
       "fragments": [
         "&download=original."
@@ -277736,7 +278294,7 @@
     {
       "kind": "concatenation",
       "file": "server/portal.mjs",
-      "line": 431,
+      "line": 432,
       "expression": "'attachment; filename=\"original.'+(['pdf','epub','txt','md'].includes(file.format)?file.format:'bin')+'\"'",
       "fragments": [
         "attachment; filename=\"original.",
@@ -277747,7 +278305,7 @@
     {
       "kind": "concatenation",
       "file": "server/portal.mjs",
-      "line": 431,
+      "line": 432,
       "expression": "'attachment; filename=\"original.'+(['pdf','epub','txt','md'].includes(file.format)?file.format:'bin')",
       "fragments": [
         "attachment; filename=\"original."
@@ -277757,7 +278315,7 @@
     {
       "kind": "computed-member",
       "file": "server/portal.mjs",
-      "line": 434,
+      "line": 435,
       "expression": "2",
       "fragments": [],
       "unresolved": true
@@ -277765,7 +278323,7 @@
     {
       "kind": "computed-member",
       "file": "server/portal.mjs",
-      "line": 434,
+      "line": 435,
       "expression": "1",
       "fragments": [],
       "unresolved": true
@@ -277773,7 +278331,7 @@
     {
       "kind": "computed-member",
       "file": "server/portal.mjs",
-      "line": 436,
+      "line": 437,
       "expression": "1",
       "fragments": [],
       "unresolved": true
@@ -277781,16 +278339,8 @@
     {
       "kind": "computed-member",
       "file": "server/portal.mjs",
-      "line": 450,
+      "line": 451,
       "expression": "1",
-      "fragments": [],
-      "unresolved": true
-    },
-    {
-      "kind": "computed-member",
-      "file": "server/portal.mjs",
-      "line": 459,
-      "expression": "action",
       "fragments": [],
       "unresolved": true
     },
@@ -277803,9 +278353,17 @@
       "unresolved": true
     },
     {
+      "kind": "computed-member",
+      "file": "server/portal.mjs",
+      "line": 461,
+      "expression": "action",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
       "kind": "template",
       "file": "server/portal.mjs",
-      "line": 465,
+      "line": 466,
       "expression": "`reader://books/${bookId}/audio/clips/${c.id}`",
       "fragments": [
         "reader://books/",
@@ -280187,11 +280745,11 @@
     "duplicateKeys": 0,
     "reviewedItems": 12,
     "unreviewedItems": 2285,
-    "candidates": 5452,
-    "candidatesUnreviewed": 5451,
-    "candidatesProtected": 136,
+    "candidates": 5476,
+    "candidatesUnreviewed": 5475,
+    "candidatesProtected": 139,
     "itemsProtected": 9,
-    "dynamicConsumers": 3650,
+    "dynamicConsumers": 3657,
     "consumerReferences": 1719,
     "keysWithoutStaticConsumers": 1211,
     "reviewedLocaleValues": 48,
