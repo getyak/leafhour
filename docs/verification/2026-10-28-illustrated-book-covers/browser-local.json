@@ -1,0 +1,169 @@
+{
+  "kind": "real local integrated app",
+  "date": "2026-10-28",
+  "checks": [
+    {
+      "locale": "ja",
+      "width": 390,
+      "height": 844,
+      "lang": "ja",
+      "count": 12,
+      "overflow": false,
+      "first": "不思議の国のアリス",
+      "adjacent": "不思議の国のアリス",
+      "failed": 0
+    },
+    {
+      "locale": "zh-Hans",
+      "width": 390,
+      "height": 844,
+      "lang": "zh-Hans",
+      "count": 12,
+      "overflow": false,
+      "first": "爱丽丝梦游仙境",
+      "adjacent": "爱丽丝梦游仙境",
+      "failed": 0
+    },
+    {
+      "locale": "zh-Hans",
+      "width": 1440,
+      "height": 1000,
+      "lang": "zh-Hans",
+      "count": 24,
+      "overflow": false,
+      "first": "爱丽丝梦游仙境",
+      "adjacent": "爱丽丝梦游仙境",
+      "failed": 0
+    },
+    {
+      "locale": "zh-Hant",
+      "width": 1440,
+      "height": 1000,
+      "lang": "zh-Hant",
+      "count": 24,
+      "overflow": false,
+      "first": "愛麗絲夢遊仙境",
+      "adjacent": "愛麗絲夢遊仙境",
+      "failed": 0
+    },
+    {
+      "locale": "en",
+      "width": 1440,
+      "height": 1000,
+      "lang": "en",
+      "count": 24,
+      "overflow": false,
+      "first": "Alice’s Adventures in Wonderland",
+      "adjacent": "Alice’s Adventures in Wonderland",
+      "failed": 0
+    }
+  ],
+  "languageCommit": {
+    "from": "ja",
+    "to": "zh-Hans",
+    "sameCover": true,
+    "sameImage": true,
+    "sameTitleNode": true
+  },
+  "japaneseExpandedShelf": {
+    "cards": 64,
+    "loaded": 64,
+    "failed": 0,
+    "overflow": false
+  },
+  "limits": [
+    "Chromium viewport emulation, not a physical phone or Safari.",
+    "Production acceptance is separately recorded after merge."
+  ],
+  "controlledImageFailure": {
+    "lang": "ja",
+    "failedVisibleImages": 10,
+    "title": "不思議の国のアリス",
+    "titleVisible": true,
+    "imageHidden": true
+  },
+  "readerAbout": {
+    "lang": "ja",
+    "title": "森の生活",
+    "sourceTitleNodePresent": true,
+    "loaded": true,
+    "overflow": false
+  },
+  "mobileMenu": {
+    "titleMenuOverlap": 0,
+    "width": 44,
+    "height": 44,
+    "menuOpenedAndClosed": true
+  },
+  "sourceReaderConsole": {
+    "observed": 22,
+    "kind": "inline-style CSP violations in the local source reader; no clean-console claim",
+    "locations": [
+      "unchanged app/index.html inline styles",
+      "reader-atmosphere.js"
+    ],
+    "coverLoaded": true
+  },
+  "finalIntegrated": {
+    "checks": [
+      {
+        "lang": "ja",
+        "width": 1440,
+        "overflow": false,
+        "title": "不思議の国のアリス",
+        "badge": "中国語の試し読み · 冒頭6段 ↗"
+      },
+      {
+        "lang": "ja",
+        "width": 390,
+        "overflow": false,
+        "title": "不思議の国のアリス",
+        "badge": "中国語の試し読み · 冒頭6段 ↗"
+      },
+      {
+        "lang": "zh-Hans",
+        "width": 1440,
+        "overflow": false,
+        "title": "爱丽丝梦游仙境",
+        "badge": "中文试读 · 6 段 ↗"
+      },
+      {
+        "lang": "zh-Hans",
+        "width": 390,
+        "overflow": false,
+        "title": "爱丽丝梦游仙境",
+        "badge": "中文试读 · 6 段 ↗"
+      }
+    ],
+    "volumes": {
+      "cards": 64,
+      "uniqueNames": 64,
+      "lastNine": [
+        "紅楼夢 · 第 1 冊 · 第 1–40 回 · 中国語本文",
+        "紅楼夢 · 第 2 冊 · 第 41–80 回 · 中国語本文",
+        "紅楼夢 · 第 3 冊 · 第 81–120 回 · 中国語本文",
+        "エセー · 第 1 巻 · 英訳本文",
+        "エセー · 第 2 巻 · 英訳本文",
+        "エセー · 第 3 巻 · 英訳本文",
+        "意志と表象としての世界 · 英訳版・第 1 冊（全 3 冊）",
+        "意志と表象としての世界 · 英訳版・第 2 冊（全 3 冊）",
+        "意志と表象としての世界 · 英訳版・第 3 冊（全 3 冊）"
+      ]
+    }
+  },
+  "compiledPortal": {
+    "kind": "compiled shared cover entry; native distinct preference commit",
+    "languageCommit": {
+      "sameCover": true,
+      "sameImage": true,
+      "sameTitle": true,
+      "title": "爱丽丝梦游仙境"
+    },
+    "nameSearchMatched": "gutenberg-walden",
+    "authorSearchMatched": "gutenberg-walden",
+    "chunks": [
+      "/book-cover-ui.mjs"
+    ],
+    "uncaughtErrors": []
+  }
+}

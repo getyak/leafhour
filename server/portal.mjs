@@ -8,6 +8,7 @@ import {createPeopleRuntimeRoutes} from './people-runtime-routes.mjs';
 import {createPeopleGrants} from './people-grants.mjs';
 import {bookTransfer as transferReading} from './book-transfer.mjs';
 import {documentExportAssets} from './document-export-assets.mjs';
+import {bookCoverArtwork} from '../app/book-cover-artwork.mjs';
 import {cjkFontAssets} from './cjk-font-assets.mjs';
 import {createIngestionRunner} from './ingestion-runner.mjs';
 import {readFile} from 'node:fs/promises';
@@ -59,6 +60,9 @@ import {withProviderMeter} from './provider-metering.mjs';
 import {commercePage} from '../app/commerce-pages.mjs';
 
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
+// Only checked-in public artwork can become a static cover route. Never turn
+// book metadata, account paths or a request suffix into a filesystem path.
+const publicCoverPaths=new Set(Object.values(bookCoverArtwork).flatMap(artwork=>[artwork.src,...String(artwork.srcSet||'').split(',').map(source=>source.trim().split(/\s+/)[0])]).map(url=>String(url).split('?')[0]).filter(url=>/^\/book-covers\/[a-z0-9-]+-(320|640)\.webp$/.test(url)));
 const cookieToken=req=>(req.headers.cookie||'').split(';').map(s=>s.trim()).find(s=>s.startsWith('marginalia_session='))?.slice('marginalia_session='.length);
 const jsonBody=async(req,limit=29*1024*1024)=>{if(!req.headers['content-type']?.startsWith('application/json'))throw fail('请使用 JSON 请求',415);if(req.body&&typeof req.body==='object'){if(Buffer.byteLength(JSON.stringify(req.body))>limit)throw fail('这次导入内容过大，请分书恢复',413);return req.body;}let size=0;const chunks=[];for await(const chunk of req){size+=chunk.length;if(size>limit)throw fail('这次导入内容过大，请分书恢复',413);chunks.push(chunk);}try{return JSON.parse(Buffer.concat(chunks).toString('utf8'));}catch{throw fail('请求格式不正确');}};
 export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigins=[],sendCode,translator,catalogDir=path.join(root,'catalog'),allowLocal=true,dataStore=null,authService=null,hostedMcp=false,speechProvider,dialogueGenerator,guideGenerator,chatGenerator,companionGenerator,introductionGenerator,schedule=()=>{},paddleProvider,env=process.env,giftQuoteGenerator=null,annotationGenerator,billingService=null}={}){
@@ -158,7 +162,8 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
     // stylesheet, mounted by portal.js on the authored home routes only.
     for(const file of ['home-navigation.css','home-navigation.mjs'])files['/'+file]=file;
     for(const file of ['pricing-checkout.mjs','pricing-checkout-flow.mjs','pricing-checkout-markup.mjs','checkout-embed.mjs','pricing-checkout.css'])files['/'+file]=file;
-    for(const file of ['library-craft.css','book-binding.mjs','brand-assets/sage-paper.webp'])files['/'+file]=file;
+    for(const file of ['library-craft.css','book-binding.mjs','book-cover-ui.mjs','book-cover-labels.mjs','book-cover-artwork.mjs','book-binding.css','brand-assets/sage-paper.webp'])files['/'+file]=file;
+    for(const url of publicCoverPaths)files[url]=url.slice(1);
     files['/library-incremental.mjs']='library-incremental.mjs';
     for(const file of ['library-arrival.mjs','library-arrival-state.mjs','library-arrival.css','library-transfer-limits.mjs'])files['/'+file]=file;
     for(const file of ['home-atmosphere.css','home-atmosphere.mjs','brand-assets/sunlit-room.webp','brand-assets/foliage-canopy.webp'])files['/'+file]=file;

@@ -22,19 +22,19 @@ test('the bookplate enhancement and gift composer remain allowed public modules 
   assert.equal((js.match(/\/reader-book-actions\.mjs/g)||[]).length,1,'exactly one lazy edge to the enhancement');
   const actions=await readFile(path.join(root,'app/reader-book-actions.mjs'),'utf8');
   assert.match(actions,/import\(["']\.\/gift-compose\.mjs["']\)/,'the gift composer keeps its original lazy path inside the book-actions module');
-  assert.match(actions,/import\(["']\.\/book-binding\.mjs["']\)/);
+  assert.match(actions,/import\(["']\.\/book-cover-ui\.mjs["']\)/);
   assert.ok(!/from\s*["']\.\/popover-controls\.mjs["']/.test(actions),'the lazy module never carries a second controller registry copy');
   assert.match(js,/import\(["']\/command-palette\.mjs["']\)/,'the palette module waits for a real gesture');
   assert.ok(result.inputs.includes('app/palette-bootstrap.mjs'),'the small shared trigger is bundled with the page');
   for(const file of ['command-palette.mjs','palette-library.mjs'])assert.ok(!result.inputs.includes('app/'+file),file+' must wait for the palette trigger');
   assert.match(js,/import\(["']\/reader-settings-choices\.mjs["']\)/);
-  for(const file of ['reader-book-actions.mjs','book-introduction-controller.mjs','gift-compose.mjs','gift-compose-state.mjs','gift-preview.mjs','book-binding.mjs'])assert.ok(!result.inputs.includes('app/'+file),file+' must wait for the explicit user gesture');
+  for(const file of ['reader-book-actions.mjs','book-introduction-controller.mjs','gift-compose.mjs','gift-compose-state.mjs','gift-preview.mjs','book-cover-ui.mjs','book-binding.mjs','book-cover-labels.mjs','book-cover-artwork.mjs'])assert.ok(!result.inputs.includes('app/'+file),file+' must wait for the explicit user gesture');
   assert.match(js,/import\(["']\/share-fonts\.mjs["']\)/);assert.ok(!js.includes('normal 48px'),'on-demand font loader bodies must be tree-shaken from initial JS, even though the compatibility re-export is parsed');
   assert.match(js,/import\(["']\/share-model\.mjs["']\)/,'pure canvas layout waits for the actual Share gesture');
   assert.ok(!js.includes('/arrival-catalog.mjs'),'waiting-page quotes never block reader startup');assert.ok(!result.inputs.includes('app/reading-arrival.mjs'));assert.ok(result.inputs.includes('app/paper-companion.mjs'),'the ending drawing has no quote-catalogue dependency');
   assert.ok(result.inputs.includes('app/gift-compose.css'),'the shared gift styles stay in the single reader stylesheet');
   const allowed=JSON.parse(await readFile(path.join(root,'release-files.json'),'utf8'));
-  for(const file of ['reader-book-actions.mjs','reader-book-actions-bootstrap.mjs','gift-compose.mjs','book-binding.mjs','arrival-catalog.mjs']){assert.ok(allowed.includes('app/'+file));assert.ok((await readFile(path.join(root,'app',file))).length>0);}
+  for(const file of ['reader-book-actions.mjs','reader-book-actions-bootstrap.mjs','gift-compose.mjs','book-cover-ui.mjs','book-binding.mjs','book-cover-labels.mjs','book-cover-artwork.mjs','arrival-catalog.mjs']){assert.ok(allowed.includes('app/'+file));assert.ok((await readFile(path.join(root,'app',file))).length>0);}
   assert.ok((await readFile(path.join(root,'app/gift-compose.mjs'),'utf8')).includes('export function mountGiftComposer'));
  }finally{await rm(out,{recursive:true,force:true});}
 });

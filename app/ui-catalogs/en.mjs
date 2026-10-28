@@ -1131,7 +1131,7 @@ export default Object.freeze({
   "portal.card.extracted": "Extracted",
   "portal.card.paragraphs": "{count} passages",
   "portal.card.private": "A book of my own · {format}",
-  "portal.card.public": "Public domain · English original",
+  "portal.card.public": "Public-domain edition",
   "portal.card.readAria": "Read {title}",
   "portal.card.sample": "Dual-translation opening · {count} passages",
   "portal.card.sampleLink": "Chinese sample ↗",

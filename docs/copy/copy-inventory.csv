@@ -1124,7 +1124,7 @@ portal.card.continueAria,catalogue,app/ui-catalogs/en.mjs,1130,unknown,unknown,u
 portal.card.extracted,catalogue,app/ui-catalogs/en.mjs,1131,unknown,unknown,unknown,unknown,unreviewed,Extracted,已提取,已提取,抽出済み
 portal.card.paragraphs,catalogue,app/ui-catalogs/en.mjs,1132,unknown,unknown,unknown,unknown,unreviewed,{count} passages,{count} 段,{count} 段,{count} 段
 portal.card.private,catalogue,app/ui-catalogs/en.mjs,1133,unknown,unknown,unknown,unknown,unreviewed,A book of my own · {format},自己的书 · {format},自己的書 · {format},自分の本 · {format}
-portal.card.public,catalogue,app/ui-catalogs/en.mjs,1134,unknown,unknown,unknown,unknown,unreviewed,Public domain · English original,公版 · 英文原文,公版 · 英文原文,パブリックドメイン · 英語原文
+portal.card.public,catalogue,app/ui-catalogs/en.mjs,1134,unknown,unknown,unknown,unknown,unreviewed,Public-domain edition,公版书,公版書,パブリックドメイン
 portal.card.readAria,catalogue,app/ui-catalogs/en.mjs,1135,unknown,unknown,unknown,unknown,unreviewed,Read {title},阅读{title},閱讀{title},{title}を読む
 portal.card.sample,catalogue,app/ui-catalogs/en.mjs,1136,unknown,unknown,unknown,unknown,unreviewed,Dual-translation opening · {count} passages,双译开篇 · {count} 段,雙譯開篇 · {count} 段,二つの訳 · 冒頭{count}段
 portal.card.sampleLink,catalogue,app/ui-catalogs/en.mjs,1137,unknown,unknown,unknown,unknown,unreviewed,Chinese sample ↗,中文试读 ↗,中文試讀 ↗,中国語の試し読み ↗
@@ -2105,7 +2105,7 @@ sourceReview.originalInfo,catalogue,app/ui-catalogs/en.mjs,2071,unknown,unknown,
 bookActions.closeGift,catalogue,app/ui-catalogs/en.mjs,2072,unknown,unknown,unknown,unknown,unreviewed,Close gift letter,关闭赠书,關閉贈書,贈書の手紙を閉じる
 giftCompose.open,catalogue,app/ui-catalogs/en.mjs,2073,unknown,unknown,unknown,unknown,unreviewed,Open this letter,打开这封信,開啟這封信,この手紙を開く
 bookActions.introFailure,catalogue,app/ui-catalogs/en.mjs,2074,unknown,unknown,unknown,unknown,unreviewed,Could not load the introduction. Retry.,暂时无法读取简介，可以稍后重试。,暫時無法讀取簡介，可以稍後重試。,現在、紹介文を読み込めません。後でもう一度お試しください。
-giftCompose.help,catalogue,app/ui-catalogs/en.mjs,2075,gift compose,compose gift,C+D,preserve,reviewed,Recipient and message are optional. Preview before sealing.,称呼与赠言可留空。封好前可以预览。,稱呼與贈言可留空。封好前可以預覽。,宛名とメッセージは任意です。封をする前にプレビューできます。
+giftCompose.help,catalogue,app/ui-catalogs/en.mjs,2075,unknown,unknown,unknown,unknown,unreviewed,Recipient and message are optional. Preview before sealing.,称呼与赠言可留空。封好前可以预览。,稱呼與贈言可留空。封好前可以預覽。,宛名とメッセージは任意です。封をする前にプレビューできます。
 sourceReview.eyebrow,catalogue,app/ui-catalogs/en.mjs,2076,unknown,unknown,unknown,unknown,unreviewed,Your source file,自己的来源文件,自己的來源檔案,自分の原本ファイル
 giftCompose.quoteRemoved,catalogue,app/ui-catalogs/en.mjs,2077,unknown,unknown,unknown,unknown,unreviewed,Quotation removed. You can restore it or get it again.,引文已移除，可以恢复或重新获取。,引文已移除，可以恢復或重新取得。,引用を外しました。戻すか再取得できます。
 sourceReview.extracting,catalogue,app/ui-catalogs/en.mjs,2078,unknown,unknown,unknown,unknown,unreviewed,Re-extraction requested. Reading the original; the old edition is kept if this fails.,已接收重新提取请求，正在读取原件；失败时旧版保留。,已接收重新擷取請求，正在讀取原件；失敗時舊版保留。,再抽出を受け付けました。原本を読み込んでいます。失敗しても旧版は残ります。

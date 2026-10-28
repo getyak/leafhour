@@ -1,0 +1,42 @@
+/* Public literary artwork keeps its native, selectable type on the quiet top
+   of the image. Existing private bindings retain their own cloth treatment. */
+[data-cover-style="illustrated"] {
+  position: relative !important; display: block !important; container-type: inline-size;
+  aspect-ratio: 2 / 3 !important; height: auto !important; min-height: 0 !important;
+  padding: 0 !important; overflow: hidden !important; isolation: isolate;
+  color: var(--cover-ink) !important; background: var(--cover-paper) !important;
+  border: 0 !important; text-align: left; white-space: normal; user-select: text;
+}
+[data-cover-style="illustrated"]::before,
+[data-cover-style="illustrated"]::after { content: none !important; }
+.cover-artwork { position: absolute; inset: 0; display: block; width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
+.cover-artwork[hidden] { display: none; }
+.book-info-source-cover { display: none !important; }
+.book-info-cover[data-cover-style="illustrated"][hidden] { display: none !important; }
+.cover-labels {
+  position: relative; z-index: 1; box-sizing: border-box; width: 100%;
+  min-height: 52.5cqw; padding: 6.5cqw 8cqw 4cqw; display: flex; flex-direction: column;
+  align-items: flex-start; gap: 1.4cqw; color: var(--cover-ink);
+  font-family: var(--font-serif, Georgia, serif); font-weight: 400;
+}
+.cover-labels .cover-brand { display: block; margin: 0 0 1cqw; font: 400 4.4cqw/1.1 var(--font-serif, Georgia, serif); letter-spacing: .015em; }
+.cover-labels .cover-title { display: block; max-width: 100%; margin: 0; font: 400 11cqw/1.05 var(--font-serif, Georgia, serif); letter-spacing: -.025em; text-wrap: pretty; overflow-wrap: anywhere; }
+.cover-labels .cover-subtitle { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; margin: .4cqw 0 0; font: 400 4.8cqw/1.3 var(--font-serif, Georgia, serif); letter-spacing: 0; overflow-wrap: anywhere; }
+.cover-labels .cover-author { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; margin: .7cqw 0 0; font: 400 4.7cqw/1.3 var(--font-serif, Georgia, serif); letter-spacing: .005em; overflow-wrap: anywhere; }
+[data-cover-title-size="long"] .cover-labels .cover-title { font-size: 8.7cqw; line-height: 1.1; }
+[data-cover-title-size="longest"] .cover-labels .cover-title { font-size: 7.8cqw; line-height: 1.1; }
+[data-cover-style="illustrated"]:lang(zh) .cover-title { font-size: 11.5cqw; line-height: 1.13; letter-spacing: .015em; }
+[data-cover-style="illustrated"][data-cover-title-size="long"]:lang(zh) .cover-title { font-size: 9.5cqw; }
+[data-cover-style="illustrated"][data-cover-title-size="longest"]:lang(zh) .cover-title { font-size: 8.5cqw; }
+[data-cover-style="illustrated"]:lang(ja) .cover-labels,
+[data-cover-style="illustrated"]:lang(ja) :is(.cover-title,.cover-subtitle,.cover-author) { font-family: "Hiragino Mincho ProN", "Yu Mincho", YuMincho, "Noto Serif JP", IPAexMincho, serif; }
+[data-cover-style="illustrated"]:lang(ja) .cover-title { line-height: 1.18; letter-spacing: 0; }
+[data-cover-artwork="failed"] .cover-labels,
+[data-cover-artwork="missing"] .cover-labels { min-height: 100%; }
+
+/* Touch actions sit beside reading controls so they cannot hide cover titles. */
+@media (max-width: 980px), (any-hover: none), (any-pointer: coarse) {
+  body.library-page #library-books .book-card:has([data-cover-style="illustrated"]) .book-action-trigger {
+    top: auto; bottom: 0; right: 0; width: 44px; height: 44px;
+  }
+}
