@@ -123,3 +123,25 @@
 .shelf-more-summary{margin:0;color:var(--muted);font-size:13px;line-height:1.6}
 .shelf-more .outline{min-height:44px}
 .shelf-more-sentinel{position:absolute;bottom:0;left:50%;width:1px;height:1px;pointer-events:none}
+
+/* The calendar is one paper surface; its month and dismissal stay in reach. */
+.reading-history-dialog{box-sizing:border-box;width:min(1020px,calc(100vw - 40px));padding:0;overflow:hidden;border:1px solid var(--line-hairline);border-radius:14px;background:var(--paper);color:var(--ink)}
+.reading-history-dialog .dialog-close{position:absolute;z-index:5;top:20px;right:20px;min-width:44px;min-height:44px;border-radius:9px;background:var(--paper)}
+.reading-history-dialog .reading-calendar{max-height:calc(100dvh - 48px);overflow:auto;overscroll-behavior:contain;padding:0 30px 30px;scroll-padding-top:130px}
+.reading-history-dialog .calendar-heading{position:sticky;top:0;z-index:3;margin:0;padding:30px 58px 24px 0;background:var(--paper);gap:22px;align-items:center}
+.reading-history-dialog .calendar-heading h2{font:30px/1.4 var(--serif);margin:0}
+.reading-history-dialog .calendar-heading .muted{margin-top:6px;line-height:1.8}
+.reading-history-dialog .calendar-navigation{gap:4px}
+.reading-history-dialog .calendar-navigation button{border:1px solid transparent;border-radius:8px}
+.reading-history-dialog .calendar-navigation button:hover{border-color:var(--line-hairline)}
+.reading-history-dialog .calendar-layout{grid-template-columns:minmax(0,1fr) minmax(0,1fr);border-radius:10px;border-color:var(--line-hairline);min-height:420px}
+.reading-history-dialog .calendar-main{padding:24px 20px;min-width:0}
+.reading-history-dialog .calendar-detail{padding:28px;background:var(--surface-soft);border-inline-start:1px solid var(--line-hairline)}
+.reading-history-dialog .calendar-detail h3{font:24px/1.5 var(--serif)}
+.reading-history-dialog .day-empty{margin:28px 0 0;font-size:14px;line-height:1.9;max-width:30ch}
+.reading-history-dialog .calendar-day{height:46px;border-radius:8px;font-variant-numeric:tabular-nums}
+.reading-history-dialog .calendar-day.is-today:before{border-color:var(--accent)}
+.reading-history-dialog .calendar-day[aria-pressed=true]{background:var(--accent);color:var(--action-text)}
+.reading-history-dialog .calendar-day[aria-pressed=true]:before{border-color:currentColor;opacity:.55}
+.reading-history-dialog .calendar-stats{font-size:13px;line-height:1.8}
+@media(max-width:800px){.reading-history-dialog{width:calc(100vw - 20px)}.reading-history-dialog .reading-calendar{padding:0 20px 20px;max-height:calc(100dvh - 24px);scroll-padding-top:170px}.reading-history-dialog .calendar-heading{padding:25px 48px 20px 0;align-items:flex-start;gap:14px}.reading-history-dialog .calendar-navigation{align-self:flex-start}.reading-history-dialog .dialog-close{top:16px;right:12px}.reading-history-dialog .calendar-layout{grid-template-columns:1fr;min-height:0}.reading-history-dialog .calendar-main{padding:16px 8px}.reading-history-dialog .calendar-detail{padding:24px 20px;border-inline-start:0;border-top:1px solid var(--line-hairline);min-height:170px}.reading-history-dialog .calendar-heading h2{font-size:26px}}

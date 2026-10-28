@@ -224,3 +224,12 @@
 @media (prefers-reduced-motion: reduce) {
   .library-page #library-books .book-bottom { transition: none; }
 }
+
+/* Readable titles and authors give the shelf a steady editorial rhythm. */
+.library-page #library-books .book-meta h3{font-size:19px;line-height:1.55;margin-bottom:8px}
+.library-page #library-books .book-title-link{display:block;min-height:0;overflow:visible;text-wrap:pretty;overflow-wrap:anywhere}
+.library-page #library-books .book-author{white-space:normal;overflow:visible;text-overflow:clip;font-size:12px;line-height:1.8;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2}
+.library-page #library-books .book-bottom{padding-top:12px}
+.library-page #library-books .book-read{font-size:13px}
+@media(min-width:981px){.library-page #library-books{row-gap:36px}.library-page #library-books .book-bottom{opacity:1;pointer-events:auto}}
+@media(max-width:620px){.library-page #library-books .book-meta h3{font-size:17px}.library-page #library-books .book-author{font-size:12px}}

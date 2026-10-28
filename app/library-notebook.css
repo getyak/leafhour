@@ -1,6 +1,6 @@
 /* A notebook of readable rows; the book page, quotation and personal thought
    keep their own hierarchy. All colors inherit the current room appearance. */
-.library-notebook-dialog{box-sizing:border-box;width:min(900px,calc(100vw - 48px));max-width:none;height:min(820px,calc(100dvh - 48px));max-height:calc(100dvh - 48px);padding:0;border:1px solid var(--line-hairline);border-radius:var(--radius-dialog,10px);background:var(--surface-raised,var(--paper));color:var(--ink);box-shadow:var(--shadow-modal);overflow:auto;overscroll-behavior:contain}
+.library-notebook-dialog{box-sizing:border-box;width:min(900px,calc(100vw - 48px));max-width:none;height:min(820px,calc(100dvh - 48px));max-height:calc(100dvh - 48px);padding:0;border:1px solid var(--line-hairline);border-radius:var(--radius-dialog,10px);background:var(--surface-raised,var(--paper));color:var(--ink);box-shadow:var(--shadow-modal);overflow:hidden;overscroll-behavior:contain}
 .library-notebook-dialog::backdrop{background:color-mix(in srgb,var(--ink) 24%,transparent);backdrop-filter:blur(3px)}
 .notebook-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;padding:32px 36px 22px}
 .notebook-heading h2{margin:0;font:500 30px/1.3 var(--font-serif,Georgia,serif);letter-spacing:var(--track-heading,0)}
@@ -31,3 +31,9 @@
 .library-notebook-dialog [hidden]{display:none!important}
 @media(max-width:620px){.library-notebook-dialog{width:calc(100vw - 20px);height:calc(100dvh - 20px);max-height:calc(100dvh - 20px)}.notebook-heading{padding:25px 20px 20px;gap:12px}.notebook-heading h2{font-size:27px}.notebook-controls{grid-template-columns:minmax(0,1fr) minmax(0,1fr);margin:0 20px}.notebook-search{grid-column:1/-1}.notebook-controls input,.notebook-controls select{font-size:16px}.notebook-summary{padding:10px 20px 0;gap:8px}.notebook-export{font-size:12px}.notebook-status,.notebook-list{padding-left:20px;padding-right:20px}.notebook-entry{padding:23px 0}.notebook-entry-text{font-size:17px;line-height:1.9}.notebook-quotation blockquote{font-size:15px}.notebook-empty{padding:50px 20px}.notebook-footer{padding:10px 20px 20px}.notebook-close{margin-right:-10px}}
 @media(prefers-reduced-motion:reduce){.library-notebook-dialog,.library-notebook-dialog *{scroll-behavior:auto;animation:none;transition:none}}
+
+.library-notebook-dialog[open]{display:flex;flex-direction:column}
+.notebook-fixed{flex:none;background:var(--surface-raised,var(--paper));border-bottom:1px solid var(--line-hairline)}
+.notebook-results{flex:1;min-height:0;overflow:auto;overscroll-behavior:contain;scrollbar-gutter:stable}
+.library-notebook-dialog :focus-visible{outline:var(--focus-ring-width,2px) solid var(--focus-ring);outline-offset:var(--focus-ring-offset,3px)}
+@media(max-height:560px){.notebook-heading{padding-top:12px;padding-bottom:8px}.notebook-intro{display:none}.notebook-controls{padding-bottom:8px}.notebook-summary{padding-top:0}.notebook-heading h2{font-size:24px}}

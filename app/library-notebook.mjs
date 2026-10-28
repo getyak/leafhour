@@ -2,7 +2,7 @@ import {t,getUiLocale,onUiLocaleChange,uiHref} from './ui-locale.mjs';
 import {createNotebookLoader,filterNotebookEntries,notebookMarkdown} from './library-notebook-state.mjs';
 
 export function mountLibraryNotebook({api,getSession,getOwner,getBooks,openAuth,onOpen=()=>{},onClose=()=>{},document=globalThis.document}){
-  const labels=new Map(),links=new Map();let disposed=false,opener=null,owner=null,view={entries:[],failed:[],loading:false,completed:0,total:0},shown=50,filtered=[],searchTimer,bookOptionsKey='';
+  const labels=new Map(),links=new Map(),rowNodes=new Map(),knownBooks=new Map();let disposed=false,opener=null,owner=null,view={entries:[],failed:[],loading:false,completed:0,total:0},shown=50,filtered=[],searchTimer,bookOptionsKey='';
   const el=(tag,cls)=>{const n=document.createElement(tag);if(cls)n.className=cls;return n;};
   const own=(node,key,params,attr)=>{const render=typeof key==='function'?key:()=>t(key,params);labels.set(node,{render,attr});if(attr)node.setAttribute(attr,render());else node.textContent=render();return node;};
   const ui=(tag,cls,key,params)=>own(el(tag,cls),key,params);
@@ -20,8 +20,8 @@ export function mountLibraryNotebook({api,getSession,getOwner,getBooks,openAuth,
   const status=el('div','notebook-status'),message=el('p'),retry=button('notebook-retry','notebook.retry'),login=button('notebook-login','notebook.signIn');message.setAttribute('role','status');status.append(message,retry,login);
   const list=el('div','notebook-list'),empty=el('div','notebook-empty'),emptyTitle=el('h3'),emptyBody=el('p'),clearFilter=button('notebook-clear','notebook.clearFilters');empty.append(emptyTitle,emptyBody,clearFilter);
   const more=button('notebook-more','notebook.more'),footer=el('footer','notebook-footer');footer.append(more);
-  dialog.append(header,controls,summary,status,list,empty,footer);document.body.append(dialog);
-  const loader=createNotebookLoader({api,getOwner,onUpdate:next=>{if(disposed)return;view=next;const signature=JSON.stringify((view.books||[]).map(book=>book.bookId));if(signature!==bookOptionsKey){bookOptionsKey=signature;populateBooks(view.books||getBooks());}render();}});
+  const fixed=el('div','notebook-fixed'),results=el('div','notebook-results');fixed.append(header,controls,summary);results.append(status,list,empty,footer);dialog.append(fixed,results);document.body.append(dialog);
+  const loader=createNotebookLoader({api,getOwner,paged:true,onUpdate:next=>{if(disposed)return;view=next;const signature=JSON.stringify((view.books||[]).map(book=>book.bookId));if(signature!==bookOptionsKey){bookOptionsKey=signature;populateBooks(view.books||getBooks());}render();}});
   const prune=()=>{for(const n of labels.keys())if(!dialog.contains(n))labels.delete(n);for(const n of links.keys())if(!dialog.contains(n))links.delete(n);};
   function sourceLink(row){const link=ui('a','notebook-source',row.sourceAvailable?'notebook.source':'notebook.openBook');link.href=uiHref(row.href);links.set(link,row.href);return link;}
   function rowNode(row){
@@ -41,10 +41,19 @@ export function mountLibraryNotebook({api,getSession,getOwner,getBooks,openAuth,
     if(disposed)return;
     // Caller clears synchronously at owner adoption; this additional check also
     // keeps an independently mounted notebook from painting an earlier account.
-    if(owner!==getOwner()){list.replaceChildren();view={entries:[],failed:[],loading:false,completed:0,total:0};filtered=[];}
+    if(owner!==getOwner()){list.replaceChildren();rowNodes.clear();view={entries:[],failed:[],loading:false,completed:0,total:0};filtered=[];}
     const signedIn=!!getSession()?.user,query=search.value,bookId=bookChoice.value,kind=kindChoice.value;
     filtered=signedIn?filterNotebookEntries(view.entries,{query,bookId,kind}):[];
-    list.replaceChildren(...filtered.slice(0,shown).map(rowNode));prune();
+    const visible=filtered.slice(0,shown),keys=new Set(visible.map(row=>row.key));
+    for(const [key,node] of rowNodes)if(!keys.has(key)){node.remove();rowNodes.delete(key);}
+    visible.forEach((row,index)=>{
+      let node=rowNodes.get(row.key);
+      const signature=JSON.stringify(row);
+      if(node&&node.dataset.record!==signature){node.remove();rowNodes.delete(row.key);node=null;}
+      if(!node){node=rowNode(row);node.dataset.record=signature;rowNodes.set(row.key,node);}
+      // Leave unchanged rows attached: focused links and expanded quotations survive progress.
+      if(list.children[index]!==node)list.insertBefore(node,list.children[index]||null);
+    });prune();
     own(total,()=>t('notebook.count',{count:count(filtered.length),books:count(new Set(filtered.map(row=>row.bookId)).size)}));
     exportButton.disabled=!filtered.length;exportButton.hidden=!signedIn;
     login.hidden=signedIn;retry.hidden=!signedIn||!view.failed.length&&!view.archiveFailed;
@@ -57,8 +66,11 @@ export function mountLibraryNotebook({api,getSession,getOwner,getBooks,openAuth,
     list.setAttribute('aria-busy',String(view.loading));
   }
   function populateBooks(available=getBooks()){
+    // Page inventories are incomplete during refresh; retain known same-owner options.
+    // Only an explicit owner clear discards their metadata and selected filter.
+    for(const book of available)knownBooks.set(book.bookId,book);
     const previous=bookChoice.value,all=ui('option','','notebook.allBooks');all.value='';
-    bookChoice.replaceChildren(all,...available.map(book=>{const option=el('option');option.value=book.bookId;option.textContent=typeof book.title==='string'?book.title:book.title?.zh||book.title?.en||book.bookId;return option;}));bookChoice.value=[...bookChoice.options].some(option=>option.value===previous)?previous:'';
+    bookChoice.replaceChildren(all,...[...knownBooks.values()].map(book=>{const option=el('option');option.value=book.bookId;option.textContent=typeof book.title==='string'?book.title:book.title?.zh||book.title?.en||book.bookId;return option;}));bookChoice.value=[...bookChoice.options].some(option=>option.value===previous)?previous:'';
   }
   async function load(){if(disposed||!dialog.open||!getSession()?.user)return;owner=getOwner();await loader.load(getBooks(),{includeArchived:true});}
   function open(){
@@ -68,7 +80,7 @@ export function mountLibraryNotebook({api,getSession,getOwner,getBooks,openAuth,
     render();void load();
   }
   function clear(){
-    clearTimeout(searchTimer);owner=getOwner();search.value='';bookChoice.value='';kindChoice.value='';shown=50;loader.clear();
+    clearTimeout(searchTimer);owner=getOwner();knownBooks.clear();bookOptionsKey='';search.value='';bookChoice.value='';kindChoice.value='';shown=50;loader.clear();
     if(dialog.open)dialog.close();render();
   }
   close.addEventListener('click',()=>dialog.close());
@@ -86,5 +98,5 @@ export function mountLibraryNotebook({api,getSession,getOwner,getBooks,openAuth,
   });
   function updateLabels(){if(disposed)return;prune();for(const [node,{render,attr}] of labels){if(attr)node.setAttribute(attr,render());else node.textContent=render();}for(const [link,href] of links)link.href=uiHref(href);}
   const offLocale=onUiLocaleChange(updateLabels);populateBooks();render();
-  return {open,close(){if(dialog.open)dialog.close();},clear,updateLabels,isOpen:()=>dialog.open,dispose(){if(disposed)return;disposed=true;clearTimeout(searchTimer);loader.dispose();offLocale();dialog.remove();labels.clear();links.clear();}};
+  return {open,close(){if(dialog.open)dialog.close();},clear,updateLabels,isOpen:()=>dialog.open,dispose(){if(disposed)return;disposed=true;clearTimeout(searchTimer);loader.dispose();offLocale();dialog.remove();labels.clear();links.clear();rowNodes.clear();knownBooks.clear();}};
 }

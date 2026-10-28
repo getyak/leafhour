@@ -69,3 +69,22 @@ test('calendar date keys keep their day and Monday-first labels in positive-offs
 test('book-only library keeps the journal hidden and fetches activity only when its dedicated view opens',async()=>{
  const f=fixture({shelfOnly:true});try{f.ui.update(null);await flush();assert.equal(f.roots[1].hidden,true);assert.equal(f.days().length,0);assert.equal(f.calls(),0);f.ui.openHistory();await flush();assert.equal(f.roots[2].open,true);assert.ok(f.calls()>0);assert.equal(f.roots[1].hidden,true);}finally{f.ui.dispose();}
 });
+
+
+test('selected calendar day distinguishes loading, failure and a genuinely empty day',async()=>{
+ await locale.requestUiRoute('en');
+ const f=fixture({pending:true});try{
+  f.ui.openHistory();
+  const detail=f.find('calendar-detail');
+  assert.equal(detail.getAttribute('aria-busy'),'true');
+  assert.equal(detail.children[1].textContent,locale.t('dash.calendar.loading'));
+  f.resolve({...f.data,days:[]});await flush();
+  assert.equal(detail.getAttribute('aria-busy'),'false');
+  assert.equal(detail.children[1].textContent,locale.t('dash.detail.empty.today'));
+ }finally{f.ui.dispose();}
+ const failed=fixture({pending:true});try{
+  failed.ui.openHistory();failed.resolve(Promise.reject(Error('offline')));await flush();
+  const detail=failed.find('calendar-detail');assert.equal(detail.getAttribute('aria-busy'),'false');
+  assert.equal(detail.children[1].textContent,locale.t('dash.calendar.error'));
+ }finally{failed.ui.dispose();}
+});
