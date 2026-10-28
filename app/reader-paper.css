@@ -1,6 +1,6 @@
 /* The page is a stable printed surface. Its controls live outside the leaf. */
 @media screen{
- body[data-paginated=true]{background:color-mix(in srgb,var(--paper) 96%,var(--ink) 4%);padding-right:0!important}
+ body[data-paginated=true]{background:color-mix(in srgb,var(--paper) 96%,var(--ink) 4%)}
  body[data-paginated=true] .book-page{position:relative;width:min(1200px,calc(100% - 96px),calc((100dvh - 144px)*1.5));height:calc(100dvh - 144px);margin:82px auto 62px;padding:30px 44px 28px;background:var(--paper);border-radius:2px 6px 6px 2px;box-shadow:0 7px 28px color-mix(in srgb,var(--ink) 7%,transparent),0 2px 0 var(--line),0 4px 0 var(--paper),0 5px 0 var(--line)}
  body[data-paginated=true] .book-page::before{content:"";position:absolute;inset:0 auto 0 calc(50% - 28px);width:56px;background:linear-gradient(90deg,transparent,color-mix(in srgb,var(--ink) 5%,transparent) 47%,color-mix(in srgb,var(--paper) 65%,transparent) 54%,transparent);pointer-events:none;z-index:1}
  body.is-focused[data-paginated=true] .book-page{height:calc(100dvh - 88px);width:min(1200px,calc(100% - 72px),calc((100dvh - 88px)*1.5));margin-top:24px;padding-top:30px}
@@ -27,10 +27,6 @@
  .paper-turn-face{inset:0;overflow:hidden;backface-visibility:hidden;transform-style:flat}
  .paper-turn-face::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,color-mix(in srgb,var(--ink) 85%,transparent));opacity:var(--paper-turn-light,0);pointer-events:none}
  .paper-turn-text{pointer-events:none;user-select:none;overflow:visible}
- body[data-paginated=true].has-reader-chat .reading-header{right:0}
- body[data-paginated=true].has-reader-chat .reading-session{right:24px}
- body[data-paginated=true].has-reader-chat .focus-actions,body[data-paginated=true].has-reader-chat .focus-exit{right:20px}
- @media(min-width:1100px){body[data-paginated=true] dialog.reader-chat-workspace{inset:auto 24px 88px auto;top:auto;height:min(620px,calc(100dvh - 120px));border:1px solid var(--line-hairline);border-radius:12px;box-shadow:var(--shadow-popover)}body[data-paginated=true] .reader-chat-workspace .library-chat-frame{border-radius:inherit}}
  @media(max-width:899px){
   body[data-paginated=true] .book-page{width:min(650px,calc(100% - 56px));padding:30px 34px}
   body.is-focused[data-paginated=true] .book-page{width:min(650px,calc(100% - 40px))}

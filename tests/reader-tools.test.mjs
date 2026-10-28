@@ -58,7 +58,7 @@ test('a disposed primary-surface owner cannot close a replacement reader dialog'
  tools.unmount();tools.chatIntegration.onOpen();assert.equal(closed,0);
 }));
 
-test('returning from tucked-away chat reveals its existing entry before restoring focus',t=>withTools(f=>{
+test('closing chat restores the persistent entry without opening reading tools',t=>withTools(f=>{
   t.mock.timers.enable({apis:['setTimeout']});
   const entry=new Element('chat-entry'),host=f.elements.get('#reading-tools-chat-slot');
   host.querySelector=()=>entry;host.append(entry);f.sessionRoot.append(host);
@@ -67,16 +67,16 @@ test('returning from tucked-away chat reveals its existing entry before restorin
     tools.toolbar.reveal(false);tools.chatIntegration.onOpen();
     assert.equal(tools.toolbar.expanded,false);
     tools.chatIntegration.focusReturn();
-    assert.equal(tools.toolbar.expanded,true,'a closed chat must not return focus to a concealed entry');
+    assert.equal(tools.toolbar.expanded,false,'the permanent entry needs no tools reveal');
     assert.equal(f.document.activeElement,entry);
-    assert.equal(f.immersion.shown,2,'the existing coordinator owns the reveal');
+    assert.equal(f.immersion.shown,1,'closing chat does not introduce a second tools surface');
     t.mock.timers.tick(5000);
     assert.equal(tools.toolbar.expanded,false);
-    assert.equal(f.document.activeElement,f.elements.get('#reading-tools-trigger'),'mouse idle concealment returns focus to the persistent pill');
+    assert.equal(f.document.activeElement,entry,'idle time leaves focus on the persistent conversation entry');
     tools.chatIntegration.focusReturn();
     f.document.dispatchEvent(Object.assign(new Event('keydown'),{key:'Tab'}));
     t.mock.timers.tick(6000);
-    assert.equal(tools.toolbar.expanded,true,'keyboard focus holds the visible Agent entry');
+    assert.equal(tools.toolbar.expanded,false,'keyboard focus does not expand unrelated tools');
     assert.equal(f.document.activeElement,entry);
     f.document.activeElement=null;f.sessionRoot.dispatchEvent(new Event('focusout'));
   }finally{tools.unmount();}

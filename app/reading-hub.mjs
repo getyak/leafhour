@@ -51,7 +51,7 @@ export function mountReadingHub({document,panel,toolbar,onHandoff=()=>toolbar?.c
  for(const id of ['reading-timer-settings','manual-reading-open','reading-guide-open'])move($(id),more);
  const heading=panel.querySelector('.reading-tools-heading'),sync=panel.querySelector('.reading-sync-row');
  if(heading?.nextSibling)panel.insertBefore(primary,heading.nextSibling);else panel.prepend(primary);
- move($('reading-tools-chat-slot'),panel);
+ // Conversation remains beside the tools trigger so a closed tray cannot hide it.
  // Append in reading order. Moving the session controls retains their clock.
  for(const id of ['reading-controls','page-turner','reading-login','reading-drafts-open'])move($(id),panel);
  panel.append(more);if(sync)panel.append(sync);

@@ -50,7 +50,7 @@ export function mountReaderConversation({bookId,session,getReader,root,request=f
   };
   let taskStorage=null;try{taskStorage=globalThis.localStorage;}catch{}
   chat=mountChat({root,api,uploadController,mountUpload,renderMarkdown,uploadOptions:{request,storage:taskStorage},getSession:()=>session,getOwner:()=>session?.user?.id||null,getBooks:()=>{const current=context();return current?[current.book]:[];},getCurrentBook:()=>bookId,getCurrentPassage:()=>context()?.passageId||null,externalLauncher,
-    openAuth,onViewChange:opened=>{if(opened)getReader()?.dismissTools?.({preserveSelection:true});workspace?.setOpen(opened);},
+    openAuth,dismissOnOutside:()=>workspace?.isMobile()!==false,onViewChange:opened=>{if(opened)getReader()?.dismissTools?.({preserveSelection:true});workspace?.setOpen(opened);},
     onNavigateToPassage:(targetBook,passageId)=>{
       const current=context();if(targetBook!==bookId||!current?.passages.has(passageId))return false;
       const reader=getReader();if(workspace?.isMobile())chat.close();reader.dismissTools?.();reader.goToPassage(passageId);return true;

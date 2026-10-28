@@ -1,0 +1,41 @@
+{
+  "cases": [
+    {
+      "width": 1440,
+      "height": 900,
+      "locale": "zh-Hans",
+      "passed": true
+    },
+    {
+      "width": 1200,
+      "height": 700,
+      "locale": "en",
+      "passed": true
+    },
+    {
+      "width": 1100,
+      "height": 700,
+      "locale": "ja",
+      "passed": true
+    },
+    {
+      "width": 768,
+      "height": 1024,
+      "locale": "zh-Hant",
+      "passed": true
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "locale": "zh-Hans",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "limits": [
+    "Local synthetic account; no provider calls or production records.",
+    "Chromium only; physical mobile keyboard and screen reader not tested."
+  ],
+  "browser": "156.0.8078.48",
+  "passed": true
+}

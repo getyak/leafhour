@@ -2863,6 +2863,7 @@ candidate:app/library-chat-markdown.mjs:90:331,js-attribute,app/library-chat-mar
 candidate:app/library-chat.mjs:44:81,js-attribute,app/library-chat.mjs,44,aria-labelledby,unknown,protected,identifier,library-chat-title
 candidate:app/library-chat.mjs:45:34,js-attribute,app/library-chat.mjs,45,aria-modal,unknown,reviewable,,false
 candidate:app/library-chat.mjs:58:157,js-attribute,app/library-chat.mjs,58,aria-haspopup,unknown,reviewable,,dialog
+candidate:app/library-chat.mjs:58:250,js-attribute,app/library-chat.mjs,58,aria-expanded,unknown,reviewable,,false
 candidate:app/library-chat.mjs:62:171,js-attribute,app/library-chat.mjs,62,aria-expanded,unknown,reviewable,,false
 candidate:app/library-chat.mjs:70:83,js-attribute,app/library-chat.mjs,70,role,unknown,reviewable,,log
 candidate:app/library-chat.mjs:70:162,js-attribute,app/library-chat.mjs,70,aria-live,unknown,reviewable,,polite
@@ -2871,9 +2872,11 @@ candidate:app/library-chat.mjs:71:155,js-attribute,app/library-chat.mjs,71,role,
 candidate:app/library-chat.mjs:74:266,js-attribute,app/library-chat.mjs,74,aria-describedby,unknown,reviewable,,library-chat-status library-chat-count
 candidate:app/library-chat.mjs:153:374,js-attribute,app/library-chat.mjs,153,aria-busy,unknown,reviewable,,true
 candidate:app/library-chat.mjs:153:414,js-attribute,app/library-chat.mjs,153,aria-live,unknown,reviewable,,off
-candidate:app/library-chat.mjs:278:225,js-attribute,app/library-chat.mjs,278,aria-expanded,unknown,reviewable,,false
+candidate:app/library-chat.mjs:278:212,js-attribute,app/library-chat.mjs,278,aria-expanded,unknown,reviewable,,false
+candidate:app/library-chat.mjs:278:272,js-attribute,app/library-chat.mjs,278,aria-expanded,unknown,reviewable,,false
 candidate:app/library-chat.mjs:288:159,js-cjk-literal,app/library-chat.mjs,288,,unknown,reviewable,,Leafhour-对话-
-candidate:app/library-chat.mjs:343:168,js-attribute,app/library-chat.mjs,343,aria-expanded,unknown,reviewable,,true
+candidate:app/library-chat.mjs:318:241,js-attribute,app/library-chat.mjs,318,aria-expanded,unknown,reviewable,,false
+candidate:app/library-chat.mjs:344:168,js-attribute,app/library-chat.mjs,344,aria-expanded,unknown,reviewable,,true
 candidate:app/library-daily-reading.mjs:9:27,js-cjk-literal,app/library-daily-reading.mjs,9,,unknown,reviewable,,每日陪读
 candidate:app/library-daily-reading.mjs:51:172,js-attribute,app/library-daily-reading.mjs,51,aria-hidden,unknown,reviewable,,true
 candidate:app/library-daily-reading.mjs:56:81,js-attribute,app/library-daily-reading.mjs,56,popover,unknown,reviewable,,auto
@@ -3704,13 +3707,13 @@ candidate:app/reader-book-actions.mjs:49:123,js-attribute,app/reader-book-action
 candidate:app/reader-book-actions.mjs:64:93,js-attribute,app/reader-book-actions.mjs,64,aria-hidden,unknown,reviewable,,true
 candidate:app/reader-book-actions.mjs:117:136,js-attribute,app/reader-book-actions.mjs,117,aria-labelledby,unknown,protected,identifier,reader-gift-title
 candidate:app/reader-book-actions.mjs:119:120,js-attribute,app/reader-book-actions.mjs,119,role,unknown,reviewable,,status
-candidate:app/reader-chat-workspace.mjs:12:122,js-attribute,app/reader-chat-workspace.mjs,12,role,unknown,reviewable,,separator
-candidate:app/reader-chat-workspace.mjs:12:177,js-attribute,app/reader-chat-workspace.mjs,12,aria-orientation,unknown,reviewable,,vertical
-candidate:app/reader-chat-workspace.mjs:12:223,js-attribute,app/reader-chat-workspace.mjs,12,tabindex,unknown,reviewable,,0
-candidate:app/reader-chat-workspace.mjs:28:42,js-attribute,app/reader-chat-workspace.mjs,28,aria-valuemin,unknown,reviewable,,320
-candidate:app/reader-chat-workspace.mjs:29:111,js-attribute,app/reader-chat-workspace.mjs,29,aria-modal,unknown,reviewable,,true
-candidate:app/reader-chat-workspace.mjs:29:191,js-attribute,app/reader-chat-workspace.mjs,29,tabindex,unknown,reviewable,,-1
-candidate:app/reader-chat-workspace.mjs:30:54,js-attribute,app/reader-chat-workspace.mjs,30,aria-modal,unknown,reviewable,,false
+candidate:app/reader-chat-workspace.mjs:25:122,js-attribute,app/reader-chat-workspace.mjs,25,role,unknown,reviewable,,separator
+candidate:app/reader-chat-workspace.mjs:25:177,js-attribute,app/reader-chat-workspace.mjs,25,aria-orientation,unknown,reviewable,,vertical
+candidate:app/reader-chat-workspace.mjs:25:223,js-attribute,app/reader-chat-workspace.mjs,25,tabindex,unknown,reviewable,,0
+candidate:app/reader-chat-workspace.mjs:43:42,js-attribute,app/reader-chat-workspace.mjs,43,aria-valuemin,unknown,reviewable,,320
+candidate:app/reader-chat-workspace.mjs:44:111,js-attribute,app/reader-chat-workspace.mjs,44,aria-modal,unknown,reviewable,,true
+candidate:app/reader-chat-workspace.mjs:44:191,js-attribute,app/reader-chat-workspace.mjs,44,tabindex,unknown,reviewable,,-1
+candidate:app/reader-chat-workspace.mjs:45:54,js-attribute,app/reader-chat-workspace.mjs,45,aria-modal,unknown,reviewable,,false
 candidate:app/reader-companion.mjs:39:141,js-attribute,app/reader-companion.mjs,39,aria-pressed,unknown,reviewable,,false
 candidate:app/reader-companion.mjs:42:68,js-attribute,app/reader-companion.mjs,42,role,unknown,reviewable,,status
 candidate:app/reader-conversation.mjs:48:60,js-cjk-literal,app/reader-conversation.mjs,48,,unknown,reviewable,,对话暂时无法载入，请重试。
