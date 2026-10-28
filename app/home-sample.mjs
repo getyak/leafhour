@@ -29,7 +29,8 @@ export function mountHomeSample(root,win=root?.ownerDocument?.defaultView){
   if(root?.hidden||!label||!text||!card||!doc?.createElement||!win?.setTimeout||!block.prepend||!card.addEventListener)return ()=>{};
   const original={label:label.textContent,text:text.textContent,lang:text.getAttribute('lang')};
   const group=doc.createElement('div'),content=doc.createElement('div');
-  group.className='sample-languages';group.setAttribute('role','group');group.setAttribute('aria-label','Interpretation language');
+  const groupLabels={'zh-Hans':'译文语言',en:'Interpretation language','zh-Hant':'譯文語言',ja:'訳文の言語'};
+  group.className='sample-languages';group.setAttribute('role','group');group.setAttribute('aria-label',groupLabels[homeLocale(doc)]||groupLabels.en);
   content.className='sample-interpretation';
   block.insertBefore(content,label);content.append(label,text);block.prepend(group);
   const preference=win.matchMedia?.('(prefers-reduced-motion: reduce)');
