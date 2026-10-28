@@ -1,0 +1,20 @@
+[
+  {
+    "compiled": false,
+    "firstUsableBooksMs": 15832,
+    "resources": 126,
+    "modules": 89,
+    "dom": 11467,
+    "archive": false,
+    "errors": []
+  },
+  {
+    "compiled": true,
+    "firstUsableBooksMs": 6135,
+    "resources": 78,
+    "modules": 44,
+    "dom": 2772,
+    "archive": false,
+    "errors": []
+  }
+]
