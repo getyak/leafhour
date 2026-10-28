@@ -1,0 +1,46 @@
+{
+  "scrollSamples": [
+    {
+      "photo": "matrix(0.992546, -0.121869, 0.121869, 0.992546, 0, 0)",
+      "y": 0
+    },
+    {
+      "cardTop": 104,
+      "copyTop": -92.40625,
+      "photo": "matrix(1.05232, -0.242947, 0.242947, 1.05232, 0, -158.4)",
+      "y": 1102
+    },
+    {
+      "cardTop": 104,
+      "copyTop": -200.40625,
+      "y": 1210
+    },
+    {
+      "photo": "matrix(0.992546, -0.121869, 0.121869, 0.992546, 0, 0)",
+      "y": 0
+    }
+  ],
+  "privateMotionCheck": {
+    "hiddenHome": true,
+    "motionEntry": false,
+    "motionOwner": "",
+    "storyCSS": false
+  },
+  "protectedText": {
+    "heading": "读到难句，也不用离开书页。",
+    "href": "/read?book=gutenberg-alice&passage=01b38ea4c710a84b-p00008&layer=original",
+    "quote": "“What is the use of a book,” thought Alice, “without pictures or conversations?”"
+  },
+  "observed": {
+    "heroParallax": true,
+    "heldCardAcrossTwoScrollPositions": true,
+    "continuityCropChanges": true,
+    "reducedMotionRestoresStatic": true,
+    "noJsContentVisible": true,
+    "languageFailureDisposesMotion": true,
+    "normalMotionAcrossFourLocales": true
+  },
+  "limits": [
+    "Browser layout/DOM observations; no physical-device or screen-reader speech claim."
+  ]
+}

@@ -2777,32 +2777,32 @@ candidate:app/home.html:41:135,html-attribute,app/home.html,41,aria-label,unknow
 candidate:app/home.html:42:256,html-attribute,app/home.html,42,aria-label,unknown,reviewable,,打开导航菜单
 candidate:app/home.html:50:73,html-attribute,app/home.html,50,aria-label,unknown,reviewable,,打开爱丽丝梦游仙境
 candidate:app/home.html:51:53,html-attribute,app/home.html,51,aria-label,unknown,reviewable,,看看怎么读
-candidate:app/home.html:55:579,html-attribute,app/home.html,55,aria-label,unknown,reviewable,,打开爱丽丝梦游仙境
-candidate:app/home.html:70:73,html-attribute,app/home.html,70,aria-label,unknown,reviewable,,Leafhour 首页
-candidate:app/home.html:70:551,html-attribute,app/home.html,70,aria-label,unknown,reviewable,,打开书房导航
-candidate:app/home.html:72:53,html-attribute,app/home.html,72,aria-label,unknown,reviewable,,筛选书架
-candidate:app/home.html:74:101,html-attribute,app/home.html,74,aria-label,unknown,reviewable,,阅读状态
-candidate:app/home.html:75:276,html-attribute,app/home.html,75,placeholder,unknown,reviewable,,搜索书名或作者
-candidate:app/home.html:75:413,html-attribute,app/home.html,75,aria-label,unknown,reviewable,,清空搜索
-candidate:app/home.html:75:564,html-attribute,app/home.html,75,aria-label,unknown,reviewable,,筛选书籍
-candidate:app/home.html:81:77,html-attribute,app/home.html,81,aria-label,unknown,reviewable,,阅读习惯
-candidate:app/home.html:82:308,html-attribute,app/home.html,82,aria-label,unknown,reviewable,,每日陪读纸条
-candidate:app/home.html:82:395,html-attribute,app/home.html,82,aria-label,unknown,reviewable,,书架
-candidate:app/home.html:82:889,html-attribute,app/home.html,82,aria-label,unknown,reviewable,,阅读近况
-candidate:app/home.html:85:607,html-attribute,app/home.html,85,aria-label,unknown,reviewable,,切换页面外观
-candidate:app/home.html:86:83,html-attribute,app/home.html,86,aria-label,unknown,reviewable,,阅读日历
-candidate:app/home.html:87:82,html-attribute,app/home.html,87,aria-label,unknown,reviewable,,书房导航
-candidate:app/home.html:91:101,html-attribute,app/home.html,91,aria-label,unknown,reviewable,,关闭登录
-candidate:app/home.html:96:185,html-attribute,app/home.html,96,placeholder,unknown,reviewable,,you@example.com
-candidate:app/home.html:97:383,html-attribute,app/home.html,97,aria-label,unknown,reviewable,,显示登录密码
-candidate:app/home.html:106:418,html-attribute,app/home.html,106,aria-label,unknown,reviewable,,显示新密码
-candidate:app/home.html:110:116,html-attribute,app/home.html,110,aria-label,unknown,reviewable,,使用 Google 登录
-candidate:app/home.html:111:114,html-attribute,app/home.html,111,aria-label,unknown,reviewable,,使用 Apple 登录
-candidate:app/home.html:116:159,html-attribute,app/home.html,116,aria-label,unknown,reviewable,,关闭上传
-candidate:app/home.html:116:351,html-attribute,app/home.html,116,aria-label,unknown,reviewable,,选择 PDF、EPUB、TXT 或 Markdown 文件
-candidate:app/home.html:118:98,html-attribute,app/home.html,118,aria-label,unknown,reviewable,,关闭菜单
-candidate:app/home.html:120:95,html-attribute,app/home.html,120,aria-label,unknown,reviewable,,主导航
-candidate:app/home.html:121:102,html-attribute,app/home.html,121,aria-label,unknown,reviewable,,切换界面语言
+candidate:app/home.html:56:579,html-attribute,app/home.html,56,aria-label,unknown,reviewable,,打开爱丽丝梦游仙境
+candidate:app/home.html:71:73,html-attribute,app/home.html,71,aria-label,unknown,reviewable,,Leafhour 首页
+candidate:app/home.html:71:551,html-attribute,app/home.html,71,aria-label,unknown,reviewable,,打开书房导航
+candidate:app/home.html:73:53,html-attribute,app/home.html,73,aria-label,unknown,reviewable,,筛选书架
+candidate:app/home.html:75:101,html-attribute,app/home.html,75,aria-label,unknown,reviewable,,阅读状态
+candidate:app/home.html:76:276,html-attribute,app/home.html,76,placeholder,unknown,reviewable,,搜索书名或作者
+candidate:app/home.html:76:413,html-attribute,app/home.html,76,aria-label,unknown,reviewable,,清空搜索
+candidate:app/home.html:76:564,html-attribute,app/home.html,76,aria-label,unknown,reviewable,,筛选书籍
+candidate:app/home.html:82:77,html-attribute,app/home.html,82,aria-label,unknown,reviewable,,阅读习惯
+candidate:app/home.html:83:308,html-attribute,app/home.html,83,aria-label,unknown,reviewable,,每日陪读纸条
+candidate:app/home.html:83:395,html-attribute,app/home.html,83,aria-label,unknown,reviewable,,书架
+candidate:app/home.html:83:889,html-attribute,app/home.html,83,aria-label,unknown,reviewable,,阅读近况
+candidate:app/home.html:86:607,html-attribute,app/home.html,86,aria-label,unknown,reviewable,,切换页面外观
+candidate:app/home.html:87:83,html-attribute,app/home.html,87,aria-label,unknown,reviewable,,阅读日历
+candidate:app/home.html:88:82,html-attribute,app/home.html,88,aria-label,unknown,reviewable,,书房导航
+candidate:app/home.html:92:101,html-attribute,app/home.html,92,aria-label,unknown,reviewable,,关闭登录
+candidate:app/home.html:97:185,html-attribute,app/home.html,97,placeholder,unknown,reviewable,,you@example.com
+candidate:app/home.html:98:383,html-attribute,app/home.html,98,aria-label,unknown,reviewable,,显示登录密码
+candidate:app/home.html:107:418,html-attribute,app/home.html,107,aria-label,unknown,reviewable,,显示新密码
+candidate:app/home.html:111:116,html-attribute,app/home.html,111,aria-label,unknown,reviewable,,使用 Google 登录
+candidate:app/home.html:112:114,html-attribute,app/home.html,112,aria-label,unknown,reviewable,,使用 Apple 登录
+candidate:app/home.html:117:159,html-attribute,app/home.html,117,aria-label,unknown,reviewable,,关闭上传
+candidate:app/home.html:117:351,html-attribute,app/home.html,117,aria-label,unknown,reviewable,,选择 PDF、EPUB、TXT 或 Markdown 文件
+candidate:app/home.html:119:98,html-attribute,app/home.html,119,aria-label,unknown,reviewable,,关闭菜单
+candidate:app/home.html:121:95,html-attribute,app/home.html,121,aria-label,unknown,reviewable,,主导航
+candidate:app/home.html:122:102,html-attribute,app/home.html,122,aria-label,unknown,reviewable,,切换界面语言
 candidate:app/home.html:12:10,html-text,app/home.html,12,,unknown,reviewable,,Leafhour — AI 辅助的私人阅读书房
 candidate:app/home.html:32:30,html-text,app/home.html,32,,unknown,reviewable,,跳到正文
 candidate:app/home.html:34:402,html-text,app/home.html,34,,unknown,reviewable,,Leafhour
@@ -2837,128 +2837,128 @@ candidate:app/home.html:54:60,html-text,app/home.html,54,,unknown,reviewable,,�
 candidate:app/home.html:54:122,html-text,app/home.html,54,,unknown,reviewable,,遇见难句，可以对照原文、直译与意译。AI 译文标为草稿；没有译文的地方，原文始终保留。
 candidate:app/home.html:54:224,html-text,app/home.html,54,,unknown,reviewable,,打开这本书
 candidate:app/home.html:54:255,html-text,app/home.html,54,,unknown,reviewable,,→
-candidate:app/home.html:55:112,html-text,app/home.html,55,,unknown,reviewable,,LEWIS CARROLL
-candidate:app/home.html:55:138,html-text,app/home.html,55,,unknown,reviewable,,《爱丽丝梦游仙境》· 阅读示例
-candidate:app/home.html:55:203,html-text,app/home.html,55,,unknown,protected,quotation,"“What is the use of a book,” thought Alice, “without pictures or conversations?”"
-candidate:app/home.html:55:325,html-text,app/home.html,55,,unknown,reviewable,,中文意译 · 页面示例
-candidate:app/home.html:55:361,html-text,app/home.html,55,,unknown,protected,quotation,“一本书如果没有图画，也没有对话，那有什么用呢？”爱丽丝想。
-candidate:app/home.html:55:456,html-text,app/home.html,55,,unknown,reviewable,,读到这里，你想起了什么？
-candidate:app/home.html:55:590,html-text,app/home.html,55,,unknown,reviewable,,读这一页
-candidate:app/home.html:55:620,html-text,app/home.html,55,,unknown,reviewable,,→
-candidate:app/home.html:58:44,html-text,app/home.html,58,,unknown,reviewable,,今天读到这里。
-candidate:app/home.html:58:55,html-text,app/home.html,58,,unknown,reviewable,,明天，接着读。
-candidate:app/home.html:58:70,html-text,app/home.html,58,,unknown,reviewable,,下次打开，回到读到的那一段。
-candidate:app/home.html:58:88,html-text,app/home.html,58,,unknown,reviewable,,笔记和问题，仍跟着那句话。
-candidate:app/home.html:58:142,html-text,app/home.html,58,,unknown,reviewable,,打开我的书房
-candidate:app/home.html:58:174,html-text,app/home.html,58,,unknown,reviewable,,→
-candidate:app/home.html:61:92,html-text,app/home.html,61,,unknown,reviewable,,选一本书
-candidate:app/home.html:61:178,html-text,app/home.html,61,,unknown,reviewable,,正在载入书架…
-candidate:app/home.html:61:219,html-text,app/home.html,61,,unknown,reviewable,,默认书籍来自 Project Gutenberg，原文在美国属于公版；各书保留来源和许可说明，使用时请核对所在地规则。
-candidate:app/home.html:62:62,html-text,app/home.html,62,,unknown,reviewable,,你的书，
-candidate:app/home.html:62:70,html-text,app/home.html,62,,unknown,reviewable,,你的书房。
-candidate:app/home.html:62:117,html-text,app/home.html,62,,unknown,reviewable,,带来自己的 PDF、EPUB、Markdown 或纯文本。原文和译文各自保留，你写下的笔记也有自己的位置。
-candidate:app/home.html:62:177,html-text,app/home.html,62,,unknown,reviewable,,Leafhour 以 AGPL-3.0 开源，可在本地运行或自行托管。
-candidate:app/home.html:63:119,html-text,app/home.html,63,,unknown,reviewable,,开始之前，你也许想知道。
-candidate:app/home.html:64:23,html-text,app/home.html,64,,unknown,reviewable,,可以导入哪些格式？
-candidate:app/home.html:64:45,html-text,app/home.html,64,,unknown,reviewable,,目前支持 PDF、EPUB、Markdown（.md）和纯文本（.txt）。PDF 提取的文字需要与原稿核对；扫描页会在你确认后自动识别。EPUB 按内置阅读顺序提取，暂不支持加密或 DRM 版本。
-candidate:app/home.html:65:23,html-text,app/home.html,65,,unknown,reviewable,,书籍与记录可以带走吗？
-candidate:app/home.html:65:47,html-text,app/home.html,65,,unknown,protected,quotation,服务支持整库导出和恢复，不要求订阅。登录后在书房“设置 → 数据与迁移”下载 ZIP 备份、恢复书房或导出选定记录，原文件可自行选择是否纳入。未同步的记录与草稿仍留在原浏览器，处理方式见
-candidate:app/home.html:65:160,html-text,app/home.html,65,,unknown,reviewable,,隐私与数据说明
-candidate:app/home.html:65:171,html-text,app/home.html,65,,unknown,reviewable,,。
-candidate:app/home.html:66:23,html-text,app/home.html,66,,unknown,reviewable,,使用 AI 和朋友共读有哪些限制？
-candidate:app/home.html:66:53,html-text,app/home.html,66,,unknown,reviewable,,直接阅读公版样书不需要调用模型。翻译与对话需要配置模型服务，自托管时由运营者承担供应商费用。赠书信可以分享所选阅读材料；在线好友的实时共读仍是后续设想。
-candidate:app/home.html:70:407,html-text,app/home.html,70,,unknown,reviewable,,Leafhour
-candidate:app/home.html:71:49,html-text,app/home.html,71,,unknown,reviewable,,我的书房
-candidate:app/home.html:71:156,html-text,app/home.html,71,,unknown,reviewable,,自己的书与阅读记录。
-candidate:app/home.html:71:211,html-text,app/home.html,71,,unknown,reviewable,,拖动整本书调整位置，触屏可长按后移动。键盘聚焦调整位置按钮后使用左右方向键；更多操作中也可向前或向后移动。
-candidate:app/home.html:74:175,html-text,app/home.html,74,,unknown,reviewable,,全部
-candidate:app/home.html:74:259,html-text,app/home.html,74,,unknown,reviewable,,在读
-candidate:app/home.html:74:342,html-text,app/home.html,74,,unknown,reviewable,,未读
-candidate:app/home.html:74:427,html-text,app/home.html,74,,unknown,reviewable,,读完
-candidate:app/home.html:75:174,html-text,app/home.html,75,,unknown,reviewable,,搜索书名或作者
-candidate:app/home.html:75:426,html-text,app/home.html,75,,unknown,reviewable,,×
-candidate:app/home.html:75:676,html-text,app/home.html,75,,unknown,reviewable,,筛选
-candidate:app/home.html:77:237,html-text,app/home.html,77,,unknown,reviewable,,清除筛选
-candidate:app/home.html:78:177,html-text,app/home.html,78,,unknown,reviewable,,筛选书籍
-candidate:app/home.html:78:293,html-text,app/home.html,78,,unknown,reviewable,,主题
-candidate:app/home.html:78:348,html-text,app/home.html,78,,unknown,reviewable,,全部主题
-candidate:app/home.html:78:484,html-text,app/home.html,78,,unknown,reviewable,,来源
-candidate:app/home.html:78:540,html-text,app/home.html,78,,unknown,reviewable,,全部来源
-candidate:app/home.html:78:576,html-text,app/home.html,78,,unknown,reviewable,,内置书
-candidate:app/home.html:78:612,html-text,app/home.html,78,,unknown,reviewable,,我上传的
-candidate:app/home.html:78:753,html-text,app/home.html,78,,unknown,reviewable,,阅读语言
-candidate:app/home.html:78:813,html-text,app/home.html,78,,unknown,reviewable,,全部阅读语言
-candidate:app/home.html:78:948,html-text,app/home.html,78,,unknown,reviewable,,阅读形态
-candidate:app/home.html:78:1004,html-text,app/home.html,78,,unknown,reviewable,,全部形态
-candidate:app/home.html:78:1042,html-text,app/home.html,78,,unknown,reviewable,,原版
-candidate:app/home.html:78:1080,html-text,app/home.html,78,,unknown,reviewable,,有译本
-candidate:app/home.html:78:1118,html-text,app/home.html,78,,unknown,reviewable,,双语对照
-candidate:app/home.html:78:1204,html-text,app/home.html,78,,unknown,reviewable,,有译本也可能只有部分段落，缺译处保留原文。
-candidate:app/home.html:80:125,html-text,app/home.html,80,,unknown,reviewable,,重新打开书房
-candidate:app/home.html:81:94,html-text,app/home.html,81,,unknown,reviewable,,设置阅读习惯
-candidate:app/home.html:81:108,html-text,app/home.html,81,,unknown,reviewable,,选好新书默认的阅读方式、译文与文字，之后打开的新书都从这里开始。每本书自己的选择仍然保留。
-candidate:app/home.html:81:254,html-text,app/home.html,81,,unknown,reviewable,,设置阅读习惯
-candidate:app/home.html:81:333,html-text,app/home.html,81,,unknown,reviewable,,暂不设置
-candidate:app/home.html:82:219,html-text,app/home.html,82,,unknown,reviewable,,正在打开书房…
-candidate:app/home.html:82:427,html-text,app/home.html,82,,unknown,reviewable,,书架上的其他书
-candidate:app/home.html:82:623,html-text,app/home.html,82,,unknown,reviewable,,还没有自己的书
-candidate:app/home.html:82:638,html-text,app/home.html,82,,unknown,reviewable,,带来一份 PDF、EPUB、TXT 或 Markdown。
-candidate:app/home.html:82:727,html-text,app/home.html,82,,unknown,reviewable,,带来第一本书
-candidate:app/home.html:82:806,html-text,app/home.html,82,,unknown,reviewable,,清空搜索
-candidate:app/home.html:85:376,html-text,app/home.html,85,,unknown,reviewable,,Leafhour
-candidate:app/home.html:85:408,html-text,app/home.html,85,,unknown,reviewable,,Stay with a book.
-candidate:app/home.html:85:444,html-text,app/home.html,85,,unknown,reviewable,,MCP 接入指南
-candidate:app/home.html:85:475,html-text,app/home.html,85,,unknown,reviewable,,隐私说明
-candidate:app/home.html:85:528,html-text,app/home.html,85,,unknown,reviewable,,GitHub
-candidate:app/home.html:85:615,html-text,app/home.html,85,,unknown,reviewable,,◐
-candidate:app/home.html:91:107,html-text,app/home.html,91,,unknown,reviewable,,×
-candidate:app/home.html:92:297,html-text,app/home.html,92,,unknown,reviewable,,Leafhour
-candidate:app/home.html:93:23,html-text,app/home.html,93,,unknown,reviewable,,回到你的书房
-candidate:app/home.html:93:53,html-text,app/home.html,93,,unknown,reviewable,,从上次停下的地方继续。
-candidate:app/home.html:96:53,html-text,app/home.html,96,,unknown,reviewable,,邮箱
-candidate:app/home.html:97:122,html-text,app/home.html,97,,unknown,reviewable,,密码
-candidate:app/home.html:97:412,html-text,app/home.html,97,,unknown,reviewable,,显示
-candidate:app/home.html:98:69,html-text,app/home.html,98,,unknown,reviewable,,进入书房
-candidate:app/home.html:102:143,html-text,app/home.html,102,,unknown,reviewable,,更换邮箱
-candidate:app/home.html:103:78,html-text,app/home.html,103,,unknown,reviewable,,登录验证码
-candidate:app/home.html:103:325,html-text,app/home.html,103,,unknown,reviewable,,进入书房
-candidate:app/home.html:104:122,html-text,app/home.html,104,,unknown,reviewable,,重新发送
-candidate:app/home.html:106:126,html-text,app/home.html,106,,unknown,reviewable,,新密码
-candidate:app/home.html:106:446,html-text,app/home.html,106,,unknown,reviewable,,显示
-candidate:app/home.html:106:518,html-text,app/home.html,106,,unknown,reviewable,,至少 8 个字符。
-candidate:app/home.html:106:588,html-text,app/home.html,106,,unknown,reviewable,,保存并进入书房
-candidate:app/home.html:107:127,html-text,app/home.html,107,,unknown,reviewable,,登录服务准备中，可以先试读。
-candidate:app/home.html:108:129,html-text,app/home.html,108,,unknown,reviewable,,验证码登录
-candidate:app/home.html:108:228,html-text,app/home.html,108,,unknown,reviewable,,返回密码登录
-candidate:app/home.html:108:319,html-text,app/home.html,108,,unknown,reviewable,,忘记密码？
-candidate:app/home.html:109:81,html-text,app/home.html,109,,unknown,reviewable,,或
-candidate:app/home.html:110:201,html-text,app/home.html,110,,unknown,reviewable,,Google
-candidate:app/home.html:110:277,html-text,app/home.html,110,,unknown,reviewable,,准备中
-candidate:app/home.html:111:197,html-text,app/home.html,111,,unknown,reviewable,,Apple
-candidate:app/home.html:111:272,html-text,app/home.html,111,,unknown,reviewable,,准备中
-candidate:app/home.html:113:91,html-text,app/home.html,113,,unknown,reviewable,,本机使用
-candidate:app/home.html:113:181,html-text,app/home.html,113,,unknown,reviewable,,进入本机书房 ↗
-candidate:app/home.html:113:246,html-text,app/home.html,113,,unknown,reviewable,,仅在这台电脑使用，无需邮箱；与邮箱账户分开保存。
-candidate:app/home.html:114:97,html-text,app/home.html,114,,unknown,reviewable,,第一次来？
-candidate:app/home.html:114:184,html-text,app/home.html,114,,unknown,reviewable,,创建书房
-candidate:app/home.html:114:284,html-text,app/home.html,114,,unknown,reviewable,,先试读几页
-candidate:app/home.html:114:322,html-text,app/home.html,114,,unknown,reviewable,,↗
-candidate:app/home.html:116:165,html-text,app/home.html,116,,unknown,reviewable,,×
-candidate:app/home.html:116:197,html-text,app/home.html,116,,unknown,reviewable,,这次，你想读什么？
-candidate:app/home.html:116:232,html-text,app/home.html,116,,unknown,reviewable,,原文件保存在自己的书房，提取后即可阅读。
-candidate:app/home.html:116:427,html-text,app/home.html,116,,unknown,reviewable,,↥
-candidate:app/home.html:116:466,html-text,app/home.html,116,,unknown,reviewable,,拖放一本书，或点击选择
-candidate:app/home.html:116:511,html-text,app/home.html,116,,unknown,reviewable,,PDF 最多 256 MB · EPUB、TXT、Markdown 最多 20 MB
-candidate:app/home.html:116:729,html-text,app/home.html,116,,unknown,reviewable,,自动整理文字版与扫描版。需要借助外部识别时，再由你确认；原文件始终保留。
-candidate:app/home.html:116:919,html-text,app/home.html,116,,unknown,reviewable,,放进我的书房
-candidate:app/home.html:116:932,html-text,app/home.html,116,,unknown,reviewable,,→
-candidate:app/home.html:118:104,html-text,app/home.html,118,,unknown,reviewable,,×
-candidate:app/home.html:119:47,html-text,app/home.html,119,,unknown,reviewable,,主导航
-candidate:app/home.html:121:163,html-text,app/home.html,121,,unknown,reviewable,,English
-candidate:app/home.html:121:244,html-text,app/home.html,121,,unknown,reviewable,,简体中文
-candidate:app/home.html:121:322,html-text,app/home.html,121,,unknown,reviewable,,繁體中文
-candidate:app/home.html:121:385,html-text,app/home.html,121,,unknown,reviewable,,日本語
-candidate:app/home.html:121:462,html-text,app/home.html,121,,unknown,reviewable,,界面语言设置
+candidate:app/home.html:56:112,html-text,app/home.html,56,,unknown,reviewable,,LEWIS CARROLL
+candidate:app/home.html:56:138,html-text,app/home.html,56,,unknown,reviewable,,《爱丽丝梦游仙境》· 阅读示例
+candidate:app/home.html:56:203,html-text,app/home.html,56,,unknown,protected,quotation,"“What is the use of a book,” thought Alice, “without pictures or conversations?”"
+candidate:app/home.html:56:325,html-text,app/home.html,56,,unknown,reviewable,,中文意译 · 页面示例
+candidate:app/home.html:56:361,html-text,app/home.html,56,,unknown,protected,quotation,“一本书如果没有图画，也没有对话，那有什么用呢？”爱丽丝想。
+candidate:app/home.html:56:456,html-text,app/home.html,56,,unknown,reviewable,,读到这里，你想起了什么？
+candidate:app/home.html:56:590,html-text,app/home.html,56,,unknown,reviewable,,读这一页
+candidate:app/home.html:56:620,html-text,app/home.html,56,,unknown,reviewable,,→
+candidate:app/home.html:59:44,html-text,app/home.html,59,,unknown,reviewable,,今天读到这里。
+candidate:app/home.html:59:55,html-text,app/home.html,59,,unknown,reviewable,,明天，接着读。
+candidate:app/home.html:59:70,html-text,app/home.html,59,,unknown,reviewable,,下次打开，回到读到的那一段。
+candidate:app/home.html:59:88,html-text,app/home.html,59,,unknown,reviewable,,笔记和问题，仍跟着那句话。
+candidate:app/home.html:59:142,html-text,app/home.html,59,,unknown,reviewable,,打开我的书房
+candidate:app/home.html:59:174,html-text,app/home.html,59,,unknown,reviewable,,→
+candidate:app/home.html:62:92,html-text,app/home.html,62,,unknown,reviewable,,选一本书
+candidate:app/home.html:62:178,html-text,app/home.html,62,,unknown,reviewable,,正在载入书架…
+candidate:app/home.html:62:219,html-text,app/home.html,62,,unknown,reviewable,,默认书籍来自 Project Gutenberg，原文在美国属于公版；各书保留来源和许可说明，使用时请核对所在地规则。
+candidate:app/home.html:63:62,html-text,app/home.html,63,,unknown,reviewable,,你的书，
+candidate:app/home.html:63:70,html-text,app/home.html,63,,unknown,reviewable,,你的书房。
+candidate:app/home.html:63:117,html-text,app/home.html,63,,unknown,reviewable,,带来自己的 PDF、EPUB、Markdown 或纯文本。原文和译文各自保留，你写下的笔记也有自己的位置。
+candidate:app/home.html:63:177,html-text,app/home.html,63,,unknown,reviewable,,Leafhour 以 AGPL-3.0 开源，可在本地运行或自行托管。
+candidate:app/home.html:64:119,html-text,app/home.html,64,,unknown,reviewable,,开始之前，你也许想知道。
+candidate:app/home.html:65:23,html-text,app/home.html,65,,unknown,reviewable,,可以导入哪些格式？
+candidate:app/home.html:65:45,html-text,app/home.html,65,,unknown,reviewable,,目前支持 PDF、EPUB、Markdown（.md）和纯文本（.txt）。PDF 提取的文字需要与原稿核对；扫描页会在你确认后自动识别。EPUB 按内置阅读顺序提取，暂不支持加密或 DRM 版本。
+candidate:app/home.html:66:23,html-text,app/home.html,66,,unknown,reviewable,,书籍与记录可以带走吗？
+candidate:app/home.html:66:47,html-text,app/home.html,66,,unknown,protected,quotation,服务支持整库导出和恢复，不要求订阅。登录后在书房“设置 → 数据与迁移”下载 ZIP 备份、恢复书房或导出选定记录，原文件可自行选择是否纳入。未同步的记录与草稿仍留在原浏览器，处理方式见
+candidate:app/home.html:66:160,html-text,app/home.html,66,,unknown,reviewable,,隐私与数据说明
+candidate:app/home.html:66:171,html-text,app/home.html,66,,unknown,reviewable,,。
+candidate:app/home.html:67:23,html-text,app/home.html,67,,unknown,reviewable,,使用 AI 和朋友共读有哪些限制？
+candidate:app/home.html:67:53,html-text,app/home.html,67,,unknown,reviewable,,直接阅读公版样书不需要调用模型。翻译与对话需要配置模型服务，自托管时由运营者承担供应商费用。赠书信可以分享所选阅读材料；在线好友的实时共读仍是后续设想。
+candidate:app/home.html:71:407,html-text,app/home.html,71,,unknown,reviewable,,Leafhour
+candidate:app/home.html:72:49,html-text,app/home.html,72,,unknown,reviewable,,我的书房
+candidate:app/home.html:72:156,html-text,app/home.html,72,,unknown,reviewable,,自己的书与阅读记录。
+candidate:app/home.html:72:211,html-text,app/home.html,72,,unknown,reviewable,,拖动整本书调整位置，触屏可长按后移动。键盘聚焦调整位置按钮后使用左右方向键；更多操作中也可向前或向后移动。
+candidate:app/home.html:75:175,html-text,app/home.html,75,,unknown,reviewable,,全部
+candidate:app/home.html:75:259,html-text,app/home.html,75,,unknown,reviewable,,在读
+candidate:app/home.html:75:342,html-text,app/home.html,75,,unknown,reviewable,,未读
+candidate:app/home.html:75:427,html-text,app/home.html,75,,unknown,reviewable,,读完
+candidate:app/home.html:76:174,html-text,app/home.html,76,,unknown,reviewable,,搜索书名或作者
+candidate:app/home.html:76:426,html-text,app/home.html,76,,unknown,reviewable,,×
+candidate:app/home.html:76:676,html-text,app/home.html,76,,unknown,reviewable,,筛选
+candidate:app/home.html:78:237,html-text,app/home.html,78,,unknown,reviewable,,清除筛选
+candidate:app/home.html:79:177,html-text,app/home.html,79,,unknown,reviewable,,筛选书籍
+candidate:app/home.html:79:293,html-text,app/home.html,79,,unknown,reviewable,,主题
+candidate:app/home.html:79:348,html-text,app/home.html,79,,unknown,reviewable,,全部主题
+candidate:app/home.html:79:484,html-text,app/home.html,79,,unknown,reviewable,,来源
+candidate:app/home.html:79:540,html-text,app/home.html,79,,unknown,reviewable,,全部来源
+candidate:app/home.html:79:576,html-text,app/home.html,79,,unknown,reviewable,,内置书
+candidate:app/home.html:79:612,html-text,app/home.html,79,,unknown,reviewable,,我上传的
+candidate:app/home.html:79:753,html-text,app/home.html,79,,unknown,reviewable,,阅读语言
+candidate:app/home.html:79:813,html-text,app/home.html,79,,unknown,reviewable,,全部阅读语言
+candidate:app/home.html:79:948,html-text,app/home.html,79,,unknown,reviewable,,阅读形态
+candidate:app/home.html:79:1004,html-text,app/home.html,79,,unknown,reviewable,,全部形态
+candidate:app/home.html:79:1042,html-text,app/home.html,79,,unknown,reviewable,,原版
+candidate:app/home.html:79:1080,html-text,app/home.html,79,,unknown,reviewable,,有译本
+candidate:app/home.html:79:1118,html-text,app/home.html,79,,unknown,reviewable,,双语对照
+candidate:app/home.html:79:1204,html-text,app/home.html,79,,unknown,reviewable,,有译本也可能只有部分段落，缺译处保留原文。
+candidate:app/home.html:81:125,html-text,app/home.html,81,,unknown,reviewable,,重新打开书房
+candidate:app/home.html:82:94,html-text,app/home.html,82,,unknown,reviewable,,设置阅读习惯
+candidate:app/home.html:82:108,html-text,app/home.html,82,,unknown,reviewable,,选好新书默认的阅读方式、译文与文字，之后打开的新书都从这里开始。每本书自己的选择仍然保留。
+candidate:app/home.html:82:254,html-text,app/home.html,82,,unknown,reviewable,,设置阅读习惯
+candidate:app/home.html:82:333,html-text,app/home.html,82,,unknown,reviewable,,暂不设置
+candidate:app/home.html:83:219,html-text,app/home.html,83,,unknown,reviewable,,正在打开书房…
+candidate:app/home.html:83:427,html-text,app/home.html,83,,unknown,reviewable,,书架上的其他书
+candidate:app/home.html:83:623,html-text,app/home.html,83,,unknown,reviewable,,还没有自己的书
+candidate:app/home.html:83:638,html-text,app/home.html,83,,unknown,reviewable,,带来一份 PDF、EPUB、TXT 或 Markdown。
+candidate:app/home.html:83:727,html-text,app/home.html,83,,unknown,reviewable,,带来第一本书
+candidate:app/home.html:83:806,html-text,app/home.html,83,,unknown,reviewable,,清空搜索
+candidate:app/home.html:86:376,html-text,app/home.html,86,,unknown,reviewable,,Leafhour
+candidate:app/home.html:86:408,html-text,app/home.html,86,,unknown,reviewable,,Stay with a book.
+candidate:app/home.html:86:444,html-text,app/home.html,86,,unknown,reviewable,,MCP 接入指南
+candidate:app/home.html:86:475,html-text,app/home.html,86,,unknown,reviewable,,隐私说明
+candidate:app/home.html:86:528,html-text,app/home.html,86,,unknown,reviewable,,GitHub
+candidate:app/home.html:86:615,html-text,app/home.html,86,,unknown,reviewable,,◐
+candidate:app/home.html:92:107,html-text,app/home.html,92,,unknown,reviewable,,×
+candidate:app/home.html:93:297,html-text,app/home.html,93,,unknown,reviewable,,Leafhour
+candidate:app/home.html:94:23,html-text,app/home.html,94,,unknown,reviewable,,回到你的书房
+candidate:app/home.html:94:53,html-text,app/home.html,94,,unknown,reviewable,,从上次停下的地方继续。
+candidate:app/home.html:97:53,html-text,app/home.html,97,,unknown,reviewable,,邮箱
+candidate:app/home.html:98:122,html-text,app/home.html,98,,unknown,reviewable,,密码
+candidate:app/home.html:98:412,html-text,app/home.html,98,,unknown,reviewable,,显示
+candidate:app/home.html:99:69,html-text,app/home.html,99,,unknown,reviewable,,进入书房
+candidate:app/home.html:103:143,html-text,app/home.html,103,,unknown,reviewable,,更换邮箱
+candidate:app/home.html:104:78,html-text,app/home.html,104,,unknown,reviewable,,登录验证码
+candidate:app/home.html:104:325,html-text,app/home.html,104,,unknown,reviewable,,进入书房
+candidate:app/home.html:105:122,html-text,app/home.html,105,,unknown,reviewable,,重新发送
+candidate:app/home.html:107:126,html-text,app/home.html,107,,unknown,reviewable,,新密码
+candidate:app/home.html:107:446,html-text,app/home.html,107,,unknown,reviewable,,显示
+candidate:app/home.html:107:518,html-text,app/home.html,107,,unknown,reviewable,,至少 8 个字符。
+candidate:app/home.html:107:588,html-text,app/home.html,107,,unknown,reviewable,,保存并进入书房
+candidate:app/home.html:108:127,html-text,app/home.html,108,,unknown,reviewable,,登录服务准备中，可以先试读。
+candidate:app/home.html:109:129,html-text,app/home.html,109,,unknown,reviewable,,验证码登录
+candidate:app/home.html:109:228,html-text,app/home.html,109,,unknown,reviewable,,返回密码登录
+candidate:app/home.html:109:319,html-text,app/home.html,109,,unknown,reviewable,,忘记密码？
+candidate:app/home.html:110:81,html-text,app/home.html,110,,unknown,reviewable,,或
+candidate:app/home.html:111:201,html-text,app/home.html,111,,unknown,reviewable,,Google
+candidate:app/home.html:111:277,html-text,app/home.html,111,,unknown,reviewable,,准备中
+candidate:app/home.html:112:197,html-text,app/home.html,112,,unknown,reviewable,,Apple
+candidate:app/home.html:112:272,html-text,app/home.html,112,,unknown,reviewable,,准备中
+candidate:app/home.html:114:91,html-text,app/home.html,114,,unknown,reviewable,,本机使用
+candidate:app/home.html:114:181,html-text,app/home.html,114,,unknown,reviewable,,进入本机书房 ↗
+candidate:app/home.html:114:246,html-text,app/home.html,114,,unknown,reviewable,,仅在这台电脑使用，无需邮箱；与邮箱账户分开保存。
+candidate:app/home.html:115:97,html-text,app/home.html,115,,unknown,reviewable,,第一次来？
+candidate:app/home.html:115:184,html-text,app/home.html,115,,unknown,reviewable,,创建书房
+candidate:app/home.html:115:284,html-text,app/home.html,115,,unknown,reviewable,,先试读几页
+candidate:app/home.html:115:322,html-text,app/home.html,115,,unknown,reviewable,,↗
+candidate:app/home.html:117:165,html-text,app/home.html,117,,unknown,reviewable,,×
+candidate:app/home.html:117:197,html-text,app/home.html,117,,unknown,reviewable,,这次，你想读什么？
+candidate:app/home.html:117:232,html-text,app/home.html,117,,unknown,reviewable,,原文件保存在自己的书房，提取后即可阅读。
+candidate:app/home.html:117:427,html-text,app/home.html,117,,unknown,reviewable,,↥
+candidate:app/home.html:117:466,html-text,app/home.html,117,,unknown,reviewable,,拖放一本书，或点击选择
+candidate:app/home.html:117:511,html-text,app/home.html,117,,unknown,reviewable,,PDF 最多 256 MB · EPUB、TXT、Markdown 最多 20 MB
+candidate:app/home.html:117:729,html-text,app/home.html,117,,unknown,reviewable,,自动整理文字版与扫描版。需要借助外部识别时，再由你确认；原文件始终保留。
+candidate:app/home.html:117:919,html-text,app/home.html,117,,unknown,reviewable,,放进我的书房
+candidate:app/home.html:117:932,html-text,app/home.html,117,,unknown,reviewable,,→
+candidate:app/home.html:119:104,html-text,app/home.html,119,,unknown,reviewable,,×
+candidate:app/home.html:120:47,html-text,app/home.html,120,,unknown,reviewable,,主导航
+candidate:app/home.html:122:163,html-text,app/home.html,122,,unknown,reviewable,,English
+candidate:app/home.html:122:244,html-text,app/home.html,122,,unknown,reviewable,,简体中文
+candidate:app/home.html:122:322,html-text,app/home.html,122,,unknown,reviewable,,繁體中文
+candidate:app/home.html:122:385,html-text,app/home.html,122,,unknown,reviewable,,日本語
+candidate:app/home.html:122:462,html-text,app/home.html,122,,unknown,reviewable,,界面语言设置
 candidate:app/index.html:12:48,html-attribute,app/index.html,12,aria-label,unknown,reviewable,,Reading navigation
 candidate:app/index.html:12:287,html-attribute,app/index.html,12,aria-label,unknown,reviewable,,Account
 candidate:app/index.html:12:527,html-attribute,app/index.html,12,aria-label,unknown,reviewable,,Back to library
