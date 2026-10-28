@@ -1,5 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import vm from 'node:vm';
+import {readFile} from 'node:fs/promises';
 import {createOfflineReadingTransport,resolveOfflineReadingContext} from '../app/offline-reading.mjs';
 const chapter={bookId:'book',contentVersion:'source-v1',chapterId:'ch1',sections:[{number:1,chapterId:'ch1',paragraphs:[{id:'p1',original:'Actual saved source',translations:{}}]}]};
 const book={bookId:'book',contentVersion:'source-v1',title:{en:'Book'},chapters:[{id:'ch1'}],sections:chapter.sections,annotations:[],glossary:[],readingCache:{schemaVersion:1,snapshotId:'snap1',chapters:{ch1:'hash1'}}};
@@ -87,4 +89,12 @@ test('automatic offline resources respect data saving while explicit downloads r
  const {prepareOfflineResources}=await import('../app/offline-reading.mjs'),descriptor=Object.getOwnPropertyDescriptor(globalThis,'navigator');let registrations=0;
  Object.defineProperty(globalThis,'navigator',{configurable:true,value:{connection:{saveData:true},serviceWorker:{getRegistration:async()=>undefined,register:async()=>{registrations++;throw Error('test registration');}}}});
  try{assert.equal(await prepareOfflineResources(),false);assert.equal(registrations,0);assert.equal(await prepareOfflineResources({explicit:true}),false);assert.equal(registrations,1);}finally{if(descriptor)Object.defineProperty(globalThis,'navigator',descriptor);else delete globalThis.navigator;}
+});
+
+test('only an explicit device save requests public resource repair and allows time for the verified group',async()=>{
+ const requests=[],timeouts=[],source=(await readFile(new URL('../app/offline-reading.mjs',import.meta.url),'utf8')).replace(/^import[^\n]+\n/gm,'').replace(/^export /gm,'');
+ class Channel{constructor(){this.port1={close(){}};this.port2={postMessage:value=>queueMicrotask(()=>this.port1.onmessage({data:value}))};}}
+ const worker={postMessage(message,ports){requests.push(message);ports[0].postMessage({requestId:message.requestId,ready:true});}},registration={active:worker};
+ const prepare=vm.runInNewContext(source+';prepareOfflineResources',{URL,MessageChannel:Channel,crypto:{randomUUID:()=>String(requests.length)},document:{scripts:[{src:'https://reader.invalid/reader-web/reader-1111111111111111.js'}]},navigator:{serviceWorker:{controller:worker,register:async()=>registration,ready:Promise.resolve(registration)}},setTimeout(_callback,ms){timeouts.push(ms);return ms;},clearTimeout(){}});
+ assert.equal(await prepare(),true);assert.equal(await prepare({explicit:true}),true);assert.equal(requests[0].repair,false,'background status remains read-only');assert.equal(requests[1].repair,true,'the existing Save action authorizes repair');assert.equal(requests[1].readerEntry,'/reader-web/reader-1111111111111111.js');assert.ok(timeouts.includes(6000));assert.ok(timeouts.includes(60000));
 });
