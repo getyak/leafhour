@@ -44,5 +44,11 @@
     }
   ],
   "review": "independent read-only review, no outstanding confirmed finding",
-  "scheduling": "not installed; native automation tool unavailable"
+  "schedulingAtCapture": "not installed; native automation tool unavailable",
+  "schedulingFollowUp": {
+    "state": "ACTIVE; created and read back through native automation tools",
+    "cadence": "Every half hour",
+    "deadline": "2026-10-30 12:00 Asia/Shanghai",
+    "scope": "ongoing scheduled work, not proof of future completed rounds"
+  }
 }
