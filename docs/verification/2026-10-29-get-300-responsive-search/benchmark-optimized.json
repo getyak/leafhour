@@ -1,0 +1,37 @@
+{
+  "cases" : [
+    {
+      "matches" : 2000,
+      "milliseconds" : [
+        25.035833,
+        23.249082999999999,
+        19.803625
+      ],
+      "query" : "Alice"
+    },
+    {
+      "matches" : 334,
+      "milliseconds" : [
+        10.596791,
+        10.817375,
+        10.988625000000001
+      ],
+      "query" : "waistcoat-pocket"
+    },
+    {
+      "matches" : 0,
+      "milliseconds" : [
+        8.4266670000000001,
+        8.3422920000000005,
+        8.3145410000000002
+      ],
+      "query" : "unmatched-benchmark-query"
+    }
+  ],
+  "logicalSourceScalars" : 1161502,
+  "onMainThread" : true,
+  "passages" : 3000,
+  "runtime" : "iOS 26.5",
+  "scope" : "Synthetic 3000-passage synchronous core scan; public fixture paragraphs repeated; not app input latency or physical-device evidence",
+  "sourceParagraphs" : 9
+}

@@ -44,38 +44,60 @@ struct BookSearchPanel: View {
     @Bindable var session: ReaderSession
     let onJump: (Int, ReadingAnchor?) -> Void
     @State private var query = ""
-    private struct Match: Identifiable {
-        let chapterIndex: Int
-        let passage: Passage
-        let excerpt: SearchExcerpt
-        var id: String { "\(chapterIndex):\(passage.id)" }
+    private struct Request: Equatable, Sendable {
+        let bookID: String
+        let query: String
     }
-    private var normalizedQuery: String { query.trimmingCharacters(in: .whitespacesAndNewlines) }
-    private var matches: [Match] {
-        guard !normalizedQuery.isEmpty else { return [] }
-        return session.book.chapters.enumerated().flatMap { index, chapter in
-            chapter.passages.compactMap { passage in
-                SearchExcerpt.find(in: passage.text, query: normalizedQuery).map { Match(chapterIndex: index, passage: passage, excerpt: $0) }
-            }
-        }
+    private enum Outcome {
+        case matches(Request, [BookSearchResult])
+        case failed(Request)
     }
+    @State private var outcome: Outcome?
+    private var request: Request { Request(bookID: session.book.id, query: query.trimmingCharacters(in: .whitespacesAndNewlines)) }
     var body: some View {
-        let results = matches
+        let request = self.request
         List {
-            if normalizedQuery.isEmpty { ContentUnavailableView("在整本书中找一句话", systemImage: "magnifyingglass", description: Text("本机检索全部已导入章节。扫描 PDF 可能没有可检索文字。")) }
-            else if results.isEmpty { ContentUnavailableView.search(text: normalizedQuery) }
-            ForEach(results) { result in
-                Button {
-                    onJump(result.chapterIndex, ReadingAnchor(chapterID: session.book.chapters[result.chapterIndex].id, passageID: result.passage.id, characterOffset: result.excerpt.characterOffset))
-                } label: {
-                    VStack(alignment: .leading, spacing: 6) {
-                        Text(session.book.chapters[result.chapterIndex].title).font(.caption).foregroundStyle(.secondary)
-                        (Text(result.excerpt.before) + Text(result.excerpt.match).bold() + Text(result.excerpt.after))
-                            .fixedSize(horizontal: false, vertical: true).foregroundStyle(.primary)
-                    }.padding(.vertical, 6)
+            if request.query.isEmpty { ContentUnavailableView("在整本书中找一句话", systemImage: "magnifyingglass", description: Text("本机检索全部已导入章节。扫描 PDF 可能没有可检索文字。")) }
+            else if case let .matches(completed, results)? = outcome, completed == request {
+                if results.isEmpty { ContentUnavailableView.search(text: request.query) }
+                else {
+                    Section {
+                        ForEach(results) { result in
+                            Button {
+                                guard request == self.request else { return }
+                                onJump(result.chapterIndex, result.anchor)
+                            } label: {
+                                VStack(alignment: .leading, spacing: 6) {
+                                    Text(session.book.chapters[result.chapterIndex].title).font(.caption).foregroundStyle(.secondary)
+                                    (Text(result.excerpt.before) + Text(result.excerpt.match).bold() + Text(result.excerpt.after))
+                                        .fixedSize(horizontal: false, vertical: true).foregroundStyle(.primary)
+                                }.padding(.vertical, 6)
+                            }
+                        }
+                    } header: { Text("找到 \(results.count) 段原文").accessibilityIdentifier("book-search-count") }
                 }
             }
+            else if case let .failed(completed)? = outcome, completed == request {
+                ContentUnavailableView("暂时无法搜索", systemImage: "magnifyingglass", description: Text("请调整关键词后重试。"))
+            } else { ProgressView("正在查找原文…") }
         }.searchable(text: $query, prompt: "搜索原文").navigationTitle("书内搜索")
+            .task(id: request) { await load(request) }
+    }
+    @MainActor private func load(_ requested: Request) async {
+        guard !Task.isCancelled, requested == request else { return }
+        guard !requested.query.isEmpty else { outcome = nil; return }
+        do {
+            try await Task.sleep(for: .milliseconds(150))
+            let results = try await BookSearch.matches(in: session.book.chapters, query: requested.query)
+            try Task.checkCancellation()
+            guard requested == request else { return }
+            outcome = .matches(requested, results)
+        } catch is CancellationError {
+            // Typing another query or dismissing the panel normally cancels this request.
+        } catch {
+            guard !Task.isCancelled, requested == request else { return }
+            outcome = .failed(requested)
+        }
     }
 }
 struct ReaderPreferencesPanel: View {

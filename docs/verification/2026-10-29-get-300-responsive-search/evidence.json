@@ -1,0 +1,68 @@
+{
+  "issue": "GET-300",
+  "baseline": "2d39e19b4efc79728eaaf34c7e2d1efc99655e94",
+  "sourceSha256": {
+    "apps/ios/Leafhour/ReaderPanels.swift": "4640b8f54c39bea577b5b513b0843fa423430f68fca6878da2e8a12d9c49770c",
+    "apps/ios/LeafhourCore/Sources/LeafhourCore/BookSearch.swift": "e1bb8db36e6ad7b1b92e5aeaa03347c2665cc024757499be66148de94a3d526d",
+    "apps/ios/LeafhourCore/Tests/LeafhourCoreTests/BookSearchTests.swift": "dce16b0ae58f01d35c1105d9d631a59f6a4a5fce3541bde0a3f53a53d0bcfee5",
+    "apps/ios/LeafhourCore/Sources/LeafhourCore/SearchExcerpt.swift": "a4f0361bf4282256244ae90749b9c0537f5adeb22ae9076a5f01a47d0bbc58e5"
+  },
+  "host": {
+    "result": "33 tests passed, 0 failures",
+    "newCases": 5,
+    "log": "core-green.log",
+    "command": "LEAFHOUR_TEST_ROOT=\"$ARTIFACT/fixtures\" swift test --package-path apps/ios/LeafhourCore --scratch-path \"$REUSED_CORE_CACHE\" -j 2"
+  },
+  "native": {
+    "device": "Existing Primary iPhone / iPhone 17 Pro / iOS 26.5",
+    "bundle": "org.leafhour.craft297",
+    "result": "1 focused UI test executed and passed",
+    "resultBundle": "native-final.xcresult",
+    "testIdentifier": "LeafhourUITests/ReadingUITests/testCraft300SearchReplacementAndReturn()",
+    "effectiveXcodeJobs": 2,
+    "configuration": "IOS_XCODE_JOBS=2 through dev-ios-session and local xcodebuild shim",
+    "probeSha256": "9021037599e2bdcc38723b726712779fd80ecd3adf0d248bc3d037d63f75d7ec",
+    "checkedInProbeRestored": true,
+    "anchorProof": "anchor-proof.json",
+    "screenshotsInspected": true,
+    "log": "native-final.log",
+    "entryGuardAlsoValidated": true
+  },
+  "excludedRuns": [
+    {
+      "resultBundle": "native.xcresult",
+      "reason": "0 tests executed; not accepted despite xcodebuild success"
+    },
+    {
+      "resultBundle": "native-current.xcresult",
+      "reason": "1 failed UI probe: harness looked for Cancel/取消 instead of observed system close control; not accepted"
+    }
+  ],
+  "review": {
+    "confirmedIssue": "An old result row could remain tappable before redraw after query changes",
+    "fix": "Button action rechecks the captured book/query against the current request before navigation",
+    "fixReview": "P2 closed; no new confirmed issue",
+    "entryGuard": "Cancelled or outdated empty requests cannot clear a newer outcome; reviewed with no new issue"
+  },
+  "benchmark": {
+    "sourceSampleSha256": "009fe1ae872e6fc9aa8c4c3eab6c40a4a98175b3b86ccc93419283bf6ec8712f",
+    "excerptSourceSha256": "a4f0361bf4282256244ae90749b9c0537f5adeb22ae9076a5f01a47d0bbc58e5",
+    "passages": 3000,
+    "logicalSourceScalars": 1161502,
+    "samplesPerQueryPerMode": 3,
+    "scope": "Synthetic synchronous core scan on iOS26.5 simulator, not app-input latency, physical performance or measured post-change speedup"
+  },
+  "notVerified": [
+    "Instrumented UI/main-actor traces",
+    "End-to-end typing latency or frame rate",
+    "Physical-device or p95 performance",
+    "Maximum Dynamic Type/VoiceOver/hardware keyboard",
+    "Compact iPhone/iPad",
+    "TestFlight distribution",
+    "Website deployment of this new source"
+  ],
+  "supersededPassedRun": {
+    "resultBundle": "native-confirmed.xcresult",
+    "scope": "1 UI probe passed before entry cancellation/request guard; preserved separately, final source uses native-final"
+  }
+}

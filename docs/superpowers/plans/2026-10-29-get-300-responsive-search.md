@@ -1,0 +1,11 @@
+# GET-300: keep native search work off the input thread
+
+The current view scans every chapter synchronously while evaluating its body. A controlled iOS 26.5 executable using the exact SearchExcerpt source and 3,000 repeated public-domain paragraphs (1,161,502 logical source scalars) measured the common-word core scan at 19.8–25.0 ms with optimization and 24.1–30.9 ms without it. Three samples per query are not an app-input, frame-rate, p95 or physical-device benchmark. They justify removing this work from the UI actor without claiming that the search algorithm itself becomes faster.
+
+Use a pure LeafhourCore asynchronous search API returning chapter indices, original-source excerpts and ReadingAnchors. An explicitly detached task owns the CPU scan, checks cancellation between passages, and receives cancellation from its awaiting parent via withTaskCancellationHandler. Check cancellation again before returning. No network, model, notes, persistence or indexing migration.
+
+The panel keeps one query/book-tagged outcome, restarts via task(id:), and coalesces input for 150 ms before launching work. Only a matching request can display/select results; the same guard precedes clearing an empty request. Cancellation is normal when typing or dismissing; unexpected failure has its own truthful state. Keep whitespace/empty/no-match behavior, GET-299 excerpts and exact scalar navigation. Count matching paragraphs in the result area, keeping the input field for the user's query.
+
+Validate Unicode/cross-chapter identity, per-passage counts, concurrent query isolation and parent cancellation in core tests. Run a focused native replace/clear/dismiss/reopen/result/jump probe against isolated public text. Review cancellation propagation and stale-result publication independently, then pass current-head CI and merge normally. Reflow/selection/image/iPad work remains separate.
+
+Primary references checked 2026-10-29: [Apple responsiveness](https://developer.apple.com/documentation/xcode/improving-app-responsiveness), [Swift task ownership](https://docs.swift.org/latest/documentation/the-swift-programming-language/concurrency/), [Apple cancellation handler](https://developer.apple.com/documentation/swift/withtaskcancellationhandler%28operation%3Aoncancel%3A%29).
