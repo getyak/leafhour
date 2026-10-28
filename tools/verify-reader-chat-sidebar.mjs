@@ -13,6 +13,7 @@ const report={cases:[],errors:[],limits:['Local synthetic account; no provider c
 if(process.argv.includes('--paginated-only')){const previous=JSON.parse(await readFile(path.join(output,'report.json'),'utf8'));report.cases=previous.cases;}
 let browser;console.log('Local server created');
 const settle=page=>page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
+const wake=async page=>{if(await page.locator('body').getAttribute('data-reading-tools')!=='open'){await page.locator('#reading-tools-trigger').focus();await page.keyboard.press('Enter');}};
 try{
  await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));const base='http://127.0.0.1:'+server.address().port;
  const {chromium}=await import(pathToFileURL(process.env.LEAFHOUR_PLAYWRIGHT_MODULE));browser=await chromium.launch({headless:true,executablePath:process.env.LEAFHOUR_CHROMIUM_EXECUTABLE||'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'});report.browser=browser.version();console.log('Browser started');
@@ -22,9 +23,9 @@ try{
  console.log('Synthetic account ready');const page=await context.newPage();page.on('pageerror',error=>report.errors.push(error.message));
  for(const [width,height,locale]of (process.argv.includes('--paginated-only')?[]:[[1440,900,'zh-Hans'],[1200,700,'en'],[1100,700,'ja'],[768,1024,'zh-Hant'],[390,844,'zh-Hans']])){
   console.log('Checking',width,locale);await page.setViewportSize({width,height});await page.goto(base+'/read?book=gutenberg-alice&ui='+locale,{waitUntil:'networkidle'});
-  const trigger=page.locator('.library-chat-trigger'),dialog=page.locator('#reader-conversation');await trigger.waitFor({state:'visible'});
+  const trigger=page.locator('.library-chat-trigger'),dialog=page.locator('#reader-conversation');await trigger.waitFor({state:'attached'});await wake(page);
   await page.evaluate(()=>window.scrollTo(0,500));await settle(page);const before=await page.evaluate(()=>window.marginaliaReader.getAnchor());
-  await page.screenshot({path:path.join(output,`${width}-closed.png`)});await trigger.click();await dialog.waitFor({state:'visible'});await settle(page);
+  await page.screenshot({path:path.join(output,`${width}-closed.png`)});await wake(page);await trigger.click();await dialog.waitFor({state:'visible'});await settle(page);
   const bounds=await dialog.boundingBox();assert.ok(bounds.x>=0&&bounds.y>=0&&bounds.x+bounds.width<=width+1&&bounds.y+bounds.height<=height+1);
   assert.equal(await trigger.getAttribute('aria-expanded'),'true');
   if(width>=1100){
@@ -44,8 +45,8 @@ try{
   report.cases.push({width,height,locale,passed:true});
  }
  await page.setViewportSize({width:1440,height:900});await page.goto(base+'/read?book=gutenberg-alice&ui=zh-Hans',{waitUntil:'networkidle'});
- await page.locator('#reading-tools-trigger').click();await page.locator('#open-settings').click();await page.locator('#page-layout').selectOption('spread',{force:true});await page.locator('[data-close-dialog="settings-dialog"]').first().click();await page.waitForFunction(()=>document.body.dataset.paginated==='true');
- await page.locator('.library-chat-trigger').click();await settle(page);let book=await page.locator('#book-page').boundingBox(),panel=await page.locator('#reader-conversation').boundingBox();assert.ok(book.x+book.width<=panel.x+1);assert.equal(panel.height,900);
+ await wake(page);await page.locator('#open-settings').click();await page.locator('#page-layout').selectOption('spread',{force:true});await page.locator('[data-close-dialog="settings-dialog"]').first().click();await page.waitForFunction(()=>document.body.dataset.paginated==='true');
+ await wake(page);await page.locator('.library-chat-trigger').click();await settle(page);let book=await page.locator('#book-page').boundingBox(),panel=await page.locator('#reader-conversation').boundingBox();assert.ok(book.x+book.width<=panel.x+1);assert.equal(panel.height,900);
  await page.screenshot({path:path.join(output,'1440-paginated.png')});
  await page.setViewportSize({width:390,height:420});await settle(page);assert.equal(await page.locator('#reader-conversation').getAttribute('aria-modal'),'true');
  await page.setViewportSize({width:1440,height:900});await settle(page);assert.equal(await page.locator('#reader-conversation').getAttribute('aria-modal'),'false');assert.equal(await page.evaluate(()=>document.body.style.overflow),'');

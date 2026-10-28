@@ -30,11 +30,11 @@
 .book-info-heading{display:flex;align-items:center;justify-content:space-between;margin:-6px -9px 14px 0}
 .book-info-heading>span{font:12px/1.6 var(--interface);color:var(--muted);letter-spacing:var(--track-label)}
 .book-info-identity{display:grid;grid-template-columns:72px minmax(0,1fr);align-items:center;gap:20px}
-.book-info-cover{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:space-between;min-height:105px;padding:10px 9px 9px;background:#6d7865;color:#fcf8e9;box-shadow:inset 3px 0 #0002,inset 4px 0 #fff2,2px 3px 6px #1523191a;border-radius:1px 4px 4px 1px;text-align:center}
-.book-info[data-cover=alice] .book-info-cover{background:#658779}
-.book-info[data-cover=walden] .book-info-cover{background:#68765e}
-.book-info[data-cover=meditations] .book-info-cover{background:#8c7659}
-.book-info-cover>span{font:12px/1.4 var(--interface);letter-spacing:.12em;opacity:.7}
+.book-info-cover{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:space-between;min-height:105px;padding:10px 9px 9px;background:#56634f;color:#fcf8e9;box-shadow:inset 3px 0 #0002,inset 4px 0 #fff2,2px 3px 6px #1523191a;border-radius:1px 4px 4px 1px;text-align:center}
+.book-info[data-cover=alice] .book-info-cover{background:#455e51}
+.book-info[data-cover=walden] .book-info-cover{background:#4f5d46}
+.book-info[data-cover=meditations] .book-info-cover{background:#665239}
+.book-info-cover>span{font:12px/1.4 var(--interface);letter-spacing:.12em;opacity:1}
 .book-info-cover strong{font:400 12px/1.6 var(--book);overflow-wrap:anywhere;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;overflow:hidden}
 .book-info-cover i{font:15px/1 var(--font-serif);opacity:.8}
 .book-info-identity h2{font:400 22px/1.5 var(--font-serif);margin:0 0 6px;overflow-wrap:anywhere;letter-spacing:var(--track-heading)}

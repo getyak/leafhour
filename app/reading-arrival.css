@@ -18,7 +18,7 @@
 .arrival-person{position:absolute;left:59px;top:16px;width:84px;height:124px;transform:rotate(-5deg);transform-origin:bottom center;animation:arrival-sway 2.8s ease-in-out infinite}
 .arrival-face{position:absolute;width:65px;height:69px;top:0;left:9px;border:1.5px solid var(--arrival-ink);border-radius:9px 17px 12px 12px;background:var(--arrival-cream);z-index:3;transform:rotate(7deg);transform-origin:50% 85%;animation:arrival-look 3.8s ease-in-out infinite}
 .arrival-fold{position:absolute;right:-1px;top:-1px;width:17px;height:17px;background:var(--arrival-fold);border-left:1.5px solid var(--arrival-ink);border-bottom:1.5px solid var(--arrival-ink);border-radius:0 13px 0 4px}
-.arrival-eye{position:absolute;top:30px;width:4px;height:6px;background:var(--arrival-ink);border-radius:50%;animation:arrival-blink 4.3s linear infinite}
+.arrival-eye{position:absolute;top:30px;width:4px;height:6px;background:var(--arrival-ink);border-radius:50%}
 .arrival-eye-left{left:19px}.arrival-eye-right{left:40px}
 .arrival-smile{position:absolute;width:10px;height:6px;top:40px;left:27px;border-bottom:1.5px solid var(--arrival-ink);border-radius:50%}
 .arrival-cheek{position:absolute;top:39px;width:9px;height:4px;background:var(--arrival-cheek);border-radius:50%;opacity:.65}
@@ -38,7 +38,6 @@
 @keyframes arrival-sway{0%,100%{transform:rotate(-5deg) translateY(0)}50%{transform:rotate(-2deg) translateY(-4px)}}
 @keyframes arrival-look{0%,20%,100%{transform:rotate(7deg)}48%,72%{transform:rotate(3deg) translateY(1px)}}
 @keyframes arrival-leg{0%,100%{transform:rotate(15deg)}50%{transform:rotate(-8deg)}}
-@keyframes arrival-blink{0%,43%,47%,100%{transform:scaleY(1)}45%{transform:scaleY(.1)}}
 @keyframes arrival-page{0%,37%{transform:skewY(-13deg) rotateY(0)}62%,100%{transform:skewY(-13deg) rotateY(-170deg)}}
 @keyframes arrival-leaf{0%,100%{translate:0 0}50%{translate:0 -6px}}
 @media(max-width:600px){.reading-arrival{min-height:500px;padding:0 4px 32px}.reading-arrival .arrival-quote{font-size:23px}.reading-arrival .arrival-greeting{margin-bottom:24px}.reading-arrival .arrival-original{font-size:12px;max-width:340px}.arrival-library{padding-top:0}.arrival-scene{height:148px}}

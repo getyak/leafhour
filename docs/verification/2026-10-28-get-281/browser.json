@@ -1,0 +1,155 @@
+{
+  "cases": [
+    {
+      "width": 1440,
+      "height": 900,
+      "locale": "zh-Hans",
+      "theme": "paper",
+      "checks": [
+        "sleeping-shell-and-chat-hidden",
+        "edge-keyboard-and-unread-recovery",
+        "half-sheet-or-wide-reflow",
+        "plain-answer-specimen",
+        "anchor-and-focus-return"
+      ],
+      "chat": {
+        "x": 1040,
+        "y": 0,
+        "width": 400,
+        "height": 900
+      }
+    },
+    {
+      "width": 1200,
+      "height": 800,
+      "locale": "en",
+      "theme": "leaf",
+      "checks": [
+        "sleeping-shell-and-chat-hidden",
+        "edge-keyboard-and-unread-recovery",
+        "half-sheet-or-wide-reflow",
+        "plain-answer-specimen",
+        "anchor-and-focus-return"
+      ],
+      "chat": {
+        "x": 800,
+        "y": 0,
+        "width": 400,
+        "height": 800
+      }
+    },
+    {
+      "width": 768,
+      "height": 1024,
+      "locale": "zh-Hant",
+      "theme": "paper",
+      "checks": [
+        "sleeping-shell-and-chat-hidden",
+        "edge-keyboard-and-unread-recovery",
+        "half-sheet-or-wide-reflow",
+        "plain-answer-specimen",
+        "anchor-and-focus-return"
+      ],
+      "chat": {
+        "x": 0,
+        "y": 512,
+        "width": 768,
+        "height": 512
+      }
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "locale": "zh-Hans",
+      "theme": "night",
+      "checks": [
+        "sleeping-shell-and-chat-hidden",
+        "edge-keyboard-and-unread-recovery",
+        "half-sheet-or-wide-reflow",
+        "plain-answer-specimen",
+        "anchor-and-focus-return",
+        "compact-viewport-recovers-half-sheet",
+        "real-quote-expands-and-removal-restores-sheet",
+        "annotation-layout-specimen-scrolls-and-restores-sheet"
+      ],
+      "chat": {
+        "x": 0,
+        "y": 422,
+        "width": 390,
+        "height": 422
+      }
+    },
+    {
+      "width": 320,
+      "height": 700,
+      "locale": "ja",
+      "theme": "paper",
+      "checks": [
+        "sleeping-shell-and-chat-hidden",
+        "edge-keyboard-and-unread-recovery",
+        "half-sheet-or-wide-reflow",
+        "plain-answer-specimen",
+        "anchor-and-focus-return"
+      ],
+      "chat": {
+        "x": 0,
+        "y": 340,
+        "width": 320,
+        "height": 360
+      }
+    }
+  ],
+  "errors": [],
+  "blockedWrites": [
+    "/api/library/daily-reading/presence",
+    "/api/library/books/gutenberg-alice/progress",
+    "/api/library/daily-reading/presence",
+    "/api/library/books/gutenberg-alice/progress",
+    "/api/library/daily-reading/presence",
+    "/api/library/books/gutenberg-alice/progress",
+    "/api/library/daily-reading/presence",
+    "/api/library/books/gutenberg-alice/progress",
+    "/api/library/daily-reading/presence",
+    "/api/library/books/gutenberg-alice/progress"
+  ],
+  "limits": [
+    "Browser input, not physical iPhone, Safari or screen-reader acceptance.",
+    "Answer/unread specimens are labelled DOM fixtures, not model outputs.",
+    "No production login, personal data or model calls."
+  ],
+  "browser": "156.0.8078.74",
+  "packaged": true,
+  "guestContrast": [
+    {
+      "theme": "paper",
+      "color": "rgb(250, 249, 245)",
+      "background": "rgb(41, 42, 37)",
+      "ratio": 13.726630877501822
+    },
+    {
+      "theme": "warm",
+      "color": "rgb(245, 239, 223)",
+      "background": "rgb(55, 48, 39)",
+      "ratio": 11.331299113692959
+    },
+    {
+      "theme": "mist",
+      "color": "rgb(237, 240, 240)",
+      "background": "rgb(41, 51, 52)",
+      "ratio": 11.328791484710214
+    },
+    {
+      "theme": "leaf",
+      "color": "rgb(234, 242, 231)",
+      "background": "rgb(41, 55, 44)",
+      "ratio": 10.943253005497526
+    },
+    {
+      "theme": "night",
+      "color": "rgb(35, 48, 38)",
+      "background": "rgb(214, 225, 216)",
+      "ratio": 10.261817068079447
+    }
+  ],
+  "passed": true
+}

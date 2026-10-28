@@ -1,0 +1,32 @@
+[
+  {
+    "name": "desktop-sleep",
+    "primary": 0,
+    "advisory": 0
+  },
+  {
+    "name": "desktop-conversation",
+    "primary": 0,
+    "advisory": 0
+  },
+  {
+    "name": "mobile-conversation-paper",
+    "primary": 0,
+    "advisory": 0
+  },
+  {
+    "name": "mobile-conversation-leaf",
+    "primary": 0,
+    "advisory": 0
+  },
+  {
+    "name": "mobile-conversation-night",
+    "primary": 0,
+    "advisory": 0
+  },
+  {
+    "name": "mobile-sleep",
+    "primary": 0,
+    "advisory": 0
+  }
+]
