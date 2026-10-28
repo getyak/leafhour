@@ -1,6 +1,15 @@
 import {t,getUiLocale,onUiLocaleChange,uiReady,createUiMessage} from './ui-locale.mjs';
-import {exportLibraryInParts,readExportResource} from './library-export.mjs';
-import {createLibraryArchive,readLibraryArchive,personalExportItems,selectedRecordExport,portableHash,PART_BYTES,MAX_ARCHIVE_BYTES} from './library-portability.mjs';
+import {PART_BYTES,MAX_ARCHIVE_BYTES} from './library-transfer-limits.mjs';
+// Archive parsing/compression is loaded only after an explicit data action.
+let archiveTools=null,archiveLoading=null;
+const loadArchive=()=>archiveTools?Promise.resolve(archiveTools):archiveLoading||(archiveLoading=import('./library-portability.mjs').then(module=>archiveTools=module).finally(()=>{archiveLoading=null;}));
+const createLibraryArchive=async(...args)=>(await loadArchive()).createLibraryArchive(...args);
+const readLibraryArchive=async(...args)=>(await loadArchive()).readLibraryArchive(...args);
+const portableHash=async(...args)=>(await loadArchive()).portableHash(...args);
+const personalExportItems=(...args)=>archiveTools.personalExportItems(...args);
+const selectedRecordExport=(...args)=>archiveTools.selectedRecordExport(...args);
+const exportLibraryInParts=async(...args)=>{const [module]=await Promise.all([import('./library-export.mjs'),loadArchive()]);return module.exportLibraryInParts(...args);};
+const readExportResource=async(...args)=>(await import('./library-export.mjs')).readExportResource(...args);
 import {mountChoiceControl} from './choice-control.mjs';
 import {settingGroup,switchRow,mountDropzone,mountConfirm} from './settings-controls.mjs';
 const node=(tag,text)=>{const el=document.createElement(tag);if(text!==undefined)el.textContent=text;return el;};

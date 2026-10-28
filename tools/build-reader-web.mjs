@@ -21,6 +21,7 @@ export const UI_LOCALE_OWNERS=Object.freeze([
  'app/gift-compose.mjs',
  'app/home-atmosphere.mjs',
  'app/home-navigation.mjs',
+ 'app/library-arrival.mjs',
  'app/library-book-actions.mjs',
  'app/library-chat.mjs',
  'app/chat-book-upload.mjs',

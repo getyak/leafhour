@@ -13,6 +13,7 @@ export async function loadWorkspaceActivity(api,{month,date,timeZone}){
 }
 
 export function shelfReadingStatus(book){
+  if(book.personalizationPending)return 'pending';
   if(book.journey?.status==='finished')return 'finished';
   return book.resume?.passageId||book.journey?.lastReadAt||book.journey?.completedChapters>0?'reading':'unread';
 }
@@ -22,7 +23,7 @@ export const hasShelfFilters=({scope='all',status='all',topic='all',language='al
 
 export function libraryShelf(books,{scope='all',query='',status='all',topic='all',language='all',form='all'}={}){
   const needle=query.trim().toLocaleLowerCase();
-  return books.filter(book=>(scope==='all'||book.visibility===scope)&&(status==='all'||shelfReadingStatus(book)===status)&&(topic==='all'||Array.isArray(book.topics)&&book.topics.includes(topic))&&matchesReadingLanguage(book,{language,form})&&(!needle||[book.title?.zh,book.title?.en,book.author].filter(Boolean).join(' ').toLocaleLowerCase().includes(needle)))
+  return books.filter(book=>(scope==='all'||book.visibility===scope)&&(status==='all'||book.personalizationPending||shelfReadingStatus(book)===status)&&(topic==='all'||Array.isArray(book.topics)&&book.topics.includes(topic))&&(book.personalizationPending||matchesReadingLanguage(book,{language,form}))&&(!needle||[book.title?.zh,book.title?.en,book.author].filter(Boolean).join(' ').toLocaleLowerCase().includes(needle)))
     .sort((a,b)=>(Number.isFinite(a.shelfPosition)||Number.isFinite(b.shelfPosition)?(a.shelfPosition??Number.MAX_SAFE_INTEGER)-(b.shelfPosition??Number.MAX_SAFE_INTEGER):0)||Number(b.visibility==='private')-Number(a.visibility==='private')||activityAt(b).localeCompare(activityAt(a)));
 }
 

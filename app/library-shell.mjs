@@ -92,6 +92,7 @@ export function mountLibraryShell({getSession,openAuth,onLogout,onHistory,onOpen
   const memoryDetails=node('details','settings-advanced'),memorySummary=node('summary','',t('shell.preferences.advanced'));
   const memoryRoot=node('section','settings-preference-memory');memoryDetails.append(memorySummary,memoryRoot);panels['reading-habits'].append(memoryDetails);
   const memory=mountPreferenceMemory({root:memoryRoot,api,getSession,onSaved:onPreferenceMemorySaved});
+  if(inboxRoot)panels['daily-reading'].append(inboxRoot);
   const daily=mountLibraryDailyReading({root:panels['daily-reading'],inboxRoot,api,getSession,getBooks,getCurrentBook});
   const data=mountLibraryData({root:panels.data,getSession,api,onRestored});
   const observability=createBrowserObservability({getOwner:()=>accountUser?.id||null,page:'library'});

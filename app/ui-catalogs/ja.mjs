@@ -1,6 +1,23 @@
 // GET-192 immutable ja UI catalogue. Fixed public stateless ID→string
 // data with the same keys as app/ui-catalogs/en.mjs. No logic lives here.
 export default Object.freeze({
+  "arrival.title": "続きから読もう",
+  "arrival.close": "今日の振り返りを閉じる",
+  "arrival.talk": "本について話す",
+  "arrival.continue": "続きを読む →",
+  "arrival.preference": "毎日の最初の訪問時に読書を振り返る",
+  "arrival.lessMinute": "1 分未満",
+  "arrival.bookSeparator": "、",
+  "arrival.yesterday": "昨日は {time}の読書を記録しました（{sources}）。",
+  "arrival.noYesterday": "昨日の読書記録はありません。",
+  "arrival.activity": "メモ {notes} 件と質問 {questions} 件を残しました。",
+  "arrival.last": "直近の読書記録は {at}。『{title}』を {time}読みました。",
+  "arrival.firstRead": "本を選んで、数ページから始めましょう。",
+  "arrival.source.reader_focus": "読書タイマー",
+  "arrival.source.reader_estimate": "読書時間の推定",
+  "arrival.source.manual": "手動の記録",
+  "arrival.pending": "本を表示しました。読書位置を読み込めません。もう一度お試しください。",
+  "arrival.open": "本を開く",
   "observability.title": "Leafhour の改善",
   "observability.description": "いつでもオフにできます。本の内容や個人の記録は含みません。",
   "observability.analytics": "利用状況の統計",

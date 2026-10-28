@@ -1,3 +1,4 @@
+import {buildLibraryArrival} from './library-arrival.mjs';
 import {memoryFor,recordPreference,applyMemoryChange} from './preference-memory.mjs';
 import {resolveVerifiedSource} from './verified-source.mjs';
 import {createChapterReadStore} from './chapter-read-store.mjs';
@@ -188,7 +189,8 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
     });
   }
   const shelfFile=user=>path.join(userDir(user),'shelf.json');
-  async function allShelfRows(user){const index=user?await read(path.join(userDir(user),'index.json'),{books:[]}):{books:[]};return [...publicBooks.values()].map(brief).concat(index.books);}
+  const publicRows=[...publicBooks.values()].map(brief);
+  async function allShelfRows(user){const index=user?await read(path.join(userDir(user),'index.json'),{books:[]}):{books:[]};return publicRows.concat(index.books);}
   const activeOrder=(shelf,rows)=>{const visible=rows.filter(row=>!Object.hasOwn(shelf.archived,row.bookId)).map(row=>row.bookId),available=new Set(visible);return [...shelf.order.filter(id=>available.has(id)),...visible.filter(id=>!shelf.order.includes(id))];};
   function visibleShelf(shelf,rows){const available=new Set(rows.map(row=>row.bookId));return {revision:shelf.revision,order:shelf.order.length?activeOrder(shelf,rows):[],archived:Object.fromEntries(Object.entries(shelf.archived).filter(([id])=>available.has(id)))};}
   async function shelfState(user){if(!user)return emptyShelf();const [shelf,rows]=await Promise.all([read(shelfFile(user),emptyShelf()),allShelfRows(user)]);return visibleShelf(shelf,rows);}
@@ -221,11 +223,11 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
   const archiveBook=(user,id,input)=>changeArchive(user,id,input,false);
   const restoreBook=(user,id,input)=>changeArchive(user,id,input,true);
   async function trash(user){if(!user)return [];const [shelf,rows]=await Promise.all([read(shelfFile(user),emptyShelf()),allShelfRows(user)]);return rows.filter(row=>Object.hasOwn(shelf.archived,row.bookId)).map(row=>({...row,archivedAt:shelf.archived[row.bookId]}));}
-  async function list(user){
+  async function list(user,{metadataOnly=false}={}){
     const [all,shelf]=await Promise.all([allShelfRows(user),user?read(shelfFile(user),emptyShelf()):emptyShelf()]),order=shelf.order.length?activeOrder(shelf,all):null,positions=order&&new Map(order.map((id,index)=>[id,index])),rows=all.filter(row=>!Object.hasOwn(shelf.archived,row.bookId));
     if(positions)rows.sort((a,b)=>positions.get(a.bookId)-positions.get(b.bookId));
     return Promise.all(rows.map(async row=>{
-      if(!user)return {...row,resume:null,journey:null};
+      if(!user||metadataOnly)return {...row,...(positions?{shelfPosition:positions.get(row.bookId)}:{}),resume:null,journey:null,...(user?{personalizationPending:true}:{})};
       const data=await read(recordFile(user,row.bookId),{position:null});
       // Older indexes lack language metadata. Derive it without rewriting the account's files.
       const book=publicBooks.get(row.bookId)||await read(bookFile(user,row.bookId),null);
@@ -327,6 +329,12 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
   }
   async function setReadingGoal(user,id,input){
     requireUser(user);const book=await getBook(user,id),goal=normalizeReadingGoal({minutes:input?.minutes});return mutate(recordFile(user,id),emptyRecords(book),raw=>{const data=readingDefaults(raw);data.readingGoal=goal;guardRecordSize(data);return goal;});
+  }
+  async function arrival(user,query){
+    requireUser(user);buildLibraryArrival([],query);
+    const [rows,shelf]=await Promise.all([allShelfRows(user),read(shelfFile(user),emptyShelf())]);
+    const entries=await Promise.all(rows.filter(row=>!Object.hasOwn(shelf.archived,row.bookId)).map(async book=>({book,records:await read(recordFile(user,book.bookId),emptyRecords(book))})));
+    return buildLibraryArrival(entries,query);
   }
   async function readingActivity(user,query){
     requireUser(user);buildReadingCalendar([],query);const index=await read(path.join(userDir(user),'index.json'),{books:[]}),ids=[...new Set([...publicBooks.keys(),...index.books.map(b=>b.bookId)])];
@@ -620,5 +628,5 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
     await chapterReads.manifest(user,incoming.bookId);
     return {bookId:incoming.bookId,alreadyOwned:!claim.created};
   }
-  return {introductions,sourceEvidence,sourceReview,createSourceRevision,resolveSourceAnchor,bookTransfer:async(user,id,offset,snapshot)=>transferBook(await getBook(user,id),offset,snapshot),list,shelfState,reorderShelf,archiveBook,restoreBook,trash,getBook,readingView,readingChapter,importDocument,importExtracted,originalInfo,getOriginal,originalDownload,originalParts,originalRange,records,getReadingPreferences,saveReadingPreferences,getPreferenceMemory,changePreferenceMemory,addComment,editComment,addHighlight,addAgentHighlight,removeHighlight,saveProgress,saveReadingSession,recordReadingMilestone,setReadingGoal,readingActivity,translate,createGrant,createMcpGrant,createDailyGrant,authorize,authorizeDaily,isGrantActive,registerGrantRevocation:listener=>{grantRevocationListeners.add(listener);return()=>grantRevocationListeners.delete(listener);},registerSourceMutation:listener=>{sourceMutationListeners.add(listener);return()=>sourceMutationListeners.delete(listener);},grants,revokeGrant,exportLibrary,exportManifest,exportBookPart,exportBookEntry,restoreOriginal,validateRestore,previewRestoreBooks,restoreLibrary,receiveGift,translationAvailable:!!translator};
+  return {introductions,sourceEvidence,sourceReview,createSourceRevision,resolveSourceAnchor,bookTransfer:async(user,id,offset,snapshot)=>transferBook(await getBook(user,id),offset,snapshot),list,shelfState,reorderShelf,archiveBook,restoreBook,trash,getBook,readingView,readingChapter,importDocument,importExtracted,originalInfo,getOriginal,originalDownload,originalParts,originalRange,records,getReadingPreferences,saveReadingPreferences,getPreferenceMemory,changePreferenceMemory,addComment,editComment,addHighlight,addAgentHighlight,removeHighlight,saveProgress,saveReadingSession,recordReadingMilestone,setReadingGoal,readingActivity,arrival,translate,createGrant,createMcpGrant,createDailyGrant,authorize,authorizeDaily,isGrantActive,registerGrantRevocation:listener=>{grantRevocationListeners.add(listener);return()=>grantRevocationListeners.delete(listener);},registerSourceMutation:listener=>{sourceMutationListeners.add(listener);return()=>sourceMutationListeners.delete(listener);},grants,revokeGrant,exportLibrary,exportManifest,exportBookPart,exportBookEntry,restoreOriginal,validateRestore,previewRestoreBooks,restoreLibrary,receiveGift,translationAvailable:!!translator};
 }

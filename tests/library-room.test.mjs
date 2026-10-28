@@ -28,3 +28,6 @@ test('long preview text remains a bounded exact prefix without splitting Unicode
   const original='😀'.repeat(6001),long={...book,sections:[{chapterId:'ch1',paragraphs:[{id:'long',original}]}]};
   const preview=workspace.roomExcerpt(long,'long');assert.ok(preview.original.length<=6000);assert.ok(preview.original.isWellFormed());assert.ok(original.startsWith(preview.original));assert.equal(preview.truncated,true);
 });
+test('pending personalization never classifies a book as unread or empties a saved status filter',()=>{
+ const pending={...books[2],personalizationPending:true};assert.equal(workspace.shelfReadingStatus(pending),'pending');assert.equal(workspace.libraryShelf([pending],{status:'reading',form:'bilingual',language:'ja'}).length,1);
+});

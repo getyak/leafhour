@@ -1,6 +1,23 @@
 // GET-192 immutable zh-Hant UI catalogue. Fixed public stateless ID→string
 // data with the same keys as app/ui-catalogs/en.mjs. No logic lives here.
 export default Object.freeze({
+  "arrival.title": "回來接著讀",
+  "arrival.close": "收起今天的閱讀回顧",
+  "arrival.talk": "聊聊這本書",
+  "arrival.continue": "接著讀 →",
+  "arrival.preference": "每天第一次進入時顯示閱讀回顧",
+  "arrival.lessMinute": "不足 1 分鐘",
+  "arrival.bookSeparator": "、",
+  "arrival.yesterday": "昨天記錄了 {time}閱讀（{sources}）。",
+  "arrival.noYesterday": "昨天沒有記錄到閱讀。",
+  "arrival.activity": "還留下了 {notes} 條筆記和 {questions} 個問題。",
+  "arrival.last": "最近一次閱讀記錄在 {at}：《{title}》，{time}。",
+  "arrival.firstRead": "選一本書，從幾頁開始。",
+  "arrival.source.reader_focus": "自動計時",
+  "arrival.source.reader_estimate": "閱讀估算",
+  "arrival.source.manual": "手動補記",
+  "arrival.pending": "書籍已打開，閱讀進度暫時無法讀取，請重試。",
+  "arrival.open": "打開書籍",
   "observability.title": "改進 Leafhour",
   "observability.description": "可隨時關閉，不含書中內容和個人紀錄。",
   "observability.analytics": "使用統計",

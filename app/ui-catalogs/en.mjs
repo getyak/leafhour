@@ -2,6 +2,23 @@
 // data, also the safe default for server/static English shells. Complete
 // default data: every other catalogue carries the same keys.
 export default Object.freeze({
+  "arrival.title": "Welcome back",
+  "arrival.close": "Dismiss today’s recap",
+  "arrival.talk": "Talk about a book",
+  "arrival.continue": "Continue reading →",
+  "arrival.preference": "Show a reading recap on my first visit each day",
+  "arrival.lessMinute": "less than a minute",
+  "arrival.bookSeparator": ", ",
+  "arrival.yesterday": "Yesterday, you recorded {time} of reading ({sources}).",
+  "arrival.noYesterday": "No reading was recorded yesterday.",
+  "arrival.activity": "You added {notes} notes and {questions} questions.",
+  "arrival.last": "Your latest reading record was {at}: {title}, {time}.",
+  "arrival.firstRead": "Choose a book to begin.",
+  "arrival.source.reader_focus": "the reading timer",
+  "arrival.source.reader_estimate": "reading estimates",
+  "arrival.source.manual": "your manual entries",
+  "arrival.pending": "Books are open. Reading progress could not be loaded. Try again.",
+  "arrival.open": "Open book",
   "observability.title": "Improve Leafhour",
   "observability.description": "Optional. Book content and personal records are never included.",
   "observability.analytics": "Usage statistics",

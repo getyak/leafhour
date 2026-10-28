@@ -160,6 +160,7 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
     for(const file of ['pricing-checkout.mjs','pricing-checkout-flow.mjs','pricing-checkout-markup.mjs','checkout-embed.mjs','pricing-checkout.css'])files['/'+file]=file;
     for(const file of ['library-craft.css','book-binding.mjs','brand-assets/sage-paper.webp'])files['/'+file]=file;
     files['/library-incremental.mjs']='library-incremental.mjs';
+    for(const file of ['library-arrival.mjs','library-arrival-state.mjs','library-arrival.css','library-transfer-limits.mjs'])files['/'+file]=file;
     for(const file of ['home-atmosphere.css','home-atmosphere.mjs','brand-assets/sunlit-room.webp','brand-assets/foliage-canopy.webp'])files['/'+file]=file;
     files['/reading-session-record.mjs']='reading-session-record.mjs';
     for(const file of ['reading-time-policy.mjs','reading-manual.mjs','reading-manual-ui.mjs'])files['/'+file]=file;
@@ -299,9 +300,10 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
       const session=await auth.verifyCode(body.email,body.code,purpose);setSession(session.token);send(200,{user:session.user,...(session.passwordSetup?{passwordSetup:true,passwordSetupToken:session.passwordSetupToken}:{})});return true;
     }
     if(p==='/api/auth/local'&&req.method==='POST'){if(!localAllowed)throw fail('本机书房只在本机模式可用',403);const session=await auth.localSession();setSession(session.token);send(200,{user:session.user});return true;}
-    if(p==='/api/library'&&req.method==='GET'){const view=await shelfView(user,library.list);send(200,{books:view.books,user:await visibleUser(user),shelfRevision:view.revision});return true;}
+    if(p==='/api/library'&&req.method==='GET'){const view=await shelfView(user,owner=>library.list(owner,{metadataOnly:url.searchParams.get('view')==='books'}));send(200,{books:view.books,user:await visibleUser(user),shelfRevision:view.revision});return true;}
     if(p==='/api/library/order'&&req.method==='POST'){send(200,await library.reorderShelf(user,body));return true;}
     if(p==='/api/library/trash'&&req.method==='GET'){send(200,await shelfView(user,library.trash));return true;}
+    if(p==='/api/library/arrival'&&req.method==='GET'){res.setHeader('Cache-Control','private, no-store');send(200,await library.arrival(user,{timeZone:url.searchParams.get('timeZone')}));return true;}
     if(p==='/api/library/activity'&&req.method==='GET'){send(200,await library.readingActivity(user,{month:url.searchParams.get('month'),timeZone:url.searchParams.get('timeZone')}));return true;}
     if(p==='/api/library/mcp-setup'&&req.method==='GET'){
       if(!user)throw fail('请先进入自己的书房',401);
