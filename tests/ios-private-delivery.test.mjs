@@ -15,4 +15,6 @@ test('signed IPA stays on one ephemeral runner and is never uploaded to GitHub a
     }
   }
   assert.equal(readFileSync('.github/workflows/release-ios.yml','utf8').includes('scripts/ios/finalize.mjs'),false);
+  assert.equal(workflow.jobs.reconcile.steps.some(step=>step.uses?.startsWith('actions/download-artifact@')),false,'user-selected recovery artifacts must never be extracted over executable source');
+  assert.equal(workflow.jobs.reconcile.env.ASC_PRIVATE_KEY_P8,undefined,'ASC secrets belong only to the final read-only Apple query step');
 });

@@ -17,7 +17,7 @@ Date: 2026-10-28. Scope: source implementation and validation for draft PR #240.
 
 | Check | Actual result |
 | --- | --- |
-| `node --test tests/ios-*.test.mjs` | 20 passed, 0 failed after the controlled-upload revision |
+| `node --test tests/ios-*.test.mjs` | 21 passed, 0 failed after the controlled-upload and recovery-isolation revision |
 | `python3 -m unittest discover -s tests -p 'test_ios_*.py'` | 3 passed, 0 failed |
 | `bash -n scripts/ios/archive.sh scripts/ios/upload.sh` | Passed |
 | Ruby/Psych parse of all four changed/new YAML workflows | Passed |
@@ -38,7 +38,9 @@ A fresh read-only reviewer found three Important issues and no Critical issues:
 
 At the initial review checkpoint, 17 Node and 3 Python tests and actionlint passed after those fixes. The subsequent user-directed sharing-boundary revision removes public Release/tag creation, all IPA artifacts, binary attestations and the finalize job entirely. Archive and ASC upload now share one ephemeral runner; only a schema-2 allowlisted metadata receipt survives. Receipt ZIP server-digest verification and actual successful exact-source workflow/CI provenance replace tag/asset checks. Read-only recovery verifies the original plan and stores only a separately named observation; a failed source run cannot become a trusted baseline.
 
-The privacy regression was first reproduced as a failing test on the previous split-job/public-artifact design. The revised tests prove that the IPA never appears in an artifact upload path, archive and upload share a job, no contents-write permission exists, arbitrary plan/API fields are removed from persisted JSON, and malformed/digest-mismatched receipt archives are rejected. Current local results are 20 Node and 3 Python tests plus actionlint passing.
+The privacy regression was first reproduced as a failing test on the previous split-job/public-artifact design. A focused fresh review then found that the read-only recovery plan downloader could extract over executable source before validation. This was reproduced and fixed: validate the selected main release run before download, verify the server digest, accept only one bounded `release-plan.json` via in-memory ZIP parsing, never extract over the checkout, write the validated JSON under runner temp, and scope ASC credentials solely to the final Apple-query step. A regression supplies an artifact containing an executable source path and requires rejection.
+
+The revised tests prove that the IPA never appears in an artifact upload path, archive and upload share a job, no contents-write permission exists, arbitrary plan/API fields are removed from persisted JSON, and malformed/digest-mismatched or executable-bearing metadata archives are rejected. Current local results are 21 Node and 3 Python tests plus actionlint passing.
 
 The original PR head `cd7facf1fa441fdb9021c977e7330efbdeb35a63` reached CI success: `test`, `native-ios`, `catalog-sources`, and `Validate dormant TestFlight automation` all passed in [run 40718214629](https://github.com/getyak/leafhour/actions/runs/40718214629). The revised head must independently pass its own CI; the original result is not reused as proof for changed code.
 

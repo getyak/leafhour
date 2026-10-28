@@ -142,9 +142,6 @@ jobs:
       contents: read
       actions: read
     env:
-      ASC_API_KEY_ID: ${{ secrets.ASC_API_KEY_ID }}
-      ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
-      ASC_PRIVATE_KEY_P8: ${{ secrets.ASC_PRIVATE_KEY_P8 }}
       IOS_APP_ID: ${{ vars.IOS_APP_ID }}
       IOS_BUNDLE_ID: ${{ vars.IOS_BUNDLE_ID }}
       ORIGINAL_RUN_ID: ${{ inputs.reconcile_run_id }}
@@ -155,23 +152,33 @@ jobs:
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: 22
-      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
-        with:
-          name: ios-release-plan
-          run-id: ${{ inputs.reconcile_run_id }}
-          github-token: ${{ github.token }}
-      - name: Validate original app, source and successful CI provenance
+      - name: Validate original run first and decode only one bounded plan without extraction
         uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea9 # v7.0.1
         with:
           script: |
-            const {readFileSync} = require('node:fs');
-            const {verifyOriginalPlan} = await import(`${process.env.GITHUB_WORKSPACE}/scripts/ios/receipt-provenance.mjs`);
-            const plan = JSON.parse(readFileSync('release-plan.json', 'utf8'));
-            await verifyOriginalPlan(plan, {appId:process.env.IOS_APP_ID,bundleId:process.env.IOS_BUNDLE_ID}, process.env.ORIGINAL_RUN_ID, {getRun:async id=>(await github.rest.actions.getWorkflowRun({...context.repo,run_id:Number(id)})).data});
+            const {mkdirSync,writeFileSync} = require('node:fs');
+            const {verifySourceRun,verifyOriginalPlan,decodePlanArchive} = await import(`${process.env.GITHUB_WORKSPACE}/scripts/ios/receipt-provenance.mjs`);
+            const proof = {getRun:async id=>(await github.rest.actions.getWorkflowRun({...context.repo,run_id:Number(id)})).data};
+            const source = await verifySourceRun(process.env.ORIGINAL_RUN_ID, proof);
+            const listed = await github.rest.actions.listWorkflowRunArtifacts({...context.repo,run_id:source.id,per_page:100});
+            const found = listed.data.artifacts.find(item=>item.name==='ios-release-plan' && !item.expired && item.size_in_bytes<=65536);
+            if (!found) throw Error('Original bounded release plan is unavailable');
+            const artifact = (await github.rest.actions.getArtifact({...context.repo,artifact_id:found.id})).data;
+            if (String(artifact.workflow_run?.id)!==process.env.ORIGINAL_RUN_ID || artifact.workflow_run?.head_sha!==source.head_sha) throw Error('Original plan artifact source differs');
+            const downloaded = await github.rest.actions.downloadArtifact({...context.repo,artifact_id:artifact.id,archive_format:'zip'});
+            const plan = decodePlanArchive(Buffer.from(downloaded.data), artifact);
+            await verifyOriginalPlan(plan, {appId:process.env.IOS_APP_ID,bundleId:process.env.IOS_BUNDLE_ID}, process.env.ORIGINAL_RUN_ID, proof);
+            const directory = `${process.env.RUNNER_TEMP}/leafhour-reconcile`;
+            mkdirSync(directory,{recursive:true,mode:0o700});
+            writeFileSync(`${directory}/release-plan.json`,JSON.stringify(plan),{mode:0o600});
       - name: Query Apple only; no archive, upload, signing changes or success receipt
+        env:
+          ASC_API_KEY_ID: ${{ secrets.ASC_API_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+          ASC_PRIVATE_KEY_P8: ${{ secrets.ASC_PRIVATE_KEY_P8 }}
         run: |
           mkdir -p build/ios
-          node scripts/ios/release.mjs wait
+          node scripts/ios/release.mjs wait "$RUNNER_TEMP/leafhour-reconcile/release-plan.json"
       - name: Retain non-sensitive observation without treating it as a successful release baseline
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:

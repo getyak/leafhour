@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
 import {execFileSync} from 'node:child_process';
-import {verifyReceiptProvenance,decodeReceiptArchive,verifyOriginalPlan} from '../scripts/ios/receipt-provenance.mjs';
+import {verifyReceiptProvenance,decodeReceiptArchive,decodePlanArchive,verifySourceRun,verifyOriginalPlan} from '../scripts/ios/receipt-provenance.mjs';
 import {maySubmit,trustedReceipt} from '../scripts/ios/release-policy.mjs';
 const sha='a'.repeat(40),hash='b'.repeat(64),identity={appId:'123',bundleId:'example.verified'};
 const apple={...identity,version:'0.1.0',buildNumber:'1.0.1',buildId:'build',uploadId:'upload',uploadState:'COMPLETE',processingState:'VALID'};
@@ -33,4 +33,12 @@ test('read-only recovery accepts a failed source run only when its exact plan, a
   await verifyOriginalPlan(receipt,identity,'100',{getRun:async id=>({...run(id),...(Number(id)===100?{conclusion:'failure'}:{})})});
   await assert.rejects(verifyOriginalPlan(receipt,identity,'101',proof));
   await assert.rejects(verifyOriginalPlan(receipt,{...identity,appId:'other'},'100',proof));
+});
+test('recovery validates the selected main workflow before accepting a bounded plan with no executable paths',async()=>{
+  await verifySourceRun('100',proof);
+  await assert.rejects(verifySourceRun('100',{getRun:async()=>({...run('100'),head_branch:'feature'})}));
+  const good=execFileSync('python3',['-c','import sys,io,zipfile; b=io.BytesIO(); z=zipfile.ZipFile(b,"w"); z.writestr("release-plan.json",sys.stdin.buffer.read()); z.close(); sys.stdout.buffer.write(b.getvalue())'],{input:JSON.stringify(receipt)});
+  assert.deepEqual(decodePlanArchive(good,{...artifact,name:'ios-release-plan',digest:'sha256:'+createHash('sha256').update(good).digest('hex')}),receipt);
+  const zip=execFileSync('python3',['-c','import sys,io,zipfile; b=io.BytesIO(); z=zipfile.ZipFile(b,"w"); z.writestr("release-plan.json",sys.stdin.buffer.read()); z.writestr("scripts/ios/receipt-provenance.mjs",b"untrusted executable source"); z.close(); sys.stdout.buffer.write(b.getvalue())'],{input:JSON.stringify(receipt)});
+  assert.throws(()=>decodePlanArchive(zip,{...artifact,name:'ios-release-plan',digest:'sha256:'+createHash('sha256').update(zip).digest('hex')}));
 });

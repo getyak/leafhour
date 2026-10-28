@@ -52,6 +52,6 @@ Files: `scripts/ios/{archive,upload}.sh`, `scripts/ios/{signing,verify-ipa}.py`,
 Files: `docs/ios-testflight-release.md`, `docs/verification/2026-10-28-ios-testflight-chain.md`, iOS README.
 
 - [x] Document candidate credentials/settings, versioning, concurrency, retries, rotation, rollback and device update acceptance.
-- [x] Fresh review, resolve material findings, run current tests and workflow lint (20 Node, 3 Python, actionlint v1.7.12 after the controlled-upload revision).
+- [x] Fresh review, resolve material findings, run current tests and workflow lint (21 Node, 3 Python, actionlint v1.7.12 after the controlled-upload/recovery trust-boundary revision).
 - [x] Create draft PR #240 from current public main; keep draft and do not merge or dispatch publication.
 - [ ] Report exact verified results and pending Apple/security decisions to the parent.
