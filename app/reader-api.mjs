@@ -1,14 +1,14 @@
-import {adoptUiOwner,getUiLocale} from './ui-locale.mjs';
+import {adoptUiOwner,getUiLocale,readUiSession} from './ui-locale.mjs';
 import {assembleBookTransfer} from './book-transfer.mjs';
 export const selectedBookId=new URLSearchParams(location.search).get('book');
-export const readerSession=selectedBookId?await fetch('/api/auth/session').then(r=>r.json()).catch(()=>({user:null})):null;
+export const readerSession=selectedBookId?await readUiSession():null;
 // This document leaves on identity change; every account consumer shares
 // the same captured ID instead of reinterpreting a mutable session object.
 export const readerOwner=readerSession?.user?.id||null;
 let sessionCurrent=true;
 export const readerObservability={operationId:crypto.randomUUID(),requestFailed(){},dispose(){},syncOwner(){this.dispose();this.operationId=crypto.randomUUID();}};
 document.addEventListener('reader:session-changed',()=>{sessionCurrent=false;readerObservability.syncOwner();});
-void adoptUiOwner(readerOwner);
+void adoptUiOwner(readerOwner,{verified:readerSession!==null});
 export function readerApiUrl(url){
   // Explicit library, gift, account and auth routes keep their original scope.
   if(!selectedBookId||!url.startsWith('/api/')||['/api/library/','/api/book-gifts/','/api/account/','/api/auth/','/api/billing/'].some(prefix=>url.startsWith(prefix)))return url;

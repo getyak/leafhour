@@ -1,0 +1,41 @@
+{
+  "pass": true,
+  "results": [
+    {
+      "name": "legacy-device-fragment",
+      "pass": true,
+      "documents": [
+        {
+          "path": "/library",
+          "site": "none",
+          "authenticated": false
+        },
+        {
+          "path": "/_ui/library",
+          "site": "same-origin",
+          "authenticated": false
+        }
+      ],
+      "paintSamples": 99,
+      "wrongLanguageSamples": 0
+    },
+    {
+      "name": "cross-site-strict-account-fragment",
+      "pass": true,
+      "documents": [
+        {
+          "path": "/library",
+          "site": "cross-site",
+          "authenticated": false
+        },
+        {
+          "path": "/_ui/library",
+          "site": "same-origin",
+          "authenticated": true
+        }
+      ],
+      "paintSamples": 98,
+      "wrongLanguageSamples": 0
+    }
+  ]
+}

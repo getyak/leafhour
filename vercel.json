@@ -191,12 +191,40 @@
     }
   ],
   "functions": {
+    "api/ui-entry.js": {
+      "maxDuration": 15,
+      "includeFiles": "{app/home.html,.ui-entry/read.html}"
+    },
     "api/*.js": {
       "maxDuration": 300,
       "includeFiles": "{catalog/**,server/**,deploy/**,app/*.mjs,harness/**,skills/**,.reader-runtime/**,node_modules/pdfjs-dist/wasm/**,node_modules/pdfjs-dist/cmaps/**,node_modules/pdfjs-dist/standard_fonts/**,node_modules/@napi-rs/canvas/**,node_modules/@napi-rs/canvas-*/**}"
     }
   },
   "rewrites": [
+    {
+      "source": "/_ui/home",
+      "destination": "/api/ui-entry?__leafhour_surface=internal-home"
+    },
+    {
+      "source": "/_ui/library",
+      "destination": "/api/ui-entry?__leafhour_surface=internal-library"
+    },
+    {
+      "source": "/_ui/read",
+      "destination": "/api/ui-entry?__leafhour_surface=internal-read"
+    },
+    {
+      "source": "/",
+      "destination": "/api/ui-entry?__leafhour_surface=home"
+    },
+    {
+      "source": "/library",
+      "destination": "/api/ui-entry?__leafhour_surface=library"
+    },
+    {
+      "source": "/read",
+      "destination": "/api/ui-entry?__leafhour_surface=read"
+    },
     {
       "source": "/.well-known/oauth-protected-resource/api/people/mcp",
       "destination": "/api/service?path=mcp/people-metadata"

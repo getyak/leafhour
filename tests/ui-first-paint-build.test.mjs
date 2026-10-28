@@ -1,0 +1,20 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {mkdtemp,readFile,stat,rm} from 'node:fs/promises';
+import {tmpdir} from 'node:os';
+import path from 'node:path';
+import {buildVercel} from '../tools/build-vercel.mjs';
+import {createUiEntryHandler} from '../api/ui-entry.js';
+test('hosted canonical pages cannot be shadowed by public HTML and use the compiled private reader',async t=>{
+ const outputDir=await mkdtemp(path.join(tmpdir(),'leafhour-localized-build-'));let built;
+ t.after(async()=>{await rm(outputDir,{recursive:true,force:true});if(built?.uiTemplateDir)await rm(built.uiTemplateDir,{recursive:true,force:true});});
+ built=await buildVercel({outputDir});
+ for(const name of ['index.html','library.html','read.html'])await assert.rejects(stat(path.join(outputDir,name)),{code:'ENOENT'},'filesystem routing must reach localized HTML for '+name);
+ const source=await readFile(path.join(built.uiTemplateDir,'read.html'),'utf8');assert.match(source,/reader-web\/reader-[a-f0-9]+\.js/);assert.doesNotMatch(source,/<script type="module" src="\/reader\.js"/);
+ const config=JSON.parse(await readFile(new URL('../vercel.json',import.meta.url),'utf8'));for(const route of ['/','/library','/read'])assert.ok(config.rewrites.some(row=>row.source===route&&row.destination.startsWith('/api/ui-entry?')));
+ assert.ok(config.functions['api/ui-entry.js'].includeFiles.includes('.ui-entry/read.html'));
+ const headers=new Map();let html,status;
+ const handler=createUiEntryHandler({env:{},readTemplate:async()=>source,storeFactory(){assert.fail('explicit language has no auth/store cost');}});
+ await handler({url:'/read?book=literal&ui=ja',method:'GET',headers:{}},{setHeader:(key,value)=>headers.set(key,value),set statusCode(value){status=value;},end:value=>html=value});
+ assert.equal(status,200);assert.match(html,/<html[^>]*lang="ja"/);assert.match(html,/reader-web\/reader-[a-f0-9]+\.js/);assert.ok(headers.get('Content-Security-Policy').includes('sha256-'));assert.ok(!headers.get('Content-Security-Policy').includes("script-src 'unsafe-inline'"));
+});

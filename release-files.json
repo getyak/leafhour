@@ -1197,5 +1197,11 @@
   "tools/classic_nineteenth.py",
   "tools/classic_philosophy.py",
   "tools/classic_world.py",
-  "app/source-resources.css"
+  "app/source-resources.css",
+  "app/ui-first-paint-codec.mjs",
+  "app/ui-first-paint-bootstrap.mjs",
+  "server/ui-first-paint.mjs",
+  "api/ui-entry.js",
+  "server/ui-first-paint-script.mjs",
+  "tools/build-ui-first-paint-script.mjs"
 ]

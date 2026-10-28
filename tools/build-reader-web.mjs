@@ -74,7 +74,7 @@ export const UI_LOCALE_OWNERS=Object.freeze([
 ]);
 export const UI_CATALOGUES=Object.freeze(['en','zh-Hans','zh-Hant','ja']);
 export const UI_LOCALE_RELEASE_ENTRIES=Object.freeze([
- 'app/ui-locale.mjs','app/ui-locale-codec.mjs',
+ 'app/ui-locale.mjs','app/ui-locale-codec.mjs','app/ui-first-paint-codec.mjs','app/ui-first-paint-bootstrap.mjs',
  // GET-198 explicit account factories: closed raw dependencies of the one
  // runtime, no additional mutable locale and no new catalogue import forms.
  'app/account-ui-preferences-browser.mjs','app/account-ui-preferences.mjs',
@@ -329,6 +329,11 @@ export async function auditUiLocaleGraph({root,allowed=null}={}){
       if(!UI_LOCALE_OWNERS.includes(edge.importer))throw Error('Unauthorized ui-locale edge from '+edge.importer+': wrong caller');
       owners.add(edge.importer);
     }else{
+      if(edge.importer==='server/ui-first-paint.mjs'){
+        const serverMatch=/^\.\.\/app\/ui-catalogs\/(en|zh-Hans|zh-Hant|ja)\.mjs$/.exec(edge.specifier);
+        if(!serverMatch||edge.kind!=='import-statement'||!release.has('app/ui-catalogs/'+serverMatch[1]+'.mjs'))throw Error('Unauthorized initial HTML catalogue edge: '+edge.specifier);
+        continue;
+      }
       const match=/^\.\/ui-catalogs\/(en|zh-Hans|zh-Hant|ja)\.mjs(\?retry=1)?$/.exec(edge.specifier),query=match?.[2]||'';
       if(edge.importer!=='app/ui-locale.mjs'||!match||!UI_CATALOGUES.includes(match[1]))throw Error('Unauthorized ui-catalogue edge from '+edge.importer+': '+edge.specifier+' ('+edge.kind+')');
       if(query&&query!=='?retry=1')throw Error('Unauthorized ui-catalogue query edge: '+edge.specifier);

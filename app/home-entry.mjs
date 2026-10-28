@@ -1,3 +1,4 @@
+import {readInitialUiDecision} from './ui-first-paint-codec.mjs';
 import {isUiPreference,resolveUiPreference,browserUiLocale,readUiParam,UI_PREFERENCE_KEY,UI_SESSION_PREFERENCE_KEY} from './ui-locale-codec.mjs';
 
 const destinations={en:'/en','zh-Hans':'/zh-hans','zh-Hant':'/zh-hant',ja:'/ja'};
@@ -24,6 +25,9 @@ export async function enterAutoHome({
  if(original.pathname!=='/')return {kind:'continue',reason:'explicit-route'};
  const active=view?.document?.activeElement;
  if(active?.isContentEditable||['INPUT','TEXTAREA','SELECT'].includes(active?.tagName))return {kind:'continue',reason:'interacted'};
+ if(view?.document?.documentElement?.hasAttribute?.('data-ui-handoff'))return {kind:'continue',reason:'language-handoff'};
+ const initial=readInitialUiDecision(view?.document);
+ if(initial){const target=new URL(original.href);target.pathname=destinations[initial.locale];try{location.replace(target.pathname+target.search+target.hash);}catch{return {kind:'continue',reason:'navigation-unavailable'};}return {kind:'redirected',locale:initial.locale};}
  const query=readUiParam(original.href),controller=new AbortController();
  let interacted=false,timer=null,device=null,releaseInteraction;
  const interaction=new Promise(resolve=>{releaseInteraction=resolve;});

@@ -43,7 +43,7 @@ test('every language discovery page exposes usable content and metadata before J
   const base=await fixture(t);
   for(const [route,{lang,canonical}]of Object.entries(pages)){
     const response=await fetch(base+route),html=await response.text();assert.equal(response.status,200);
-    assert.match(html,new RegExp('<html lang="'+lang+'">'));assert.equal(new RegExp('<link rel="canonical" href="'+canonical.replace(/[/.]/g,'\\$&')+'">').test(html),true);
+    assert.match(html,new RegExp('<html\\b[^>]*\\blang="'+lang+'"[^>]*>'));assert.equal(new RegExp('<link rel="canonical" href="'+canonical.replace(/[/.]/g,'\\$&')+'">').test(html),true);
     assert.match(html,/<h1[^>]*>[^<]+<\/h1>/);assert.match(html,/<meta name="description" content="[^"]{24,}"/);
     const home=['/','/zh-hans','/zh-hant','/ja'].includes(route);
     const entry=home?'/read?book=gutenberg-alice':'/library';

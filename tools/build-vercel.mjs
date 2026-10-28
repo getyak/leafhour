@@ -38,7 +38,7 @@ export async function buildCommercePages({appDir,outputDir}){
   await cp(path.join(appDir,'billing.html'),path.join(outputDir,'admin','billing.html'));
 }
 
-export async function buildVercel({outputDir=path.join(root,'dist')}={}){
+export async function buildVercel({outputDir=path.join(root,'dist'),uiTemplateDir=outputDir===path.join(root,'dist')?path.join(root,'.ui-entry'):outputDir+'.ui-entry'}={}){
 const appDir = path.join(root, 'app');
 
 await rm(outputDir, { recursive: true, force: true });
@@ -46,11 +46,15 @@ await mkdir(outputDir, { recursive: true });
 
 await cp(appDir, outputDir, { recursive: true });
 const readerWeb=await buildReaderWeb({root,outputDir,html:await readFile(path.join(appDir,'index.html'),'utf8')});
-await writeFile(path.join(outputDir,'read.html'),readerWeb.html);
+await mkdir(uiTemplateDir,{recursive:true});
+await writeFile(path.join(uiTemplateDir,'read.html'),readerWeb.html);
+await rm(path.join(outputDir,'index.html'),{force:true});
 const home = await readFile(path.join(appDir, 'home.html'), 'utf8');
 // The root is a safe automatic entry; authored language pages have stable URLs.
-await writeFile(path.join(outputDir, 'index.html'), portalDocument(home, '/'));
-await writeFile(path.join(outputDir, 'library.html'), portalDocument(home, '/library'));
+// Canonical /, /library and /read are served by the localized HTML function.
+// Public flat files here would win filesystem routing and shadow its rewrites.
+await rm(path.join(outputDir,'library.html'),{force:true});
+await rm(path.join(outputDir,'read.html'),{force:true});
 for (const locale of homeLocales) {
   const directory = locale.route === '/' ? 'en' : locale.route.slice(1);
   const rendered = homeDocument(home, locale.code);
@@ -75,6 +79,7 @@ const sourceCommit=await releaseCommit(root,{sourceCommit:process.env.VERCEL_GIT
 await writeFile(path.join(outputDir,'release.json'),JSON.stringify({sourceCommit})+'\n');
 
 console.log(`Built hosted library and reader at ${outputDir}; private content stays in Supabase.`);
+return {outputDir,uiTemplateDir};
 }
 
 if(process.argv[1]&&import.meta.url===pathToFileURL(path.resolve(process.argv[1])).href)await buildVercel();

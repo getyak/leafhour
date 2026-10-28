@@ -5,7 +5,9 @@ import {createAuthoredUiChoiceHandoff} from './authored-ui-choice.mjs';
 
 // Entry adapter for the one locale runtime. Hosts supply their verified owner;
 // no second auth request, active language, reading state or model lives here.
-export function createBrowserAccountUiPreferences({runtime,request=globalThis.fetch,document=globalThis.document,view=globalThis.window,getLocation=()=>globalThis.location,storage,timeoutMs=6000}={}){
+export function createBrowserAccountUiPreferences({runtime,request=globalThis.fetch,document=globalThis.document,view=globalThis.window,getLocation=()=>globalThis.location,storage,timeoutMs=6000,initialDecision=null}={}){
+ let bootstrapOwner=initialDecision?.source==='account'?initialDecision.ownerId:null;
+ let initialAccount=initialDecision?.source==='account'?{ownerId:initialDecision.ownerId,preference:initialDecision.preference}:null;
  const listeners=new Set();let owner,epoch=0,manual=false,disposed=false,outgoing=false,localChoiceApplied=false,accountChoiceApplied=false,bridge,offBridge,pending=Promise.resolve();
  try{storage??=globalThis.sessionStorage;}catch{}
  const handoff=createAuthoredUiChoiceHandoff({storage,getLocation,getOwner:()=>owner});
@@ -17,7 +19,7 @@ export function createBrowserAccountUiPreferences({runtime,request=globalThis.fe
   const transport=createAccountUiPreferencesTransport({request,timeoutMs,onSessionChanged:id=>{if(epoch===captured&&id===owner)invalidate();}});
   return transport[method](target,input);
  };
- const createBridge=()=>{bridge=createAccountUiPreferencesBridge({runtime,read:id=>perform('read',id),write:(id,input)=>perform('write',id,input),getLocation});offBridge=bridge.onStatus(notify);};
+ const createBridge=()=>{bridge=createAccountUiPreferencesBridge({runtime,initialAccount,read:id=>perform('read',id),write:(id,input)=>perform('write',id,input),getLocation});initialAccount=null;offBridge=bridge.onStatus(notify);};
  createBridge();
  const offCore=runtime.onUiLocaleStateChange(()=>{notify();void applyHandoff();}),offManual=runtime.onUiLocaleManualIntent(()=>{manual=true;handoff.discard();});
  // uiReady also settles on a load failure. A handoff must wait for the actual
@@ -46,6 +48,7 @@ export function createBrowserAccountUiPreferences({runtime,request=globalThis.fe
   if(next!==null&&(typeof next!=='string'||!next||next.length>512||/[\u0000-\u001f\u007f]/.test(next)))return Promise.resolve({adopted:false});
   if(disposed)return Promise.resolve({adopted:false});
   if(owner===next&&bridge.getState().phase!=='disposed')return pending;
+  if(bootstrapOwner!=null){const changed=bootstrapOwner!==next;bootstrapOwner=null;if(changed)void runtime.invalidateUiOwner?.();}
   const captured=++epoch;owner=next;
   if(bridge.getState().phase==='disposed')createBridge();
   const adoption=bridge.adoptOwner(next);

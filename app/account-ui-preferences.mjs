@@ -59,7 +59,7 @@ const reasonOf=error=>{
   return status===401||status===403?'auth':status===400||status===409?'record':'network';
 };
 
-export function createAccountUiPreferencesBridge({runtime,read,write,getLocation,onStatus=()=>{}}={}){
+export function createAccountUiPreferencesBridge({runtime,read,write,getLocation,onStatus=()=>{},initialAccount=null}={}){
   if(!runtime||typeof runtime.onUiLocaleManualIntent!=='function'||typeof runtime.onUiLocaleManualCommit!=='function'||typeof runtime.requestAccountUiLocale!=='function')throw Error('Account UI preferences bridge requires the runtime manual intent, manual commit and account recovery interfaces');
   if(typeof read!=='function'||typeof write!=='function'||typeof getLocation!=='function')throw Error('Account UI preferences bridge requires injected read, write and getLocation');
   if(typeof onStatus!=='function')throw Error('Account UI preferences bridge requires an onStatus sink');
@@ -67,7 +67,8 @@ export function createAccountUiPreferencesBridge({runtime,read,write,getLocation
   const listeners=new Set();
   let phase='idle',reason=null;
   let owner=null,epoch=0,disposed=false;
-  let restoredCode=null,adoptionCapture=null;
+  let initialOwner=typeof initialAccount?.ownerId==='string'&&initialAccount.ownerId&&isUiPreference(initialAccount.preference)?initialAccount.ownerId:null;
+  let restoredCode=initialOwner?initialAccount.preference:null,adoptionCapture=null;
   let latestIntent=0,latestCommit=0;
   let binding=null,conflict=null,lastAttempt=null;
   let chain=Promise.resolve(),queued=null;
@@ -208,7 +209,7 @@ export function createAccountUiPreferencesBridge({runtime,read,write,getLocation
     if(disposed)return Promise.resolve({applied:false});
     // Adopting synchronously invalidates the old owner's reads, writes and
     // pending success feedback before any new IO starts.
-    const previousOwner=owner;
+    const previousOwner=owner,matchingInitialOwner=initialOwner!==null&&initialOwner===ownerId;initialOwner=null;
     epoch++;owner=ownerId;conflict=null;queued=null;lastAttempt=null;
     if(previousOwner!==null&&previousOwner!==ownerId)void runtime.invalidateUiOwner?.();
     const capture={epoch,owner:ownerId,intent:latestIntent,commit:latestCommit};
@@ -218,7 +219,7 @@ export function createAccountUiPreferencesBridge({runtime,read,write,getLocation
     // path clears it BEFORE the new owner's read settles — or fails. A first
     // adoption and a same-owner refresh have nothing to clear and therefore
     // never add extra catalogue work or flicker.
-    const clearing=restoredCode!==null&&(previousOwner!==ownerId||ownerId===null)
+    const clearing=restoredCode!==null&&(!matchingInitialOwner&&previousOwner!==ownerId||ownerId===null)
       ?restore(capture,null)
       :Promise.resolve({applied:false});
     if(ownerId===null){

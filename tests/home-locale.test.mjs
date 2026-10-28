@@ -123,7 +123,7 @@ test('every language serves the same homepage structure over HTTP',async t=>{
   const base='http://127.0.0.1:'+server.address().port;
   const englishResponse=await fetch(base+'/'),english=await englishResponse.text();assert.equal(englishResponse.status,200);
   const showcaseStyle=await fetch(base+'/home-books.css');assert.equal(showcaseStyle.status,200);assert.match(showcaseStyle.headers.get('content-type'),/text\/css/);
-  assert.match(english,/<html lang="en">/);assert.doesNotMatch(english,/留一点时间，读进一本书。/);
+  assert.match(english,/<html lang="en"(?:\s[^>]*)?>/);assert.doesNotMatch(english,/留一点时间，读进一本书。/);
   for(const locale of homeLocales){
     const route=locale.code==='en'?'/en':locale.route;
     const response=await fetch(base+route),html=await response.text();assert.equal(response.status,200);
@@ -146,7 +146,7 @@ test('every language serves the same homepage structure over HTTP',async t=>{
 
 test('the library shell renders the complete safe English shell and hides in-page home navigation',()=>{
   const library=portalDocument(source,'/library');
-  assert.match(library,/<html lang="en">/);assert.match(library,/<title>My reading room · Leafhour<\/title>/);
+  assert.match(library,/<html lang="en"(?:\s[^>]*)?>/);assert.match(library,/<title>My reading room · Leafhour<\/title>/);
   assert.match(library,/Opening the reading room…/);
   assert.doesNotMatch(library,/class="home-nav" href=/);assert.equal(portalDocument(library,'/library'),library);
   assert.equal(portalDocument(source,'/unknown-route'),source);

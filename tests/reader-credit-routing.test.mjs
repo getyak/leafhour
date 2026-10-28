@@ -5,6 +5,7 @@ import {webcrypto} from 'node:crypto';
 import {readFile} from 'node:fs/promises';
 import {parse} from 'acorn';
 import {prepareCreditRequest} from '../app/credit-client.mjs';
+import {readVerifiedUiSession} from '../app/ui-first-paint-bootstrap.mjs';
 
 const source=await readFile(new URL('../app/reader-api.mjs',import.meta.url),'utf8'),tree=parse(source,{ecmaVersion:'latest',sourceType:'module'});
 // AST positions belong to the original source. Remove module declarations before
@@ -15,7 +16,7 @@ executable=executable.replace("import("+"'./credit-client.mjs')","Promise.resolv
 async function fixture({enabled=true,prepare,fetcher}={}){
  const calls=[],prepared=[],events=[],listeners=new Map(),doc=Object.assign(new EventTarget(),{hidden:false}),session={user:{id:'owner-a'},billing:{enabled,mode:'test',unitsPerPoint:1_000_000,prices:{translation:1_000_000,conversation:4_000_000,annotation:4_000_000}}};
  const fetch=async(url,options={})=>{calls.push({url,options});if(url==='/api/auth/session')return Response.json(session);return fetcher?fetcher(url,options):Response.json({ok:true});};
- const context=vm.createContext({URLSearchParams,URL,Event,Response,DOMException,crypto:webcrypto,document:doc,window:{addEventListener:(name,handler)=>listeners.set(name,handler)},location:{search:'?book=selected-book',origin:'https://reader.example',replace:url=>events.push(url)},fetch,adoptUiOwner:()=>{},assembleBookTransfer:()=>assert.fail('Not a multipart fixture'),getUiLocale:()=> 'ja',prepareCreditRequest:async input=>{prepared.push(input);return prepare?prepare(input):{...input.data,id:input.data.id||'generated-id',billing:{quoteId:'quote-id',idempotencyKey:input.data.id||'generated-id'}};}});
+ const context=vm.createContext({URLSearchParams,URL,Event,Response,DOMException,crypto:webcrypto,document:doc,window:{addEventListener:(name,handler)=>listeners.set(name,handler)},location:{search:'?book=selected-book',origin:'https://reader.example',replace:url=>events.push(url)},fetch,readUiSession:()=>readVerifiedUiSession({request:fetch}),adoptUiOwner:()=>{},assembleBookTransfer:()=>assert.fail('Not a multipart fixture'),getUiLocale:()=> 'ja',prepareCreditRequest:async input=>{prepared.push(input);return prepare?prepare(input):{...input.data,id:input.data.id||'generated-id',billing:{quoteId:'quote-id',idempotencyKey:input.data.id||'generated-id'}};}});
  const api=await vm.runInContext('(async()=>{'+executable+';return {readerApiUrl,readerFetch};})()',context);
  return {api,calls,prepared,doc,events,listeners};
 }

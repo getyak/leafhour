@@ -1,10 +1,14 @@
 import test from 'node:test';
 import vm from 'node:vm';
+import {parse} from 'acorn';
+import {readInitialUiDecision} from '../app/ui-first-paint-codec.mjs';
 import {readFileSync} from 'node:fs';
 import * as clockCodec from '../app/ui-locale-codec.mjs';
 import assert from 'node:assert/strict';
 import {enterAutoHome} from '../app/home-entry.mjs';
 const clockSource=readFileSync(new URL('../app/home-entry.mjs',import.meta.url),'utf8');
+const clockAst=parse(clockSource,{ecmaVersion:'latest',sourceType:'module'});
+const clockExecutable=clockAst.body.map(node=>node.type==='ImportDeclaration'?'':node.type==='ExportNamedDeclaration'?clockSource.slice(node.declaration.start,node.end):clockSource.slice(node.start,node.end)).join('\n');
 const fixture=(options={})=>{
  const view=new EventTarget(),calls=[],replacements=[];
  const location={href:'https://leafhour.test/?from=leaf#page',replace(value){replacements.push(value);this.href=new URL(value,this.href).href;}};
@@ -92,7 +96,7 @@ test('the second account window still bounds a hanging final identity check',asy
 const clockPrefs={revision:7,updatedAt:'2026-10-20T00:00:00Z',uiLocale:'ja'},clockUser={user:{id:'synthetic-A'}};
 const flushClock=async()=>{for(let i=0;i<30;i++)await Promise.resolve();};
 function clockFixture(handler,extra={}){let time=0,id=0;const timers=new Map(),calls=[],replacements=[];const view=new EventTarget();view.document=new EventTarget();const location={href:'https://synthetic.invalid/?x=1#s',replace:p=>replacements.push(p)};
- const context={...clockCodec,URL,AbortController,Date,performance:{now:()=>time},setTimeout:(fn,ms)=>{timers.set(++id,{fn,at:time+ms});return id;},clearTimeout:id=>timers.delete(id)};vm.createContext(context);vm.runInContext(clockSource.replace(/^import .*;\n/,'').replace('export async function','async function')+';globalThis.enter=enterAutoHome;',context);
+ const context={...clockCodec,readInitialUiDecision,URL,AbortController,Date,performance:{now:()=>time},setTimeout:(fn,ms)=>{timers.set(++id,{fn,at:time+ms});return id;},clearTimeout:id=>timers.delete(id)};vm.createContext(context);vm.runInContext(clockExecutable+';globalThis.enter=enterAutoHome;',context);
  const f={calls,replacements,view,timers,location,set:t=>{time=t;},expire(){const t=[...timers.values()][0];time=t.at;t.fn();},response:(value,t)=>({ok:true,json:async()=>{if(t!==undefined)time=t;return value;}})};
  f.work=context.enter({location,view,storage:{getItem:()=>null},languages:['en-US'],request:async(url,options)=>{calls.push({url,options});return handler(f,calls.length);},...extra});return f;}
 test('observed 984+895+300ms sequence succeeds inside verified phase',async()=>{const f=clockFixture((f,n)=>f.response(n===2?clockPrefs:clockUser,[984,1879,2179][n-1]));assert.equal((await f.work).locale,'ja');assert.equal(f.calls.length,3);assert.equal(f.timers.size,0);});
