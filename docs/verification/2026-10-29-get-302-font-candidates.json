@@ -1,0 +1,186 @@
+{
+  "task": "GET-302",
+  "scope": "metadata research only; no font binary downloaded, registered, bundled or runtime-tested",
+  "checkedAtUTC": "2026-10-28 22:38:26 UTC",
+  "leafhourBaseline": "51ce8cf417452489915c99ba0ab2469e5c771f12",
+  "upstreams": {
+    "noto": {
+      "repository": "notofonts/noto-cjk",
+      "commit": "f8d157532fbfaeda587e826d4cd5b21a49186f7c",
+      "readmeURL": "https://github.com/notofonts/noto-cjk/blob/f8d157532fbfaeda587e826d4cd5b21a49186f7c/Serif/README.md",
+      "licenseURL": "https://github.com/notofonts/noto-cjk/blob/f8d157532fbfaeda587e826d4cd5b21a49186f7c/Serif/LICENSE",
+      "licenseGitBlobSHA1": "d952d62c065f3f35fb83a173496e90b21525aef3",
+      "licenseDeclared": "SIL Open Font License 1.1"
+    },
+    "adobe": {
+      "repository": "adobe-fonts/source-han-serif",
+      "commit": "7889f11bf31170b5d092a083b357c8c8130f89e0",
+      "tag": "2.003R",
+      "tagResolvesToCommitVerified": true,
+      "readmeURL": "https://github.com/adobe-fonts/source-han-serif/blob/7889f11bf31170b5d092a083b357c8c8130f89e0/README.md",
+      "licenseURL": "https://github.com/adobe-fonts/source-han-serif/blob/7889f11bf31170b5d092a083b357c8c8130f89e0/LICENSE.txt",
+      "licenseGitBlobSHA1": "07235a78b936958799812313565ba0d03e7cd7dd",
+      "licenseDeclared": "SIL Open Font License 1.1",
+      "reservedFontNameObservedInLicense": "Source"
+    }
+  },
+  "candidates": [
+    {
+      "upstream": "noto",
+      "repository": "notofonts/noto-cjk",
+      "commit": "f8d157532fbfaeda587e826d4cd5b21a49186f7c",
+      "repositoryPath": "Serif/OTF/SimplifiedChinese/NotoSerifCJKsc-Regular.otf",
+      "configuration": "Full CJK OTF, SC default, Regular",
+      "bytes": 24543080,
+      "MiB": 23.41,
+      "gitBlobSHA1": "cba8a4783cc38574ac7cda52cae7d9b4241c07a5",
+      "metadataTreeURL": "https://api.github.com/repos/notofonts/noto-cjk/git/trees/26c534316d5d4c060c5acf99efd6749b359b1e68",
+      "sourceURL": "https://github.com/notofonts/noto-cjk/blob/f8d157532fbfaeda587e826d4cd5b21a49186f7c/Serif/OTF/SimplifiedChinese/NotoSerifCJKsc-Regular.otf"
+    },
+    {
+      "upstream": "noto",
+      "repository": "notofonts/noto-cjk",
+      "commit": "f8d157532fbfaeda587e826d4cd5b21a49186f7c",
+      "repositoryPath": "Serif/SubsetOTF/SC/NotoSerifSC-Regular.otf",
+      "configuration": "Regional SC subset OTF, Regular",
+      "bytes": 11625800,
+      "MiB": 11.09,
+      "gitBlobSHA1": "be55fbdf3fe53bfc99779389f3f0b875707bf496",
+      "metadataTreeURL": "https://api.github.com/repos/notofonts/noto-cjk/git/trees/2073a65cec466d50d04529edfc66a43874eae7a1",
+      "sourceURL": "https://github.com/notofonts/noto-cjk/blob/f8d157532fbfaeda587e826d4cd5b21a49186f7c/Serif/SubsetOTF/SC/NotoSerifSC-Regular.otf"
+    },
+    {
+      "upstream": "noto",
+      "repository": "notofonts/noto-cjk",
+      "commit": "f8d157532fbfaeda587e826d4cd5b21a49186f7c",
+      "repositoryPath": "Serif/SubsetOTF/TC/NotoSerifTC-Regular.otf",
+      "configuration": "Regional TC subset OTF, Regular",
+      "bytes": 7936104,
+      "MiB": 7.57,
+      "gitBlobSHA1": "abc153d74de8b1f0a84818dcab6cf8be647d8bc1",
+      "metadataTreeURL": "https://api.github.com/repos/notofonts/noto-cjk/git/trees/2073a65cec466d50d04529edfc66a43874eae7a1",
+      "sourceURL": "https://github.com/notofonts/noto-cjk/blob/f8d157532fbfaeda587e826d4cd5b21a49186f7c/Serif/SubsetOTF/TC/NotoSerifTC-Regular.otf"
+    },
+    {
+      "upstream": "noto",
+      "repository": "notofonts/noto-cjk",
+      "commit": "f8d157532fbfaeda587e826d4cd5b21a49186f7c",
+      "repositoryPath": "Serif/SubsetOTF/JP/NotoSerifJP-Regular.otf",
+      "configuration": "Regional JP subset OTF, Regular",
+      "bytes": 6210492,
+      "MiB": 5.92,
+      "gitBlobSHA1": "c8df42713ff38a06b34497f24ef38d8c72dbd02d",
+      "metadataTreeURL": "https://api.github.com/repos/notofonts/noto-cjk/git/trees/2073a65cec466d50d04529edfc66a43874eae7a1",
+      "sourceURL": "https://github.com/notofonts/noto-cjk/blob/f8d157532fbfaeda587e826d4cd5b21a49186f7c/Serif/SubsetOTF/JP/NotoSerifJP-Regular.otf"
+    },
+    {
+      "upstream": "noto",
+      "repository": "notofonts/noto-cjk",
+      "commit": "f8d157532fbfaeda587e826d4cd5b21a49186f7c",
+      "repositoryPath": "Serif/Variable/OTF/NotoSerifCJKsc-VF.otf",
+      "configuration": "Full CJK SC variable OTF",
+      "bytes": 55379832,
+      "MiB": 52.81,
+      "gitBlobSHA1": "7b838c0c611548cc150e77c65b6ab0096875e362",
+      "metadataTreeURL": "https://api.github.com/repos/notofonts/noto-cjk/git/trees/74d2563bfce2280ab9a1e730efc7b3c64d0ce82d",
+      "sourceURL": "https://github.com/notofonts/noto-cjk/blob/f8d157532fbfaeda587e826d4cd5b21a49186f7c/Serif/Variable/OTF/NotoSerifCJKsc-VF.otf"
+    },
+    {
+      "upstream": "noto",
+      "repository": "notofonts/noto-cjk",
+      "commit": "f8d157532fbfaeda587e826d4cd5b21a49186f7c",
+      "repositoryPath": "Serif/Variable/OTF/Subset/NotoSerifSC-VF.otf",
+      "configuration": "Regional SC variable subset OTF",
+      "bytes": 22613272,
+      "MiB": 21.57,
+      "gitBlobSHA1": "8453f2dbfd086be167f4dbc0d3930520a0e01a2d",
+      "metadataTreeURL": "https://api.github.com/repos/notofonts/noto-cjk/git/trees/74d2563bfce2280ab9a1e730efc7b3c64d0ce82d",
+      "sourceURL": "https://github.com/notofonts/noto-cjk/blob/f8d157532fbfaeda587e826d4cd5b21a49186f7c/Serif/Variable/OTF/Subset/NotoSerifSC-VF.otf"
+    },
+    {
+      "upstream": "noto",
+      "repository": "notofonts/noto-cjk",
+      "commit": "f8d157532fbfaeda587e826d4cd5b21a49186f7c",
+      "repositoryPath": "Serif/Variable/OTC/NotoSerifCJK-VF.otf.ttc",
+      "configuration": "Five-language variable OTC",
+      "bytes": 57488648,
+      "MiB": 54.83,
+      "gitBlobSHA1": "e88d87875948e5efe629efaf592b9a80a223f378",
+      "metadataTreeURL": "https://api.github.com/repos/notofonts/noto-cjk/git/trees/74d2563bfce2280ab9a1e730efc7b3c64d0ce82d",
+      "sourceURL": "https://github.com/notofonts/noto-cjk/blob/f8d157532fbfaeda587e826d4cd5b21a49186f7c/Serif/Variable/OTC/NotoSerifCJK-VF.otf.ttc"
+    },
+    {
+      "upstream": "adobe",
+      "repository": "adobe-fonts/source-han-serif",
+      "commit": "7889f11bf31170b5d092a083b357c8c8130f89e0",
+      "repositoryPath": "OTF/SimplifiedChinese/SourceHanSerifSC-Regular.otf",
+      "configuration": "Full CJK OTF, SC default, Regular",
+      "bytes": 24543332,
+      "MiB": 23.41,
+      "gitBlobSHA1": "cb41635674be23029e98469f729eded6ebc54611",
+      "metadataTreeURL": "https://api.github.com/repos/adobe-fonts/source-han-serif/git/trees/0fb3c9fe9f79a98e0249b156c2fe115750a451b1",
+      "sourceURL": "https://github.com/adobe-fonts/source-han-serif/blob/7889f11bf31170b5d092a083b357c8c8130f89e0/OTF/SimplifiedChinese/SourceHanSerifSC-Regular.otf"
+    },
+    {
+      "upstream": "adobe",
+      "repository": "adobe-fonts/source-han-serif",
+      "commit": "7889f11bf31170b5d092a083b357c8c8130f89e0",
+      "repositoryPath": "SubsetOTF/CN/SourceHanSerifCN-Regular.otf",
+      "configuration": "Regional CN subset OTF, Regular",
+      "bytes": 11626108,
+      "MiB": 11.09,
+      "gitBlobSHA1": "a4feb5f2461886dbf9cfe575974f0a68940c6bf9",
+      "metadataTreeURL": "https://api.github.com/repos/adobe-fonts/source-han-serif/git/trees/91832a17a2d18962990f039d7e3f87d70a2e152e",
+      "sourceURL": "https://github.com/adobe-fonts/source-han-serif/blob/7889f11bf31170b5d092a083b357c8c8130f89e0/SubsetOTF/CN/SourceHanSerifCN-Regular.otf"
+    },
+    {
+      "upstream": "adobe",
+      "repository": "adobe-fonts/source-han-serif",
+      "commit": "7889f11bf31170b5d092a083b357c8c8130f89e0",
+      "repositoryPath": "SubsetOTF/TW/SourceHanSerifTW-Regular.otf",
+      "configuration": "Regional TW subset OTF, Regular",
+      "bytes": 7936412,
+      "MiB": 7.57,
+      "gitBlobSHA1": "86104096ee81431fc385ee556fc1e7ba6b51086f",
+      "metadataTreeURL": "https://api.github.com/repos/adobe-fonts/source-han-serif/git/trees/91832a17a2d18962990f039d7e3f87d70a2e152e",
+      "sourceURL": "https://github.com/adobe-fonts/source-han-serif/blob/7889f11bf31170b5d092a083b357c8c8130f89e0/SubsetOTF/TW/SourceHanSerifTW-Regular.otf"
+    },
+    {
+      "upstream": "adobe",
+      "repository": "adobe-fonts/source-han-serif",
+      "commit": "7889f11bf31170b5d092a083b357c8c8130f89e0",
+      "repositoryPath": "SubsetOTF/JP/SourceHanSerifJP-Regular.otf",
+      "configuration": "Regional JP subset OTF, Regular",
+      "bytes": 6210796,
+      "MiB": 5.92,
+      "gitBlobSHA1": "9bc2582e3f65dbc5344903a22cfd201fe61b3095",
+      "metadataTreeURL": "https://api.github.com/repos/adobe-fonts/source-han-serif/git/trees/91832a17a2d18962990f039d7e3f87d70a2e152e",
+      "sourceURL": "https://github.com/adobe-fonts/source-han-serif/blob/7889f11bf31170b5d092a083b357c8c8130f89e0/SubsetOTF/JP/SourceHanSerifJP-Regular.otf"
+    }
+  ],
+  "sizeMeaning": "Git tree blob size in bytes; MiB=bytes/1048576. Not ZIP size, IPA delta, device download size or resident memory. Git blob object IDs are not font-file SHA-256 validation.",
+  "validation": {
+    "pinnedCommitsAndTreesChecked": true,
+    "metadataTruncated": false,
+    "binaryDownloads": false,
+    "localNativeBuildsOrTests": false,
+    "independentReview": "passed: official commits/tree object IDs/byte sizes/MiB, source hashes, format/license statements and scope checked; no substantive issue found",
+    "independentReviewer": "ios_preferences_review",
+    "independentReviewReadBackAt": "2026-10-29T06:44:47.115899+08:00"
+  },
+  "unverified": [
+    "registered PostScript names and UIFont loading",
+    "actual glyph/script/locale coverage and fallback",
+    "source-language metadata/provenance",
+    "native body/preview consistency and reflow anchors",
+    "archive/thinned-install delta and resident memory",
+    "cold render/scroll latency and accessibility",
+    "physical device and TestFlight"
+  ],
+  "leafhourSourceSHA256": {
+    "apps/ios/Leafhour/TextReadingView.swift": "2f953b8c36ac9c51305a7de1cf41ba2d364f9c16455e465499054fa0d0883a44",
+    "apps/ios/Leafhour/ReaderPanels.swift": "4640b8f54c39bea577b5b513b0843fa423430f68fca6878da2e8a12d9c49770c",
+    "apps/ios/LeafhourCore/Sources/LeafhourCore/Models.swift": "17fd160de33890fa65c468b49f980907ec72e10e09a75fc7e33e642f83c97471",
+    "apps/ios/LeafhourCore/Sources/LeafhourCore/BookParser.swift": "91367a91407cfd32a48f1abd70b778594092556b651197f54da4e7423b550da5"
+  }
+}
