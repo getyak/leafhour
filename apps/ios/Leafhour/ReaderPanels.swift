@@ -4,6 +4,7 @@ import LeafhourCore
 struct ReaderPanelView: View {
     let panel: ReaderPanel
     @Bindable var session: ReaderSession
+    let systemColorScheme: ColorScheme
     let onJump: (Int, ReadingAnchor?) -> Void
     @Environment(\.dismiss) private var dismiss
     var body: some View {
@@ -36,6 +37,7 @@ struct ReaderPanelView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar { ToolbarItem(placement: .cancellationAction) { Button("继续读") { Task { await session.flush(); if session.saveError == nil { dismiss() } } } } }
         }
+        .preferredColorScheme(session.state.preferences.colorScheme(following: systemColorScheme))
     }
 }
 struct BookSearchPanel: View {
@@ -65,17 +67,56 @@ struct BookSearchPanel: View {
 }
 struct ReaderPreferencesPanel: View {
     @Bindable var session: ReaderSession
+    @ScaledMetric(relativeTo: .body) private var typeScale = 1.0
+    private var defaults: ReaderPreferences { ReaderPreferences() }
+    private var preview: String? {
+        let passages = session.chapter.passages
+        let current = passages.first { $0.id == session.state.anchor?.passageID && !$0.heading && $0.resourcePath == nil && !$0.text.isEmpty }
+        return (current ?? passages.first { !$0.heading && $0.resourcePath == nil && !$0.text.isEmpty }).map { String($0.text.prefix(600)) }
+    }
+    private var usesDefaultTypography: Bool {
+        session.state.preferences.fontSize == defaults.fontSize && session.state.preferences.lineSpacing == defaults.lineSpacing
+    }
     private func binding<T>(_ path: WritableKeyPath<ReaderPreferences, T>) -> Binding<T> {
         Binding(get: { session.state.preferences[keyPath: path] }, set: { value in var preferences = session.state.preferences; preferences[keyPath: path] = value; session.changePreferences(preferences) })
     }
     var body: some View {
         Form {
-            Section("正文") {
-                LabeledContent("字号", value: "\(Int(session.state.preferences.fontSize))")
-                Slider(value: binding(\.fontSize), in: 16...36, step: 1).accessibilityLabel("正文字号")
-                LabeledContent("行间距", value: "\(Int(session.state.preferences.lineSpacing))")
-                Slider(value: binding(\.lineSpacing), in: 4...18, step: 1).accessibilityLabel("正文行间距")
-                Text("字号随系统大字设置继续缩放。PDF 保留原页排版，可用系统手势缩放。").font(.footnote).foregroundStyle(.secondary)
+            if session.book.kind == .pdf {
+                Section("原页排版") {
+                    Label("PDF 保留原来的字体与排版，可在书页上双指缩放。", systemImage: "doc.richtext")
+                        .font(.subheadline)
+                }
+            } else {
+                if let preview {
+                    Section {
+                        Text(preview)
+                            .font(.system(size: session.state.preferences.fontSize * typeScale, design: .serif))
+                            .lineSpacing(session.state.preferences.lineSpacing)
+                            .lineLimit(4)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .frame(height: 140 * typeScale, alignment: .topLeading)
+                            .padding(.vertical, 8)
+                            .accessibilityIdentifier("reading-type-preview")
+                            .listRowBackground(session.state.preferences.theme == "paper" ? Color.readingPaper : Color(uiColor: .systemBackground))
+                    } header: { Text("排版预览 · 当前原文") }
+                }
+                Section {
+                    LabeledContent("字号", value: "\(Int(session.state.preferences.fontSize)) pt").monospacedDigit()
+                    Slider(value: binding(\.fontSize), in: 16...36, step: 1)
+                        .accessibilityLabel("正文字号")
+                        .accessibilityValue("\(Int(session.state.preferences.fontSize)) 磅")
+                    LabeledContent("行间距", value: "\(Int(session.state.preferences.lineSpacing)) pt").monospacedDigit()
+                    Slider(value: binding(\.lineSpacing), in: 4...18, step: 1)
+                        .accessibilityLabel("正文行间距")
+                        .accessibilityValue("\(Int(session.state.preferences.lineSpacing)) 磅")
+                    Button("恢复默认排版") {
+                        var preferences = session.state.preferences
+                        preferences.fontSize = defaults.fontSize
+                        preferences.lineSpacing = defaults.lineSpacing
+                        session.changePreferences(preferences)
+                    }.disabled(usesDefaultTypography)
+                } header: { Text("正文") } footer: { Text("字号随系统大字设置继续缩放。更改会自动保存到此设备。") }
             }
             Section("阅读纸面") {
                 Picker("主题", selection: binding(\.theme)) { Text("清纸").tag("paper"); Text("夜读").tag("night"); Text("跟随系统").tag("system") }.pickerStyle(.segmented)

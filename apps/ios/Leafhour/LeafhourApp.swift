@@ -14,6 +14,13 @@ extension Color {
     static let readingPaper = Color(red: 0.97, green: 0.96, blue: 0.92)
 }
 
+extension ReaderPreferences {
+    /// Read the system appearance outside the reader's presentation overrides.
+    func colorScheme(following system: ColorScheme) -> ColorScheme {
+        theme == "night" ? .dark : (theme == "paper" ? .light : system)
+    }
+}
+
 @MainActor @Observable
 final class LibraryModel {
     var books: [LocalBook] = []
