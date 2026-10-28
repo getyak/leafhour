@@ -8,6 +8,15 @@ import {releaseCommit} from './release-policy.mjs';
 import {commercePage} from '../app/commerce-pages.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+export async function buildSupportPages({appDir,outputDir}){
+  for(const directory of ['en','zh-hans','zh-hant','ja'])for(const kind of ['privacy','mcp']){
+    const source=await readFile(path.join(appDir,directory,kind+'.html'),'utf8');
+    const html=portalDocument(source,'/'+directory+'/'+kind);
+    await mkdir(path.join(outputDir,directory),{recursive:true});
+    await writeFile(path.join(outputDir,directory,kind+'.html'),html);
+    if(directory==='en')await writeFile(path.join(outputDir,kind+'.html'),html);
+  }
+}
 export async function buildCommercePages({appDir,outputDir}){
   for(const [locale,directory]of [['en','en'],['zh-Hans','zh-hans'],['zh-Hant','zh-hant'],['ja','ja']]){
     for(const kind of ['pricing','terms','refunds']){
@@ -50,9 +59,7 @@ for (const locale of homeLocales) {
   // Static hosts may resolve either the flat file or the directory index.
   await writeFile(path.join(outputDir, directory + '.html'), rendered);
 }
-// The default-language guides also serve the unprefixed URLs.
-await cp(path.join(appDir, 'en', 'mcp.html'), path.join(outputDir, 'mcp.html'));
-await cp(path.join(appDir, 'en', 'privacy.html'), path.join(outputDir, 'privacy.html'));
+await buildSupportPages({appDir,outputDir});
 await buildCommercePages({appDir,outputDir});
 
 const evalsPath = path.join(outputDir, 'evals.html');

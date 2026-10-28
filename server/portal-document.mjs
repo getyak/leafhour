@@ -1,7 +1,18 @@
 // Serve the correct public shell on the first paint, even before modules load.
 import {homeDocument,homeLocales} from '../app/home-locale.mjs';
+import {publicDocumentHeader,publicNavigationMenu} from '../app/public-navigation.mjs';
 const homeRoutes=new Map(homeLocales.map(row=>[row.route,row.code]));
 export function portalDocument(source,pathname){
+  const support=pathname.match(/^\/(?:(en|zh-hans|zh-hant|ja)\/)?(privacy|mcp)$/);
+  if(support){
+    const locale=({'zh-hans':'zh-Hans','zh-hant':'zh-Hant'})[support[1]]||support[1]||'en',kind=support[2];
+    const languages=[['en','English'],['zh-Hans','简体中文'],['zh-Hant','繁體中文'],['ja','日本語']].map(([code,label])=>{
+      const slug=({'zh-Hans':'zh-hans','zh-Hant':'zh-hant'})[code]||code;
+      return `<a${code===locale?' aria-current="true"':''} href="${code==='en'?'/':'/'+slug+'/'}${kind}" lang="${code}" hreflang="${code}">${label}</a>`;
+    }).join('');
+    return source.replace('<!-- public-header -->',publicDocumentHeader({locale,current:kind}))
+      .replace('<!-- public-menu -->',publicNavigationMenu({locale,languages}));
+  }
   if(pathname==='/library')return libraryDocument(source);
   if(pathname==='/')return homeDocument(source,'en').replace(/(<a\b[^>]*\bhref=")(\/(?:library|read)(?:[?#][^"]*)?)(")/g,(_,before,href,after)=>before+href.replace(/(?:\?|&amp;)ui=en(?=#|$)/,'')+after);
   if(pathname==='/en')return homeDocument(source,'en');
