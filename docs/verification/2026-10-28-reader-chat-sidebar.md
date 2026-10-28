@@ -22,3 +22,7 @@ Build, copy lint, CI, merge and matching production release results are recorded
 Chromium verification does not prove Safari, physical mobile keyboard or screen-reader behavior. The local conversation service is intentionally unavailable in this layout fixture; this work does not validate provider output or change model/data authorization.
 
 Observed before PR creation: the final focused run passed 78/78; copy export and the pinned Vale/textlint copy lint passed. The first local runtime build timed out during the existing DSH initialization; a retry and the PR build remain required.
+
+Final browser replay passed all five responsive cases plus pagination, breakpoint transitions and Escape, with no page errors. The stored result is [browser evidence](assets/2026-10-28-reader-chat-sidebar.json). The local runtime retry initialized 928 traced files (9.0 MB), with no model requests. The stylesheet was deduplicated to preserve the existing 200 KiB reader asset limit.
+
+The final hosted web build passed, and `check-public-build` checked 563 files and 12 registered media assets without private content directories.
