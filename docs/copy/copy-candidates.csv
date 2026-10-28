@@ -3813,8 +3813,10 @@ candidate:app/reading-arrival.mjs:14:49,js-cjk-literal,app/reading-arrival.mjs,1
 candidate:app/reading-arrival.mjs:22:77,js-cjk-literal,app/reading-arrival.mjs,22,,unknown,reviewable,,当前书籍
 candidate:app/reading-arrival.mjs:30:263,js-cjk-literal,app/reading-arrival.mjs,30,,unknown,reviewable,,书中一段
 candidate:app/reading-arrival.mjs:61:74,js-cjk-literal,app/reading-arrival.mjs,61,,unknown,reviewable,,书房拾句
-candidate:app/reading-arrival.mjs:91:70,js-attribute,app/reading-arrival.mjs,91,role,unknown,reviewable,,status
-candidate:app/reading-arrival.mjs:91:112,js-attribute,app/reading-arrival.mjs,91,aria-live,unknown,reviewable,,polite
+candidate:app/reading-arrival.mjs:85:52,js-cjk-literal,app/reading-arrival.mjs,85,,unknown,reviewable,,書裡連圖畫和對話都沒有，讀它有什麼意思？
+candidate:app/reading-arrival.mjs:89:50,js-cjk-literal,app/reading-arrival.mjs,89,,unknown,reviewable,,劉易斯·卡羅爾 《愛麗絲夢遊仙境》 · 第一章
+candidate:app/reading-arrival.mjs:102:70,js-attribute,app/reading-arrival.mjs,102,role,unknown,reviewable,,status
+candidate:app/reading-arrival.mjs:102:112,js-attribute,app/reading-arrival.mjs,102,aria-live,unknown,reviewable,,polite
 candidate:app/reading-book.mjs:4:68,js-cjk-literal,app/reading-book.mjs,4,,unknown,reviewable,,找不到这一章
 candidate:app/reading-book.mjs:9:191,js-cjk-literal,app/reading-book.mjs,9,,unknown,reviewable,,章节版本无法核对，请重新打开这本书
 candidate:app/reading-book.mjs:12:245,js-cjk-literal,app/reading-book.mjs,12,,unknown,reviewable,,章节原文不完整，请重试读取

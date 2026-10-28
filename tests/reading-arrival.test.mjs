@@ -75,13 +75,13 @@ test('a loaded book excerpt uses only the requested book and preserves original 
   assert.equal(empty.title,'自己的书');assert.equal(empty.original,null);
 });
 
-function mountFixture(bookId){
+function mountFixture(bookId,{library=false}={}){
   class Element {
     constructor(){this.children=[];this.dataset={};this.hidden=false;this.classList={add(){},toggle(){}};}
     setAttribute(){} removeAttribute(){} addEventListener(){} removeEventListener(){} append(...nodes){this.children.push(...nodes);} replaceChildren(...nodes){this.children=nodes;}
   }
   const doc={defaultView:{location:{search:'?book='+bookId,reload(){}}},createElement:()=>new Element()};
-  const root=new Element();root.ownerDocument=doc;root.dataset.readingArrival='reader';
+  const root=new Element();root.ownerDocument=doc;root.dataset.readingArrival=library?'library':'reader';
   return {root,controller:arrival.mountReadingArrival(root)};
 }
 test('arrival content updates reject another book, a finished request and an earlier retry ticket',()=>{
@@ -114,4 +114,41 @@ test('arrival context has an explicit localized descriptor while source and tick
  const {requestUiRoute,t}=await import('../app/ui-locale.mjs');await requestUiRoute('en');
  const {root,controller}=mountFixture('gutenberg-alice');const find=name=>root.children.find(n=>n.className===name),quote=find('arrival-quote'),source=find('arrival-source'),literal=quote.textContent;
  try{assert.equal(find('arrival-context').textContent,t('arrival.context.sentence'));for(const code of ['ja','zh-Hant','zh-Hans','en']){await requestUiRoute(code);assert.ok(find('arrival-quote')===quote);assert.ok(find('arrival-source')===source);assert.equal(quote.textContent,literal);assert.equal(find('arrival-context').textContent,t('arrival.context.sentence'));}assert.equal(controller.finish(),true);}finally{controller.dispose();}
+});
+
+test('English and Japanese library arrivals show the exact source once with original attribution',async()=>{
+ const {requestUiRoute,t}=await import('../app/ui-locale.mjs');
+ for(const locale of ['en','ja']){
+  await requestUiRoute(locale);
+  const {root,controller}=mountFixture(null,{library:true}),find=name=>root.children.find(n=>n.className===name);
+  try{
+   assert.equal(find('arrival-quote').textContent,arrival.arrivalQuote('gutenberg-alice').original);
+   assert.equal(find('arrival-quote').lang,'en');
+   assert.equal(find('arrival-original').hidden,true);
+   assert.equal(find('arrival-source').textContent,'Lewis Carroll · Alice’s Adventures in Wonderland · Chapter I');
+   assert.equal(find('arrival-source').children.at(-1).textContent,t('arrival.provenance.original'));
+   if(locale==='en')for(const node of root.children.filter(n=>!n.hidden))assert.doesNotMatch(node.textContent||'',/\p{Script=Han}/u);
+  }finally{controller.dispose();}
+ }
+ await requestUiRoute('en');
+});
+
+test('library locale changes select bundled excerpts without replacing nodes or restarting the load',async()=>{
+ const {requestUiRoute,t}=await import('../app/ui-locale.mjs');await requestUiRoute('en');
+ const {root,controller}=mountFixture(null,{library:true}),nodes=root.children.slice(),find=name=>root.children.find(n=>n.className===name),ticket=controller.start();
+ const quote=arrival.arrivalQuote('gutenberg-alice'),snapshot=JSON.stringify(quote);
+ try{
+  for(const locale of ['zh-Hans','zh-Hant','ja','en']){
+   await requestUiRoute(locale);assert.deepEqual(root.children,nodes);assert.equal(root.hidden,false);
+   const chinese=locale.startsWith('zh');
+   assert.equal(find('arrival-original').hidden,!chinese);
+   assert.equal(find('arrival-quote').lang,chinese?locale:'en');
+   assert.equal(find('arrival-source').children.at(-1).textContent,t(chinese?'arrival.provenance.interpretive':'arrival.provenance.original'));
+   if(locale==='zh-Hans')assert.equal(find('arrival-quote').textContent,'“'+quote.translation+'”');
+   if(locale==='zh-Hant'){assert.match(find('arrival-quote').textContent,/書裡連圖畫/);assert.match(find('arrival-source').textContent,/愛麗絲夢遊仙境/);}
+   if(!chinese)assert.equal(find('arrival-quote').textContent,quote.original);
+  }
+  assert.equal(JSON.stringify(arrival.arrivalQuote('gutenberg-alice')),snapshot);
+  assert.equal(controller.finish(ticket),true);
+ }finally{controller.dispose();await requestUiRoute('en');}
 });

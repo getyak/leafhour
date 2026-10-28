@@ -64,13 +64,13 @@ export function mountReadingArrival(root){
   const scene=createPaperCompanion(doc);
   const greeting=node('p','arrival-greeting'),context=node('p','arrival-context'),text=node('blockquote','arrival-quote');
   const original=node('p','arrival-original'),source=node('p','arrival-source');
-  // Semantic UI state: language commits relabel only the owned chrome from
-  // these caches. They never call showQuote, never touch the literal source
-  // descendants and never restart or reset the arrival lifecycle or timers.
+  // The library's bundled welcome excerpt is authored presentation, so its
+  // display follows the interface language. Requested book content stays
+  // literal. Neither path restarts the arrival lifecycle or its timers.
   const model={quote:initialQuote,view:{phase:'loading',slow:false},disposed:false};
   let provenanceNode=null;
   function paintChrome(){
-    root.setAttribute('lang',getUiLocale());
+    const locale=getUiLocale();root.setAttribute('lang',locale);
     greeting.textContent=t('arrival.greeting.'+(library?'library':'reader'));
     retry.textContent=t('arrival.retry');
     const view=model.view;
@@ -78,7 +78,18 @@ export function mountReadingArrival(root){
     const quote=model.quote,opening=quote?.title&&!quote.original;
     if(opening)context.textContent=t('arrival.context.opening',{title:quote.title});
     else context.textContent=t(quote?.contextId||'arrival.context.book');
-    if(provenanceNode)provenanceNode.textContent=quote.translation?t('arrival.provenance.'+(quote.variant==='literal'?'literal':'interpretive')):t('arrival.provenance.original');
+    let translated=!!quote?.translation;
+    if(library&&quote?.original){
+      translated=locale==='zh-Hans'||locale==='zh-Hant';
+      const traditional=locale==='zh-Hant';
+      text.textContent=translated?'“'+(traditional?'書裡連圖畫和對話都沒有，讀它有什麼意思？':quote.translation)+'”':quote.original;
+      text.lang=translated?locale:quote.sourceLanguage;
+      original.hidden=!translated;original.textContent=translated?quote.original:'';
+      source.lang=translated?locale:quote.sourceLanguage;
+      source.textContent=translated?(traditional?'劉易斯·卡羅爾 《愛麗絲夢遊仙境》 · 第一章':quote.author+' 《'+quote.title+'》 · '+quote.chapter):'Lewis Carroll · Alice’s Adventures in Wonderland · Chapter I';
+      if(provenanceNode)source.append(provenanceNode);
+    }
+    if(provenanceNode){provenanceNode.lang=locale;provenanceNode.textContent=translated?t('arrival.provenance.'+(quote.variant==='literal'?'literal':'interpretive')):t('arrival.provenance.original');}
   }
   function showQuote(quote){
     model.quote=quote||null;provenanceNode=null;
