@@ -11,6 +11,7 @@ enum ReaderPanel: Identifiable {
 }
 struct ReaderScreen: View {
     @Bindable var session: ReaderSession
+    let systemColorScheme: ColorScheme
     @Environment(\.dismiss) private var dismiss
     @Environment(\.scenePhase) private var scenePhase
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
@@ -65,11 +66,11 @@ struct ReaderScreen: View {
                 }
             }
         }
-        .preferredColorScheme(session.state.preferences.theme == "night" ? .dark : (session.state.preferences.theme == "paper" ? .light : nil))
+        .preferredColorScheme(session.state.preferences.colorScheme(following: systemColorScheme))
         .statusBarHidden(false)
         .interactiveDismissDisabled(session.saving || session.saveError != nil)
         .sheet(item: $panel, onDismiss: { chrome = .asleep }) { destination in
-            ReaderPanelView(panel: destination, session: session, onJump: { index, anchor in session.go(to: index, anchor: anchor); panel = nil })
+            ReaderPanelView(panel: destination, session: session, systemColorScheme: systemColorScheme, onJump: { index, anchor in session.go(to: index, anchor: anchor); panel = nil })
                 .presentationDetents([.medium, .large]).presentationDragIndicator(.visible)
                 .presentationBackgroundInteraction(.enabled(upThrough: .medium))
         }
