@@ -26,3 +26,5 @@ Observed before PR creation: the final focused run passed 78/78; copy export and
 Final browser replay passed all five responsive cases plus pagination, breakpoint transitions and Escape, with no page errors. The stored result is [browser evidence](assets/2026-10-28-reader-chat-sidebar.json). The local runtime retry initialized 928 traced files (9.0 MB), with no model requests. The stylesheet was deduplicated to preserve the existing 200 KiB reader asset limit.
 
 The final hosted web build passed, and `check-public-build` checked 563 files and 12 registered media assets without private content directories.
+
+After syncing main, the focused run passed 91/91. A final close-flow regression was observed failing before removing the obsolete tools reveal from focus return; closing chat now keeps tools collapsed. The 91-test run, five-case browser matrix, pagination/breakpoint checks and hosted public build passed again, and the follow-up independent focus review found no new issue.

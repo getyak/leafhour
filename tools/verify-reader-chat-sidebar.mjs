@@ -38,7 +38,7 @@ try{
   }else{assert.equal(await dialog.getAttribute('aria-modal'),'true');assert.equal(await page.evaluate(()=>document.body.style.overflow),'hidden');}
   await page.screenshot({path:path.join(output,`${width}-open.png`)});
   await page.locator('.library-chat-close').click();await settle(page);assert.equal(await trigger.getAttribute('aria-expanded'),'false');assert.equal(await page.evaluate(()=>document.body.classList.contains('has-reader-chat')),false);
-  assert.equal(await page.evaluate(()=>document.body.style.overflow),'');assert.equal(await page.evaluate(()=>document.activeElement.classList.contains('library-chat-trigger')),true);await trigger.waitFor({state:'visible'});
+  assert.equal(await page.evaluate(()=>document.body.style.overflow),'');assert.equal(await page.evaluate(()=>document.activeElement.classList.contains('library-chat-trigger')),true);assert.equal(await page.locator('#reading-session').getAttribute('data-expanded'),'false','closing chat keeps tools collapsed');await trigger.waitFor({state:'visible'});
   // The entry remains usable after the reading tools collapse.
   await page.evaluate(async()=>{const {readerTools}=await import('/reader-tools.mjs');readerTools().toolbar.conceal({restoreFocus:false});});await trigger.waitFor({state:'visible'});
   report.cases.push({width,height,locale,passed:true});

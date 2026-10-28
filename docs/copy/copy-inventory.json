@@ -646,7 +646,7 @@
       },
       {
         "file": "app/reader-tools.mjs",
-        "sha256": "fbf78befdc815865942c1b32793b49be254c8bd48dc1b89e226c4466226e38e2"
+        "sha256": "d1b65d9ee2a5c685c7b86b50dc56d93d43dcd486408c49341be83bb82ce12e4d"
       },
       {
         "file": "app/reader-translation.js",
@@ -1285,7 +1285,7 @@
         "sha256": "531202f1814314b6c76bfef38b2ea66636425b1ca9b445db349e70ebb8bcd00e"
       }
     ],
-    "inputDigest": "e4bce462070c83d0698349495f43d70d124a465ae3c5df16b593c09690c3fe45"
+    "inputDigest": "169b2f244a474bbd5bacf9e3936c89f553c16b25a6f9b2e380fd0b5f05fb8317"
   },
   "locales": [
     "en",
