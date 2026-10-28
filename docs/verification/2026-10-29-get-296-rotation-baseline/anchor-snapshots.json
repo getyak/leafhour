@@ -1,0 +1,42 @@
+[
+  {
+    "stage": "portrait-before",
+    "atUTC": "2026-10-28T19:42:08.139682+00:00",
+    "anchor": {
+      "chapterID": "text",
+      "characterOffset": 370,
+      "passageID": "text-2"
+    },
+    "sourceVersion": "sha256-009fe1ae872e6fc9aa8c4c3eab6c40a4a98175b3b86ccc93419283bf6ec8712f"
+  },
+  {
+    "stage": "landscape",
+    "atUTC": "2026-10-28T19:42:14.534724+00:00",
+    "anchor": {
+      "chapterID": "text",
+      "characterOffset": 353,
+      "passageID": "text-2"
+    },
+    "sourceVersion": "sha256-009fe1ae872e6fc9aa8c4c3eab6c40a4a98175b3b86ccc93419283bf6ec8712f"
+  },
+  {
+    "stage": "portrait-after",
+    "atUTC": "2026-10-28T19:42:21.856416+00:00",
+    "anchor": {
+      "chapterID": "text",
+      "characterOffset": 353,
+      "passageID": "text-2"
+    },
+    "sourceVersion": "sha256-009fe1ae872e6fc9aa8c4c3eab6c40a4a98175b3b86ccc93419283bf6ec8712f"
+  },
+  {
+    "stage": "raw-landscape",
+    "atUTC": "2026-10-28T19:45:20.292501+00:00",
+    "anchor": {
+      "chapterID": "text",
+      "characterOffset": 353,
+      "passageID": "text-2"
+    },
+    "sourceVersion": "sha256-009fe1ae872e6fc9aa8c4c3eab6c40a4a98175b3b86ccc93419283bf6ec8712f"
+  }
+]
