@@ -12,7 +12,7 @@ const groupName=version=>GROUP_PREFIX+version;
 const pinUrl=clientId=>absolute('/__leafhour-offline__/client/'+encodeURIComponent(clientId));
 const hex=buffer=>Array.from(new Uint8Array(buffer),byte=>byte.toString(16).padStart(2,'0')).join('');
 const validResource=entry=>entry&&typeof entry.url==='string'&&/^\/(?!\/|api(?:\/|$))[^?#]*$/.test(entry.url)&&!entry.url.includes('..')&&Number.isSafeInteger(entry.bytes)&&entry.bytes>=0&&/^[a-f0-9]{64}$/.test(entry.sha256);
-const validRelease=release=>release&&/^[a-f0-9]{64}$/.test(release.version)&&release.readerShell==='/offline-reader.html'&&release.offlineShelf==='/offline.html'&&Array.isArray(release.readerEntries)&&release.readerEntries.every(url=>/^\/reader-web\/reader-[a-f0-9]{16}\.js$/.test(url))&&Array.isArray(release.resources)&&release.resources.length>0&&release.resources.every(validResource)&&new Set(release.resources.map(entry=>entry.url)).size===release.resources.length;
+const validRelease=release=>release&&/^[a-f0-9]{64}$/.test(release.version)&&['/offline-reader','/offline-reader.html'].includes(release.readerShell)&&['/offline','/offline.html'].includes(release.offlineShelf)&&Array.isArray(release.readerEntries)&&release.readerEntries.every(url=>/^\/reader-web\/reader-[a-f0-9]{16}\.js$/.test(url))&&Array.isArray(release.resources)&&release.resources.length>0&&release.resources.every(validResource)&&new Set(release.resources.map(entry=>entry.url)).size===release.resources.length;
 
 async function verified(response,entry){
  if(!response||!response.ok||response.type==='opaque'||response.redirected)return false;

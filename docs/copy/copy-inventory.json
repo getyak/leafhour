@@ -850,7 +850,7 @@
       },
       {
         "file": "app/reading-worker.js",
-        "sha256": "4c7b8895d093ad21643467965de0f68e7e59de279bc261f66df33b63f83952b9"
+        "sha256": "ca2741c1ed6ba35aac06db08bc3acdd14bb2f4d1f171f94966711bd03e9a8bd8"
       },
       {
         "file": "app/save-receipts.mjs",
@@ -1286,7 +1286,7 @@
       },
       {
         "file": "server/portal.mjs",
-        "sha256": "eaf821f63652eed964a698447228395cdc07416b298a249302e2711ec2922ca3"
+        "sha256": "2fbe6b6a83c05c6b346941cf667e463f09d396fc84869f320f28e970e8e58aab"
       },
       {
         "file": "server/preference-memory.mjs",
@@ -1381,7 +1381,7 @@
         "sha256": "531202f1814314b6c76bfef38b2ea66636425b1ca9b445db349e70ebb8bcd00e"
       }
     ],
-    "inputDigest": "291b46de49a1d2fcc065dd908059b98113bb276943ad55971d17387d85cc2d85"
+    "inputDigest": "1290d6aa3c8c6c1cda3f08308ca6b24db7769c204da2f2814059dbc48aec1f1c"
   },
   "locales": [
     "en",

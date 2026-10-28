@@ -150,3 +150,10 @@ for(const [locale,label,working,done]of [
 test('failed shelf deletion keeps titles inaccessible and reports remaining files truthfully',async()=>{
  const {store,storage,backend,rows}=await savedShelfStore(),{nodes,handlers}=await shelf(store);backend.fail=true;await nodes.get('offline-clear').trigger('click');assert.equal(store.owner(),null);assert.equal(nodes.get('offline-books').children.length,0);assert.equal(nodes.get('offline-clear').disabled,true);assert.equal(rows.books.size,1,'failed physical deletion must not be reported as removed');assert.equal(nodes.get('offline-status').textContent,'Local reading is closed, but some book files could not be removed.');handlers.get('pageshow')();assert.equal(nodes.get('offline-status').textContent,'Local reading is closed, but some book files could not be removed.');assert.equal(storage.getItem('note-drafts|account-a'),'keep my draft');assert.equal(createOfflineBookStore({storage,backend}).owner(),null);
 });
+
+test('canonical shell resources install and reopen offline when HTML-suffix routes redirect',async()=>{
+ const files={...bodies,'/offline-reader':bodies['/offline-reader.html'],'/offline':bodies['/offline.html']};delete files['/offline-reader.html'];delete files['/offline.html'];
+ const canonical={...release,readerShell:'/offline-reader',offlineShelf:'/offline',resources:Object.entries(files).map(([url,body])=>resource(url,body))};let offline=false;
+ const w=await worker({manifest:canonical,files,network:async request=>{const url=new URL(request.url||request,origin);if(offline)throw TypeError('offline');if(url.pathname.endsWith('.html'))return new Response(null,{status:308,headers:{Location:url.pathname.slice(0,-5)}});return new Response(files[url.pathname]||'missing',{status:files[url.pathname]?200:404});}});
+ await w.install();assert.equal((await w.status()).ready,true);assert.ok(!w.fetches.some(r=>new URL(r.url).pathname.endsWith('.html')));offline=true;assert.equal(await(await w.fetch('/read',{navigate:true})).text(),bodies['/offline-reader.html']);assert.equal(await(await w.fetch('/library',{navigate:true})).text(),bodies['/offline.html']);
+});
