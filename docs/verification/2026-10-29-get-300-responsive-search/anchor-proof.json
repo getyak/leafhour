@@ -1,0 +1,11 @@
+{
+  "scope": "isolated org.leafhour.craft297 public-domain fixture only",
+  "expectedScalarOffset": 370,
+  "actualAnchor": {
+    "chapterID": "text",
+    "characterOffset": 370,
+    "passageID": "text-2"
+  },
+  "matchAtDestination": true,
+  "sourceVersion": "sha256-009fe1ae872e6fc9aa8c4c3eab6c40a4a98175b3b86ccc93419283bf6ec8712f"
+}
