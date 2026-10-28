@@ -34,3 +34,5 @@ The old static review records `candidate:app/en/privacy.html:19:91` (search) and
 - Reading runtime built and initialized: 928 files, 9.0 MB, without model requests.
 - Hosted static build and public-content checks: passed (564 public files, 12 registered media assets).
 - Release allowlist and asset/source-provenance checks: passed (1,196 software files).
+- Planted-negative copy canaries: passed with the real pinned CLIs.
+- After merging main `201da35`, regenerated the conflicting inventory from the combined sources and ran navigation/support/commerce/arrival tests again: 50 passed, 0 failed, 0 skipped.
