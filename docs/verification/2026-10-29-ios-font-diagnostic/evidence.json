@@ -1,0 +1,7 @@
+{
+  "runtime": "iOS 26.5 on existing Primary iPhone simulator",
+  "sourceSHA256": "51cf79ddec6b0b377e001d2f429c42e50b7fcd7467c6ea323c03da6f413d7da3",
+  "outputSHA256": "e896a447ac92cb7ce6fccf07634e1e89e7451d0cc193d681e8502bb328be1c01",
+  "readerImplementationSHA256": "2f953b8c36ac9c51305a7de1cf41ba2d364f9c16455e465499054fa0d0883a44",
+  "scope": "Read-only UIFont/CoreText fallback queries for the literal sample ranges; not a full-language or visual acceptance"
+}

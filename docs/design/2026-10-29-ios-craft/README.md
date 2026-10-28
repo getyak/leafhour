@@ -42,3 +42,9 @@ Reset changes only font size and line spacing to ReaderPreferences defaults. The
 ## Current limitations
 
 Native source/local build, simulator behavior, production web deployment, TestFlight upload, availability to testers and physical-device acceptance are distinct states. This batch cannot satisfy GET-276's complete physical and distribution acceptance. See [runtime verification](../../verification/2026-10-29-get-296-ios/README.md) for actual current evidence.
+
+## Native font diagnostic follow-up
+
+A read-only probe recreated the current body UIFont construction and queried Core Text fallback in the existing iOS 26.5 simulator. The Latin sample `Reading` retained `.NewYork-Regular`; the literal ranges `阅读` and `読書` returned `.PingFangUIDisplaySC-Regular`; `한글` returned `.AppleSDGothicNeoI-Regular`. The three queried Songti/Mincho font names could not be loaded directly. These observations apply to those samples and that runtime; they do not prove that every other CJK serif is absent, that every Japanese string follows the same path, or that physical-device typography has been accepted. [Probe and exact output](../../verification/2026-10-29-ios-font-diagnostic/README.md).
+
+This changes the next typography recommendation: a serif API setting alone must not be described as Chinese serif output. Inventory actual faces and glyph coverage before adding a choice. If a separate licensed offline CJK font is considered, first prototype its script/locale behavior and measure app size, memory, first render and scrolling. Retain a reliable native fallback and avoid controls that silently select an unavailable font or trigger a network download during reading. No font asset, font picker or reading-data migration was added by this diagnostic.
