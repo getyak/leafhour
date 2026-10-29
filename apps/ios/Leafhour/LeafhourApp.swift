@@ -81,7 +81,7 @@ final class LibraryModel {
     }
     func open(_ book: LocalBook) async {
         guard let library else { return }
-        if let current = reader { await current.flush(); guard current.saveError == nil else { return } }
+        if let current = reader { let receipt = await current.flush(); guard current.isCurrent(receipt) else { return } }
         do {
             let verifiedBook = try await library.book(book.id)
             let state = try await library.state(book.id)
@@ -91,62 +91,4 @@ final class LibraryModel {
             reader = ReaderSession(book: verifiedBook, state: state, original: original, directory: folder, library: library)
         } catch { message = "暂时无法打开这本书：\(error.localizedDescription) 可在书籍详情中校验或修复。" }
     }
-}
-
-@MainActor @Observable
-final class ReaderSession: Identifiable {
-    let book: LocalBook
-    let original: URL
-    let directory: URL
-    let library: OfflineLibrary
-    nonisolated let id: String
-    var state: ReaderState
-    var chapterIndex: Int
-    var navigationID = UUID()
-    var message: String?
-    var saving = false
-    var saveError: String?
-    var selection: SelectedQuote?
-    private var pending: Task<Void, Never>?
-    private var revision = 0
-    init(book: LocalBook, state: ReaderState, original: URL, directory: URL, library: OfflineLibrary) {
-        self.id = book.id; self.book = book; self.state = state; self.original = original; self.directory = directory; self.library = library
-        chapterIndex = book.chapters.firstIndex { $0.id == state.anchor?.chapterID } ?? 0
-    }
-    var chapter: BookChapter { book.chapters[chapterIndex] }
-    func save() {
-        revision += 1
-        let version = revision, snapshot = state, previous = pending
-        saving = true
-        pending = Task {
-            await previous?.value
-            do { try await library.saveState(snapshot, bookID: book.id); if version == revision { saving = false; saveError = nil } }
-            catch { if version == revision { saveError = error.localizedDescription; message = "记录尚未保存：\(error.localizedDescription)"; saving = false } }
-        }
-    }
-    func flush() async { await pending?.value }
-    func moved(_ anchor: ReadingAnchor) {
-        guard anchor != state.anchor else { return }
-        state.anchor = anchor; save()
-    }
-    func go(to index: Int, anchor: ReadingAnchor? = nil) {
-        guard book.chapters.indices.contains(index) else { return }
-        chapterIndex = index
-        state.anchor = anchor ?? ReadingAnchor(chapterID: chapter.id, passageID: chapter.passages.first?.id ?? "page", characterOffset: 0)
-        navigationID = UUID(); selection = nil; save()
-    }
-    func changePreferences(_ value: ReaderPreferences) { state.preferences = value; navigationID = UUID(); save() }
-    func draft(_ quote: SelectedQuote, text: String) {
-        state.drafts[quote.anchor.key] = NoteDraft(anchor: quote.anchor, quote: quote.text, body: text); save()
-    }
-    func saveNote(_ quote: SelectedQuote, text: String) {
-        guard !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return }
-        state.notes.append(ReaderNote(anchor: quote.anchor, quote: quote.text, body: text))
-        state.drafts.removeValue(forKey: quote.anchor.key); save()
-    }
-}
-struct SelectedQuote: Identifiable {
-    let anchor: ReadingAnchor
-    let text: String
-    var id: String { anchor.key }
 }

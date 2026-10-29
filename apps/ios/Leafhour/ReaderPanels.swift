@@ -7,6 +7,7 @@ struct ReaderPanelView: View {
     let systemColorScheme: ColorScheme
     let onJump: (Int, ReadingAnchor?) -> Void
     @Environment(\.dismiss) private var dismiss
+    private var isNoteEditor: Bool { if case .note = panel { return true }; return false }
     var body: some View {
         NavigationStack {
             Group {
@@ -35,7 +36,11 @@ struct ReaderPanelView: View {
             }
             .interactiveDismissDisabled(session.saving || session.saveError != nil)
             .navigationBarTitleDisplayMode(.inline)
-            .toolbar { ToolbarItem(placement: .cancellationAction) { Button("继续读") { Task { await session.flush(); if session.saveError == nil { dismiss() } } } } }
+            .toolbar {
+                if !isNoteEditor {
+                    ToolbarItem(placement: .cancellationAction) { Button("继续读") { Task { let receipt = await session.flush(); if session.isCurrent(receipt) { dismiss() } } } }
+                }
+            }
         }
         .preferredColorScheme(session.state.preferences.colorScheme(following: systemColorScheme))
     }
@@ -199,20 +204,47 @@ struct NoteEditorPanel: View {
     @Environment(\.dismiss) private var dismiss
     @State private var text = ""
     @State private var didLoad = false
+    @State private var submissionID = UUID()
+    private enum PendingAction { case note, draft }
+    @State private var pendingAction: PendingAction?
+    private var noteIsPersisted: Bool { session.isNotePersisted(id: submissionID, body: text) }
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
             Text("作者原文").font(.caption).foregroundStyle(.secondary)
             Text(quote.text).font(.subheadline).foregroundStyle(.secondary).lineLimit(4).textSelection(.enabled)
             Divider()
             Text("我的笔记").font(.caption).foregroundStyle(Color.leafInk)
-            TextEditor(text: Binding(get: { text }, set: { text = $0; session.draft(quote, text: $0) })).scrollContentBackground(.hidden).accessibilityLabel("我的笔记正文")
-            Text(session.saveError != nil ? "记录尚未写入本机，请保留此页并重试保存。" : (session.saving ? "正在保存本机草稿…" : "草稿保存在此设备，关闭后可从“我的记录”找回")).font(.caption).foregroundStyle(.secondary)
+            TextEditor(text: Binding(get: { text }, set: { text = $0; session.draft(quote, text: $0) })).scrollContentBackground(.hidden).accessibilityLabel("我的笔记正文").disabled(pendingAction != nil)
+            Text(footer).font(.caption).foregroundStyle(.secondary)
         }.padding(22).navigationTitle("记下自己的想法")
-            .interactiveDismissDisabled(session.saving || session.saveError != nil)
+            .interactiveDismissDisabled(pendingAction != nil || session.saving || session.saveError != nil)
             .toolbar {
-                ToolbarItem(placement: .confirmationAction) { Button("保存笔记") { session.saveNote(quote, text: text); Task { await session.flush(); if session.saveError == nil { dismiss() } } }.disabled(text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty) }
-                ToolbarItem(placement: .cancellationAction) { Button("保留草稿") { Task { await session.flush(); if session.saveError == nil { dismiss() } } } }
+                ToolbarItem(placement: .confirmationAction) { Button("保存笔记") { submit(.note) }.disabled(pendingAction != nil || text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty) }
+                ToolbarItem(placement: .cancellationAction) { Button(noteIsPersisted ? "关闭" : "保留草稿") { submit(.draft) }.disabled(pendingAction != nil) }
             }
-            .onAppear { if !didLoad { text = session.state.drafts[quote.anchor.key]?.body ?? ""; didLoad = true } }
+            .onAppear { session.noteEditorID = submissionID; if !didLoad { text = session.state.drafts[quote.anchor.key]?.body ?? ""; didLoad = true } }
+            .onDisappear { if session.noteEditorID == submissionID { session.noteEditorID = nil } }
+    }
+    private var footer: String {
+        if case .note? = pendingAction { return "正在保存笔记…" }
+        if session.saveError != nil { return "本次更改尚未全部保存，请保留此页并重试。" }
+        if session.saving || pendingAction != nil { return "正在保存本机草稿…" }
+        return noteIsPersisted ? "笔记已保存在此设备。" : "草稿保存在此设备，关闭后可从“我的记录”找回"
+    }
+    private func submit(_ action: PendingAction) {
+        guard pendingAction == nil else { return }
+        pendingAction = action
+        Task {
+            let submitted: Bool
+            switch action {
+            case .note: submitted = await session.saveNote(quote, text: text, id: submissionID)
+            case .draft:
+                session.keepNoteDraft(quote, text: text, submissionID: submissionID)
+                submitted = true
+            }
+            let receipt = await session.flush()
+            pendingAction = nil
+            if submitted && session.isCurrent(receipt) { dismiss() }
+        }
     }
 }
