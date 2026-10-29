@@ -44,6 +44,10 @@ final class LibraryModel {
     var notebookEntries: [CloudJSON] = []
     var notebookCursor: String?
     var syncIssues: [String: CloudSyncMetadata] = [:]
+    var nativeAuthenticating = false
+    var nativeAuthStatus: NativeAuthenticationStatus?
+    var linkedIdentities: [CloudLinkedIdentity] = []
+    var nativeAuthMessage: String?
     let cloud: CloudLibraryClient
     private(set) var library: OfflineLibrary?
     private var sync: CloudBookSync?
@@ -54,9 +58,11 @@ final class LibraryModel {
     private let persistCredential: Bool
     private var contextID = UUID()
     private var openingBookID: String?
+    private var nativeOperationID = UUID()
+    @ObservationIgnored private weak var activeNativeBrowser: NativeProviderAuthentication?
     @ObservationIgnored private var networkMonitor: NWPathMonitor?
 
-    init(root: URL? = nil, cloud: CloudLibraryClient? = nil, credential: CloudCredential? = nil) {
+    init(root: URL? = nil, cloud: CloudLibraryClient? = nil, credential: CloudCredential? = nil, monitorNetwork: Bool = true) {
         persistCredential = cloud == nil
         let saved = credential ?? (cloud == nil ? AccountCredentialStore.read() : nil)
         self.cloud = cloud ?? CloudLibraryClient(credential: saved)
@@ -66,6 +72,7 @@ final class LibraryModel {
             self.root = base
             try configureLibrary()
         } catch { message = error.localizedDescription }
+        guard monitorNetwork else { return }
         let monitor = NWPathMonitor()
         monitor.pathUpdateHandler = { [weak self] path in
             guard path.status == .satisfied else { return }
@@ -108,19 +115,81 @@ final class LibraryModel {
         } catch { message = error.localizedDescription }
     }
     func signIn(email: String, password: String, code: String? = nil) async throws {
-        guard !busy, reader == nil, openingBookID == nil else { throw LibraryError.invalid("请先回到书房，再切换账号。") }
+        guard !nativeAuthenticating, !busy, reader == nil, openingBookID == nil else { throw LibraryError.invalid("请先回到书房，再切换账号。") }
         let user: CloudAccount
         if let code { user = try await cloud.verifyCode(email: email, code: code) }
         else { user = try await cloud.signIn(email: email, password: password) }
         if persistCredential { try AccountCredentialStore.write(await cloud.savedCredential()) }
-        contextID = UUID(); account = user; books = []; cloudBooks = []; syncIssues = [:]; notebookEntries = []; summary = .null; didRestore = true
+        try await adoptSignedInAccount(user)
+    }
+    private func adoptSignedInAccount(_ user: CloudAccount) async throws {
+        contextID = UUID(); account = user; books = []; cloudBooks = []; syncIssues = [:]; notebookEntries = []; notebookCursor = nil; summary = .null; didRestore = true; syncing = false
+        linkedIdentities = []
         try configureLibrary(); await reload(); await synchronize()
+    }
+    func loadAuthenticationOptions() async {
+        let marker = contextID, owner = account?.id
+        do {
+            let status = try await cloud.nativeAuthenticationStatus()
+            guard marker == contextID, owner == account?.id else { return }
+            nativeAuthStatus = status
+            nativeAuthMessage = status.available ? nil : "当前书房版本尚未开放 Apple 与 Google 登录，可以继续使用邮箱。"
+            if let owner, status.available {
+                let identities = try await cloud.linkedIdentities(ownerID: owner)
+                guard marker == contextID, owner == account?.id else { return }
+                linkedIdentities = identities
+            }
+        } catch { if marker == contextID { nativeAuthMessage = "暂时无法核对登录方式，请联网后刷新。" } }
+    }
+    func authenticate(provider: NativeOAuthProvider, browser: NativeProviderAuthentication) async throws {
+        guard !nativeAuthenticating, !busy, openingBookID == nil,
+              nativeAuthStatus?.available == true, nativeAuthStatus?.providers.contains(provider) == true else { throw LibraryError.invalid("这个登录方式暂不可用，请稍后重试或使用邮箱。") }
+        let mode: NativeOAuthMode = account == nil ? .signIn : .link
+        guard mode == .link || reader == nil else { throw LibraryError.invalid("请先回到书房再登录。") }
+        let operation = UUID(), marker = contextID, owner = account?.id
+        nativeOperationID = operation; nativeAuthenticating = true; nativeAuthMessage = nil; activeNativeBrowser = browser
+        defer { if nativeOperationID == operation { nativeAuthenticating = false; activeNativeBrowser = nil } }
+        var flowID: UUID?
+        do {
+            let flow = try await cloud.beginNativeOAuth(provider: provider, mode: mode)
+            flowID = flow.id
+            guard nativeOperationID == operation, marker == contextID, owner == account?.id else { await cloud.cancelNativeOAuth(flowID: flow.id); throw CancellationError() }
+            let callback = try await browser.authenticate(flow)
+            guard nativeOperationID == operation, marker == contextID, owner == account?.id else { await cloud.cancelNativeOAuth(flowID: flow.id); throw CancellationError() }
+            let persistence: (@Sendable (CloudCredential) throws -> Void)?
+            if persistCredential {
+                persistence = { @Sendable (credential: CloudCredential) throws -> Void in
+                    try AccountCredentialStore.write(credential)
+                }
+            } else { persistence = nil }
+            let user = try await cloud.completeNativeOAuth(flowID: flow.id, callbackURL: callback, persist: persistence)
+            guard nativeOperationID == operation, marker == contextID, owner == account?.id else { throw CancellationError() }
+            if mode == .link {
+                guard user.id == owner else { throw LibraryError.invalid("关联回程的账号已变化，原书房仍保留。") }
+                account = user // Same UID: preserve library, reader, notes, drafts and the current sync context.
+                nativeAuthMessage = "登录方式已关联到这间书房。"
+            } else { try await adoptSignedInAccount(user) }
+            await loadAuthenticationOptions()
+        } catch {
+            if let flowID { await cloud.cancelNativeOAuth(flowID: flowID) }
+            else if nativeOperationID == operation { await cloud.cancelNativeOAuth() }
+            if nativeOperationID == operation {
+                nativeAuthMessage = error is CancellationError ? (mode == .link ? "已关闭登录窗口。本次关联尚未确认，可以刷新登录方式查看。" : "已关闭登录窗口。") : error.localizedDescription
+            }
+            throw error
+        }
+    }
+    func cancelNativeAuthentication() async {
+        nativeOperationID = UUID(); nativeAuthenticating = false
+        activeNativeBrowser?.cancel(); activeNativeBrowser = nil
+        await cloud.cancelNativeOAuth()
     }
     func signOut() async {
         guard !busy, reader == nil, openingBookID == nil else { message = "正在打开书籍，请先回到书房，等待本机保存完成后再退出。"; return }
         do {
+            await cancelNativeAuthentication()
             if persistCredential { try AccountCredentialStore.write(nil) }
-            contextID = UUID(); account = nil; books = []; cloudBooks = []; syncIssues = [:]; notebookEntries = []; summary = .null
+            contextID = UUID(); account = nil; books = []; cloudBooks = []; syncIssues = [:]; notebookEntries = []; summary = .null; linkedIdentities = []; nativeAuthStatus = nil; syncing = false
             await cloud.signOut(); try configureLibrary(); await reload()
             syncStatus = "已退出，账号书籍与记录保留在各自的离线空间。"
         } catch { message = error.localizedDescription }
