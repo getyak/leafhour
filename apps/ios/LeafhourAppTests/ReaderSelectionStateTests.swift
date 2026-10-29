@@ -1,0 +1,46 @@
+import XCTest
+import UIKit
+import LeafhourCore
+@testable import Leafhour
+
+@MainActor
+final class ReaderSelectionStateTests: XCTestCase {
+    private func drain() async {
+        await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in DispatchQueue.main.async { continuation.resume() } }
+    }
+    func testNativeSelectionAndClearingPublishAccurateTransientContext() async throws {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        try FileManager.default.createDirectory(at: root, withIntermediateDirectories: true)
+        addTeardownBlock { try? FileManager.default.removeItem(at: root) }
+        let file = root.appendingPathComponent("selection.txt")
+        try Data("First quiet paragraph.\n\nSecond quiet paragraph.".utf8).write(to: file)
+        let library = try OfflineLibrary(root: root.appendingPathComponent("library"), scope: .device)
+        let book = try await library.importFile(file)
+        let session = ReaderSession(book: book, state: try await library.state(book.id), original: try await library.originalURL(book.id), directory: try await library.bookDirectory(book.id), library: library)
+        var quote: SelectedQuote?, active = false
+        let reading = TextReadingView(session: session, onNote: { _ in }, onSource: { _ in }, onWake: { _ in }, onReadingScroll: {}, onSelectionChange: { quote = $0; active = $1 })
+        let coordinator = reading.makeCoordinator()
+        let view = UITextView(frame: CGRect(x: 0, y: 0, width: 390, height: 700), textContainer: nil)
+        view.delegate = coordinator; coordinator.view = view; coordinator.updateContent(view)
+        await drain()
+        view.selectedRange = (view.text as NSString).range(of: "quiet")
+        coordinator.textViewDidChangeSelection(view)
+        await drain()
+        XCTAssertTrue(active)
+        XCTAssertEqual(quote?.text, "quiet")
+        XCTAssertEqual(quote?.anchor.passageID, book.chapters[0].passages[0].id)
+        view.selectedRange = NSRange(location: 0, length: view.text.utf16.count)
+        coordinator.textViewDidChangeSelection(view)
+        await drain()
+        XCTAssertTrue(active, "Cross-paragraph selection still needs its native Copy menu")
+        XCTAssertNil(quote, "An invalid anchored selection must not become an author quote")
+        view.selectedRange = NSRange(location: 0, length: 0)
+        coordinator.textViewDidChangeSelection(view)
+        await drain()
+        XCTAssertFalse(active)
+        XCTAssertNil(quote)
+        XCTAssertTrue(session.state.notes.isEmpty)
+        XCTAssertTrue(session.state.drafts.isEmpty)
+        coordinator.invalidate(); view.delegate = nil
+    }
+}

@@ -1,0 +1,62 @@
+[
+  {
+    "file": "max-type-long-title.png",
+    "sha256": "d3245eb91ad3397dbb0a6b69842490d4f8c760d07a75738d0e4e46fa58c1f774",
+    "run": "NativeAX5Profile18",
+    "scenario": "test44",
+    "contentSize": "UICTContentSizeCategoryAccessibilityXXXL",
+    "runtimeSourceBound": true,
+    "uiSourceSHA256": "3f156bcb6172cfe22e58e6fd482811deab23f5a9ca8d366d76a5cfe8e783269d",
+    "scope": "synthetic fixture; simulator; no real service or account"
+  },
+  {
+    "file": "max-type-settings.png",
+    "sha256": "798631edb0d832ed0181965f4c4d5e16e27a9255fd210edecacd6001c5465d2b",
+    "run": "NativeAX5Profile18",
+    "scenario": "test41",
+    "contentSize": "UICTContentSizeCategoryAccessibilityXXXL",
+    "runtimeSourceBound": true,
+    "uiSourceSHA256": "3f156bcb6172cfe22e58e6fd482811deab23f5a9ca8d366d76a5cfe8e783269d",
+    "scope": "synthetic fixture; simulator; no real service or account"
+  },
+  {
+    "file": "max-type-saved-note.png",
+    "sha256": "a398391fb007083e6a64b137d303512de9fd83622b9a32f4ac8465bedf9869b5",
+    "run": "NativeAX5Profile17",
+    "scenario": "test42",
+    "contentSize": "UICTContentSizeCategoryAccessibilityXXXL",
+    "runtimeSourceBound": true,
+    "uiSourceSHA256": "af104fe1747cd7b16f8708ec6c9af4d3e8478498bed1acb03bc1c213ea656f57",
+    "scope": "synthetic fixture; simulator; no real service or account"
+  },
+  {
+    "file": "max-type-grid-action.png",
+    "sha256": "31a959fabd9805277958f29f0e8c6b02cac18994304a3df43e0ae1384ea2518e",
+    "run": "NativeAX5Profile17",
+    "scenario": "test43",
+    "contentSize": "UICTContentSizeCategoryAccessibilityXXXL",
+    "runtimeSourceBound": true,
+    "uiSourceSHA256": "af104fe1747cd7b16f8708ec6c9af4d3e8478498bed1acb03bc1c213ea656f57",
+    "scope": "synthetic fixture; simulator; no real service or account"
+  },
+  {
+    "file": "normal-native-selection.png",
+    "sha256": "f7fb64fb49094aa70496cf1e1ca861c62c41bb612e7eac067a230084e511f539",
+    "run": "NativeFullNormal19",
+    "scenario": "test39",
+    "contentSize": "UICTContentSizeCategoryL",
+    "runtimeSourceBound": true,
+    "uiSourceSHA256": "bc6d08d31aeb869b57ee79242a05da1be36b8ac61edc17d96ff461b59a1c8682",
+    "scope": "synthetic fixture; simulator; no real service or account"
+  },
+  {
+    "file": "normal-shelf.png",
+    "sha256": "6fe92e290f38dd95046c21de30938c601e486bfcb18957eab560b026796f2a35",
+    "run": "NativeFullNormal19",
+    "scenario": "test01",
+    "contentSize": "UICTContentSizeCategoryL",
+    "runtimeSourceBound": true,
+    "uiSourceSHA256": "bc6d08d31aeb869b57ee79242a05da1be36b8ac61edc17d96ff461b59a1c8682",
+    "scope": "synthetic fixture; simulator; no real service or account"
+  }
+]

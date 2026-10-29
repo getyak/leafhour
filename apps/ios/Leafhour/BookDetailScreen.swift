@@ -70,6 +70,7 @@ struct BookDetailScreen: View {
                 Text(book.cloud == nil ? "此设备的原件、个人笔记与草稿分别保留。导入不会自动生成译文或 AI 回答。" : "此账号的原文阅读副本、已有译文与个人笔记分别保留。只有主动选择翻译或对话才会生成新的内容。").font(.footnote).foregroundStyle(.secondary)
             }
         }
+        .accessibilityIdentifier("book-details-list")
         .navigationTitle("书籍详情").navigationBarTitleDisplayMode(.inline)
         .task { original = try? await model.library?.originalURL(book.id) }
         .fileImporter(isPresented: $replacingOriginal, allowedContentTypes: [.epub, .pdf, .plainText, UTType(filenameExtension: "md") ?? .plainText]) { result in

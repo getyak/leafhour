@@ -6,6 +6,7 @@ import LeafhourCore
 /// UIKit owns selection/copy and accessibility. Source XHTML never executes or loads remote resources.
 struct TextReadingView: UIViewRepresentable {
     let session: ReaderSession
+    var pageInsets = UIEdgeInsets(top: 64, left: 24, bottom: 24, right: 24)
     var selectionDismissalID = UUID()
     let onNote: (SelectedQuote) -> Void
     let onSource: (SelectedQuote) -> Void
@@ -14,13 +15,14 @@ struct TextReadingView: UIViewRepresentable {
     let onReadingScroll: () -> Void
     var onTranslate: ((SelectedQuote) -> Void)? = nil
     var onDiscuss: ((SelectedQuote) -> Void)? = nil
+    var onSelectionChange: ((SelectedQuote?, Bool) -> Void)? = nil
     func makeCoordinator() -> Coordinator { Coordinator(parent: self) }
     func makeUIView(context: Context) -> UITextView {
         let view = ReflowTextView(usingTextLayoutManager: false)
         view.isEditable = false; view.isSelectable = true; view.backgroundColor = .clear
         // Entry tools overlay the page. A stable first-page margin keeps the title
         // below navigation without reflowing the text when those tools go to sleep.
-        view.textContainerInset = UIEdgeInsets(top: 64, left: 24, bottom: 24, right: 24)
+        view.textContainerInset = pageInsets
         view.textContainer.lineFragmentPadding = 0
         view.adjustsFontForContentSizeCategory = true; view.alwaysBounceVertical = true
         view.delegate = context.coordinator; view.accessibilityIdentifier = "leafhour-epub-reader"
@@ -47,10 +49,27 @@ struct TextReadingView: UIViewRepresentable {
     }
     struct Span { var passage: Passage; var range: NSRange; var sourceOffsets: SourceTextOffsets; var sourceRange: NSRange? = nil }
     @MainActor final class Coordinator: NSObject, UITextViewDelegate {
+        private func layout(for view: UITextView) -> (contentWidth: CGFloat, insets: UIEdgeInsets) {
+            let viewport = view.bounds.width > 0 ? view.bounds.width : UIScreen.main.bounds.width
+            var insets = parent.pageInsets
+            let available = max(1, viewport - insets.left - insets.right)
+            let width = min(680, available)
+            let extraMargin = max(0, (available - width) / 2)
+            insets.left += extraMargin; insets.right += extraMargin
+            return (width, insets)
+        }
         func updateContent(_ view: UITextView) {
             let coordinator = self, session = parent.session
+            let column = layout(for: view)
+            if view.textContainerInset != column.insets {
+                let topChange = column.insets.top - view.textContainerInset.top
+                view.textContainerInset = column.insets
+                // A larger accessibility toolbar may change the first-page margin.
+                // Preserve the same visible line; changing the bottom margin needs no scrolling.
+                if topChange != 0 { view.contentOffset.y += topChange }
+            }
             let preferences = session.state.preferences
-            let width = max(240, view.bounds.width > 0 ? view.bounds.width - 48 : UIScreen.main.bounds.width - 48)
+            let width = column.contentWidth
             let signature = "\(session.chapter.id)-\(preferences)-\(view.traitCollection.preferredContentSizeCategory.rawValue)-\(Int(width))"
             let navigating = coordinator.navigationID != session.navigationID
             // A session owns an immutable book/source version. Never carry indices into another source.
@@ -100,7 +119,15 @@ struct TextReadingView: UIViewRepresentable {
                             let image = UIImage(cgImage: cgImage), attachment = NSTextAttachment()
                             attachment.image = image
                             attachment.bounds = CGRect(x: 0, y: 0, width: width, height: width * image.size.height / max(1, image.size.width))
-                            result.append(NSAttributedString(attachment: attachment)); result.append(NSAttributedString(string: "\n\n"))
+                            result.append(NSAttributedString(attachment: attachment))
+                            let alternative = passage.alternative?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+                            let next = session.chapter.passages.indices.contains(passageIndex + 1) ? session.chapter.passages[passageIndex + 1].text.trimmingCharacters(in: .whitespacesAndNewlines) : nil
+                            if !alternative.isEmpty && alternative != next {
+                                // Keep source image metadata reachable to system reading and
+                                // selection, without inventing prose or an author-text anchor.
+                                let captionFont = UIFontMetrics(forTextStyle: .footnote).scaledFont(for: .systemFont(ofSize: max(14, preferences.fontSize * 0.72)))
+                                result.append(NSAttributedString(string: "\n插图说明 · " + alternative + "\n\n", attributes: [.font: captionFont, .foregroundColor: UIColor.secondaryLabel, .paragraphStyle: style]))
+                            } else { result.append(NSAttributedString(string: "\n\n")) }
                         } else {
                             result.append(NSAttributedString(string: "[插图：\(passage.alternative ?? "此设备暂不支持显示，原件仍保留")]\n\n", attributes: [.font: font, .foregroundColor: UIColor.secondaryLabel, .paragraphStyle: style]))
                         }
@@ -178,8 +205,11 @@ struct TextReadingView: UIViewRepresentable {
             guard !restoring, let view, view.bounds.width > 0, !spans.isEmpty,
                   indexedSessionID == ObjectIdentifier(parent.session), indexedChapterIndex == parent.session.chapterIndex,
                   renderedChapterID == parent.session.chapter.id, navigationID == parent.session.navigationID,
-                  renderedWidth == Int(max(240, view.bounds.width - 48)) else { return false }
-            let point = CGPoint(x: 1, y: max(0, view.contentOffset.y + 50 - view.textContainerInset.top))
+                  renderedWidth == Int(layout(for: view).contentWidth) else { return false }
+            // Sample inside the visible line. Its exact top edge may resolve to
+            // the previous paragraph's trailing newline after a width reflow.
+            let readingTop = max(50, parent.pageInsets.top)
+            let point = CGPoint(x: 1, y: max(0, view.contentOffset.y + readingTop + 1 - view.textContainerInset.top))
             let index = view.layoutManager.characterIndex(for: point, in: view.textContainer, fractionOfDistanceBetweenInsertionPoints: nil)
             let span = spans.last(where: { $0.range.location <= index }) ?? spans[0]
             let utf16Offset = sourceOffset(in: span, displayedIndex: index)
@@ -202,6 +232,20 @@ struct TextReadingView: UIViewRepresentable {
         func selectedText() -> (range: NSRange, text: String)? {
             guard let view, view.selectedRange.length > 0, NSMaxRange(view.selectedRange) <= view.attributedText.length else { return nil }
             return (view.selectedRange, (view.attributedText.string as NSString).substring(with: view.selectedRange))
+        }
+        func textViewDidChangeSelection(_ textView: UITextView) {
+            let range = textView.selectedRange, navigation = navigationID
+            // UIKit can notify synchronously during representable updates. Publish
+            // only the latest user selection after that update has completed.
+            DispatchQueue.main.async { [weak self, weak textView] in
+                guard let self, let textView, self.view === textView, !self.restoring,
+                      self.indexedSessionID == ObjectIdentifier(self.parent.session),
+                      self.indexedChapterIndex == self.parent.session.chapterIndex,
+                      self.navigationID == navigation, self.parent.session.navigationID == navigation,
+                      self.renderedChapterID == self.parent.session.chapter.id,
+                      textView.selectedRange == range else { return }
+                self.parent.onSelectionChange?(self.selectedQuote(in: textView, range: range), range.length > 0)
+            }
         }
         func invalidate() {
             restorationGeneration += 1; cancelPendingCapture(); view = nil
@@ -229,7 +273,8 @@ struct TextReadingView: UIViewRepresentable {
                     let position = min(max(0, view.attributedText.length - 1), displayedOffset)
                     let glyph = view.layoutManager.glyphRange(forCharacterRange: NSRange(location: position, length: 1), actualCharacterRange: nil)
                     let rect = view.layoutManager.boundingRect(forGlyphRange: glyph, in: view.textContainer)
-                    let y = max(-view.adjustedContentInset.top, rect.minY + view.textContainerInset.top - 50)
+                    let readingTop = max(50, self.parent.pageInsets.top)
+                    let y = max(-view.adjustedContentInset.top, rect.minY + view.textContainerInset.top - readingTop)
                     view.setContentOffset(CGPoint(x: 0, y: min(y, max(0, view.contentSize.height - view.bounds.height))), animated: false)
                 } else { view.setContentOffset(.zero, animated: false) }
                 self.restoring = false
@@ -238,7 +283,8 @@ struct TextReadingView: UIViewRepresentable {
         }
         func selectedQuote(in textView: UITextView, range: NSRange) -> SelectedQuote? {
             guard range.location >= 0, range.length > 0, NSMaxRange(range) <= (textView.text as NSString).length,
-                  let span = spans.first(where: { $0.range.location <= range.location && NSMaxRange(range) <= NSMaxRange($0.range) }) else { return nil }
+                  let span = spans.first(where: { $0.range.location <= range.location && NSMaxRange(range) <= NSMaxRange($0.range) }),
+                  span.passage.resourcePath == nil, !span.passage.text.isEmpty else { return nil }
             let source = span.passage.text as NSString
             let start = sourceOffset(in: span, displayedIndex: range.location)
             let end = sourceOffset(in: span, displayedIndex: NSMaxRange(range))
@@ -249,10 +295,15 @@ struct TextReadingView: UIViewRepresentable {
                 text: selected, sourceText: source.substring(with: NSRange(location: start, length: end - start)))
         }
         func textView(_ textView: UITextView, editMenuForTextIn range: NSRange, suggestedActions: [UIMenuElement]) -> UIMenu? {
-            func quote() -> SelectedQuote? { selectedQuote(in: textView, range: range) }
+            let selectionGuidance = "请在同一段原文内选择文字，以保留准确引用。"
+            func quote() -> SelectedQuote? {
+                let value = selectedQuote(in: textView, range: range)
+                if value == nil { parent.session.message = selectionGuidance }
+                return value
+            }
             let note = UIAction(title: "记笔记", image: UIImage(systemName: "square.and.pencil")) { [weak self] _ in
                 guard let self else { return }
-                guard let value = quote() else { self.parent.session.message = "请在同一段内选择文字，以保留准确原句引用。"; return }
+                guard let value = quote() else { return }
                 self.parent.onNote(value)
             }
             let source = UIAction(title: "核对原文", image: UIImage(systemName: "text.quote")) { [weak self] _ in if let value = quote() { self?.parent.onSource(value) } }
@@ -260,7 +311,7 @@ struct TextReadingView: UIViewRepresentable {
             if parent.onExplain != nil {
                 actions.insert(UIAction(title: "解释这句", image: UIImage(systemName: "text.bubble")) { [weak self] _ in
                     guard let self else { return }
-                    guard let value = quote() else { self.parent.session.message = "请在同一段内选择文字，以保留准确原句引用。"; return }
+                    guard let value = quote() else { return }
                     self.parent.onExplain?(value)
                 }, at: 0)
             }
@@ -270,7 +321,17 @@ struct TextReadingView: UIViewRepresentable {
             if parent.onDiscuss != nil {
                 actions.append(UIAction(title: "问陪读", image: UIImage(systemName: "bubble.left.and.bubble.right")) { [weak self] _ in if let value = quote() { self?.parent.onDiscuss?(value) } })
             }
-            return UIMenu(children: actions + suggestedActions)
+            // Keep UIKit's Copy/Select editing group ahead of optional reading
+            // actions. Preserve every system element and its original behavior.
+            let editing = suggestedActions.filter { ($0 as? UIMenu)?.identifier == .standardEdit }
+            let other = suggestedActions.filter { ($0 as? UIMenu)?.identifier != .standardEdit }
+            let leading = editing.isEmpty ? suggestedActions : editing
+            let trailing = editing.isEmpty ? [] : other
+            if selectedQuote(in: textView, range: range) == nil {
+                for case let action as UIAction in actions { action.attributes = action.attributes.union(.disabled) }
+                return UIMenu(children: leading + [UIMenu(title: selectionGuidance, options: .displayInline, children: actions)] + trailing)
+            }
+            return UIMenu(children: leading + actions + trailing)
         }
     }
 }

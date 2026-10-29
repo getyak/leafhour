@@ -5,7 +5,7 @@ import LeafhourCore
 
 @main
 struct LeafhourApp: App {
-    @State private var model = LibraryModel()
+    @State private var model = VideoAcceptanceFixture.makeModelIfRequested() ?? LibraryModel()
     var body: some Scene {
         WindowGroup { LibraryScreen(model: model).tint(.leafInk) }
     }
@@ -28,6 +28,22 @@ extension ReaderPreferences {
     }
 }
 
+enum AccountRecordsState: Equatable {
+    case idle
+    case loading
+    case ready
+    case partial(String)
+    case cached(String)
+    case failed(String)
+    var isLoading: Bool { self == .loading }
+    var hasSnapshot: Bool {
+        switch self {
+        case .ready, .partial, .cached: true
+        default: false
+        }
+    }
+}
+
 @MainActor @Observable
 final class LibraryModel {
     var books: [LocalBook] = []
@@ -36,6 +52,9 @@ final class LibraryModel {
     var message: String?
     var busy = false
     var status = ""
+    var activeBookID: String?
+    var activityProgress: Double?
+    var activityCanCancel = false
     var syncing = false
     var syncStatus = ""
     var account: CloudAccount?
@@ -43,6 +62,9 @@ final class LibraryModel {
     var summary: CloudJSON = .null
     var notebookEntries: [CloudJSON] = []
     var notebookCursor: String?
+    var notebookState: AccountRecordsState = .idle
+    var summaryState: AccountRecordsState = .idle
+    private var notebookIncomplete = false
     var syncIssues: [String: CloudSyncMetadata] = [:]
     var nativeAuthenticating = false
     var nativeAuthStatus: NativeAuthenticationStatus?
@@ -53,6 +75,8 @@ final class LibraryModel {
     private var sync: CloudBookSync?
     private var root: URL?
     private var importTask: Task<Void, Never>?
+    private var downloadTask: Task<Void, Never>?
+    private var downloadOperationID: UUID?
     private var didRestore = false
     private var didRestoreAccount = false
     private let persistCredential: Bool
@@ -96,7 +120,14 @@ final class LibraryModel {
             didRestoreAccount = true
             do {
                 let restored = try await cloud.restore()
-                if restored != account { account = restored; try configureLibrary() }
+                if restored != account {
+                    contextID = UUID(); account = restored
+                    books = []; cloudBooks = []; syncIssues = [:]; syncing = false; syncStatus = ""
+                    notebookEntries = []; notebookCursor = nil; notebookIncomplete = false; notebookState = .idle
+                    summary = .null; summaryState = .idle
+                    linkedIdentities = []; nativeAuthStatus = nil; nativeAuthMessage = nil
+                    try configureLibrary()
+                }
                 if persistCredential { try AccountCredentialStore.write(await cloud.savedCredential()) }
             } catch { syncStatus = account == nil ? "可先在本机阅读，联网后登录书房。" : "暂时离线，已保留此账号的书籍与记录。" }
         }
@@ -123,7 +154,7 @@ final class LibraryModel {
         try await adoptSignedInAccount(user)
     }
     private func adoptSignedInAccount(_ user: CloudAccount) async throws {
-        contextID = UUID(); account = user; books = []; cloudBooks = []; syncIssues = [:]; notebookEntries = []; notebookCursor = nil; summary = .null; didRestore = true; syncing = false
+        contextID = UUID(); account = user; books = []; cloudBooks = []; syncIssues = [:]; notebookEntries = []; notebookCursor = nil; notebookState = .idle; notebookIncomplete = false; summary = .null; summaryState = .idle; didRestore = true; syncing = false
         linkedIdentities = []
         try configureLibrary(); await reload(); await synchronize()
     }
@@ -189,7 +220,7 @@ final class LibraryModel {
         do {
             await cancelNativeAuthentication()
             if persistCredential { try AccountCredentialStore.write(nil) }
-            contextID = UUID(); account = nil; books = []; cloudBooks = []; syncIssues = [:]; notebookEntries = []; summary = .null; linkedIdentities = []; nativeAuthStatus = nil; syncing = false
+            contextID = UUID(); account = nil; books = []; cloudBooks = []; syncIssues = [:]; notebookEntries = []; notebookCursor = nil; notebookState = .idle; notebookIncomplete = false; summary = .null; summaryState = .idle; linkedIdentities = []; nativeAuthStatus = nil; syncing = false
             await cloud.signOut(); try configureLibrary(); await reload()
             syncStatus = "已退出，账号书籍与记录保留在各自的离线空间。"
         } catch { message = error.localizedDescription }
@@ -217,39 +248,125 @@ final class LibraryModel {
     }
     func download(_ remote: CloudShelfBook, openAfter: Bool = true, refresh: Bool = false) async {
         guard !busy, let account, let library, let sync else { return }
-        if !refresh, let existing = books.first(where: { $0.cloud?.bookID == remote.id && $0.cloud?.contentVersion == remote.contentVersion }) { if openAfter { await open(existing) }; return }
-        let marker = contextID; busy = true; status = "正在下载全部章节…"
-        defer { if marker == contextID { busy = false } }
-        do {
-            let copy = try await cloud.downloadReadingCopy(remote, ownerID: account.id)
-            guard marker == contextID else { return }
-            let book = try await library.importCloud(copy, replaceExisting: refresh)
-            try await sync.synchronize(book.id)
-            await reload(); if openAfter { await open(book) }
-            status = "正文和已有译文已保存在此设备"
-        } catch { if marker == contextID { message = "下载尚未完成：\(error.localizedDescription) 已有副本与原件仍保留。"; await reload() } }
+        if !refresh, let existing = books.first(where: { $0.cloud?.bookID == remote.id && $0.cloud?.contentVersion == remote.contentVersion }) { if openAfter && reader == nil && openingBookID == nil { await open(existing) }; return }
+        let marker = contextID, operation = UUID()
+        downloadOperationID = operation
+        busy = true; activeBookID = remote.id; activityProgress = nil; activityCanCancel = true
+        status = "正在下载《\(remote.title)》…"
+        defer {
+            if downloadOperationID == operation {
+                downloadTask = nil; downloadOperationID = nil
+                if marker == contextID { busy = false; activeBookID = nil; activityProgress = nil; activityCanCancel = false }
+            }
+        }
+        let work = Task { @MainActor [self] in
+            do {
+                try Task.checkCancellation()
+                let copy = try await cloud.downloadReadingCopy(remote, ownerID: account.id) { [weak self] progress in
+                    await MainActor.run {
+                        guard let self, self.contextID == marker, self.downloadOperationID == operation else { return }
+                        self.activityProgress = progress.totalChapters > 0 ? progress.fraction : nil
+                        self.status = progress.completedChapters == progress.totalChapters
+                            ? "《\(remote.title)》已接收全部章节，正在核对完整性…"
+                            : "正在下载《\(remote.title)》· \(progress.completedChapters) / \(progress.totalChapters) 章"
+                    }
+                }
+                try Task.checkCancellation()
+                guard marker == contextID else { return }
+                status = "正在保存《\(remote.title)》的离线副本…"
+                let book = try await library.importCloud(copy, replaceExisting: refresh)
+                // Once the verified package has been published, cancellation cannot undo it.
+                activityCanCancel = false
+                do { try await sync.synchronize(book.id) }
+                catch { syncStatus = "正文已保存，笔记与位置稍后同步。" }
+                guard marker == contextID else { return }
+                await reload()
+                status = Task.isCancelled ? "下载已停止，完整保存的副本仍可阅读。" : "正文和已有译文已保存在此设备"
+                if openAfter && !Task.isCancelled && reader == nil && openingBookID == nil { await open(book) }
+            } catch {
+                guard marker == contextID else { return }
+                if Task.isCancelled || error is CancellationError || (error as? URLError)?.code == .cancelled {
+                    status = "下载已取消，已有副本与云端原件仍保留。"
+                } else { message = "下载尚未完成：\(error.localizedDescription) 已有副本与原件仍保留。" }
+                await reload()
+            }
+        }
+        downloadTask = work
+        await withTaskCancellationHandler { await work.value } onCancel: { work.cancel() }
     }
     func loadAccountRecords(more: Bool = false) async {
         guard let account, let library else { return }
         let marker = contextID
+        if more {
+            await loadNotebook(more: true, account: account, library: library, marker: marker)
+        } else {
+            async let notes: Void = loadNotebook(more: false, account: account, library: library, marker: marker)
+            async let reading: Void = loadReadingSummary(account: account, library: library, marker: marker)
+            _ = await (notes, reading)
+        }
+    }
+    private func loadNotebook(more: Bool, account: CloudAccount, library: OfflineLibrary, marker: UUID) async {
+        guard marker == contextID, !notebookState.isLoading, !more || notebookCursor != nil else { return }
+        let previous = notebookState
+        let hadSnapshot = previous.hasSnapshot || !notebookEntries.isEmpty || notebookCursor != nil
+        let requestedCursor = more ? notebookCursor : nil
+        notebookState = .loading
         do {
-            let cursor = more ? notebookCursor.map { "?limit=12&cursor=" + CloudJSON.component($0) } : "?limit=12"
-            let data = try await cloud.data(path: "/api/library/notebook" + (cursor ?? "?limit=12"), ownerID: account.id)
+            let query = "?limit=12" + (requestedCursor.map { "&cursor=" + CloudJSON.component($0) } ?? "")
+            let data = try await cloud.data(path: "/api/library/notebook" + query, ownerID: account.id)
+            try Task.checkCancellation()
             let notebook = try CloudJSON.decode(data)
+            guard case .array = notebook["entries"], notebook["nextCursor"] == .null || notebook["nextCursor"].string != nil else { throw LibraryError.invalid("返回的笔记记录暂时无法读取。") }
             guard marker == contextID else { return }
             notebookEntries = more ? notebookEntries + notebook["entries"].array : notebook["entries"].array
             notebookCursor = notebook["nextCursor"].string
-            try await library.cacheCloudView("notebook", data: CloudJSON.encode(["entries": .array(notebookEntries)]))
-            let formatter = DateFormatter(); formatter.dateFormat = "yyyy-MM"; formatter.locale = Locale(identifier: "en_US_POSIX")
-            let query = "?month=" + formatter.string(from: Date()) + "&timeZone=" + CloudJSON.component(TimeZone.current.identifier)
-            let summaryData = try await cloud.data(path: "/api/library/reading-summary" + query, ownerID: account.id)
-            guard marker == contextID else { return }
-            summary = try CloudJSON.decode(summaryData); try await library.cacheCloudView("summary", data: summaryData)
+            notebookIncomplete = (more && notebookIncomplete) || !notebook["failed"].array.isEmpty
+            notebookState = notebookIncomplete ? .partial("部分书籍的记录暂未读取，当前列表可能不完整。请重试读取笔记。") : .ready
+            let snapshot: [String: CloudJSON] = ["entries": .array(notebookEntries), "nextCursor": notebookCursor.map(CloudJSON.string) ?? .null, "incomplete": .bool(notebookIncomplete)]
+            do { try await library.cacheCloudView("notebook", data: CloudJSON.encode(snapshot)) }
+            catch { if marker == contextID { notebookState = .partial("最新笔记已读取，但此设备暂未保存离线副本。请联网时重试。") } }
         } catch {
             guard marker == contextID else { return }
-            if notebookEntries.isEmpty, let data = try? await library.cloudView("notebook") { notebookEntries = (try? CloudJSON.decode(data)["entries"].array) ?? [] }
-            if let data = try? await library.cloudView("summary") { summary = (try? CloudJSON.decode(data)) ?? .null }
-            syncStatus = "当前显示已缓存的记录；联网后可重新同步。"
+            if Task.isCancelled || error is CancellationError { notebookState = previous; return }
+            if hadSnapshot {
+                notebookState = .cached(more ? "下一页暂未读取，已载入的内容和翻页位置仍保留。\n" + error.localizedDescription : "暂时无法更新，当前保留此前载入的笔记记录。\n" + error.localizedDescription)
+            } else if let data = try? await library.cloudView("notebook"), let cached = try? CloudJSON.decode(data), case .array = cached["entries"] {
+                guard marker == contextID else { return }
+                notebookEntries = cached["entries"].array; notebookCursor = cached["nextCursor"].string
+                notebookIncomplete = cached["incomplete"] == .bool(true)
+                notebookState = .cached("暂时无法更新，当前显示此账号此前保存的笔记记录。" + (notebookIncomplete ? "部分书籍记录仍待核对。" : "") + "\n" + error.localizedDescription)
+            } else {
+                guard marker == contextID else { return }
+                notebookState = .failed("此设备没有可显示的离线笔记记录。读取失败不代表书房里没有笔记。\n" + error.localizedDescription)
+            }
+        }
+    }
+    private func loadReadingSummary(account: CloudAccount, library: OfflineLibrary, marker: UUID) async {
+        guard marker == contextID, !summaryState.isLoading else { return }
+        let previous = summaryState, hadSnapshot = summary != .null
+        summaryState = .loading
+        do {
+            let formatter = DateFormatter(); formatter.dateFormat = "yyyy-MM"; formatter.locale = Locale(identifier: "en_US_POSIX")
+            let query = "?month=" + formatter.string(from: Date()) + "&timeZone=" + CloudJSON.component(TimeZone.current.identifier)
+            let data = try await cloud.data(path: "/api/library/reading-summary" + query, ownerID: account.id)
+            try Task.checkCancellation()
+            let value = try CloudJSON.decode(data)
+            guard case .array = value["books"], value["allTime"]["durationSeconds"].number != nil else { throw LibraryError.invalid("返回的阅读记录暂时无法读取。") }
+            guard marker == contextID else { return }
+            summary = value; summaryState = .ready
+            do { try await library.cacheCloudView("summary", data: data) }
+            catch { if marker == contextID { summaryState = .partial("最新阅读记录已读取，但此设备暂未保存离线副本。请联网时重试。") } }
+        } catch {
+            guard marker == contextID else { return }
+            if Task.isCancelled || error is CancellationError { summaryState = previous; return }
+            if hadSnapshot { summaryState = .cached("暂时无法更新，当前保留此前载入的阅读记录。\n" + error.localizedDescription) }
+            else if let data = try? await library.cloudView("summary"), let cached = try? CloudJSON.decode(data), case .array = cached["books"], cached["allTime"]["durationSeconds"].number != nil {
+                guard marker == contextID else { return }
+                summary = cached; summaryState = .cached("暂时无法更新，当前显示此账号此前保存的阅读记录。\n" + error.localizedDescription)
+            } else {
+                guard marker == contextID else { return }
+                summaryState = .failed("此设备没有可显示的离线阅读记录，请重试读取。\n" + error.localizedDescription)
+            }
         }
     }
     func resolvePosition(_ book: LocalBook, useDevice: Bool) async {
@@ -263,7 +380,8 @@ final class LibraryModel {
     func upload(_ book: LocalBook) async {
         guard let account, let library, !busy, book.cloud == nil else { return }
         let marker = contextID; busy = true; status = "正在上传原件到自己的书房…"
-        defer { if marker == contextID { busy = false } }
+        activeBookID = book.id; activityCanCancel = false; activityProgress = nil
+        defer { if marker == contextID { busy = false; activeBookID = nil; activityCanCancel = false; activityProgress = nil } }
         do {
             let source = try await library.originalURL(book.id), attributes = try FileManager.default.attributesOfItem(atPath: source.path)
             guard let size = attributes[.size] as? NSNumber, size.int64Value <= 20 * 1024 * 1024 else { throw LibraryError.invalid("当前云端上传上限为 20 MB。本机原件与记录已保留，可继续离线阅读。") }
@@ -288,22 +406,36 @@ final class LibraryModel {
     }
     func importFile(_ url: URL) {
         guard !busy, let library else { return }
-        busy = true; status = "正在保留原件并处理书籍…"
+        busy = true; status = "正在保留原件并处理书籍…"; activityCanCancel = true; activeBookID = nil; activityProgress = nil
+        let marker = contextID
         importTask = Task {
             let scoped = url.startAccessingSecurityScopedResource()
-            defer { if scoped { url.stopAccessingSecurityScopedResource() }; busy = false; importTask = nil }
-            do { let book = try await library.importFile(url); await reload(); await open(book) }
+            defer { if scoped { url.stopAccessingSecurityScopedResource() }; busy = false; importTask = nil; activityCanCancel = false }
+            do {
+                let book = try await library.importFile(url)
+                await reload()
+                if marker == contextID && !Task.isCancelled && reader == nil && openingBookID == nil { await open(book) }
+            }
             catch is CancellationError { status = "导入已取消，原件仍保留，可稍后重试。"; await reload() }
             catch { message = error.localizedDescription; await reload() }
         }
     }
-    func cancelImport() { importTask?.cancel() }
+    func cancelImport() {
+        guard activityCanCancel else { return }
+        importTask?.cancel(); downloadTask?.cancel()
+    }
     func retry(_ job: ImportJob) {
         guard !busy, let library else { return }
-        busy = true; status = "正在从保留的原件重试…"
+        busy = true; status = "正在从保留的原件重试…"; activityCanCancel = true; activeBookID = nil; activityProgress = nil
+        let marker = contextID
         importTask = Task {
-            defer { busy = false; importTask = nil }
-            do { let book = try await library.retry(job.id); await reload(); await open(book) }
+            defer { busy = false; importTask = nil; activityCanCancel = false }
+            do {
+                let book = try await library.retry(job.id)
+                await reload()
+                if marker == contextID && !Task.isCancelled && reader == nil && openingBookID == nil { await open(book) }
+            }
+            catch is CancellationError { status = "导入已取消，原件仍保留，可稍后重试。"; await reload() }
             catch { message = error.localizedDescription; await reload() }
         }
     }
