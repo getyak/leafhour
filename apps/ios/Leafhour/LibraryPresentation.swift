@@ -26,6 +26,7 @@ struct LibraryShelfItem: Identifiable {
     let id: String
     let local: LocalBook?
     let cloud: CloudShelfBook?
+    var isAdditionalVersion = false
     var title: String { local?.title ?? cloud?.title ?? "" }
     var author: String { local?.author ?? cloud?.author ?? "" }
     var isDownloaded: Bool { local != nil }
@@ -44,10 +45,27 @@ enum LibraryPresentation {
         let byImport = local.sorted {
             $0.importedAt == $1.importedAt ? $0.id < $1.id : $0.importedAt > $1.importedAt
         }
+        var primaryByCloudID: [String: String] = [:]
+        var primaryVersionByCloudID: [String: String] = [:]
         for book in byImport {
-            let id = book.cloud.map { "cloud:" + $0.bookID } ?? "local:" + book.id
+            guard let identity = book.cloud else { continue }
+            if primaryByCloudID[identity.bookID] == nil {
+                primaryByCloudID[identity.bookID] = book.id
+                primaryVersionByCloudID[identity.bookID] = identity.contentVersion
+            }
+            if let remote = remoteByID[identity.bookID], identity.contentVersion == remote.contentVersion {
+                // A matching current version is preferred even when another copy was imported later.
+                if primaryVersionByCloudID[identity.bookID] != remote.contentVersion {
+                    primaryByCloudID[identity.bookID] = book.id
+                    primaryVersionByCloudID[identity.bookID] = identity.contentVersion
+                }
+            }
+        }
+        for book in byImport {
+            let additional = book.cloud.map { primaryByCloudID[$0.bookID] != book.id } ?? false
+            let id = additional ? "local:" + book.id : (book.cloud.map { "cloud:" + $0.bookID } ?? "local:" + book.id)
             guard seen.insert(id).inserted else { continue }
-            result.append(LibraryShelfItem(id: id, local: book, cloud: book.cloud.flatMap { remoteByID[$0.bookID] }))
+            result.append(LibraryShelfItem(id: id, local: book, cloud: additional ? nil : book.cloud.flatMap { remoteByID[$0.bookID] }, isAdditionalVersion: additional))
         }
         // CloudShelfBook has no added-at field. Preserve the service's shelf order
         // instead of inventing dates for books that have not been downloaded.

@@ -25,6 +25,16 @@ final class LibraryPresentationTests: XCTestCase {
         XCTAssertTrue(try XCTUnwrap(items.first).hasCloudUpdate)
     }
 
+    func testOlderOfflineVersionRemainsReachableAfterDownloadingAnUpdatedCopy() throws {
+        let older = try local("older-copy", title: "A Book", added: 1, cloudID: "cloud-book", version: "v1")
+        let current = try local("current-copy", title: "A Book", added: 2, cloudID: "cloud-book", version: "v2")
+        let remote = CloudShelfBook(id: "cloud-book", title: "A Book", author: "", contentVersion: "v2")
+        let items = LibraryPresentation.items(local: [older, current], cloud: [remote])
+        XCTAssertEqual(Set(items.compactMap { $0.local?.id }), Set(["older-copy", "current-copy"]), "Each source version needs an entry to its own notes, drafts and export")
+        XCTAssertEqual(items.first { $0.id == "cloud:cloud-book" }?.local?.id, "current-copy")
+        XCTAssertEqual(Set(items.map(\.id)).count, 2)
+    }
+
     func testDownloadedFilterExcludesCloudOnlyBookWithoutChangingTheLibrary() throws {
         let saved = try local("device-book", title: "Available Offline")
         let remote = CloudShelfBook(id: "remote", title: "Needs Download", author: "", contentVersion: "v1")

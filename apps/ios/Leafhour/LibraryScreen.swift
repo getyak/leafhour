@@ -285,7 +285,7 @@ struct LibraryScreen: View {
 
     private func isActive(_ item: LibraryShelfItem) -> Bool {
         guard model.busy, let id = model.activeBookID else { return false }
-        return item.local?.id == id || item.cloud?.id == id || item.local?.cloud?.bookID == id
+        return item.local?.id == id || (!item.isAdditionalVersion && (item.cloud?.id == id || item.local?.cloud?.bookID == id))
     }
 
     private func open(_ item: LibraryShelfItem) {

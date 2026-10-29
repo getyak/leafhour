@@ -36,7 +36,7 @@ struct ShelfBookAvailability: View {
 
     var body: some View {
         if item.isDownloaded {
-            Label(item.hasCloudUpdate ? "已下载 · 云端有更新" : "已下载 · 可离线阅读", systemImage: "checkmark.circle")
+            Label(item.isAdditionalVersion ? "其他离线版本 · 记录保留" : (item.hasCloudUpdate ? "已下载 · 云端有更新" : "已下载 · 可离线阅读"), systemImage: item.isAdditionalVersion ? "books.vertical" : "checkmark.circle")
                 .foregroundStyle(Color.leafInk)
         } else {
             Label("尚未下载", systemImage: "icloud")
@@ -82,7 +82,7 @@ struct LibraryShelfRow: View {
             if item.isDownloaded {
                 Button(action: open) { bookLabel }
                     .buttonStyle(.plain)
-                    .accessibilityLabel("阅读，\(item.title)，已下载可离线阅读")
+                    .accessibilityLabel("阅读，\(item.title)，" + (item.isAdditionalVersion ? "其他离线版本，个人记录保留" : "已下载可离线阅读"))
             } else {
                 bookLabel
             }
@@ -134,7 +134,7 @@ struct LibraryShelfTile: View {
             if item.isDownloaded {
                 Button(action: open) { cover }
                     .buttonStyle(.plain)
-                    .accessibilityLabel("阅读，\(item.title)，已下载可离线阅读")
+                    .accessibilityLabel("阅读，\(item.title)，" + (item.isAdditionalVersion ? "其他离线版本，个人记录保留" : "已下载可离线阅读"))
             } else {
                 cover
             }
