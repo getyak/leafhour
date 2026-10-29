@@ -1,0 +1,116 @@
+{
+  "issue": "GET-306",
+  "base": "9ea5350bb2a07faf099808f6f3e5a1a9806eb795",
+  "sourceSHA256": {
+    "apps/ios/Leafhour/LeafhourApp.swift": "728dfb92887f5910582144e1d0cc605af81bcd0f588b33b7d1ccd0b815f47941",
+    "apps/ios/Leafhour/ReaderPanels.swift": "d839e8e92b1c359b657dba332f47d3fc1f6f681ee63e2a1afd2746fd9be8dd5d",
+    "apps/ios/Leafhour/ReaderScreen.swift": "1b5242230f424f3c6891507a767f71b71d2e2ca14400253c5bb40027d82ef627",
+    "apps/ios/LeafhourCore/Sources/LeafhourCore/ReaderSession.swift": "a495a8151106452bd412a40deddc966dc60ed1c5ebdd437061c616a3042bbdcb",
+    "apps/ios/LeafhourCore/Tests/LeafhourCoreTests/ReaderSessionTests.swift": "9dee591ae986c4b502df2ad9997c0bb7b4504d0dbbd97223dae47793f72e2a15"
+  },
+  "host": {
+    "accepted": "host-final-reviewed.log",
+    "framework": "XCTest",
+    "executed": 41,
+    "newSessionTests": 8,
+    "failures": 0,
+    "compilerWarnings": 0,
+    "red": "host-red.log",
+    "redExecuted": 2,
+    "redAssertionFailures": 3,
+    "closeRed": "host-close-red.log",
+    "closeRedExecuted": 1,
+    "closeRedFailures": 1,
+    "excludedZeroTestFooter": "Separate Swift Testing footer is not the XCTest result"
+  },
+  "native": {
+    "accepted": "native-final.xcresult",
+    "log": "native-final.log",
+    "executed": 1,
+    "failures": 0,
+    "durationSeconds": 56.94,
+    "simulator": "iPhone 17 Pro / iOS 26.5",
+    "effectiveXcodeJobs": 2,
+    "reusedPrimary": true,
+    "taskOnlyBundle": "org.leafhour.craft297",
+    "fixtureSource": "public-domain Alice reading text",
+    "fixtureSHA256": "009fe1ae872e6fc9aa8c4c3eab6c40a4a98175b3b86ccc93419283bf6ec8712f",
+    "nested": "write failure keeps editor; retry/cold resume exactly one note, original quote anchor scalar370",
+    "direct": "real text selection/input; failed write keeps editor; keep draft/cold resume/reopen/commit; two distinct notes and original selected quote/anchor retained",
+    "noteIDs": [
+      "A1AD6EDB-0CF3-4F21-BA6D-719DE1A4FD27",
+      "7F05F259-7ECB-43A1-9AC3-8C6F33585E82"
+    ],
+    "noteAnchors": [
+      {
+        "chapterID": "text",
+        "characterOffset": 370,
+        "passageID": "text-2"
+      },
+      {
+        "chapterID": "text",
+        "characterOffset": 616,
+        "passageID": "text-2"
+      }
+    ],
+    "remainingDrafts": 0,
+    "red": "native-retention-red.xcresult",
+    "redExecuted": 1,
+    "redFailures": 1,
+    "redFinding": "Root error presentation displaced nested editor; root retry and cold resume persisted exactly one note",
+    "excludedRuns": {
+      "native-baseline": "Old task container path became invalid after install; excluded as reproduction",
+      "native-baseline-confirmed": "Expected inline footer but actual root alert; excluded as accepted test, raw hierarchy retained",
+      "native-green": "Passing earlier implementation; superseded by reviewed final source and expanded final probe"
+    },
+    "temporaryUITestRestoredExactly": true,
+    "finalProbeSHA256": "f9f48d77f9cdc9ae56bfe413a086435fb4da1c88e401045a9fc35fb421d69b9c"
+  },
+  "screenshots": [
+    {
+      "file": "before-root-alert.png",
+      "sha256": "65f3de8d2e09df49efe75d9758adb6670e0f9f0c5ccbb1cd12324b5d4797ed99",
+      "unmodifiedNativeScreenshot": true
+    },
+    {
+      "file": "after-nested-editor.png",
+      "sha256": "9ad91f139f388ca45c8744e50552b67c397ef604459e362e718b8a11c761cdb2",
+      "unmodifiedNativeScreenshot": true
+    },
+    {
+      "file": "after-direct-editor.png",
+      "sha256": "cf14a93800868c241c2f8f5ec111955077e379848257ddee46e59632f05c6e67",
+      "unmodifiedNativeScreenshot": true
+    }
+  ],
+  "review": {
+    "agent": "ios_preferences_review",
+    "result": "No confirmed P0/P1 or remaining substantive issue after two P2 fixes",
+    "fixed": [
+      "All close entries validate current receipt; direct editor removes duplicate continue action",
+      "Close clears only its matching confirmed draft; different text or different editor ID remains a draft"
+    ]
+  },
+  "preservation": {
+    "archive": "native-note-save-evidence.tar.gz",
+    "archiveSHA256": "155ccc9fb103a7911748679e48992e81aa3242cc0fa0fcf4e6a6023713eb95ec",
+    "archiveBytes": 223073441,
+    "members": 4315,
+    "memberPrefix": "runtime/",
+    "everyFileVerified": true
+  },
+  "closeout": {
+    "taskStateRestoredExactly": true,
+    "originalStateSHA256": "f0df05c436c404e0a9a7a81e85c03b701ad763adc4f800078f4735ea2fcf0e57",
+    "borrowedDeviceLeftBooted": true
+  },
+  "notAccepted": [
+    "physical device",
+    "TestFlight",
+    "VoiceOver",
+    "hardware keyboard",
+    "compact/iPad",
+    "actual production storage outage or global performance",
+    "severe native flush race or duplicate notes before the change"
+  ]
+}
