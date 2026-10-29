@@ -27,6 +27,9 @@ public struct LocalBook: Codable, Identifiable, Equatable, Sendable {
     public var importedAt: Date
     public var chapters: [BookChapter]
     public var cloud: CloudBookIdentity? = nil
+    /// A first-open hint; every source chapter and saved reading position remains available.
+    public var readingStartChapterID: String? = nil
+    public var readingStartAnchor: ReadingAnchor? = nil
 }
 public struct ReadingAnchor: Codable, Equatable, Hashable, Sendable {
     public var chapterID: String

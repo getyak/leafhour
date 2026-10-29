@@ -1,0 +1,301 @@
+import XCTest
+import Foundation
+import ZIPFoundation
+@testable import LeafhourCore
+
+final class CoverOpeningTests: XCTestCase {
+    private var root: URL!
+    override func setUpWithError() throws {
+        let base = ProcessInfo.processInfo.environment["LEAFHOUR_TEST_ROOT"].map { URL(fileURLWithPath: $0, isDirectory: true) } ?? FileManager.default.temporaryDirectory
+        root = base.appendingPathComponent("CoverOpening-" + UUID().uuidString)
+        try FileManager.default.createDirectory(at: root, withIntermediateDirectories: true)
+    }
+    override func tearDownWithError() throws { try FileManager.default.removeItem(at: root) }
+
+    @MainActor func testNewReadingStartsAtFirstLinearChapterAndRetainsCover() async throws {
+        let fixture = try await fixture(coverLinear: false)
+        let reader = fixture.session()
+        XCTAssertEqual(reader.chapter.sourcePath, "OPS/preface.xhtml")
+        XCTAssertEqual(fixture.book.chapters.map(\.sourcePath), ["OPS/art.xhtml", "OPS/title.xhtml", "OPS/preface.xhtml", "OPS/body.xhtml", "OPS/nav.xhtml"])
+        XCTAssertEqual(fixture.book.chapters[0].passages[0].resourcePath, "OPS/cover.png")
+    }
+
+    @MainActor func testExplicitCoverAndTitlePageDoNotReplaceUnmarkedPreface() async throws {
+        let fixture = try await fixture(coverLinear: true)
+        XCTAssertEqual(fixture.session().chapter.sourcePath, "OPS/preface.xhtml")
+    }
+
+    @MainActor func testBodymatterLandmarkSelectsBodyWithoutRemovingFrontMatter() async throws {
+        let fixture = try await fixture(landmark: "body.xhtml#opening")
+        XCTAssertEqual(fixture.session().chapter.sourcePath, "OPS/body.xhtml")
+        XCTAssertTrue(fixture.book.chapters.contains { $0.sourcePath == "OPS/preface.xhtml" })
+    }
+
+    @MainActor func testBodymatterFragmentStartsAtRealPassageAfterCoverInSameXHTML() async throws {
+        let fixture = try await fixture(coverLinear: true, markCover: false, landmark: "art.xhtml#body-start", combinedOpening: true)
+        let reader = fixture.session()
+        let passage = try XCTUnwrap(reader.chapter.passages.first { $0.text == "Chapter one inside the cover document" })
+        XCTAssertEqual(reader.chapter.sourcePath, "OPS/art.xhtml")
+        XCTAssertEqual(reader.currentAnchor?.passageID, passage.id)
+        XCTAssertEqual(reader.chapter.passages.first?.resourcePath, "OPS/cover.png")
+    }
+
+    @MainActor func testLegacyCacheResolvesEncodedFragmentWithoutRewritingIndex() async throws {
+        let fixture = try await fixture(coverLinear: true, markCover: false, landmark: "art.xhtml#body%2Dstart", combinedOpening: true)
+        var index = try XCTUnwrap(JSONSerialization.jsonObject(with: JSONEncoder().encode(fixture.book)) as? [String: Any])
+        index.removeValue(forKey: "readingStartChapterID")
+        index.removeValue(forKey: "readingStartAnchor")
+        let legacy = try JSONDecoder().decode(LocalBook.self, from: JSONSerialization.data(withJSONObject: index))
+        let before = try Data(contentsOf: fixture.directory.appendingPathComponent("book.json"))
+        let reader = fixture.session(book: legacy)
+        let passage = try XCTUnwrap(reader.chapter.passages.first { $0.text == "Chapter one inside the cover document" })
+        XCTAssertEqual(reader.currentAnchor?.passageID, passage.id)
+        XCTAssertEqual(try Data(contentsOf: fixture.directory.appendingPathComponent("book.json")), before)
+    }
+
+    @MainActor func testMissingBodymatterFragmentDoesNotInventAnOpeningAnchor() async throws {
+        let fixture = try await fixture(landmark: "body.xhtml#missing-target")
+        XCTAssertEqual(fixture.session().chapter.sourcePath, "OPS/preface.xhtml")
+    }
+
+    @MainActor func testBodyFragmentInSameDocumentOverridesCoverLandmarkForNewAndLegacyBooks() async throws {
+        let fixture = try await fixture(coverLinear: true, markCover: false, landmark: "art.xhtml#body-start", combinedOpening: true, coverLandmark: "art.xhtml#cover")
+        try assertCombinedBodyStartForNewAndLegacy(fixture)
+    }
+
+    @MainActor func testGuideBodyFragmentInSameDocumentOverridesCoverReferenceForNewAndLegacyBooks() async throws {
+        let guide = "<reference type=\"cover\" href=\"art.xhtml#cover\"/><reference type=\"text\" href=\"art.xhtml#body-start\"/>"
+        let fixture = try await fixture(coverLinear: true, markCover: false, guide: guide, combinedOpening: true)
+        try assertCombinedBodyStartForNewAndLegacy(fixture)
+    }
+
+    @MainActor func testBodyFragmentCannotOverrideWholeDocumentCoverOrTheSameCoverFragment() async throws {
+        let wholeCover = try await fixture(coverLinear: true, landmark: "art.xhtml#body-start", combinedOpening: true, coverLandmark: "art.xhtml#cover")
+        XCTAssertEqual(wholeCover.session().chapter.sourcePath, "OPS/preface.xhtml")
+        let sameFragment = try await fixture(coverLinear: true, markCover: false, landmark: "art.xhtml#cover", combinedOpening: true, coverLandmark: "art.xhtml#cover")
+        XCTAssertEqual(sameFragment.session().chapter.sourcePath, "OPS/preface.xhtml")
+    }
+
+    @MainActor func testLinearNavigationDocumentCanDeclareBodyOutsideNavigationElements() async throws {
+        let fixture = try await fixture(landmark: "nav.xhtml#body-start", navInSpine: true, navSupplement: "<section id=\"body-start\"><h1>Actual body outside navigation</h1><p>Original main prose.</p></section>")
+        try assertCombinedBodyStartForNewAndLegacy(fixture, path: "OPS/nav.xhtml", text: "Actual body outside navigation", hasCover: false)
+    }
+
+    @MainActor func testFragmentOnlyLandmarkResolvesWithinItsCurrentDocument() async throws {
+        let fixture = try await fixture(landmark: "#body-start", navInSpine: true, navSupplement: "<section id=\"body-start\"><h1>Actual body outside navigation</h1><p>Original main prose.</p></section>")
+        try assertCombinedBodyStartForNewAndLegacy(fixture, path: "OPS/nav.xhtml", text: "Actual body outside navigation", hasCover: false)
+    }
+
+    @MainActor func testNavigationFragmentOrDescendantCannotMasqueradeAsBodymatter() async throws {
+        for role in ["toc", "landmarks", "page-list"] {
+            let fixture = try await fixture(landmark: "#navigation-child", navInSpine: true, navSupplement: "<nav epub:type=\"\(role)\" id=\"navigation-target\"><h1 id=\"navigation-child\">Navigation only</h1><ol><li>Index entry</li></ol></nav>")
+            var index = try XCTUnwrap(JSONSerialization.jsonObject(with: JSONEncoder().encode(fixture.book)) as? [String: Any])
+            index.removeValue(forKey: "readingStartChapterID")
+            index.removeValue(forKey: "readingStartAnchor")
+            let legacy = try JSONDecoder().decode(LocalBook.self, from: JSONSerialization.data(withJSONObject: index))
+            for book in [fixture.book, legacy] { XCTAssertEqual(fixture.session(book: book).chapter.sourcePath, "OPS/preface.xhtml", role) }
+        }
+    }
+
+    @MainActor private func assertCombinedBodyStartForNewAndLegacy(_ fixture: CoverFixture, path: String = "OPS/art.xhtml", text: String = "Chapter one inside the cover document", hasCover: Bool = true) throws {
+        var index = try XCTUnwrap(JSONSerialization.jsonObject(with: JSONEncoder().encode(fixture.book)) as? [String: Any])
+        index.removeValue(forKey: "readingStartChapterID")
+        index.removeValue(forKey: "readingStartAnchor")
+        let legacy = try JSONDecoder().decode(LocalBook.self, from: JSONSerialization.data(withJSONObject: index))
+        for book in [fixture.book, legacy] {
+            let reader = fixture.session(book: book)
+            XCTAssertEqual(reader.chapter.sourcePath, path)
+            let passage = try XCTUnwrap(reader.chapter.passages.first { $0.text == text })
+            XCTAssertEqual(reader.currentAnchor?.passageID, passage.id)
+            if hasCover { XCTAssertEqual(reader.chapter.passages.first?.resourcePath, "OPS/cover.png") }
+        }
+    }
+
+    @MainActor func testSVGRasterCoverImportsAsLocalImageAndKeepsAlternative() async throws {
+        for attribute in ["href", "xlink:href"] {
+            let svg = "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\"><title>Source cover artwork</title><image \(attribute)=\"cover.png\"/></svg>"
+            let fixture = try await fixture(coverMarkup: svg)
+            let image = try XCTUnwrap(fixture.book.chapters[0].passages.first { $0.resourcePath == "OPS/cover.png" })
+            XCTAssertEqual(image.alternative, "Source cover artwork")
+            XCTAssertEqual(fixture.session().chapter.sourcePath, "OPS/preface.xhtml")
+        }
+    }
+
+    @MainActor func testPureVectorCoverKeepsExplicitPlaceholderAndOriginalSource() async throws {
+        let fixture = try await fixture(coverMarkup: "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M0 0 L10 10\"/></svg>")
+        let placeholder = try XCTUnwrap(fixture.book.chapters[0].passages.first)
+        XCTAssertEqual(placeholder.text, "")
+        XCTAssertEqual(placeholder.resourcePath, "OPS/art.xhtml")
+        XCTAssertTrue(placeholder.alternative?.contains("SVG") == true)
+        let source = try String(contentsOf: fixture.directory.appendingPathComponent("assets/OPS/art.xhtml"), encoding: .utf8)
+        XCTAssertTrue(source.contains("M0 0 L10 10"))
+    }
+
+    @MainActor func testAddingSVGImageDoesNotRenumberExistingSourceParagraph() async throws {
+        let svg = "<svg xmlns=\"http://www.w3.org/2000/svg\"><title>Source cover artwork</title><image href=\"cover.png\"/></svg><p>Existing source paragraph.</p>"
+        let fixture = try await fixture(coverMarkup: svg)
+        let source = try XCTUnwrap(fixture.book.chapters[0].passages.first { $0.text == "Existing source paragraph." })
+        // The pre-SVG implementation assigned this source paragraph block-1.
+        XCTAssertEqual(source.id, "p-056f3be19fb1b499d38c77ef8bd7e08a84c4b6d97bc1807863dcf14e6b13dfd4")
+    }
+
+    @MainActor func testSVGImageCannotLoadRemoteOrEscapingResource() async throws {
+        for href in ["https://example.invalid/cover.png", "../../outside.png"] {
+            do {
+                _ = try await fixture(coverMarkup: "<svg xmlns=\"http://www.w3.org/2000/svg\"><image href=\"\(href)\"/></svg>")
+                XCTFail("Unsafe SVG image reference must fail import")
+            } catch { /* No request is made; source remains in the failed import job. */ }
+        }
+    }
+
+    @MainActor func testEPUB2GuideTextSelectsBody() async throws {
+        let fixture = try await fixture(guide: "<reference type=\"text\" href=\"body.xhtml#opening\"/>")
+        XCTAssertEqual(fixture.session().chapter.sourcePath, "OPS/body.xhtml")
+    }
+
+    @MainActor func testGuideCoverReferenceSkipsOnlyItsExplicitTarget() async throws {
+        let fixture = try await fixture(coverLinear: true, markCover: false, guide: "<reference type=\"cover\" href=\"art.xhtml\"/>")
+        XCTAssertEqual(fixture.session().chapter.sourcePath, "OPS/preface.xhtml")
+    }
+
+    @MainActor func testUnmarkedOpeningIllustrationIsNotAssumedToBeCover() async throws {
+        let fixture = try await fixture(coverLinear: true, markCover: false)
+        XCTAssertEqual(fixture.session().chapter.sourcePath, "OPS/art.xhtml")
+    }
+
+    @MainActor func testLandmarkCannotSelectNonlinearOrOutsideSpineContent() async throws {
+        for href in ["art.xhtml", "nav.xhtml", "https://example.invalid/body.xhtml", "../../outside.xhtml"] {
+            let fixture = try await fixture(landmark: href)
+            XCTAssertEqual(fixture.session().chapter.sourcePath, "OPS/preface.xhtml", href)
+        }
+    }
+
+    @MainActor func testSavedCoverAndBodyPositionsOverrideNewReadingStart() async throws {
+        let fixture = try await fixture(landmark: "body.xhtml")
+        for chapterIndex in [0, 2, 3] {
+            let chapter = fixture.book.chapters[chapterIndex], passage = chapter.passages[0]
+            var state = ReaderState()
+            let anchor = ReadingAnchor(chapterID: chapter.id, passageID: passage.id, characterOffset: min(3, passage.text.unicodeScalars.count))
+            state.anchor = anchor
+            state.notes = [ReaderNote(anchor: anchor, quote: passage.text, body: "Keep this note")]
+            state.drafts[anchor.key] = NoteDraft(anchor: anchor, quote: passage.text, body: "Keep this draft")
+            let reader = fixture.session(state: state)
+            XCTAssertEqual(reader.chapter.id, chapter.id)
+            XCTAssertEqual(reader.currentAnchor, anchor)
+            XCTAssertEqual(reader.state.notes, state.notes)
+            XCTAssertEqual(reader.state.drafts, state.drafts)
+        }
+    }
+
+    @MainActor func testDeclaredReadingStartFindsBodyWithoutMovingSavedCoverPosition() async throws {
+        let fixture = try await fixture(landmark: "body.xhtml#opening")
+        var index = try XCTUnwrap(JSONSerialization.jsonObject(with: JSONEncoder().encode(fixture.book)) as? [String: Any])
+        index.removeValue(forKey: "readingStartChapterID")
+        index.removeValue(forKey: "readingStartAnchor")
+        let legacy = try JSONDecoder().decode(LocalBook.self, from: JSONSerialization.data(withJSONObject: index))
+        let cover = fixture.book.chapters[0]
+        var state = ReaderState()
+        state.anchor = ReadingAnchor(chapterID: cover.id, passageID: cover.passages[0].id)
+        for book in [fixture.book, legacy] {
+            let reader = fixture.session(book: book, state: state)
+            let declared = try XCTUnwrap(reader.declaredReadingStart())
+            XCTAssertEqual(declared.chapterID, fixture.book.chapters[3].id)
+            XCTAssertEqual(declared.passageID, fixture.book.chapters[3].passages[0].id)
+            XCTAssertEqual(reader.currentAnchor, state.anchor)
+            XCTAssertEqual(reader.chapter.id, cover.id)
+            XCTAssertEqual(reader.state, state)
+        }
+        let diskState = try await fixture.library.state(fixture.book.id)
+        XCTAssertNil(diskState.anchor)
+    }
+
+    @MainActor func testOldOutOfRangeOffsetIsClampedWithoutMovingChapters() async throws {
+        let fixture = try await fixture(landmark: "body.xhtml")
+        let chapter = fixture.book.chapters[2], passage = chapter.passages[0]
+        var state = ReaderState()
+        state.anchor = ReadingAnchor(chapterID: chapter.id, passageID: passage.id, characterOffset: 10_000)
+        let reader = fixture.session(state: state)
+        XCTAssertEqual(reader.chapter.sourcePath, "OPS/preface.xhtml")
+        XCTAssertEqual(reader.currentAnchor?.characterOffset, passage.text.unicodeScalars.count)
+    }
+
+    @MainActor func testMissingPassageKeepsSavedChapterAndMissingChapterUsesReadingStart() async throws {
+        let fixture = try await fixture(landmark: "body.xhtml")
+        var state = ReaderState()
+        state.anchor = ReadingAnchor(chapterID: fixture.book.chapters[2].id, passageID: "old-missing-passage")
+        XCTAssertEqual(fixture.session(state: state).chapter.sourcePath, "OPS/preface.xhtml")
+        state.anchor = ReadingAnchor(chapterID: "missing-chapter", passageID: "missing-passage")
+        XCTAssertEqual(fixture.session(state: state).chapter.sourcePath, "OPS/body.xhtml")
+    }
+
+    @MainActor func testLegacyBookIndexDerivesStartFromLocalAssetsWithoutWritingPackage() async throws {
+        let fixture = try await fixture(landmark: "body.xhtml")
+        var index = try XCTUnwrap(JSONSerialization.jsonObject(with: JSONEncoder().encode(fixture.book)) as? [String: Any])
+        index.removeValue(forKey: "readingStartChapterID")
+        index.removeValue(forKey: "readingStartAnchor")
+        let legacy = try JSONDecoder().decode(LocalBook.self, from: JSONSerialization.data(withJSONObject: index))
+        let before = try Data(contentsOf: fixture.directory.appendingPathComponent("book.json"))
+        let reader = fixture.session(book: legacy)
+        XCTAssertEqual(reader.chapter.sourcePath, "OPS/body.xhtml")
+        XCTAssertEqual(try Data(contentsOf: fixture.directory.appendingPathComponent("book.json")), before)
+        let diskState = try await fixture.library.state(fixture.book.id)
+        XCTAssertNil(diskState.anchor)
+    }
+
+    @MainActor func testLegacyFallbackDoesNotFollowInvalidContainerPath() async throws {
+        let fixture = try await fixture(landmark: "body.xhtml")
+        var index = try XCTUnwrap(JSONSerialization.jsonObject(with: JSONEncoder().encode(fixture.book)) as? [String: Any])
+        index.removeValue(forKey: "readingStartChapterID")
+        index.removeValue(forKey: "readingStartAnchor")
+        let legacy = try JSONDecoder().decode(LocalBook.self, from: JSONSerialization.data(withJSONObject: index))
+        let container = fixture.directory.appendingPathComponent("assets/META-INF/container.xml")
+        try Data("<container><rootfiles><rootfile full-path=\"../../outside.opf\"/></rootfiles></container>".utf8).write(to: container)
+        XCTAssertEqual(fixture.session(book: legacy).chapter.sourcePath, "OPS/art.xhtml")
+    }
+
+    @MainActor func testTextAndPDFKeepTheirOriginalFirstChapter() async throws {
+        let fixture = try await fixture(landmark: "body.xhtml")
+        for kind in [BookKind.txt, .pdf] {
+            var book = fixture.book
+            book.kind = kind
+            XCTAssertEqual(fixture.session(book: book).chapter.sourcePath, "OPS/art.xhtml")
+        }
+    }
+
+    @MainActor private func fixture(coverLinear: Bool = false, markCover: Bool = true, landmark: String? = nil, guide: String = "", combinedOpening: Bool = false, coverMarkup: String? = nil, coverLandmark: String? = nil, navInSpine: Bool = false, navSupplement: String = "") async throws -> CoverFixture {
+        let file = root.appendingPathComponent(UUID().uuidString + ".epub")
+        let archive = try Archive(url: file, accessMode: .create)
+        let coverLink = coverLandmark.map { "<li><a epub:type=\"cover\" href=\"\($0)\">Source cover</a></li>" } ?? ""
+        let navigation = landmark.map { "<nav epub:type=\"landmarks\"><ol>\(coverLink)<li><a epub:type=\"bodymatter\" href=\"\($0)\">Begin reading</a></li></ol></nav>" } ?? "<nav><p>Contents</p></nav>"
+        let entries = [
+            ("mimetype", "application/epub+zip"),
+            ("META-INF/container.xml", "<container><rootfiles><rootfile full-path=\"OPS/book.opf\"/></rootfiles></container>"),
+            ("OPS/book.opf", "<package><metadata><title>Synthetic opening</title></metadata><manifest><item id=\"art\" href=\"art.xhtml\" media-type=\"application/xhtml+xml\"/><item id=\"title\" href=\"title.xhtml\" media-type=\"application/xhtml+xml\"/><item id=\"preface\" href=\"preface.xhtml\" media-type=\"application/xhtml+xml\"/><item id=\"body\" href=\"body.xhtml\" media-type=\"application/xhtml+xml\"/><item id=\"nav\" href=\"nav.xhtml\" properties=\"nav\" media-type=\"application/xhtml+xml\"/></manifest><spine><itemref idref=\"art\" linear=\"\(coverLinear ? "yes" : "no")\"/><itemref idref=\"title\"/><itemref idref=\"preface\"/><itemref idref=\"body\"/>\(navInSpine ? "<itemref idref=\"nav\"/>" : "")</spine><guide>\(guide)</guide></package>"),
+            ("OPS/art.xhtml", "<html xmlns:epub=\"http://www.idpf.org/2007/ops\"><body\(markCover ? " epub:type=\"cover\"" : "")>\(coverMarkup ?? "<img id=\"cover\" src=\"cover.png\" alt=\"Source artwork\"/>")\(combinedOpening ? "<section id=\"body-start\"><h1>Chapter one inside the cover document</h1><p>Actual main prose after source artwork.</p></section>" : "")</body></html>"),
+            ("OPS/title.xhtml", "<html xmlns:epub=\"http://www.idpf.org/2007/ops\"><body><section epub:type=\"titlepage\"><h1>Synthetic opening</h1><p>Author metadata</p></section></body></html>"),
+            ("OPS/preface.xhtml", "<html><body><h1>Preface</h1><p>A real preface is retained.</p></body></html>"),
+            ("OPS/body.xhtml", "<html><body><h1 id=\"opening\">Chapter one</h1><p>The main reading begins here.</p></body></html>"),
+            ("OPS/nav.xhtml", "<html xmlns:epub=\"http://www.idpf.org/2007/ops\"><body>\(navigation)\(navSupplement)</body></html>"),
+            ("OPS/cover.png", "Synthetic retained image resource")
+        ]
+        for (path, text) in entries {
+            let data = Data(text.utf8)
+            try archive.addEntry(with: path, type: .file, uncompressedSize: Int64(data.count), compressionMethod: .deflate) { position, size in
+                data.subdata(in: Int(position)..<min(Int(position) + size, data.count))
+            }
+        }
+        let library = try OfflineLibrary(root: root.appendingPathComponent(UUID().uuidString), scope: .device)
+        let book = try await library.importFile(file)
+        return CoverFixture(library: library, book: book, original: try await library.originalURL(book.id), directory: try await library.bookDirectory(book.id))
+    }
+}
+
+private struct CoverFixture {
+    let library: OfflineLibrary
+    let book: LocalBook
+    let original: URL
+    let directory: URL
+    @MainActor func session(book: LocalBook? = nil, state: ReaderState = ReaderState()) -> ReaderSession {
+        ReaderSession(book: book ?? self.book, state: state, original: original, directory: directory, library: library)
+    }
+}
