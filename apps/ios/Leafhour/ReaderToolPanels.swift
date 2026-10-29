@@ -135,16 +135,31 @@ struct ReaderIntroductionPanel: View {
     @Bindable var session: ReaderSession
     @Bindable var tools: ReaderCloudTools
     let cloud: CloudLibraryClient?
+    @State private var didLoad = false
     var body: some View {
         List {
             if !tools.introduction.isEmpty {
-                Section(tools.introductionOrigin) { Text(.init(tools.introduction)).textSelection(.enabled) }
-            } else if !tools.loading {
-                ContentUnavailableView("这本书还没有导读", systemImage: "text.book.closed", description: Text("这里显示书中已有的简介或已经保存的 AI 开篇导读。打开这个面板不会生成内容。"))
+                Section(tools.introductionOrigin) {
+                    Text(.init(tools.introduction)).font(.body).lineSpacing(5).textSelection(.enabled)
+                }
+            } else if !didLoad || tools.loading {
+                if !tools.loading { ProgressView("正在读取已有导读…") }
+            } else if tools.error != nil {
+                ContentUnavailableView("暂时无法读取导读", systemImage: "wifi.exclamationmark", description: Text("请重试读取已有内容。读取失败不代表这本书没有导读。"))
+            } else {
+                ContentUnavailableView(session.book.cloud == nil || cloud == nil ? "此设备尚未保存导读" : "暂无已保存的导读", systemImage: "text.book.closed", description: Text("这里显示书中已有的简介或已经保存的开篇导读。打开面板不会生成内容。"))
             }
             ReaderToolStatus(tools: tools, cloud: cloud)
+            if didLoad && tools.error != nil {
+                Section { Button("重新读取已有导读", systemImage: "arrow.clockwise") { Task { await load() } }.disabled(tools.loading || tools.generating) }
+            }
         }.navigationTitle("导读与摘要")
-            .task { await tools.loadIntroduction(session, cloud: cloud) }
+            .task { await load() }
+    }
+    @MainActor private func load() async {
+        didLoad = false
+        await tools.loadIntroduction(session, cloud: cloud)
+        if !Task.isCancelled { didLoad = true }
     }
 }
 
@@ -154,39 +169,150 @@ struct ReaderConversationPanel: View {
     let cloud: CloudLibraryClient?
     var selection: SelectedQuote? = nil
     var title = "阅读陪读"
+    @State private var didLoad = false
+    @State private var sourceExpanded = false
+    @FocusState private var questionFocused: Bool
+    private struct LatestTurn: Equatable {
+        let id: String
+        let status: String
+        let answer: String?
+    }
+    private var latestTurn: LatestTurn? {
+        tools.turns.last.map { LatestTurn(id: $0.id, status: $0.status, answer: $0.answer) }
+    }
+    private var source: String {
+        let value = selection?.text ?? ReaderCloudTools.currentPassage(session)?.text ?? "此页暂无可引用的文字。"
+        return session.book.rendersMarkdown && selection == nil ? MarkdownDocument(source: value).text.trimmingCharacters(in: .whitespacesAndNewlines) : value
+    }
+    private var canAsk: Bool {
+        !tools.loading && !tools.generating && tools.conversationAvailable && !tools.question.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+    }
     var body: some View {
-        List {
-            Section {
-                let source = selection?.text ?? ReaderCloudTools.currentPassage(session)?.text ?? "此页暂无可引用的文字。"
-                Text(session.book.rendersMarkdown && selection == nil ? MarkdownDocument(source: source).text.trimmingCharacters(in: .whitespacesAndNewlines) : source)
-                    .font(.subheadline).foregroundStyle(.secondary).lineLimit(4).textSelection(.enabled)
-            } header: { Text(selection == nil ? "正在读的原文" : "作者原文") }
-            ForEach(tools.turns) { turn in
-                Section {
-                    Text(turn.question).textSelection(.enabled)
-                    if let answer = turn.answer {
-                        Divider()
-                        Text("AI 陪读").font(.caption).foregroundStyle(Color.leafInk)
-                        Text(.init(answer)).textSelection(.enabled)
-                    } else {
-                        Text(turn.status == "running" ? "回答还在处理中" : "这次回答未完成，问题已保留").font(.footnote).foregroundStyle(.secondary)
+        ScrollViewReader { proxy in
+            ScrollView {
+                LazyVStack(alignment: .leading, spacing: 20) {
+                    DisclosureGroup(isExpanded: $sourceExpanded) {
+                        Text(source).font(.body).lineSpacing(4).textSelection(.enabled).padding(.top, 6)
+                    } label: {
+                        VStack(alignment: .leading, spacing: 5) {
+                            Text(selection == nil ? "正在读的原文" : "作者原文").font(.caption).foregroundStyle(.secondary)
+                            if !sourceExpanded { Text(source).font(.subheadline).foregroundStyle(.secondary).lineLimit(2) }
+                        }
                     }
-                } header: { Text("我的提问") }
+                    .tint(Color.leafInk)
+                    .padding(14)
+                    .background(Color.leafInk.opacity(0.06), in: RoundedRectangle(cornerRadius: 14))
+                    ForEach(tools.turns) { turn in ReaderConversationTurnView(turn: turn) }
+                    conversationStatus
+                    if session.book.cloud != nil {
+                        Button("刷新已有对话", systemImage: "arrow.clockwise") { Task { await load() } }
+                            .font(.subheadline).frame(minHeight: 44).disabled(tools.loading || tools.generating)
+                    }
+                    Color.clear.frame(height: 1).id("reader-conversation-bottom")
+                }.padding(16)
             }
-            Section {
-                TextField("写下此刻的问题", text: $tools.question, axis: .vertical).lineLimit(3...6).accessibilityIdentifier("reader-question")
-                Button("向陪读提问", systemImage: "paperplane") { Task { await tools.prepare("conversation", session: session, cloud: cloud, selection: selection) } }
-                    .frame(minHeight: 44).disabled(tools.loading || tools.generating || tools.question.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || !tools.conversationAvailable)
-                Text(session.book.cloud == nil ? "在书房登录并同步这本书后，可找回已有对话并继续提问。" : tools.scope == "library" ? "当前可查阅自己的书房与网络，不读取私人笔记。" : "围绕这本书继续聊，不读取私人笔记。")
-                    .font(.footnote).foregroundStyle(.secondary)
-            } header: { Text("接着聊") }
-            ReaderToolStatus(tools: tools, cloud: cloud)
-            if session.book.cloud != nil {
-                Section { Button("刷新已有对话", systemImage: "arrow.clockwise") { Task { await tools.loadConversation(session, cloud: cloud, selection: selection) } }.disabled(tools.loading || tools.generating) }
+            .accessibilityIdentifier("reader-conversation-history")
+            .defaultScrollAnchor(.bottom)
+            .scrollDismissesKeyboard(.interactively)
+            .safeAreaInset(edge: .bottom, spacing: 0) { composer }
+            .onChange(of: latestTurn) { _, _ in
+                withAnimation(.easeOut(duration: 0.2)) { proxy.scrollTo("reader-conversation-bottom", anchor: .bottom) }
             }
-        }.navigationTitle(title)
-            .task { await tools.loadConversation(session, cloud: cloud, selection: selection) }
-            .modifier(ReaderGenerationConfirmation(tools: tools, cloud: cloud))
+            .onChange(of: tools.error) { _, value in
+                if value != nil { proxy.scrollTo("reader-conversation-bottom", anchor: .bottom) }
+            }
+            .onChange(of: tools.generating) { _, value in
+                if value { proxy.scrollTo("reader-conversation-bottom", anchor: .bottom) }
+            }
+        }
+        .navigationTitle(title)
+        .toolbar {
+            ToolbarItemGroup(placement: .keyboard) {
+                Spacer()
+                Button("收起键盘") { questionFocused = false }
+            }
+        }
+        .task { await load() }
+        .modifier(ReaderGenerationConfirmation(tools: tools, cloud: cloud))
+    }
+    private var composer: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            HStack(alignment: .bottom, spacing: 10) {
+                TextField("写下此刻的问题", text: $tools.question, axis: .vertical)
+                    .font(.body).lineLimit(1...3).focused($questionFocused)
+                    .padding(.horizontal, 12).padding(.vertical, 10)
+                    .background(Color.leafInk.opacity(0.06), in: RoundedRectangle(cornerRadius: 12))
+                    .accessibilityIdentifier("reader-question")
+                    .layoutPriority(1)
+                Button { Task { await tools.prepare("conversation", session: session, cloud: cloud, selection: selection) } } label: {
+                    Label("向陪读提问", systemImage: "paperplane.fill").labelStyle(.iconOnly).frame(minWidth: 44, minHeight: 44)
+                }
+                .buttonStyle(.borderedProminent).tint(Color.leafInk).disabled(!canAsk)
+                .accessibilityIdentifier("reader-question-send")
+            }
+            if !questionFocused {
+                Text(session.book.cloud == nil || cloud == nil ? "同步这本书后可继续提问；输入中的文字会保留。" : tools.scope == "library" ? "可查阅自己的书房与网络，不读取私人笔记。" : "围绕这本书继续聊，不读取私人笔记。")
+                    .font(.caption).foregroundStyle(.secondary).lineLimit(2)
+            }
+        }
+        .padding(.horizontal, 16).padding(.vertical, 10)
+        .background(.bar)
+        .overlay(alignment: .top) { Divider() }
+    }
+    @ViewBuilder private var conversationStatus: some View {
+        if tools.generating { ProgressView("陪读正在回答…") }
+        else if tools.loading || !didLoad { ProgressView(didLoad ? "正在准备本次提问…" : "正在读取已有对话…") }
+        else if tools.turns.isEmpty && tools.error == nil {
+            VStack(alignment: .leading, spacing: 8) {
+                if session.book.cloud == nil || cloud == nil {
+                    Label("同步后继续聊", systemImage: "books.vertical").font(.headline)
+                    Text("在书房登录并同步这本书后，可以找回已有对话。现在仍可写下问题。").font(.subheadline).foregroundStyle(.secondary)
+                } else if tools.conversationAvailable {
+                    Text("从正在读的这段开始").font(.headline)
+                    Text("写下一个问题，陪读会围绕这本书回应。").font(.subheadline).foregroundStyle(.secondary)
+                } else {
+                    Label("陪读暂时不可用", systemImage: "bubble.left.and.exclamationmark.bubble.right").font(.headline)
+                    Text("可以刷新已有对话后再试。输入的问题会保留。").font(.subheadline).foregroundStyle(.secondary)
+                }
+            }
+        }
+        if let error = tools.error {
+            VStack(alignment: .leading, spacing: 7) {
+                Label("暂时无法完成", systemImage: "exclamationmark.circle").font(.subheadline).foregroundStyle(Color.leafInk)
+                Text(error).font(.subheadline).foregroundStyle(.secondary).textSelection(.enabled)
+            }.accessibilityIdentifier("reader-conversation-error")
+        }
+        if let retry = tools.retry {
+            Button("重试查看本次结果", systemImage: "arrow.clockwise") { Task { await tools.perform(retry, cloud: cloud) } }
+                .frame(minHeight: 44).disabled(tools.generating || tools.loading)
+        }
+    }
+    @MainActor private func load() async {
+        didLoad = false
+        await tools.loadConversation(session, cloud: cloud, selection: selection)
+        if !Task.isCancelled { didLoad = true }
+    }
+}
+
+private struct ReaderConversationTurnView: View {
+    let turn: ReaderConversationTurn
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("我的提问").font(.caption).foregroundStyle(.secondary)
+            Text(turn.question).font(.body).textSelection(.enabled)
+            Divider()
+            if let answer = turn.answer {
+                Label("AI 陪读", systemImage: "sparkle").font(.caption).foregroundStyle(Color.leafInk)
+                Text(.init(answer)).font(.body).lineSpacing(4).textSelection(.enabled)
+            } else {
+                Label(turn.status == "running" ? "回答还在处理中" : "这次回答未完成，问题已保留", systemImage: turn.status == "running" ? "clock" : "exclamationmark.circle")
+                    .font(.subheadline).foregroundStyle(.secondary)
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(16)
+        .background(Color.leafInk.opacity(0.04), in: RoundedRectangle(cornerRadius: 14))
+        .accessibilityIdentifier("reader-conversation-turn-" + turn.id)
     }
 }
 

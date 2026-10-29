@@ -1,5 +1,7 @@
 import XCTest
 import AVFoundation
+import SwiftUI
+import UIKit
 import LeafhourCore
 @testable import Leafhour
 
@@ -14,6 +16,44 @@ final class ReaderInteractionTests: XCTestCase {
         let library = try OfflineLibrary(root: root.appendingPathComponent("library"), scope: .device)
         let book = try await library.importFile(file)
         return ReaderSession(book: book, state: try await library.state(book.id), original: try await library.originalURL(book.id), directory: try await library.bookDirectory(book.id), library: library)
+    }
+
+    func testCompanionComposerIsVisibleWithoutScrollingLongHistory() async throws {
+        try await assertCompanionComposerVisible(dynamicType: .large)
+    }
+
+    func testCompanionComposerRemainsVisibleAtAccessibilityTextSize() async throws {
+        try await assertCompanionComposerVisible(dynamicType: .accessibility3)
+    }
+
+    private func assertCompanionComposerVisible(dynamicType: DynamicTypeSize) async throws {
+        let session = try await session(), tools = ReaderCloudTools()
+        let controller = UIHostingController(rootView: NavigationStack {
+            ReaderConversationPanel(session: session, tools: tools, cloud: nil)
+        }.environment(\.dynamicTypeSize, dynamicType))
+        let window = UIWindow(frame: CGRect(x: 0, y: 0, width: 390, height: 400))
+        window.rootViewController = controller
+        window.isHidden = false
+        addTeardownBlock { window.isHidden = true; window.rootViewController = nil }
+        controller.view.layoutIfNeeded()
+        // Let the view's local read complete before supplying a long saved conversation.
+        try await Task.sleep(for: .milliseconds(100))
+        tools.turns = (0..<30).map { ReaderConversationTurn(id: "saved-\($0)", question: "Question \($0)", answer: String(repeating: "A saved answer. ", count: 20), status: "completed") }
+        controller.view.setNeedsLayout()
+        controller.view.layoutIfNeeded()
+        try await Task.sleep(for: .milliseconds(100))
+        controller.view.layoutIfNeeded()
+        let field = try XCTUnwrap(descendants(of: controller.view).first {
+            $0 is UITextField || ($0 as? UITextView)?.isEditable == true
+        }, "The composer must be mounted even when the saved conversation is long")
+        let frame = field.convert(field.bounds, to: window)
+        XCTAssertGreaterThan(frame.height, 0)
+        XCTAssertGreaterThanOrEqual(frame.minY, window.bounds.minY)
+        XCTAssertLessThanOrEqual(frame.maxY, window.bounds.maxY, "The input must stay in the visible half sheet, outside scrolling history")
+    }
+
+    private func descendants(of view: UIView) -> [UIView] {
+        [view] + view.subviews.flatMap { descendants(of: $0) }
     }
 
     func testChangingSpeedWhilePausedWaitsForExplicitResume() async throws {
