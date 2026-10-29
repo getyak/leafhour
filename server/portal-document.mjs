@@ -36,7 +36,8 @@ function libraryDocument(source,decision={locale:'en',source:'browser',preferenc
     .replace('<div id="home-view">','<div id="home-view" hidden>')
     .replace('<div id="library-view" hidden>','<div id="library-view">')
     .replaceAll('class="home-nav" href=','class="home-nav" hidden href=');
-  const native=initialNativeLinks(rendered,decision);
+  const workspace=['calendar','notes'].includes(decision.workspace)?rendered.replace('<body class="library-page">','<body class="library-page workspace-active">').replace('<div id="library-view">','<div id="library-view" hidden>').replace('<section id="reading-workspace" hidden','<section id="reading-workspace"').replace(/<title>[^<]*<\/title>/,'<title>'+firstPaintCatalogue(decision.locale)[decision.workspace==='notes'?'ws.notesTitle':'ws.calendarTitle']+'</title>'):rendered;
+  const native=initialNativeLinks(workspace,decision);
   return stampInitialUiDocument(localizeOwnedUiHtml(native,decision.locale),decision);
 }
 

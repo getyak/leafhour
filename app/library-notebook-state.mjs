@@ -11,7 +11,7 @@ export function collectNotebookEntries(book,records){
     if(!body&&!quote)continue;
     const version=text(record.contentVersion)||text(records.contentVersion),sourceAvailable=!!passageId&&(!version||!book.contentVersion||version===book.contentVersion);
     const params=new URLSearchParams({book:book.bookId});if(sourceAvailable){params.set('passage',passageId);if(kind!=='highlight')params.set('note',kind);if(version)params.set('contentVersion',version);}
-    entries.push({key:JSON.stringify([book.bookId,kind,record.id]),id:record.id,bookId:book.bookId,title,titleEn:typeof book.title==='object'?text(book.title?.en):'',author:text(book.author),kind,text:body,quote,quoteOrigin:kind==='highlight'?(record.parts?.[0]?.language==='en'?'original':record.parts?.[0]?.language==='zh'?'translation':'selection'):text(record.quoteOrigin),createdAt:date(record.createdAt),updatedAt:date(record.updatedAt),passageId,sourceAvailable,href:'/read?'+params,origin:'user'});
+    entries.push({key:JSON.stringify([book.bookId,kind,record.id]),id:record.id,bookId:book.bookId,title,titleEn:typeof book.title==='object'?text(book.title?.en):'',author:text(book.author),kind,text:body,quote,quoteOrigin:kind==='highlight'?(record.parts?.[0]?.language==='en'?'original':record.parts?.[0]?.language==='zh'?'translation':'selection'):text(record.quoteOrigin),createdAt:date(record.createdAt),updatedAt:date(record.updatedAt),revision:Number.isSafeInteger(record.revision)?record.revision:0,lastEditId:text(record.lastEditId),contentVersion:version,passageId,sourceAvailable,href:'/read?'+params,origin:'user'});
   }
   return entries;
 }

@@ -1380,5 +1380,11 @@
   "tools/build-offline-reading.mjs",
   "app/offline-position.mjs",
   "tests/offline-position.test.mjs",
-  "tests/offline-static-http.test.mjs"
+  "tests/offline-static-http.test.mjs",
+  "app/reading-workspace.mjs",
+  "app/reading-workspace-state.mjs",
+  "app/reading-workspace.css",
+  "server/reading-workspace-service.mjs",
+  "server/reading-summary.mjs",
+  "harness/notebook-generator.mjs"
 ]

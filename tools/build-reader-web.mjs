@@ -34,6 +34,7 @@ export const UI_LOCALE_OWNERS=Object.freeze([
  'app/library-reading-preferences.mjs',
  'app/library-shell.mjs',
  'app/library-notebook.mjs',
+ 'app/reading-workspace.mjs',
  'app/palette-bootstrap.mjs',
  'app/palette-library.mjs',
  'app/parallel-reading.mjs',

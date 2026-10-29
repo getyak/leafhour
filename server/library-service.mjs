@@ -1,3 +1,4 @@
+import {buildReadingSummary} from './reading-summary.mjs';
 import {deriveImportedCover} from './imported-cover.mjs';
 import {buildLibraryArrival} from './library-arrival.mjs';
 import {memoryFor,recordPreference,applyMemoryChange} from './preference-memory.mjs';
@@ -33,6 +34,7 @@ import {normalizeReadingSession,mergeReadingSession,normalizeReadingMilestone,no
 
 const localTranslationsRunning=new Set();
 const requireUser=user=>{if(!user?.id)throw fail('请先进入自己的书房',401);return user;};
+const canonicalWorkspaceValue=value=>Array.isArray(value)?value.map(canonicalWorkspaceValue):value&&typeof value==='object'?Object.fromEntries(Object.keys(value).sort().map(key=>[key,canonicalWorkspaceValue(value[key])])):value;
 const emptyRecords=book=>({kind:'marginalia-personal-records',schemaVersion:3,bookId:book.bookId,contentVersion:book.contentVersion,comments:[],questions:[],readingSessions:[],readingMilestones:[],position:null});
 const readingDefaults=data=>Object.assign(data,{schemaVersion:3,readingMilestones:data.readingMilestones||[],readingSessions:data.readingSessions||[],highlights:data.highlights||[]});
 function mergedPersonalRecords(book,current,incoming,{preserveExisting=false}={}){
@@ -368,7 +370,7 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
       if(decoded.scope!==scope)throw fail('Notebook shelf changed; retry',409);offset=decoded.offset;if(offset>books.length)throw fail('Invalid notebook cursor',400);
     }
     const batch=books.slice(offset,offset+limit),results=new Array(batch.length);let work=0;
-    const fields=['id','bookId','origin','text','quote','quoteOrigin','passageId','parts','contentVersion','createdAt','updatedAt'];
+    const fields=['id','bookId','origin','text','quote','quoteOrigin','passageId','parts','contentVersion','createdAt','updatedAt','revision','lastEditId','status'];
     async function worker(){while(work<batch.length){const index=work++,book=batch[index];try{
       const stored=await read(recordFile(user,book.bookId),emptyRecords(book));if(stored?.bookId!==book.bookId)throw Error('Unmatched records');
       const records={bookId:book.bookId,contentVersion:stored.contentVersion};
@@ -403,6 +405,35 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
   async function readingActivity(user,query){
     requireUser(user);buildReadingCalendar([],query);const index=await read(path.join(userDir(user),'index.json'),{books:[]}),ids=[...new Set([...publicBooks.keys(),...index.books.map(b=>b.bookId)])];
     const entries=await Promise.all(ids.map(async id=>{const book=publicBooks.get(id)||await read(bookFile(user,id),null);if(!book)return null;return {book,records:await read(recordFile(user,id),emptyRecords(book))};}));return buildReadingCalendar(entries.filter(Boolean),query);
+  }
+  async function readingSummary(user,query){
+    requireUser(user);buildReadingSummary([],query);
+    const rows=[...new Map((await allShelfRows(user)).map(row=>[row.bookId,row])).values()],entries=new Array(rows.length);let offset=0;
+    const array=value=>Array.isArray(value)?value:[];
+    const needsSource=(row,records)=>records?.bookId===row.bookId&&(array(records.readingSessions).some(session=>session?.bookId===row.bookId&&session.contentVersion===row.contentVersion&&isReadingTimeSource(session.source)&&array(session.segments).length>0)||['comments','questions'].some(field=>array(records[field]).some(note=>note?.origin==='user'&&!note.deletedAt&&typeof note.text==='string'))||array(records.readingMilestones).some(mark=>mark?.origin==='user'&&['chapter_read','book_finished'].includes(mark.type)));
+    async function worker(){while(offset<rows.length){
+      const index=offset++,row=rows[index],records=await read(recordFile(user,row.bookId),null);
+      // Keep zero-duration catalog rows without building account chapter caches.
+      // Only real personal activity needs source anchors/version validation.
+      if(!needsSource(row,records)){const book={...row,sections:[],chapters:row.chapterIndex||[]};entries[index]={book,records:emptyRecords(book)};continue;}
+      const shared=publicBooks.get(row.bookId);if(shared){entries[index]={book:shared,records};continue;}
+      const snapshot=await chapterReads.manifest(user,row.bookId);entries[index]={book:snapshot.book,records};await chapterReads.assertCurrent(user,row.bookId,snapshot);
+    }}
+    await Promise.all(Array.from({length:Math.min(3,rows.length)},worker));return buildReadingSummary(entries,query);
+  }
+  // Selected saved user records only. Caller supplies keys, never note text.
+  const workspaceStateFile=user=>path.join(userDir(user),'notebook-workspace.json');
+  async function workspaceRecords(user,noteKeys){
+    requireUser(user);if(!Array.isArray(noteKeys)||noteKeys.length>10000)throw fail('Invalid note selection',400);
+    return Promise.all(noteKeys.map(async noteKey=>{
+      let parts;try{parts=JSON.parse(noteKey);}catch{throw fail('Invalid note key',400);}
+      if(!Array.isArray(parts)||parts.length!==3||parts.some(v=>typeof v!=='string'||!v||v.length>128)||!['comment','question','highlight'].includes(parts[1])||JSON.stringify(parts)!==noteKey)throw fail('Invalid note key',400);
+      const [bookId,kind,id]=parts,book=(await chapterReads.manifest(user,bookId)).book,stored=await read(recordFile(user,bookId),emptyRecords(book)),field={comment:'comments',question:'questions',highlight:'highlights'}[kind];
+      const record=stored[field]?.find(row=>row.id===id&&!row.deletedAt&&row.origin==='user'&&(row.bookId===undefined||row.bookId===bookId));
+      if(!record||record.contentVersion!==book.contentVersion)throw fail('Saved note is unavailable',404);
+      const snapshot={noteKey,bookId,kind,recordId:id,revision:record.revision||0,contentVersion:record.contentVersion,title:book.title,author:book.author||'',origin:'user',createdAt:record.createdAt||null,updatedAt:record.updatedAt||record.createdAt||null,text:record.text||'',quote:record.quote||null,quoteOrigin:record.quoteOrigin||null,quoteLanguage:record.quoteLanguage||null,parts:record.parts||null,passageId:record.passageId||null};
+      return {...snapshot,sourceHash:digest(JSON.stringify(canonicalWorkspaceValue(snapshot)))};
+    }));
   }
   async function addHighlight(user,id,input){
     requireUser(user);const book=await getBook(user,id);
@@ -692,5 +723,5 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
     await chapterReads.manifest(user,incoming.bookId);
     return {bookId:incoming.bookId,alreadyOwned:!claim.created};
   }
-  return {getCover,introductions,sourceEvidence,sourceReview,createSourceRevision,resolveSourceAnchor,bookTransfer:async(user,id,offset,snapshot)=>transferBook(await getBook(user,id),offset,snapshot),list,shelfState,reorderShelf,archiveBook,restoreBook,trash,getBook,readingView,readingManifest,readingChapter,importDocument,importExtracted,originalInfo,getOriginal,originalDownload,originalParts,originalRange,records,notebookPage,getReadingPreferences,saveReadingPreferences,getPreferenceMemory,changePreferenceMemory,addComment,editComment,addHighlight,addAgentHighlight,removeHighlight,saveProgress,saveReadingSession,recordReadingMilestone,setReadingGoal,readingActivity,arrival,translate,createGrant,createMcpGrant,createDailyGrant,authorize,authorizeDaily,isGrantActive,registerGrantRevocation:listener=>{grantRevocationListeners.add(listener);return()=>grantRevocationListeners.delete(listener);},registerSourceMutation:listener=>{sourceMutationListeners.add(listener);return()=>sourceMutationListeners.delete(listener);},grants,revokeGrant,exportLibrary,exportManifest,exportBookPart,exportBookEntry,restoreOriginal,validateRestore,previewRestoreBooks,restoreLibrary,receiveGift,translationAvailable:!!translator};
+  return {getCover,introductions,sourceEvidence,sourceReview,createSourceRevision,resolveSourceAnchor,bookTransfer:async(user,id,offset,snapshot)=>transferBook(await getBook(user,id),offset,snapshot),list,shelfState,reorderShelf,archiveBook,restoreBook,trash,getBook,readingView,readingManifest,readingChapter,importDocument,importExtracted,originalInfo,getOriginal,originalDownload,originalParts,originalRange,records,notebookPage,workspaceRecords,workspaceStateFile,readingSummary,getReadingPreferences,saveReadingPreferences,getPreferenceMemory,changePreferenceMemory,addComment,editComment,addHighlight,addAgentHighlight,removeHighlight,saveProgress,saveReadingSession,recordReadingMilestone,setReadingGoal,readingActivity,arrival,translate,createGrant,createMcpGrant,createDailyGrant,authorize,authorizeDaily,isGrantActive,registerGrantRevocation:listener=>{grantRevocationListeners.add(listener);return()=>grantRevocationListeners.delete(listener);},registerSourceMutation:listener=>{sourceMutationListeners.add(listener);return()=>sourceMutationListeners.delete(listener);},grants,revokeGrant,exportLibrary,exportManifest,exportBookPart,exportBookEntry,restoreOriginal,validateRestore,previewRestoreBooks,restoreLibrary,receiveGift,translationAvailable:!!translator};
 }

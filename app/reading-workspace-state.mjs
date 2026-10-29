@@ -1,0 +1,26 @@
+import {localReadingDate} from './reading-calendar.mjs';
+const key=value=>typeof value==='string'&&/^[A-Za-z0-9_-]{1,128}$/.test(value);
+const validMonth=value=>typeof value==='string'&&/^\d{4}-(0[1-9]|1[0-2])$/.test(value)&&Number(value.slice(0,4))>0;
+const validDate=value=>typeof value==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(value)&&Number.isFinite(Date.parse(value+'T12:00:00Z'))&&new Date(value+'T12:00:00Z').toISOString().slice(0,10)===value;
+export function workspaceNoteKey(value){try{if(typeof value!=='string'||value.length>500)return null;const row=JSON.parse(value);return Array.isArray(row)&&row.length===3&&key(row[0])&&['comment','question','highlight'].includes(row[1])&&key(row[2])?row:null;}catch{return null;}}
+export function readWorkspaceView(search){const q=new URLSearchParams(search),date=q.get('date'),month=q.get('month');return {page:['calendar','notes'].includes(q.get('workspace'))?q.get('workspace'):null,date:validDate(date)?date:null,month:validMonth(month)?month:null,bookId:key(q.get('book'))?q.get('book'):'',kind:['comment','question','highlight'].includes(q.get('kind'))?q.get('kind'):'',topicId:key(q.get('wtopic'))?q.get('wtopic'):'',noteKey:workspaceNoteKey(q.get('note'))?q.get('note'):'',questionsOnly:q.get('questions')==='open',query:''};}
+export function workspaceUrl(view={},locale){const q=new URLSearchParams({workspace:view.page==='calendar'?'calendar':'notes'});if(validDate(view.date))q.set('date',view.date);if(validMonth(view.month))q.set('month',view.month);if(key(view.bookId))q.set('book',view.bookId);if(['comment','question','highlight'].includes(view.kind))q.set('kind',view.kind);if(key(view.topicId))q.set('wtopic',view.topicId);if(workspaceNoteKey(view.noteKey))q.set('note',view.noteKey);if(view.questionsOnly)q.set('questions','open');if(['en','zh-Hans','zh-Hant','ja'].includes(locale))q.set('ui',locale);return '/library?'+q;}
+const fold=value=>String(value||'').normalize('NFKC').toLocaleLowerCase();
+export function workspaceNotes(notes,view={},metadata={}){const query=fold(view.query?.trim());return notes.filter(note=>{const state=metadata.recordStates?.[note.key]||{};return (!view.bookId||note.bookId===view.bookId)&&(!view.kind||note.kind===view.kind)&&(!view.topicId||state.topicIds?.includes(view.topicId))&&(!view.questionsOnly||note.kind==='question'&&state.status!=='understood')&&(!query||fold([note.title,note.titleEn,note.author,note.text,note.quote,...(state.understandings||[]).map(row=>row.text)].join('\n')).includes(query));}).sort((a,b)=>Date.parse(b.updatedAt||b.createdAt||0)-Date.parse(a.updatedAt||a.createdAt||0)||a.key.localeCompare(b.key));}
+export function workspaceDayNotes(notes,date,timeZone){return notes.filter(note=>{const stamp=Date.parse(note.createdAt);return Number.isFinite(stamp)&&localReadingDate(timeZone,new Date(stamp))===date;});}
+export const workspaceDraftKey=(owner,noteKey)=>'marginalia-workspace-draft:'+encodeURIComponent(owner)+':'+encodeURIComponent(noteKey);
+export const workspaceNoteRevision=note=>Number.isSafeInteger(note?.revision)&&note.revision>=0?note.revision:0;
+export function workspaceSelection(notes,keys){if(!keys.size||keys.size>24)throw Error('Select between 1 and 24 saved notes');const byKey=new Map(notes.map(note=>[note.key,note])),noteKeys=[...keys];if(noteKeys.some(key=>!byKey.has(key)))throw Error('Invalid note selection');return {noteKeys,sourceRevisions:Object.fromEntries(noteKeys.map(key=>[key,workspaceNoteRevision(byKey.get(key))]))};}
+
+// Acknowledgement applies only to the submitted words. Newer prose stays recoverable.
+export function workspaceAcknowledgeDraft(draft,attempt,saved){
+ if(!draft)return null;
+ if(draft.text===attempt.text)return null;
+ return {...draft,baseRevision:saved.revision,pending:null};
+}
+export function workspaceVisibleSelection(selected,available){const keys=new Set(available.map(n=>n.key));return new Set([...selected].filter(key=>keys.has(key)));}
+// Calendar stories include dated followups without treating writing as reading time.
+const localNoteDay=(value,timeZone)=>Number.isFinite(Date.parse(value))?localReadingDate(timeZone,new Date(value)):null;
+export function workspaceDatedUnderstandings(notes,metadata,date,timeZone){return notes.flatMap(note=>(metadata.recordStates?.[note.key]?.understandings||[]).filter(row=>localNoteDay(row.createdAt,timeZone)===date).map(understanding=>({note,understanding})));}
+export function workspaceReviewRange(date,period='week'){if(!validDate(date))throw Error('Invalid reading date');const start=new Date(date+'T12:00:00Z'),end=new Date(start);if(period==='month'){start.setUTCDate(1);end.setUTCMonth(end.getUTCMonth()+1,0);}else{start.setUTCDate(start.getUTCDate()-(start.getUTCDay()+6)%7);end.setTime(start.getTime()+6*86400000);}const format=value=>{const text=value.toISOString().slice(0,10);return validDate(text)?text:value.getUTCFullYear()<1?'0001-01-01':'9999-12-31';};return{start:format(start),end:format(end)};}
+export function workspaceRangeNotes(notes,metadata,range,timeZone){const inRange=value=>{const date=localNoteDay(value,timeZone);return date&&date>=range.start&&date<=range.end;};return notes.filter(note=>inRange(note.createdAt)||(metadata.recordStates?.[note.key]?.understandings||[]).some(row=>inRange(row.createdAt)));}
