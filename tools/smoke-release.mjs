@@ -1,4 +1,5 @@
 import {readFile} from 'node:fs/promises';
+import {assertDeploymentNotRejected} from './production-status.mjs';
 const base=process.env.READER_URL||'https://leafhour.com',expected=process.env.EXPECTED_SOURCE_COMMIT;
 const deadline=Date.now()+Number(process.env.RELEASE_WAIT_SECONDS||600)*1000;
 const requestTimeout=Number(process.env.SMOKE_REQUEST_TIMEOUT_MS||15000);
@@ -7,6 +8,7 @@ async function get(route){const response=await fetch(new URL(route,base),{signal
 if(expected){
   if(!/^[a-f0-9]{40}$/.test(expected))throw Error('Expected a full source commit');
   while(true){
+    await assertDeploymentNotRejected({repository:process.env.GITHUB_REPOSITORY,commit:expected,token:process.env.GH_STATUS_TOKEN});
     try{const release=await(await get('/release.json?source='+expected)).json();if(release.sourceCommit===expected)break;}catch{}
     if(Date.now()>=deadline)throw Error('Production did not reach expected source '+expected);
     await new Promise(resolve=>setTimeout(resolve,15000));
