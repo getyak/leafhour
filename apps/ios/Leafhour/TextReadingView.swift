@@ -97,7 +97,7 @@ struct TextReadingView: UIViewRepresentable {
                     }
                 } else {
                 coordinator.markdown = nil; coordinator.markdownChapterID = nil
-                for passage in session.chapter.passages {
+                for (index, passage) in session.chapter.passages.enumerated() {
                     let start = result.length
                     let style = NSMutableParagraphStyle(); style.lineSpacing = preferences.lineSpacing; style.paragraphSpacing = 20; style.baseWritingDirection = .natural
                     if let resource = passage.resourcePath {
@@ -106,7 +106,15 @@ struct TextReadingView: UIViewRepresentable {
                             let image = UIImage(cgImage: cgImage), attachment = NSTextAttachment()
                             attachment.image = image
                             attachment.bounds = CGRect(x: 0, y: 0, width: width, height: width * image.size.height / max(1, image.size.width))
-                            result.append(NSAttributedString(attachment: attachment)); result.append(NSAttributedString(string: "\n\n"))
+                            result.append(NSAttributedString(attachment: attachment))
+                            let alternative = passage.alternative?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+                            let next = session.chapter.passages.indices.contains(index + 1) ? session.chapter.passages[index + 1].text.trimmingCharacters(in: .whitespacesAndNewlines) : nil
+                            if !alternative.isEmpty && alternative != next {
+                                // Keep source image metadata reachable to system reading and
+                                // selection, without inventing prose or an author-text anchor.
+                                let captionFont = UIFontMetrics(forTextStyle: .footnote).scaledFont(for: .systemFont(ofSize: max(14, preferences.fontSize * 0.72)))
+                                result.append(NSAttributedString(string: "\n插图说明 · " + alternative + "\n\n", attributes: [.font: captionFont, .foregroundColor: UIColor.secondaryLabel, .paragraphStyle: style]))
+                            } else { result.append(NSAttributedString(string: "\n\n")) }
                         } else {
                             result.append(NSAttributedString(string: "[插图：\(passage.alternative ?? "此设备暂不支持显示，原件仍保留")]\n\n", attributes: [.font: font, .foregroundColor: UIColor.secondaryLabel, .paragraphStyle: style]))
                         }
@@ -237,7 +245,8 @@ struct TextReadingView: UIViewRepresentable {
         }
         func selectedQuote(in textView: UITextView, range: NSRange) -> SelectedQuote? {
             guard range.location >= 0, range.length > 0, NSMaxRange(range) <= (textView.text as NSString).length,
-                  let span = spans.first(where: { $0.range.location <= range.location && NSMaxRange(range) <= NSMaxRange($0.range) }) else { return nil }
+                  let span = spans.first(where: { $0.range.location <= range.location && NSMaxRange(range) <= NSMaxRange($0.range) }),
+                  span.passage.resourcePath == nil, !span.passage.text.isEmpty else { return nil }
             let source = span.passage.text as NSString
             let start = sourceOffset(in: span, displayedIndex: range.location)
             let end = sourceOffset(in: span, displayedIndex: NSMaxRange(range))
