@@ -13,7 +13,33 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  changes:
+    name: Plan CI and check workflow contracts
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      web: ${{ steps.plan.outputs.web }}
+      native: ${{ steps.plan.outputs.native }}
+      catalog: ${{ steps.plan.outputs.catalog }}
+      ios_release: ${{ steps.plan.outputs.ios_release }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Check impact selection and failure handling without installing dependencies
+        run: node --test tests/ci-resource-plan.test.mjs tests/production-status.test.mjs tests/readme-languages.test.mjs
+      - name: Select required areas from this event's exact commit range
+        id: plan
+        run: node tools/ci-resource-plan.mjs
+      - name: Lint all workflow contracts with the pinned official actionlint module
+        run: go run github.com/rhysd/actionlint/cmd/actionlint@v1.7.12 -shellcheck= -pyflakes= .github/workflows/*.yml
+
   catalog-sources:
+    needs: changes
+    if: needs.changes.outputs.catalog == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
@@ -31,6 +57,8 @@ jobs:
         run: python -m unittest discover -s tests -p 'test_classic_*.py'
 
   test:
+    needs: changes
+    if: needs.changes.outputs.web == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     env:
@@ -113,6 +141,8 @@ jobs:
           include-hidden-files: true
 
   native-ios:
+    needs: changes
+    if: needs.changes.outputs.native == 'true'
     defaults:
       run:
         shell: bash
@@ -144,6 +174,8 @@ jobs:
           if-no-files-found: warn
 
   ios-release-contracts:
+    needs: changes
+    if: needs.changes.outputs.ios_release == 'true'
     name: Validate dormant TestFlight automation
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -157,6 +189,19 @@ jobs:
           node --test tests/ios-*.test.mjs
           python3 -m unittest discover -s tests -p 'test_ios_*.py'
           bash -n scripts/ios/archive.sh scripts/ios/upload.sh
-      - name: Lint workflow contracts with the pinned official actionlint module
-        run: go run github.com/rhysd/actionlint/cmd/actionlint@v1.7.12 -shellcheck= -pyflakes= .github/workflows/release-ios.yml .github/workflows/refresh-ios-signing.yml .github/workflows/testflight-access.yml
+  gate:
+    name: CI gate
+    if: always()
+    needs: [changes, catalog-sources, test, native-ios, ios-release-contracts]
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Require success for every selected area
+        env:
+          CI_JOB_RESULTS: ${{ toJSON(needs) }}
+        run: node tools/ci-resource-gate.mjs
 
