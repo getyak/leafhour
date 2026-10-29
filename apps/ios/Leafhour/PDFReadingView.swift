@@ -4,6 +4,7 @@ import LeafhourCore
 
 struct PDFReadingView: UIViewRepresentable {
     let session: ReaderSession
+    var pageInsets = UIEdgeInsets(top: 64, left: 0, bottom: 180, right: 0)
     let selectionDismissalID: UUID
     let onSelection: (SelectedQuote?) -> Void
     let onWake: (ReaderChrome) -> Void
@@ -24,6 +25,7 @@ struct PDFReadingView: UIViewRepresentable {
             view.clearSelection()
         }
         if view.document == nil { view.document = PDFDocument(url: session.original) }
+        coordinator.observeScroll(in: view)
         if coordinator.navigationID != session.navigationID {
             coordinator.navigationID = session.navigationID; coordinator.restoring = true
             coordinator.userScrolled = false; coordinator.cancelPendingScroll()
@@ -32,7 +34,9 @@ struct PDFReadingView: UIViewRepresentable {
                 if let y = session.state.anchor?.pageY {
                     view.go(to: PDFDestination(page: page, at: CGPoint(x: page.bounds(for: .mediaBox).minX, y: y)))
                 } else { view.go(to: page) }
-                coordinator.restoring = false; coordinator.observeScroll(in: view)
+                coordinator.observeScroll(in: view)
+                coordinator.revealDestinationBelowChrome()
+                coordinator.restoring = false
             }
         }
     }
@@ -47,6 +51,7 @@ struct PDFReadingView: UIViewRepresentable {
         private var observers: [NSObjectProtocol] = []
         private var scrolling: NSKeyValueObservation?
         private weak var observedScroll: UIScrollView?
+        private var originalScrollInsets = UIEdgeInsets.zero
         private var delayed: DispatchWorkItem?
         init(parent: PDFReadingView) { self.parent = parent }
         deinit { observers.forEach { NotificationCenter.default.removeObserver($0) }; scrolling?.invalidate(); delayed?.cancel() }
@@ -56,7 +61,17 @@ struct PDFReadingView: UIViewRepresentable {
         }
         func observeScroll(in view: UIView) {
             func scroll(_ view: UIView) -> UIScrollView? { if let result = view as? UIScrollView { return result }; return view.subviews.lazy.compactMap { scroll($0) }.first }
-            guard let target = scroll(view), target !== observedScroll else { return }
+            guard let target = scroll(view) else { return }
+            if target !== observedScroll { originalScrollInsets = target.contentInset }
+            let insets = UIEdgeInsets(top: originalScrollInsets.top + parent.pageInsets.top, left: originalScrollInsets.left,
+                                      bottom: originalScrollInsets.bottom + parent.pageInsets.bottom, right: originalScrollInsets.right)
+            if target.contentInset != insets {
+                let offset = target.contentOffset
+                target.contentInset = insets
+                target.verticalScrollIndicatorInsets = UIEdgeInsets(top: parent.pageInsets.top, left: 0, bottom: parent.pageInsets.bottom, right: 0)
+                target.setContentOffset(offset, animated: false)
+            }
+            guard target !== observedScroll else { return }
             observedScroll = target
             scrolling = target.observe(\.contentOffset, options: .new) { [weak self, weak target] _, _ in
                 DispatchQueue.main.async { [weak self] in
@@ -68,6 +83,11 @@ struct PDFReadingView: UIViewRepresentable {
                 }
             }
         }
+        func revealDestinationBelowChrome() {
+            guard let scroll = observedScroll else { return }
+            let y = max(-scroll.adjustedContentInset.top, scroll.contentOffset.y - parent.pageInsets.top)
+            scroll.setContentOffset(CGPoint(x: scroll.contentOffset.x, y: y), animated: false)
+        }
         func cancelPendingScroll() { delayed?.cancel() }
         func capture() {
             guard !restoring, userScrolled, let view, let page = view.currentDestination?.page ?? view.currentPage, let document = view.document else { return }
@@ -75,7 +95,8 @@ struct PDFReadingView: UIViewRepresentable {
             guard parent.session.book.chapters.indices.contains(index) else { return }
             let chapter = parent.session.book.chapters[index]
             parent.session.chapterIndex = index
-            parent.session.moved(ReadingAnchor(chapterID: chapter.id, passageID: chapter.passages[0].id, pageY: view.currentDestination.map { Double($0.point.y) }))
+            let visiblePoint = view.convert(CGPoint(x: view.bounds.midX, y: parent.pageInsets.top), to: page)
+            parent.session.moved(ReadingAnchor(chapterID: chapter.id, passageID: chapter.passages[0].id, pageY: Double(visiblePoint.y)))
         }
         func selectionChanged() {
             guard let view, let selection = view.currentSelection, selection.pages.count == 1, let page = selection.pages.first, let index = view.document?.index(for: page), parent.session.book.chapters.indices.contains(index), let text = selection.string, !text.isEmpty else { parent.onSelection(nil); return }

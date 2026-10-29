@@ -3,6 +3,13 @@ import UIKit
 import LeafhourCore
 
 enum ReaderChrome { case asleep, top, progress, tools }
+private enum ReaderChromeRegion: Hashable { case top, bottom }
+private struct ReaderChromeHeightKey: PreferenceKey {
+    static var defaultValue: [ReaderChromeRegion: CGFloat] = [:]
+    static func reduce(value: inout [ReaderChromeRegion: CGFloat], nextValue: () -> [ReaderChromeRegion: CGFloat]) {
+        value.merge(nextValue(), uniquingKeysWith: { _, new in new })
+    }
+}
 enum ReaderPanel: Identifiable {
     case contents, search, preferences, records, tools, listening, translation, introduction, conversation, note(SelectedQuote), source(SelectedQuote), companion(SelectedQuote?)
     var isCompanion: Bool { switch self { case .companion, .conversation: true; default: false } }
@@ -31,19 +38,26 @@ struct ReaderScreen: View {
     @State private var clockID = UUID()
     @State private var adjustingProgress = false
     @State private var selectionDismissalID = UUID()
+    @State private var chromeHeights: [ReaderChromeRegion: CGFloat] = [.top: 44, .bottom: 156]
     private enum ChromeFocus: Hashable { case back, preferences, companion, previous, next, progress, contents, listening, translation, records, tools }
     @FocusState private var focusedControl: ChromeFocus?
     private var paper: Color { session.state.preferences.theme == "paper" ? .readingPaper : Color(uiColor: .systemBackground) }
+    // Keep page margins stable when chrome sleeps. Only a real control-size change
+    // updates them, so waking the tools never reflows the chapter or moves its anchor.
+    private var pageInsets: UIEdgeInsets {
+        UIEdgeInsets(top: max(64, (chromeHeights[.top] ?? 44) + 16), left: 24,
+                     bottom: max(44, (chromeHeights[.bottom] ?? 156) + 24), right: 24)
+    }
     var body: some View {
         ZStack(alignment: .top) {
             paper.ignoresSafeArea()
             if session.book.kind == .pdf {
-                PDFReadingView(session: session, selectionDismissalID: selectionDismissalID, onSelection: { quote in
+                PDFReadingView(session: session, pageInsets: pageInsets, selectionDismissalID: selectionDismissalID, onSelection: { quote in
                     // PDFView can synchronously notify while its native selection is being cleared.
                     if quote != nil || session.selection != nil { session.selection = quote }
                 }, onWake: wake, onReadingScroll: readingDidScroll)
             } else {
-                TextReadingView(session: session, selectionDismissalID: selectionDismissalID, onNote: { showNote($0) }, onSource: { panel = .source($0); chrome = .asleep }, onExplain: { showCompanion($0) }, onWake: wake, onReadingScroll: readingDidScroll,
+                TextReadingView(session: session, pageInsets: pageInsets, selectionDismissalID: selectionDismissalID, onNote: { showNote($0) }, onSource: { panel = .source($0); chrome = .asleep }, onExplain: { showCompanion($0) }, onWake: wake, onReadingScroll: readingDidScroll,
                     onTranslate: { session.selection = $0; present(.translation) })
             }
             VStack(spacing: 0) {
@@ -53,7 +67,9 @@ struct ReaderScreen: View {
                         Text(session.book.title).font(.subheadline).lineLimit(1).frame(maxWidth: .infinity)
                         Button("陪我读", systemImage: "text.bubble") { showCompanion(currentQuote) }.focused($focusedControl, equals: .companion).labelStyle(.iconOnly).frame(width: 44, height: 44)
                         Button("阅读设置", systemImage: "textformat.size") { panel = .preferences; chrome = .asleep }.focused($focusedControl, equals: .preferences).labelStyle(.iconOnly).frame(width: 44, height: 44)
-                    }.padding(.horizontal, 10).background(.regularMaterial)
+                    }.padding(.horizontal, 10).background(paper)
+                        .overlay(alignment: .bottom) { Divider() }
+                        .background { GeometryReader { geometry in Color.clear.preference(key: ReaderChromeHeightKey.self, value: [.top: geometry.size.height]) } }
                 } else {
                     Button { wake(.top) } label: { Color.clear.frame(maxWidth: .infinity).frame(height: 44) }.allowsHitTesting(false)
                         .accessibilityLabel("显示书名、返回与阅读设置")
@@ -82,9 +98,12 @@ struct ReaderScreen: View {
                             ReaderDockButton("更多", symbol: "ellipsis") { present(.tools) }.focused($focusedControl, equals: .tools)
                         }
                     }.padding(.horizontal, 18).padding(.bottom, 12).padding(.top, 4)
-                        .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 24, style: .continuous))
+                        .background(paper, in: RoundedRectangle(cornerRadius: 24, style: .continuous))
+                        .overlay { RoundedRectangle(cornerRadius: 24, style: .continuous).strokeBorder(.primary.opacity(0.08)) }
+                        .shadow(color: .black.opacity(0.08), radius: 12, y: 3)
                         .padding(.horizontal, 12).padding(.bottom, 6)
                         .accessibilityIdentifier("reader-tool-dock")
+                        .background { GeometryReader { geometry in Color.clear.preference(key: ReaderChromeHeightKey.self, value: [.bottom: geometry.size.height]) } }
                 } else {
                     HStack {
                         Spacer()
@@ -104,6 +123,11 @@ struct ReaderScreen: View {
         }
         .preferredColorScheme(session.state.preferences.colorScheme(following: systemColorScheme))
         .statusBarHidden(false)
+        .onPreferenceChange(ReaderChromeHeightKey.self) { values in
+            for (region, height) in values where height > 0 && abs((chromeHeights[region] ?? 0) - height) > 0.5 {
+                chromeHeights[region] = height
+            }
+        }
         .interactiveDismissDisabled(panel?.isCompanion != true && (session.saving || session.saveError != nil))
         .sheet(item: $panel, onDismiss: { session.clearTransientSelection(); selectionDismissalID = UUID(); chrome = .asleep }) { destination in
             ReaderPanelView(panel: destination, session: session, systemColorScheme: systemColorScheme, speech: speech, tools: tools, cloud: cloud,

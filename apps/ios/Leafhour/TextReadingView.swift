@@ -6,6 +6,7 @@ import LeafhourCore
 /// UIKit owns selection/copy and accessibility. Source XHTML never executes or loads remote resources.
 struct TextReadingView: UIViewRepresentable {
     let session: ReaderSession
+    var pageInsets = UIEdgeInsets(top: 64, left: 24, bottom: 24, right: 24)
     var selectionDismissalID = UUID()
     let onNote: (SelectedQuote) -> Void
     let onSource: (SelectedQuote) -> Void
@@ -20,7 +21,7 @@ struct TextReadingView: UIViewRepresentable {
         view.isEditable = false; view.isSelectable = true; view.backgroundColor = .clear
         // Entry tools overlay the page. A stable first-page margin keeps the title
         // below navigation without reflowing the text when those tools go to sleep.
-        view.textContainerInset = UIEdgeInsets(top: 64, left: 24, bottom: 24, right: 24)
+        view.textContainerInset = pageInsets
         view.textContainer.lineFragmentPadding = 0
         view.adjustsFontForContentSizeCategory = true; view.alwaysBounceVertical = true
         view.delegate = context.coordinator; view.accessibilityIdentifier = "leafhour-epub-reader"
@@ -49,6 +50,13 @@ struct TextReadingView: UIViewRepresentable {
     @MainActor final class Coordinator: NSObject, UITextViewDelegate {
         func updateContent(_ view: UITextView) {
             let coordinator = self, session = parent.session
+            if view.textContainerInset != parent.pageInsets {
+                let topChange = parent.pageInsets.top - view.textContainerInset.top
+                view.textContainerInset = parent.pageInsets
+                // A larger accessibility toolbar may change the first-page margin.
+                // Preserve the same visible line; changing the bottom margin needs no scrolling.
+                if topChange != 0 { view.contentOffset.y += topChange }
+            }
             let preferences = session.state.preferences
             let width = max(240, view.bounds.width > 0 ? view.bounds.width - 48 : UIScreen.main.bounds.width - 48)
             let signature = "\(session.chapter.id)-\(preferences)-\(view.traitCollection.preferredContentSizeCategory.rawValue)-\(Int(width))"
