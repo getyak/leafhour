@@ -17,11 +17,7 @@ struct ReaderPanelView: View {
             Group {
                 switch panel {
                 case .contents:
-                    List(Array(session.book.chapters.enumerated()), id: \.element.id) { index, chapter in
-                        Button { onJump(index, nil) } label: {
-                            HStack { Text(chapter.title).foregroundStyle(.primary); Spacer(); if index == session.chapterIndex { Image(systemName: "bookmark.fill").foregroundStyle(Color.leafInk) } }.frame(minHeight: 44)
-                        }
-                    }.navigationTitle("目录")
+                    ReaderContentsPanel(session: session, onJump: onJump)
                 case .search: BookSearchPanel(session: session, onJump: onJump)
                 case .preferences: ReaderPreferencesPanel(session: session)
                 case .records: ReaderRecordsPanel(session: session, onJump: onJump)
@@ -57,6 +53,39 @@ struct ReaderPanelView: View {
             }
         }
         .preferredColorScheme(session.state.preferences.colorScheme(following: systemColorScheme))
+    }
+}
+struct ReaderContentsPanel: View {
+    @Bindable var session: ReaderSession
+    let onJump: (Int, ReadingAnchor?) -> Void
+    @State private var query = ""
+    private var chapters: [(offset: Int, element: BookChapter)] {
+        let value = query.trimmingCharacters(in: .whitespacesAndNewlines)
+        return Array(session.book.chapters.enumerated()).filter { value.isEmpty || $0.element.title.localizedStandardContains(value) }
+    }
+    var body: some View {
+        ScrollViewReader { proxy in
+            List {
+                if chapters.isEmpty { ContentUnavailableView.search(text: query) }
+                Section(session.book.kind == .pdf ? "第 \(session.chapterIndex + 1) 页，共 \(session.book.chapters.count) 页" : "第 \(session.chapterIndex + 1) 章，共 \(session.book.chapters.count) 章") {
+                    ForEach(chapters, id: \.element.id) { index, chapter in
+                        Button { onJump(index, nil) } label: {
+                            HStack(spacing: 14) {
+                                Text("\(index + 1)").font(.caption.monospacedDigit()).foregroundStyle(.secondary).frame(minWidth: 24, alignment: .leading)
+                                Text(chapter.title).foregroundStyle(.primary).frame(maxWidth: .infinity, alignment: .leading)
+                                if index == session.chapterIndex { Image(systemName: "bookmark.fill").foregroundStyle(Color.leafInk).accessibilityHidden(true) }
+                            }.frame(minHeight: 44)
+                        }
+                        .accessibilityLabel(chapter.title)
+                        .accessibilityValue(index == session.chapterIndex ? "当前章节" : "")
+                        .id(chapter.id)
+                    }
+                }
+            }
+            .task { await Task.yield(); proxy.scrollTo(session.chapter.id, anchor: .center) }
+        }
+        .searchable(text: $query, prompt: session.book.kind == .pdf ? "查找页码" : "搜索章节")
+        .navigationTitle("目录")
     }
 }
 struct BookSearchPanel: View {
