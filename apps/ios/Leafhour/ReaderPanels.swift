@@ -277,11 +277,13 @@ struct ReaderPreferencesPanel: View {
         let lineSpacing: Double
         @ScaledMetric(relativeTo: .body) private var typeScale = 1.0
         private var font: Font {
+            #if compiler(>=6.2)
             if #available(iOS 26.0, *) {
                 // Scale the semantic body font so both Dynamic Type and the
                 // reader's chosen base size remain part of font resolution.
                 return .system(.body, design: .serif).scaled(by: CGFloat(fontSize) / 17)
             }
+            #endif
             return .system(size: fontSize * typeScale, design: .serif)
         }
         var body: some View {
