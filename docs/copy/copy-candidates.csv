@@ -2779,31 +2779,31 @@ candidate:app/home.html:42:256,html-attribute,app/home.html,42,aria-label,unknow
 candidate:app/home.html:50:73,html-attribute,app/home.html,50,aria-label,unknown,reviewable,,打开爱丽丝梦游仙境
 candidate:app/home.html:51:53,html-attribute,app/home.html,51,aria-label,unknown,reviewable,,看看怎么读
 candidate:app/home.html:56:579,html-attribute,app/home.html,56,aria-label,unknown,reviewable,,打开爱丽丝梦游仙境
-candidate:app/home.html:71:73,html-attribute,app/home.html,71,aria-label,unknown,reviewable,,Leafhour 首页
-candidate:app/home.html:71:551,html-attribute,app/home.html,71,aria-label,unknown,reviewable,,打开书房导航
-candidate:app/home.html:73:53,html-attribute,app/home.html,73,aria-label,unknown,reviewable,,筛选书架
-candidate:app/home.html:75:101,html-attribute,app/home.html,75,aria-label,unknown,reviewable,,阅读状态
-candidate:app/home.html:76:276,html-attribute,app/home.html,76,placeholder,unknown,reviewable,,搜索书名或作者
-candidate:app/home.html:76:413,html-attribute,app/home.html,76,aria-label,unknown,reviewable,,清空搜索
-candidate:app/home.html:76:564,html-attribute,app/home.html,76,aria-label,unknown,reviewable,,筛选书籍
-candidate:app/home.html:82:77,html-attribute,app/home.html,82,aria-label,unknown,reviewable,,阅读习惯
-candidate:app/home.html:83:377,html-attribute,app/home.html,83,aria-label,unknown,reviewable,,每日陪读纸条
-candidate:app/home.html:83:464,html-attribute,app/home.html,83,aria-label,unknown,reviewable,,书架
-candidate:app/home.html:83:958,html-attribute,app/home.html,83,aria-label,unknown,reviewable,,阅读近况
-candidate:app/home.html:86:607,html-attribute,app/home.html,86,aria-label,unknown,reviewable,,切换页面外观
-candidate:app/home.html:87:83,html-attribute,app/home.html,87,aria-label,unknown,reviewable,,阅读日历
-candidate:app/home.html:88:82,html-attribute,app/home.html,88,aria-label,unknown,reviewable,,书房导航
-candidate:app/home.html:92:101,html-attribute,app/home.html,92,aria-label,unknown,reviewable,,关闭登录
-candidate:app/home.html:97:185,html-attribute,app/home.html,97,placeholder,unknown,reviewable,,you@example.com
-candidate:app/home.html:98:383,html-attribute,app/home.html,98,aria-label,unknown,reviewable,,显示登录密码
-candidate:app/home.html:107:418,html-attribute,app/home.html,107,aria-label,unknown,reviewable,,显示新密码
-candidate:app/home.html:111:116,html-attribute,app/home.html,111,aria-label,unknown,reviewable,,使用 Google 登录
-candidate:app/home.html:112:114,html-attribute,app/home.html,112,aria-label,unknown,reviewable,,使用 Apple 登录
-candidate:app/home.html:117:159,html-attribute,app/home.html,117,aria-label,unknown,reviewable,,关闭上传
-candidate:app/home.html:117:351,html-attribute,app/home.html,117,aria-label,unknown,reviewable,,选择 PDF、EPUB、TXT 或 Markdown 文件
-candidate:app/home.html:119:98,html-attribute,app/home.html,119,aria-label,unknown,reviewable,,关闭菜单
-candidate:app/home.html:121:95,html-attribute,app/home.html,121,aria-label,unknown,reviewable,,主导航
-candidate:app/home.html:122:102,html-attribute,app/home.html,122,aria-label,unknown,reviewable,,切换界面语言
+candidate:app/home.html:72:73,html-attribute,app/home.html,72,aria-label,unknown,reviewable,,Leafhour 首页
+candidate:app/home.html:72:551,html-attribute,app/home.html,72,aria-label,unknown,reviewable,,打开书房导航
+candidate:app/home.html:74:53,html-attribute,app/home.html,74,aria-label,unknown,reviewable,,筛选书架
+candidate:app/home.html:76:101,html-attribute,app/home.html,76,aria-label,unknown,reviewable,,阅读状态
+candidate:app/home.html:77:276,html-attribute,app/home.html,77,placeholder,unknown,reviewable,,搜索书名或作者
+candidate:app/home.html:77:413,html-attribute,app/home.html,77,aria-label,unknown,reviewable,,清空搜索
+candidate:app/home.html:77:564,html-attribute,app/home.html,77,aria-label,unknown,reviewable,,筛选书籍
+candidate:app/home.html:83:77,html-attribute,app/home.html,83,aria-label,unknown,reviewable,,阅读习惯
+candidate:app/home.html:84:377,html-attribute,app/home.html,84,aria-label,unknown,reviewable,,每日陪读纸条
+candidate:app/home.html:84:464,html-attribute,app/home.html,84,aria-label,unknown,reviewable,,书架
+candidate:app/home.html:84:958,html-attribute,app/home.html,84,aria-label,unknown,reviewable,,阅读近况
+candidate:app/home.html:87:607,html-attribute,app/home.html,87,aria-label,unknown,reviewable,,切换页面外观
+candidate:app/home.html:88:83,html-attribute,app/home.html,88,aria-label,unknown,reviewable,,阅读日历
+candidate:app/home.html:89:82,html-attribute,app/home.html,89,aria-label,unknown,reviewable,,书房导航
+candidate:app/home.html:93:101,html-attribute,app/home.html,93,aria-label,unknown,reviewable,,关闭登录
+candidate:app/home.html:98:185,html-attribute,app/home.html,98,placeholder,unknown,reviewable,,you@example.com
+candidate:app/home.html:99:383,html-attribute,app/home.html,99,aria-label,unknown,reviewable,,显示登录密码
+candidate:app/home.html:108:418,html-attribute,app/home.html,108,aria-label,unknown,reviewable,,显示新密码
+candidate:app/home.html:112:116,html-attribute,app/home.html,112,aria-label,unknown,reviewable,,使用 Google 登录
+candidate:app/home.html:113:114,html-attribute,app/home.html,113,aria-label,unknown,reviewable,,使用 Apple 登录
+candidate:app/home.html:118:159,html-attribute,app/home.html,118,aria-label,unknown,reviewable,,关闭上传
+candidate:app/home.html:118:351,html-attribute,app/home.html,118,aria-label,unknown,reviewable,,选择 PDF、EPUB、TXT 或 Markdown 文件
+candidate:app/home.html:120:98,html-attribute,app/home.html,120,aria-label,unknown,reviewable,,关闭菜单
+candidate:app/home.html:122:95,html-attribute,app/home.html,122,aria-label,unknown,reviewable,,主导航
+candidate:app/home.html:123:102,html-attribute,app/home.html,123,aria-label,unknown,reviewable,,切换界面语言
 candidate:app/home.html:12:10,html-text,app/home.html,12,,unknown,reviewable,,Leafhour — AI 辅助的私人阅读书房
 candidate:app/home.html:32:30,html-text,app/home.html,32,,unknown,reviewable,,跳到正文
 candidate:app/home.html:34:402,html-text,app/home.html,34,,unknown,reviewable,,Leafhour
@@ -2815,9 +2815,9 @@ candidate:app/home.html:37:232,html-text,app/home.html,37,,unknown,reviewable,,�
 candidate:app/home.html:38:203,html-text,app/home.html,38,,unknown,reviewable,,我的书房
 candidate:app/home.html:38:452,html-text,app/home.html,38,,unknown,reviewable,,我上传的
 candidate:app/home.html:39:183,html-text,app/home.html,39,,unknown,reviewable,,阅读日历
-candidate:app/home.html:39:410,html-text,app/home.html,39,,unknown,reviewable,,我的笔记
-candidate:app/home.html:39:579,html-text,app/home.html,39,,unknown,reviewable,,阅读对话
-candidate:app/home.html:39:735,html-text,app/home.html,39,,unknown,reviewable,,带来一本书
+candidate:app/home.html:39:354,html-text,app/home.html,39,,unknown,reviewable,,我的笔记
+candidate:app/home.html:39:523,html-text,app/home.html,39,,unknown,reviewable,,阅读对话
+candidate:app/home.html:39:679,html-text,app/home.html,39,,unknown,reviewable,,带来一本书
 candidate:app/home.html:41:220,html-text,app/home.html,41,,unknown,reviewable,,回收站
 candidate:app/home.html:41:406,html-text,app/home.html,41,,unknown,reviewable,,设置
 candidate:app/home.html:42:52,html-text,app/home.html,42,,unknown,reviewable,,登录 / 注册
@@ -2868,98 +2868,99 @@ candidate:app/home.html:66:160,html-text,app/home.html,66,,unknown,reviewable,,�
 candidate:app/home.html:66:171,html-text,app/home.html,66,,unknown,reviewable,,。
 candidate:app/home.html:67:23,html-text,app/home.html,67,,unknown,reviewable,,使用 AI 和朋友共读有哪些限制？
 candidate:app/home.html:67:53,html-text,app/home.html,67,,unknown,reviewable,,直接阅读公版样书不需要调用模型。翻译与对话需要配置模型服务，自托管时由运营者承担供应商费用。赠书信可以分享所选阅读材料；在线好友的实时共读仍是后续设想。
-candidate:app/home.html:71:407,html-text,app/home.html,71,,unknown,reviewable,,Leafhour
-candidate:app/home.html:72:49,html-text,app/home.html,72,,unknown,reviewable,,我的书房
-candidate:app/home.html:72:156,html-text,app/home.html,72,,unknown,reviewable,,自己的书与阅读记录。
-candidate:app/home.html:72:211,html-text,app/home.html,72,,unknown,reviewable,,拖动整本书调整位置，触屏可长按后移动。键盘聚焦调整位置按钮后使用左右方向键；更多操作中也可向前或向后移动。
-candidate:app/home.html:75:175,html-text,app/home.html,75,,unknown,reviewable,,全部
-candidate:app/home.html:75:259,html-text,app/home.html,75,,unknown,reviewable,,在读
-candidate:app/home.html:75:342,html-text,app/home.html,75,,unknown,reviewable,,未读
-candidate:app/home.html:75:427,html-text,app/home.html,75,,unknown,reviewable,,读完
-candidate:app/home.html:76:174,html-text,app/home.html,76,,unknown,reviewable,,搜索书名或作者
-candidate:app/home.html:76:426,html-text,app/home.html,76,,unknown,reviewable,,×
-candidate:app/home.html:76:676,html-text,app/home.html,76,,unknown,reviewable,,筛选
-candidate:app/home.html:78:237,html-text,app/home.html,78,,unknown,reviewable,,清除筛选
-candidate:app/home.html:79:177,html-text,app/home.html,79,,unknown,reviewable,,筛选书籍
-candidate:app/home.html:79:293,html-text,app/home.html,79,,unknown,reviewable,,主题
-candidate:app/home.html:79:348,html-text,app/home.html,79,,unknown,reviewable,,全部主题
-candidate:app/home.html:79:484,html-text,app/home.html,79,,unknown,reviewable,,来源
-candidate:app/home.html:79:540,html-text,app/home.html,79,,unknown,reviewable,,全部来源
-candidate:app/home.html:79:576,html-text,app/home.html,79,,unknown,reviewable,,内置书
-candidate:app/home.html:79:612,html-text,app/home.html,79,,unknown,reviewable,,我上传的
-candidate:app/home.html:79:753,html-text,app/home.html,79,,unknown,reviewable,,阅读语言
-candidate:app/home.html:79:813,html-text,app/home.html,79,,unknown,reviewable,,全部阅读语言
-candidate:app/home.html:79:948,html-text,app/home.html,79,,unknown,reviewable,,阅读形态
-candidate:app/home.html:79:1004,html-text,app/home.html,79,,unknown,reviewable,,全部形态
-candidate:app/home.html:79:1042,html-text,app/home.html,79,,unknown,reviewable,,原版
-candidate:app/home.html:79:1080,html-text,app/home.html,79,,unknown,reviewable,,有译本
-candidate:app/home.html:79:1118,html-text,app/home.html,79,,unknown,reviewable,,双语对照
-candidate:app/home.html:79:1204,html-text,app/home.html,79,,unknown,reviewable,,有译本也可能只有部分段落，缺译处保留原文。
-candidate:app/home.html:81:125,html-text,app/home.html,81,,unknown,reviewable,,重新打开书房
-candidate:app/home.html:82:94,html-text,app/home.html,82,,unknown,reviewable,,设置阅读习惯
-candidate:app/home.html:82:108,html-text,app/home.html,82,,unknown,reviewable,,选好新书默认的阅读方式、译文与文字，之后打开的新书都从这里开始。每本书自己的选择仍然保留。
-candidate:app/home.html:82:254,html-text,app/home.html,82,,unknown,reviewable,,设置阅读习惯
-candidate:app/home.html:82:333,html-text,app/home.html,82,,unknown,reviewable,,暂不设置
-candidate:app/home.html:83:288,html-text,app/home.html,83,,unknown,reviewable,,正在打开书房…
-candidate:app/home.html:83:496,html-text,app/home.html,83,,unknown,reviewable,,书架上的其他书
-candidate:app/home.html:83:692,html-text,app/home.html,83,,unknown,reviewable,,还没有自己的书
-candidate:app/home.html:83:707,html-text,app/home.html,83,,unknown,reviewable,,带来一份 PDF、EPUB、TXT 或 Markdown。
-candidate:app/home.html:83:796,html-text,app/home.html,83,,unknown,reviewable,,带来第一本书
-candidate:app/home.html:83:875,html-text,app/home.html,83,,unknown,reviewable,,清空搜索
-candidate:app/home.html:86:376,html-text,app/home.html,86,,unknown,reviewable,,Leafhour
-candidate:app/home.html:86:408,html-text,app/home.html,86,,unknown,reviewable,,Stay with a book.
-candidate:app/home.html:86:444,html-text,app/home.html,86,,unknown,reviewable,,MCP 接入指南
-candidate:app/home.html:86:475,html-text,app/home.html,86,,unknown,reviewable,,隐私说明
-candidate:app/home.html:86:528,html-text,app/home.html,86,,unknown,reviewable,,GitHub
-candidate:app/home.html:86:615,html-text,app/home.html,86,,unknown,reviewable,,◐
-candidate:app/home.html:92:107,html-text,app/home.html,92,,unknown,reviewable,,×
-candidate:app/home.html:93:297,html-text,app/home.html,93,,unknown,reviewable,,Leafhour
-candidate:app/home.html:94:23,html-text,app/home.html,94,,unknown,reviewable,,回到你的书房
-candidate:app/home.html:94:53,html-text,app/home.html,94,,unknown,reviewable,,从上次停下的地方继续。
-candidate:app/home.html:97:53,html-text,app/home.html,97,,unknown,reviewable,,邮箱
-candidate:app/home.html:98:122,html-text,app/home.html,98,,unknown,reviewable,,密码
-candidate:app/home.html:98:412,html-text,app/home.html,98,,unknown,reviewable,,显示
-candidate:app/home.html:99:69,html-text,app/home.html,99,,unknown,reviewable,,进入书房
-candidate:app/home.html:103:143,html-text,app/home.html,103,,unknown,reviewable,,更换邮箱
-candidate:app/home.html:104:78,html-text,app/home.html,104,,unknown,reviewable,,登录验证码
-candidate:app/home.html:104:325,html-text,app/home.html,104,,unknown,reviewable,,进入书房
-candidate:app/home.html:105:122,html-text,app/home.html,105,,unknown,reviewable,,重新发送
-candidate:app/home.html:107:126,html-text,app/home.html,107,,unknown,reviewable,,新密码
-candidate:app/home.html:107:446,html-text,app/home.html,107,,unknown,reviewable,,显示
-candidate:app/home.html:107:518,html-text,app/home.html,107,,unknown,reviewable,,至少 8 个字符。
-candidate:app/home.html:107:588,html-text,app/home.html,107,,unknown,reviewable,,保存并进入书房
-candidate:app/home.html:108:127,html-text,app/home.html,108,,unknown,reviewable,,登录服务准备中，可以先试读。
-candidate:app/home.html:109:129,html-text,app/home.html,109,,unknown,reviewable,,验证码登录
-candidate:app/home.html:109:228,html-text,app/home.html,109,,unknown,reviewable,,返回密码登录
-candidate:app/home.html:109:319,html-text,app/home.html,109,,unknown,reviewable,,忘记密码？
-candidate:app/home.html:110:81,html-text,app/home.html,110,,unknown,reviewable,,或
-candidate:app/home.html:111:201,html-text,app/home.html,111,,unknown,reviewable,,Google
-candidate:app/home.html:111:277,html-text,app/home.html,111,,unknown,reviewable,,准备中
-candidate:app/home.html:112:197,html-text,app/home.html,112,,unknown,reviewable,,Apple
-candidate:app/home.html:112:272,html-text,app/home.html,112,,unknown,reviewable,,准备中
-candidate:app/home.html:114:91,html-text,app/home.html,114,,unknown,reviewable,,本机使用
-candidate:app/home.html:114:181,html-text,app/home.html,114,,unknown,reviewable,,进入本机书房 ↗
-candidate:app/home.html:114:246,html-text,app/home.html,114,,unknown,reviewable,,仅在这台电脑使用，无需邮箱；与邮箱账户分开保存。
-candidate:app/home.html:115:97,html-text,app/home.html,115,,unknown,reviewable,,第一次来？
-candidate:app/home.html:115:184,html-text,app/home.html,115,,unknown,reviewable,,创建书房
-candidate:app/home.html:115:284,html-text,app/home.html,115,,unknown,reviewable,,先试读几页
-candidate:app/home.html:115:322,html-text,app/home.html,115,,unknown,reviewable,,↗
-candidate:app/home.html:117:165,html-text,app/home.html,117,,unknown,reviewable,,×
-candidate:app/home.html:117:197,html-text,app/home.html,117,,unknown,reviewable,,这次，你想读什么？
-candidate:app/home.html:117:232,html-text,app/home.html,117,,unknown,reviewable,,原文件保存在自己的书房，提取后即可阅读。
-candidate:app/home.html:117:427,html-text,app/home.html,117,,unknown,reviewable,,↥
-candidate:app/home.html:117:466,html-text,app/home.html,117,,unknown,reviewable,,拖放一本书，或点击选择
-candidate:app/home.html:117:511,html-text,app/home.html,117,,unknown,reviewable,,PDF 最多 256 MB · EPUB、TXT、Markdown 最多 20 MB
-candidate:app/home.html:117:729,html-text,app/home.html,117,,unknown,reviewable,,自动整理文字版与扫描版。需要借助外部识别时，再由你确认；原文件始终保留。
-candidate:app/home.html:117:919,html-text,app/home.html,117,,unknown,reviewable,,放进我的书房
-candidate:app/home.html:117:932,html-text,app/home.html,117,,unknown,reviewable,,→
-candidate:app/home.html:119:104,html-text,app/home.html,119,,unknown,reviewable,,×
-candidate:app/home.html:120:47,html-text,app/home.html,120,,unknown,reviewable,,主导航
-candidate:app/home.html:122:163,html-text,app/home.html,122,,unknown,reviewable,,English
-candidate:app/home.html:122:244,html-text,app/home.html,122,,unknown,reviewable,,简体中文
-candidate:app/home.html:122:322,html-text,app/home.html,122,,unknown,reviewable,,繁體中文
-candidate:app/home.html:122:385,html-text,app/home.html,122,,unknown,reviewable,,日本語
-candidate:app/home.html:122:462,html-text,app/home.html,122,,unknown,reviewable,,界面语言设置
+candidate:app/home.html:70:83,html-text,app/home.html,70,,unknown,reviewable,,Opening your reading records…
+candidate:app/home.html:72:407,html-text,app/home.html,72,,unknown,reviewable,,Leafhour
+candidate:app/home.html:73:49,html-text,app/home.html,73,,unknown,reviewable,,我的书房
+candidate:app/home.html:73:156,html-text,app/home.html,73,,unknown,reviewable,,自己的书与阅读记录。
+candidate:app/home.html:73:211,html-text,app/home.html,73,,unknown,reviewable,,拖动整本书调整位置，触屏可长按后移动。键盘聚焦调整位置按钮后使用左右方向键；更多操作中也可向前或向后移动。
+candidate:app/home.html:76:175,html-text,app/home.html,76,,unknown,reviewable,,全部
+candidate:app/home.html:76:259,html-text,app/home.html,76,,unknown,reviewable,,在读
+candidate:app/home.html:76:342,html-text,app/home.html,76,,unknown,reviewable,,未读
+candidate:app/home.html:76:427,html-text,app/home.html,76,,unknown,reviewable,,读完
+candidate:app/home.html:77:174,html-text,app/home.html,77,,unknown,reviewable,,搜索书名或作者
+candidate:app/home.html:77:426,html-text,app/home.html,77,,unknown,reviewable,,×
+candidate:app/home.html:77:676,html-text,app/home.html,77,,unknown,reviewable,,筛选
+candidate:app/home.html:79:237,html-text,app/home.html,79,,unknown,reviewable,,清除筛选
+candidate:app/home.html:80:177,html-text,app/home.html,80,,unknown,reviewable,,筛选书籍
+candidate:app/home.html:80:293,html-text,app/home.html,80,,unknown,reviewable,,主题
+candidate:app/home.html:80:348,html-text,app/home.html,80,,unknown,reviewable,,全部主题
+candidate:app/home.html:80:484,html-text,app/home.html,80,,unknown,reviewable,,来源
+candidate:app/home.html:80:540,html-text,app/home.html,80,,unknown,reviewable,,全部来源
+candidate:app/home.html:80:576,html-text,app/home.html,80,,unknown,reviewable,,内置书
+candidate:app/home.html:80:612,html-text,app/home.html,80,,unknown,reviewable,,我上传的
+candidate:app/home.html:80:753,html-text,app/home.html,80,,unknown,reviewable,,阅读语言
+candidate:app/home.html:80:813,html-text,app/home.html,80,,unknown,reviewable,,全部阅读语言
+candidate:app/home.html:80:948,html-text,app/home.html,80,,unknown,reviewable,,阅读形态
+candidate:app/home.html:80:1004,html-text,app/home.html,80,,unknown,reviewable,,全部形态
+candidate:app/home.html:80:1042,html-text,app/home.html,80,,unknown,reviewable,,原版
+candidate:app/home.html:80:1080,html-text,app/home.html,80,,unknown,reviewable,,有译本
+candidate:app/home.html:80:1118,html-text,app/home.html,80,,unknown,reviewable,,双语对照
+candidate:app/home.html:80:1204,html-text,app/home.html,80,,unknown,reviewable,,有译本也可能只有部分段落，缺译处保留原文。
+candidate:app/home.html:82:125,html-text,app/home.html,82,,unknown,reviewable,,重新打开书房
+candidate:app/home.html:83:94,html-text,app/home.html,83,,unknown,reviewable,,设置阅读习惯
+candidate:app/home.html:83:108,html-text,app/home.html,83,,unknown,reviewable,,选好新书默认的阅读方式、译文与文字，之后打开的新书都从这里开始。每本书自己的选择仍然保留。
+candidate:app/home.html:83:254,html-text,app/home.html,83,,unknown,reviewable,,设置阅读习惯
+candidate:app/home.html:83:333,html-text,app/home.html,83,,unknown,reviewable,,暂不设置
+candidate:app/home.html:84:288,html-text,app/home.html,84,,unknown,reviewable,,正在打开书房…
+candidate:app/home.html:84:496,html-text,app/home.html,84,,unknown,reviewable,,书架上的其他书
+candidate:app/home.html:84:692,html-text,app/home.html,84,,unknown,reviewable,,还没有自己的书
+candidate:app/home.html:84:707,html-text,app/home.html,84,,unknown,reviewable,,带来一份 PDF、EPUB、TXT 或 Markdown。
+candidate:app/home.html:84:796,html-text,app/home.html,84,,unknown,reviewable,,带来第一本书
+candidate:app/home.html:84:875,html-text,app/home.html,84,,unknown,reviewable,,清空搜索
+candidate:app/home.html:87:376,html-text,app/home.html,87,,unknown,reviewable,,Leafhour
+candidate:app/home.html:87:408,html-text,app/home.html,87,,unknown,reviewable,,Stay with a book.
+candidate:app/home.html:87:444,html-text,app/home.html,87,,unknown,reviewable,,MCP 接入指南
+candidate:app/home.html:87:475,html-text,app/home.html,87,,unknown,reviewable,,隐私说明
+candidate:app/home.html:87:528,html-text,app/home.html,87,,unknown,reviewable,,GitHub
+candidate:app/home.html:87:615,html-text,app/home.html,87,,unknown,reviewable,,◐
+candidate:app/home.html:93:107,html-text,app/home.html,93,,unknown,reviewable,,×
+candidate:app/home.html:94:297,html-text,app/home.html,94,,unknown,reviewable,,Leafhour
+candidate:app/home.html:95:23,html-text,app/home.html,95,,unknown,reviewable,,回到你的书房
+candidate:app/home.html:95:53,html-text,app/home.html,95,,unknown,reviewable,,从上次停下的地方继续。
+candidate:app/home.html:98:53,html-text,app/home.html,98,,unknown,reviewable,,邮箱
+candidate:app/home.html:99:122,html-text,app/home.html,99,,unknown,reviewable,,密码
+candidate:app/home.html:99:412,html-text,app/home.html,99,,unknown,reviewable,,显示
+candidate:app/home.html:100:69,html-text,app/home.html,100,,unknown,reviewable,,进入书房
+candidate:app/home.html:104:143,html-text,app/home.html,104,,unknown,reviewable,,更换邮箱
+candidate:app/home.html:105:78,html-text,app/home.html,105,,unknown,reviewable,,登录验证码
+candidate:app/home.html:105:325,html-text,app/home.html,105,,unknown,reviewable,,进入书房
+candidate:app/home.html:106:122,html-text,app/home.html,106,,unknown,reviewable,,重新发送
+candidate:app/home.html:108:126,html-text,app/home.html,108,,unknown,reviewable,,新密码
+candidate:app/home.html:108:446,html-text,app/home.html,108,,unknown,reviewable,,显示
+candidate:app/home.html:108:518,html-text,app/home.html,108,,unknown,reviewable,,至少 8 个字符。
+candidate:app/home.html:108:588,html-text,app/home.html,108,,unknown,reviewable,,保存并进入书房
+candidate:app/home.html:109:127,html-text,app/home.html,109,,unknown,reviewable,,登录服务准备中，可以先试读。
+candidate:app/home.html:110:129,html-text,app/home.html,110,,unknown,reviewable,,验证码登录
+candidate:app/home.html:110:228,html-text,app/home.html,110,,unknown,reviewable,,返回密码登录
+candidate:app/home.html:110:319,html-text,app/home.html,110,,unknown,reviewable,,忘记密码？
+candidate:app/home.html:111:81,html-text,app/home.html,111,,unknown,reviewable,,或
+candidate:app/home.html:112:201,html-text,app/home.html,112,,unknown,reviewable,,Google
+candidate:app/home.html:112:277,html-text,app/home.html,112,,unknown,reviewable,,准备中
+candidate:app/home.html:113:197,html-text,app/home.html,113,,unknown,reviewable,,Apple
+candidate:app/home.html:113:272,html-text,app/home.html,113,,unknown,reviewable,,准备中
+candidate:app/home.html:115:91,html-text,app/home.html,115,,unknown,reviewable,,本机使用
+candidate:app/home.html:115:181,html-text,app/home.html,115,,unknown,reviewable,,进入本机书房 ↗
+candidate:app/home.html:115:246,html-text,app/home.html,115,,unknown,reviewable,,仅在这台电脑使用，无需邮箱；与邮箱账户分开保存。
+candidate:app/home.html:116:97,html-text,app/home.html,116,,unknown,reviewable,,第一次来？
+candidate:app/home.html:116:184,html-text,app/home.html,116,,unknown,reviewable,,创建书房
+candidate:app/home.html:116:284,html-text,app/home.html,116,,unknown,reviewable,,先试读几页
+candidate:app/home.html:116:322,html-text,app/home.html,116,,unknown,reviewable,,↗
+candidate:app/home.html:118:165,html-text,app/home.html,118,,unknown,reviewable,,×
+candidate:app/home.html:118:197,html-text,app/home.html,118,,unknown,reviewable,,这次，你想读什么？
+candidate:app/home.html:118:232,html-text,app/home.html,118,,unknown,reviewable,,原文件保存在自己的书房，提取后即可阅读。
+candidate:app/home.html:118:427,html-text,app/home.html,118,,unknown,reviewable,,↥
+candidate:app/home.html:118:466,html-text,app/home.html,118,,unknown,reviewable,,拖放一本书，或点击选择
+candidate:app/home.html:118:511,html-text,app/home.html,118,,unknown,reviewable,,PDF 最多 256 MB · EPUB、TXT、Markdown 最多 20 MB
+candidate:app/home.html:118:729,html-text,app/home.html,118,,unknown,reviewable,,自动整理文字版与扫描版。需要借助外部识别时，再由你确认；原文件始终保留。
+candidate:app/home.html:118:919,html-text,app/home.html,118,,unknown,reviewable,,放进我的书房
+candidate:app/home.html:118:932,html-text,app/home.html,118,,unknown,reviewable,,→
+candidate:app/home.html:120:104,html-text,app/home.html,120,,unknown,reviewable,,×
+candidate:app/home.html:121:47,html-text,app/home.html,121,,unknown,reviewable,,主导航
+candidate:app/home.html:123:163,html-text,app/home.html,123,,unknown,reviewable,,English
+candidate:app/home.html:123:244,html-text,app/home.html,123,,unknown,reviewable,,简体中文
+candidate:app/home.html:123:322,html-text,app/home.html,123,,unknown,reviewable,,繁體中文
+candidate:app/home.html:123:385,html-text,app/home.html,123,,unknown,reviewable,,日本語
+candidate:app/home.html:123:462,html-text,app/home.html,123,,unknown,reviewable,,界面语言设置
 candidate:app/index.html:12:48,html-attribute,app/index.html,12,aria-label,unknown,reviewable,,Reading navigation
 candidate:app/index.html:12:287,html-attribute,app/index.html,12,aria-label,unknown,reviewable,,Account
 candidate:app/index.html:12:527,html-attribute,app/index.html,12,aria-label,unknown,reviewable,,Back to library
@@ -3605,7 +3606,7 @@ candidate:app/library-shell.mjs:87:101,js-cjk-literal,app/library-shell.mjs,87,,
 candidate:app/library-shell.mjs:87:119,js-cjk-literal,app/library-shell.mjs,87,,unknown,reviewable,,額度與帳單
 candidate:app/library-shell.mjs:87:132,js-cjk-literal,app/library-shell.mjs,87,,unknown,reviewable,,ポイントと請求
 candidate:app/library-shell.mjs:106:609,js-attribute,app/library-shell.mjs,106,aria-hidden,unknown,reviewable,,true
-candidate:app/library-view-state.mjs:54:65,js-cjk-literal,app/library-view-state.mjs,54,,unknown,reviewable,,overlay kind 无效
+candidate:app/library-view-state.mjs:55:65,js-cjk-literal,app/library-view-state.mjs,55,,unknown,reviewable,,overlay kind 无效
 candidate:app/library-workspace.mjs:46:43,js-cjk-literal,app/library-workspace.mjs,46,,unknown,reviewable,,找不到这段原文，请重新选择段落。
 candidate:app/library-workspace.mjs:76:52,js-cjk-literal,app/library-workspace.mjs,76,,unknown,reviewable,,日期不正确。
 candidate:app/library-workspace.mjs:78:88,js-cjk-literal,app/library-workspace.mjs,78,,unknown,reviewable,,日期不正确。
@@ -4231,16 +4232,16 @@ candidate:app/portable-chat.mjs:52:69,js-cjk-literal,app/portable-chat.mjs,52,,u
 candidate:app/portable-chat.mjs:53:55,js-cjk-literal,app/portable-chat.mjs,53,,unknown,reviewable,,未完成对话不能携带回答
 candidate:app/portable-chat.mjs:54:375,js-cjk-literal,app/portable-chat.mjs,54,,unknown,reviewable,,导入前的回答已中断，未恢复生成。
 candidate:app/portal.js:88:528,js-cjk-literal,app/portal.js,88,,unknown,reviewable,,网络暂时无法连接，请稍后重试。
-candidate:app/portal.js:180:111,js-attribute,app/portal.js,180,aria-hidden,unknown,reviewable,,true
-candidate:app/portal.js:190:160,js-cjk-literal,app/portal.js,190,,unknown,reviewable,,"第 "
-candidate:app/portal.js:190:176,js-cjk-literal,app/portal.js,190,,unknown,reviewable,," 章 · "
-candidate:app/portal.js:209:165,js-attribute,app/portal.js,209,lang,unknown,reviewable,,und
-candidate:app/portal.js:212:412,js-cjk-literal,app/portal.js,212,,unknown,reviewable,,文本
-candidate:app/portal.js:215:161,js-attribute,app/portal.js,215,aria-describedby,unknown,protected,identifier,shelf-order-help
-candidate:app/portal.js:215:277,js-attribute,app/portal.js,215,aria-hidden,unknown,reviewable,,true
-candidate:app/portal.js:245:77,js-attribute,app/portal.js,245,aria-hidden,unknown,reviewable,,true
-candidate:app/portal.js:257:47,js-attribute,app/portal.js,257,aria-busy,unknown,reviewable,,false
-candidate:app/portal.js:296:184,js-attribute,app/portal.js,296,aria-busy,unknown,reviewable,,false
+candidate:app/portal.js:189:111,js-attribute,app/portal.js,189,aria-hidden,unknown,reviewable,,true
+candidate:app/portal.js:199:160,js-cjk-literal,app/portal.js,199,,unknown,reviewable,,"第 "
+candidate:app/portal.js:199:176,js-cjk-literal,app/portal.js,199,,unknown,reviewable,," 章 · "
+candidate:app/portal.js:218:165,js-attribute,app/portal.js,218,lang,unknown,reviewable,,und
+candidate:app/portal.js:221:412,js-cjk-literal,app/portal.js,221,,unknown,reviewable,,文本
+candidate:app/portal.js:224:161,js-attribute,app/portal.js,224,aria-describedby,unknown,protected,identifier,shelf-order-help
+candidate:app/portal.js:224:277,js-attribute,app/portal.js,224,aria-hidden,unknown,reviewable,,true
+candidate:app/portal.js:254:77,js-attribute,app/portal.js,254,aria-hidden,unknown,reviewable,,true
+candidate:app/portal.js:266:47,js-attribute,app/portal.js,266,aria-busy,unknown,reviewable,,false
+candidate:app/portal.js:305:184,js-attribute,app/portal.js,305,aria-busy,unknown,reviewable,,false
 candidate:app/pricing-checkout-markup.mjs:2:48,js-cjk-literal,app/pricing-checkout-markup.mjs,2,,unknown,protected,path+quotation,"<dialog autofocus id=""auth-dialog"" class=""auth-dialog"" aria-labelledby=""auth-title"" aria-describedby=""auth-intro"">
   <button class=""dialog-close"" id=""billing-auth-close"" data-close=""auth-dialog"" data-ui-aria-label=""auth.close"" aria-label=""关闭登录"">×</button>
   <div class=""auth-brand"" aria-hidden=""true""><svg viewBox=""0 0 40 40"" fill=""none"" stroke=""currentColor"" stroke-width=""2"" stroke-linecap=""round"" stroke-linejoin=""round"" aria-hidden=""true""><path d=""M8 32V20A13 13 0 0 1 21 7h11v11a14 14 0 0 1-14 14H8Z""/><path d=""M16 23h7v-9""/></svg><span lang=""en"">Leafhour</span></div>
@@ -4592,6 +4593,13 @@ candidate:app/reading-time-policy.mjs:10:93,js-cjk-literal,app/reading-time-poli
 candidate:app/reading-time-policy.mjs:10:111,js-cjk-literal,app/reading-time-policy.mjs,10,,unknown,reviewable,,旧预览记录
 candidate:app/reading-time-policy.mjs:14:35,js-cjk-literal,app/reading-time-policy.mjs,14,,unknown,reviewable,,总时长按所有书籍、设备与口径的区间合并，重叠只计一次；各口径分别去重，彼此可能重叠，不能相加。前台估计在2分钟无操作后暂停；主动专注允许停留思考，隐藏、失焦或手动暂停时不计。手动补记为自报，时长不代表理解程度。
 candidate:app/reading-toolbar.mjs:97:53,js-attribute,app/reading-toolbar.mjs,97,aria-hidden,unknown,reviewable,,true
+candidate:app/reading-workspace.mjs:45:62,js-attribute,app/reading-workspace.mjs,45,role,unknown,reviewable,,status
+candidate:app/reading-workspace.mjs:51:19,js-dom-literal,app/reading-workspace.mjs,51,textContent,unknown,reviewable,,←
+candidate:app/reading-workspace.mjs:51:40,js-dom-literal,app/reading-workspace.mjs,51,textContent,unknown,reviewable,,→
+candidate:app/reading-workspace.mjs:70:364,js-attribute,app/reading-workspace.mjs,70,aria-current,unknown,reviewable,,date
+candidate:app/reading-workspace.mjs:90:108,js-attribute,app/reading-workspace.mjs,90,role,unknown,reviewable,,status
+candidate:app/reading-workspace.mjs:116:295,js-attribute,app/reading-workspace.mjs,116,aria-disabled,unknown,reviewable,,true
+candidate:app/reading-workspace.mjs:125:319,js-attribute,app/reading-workspace.mjs,125,aria-current,unknown,reviewable,,page
 candidate:app/save-receipts.mjs:6:33,js-cjk-literal,app/save-receipts.mjs,6,,unknown,reviewable,,保存尚未确认。文字仅在当前页面，请先复制；刷新或离开可能丢失。 重试会先确认同一次提交。
 candidate:app/save-receipts.mjs:7:36,js-cjk-literal,app/save-receipts.mjs,7,,unknown,reviewable,,本次时段仅在当前页面，请重试保存或另存记录。
 candidate:app/save-receipts.mjs:8:27,js-cjk-literal,app/save-receipts.mjs,8,,unknown,reviewable,,当前文字是草稿，尚未提交。仅在当前页面，请先复制；刷新或离开可能丢失。
@@ -5607,123 +5615,123 @@ candidate:server/library-portability.mjs:105:108,js-cjk-literal,server/library-p
 candidate:server/library-portability.mjs:105:166,js-cjk-literal,server/library-portability.mjs,105,,unknown,reviewable,,记录正在更新，请重试备份
 candidate:server/library-portability.mjs:105:215,js-cjk-literal,server/library-portability.mjs,105,,unknown,reviewable,,备份分段超出范围
 candidate:server/library-portability.mjs:109:191,js-cjk-literal,server/library-portability.mjs,109,,unknown,reviewable,,原文件分段或版本不正确
-candidate:server/library-service.mjs:35:50,js-cjk-literal,server/library-service.mjs,35,,unknown,reviewable,,请先进入自己的书房
-candidate:server/library-service.mjs:41:178,js-cjk-literal,server/library-service.mjs,41,,unknown,reviewable,,校对迁移回执版本冲突
-candidate:server/library-service.mjs:45:264,js-cjk-literal,server/library-service.mjs,45,,unknown,reviewable,,备份中的阅读时段标识冲突，未覆盖记录
-candidate:server/library-service.mjs:48:198,js-cjk-literal,server/library-service.mjs,48,,unknown,reviewable,,备份中的阅读标记标识冲突，未覆盖记录
-candidate:server/library-service.mjs:60:130,js-cjk-literal,server/library-service.mjs,60,,unknown,reviewable,,书架顺序不正确，请刷新后重新排列
-candidate:server/library-service.mjs:64:140,js-cjk-literal,server/library-service.mjs,64,,unknown,reviewable,,备份中的书架信息不完整
-candidate:server/library-service.mjs:66:132,js-cjk-literal,server/library-service.mjs,66,,unknown,reviewable,,备份中的移除时间不正确
-candidate:server/library-service.mjs:106:55,js-cjk-literal,server/library-service.mjs,106,,unknown,reviewable,,找不到这本书
-candidate:server/library-service.mjs:108:35,js-cjk-literal,server/library-service.mjs,108,,unknown,reviewable,,找不到这本书
-candidate:server/library-service.mjs:109:25,js-cjk-literal,server/library-service.mjs,109,,unknown,reviewable,,找不到这本书
-candidate:server/library-service.mjs:142:60,js-cjk-literal,server/library-service.mjs,142,,unknown,reviewable,,书籍版本已更新，请重新打开这本书
-candidate:server/library-service.mjs:152:196,js-cjk-literal,server/library-service.mjs,152,,unknown,reviewable,,备份简介与目标保留的原文结构冲突，未开始恢复
-candidate:server/library-service.mjs:158:103,js-cjk-literal,server/library-service.mjs,158,,unknown,reviewable,,备份记录或锚点与目标保留的书籍结构冲突，未开始恢复
-candidate:server/library-service.mjs:173:168,js-cjk-literal,server/library-service.mjs,173,,unknown,reviewable,,阅读习惯请求包含未知字段，尚未保存
-candidate:server/library-service.mjs:174:83,js-cjk-literal,server/library-service.mjs,174,,unknown,reviewable,,请先读取当前阅读习惯，再保存修改
-candidate:server/library-service.mjs:175:101,js-cjk-literal,server/library-service.mjs,175,,unknown,reviewable,,阅读习惯格式不正确，尚未保存
-candidate:server/library-service.mjs:178:51,js-cjk-literal,server/library-service.mjs,178,,unknown,reviewable,,阅读习惯已在另一处更新，请刷新后重新保存
-candidate:server/library-service.mjs:179:55,js-cjk-literal,server/library-service.mjs,179,,unknown,reviewable,,阅读习惯版本已超过可保存范围
-candidate:server/library-service.mjs:188:111,js-cjk-literal,server/library-service.mjs,188,,unknown,reviewable,,备份中的阅读习惯信息不完整，未开始恢复
-candidate:server/library-service.mjs:196:54,js-cjk-literal,server/library-service.mjs,196,,unknown,reviewable,,阅读习惯版本已超过可保存范围
-candidate:server/library-service.mjs:208:117,js-cjk-literal,server/library-service.mjs,208,,unknown,reviewable,,请先读取当前书架版本，再保存调整
-candidate:server/library-service.mjs:209:87,js-cjk-literal,server/library-service.mjs,209,,unknown,reviewable,,书架已在另一处更新，请刷新后再试
-candidate:server/library-service.mjs:209:165,js-cjk-literal,server/library-service.mjs,209,,unknown,reviewable,,书架版本已超过可保存范围
-candidate:server/library-service.mjs:214:98,js-cjk-literal,server/library-service.mjs,214,,unknown,reviewable,,找不到要排列的书籍
-candidate:server/library-service.mjs:215:58,js-cjk-literal,server/library-service.mjs,215,,unknown,reviewable,,书架已有变化，请刷新后重新排列
-candidate:server/library-service.mjs:218:51,js-cjk-literal,server/library-service.mjs,218,,unknown,reviewable,,书架最多支持排列 1000 本书，请先导出整理
-candidate:server/library-service.mjs:226:54,js-cjk-literal,server/library-service.mjs,226,,unknown,reviewable,,找不到这本书
-candidate:server/library-service.mjs:229:87,js-cjk-literal,server/library-service.mjs,229,,unknown,reviewable,,已移除的书较多，请先导出整理
-candidate:server/library-service.mjs:253:72,js-cjk-literal,server/library-service.mjs,253,,unknown,reviewable,,这本书没有原文件封面
-candidate:server/library-service.mjs:254:82,js-cjk-literal,server/library-service.mjs,254,,unknown,reviewable,,找不到原文件封面
-candidate:server/library-service.mjs:256:35,js-cjk-literal,server/library-service.mjs,256,,unknown,reviewable,,原文件没有封面
-candidate:server/library-service.mjs:262:142,js-cjk-literal,server/library-service.mjs,262,,unknown,reviewable,,找不到原文件封面
-candidate:server/library-service.mjs:263:55,js-cjk-literal,server/library-service.mjs,263,,unknown,reviewable,,找不到原文件封面
-candidate:server/library-service.mjs:265:73,js-cjk-literal,server/library-service.mjs,265,,unknown,reviewable,,原文件校验失败，请重新上传
-candidate:server/library-service.mjs:268:30,js-cjk-literal,server/library-service.mjs,268,,unknown,reviewable,,原文件没有封面
-candidate:server/library-service.mjs:280:60,js-cjk-literal,server/library-service.mjs,280,,unknown,reviewable,,已保存的原文版本与此文件不一致，未覆盖书籍或记录
-candidate:server/library-service.mjs:291:139,js-cjk-literal,server/library-service.mjs,291,,unknown,reviewable,,找不到来源段落
-candidate:server/library-service.mjs:297:99,js-cjk-literal,server/library-service.mjs,297,,unknown,reviewable,,请在自己的来源文件中校对，公版目录不会被修改
-candidate:server/library-service.mjs:302:103,js-cjk-literal,server/library-service.mjs,302,,unknown,reviewable,,共享目录不可校对，请使用自己的原件
-candidate:server/library-service.mjs:303:69,js-cjk-literal,server/library-service.mjs,303,,unknown,reviewable,,原文版本已变化，请重新读取后校对
-candidate:server/library-service.mjs:305:204,js-cjk-literal,server/library-service.mjs,305,,unknown,reviewable,,PDF 原件无法核对，请检查是否损坏或加密
-candidate:server/library-service.mjs:313:171,js-cjk-literal,server/library-service.mjs,313,,unknown,reviewable,,修订版本标识冲突，原书已保留
-candidate:server/library-service.mjs:322:174,js-cjk-literal,server/library-service.mjs,322,,unknown,reviewable,,请选择当前修订中的来源段落
-candidate:server/library-service.mjs:323:159,js-cjk-literal,server/library-service.mjs,323,,unknown,reviewable,,找不到待确认的私人记录
-candidate:server/library-service.mjs:324:88,js-cjk-literal,server/library-service.mjs,324,,unknown,reviewable,,这条记录已确认到另一段，请重新读取
-candidate:server/library-service.mjs:326:26,js-cjk-literal,server/library-service.mjs,326,,unknown,reviewable,,此记录标识已在当前修订使用，原话和待确认记录均保留
-candidate:server/library-service.mjs:331:99,js-cjk-literal,server/library-service.mjs,331,,unknown,reviewable,,公版书请使用书籍出处查看底本
-candidate:server/library-service.mjs:332:82,js-cjk-literal,server/library-service.mjs,332,,unknown,reviewable,,原文件信息不完整，请保留提取原文并重新上传原文件
-candidate:server/library-service.mjs:334:298,js-cjk-literal,server/library-service.mjs,334,,unknown,reviewable,,原文件不完整，请重新上传
-candidate:server/library-service.mjs:335:121,js-cjk-literal,server/library-service.mjs,335,,unknown,reviewable,,此书房没有原文件。JSON 备份只包含提取文字与记录；重新上传同一原文件即可补回。
-candidate:server/library-service.mjs:339:83,js-cjk-literal,server/library-service.mjs,339,,unknown,reviewable,,原文件校验失败，未提供损坏的文件，请重新上传
-candidate:server/library-service.mjs:342:167,js-cjk-literal,server/library-service.mjs,342,,unknown,reviewable,,本机原件使用直接下载
-candidate:server/library-service.mjs:344:73,js-cjk-literal,server/library-service.mjs,344,,unknown,reviewable,,找不到这本书
-candidate:server/library-service.mjs:344:198,js-cjk-literal,server/library-service.mjs,344,,unknown,reviewable,,原文件分段位置无效
-candidate:server/library-service.mjs:346:26,js-cjk-literal,server/library-service.mjs,346,,unknown,reviewable,,找不到这本书
-candidate:server/library-service.mjs:347:87,js-cjk-literal,server/library-service.mjs,347,,unknown,reviewable,,原文件版本无法核对，请重新打开书籍
-candidate:server/library-service.mjs:350:130,js-cjk-literal,server/library-service.mjs,350,,unknown,reviewable,,原文件分段超出范围
-candidate:server/library-service.mjs:350:264,js-cjk-literal,server/library-service.mjs,350,,unknown,reviewable,,原文件分段不完整
-candidate:server/library-service.mjs:353:115,js-cjk-literal,server/library-service.mjs,353,,unknown,reviewable,,大原件请在阅读页使用“下载原文件校对”，分块校验后下载
-candidate:server/library-service.mjs:385:105,js-cjk-literal,server/library-service.mjs,385,,unknown,reviewable,,阅读记录已超过云端单书容量，请保留导出备份并在本机继续
-candidate:server/library-service.mjs:388:263,js-cjk-literal,server/library-service.mjs,388,,unknown,reviewable,,阅读时段较多，请保留导出备份
-candidate:server/library-service.mjs:392:264,js-cjk-literal,server/library-service.mjs,392,,unknown,reviewable,,阅读标记标识冲突，原标记已保留
-candidate:server/library-service.mjs:392:350,js-cjk-literal,server/library-service.mjs,392,,unknown,reviewable,,阅读标记较多，请保留导出备份
-candidate:server/library-service.mjs:417:158,js-cjk-literal,server/library-service.mjs,417,,unknown,reviewable,,高亮请求格式不正确
-candidate:server/library-service.mjs:419:37,js-cjk-literal,server/library-service.mjs,419,,unknown,reviewable,,所选文字不属于这本书
-candidate:server/library-service.mjs:420:75,js-cjk-literal,server/library-service.mjs,420,,unknown,reviewable,,Agent 授权无效或范围不足
-candidate:server/library-service.mjs:427:70,js-cjk-literal,server/library-service.mjs,427,,unknown,reviewable,,高亮标识冲突，原记录已保留
-candidate:server/library-service.mjs:434:171,js-cjk-literal,server/library-service.mjs,434,,unknown,reviewable,,找不到这条高亮
-candidate:server/library-service.mjs:444:350,js-cjk-literal,server/library-service.mjs,444,,unknown,reviewable,,记录无法对应当前原文
-candidate:server/library-service.mjs:447:191,js-cjk-literal,server/library-service.mjs,447,,unknown,reviewable,,记录标识冲突
-candidate:server/library-service.mjs:447:256,js-cjk-literal,server/library-service.mjs,447,,unknown,reviewable,,请先导出记录
-candidate:server/library-service.mjs:451:120,js-cjk-literal,server/library-service.mjs,451,,unknown,reviewable,,找不到自己的这条记录
-candidate:server/library-service.mjs:453:82,js-cjk-literal,server/library-service.mjs,453,,unknown,reviewable,,找不到自己的这条记录
-candidate:server/library-service.mjs:459:194,js-cjk-literal,server/library-service.mjs,459,,unknown,reviewable,,阅读位置无法对应原文
-candidate:server/library-service.mjs:460:85,js-cjk-literal,server/library-service.mjs,460,,unknown,reviewable,,阅读设置不正确
-candidate:server/library-service.mjs:461:113,js-cjk-literal,server/library-service.mjs,461,,unknown,reviewable,,阅读位置版本不正确
-candidate:server/library-service.mjs:463:183,js-cjk-literal,server/library-service.mjs,463,,unknown,reviewable,,阅读位置已在另一处更新，请选择从哪里继续
-candidate:server/library-service.mjs:468:23,js-cjk-literal,server/library-service.mjs,468,,unknown,reviewable,,找不到当前段落
-candidate:server/library-service.mjs:473:68,js-cjk-literal,server/library-service.mjs,473,,unknown,reviewable,,这段原文为中文，无需生成中文译文；原文与个人记录仍可使用
-candidate:server/library-service.mjs:474:31,js-cjk-literal,server/library-service.mjs,474,,unknown,reviewable,,翻译服务尚未配置，原文仍可继续阅读
-candidate:server/library-service.mjs:475:173,js-cjk-literal,server/library-service.mjs,475,,unknown,reviewable,,这本书正在保存另一段译文，请稍后再试；当前段落尚未提交翻译。
-candidate:server/library-service.mjs:475:254,js-cjk-literal,server/library-service.mjs,475,,unknown,reviewable,,这一段正在翻译，请稍后查看
-candidate:server/library-service.mjs:475:317,js-cjk-literal,server/library-service.mjs,475,,unknown,reviewable,,翻译服务正在处理其他段落，请稍后再试
-candidate:server/library-service.mjs:480:101,js-cjk-literal,server/library-service.mjs,480,,unknown,reviewable,,本次翻译已取消或过期，未保存结果
-candidate:server/library-service.mjs:487:139,js-cjk-literal,server/library-service.mjs,487,,unknown,reviewable,,翻译结果不完整，请重试；原文已保留
-candidate:server/library-service.mjs:514:164,js-cjk-literal,server/library-service.mjs,514,,unknown,reviewable,,请先撤回不再使用的授权
-candidate:server/library-service.mjs:519:139,js-cjk-literal,server/library-service.mjs,519,,unknown,reviewable,,请选择授权范围
-candidate:server/library-service.mjs:523:239,js-cjk-literal,server/library-service.mjs,523,,unknown,reviewable,,请选择授权范围
-candidate:server/library-service.mjs:526:269,js-cjk-literal,server/library-service.mjs,526,,unknown,reviewable,,请选择授权范围
-candidate:server/library-service.mjs:531:324,js-cjk-literal,server/library-service.mjs,531,,unknown,reviewable,,Agent 授权无效或范围不足
-candidate:server/library-service.mjs:534:144,js-cjk-literal,server/library-service.mjs,534,,unknown,reviewable,,Agent 授权无效或范围不足
-candidate:server/library-service.mjs:553:146,js-cjk-literal,server/library-service.mjs,553,,unknown,reviewable,,找不到这条授权
-candidate:server/library-service.mjs:570:89,js-cjk-literal,server/library-service.mjs,570,,unknown,reviewable,,单份备份最多容纳100本书，请在本机按书整理后导出。
-candidate:server/library-service.mjs:580:139,js-cjk-literal,server/library-service.mjs,580,,unknown,reviewable,,原文件与恢复的书籍版本不符
-candidate:server/library-service.mjs:588:183,js-cjk-literal,server/library-service.mjs,588,,unknown,reviewable,,备份分段范围不正确。
-candidate:server/library-service.mjs:593:46,js-cjk-literal,server/library-service.mjs,593,,unknown,reviewable,,这本书的备份过大，请在本机导出。
-candidate:server/library-service.mjs:594:45,js-cjk-literal,server/library-service.mjs,594,,unknown,reviewable,,这本书刚刚有新记录，请重试导出。
-candidate:server/library-service.mjs:595:40,js-cjk-literal,server/library-service.mjs,595,,unknown,reviewable,,备份分段范围不正确。
-candidate:server/library-service.mjs:603:158,js-cjk-literal,server/library-service.mjs,603,,unknown,reviewable,,备份中的书架超过 1000 本，请在本机整理后恢复
-candidate:server/library-service.mjs:605:460,js-cjk-literal,server/library-service.mjs,605,,unknown,reviewable,,书籍格式不完整
-candidate:server/library-service.mjs:606:84,js-cjk-literal,server/library-service.mjs,606,,unknown,reviewable,,这本备份的文字量超过云端限制，请在本机恢复
-candidate:server/library-service.mjs:607:283,js-cjk-literal,server/library-service.mjs,607,,unknown,reviewable,,备份的原文版本与书房已有内容冲突，未覆盖原书或记录
-candidate:server/library-service.mjs:608:330,js-cjk-literal,server/library-service.mjs,608,,unknown,reviewable,,原文锚点不完整
-candidate:server/library-service.mjs:609:265,js-cjk-literal,server/library-service.mjs,609,,unknown,reviewable,,个人记录无法对应原文
-candidate:server/library-service.mjs:610:116,js-cjk-literal,server/library-service.mjs,610,,unknown,reviewable,,阅读位置无法恢复
-candidate:server/library-service.mjs:629:86,js-cjk-literal,server/library-service.mjs,629,,unknown,reviewable,,书架正在另一处更新，请刷新后重新恢复
-candidate:server/library-service.mjs:638:101,js-cjk-literal,server/library-service.mjs,638,,unknown,reviewable,,请选择一份 20 MB 以内的单书阅读包
-candidate:server/library-service.mjs:640:232,js-cjk-literal,server/library-service.mjs,640,,unknown,reviewable,,赠书阅读包不能包含个人记录
-candidate:server/library-service.mjs:641:57,js-cjk-literal,server/library-service.mjs,641,,unknown,reviewable,,赠书阅读包不能包含账户阅读习惯
-candidate:server/library-service.mjs:642:31,js-cjk-literal,server/library-service.mjs,642,,unknown,reviewable,,这份阅读包的原文与译文合计超过云端阅读容量，请下载后在本机接收
-candidate:server/library-service.mjs:648:124,js-cjk-literal,server/library-service.mjs,648,,unknown,reviewable,,阅读包的原文或译文超过云端单份容量，请在本机接收
-candidate:server/library-service.mjs:651:69,js-cjk-literal,server/library-service.mjs,651,,unknown,reviewable,,译文已超过云端单份容量，已有记录已保留
-candidate:server/library-service.mjs:658:91,js-cjk-literal,server/library-service.mjs,658,,unknown,reviewable,,书架已有同标识的另一版本，原书和记录已保留
-candidate:server/library-service.mjs:663:104,js-cjk-literal,server/library-service.mjs,663,,unknown,reviewable,,译文来源版本已变化，已有译文已保留
-candidate:server/library-service.mjs:677:46,js-cjk-literal,server/library-service.mjs,677,,unknown,reviewable,,书架已有同标识的另一版本，原书和记录已保留
-candidate:server/library-service.mjs:678:92,js-cjk-literal,server/library-service.mjs,678,,unknown,reviewable,,另一封赠书尚未收好，请先重试原来的赠书链接
-candidate:server/library-service.mjs:685:89,js-cjk-literal,server/library-service.mjs,685,,unknown,reviewable,,译文来源版本已变化，已有译文已保留
+candidate:server/library-service.mjs:36:50,js-cjk-literal,server/library-service.mjs,36,,unknown,reviewable,,请先进入自己的书房
+candidate:server/library-service.mjs:43:178,js-cjk-literal,server/library-service.mjs,43,,unknown,reviewable,,校对迁移回执版本冲突
+candidate:server/library-service.mjs:47:264,js-cjk-literal,server/library-service.mjs,47,,unknown,reviewable,,备份中的阅读时段标识冲突，未覆盖记录
+candidate:server/library-service.mjs:50:198,js-cjk-literal,server/library-service.mjs,50,,unknown,reviewable,,备份中的阅读标记标识冲突，未覆盖记录
+candidate:server/library-service.mjs:62:130,js-cjk-literal,server/library-service.mjs,62,,unknown,reviewable,,书架顺序不正确，请刷新后重新排列
+candidate:server/library-service.mjs:66:140,js-cjk-literal,server/library-service.mjs,66,,unknown,reviewable,,备份中的书架信息不完整
+candidate:server/library-service.mjs:68:132,js-cjk-literal,server/library-service.mjs,68,,unknown,reviewable,,备份中的移除时间不正确
+candidate:server/library-service.mjs:108:55,js-cjk-literal,server/library-service.mjs,108,,unknown,reviewable,,找不到这本书
+candidate:server/library-service.mjs:110:35,js-cjk-literal,server/library-service.mjs,110,,unknown,reviewable,,找不到这本书
+candidate:server/library-service.mjs:111:25,js-cjk-literal,server/library-service.mjs,111,,unknown,reviewable,,找不到这本书
+candidate:server/library-service.mjs:144:60,js-cjk-literal,server/library-service.mjs,144,,unknown,reviewable,,书籍版本已更新，请重新打开这本书
+candidate:server/library-service.mjs:154:196,js-cjk-literal,server/library-service.mjs,154,,unknown,reviewable,,备份简介与目标保留的原文结构冲突，未开始恢复
+candidate:server/library-service.mjs:160:103,js-cjk-literal,server/library-service.mjs,160,,unknown,reviewable,,备份记录或锚点与目标保留的书籍结构冲突，未开始恢复
+candidate:server/library-service.mjs:175:168,js-cjk-literal,server/library-service.mjs,175,,unknown,reviewable,,阅读习惯请求包含未知字段，尚未保存
+candidate:server/library-service.mjs:176:83,js-cjk-literal,server/library-service.mjs,176,,unknown,reviewable,,请先读取当前阅读习惯，再保存修改
+candidate:server/library-service.mjs:177:101,js-cjk-literal,server/library-service.mjs,177,,unknown,reviewable,,阅读习惯格式不正确，尚未保存
+candidate:server/library-service.mjs:180:51,js-cjk-literal,server/library-service.mjs,180,,unknown,reviewable,,阅读习惯已在另一处更新，请刷新后重新保存
+candidate:server/library-service.mjs:181:55,js-cjk-literal,server/library-service.mjs,181,,unknown,reviewable,,阅读习惯版本已超过可保存范围
+candidate:server/library-service.mjs:190:111,js-cjk-literal,server/library-service.mjs,190,,unknown,reviewable,,备份中的阅读习惯信息不完整，未开始恢复
+candidate:server/library-service.mjs:198:54,js-cjk-literal,server/library-service.mjs,198,,unknown,reviewable,,阅读习惯版本已超过可保存范围
+candidate:server/library-service.mjs:210:117,js-cjk-literal,server/library-service.mjs,210,,unknown,reviewable,,请先读取当前书架版本，再保存调整
+candidate:server/library-service.mjs:211:87,js-cjk-literal,server/library-service.mjs,211,,unknown,reviewable,,书架已在另一处更新，请刷新后再试
+candidate:server/library-service.mjs:211:165,js-cjk-literal,server/library-service.mjs,211,,unknown,reviewable,,书架版本已超过可保存范围
+candidate:server/library-service.mjs:216:98,js-cjk-literal,server/library-service.mjs,216,,unknown,reviewable,,找不到要排列的书籍
+candidate:server/library-service.mjs:217:58,js-cjk-literal,server/library-service.mjs,217,,unknown,reviewable,,书架已有变化，请刷新后重新排列
+candidate:server/library-service.mjs:220:51,js-cjk-literal,server/library-service.mjs,220,,unknown,reviewable,,书架最多支持排列 1000 本书，请先导出整理
+candidate:server/library-service.mjs:228:54,js-cjk-literal,server/library-service.mjs,228,,unknown,reviewable,,找不到这本书
+candidate:server/library-service.mjs:231:87,js-cjk-literal,server/library-service.mjs,231,,unknown,reviewable,,已移除的书较多，请先导出整理
+candidate:server/library-service.mjs:255:72,js-cjk-literal,server/library-service.mjs,255,,unknown,reviewable,,这本书没有原文件封面
+candidate:server/library-service.mjs:256:82,js-cjk-literal,server/library-service.mjs,256,,unknown,reviewable,,找不到原文件封面
+candidate:server/library-service.mjs:258:35,js-cjk-literal,server/library-service.mjs,258,,unknown,reviewable,,原文件没有封面
+candidate:server/library-service.mjs:264:142,js-cjk-literal,server/library-service.mjs,264,,unknown,reviewable,,找不到原文件封面
+candidate:server/library-service.mjs:265:55,js-cjk-literal,server/library-service.mjs,265,,unknown,reviewable,,找不到原文件封面
+candidate:server/library-service.mjs:267:73,js-cjk-literal,server/library-service.mjs,267,,unknown,reviewable,,原文件校验失败，请重新上传
+candidate:server/library-service.mjs:270:30,js-cjk-literal,server/library-service.mjs,270,,unknown,reviewable,,原文件没有封面
+candidate:server/library-service.mjs:282:60,js-cjk-literal,server/library-service.mjs,282,,unknown,reviewable,,已保存的原文版本与此文件不一致，未覆盖书籍或记录
+candidate:server/library-service.mjs:293:139,js-cjk-literal,server/library-service.mjs,293,,unknown,reviewable,,找不到来源段落
+candidate:server/library-service.mjs:299:99,js-cjk-literal,server/library-service.mjs,299,,unknown,reviewable,,请在自己的来源文件中校对，公版目录不会被修改
+candidate:server/library-service.mjs:304:103,js-cjk-literal,server/library-service.mjs,304,,unknown,reviewable,,共享目录不可校对，请使用自己的原件
+candidate:server/library-service.mjs:305:69,js-cjk-literal,server/library-service.mjs,305,,unknown,reviewable,,原文版本已变化，请重新读取后校对
+candidate:server/library-service.mjs:307:204,js-cjk-literal,server/library-service.mjs,307,,unknown,reviewable,,PDF 原件无法核对，请检查是否损坏或加密
+candidate:server/library-service.mjs:315:171,js-cjk-literal,server/library-service.mjs,315,,unknown,reviewable,,修订版本标识冲突，原书已保留
+candidate:server/library-service.mjs:324:174,js-cjk-literal,server/library-service.mjs,324,,unknown,reviewable,,请选择当前修订中的来源段落
+candidate:server/library-service.mjs:325:159,js-cjk-literal,server/library-service.mjs,325,,unknown,reviewable,,找不到待确认的私人记录
+candidate:server/library-service.mjs:326:88,js-cjk-literal,server/library-service.mjs,326,,unknown,reviewable,,这条记录已确认到另一段，请重新读取
+candidate:server/library-service.mjs:328:26,js-cjk-literal,server/library-service.mjs,328,,unknown,reviewable,,此记录标识已在当前修订使用，原话和待确认记录均保留
+candidate:server/library-service.mjs:333:99,js-cjk-literal,server/library-service.mjs,333,,unknown,reviewable,,公版书请使用书籍出处查看底本
+candidate:server/library-service.mjs:334:82,js-cjk-literal,server/library-service.mjs,334,,unknown,reviewable,,原文件信息不完整，请保留提取原文并重新上传原文件
+candidate:server/library-service.mjs:336:298,js-cjk-literal,server/library-service.mjs,336,,unknown,reviewable,,原文件不完整，请重新上传
+candidate:server/library-service.mjs:337:121,js-cjk-literal,server/library-service.mjs,337,,unknown,reviewable,,此书房没有原文件。JSON 备份只包含提取文字与记录；重新上传同一原文件即可补回。
+candidate:server/library-service.mjs:341:83,js-cjk-literal,server/library-service.mjs,341,,unknown,reviewable,,原文件校验失败，未提供损坏的文件，请重新上传
+candidate:server/library-service.mjs:344:167,js-cjk-literal,server/library-service.mjs,344,,unknown,reviewable,,本机原件使用直接下载
+candidate:server/library-service.mjs:346:73,js-cjk-literal,server/library-service.mjs,346,,unknown,reviewable,,找不到这本书
+candidate:server/library-service.mjs:346:198,js-cjk-literal,server/library-service.mjs,346,,unknown,reviewable,,原文件分段位置无效
+candidate:server/library-service.mjs:348:26,js-cjk-literal,server/library-service.mjs,348,,unknown,reviewable,,找不到这本书
+candidate:server/library-service.mjs:349:87,js-cjk-literal,server/library-service.mjs,349,,unknown,reviewable,,原文件版本无法核对，请重新打开书籍
+candidate:server/library-service.mjs:352:130,js-cjk-literal,server/library-service.mjs,352,,unknown,reviewable,,原文件分段超出范围
+candidate:server/library-service.mjs:352:264,js-cjk-literal,server/library-service.mjs,352,,unknown,reviewable,,原文件分段不完整
+candidate:server/library-service.mjs:355:115,js-cjk-literal,server/library-service.mjs,355,,unknown,reviewable,,大原件请在阅读页使用“下载原文件校对”，分块校验后下载
+candidate:server/library-service.mjs:387:105,js-cjk-literal,server/library-service.mjs,387,,unknown,reviewable,,阅读记录已超过云端单书容量，请保留导出备份并在本机继续
+candidate:server/library-service.mjs:390:263,js-cjk-literal,server/library-service.mjs,390,,unknown,reviewable,,阅读时段较多，请保留导出备份
+candidate:server/library-service.mjs:394:264,js-cjk-literal,server/library-service.mjs,394,,unknown,reviewable,,阅读标记标识冲突，原标记已保留
+candidate:server/library-service.mjs:394:350,js-cjk-literal,server/library-service.mjs,394,,unknown,reviewable,,阅读标记较多，请保留导出备份
+candidate:server/library-service.mjs:439:158,js-cjk-literal,server/library-service.mjs,439,,unknown,reviewable,,高亮请求格式不正确
+candidate:server/library-service.mjs:441:37,js-cjk-literal,server/library-service.mjs,441,,unknown,reviewable,,所选文字不属于这本书
+candidate:server/library-service.mjs:442:75,js-cjk-literal,server/library-service.mjs,442,,unknown,reviewable,,Agent 授权无效或范围不足
+candidate:server/library-service.mjs:449:70,js-cjk-literal,server/library-service.mjs,449,,unknown,reviewable,,高亮标识冲突，原记录已保留
+candidate:server/library-service.mjs:456:171,js-cjk-literal,server/library-service.mjs,456,,unknown,reviewable,,找不到这条高亮
+candidate:server/library-service.mjs:466:350,js-cjk-literal,server/library-service.mjs,466,,unknown,reviewable,,记录无法对应当前原文
+candidate:server/library-service.mjs:469:191,js-cjk-literal,server/library-service.mjs,469,,unknown,reviewable,,记录标识冲突
+candidate:server/library-service.mjs:469:256,js-cjk-literal,server/library-service.mjs,469,,unknown,reviewable,,请先导出记录
+candidate:server/library-service.mjs:473:120,js-cjk-literal,server/library-service.mjs,473,,unknown,reviewable,,找不到自己的这条记录
+candidate:server/library-service.mjs:475:82,js-cjk-literal,server/library-service.mjs,475,,unknown,reviewable,,找不到自己的这条记录
+candidate:server/library-service.mjs:481:194,js-cjk-literal,server/library-service.mjs,481,,unknown,reviewable,,阅读位置无法对应原文
+candidate:server/library-service.mjs:482:85,js-cjk-literal,server/library-service.mjs,482,,unknown,reviewable,,阅读设置不正确
+candidate:server/library-service.mjs:483:113,js-cjk-literal,server/library-service.mjs,483,,unknown,reviewable,,阅读位置版本不正确
+candidate:server/library-service.mjs:485:183,js-cjk-literal,server/library-service.mjs,485,,unknown,reviewable,,阅读位置已在另一处更新，请选择从哪里继续
+candidate:server/library-service.mjs:490:23,js-cjk-literal,server/library-service.mjs,490,,unknown,reviewable,,找不到当前段落
+candidate:server/library-service.mjs:495:68,js-cjk-literal,server/library-service.mjs,495,,unknown,reviewable,,这段原文为中文，无需生成中文译文；原文与个人记录仍可使用
+candidate:server/library-service.mjs:496:31,js-cjk-literal,server/library-service.mjs,496,,unknown,reviewable,,翻译服务尚未配置，原文仍可继续阅读
+candidate:server/library-service.mjs:497:173,js-cjk-literal,server/library-service.mjs,497,,unknown,reviewable,,这本书正在保存另一段译文，请稍后再试；当前段落尚未提交翻译。
+candidate:server/library-service.mjs:497:254,js-cjk-literal,server/library-service.mjs,497,,unknown,reviewable,,这一段正在翻译，请稍后查看
+candidate:server/library-service.mjs:497:317,js-cjk-literal,server/library-service.mjs,497,,unknown,reviewable,,翻译服务正在处理其他段落，请稍后再试
+candidate:server/library-service.mjs:502:101,js-cjk-literal,server/library-service.mjs,502,,unknown,reviewable,,本次翻译已取消或过期，未保存结果
+candidate:server/library-service.mjs:509:139,js-cjk-literal,server/library-service.mjs,509,,unknown,reviewable,,翻译结果不完整，请重试；原文已保留
+candidate:server/library-service.mjs:536:164,js-cjk-literal,server/library-service.mjs,536,,unknown,reviewable,,请先撤回不再使用的授权
+candidate:server/library-service.mjs:541:139,js-cjk-literal,server/library-service.mjs,541,,unknown,reviewable,,请选择授权范围
+candidate:server/library-service.mjs:545:239,js-cjk-literal,server/library-service.mjs,545,,unknown,reviewable,,请选择授权范围
+candidate:server/library-service.mjs:548:269,js-cjk-literal,server/library-service.mjs,548,,unknown,reviewable,,请选择授权范围
+candidate:server/library-service.mjs:553:324,js-cjk-literal,server/library-service.mjs,553,,unknown,reviewable,,Agent 授权无效或范围不足
+candidate:server/library-service.mjs:556:144,js-cjk-literal,server/library-service.mjs,556,,unknown,reviewable,,Agent 授权无效或范围不足
+candidate:server/library-service.mjs:575:146,js-cjk-literal,server/library-service.mjs,575,,unknown,reviewable,,找不到这条授权
+candidate:server/library-service.mjs:592:89,js-cjk-literal,server/library-service.mjs,592,,unknown,reviewable,,单份备份最多容纳100本书，请在本机按书整理后导出。
+candidate:server/library-service.mjs:602:139,js-cjk-literal,server/library-service.mjs,602,,unknown,reviewable,,原文件与恢复的书籍版本不符
+candidate:server/library-service.mjs:610:183,js-cjk-literal,server/library-service.mjs,610,,unknown,reviewable,,备份分段范围不正确。
+candidate:server/library-service.mjs:615:46,js-cjk-literal,server/library-service.mjs,615,,unknown,reviewable,,这本书的备份过大，请在本机导出。
+candidate:server/library-service.mjs:616:45,js-cjk-literal,server/library-service.mjs,616,,unknown,reviewable,,这本书刚刚有新记录，请重试导出。
+candidate:server/library-service.mjs:617:40,js-cjk-literal,server/library-service.mjs,617,,unknown,reviewable,,备份分段范围不正确。
+candidate:server/library-service.mjs:625:158,js-cjk-literal,server/library-service.mjs,625,,unknown,reviewable,,备份中的书架超过 1000 本，请在本机整理后恢复
+candidate:server/library-service.mjs:627:460,js-cjk-literal,server/library-service.mjs,627,,unknown,reviewable,,书籍格式不完整
+candidate:server/library-service.mjs:628:84,js-cjk-literal,server/library-service.mjs,628,,unknown,reviewable,,这本备份的文字量超过云端限制，请在本机恢复
+candidate:server/library-service.mjs:629:283,js-cjk-literal,server/library-service.mjs,629,,unknown,reviewable,,备份的原文版本与书房已有内容冲突，未覆盖原书或记录
+candidate:server/library-service.mjs:630:330,js-cjk-literal,server/library-service.mjs,630,,unknown,reviewable,,原文锚点不完整
+candidate:server/library-service.mjs:631:265,js-cjk-literal,server/library-service.mjs,631,,unknown,reviewable,,个人记录无法对应原文
+candidate:server/library-service.mjs:632:116,js-cjk-literal,server/library-service.mjs,632,,unknown,reviewable,,阅读位置无法恢复
+candidate:server/library-service.mjs:651:86,js-cjk-literal,server/library-service.mjs,651,,unknown,reviewable,,书架正在另一处更新，请刷新后重新恢复
+candidate:server/library-service.mjs:660:101,js-cjk-literal,server/library-service.mjs,660,,unknown,reviewable,,请选择一份 20 MB 以内的单书阅读包
+candidate:server/library-service.mjs:662:232,js-cjk-literal,server/library-service.mjs,662,,unknown,reviewable,,赠书阅读包不能包含个人记录
+candidate:server/library-service.mjs:663:57,js-cjk-literal,server/library-service.mjs,663,,unknown,reviewable,,赠书阅读包不能包含账户阅读习惯
+candidate:server/library-service.mjs:664:31,js-cjk-literal,server/library-service.mjs,664,,unknown,reviewable,,这份阅读包的原文与译文合计超过云端阅读容量，请下载后在本机接收
+candidate:server/library-service.mjs:670:124,js-cjk-literal,server/library-service.mjs,670,,unknown,reviewable,,阅读包的原文或译文超过云端单份容量，请在本机接收
+candidate:server/library-service.mjs:673:69,js-cjk-literal,server/library-service.mjs,673,,unknown,reviewable,,译文已超过云端单份容量，已有记录已保留
+candidate:server/library-service.mjs:680:91,js-cjk-literal,server/library-service.mjs,680,,unknown,reviewable,,书架已有同标识的另一版本，原书和记录已保留
+candidate:server/library-service.mjs:685:104,js-cjk-literal,server/library-service.mjs,685,,unknown,reviewable,,译文来源版本已变化，已有译文已保留
+candidate:server/library-service.mjs:699:46,js-cjk-literal,server/library-service.mjs,699,,unknown,reviewable,,书架已有同标识的另一版本，原书和记录已保留
+candidate:server/library-service.mjs:700:92,js-cjk-literal,server/library-service.mjs,700,,unknown,reviewable,,另一封赠书尚未收好，请先重试原来的赠书链接
+candidate:server/library-service.mjs:707:89,js-cjk-literal,server/library-service.mjs,707,,unknown,reviewable,,译文来源版本已变化，已有译文已保留
 candidate:server/listening-guide-content.mjs:6:31,js-cjk-literal,server/listening-guide-content.mjs,6,,unknown,reviewable,,这次导听的原文范围太长，请缩小范围；尚未开始生成。
 candidate:server/listening-guide-content.mjs:7:28,js-cjk-literal,server/listening-guide-content.mjs,7,,unknown,reviewable,,导听依据的原文已变化，请重新选择范围。
 candidate:server/listening-guide-content.mjs:13:73,js-cjk-literal,server/listening-guide-content.mjs,13,,unknown,reviewable,,请选择开篇导听、讲解或全书导览。
@@ -5914,67 +5922,67 @@ candidate:server/people-runtime-routes.mjs:28:41,js-cjk-literal,server/people-ru
 candidate:server/portal-document.mjs:11:50,js-cjk-literal,server/portal-document.mjs,11,,unknown,reviewable,,简体中文
 candidate:server/portal-document.mjs:11:69,js-cjk-literal,server/portal-document.mjs,11,,unknown,reviewable,,繁體中文
 candidate:server/portal-document.mjs:11:83,js-cjk-literal,server/portal-document.mjs,11,,unknown,reviewable,,日本語
-candidate:server/portal.mjs:68:123,js-cjk-literal,server/portal.mjs,68,,unknown,reviewable,,请使用 JSON 请求
-candidate:server/portal.mjs:68:247,js-cjk-literal,server/portal.mjs,68,,unknown,reviewable,,这次导入内容过大，请分书恢复
-candidate:server/portal.mjs:68:387,js-cjk-literal,server/portal.mjs,68,,unknown,reviewable,,这次导入内容过大，请分书恢复
-candidate:server/portal.mjs:68:509,js-cjk-literal,server/portal.mjs,68,,unknown,reviewable,,请求格式不正确
-candidate:server/portal.mjs:71:54,js-cjk-literal,server/portal.mjs,71,,unknown,reviewable,,额外网页来源配置无效
-candidate:server/portal.mjs:73:116,js-cjk-literal,server/portal.mjs,73,,unknown,reviewable,,额外网页来源配置无效
-candidate:server/portal.mjs:74:91,js-cjk-literal,server/portal.mjs,74,,unknown,reviewable,,额外网页来源配置无效
-candidate:server/portal.mjs:108:16,js-cjk-literal,server/portal.mjs,108,,unknown,reviewable,,书架正在另一处更新，请稍后刷新
-candidate:server/portal.mjs:133:69,js-cjk-literal,server/portal.mjs,133,,unknown,reviewable,,不支持这个请求
-candidate:server/portal.mjs:134:134,js-cjk-literal,server/portal.mjs,134,,unknown,reviewable,,找不到这个操作
-candidate:server/portal.mjs:207:58,js-cjk-literal,server/portal.mjs,207,,unknown,reviewable,,不支持这个请求
-candidate:server/portal.mjs:216:61,js-cjk-literal,server/portal.mjs,216,,unknown,reviewable,,不支持这个请求
-candidate:server/portal.mjs:223:70,js-cjk-literal,server/portal.mjs,223,,unknown,reviewable,,不支持这个请求
-candidate:server/portal.mjs:224:59,js-cjk-literal,server/portal.mjs,224,,unknown,reviewable,,不支持这个请求
-candidate:server/portal.mjs:227:54,js-cjk-literal,server/portal.mjs,227,,unknown,reviewable,,请求来源未授权
-candidate:server/portal.mjs:228:85,js-cjk-literal,server/portal.mjs,228,,unknown,reviewable,,请求来源未授权
-candidate:server/portal.mjs:229:111,js-cjk-literal,server/portal.mjs,229,,unknown,reviewable,,"请在 "
-candidate:server/portal.mjs:229:130,js-cjk-literal,server/portal.mjs,229,,unknown,reviewable,," 使用 Google 或 Apple 登录。当前页面仍可使用邮箱或密码登录。"
-candidate:server/portal.mjs:233:79,js-cjk-literal,server/portal.mjs,233,,unknown,reviewable,,这个登录入口尚未开放
-candidate:server/portal.mjs:248:162,js-cjk-literal,server/portal.mjs,248,,unknown,reviewable,,账户已切换，请重新进入书房。原账户草稿仍留在原处。
-candidate:server/portal.mjs:255:52,js-cjk-literal,server/portal.mjs,255,,unknown,reviewable,,请先进入自己的书房。
-candidate:server/portal.mjs:256:82,js-cjk-literal,server/portal.mjs,256,,unknown,reviewable,,请重新核对当前书房账户。
-candidate:server/portal.mjs:259:18,js-cjk-literal,server/portal.mjs,259,,unknown,reviewable,,找不到这个人物操作。
-candidate:server/portal.mjs:269:27,js-cjk-literal,server/portal.mjs,269,,unknown,reviewable,,请先进入自己的书房
-candidate:server/portal.mjs:271:41,js-cjk-literal,server/portal.mjs,271,,unknown,reviewable,,不支持这个请求
-candidate:server/portal.mjs:272:61,js-cjk-literal,server/portal.mjs,272,,unknown,reviewable,,请重新核对当前书房账户
-candidate:server/portal.mjs:286:27,js-cjk-literal,server/portal.mjs,286,,unknown,reviewable,,请先进入自己的书房
-candidate:server/portal.mjs:288:94,js-cjk-literal,server/portal.mjs,288,,unknown,reviewable,,请重新核对当前书房账户
-candidate:server/portal.mjs:291:41,js-cjk-literal,server/portal.mjs,291,,unknown,reviewable,,不支持这个请求
-candidate:server/portal.mjs:292:61,js-cjk-literal,server/portal.mjs,292,,unknown,reviewable,,请重新核对当前书房账户
-candidate:server/portal.mjs:297:27,js-cjk-literal,server/portal.mjs,297,,unknown,reviewable,,请先进入自己的书房
-candidate:server/portal.mjs:299:41,js-cjk-literal,server/portal.mjs,299,,unknown,reviewable,,不支持这个请求
-candidate:server/portal.mjs:300:61,js-cjk-literal,server/portal.mjs,300,,unknown,reviewable,,请重新核对当前书房账户
-candidate:server/portal.mjs:307:95,js-cjk-literal,server/portal.mjs,307,,unknown,reviewable,,这个登录方式正在准备中
-candidate:server/portal.mjs:311:146,js-cjk-literal,server/portal.mjs,311,,unknown,reviewable,,此书房尚未开启密码登录，可以使用验证码或本机书房
-candidate:server/portal.mjs:312:146,js-cjk-literal,server/portal.mjs,312,,unknown,reviewable,,此书房尚未开启密码设置
-candidate:server/portal.mjs:314:151,js-cjk-literal,server/portal.mjs,314,,unknown,reviewable,,此书房尚未开启密码设置
-candidate:server/portal.mjs:318:80,js-cjk-literal,server/portal.mjs,318,,unknown,reviewable,,本机书房只在本机模式可用
-candidate:server/portal.mjs:326:27,js-cjk-literal,server/portal.mjs,326,,unknown,reviewable,,请先进入自己的书房
-candidate:server/portal.mjs:327:149,js-cjk-literal,server/portal.mjs,327,,unknown,reviewable,,线上版本尚未准备好，请稍后重新读取接入配置。
-candidate:server/portal.mjs:328:35,js-cjk-literal,server/portal.mjs,328,,unknown,reviewable,,本机接入配置只能在运行 Leafhour 的电脑上读取。远程接入尚未支持。
-candidate:server/portal.mjs:337:446,js-cjk-literal,server/portal.mjs,337,,unknown,reviewable,,不支持这个请求
-candidate:server/portal.mjs:339:45,js-cjk-literal,server/portal.mjs,339,,unknown,reviewable,,此书房使用本机上传
-candidate:server/portal.mjs:343:48,js-cjk-literal,server/portal.mjs,343,,unknown,reviewable,,此书房使用本机上传
-candidate:server/portal.mjs:347:27,js-cjk-literal,server/portal.mjs,347,,unknown,reviewable,,请先进入自己的书房
-candidate:server/portal.mjs:347:187,js-cjk-literal,server/portal.mjs,347,,unknown,reviewable,,文件编码不正确
-candidate:server/portal.mjs:361:27,js-cjk-literal,server/portal.mjs,361,,unknown,reviewable,,请先进入自己的书房
-candidate:server/portal.mjs:361:98,js-cjk-literal,server/portal.mjs,361,,unknown,reviewable,,请重新核对当前书房账户
-candidate:server/portal.mjs:363:41,js-cjk-literal,server/portal.mjs,363,,unknown,reviewable,,不支持这个请求
-candidate:server/portal.mjs:376:164,js-cjk-literal,server/portal.mjs,376,,unknown,reviewable,,这份阅读包较大，请从赠书信页面分段下载
-candidate:server/portal.mjs:390:25,js-cjk-literal,server/portal.mjs,390,,unknown,reviewable,,不支持这个请求
-candidate:server/portal.mjs:483:120,js-cjk-literal,server/portal.mjs,483,,unknown,reviewable,,本书尚未开启探索体验统计
-candidate:server/portal.mjs:484:175,js-cjk-literal,server/portal.mjs,484,,unknown,reviewable,,请选择这本书的记录包
-candidate:server/portal.mjs:485:99,js-cjk-literal,server/portal.mjs,485,,unknown,reviewable,,这本书的探索体验尚未接入，可以按段翻译并保存自己的笔记
-candidate:server/portal.mjs:492:43,js-cjk-literal,server/portal.mjs,492,,unknown,reviewable,,不支持这个请求
-candidate:server/portal.mjs:497:430,js-cjk-literal,server/portal.mjs,497,,unknown,reviewable,,找不到这个工具
-candidate:server/portal.mjs:500:30,js-cjk-literal,server/portal.mjs,500,,unknown,reviewable,,此实例暂未开启听读，请在本机书房使用。
-candidate:server/portal.mjs:506:20,js-cjk-literal,server/portal.mjs,506,,unknown,reviewable,,不支持这个听读操作
-candidate:server/portal.mjs:515:86,js-cjk-literal,server/portal.mjs,515,,unknown,reviewable,,只保存用户明确提供的原话
-candidate:server/portal.mjs:516:18,js-cjk-literal,server/portal.mjs,516,,unknown,reviewable,,不支持这个请求
-candidate:server/portal.mjs:518:16,js-cjk-literal,server/portal.mjs,518,,unknown,reviewable,,找不到这个操作
+candidate:server/portal.mjs:70:123,js-cjk-literal,server/portal.mjs,70,,unknown,reviewable,,请使用 JSON 请求
+candidate:server/portal.mjs:70:247,js-cjk-literal,server/portal.mjs,70,,unknown,reviewable,,这次导入内容过大，请分书恢复
+candidate:server/portal.mjs:70:387,js-cjk-literal,server/portal.mjs,70,,unknown,reviewable,,这次导入内容过大，请分书恢复
+candidate:server/portal.mjs:70:509,js-cjk-literal,server/portal.mjs,70,,unknown,reviewable,,请求格式不正确
+candidate:server/portal.mjs:73:54,js-cjk-literal,server/portal.mjs,73,,unknown,reviewable,,额外网页来源配置无效
+candidate:server/portal.mjs:75:116,js-cjk-literal,server/portal.mjs,75,,unknown,reviewable,,额外网页来源配置无效
+candidate:server/portal.mjs:76:91,js-cjk-literal,server/portal.mjs,76,,unknown,reviewable,,额外网页来源配置无效
+candidate:server/portal.mjs:110:16,js-cjk-literal,server/portal.mjs,110,,unknown,reviewable,,书架正在另一处更新，请稍后刷新
+candidate:server/portal.mjs:136:69,js-cjk-literal,server/portal.mjs,136,,unknown,reviewable,,不支持这个请求
+candidate:server/portal.mjs:137:134,js-cjk-literal,server/portal.mjs,137,,unknown,reviewable,,找不到这个操作
+candidate:server/portal.mjs:210:58,js-cjk-literal,server/portal.mjs,210,,unknown,reviewable,,不支持这个请求
+candidate:server/portal.mjs:220:61,js-cjk-literal,server/portal.mjs,220,,unknown,reviewable,,不支持这个请求
+candidate:server/portal.mjs:227:70,js-cjk-literal,server/portal.mjs,227,,unknown,reviewable,,不支持这个请求
+candidate:server/portal.mjs:228:59,js-cjk-literal,server/portal.mjs,228,,unknown,reviewable,,不支持这个请求
+candidate:server/portal.mjs:231:54,js-cjk-literal,server/portal.mjs,231,,unknown,reviewable,,请求来源未授权
+candidate:server/portal.mjs:232:85,js-cjk-literal,server/portal.mjs,232,,unknown,reviewable,,请求来源未授权
+candidate:server/portal.mjs:233:111,js-cjk-literal,server/portal.mjs,233,,unknown,reviewable,,"请在 "
+candidate:server/portal.mjs:233:130,js-cjk-literal,server/portal.mjs,233,,unknown,reviewable,," 使用 Google 或 Apple 登录。当前页面仍可使用邮箱或密码登录。"
+candidate:server/portal.mjs:237:79,js-cjk-literal,server/portal.mjs,237,,unknown,reviewable,,这个登录入口尚未开放
+candidate:server/portal.mjs:252:162,js-cjk-literal,server/portal.mjs,252,,unknown,reviewable,,账户已切换，请重新进入书房。原账户草稿仍留在原处。
+candidate:server/portal.mjs:259:52,js-cjk-literal,server/portal.mjs,259,,unknown,reviewable,,请先进入自己的书房。
+candidate:server/portal.mjs:260:82,js-cjk-literal,server/portal.mjs,260,,unknown,reviewable,,请重新核对当前书房账户。
+candidate:server/portal.mjs:263:18,js-cjk-literal,server/portal.mjs,263,,unknown,reviewable,,找不到这个人物操作。
+candidate:server/portal.mjs:273:27,js-cjk-literal,server/portal.mjs,273,,unknown,reviewable,,请先进入自己的书房
+candidate:server/portal.mjs:275:41,js-cjk-literal,server/portal.mjs,275,,unknown,reviewable,,不支持这个请求
+candidate:server/portal.mjs:276:61,js-cjk-literal,server/portal.mjs,276,,unknown,reviewable,,请重新核对当前书房账户
+candidate:server/portal.mjs:290:27,js-cjk-literal,server/portal.mjs,290,,unknown,reviewable,,请先进入自己的书房
+candidate:server/portal.mjs:292:94,js-cjk-literal,server/portal.mjs,292,,unknown,reviewable,,请重新核对当前书房账户
+candidate:server/portal.mjs:295:41,js-cjk-literal,server/portal.mjs,295,,unknown,reviewable,,不支持这个请求
+candidate:server/portal.mjs:296:61,js-cjk-literal,server/portal.mjs,296,,unknown,reviewable,,请重新核对当前书房账户
+candidate:server/portal.mjs:301:27,js-cjk-literal,server/portal.mjs,301,,unknown,reviewable,,请先进入自己的书房
+candidate:server/portal.mjs:303:41,js-cjk-literal,server/portal.mjs,303,,unknown,reviewable,,不支持这个请求
+candidate:server/portal.mjs:304:61,js-cjk-literal,server/portal.mjs,304,,unknown,reviewable,,请重新核对当前书房账户
+candidate:server/portal.mjs:311:95,js-cjk-literal,server/portal.mjs,311,,unknown,reviewable,,这个登录方式正在准备中
+candidate:server/portal.mjs:315:146,js-cjk-literal,server/portal.mjs,315,,unknown,reviewable,,此书房尚未开启密码登录，可以使用验证码或本机书房
+candidate:server/portal.mjs:316:146,js-cjk-literal,server/portal.mjs,316,,unknown,reviewable,,此书房尚未开启密码设置
+candidate:server/portal.mjs:318:151,js-cjk-literal,server/portal.mjs,318,,unknown,reviewable,,此书房尚未开启密码设置
+candidate:server/portal.mjs:322:80,js-cjk-literal,server/portal.mjs,322,,unknown,reviewable,,本机书房只在本机模式可用
+candidate:server/portal.mjs:342:27,js-cjk-literal,server/portal.mjs,342,,unknown,reviewable,,请先进入自己的书房
+candidate:server/portal.mjs:343:149,js-cjk-literal,server/portal.mjs,343,,unknown,reviewable,,线上版本尚未准备好，请稍后重新读取接入配置。
+candidate:server/portal.mjs:344:35,js-cjk-literal,server/portal.mjs,344,,unknown,reviewable,,本机接入配置只能在运行 Leafhour 的电脑上读取。远程接入尚未支持。
+candidate:server/portal.mjs:353:446,js-cjk-literal,server/portal.mjs,353,,unknown,reviewable,,不支持这个请求
+candidate:server/portal.mjs:355:45,js-cjk-literal,server/portal.mjs,355,,unknown,reviewable,,此书房使用本机上传
+candidate:server/portal.mjs:359:48,js-cjk-literal,server/portal.mjs,359,,unknown,reviewable,,此书房使用本机上传
+candidate:server/portal.mjs:363:27,js-cjk-literal,server/portal.mjs,363,,unknown,reviewable,,请先进入自己的书房
+candidate:server/portal.mjs:363:187,js-cjk-literal,server/portal.mjs,363,,unknown,reviewable,,文件编码不正确
+candidate:server/portal.mjs:377:27,js-cjk-literal,server/portal.mjs,377,,unknown,reviewable,,请先进入自己的书房
+candidate:server/portal.mjs:377:98,js-cjk-literal,server/portal.mjs,377,,unknown,reviewable,,请重新核对当前书房账户
+candidate:server/portal.mjs:379:41,js-cjk-literal,server/portal.mjs,379,,unknown,reviewable,,不支持这个请求
+candidate:server/portal.mjs:392:164,js-cjk-literal,server/portal.mjs,392,,unknown,reviewable,,这份阅读包较大，请从赠书信页面分段下载
+candidate:server/portal.mjs:406:25,js-cjk-literal,server/portal.mjs,406,,unknown,reviewable,,不支持这个请求
+candidate:server/portal.mjs:499:120,js-cjk-literal,server/portal.mjs,499,,unknown,reviewable,,本书尚未开启探索体验统计
+candidate:server/portal.mjs:500:175,js-cjk-literal,server/portal.mjs,500,,unknown,reviewable,,请选择这本书的记录包
+candidate:server/portal.mjs:501:99,js-cjk-literal,server/portal.mjs,501,,unknown,reviewable,,这本书的探索体验尚未接入，可以按段翻译并保存自己的笔记
+candidate:server/portal.mjs:508:43,js-cjk-literal,server/portal.mjs,508,,unknown,reviewable,,不支持这个请求
+candidate:server/portal.mjs:513:430,js-cjk-literal,server/portal.mjs,513,,unknown,reviewable,,找不到这个工具
+candidate:server/portal.mjs:516:30,js-cjk-literal,server/portal.mjs,516,,unknown,reviewable,,此实例暂未开启听读，请在本机书房使用。
+candidate:server/portal.mjs:522:20,js-cjk-literal,server/portal.mjs,522,,unknown,reviewable,,不支持这个听读操作
+candidate:server/portal.mjs:531:86,js-cjk-literal,server/portal.mjs,531,,unknown,reviewable,,只保存用户明确提供的原话
+candidate:server/portal.mjs:532:18,js-cjk-literal,server/portal.mjs,532,,unknown,reviewable,,不支持这个请求
+candidate:server/portal.mjs:534:16,js-cjk-literal,server/portal.mjs,534,,unknown,reviewable,,找不到这个操作
 candidate:server/preference-memory.mjs:5:97,js-cjk-literal,server/preference-memory.mjs,5,,unknown,reviewable,,阅读偏好记录无法识别，已保持原样
 candidate:server/preference-memory.mjs:15:245,js-cjk-literal,server/preference-memory.mjs,15,,unknown,reviewable,,阅读偏好请求格式不正确
 candidate:server/preference-memory.mjs:16:56,js-cjk-literal,server/preference-memory.mjs,16,,unknown,reviewable,,阅读偏好已在另一处更新，请读取最新版本

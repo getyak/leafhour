@@ -1,3 +1,5 @@
+import {createReadingWorkspaceService} from './reading-workspace-service.mjs';
+import {createNotebookGenerator} from '../harness/notebook-generator.mjs';
 import {contentSecurityPolicy} from './content-security.mjs';
 import {createPeopleService} from './people-service.mjs';
 import {createPeopleRoutes} from './people-routes.mjs';
@@ -66,7 +68,7 @@ const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const publicCoverPaths=new Set(Object.values(bookCoverArtwork).flatMap(artwork=>[artwork.src,...String(artwork.srcSet||'').split(',').map(source=>source.trim().split(/\s+/)[0])]).map(url=>String(url).split('?')[0]).filter(url=>/^\/book-covers\/[a-z0-9-]+-(320|640)\.webp$/.test(url)));
 const cookieToken=req=>(req.headers.cookie||'').split(';').map(s=>s.trim()).find(s=>s.startsWith('marginalia_session='))?.slice('marginalia_session='.length);
 const jsonBody=async(req,limit=29*1024*1024)=>{if(!req.headers['content-type']?.startsWith('application/json'))throw fail('请使用 JSON 请求',415);if(req.body&&typeof req.body==='object'){if(Buffer.byteLength(JSON.stringify(req.body))>limit)throw fail('这次导入内容过大，请分书恢复',413);return req.body;}let size=0;const chunks=[];for await(const chunk of req){size+=chunk.length;if(size>limit)throw fail('这次导入内容过大，请分书恢复',413);chunks.push(chunk);}try{return JSON.parse(Buffer.concat(chunks).toString('utf8'));}catch{throw fail('请求格式不正确');}};
-export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigins=[],sendCode,translator,catalogDir=path.join(root,'catalog'),allowLocal=true,dataStore=null,authService=null,hostedMcp=false,speechProvider,dialogueGenerator,guideGenerator,chatGenerator,companionGenerator,introductionGenerator,schedule=()=>{},paddleProvider,env=process.env,giftQuoteGenerator=null,annotationGenerator,billingService=null,compiledWeb=false,webDir=path.join(root,'dist')}={}){
+export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigins=[],sendCode,translator,catalogDir=path.join(root,'catalog'),allowLocal=true,dataStore=null,authService=null,hostedMcp=false,speechProvider,dialogueGenerator,guideGenerator,chatGenerator,companionGenerator,introductionGenerator,schedule=()=>{},paddleProvider,env=process.env,giftQuoteGenerator=null,annotationGenerator,notebookGenerator,billingService=null,compiledWeb=false,webDir=path.join(root,'dist')}={}){
   const webOrigins=new Set(publicOrigin?[publicOrigin]:[]);
   if(!Array.isArray(additionalWebOrigins))throw fail('额外网页来源配置无效',503);
   for(const value of additionalWebOrigins){
@@ -107,6 +109,7 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
     }
     throw fail('书架正在另一处更新，请稍后刷新',409);
   }
+  const readingWorkspace=createReadingWorkspaceService({library,dataDir:path.join(dataDir,'library'),dataStore,env,generator:notebookGenerator===undefined?createReaderChatGenerator({env,makeGenerator:createNotebookGenerator}):notebookGenerator});
   const readingGenerator=chatGenerator===undefined?createReaderChatGenerator():chatGenerator;
   const bookIntroductions=createBookIntroductionService({library,generator:introductionGenerator===undefined?createReaderChatGenerator({env,makeGenerator:createIntroductionGenerator}):introductionGenerator});
   const proactiveGenerator=companionGenerator===undefined?createReaderChatGenerator({makeGenerator:createCompanionGenerator}):companionGenerator;
@@ -210,13 +213,14 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
       res.setHeader('Cache-Control',p.startsWith('/reader-web/')?'public, max-age=31536000, immutable':'no-cache');if(p==='/reading-worker.js')res.setHeader('Service-Worker-Allowed','/');if(generatedFile==='offline-reader.html')res.setHeader('Content-Security-Policy',contentSecurityPolicy('/read'));
       res.statusCode=200;res.setHeader('Content-Type',type+'; charset=utf-8');res.setHeader('Content-Length',bytes.length);res.end(req.method==='HEAD'?undefined:bytes);return true;
     }
+    for(const file of ['reading-workspace.mjs','reading-workspace-state.mjs','reading-workspace.css'])files['/'+file]=file;
     if(!isAPI&&!files[p])return false;
     if(isAPI||p==='/billing'||p==='/admin/billing'||p==='/source-review'||p==='/library'||p==='/gift-preview'||safeGiftReturn(p))res.setHeader('X-Robots-Tag','noindex, nofollow, noarchive');
     if(!isAPI&&(p==='/'||p==='/library')){
       if(req.method!=='GET'&&req.method!=='HEAD')throw fail('不支持这个请求',405);
       res.setHeader('Cache-Control','private, no-store');res.setHeader('Vary','Cookie, Accept-Language, Sec-Fetch-Site');
       if(!internalEntry&&needsUiSessionHandoff({url,cookie:req.headers.cookie,secFetchSite:req.headers['sec-fetch-site']})){res.setHeader('X-Robots-Tag','noindex, nofollow, noarchive');send(200,sessionUiHandoffDocument(documentUrl,fallbackInitialUiLanguage({url:documentUrl,cookie:req.headers.cookie,acceptLanguage:req.headers['accept-language']})),'text/html');return true;}
-      try{const decision=await selectInitialUiLanguage({url:documentUrl,cookie:req.headers.cookie,acceptLanguage:req.headers['accept-language'],getUser:token=>auth.userFor(token),getAccountPreference:user=>uiPreferences.get(user)}),source=await readFile(path.join(root,'app/home.html'),'utf8');send(200,portalDocument(source,p,decision),'text/html');}
+      try{const decision=await selectInitialUiLanguage({url:documentUrl,cookie:req.headers.cookie,acceptLanguage:req.headers['accept-language'],getUser:token=>auth.userFor(token),getAccountPreference:user=>uiPreferences.get(user)}),source=await readFile(path.join(root,'app/home.html'),'utf8');send(200,portalDocument(source,p,{...decision,workspace:['calendar','notes'].includes(documentUrl.searchParams.get('workspace'))?documentUrl.searchParams.get('workspace'):null}),'text/html');}
       catch{res.setHeader('Retry-After','5');send(503,initialRetryDocument(documentUrl,fallbackInitialUiLanguage({url:documentUrl,cookie:req.headers.cookie,acceptLanguage:req.headers['accept-language']})),'text/html');}
       return true;
     }
@@ -246,7 +250,7 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
     requestState.user=user;
     const ownerScoped=p==='/api/people'||p.startsWith('/api/people/')||p.startsWith('/api/billing/')||p.startsWith('/api/admin/billing')||p.startsWith('/api/library')||p==='/api/account/preference-memory'||p==='/api/account/reading-preferences'||p==='/api/account/ui-preferences'||p==='/api/account/observability'||p==='/api/account/observability/events'||req.method==='POST'&&(p==='/api/account/profile'||/^\/api\/book-gifts\/[^/]+\/(?:accept|revoke)$/.test(p));
     if(ownerScoped&&req.headers['x-reader-owner']&&req.headers['x-reader-owner']!==(user?.id||'guest')){res.setHeader('X-Reader-Session-Changed','1');throw fail('账户已切换，请重新进入书房。原账户草稿仍留在原处。',409);}
-    const body=req.method==='POST'?await jsonBody(req,p.startsWith('/api/people')?1024*1024:p.startsWith('/api/billing/')?32*1024:p==='/api/account/observability/events'?16*1024:p==='/api/account/observability'?1024:p==='/api/account/ui-preferences'?4*1024:['/api/account/reading-preferences','/api/account/preference-memory'].includes(p)?8*1024:p.startsWith('/api/library/daily-reading')||p.startsWith('/api/agent/daily-')?8*1024:p.startsWith('/api/auth/')||p.startsWith('/api/book-gifts/')||p.endsWith('/introduction')?4096:p.startsWith('/api/library/restore/')?2*1024*1024:p==='/api/account/profile'?160*1024:p.endsWith('/audio/import')||p.endsWith('/audio/validate')?32*1024*1024:['/api/library/import','/api/library/validate'].includes(p)?200*1024*1024:29*1024*1024):null;
+    const body=req.method==='POST'?await jsonBody(req,p==='/api/library/notebook-workspace/analyze'?32768:p==='/api/library/notebook-workspace/import'?3*1024*1024:p==='/api/library/notebook-workspace'?16384:p.startsWith('/api/people')?1024*1024:p.startsWith('/api/billing/')?32*1024:p==='/api/account/observability/events'?16*1024:p==='/api/account/observability'?1024:p==='/api/account/ui-preferences'?4*1024:['/api/account/reading-preferences','/api/account/preference-memory'].includes(p)?8*1024:p.startsWith('/api/library/daily-reading')||p.startsWith('/api/agent/daily-')?8*1024:p.startsWith('/api/auth/')||p.startsWith('/api/book-gifts/')||p.endsWith('/introduction')?4096:p.startsWith('/api/library/restore/')?2*1024*1024:p==='/api/account/profile'?160*1024:p.endsWith('/audio/import')||p.endsWith('/audio/validate')?32*1024*1024:['/api/library/import','/api/library/validate'].includes(p)?200*1024*1024:29*1024*1024):null;
     if(p==='/api/billing/account'&&user)await creditGate.recover(user);
     if(await billingRoutes.handle({req,res,url,user,body,send}))return true;
     const localAllowed=allowLocal&&['127.0.0.1','::1','::ffff:127.0.0.1'].includes(req.socket.remoteAddress)&&!publicOrigin;
@@ -321,6 +325,18 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
     if(p==='/api/library/trash'&&req.method==='GET'){send(200,await shelfView(user,library.trash));return true;}
     if(p==='/api/library/notebook'&&req.method==='GET'){res.setHeader('Cache-Control','private, no-store');send(200,await library.notebookPage(user,{cursor:url.searchParams.get('cursor'),limit:url.searchParams.has('limit')?Number(url.searchParams.get('limit')):12}));return true;}
     if(p==='/api/library/arrival'&&req.method==='GET'){res.setHeader('Cache-Control','private, no-store');send(200,await library.arrival(user,{timeZone:url.searchParams.get('timeZone')}));return true;}
+    if(p==='/api/library/reading-summary'&&req.method==='GET'){res.setHeader('Cache-Control','private, no-store');send(200,await library.readingSummary(user,{month:url.searchParams.get('month'),timeZone:url.searchParams.get('timeZone')}));return true;}
+    if(p.startsWith('/api/library/notebook-workspace')&&!user?.id)throw fail('Authentication required',401);
+    if(p==='/api/library/notebook-workspace'){
+      res.setHeader('Cache-Control','private, no-store');
+      if(req.method==='GET')send(200,await readingWorkspace.view(user));else if(req.method==='POST')send(200,await readingWorkspace.change(user,body));else throw fail('Unsupported method',405);return true;
+    }
+    if(p==='/api/library/notebook-workspace/analyze'&&req.method==='POST'){
+      const controller=new AbortController(),cancel=()=>{if(!res.writableEnded)controller.abort();};res.once('close',cancel);
+      try{send(200,await sponsored(user,'notebook',()=>readingWorkspace.analyze(user,body,{signal:controller.signal,authorize:()=>auth.userFor(token)})));}catch(error){throw fail('Note analysis could not finish',[400,401,403,404,409,413,429,503].includes(error?.status)?error.status:502);}finally{res.removeListener('close',cancel);}return true;
+    }
+    if(p==='/api/library/notebook-workspace/export'&&req.method==='GET'){res.setHeader('Cache-Control','private, no-store');send(200,await readingWorkspace.exportState(user));return true;}
+    if(p==='/api/library/notebook-workspace/import'&&req.method==='POST'){send(200,await readingWorkspace.importState(user,body));return true;}
     if(p==='/api/library/activity'&&req.method==='GET'){send(200,await library.readingActivity(user,{month:url.searchParams.get('month'),timeZone:url.searchParams.get('timeZone')}));return true;}
     if(p==='/api/library/mcp-setup'&&req.method==='GET'){
       if(!user)throw fail('请先进入自己的书房',401);

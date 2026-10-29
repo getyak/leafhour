@@ -2376,3 +2376,128 @@ offline.needsNetwork,catalogue,app/ui-catalogs/en.mjs,2342,unknown,unknown,unkno
 offline.drafts,catalogue,app/ui-catalogs/en.mjs,2343,unknown,unknown,unknown,unknown,unreviewed,Offline notes stay as drafts on this device. Reconnect to view saved notes.,离线笔记暂存为本机草稿，联网后可查看已保存的笔记。,離線筆記暫存為本機草稿，連線後可查看已儲存的筆記。,オフラインのメモは端末の下書きです。保存済みのメモは接続後に確認できます。
 offline.deviceScope,catalogue,app/ui-catalogs/en.mjs,2344,unknown,unknown,unknown,unknown,unreviewed,Saved in this browser. Signing out removes these books. Changes to account access are checked after reconnecting.,书籍保存在此浏览器。退出账号时清除，账号权限的变化需联网核对。,書籍儲存在此瀏覽器。登出帳號時清除，帳號權限的變化需連線核對。,本はこのブラウザーに保存され、ログアウトすると削除されます。アカウントの権限変更は再接続後に確認します。
 offline.resumeMissing,catalogue,app/ui-catalogs/en.mjs,2345,unknown,unknown,unknown,unknown,unreviewed,That chapter is not saved here. Showing a saved chapter.,要打开的章节还没保存。当前显示本机已有的章节。,要開啟的章節還沒儲存。目前顯示本機已有的章節。,その章は端末に保存されていません。保存済みの章を表示しています。
+ws.calendarTitle,catalogue,app/ui-catalogs/en.mjs,2346,unknown,unknown,unknown,unknown,unreviewed,Reading calendar,阅读日历,閱讀日曆,読書カレンダー
+ws.notesTitle,catalogue,app/ui-catalogs/en.mjs,2347,unknown,unknown,unknown,unknown,unreviewed,My notes,我的笔记,我的筆記,自分のノート
+ws.calendarIntro,catalogue,app/ui-catalogs/en.mjs,2348,unknown,unknown,unknown,unknown,unreviewed,Return to what you read and what you left beside it.,回看读过的地方，接着上次的想法。,回看讀過的地方，接著上次的想法。,読んだ場所と、そこに残した考えへ。
+ws.notesIntro,catalogue,app/ui-catalogs/en.mjs,2349,unknown,unknown,unknown,unknown,unreviewed,"Your words, with their sources.",自己的话，和它的来处。,自己的話，和它的來處。,自分の言葉と、その出典。
+ws.loading,catalogue,app/ui-catalogs/en.mjs,2350,unknown,unknown,unknown,unknown,unreviewed,Opening your reading records…,正在打开阅读记录…,正在開啟閱讀記錄…,読書記録を開いています…
+ws.retry,catalogue,app/ui-catalogs/en.mjs,2351,unknown,unknown,unknown,unknown,unreviewed,Try again,重试,重試,再試行
+ws.error,catalogue,app/ui-catalogs/en.mjs,2352,unknown,unknown,unknown,unknown,unreviewed,Could not open this right now. Your saved records are kept.,暂时打不开，已保存的记录仍保留。,暫時打不開，已儲存的記錄仍保留。,今は開けません。保存済みの記録は残っています。
+ws.guest,catalogue,app/ui-catalogs/en.mjs,2353,unknown,unknown,unknown,unknown,unreviewed,Sign in to see your reading and notes.,登录后查看自己的阅读与笔记。,登入後查看自己的閱讀與筆記。,ログインして自分の読書とノートを開きます。
+ws.signIn,catalogue,app/ui-catalogs/en.mjs,2354,unknown,unknown,unknown,unknown,unreviewed,Sign in,登录,登入,ログイン
+ws.library,catalogue,app/ui-catalogs/en.mjs,2355,unknown,unknown,unknown,unknown,unreviewed,Back to library,回到书房,回到書房,書斎に戻る
+ws.allTime,catalogue,app/ui-catalogs/en.mjs,2356,unknown,unknown,unknown,unknown,unreviewed,All recorded reading,累计阅读,累計閱讀,これまでの読書時間
+ws.monthTime,catalogue,app/ui-catalogs/en.mjs,2357,unknown,unknown,unknown,unknown,unreviewed,This month,本月阅读,本月閱讀,今月の読書時間
+ws.dayTime,catalogue,app/ui-catalogs/en.mjs,2358,unknown,unknown,unknown,unknown,unreviewed,On this day,当日阅读,當日閱讀,この日の読書時間
+ws.hoursMinutes,catalogue,app/ui-catalogs/en.mjs,2359,unknown,unknown,unknown,unknown,unreviewed,{hours} hr {minutes} min,{hours} 小时 {minutes} 分钟,{hours} 小時 {minutes} 分鐘,{hours} 時間 {minutes} 分
+ws.month,catalogue,app/ui-catalogs/en.mjs,2360,unknown,unknown,unknown,unknown,unreviewed,Month,月份,月份,月
+ws.prevMonth,catalogue,app/ui-catalogs/en.mjs,2361,unknown,unknown,unknown,unknown,unreviewed,Previous month,上个月,上個月,前の月
+ws.nextMonth,catalogue,app/ui-catalogs/en.mjs,2362,unknown,unknown,unknown,unknown,unreviewed,Next month,下个月,下個月,次の月
+ws.now,catalogue,app/ui-catalogs/en.mjs,2363,unknown,unknown,unknown,unknown,unreviewed,Today,今天,今天,今日
+ws.minuteLegend,catalogue,app/ui-catalogs/en.mjs,2364,unknown,unknown,unknown,unknown,unreviewed,Numbers below dates show recorded minutes.,日期下方为已记录的分钟数。,日期下方為已記錄的分鐘數。,日付の下は記録された分数です。
+ws.measurement,catalogue,app/ui-catalogs/en.mjs,2365,unknown,unknown,unknown,unknown,unreviewed,How time is counted,时长口径,時長口徑,時間の数え方
+ws.perBook,catalogue,app/ui-catalogs/en.mjs,2366,unknown,unknown,unknown,unknown,unreviewed,Time by book,每本书的阅读时间,每本書的閱讀時間,本ごとの読書時間
+ws.book,catalogue,app/ui-catalogs/en.mjs,2367,unknown,unknown,unknown,unknown,unreviewed,Book,书籍,書籍,本
+ws.bookMonth,catalogue,app/ui-catalogs/en.mjs,2368,unknown,unknown,unknown,unknown,unreviewed,Selected month,所选月份,所選月份,選んだ月
+ws.bookAll,catalogue,app/ui-catalogs/en.mjs,2369,unknown,unknown,unknown,unknown,unreviewed,All time,累计时间,累計時間,累計時間
+ws.includeZero,catalogue,app/ui-catalogs/en.mjs,2370,unknown,unknown,unknown,unknown,unreviewed,Include books without recorded time,显示暂无时长的书,顯示暫無時長的書,時間の記録がない本も表示
+ws.dayEmpty,catalogue,app/ui-catalogs/en.mjs,2371,unknown,unknown,unknown,unknown,unreviewed,No reading recorded on this date. Return to your last question or choose a book.,这天还没有阅读记录，可以接着上次的问题读。,這天還沒有閱讀記錄，可以接著上次的問題讀。,この日の記録はまだありません。前の問いから読み続けられます。
+ws.noTime,catalogue,app/ui-catalogs/en.mjs,2372,unknown,unknown,unknown,unknown,unreviewed,No reading time recorded yet.,还没有已记录的阅读时间。,還沒有已記錄的閱讀時間。,読書時間はまだ記録されていません。
+ws.continueQuestion,catalogue,app/ui-catalogs/en.mjs,2373,unknown,unknown,unknown,unknown,unreviewed,Continue a question,接着上次的问题,接著上次的問題,前の問いを続ける
+ws.dayNotes,catalogue,app/ui-catalogs/en.mjs,2374,unknown,unknown,unknown,unknown,unreviewed,Thoughts from this day,当天留下的想法,當天留下的想法,この日に残した考え
+ws.search,catalogue,app/ui-catalogs/en.mjs,2375,unknown,unknown,unknown,unknown,unreviewed,Find your notes,搜索自己的笔记,搜尋自己的筆記,自分のノートを検索
+ws.allBooks,catalogue,app/ui-catalogs/en.mjs,2376,unknown,unknown,unknown,unknown,unreviewed,All books,全部书籍,全部書籍,すべての本
+ws.allKinds,catalogue,app/ui-catalogs/en.mjs,2377,unknown,unknown,unknown,unknown,unreviewed,All records,全部记录,全部記錄,すべての記録
+ws.allTopics,catalogue,app/ui-catalogs/en.mjs,2378,unknown,unknown,unknown,unknown,unreviewed,All topics,全部主题,全部主題,すべてのテーマ
+ws.recent,catalogue,app/ui-catalogs/en.mjs,2379,unknown,unknown,unknown,unknown,unreviewed,Recent writing,最近写下,最近寫下,最近書いたこと
+ws.openQuestions,catalogue,app/ui-catalogs/en.mjs,2380,unknown,unknown,unknown,unknown,unreviewed,Questions to continue,待继续的问题,待繼續的問題,考え続けたい問い
+ws.comment,catalogue,app/ui-catalogs/en.mjs,2381,unknown,unknown,unknown,unknown,unreviewed,My thought,我的想法,我的想法,自分の考え
+ws.question,catalogue,app/ui-catalogs/en.mjs,2382,unknown,unknown,unknown,unknown,unreviewed,My question,我的问题,我的問題,自分の問い
+ws.highlight,catalogue,app/ui-catalogs/en.mjs,2383,unknown,unknown,unknown,unknown,unreviewed,Excerpt,摘录,摘錄,抜き書き
+ws.count,catalogue,app/ui-catalogs/en.mjs,2384,unknown,unknown,unknown,unknown,unreviewed,{count} records,{count} 条记录,{count} 條記錄,{count} 件の記録
+ws.partial,catalogue,app/ui-catalogs/en.mjs,2385,unknown,unknown,unknown,unknown,unreviewed,Some records could not be opened. Retry to include them.,部分记录暂时打不开，重试后补全。,部分記錄暫時打不開，重試後補全。,一部の記録を開けません。再試行してください。
+ws.empty,catalogue,app/ui-catalogs/en.mjs,2386,unknown,unknown,unknown,unknown,unreviewed,Nothing here yet,这里还没有记录,這裡還沒有記錄,記録はまだありません
+ws.emptyHelp,catalogue,app/ui-catalogs/en.mjs,2387,unknown,unknown,unknown,unknown,unreviewed,"Leave a thought or question beside a passage, then return here.",在书页旁留下一点想法或问题，再回来看看。,在書頁旁留下一點想法或問題，再回來看看。,本のそばに考えや問いを残して、ここで読み返せます。
+ws.noMatch,catalogue,app/ui-catalogs/en.mjs,2388,unknown,unknown,unknown,unknown,unreviewed,No matching notes,没有找到相符的笔记,沒有找到相符的筆記,一致するノートはありません
+ws.selectNote,catalogue,app/ui-catalogs/en.mjs,2389,unknown,unknown,unknown,unknown,unreviewed,Choose a note to read or continue writing.,选一条笔记，回看或接着写。,選一條筆記，回看或接著寫。,ノートを選んで、読み返したり書き続けたりします。
+ws.source,catalogue,app/ui-catalogs/en.mjs,2390,unknown,unknown,unknown,unknown,unreviewed,Return to the passage,回到原文,回到原文,元の文章へ
+ws.quotation,catalogue,app/ui-catalogs/en.mjs,2391,unknown,unknown,unknown,unknown,unreviewed,Quotation and source,引文与出处,引文與出處,引用と出典
+ws.original,catalogue,app/ui-catalogs/en.mjs,2392,unknown,unknown,unknown,unknown,unreviewed,Original excerpt,原文摘录,原文摘錄,原文の抜き書き
+ws.translation,catalogue,app/ui-catalogs/en.mjs,2393,unknown,unknown,unknown,unknown,unreviewed,Translation excerpt,译文摘录,譯文摘錄,訳文の抜き書き
+ws.unknownSource,catalogue,app/ui-catalogs/en.mjs,2394,unknown,unknown,unknown,unknown,unreviewed,Source location needs checking. The saved words are kept.,原文位置待确认，已保存的文字仍保留。,原文位置待確認，已儲存的文字仍保留。,出典の位置を確認してください。保存した言葉は残っています。
+ws.edit,catalogue,app/ui-catalogs/en.mjs,2395,unknown,unknown,unknown,unknown,unreviewed,Continue writing,接着写,接著寫,書き続ける
+ws.save,catalogue,app/ui-catalogs/en.mjs,2396,unknown,unknown,unknown,unknown,unreviewed,Save,保存,儲存,保存
+ws.saving,catalogue,app/ui-catalogs/en.mjs,2397,unknown,unknown,unknown,unknown,unreviewed,Saving…,正在保存…,正在儲存…,保存中…
+ws.saved,catalogue,app/ui-catalogs/en.mjs,2398,unknown,unknown,unknown,unknown,unreviewed,Saved,已保存,已儲存,保存しました
+ws.localDraft,catalogue,app/ui-catalogs/en.mjs,2399,unknown,unknown,unknown,unknown,unreviewed,Unsaved words are kept in this browser.,未保存的文字已留在当前浏览器。,未儲存的文字已留在目前瀏覽器。,未保存の言葉はこのブラウザに残ります。
+ws.conflict,catalogue,app/ui-catalogs/en.mjs,2400,unknown,unknown,unknown,unknown,unreviewed,This note changed elsewhere. Your words are kept here; reopen the latest note before saving.,这条笔记已在别处修改。当前文字已保留，请先重新打开较新的笔记。,這條筆記已在別處修改。目前文字已保留，請先重新開啟較新的筆記。,別の場所で変更されています。入力はここに残るので、最新のノートを開き直してください。
+ws.undo,catalogue,app/ui-catalogs/en.mjs,2401,unknown,unknown,unknown,unknown,unreviewed,Undo last edit,撤销上次修改,復原上次修改,直前の編集を戻す
+ws.open,catalogue,app/ui-catalogs/en.mjs,2402,unknown,unknown,unknown,unknown,unreviewed,To continue,待继续,待繼續,考え中
+ws.understood,catalogue,app/ui-catalogs/en.mjs,2403,unknown,unknown,unknown,unknown,unreviewed,A new understanding,有了新理解,有了新理解,新しい理解
+ws.markUnderstood,catalogue,app/ui-catalogs/en.mjs,2404,unknown,unknown,unknown,unknown,unreviewed,Mark a new understanding,标记有了新理解,標記有了新理解,新しい理解として記録
+ws.markOpen,catalogue,app/ui-catalogs/en.mjs,2405,unknown,unknown,unknown,unknown,unreviewed,Continue this question,继续这个问题,繼續這個問題,この問いを続ける
+ws.understandings,catalogue,app/ui-catalogs/en.mjs,2406,unknown,unknown,unknown,unknown,unreviewed,Later thoughts,后来的理解,後來的理解,その後の考え
+ws.addUnderstanding,catalogue,app/ui-catalogs/en.mjs,2407,unknown,unknown,unknown,unknown,unreviewed,Add your current understanding,补上现在的理解,補上現在的理解,今の理解を書き足す
+ws.understandingHelp,catalogue,app/ui-catalogs/en.mjs,2408,unknown,unknown,unknown,unknown,unreviewed,Kept separately from your earlier words.,与以前的原话分开保留。,與以前的原話分開保留。,以前の言葉と分けて残します。
+ws.newTopic,catalogue,app/ui-catalogs/en.mjs,2409,unknown,unknown,unknown,unknown,unreviewed,New topic,新建主题,新增主題,テーマを作る
+ws.topicName,catalogue,app/ui-catalogs/en.mjs,2410,unknown,unknown,unknown,unknown,unreviewed,Topic name,主题名称,主題名稱,テーマ名
+ws.create,catalogue,app/ui-catalogs/en.mjs,2411,unknown,unknown,unknown,unknown,unreviewed,Create,创建,建立,作成
+ws.topics,catalogue,app/ui-catalogs/en.mjs,2412,unknown,unknown,unknown,unknown,unreviewed,Topics,主题,主題,テーマ
+ws.semantic,catalogue,app/ui-catalogs/en.mjs,2413,unknown,unknown,unknown,unknown,unreviewed,Find by meaning,按大意查找,按大意查找,意味から探す
+ws.compare,catalogue,app/ui-catalogs/en.mjs,2414,unknown,unknown,unknown,unknown,unreviewed,Compare notes,比较所选笔记,比較所選筆記,ノートを比べる
+ws.review,catalogue,app/ui-catalogs/en.mjs,2415,unknown,unknown,unknown,unknown,unreviewed,Review this period,回顾这段时间,回顧這段時間,この期間を振り返る
+ws.scopeTitle,catalogue,app/ui-catalogs/en.mjs,2416,unknown,unknown,unknown,unknown,unreviewed,Choose the saved notes to use,选择本次使用的笔记,選擇本次使用的筆記,今回使う保存済みノートを選ぶ
+ws.scopeCount,catalogue,app/ui-catalogs/en.mjs,2417,unknown,unknown,unknown,unknown,unreviewed,{count} selected · up to 24,已选 {count} 条，最多 24 条,已選 {count} 條，最多 24 條,{count} 件選択・最大 24 件
+ws.select24,catalogue,app/ui-catalogs/en.mjs,2418,unknown,unknown,unknown,unknown,unreviewed,Select the first 24 shown,选择当前前 24 条,選擇目前前 24 條,表示中の先頭 24 件を選ぶ
+ws.clearSelection,catalogue,app/ui-catalogs/en.mjs,2419,unknown,unknown,unknown,unknown,unreviewed,Clear selection,清空选择,清空選擇,選択を解除
+ws.questionPrompt,catalogue,app/ui-catalogs/en.mjs,2420,unknown,unknown,unknown,unknown,unreviewed,What would you like to find or compare?,想找什么，或想比较什么？,想找什麼，或想比較什麼？,何を探したり比べたりしますか？
+ws.consent,catalogue,app/ui-catalogs/en.mjs,2421,unknown,unknown,unknown,unknown,unreviewed,Use only the saved notes selected above for this analysis.,同意本次整理使用上面选中的已保存笔记。,同意本次整理使用上面選中的已儲存筆記。,今回の整理に、上で選んだ保存済みノートだけを使います。
+ws.funded,catalogue,app/ui-catalogs/en.mjs,2422,unknown,unknown,unknown,unknown,unreviewed,No reading points are used. Daily note analysis is limited.,本次不扣阅读点数，每日整理次数有限。,本次不扣閱讀點數，每日整理次數有限。,読書ポイントは使用しません。1日の整理回数には上限があります。
+ws.run,catalogue,app/ui-catalogs/en.mjs,2423,unknown,unknown,unknown,unknown,unreviewed,Start,开始整理,開始整理,整理を始める
+ws.working,catalogue,app/ui-catalogs/en.mjs,2424,unknown,unknown,unknown,unknown,unreviewed,Working with the selected notes…,正在整理所选笔记…,正在整理所選筆記…,選んだノートを整理しています…
+ws.cancel,catalogue,app/ui-catalogs/en.mjs,2425,unknown,unknown,unknown,unknown,unreviewed,Stop,停止,停止,停止
+ws.cancelled,catalogue,app/ui-catalogs/en.mjs,2426,unknown,unknown,unknown,unknown,unreviewed,Stopped waiting. Saved content is kept.,已停止等待，已有内容仍保留。,已停止等待，已有內容仍保留。,待機を停止しました。保存済みの内容は残っています。
+ws.unavailable,catalogue,app/ui-catalogs/en.mjs,2427,unknown,unknown,unknown,unknown,unreviewed,This reading room has not enabled note analysis. Reading and editing are available.,此书房暂未开启笔记整理，阅读和编辑仍可使用。,此書房暫未開啟筆記整理，閱讀和編輯仍可使用。,この書斎ではノート整理が未設定です。閲覧と編集は使えます。
+ws.saveFirst,catalogue,app/ui-catalogs/en.mjs,2428,unknown,unknown,unknown,unknown,unreviewed,Save edits before using these notes.,请先保存所选笔记的修改。,請先儲存所選筆記的修改。,選んだノートの編集を先に保存してください。
+ws.reduceScope,catalogue,app/ui-catalogs/en.mjs,2429,unknown,unknown,unknown,unknown,unreviewed,Select fewer notes; this content is too long for one analysis.,所选内容较长，请减少笔记数量。,所選內容較長，請減少筆記數量。,内容が長いため、選ぶノートを減らしてください。
+ws.quota,catalogue,app/ui-catalogs/en.mjs,2430,unknown,unknown,unknown,unknown,unreviewed,Today’s note analysis allowance is used up. Your records are available.,今天的笔记整理次数已用完，已有记录仍可使用。,今天的筆記整理次數已用完，已有記錄仍可使用。,今日の整理回数を使い切りました。保存済みの記録は使えます。
+ws.chooseTwo,catalogue,app/ui-catalogs/en.mjs,2431,unknown,unknown,unknown,unknown,unreviewed,Choose at least two notes to compare.,请选择至少两条笔记比较。,請選擇至少兩條筆記比較。,比較するノートを 2 件以上選んでください。
+ws.chooseNotes,catalogue,app/ui-catalogs/en.mjs,2432,unknown,unknown,unknown,unknown,unreviewed,Choose between 1 and 24 saved notes and confirm their use.,请选择 1 至 24 条笔记，并确认本次使用范围。,請選擇 1 至 24 條筆記，並確認本次使用範圍。,保存済みノートを 1〜24 件選び、使用範囲を確認してください。
+ws.candidate,catalogue,app/ui-catalogs/en.mjs,2433,unknown,unknown,unknown,unknown,unreviewed,Proposed reading connections,整理建议,整理建議,整理の提案
+ws.noEvidence,catalogue,app/ui-catalogs/en.mjs,2434,unknown,unknown,unknown,unknown,unreviewed,No supported matches were found in the selected notes.,在所选笔记里没有找到有依据的结果。,在所選筆記裡沒有找到有依據的結果。,選んだノートに、根拠のある結果は見つかりませんでした。
+ws.evidence,catalogue,app/ui-catalogs/en.mjs,2435,unknown,unknown,unknown,unknown,unreviewed,Evidence,依据,依據,根拠
+ws.adopt,catalogue,app/ui-catalogs/en.mjs,2436,unknown,unknown,unknown,unknown,unreviewed,Keep this suggestion,采用这份建议,採用這份建議,この提案を残す
+ws.dismiss,catalogue,app/ui-catalogs/en.mjs,2437,unknown,unknown,unknown,unknown,unreviewed,Dismiss,不采用,不採用,採用しない
+ws.adopted,catalogue,app/ui-catalogs/en.mjs,2438,unknown,unknown,unknown,unknown,unreviewed,Kept suggestions,已采用的建议,已採用的建議,残した提案
+ws.removeRelation,catalogue,app/ui-catalogs/en.mjs,2439,unknown,unknown,unknown,unknown,unreviewed,Remove this connection,移除这条关联,移除此關聯,この関連を外す
+ws.supports,catalogue,app/ui-catalogs/en.mjs,2440,unknown,unknown,unknown,unknown,unreviewed,Supports,相互支持,相互支持,支え合う
+ws.extends,catalogue,app/ui-catalogs/en.mjs,2441,unknown,unknown,unknown,unknown,unreviewed,Adds another angle,补充视角,補充視角,別の視点を加える
+ws.contrasts,catalogue,app/ui-catalogs/en.mjs,2442,unknown,unknown,unknown,unknown,unreviewed,Different views,观点相左,觀點相左,異なる見方
+ws.related,catalogue,app/ui-catalogs/en.mjs,2443,unknown,unknown,unknown,unknown,unreviewed,May be related,可能相关,可能相關,関連の候補
+ws.export,catalogue,app/ui-catalogs/en.mjs,2444,unknown,unknown,unknown,unknown,unreviewed,Export notes,导出笔记,匯出筆記,ノートを書き出す
+ws.exportState,catalogue,app/ui-catalogs/en.mjs,2445,unknown,unknown,unknown,unknown,unreviewed,Export topics and later thoughts,导出主题与后续理解,匯出主題與後續理解,テーマとその後の考えを書き出す
+ws.importState,catalogue,app/ui-catalogs/en.mjs,2446,unknown,unknown,unknown,unknown,unreviewed,Restore topics and later thoughts,恢复主题与后续理解,還原主題與後續理解,テーマとその後の考えを復元
+ws.restoreHelp,catalogue,app/ui-catalogs/en.mjs,2447,unknown,unknown,unknown,unknown,unreviewed,"Restore base books and notes first. This restores their topics, later thoughts and attributed suggestions.",对应书籍和笔记恢复后，导入其主题、后续理解与整理建议。,對應書籍和筆記還原後，匯入其主題、後續理解與整理建議。,先に元の本とノートを復元し、そのテーマ、その後の考え、整理の提案を読み込みます。
+ws.restoreConfirm,catalogue,app/ui-catalogs/en.mjs,2448,unknown,unknown,unknown,unknown,unreviewed,"Restore this file’s topics, later thoughts and suggestions over the current workspace state? Original notes are kept.",用这份文件恢复当前的主题、后续理解与整理建议？原始笔记仍保留。,用這份檔案還原目前的主題、後續理解與整理建議？原始筆記仍保留。,このファイルのテーマ、その後の考え、提案を復元しますか？ 元のノートは残ります。
+ws.reviewPrompt,catalogue,app/ui-catalogs/en.mjs,2449,unknown,unknown,unknown,unknown,unreviewed,"Review these saved notes. Suggest at most three evidence-linked next reading, writing or question steps.",回顾这些已保存笔记，提出最多三条有依据的重读、补写或继续问题的建议。,回顧這些已儲存筆記，提出最多三條有依據的重讀、補寫或繼續問題的建議。,保存済みノートを振り返り、根拠を示して読み直し、書き足し、問いの続きを最大 3 件提案してください。
+ws.comparePrompt,catalogue,app/ui-catalogs/en.mjs,2450,unknown,unknown,unknown,unknown,unreviewed,"Compare the selected notes and explain supported relationships, preserving each original viewpoint.",比较所选笔记，保留各自观点，说明有依据的关系。,比較所選筆記，保留各自觀點，說明有依據的關係。,それぞれの見方を保ち、選んだノートの根拠ある関係を比べてください。
+ws.viewNote,catalogue,app/ui-catalogs/en.mjs,2451,unknown,unknown,unknown,unknown,unreviewed,Open this note,查看这条笔记,查看這條筆記,このノートを開く
+ws.historical,catalogue,app/ui-catalogs/en.mjs,2452,unknown,unknown,unknown,unknown,unreviewed,Words used at the time,当时的依据,當時的依據,当時の根拠
+ws.scopeMaterial,catalogue,app/ui-catalogs/en.mjs,2453,unknown,unknown,unknown,unknown,unreviewed,"Original words, quotations and later thoughts",原话、引文与后续理解,原話、引文與後續理解,元の言葉、引用、その後の考え
+ws.savedVersion,catalogue,app/ui-catalogs/en.mjs,2454,unknown,unknown,unknown,unknown,unreviewed,Saved words,当前已保存的文字,目前已儲存的文字,保存済みの文章
+ws.useSaved,catalogue,app/ui-catalogs/en.mjs,2455,unknown,unknown,unknown,unknown,unreviewed,Keep the local version and use saved words,保留本地副本，使用已保存文字,保留本機副本，使用已儲存文字,ローカルの文章を残して保存済みの文章を使う
+ws.archiveHelp,catalogue,app/ui-catalogs/en.mjs,2456,unknown,unknown,unknown,unknown,unreviewed,Your unsaved words remain below in recovered versions.,未保存的文字仍在下方保留，可以取回。,尚未儲存的文字仍在下方保留，可以取回。,未保存の文章は下のローカル復元版に残ります。
+ws.recoveredVersions,catalogue,app/ui-catalogs/en.mjs,2457,unknown,unknown,unknown,unknown,unreviewed,Recovered local versions,先前未保存的文字,先前未儲存的文字,ローカル復元版
+ws.retryPending,catalogue,app/ui-catalogs/en.mjs,2458,unknown,unknown,unknown,unknown,unreviewed,Retry the unfinished change before making another change.,还有一次修改未完成，请重试后继续。,還有一次修改尚未完成，請重試後繼續。,未完了の変更を再試行してから、ほかの変更を行ってください。
+ws.nextReread,catalogue,app/ui-catalogs/en.mjs,2459,unknown,unknown,unknown,unknown,unreviewed,Read the source again,重读原文,重讀原文,原文を読み返す
+ws.nextWrite,catalogue,app/ui-catalogs/en.mjs,2460,unknown,unknown,unknown,unknown,unreviewed,Write about this note,继续写这条笔记,繼續寫這則筆記,このノートに書き足す
+ws.nextQuestion,catalogue,app/ui-catalogs/en.mjs,2461,unknown,unknown,unknown,unknown,unreviewed,Return to this note’s question,回到这条笔记追问,回到這則筆記追問,このノートの問いに戻る
+ws.reviewKind,catalogue,app/ui-catalogs/en.mjs,2462,unknown,unknown,unknown,unknown,unreviewed,Review suggestion,回顾建议,回顧建議,振り返りの提案
+ws.compareKind,catalogue,app/ui-catalogs/en.mjs,2463,unknown,unknown,unknown,unknown,unreviewed,Comparison suggestion,对照建议,對照建議,比較の提案
+ws.searchKind,catalogue,app/ui-catalogs/en.mjs,2464,unknown,unknown,unknown,unknown,unreviewed,Search suggestion,检索建议,檢索建議,検索の提案
+ws.abandonChange,catalogue,app/ui-catalogs/en.mjs,2465,unknown,unknown,unknown,unknown,unreviewed,Abandon this change and keep my words,放弃这次操作，保留文字,放棄這次操作，保留文字,この操作を取り消し、文章を残す
+ws.changeAbandoned,catalogue,app/ui-catalogs/en.mjs,2466,unknown,unknown,unknown,unknown,unreviewed,Change abandoned. Your unsaved words are kept.,已放弃这次操作，未保存的文字仍保留。,已放棄這次操作，尚未儲存的文字仍保留。,操作を取り消しました。未保存の文章は残っています。
+ws.reviewWeek,catalogue,app/ui-catalogs/en.mjs,2467,unknown,unknown,unknown,unknown,unreviewed,Selected week,所选一周,所選一週,選んだ週
+ws.reviewMonth,catalogue,app/ui-catalogs/en.mjs,2468,unknown,unknown,unknown,unknown,unreviewed,Selected month,所选月份,所選月份,選んだ月
+ws.reviewPeriod,catalogue,app/ui-catalogs/en.mjs,2469,unknown,unknown,unknown,unknown,unreviewed,Review period,回顾日期范围,回顧日期範圍,振り返る期間
+ws.reviewRange,catalogue,app/ui-catalogs/en.mjs,2470,unknown,unknown,unknown,unknown,unreviewed,Date range: {start} to {end}. Review only entries from this period; older original notes are context.,日期范围：{start} 至 {end}。仅回顾这个时段的记录，较早原话仅作上下文。,日期範圍：{start} 至 {end}。僅回顧這個時段的記錄，較早原話僅作上下文。,対象期間：{start} から {end}。この期間の記録を振り返り、以前のノートは文脈として扱います。

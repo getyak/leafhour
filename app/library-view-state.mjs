@@ -1,3 +1,4 @@
+import {readWorkspaceView,workspaceUrl} from './reading-workspace-state.mjs';
 // GET-176/179 library view URL state: one pure codec/reducer plus one explicit
 // UI lifecycle adapter. Owned keys are q/scope/status/topic/language/form and exactly
 // one overlay among filter/calendar/settings/upload/trash. Unknown parameters are
@@ -141,6 +142,14 @@ export function safeLibraryReturn(value){
   if(typeof value!=='string'||value.length>1500||CONTROL_CHARS.test(value)||value.includes('\\')||!value.startsWith('/')||value.startsWith('//'))return null;
   let url;try{url=new URL(value,'https://reader.invalid');}catch{return null;}
   if(url.origin!=='https://reader.invalid'||url.pathname!=='/library'||url.hash||value.split('?')[0]!=='/library')return null;
+  if(url.searchParams.has('workspace')){
+    const allowed=['workspace','date','month','book','kind','wtopic','note','questions','ui'];
+    if([...url.searchParams.keys()].some(key=>!allowed.includes(key)||url.searchParams.getAll(key).length!==1))return null;
+    const state=readWorkspaceView(url.search),locale=parseUiParam(url.searchParams);if(!state.page||!['valid','absent'].includes(locale.status))return null;
+    for(const [key,value]of [['date',state.date],['month',state.month],['book',state.bookId],['kind',state.kind],['wtopic',state.topicId],['note',state.noteKey]])if(url.searchParams.has(key)&&!value)return null;
+    if(url.searchParams.has('questions')&&url.searchParams.get('questions')!=='open')return null;
+    return workspaceUrl(state,locale.code);
+  }
   const parsed=parseLibraryView(url.search);
   return '/library'+writeLibraryView('',parsed);
 }

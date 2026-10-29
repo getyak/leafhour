@@ -46,7 +46,7 @@ function uploadFixture(bindings={}){
   };
   const ownerScope=createOwnerScope();ownerScope.adopt('synthetic-a');
   const upload=createUploadState();upload.select({name:'synthetic.pdf',size:1});upload.begin();
-  const context={libraryArrival:null,personalizationPending:false,document:{querySelectorAll:()=>[]},$:el,t:formatter,getUiLocale,ownerScope,upload,createUploadState,homeMenu:null,invalidatePaletteLibraries(){},viewHistory:null,bookActions:null,notebook:null,shelfDrag:null,shelfRevision:0,orderOperation:null,authDialog:{reset(){}},pendingUpload:false,pendingChat:false,selectedCurrent:null,pdfOnboarding:null,followedPdfId:null,shelfControls:null,books:[],chat:null,shell:null,setupInvite:null,dashboard:null,renderBooks(){},landingBookCard(){assert.fail('no books expected');},...bindings};
+  const context={readingWorkspace:null,readingWorkspaceOwner:null,libraryArrival:null,personalizationPending:false,document:{querySelectorAll:()=>[]},$:el,t:formatter,getUiLocale,ownerScope,upload,createUploadState,homeMenu:null,invalidatePaletteLibraries(){},viewHistory:null,bookActions:null,notebook:null,shelfDrag:null,shelfRevision:0,orderOperation:null,authDialog:{reset(){}},pendingUpload:false,pendingChat:false,selectedCurrent:null,pdfOnboarding:null,followedPdfId:null,shelfControls:null,books:[],chat:null,shell:null,setupInvite:null,dashboard:null,renderBooks(){},landingBookCard(){assert.fail('no books expected');},...bindings};
   vm.createContext(context);
   vm.runInContext(['chromeLabels','specText','applySpec','own','uploadProgressMessage','paintStatus','status','showUploadProgress','updateUploadProgressLabel','clearPrivateUI'].map(declaration).join('\n')+'\nthis.progress=showUploadProgress;this.relabel=updateUploadProgressLabel;this.replace=status;this.clear=clearPrivateUI;',context);
   return {context,ownerScope,upload,el,ticket:ownerScope.capture()};
@@ -168,7 +168,7 @@ test('opening and refreshing an account never replaces the explicit shelf view w
  for(const firstEntry of [true,false]){
   const explicit={query:'kept',topic:'history',language:'en',form:'translated'},session={user:{id:'reader'},readingPreferences:{preferences:{preferredLanguage:'zh'}},preferenceMemory:{revision:2,memory:{topic:'philosophy',sources:{mode:{source:'settings'}}},preferences:{mode:'en'}}};
   let renders=0;
-  const context={libraryArrival:null,personalizationPending:false,requestAnimationFrame(){},refreshGeneration:0,isLibrary:true,identityResolved:!firstEntry,ownerScope:createOwnerScope(firstEntry?'guest':'reader'),session,books:[],shelfRevision:0,pendingUpload:false,pendingChat:false,bootstrapped:false,
+  const context={ensureReadingWorkspace:async()=>null,libraryArrival:null,personalizationPending:false,requestAnimationFrame(){},refreshGeneration:0,isLibrary:true,identityResolved:!firstEntry,ownerScope:createOwnerScope(firstEntry?'guest':'reader'),session,books:[],shelfRevision:0,pendingUpload:false,pendingChat:false,bootstrapped:false,
    dashboard:{begin:()=>1,update(){},fail(){}},homeMenu:null,adoptUiOwner(){},deviceBookStore:()=>({adopt:async()=>{}}),prepareOfflineResources:async()=>false,
    authDialog:{updateCapabilities(){},isSettingPasswordFor:()=>false},clearPrivateUI(options){assert.equal(options.preserveView,true,'first identity keeps the incoming explicit URL');},
    shell:{update(){},refreshDaily(){}},setupInvite:{update(){}},
