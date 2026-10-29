@@ -1,0 +1,70 @@
+{
+  "schema": 1,
+  "task": "GET-321",
+  "observedAt": "2026-10-29T11:10:38Z",
+  "runtime": {
+    "system": "iOS",
+    "version": "26.5",
+    "simulatorModelIdentifier": "iPhone18,1"
+  },
+  "scope": "One simulator runtime; standalone UIKit/Core Text diagnostic. Not Leafhour app, offline-mode, glyph-coverage, visual-quality, or physical-device acceptance.",
+  "inventory": {
+    "uiFamilyCount": 86,
+    "enumeratedPostScriptFaceCount": 303,
+    "enumeratedNamesConstructedByUIFont": 303,
+    "enumeratedNamesResolvingToExactRequestedPostScriptName": 303
+  },
+  "dynamicType": {
+    "bodySystemSerif": {
+      "large": 22,
+      "accessibilityExtraExtraExtraLarge": 62,
+      "unit": "pt"
+    },
+    "traceCount": 28,
+    "syntheticSamples": 7,
+    "languageConditions": ["untagged", "declared-language-hint"],
+    "sampleLanguages": ["en", "zh-Hans", "zh-Hant", "ja", "ko", "und"],
+    "glyphZeroCountInTheseSamples": 0
+  },
+  "sampleFallback": {
+    "traditionalChinese": {
+      "untagged": ["PingFangUIDisplaySC-Regular"],
+      "declaredLanguageHint": ["PingFangUIDisplayTC-Regular"]
+    },
+    "japaneseSentence": {
+      "untagged": ["PingFangUIDisplaySC-Regular", ".CJKSymbolsFallbackSC-Regular"],
+      "declaredLanguageHint": ["HiraMinProN-W3"]
+    },
+    "ambiguousHan": {
+      "text": "読書",
+      "untagged": ["PingFangUIDisplaySC-Regular"],
+      "declaredLanguageHint": ["HiraMinProN-W3"]
+    },
+    "koreanWithLatinPunctuation": ["AppleSDGothicNeoI-Regular", ".NewYork-Regular"]
+  },
+  "directFaceResolution": {
+    "requestedPostScriptName": "HiraMinProN-W3",
+    "presentInEnumeration": true,
+    "constructedByUIFont": true,
+    "resolvedPostScriptNameMatchesRequest": true,
+    "systemResourceFilename": "HiraginoMincho.ttc",
+    "systemResourceBytes": 19357152,
+    "note": "Single system TTC resource size; not app install delta or memory."
+  },
+  "identityCaveat": {
+    "requestedRunNamesReturningNonNullUIFontButResolvingElsewhere": [
+      ".AppleColorEmojiUI",
+      ".AppleSDGothicNeoI-Regular",
+      ".CJKSymbolsFallbackSC-Regular",
+      ".NewYork-Regular",
+      ".PingFangUIDisplaySC-Regular",
+      ".PingFangUIDisplayTC-Regular"
+    ],
+    "observedResolvedPostScriptName": "TimesNewRomanPSMT",
+    "interpretation": "UIFont object construction alone does not establish exact face loading; compare the resolved PostScript name."
+  },
+  "finalProbeSHA256": "4dfcc9afd7c02a24e398b31e1fd230dbc36d4f81a1000a29e05e4831046bf7df",
+  "fullInventorySHA256": "645f6be256560809d45290b2765eddd687a748152546c193da09bf3feabc8558",
+  "productionChanges": false,
+  "networkOrSystemSettingsChanged": false
+}
