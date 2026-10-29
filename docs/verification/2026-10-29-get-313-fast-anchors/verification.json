@@ -1,0 +1,34 @@
+{
+  "issue": "GET-313",
+  "base": "9ed97de798f08818f2c12c4eed2f1804fe867ebb",
+  "host": {
+    "configuration": "macOS Foundation swiftc -O -num-threads 2",
+    "executedXCTest": 54,
+    "failures": 0,
+    "newOffsetTests": 7,
+    "lookupSamplesPerCase": 48,
+    "constructionSamplesPerCase": 10
+  },
+  "native": {
+    "configuration": "iOS 26.5 Simulator Debug, iPhone 17 Pro, xcodebuild -jobs 2, serial testing",
+    "executedXCTest": 1,
+    "failures": 0,
+    "testSeconds": 36.985,
+    "lookupSamplesPerCase": 24,
+    "constructionSamplesPerCase": 4,
+    "componentMarker": "GET313-COMPONENT-EXECUTED all-preserved",
+    "coldDraftMarker": "GET313-COLD-DRAFT-EXECUTED"
+  },
+  "excludedOrLimited": [
+    "Initial semantic RED: 6 executed XCTest, one expected mid-surrogate regression. Not a native bug reproduction.",
+    "host-comparison-preliminary.json: six cases superseded by final nine-case host comparison.",
+    "Separate Swift Testing zero-test footer is not acceptance.",
+    "Component timing on shared host/simulator is not whole-scroll FPS, physical latency or RSS.",
+    "Small sample distributions, especially four native construction samples, are descriptive and not a stable production percentile."
+  ],
+  "sourceHashes": {
+    "apps/ios/Leafhour/TextReadingView.swift": "5ae4ed2b1f91b51f6da6c4ce649ac2c526ff1291a78499158fbe946fac59b8b5",
+    "apps/ios/LeafhourCore/Sources/LeafhourCore/SourceTextOffsets.swift": "f5452759b4265c0b1c619c2bcbb1f455b75bf12d6ec1b83e73eda2c4c4fa15bb",
+    "apps/ios/LeafhourCore/Tests/LeafhourCoreTests/SourceTextOffsetsTests.swift": "c73b5173d8b517ad7b5423328733db16a433f936d3f1738c39303bf65be929eb"
+  }
+}

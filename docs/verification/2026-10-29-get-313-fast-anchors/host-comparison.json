@@ -1,0 +1,259 @@
+{
+  "checksum" : 153754732,
+  "os" : "Version 26.4 (Build 25E246)",
+  "results" : [
+    {
+      "case" : "ascii",
+      "checkpointCount" : 0,
+      "construction" : {
+        "maxMs" : 0.000125,
+        "medianMs" : 8.2999999999999998e-05,
+        "minMs" : 4.1e-05,
+        "p95Ms" : 8.3999999999999995e-05
+      },
+      "constructionSamples" : 10,
+      "logicalAuxiliaryBytes" : 0,
+      "lookupSamples" : 48,
+      "newLookup" : {
+        "maxMs" : 4.1999999999999998e-05,
+        "medianMs" : 0,
+        "minMs" : 0,
+        "p95Ms" : 4.1999999999999998e-05
+      },
+      "oldLookup" : {
+        "maxMs" : 0.0027499999999999998,
+        "medianMs" : 0.00041599999999999997,
+        "minMs" : 8.2999999999999998e-05,
+        "p95Ms" : 0.00058399999999999999
+      },
+      "sourceScalars" : 56,
+      "sourceUTF8Bytes" : 56,
+      "sourceUTF16Units" : 56
+    },
+    {
+      "case" : "ascii",
+      "checkpointCount" : 0,
+      "construction" : {
+        "maxMs" : 1.0775410000000001,
+        "medianMs" : 0.85475000000000001,
+        "minMs" : 0.25124999999999997,
+        "p95Ms" : 1.0407500000000001
+      },
+      "constructionSamples" : 10,
+      "logicalAuxiliaryBytes" : 0,
+      "lookupSamples" : 48,
+      "newLookup" : {
+        "maxMs" : 0.00045899999999999999,
+        "medianMs" : 4.1999999999999998e-05,
+        "minMs" : 0,
+        "p95Ms" : 0.00025000000000000001
+      },
+      "oldLookup" : {
+        "maxMs" : 2.6648749999999999,
+        "medianMs" : 1.210375,
+        "minMs" : 0.20558299999999999,
+        "p95Ms" : 2.2322500000000001
+      },
+      "sourceScalars" : 224000,
+      "sourceUTF8Bytes" : 224000,
+      "sourceUTF16Units" : 224000
+    },
+    {
+      "case" : "ascii",
+      "checkpointCount" : 0,
+      "construction" : {
+        "maxMs" : 3.259916,
+        "medianMs" : 2.4764590000000002,
+        "minMs" : 1.1895830000000001,
+        "p95Ms" : 3.223166
+      },
+      "constructionSamples" : 10,
+      "logicalAuxiliaryBytes" : 0,
+      "lookupSamples" : 48,
+      "newLookup" : {
+        "maxMs" : 0.00062500000000000001,
+        "medianMs" : 4.1e-05,
+        "minMs" : 0,
+        "p95Ms" : 8.2999999999999998e-05
+      },
+      "oldLookup" : {
+        "maxMs" : 11.306125,
+        "medianMs" : 4.2534999999999998,
+        "minMs" : 0.21254200000000001,
+        "p95Ms" : 7.4822920000000002
+      },
+      "sourceScalars" : 896000,
+      "sourceUTF8Bytes" : 896000,
+      "sourceUTF16Units" : 896000
+    },
+    {
+      "case" : "bmp",
+      "checkpointCount" : 0,
+      "construction" : {
+        "maxMs" : 0.000166,
+        "medianMs" : 0.000125,
+        "minMs" : 0.000125,
+        "p95Ms" : 0.000166
+      },
+      "constructionSamples" : 10,
+      "logicalAuxiliaryBytes" : 0,
+      "lookupSamples" : 48,
+      "newLookup" : {
+        "maxMs" : 4.1999999999999998e-05,
+        "medianMs" : 0,
+        "minMs" : 0,
+        "p95Ms" : 4.1999999999999998e-05
+      },
+      "oldLookup" : {
+        "maxMs" : 0.0062919999999999998,
+        "medianMs" : 0.00037500000000000001,
+        "minMs" : 0.00025000000000000001,
+        "p95Ms" : 0.001
+      },
+      "sourceScalars" : 32,
+      "sourceUTF8Bytes" : 56,
+      "sourceUTF16Units" : 32
+    },
+    {
+      "case" : "bmp",
+      "checkpointCount" : 0,
+      "construction" : {
+        "maxMs" : 0.91779200000000005,
+        "medianMs" : 0.66774999999999995,
+        "minMs" : 0.66345799999999999,
+        "p95Ms" : 0.77070899999999998
+      },
+      "constructionSamples" : 10,
+      "logicalAuxiliaryBytes" : 0,
+      "lookupSamples" : 48,
+      "newLookup" : {
+        "maxMs" : 8.2999999999999998e-05,
+        "medianMs" : 4.1e-05,
+        "minMs" : 0,
+        "p95Ms" : 4.1999999999999998e-05
+      },
+      "oldLookup" : {
+        "maxMs" : 0.762459,
+        "medianMs" : 0.46820800000000001,
+        "minMs" : 0.10162499999999999,
+        "p95Ms" : 0.74133300000000002
+      },
+      "sourceScalars" : 128000,
+      "sourceUTF8Bytes" : 224000,
+      "sourceUTF16Units" : 128000
+    },
+    {
+      "case" : "bmp",
+      "checkpointCount" : 0,
+      "construction" : {
+        "maxMs" : 3.4309159999999999,
+        "medianMs" : 2.9452500000000001,
+        "minMs" : 2.6784590000000001,
+        "p95Ms" : 3.4043749999999999
+      },
+      "constructionSamples" : 10,
+      "logicalAuxiliaryBytes" : 0,
+      "lookupSamples" : 48,
+      "newLookup" : {
+        "maxMs" : 0.00020799999999999999,
+        "medianMs" : 0,
+        "minMs" : 0,
+        "p95Ms" : 8.3999999999999995e-05
+      },
+      "oldLookup" : {
+        "maxMs" : 4.1715419999999996,
+        "medianMs" : 1.7060839999999999,
+        "minMs" : 0.098000000000000004,
+        "p95Ms" : 3.1236250000000001
+      },
+      "sourceScalars" : 512000,
+      "sourceUTF8Bytes" : 896000,
+      "sourceUTF16Units" : 512000
+    },
+    {
+      "case" : "mixed",
+      "checkpointCount" : 0,
+      "construction" : {
+        "maxMs" : 0.00033399999999999999,
+        "medianMs" : 0.00033300000000000002,
+        "minMs" : 0.000292,
+        "p95Ms" : 0.00033399999999999999
+      },
+      "constructionSamples" : 10,
+      "logicalAuxiliaryBytes" : 0,
+      "lookupSamples" : 48,
+      "newLookup" : {
+        "maxMs" : 0.00016699999999999999,
+        "medianMs" : 8.3999999999999995e-05,
+        "minMs" : 0,
+        "p95Ms" : 0.00016699999999999999
+      },
+      "oldLookup" : {
+        "maxMs" : 0.00075000000000000002,
+        "medianMs" : 0.000417,
+        "minMs" : 0.00025000000000000001,
+        "p95Ms" : 0.00058399999999999999
+      },
+      "sourceScalars" : 48,
+      "sourceUTF8Bytes" : 96,
+      "sourceUTF16Units" : 56
+    },
+    {
+      "case" : "mixed",
+      "checkpointCount" : 187,
+      "construction" : {
+        "maxMs" : 2.6922079999999999,
+        "medianMs" : 1.6855,
+        "minMs" : 1.6590419999999999,
+        "p95Ms" : 1.8831659999999999
+      },
+      "constructionSamples" : 10,
+      "logicalAuxiliaryBytes" : 4488,
+      "lookupSamples" : 48,
+      "newLookup" : {
+        "maxMs" : 0.023333,
+        "medianMs" : 0.0029169999999999999,
+        "minMs" : 0.00020900000000000001,
+        "p95Ms" : 0.0086250000000000007
+      },
+      "oldLookup" : {
+        "maxMs" : 4.5126249999999999,
+        "medianMs" : 1.1067499999999999,
+        "minMs" : 0.206709,
+        "p95Ms" : 2.7013750000000001
+      },
+      "sourceScalars" : 192000,
+      "sourceUTF8Bytes" : 384000,
+      "sourceUTF16Units" : 224000
+    },
+    {
+      "case" : "mixed",
+      "checkpointCount" : 749,
+      "construction" : {
+        "maxMs" : 24.910917000000001,
+        "medianMs" : 10.155457999999999,
+        "minMs" : 6.8974580000000003,
+        "p95Ms" : 15.812208
+      },
+      "constructionSamples" : 10,
+      "logicalAuxiliaryBytes" : 17976,
+      "lookupSamples" : 48,
+      "newLookup" : {
+        "maxMs" : 0.0073330000000000001,
+        "medianMs" : 0.0026670000000000001,
+        "minMs" : 0.00037500000000000001,
+        "p95Ms" : 0.0061250000000000002
+      },
+      "oldLookup" : {
+        "maxMs" : 14.008125,
+        "medianMs" : 3.5286659999999999,
+        "minMs" : 0.17316599999999999,
+        "p95Ms" : 6.9794159999999996
+      },
+      "sourceScalars" : 768000,
+      "sourceUTF8Bytes" : 1536000,
+      "sourceUTF16Units" : 896000
+    }
+  ],
+  "scope" : "host Foundation release -O component comparison; construction separate; logical checkpoint fields exclude allocator\/object\/text storage; not RSS\/UIKit\/FPS\/physical latency"
+}
