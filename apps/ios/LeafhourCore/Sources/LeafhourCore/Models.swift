@@ -58,11 +58,23 @@ public struct ReaderNote: Codable, Identifiable, Equatable, Sendable {
         self.id = id; self.anchor = anchor; self.quote = quote; self.body = body; self.modifiedAt = modifiedAt
     }
 }
+public enum ReaderNavigationMode: String, Codable, Sendable { case scroll, paged }
 public struct ReaderPreferences: Codable, Equatable, Sendable {
     public var fontSize: Double = 22
     public var lineSpacing: Double = 9
     public var theme: String = "paper"
+    public var navigationMode: ReaderNavigationMode = .scroll
     public init() {}
+    private enum CodingKeys: String, CodingKey { case fontSize, lineSpacing, theme, navigationMode }
+    public init(from decoder: Decoder) throws {
+        let values = try decoder.container(keyedBy: CodingKeys.self)
+        fontSize = try values.decodeIfPresent(Double.self, forKey: .fontSize) ?? 22
+        lineSpacing = try values.decodeIfPresent(Double.self, forKey: .lineSpacing) ?? 9
+        theme = try values.decodeIfPresent(String.self, forKey: .theme) ?? "paper"
+        // Old state and a future mode remain readable without discarding notes or position.
+        let mode = try values.decodeIfPresent(String.self, forKey: .navigationMode)
+        navigationMode = mode.flatMap(ReaderNavigationMode.init(rawValue:)) ?? .scroll
+    }
 }
 public struct ReaderState: Codable, Equatable, Sendable {
     public var anchor: ReadingAnchor?
