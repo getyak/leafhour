@@ -1,0 +1,587 @@
+{
+  "schemaVersion": 1,
+  "recordedDate": "2026-10-30",
+  "issue": "GET-317",
+  "status": "partial_acceptance",
+  "scope": {
+    "designLedgerItems": 50,
+    "nativeUICases": 45,
+    "syntheticDataOnly": true,
+    "privateEvidencePreserved": true
+  },
+  "targets": {
+    "design": {
+      "targetOutOf100": 95,
+      "measuredScore": null,
+      "status": "not_demonstrated"
+    },
+    "nativeUI": {
+      "targetPassPercent": 98,
+      "observedNormalPassPercent": 95.56,
+      "status": "not_met",
+      "denominator": 45,
+      "failedCasesRetained": true
+    }
+  },
+  "environment": {
+    "xcode": "26.6",
+    "xcodeBuild": "17F113",
+    "simulatorOS": "26.5",
+    "primaryDevice": "iPhone 17 Pro simulator",
+    "execution": "serial shared device session",
+    "physicalDeviceAcceptance": false
+  },
+  "validationLayers": [
+    {
+      "layer": "LeafhourCore",
+      "passed": 95,
+      "failed": 0,
+      "status": "passed",
+      "scope": "Previously completed domain tests; relevant Core source bytes unchanged in source22."
+    },
+    {
+      "layer": "NativeAppTests",
+      "passed": 73,
+      "failed": 0,
+      "status": "passed",
+      "artifact": "NativeBuildCompatibility22.log",
+      "scope": "Current Xcode 26 hosted app tests; also passed in full source21. Not a legacy Xcode build."
+    },
+    {
+      "layer": "HostIOSContracts",
+      "passed": 90,
+      "failed": 0,
+      "status": "passed",
+      "artifact": "ios-host-contracts-21.log"
+    },
+    {
+      "layer": "LocalCIContracts",
+      "passed": 8,
+      "failed": 0,
+      "status": "passed",
+      "artifact": "ci-contracts-22-complete.log",
+      "components": {
+        "ciImpactPlanner": 4,
+        "productionStatus": 4
+      },
+      "scope": "Local contracts only; hosted CI is read from live PR checks."
+    },
+    {
+      "layer": "IOSPythonContracts",
+      "passed": 9,
+      "failed": 0,
+      "status": "passed",
+      "artifact": "ios-python-21.log"
+    },
+    {
+      "layer": "VendorIntegrity",
+      "status": "passed",
+      "scope": "Local vendored dependency verification."
+    },
+    {
+      "layer": "BashSyntax",
+      "status": "passed",
+      "scope": "Local shell syntax verification."
+    }
+  ],
+  "normalNativeUI": {
+    "artifact": "NativeFullFinal21.xcresult",
+    "sourceSnapshot": "source21",
+    "completed": true,
+    "overallResult": "failed",
+    "runtimeSourceBound": true,
+    "totalCases": 45,
+    "passedCases": 43,
+    "failedCases": 2,
+    "skippedCases": 0,
+    "passPercent": 95.56,
+    "auditFiltering": false,
+    "caseResults": [
+      {
+        "case": "test01SyntheticShelfShowsLocalAndCloudWithoutDuplicateTranslatedBook",
+        "status": "passed",
+        "seconds": 10.043
+      },
+      {
+        "case": "test02AuthorSearchAndClearRestoreTheShelf",
+        "status": "passed",
+        "seconds": 13.865
+      },
+      {
+        "case": "test03DownloadedScopeOnlyShowsOfflineBooks",
+        "status": "passed",
+        "seconds": 12.346
+      },
+      {
+        "case": "test04GridAndListChoicePersistsAcrossColdLaunch",
+        "status": "passed",
+        "seconds": 25.424
+      },
+      {
+        "case": "test05SortMenuKeepsTheSearchAndFilter",
+        "status": "passed",
+        "seconds": 21.543
+      },
+      {
+        "case": "test06ZeroSearchExplainsAndCanRecover",
+        "status": "passed",
+        "seconds": 12.336
+      },
+      {
+        "case": "test07TextAndMarkdownOpenThroughRealBookActions",
+        "status": "passed",
+        "seconds": 16.971
+      },
+      {
+        "case": "test08NativeCopyCanBePastedIntoTheRealNoteEditor",
+        "status": "passed",
+        "seconds": 35.793
+      },
+      {
+        "case": "test09SelectedQuoteDraftSurvivesColdRelaunch",
+        "status": "passed",
+        "seconds": 28.62
+      },
+      {
+        "case": "test10SavedNoteAndReturnToQuoteWork",
+        "status": "passed",
+        "seconds": 31.934
+      },
+      {
+        "case": "test11ContentsJumpAndColdResumeKeepTheChapter",
+        "status": "passed",
+        "seconds": 18.05
+      },
+      {
+        "case": "test12WholeBookSearchJumpsToMatchingChapter",
+        "status": "passed",
+        "seconds": 18.891
+      },
+      {
+        "case": "test13FontSpacingAndThemePersistAcrossColdLaunch",
+        "status": "passed",
+        "seconds": 38.307
+      },
+      {
+        "case": "test14ResetTypographyKeepsTheChosenTheme",
+        "status": "passed",
+        "seconds": 24.564
+      },
+      {
+        "case": "test15MiddleTapDoesNotWakeSleepingToolsButTheEdgeDoes",
+        "status": "passed",
+        "seconds": 18.332
+      },
+      {
+        "case": "test16OpeningAndClosingToolsDoesNotMoveTheVisibleText",
+        "status": "passed",
+        "seconds": 21.095
+      },
+      {
+        "case": "test17TranslationVariantsKeepSourceAndDraftIdentity",
+        "status": "passed",
+        "seconds": 22.95
+      },
+      {
+        "case": "test18ExpandedLongTranslationReachesItsEndAndReturns",
+        "status": "passed",
+        "seconds": 40.858
+      },
+      {
+        "case": "test19LocalMissingTranslationNeverPretendsToExist",
+        "status": "passed",
+        "seconds": 19.448
+      },
+      {
+        "case": "test20CompanionHalfSheetKeepsComposerAboveKeyboard",
+        "status": "passed",
+        "seconds": 15.2
+      },
+      {
+        "case": "test21CompanionExplicitSubmissionReturnsLabelledSyntheticAnswer",
+        "status": "passed",
+        "seconds": 18.205
+      },
+      {
+        "case": "test22ListeningPauseAndSpeedDoNotResumeUnexpectedly",
+        "status": "passed",
+        "seconds": 21.839
+      },
+      {
+        "case": "test23ExistingSyntheticPDFReachesLastPageAndColdRestores",
+        "status": "passed",
+        "seconds": 19.627
+      },
+      {
+        "case": "test24BookDetailsExposeOriginalAndRecordExports",
+        "status": "passed",
+        "seconds": 23.431
+      },
+      {
+        "case": "test25SlowDownloadCanCancelWithoutPublishingAnOfflineBook",
+        "status": "passed",
+        "seconds": 13.138
+      },
+      {
+        "case": "test26FinishingAnotherDownloadDoesNotHijackCurrentReading",
+        "status": "passed",
+        "seconds": 18.227
+      },
+      {
+        "case": "test27AccountRecordFailureIsNotPresentedAsAnEmptyNotebook",
+        "status": "passed",
+        "seconds": 13.406
+      },
+      {
+        "case": "test28SuccessfulEmptyRecordsShowAnHonestEmptyState",
+        "status": "passed",
+        "seconds": 13.96
+      },
+      {
+        "case": "test29CloudShelfFailureStillAllowsLocalReading",
+        "status": "passed",
+        "seconds": 12.192
+      },
+      {
+        "case": "test30SystemImporterCanOpenAndCancelWithoutChangingShelf",
+        "status": "passed",
+        "seconds": 17.931
+      },
+      {
+        "case": "test31ExplicitSyntheticTranslationSavesBothVariantsAndColdRestores",
+        "status": "passed",
+        "seconds": 39.611
+      },
+      {
+        "case": "test32ShelfAndQuietReaderPassNativeAccessibilityAudits",
+        "status": "failed",
+        "seconds": 22.414
+      },
+      {
+        "case": "test33NativeSelectionMenuSurvivesTheChromeIdleInterval",
+        "status": "passed",
+        "seconds": 34.869
+      },
+      {
+        "case": "test34SystemFilesActuallyImportsSyntheticTextAndColdRestoresIt",
+        "status": "passed",
+        "seconds": 32.387
+      },
+      {
+        "case": "test35PersonalRecordsActuallySaveThroughTheSystemFileExporter",
+        "status": "passed",
+        "seconds": 42.55
+      },
+      {
+        "case": "test36AvailableAccountProvidersDisableOnlyWhileABookTaskIsBusy",
+        "status": "passed",
+        "seconds": 31.605
+      },
+      {
+        "case": "test37RejectedAccountLinkShowsItsErrorWithoutChangingTheAccount",
+        "status": "passed",
+        "seconds": 17.249
+      },
+      {
+        "case": "test38SavedRecordsAndExpandedSettingsPassNativeAccessibilityAudits",
+        "status": "failed",
+        "seconds": 54.556
+      },
+      {
+        "case": "test39AwakeReaderControlsKeepNativeTapTargetsDuringSelection",
+        "status": "passed",
+        "seconds": 40.782
+      },
+      {
+        "case": "test40SystemTypeProfileKeepsTheFullTitleAndEveryReadingToolUsable",
+        "status": "passed",
+        "seconds": 117.666
+      },
+      {
+        "case": "test41SystemTypeProfileKeepsTheRealTypographyPreviewAndResetUsable",
+        "status": "passed",
+        "seconds": 34.637
+      },
+      {
+        "case": "test42SystemTypeProfileKeepsSavedNotesReturnActionAndNativeContinueUsable",
+        "status": "passed",
+        "seconds": 52.447
+      },
+      {
+        "case": "test43GridDownloadDetailsAndReadingKeepFullNativeTapTargets",
+        "status": "passed",
+        "seconds": 31.637
+      },
+      {
+        "case": "test44LongBookTitleKeepsReadableNavigationAndCopyableCompleteInformation",
+        "status": "passed",
+        "seconds": 67.998
+      },
+      {
+        "case": "test45NativeRotationKeepsReadableParagraphWidthCopyAndPortraitPosition",
+        "status": "passed",
+        "seconds": 73.692
+      }
+    ]
+  },
+  "selectedNativeRuns": [
+    {
+      "artifact": "NativeAX5Current20.xcresult",
+      "sourceSnapshot": "source20",
+      "profile": "OS maximum accessibility text size",
+      "runtimeSourceBound": true,
+      "passedCases": 7,
+      "failedCases": 0,
+      "caseResults": [
+        {
+          "case": "test20CompanionHalfSheetKeepsComposerAboveKeyboard",
+          "status": "passed",
+          "seconds": 20.075
+        },
+        {
+          "case": "test39AwakeReaderControlsKeepNativeTapTargetsDuringSelection",
+          "status": "passed",
+          "seconds": 39.941
+        },
+        {
+          "case": "test40SystemTypeProfileKeepsTheFullTitleAndEveryReadingToolUsable",
+          "status": "passed",
+          "seconds": 101.973
+        },
+        {
+          "case": "test41SystemTypeProfileKeepsTheRealTypographyPreviewAndResetUsable",
+          "status": "passed",
+          "seconds": 62.847
+        },
+        {
+          "case": "test42SystemTypeProfileKeepsSavedNotesReturnActionAndNativeContinueUsable",
+          "status": "passed",
+          "seconds": 50.391
+        },
+        {
+          "case": "test43GridDownloadDetailsAndReadingKeepFullNativeTapTargets",
+          "status": "passed",
+          "seconds": 26.298
+        },
+        {
+          "case": "test44LongBookTitleKeepsReadableNavigationAndCopyableCompleteInformation",
+          "status": "passed",
+          "seconds": 113.629
+        }
+      ],
+      "boundary": "Predates the normal-size Cancel repair; not compact/iPad acceptance."
+    },
+    {
+      "artifact": "NativeNormalRepair21.xcresult",
+      "sourceSnapshot": "source21",
+      "profile": "normal",
+      "runtimeSourceBound": true,
+      "passedCases": 3,
+      "failedCases": 0,
+      "caseResults": [
+        {
+          "case": "test25SlowDownloadCanCancelWithoutPublishingAnOfflineBook",
+          "status": "passed",
+          "seconds": 17.101
+        },
+        {
+          "case": "test42SystemTypeProfileKeepsSavedNotesReturnActionAndNativeContinueUsable",
+          "status": "passed",
+          "seconds": 46.968
+        },
+        {
+          "case": "test43GridDownloadDetailsAndReadingKeepFullNativeTapTargets",
+          "status": "passed",
+          "seconds": 30.662
+        }
+      ],
+      "boundary": "UI25/UI42/UI43 also pass in the full source21 run."
+    }
+  ],
+  "compatibility": {
+    "artifact": "NativeBuildCompatibility22.xcresult",
+    "sourceSnapshot": "source22",
+    "buildSucceeded": true,
+    "hostedAppTestsPassed": 73,
+    "hostedAppTestsFailed": 0,
+    "uiCasesExecuted": 0,
+    "runtimeUITestMarkerExpected": false,
+    "evidence": "Immutable input manifest and compile/test log; no UI runtime binding is claimed for this app-test-only run.",
+    "changeFromSource21": {
+      "file": "apps/ios/Leafhour/ReaderPanels.swift",
+      "addedLines": [
+        "#if compiler(>=6.2)",
+        "#endif"
+      ],
+      "currentXcode26RuntimeBranchChanged": false,
+      "scaledMetricFallbackRetained": true
+    },
+    "actualXcode16BuildVerified": false,
+    "source21Hashes": {
+      "LeafhourUITests/VideoExperienceUITests.swift": "ab067f4bbbb70785c279c5d8f4ad3f41dc5cd1c73eb67fb696989beb9df68542",
+      "Leafhour/ReaderPanels.swift": "003d7fa3bdb41ba0bb7911f2a213cc73442a2dd2d46492ab05b97f4033a2901a",
+      "Leafhour/LibraryScreen.swift": "770c3acdaa05bb9fd06432aa60eb408dc97ba5e0392d2de964926807a91a7da9"
+    },
+    "source22Hashes": {
+      "LeafhourUITests/VideoExperienceUITests.swift": "ab067f4bbbb70785c279c5d8f4ad3f41dc5cd1c73eb67fb696989beb9df68542",
+      "Leafhour/ReaderPanels.swift": "0f3322354dd8384789a157b2f868ec35023771296d66c112a9b87f3b69040158",
+      "Leafhour/LibraryScreen.swift": "770c3acdaa05bb9fd06432aa60eb408dc97ba5e0392d2de964926807a91a7da9"
+    }
+  },
+  "rawAccessibilityAudits": {
+    "status": "failed",
+    "baselineArtifact": "NativeAuditBaseline13.xcresult",
+    "finalArtifact": "NativeFullFinal21.xcresult",
+    "failedCases": [
+      "test32ShelfAndQuietReaderPassNativeAccessibilityAudits",
+      "test38SavedRecordsAndExpandedSettingsPassNativeAccessibilityAudits"
+    ],
+    "auditType": "all",
+    "handlerIgnoresIssues": false,
+    "globalAllowlist": false,
+    "skippedCases": 0,
+    "evidence": [
+      {
+        "issue": "UI32 nil-element inaccessible text",
+        "controlArtifact": "NativeCoverProbe16.xcresult",
+        "controlRuntimeSourceBound": true,
+        "testSourceUnchanged": true,
+        "singleVisualChange": "Hide only duplicate fallback-cover title/author text while preserving layout.",
+        "controlPassedCases": 1,
+        "controlSeconds": 22.641,
+        "productionCoverTextRetained": true,
+        "conclusion": "The warning is causally tied to repeated cover text; the diagnostic control is not a passing production audit."
+      },
+      {
+        "issue": "UI38 saved-note header contrast",
+        "foreground": "#000000",
+        "background": "#F2F2F7",
+        "measuredContrastRatio": 18.82,
+        "scope": "Baseline13 element pixels only; not all colors or surfaces."
+      },
+      {
+        "issue": "UI38 partial Dynamic Type support",
+        "sourceSnapshot": "source13",
+        "observedNormalToAX5HeightsPoints": [
+          {
+            "nodes": [
+              "fontSizeLabel",
+              "fontSizeValue",
+              "lineSpacingLabel",
+              "lineSpacingValue"
+            ],
+            "normalEach": 20.3,
+            "ax5Each": 63.3
+          },
+          {
+            "nodes": [
+              "defaultTypographyState"
+            ],
+            "normal": 52.3,
+            "ax5": 155.3
+          },
+          {
+            "nodes": [
+              "systemSizeExplanatoryText"
+            ],
+            "normal": 52.0,
+            "ax5": 246.7
+          }
+        ],
+        "conclusion": "These nodes actually scale. Scaling alone does not prove all text is unclipped and reachable."
+      },
+      {
+        "issue": "UI38 toolbar and Return Label warnings",
+        "control": "Separate stock SwiftUI probe reproduces partial Dynamic Type/text-clipping warnings.",
+        "scope": "Specific control evidence only; original product failures remain retained."
+      },
+      {
+        "issue": "UI38 typography preview contrast",
+        "observation": "The flagged frame was partly outside the viewport and overlapped the navigation bar.",
+        "scope": "Does not establish the contrast of a fully exposed preview."
+      }
+    ]
+  },
+  "exportVerification": {
+    "status": "verified_export_only",
+    "strictReceiptArtifact": "NativeFiles12-export-receipt.json",
+    "verified": true,
+    "runtimeSourceBound": true,
+    "checks": [
+      "current task-owned container after installation",
+      "exact run-specific sentinel",
+      "current fixture book ID and source version",
+      "stored note body, quote and anchor"
+    ],
+    "followupRun": "NativeFiles20",
+    "followupBytes": 583,
+    "followupSHA256": "855058a9c21f3e828e4a070532b7e59931eb426760c11532c2c1a62027b6d032",
+    "earlierFailedContainerReceiptRetained": true,
+    "restoreInterfaceAvailable": false,
+    "restorationVerified": false
+  },
+  "history": [
+    {
+      "artifact": "NativeFullNormal19.xcresult",
+      "totalCases": 44,
+      "passedCases": 39,
+      "failedCases": 5,
+      "failedCaseIDs": [
+        "UI30",
+        "UI32",
+        "UI38",
+        "UI42",
+        "UI43"
+      ],
+      "cancelTargetFinding": {
+        "case": "UI43",
+        "measuredWidthPoints": 34,
+        "requiredMinimumPoints": 44,
+        "heightAssertionReached": false,
+        "repair": "Put minimum dimensions and content shape inside the actual Cancel label."
+      },
+      "originalFailuresRetained": true
+    }
+  ],
+  "unavailableProfiles": [
+    {
+      "profile": "compact iPhone",
+      "attempt": "Compact21",
+      "status": "blocked_before_native_execution",
+      "guardExitCode": 2,
+      "nativeCasesExecuted": 0,
+      "reason": "Shared session refuses a second simulator while borrowed Primary remains Booted.",
+      "borrowedDevicePreserved": true,
+      "guardChanged": false
+    },
+    {
+      "profile": "iPad",
+      "status": "not_started_same_session_gate",
+      "nativeCasesExecuted": 0,
+      "guardChanged": false
+    }
+  ],
+  "unproved": [
+    "complete accessibility acceptance",
+    "compact iPhone and iPad acceptance",
+    "physical-device VoiceOver",
+    "hardware keyboard",
+    "real cloud/account/model round trips",
+    "TestFlight installation",
+    "production release",
+    "JSON restoration",
+    "actual Xcode 16 build"
+  ],
+  "delivery": {
+    "mode": "draft_pr_review",
+    "issueState": "In Progress",
+    "hostedCIStatusSource": "live_pull_request_checks",
+    "hostedCIStatusFrozenInReport": false,
+    "mergedOrReleasedClaimed": false
+  },
+  "publicArtifacts": {
+    "readme": "README.md",
+    "designLedger": "../../superpowers/specs/2026-10-29-get-317-ios-video-experience-design.md",
+    "screenshotProvenance": "../../../apps/ios/Documentation/verification/2026-10-29-get-317-ios-video-experience/screenshots/provenance.json"
+  }
+}

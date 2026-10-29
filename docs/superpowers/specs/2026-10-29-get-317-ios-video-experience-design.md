@@ -44,6 +44,37 @@ No new model provider, full-book translation, notification, cloud deletion, acco
 | V22 | supplementary test | Test cold resume, offline integrity, import, cancellation/retry, search, export and account isolation. |
 | V23 | supplementary test | Test compact iPhone and iPad adaptation using the existing guarded device pool. |
 | V24 | supplementary review | Independent code and screenshot review, with unresolved findings reported explicitly. |
+| V25 | independent review + regression | Download/import completion can replace a different book opened while the task ran. Preserve the active reader and finish the background item without navigation. |
+| V26 | independent review + regression | Deduplicating a newer cloud copy can hide an older local version and its records. Keep the current copy canonical and older offline versions reachable without migration. |
+| V27 | tall-toolbar layout regression | Text anchor capture/restoration must use the actual unobscured top inset instead of a fixed 50-point reference. |
+| V28 | PDF page-seam regression | Capture the PDF page under the unobscured viewport probe, including seams in both directions, rather than the stale destination page. |
+| V29 | native XCUITest | Text selection must suspend the six-second chrome idle timer to keep existing reading controls stable. Separately exercise both horizontal and expanded vertical forms of the native Copy menu. Cross-paragraph copying remains available without creating an invalid anchored quote. |
+| V30 | native XCUITest | Expanded long translations need a direct return to reading, using the same save receipt check as the parent sheet. |
+| V31 | native XCUITest + deterministic speech probe | Preserve an explicit pause even if the system rejects the immediate pause request or delivers a late completion callback. |
+| V32 | native XCUITest | Keep the book meaningfully visible when the companion composer opens the keyboard, while retaining reachable input and native sheet dismissal. |
+| V33 | final independent integration review | Disable native account-link actions during book processing and show failures for already signed-in accounts as well as signed-out accounts. Verify providers were enabled before exercising the busy state. |
+| V34 | native menu inspection | Four optional reading actions precede the system editing actions and bury Copy. Keep UIKit's standard editing group first, preserving the original system actions and cross-paragraph copying. |
+| V35 | native speech E2E | Multiple automatic-style buttons share one Form row. Make previous/play/next independently actionable, keeping the first passage selected when playback is paused. |
+| V36 | native accessibility audit | The library sorting menu exposes a hit region smaller than 44 points. Put the size and hit shape inside the actual menu label and rerun the unfiltered system audit. |
+| V37 | independent screenshot review | Reader sheets allow underlying book glyphs to show through their spare areas. Give record/translation surfaces a solid theme-aware background. |
+| V38 | independent screenshot/code review | Repeated excerpt words make local notes hard to distinguish. Show their real chapter/passage and saved modification time; keep reopened draft editing inline and omit empty note sections. |
+| V39 | supplementary interaction review | A note's return button must not make its entire List row navigate. Keep tapping/selecting personal text independent from the explicit return-to-source action. |
+
+
+| V40 | native accessibility audit | Shelf author/status captions lack contrast and the long search prompt clips. Use theme-aware readable metadata, include author in the reading action, and shorten the field prompt. |
+| V41 | native audit + actual SwiftUI render tests | The typography preview is capped to four lines and a fixed height. Let the real source excerpt grow with both chosen base size and every system text category; make the default state clear without a dimmed reset action. |
+| V42 | native AX frame inspection | Visible reader button padding is not the native tap region. Verify at least 44 points for back, companion, settings, chapter navigation and progress. |
+| V43 | maximum-type layout review | Five equal dock columns and a one-line title cannot accommodate accessibility sizes. Keep the complete title readable, scroll enlarged tools horizontally and put opaque navigation styling inside the actual panel stack. |
+
+| V44 | independent screenshot review | Five small green action captions are harder to scan than the icons. Use slightly larger medium-weight semantic captions in primary text, retaining leaf-colored icons, and check both normal and accessibility layouts. This does not itself establish the cause of an unlocated system contrast warning. |
+
+
+| V45 | actual OS AX5 shelf inspection | Decorative mini covers squeeze enlarged book information while title/author limits truncate it. At accessibility sizes give complete text the width, separate secondary actions, preserve a true single-column grid preference, and keep resume metadata readable. |
+| V46 | grid action inspection | Explicit grid Read/Download captions expose only their small text bounds. Give each actual button label at least a 44-point target and verify download cancellation, details navigation and opening the real local source in both type profiles. |
+| V47 | long-title boundary review | An unlimited enlarged title can consume the reading viewport. Keep navigation bounded to one normal or two accessibility lines, provide the complete title, author, source format and original filename in a scrollable information panel, and allow explicit copying without changing the source anchor. |
+| V48 | native test provenance | A rebuilt XCTest runner can still load a cached earlier test image. Isolate each acceptance runner and verify the executed source path, immutable input hashes and actual saved export bytes before accepting its result. This is verification infrastructure, not a video-confirmed product defect. |
+| V49 | complete native normal-size regression | The active download Cancel button has a measured 34-point width because its 44-point frame surrounds the Button. Put the real 44-point hit region inside its label, and verify both dimensions and cancellation without publishing an offline copy. |
+| V50 | documented build support review | The semantic preview font calls an iOS 26 SDK member inside a runtime availability check, which older Xcode compilers still type-check. Guard the new member by compiler version while retaining the scaled-metric fallback and the documented Xcode 16 build path. A source guard does not establish an actual Xcode 16 build. |
 
 The video does not demonstrate settings content, note editing or a real AI conversation. These are supplementary investigations, not video-confirmed failures. Multi-select download and richer book management may be implemented only after their state/cancellation behavior is concrete; no destructive bulk action is inferred from the comparison application.
 
@@ -59,6 +90,8 @@ The video does not demonstrate settings content, note editing or a real AI conve
 The requested 95/100 design target is a review target across content hierarchy, native behavior, visual legibility, recovery and accessibility, each with explicit acceptance cases. Independent review records findings rather than manufacturing a score. The requested 98% testing target means at least 98% of the agreed executable acceptance cases pass, with zero unresolved critical/high-impact failures; skipped/unavailable cases do not count as passed. Passing simulator or fixture checks does not establish real-device, cloud generation, TestFlight update or full VoiceOver acceptance.
 
 Evidence must identify source revision, runtime, fixture/real-service scope, command outcome and screenshots. Final delivery must distinguish source merged, web production, native build and physical installation.
+
+Native JSON record export currently has no corresponding restore interface. Opening or saving the exporter does not establish restoration in another installation. Keep that capability gap explicit; do not count it as a passed round-trip test.
 
 ## References
 
