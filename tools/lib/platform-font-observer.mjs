@@ -86,7 +86,9 @@ export async function exercisePopoverKeyboard({cdp,trigger,panel,capture,afterOp
   opened=await read();
   assert.ok(opened.panel?.visible&&opened.expanded==='true'&&opened.focusInPanel,'Settled paint must preserve the actual chooser and focus');
   guard();await capture();await dispatchRemoteKey(cdp,guard,'Escape',27);
-  const closed=await until(async()=>{const value=await read();return !value.panel?.visible&&value.expanded==='false'?value:false;},'real popover to close',4000);
+  // dialog.close() changes open/ARIA before its queued close handler returns
+  // focus. Observe the complete roundtrip within one bound; never replay Escape.
+  const closed=await until(async()=>{const value=await read();return !value.panel?.visible&&value.expanded==='false'&&value.focusOnTrigger&&value.trigger?.visible&&!value.trigger.disabled&&!value.trigger.inert?value:false;},'real popover to close and return focus to its visible opener',4000);
   assert.equal(closed.focusOnTrigger,true,'Escape must return focus to the actual visible opener');
   assert.equal(closed.url,activation.before.url,'Opening/closing a chooser must preserve the entry URL');
   return {trigger,panel,...activation,openedBeforePaint,paint,opened,closed};

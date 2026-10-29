@@ -28,13 +28,14 @@ test('removing the actual control cannot satisfy initial-closed acceptance',()=>
 });
 
 function keyboardTransport(options={}){
-  let open=false,focusOnTrigger=false,focusInPanel=false,stopped=false;
+  let open=false,focusOnTrigger=false,focusInPanel=false,stopped=false,closing=false,closedReads=0;
   const commands=[],captures=[];
   const cdp={
     async evaluate(expression){
       if(expression.startsWith('(function observeNativeScroll'))return options.scroll||{status:'unchanged'};
       if(expression.startsWith('(function observePopoverPaint')){captures.push('paint observation');if(options.cancelAtPaint)stopped=true;return options.paint||{status:'settled'};}
       assert.ok(expression.startsWith('(function observePopoverState'),'only the actual read-only observation is evaluated');
+      if(closing&&options.delayedCloseFocus&&++closedReads>=2)focusOnTrigger=true;
       return {url:options.changedUrl&&!open&&captures.length?'/library?broken=1':'/library',trigger:{visible:options.visible!==false,disabled:false,inert:false},panel:{visible:open},expanded:String(open),focusOnTrigger,focusInPanel};
     },
     async send(method,args){
@@ -46,7 +47,7 @@ function keyboardTransport(options={}){
       if(args.type==='keyDown'&&args.key==='Enter'&&args.text==='\r'&&args.unmodifiedText==='\r'){open=true;focusOnTrigger=false;}
       if(args.type==='rawKeyDown'){
         if(args.key==='Tab')focusInPanel=!options.outsideFocus;
-        else if(args.key==='Escape'){open=false;focusInPanel=false;focusOnTrigger=true;}
+        else if(args.key==='Escape'){open=false;closing=true;focusInPanel=false;focusOnTrigger=!options.delayedCloseFocus&&!options.noCloseFocus;}
       }
       return {};
     },
@@ -60,6 +61,14 @@ test('remote keyboard sequence activates the real button once and observes focus
   assert.deepEqual(down.map(args=>args.key),['Enter','Tab','Escape']);
   assert.equal(down[0].type,'keyDown');assert.equal(down[0].text,'\r');assert.equal(down[0].unmodifiedText,'\r');
   assert.deepEqual(f.captures,['paint observation','real open screenshot']);assert.equal(value.paint.status,'settled');
+});
+test('closing visibility can precede the native close event that returns focus',async()=>{
+  const f=keyboardTransport({delayedCloseFocus:true});const value=await exercisePopoverKeyboard(f);
+  assert.equal(value.closed.focusOnTrigger,true);assert.equal(f.commands.filter(([,args])=>args?.key==='Escape'&&args.type==='rawKeyDown').length,1,'Only closing state is observed; Escape must not be replayed');
+});
+test('a closed panel that never restores focus remains an acceptance failure',async()=>{
+  const f=keyboardTransport({noCloseFocus:true});await assert.rejects(()=>exercisePopoverKeyboard(f),/Escape.*focus|close.*focus/);
+  assert.equal(f.commands.filter(([,args])=>args?.key==='Escape'&&args.type==='rawKeyDown').length,1);
 });
 test('hidden trigger or failed actual focus refuses keyboard activation',async()=>{
   for(const options of [{visible:false},{failedFocus:true}]){

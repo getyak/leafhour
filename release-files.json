@@ -1401,5 +1401,6 @@
   "tests/reader-highlight-intent.test.mjs",
   "tests/reader-note-refresh.test.mjs",
   "tests/catalog-checkout-bytes.test.mjs",
-  "tests/platform-home-contract.test.mjs"
+  "tests/platform-home-contract.test.mjs",
+  "tests/platform-shelf-contract.test.mjs"
 ]
