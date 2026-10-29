@@ -235,7 +235,7 @@ private struct ReaderDockButton: View {
     }
     var body: some View {
         Button(action: action) {
-            VStack(spacing: 5) { Image(systemName: symbol).font(.system(size: iconSize, weight: .regular)); Text(title).font(.caption2).fixedSize(horizontal: true, vertical: true) }
+            VStack(spacing: 5) { Image(systemName: symbol).font(.system(size: iconSize, weight: .regular)); Text(title).font(.caption.weight(.medium)).foregroundStyle(Color.primary).fixedSize(horizontal: true, vertical: true) }
                 .frame(maxWidth: .infinity).frame(minWidth: 52, minHeight: 52).padding(.horizontal, 4).contentShape(Rectangle())
         }.buttonStyle(.plain).foregroundStyle(Color.leafInk).accessibilityLabel(accessibility)
     }
