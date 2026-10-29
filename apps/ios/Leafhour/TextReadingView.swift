@@ -15,6 +15,7 @@ struct TextReadingView: UIViewRepresentable {
     let onReadingScroll: () -> Void
     var onTranslate: ((SelectedQuote) -> Void)? = nil
     var onDiscuss: ((SelectedQuote) -> Void)? = nil
+    var onSelectionChange: ((SelectedQuote?, Bool) -> Void)? = nil
     func makeCoordinator() -> Coordinator { Coordinator(parent: self) }
     func makeUIView(context: Context) -> UITextView {
         let view = ReflowTextView(usingTextLayoutManager: false)
@@ -215,6 +216,18 @@ struct TextReadingView: UIViewRepresentable {
         func selectedText() -> (range: NSRange, text: String)? {
             guard let view, view.selectedRange.length > 0, NSMaxRange(view.selectedRange) <= view.attributedText.length else { return nil }
             return (view.selectedRange, (view.attributedText.string as NSString).substring(with: view.selectedRange))
+        }
+        func textViewDidChangeSelection(_ textView: UITextView) {
+            let range = textView.selectedRange, navigation = navigationID
+            // UIKit can notify synchronously during representable updates. Publish
+            // only the latest user selection after that update has completed.
+            DispatchQueue.main.async { [weak self, weak textView] in
+                guard let self, let textView, self.view === textView, !self.restoring,
+                      self.navigationID == navigation, self.parent.session.navigationID == navigation,
+                      self.renderedChapterID == self.parent.session.chapter.id,
+                      textView.selectedRange == range else { return }
+                self.parent.onSelectionChange?(self.selectedQuote(in: textView, range: range), range.length > 0)
+            }
         }
         func invalidate() { restorationGeneration += 1; cancelPendingCapture(); view = nil }
         func restore(_ anchor: ReadingAnchor?, persistCheckpoint: Bool = false) {

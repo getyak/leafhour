@@ -39,6 +39,7 @@ struct ReaderScreen: View {
     @State private var clockID = UUID()
     @State private var adjustingProgress = false
     @State private var selectionDismissalID = UUID()
+    @State private var hasNativeTextSelection = false
     @State private var chromeHeights: [ReaderChromeRegion: CGFloat] = [.top: 44, .bottom: 156]
     private enum ChromeFocus: Hashable { case back, preferences, companion, previous, next, progress, contents, listening, translation, records, tools }
     @FocusState private var focusedControl: ChromeFocus?
@@ -59,7 +60,8 @@ struct ReaderScreen: View {
                 }, onWake: wake, onReadingScroll: readingDidScroll)
             } else {
                 TextReadingView(session: session, pageInsets: pageInsets, selectionDismissalID: selectionDismissalID, onNote: { showNote($0) }, onSource: { panel = .source($0); chrome = .asleep }, onExplain: { showCompanion($0) }, onWake: wake, onReadingScroll: readingDidScroll,
-                    onTranslate: { session.selection = $0; present(.translation) })
+                    onTranslate: { session.selection = $0; present(.translation) },
+                    onSelectionChange: { quote, active in session.selection = quote; hasNativeTextSelection = active })
             }
             VStack(spacing: 0) {
                 if chrome == .top || chrome == .tools {
@@ -134,7 +136,7 @@ struct ReaderScreen: View {
             }
         }
         .interactiveDismissDisabled(panel?.isCompanion != true && (session.saving || session.saveError != nil))
-        .sheet(item: $panel, onDismiss: { session.clearTransientSelection(); selectionDismissalID = UUID(); chrome = .asleep }) { destination in
+        .sheet(item: $panel, onDismiss: { hasNativeTextSelection = false; session.clearTransientSelection(); selectionDismissalID = UUID(); chrome = .asleep }) { destination in
             ReaderPanelView(panel: destination, session: session, systemColorScheme: systemColorScheme, speech: speech, tools: tools, cloud: cloud,
                 onJump: { index, anchor in session.go(to: index, anchor: anchor); panel = nil }, onCompanion: { showCompanion(currentQuote) })
                 .presentationDetents(destination.isNoteEditor ? [.large] : destination.isCompanion ? [.fraction(0.5)] : [.medium, .large]).presentationDragIndicator(.visible)
@@ -150,22 +152,23 @@ struct ReaderScreen: View {
         } message: { Text(session.message ?? session.saveMessage ?? "") }
         .onChange(of: focusedControl) { _, _ in clockID = UUID() }
         .onChange(of: session.selection?.id) { _, _ in clockID = UUID() }
+        .onChange(of: hasNativeTextSelection) { _, _ in clockID = UUID() }
         .onChange(of: chrome) { _, _ in clockID = UUID() }
-        .onChange(of: session.chapterIndex) { _, _ in speech.stop(); if chrome == .progress || chrome == .tools { clockID = UUID() } }
+        .onChange(of: session.chapterIndex) { _, _ in hasNativeTextSelection = false; speech.stop(); if chrome == .progress || chrome == .tools { clockID = UUID() } }
         .sensoryFeedback(.selection, trigger: panel?.id)
         .task(id: clockID) {
             guard chrome != .asleep else { return }
-            do { try await Task.sleep(for: .seconds(6)); guard !Task.isCancelled, !adjustingProgress, focusedControl == nil, panel == nil, session.selection == nil, !UIAccessibility.isVoiceOverRunning else { return }; sleepChrome() } catch {}
+            do { try await Task.sleep(for: .seconds(6)); guard !Task.isCancelled, !adjustingProgress, focusedControl == nil, panel == nil, session.selection == nil, !hasNativeTextSelection, !UIAccessibility.isVoiceOverRunning else { return }; sleepChrome() } catch {}
         }
         .onChange(of: scenePhase) { _, phase in if phase != .active { speech.pause(); session.save(); chrome = .asleep } }
         .onAppear { tools.configure(library: library, localBookID: session.book.id) }
         .onDisappear { speech.stop() }
     }
     private func sleepChrome() {
-        guard chrome != .asleep, !adjustingProgress, focusedControl == nil, panel == nil, session.selection == nil, !UIAccessibility.isVoiceOverRunning else { return }
+        guard chrome != .asleep, !adjustingProgress, focusedControl == nil, panel == nil, session.selection == nil, !hasNativeTextSelection, !UIAccessibility.isVoiceOverRunning else { return }
         withAnimation(reduceMotion ? nil : .easeOut(duration: 0.18)) { chrome = .asleep }
     }
-    private func readingDidScroll() { session.clearTransientSelection(); selectionDismissalID = UUID(); sleepChrome() }
+    private func readingDidScroll() { hasNativeTextSelection = false; session.clearTransientSelection(); selectionDismissalID = UUID(); sleepChrome() }
     private func wake(_ value: ReaderChrome) { withAnimation(reduceMotion ? nil : .easeOut(duration: 0.16)) { chrome = value } }
     private func present(_ value: ReaderPanel) { panel = value; chrome = .asleep }
     private func showNote(_ quote: SelectedQuote) {
@@ -185,6 +188,7 @@ struct ReaderScreen: View {
         return SelectedQuote(anchor: ReadingAnchor(chapterID: session.chapter.id, passageID: passage.id), text: visible, sourceText: source)
     }
     private func showCompanion(_ quote: SelectedQuote?) {
+        hasNativeTextSelection = false
         session.selection = nil
         selectionDismissalID = UUID()
         focusedControl = nil
