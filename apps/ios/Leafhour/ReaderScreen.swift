@@ -32,6 +32,7 @@ struct ReaderScreen: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.scenePhase) private var scenePhase
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @State private var chrome: ReaderChrome = .tools
     @State private var panel: ReaderPanel?
     @State private var speech = ReaderSpeech()
@@ -70,7 +71,8 @@ struct ReaderScreen: View {
                             Label("返回书房", systemImage: "chevron.left").labelStyle(.iconOnly)
                                 .frame(minWidth: 44, minHeight: 44).contentShape(Rectangle())
                         }.focused($focusedControl, equals: .back)
-                        Text(session.book.title).font(.subheadline).lineLimit(1).frame(maxWidth: .infinity)
+                        Text(session.book.title).font(.subheadline).lineLimit(dynamicTypeSize.isAccessibilitySize ? nil : 1)
+                            .fixedSize(horizontal: false, vertical: true).frame(maxWidth: .infinity)
                         Button { showCompanion(currentQuote) } label: {
                             Label("陪我读", systemImage: "text.bubble").labelStyle(.iconOnly)
                                 .frame(minWidth: 44, minHeight: 44).contentShape(Rectangle())
@@ -108,12 +110,15 @@ struct ReaderScreen: View {
                         if chrome == .progress && session.book.chapters.count > 1 {
                             Slider(value: Binding(get: { Double(session.chapterIndex) }, set: { session.go(to: Int($0.rounded())) }), in: 0...Double(session.book.chapters.count - 1), step: 1, onEditingChanged: { adjustingProgress = $0; clockID = UUID() }).focused($focusedControl, equals: .progress).accessibilityLabel(session.book.kind == .pdf ? "页码" : "章节")
                         }
-                        HStack(spacing: 4) {
-                            ReaderDockButton("目录", symbol: "list.bullet") { present(.contents) }.focused($focusedControl, equals: .contents)
-                            ReaderDockButton("听书", symbol: speech.playing ? "waveform" : "headphones") { present(.listening) }.focused($focusedControl, equals: .listening)
-                            ReaderDockButton("翻译", symbol: "character.book.closed") { present(.translation) }.focused($focusedControl, equals: .translation)
-                            ReaderDockButton("笔记", symbol: "square.and.pencil", accessibility: "我的记录") { present(.records) }.focused($focusedControl, equals: .records)
-                            ReaderDockButton("更多", symbol: "ellipsis") { present(.tools) }.focused($focusedControl, equals: .tools)
+                        if dynamicTypeSize.isAccessibilitySize {
+                            ScrollView(.horizontal) {
+                                dockActions
+                                    .fixedSize(horizontal: true, vertical: false)
+                            }.fixedSize(horizontal: false, vertical: true)
+                                .scrollIndicators(.visible)
+                                .accessibilityHint("横向滚动可查看全部阅读工具")
+                        } else {
+                            dockActions
                         }
                     }.padding(.horizontal, 18).padding(.bottom, 12).padding(.top, 4)
                         .background(paper, in: RoundedRectangle(cornerRadius: 24, style: .continuous))
@@ -177,6 +182,15 @@ struct ReaderScreen: View {
         .onAppear { tools.configure(library: library, localBookID: session.book.id) }
         .onDisappear { speech.stop() }
     }
+    private var dockActions: some View {
+        HStack(spacing: 4) {
+            ReaderDockButton("目录", symbol: "list.bullet") { present(.contents) }.focused($focusedControl, equals: .contents)
+            ReaderDockButton("听书", symbol: speech.playing ? "waveform" : "headphones") { present(.listening) }.focused($focusedControl, equals: .listening)
+            ReaderDockButton("翻译", symbol: "character.book.closed") { present(.translation) }.focused($focusedControl, equals: .translation)
+            ReaderDockButton("笔记", symbol: "square.and.pencil", accessibility: "我的记录") { present(.records) }.focused($focusedControl, equals: .records)
+            ReaderDockButton("更多", symbol: "ellipsis") { present(.tools) }.focused($focusedControl, equals: .tools)
+        }
+    }
     private func sleepChrome() {
         guard chrome != .asleep, !adjustingProgress, focusedControl == nil, panel == nil, session.selection == nil, !hasNativeTextSelection, !UIAccessibility.isVoiceOverRunning else { return }
         withAnimation(reduceMotion ? nil : .easeOut(duration: 0.18)) { chrome = .asleep }
@@ -215,13 +229,14 @@ private struct ReaderDockButton: View {
     let symbol: String
     let accessibility: String
     let action: () -> Void
+    @ScaledMetric(relativeTo: .body) private var iconSize = 18.0
     init(_ title: String, symbol: String, accessibility: String? = nil, action: @escaping () -> Void) {
         self.title = title; self.symbol = symbol; self.accessibility = accessibility ?? title; self.action = action
     }
     var body: some View {
         Button(action: action) {
-            VStack(spacing: 5) { Image(systemName: symbol).font(.system(size: 18, weight: .regular)); Text(title).font(.caption2) }
-                .frame(maxWidth: .infinity).frame(minHeight: 52).contentShape(Rectangle())
+            VStack(spacing: 5) { Image(systemName: symbol).font(.system(size: iconSize, weight: .regular)); Text(title).font(.caption2).fixedSize(horizontal: true, vertical: true) }
+                .frame(maxWidth: .infinity).frame(minWidth: 52, minHeight: 52).padding(.horizontal, 4).contentShape(Rectangle())
         }.buttonStyle(.plain).foregroundStyle(Color.leafInk).accessibilityLabel(accessibility)
     }
 }
