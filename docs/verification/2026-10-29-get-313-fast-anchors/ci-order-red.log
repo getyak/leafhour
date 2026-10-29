@@ -1,0 +1,60 @@
+TAP version 13
+# Subtest: server-only smoke context is synthetic while client synthetic fields cannot override it
+    # Subtest: server delivery completes first
+    ok 1 - server delivery completes first
+      ---
+      duration_ms: 125.997917
+      type: 'test'
+      ...
+    # Subtest: browser delivery completes first
+    not ok 2 - browser delivery completes first
+      ---
+      duration_ms: 10.2045
+      type: 'test'
+      location: '/Users/cubxxw/.codex/worktrees/leafhour-ios-contrast-20261029/leafhour/tests/observability.test.mjs:21:51'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          [
+        +   false,
+            true,
+        -   false
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: true
+        1: false
+      actual:
+        0: false
+        1: true
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///Users/cubxxw/.codex/worktrees/leafhour-ios-contrast-20261029/leafhour/tests/observability.test.mjs:41:12)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async TestContext.<anonymous> (file:///Users/cubxxw/.codex/worktrees/leafhour-ios-contrast-20261029/leafhour/tests/observability.test.mjs:21:43)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    1..2
+not ok 1 - server-only smoke context is synthetic while client synthetic fields cannot override it
+  ---
+  duration_ms: 140.09025
+  type: 'test'
+  location: '/Users/cubxxw/.codex/worktrees/leafhour-ios-contrast-20261029/leafhour/tests/observability.test.mjs:20:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 3
+# suites 0
+# pass 1
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 276.681542
