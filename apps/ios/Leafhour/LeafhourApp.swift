@@ -5,7 +5,7 @@ import LeafhourCore
 
 @main
 struct LeafhourApp: App {
-    @State private var model = LibraryModel()
+    @State private var model = VideoAcceptanceFixture.makeModelIfRequested() ?? LibraryModel()
     var body: some Scene {
         WindowGroup { LibraryScreen(model: model).tint(.leafInk) }
     }
