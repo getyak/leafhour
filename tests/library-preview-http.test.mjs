@@ -58,3 +58,18 @@ test('a personal records outage leaves the source preview readable without weake
   assert.equal((await fetch(url,{headers:{...headers,'X-Reader-Owner':'another-owner'}})).status,409);
   assert.equal(reads,1,'access and passage validation must reject before optional enrichment');
 });
+
+test('private cover HTTP responses use the signed-in owner and never public caching',async t=>{
+  const {PDFDocument,StandardFonts}=await import('pdf-lib');
+  const dir=await mkdtemp(path.join(tmpdir(),'reader-cover-http-'));
+  const server=await createReaderServer({recordsPath:path.join(dir,'records.json'),translator:null,sendCode:null});await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
+  t.after(async()=>{await new Promise(resolve=>{server.close(resolve);server.closeAllConnections();});await rm(dir,{recursive:true,force:true});});
+  const base='http://127.0.0.1:'+server.address().port,session=await server.portal.auth.localSession();
+  const pdf=await PDFDocument.create(),page=pdf.addPage([300,450]);page.drawText('An original book cover for reading',{x:20,y:350,size:12,font:await pdf.embedFont(StandardFonts.Helvetica)});
+  const book=await server.portal.library.importDocument(session.user,{filename:'cover.pdf',bytes:Buffer.from(await pdf.save())}),url=base+'/api/library/books/'+book.bookId+'/cover';
+  assert.equal((await fetch(url)).status,401);
+  const headers={Cookie:'marginalia_session='+session.token};
+  const response=await fetch(url,{headers});assert.equal(response.status,200);assert.equal(response.headers.get('content-type'),'image/webp');assert.equal(response.headers.get('cache-control'),'private, no-store');assert.equal(response.headers.get('x-content-type-options'),'nosniff');assert.ok((await response.arrayBuffer()).byteLength>0);
+  assert.equal((await fetch(url,{headers:{...headers,'X-Reader-Owner':'other'}})).status,409);
+  assert.equal((await fetch(base+'/api/library/books/gutenberg-alice/cover',{headers})).status,404);
+});

@@ -1,3 +1,4 @@
+import {deriveImportedCover} from './imported-cover.mjs';
 import {buildLibraryArrival} from './library-arrival.mjs';
 import {memoryFor,recordPreference,applyMemoryChange} from './preference-memory.mjs';
 import {resolveVerifiedSource} from './verified-source.mjs';
@@ -245,6 +246,32 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
       const overlay=await read(path.join(userDir(user),'translations',digest(row.bookId)+'.json'),{});
       return {...row,...bookReadingLanguages({...book,sourceLanguage},overlay),topics:row.topics||book?.topics||[],...(positions?{shelfPosition:positions.get(row.bookId)}:{}),resume:book&&data.position?resumeSummary(book,data.position):null,journey:book?readingJourney(book,data):null};
     }));
+  }
+  const coverJobs=new Map();let coverQueue=Promise.resolve();
+  async function getCover(user,id){
+    requireUser(user);const index=await read(path.join(userDir(user),'index.json'),{books:[]}),book=index.books.find(row=>row.bookId===id&&row.visibility==='private');
+    if(!book||!['pdf','epub'].includes(book.source?.format))throw fail('这本书没有原文件封面',404);
+    const hash=book.source.sha256;if(!/^[a-f0-9]{64}$/.test(hash||''))throw fail('找不到原文件封面',404);
+    const file=path.join(userDir(user),'covers',hash+'-v1.json'),cached=await read(file,null);
+    if(cached?.missing)throw fail('原文件没有封面',404);
+    if(cached?.data)return {mimeType:'image/webp',bytes:Buffer.from(cached.data,'base64')};
+    const key=user.id+':'+hash;
+    if(!coverJobs.has(key)){
+      const work=coverQueue.catch(()=>{}).then(async()=>{
+        const originalFile=path.join(userDir(user),'originals',hash);let info;
+        try{info=dataStore?await dataStore.blobInfo(originalFile):await stat(originalFile);}catch(error){if(error.code==='ENOENT')throw fail('找不到原文件封面',404);throw error;}
+        if(!info||info.size>MAX_FILE_BYTES)throw fail('找不到原文件封面',404);
+        const bytes=await (dataStore?dataStore.blob(originalFile):readFile(originalFile));
+        if(bytes.length>MAX_FILE_BYTES||digest(bytes)!==hash)throw fail('原文件校验失败，请重新上传',409);
+        const cover=await deriveImportedCover(bytes,book.source.format);
+        await mutate(file,{},data=>Object.assign(data,cover?{data:cover.toString('base64')}:{missing:true}));
+        if(!cover)throw fail('原文件没有封面',404);
+        return {mimeType:'image/webp',bytes:cover};
+      });
+      coverJobs.set(key,work);coverQueue=work.catch(()=>{});
+      work.finally(()=>coverJobs.delete(key)).catch(()=>{});
+    }
+    return coverJobs.get(key);
   }
   async function importDocument(user,input){requireUser(user);return importExtracted(user,{...input,extracted:await extractDocument(input)});}
   async function importExtracted(user,input){
@@ -665,5 +692,5 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
     await chapterReads.manifest(user,incoming.bookId);
     return {bookId:incoming.bookId,alreadyOwned:!claim.created};
   }
-  return {introductions,sourceEvidence,sourceReview,createSourceRevision,resolveSourceAnchor,bookTransfer:async(user,id,offset,snapshot)=>transferBook(await getBook(user,id),offset,snapshot),list,shelfState,reorderShelf,archiveBook,restoreBook,trash,getBook,readingView,readingManifest,readingChapter,importDocument,importExtracted,originalInfo,getOriginal,originalDownload,originalParts,originalRange,records,notebookPage,getReadingPreferences,saveReadingPreferences,getPreferenceMemory,changePreferenceMemory,addComment,editComment,addHighlight,addAgentHighlight,removeHighlight,saveProgress,saveReadingSession,recordReadingMilestone,setReadingGoal,readingActivity,arrival,translate,createGrant,createMcpGrant,createDailyGrant,authorize,authorizeDaily,isGrantActive,registerGrantRevocation:listener=>{grantRevocationListeners.add(listener);return()=>grantRevocationListeners.delete(listener);},registerSourceMutation:listener=>{sourceMutationListeners.add(listener);return()=>sourceMutationListeners.delete(listener);},grants,revokeGrant,exportLibrary,exportManifest,exportBookPart,exportBookEntry,restoreOriginal,validateRestore,previewRestoreBooks,restoreLibrary,receiveGift,translationAvailable:!!translator};
+  return {getCover,introductions,sourceEvidence,sourceReview,createSourceRevision,resolveSourceAnchor,bookTransfer:async(user,id,offset,snapshot)=>transferBook(await getBook(user,id),offset,snapshot),list,shelfState,reorderShelf,archiveBook,restoreBook,trash,getBook,readingView,readingManifest,readingChapter,importDocument,importExtracted,originalInfo,getOriginal,originalDownload,originalParts,originalRange,records,notebookPage,getReadingPreferences,saveReadingPreferences,getPreferenceMemory,changePreferenceMemory,addComment,editComment,addHighlight,addAgentHighlight,removeHighlight,saveProgress,saveReadingSession,recordReadingMilestone,setReadingGoal,readingActivity,arrival,translate,createGrant,createMcpGrant,createDailyGrant,authorize,authorizeDaily,isGrantActive,registerGrantRevocation:listener=>{grantRevocationListeners.add(listener);return()=>grantRevocationListeners.delete(listener);},registerSourceMutation:listener=>{sourceMutationListeners.add(listener);return()=>sourceMutationListeners.delete(listener);},grants,revokeGrant,exportLibrary,exportManifest,exportBookPart,exportBookEntry,restoreOriginal,validateRestore,previewRestoreBooks,restoreLibrary,receiveGift,translationAvailable:!!translator};
 }

@@ -41,7 +41,7 @@ test('actual public and private shelf cards use complete message IDs and preserv
 
 function uploadFixture(bindings={}){
   const nodes=new Map(),el=id=>{
-    if(!nodes.has(id))nodes.set(id,{textContent:'',value:'',open:false,disabled:false,attributes:new Map(),setAttribute(k,v){this.attributes.set(k,String(v));},getAttribute(k){return this.attributes.get(k);},classList:{toggle(){},remove(){}},replaceChildren(){},removeAttribute(){},close(){this.open=false;}});
+    if(!nodes.has(id))nodes.set(id,{dataset:{},textContent:'',value:'',open:false,disabled:false,attributes:new Map(),setAttribute(k,v){this.attributes.set(k,String(v));},getAttribute(k){return this.attributes.get(k);},classList:{toggle(){},remove(){}},replaceChildren(){},removeAttribute(){},close(){this.open=false;}});
     return nodes.get(id);
   };
   const ownerScope=createOwnerScope();ownerScope.adopt('synthetic-a');

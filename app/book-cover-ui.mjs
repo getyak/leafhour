@@ -22,7 +22,7 @@ export function paintBookAbout(document,book){
   let cover=document.getElementById('book-info-artwork');
   if(!cover){cover=document.createElement('div');cover.id='book-info-artwork';cover.className='book-info-cover';cover.setAttribute('aria-hidden','true');sourceCover.parentNode.insertBefore(cover,sourceCover);}
   paintBookCover(cover,book);
-  const illustrated=cover.dataset.coverStyle==='illustrated';sourceCover.classList.toggle('book-info-source-cover',illustrated);sourceCover.hidden=illustrated;
+  const illustrated=['illustrated','imported'].includes(cover.dataset.coverStyle);sourceCover.classList.toggle('book-info-source-cover',illustrated);sourceCover.hidden=illustrated;
   if(!illustrated){painter.forget(cover);cover.remove();}
   const title=document.getElementById('book-info-title'),author=document.getElementById('book-info-author');
   if(title)paintBookIdentity(title,book);if(author){paintBookIdentity(author,book,'author');author.setAttribute('title',book?.author||'');author.hidden=!author.textContent;}
