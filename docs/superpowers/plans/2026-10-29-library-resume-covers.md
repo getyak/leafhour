@@ -16,5 +16,5 @@
 - [x] Implement compact bookmark in the library render/clear lifecycle with existing translated labels.
 - [x] Add real EPUB/PDF cover tests and owner-isolation HTTP checks; observe failures.
 - [x] Implement bounded extraction, private cached cover service and shared image rendering.
-- [ ] Run focused/full tests, copy checks and hosted build; inspect browser screenshots and keyboard navigation.
-- [ ] Review, synchronize main, create PR, wait for CI, merge and verify the same production revision.
+- [x] Run focused/full tests, copy checks and hosted build; inspect browser screenshots and keyboard navigation.
+- Delivery: [PR #253](https://github.com/getyak/leafhour/pull/253) tracks review, synchronization, CI, merge and verification of the same production revision.
