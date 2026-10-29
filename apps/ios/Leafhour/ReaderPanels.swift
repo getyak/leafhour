@@ -53,9 +53,15 @@ struct ReaderPanelView: View {
             }
             .interactiveDismissDisabled(!panel.isCompanion && (session.saving || session.saveError != nil))
             .navigationBarTitleDisplayMode(.inline)
+            .toolbarBackground(Color(uiColor: .systemBackground), for: .navigationBar)
+            .toolbarBackground(.visible, for: .navigationBar)
             .toolbar {
                 if !isNoteEditor {
-                    ToolbarItem(placement: .cancellationAction) { Button("继续读", action: continueReading) }
+                    ToolbarItem(placement: .cancellationAction) {
+                        Button(action: continueReading) {
+                            Text("继续读").font(.body).frame(minHeight: 44).contentShape(Rectangle())
+                        }
+                    }
                 }
             }
         }
