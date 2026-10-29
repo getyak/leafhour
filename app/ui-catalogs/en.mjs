@@ -1344,7 +1344,7 @@ export default Object.freeze({
   "reader.shell.viewRecords": "View highlights, thoughts and questions",
   "reader.shell.manual": "Add reading time",
   "reader.shell.ownRecords": "Leafhour · Your reading records",
-  "reader.shell.instructions": "Click a passage or focus it and press Enter for original text, annotations and records. In page mode use ← → or the buttons below. F toggles full screen when available. Esc exits full screen; the browser may also close an overlay. Outside full screen, Esc closes overlays.",
+  "reader.shell.instructions": "On touch screens, press and hold to select text; tapping keeps reading quiet. With a mouse, click a passage or focus it and press Enter for original text, annotations and records. In page mode use ← → or the buttons below. F toggles full screen when available. Esc exits full screen; the browser may also close an overlay. Outside full screen, Esc closes overlays.",
   "reader.b1.draftUnavailable": "Local drafts could not be read. Original data is kept. Save a recovery copy or copy new text first.",
   "reader.shell.draftHelp": "Each draft keeps its source location. Drafts from separate reading pages stay separate and enter your notes only after saving.",
   "reader.session.state.active": "{source} in progress",
