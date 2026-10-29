@@ -226,16 +226,21 @@ try{
   // font warming on every mode.
   lifecycle.guard('product evidence');
   await session.installFontHold();
-  await session.navigateProduct(origin+'/');
-  await session.until(async()=>session.paused.size&&await cdp.evaluate(`['/en','/zh-hans','/zh-hant','/ja'].includes(location.pathname)&&document.readyState!=='loading'&&!!document.querySelector('.hero-copy h1 .hero-line')`),'font-paused authored hero after automatic root entry');
+  // Bind cold-font evidence to one authored document. The automatic root entry
+  // replaces its loader and can retire its only held preload; test that entry
+  // separately after the real cold/loaded glyph observations are complete.
+  await session.navigateProduct(origin+'/en');
+  await session.until(async()=>session.paused.size&&await cdp.evaluate(`location.pathname==='/en'&&document.readyState!=='loading'&&!!document.querySelector('#home-view .hero-copy h1')`),'font-paused authored homepage');
   if(args.mode==='android')viewport=await bindAndroidProductViewport({receipt,label:'home-cold',read:()=>session.viewport('home-cold')});
-  // Current surfaces use stock sans for the headline and Leafhour Serif for
-  // the actual source quotation. Exercise the font owner that the product
-  // really renders; never restyle a node to satisfy the font assertions.
+  // The current authored headline and source quotation both use Leafhour Serif.
+  // Exercise their real font owners without restyling or adding probe wrappers.
   await delay(500);const cold=await session.fonts('#home-view .sample-original','cold font-withheld source quotation',{awaitFonts:false});assert.ok(cold.fonts.some(font=>!font.isCustomFont&&font.glyphCount>0),'Cold fallback must have visible actual glyphs');assert.ok(!cold.fonts.some(font=>font.isCustomFont&&font.glyphCount>0),'Cold run must not use warmed custom face');await session.capture('home-controlled-font-delay');
   await session.releaseFontHold();
   await cdp.evaluate('document.fonts.ready.then(()=>true)');await session.capture('home-loaded');customNewsreader(await session.fonts('#home-view .sample-original','loaded source quotation'));
-  const headline=await session.fonts('.hero-copy h1 .hero-line','current stock-sans headline');assert.ok(headline.fonts.some(font=>!font.isCustomFont&&font.glyphCount>0),'Current headline must render its actual stock sans glyphs');
+  customNewsreader(await session.fonts('#home-view .hero-copy h1','current serif headline'));
+  await session.navigateProduct(origin+'/',{page:'home-root-entry'});
+  await session.until(()=>cdp.evaluate(`({'/en':'en','/zh-hans':'zh-Hans','/zh-hant':'zh-Hant','/ja':'ja'})[location.pathname]===document.documentElement.lang&&document.readyState!=='loading'&&!!document.querySelector('#home-view .hero-copy h1')`),'automatic root entry to an authored locale homepage');
+  receipt.rootEntry=await cdp.evaluate('({pathname:location.pathname,lang:document.documentElement.lang})');
   for(const [route,locale] of [['/zh-hans','zh-Hans'],['/zh-hant','zh-Hant'],['/ja','ja']]){
     await session.navigateProduct(origin+route,{page:'home-'+locale});
     await session.until(()=>cdp.evaluate(`location.pathname===${JSON.stringify(route)}&&document.readyState==='complete'&&document.documentElement.lang===${JSON.stringify(locale)}&&document.querySelector('#home-menu-trigger')?.getAttribute('lang')===${JSON.stringify(locale)}&&!!document.querySelector('#how .section-copy h2')`),'authored '+locale+' home and initialized navigation');
