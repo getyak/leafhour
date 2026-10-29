@@ -234,28 +234,41 @@ struct ReaderRecordsPanel: View {
                 Section("未完成草稿") {
                     ForEach(session.state.drafts.values.sorted { $0.anchor.key < $1.anchor.key }, id: \.anchor.key) { draft in
                         Button { editing = SelectedQuote(anchor: draft.anchor, text: draft.quote) } label: {
-                            VStack(alignment: .leading, spacing: 8) { Text(draft.body.isEmpty ? "尚未写完" : draft.body).foregroundStyle(.primary).lineLimit(3); Text("原文 · " + draft.quote).font(.footnote).foregroundStyle(.secondary).lineLimit(2) }.padding(.vertical, 6)
+                            VStack(alignment: .leading, spacing: 8) {
+                                Text(location(draft.anchor)).font(.caption).foregroundStyle(.secondary)
+                                Text(draft.body.isEmpty ? "尚未写完" : draft.body).foregroundStyle(.primary).lineLimit(3)
+                                Text("原文 · " + draft.quote).font(.footnote).foregroundStyle(.secondary).lineLimit(2)
+                            }.padding(.vertical, 6)
                         }
                     }
                 }
             }
-            Section("我的笔记") {
+            if !session.state.notes.isEmpty { Section("我的笔记") {
                 ForEach(session.state.notes.reversed()) { note in
                     VStack(alignment: .leading, spacing: 8) {
+                        Text(location(note.anchor)).font(.caption).foregroundStyle(.secondary)
                         Text(note.body).textSelection(.enabled)
                         Text("原文 · " + note.quote).font(.footnote).foregroundStyle(.secondary).lineLimit(3)
+                        Text(note.modifiedAt, format: .dateTime.year().month().day().hour().minute())
+                            .font(.caption2).foregroundStyle(.secondary)
+                            .accessibilityLabel("修改于 \(note.modifiedAt.formatted(date: .abbreviated, time: .shortened))")
                         Button("回到原句", systemImage: "arrow.uturn.backward") {
                             if let index = session.book.chapters.firstIndex(where: { $0.id == note.anchor.chapterID }) { onJump(index, note.anchor) }
                         }.font(.footnote)
                     }.padding(.vertical, 6)
                 }
-            }
+            } }
         }.navigationTitle("我的记录")
             .sheet(item: $editing) { quote in
                 NavigationStack { NoteEditorPanel(quote: quote, session: session) }
                     .presentationDetents([.large])
                     .presentationBackground(Color(uiColor: .systemBackground))
             }
+    }
+    private func location(_ anchor: ReadingAnchor) -> String {
+        guard let chapter = session.book.chapters.first(where: { $0.id == anchor.chapterID }) else { return "原文位置暂不可用" }
+        guard let index = chapter.passages.firstIndex(where: { $0.id == anchor.passageID }) else { return chapter.title }
+        return chapter.title + " · 第 \(index + 1) 段"
     }
 }
 struct NoteEditorPanel: View {
