@@ -6,8 +6,10 @@ import LeafhourCore
 /// UIKit owns selection/copy and accessibility. Source XHTML never executes or loads remote resources.
 struct TextReadingView: UIViewRepresentable {
     let session: ReaderSession
+    let selectionDismissalID: UUID
     let onNote: (SelectedQuote) -> Void
     let onSource: (SelectedQuote) -> Void
+    let onExplain: (SelectedQuote) -> Void
     let onWake: (ReaderChrome) -> Void
     let onReadingScroll: () -> Void
     func makeCoordinator() -> Coordinator { Coordinator(parent: self) }
@@ -29,6 +31,11 @@ struct TextReadingView: UIViewRepresentable {
         let coordinator = context.coordinator
         coordinator.parent = self
         coordinator.updateContent(view)
+        if coordinator.selectionDismissalID != selectionDismissalID {
+            coordinator.selectionDismissalID = selectionDismissalID
+            view.selectedRange = NSRange(location: 0, length: 0)
+            view.resignFirstResponder()
+        }
     }
     static func dismantleUIView(_ view: UITextView, coordinator: Coordinator) {
         (view as? ReflowTextView)?.onWidthChange = nil
@@ -96,6 +103,7 @@ struct TextReadingView: UIViewRepresentable {
         var renderedWidth = 0
         var restoring = false
         var edgeTap: ReaderEdgeTapHandler?
+        var selectionDismissalID: UUID?
         private var delayed: DispatchWorkItem?
         private var restorationGeneration = 0
         private var resignObserver: NSObjectProtocol?
@@ -188,7 +196,12 @@ struct TextReadingView: UIViewRepresentable {
                 self.parent.onNote(value)
             }
             let source = UIAction(title: "核对原文", image: UIImage(systemName: "text.quote")) { [weak self] _ in if let value = quote() { self?.parent.onSource(value) } }
-            return UIMenu(children: [note, source] + suggestedActions)
+            let explain = UIAction(title: "解释这句", image: UIImage(systemName: "text.bubble")) { [weak self] _ in
+                guard let self else { return }
+                guard let value = quote() else { self.parent.session.message = "请在同一段内选择文字，以保留准确原句引用。"; return }
+                self.parent.onExplain(value)
+            }
+            return UIMenu(children: [explain, note, source] + suggestedActions)
         }
     }
 }

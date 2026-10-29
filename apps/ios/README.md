@@ -51,7 +51,7 @@ flowchart LR
   Library --> Detail[Original / offline integrity / export]
 ```
 
-The reader starts with its chrome asleep. Top and progress controls wake independently from explicit edge buttons and have accessibility labels. Ordinary text taps do not summon an AI interface. Tools overlay the page; notes use the native half sheet and preserve their original quote. No unconnected cloud companion is presented as a working model service.
+The reader starts with its chrome asleep. Top and progress controls wake independently from explicit edge buttons and have accessibility labels. Ordinary text taps do not summon an AI interface. Tools overlay the page; notes use the native half sheet and preserve their original quote. The companion is summoned explicitly from the awake top controls or “解释这句” after system selection (PDF uses its selection actions). Its half sheet preserves the book above it and closes directly to quiet reading. Until the native service is integrated, it shows only the real source and an explicit unavailable state; no working AI service or generated answer is claimed. See [GET-274 verification](../../docs/verification/2026-10-29-get-274/README.md).
 
 ## Separate pending acceptance
 

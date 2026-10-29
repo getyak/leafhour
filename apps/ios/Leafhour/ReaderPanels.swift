@@ -22,6 +22,18 @@ struct ReaderPanelView: View {
                 case .preferences: ReaderPreferencesPanel(session: session)
                 case .records: ReaderRecordsPanel(session: session, onJump: onJump)
                 case .note(let quote): NoteEditorPanel(quote: quote, session: session)
+                case .companion(let quote):
+                    ScrollView {
+                        VStack(alignment: .leading, spacing: 18) {
+                            if let quote {
+                                Text("作者原文").font(.caption).foregroundStyle(.secondary)
+                                Text(quote.text).font(.body).textSelection(.enabled)
+                                Divider()
+                            }
+                            Text("此设备尚未连接 AI 陪读。原文仍在这里，可以继续阅读。")
+                                .font(.subheadline).foregroundStyle(.secondary)
+                        }.frame(maxWidth: .infinity, alignment: .leading).padding(24)
+                    }.navigationTitle("陪我读")
                 case .source(let quote):
                     ScrollView {
                         VStack(alignment: .leading, spacing: 18) {
@@ -34,11 +46,14 @@ struct ReaderPanelView: View {
                     }.navigationTitle("核对原文")
                 }
             }
-            .interactiveDismissDisabled(session.saving || session.saveError != nil)
+            .interactiveDismissDisabled(!panel.isCompanion && (session.saving || session.saveError != nil))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 if !isNoteEditor {
-                    ToolbarItem(placement: .cancellationAction) { Button("继续读") { Task { let receipt = await session.flush(); if session.isCurrent(receipt) { dismiss() } } } }
+                    ToolbarItem(placement: .cancellationAction) { Button("继续读") {
+                        if panel.isCompanion { dismiss() }
+                        else { Task { let receipt = await session.flush(); if session.isCurrent(receipt) { dismiss() } } }
+                    } }
                 }
             }
         }

@@ -8,6 +8,46 @@ final class ReadingUITests: XCTestCase {
     func capture(_ name: String) {
         let attachment = XCTAttachment(screenshot: app.screenshot()); attachment.name = name; attachment.lifetime = .keepAlways; add(attachment)
     }
+    /// GET-274 uses a separate task bundle seeded through OfflineLibrary with public-domain text.
+    func testCompanionExplicitSummonAndQuietDismissal() {
+        let reader = app.textViews["leafhour-epub-reader"]
+        XCTAssertTrue(reader.waitForExistence(timeout: 10))
+        XCTAssertFalse(app.buttons["陪我读"].exists)
+        reader.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).tap()
+        XCTAssertFalse(app.buttons["陪我读"].exists)
+        app.buttons["显示书名、返回与阅读设置"].tap()
+        let summon = app.buttons["陪我读"]
+        XCTAssertTrue(summon.waitForExistence(timeout: 3)); summon.tap()
+        assertCompanionAndDismiss("explicit")
+        app.terminate(); app.launch()
+        XCTAssertTrue(reader.waitForExistence(timeout: 10))
+        XCTAssertFalse(app.buttons["陪我读"].exists)
+    }
+    func testCompanionSystemSelectionAndQuietDismissal() {
+        let reader = app.textViews["leafhour-epub-reader"]
+        XCTAssertTrue(reader.waitForExistence(timeout: 10))
+        reader.coordinate(withNormalizedOffset: CGVector(dx: 0.45, dy: 0.48)).press(forDuration: 1.2)
+        let explain = app.menuItems["解释这句"]
+        XCTAssertTrue(explain.waitForExistence(timeout: 5), app.debugDescription); explain.tap()
+        XCTAssertTrue(app.staticTexts["作者原文"].waitForExistence(timeout: 3))
+        assertCompanionAndDismiss("selection")
+        XCTAssertFalse(app.menuItems["解释这句"].exists)
+    }
+    private func assertCompanionAndDismiss(_ origin: String) {
+        let title = app.navigationBars["陪我读"]
+        XCTAssertTrue(title.waitForExistence(timeout: 3))
+        XCTAssertGreaterThan(title.frame.minY, app.windows.firstMatch.frame.height * 0.3,
+                             "The companion must leave the upper book visible")
+        XCTAssertTrue(app.staticTexts["此设备尚未连接 AI 陪读。原文仍在这里，可以继续阅读。"].exists)
+        capture("GET274-" + origin + "-half-sheet-unavailable")
+        app.buttons["继续读"].tap()
+        capture("GET274-" + origin + "-after-close-tap")
+        XCTAssertTrue(title.waitForNonExistence(timeout: 1), app.debugDescription)
+        XCTAssertFalse(app.buttons["陪我读"].exists)
+        XCTAssertFalse(app.buttons["目录"].exists)
+        XCTAssertFalse(app.buttons["阅读设置"].exists)
+        capture("GET274-" + origin + "-quiet")
+    }
     func progress() {
         let wake = app.buttons["显示阅读进度、目录、搜索与记录"]
         XCTAssertTrue(wake.waitForExistence(timeout: 10)); wake.tap()

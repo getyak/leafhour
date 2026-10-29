@@ -20,6 +20,17 @@ async function setup(t) {
 }
 function event(type,values={}) {const e=new Event(type,{cancelable:true});for(const [key,value]of Object.entries(values))Object.defineProperty(e,key,{value});return e;}
 
+test('closing companion restores the quiet reading edge without leaving the AI entry focused',async t=>{
+ const {document,tools}=await setup(t);
+ const slot=document.getElementById('reading-tools-chat-slot'),chat=document.createElement('button');
+ chat.className='library-chat-trigger';slot.append(chat);
+ tools.toolbar.reveal(false);tools.chatIntegration.onOpen();
+ document.getElementById('reader-conversation').focus();
+ assert.equal(tools.chatIntegration.focusReturn(),true);
+ assert.equal(document.activeElement.id,'reading-tools-trigger');
+ assert.equal(tools.toolbar.expanded,false);
+});
+
 test('focused reader wakes only on explicit edge activation, then sleeps within ten seconds',async t=>{
  const {document,tools}=await setup(t);
  const top=document.getElementById('reader-top-edge');assert.ok(top,'production reader needs an accessible top-edge target');
