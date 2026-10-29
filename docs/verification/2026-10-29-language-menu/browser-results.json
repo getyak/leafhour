@@ -1,0 +1,71 @@
+{
+  "checks": [
+    {
+      "engine": "chromium",
+      "label": "cold entry works while private library bootstrap is unavailable"
+    },
+    {
+      "engine": "chromium",
+      "label": "hover reveals without focus movement, survives the gap and click pins"
+    },
+    {
+      "engine": "chromium",
+      "label": "keyboard and outside dismissal keep focus natural"
+    },
+    {
+      "engine": "chromium",
+      "label": "all four language links navigate and disclose the current language"
+    },
+    {
+      "engine": "chromium",
+      "label": "mobile bounds, touch click and reduced motion"
+    },
+    {
+      "engine": "chromium",
+      "label": "same controller serves pricing and support document language routes"
+    },
+    {
+      "engine": "webkit",
+      "label": "cold entry works while private library bootstrap is unavailable"
+    },
+    {
+      "engine": "webkit",
+      "label": "hover reveals without focus movement, survives the gap and click pins"
+    },
+    {
+      "engine": "webkit",
+      "label": "keyboard and outside dismissal keep focus natural"
+    },
+    {
+      "engine": "webkit",
+      "label": "all four language links navigate and disclose the current language"
+    },
+    {
+      "engine": "webkit",
+      "label": "mobile bounds, touch click and reduced motion"
+    },
+    {
+      "engine": "webkit",
+      "label": "same controller serves pricing and support document language routes"
+    }
+  ],
+  "errors": [],
+  "expectedErrors": [],
+  "failedRequests": [
+    {
+      "engine": "chromium",
+      "phase": "cold entry works while private library bootstrap is unavailable",
+      "path": "/portal.js",
+      "failure": "net::ERR_FAILED"
+    },
+    {
+      "engine": "webkit",
+      "phase": "cold entry works while private library bootstrap is unavailable",
+      "path": "/portal.js",
+      "failure": "Blocked by Web Inspector"
+    }
+  ],
+  "limits": [
+    "Headless browser touch emulation does not prove physical iPhone or screen-reader speech."
+  ]
+}

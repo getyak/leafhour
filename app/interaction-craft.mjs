@@ -48,6 +48,8 @@ export function mountInteractionCraft(document) {
       gestures.delete(dialog);
     }, true);
     dialog.addEventListener('close', () => {
+      // close is queued: a newer open may already be visible.
+      if(dialog.open){syncDialog(dialog);return;}
       syncDialog(dialog, false);
       const opener = openers.get(dialog); gestures.delete(dialog);
       // A registered focus owner owns this dialog's return path outright.
