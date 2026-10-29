@@ -1,0 +1,526 @@
+TAP version 13
+# Subtest: an old HTTP Set-Cookie must settle before another account can start verification
+ok 1 - an old HTTP Set-Cookie must settle before another account can start verification
+  ---
+  duration_ms: 83.428875
+  type: 'test'
+  ...
+# Subtest: resend uses an absolute deadline and survives closing and reopening the dialog
+ok 2 - resend uses an absolute deadline and survives closing and reopening the dialog
+  ---
+  duration_ms: 1.352
+  type: 'test'
+  ...
+# Subtest: changing mailbox discards the old code and a delayed send response
+ok 3 - changing mailbox discards the old code and a delayed send response
+  ---
+  duration_ms: 10.093583
+  type: 'test'
+  ...
+# Subtest: a second submit cannot launch another concurrent send or verification
+ok 4 - a second submit cannot launch another concurrent send or verification
+  ---
+  duration_ms: 4.921208
+  type: 'test'
+  ...
+# Subtest: a successful verification cannot be overwritten by a delayed failure
+ok 5 - a successful verification cannot be overwritten by a delayed failure
+  ---
+  duration_ms: 0.617375
+  type: 'test'
+  ...
+# Subtest: backend rate limits update the actual wait and do not clear a recoverable mailbox
+ok 6 - backend rate limits update the actual wait and do not clear a recoverable mailbox
+  ---
+  duration_ms: 0.23975
+  type: 'test'
+  ...
+# Subtest: closing an in-flight request invalidates its response without losing its cooldown
+ok 7 - closing an in-flight request invalidates its response without losing its cooldown
+  ---
+  duration_ms: 0.201625
+  type: 'test'
+  ...
+# Subtest: pasted digits are normalized and incomplete codes cannot submit
+ok 8 - pasted digits are normalized and incomplete codes cannot submit
+  ---
+  duration_ms: 0.533834
+  type: 'test'
+  ...
+# Subtest: cookie-changing requests remain serialized across close, reset, and a different account
+ok 9 - cookie-changing requests remain serialized across close, reset, and a different account
+  ---
+  duration_ms: 0.272042
+  type: 'test'
+  ...
+# Subtest: auth flow retains only a validated message descriptor, never remote prose as a catalogue key
+ok 10 - auth flow retains only a validated message descriptor, never remote prose as a catalogue key
+  ---
+  duration_ms: 1.130917
+  type: 'test'
+  ...
+# Subtest: independent hosted instances reserve one email delivery and report its remaining cooldown
+ok 11 - independent hosted instances reserve one email delivery and report its remaining cooldown
+  ---
+  duration_ms: 10.695208
+  type: 'test'
+  ...
+# Subtest: failed delivery does not report success or remove its cooldown
+ok 12 - failed delivery does not report success or remove its cooldown
+  ---
+  duration_ms: 0.52575
+  type: 'test'
+  ...
+# Subtest: cycling email addresses cannot exceed the shared hourly delivery ceiling
+ok 13 - cycling email addresses cannot exceed the shared hourly delivery ceiling
+  ---
+  duration_ms: 17.441875
+  type: 'test'
+  ...
+# Subtest: mailbox input cannot contain a second address separator or control characters
+ok 14 - mailbox input cannot contain a second address separator or control characters
+  ---
+  duration_ms: 0.531916
+  type: 'test'
+  ...
+# Subtest: an expired refresh lease can be recovered after another instance stops
+ok 15 - an expired refresh lease can be recovered after another instance stops
+  ---
+  duration_ms: 3.325166
+  type: 'test'
+  ...
+# Subtest: hosted capabilities expose configured providers without secrets
+ok 16 - hosted capabilities expose configured providers without secrets
+  ---
+  duration_ms: 0.331125
+  type: 'test'
+  ...
+# Subtest: a temporarily unavailable auth provider remains a retryable service error
+ok 17 - a temporarily unavailable auth provider remains a retryable service error
+  ---
+  duration_ms: 8.169916
+  type: 'test'
+  ...
+# Subtest: parallel instances share one token refresh instead of rotating the same credential twice
+ok 18 - parallel instances share one token refresh instead of rotating the same credential twice
+  ---
+  duration_ms: 60.370292
+  type: 'test'
+  ...
+# Subtest: logout wins against a refresh that is already in flight
+ok 19 - logout wins against a refresh that is already in flight
+  ---
+  duration_ms: 20.536084
+  type: 'test'
+  ...
+# Subtest: provider transport failures do not masquerade as a permanently signed-out user
+ok 20 - provider transport failures do not masquerade as a permanently signed-out user
+  ---
+  duration_ms: 5.004417
+  type: 'test'
+  ...
+# Subtest: logout also wins against an identity lookup already in flight
+ok 21 - logout also wins against an identity lookup already in flight
+  ---
+  duration_ms: 21.484042
+  type: 'test'
+  ...
+# Subtest: HTTP logout revokes the local session when the identity provider is unavailable
+ok 22 - HTTP logout revokes the local session when the identity provider is unavailable
+  ---
+  duration_ms: 37.765208
+  type: 'test'
+  ...
+# Subtest: a delayed refresh claim acknowledgement never dispatches a replaced or expired lease
+ok 23 - a delayed refresh claim acknowledgement never dispatches a replaced or expired lease
+  ---
+  duration_ms: 5.165167
+  type: 'test'
+  ...
+# Subtest: a bounded delayed refresh-result write remains covered by its lease
+ok 24 - a bounded delayed refresh-result write remains covered by its lease
+  ---
+  duration_ms: 56.143667
+  type: 'test'
+  ...
+# Subtest: auth return keeps owned library view and overlay keys and drops unknown parameters
+ok 25 - auth return keeps owned library view and overlay keys and drops unknown parameters
+  ---
+  duration_ms: 1.596709
+  type: 'test'
+  ...
+# Subtest: OAuth success, cancel and expiry keep the known safe library view without form contents or unknown keys
+ok 26 - OAuth success, cancel and expiry keep the known safe library view without form contents or unknown keys
+  ---
+  duration_ms: 6.8165
+  type: 'test'
+  ...
+# Subtest: native sign-in launches an isolated browser transaction and exchanges only a proof-bound one-time code
+ok 27 - native sign-in launches an isolated browser transaction and exchanges only a proof-bound one-time code
+  ---
+  duration_ms: 187.977167
+  type: 'test'
+  ...
+# Subtest: linking requires the captured native owner and keeps the same first-party account session
+ok 28 - linking requires the captured native owner and keeps the same first-party account session
+  ---
+  duration_ms: 71.448875
+  type: 'test'
+  ...
+# Subtest: native start rejects a foreign Origin and callback cancellation returns only a fixed public category
+ok 29 - native start rejects a foreign Origin and callback cancellation returns only a fixed public category
+  ---
+  duration_ms: 16.803084
+  type: 'test'
+  ...
+# Subtest: native capabilities are advertised only when the hosted adapter actually exists
+ok 30 - native capabilities are advertised only when the hosted adapter actually exists
+  ---
+  duration_ms: 4.491375
+  type: 'test'
+  ...
+# Subtest: native sign-in launches a first-party ticket and exchanges one verifier-bound handoff
+ok 31 - native sign-in launches a first-party ticket and exchanges one verifier-bound handoff
+  ---
+  duration_ms: 38.485667
+  type: 'test'
+  ...
+# Subtest: native launch replay and invalid proof never expose a session or consume the valid handoff
+ok 32 - native launch replay and invalid proof never expose a session or consume the valid handoff
+  ---
+  duration_ms: 17.690334
+  type: 'test'
+  ...
+# Subtest: native rejects unsafe shapes and sign-in cannot silently replace a current account
+ok 33 - native rejects unsafe shapes and sign-in cannot silently replace a current account
+  ---
+  duration_ms: 10.502584
+  type: 'test'
+  ...
+# Subtest: manual linking uses authenticated GET authorize and preserves the original session credentials
+ok 34 - manual linking uses authenticated GET authorize and preserves the original session credentials
+  ---
+  duration_ms: 27.90975
+  type: 'test'
+  ...
+# Subtest: manual linking refuses occupied identities, disabled configuration, and unsafe provider URLs
+ok 35 - manual linking refuses occupied identities, disabled configuration, and unsafe provider URLs
+  ---
+  duration_ms: 104.588125
+  type: 'test'
+  ...
+# Subtest: same raw email cannot override a changed provider UID during linking
+ok 36 - same raw email cannot override a changed provider UID during linking
+  ---
+  duration_ms: 6.958792
+  type: 'test'
+  ...
+# Subtest: unverified provider mailbox cannot create a native session
+ok 37 - unverified provider mailbox cannot create a native session
+  ---
+  duration_ms: 140.538667
+  type: 'test'
+  ...
+# Subtest: link handoff needs the exact original native cookie and a still-live parent
+ok 38 - link handoff needs the exact original native cookie and a still-live parent
+  ---
+  duration_ms: 40.632125
+  type: 'test'
+  ...
+# Subtest: cancelled callback and handoff cannot later install a first-party session
+ok 39 - cancelled callback and handoff cannot later install a first-party session
+  ---
+  duration_ms: 33.936709
+  type: 'test'
+  ...
+# Subtest: cancel during provider exchange fences late callback publication
+ok 40 - cancel during provider exchange fences late callback publication
+  ---
+  duration_ms: 12.2755
+  type: 'test'
+  ...
+# Subtest: expired launch and short handoff expire without accepting an old proof
+ok 41 - expired launch and short handoff expire without accepting an old proof
+  ---
+  duration_ms: 9.760791
+  type: 'test'
+  ...
+# Subtest: only one concurrent native exchange can adopt the handoff
+ok 42 - only one concurrent native exchange can adopt the handoff
+  ---
+  duration_ms: 13.942334
+  type: 'test'
+  ...
+# Subtest: link launch refuses a parent revoked after native start
+ok 43 - link launch refuses a parent revoked after native start
+  ---
+  duration_ms: 5.16575
+  type: 'test'
+  ...
+# Subtest: cancel while creating a native sign-in session revokes the undisclosed late result
+ok 44 - cancel while creating a native sign-in session revokes the undisclosed late result
+  ---
+  duration_ms: 30.2005
+  type: 'test'
+  ...
+# Subtest: revocation during the link exchange provider read cannot update the old parent
+ok 45 - revocation during the link exchange provider read cannot update the old parent
+  ---
+  duration_ms: 43.563792
+  type: 'test'
+  ...
+# Subtest: identities are a fresh current-owner projection with no provider subject or credential
+ok 46 - identities are a fresh current-owner projection with no provider subject or credential
+  ---
+  duration_ms: 3.203541
+  type: 'test'
+  ...
+# Subtest: expired callback cannot publish a handoff after the provider eventually returns
+ok 47 - expired callback cannot publish a handoff after the provider eventually returns
+  ---
+  duration_ms: 4.890917
+  type: 'test'
+  ...
+# Subtest: manual link authorize rejects same-host non-OAuth paths and unrelated auth-origin URLs
+ok 48 - manual link authorize rejects same-host non-OAuth paths and unrelated auth-origin URLs
+  ---
+  duration_ms: 52.358917
+  type: 'test'
+  ...
+# Subtest: native callback requires the requested identity, not just a confirmed account email
+ok 49 - native callback requires the requested identity, not just a confirmed account email
+  ---
+  duration_ms: 3.042333
+  type: 'test'
+  ...
+# Subtest: manual link cannot begin from an unverified parent mailbox
+ok 50 - manual link cannot begin from an unverified parent mailbox
+  ---
+  duration_ms: 2.317416
+  type: 'test'
+  ...
+# Subtest: a changed parent primary mailbox is an account change rather than an email merge
+ok 51 - a changed parent primary mailbox is an account change rather than an email merge
+  ---
+  duration_ms: 7.623542
+  type: 'test'
+  ...
+# Subtest: auth return paths preserve reading anchors but reject external and ambiguous URLs
+ok 52 - auth return paths preserve reading anchors but reject external and ambiguous URLs
+  ---
+  duration_ms: 2.813084
+  type: 'test'
+  ...
+# Subtest: OAuth exchanges one browser-bound code with its original server-side verifier
+ok 53 - OAuth exchanges one browser-bound code with its original server-side verifier
+  ---
+  duration_ms: 8.093625
+  type: 'test'
+  ...
+# Subtest: unknown or disabled providers and unsafe return targets do not allocate a login transaction
+ok 54 - unknown or disabled providers and unsafe return targets do not allocate a login transaction
+  ---
+  duration_ms: 0.4825
+  type: 'test'
+  ...
+# Subtest: cancelled, missing and expired browser transactions cannot create a session
+ok 55 - cancelled, missing and expired browser transactions cannot create a session
+  ---
+  duration_ms: 4.061375
+  type: 'test'
+  ...
+# Subtest: Apple relay identities keep their verified provider ID instead of joining another mailbox
+ok 56 - Apple relay identities keep their verified provider ID instead of joining another mailbox
+  ---
+  duration_ms: 1.703542
+  type: 'test'
+  ...
+# Subtest: HTTP OAuth callback creates a private session cookie and uses the fixed public origin
+ok 57 - HTTP OAuth callback creates a private session cookie and uses the fixed public origin
+  ---
+  duration_ms: 77.717709
+  type: 'test'
+  ...
+# Subtest: a missing browser cookie and cancelled authorization return to a retryable login screen
+ok 58 - a missing browser cookie and cancelled authorization return to a retryable login screen
+  ---
+  duration_ms: 14.506167
+  type: 'test'
+  ...
+# Subtest: OAuth cancellation and expired callbacks retain the original safe reading or upload intent
+ok 59 - OAuth cancellation and expired callbacks retain the original safe reading or upload intent
+  ---
+  duration_ms: 106.994167
+  type: 'test'
+  ...
+# Subtest: password is the initial method and passwords are never copied into flow state
+ok 60 - password is the initial method and passwords are never copied into flow state
+  ---
+  duration_ms: 0.898209
+  type: 'test'
+  ...
+# Subtest: switching methods retains the mailbox and invalidates a pending email response
+ok 61 - switching methods retains the mailbox and invalidates a pending email response
+  ---
+  duration_ms: 0.613584
+  type: 'test'
+  ...
+# Subtest: signup proof leads to password setup while ordinary email proof finishes login
+ok 62 - signup proof leads to password setup while ordinary email proof finishes login
+  ---
+  duration_ms: 3.207834
+  type: 'test'
+  ...
+# Subtest: password requests remain serialized after closing and reopening
+ok 63 - password requests remain serialized after closing and reopening
+  ---
+  duration_ms: 0.296208
+  type: 'test'
+  ...
+# Subtest: closing password setup resets the entry method and clears the code
+ok 64 - closing password setup resets the entry method and clears the code
+  ---
+  duration_ms: 0.37925
+  type: 'test'
+  ...
+# Subtest: password login preserves the existing identity and stores only provider credentials
+ok 65 - password login preserves the existing identity and stores only provider credentials
+  ---
+  duration_ms: 13.222708
+  type: 'test'
+  ...
+# Subtest: incorrect passwords return a useful generic error without minting a session
+ok 66 - incorrect passwords return a useful generic error without minting a session
+  ---
+  duration_ms: 0.804875
+  type: 'test'
+  ...
+# Subtest: password transport failures remain retryable service errors
+ok 67 - password transport failures remain retryable service errors
+  ---
+  duration_ms: 0.6285
+  type: 'test'
+  ...
+# Subtest: independent instances share the password attempt ceiling without storing passwords
+ok 68 - independent instances share the password attempt ceiling without storing passwords
+  ---
+  duration_ms: 8.892917
+  type: 'test'
+  ...
+# Subtest: password login can be available while delivery is disabled
+ok 69 - password login can be available while delivery is disabled
+  ---
+  duration_ms: 2.166708
+  type: 'test'
+  ...
+# Subtest: recovery requests use the non-creating provider endpoint and share mail cooldowns
+ok 70 - recovery requests use the non-creating provider endpoint and share mail cooldowns
+  ---
+  duration_ms: 1.331417
+  type: 'test'
+  ...
+# Subtest: unsupported mail purposes fail before contacting the provider
+ok 71 - unsupported mail purposes fail before contacting the provider
+  ---
+  duration_ms: 0.401542
+  type: 'test'
+  ...
+# Subtest: recovery proof grants a short password setup window and uses recovery verification
+ok 72 - recovery proof grants a short password setup window and uses recovery verification
+  ---
+  duration_ms: 1.076792
+  type: 'test'
+  ...
+# Subtest: a normal login session cannot change the account password
+ok 73 - a normal login session cannot change the account password
+  ---
+  duration_ms: 2.970084
+  type: 'test'
+  ...
+# Subtest: a password form from an earlier verification cannot act on a replaced session cookie
+ok 74 - a password form from an earlier verification cannot act on a replaced session cookie
+  ---
+  duration_ms: 2.533042
+  type: 'test'
+  ...
+# Subtest: verified signup sets a password once and never persists the password
+ok 75 - verified signup sets a password once and never persists the password
+  ---
+  duration_ms: 8.239416
+  type: 'test'
+  ...
+# Subtest: expired or revoked email proof cannot change a password
+ok 76 - expired or revoked email proof cannot change a password
+  ---
+  duration_ms: 11.103208
+  type: 'test'
+  ...
+# Subtest: a failed password update keeps verified proof available for a corrected retry
+ok 77 - a failed password update keeps verified proof available for a corrected retry
+  ---
+  duration_ms: 22.720584
+  type: 'test'
+  ...
+# Subtest: simultaneous password updates consume one email proof only once
+ok 78 - simultaneous password updates consume one email proof only once
+  ---
+  duration_ms: 3.39275
+  type: 'test'
+  ...
+# Subtest: a delayed password response cannot reopen an already dispatched proof after the lease duration
+ok 79 - a delayed password response cannot reopen an already dispatched proof after the lease duration
+  ---
+  duration_ms: 2.951333
+  type: 'test'
+  ...
+# Subtest: an ambiguous password timeout consumes its proof instead of dispatching a second change
+ok 80 - an ambiguous password timeout consumes its proof instead of dispatching a second change
+  ---
+  duration_ms: 3.824125
+  type: 'test'
+  ...
+# Subtest: password HTTP login returns a private cookie and exposes no provider credentials
+ok 81 - password HTTP login returns a private cookie and exposes no provider credentials
+  ---
+  duration_ms: 16.508791
+  type: 'test'
+  ...
+# Subtest: an explicitly configured legacy HTTPS origin can sign in, save a local draft and export its backup
+ok 82 - an explicitly configured legacy HTTPS origin can sign in, save a local draft and export its backup
+  ---
+  duration_ms: 75.291292
+  type: 'test'
+  ...
+# Subtest: extra web origins reject non-exact or non-HTTPS configuration before services are used
+ok 83 - extra web origins reject non-exact or non-HTTPS configuration before services are used
+  ---
+  duration_ms: 1.418208
+  type: 'test'
+  ...
+# Subtest: hosted web origins remain opt-in and never come from Host or forwarded headers
+ok 84 - hosted web origins remain opt-in and never come from Host or forwarded headers
+  ---
+  duration_ms: 9.652833
+  type: 'test'
+  ...
+# Subtest: a legacy host exposes password and email recovery without offering OAuth providers
+ok 85 - a legacy host exposes password and email recovery without offering OAuth providers
+  ---
+  duration_ms: 3.665875
+  type: 'test'
+  ...
+# Subtest: the legacy origin cannot start OAuth and the canonical origin retains its sole callback
+ok 86 - the legacy origin cannot start OAuth and the canonical origin retains its sole callback
+  ---
+  duration_ms: 7.0465
+  type: 'test'
+  ...
+1..86
+# tests 86
+# suites 0
+# pass 86
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1432.565041

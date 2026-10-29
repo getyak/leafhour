@@ -1,6 +1,6 @@
 # Leafhour native iOS
 
-This is the native iOS reader for GET-276 and GET-312, with optional Leafhour account login and cloud synchronization. Device-local import and reading still work without a login or network connection. System listening runs locally; cloud translation and reading conversations require an explicit action. The checked-in debug identifier is for unsigned local development only; distribution must reuse the separately verified existing Leafhour App Store Connect app.
+This is the native iOS reader for GET-276, GET-312 and GET-315, with optional Leafhour account login and cloud synchronization. Device-local import and reading still work without a login or network connection. System listening runs locally; cloud translation and reading conversations require an explicit action. The checked-in debug identifier is for unsigned local development only; distribution must reuse the separately verified existing Leafhour App Store Connect app.
 
 ## Build and test
 
@@ -27,6 +27,8 @@ Archive entries are bounded by count, per-entry size and total expanded size. Ab
 Imported books are already on this device. “Available offline” means the complete local manifest has passed verification; it never means a network request merely started. Cloud downloads retain all text chapters, source IDs and available translations as a verified reading copy. Original EPUB/PDF files stay separate; a text copy is not a downloaded original. Device-local identity and authenticated account UUID scopes are isolated. Account tests use fixtures; production login/read checks and real-device acceptance are recorded separately.
 
 Email/password and email-code login reuse the website's authenticated APIs. Session credentials stay in Keychain and an isolated URLSession. Saved notes and positions write locally before synchronization; retries keep stable note IDs, and newer cloud positions require an explicit choice. Local drafts remain on the device. Signing out hides the account's cache and returns to the separate device library. Uploading a local original is explicit; only unique exact source matches migrate its notes and position, with unmatched records retained in the source book.
+
+Google and Apple sign-in use the system authentication browser and the existing hosted providers. The account screen lists actual linked identities and allows a signed-in account to link another provider while keeping its ID, native session and offline library. Supabase owns automatic linking for the same verified email; Apple relay and different provider addresses require explicit authenticated linking. An occupied identity is a conflict, never permission to merge reading data. The native callback contains only a short-lived one-time code and state; a verifier-bound HTTPS exchange obtains the opaque session. See [social sign-in operations and acceptance limits](../../docs/ios-social-sign-in.md).
 
 Stable chapter/passage identifiers and source versions bind reading position, notes and drafts. State writes are atomic and serialized. Duplicate imports leave existing personal state intact. Native text selection keeps copy available; author text, a selected quote and personal notes are labeled independently. No literal/interpretive translation is fabricated when none was imported.
 
@@ -61,7 +63,7 @@ TestFlight archive/upload, Apple processing, distribution, authorized tester inv
 
 Reference APIs: [Apple fileImporter and security-scoped access](https://developer.apple.com/documentation/swiftui/view/fileimporter(ispresented:allowedcontenttypes:oncompletion:)), [Apple PDFKit](https://developer.apple.com/documentation/pdfkit), [ZIPFoundation 0.9.20](https://github.com/weichsel/ZIPFoundation/releases/tag/0.9.20).
 
-## TestFlight release automation (disabled)
+## TestFlight release automation
 
-The reviewable archive/upload/Apple-confirmation chain, signing audit and maintenance workflow are documented in [native TestFlight operations](../../docs/ios-testflight-release.md). `release.json` owns the native marketing version. This source does not configure credentials or a registered application, authorize the first upload, or enable automatic updates. Keep those decisions and real-device acceptance separate from simulator CI.
+The archive/upload/Apple-confirmation chain, signing audit and maintenance workflow are documented in [native TestFlight operations](../../docs/ios-testflight-release.md). `release.json` owns the native marketing version. Runtime release switches are repository settings; on 2026-10-29 the user explicitly enabled automatic upload, and [run 40834531572](https://github.com/getyak/leafhour/actions/runs/40834531572) recorded Apple VALID for source `c03ecd7`, version 0.1.0/build 1.0.10. That historical receipt does not verify later source, tester distribution or installation. Credentials and the registered application identity remain outside source.
 

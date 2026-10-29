@@ -11,7 +11,9 @@
 		3834F8DD07B0244D9873FC39 /* AccountScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B7695C525E1FC7F2151463C /* AccountScreen.swift */; };
 		3D28103353174CF11FA15522 /* ReaderToolsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9E9843F780C3B8064BC647F /* ReaderToolsTests.swift */; };
 		497B1C91B1E5BF35DF45198E /* LibraryScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03E537D8BE04773F738DBB85 /* LibraryScreen.swift */; };
+		56B3FD020B30D8C94BB6BC85 /* NativeAuthenticationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADC3A1E0640007C8E7F5AE08 /* NativeAuthenticationTests.swift */; };
 		56ED28FA1DAC8B395A183C43 /* TextReadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 878434EEA066C19B2F60BD71 /* TextReadingView.swift */; };
+		60025F26EBEA67F646C96BDC /* NativeProviderAuthentication.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0453B8082F72BDACB0777356 /* NativeProviderAuthentication.swift */; };
 		61125147E5FCF4B7597F8348 /* ReaderScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9E14C10861765251864D27F /* ReaderScreen.swift */; };
 		651CDF903D82A8192DBD27D2 /* ReaderToolPanels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5478FC5BEB93EE6E0F2DE3C9 /* ReaderToolPanels.swift */; };
 		6F09140B78AFE3363D4FB43F /* ReaderSpeech.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDEB86782104108D1317F7AE /* ReaderSpeech.swift */; };
@@ -50,6 +52,7 @@
 
 /* Begin PBXFileReference section */
 		03E537D8BE04773F738DBB85 /* LibraryScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryScreen.swift; sourceTree = "<group>"; };
+		0453B8082F72BDACB0777356 /* NativeProviderAuthentication.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NativeProviderAuthentication.swift; sourceTree = "<group>"; };
 		0A90A4D814926D7BDD928EFA /* Debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Debug.xcconfig; sourceTree = "<group>"; };
 		0D21CD4FE4DAF595CBDEB51A /* MarkdownThirdPartyNotices.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = MarkdownThirdPartyNotices.txt; sourceTree = "<group>"; };
 		190E595DF8E356D9375375C3 /* ReaderPanels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReaderPanels.swift; sourceTree = "<group>"; };
@@ -69,6 +72,7 @@
 		933A454F757161CE4F2491E7 /* LeafhourCore */ = {isa = PBXFileReference; lastKnownFileType = folder; name = LeafhourCore; path = LeafhourCore; sourceTree = SOURCE_ROOT; };
 		9CB602653F224B78330B371B /* BookDetailScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookDetailScreen.swift; sourceTree = "<group>"; };
 		A85977F35BF520F19037ADFB /* PDFReadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFReadingView.swift; sourceTree = "<group>"; };
+		ADC3A1E0640007C8E7F5AE08 /* NativeAuthenticationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NativeAuthenticationTests.swift; sourceTree = "<group>"; };
 		BCF573520407A93144E699EC /* ReaderCloudTools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReaderCloudTools.swift; sourceTree = "<group>"; };
 		C5BA4DE90DC37B23A3034EB2 /* LeafhourApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeafhourApp.swift; sourceTree = "<group>"; };
 		CDEB86782104108D1317F7AE /* ReaderSpeech.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReaderSpeech.swift; sourceTree = "<group>"; };
@@ -94,6 +98,7 @@
 		2BAFD685F5CF9E5DBF587BD5 /* LeafhourAppTests */ = {
 			isa = PBXGroup;
 			children = (
+				ADC3A1E0640007C8E7F5AE08 /* NativeAuthenticationTests.swift */,
 				F9E9843F780C3B8064BC647F /* ReaderToolsTests.swift */,
 				D4E7B7F468A47BEFBFAFF155 /* ReaderWebPolicyTests.swift */,
 			);
@@ -121,6 +126,7 @@
 				C5BA4DE90DC37B23A3034EB2 /* LeafhourApp.swift */,
 				03E537D8BE04773F738DBB85 /* LibraryScreen.swift */,
 				61E087460D41217FEAE7CC0B /* MarkdownTextRenderer.swift */,
+				0453B8082F72BDACB0777356 /* NativeProviderAuthentication.swift */,
 				A85977F35BF520F19037ADFB /* PDFReadingView.swift */,
 				5C7589B4E02534E97DD36795 /* PrivacyInfo.xcprivacy */,
 				BCF573520407A93144E699EC /* ReaderCloudTools.swift */,
@@ -317,6 +323,7 @@
 				FD5562DABEFEADF16AF28795 /* LeafhourApp.swift in Sources */,
 				497B1C91B1E5BF35DF45198E /* LibraryScreen.swift in Sources */,
 				F48522D668D56A3C6815517A /* MarkdownTextRenderer.swift in Sources */,
+				60025F26EBEA67F646C96BDC /* NativeProviderAuthentication.swift in Sources */,
 				DD73E33E559037D0DFD080DF /* PDFReadingView.swift in Sources */,
 				EDC4D5A3E43E9336BFC60FFE /* ReaderCloudTools.swift in Sources */,
 				A83D091CB4ADBE1B6AA57126 /* ReaderPanels.swift in Sources */,
@@ -333,6 +340,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				56B3FD020B30D8C94BB6BC85 /* NativeAuthenticationTests.swift in Sources */,
 				3D28103353174CF11FA15522 /* ReaderToolsTests.swift in Sources */,
 				BD99DF4325B89510BA6595FF /* ReaderWebPolicyTests.swift in Sources */,
 			);

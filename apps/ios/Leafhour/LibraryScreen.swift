@@ -94,12 +94,12 @@ struct LibraryScreen: View {
             .fileImporter(isPresented: $importing, allowedContentTypes: [.epub, .pdf, .plainText, UTType(filenameExtension: "md") ?? .plainText]) { result in
                 switch result { case .success(let url): model.importFile(url); case .failure(let error): model.message = error.localizedDescription }
             }
-            .onOpenURL { model.importFile($0) }
+            .onOpenURL { url in if url.isFileURL { model.importFile(url) } }
             .task { await model.reload(restore: true); await model.synchronize() }
             .refreshable { await model.synchronize(); await model.reload() }
             .onChange(of: scenePhase) { _, phase in if phase == .active { Task { await model.synchronize() } } }
             .fullScreenCover(item: $model.reader, onDismiss: { Task { await model.reload(); await model.synchronize() } }) { session in ReaderScreen(session: session, systemColorScheme: systemColorScheme, cloud: session.book.cloud == nil ? nil : model.cloud, library: model.library) }
-            .sheet(isPresented: $info) { AccountScreen(model: model) }
+            .sheet(isPresented: $info, onDismiss: { Task { await model.cancelNativeAuthentication() } }) { AccountScreen(model: model) }
             .alert("书房提示", isPresented: Binding(get: { model.message != nil }, set: { if !$0 { model.message = nil } })) { Button("知道了") { model.message = nil } } message: { Text(model.message ?? "") }
         }
     }
