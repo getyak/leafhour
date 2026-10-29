@@ -1,0 +1,42 @@
+{
+  "issue": "GET-315",
+  "recordedAt": "2026-10-29T08:08:40.288833+00:00",
+  "baseCommit": "f77288cc57658acedf6b2a83a31e281b5dfde7e2",
+  "sourceSha256": {
+    "apps/ios/Leafhour.xcodeproj/project.pbxproj": "178f7b063d059dbc90662f3e2f078a1a567521f36c2f9d35e08ff06e1ae297d3",
+    "apps/ios/Leafhour/AccountScreen.swift": "367654fdeeb617aa170f80f13adf4bbf9c02bd3c8b6786e8430331dbd402adad",
+    "apps/ios/Leafhour/Info.plist": "19f7e74444dcb5c13718c40f5c657bdf574737dfcef41d3cd0646e3b584d1015",
+    "apps/ios/Leafhour/LeafhourApp.swift": "e36e3bd1df6c1f8e25d7c0133eda8cfd715450870f02788455320c4d6be20860",
+    "apps/ios/Leafhour/LibraryScreen.swift": "4b3a5adcc1054c59b7c0936ee7fef40477ba5a85fd924b4eeaaaeae2f6c3552d",
+    "apps/ios/Leafhour/NativeProviderAuthentication.swift": "7e73a2e71c645fa73a3ae6c79fc70b405d2dd95542f988dd808817f006f2418b",
+    "apps/ios/LeafhourAppTests/NativeAuthenticationTests.swift": "ff7a2e29b2f86b6743c0aae6b0cb354ae6511022c8402971be18a508f2ce6c6c",
+    "apps/ios/LeafhourCore/Sources/LeafhourCore/CloudLibraryClient.swift": "626ad2555ff79a49ebdefa7c5015a86839768f8aa858a7379ba08214f33e8a84",
+    "apps/ios/LeafhourCore/Sources/LeafhourCore/NativeOAuth.swift": "472e2d96c7921a5489b3ad29ae21c0349c16f9356c786d5d06f372105a2188bd",
+    "apps/ios/LeafhourCore/Tests/LeafhourCoreTests/NativeOAuthTests.swift": "c2f1b71f85c78aa7cf57cff7213c5bbf8964a5829c5a6ae0082735548667f4c2",
+    "apps/ios/README.md": "7a1ccba44bd6e5b007f9b406cc5e4e108a7247f7ce5b6cf1d34352d8735cef15",
+    "deploy/hosted-auth.mjs": "1c7ab3eb608b19f733a4398c046197240ce2f549a91964e1691127a4cff70a90",
+    "deploy/hosted-native-auth.mjs": "7f02dcc3dab90a2f4e5f9b49ac06f160999d7d55b97e223c926fe0c5e2af802d",
+    "release-files.json": "4483f7f7efdfa0d070b213de058aac4e5809b0470e57e85362205ceab005d1d9",
+    "server/portal.mjs": "8125d6d984b39e1fb7f3f147f56525eb3cb361030b37f10808b44586bbb6e6ba",
+    "tests/native-oauth-http.test.mjs": "d18e28ed5977abe6081dc2dc39e6bc4629324e101df659e6b14ff8873384ee0c",
+    "tests/native-oauth.test.mjs": "b3c4764f37f875a240b6443e9c9a8b501676c56454c3957761386097ca4171df"
+  },
+  "results": {
+    "hostAuth": 86,
+    "hostPortal": 49,
+    "swiftCore": 85,
+    "nativeAppTests": 22,
+    "nativeUI": 1,
+    "iosNodeContracts": 90,
+    "iosPythonContracts": 9,
+    "allFailures": 0
+  },
+  "nativeUIScope": "Synthetic provider availability/linked identities; email fixture login and own saved record, actual native views. No real provider consent.",
+  "liveAcceptance": {
+    "googleAppleProvidersPubliclyEnabled": true,
+    "googleAppleConsentTested": false,
+    "manualLinkingConfigurationVerified": false,
+    "physicalDeviceTested": false
+  },
+  "operationalBlocker": "Leafhour Supabase project unavailable through current connector; existing local Vercel identity requests return 403; browser management sign-in did not complete."
+}

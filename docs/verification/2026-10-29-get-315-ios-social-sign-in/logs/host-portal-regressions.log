@@ -1,0 +1,315 @@
+TAP version 13
+# Subtest: password errors restore focus after disabled controls are re-enabled
+ok 1 - password errors restore focus after disabled controls are re-enabled
+  ---
+  duration_ms: 13.593417
+  type: 'test'
+  ...
+# Subtest: English home login keeps its language across method changes, countdowns and reopening
+ok 2 - English home login keeps its language across method changes, countdowns and reopening
+  ---
+  duration_ms: 1.528584
+  type: 'test'
+  ...
+# Subtest: English sign-in failures explain the available recovery action
+    # Subtest: 邮箱或密码不正确，请重试或使用验证码登录
+    ok 1 - 邮箱或密码不正确，请重试或使用验证码登录
+      ---
+      duration_ms: 1.42175
+      type: 'test'
+      ...
+    # Subtest: 登录尝试较多，请稍后再试，也可以使用验证码登录
+    ok 2 - 登录尝试较多，请稍后再试，也可以使用验证码登录
+      ---
+      duration_ms: 0.932291
+      type: 'test'
+      ...
+    # Subtest: 未来新增的登录错误
+    ok 3 - 未来新增的登录错误
+      ---
+      duration_ms: 0.886291
+      type: 'test'
+      ...
+    1..3
+ok 3 - English sign-in failures explain the available recovery action
+  ---
+  duration_ms: 3.440792
+  type: 'test'
+  ...
+# Subtest: English email-code errors stay readable in sending and verification steps
+    # Subtest: /api/auth/code
+    ok 1 - /api/auth/code
+      ---
+      duration_ms: 1.557667
+      type: 'test'
+      ...
+    # Subtest: /api/auth/verify
+    ok 2 - /api/auth/verify
+      ---
+      duration_ms: 1.24925
+      type: 'test'
+      ...
+    1..2
+ok 4 - English email-code errors stay readable in sending and verification steps
+  ---
+  duration_ms: 3.125666
+  type: 'test'
+  ...
+# Subtest: English password setup retains the verified flow after a rejected password
+    # Subtest: 请设置至少 8 个字符的密码
+    ok 1 - 请设置至少 8 个字符的密码
+      ---
+      duration_ms: 6.347417
+      type: 'test'
+      ...
+    # Subtest: 这个密码不够安全，请换一个较长的密码
+    ok 2 - 这个密码不够安全，请换一个较长的密码
+      ---
+      duration_ms: 2.565708
+      type: 'test'
+      ...
+    # Subtest: 新密码与原密码相同，请换一个
+    ok 3 - 新密码与原密码相同，请换一个
+      ---
+      duration_ms: 1.940167
+      type: 'test'
+      ...
+    1..3
+ok 5 - English password setup retains the verified flow after a rejected password
+  ---
+  duration_ms: 11.383583
+  type: 'test'
+  ...
+# Subtest: pending verification is exposed until the receipt establishes matching password setup
+ok 6 - pending verification is exposed until the receipt establishes matching password setup
+  ---
+  duration_ms: 2.188333
+  type: 'test'
+  ...
+# Subtest: SMTP-only local auth keeps password-specific registration hidden
+ok 7 - SMTP-only local auth keeps password-specific registration hidden
+  ---
+  duration_ms: 1.424375
+  type: 'test'
+  ...
+# Subtest: login availability follows native email validity and password input, including busy requests
+ok 8 - login availability follows native email validity and password input, including busy requests
+  ---
+  duration_ms: 1.152042
+  type: 'test'
+  ...
+# Subtest: a failed code send retains the verification step with visible focus and an announced error
+ok 9 - a failed code send retains the verification step with visible focus and an announced error
+  ---
+  duration_ms: 1.615833
+  type: 'test'
+  ...
+# Subtest: language changes reformat a pending login and its failure without clearing secrets, selection or request ownership
+ok 10 - language changes reformat a pending login and its failure without clearing secrets, selection or request ownership
+  ---
+  duration_ms: 17.73975
+  type: 'test'
+  ...
+# Subtest: language changes keep the absolute email cooldown and entered code without sending again
+ok 11 - language changes keep the absolute email cooldown and entered code without sending again
+  ---
+  duration_ms: 4.33
+  type: 'test'
+  ...
+# Subtest: person OAuth selects records, defaults to read-only, and never grants book content
+ok 12 - person OAuth selects records, defaults to read-only, and never grants book content
+  ---
+  duration_ms: 7.927167
+  type: 'test'
+  ...
+# Subtest: person and book scope mixing is rejected at registration
+ok 13 - person and book scope mixing is rejected at registration
+  ---
+  duration_ms: 0.56825
+  type: 'test'
+  ...
+# Subtest: people consent renders four locales with explicit browser/query preference and safe text
+ok 14 - people consent renders four locales with explicit browser/query preference and safe text
+  ---
+  duration_ms: 1.085708
+  type: 'test'
+  ...
+# Subtest: OAuth preserves validated locale hints as presentation data without widening scopes
+ok 15 - OAuth preserves validated locale hints as presentation data without widening scopes
+  ---
+  duration_ms: 0.345917
+  type: 'test'
+  ...
+# Subtest: people and reading resource metadata stay separate and token exchange binds the exact audience
+ok 16 - people and reading resource metadata stay separate and token exchange binds the exact audience
+  ---
+  duration_ms: 0.807625
+  type: 'test'
+  ...
+# Subtest: native literal loopback redirects support S256 with exact ports and paths on the HTTPS people resource
+ok 17 - native literal loopback redirects support S256 with exact ports and paths on the HTTPS people resource
+  ---
+  duration_ms: 1.482458
+  type: 'test'
+  ...
+# Subtest: HTTP callbacks reject DNS localhost, other hosts, obfuscated loopbacks, credentials and fragments
+ok 18 - HTTP callbacks reject DNS localhost, other hosts, obfuscated loopbacks, credentials and fragments
+  ---
+  duration_ms: 0.328541
+  type: 'test'
+  ...
+# Subtest: self-hosted settings modules are served as exact public JavaScript assets
+ok 19 - self-hosted settings modules are served as exact public JavaScript assets
+  ---
+  duration_ms: 322.911083
+  type: 'test'
+  ...
+# Subtest: MCP setup remains reachable when localhost resolves to an IPv6 listener
+ok 20 - MCP setup remains reachable when localhost resolves to an IPv6 listener
+  ---
+  duration_ms: 134.161125
+  type: 'test'
+  ...
+# Subtest: local MCP setup is authenticated, uses the actual runtime and port, and is absent from hosted mode
+ok 21 - local MCP setup is authenticated, uses the actual runtime and port, and is absent from hosted mode
+  ---
+  duration_ms: 435.81225
+  type: 'test'
+  ...
+# Subtest: email codes must be delivered, expire, cannot be replayed and sessions revoke
+ok 22 - email codes must be delivered, expire, cannot be replayed and sessions revoke
+  ---
+  duration_ms: 12.890834
+  type: 'test'
+  ...
+# Subtest: SMTP-only hosting rejects password setup purposes before sending or verifying mail
+ok 23 - SMTP-only hosting rejects password setup purposes before sending or verifying mail
+  ---
+  duration_ms: 239.05225
+  type: 'test'
+  ...
+# Subtest: original downloads keep exact bytes private and restored books can reattach their original
+ok 24 - original downloads keep exact bytes private and restored books can reattach their original
+  ---
+  duration_ms: 12129.704542
+  type: 'test'
+  ...
+# Subtest: portal serves home, imports private text after explicit local entry, guards origin and scoped Agent API
+ok 25 - portal serves home, imports private text after explicit local entry, guards origin and scoped Agent API
+  ---
+  duration_ms: 1380.856833
+  type: 'test'
+  ...
+# Subtest: restores a backup larger than 29 MB through the real HTTP endpoint
+ok 26 - restores a backup larger than 29 MB through the real HTTP endpoint
+  ---
+  duration_ms: 66512.871625
+  type: 'test'
+  ...
+# Subtest: an old reader tab cannot write its private draft into the new email account
+ok 27 - an old reader tab cannot write its private draft into the new email account
+  ---
+  duration_ms: 7700.235916
+  type: 'test'
+  ...
+# Subtest: pre-existing oversized local books keep their ordinary readable response
+ok 28 - pre-existing oversized local books keep their ordinary readable response
+  ---
+  duration_ms: 13145.447458
+  type: 'test'
+  ...
+# Subtest: reader account confirms explicitly and cancels without logout in en
+ok 29 - reader account confirms explicitly and cancels without logout in en
+  ---
+  duration_ms: 14.67375
+  type: 'test'
+  ...
+# Subtest: reader account confirms explicitly and cancels without logout in zh-Hans
+ok 30 - reader account confirms explicitly and cancels without logout in zh-Hans
+  ---
+  duration_ms: 9.850333
+  type: 'test'
+  ...
+# Subtest: reader account confirms explicitly and cancels without logout in zh-Hant
+ok 31 - reader account confirms explicitly and cancels without logout in zh-Hant
+  ---
+  duration_ms: 8.096292
+  type: 'test'
+  ...
+# Subtest: reader account confirms explicitly and cancels without logout in ja
+ok 32 - reader account confirms explicitly and cancels without logout in ja
+  ---
+  duration_ms: 8.924125
+  type: 'test'
+  ...
+# Subtest: anonymous reader has a current return link and no logout action
+ok 33 - anonymous reader has a current return link and no logout action
+  ---
+  duration_ms: 0.223375
+  type: 'test'
+  ...
+# Subtest: failed logout preserves the reader and allows an explicit retry
+ok 34 - failed logout preserves the reader and allows an explicit retry
+  ---
+  duration_ms: 0.94475
+  type: 'test'
+  ...
+# Subtest: unmount withdraws pending logout UI, locale subscriptions and late navigation
+ok 35 - unmount withdraws pending logout UI, locale subscriptions and late navigation
+  ---
+  duration_ms: 1.500958
+  type: 'test'
+  ...
+# Subtest: account Tab order stays inside visible actions and does not consume browser shortcuts
+ok 36 - account Tab order stays inside visible actions and does not consume browser shortcuts
+  ---
+  duration_ms: 0.70175
+  type: 'test'
+  ...
+# Subtest: one validated outer/inner ui survives bounded auth entry; ambiguous values never become a next
+ok 37 - one validated outer/inner ui survives bounded auth entry; ambiguous values never become a next
+  ---
+  duration_ms: 6.294333
+  type: 'test'
+  ...
+# Subtest: actual HTTP OAuth success, cancellation, expiration and unavailable callbacks preserve four-language reader/gift/upload/notebook returns
+ok 38 - actual HTTP OAuth success, cancellation, expiration and unavailable callbacks preserve four-language reader/gift/upload/notebook returns
+  ---
+  duration_ms: 380.723459
+  type: 'test'
+  ...
+# Leafhour 配置：
+#   阅读：无需 AI Key
+#   AI 文字：未配置（可填写 DEEPSEEK_API_KEY）
+#   语音：未配置（可填写 GEMINI_API_KEY）
+# Leafhour 配置：
+#   阅读：无需 AI Key
+#   AI 文字：未配置（可填写 DEEPSEEK_API_KEY）
+#   语音：未配置（可填写 GEMINI_API_KEY）
+# Subtest: actual hosted provider failure crosses the public JSON adapter into the browser flow as a bounded ID
+ok 39 - actual hosted provider failure crosses the public JSON adapter into the browser flow as a bounded ID
+  ---
+  duration_ms: 584.0045
+  type: 'test'
+  ...
+# Subtest: actual local HTTP validation sends the same bounded descriptor to the browser
+ok 40 - actual local HTTP validation sends the same bounded descriptor to the browser
+  ---
+  duration_ms: 178.962125
+  type: 'test'
+  ...
+# Subtest: unknown transported identifiers cannot select unrelated labels or surface provider prose
+ok 41 - unknown transported identifiers cannot select unrelated labels or surface provider prose
+  ---
+  duration_ms: 0.537541
+  type: 'test'
+  ...
+1..41
+# tests 49
+# suites 0
+# pass 49
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 103125.221959

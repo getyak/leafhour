@@ -230,11 +230,30 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
     const originAllowed=webOrigins.has(req.headers.origin)||!publicOrigin&&req.headers.origin==='http://'+req.headers.host;
     if(req.headers.origin&&!originAllowed)throw fail('请求来源未授权',403);
     if(req.method==='POST'&&!p.startsWith('/api/agent/')&&!originAllowed)throw fail('请求来源未授权',403);
-    if(p==='/api/auth/oauth'&&req.method==='POST'&&publicOrigin&&req.headers.origin!==publicOrigin)throw fail('请在 '+publicOrigin+' 使用 Google 或 Apple 登录。当前页面仍可使用邮箱或密码登录。',403);
+    if((p==='/api/auth/oauth'||p.startsWith('/api/auth/native/'))&&req.method==='POST'&&publicOrigin&&req.headers.origin!==publicOrigin)throw fail('请在 '+publicOrigin+' 使用 Google 或 Apple 登录。当前页面仍可使用邮箱或密码登录。',403);
     const flowToken=(req.headers.cookie||'').split(';').map(x=>x.trim()).find(x=>x.startsWith('marginalia_auth_flow='))?.slice('marginalia_auth_flow='.length);
     const setFlow=value=>`marginalia_auth_flow=${value}; HttpOnly; Secure; SameSite=Lax; Path=/api/auth; Max-Age=${value?600:0}`;
+    if(p.startsWith('/api/auth/native/')||p==='/api/auth/identities'){
+      res.setHeader('Cache-Control','private, no-store');res.setHeader('Referrer-Policy','no-referrer');
+    }
+    if(p==='/api/auth/native/authorize'&&req.method==='GET'){
+      if(!publicOrigin||typeof auth.launchNativeOAuth!=='function')throw fail('原生登录服务正在更新，请稍后重试。',503);
+      if([...url.searchParams.keys()].length!==1||url.searchParams.getAll('ticket').length!==1)throw fail('登录地址已失效，请重新开始。',400);
+      const flow=await auth.launchNativeOAuth(url.searchParams.get('ticket'));
+      res.setHeader('Set-Cookie',setFlow('native.'+flow.transactionId));res.setHeader('Location',flow.authorizeUrl);res.statusCode=303;res.end();return true;
+    }
     if(p==='/api/auth/callback'&&req.method==='GET'){
       if(!publicOrigin||typeof auth.finishOAuth!=='function'){send(404,{error:'这个登录入口尚未开放'});return true;}
+      if(typeof flowToken==='string'&&flowToken.startsWith('native.')){
+        let destination;
+        try{
+          if(typeof auth.finishNativeOAuth!=='function')throw fail('原生登录服务暂不可用。',503);
+          const invalid=url.searchParams.getAll('code').length>1||url.searchParams.getAll('error').length>1||url.searchParams.has('code')&&url.searchParams.has('error');
+          const result=await auth.finishNativeOAuth(flowToken.slice('native.'.length),{code:invalid?null:url.searchParams.get('code'),error:invalid?'failed':url.searchParams.get('error')||undefined});
+          destination=result.redirectURL;
+        }catch{destination=new URL('/library?login=1&auth_error=expired',publicOrigin).href;}
+        res.setHeader('Set-Cookie',setFlow(''));res.setHeader('Cache-Control','private, no-store');res.setHeader('Referrer-Policy','no-referrer');res.setHeader('Location',destination);res.statusCode=303;res.end();return true;
+      }
       let next,session,returnTo=null,errorCode='expired';
       try{
         if(url.searchParams.has('error')){returnTo=await auth.cancelOAuth(flowToken);errorCode='cancelled';}
@@ -266,7 +285,23 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
       const capabilities=auth.capabilities?await auth.capabilities():{email:auth.emailAvailable,providers:{google:false,apple:false},otp:{digits:6,expiresIn:600,retryAfter:60}};
       // Host only hides unusable OAuth buttons; it never authorizes a web origin.
       const providers=publicOrigin&&req.headers.host!==new URL(publicOrigin).host?{google:false,apple:false}:capabilities.providers;
-      send(200,{user:await visibleUser(user),emailAvailable:capabilities.email,passwordAvailable:capabilities.password===true,providers,otp:capabilities.otp,localAvailable:localAllowed,translationAvailable:library.translationAvailable,directUpload:!!dataStore?.beginUpload,pdfOcrAvailable:!!provider,readingPreferences:user?await library.getReadingPreferences(user):null,billing:{enabled:billing.enabled,mode:billing.mode,prices:{translation:1000000,conversation:4000000,annotation:4000000},unitsPerPoint:1000000},preferenceMemory:user?await library.getPreferenceMemory(user):null});return true;
+      send(200,{user:await visibleUser(user),emailAvailable:capabilities.email,passwordAvailable:capabilities.password===true,providers,...(typeof auth.beginNativeOAuth==='function'?{nativeOAuth:{version:1}}:{}),otp:capabilities.otp,localAvailable:localAllowed,translationAvailable:library.translationAvailable,directUpload:!!dataStore?.beginUpload,pdfOcrAvailable:!!provider,readingPreferences:user?await library.getReadingPreferences(user):null,billing:{enabled:billing.enabled,mode:billing.mode,prices:{translation:1000000,conversation:4000000,annotation:4000000},unitsPerPoint:1000000},preferenceMemory:user?await library.getPreferenceMemory(user):null});return true;
+    }
+    if(p==='/api/auth/identities'&&req.method==='GET'){
+      if(typeof auth.identitiesFor!=='function')throw fail('账号绑定服务正在更新，请稍后重试。',503);
+      send(200,await auth.identitiesFor(token,req.headers['x-reader-owner']));return true;
+    }
+    if(p==='/api/auth/native/start'&&req.method==='POST'){
+      if(typeof auth.beginNativeOAuth!=='function')throw fail('原生登录服务正在更新，请稍后重试。',503);
+      send(200,await auth.beginNativeOAuth(token,body,req.headers['x-reader-owner']));return true;
+    }
+    if(p==='/api/auth/native/exchange'&&req.method==='POST'){
+      if(typeof auth.exchangeNativeOAuth!=='function')throw fail('原生登录服务正在更新，请稍后重试。',503);
+      const session=await auth.exchangeNativeOAuth(token,body,req.headers['x-reader-owner']);setSession(session.token);send(200,{user:session.user});return true;
+    }
+    if(p==='/api/auth/native/cancel'&&req.method==='POST'){
+      if(typeof auth.cancelNativeOAuth!=='function')throw fail('原生登录服务正在更新，请稍后重试。',503);
+      await auth.cancelNativeOAuth(body?.transactionId);send(200,{cancelled:true});return true;
     }
     if(p==='/api/account/preference-memory'){
       res.setHeader('Cache-Control','private, no-store');
