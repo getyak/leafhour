@@ -1,0 +1,9 @@
+# GET-276 TestFlight signing follow-up
+
+The first manual release from `e1cd406acba2ea8b3bc8b1e0ea876981c7239e45`, [run 40813319936](https://github.com/getyak/leafhour/actions/runs/40813319936), verified the existing Apple application and passed release contracts, then exited in the signing/archive step before any upload. Its suppressed parser diagnostics do not establish the exact failing command or root cause.
+
+The archive now reports a fixed stage on failure without dumping its command, environment, key material or raw parser output. Certificate extraction first uses ordinary PKCS#12 parsing, then locally enables OpenSSL 3's legacy provider when needed for older RC2 exports. It exports only public certificates; all existing certificate/profile/expiry and exported IPA checks remain in place. This addresses a plausible runner compatibility issue; only an actual subsequent archive can establish whether it resolves the original failure.
+
+Three real generated-fixture tests cover normal P12 extraction, an explicitly RC2-encrypted P12, and a wrong password. They verify identical DER certificate bytes, no private key output, a fixed error and no output certificate on failure. Under OpenSSL 3, the RC2 fixture must first fail ordinary extraction so the fallback cannot pass unexercised. Local LibreSSL validation passed these three tests, the six existing Python checks, 88 iOS Node contracts, Bash syntax and diff checks. Independent review found no confirmed blocking issue. Ubuntu CI provides the separate OpenSSL 3 check.
+
+No Apple upload, processing, external review, invitation, physical installation or update-retention success is established by these tests. User authorization in the current chat covers continuing the existing app's release and inviting the specifically named tester; the address and private review contact details stay outside the public repository. Automatic publication and signing refresh remain disabled.
