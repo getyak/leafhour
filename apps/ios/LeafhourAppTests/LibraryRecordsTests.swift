@@ -16,7 +16,7 @@ final class LibraryRecordsTests: XCTestCase {
         configuration.protocolClasses = [RecordsURLProtocol.self]
         let credential = CloudCredential(account: CloudAccount(id: owner, email: nil), token: "isolated-records-fixture")
         let cloud = CloudLibraryClient(baseURL: URL(string: "https://records.leafhour.test")!, credential: credential, configuration: configuration)
-        return (LibraryModel(root: root, cloud: cloud, credential: credential), probe)
+        return (LibraryModel(root: root, cloud: cloud, credential: credential, monitorNetwork: false), probe)
     }
     private func entry(_ id: String = "one") throws -> CloudJSON {
         try CloudJSON.decode(JSONSerialization.data(withJSONObject: ["book": ["bookId": id, "title": "Saved Book"], "records": ["comments": [["id": "note-" + id, "origin": "user", "text": "My saved thought."]], "questions": []]]))

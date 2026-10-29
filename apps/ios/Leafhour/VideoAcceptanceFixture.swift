@@ -1,5 +1,6 @@
 import Foundation
 import UIKit
+import Observation
 import LeafhourCore
 
 /// Synthetic local acceptance only. Production bundles cannot opt into this factory.
@@ -22,6 +23,7 @@ enum VideoAcceptanceFixture {
                 try FileManager.default.removeItem(at: root)
             }
             try FileManager.default.createDirectory(at: root, withIntermediateDirectories: true)
+            try prepareSystemPickerDocuments()
             GET317Transport.configure(root: root, arguments: arguments)
             let configuration = URLSessionConfiguration.ephemeral
             configuration.protocolClasses = [GET317Transport.self]
@@ -29,7 +31,8 @@ enum VideoAcceptanceFixture {
             let credential = CloudCredential(account: CloudAccount(id: GET317Transport.owner, email: "get317-synthetic@example.invalid"), token: "get317-isolated-fixture")
             let cloud = CloudLibraryClient(baseURL: URL(string: "https://fixture.invalid")!, credential: credential, configuration: configuration)
             // Supplying both objects bypasses credential-store reads and writes.
-            let model = LibraryModel(root: root.appendingPathComponent("library", isDirectory: true), cloud: cloud, credential: credential)
+            let model = LibraryModel(root: root.appendingPathComponent("library", isDirectory: true), cloud: cloud, credential: credential, monitorNetwork: false)
+            if arguments.contains("--get317-gated-download") { observeReaderForDownloadGate(model) }
             Task { @MainActor in
                 do {
                     let marker = root.appendingPathComponent("seed-v1.complete")
@@ -79,6 +82,38 @@ enum VideoAcceptanceFixture {
         return nil
         #endif
     }
+
+    #if DEBUG
+    @MainActor private static func prepareSystemPickerDocuments() throws {
+        let documents = try FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
+        let sources = documents.appendingPathComponent("GET317AcceptanceSources", isDirectory: true)
+        let exports = documents.appendingPathComponent("GET317AcceptanceExports", isDirectory: true)
+        try FileManager.default.createDirectory(at: sources, withIntermediateDirectories: true)
+        try FileManager.default.createDirectory(at: exports, withIntermediateDirectories: true)
+        let selectedFile = sources.appendingPathComponent("GET317-System-Picker-Import.txt")
+        let bytes = Data("GET317_SYSTEM_PICKER_IMPORT_SUCCESS\n\nThis synthetic source is prepared for the real system Files picker. The fixture must not import this file into OfflineLibrary. Only the user-facing import action may create its readable book.\n\nGET317_SYSTEM_PICKER_IMPORT_END".utf8)
+        if FileManager.default.fileExists(atPath: selectedFile.path) {
+            guard try Data(contentsOf: selectedFile) == bytes else { throw LibraryError.invalid("GET317 系统导入样本路径已有其他内容，未覆盖。") }
+        } else { try bytes.write(to: selectedFile, options: .atomic) }
+        // No export JSON is seeded here. UI35 must make the real fileExporter
+        // write its own bytes into this otherwise fixture-owned destination.
+    }
+
+    @MainActor private static func observeReaderForDownloadGate(_ model: LibraryModel) {
+        withObservationTracking {
+            if let reader = model.reader, reader.book.cloud == nil {
+                GET317Transport.releaseGatedDownloads()
+            }
+        } onChange: { [weak model] in
+            // Observation is one-shot and fires before the mutation commits.
+            // Re-register on the main actor to inspect the actual new reader.
+            Task { @MainActor [weak model] in
+                guard let model else { return }
+                observeReaderForDownloadGate(model)
+            }
+        }
+    }
+    #endif
 }
 
 #if DEBUG
@@ -87,12 +122,16 @@ private final class GET317Transport: URLProtocol, @unchecked Sendable {
     private static let lock = NSLock()
     private static var root: URL?
     private static var arguments: [String] = []
+    private static var downloadGateOpen = true
+    private static var pendingDownloads: [ObjectIdentifier: PendingDownload] = [:]
     private let completionLock = NSLock()
     private var stopped = false
 
     static func configure(root: URL, arguments: [String]) {
         lock.lock(); defer { lock.unlock() }
         self.root = root; self.arguments = arguments
+        downloadGateOpen = !arguments.contains("--get317-gated-download")
+        pendingDownloads.removeAll()
     }
 
     // Intercept every URL in this dedicated session, including unexpected hosts.
@@ -101,6 +140,10 @@ private final class GET317Transport: URLProtocol, @unchecked Sendable {
     override class func canonicalRequest(for request: URLRequest) -> URLRequest { request }
     override func startLoading() {
         let result = Self.response(for: request)
+        guard !Self.holdIfGated(self, response: result) else { return }
+        deliver(result)
+    }
+    private func deliver(_ result: Response) {
         DispatchQueue.global(qos: .utility).asyncAfter(deadline: .now() + result.delay) { [self] in
             completionLock.lock(); defer { completionLock.unlock() }
             guard !stopped, let url = request.url else { return }
@@ -110,9 +153,41 @@ private final class GET317Transport: URLProtocol, @unchecked Sendable {
             client?.urlProtocolDidFinishLoading(self)
         }
     }
-    override func stopLoading() { completionLock.lock(); stopped = true; completionLock.unlock() }
+    override func stopLoading() {
+        completionLock.lock(); stopped = true; completionLock.unlock()
+        Self.removePendingDownload(self)
+    }
 
-    private struct Response { var status: Int; var data: Data; var delay: TimeInterval }
+    private struct Response: Sendable { var status: Int; var data: Data; var delay: TimeInterval }
+    private final class PendingDownload {
+        weak var transport: GET317Transport?
+        let response: Response
+        init(transport: GET317Transport, response: Response) { self.transport = transport; self.response = response }
+    }
+    private static func holdIfGated(_ transport: GET317Transport, response: Response) -> Bool {
+        lock.lock(); defer { lock.unlock() }
+        guard !downloadGateOpen, arguments.contains("--get317-gated-download"), response.status == 200,
+              transport.request.url?.host == "fixture.invalid",
+              transport.request.url?.path.hasPrefix("/api/library/books/get317-slow/chapters/") == true else { return false }
+        transport.completionLock.lock(); defer { transport.completionLock.unlock() }
+        guard !transport.stopped else { return false }
+        pendingDownloads[ObjectIdentifier(transport)] = PendingDownload(transport: transport, response: response)
+        return true
+    }
+    private static func removePendingDownload(_ transport: GET317Transport) {
+        lock.lock(); defer { lock.unlock() }
+        pendingDownloads.removeValue(forKey: ObjectIdentifier(transport))
+    }
+    static func releaseGatedDownloads() {
+        lock.lock()
+        downloadGateOpen = true
+        let ready = Array(pendingDownloads.values)
+        pendingDownloads.removeAll()
+        lock.unlock()
+        // Client delivery runs after unlocking; a cancelled URLProtocol is also
+        // guarded by its own stopped state. No session thread waits on the gate.
+        for item in ready { item.transport?.deliver(item.response) }
+    }
     private static func response(for request: URLRequest) -> Response {
         lock.lock(); defer { lock.unlock() }
         func reply(_ object: [String: Any], status: Int = 200, delay: TimeInterval = 0.03) -> Response {
@@ -123,8 +198,28 @@ private final class GET317Transport: URLProtocol, @unchecked Sendable {
         }
         let path = request.url!.path
         let method = request.httpMethod ?? "GET"
-        if path == "/api/auth/session" { return reply(["user": ["id": owner, "email": "get317-synthetic@example.invalid"], "billing": ["enabled": false]]) }
+        if path == "/api/auth/session" {
+            var value: [String: Any] = ["user": ["id": owner, "email": "get317-synthetic@example.invalid"], "billing": ["enabled": false]]
+            if arguments.contains("--get317-native-auth") {
+                value["nativeOAuth"] = ["version": 1]
+                value["providers"] = ["apple": true, "google": true]
+            }
+            return reply(value)
+        }
         guard request.value(forHTTPHeaderField: "X-Reader-Owner") == owner else { return reply(["error": "GET317 owner mismatch"], status: 403) }
+        if path == "/api/auth/identities", arguments.contains("--get317-native-auth") {
+            return reply(["user": ["id": owner], "identities": [["provider": "email", "email": "get317-synthetic@example.invalid", "emailVerified": true]]])
+        }
+        if path == "/api/auth/native/start", arguments.contains("--get317-native-auth") {
+            let input = bodyObject(request)
+            guard method == "POST", input["mode"] as? String == "link",
+                  ["apple", "google"].contains(input["provider"] as? String ?? "") else {
+                return reply(["error": "GET317 synthetic link request did not match the fixture"], status: 400)
+            }
+            // Reject before returning any launch URL. No browser or real OAuth
+            // provider can be started by this declared-capability test scenario.
+            return reply(["error": "GET317 合成账号关联被拒绝，原书房与登录账号仍保留。"], status: 403)
+        }
         if path == "/api/library" {
             if arguments.contains("--get317-cloud-error") { return reply(["error": "GET317 合成云书房读取失败"], status: 503) }
             return reply(["user": ["id": owner], "books": shelf])

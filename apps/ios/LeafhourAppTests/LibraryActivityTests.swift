@@ -28,7 +28,7 @@ final class LibraryActivityTests: XCTestCase {
         configuration.protocolClasses = [ActivityURLProtocol.self]
         let credential = CloudCredential(account: CloudAccount(id: owner, email: nil), token: "isolated-fixture")
         let cloud = CloudLibraryClient(baseURL: URL(string: "https://leafhour.test")!, credential: credential, configuration: configuration)
-        let model = LibraryModel(root: root, cloud: cloud, credential: credential)
+        let model = LibraryModel(root: root, cloud: cloud, credential: credential, monitorNetwork: false)
         let work = Task { await model.download(CloudShelfBook(id: "quiet-book", title: "A Quiet Book", author: "", contentVersion: "v1"), openAfter: false) }
         await fulfillment(of: [chapterStarted], timeout: 5)
         model.cancelImport()
