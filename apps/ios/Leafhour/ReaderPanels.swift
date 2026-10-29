@@ -61,6 +61,7 @@ struct ReaderPanelView: View {
         }
         .environment(\.readerContinueReading, continueReading)
         .preferredColorScheme(session.state.preferences.colorScheme(following: systemColorScheme))
+        .presentationBackground(Color(uiColor: .systemBackground))
     }
     private func continueReading() {
         if panel.isCompanion { dismiss() }
@@ -250,7 +251,11 @@ struct ReaderRecordsPanel: View {
                 }
             }
         }.navigationTitle("我的记录")
-            .sheet(item: $editing) { quote in NavigationStack { NoteEditorPanel(quote: quote, session: session) }.presentationDetents([.large]) }
+            .sheet(item: $editing) { quote in
+                NavigationStack { NoteEditorPanel(quote: quote, session: session) }
+                    .presentationDetents([.large])
+                    .presentationBackground(Color(uiColor: .systemBackground))
+            }
     }
 }
 struct NoteEditorPanel: View {
