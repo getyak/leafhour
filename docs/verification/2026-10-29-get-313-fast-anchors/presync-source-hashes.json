@@ -1,0 +1,5 @@
+{
+  "apps/ios/Leafhour/TextReadingView.swift": "5ae4ed2b1f91b51f6da6c4ce649ac2c526ff1291a78499158fbe946fac59b8b5",
+  "apps/ios/LeafhourCore/Sources/LeafhourCore/SourceTextOffsets.swift": "f5452759b4265c0b1c619c2bcbb1f455b75bf12d6ec1b83e73eda2c4c4fa15bb",
+  "apps/ios/LeafhourCore/Tests/LeafhourCoreTests/SourceTextOffsetsTests.swift": "c73b5173d8b517ad7b5423328733db16a433f936d3f1738c39303bf65be929eb"
+}

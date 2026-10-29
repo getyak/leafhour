@@ -1,0 +1,29 @@
+TAP version 13
+# Subtest: server-only smoke context is synthetic while client synthetic fields cannot override it
+    # Subtest: server delivery completes first
+    ok 1 - server delivery completes first
+      ---
+      duration_ms: 19.927625
+      type: 'test'
+      ...
+    # Subtest: browser delivery completes first
+    ok 2 - browser delivery completes first
+      ---
+      duration_ms: 5.67575
+      type: 'test'
+      ...
+    1..2
+ok 1 - server-only smoke context is synthetic while client synthetic fields cannot override it
+  ---
+  duration_ms: 26.347292
+  type: 'test'
+  ...
+1..1
+# tests 3
+# suites 0
+# pass 3
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 83.227583

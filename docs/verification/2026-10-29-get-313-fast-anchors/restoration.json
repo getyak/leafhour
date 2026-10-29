@@ -1,0 +1,16 @@
+{
+  "restored": true,
+  "stateSHA256": "f0df05c436c404e0a9a7a81e85c03b701ad763adc4f800078f4735ea2fcf0e57",
+  "exitCode": 0,
+  "draftQuotes": [
+    {
+      "anchor": {
+        "chapterID": "text",
+        "characterOffset": 687,
+        "passageID": "text-2"
+      },
+      "quote": "see",
+      "exactSourceMatch": true
+    }
+  ]
+}
