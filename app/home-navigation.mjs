@@ -1,16 +1,8 @@
 import {publicPageHref} from './public-navigation.mjs';
-// GET-188 authored-home mobile navigation. One controller, mounted by
-// app/portal.js on the five authored home routes only, owns a quiet pill menu
-// trigger and one full-height native dialog sheet. The sheet reuses the real
-// localized navigation anchors and language links from the header (cloned, so
-// modified clicks and later locale edits stay truthful), keeps the optional
-// resume row limited to the current authorized book's real progress, and hands
-// sign-in and the command palette back to the existing auth dialog and the one
-// palette bootstrap. Close reasons are explicit: only a user close returns the
-// initial opener; a breakpoint crossing returns the visible brand; auth and
-// palette handoffs focus the visible menu trigger first; navigation closes
-// without any later focus steal, apart from one guarded destination RAF that
-// preserves default scrolling and any existing tabindex.
+// One public menu lifecycle is shared by the early public-page entry and the
+// later portal bootstrap. Hover reveals languages without moving focus; active
+// keyboard opening starts at the current language. Existing localized anchors
+// and explicit close reasons preserve navigation and focus ownership.
 import {chooseCurrentBook} from './reading-calendar.mjs';
 import {readingBookUrl} from './library-workspace.mjs';
 import {otherOverlayOpen,focusableTrigger} from './popover-controls.mjs';
@@ -18,9 +10,11 @@ import {registerDialogFocusOwner} from './interaction-craft.mjs';
 import {t,uiHref,getUiLocale,onUiLocaleChange,uiReady,bindUi} from './ui-locale.mjs';
 const defaultUi={t,uiHref,getUiLocale,onUiLocaleChange,uiReady,bindUi};
 
+const mountedMenus=new WeakMap();
+
 export const HOME_NAV_ROUTES=Object.freeze(['/','/en','/zh-hans','/zh-hant','/ja']);
-export const HOME_MENU_CLOSE_REASONS=Object.freeze(['user','navigation','auth-handoff','palette-handoff','breakpoint']);
-export const HOME_MENU_DESKTOP_QUERY='(min-width:1101px)';
+export const HOME_MENU_CLOSE_REASONS=Object.freeze(['user','navigation','auth-handoff','palette-handoff','breakpoint','pointer','outside','focus']);
+export const HOME_MENU_DESKTOP_QUERY='(min-width:981px)';
 // The home entry opens the shelf. Account settings stay inside the reading room.
 export const HOME_ACCOUNT_URL='/library';
 
@@ -43,6 +37,7 @@ export function mountHomeNavigation({
   const dialog=document?.getElementById?.('home-menu');
   const trigger=document?.getElementById?.('home-menu-trigger');
   if(!dialog||!trigger)return null;
+  if(mountedMenus.has(dialog))return mountedMenus.get(dialog);
   const signInRow=document.getElementById('home-menu-signin');
   const accountRow=document.getElementById('home-menu-account');
   const resumeRow=document.getElementById('home-menu-resume');
@@ -55,10 +50,16 @@ export function mountHomeNavigation({
   let opener=null,pendingReason=null,lastReason=null,destinationGeneration=0,disposed=false,resumeHref=null;
   const created=[],rowListeners=[];
   const unbind=bindUi(dialog),unbindNav=nav?bindUi(nav):()=>{};
+  const hoverMedia=typeof matchMedia==='function'?matchMedia('(hover: hover) and (pointer: fine)'):null;
+  const win=document.defaultView||globalThis;
+  let hoverTimer=null,leaveTimer=null,pinned=false;
+  const clearIntent=()=>{clearTimeout(hoverTimer);clearTimeout(leaveTimer);hoverTimer=leaveTimer=null;};
   const documentLinks=[...(document.querySelectorAll?.('a[href]')||[])].map(node=>({node,href:node.getAttribute('href')})).filter(row=>row.node!==accountRow&&/^\/(?:library|read)(?:[?#]|$)/.test(row.href));
   function updateLabels(){
     if(disposed)return;
-    dialog.setAttribute('lang',getUiLocale());trigger.setAttribute('lang',getUiLocale());trigger.setAttribute('aria-label',t('nav.open'));
+    dialog.setAttribute('lang',getUiLocale());trigger.setAttribute('lang',getUiLocale());trigger.setAttribute('aria-label',t(desktop?.matches?'ui.language.label':'nav.open'));
+    const title=document.getElementById('home-menu-title');
+    if(title){title.removeAttribute('data-ui');title.textContent=t(desktop?.matches?'ui.language.label':'nav.main');}
     if(accountRow)accountRow.setAttribute('href',uiHref(HOME_ACCOUNT_URL));
     if(resumeHref&&resumeRow&&!resumeRow.hidden)resumeRow.setAttribute('href',uiHref(resumeHref));
     for(const {node,href} of documentLinks)node.setAttribute('href',uiHref(href));
@@ -159,6 +160,8 @@ export function mountHomeNavigation({
   };
 
   const onClose=()=>{
+    if(dialog.open)return; // Ignore a queued close after a rapid reopen.
+    clearIntent();pinned=false;
     const reason=pendingReason||'user';
     pendingReason=null;
     lastReason=reason;
@@ -167,29 +170,87 @@ export function mountHomeNavigation({
   };
   function closeMenu(reason='user'){
     if(disposed)return;
+    clearIntent();pinned=false;
     const use=HOME_MENU_CLOSE_REASONS.includes(reason)?reason:'user';
     pendingReason=use;
     lastReason=use;
+    trigger.setAttribute('aria-expanded','false');
     if(dialog.open)dialog.close();
     if(use==='auth-handoff'){focusVisibleTrigger();openAuth();}
     else if(use==='palette-handoff'){const target=focusVisibleTrigger()||trigger;openPalette(target);}
     else if(use==='breakpoint')focusBrand();
     return use;
   }
-  const openMenu=()=>{
+  const positionMenu=()=>{
+    const rect=trigger.getBoundingClientRect?.();
+    if(!rect||!dialog.style)return;
+    const width=win.innerWidth||document.documentElement.clientWidth;
+    const height=win.innerHeight||document.documentElement.clientHeight;
+    dialog.style.right=Math.max(16,width-rect.right)+'px';
+    dialog.style.left='auto';
+    const top=Math.max(8,Math.min(rect.bottom+8,height-80));
+    dialog.style.top=top+'px';
+    dialog.style.maxHeight=Math.max(44,height-top-16)+'px';
+  };
+  const openMenu=({hover=false}={})=>{
     if(disposed||dialog.open)return;
     // Refuse another modal or the open appearance popover instead of stacking.
     if(otherOverlayOpen(document)||appearanceMenuOpen(document))return;
     destinationGeneration++;
     const active=document.activeElement;
-    opener=active&&active!==document.body&&typeof active.focus==='function'?active:trigger;
+    opener=!hover&&active&&active!==document.body&&typeof active.focus==='function'?active:trigger;
     pendingReason=null;
     trigger.setAttribute('aria-expanded','true');
-    if(typeof dialog.showModal==='function')dialog.showModal();
-    else dialog.setAttribute('open','');
+    pinned=!hover;
+    dialog.setAttribute('aria-modal','false');
+    // Setting open reveals this non-modal dialog without show()'s focus step.
+    // Hover leaves the page and its active control exactly where they were.
+    positionMenu();
+    dialog.setAttribute('open','');dialog.open=true;
   };
 
-  const onTrigger=()=>{if(dialog.open)closeMenu('user');else openMenu();};
+  const focusLanguage=()=>{
+    const links=[...(languageSlot?.querySelectorAll('a')||[])];
+    focusNode(links.find(node=>node.hasAttribute('aria-current'))||links[0]);
+  };
+  const onTrigger=event=>{
+    clearIntent();
+    if(dialog.open&&!pinned){pinned=true;if(event.detail===0)focusLanguage();return;}
+    if(dialog.open)closeMenu('user');else{openMenu();if(event.detail===0&&dialog.open)focusLanguage();}
+  };
+  const onEnter=event=>{
+    if(event.pointerType!=='mouse'||!hoverMedia?.matches)return;
+    clearIntent();
+    if(!dialog.open)hoverTimer=setTimeout(()=>{hoverTimer=null;openMenu({hover:true});},100);
+  };
+  const onLeave=event=>{
+    if(event.pointerType!=='mouse')return;
+    clearTimeout(hoverTimer);hoverTimer=null;
+    if(pinned||dialog.contains(document.activeElement))return;
+    clearTimeout(leaveTimer);
+    leaveTimer=setTimeout(()=>{leaveTimer=null;closeMenu('pointer');},220);
+  };
+  const onPanelEnter=()=>{clearTimeout(leaveTimer);leaveTimer=null;};
+  const onOutside=event=>{
+    if(dialog.open&&!dialog.contains(event.target)&&!trigger.contains(event.target))closeMenu(event.type==='focusin'?'focus':'outside');
+  };
+  const onKey=event=>{
+    if(event.key==='Escape'&&dialog.open){event.preventDefault();opener=trigger;closeMenu('user');}
+    else if(event.target===trigger&&['ArrowDown','ArrowUp'].includes(event.key)){
+      event.preventDefault();clearIntent();if(!dialog.open)openMenu();if(!dialog.open)return;pinned=true;
+      const links=[...(languageSlot?.querySelectorAll('a')||[])];
+      focusNode(event.key==='ArrowUp'?links.at(-1):links.find(node=>node.hasAttribute('aria-current'))||links[0]);
+    }
+  };
+  trigger.addEventListener('pointerenter',onEnter);
+  trigger.addEventListener('pointerleave',onLeave);
+  dialog.addEventListener('pointerenter',onPanelEnter);
+  dialog.addEventListener('pointerleave',onLeave);
+  document.addEventListener('pointerdown',onOutside);
+  document.addEventListener('focusin',onOutside);
+  document.addEventListener('keydown',onKey);
+  win.addEventListener?.('resize',positionMenu);
+  win.addEventListener?.('scroll',positionMenu,{passive:true});
   const onSignIn=()=>closeMenu('auth-handoff');
   const onSearch=()=>closeMenu('palette-handoff');
   trigger.setAttribute('aria-haspopup','dialog');
@@ -206,12 +267,12 @@ export function mountHomeNavigation({
   const releaseFocusOwner=registerDialogFocusOwner(dialog,'home-navigation');
 
   const desktop=typeof matchMedia==='function'?matchMedia(HOME_MENU_DESKTOP_QUERY):null;
-  const onBreakpoint=()=>{if(desktop?.matches&&dialog.open)closeMenu('breakpoint');};
+  const onBreakpoint=()=>{if(dialog.open)closeMenu('breakpoint');updateLabels();};
   if(desktop?.addEventListener)desktop.addEventListener('change',onBreakpoint);
   else desktop?.addListener?.(onBreakpoint);
   const offLocale=onUiLocaleChange(updateLabels);void uiReady.then(updateLabels);updateLabels();
 
-  return {
+  const controller={
     clear,
     update,
     updateIdentity,
@@ -220,7 +281,16 @@ export function mountHomeNavigation({
     lastCloseReason:()=>lastReason,
     dispose(){
       if(disposed)return;
-      disposed=true;
+      disposed=true;clearIntent();mountedMenus.delete(dialog);
+      trigger.removeEventListener('pointerenter',onEnter);
+      trigger.removeEventListener('pointerleave',onLeave);
+      dialog.removeEventListener('pointerenter',onPanelEnter);
+      dialog.removeEventListener('pointerleave',onLeave);
+      document.removeEventListener('pointerdown',onOutside);
+      document.removeEventListener('focusin',onOutside);
+      document.removeEventListener('keydown',onKey);
+      win.removeEventListener?.('resize',positionMenu);
+      win.removeEventListener?.('scroll',positionMenu);
       offLocale();unbind();unbindNav();
       for(const off of rowListeners)off();for(const node of created)node.remove();
       if(dialog.open)dialog.close();
@@ -233,4 +303,6 @@ export function mountHomeNavigation({
       releaseFocusOwner();
     }
   };
+  mountedMenus.set(dialog,controller);
+  return controller;
 }

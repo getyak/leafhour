@@ -18,10 +18,10 @@ test('keyboard tab movement wraps, supports first/last, and ignores text keys',(
   assert.equal(tabDestination('Home',0,0),null);
   assert.equal(tabDestination('ArrowRight',-1,3),null);
 });
-function fixture({fallback=[],openDialogs=[]}={}){
+function fixture({fallback=[],openDialogs=[],triggers=[]}={}){
   const handlers=new Map();
   const dialog={closed:0,contains:()=>false,getBoundingClientRect:()=>rect,addEventListener(type,fn){handlers.set(type,fn);},close(){this.closed++;}};
-  const doc={body:{},defaultView:{MutationObserver:class {observe(){}disconnect(){}},requestAnimationFrame:fn=>fn()},querySelectorAll:selector=>selector==='dialog'?[dialog]:selector.split(',').flatMap(part=>fallback.filter(node=>part.trim()==='#'+node.id)),querySelector:selector=>selector==='dialog:modal'?openDialogs.find(node=>node.modal)||null:selector==='dialog[open]'?openDialogs[0]||null:null,addEventListener(){}};
+  const doc={body:{},defaultView:{MutationObserver:class {observe(){}disconnect(){}},requestAnimationFrame:fn=>fn()},querySelectorAll:selector=>selector==='dialog'?[dialog]:selector.startsWith('[aria-controls=')?triggers:selector.split(',').flatMap(part=>fallback.filter(node=>part.trim()==='#'+node.id)),querySelector:selector=>selector==='dialog:modal'?openDialogs.find(node=>node.modal)||null:selector==='dialog[open]'?openDialogs[0]||null:null,addEventListener(){}};
   mountInteractionCraft(doc);
   const dispatch=(type,target,x,y)=>{let stopped=false;handlers.get(type)({target,clientX:x,clientY:y,stopImmediatePropagation(){stopped=true;}});return stopped;};
   return {dialog,dispatch};
@@ -74,4 +74,12 @@ test('focus-owner release only clears its own registration',()=>{
  assert.equal(dialogFocusOwner(dialog),'second','an older release cannot unregister a newer owner');
  dispatch('close',dialog);
  assert.equal(dialogFocusOwner(dialog),'second');
+});
+
+
+test('a queued close from before a reopen preserves the current expanded state',()=>{
+ const attrs=new Map([['aria-expanded','true']]);
+ const trigger={hasAttribute:key=>attrs.has(key),setAttribute:(key,value)=>attrs.set(key,value)};
+ const {dialog,dispatch}=fixture({triggers:[trigger]});dialog.id='home-menu';dialog.open=true;
+ dispatch('close',dialog);assert.equal(attrs.get('aria-expanded'),'true');
 });

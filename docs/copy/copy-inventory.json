@@ -274,7 +274,7 @@
       },
       {
         "file": "app/home-navigation.mjs",
-        "sha256": "b2cd51f7c58326238362177f99e43486d95b1f4aaa78fb63f1afba9b580e2272"
+        "sha256": "2452fdf2fbcc68b08e1398b0f93d81d22a9d857820689bda5dc73b548d7fc944"
       },
       {
         "file": "app/home-sample.mjs",
@@ -286,7 +286,7 @@
       },
       {
         "file": "app/home.html",
-        "sha256": "4eaa2d00c0967dff7ec5273cf8991af9b3f70ec0deacc28cfba8070b93ab01a7"
+        "sha256": "0e2b38a553150bc583117df23f727575a7bef0754168ac8d6af453c8ed21453c"
       },
       {
         "file": "app/index.html",
@@ -294,7 +294,7 @@
       },
       {
         "file": "app/interaction-craft.mjs",
-        "sha256": "5b30d2f1d71443818fec08ae88ea8c13c0598288069bfee8726b076accf00c6d"
+        "sha256": "5a3c51f479e6c8f882ce3a60c4b2bb39ea92ee066debf213ba60835b3ba0fea2"
       },
       {
         "file": "app/ja/mcp.html",
@@ -582,7 +582,7 @@
       },
       {
         "file": "app/public-page.mjs",
-        "sha256": "627ecfaa8c8b470f420cf06036c1feae26d3006bf8c9b9fd4445c5e426b344d6"
+        "sha256": "a999dd14177d0a6a411593eee94c540364e1b0377044c99550cefdb2e2ccd10b"
       },
       {
         "file": "app/reader-account.mjs",
@@ -1401,7 +1401,7 @@
         "sha256": "531202f1814314b6c76bfef38b2ea66636425b1ca9b445db349e70ebb8bcd00e"
       }
     ],
-    "inputDigest": "3e01ee124df4847d33581e30a0cb8d3b1e1fcb9d50f4469a77a7e202bdb8ac77"
+    "inputDigest": "3cc67c367fabaf84ad8641b5ebfb6b29045eb64d5d0a140a9b8f753f1bb102db"
   },
   "locales": [
     "en",
@@ -9252,6 +9252,16 @@
       "missingLocales": [],
       "duplicates": [],
       "consumers": [
+        {
+          "file": "app/home-navigation.mjs",
+          "line": 60,
+          "column": 143
+        },
+        {
+          "file": "app/home-navigation.mjs",
+          "line": 62,
+          "column": 85
+        },
         {
           "file": "app/ui-locale-controls.mjs",
           "line": 48,
@@ -17924,8 +17934,8 @@
         },
         {
           "file": "app/home-navigation.mjs",
-          "line": 189,
-          "column": 30
+          "line": 209,
+          "column": 25
         },
         {
           "file": "app/interaction-craft.mjs",
@@ -17939,7 +17949,7 @@
         },
         {
           "file": "app/interaction-craft.mjs",
-          "line": 72,
+          "line": 74,
           "column": 104
         },
         {
@@ -18171,12 +18181,12 @@
         },
         {
           "file": "app/home-navigation.mjs",
-          "line": 199,
+          "line": 260,
           "column": 27
         },
         {
           "file": "app/home-navigation.mjs",
-          "line": 228,
+          "line": 298,
           "column": 34
         },
         {
@@ -20222,7 +20232,7 @@
         },
         {
           "file": "app/home-navigation.mjs",
-          "line": 130,
+          "line": 131,
           "column": 31
         },
         {
@@ -34393,7 +34403,13 @@
       },
       "missingLocales": [],
       "duplicates": [],
-      "consumers": [],
+      "consumers": [
+        {
+          "file": "app/home-navigation.mjs",
+          "line": 62,
+          "column": 105
+        }
+      ],
       "hints": [
         {
           "kind": "key-namespace",
@@ -34447,8 +34463,8 @@
       "consumers": [
         {
           "file": "app/home-navigation.mjs",
-          "line": 61,
-          "column": 126
+          "line": 60,
+          "column": 163
         }
       ],
       "hints": [
@@ -196366,9 +196382,9 @@
       }
     },
     {
-      "id": "candidate:app/home-navigation.mjs:102:158",
+      "id": "candidate:app/home-navigation.mjs:103:158",
       "file": "app/home-navigation.mjs",
-      "line": 102,
+      "line": 103,
       "column": 158,
       "kind": "js-attribute",
       "property": "tabindex",
@@ -196386,9 +196402,9 @@
       }
     },
     {
-      "id": "candidate:app/home-navigation.mjs:165:42",
+      "id": "candidate:app/home-navigation.mjs:168:42",
       "file": "app/home-navigation.mjs",
-      "line": 165,
+      "line": 168,
       "column": 42,
       "kind": "js-attribute",
       "property": "aria-expanded",
@@ -196406,9 +196422,29 @@
       }
     },
     {
-      "id": "candidate:app/home-navigation.mjs:187:42",
+      "id": "candidate:app/home-navigation.mjs:177:42",
       "file": "app/home-navigation.mjs",
-      "line": 187,
+      "line": 177,
+      "column": 42,
+      "kind": "js-attribute",
+      "property": "aria-expanded",
+      "value": "false",
+      "sha256": "fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/home-navigation.mjs:203:42",
+      "file": "app/home-navigation.mjs",
+      "line": 203,
       "column": 42,
       "kind": "js-attribute",
       "property": "aria-expanded",
@@ -196426,9 +196462,29 @@
       }
     },
     {
-      "id": "candidate:app/home-navigation.mjs:195:40",
+      "id": "candidate:app/home-navigation.mjs:205:38",
       "file": "app/home-navigation.mjs",
-      "line": 195,
+      "line": 205,
+      "column": 38,
+      "kind": "js-attribute",
+      "property": "aria-modal",
+      "value": "false",
+      "sha256": "fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/home-navigation.mjs:256:40",
+      "file": "app/home-navigation.mjs",
+      "line": 256,
       "column": 40,
       "kind": "js-attribute",
       "property": "aria-haspopup",
@@ -196446,9 +196502,9 @@
       }
     },
     {
-      "id": "candidate:app/home-navigation.mjs:196:40",
+      "id": "candidate:app/home-navigation.mjs:257:40",
       "file": "app/home-navigation.mjs",
-      "line": 196,
+      "line": 257,
       "column": 40,
       "kind": "js-attribute",
       "property": "aria-controls",
@@ -196466,9 +196522,9 @@
       }
     },
     {
-      "id": "candidate:app/home-navigation.mjs:197:40",
+      "id": "candidate:app/home-navigation.mjs:258:40",
       "file": "app/home-navigation.mjs",
-      "line": 197,
+      "line": 258,
       "column": 40,
       "kind": "js-attribute",
       "property": "aria-expanded",
@@ -279060,6 +279116,52 @@
       "unresolved": true
     },
     {
+      "kind": "concatenation",
+      "file": "app/home-navigation.mjs",
+      "line": 189,
+      "expression": "Math.max(16,width-rect.right)+'px'",
+      "fragments": [
+        "px"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "app/home-navigation.mjs",
+      "line": 192,
+      "expression": "top+'px'",
+      "fragments": [
+        "px"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "app/home-navigation.mjs",
+      "line": 193,
+      "expression": "Math.max(44,height-top-16)+'px'",
+      "fragments": [
+        "px"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "app/home-navigation.mjs",
+      "line": 214,
+      "expression": "0",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "app/home-navigation.mjs",
+      "line": 242,
+      "expression": "0",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
       "kind": "computed-member",
       "file": "app/home-sample.mjs",
       "line": 22,
@@ -279167,7 +279269,7 @@
     {
       "kind": "computed-member",
       "file": "app/interaction-craft.mjs",
-      "line": 79,
+      "line": 81,
       "expression": "index",
       "fragments": [],
       "unresolved": true
@@ -279175,7 +279277,7 @@
     {
       "kind": "computed-member",
       "file": "app/interaction-craft.mjs",
-      "line": 79,
+      "line": 81,
       "expression": "index",
       "fragments": [],
       "unresolved": true
@@ -308201,13 +308303,13 @@
     "duplicateKeys": 0,
     "reviewedItems": 11,
     "unreviewedItems": 2448,
-    "candidates": 6190,
-    "candidatesUnreviewed": 6189,
+    "candidates": 6192,
+    "candidatesUnreviewed": 6191,
     "candidatesProtected": 143,
     "itemsProtected": 9,
-    "dynamicConsumers": 3971,
-    "consumerReferences": 2084,
-    "keysWithoutStaticConsumers": 1329,
+    "dynamicConsumers": 3976,
+    "consumerReferences": 2087,
+    "keysWithoutStaticConsumers": 1328,
     "reviewedLocaleValues": 44,
     "unreviewedLocaleValues": 9792,
     "reviewedStaticItems": 1

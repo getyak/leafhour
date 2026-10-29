@@ -122,7 +122,7 @@ class Doc{
     return node;
   }
 }
-function menuFixture({user=null,books=[],owner={owner:'guest',revision:0},getOwner=null,extraLinks=[],ui,authoredLang}={}){
+function menuFixture({user=null,books=[],owner={owner:'guest',revision:0},getOwner=null,extraLinks=[],ui,authoredLang,hover=false}={}){
   const document=new Doc(),raf=[];if(authoredLang)document.documentElement.lang=authoredLang;
   const header=document.createElement('header');header.className='site-header';document.body.append(header);
   const brand=document.createElement('a');brand.className='brand';brand.setAttribute('href','/');header.append(brand);
@@ -162,7 +162,7 @@ function menuFixture({user=null,books=[],owner={owner:'guest',revision:0},getOwn
     getOwner:getOwner||(()=>({...current})),
     openAuth:()=>{calls.auth++;},
     openPalette:opener=>{calls.palette.push(opener);},
-    matchMedia:query=>query==='(min-width:1101px)'?desktop:null,
+    matchMedia:query=>query==='(min-width:981px)'?desktop:query==='(hover: hover) and (pointer: fine)'?{matches:hover}:null,
     requestAnimationFrame:fn=>{raf.push(fn);},
   });
   mounted.push(menu);
@@ -179,7 +179,7 @@ test('the menu mounts on the five authored home routes and never on the canonica
   assert.deepEqual(HOME_NAV_ROUTES,['/','/en','/zh-hans','/zh-hant','/ja']);
   for(const route of HOME_NAV_ROUTES)assert.equal(isHomeNavRoute(route),true,route);
   for(const route of ['/library','/read','/mcp','/zh-hans/mcp','/en/','/JA'])assert.equal(isHomeNavRoute(route),false,route);
-  assert.deepEqual([...HOME_MENU_CLOSE_REASONS].sort(),['auth-handoff','breakpoint','navigation','palette-handoff','user']);
+  assert.deepEqual([...HOME_MENU_CLOSE_REASONS].sort(),['auth-handoff','breakpoint','focus','navigation','outside','palette-handoff','pointer','user']);
 });
 
 test('the authored home markup ships one trigger and one native sheet with the exact ids the controller needs',async()=>{
@@ -559,4 +559,65 @@ test('disposing an authored home during first load fences late successful settle
  let resolve;const pending=new Promise(r=>resolve=r),catalogue=jaCatalogue;
  const runtime=createUiLocale({getLocation:()=>({href:'https://leafhour.com/ja'}),loadCatalogue:()=>pending});const initial=runtime.initializeOnce();
  const f=menuFixture({authoredLang:'ja',extraLinks:['/library?ui=ja'],ui:runtime});const href=f.bodyLinks[0].getAttribute('href'),label=f.trigger.getAttribute('aria-label');f.menu.dispose();resolve(catalogue);await initial;await runtime.uiReady;await Promise.resolve();assert.equal(f.bodyLinks[0].getAttribute('href'),href);assert.equal(f.trigger.getAttribute('aria-label'),label);
+});
+
+
+test('deliberate mouse hover reveals languages without moving focus and click pins the reveal',async()=>{
+ const f=menuFixture({hover:true});f.brand.focus();
+ f.trigger.emit('pointerenter',{pointerType:'mouse',bubbles:false});
+ assert.equal(f.dialog.open,false,'passing over the globe does not flash a menu');
+ await new Promise(r=>setTimeout(r,130));
+ assert.equal(f.dialog.open,true,'deliberate hover reveals the panel');
+ assert.equal(f.document.activeElement,f.brand,'hover must never steal keyboard focus');
+ f.trigger.click();f.trigger.emit('pointerleave',{pointerType:'mouse',bubbles:false});
+ await new Promise(r=>setTimeout(r,250));
+ assert.equal(f.dialog.open,true,'a click pins a hover reveal');
+ f.trigger.click();assert.equal(f.dialog.open,false);
+});
+
+test('pointer travel into the panel cancels dismissal and leaving both closes it',async()=>{
+ const f=menuFixture({hover:true});
+ f.trigger.emit('pointerenter',{pointerType:'mouse',bubbles:false});
+ await new Promise(r=>setTimeout(r,130));
+ assert.equal(f.dialog.open,true);
+ f.trigger.emit('pointerleave',{pointerType:'mouse',bubbles:false});
+ f.dialog.emit('pointerenter',{pointerType:'mouse',bubbles:false});
+ await new Promise(r=>setTimeout(r,250));assert.equal(f.dialog.open,true);
+ f.dialog.emit('pointerleave',{pointerType:'mouse',bubbles:false});
+ await new Promise(r=>setTimeout(r,250));assert.equal(f.dialog.open,false);
+});
+
+test('outside press and Escape dismiss without trapping focus',()=>{
+ const f=menuFixture();f.trigger.click();f.brand.emit('pointerdown');
+ assert.equal(f.dialog.open,false,'outside press closes the menu');
+ f.trigger.click();f.document.emit('keydown',{key:'Escape'});
+ assert.equal(f.dialog.open,false);assert.equal(f.document.activeElement,f.trigger);
+ f.trigger.click();f.brand.focus();f.document.emit('focusin',{target:f.brand});
+ assert.equal(f.dialog.open,false,'Tab can leave the menu');assert.equal(f.document.activeElement,f.brand);
+});
+
+test('touch hover and pending work after disposal never open the menu',async()=>{
+ const f=menuFixture({hover:true});
+ f.trigger.emit('pointerenter',{pointerType:'touch',bubbles:false});
+ await new Promise(r=>setTimeout(r,130));assert.equal(f.dialog.open,false);
+ f.trigger.emit('pointerenter',{pointerType:'mouse',bubbles:false});f.menu.dispose();
+ await new Promise(r=>setTimeout(r,130));assert.equal(f.dialog.open,false);
+});
+
+test('early public mount and later library mount share one controller',()=>{
+ const f=menuFixture();const again=mountHomeNavigation({document:f.document});
+ assert.equal(again,f.menu,'one lifecycle owner for early public and later portal entry');
+ f.trigger.click();assert.equal(f.dialog.open,true,'one click opens once');
+});
+
+test('authored home loads the public menu independently of the private library bootstrap',async()=>{
+ const source=await readFile(new URL('../app/home.html',import.meta.url),'utf8');
+ assert.match(source,/<script type="module" src="\/public-page.mjs"><\/script>/);
+});
+
+
+test('keyboard activation places focus in the language choices',()=>{
+ const f=menuFixture();f.trigger.focus();f.trigger.click({detail:0});
+ assert.equal(f.dialog.open,true);
+ assert.equal(f.document.activeElement===f.languageSlot.querySelector('a'),true,'Enter/Space opens at a language option');
 });

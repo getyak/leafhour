@@ -157,3 +157,49 @@ body:not(.library-page) > .site-footer .site-theme { margin-left: auto; flex: no
 @media (prefers-reduced-transparency: reduce), (prefers-contrast: more) {
   body:not(.library-page) > .site-header { background: var(--paper); }
 }
+
+/* The globe owns this small, non-modal surface. A short reveal establishes its
+   origin; language links navigate immediately, without waiting for an exit. */
+body #home-menu {
+  z-index: 150;
+  width: min(288px, calc(100vw - 32px));
+  padding: 12px;
+  border: 1px solid var(--line-hairline);
+  box-shadow: 0 12px 36px #14261d12, 0 2px 8px #14261d08;
+  transform-origin: calc(100% - 22px) top;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-6px) scale(.985);
+  transition: opacity 130ms ease, transform 160ms cubic-bezier(.2,.8,.2,1), display 160ms allow-discrete;
+}
+body #home-menu[open] { pointer-events: auto; opacity: 1; transform: translateY(0) scale(1); }
+@starting-style {
+  body #home-menu[open] { opacity: 0; transform: translateY(-6px) scale(.985); }
+}
+body #home-menu h2 { padding: 6px 36px 12px 12px; font: 500 13px/1.5 var(--sans); color: var(--muted); }
+body #home-menu .home-languages { width: 100%; }
+body #home-menu .home-languages a {
+  justify-content: space-between;
+  gap: 12px;
+  text-decoration: none;
+  transition: background-color 120ms ease, color 120ms ease;
+}
+body #home-menu .home-languages a[aria-current]::after { content: '✓'; color: var(--accent); font-size: 14px; }
+body #home-menu .home-languages a:last-child:not([hreflang]) {
+  margin-top: 6px;
+  border-top: 1px solid var(--line-hairline);
+  border-radius: 0;
+  font-size: 12px;
+}
+body:not(.library-page) > .site-header .home-menu-trigger[aria-expanded=true] { background: var(--surface-soft); color: var(--accent); }
+.home-menu-trigger svg { transition: transform 180ms cubic-bezier(.2,.8,.2,1); }
+.home-menu-trigger[aria-expanded=true] svg { transform: rotate(8deg); }
+@media (min-width: 981px) {
+  body #home-menu { width: min(240px, calc(100vw - 32px)); }
+  body #home-menu .home-menu-links { display: none; }
+  body #home-menu .home-menu-languages { border: 0; margin: 0; padding: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  body #home-menu, .home-menu-trigger svg, body #home-menu .home-languages a { transition: none; transform: none; }
+  @starting-style { body #home-menu[open] { pointer-events: auto; opacity: 1; transform: none; } }
+}
