@@ -59,3 +59,13 @@ The test now forces **both completion orders** through an isolated fetcher promi
 With the old array assertion retained, the forced browser-first case deterministically failed: [RED](ci-order-red.log), 3 Node tests /1pass /2fail including the enclosing parent. With identity assertions both orders pass: [GREEN](ci-order-green.log), 3 /3pass. [Scope and source hashes](ci-order-repair.json). This iOS-only workspace lacks the Sentry SDK dependency; the full SDK suite was not locally executed or relabeled passed. Current-head full hosted CI is still required. No blanket retry, check bypass, SDK/runtime change or full dependency installation was used.
 
 Independent test-logic review confirmed unchanged anti-forgery assertions, both controlled orders and bounded gate cleanup; the full Sentry suite remains a hosted-CI requirement.
+
+## Native authentication main integration
+
+A final premerge check detected main advancing to `90c30d0c497ed4642094fce5c90dd313add01928` (GET-315/PR263). The nonzero ancestry result stopped merging; this branch then normally merged that main into `434847dc1964d25edb546599825a5a277a1a8e71`. All four reader/index/test hashes and AGENTS/briefs remained unchanged. A bounded independent integration review confirmed that same-account linking preserves the ReaderSession and opening a book still creates a session, without mutating its immutable source/index owner. This does not review or certify real provider sign-in.
+
+Once the shared device lock became available, guarded jobs2 revalidation executed **92 Core XCTest and 23 native AppTests, zero failures**, including all added OAuth/authentication test names checked against passed lines. These are isolated fake/provider protocol tests; no real Google/Apple flow was started. The original task state SHAf0df05c436c404e0a9a7a81e85c03b701ad763adc4f800078f4735ea2fcf0e57 was restored byte-for-byte, only the task app was terminated and the borrowed Primary stayed booted. [Exact summary and archive](post-auth-main-validation.json). Earlier guard exit75 meant another chat held the lock; no test or artifact had started in that attempt.
+
+The 31.616s native UI probe remains evidence for its four byte-identical reader sources and quote/draft flow. It was not rerun as an authentication-provider UI or physical-device acceptance test. Current synchronized head CI, normal merge, main CI, website source and native distribution remain separate gates.
+
+An independent evidence review matched the 92/23 counts, all added passed test names, actual jobs2, state restoration and four reader hashes; current exact-head CI remains required.
