@@ -250,7 +250,10 @@ struct LibraryScreen: View {
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             if model.activityCanCancel {
-                Button("取消") { model.cancelImport() }.frame(minWidth: 44, minHeight: 44).accessibilityIdentifier("library-activity-cancel")
+                Button { model.cancelImport() } label: {
+                    Text("取消").frame(minWidth: 44, minHeight: 44).contentShape(Rectangle())
+                }
+                .accessibilityIdentifier("library-activity-cancel")
             }
         }
         .padding(.horizontal, 20).padding(.vertical, 10)
