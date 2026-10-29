@@ -173,6 +173,48 @@ final class LibraryRecordsTests: XCTestCase {
         XCTAssertEqual(rows.last?.attribution, "AI 内容")
     }
 
+    func testFinishingBackgroundDownloadKeepsTheBookOpenedWhileItWasDownloading() async throws {
+        let (model, probe) = try fixture()
+        let source = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString + ".txt")
+        try Data("The local book I chose to read.".utf8).write(to: source)
+        addTeardownBlock { try? FileManager.default.removeItem(at: source) }
+        let library = try XCTUnwrap(model.library)
+        let local = try await library.importFile(source)
+        await model.reload()
+        let started = expectation(description: "remote chapter is held in flight")
+        probe.blockChapters(started)
+        let download = Task { await model.download(CloudShelfBook(id: "slow-remote", title: "Downloading Book", author: "", contentVersion: "v1")) }
+        await fulfillment(of: [started], timeout: 5)
+
+        await model.open(local)
+        XCTAssertEqual(model.reader?.book.id, local.id)
+        probe.releaseChapters()
+        await download.value
+
+        XCTAssertTrue(model.books.contains { $0.cloud?.bookID == "slow-remote" }, "The background download must still finish saving its own copy")
+        XCTAssertEqual(model.reader?.book.id, local.id, "Completing another book must not switch away from the reader's chosen book")
+    }
+
+    func testFinishingLocalImportDoesNotReplaceAnOpenReader() async throws {
+        let (model, _) = try fixture()
+        let firstSource = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString + ".txt")
+        let nextSource = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString + ".txt")
+        try Data("My current book stays open.".utf8).write(to: firstSource)
+        try Data("Another book can finish importing in the background.".utf8).write(to: nextSource)
+        addTeardownBlock { try? FileManager.default.removeItem(at: firstSource); try? FileManager.default.removeItem(at: nextSource) }
+        let library = try XCTUnwrap(model.library)
+        let first = try await library.importFile(firstSource)
+        await model.reload()
+        await model.open(first)
+
+        model.importFile(nextSource)
+        for _ in 0..<200 where model.busy { try await Task.sleep(for: .milliseconds(20)) }
+
+        XCTAssertFalse(model.busy)
+        XCTAssertTrue(model.books.contains { $0.originalFilename == nextSource.lastPathComponent })
+        XCTAssertEqual(model.reader?.book.id, first.id, "A completed import must preserve the current reading session")
+    }
+
     func testAuthRestoreToSignedOutClearsPreviousAccountRecordsAndCursor() async throws {
         let (model, probe) = try fixture()
         model.notebookEntries = [try entry()]
@@ -217,16 +259,40 @@ private final class RecordsProbe: @unchecked Sendable {
     var summary: CloudJSON = .object(["allTime": .object(["durationSeconds": .number(0)]), "books": .array([])])
     private let lock = NSLock()
     private var captured: [String] = []
+    private var chaptersBlocked = false
+    private var chapterStarted: XCTestExpectation?
+    private var heldChapters: [() -> Void] = []
+    func blockChapters(_ started: XCTestExpectation) { lock.lock(); chaptersBlocked = true; chapterStarted = started; lock.unlock() }
+    func holdIfBlocked(_ request: URLRequest, deliver: @escaping () -> Void) -> Bool {
+        lock.lock()
+        guard chaptersBlocked, request.url!.path.contains("/chapters/") else { lock.unlock(); return false }
+        heldChapters.append(deliver)
+        let started = chapterStarted; chapterStarted = nil
+        lock.unlock()
+        started?.fulfill()
+        return true
+    }
+    func releaseChapters() {
+        lock.lock(); chaptersBlocked = false; let pending = heldChapters; heldChapters = []; lock.unlock()
+        pending.forEach { $0() }
+    }
     var summaryRequests: Int { lock.lock(); defer { lock.unlock() }; return captured.filter { $0 == "/api/library/reading-summary" }.count }
     init(owner: String) { self.owner = owner }
     func response(_ request: URLRequest) -> (Int, CloudJSON) {
         let path = request.url!.path
         lock.lock(); captured.append(path); lock.unlock()
+        if path.hasSuffix("/reading-manifest") {
+            return (200, .object(["bookId": .string("slow-remote"), "contentVersion": .string("v1"), "title": .string("Downloading Book"), "chapters": .array([.object(["id": .string("c1"), "title": .string("One")])])]))
+        }
+        if path.contains("/chapters/") {
+            return (200, .object(["bookId": .string("slow-remote"), "contentVersion": .string("v1"), "chapterId": .string("c1"), "sections": .array([.object(["chapterId": .string("c1"), "paragraphs": .array([.object(["id": .string("p1"), "original": .string("An isolated downloaded passage.")])])])])]))
+        }
+        if path.hasSuffix("/records") { return (200, .object(["bookId": .string("slow-remote"), "contentVersion": .string("v1"), "comments": .array([]), "questions": .array([])])) }
         if path == "/api/library/notebook" { return (notebookStatus, notebookStatus == 200 ? notebook : .object(["error": .string("Notebook unavailable")])) }
         if path == "/api/library/notebook-workspace" { return (workspaceStatus, workspaceStatus == 200 ? workspace : .object(["error": .string("Workspace unavailable")])) }
         if path == "/api/library/reading-summary" { return (summaryStatus, summaryStatus == 200 ? summary : .object(["error": .string("Summary unavailable")])) }
         if path == "/api/auth/session" { return (200, .object(["user": restoreSignedOut || request.value(forHTTPHeaderField: "Cookie") == nil ? .null : .object(["id": .string(owner)])])) }
-        if path == "/api/library" { return (200, .object(["books": .array([])])) }
+        if path == "/api/library" { return (200, .object(["user": .object(["id": .string(owner)]), "books": .array([])])) }
         return (200, .object([:]))
     }
 }
@@ -234,6 +300,8 @@ private final class RecordsProbe: @unchecked Sendable {
 private final class RecordsURLProtocol: URLProtocol, @unchecked Sendable {
     private static let lock = NSLock()
     private static var probe: RecordsProbe?
+    private let deliveryLock = NSLock()
+    private var stopped = false
     static func install(_ value: RecordsProbe?) { lock.lock(); probe = value; lock.unlock() }
     override class func canInit(with request: URLRequest) -> Bool { request.url?.host == "records.leafhour.test" }
     override class func canonicalRequest(for request: URLRequest) -> URLRequest { request }
@@ -243,10 +311,15 @@ private final class RecordsURLProtocol: URLProtocol, @unchecked Sendable {
         let (status, json) = probe.response(request)
         do {
             let data = try JSONEncoder().encode(json)
-            client?.urlProtocol(self, didReceive: HTTPURLResponse(url: request.url!, statusCode: status, httpVersion: nil, headerFields: ["Content-Type": "application/json"])!, cacheStoragePolicy: .notAllowed)
-            client?.urlProtocol(self, didLoad: data)
-            client?.urlProtocolDidFinishLoading(self)
+            let deliver = { [self] in
+                deliveryLock.lock(); let cancelled = stopped; deliveryLock.unlock()
+                guard !cancelled else { return }
+                client?.urlProtocol(self, didReceive: HTTPURLResponse(url: request.url!, statusCode: status, httpVersion: nil, headerFields: ["Content-Type": "application/json"])!, cacheStoragePolicy: .notAllowed)
+                client?.urlProtocol(self, didLoad: data)
+                client?.urlProtocolDidFinishLoading(self)
+            }
+            if !probe.holdIfBlocked(request, deliver: deliver) { deliver() }
         } catch { client?.urlProtocol(self, didFailWithError: error) }
     }
-    override func stopLoading() { }
+    override func stopLoading() { deliveryLock.lock(); stopped = true; deliveryLock.unlock() }
 }

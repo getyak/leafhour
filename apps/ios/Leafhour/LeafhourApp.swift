@@ -178,7 +178,7 @@ final class LibraryModel {
     }
     func download(_ remote: CloudShelfBook, openAfter: Bool = true, refresh: Bool = false) async {
         guard !busy, let account, let library, let sync else { return }
-        if !refresh, let existing = books.first(where: { $0.cloud?.bookID == remote.id && $0.cloud?.contentVersion == remote.contentVersion }) { if openAfter { await open(existing) }; return }
+        if !refresh, let existing = books.first(where: { $0.cloud?.bookID == remote.id && $0.cloud?.contentVersion == remote.contentVersion }) { if openAfter && reader == nil && openingBookID == nil { await open(existing) }; return }
         let marker = contextID, operation = UUID()
         downloadOperationID = operation
         busy = true; activeBookID = remote.id; activityProgress = nil; activityCanCancel = true
@@ -212,7 +212,7 @@ final class LibraryModel {
                 guard marker == contextID else { return }
                 await reload()
                 status = Task.isCancelled ? "下载已停止，完整保存的副本仍可阅读。" : "正文和已有译文已保存在此设备"
-                if openAfter && !Task.isCancelled { await open(book) }
+                if openAfter && !Task.isCancelled && reader == nil && openingBookID == nil { await open(book) }
             } catch {
                 guard marker == contextID else { return }
                 if Task.isCancelled || error is CancellationError || (error as? URLError)?.code == .cancelled {
@@ -337,10 +337,15 @@ final class LibraryModel {
     func importFile(_ url: URL) {
         guard !busy, let library else { return }
         busy = true; status = "正在保留原件并处理书籍…"; activityCanCancel = true; activeBookID = nil; activityProgress = nil
+        let marker = contextID
         importTask = Task {
             let scoped = url.startAccessingSecurityScopedResource()
             defer { if scoped { url.stopAccessingSecurityScopedResource() }; busy = false; importTask = nil; activityCanCancel = false }
-            do { let book = try await library.importFile(url); await reload(); await open(book) }
+            do {
+                let book = try await library.importFile(url)
+                await reload()
+                if marker == contextID && !Task.isCancelled && reader == nil && openingBookID == nil { await open(book) }
+            }
             catch is CancellationError { status = "导入已取消，原件仍保留，可稍后重试。"; await reload() }
             catch { message = error.localizedDescription; await reload() }
         }
@@ -352,9 +357,14 @@ final class LibraryModel {
     func retry(_ job: ImportJob) {
         guard !busy, let library else { return }
         busy = true; status = "正在从保留的原件重试…"; activityCanCancel = true; activeBookID = nil; activityProgress = nil
+        let marker = contextID
         importTask = Task {
             defer { busy = false; importTask = nil; activityCanCancel = false }
-            do { let book = try await library.retry(job.id); await reload(); await open(book) }
+            do {
+                let book = try await library.retry(job.id)
+                await reload()
+                if marker == contextID && !Task.isCancelled && reader == nil && openingBookID == nil { await open(book) }
+            }
             catch is CancellationError { status = "导入已取消，原件仍保留，可稍后重试。"; await reload() }
             catch { message = error.localizedDescription; await reload() }
         }
