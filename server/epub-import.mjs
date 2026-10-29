@@ -106,3 +106,16 @@ export function epubSourceEvidence(bytes,{href,elementId,blockIndex}){
  if(!safeName(href))throw invalid('来源路径不安全');const files=readArchive(bytes),doc=parseXML(files.get(href),href,'application/xhtml+xml'),blocks=sourceBlocks(doc,href,hash(bytes),true),block=elementId?blocks.find(b=>b.elementId===elementId):blocks[blockIndex];
  if(!block)throw invalid('无法定位来源元素，请保留待校对状态');return {href,sourceXML:block.sourceXML.slice(0,50000),truncated:block.sourceXML.length>50000};
 }
+
+// Reuse the same bounded ZIP and local-reference validation as source import.
+export function extractEpubCover(bytes){
+ const files=readArchive(bytes),container=parseXML(files.get('META-INF/container.xml'),'container');
+ const root=elements(container,'rootfile').find(node=>attr(node,'media-type')==='application/oebps-package+xml'),packagePath=root&&attr(root,'full-path');
+ if(!safeName(packagePath))throw invalid('package 路径不安全');
+ const pkg=parseXML(files.get(packagePath),'package'),items=elements(pkg,'item');
+ const legacy=elements(pkg,'meta').find(node=>attr(node,'name')==='cover');
+ const item=items.find(node=>attr(node,'properties').split(/\s+/u).includes('cover-image'))||items.find(node=>legacy&&attr(node,'id')===attr(legacy,'content'));
+ if(!item||!['image/jpeg','image/png'].includes(attr(item,'media-type')))return null;
+ const target=reference(packagePath,attr(item,'href')),data=files.get(target.href);
+ return data?Buffer.from(data):null;
+}

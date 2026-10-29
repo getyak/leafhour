@@ -31,3 +31,12 @@ test('long preview text remains a bounded exact prefix without splitting Unicode
 test('pending personalization never classifies a book as unread or empties a saved status filter',()=>{
  const pending={...books[2],personalizationPending:true};assert.equal(workspace.shelfReadingStatus(pending),'pending');assert.equal(workspace.libraryShelf([pending],{status:'reading',form:'bilingual',language:'ja'}).length,1);
 });
+
+test('the bookmark resumes the most recent valid unfinished passage regardless of shelf order',()=>{
+  assert.equal(typeof workspace.currentReadingBookmark,'function');
+  const recent={...books[0],bookId:'recent',resume:{passageId:'a9',label:'Chapter Nine',updatedAt:'2026-10-29'}};
+  const finished={...recent,bookId:'finished',journey:{status:'finished',lastReadAt:'2026-10-30'}};
+  const pending={...recent,bookId:'pending',personalizationPending:true};
+  assert.equal(workspace.currentReadingBookmark([books[0],finished,pending,recent]),recent);
+  assert.equal(workspace.currentReadingBookmark([{...recent,resume:null,journey:{lastReadAt:'2026-10-30'}},finished,pending]),null);
+});

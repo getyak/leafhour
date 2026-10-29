@@ -2,6 +2,10 @@ import {chooseCurrentBook} from './reading-calendar.mjs';
 import {contentLanguage,matchesReadingLanguage} from './book-reading-languages.mjs';
 const activityAt=book=>String(book.journey?.lastReadAt||book.resume?.updatedAt||'');
 
+export function currentReadingBookmark(books){
+  return chooseCurrentBook(books.filter(book=>!book.personalizationPending&&typeof book.resume?.passageId==='string'&&book.resume.passageId))||null;
+}
+
 export function workspaceCurrentBook(books){
   return chooseCurrentBook(books)||books.filter(book=>book.resume||book.journey?.status==='finished').sort((a,b)=>activityAt(b).localeCompare(activityAt(a)))[0]||null;
 }
