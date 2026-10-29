@@ -12,7 +12,7 @@ The native reader exposes “陪我读” only after waking its top controls. UI
 
 ## Executed checks
 
-- **47 host Swift tests passed**. **212 related Node tests passed**. The pinned vendor integrity check and public release allowlist passed. Web production packaging succeeded.
+- **47 host Swift tests passed**. **275 related Node tests passed**, including the tools coordinator, toolbar lifecycle, reading position and placement suites. The pinned vendor integrity check and public release allowlist passed. Web production packaging succeeded.
 - Before the change, the native explicit-summon test failed because its button did not exist. The selected-quote Web layout fixture occupied all 844px of a 390×844 viewport; the focus regression also failed. After the change, the Web focus suite passed 7/7.
 - The reviewed unsigned native build passed. **Two actual XCTest flows passed**, using the existing guarded Primary iPhone / iPhone 17 Pro / iOS 26.5 and isolated `org.leafhour.get274`: explicit summon + cold restart; system text selection + explain. Both checked upper-book space, real unavailable text, dismissal and no residual controls. The fixture is a bounded public-domain excerpt of `catalog/alice.txt`, seeded through the normal OfflineLibrary import service. No shared app data was overwritten or simulator created/erased.
 - The final native assertion waits up to one second for the navigation element to disappear **after the XCUI tap returns**. It is not a frame-level touch-to-dismiss or physical-device latency measurement. An earlier run used a one-second polling expectation and failed; changing that test to `waitForNonExistence` passed without a product dismissal change. Those failed results remain in local evidence.
@@ -20,7 +20,7 @@ The native reader exposes “陪我读” only after waking its top controls. UI
 - Browser tests used a disposable local identity and intercepted only chat availability to exercise the actual composer. No question was sent and no model was called. Existing inline-style CSP console errors were observed in the local compiled harness; this run does not claim zero-console acceptance. The interaction/layout assertions passed independently of those errors.
 - Independent agent review found two P2 issues (short-screen composer overflow and hidden-bubble live announcements); both were fixed and reviewed. The PDF repeated-nil guard was also reviewed. Final review found no blocking issue.
 
-Copy lint and the latest CI/publication receipts are tracked in the primary PR. Only actual successful receipts establish those later states.
+Pinned Vale 3.24.0/textlint 15.8.0 lint and planted canaries passed locally after a task-local pinned installation repaired an incomplete shared cache. The first PR CI ran 4,255 tests with one failure: an older coordinator test still required focus on a persistent AI entry. Its expectation was updated to the new quiet-edge contract while retaining idle and keyboard focus guarantees; the expanded 275-test suite passed. Latest CI/publication receipts are tracked in the primary PR; earlier failures do not certify later revisions.
 
 ## Remaining acceptance
 

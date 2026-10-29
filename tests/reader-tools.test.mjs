@@ -58,26 +58,27 @@ test('a disposed primary-surface owner cannot close a replacement reader dialog'
  tools.unmount();tools.chatIntegration.onOpen();assert.equal(closed,0);
 }));
 
-test('closing chat restores the persistent entry without opening reading tools',t=>withTools(f=>{
+test('closing chat restores the quiet reading edge without opening reading tools',t=>withTools(f=>{
   t.mock.timers.enable({apis:['setTimeout']});
   const entry=new Element('chat-entry'),host=f.elements.get('#reading-tools-chat-slot');
   host.querySelector=()=>entry;host.append(entry);f.sessionRoot.append(host);
+  const edge=f.elements.get('#reading-tools-trigger');
   const tools=mountReaderTools({sessionRoot:f.sessionRoot,immersion:f.immersion,document:f.document});
   try{
     tools.toolbar.reveal(false);tools.chatIntegration.onOpen();
     assert.equal(tools.toolbar.expanded,false);
     tools.chatIntegration.focusReturn();
-    assert.equal(tools.toolbar.expanded,false,'the permanent entry needs no tools reveal');
-    assert.equal(f.document.activeElement,entry);
+    assert.equal(tools.toolbar.expanded,false,'returning to the reading edge leaves tools asleep');
+    assert.ok(f.document.activeElement===edge,'focus returns to the actual reading edge');
     assert.equal(f.immersion.shown,1,'closing chat does not introduce a second tools surface');
     t.mock.timers.tick(5000);
     assert.equal(tools.toolbar.expanded,false);
-    assert.equal(f.document.activeElement,entry,'idle time leaves focus on the persistent conversation entry');
+    assert.ok(f.document.activeElement===edge,'idle time keeps focus on the quiet reading edge');
     tools.chatIntegration.focusReturn();
     f.document.dispatchEvent(Object.assign(new Event('keydown'),{key:'Tab'}));
     t.mock.timers.tick(6000);
     assert.equal(tools.toolbar.expanded,false,'keyboard focus does not expand unrelated tools');
-    assert.equal(f.document.activeElement,entry);
+    assert.ok(f.document.activeElement===edge,'keyboard activity keeps focus on the actual reading edge');
     f.document.activeElement=null;f.sessionRoot.dispatchEvent(new Event('focusout'));
   }finally{tools.unmount();}
 }));
