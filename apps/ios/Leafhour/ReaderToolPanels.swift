@@ -15,6 +15,8 @@ struct ReaderMorePanel: View {
         List {
             Section("读这本书") {
                 NavigationLink { BookSearchPanel(session: session, onJump: onJump) } label: { Label("搜索原文", systemImage: "magnifyingglass").frame(minHeight: 44) }
+                NavigationLink { ReaderTranslationPanel(session: session, tools: tools, cloud: cloud) } label: { Label("翻译", systemImage: "character.book.closed").frame(minHeight: 44) }
+                NavigationLink { ReaderRecordsPanel(session: session, onJump: onJump) } label: { Label("我的记录", systemImage: "square.and.pencil").frame(minHeight: 44) }
                 NavigationLink { ReaderPreferencesPanel(session: session) } label: { Label("文字与纸面", systemImage: "textformat.size").frame(minHeight: 44) }
                 NavigationLink { ReaderIntroductionPanel(session: session, tools: tools, cloud: cloud) } label: { Label("导读与摘要", systemImage: "text.book.closed").frame(minHeight: 44) }
                 Button(action: onCompanion) { Label("阅读陪读", systemImage: "bubble.left.and.bubble.right").frame(minHeight: 44) }
@@ -35,7 +37,7 @@ struct ReaderMorePanel: View {
                 } label: { Label("导出笔记与草稿", systemImage: "doc.text").frame(minHeight: 44) }
             }
             Section {
-                Text("轻点书页底边找回工具。滑动继续阅读时，工具会轻轻收起；长按正文仍使用系统选字。").font(.footnote).foregroundStyle(.secondary)
+                Text("轻点书页找回工具，再轻点可收起。长按正文仍使用系统选字；翻页方式可在阅读设置中更改。").font(.footnote).foregroundStyle(.secondary)
             }
         }.navigationTitle("阅读工具")
             .fileExporter(isPresented: $exporting, document: export, contentType: .json, defaultFilename: "Leafhour-records") { result in

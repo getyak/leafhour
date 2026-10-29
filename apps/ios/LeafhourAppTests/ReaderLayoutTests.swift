@@ -63,9 +63,94 @@ final class ReaderLayoutTests: XCTestCase {
         let lastOffset = max(-text.adjustedContentInset.top, text.contentSize.height - text.bounds.height + text.adjustedContentInset.bottom)
         text.setContentOffset(CGPoint(x: 0, y: lastOffset), animated: false)
         let finalLine = text.convert(line.offsetBy(dx: text.textContainerInset.left, dy: text.textContainerInset.top), to: host.view)
-        // The initial dock contains the chapter controls and a second row of tools.
-        // Reserving only the ordinary 24 pt page margin leaves this line behind that dock.
-        XCTAssertLessThanOrEqual(finalLine.maxY, host.view.safeAreaLayoutGuide.layoutFrame.maxY - 130)
+        let dock = ReaderBottomBar(mode: .reading, chapterAccessibilityValue: "第 1 章", onContents: {}, onRead: {}, onListen: {}, onAppearance: {}, onTypography: {})
+            .frame(width: host.view.bounds.width - 24)
+        let dockHeight = try XCTUnwrap(ImageRenderer(content: dock).uiImage).size.height
+        // Measure the production controls, whose new compact layout replaces
+        // the previous two-row dock. The last source line must clear them.
+        XCTAssertGreaterThanOrEqual(dockHeight, 44)
+        XCTAssertLessThanOrEqual(finalLine.maxY, host.view.safeAreaLayoutGuide.layoutFrame.maxY - dockHeight - 6)
+    }
+
+    func testAdjacentPlainPassagesUseOneTextKitBoundaryAndKeepUnicodeQuoteAndSavedAnchor() async throws {
+        let first = "First source.", prefix = "😀 prefix ", selected = "🐿️ e\u{301} source."
+        let second = prefix + selected, authoredBreak = "Author line one.\nAuthor line two."
+        let following = (1...20).map { "Following paragraph \($0) keeps room below the saved source line." }
+        let session = try await session(source: ([first, second, authoredBreak] + following).joined(separator: "\n\n"))
+        let passage = session.chapter.passages[1]
+        XCTAssertEqual(passage.text, second)
+        let savedAnchor = ReadingAnchor(chapterID: session.chapter.id, passageID: passage.id, characterOffset: prefix.unicodeScalars.count)
+        session.go(to: 0, anchor: savedAnchor)
+        let receipt = await session.flush()
+        XCTAssertTrue(session.isCurrent(receipt))
+        XCTAssertEqual(session.state.anchor, savedAnchor, "An existing anchor counts source scalars, never rendered separators")
+
+        let controller = UIViewController(), window = UIWindow(frame: CGRect(x: 0, y: 0, width: 390, height: 700))
+        window.rootViewController = controller; window.makeKeyAndVisible(); controller.view.frame = window.bounds
+        defer { window.isHidden = true; window.rootViewController = nil }
+        let reading = TextReadingView(session: session, onNote: { _ in }, onSource: { _ in }, onWake: { _ in }, onReadingScroll: {})
+        func makeText() -> (UITextView, TextReadingView.Coordinator) {
+            let coordinator = reading.makeCoordinator(), text = UITextView(usingTextLayoutManager: false)
+            text.frame = controller.view.bounds; text.isEditable = false; text.isSelectable = true
+            text.textContainer.lineFragmentPadding = 0; text.contentInsetAdjustmentBehavior = .never
+            text.delegate = coordinator; coordinator.view = text; controller.view.addSubview(text)
+            coordinator.updateContent(text)
+            return (text, coordinator)
+        }
+        func drain() async {
+            await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
+                DispatchQueue.main.async { continuation.resume() }
+            }
+        }
+        let (text, coordinator) = makeText()
+        defer { coordinator.invalidate(); text.delegate = nil }
+        await drain()
+        text.layoutManager.ensureLayout(for: text.textContainer); text.layoutIfNeeded()
+        let firstSpan = try XCTUnwrap(coordinator.spans.first), secondSpan = try XCTUnwrap(coordinator.spans.dropFirst().first)
+        let lastFirstCharacter = firstSpan.range.location + first.utf16.count - 1
+        let boundary = NSRange(location: lastFirstCharacter, length: secondSpan.range.location - lastFirstCharacter + 1)
+        let glyphs = text.layoutManager.glyphRange(forCharacterRange: boundary, actualCharacterRange: nil)
+        var boundaryLines: [CGRect] = []
+        text.layoutManager.enumerateLineFragments(forGlyphRange: glyphs) { rect, _, _, _, _ in boundaryLines.append(rect) }
+        XCTAssertEqual(boundaryLines.count, 2, "Adjacent source paragraphs must have no synthetic empty TextKit line between their actual text lines")
+        let authoredSpan = coordinator.spans[2]
+        XCTAssertEqual((text.text as NSString).substring(with: NSRange(location: authoredSpan.range.location, length: authoredBreak.utf16.count)), authoredBreak, "Keep author-provided line breaks intact")
+
+        let quoteRange = NSRange(location: secondSpan.range.location + prefix.utf16.count, length: selected.utf16.count)
+        text.selectedRange = quoteRange
+        XCTAssertTrue(text.becomeFirstResponder())
+        let quote = try XCTUnwrap(coordinator.selectedQuote(in: text, range: quoteRange))
+        let sourceQuote = try XCTUnwrap(quote.sourceText)
+        XCTAssertEqual(quote.text.unicodeScalars.map(\.value), selected.unicodeScalars.map(\.value))
+        XCTAssertEqual(sourceQuote.unicodeScalars.map(\.value), selected.unicodeScalars.map(\.value))
+        XCTAssertEqual(quote.anchor, savedAnchor, "An earlier surrogate pair must not turn the source scalar offset into a UTF-16 offset")
+        XCTAssertTrue(text.canPerformAction(#selector(UIResponderStandardEditActions.copy(_:)), withSender: nil))
+        text.copy(nil)
+        XCTAssertEqual(text.selectedRange, quoteRange)
+        text.selectedRange = NSRange(location: 0, length: 0); text.resignFirstResponder()
+        coordinator.invalidate(); text.delegate = nil; text.removeFromSuperview()
+
+        session.go(to: 0, anchor: savedAnchor)
+        _ = await session.flush()
+        let (restored, restoredCoordinator) = makeText()
+        defer { restoredCoordinator.invalidate(); restored.delegate = nil }
+        await drain()
+        restored.layoutManager.ensureLayout(for: restored.textContainer); restored.layoutIfNeeded()
+        XCTAssertFalse(restoredCoordinator.restoring)
+        XCTAssertEqual(session.currentAnchor, savedAnchor)
+        XCTAssertGreaterThan(restored.contentOffset.y, 0, "Restoring must actually move the second passage to the readable top")
+        let restoredSpan = try XCTUnwrap(restoredCoordinator.spans.first { $0.passage.id == savedAnchor.passageID })
+        let restoredRange = NSRange(location: restoredSpan.range.location + prefix.utf16.count, length: selected.utf16.count)
+        let restoredGlyphs = restored.layoutManager.glyphRange(forCharacterRange: NSRange(location: restoredRange.location, length: 1), actualCharacterRange: nil)
+        let sourceRect = restored.layoutManager.boundingRect(forGlyphRange: restoredGlyphs, in: restored.textContainer)
+            .offsetBy(dx: restored.textContainerInset.left - restored.contentOffset.x, dy: restored.textContainerInset.top - restored.contentOffset.y)
+        let viewport = CGRect(x: 0, y: reading.pageInsets.top, width: restored.bounds.width, height: restored.bounds.height - reading.pageInsets.top - reading.pageInsets.bottom)
+        XCTAssertTrue(viewport.insetBy(dx: -1, dy: -1).contains(sourceRect), "The saved source glyphs must physically return inside the readable viewport")
+        XCTAssertTrue(restoredCoordinator.checkpointVisible())
+        XCTAssertEqual(session.currentAnchor?.passageID, passage.id)
+        XCTAssertLessThanOrEqual(try XCTUnwrap(session.currentAnchor?.characterOffset), savedAnchor.characterOffset)
+        XCTAssertEqual(restoredCoordinator.selectedQuote(in: restored, range: restoredRange)?.sourceText, selected)
+        _ = await session.flush()
     }
 
     func testCrossParagraphSelectionDisablesEveryAnchoredActionButKeepsCopy() async throws {

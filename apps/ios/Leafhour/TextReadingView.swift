@@ -139,7 +139,7 @@ struct TextReadingView: UIViewRepresentable {
                     } else {
                         let actualFont = passage.heading ? UIFontMetrics(forTextStyle: .title2).scaledFont(for: .systemFont(ofSize: preferences.fontSize + 5, weight: .semibold)) : font
                         result.append(NSAttributedString(string: passage.text, attributes: [.font: actualFont, .foregroundColor: UIColor.label, .paragraphStyle: style]))
-                        result.append(NSAttributedString(string: "\n\n", attributes: [.font: font, .paragraphStyle: style]))
+                        result.append(NSAttributedString(string: "\n", attributes: [.font: font, .paragraphStyle: style]))
                     }
                     coordinator.spans.append(Span(passage: passage, range: NSRange(location: start, length: result.length - start), sourceOffsets: sourceOffsets(for: passage, at: passageIndex)))
                 }

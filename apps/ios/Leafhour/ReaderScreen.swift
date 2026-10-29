@@ -2,7 +2,7 @@ import SwiftUI
 import UIKit
 import LeafhourCore
 
-enum ReaderChrome { case asleep, top, progress, tools }
+enum ReaderChrome: Equatable { case asleep, top, progress, tools }
 private enum ReaderChromeRegion: Hashable { case top, bottom }
 private struct ReaderChromeHeightKey: PreferenceKey {
     static var defaultValue: [ReaderChromeRegion: CGFloat] = [:]
@@ -11,13 +11,13 @@ private struct ReaderChromeHeightKey: PreferenceKey {
     }
 }
 enum ReaderPanel: Identifiable {
-    case contents, search, preferences, records, tools, listening, translation, introduction, conversation, bookInformation, note(SelectedQuote), source(SelectedQuote), companion(SelectedQuote?)
+    case contents, search, preferences, appearance, records, tools, listening, translation, introduction, conversation, bookInformation, note(SelectedQuote), source(SelectedQuote), companion(SelectedQuote?)
     var isCompanion: Bool { switch self { case .companion, .conversation: true; default: false } }
     var isNoteEditor: Bool { if case .note = self { true } else { false } }
     var id: String {
         switch self {
         case .contents: "contents"; case .search: "search"; case .preferences: "preferences"; case .records: "records"
-        case .tools: "tools"; case .listening: "listening"; case .translation: "translation"
+        case .appearance: "appearance"; case .tools: "tools"; case .listening: "listening"; case .translation: "translation"
         case .introduction: "introduction"; case .conversation: "conversation"; case .bookInformation: "book-information"
         case .note(let quote): "note-" + quote.id; case .source(let quote): "source-" + quote.id
         case .companion(let quote): "companion-" + (quote?.id ?? "current")
@@ -38,18 +38,19 @@ struct ReaderScreen: View {
     @State private var speech = ReaderSpeech()
     @State private var tools = ReaderCloudTools()
     @State private var clockID = UUID()
-    @State private var adjustingProgress = false
+    @State private var bottomBarFocused = false
+    @State private var pagePosition: ReaderPagePosition?
     @State private var selectionDismissalID = UUID()
     @State private var hasNativeTextSelection = false
-    @State private var chromeHeights: [ReaderChromeRegion: CGFloat] = [.top: 44, .bottom: 156]
-    private enum ChromeFocus: Hashable { case back, bookInformation, preferences, companion, previous, next, progress, contents, listening, translation, records, tools }
+    @State private var chromeHeights: [ReaderChromeRegion: CGFloat] = [.top: 44, .bottom: 100]
+    private enum ChromeFocus: Hashable { case back, bookInformation, tools }
     @FocusState private var focusedControl: ChromeFocus?
     private var paper: Color { session.state.preferences.theme == "paper" ? .readingPaper : Color(uiColor: .systemBackground) }
     // Keep page margins stable when chrome sleeps. Only a real control-size change
     // updates them, so waking the tools never reflows the chapter or moves its anchor.
     private var pageInsets: UIEdgeInsets {
         UIEdgeInsets(top: max(64, (chromeHeights[.top] ?? 44) + 16), left: 24,
-                     bottom: max(44, (chromeHeights[.bottom] ?? 156) + 24), right: 24)
+                     bottom: max(44, (chromeHeights[.bottom] ?? 100) + 24), right: 24)
     }
     var body: some View {
         ZStack(alignment: .top) {
@@ -59,10 +60,15 @@ struct ReaderScreen: View {
                     // PDFView can synchronously notify while its native selection is being cleared.
                     if quote != nil || session.selection != nil { session.selection = quote }
                 }, onWake: wake, onReadingScroll: readingDidScroll)
+                // PDFKit's page controller scales into its complete bounds.
+                // Give it an unobscured page instead of covering source lines.
+                .padding(.top, session.state.preferences.navigationMode == .paged ? pageInsets.top : 0)
+                .padding(.bottom, session.state.preferences.navigationMode == .paged ? pageInsets.bottom : 0)
             } else {
                 TextReadingView(session: session, pageInsets: pageInsets, selectionDismissalID: selectionDismissalID, onNote: { showNote($0) }, onSource: { panel = .source($0); chrome = .asleep }, onExplain: { showCompanion($0) }, onWake: wake, onReadingScroll: readingDidScroll,
                     onTranslate: { session.selection = $0; present(.translation) },
-                    onSelectionChange: { quote, active in session.selection = quote; hasNativeTextSelection = active })
+                    onSelectionChange: { quote, active in session.selection = quote; hasNativeTextSelection = active },
+                    onPageChange: { pagePosition = $0 })
             }
             VStack(spacing: 0) {
                 if chrome == .top || chrome == .tools {
@@ -78,40 +84,35 @@ struct ReaderScreen: View {
                     HStack { Text("已选择原文").font(.footnote); Spacer(); Button("解释这句") { showCompanion(quote) }; Button("记笔记", systemImage: "square.and.pencil") { showNote(quote) }; Button("取消") { session.selection = nil; selectionDismissalID = UUID() } }.padding().background(.regularMaterial)
                 }
                 if chrome == .progress || chrome == .tools {
-                    VStack(spacing: 10) {
-                        HStack {
-                            Button { session.go(to: session.chapterIndex - 1) } label: {
-                                Label(session.book.kind == .pdf ? "上一页" : "上一章", systemImage: "chevron.left").labelStyle(.iconOnly)
-                                    .frame(minWidth: 44, minHeight: 44).contentShape(Rectangle())
-                            }.focused($focusedControl, equals: .previous).disabled(session.chapterIndex == 0)
-                            Button { wake(.progress) } label: {
-                                Text("\(session.chapterIndex + 1) / \(session.book.chapters.count) · \(session.chapter.title)").font(.footnote).lineLimit(1).frame(maxWidth: .infinity).frame(minHeight: 44).contentShape(Rectangle())
-                            }.buttonStyle(.plain).accessibilityLabel("调整阅读进度")
-                            Button { session.go(to: session.chapterIndex + 1) } label: {
-                                Label(session.book.kind == .pdf ? "下一页" : "下一章", systemImage: "chevron.right").labelStyle(.iconOnly)
-                                    .frame(minWidth: 44, minHeight: 44).contentShape(Rectangle())
-                            }.focused($focusedControl, equals: .next).disabled(session.chapterIndex + 1 == session.book.chapters.count)
-                        }
-                        if chrome == .progress && session.book.chapters.count > 1 {
-                            Slider(value: Binding(get: { Double(session.chapterIndex) }, set: { session.go(to: Int($0.rounded())) }), in: 0...Double(session.book.chapters.count - 1), step: 1, onEditingChanged: { adjustingProgress = $0; clockID = UUID() }).focused($focusedControl, equals: .progress).accessibilityLabel(session.book.kind == .pdf ? "页码" : "章节")
-                        }
-                        if dynamicTypeSize.isAccessibilitySize {
-                            ScrollView(.horizontal) {
-                                dockActions
-                                    .fixedSize(horizontal: true, vertical: false)
-                            }.fixedSize(horizontal: false, vertical: true)
-                                .scrollIndicators(.visible)
-                                .accessibilityHint("横向滚动可查看全部阅读工具")
-                        } else {
-                            dockActions
-                        }
-                    }.padding(.horizontal, 18).padding(.bottom, 12).padding(.top, 4)
-                        .background(paper, in: RoundedRectangle(cornerRadius: 24, style: .continuous))
-                        .overlay { RoundedRectangle(cornerRadius: 24, style: .continuous).strokeBorder(.primary.opacity(0.08)) }
-                        .shadow(color: .black.opacity(0.08), radius: 12, y: 3)
-                        .padding(.horizontal, 12).padding(.bottom, 6)
-                        .accessibilityIdentifier("reader-tool-dock")
-                        .background { GeometryReader { geometry in Color.clear.preference(key: ReaderChromeHeightKey.self, value: [.bottom: geometry.size.height]) } }
+                    VStack(spacing: 8) {
+                        Text(progressDescription).font(.caption).foregroundStyle(.secondary).lineLimit(1)
+                            .padding(.horizontal, 12).padding(.vertical, 4)
+                            .background(paper, in: Capsule()).accessibilityHidden(true)
+                        ReaderBottomBar(
+                            mode: speech.playing ? .listening : .reading,
+                            chapterAccessibilityValue: progressDescription,
+                            listeningAccessibilityHint: speech.playing ? "正在朗读，打开听书控制" : speech.paused ? "听书已暂停，打开后可继续" : "打开听书控制，点击播放后才开始",
+                            onContents: { present(.contents) },
+                            onRead: { speech.pause(); chrome = .asleep },
+                            onListen: { present(.listening) },
+                            onAppearance: { present(.appearance) },
+                            onTypography: { present(.preferences) },
+                            onInteraction: { clockID = UUID() },
+                            onFocusChange: { bottomBarFocused = $0; clockID = UUID() }
+                        )
+                    }
+                    .padding(.horizontal, 12).padding(.bottom, 6)
+                    .background {
+                        // Paper fades in before the floating controls so source
+                        // ink never competes through the spaces between pills.
+                        LinearGradient(stops: [.init(color: paper.opacity(0), location: 0),
+                                               .init(color: paper, location: 0.35),
+                                               .init(color: paper, location: 1)],
+                                       startPoint: .top, endPoint: .bottom)
+                            .padding(.top, -24).ignoresSafeArea(edges: .bottom)
+                            .allowsHitTesting(false).accessibilityHidden(true)
+                    }
+                    .background { GeometryReader { geometry in Color.clear.preference(key: ReaderChromeHeightKey.self, value: [.bottom: geometry.size.height]) } }
                 } else {
                     HStack {
                         Spacer()
@@ -122,7 +123,7 @@ struct ReaderScreen: View {
                         } else {
                             Button { wake(.tools) } label: {
                                 Capsule().fill(.secondary.opacity(0.4)).frame(width: 30, height: 4).frame(width: 72, height: 44)
-                            }.accessibilityLabel("显示阅读进度、目录、搜索与记录").accessibilityHint("轻点书页底边也能打开阅读工具")
+                            }.accessibilityLabel("显示阅读进度、目录、搜索与记录").accessibilityHint("轻点书页也能打开阅读工具")
                         }
                         Spacer()
                     }
@@ -133,9 +134,8 @@ struct ReaderScreen: View {
         .statusBarHidden(false)
         .onPreferenceChange(ReaderChromeHeightKey.self) { values in
             for (region, height) in values where height > 0 {
-                // The progress slider can make the dock taller than its tools state.
-                // Keep that room for this reading session so returning to tools at
-                // the chapter end cannot clamp the page to a different offset.
+                // Keep the measured space stable while controls sleep or wrap.
+                // Returning at a chapter end must not clamp to another source line.
                 let retained = region == .bottom ? max(chromeHeights[region] ?? 0, height) : height
                 if abs((chromeHeights[region] ?? 0) - retained) > 0.5 { chromeHeights[region] = retained }
             }
@@ -161,7 +161,7 @@ struct ReaderScreen: View {
         .sensoryFeedback(.selection, trigger: panel?.id)
         .task(id: clockID) {
             guard chrome != .asleep else { return }
-            do { try await Task.sleep(for: .seconds(6)); guard !Task.isCancelled, !adjustingProgress, focusedControl == nil, panel == nil, session.selection == nil, !hasNativeTextSelection, !UIAccessibility.isVoiceOverRunning else { return }; sleepChrome() } catch {}
+            do { try await Task.sleep(for: .seconds(6)); guard !Task.isCancelled, !bottomBarFocused, focusedControl == nil, panel == nil, session.selection == nil, !hasNativeTextSelection, !UIAccessibility.isVoiceOverRunning else { return }; sleepChrome() } catch {}
         }
         .onChange(of: scenePhase) { _, phase in if phase != .active { speech.pause(); session.save(); chrome = .asleep } }
         .onAppear { tools.configure(library: library, localBookID: session.book.id) }
@@ -173,8 +173,7 @@ struct ReaderScreen: View {
                 HStack {
                     backButton
                     Spacer(minLength: 8)
-                    companionButton
-                    preferencesButton
+                    moreButton
                 }
                 bookTitleButton
             }
@@ -182,8 +181,7 @@ struct ReaderScreen: View {
             HStack {
                 backButton
                 bookTitleButton
-                companionButton
-                preferencesButton
+                moreButton
             }
         }
     }
@@ -208,33 +206,26 @@ struct ReaderScreen: View {
             .accessibilityHint("查看完整书名、作者与来源格式")
             .accessibilityIdentifier("reader-book-title")
     }
-    private var companionButton: some View {
-        Button { showCompanion(currentQuote) } label: {
-            Label("陪我读", systemImage: "text.bubble").labelStyle(.iconOnly)
-                .frame(minWidth: 44, minHeight: 44).contentShape(Rectangle())
-        }.focused($focusedControl, equals: .companion)
+    private var moreButton: some View {
+        Button { present(.tools) } label: {
+            Label("更多", systemImage: "ellipsis")
+                .labelStyle(.iconOnly).frame(minWidth: 44, minHeight: 44).contentShape(Rectangle())
+        }.focused($focusedControl, equals: .tools)
+            .accessibilityIdentifier("reader-more")
     }
-    private var preferencesButton: some View {
-        Button { present(.preferences) } label: {
-            Label("阅读设置", systemImage: "textformat.size").labelStyle(.iconOnly)
-                .frame(minWidth: 44, minHeight: 44).contentShape(Rectangle())
-        }.focused($focusedControl, equals: .preferences)
-    }
-    private var dockActions: some View {
-        HStack(spacing: 4) {
-            ReaderDockButton("目录", symbol: "list.bullet") { present(.contents) }.focused($focusedControl, equals: .contents)
-            ReaderDockButton("听书", symbol: speech.playing ? "waveform" : "headphones") { present(.listening) }.focused($focusedControl, equals: .listening)
-            ReaderDockButton("翻译", symbol: "character.book.closed") { present(.translation) }.focused($focusedControl, equals: .translation)
-            ReaderDockButton("笔记", symbol: "square.and.pencil", accessibility: "我的记录") { present(.records) }.focused($focusedControl, equals: .records)
-            ReaderDockButton("更多", symbol: "ellipsis") { present(.tools) }.focused($focusedControl, equals: .tools)
-        }
+    private var progressDescription: String {
+        let unit = session.book.kind == .pdf ? "页" : "章"
+        let chapter = "第 \(session.chapterIndex + 1) / \(session.book.chapters.count) \(unit) · \(session.chapter.title)"
+        guard session.book.kind != .pdf, session.state.preferences.navigationMode == .paged,
+              let pagePosition, pagePosition.chapterIndex == session.chapterIndex else { return chapter }
+        return chapter + " · 本章第 \(pagePosition.index + 1) / \(pagePosition.count) 屏"
     }
     private func sleepChrome() {
-        guard chrome != .asleep, !adjustingProgress, focusedControl == nil, panel == nil, session.selection == nil, !hasNativeTextSelection, !UIAccessibility.isVoiceOverRunning else { return }
+        guard chrome != .asleep, !bottomBarFocused, focusedControl == nil, panel == nil, session.selection == nil, !hasNativeTextSelection, !UIAccessibility.isVoiceOverRunning else { return }
         withAnimation(reduceMotion ? nil : .easeOut(duration: 0.18)) { chrome = .asleep }
     }
     private func readingDidScroll() { hasNativeTextSelection = false; session.clearTransientSelection(); selectionDismissalID = UUID(); sleepChrome() }
-    private func wake(_ value: ReaderChrome) { withAnimation(reduceMotion ? nil : .easeOut(duration: 0.16)) { chrome = value } }
+    private func wake(_: ReaderChrome) { withAnimation(reduceMotion ? nil : .easeOut(duration: 0.16)) { chrome = chrome == .tools ? .asleep : .tools } }
     private func present(_ value: ReaderPanel) { panel = value; chrome = .asleep }
     private func showNote(_ quote: SelectedQuote) {
         let draft = session.state.drafts[quote.anchor.key]
@@ -259,49 +250,5 @@ struct ReaderScreen: View {
         focusedControl = nil
         chrome = .asleep
         panel = .companion(quote)
-    }
-}
-
-private struct ReaderDockButton: View {
-    let title: String
-    let symbol: String
-    let accessibility: String
-    let action: () -> Void
-    @ScaledMetric(relativeTo: .body) private var iconSize = 18.0
-    init(_ title: String, symbol: String, accessibility: String? = nil, action: @escaping () -> Void) {
-        self.title = title; self.symbol = symbol; self.accessibility = accessibility ?? title; self.action = action
-    }
-    var body: some View {
-        Button(action: action) {
-            VStack(spacing: 5) { Image(systemName: symbol).font(.system(size: iconSize, weight: .regular)); Text(title).font(.caption.weight(.medium)).foregroundStyle(Color.primary).fixedSize(horizontal: true, vertical: true) }
-                .frame(maxWidth: .infinity).frame(minWidth: 52, minHeight: 52).padding(.horizontal, 4).contentShape(Rectangle())
-        }.buttonStyle(.plain).foregroundStyle(Color.leafInk).accessibilityLabel(accessibility)
-    }
-}
-
-/// A tap must finish at a reading edge. Selection, links and scrolling retain their system gestures.
-@MainActor final class ReaderEdgeTapHandler: NSObject, UIGestureRecognizerDelegate {
-    private weak var view: UIView?
-    private let blocked: () -> Bool
-    private let onWake: (ReaderChrome) -> Void
-    init(view: UIView, blocked: @escaping () -> Bool, onWake: @escaping (ReaderChrome) -> Void) {
-        self.view = view; self.blocked = blocked; self.onWake = onWake
-        super.init()
-        let tap = UITapGestureRecognizer(target: self, action: #selector(activate(_:)))
-        tap.cancelsTouchesInView = false; tap.delegate = self; view.addGestureRecognizer(tap)
-    }
-    private func edge(at point: CGPoint) -> ReaderChrome? {
-        guard let view else { return nil }
-        if point.y < view.bounds.minY + 44 { return .top }
-        if point.y > view.bounds.maxY - 44 { return .progress }
-        return nil
-    }
-    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
-        !blocked() && edge(at: touch.location(in: view)) != nil
-    }
-    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool { true }
-    @objc private func activate(_ tap: UITapGestureRecognizer) {
-        guard tap.state == .ended, !blocked(), let edge = edge(at: tap.location(in: view)) else { return }
-        onWake(edge)
     }
 }

@@ -31,6 +31,7 @@ struct ReaderPanelView: View {
                     ReaderContentsPanel(session: session, onJump: onJump)
                 case .search: BookSearchPanel(session: session, onJump: onJump)
                 case .preferences: ReaderPreferencesPanel(session: session)
+                case .appearance: ReaderAppearancePanel(session: session)
                 case .records: ReaderRecordsPanel(session: session, onJump: onJump)
                 case .tools: ReaderMorePanel(session: session, speech: speech, tools: tools, cloud: cloud, onJump: onJump, onCompanion: onCompanion)
                 case .listening: ReaderListeningPanel(session: session, speech: speech)
@@ -123,6 +124,38 @@ struct ReaderContentsPanel: View {
     var body: some View {
         ScrollViewReader { proxy in
             List {
+                Section {
+                    if session.book.kind == .epub {
+                        Button {
+                            guard let anchor = session.declaredReadingStart(),
+                                  let index = session.book.chapters.firstIndex(where: { $0.id == anchor.chapterID }) else {
+                                session.message = "这本书没有可用的正文起点，请从目录选择章节。"
+                                return
+                            }
+                            onJump(index, anchor)
+                        } label: {
+                            Label("从正文开始", systemImage: "book.pages")
+                                .frame(minHeight: 44).contentShape(Rectangle())
+                        }.accessibilityIdentifier("reader-start-body")
+                    }
+                    HStack {
+                        Button { session.go(to: session.chapterIndex - 1) } label: {
+                            Label(session.book.kind == .pdf ? "上一页" : "上一章", systemImage: "chevron.left")
+                                .frame(minHeight: 44).contentShape(Rectangle())
+                        }.disabled(session.chapterIndex == 0)
+                        Spacer()
+                        Text("\(session.chapterIndex + 1) / \(session.book.chapters.count)").font(.subheadline.monospacedDigit())
+                        Spacer()
+                        Button { session.go(to: session.chapterIndex + 1) } label: {
+                            Label(session.book.kind == .pdf ? "下一页" : "下一章", systemImage: "chevron.right")
+                                .frame(minHeight: 44).contentShape(Rectangle())
+                        }.disabled(session.chapterIndex + 1 == session.book.chapters.count)
+                    }.buttonStyle(.plain)
+                    if session.book.chapters.count > 1 {
+                        Slider(value: Binding(get: { Double(session.chapterIndex) }, set: { session.go(to: Int($0.rounded())) }), in: 0...Double(session.book.chapters.count - 1), step: 1)
+                            .accessibilityLabel(session.book.kind == .pdf ? "页码" : "章节")
+                    }
+                } header: { Text("阅读位置") }
                 if chapters.isEmpty { ContentUnavailableView.search(text: query) }
                 Section(session.book.kind == .pdf ? "第 \(session.chapterIndex + 1) 页，共 \(session.book.chapters.count) 页" : "第 \(session.chapterIndex + 1) 章，共 \(session.book.chapters.count) 章") {
                     ForEach(chapters, id: \.element.id) { index, chapter in
@@ -221,6 +254,14 @@ struct ReaderPreferencesPanel: View {
     }
     var body: some View {
         Form {
+            Section {
+                Picker("翻页方式", selection: binding(\.navigationMode)) {
+                    Text("上下滚动").tag(ReaderNavigationMode.scroll)
+                    Text("左右翻页").tag(ReaderNavigationMode.paged)
+                }.pickerStyle(.segmented).accessibilityIdentifier("reader-navigation-mode")
+            } header: { Text("阅读方式").foregroundStyle(Color.primary) } footer: {
+                Text(session.state.preferences.navigationMode == .paged ? "向左滑动下一页，向右滑动上一页。轻点书页显示阅读工具。" : "上下滑动继续阅读，轻点书页显示阅读工具。")
+            }
             if session.book.kind == .pdf {
                 Section {
                     Label("PDF 保留原来的字体与排版，可在书页上双指缩放。", systemImage: "doc.richtext")
@@ -293,6 +334,29 @@ struct ReaderPreferencesPanel: View {
                 .padding(.vertical, 8)
                 .accessibilityIdentifier("reading-type-preview")
         }
+    }
+}
+struct ReaderAppearancePanel: View {
+    @Bindable var session: ReaderSession
+    var body: some View {
+        Form {
+            Section {
+                ForEach([("paper", "清纸", "sun.max"), ("night", "夜读", "moon"), ("system", "跟随系统", "circle.lefthalf.filled")], id: \.0) { value, title, symbol in
+                    Button {
+                        var preferences = session.state.preferences
+                        preferences.theme = value
+                        session.changePreferences(preferences)
+                    } label: {
+                        HStack {
+                            Label(title, systemImage: symbol)
+                            Spacer()
+                            if session.state.preferences.theme == value { Image(systemName: "checkmark").accessibilityHidden(true) }
+                        }.frame(minHeight: 44).contentShape(Rectangle())
+                    }.buttonStyle(.plain).foregroundStyle(Color.primary)
+                        .accessibilityAddTraits(session.state.preferences.theme == value ? .isSelected : [])
+                }
+            } header: { Text("阅读纸面") } footer: { Text("仅调整这本书的阅读外观。屏幕亮度可在系统控制中心调整。") }
+        }.navigationTitle("外观").accessibilityIdentifier("reader-appearance-form")
     }
 }
 struct ReaderRecordsPanel: View {
