@@ -166,7 +166,7 @@
       },
       {
         "file": "app/commerce-pages.mjs",
-        "sha256": "e047798088f04175824a97e3bb070599050cdaa4832f020e663007c1a3e254f4"
+        "sha256": "ac277758f22b0c8b1854a3043e24ef7b550a8b67d737a8a9919af61f974b5ffa"
       },
       {
         "file": "app/credit-client.mjs",
@@ -570,7 +570,7 @@
       },
       {
         "file": "app/pricing-checkout.mjs",
-        "sha256": "9a95087533cb628d9d9bf2c7e2c6429ca01015c9a0afc9caf682231c20337293"
+        "sha256": "ada4ab3c56e7c418bdc73f658ac0decf039b95c6c65e4c4a1d8519b8d1c3ac32"
       },
       {
         "file": "app/progress-sync.mjs",
@@ -1401,7 +1401,7 @@
         "sha256": "531202f1814314b6c76bfef38b2ea66636425b1ca9b445db349e70ebb8bcd00e"
       }
     ],
-    "inputDigest": "5e50ea64d648df0ad5066f877bc7aa8cff1ca202355269d8b108d5841297f24d"
+    "inputDigest": "03de20a086902fe9deb7c4af1a18a32834679b9cb08fb833123275b08d268044"
   },
   "locales": [
     "en",
@@ -18266,7 +18266,7 @@
         },
         {
           "file": "app/pricing-checkout.mjs",
-          "line": 56,
+          "line": 59,
           "column": 60
         },
         {
@@ -230398,14 +230398,14 @@
       }
     },
     {
-      "id": "candidate:app/pricing-checkout.mjs:9:32",
+      "id": "candidate:app/pricing-checkout.mjs:9:21",
       "file": "app/pricing-checkout.mjs",
       "line": 9,
-      "column": 32,
+      "column": 21,
       "kind": "js-cjk-literal",
       "property": null,
-      "value": "正在打开安全付款窗口…",
-      "sha256": "3c35af20bebeb2f87a9eb65872e3678f7e82b9756ae3faf17bb354bf18e1dea7",
+      "value": "正在确认订阅是否可用…",
+      "sha256": "cc5433026231c8493f865d3b51b9eedd8456c22a08dfb01b5c947ec60c874a3d",
       "protected": false,
       "protectionReason": null,
       "hints": [],
@@ -230424,6 +230424,46 @@
       "column": 53,
       "kind": "js-cjk-literal",
       "property": null,
+      "value": "暂未开放",
+      "sha256": "98c9b122a6cf95547e0f5c57f3991ee6fbaf6708af2d9c0bba6dbed1816f889e",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/pricing-checkout.mjs:9:68",
+      "file": "app/pricing-checkout.mjs",
+      "line": 9,
+      "column": 68,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "正在打开安全付款窗口…",
+      "sha256": "3c35af20bebeb2f87a9eb65872e3678f7e82b9756ae3faf17bb354bf18e1dea7",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/pricing-checkout.mjs:9:89",
+      "file": "app/pricing-checkout.mjs",
+      "line": 9,
+      "column": 89,
+      "kind": "js-cjk-literal",
+      "property": null,
       "value": "登录后继续所选方案。",
       "sha256": "5da6f4239b17035ec8c8c113d3d090e038d4ece672e507ba45c7f6f9a9a33244",
       "protected": false,
@@ -230438,10 +230478,10 @@
       }
     },
     {
-      "id": "candidate:app/pricing-checkout.mjs:9:77",
+      "id": "candidate:app/pricing-checkout.mjs:9:113",
       "file": "app/pricing-checkout.mjs",
       "line": 9,
-      "column": 77,
+      "column": 113,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "正在确认付款…",
@@ -230458,10 +230498,10 @@
       }
     },
     {
-      "id": "candidate:app/pricing-checkout.mjs:9:95",
+      "id": "candidate:app/pricing-checkout.mjs:9:131",
       "file": "app/pricing-checkout.mjs",
       "line": 9,
-      "column": 95,
+      "column": 131,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "付款尚未确认，可点原方案继续。",
@@ -230478,10 +230518,10 @@
       }
     },
     {
-      "id": "candidate:app/pricing-checkout.mjs:9:125",
+      "id": "candidate:app/pricing-checkout.mjs:9:161",
       "file": "app/pricing-checkout.mjs",
       "line": 9,
-      "column": 125,
+      "column": 161,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "订阅暂未开放，仍可免费阅读。",
@@ -230498,10 +230538,10 @@
       }
     },
     {
-      "id": "candidate:app/pricing-checkout.mjs:9:148",
+      "id": "candidate:app/pricing-checkout.mjs:9:184",
       "file": "app/pricing-checkout.mjs",
       "line": 9,
-      "column": 148,
+      "column": 184,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "暂时无法打开付款窗口，请重试。",
@@ -230518,10 +230558,10 @@
       }
     },
     {
-      "id": "candidate:app/pricing-checkout.mjs:9:173",
+      "id": "candidate:app/pricing-checkout.mjs:9:209",
       "file": "app/pricing-checkout.mjs",
       "line": 9,
-      "column": 173,
+      "column": 209,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "你已有订阅，可在账号中管理。",
@@ -230538,10 +230578,10 @@
       }
     },
     {
-      "id": "candidate:app/pricing-checkout.mjs:9:197",
+      "id": "candidate:app/pricing-checkout.mjs:9:233",
       "file": "app/pricing-checkout.mjs",
       "line": 9,
-      "column": 197,
+      "column": 233,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "管理订阅",
@@ -230558,10 +230598,10 @@
       }
     },
     {
-      "id": "candidate:app/pricing-checkout.mjs:9:212",
+      "id": "candidate:app/pricing-checkout.mjs:9:248",
       "file": "app/pricing-checkout.mjs",
       "line": 9,
-      "column": 212,
+      "column": 248,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "账号已切换，请重新选择方案。",
@@ -230578,10 +230618,10 @@
       }
     },
     {
-      "id": "candidate:app/pricing-checkout.mjs:9:237",
+      "id": "candidate:app/pricing-checkout.mjs:9:273",
       "file": "app/pricing-checkout.mjs",
       "line": 9,
-      "column": 237,
+      "column": 273,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "确认付款",
@@ -230598,10 +230638,10 @@
       }
     },
     {
-      "id": "candidate:app/pricing-checkout.mjs:9:249",
+      "id": "candidate:app/pricing-checkout.mjs:9:285",
       "file": "app/pricing-checkout.mjs",
       "line": 9,
-      "column": 249,
+      "column": 285,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "测试付款窗口，不会实际扣款。",
@@ -230618,14 +230658,14 @@
       }
     },
     {
-      "id": "candidate:app/pricing-checkout.mjs:10:32",
+      "id": "candidate:app/pricing-checkout.mjs:10:21",
       "file": "app/pricing-checkout.mjs",
       "line": 10,
-      "column": 32,
+      "column": 21,
       "kind": "js-cjk-literal",
       "property": null,
-      "value": "正在開啟安全付款視窗…",
-      "sha256": "1222b6dd74ead1ccfdf8b49738d5231332ae4c47df6ca8d97e4f6ff6e0d3bd31",
+      "value": "正在確認訂閱是否可用…",
+      "sha256": "a25edd150fd8e6bf8a513bb57d979cce3c7af6114123c309b115e523890347aa",
       "protected": false,
       "protectionReason": null,
       "hints": [],
@@ -230644,6 +230684,46 @@
       "column": 53,
       "kind": "js-cjk-literal",
       "property": null,
+      "value": "暫未開放",
+      "sha256": "9e17ab1fdd486ee8ec75a1f8c846ee61e5a3bdb274db56b7323f241a287c3334",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/pricing-checkout.mjs:10:68",
+      "file": "app/pricing-checkout.mjs",
+      "line": 10,
+      "column": 68,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "正在開啟安全付款視窗…",
+      "sha256": "1222b6dd74ead1ccfdf8b49738d5231332ae4c47df6ca8d97e4f6ff6e0d3bd31",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/pricing-checkout.mjs:10:89",
+      "file": "app/pricing-checkout.mjs",
+      "line": 10,
+      "column": 89,
+      "kind": "js-cjk-literal",
+      "property": null,
       "value": "登入後繼續所選方案。",
       "sha256": "f2d0e2f2d809911f0713f5c8932332c5b977f3fae389d0b13cff230d260281bc",
       "protected": false,
@@ -230658,10 +230738,10 @@
       }
     },
     {
-      "id": "candidate:app/pricing-checkout.mjs:10:77",
+      "id": "candidate:app/pricing-checkout.mjs:10:113",
       "file": "app/pricing-checkout.mjs",
       "line": 10,
-      "column": 77,
+      "column": 113,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "正在確認付款…",
@@ -230678,10 +230758,10 @@
       }
     },
     {
-      "id": "candidate:app/pricing-checkout.mjs:10:95",
+      "id": "candidate:app/pricing-checkout.mjs:10:131",
       "file": "app/pricing-checkout.mjs",
       "line": 10,
-      "column": 95,
+      "column": 131,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "付款尚未確認，可點原方案繼續。",
@@ -230698,10 +230778,10 @@
       }
     },
     {
-      "id": "candidate:app/pricing-checkout.mjs:10:125",
+      "id": "candidate:app/pricing-checkout.mjs:10:161",
       "file": "app/pricing-checkout.mjs",
       "line": 10,
-      "column": 125,
+      "column": 161,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "訂閱暫未開放，仍可免費閱讀。",
@@ -230718,10 +230798,10 @@
       }
     },
     {
-      "id": "candidate:app/pricing-checkout.mjs:10:148",
+      "id": "candidate:app/pricing-checkout.mjs:10:184",
       "file": "app/pricing-checkout.mjs",
       "line": 10,
-      "column": 148,
+      "column": 184,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "暫時無法開啟付款視窗，請重試。",
@@ -230738,10 +230818,10 @@
       }
     },
     {
-      "id": "candidate:app/pricing-checkout.mjs:10:173",
+      "id": "candidate:app/pricing-checkout.mjs:10:209",
       "file": "app/pricing-checkout.mjs",
       "line": 10,
-      "column": 173,
+      "column": 209,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "你已有訂閱，可在帳號中管理。",
@@ -230758,10 +230838,10 @@
       }
     },
     {
-      "id": "candidate:app/pricing-checkout.mjs:10:197",
+      "id": "candidate:app/pricing-checkout.mjs:10:233",
       "file": "app/pricing-checkout.mjs",
       "line": 10,
-      "column": 197,
+      "column": 233,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "管理訂閱",
@@ -230778,10 +230858,10 @@
       }
     },
     {
-      "id": "candidate:app/pricing-checkout.mjs:10:212",
+      "id": "candidate:app/pricing-checkout.mjs:10:248",
       "file": "app/pricing-checkout.mjs",
       "line": 10,
-      "column": 212,
+      "column": 248,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "帳號已切換，請重新選擇方案。",
@@ -230798,10 +230878,10 @@
       }
     },
     {
-      "id": "candidate:app/pricing-checkout.mjs:10:237",
+      "id": "candidate:app/pricing-checkout.mjs:10:273",
       "file": "app/pricing-checkout.mjs",
       "line": 10,
-      "column": 237,
+      "column": 273,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "確認付款",
@@ -230818,10 +230898,10 @@
       }
     },
     {
-      "id": "candidate:app/pricing-checkout.mjs:10:249",
+      "id": "candidate:app/pricing-checkout.mjs:10:285",
       "file": "app/pricing-checkout.mjs",
       "line": 10,
-      "column": 249,
+      "column": 285,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "測試付款視窗，不會實際扣款。",
@@ -230838,10 +230918,50 @@
       }
     },
     {
-      "id": "candidate:app/pricing-checkout.mjs:11:25",
+      "id": "candidate:app/pricing-checkout.mjs:11:14",
       "file": "app/pricing-checkout.mjs",
       "line": 11,
-      "column": 25,
+      "column": 14,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "定期プランの利用状況を確認しています…",
+      "sha256": "4b0981947921fca34a66a364a3a2b6225b6c282e234c804dab60f7816bfccc98",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/pricing-checkout.mjs:11:54",
+      "file": "app/pricing-checkout.mjs",
+      "line": 11,
+      "column": 54,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "現在利用できません",
+      "sha256": "c17f4a29b6552e9a39bda755101e9a5c75a35584da6b2759600d48b1585dad41",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/pricing-checkout.mjs:11:74",
+      "file": "app/pricing-checkout.mjs",
+      "line": 11,
+      "column": 74,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "安全な決済画面を開いています…",
@@ -230858,10 +230978,10 @@
       }
     },
     {
-      "id": "candidate:app/pricing-checkout.mjs:11:50",
+      "id": "candidate:app/pricing-checkout.mjs:11:99",
       "file": "app/pricing-checkout.mjs",
       "line": 11,
-      "column": 50,
+      "column": 99,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "ログイン後、選んだプランで続けます。",
@@ -230878,10 +230998,10 @@
       }
     },
     {
-      "id": "candidate:app/pricing-checkout.mjs:11:82",
+      "id": "candidate:app/pricing-checkout.mjs:11:131",
       "file": "app/pricing-checkout.mjs",
       "line": 11,
-      "column": 82,
+      "column": 131,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "お支払いを確認しています…",
@@ -230898,10 +231018,10 @@
       }
     },
     {
-      "id": "candidate:app/pricing-checkout.mjs:11:106",
+      "id": "candidate:app/pricing-checkout.mjs:11:155",
       "file": "app/pricing-checkout.mjs",
       "line": 11,
-      "column": 106,
+      "column": 155,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "お支払いは未確認です。同じプランを選ぶと続けられます。",
@@ -230918,10 +231038,10 @@
       }
     },
     {
-      "id": "candidate:app/pricing-checkout.mjs:11:148",
+      "id": "candidate:app/pricing-checkout.mjs:11:197",
       "file": "app/pricing-checkout.mjs",
       "line": 11,
-      "column": 148,
+      "column": 197,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "定期プランは準備中です。無料で読書を続けられます。",
@@ -230938,10 +231058,10 @@
       }
     },
     {
-      "id": "candidate:app/pricing-checkout.mjs:11:182",
+      "id": "candidate:app/pricing-checkout.mjs:11:231",
       "file": "app/pricing-checkout.mjs",
       "line": 11,
-      "column": 182,
+      "column": 231,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "決済画面を開けませんでした。もう一度お試しください。",
@@ -230958,10 +231078,10 @@
       }
     },
     {
-      "id": "candidate:app/pricing-checkout.mjs:11:218",
+      "id": "candidate:app/pricing-checkout.mjs:11:267",
       "file": "app/pricing-checkout.mjs",
       "line": 11,
-      "column": 218,
+      "column": 267,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "すでに定期プランがあります。アカウントから管理できます。",
@@ -230978,10 +231098,10 @@
       }
     },
     {
-      "id": "candidate:app/pricing-checkout.mjs:11:256",
+      "id": "candidate:app/pricing-checkout.mjs:11:305",
       "file": "app/pricing-checkout.mjs",
       "line": 11,
-      "column": 256,
+      "column": 305,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "プランを管理",
@@ -230998,10 +231118,10 @@
       }
     },
     {
-      "id": "candidate:app/pricing-checkout.mjs:11:273",
+      "id": "candidate:app/pricing-checkout.mjs:11:322",
       "file": "app/pricing-checkout.mjs",
       "line": 11,
-      "column": 273,
+      "column": 322,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "アカウントが変わりました。プランを選び直してください。",
@@ -231018,10 +231138,10 @@
       }
     },
     {
-      "id": "candidate:app/pricing-checkout.mjs:11:311",
+      "id": "candidate:app/pricing-checkout.mjs:11:360",
       "file": "app/pricing-checkout.mjs",
       "line": 11,
-      "column": 311,
+      "column": 360,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "支払いを確認",
@@ -231038,10 +231158,10 @@
       }
     },
     {
-      "id": "candidate:app/pricing-checkout.mjs:11:325",
+      "id": "candidate:app/pricing-checkout.mjs:11:374",
       "file": "app/pricing-checkout.mjs",
       "line": 11,
-      "column": 325,
+      "column": 374,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "テスト決済です。実際の請求はありません。",
@@ -274413,10 +274533,10 @@
       "kind": "template",
       "file": "app/commerce-pages.mjs",
       "line": 26,
-      "expression": "`<button type=\"button\" class=\"primary\" data-pricing-subscribe=\"${plan.key}\">${e(plan.action)}</button>`",
+      "expression": "`<button type=\"button\" class=\"primary\" data-pricing-subscribe=\"${plan.key}\" disabled aria-describedby=\"pricing-status\">${e(plan.action)}</button>`",
       "fragments": [
         "<button type=\"button\" class=\"primary\" data-pricing-subscribe=\"",
-        "\">",
+        "\" disabled aria-describedby=\"pricing-status\">",
         "</button>"
       ],
       "unresolved": true
@@ -286431,7 +286551,7 @@
     {
       "kind": "computed-member",
       "file": "app/pricing-checkout.mjs",
-      "line": 28,
+      "line": 29,
       "expression": "state.phase",
       "fragments": [],
       "unresolved": true
@@ -308453,8 +308573,8 @@
     "duplicateKeys": 0,
     "reviewedItems": 11,
     "unreviewedItems": 2448,
-    "candidates": 6199,
-    "candidatesUnreviewed": 6198,
+    "candidates": 6205,
+    "candidatesUnreviewed": 6204,
     "candidatesProtected": 143,
     "itemsProtected": 9,
     "dynamicConsumers": 3977,
