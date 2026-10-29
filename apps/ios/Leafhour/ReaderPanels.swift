@@ -268,7 +268,7 @@ struct ReaderPreferencesPanel: View {
                 Text("从阅读工具的“翻译”查看当前段的直译、意译和原文。切换排版不生成内容；未翻译的段落保留原文。")
                     .font(.subheadline).foregroundStyle(Color.primary).fixedSize(horizontal: false, vertical: true)
             } header: { Text("原文与译文").foregroundStyle(Color.primary) }
-        }.navigationTitle("阅读设置")
+        }.accessibilityIdentifier("reader-preferences-form").navigationTitle("阅读设置")
     }
 
     struct TypographyPreview: View {
@@ -335,7 +335,7 @@ struct ReaderRecordsPanel: View {
                     }.padding(.vertical, 6)
                 }
             } header: { Text("我的笔记").foregroundStyle(Color.primary) } }
-        }.navigationTitle("我的记录")
+        }.accessibilityIdentifier("reader-records-list").navigationTitle("我的记录")
             .sheet(item: $editing) { quote in
                 NavigationStack { NoteEditorPanel(quote: quote, session: session) }
                     .presentationDetents([.large])
