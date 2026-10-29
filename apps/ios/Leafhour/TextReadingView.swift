@@ -48,17 +48,27 @@ struct TextReadingView: UIViewRepresentable {
     }
     struct Span { var passage: Passage; var range: NSRange; var sourceRange: NSRange? = nil }
     @MainActor final class Coordinator: NSObject, UITextViewDelegate {
+        private func layout(for view: UITextView) -> (contentWidth: CGFloat, insets: UIEdgeInsets) {
+            let viewport = view.bounds.width > 0 ? view.bounds.width : UIScreen.main.bounds.width
+            var insets = parent.pageInsets
+            let available = max(1, viewport - insets.left - insets.right)
+            let width = min(680, available)
+            let extraMargin = max(0, (available - width) / 2)
+            insets.left += extraMargin; insets.right += extraMargin
+            return (width, insets)
+        }
         func updateContent(_ view: UITextView) {
             let coordinator = self, session = parent.session
-            if view.textContainerInset != parent.pageInsets {
-                let topChange = parent.pageInsets.top - view.textContainerInset.top
-                view.textContainerInset = parent.pageInsets
+            let column = layout(for: view)
+            if view.textContainerInset != column.insets {
+                let topChange = column.insets.top - view.textContainerInset.top
+                view.textContainerInset = column.insets
                 // A larger accessibility toolbar may change the first-page margin.
                 // Preserve the same visible line; changing the bottom margin needs no scrolling.
                 if topChange != 0 { view.contentOffset.y += topChange }
             }
             let preferences = session.state.preferences
-            let width = max(240, view.bounds.width > 0 ? view.bounds.width - 48 : UIScreen.main.bounds.width - 48)
+            let width = column.contentWidth
             let signature = "\(session.chapter.id)-\(preferences)-\(view.traitCollection.preferredContentSizeCategory.rawValue)-\(Int(width))"
             let navigating = coordinator.navigationID != session.navigationID
             if coordinator.signature != signature {
@@ -171,8 +181,10 @@ struct TextReadingView: UIViewRepresentable {
         @discardableResult func checkpointVisible() -> Bool {
             guard !restoring, let view, view.bounds.width > 0, !spans.isEmpty,
                   renderedChapterID == parent.session.chapter.id, navigationID == parent.session.navigationID,
-                  renderedWidth == Int(max(240, view.bounds.width - 48)) else { return false }
-            let point = CGPoint(x: 1, y: max(0, view.contentOffset.y + 50 - view.textContainerInset.top))
+                  renderedWidth == Int(layout(for: view).contentWidth) else { return false }
+            // Sample inside the visible line. Its exact top edge may resolve to
+            // the previous paragraph's trailing newline after a width reflow.
+            let point = CGPoint(x: 1, y: max(0, view.contentOffset.y + 51 - view.textContainerInset.top))
             let index = view.layoutManager.characterIndex(for: point, in: view.textContainer, fractionOfDistanceBetweenInsertionPoints: nil)
             let span = spans.last(where: { $0.range.location <= index }) ?? spans[0]
             let utf16Offset = sourceOffset(in: span, displayedIndex: index)

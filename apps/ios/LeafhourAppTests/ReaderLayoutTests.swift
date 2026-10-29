@@ -94,6 +94,46 @@ final class ReaderLayoutTests: XCTestCase {
         XCTAssertEqual(quote.anchor.passageID, session.chapter.passages.last?.id)
     }
 
+    func testTextColumnStaysReadableAndCenteredOnWideScreens() async throws {
+        let session = try await session(source: "A quiet page should remain a readable column when the window gets wider.")
+        let reading = TextReadingView(session: session, onNote: { _ in }, onSource: { _ in }, onWake: { _ in }, onReadingScroll: {})
+        for (width, expectedColumn) in [(390.0, 342.0), (768.0, 680.0), (1024.0, 680.0), (1366.0, 680.0)] {
+            let coordinator = reading.makeCoordinator()
+            let text = UITextView(frame: CGRect(x: 0, y: 0, width: width, height: 768))
+            coordinator.view = text
+            coordinator.updateContent(text)
+            let column = text.bounds.width - text.textContainerInset.left - text.textContainerInset.right
+            XCTAssertEqual(column, expectedColumn, accuracy: 1, "Readable column at \(width) pt")
+            XCTAssertEqual(text.textContainerInset.left, text.textContainerInset.right, accuracy: 1)
+        }
+    }
+
+    func testWideningTextKeepsSelectionAndVisiblePassageCheckpoint() async throws {
+        let paragraphs = (1...60).map { "Paragraph \($0). This passage has enough words to reflow between phone and tablet widths." }
+        let session = try await session(source: paragraphs.joined(separator: "\n\n"))
+        let passage = session.chapter.passages[29]
+        let anchor = ReadingAnchor(chapterID: session.chapter.id, passageID: passage.id, characterOffset: 3)
+        session.go(to: 0, anchor: anchor)
+        let reading = TextReadingView(session: session, onNote: { _ in }, onSource: { _ in }, onWake: { _ in }, onReadingScroll: {})
+        let coordinator = reading.makeCoordinator()
+        let text = UITextView(frame: CGRect(x: 0, y: 0, width: 390, height: 700))
+        coordinator.view = text
+        coordinator.updateContent(text)
+        try await Task.sleep(for: .milliseconds(100))
+        let range = (text.text as NSString).range(of: passage.text)
+        text.selectedRange = range
+        let selected = try XCTUnwrap(coordinator.selectedQuote(in: text, range: range))
+
+        text.frame.size.width = 1024
+        coordinator.updateContent(text)
+        try await Task.sleep(for: .milliseconds(100))
+        XCTAssertEqual(text.selectedRange, range)
+        XCTAssertEqual(coordinator.selectedQuote(in: text, range: text.selectedRange)?.sourceText, selected.sourceText)
+        XCTAssertEqual(session.currentAnchor, anchor)
+        XCTAssertTrue(coordinator.checkpointVisible(), "The centered column must still accept its scroll checkpoint after reflow")
+        XCTAssertEqual(session.currentAnchor?.passageID, passage.id)
+    }
+
     private func actions(in menu: UIMenu) -> [UIAction] {
         menu.children.flatMap { element -> [UIAction] in
             if let action = element as? UIAction { return [action] }
