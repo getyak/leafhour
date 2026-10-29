@@ -53,7 +53,7 @@ struct ShelfBookActivity: View {
         VStack(alignment: .leading, spacing: 5) {
             if let progress {
                 ProgressView(value: min(1, max(0, progress)))
-                    .accessibilityLabel("书籍下载进度")
+                    .accessibilityLabel("书籍处理进度")
             } else {
                 HStack(spacing: 6) {
                     ProgressView().controlSize(.mini)
@@ -147,7 +147,7 @@ struct LibraryShelfTile: View {
             }
             HStack {
                 if item.isDownloaded {
-                    Button("阅读", action: open).font(.subheadline)
+                    Button("阅读", action: open).font(.subheadline).accessibilityLabel("阅读，\(item.title)")
                     Spacer(minLength: 2)
                     Button(action: details) { Image(systemName: "info.circle").frame(width: 44, height: 44) }
                         .accessibilityLabel("\(item.title)，书籍详情")
@@ -155,6 +155,7 @@ struct LibraryShelfTile: View {
                     Button("下载并阅读", systemImage: "icloud.and.arrow.down", action: open)
                         .font(.subheadline)
                         .disabled(downloadUnavailable)
+                        .accessibilityLabel("下载并阅读，\(item.title)")
                 }
             }
             .buttonStyle(.borderless)

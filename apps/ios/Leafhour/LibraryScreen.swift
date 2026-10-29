@@ -15,6 +15,10 @@ struct LibraryScreen: View {
     @State private var path: [String] = []
     @State private var query = ""
     @State private var didLoad = false
+    @State private var resumeBookID: String?
+    @State private var resumeChapter: String?
+    @State private var resumeLoadID = UUID()
+    @State private var resumeOwnerKey: String?
 
     private var filter: LibraryShelfFilter { LibraryShelfFilter(rawValue: filterRaw) ?? .all }
     private var sort: LibraryShelfSort { LibraryShelfSort(rawValue: sortRaw) ?? .added }
@@ -28,6 +32,12 @@ struct LibraryScreen: View {
     private var filterBinding: Binding<LibraryShelfFilter> { Binding(get: { filter }, set: { filterRaw = $0.rawValue }) }
     private var sortBinding: Binding<LibraryShelfSort> { Binding(get: { sort }, set: { sortRaw = $0.rawValue }) }
     private var layoutBinding: Binding<LibraryShelfLayout> { Binding(get: { layout }, set: { layoutRaw = $0.rawValue }) }
+    private var resumeBook: LocalBook? {
+        guard resumeOwnerKey == (model.account?.id ?? "device") else { return nil }
+        return model.books.first(where: { $0.id == resumeBookID })
+    }
+    private var resumeLookupKey: String { (model.account?.id ?? "device") + ":" + model.books.map(\.id).joined(separator: ",") }
+    private var activeItem: LibraryShelfItem? { allItems.first(where: isActive) }
 
     var body: some View {
         NavigationStack(path: $path) {
@@ -70,19 +80,17 @@ struct LibraryScreen: View {
                 }
             }
             .safeAreaInset(edge: .bottom) {
-                if model.busy {
-                    HStack { ProgressView(); Text(model.status).font(.footnote); Spacer(); Button("取消") { model.cancelImport() } }
-                        .padding().background(.regularMaterial)
-                }
+                if model.busy { activityBar }
             }
             .fileImporter(isPresented: $importing, allowedContentTypes: [.epub, .pdf, .plainText, UTType(filenameExtension: "md") ?? .plainText]) { result in
                 switch result { case .success(let url): model.importFile(url); case .failure(let error): model.message = error.localizedDescription }
             }
             .onOpenURL { model.importFile($0) }
             .task { await model.reload(restore: true); didLoad = true; await model.synchronize() }
+            .task(id: resumeLookupKey) { await loadResume() }
             .refreshable { await model.synchronize(); await model.reload() }
             .onChange(of: scenePhase) { _, phase in if phase == .active { Task { await model.synchronize() } } }
-            .fullScreenCover(item: $model.reader, onDismiss: { Task { await model.reload(); await model.synchronize() } }) { session in
+            .fullScreenCover(item: $model.reader, onDismiss: { Task { await model.reload(); await loadResume(); await model.synchronize() } }) { session in
                 ReaderScreen(session: session, systemColorScheme: systemColorScheme, cloud: session.book.cloud == nil ? nil : model.cloud, library: model.library)
             }
             .sheet(isPresented: $info) { AccountScreen(model: model) }
@@ -109,11 +117,14 @@ struct LibraryScreen: View {
 
     private var listShelf: some View {
         List {
+            if let book = resumeBook, query.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                Section("继续读") { resumeCard(book) }
+            }
             if visibleItems.isEmpty { filteredEmptyState.listRowBackground(Color.clear) }
             else {
                 Section("\(visibleItems.count) 本书") {
                     ForEach(visibleItems) { item in
-                        LibraryShelfRow(item: item, downloadUnavailable: model.busy, open: { open(item) }, details: { details(item) })
+                        LibraryShelfRow(item: item, downloadUnavailable: model.busy, isActive: isActive(item), progress: model.activityProgress, status: model.status, open: { open(item) }, details: { details(item) })
                     }
                 }
             }
@@ -126,12 +137,17 @@ struct LibraryScreen: View {
     private var gridShelf: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 22) {
+                if let book = resumeBook, query.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                    resumeCard(book)
+                        .padding(16)
+                        .background(Color(uiColor: .secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 16))
+                }
                 if visibleItems.isEmpty { filteredEmptyState.frame(maxWidth: .infinity) }
                 else {
                     Text("\(visibleItems.count) 本书").font(.subheadline).foregroundStyle(.secondary)
                     LazyVGrid(columns: [GridItem(.adaptive(minimum: 136, maximum: 220), spacing: 20, alignment: .top)], alignment: .leading, spacing: 24) {
                         ForEach(visibleItems) { item in
-                            LibraryShelfTile(item: item, downloadUnavailable: model.busy, open: { open(item) }, details: { details(item) })
+                            LibraryShelfTile(item: item, downloadUnavailable: model.busy, isActive: isActive(item), progress: model.activityProgress, status: model.status, open: { open(item) }, details: { details(item) })
                         }
                     }
                 }
@@ -207,6 +223,69 @@ struct LibraryScreen: View {
             if model.account != nil { Button("我的笔记与阅读记录", systemImage: "books.vertical") { info = true } }
         }
         .padding(.vertical, 8)
+    }
+
+    private var activityBar: some View {
+        HStack(spacing: 12) {
+            VStack(alignment: .leading, spacing: 5) {
+                if let item = activeItem { Text(item.title).font(.subheadline.weight(.semibold)).lineLimit(1) }
+                if let progress = model.activityProgress {
+                    ProgressView(value: min(1, max(0, progress))).accessibilityLabel("书籍处理进度")
+                }
+                HStack(spacing: 8) {
+                    if model.activityProgress == nil { ProgressView().controlSize(.small) }
+                    Text(model.status).font(.footnote).foregroundStyle(.secondary).lineLimit(2)
+                }
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            if model.activityCanCancel {
+                Button("取消") { model.cancelImport() }.frame(minWidth: 44, minHeight: 44)
+            }
+        }
+        .padding(.horizontal, 20).padding(.vertical, 10)
+        .background(.regularMaterial)
+    }
+
+    private func resumeCard(_ book: LocalBook) -> some View {
+        Button { Task { await model.open(book) } } label: {
+            HStack(spacing: 14) {
+                BookCover(book: book)
+                VStack(alignment: .leading, spacing: 6) {
+                    Text("继续读").font(.caption.weight(.semibold)).foregroundStyle(Color.leafInk)
+                    Text(book.title).font(.headline).foregroundStyle(.primary).lineLimit(2)
+                    if let resumeChapter { Text(resumeChapter).font(.subheadline).foregroundStyle(.secondary).lineLimit(2) }
+                    Label("此设备已下载，可离线继续", systemImage: "checkmark.circle").font(.caption).foregroundStyle(.secondary)
+                }
+                Spacer(minLength: 0)
+                Image(systemName: "chevron.right").font(.footnote.weight(.semibold)).foregroundStyle(.secondary)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel("继续阅读，\(book.title)" + (resumeChapter.map { "，" + $0 } ?? ""))
+    }
+
+    private func loadResume() async {
+        let requestID = UUID()
+        resumeLoadID = requestID
+        let owner = model.account?.id
+        guard let library = model.library else { resumeBookID = nil; resumeChapter = nil; return }
+        let savedID = try? await library.lastOpenedBook()
+        guard !Task.isCancelled, owner == model.account?.id, resumeLoadID == requestID else { return }
+        guard let savedID, let book = model.books.first(where: { $0.id == savedID }) else {
+            resumeBookID = nil; resumeChapter = nil; return
+        }
+        let state = try? await library.state(book.id)
+        guard !Task.isCancelled, owner == model.account?.id, resumeLoadID == requestID else { return }
+        resumeOwnerKey = owner ?? "device"
+        resumeBookID = book.id
+        resumeChapter = state?.anchor.flatMap { anchor in book.chapters.first(where: { $0.id == anchor.chapterID })?.title }
+    }
+
+    private func isActive(_ item: LibraryShelfItem) -> Bool {
+        guard model.busy, let id = model.activeBookID else { return false }
+        return item.local?.id == id || item.cloud?.id == id || item.local?.cloud?.bookID == id
     }
 
     private func open(_ item: LibraryShelfItem) {
