@@ -238,7 +238,7 @@ struct ReaderRecordsPanel: View {
                 }
             }
         }.navigationTitle("我的记录")
-            .sheet(item: $editing) { quote in NavigationStack { NoteEditorPanel(quote: quote, session: session) }.presentationDetents([.medium, .large]) }
+            .sheet(item: $editing) { quote in NavigationStack { NoteEditorPanel(quote: quote, session: session) }.presentationDetents([.large]) }
     }
 }
 struct NoteEditorPanel: View {
@@ -248,24 +248,33 @@ struct NoteEditorPanel: View {
     @State private var text = ""
     @State private var didLoad = false
     @State private var submissionID = UUID()
+    @State private var showingQuote = false
+    @FocusState private var editorFocused: Bool
     private enum PendingAction { case note, draft }
     @State private var pendingAction: PendingAction?
     private var noteIsPersisted: Bool { session.isNotePersisted(id: submissionID, body: text) }
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
-            Text("作者原文").font(.caption).foregroundStyle(.secondary)
-            Text(quote.text).font(.subheadline).foregroundStyle(.secondary).lineLimit(4).textSelection(.enabled)
+            DisclosureGroup("作者原文", isExpanded: $showingQuote) {
+                ScrollView { Text(quote.text).font(.subheadline).foregroundStyle(.secondary).textSelection(.enabled).frame(maxWidth: .infinity, alignment: .leading) }
+                    .frame(maxHeight: 120)
+            }.font(.caption).foregroundStyle(.secondary)
+            if !showingQuote { Text(quote.text).font(.subheadline).foregroundStyle(.secondary).lineLimit(2) }
             Divider()
             Text("我的笔记").font(.caption).foregroundStyle(Color.leafInk)
-            TextEditor(text: Binding(get: { text }, set: { text = $0; session.draft(quote, text: $0) })).scrollContentBackground(.hidden).accessibilityLabel("我的笔记正文").disabled(pendingAction != nil)
+            TextEditor(text: Binding(get: { text }, set: { text = $0; session.draft(quote, text: $0) }))
+                .scrollContentBackground(.hidden).scrollDismissesKeyboard(.interactively)
+                .focused($editorFocused).accessibilityLabel("我的笔记正文").disabled(pendingAction != nil)
             Text(footer).font(.caption).foregroundStyle(.secondary)
         }.padding(22).navigationTitle("记下自己的想法")
             .interactiveDismissDisabled(pendingAction != nil || session.saving || session.saveError != nil)
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) { Button("保存笔记") { submit(.note) }.disabled(pendingAction != nil || text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty) }
                 ToolbarItem(placement: .cancellationAction) { Button(noteIsPersisted ? "关闭" : "保留草稿") { submit(.draft) }.disabled(pendingAction != nil) }
+                ToolbarItemGroup(placement: .keyboard) { Spacer(); Button("收起键盘") { editorFocused = false }.accessibilityLabel("收起笔记键盘") }
             }
             .onAppear { session.noteEditorID = submissionID; if !didLoad { text = session.state.drafts[quote.anchor.key]?.body ?? ""; didLoad = true } }
+            .task { await Task.yield(); editorFocused = true }
             .onDisappear { if session.noteEditorID == submissionID { session.noteEditorID = nil } }
     }
     private var footer: String {
@@ -276,6 +285,7 @@ struct NoteEditorPanel: View {
     }
     private func submit(_ action: PendingAction) {
         guard pendingAction == nil else { return }
+        editorFocused = false
         pendingAction = action
         Task {
             let submitted: Bool
