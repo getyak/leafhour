@@ -1,0 +1,83 @@
+name: Refresh iOS signing
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: Audit existing signing, or create one exact app profile after separate approval
+        type: choice
+        options: [audit, refresh]
+        default: audit
+        required: true
+      confirm_profile_refresh:
+        description: Authorize creating one Leafhour App Store profile and updating its testflight environment secret
+        type: boolean
+        default: false
+        required: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: leafhour-ios-publish
+  cancel-in-progress: false
+
+jobs:
+  signing:
+    if: github.repository == 'getyak/leafhour' && github.ref == 'refs/heads/main'
+    runs-on: macos-26
+    timeout-minutes: 15
+    # This environment must be configured with required reviewers before maintenance is enabled.
+    environment: signing-maintenance
+    env:
+      ASC_API_KEY_ID: ${{ secrets.ASC_API_KEY_ID }}
+      ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+      ASC_PRIVATE_KEY_P8: ${{ secrets.ASC_PRIVATE_KEY_P8 }}
+      IOS_APP_ID: ${{ vars.IOS_APP_ID }}
+      IOS_BUNDLE_ID: ${{ vars.IOS_BUNDLE_ID }}
+      IOS_TEAM_ID: ${{ vars.IOS_TEAM_ID }}
+      IOS_CERTIFICATE_ID: ${{ vars.IOS_CERTIFICATE_ID }}
+      IOS_SIGNING_REFRESH_ENABLED: ${{ vars.IOS_SIGNING_REFRESH_ENABLED }}
+      CONFIRM_PROFILE_REFRESH: ${{ inputs.confirm_profile_refresh }}
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 22
+      - name: Audit exact app, certificate expiry and profile metadata without repair
+        run: node scripts/ios/signing-audit.mjs audit
+      - name: Require separate maintenance authorization (no automatic mutation retry)
+        if: inputs.mode == 'refresh'
+        env:
+          ATTEMPT: ${{ github.run_attempt }}
+        run: |
+          test "$IOS_SIGNING_REFRESH_ENABLED" = true
+          test "$CONFIRM_PROFILE_REFRESH" = true
+          test "$ATTEMPT" = 1
+      - name: Create one exact app profile, retaining every previous resource
+        if: inputs.mode == 'refresh'
+        run: node scripts/ios/signing-audit.mjs refresh
+      - name: Independently validate refreshed profile before replacing the secret
+        if: inputs.mode == 'refresh'
+        run: |
+          security cms -D -i "$RUNNER_TEMP/leafhour-refreshed.mobileprovision" > "$RUNNER_TEMP/leafhour-profile.plist"
+          python3 scripts/ios/signing.py "$RUNNER_TEMP/leafhour-profile.plist" "$RUNNER_TEMP/leafhour-signing-plan.json" "$IOS_TEAM_ID" "$RUNNER_TEMP/leafhour-certificate.der"
+      - name: Store only validated profile in the existing testflight environment
+        if: inputs.mode == 'refresh'
+        env:
+          GH_TOKEN: ${{ secrets.IOS_SIGNING_MAINTENANCE_TOKEN }}
+        run: |
+          node --input-type=module <<'JS'
+          import {readFileSync} from 'node:fs';
+          import {execFileSync} from 'node:child_process';
+          if (!process.env.GH_TOKEN) throw Error('Missing dedicated Leafhour environment-secret maintenance token');
+          const content = readFileSync(`${process.env.RUNNER_TEMP}/leafhour-refreshed.mobileprovision`).toString('base64');
+          execFileSync('gh',['secret','set','IOS_APP_STORE_PROFILE_BASE64','--repo','getyak/leafhour','--env','testflight'],{input:content,stdio:['pipe','ignore','pipe']});
+          console.log('Validated profile stored; existing certificates, previous profiles and P12 retained. Run audit before the next archive.');
+          JS
+      - name: Remove transient profile/certificate material
+        if: always()
+        run: |
+          rm -f "$RUNNER_TEMP/leafhour-refreshed.mobileprovision" "$RUNNER_TEMP/leafhour-profile.plist" "$RUNNER_TEMP/leafhour-certificate.der" "$RUNNER_TEMP/leafhour-signing-plan.json"

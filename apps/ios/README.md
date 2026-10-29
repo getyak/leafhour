@@ -58,3 +58,8 @@ The reader starts with its chrome asleep. Top and progress controls wake indepen
 TestFlight archive/upload, Apple processing, distribution, authorized tester invitation/acceptance, physical installation, an actual TestFlight update with retained data, full VoiceOver and real-device timing remain separate pending acceptance. Apple browser/authentication and physical-device availability must not block source work. Cloud authentication, upload/sync, conflict handling and translation/companion service integration need their own actual integration evidence. Keep GET-276 In Progress until its complete issue acceptance is satisfied.
 
 Reference APIs: [Apple fileImporter and security-scoped access](https://developer.apple.com/documentation/swiftui/view/fileimporter(ispresented:allowedcontenttypes:oncompletion:)), [Apple PDFKit](https://developer.apple.com/documentation/pdfkit), [ZIPFoundation 0.9.20](https://github.com/weichsel/ZIPFoundation/releases/tag/0.9.20).
+
+## TestFlight release automation (disabled)
+
+The reviewable archive/upload/Apple-confirmation chain, signing audit and maintenance workflow are documented in [native TestFlight operations](../../docs/ios-testflight-release.md). `release.json` owns the native marketing version. This source does not configure credentials or a registered application, authorize the first upload, or enable automatic updates. Keep those decisions and real-device acceptance separate from simulator CI.
+

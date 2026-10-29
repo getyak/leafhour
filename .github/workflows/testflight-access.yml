@@ -1,0 +1,29 @@
+name: Audit TestFlight access
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    if: github.repository == 'getyak/leafhour' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    environment: testflight
+    env:
+      ASC_API_KEY_ID: ${{ secrets.ASC_API_KEY_ID }}
+      ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+      ASC_PRIVATE_KEY_P8: ${{ secrets.ASC_PRIVATE_KEY_P8 }}
+      IOS_APP_ID: ${{ vars.IOS_APP_ID }}
+      IOS_BUNDLE_ID: ${{ vars.IOS_BUNDLE_ID }}
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 22
+      - name: Read existing groups and auto-distribution flags (no repair/invite mode)
+        run: node scripts/ios/access-audit.mjs

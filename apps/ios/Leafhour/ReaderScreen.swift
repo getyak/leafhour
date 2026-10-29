@@ -33,7 +33,7 @@ struct ReaderScreen: View {
             VStack(spacing: 0) {
                 if chrome == .top {
                     HStack {
-                        Button("返回书房", systemImage: "chevron.left") { Task { await session.flush(); if session.saveError == nil { dismiss() } } }.focused($focusedControl, equals: .back).labelStyle(.iconOnly).frame(width: 44, height: 44)
+                        Button("返回书房", systemImage: "chevron.left") { Task { let receipt = await session.flush(); if session.isCurrent(receipt) { dismiss() } } }.focused($focusedControl, equals: .back).labelStyle(.iconOnly).frame(width: 44, height: 44)
                         Text(session.book.title).font(.subheadline).lineLimit(1).frame(maxWidth: .infinity)
                         Button("阅读设置", systemImage: "textformat.size") { panel = .preferences; chrome = .asleep }.focused($focusedControl, equals: .preferences).labelStyle(.iconOnly).frame(width: 44, height: 44)
                     }.padding(.horizontal, 10).background(.regularMaterial)
@@ -74,7 +74,7 @@ struct ReaderScreen: View {
                 .presentationDetents([.medium, .large]).presentationDragIndicator(.visible)
                 .presentationBackgroundInteraction(.enabled(upThrough: .medium))
         }
-        .alert("阅读记录", isPresented: Binding(get: { session.message != nil }, set: { if !$0 { session.message = nil } })) { Button("重试保存") { session.message = nil; session.save() } } message: { Text(session.message ?? "") }
+        .alert("阅读记录", isPresented: Binding(get: { session.message != nil || (session.noteEditorID == nil && session.saveMessage != nil) }, set: { if !$0 { session.message = nil; session.saveMessage = nil } })) { Button("重试保存") { session.message = nil; session.saveMessage = nil; session.save() } } message: { Text(session.message ?? session.saveMessage ?? "") }
         .onChange(of: focusedControl) { _, _ in clockID = UUID() }
         .onChange(of: session.selection?.id) { _, _ in clockID = UUID() }
         .onChange(of: chrome) { _, _ in clockID = UUID() }
