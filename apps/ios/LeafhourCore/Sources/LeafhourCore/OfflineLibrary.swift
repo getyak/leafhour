@@ -239,6 +239,7 @@ public actor OfflineLibrary {
     }
     /// A cloud copy contains extracted text and its web IDs; it never masquerades as the uploaded original.
     public func importCloud(_ copy: CloudReadingCopy, replaceExisting: Bool = false) throws -> LocalBook {
+        try Task.checkCancellation()
         guard let owner = UUID(uuidString: copy.identity.ownerID), root.lastPathComponent == "account-" + owner.uuidString.lowercased(), !copy.chapters.isEmpty,
               Set(copy.chapters.map(\.id)).count == copy.chapters.count,
               Set(copy.chapters.flatMap { $0.passages.map(\.id) }).count == copy.chapters.reduce(0, { $0 + $1.passages.count }) else { throw LibraryError.invalid("离线副本不属于当前书房或章节标识不完整。") }
@@ -265,6 +266,9 @@ public actor OfflineLibrary {
         }
         try Disk.write(OfflineManifest(bookID: id, files: digests), to: stage.appendingPathComponent("manifest.json"))
         try checkPackage(stage, id: id)
+        // Cancellation remains cooperative until the atomic publication begins.
+        // Once published, the verified copy and its personal state remain intact.
+        try Task.checkCancellation()
         if Disk.fm.fileExists(atPath: target.path) { try publishCloudStage(stage, bookID: id) }
         else { try Disk.fm.moveItem(at: stage, to: target) }
         return value

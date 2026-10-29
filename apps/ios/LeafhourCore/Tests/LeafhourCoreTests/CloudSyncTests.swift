@@ -40,6 +40,33 @@ final class CloudSyncTests: XCTestCase {
         let verified = try await own.verify(book.id)
         XCTAssertTrue(verified)
     }
+    func testCancelledCloudReplacementPreservesTheVerifiedCopyAndPersonalState() async throws {
+        let library = try library(owner), copy = try fixtureCopy()
+        let book = try await library.importCloud(copy)
+        let passage = book.chapters[0].passages[0]
+        let anchor = ReadingAnchor(chapterID: book.chapters[0].id, passageID: passage.id)
+        var state = ReaderState()
+        state.notes = [ReaderNote(anchor: anchor, quote: passage.text, body: "A local thought to preserve.")]
+        state.drafts[anchor.key] = NoteDraft(anchor: anchor, quote: passage.text, body: "An unfinished local thought.")
+        try await library.saveState(state, bookID: book.id)
+        let folder = try await library.bookDirectory(book.id)
+        let originalContent = try Data(contentsOf: folder.appendingPathComponent("cloud-content.json"))
+        var replacement = copy
+        var changed = try CloudJSON.decode(copy.content).object
+        changed["acceptanceReplacement"] = .bool(true)
+        replacement.content = try CloudJSON.encode(changed)
+        let cancelled = Task {
+            withUnsafeCurrentTask { $0?.cancel() }
+            return try await library.importCloud(replacement, replaceExisting: true)
+        }
+        do { _ = try await cancelled.value; XCTFail("Cancelled replacement was published") }
+        catch is CancellationError { }
+        let actualState = try await library.state(book.id)
+        let verified = try await library.verify(book.id)
+        XCTAssertTrue(verified)
+        XCTAssertEqual(actualState, state)
+        XCTAssertEqual(try Data(contentsOf: folder.appendingPathComponent("cloud-content.json")), originalContent)
+    }
     func testClientFencesWrongOwnerBeforeNetwork() async throws {
         CloudMockProtocol.handler = { _ in XCTFail("Wrong owner reached network"); return (200, Data("{}".utf8)) }
         do { _ = try await client().data(path: "/api/library", ownerID: other); XCTFail("Expected owner refusal") }
