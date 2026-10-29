@@ -40,7 +40,7 @@ struct ShelfBookAvailability: View {
                 .foregroundStyle(Color.leafInk)
         } else {
             Label("尚未下载", systemImage: "icloud")
-                .foregroundStyle(.secondary)
+                .foregroundStyle(Color.primary.opacity(0.68))
         }
     }
 }
@@ -83,6 +83,7 @@ struct LibraryShelfRow: View {
                 Button(action: open) { bookLabel }
                     .buttonStyle(.plain)
                     .accessibilityLabel("阅读，\(item.title)，" + (item.isAdditionalVersion ? "其他离线版本，个人记录保留" : "已下载可离线阅读"))
+                    .accessibilityValue(item.author)
             } else {
                 bookLabel
             }
@@ -99,6 +100,7 @@ struct LibraryShelfRow: View {
                 .buttonStyle(.borderless)
                 .disabled(downloadUnavailable)
                 .accessibilityLabel("下载并阅读，\(item.title)")
+                .accessibilityValue(item.author)
             }
         }
         .padding(.vertical, 7)
@@ -109,7 +111,7 @@ struct LibraryShelfRow: View {
             ShelfBookCover(title: item.title, author: item.author, compact: true).frame(width: 58, height: 80)
             VStack(alignment: .leading, spacing: 6) {
                 Text(item.title).font(.headline).foregroundStyle(.primary).lineLimit(2)
-                if !item.author.isEmpty { Text(item.author).font(.subheadline).foregroundStyle(.secondary).lineLimit(1) }
+                if !item.author.isEmpty { Text(item.author).font(.subheadline).foregroundStyle(Color.primary.opacity(0.68)).lineLimit(1) }
                 if isActive { ShelfBookActivity(progress: progress, status: status) }
                 else { ShelfBookAvailability(item: item).font(.caption) }
             }
@@ -139,7 +141,7 @@ struct LibraryShelfTile: View {
                 cover
             }
             Text(item.title).font(.subheadline.weight(.semibold)).lineLimit(2)
-            if !item.author.isEmpty { Text(item.author).font(.caption).foregroundStyle(.secondary).lineLimit(1) }
+            if !item.author.isEmpty { Text(item.author).font(.caption).foregroundStyle(Color.primary.opacity(0.68)).lineLimit(1) }
             if isActive {
                 ShelfBookActivity(progress: progress, status: status)
             } else {

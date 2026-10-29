@@ -59,7 +59,7 @@ struct LibraryScreen: View {
             }
             .navigationTitle("我的书房")
             .navigationBarTitleDisplayMode(.inline)
-            .searchable(text: $query, placement: .navigationBarDrawer(displayMode: .always), prompt: "搜索书名或作者")
+            .searchable(text: $query, placement: .navigationBarDrawer(displayMode: .always), prompt: "书名或作者")
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     Button(model.account == nil ? "登录书房" : "我的账号", systemImage: model.account == nil ? "person.crop.circle" : "person.crop.circle.fill") { info = true }
@@ -126,11 +126,11 @@ struct LibraryScreen: View {
             }
             if visibleItems.isEmpty { filteredEmptyState.listRowBackground(Color.clear) }
             else {
-                Section("\(visibleItems.count) 本书") {
+                Section {
                     ForEach(visibleItems) { item in
                         LibraryShelfRow(item: item, downloadUnavailable: model.busy, isActive: isActive(item), progress: model.activityProgress, status: model.status, open: { open(item) }, details: { details(item) })
                     }
-                }
+                } header: { Text("\(visibleItems.count) 本书").foregroundStyle(Color.primary) }
             }
             if !model.jobs.isEmpty { Section("待继续的导入") { importRows } }
             Section { libraryFooter }
@@ -148,7 +148,7 @@ struct LibraryScreen: View {
                 }
                 if visibleItems.isEmpty { filteredEmptyState.frame(maxWidth: .infinity) }
                 else {
-                    Text("\(visibleItems.count) 本书").font(.subheadline).foregroundStyle(.secondary)
+                    Text("\(visibleItems.count) 本书").font(.subheadline).foregroundStyle(Color.primary)
                     LazyVGrid(columns: [GridItem(.adaptive(minimum: 136, maximum: 220), spacing: 20, alignment: .top)], alignment: .leading, spacing: 24) {
                         ForEach(visibleItems) { item in
                             LibraryShelfTile(item: item, downloadUnavailable: model.busy, isActive: isActive(item), progress: model.activityProgress, status: model.status, open: { open(item) }, details: { details(item) })
