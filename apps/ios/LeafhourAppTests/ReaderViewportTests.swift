@@ -104,4 +104,78 @@ final class ReaderViewportTests: XCTestCase {
         _ = await session.flush()
     }
 
+    func testPDFCaptureUsesThePageAtTheReadableTopAcrossPageSeamsInBothDirections() async throws {
+        let session = try await session(filename: "synthetic-viewport.pdf") { url in
+            let renderer = UIGraphicsPDFRenderer(bounds: CGRect(x: 0, y: 0, width: 420, height: 595))
+            try renderer.writePDF(to: url) { context in
+                for page in 1...3 {
+                    context.beginPage()
+                    for y in stride(from: 20, through: 570, by: 50) {
+                        let label = "SYNTHETIC PAGE \(page) / MARKER \(y)"
+                        (label as NSString).draw(at: CGPoint(x: 24, y: CGFloat(y)), withAttributes: [.font: UIFont.systemFont(ofSize: 13), .foregroundColor: UIColor.black])
+                    }
+                }
+            }
+        }
+        XCTAssertEqual(session.book.chapters.count, 3, "Use the actual imported PDF page index")
+        let insets = UIEdgeInsets(top: 120, left: 0, bottom: 180, right: 0)
+        let reading = PDFReadingView(session: session, pageInsets: insets, selectionDismissalID: UUID(), onSelection: { _ in }, onWake: { _ in }, onReadingScroll: {})
+        let coordinator = reading.makeCoordinator()
+        let pdf = PDFView()
+        pdf.displayMode = .singlePageContinuous
+        pdf.displayDirection = .vertical
+        pdf.autoScales = true
+        pdf.document = try XCTUnwrap(PDFDocument(url: session.original))
+        coordinator.view = pdf
+        coordinator.navigationID = session.navigationID
+        coordinator.observe(pdf)
+        _ = host(pdf)
+        pdf.layoutDocumentView()
+        await drainMainQueue()
+        pdf.layoutIfNeeded()
+        coordinator.observeScroll(in: pdf)
+        let scroll = try XCTUnwrap(descendant(UIScrollView.self, in: pdf), "PDFKit must expose its real laid-out scrolling view")
+        let document = try XCTUnwrap(pdf.document)
+        XCTAssertGreaterThan(pdf.scaleFactor, 0)
+        XCTAssertGreaterThan(scroll.contentSize.height, scroll.bounds.height)
+
+        // The next page begins before, inside, and after the obscured top band.
+        // Reversing the same positions checks capture without relying on which
+        // page PDFKit previously considered current during forward scrolling.
+        let seamPositions: [(page: Int, top: CGFloat)] = [1, 2].flatMap { page in
+            [insets.top + 60, insets.top / 2, CGFloat(0)].map { (page: page, top: $0) }
+        }
+        var sampledPages: Set<Int> = []
+        for sample in seamPositions + Array(seamPositions.reversed()) {
+            let nextPage = try XCTUnwrap(document.page(at: sample.page))
+            let nextPageRect = pdf.convert(nextPage.bounds(for: pdf.displayBox), from: nextPage)
+            let desiredOffset = scroll.contentOffset.y + nextPageRect.minY - sample.top
+            let minimum = -scroll.adjustedContentInset.top
+            let maximum = max(minimum, scroll.contentSize.height - scroll.bounds.height + scroll.adjustedContentInset.bottom)
+            scroll.setContentOffset(CGPoint(x: scroll.contentOffset.x, y: min(maximum, max(minimum, desiredOffset))), animated: false)
+            pdf.layoutIfNeeded()
+            await drainMainQueue()
+
+            let readablePoint = CGPoint(x: pdf.bounds.midX, y: insets.top + 1)
+            let expectedPage = try XCTUnwrap(pdf.page(for: readablePoint, nearest: true))
+            let expectedIndex = document.index(for: expectedPage)
+            let expectedPoint = pdf.convert(readablePoint, to: expectedPage)
+            sampledPages.insert(expectedIndex)
+            coordinator.restoring = false
+            coordinator.userScrolled = true
+            coordinator.capture()
+
+            let saved = try XCTUnwrap(session.currentAnchor)
+            let sampleDescription = "page \(sample.page + 1) top at \(sample.top) pt; actual unobscured page is \(expectedIndex + 1)"
+            XCTAssertEqual(saved.chapterID, session.book.chapters[expectedIndex].id, "Capture must bind to the page under the unobscured reading point: " + sampleDescription)
+            XCTAssertEqual(session.chapterIndex, expectedIndex, sampleDescription)
+            let savedY = try XCTUnwrap(saved.pageY)
+            // capture currently samples top rather than top+1; one screen point
+            // is allowed so this assertion detects page/coordinate confusion.
+            XCTAssertEqual(savedY, Double(expectedPoint.y), accuracy: max(2, Double(1 / pdf.scaleFactor) + 0.1), sampleDescription)
+        }
+        XCTAssertEqual(sampledPages, Set([0, 1, 2]), "The seam setup must really sample all three pages, not repeat a single-page fixture")
+        coordinator.cancelPendingScroll()
+        _ = await session.flush()
+    }
 }

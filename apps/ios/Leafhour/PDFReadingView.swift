@@ -90,12 +90,14 @@ struct PDFReadingView: UIViewRepresentable {
         }
         func cancelPendingScroll() { delayed?.cancel() }
         func capture() {
-            guard !restoring, userScrolled, let view, let page = view.currentDestination?.page ?? view.currentPage, let document = view.document else { return }
+            guard !restoring, userScrolled, let view, let document = view.document else { return }
+            let readingPoint = CGPoint(x: view.bounds.midX, y: parent.pageInsets.top + 1)
+            guard let page = view.page(for: readingPoint, nearest: true) else { return }
             let index = document.index(for: page)
             guard parent.session.book.chapters.indices.contains(index) else { return }
             let chapter = parent.session.book.chapters[index]
             parent.session.chapterIndex = index
-            let visiblePoint = view.convert(CGPoint(x: view.bounds.midX, y: parent.pageInsets.top), to: page)
+            let visiblePoint = view.convert(readingPoint, to: page)
             parent.session.moved(ReadingAnchor(chapterID: chapter.id, passageID: chapter.passages[0].id, pageY: Double(visiblePoint.y)))
         }
         func selectionChanged() {
