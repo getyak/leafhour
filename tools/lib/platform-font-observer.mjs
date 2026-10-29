@@ -266,14 +266,24 @@ export function observeNativeScroll(selector,alignment='nearest'){
     return true;
   };
   const sample=()=>{
-    const r=node.getBoundingClientRect(),viewportFixed=fixedToViewport();
-    return {rect:{x:r.x,y:r.y,width:r.width,height:r.height},viewportFixed,positions:scrollers.map(element=>({left:element.scrollLeft,top:element.scrollTop})),scrollports:scrollers.map((element,index)=>{
-      const style=getComputedStyle(element),rect=index?element.getBoundingClientRect():{x:0,y:0},left=rect.x+(index?element.clientLeft:0),top=rect.y+(index?element.clientTop:0);
+    const r=node.getBoundingClientRect(),viewportFixed=fixedToViewport(),actual=globalThis.visualViewport;
+    const visual=actual&&[actual.width,actual.height,actual.scale,actual.offsetLeft,actual.offsetTop].every(Number.isFinite)&&actual.width>0&&actual.height>0&&actual.scale>0?{width:actual.width,height:actual.height,scale:actual.scale,offsetLeft:actual.offsetLeft,offsetTop:actual.offsetTop}:null;
+    const value={rect:{x:r.x,y:r.y,width:r.width,height:r.height},viewportFixed,visualViewport:visual,positions:scrollers.map(element=>({left:element.scrollLeft,top:element.scrollTop})),scrollports:scrollers.map((element,index)=>{
+      // innerWidth/innerHeight are integers. Fixed geometry can instead land
+      // exactly on a fractional visual viewport edge (stock Android Chrome).
+      // Use those measured bounds, never a guessed pixel tolerance.
+      const visualRoot=!index&&viewportFixed&&visual;
+      const style=getComputedStyle(element),rect=index?element.getBoundingClientRect():{x:visualRoot?visual.offsetLeft:0,y:visualRoot?visual.offsetTop:0},left=rect.x+(index?element.clientLeft:0),top=rect.y+(index?element.clientTop:0);
       const padding=side=>!index&&viewportFixed?0:pixels(style['scrollPadding'+side]);
-      return {left:left+padding('Left'),top:top+padding('Top'),right:left+(index?element.clientWidth:innerWidth)-padding('Right'),bottom:top+(index?element.clientHeight:innerHeight)-padding('Bottom'),maxLeft:Math.max(0,element.scrollWidth-element.clientWidth),maxTop:Math.max(0,element.scrollHeight-element.clientHeight),position:style.position,overflowX:style.overflowX,overflowY:style.overflowY,behavior:style.scrollBehavior};
+      return {left:left+padding('Left'),top:top+padding('Top'),right:left+(index?element.clientWidth:visualRoot?visual.width:innerWidth)-padding('Right'),bottom:top+(index?element.clientHeight:visualRoot?visual.height:innerHeight)-padding('Bottom'),maxLeft:Math.max(0,element.scrollWidth-element.clientWidth),maxTop:Math.max(0,element.scrollHeight-element.clientHeight),position:style.position,overflowX:style.overflowX,overflowY:style.overflowY,behavior:style.scrollBehavior};
     }),scrollX,scrollY};
+    const port=value.scrollports[0];value.viewportClipped=viewportFixed&&(r.x<port.left||r.y<port.top||r.x+r.width>port.right||r.y+r.height>port.bottom);return value;
   };
   const needs=value=>value.scrollports.flatMap((port,index)=>{
+    // Root scrolling cannot move a viewport-fixed box. An actual inner
+    // scrollport may still move its descendant; observe that normally before
+    // requiring the final box to fit the real visual viewport.
+    if(!index&&value.viewportFixed)return [];
     const r=value.rect,left=r.x-pixels(margin.scrollMarginLeft),right=r.x+r.width+pixels(margin.scrollMarginRight),top=r.y-pixels(margin.scrollMarginTop),bottom=r.y+r.height+pixels(margin.scrollMarginBottom);
     const movable=(start,end,low,high,current,max,center=false)=>{
       if(!center&&(start>=low&&end<=high||start<=low&&end>=high))return false;
@@ -307,8 +317,8 @@ export function observeNativeScroll(selector,alignment='nearest'){
       if(changed){lastChange=now;stableFrames=0;}else stableFrames++;
       previous=current;
       const currentNeeds=needs(current);
-      if(started&&stableFrames>=4&&now-lastChange>=100&&!currentNeeds.some(index=>!startedScrollers.has(index)))return finish('settled');
-      if(!started&&!currentNeeds.length&&positionStableFrames>=2)return finish('unchanged');
+      if(!current.viewportClipped&&started&&stableFrames>=4&&now-lastChange>=100&&!currentNeeds.some(index=>!startedScrollers.has(index)))return finish('settled');
+      if(!current.viewportClipped&&!started&&!currentNeeds.length&&positionStableFrames>=2)return finish('unchanged');
       frame=requestAnimationFrame(tick);
     };
     document.addEventListener('scroll',onScroll,true);document.addEventListener('scrollend',onEnd,true);

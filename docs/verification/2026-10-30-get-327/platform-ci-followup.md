@@ -67,3 +67,17 @@ node --test tests/reader-tool-focus.test.mjs tests/reading-hub.test.mjs tests/re
 This checkpoint passed **118 tests, zero failed/skipped**. Independent reviewers checked the product lifecycle/fences and observer/harness contract separately.
 
 The same owned native CDP sequence then passed on local macOS Chrome `156.0.8078.48`: the pill focused the actual moved `open-toc`; book-info opened, settled its paint, initialized the real enabled share control and closed gift dialog, then returned focus after one Escape with the URL preserved. Actual Newsreader italic identity used four `very` glyphs and both font responses matched checkout bytes. The screenshot visibly retained the italic source emphasis. Extra native sequences verified the top edge's header handoff and a header-only pill fallback with the optional hub stylesheet unavailable. The main reader recorded zero runtime/network errors, and the owned browser was closed. These are anonymous local source observations, not fresh Linux/Windows/Android or production acceptance. Complete host gates, generated release inventories and new-head CI remain the main agent's delivery checks.
+
+## Android at `8523699`: measured fractional viewport boundary
+
+The Android receipt at `8523699` stopped before the pill received CDP focus or Enter. Its one native scroll request timed out with no scroll events. The pill was actually fixed at `{x:0, y:678.1818237304688, width:393.0909118652344, height:44}`. Reader `innerWidth/innerHeight` were integer `393/722`, while the independently recorded real visual viewport was `393.0909118652344 × 722.1818237304688`, scale `1`, offsets `0/0`. The pill exactly fit those measured visual bounds. Comparing its bottom to the integer height incorrectly requested document movement; document scrolling cannot move a viewport-fixed box.
+
+The native-scroll observer now uses the measured visual viewport's fractional bounds for a viewport-fixed root, without a pixel tolerance or viewport/scale changes. It records the visual metrics and final clipping state. Ordinary content, transformed/contained fixed ancestors and inner scrollports keep their existing rules. Root scrolling is not assumed to move a viewport-fixed box, and a fixed control genuinely outside the real viewport cannot complete acceptance. This is a final visibility condition: a descendant of a fixed ancestor can still perform its one native inner scroll and settle inside the viewport before passing. Missing/invalid visual metrics fall back to strict layout viewport bounds. No input is replayed.
+
+Four new deterministic contracts first failed: the exact receipt geometry, real `0.001px` clipping with no attainable document scroll, actual visual offsets/scale and fallback, and a valid inner scroll from outside to inside a fixed viewport. The affected files then passed **102 tests, zero failed/skipped**:
+
+```sh
+node --test tests/platform-android.test.mjs tests/platform-popover-observer.test.mjs
+```
+
+An independent reviewer also passed the targeted geometry/inner-scroll checks. These regressions replay the recorded boundary; they do not establish a successful Android run at the next source revision. Fresh same-head Android acceptance remains required.

@@ -508,6 +508,7 @@
   "app/reading-session.js",
   "app/reading-time-policy.mjs",
   "app/reading-toolbar.mjs",
+  "app/reading-tool-focus.mjs",
   "app/robots.txt",
   "app/save-receipts.mjs",
   "app/settings-appearance.mjs",
@@ -1403,5 +1404,7 @@
   "tests/catalog-checkout-bytes.test.mjs",
   "tests/platform-home-contract.test.mjs",
   "tests/platform-shelf-contract.test.mjs",
-  "tests/reader-tool-focus.test.mjs"
+  "tests/reader-tool-focus.test.mjs",
+  "tests/helpers/packaged-tool-focus.mjs",
+  "tests/reader-tool-focus-boundary.test.mjs"
 ]

@@ -1,5 +1,6 @@
 import {t,onUiLocaleChange} from './ui-locale.mjs';
-import {handoffReadingToolFocus} from './reading-toolbar.mjs';
+import {handoffReadingToolFocus} from './reading-tool-focus.mjs';
+import {overlayOpen} from './popover-controls.mjs';
 
 // Optional presentation loads with the external enhancement, after the reader.
 // A failed stylesheet keeps the original controls in their existing locations.
@@ -39,7 +40,7 @@ export function mountReadingHub({document,panel,toolbar,onHandoff=()=>toolbar?.c
  const move=(node,parent)=>{if(!node?.parentElement)return;const previous=node.parentElement,next=node.nextSibling;moved.push(()=>{if(next?.parentElement===previous)previous.insertBefore(node,next);else previous.append(node);});parent.append(node);};
  const addLabel=(node,key)=>{const label=make('span','reading-hub-label');label.dataset.readingHubLabel='';labels.push([label,key]);node.append(label);removers.push(()=>label.remove());};
  const listen=(node,event,fn)=>{node?.addEventListener(event,fn);removers.push(()=>node?.removeEventListener(event,fn));};
- listen($('reading-tools-trigger'),'click',event=>{if(event.detail!==1&&$('reading-session')?.dataset.expanded==='true')cancelToolFocus=handoffReadingToolFocus({document,target:()=>primary.querySelector('button:not([disabled]):not([hidden])'),current:()=>!disposed&&$('reading-session')?.dataset.expanded==='true'&&!panel.inert});});
+ listen($('reading-tools-trigger'),'click',event=>{if(event.detail!==1&&$('reading-session')?.dataset.expanded==='true')cancelToolFocus=handoffReadingToolFocus({document,target:()=>primary.querySelector('button:not([disabled]):not([hidden])'),blocked:()=>overlayOpen(document),current:()=>!disposed&&$('reading-session')?.dataset.expanded==='true'&&!panel.inert});});
  const contents=$('open-toc'),settings=$('open-settings'),notes=$('show-all-records');
  move(contents,primary);move(settings,primary);move(notes,primary);move($('listen-chapter')?.parentElement,primary);
  if(settings)addLabel(settings,'reader.hub.appearance');

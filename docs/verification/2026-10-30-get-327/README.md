@@ -13,7 +13,7 @@
 | 正文转为分片传输后，取消外层读取没有传给后续分片。 | 每次分片读取携带原来的 `AbortSignal`，取消后不再发送下一片请求。 | `app/reader-api.mjs` |
 | 保存高亮或延迟加载注解完成时，用户已经取消选文、移动或聚焦别处，旧回执仍可能打开卡片并抢回焦点。 | 高亮保存仍接纳持久化回执；打开卡片另行校验当前交互意图，并在模块加载、注解读取等异步边界再次校验。用户主动重新打开同一高亮仍可进入注解。 | `app/reader-highlights.mjs`、`app/reader-annotations.mjs` |
 | 译文或个人记录刷新重建笔记表单，可能打断正在输入的草稿、焦点或选区。 | 当前段落、标签和草稿范围未变时复用同一个表单和 textarea，仅更新记录列表；记录 composition 状态，避免刷新覆盖正在组合输入的内容。面板已经处于正确位置时不重复移动 DOM。 | `app/reader.js` |
-| 键盘展开工具条时，header 和 hub 在 visibility 过渡起点就调用 focus，Chrome 拒绝；顶部唤醒按钮隐藏自身后还会原生退焦到 body。 | 共享有界 paint 交接，只在真实可见且可用时聚焦；用户新操作、关闭、隐藏和卸载取消。顶部按钮仅在无新事件的原生隐藏退焦时保留原意图，元素 blur 不再误当窗口失焦。 | `app/reader-immersion.mjs`、`app/reading-hub.mjs`、`app/reading-toolbar.mjs` |
+| 键盘展开工具条时，header 和 hub 在 visibility 过渡起点就调用 focus，Chrome 拒绝；顶部唤醒按钮隐藏自身后还会原生退焦到 body。 | 共享有界 paint 交接，只在真实可见且可用时聚焦；用户新操作、关闭、隐藏和卸载取消。顶部按钮仅在无新事件的原生隐藏退焦时保留原意图，元素 blur 不再误当窗口失焦。编译入口与延迟 hub 共用一个无依赖模块，避免各自保存焦点状态。 | `app/reading-tool-focus.mjs`、`app/reader-immersion.mjs`、`app/reading-hub.mjs`、`app/reading-toolbar.mjs` |
 | 固定本地化片段使用 inline style，其排版规则可能被现有 CSP 拒绝。 | 将这些固定样式移到共享样式表的 `.ui-inline` 类，保留字体、颜色和文本流继承；隐藏节点继续保持隐藏，CSP 未放宽。 | `app/index.html`、`app/reader-atmosphere.js`、`app/typography.css` |
 
 ## iOS 改动
@@ -53,6 +53,10 @@ composition 验证采用浏览器合成事件，不等同于操作系统中文�
 ## 工具条的真实键盘复验
 
 后续实际跨平台执行发现了产品焦点交接早于 CSS visibility 可见帧的问题，不能仅修改观察器。使用同一套 `DOM.focus` + trusted Enter/Escape CDP 输入复现并修复；真实源码页面重新验证主 pill→目录、书籍信息打开与 Escape 还焦、顶部唤醒，以及可选 hub 样式不可用时的 header 回退，结果通过，页面与网络错误为空。主 Agent 最终 114 项定向回归通过，同时覆盖隐藏、关闭、新输入、新焦点、窗口失焦和卸载；最终完整门禁与最新 CI 继续分别记录。
+
+打包回归进一步发现：编译入口与 raw hub 原先会各自取得一份 toolbar 内的 WeakMap，源码单例不等于发布产物单例。现在无依赖的 `reading-tool-focus.mjs` 以唯一公开 URL 共享，两个调用方必须显式传入原有完整 overlay guard，缺失 guard 直接拒绝。构建检查静态调用归属、公开资源与离线清单，HTML 预加载同一模块。核心脚本为 **327097 B**，低于既有 **327680 B** 上限；整个阅读器模块图相较上一候选减少 **10562 B**，但首次关键路径 JS 净增 **1977 B** 和一个预加载 URL。这是打包边界和重复模块修复，未将它表述为实测冷启动提速。
+
+最终完整编译产物的 macOS 原生 CDP 复验中，共享模块只请求一次；同次展开操作仅调用一次 `open-toc` 焦点，没有 header 竞争。书籍信息真实打开与 paint、可用分享入口、关闭状态的赠书对话框、单次 Escape 还焦、实际斜体字体及字节、顶部唤醒和无 hub 回退均通过，页面错误为空。两位其他 Agent 对最终共享边界做了只读审阅，没有发现实质问题。该证据仍不替代新提交的 Android、Windows、Linux CI 或正式发布验收。
 
 ## 合成性能观察
 

@@ -1,6 +1,7 @@
 import {readerInteractionBlocked} from './reader-conversation.mjs';
 import {t,onUiLocaleChange} from './ui-locale.mjs';
-import {handoffReadingToolFocus} from './reading-toolbar.mjs';
+import {handoffReadingToolFocus} from './reading-tool-focus.mjs';
+import {overlayOpen} from './popover-controls.mjs';
 
 // Immersion is a page layout. Browser fullscreen is requested only by a user action.
 // GET-184: the floating #exit-focus/#focus-fullscreen pair is gone; the pill
@@ -45,7 +46,7 @@ export function mountReaderImmersion({document,announce=()=>{},beforeLayout=()=>
     const anchor=beforeLayout();requestToolsClose();focused=!!value;sync();afterLayout(anchor);
     document.dispatchEvent(new CustomEvent('reader:focus',{detail:{focused}}));
   }
-  function showTools({focus=true}={}){if(disposed||toolsOpen)return false;const wakeEdge=document.activeElement===document.getElementById('reader-top-edge');toolsOpen=true;sync();onToolsLayout();if(focus)cancelToolFocus=handoffReadingToolFocus({document,target:()=>header.querySelector('a[href],button:not([disabled]):not([hidden])'),current:()=>!disposed&&toolsOpen&&!header.inert,allowHiddenOpener:wakeEdge});return true;}
+  function showTools({focus=true}={}){if(disposed||toolsOpen)return false;const wakeEdge=document.activeElement===document.getElementById('reader-top-edge');toolsOpen=true;sync();onToolsLayout();if(focus)cancelToolFocus=handoffReadingToolFocus({document,target:()=>header.querySelector('a[href],button:not([disabled]):not([hidden])'),blocked:()=>overlayOpen(document),current:()=>!disposed&&toolsOpen&&!header.inert,allowHiddenOpener:wakeEdge});return true;}
   function closeTools({restoreFocus=false}={}){cancelToolFocus();if(disposed||!toolsOpen)return false;toolsOpen=false;sync();onToolsLayout();if(restoreFocus)restoreToolFocus();return true;}
   function toggleTools(options){return toolsOpen?closeTools():showTools(options);}
   async function changeFullscreen(enter){

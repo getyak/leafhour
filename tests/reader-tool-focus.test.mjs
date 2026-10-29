@@ -51,6 +51,15 @@ test('header-only keyboard reveal uses the same painted handoff when the optiona
  assert.equal(f.$('reading-header').contains(f.document.activeElement),true);
  assert.ok(f.document.activeElement!==f.pill);assert.equal(f.attempts.length,1);
 });
+test('both real handoff owners yield to every open dialog and owned popover before painted focus',async t=>{
+ for(const hub of [false,true])for(const overlay of ['dialog','chat','popover']){
+  const f=setup(t,{hub});f.activate();await Promise.resolve();
+  if(overlay==='popover')f.$('book-info').setAttribute('data-popover-open','');
+  else f.$(overlay==='chat'?'reader-conversation':'settings-dialog').open=true;
+  f.paint();f.frame();
+  assert.ok(f.document.activeElement===f.pill,hub+' '+overlay);assert.deepEqual(f.attempts,[]);assert.equal(f.frames.size,0);assert.equal(f.timers.size,0);
+ }
+});
 test('top-edge keyboard reveal survives its own native hidden-opener blur, while a newer body focus event cancels it',t=>{
  for(const newerFocus of [false,true]){
   const f=setup(t,{hub:false});f.$('reader-top-edge').focus();f.attempts.length=0;f.tools.toolbar.reveal();
