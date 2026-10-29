@@ -1386,5 +1386,10 @@
   "app/reading-workspace.css",
   "server/reading-workspace-service.mjs",
   "server/reading-summary.mjs",
-  "harness/notebook-generator.mjs"
+  "harness/notebook-generator.mjs",
+  "tools/ci-resource-plan.mjs",
+  "tools/ci-resource-gate.mjs",
+  "tools/production-status.mjs",
+  "tests/ci-resource-plan.test.mjs",
+  "tests/production-status.test.mjs"
 ]
