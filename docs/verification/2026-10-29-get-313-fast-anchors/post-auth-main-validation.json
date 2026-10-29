@@ -1,0 +1,46 @@
+{
+  "head": "434847dc1964d25edb546599825a5a277a1a8e71",
+  "base": "90c30d0c497ed4642094fce5c90dd313add01928",
+  "coreTests": 92,
+  "appTests": 23,
+  "failures": 0,
+  "allAddedAuthenticationTestNamesExecuted": true,
+  "fourReaderHashesMatchAcceptedNativeProbe": true,
+  "originalStateSHA256": "f0df05c436c404e0a9a7a81e85c03b701ad763adc4f800078f4735ea2fcf0e57",
+  "originalStateRestored": true,
+  "scope": "Combined native host/unit integration after auth main sync. Isolated fake authentication; no real provider sign-in, physical or distribution acceptance.",
+  "newAuthTestsPassedByName": {
+    "apps/ios/LeafhourCore/Tests/LeafhourCoreTests/NativeOAuthTests.swift": [
+      "testS256RFC7636VectorAndSecureProofShapes",
+      "testLaunchAndCallbackRejectOriginDriftDuplicateOrLeakedParameters",
+      "testSignInExchangesOverHTTPSAndOnlyThenAdoptsOpaqueCredential",
+      "testLinkRejectsDifferentUIDAndPreservesExistingCredential",
+      "testCancelAndProviderFailureNeverExchangeOrDiscardGoodLinkSession",
+      "testPersistenceFailureDoesNotInstallNewCredential",
+      "testLateExchangeAfterCancellationAndSignOutCannotAdoptCredential",
+      "testLinkRejectsRotatedOpaqueTokenEvenForSameUID",
+      "testOnlyOnePendingFlowAndIdentityOwnerMustMatch"
+    ],
+    "apps/ios/LeafhourAppTests/NativeAuthenticationTests.swift": [
+      "testSystemBrowserStartFailureAndSinglePendingCancellationAreRecoverable",
+      "testLateBrowserCallbackAfterCancellationCannotResumeTheOperation",
+      "testExpiredBrowserOperationClosesWithoutWaitingForAProvider",
+      "testLinkSuccessKeepsExistingLibraryReaderDraftsAndOpaqueToken"
+    ]
+  },
+  "actualXcodeJobs": 2,
+  "rawArchive": {
+    "archive": "native-fast-anchors-auth-sync-evidence.tar.gz",
+    "sha256": "a4ebf396c25a536e5862abeabf29c46e9038d79784eb4be2c6eb931db0f34d9b",
+    "bytes": 85477,
+    "fileCount": 81,
+    "verifiedEachMember": true,
+    "restorePrefix": "runtime/"
+  },
+  "fourSourceHashes": {
+    "apps/ios/Leafhour/TextReadingView.swift": "c28eb38499b8520da5b36234bdfddbb36d2007a8106d1508b4c98211f041cf86",
+    "apps/ios/LeafhourCore/Sources/LeafhourCore/SourceTextOffsets.swift": "f5452759b4265c0b1c619c2bcbb1f455b75bf12d6ec1b83e73eda2c4c4fa15bb",
+    "apps/ios/LeafhourCore/Tests/LeafhourCoreTests/SourceTextOffsetsTests.swift": "c73b5173d8b517ad7b5423328733db16a433f936d3f1738c39303bf65be929eb",
+    "apps/ios/LeafhourAppTests/ReaderToolsTests.swift": "3e29b5ab3ce6594fc810e8bfaeb97985531396ab62a58d3241a522353457c1e9"
+  }
+}

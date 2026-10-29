@@ -1,0 +1,43 @@
+{
+  "issue": "GET-313",
+  "base": "9ed97de798f08818f2c12c4eed2f1804fe867ebb",
+  "host": {
+    "configuration": "macOS Foundation swiftc -O -num-threads 2",
+    "executedXCTest": 83,
+    "failures": 0,
+    "newOffsetTests": 7,
+    "lookupSamplesPerCase": 48,
+    "constructionSamplesPerCase": 10
+  },
+  "native": {
+    "configuration": "iOS 26.5 Simulator Debug, iPhone 17 Pro, xcodebuild -jobs 2, serial testing",
+    "executedXCTest": 1,
+    "failures": 0,
+    "testSeconds": 31.616,
+    "lookupSamplesPerCase": 24,
+    "constructionSamplesPerCase": 4,
+    "componentMarker": "GET313-COMPONENT-EXECUTED all-preserved",
+    "coldDraftMarker": "GET313-COLD-DRAFT-EXECUTED",
+    "appTests": {
+      "executedXCTest": 19,
+      "failures": 0,
+      "log": "native-combined.log",
+      "newLongPlainMarkdownQuoteReflowTest": true
+    }
+  },
+  "excludedOrLimited": [
+    "Initial semantic RED: 6 executed XCTest, one expected mid-surrogate regression. Not a native bug reproduction.",
+    "host-comparison-preliminary.json: six cases superseded by final nine-case host comparison.",
+    "Separate Swift Testing zero-test footer is not acceptance.",
+    "Component timing on shared host/simulator is not whole-scroll FPS, physical latency or RSS.",
+    "Small sample distributions, especially four native construction samples, are descriptive and not a stable production percentile.",
+    "Presync 54host/1native36.985s belongs to9ed source. First combined native UI run failed at old hidden-entry assumption; its19AppTests passed. Final combined UI run repairs only test entry selection and executes1test31.616s."
+  ],
+  "sourceHashes": {
+    "apps/ios/Leafhour/TextReadingView.swift": "c28eb38499b8520da5b36234bdfddbb36d2007a8106d1508b4c98211f041cf86",
+    "apps/ios/LeafhourCore/Sources/LeafhourCore/SourceTextOffsets.swift": "f5452759b4265c0b1c619c2bcbb1f455b75bf12d6ec1b83e73eda2c4c4fa15bb",
+    "apps/ios/LeafhourCore/Tests/LeafhourCoreTests/SourceTextOffsetsTests.swift": "c73b5173d8b517ad7b5423328733db16a433f936d3f1738c39303bf65be929eb",
+    "apps/ios/LeafhourAppTests/ReaderToolsTests.swift": "3e29b5ab3ce6594fc810e8bfaeb97985531396ab62a58d3241a522353457c1e9"
+  },
+  "combinedBase": "c03ecd7fc162e0e5a4983ab2d51748c5d4a522f6"
+}

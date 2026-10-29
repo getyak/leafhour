@@ -1,0 +1,164 @@
+{
+  "allPassed" : true,
+  "checksum" : 54870016,
+  "componentCases" : [
+    {
+      "case" : "ascii",
+      "construction" : {
+        "maxMs" : 0.0043750000000000004,
+        "medianMs" : 0.0037919999999999998,
+        "minMs" : 0.0025000000000000001,
+        "p95Ms" : 0.0037919999999999998
+      },
+      "constructionSamples" : 4,
+      "lookupSamples" : 24,
+      "newLookup" : {
+        "maxMs" : 0.002333,
+        "medianMs" : 0.001042,
+        "minMs" : 0.00025000000000000001,
+        "p95Ms" : 0.001542
+      },
+      "oldLookup" : {
+        "maxMs" : 0.030499999999999999,
+        "medianMs" : 0.016125,
+        "minMs" : 0.0087500000000000008,
+        "p95Ms" : 0.023667000000000001
+      },
+      "sourceScalars" : 56,
+      "sourceUTF16Units" : 56
+    },
+    {
+      "case" : "ascii",
+      "construction" : {
+        "maxMs" : 2.164625,
+        "medianMs" : 1.7067909999999999,
+        "minMs" : 1.5829580000000001,
+        "p95Ms" : 1.7067909999999999
+      },
+      "constructionSamples" : 4,
+      "lookupSamples" : 24,
+      "newLookup" : {
+        "maxMs" : 0.0048329999999999996,
+        "medianMs" : 0.00079100000000000004,
+        "minMs" : 0.00025000000000000001,
+        "p95Ms" : 0.0020409999999999998
+      },
+      "oldLookup" : {
+        "maxMs" : 6.8842499999999998,
+        "medianMs" : 3.5333749999999999,
+        "minMs" : 0.43025000000000002,
+        "p95Ms" : 6.5157499999999997
+      },
+      "sourceScalars" : 896000,
+      "sourceUTF16Units" : 896000
+    },
+    {
+      "case" : "bmp",
+      "construction" : {
+        "maxMs" : 0.0062919999999999998,
+        "medianMs" : 0.0054159999999999998,
+        "minMs" : 0.0040829999999999998,
+        "p95Ms" : 0.0054159999999999998
+      },
+      "constructionSamples" : 4,
+      "lookupSamples" : 24,
+      "newLookup" : {
+        "maxMs" : 0.001833,
+        "medianMs" : 0.00054199999999999995,
+        "minMs" : 4.1e-05,
+        "p95Ms" : 0.0012080000000000001
+      },
+      "oldLookup" : {
+        "maxMs" : 0.02375,
+        "medianMs" : 0.01375,
+        "minMs" : 0.0041669999999999997,
+        "p95Ms" : 0.017749999999999998
+      },
+      "sourceScalars" : 32,
+      "sourceUTF16Units" : 32
+    },
+    {
+      "case" : "bmp",
+      "construction" : {
+        "maxMs" : 2.8437079999999999,
+        "medianMs" : 2.7763749999999998,
+        "minMs" : 2.6773750000000001,
+        "p95Ms" : 2.7763749999999998
+      },
+      "constructionSamples" : 4,
+      "lookupSamples" : 24,
+      "newLookup" : {
+        "maxMs" : 0.0013749999999999999,
+        "medianMs" : 0.00054199999999999995,
+        "minMs" : 8.2999999999999998e-05,
+        "p95Ms" : 0.001
+      },
+      "oldLookup" : {
+        "maxMs" : 2.7589999999999999,
+        "medianMs" : 1.2475830000000001,
+        "minMs" : 0.16725000000000001,
+        "p95Ms" : 2.5177499999999999
+      },
+      "sourceScalars" : 512000,
+      "sourceUTF16Units" : 512000
+    },
+    {
+      "case" : "mixed",
+      "construction" : {
+        "maxMs" : 0.0057499999999999999,
+        "medianMs" : 0.0056249999999999998,
+        "minMs" : 0.0050000000000000001,
+        "p95Ms" : 0.0056249999999999998
+      },
+      "constructionSamples" : 4,
+      "lookupSamples" : 24,
+      "newLookup" : {
+        "maxMs" : 0.008208,
+        "medianMs" : 0.0039170000000000003,
+        "minMs" : 0.001542,
+        "p95Ms" : 0.0064590000000000003
+      },
+      "oldLookup" : {
+        "maxMs" : 0.024791000000000001,
+        "medianMs" : 0.01575,
+        "minMs" : 0.0044999999999999997,
+        "p95Ms" : 0.022415999999999998
+      },
+      "sourceScalars" : 48,
+      "sourceUTF16Units" : 56
+    },
+    {
+      "case" : "mixed",
+      "construction" : {
+        "maxMs" : 13.544917,
+        "medianMs" : 13.407292,
+        "minMs" : 12.922499999999999,
+        "p95Ms" : 13.407292
+      },
+      "constructionSamples" : 4,
+      "lookupSamples" : 24,
+      "newLookup" : {
+        "maxMs" : 0.015875,
+        "medianMs" : 0.0098750000000000001,
+        "minMs" : 0.0022920000000000002,
+        "p95Ms" : 0.014042000000000001
+      },
+      "oldLookup" : {
+        "maxMs" : 4.5680829999999997,
+        "medianMs" : 2.0120420000000001,
+        "minMs" : 0.261042,
+        "p95Ms" : 3.9289170000000002
+      },
+      "sourceScalars" : 768000,
+      "sourceUTF16Units" : 896000
+    }
+  ],
+  "explicitScalar" : 500,
+  "navigationRetained" : true,
+  "originalSourceRestored" : true,
+  "os" : "Version 26.5 (Build 23F77)",
+  "scope" : "iOS Simulator Debug component comparison, main actor; sleeps outside timed samples; not Release\/finger\/FPS\/RSS\/physical latency",
+  "selectedText" : "waistcoat-",
+  "selectionRetained" : true,
+  "sourceSwitchRetainedExactOffsets" : true
+}

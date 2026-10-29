@@ -215,6 +215,34 @@ final class ReaderToolsTests: XCTestCase {
         XCTAssertEqual((fixture.passage.text as NSString).substring(with: NSRange(location: start, length: end - start)), raw)
         XCTAssertNil(tools.error)
     }
+    func testLongMixedQuoteKeepsRawScalarOffsetThroughPlainAndMarkdownReflow() async throws {
+        let raw = String(repeating: "a字😀e\u{301} ", count: 220) + "**bold** &amp; tail😀 end"
+        let rawRange = (raw as NSString).range(of: "tail😀")
+        let expectedScalar = (raw as NSString).substring(to: rawRange.location).unicodeScalars.count
+        for markdown in [false, true] {
+            let fixture = try await fixture(source: raw, markdown: markdown)
+            let reading = TextReadingView(session: fixture.session, onNote: { _ in }, onSource: { _ in }, onWake: { _ in }, onReadingScroll: { })
+            let coordinator = reading.makeCoordinator(), view = UITextView(frame: CGRect(x: 0, y: 0, width: 390, height: 700))
+            coordinator.view = view; coordinator.updateContent(view)
+            for fontSize in [22.0, 26.0] {
+                var preferences = fixture.session.state.preferences; preferences.fontSize = fontSize
+                fixture.session.changePreferences(preferences); coordinator.updateContent(view)
+                let range = (view.text as NSString).range(of: "tail😀")
+                XCTAssertNotEqual(range.location, NSNotFound)
+                let selected = try XCTUnwrap(coordinator.selectedQuote(in: view, range: range))
+                XCTAssertEqual(selected.text, "tail😀")
+                XCTAssertEqual(selected.sourceText, "tail😀")
+                XCTAssertEqual(selected.anchor.characterOffset, expectedScalar)
+                XCTAssertEqual(selected.anchor.passageID, fixture.passage.id)
+                let span = try XCTUnwrap(coordinator.spans.first)
+                XCTAssertEqual(span.sourceOffsets.utf16Offset(forScalarOffset: expectedScalar), rawRange.location)
+            }
+            coordinator.invalidate()
+            XCTAssertTrue(coordinator.spans.isEmpty)
+            XCTAssertNil(coordinator.markdown)
+            _ = await fixture.session.flush()
+        }
+    }
     func testDismissAndScrollClearTemporarySelectionWithoutChangingDrafts() async throws {
         let fixture = try await fixture(source: "First thought.\n\nSecond thought.")
         let first = fixture.passage, second = try XCTUnwrap(fixture.session.chapter.passages.last)

@@ -1,0 +1,28 @@
+{
+  "failureRun": "https://github.com/getyak/leafhour/actions/runs/40836356227",
+  "failureHead": "2f95917f2c74a250f20a67bfc89b24c3c77397e0",
+  "failureTimeUTC": "2026-10-29T07:42:24Z",
+  "failure": "4272/4273 Node tests passed; existing observability synthetic classification assertion assumed asynchronous completion order",
+  "deterministicRed": {
+    "nodeTests": 3,
+    "pass": 1,
+    "fail": 2,
+    "detail": "server-first child passed; browser-first child and enclosing parent failed the old [true,false] array assertion"
+  },
+  "targetedGreen": {
+    "nodeTests": 3,
+    "pass": 3,
+    "fail": 0,
+    "forcedOrders": [
+      "server-first",
+      "browser-first"
+    ]
+  },
+  "productionObservabilityUnchanged": true,
+  "newAssertions": "Assert browser payload UUID/client/event and synthetic=false; assert trusted server request_failed/client and synthetic=true; ensure two payloads and the injected completion order.",
+  "localFullSDKSuite": "Not executed: @sentry/node dependency absent from isolated iOS worktree and original checkout. Targeted test disables this independent sink. New exact-head full CI remains required. No full dependency install or production changes.",
+  "sourceSHA256": {
+    "tests/observability.test.mjs": "a18d019aa00b502f7102613bfcfa53e33876a28ee3221867fb7766ad33c6bb8e",
+    "server/observability.mjs": "0953fd990163d17ae4646c108a0d69ff4f1c35820939d807dffab76ceeef2246"
+  }
+}

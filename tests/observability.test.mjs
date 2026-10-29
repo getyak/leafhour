@@ -17,7 +17,36 @@ test('revocation is rechecked after acceptance while delivery is waiting',async 
 test('vendor failure does not reject acceptance or block the independent sink',async t=>{const outgoing=[],f=await fixture(t,{fetcher:async(url,options)=>{outgoing.push(String(url));if(String(url).includes('posthog'))throw Error('SECRET_FAILURE');return Response.json({});}});await f.service.setConsent(user,{analytics:false,diagnostics:true});assert.equal((await f.service.accept(user,{events:[event('client_error')]})).accepted,1);await f.flush();assert.equal(outgoing.length,2);});
 test('raw errors never enter a fault and expected 4xx/cancellation are suppressed',async t=>{const f=await fixture(t);await f.service.setConsent(user,{analytics:false,diagnostics:true});assert.equal(await f.service.reportError(user,Object.assign(Error('SECRET_BODY https://SECRET_URL'),{status:404})),false);assert.equal(await f.service.reportError(user,Object.assign(Error('SECRET'),{name:'AbortError'})),false);assert.equal(await f.service.reportError(user,Object.assign(Error('SECRET_BODY'),{stack:'SECRET_PATH',status:503}),{page:'reader',stage:'reader_load'}),true);await f.flush();assert.equal(f.outgoing.length,2);assert.ok(!JSON.stringify(f.outgoing).includes('SECRET'));});
 test('delivery is bounded even when a vendor ignores abort signals',async t=>{const f=await fixture(t,{fetcher:async()=>new Promise(()=>{})});await f.service.setConsent(user,{analytics:true,diagnostics:false});const start=Date.now();await f.service.accept(user,{events:[event()]});await f.flush();assert.ok(Date.now()-start<2400);});
-test('server-only smoke context is synthetic while client synthetic fields cannot override it',async t=>{const f=await fixture(t);await f.service.setConsent(user,{analytics:false,diagnostics:true});await f.service.reportError(user,Error('PRIVATE_ERROR'),{synthetic:true});await f.service.accept(user,{events:[{...event('client_error'),synthetic:true,properties:{client:'browser',synthetic:true}}]});await f.flush();const ph=f.outgoing.filter(row=>row.url.includes('posthog')).map(row=>JSON.parse(row.body));assert.deepEqual(ph.map(row=>row.properties.synthetic),[true,false]);});
+test('server-only smoke context is synthetic while client synthetic fields cannot override it',async t=>{
+  for(const first of ['server','browser'])await t.test(`${first} delivery completes first`,async t=>{
+    const outgoing=[];let releaseFirst;
+    const firstDelivered=new Promise(resolve=>releaseFirst=resolve);
+    t.after(()=>releaseFirst());
+    // This assertion concerns PostHog payload identity, not the independent Sentry sink.
+    const f=await fixture(t,{env:{...env,SENTRY_DSN:''},fetcher:async(url,options)=>{
+      assert.ok(String(url).includes('posthog'));
+      const row=JSON.parse(options.body);
+      if(row.properties.client!==first)await firstDelivered;
+      outgoing.push(row);
+      if(row.properties.client===first)releaseFirst();
+      return Response.json({status:1});
+    }});
+    await f.service.setConsent(user,{analytics:false,diagnostics:true});
+    assert.equal(await f.service.reportError(user,Error('PRIVATE_ERROR'),{synthetic:true}),true);
+    const client={...event('client_error'),synthetic:true,properties:{client:'browser',synthetic:true}};
+    assert.deepEqual(await f.service.accept(user,{events:[client]}),{accepted:1});
+    await f.flush();
+    assert.equal(outgoing.length,2);
+    assert.deepEqual(outgoing.map(row=>row.properties.client),[first,first==='server'?'browser':'server']);
+    const browser=outgoing.find(row=>row.uuid===client.id);
+    assert.equal(browser.event,'client_error');
+    assert.equal(browser.properties.client,'browser');
+    assert.equal(browser.properties.synthetic,false);
+    const server=outgoing.find(row=>row.event==='request_failed');
+    assert.equal(server.properties.client,'server');
+    assert.equal(server.properties.synthetic,true);
+  });
+});
 test('dedup is durable across service instances without retaining payloads',async t=>{const f=await fixture(t),e=event();await f.service.setConsent(user,{analytics:true,diagnostics:false});assert.equal((await f.service.accept(user,{events:[e]})).accepted,1);await f.flush();const other=createObservability({dataDir:f.dataDir,env,fetcher:async()=>assert.fail('duplicate sent')});assert.equal((await other.accept(user,{events:[e]})).accepted,0);});
 test('Sentry delivery leaves no process listeners or cross-account identity',async t=>{const f=await fixture(t),other={id:'second-private-owner',email:'second@example.test'},before=process.listenerCount('beforeExit');await f.service.setConsent(user,{analytics:false,diagnostics:true});await f.service.setConsent(other,{analytics:false,diagnostics:true});await Promise.all([f.service.reportError(user,Error('PRIVATE_A')),f.service.reportError(other,Error('PRIVATE_B'))]);await f.flush();assert.equal(process.listenerCount('beforeExit'),before);const actorIds=f.outgoing.filter(row=>row.url.includes('posthog')).map(row=>JSON.parse(row.body).distinct_id);assert.equal(new Set(actorIds).size,2);for(const body of f.outgoing.filter(row=>row.url.includes('sentry')).map(row=>row.body)){const parsed=body.split('\n').slice(2).join('\n'),sentry=JSON.parse(parsed);assert.ok(actorIds.includes(sentry.user.id));assert.equal(sentry.exception.values[0].value,'request_failed');assert.equal(sentry.request,undefined);assert.equal(sentry.breadcrumbs,undefined);assert.equal(sentry.contexts,undefined);}});
 test('invalid integration DSN is disabled before SDK logging or capture',async t=>{const f=await fixture(t,{env:{...env,POSTHOG_PROJECT_KEY:'',SENTRY_DSN:'https://invalid-key@sentry.example/123'}});assert.equal((await f.service.config(user)).enabled,false);});
