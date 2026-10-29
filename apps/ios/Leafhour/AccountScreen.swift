@@ -79,12 +79,20 @@ struct AccountScreen: View {
 struct AccountRecordsScreen: View {
     @Bindable var model: LibraryModel
     @State private var selection = 0
-    @State private var loading = false
     var body: some View {
         List {
             Picker("记录类型", selection: $selection) { Text("我的笔记").tag(0); Text("阅读记录").tag(1) }.pickerStyle(.segmented)
             if selection == 0 {
-                if model.notebookEntries.isEmpty && !loading { ContentUnavailableView("还没有笔记", systemImage: "square.and.pencil", description: Text("网页与 iOS 的个人笔记会保存在同一间书房。")) }
+                AccountRecordsStatus(state: model.notebookState, title: "笔记") { Task { await model.loadAccountRecords() } }
+                if model.notebookEntries.isEmpty {
+                    if model.notebookCursor != nil && model.notebookState.hasSnapshot {
+                        Text("已载入的页面暂无笔记，还有记录未读取，可以继续载入。").font(.subheadline).foregroundStyle(.secondary)
+                    } else if model.notebookState == .ready {
+                        ContentUnavailableView("还没有笔记", systemImage: "square.and.pencil", description: Text("网页与 iOS 的个人笔记会保存在同一间书房。"))
+                    } else if case .cached = model.notebookState {
+                        Text("这份已载入的记录中暂无笔记。联网后可重新核对书房记录。").font(.subheadline).foregroundStyle(.secondary)
+                    }
+                }
                 ForEach(Array(model.notebookEntries.enumerated()), id: \.offset) { _, entry in
                     Section(CloudShelfBook.title(entry["book"]["title"])) {
                         let rows = entry["records"]["comments"].array + entry["records"]["questions"].array
@@ -98,27 +106,57 @@ struct AccountRecordsScreen: View {
                         }
                     }
                 }
-                if model.notebookCursor != nil { Button("载入更多记录") { load(more: true) }.disabled(loading) }
-            } else if model.summary == .null {
-                ContentUnavailableView("阅读记录暂未载入", systemImage: "icloud.slash", description: Text("联网后下拉同步，已有记录仍保留在自己的书房。"))
-            } else {
-                Section("阅读概况") {
-                    LabeledContent("累计阅读", value: duration(model.summary["allTime"]["durationSeconds"].number ?? 0))
-                    LabeledContent("有阅读的天数", value: "\(Int(model.summary["allTime"]["readingDays"].number ?? 0)) 天")
-                    Text("只统计实际记录的阅读时段；阅读时长不代表已经掌握。").font(.footnote).foregroundStyle(.secondary)
+                if model.notebookCursor != nil {
+                    Button("载入更多记录") { Task { await model.loadAccountRecords(more: true) } }.disabled(model.notebookState.isLoading)
                 }
-                Section("按书查看") {
-                    ForEach(Array(model.summary["books"].array.enumerated()), id: \.offset) { _, book in
-                        LabeledContent(CloudShelfBook.title(book["title"]), value: duration(book["durationSeconds"].number ?? 0))
+            } else {
+                AccountRecordsStatus(state: model.summaryState, title: "阅读记录") { Task { await model.loadAccountRecords() } }
+                if model.summary != .null {
+                    Section("阅读概况") {
+                        LabeledContent("累计阅读", value: duration(model.summary["allTime"]["durationSeconds"].number ?? 0))
+                        LabeledContent("有阅读的天数", value: "\(Int(model.summary["allTime"]["readingDays"].number ?? 0)) 天")
+                        Text("只统计实际记录的阅读时段；阅读时长不代表已经掌握。").font(.footnote).foregroundStyle(.secondary)
+                    }
+                    Section("按书查看") {
+                        ForEach(Array(model.summary["books"].array.enumerated()), id: \.offset) { _, book in
+                            LabeledContent(CloudShelfBook.title(book["title"]), value: duration(book["durationSeconds"].number ?? 0))
+                        }
                     }
                 }
             }
-            if loading { ProgressView("正在读取自己的记录…") }
-            if !model.syncStatus.isEmpty { Text(model.syncStatus).font(.footnote).foregroundStyle(.secondary) }
         }.navigationTitle("我的记录").navigationBarTitleDisplayMode(.inline)
-            .task { load() }
+            .task(id: model.account?.id) { await model.loadAccountRecords() }
             .refreshable { await model.loadAccountRecords() }
     }
-    private func load(more: Bool = false) { guard !loading else { return }; loading = true; Task { await model.loadAccountRecords(more: more); loading = false } }
     private func duration(_ seconds: Double) -> String { seconds < 60 ? "\(Int(seconds)) 秒" : "\(Int(seconds / 60)) 分钟" }
+}
+
+struct AccountRecordsStatus: View {
+    let state: AccountRecordsState
+    let title: String
+    let retry: () -> Void
+    var body: some View {
+        switch state {
+        case .idle, .loading:
+            ProgressView("正在读取" + title + "…")
+        case .ready:
+            EmptyView()
+        case .partial(let message), .cached(let message), .failed(let message):
+            VStack(alignment: .leading, spacing: 10) {
+                Label(statusTitle, systemImage: statusIcon).font(.headline)
+                Text(message).font(.subheadline).foregroundStyle(.secondary).textSelection(.enabled)
+                Button("重新读取" + title, systemImage: "arrow.clockwise", action: retry).frame(minHeight: 44)
+            }.padding(.vertical, 5)
+        }
+    }
+    private var statusTitle: String {
+        switch state {
+        case .failed: "暂时无法读取" + title
+        case .partial: "部分内容暂未更新"
+        default: "保留此前载入的记录"
+        }
+    }
+    private var statusIcon: String {
+        if case .cached = state { "clock.arrow.circlepath" } else { "exclamationmark.circle" }
+    }
 }

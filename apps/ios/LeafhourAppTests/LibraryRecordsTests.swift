@@ -1,0 +1,195 @@
+import XCTest
+import Foundation
+import LeafhourCore
+@testable import Leafhour
+
+@MainActor
+final class LibraryRecordsTests: XCTestCase {
+    private let owner = "00000000-0000-4000-8000-000000000318"
+    private func fixture() throws -> (LibraryModel, RecordsProbe) {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        try FileManager.default.createDirectory(at: root, withIntermediateDirectories: true)
+        let probe = RecordsProbe(owner: owner)
+        RecordsURLProtocol.install(probe)
+        addTeardownBlock { try? FileManager.default.removeItem(at: root); RecordsURLProtocol.install(nil) }
+        let configuration = URLSessionConfiguration.ephemeral
+        configuration.protocolClasses = [RecordsURLProtocol.self]
+        let credential = CloudCredential(account: CloudAccount(id: owner, email: nil), token: "isolated-records-fixture")
+        let cloud = CloudLibraryClient(baseURL: URL(string: "https://records.leafhour.test")!, credential: credential, configuration: configuration)
+        return (LibraryModel(root: root, cloud: cloud, credential: credential), probe)
+    }
+    private func entry(_ id: String = "one") throws -> CloudJSON {
+        try CloudJSON.decode(JSONSerialization.data(withJSONObject: ["book": ["bookId": id, "title": "Saved Book"], "records": ["comments": [["id": "note-" + id, "origin": "user", "text": "My saved thought."]], "questions": []]]))
+    }
+    private func summary(_ seconds: Double) -> CloudJSON {
+        .object(["allTime": .object(["durationSeconds": .number(seconds), "readingDays": .number(1)]), "books": .array([])])
+    }
+
+    func testNotebookFailureDoesNotBlockIndependentReadingSummary() async throws {
+        let (model, probe) = try fixture()
+        probe.notebookStatus = 503
+        probe.summary = summary(120)
+        await model.loadAccountRecords()
+        XCTAssertEqual(model.summary["allTime"]["durationSeconds"].number, 120)
+        XCTAssertEqual(probe.summaryRequests, 1)
+        XCTAssertTrue(model.notebookEntries.isEmpty)
+        XCTAssertEqual(model.summaryState, .ready)
+        guard case .failed = model.notebookState else { return XCTFail("Notebook failure must remain distinct from an empty notebook") }
+    }
+
+    func testNoCacheFailureDoesNotClaimCachedRecordsExist() async throws {
+        let (model, probe) = try fixture()
+        probe.notebookStatus = 503; probe.summaryStatus = 503
+        await model.loadAccountRecords()
+        XCTAssertTrue(model.notebookEntries.isEmpty)
+        XCTAssertEqual(model.summary, .null)
+        XCTAssertFalse(model.syncStatus.contains("缓存"), "A failed read with no cache must never claim to display cached records")
+        guard case .failed = model.notebookState, case .failed = model.summaryState else { return XCTFail("Both uncached failures need explicit failure states") }
+    }
+
+    func testOfflineNotebookRestoresItsSavedPaginationCursor() async throws {
+        let (model, probe) = try fixture()
+        let first = try entry()
+        let library = try XCTUnwrap(model.library)
+        try await library.cacheCloudView("notebook", data: CloudJSON.encode(["entries": .array([first]), "nextCursor": .string("next-page")]))
+        probe.notebookStatus = 503; probe.summaryStatus = 503
+        await model.loadAccountRecords()
+        XCTAssertEqual(model.notebookEntries, [first])
+        XCTAssertEqual(model.notebookCursor, "next-page")
+        guard case .cached = model.notebookState else { return XCTFail("A real saved notebook must be identified as cached") }
+    }
+
+    func testSuccessfulNotebookCacheIncludesPaginationCursor() async throws {
+        let (model, probe) = try fixture()
+        probe.notebook = .object(["entries": .array([try entry()]), "nextCursor": .string("page-two")])
+        await model.loadAccountRecords()
+        let library = try XCTUnwrap(model.library)
+        let bytes = try await library.cloudView("notebook")
+        let cached = try CloudJSON.decode(XCTUnwrap(bytes))
+        XCTAssertEqual(cached["nextCursor"].string, "page-two")
+        XCTAssertEqual(cached["entries"].array.count, 1)
+    }
+
+    func testFailedNextPagePreservesLoadedRowsCursorAndFreshSummary() async throws {
+        let (model, probe) = try fixture()
+        let first = try entry()
+        model.notebookEntries = [first]; model.notebookCursor = "page-two"
+        model.summary = summary(240)
+        let library = try XCTUnwrap(model.library)
+        try await library.cacheCloudView("summary", data: CloudJSON.encode(["allTime": .object(["durationSeconds": .number(60)]), "books": .array([])]))
+        probe.notebookStatus = 503
+        await model.loadAccountRecords(more: true)
+        XCTAssertEqual(model.notebookEntries, [first])
+        XCTAssertEqual(model.notebookCursor, "page-two")
+        XCTAssertEqual(model.summary["allTime"]["durationSeconds"].number, 240, "A pagination failure must not replace a current summary with an older disk snapshot")
+    }
+
+    func testMalformedNotebookIsAFailureRatherThanAnEmptySuccess() async throws {
+        let (model, probe) = try fixture()
+        probe.notebook = .object([:])
+        await model.loadAccountRecords()
+        guard case .failed = model.notebookState else { return XCTFail("A response missing entries must not become a successful empty notebook") }
+        XCTAssertEqual(model.summaryState, .ready)
+    }
+
+    func testSavedSummariesWithoutCacheReportFailureAndCanRetryToAGenuineEmptyResult() async throws {
+        let (model, probe) = try fixture()
+        let summaries = SavedReadingSummariesModel()
+        probe.workspaceStatus = 503
+        await summaries.load(model)
+        XCTAssertEqual(summaries.workspace, .null)
+        guard case .failed = summaries.state else { return XCTFail("A missing offline snapshot must not claim that saved summaries are empty or cached") }
+        probe.workspaceStatus = 200
+        await summaries.load(model)
+        XCTAssertEqual(summaries.state, .ready)
+        XCTAssertTrue(summaries.workspace["relations"].array.isEmpty)
+        XCTAssertTrue(summaries.workspace["candidates"].array.isEmpty)
+    }
+
+    func testSavedSummariesUseOnlyAnActualValidAccountCacheOnFailure() async throws {
+        let (model, probe) = try fixture()
+        let saved: CloudJSON = .object(["relations": .array([.object(["text": .string("An attributed saved summary"), "noteKeys": .array([.string("note-one")])])]), "candidates": .array([])])
+        let library = try XCTUnwrap(model.library)
+        try await library.cacheCloudView("workspace", data: JSONEncoder().encode(saved))
+        probe.workspaceStatus = 503
+        let summaries = SavedReadingSummariesModel()
+        await summaries.load(model)
+        XCTAssertEqual(summaries.workspace, saved)
+        guard case .cached = summaries.state else { return XCTFail("An existing account snapshot should stay available as cached content") }
+        await model.signOut()
+        await summaries.load(model)
+        XCTAssertEqual(summaries.workspace, .null)
+        XCTAssertEqual(summaries.state, .idle)
+    }
+
+    func testSavedSummaryRefreshKeepsCurrentContentInsteadOfAnOlderDiskSnapshot() async throws {
+        let (model, probe) = try fixture()
+        probe.workspace = .object(["relations": .array([.object(["text": .string("Latest saved summary")])]), "candidates": .array([])])
+        let summaries = SavedReadingSummariesModel()
+        await summaries.load(model)
+        XCTAssertEqual(summaries.state, .ready)
+        let library = try XCTUnwrap(model.library)
+        try await library.cacheCloudView("workspace", data: CloudJSON.encode(["relations": .array([]), "candidates": .array([])]))
+        probe.workspaceStatus = 503
+        await summaries.load(model)
+        XCTAssertEqual(summaries.workspace, probe.workspace)
+        guard case .cached = summaries.state else { return XCTFail("Current loaded summaries must remain visible during a failed refresh") }
+    }
+
+    func testSignOutClearsThePreviousAccountsPaginationCursor() async throws {
+        let (model, _) = try fixture()
+        model.notebookCursor = "previous-account-cursor"
+        model.notebookState = .ready; model.summaryState = .ready
+        model.notebookEntries = [try entry()]
+        await model.signOut()
+        XCTAssertNil(model.account)
+        XCTAssertNil(model.notebookCursor)
+        XCTAssertTrue(model.notebookEntries.isEmpty)
+        XCTAssertEqual(model.notebookState, .idle)
+        XCTAssertEqual(model.summaryState, .idle)
+    }
+}
+
+private final class RecordsProbe: @unchecked Sendable {
+    let owner: String
+    var notebookStatus = 200
+    var summaryStatus = 200
+    var workspaceStatus = 200
+    var workspace: CloudJSON = .object(["relations": .array([]), "candidates": .array([])])
+    var notebook: CloudJSON = .object(["entries": .array([]), "nextCursor": .null])
+    var summary: CloudJSON = .object(["allTime": .object(["durationSeconds": .number(0)]), "books": .array([])])
+    private let lock = NSLock()
+    private var captured: [String] = []
+    var summaryRequests: Int { lock.lock(); defer { lock.unlock() }; return captured.filter { $0 == "/api/library/reading-summary" }.count }
+    init(owner: String) { self.owner = owner }
+    func response(_ request: URLRequest) -> (Int, CloudJSON) {
+        let path = request.url!.path
+        lock.lock(); captured.append(path); lock.unlock()
+        if path == "/api/library/notebook" { return (notebookStatus, notebookStatus == 200 ? notebook : .object(["error": .string("Notebook unavailable")])) }
+        if path == "/api/library/notebook-workspace" { return (workspaceStatus, workspaceStatus == 200 ? workspace : .object(["error": .string("Workspace unavailable")])) }
+        if path == "/api/library/reading-summary" { return (summaryStatus, summaryStatus == 200 ? summary : .object(["error": .string("Summary unavailable")])) }
+        if path == "/api/auth/session" { return (200, .object(["user": request.value(forHTTPHeaderField: "Cookie") == nil ? .null : .object(["id": .string(owner)])])) }
+        if path == "/api/library" { return (200, .object(["books": .array([])])) }
+        return (200, .object([:]))
+    }
+}
+
+private final class RecordsURLProtocol: URLProtocol, @unchecked Sendable {
+    private static let lock = NSLock()
+    private static var probe: RecordsProbe?
+    static func install(_ value: RecordsProbe?) { lock.lock(); probe = value; lock.unlock() }
+    override class func canInit(with request: URLRequest) -> Bool { request.url?.host == "records.leafhour.test" }
+    override class func canonicalRequest(for request: URLRequest) -> URLRequest { request }
+    override func startLoading() {
+        Self.lock.lock(); let probe = Self.probe; Self.lock.unlock()
+        guard let probe else { client?.urlProtocol(self, didFailWithError: URLError(.badServerResponse)); return }
+        let (status, json) = probe.response(request)
+        do {
+            let data = try JSONEncoder().encode(json)
+            client?.urlProtocol(self, didReceive: HTTPURLResponse(url: request.url!, statusCode: status, httpVersion: nil, headerFields: ["Content-Type": "application/json"])!, cacheStoragePolicy: .notAllowed)
+            client?.urlProtocol(self, didLoad: data)
+            client?.urlProtocolDidFinishLoading(self)
+        } catch { client?.urlProtocol(self, didFailWithError: error) }
+    }
+    override func stopLoading() { }
+}
