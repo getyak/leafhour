@@ -1,4 +1,5 @@
 import XCTest
+import Observation
 @testable import LeafhourCore
 
 final class ReaderSessionTests: XCTestCase {
@@ -183,6 +184,124 @@ final class ReaderSessionTests: XCTestCase {
         await session.flush()
         disk = try await fixture.library.state(fixture.book.id)
         XCTAssertEqual(disk.drafts[fixture.quote.anchor.key]?.body, "Confirmed thought", "A different editor can intentionally keep a draft with the same content")
+    }
+
+    @MainActor
+    func testTypographyChangesDoNotBecomeExplicitNavigation() async throws {
+        let fixture = try await fixture()
+        let session = fixture.session(state: fixture.state, store: fixture.library)
+        let navigation = session.navigationID
+        var preferences = session.state.preferences
+        preferences.fontSize += 4
+        session.changePreferences(preferences)
+        await session.flush()
+        XCTAssertEqual(session.navigationID, navigation, "Reflow must retain its position rather than impersonating a source jump")
+        session.go(to: 0, anchor: fixture.quote.anchor)
+        XCTAssertNotEqual(session.navigationID, navigation, "An explicit same-chapter jump still needs a new identity")
+        await session.flush()
+    }
+
+    @MainActor
+    func testVisibleCheckpointDoesNotPublishStateAndIsIncludedInImmediateFlush() async throws {
+        let fixture = try await fixture()
+        let session = fixture.session(state: fixture.state, store: fixture.library)
+        let changed = expectation(description: "scroll must not publish observed state")
+        changed.isInverted = true
+        withObservationTracking { _ = session.state; _ = session.navigationID; _ = session.currentAnchor } onChange: { changed.fulfill() }
+        var visible = fixture.quote.anchor; visible.characterOffset = 5
+        session.recordVisible(visible, navigationID: session.navigationID)
+        await fulfillment(of: [changed], timeout: 0.05)
+        XCTAssertEqual(session.currentAnchor, visible)
+        XCTAssertEqual(session.state.anchor, fixture.quote.anchor)
+        let before = try await fixture.library.state(fixture.book.id)
+        XCTAssertNil(before.anchor)
+        let receipt = await session.flush()
+        XCTAssertTrue(session.isCurrent(receipt))
+        let disk = try await fixture.library.state(fixture.book.id)
+        XCTAssertEqual(disk.anchor, visible)
+    }
+
+    @MainActor
+    func testFlushIncludesCheckpointArrivingWhileAnEarlierWriteIsSuspended() async throws {
+        let fixture = try await fixture()
+        let first = expectation(description: "earlier snapshot started")
+        let second = expectation(description: "latest visible checkpoint started")
+        let store = GatedStateStore(library: fixture.library, starts: [first, second])
+        let session = fixture.session(state: fixture.state, store: store)
+        session.save()
+        await fulfillment(of: [first], timeout: 3)
+        let flush = Task { await session.flush() }
+        var visible = fixture.quote.anchor; visible.characterOffset = 7
+        session.recordVisible(visible, navigationID: session.navigationID)
+        await store.release(1)
+        await fulfillment(of: [second], timeout: 3)
+        let earlier = try await fixture.library.state(fixture.book.id)
+        XCTAssertEqual(earlier.anchor, fixture.quote.anchor)
+        await store.release(2)
+        let receipt = await flush.value
+        XCTAssertTrue(session.isCurrent(receipt))
+        let disk = try await fixture.library.state(fixture.book.id)
+        XCTAssertEqual(disk.anchor, visible)
+    }
+
+    @MainActor
+    func testOldRenderedCheckpointCannotOverrideAnExplicitJump() async throws {
+        let fixture = try await fixture()
+        let session = fixture.session(state: fixture.state, store: fixture.library)
+        let oldNavigation = session.navigationID
+        var oldVisible = fixture.quote.anchor; oldVisible.characterOffset = 3
+        session.recordVisible(oldVisible, navigationID: oldNavigation)
+        var target = fixture.quote.anchor; target.characterOffset = 8
+        session.go(to: 0, anchor: target)
+        session.recordVisible(oldVisible, navigationID: oldNavigation)
+        var wrongChapter = target; wrongChapter.chapterID = "a different rendered chapter"
+        session.recordVisible(wrongChapter, navigationID: session.navigationID)
+        XCTAssertEqual(session.currentAnchor, target)
+        await session.flush()
+        let disk = try await fixture.library.state(fixture.book.id)
+        XCTAssertEqual(disk.anchor, target)
+    }
+
+    @MainActor
+    func testNoteSubmissionConfirmsTheLatestVisibleCheckpoint() async throws {
+        let fixture = try await fixture()
+        let first = expectation(description: "note snapshot started")
+        let second = expectation(description: "latest note and reading position started")
+        let store = GatedStateStore(library: fixture.library, starts: [first, second])
+        let session = fixture.session(state: fixture.state, store: store)
+        let id = UUID()
+        let note = Task { await session.saveNote(fixture.quote, text: "Keep this thought", id: id) }
+        await fulfillment(of: [first], timeout: 3)
+        var visible = fixture.quote.anchor; visible.characterOffset = 6
+        session.recordVisible(visible, navigationID: session.navigationID)
+        await store.release(1)
+        await fulfillment(of: [second], timeout: 3)
+        XCTAssertTrue(session.saving)
+        await store.release(2)
+        let submitted = await note.value
+        XCTAssertTrue(submitted)
+        let disk = try await fixture.library.state(fixture.book.id)
+        XCTAssertEqual(disk.notes.map(\.id), [id])
+        XCTAssertEqual(disk.anchor, visible)
+        XCTAssertEqual(disk.notes.first?.anchor, fixture.quote.anchor, "The reading checkpoint must not rewrite the note's original quote")
+    }
+
+    @MainActor
+    func testNewVisibleCheckpointInvalidatesAnEarlierReceiptAndPreferencesSaveIt() async throws {
+        let fixture = try await fixture()
+        let session = fixture.session(state: fixture.state, store: fixture.library)
+        session.save()
+        let earlier = await session.flush()
+        XCTAssertTrue(session.isCurrent(earlier))
+        var visible = fixture.quote.anchor; visible.characterOffset = 9
+        session.recordVisible(visible, navigationID: session.navigationID)
+        XCTAssertFalse(session.isCurrent(earlier))
+        var preferences = session.state.preferences; preferences.fontSize += 2
+        session.changePreferences(preferences)
+        await session.flush()
+        let disk = try await fixture.library.state(fixture.book.id)
+        XCTAssertEqual(disk.anchor, visible)
+        XCTAssertEqual(disk.preferences, preferences)
     }
 
     @MainActor
