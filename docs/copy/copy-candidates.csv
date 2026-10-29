@@ -2740,12 +2740,14 @@ candidate:app/home-locale.mjs:344:115,js-cjk-literal,app/home-locale.mjs,344,,un
 candidate:app/home-locale.mjs:344:129,js-cjk-literal,app/home-locale.mjs,344,,unknown,reviewable,,料金
 candidate:app/home-locale.mjs:344:134,js-cjk-literal,app/home-locale.mjs,344,,unknown,reviewable,,利用規約
 candidate:app/home-locale.mjs:344:141,js-cjk-literal,app/home-locale.mjs,344,,unknown,reviewable,,返金ポリシー
-candidate:app/home-navigation.mjs:102:158,js-attribute,app/home-navigation.mjs,102,tabindex,unknown,reviewable,,-1
-candidate:app/home-navigation.mjs:165:42,js-attribute,app/home-navigation.mjs,165,aria-expanded,unknown,reviewable,,false
-candidate:app/home-navigation.mjs:187:42,js-attribute,app/home-navigation.mjs,187,aria-expanded,unknown,reviewable,,true
-candidate:app/home-navigation.mjs:195:40,js-attribute,app/home-navigation.mjs,195,aria-haspopup,unknown,reviewable,,dialog
-candidate:app/home-navigation.mjs:196:40,js-attribute,app/home-navigation.mjs,196,aria-controls,unknown,protected,identifier,home-menu
-candidate:app/home-navigation.mjs:197:40,js-attribute,app/home-navigation.mjs,197,aria-expanded,unknown,reviewable,,false
+candidate:app/home-navigation.mjs:103:158,js-attribute,app/home-navigation.mjs,103,tabindex,unknown,reviewable,,-1
+candidate:app/home-navigation.mjs:168:42,js-attribute,app/home-navigation.mjs,168,aria-expanded,unknown,reviewable,,false
+candidate:app/home-navigation.mjs:177:42,js-attribute,app/home-navigation.mjs,177,aria-expanded,unknown,reviewable,,false
+candidate:app/home-navigation.mjs:203:42,js-attribute,app/home-navigation.mjs,203,aria-expanded,unknown,reviewable,,true
+candidate:app/home-navigation.mjs:205:38,js-attribute,app/home-navigation.mjs,205,aria-modal,unknown,reviewable,,false
+candidate:app/home-navigation.mjs:256:40,js-attribute,app/home-navigation.mjs,256,aria-haspopup,unknown,reviewable,,dialog
+candidate:app/home-navigation.mjs:257:40,js-attribute,app/home-navigation.mjs,257,aria-controls,unknown,protected,identifier,home-menu
+candidate:app/home-navigation.mjs:258:40,js-attribute,app/home-navigation.mjs,258,aria-expanded,unknown,reviewable,,false
 candidate:app/home-sample.mjs:4:24,js-cjk-literal,app/home-sample.mjs,4,,unknown,reviewable,,简体中文
 candidate:app/home-sample.mjs:5:15,js-cjk-literal,app/home-sample.mjs,5,,unknown,reviewable,,中文意译 · 页面示例
 candidate:app/home-sample.mjs:6:15,js-cjk-literal,app/home-sample.mjs,6,,unknown,reviewable,,中文意譯 · 頁面範例
