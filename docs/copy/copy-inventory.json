@@ -662,7 +662,7 @@
       },
       {
         "file": "app/reader-immersion.mjs",
-        "sha256": "d0b1109ce7f22b4f1b0478856244c832d0d3d1c86773b6d7400fd9d3e359d7fb"
+        "sha256": "ad6fc4af71759cdc3f2fa54baf66042263d3594f34bc20382177ee5c82699c16"
       },
       {
         "file": "app/reader-loading.mjs",
@@ -770,7 +770,7 @@
       },
       {
         "file": "app/reading-hub.mjs",
-        "sha256": "d213a27ee36debe1b97ac1d78a36595b6ce366df28dc5a87d497b0afe12b0e75"
+        "sha256": "54c5bbcda5766ac7ffd33dad6105d8a9179301a68cdf1c3cd42699a257d15fc2"
       },
       {
         "file": "app/reading-journal.mjs",
@@ -846,7 +846,7 @@
       },
       {
         "file": "app/reading-toolbar.mjs",
-        "sha256": "7fa6b9187f31c9ce7d661c8b0ee8e83900629ced2f17f71505dad8bc36cfad8c"
+        "sha256": "22f20153d93911abd8a428258f362bbc4811351c04322d8429105f948210c364"
       },
       {
         "file": "app/reading-worker.js",
@@ -1401,7 +1401,7 @@
         "sha256": "531202f1814314b6c76bfef38b2ea66636425b1ca9b445db349e70ebb8bcd00e"
       }
     ],
-    "inputDigest": "aa7ca7835576a6e0ce934982513635af4246599ed4cc327c62410b8067deeb61"
+    "inputDigest": "693f96d4cad49130fc33d44e0a7099c5befc550aded3ac55b7fbe6102abb0b6e"
   },
   "locales": [
     "en",
@@ -18019,17 +18019,22 @@
         },
         {
           "file": "app/reader-immersion.mjs",
-          "line": 33,
+          "line": 35,
           "column": 103
         },
         {
           "file": "app/reading-toolbar.mjs",
-          "line": 86,
+          "line": 42,
           "column": 62
         },
         {
           "file": "app/reading-toolbar.mjs",
-          "line": 90,
+          "line": 133,
+          "column": 62
+        },
+        {
+          "file": "app/reading-toolbar.mjs",
+          "line": 137,
           "column": 145
         },
         {
@@ -46450,7 +46455,7 @@
       "consumers": [
         {
           "file": "app/reader-immersion.mjs",
-          "line": 27,
+          "line": 29,
           "column": 76
         }
       ],
@@ -46507,7 +46512,7 @@
       "consumers": [
         {
           "file": "app/reader-immersion.mjs",
-          "line": 26,
+          "line": 28,
           "column": 55
         }
       ],
@@ -46564,12 +46569,12 @@
       "consumers": [
         {
           "file": "app/reader-immersion.mjs",
-          "line": 26,
+          "line": 28,
           "column": 30
         },
         {
           "file": "app/reader-immersion.mjs",
-          "line": 27,
+          "line": 29,
           "column": 51
         }
       ],
@@ -46626,7 +46631,7 @@
       "consumers": [
         {
           "file": "app/reader-immersion.mjs",
-          "line": 58,
+          "line": 60,
           "column": 88
         }
       ],
@@ -46797,7 +46802,7 @@
       "consumers": [
         {
           "file": "app/reading-toolbar.mjs",
-          "line": 42,
+          "line": 89,
           "column": 35
         }
       ],
@@ -46854,7 +46859,7 @@
       "consumers": [
         {
           "file": "app/reading-toolbar.mjs",
-          "line": 42,
+          "line": 89,
           "column": 76
         }
       ],
@@ -46911,7 +46916,7 @@
       "consumers": [
         {
           "file": "app/reading-toolbar.mjs",
-          "line": 42,
+          "line": 89,
           "column": 98
         }
       ],
@@ -46968,7 +46973,7 @@
       "consumers": [
         {
           "file": "app/reading-toolbar.mjs",
-          "line": 43,
+          "line": 90,
           "column": 40
         }
       ],
@@ -47025,7 +47030,7 @@
       "consumers": [
         {
           "file": "app/reading-toolbar.mjs",
-          "line": 43,
+          "line": 90,
           "column": 88
         }
       ],
@@ -47082,7 +47087,7 @@
       "consumers": [
         {
           "file": "app/reading-toolbar.mjs",
-          "line": 43,
+          "line": 90,
           "column": 131
         }
       ],
@@ -47139,7 +47144,7 @@
       "consumers": [
         {
           "file": "app/reading-toolbar.mjs",
-          "line": 43,
+          "line": 90,
           "column": 171
         }
       ],
@@ -47400,7 +47405,7 @@
       "consumers": [
         {
           "file": "app/reading-toolbar.mjs",
-          "line": 46,
+          "line": 93,
           "column": 21
         }
       ],
@@ -47457,7 +47462,7 @@
       "consumers": [
         {
           "file": "app/reading-toolbar.mjs",
-          "line": 47,
+          "line": 94,
           "column": 36
         }
       ],
@@ -47571,12 +47576,12 @@
       "consumers": [
         {
           "file": "app/reading-toolbar.mjs",
-          "line": 43,
+          "line": 90,
           "column": 240
         },
         {
           "file": "app/reading-toolbar.mjs",
-          "line": 45,
+          "line": 92,
           "column": 56
         }
       ],
@@ -132291,7 +132296,7 @@
       "consumers": [
         {
           "file": "app/reading-hub.mjs",
-          "line": 44,
+          "line": 45,
           "column": 32
         }
       ],
@@ -132348,7 +132353,7 @@
       "consumers": [
         {
           "file": "app/reading-hub.mjs",
-          "line": 46,
+          "line": 47,
           "column": 18
         }
       ],
@@ -132405,7 +132410,7 @@
       "consumers": [
         {
           "file": "app/reading-hub.mjs",
-          "line": 28,
+          "line": 29,
           "column": 78
         }
       ],
@@ -132462,7 +132467,7 @@
       "consumers": [
         {
           "file": "app/reading-hub.mjs",
-          "line": 61,
+          "line": 62,
           "column": 135
         }
       ],
@@ -236603,9 +236608,9 @@
       }
     },
     {
-      "id": "candidate:app/reading-toolbar.mjs:97:53",
+      "id": "candidate:app/reading-toolbar.mjs:144:53",
       "file": "app/reading-toolbar.mjs",
-      "line": 97,
+      "line": 144,
       "column": 53,
       "kind": "js-attribute",
       "property": "aria-hidden",
@@ -293966,7 +293971,7 @@
     {
       "kind": "concatenation",
       "file": "app/reading-toolbar.mjs",
-      "line": 44,
+      "line": 91,
       "expression": "'reader.tools.'+(toolbar.expanded?'expanded':'expand')",
       "fragments": [
         "reader.tools."
@@ -293976,7 +293981,7 @@
     {
       "kind": "concatenation",
       "file": "app/reading-toolbar.mjs",
-      "line": 46,
+      "line": 93,
       "expression": "' · '+details",
       "fragments": [
         " · "
@@ -308599,7 +308604,7 @@
     "candidatesProtected": 143,
     "itemsProtected": 9,
     "dynamicConsumers": 3979,
-    "consumerReferences": 2088,
+    "consumerReferences": 2089,
     "keysWithoutStaticConsumers": 1328,
     "reviewedLocaleValues": 44,
     "unreviewedLocaleValues": 9792,

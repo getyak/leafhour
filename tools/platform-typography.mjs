@@ -295,7 +295,7 @@ try{
   assert.equal(receipt.readerBookActions.before.shareEnabled,false,'Uninitialized optional actions must stay disabled');
   const remoteGuard=()=>lifecycle.guard('owned remote reader keyboard input');
   const activation=await activateRemoteButton({cdp,trigger:'#reading-tools-trigger',guard:remoteGuard});
-  const toolsOpened=await until(async()=>{remoteGuard();const value=await cdp.evaluate('('+observeReaderTools.toString()+')()');return value.expanded==='true'&&value.headerVisible&&!value.headerInert&&value.focusInHeader?value:false;},'actual reading pill to expose navigation',4000);
+  const toolsOpened=await until(async()=>{remoteGuard();const value=await cdp.evaluate('('+observeReaderTools.toString()+')()');return value.ready?value:false;},'actual reading pill to expose navigation',4000);
   receipt.readerTools={...activation,opened:toolsOpened};
   receipt.popoverInteractions.push(await exercisePopoverKeyboard({cdp,trigger:'#open-book-info',panel:'#book-info',guard:remoteGuard,capture:()=>session.capture('reader-book-info-open'),afterOpened:async()=>{
     receipt.readerBookActions.opened=await until(async()=>{remoteGuard();const value=await cdp.evaluate('('+observeReaderBookActions.toString()+')()');return value.ready?value:false;},'actual optional book actions to initialize',4000);

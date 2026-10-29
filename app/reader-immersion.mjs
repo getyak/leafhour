@@ -1,5 +1,6 @@
 import {readerInteractionBlocked} from './reader-conversation.mjs';
 import {t,onUiLocaleChange} from './ui-locale.mjs';
+import {handoffReadingToolFocus} from './reading-toolbar.mjs';
 
 // Immersion is a page layout. Browser fullscreen is requested only by a user action.
 // GET-184: the floating #exit-focus/#focus-fullscreen pair is gone; the pill
@@ -9,6 +10,7 @@ export function mountReaderImmersion({document,announce=()=>{},beforeLayout=()=>
   const header=document.getElementById('reading-header'),headerScreen=document.getElementById('enter-focus'),setting=document.getElementById('immersive-reading'),exit=document.getElementById('reader-exit-fullscreen');
   const supported=typeof document.documentElement.requestFullscreen==='function'&&document.fullscreenEnabled!==false;
   let focused=true,toolsOpen=false,pending=false,disposed=false,composing=false;
+  let cancelToolFocus=()=>{};
   const listeners=[];
   const listen=(target,name,fn,options)=>{const owned=event=>{if(!disposed)fn(event);};target.addEventListener(name,owned,options);listeners.push(()=>target.removeEventListener(name,owned,options));};
   const visible=target=>!!target&&typeof target.focus==='function'&&target.isConnected!==false&&!target.hidden;
@@ -43,8 +45,8 @@ export function mountReaderImmersion({document,announce=()=>{},beforeLayout=()=>
     const anchor=beforeLayout();requestToolsClose();focused=!!value;sync();afterLayout(anchor);
     document.dispatchEvent(new CustomEvent('reader:focus',{detail:{focused}}));
   }
-  function showTools({focus=true}={}){if(disposed||toolsOpen)return false;toolsOpen=true;sync();onToolsLayout();if(focus)header.querySelector('a[href],button:not([disabled]):not([hidden])')?.focus({preventScroll:true});return true;}
-  function closeTools({restoreFocus=false}={}){if(disposed||!toolsOpen)return false;toolsOpen=false;sync();onToolsLayout();if(restoreFocus)restoreToolFocus();return true;}
+  function showTools({focus=true}={}){if(disposed||toolsOpen)return false;const wakeEdge=document.activeElement===document.getElementById('reader-top-edge');toolsOpen=true;sync();onToolsLayout();if(focus)cancelToolFocus=handoffReadingToolFocus({document,target:()=>header.querySelector('a[href],button:not([disabled]):not([hidden])'),current:()=>!disposed&&toolsOpen&&!header.inert,allowHiddenOpener:wakeEdge});return true;}
+  function closeTools({restoreFocus=false}={}){cancelToolFocus();if(disposed||!toolsOpen)return false;toolsOpen=false;sync();onToolsLayout();if(restoreFocus)restoreToolFocus();return true;}
   function toggleTools(options){return toolsOpen?closeTools():showTools(options);}
   async function changeFullscreen(enter){
     if(disposed||pending||!enter&&!document.fullscreenElement)return false;
@@ -89,5 +91,5 @@ export function mountReaderImmersion({document,announce=()=>{},beforeLayout=()=>
     // released touch gesture receives that exception; cancellation/move still win.
     if(event.detail===0||previous&&!previous.inside&&!previous.cancelled&&(event.pointerId===undefined||previous.id===event.pointerId||previous.touchEnd&&event.pointerType==='mouse'))requestToolsClose(event.target);
   },true);
-  sync();return {setFocused,toggleTools,showTools,closeTools,toggleFullscreen,exitFullscreen,handleKeydown,restoreToolFocus,unmount(){if(disposed)return;disposed=true;offLocale();for(const release of listeners)release();listeners.length=0;}};
+  sync();return {setFocused,toggleTools,showTools,closeTools,toggleFullscreen,exitFullscreen,handleKeydown,restoreToolFocus,unmount(){if(disposed)return;disposed=true;cancelToolFocus();offLocale();for(const release of listeners)release();listeners.length=0;}};
 }

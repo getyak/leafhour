@@ -143,9 +143,16 @@ export function observePopoverState(triggerSelector,panelSelector){
 // Serialized read-only proof that the normal reading pill really exposed its
 // navigation before the remote sequence focuses book-info. No app state edits.
 export function observeReaderTools(){
-  const pill=document.getElementById('reading-tools-trigger'),header=document.getElementById('reading-header');
-  const r=header?.getBoundingClientRect(),style=header?getComputedStyle(header):null;
-  return {expanded:pill?.getAttribute('aria-expanded'),headerInert:!!header?.inert,headerVisible:!!header?.getClientRects().length&&style.display!=='none'&&style.visibility!=='hidden'&&r.width>0&&r.height>0&&r.bottom>0&&r.right>0&&r.top<innerHeight&&r.left<innerWidth,focusInHeader:!!header?.contains(document.activeElement)};
+  const pill=document.getElementById('reading-tools-trigger'),header=document.getElementById('reading-header'),panel=document.getElementById('reading-tools-panel'),bookInfo=document.getElementById('open-book-info'),active=document.activeElement;
+  const painted=node=>{
+    if(!node||node.isConnected===false||!node.getClientRects().length||node.closest('[hidden],[inert]'))return false;
+    for(let part=node;part;part=part.parentElement){const style=getComputedStyle(part);if(part.inert||part.hidden||style.display==='none'||['hidden','collapse'].includes(style.visibility)||Number(style.opacity)===0)return false;}
+    const r=node.getBoundingClientRect();return r.width>0&&r.height>0&&r.bottom>0&&r.right>0&&r.top<innerHeight&&r.left<innerWidth;
+  };
+  const usable=node=>painted(node)&&!node.disabled&&node.tabIndex>=0&&node.matches('button,a[href],input,select,textarea,summary,[tabindex]');
+  const expanded=pill?.getAttribute('aria-expanded'),headerInert=!!header?.inert,headerVisible=painted(header),panelInert=!!panel?.inert,panelVisible=painted(panel)&&panel.getAttribute('aria-hidden')!=='true';
+  const focusInHeader=!!header?.contains(active),focusInPanel=!!panel?.contains(active),focusUsable=usable(active),bookInfoUsable=!!header?.contains(bookInfo)&&usable(bookInfo);
+  return {ready:expanded==='true'&&headerVisible&&!headerInert&&bookInfoUsable&&focusUsable&&(focusInHeader||focusInPanel&&panelVisible&&!panelInert),expanded,headerInert,headerVisible,panelInert,panelVisible,focusInHeader,focusInPanel,focusUsable,bookInfoUsable,activeId:active?.id||null};
 }
 // The real enabled share control plus its closed native gift dialog prove that
 // the optional code mounted. The basic bookplate alone cannot satisfy this.

@@ -4601,7 +4601,7 @@ candidate:app/reading-time-policy.mjs:10:79,js-cjk-literal,app/reading-time-poli
 candidate:app/reading-time-policy.mjs:10:93,js-cjk-literal,app/reading-time-policy.mjs,10,,unknown,reviewable,,手动补记（自报）
 candidate:app/reading-time-policy.mjs:10:111,js-cjk-literal,app/reading-time-policy.mjs,10,,unknown,reviewable,,旧预览记录
 candidate:app/reading-time-policy.mjs:14:35,js-cjk-literal,app/reading-time-policy.mjs,14,,unknown,reviewable,,总时长按所有书籍、设备与口径的区间合并，重叠只计一次；各口径分别去重，彼此可能重叠，不能相加。前台估计在2分钟无操作后暂停；主动专注允许停留思考，隐藏、失焦或手动暂停时不计。手动补记为自报，时长不代表理解程度。
-candidate:app/reading-toolbar.mjs:97:53,js-attribute,app/reading-toolbar.mjs,97,aria-hidden,unknown,reviewable,,true
+candidate:app/reading-toolbar.mjs:144:53,js-attribute,app/reading-toolbar.mjs,144,aria-hidden,unknown,reviewable,,true
 candidate:app/reading-workspace.mjs:45:62,js-attribute,app/reading-workspace.mjs,45,role,unknown,reviewable,,status
 candidate:app/reading-workspace.mjs:51:19,js-dom-literal,app/reading-workspace.mjs,51,textContent,unknown,reviewable,,←
 candidate:app/reading-workspace.mjs:51:40,js-dom-literal,app/reading-workspace.mjs,51,textContent,unknown,reviewable,,→
