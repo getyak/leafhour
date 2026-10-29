@@ -163,12 +163,11 @@ struct BookSearchPanel: View {
 }
 struct ReaderPreferencesPanel: View {
     @Bindable var session: ReaderSession
-    @ScaledMetric(relativeTo: .body) private var typeScale = 1.0
     private var defaults: ReaderPreferences { ReaderPreferences() }
     private var preview: String? {
         let passages = session.chapter.passages
         let current = passages.first { $0.id == session.currentAnchor?.passageID && !$0.heading && $0.resourcePath == nil && !$0.text.isEmpty }
-        return (current ?? passages.first { !$0.heading && $0.resourcePath == nil && !$0.text.isEmpty }).map { String($0.text.prefix(600)) }
+        return (current ?? passages.first { !$0.heading && $0.resourcePath == nil && !$0.text.isEmpty }).map { String($0.text.prefix(120)) }
     }
     private var usesDefaultTypography: Bool {
         session.state.preferences.fontSize == defaults.fontSize && session.state.preferences.lineSpacing == defaults.lineSpacing
@@ -179,46 +178,75 @@ struct ReaderPreferencesPanel: View {
     var body: some View {
         Form {
             if session.book.kind == .pdf {
-                Section("原页排版") {
+                Section {
                     Label("PDF 保留原来的字体与排版，可在书页上双指缩放。", systemImage: "doc.richtext")
                         .font(.subheadline)
-                }
+                } header: { Text("原页排版").foregroundStyle(Color.primary) }
             } else {
                 if let preview {
                     Section {
-                        Text(preview)
-                            .font(.system(size: session.state.preferences.fontSize * typeScale, design: .serif))
-                            .lineSpacing(session.state.preferences.lineSpacing)
-                            .lineLimit(4)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .frame(height: 140 * typeScale, alignment: .topLeading)
-                            .padding(.vertical, 8)
-                            .accessibilityIdentifier("reading-type-preview")
+                        TypographyPreview(text: preview, fontSize: session.state.preferences.fontSize, lineSpacing: session.state.preferences.lineSpacing)
                             .listRowBackground(session.state.preferences.theme == "paper" ? Color.readingPaper : Color(uiColor: .systemBackground))
-                    } header: { Text("排版预览 · 当前原文") }
+                    } header: { Text("排版预览 · 原文片段").foregroundStyle(Color.primary) }
                 }
                 Section {
-                    LabeledContent("字号", value: "\(Int(session.state.preferences.fontSize)) pt").monospacedDigit()
+                    LabeledContent {
+                        Text("\(Int(session.state.preferences.fontSize)) pt").foregroundStyle(Color.primary).monospacedDigit()
+                    } label: { Text("字号").font(.body).fixedSize(horizontal: false, vertical: true) }
                     Slider(value: binding(\.fontSize), in: 16...36, step: 1)
                         .accessibilityLabel("正文字号")
                         .accessibilityValue("\(Int(session.state.preferences.fontSize)) 磅")
-                    LabeledContent("行间距", value: "\(Int(session.state.preferences.lineSpacing)) pt").monospacedDigit()
+                    LabeledContent {
+                        Text("\(Int(session.state.preferences.lineSpacing)) pt").foregroundStyle(Color.primary).monospacedDigit()
+                    } label: { Text("行间距").font(.body).fixedSize(horizontal: false, vertical: true) }
                     Slider(value: binding(\.lineSpacing), in: 4...18, step: 1)
                         .accessibilityLabel("正文行间距")
                         .accessibilityValue("\(Int(session.state.preferences.lineSpacing)) 磅")
-                    Button("恢复默认排版") {
-                        var preferences = session.state.preferences
-                        preferences.fontSize = defaults.fontSize
-                        preferences.lineSpacing = defaults.lineSpacing
-                        session.changePreferences(preferences)
-                    }.disabled(usesDefaultTypography)
-                } header: { Text("正文") } footer: { Text("字号随系统大字设置继续缩放。更改会自动保存到此设备。") }
+                    if usesDefaultTypography {
+                        Label("当前为默认排版", systemImage: "checkmark").font(.body).foregroundStyle(Color.primary)
+                    } else {
+                        Button {
+                            var preferences = session.state.preferences
+                            preferences.fontSize = defaults.fontSize
+                            preferences.lineSpacing = defaults.lineSpacing
+                            session.changePreferences(preferences)
+                        } label: { Text("恢复默认排版").font(.body).fixedSize(horizontal: false, vertical: true).frame(minHeight: 44) }
+                    }
+                } header: { Text("正文").foregroundStyle(Color.primary) } footer: {
+                    Text("字号随系统大字设置继续缩放。更改会自动保存到此设备。")
+                        .font(.subheadline).foregroundStyle(Color.primary).fixedSize(horizontal: false, vertical: true)
+                }
             }
-            Section("阅读纸面") {
+            Section {
                 Picker("主题", selection: binding(\.theme)) { Text("清纸").tag("paper"); Text("夜读").tag("night"); Text("跟随系统").tag("system") }.pickerStyle(.segmented)
-            }
-            Section("原文与译文") { Text("从阅读工具的“翻译”查看当前段的直译、意译和原文。切换排版不生成内容；未翻译的段落保留原文。").font(.footnote).foregroundStyle(.secondary) }
+            } header: { Text("阅读纸面").foregroundStyle(Color.primary) }
+            Section {
+                Text("从阅读工具的“翻译”查看当前段的直译、意译和原文。切换排版不生成内容；未翻译的段落保留原文。")
+                    .font(.subheadline).foregroundStyle(Color.primary).fixedSize(horizontal: false, vertical: true)
+            } header: { Text("原文与译文").foregroundStyle(Color.primary) }
         }.navigationTitle("阅读设置")
+    }
+
+    struct TypographyPreview: View {
+        let text: String
+        let fontSize: Double
+        let lineSpacing: Double
+        @ScaledMetric(relativeTo: .body) private var typeScale = 1.0
+        private var font: Font {
+            if #available(iOS 26.0, *) {
+                // Scale the semantic body font so both Dynamic Type and the
+                // reader's chosen base size remain part of font resolution.
+                return .system(.body, design: .serif).scaled(by: CGFloat(fontSize) / 17)
+            }
+            return .system(size: fontSize * typeScale, design: .serif)
+        }
+        var body: some View {
+            Text(text).font(font).foregroundStyle(Color.primary).lineSpacing(lineSpacing)
+                .fixedSize(horizontal: false, vertical: true)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.vertical, 8)
+                .accessibilityIdentifier("reading-type-preview")
+        }
     }
 }
 struct ReaderRecordsPanel: View {
