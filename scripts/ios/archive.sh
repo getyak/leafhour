@@ -17,6 +17,8 @@ cleanup() {
   rm -rf "$signing_dir"
 }
 trap cleanup EXIT
+stage='decode-signing-material'
+trap 'echo "iOS signing/archive failed at stage: $stage" >&2' ERR
 export SIGNING_DIR="$signing_dir"
 node --input-type=module <<'JS'
 import {writeFileSync} from 'node:fs';
@@ -26,11 +28,15 @@ for (const [key,file] of [['IOS_DISTRIBUTION_P12_BASE64','distribution.p12'],['I
   writeFileSync(`${process.env.SIGNING_DIR}/${file}`,Buffer.from(value,'base64'),{mode:0o600});
 }
 JS
+stage='decode-profile'
 security cms -D -i "$signing_dir/app.mobileprovision" > "$signing_dir/profile.plist"
-openssl pkcs12 -in "$signing_dir/distribution.p12" -clcerts -nokeys -passin env:IOS_DISTRIBUTION_P12_PASSWORD -out "$signing_dir/cert.pem" >/dev/null 2>&1
+stage='extract-distribution-certificate'
+bash scripts/ios/extract-certificate.sh "$signing_dir/distribution.p12" "$signing_dir/cert.pem"
+stage='validate-distribution-certificate'
 openssl x509 -in "$signing_dir/cert.pem" -checkend 604800 -noout >/dev/null
 openssl x509 -in "$signing_dir/cert.pem" -outform DER -out "$signing_dir/cert.der"
 uuid="$(python3 scripts/ios/signing.py "$signing_dir/profile.plist" "$plan" "$IOS_TEAM_ID" "$signing_dir/cert.der")"
+stage='install-profile-and-keychain'
 profile_dir="$HOME/Library/MobileDevice/Provisioning Profiles"
 mkdir -p "$profile_dir"
 candidate_profile="$profile_dir/$uuid.mobileprovision"
@@ -59,14 +65,17 @@ bundle_id="$(node -p 'JSON.parse(require("node:fs").readFileSync(process.env.REL
 version="$(node -p 'JSON.parse(require("node:fs").readFileSync(process.env.RELEASE_PLAN)).version')"
 build_number="$(node -p 'JSON.parse(require("node:fs").readFileSync(process.env.RELEASE_PLAN)).buildNumber')"
 # No -allowProvisioningUpdates: ordinary releases cannot create/repair Apple resources.
+stage='archive'
 xcodebuild -project apps/ios/Leafhour.xcodeproj -scheme Leafhour -configuration Release \
   -destination 'generic/platform=iOS' -archivePath "$RUNNER_TEMP/Leafhour.xcarchive" \
   -derivedDataPath "$RUNNER_TEMP/leafhour-release-derived" -jobs 2 \
   PRODUCT_BUNDLE_IDENTIFIER="$bundle_id" DEVELOPMENT_TEAM="$IOS_TEAM_ID" \
   CODE_SIGN_STYLE=Manual CODE_SIGN_IDENTITY='Apple Distribution' PROVISIONING_PROFILE_SPECIFIER="$uuid" \
   OTHER_CODE_SIGN_FLAGS="--keychain $keychain" MARKETING_VERSION="$version" CURRENT_PROJECT_VERSION="$build_number" archive
+stage='export'
 xcodebuild -exportArchive -archivePath "$RUNNER_TEMP/Leafhour.xcarchive" \
   -exportOptionsPlist "$signing_dir/ExportOptions.plist" -exportPath build/ios \
   OTHER_CODE_SIGN_FLAGS="--keychain $keychain"
+stage='verify-exported-ipa'
 python3 scripts/ios/verify-ipa.py build/ios/Leafhour.ipa "$plan" "$IOS_TEAM_ID"
 cp "$plan" build/ios/release-plan.json
