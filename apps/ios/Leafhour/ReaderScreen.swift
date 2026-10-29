@@ -139,9 +139,7 @@ struct ReaderScreen: View {
         .sheet(item: $panel, onDismiss: { hasNativeTextSelection = false; session.clearTransientSelection(); selectionDismissalID = UUID(); chrome = .asleep }) { destination in
             ReaderPanelView(panel: destination, session: session, systemColorScheme: systemColorScheme, speech: speech, tools: tools, cloud: cloud,
                 onJump: { index, anchor in session.go(to: index, anchor: anchor); panel = nil }, onCompanion: { showCompanion(currentQuote) })
-                .presentationDetents(destination.isNoteEditor ? [.large] : destination.isCompanion ? [.fraction(0.5)] : [.medium, .large]).presentationDragIndicator(.visible)
-                .presentationCompactAdaptation(destination.isCompanion ? .none : .automatic)
-                .presentationBackgroundInteraction(destination.isCompanion ? .enabled(upThrough: .fraction(0.5)) : .enabled(upThrough: .medium))
+                .modifier(ReaderPanelPresentation(isCompanion: destination.isCompanion, isNoteEditor: destination.isNoteEditor))
         }
         .alert(session.saveError == nil ? "阅读提示" : "阅读记录", isPresented: Binding(get: { session.message != nil || (session.noteEditorID == nil && session.saveMessage != nil) }, set: { if !$0 { session.message = nil; session.saveMessage = nil } })) {
             if session.saveError != nil {

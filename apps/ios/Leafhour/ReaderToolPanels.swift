@@ -319,12 +319,6 @@ struct ReaderConversationPanel: View {
             }
         }
         .navigationTitle(title)
-        .toolbar {
-            ToolbarItemGroup(placement: .keyboard) {
-                Spacer()
-                Button("收起键盘") { questionFocused = false }
-            }
-        }
         .task { await load() }
         .modifier(ReaderGenerationConfirmation(tools: tools, cloud: cloud))
     }
@@ -332,11 +326,16 @@ struct ReaderConversationPanel: View {
         VStack(alignment: .leading, spacing: 8) {
             HStack(alignment: .bottom, spacing: 10) {
                 TextField("写下此刻的问题", text: $tools.question, axis: .vertical)
-                    .font(.body).lineLimit(1...3).focused($questionFocused)
+                    .font(.body).lineLimit(1...(questionFocused ? 2 : 3)).focused($questionFocused)
                     .padding(.horizontal, 12).padding(.vertical, 10)
                     .background(Color.leafInk.opacity(0.06), in: RoundedRectangle(cornerRadius: 12))
                     .accessibilityIdentifier("reader-question")
                     .layoutPriority(1)
+                if questionFocused {
+                    Button("收起键盘", systemImage: "keyboard.chevron.compact.down") { questionFocused = false }
+                        .labelStyle(.iconOnly).frame(minWidth: 44, minHeight: 44)
+                        .accessibilityIdentifier("reader-question-dismiss-keyboard")
+                }
                 Button { Task { await tools.prepare("conversation", session: session, cloud: cloud, selection: selection) } } label: {
                     Label("向陪读提问", systemImage: "paperplane.fill").labelStyle(.iconOnly).frame(minWidth: 44, minHeight: 44)
                 }
@@ -351,6 +350,7 @@ struct ReaderConversationPanel: View {
         .padding(.horizontal, 16).padding(.vertical, 10)
         .background(.bar)
         .overlay(alignment: .top) { Divider() }
+        .background { GeometryReader { geometry in Color.clear.preference(key: CompanionComposerHeightKey.self, value: geometry.size.height) } }
     }
     @ViewBuilder private var conversationStatus: some View {
         if tools.generating { ProgressView("陪读正在回答…") }
