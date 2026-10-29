@@ -113,7 +113,13 @@ final class LibraryModel {
             didRestoreAccount = true
             do {
                 let restored = try await cloud.restore()
-                if restored != account { account = restored; try configureLibrary() }
+                if restored != account {
+                    contextID = UUID(); account = restored
+                    books = []; cloudBooks = []; syncIssues = [:]; syncing = false; syncStatus = ""
+                    notebookEntries = []; notebookCursor = nil; notebookIncomplete = false; notebookState = .idle
+                    summary = .null; summaryState = .idle
+                    try configureLibrary()
+                }
                 if persistCredential { try AccountCredentialStore.write(await cloud.savedCredential()) }
             } catch { syncStatus = account == nil ? "可先在本机阅读，联网后登录书房。" : "暂时离线，已保留此账号的书籍与记录。" }
         }

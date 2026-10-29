@@ -173,6 +173,25 @@ final class LibraryRecordsTests: XCTestCase {
         XCTAssertEqual(rows.last?.attribution, "AI 内容")
     }
 
+    func testAuthRestoreToSignedOutClearsPreviousAccountRecordsAndCursor() async throws {
+        let (model, probe) = try fixture()
+        model.notebookEntries = [try entry()]
+        model.notebookCursor = "old-account-page"
+        model.notebookState = .ready
+        model.summary = summary(120)
+        model.summaryState = .ready
+        probe.restoreSignedOut = true
+
+        await model.reload()
+
+        XCTAssertNil(model.account)
+        XCTAssertTrue(model.notebookEntries.isEmpty)
+        XCTAssertNil(model.notebookCursor)
+        XCTAssertEqual(model.summary, .null)
+        XCTAssertEqual(model.notebookState, .idle)
+        XCTAssertEqual(model.summaryState, .idle)
+    }
+
     func testSignOutClearsThePreviousAccountsPaginationCursor() async throws {
         let (model, _) = try fixture()
         model.notebookCursor = "previous-account-cursor"
@@ -192,6 +211,7 @@ private final class RecordsProbe: @unchecked Sendable {
     var notebookStatus = 200
     var summaryStatus = 200
     var workspaceStatus = 200
+    var restoreSignedOut = false
     var workspace: CloudJSON = .object(["relations": .array([]), "candidates": .array([])])
     var notebook: CloudJSON = .object(["entries": .array([]), "nextCursor": .null])
     var summary: CloudJSON = .object(["allTime": .object(["durationSeconds": .number(0)]), "books": .array([])])
@@ -205,7 +225,7 @@ private final class RecordsProbe: @unchecked Sendable {
         if path == "/api/library/notebook" { return (notebookStatus, notebookStatus == 200 ? notebook : .object(["error": .string("Notebook unavailable")])) }
         if path == "/api/library/notebook-workspace" { return (workspaceStatus, workspaceStatus == 200 ? workspace : .object(["error": .string("Workspace unavailable")])) }
         if path == "/api/library/reading-summary" { return (summaryStatus, summaryStatus == 200 ? summary : .object(["error": .string("Summary unavailable")])) }
-        if path == "/api/auth/session" { return (200, .object(["user": request.value(forHTTPHeaderField: "Cookie") == nil ? .null : .object(["id": .string(owner)])])) }
+        if path == "/api/auth/session" { return (200, .object(["user": restoreSignedOut || request.value(forHTTPHeaderField: "Cookie") == nil ? .null : .object(["id": .string(owner)])])) }
         if path == "/api/library" { return (200, .object(["books": .array([])])) }
         return (200, .object([:]))
     }
