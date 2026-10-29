@@ -66,10 +66,19 @@ struct ReaderScreen: View {
             VStack(spacing: 0) {
                 if chrome == .top || chrome == .tools {
                     HStack {
-                        Button("返回书房", systemImage: "chevron.left") { Task { let receipt = await session.flush(); if session.isCurrent(receipt) { dismiss() } } }.focused($focusedControl, equals: .back).labelStyle(.iconOnly).frame(width: 44, height: 44)
+                        Button { Task { let receipt = await session.flush(); if session.isCurrent(receipt) { dismiss() } } } label: {
+                            Label("返回书房", systemImage: "chevron.left").labelStyle(.iconOnly)
+                                .frame(minWidth: 44, minHeight: 44).contentShape(Rectangle())
+                        }.focused($focusedControl, equals: .back)
                         Text(session.book.title).font(.subheadline).lineLimit(1).frame(maxWidth: .infinity)
-                        Button("陪我读", systemImage: "text.bubble") { showCompanion(currentQuote) }.focused($focusedControl, equals: .companion).labelStyle(.iconOnly).frame(width: 44, height: 44)
-                        Button("阅读设置", systemImage: "textformat.size") { panel = .preferences; chrome = .asleep }.focused($focusedControl, equals: .preferences).labelStyle(.iconOnly).frame(width: 44, height: 44)
+                        Button { showCompanion(currentQuote) } label: {
+                            Label("陪我读", systemImage: "text.bubble").labelStyle(.iconOnly)
+                                .frame(minWidth: 44, minHeight: 44).contentShape(Rectangle())
+                        }.focused($focusedControl, equals: .companion)
+                        Button { panel = .preferences; chrome = .asleep } label: {
+                            Label("阅读设置", systemImage: "textformat.size").labelStyle(.iconOnly)
+                                .frame(minWidth: 44, minHeight: 44).contentShape(Rectangle())
+                        }.focused($focusedControl, equals: .preferences)
                     }.padding(.horizontal, 10).background(paper)
                         .overlay(alignment: .bottom) { Divider() }
                         .background { GeometryReader { geometry in Color.clear.preference(key: ReaderChromeHeightKey.self, value: [.top: geometry.size.height]) } }
@@ -84,11 +93,17 @@ struct ReaderScreen: View {
                 if chrome == .progress || chrome == .tools {
                     VStack(spacing: 10) {
                         HStack {
-                            Button(session.book.kind == .pdf ? "上一页" : "上一章", systemImage: "chevron.left") { session.go(to: session.chapterIndex - 1) }.focused($focusedControl, equals: .previous).disabled(session.chapterIndex == 0).labelStyle(.iconOnly).frame(width: 44, height: 44)
+                            Button { session.go(to: session.chapterIndex - 1) } label: {
+                                Label(session.book.kind == .pdf ? "上一页" : "上一章", systemImage: "chevron.left").labelStyle(.iconOnly)
+                                    .frame(minWidth: 44, minHeight: 44).contentShape(Rectangle())
+                            }.focused($focusedControl, equals: .previous).disabled(session.chapterIndex == 0)
                             Button { wake(.progress) } label: {
-                                Text("\(session.chapterIndex + 1) / \(session.book.chapters.count) · \(session.chapter.title)").font(.footnote).lineLimit(1).frame(maxWidth: .infinity).frame(minHeight: 44)
+                                Text("\(session.chapterIndex + 1) / \(session.book.chapters.count) · \(session.chapter.title)").font(.footnote).lineLimit(1).frame(maxWidth: .infinity).frame(minHeight: 44).contentShape(Rectangle())
                             }.buttonStyle(.plain).accessibilityLabel("调整阅读进度")
-                            Button(session.book.kind == .pdf ? "下一页" : "下一章", systemImage: "chevron.right") { session.go(to: session.chapterIndex + 1) }.focused($focusedControl, equals: .next).disabled(session.chapterIndex + 1 == session.book.chapters.count).labelStyle(.iconOnly).frame(width: 44, height: 44)
+                            Button { session.go(to: session.chapterIndex + 1) } label: {
+                                Label(session.book.kind == .pdf ? "下一页" : "下一章", systemImage: "chevron.right").labelStyle(.iconOnly)
+                                    .frame(minWidth: 44, minHeight: 44).contentShape(Rectangle())
+                            }.focused($focusedControl, equals: .next).disabled(session.chapterIndex + 1 == session.book.chapters.count)
                         }
                         if chrome == .progress && session.book.chapters.count > 1 {
                             Slider(value: Binding(get: { Double(session.chapterIndex) }, set: { session.go(to: Int($0.rounded())) }), in: 0...Double(session.book.chapters.count - 1), step: 1, onEditingChanged: { adjustingProgress = $0; clockID = UUID() }).focused($focusedControl, equals: .progress).accessibilityLabel(session.book.kind == .pdf ? "页码" : "章节")
