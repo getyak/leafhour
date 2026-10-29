@@ -79,37 +79,38 @@ struct AccountScreen: View {
 struct AccountRecordsScreen: View {
     @Bindable var model: LibraryModel
     @State private var selection = 0
+    @State private var query = ""
+    @State private var includeUnstarted = false
+    private var search: String { query.trimmingCharacters(in: .whitespacesAndNewlines) }
+    private var notebookBooks: [AccountRecordsPresentation.Book] { AccountRecordsPresentation.notebookBooks(model.notebookEntries, query: query) }
+    private var readingBooks: [CloudJSON] { AccountRecordsPresentation.readingBooks(model.summary, query: query, includeUnstarted: includeUnstarted) }
     var body: some View {
         List {
             Picker("记录类型", selection: $selection) { Text("我的笔记").tag(0); Text("阅读记录").tag(1) }.pickerStyle(.segmented)
             if selection == 0 {
+                Text(model.notebookCursor == nil ? "只搜索此页已载入的书名、作者、笔记与引用。" : "只搜索已载入的书名、作者、笔记与引用；还有记录未读取，可继续载入。")
+                    .font(.footnote).foregroundStyle(.secondary)
                 AccountRecordsStatus(state: model.notebookState, title: "笔记") { Task { await model.loadAccountRecords() } }
-                if model.notebookEntries.isEmpty {
-                    if model.notebookCursor != nil && model.notebookState.hasSnapshot {
-                        Text("已载入的页面暂无笔记，还有记录未读取，可以继续载入。").font(.subheadline).foregroundStyle(.secondary)
-                    } else if model.notebookState == .ready {
-                        ContentUnavailableView("还没有笔记", systemImage: "square.and.pencil", description: Text("网页与 iOS 的个人笔记会保存在同一间书房。"))
-                    } else if case .cached = model.notebookState {
-                        Text("这份已载入的记录中暂无笔记。联网后可重新核对书房记录。").font(.subheadline).foregroundStyle(.secondary)
-                    }
-                }
-                ForEach(Array(model.notebookEntries.enumerated()), id: \.offset) { _, entry in
-                    Section(CloudShelfBook.title(entry["book"]["title"])) {
-                        let rows = entry["records"]["comments"].array + entry["records"]["questions"].array
-                        if rows.isEmpty { Text("这本书还没有个人笔记").font(.footnote).foregroundStyle(.secondary) }
-                        ForEach(Array(rows.enumerated()), id: \.offset) { _, note in
+                if notebookBooks.isEmpty { notebookEmptyState }
+                ForEach(notebookBooks) { book in
+                    Section(book.title) {
+                        ForEach(book.rows) { note in
                             VStack(alignment: .leading, spacing: 9) {
-                                Text(note["text"].string ?? "").textSelection(.enabled)
-                                if let quote = note["quote"].string, !quote.isEmpty { Text("原文 · " + quote).font(.footnote).foregroundStyle(.secondary).textSelection(.enabled) }
-                                if let status = note["status"].string { Text(status == "open" ? "未完成的问题" : "我的提问").font(.caption).foregroundStyle(Color.leafInk) }
+                                Text(note.attribution).font(.caption).foregroundStyle(Color.leafInk)
+                                Text(note.text).font(.body).textSelection(.enabled)
+                                if !note.quote.isEmpty {
+                                    Text(note.quoteAttribution + " · " + note.quote).font(.subheadline).foregroundStyle(.secondary).textSelection(.enabled)
+                                }
                             }.padding(.vertical, 5)
                         }
                     }
                 }
                 if model.notebookCursor != nil {
-                    Button("载入更多记录") { Task { await model.loadAccountRecords(more: true) } }.disabled(model.notebookState.isLoading)
+                    Button("载入更多记录") { Task { await model.loadAccountRecords(more: true) } }
+                        .frame(minHeight: 44).disabled(model.notebookState.isLoading)
                 }
             } else {
+                Text("搜索此页已载入的书名与作者。默认按已记录的真实阅读时长排序。").font(.footnote).foregroundStyle(.secondary)
                 AccountRecordsStatus(state: model.summaryState, title: "阅读记录") { Task { await model.loadAccountRecords() } }
                 if model.summary != .null {
                     Section("阅读概况") {
@@ -117,18 +118,46 @@ struct AccountRecordsScreen: View {
                         LabeledContent("有阅读的天数", value: "\(Int(model.summary["allTime"]["readingDays"].number ?? 0)) 天")
                         Text("只统计实际记录的阅读时段；阅读时长不代表已经掌握。").font(.footnote).foregroundStyle(.secondary)
                     }
-                    Section("按书查看") {
-                        ForEach(Array(model.summary["books"].array.enumerated()), id: \.offset) { _, book in
-                            LabeledContent(CloudShelfBook.title(book["title"]), value: duration(book["durationSeconds"].number ?? 0))
+                    if model.summary["books"].array.contains(where: { ($0["durationSeconds"].number ?? 0) == 0 }) {
+                        Toggle("包括尚未开始阅读的书", isOn: $includeUnstarted)
+                    }
+                    if readingBooks.isEmpty {
+                        ContentUnavailableView(search.isEmpty ? "暂无已记录时长的书" : "已载入内容中没有匹配的书", systemImage: "book", description: Text(search.isEmpty ? "有实际阅读时段的书会显示在这里，也可以选择包括尚未开始的书。" : "只搜索当前已载入的书名与作者。"))
+                    } else {
+                        Section(includeUnstarted ? "按书查看" : "已记录的阅读 · 按时长排序") {
+                            ForEach(Array(readingBooks.enumerated()), id: \.offset) { _, book in
+                                let seconds = book["durationSeconds"].number ?? 0
+                                LabeledContent(CloudShelfBook.title(book["title"]), value: seconds > 0 ? duration(seconds) : "尚未开始")
+                            }
                         }
                     }
                 }
             }
         }.navigationTitle("我的记录").navigationBarTitleDisplayMode(.inline)
+            .searchable(text: $query, prompt: selection == 0 ? "搜索已载入的书与笔记" : "搜索已载入的书名")
             .task(id: model.account?.id) { await model.loadAccountRecords() }
             .refreshable { await model.loadAccountRecords() }
     }
-    private func duration(_ seconds: Double) -> String { seconds < 60 ? "\(Int(seconds)) 秒" : "\(Int(seconds / 60)) 分钟" }
+    @ViewBuilder private var notebookEmptyState: some View {
+        if !search.isEmpty && (model.notebookState.hasSnapshot || !model.notebookEntries.isEmpty) {
+            ContentUnavailableView("已载入内容中没有匹配的笔记", systemImage: "magnifyingglass", description: Text(model.notebookCursor == nil ? "可以换个书名或笔记关键词。" : "还有记录未读取，可以继续载入后再查找。"))
+        } else if model.notebookCursor != nil && (model.notebookState.hasSnapshot || !model.notebookEntries.isEmpty) {
+            Text("已载入的页面暂无笔记，还有记录未读取，可以继续载入。").font(.subheadline).foregroundStyle(.secondary)
+        } else if model.notebookState == .ready {
+            ContentUnavailableView("还没有笔记", systemImage: "square.and.pencil", description: Text("网页与 iOS 的个人笔记会保存在同一间书房。书中有笔记或问题后会显示在这里。"))
+        } else if case .cached = model.notebookState {
+            Text("此前载入的记录中暂无可显示笔记。联网后可重新核对书房记录。").font(.subheadline).foregroundStyle(.secondary)
+        } else if case .partial = model.notebookState {
+            Text("当前已读取的内容中暂无可显示笔记，仍有部分记录待核对。").font(.subheadline).foregroundStyle(.secondary)
+        }
+    }
+    private func duration(_ seconds: Double) -> String {
+        guard seconds.isFinite, seconds > 0 else { return "0 秒" }
+        if seconds < 1 { return "少于 1 秒" }
+        if seconds < 60 { return "\(Int(seconds)) 秒" }
+        if seconds < 3600 { return "\(Int(seconds / 60)) 分钟" }
+        return "\(Int(seconds / 3600)) 小时 \(Int(seconds.truncatingRemainder(dividingBy: 3600) / 60)) 分钟"
+    }
 }
 
 struct AccountRecordsStatus: View {
@@ -158,5 +187,69 @@ struct AccountRecordsStatus: View {
     }
     private var statusIcon: String {
         if case .cached = state { "clock.arrow.circlepath" } else { "exclamationmark.circle" }
+    }
+}
+
+/// A read-only view of loaded records; filtering never edits the account snapshot.
+enum AccountRecordsPresentation {
+    enum Kind { case note, question }
+    struct Row: Identifiable {
+        let id: String
+        let value: CloudJSON
+        let kind: Kind
+        var text: String { value["text"].string ?? "" }
+        var attribution: String {
+            if value["origin"].string == "assistant" { return "AI 内容" }
+            guard value["origin"].string == "user" else { return kind == .note ? "笔记 · 来源未标注" : "问题 · 来源未标注" }
+            if kind == .note { return "我的笔记" }
+            return value["status"].string == "open" ? "我的提问 · 未完成" : "我的提问"
+        }
+        var quote: String {
+            value["quote"].string ?? value["parts"].array.compactMap { $0["text"].string }.joined(separator: "\n\n")
+        }
+        var quoteAttribution: String {
+            switch value["quoteOrigin"].string {
+            case "original": "作者原文"
+            case "translation": "译文引用"
+            default: "引用 · 来源未标注"
+            }
+        }
+    }
+    struct Book: Identifiable {
+        let id: String
+        let title: String
+        let rows: [Row]
+    }
+    static func notebookBooks(_ entries: [CloudJSON], query: String = "") -> [Book] {
+        let query = query.trimmingCharacters(in: .whitespacesAndNewlines)
+        return entries.enumerated().compactMap { index, entry -> Book? in
+            let title = CloudShelfBook.title(entry["book"]["title"])
+            let bookMatches = query.isEmpty || matches(title, query) || matches(entry["book"]["author"].string ?? "", query)
+            let rows = [(Kind.note, entry["records"]["comments"].array), (Kind.question, entry["records"]["questions"].array)].flatMap { kind, values -> [Row] in
+                values.enumerated().compactMap { offset, value -> Row? in
+                    guard value["deletedAt"] == .null, let text = value["text"].string, !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return nil }
+                    let row = Row(id: (kind == .note ? "note:" : "question:") + (value["id"].string ?? String(offset)), value: value, kind: kind)
+                    return bookMatches || matches(text, query) || matches(row.quote, query) ? row : nil
+                }
+            }
+            guard !rows.isEmpty else { return nil }
+            return Book(id: entry["book"]["bookId"].string ?? String(index), title: title, rows: rows)
+        }
+    }
+    static func readingBooks(_ summary: CloudJSON, query: String = "", includeUnstarted: Bool = false) -> [CloudJSON] {
+        let query = query.trimmingCharacters(in: .whitespacesAndNewlines)
+        return summary["books"].array.filter { book in
+            let seconds = book["durationSeconds"].number ?? 0
+            guard seconds.isFinite, seconds >= 0, includeUnstarted || seconds > 0 else { return false }
+            return query.isEmpty || matches(CloudShelfBook.title(book["title"]), query) || matches(book["author"].string ?? "", query)
+        }.sorted { first, second in
+            let a = first["durationSeconds"].number ?? 0, b = second["durationSeconds"].number ?? 0
+            if a != b { return a > b }
+            let order = CloudShelfBook.title(first["title"]).localizedStandardCompare(CloudShelfBook.title(second["title"]))
+            return order == .orderedSame ? (first["bookId"].string ?? "") < (second["bookId"].string ?? "") : order == .orderedAscending
+        }
+    }
+    private static func matches(_ source: String, _ query: String) -> Bool {
+        source.range(of: query, options: [.caseInsensitive, .diacriticInsensitive]) != nil
     }
 }

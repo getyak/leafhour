@@ -136,6 +136,43 @@ final class LibraryRecordsTests: XCTestCase {
         guard case .cached = summaries.state else { return XCTFail("Current loaded summaries must remain visible during a failed refresh") }
     }
 
+    func testNotebookListSkipsEmptyBooksAndFindsLoadedNotesWithoutChangingRawRecords() throws {
+        let empty: CloudJSON = .object(["book": .object(["bookId": .string("empty"), "title": .string("Empty Book")]), "records": .object(["comments": .array([]), "questions": .array([])])])
+        let saved = try entry("saved")
+        let question: CloudJSON = .object(["book": .object(["bookId": .string("question"), "title": .string("Questions")]), "records": .object(["comments": .array([.object(["text": .string("  ")])]), "questions": .array([.object(["id": .string("q1"), "origin": .string("user"), "text": .string("Why is café used here?"), "status": .string("open")])])])])
+        let original = [empty, saved, question]
+        XCTAssertEqual(AccountRecordsPresentation.notebookBooks(original).map(\.id), ["saved", "question"])
+        let matches = AccountRecordsPresentation.notebookBooks(original, query: "  CAFE  ")
+        XCTAssertEqual(matches.map(\.id), ["question"])
+        XCTAssertEqual(matches.first?.rows.first?.text, "Why is café used here?")
+        XCTAssertEqual(AccountRecordsPresentation.notebookBooks(original, query: "Saved Book").map(\.id), ["saved"])
+        XCTAssertEqual(original, [empty, saved, question], "Filtering must keep empty books and original records intact in the saved snapshot")
+    }
+
+    func testReadingListDefaultsToActualTimeDescendingAndCanIncludeUnstartedBooks() {
+        let source: CloudJSON = .object(["books": .array([
+            .object(["bookId": .string("zero"), "title": .string("Not started"), "durationSeconds": .number(0)]),
+            .object(["bookId": .string("short"), "title": .string("Short reading"), "durationSeconds": .number(30)]),
+            .object(["bookId": .string("long"), "title": .string("Long reading"), "durationSeconds": .number(3600)])
+        ])])
+        XCTAssertEqual(AccountRecordsPresentation.readingBooks(source).compactMap { $0["bookId"].string }, ["long", "short"])
+        XCTAssertEqual(AccountRecordsPresentation.readingBooks(source, includeUnstarted: true).compactMap { $0["bookId"].string }, ["long", "short", "zero"])
+        XCTAssertEqual(AccountRecordsPresentation.readingBooks(source, query: " LONG ").compactMap { $0["bookId"].string }, ["long"])
+        XCTAssertEqual(source["books"].array.count, 3)
+        XCTAssertEqual(source["books"].array.first?["durationSeconds"].number, 0)
+    }
+
+    func testNoteAttributionDoesNotCallTranslationQuotesOriginalTextOrAITheUsersWords() {
+        let source: CloudJSON = .object(["book": .object(["bookId": .string("book"), "title": .string("Book")]), "records": .object(["comments": .array([
+            .object(["id": .string("user"), "origin": .string("user"), "text": .string("My own thought"), "quote": .string("A translated sentence"), "quoteOrigin": .string("translation")]),
+            .object(["id": .string("ai"), "origin": .string("assistant"), "text": .string("An AI suggestion")])
+        ])])])
+        let rows = AccountRecordsPresentation.notebookBooks([source]).first?.rows ?? []
+        XCTAssertEqual(rows.first?.attribution, "我的笔记")
+        XCTAssertEqual(rows.first?.quoteAttribution, "译文引用")
+        XCTAssertEqual(rows.last?.attribution, "AI 内容")
+    }
+
     func testSignOutClearsThePreviousAccountsPaginationCursor() async throws {
         let (model, _) = try fixture()
         model.notebookCursor = "previous-account-cursor"
