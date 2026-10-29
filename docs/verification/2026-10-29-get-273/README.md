@@ -29,7 +29,9 @@ The initial serial host suite completed with **4,283 pass, 13 fail, 16 skipped (
 | `pdf-hosted-package.test.mjs` | the function package renders PDF glyphs without system fonts and from a different runtime directory |
 | `reader-runtime.test.mjs` | the isolated hosted runtime initializes its actual SDK, profile, plugins and native bindings without a model request; rebuilding removes stale runtime files while keeping files beside the generated directory; an explicitly allowed Vercel dependency-only cache can be rebuilt without a restored manifest |
 
-The local dependency tree lacked `@sentry/node`; tracing a linked `node_modules` also produced an invalid root entry for the package-copy tests. A task-owned lockfile installation was started to repair these prerequisites. No native PostgreSQL engine was found. Exact later rerun, PR CI and publication receipts belong to the primary PR/Linear follow-up, rather than being inferred from this first run.
+The local dependency tree lacked `@sentry/node`; tracing a linked `node_modules` also produced an invalid root entry for the package-copy tests. A task-owned lockfile installation supplied the missing dependencies. Its slow optional LibreOffice download was stopped, and the existing local `@deepseek-ai/libreoffice-kit-darwin-arm64` 0.1.5 cache (the same lockfile version) was reused. With an actual task-owned dependency directory, the three affected files above (`observability`, `pdf-hosted-package`, `reader-runtime`) reran with **32 pass, 0 fail, 1 skipped**. No native PostgreSQL engine was found; the annual database test remains a local prerequisite gap, rather than a green check.
+
+First PR CI stopped at the copy-inventory reproducibility check: the compatibility guard added during review shifted generated source mappings by three lines after the earlier export. The final inventory was regenerated. Exact later PR CI and publication receipts belong to the primary PR/Linear follow-up, rather than being inferred from either earlier run.
 
 ## Remaining acceptance
 
