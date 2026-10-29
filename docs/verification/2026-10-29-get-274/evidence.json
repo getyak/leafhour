@@ -1,0 +1,55 @@
+{
+  "base": "44f3836",
+  "simulator": {
+    "name": "Primary iPhone",
+    "model": "iPhone 17 Pro",
+    "os": "iOS 26.5",
+    "bundle": "org.leafhour.get274",
+    "tests": 2,
+    "failed": 0,
+    "result": "native-reviewed.xcresult"
+  },
+  "hostCoreTests": 47,
+  "relatedWebTests": 275,
+  "modelCalls": 0,
+  "screenshots": [
+    {
+      "file": "GET274-explicit-quiet.png",
+      "sha256": "41ca89e4ab49c4c61da7d6f5b5f03634a7a283b91881d9ab4e37261d85d1c2a3",
+      "timestamp": 1793251791.223
+    },
+    {
+      "file": "GET274-explicit-after-close-tap.png",
+      "sha256": "41ca89e4ab49c4c61da7d6f5b5f03634a7a283b91881d9ab4e37261d85d1c2a3",
+      "timestamp": 1793251789.955
+    },
+    {
+      "file": "GET274-explicit-half-sheet-unavailable.png",
+      "sha256": "0d7ecde9f68939d1b1a2c41717915623505bc49ba081503aed277925ae37f671",
+      "timestamp": 1793251788.689
+    },
+    {
+      "file": "GET274-selection-quiet.png",
+      "sha256": "104dc02fb5eabd69b66b97fe86b7a540a0676129df18903c73b2c94a8ae96265",
+      "timestamp": 1793251811.877
+    },
+    {
+      "file": "GET274-selection-after-close-tap.png",
+      "sha256": "104dc02fb5eabd69b66b97fe86b7a540a0676129df18903c73b2c94a8ae96265",
+      "timestamp": 1793251810.385
+    },
+    {
+      "file": "GET274-selection-half-sheet-unavailable.png",
+      "sha256": "08e04df3ed054b027173f28ffafaec59ae2ab4e727e4fc6f2f13e15be44c1ba1",
+      "timestamp": 1793251809.216
+    },
+    {
+      "file": "web-375-quote-draft.png",
+      "sha256": "eaa74984cfc4e21196ec0d477ef90d44a2a650b4a383ae507df08d0a72d2207a"
+    },
+    {
+      "file": "web-quiet.png",
+      "sha256": "ab906a51a1d076f3c5aef8291fe784826d8e801f4073a4f930f6d783b4a2dfb7"
+    }
+  ]
+}

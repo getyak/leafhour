@@ -4,9 +4,10 @@ import LeafhourCore
 
 enum ReaderChrome { case asleep, top, progress }
 enum ReaderPanel: Identifiable {
-    case contents, search, preferences, records, note(SelectedQuote), source(SelectedQuote)
+    case contents, search, preferences, records, note(SelectedQuote), source(SelectedQuote), companion(SelectedQuote?)
+    var isCompanion: Bool { if case .companion = self { return true }; return false }
     var id: String {
-        switch self { case .contents: "contents"; case .search: "search"; case .preferences: "preferences"; case .records: "records"; case .note(let quote): "note-" + quote.id; case .source(let quote): "source-" + quote.id }
+        switch self { case .contents: "contents"; case .search: "search"; case .preferences: "preferences"; case .records: "records"; case .note(let quote): "note-" + quote.id; case .source(let quote): "source-" + quote.id; case .companion(let quote): "companion-" + (quote?.id ?? "current") }
     }
 }
 struct ReaderScreen: View {
@@ -19,22 +20,27 @@ struct ReaderScreen: View {
     @State private var panel: ReaderPanel?
     @State private var clockID = UUID()
     @State private var adjustingProgress = false
-    private enum ChromeFocus: Hashable { case back, preferences, previous, next, progress, contents, search, records }
+    @State private var selectionDismissalID = UUID()
+    private enum ChromeFocus: Hashable { case back, preferences, companion, previous, next, progress, contents, search, records }
     @FocusState private var focusedControl: ChromeFocus?
     private var paper: Color { session.state.preferences.theme == "paper" ? .readingPaper : Color(uiColor: .systemBackground) }
     var body: some View {
         ZStack(alignment: .top) {
             paper.ignoresSafeArea()
             if session.book.kind == .pdf {
-                PDFReadingView(session: session, onSelection: { session.selection = $0 }, onWake: wake, onReadingScroll: sleepChrome)
+                PDFReadingView(session: session, selectionDismissalID: selectionDismissalID, onSelection: { quote in
+                    // clearSelection can notify synchronously during updateUIView.
+                    if quote != nil || session.selection != nil { session.selection = quote }
+                }, onWake: wake, onReadingScroll: sleepChrome)
             } else {
-                TextReadingView(session: session, onNote: { showNote($0) }, onSource: { panel = .source($0); chrome = .asleep }, onWake: wake, onReadingScroll: sleepChrome)
+                TextReadingView(session: session, selectionDismissalID: selectionDismissalID, onNote: { showNote($0) }, onSource: { panel = .source($0); chrome = .asleep }, onExplain: showCompanion, onWake: wake, onReadingScroll: sleepChrome)
             }
             VStack(spacing: 0) {
                 if chrome == .top {
                     HStack {
                         Button("返回书房", systemImage: "chevron.left") { Task { let receipt = await session.flush(); if session.isCurrent(receipt) { dismiss() } } }.focused($focusedControl, equals: .back).labelStyle(.iconOnly).frame(width: 44, height: 44)
                         Text(session.book.title).font(.subheadline).lineLimit(1).frame(maxWidth: .infinity)
+                        Button("陪我读", systemImage: "text.bubble") { showCompanion(currentQuote) }.focused($focusedControl, equals: .companion).labelStyle(.iconOnly).frame(width: 44, height: 44)
                         Button("阅读设置", systemImage: "textformat.size") { panel = .preferences; chrome = .asleep }.focused($focusedControl, equals: .preferences).labelStyle(.iconOnly).frame(width: 44, height: 44)
                     }.padding(.horizontal, 10).background(.regularMaterial)
                 } else {
@@ -43,7 +49,7 @@ struct ReaderScreen: View {
                 }
                 Spacer()
                 if let quote = session.selection, session.book.kind == .pdf {
-                    HStack { Text("已选择原文").font(.footnote); Spacer(); Button("记笔记", systemImage: "square.and.pencil") { showNote(quote) }; Button("取消") { session.selection = nil } }.padding().background(.regularMaterial)
+                    HStack { Text("已选择原文").font(.footnote); Spacer(); Button("解释这句") { showCompanion(quote) }; Button("记笔记", systemImage: "square.and.pencil") { showNote(quote) }; Button("取消") { session.selection = nil; selectionDismissalID = UUID() } }.padding().background(.regularMaterial)
                 }
                 if chrome == .progress {
                     VStack(spacing: 10) {
@@ -71,7 +77,8 @@ struct ReaderScreen: View {
         .interactiveDismissDisabled(session.saving || session.saveError != nil)
         .sheet(item: $panel, onDismiss: { chrome = .asleep }) { destination in
             ReaderPanelView(panel: destination, session: session, systemColorScheme: systemColorScheme, onJump: { index, anchor in session.go(to: index, anchor: anchor); panel = nil })
-                .presentationDetents([.medium, .large]).presentationDragIndicator(.visible)
+                .presentationDetents(destination.isCompanion ? [.fraction(0.5)] : [.medium, .large]).presentationDragIndicator(.visible)
+                .presentationCompactAdaptation(destination.isCompanion ? .none : .automatic)
                 .presentationBackgroundInteraction(.enabled(upThrough: .medium))
         }
         .alert("阅读记录", isPresented: Binding(get: { session.message != nil || (session.noteEditorID == nil && session.saveMessage != nil) }, set: { if !$0 { session.message = nil; session.saveMessage = nil } })) { Button("重试保存") { session.message = nil; session.saveMessage = nil; session.save() } } message: { Text(session.message ?? session.saveMessage ?? "") }
@@ -94,6 +101,20 @@ struct ReaderScreen: View {
         let draft = session.state.drafts[quote.anchor.key]
         panel = .note(draft.map { SelectedQuote(anchor: $0.anchor, text: $0.quote) } ?? quote)
         chrome = .asleep
+    }
+    private var currentQuote: SelectedQuote? {
+        if let selected = session.selection { return selected }
+        let passage = session.chapter.passages.first { $0.id == session.currentAnchor?.passageID && !$0.text.isEmpty }
+            ?? session.chapter.passages.first { !$0.heading && !$0.text.isEmpty }
+        guard let passage else { return nil }
+        return SelectedQuote(anchor: ReadingAnchor(chapterID: session.chapter.id, passageID: passage.id), text: String(passage.text.prefix(2000)))
+    }
+    private func showCompanion(_ quote: SelectedQuote?) {
+        session.selection = nil
+        selectionDismissalID = UUID()
+        focusedControl = nil
+        chrome = .asleep
+        panel = .companion(quote)
     }
 }
 

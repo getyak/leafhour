@@ -4,6 +4,7 @@ import LeafhourCore
 
 struct PDFReadingView: UIViewRepresentable {
     let session: ReaderSession
+    let selectionDismissalID: UUID
     let onSelection: (SelectedQuote?) -> Void
     let onWake: (ReaderChrome) -> Void
     let onReadingScroll: () -> Void
@@ -18,6 +19,10 @@ struct PDFReadingView: UIViewRepresentable {
     }
     func updateUIView(_ view: PDFView, context: Context) {
         let coordinator = context.coordinator; coordinator.parent = self
+        if coordinator.selectionDismissalID != selectionDismissalID {
+            coordinator.selectionDismissalID = selectionDismissalID
+            view.clearSelection()
+        }
         if view.document == nil { view.document = PDFDocument(url: session.original) }
         if coordinator.navigationID != session.navigationID {
             coordinator.navigationID = session.navigationID; coordinator.restoring = true
@@ -38,6 +43,7 @@ struct PDFReadingView: UIViewRepresentable {
         var restoring = false
         var userScrolled = false
         var edgeTap: ReaderEdgeTapHandler?
+        var selectionDismissalID: UUID?
         private var observers: [NSObjectProtocol] = []
         private var scrolling: NSKeyValueObservation?
         private weak var observedScroll: UIScrollView?
