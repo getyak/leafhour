@@ -40,3 +40,9 @@
     top: auto; bottom: 0; right: 0; width: 44px; height: 44px;
   }
 }
+
+[data-cover-style="imported"]{position:relative!important;display:block!important;aspect-ratio:2/3;overflow:hidden!important;padding:0!important;isolation:isolate}
+[data-cover-style="imported"]::before,[data-cover-style="imported"]::after{content:none!important}
+.imported-cover-artwork{position:absolute;inset:0;display:block;width:100%;height:100%;object-fit:contain;background:var(--panel,#faf9f5);pointer-events:none}
+.imported-cover-artwork[hidden]{display:none}
+[data-cover-style="imported"][data-cover-artwork="ready"] .binding-type{visibility:hidden}

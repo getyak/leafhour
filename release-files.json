@@ -789,6 +789,7 @@
   "server/document-import.mjs",
   "server/email-auth.mjs",
   "server/epub-import.mjs",
+  "server/imported-cover.mjs",
   "server/experience-metrics.mjs",
   "server/experience-service.mjs",
   "server/experience-validation.mjs",

@@ -18,7 +18,7 @@ import {chineseTrialUrl} from './catalog-sample.mjs';
 import {mountLibraryArrival} from './library-arrival.mjs';
 import {mountReadingDashboard} from './reading-dashboard.mjs';
 import {mountLibraryNotebook} from './library-notebook.mjs';
-import {roomShelf,readingBookUrl,libraryShelf,hasShelfFilters} from './library-workspace.mjs';
+import {currentReadingBookmark,roomShelf,readingBookUrl,libraryShelf,hasShelfFilters} from './library-workspace.mjs';
 import {mountShelfFilters} from './library-filter-controls.mjs';
 import {mountLibraryShell,roomIcons} from './library-shell.mjs';
 import {mountPreferenceMemory} from './preference-memory-ui.mjs';
@@ -155,6 +155,7 @@ function clearPrivateUI({keepAuthDialog=false,preserveView=false}={}){
   // GET-188: the optional home resume row is removed synchronously at the
   // owner transition, before any slower reconciliation can repaint it.
   homeMenu?.clear(ownerScope.capture());
+  $('library-resume')?.replaceChildren();if($('library-resume')){$('library-resume').hidden=true;delete $('library-resume').dataset.bookmarkKey;}
   // GET-178 owner boundary: every real account transition clears any open
   // command-palette cache and rendered private results synchronously.
   invalidatePaletteLibraries();
@@ -233,8 +234,23 @@ function renderHomeBooks(){
   const empty=make('div','home-shelf-empty'),title=own(make('h3'),{id:'portal.empty.filtered'}),help=own(make('p'),{id:shelfEmptyHelpId(filters)}),clear=own(make('button','outline'),{id:'filter.clearAll'});
   clear.type='button';clear.addEventListener('click',()=>shelfControls.clearAll());empty.append(title,help,clear);$('featured-books').replaceChildren(empty);
 }
+function renderReadingBookmark(){
+  const root=$('library-resume');if(!root)return;
+  const book=currentReadingBookmark(books);
+  if(!book){root.replaceChildren();delete root.dataset.bookmarkKey;root.hidden=true;return;}
+  const key=getOwner()+':'+book.bookId+':'+book.resume.passageId+':'+book.source?.sha256;
+  if(root.dataset.bookmarkKey!==key){
+    root.replaceChildren();root.dataset.bookmarkKey=key;
+    const link=make('a','resume-bookmark');const target=readingBookUrl(book);ownedHref(link,target);
+    const cover=make('div','resume-cover');cover.setAttribute('aria-hidden','true');paintBookCover(cover,book);
+    const copy=make('div','resume-copy'),label=cardLabel(make('p','resume-label'),'dash.today.label.resume'),title=make('h2'),chapter=make('p','resume-chapter'),action=cardLabel(make('span','resume-action'),'dash.read.continue');
+    paintBookIdentity(title,book);chapter.textContent=book.resume.label||'';chapter.lang='und';chapter.hidden=!chapter.textContent;copy.append(label,title,chapter);link.append(cover,copy,action);root.append(link);mountCardLabels(root);
+  }
+  root.hidden=false;
+}
 function renderBooks(){
   if(!isLibrary){renderHomeBooks();return;}
+  renderReadingBookmark();
   const filters=shelfControls?.read()||{query:$('book-search').value},query=filters.query.trim(),filtered=hasShelfFilters(filters),shelf=libraryShelf(books,filters,{searchText:bookCoverSearchText}),room={featured:null,books:shelf,total:shelf.length};shelfControls?.update(books);shelfControls?.setPending(personalizationPending);
   const anchorId=document.activeElement?.closest('[data-book-id]')?.dataset.bookId;
   if(shelfList)shelfList.setItems(room.books,{key:JSON.stringify([getOwner(),filters]),anchorId});else $('library-books').replaceChildren();
@@ -288,7 +304,7 @@ async function hydrateLibrary(generation,ticket){
     books=books.map(book=>fresh.has(book.bookId)?{...fresh.get(book.bookId),shelfPosition:book.shelfPosition}:book);
     personalizationPending=false;dashboard.update(null);renderBooks();
     if(focusId&&focusClass){const card=[...$('library-books').children].find(n=>n.dataset.bookId===focusId);card?.querySelector('.'+CSS.escape(focusClass))?.focus({preventScroll:true});}
-    if(anchorId){const anchor=[...$('library-books').children].find(n=>n.dataset.bookId===anchorId);if(anchor)window.scrollBy(0,anchor.getBoundingClientRect().top-anchorTop);}
+    if(anchorId&&window.scrollY>0){const anchor=[...$('library-books').children].find(n=>n.dataset.bookId===anchorId);if(anchor)window.scrollBy(0,anchor.getBoundingClientRect().top-anchorTop);}
     libraryArrival?.update();
   }catch(error){if(generation!==refreshGeneration||!ownerScope.isCurrent(ticket))return;status('library-status',{id:'arrival.pending'},true);$('library-retry').hidden=false;libraryArrival?.update();}
 }
