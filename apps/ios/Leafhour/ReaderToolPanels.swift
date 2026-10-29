@@ -55,12 +55,20 @@ struct ReaderListeningPanel: View {
                     Text(session.chapter.title).font(.headline).multilineTextAlignment(.center)
                     if speech.count > 0 { Text("第 \(speech.position + 1) / \(speech.count) 段").font(.caption).foregroundStyle(.secondary).monospacedDigit() }
                     HStack(spacing: 30) {
-                        Button("上一段", systemImage: "backward.end.fill") { speech.move(-1) }.disabled(!speech.canPrevious).labelStyle(.iconOnly).frame(width: 44, height: 44)
-                        Button(speech.playing ? "暂停朗读" : speech.paused ? "继续朗读" : "从当前段开始朗读", systemImage: speech.playing ? "pause.fill" : "play.fill") { speech.toggle(session) }
-                            .font(.title2).labelStyle(.iconOnly).frame(width: 60, height: 60).background(Color.leafInk.opacity(0.12), in: Circle())
-                            .accessibilityIdentifier("reader-speech-play")
-                        Button("下一段", systemImage: "forward.end.fill") { speech.move(1) }.disabled(!speech.canNext).labelStyle(.iconOnly).frame(width: 44, height: 44)
-                    }
+                        Button { speech.move(-1) } label: {
+                            Label("上一段", systemImage: "backward.end.fill").labelStyle(.iconOnly)
+                                .frame(width: 44, height: 44).contentShape(Rectangle())
+                        }.disabled(!speech.canPrevious)
+                        Button { speech.toggle(session) } label: {
+                            Label(speech.playing ? "暂停朗读" : speech.paused ? "继续朗读" : "从当前段开始朗读", systemImage: speech.playing ? "pause.fill" : "play.fill")
+                                .font(.title2).labelStyle(.iconOnly).frame(width: 60, height: 60)
+                                .background(Color.leafInk.opacity(0.12), in: Circle()).contentShape(Circle())
+                        }.accessibilityIdentifier("reader-speech-play")
+                        Button { speech.move(1) } label: {
+                            Label("下一段", systemImage: "forward.end.fill").labelStyle(.iconOnly)
+                                .frame(width: 44, height: 44).contentShape(Rectangle())
+                        }.disabled(!speech.canNext)
+                    }.buttonStyle(.plain)
                     if !speech.text.isEmpty { Text(speech.text).font(.subheadline).foregroundStyle(.secondary).lineLimit(4).textSelection(.enabled) }
                 }.frame(maxWidth: .infinity).padding(.vertical, 12)
             }
