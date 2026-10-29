@@ -13,6 +13,7 @@ private struct ReaderChromeHeightKey: PreferenceKey {
 enum ReaderPanel: Identifiable {
     case contents, search, preferences, records, tools, listening, translation, introduction, conversation, note(SelectedQuote), source(SelectedQuote), companion(SelectedQuote?)
     var isCompanion: Bool { switch self { case .companion, .conversation: true; default: false } }
+    var isNoteEditor: Bool { if case .note = self { true } else { false } }
     var id: String {
         switch self {
         case .contents: "contents"; case .search: "search"; case .preferences: "preferences"; case .records: "records"
@@ -124,15 +125,19 @@ struct ReaderScreen: View {
         .preferredColorScheme(session.state.preferences.colorScheme(following: systemColorScheme))
         .statusBarHidden(false)
         .onPreferenceChange(ReaderChromeHeightKey.self) { values in
-            for (region, height) in values where height > 0 && abs((chromeHeights[region] ?? 0) - height) > 0.5 {
-                chromeHeights[region] = height
+            for (region, height) in values where height > 0 {
+                // The progress slider can make the dock taller than its tools state.
+                // Keep that room for this reading session so returning to tools at
+                // the chapter end cannot clamp the page to a different offset.
+                let retained = region == .bottom ? max(chromeHeights[region] ?? 0, height) : height
+                if abs((chromeHeights[region] ?? 0) - retained) > 0.5 { chromeHeights[region] = retained }
             }
         }
         .interactiveDismissDisabled(panel?.isCompanion != true && (session.saving || session.saveError != nil))
         .sheet(item: $panel, onDismiss: { session.clearTransientSelection(); selectionDismissalID = UUID(); chrome = .asleep }) { destination in
             ReaderPanelView(panel: destination, session: session, systemColorScheme: systemColorScheme, speech: speech, tools: tools, cloud: cloud,
                 onJump: { index, anchor in session.go(to: index, anchor: anchor); panel = nil }, onCompanion: { showCompanion(currentQuote) })
-                .presentationDetents(destination.isCompanion ? [.fraction(0.5)] : [.medium, .large]).presentationDragIndicator(.visible)
+                .presentationDetents(destination.isNoteEditor ? [.large] : destination.isCompanion ? [.fraction(0.5)] : [.medium, .large]).presentationDragIndicator(.visible)
                 .presentationCompactAdaptation(destination.isCompanion ? .none : .automatic)
                 .presentationBackgroundInteraction(destination.isCompanion ? .enabled(upThrough: .fraction(0.5)) : .enabled(upThrough: .medium))
         }
