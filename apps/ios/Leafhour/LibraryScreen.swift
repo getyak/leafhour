@@ -8,21 +8,24 @@ struct LibraryScreen: View {
     @State private var importing = false
     @State private var info = false
     @State private var path: [String] = []
+    @Environment(\.scenePhase) private var scenePhase
     var body: some View {
         NavigationStack(path: $path) {
             Group {
-                if model.books.isEmpty && model.jobs.isEmpty {
+                if model.books.isEmpty && model.jobs.isEmpty && model.cloudBooks.isEmpty {
                     VStack(spacing: 20) {
                         Image(systemName: "leaf").font(.system(size: 52, weight: .light)).foregroundStyle(Color.leafInk).accessibilityHidden(true)
                         Text("给自己留一页安静").font(.title2).fontWeight(.medium)
-                        Text("带一本自己的书来。\n保存在这台设备，断网也能继续读。").multilineTextAlignment(.center).foregroundStyle(.secondary)
+                        Text(model.account == nil ? "带一本自己的书来。\n保存在这台设备，断网也能继续读。" : "登录后，网页与 iOS 共用自己的书房。\n下拉同步，或导入一本书。").multilineTextAlignment(.center).foregroundStyle(.secondary)
                         Button("选择一本书", systemImage: "plus") { importing = true }.buttonStyle(.borderedProminent).tint(.leafFill).foregroundStyle(.white).controlSize(.large).disabled(model.busy)
                         Text("EPUB · PDF · TXT · Markdown").font(.footnote).foregroundStyle(.secondary)
+                        if model.account == nil { Button("登录并同步自己的书房", systemImage: "person.crop.circle") { info = true } }
+                        else { Button("同步书房", systemImage: "arrow.triangle.2.circlepath") { Task { await model.synchronize() } }.disabled(model.syncing) }
                     }.padding(28).frame(maxWidth: .infinity, maxHeight: .infinity)
                 } else {
                     List {
                         if !model.books.isEmpty {
-                            Section("此设备上的书") {
+                            Section(model.account == nil ? "此设备上的书" : "已下载到此设备") {
                                 ForEach(model.books) { book in
                                     HStack(spacing: 16) {
                                         Button { Task { await model.open(book) } } label: {
@@ -31,13 +34,26 @@ struct LibraryScreen: View {
                                                 VStack(alignment: .leading, spacing: 6) {
                                                     Text(book.title).font(.headline).foregroundStyle(.primary).lineLimit(2)
                                                     if !book.author.isEmpty { Text(book.author).font(.subheadline).foregroundStyle(.secondary).lineLimit(1) }
-                                                    Text("\(book.kind.rawValue.uppercased()) · 已保存在此设备").font(.caption).foregroundStyle(.secondary)
+                                                    Text(book.cloud == nil ? "\(book.kind.rawValue.uppercased()) · 本机原件" : "已下载 · 笔记与位置可同步").font(.caption).foregroundStyle(.secondary)
                                                 }
                                                 Spacer(minLength: 0)
                                             }.contentShape(Rectangle())
                                         }.buttonStyle(.plain).accessibilityLabel("阅读，\(book.title)")
                                         Button { path.append(book.id) } label: { Image(systemName: "info.circle").frame(width: 44, height: 44) }.buttonStyle(.borderless).accessibilityLabel("\(book.title)，书籍详情")
                                     }.padding(.vertical, 8)
+                                }
+                            }
+                        }
+                        if model.account != nil && !model.cloudBooks.isEmpty {
+                            Section("云端书房") {
+                                ForEach(model.cloudBooks.filter { remote in !model.books.contains(where: { $0.cloud?.bookID == remote.id && $0.cloud?.contentVersion == remote.contentVersion }) }) { book in
+                                    Button { Task { await model.download(book) } } label: {
+                                        HStack(spacing: 14) {
+                                            Image(systemName: "book.closed").font(.title2).foregroundStyle(Color.leafInk).frame(width: 44, height: 56)
+                                            VStack(alignment: .leading, spacing: 6) { Text(book.title).font(.headline).foregroundStyle(.primary).lineLimit(2); Text(book.author).font(.subheadline).foregroundStyle(.secondary).lineLimit(1); Label("下载后可离线阅读", systemImage: "icloud.and.arrow.down").font(.caption).foregroundStyle(.secondary) }
+                                            Spacer(minLength: 0)
+                                        }.padding(.vertical, 6)
+                                    }.disabled(model.busy)
                                 }
                             }
                         }
@@ -52,7 +68,11 @@ struct LibraryScreen: View {
                                 }
                             }
                         }
-                        Section { Label("本机书房 · 尚未连接云端账号", systemImage: "iphone").font(.footnote).foregroundStyle(.secondary) }
+                        Section {
+                            Label(model.account?.email ?? "本机书房", systemImage: model.account == nil ? "iphone" : "person.crop.circle").font(.footnote).foregroundStyle(.secondary)
+                            if !model.syncStatus.isEmpty { Text(model.syncStatus).font(.footnote).foregroundStyle(.secondary) }
+                            if model.account != nil { Button("我的笔记与阅读记录", systemImage: "books.vertical") { info = true } }
+                        }
                     }.listStyle(.insetGrouped)
                 }
             }
@@ -63,7 +83,7 @@ struct LibraryScreen: View {
             }
             .navigationTitle("我的书房")
             .toolbar {
-                ToolbarItem(placement: .topBarLeading) { Button("关于书房", systemImage: "person.crop.circle") { info = true }.labelStyle(.iconOnly) }
+                ToolbarItem(placement: .topBarLeading) { Button(model.account == nil ? "登录书房" : "我的账号", systemImage: model.account == nil ? "person.crop.circle" : "person.crop.circle.fill") { info = true }.labelStyle(.iconOnly) }
                 ToolbarItem(placement: .topBarTrailing) { Button("导入书籍", systemImage: "plus") { importing = true }.labelStyle(.iconOnly).disabled(model.busy) }
             }
             .safeAreaInset(edge: .bottom) {
@@ -75,9 +95,11 @@ struct LibraryScreen: View {
                 switch result { case .success(let url): model.importFile(url); case .failure(let error): model.message = error.localizedDescription }
             }
             .onOpenURL { model.importFile($0) }
-            .task { await model.reload(restore: true) }
-            .fullScreenCover(item: $model.reader, onDismiss: { Task { await model.reload() } }) { session in ReaderScreen(session: session, systemColorScheme: systemColorScheme) }
-            .sheet(isPresented: $info) { LocalLibraryInfo() }
+            .task { await model.reload(restore: true); await model.synchronize() }
+            .refreshable { await model.synchronize(); await model.reload() }
+            .onChange(of: scenePhase) { _, phase in if phase == .active { Task { await model.synchronize() } } }
+            .fullScreenCover(item: $model.reader, onDismiss: { Task { await model.reload(); await model.synchronize() } }) { session in ReaderScreen(session: session, systemColorScheme: systemColorScheme, cloud: session.book.cloud == nil ? nil : model.cloud, library: model.library) }
+            .sheet(isPresented: $info) { AccountScreen(model: model) }
             .alert("书房提示", isPresented: Binding(get: { model.message != nil }, set: { if !$0 { model.message = nil } })) { Button("知道了") { model.message = nil } } message: { Text(model.message ?? "") }
         }
     }

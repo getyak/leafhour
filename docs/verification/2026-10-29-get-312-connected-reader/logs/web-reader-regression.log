@@ -1,0 +1,290 @@
+TAP version 13
+# (node:41337) ExperimentalWarning: The MockTimers API is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: closing companion restores the quiet reading edge without leaving the AI entry focused
+ok 1 - closing companion restores the quiet reading edge without leaving the AI entry focused
+  ---
+  duration_ms: 16.559459
+  type: 'test'
+  ...
+# Subtest: focused reader wakes only on explicit edge activation, then sleeps within ten seconds
+ok 2 - focused reader wakes only on explicit edge activation, then sleeps within ten seconds
+  ---
+  duration_ms: 9.54475
+  type: 'test'
+  ...
+# Subtest: reading scroll preserves a keyboard control, selection and a child dialog
+ok 3 - reading scroll preserves a keyboard control, selection and a child dialog
+  ---
+  duration_ms: 16.644041
+  type: 'test'
+  ...
+# Subtest: quiet edge subscriptions are removed on remount/disposal
+ok 4 - quiet edge subscriptions are removed on remount/disposal
+  ---
+  duration_ms: 7.629708
+  type: 'test'
+  ...
+# Subtest: paged reading scroll also sleeps, and a keyboard top-edge wake requests visible focus
+ok 5 - paged reading scroll also sleeps, and a keyboard top-edge wake requests visible focus
+  ---
+  duration_ms: 11.003458
+  type: 'test'
+  ...
+# Subtest: only a completed short edge click is consumed; text drag, cancellation, links and long press keep native input
+ok 6 - only a completed short edge click is consumed; text drag, cancellation, links and long press keep native input
+  ---
+  duration_ms: 10.304834
+  type: 'test'
+  ...
+# Subtest: page navigation belongs to the sleeping tools panel rather than reserving reading space
+ok 7 - page navigation belongs to the sleeping tools panel rather than reserving reading space
+  ---
+  duration_ms: 10.044292
+  type: 'test'
+  ...
+# Subtest: source self-host serves the new tools module and its complete direct dependencies as JavaScript
+ok 8 - source self-host serves the new tools module and its complete direct dependencies as JavaScript
+  ---
+  duration_ms: 271.161459
+  type: 'test'
+  ...
+# Subtest: a disposed primary-surface owner cannot close a replacement reader dialog
+ok 9 - a disposed primary-surface owner cannot close a replacement reader dialog
+  ---
+  duration_ms: 0.989709
+  type: 'test'
+  ...
+# (node:41338) ExperimentalWarning: The MockTimers API is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: closing chat restores the quiet reading edge without opening reading tools
+ok 10 - closing chat restores the quiet reading edge without opening reading tools
+  ---
+  duration_ms: 0.632083
+  type: 'test'
+  ...
+# Subtest: locale preserves the sole conceal deadline, unread state, focus and held tools
+ok 11 - locale preserves the sole conceal deadline, unread state, focus and held tools
+  ---
+  duration_ms: 6.511166
+  type: 'test'
+  ...
+# Subtest: unmount releases tools listeners and stale unread callbacks cannot change a replacement pill
+ok 12 - unmount releases tools listeners and stale unread callbacks cannot change a replacement pill
+  ---
+  duration_ms: 0.445583
+  type: 'test'
+  ...
+# Subtest: the single pill interaction drives both tools surfaces through one conceal timer
+ok 13 - the single pill interaction drives both tools surfaces through one conceal timer
+  ---
+  duration_ms: 0.378542
+  type: 'test'
+  ...
+# Subtest: concealing tools returns focus from the revealed header to the visible pill
+ok 14 - concealing tools returns focus from the revealed header to the visible pill
+  ---
+  duration_ms: 0.239625
+  type: 'test'
+  ...
+# Subtest: fullscreen failure restoration targets the visible pill through the reader wiring seam
+ok 15 - fullscreen failure restoration targets the visible pill through the reader wiring seam
+  ---
+  duration_ms: 0.56425
+  type: 'test'
+  ...
+# Subtest: injected chat integration keeps trigger, anchor, focus and unread seams separate
+ok 16 - injected chat integration keeps trigger, anchor, focus and unread seams separate
+  ---
+  duration_ms: 0.370875
+  type: 'test'
+  ...
+# Subtest: control mode follows the reader focus layout for the pill label
+ok 17 - control mode follows the reader focus layout for the pill label
+  ---
+  duration_ms: 0.267959
+  type: 'test'
+  ...
+# Subtest: composed tools keep hover reveals from stealing focus while explicit clicks may focus
+ok 18 - composed tools keep hover reveals from stealing focus while explicit clicks may focus
+  ---
+  duration_ms: 0.3345
+  type: 'test'
+  ...
+# Subtest: focused chrome sleeps under a stationary pointer but preserves keyboard focus
+ok 19 - focused chrome sleeps under a stationary pointer but preserves keyboard focus
+  ---
+  duration_ms: 0.362375
+  type: 'test'
+  ...
+# Subtest: outside completed click and pill click keep one tools state across both surfaces
+ok 20 - outside completed click and pill click keep one tools state across both surfaces
+  ---
+  duration_ms: 0.778333
+  type: 'test'
+  ...
+# Subtest: setFocused and fullscreen transitions cannot strand the toolbar state
+ok 21 - setFocused and fullscreen transitions cannot strand the toolbar state
+  ---
+  duration_ms: 0.412458
+  type: 'test'
+  ...
+# Subtest: the Ask AI handoff closes tools without bubbling re-reveal or focus theft
+ok 22 - the Ask AI handoff closes tools without bubbling re-reveal or focus theft
+  ---
+  duration_ms: 0.246375
+  type: 'test'
+  ...
+# Subtest: hover preview stays available on the tucked-away AI sibling and conceals after leaving
+ok 23 - hover preview stays available on the tucked-away AI sibling and conceals after leaving
+  ---
+  duration_ms: 0.43175
+  type: 'test'
+  ...
+# Subtest: hover reveals only the card and explicit activation adds the navigation surface
+ok 24 - hover reveals only the card and explicit activation adds the navigation surface
+  ---
+  duration_ms: 0.263667
+  type: 'test'
+  ...
+# Subtest: button and card gap crossings and reentry cancel the sole old preview deadline
+ok 25 - button and card gap crossings and reentry cancel the sole old preview deadline
+  ---
+  duration_ms: 0.327917
+  type: 'test'
+  ...
+# Subtest: mouse focus in navigation cannot hold explicit tools forever but Tab focus can
+ok 26 - mouse focus in navigation cannot hold explicit tools forever but Tab focus can
+  ---
+  duration_ms: 0.240625
+  type: 'test'
+  ...
+# Subtest: Enter activation establishes keyboard ownership before navigation receives focus
+ok 27 - Enter activation establishes keyboard ownership before navigation receives focus
+  ---
+  duration_ms: 0.166709
+  type: 'test'
+  ...
+# Subtest: outside dismissal waits for a complete primary gesture and preserves its target
+ok 28 - outside dismissal waits for a complete primary gesture and preserves its target
+  ---
+  duration_ms: 0.260334
+  type: 'test'
+  ...
+# Subtest: WebKit touch compatibility click can finish its actual released gesture with a mouse ID
+ok 29 - WebKit touch compatibility click can finish its actual released gesture with a mouse ID
+  ---
+  duration_ms: 0.276625
+  type: 'test'
+  ...
+# Subtest: WebKit compatibility click cannot bypass cancelled touch protection
+ok 30 - WebKit compatibility click cannot bypass cancelled touch protection
+  ---
+  duration_ms: 0.175958
+  type: 'test'
+  ...
+# Subtest: WebKit compatibility click cannot bypass unmatched-release touch protection
+ok 31 - WebKit compatibility click cannot bypass unmatched-release touch protection
+  ---
+  duration_ms: 0.222417
+  type: 'test'
+  ...
+# Subtest: inside-drag is not an outside dismissal
+ok 32 - inside-drag is not an outside dismissal
+  ---
+  duration_ms: 0.18225
+  type: 'test'
+  ...
+# Subtest: cancelled is not an outside dismissal
+ok 33 - cancelled is not an outside dismissal
+  ---
+  duration_ms: 0.147167
+  type: 'test'
+  ...
+# Subtest: right-click is not an outside dismissal
+ok 34 - right-click is not an outside dismissal
+  ---
+  duration_ms: 0.1345
+  type: 'test'
+  ...
+# Subtest: touch-scroll is not an outside dismissal
+ok 35 - touch-scroll is not an outside dismissal
+  ---
+  duration_ms: 0.155125
+  type: 'test'
+  ...
+# Subtest: leaving the window releases transient mouse holds and a chapter change closes coherently
+ok 36 - leaving the window releases transient mouse holds and a chapter change closes coherently
+  ---
+  duration_ms: 0.279833
+  type: 'test'
+  ...
+# Subtest: pointer cancellation releases a preview hold rather than stranding it
+ok 37 - pointer cancellation releases a preview hold rather than stranding it
+  ---
+  duration_ms: 0.139333
+  type: 'test'
+  ...
+# Subtest: a replacement coordinator retires the old listeners and conceal deadline
+ok 38 - a replacement coordinator retires the old listeners and conceal deadline
+  ---
+  duration_ms: 0.195667
+  type: 'test'
+  ...
+# Subtest: selecting card text holds it through pointer release until the selection leaves
+ok 39 - selecting card text holds it through pointer release until the selection leaves
+  ---
+  duration_ms: 0.187541
+  type: 'test'
+  ...
+# Subtest: an outside gesture that light-dismisses a child popover does not also close its parent tools
+ok 40 - an outside gesture that light-dismisses a child popover does not also close its parent tools
+  ---
+  duration_ms: 0.157334
+  type: 'test'
+  ...
+# Subtest: touch interaction promotes an existing mouse preview before native scroll cancellation
+ok 41 - touch interaction promotes an existing mouse preview before native scroll cancellation
+  ---
+  duration_ms: 0.124875
+  type: 'test'
+  ...
+# Subtest: active card scrolling renews explicit idle time through native pointer cancellation
+ok 42 - active card scrolling renews explicit idle time through native pointer cancellation
+  ---
+  duration_ms: 0.154167
+  type: 'test'
+  ...
+# Subtest: a passive layout scroll cannot promote or reopen a hover preview
+ok 43 - a passive layout scroll cannot promote or reopen a hover preview
+  ---
+  duration_ms: 0.122917
+  type: 'test'
+  ...
+# Subtest: a wheel operation promotes preview and gets explicit idle time
+ok 44 - a wheel operation promotes preview and gets explicit idle time
+  ---
+  duration_ms: 0.146416
+  type: 'test'
+  ...
+# Subtest: browser fullscreen exit clears the old header hold and tools state
+ok 45 - browser fullscreen exit clears the old header hold and tools state
+  ---
+  duration_ms: 0.183542
+  type: 'test'
+  ...
+# Subtest: a late fullscreen notification cannot close tools opened after that state was already rendered
+ok 46 - a late fullscreen notification cannot close tools opened after that state was already rendered
+  ---
+  duration_ms: 0.1255
+  type: 'test'
+  ...
+1..46
+# tests 46
+# suites 0
+# pass 46
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 674.237167

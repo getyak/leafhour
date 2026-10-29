@@ -12,7 +12,7 @@ final class ReadingUITests: XCTestCase {
     func testCompanionExplicitSummonAndQuietDismissal() {
         let reader = app.textViews["leafhour-epub-reader"]
         XCTAssertTrue(reader.waitForExistence(timeout: 10))
-        XCTAssertFalse(app.buttons["陪我读"].exists)
+        XCTAssertTrue(app.buttons["陪我读"].waitForNonExistence(timeout: 8), "Entry tools become quiet after a short idle")
         reader.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).tap()
         XCTAssertFalse(app.buttons["陪我读"].exists)
         app.buttons["显示书名、返回与阅读设置"].tap()
@@ -21,7 +21,8 @@ final class ReadingUITests: XCTestCase {
         assertCompanionAndDismiss("explicit")
         app.terminate(); app.launch()
         XCTAssertTrue(reader.waitForExistence(timeout: 10))
-        XCTAssertFalse(app.buttons["陪我读"].exists)
+        XCTAssertTrue(app.buttons["陪我读"].exists, "Entry tools remain discoverable after a cold launch")
+        XCTAssertTrue(app.buttons["陪我读"].waitForNonExistence(timeout: 8))
     }
     func testCompanionSystemSelectionAndQuietDismissal() {
         let reader = app.textViews["leafhour-epub-reader"]
@@ -38,8 +39,9 @@ final class ReadingUITests: XCTestCase {
         XCTAssertTrue(title.waitForExistence(timeout: 3))
         XCTAssertGreaterThan(title.frame.minY, app.windows.firstMatch.frame.height * 0.3,
                              "The companion must leave the upper book visible")
-        XCTAssertTrue(app.staticTexts["此设备尚未连接 AI 陪读。原文仍在这里，可以继续阅读。"].exists)
-        capture("GET274-" + origin + "-half-sheet-unavailable")
+        XCTAssertTrue(app.textFields["reader-question"].exists || app.textViews["reader-question"].exists, "The real conversation composer replaces the old placeholder")
+        XCTAssertFalse(app.staticTexts["此设备尚未连接 AI 陪读。原文仍在这里，可以继续阅读。"].exists)
+        capture("GET312-" + origin + "-conversation-half-sheet")
         app.buttons["继续读"].tap()
         capture("GET274-" + origin + "-after-close-tap")
         XCTAssertTrue(title.waitForNonExistence(timeout: 1), app.debugDescription)
@@ -49,10 +51,12 @@ final class ReadingUITests: XCTestCase {
         capture("GET274-" + origin + "-quiet")
     }
     func progress() {
+        if app.buttons["目录"].exists { return }
         let wake = app.buttons["显示阅读进度、目录、搜索与记录"]
         XCTAssertTrue(wake.waitForExistence(timeout: 10)); wake.tap()
     }
     func library() {
+        if app.buttons["返回书房"].exists { app.buttons["返回书房"].tap(); return }
         let wake = app.buttons["显示书名、返回与阅读设置"]
         if wake.waitForExistence(timeout: 3) { wake.tap(); app.buttons["返回书房"].tap() }
     }
@@ -73,8 +77,8 @@ final class ReadingUITests: XCTestCase {
         app.terminate(); app.launch()
         XCTAssertTrue(text.waitForExistence(timeout: 10))
         XCTAssertTrue((text.value as? String)?.contains("CHAPTER XII.") == true)
-        XCTAssertFalse(app.buttons["我的记录"].exists)
-        capture("EPUB-cold-resume-pure")
+        XCTAssertTrue(app.buttons["我的记录"].exists, "Reading tools are discoverable on entry")
+        capture("EPUB-cold-resume-tools")
     }
     func testNativeSelectionDraftAndRelaunch() {
         library()
@@ -109,6 +113,7 @@ final class ReadingUITests: XCTestCase {
         file.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.25)).tap()
         XCTAssertTrue(app.otherElements["leafhour-pdf-reader"].waitForExistence(timeout: 15), app.debugDescription)
         progress()
+        if !app.sliders["页码"].exists { app.buttons["调整阅读进度"].tap() }
         let slider = app.sliders["页码"]
         XCTAssertTrue(slider.exists); slider.adjust(toNormalizedSliderPosition: 1)
         // XCUI normalized slider adjustment is approximate for a stepped 73-page range.
@@ -146,8 +151,8 @@ final class ReadingUITests: XCTestCase {
         Thread.sleep(forTimeInterval: 4)
         app.terminate(); app.launch()
         XCTAssertTrue(reader.waitForExistence(timeout: 10))
-        XCTAssertFalse(app.buttons["目录"].exists)
-        capture("GET272-native-cold-resume-asleep")
+        XCTAssertTrue(app.buttons["目录"].exists)
+        capture("GET312-native-cold-resume-tools")
     }
 
 }
