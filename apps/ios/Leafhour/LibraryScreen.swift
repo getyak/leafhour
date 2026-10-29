@@ -58,6 +58,7 @@ struct LibraryScreen: View {
                 else { ContentUnavailableView("书籍暂不可用", systemImage: "book.closed") }
             }
             .navigationTitle("我的书房")
+            .navigationBarTitleDisplayMode(.inline)
             .searchable(text: $query, placement: .navigationBarDrawer(displayMode: .always), prompt: "搜索书名或作者")
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
@@ -65,16 +66,17 @@ struct LibraryScreen: View {
                         .labelStyle(.iconOnly)
                 }
                 ToolbarItemGroup(placement: .topBarTrailing) {
-                    presentationMenu
                     Button("导入书籍", systemImage: "plus") { importing = true }.labelStyle(.iconOnly).disabled(model.busy)
                 }
             }
             .safeAreaInset(edge: .top, spacing: 0) {
                 if !allItems.isEmpty {
-                    Picker("书房范围", selection: filterBinding) {
-                        ForEach(LibraryShelfFilter.allCases, id: \.rawValue) { Text($0.title).tag($0) }
+                    HStack(spacing: 12) {
+                        Picker("书房范围", selection: filterBinding) {
+                            ForEach(LibraryShelfFilter.allCases, id: \.rawValue) { Text($0.title).tag($0) }
+                        }.pickerStyle(.segmented)
+                        presentationMenu.labelStyle(.iconOnly).frame(minWidth: 44, minHeight: 44)
                     }
-                    .pickerStyle(.segmented)
                     .padding(.horizontal, 20).padding(.vertical, 8)
                     .background(.regularMaterial)
                 }
@@ -239,7 +241,7 @@ struct LibraryScreen: View {
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             if model.activityCanCancel {
-                Button("取消") { model.cancelImport() }.frame(minWidth: 44, minHeight: 44)
+                Button("取消") { model.cancelImport() }.frame(minWidth: 44, minHeight: 44).accessibilityIdentifier("library-activity-cancel")
             }
         }
         .padding(.horizontal, 20).padding(.vertical, 10)
