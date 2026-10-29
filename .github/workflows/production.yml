@@ -8,6 +8,7 @@ on:
 
 permissions:
   contents: read
+  statuses: read
 
 concurrency:
   group: production-verification
@@ -28,7 +29,8 @@ jobs:
       - name: Verify the source deployed directly from the public repository
         env:
           EXPECTED_SOURCE_COMMIT: ${{ github.event.workflow_run.head_sha }}
-          # Hosted builds queue behind provider limits; keep waiting instead of
-          # failing a healthy deployment that is merely pending.
+          GH_STATUS_TOKEN: ${{ github.token }}
+          # Pending builds may queue; an explicit provider rejection stops
+          # the wait immediately through the exact source's commit status.
           RELEASE_WAIT_SECONDS: 1800
         run: npm run smoke:production
