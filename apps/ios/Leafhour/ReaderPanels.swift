@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 import LeafhourCore
 
 private struct ReaderContinueReadingKey: EnvironmentKey {
@@ -36,6 +37,7 @@ struct ReaderPanelView: View {
                 case .translation: ReaderTranslationPanel(session: session, tools: tools, cloud: cloud)
                 case .introduction: ReaderIntroductionPanel(session: session, tools: tools, cloud: cloud)
                 case .conversation: ReaderConversationPanel(session: session, tools: tools, cloud: cloud)
+                case .bookInformation: ReaderBookInformationPanel(book: session.book)
                 case .note(let quote): NoteEditorPanel(quote: quote, session: session)
                 case .companion(let quote):
                     ReaderConversationPanel(session: session, tools: tools, cloud: cloud, selection: quote, title: "陪我读")
@@ -72,6 +74,42 @@ struct ReaderPanelView: View {
     private func continueReading() {
         if panel.isCompanion { dismiss() }
         else { Task { let receipt = await session.flush(); if session.isCurrent(receipt) { dismiss() } } }
+    }
+}
+struct ReaderBookInformationPanel: View {
+    let book: LocalBook
+    private var sourceFormat: String {
+        let format = book.cloud?.sourceFormat.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        return (format.isEmpty ? book.kind.rawValue : format).uppercased()
+    }
+    var body: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 24) {
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("书名").font(.headline)
+                    Button { UIPasteboard.general.string = book.title } label: {
+                        Label("复制完整书名", systemImage: "doc.on.doc").font(.body)
+                            .fixedSize(horizontal: false, vertical: true)
+                            .frame(maxWidth: .infinity, minHeight: 44, alignment: .leading).contentShape(Rectangle())
+                    }.buttonStyle(.plain).foregroundStyle(Color.leafInk)
+                        .accessibilityIdentifier("reader-copy-book-title")
+                    Text(book.title).font(.title2).fixedSize(horizontal: false, vertical: true)
+                        .accessibilityIdentifier("reader-book-full-title")
+                }
+                metadata("作者", value: book.author.isEmpty ? "未提供作者" : book.author)
+                metadata("来源格式", value: sourceFormat)
+                metadata(book.kind == .pdf ? "页数" : "章节数", value: "\(book.chapters.count)")
+                metadata(book.cloud == nil ? "原始文件名" : "阅读副本文件名", value: book.originalFilename)
+                    .accessibilityIdentifier("reader-book-original-filename")
+            }.frame(maxWidth: .infinity, alignment: .leading).padding(24)
+                .textSelection(.enabled)
+        }.accessibilityIdentifier("reader-book-information").navigationTitle("书籍信息")
+    }
+    private func metadata(_ title: String, value: String) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text(title).font(.headline)
+            Text(value).font(.body).fixedSize(horizontal: false, vertical: true)
+        }
     }
 }
 struct ReaderContentsPanel: View {

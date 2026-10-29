@@ -40,7 +40,13 @@ enum VideoAcceptanceFixture {
                         guard let library = model.library else { throw LibraryError.invalid("GET317 合成书房未能打开") }
                         let sources = root.appendingPathComponent("sources", isDirectory: true)
                         try FileManager.default.createDirectory(at: sources, withIntermediateDirectories: true)
-                        let text = sources.appendingPathComponent("GET317 合成验收 · 本机文本.txt")
+                        // UI44 opts into a 70-CJK title without changing the
+                        // default seed or adding a seventh book (224 UTF-8 bytes
+                        // including .txt, within the source filename limit).
+                        let textFilename = arguments.contains("--get317-long-title")
+                            ? "GET317 · " + String(repeating: "长书名依然完整保留着", count: 7) + ".txt"
+                            : "GET317 合成验收 · 本机文本.txt"
+                        let text = sources.appendingPathComponent(textFilename)
                         let paragraphs = (1...35).map { index in
                             "GET317 synthetic paragraph \(index). This is invented acceptance material, not an uploaded book. A quiet reader keeps the selected words and the saved position together. The searchable marker ORCHARD_\(index) identifies this paragraph. " + String(repeating: "Reading this invented passage should not move another book's position. ", count: 3)
                         }

@@ -11,14 +11,14 @@ private struct ReaderChromeHeightKey: PreferenceKey {
     }
 }
 enum ReaderPanel: Identifiable {
-    case contents, search, preferences, records, tools, listening, translation, introduction, conversation, note(SelectedQuote), source(SelectedQuote), companion(SelectedQuote?)
+    case contents, search, preferences, records, tools, listening, translation, introduction, conversation, bookInformation, note(SelectedQuote), source(SelectedQuote), companion(SelectedQuote?)
     var isCompanion: Bool { switch self { case .companion, .conversation: true; default: false } }
     var isNoteEditor: Bool { if case .note = self { true } else { false } }
     var id: String {
         switch self {
         case .contents: "contents"; case .search: "search"; case .preferences: "preferences"; case .records: "records"
         case .tools: "tools"; case .listening: "listening"; case .translation: "translation"
-        case .introduction: "introduction"; case .conversation: "conversation"
+        case .introduction: "introduction"; case .conversation: "conversation"; case .bookInformation: "book-information"
         case .note(let quote): "note-" + quote.id; case .source(let quote): "source-" + quote.id
         case .companion(let quote): "companion-" + (quote?.id ?? "current")
         }
@@ -42,7 +42,7 @@ struct ReaderScreen: View {
     @State private var selectionDismissalID = UUID()
     @State private var hasNativeTextSelection = false
     @State private var chromeHeights: [ReaderChromeRegion: CGFloat] = [.top: 44, .bottom: 156]
-    private enum ChromeFocus: Hashable { case back, preferences, companion, previous, next, progress, contents, listening, translation, records, tools }
+    private enum ChromeFocus: Hashable { case back, bookInformation, preferences, companion, previous, next, progress, contents, listening, translation, records, tools }
     @FocusState private var focusedControl: ChromeFocus?
     private var paper: Color { session.state.preferences.theme == "paper" ? .readingPaper : Color(uiColor: .systemBackground) }
     // Keep page margins stable when chrome sleeps. Only a real control-size change
@@ -66,22 +66,7 @@ struct ReaderScreen: View {
             }
             VStack(spacing: 0) {
                 if chrome == .top || chrome == .tools {
-                    HStack {
-                        Button { Task { let receipt = await session.flush(); if session.isCurrent(receipt) { dismiss() } } } label: {
-                            Label("返回书房", systemImage: "chevron.left").labelStyle(.iconOnly)
-                                .frame(minWidth: 44, minHeight: 44).contentShape(Rectangle())
-                        }.focused($focusedControl, equals: .back)
-                        Text(session.book.title).font(.subheadline).lineLimit(dynamicTypeSize.isAccessibilitySize ? nil : 1)
-                            .fixedSize(horizontal: false, vertical: true).frame(maxWidth: .infinity)
-                        Button { showCompanion(currentQuote) } label: {
-                            Label("陪我读", systemImage: "text.bubble").labelStyle(.iconOnly)
-                                .frame(minWidth: 44, minHeight: 44).contentShape(Rectangle())
-                        }.focused($focusedControl, equals: .companion)
-                        Button { panel = .preferences; chrome = .asleep } label: {
-                            Label("阅读设置", systemImage: "textformat.size").labelStyle(.iconOnly)
-                                .frame(minWidth: 44, minHeight: 44).contentShape(Rectangle())
-                        }.focused($focusedControl, equals: .preferences)
-                    }.padding(.horizontal, 10).background(paper)
+                    navigationHeader.padding(.horizontal, 10).background(paper)
                         .overlay(alignment: .bottom) { Divider() }
                         .background { GeometryReader { geometry in Color.clear.preference(key: ReaderChromeHeightKey.self, value: [.top: geometry.size.height]) } }
                 } else {
@@ -181,6 +166,59 @@ struct ReaderScreen: View {
         .onChange(of: scenePhase) { _, phase in if phase != .active { speech.pause(); session.save(); chrome = .asleep } }
         .onAppear { tools.configure(library: library, localBookID: session.book.id) }
         .onDisappear { speech.stop() }
+    }
+    @ViewBuilder private var navigationHeader: some View {
+        if dynamicTypeSize.isAccessibilitySize {
+            VStack(spacing: 0) {
+                HStack {
+                    backButton
+                    Spacer(minLength: 8)
+                    companionButton
+                    preferencesButton
+                }
+                bookTitleButton
+            }
+        } else {
+            HStack {
+                backButton
+                bookTitleButton
+                companionButton
+                preferencesButton
+            }
+        }
+    }
+    private var backButton: some View {
+        Button { Task { let receipt = await session.flush(); if session.isCurrent(receipt) { dismiss() } } } label: {
+            Label("返回书房", systemImage: "chevron.left").labelStyle(.iconOnly)
+                .frame(minWidth: 44, minHeight: 44).contentShape(Rectangle())
+        }.focused($focusedControl, equals: .back)
+    }
+    private var bookTitleButton: some View {
+        Button { present(.bookInformation) } label: {
+            // Navigation stays bounded at every text size. The information
+            // sheet keeps the complete selectable title available on demand.
+            Text(session.book.title).font(.subheadline)
+                .lineLimit(dynamicTypeSize.isAccessibilitySize ? 2 : 1)
+                .fixedSize(horizontal: false, vertical: true)
+                .multilineTextAlignment(.center)
+                .frame(maxWidth: .infinity, minHeight: 44).contentShape(Rectangle())
+        }.buttonStyle(.plain).foregroundStyle(Color.primary)
+            .focused($focusedControl, equals: .bookInformation)
+            .accessibilityLabel(session.book.title)
+            .accessibilityHint("查看完整书名、作者与来源格式")
+            .accessibilityIdentifier("reader-book-title")
+    }
+    private var companionButton: some View {
+        Button { showCompanion(currentQuote) } label: {
+            Label("陪我读", systemImage: "text.bubble").labelStyle(.iconOnly)
+                .frame(minWidth: 44, minHeight: 44).contentShape(Rectangle())
+        }.focused($focusedControl, equals: .companion)
+    }
+    private var preferencesButton: some View {
+        Button { present(.preferences) } label: {
+            Label("阅读设置", systemImage: "textformat.size").labelStyle(.iconOnly)
+                .frame(minWidth: 44, minHeight: 44).contentShape(Rectangle())
+        }.focused($focusedControl, equals: .preferences)
     }
     private var dockActions: some View {
         HStack(spacing: 4) {
