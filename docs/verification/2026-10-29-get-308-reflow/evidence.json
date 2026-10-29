@@ -1,0 +1,197 @@
+{
+  "issue": "GET-308",
+  "base": "e1cd406acba2ea8b3bc8b1e0ea876981c7239e45",
+  "sourceSHA256": {
+    "apps/ios/Leafhour/TextReadingView.swift": "56ae1b825187ba22d3b3ae8b9c9d789efc04677595974e1365124e5d199432b6",
+    "apps/ios/Leafhour/ReaderPanels.swift": "ae8259c029e3d8a65b40ea928fc052ae60e539eafaaa0f4a9d4ebdd632ad4864",
+    "apps/ios/LeafhourCore/Sources/LeafhourCore/ReaderSession.swift": "748e3d982077a8d123ff1d4a0663ec7171f1dfd70f1289b62cfaacccab22531e",
+    "apps/ios/LeafhourCore/Tests/LeafhourCoreTests/ReaderSessionTests.swift": "65d01740fc8f704959f863accdb3532ccfb1b412cb3193efe3b7eaf81e89ffca"
+  },
+  "host": {
+    "log": "host-final.log",
+    "tests": 47,
+    "failures": 0
+  },
+  "native": {
+    "result": "native-final.xcresult",
+    "tests": 1,
+    "failures": 0,
+    "seconds": 9.849,
+    "report": {
+      "anchorPreserved": true,
+      "bounds": [
+        402,
+        778
+      ],
+      "checkpointAfterRotation": {
+        "chapterID": "text",
+        "characterOffset": 500,
+        "passageID": "text-2"
+      },
+      "checkpointImmediatelyAfterScroll": {
+        "chapterID": "text",
+        "characterOffset": 28,
+        "passageID": "text-3"
+      },
+      "explicitTarget": {
+        "chapterID": "text",
+        "characterOffset": 500,
+        "passageID": "text-2"
+      },
+      "landscapeBounds": [
+        750,
+        382
+      ],
+      "navigationPreserved": true,
+      "rotationPreserved": true,
+      "selectedRangeAfter": [
+        965,
+        10
+      ],
+      "selectionAfter": "waistcoat-",
+      "selectionBefore": "waistcoat-",
+      "selectionClearedAfterNavigation": true,
+      "selectionPreserved": true,
+      "sessionAfterExplicitJump": {
+        "chapterID": "text",
+        "characterOffset": 500,
+        "passageID": "text-2"
+      },
+      "sessionAfterReflow": {
+        "chapterID": "text",
+        "characterOffset": 28,
+        "passageID": "text-3"
+      },
+      "sessionBeforeScroll": {
+        "chapterID": "text",
+        "characterOffset": 353,
+        "passageID": "text-2"
+      },
+      "sessionImmediatelyAfterScroll": {
+        "chapterID": "text",
+        "characterOffset": 353,
+        "passageID": "text-2"
+      },
+      "settled": {
+        "chapterID": "text",
+        "characterOffset": 353,
+        "passageID": "text-2"
+      },
+      "targetPassageScalars": 739,
+      "visibleAfterExplicitJump": {
+        "chapterID": "text",
+        "characterOffset": 481,
+        "passageID": "text-2"
+      },
+      "visibleAfterReflow": {
+        "chapterID": "text",
+        "characterOffset": 0,
+        "passageID": "text-3"
+      },
+      "visibleAfterRotation": {
+        "chapterID": "text",
+        "characterOffset": 481,
+        "passageID": "text-2"
+      },
+      "visibleImmediatelyAfterScroll": {
+        "chapterID": "text",
+        "characterOffset": 28,
+        "passageID": "text-3"
+      }
+    }
+  },
+  "baseline": {
+    "result": "native-baseline-final.xcresult",
+    "tests": 1,
+    "failures": 1,
+    "report": {
+      "anchorPreserved": false,
+      "bounds": [
+        402,
+        778
+      ],
+      "explicitTarget": {
+        "chapterID": "text",
+        "characterOffset": 500,
+        "passageID": "text-2"
+      },
+      "navigationPreserved": true,
+      "selectedRangeAfter": [
+        3502,
+        0
+      ],
+      "selectionAfter": "",
+      "selectionBefore": "waistcoat-",
+      "selectionClearedAfterNavigation": true,
+      "selectionPreserved": false,
+      "sessionAfterExplicitJump": {
+        "chapterID": "text",
+        "characterOffset": 500,
+        "passageID": "text-2"
+      },
+      "sessionAfterReflow": {
+        "chapterID": "text",
+        "characterOffset": 353,
+        "passageID": "text-2"
+      },
+      "sessionBeforeScroll": {
+        "chapterID": "text",
+        "characterOffset": 353,
+        "passageID": "text-2"
+      },
+      "sessionImmediatelyAfterScroll": {
+        "chapterID": "text",
+        "characterOffset": 353,
+        "passageID": "text-2"
+      },
+      "settled": {
+        "chapterID": "text",
+        "characterOffset": 353,
+        "passageID": "text-2"
+      },
+      "targetPassageScalars": 739,
+      "visibleAfterExplicitJump": {
+        "chapterID": "text",
+        "characterOffset": 481,
+        "passageID": "text-2"
+      },
+      "visibleAfterReflow": {
+        "chapterID": "text",
+        "characterOffset": 353,
+        "passageID": "text-2"
+      },
+      "visibleImmediatelyAfterScroll": {
+        "chapterID": "text",
+        "characterOffset": 28,
+        "passageID": "text-3"
+      }
+    }
+  },
+  "stateRestoration": {
+    "sha256": "f0df05c436c404e0a9a7a81e85c03b701ad763adc4f800078f4735ea2fcf0e57",
+    "verified": true
+  },
+  "fileSHA256": {
+    "host-final.log": "0ba9186dce0c91b97ba1e4b5ce565acd9831351766c2447fc4b3e8d44a89bfc8",
+    "native-final.log": "63ca2eccea28d2a8e17d9dbdf09d4c5fdf383d50e7addcea49e739a09d9b1770",
+    "native-final-report.json": "4e8d9e3cd3798c3f7db1be4a279745c84baf151dd7c62f0526bb5b20966b9443",
+    "native-baseline-final-report.json": "2245246cc7a9ae818f5b5d1485f128a69d6f8f32c7f97f1c14d61b8fb10f460f",
+    "ReadingUITests.final-probe.swift": "834e23029e365ea8e060d587c03b356c9f2781ddc9c68107b4b4f9bc863bc4fd",
+    "TextReadingView.final-reviewed-instrumented.swift": "5c2fa857a1e65dd39b755a2c16442d5020ae83a128cd4a356714e577b3a471d8"
+  },
+  "screenshotsSHA256": {
+    "portrait.png": "1ff67bcfe2ed208f49fefe6dee72cd9948ae2d6132882304716b6ee232c0bdb7",
+    "landscape.png": "04d5a16fb20b598e534b05425e552759bd48f4efe4897af17fda2ecfb60c5e3f"
+  },
+  "unverified": [
+    "real cross-chapter UI interruption",
+    "images/cache",
+    "long-paragraph CPU/FPS/memory",
+    "PDF theme",
+    "iPad/split view",
+    "maximum type/VoiceOver",
+    "mixed RTL/LTR multiple ranges",
+    "physical input/device",
+    "TestFlight"
+  ]
+}

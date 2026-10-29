@@ -111,7 +111,7 @@ struct ReaderPreferencesPanel: View {
     private var defaults: ReaderPreferences { ReaderPreferences() }
     private var preview: String? {
         let passages = session.chapter.passages
-        let current = passages.first { $0.id == session.state.anchor?.passageID && !$0.heading && $0.resourcePath == nil && !$0.text.isEmpty }
+        let current = passages.first { $0.id == session.currentAnchor?.passageID && !$0.heading && $0.resourcePath == nil && !$0.text.isEmpty }
         return (current ?? passages.first { !$0.heading && $0.resourcePath == nil && !$0.text.isEmpty }).map { String($0.text.prefix(600)) }
     }
     private var usesDefaultTypography: Bool {

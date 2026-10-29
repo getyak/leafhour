@@ -36,13 +36,21 @@ public final class ReaderSession: Identifiable {
     @ObservationIgnored private var persistedState: ReaderState
     @ObservationIgnored private var noteSubmission: ReaderNote?
     @ObservationIgnored private var noteSubmissionWasPersisted = false
+    @ObservationIgnored private var visibleAnchor: ReadingAnchor?
     public init(book: LocalBook, state: ReaderState, original: URL, directory: URL, library: any ReaderStateStore) {
         self.id = book.id; self.book = book; self.state = state; self.original = original; self.directory = directory; self.library = library
         persistedState = state
         chapterIndex = book.chapters.firstIndex { $0.id == state.anchor?.chapterID } ?? 0
     }
     public var chapter: BookChapter { book.chapters[chapterIndex] }
+    /// Scroll checkpoints are immediate, while observed state and disk writes remain coalesced.
+    public var currentAnchor: ReadingAnchor? { visibleAnchor ?? state.anchor }
+    public func recordVisible(_ anchor: ReadingAnchor, navigationID: UUID) {
+        guard navigationID == self.navigationID, anchor.chapterID == chapter.id else { return }
+        visibleAnchor = anchor
+    }
     public func save() {
+        if state.anchor != currentAnchor { state.anchor = currentAnchor }
         revision += 1
         let version = revision, snapshot = state, previous = pending
         saving = true
@@ -64,30 +72,33 @@ public final class ReaderSession: Identifiable {
     }
     @discardableResult public func flush() async -> ReaderSaveReceipt {
         while true {
+            if state.anchor != currentAnchor { save() }
             let version = revision, task = pending
             await task?.value
-            if version == revision {
+            if version == revision && state.anchor == currentAnchor {
                 return ReaderSaveReceipt(revision: version, persistedRevision: persistedRevision, succeeded: version == persistedRevision && saveError == nil)
             }
         }
     }
     public func isCurrent(_ receipt: ReaderSaveReceipt) -> Bool {
-        receipt.revision == revision && receipt.succeeded && !saving && saveError == nil
+        receipt.revision == revision && receipt.succeeded && !saving && saveError == nil && state.anchor == currentAnchor
     }
     public func isNotePersisted(id: UUID, body: String) -> Bool {
         persistedState.notes.contains { $0.id == id && $0.body == body }
     }
     public func moved(_ anchor: ReadingAnchor) {
+        recordVisible(anchor, navigationID: navigationID)
         guard anchor != state.anchor else { return }
         state.anchor = anchor; save()
     }
     public func go(to index: Int, anchor: ReadingAnchor? = nil) {
         guard book.chapters.indices.contains(index) else { return }
+        visibleAnchor = nil
         chapterIndex = index
         state.anchor = anchor ?? ReadingAnchor(chapterID: chapter.id, passageID: chapter.passages.first?.id ?? "page", characterOffset: 0)
         navigationID = UUID(); selection = nil; save()
     }
-    public func changePreferences(_ value: ReaderPreferences) { state.preferences = value; navigationID = UUID(); save() }
+    public func changePreferences(_ value: ReaderPreferences) { state.preferences = value; save() }
     public func draft(_ quote: SelectedQuote, text: String) {
         state.drafts[quote.anchor.key] = NoteDraft(anchor: quote.anchor, quote: quote.text, body: text); save()
     }
@@ -113,7 +124,7 @@ public final class ReaderSession: Identifiable {
         save()
         while true {
             let receipt = await flush()
-            guard receipt.revision == revision else { continue }
+            guard receipt.revision == revision && state.anchor == currentAnchor else { continue }
             if isCurrent(receipt) { return true }
             // A later failure must not undo a note that an earlier successful snapshot already confirmed.
             if !noteSubmissionWasPersisted {
