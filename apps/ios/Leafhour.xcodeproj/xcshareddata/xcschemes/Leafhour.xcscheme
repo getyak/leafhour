@@ -44,6 +44,17 @@
             parallelizable = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
+               BlueprintIdentifier = "E9EBBB130A719C5DC1AA2664"
+               BuildableName = "LeafhourAppTests.xctest"
+               BlueprintName = "LeafhourAppTests"
+               ReferencedContainer = "container:Leafhour.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO"
+            parallelizable = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
                BlueprintIdentifier = "9E20BC03224E1319D4225E3C"
                BuildableName = "LeafhourUITests.xctest"
                BlueprintName = "LeafhourUITests"

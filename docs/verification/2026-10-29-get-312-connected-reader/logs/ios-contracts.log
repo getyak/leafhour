@@ -1,0 +1,550 @@
+TAP version 13
+# Subtest: the distribution icon is a real opaque 1024px RGB PNG referenced by the asset catalog
+ok 1 - the distribution icon is a real opaque 1024px RGB PNG referenced by the asset catalog
+  ---
+  duration_ms: 9.802375
+  type: 'test'
+  ...
+# Subtest: the checked-in Xcode project compiles the actual icon asset catalog
+ok 2 - the checked-in Xcode project compiles the actual icon asset catalog
+  ---
+  duration_ms: 1.917084
+  type: 'test'
+  ...
+# Subtest: the same elapsed time gives the same spring position at 30 and 120 frames per second
+ok 3 - the same elapsed time gives the same spring position at 30 and 120 frames per second
+  ---
+  duration_ms: 3.416
+  type: 'test'
+  ...
+# Subtest: retargeting keeps current position and momentum rather than jumping to the old destination
+ok 4 - retargeting keeps current position and momentum rather than jumping to the old destination
+  ---
+  duration_ms: 3.311
+  type: 'test'
+  ...
+# Subtest: long frame intervals stay finite and the spring settles at its destination
+ok 5 - long frame intervals stay finite and the spring settles at its destination
+  ---
+  duration_ms: 0.814917
+  type: 'test'
+  ...
+# Subtest: inside bounds the sheet follows the finger exactly and outside bounds it resists progressively
+ok 6 - inside bounds the sheet follows the finger exactly and outside bounds it resists progressively
+  ---
+  duration_ms: 0.214125
+  type: 'test'
+  ...
+# Subtest: a fast flick lands using its projected direction while a slow release stays in the nearest detent
+ok 7 - a fast flick lands using its projected direction while a slow release stays in the nearest detent
+  ---
+  duration_ms: 0.385542
+  type: 'test'
+  ...
+# Subtest: the tool sits above a visible selection when there is room
+ok 8 - the tool sits above a visible selection when there is room
+  ---
+  duration_ms: 0.250042
+  type: 'test'
+  ...
+# Subtest: a selection beside the top navigation gets tools below it
+ok 9 - a selection beside the top navigation gets tools below it
+  ---
+  duration_ms: 0.248875
+  type: 'test'
+  ...
+# Subtest: selections near either edge keep the entire menu in the safe area
+ok 10 - selections near either edge keep the entire menu in the safe area
+  ---
+  duration_ms: 0.148166
+  type: 'test'
+  ...
+# Subtest: a long selection in the half sheet exposed area keeps the tools reachable
+ok 11 - a long selection in the half sheet exposed area keeps the tools reachable
+  ---
+  duration_ms: 0.656167
+  type: 'test'
+  ...
+# Subtest: moving the source down moves the tools with it
+ok 12 - moving the source down moves the tools with it
+  ---
+  duration_ms: 0.578333
+  type: 'test'
+  ...
+# Subtest: a locator keeps its book, source version and paragraph independently of display pixels
+ok 13 - a locator keeps its book, source version and paragraph independently of display pixels
+  ---
+  duration_ms: 0.334291
+  type: 'test'
+  ...
+# Subtest: a different book or source version is not restored as this document
+ok 14 - a different book or source version is not restored as this document
+  ---
+  duration_ms: 0.09025
+  type: 'test'
+  ...
+# Subtest: offsets are bounded by actual same-layer text
+ok 15 - offsets are bounded by actual same-layer text
+  ---
+  duration_ms: 0.170291
+  type: 'test'
+  ...
+# Subtest: UTF-16 offsets do not split a surrogate pair
+ok 16 - UTF-16 offsets do not split a surrogate pair
+  ---
+  duration_ms: 0.112166
+  type: 'test'
+  ...
+# Subtest: a different text layer uses the paragraph fallback instead of reusing its character offset
+ok 17 - a different text layer uses the paragraph fallback instead of reusing its character offset
+  ---
+  duration_ms: 0.081959
+  type: 'test'
+  ...
+# Subtest: malformed and nonfinite locator fields are rejected
+ok 18 - malformed and nonfinite locator fields are rejected
+  ---
+  duration_ms: 0.162416
+  type: 'test'
+  ...
+# Subtest: normalization does not mutate the stored locator
+ok 19 - normalization does not mutate the stored locator
+  ---
+  duration_ms: 0.085666
+  type: 'test'
+  ...
+# Subtest: quote identity retains the existing six-field format
+ok 20 - quote identity retains the existing six-field format
+  ---
+  duration_ms: 0.092875
+  type: 'test'
+  ...
+# Subtest: a fresh entry follows the current reading paragraph instead of a placeholder
+ok 21 - a fresh entry follows the current reading paragraph instead of a placeholder
+  ---
+  duration_ms: 0.205
+  type: 'test'
+  ...
+# Subtest: a previous draft keeps its exact source and offers an explicit current-paragraph switch
+ok 22 - a previous draft keeps its exact source and offers an explicit current-paragraph switch
+  ---
+  duration_ms: 0.213292
+  type: 'test'
+  ...
+# Subtest: a sent question keeps its established source
+ok 23 - a sent question keeps its established source
+  ---
+  duration_ms: 0.088875
+  type: 'test'
+  ...
+# Subtest: an explicit selection keeps its scope even before typing a question
+ok 24 - an explicit selection keeps its scope even before typing a question
+  ---
+  duration_ms: 0.092958
+  type: 'test'
+  ...
+# Subtest: an uncompleted request alone resumes its own snapshot
+ok 25 - an uncompleted request alone resumes its own snapshot
+  ---
+  duration_ms: 0.175584
+  type: 'test'
+  ...
+# Subtest: a new active draft is not replaced by another paragraphs pending request
+ok 26 - a new active draft is not replaced by another paragraphs pending request
+  ---
+  duration_ms: 0.976375
+  type: 'test'
+  ...
+# Subtest: whitespace does not establish a discussion
+ok 27 - whitespace does not establish a discussion
+  ---
+  duration_ms: 0.131292
+  type: 'test'
+  ...
+# Subtest: an established question with an incomplete source is not silently rebound
+ok 28 - an established question with an incomplete source is not silently rebound
+  ---
+  duration_ms: 0.078
+  type: 'test'
+  ...
+# Subtest: resolver output does not mutate or alias the source snapshot
+ok 29 - resolver output does not mutate or alias the source snapshot
+  ---
+  duration_ms: 0.102917
+  type: 'test'
+  ...
+# Subtest: initial continuation has only the reading surface
+ok 30 - initial continuation has only the reading surface
+  ---
+  duration_ms: 0.077166
+  type: 'test'
+  ...
+# Subtest: top tools sleep at the exact idle boundary
+ok 31 - top tools sleep at the exact idle boundary
+  ---
+  duration_ms: 0.110583
+  type: 'test'
+  ...
+# Subtest: progress and navigation never become visible together
+ok 32 - progress and navigation never become visible together
+  ---
+  duration_ms: 0.063625
+  type: 'test'
+  ...
+# Subtest: keyboard focus pins tools and leaving renews the short window
+ok 33 - keyboard focus pins tools and leaving renews the short window
+  ---
+  duration_ms: 0.068625
+  type: 'test'
+  ...
+# Subtest: reading hides awake tools but does not dismiss an existing panel
+ok 34 - reading hides awake tools but does not dismiss an existing panel
+  ---
+  duration_ms: 0.19675
+  type: 'test'
+  ...
+# Subtest: selection replaces chrome and an explicit sheet replaces selection
+ok 35 - selection replaces chrome and an explicit sheet replaces selection
+  ---
+  duration_ms: 0.07075
+  type: 'test'
+  ...
+# Subtest: closing or cancelling intent returns directly to pure reading
+ok 36 - closing or cancelling intent returns directly to pure reading
+  ---
+  duration_ms: 0.069375
+  type: 'test'
+  ...
+# Subtest: a real touch hold has an explicit threshold and passage
+ok 37 - a real touch hold has an explicit threshold and passage
+  ---
+  duration_ms: 0.117833
+  type: 'test'
+  ...
+# Subtest: mouse clicks and non-primary or alternate buttons cannot arm long press
+ok 38 - mouse clicks and non-primary or alternate buttons cannot arm long press
+  ---
+  duration_ms: 0.08325
+  type: 'test'
+  ...
+# Subtest: finger movement cancels a potential hold permanently
+ok 39 - finger movement cancels a potential hold permanently
+  ---
+  duration_ms: 0.097083
+  type: 'test'
+  ...
+# Subtest: small tremor remains selectable without mutating the original sample
+ok 40 - small tremor remains selectable without mutating the original sample
+  ---
+  duration_ms: 0.065959
+  type: 'test'
+  ...
+# Subtest: cancelled and absent gestures never become ready
+ok 41 - cancelled and absent gestures never become ready
+  ---
+  duration_ms: 0.064167
+  type: 'test'
+  ...
+# Subtest: existing six-field partial quote draft retains exact source and editor text
+ok 42 - existing six-field partial quote draft retains exact source and editor text
+  ---
+  duration_ms: 0.291584
+  type: 'test'
+  ...
+# Subtest: full quote with legacy null offsets remains recoverable
+ok 43 - full quote with legacy null offsets remains recoverable
+  ---
+  duration_ms: 0.101041
+  type: 'test'
+  ...
+# Subtest: empty drafts do not create a section or fabricated note
+ok 44 - empty drafts do not create a section or fabricated note
+  ---
+  duration_ms: 0.098
+  type: 'test'
+  ...
+# Subtest: malformed keys foreign sources and impossible ranges stay stored but are not reattributed
+ok 45 - malformed keys foreign sources and impossible ranges stay stored but are not reattributed
+  ---
+  duration_ms: 0.26675
+  type: 'test'
+  ...
+# Subtest: draft discovery never mutates storage or returns shared quote objects
+ok 46 - draft discovery never mutates storage or returns shared quote objects
+  ---
+  duration_ms: 0.496292
+  type: 'test'
+  ...
+# Subtest: undo removes only exact saved note and restores untrimmed editor text
+ok 47 - undo removes only exact saved note and restores untrimmed editor text
+  ---
+  duration_ms: 0.282833
+  type: 'test'
+  ...
+# Subtest: undo refuses to overwrite a newer same-quote draft and keeps both versions
+ok 48 - undo refuses to overwrite a newer same-quote draft and keeps both versions
+  ---
+  duration_ms: 0.115792
+  type: 'test'
+  ...
+# Subtest: same draft text can be restored without duplication
+ok 49 - same draft text can be restored without duplication
+  ---
+  duration_ms: 0.195375
+  type: 'test'
+  ...
+# Subtest: changed save or another author cannot be removed by an old receipt
+ok 50 - changed save or another author cannot be removed by an old receipt
+  ---
+  duration_ms: 0.163667
+  type: 'test'
+  ...
+# Subtest: repeat or missing undo does not produce a second draft or remove another save
+ok 51 - repeat or missing undo does not produce a second draft or remove another save
+  ---
+  duration_ms: 0.100333
+  type: 'test'
+  ...
+# Subtest: a malformed receipt cannot replace saved text with another draft
+ok 52 - a malformed receipt cannot replace saved text with another draft
+  ---
+  duration_ms: 0.085416
+  type: 'test'
+  ...
+# Subtest: source validation rejects out-of-bounds zero-length and mismatched quotes without deleting storage
+ok 53 - source validation rejects out-of-bounds zero-length and mismatched quotes without deleting storage
+  ---
+  duration_ms: 0.200625
+  type: 'test'
+  ...
+# Subtest: noncanonical JSON keys do not advertise a draft the editor cannot recover
+ok 54 - noncanonical JSON keys do not advertise a draft the editor cannot recover
+  ---
+  duration_ms: 0.084041
+  type: 'test'
+  ...
+# Subtest: surrogate boundaries reject split characters while a full selected codepoint survives
+ok 55 - surrogate boundaries reject split characters while a full selected codepoint survives
+  ---
+  duration_ms: 0.198709
+  type: 'test'
+  ...
+# Subtest: unverified legacy null-range text is not presented as an original quotation
+ok 56 - unverified legacy null-range text is not presented as an original quotation
+  ---
+  duration_ms: 0.09225
+  type: 'test'
+  ...
+# Subtest: chapter seek starts at first source character
+ok 57 - chapter seek starts at first source character
+  ---
+  duration_ms: 0.204291
+  type: 'test'
+  ...
+# Subtest: chapter seek end uses the last source character even when the chapter fits onscreen
+ok 58 - chapter seek end uses the last source character even when the chapter fits onscreen
+  ---
+  duration_ms: 0.1305
+  type: 'test'
+  ...
+# Subtest: paragraph boundaries and mid-chapter positions use stable text rather than pixels
+ok 59 - paragraph boundaries and mid-chapter positions use stable text rather than pixels
+  ---
+  duration_ms: 0.084834
+  type: 'test'
+  ...
+# Subtest: seek never splits a source surrogate pair
+ok 60 - seek never splits a source surrogate pair
+  ---
+  duration_ms: 0.066125
+  type: 'test'
+  ...
+# Subtest: another reading layer uses its own text lengths
+ok 61 - another reading layer uses its own text lengths
+  ---
+  duration_ms: 0.077458
+  type: 'test'
+  ...
+# Subtest: empty chapters and invalid seeks do not fabricate a position
+ok 62 - empty chapters and invalid seeks do not fabricate a position
+  ---
+  duration_ms: 0.067208
+  type: 'test'
+  ...
+# Subtest: disabled channels read no signing credentials and publish no plan
+ok 63 - disabled channels read no signing credentials and publish no plan
+  ---
+  duration_ms: 1.624625
+  type: 'test'
+  ...
+# Subtest: dispatch verifies the latest exact CI run and refuses a newer failed run
+ok 64 - dispatch verifies the latest exact CI run and refuses a newer failed run
+  ---
+  duration_ms: 0.484416
+  type: 'test'
+  ...
+# Subtest: signed IPA stays on one ephemeral runner and is never uploaded to GitHub artifacts or releases
+ok 65 - signed IPA stays on one ephemeral runner and is never uploaded to GitHub artifacts or releases
+  ---
+  duration_ms: 136.344083
+  type: 'test'
+  ...
+# Subtest: later workflow attempts never make an uncertain second transport submission
+ok 66 - later workflow attempts never make an uncertain second transport submission
+  ---
+  duration_ms: 1.421709
+  type: 'test'
+  ...
+# Subtest: a minimal receipt is trusted only with its matching successful source workflow and CI artifact
+ok 67 - a minimal receipt is trusted only with its matching successful source workflow and CI artifact
+  ---
+  duration_ms: 1.50675
+  type: 'test'
+  ...
+# Subtest: receipt ZIP downloads require the server digest and exactly the allowlisted small JSON
+ok 68 - receipt ZIP downloads require the server digest and exactly the allowlisted small JSON
+  ---
+  duration_ms: 179.39575
+  type: 'test'
+  ...
+# Subtest: read-only recovery accepts a failed source run only when its exact plan, app and successful CI match
+ok 69 - read-only recovery accepts a failed source run only when its exact plan, app and successful CI match
+  ---
+  duration_ms: 0.555542
+  type: 'test'
+  ...
+# Subtest: recovery validates the selected main workflow before accepting a bounded plan with no executable paths
+ok 70 - recovery validates the selected main workflow before accepting a bounded plan with no executable paths
+  ---
+  duration_ms: 136.843375
+  type: 'test'
+  ...
+# Subtest: a different IPA cannot use the archived release metadata
+ok 71 - a different IPA cannot use the archived release metadata
+  ---
+  duration_ms: 1.258667
+  type: 'test'
+  ...
+# Subtest: a receipt requires matching exact identity and independent valid processing proof
+ok 72 - a receipt requires matching exact identity and independent valid processing proof
+  ---
+  duration_ms: 0.334042
+  type: 'test'
+  ...
+# Subtest: the persisted receipt drops arbitrary plan/proof fields and contains no binary or secret metadata
+ok 73 - the persisted receipt drops arbitrary plan/proof fields and contains no binary or secret metadata
+  ---
+  duration_ms: 0.204833
+  type: 'test'
+  ...
+# Subtest: publishing requires both channel enablement and explicit manual or automatic authorization
+ok 74 - publishing requires both channel enablement and explicit manual or automatic authorization
+  ---
+  duration_ms: 2.880333
+  type: 'test'
+  ...
+# Subtest: stale CI, PR workflows, foreign repositories and non-main dispatch cannot publish
+ok 75 - stale CI, PR workflows, foreign repositories and non-main dispatch cannot publish
+  ---
+  duration_ms: 0.456375
+  type: 'test'
+  ...
+# Subtest: versions are strict and build numbers are monotonic, Apple-sized, and stable on reruns
+ok 76 - versions are strict and build numbers are monotonic, Apple-sized, and stable on reruns
+  ---
+  duration_ms: 2.725875
+  type: 'test'
+  ...
+# Subtest: a trusted receipt binds source, artifact, workflow, Apple app and exact valid build
+ok 77 - a trusted receipt binds source, artifact, workflow, Apple app and exact valid build
+  ---
+  duration_ms: 1.175583
+  type: 'test'
+  ...
+# Subtest: build lookup requires exact iOS version and build, rejecting ambiguity and terminal failure
+ok 78 - build lookup requires exact iOS version and build, rejecting ambiguity and terminal failure
+  ---
+  duration_ms: 0.586416
+  type: 'test'
+  ...
+# Subtest: Apple processing retries transient reads, waits for VALID, and bounds the deadline
+ok 79 - Apple processing retries transient reads, waits for VALID, and bounds the deadline
+  ---
+  duration_ms: 0.755917
+  type: 'test'
+  ...
+# Subtest: API client retries only transient failures and never follows credential-bearing redirects
+ok 80 - API client retries only transient failures and never follows credential-bearing redirects
+  ---
+  duration_ms: 3.899583
+  type: 'test'
+  ...
+# Subtest: ASC JWT uses ES256 with a short lifetime and valid JOSE signature
+ok 81 - ASC JWT uses ES256 with a short lifetime and valid JOSE signature
+  ---
+  duration_ms: 2.373
+  type: 'test'
+  ...
+# Subtest: default signing audit is read only and reports exact app/certificate profile metadata
+ok 82 - default signing audit is read only and reports exact app/certificate profile metadata
+  ---
+  duration_ms: 1.481209
+  type: 'test'
+  ...
+# Subtest: profile creation requires a distinct explicit approval and never revokes a resource
+ok 83 - profile creation requires a distinct explicit approval and never revokes a resource
+  ---
+  duration_ms: 1.620209
+  type: 'test'
+  ...
+# Subtest: Apple icon failures retain actionable codes without arbitrary messages or userInfo
+ok 84 - Apple icon failures retain actionable codes without arbitrary messages or userInfo
+  ---
+  duration_ms: 1.648042
+  type: 'test'
+  ...
+# Subtest: credential-looking fields and unstructured transport output are never reflected
+ok 85 - credential-looking fields and unstructured transport output are never reflected
+  ---
+  duration_ms: 0.453916
+  type: 'test'
+  ...
+# Subtest: authorization and network categories are allowlisted and numeric codes remain bounded
+ok 86 - authorization and network categories are allowlisted and numeric codes remain bounded
+  ---
+  duration_ms: 2.418375
+  type: 'test'
+  ...
+# Subtest: native dependency matches its independently pinned upstream source
+ok 87 - native dependency matches its independently pinned upstream source
+  ---
+  duration_ms: 21.356083
+  type: 'test'
+  ...
+# Subtest: native dependency rejects forged source and jointly altered provenance
+ok 88 - native dependency rejects forged source and jointly altered provenance
+  ---
+  duration_ms: 48.829833
+  type: 'test'
+  ...
+# Subtest: Markdown parser matches its reviewed official Swift upstream source
+ok 89 - Markdown parser matches its reviewed official Swift upstream source
+  ---
+  duration_ms: 33.712459
+  type: 'test'
+  ...
+# Subtest: Markdown parser rejects altered C code and jointly forged provenance
+ok 90 - Markdown parser rejects altered C code and jointly forged provenance
+  ---
+  duration_ms: 53.337875
+  type: 'test'
+  ...
+1..90
+# tests 90
+# suites 0
+# pass 90
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 470.848042

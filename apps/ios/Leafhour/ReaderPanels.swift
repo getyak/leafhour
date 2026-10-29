@@ -5,7 +5,11 @@ struct ReaderPanelView: View {
     let panel: ReaderPanel
     @Bindable var session: ReaderSession
     let systemColorScheme: ColorScheme
+    @Bindable var speech: ReaderSpeech
+    @Bindable var tools: ReaderCloudTools
+    let cloud: CloudLibraryClient?
     let onJump: (Int, ReadingAnchor?) -> Void
+    let onCompanion: () -> Void
     @Environment(\.dismiss) private var dismiss
     private var isNoteEditor: Bool { if case .note = panel { return true }; return false }
     var body: some View {
@@ -21,19 +25,14 @@ struct ReaderPanelView: View {
                 case .search: BookSearchPanel(session: session, onJump: onJump)
                 case .preferences: ReaderPreferencesPanel(session: session)
                 case .records: ReaderRecordsPanel(session: session, onJump: onJump)
+                case .tools: ReaderMorePanel(session: session, speech: speech, tools: tools, cloud: cloud, onJump: onJump, onCompanion: onCompanion)
+                case .listening: ReaderListeningPanel(session: session, speech: speech)
+                case .translation: ReaderTranslationPanel(session: session, tools: tools, cloud: cloud)
+                case .introduction: ReaderIntroductionPanel(session: session, tools: tools, cloud: cloud)
+                case .conversation: ReaderConversationPanel(session: session, tools: tools, cloud: cloud)
                 case .note(let quote): NoteEditorPanel(quote: quote, session: session)
                 case .companion(let quote):
-                    ScrollView {
-                        VStack(alignment: .leading, spacing: 18) {
-                            if let quote {
-                                Text("作者原文").font(.caption).foregroundStyle(.secondary)
-                                Text(quote.text).font(.body).textSelection(.enabled)
-                                Divider()
-                            }
-                            Text("此设备尚未连接 AI 陪读。原文仍在这里，可以继续阅读。")
-                                .font(.subheadline).foregroundStyle(.secondary)
-                        }.frame(maxWidth: .infinity, alignment: .leading).padding(24)
-                    }.navigationTitle("陪我读")
+                    ReaderConversationPanel(session: session, tools: tools, cloud: cloud, selection: quote, title: "陪我读")
                 case .source(let quote):
                     ScrollView {
                         VStack(alignment: .leading, spacing: 18) {
@@ -41,7 +40,7 @@ struct ReaderPanelView: View {
                             Text(quote.text).font(.title3).textSelection(.enabled)
                             Text("\(session.book.title) · \(session.book.chapters.first { $0.id == quote.anchor.chapterID }?.title ?? "")").font(.footnote).foregroundStyle(.secondary)
                             Divider()
-                            Text("此导入未附直译或意译。保留原文，没有生成替代译文。").font(.subheadline).foregroundStyle(.secondary)
+                            Text("原文与译文分别保留。已有译文可从阅读工具的“翻译”核对，未翻译的内容仍显示原文。").font(.subheadline).foregroundStyle(.secondary)
                         }.padding(24)
                     }.navigationTitle("核对原文")
                 }
@@ -108,7 +107,7 @@ struct BookSearchPanel: View {
         guard !requested.query.isEmpty else { outcome = nil; return }
         do {
             try await Task.sleep(for: .milliseconds(150))
-            let results = try await BookSearch.matches(in: session.book.chapters, query: requested.query)
+            let results = try await BookSearch.matches(in: session.book.chapters, query: requested.query, markdown: session.book.rendersMarkdown)
             try Task.checkCancellation()
             guard requested == request else { return }
             outcome = .matches(requested, results)
@@ -176,7 +175,7 @@ struct ReaderPreferencesPanel: View {
             Section("阅读纸面") {
                 Picker("主题", selection: binding(\.theme)) { Text("清纸").tag("paper"); Text("夜读").tag("night"); Text("跟随系统").tag("system") }.pickerStyle(.segmented)
             }
-            Section("原文与译文") { Text("此书由本机文件导入。未附直译、意译或缓存讲解，不会在切换排版时调用模型。").font(.footnote).foregroundStyle(.secondary) }
+            Section("原文与译文") { Text("从阅读工具的“翻译”查看当前段的直译、意译和原文。切换排版不生成内容；未翻译的段落保留原文。").font(.footnote).foregroundStyle(.secondary) }
         }.navigationTitle("阅读设置")
     }
 }
