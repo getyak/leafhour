@@ -271,21 +271,26 @@ struct ReaderRecordsPanel: View {
                     }
                 }
             }
-            if !session.state.notes.isEmpty { Section("我的笔记") {
+            if !session.state.notes.isEmpty { Section {
                 ForEach(session.state.notes.reversed()) { note in
                     VStack(alignment: .leading, spacing: 8) {
-                        Text(location(note.anchor)).font(.caption).foregroundStyle(.secondary)
+                        Text(location(note.anchor)).font(.caption).foregroundStyle(Color.primary).fixedSize(horizontal: false, vertical: true)
                         Text(note.body).textSelection(.enabled)
-                        Text("原文 · " + note.quote).font(.footnote).foregroundStyle(.secondary).lineLimit(3)
+                        Text("原文 · " + note.quote).font(.footnote).foregroundStyle(Color.primary).lineLimit(3)
                         Text(note.modifiedAt, format: .dateTime.year().month().day().hour().minute())
-                            .font(.caption2).foregroundStyle(.secondary)
+                            .font(.subheadline).foregroundStyle(Color.primary).fixedSize(horizontal: false, vertical: true)
                             .accessibilityLabel("修改于 \(note.modifiedAt.formatted(date: .abbreviated, time: .shortened))")
-                        Button("回到原句", systemImage: "arrow.uturn.backward") {
+                        Button {
                             if let index = session.book.chapters.firstIndex(where: { $0.id == note.anchor.chapterID }) { onJump(index, note.anchor) }
-                        }.font(.footnote)
+                        } label: {
+                            Label {
+                                Text("回到原句").font(.body).fixedSize(horizontal: false, vertical: true)
+                            } icon: { Image(systemName: "arrow.uturn.backward") }
+                                .frame(minHeight: 44).contentShape(Rectangle())
+                        }.buttonStyle(.borderless)
                     }.padding(.vertical, 6)
                 }
-            } }
+            } header: { Text("我的笔记").foregroundStyle(Color.primary) } }
         }.navigationTitle("我的记录")
             .sheet(item: $editing) { quote in
                 NavigationStack { NoteEditorPanel(quote: quote, session: session) }
