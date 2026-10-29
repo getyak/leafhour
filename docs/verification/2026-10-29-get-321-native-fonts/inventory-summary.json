@@ -28,19 +28,19 @@
   },
   "sampleFallback": {
     "traditionalChinese": {
-      "untagged": ["PingFangUIDisplaySC-Regular"],
-      "declaredLanguageHint": ["PingFangUIDisplayTC-Regular"]
+      "untagged": [".PingFangUIDisplaySC-Regular"],
+      "declaredLanguageHint": [".PingFangUIDisplayTC-Regular"]
     },
     "japaneseSentence": {
-      "untagged": ["PingFangUIDisplaySC-Regular", ".CJKSymbolsFallbackSC-Regular"],
+      "untagged": [".PingFangUIDisplaySC-Regular", ".CJKSymbolsFallbackSC-Regular"],
       "declaredLanguageHint": ["HiraMinProN-W3"]
     },
     "ambiguousHan": {
       "text": "読書",
-      "untagged": ["PingFangUIDisplaySC-Regular"],
+      "untagged": [".PingFangUIDisplaySC-Regular"],
       "declaredLanguageHint": ["HiraMinProN-W3"]
     },
-    "koreanWithLatinPunctuation": ["AppleSDGothicNeoI-Regular", ".NewYork-Regular"]
+    "koreanWithLatinPunctuation": [".AppleSDGothicNeoI-Regular", ".NewYork-Regular"]
   },
   "directFaceResolution": {
     "requestedPostScriptName": "HiraMinProN-W3",
