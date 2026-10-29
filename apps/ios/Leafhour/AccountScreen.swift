@@ -68,9 +68,14 @@ struct AccountScreen: View {
                             .disabled(working || email.isEmpty || (useCode ? code.isEmpty : password.isEmpty)).accessibilityIdentifier("leafhour-login-submit")
                         Button(useCode ? "使用密码登录" : "改用邮箱验证码") { useCode.toggle(); error = nil }.disabled(working)
                     }.disabled(model.nativeAuthenticating)
-                    if let error { Section { Text(error).foregroundStyle(.red).font(.footnote) } }
                     Section("先在本机阅读也可以") {
                         Text("未登录时导入的书与记录仍留在本机书房。登录不会自动把它们传给任何账号；回到本机书房可继续阅读或导出。").font(.footnote).foregroundStyle(.secondary)
+                    }
+                }
+                if let error {
+                    Section {
+                        Text(error).foregroundStyle(.red).font(.footnote)
+                            .accessibilityIdentifier("leafhour-account-auth-error")
                     }
                 }
             }.navigationTitle(model.account == nil ? "登录书房" : "我的账号").navigationBarTitleDisplayMode(.inline)
@@ -83,7 +88,7 @@ struct AccountScreen: View {
         }
     }
     private func available(_ provider: NativeOAuthProvider) -> Bool {
-        !working && !model.nativeAuthenticating && model.nativeAuthStatus?.available == true && model.nativeAuthStatus?.providers.contains(provider) == true
+        !working && !model.busy && !model.nativeAuthenticating && model.nativeAuthStatus?.available == true && model.nativeAuthStatus?.providers.contains(provider) == true
     }
     @ViewBuilder private var providerOptions: some View {
         Section {
@@ -111,6 +116,10 @@ struct AccountScreen: View {
                     Button("关联 \(provider.name)") { begin(provider) }.frame(minHeight: 44).disabled(!available(provider)).accessibilityIdentifier("leafhour-link-" + provider.rawValue)
                 }
                 Button("刷新登录方式", systemImage: "arrow.clockwise") { Task { await model.loadAuthenticationOptions() } }.disabled(model.nativeAuthenticating)
+            }
+            if model.busy {
+                Label(model.account == nil ? "正在处理书籍，完成后可以登录。" : "正在处理书籍，完成后可以关联登录方式。", systemImage: "hourglass")
+                    .font(.footnote).foregroundStyle(.secondary).accessibilityIdentifier("leafhour-auth-book-processing")
             }
             if model.nativeAuthenticating { ProgressView(model.account == nil ? "正在等待登录…" : "正在确认账号关联…") }
             if model.nativeAuthStatus == nil && model.nativeAuthMessage == nil { ProgressView("正在核对可用的登录方式…") }
