@@ -255,6 +255,7 @@ struct ReaderConversationPanel: View {
     var title = "阅读陪读"
     @State private var didLoad = false
     @State private var sourceExpanded = false
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @FocusState private var questionFocused: Bool
     private struct LatestTurn: Equatable {
         let id: String
@@ -300,7 +301,7 @@ struct ReaderConversationPanel: View {
             .scrollDismissesKeyboard(.interactively)
             .safeAreaInset(edge: .bottom, spacing: 0) { composer }
             .onChange(of: latestTurn) { _, _ in
-                withAnimation(.easeOut(duration: 0.2)) { proxy.scrollTo("reader-conversation-bottom", anchor: .bottom) }
+                withAnimation(reduceMotion ? nil : .easeOut(duration: 0.2)) { proxy.scrollTo("reader-conversation-bottom", anchor: .bottom) }
             }
             .onChange(of: tools.error) { _, value in
                 if value != nil { proxy.scrollTo("reader-conversation-bottom", anchor: .bottom) }
