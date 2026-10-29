@@ -181,9 +181,16 @@ public struct MarkdownDocument: Sendable {
                     // Entity and escape syntax can be longer than the decoded display character.
                     if cursor < originals.count, originals[cursor] == "&", let end = originals[cursor...].prefix(32).firstIndex(of: ";") {
                         let entity = String(String.UnicodeScalarView(originals[cursor...end]))
-                        let remaining = String(String.UnicodeScalarView(visible[index...]))
+                        let remaining = visible[index...]
                         let decoded = Self.decodeEntity(entity)
-                        if decoded != entity, !remaining.hasPrefix(entity), remaining.hasPrefix(decoded) {
+                        let decodedScalars = Array(decoded.unicodeScalars), literalScalars = Array(entity.unicodeScalars)
+                        // An entity can decode to the first scalar of a larger
+                        // grapheme (e.g. encoded squirrel + variation selector).
+                        // String.hasPrefix compares Characters and can reject
+                        // that valid prefix, losing the source cursor entirely.
+                        if decoded != entity,
+                           !remaining.prefix(literalScalars.count).elementsEqual(literalScalars),
+                           remaining.prefix(decodedScalars.count).elementsEqual(decodedScalars) {
                             entityPosition = originalPositions[cursor]; entityScalars = max(0, decoded.unicodeScalars.count - 1)
                             cursor = end + 1; appendPosition(entityPosition, scalar: scalar); continue
                         }

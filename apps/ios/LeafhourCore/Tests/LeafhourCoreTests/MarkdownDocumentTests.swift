@@ -68,6 +68,66 @@ final class MarkdownDocumentTests: XCTestCase {
             XCTAssertEqual(document.sourceUTF16Offset(at: (document.text as NSString).range(of: word).location), (source as NSString).range(of: word).location)
         }
     }
+    func testLiteralAndEncodedEmojiHaveAccurateScalarSourceMappingsAndRoundTrips() throws {
+        let source = "Literal **🐿️**; encoded **&#x1F43F;&#xfe0f;**; multi **&NotEqualTilde;**; link [café](https://example.invalid); after **done**."
+        let document = MarkdownDocument(source: source), raw = source as NSString, visible = document.text as NSString
+        XCTAssertEqual(document.text, "Literal 🐿️; encoded 🐿️; multi ≂̸; link café; after done.\n")
+        let foundLiteral = visible.range(of: "🐿️")
+        let literal = try XCTUnwrap(foundLiteral.location == NSNotFound ? nil : foundLiteral)
+        let encoded = visible.range(of: "🐿️", options: [], range: NSRange(location: NSMaxRange(literal), length: visible.length - NSMaxRange(literal)))
+        let literalSource = raw.range(of: "🐿️"), entitySource = raw.range(of: "&#x1F43F;"), selectorSource = raw.range(of: "&#xfe0f;")
+        for (display, scalarSource, selector) in [(literal, literalSource.location, literalSource.location + 2), (encoded, entitySource.location, selectorSource.location)] {
+            XCTAssertNotEqual(display.location, NSNotFound)
+            XCTAssertEqual(document.sourceUTF16Offset(at: display.location), scalarSource)
+            XCTAssertEqual(document.sourceUTF16Offset(at: display.location + 1), scalarSource, "Both UTF-16 surrogate units belong to the squirrel scalar")
+            XCTAssertEqual(document.sourceUTF16Offset(at: display.location + 2), selector, "The variation selector has its own source scalar even when it shares one displayed Character")
+            XCTAssertEqual(document.displayedUTF16Offset(forSourceUTF16Offset: scalarSource), display.location)
+            XCTAssertEqual(document.displayedUTF16Offset(forSourceUTF16Offset: selector), display.location + 2)
+        }
+        let multi = visible.range(of: "≂̸"), multiSource = raw.range(of: "&NotEqualTilde;")
+        XCTAssertEqual(document.sourceUTF16Offset(at: multi.location), multiSource.location)
+        XCTAssertEqual(document.sourceUTF16Offset(at: multi.location + 1), multiSource.location, "One entity can produce multiple visible scalars")
+        XCTAssertEqual(document.displayedUTF16Offset(forSourceUTF16Offset: multiSource.location), multi.location)
+        for word in ["café", "done"] {
+            let display = visible.range(of: word), sourceRange = raw.range(of: word)
+            XCTAssertEqual(document.sourceUTF16Offset(at: display.location), sourceRange.location)
+            XCTAssertEqual(document.displayedUTF16Offset(forSourceUTF16Offset: sourceRange.location), display.location)
+        }
+    }
+    func testEncodedPrefixesCanCombineWithLiteralScalarsWithoutLosingTheirSource() throws {
+        func firstMatch(of needle: [UInt16], in haystack: [UInt16]) -> Int? {
+            guard !needle.isEmpty, needle.count <= haystack.count else { return nil }
+            return (0...(haystack.count - needle.count)).first {
+                haystack[$0..<($0 + needle.count)].elementsEqual(needle)
+            }
+        }
+        let cases: [(source: String, display: [UInt16], token: [UInt16], tail: [UInt16])] = [
+            ("**&#x65;\u{301}** after", [0x65, 0x301], Array("&#x65;".utf16), [0x301]),
+            ("**e&#x301;** after", [0x65, 0x301], [0x65], Array("&#x301;".utf16)),
+            ("**&NotEqualTilde;\u{FE0F}** after", [0x2242, 0x338, 0xFE0F], Array("&NotEqualTilde;".utf16), [0xFE0F])
+        ]
+        for item in cases {
+            let document = MarkdownDocument(source: item.source)
+            let raw = Array(item.source.utf16), display = Array(document.text.utf16)
+            let diagnostics = "raw scalars: \(item.source.unicodeScalars.map(\.value)); display scalars: \(document.text.unicodeScalars.map(\.value))"
+            let after: [UInt16] = [0x61, 0x66, 0x74, 0x65, 0x72]
+            XCTAssertEqual(display, item.display + [0x20] + after + [0xA], diagnostics)
+            // Exact UTF-16 subsequences can end before a combining mark or start
+            // inside a Character; NSString.range(of:) may reject those boundaries.
+            let visible = try XCTUnwrap(firstMatch(of: item.display, in: display), diagnostics)
+            let start = try XCTUnwrap(firstMatch(of: item.token, in: raw), diagnostics)
+            let suffix = try XCTUnwrap(firstMatch(of: item.tail, in: raw), diagnostics)
+            let visibleSuffix = visible + item.display.count - 1
+            XCTAssertEqual(document.sourceUTF16Offset(at: visible), start, diagnostics)
+            XCTAssertEqual(document.displayedUTF16Offset(forSourceUTF16Offset: start), visible, diagnostics)
+            XCTAssertEqual(document.sourceUTF16Offset(at: visibleSuffix), suffix, diagnostics)
+            XCTAssertEqual(document.displayedUTF16Offset(forSourceUTF16Offset: suffix), visibleSuffix, diagnostics)
+            let visibleAfter = try XCTUnwrap(firstMatch(of: after, in: display), diagnostics)
+            let rawAfter = try XCTUnwrap(firstMatch(of: after, in: raw), diagnostics)
+            XCTAssertEqual(document.sourceUTF16Offset(at: visibleAfter), rawAfter, diagnostics)
+            XCTAssertEqual(document.displayedUTF16Offset(forSourceUTF16Offset: rawAfter), visibleAfter, diagnostics)
+        }
+    }
     func testCodePreservesLiteralEntitiesAndMarkdown() {
         let source = "```html\n&amp; **kept**\n```"
         let document = MarkdownDocument(source: source)
