@@ -87,6 +87,23 @@ final class ReaderLayoutTests: XCTestCase {
         }
         XCTAssertTrue(actions.contains { $0 === copy })
         XCTAssertFalse(copy.attributes.contains(.disabled), "Copy remains a normal system selection action")
+        XCTAssertTrue(actions.first === copy, "Cross-paragraph copying must stay ahead of unavailable anchored actions")
+    }
+
+    func testSystemEditingStaysAheadOfOptionalReadingActionsWithoutReplacingCopy() async throws {
+        let session = try await session(source: "First paragraph.")
+        let reading = TextReadingView(session: session, onNote: { _ in }, onSource: { _ in }, onExplain: { _ in }, onWake: { _ in }, onReadingScroll: {}, onTranslate: { _ in })
+        let coordinator = reading.makeCoordinator()
+        let text = UITextView(frame: CGRect(x: 0, y: 0, width: 390, height: 700))
+        coordinator.view = text; coordinator.updateContent(text)
+        let copy = UIAction(title: "Copy") { _ in }
+        let editing = UIMenu(title: "", identifier: .standardEdit, options: .displayInline, children: [copy])
+        let lookup = UIAction(title: "Look Up") { _ in }
+        let menu = try XCTUnwrap(coordinator.textView(text, editMenuForTextIn: NSRange(location: 0, length: 5), suggestedActions: [lookup, editing]))
+        XCTAssertTrue(menu.children.first === editing)
+        XCTAssertTrue(actions(in: menu).first === copy)
+        XCTAssertTrue(actions(in: menu).contains { $0.title == "记笔记" })
+        XCTAssertTrue(actions(in: menu).last === lookup)
     }
 
     func testSingleParagraphSelectionKeepsAllAnchoredActionsAvailable() async throws {

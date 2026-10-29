@@ -321,11 +321,17 @@ struct TextReadingView: UIViewRepresentable {
             if parent.onDiscuss != nil {
                 actions.append(UIAction(title: "问陪读", image: UIImage(systemName: "bubble.left.and.bubble.right")) { [weak self] _ in if let value = quote() { self?.parent.onDiscuss?(value) } })
             }
+            // Keep UIKit's Copy/Select editing group ahead of optional reading
+            // actions. Preserve every system element and its original behavior.
+            let editing = suggestedActions.filter { ($0 as? UIMenu)?.identifier == .standardEdit }
+            let other = suggestedActions.filter { ($0 as? UIMenu)?.identifier != .standardEdit }
+            let leading = editing.isEmpty ? suggestedActions : editing
+            let trailing = editing.isEmpty ? [] : other
             if selectedQuote(in: textView, range: range) == nil {
                 for case let action as UIAction in actions { action.attributes = action.attributes.union(.disabled) }
-                return UIMenu(children: [UIMenu(title: selectionGuidance, options: .displayInline, children: actions)] + suggestedActions)
+                return UIMenu(children: leading + [UIMenu(title: selectionGuidance, options: .displayInline, children: actions)] + trailing)
             }
-            return UIMenu(children: actions + suggestedActions)
+            return UIMenu(children: leading + actions + trailing)
         }
     }
 }
