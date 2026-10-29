@@ -201,6 +201,7 @@ private struct ReaderExpandedTextPanel: View {
     let source: String
     let text: String
     var serif = false
+    @Environment(\.readerContinueReading) private var continueReading
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 18) {
@@ -212,6 +213,13 @@ private struct ReaderExpandedTextPanel: View {
             .frame(maxWidth: 680, alignment: .leading)
             .frame(maxWidth: .infinity)
         }.navigationTitle(title).navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                if let continueReading {
+                    ToolbarItem(placement: .confirmationAction) {
+                        Button("继续读", action: continueReading).accessibilityIdentifier("reader-expanded-continue")
+                    }
+                }
+            }
     }
 }
 

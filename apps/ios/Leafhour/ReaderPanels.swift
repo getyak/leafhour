@@ -1,6 +1,16 @@
 import SwiftUI
 import LeafhourCore
 
+private struct ReaderContinueReadingKey: EnvironmentKey {
+    static let defaultValue: (() -> Void)? = nil
+}
+extension EnvironmentValues {
+    var readerContinueReading: (() -> Void)? {
+        get { self[ReaderContinueReadingKey.self] }
+        set { self[ReaderContinueReadingKey.self] = newValue }
+    }
+}
+
 struct ReaderPanelView: View {
     let panel: ReaderPanel
     @Bindable var session: ReaderSession
@@ -45,14 +55,16 @@ struct ReaderPanelView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 if !isNoteEditor {
-                    ToolbarItem(placement: .cancellationAction) { Button("继续读") {
-                        if panel.isCompanion { dismiss() }
-                        else { Task { let receipt = await session.flush(); if session.isCurrent(receipt) { dismiss() } } }
-                    } }
+                    ToolbarItem(placement: .cancellationAction) { Button("继续读", action: continueReading) }
                 }
             }
         }
+        .environment(\.readerContinueReading, continueReading)
         .preferredColorScheme(session.state.preferences.colorScheme(following: systemColorScheme))
+    }
+    private func continueReading() {
+        if panel.isCompanion { dismiss() }
+        else { Task { let receipt = await session.flush(); if session.isCurrent(receipt) { dismiss() } } }
     }
 }
 struct ReaderContentsPanel: View {
