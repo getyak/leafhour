@@ -32,6 +32,11 @@ struct LibraryScreen: View {
     private var filterBinding: Binding<LibraryShelfFilter> { Binding(get: { filter }, set: { filterRaw = $0.rawValue }) }
     private var sortBinding: Binding<LibraryShelfSort> { Binding(get: { sort }, set: { sortRaw = $0.rawValue }) }
     private var layoutBinding: Binding<LibraryShelfLayout> { Binding(get: { layout }, set: { layoutRaw = $0.rawValue }) }
+    private var shelfColumns: [GridItem] {
+        dynamicTypeSize.isAccessibilitySize
+            ? [GridItem(.flexible(), alignment: .top)]
+            : [GridItem(.adaptive(minimum: 136, maximum: 220), spacing: 20, alignment: .top)]
+    }
     private var resumeBook: LocalBook? {
         guard resumeOwnerKey == (model.account?.id ?? "device") else { return nil }
         return model.books.first(where: { $0.id == resumeBookID })
@@ -46,7 +51,7 @@ struct LibraryScreen: View {
                     ProgressView("正在打开书房…").frame(maxWidth: .infinity, maxHeight: .infinity)
                 } else if allItems.isEmpty && model.jobs.isEmpty {
                     emptyLibrary
-                } else if layout == .list || dynamicTypeSize.isAccessibilitySize {
+                } else if layout == .list {
                     listShelf
                 } else {
                     gridShelf
@@ -136,6 +141,7 @@ struct LibraryScreen: View {
             Section { libraryFooter }
         }
         .listStyle(.insetGrouped)
+        .accessibilityIdentifier("library-shelf-list")
     }
 
     private var gridShelf: some View {
@@ -149,7 +155,7 @@ struct LibraryScreen: View {
                 if visibleItems.isEmpty { filteredEmptyState.frame(maxWidth: .infinity) }
                 else {
                     Text("\(visibleItems.count) 本书").font(.subheadline).foregroundStyle(Color.primary)
-                    LazyVGrid(columns: [GridItem(.adaptive(minimum: 136, maximum: 220), spacing: 20, alignment: .top)], alignment: .leading, spacing: 24) {
+                    LazyVGrid(columns: shelfColumns, alignment: .leading, spacing: 24) {
                         ForEach(visibleItems) { item in
                             LibraryShelfTile(item: item, downloadUnavailable: model.busy, isActive: isActive(item), progress: model.activityProgress, status: model.status, open: { open(item) }, details: { details(item) })
                         }
@@ -167,6 +173,7 @@ struct LibraryScreen: View {
             }
             .padding(20)
         }
+        .accessibilityIdentifier("library-shelf-grid")
     }
 
     @ViewBuilder private var filteredEmptyState: some View {
@@ -253,11 +260,17 @@ struct LibraryScreen: View {
     private func resumeCard(_ book: LocalBook) -> some View {
         Button { Task { await model.open(book) } } label: {
             HStack(spacing: 14) {
-                BookCover(book: book)
+                if !dynamicTypeSize.isAccessibilitySize { BookCover(book: book) }
                 VStack(alignment: .leading, spacing: 6) {
                     Text("继续读").font(.caption.weight(.semibold)).foregroundStyle(Color.leafInk)
-                    Text(book.title).font(.headline).foregroundStyle(.primary).lineLimit(2)
-                    if let resumeChapter { Text(resumeChapter).font(.subheadline).foregroundStyle(.secondary).lineLimit(2) }
+                    Text(book.title).font(.headline).foregroundStyle(.primary)
+                        .lineLimit(dynamicTypeSize.isAccessibilitySize ? nil : 2)
+                        .fixedSize(horizontal: false, vertical: dynamicTypeSize.isAccessibilitySize)
+                    if let resumeChapter {
+                        Text(resumeChapter).font(.subheadline).foregroundStyle(.secondary)
+                            .lineLimit(dynamicTypeSize.isAccessibilitySize ? nil : 2)
+                            .fixedSize(horizontal: false, vertical: dynamicTypeSize.isAccessibilitySize)
+                    }
                     Label("此设备已下载，可离线继续", systemImage: "checkmark.circle").font(.caption).foregroundStyle(.secondary)
                 }
                 Spacer(minLength: 0)
