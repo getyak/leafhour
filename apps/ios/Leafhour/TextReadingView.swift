@@ -235,10 +235,15 @@ struct TextReadingView: UIViewRepresentable {
                 text: selected, sourceText: source.substring(with: NSRange(location: start, length: end - start)))
         }
         func textView(_ textView: UITextView, editMenuForTextIn range: NSRange, suggestedActions: [UIMenuElement]) -> UIMenu? {
-            func quote() -> SelectedQuote? { selectedQuote(in: textView, range: range) }
+            let selectionGuidance = "请在同一段原文内选择文字，以保留准确引用。"
+            func quote() -> SelectedQuote? {
+                let value = selectedQuote(in: textView, range: range)
+                if value == nil { parent.session.message = selectionGuidance }
+                return value
+            }
             let note = UIAction(title: "记笔记", image: UIImage(systemName: "square.and.pencil")) { [weak self] _ in
                 guard let self else { return }
-                guard let value = quote() else { self.parent.session.message = "请在同一段内选择文字，以保留准确原句引用。"; return }
+                guard let value = quote() else { return }
                 self.parent.onNote(value)
             }
             let source = UIAction(title: "核对原文", image: UIImage(systemName: "text.quote")) { [weak self] _ in if let value = quote() { self?.parent.onSource(value) } }
@@ -246,7 +251,7 @@ struct TextReadingView: UIViewRepresentable {
             if parent.onExplain != nil {
                 actions.insert(UIAction(title: "解释这句", image: UIImage(systemName: "text.bubble")) { [weak self] _ in
                     guard let self else { return }
-                    guard let value = quote() else { self.parent.session.message = "请在同一段内选择文字，以保留准确原句引用。"; return }
+                    guard let value = quote() else { return }
                     self.parent.onExplain?(value)
                 }, at: 0)
             }
@@ -255,6 +260,10 @@ struct TextReadingView: UIViewRepresentable {
             }
             if parent.onDiscuss != nil {
                 actions.append(UIAction(title: "问陪读", image: UIImage(systemName: "bubble.left.and.bubble.right")) { [weak self] _ in if let value = quote() { self?.parent.onDiscuss?(value) } })
+            }
+            if selectedQuote(in: textView, range: range) == nil {
+                for case let action as UIAction in actions { action.attributes = action.attributes.union(.disabled) }
+                return UIMenu(children: [UIMenu(title: selectionGuidance, options: .displayInline, children: actions)] + suggestedActions)
             }
             return UIMenu(children: actions + suggestedActions)
         }

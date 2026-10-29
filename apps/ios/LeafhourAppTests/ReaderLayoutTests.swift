@@ -55,4 +55,50 @@ final class ReaderLayoutTests: XCTestCase {
         // Reserving only the ordinary 24 pt page margin leaves this line behind that dock.
         XCTAssertLessThanOrEqual(finalLine.maxY, host.view.safeAreaLayoutGuide.layoutFrame.maxY - 130)
     }
+
+    func testCrossParagraphSelectionDisablesEveryAnchoredActionButKeepsCopy() async throws {
+        let session = try await session(source: "First paragraph.\n\nSecond paragraph.")
+        let reading = TextReadingView(session: session, onNote: { _ in }, onSource: { _ in }, onExplain: { _ in }, onWake: { _ in }, onReadingScroll: {}, onTranslate: { _ in })
+        let coordinator = reading.makeCoordinator()
+        let text = UITextView(frame: CGRect(x: 0, y: 0, width: 390, height: 700))
+        coordinator.view = text
+        coordinator.updateContent(text)
+        let first = (text.text as NSString).range(of: "First paragraph.")
+        let second = (text.text as NSString).range(of: "Second paragraph.")
+        let crossing = NSRange(location: first.location, length: NSMaxRange(second) - first.location)
+        let copy = UIAction(title: "Copy", identifier: UIAction.Identifier("copy-fixture")) { _ in }
+        let menu = try XCTUnwrap(coordinator.textView(text, editMenuForTextIn: crossing, suggestedActions: [copy]))
+        let actions = self.actions(in: menu)
+        for title in ["解释这句", "记笔记", "核对原文", "查看译文"] {
+            let action = try XCTUnwrap(actions.first { $0.title == title }, title)
+            XCTAssertTrue(action.attributes.contains(.disabled), "\(title) must not accept a quote crossing stable passage anchors")
+        }
+        XCTAssertTrue(actions.contains { $0 === copy })
+        XCTAssertFalse(copy.attributes.contains(.disabled), "Copy remains a normal system selection action")
+    }
+
+    func testSingleParagraphSelectionKeepsAllAnchoredActionsAvailable() async throws {
+        let session = try await session(source: "First paragraph.\n\nSecond paragraph.")
+        let reading = TextReadingView(session: session, onNote: { _ in }, onSource: { _ in }, onExplain: { _ in }, onWake: { _ in }, onReadingScroll: {}, onTranslate: { _ in })
+        let coordinator = reading.makeCoordinator()
+        let text = UITextView(frame: CGRect(x: 0, y: 0, width: 390, height: 700))
+        coordinator.view = text
+        coordinator.updateContent(text)
+        let range = (text.text as NSString).range(of: "Second paragraph.")
+        let menu = try XCTUnwrap(coordinator.textView(text, editMenuForTextIn: range, suggestedActions: []))
+        let actions = self.actions(in: menu)
+        XCTAssertEqual(actions.count, 4)
+        XCTAssertTrue(actions.allSatisfy { !$0.attributes.contains(.disabled) })
+        let quote = try XCTUnwrap(coordinator.selectedQuote(in: text, range: range))
+        XCTAssertEqual(quote.text, "Second paragraph.")
+        XCTAssertEqual(quote.anchor.passageID, session.chapter.passages.last?.id)
+    }
+
+    private func actions(in menu: UIMenu) -> [UIAction] {
+        menu.children.flatMap { element -> [UIAction] in
+            if let action = element as? UIAction { return [action] }
+            if let submenu = element as? UIMenu { return self.actions(in: submenu) }
+            return []
+        }
+    }
 }

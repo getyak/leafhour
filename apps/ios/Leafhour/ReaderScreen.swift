@@ -136,7 +136,13 @@ struct ReaderScreen: View {
                 .presentationCompactAdaptation(destination.isCompanion ? .none : .automatic)
                 .presentationBackgroundInteraction(destination.isCompanion ? .enabled(upThrough: .fraction(0.5)) : .enabled(upThrough: .medium))
         }
-        .alert("阅读记录", isPresented: Binding(get: { session.message != nil || (session.noteEditorID == nil && session.saveMessage != nil) }, set: { if !$0 { session.message = nil; session.saveMessage = nil } })) { Button("重试保存") { session.message = nil; session.saveMessage = nil; session.save() } } message: { Text(session.message ?? session.saveMessage ?? "") }
+        .alert(session.saveError == nil ? "阅读提示" : "阅读记录", isPresented: Binding(get: { session.message != nil || (session.noteEditorID == nil && session.saveMessage != nil) }, set: { if !$0 { session.message = nil; session.saveMessage = nil } })) {
+            if session.saveError != nil {
+                Button("重试保存") { session.message = nil; session.saveMessage = nil; session.save() }
+            } else {
+                Button("知道了") { session.message = nil; session.saveMessage = nil }
+            }
+        } message: { Text(session.message ?? session.saveMessage ?? "") }
         .onChange(of: focusedControl) { _, _ in clockID = UUID() }
         .onChange(of: session.selection?.id) { _, _ in clockID = UUID() }
         .onChange(of: chrome) { _, _ in clockID = UUID() }
