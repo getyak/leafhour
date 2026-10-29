@@ -81,3 +81,12 @@ node --test tests/platform-android.test.mjs tests/platform-popover-observer.test
 ```
 
 An independent reviewer also passed the targeted geometry/inner-scroll checks. These regressions replay the recorded boundary; they do not establish a successful Android run at the next source revision. Fresh same-head Android acceptance remains required.
+
+
+## Android at `6f83f17`: the positioned CJK text run
+
+The next [Android job](https://github.com/getyak/leafhour/actions/runs/40934206747/job/123660313095) failed on the Chinese shelf before reaching reader navigation. Its parent metadata title completed a real center scroll with seven events and settled at scrollY `136.72727966308594`. The directly wrapped CJK text was fully visible at y `402.42047119140625..424.2386531829834`, inside the effective root port `104..722`. A second center request made no movement; the observer predicted a remaining `0.3295621871948242px` delta and timed out. The screenshot showed the complete title, and runtime/background/cleanup errors were empty. This is a different failure from the fixed-pill geometry at `8523699`.
+
+Main font probes still use one native center request and must complete. After that successful parent probe, the layout-preserving direct CJK wrappers use one nearest request and retain the same bounded scroll completion, real visibility, text and glyph-coverage checks. There is no pixel tolerance, timeout fallback, repeated input, SDK change or product change. A genuinely offscreen or inner-clipped run that cannot move still fails.
+
+The new four-test boundary replay uses the real session and serialized native observer with the receipt geometry. The baseline produced one pass and three failures; the candidate passed all four, including offscreen/inner no-motion failures, visibility/coverage rejection and unchanged ordinary center behavior. Independent review reproduced the four passes without modifying the shared tree. The `6f83f17` full host gate separately passed 4371 tests with one Linux-only skip, and its main CI passed all 4372; those results do not substitute for new-head Android acceptance.

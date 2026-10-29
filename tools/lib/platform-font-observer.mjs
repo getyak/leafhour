@@ -342,17 +342,17 @@ export function createEvidenceSession({cdp,out,receipt,root,origin,failures=[]})
     await writeFile(path.join(out,name+'.png'),bytes);
     receipt.screenshots.push({file:name+'.png',bytes:bytes.length,sha256:sha(bytes)});
   }
-  async function fonts(selector,label,{awaitFonts=true}={}){
+  async function fonts(selector,label,{awaitFonts=true,alignment='center'}={}){
     receipt.activeProbe={selector,label,phase:'layout'};
     if(awaitFonts)await cdp.evaluate('document.fonts.ready.then(()=>true)');
     // Withheld fonts must stay pending, but the authored document's CSS must
     // have parsed before a native scroll can produce meaningful coordinates.
     // This observes existing styles/viewport; it never loads or releases fonts.
     else await viewport(label+' styles');
-    // A font probe should center the whole real text box. Chrome113 can leave
+    // Main font probes center the whole real text box. Chrome113 can leave
     // an only partly visible quote unmoved with nearest; retain one observed
     // native request and require its completion, never retry a failed probe.
-    const scroll=await cdp.evaluate('('+observeNativeScroll.toString()+')('+JSON.stringify(selector)+',"center")');
+    const scroll=await cdp.evaluate('('+observeNativeScroll.toString()+')('+JSON.stringify(selector)+','+JSON.stringify(alignment)+')');
     (receipt.scrolls??=[]).push({label,selector,...scroll});
     assert.ok(['settled','unchanged'].includes(scroll.status),label+' native scrolling must complete within the bounded observation');
     let usage;
@@ -401,7 +401,9 @@ export function createEvidenceSession({cdp,out,receipt,root,origin,failures=[]})
     assert.ok(probes.length,label+' must contain actual CJK text');
     const allowed=serif?/Noto.*Serif.*(?:SC|CJK)|Source.*Han.*Serif|Songti|STSong|SimSun|NSimSun/i:/Noto.*Serif.*(?:SC|CJK)|Source.*Han.*Serif|Songti|STSong|SimSun|NSimSun|PingFang|YaHei|Yu.?Gothic|Meiryo/i;
     for(const probe of probes){
-      const value=await fonts(probe.selector,label+' direct CJK text');
+      // The parent already completed its center request; these unchanged
+      // child runs only need to remain in view, without another center target.
+      const value=await fonts(probe.selector,label+' direct CJK text',{alignment:'nearest'});
       assert.equal(value.text,probe.text);
       assert.ok(value.fonts.length&&value.fonts.every(font=>font.glyphCount>0&&allowed.test(font.postScriptName||font.familyName)),label+' requires covered CJK glyphs, not Latin missing glyphs');
       value.probeWidths={before:probe.before,after:probe.after};

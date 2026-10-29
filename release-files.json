@@ -1406,5 +1406,6 @@
   "tests/platform-shelf-contract.test.mjs",
   "tests/reader-tool-focus.test.mjs",
   "tests/helpers/packaged-tool-focus.mjs",
-  "tests/reader-tool-focus-boundary.test.mjs"
+  "tests/reader-tool-focus-boundary.test.mjs",
+  "tests/platform-cjk-subrun.test.mjs"
 ]
