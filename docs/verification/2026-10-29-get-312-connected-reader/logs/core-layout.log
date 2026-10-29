@@ -1,0 +1,252 @@
+Borrowed-device warning: iPhone 17 Pro (02B4F0C1-A92F-469D-9DCC-5ED13F119507) was already Booted before this session and will be left as-is at closeout.
+[0/1] Planning build
+Building for debugging...
+[0/38] Write sources
+[1/38] Write swift-version--58304C5D6DBC2206.txt
+[2/38] Compiling cmark-gfm-extensions tasklist.c
+[3/38] Compiling cmark-gfm-extensions tagfilter.c
+[4/38] Compiling cmark-gfm-extensions strikethrough.c
+[5/38] Compiling cmark-gfm-extensions table.c
+[6/38] Compiling cmark-gfm-extensions ext_scanners.c
+[7/38] Compiling cmark-gfm-extensions core-extensions.c
+[8/38] Compiling cmark-gfm xml.c
+[9/38] Compiling cmark-gfm-extensions autolink.c
+[10/38] Compiling cmark-gfm syntax_extension.c
+[11/38] Compiling cmark-gfm utf8.c
+[12/38] Compiling cmark-gfm render.c
+[13/38] Compiling cmark-gfm registry.c
+[14/38] Compiling cmark-gfm scanners.c
+[15/38] Compiling cmark-gfm references.c
+[16/38] Compiling cmark-gfm plugin.c
+[17/38] Compiling cmark-gfm plaintext.c
+[18/38] Compiling cmark-gfm node.c
+[19/38] Compiling cmark-gfm map.c
+[20/38] Compiling cmark-gfm linked_list.c
+[21/38] Compiling cmark-gfm man.c
+[22/38] Compiling cmark-gfm iterator.c
+[23/38] Compiling cmark-gfm latex.c
+[24/38] Compiling cmark-gfm html.c
+[25/38] Compiling cmark-gfm inlines.c
+[26/38] Compiling cmark-gfm houdini_html_u.c
+[27/38] Compiling cmark-gfm houdini_html_e.c
+[28/38] Compiling cmark-gfm houdini_href_e.c
+[29/38] Compiling cmark-gfm footnotes.c
+[30/38] Compiling cmark-gfm cmark_ctype.c
+[31/38] Compiling cmark-gfm commonmark.c
+[32/38] Compiling cmark-gfm cmark.c
+[33/38] Compiling cmark-gfm buffer.c
+[34/38] Compiling cmark-gfm arena.c
+[35/38] Write sources
+[36/38] Compiling cmark-gfm blocks.c
+[38/46] Emitting module LeafhourCore
+[39/46] Compiling LeafhourCore BookParser.swift
+[40/46] Compiling LeafhourCore BookSearch.swift
+[41/46] Compiling LeafhourCore CloudBookSync.swift
+[42/46] Compiling LeafhourCore CloudLibraryClient.swift
+[43/46] Compiling LeafhourCore CloudUploadMigration.swift
+[44/46] Compiling LeafhourCore FileIO.swift
+[45/46] Compiling LeafhourCore MarkdownChapterDocument.swift
+[46/52] Compiling LeafhourCore MarkdownDocument.swift
+[47/52] Compiling LeafhourCore Models.swift
+[48/52] Compiling LeafhourCore OfflineLibrary.swift
+[49/52] Compiling LeafhourCore PDFTextAnchor.swift
+[50/52] Compiling LeafhourCore ReaderSession.swift
+[51/52] Compiling LeafhourCore SearchExcerpt.swift
+[52/58] Emitting module LeafhourCoreTests
+[53/58] Compiling LeafhourCoreTests BookSearchTests.swift
+[54/58] Compiling LeafhourCoreTests CloudSyncTests.swift
+[55/58] Compiling LeafhourCoreTests CloudUploadMigrationTests.swift
+[56/58] Compiling LeafhourCoreTests ImportTests.swift
+[57/61] Compiling LeafhourCoreTests MarkdownDocumentTests.swift
+[58/61] Compiling LeafhourCoreTests ReaderSessionTests.swift
+[59/61] Compiling LeafhourCoreTests SearchExcerptTests.swift
+[60/63] Compiling LeafhourCorePackageTests runner.swift
+[61/63] Emitting module LeafhourCorePackageTests
+[61/63] Write Objects.LinkFileList
+[62/63] Linking LeafhourCorePackageTests
+Build complete! (6.38s)
+Test Suite 'All tests' started at 2026-10-29 14:16:50.710.
+Test Suite 'LeafhourCorePackageTests.xctest' started at 2026-10-29 14:16:50.712.
+Test Suite 'BookSearchTests' started at 2026-10-29 14:16:50.712.
+Test Case '-[LeafhourCoreTests.BookSearchTests testCancelledParentDoesNotReturnSearchResults]' started.
+Test Case '-[LeafhourCoreTests.BookSearchTests testCancelledParentDoesNotReturnSearchResults]' passed (0.010 seconds).
+Test Case '-[LeafhourCoreTests.BookSearchTests testCancellingALargeScanLeavesANewSearchUsable]' started.
+Test Case '-[LeafhourCoreTests.BookSearchTests testCancellingALargeScanLeavesANewSearchUsable]' passed (0.014 seconds).
+Test Case '-[LeafhourCoreTests.BookSearchTests testConcurrentQueriesDoNotMixResults]' started.
+Test Case '-[LeafhourCoreTests.BookSearchTests testConcurrentQueriesDoNotMixResults]' passed (0.000 seconds).
+Test Case '-[LeafhourCoreTests.BookSearchTests testEmptyAndMissingQueriesHaveNoResults]' started.
+Test Case '-[LeafhourCoreTests.BookSearchTests testEmptyAndMissingQueriesHaveNoResults]' passed (0.000 seconds).
+Test Case '-[LeafhourCoreTests.BookSearchTests testMarkdownSearchRetainsLegacyPassageIDsAndCodeLiteralsAcrossBlankLines]' started.
+Test Case '-[LeafhourCoreTests.BookSearchTests testMarkdownSearchRetainsLegacyPassageIDsAndCodeLiteralsAcrossBlankLines]' passed (0.002 seconds).
+Test Case '-[LeafhourCoreTests.BookSearchTests testMarkdownSearchUsesRenderedTextAndOriginalUnicodeAnchor]' started.
+Test Case '-[LeafhourCoreTests.BookSearchTests testMarkdownSearchUsesRenderedTextAndOriginalUnicodeAnchor]' passed (0.000 seconds).
+Test Case '-[LeafhourCoreTests.BookSearchTests testMatchesPreserveChapterIdentityAndExactScalarNavigation]' started.
+Test Case '-[LeafhourCoreTests.BookSearchTests testMatchesPreserveChapterIdentityAndExactScalarNavigation]' passed (0.000 seconds).
+Test Suite 'BookSearchTests' passed at 2026-10-29 14:16:50.738.
+	 Executed 7 tests, with 0 failures (0 unexpected) in 0.026 (0.027) seconds
+Test Suite 'CloudSyncTests' started at 2026-10-29 14:16:50.738.
+Test Case '-[LeafhourCoreTests.CloudSyncTests testChangedCloudPositionDoesNotSilentlyOverwriteDevice]' started.
+Test Case '-[LeafhourCoreTests.CloudSyncTests testChangedCloudPositionDoesNotSilentlyOverwriteDevice]' passed (0.014 seconds).
+Test Case '-[LeafhourCoreTests.CloudSyncTests testClientFencesWrongOwnerBeforeNetwork]' started.
+Test Case '-[LeafhourCoreTests.CloudSyncTests testClientFencesWrongOwnerBeforeNetwork]' passed (0.000 seconds).
+Test Case '-[LeafhourCoreTests.CloudSyncTests testClientSuppliesOwnOriginAndOwnerAndPrivateCookie]' started.
+Test Case '-[LeafhourCoreTests.CloudSyncTests testClientSuppliesOwnOriginAndOwnerAndPrivateCookie]' passed (0.000 seconds).
+Test Case '-[LeafhourCoreTests.CloudSyncTests testCloudCopiesCannotEnterDeviceOrOtherAccount]' started.
+Test Case '-[LeafhourCoreTests.CloudSyncTests testCloudCopiesCannotEnterDeviceOrOtherAccount]' passed (0.004 seconds).
+Test Case '-[LeafhourCoreTests.CloudSyncTests testConcurrentNoteEditKeepsLocalVersionAndReportsConflict]' started.
+Test Case '-[LeafhourCoreTests.CloudSyncTests testConcurrentNoteEditKeepsLocalVersionAndReportsConflict]' passed (0.006 seconds).
+Test Case '-[LeafhourCoreTests.CloudSyncTests testDownloadRejectsDuplicateParagraphIDs]' started.
+Test Case '-[LeafhourCoreTests.CloudSyncTests testDownloadRejectsDuplicateParagraphIDs]' passed (0.001 seconds).
+Test Case '-[LeafhourCoreTests.CloudSyncTests testFailedNoteUploadRemainsPendingAndRetryUsesSameID]' started.
+Test Case '-[LeafhourCoreTests.CloudSyncTests testFailedNoteUploadRemainsPendingAndRetryUsesSameID]' passed (0.006 seconds).
+Test Case '-[LeafhourCoreTests.CloudSyncTests testLateAccountResponseIsRejectedAfterSignOut]' started.
+Test Case '-[LeafhourCoreTests.CloudSyncTests testLateAccountResponseIsRejectedAfterSignOut]' passed (0.081 seconds).
+Test Case '-[LeafhourCoreTests.CloudSyncTests testOpeningWaitsForExistingPullBeforeSavingReaderEdits]' started.
+Test Case '-[LeafhourCoreTests.CloudSyncTests testOpeningWaitsForExistingPullBeforeSavingReaderEdits]' passed (0.091 seconds).
+Test Case '-[LeafhourCoreTests.CloudSyncTests testOversizeNoteDoesNotBlockOtherNotesOrProgress]' started.
+Test Case '-[LeafhourCoreTests.CloudSyncTests testOversizeNoteDoesNotBlockOtherNotesOrProgress]' passed (0.007 seconds).
+Test Case '-[LeafhourCoreTests.CloudSyncTests testRemoteNoteEditAndDeletionReachUnmodifiedLocalCopy]' started.
+Test Case '-[LeafhourCoreTests.CloudSyncTests testRemoteNoteEditAndDeletionReachUnmodifiedLocalCopy]' passed (0.009 seconds).
+Test Case '-[LeafhourCoreTests.CloudSyncTests testTranslationCacheRetainsManifestIntegrityAndPrivateState]' started.
+Test Case '-[LeafhourCoreTests.CloudSyncTests testTranslationCacheRetainsManifestIntegrityAndPrivateState]' passed (0.008 seconds).
+Test Suite 'CloudSyncTests' passed at 2026-10-29 14:16:50.968.
+	 Executed 12 tests, with 0 failures (0 unexpected) in 0.228 (0.229) seconds
+Test Suite 'CloudUploadMigrationTests' started at 2026-10-29 14:16:50.968.
+Test Case '-[LeafhourCoreTests.CloudUploadMigrationTests testAmbiguousQuoteIsKeptInOriginalAndNeverGuessed]' started.
+Test Case '-[LeafhourCoreTests.CloudUploadMigrationTests testAmbiguousQuoteIsKeptInOriginalAndNeverGuessed]' passed (0.000 seconds).
+Test Case '-[LeafhourCoreTests.CloudUploadMigrationTests testMapsExactUnicodeSourceAndPreservesNotesDraftAndProgress]' started.
+Test Case '-[LeafhourCoreTests.CloudUploadMigrationTests testMapsExactUnicodeSourceAndPreservesNotesDraftAndProgress]' passed (0.000 seconds).
+Test Case '-[LeafhourCoreTests.CloudUploadMigrationTests testRepeatedMigrationDeduplicatesAndDoesNotReplaceExistingPosition]' started.
+Test Case '-[LeafhourCoreTests.CloudUploadMigrationTests testRepeatedMigrationDeduplicatesAndDoesNotReplaceExistingPosition]' passed (0.000 seconds).
+Test Case '-[LeafhourCoreTests.CloudUploadMigrationTests testUniqueSelectedQuoteCanBridgeDifferentParagraphSplitting]' started.
+Test Case '-[LeafhourCoreTests.CloudUploadMigrationTests testUniqueSelectedQuoteCanBridgeDifferentParagraphSplitting]' passed (0.000 seconds).
+Test Suite 'CloudUploadMigrationTests' passed at 2026-10-29 14:16:50.968.
+	 Executed 4 tests, with 0 failures (0 unexpected) in 0.001 (0.001) seconds
+Test Suite 'ImportTests' started at 2026-10-29 14:16:50.968.
+Test Case '-[LeafhourCoreTests.ImportTests testCorruptAssetAndMissingChapterCannotClaimOfflineReady]' started.
+Test Case '-[LeafhourCoreTests.ImportTests testCorruptAssetAndMissingChapterCannotClaimOfflineReady]' passed (0.047 seconds).
+Test Case '-[LeafhourCoreTests.ImportTests testDuplicateImportPreservesPositionNotesAndDraftAfterRelaunch]' started.
+Test Case '-[LeafhourCoreTests.ImportTests testDuplicateImportPreservesPositionNotesAndDraftAfterRelaunch]' passed (0.040 seconds).
+Test Case '-[LeafhourCoreTests.ImportTests testExpansionLimitRejectsArchiveAndKeepsRetryableSource]' started.
+Test Case '-[LeafhourCoreTests.ImportTests testExpansionLimitRejectsArchiveAndKeepsRetryableSource]' passed (0.010 seconds).
+Test Case '-[LeafhourCoreTests.ImportTests testFailedImportRetainsOriginalAndCanRetryWithoutDuplicateBooks]' started.
+Test Case '-[LeafhourCoreTests.ImportTests testFailedImportRetainsOriginalAndCanRetryWithoutDuplicateBooks]' passed (0.011 seconds).
+Test Case '-[LeafhourCoreTests.ImportTests testFailedRepairCleansUncommittedDerivedStage]' started.
+Test Case '-[LeafhourCoreTests.ImportTests testFailedRepairCleansUncommittedDerivedStage]' passed (0.028 seconds).
+Test Case '-[LeafhourCoreTests.ImportTests testGeneratedAndAuthorSuppliedParagraphIDsCannotCollide]' started.
+Test Case '-[LeafhourCoreTests.ImportTests testGeneratedAndAuthorSuppliedParagraphIDsCannotCollide]' passed (0.012 seconds).
+Test Case '-[LeafhourCoreTests.ImportTests testImportsEntireEPUBSpineAndKeepsStableAnchorsAndOriginal]' started.
+Test Case '-[LeafhourCoreTests.ImportTests testImportsEntireEPUBSpineAndKeepsStableAnchorsAndOriginal]' passed (0.029 seconds).
+Test Case '-[LeafhourCoreTests.ImportTests testInterruptedJobRecoversWithOriginalAndExplicitRetry]' started.
+CoreGraphics PDF has logged an error. Set environment variable "CG_PDF_VERBOSE" to learn more.
+Test Case '-[LeafhourCoreTests.ImportTests testInterruptedJobRecoversWithOriginalAndExplicitRetry]' passed (0.010 seconds).
+Test Case '-[LeafhourCoreTests.ImportTests testMarkdownCanRepairFromSelectedOriginalAfterIndexLoss]' started.
+Test Case '-[LeafhourCoreTests.ImportTests testMarkdownCanRepairFromSelectedOriginalAfterIndexLoss]' passed (0.011 seconds).
+Test Case '-[LeafhourCoreTests.ImportTests testMissingIndexStillListsRecoverableBookAndRepairRetainsRecords]' started.
+Test Case '-[LeafhourCoreTests.ImportTests testMissingIndexStillListsRecoverableBookAndRepairRetainsRecords]' passed (0.037 seconds).
+Test Case '-[LeafhourCoreTests.ImportTests testPDFKeepsEveryPageAndExtractsActualText]' started.
+Test Case '-[LeafhourCoreTests.ImportTests testPDFKeepsEveryPageAndExtractsActualText]' passed (0.096 seconds).
+Test Case '-[LeafhourCoreTests.ImportTests testPDFSecondIdenticalQuoteUsesItsActualSelectionRange]' started.
+Test Case '-[LeafhourCoreTests.ImportTests testPDFSecondIdenticalQuoteUsesItsActualSelectionRange]' passed (0.002 seconds).
+Test Case '-[LeafhourCoreTests.ImportTests testPlainTextLastBookAndUnicodeScalarPositionSurviveRestart]' started.
+Test Case '-[LeafhourCoreTests.ImportTests testPlainTextLastBookAndUnicodeScalarPositionSurviveRestart]' passed (0.010 seconds).
+Test Case '-[LeafhourCoreTests.ImportTests testProfilesCannotReadEachOthersBooksOrState]' started.
+Test Case '-[LeafhourCoreTests.ImportTests testProfilesCannotReadEachOthersBooksOrState]' passed (0.023 seconds).
+Test Case '-[LeafhourCoreTests.ImportTests testRepairInterruptedBetweenRenamesRecoversRetainedOriginalOnRestart]' started.
+Test Case '-[LeafhourCoreTests.ImportTests testRepairInterruptedBetweenRenamesRecoversRetainedOriginalOnRestart]' passed (0.027 seconds).
+Test Case '-[LeafhourCoreTests.ImportTests testRepairUsesRetainedOriginalAndPreservesPersonalState]' started.
+Test Case '-[LeafhourCoreTests.ImportTests testRepairUsesRetainedOriginalAndPreservesPersonalState]' passed (0.042 seconds).
+Test Case '-[LeafhourCoreTests.ImportTests testReselectingMatchingOriginalRepairsCorruptSourceAndManifest]' started.
+Test Case '-[LeafhourCoreTests.ImportTests testReselectingMatchingOriginalRepairsCorruptSourceAndManifest]' passed (0.043 seconds).
+Test Case '-[LeafhourCoreTests.ImportTests testStateRejectsForeignAnchorAndDoesNotOverwriteValidData]' started.
+Test Case '-[LeafhourCoreTests.ImportTests testStateRejectsForeignAnchorAndDoesNotOverwriteValidData]' passed (0.025 seconds).
+Test Case '-[LeafhourCoreTests.ImportTests testTraversalAndOversizedArchiveFailWithoutPublishingPartialBook]' started.
+Test Case '-[LeafhourCoreTests.ImportTests testTraversalAndOversizedArchiveFailWithoutPublishingPartialBook]' passed (0.013 seconds).
+Test Case '-[LeafhourCoreTests.ImportTests testUTF16EntityDeclarationsCannotBypassSafeXML]' started.
+Test Case '-[LeafhourCoreTests.ImportTests testUTF16EntityDeclarationsCannotBypassSafeXML]' passed (0.001 seconds).
+Test Case '-[LeafhourCoreTests.ImportTests testXHTMLCollapsesSourceWhitespaceButPreservesBreaksAndPreformattedText]' started.
+Test Case '-[LeafhourCoreTests.ImportTests testXHTMLCollapsesSourceWhitespaceButPreservesBreaksAndPreformattedText]' passed (0.013 seconds).
+Test Suite 'ImportTests' passed at 2026-10-29 14:16:51.501.
+	 Executed 21 tests, with 0 failures (0 unexpected) in 0.531 (0.532) seconds
+Test Suite 'MarkdownDocumentTests' started at 2026-10-29 14:16:51.501.
+Test Case '-[LeafhourCoreTests.MarkdownDocumentTests testBlockSeparatorsDoNotAddBlankRowsOrCodeBackgroundWhitespace]' started.
+Test Case '-[LeafhourCoreTests.MarkdownDocumentTests testBlockSeparatorsDoNotAddBlankRowsOrCodeBackgroundWhitespace]' passed (0.000 seconds).
+Test Case '-[LeafhourCoreTests.MarkdownDocumentTests testCloudMarkdownUsesOnlyCurrentChapterAndKeepsOriginalAnchor]' started.
+Test Case '-[LeafhourCoreTests.MarkdownDocumentTests testCloudMarkdownUsesOnlyCurrentChapterAndKeepsOriginalAnchor]' passed (0.000 seconds).
+Test Case '-[LeafhourCoreTests.MarkdownDocumentTests testCodePreservesLiteralEntitiesAndMarkdown]' started.
+Test Case '-[LeafhourCoreTests.MarkdownDocumentTests testCodePreservesLiteralEntitiesAndMarkdown]' passed (0.000 seconds).
+Test Case '-[LeafhourCoreTests.MarkdownDocumentTests testCommonMarkRendersBlocksAndInlineStylesWithoutSourceDelimiters]' started.
+Test Case '-[LeafhourCoreTests.MarkdownDocumentTests testCommonMarkRendersBlocksAndInlineStylesWithoutSourceDelimiters]' passed (0.000 seconds).
+Test Case '-[LeafhourCoreTests.MarkdownDocumentTests testEmptyAndMalformedMarkdownRemainReadable]' started.
+Test Case '-[LeafhourCoreTests.MarkdownDocumentTests testEmptyAndMalformedMarkdownRemainReadable]' passed (0.000 seconds).
+Test Case '-[LeafhourCoreTests.MarkdownDocumentTests testEscapesEntitiesAndSafeLinksKeepTextAndSourceLocation]' started.
+Test Case '-[LeafhourCoreTests.MarkdownDocumentTests testEscapesEntitiesAndSafeLinksKeepTextAndSourceLocation]' passed (0.000 seconds).
+Test Case '-[LeafhourCoreTests.MarkdownDocumentTests testGFMListsTablesAndStrikethrough]' started.
+Test Case '-[LeafhourCoreTests.MarkdownDocumentTests testGFMListsTablesAndStrikethrough]' passed (0.000 seconds).
+Test Case '-[LeafhourCoreTests.MarkdownDocumentTests testHTMLAndImagesNeverBecomeExecutableOrRemoteLoads]' started.
+Test Case '-[LeafhourCoreTests.MarkdownDocumentTests testHTMLAndImagesNeverBecomeExecutableOrRemoteLoads]' passed (0.000 seconds).
+Test Case '-[LeafhourCoreTests.MarkdownDocumentTests testLocalSingleChapterMarkdownKeepsRetainedCodeBlankLines]' started.
+Test Case '-[LeafhourCoreTests.MarkdownDocumentTests testLocalSingleChapterMarkdownKeepsRetainedCodeBlankLines]' passed (0.000 seconds).
+Test Case '-[LeafhourCoreTests.MarkdownDocumentTests testMultiScalarEntitiesDoNotMoveFollowingTextAnchors]' started.
+Test Case '-[LeafhourCoreTests.MarkdownDocumentTests testMultiScalarEntitiesDoNotMoveFollowingTextAnchors]' passed (0.001 seconds).
+Test Case '-[LeafhourCoreTests.MarkdownDocumentTests testSourceMappingRetainsUnicodeAndMarkdownAnchors]' started.
+Test Case '-[LeafhourCoreTests.MarkdownDocumentTests testSourceMappingRetainsUnicodeAndMarkdownAnchors]' passed (0.000 seconds).
+Test Suite 'MarkdownDocumentTests' passed at 2026-10-29 14:16:51.503.
+	 Executed 11 tests, with 0 failures (0 unexpected) in 0.002 (0.003) seconds
+Test Suite 'ReaderSessionTests' started at 2026-10-29 14:16:51.503.
+Test Case '-[LeafhourCoreTests.ReaderSessionTests testClosingConfirmedNoteClearsOnlyItsMatchingDraft]' started.
+Test Case '-[LeafhourCoreTests.ReaderSessionTests testClosingConfirmedNoteClearsOnlyItsMatchingDraft]' passed (0.015 seconds).
+Test Case '-[LeafhourCoreTests.ReaderSessionTests testFailedNoteSaveRetainsEditableDraftInsteadOfAnUnconfirmedNote]' started.
+Test Case '-[LeafhourCoreTests.ReaderSessionTests testFailedNoteSaveRetainsEditableDraftInsteadOfAnUnconfirmedNote]' passed (0.011 seconds).
+Test Case '-[LeafhourCoreTests.ReaderSessionTests testFlushIncludesCheckpointArrivingWhileAnEarlierWriteIsSuspended]' started.
+Test Case '-[LeafhourCoreTests.ReaderSessionTests testFlushIncludesCheckpointArrivingWhileAnEarlierWriteIsSuspended]' passed (0.010 seconds).
+Test Case '-[LeafhourCoreTests.ReaderSessionTests testFlushWaitsForEditsQueuedWhileAnEarlierWriteIsSuspended]' started.
+Test Case '-[LeafhourCoreTests.ReaderSessionTests testFlushWaitsForEditsQueuedWhileAnEarlierWriteIsSuspended]' passed (0.115 seconds).
+Test Case '-[LeafhourCoreTests.ReaderSessionTests testLaterWriteFailureDoesNotRollBackAnAlreadyPersistedNote]' started.
+Test Case '-[LeafhourCoreTests.ReaderSessionTests testLaterWriteFailureDoesNotRollBackAnAlreadyPersistedNote]' passed (0.013 seconds).
+Test Case '-[LeafhourCoreTests.ReaderSessionTests testNewRevisionInvalidatesAnEarlierSuccessfulReceipt]' started.
+Test Case '-[LeafhourCoreTests.ReaderSessionTests testNewRevisionInvalidatesAnEarlierSuccessfulReceipt]' passed (0.011 seconds).
+Test Case '-[LeafhourCoreTests.ReaderSessionTests testNewVisibleCheckpointInvalidatesAnEarlierReceiptAndPreferencesSaveIt]' started.
+Test Case '-[LeafhourCoreTests.ReaderSessionTests testNewVisibleCheckpointInvalidatesAnEarlierReceiptAndPreferencesSaveIt]' passed (0.011 seconds).
+Test Case '-[LeafhourCoreTests.ReaderSessionTests testNoteSubmissionConfirmsTheLatestVisibleCheckpoint]' started.
+Test Case '-[LeafhourCoreTests.ReaderSessionTests testNoteSubmissionConfirmsTheLatestVisibleCheckpoint]' passed (0.011 seconds).
+Test Case '-[LeafhourCoreTests.ReaderSessionTests testOldRenderedCheckpointCannotOverrideAnExplicitJump]' started.
+Test Case '-[LeafhourCoreTests.ReaderSessionTests testOldRenderedCheckpointCannotOverrideAnExplicitJump]' passed (0.010 seconds).
+Test Case '-[LeafhourCoreTests.ReaderSessionTests testOnlyOneNoteSubmissionCanBeInFlight]' started.
+Test Case '-[LeafhourCoreTests.ReaderSessionTests testOnlyOneNoteSubmissionCanBeInFlight]' passed (0.012 seconds).
+Test Case '-[LeafhourCoreTests.ReaderSessionTests testRetryRetainsLaterEditsAndUsesOneSubmissionIdentity]' started.
+Test Case '-[LeafhourCoreTests.ReaderSessionTests testRetryRetainsLaterEditsAndUsesOneSubmissionIdentity]' passed (0.012 seconds).
+Test Case '-[LeafhourCoreTests.ReaderSessionTests testSeparateSubmissionsCanIntentionallySaveTheSameQuoteAndBody]' started.
+Test Case '-[LeafhourCoreTests.ReaderSessionTests testSeparateSubmissionsCanIntentionallySaveTheSameQuoteAndBody]' passed (0.009 seconds).
+Test Case '-[LeafhourCoreTests.ReaderSessionTests testTypographyChangesDoNotBecomeExplicitNavigation]' started.
+Test Case '-[LeafhourCoreTests.ReaderSessionTests testTypographyChangesDoNotBecomeExplicitNavigation]' passed (0.009 seconds).
+Test Case '-[LeafhourCoreTests.ReaderSessionTests testVisibleCheckpointDoesNotPublishStateAndIsIncludedInImmediateFlush]' started.
+Test Case '-[LeafhourCoreTests.ReaderSessionTests testVisibleCheckpointDoesNotPublishStateAndIsIncludedInImmediateFlush]' passed (0.061 seconds).
+Test Suite 'ReaderSessionTests' passed at 2026-10-29 14:16:51.814.
+	 Executed 14 tests, with 0 failures (0 unexpected) in 0.309 (0.310) seconds
+Test Suite 'SearchExcerptTests' started at 2026-10-29 14:16:51.814.
+Test Case '-[LeafhourCoreTests.SearchExcerptTests testComposedSourceAndRepeatedMatchesUseFirstOccurrence]' started.
+Test Case '-[LeafhourCoreTests.SearchExcerptTests testComposedSourceAndRepeatedMatchesUseFirstOccurrence]' passed (0.000 seconds).
+Test Case '-[LeafhourCoreTests.SearchExcerptTests testEmptyWhitespaceAndMissingQueryHaveNoMatch]' started.
+Test Case '-[LeafhourCoreTests.SearchExcerptTests testEmptyWhitespaceAndMissingQueryHaveNoMatch]' passed (0.000 seconds).
+Test Case '-[LeafhourCoreTests.SearchExcerptTests testHardLineBreaksCannotPushMatchOutOfPreview]' started.
+Test Case '-[LeafhourCoreTests.SearchExcerptTests testHardLineBreaksCannotPushMatchOutOfPreview]' passed (0.000 seconds).
+Test Case '-[LeafhourCoreTests.SearchExcerptTests testLateMatchShowsContextAndUsesScalarOffset]' started.
+Test Case '-[LeafhourCoreTests.SearchExcerptTests testLateMatchShowsContextAndUsesScalarOffset]' passed (0.000 seconds).
+Test Case '-[LeafhourCoreTests.SearchExcerptTests testLocaleSearchRetainsSourceSpellingAndTrimsInput]' started.
+Test Case '-[LeafhourCoreTests.SearchExcerptTests testLocaleSearchRetainsSourceSpellingAndTrimsInput]' passed (0.000 seconds).
+Test Case '-[LeafhourCoreTests.SearchExcerptTests testMatchInsideEmojiKeepsDisplayWholeAndExactScalarDestination]' started.
+Test Case '-[LeafhourCoreTests.SearchExcerptTests testMatchInsideEmojiKeepsDisplayWholeAndExactScalarDestination]' passed (0.001 seconds).
+Test Case '-[LeafhourCoreTests.SearchExcerptTests testVeryLongMatchIsBoundedWithoutBreakingCharacters]' started.
+Test Case '-[LeafhourCoreTests.SearchExcerptTests testVeryLongMatchIsBoundedWithoutBreakingCharacters]' passed (0.000 seconds).
+Test Suite 'SearchExcerptTests' passed at 2026-10-29 14:16:51.816.
+	 Executed 7 tests, with 0 failures (0 unexpected) in 0.002 (0.002) seconds
+Test Suite 'LeafhourCorePackageTests.xctest' passed at 2026-10-29 14:16:51.816.
+	 Executed 76 tests, with 0 failures (0 unexpected) in 1.099 (1.104) seconds
+Test Suite 'All tests' passed at 2026-10-29 14:16:51.816.
+	 Executed 76 tests, with 0 failures (0 unexpected) in 1.099 (1.106) seconds
+◇ Test run started.
+↳ Testing Library Version: 1902
+↳ Target Platform: arm64e-apple-macos14.0
+✔ Test run with 0 tests in 0 suites passed after 0.001 seconds.
+Borrowed-device warning: leaving iPhone 17 Pro (02B4F0C1-A92F-469D-9DCC-5ED13F119507) running because it was already active before this session.

@@ -6,17 +6,21 @@ import LeafhourCore
 /// UIKit owns selection/copy and accessibility. Source XHTML never executes or loads remote resources.
 struct TextReadingView: UIViewRepresentable {
     let session: ReaderSession
-    let selectionDismissalID: UUID
+    var selectionDismissalID = UUID()
     let onNote: (SelectedQuote) -> Void
     let onSource: (SelectedQuote) -> Void
-    let onExplain: (SelectedQuote) -> Void
+    var onExplain: ((SelectedQuote) -> Void)? = nil
     let onWake: (ReaderChrome) -> Void
     let onReadingScroll: () -> Void
+    var onTranslate: ((SelectedQuote) -> Void)? = nil
+    var onDiscuss: ((SelectedQuote) -> Void)? = nil
     func makeCoordinator() -> Coordinator { Coordinator(parent: self) }
     func makeUIView(context: Context) -> UITextView {
         let view = ReflowTextView(usingTextLayoutManager: false)
         view.isEditable = false; view.isSelectable = true; view.backgroundColor = .clear
-        view.textContainerInset = UIEdgeInsets(top: 20, left: 24, bottom: 24, right: 24)
+        // Entry tools overlay the page. A stable first-page margin keeps the title
+        // below navigation without reflowing the text when those tools go to sleep.
+        view.textContainerInset = UIEdgeInsets(top: 64, left: 24, bottom: 24, right: 24)
         view.textContainer.lineFragmentPadding = 0
         view.adjustsFontForContentSizeCategory = true; view.alwaysBounceVertical = true
         view.delegate = context.coordinator; view.accessibilityIdentifier = "leafhour-epub-reader"
@@ -41,7 +45,7 @@ struct TextReadingView: UIViewRepresentable {
         (view as? ReflowTextView)?.onWidthChange = nil
         coordinator.invalidate(); view.delegate = nil
     }
-    struct Span { var passage: Passage; var range: NSRange; var sourceOffsets: SourceTextOffsets }
+    struct Span { var passage: Passage; var range: NSRange; var sourceOffsets: SourceTextOffsets; var sourceRange: NSRange? = nil }
     @MainActor final class Coordinator: NSObject, UITextViewDelegate {
         func updateContent(_ view: UITextView) {
             let coordinator = self, session = parent.session
@@ -53,6 +57,13 @@ struct TextReadingView: UIViewRepresentable {
             let sameSource = coordinator.indexedSessionID == ObjectIdentifier(session) && coordinator.indexedChapterIndex == session.chapterIndex
             if !sameSource || coordinator.signature != signature {
                 let previousSpans = sameSource ? coordinator.spans : []
+                func sourceOffsets(for passage: Passage, at index: Int) -> SourceTextOffsets {
+                    if previousSpans.indices.contains(index), previousSpans[index].passage.id == passage.id,
+                       previousSpans[index].passage.text.utf8.elementsEqual(passage.text.utf8) {
+                        return previousSpans[index].sourceOffsets
+                    }
+                    return SourceTextOffsets(passage.text)
+                }
                 let selection = !navigating && sameSource ? coordinator.selectedText() : nil
                 if !navigating { coordinator.checkpointVisible() }
                 let anchor = session.currentAnchor
@@ -64,6 +75,22 @@ struct TextReadingView: UIViewRepresentable {
                 coordinator.spans = []
                 let base = UIFont.systemFont(ofSize: preferences.fontSize)
                 let font = UIFontMetrics(forTextStyle: .body).scaledFont(for: UIFont(descriptor: base.fontDescriptor.withDesign(.serif) ?? base.fontDescriptor, size: preferences.fontSize))
+                if session.book.rendersMarkdown {
+                    if !sameSource || coordinator.markdownChapterID != session.chapter.id {
+                        coordinator.markdown = MarkdownChapterLayout(book: session.book, chapter: session.chapter, original: session.original)
+                        coordinator.markdownChapterID = session.chapter.id
+                    }
+                    if let layout = coordinator.markdown {
+                        result.append(layout.attributed(font: font, size: preferences.fontSize, lineSpacing: preferences.lineSpacing, contentWidth: width))
+                        coordinator.spans = zip(session.chapter.passages, layout.sourceRanges).enumerated().map { index, pair in
+                            let (passage, source) = pair
+                            let start = layout.document.displayedUTF16Offset(forSourceUTF16Offset: source.location)
+                            let end = layout.document.displayedUTF16Offset(forSourceUTF16Offset: NSMaxRange(source))
+                            return Span(passage: passage, range: NSRange(location: start, length: max(0, end - start)), sourceOffsets: sourceOffsets(for: passage, at: index), sourceRange: source)
+                        }
+                    }
+                } else {
+                coordinator.markdown = nil; coordinator.markdownChapterID = nil
                 for (passageIndex, passage) in session.chapter.passages.enumerated() {
                     let start = result.length
                     let style = NSMutableParagraphStyle(); style.lineSpacing = preferences.lineSpacing; style.paragraphSpacing = 20; style.baseWritingDirection = .natural
@@ -82,12 +109,8 @@ struct TextReadingView: UIViewRepresentable {
                         result.append(NSAttributedString(string: passage.text, attributes: [.font: actualFont, .foregroundColor: UIColor.label, .paragraphStyle: style]))
                         result.append(NSAttributedString(string: "\n\n", attributes: [.font: font, .paragraphStyle: style]))
                     }
-                    let sourceOffsets: SourceTextOffsets
-                    if previousSpans.indices.contains(passageIndex), previousSpans[passageIndex].passage.id == passage.id,
-                       previousSpans[passageIndex].passage.text.utf8.elementsEqual(passage.text.utf8) {
-                        sourceOffsets = previousSpans[passageIndex].sourceOffsets
-                    } else { sourceOffsets = SourceTextOffsets(passage.text) }
-                    coordinator.spans.append(Span(passage: passage, range: NSRange(location: start, length: result.length - start), sourceOffsets: sourceOffsets))
+                    coordinator.spans.append(Span(passage: passage, range: NSRange(location: start, length: result.length - start), sourceOffsets: sourceOffsets(for: passage, at: passageIndex)))
+                }
                 }
                 view.attributedText = result
                 if let selection, NSMaxRange(selection.range) <= result.length,
@@ -106,6 +129,8 @@ struct TextReadingView: UIViewRepresentable {
         var parent: TextReadingView
         weak var view: UITextView?
         var spans: [Span] = []
+        var markdown: MarkdownChapterLayout?
+        var markdownChapterID: String?
         var signature = ""
         var navigationID: UUID?
         var renderedChapterID: String?
@@ -126,6 +151,7 @@ struct TextReadingView: UIViewRepresentable {
         deinit { delayed?.cancel(); if let resignObserver { NotificationCenter.default.removeObserver(resignObserver) } }
         func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
             restorationGeneration += 1; restoring = false; cancelPendingCapture()
+            parent.session.clearTransientSelection()
             parent.onReadingScroll()
         }
         func scrollViewDidScroll(_ scrollView: UIScrollView) {
@@ -156,9 +182,16 @@ struct TextReadingView: UIViewRepresentable {
             let point = CGPoint(x: 1, y: max(0, view.contentOffset.y + 50 - view.textContainerInset.top))
             let index = view.layoutManager.characterIndex(for: point, in: view.textContainer, fractionOfDistanceBetweenInsertionPoints: nil)
             let span = spans.last(where: { $0.range.location <= index }) ?? spans[0]
-            let scalarOffset = span.sourceOffsets.scalarOffset(forUTF16Offset: index - span.range.location)
+            let utf16Offset = sourceOffset(in: span, displayedIndex: index)
+            let scalarOffset = span.sourceOffsets.scalarOffset(forUTF16Offset: utf16Offset)
             parent.session.recordVisible(ReadingAnchor(chapterID: parent.session.chapter.id, passageID: span.passage.id, characterOffset: scalarOffset), navigationID: parent.session.navigationID)
             return true
+        }
+        private func sourceOffset(in span: Span, displayedIndex: Int) -> Int {
+            if let source = span.sourceRange, let markdown {
+                return min(max(0, markdown.document.sourceUTF16Offset(at: displayedIndex) - source.location), span.sourceOffsets.utf16Count)
+            }
+            return min(max(0, displayedIndex - span.range.location), span.sourceOffsets.utf16Count)
         }
         private func persistCheckpoint() {
             guard !restoring, renderedChapterID == parent.session.chapter.id, navigationID == parent.session.navigationID,
@@ -173,6 +206,7 @@ struct TextReadingView: UIViewRepresentable {
         func invalidate() {
             restorationGeneration += 1; cancelPendingCapture(); view = nil
             spans = []; indexedSessionID = nil; indexedChapterIndex = nil
+            markdown = nil; markdownChapterID = nil
         }
         func restore(_ anchor: ReadingAnchor?, persistCheckpoint: Bool = false) {
             guard let view else { return }
@@ -189,7 +223,10 @@ struct TextReadingView: UIViewRepresentable {
                 if let anchor, anchor.chapterID == chapter, view.attributedText.length > 0,
                    let span = self.spans.first(where: { $0.passage.id == anchor.passageID }) {
                     let offset = span.sourceOffsets.utf16Offset(forScalarOffset: anchor.characterOffset)
-                    let position = min(max(0, view.attributedText.length - 1), span.range.location + offset)
+                    let displayedOffset: Int
+                    if let source = span.sourceRange, let markdown = self.markdown { displayedOffset = markdown.document.displayedUTF16Offset(forSourceUTF16Offset: source.location + offset) }
+                    else { displayedOffset = span.range.location + offset }
+                    let position = min(max(0, view.attributedText.length - 1), displayedOffset)
                     let glyph = view.layoutManager.glyphRange(forCharacterRange: NSRange(location: position, length: 1), actualCharacterRange: nil)
                     let rect = view.layoutManager.boundingRect(forGlyphRange: glyph, in: view.textContainer)
                     let y = max(-view.adjustedContentInset.top, rect.minY + view.textContainerInset.top - 50)
@@ -199,25 +236,41 @@ struct TextReadingView: UIViewRepresentable {
                 if persistCheckpoint { self.schedulePersistence() }
             }
         }
+        func selectedQuote(in textView: UITextView, range: NSRange) -> SelectedQuote? {
+            guard range.location >= 0, range.length > 0, NSMaxRange(range) <= (textView.text as NSString).length,
+                  let span = spans.first(where: { $0.range.location <= range.location && NSMaxRange(range) <= NSMaxRange($0.range) }) else { return nil }
+            let source = span.passage.text as NSString
+            let start = sourceOffset(in: span, displayedIndex: range.location)
+            let end = sourceOffset(in: span, displayedIndex: NSMaxRange(range))
+            guard end > start, end <= span.sourceOffsets.utf16Count else { return nil }
+            let scalarOffset = span.sourceOffsets.scalarOffset(forUTF16Offset: start)
+            let selected = (textView.text as NSString).substring(with: range)
+            return SelectedQuote(anchor: ReadingAnchor(chapterID: parent.session.chapter.id, passageID: span.passage.id, characterOffset: scalarOffset),
+                text: selected, sourceText: source.substring(with: NSRange(location: start, length: end - start)))
+        }
         func textView(_ textView: UITextView, editMenuForTextIn range: NSRange, suggestedActions: [UIMenuElement]) -> UIMenu? {
-            func quote() -> SelectedQuote? {
-                guard range.length > 0, let span = spans.first(where: { $0.range.location <= range.location && range.location + range.length <= $0.range.location + $0.sourceOffsets.utf16Count }) else { return nil }
-                let scalarOffset = span.sourceOffsets.scalarOffset(forUTF16Offset: range.location - span.range.location)
-                let selected = (textView.text as NSString).substring(with: range)
-                return SelectedQuote(anchor: ReadingAnchor(chapterID: parent.session.chapter.id, passageID: span.passage.id, characterOffset: scalarOffset), text: selected)
-            }
+            func quote() -> SelectedQuote? { selectedQuote(in: textView, range: range) }
             let note = UIAction(title: "记笔记", image: UIImage(systemName: "square.and.pencil")) { [weak self] _ in
                 guard let self else { return }
                 guard let value = quote() else { self.parent.session.message = "请在同一段内选择文字，以保留准确原句引用。"; return }
                 self.parent.onNote(value)
             }
             let source = UIAction(title: "核对原文", image: UIImage(systemName: "text.quote")) { [weak self] _ in if let value = quote() { self?.parent.onSource(value) } }
-            let explain = UIAction(title: "解释这句", image: UIImage(systemName: "text.bubble")) { [weak self] _ in
-                guard let self else { return }
-                guard let value = quote() else { self.parent.session.message = "请在同一段内选择文字，以保留准确原句引用。"; return }
-                self.parent.onExplain(value)
+            var actions: [UIMenuElement] = [note, source]
+            if parent.onExplain != nil {
+                actions.insert(UIAction(title: "解释这句", image: UIImage(systemName: "text.bubble")) { [weak self] _ in
+                    guard let self else { return }
+                    guard let value = quote() else { self.parent.session.message = "请在同一段内选择文字，以保留准确原句引用。"; return }
+                    self.parent.onExplain?(value)
+                }, at: 0)
             }
-            return UIMenu(children: [explain, note, source] + suggestedActions)
+            if parent.onTranslate != nil {
+                actions.append(UIAction(title: "查看译文", image: UIImage(systemName: "character.bubble")) { [weak self] _ in if let value = quote() { self?.parent.onTranslate?(value) } })
+            }
+            if parent.onDiscuss != nil {
+                actions.append(UIAction(title: "问陪读", image: UIImage(systemName: "bubble.left.and.bubble.right")) { [weak self] _ in if let value = quote() { self?.parent.onDiscuss?(value) } })
+            }
+            return UIMenu(children: actions + suggestedActions)
         }
     }
 }

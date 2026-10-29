@@ -1,10 +1,10 @@
 # Leafhour native iOS
 
-This is the native, device-local reading implementation for GET-276. It runs without Apple account login, remote services, model calls or a subscription. It does not register an Apple application. The checked-in debug identifier is for unsigned local development only; distribution must reuse the separately verified existing Leafhour App Store Connect app.
+This is the native iOS reader for GET-276 and GET-312, with optional Leafhour account login and cloud synchronization. Device-local import and reading still work without a login or network connection. System listening runs locally; cloud translation and reading conversations require an explicit action. The checked-in debug identifier is for unsigned local development only; distribution must reuse the separately verified existing Leafhour App Store Connect app.
 
 ## Build and test
 
-Requires Xcode 16+ (iOS 17 minimum), Swift 5.9+, and the existing shared iOS guard on this Mac. ZIPFoundation is pinned to 0.9.20 and vendored with upstream blob checksums. No sample books or personal data ship in the app.
+Requires Xcode 16+ (iOS 17 minimum), Swift 5.9+, and the existing shared iOS guard on this Mac. ZIPFoundation 0.9.20 and Swift cmark 0.6.0 are vendored with upstream blob checksums. No sample books or personal data ship in the app. `node tools/verify-ios-vendor.mjs` checks both dependencies without network access.
 
 ```sh
 # Use an output path issued by dev-storage-guard new-artifact GET-276-native.
@@ -20,11 +20,13 @@ The optional `LeafhourUITests` scheme tests system selection, EPUB chapter XII/c
 
 ## Local data and import contract
 
-Files selected through the system picker are copied under a device-local Application Support library before parsing. Original bytes identify duplicates and content versions. Complete EPUB spines and their local assets are parsed in order; every PDF page remains available in the original PDF, including pages with no extractable text. TXT/Markdown are plain-text imports. Parsing never invents text, translations or OCR results. Source files never enter this Git repository.
+Files selected through the system picker are copied under the current device or account's Application Support library before parsing. Original bytes identify duplicates and content versions. Complete EPUB spines and their local assets are parsed in order; every local PDF page remains available in the original PDF, including pages with no extractable text. Markdown retains its original source and renders CommonMark/GFM as native attributed text. Parsing never invents text, translations or OCR results. Source files never enter this Git repository.
 
 Archive entries are bounded by count, per-entry size and total expanded size. Absolute paths, parent traversal, symbolic links, duplicate archive names, unsupported encryption and missing spine content are rejected. CRC and offline file hashes are checked. A staged import becomes a book only after the complete original, content index and resources have been written and verified. Failed/interrupted jobs retain their copied original and offer an explicit retry; reconnecting never starts a paid task.
 
-Imported books are already on this device. “Available offline” means the complete local manifest has passed verification; it never means a network request merely started. A failed integrity check offers repair from the retained original. No cloud upload/download status is displayed as complete. Device-local identity is distinct from future authenticated account UUID scopes; account tests must not be read as acceptance of a cloud login or sync service.
+Imported books are already on this device. “Available offline” means the complete local manifest has passed verification; it never means a network request merely started. Cloud downloads retain all text chapters, source IDs and available translations as a verified reading copy. Original EPUB/PDF files stay separate; a text copy is not a downloaded original. Device-local identity and authenticated account UUID scopes are isolated. Account tests use fixtures; production login/read checks and real-device acceptance are recorded separately.
+
+Email/password and email-code login reuse the website's authenticated APIs. Session credentials stay in Keychain and an isolated URLSession. Saved notes and positions write locally before synchronization; retries keep stable note IDs, and newer cloud positions require an explicit choice. Local drafts remain on the device. Signing out hides the account's cache and returns to the separate device library. Uploading a local original is explicit; only unique exact source matches migrate its notes and position, with unmatched records retained in the source book.
 
 Stable chapter/passage identifiers and source versions bind reading position, notes and drafts. State writes are atomic and serialized. Duplicate imports leave existing personal state intact. Native text selection keeps copy available; author text, a selected quote and personal notes are labeled independently. No literal/interpretive translation is fabricated when none was imported.
 
@@ -51,11 +53,11 @@ flowchart LR
   Library --> Detail[Original / offline integrity / export]
 ```
 
-The reader starts with its chrome asleep. Top and progress controls wake independently from explicit edge buttons and have accessibility labels. Ordinary text taps do not summon an AI interface. Tools overlay the page; notes use the native half sheet and preserve their original quote. The companion is summoned explicitly from the awake top controls or “解释这句” after system selection (PDF uses its selection actions). Its half sheet preserves the book above it and closes directly to quiet reading. Until the native service is integrated, it shows only the real source and an explicit unavailable state; no working AI service or generated answer is claimed. See [GET-274 verification](../../docs/verification/2026-10-29-get-274/README.md).
+The reader initially exposes its native tools, then lets them sleep after idle time or scrolling. Edge controls and a small bottom handle restore the toolbar. Ordinary text taps keep their reading behavior. Contents, search, notes, typography, system listening, translations and reading conversations use native panels. The companion is summoned explicitly from the top controls, “解释这句” after system selection, or the additional reading tools. Its half sheet preserves the book above it and closes directly to quiet reading while clearing native selection. Cloud generation requires explicit confirmation and preserves request identity across uncertain retries. Additional website tools open in a clearly labeled, short-lived web panel with an isolated account session. Historical [GET-274 verification](../../docs/verification/2026-10-29-get-274/README.md) describes the earlier unconnected companion; GET-312 adds the authenticated service integration.
 
 ## Separate pending acceptance
 
-TestFlight archive/upload, Apple processing, distribution, authorized tester invitation/acceptance, physical installation, an actual TestFlight update with retained data, full VoiceOver and real-device timing remain separate pending acceptance. Apple browser/authentication and physical-device availability must not block source work. Cloud authentication, upload/sync, conflict handling and translation/companion service integration need their own actual integration evidence. Keep GET-276 In Progress until its complete issue acceptance is satisfied.
+TestFlight archive/upload, Apple processing, distribution, authorized tester invitation/acceptance, physical installation, an actual TestFlight update with retained data, full VoiceOver and real-device timing remain separate pending acceptance. Apple browser/authentication and physical-device availability must not block source work. Cloud authentication, upload/sync, conflict handling and translation/companion service integration require their own recorded integration evidence. Keep GET-276 In Progress until its complete issue acceptance is satisfied.
 
 Reference APIs: [Apple fileImporter and security-scoped access](https://developer.apple.com/documentation/swiftui/view/fileimporter(ispresented:allowedcontenttypes:oncompletion:)), [Apple PDFKit](https://developer.apple.com/documentation/pdfkit), [ZIPFoundation 0.9.20](https://github.com/weichsel/ZIPFoundation/releases/tag/0.9.20).
 
