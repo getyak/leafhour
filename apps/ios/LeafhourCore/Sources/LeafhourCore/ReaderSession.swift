@@ -45,6 +45,8 @@ public final class ReaderSession: Identifiable {
     public var chapter: BookChapter { book.chapters[chapterIndex] }
     /// Scroll checkpoints are immediate, while observed state and disk writes remain coalesced.
     public var currentAnchor: ReadingAnchor? { visibleAnchor ?? state.anchor }
+    /// A tool's selected excerpt is temporary; returning to reading must follow the visible passage.
+    public func clearTransientSelection() { selection = nil }
     public func recordVisible(_ anchor: ReadingAnchor, navigationID: UUID) {
         guard navigationID == self.navigationID, anchor.chapterID == chapter.id else { return }
         visibleAnchor = anchor
@@ -142,6 +144,8 @@ public final class ReaderSession: Identifiable {
 public struct SelectedQuote: Identifiable {
     public let anchor: ReadingAnchor
     public let text: String
-    public init(anchor: ReadingAnchor, text: String) { self.anchor = anchor; self.text = text }
+    /// Exact underlying source for a formatted selection, independent of its displayed characters.
+    public let sourceText: String?
+    public init(anchor: ReadingAnchor, text: String, sourceText: String? = nil) { self.anchor = anchor; self.text = text; self.sourceText = sourceText }
     public var id: String { anchor.key }
 }

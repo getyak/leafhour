@@ -237,5 +237,100 @@ public actor OfflineLibrary {
         // Leftover stage/backup copies are deliberately preserved after a crash.
         try Disk.fm.removeItem(at: journal)
     }
+    /// A cloud copy contains extracted text and its web IDs; it never masquerades as the uploaded original.
+    public func importCloud(_ copy: CloudReadingCopy, replaceExisting: Bool = false) throws -> LocalBook {
+        guard let owner = UUID(uuidString: copy.identity.ownerID), root.lastPathComponent == "account-" + owner.uuidString.lowercased(), !copy.chapters.isEmpty,
+              Set(copy.chapters.map(\.id)).count == copy.chapters.count,
+              Set(copy.chapters.flatMap { $0.passages.map(\.id) }).count == copy.chapters.reduce(0, { $0 + $1.passages.count }) else { throw LibraryError.invalid("离线副本不属于当前书房或章节标识不完整。") }
+        let header = "Leafhour 正文离线副本\n\(copy.title)\n\(copy.author)\n书籍：\(copy.identity.bookID)\n版本：\(copy.identity.contentVersion)\n\n"
+        let source = Data((header + copy.chapters.map { $0.title + "\n\n" + $0.passages.map(\.text).joined(separator: "\n\n") }.joined(separator: "\n\n")).utf8)
+        let id = Disk.hash(source), target = try bookDirectory(id)
+        if Disk.fm.fileExists(atPath: target.path) && !replaceExisting {
+            let existing = try book(id)
+            guard existing.cloud == copy.identity else { throw LibraryError.invalid("离线副本身份不一致，已有记录仍保留。") }
+            return existing
+        }
+        let stage = root.appendingPathComponent("staging/repair-cloud-" + UUID().uuidString)
+        try Disk.directory(stage)
+        defer { try? Disk.fm.removeItem(at: stage) }
+        try source.write(to: stage.appendingPathComponent("source.txt"), options: .atomic)
+        try copy.content.write(to: stage.appendingPathComponent("cloud-content.json"), options: .atomic)
+        var value = LocalBook(id: id, title: copy.title, author: copy.author, kind: .txt, sourceVersion: "sha256-" + id, originalFilename: "Leafhour-reading-copy.txt", importedAt: Date(), chapters: copy.chapters)
+        value.cloud = copy.identity
+        try Disk.write(value, to: stage.appendingPathComponent("book.json"))
+        var digests: [FileDigest] = []
+        for name in ["source.txt", "book.json", "cloud-content.json"] {
+            let file = stage.appendingPathComponent(name)
+            digests.append(FileDigest(path: name, sha256: try Disk.hashFile(file), bytes: try Disk.size(file)))
+        }
+        try Disk.write(OfflineManifest(bookID: id, files: digests), to: stage.appendingPathComponent("manifest.json"))
+        try checkPackage(stage, id: id)
+        if Disk.fm.fileExists(atPath: target.path) { try publishCloudStage(stage, bookID: id) }
+        else { try Disk.fm.moveItem(at: stage, to: target) }
+        return value
+    }
+    public func cacheCloudPassage(_ passage: CloudJSON, bookID: String) throws {
+        let book = try book(bookID)
+        guard book.cloud != nil, let passageID = passage["id"].string, !passage["translations"].object.isEmpty else { throw LibraryError.invalid("译文缓存回执不完整。") }
+        let folder = try bookDirectory(bookID)
+        let content = try CloudJSON.decode(Data(contentsOf: folder.appendingPathComponent("cloud-content.json")))
+        var found = false
+        let sections = content["sections"].array.map { section -> CloudJSON in
+            var object = section.object
+            object["paragraphs"] = .array(section["paragraphs"].array.map { row in
+                guard row["id"].string == passageID, row["original"].string == passage["original"].string else { return row }
+                found = true; var changed = row.object; changed["translations"] = passage["translations"]; return .object(changed)
+            })
+            return .object(object)
+        }
+        guard found else { throw LibraryError.invalid("译文与当前离线原文版本不一致。") }
+        var object = content.object; object["sections"] = .array(sections)
+        let stage = root.appendingPathComponent("staging/repair-cloud-cache-" + UUID().uuidString)
+        try Disk.fm.copyItem(at: folder, to: stage)
+        defer { try? Disk.fm.removeItem(at: stage) }
+        let updated = stage.appendingPathComponent("cloud-content.json")
+        try JSONEncoder().encode(CloudJSON.object(object)).write(to: updated, options: .atomic)
+        var manifest = try Disk.read(OfflineManifest.self, from: stage.appendingPathComponent("manifest.json"))
+        guard let index = manifest.files.firstIndex(where: { $0.path == "cloud-content.json" }) else { throw LibraryError.invalid("离线清单没有译文缓存。") }
+        manifest.files[index] = FileDigest(path: "cloud-content.json", sha256: try Disk.hashFile(updated), bytes: try Disk.size(updated))
+        try Disk.write(manifest, to: stage.appendingPathComponent("manifest.json"))
+        try checkPackage(stage, id: bookID)
+        try publishCloudStage(stage, bookID: bookID)
+    }
+    private func publishCloudStage(_ stage: URL, bookID: String) throws {
+        try Self.recoverRepair(root: root)
+        let target = try bookDirectory(bookID), backup = root.appendingPathComponent("staging/backup-" + UUID().uuidString)
+        let journal = root.appendingPathComponent("repair-transaction.json")
+        let transaction = RepairTransaction(bookID: bookID, stage: "staging/" + stage.lastPathComponent, backup: "staging/" + backup.lastPathComponent)
+        try Disk.write(transaction, to: journal)
+        do {
+            try Disk.fm.moveItem(at: target, to: backup)
+            try Disk.fm.moveItem(at: stage, to: target)
+            try checkPackage(target, id: bookID)
+        } catch {
+            if !Disk.fm.fileExists(atPath: target.path) { try? Disk.fm.moveItem(at: backup, to: target) }
+            throw error
+        }
+        try? Disk.fm.removeItem(at: backup); try Disk.fm.removeItem(at: journal)
+    }
+    public func cloudMetadata(_ bookID: String) throws -> CloudSyncMetadata {
+        _ = try bookDirectory(bookID)
+        let url = root.appendingPathComponent("states/" + bookID + "-sync.json")
+        guard Disk.fm.fileExists(atPath: url.path) else { return CloudSyncMetadata() }
+        return try Disk.read(CloudSyncMetadata.self, from: url)
+    }
+    public func saveCloudMetadata(_ metadata: CloudSyncMetadata, bookID: String) throws {
+        _ = try bookDirectory(bookID)
+        try Disk.write(metadata, to: root.appendingPathComponent("states/" + bookID + "-sync.json"))
+    }
+    public func cacheCloudView(_ name: String, data: Data) throws {
+        guard ["shelf", "summary", "activity", "notebook", "workspace"].contains(name), root.lastPathComponent.hasPrefix("account-") else { throw LibraryError.invalid("书房缓存归属无效。") }
+        try data.write(to: root.appendingPathComponent("cloud-" + name + ".json"), options: .atomic)
+    }
+    public func cloudView(_ name: String) throws -> Data? {
+        guard ["shelf", "summary", "activity", "notebook", "workspace"].contains(name), root.lastPathComponent.hasPrefix("account-") else { return nil }
+        let file = root.appendingPathComponent("cloud-" + name + ".json")
+        return Disk.fm.fileExists(atPath: file.path) ? try Data(contentsOf: file) : nil
+    }
     private func importsFolder(_ id: UUID) -> URL { root.appendingPathComponent("imports/" + id.uuidString, isDirectory: true) }
 }

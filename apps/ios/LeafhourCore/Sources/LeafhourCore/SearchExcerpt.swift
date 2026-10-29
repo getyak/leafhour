@@ -1,6 +1,6 @@
 import Foundation
 
-/// A source-only preview and destination derived from the same user-level search range.
+/// A source-owned preview and destination derived from the same user-level search range.
 public struct SearchExcerpt: Equatable, Sendable {
     public let before: String
     public let match: String

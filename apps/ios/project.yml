@@ -52,6 +52,18 @@ targets:
         INFOPLIST_FILE: ""
         PRODUCT_BUNDLE_IDENTIFIER: org.leafhour.local.uitests
         CODE_SIGN_STYLE: Automatic
+  LeafhourAppTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources: [LeafhourAppTests]
+    dependencies:
+      - target: Leafhour
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
+        INFOPLIST_FILE: ""
+        PRODUCT_BUNDLE_IDENTIFIER: $(LEAFHOUR_BUNDLE_ID).apptests
+        CODE_SIGN_STYLE: Automatic
 schemes:
   Leafhour:
     build:
@@ -61,6 +73,6 @@ schemes:
       config: Debug
     test:
       config: Debug
-      targets: [LeafhourUITests]
+      targets: [LeafhourAppTests, LeafhourUITests]
     archive:
       config: Release

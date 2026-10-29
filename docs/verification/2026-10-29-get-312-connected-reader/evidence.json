@@ -1,0 +1,101 @@
+{
+  "issue": "GET-312",
+  "base": "9ed97de",
+  "date": "2026-10-29",
+  "timezone": "Asia/Shanghai",
+  "sourceSHA256": {
+    "apps/ios/Config/Debug.xcconfig": "6be78a64ffb27ee1c9655738cfa6a62915f809eeb2a724158a7aa5ca9e52891c",
+    "apps/ios/Leafhour/AccountCredentialStore.swift": "42b7a7746980f9123f5e2fbd41e10a3d1461295046ba7f6cd52ec2a2209daa60",
+    "apps/ios/Leafhour/AccountScreen.swift": "9bbbcfa9565cf7ba762399d9fd20fb5c910a08a654ec2b1ed9e615cc3f570a55",
+    "apps/ios/Leafhour/BookDetailScreen.swift": "4f7bde8367cbffc36d363a2da77ea2cd82cfcc80fb91c58e80a8c0dd79d71355",
+    "apps/ios/Leafhour/LeafhourApp.swift": "ddf92d9fab261971e2625d0e435582d1bb1155003aaeb9a15ae2d3939a437324",
+    "apps/ios/Leafhour/LibraryScreen.swift": "b3f167f85ba0d7bde44891c5f19d6ec06deb5b4443770ede623ae631617fc50f",
+    "apps/ios/Leafhour/MarkdownTextRenderer.swift": "be3b40bdd4762e06f4cbb2577594de7aacbc4abf136020d58eabe9cbcaaa1394",
+    "apps/ios/Leafhour/PDFReadingView.swift": "fb43975c04a39c0f1bd8d2f134efd0206e01a0cf7d3c24a61c321a669182dc5b",
+    "apps/ios/Leafhour/ReaderCloudTools.swift": "8cee947d152c60a31f7f7075d0255ed9d2acaac6f20b6e8e4fbc486f290fe531",
+    "apps/ios/Leafhour/ReaderPanels.swift": "f58865c862186513ce0d9241a39e0b5cbf2acdfd65f5e859fea4fdd3cb0f0027",
+    "apps/ios/Leafhour/ReaderScreen.swift": "7216eca57803969eb1e92d14548188fc0aef984e21e7f44c45c3163350182b8f",
+    "apps/ios/Leafhour/ReaderSpeech.swift": "8cb200fa6a004b636228ea446617c902ffbc713d90530315ad9b286edeba830e",
+    "apps/ios/Leafhour/ReaderToolPanels.swift": "ee2295a0544732fcc30d926185a5d5ce85d6dc91a984354db9838b28271dd261",
+    "apps/ios/Leafhour/ReaderWebTools.swift": "11fcb3f948beb55c3da2c62d7487d2a9ac6499e78e5cf196d02587fdf33cfa05",
+    "apps/ios/Leafhour/SavedReadingSummariesScreen.swift": "c9318980eed4869603e67e386fa5ffa1c9628b6599410830877e6a4764f2a96f",
+    "apps/ios/Leafhour/TextReadingView.swift": "1d93cdde34deaa4447d60900ae8e727853ba1067f5c8488418c499275b0e0f5a",
+    "apps/ios/LeafhourCore/Sources/LeafhourCore/BookParser.swift": "91367a91407cfd32a48f1abd70b778594092556b651197f54da4e7423b550da5",
+    "apps/ios/LeafhourCore/Sources/LeafhourCore/BookSearch.swift": "574b127c86492b3f8d06b7bdfa39a5c042d9568e8499ab33b0360ec3b01083fe",
+    "apps/ios/LeafhourCore/Sources/LeafhourCore/CloudBookSync.swift": "42f7ad6014f53deffacf779a916b6023039a1e500711fb57daab23101fbae355",
+    "apps/ios/LeafhourCore/Sources/LeafhourCore/CloudLibraryClient.swift": "f32e8bed4bea1951445b31d2bd5e2d510dff7c2ef01ad61b5966bc9cdb6f45e4",
+    "apps/ios/LeafhourCore/Sources/LeafhourCore/CloudUploadMigration.swift": "525dda171149f01bd4297d04622af7219b1de9c650569ad20115181ca2776284",
+    "apps/ios/LeafhourCore/Sources/LeafhourCore/FileIO.swift": "3e798d39a8b43cd2f79d8ffd4a66f63b97847cd21aea06fc745a169d912e84e3",
+    "apps/ios/LeafhourCore/Sources/LeafhourCore/MarkdownChapterDocument.swift": "bee2e4329c4ebee7bd13d330067880c689fc8e2d4f12741217bbf073bc00e7d4",
+    "apps/ios/LeafhourCore/Sources/LeafhourCore/MarkdownDocument.swift": "d9cffb1da14c1ec61379291a12575f7ccf0eec9b78d601f16c142836b338913e",
+    "apps/ios/LeafhourCore/Sources/LeafhourCore/Models.swift": "975d4ac40a7f81babb899d3c2352174956ee7b9dd27721ad25db2382247ee45e",
+    "apps/ios/LeafhourCore/Sources/LeafhourCore/OfflineLibrary.swift": "15a0c05e48ff76d5f1f190f118cb1f416b1ad4f24815ef323574d361059a16f9",
+    "apps/ios/LeafhourCore/Sources/LeafhourCore/PDFTextAnchor.swift": "326992619e60d5c338c58a24d83bb78169815f066c951d5c57df7d9843fc769e",
+    "apps/ios/LeafhourCore/Sources/LeafhourCore/ReaderSession.swift": "7587199f643afc58e641ef5edf5c4fbb3942b5d9ffc0df420293dbaa61baac90",
+    "apps/ios/LeafhourCore/Sources/LeafhourCore/SearchExcerpt.swift": "7132b1be4693296eb974df2fb7b08d1cc59f70a12a18d095a86f874e9a4811dc",
+    "apps/ios/project.yml": "169b92ff0a61791a0d0bc3fb3515cc4690c38f1931408db09eb6077fdf8f7cf8"
+  },
+  "checks": {
+    "core": {
+      "tests": 76,
+      "failures": 0,
+      "log": "logs/core-layout.log"
+    },
+    "native": {
+      "tests": 18,
+      "failures": 0,
+      "log": "logs/app-tests-final.log",
+      "result": "app-tests-final.xcresult"
+    },
+    "ui": {
+      "tests": 1,
+      "failures": 0,
+      "seconds": 46.943,
+      "log": "logs/ui-accepted.log",
+      "result": "ui-accepted.xcresult"
+    },
+    "iosContracts": {
+      "node": 90,
+      "python": 9,
+      "failures": 0
+    },
+    "webReader": {
+      "tests": 46,
+      "failures": 0,
+      "log": "logs/web-reader-regression.log"
+    },
+    "productionSync": {
+      "checks": 8,
+      "status": "passed",
+      "report": "live-sync-result.json",
+      "modelRequests": 0,
+      "cleanup": "archived-verified"
+    }
+  },
+  "device": {
+    "name": "Primary iPhone / iPhone 17 Pro",
+    "os": "iOS 26.5",
+    "udid": "02B4F0C1-A92F-469D-9DCC-5ED13F119507"
+  },
+  "distribution": {
+    "testflightUploaded": false,
+    "physicalDeviceAccepted": false
+  },
+  "nativeArchive": {
+    "path": "native-results.tar.gz",
+    "sha256": "f89828f0e49b903a3a29241ea5140d189477b0110a09dc4d7d31db94b8003bd8",
+    "allFilesVerified": true
+  },
+  "screenshotSHA256": {
+    "01-native-login.png": "e8d49755b51eb8f241a3efaa66837052a54e338308552dfff1e0ccb1774ace9e",
+    "02-account-library.png": "3fc5f28d86cbde633d1ba9538e26a22a0f32eba3fe6edeb73b45f2c664a30ce2",
+    "02b-saved-reading-summary.png": "060e1908aa36145394a0ecca6c27ad2f5b1741723bea8575a0a43ac31ed97a2a",
+    "03-markdown-native-dock.png": "5bdabea3141b69ac782069f79066791b9b52011ab7d70b453e401437b3cdec62",
+    "04-distinct-translations.png": "c1cfeef205c7773ff4c94b0c0969cd07adf2cc6fa73e9a63098f5b774a1a73c9",
+    "05-native-listening.png": "ed367678ce02b4cac82de0d6ebbbf9ae8cba707683bd4b134a959a98f5e556cf",
+    "06-cloud-notes.png": "c244bc17fd3ba2a13e51a80d011883877b2a9f3f9e1e277787f16f9e142410d9",
+    "07-markdown-second-chapter.png": "056710893bd9c073b27d6d47a10f7ee53659b5613a5f1cce44d0560acb12a536",
+    "08-native-companion-composer.png": "ce5dcd1719d6fc0d0a4b1d7be4b72e21f0f5949fa5c879111601c0f182a8549b",
+    "before-title-spacing.png": "050eddb6f17b8bc81396bcf2ebf96f29357cc0ea6d246ec01782b8973c61f2b2"
+  }
+}

@@ -26,6 +26,7 @@ public struct LocalBook: Codable, Identifiable, Equatable, Sendable {
     public var originalFilename: String
     public var importedAt: Date
     public var chapters: [BookChapter]
+    public var cloud: CloudBookIdentity? = nil
 }
 public struct ReadingAnchor: Codable, Equatable, Hashable, Sendable {
     public var chapterID: String

@@ -1,0 +1,34 @@
+TAP version 13
+# Subtest: native dependency matches its independently pinned upstream source
+ok 1 - native dependency matches its independently pinned upstream source
+  ---
+  duration_ms: 18.096
+  type: 'test'
+  ...
+# Subtest: native dependency rejects forged source and jointly altered provenance
+ok 2 - native dependency rejects forged source and jointly altered provenance
+  ---
+  duration_ms: 43.062125
+  type: 'test'
+  ...
+# Subtest: Markdown parser matches its reviewed official Swift upstream source
+ok 3 - Markdown parser matches its reviewed official Swift upstream source
+  ---
+  duration_ms: 12.360084
+  type: 'test'
+  ...
+# Subtest: Markdown parser rejects altered C code and jointly forged provenance
+ok 4 - Markdown parser rejects altered C code and jointly forged provenance
+  ---
+  duration_ms: 92.007667
+  type: 'test'
+  ...
+1..4
+# tests 4
+# suites 0
+# pass 4
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 223.333167
