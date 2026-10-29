@@ -296,7 +296,7 @@ struct NoteEditorPanel: View {
                 .scrollContentBackground(.hidden).scrollDismissesKeyboard(.interactively)
                 .focused($editorFocused).accessibilityLabel("我的笔记正文").disabled(pendingAction != nil)
             Text(footer).font(.caption).foregroundStyle(.secondary)
-        }.padding(22).navigationTitle("记下自己的想法")
+        }.padding(22).navigationTitle("记下自己的想法").navigationBarTitleDisplayMode(.inline)
             .interactiveDismissDisabled(pendingAction != nil || session.saving || session.saveError != nil)
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) { Button("保存笔记") { submit(.note) }.disabled(pendingAction != nil || text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty) }
