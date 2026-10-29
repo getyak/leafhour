@@ -16,6 +16,7 @@ struct TextReadingView: UIViewRepresentable {
     var onTranslate: ((SelectedQuote) -> Void)? = nil
     var onDiscuss: ((SelectedQuote) -> Void)? = nil
     var onSelectionChange: ((SelectedQuote?, Bool) -> Void)? = nil
+    var onPageChange: ((ReaderPagePosition) -> Void)? = nil
     func makeCoordinator() -> Coordinator { Coordinator(parent: self) }
     func makeUIView(context: Context) -> UITextView {
         let view = ReflowTextView(usingTextLayoutManager: false)
@@ -27,10 +28,14 @@ struct TextReadingView: UIViewRepresentable {
         view.adjustsFontForContentSizeCategory = true; view.alwaysBounceVertical = true
         view.delegate = context.coordinator; view.accessibilityIdentifier = "leafhour-epub-reader"
         context.coordinator.view = view
-        view.onWidthChange = { [weak coordinator = context.coordinator, weak view] in
+        view.onSizeChange = { [weak coordinator = context.coordinator, weak view] in
             guard let coordinator, let view else { return }; coordinator.updateContent(view)
         }
         context.coordinator.edgeTap = ReaderEdgeTapHandler(view: view, blocked: { [weak view] in (view?.selectedRange.length ?? 0) > 0 }, onWake: { [weak coordinator = context.coordinator] edge in coordinator?.parent.onWake(edge) })
+        context.coordinator.pageTurn = ReaderPageTurnGestureHandler(view: view, blocked: { [weak view, weak coordinator = context.coordinator] in
+            (view?.selectedRange.length ?? 0) > 0 || coordinator?.restoring != false
+        }, onTurn: { [weak coordinator = context.coordinator] direction in _ = coordinator?.turnPage(direction) })
+        context.coordinator.configureNavigation(view)
         return view
     }
     func updateUIView(_ view: UITextView, context: Context) {
@@ -44,7 +49,7 @@ struct TextReadingView: UIViewRepresentable {
         }
     }
     static func dismantleUIView(_ view: UITextView, coordinator: Coordinator) {
-        (view as? ReflowTextView)?.onWidthChange = nil
+        (view as? ReflowTextView)?.onSizeChange = nil
         coordinator.invalidate(); view.delegate = nil
     }
     struct Span { var passage: Passage; var range: NSRange; var sourceOffsets: SourceTextOffsets; var sourceRange: NSRange? = nil }
@@ -152,6 +157,7 @@ struct TextReadingView: UIViewRepresentable {
                 view.selectedRange = NSRange(location: 0, length: 0)
                 coordinator.restore(session.currentAnchor)
             }
+            coordinator.configureNavigation(view)
         }
         var parent: TextReadingView
         weak var view: UITextView?
@@ -166,7 +172,12 @@ struct TextReadingView: UIViewRepresentable {
         private var indexedChapterIndex: Int?
         var restoring = false
         var edgeTap: ReaderEdgeTapHandler?
+        var pageTurn: ReaderPageTurnGestureHandler?
         var selectionDismissalID: UUID?
+        private var pagination: ReaderTextPagination?
+        private var paginationKey: String?
+        private var lastReportedPage: ReaderPagePosition?
+        private var pendingPageTransition: ReaderPageDirection?
         private var delayed: DispatchWorkItem?
         private var restorationGeneration = 0
         private var resignObserver: NSObjectProtocol?
@@ -184,6 +195,7 @@ struct TextReadingView: UIViewRepresentable {
         func scrollViewDidScroll(_ scrollView: UIScrollView) {
             guard checkpointVisible() else { return }
             schedulePersistence()
+            reportPagePosition()
         }
         func cancelPendingCapture() { delayed?.cancel(); delayed = nil }
         private func schedulePersistence() {
@@ -251,6 +263,75 @@ struct TextReadingView: UIViewRepresentable {
             restorationGeneration += 1; cancelPendingCapture(); view = nil
             spans = []; indexedSessionID = nil; indexedChapterIndex = nil
             markdown = nil; markdownChapterID = nil
+            pageTurn?.invalidate(); pageTurn = nil; pagination = nil; paginationKey = nil
+        }
+        func configureNavigation(_ view: UITextView) {
+            let paged = parent.session.state.preferences.navigationMode == .paged
+            pageTurn?.isEnabled = paged
+            // Preserve UITextView's selection/editing recognizers and native
+            // autoscroll. Only ordinary content-drag navigation changes mode.
+            view.panGestureRecognizer.isEnabled = !paged
+            if let reflow = view as? ReflowTextView {
+                reflow.onPageScroll = paged ? { [weak self] direction in self?.turnPage(direction) ?? false } : nil
+            }
+            if paged {
+                view.accessibilityCustomActions = [
+                    UIAccessibilityCustomAction(name: "下一屏") { [weak self] _ in self?.turnPage(.next) ?? false },
+                    UIAccessibilityCustomAction(name: "上一屏") { [weak self] _ in self?.turnPage(.previous) ?? false }
+                ]
+                refreshPagination()
+                reportPagePosition()
+            } else {
+                view.accessibilityCustomActions = nil
+                pagination = nil; paginationKey = nil; lastReportedPage = nil
+            }
+        }
+        private func refreshPagination() {
+            guard let view, !restoring, parent.session.state.preferences.navigationMode == .paged else { return }
+            let key = "\(ObjectIdentifier(parent.session))-\(signature)-\(view.bounds.size)-\(view.textContainerInset)-\(parent.pageInsets)"
+            guard key != paginationKey else { return }
+            paginationKey = key
+            pagination = ReaderTextPagination(textView: view, readingTop: max(50, parent.pageInsets.top), bottomInset: parent.pageInsets.bottom)
+        }
+        private func reportPagePosition() {
+            guard !restoring, let view, parent.session.state.preferences.navigationMode == .paged else { return }
+            refreshPagination()
+            guard let pagination else { return }
+            let position = ReaderPagePosition(index: pagination.index(at: view.contentOffset.y), count: pagination.origins.count, chapterIndex: parent.session.chapterIndex)
+            guard position != lastReportedPage else { return }
+            lastReportedPage = position
+            let navigation = navigationID, generation = restorationGeneration
+            DispatchQueue.main.async { [weak self] in
+                guard let self, self.navigationID == navigation, self.restorationGeneration == generation,
+                      self.lastReportedPage == position, self.parent.session.state.preferences.navigationMode == .paged else { return }
+                self.parent.onPageChange?(position)
+            }
+        }
+        @discardableResult func turnPage(_ direction: ReaderPageDirection) -> Bool {
+            guard let view, !restoring, view.selectedRange.length == 0,
+                  parent.session.state.preferences.navigationMode == .paged else { return false }
+            refreshPagination()
+            guard let pagination else { return false }
+            if let offset = pagination.destination(direction, from: view.contentOffset.y) {
+                guard abs(offset - view.contentOffset.y) > 0.5 else { return false }
+                restorationGeneration += 1; cancelPendingCapture()
+                parent.onReadingScroll()
+                ReaderPageTransition.apply(to: view, direction: direction)
+                view.setContentOffset(CGPoint(x: 0, y: offset), animated: false)
+                capture(); reportPagePosition()
+                return true
+            }
+            let session = parent.session, chapter = session.chapterIndex + (direction == .next ? 1 : -1)
+            guard session.book.chapters.indices.contains(chapter) else { return false }
+            parent.onReadingScroll()
+            pendingPageTransition = direction
+            var anchor: ReadingAnchor?
+            if direction == .previous, let passage = session.book.chapters[chapter].passages.last {
+                anchor = ReadingAnchor(chapterID: session.book.chapters[chapter].id, passageID: passage.id, characterOffset: max(0, passage.text.unicodeScalars.count - 1))
+            }
+            session.go(to: chapter, anchor: anchor)
+            updateContent(view)
+            return true
         }
         func restore(_ anchor: ReadingAnchor?, persistCheckpoint: Bool = false) {
             guard let view else { return }
@@ -278,6 +359,15 @@ struct TextReadingView: UIViewRepresentable {
                     view.setContentOffset(CGPoint(x: 0, y: min(y, max(0, view.contentSize.height - view.bounds.height))), animated: false)
                 } else { view.setContentOffset(.zero, animated: false) }
                 self.restoring = false
+                if let direction = self.pendingPageTransition {
+                    self.pendingPageTransition = nil
+                    ReaderPageTransition.apply(to: view, direction: direction)
+                    if self.parent.session.state.preferences.navigationMode == .paged, direction == .previous {
+                        view.setContentOffset(CGPoint(x: 0, y: max(-view.adjustedContentInset.top, view.contentSize.height - view.bounds.height + view.adjustedContentInset.bottom)), animated: false)
+                    }
+                    self.capture()
+                }
+                self.configureNavigation(view)
                 if persistCheckpoint { self.schedulePersistence() }
             }
         }
@@ -287,12 +377,30 @@ struct TextReadingView: UIViewRepresentable {
                   span.passage.resourcePath == nil, !span.passage.text.isEmpty else { return nil }
             let source = span.passage.text as NSString
             let start = sourceOffset(in: span, displayedIndex: range.location)
-            let end = sourceOffset(in: span, displayedIndex: NSMaxRange(range))
+            let end = sourceSelectionEnd(in: span, displayedRange: range)
             guard end > start, end <= span.sourceOffsets.utf16Count else { return nil }
             let scalarOffset = span.sourceOffsets.scalarOffset(forUTF16Offset: start)
             let selected = (textView.text as NSString).substring(with: range)
             return SelectedQuote(anchor: ReadingAnchor(chapterID: parent.session.chapter.id, passageID: span.passage.id, characterOffset: scalarOffset),
                 text: selected, sourceText: source.substring(with: NSRange(location: start, length: end - start)))
+        }
+        private func sourceSelectionEnd(in span: Span, displayedRange: NSRange) -> Int {
+            let boundary = sourceOffset(in: span, displayedIndex: NSMaxRange(displayedRange))
+            guard markdown != nil else { return boundary }
+            let source = span.passage.text as NSString
+            let last = sourceOffset(in: span, displayedIndex: NSMaxRange(displayedRange) - 1)
+            guard last < source.length else { return boundary }
+            // Point mappings belong to visible character starts. The next
+            // visible character can be after closing **, ` or a link URL.
+            var end = min(boundary, NSMaxRange(source.rangeOfComposedCharacterSequence(at: last)))
+            if source.character(at: last) == 38 {
+                let semicolon = source.range(of: ";", options: [], range: NSRange(location: last, length: min(32, source.length - last)))
+                // A decoded entity maps its whole visible scalar/grapheme to
+                // the raw '&'. Keep all encoded source bytes, but only when
+                // the next visible mapping has passed that complete entity.
+                if semicolon.location != NSNotFound, NSMaxRange(semicolon) <= boundary { end = NSMaxRange(semicolon) }
+            }
+            return end
         }
         func textView(_ textView: UITextView, editMenuForTextIn range: NSRange, suggestedActions: [UIMenuElement]) -> UIMenu? {
             let selectionGuidance = "请在同一段原文内选择文字，以保留准确引用。"
@@ -338,13 +446,24 @@ struct TextReadingView: UIViewRepresentable {
 
 /// UIKit can resize the text container without a new SwiftUI state update.
 private final class ReflowTextView: UITextView {
-    var onWidthChange: (() -> Void)?
-    private var laidOutWidth = 0
+    var onSizeChange: (() -> Void)?
+    var onPageScroll: ((ReaderPageDirection) -> Bool)?
+    private var laidOutSize = CGSize.zero
+    override func accessibilityScroll(_ direction: UIAccessibilityScrollDirection) -> Bool {
+        if let onPageScroll {
+            switch direction {
+            case .left, .next: return onPageScroll(.next)
+            case .right, .previous: return onPageScroll(.previous)
+            default: return false
+            }
+        }
+        return super.accessibilityScroll(direction)
+    }
     override func layoutSubviews() {
-        let width = Int(bounds.width)
-        let changed = width > 0 && width != laidOutWidth
-        if changed { laidOutWidth = width }
+        let size = CGSize(width: CGFloat(Int(bounds.width)), height: CGFloat(Int(bounds.height)))
+        let changed = size.width > 0 && size != laidOutSize
+        if changed { laidOutSize = size }
         super.layoutSubviews()
-        if changed { onWidthChange?() }
+        if changed { onSizeChange?() }
     }
 }
