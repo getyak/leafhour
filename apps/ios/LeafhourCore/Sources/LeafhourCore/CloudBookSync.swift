@@ -41,13 +41,19 @@ public struct CloudReadingCopy: Sendable {
     }
 }
 
+public struct CloudDownloadProgress: Equatable, Sendable {
+    public let completedChapters: Int
+    public let totalChapters: Int
+    public var fraction: Double { totalChapters > 0 ? Double(completedChapters) / Double(totalChapters) : 0 }
+}
+
 public extension CloudLibraryClient {
     func shelf(ownerID: String) async throws -> [CloudShelfBook] {
         let value = try CloudJSON.decode(await data(path: "/api/library?view=books", ownerID: ownerID))
         guard value["user"]["id"].string == ownerID else { throw CloudRequestError(status: 409, message: "账号已切换，未载入其他书房。") }
         return value["books"].array.compactMap(CloudShelfBook.init(json:))
     }
-    func downloadReadingCopy(_ remote: CloudShelfBook, ownerID: String) async throws -> CloudReadingCopy {
+    func downloadReadingCopy(_ remote: CloudShelfBook, ownerID: String, progress: (@Sendable (CloudDownloadProgress) async -> Void)? = nil) async throws -> CloudReadingCopy {
         let path = "/api/library/books/" + CloudJSON.component(remote.id)
         var manifest = try await readingJSON(path: path + "/reading-manifest", ownerID: ownerID)
         guard manifest["bookId"].string == remote.id, let version = manifest["contentVersion"].string else { throw CloudRequestError(status: 409, message: "书籍版本无法核对，请重新打开书房。") }
@@ -55,6 +61,8 @@ public extension CloudLibraryClient {
         var downloadBytes = try JSONEncoder().encode(manifest).count
         var passageIDs: Set<String> = [], chapterIDs: Set<String> = []
         var chapters: [BookChapter] = [], sections: [CloudJSON] = []
+        let totalChapters = manifest["chapters"].array.count
+        await progress?(CloudDownloadProgress(completedChapters: 0, totalChapters: totalChapters))
         for chapter in manifest["chapters"].array {
             try Task.checkCancellation()
             guard let chapterID = chapter["id"].string else { throw CloudRequestError(status: 409, message: "章节目录不完整，尚未标为离线可用。") }
@@ -73,6 +81,8 @@ public extension CloudLibraryClient {
                 }
             }
             if !passages.isEmpty { chapters.append(BookChapter(id: chapterID, title: CloudShelfBook.title(chapter["title"]), sourcePath: chapterID, passages: passages)) }
+            await progress?(CloudDownloadProgress(completedChapters: chapterIDs.count, totalChapters: totalChapters))
+            try Task.checkCancellation()
         }
         guard !chapters.isEmpty else { throw CloudRequestError(status: 409, message: "这本书暂时没有可下载的文字正文，请在网页查看原件。") }
         if let snapshot = manifest["readingCache"]["snapshotId"].string {
@@ -80,6 +90,7 @@ public extension CloudLibraryClient {
             guard current["contentVersion"].string == version, current["readingCache"]["snapshotId"].string == snapshot else { throw CloudRequestError(status: 409, message: "正文或译文刚刚更新，请重试下载。已有副本仍保留。") }
         }
         var object = manifest.object; object["sections"] = .array(sections); manifest = .object(object)
+        try Task.checkCancellation()
         return CloudReadingCopy(identity: CloudBookIdentity(ownerID: ownerID, bookID: remote.id, contentVersion: version, sourceFormat: manifest["source"]["format"].string ?? "text"), title: CloudShelfBook.title(manifest["title"]), author: manifest["author"].string ?? remote.author, chapters: chapters, content: try JSONEncoder().encode(manifest))
     }
     /// The web transport switches to stable base64 parts for a chapter over its response limit.

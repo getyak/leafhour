@@ -167,7 +167,15 @@ final class LibraryModel {
         let work = Task { @MainActor [self] in
             do {
                 try Task.checkCancellation()
-                let copy = try await cloud.downloadReadingCopy(remote, ownerID: account.id)
+                let copy = try await cloud.downloadReadingCopy(remote, ownerID: account.id) { [weak self] progress in
+                    await MainActor.run {
+                        guard let self, self.contextID == marker, self.downloadOperationID == operation else { return }
+                        self.activityProgress = progress.totalChapters > 0 ? progress.fraction : nil
+                        self.status = progress.completedChapters == progress.totalChapters
+                            ? "《\(remote.title)》已接收全部章节，正在核对完整性…"
+                            : "正在下载《\(remote.title)》· \(progress.completedChapters) / \(progress.totalChapters) 章"
+                    }
+                }
                 try Task.checkCancellation()
                 guard marker == contextID else { return }
                 status = "正在保存《\(remote.title)》的离线副本…"
