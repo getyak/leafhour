@@ -192,7 +192,8 @@ struct TextReadingView: UIViewRepresentable {
                   renderedWidth == Int(layout(for: view).contentWidth) else { return false }
             // Sample inside the visible line. Its exact top edge may resolve to
             // the previous paragraph's trailing newline after a width reflow.
-            let point = CGPoint(x: 1, y: max(0, view.contentOffset.y + 51 - view.textContainerInset.top))
+            let readingTop = max(50, parent.pageInsets.top)
+            let point = CGPoint(x: 1, y: max(0, view.contentOffset.y + readingTop + 1 - view.textContainerInset.top))
             let index = view.layoutManager.characterIndex(for: point, in: view.textContainer, fractionOfDistanceBetweenInsertionPoints: nil)
             let span = spans.last(where: { $0.range.location <= index }) ?? spans[0]
             let utf16Offset = sourceOffset(in: span, displayedIndex: index)
@@ -236,7 +237,8 @@ struct TextReadingView: UIViewRepresentable {
                     let position = min(max(0, view.attributedText.length - 1), displayedOffset)
                     let glyph = view.layoutManager.glyphRange(forCharacterRange: NSRange(location: position, length: 1), actualCharacterRange: nil)
                     let rect = view.layoutManager.boundingRect(forGlyphRange: glyph, in: view.textContainer)
-                    let y = max(-view.adjustedContentInset.top, rect.minY + view.textContainerInset.top - 50)
+                    let readingTop = max(50, self.parent.pageInsets.top)
+                    let y = max(-view.adjustedContentInset.top, rect.minY + view.textContainerInset.top - readingTop)
                     view.setContentOffset(CGPoint(x: 0, y: min(y, max(0, view.contentSize.height - view.bounds.height))), animated: false)
                 } else { view.setContentOffset(.zero, animated: false) }
                 self.restoring = false
