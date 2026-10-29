@@ -7,12 +7,12 @@ import LeafhourCore
 
 @MainActor
 final class ReaderInteractionTests: XCTestCase {
-    private func session() async throws -> ReaderSession {
+    private func session(source: String = "A quiet passage to read aloud.") async throws -> ReaderSession {
         let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
         try FileManager.default.createDirectory(at: root, withIntermediateDirectories: true)
         addTeardownBlock { try? FileManager.default.removeItem(at: root) }
         let file = root.appendingPathComponent("reader.txt")
-        try Data("A quiet passage to read aloud.".utf8).write(to: file)
+        try Data(source.utf8).write(to: file)
         let library = try OfflineLibrary(root: root.appendingPathComponent("library"), scope: .device)
         let book = try await library.importFile(file)
         return ReaderSession(book: book, state: try await library.state(book.id), original: try await library.originalURL(book.id), directory: try await library.bookDirectory(book.id), library: library)
@@ -54,6 +54,47 @@ final class ReaderInteractionTests: XCTestCase {
 
     private func descendants(of view: UIView) -> [UIView] {
         [view] + view.subviews.flatMap { descendants(of: $0) }
+    }
+
+    func testPauseBeforeTheSynthesizerIsReadyStillWaitsForExplicitResume() async throws {
+        let session = try await session(), synthesizer = SpeechSynthesizerProbe(), audio = SpeechAudioSessionProbe()
+        synthesizer.pauseAccepted = false
+        let speech = ReaderSpeech(synthesizer: synthesizer, audioSession: audio)
+        speech.start(session)
+
+        speech.pause()
+
+        XCTAssertTrue(speech.paused, "A system pause rejection must not discard the reader's pause intent")
+        XCTAssertFalse(speech.playing)
+        XCTAssertEqual(audio.activations.last, false)
+        XCTAssertEqual(synthesizer.spoken.count, 1)
+        speech.speed = 1.5
+        speech.restartVoice()
+        XCTAssertEqual(synthesizer.spoken.count, 1)
+        speech.toggle(session)
+        XCTAssertTrue(speech.playing)
+        XCTAssertEqual(synthesizer.spoken.count, 2)
+        XCTAssertEqual(synthesizer.continuations, 0, "A rejected system pause needs a fresh utterance only after explicit resume")
+    }
+
+    func testLateFinishAfterPauseDoesNotAdvanceToTheNextPassage() async throws {
+        let session = try await session(source: "First passage stays paused.\n\nSecond passage must not start."), synthesizer = SpeechSynthesizerProbe(), audio = SpeechAudioSessionProbe()
+        let speech = ReaderSpeech(synthesizer: synthesizer, audioSession: audio)
+        speech.start(session)
+        let first = try XCTUnwrap(synthesizer.spoken.first)
+        speech.pause()
+
+        speech.speechSynthesizer(AVSpeechSynthesizer(), didFinish: first)
+        try await Task.sleep(for: .milliseconds(30))
+
+        XCTAssertEqual(speech.position, 0)
+        XCTAssertEqual(synthesizer.spoken.count, 1, "A finish callback queued before pause must not start the next passage")
+        XCTAssertTrue(speech.paused)
+        XCTAssertFalse(speech.playing)
+        speech.toggle(session)
+        XCTAssertEqual(synthesizer.spoken.count, 2)
+        XCTAssertEqual(synthesizer.spoken.last?.speechString, "First passage stays paused.")
+        XCTAssertTrue(speech.playing)
     }
 
     func testChangingSpeedWhilePausedWaitsForExplicitResume() async throws {
@@ -129,9 +170,10 @@ private final class SpeechSynthesizerProbe: ReaderSpeechSynthesizing {
     weak var delegate: (any AVSpeechSynthesizerDelegate)?
     var spoken: [AVSpeechUtterance] = []
     var continuations = 0
+    var pauseAccepted = true
     func speak(_ utterance: AVSpeechUtterance) { spoken.append(utterance) }
     func stopSpeaking(at boundary: AVSpeechBoundary) -> Bool { true }
-    func pauseSpeaking(at boundary: AVSpeechBoundary) -> Bool { true }
+    func pauseSpeaking(at boundary: AVSpeechBoundary) -> Bool { pauseAccepted }
     func continueSpeaking() -> Bool { continuations += 1; return true }
 }
 

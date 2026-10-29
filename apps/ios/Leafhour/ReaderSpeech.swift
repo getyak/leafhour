@@ -79,10 +79,15 @@ final class ReaderSpeech: NSObject, AVSpeechSynthesizerDelegate {
     }
     func pause() {
         guard playing else { return }
-        if synthesizer.pauseSpeaking(at: .immediate) {
-            paused = true; playing = false
-            try? audioSession.setActive(false, options: .notifyOthersOnDeactivation)
+        paused = true; playing = false
+        // The engine can reject a pause while preparing or finishing an utterance.
+        // Keep the reader's intent and rebuild only after an explicit resume.
+        if !synthesizer.pauseSpeaking(at: .immediate) {
+            utterance = nil
+            synthesizer.stopSpeaking(at: .immediate)
+            voiceChangePending = true
         }
+        try? audioSession.setActive(false, options: .notifyOthersOnDeactivation)
     }
     func stop() {
         voiceChangePending = false
@@ -123,6 +128,11 @@ final class ReaderSpeech: NSObject, AVSpeechSynthesizerDelegate {
     nonisolated func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didFinish utterance: AVSpeechUtterance) {
         Task { @MainActor [weak self] in
             guard let self, self.utterance === utterance else { return }
+            if self.paused {
+                self.utterance = nil; self.voiceChangePending = true
+                return
+            }
+            guard self.playing else { return }
             if self.canNext { self.position += 1; self.speakCurrent() }
             else { self.stop() }
         }
