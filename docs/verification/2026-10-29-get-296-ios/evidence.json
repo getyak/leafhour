@@ -1,0 +1,54 @@
+{
+  "date": "2026-10-29",
+  "timezone": "Asia/Shanghai",
+  "baseline": "9c127e0bdbab11ae21dc2f462dad4d8430cd0ef2",
+  "scope": "native simulator; bounded public-domain text/PDF fixtures; no physical-device or TestFlight acceptance",
+  "device": {
+    "name": "Primary iPhone / iPhone 17 Pro",
+    "udid": "02B4F0C1-A92F-469D-9DCC-5ED13F119507",
+    "os": "iOS 26.5"
+  },
+  "nativeSourceSHA256": {
+    "apps/ios/Leafhour/LeafhourApp.swift": "21395ccda956e28ecd6b0a8d6a4a5b4a5458c304e31c6fd9d4f5d99a342689b3",
+    "apps/ios/Leafhour/TextReadingView.swift": "2f953b8c36ac9c51305a7de1cf41ba2d364f9c16455e465499054fa0d0883a44",
+    "apps/ios/Leafhour/LibraryScreen.swift": "17e61ba5f53e29bee7f1c7f635870799cfbe20e2d79c1e2234bf6b9094b8ac00",
+    "apps/ios/Leafhour/PDFReadingView.swift": "cfce82283cda152a10f8f41309601a94f087efce5b3bc073f413182f4b705809",
+    "apps/ios/Leafhour/BookDetailScreen.swift": "784e703165a3cf826ece512b3aedee911c3fbb908f081df1adb4921099f99029",
+    "apps/ios/Leafhour/ReaderPanels.swift": "3dd69a7e3b2b81c3aab3822ce92ee86d0ff02025fcab052f699206664cc0d6e7",
+    "apps/ios/Leafhour/ReaderScreen.swift": "48e32d87b966125de4c03cb7bfbbdc7762b467b12a649c43a14d14150e06d627"
+  },
+  "screenshotsSHA256": {
+    "docs/verification/2026-10-29-get-296-ios/screenshots/06-system-light-live.png": "e6f22eb4a67d5bd5e10b70b25486f856fe1bc872f29dc8af3125ecf33f1fe7b1",
+    "docs/verification/2026-10-29-get-296-ios/screenshots/01-preferences-before.png": "ba8fcff1b141abeaa3044e1c884f9451ee74cc77004e43c3ba7af505716d2d9a",
+    "docs/verification/2026-10-29-get-296-ios/screenshots/03-adjusted-preview.png": "70375b85545437df089e79af63f141cc30a1d3a3ee8261bf17d44de58f141ef4",
+    "docs/verification/2026-10-29-get-296-ios/screenshots/02-system-theme.png": "df8752665f3af5e51a1ef62f650c2189e190e313f0b5220ab85c1eeec9567dc4",
+    "docs/verification/2026-10-29-get-296-ios/screenshots/05-system-dark-live.png": "8b5fe9cd26a2193b65b25576ea275cc444fde51cb380a597ec9ccf61420e8204",
+    "docs/verification/2026-10-29-get-296-ios/screenshots/04-pdf-settings.png": "216e6c9b9e39541e22b7e474cde752c7766115d24e16151b2c7960260398e983"
+  },
+  "probes": [
+    {
+      "test": "testCraft296Preferences",
+      "result": "passed",
+      "bundle": "final-v2-text.xcresult"
+    },
+    {
+      "test": "testCraft296PDFPreferences",
+      "result": "passed",
+      "bundle": "final-v2-pdf.xcresult"
+    },
+    {
+      "test": "testCraft296LiveSystemAppearance",
+      "result": "passed",
+      "bundle": "system-live.xcresult",
+      "systemAppearanceRestored": "light"
+    }
+  ],
+  "review": "independent read-only review, no outstanding confirmed finding",
+  "schedulingAtCapture": "not installed; native automation tool unavailable",
+  "schedulingFollowUp": {
+    "state": "ACTIVE; created and read back through native automation tools",
+    "cadence": "Every half hour",
+    "deadline": "2026-10-30 12:00 Asia/Shanghai",
+    "scope": "ongoing scheduled work, not proof of future completed rounds"
+  }
+}

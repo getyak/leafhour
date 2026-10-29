@@ -78,8 +78,8 @@ for(const [url,file,type] of [['/share.js','app/share.js','text/javascript'],['/
 assets.set('/evals',['app/evals.html','text/html']);assets.set('/evals.js',['app/evals.js','text/javascript']);assets.set('/evals.css',['app/evals.css','text/css']);
 const fail=(message,status=400)=>Object.assign(new Error(message),{status});
 
-export async function createReaderServer({bookPath=path.join(root,'local/finite-infinite-games/book.json'),recordsPath=path.join(root,'local/service/records.json'),publicOrigin=null,experienceStorePath=path.join(path.dirname(recordsPath),'experience-records.json'),experiencePackPath=path.join(path.dirname(bookPath),'experience-pack.json'),generator=null,portalDataDir=path.join(path.dirname(recordsPath),'portal'),sendCode,translator,allowLocal=true,speechProvider,dialogueGenerator,guideGenerator,chatGenerator,companionGenerator,introductionGenerator,giftQuoteGenerator=null,annotationGenerator,dataStore=null,authService=null,paddleProvider,env=process.env}={}){
-  const portal=await createPortal({dataDir:portalDataDir,publicOrigin,sendCode,translator,allowLocal,speechProvider,dialogueGenerator,guideGenerator,chatGenerator,companionGenerator,introductionGenerator,giftQuoteGenerator,annotationGenerator,dataStore,authService,paddleProvider,env});
+export async function createReaderServer({bookPath=path.join(root,'local/finite-infinite-games/book.json'),recordsPath=path.join(root,'local/service/records.json'),publicOrigin=null,experienceStorePath=path.join(path.dirname(recordsPath),'experience-records.json'),experiencePackPath=path.join(path.dirname(bookPath),'experience-pack.json'),generator=null,portalDataDir=path.join(path.dirname(recordsPath),'portal'),sendCode,translator,allowLocal=true,speechProvider,dialogueGenerator,guideGenerator,chatGenerator,companionGenerator,introductionGenerator,giftQuoteGenerator=null,annotationGenerator,dataStore=null,authService=null,paddleProvider,env=process.env,compiledWeb=false}={}){
+  const portal=await createPortal({dataDir:portalDataDir,publicOrigin,sendCode,translator,allowLocal,speechProvider,dialogueGenerator,guideGenerator,chatGenerator,companionGenerator,introductionGenerator,giftQuoteGenerator,annotationGenerator,dataStore,authService,paddleProvider,env,compiledWeb});
   let book;try{book=JSON.parse(await readFile(bookPath,'utf8'));}catch(error){if(error.code!=='ENOENT')throw error;book=await portal.library.getBook(null,'gutenberg-alice');}
   if(!Array.isArray(book.sections)||!Array.isArray(book.chapters))throw Error('Reading package is not ready');
   portal.setLegacyBook(book);
@@ -167,7 +167,7 @@ export async function createReaderServer({bookPath=path.join(root,'local/finite-
         const internalEntry=url.pathname!=='/read',documentUrl=new URL(url);documentUrl.pathname='/read';res.setHeader('X-Robots-Tag','noindex, nofollow, noarchive');
         res.setHeader('Cache-Control','private, no-store');res.setHeader('Vary','Cookie, Accept-Language, Sec-Fetch-Site');
         if(!internalEntry&&needsUiSessionHandoff({url,cookie:req.headers.cookie,secFetchSite:req.headers['sec-fetch-site']})){send(200,sessionUiHandoffDocument(documentUrl,fallbackInitialUiLanguage({url:documentUrl,cookie:req.headers.cookie,acceptLanguage:req.headers['accept-language']})),'text/html');return;}
-        try{const decision=await selectInitialUiLanguage({url:documentUrl,cookie:req.headers.cookie,acceptLanguage:req.headers['accept-language'],getUser:token=>portal.auth.userFor(token),getAccountPreference:user=>portal.uiPreferences.get(user)});send(200,readerDocument(await readFile(path.join(root,'app/index.html'),'utf8'),decision),'text/html');}
+        try{const decision=await selectInitialUiLanguage({url:documentUrl,cookie:req.headers.cookie,acceptLanguage:req.headers['accept-language'],getUser:token=>portal.auth.userFor(token),getAccountPreference:user=>portal.uiPreferences.get(user)});send(200,readerDocument(compiledWeb?await readFile(path.join(root,'.ui-entry/read.html'),'utf8').catch(error=>{if(error.code!=='ENOENT')throw error;return readFile(path.join(root,'app/index.html'),'utf8');}):await readFile(path.join(root,'app/index.html'),'utf8'),decision),'text/html');}
         catch{res.setHeader('Retry-After','5');send(503,initialRetryDocument(documentUrl,fallbackInitialUiLanguage({url:documentUrl,cookie:req.headers.cookie,acceptLanguage:req.headers['accept-language']})),'text/html');}
         return;
       }
@@ -190,7 +190,7 @@ if(process.argv[1]&&import.meta.url===pathToFileURL(path.resolve(process.argv[1]
   let generator=null;
   if(process.env.DEEPSEEK_API_KEY){const {createHarnessGenerator}=await import('../harness/generator.mjs');generator=await createHarnessGenerator();}
   const recordsPath=process.env.READER_DATA_DIR?path.join(path.resolve(process.env.READER_DATA_DIR),'records.json'):undefined;
-  const server=await createReaderServer({generator,recordsPath,bookPath:process.env.READER_BOOK_PATH?path.resolve(process.env.READER_BOOK_PATH):undefined,publicOrigin:process.env.READER_PUBLIC_ORIGIN||null});
+  const server=await createReaderServer({compiledWeb:true,generator,recordsPath,bookPath:process.env.READER_BOOK_PATH?path.resolve(process.env.READER_BOOK_PATH):undefined,publicOrigin:process.env.READER_PUBLIC_ORIGIN||null});
   server.listen(port,host,()=>{console.log(configurationSummary({speechSupported:!!server.portal.audio}));console.log('Leafhour 已启动：http://'+host+':'+server.address().port);});
   process.on('SIGTERM',()=>server.close());process.on('SIGINT',()=>server.close());
 }

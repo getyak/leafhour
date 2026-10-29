@@ -138,3 +138,14 @@ test('repainting a cover replaces old metadata, preserves long titles and insert
   assert.match(cover.dataset.binding,/^[a-z]+$/);
   assert.ok(!text(cover).includes('旧作者'));
 });
+
+test('private originals reuse an authenticated image and recover literal typography if it fails',()=>{
+  const book={bookId:'private-one',visibility:'private',title:{zh:'Source title'},author:'Original author',source:{format:'pdf',sha256:'a'.repeat(64)}};
+  const cover=new Element();binding.paintBookCover(cover,book);
+  const image=descendants(cover).find(node=>node.tagName==='img');
+  assert.equal(image?.src,'/api/library/books/private-one/cover?v='+'a'.repeat(64));
+  assert.equal(cover.dataset.coverStyle,'imported');
+  binding.paintBookCover(cover,book,{locale:'ja'});assert.equal(descendants(cover).find(node=>node.tagName==='img'),image);
+  image.dispatchEvent(new Event('error'));assert.match(text(cover),/Source title/);assert.equal(image.hidden,true);
+  assert.equal(cover.dataset.coverArtwork,'failed');
+});

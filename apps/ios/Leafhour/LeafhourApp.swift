@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 import LeafhourCore
 
 @main
@@ -10,8 +11,20 @@ struct LeafhourApp: App {
 }
 
 extension Color {
-    static let leafInk = Color(red: 0.24, green: 0.40, blue: 0.31)
+    static let leafFill = Color(red: 0.24, green: 0.40, blue: 0.31)
+    static let leafInk = Color(uiColor: UIColor { traits in
+        traits.userInterfaceStyle == .dark
+            ? UIColor(red: 181.0 / 255, green: 205.0 / 255, blue: 189.0 / 255, alpha: 1)
+            : UIColor(red: 0.24, green: 0.40, blue: 0.31, alpha: 1)
+    })
     static let readingPaper = Color(red: 0.97, green: 0.96, blue: 0.92)
+}
+
+extension ReaderPreferences {
+    /// Read the system appearance outside the reader's presentation overrides.
+    func colorScheme(following system: ColorScheme) -> ColorScheme {
+        theme == "night" ? .dark : (theme == "paper" ? .light : system)
+    }
 }
 
 @MainActor @Observable

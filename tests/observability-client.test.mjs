@@ -1,6 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import {readFile} from 'node:fs/promises';
+import {parse} from 'acorn';
 import {createBrowserObservability,safeErrorKind} from '../app/observability.mjs';
+import {resolveOfflineReadingContext} from '../app/offline-reading.mjs';
 
 const enabled={enabled:true,analytics:true,diagnostics:true,excluded:false,release:'test'};
 const tick=()=>new Promise(resolve=>setImmediate(resolve));
@@ -64,7 +67,14 @@ test('readerFetch adds only a random operation header, preserves failures, and n
   globalThis.document=Object.assign(new EventTarget(),{hidden:false});globalThis.window=new EventTarget();globalThis.location={search:'?book=SENTINEL_PRIVATE_BOOK',origin:'https://fixture.invalid',replace(){}};
   const calls=[],failure=new TypeError('SENTINEL_PRIVATE_ERROR');let fail=false;
   const original=async(url,options={})=>{calls.push({url,options});if(url==='/api/auth/session')return Response.json({user:{id:'alice'}});if(url==='/api/account/observability')return Response.json(enabled);if(url.endsWith('/events'))return Response.json({accepted:true});if(fail)throw failure;return Response.json({revision:0,uiLocale:null,ok:true});};globalThis.fetch=original;
-  const module=await import('../app/reader-api.mjs?observability-client-test');t.after(()=>module.readerObservability.dispose());
+  // Run the actual request wrapper and fresh session resolver with an online
+  // device boundary. Chapter-cache hydration is owned by its separate tests.
+  const source=await readFile(new URL('../app/reader-api.mjs',import.meta.url),'utf8'),tree=parse(source,{ecmaVersion:'latest',sourceType:'module'}),bindings={};let executable=source;
+  const store={adopt:async()=>{},capture:()=>null,owner:()=>null,clear:async()=>{}};
+  const offline={deviceBookStore:()=>store,resolveOfflineReadingContext:async options=>{const context=await resolveOfflineReadingContext(options);context.transport={fetch:options.fetcher,isOffline:()=>false};return context;}};
+  for(const node of tree.body.filter(node=>node.type==='ImportDeclaration')){const provided=node.source.value==='./offline-reading.mjs'?offline:await import(new URL(node.source.value,new URL('../app/reader-api.mjs',import.meta.url)));for(const spec of node.specifiers)bindings[spec.local.name]=provided[spec.imported?.name||'default'];}
+  for(const node of [...tree.body].reverse())if(node.type==='ImportDeclaration')executable=executable.slice(0,node.start)+executable.slice(node.end);else if(node.type==='ExportNamedDeclaration')executable=executable.slice(0,node.start)+executable.slice(node.declaration.start);
+  const AsyncFunction=Object.getPrototypeOf(async function(){}).constructor,module=await new AsyncFunction(...Object.keys(bindings),executable+';return {readerFetch,readerObservability};')(...Object.values(bindings));t.after(()=>module.readerObservability.dispose());
   const response=await module.readerFetch('/api/book');assert.equal(response.ok,true);assert.equal(globalThis.fetch,original);
   const bookCall=calls.find(call=>call.url==='/api/library/books/SENTINEL_PRIVATE_BOOK');assert.equal(bookCall.options.headers['X-Leafhour-Operation'],module.readerObservability.operationId);assert.equal(bookCall.options.headers['X-Reader-Owner'],'alice');
   fail=true;await assert.rejects(module.readerFetch('/api/chapters/SENTINEL_PRIVATE_PASSAGE?text=SENTINEL_PRIVATE_SOURCE'),error=>error===failure);await module.readerObservability.flush?.();

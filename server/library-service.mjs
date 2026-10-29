@@ -1,3 +1,4 @@
+import {deriveImportedCover} from './imported-cover.mjs';
 import {buildLibraryArrival} from './library-arrival.mjs';
 import {memoryFor,recordPreference,applyMemoryChange} from './preference-memory.mjs';
 import {resolveVerifiedSource} from './verified-source.mjs';
@@ -114,16 +115,26 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
     if(user){const introduction=await introductions.get(user,book);if(introduction)book.introduction=introduction;}
     return book;
   }
-  async function readingView(user,id,{chapterId,passageId}={}){
-    const snapshot=await chapterReads.manifest(user,id),book=structuredClone(snapshot.book);
+  const readingCache=snapshot=>({schemaVersion:1,snapshotId:snapshot.id,chapters:structuredClone(snapshot.chapters)});
+  async function readingMetadata(user,snapshot){
+    const book=structuredClone(snapshot.book);
     if(user){const introduction=await introductions.get(user,{...book,sections:snapshot.introductionSections});if(introduction)book.introduction=introduction;}
+    return book;
+  }
+  async function readingManifest(user,id){
+    const snapshot=await chapterReads.manifest(user,id),book=await readingMetadata(user,snapshot);
+    book.reading={partial:true,loadedChapters:[],hasTranslations:snapshot.hasTranslations};book.readingCache=readingCache(snapshot);
+    await chapterReads.assertCurrent(user,id,snapshot);return book;
+  }
+  async function readingView(user,id,{chapterId,passageId}={}){
+    const snapshot=await chapterReads.manifest(user,id),book=await readingMetadata(user,snapshot);
     const partial=snapshot.byteLength+(book.introduction?Buffer.byteLength(JSON.stringify(book.introduction))+16:0)>256*1024;
-    if(!partial){Object.assign(book,await chapterReads.complete(user,id,snapshot));await chapterReads.assertCurrent(user,id,snapshot);return book;}
+    if(!partial){Object.assign(book,await chapterReads.complete(user,id,snapshot));book.readingCache=readingCache(snapshot);await chapterReads.assertCurrent(user,id,snapshot);return book;}
     const selected=book.sections.find(s=>s.paragraphs.some(p=>p.id===passageId))?.chapterId||(book.chapters.some(c=>c.id===chapterId)?chapterId:null)||book.readingStart?.chapterId||book.chapters[0].id;
     const ids=[selected],loaded=new Map();
     for(const chapterId of ids)loaded.set(chapterId,(await chapterReads.chapter(user,id,snapshot,chapterId)).sections);
     const offsets=new Map();book.sections=book.sections.map(section=>{const rows=loaded.get(section.chapterId);if(!rows)return section;const offset=offsets.get(section.chapterId)||0;offsets.set(section.chapterId,offset+1);return rows[offset];});
-    if(partial)book.reading={partial:true,loadedChapters:[selected],hasTranslations:snapshot.hasTranslations};
+    if(partial)book.reading={partial:true,loadedChapters:[selected],hasTranslations:snapshot.hasTranslations};book.readingCache=readingCache(snapshot);
     await chapterReads.assertCurrent(user,id,snapshot);return book;
   }
   async function readingChapter(user,id,chapterId,contentVersion){
@@ -236,6 +247,32 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
       return {...row,...bookReadingLanguages({...book,sourceLanguage},overlay),topics:row.topics||book?.topics||[],...(positions?{shelfPosition:positions.get(row.bookId)}:{}),resume:book&&data.position?resumeSummary(book,data.position):null,journey:book?readingJourney(book,data):null};
     }));
   }
+  const coverJobs=new Map();let coverQueue=Promise.resolve();
+  async function getCover(user,id){
+    requireUser(user);const index=await read(path.join(userDir(user),'index.json'),{books:[]}),book=index.books.find(row=>row.bookId===id&&row.visibility==='private');
+    if(!book||!['pdf','epub'].includes(book.source?.format))throw fail('这本书没有原文件封面',404);
+    const hash=book.source.sha256;if(!/^[a-f0-9]{64}$/.test(hash||''))throw fail('找不到原文件封面',404);
+    const file=path.join(userDir(user),'covers',hash+'-v1.json'),cached=await read(file,null);
+    if(cached?.missing)throw fail('原文件没有封面',404);
+    if(cached?.data)return {mimeType:'image/webp',bytes:Buffer.from(cached.data,'base64')};
+    const key=user.id+':'+hash;
+    if(!coverJobs.has(key)){
+      const work=coverQueue.catch(()=>{}).then(async()=>{
+        const originalFile=path.join(userDir(user),'originals',hash);let info;
+        try{info=dataStore?await dataStore.blobInfo(originalFile):await stat(originalFile);}catch(error){if(error.code==='ENOENT')throw fail('找不到原文件封面',404);throw error;}
+        if(!info||info.size>MAX_FILE_BYTES)throw fail('找不到原文件封面',404);
+        const bytes=await (dataStore?dataStore.blob(originalFile):readFile(originalFile));
+        if(bytes.length>MAX_FILE_BYTES||digest(bytes)!==hash)throw fail('原文件校验失败，请重新上传',409);
+        const cover=await deriveImportedCover(bytes,book.source.format);
+        await mutate(file,{},data=>Object.assign(data,cover?{data:cover.toString('base64')}:{missing:true}));
+        if(!cover)throw fail('原文件没有封面',404);
+        return {mimeType:'image/webp',bytes:cover};
+      });
+      coverJobs.set(key,work);coverQueue=work.catch(()=>{});
+      work.finally(()=>coverJobs.delete(key)).catch(()=>{});
+    }
+    return coverJobs.get(key);
+  }
   async function importDocument(user,input){requireUser(user);return importExtracted(user,{...input,extracted:await extractDocument(input)});}
   async function importExtracted(user,input){
     requireUser(user);const reference=input.verifiedSource!==undefined?resolveVerifiedSource(user,input.verifiedSource):null,extracted=input.extracted,hash=reference?.sha256||digest(input.bytes);let id='private-'+digest(user.id+hash).slice(0,24),existing=await read(bookFile(user,id),null);
@@ -318,6 +355,33 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
   }
   async function recordsForBook(user,book){if(!user)return emptyRecords(book);const data=readingDefaults(await read(recordFile(user,book.bookId),emptyRecords(book)));data.position=alignReadingPosition(book,data.position);return data;}
   async function records(user,id){return recordsForBook(user,await getBook(user,id));}
+  // This read projection never loads source books, translation overlays or introductions.
+  async function notebookPage(user,{cursor=null,limit=12}={}){
+    requireUser(user);if(!Number.isInteger(limit)||limit<1||limit>12)throw fail('Invalid notebook page size',400);
+    const [available,shelf]=await Promise.all([allShelfRows(user),read(shelfFile(user),emptyShelf())]);
+    const books=[...new Map(available.map(({bookId,contentVersion,title,author})=>[bookId,{bookId,contentVersion,title,author}])).values()].sort((a,b)=>a.bookId.localeCompare(b.bookId));
+    const scope=digest(JSON.stringify([user.id,books,shelf.revision,shelf.archived]));let offset=0;
+    if(cursor!==null){
+      if(typeof cursor!=='string'||cursor.length>256||! /^[A-Za-z0-9_-]+$/.test(cursor))throw fail('Invalid notebook cursor',400);
+      let decoded;try{decoded=JSON.parse(Buffer.from(cursor,'base64url').toString('utf8'));}catch{throw fail('Invalid notebook cursor',400);}
+      if(!decoded||Object.keys(decoded).sort().join(',')!=='offset,scope'||!Number.isSafeInteger(decoded.offset)||decoded.offset<0||typeof decoded.scope!=='string'||!/^[a-f0-9]{64}$/.test(decoded.scope))throw fail('Invalid notebook cursor',400);
+      if(decoded.scope!==scope)throw fail('Notebook shelf changed; retry',409);offset=decoded.offset;if(offset>books.length)throw fail('Invalid notebook cursor',400);
+    }
+    const batch=books.slice(offset,offset+limit),results=new Array(batch.length);let work=0;
+    const fields=['id','bookId','origin','text','quote','quoteOrigin','passageId','parts','contentVersion','createdAt','updatedAt'];
+    async function worker(){while(work<batch.length){const index=work++,book=batch[index];try{
+      const stored=await read(recordFile(user,book.bookId),emptyRecords(book));if(stored?.bookId!==book.bookId)throw Error('Unmatched records');
+      const records={bookId:book.bookId,contentVersion:stored.contentVersion};
+      for(const kind of ['comments','questions','highlights'])records[kind]=(Array.isArray(stored[kind])?stored[kind]:[]).filter(row=>row?.origin==='user'&&!row.deletedAt&&(row.bookId===undefined||row.bookId===book.bookId)).map(row=>Object.fromEntries(fields.filter(key=>Object.hasOwn(row,key)).map(key=>[key,row[key]])));
+      const entry={book,records},bytes=Buffer.byteLength(JSON.stringify(entry));results[index]=bytes>3500000?{failed:{...book,fallback:true}}:{entry,bytes};
+    }catch{results[index]={failed:book};}}}
+    await Promise.all(Array.from({length:Math.min(3,batch.length)},worker));
+    const entries=[],failed=[],included=[];let bytes=0,consumed=0;
+    for(let index=0;index<batch.length;index++){const result=results[index];if(result.entry&&entries.length&&bytes+result.bytes>3500000)break;included.push(batch[index]);consumed++;if(result.failed)failed.push(result.failed);else{entries.push(result.entry);bytes+=result.bytes;}}
+    const completed=offset+consumed,nextCursor=completed<books.length?Buffer.from(JSON.stringify({scope,offset:completed})).toString('base64url'):null;
+    return {books:included,entries,failed,completed,total:books.length,nextCursor};
+  }
+
   const guardRecordSize=data=>{if(dataStore&&Buffer.byteLength(JSON.stringify(data))>3500000)throw fail('阅读记录已超过云端单书容量，请保留导出备份并在本机继续',413);};
   async function saveReadingSession(user,id,input){
     requireUser(user);const book=await getBook(user,id),next=normalizeReadingSession(input,book);
@@ -628,5 +692,5 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
     await chapterReads.manifest(user,incoming.bookId);
     return {bookId:incoming.bookId,alreadyOwned:!claim.created};
   }
-  return {introductions,sourceEvidence,sourceReview,createSourceRevision,resolveSourceAnchor,bookTransfer:async(user,id,offset,snapshot)=>transferBook(await getBook(user,id),offset,snapshot),list,shelfState,reorderShelf,archiveBook,restoreBook,trash,getBook,readingView,readingChapter,importDocument,importExtracted,originalInfo,getOriginal,originalDownload,originalParts,originalRange,records,getReadingPreferences,saveReadingPreferences,getPreferenceMemory,changePreferenceMemory,addComment,editComment,addHighlight,addAgentHighlight,removeHighlight,saveProgress,saveReadingSession,recordReadingMilestone,setReadingGoal,readingActivity,arrival,translate,createGrant,createMcpGrant,createDailyGrant,authorize,authorizeDaily,isGrantActive,registerGrantRevocation:listener=>{grantRevocationListeners.add(listener);return()=>grantRevocationListeners.delete(listener);},registerSourceMutation:listener=>{sourceMutationListeners.add(listener);return()=>sourceMutationListeners.delete(listener);},grants,revokeGrant,exportLibrary,exportManifest,exportBookPart,exportBookEntry,restoreOriginal,validateRestore,previewRestoreBooks,restoreLibrary,receiveGift,translationAvailable:!!translator};
+  return {getCover,introductions,sourceEvidence,sourceReview,createSourceRevision,resolveSourceAnchor,bookTransfer:async(user,id,offset,snapshot)=>transferBook(await getBook(user,id),offset,snapshot),list,shelfState,reorderShelf,archiveBook,restoreBook,trash,getBook,readingView,readingManifest,readingChapter,importDocument,importExtracted,originalInfo,getOriginal,originalDownload,originalParts,originalRange,records,notebookPage,getReadingPreferences,saveReadingPreferences,getPreferenceMemory,changePreferenceMemory,addComment,editComment,addHighlight,addAgentHighlight,removeHighlight,saveProgress,saveReadingSession,recordReadingMilestone,setReadingGoal,readingActivity,arrival,translate,createGrant,createMcpGrant,createDailyGrant,authorize,authorizeDaily,isGrantActive,registerGrantRevocation:listener=>{grantRevocationListeners.add(listener);return()=>grantRevocationListeners.delete(listener);},registerSourceMutation:listener=>{sourceMutationListeners.add(listener);return()=>sourceMutationListeners.delete(listener);},grants,revokeGrant,exportLibrary,exportManifest,exportBookPart,exportBookEntry,restoreOriginal,validateRestore,previewRestoreBooks,restoreLibrary,receiveGift,translationAvailable:!!translator};
 }

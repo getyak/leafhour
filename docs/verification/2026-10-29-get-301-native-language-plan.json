@@ -1,0 +1,145 @@
+{
+  "task": "GET-301",
+  "scope": "source-backed proposal only",
+  "baselineSource": "93630028ff29e61af566af9fb454a6f5c120a11b",
+  "reviewedAt": "2026-10-29T05:35:21.970557+08:00",
+  "observations": [
+    {
+      "file": "apps/ios/Leafhour.xcodeproj/project.pbxproj",
+      "lines": [
+        183
+      ],
+      "finding": "Declared development region differs from visible Chinese copy."
+    },
+    {
+      "file": "apps/ios/Leafhour/LibraryScreen.swift",
+      "lines": [
+        49
+      ],
+      "finding": "Persisted/dynamic job diagnostics enter a SwiftUI Text value."
+    },
+    {
+      "file": "apps/ios/Leafhour/LibraryScreen.swift",
+      "lines": [
+        38
+      ],
+      "finding": "Book title occurs inside an app-owned accessible label."
+    },
+    {
+      "file": "apps/ios/Leafhour/BookDetailScreen.swift",
+      "lines": [
+        17
+      ],
+      "finding": "Count phrase chooses a page/chapter noun within interpolation."
+    },
+    {
+      "file": "apps/ios/Leafhour/ReaderScreen.swift",
+      "lines": [
+        65
+      ],
+      "finding": "Quiet controls include an accessible discovery route."
+    },
+    {
+      "file": "apps/ios/Leafhour/ReaderPanels.swift",
+      "lines": [
+        77
+      ],
+      "finding": "Search count denotes matching source paragraphs."
+    },
+    {
+      "file": "apps/ios/Leafhour/ReaderPanels.swift",
+      "lines": [
+        185
+      ],
+      "finding": "Source label is concatenated with a verbatim note quote."
+    },
+    {
+      "file": "apps/ios/Leafhour/TextReadingView.swift",
+      "lines": [
+        125
+      ],
+      "finding": "UIKit action title requires a non-SwiftUI localization boundary."
+    },
+    {
+      "file": "apps/ios/LeafhourCore/Sources/LeafhourCore/Models.swift",
+      "lines": [
+        90
+      ],
+      "finding": "LocalizedError forwards a supplied String."
+    },
+    {
+      "file": "apps/ios/LeafhourCore/Sources/LeafhourCore/OfflineLibrary.swift",
+      "lines": [
+        113
+      ],
+      "finding": "Import recovery persists an already-rendered error string."
+    },
+    {
+      "file": "apps/ios/LeafhourUITests/ReadingUITests.swift",
+      "lines": [
+        24,
+        43,
+        92,
+        97,
+        100,
+        103,
+        109
+      ],
+      "finding": "UI tests depend on Chinese accessibility names."
+    },
+    {
+      "file": "apps/ios/LeafhourCore/Sources/LeafhourCore/BookParser.swift",
+      "lines": [
+        48
+      ],
+      "finding": "Heading-less EPUB titles fall back to app-generated Chinese chapter labels."
+    },
+    {
+      "file": "apps/ios/LeafhourCore/Sources/LeafhourCore/BookParser.swift",
+      "lines": [
+        58
+      ],
+      "finding": "PDF titles are generated Chinese page labels, not original headings."
+    }
+  ],
+  "sourceSHA256": {
+    "apps/ios/Leafhour.xcodeproj/project.pbxproj": "71f75f646fd96d87f38928d925a4054c9e3f7e25f70492477c9dcdacf87ba933",
+    "apps/ios/Leafhour/Info.plist": "c119ac3e6b4bff0e29b983bf47ba6ad287952787964fd6efd39873c6ff14df32",
+    "apps/ios/Leafhour/LibraryScreen.swift": "fae3a3aa2453010238c1ee60e5c12346460f69f09fa8e7d953f290f6d95c9c11",
+    "apps/ios/Leafhour/BookDetailScreen.swift": "784e703165a3cf826ece512b3aedee911c3fbb908f081df1adb4921099f99029",
+    "apps/ios/Leafhour/ReaderScreen.swift": "48e32d87b966125de4c03cb7bfbbdc7762b467b12a649c43a14d14150e06d627",
+    "apps/ios/Leafhour/ReaderPanels.swift": "4640b8f54c39bea577b5b513b0843fa423430f68fca6878da2e8a12d9c49770c",
+    "apps/ios/Leafhour/TextReadingView.swift": "2f953b8c36ac9c51305a7de1cf41ba2d364f9c16455e465499054fa0d0883a44",
+    "apps/ios/Leafhour/PDFReadingView.swift": "cfce82283cda152a10f8f41309601a94f087efce5b3bc073f413182f4b705809",
+    "apps/ios/Leafhour/LeafhourApp.swift": "ab277d7848ba28d05864223993b197db971e8abb31056cedd957531a21e29a0d",
+    "apps/ios/LeafhourUITests/ReadingUITests.swift": "ccf89cf8dcbf7df980d35b49558b6a4ec473bd7cd633b69559fd1f8a85c68edc",
+    "apps/ios/LeafhourCore/Sources/LeafhourCore/Models.swift": "17fd160de33890fa65c468b49f980907ec72e10e09a75fc7e33e642f83c97471",
+    "apps/ios/LeafhourCore/Sources/LeafhourCore/OfflineLibrary.swift": "f933a294fc3d36331fe1077f4efdc0ed828031c86b49b2f1792838c261dd926d",
+    "apps/ios/LeafhourCore/Sources/LeafhourCore/FileIO.swift": "3e798d39a8b43cd2f79d8ffd4a66f63b97847cd21aea06fc745a169d912e84e3",
+    "apps/ios/LeafhourCore/Sources/LeafhourCore/BookParser.swift": "91367a91407cfd32a48f1abd70b778594092556b651197f54da4e7423b550da5"
+  },
+  "nativeLocalizationResourcesOutsideVendor": [],
+  "applicationChanges": false,
+  "validation": {
+    "sourceExamplesLocated": true,
+    "relativeSourceLinksResolved": true,
+    "fingerprintsRecorded": true,
+    "independentReview": "passed after source-confirmed P2/P3 fixes; re-review found no new substantive issue",
+    "newLocalBuildOrRuntimeTests": false,
+    "reason": "operations pause; documentation-only change",
+    "reviewFixes": [
+      "Distinguish authentic source titles from generated PDF/EPUB labels and require provenance/legacy compatibility coverage.",
+      "Clarify Japanese search wording is within the current book."
+    ],
+    "independentReviewer": "ios_preferences_review",
+    "independentReviewReadBackAt": "2026-10-29T05:39:33.311354+08:00"
+  },
+  "unverified": [
+    "catalog target membership and extraction",
+    "compiled localization resources and fallback",
+    "translated native layouts and keyboard",
+    "real VoiceOver and hardware input",
+    "locale/data/anchor invariance",
+    "TestFlight and physical device"
+  ]
+}

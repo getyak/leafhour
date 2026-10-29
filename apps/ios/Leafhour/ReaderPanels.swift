@@ -4,6 +4,7 @@ import LeafhourCore
 struct ReaderPanelView: View {
     let panel: ReaderPanel
     @Bindable var session: ReaderSession
+    let systemColorScheme: ColorScheme
     let onJump: (Int, ReadingAnchor?) -> Void
     @Environment(\.dismiss) private var dismiss
     var body: some View {
@@ -36,46 +37,121 @@ struct ReaderPanelView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar { ToolbarItem(placement: .cancellationAction) { Button("继续读") { Task { await session.flush(); if session.saveError == nil { dismiss() } } } } }
         }
+        .preferredColorScheme(session.state.preferences.colorScheme(following: systemColorScheme))
     }
 }
 struct BookSearchPanel: View {
     @Bindable var session: ReaderSession
     let onJump: (Int, ReadingAnchor?) -> Void
     @State private var query = ""
-    private var matches: [(Int, Passage)] {
-        guard !query.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return [] }
-        return session.book.chapters.enumerated().flatMap { index, chapter in
-            chapter.passages.filter { $0.text.localizedStandardContains(query) }.map { (index, $0) }
-        }
+    private struct Request: Equatable, Sendable {
+        let bookID: String
+        let query: String
     }
+    private enum Outcome {
+        case matches(Request, [BookSearchResult])
+        case failed(Request)
+    }
+    @State private var outcome: Outcome?
+    private var request: Request { Request(bookID: session.book.id, query: query.trimmingCharacters(in: .whitespacesAndNewlines)) }
     var body: some View {
+        let request = self.request
         List {
-            if query.isEmpty { ContentUnavailableView("在整本书中找一句话", systemImage: "magnifyingglass", description: Text("本机检索全部已导入章节。扫描 PDF 可能没有可检索文字。")) }
-            else if matches.isEmpty { ContentUnavailableView.search(text: query) }
-            ForEach(matches, id: \.1.id) { index, passage in
-                Button {
-                    let offset = passage.text.range(of: query, options: [.caseInsensitive, .diacriticInsensitive]).map { passage.text[..<$0.lowerBound].unicodeScalars.count } ?? 0
-                    onJump(index, ReadingAnchor(chapterID: session.book.chapters[index].id, passageID: passage.id, characterOffset: offset))
-                } label: {
-                    VStack(alignment: .leading, spacing: 6) { Text(session.book.chapters[index].title).font(.caption).foregroundStyle(.secondary); Text(passage.text).lineLimit(4).foregroundStyle(.primary) }.padding(.vertical, 6)
+            if request.query.isEmpty { ContentUnavailableView("在整本书中找一句话", systemImage: "magnifyingglass", description: Text("本机检索全部已导入章节。扫描 PDF 可能没有可检索文字。")) }
+            else if case let .matches(completed, results)? = outcome, completed == request {
+                if results.isEmpty { ContentUnavailableView.search(text: request.query) }
+                else {
+                    Section {
+                        ForEach(results) { result in
+                            Button {
+                                guard request == self.request else { return }
+                                onJump(result.chapterIndex, result.anchor)
+                            } label: {
+                                VStack(alignment: .leading, spacing: 6) {
+                                    Text(session.book.chapters[result.chapterIndex].title).font(.caption).foregroundStyle(.secondary)
+                                    (Text(result.excerpt.before) + Text(result.excerpt.match).bold() + Text(result.excerpt.after))
+                                        .fixedSize(horizontal: false, vertical: true).foregroundStyle(.primary)
+                                }.padding(.vertical, 6)
+                            }
+                        }
+                    } header: { Text("找到 \(results.count) 段原文").accessibilityIdentifier("book-search-count") }
                 }
             }
+            else if case let .failed(completed)? = outcome, completed == request {
+                ContentUnavailableView("暂时无法搜索", systemImage: "magnifyingglass", description: Text("请调整关键词后重试。"))
+            } else { ProgressView("正在查找原文…") }
         }.searchable(text: $query, prompt: "搜索原文").navigationTitle("书内搜索")
+            .task(id: request) { await load(request) }
+    }
+    @MainActor private func load(_ requested: Request) async {
+        guard !Task.isCancelled, requested == request else { return }
+        guard !requested.query.isEmpty else { outcome = nil; return }
+        do {
+            try await Task.sleep(for: .milliseconds(150))
+            let results = try await BookSearch.matches(in: session.book.chapters, query: requested.query)
+            try Task.checkCancellation()
+            guard requested == request else { return }
+            outcome = .matches(requested, results)
+        } catch is CancellationError {
+            // Typing another query or dismissing the panel normally cancels this request.
+        } catch {
+            guard !Task.isCancelled, requested == request else { return }
+            outcome = .failed(requested)
+        }
     }
 }
 struct ReaderPreferencesPanel: View {
     @Bindable var session: ReaderSession
+    @ScaledMetric(relativeTo: .body) private var typeScale = 1.0
+    private var defaults: ReaderPreferences { ReaderPreferences() }
+    private var preview: String? {
+        let passages = session.chapter.passages
+        let current = passages.first { $0.id == session.state.anchor?.passageID && !$0.heading && $0.resourcePath == nil && !$0.text.isEmpty }
+        return (current ?? passages.first { !$0.heading && $0.resourcePath == nil && !$0.text.isEmpty }).map { String($0.text.prefix(600)) }
+    }
+    private var usesDefaultTypography: Bool {
+        session.state.preferences.fontSize == defaults.fontSize && session.state.preferences.lineSpacing == defaults.lineSpacing
+    }
     private func binding<T>(_ path: WritableKeyPath<ReaderPreferences, T>) -> Binding<T> {
         Binding(get: { session.state.preferences[keyPath: path] }, set: { value in var preferences = session.state.preferences; preferences[keyPath: path] = value; session.changePreferences(preferences) })
     }
     var body: some View {
         Form {
-            Section("正文") {
-                LabeledContent("字号", value: "\(Int(session.state.preferences.fontSize))")
-                Slider(value: binding(\.fontSize), in: 16...36, step: 1).accessibilityLabel("正文字号")
-                LabeledContent("行间距", value: "\(Int(session.state.preferences.lineSpacing))")
-                Slider(value: binding(\.lineSpacing), in: 4...18, step: 1).accessibilityLabel("正文行间距")
-                Text("字号随系统大字设置继续缩放。PDF 保留原页排版，可用系统手势缩放。").font(.footnote).foregroundStyle(.secondary)
+            if session.book.kind == .pdf {
+                Section("原页排版") {
+                    Label("PDF 保留原来的字体与排版，可在书页上双指缩放。", systemImage: "doc.richtext")
+                        .font(.subheadline)
+                }
+            } else {
+                if let preview {
+                    Section {
+                        Text(preview)
+                            .font(.system(size: session.state.preferences.fontSize * typeScale, design: .serif))
+                            .lineSpacing(session.state.preferences.lineSpacing)
+                            .lineLimit(4)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .frame(height: 140 * typeScale, alignment: .topLeading)
+                            .padding(.vertical, 8)
+                            .accessibilityIdentifier("reading-type-preview")
+                            .listRowBackground(session.state.preferences.theme == "paper" ? Color.readingPaper : Color(uiColor: .systemBackground))
+                    } header: { Text("排版预览 · 当前原文") }
+                }
+                Section {
+                    LabeledContent("字号", value: "\(Int(session.state.preferences.fontSize)) pt").monospacedDigit()
+                    Slider(value: binding(\.fontSize), in: 16...36, step: 1)
+                        .accessibilityLabel("正文字号")
+                        .accessibilityValue("\(Int(session.state.preferences.fontSize)) 磅")
+                    LabeledContent("行间距", value: "\(Int(session.state.preferences.lineSpacing)) pt").monospacedDigit()
+                    Slider(value: binding(\.lineSpacing), in: 4...18, step: 1)
+                        .accessibilityLabel("正文行间距")
+                        .accessibilityValue("\(Int(session.state.preferences.lineSpacing)) 磅")
+                    Button("恢复默认排版") {
+                        var preferences = session.state.preferences
+                        preferences.fontSize = defaults.fontSize
+                        preferences.lineSpacing = defaults.lineSpacing
+                        session.changePreferences(preferences)
+                    }.disabled(usesDefaultTypography)
+                } header: { Text("正文") } footer: { Text("字号随系统大字设置继续缩放。更改会自动保存到此设备。") }
             }
             Section("阅读纸面") {
                 Picker("主题", selection: binding(\.theme)) { Text("清纸").tag("paper"); Text("夜读").tag("night"); Text("跟随系统").tag("system") }.pickerStyle(.segmented)

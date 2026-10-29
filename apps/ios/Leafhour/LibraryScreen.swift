@@ -4,6 +4,7 @@ import LeafhourCore
 
 struct LibraryScreen: View {
     @Bindable var model: LibraryModel
+    @Environment(\.colorScheme) private var systemColorScheme
     @State private var importing = false
     @State private var info = false
     @State private var path: [String] = []
@@ -15,7 +16,7 @@ struct LibraryScreen: View {
                         Image(systemName: "leaf").font(.system(size: 52, weight: .light)).foregroundStyle(Color.leafInk).accessibilityHidden(true)
                         Text("给自己留一页安静").font(.title2).fontWeight(.medium)
                         Text("带一本自己的书来。\n保存在这台设备，断网也能继续读。").multilineTextAlignment(.center).foregroundStyle(.secondary)
-                        Button("选择一本书", systemImage: "plus") { importing = true }.buttonStyle(.borderedProminent).controlSize(.large).disabled(model.busy)
+                        Button("选择一本书", systemImage: "plus") { importing = true }.buttonStyle(.borderedProminent).tint(.leafFill).foregroundStyle(.white).controlSize(.large).disabled(model.busy)
                         Text("EPUB · PDF · TXT · Markdown").font(.footnote).foregroundStyle(.secondary)
                     }.padding(28).frame(maxWidth: .infinity, maxHeight: .infinity)
                 } else {
@@ -75,7 +76,7 @@ struct LibraryScreen: View {
             }
             .onOpenURL { model.importFile($0) }
             .task { await model.reload(restore: true) }
-            .fullScreenCover(item: $model.reader, onDismiss: { Task { await model.reload() } }) { session in ReaderScreen(session: session) }
+            .fullScreenCover(item: $model.reader, onDismiss: { Task { await model.reload() } }) { session in ReaderScreen(session: session, systemColorScheme: systemColorScheme) }
             .sheet(isPresented: $info) { LocalLibraryInfo() }
             .alert("书房提示", isPresented: Binding(get: { model.message != nil }, set: { if !$0 { model.message = nil } })) { Button("知道了") { model.message = nil } } message: { Text(model.message ?? "") }
         }

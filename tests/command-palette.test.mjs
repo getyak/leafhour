@@ -5,6 +5,8 @@ import {mountPaletteBootstrap,paletteKeycapHintAvailable,paletteShortcutAllowed,
 
 class Element extends EventTarget {
   constructor(tag,doc){super();this.tagName=String(tag).toUpperCase();this.doc=doc;this.children=[];this.attrs={};this.dataset={};this.style={};this.className='';this.textContent='';this.value='';this.hidden=false;this.open=false;this.disabled=false;this.classList={add:c=>{if(!this.className.split(' ').includes(c))this.className+=(this.className?' ':'')+c;},remove:c=>{this.className=this.className.split(' ').filter(x=>x&&x!==c).join(' ');},toggle:(c,on)=>{on?this.classList.add(c):this.classList.remove(c);},contains:c=>this.className.split(' ').includes(c)};}
+  get textContent(){return (this._text||'')+this.children.map(node=>node.textContent).join('');}
+  set textContent(value){this._text=String(value);if(this.children){for(const node of this.children)node.parentElement=null;this.children=[];}}
   append(...nodes){for(const n of nodes){n.remove();n.parentElement=this;this.children.push(n);}}
   appendChild(n){this.append(n);return n;}
   insertBefore(n,before){n.remove();const i=before?this.children.indexOf(before):this.children.length;this.children.splice(i,0,n);n.parentElement=this;}
@@ -788,4 +790,14 @@ test('GET-227 normalized matches keep the matching grapheme and exact source tex
   const book={chapters:[{id:'c',title:{en:'Chapter'}}],sections:[{chapterId:'c',paragraphs:[{id:'p',original}]}]};
   const [hit]=matchPaletteBook(book,'magic').hits;assert.ok(hit.label.includes('MAGIC'));assert.ok(hit.label.isWellFormed());assert.ok(original.includes(hit.label.replace(/^…|…$/g,'')));
  }
+});
+
+
+test('search presents a book title and its author as distinct accessible text',()=>{
+ const library={view:()=>({phase:'ready'}),search:()=>[{bookId:'one',title:{zh:'一本很长的书',en:'A book'},author:'真实作者'}]};
+ const f=openFixture({library});f.palette.open();f.input().value='book';f.input().dispatchEvent(new Event('input'));
+ const option=f.options().find(node=>node.dataset.kind==='book');
+ assert.ok(option);assert.equal(option.children.find(node=>node.className==='palette-result-title').textContent,'一本很长的书');
+ assert.equal(option.children.find(node=>node.className==='palette-result-detail').textContent,'真实作者');
+ assert.equal(option.getAttribute('aria-label'),'一本很长的书 · 真实作者');
 });

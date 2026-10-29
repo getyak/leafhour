@@ -1,0 +1,9 @@
+Base native serif: .NewYork-Regular
+Reading => .NewYork-Regular
+阅读 => .PingFangUIDisplaySC-Regular
+読書 => .PingFangUIDisplaySC-Regular
+한글 => .AppleSDGothicNeoI-Regular
+Runtime: iOS 26.5
+Available local face: SongtiSC-Regular unavailable
+Available local face: SongtiTC-Regular unavailable
+Available local face: HiraginoMinchoProN-W3 unavailable

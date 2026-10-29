@@ -23,13 +23,13 @@ test('a fresh service serves an independently stored chapter without full book o
  assert.equal(chapter.sections[0].paragraphs[0].original,'Continue from here.');assert.equal(chapter.bookId,book.bookId);
  assert.deepEqual(canonicalReads(f.reads),[]);assert.ok(!JSON.stringify(chapter).includes('Long source.'));
  const view=await fresh.readingView(owner,book.bookId,{passageId:'p3'});
- const expected=projectView(await f.library.getBook(owner,book.bookId),{passageId:'p3'});assert.deepEqual(view,expected);
+ const expected=projectView(await f.library.getBook(owner,book.bookId),{passageId:'p3'});assert.deepEqual({...view,readingCache:undefined},{...expected,readingCache:undefined});
  f.reads.length=0;await (await f.create()).readingView(owner,book.bookId,{chapterId:'ch02'});assert.deepEqual(canonicalReads(f.reads),[]);
 });
 
 test('small reading responses retain the full payload and owner/version checks reject unauthorized chapters',async()=>{
  const f=await fixture();await f.library.restoreLibrary(owner,backup(readingBook));const expected=await f.library.getBook(owner,readingBook.bookId);
- assert.deepEqual(await f.library.readingView(owner,readingBook.bookId),expected);
+ const view=await f.library.readingView(owner,readingBook.bookId);assert.deepEqual({...view,readingCache:undefined},{...expected,readingCache:undefined});
  await assert.rejects(f.library.readingChapter(other,readingBook.bookId,'ch01','edition-1'),e=>e.status===404);
  await assert.rejects(f.library.readingChapter(null,readingBook.bookId,'ch01','edition-1'),e=>e.status===404);
  await assert.rejects(f.library.readingChapter(owner,readingBook.bookId,'ch01','old'),e=>e.status===409);
@@ -197,4 +197,70 @@ test('small-book aggregates reject changed source text or a substituted content 
   const f=await fixture();await f.library.restoreLibrary(owner,backup(readingBook));const aggregate=[...f.database.rows.entries()].find(([key])=>key.includes('/complete/'));assert.ok(aggregate,'a small source should have an independent aggregate document');corrupt(aggregate[1].value);
   await assert.rejects((await f.create()).readingView(owner,readingBook.bookId),e=>e.status===409);
  }
+});
+
+test('full and partial reading views publish a durable snapshot and canonical chapter hashes',async()=>{
+ for(const book of [structuredClone(readingBook),largeBook()]){
+  const f=await fixture();await f.library.restoreLibrary(owner,backup(book));const view=await f.library.readingView(owner,book.bookId);
+  assert.equal(view.readingCache?.schemaVersion,1);assert.equal(typeof view.readingCache.snapshotId,'string');assert.deepEqual(Object.keys(view.readingCache.chapters),['ch01','ch02']);
+  const saved=[...f.database.rows.values()].find(row=>row.value.snapshot?.book.bookId===book.bookId).value.snapshot;
+  assert.equal(view.readingCache.snapshotId,saved.id);assert.deepEqual(view.readingCache.chapters,saved.chapters);
+  const chapter=await f.library.readingChapter(owner,book.bookId,'ch02',book.contentVersion);
+  const sorted=value=>Array.isArray(value)?value.map(sorted):value&&typeof value==='object'?Object.fromEntries(Object.entries(value).sort(([a],[b])=>a<b?-1:a>b?1:0).map(([key,row])=>[key,sorted(row)])):value;
+  assert.equal(view.readingCache.chapters.ch02,digest(JSON.stringify(sorted(chapter))));assert.deepEqual(Object.keys(chapter).sort(),['bookId','chapterId','contentVersion','sections']);
+ }
+});
+
+test('a translation update with the same source version replaces only the changed chapter hash',async()=>{
+ const f=await fixture({translator:async()=>({literal:'Newly saved literal',interpretive:'Newly saved interpretation'})});await f.library.restoreLibrary(owner,backup(readingBook));
+ const before=await f.library.readingView(owner,readingBook.bookId);assert.equal(before.readingCache?.schemaVersion,1);
+ await f.library.translate(owner,readingBook.bookId,'p3');const after=await f.library.readingView(owner,readingBook.bookId);
+ assert.equal(after.contentVersion,before.contentVersion);assert.notEqual(after.readingCache.snapshotId,before.readingCache.snapshotId);assert.equal(after.readingCache.chapters.ch01,before.readingCache.chapters.ch01);assert.notEqual(after.readingCache.chapters.ch02,before.readingCache.chapters.ch02);
+});
+
+test('warm chapter reads coalesce storage reads while every caller rechecks the durable manifest',async()=>{
+ const f=await fixture();await f.library.restoreLibrary(owner,backup(readingBook));f.reads.length=0;
+ let release,enter;const blocked=new Promise(resolve=>{release=resolve;}),entered=new Promise(resolve=>{enter=resolve;});
+ f.setReadInterrupt(file=>{if(file.includes('/chapters/')){enter();return blocked;}});
+ const first=f.library.readingChapter(owner,readingBook.bookId,'ch02',readingBook.contentVersion),second=f.library.readingChapter(owner,readingBook.bookId,'ch02',readingBook.contentVersion);
+ await entered;await new Promise(setImmediate);release();const [a,b]=await Promise.all([first,second]);f.setReadInterrupt(null);
+ assert.equal(f.reads.filter(file=>file.includes('/chapters/')).length,1);assert.equal(f.reads.filter(file=>file.endsWith('/manifest.json')).length,4);
+ a.sections[0].paragraphs[0].original='Request mutation';assert.equal(b.sections[0].paragraphs[0].original,'Continue from here.');f.reads.length=0;
+ assert.equal((await f.library.readingChapter(owner,readingBook.bookId,'ch02',readingBook.contentVersion)).sections[0].paragraphs[0].original,'Continue from here.');assert.equal(f.reads.filter(file=>file.includes('/chapters/')).length,0);assert.equal(f.reads.filter(file=>file.endsWith('/manifest.json')).length,2);
+});
+
+test('identical chapter hashes for distinct owners never share a cached storage read',async()=>{
+ const f=await fixture();await f.library.restoreLibrary(owner,backup(readingBook));await f.library.restoreLibrary(other,backup(readingBook));f.reads.length=0;
+ await f.library.readingChapter(owner,readingBook.bookId,'ch02',readingBook.contentVersion);await f.library.readingChapter(other,readingBook.bookId,'ch02',readingBook.contentVersion);
+ const files=f.reads.filter(file=>file.includes('/chapters/'));assert.equal(files.length,2);assert.notEqual(files[0],files[1]);assert.equal(files[0].split('/').at(-1),files[1].split('/').at(-1));
+});
+
+test('a warm aggregate returns isolated content without another immutable document read',async()=>{
+ const f=await fixture();await f.library.restoreLibrary(owner,backup(readingBook));const view=await f.library.readingView(owner,readingBook.bookId);view.sections[1].paragraphs[0].original='Request mutation';f.reads.length=0;
+ const next=await f.library.readingView(owner,readingBook.bookId);assert.equal(next.sections[1].paragraphs[0].original,'Continue from here.');assert.equal(f.reads.filter(file=>file.includes('/complete/')).length,0);assert.equal(f.reads.filter(file=>file.endsWith('/manifest.json')).length,2);
+});
+
+test('a cached chapter cannot bypass the final write fence check',async()=>{
+ const f=await fixture({translator:async()=>({literal:'After the fence',interpretive:'After the fence too'})});await f.library.restoreLibrary(owner,backup(readingBook));await f.library.readingChapter(owner,readingBook.bookId,'ch02',readingBook.contentVersion);
+ let checks=0,enter,release;const entered=new Promise(resolve=>{enter=resolve;}),blocked=new Promise(resolve=>{release=resolve;});
+ f.setReadInterrupt(file=>{if(file.endsWith('/manifest.json')&&++checks===2){f.setReadInterrupt(null);enter();return blocked;}});
+ const pending=f.library.readingChapter(owner,readingBook.bookId,'ch02',readingBook.contentVersion);await entered;await f.library.translate(owner,readingBook.bookId,'p3');release();await assert.rejects(pending,error=>error.status===409);
+ assert.equal((await f.library.readingChapter(owner,readingBook.bookId,'ch02',readingBook.contentVersion)).sections[0].paragraphs[0].translations.literal.text,'After the fence');
+});
+
+test('reading manifests load no body documents, retain late introductions, and isolate metadata',async()=>{
+ const f=await fixture();await f.library.restoreLibrary(owner,backup(readingBook));assert.equal(typeof f.library.readingManifest,'function');
+ const intro={kind:'leafhour-book-introduction',schemaVersion:1,origin:'ai',status:'draft',model:'deepseek-flash',scope:'opening-sample',contentVersion:readingBook.contentVersion,text:'A late saved introduction.',createdAt:new Date().toISOString(),sourcePassageIds:['p1']};
+ await f.library.introductions.restore(owner,{...readingBook,introduction:intro});f.reads.length=0;
+ const manifest=await f.library.readingManifest(owner,readingBook.bookId);assert.deepEqual(manifest.reading,{partial:true,loadedChapters:[],hasTranslations:false});assert.deepEqual(manifest.introduction,intro);assert.equal(manifest.readingCache.schemaVersion,1);
+ assert.equal(manifest.sections.every(section=>section.paragraphs.every(p=>Object.keys(p).sort().join(',')==='id,unloaded'&&p.unloaded)),true);assert.deepEqual(canonicalReads(f.reads),[]);assert.equal(f.reads.some(file=>/\/(?:complete|chapters)\//.test(file)),false);assert.equal(f.reads.filter(file=>file.endsWith('/manifest.json')).length,2);
+ manifest.readingCache.chapters.ch02='tampered';manifest.sections[1].paragraphs[0].id='tampered';const next=await f.library.readingManifest(owner,readingBook.bookId);assert.notEqual(next.readingCache.chapters.ch02,'tampered');assert.equal(next.sections[1].paragraphs[0].id,'p3');
+ await assert.rejects(f.library.readingManifest(other,readingBook.bookId),error=>error.status===404);await assert.rejects(f.library.readingManifest(null,readingBook.bookId),error=>error.status===404);
+});
+
+test('reading manifests retain the final check against a completed concurrent write',async()=>{
+ const f=await fixture({translator:async()=>({literal:'After manifest read',interpretive:'Another variant'})});await f.library.restoreLibrary(owner,backup(readingBook));assert.equal(typeof f.library.readingManifest,'function');
+ let checks=0,enter,release;const entered=new Promise(resolve=>{enter=resolve;}),blocked=new Promise(resolve=>{release=resolve;});
+ f.setReadInterrupt(file=>{if(file.endsWith('/manifest.json')&&++checks===2){f.setReadInterrupt(null);enter();return blocked;}});
+ const pending=f.library.readingManifest(owner,readingBook.bookId);await entered;await f.library.translate(owner,readingBook.bookId,'p3');release();await assert.rejects(pending,error=>error.status===409);
 });

@@ -1,0 +1,58 @@
+{
+  "issue": "GET-296",
+  "appBaseline": "6db7336244e400621f56c197e659bc421f3a193e",
+  "appSourceChanged": false,
+  "sourceSha256": {
+    "apps/ios/Leafhour/TextReadingView.swift": "2f953b8c36ac9c51305a7de1cf41ba2d364f9c16455e465499054fa0d0883a44",
+    "apps/ios/Leafhour/ReaderScreen.swift": "48e32d87b966125de4c03cb7bfbbdc7762b467b12a649c43a14d14150e06d627",
+    "apps/ios/Leafhour/LeafhourApp.swift": "ab277d7848ba28d05864223993b197db971e8abb31056cedd957531a21e29a0d"
+  },
+  "device": "Existing Primary iPhone / iPhone 17 Pro / iOS 26.5",
+  "bundle": "org.leafhour.craft297",
+  "fixture": "Bounded public-domain Alice text; source fingerprint checked before live state reads",
+  "probe": "ReadingUITests/testCraftRotationBaseline",
+  "successfulProbeExecutions": 2,
+  "runs": [
+    {
+      "action": "test-without-building",
+      "resultBundle": "baseline-retry.xcresult",
+      "purpose": "Portrait-landscape-portrait and live scalar snapshots",
+      "result": "1 test passed"
+    },
+    {
+      "action": "test-without-building",
+      "resultBundle": "raw-capture.xcresult",
+      "purpose": "Corroborate landscape with a direct full-device screenshot",
+      "result": "1 test passed"
+    }
+  ],
+  "excludedAttempt": {
+    "resultBundle": "baseline.xcresult",
+    "cause": "Harness resolved the isolated app container before Xcode install moved it; snapshot file not found; build interrupted",
+    "productFailureClaimed": false
+  },
+  "probeSha256": "67a1d8a23fb33166f134c37566f8afe54eff656f1288974ffcdbca43821e17a3",
+  "observations": {
+    "chapterAndPassageUnchanged": true,
+    "scalarOffsets": [
+      370,
+      353,
+      353
+    ],
+    "corroboratingLandscapeScalar": 353,
+    "visiblePortraitComparable": true,
+    "exactAnchorUnchanged": false
+  },
+  "captureCaution": "XCUI app-level landscape attachment carries EXIF orientation8 and appears cropped/black in viewers. Rejected as landscape layout evidence; included direct simctl full-device PNG in physical panel orientation instead. No image pixels edited.",
+  "notVerified": [
+    "Immediate scroll-to-rotation race",
+    "Continuous resize",
+    "Selected text/clipboard/note reference preservation",
+    "Images near reflow",
+    "Maximum Dynamic Type",
+    "iPad or split view",
+    "Real devices",
+    "TestFlight",
+    "Website publication"
+  ]
+}

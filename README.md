@@ -43,6 +43,12 @@ Gifts move through “write the note → watch it open → seal and share”. Th
 - Import and export of highlights, comments, questions, reading position, sessions and reading marks
 - Local JSON storage, or private hosting on Vercel + Supabase
 
+## Offline reading
+
+Open the book title and choose “Save on this device”. Once “Ready to read offline” appears, saved chapters can reopen without a connection. Recent chapters are also retained automatically. Offline reading uses existing source text and translations; it never starts generation or paid work. Notes remain local drafts until you reconnect and submit them.
+
+Signing out or removing device books clears the local reading scope without deleting pending drafts. Browsers can clear site storage, so keep independent exports of your library. `npm start` builds the public offline resources before starting the local server. See [verification and limits](docs/verification/2026-10-29-offline-reading-cache.md).
+
 ## Running locally
 
 Node.js 22.13 or newer:

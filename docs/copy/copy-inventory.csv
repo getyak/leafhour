@@ -2357,3 +2357,22 @@ reader.hub.appearance,catalogue,app/ui-catalogs/en.mjs,2323,unknown,unknown,unkn
 reader.hub.notes,catalogue,app/ui-catalogs/en.mjs,2324,unknown,unknown,unknown,unknown,unreviewed,My notes,本书笔记,本書筆記,この本のノート
 reader.hub.more,catalogue,app/ui-catalogs/en.mjs,2325,unknown,unknown,unknown,unknown,unreviewed,More tools,更多工具,更多工具,その他のツール
 reader.hub.primary,catalogue,app/ui-catalogs/en.mjs,2326,unknown,unknown,unknown,unknown,unreviewed,Reading tools,阅读工具,閱讀工具,読書ツール
+offline.save,catalogue,app/ui-catalogs/en.mjs,2327,unknown,unknown,unknown,unknown,unreviewed,Save on this device,保存到此设备,儲存到此裝置,この端末に保存
+offline.cancel,catalogue,app/ui-catalogs/en.mjs,2328,unknown,unknown,unknown,unknown,unreviewed,Cancel download,取消下载,取消下載,ダウンロードを中止
+offline.remove,catalogue,app/ui-catalogs/en.mjs,2329,unknown,unknown,unknown,unknown,unreviewed,Remove saved copy,移除本机副本,移除本機副本,端末のコピーを削除
+offline.shelf,catalogue,app/ui-catalogs/en.mjs,2330,unknown,unknown,unknown,unknown,unreviewed,Books on this device,本机书籍,本機書籍,この端末の本
+offline.reading,catalogue,app/ui-catalogs/en.mjs,2331,unknown,unknown,unknown,unknown,unreviewed,Reading offline,离线阅读,離線閱讀,オフラインで読書中
+offline.preparing,catalogue,app/ui-catalogs/en.mjs,2332,unknown,unknown,unknown,unknown,unreviewed,Preparing the book…,正在准备书籍…,正在準備書籍…,本を準備しています…
+offline.ready,catalogue,app/ui-catalogs/en.mjs,2333,unknown,unknown,unknown,unknown,unreviewed,Ready to read offline,可离线阅读,可離線閱讀,オフラインで読めます
+offline.resourcesPending,catalogue,app/ui-catalogs/en.mjs,2334,unknown,unknown,unknown,unknown,unreviewed,Book saved. Reopen when connected to finish preparing offline reading.,书籍已保存，联网重新打开后完成离线准备。,書籍已儲存，連線重新開啟後完成離線準備。,本を保存しました。接続して開き直すとオフラインの準備が完了します。
+offline.range,catalogue,app/ui-catalogs/en.mjs,2335,unknown,unknown,unknown,unknown,unreviewed,{loaded} of {total} chapters saved,已保存 {loaded} / {total} 章,已儲存 {loaded} / {total} 章,{total} 章中 {loaded} 章を保存済み
+offline.cancelled,catalogue,app/ui-catalogs/en.mjs,2336,unknown,unknown,unknown,unknown,unreviewed,Download paused. Saved chapters are available.,下载已暂停，已保存章节可以继续阅读。,下載已暫停，已儲存章節可以繼續閱讀。,ダウンロードを中断しました。保存済みの章は読めます。
+offline.space,catalogue,app/ui-catalogs/en.mjs,2337,unknown,unknown,unknown,unknown,unreviewed,Not enough space. Remove a saved copy and try again.,空间不足，请移除本机副本后重试。,空間不足，請移除本機副本後重試。,空き容量が足りません。端末のコピーを削除して再試行してください。
+offline.changed,catalogue,app/ui-catalogs/en.mjs,2338,unknown,unknown,unknown,unknown,unreviewed,The book changed. Save it again to finish.,书籍已有更新，请重新保存。,書籍已有更新，請重新儲存。,本が更新されました。もう一度保存してください。
+offline.failed,catalogue,app/ui-catalogs/en.mjs,2339,unknown,unknown,unknown,unknown,unreviewed,The download did not finish. Saved chapters are available.,下载尚未完成，已保存章节可以继续阅读。,下載尚未完成，已儲存章節可以繼續閱讀。,ダウンロードは未完了です。保存済みの章は読めます。
+offline.removed,catalogue,app/ui-catalogs/en.mjs,2340,unknown,unknown,unknown,unknown,unreviewed,Saved copy removed,本机副本已移除,本機副本已移除,端末のコピーを削除しました
+offline.chapterMissing,catalogue,app/ui-catalogs/en.mjs,2341,unknown,unknown,unknown,unknown,unreviewed,This chapter has not been saved on this device.,这一章还没保存到此设备。,這一章還沒儲存到此裝置。,この章は端末に保存されていません。
+offline.needsNetwork,catalogue,app/ui-catalogs/en.mjs,2342,unknown,unknown,unknown,unknown,unreviewed,Reconnect to use this feature.,这项功能需要联网。,這項功能需要連線。,この機能には接続が必要です。
+offline.drafts,catalogue,app/ui-catalogs/en.mjs,2343,unknown,unknown,unknown,unknown,unreviewed,Offline notes stay as drafts on this device. Reconnect to view saved notes.,离线笔记暂存为本机草稿，联网后可查看已保存的笔记。,離線筆記暫存為本機草稿，連線後可查看已儲存的筆記。,オフラインのメモは端末の下書きです。保存済みのメモは接続後に確認できます。
+offline.deviceScope,catalogue,app/ui-catalogs/en.mjs,2344,unknown,unknown,unknown,unknown,unreviewed,Saved in this browser. Signing out removes these books. Changes to account access are checked after reconnecting.,书籍保存在此浏览器。退出账号时清除，账号权限的变化需联网核对。,書籍儲存在此瀏覽器。登出帳號時清除，帳號權限的變化需連線核對。,本はこのブラウザーに保存され、ログアウトすると削除されます。アカウントの権限変更は再接続後に確認します。
+offline.resumeMissing,catalogue,app/ui-catalogs/en.mjs,2345,unknown,unknown,unknown,unknown,unreviewed,That chapter is not saved here. Showing a saved chapter.,要打开的章节还没保存。当前显示本机已有的章节。,要開啟的章節還沒儲存。目前顯示本機已有的章節。,その章は端末に保存されていません。保存済みの章を表示しています。

@@ -3,6 +3,7 @@ import {randomUUID} from 'node:crypto';
 import {setTimeout as delay} from 'node:timers/promises';
 import {digest,fail} from './document-import.mjs';
 import {createLockedJsonStore} from './locked-json-store.mjs';
+import {createImmutableReadCache} from './immutable-read-cache.mjs';
 import {introductionContext} from '../app/book-introduction.mjs';
 
 const contentHash=value=>digest(JSON.stringify(value,(_key,row)=>row&&typeof row==='object'&&!Array.isArray(row)?Object.fromEntries(Object.entries(row).sort(([a],[b])=>a<b?-1:a>b?1:0)):row));
@@ -21,7 +22,7 @@ export function createChapterReadStore({dataDir,dataStore=null,loadBook,catalogF
  const root=(user,id)=>user?path.join(dataDir,'users',account(user),'reading',digest(id)):path.join(dataDir,'public','reading',digest(id));
  const stateKey=base=>path.join(base,'manifest.json');
  const state=base=>store.read(stateKey(base),{});
- const builds=new Map();
+ const builds=new Map(),immutableReads=createImmutableReadCache();
  function canonicalRoot(file){
   const parts=path.relative(dataDir,file).split(path.sep);
   if(parts.length!==4||parts[0]!=='users'||!['books','translations'].includes(parts[2])||!(/^[a-f0-9]{64}$/.test(parts[1]))||!(/^[a-f0-9]{64}\.json$/.test(parts[3])))return null;
@@ -84,14 +85,20 @@ export function createChapterReadStore({dataDir,dataStore=null,loadBook,catalogF
  async function assertCurrent(user,id,snapshot){const current=await state(root(user,id));if(!valid(current,catalogFingerprint(id))||current.snapshot.id!==snapshot.id)throw busy();}
  async function chapter(user,id,snapshot,chapterId){
   if(!Object.hasOwn(snapshot.chapters,chapterId))throw fail('找不到这一章',404);
-  const value=await store.read(path.join(root(user,id),'chapters',snapshot.chapters[chapterId]+'.json'),null);
-  if(!value||value.bookId!==id||value.chapterId!==chapterId||value.contentVersion!==snapshot.contentVersion||contentHash(value)!==snapshot.chapters[chapterId])throw fail('章节内容无法核对，请重新打开这本书',409);
-  return value;
+  const file=path.join(root(user,id),'chapters',snapshot.chapters[chapterId]+'.json');
+  return immutableReads.read(file,async()=>{
+   const value=await store.read(file,null);
+   if(!value||value.bookId!==id||value.chapterId!==chapterId||value.contentVersion!==snapshot.contentVersion||contentHash(value)!==snapshot.chapters[chapterId])throw fail('章节内容无法核对，请重新打开这本书',409);
+   return value;
+  });
  }
  async function complete(user,id,snapshot){
   if(typeof snapshot.aggregate!=='string'||!/^[a-f0-9]{64}$/.test(snapshot.aggregate))throw fail('书籍内容无法核对，请重新打开这本书',409);
-  const value=await store.read(path.join(root(user,id),'complete',snapshot.aggregate+'.json'),null);
-  if(!value||value.bookId!==id||value.contentVersion!==snapshot.contentVersion||value.book?.bookId!==id||value.book?.contentVersion!==snapshot.contentVersion||contentHash(value)!==snapshot.aggregate)throw fail('书籍内容无法核对，请重新打开这本书',409);
+  const file=path.join(root(user,id),'complete',snapshot.aggregate+'.json'),value=await immutableReads.read(file,async()=>{
+   const value=await store.read(file,null);
+   if(!value||value.bookId!==id||value.contentVersion!==snapshot.contentVersion||value.book?.bookId!==id||value.book?.contentVersion!==snapshot.contentVersion||contentHash(value)!==snapshot.aggregate)throw fail('书籍内容无法核对，请重新打开这本书',409);
+   return value;
+  });
   return value.book;
  }
  return {writing,manifest,chapter,complete,assertCurrent};

@@ -1,0 +1,41 @@
+{
+  "issue": "GET-299",
+  "baseline": "9faa5e0e7e683f5b3d094d184536d9ed0732c302",
+  "sourceSha256": {
+    "apps/ios/Leafhour/ReaderPanels.swift": "91ce4f470e416092fd023a02fad0754bbfc95dd80fce2fd2c2c2112dfbc1433b",
+    "apps/ios/LeafhourCore/Sources/LeafhourCore/SearchExcerpt.swift": "a4f0361bf4282256244ae90749b9c0537f5adeb22ae9076a5f01a47d0bbc58e5",
+    "apps/ios/LeafhourCore/Tests/LeafhourCoreTests/SearchExcerptTests.swift": "e1c6ae5857d28b126c48534230026e41c3d56375181513255ff892ee875f4277"
+  },
+  "host": {
+    "command": "swift test --package-path apps/ios/LeafhourCore --scratch-path \"$ARTIFACT/core-build\" -j 2",
+    "result": "28 tests passed, 0 failures",
+    "log": "core-reviewed.log",
+    "newSearchCases": 7
+  },
+  "native": {
+    "device": "Existing Primary iPhone / iPhone 17 Pro",
+    "runtime": "iOS 26.5",
+    "bundle": "org.leafhour.craft297",
+    "result": "1 focused native UI probe passed",
+    "test": "ReadingUITests/testCraft299SearchContextAndReturn",
+    "temporaryProbeSha256": "8fe4609de422906d49edb9a21dd2978de865d0a6316dd45ee5f45bdf31ad61ef",
+    "sourceIsolated": "Bounded public-domain Alice text imported through OfflineLibrary; no account or model access",
+    "resultBundle": "native.xcresult",
+    "anchorProof": "anchor-proof.json",
+    "screenshotsInspected": true
+  },
+  "review": {
+    "confirmedIssue": "Four hard line breaks could hide a match under the old four-line truncation",
+    "resolution": "Presentation-only whitespace substitution and a growing bounded excerpt; reviewer confirmed closed and no new confirmed issue"
+  },
+  "notVerified": [
+    "Maximum Dynamic Type native layout",
+    "VoiceOver",
+    "Hardware keyboard",
+    "iPad/compact iPhone",
+    "Long-book typing latency/cancellation",
+    "TestFlight distribution",
+    "Physical devices",
+    "Website production"
+  ]
+}

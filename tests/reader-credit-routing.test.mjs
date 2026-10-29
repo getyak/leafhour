@@ -6,6 +6,7 @@ import {readFile} from 'node:fs/promises';
 import {parse} from 'acorn';
 import {prepareCreditRequest} from '../app/credit-client.mjs';
 import {readVerifiedUiSession} from '../app/ui-first-paint-bootstrap.mjs';
+import {resolveOfflineReadingContext} from '../app/offline-reading.mjs';
 
 const source=await readFile(new URL('../app/reader-api.mjs',import.meta.url),'utf8'),tree=parse(source,{ecmaVersion:'latest',sourceType:'module'});
 // AST positions belong to the original source. Remove module declarations before
@@ -16,7 +17,10 @@ executable=executable.replace("import("+"'./credit-client.mjs')","Promise.resolv
 async function fixture({enabled=true,prepare,fetcher}={}){
  const calls=[],prepared=[],events=[],listeners=new Map(),doc=Object.assign(new EventTarget(),{hidden:false}),session={user:{id:'owner-a'},billing:{enabled,mode:'test',unitsPerPoint:1_000_000,prices:{translation:1_000_000,conversation:4_000_000,annotation:4_000_000}}};
  const fetch=async(url,options={})=>{calls.push({url,options});if(url==='/api/auth/session')return Response.json(session);return fetcher?fetcher(url,options):Response.json({ok:true});};
- const context=vm.createContext({URLSearchParams,URL,Event,Response,DOMException,crypto:webcrypto,document:doc,window:{addEventListener:(name,handler)=>listeners.set(name,handler)},location:{search:'?book=selected-book',origin:'https://reader.example',replace:url=>events.push(url)},fetch,readUiSession:()=>readVerifiedUiSession({request:fetch}),adoptUiOwner:()=>{},assembleBookTransfer:()=>assert.fail('Not a multipart fixture'),getUiLocale:()=> 'ja',prepareCreditRequest:async input=>{prepared.push(input);return prepare?prepare(input):{...input.data,id:input.data.id||'generated-id',billing:{quoteId:'quote-id',idempotencyKey:input.data.id||'generated-id'}};}});
+ // Billing probes remain online and use the real session/context resolver;
+ // device storage and resource preparation add no work to these fixtures.
+ const store={adopt:async()=>{},owner:()=>session.user.id,clear:async()=>{}};
+ const context=vm.createContext({URLSearchParams,URL,Event,Response,DOMException,crypto:webcrypto,document:doc,window:{addEventListener:(name,handler)=>listeners.set(name,handler)},location:{search:'?book=selected-book',origin:'https://reader.example',replace:url=>events.push(url)},fetch,readUiSession:options=>readVerifiedUiSession({request:options?.request||fetch}),adoptUiOwner:()=>{},resolveOfflineReadingContext,deviceBookStore:()=>store,createOfflineReadingTransport:({fetcher})=>({isOffline:()=>false,fetch:fetcher,refresh:async()=>{},setOffline(){}}),prepareOfflineResources:async()=>false,mountOfflineReadingControls:()=>()=>{},assembleBookTransfer:()=>assert.fail('Not a multipart fixture'),getUiLocale:()=> 'ja',prepareCreditRequest:async input=>{prepared.push(input);return prepare?prepare(input):{...input.data,id:input.data.id||'generated-id',billing:{quoteId:'quote-id',idempotencyKey:input.data.id||'generated-id'}};}});
  const api=await vm.runInContext('(async()=>{'+executable+';return {readerApiUrl,readerFetch};})()',context);
  return {api,calls,prepared,doc,events,listeners};
 }
@@ -64,4 +68,8 @@ test('reader onDispatch fires only for final generation after preparation and is
  assert.deepEqual(sequence,['prepare','/api/billing/quotes','prepared','dispatch','/api/library/books/selected-book/chat']);assert.equal(f.calls.at(-1).options.onDispatch,undefined);
  const disabled=await fixture({enabled:false});let dispatched=0;await disabled.api.readerFetch('/api/chat',{...post({}),onDispatch:()=>dispatched++});assert.equal(dispatched,1);assert.equal(disabled.calls.at(-1).options.onDispatch,undefined);
  const controller=new AbortController();controller.abort();await assert.rejects(disabled.api.readerFetch('/api/chat',{...post({}),signal:controller.signal,onDispatch:()=>dispatched++}));assert.equal(dispatched,1);
+});
+test('session invalidation removes visible private content after disposal listeners and before another frame',async()=>{
+ const f=await fixture();let removed=0,visibleDuringDisposal=false;f.doc.body={dataset:{ready:'true'},replaceChildren:()=>{removed++;}};f.doc.title='Private chapter';f.doc.addEventListener('reader:session-changed',()=>{visibleDuringDisposal=removed===0;});
+ f.doc.dispatchEvent(new Event('reader:session-changed'));await new Promise(resolve=>queueMicrotask(resolve));assert.equal(visibleDuringDisposal,true);assert.equal(removed,1);assert.equal(f.doc.title,'Leafhour');assert.equal(f.doc.body.dataset.ready,'false');
 });

@@ -1,0 +1,20 @@
+{
+  "date": "2026-10-29",
+  "verificationTextSha256": "53ad62a32ea6bc53232f858c954e4e0f7956f99a1794a2117590818525327796",
+  "A": "原始机械命中为零。",
+  "B": {
+    "rawDenseParallel": 8,
+    "retained": 8,
+    "reason": "均为真实样本数字、完整测试维度、发布状态字段或平台验证范围。作为必需技术清单保留，未为指标删减事实。"
+  },
+  "semanticCandidates": 22,
+  "styleRewrites": 0,
+  "C": "仅记录分布，不改变文章结构或制造句长参差。",
+  "F": "没有分号、破折号需要处理。",
+  "shortCopyReview": {
+    "scope": "本次新增的简体/繁体 README 离线章节及界面 offline.*、offline shelf 文案逐句复查；未改已有作者文字和外语段落。",
+    "minimalEdits": "仅将新 README 两处独立分句间的分号改为句号，含义与段落结构不变。",
+    "statistics": "短文案逐句复查，不为单句编造整篇统计指标。"
+  },
+  "specReview": "设计稿复用前轮逐条记录；本轮只更新用户已授权这一事实，未做额外润色。"
+}

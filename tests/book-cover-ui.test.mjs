@@ -31,7 +31,7 @@ test('actual home and library queries find the displayed Japanese cover and pres
  const $=id=>document.getElementById(id);for(const tag of ['h2','p'])$('empty-shelf').append(document.createElement(tag));
  const books=[{bookId:'gutenberg-walden',visibility:'public',title:{en:'Walden',zh:'瓦尔登湖'},author:'Henry David Thoreau',sourceLanguage:'en',source:{format:'txt'}},{bookId:'gutenberg-alice',visibility:'public',title:{en:'Alice'},author:'Lewis Carroll',sourceLanguage:'en',source:{format:'txt'}}],before=JSON.stringify(books);
  let query='森の生活';Object.assign(context,workspace,{document,$,books,bookCoverSearchText,bootstrapped:true,personalizationPending:false,session:{user:{id:'synthetic'}},homeText,Intl,getOwner:()=> 'synthetic',dashboard:null,chat:null,shelfControls:{read:()=>({query}),update(){},setPending(){},clearAll(){query='';}}});
- for(const name of ['chromeLabels','specText','num','applySpec','own','landingBookCard','shelfEmptyHelpId','renderHomeBooks','renderBooks']){const n=ast.body.find(n=>n.id?.name===name||n.declarations?.some(row=>row.id.name===name));vm.runInContext(source.slice(n.start,n.end),context);}
+ for(const name of ['chromeLabels','specText','num','applySpec','own','landingBookCard','shelfEmptyHelpId','renderHomeBooks','renderReadingBookmark','renderBooks']){const n=ast.body.find(n=>n.id?.name===name||n.declarations?.some(row=>row.id.name===name));vm.runInContext(source.slice(n.start,n.end),context);}
  context.shelfList=mountIncrementalShelf({grid:$('library-books'),controls:$('shelf-more'),renderItem:context.makeCard});
  try{
   for(const isLibrary of [false,true]){
@@ -82,4 +82,18 @@ test('real home-card factory shares illustrated covers and updates their existin
     await requestUiRoute('ja');assert.equal(title.textContent,'森の生活');assert.equal(cover.querySelector('img'),image);assert.equal(cover.querySelector('.cover-title'),title);assert.equal(card.querySelector('h3').textContent,'森の生活');assert.equal(card.querySelector('.book-author').textContent,'ヘンリー・デイヴィッド・ソロー');
     await requestUiRoute('zh-Hant');assert.equal(title.textContent,'瓦爾登湖');assert.equal(JSON.stringify(book),original);
   }finally{off();card.remove();await requestUiRoute('en');}
+});
+
+test('the real bookmark rebuilds after metadata hydration and always targets its saved passage',async()=>{
+ await requestUiRoute('en');const f=publicShelfFixture(),{document,context}=f,root=document.createElement('section');root.id='library-resume';document.body.append(root);
+ const book={bookId:'gutenberg-walden',visibility:'public',title:{en:'Walden'},source:{format:'txt'},resume:{passageId:'saved-passage',label:'The Pond',updatedAt:'2026-10-29'}};
+ Object.assign(context,workspace,{getOwner:()=> 'owner-a',$:id=>document.getElementById(id),books:[book]});
+ const declaration=ast.body.find(node=>node.id?.name==='renderReadingBookmark');vm.runInContext(source.slice(declaration.start,declaration.end),context);
+ try{
+  context.renderReadingBookmark();assert.equal(root.hidden,false);assert.match(root.querySelector('a').href,/passage=saved-passage/);assert.equal(root.querySelector('.resume-chapter').textContent,'The Pond');
+  const initial=root.querySelector('a');context.renderReadingBookmark();assert.equal(root.querySelector('a'),initial);
+  context.books=[{...book,resume:null,personalizationPending:true}];context.renderReadingBookmark();assert.equal(root.hidden,true);assert.equal(root.children.length,0);
+  context.books=[book];context.renderReadingBookmark();assert.equal(root.hidden,false);assert.ok(root.querySelector('a'));assert.notEqual(root.querySelector('a'),initial);
+  context.books=[];context.renderReadingBookmark();assert.equal(root.hidden,true);assert.equal(root.children.length,0);
+ }finally{f.dispose();await requestUiRoute('en');}
 });
