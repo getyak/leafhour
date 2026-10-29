@@ -499,17 +499,32 @@ listen($('continuous-reading'),'change',event=>{
   const a=anchor();if(a&&paragraphMap.has(a.passageId))state.chapterId=paragraphMap.get(a.passageId).chapterId;continuous=event.target.checked;document.body.dataset.continuous=String(continuous);try{localStorage.setItem(readerStorageKey('marginalia-continuous-v1'),String(continuous));}catch{}
   closePanel();dismissTools();renderChapter();restoreAnchor(a);queueReadingFlow();persist();
 });
+// Track input rather than viewport width so hybrid devices retain mouse use.
+// Older Safari supplies a MouseEvent for the compatibility click after touch.
+let passagePointerType='';
+listen(document,'pointerdown',event=>{passagePointerType=event.pointerType||'';},{capture:true,passive:true});
+listen(document,'touchstart',()=>{passagePointerType='touch';},{capture:true,passive:true});
+function touchPassageClick(event){
+  if(event.sourceCapabilities?.firesTouchEvents)return true;
+  // WebKit may label the compatibility click as mouse, with a new pointer ID.
+  // A genuine subsequent mouse pointerdown replaces the recorded touch source.
+  if(event.detail!==0&&passagePointerType==='touch')return true;
+  if(event.pointerType)return event.pointerType==='touch';
+  return false;
+}
 listen(document,'click',e=>{
   if(e.target.closest('#note-panel,#paragraph-tools,#audio-bootstrap-status,#audio-import-input,#reading-session,dialog,.library-chat-launcher,.reading-header,.focus-actions,.experience-surface,.source-evidence,.source-resource-links,.page-turner,.paper-turn-handle'))return;
   const selection=getSelection();if(selection?.toString().trim()&&selectedExcerpt&&$('paragraph-tools').dataset.excerpt==='true')return;
-  const node=e.target.closest('.passage');if(node){if(!getSelection()?.toString()){const layer=e.target.closest('p')?.dataset.readingLayer;choosePassage(node.dataset.id,e.clientY,'',layer==='original'?'en':layer==='translation'?'zh':null);}return;}
+  const node=e.target.closest('.passage');if(node){if(!touchPassageClick(e)&&!getSelection()?.toString()){const layer=e.target.closest('p')?.dataset.readingLayer;choosePassage(node.dataset.id,e.clientY,'',layer==='original'?'en':layer==='translation'?'zh':null);}return;}
   dismissTools();closePanel();
 });
 function captureExcerpt(y){
   try{const excerpt=captureDOMSelection(getSelection(),paragraphMap,book);if(!excerpt){if(getSelection()?.toString().trim()){selectedExcerpt=null;dismissTools();}return;}if(selectionKind==='excerpt'&&!$('paragraph-tools').hidden&&selectedExcerpt&&highlightKey(selectedExcerpt)===highlightKey(excerpt))return;const first=excerpt.parts[0];choosePassage(first.passageId,y,excerpt.parts.map(part=>part.text).join('\n\n'),first.language);selectedExcerpt=excerpt;selectionKind='excerpt';for(const part of excerpt.parts)document.getElementById(part.passageId)?.classList.add('is-selected');$('show-share').hidden=false;$('paragraph-tools').dataset.excerpt='true';highlights.updateTools(excerpt);positionTools();}
   catch(error){selectedExcerpt=null;dismissTools();announceUi(READER_UI+'selectAgain');}
 }
-listen(document,'pointerup',e=>{if(e.button!==0||e.target.closest('#note-panel,#paragraph-tools,#audio-bootstrap-status,#reading-session,dialog,.library-chat-launcher,[popover],.experience-surface,.source-evidence,.source-resource-links,.page-turner,.paper-turn-handle')||!book)return;captureExcerpt(e.clientY);});
+// Native long press/handle changes report selectionchange. Touch release can
+// still expose the selection from before a tap/scroll, so it must not recapture.
+listen(document,'pointerup',e=>{if(e.pointerType==='touch'||e.button!==0||e.target.closest('#note-panel,#paragraph-tools,#audio-bootstrap-status,#reading-session,dialog,.library-chat-launcher,[popover],.experience-surface,.source-evidence,.source-resource-links,.page-turner,.paper-turn-handle')||!book)return;captureExcerpt(e.clientY);});
 listen(document,'selectionchange',()=>{clearTimeout(excerptTimer);excerptTimer=undefined;if(book&&getSelection()?.toString().trim()&&$('chapter-text').contains(getSelection().anchorNode))excerptTimer=setTimeout(()=>{excerptTimer=undefined;captureExcerpt();},120);});
 // Reading intent owns dismissal; layout restoration also emits scroll and
 // must not cancel the action that caused that restoration. Native text stays
