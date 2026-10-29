@@ -113,6 +113,8 @@ struct LibraryScreen: View {
             if sort == .added { Text("云端书籍沿用书房顺序") }
         } label: {
             Label("书房显示与排序", systemImage: layout == .grid ? "square.grid.2x2" : "list.bullet")
+                .frame(minWidth: 44, minHeight: 44)
+                .contentShape(Rectangle())
         }
         .accessibilityValue("\(layout.title)，按\(sort.title)排列")
     }
