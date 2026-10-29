@@ -18,7 +18,8 @@ final class ReadingUITests: XCTestCase {
         app.buttons["保留草稿"].tap()
         app.terminate(); app.launchArguments = []; app.launch()
         XCTAssertTrue(app.textViews["leafhour-epub-reader"].waitForExistence(timeout: 10))
-        app.buttons["显示阅读进度、目录、搜索与记录"].tap(); app.buttons["我的记录"].tap()
+        if !app.buttons["我的记录"].exists { app.buttons["显示阅读进度、目录、搜索与记录"].tap() }
+        app.buttons["我的记录"].tap()
         let draft = app.buttons.matching(NSPredicate(format: "label CONTAINS %@", "GET313 exact native quote draft")).firstMatch
         XCTAssertTrue(draft.waitForExistence(timeout: 5), app.debugDescription); draft.tap()
         XCTAssertTrue(editor.waitForExistence(timeout: 5)); XCTAssertEqual(editor.value as? String, "GET313 exact native quote draft")

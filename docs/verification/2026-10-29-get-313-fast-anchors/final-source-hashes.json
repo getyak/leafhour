@@ -1,5 +1,6 @@
 {
-  "apps/ios/Leafhour/TextReadingView.swift": "5ae4ed2b1f91b51f6da6c4ce649ac2c526ff1291a78499158fbe946fac59b8b5",
+  "apps/ios/Leafhour/TextReadingView.swift": "c28eb38499b8520da5b36234bdfddbb36d2007a8106d1508b4c98211f041cf86",
   "apps/ios/LeafhourCore/Sources/LeafhourCore/SourceTextOffsets.swift": "f5452759b4265c0b1c619c2bcbb1f455b75bf12d6ec1b83e73eda2c4c4fa15bb",
-  "apps/ios/LeafhourCore/Tests/LeafhourCoreTests/SourceTextOffsetsTests.swift": "c73b5173d8b517ad7b5423328733db16a433f936d3f1738c39303bf65be929eb"
+  "apps/ios/LeafhourCore/Tests/LeafhourCoreTests/SourceTextOffsetsTests.swift": "c73b5173d8b517ad7b5423328733db16a433f936d3f1738c39303bf65be929eb",
+  "apps/ios/LeafhourAppTests/ReaderToolsTests.swift": "3e29b5ab3ce6594fc810e8bfaeb97985531396ab62a58d3241a522353457c1e9"
 }

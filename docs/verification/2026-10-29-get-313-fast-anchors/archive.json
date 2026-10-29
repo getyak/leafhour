@@ -1,0 +1,9 @@
+{
+  "archive": "native-fast-anchors-evidence.tar.gz",
+  "sha256": "897694bcf69bd5bf8a47cbbff9f8be7a437822cc3257ca0fe68bea9faf5281e1",
+  "bytes": 72931292,
+  "fileCount": 1542,
+  "verifiedEachMember": true,
+  "restorePrefix": "runtime/",
+  "baselineParentRestorePrefix": "runtime/baseline/"
+}
