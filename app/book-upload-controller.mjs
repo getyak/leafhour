@@ -6,16 +6,16 @@ const readFile=file=>new Promise((resolve,reject)=>{const reader=new FileReader(
 const stage=job=>({done:'ready',cancelled:'cancelled',awaiting_consent:'permission',failed:'interrupted',needs_review:'review'})[job.state]||'organizing';
 
 // One page owns this controller. It never touches chat drafts or generates a turn.
-export function createBookUploadController({api,getOwner,getSession,uploadPdf=sendPdf,readBase64=readFile,request=fetch,storage=null,pollMs=2500,onReady=()=>{}}){
+export function createBookUploadController({api,getOwner,getSession,uploadPdf=sendPdf,readBase64=readFile,request=fetch,storage=null,pollMs=2500,onReady=()=>{},document=globalThis.document}){
  let owner=getOwner()||null,revision=0,disposed=false,sequence=0,timer=null,refreshing=null;
  const records=new Map(),listeners=new Set(),memory=createPdfJobMemory({storage});
  const current=(captured,version)=>!disposed&&captured===owner&&captured===(getOwner()||null)&&version===revision;
  const emit=()=>{if(!disposed)for(const listener of listeners)listener(tasks());};
  const tasks=()=>[...records.values()].map(({file,run,...task})=>({...task,job:task.job?{...task.job}:null}));
- const schedule=()=>{clearTimeout(timer);if(!disposed&&owner){timer=setTimeout(()=>void refresh(),pollMs);timer.unref?.();}};
+ const schedule=()=>{clearTimeout(timer);if(!disposed&&owner&&!document?.hidden&&[...records.values()].some(r=>['preparing','running','publishing'].includes(r.job?.state))){timer=setTimeout(()=>void refresh(),pollMs);timer.unref?.();}};
  function syncOwner(){const next=getOwner()||null;if(next===owner)return false;owner=next;revision++;clearTimeout(timer);refreshing=null;records.clear();emit();return true;}
  const fence=(captured,version,record,run)=>{if(!current(captured,version)||record.stage==='cancelled'||run!==record.run)throw Error('inactive-upload');};
- function accept(record,job){record.job=job;record.stage=stage(job);record.bookId=job.bookId||null;record.percent=null;record.busy=false;record.error=false;if(job.id&&record.stage!=='ready')memory.watch(owner,job.id);emit();if(record.stage==='ready'&&!record.notified){record.notified=true;record.file=null;try{onReady({bookId:job.bookId,title:job.title||{en:record.filename},job});}catch{}}if(!['ready','cancelled'].includes(record.stage))schedule();}
+ function accept(record,job){record.job=job;record.stage=stage(job);record.bookId=job.bookId||null;record.percent=null;record.busy=false;record.error=false;if(job.id&&record.stage!=='ready')memory.watch(owner,job.id);emit();if(record.stage==='ready'&&!record.notified){record.notified=true;record.file=null;try{onReady({bookId:job.bookId,title:job.title||{en:record.filename},job});}catch{}}schedule();}
  async function transfer(record){
   const captured=owner,version=revision,run=++record.run;record.stage='receiving';record.percent=null;record.busy=true;record.error=false;emit();
   const assertCurrent=()=>fence(captured,version,record,run);
@@ -47,11 +47,13 @@ export function createBookUploadController({api,getOwner,getSession,uploadPdf=se
  }
  async function cancel(id){syncOwner();const record=records.get(id);if(!record||disposed||record.stage==='ready')return;if(record.job){await act(id,'cancel');return;}record.stage='cancelled';record.error=false;record.busy=false;emit();}
  async function retry(id){syncOwner();const record=records.get(id);if(!record||disposed||record.busy)return;if(record.job)return act(id,'resume');if(record.file)return transfer(record);}
- async function refresh(){syncOwner();clearTimeout(timer);if(disposed||!owner)return;if(refreshing)return refreshing;const captured=owner,version=revision,runs=new Map([...records.values()].map(r=>[r.id,r.busy?null:r.run]));
+ async function refresh(){syncOwner();clearTimeout(timer);if(disposed||!owner||document?.hidden)return;if(refreshing)return refreshing;const captured=owner,version=revision,runs=new Map([...records.values()].map(r=>[r.id,r.busy?null:r.run]));
   // A read begun during an action cannot attest to that action's outcome.
   const pending=(async()=>{try{const {jobs=[]}=await api('/api/library/ingestion');if(!current(captured,version))return;for(const job of jobs){let record=[...records.values()].find(r=>r.job?.id===job.id);if(!record&&([...records.values()].some(r=>r.busy&&!r.job)||!showPdfJob(job,{memory,owner})))continue;if(!record){record={id:'job-'+job.id,filename:job.filename,run:0};records.set(record.id,record);}if(!record.busy&&(!runs.has(record.id)||runs.get(record.id)===record.run)&&!(['ready','cancelled'].includes(record.stage)&&stage(job)!==record.stage))accept(record,job);}}
    catch{ /* Keep the last known card; a later poll recovers its progress. */ }
-   finally{if(current(captured,version)){refreshing=null;if([...records.values()].some(r=>!['ready','cancelled'].includes(r.stage)))schedule();}}})();refreshing=pending;return pending;
+   finally{if(current(captured,version)){refreshing=null;schedule();}}})();refreshing=pending;return pending;
  }
- return {start,tasks,act,cancel,retry,refresh,syncOwner,subscribe(listener){listeners.add(listener);listener(tasks());return ()=>listeners.delete(listener);},opened(id){const job=records.get(id)?.job;if(job?.id)memory.opened(owner,job.id);},dispose(){if(disposed)return;disposed=true;revision++;clearTimeout(timer);listeners.clear();records.clear();}};
+ const visibility=()=>{if(document.hidden)clearTimeout(timer);else void refresh();};
+ document?.addEventListener?.('visibilitychange',visibility);
+ return {start,tasks,act,cancel,retry,refresh,syncOwner,subscribe(listener){listeners.add(listener);listener(tasks());return ()=>listeners.delete(listener);},opened(id){const job=records.get(id)?.job;if(job?.id)memory.opened(owner,job.id);},dispose(){if(disposed)return;disposed=true;revision++;clearTimeout(timer);document?.removeEventListener?.('visibilitychange',visibility);listeners.clear();records.clear();}};
 }

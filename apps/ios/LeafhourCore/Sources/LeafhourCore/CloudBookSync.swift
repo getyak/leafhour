@@ -120,7 +120,12 @@ public extension CloudLibraryClient {
 public actor CloudBookSync {
     private let client: CloudLibraryClient
     private let library: OfflineLibrary
-    private struct Work { var id: UUID; var task: Task<Void, Error> }
+    private struct Work {
+        var id: UUID
+        var task: Task<Void, Error>
+        var activePull: Bool?
+        var pendingPull: Bool?
+    }
     private var running: [String: Work] = [:]
     private var deferred: [String: Task<Void, Never>] = [:]
     public init(client: CloudLibraryClient, library: OfflineLibrary) { self.client = client; self.library = library }
@@ -131,16 +136,49 @@ public actor CloudBookSync {
         }
     }
     public func synchronize(_ bookID: String, pull: Bool = true) async throws {
-        if let current = running[bookID] { try await current.task.value; return }
-        let marker = UUID(), work = Task { try await performSynchronization(bookID, pull: pull) }
-        running[bookID] = Work(id: marker, task: work)
-        defer { if running[bookID]?.id == marker { running.removeValue(forKey: bookID) } }
+        if var current = running[bookID] {
+            // A push represents a new disk checkpoint. Merge checkpoints arriving
+            // after this worker captured its snapshot into one subsequent pass.
+            // Concurrent callers of an already running pull can share that pull.
+            if !pull || current.activePull != true {
+                current.pendingPull = (current.pendingPull ?? false) || pull
+                running[bookID] = current
+            }
+            try await current.task.value
+            return
+        }
+        let marker = UUID()
+        let work = Task {
+            defer { finishWork(bookID, marker: marker) }
+            try await drainSynchronization(bookID, marker: marker, firstPull: pull)
+        }
+        running[bookID] = Work(id: marker, task: work, activePull: pull)
         try await work.value
     }
-    private func performSynchronization(_ bookID: String, pull: Bool) async throws {
+    private func finishWork(_ bookID: String, marker: UUID) {
+        if running[bookID]?.id == marker { running.removeValue(forKey: bookID) }
+    }
+    private func nextSynchronization(_ bookID: String, marker: UUID) -> Bool? {
+        guard var current = running[bookID], current.id == marker else { return nil }
+        let next = current.pendingPull
+        current.pendingPull = nil; current.activePull = next
+        running[bookID] = current
+        return next
+    }
+    private func drainSynchronization(_ bookID: String, marker: UUID, firstPull: Bool?) async throws {
+        var next = firstPull
+        while let pull = next {
+            // Failure ends this worker and reaches every waiter. Pending disk
+            // edits stay in the outbox until a later explicit or scheduled retry.
+            guard try await performSynchronization(bookID, pull: pull) else { return }
+            next = nextSynchronization(bookID, marker: marker)
+        }
+    }
+    private func performSynchronization(_ bookID: String, pull: Bool) async throws -> Bool {
         let book = try await library.book(bookID)
-        guard let identity = book.cloud else { return }
+        guard let identity = book.cloud else { return true }
         var metadata = try await library.cloudMetadata(bookID)
+        var canDrain = true
         do {
             let path = "/api/library/books/" + CloudJSON.component(identity.bookID)
             let records = try CloudJSON.decode(await client.data(path: path + "/records", ownerID: identity.ownerID))
@@ -166,7 +204,19 @@ public actor CloudBookSync {
                         metadata.syncedNotes[key] = remoteID
                         continue
                     }
-                    let remoteNote = ReaderNote(id: id, anchor: ReadingAnchor(chapterID: passage.0, passageID: passageID), quote: row["quote"].string ?? String(passage.1.prefix(200)), body: text, modifiedAt: Self.date(row["updatedAt"].string ?? row["createdAt"].string))
+                    let quote = row["quote"].string ?? String(passage.1.prefix(200))
+                    var anchor = ReadingAnchor(chapterID: passage.0, passageID: passageID)
+                    if let existing {
+                        let local = state.notes[existing]
+                        // Cloud comments do not carry a character offset. The
+                        // same note/quote in this verified content version keeps
+                        // its local selection, including formatted Markdown text.
+                        if local.anchor.chapterID == passage.0, local.anchor.passageID == passageID, local.quote == quote,
+                           (0...passage.1.unicodeScalars.count).contains(local.anchor.characterOffset) {
+                            anchor = local.anchor
+                        }
+                    }
+                    let remoteNote = ReaderNote(id: id, anchor: anchor, quote: quote, body: text, modifiedAt: Self.date(row["updatedAt"].string ?? row["createdAt"].string))
                     if let existing {
                         if localChanged && state.notes[existing].body != text { metadata.noteConflict = true }
                         else { state.notes[existing] = remoteNote }
@@ -190,9 +240,11 @@ public actor CloudBookSync {
                     try await library.saveCloudMetadata(metadata, bookID: bookID)
                 } catch let error as CloudRequestError {
                     if error.status == 401 || error.status == 403 { throw error }
+                    canDrain = false
                     metadata.noteErrors[key] = "这条笔记尚未同步：" + error.localizedDescription
                     if error.status >= 500 { break }
                 } catch {
+                    canDrain = false
                     metadata.noteErrors[key] = "这条笔记尚未同步，内容仍保存在设备。"
                     break
                 }
@@ -225,6 +277,7 @@ public actor CloudBookSync {
             if let error = metadata.noteErrors.values.sorted().first { issues.append(error) }
             metadata.lastError = issues.isEmpty ? nil : issues.joined(separator: " ")
             try await library.saveCloudMetadata(metadata, bookID: bookID)
+            return canDrain
         } catch {
             metadata.lastError = error.localizedDescription
             try? await library.saveCloudMetadata(metadata, bookID: bookID)
@@ -232,23 +285,34 @@ public actor CloudBookSync {
         }
     }
     public func resolvePosition(_ bookID: String, useDevice: Bool) async throws {
-        if let current = running[bookID] { try await current.task.value }
-        let marker = UUID(), work = Task { try await performPositionResolution(bookID, useDevice: useDevice) }
-        running[bookID] = Work(id: marker, task: work)
-        defer { if running[bookID]?.id == marker { running.removeValue(forKey: bookID) } }
+        // Recheck after suspension: another resolver may have acquired this book
+        // while multiple callers were waiting for the previous worker.
+        while let current = running[bookID] { try await current.task.value }
+        let marker = UUID()
+        let work = Task {
+            defer { finishWork(bookID, marker: marker) }
+            guard try await performPositionResolution(bookID, useDevice: useDevice) else { return }
+            try await drainSynchronization(bookID, marker: marker, firstPull: nextSynchronization(bookID, marker: marker))
+        }
+        running[bookID] = Work(id: marker, task: work, activePull: nil)
         try await work.value
     }
-    private func performPositionResolution(_ bookID: String, useDevice: Bool) async throws {
+    private func performPositionResolution(_ bookID: String, useDevice: Bool) async throws -> Bool {
         var metadata = try await library.cloudMetadata(bookID)
-        guard metadata.positionConflict, let revision = metadata.remotePositionRevision else { return }
+        guard metadata.positionConflict, let revision = metadata.remotePositionRevision else { return true }
         if useDevice {
-            metadata.positionRevision = revision; metadata.positionConflict = false
+            guard try await library.state(bookID).anchor != nil else { throw CloudRequestError(status: 409, message: "此设备暂没有可同步的阅读位置，请选择云端位置。") }
+            // Choosing this device is an explicit write, even if the user has
+            // returned to the previously acknowledged anchor. Keep the conflict
+            // context until its CAS write succeeds so failed verification is retryable.
+            metadata.positionRevision = revision; metadata.lastSyncedAnchor = nil
             try await library.saveCloudMetadata(metadata, bookID: bookID)
-            try await performSynchronization(bookID, pull: true)
+            return try await performSynchronization(bookID, pull: true)
         } else {
             var state = try await library.state(bookID); state.anchor = metadata.remoteAnchor
             metadata.lastSyncedAnchor = metadata.remoteAnchor; metadata.positionRevision = revision; metadata.positionConflict = false; metadata.lastError = nil
             try await library.saveState(state, bookID: bookID); try await library.saveCloudMetadata(metadata, bookID: bookID)
+            return true
         }
     }
     public static func noteID(_ value: String) -> UUID {

@@ -241,6 +241,261 @@ final class CloudSyncTests: XCTestCase {
         XCTAssertTrue(state.notes.contains(localNote))
         XCTAssertTrue(state.notes.contains(where: { $0.body == "Web thought" }))
     }
+    func testSynchronizationDrainsNewEditsAfterInFlightPush() async throws {
+        let library = try library(owner), book = try await library.importCloud(fixtureCopy()), sync = CloudBookSync(client: client(), library: library)
+        let first = ReaderNote(anchor: ReadingAnchor(chapterID: "chapter-one", passageID: "passage-one", characterOffset: 2), quote: "quiet page", body: "First thought")
+        let second = ReaderNote(anchor: first.anchor, quote: first.quote, body: "A later thought")
+        var state = ReaderState(); state.notes = [first]; state.anchor = first.anchor
+        try await library.saveState(state, bookID: book.id)
+        let uploading = expectation(description: "The first snapshot is uploading")
+        let release = DispatchSemaphore(value: 0)
+        var remoteNotes: [CloudJSON] = [], remotePosition: CloudJSON = .null, revision = 0
+        CloudMockProtocol.handler = { request in
+            if request.httpMethod != "POST" { return (200, try self.records(notes: remoteNotes, position: remotePosition)) }
+            let value = try CloudJSON.decode(Self.body(request))
+            if request.url!.path.hasSuffix("comments") {
+                if value["id"].string == first.id.uuidString.lowercased() {
+                    uploading.fulfill()
+                    guard release.wait(timeout: .now() + 5) == .success else { throw URLError(.timedOut) }
+                }
+                var record = value.object; record["deletedAt"] = .null
+                remoteNotes.append(.object(record)); return (201, Data("{}".utf8))
+            }
+            revision += 1
+            var position = value.object; position["revision"] = .number(Double(revision)); remotePosition = .object(position)
+            return (200, try CloudJSON.encode(["revision": .number(Double(revision))]))
+        }
+        let pushing = Task { try await sync.synchronize(book.id, pull: false) }
+        await fulfillment(of: [uploading], timeout: 3)
+        state.notes.append(second); state.anchor?.characterOffset = 8
+        try await library.saveState(state, bookID: book.id)
+        try await sync.synchronizeWhileReleasing(book.id, pull: false, release: release)
+        try await pushing.value
+        let metadata = try await library.cloudMetadata(book.id)
+        XCTAssertEqual(metadata.syncedNotes[second.id.uuidString], second.id.uuidString.lowercased(), "An edit saved during a running upload must not wait for another lifecycle event")
+        XCTAssertEqual(metadata.lastSyncedAnchor?.characterOffset, 8)
+        XCTAssertEqual(remoteNotes.count, 2)
+    }
+    func testPullRequestedDuringPushIsNotLost() async throws {
+        let library = try library(owner), book = try await library.importCloud(fixtureCopy()), sync = CloudBookSync(client: client(), library: library)
+        let fetching = expectation(description: "The push has started reading remote records")
+        let release = DispatchSemaphore(value: 0)
+        let response = try records(notes: [note("A web thought")])
+        var fetches = 0
+        CloudMockProtocol.handler = { request in
+            XCTAssertEqual(request.httpMethod, "GET")
+            fetches += 1
+            if fetches == 1 {
+                fetching.fulfill()
+                guard release.wait(timeout: .now() + 5) == .success else { throw URLError(.timedOut) }
+            }
+            return (200, response)
+        }
+        let pushing = Task { try await sync.synchronize(book.id, pull: false) }
+        await fulfillment(of: [fetching], timeout: 3)
+        try await sync.synchronizeWhileReleasing(book.id, pull: true, release: release)
+        try await pushing.value
+        let state = try await library.state(book.id)
+        XCTAssertEqual(state.notes.map(\.body), ["A web thought"])
+        XCTAssertEqual(fetches, 2, "The upgraded pull should run once after the push")
+    }
+    func testPullPreservesVerifiedLocalNoteOffset() async throws {
+        let library = try library(owner)
+        var copy = try fixtureCopy()
+        copy.chapters[0].passages[0].text = "🌿 A quiet page for reading."
+        let book = try await library.importCloud(copy), sync = CloudBookSync(client: client(), library: library)
+        let local = ReaderNote(anchor: ReadingAnchor(chapterID: "chapter-one", passageID: "passage-one", characterOffset: 4), quote: "quiet page", body: "An anchored thought")
+        var state = ReaderState(); state.notes = [local]
+        try await library.saveState(state, bookID: book.id)
+        var remoteNotes: [CloudJSON] = []
+        CloudMockProtocol.handler = { request in
+            if request.httpMethod == "POST" {
+                var record = try CloudJSON.decode(Self.body(request)).object; record["deletedAt"] = .null
+                remoteNotes.append(.object(record)); return (201, Data("{}".utf8))
+            }
+            return (200, try self.records(notes: remoteNotes))
+        }
+        try await sync.synchronize(book.id, pull: false)
+        try await sync.synchronize(book.id)
+        let pulled = try await library.state(book.id).notes
+        XCTAssertEqual(pulled.count, 1)
+        XCTAssertEqual(pulled.first?.anchor, local.anchor, "A cloud receipt without an offset must preserve the verified local selection")
+        XCTAssertEqual(pulled.first?.quote, "quiet page")
+    }
+    func testPullDoesNotReuseLocalOffsetWhenRemoteQuoteChanges() async throws {
+        let library = try library(owner), book = try await library.importCloud(fixtureCopy()), sync = CloudBookSync(client: client(), library: library)
+        let local = ReaderNote(id: CloudBookSync.noteID("web-note"), anchor: ReadingAnchor(chapterID: "chapter-one", passageID: "passage-one", characterOffset: 2), quote: "quiet page", body: "A thought")
+        var state = ReaderState(); state.notes = [local]
+        try await library.saveState(state, bookID: book.id)
+        var remote = note("A thought").object; remote["quote"] = .string("for reading.")
+        let response = try records(notes: [.object(remote)])
+        CloudMockProtocol.handler = { _ in (200, response) }
+        try await sync.synchronize(book.id)
+        let pulled = try await library.state(book.id).notes.first
+        XCTAssertEqual(pulled?.quote, "for reading.")
+        XCTAssertEqual(pulled?.anchor.characterOffset, 0, "An offset for a different quotation must not be reused")
+    }
+    func testFailedInFlightSynchronizationDoesNotAutomaticallyRetryPendingWork() async throws {
+        let library = try library(owner), book = try await library.importCloud(fixtureCopy()), sync = CloudBookSync(client: client(), library: library)
+        let fetching = expectation(description: "The first request is running")
+        let release = DispatchSemaphore(value: 0)
+        var requests = 0
+        CloudMockProtocol.handler = { _ in
+            requests += 1; fetching.fulfill()
+            guard release.wait(timeout: .now() + 5) == .success else { throw URLError(.timedOut) }
+            return (503, Data("{}".utf8))
+        }
+        let first = Task { try await sync.synchronize(book.id, pull: false) }
+        await fulfillment(of: [fetching], timeout: 3)
+        do { try await sync.synchronizeWhileReleasing(book.id, pull: false, release: release); XCTFail("Expected the shared request failure") }
+        catch let error as CloudRequestError { XCTAssertEqual(error.status, 503) }
+        do { try await first.value; XCTFail("Expected the first request failure") }
+        catch let error as CloudRequestError { XCTAssertEqual(error.status, 503) }
+        XCTAssertEqual(requests, 1, "A failed worker must not automatically retry queued requests")
+        let response = try records()
+        CloudMockProtocol.handler = { _ in requests += 1; return (200, response) }
+        try await sync.synchronize(book.id)
+        XCTAssertEqual(requests, 2, "A later explicit retry must be allowed to start")
+        let metadata = try await library.cloudMetadata(book.id)
+        XCTAssertNil(metadata.lastError)
+    }
+    func testSynchronizationQueuedDuringPositionResolutionKeepsLatestDevicePosition() async throws {
+        let library = try library(owner), book = try await library.importCloud(fixtureCopy()), sync = CloudBookSync(client: client(), library: library)
+        let firstAnchor = ReadingAnchor(chapterID: "chapter-one", passageID: "passage-one", characterOffset: 2)
+        var state = ReaderState(); state.anchor = firstAnchor
+        try await library.saveState(state, bookID: book.id)
+        var metadata = CloudSyncMetadata(); metadata.positionConflict = true; metadata.remotePositionRevision = 4
+        metadata.remoteAnchor = ReadingAnchor(chapterID: "chapter-one", passageID: "passage-one", characterOffset: 8)
+        try await library.saveCloudMetadata(metadata, bookID: book.id)
+        let saving = expectation(description: "The explicit device position choice is uploading")
+        let release = DispatchSemaphore(value: 0)
+        var remotePosition: CloudJSON = .object(["chapterId": .string("chapter-one"), "passageId": .string("passage-one"), "withinParagraph": .number(0.8), "revision": .number(4)])
+        var writes = 0
+        CloudMockProtocol.handler = { request in
+            if request.httpMethod != "POST" { return (200, try self.records(position: remotePosition)) }
+            writes += 1
+            if writes == 1 {
+                saving.fulfill()
+                guard release.wait(timeout: .now() + 5) == .success else { throw URLError(.timedOut) }
+            }
+            var position = try CloudJSON.decode(Self.body(request)).object
+            position["revision"] = .number(Double(4 + writes)); remotePosition = .object(position)
+            return (200, try CloudJSON.encode(["revision": .number(Double(4 + writes))]))
+        }
+        let resolving = Task { try await sync.resolvePosition(book.id, useDevice: true) }
+        await fulfillment(of: [saving], timeout: 3)
+        state.anchor?.characterOffset = 10
+        try await library.saveState(state, bookID: book.id)
+        try await sync.synchronizeWhileReleasing(book.id, pull: false, release: release)
+        try await resolving.value
+        try await sync.resolvePosition(book.id, useDevice: true)
+        let saved = try await library.cloudMetadata(book.id)
+        XCTAssertEqual(saved.lastSyncedAnchor?.characterOffset, 10)
+        XCTAssertEqual(writes, 2, "The queued position is saved once; repeating a resolved choice must not write again")
+        XCTAssertFalse(saved.positionConflict)
+    }
+    func testChoosingDevicePositionPublishesItEvenAfterReturningToLastSyncedAnchor() async throws {
+        let library = try library(owner), book = try await library.importCloud(fixtureCopy()), sync = CloudBookSync(client: client(), library: library)
+        let deviceAnchor = ReadingAnchor(chapterID: "chapter-one", passageID: "passage-one", characterOffset: 2)
+        var state = ReaderState(); state.anchor = deviceAnchor
+        try await library.saveState(state, bookID: book.id)
+        var metadata = CloudSyncMetadata(); metadata.positionRevision = 1; metadata.lastSyncedAnchor = deviceAnchor
+        metadata.positionConflict = true; metadata.remotePositionRevision = 4
+        metadata.remoteAnchor = ReadingAnchor(chapterID: "chapter-one", passageID: "passage-one", characterOffset: 8)
+        try await library.saveCloudMetadata(metadata, bookID: book.id)
+        let response = try records(position: .object(["chapterId": .string("chapter-one"), "passageId": .string("passage-one"), "withinParagraph": .number(0.32), "revision": .number(4)]))
+        var writes = 0
+        CloudMockProtocol.handler = { request in
+            if request.httpMethod != "POST" { return (200, response) }
+            writes += 1
+            let body = try CloudJSON.decode(Self.body(request))
+            XCTAssertEqual(body["baseRevision"].number, 4)
+            XCTAssertEqual(body["withinParagraph"].number, 0.08)
+            return (200, Data("{\"revision\":5}".utf8))
+        }
+        try await sync.resolvePosition(book.id, useDevice: true)
+        let saved = try await library.state(book.id), resolved = try await library.cloudMetadata(book.id)
+        XCTAssertEqual(saved.anchor, deviceAnchor, "Choosing this device must not pull the cloud anchor instead")
+        XCTAssertEqual(resolved.lastSyncedAnchor, deviceAnchor)
+        XCTAssertEqual(resolved.positionRevision, 5)
+        XCTAssertFalse(resolved.positionConflict)
+        XCTAssertEqual(writes, 1)
+    }
+    func testFailedDevicePositionChoiceKeepsConflictAndPendingDeviceAnchorForRetry() async throws {
+        let library = try library(owner), book = try await library.importCloud(fixtureCopy()), sync = CloudBookSync(client: client(), library: library)
+        let deviceAnchor = ReadingAnchor(chapterID: "chapter-one", passageID: "passage-one", characterOffset: 2)
+        var state = ReaderState(); state.anchor = deviceAnchor
+        try await library.saveState(state, bookID: book.id)
+        var metadata = CloudSyncMetadata(); metadata.positionRevision = 1; metadata.lastSyncedAnchor = deviceAnchor
+        metadata.positionConflict = true; metadata.remotePositionRevision = 4
+        metadata.remoteAnchor = ReadingAnchor(chapterID: "chapter-one", passageID: "passage-one", characterOffset: 8)
+        try await library.saveCloudMetadata(metadata, bookID: book.id)
+        CloudMockProtocol.handler = { _ in (503, Data("{}".utf8)) }
+        do { try await sync.resolvePosition(book.id, useDevice: true); XCTFail("Expected the failed cloud verification") }
+        catch let error as CloudRequestError { XCTAssertEqual(error.status, 503) }
+        let failed = try await library.cloudMetadata(book.id)
+        XCTAssertTrue(failed.positionConflict, "An unacknowledged device choice must retain its conflict context")
+        XCTAssertEqual(failed.remotePositionRevision, 4)
+        XCTAssertEqual(failed.remoteAnchor?.characterOffset, 8)
+        XCTAssertNotEqual(failed.lastSyncedAnchor, deviceAnchor, "The device position must remain pending until acknowledged")
+        let response = try records(position: .object(["chapterId": .string("chapter-one"), "passageId": .string("passage-one"), "withinParagraph": .number(0.32), "revision": .number(4)]))
+        var writes = 0
+        CloudMockProtocol.handler = { request in
+            if request.httpMethod != "POST" { return (200, response) }
+            writes += 1; return (200, Data("{\"revision\":5}".utf8))
+        }
+        try await sync.synchronize(book.id)
+        let retried = try await library.cloudMetadata(book.id), saved = try await library.state(book.id)
+        XCTAssertEqual(saved.anchor, deviceAnchor)
+        XCTAssertEqual(retried.lastSyncedAnchor, deviceAnchor)
+        XCTAssertFalse(retried.positionConflict)
+        XCTAssertEqual(writes, 1)
+    }
+    func testFailedNoteUploadDoesNotAutomaticallyRetryQueuedSynchronization() async throws {
+        try await checkQueuedNoteFailure(networkFailure: false)
+    }
+    func testLostNoteUploadReceiptDoesNotAutomaticallyRetryQueuedSynchronization() async throws {
+        try await checkQueuedNoteFailure(networkFailure: true)
+    }
+    private func checkQueuedNoteFailure(networkFailure: Bool) async throws {
+        let library = try library(owner), book = try await library.importCloud(fixtureCopy()), sync = CloudBookSync(client: client(), library: library)
+        let anchor = ReadingAnchor(chapterID: "chapter-one", passageID: "passage-one", characterOffset: 2)
+        let first = ReaderNote(anchor: anchor, quote: "quiet page", body: "The request with an unconfirmed receipt")
+        let second = ReaderNote(anchor: anchor, quote: "quiet page", body: "A later thought")
+        var state = ReaderState(); state.notes = [first]
+        try await library.saveState(state, bookID: book.id)
+        let uploading = expectation(description: "The first note request is running")
+        let release = DispatchSemaphore(value: 0), response = try records()
+        var writes = 0
+        CloudMockProtocol.handler = { request in
+            if request.httpMethod != "POST" { return (200, response) }
+            writes += 1
+            if writes == 1 {
+                uploading.fulfill()
+                guard release.wait(timeout: .now() + 5) == .success else { throw URLError(.timedOut) }
+            }
+            if networkFailure { throw URLError(.networkConnectionLost) }
+            return (503, Data("{}".utf8))
+        }
+        let pushing = Task { try await sync.synchronize(book.id, pull: false) }
+        await fulfillment(of: [uploading], timeout: 3)
+        state.notes.append(second); try await library.saveState(state, bookID: book.id)
+        try await sync.synchronizeWhileReleasing(book.id, pull: false, release: release)
+        try await pushing.value
+        XCTAssertEqual(writes, 1, "Queued work must not automatically resend a failed or unacknowledged note request")
+        let failed = try await library.cloudMetadata(book.id)
+        XCTAssertNil(failed.syncedNotes[first.id.uuidString])
+        XCTAssertNotNil(failed.noteErrors[first.id.uuidString])
+        CloudMockProtocol.handler = { request in
+            if request.httpMethod != "POST" { return (200, response) }
+            writes += 1; return (201, Data("{}".utf8))
+        }
+        try await sync.synchronize(book.id, pull: false)
+        let retried = try await library.cloudMetadata(book.id)
+        XCTAssertEqual(writes, 3, "A later explicit synchronization may retry the first note and upload the new one")
+        XCTAssertNotNil(retried.syncedNotes[first.id.uuidString])
+        XCTAssertNotNil(retried.syncedNotes[second.id.uuidString])
+    }
     func testDownloadRejectsDuplicateParagraphIDs() async throws {
         let manifest = try CloudJSON.encode(["bookId": .string("book-one"), "contentVersion": .string("version-one"), "chapters": .array([.object(["id": .string("chapter-one"), "title": .string("One")])])])
         let passage = CloudJSON.object(["id": .string("duplicate"), "original": .string("Text")])
@@ -256,6 +511,16 @@ final class CloudSyncTests: XCTestCase {
         var data = Data(), buffer = [UInt8](repeating: 0, count: 4096)
         while stream.hasBytesAvailable { let count = stream.read(&buffer, maxLength: buffer.count); if count <= 0 { break }; data.append(buffer, count: count) }
         return data
+    }
+}
+
+private extension CloudBookSync {
+    /// This actor-inherited task releases the blocked transport only after synchronize
+    /// has entered the actor and suspended on the existing worker. No timing sleep is needed.
+    func synchronizeWhileReleasing(_ bookID: String, pull: Bool, release: DispatchSemaphore) async throws {
+        let releasing = Task { [self] in _ = self; release.signal() }
+        try await synchronize(bookID, pull: pull)
+        await releasing.value
     }
 }
 

@@ -12,19 +12,23 @@ export function textRange(document,prose,start,end){
 
 export function mountReaderHighlights({document,getRecords,signedIn,available,getSession=()=>null,selectionMatches,api,onSelect,onNote,onChange,announce,loginUrl,loadAnnotationModule=()=>import('./reader-annotations.mjs')}){
   const root=document.getElementById('chapter-text'),save=document.getElementById('show-highlight'),status=document.getElementById('highlight-status');
-  let selected=null,busy=false,timer=null,indexed=null,index=new Map(),pending=new Map(),disposed=false;
+  let selected=null,selectedKey=null,intentEpoch=0,busy=false,timer=null,indexed=null,index=new Map(),pending=new Map(),disposed=false;
   const annotate=document.getElementById('annotate-selection');
   let annotation,annotationEpoch=0;
+  const openingIntent=(ticket=annotationEpoch)=>{const intent=intentEpoch;return ()=>!disposed&&ticket===annotationEpoch&&intent===intentEpoch;};
   const loadAnnotations=()=>annotation??=loadAnnotationModule().then(module=>disposed?null:module.mountReaderAnnotations({document,api,getSession,getRecords,getSelection:()=>selected,signedIn,available,accept,notify,isCurrent:()=>!disposed}));
   function loadFailed(ticket=annotationEpoch){if(!disposed&&ticket===annotationEpoch){document.body.dataset.annotationsState='error';notify('',{error:true,reload:true,id:'reader.annotation.loadFailed'});}}
-  async function openAnnotation(row,origin,ticket=annotationEpoch){
-    try{const controller=await loadAnnotations();if(!disposed&&ticket===annotationEpoch)controller?.openHighlight(row,origin);}
-    catch{loadFailed(ticket);}
+  async function openAnnotation(row,origin,ticket=annotationEpoch,validate=()=>true){
+    try{if(disposed||ticket!==annotationEpoch||!validate())return;const controller=await loadAnnotations();if(!disposed&&ticket===annotationEpoch&&validate())await controller?.openHighlight(row,origin,{validate});}
+    catch{if(validate())loadFailed(ticket);}
   }
   const labels=createUiLabels(),listeners=[];
   const pruneLabels=()=>labels.prune();
   const write=(node,id,params,attribute)=>{if(attribute)labels.attr(node,attribute,id,params);else labels.text(node,id,params);};
   const listen=(node,event,fn)=>{node.addEventListener(event,fn);listeners.push(()=>node.removeEventListener(event,fn));};
+  // Saving is durable even after the reader moves on. Only the original
+  // interaction may open its card, including after lazy code/data reads.
+  for(const event of ['pointerdown','keydown','wheel','touchmove','focusin','reader:chapter','reader:jump'])listen(document,event,()=>{intentEpoch++;});
   const offLocale=onUiLocaleChange(()=>{labels.refresh({pruneDetached:true});});
   const rows=()=>activeHighlights(getRecords());
   function notify(message,{error=false,login=false,reload=false,id=HIGHLIGHT_UI+'error'}={}){
@@ -35,6 +39,7 @@ export function mountReaderHighlights({document,getRecords,signedIn,available,ge
     if(!error)timer=setTimeout(()=>{status.hidden=true;},3500);
   }
   function updateTools(snapshot){if(disposed)return;
+    const key=snapshot?highlightKey(snapshot):null;if(key!==selectedKey){selectedKey=key;intentEpoch++;}
     selected=snapshot?structuredClone(snapshot):null;save.hidden=!selected;
     if(annotate)annotate.hidden=true;
     save.disabled=busy;write(save,busy?'record.saving':'reader.shell.highlight');
@@ -66,9 +71,9 @@ export function mountReaderHighlights({document,getRecords,signedIn,available,ge
     if(!selected||busy)return;
     if(!signedIn()){notify('',{id:HIGHLIGHT_UI+'loginHint',error:true,login:true});return;}
     if(!available()){notify('',{id:HIGHLIGHT_UI+'recordsUnavailable',error:true});return;}
-    const ticket=annotationEpoch,snapshot=structuredClone(selected),key=highlightKey(snapshot),existing=rows().find(row=>highlightKey(row)===key);if(existing){await openAnnotation(existing,save);return;}
+    const ticket=annotationEpoch,validate=openingIntent(ticket),snapshot=structuredClone(selected),key=highlightKey(snapshot),existing=rows().find(row=>highlightKey(row)===key);if(existing){await openAnnotation(existing,save,ticket,validate);return;}
     const input=pending.get(key)||{...snapshot,id:crypto.randomUUID()};pending.set(key,input);busy=true;updateTools(selected);
-    try{const record=await api('/api/highlights',input);if(disposed||ticket!==annotationEpoch)return;pending.delete(key);if(selectionMatches(snapshot))document.getSelection()?.removeAllRanges();accept(record);notify('',{id:record.deletedAt?HIGHLIGHT_UI+'deletedElsewhere':HIGHLIGHT_UI+'saved'});if(!record.deletedAt)await openAnnotation(record,save,ticket);}
+    try{const record=await api('/api/highlights',input);if(disposed||ticket!==annotationEpoch)return;pending.delete(key);if(selectionMatches(snapshot))document.getSelection()?.removeAllRanges();accept(record);notify('',{id:record.deletedAt?HIGHLIGHT_UI+'deletedElsewhere':HIGHLIGHT_UI+'saved'});if(!record.deletedAt)await openAnnotation(record,save,ticket,validate);}
     catch(error){notify('',{id:HIGHLIGHT_UI+'saveFailed',error:true});}
     finally{busy=false;updateTools(selected);}
   });
@@ -76,7 +81,7 @@ export function mountReaderHighlights({document,getRecords,signedIn,available,ge
   listen(root,'click',event=>{
     const mark=event.target.closest('.reader-highlight');if(document.body?.dataset.annotationsVisible==='false'||!mark||document.getSelection()?.toString().trim())return;
     const ids=mark.dataset.highlightIds.split(' '),row=rows().findLast(row=>ids.includes(row.id));if(!row)return;
-    event.stopPropagation();openAnnotation(row,mark);
+    event.stopPropagation();const ticket=annotationEpoch;openAnnotation(row,mark,ticket,openingIntent(ticket));
   });
   listen(document,'reader:layout',paintAll);listen(document,'reader:records-updated',paintAll);
   listen(document,'selectionchange',()=>{if(document.getSelection()?.isCollapsed)paintAll();});

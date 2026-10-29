@@ -167,8 +167,8 @@ export function mountReaderAnnotations({document,api,getSession=()=>null,getSele
   card.hidden=true;margins.select(null);
   if(returnFocus){const badge=document.querySelector('[data-annotation-thread="'+activeId+'"]'),target=card.closest('dialog[open]')?.querySelector('.library-chat-close')||(canReturnFocus(origin)?origin:canReturnFocus(badge)?badge:document.getElementById('book-page'));target?.focus({preventScroll:true});}
  }
- async function openHighlight(row,origin){
-  if(!ensureScope())return;const token=epoch,own=scope;if(!archive&&!await refresh()){if(current(token,own))notice('loadFailed');return;}if(!current(token,own))return;
+ async function openHighlight(row,origin,{validate=()=>true}={}){
+  if(!ensureScope()||!validate())return;const token=epoch,own=scope;if(!archive&&!await refresh()){if(current(token,own)&&validate())notice('loadFailed');return;}if(!current(token,own)||!validate())return;
   let quote;try{quote=markQuote(row);}catch{notice('stale');return;}
   const held=archive?.threads.find(r=>!r.deletedAt&&r.highlightId===row.id&&equal(r.quote,quote));
   if(held){show(held.id,origin);return;}

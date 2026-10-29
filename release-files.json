@@ -1394,5 +1394,10 @@
   "tools/ci-resource-gate.mjs",
   "tools/production-status.mjs",
   "tests/ci-resource-plan.test.mjs",
-  "tests/production-status.test.mjs"
+  "tests/production-status.test.mjs",
+  "tests/book-upload-polling.test.mjs",
+  "tests/palette-book-performance.test.mjs",
+  "tests/reader-api-transfer.test.mjs",
+  "tests/reader-highlight-intent.test.mjs",
+  "tests/reader-note-refresh.test.mjs"
 ]

@@ -106,6 +106,7 @@ const api=async(url,data,options={})=>{const response=await readerFetch(url,{...
 const dailyPresence=mountReaderPresence({api,getUserId:readerOwner,enabled:()=>readerPresenceReady&&!!selectedBookId&&!readerOffline.isOffline()});
 const settingsDefaults=mountReadingDefaults({document,api,getState:()=>state,getSession:()=>readerSession,onSaved:saved=>{if(readerSession)readerSession.readingPreferences=saved;},onAnnounce:text=>announce(text)});
 const personalRecordsUI=createPersonalRecordRenderer({document,getBook:()=>book,scope:readerStorageKey('marginalia-record-edit-drafts-v1'),api,onUpdate:(record,type)=>{const key=type==='question'?'questions':'comments',index=records[key].findIndex(row=>row.id===record.id);if(index>=0&&personalRecordRevision(record)>=personalRecordRevision(records[key][index]))records[key][index]=record;dispatchReaderEvent('reader:records-updated');},onJump:async(record,type,anchor)=>{closePanel();if(await changeChapter(anchor.chapterId,record.passageId)){choosePassage(record.passageId);openPanel(type);}}});
+const panelComposers=new WeakMap();
 const highlights=mountReaderHighlights({document,getSession:()=>readerSession,getRecords:()=>records,signedIn:()=>!selectedBookId||!!readerOwner(),available:()=>!recordsUnavailable,selectionMatches:snapshot=>{try{const native=captureDOMSelection(getSelection(),paragraphMap,book);return !!native&&highlightKey(native)===highlightKey(snapshot);}catch{return false;}},api,onSelect:selectHighlight,onNote:()=>openPanel('comment'),onChange:()=>{flow?.invalidatePrepared();if(!$('note-panel').hidden)renderPanel();dispatchReaderEvent('reader:records-updated');},announce,loginUrl:link=>link?loginLink(link,{bookId:selectedBookId,passageId:selectedId}):readerLoginUrl({ui:getUiLinkLocale(),bookId:selectedBookId,passageId:selectedId})});
 const progressKey=readerStorageKey('marginalia-focus-position-v1'),localWriterId=crypto.randomUUID();let progressSequence=0,restoringProgress=true,allowScrollSave=false;
 let positionStorage=null;try{positionStorage=localStorage;}catch{}
@@ -334,7 +335,7 @@ async function selectHighlight(row,{passageId}={}){
 function mountPanel(){
   const panel=$('note-panel'),node=$('chapter-text').querySelector('[data-id="'+selectedId+'"]');
   const inline=!pagination.active&&(innerWidth<1320||state.mode==='parallel');panel.classList.toggle('is-inline',inline);
-  if(inline&&node)node.after(panel);else if(panel.parentNode!==document.body)document.body.append(panel);
+  if(inline&&node){if(node.nextElementSibling!==panel)node.after(panel);}else if(panel.parentNode!==document.body)document.body.append(panel);
 }
 function closePanel(){queueReadingFlow();
   const a=anchor();$('note-panel').hidden=true;document.body.classList.remove('has-panel');clearPanelTextHighlight();for(const node of $('chapter-text').querySelectorAll('.is-selected,.is-panel-anchor'))node.classList.remove('is-selected','is-panel-anchor');if($('note-panel').parentNode!==document.body)document.body.append($('note-panel'));restoreAnchor(a);dispatchReaderEvent('reader:selection-end');
@@ -387,7 +388,7 @@ async function recoverRecords(event){
 }
 function renderPanel(){
   pruneLabels();
-  const content=$('panel-content');content.replaceChildren();if(records?.offline)content.append(fixed('p','empty-state','offline.drafts'));const p=paragraphMap.get(selectedId);if(!p)return;
+  const content=$('panel-content'),p=paragraphMap.get(selectedId);if(!p){content.replaceChildren();return;}
   label($('panel-title'),allRecords?READER_SHELL+'myRecords':panelTab==='annotations'?READER_UI+'annotationTitle':panelTab==='question'?READER_SHELL+'leaveQuestion':READER_UI+'writeThought');
   const sourcePage=p.source?.printedPage||p.source?.pdfPage;
   $('panel-anchor').hidden=!sourcePage;
@@ -396,6 +397,13 @@ function renderPanel(){
   for(const tab of document.querySelectorAll('[data-panel-tab]')){const active=tab.dataset.panelTab===panelTab;tab.setAttribute('aria-selected',String(active));tab.tabIndex=active?0:-1;}content.setAttribute('aria-labelledby','panel-tab-'+panelTab);
   document.querySelector('.panel-tabs').hidden=allRecords;$('panel-source').hidden=allRecords;
   if(!allRecords){renderPanelSource(p);syncPanelTextHighlight();}else clearPanelTextHighlight();
+  const retained=!allRecords&&!recordsUnavailable&&panelComposers.get(content);
+  if(retained?.current()&&retained.form.parentNode===content){
+    retained.refresh();for(const child of [...content.childNodes])if(child!==retained.form)child.remove();
+    if(records?.offline)content.prepend(fixed('p','empty-state','offline.drafts'));
+    for(const record of records[panelTab==='question'?'questions':'comments'].filter(r=>r.passageId===p.id))content.append(recordNode(record,panelTab));mountPanel();return;
+  }
+  content.replaceChildren();if(records?.offline)content.append(fixed('p','empty-state','offline.drafts'));
   if(allRecords){
     content.append(fixed('h2','all-records-title',READER_SHELL+'myRecords'));
     if(recordsUnavailable){renderRecordsAccess(content);mountPanel();return;}
@@ -416,6 +424,9 @@ function renderPanel(){
   const form=el('form','composer'),composerLabel=fixed('label','',type==='question'?READER_UI+'questionLabel':READER_UI+'thoughtLabel'),area=el('textarea');area.id='thought-text';area.maxLength=2000;label(area,type==='question'?READER_UI+'questionPlaceholder':READER_UI+'thoughtPlaceholder',null,'placeholder');composerLabel.htmlFor=area.id;area.value=noteDrafts.text(draftId);
   const save=button(''),pendingHint=el('p','form-status'),status=el('p','form-status');save.type='submit';status.setAttribute('aria-live','polite');
   const updateComposer=()=>{const pending=noteDrafts.pending(draftId),busy=noteDrafts.busy(draftId);save.disabled=busy||!noteDrafts.text(draftId).trim()&&!pending;label(save,busy?'record.saving':pending?'record.retry':type==='question'?READER_SHELL+'saveQuestion':READER_UI+'saveThought');pendingHint.hidden=!pending;label(pendingHint,pending?READER_UI+'pendingNote':READER_UI+'empty',{text:pending?pending.text.slice(0,80)+(pending.text.length>80?'…':''):''});};
+  let composing=false;
+  panelComposers.set(content,{form,current:()=>currentComposer()&&noteDrafts===scopeDrafts&&selectedId===p.id&&panelTab===type,refresh:()=>{const before=noteDrafts.text(draftId);if(noteDrafts.reconcile(draftId,records[key])){if(!composing&&area.value===before)area.value=noteDrafts.text(draftId);else noteDrafts.edit(draftId,area.value);persistDrafts();}updateComposer();}});
+  listenNode(area,'compositionstart',()=>{composing=true;});listenNode(area,'compositionend',()=>{composing=false;noteDrafts.edit(draftId,area.value);updateComposer();persistDrafts();});
   updateComposer();form.append(composerLabel,area,pendingHint,save,status);content.append(form);
   listenNode(area,'input',()=>{noteDrafts.edit(draftId,area.value);updateComposer();status.textContent=draftSaveReceipt({durable:persistDrafts()},receiptFor(status));});
   listenNode(form,'submit',async e=>{
