@@ -1,4 +1,5 @@
 import {randomBytes,createHash} from 'node:crypto';
+import {createHostedNativeAuth,nativeOAuthFailure} from './hosted-native-auth.mjs';
 import {digest} from '../server/document-import.mjs';
 import {providerProfile} from '../server/account-profile.mjs';
 import {normalizeAuthEmail,OTP_POLICY,safeAuthReturn,authPurpose,validateAuthPassword,authFailure} from '../server/auth-policy.mjs';
@@ -23,6 +24,8 @@ export function createHostedAuth({store,env=process.env,fetcher=fetch,clock=Date
     if(response.status===429){const error=authFailure("auth.error.rateLimited",'请求较频繁，请稍后再试',429);error.retryAfter=Math.max(60,Math.min(3600,Number(response.headers.get('retry-after'))||60));throw error;}
     if(response.status>=500)throw authFailure("auth.error.unavailable",'登录服务暂时不可用，请稍后重试',503);
     const code=data?.error_code||data?.code;
+    if(code==='manual_linking_disabled')throw nativeOAuthFailure('linking_disabled',503);
+    if(code==='identity_already_exists')throw nativeOAuthFailure('conflict',409);
     if(route==='token?grant_type=password')throw authFailure((code==='email_not_confirmed'?"auth.error.emailUnconfirmed":"auth.error.badCredentials"),code==='email_not_confirmed'?'请先验证邮箱，也可以使用验证码登录':'邮箱或密码不正确，请重试或使用验证码登录',401);
     if(route==='user'&&method==='PUT'){const error=authFailure((code==='same_password'?"auth.error.samePassword":(code==='weak_password'?"auth.error.weakPassword":"auth.error.passwordNotSaved")),code==='same_password'?'新密码与原密码相同，请换一个':code==='weak_password'?'这个密码不够安全，请换一个较长的密码':'密码暂未保存，请重试或重新验证邮箱',400);error.retryPasswordSetup=['same_password','weak_password','validation_failed'].includes(code);throw error;}
     if(route==='verify'&&['otp_expired','otp_disabled','validation_failed'].includes(code))throw authFailure("auth.error.codeInvalid",'验证码不正确或已过期，请重新获取',400);
@@ -121,8 +124,9 @@ export function createHostedAuth({store,env=process.env,fetcher=fetch,clock=Date
     const session=await createSession(await request('token?grant_type=pkce',{auth_code:code,code_verifier:flow.verifier}));
     return {...session,next:safeAuthReturn(flow.next)||'/library'};
   }
-  async function freshSession(token){
-    const path=sessionKey(token),leaseId=randomBytes(16).toString('hex'),deadline=Date.now()+18000;
+  async function freshSession(token){return freshSessionAt(sessionKey(token));}
+  async function freshSessionAt(path){
+    const leaseId=randomBytes(16).toString('hex'),deadline=Date.now()+18000;
     while(Date.now()<deadline){
       const row=await store.read(path,null);if(!row||row.revoked||row.expiresAt<=clock())return null;
       if(row.accessExpiresAt>clock()+60000)return row;
@@ -175,5 +179,6 @@ export function createHostedAuth({store,env=process.env,fetcher=fetch,clock=Date
     const access=await store.mutate(sessionKey(token),{},saved=>{if(expectedOwner&&saved.user?.id&&saved.user.id!==expectedOwner)throw Object.assign(authFailure("auth.error.generic",'账户已切换，请重新进入书房。原账户草稿仍留在原处。',409),{readerSessionChanged:true});const access=saved.access;saved.revoked=true;delete saved.access;delete saved.refresh;delete saved.refreshLease;return access;});
     if(access)await request('logout?scope=local',{},access).catch(()=>{});
   }
-  return {requestCode,verifyCode,signInPassword,setPassword,userFor,emailVerifiedFor,logout,capabilities,beginOAuth,finishOAuth,cancelOAuth,emailAvailable:env.READER_EMAIL_ENABLED==='true'};
+  const native=createHostedNativeAuth({store,env,clock,request,capabilities,createSession,freshSession,freshSessionAt,userFor,visible,sessionKey,validToken});
+  return {requestCode,verifyCode,signInPassword,setPassword,userFor,emailVerifiedFor,logout,capabilities,beginOAuth,finishOAuth,cancelOAuth,...native,emailAvailable:env.READER_EMAIL_ENABLED==='true'};
 }

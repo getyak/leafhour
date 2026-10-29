@@ -4,6 +4,8 @@ import LeafhourCore
 struct AccountScreen: View {
     @Bindable var model: LibraryModel
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.scenePhase) private var scenePhase
+    @State private var authentication = NativeProviderAuthentication()
     @State private var email = ""
     @State private var password = ""
     @State private var code = ""
@@ -20,6 +22,7 @@ struct AccountScreen: View {
                         Label(account.email ?? "我的 Leafhour 账号", systemImage: "person.crop.circle.fill").font(.headline)
                         Text("与网页使用同一间书房。书籍下载后可离线阅读，笔记与位置先保存在此设备，再同步到自己的账号。").font(.footnote).foregroundStyle(.secondary)
                     }
+                    providerOptions
                     Section {
                         NavigationLink { AccountRecordsScreen(model: model) } label: { Label("我的笔记与阅读记录", systemImage: "books.vertical") }
                         NavigationLink { SavedReadingSummariesScreen(model: model) } label: { Label("我的阅读摘要", systemImage: "text.book.closed") }
@@ -27,7 +30,7 @@ struct AccountScreen: View {
                         if !model.syncStatus.isEmpty { Text(model.syncStatus).font(.footnote).foregroundStyle(.secondary) }
                     }
                     Section {
-                        Button("退出此账号", role: .destructive) { Task { await model.signOut() } }.disabled(model.busy || model.syncing)
+                        Button("退出此账号", role: .destructive) { Task { await model.signOut() } }.disabled(model.busy || model.syncing || model.nativeAuthenticating)
                     } footer: { Text("退出后隐藏这个账号的离线书籍与记录，重新登录原账号即可继续。本机书房另行保留。") }
                 } else {
                     Section {
@@ -37,6 +40,7 @@ struct AccountScreen: View {
                             Text("登录 Leafhour，继续阅读网页上传的书，找回自己的笔记与阅读记录。").foregroundStyle(.secondary)
                         }.padding(.vertical, 10)
                     }
+                    providerOptions
                     Section("进入自己的书房") {
                         TextField("邮箱", text: $email).textContentType(.username).keyboardType(.emailAddress).textInputAutocapitalization(.never).autocorrectionDisabled().accessibilityIdentifier("leafhour-login-email")
                         if useCode {
@@ -63,15 +67,67 @@ struct AccountScreen: View {
                         } label: { HStack { Text("登录并同步"); Spacer(); if working { ProgressView() } } }
                             .disabled(working || email.isEmpty || (useCode ? code.isEmpty : password.isEmpty)).accessibilityIdentifier("leafhour-login-submit")
                         Button(useCode ? "使用密码登录" : "改用邮箱验证码") { useCode.toggle(); error = nil }.disabled(working)
-                    }
+                    }.disabled(model.nativeAuthenticating)
                     if let error { Section { Text(error).foregroundStyle(.red).font(.footnote) } }
                     Section("先在本机阅读也可以") {
                         Text("未登录时导入的书与记录仍留在本机书房。登录不会自动把它们传给任何账号；回到本机书房可继续阅读或导出。").font(.footnote).foregroundStyle(.secondary)
                     }
                 }
             }.navigationTitle(model.account == nil ? "登录书房" : "我的账号").navigationBarTitleDisplayMode(.inline)
-                .toolbar { ToolbarItem(placement: .confirmationAction) { Button("完成") { dismiss() }.disabled(working) } }
-                .interactiveDismissDisabled(working)
+                .toolbar { ToolbarItem(placement: .confirmationAction) { Button("完成") { dismiss() }.disabled(working || model.nativeAuthenticating) } }
+                .interactiveDismissDisabled(working || model.nativeAuthenticating)
+                .background(NativeAuthenticationAnchor(onWindow: authentication.setAnchor).frame(width: 0, height: 0))
+                .task { await model.loadAuthenticationOptions() }
+                .onChange(of: scenePhase) { _, phase in if phase == .active { authentication.checkExpiry() } }
+                .onChange(of: model.account?.id) { _, _ in if authentication.isActive { Task { await model.cancelNativeAuthentication() } } }
+        }
+    }
+    private func available(_ provider: NativeOAuthProvider) -> Bool {
+        !working && !model.nativeAuthenticating && model.nativeAuthStatus?.available == true && model.nativeAuthStatus?.providers.contains(provider) == true
+    }
+    @ViewBuilder private var providerOptions: some View {
+        Section {
+            if model.account == nil {
+                NativeAppleAuthenticationButton(enabled: available(.apple)) { begin(.apple) }.frame(height: 50)
+                Button { begin(.google) } label: {
+                    HStack { Image(systemName: "globe"); Text("使用 Google 继续").fontWeight(.medium) }.frame(maxWidth: .infinity).frame(minHeight: 50)
+                }.buttonStyle(.bordered).disabled(!available(.google)).accessibilityIdentifier("leafhour-login-google")
+                if let status = model.nativeAuthStatus, status.available, status.providers.isEmpty { Text("Apple 与 Google 登录暂未开放，可以使用下面的邮箱入口。").font(.footnote).foregroundStyle(.secondary) }
+                if let status = model.nativeAuthStatus, status.available, !status.providers.isEmpty, status.providers.count < NativeOAuthProvider.allCases.count {
+                    Text(NativeOAuthProvider.allCases.filter { !status.providers.contains($0) }.map(\.name).joined(separator: "、") + " 登录暂未开放。").font(.footnote).foregroundStyle(.secondary)
+                }
+            } else {
+                ForEach(model.linkedIdentities) { identity in
+                    HStack {
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text(identity.provider == "email" ? "邮箱" : identity.provider == "apple" ? "Apple" : "Google")
+                            if let email = identity.email { Text(email).font(.caption).foregroundStyle(.secondary).textSelection(.enabled) }
+                        }
+                        Spacer()
+                        Label(identity.emailVerified ? "已关联 · 邮箱已验证" : "已关联", systemImage: "checkmark.circle").font(.caption).foregroundStyle(Color.leafInk)
+                    }.frame(minHeight: 44)
+                }
+                ForEach(NativeOAuthProvider.allCases.filter { provider in !model.linkedIdentities.contains { $0.provider == provider.rawValue } }) { provider in
+                    Button("关联 \(provider.name)") { begin(provider) }.frame(minHeight: 44).disabled(!available(provider)).accessibilityIdentifier("leafhour-link-" + provider.rawValue)
+                }
+                Button("刷新登录方式", systemImage: "arrow.clockwise") { Task { await model.loadAuthenticationOptions() } }.disabled(model.nativeAuthenticating)
+            }
+            if model.nativeAuthenticating { ProgressView(model.account == nil ? "正在等待登录…" : "正在确认账号关联…") }
+            if model.nativeAuthStatus == nil && model.nativeAuthMessage == nil { ProgressView("正在核对可用的登录方式…") }
+            if let message = model.nativeAuthMessage { Text(message).font(.footnote).foregroundStyle(.secondary).accessibilityIdentifier("leafhour-native-auth-status") }
+        } header: {
+            Text(model.account == nil ? "使用熟悉的登录方式" : "登录方式")
+        } footer: {
+            Text(model.account == nil ? "同一已验证邮箱由登录服务识别为同一账号。已有书房也可以先用邮箱登录，再关联 Apple 或 Google。" : "关联会保留这间书房的账号与全部记录。Apple 隐藏邮箱也可在此关联；属于另一个账号的登录方式不会自动迁移。")
+        }
+    }
+    private func begin(_ provider: NativeOAuthProvider) {
+        error = nil
+        let signingIn = model.account == nil
+        Task {
+            do { try await model.authenticate(provider: provider, browser: authentication); if signingIn { dismiss() } }
+            catch is CancellationError { }
+            catch { self.error = error.localizedDescription }
         }
     }
 }

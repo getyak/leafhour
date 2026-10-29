@@ -40,6 +40,14 @@ public actor CloudLibraryClient {
     private let session: URLSession
     private var credential: CloudCredential?
     private var generation = UUID()
+    private struct NativePending {
+        let flow: NativeOAuthFlow
+        let generation: UUID
+        let parentToken: String?
+        var exchanging = false
+    }
+    private var nativeStartingID: UUID?
+    private var nativePending: NativePending?
     public init(baseURL: URL = URL(string: "https://leafhour.com")!, credential: CloudCredential? = nil, configuration: URLSessionConfiguration = .ephemeral) {
         self.baseURL = baseURL; self.credential = credential
         configuration.httpShouldSetCookies = false; configuration.httpCookieStorage = nil
@@ -60,6 +68,7 @@ public actor CloudLibraryClient {
         return account
     }
     public func signIn(email: String, password: String) async throws -> CloudAccount {
+        nativeStartingID = nil; nativePending = nil
         credential = nil; generation = UUID()
         let marker = generation
         let (bytes, response) = try await perform(path: "/api/auth/password", method: "POST", body: CloudJSON.encode(["email": .string(email), "password": .string(password)]), ownerID: nil)
@@ -76,6 +85,7 @@ public actor CloudLibraryClient {
         _ = try await data(path: "/api/auth/code", method: "POST", body: CloudJSON.encode(["email": .string(email), "purpose": .string(purpose)]))
     }
     public func verifyCode(email: String, code: String) async throws -> CloudAccount {
+        nativeStartingID = nil; nativePending = nil
         credential = nil; generation = UUID()
         let marker = generation
         let (bytes, response) = try await perform(path: "/api/auth/verify", method: "POST", body: CloudJSON.encode(["email": .string(email), "code": .string(code), "purpose": .string("login")]), ownerID: nil)
@@ -87,6 +97,7 @@ public actor CloudLibraryClient {
         credential = CloudCredential(account: account, token: token); return account
     }
     public func signOut() async {
+        await cancelNativeOAuth()
         let old = credential
         credential = nil; generation = UUID()
         guard let old else { return }
@@ -100,6 +111,74 @@ public actor CloudLibraryClient {
     }
     public func data(path: String, method: String = "GET", body: Data? = nil, ownerID: String? = nil) async throws -> Data {
         try await perform(path: path, method: method, body: body, ownerID: ownerID).0
+    }
+    public func nativeAuthenticationStatus() async throws -> NativeAuthenticationStatus {
+        let owner = credential?.account.id
+        let value = try CloudJSON.decode(await data(path: "/api/auth/session", ownerID: owner))
+        if let owner, value["user"]["id"].string != owner { throw Self.changed() }
+        return NativeAuthenticationStatus(value)
+    }
+    public func linkedIdentities(ownerID: String) async throws -> [CloudLinkedIdentity] {
+        let value = try CloudJSON.decode(await data(path: "/api/auth/identities", ownerID: ownerID))
+        guard value["user"]["id"].string == ownerID else { throw Self.changed() }
+        var seen = Set<String>()
+        return value["identities"].array.compactMap(CloudLinkedIdentity.init).filter { seen.insert($0.provider).inserted }
+    }
+    public func beginNativeOAuth(provider: NativeOAuthProvider, mode: NativeOAuthMode, proof: NativeOAuthProof? = nil) async throws -> NativeOAuthFlow {
+        guard nativeStartingID == nil, nativePending == nil else { throw CloudRequestError(status: 409, message: "请先完成或关闭当前登录窗口。") }
+        guard mode == .link ? credential != nil : credential == nil else { throw Self.changed() }
+        let proof = try proof ?? NativeOAuthProof.generate(), id = UUID(), marker = generation
+        let owner = credential?.account.id, parentToken = credential?.token, startedAt = Date()
+        nativeStartingID = id
+        defer { if nativeStartingID == id { nativeStartingID = nil } }
+        let body: [String: CloudJSON] = ["provider": .string(provider.rawValue), "mode": .string(mode.rawValue), "state": .string(proof.state), "codeChallenge": .string(proof.codeChallenge)]
+        let value = try CloudJSON.decode(await data(path: "/api/auth/native/start", method: "POST", body: CloudJSON.encode(body), ownerID: owner))
+        guard let transaction = value["transactionId"].string, NativeOAuthPolicy.isOpaque(transaction), value["expiresIn"].number == 600,
+              let address = value["url"].string else { throw NativeOAuthPolicy.invalid() }
+        let url = try NativeOAuthPolicy.launchURL(address, origin: baseURL)
+        guard marker == generation, nativeStartingID == id, credential?.account.id == owner, credential?.token == parentToken else {
+            _ = try? await data(path: "/api/auth/native/cancel", method: "POST", body: CloudJSON.encode(["transactionId": .string(transaction)]))
+            throw Self.changed()
+        }
+        let flow = NativeOAuthFlow(id: id, url: url, expiresAt: startedAt.addingTimeInterval(600), mode: mode, ownerID: owner, transactionID: transaction, proof: proof)
+        nativePending = NativePending(flow: flow, generation: marker, parentToken: parentToken)
+        return flow
+    }
+    public func cancelNativeOAuth(flowID: UUID? = nil) async {
+        if let flowID, nativePending?.flow.id != flowID, nativeStartingID != flowID { return }
+        let transaction = nativePending?.flow.transactionID
+        nativeStartingID = nil; nativePending = nil
+        if let transaction { _ = try? await data(path: "/api/auth/native/cancel", method: "POST", body: CloudJSON.encode(["transactionId": .string(transaction)])) }
+    }
+    public func completeNativeOAuth(flowID: UUID, callbackURL: URL, persist: (@Sendable (CloudCredential) throws -> Void)? = nil) async throws -> CloudAccount {
+        guard let pending = nativePending, pending.flow.id == flowID, !pending.exchanging,
+              pending.generation == generation, pending.flow.ownerID == credential?.account.id, pending.parentToken == credential?.token,
+              pending.flow.expiresAt > Date() else { throw Self.changed() }
+        let callback: NativeOAuthCallback
+        do { callback = try NativeOAuthPolicy.callback(callbackURL, expectedState: pending.flow.proof.state) }
+        catch { await cancelNativeOAuth(flowID: flowID); throw error }
+        guard case .code(let code) = callback else {
+            await cancelNativeOAuth(flowID: flowID)
+            if case .failure(let category) = callback { throw CloudRequestError(status: 400, message: NativeOAuthPolicy.errorMessage(category)) }
+            throw NativeOAuthPolicy.invalid()
+        }
+        nativePending?.exchanging = true
+        defer { if nativePending?.flow.id == flowID { nativePending = nil } }
+        let (bytes, response) = try await perform(path: "/api/auth/native/exchange", method: "POST",
+            body: CloudJSON.encode(["code": .string(code), "state": .string(pending.flow.proof.state), "codeVerifier": .string(pending.flow.proof.codeVerifier)]), ownerID: pending.flow.ownerID)
+        guard nativePending?.flow.id == flowID, pending.generation == generation,
+              credential?.account.id == pending.flow.ownerID, credential?.token == pending.parentToken else { throw Self.changed() }
+        let value = try CloudJSON.decode(bytes)
+        guard let account = Self.account(value["user"]), UUID(uuidString: account.id) != nil,
+              let header = response.value(forHTTPHeaderField: "Set-Cookie"),
+              let cookie = HTTPCookie.cookies(withResponseHeaderFields: ["Set-Cookie": header], for: baseURL).first(where: { $0.name == "marginalia_session" }),
+              cookie.isSecure, cookie.isHTTPOnly, NativeOAuthPolicy.isOpaque(cookie.value) else { throw NativeOAuthPolicy.invalid() }
+        if pending.flow.mode == .link { guard account.id == pending.flow.ownerID, cookie.value == pending.parentToken else { throw Self.changed() } }
+        let next = CloudCredential(account: account, token: cookie.value)
+        try persist?(next)
+        credential = next
+        if pending.flow.mode == .signIn { generation = UUID() }
+        return account
     }
     public func uploadOriginal(_ bytes: Data, filename: String, ownerID: String) async throws -> CloudJSON {
         guard !bytes.isEmpty, bytes.count <= 20 * 1024 * 1024 else { throw CloudRequestError(status: 413, message: "当前云端上传上限为 20 MB，本机原件仍保留。") }

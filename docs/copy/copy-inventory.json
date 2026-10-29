@@ -1298,7 +1298,7 @@
       },
       {
         "file": "server/portal.mjs",
-        "sha256": "e1d0923a3de09d2ca866c10457ce6fde8458ba951acf037dbb05933d012af90c"
+        "sha256": "8125d6d984b39e1fb7f3f147f56525eb3cb361030b37f10808b44586bbb6e6ba"
       },
       {
         "file": "server/preference-memory.mjs",
@@ -1401,7 +1401,7 @@
         "sha256": "531202f1814314b6c76bfef38b2ea66636425b1ca9b445db349e70ebb8bcd00e"
       }
     ],
-    "inputDigest": "3cc67c367fabaf84ad8641b5ebfb6b29045eb64d5d0a140a9b8f753f1bb102db"
+    "inputDigest": "5e50ea64d648df0ad5066f877bc7aa8cff1ca202355269d8b108d5841297f24d"
   },
   "locales": [
     "en",
@@ -18386,32 +18386,32 @@
         },
         {
           "file": "server/portal.mjs",
-          "line": 335,
+          "line": 370,
           "column": 110
         },
         {
           "file": "server/portal.mjs",
-          "line": 336,
+          "line": 371,
           "column": 317
         },
         {
           "file": "server/portal.mjs",
-          "line": 403,
+          "line": 438,
           "column": 114
         },
         {
           "file": "server/portal.mjs",
-          "line": 404,
+          "line": 439,
           "column": 224
         },
         {
           "file": "server/portal.mjs",
-          "line": 461,
+          "line": 496,
           "column": 110
         },
         {
           "file": "server/portal.mjs",
-          "line": 463,
+          "line": 498,
           "column": 290
         }
       ],
@@ -31141,7 +31141,7 @@
         },
         {
           "file": "server/portal.mjs",
-          "line": 311,
+          "line": 346,
           "column": 64
         }
       ],
@@ -31322,7 +31322,7 @@
         },
         {
           "file": "server/portal.mjs",
-          "line": 315,
+          "line": 350,
           "column": 116
         }
       ],
@@ -31384,12 +31384,12 @@
         },
         {
           "file": "server/portal.mjs",
-          "line": 316,
+          "line": 351,
           "column": 119
         },
         {
           "file": "server/portal.mjs",
-          "line": 318,
+          "line": 353,
           "column": 124
         }
       ],
@@ -265322,10 +265322,10 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:233:111",
+      "id": "candidate:server/portal.mjs:233:148",
       "file": "server/portal.mjs",
       "line": 233,
-      "column": 111,
+      "column": 148,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "请在 ",
@@ -265342,10 +265342,10 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:233:130",
+      "id": "candidate:server/portal.mjs:233:167",
       "file": "server/portal.mjs",
       "line": 233,
-      "column": 130,
+      "column": 167,
       "kind": "js-cjk-literal",
       "property": null,
       "value": " 使用 Google 或 Apple 登录。当前页面仍可使用邮箱或密码登录。",
@@ -265362,9 +265362,49 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:237:79",
+      "id": "candidate:server/portal.mjs:240:79",
       "file": "server/portal.mjs",
-      "line": 237,
+      "line": 240,
+      "column": 79,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "原生登录服务正在更新，请稍后重试。",
+      "sha256": "30799ac1358de115d58b6b2f3aec46290f3c9b2acbe6b512630b643b5c581744",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/portal.mjs:241:107",
+      "file": "server/portal.mjs",
+      "line": 241,
+      "column": 107,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "登录地址已失效，请重新开始。",
+      "sha256": "90985455b39683fc4b8813febbf35f70654be5759bdcb57a0ea272f71f2e8983",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/portal.mjs:246:79",
+      "file": "server/portal.mjs",
+      "line": 246,
       "column": 79,
       "kind": "js-cjk-literal",
       "property": null,
@@ -265382,9 +265422,29 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:252:162",
+      "id": "candidate:server/portal.mjs:250:68",
       "file": "server/portal.mjs",
-      "line": 252,
+      "line": 250,
+      "column": 68,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "原生登录服务暂不可用。",
+      "sha256": "a81670ef79267644fe022fc8df64a9a464865d65621b0c4f37c461dda11c15f1",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/portal.mjs:271:162",
+      "file": "server/portal.mjs",
+      "line": 271,
       "column": 162,
       "kind": "js-cjk-literal",
       "property": null,
@@ -265402,9 +265462,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:259:52",
+      "id": "candidate:server/portal.mjs:278:52",
       "file": "server/portal.mjs",
-      "line": 259,
+      "line": 278,
       "column": 52,
       "kind": "js-cjk-literal",
       "property": null,
@@ -265422,9 +265482,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:260:82",
+      "id": "candidate:server/portal.mjs:279:82",
       "file": "server/portal.mjs",
-      "line": 260,
+      "line": 279,
       "column": 82,
       "kind": "js-cjk-literal",
       "property": null,
@@ -265442,9 +265502,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:263:18",
+      "id": "candidate:server/portal.mjs:282:18",
       "file": "server/portal.mjs",
-      "line": 263,
+      "line": 282,
       "column": 18,
       "kind": "js-cjk-literal",
       "property": null,
@@ -265462,9 +265522,89 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:273:27",
+      "id": "candidate:server/portal.mjs:291:60",
       "file": "server/portal.mjs",
-      "line": 273,
+      "line": 291,
+      "column": 60,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "账号绑定服务正在更新，请稍后重试。",
+      "sha256": "51bd055ac59764d6433353a62d08b485420b4c0e4e3c2c89c68c129880943348",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/portal.mjs:295:63",
+      "file": "server/portal.mjs",
+      "line": 295,
+      "column": 63,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "原生登录服务正在更新，请稍后重试。",
+      "sha256": "30799ac1358de115d58b6b2f3aec46290f3c9b2acbe6b512630b643b5c581744",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/portal.mjs:299:66",
+      "file": "server/portal.mjs",
+      "line": 299,
+      "column": 66,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "原生登录服务正在更新，请稍后重试。",
+      "sha256": "30799ac1358de115d58b6b2f3aec46290f3c9b2acbe6b512630b643b5c581744",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/portal.mjs:303:64",
+      "file": "server/portal.mjs",
+      "line": 303,
+      "column": 64,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "原生登录服务正在更新，请稍后重试。",
+      "sha256": "30799ac1358de115d58b6b2f3aec46290f3c9b2acbe6b512630b643b5c581744",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/portal.mjs:308:27",
+      "file": "server/portal.mjs",
+      "line": 308,
       "column": 27,
       "kind": "js-cjk-literal",
       "property": null,
@@ -265482,9 +265622,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:275:41",
+      "id": "candidate:server/portal.mjs:310:41",
       "file": "server/portal.mjs",
-      "line": 275,
+      "line": 310,
       "column": 41,
       "kind": "js-cjk-literal",
       "property": null,
@@ -265502,9 +265642,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:276:61",
+      "id": "candidate:server/portal.mjs:311:61",
       "file": "server/portal.mjs",
-      "line": 276,
+      "line": 311,
       "column": 61,
       "kind": "js-cjk-literal",
       "property": null,
@@ -265522,9 +265662,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:290:27",
+      "id": "candidate:server/portal.mjs:325:27",
       "file": "server/portal.mjs",
-      "line": 290,
+      "line": 325,
       "column": 27,
       "kind": "js-cjk-literal",
       "property": null,
@@ -265542,9 +265682,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:292:94",
+      "id": "candidate:server/portal.mjs:327:94",
       "file": "server/portal.mjs",
-      "line": 292,
+      "line": 327,
       "column": 94,
       "kind": "js-cjk-literal",
       "property": null,
@@ -265562,9 +265702,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:295:41",
+      "id": "candidate:server/portal.mjs:330:41",
       "file": "server/portal.mjs",
-      "line": 295,
+      "line": 330,
       "column": 41,
       "kind": "js-cjk-literal",
       "property": null,
@@ -265582,9 +265722,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:296:61",
+      "id": "candidate:server/portal.mjs:331:61",
       "file": "server/portal.mjs",
-      "line": 296,
+      "line": 331,
       "column": 61,
       "kind": "js-cjk-literal",
       "property": null,
@@ -265602,9 +265742,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:301:27",
+      "id": "candidate:server/portal.mjs:336:27",
       "file": "server/portal.mjs",
-      "line": 301,
+      "line": 336,
       "column": 27,
       "kind": "js-cjk-literal",
       "property": null,
@@ -265622,9 +265762,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:303:41",
+      "id": "candidate:server/portal.mjs:338:41",
       "file": "server/portal.mjs",
-      "line": 303,
+      "line": 338,
       "column": 41,
       "kind": "js-cjk-literal",
       "property": null,
@@ -265642,9 +265782,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:304:61",
+      "id": "candidate:server/portal.mjs:339:61",
       "file": "server/portal.mjs",
-      "line": 304,
+      "line": 339,
       "column": 61,
       "kind": "js-cjk-literal",
       "property": null,
@@ -265662,9 +265802,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:311:95",
+      "id": "candidate:server/portal.mjs:346:95",
       "file": "server/portal.mjs",
-      "line": 311,
+      "line": 346,
       "column": 95,
       "kind": "js-cjk-literal",
       "property": null,
@@ -265682,9 +265822,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:315:146",
+      "id": "candidate:server/portal.mjs:350:146",
       "file": "server/portal.mjs",
-      "line": 315,
+      "line": 350,
       "column": 146,
       "kind": "js-cjk-literal",
       "property": null,
@@ -265702,9 +265842,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:316:146",
+      "id": "candidate:server/portal.mjs:351:146",
       "file": "server/portal.mjs",
-      "line": 316,
+      "line": 351,
       "column": 146,
       "kind": "js-cjk-literal",
       "property": null,
@@ -265722,9 +265862,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:318:151",
+      "id": "candidate:server/portal.mjs:353:151",
       "file": "server/portal.mjs",
-      "line": 318,
+      "line": 353,
       "column": 151,
       "kind": "js-cjk-literal",
       "property": null,
@@ -265742,174 +265882,14 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:322:80",
+      "id": "candidate:server/portal.mjs:357:80",
       "file": "server/portal.mjs",
-      "line": 322,
+      "line": 357,
       "column": 80,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "本机书房只在本机模式可用",
       "sha256": "4d1b256c4823b6296267892927630112f8218650d1a6e1ccbecbfab10a50421e",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:server/portal.mjs:342:27",
-      "file": "server/portal.mjs",
-      "line": 342,
-      "column": 27,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "请先进入自己的书房",
-      "sha256": "044fb479598233ce1c472b6de2d186a3c69b4e191fead797bb75191386d8f159",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:server/portal.mjs:343:149",
-      "file": "server/portal.mjs",
-      "line": 343,
-      "column": 149,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "线上版本尚未准备好，请稍后重新读取接入配置。",
-      "sha256": "60a73a63641ec8363ff6c85ac4479353b0393e3a98da6d0d4720f2ac928b2b73",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:server/portal.mjs:344:35",
-      "file": "server/portal.mjs",
-      "line": 344,
-      "column": 35,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "本机接入配置只能在运行 Leafhour 的电脑上读取。远程接入尚未支持。",
-      "sha256": "a5f3b509b9699ede85dadff557945da613c3e7f9cee8d9dbb12a9e30c52b6d1e",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:server/portal.mjs:353:446",
-      "file": "server/portal.mjs",
-      "line": 353,
-      "column": 446,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "不支持这个请求",
-      "sha256": "e24548b44b2d13e8cee9843f40238accdbecc9113789d173cb4f1847f5bfbec5",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:server/portal.mjs:355:45",
-      "file": "server/portal.mjs",
-      "line": 355,
-      "column": 45,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "此书房使用本机上传",
-      "sha256": "95a9a814051b2e67ac8554b75ada930a887cedcc569afd29f3ffced34373888d",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:server/portal.mjs:359:48",
-      "file": "server/portal.mjs",
-      "line": 359,
-      "column": 48,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "此书房使用本机上传",
-      "sha256": "95a9a814051b2e67ac8554b75ada930a887cedcc569afd29f3ffced34373888d",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:server/portal.mjs:363:27",
-      "file": "server/portal.mjs",
-      "line": 363,
-      "column": 27,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "请先进入自己的书房",
-      "sha256": "044fb479598233ce1c472b6de2d186a3c69b4e191fead797bb75191386d8f159",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:server/portal.mjs:363:187",
-      "file": "server/portal.mjs",
-      "line": 363,
-      "column": 187,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "文件编码不正确",
-      "sha256": "3da8abdd1739c243430daad8b149a15294254b082c4644c5e66df461d8b2365e",
       "protected": false,
       "protectionReason": null,
       "hints": [],
@@ -265942,9 +265922,169 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:377:98",
+      "id": "candidate:server/portal.mjs:378:149",
       "file": "server/portal.mjs",
-      "line": 377,
+      "line": 378,
+      "column": 149,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "线上版本尚未准备好，请稍后重新读取接入配置。",
+      "sha256": "60a73a63641ec8363ff6c85ac4479353b0393e3a98da6d0d4720f2ac928b2b73",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/portal.mjs:379:35",
+      "file": "server/portal.mjs",
+      "line": 379,
+      "column": 35,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "本机接入配置只能在运行 Leafhour 的电脑上读取。远程接入尚未支持。",
+      "sha256": "a5f3b509b9699ede85dadff557945da613c3e7f9cee8d9dbb12a9e30c52b6d1e",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/portal.mjs:388:446",
+      "file": "server/portal.mjs",
+      "line": 388,
+      "column": 446,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "不支持这个请求",
+      "sha256": "e24548b44b2d13e8cee9843f40238accdbecc9113789d173cb4f1847f5bfbec5",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/portal.mjs:390:45",
+      "file": "server/portal.mjs",
+      "line": 390,
+      "column": 45,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "此书房使用本机上传",
+      "sha256": "95a9a814051b2e67ac8554b75ada930a887cedcc569afd29f3ffced34373888d",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/portal.mjs:394:48",
+      "file": "server/portal.mjs",
+      "line": 394,
+      "column": 48,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "此书房使用本机上传",
+      "sha256": "95a9a814051b2e67ac8554b75ada930a887cedcc569afd29f3ffced34373888d",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/portal.mjs:398:27",
+      "file": "server/portal.mjs",
+      "line": 398,
+      "column": 27,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "请先进入自己的书房",
+      "sha256": "044fb479598233ce1c472b6de2d186a3c69b4e191fead797bb75191386d8f159",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/portal.mjs:398:187",
+      "file": "server/portal.mjs",
+      "line": 398,
+      "column": 187,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "文件编码不正确",
+      "sha256": "3da8abdd1739c243430daad8b149a15294254b082c4644c5e66df461d8b2365e",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/portal.mjs:412:27",
+      "file": "server/portal.mjs",
+      "line": 412,
+      "column": 27,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "请先进入自己的书房",
+      "sha256": "044fb479598233ce1c472b6de2d186a3c69b4e191fead797bb75191386d8f159",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/portal.mjs:412:98",
+      "file": "server/portal.mjs",
+      "line": 412,
       "column": 98,
       "kind": "js-cjk-literal",
       "property": null,
@@ -265962,9 +266102,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:379:41",
+      "id": "candidate:server/portal.mjs:414:41",
       "file": "server/portal.mjs",
-      "line": 379,
+      "line": 414,
       "column": 41,
       "kind": "js-cjk-literal",
       "property": null,
@@ -265982,9 +266122,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:392:164",
+      "id": "candidate:server/portal.mjs:427:164",
       "file": "server/portal.mjs",
-      "line": 392,
+      "line": 427,
       "column": 164,
       "kind": "js-cjk-literal",
       "property": null,
@@ -266002,9 +266142,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:406:25",
+      "id": "candidate:server/portal.mjs:441:25",
       "file": "server/portal.mjs",
-      "line": 406,
+      "line": 441,
       "column": 25,
       "kind": "js-cjk-literal",
       "property": null,
@@ -266022,9 +266162,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:499:120",
+      "id": "candidate:server/portal.mjs:534:120",
       "file": "server/portal.mjs",
-      "line": 499,
+      "line": 534,
       "column": 120,
       "kind": "js-cjk-literal",
       "property": null,
@@ -266042,9 +266182,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:500:175",
+      "id": "candidate:server/portal.mjs:535:175",
       "file": "server/portal.mjs",
-      "line": 500,
+      "line": 535,
       "column": 175,
       "kind": "js-cjk-literal",
       "property": null,
@@ -266062,9 +266202,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:501:99",
+      "id": "candidate:server/portal.mjs:536:99",
       "file": "server/portal.mjs",
-      "line": 501,
+      "line": 536,
       "column": 99,
       "kind": "js-cjk-literal",
       "property": null,
@@ -266082,9 +266222,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:508:43",
+      "id": "candidate:server/portal.mjs:543:43",
       "file": "server/portal.mjs",
-      "line": 508,
+      "line": 543,
       "column": 43,
       "kind": "js-cjk-literal",
       "property": null,
@@ -266102,9 +266242,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:513:430",
+      "id": "candidate:server/portal.mjs:548:430",
       "file": "server/portal.mjs",
-      "line": 513,
+      "line": 548,
       "column": 430,
       "kind": "js-cjk-literal",
       "property": null,
@@ -266122,9 +266262,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:516:30",
+      "id": "candidate:server/portal.mjs:551:30",
       "file": "server/portal.mjs",
-      "line": 516,
+      "line": 551,
       "column": 30,
       "kind": "js-cjk-literal",
       "property": null,
@@ -266142,9 +266282,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:522:20",
+      "id": "candidate:server/portal.mjs:557:20",
       "file": "server/portal.mjs",
-      "line": 522,
+      "line": 557,
       "column": 20,
       "kind": "js-cjk-literal",
       "property": null,
@@ -266162,9 +266302,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:531:86",
+      "id": "candidate:server/portal.mjs:566:86",
       "file": "server/portal.mjs",
-      "line": 531,
+      "line": 566,
       "column": 86,
       "kind": "js-cjk-literal",
       "property": null,
@@ -266182,9 +266322,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:532:18",
+      "id": "candidate:server/portal.mjs:567:18",
       "file": "server/portal.mjs",
-      "line": 532,
+      "line": 567,
       "column": 18,
       "kind": "js-cjk-literal",
       "property": null,
@@ -266202,9 +266342,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:534:16",
+      "id": "candidate:server/portal.mjs:569:16",
       "file": "server/portal.mjs",
-      "line": 534,
+      "line": 569,
       "column": 16,
       "kind": "js-cjk-literal",
       "property": null,
@@ -304927,9 +305067,19 @@
       "unresolved": true
     },
     {
+      "kind": "concatenation",
+      "file": "server/portal.mjs",
+      "line": 243,
+      "expression": "'native.'+flow.transactionId",
+      "fragments": [
+        "native."
+      ],
+      "unresolved": true
+    },
+    {
       "kind": "template",
       "file": "server/portal.mjs",
-      "line": 244,
+      "line": 263,
       "expression": "`marginalia_session=${session.token}; HttpOnly; SameSite=Strict; Path=/; Max-Age=604800; Secure`",
       "fragments": [
         "marginalia_session=",
@@ -304940,7 +305090,7 @@
     {
       "kind": "template",
       "file": "server/portal.mjs",
-      "line": 248,
+      "line": 267,
       "expression": "`marginalia_session=; HttpOnly; SameSite=Strict; Path=/; Max-Age=0${publicOrigin?.startsWith('https:')?'; Secure':''}`",
       "fragments": [
         "marginalia_session=; HttpOnly; SameSite=Strict; Path=/; Max-Age=0"
@@ -304950,7 +305100,7 @@
     {
       "kind": "template",
       "file": "server/portal.mjs",
-      "line": 257,
+      "line": 276,
       "expression": "`marginalia_session=${value}; HttpOnly; SameSite=Strict; Path=/; Max-Age=${value?604800:0}${publicOrigin?.startsWith('https:')?'; Secure':''}`",
       "fragments": [
         "marginalia_session=",
@@ -304961,7 +305111,7 @@
     {
       "kind": "concatenation",
       "file": "server/portal.mjs",
-      "line": 346,
+      "line": 381,
       "expression": "'http://'+loopback+':'",
       "fragments": [
         "http://",
@@ -304972,7 +305122,7 @@
     {
       "kind": "concatenation",
       "file": "server/portal.mjs",
-      "line": 346,
+      "line": 381,
       "expression": "'http://'+loopback",
       "fragments": [
         "http://"
@@ -304982,7 +305132,7 @@
     {
       "kind": "computed-member",
       "file": "server/portal.mjs",
-      "line": 350,
+      "line": 385,
       "expression": "2",
       "fragments": [],
       "unresolved": true
@@ -304990,7 +305140,7 @@
     {
       "kind": "computed-member",
       "file": "server/portal.mjs",
-      "line": 350,
+      "line": 385,
       "expression": "1",
       "fragments": [],
       "unresolved": true
@@ -304998,7 +305148,7 @@
     {
       "kind": "computed-member",
       "file": "server/portal.mjs",
-      "line": 350,
+      "line": 385,
       "expression": "partUpload[2]",
       "fragments": [],
       "unresolved": true
@@ -305006,7 +305156,7 @@
     {
       "kind": "computed-member",
       "file": "server/portal.mjs",
-      "line": 350,
+      "line": 385,
       "expression": "2",
       "fragments": [],
       "unresolved": true
@@ -305014,7 +305164,7 @@
     {
       "kind": "computed-member",
       "file": "server/portal.mjs",
-      "line": 350,
+      "line": 385,
       "expression": "1",
       "fragments": [],
       "unresolved": true
@@ -305022,7 +305172,7 @@
     {
       "kind": "computed-member",
       "file": "server/portal.mjs",
-      "line": 350,
+      "line": 385,
       "expression": "2",
       "fragments": [],
       "unresolved": true
@@ -305030,7 +305180,7 @@
     {
       "kind": "computed-member",
       "file": "server/portal.mjs",
-      "line": 353,
+      "line": 388,
       "expression": "action",
       "fragments": [],
       "unresolved": true
@@ -305038,7 +305188,7 @@
     {
       "kind": "computed-member",
       "file": "server/portal.mjs",
-      "line": 368,
+      "line": 403,
       "expression": "action",
       "fragments": [],
       "unresolved": true
@@ -305046,7 +305196,7 @@
     {
       "kind": "computed-member",
       "file": "server/portal.mjs",
-      "line": 374,
+      "line": 409,
       "expression": "1",
       "fragments": [],
       "unresolved": true
@@ -305054,7 +305204,7 @@
     {
       "kind": "concatenation",
       "file": "server/portal.mjs",
-      "line": 441,
+      "line": 476,
       "expression": "JSON.stringify(value)+'\\n'",
       "fragments": [
         "\n"
@@ -305064,7 +305214,7 @@
     {
       "kind": "concatenation",
       "file": "server/portal.mjs",
-      "line": 445,
+      "line": 480,
       "expression": "'chat-failed:'+result.id",
       "fragments": [
         "chat-failed:"
@@ -305074,7 +305224,7 @@
     {
       "kind": "computed-member",
       "file": "server/portal.mjs",
-      "line": 454,
+      "line": 489,
       "expression": "1",
       "fragments": [],
       "unresolved": true
@@ -305082,7 +305232,7 @@
     {
       "kind": "computed-member",
       "file": "server/portal.mjs",
-      "line": 454,
+      "line": 489,
       "expression": "1",
       "fragments": [],
       "unresolved": true
@@ -305090,7 +305240,7 @@
     {
       "kind": "computed-member",
       "file": "server/portal.mjs",
-      "line": 466,
+      "line": 501,
       "expression": "1",
       "fragments": [],
       "unresolved": true
@@ -305098,7 +305248,7 @@
     {
       "kind": "computed-member",
       "file": "server/portal.mjs",
-      "line": 466,
+      "line": 501,
       "expression": "1",
       "fragments": [],
       "unresolved": true
@@ -305106,7 +305256,7 @@
     {
       "kind": "computed-member",
       "file": "server/portal.mjs",
-      "line": 467,
+      "line": 502,
       "expression": "1",
       "fragments": [],
       "unresolved": true
@@ -305114,7 +305264,7 @@
     {
       "kind": "concatenation",
       "file": "server/portal.mjs",
-      "line": 474,
+      "line": 509,
       "expression": "'W/\"'+createHash('sha256').update(JSON.stringify(manifest,(_key,value)=>value&&typeof value==='object'&&!Array.isArray(value)?Object.fromEntries(Object.entries(",
       "fragments": [
         "W/\"",
@@ -305125,7 +305275,7 @@
     {
       "kind": "concatenation",
       "file": "server/portal.mjs",
-      "line": 474,
+      "line": 509,
       "expression": "'W/\"'+createHash('sha256').update(JSON.stringify(manifest,(_key,value)=>value&&typeof value==='object'&&!Array.isArray(value)?Object.fromEntries(Object.entries(",
       "fragments": [
         "W/\""
@@ -305135,7 +305285,7 @@
     {
       "kind": "computed-member",
       "file": "server/portal.mjs",
-      "line": 480,
+      "line": 515,
       "expression": "1",
       "fragments": [],
       "unresolved": true
@@ -305143,7 +305293,7 @@
     {
       "kind": "concatenation",
       "file": "server/portal.mjs",
-      "line": 482,
+      "line": 517,
       "expression": "'bytes '+part.offset+'-'+(part.offset+part.bytes.length-1)+'/'",
       "fragments": [
         "bytes ",
@@ -305155,7 +305305,7 @@
     {
       "kind": "concatenation",
       "file": "server/portal.mjs",
-      "line": 482,
+      "line": 517,
       "expression": "'bytes '+part.offset+'-'",
       "fragments": [
         "bytes ",
@@ -305166,7 +305316,7 @@
     {
       "kind": "concatenation",
       "file": "server/portal.mjs",
-      "line": 482,
+      "line": 517,
       "expression": "'bytes '+part.offset",
       "fragments": [
         "bytes "
@@ -305176,7 +305326,7 @@
     {
       "kind": "concatenation",
       "file": "server/portal.mjs",
-      "line": 485,
+      "line": 520,
       "expression": "file.url+'&download=original.'",
       "fragments": [
         "&download=original."
@@ -305186,7 +305336,7 @@
     {
       "kind": "concatenation",
       "file": "server/portal.mjs",
-      "line": 485,
+      "line": 520,
       "expression": "'attachment; filename=\"original.'+(['pdf','epub','txt','md'].includes(file.format)?file.format:'bin')+'\"'",
       "fragments": [
         "attachment; filename=\"original.",
@@ -305197,7 +305347,7 @@
     {
       "kind": "concatenation",
       "file": "server/portal.mjs",
-      "line": 485,
+      "line": 520,
       "expression": "'attachment; filename=\"original.'+(['pdf','epub','txt','md'].includes(file.format)?file.format:'bin')",
       "fragments": [
         "attachment; filename=\"original."
@@ -305207,7 +305357,7 @@
     {
       "kind": "computed-member",
       "file": "server/portal.mjs",
-      "line": 488,
+      "line": 523,
       "expression": "2",
       "fragments": [],
       "unresolved": true
@@ -305215,7 +305365,7 @@
     {
       "kind": "computed-member",
       "file": "server/portal.mjs",
-      "line": 488,
+      "line": 523,
       "expression": "1",
       "fragments": [],
       "unresolved": true
@@ -305223,7 +305373,7 @@
     {
       "kind": "computed-member",
       "file": "server/portal.mjs",
-      "line": 490,
+      "line": 525,
       "expression": "1",
       "fragments": [],
       "unresolved": true
@@ -305231,7 +305381,7 @@
     {
       "kind": "computed-member",
       "file": "server/portal.mjs",
-      "line": 504,
+      "line": 539,
       "expression": "1",
       "fragments": [],
       "unresolved": true
@@ -305239,7 +305389,7 @@
     {
       "kind": "computed-member",
       "file": "server/portal.mjs",
-      "line": 513,
+      "line": 548,
       "expression": "action",
       "fragments": [],
       "unresolved": true
@@ -305247,7 +305397,7 @@
     {
       "kind": "computed-member",
       "file": "server/portal.mjs",
-      "line": 514,
+      "line": 549,
       "expression": "action",
       "fragments": [],
       "unresolved": true
@@ -305255,7 +305405,7 @@
     {
       "kind": "template",
       "file": "server/portal.mjs",
-      "line": 519,
+      "line": 554,
       "expression": "`reader://books/${bookId}/audio/clips/${c.id}`",
       "fragments": [
         "reader://books/",
@@ -308303,11 +308453,11 @@
     "duplicateKeys": 0,
     "reviewedItems": 11,
     "unreviewedItems": 2448,
-    "candidates": 6192,
-    "candidatesUnreviewed": 6191,
+    "candidates": 6199,
+    "candidatesUnreviewed": 6198,
     "candidatesProtected": 143,
     "itemsProtected": 9,
-    "dynamicConsumers": 3976,
+    "dynamicConsumers": 3977,
     "consumerReferences": 2087,
     "keysWithoutStaticConsumers": 1328,
     "reviewedLocaleValues": 44,
