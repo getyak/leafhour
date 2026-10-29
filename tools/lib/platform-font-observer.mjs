@@ -86,7 +86,9 @@ export async function exercisePopoverKeyboard({cdp,trigger,panel,capture,afterOp
   opened=await read();
   assert.ok(opened.panel?.visible&&opened.expanded==='true'&&opened.focusInPanel,'Settled paint must preserve the actual chooser and focus');
   guard();await capture();await dispatchRemoteKey(cdp,guard,'Escape',27);
-  const closed=await until(async()=>{const value=await read();return !value.panel?.visible&&value.expanded==='false'?value:false;},'real popover to close',4000);
+  // dialog.close() changes open/ARIA before its queued close handler returns
+  // focus. Observe the complete roundtrip within one bound; never replay Escape.
+  const closed=await until(async()=>{const value=await read();return !value.panel?.visible&&value.expanded==='false'&&value.focusOnTrigger&&value.trigger?.visible&&!value.trigger.disabled&&!value.trigger.inert?value:false;},'real popover to close and return focus to its visible opener',4000);
   assert.equal(closed.focusOnTrigger,true,'Escape must return focus to the actual visible opener');
   assert.equal(closed.url,activation.before.url,'Opening/closing a chooser must preserve the entry URL');
   return {trigger,panel,...activation,openedBeforePaint,paint,opened,closed};
@@ -141,9 +143,16 @@ export function observePopoverState(triggerSelector,panelSelector){
 // Serialized read-only proof that the normal reading pill really exposed its
 // navigation before the remote sequence focuses book-info. No app state edits.
 export function observeReaderTools(){
-  const pill=document.getElementById('reading-tools-trigger'),header=document.getElementById('reading-header');
-  const r=header?.getBoundingClientRect(),style=header?getComputedStyle(header):null;
-  return {expanded:pill?.getAttribute('aria-expanded'),headerInert:!!header?.inert,headerVisible:!!header?.getClientRects().length&&style.display!=='none'&&style.visibility!=='hidden'&&r.width>0&&r.height>0&&r.bottom>0&&r.right>0&&r.top<innerHeight&&r.left<innerWidth,focusInHeader:!!header?.contains(document.activeElement)};
+  const pill=document.getElementById('reading-tools-trigger'),header=document.getElementById('reading-header'),panel=document.getElementById('reading-tools-panel'),bookInfo=document.getElementById('open-book-info'),active=document.activeElement;
+  const painted=node=>{
+    if(!node||node.isConnected===false||!node.getClientRects().length||node.closest('[hidden],[inert]'))return false;
+    for(let part=node;part;part=part.parentElement){const style=getComputedStyle(part);if(part.inert||part.hidden||style.display==='none'||['hidden','collapse'].includes(style.visibility)||Number(style.opacity)===0)return false;}
+    const r=node.getBoundingClientRect();return r.width>0&&r.height>0&&r.bottom>0&&r.right>0&&r.top<innerHeight&&r.left<innerWidth;
+  };
+  const usable=node=>painted(node)&&!node.disabled&&node.tabIndex>=0&&node.matches('button,a[href],input,select,textarea,summary,[tabindex]');
+  const expanded=pill?.getAttribute('aria-expanded'),headerInert=!!header?.inert,headerVisible=painted(header),panelInert=!!panel?.inert,panelVisible=painted(panel)&&panel.getAttribute('aria-hidden')!=='true';
+  const focusInHeader=!!header?.contains(active),focusInPanel=!!panel?.contains(active),focusUsable=usable(active),bookInfoUsable=!!header?.contains(bookInfo)&&usable(bookInfo);
+  return {ready:expanded==='true'&&headerVisible&&!headerInert&&bookInfoUsable&&focusUsable&&(focusInHeader||focusInPanel&&panelVisible&&!panelInert),expanded,headerInert,headerVisible,panelInert,panelVisible,focusInHeader,focusInPanel,focusUsable,bookInfoUsable,activeId:active?.id||null};
 }
 // The real enabled share control plus its closed native gift dialog prove that
 // the optional code mounted. The basic bookplate alone cannot satisfy this.
@@ -257,14 +266,24 @@ export function observeNativeScroll(selector,alignment='nearest'){
     return true;
   };
   const sample=()=>{
-    const r=node.getBoundingClientRect(),viewportFixed=fixedToViewport();
-    return {rect:{x:r.x,y:r.y,width:r.width,height:r.height},viewportFixed,positions:scrollers.map(element=>({left:element.scrollLeft,top:element.scrollTop})),scrollports:scrollers.map((element,index)=>{
-      const style=getComputedStyle(element),rect=index?element.getBoundingClientRect():{x:0,y:0},left=rect.x+(index?element.clientLeft:0),top=rect.y+(index?element.clientTop:0);
+    const r=node.getBoundingClientRect(),viewportFixed=fixedToViewport(),actual=globalThis.visualViewport;
+    const visual=actual&&[actual.width,actual.height,actual.scale,actual.offsetLeft,actual.offsetTop].every(Number.isFinite)&&actual.width>0&&actual.height>0&&actual.scale>0?{width:actual.width,height:actual.height,scale:actual.scale,offsetLeft:actual.offsetLeft,offsetTop:actual.offsetTop}:null;
+    const value={rect:{x:r.x,y:r.y,width:r.width,height:r.height},viewportFixed,visualViewport:visual,positions:scrollers.map(element=>({left:element.scrollLeft,top:element.scrollTop})),scrollports:scrollers.map((element,index)=>{
+      // innerWidth/innerHeight are integers. Fixed geometry can instead land
+      // exactly on a fractional visual viewport edge (stock Android Chrome).
+      // Use those measured bounds, never a guessed pixel tolerance.
+      const visualRoot=!index&&viewportFixed&&visual;
+      const style=getComputedStyle(element),rect=index?element.getBoundingClientRect():{x:visualRoot?visual.offsetLeft:0,y:visualRoot?visual.offsetTop:0},left=rect.x+(index?element.clientLeft:0),top=rect.y+(index?element.clientTop:0);
       const padding=side=>!index&&viewportFixed?0:pixels(style['scrollPadding'+side]);
-      return {left:left+padding('Left'),top:top+padding('Top'),right:left+(index?element.clientWidth:innerWidth)-padding('Right'),bottom:top+(index?element.clientHeight:innerHeight)-padding('Bottom'),maxLeft:Math.max(0,element.scrollWidth-element.clientWidth),maxTop:Math.max(0,element.scrollHeight-element.clientHeight),position:style.position,overflowX:style.overflowX,overflowY:style.overflowY,behavior:style.scrollBehavior};
+      return {left:left+padding('Left'),top:top+padding('Top'),right:left+(index?element.clientWidth:visualRoot?visual.width:innerWidth)-padding('Right'),bottom:top+(index?element.clientHeight:visualRoot?visual.height:innerHeight)-padding('Bottom'),maxLeft:Math.max(0,element.scrollWidth-element.clientWidth),maxTop:Math.max(0,element.scrollHeight-element.clientHeight),position:style.position,overflowX:style.overflowX,overflowY:style.overflowY,behavior:style.scrollBehavior};
     }),scrollX,scrollY};
+    const port=value.scrollports[0];value.viewportClipped=viewportFixed&&(r.x<port.left||r.y<port.top||r.x+r.width>port.right||r.y+r.height>port.bottom);return value;
   };
   const needs=value=>value.scrollports.flatMap((port,index)=>{
+    // Root scrolling cannot move a viewport-fixed box. An actual inner
+    // scrollport may still move its descendant; observe that normally before
+    // requiring the final box to fit the real visual viewport.
+    if(!index&&value.viewportFixed)return [];
     const r=value.rect,left=r.x-pixels(margin.scrollMarginLeft),right=r.x+r.width+pixels(margin.scrollMarginRight),top=r.y-pixels(margin.scrollMarginTop),bottom=r.y+r.height+pixels(margin.scrollMarginBottom);
     const movable=(start,end,low,high,current,max,center=false)=>{
       if(!center&&(start>=low&&end<=high||start<=low&&end>=high))return false;
@@ -298,8 +317,8 @@ export function observeNativeScroll(selector,alignment='nearest'){
       if(changed){lastChange=now;stableFrames=0;}else stableFrames++;
       previous=current;
       const currentNeeds=needs(current);
-      if(started&&stableFrames>=4&&now-lastChange>=100&&!currentNeeds.some(index=>!startedScrollers.has(index)))return finish('settled');
-      if(!started&&!currentNeeds.length&&positionStableFrames>=2)return finish('unchanged');
+      if(!current.viewportClipped&&started&&stableFrames>=4&&now-lastChange>=100&&!currentNeeds.some(index=>!startedScrollers.has(index)))return finish('settled');
+      if(!current.viewportClipped&&!started&&!currentNeeds.length&&positionStableFrames>=2)return finish('unchanged');
       frame=requestAnimationFrame(tick);
     };
     document.addEventListener('scroll',onScroll,true);document.addEventListener('scrollend',onEnd,true);
@@ -323,17 +342,17 @@ export function createEvidenceSession({cdp,out,receipt,root,origin,failures=[]})
     await writeFile(path.join(out,name+'.png'),bytes);
     receipt.screenshots.push({file:name+'.png',bytes:bytes.length,sha256:sha(bytes)});
   }
-  async function fonts(selector,label,{awaitFonts=true}={}){
+  async function fonts(selector,label,{awaitFonts=true,alignment='center'}={}){
     receipt.activeProbe={selector,label,phase:'layout'};
     if(awaitFonts)await cdp.evaluate('document.fonts.ready.then(()=>true)');
     // Withheld fonts must stay pending, but the authored document's CSS must
     // have parsed before a native scroll can produce meaningful coordinates.
     // This observes existing styles/viewport; it never loads or releases fonts.
     else await viewport(label+' styles');
-    // A font probe should center the whole real text box. Chrome113 can leave
+    // Main font probes center the whole real text box. Chrome113 can leave
     // an only partly visible quote unmoved with nearest; retain one observed
     // native request and require its completion, never retry a failed probe.
-    const scroll=await cdp.evaluate('('+observeNativeScroll.toString()+')('+JSON.stringify(selector)+',"center")');
+    const scroll=await cdp.evaluate('('+observeNativeScroll.toString()+')('+JSON.stringify(selector)+','+JSON.stringify(alignment)+')');
     (receipt.scrolls??=[]).push({label,selector,...scroll});
     assert.ok(['settled','unchanged'].includes(scroll.status),label+' native scrolling must complete within the bounded observation');
     let usage;
@@ -382,7 +401,9 @@ export function createEvidenceSession({cdp,out,receipt,root,origin,failures=[]})
     assert.ok(probes.length,label+' must contain actual CJK text');
     const allowed=serif?/Noto.*Serif.*(?:SC|CJK)|Source.*Han.*Serif|Songti|STSong|SimSun|NSimSun/i:/Noto.*Serif.*(?:SC|CJK)|Source.*Han.*Serif|Songti|STSong|SimSun|NSimSun|PingFang|YaHei|Yu.?Gothic|Meiryo/i;
     for(const probe of probes){
-      const value=await fonts(probe.selector,label+' direct CJK text');
+      // The parent already completed its center request; these unchanged
+      // child runs only need to remain in view, without another center target.
+      const value=await fonts(probe.selector,label+' direct CJK text',{alignment:'nearest'});
       assert.equal(value.text,probe.text);
       assert.ok(value.fonts.length&&value.fonts.every(font=>font.glyphCount>0&&allowed.test(font.postScriptName||font.familyName)),label+' requires covered CJK glyphs, not Latin missing glyphs');
       value.probeWidths={before:probe.before,after:probe.after};

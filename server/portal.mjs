@@ -175,6 +175,7 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
     files['/reading-session-record.mjs']='reading-session-record.mjs';
     for(const file of ['reading-time-policy.mjs','reading-manual.mjs','reading-manual-ui.mjs'])files['/'+file]=file;
     files['/reading-toolbar.mjs']='reading-toolbar.mjs';
+    files['/reading-tool-focus.mjs']='reading-tool-focus.mjs';
     for(const file of ['library-notebook.mjs', 'library-notebook-state.mjs', 'library-notebook.css', 'reading-journal.mjs', 'reading-journal.css', 'paper-companion.mjs', 'reading-hub.mjs', 'reading-hub.css', 'reader-style-ready.mjs', 'reader-loading.mjs'])files['/'+file]=file;
     files['/reader-tools.mjs']='reader-tools.mjs';
     files['/reading-flow.mjs']='reading-flow.mjs';files['/reading-load.mjs']='reading-load.mjs';files['/personal-records.mjs']='personal-records.mjs';files['/reading-chat-scope.mjs']='reading-chat-scope.mjs';files['/personal-record-editor.mjs']='personal-record-editor.mjs';

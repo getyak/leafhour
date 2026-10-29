@@ -620,21 +620,22 @@ function fontLayoutScenario({alwaysInvisible=false,cold=false}={}){
   return {receipt,calls,session:createEvidenceSession({cdp,out:'/synthetic-unused',receipt,root:'/synthetic-unused',origin:'http://127.0.0.1',failures:[]})};
 }
 
-async function nativeScrollModel({mode='delayed',padding=0,initialOffset=0,fixed=false,headerBackdrop=false,containingBlock={},fixedClip=false,alignment='nearest'}={}){
+async function nativeScrollModel({mode='delayed',padding=0,initialOffset=0,fixed=false,headerBackdrop=false,containingBlock={},fixedClip=false,alignment='nearest',targetRect=null,visualViewport=null,rootScrollHeight=3000}={}){
   let now=0,offset=initialOffset,innerOffset=350,nextId=0,requests=0,done=false,requestedAlignment;
   const frames=new Map(),timers=new Map(),listeners=new Map();
-  const root={parentElement:null,clientLeft:0,clientTop:0,clientWidth:393,clientHeight:722,scrollWidth:393,scrollHeight:3000,get scrollTop(){return offset;},scrollLeft:0};
+  const root={parentElement:null,clientLeft:0,clientTop:0,clientWidth:393,clientHeight:722,scrollWidth:393,scrollHeight:rootScrollHeight,get scrollTop(){return offset;},scrollLeft:0};
   const header={parentElement:root,clientWidth:393,clientHeight:72,scrollWidth:393,scrollHeight:72};
-  const inner={parentElement:fixedClip?header:root,clientLeft:0,clientTop:0,clientWidth:393,clientHeight:200,scrollWidth:393,scrollHeight:800,get scrollTop(){return innerOffset;},scrollLeft:0,getBoundingClientRect:()=>({x:0,y:fixedClip?100:1000-offset})};
-  const y=()=>mode==='visible-center'?600-offset:mode==='partial-quote'?637.25-offset:mode==='header'?14:mode==='unchanged'?116:mode==='inside-animation'?now===0?138:116:mode==='nested'?1000-innerOffset-offset:mode==='layout-shift'&&now===0?116:padding?50+initialOffset-offset:1060-offset;
-  const node={parentElement:fixedClip||mode==='nested'?inner:mode==='header'?header:root,getBoundingClientRect:()=>({x:20,y:y(),width:350,height:mode==='visible-center'?80:mode==='partial-quote'?158.386:mode==='header'?44:mode==='nested'?40:84}),scrollIntoView(options){requestedAlignment=options.block;requests++;assert.ok(listeners.has('scroll'),'observation must precede the only native scroll request');}};
+  const inner={parentElement:fixedClip?header:root,clientLeft:0,clientTop:0,clientWidth:393,clientHeight:200,scrollWidth:393,scrollHeight:mode==='fixed-inner'?1400:800,get scrollTop(){return innerOffset;},scrollLeft:0,getBoundingClientRect:()=>({x:0,y:fixedClip?100:1000-offset})};
+  const y=()=>mode==='visible-center'?600-offset:mode==='partial-quote'?637.25-offset:mode==='fixed-inner'?1100-innerOffset:mode==='header'?14:mode==='unchanged'?116:mode==='inside-animation'?now===0?138:116:mode==='nested'?1000-innerOffset-offset:mode==='layout-shift'&&now===0?116:padding?50+initialOffset-offset:1060-offset;
+  const node={parentElement:fixedClip||mode==='nested'?inner:mode==='header'?header:root,getBoundingClientRect:()=>targetRect||({x:20,y:y(),width:350,height:mode==='visible-center'?80:mode==='partial-quote'?158.386:mode==='header'?44:['nested','fixed-inner'].includes(mode)?40:84}),scrollIntoView(options){requestedAlignment=options.block;requests++;assert.ok(listeners.has('scroll'),'observation must precede the only native scroll request');}};
   const document={querySelector:()=>node,scrollingElement:root,addEventListener:(name,fn)=>listeners.set(name,fn),removeEventListener:(name,fn)=>{assert.equal(listeners.get(name),fn);listeners.delete(name);}};
-  const sandbox={document,innerWidth:393,innerHeight:722,scrollX:0,get scrollY(){return offset;},performance:{now:()=>now},getComputedStyle:element=>element===root?{scrollPaddingTop:String(padding),overflowY:'auto',...containingBlock}:element===header?{position:fixed?'fixed':'static',backdropFilter:headerBackdrop?'blur(16px)':'none'}:element===inner?{overflowY:'auto'}:{},requestAnimationFrame:fn=>{const id=++nextId;frames.set(id,fn);return id;},cancelAnimationFrame:id=>frames.delete(id),setTimeout:(fn,ms)=>{const id=++nextId;timers.set(id,{fn,at:now+ms});return id;},clearTimeout:id=>timers.delete(id)};
+  const sandbox={document,innerWidth:393,innerHeight:722,...(visualViewport?{visualViewport}:{}),scrollX:0,get scrollY(){return offset;},performance:{now:()=>now},getComputedStyle:element=>element===root?{scrollPaddingTop:String(padding),overflowY:'auto',...containingBlock}:element===header?{position:fixed?'fixed':'static',backdropFilter:headerBackdrop?'blur(16px)':'none'}:element===inner?{overflowY:'auto'}:{},requestAnimationFrame:fn=>{const id=++nextId;frames.set(id,fn);return id;},cancelAnimationFrame:id=>frames.delete(id),setTimeout:(fn,ms)=>{const id=++nextId;timers.set(id,{fn,at:now+ms});return id;},clearTimeout:id=>timers.delete(id)};
   const result=vm.runInNewContext('('+observeNativeScroll.toString()+')("#actual-target",'+JSON.stringify(alignment)+')',sandbox);result.then(()=>{done=true;});
   const step=['inside-animation','slow-scroll'].includes(mode)?1100:16;
   for(now=step;now<=10000+step+16&&!done;now+=step){
     if(mode==='visible-center'&&requestedAlignment==='center'&&now===208){offset=279;listeners.get('scroll')?.({target:document});}
     if(mode==='partial-quote'&&requestedAlignment==='center'&&now===16){offset=303;listeners.get('scroll')?.({target:document});}
+    if(mode==='fixed-inner'&&now===208){innerOffset=850;listeners.get('scroll')?.({target:inner});}
     if(mode==='delayed'&&now>=208&&now<=528){offset+=25;listeners.get('scroll')?.({target:document});}
     if(mode==='nested'&&now>=208&&now<=304){innerOffset-=50;listeners.get('scroll')?.({target:inner});}
     if(mode==='nested'&&now>=704&&now<=816){offset+=70;listeners.get('scroll')?.({target:document});}
@@ -686,6 +687,37 @@ test('a real viewport-fixed header target uses the viewport rather than prose sc
   assert.equal(fixed.after.scrollY,497);assert.equal(fixed.frames,2);assert.equal(fixed.deadlineMs,10000);
   const ownBackdrop=await nativeScrollModel({mode:'header',fixed:true,headerBackdrop:true,padding:100,initialOffset:497});
   assert.equal(ownBackdrop.status,'unchanged','the fixed header own backdrop does not anchor that header to an ancestor');
+});
+
+const android852Visual={width:393.0909118652344,height:722.1818237304688,scale:1,offsetTop:0,offsetLeft:0};
+test('actual Android 852 fixed-pill geometry uses measured fractional visual bounds without inventing a root scroll',async()=>{
+ const rect={x:0,y:678.1818237304688,width:393.0909118652344,height:44};
+ const proof=await nativeScrollModel({mode:'header',fixed:true,padding:100,initialOffset:509.4545593261719,targetRect:rect,visualViewport:android852Visual});
+ assert.equal(proof.status,'unchanged');assert.equal(proof.needsMovement,false);assert.equal(proof.started,false);assert.equal(proof.scrollEvents,0);assert.equal(proof.frames,2);
+ assert.equal(proof.after.scrollY,509.4545593261719);assert.equal(proof.after.scrollports[0].right,android852Visual.width);assert.equal(proof.after.scrollports[0].bottom,android852Visual.height);
+ assert.deepEqual(JSON.parse(JSON.stringify(proof.before.visualViewport)),android852Visual);assert.equal(proof.after.viewportClipped,false);
+});
+test('genuinely clipped fixed controls still fail at the actual visual edge, even without an attainable document scroll',async()=>{
+ const base={x:20,y:14,width:350,height:44},cases=[{x:-.001},{width:android852Visual.width-20+.001},{y:android852Visual.height-44+.001},{y:-1}];
+ for(const patch of cases){
+  const proof=await nativeScrollModel({mode:'header',fixed:true,targetRect:{...base,...patch},visualViewport:android852Visual,rootScrollHeight:722});
+  assert.equal(proof.status,'timeout',JSON.stringify(patch));assert.equal(proof.after.viewportClipped,true);assert.equal(proof.started,false);assert.equal(proof.scrollEvents,0);assert.equal(proof.deadlineMs,10000);
+ }
+});
+test('visual viewport offsets and scale are observed while missing or invalid visual metrics keep strict layout bounds',async()=>{
+ const visual={width:196.5,height:361.25,scale:2,offsetTop:30.5,offsetLeft:20.25};
+ const zoomed=await nativeScrollModel({mode:'header',fixed:true,visualViewport:visual,targetRect:{x:20.25,y:30.5,width:196.5,height:44}});
+ assert.equal(zoomed.status,'unchanged');assert.equal(zoomed.after.scrollports[0].left,20.25);assert.equal(zoomed.after.scrollports[0].top,30.5);assert.equal(zoomed.after.scrollports[0].right,216.75);assert.equal(zoomed.after.scrollports[0].bottom,391.75);
+ assert.deepEqual(JSON.parse(JSON.stringify(zoomed.after.visualViewport)),visual);
+ for(const visualViewport of [null,{...visual,width:0},{...visual,scale:0},{...visual,offsetLeft:NaN}]){
+  const fallback=await nativeScrollModel({mode:'header',fixed:true,visualViewport});assert.equal(fallback.status,'unchanged');assert.equal(fallback.after.scrollports[0].right,393);assert.equal(fallback.after.scrollports[0].bottom,722);
+ }
+ const ordinary=await nativeScrollModel({mode:'header',padding:100,initialOffset:497,visualViewport:android852Visual});assert.equal(ordinary.status,'timeout');assert.equal(ordinary.after.scrollports[0].top,100);assert.equal(ordinary.after.scrollports[0].right,393);
+});
+test('a viewport-fixed ancestor still permits one real inner scroll to bring its initially clipped control into view',async()=>{
+ const proof=await nativeScrollModel({mode:'fixed-inner',fixed:true,fixedClip:true,padding:100,initialOffset:509,visualViewport:android852Visual});
+ assert.equal(proof.status,'settled');assert.equal(proof.before.viewportFixed,true);assert.equal(proof.before.viewportClipped,true);assert.equal(proof.after.viewportClipped,false);
+ assert.deepEqual([...proof.startedScrollers],[1]);assert.equal(proof.after.scrollY,509);assert.equal(proof.after.rect.y,250);assert.equal(proof.after.rect.y+proof.after.rect.height<=proof.after.scrollports[1].bottom,true);assert.ok(proof.elapsedMs>=308);
 });
 
 test('ordinary content and fixed targets with a different containing block keep root padding strict',async()=>{

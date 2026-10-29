@@ -28,13 +28,14 @@ test('removing the actual control cannot satisfy initial-closed acceptance',()=>
 });
 
 function keyboardTransport(options={}){
-  let open=false,focusOnTrigger=false,focusInPanel=false,stopped=false;
+  let open=false,focusOnTrigger=false,focusInPanel=false,stopped=false,closing=false,closedReads=0;
   const commands=[],captures=[];
   const cdp={
     async evaluate(expression){
       if(expression.startsWith('(function observeNativeScroll'))return options.scroll||{status:'unchanged'};
       if(expression.startsWith('(function observePopoverPaint')){captures.push('paint observation');if(options.cancelAtPaint)stopped=true;return options.paint||{status:'settled'};}
       assert.ok(expression.startsWith('(function observePopoverState'),'only the actual read-only observation is evaluated');
+      if(closing&&options.delayedCloseFocus&&++closedReads>=2)focusOnTrigger=true;
       return {url:options.changedUrl&&!open&&captures.length?'/library?broken=1':'/library',trigger:{visible:options.visible!==false,disabled:false,inert:false},panel:{visible:open},expanded:String(open),focusOnTrigger,focusInPanel};
     },
     async send(method,args){
@@ -46,7 +47,7 @@ function keyboardTransport(options={}){
       if(args.type==='keyDown'&&args.key==='Enter'&&args.text==='\r'&&args.unmodifiedText==='\r'){open=true;focusOnTrigger=false;}
       if(args.type==='rawKeyDown'){
         if(args.key==='Tab')focusInPanel=!options.outsideFocus;
-        else if(args.key==='Escape'){open=false;focusInPanel=false;focusOnTrigger=true;}
+        else if(args.key==='Escape'){open=false;closing=true;focusInPanel=false;focusOnTrigger=!options.delayedCloseFocus&&!options.noCloseFocus;}
       }
       return {};
     },
@@ -60,6 +61,14 @@ test('remote keyboard sequence activates the real button once and observes focus
   assert.deepEqual(down.map(args=>args.key),['Enter','Tab','Escape']);
   assert.equal(down[0].type,'keyDown');assert.equal(down[0].text,'\r');assert.equal(down[0].unmodifiedText,'\r');
   assert.deepEqual(f.captures,['paint observation','real open screenshot']);assert.equal(value.paint.status,'settled');
+});
+test('closing visibility can precede the native close event that returns focus',async()=>{
+  const f=keyboardTransport({delayedCloseFocus:true});const value=await exercisePopoverKeyboard(f);
+  assert.equal(value.closed.focusOnTrigger,true);assert.equal(f.commands.filter(([,args])=>args?.key==='Escape'&&args.type==='rawKeyDown').length,1,'Only closing state is observed; Escape must not be replayed');
+});
+test('a closed panel that never restores focus remains an acceptance failure',async()=>{
+  const f=keyboardTransport({noCloseFocus:true});await assert.rejects(()=>exercisePopoverKeyboard(f),/Escape.*focus|close.*focus/);
+  assert.equal(f.commands.filter(([,args])=>args?.key==='Escape'&&args.type==='rawKeyDown').length,1);
 });
 test('hidden trigger or failed actual focus refuses keyboard activation',async()=>{
   for(const options of [{visible:false},{failedFocus:true}]){
@@ -110,10 +119,49 @@ test('serialized optional-action observer requires actual enabled rendered butto
   const ready=runProbe(observeReaderBookActions,{});assert.equal(ready.ready,true);assert.equal(ready.shareRendered,true);assert.equal(ready.giftDialogPresent,true);
   for(const options of [{disabled:true},{noShare:true},{noGift:true},{hidden:true},{missingRect:true},{zeroWidth:true},{wrongTag:true},{giftOpen:true}])assert.equal(runProbe(observeReaderBookActions,options).ready,false,JSON.stringify(options));
 });
-test('serialized tools observer reports real expanded header, inert state and actual focus without changing them',()=>{
-  const ready=runProbe(observeReaderTools,{});assert.deepEqual(ready,{expanded:'true',headerInert:false,headerVisible:true,focusInHeader:true});
-  assert.equal(runProbe(observeReaderTools,{collapsed:true}).expanded,'false');assert.equal(runProbe(observeReaderTools,{inert:true}).headerInert,true);assert.equal(runProbe(observeReaderTools,{hiddenHeader:true}).headerVisible,false);assert.equal(runProbe(observeReaderTools,{outsideFocus:true}).focusInHeader,false);
+function toolsProbe(options={}){
+  const rect={x:0,y:0,width:100,height:44,bottom:44,right:100,top:0,left:0};
+  const make=(id,parent=null)=>({id,parentElement:parent,tagName:'BUTTON',isConnected:true,disabled:false,hidden:false,inert:false,tabIndex:0,
+    style:{display:'block',visibility:'visible',opacity:'1'},getClientRects:()=>[rect],getBoundingClientRect:()=>rect,
+    getAttribute(name){return this[name]??null;},matches:()=>true,
+    closest(selector){for(let n=this;n;n=n.parentElement)if(n.inert||n.hidden)return n;return null;},
+    contains(node){for(let n=node;n;n=n.parentElement)if(n===this)return true;return false;},
+  });
+  const header=make('reading-header'),panel=make('reading-tools-panel'),bookInfo=make('open-book-info',header),headerControl=make('header-control',header),hubControl=make('open-toc',panel),pill=make('reading-tools-trigger'),body=make('body'),outside=make('outside');
+  pill['aria-expanded']=options.collapsed?'false':'true';panel['aria-hidden']='false';
+  const nodes={'reading-header':header,'reading-tools-panel':panel,'open-book-info':bookInfo,'reading-tools-trigger':pill};
+  const active=options.focus==='hub'?hubControl:options.focus==='pill'?pill:options.focus==='body'?body:options.focus==='outside'?outside:headerControl;
+  if(options.headerInert)header.inert=true;if(options.headerHidden)header.style.visibility='hidden';if(options.headerTransparent)header.style.opacity='0';
+  if(options.bookInfoDisabled)bookInfo.disabled=true;if(options.bookInfoHidden)bookInfo.style.display='none';
+  if(options.panelInert)panel.inert=true;if(options.panelHidden)panel.style.visibility='hidden';if(options.panelCollapsed)panel['aria-hidden']='true';
+  if(options.disabled)active.disabled=true;if(options.hidden)active.hidden=true;if(options.inert)active.inert=true;
+  if(options.visibility)active.style.visibility=options.visibility;if(options.transparent)active.style.opacity='0';if(options.noRects)active.getClientRects=()=>[];
+  if(options.offscreen)active.getBoundingClientRect=()=>({...rect,top:900,bottom:944});if(options.unfocusable)active.tabIndex=-1;
+  return {document:{activeElement:active,getElementById:id=>nodes[id]||null},getComputedStyle:node=>node.style,innerWidth:393,innerHeight:722};
+}
+const runToolsProbe=options=>JSON.parse(JSON.stringify(vm.runInNewContext('('+observeReaderTools.toString()+')()',toolsProbe(options))));
+test('serialized reader tools readiness accepts real usable header and hub keyboard targets',()=>{
+  const header=runToolsProbe({}),hub=runToolsProbe({focus:'hub'});
+  assert.equal(header.ready,true);assert.equal(header.focusInHeader,true);assert.equal(header.focusInPanel,false);
+  assert.equal(hub.ready,true);assert.equal(hub.focusInHeader,false);assert.equal(hub.focusInPanel,true);
 });
+test('reader tools readiness rejects pill/body/outside and unusable focused controls',()=>{
+  for(const options of [{focus:'pill'},{focus:'body'},{focus:'outside'},{collapsed:true},{disabled:true},{hidden:true},{inert:true},{visibility:'hidden'},{visibility:'collapse'},{transparent:true},{noRects:true},{offscreen:true},{unfocusable:true}])assert.equal(runToolsProbe(options).ready,false,JSON.stringify(options));
+});
+test('a hub focus cannot bypass unavailable panel, header or actual book-info navigation',()=>{
+  for(const options of [{panelInert:true},{panelHidden:true},{panelCollapsed:true},{headerInert:true},{headerHidden:true},{headerTransparent:true},{bookInfoDisabled:true},{bookInfoHidden:true}])assert.equal(runToolsProbe({focus:'hub',...options}).ready,false,JSON.stringify(options));
+});
+test('the actual harness gate consumes the complete reader-tools readiness contract',async()=>{
+  const {readFile}=await import('node:fs/promises'),source=await readFile(new URL('../tools/platform-typography.mjs',import.meta.url),'utf8');
+  const gate=source.split('\n').find(line=>line.includes('const toolsOpened=await until('));assert.ok(gate,'Actual reader gate required');
+  const run=options=>vm.runInNewContext('(async()=>{'+gate+'return toolsOpened;})()',{
+    cdp:{evaluate:async()=>runToolsProbe(options)},observeReaderTools,remoteGuard(){},
+    until:async read=>{const state=await read();if(!state)throw Error('unusable navigation');return state;},
+  });
+  assert.equal((await run({focus:'hub'})).ready,true);
+  for(const options of [{focus:'pill'},{focus:'body'},{focus:'hub',panelHidden:true},{focus:'hub',bookInfoDisabled:true},{disabled:true}])await assert.rejects(()=>run(options),/unusable navigation/);
+});
+
 
 
 async function paintScenario({animationUntil=0,parentUntil=0,permanentAnimation=false,permanentOpacity=false,unsupported=false,removed=false}={}){

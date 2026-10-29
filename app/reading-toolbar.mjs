@@ -1,5 +1,9 @@
 import {overlayOpen} from './popover-controls.mjs';
 import {t,onUiLocaleChange} from './ui-locale.mjs';
+
+import {cancelReadingToolFocus} from './reading-tool-focus.mjs';
+export {handoffReadingToolFocus,cancelReadingToolFocus} from './reading-tool-focus.mjs';
+
 // Visibility is independent of the reading clock and never records activity.
 export function createReadingToolbarState({onChange=()=>{}}={}) {
   let expanded=false,preview=false,timer,disposed=false;
@@ -28,6 +32,7 @@ export function mountReadingToolbar(root,{onExpandedChange=()=>{},header=null,do
   const listen=(target,name,fn,options)=>{const owned=event=>{if(!disposed)fn(event);};target.addEventListener(name,owned,options);listeners.push(()=>target.removeEventListener(name,owned,options));};
   const reveal=(focus=true,preview=false)=>{revealFocus=focus;toolbar.reveal({preview});};
   const toolbar=createReadingToolbarState({onChange(expanded,{restoreFocus=true,preview=false}={}){
+    if(!expanded)cancelReadingToolFocus(document);
     // Focus must never remain inside a concealed, inert panel.
     if(!expanded&&restoreFocus&&root.contains(document.activeElement))trigger.focus({preventScroll:true});
     panel.inert=!expanded;
