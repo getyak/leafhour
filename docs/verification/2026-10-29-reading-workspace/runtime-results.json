@@ -1,0 +1,32 @@
+{
+  "status": "passed",
+  "realOfficialDSH": true,
+  "syntheticNotes": 2,
+  "privateUserNotesSent": 0,
+  "items": 1,
+  "allCitationsSelected": true,
+  "providerCalls": [
+    {
+      "status": "unknown",
+      "costStatus": "unknown",
+      "costMicrousd": null,
+      "usage": {
+        "inputTokens": null,
+        "outputTokens": null,
+        "cacheReadTokens": null,
+        "cacheWriteTokens": null
+      }
+    },
+    {
+      "status": "completed",
+      "costStatus": "reported_usage_rated",
+      "costMicrousd": 136,
+      "usage": {
+        "inputTokens": 621,
+        "outputTokens": 70,
+        "cacheReadTokens": 0,
+        "cacheWriteTokens": 0
+      }
+    }
+  ]
+}

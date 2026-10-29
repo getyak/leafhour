@@ -550,7 +550,7 @@
       },
       {
         "file": "app/portal.js",
-        "sha256": "93add9b915c88184aa3683a2d18ee79e30fefbee574cb8b936c1985ddca70008"
+        "sha256": "fcc01a5010424c164ad17bb707ec8a4735e0763cd800e5c2cae4ebb2f51504bc"
       },
       {
         "file": "app/preference-memory-codec.mjs",
@@ -858,7 +858,7 @@
       },
       {
         "file": "app/reading-workspace.mjs",
-        "sha256": "c0014a1737613c0badba6ae738d472302cd801cb8b943ef7e947defaef476b11"
+        "sha256": "900ee28725155e2d237eac17bdd3702a03fbbf4d9c8c83f37345eed0cd67cbc5"
       },
       {
         "file": "app/save-receipts.mjs",
@@ -938,19 +938,19 @@
       },
       {
         "file": "app/ui-catalogs/en.mjs",
-        "sha256": "37e1740390f786ec335c7e5571673f599bde4dc8090b6e1c57b6bcb790ff72df"
+        "sha256": "2ad8f7d4df29b6b095e1aaf80c0cd7c50b81dc076a9c39c4c5cf836acac23264"
       },
       {
         "file": "app/ui-catalogs/ja.mjs",
-        "sha256": "ea47e29a0cbb3f9d0ab83e11374e3a7200a3658200d948a0b26a123b9bfad401"
+        "sha256": "8d477cc677d8ae443ac1580951204e3826c0694830abf3add73a03814036259a"
       },
       {
         "file": "app/ui-catalogs/zh-Hans.mjs",
-        "sha256": "2f524a6d410fd444bcea7ad96ac83e40c0fd53be2ed7766d33f43c89666ec139"
+        "sha256": "5d91b4587aeb79b6178d48cf355148d8d4c9b215c889cf4bb73c5c3781676835"
       },
       {
         "file": "app/ui-catalogs/zh-Hant.mjs",
-        "sha256": "2388cdc085bd05e4fd57ce6ded24893916b0d4ff2a6d93a137a6e808324bf603"
+        "sha256": "06c02bbf8f94b1545575a7facbf46f57fccd3ab48ccbb2a39af6ba1d79b85b15"
       },
       {
         "file": "app/ui-first-paint-bootstrap.mjs",
@@ -1194,7 +1194,7 @@
       },
       {
         "file": "server/library-service.mjs",
-        "sha256": "bdef4fb3b7830fe71e5e23aeb432dd1a075af295209e15c0e9199776984c43f4"
+        "sha256": "c8955e033653d6fb5b38413713f6b229680552fd602ad73655f71e6269076718"
       },
       {
         "file": "server/listening-guide-content.mjs",
@@ -1401,7 +1401,7 @@
         "sha256": "531202f1814314b6c76bfef38b2ea66636425b1ca9b445db349e70ebb8bcd00e"
       }
     ],
-    "inputDigest": "18940ca85a28a1a094e2bf6faa09780c45588d36c12e2d42fa6dd0f2b6ae2656"
+    "inputDigest": "f1e07b11b18c7aa38710c3ce21fe564ea199a4662080694df039867be0996a29"
   },
   "locales": [
     "en",
@@ -1415,25 +1415,25 @@
       "locale": "en",
       "file": "app/ui-catalogs/en.mjs",
       "missing": false,
-      "entries": 2458
+      "entries": 2459
     },
     {
       "locale": "zh-Hans",
       "file": "app/ui-catalogs/zh-Hans.mjs",
       "missing": false,
-      "entries": 2458
+      "entries": 2459
     },
     {
       "locale": "zh-Hant",
       "file": "app/ui-catalogs/zh-Hant.mjs",
       "missing": false,
-      "entries": 2458
+      "entries": 2459
     },
     {
       "locale": "ja",
       "file": "app/ui-catalogs/ja.mjs",
       "missing": false,
-      "entries": 2458
+      "entries": 2459
     }
   ],
   "items": [
@@ -18040,7 +18040,7 @@
         {
           "file": "app/reading-workspace.mjs",
           "line": 83,
-          "column": 1005
+          "column": 1102
         },
         {
           "file": "app/reading-workspace.mjs",
@@ -18069,7 +18069,7 @@
         },
         {
           "file": "server/library-service.mjs",
-          "line": 467,
+          "line": 476,
           "column": 239
         },
         {
@@ -20582,7 +20582,7 @@
         {
           "file": "app/reading-workspace.mjs",
           "line": 97,
-          "column": 535
+          "column": 696
         },
         {
           "file": "app/source-review.mjs",
@@ -133567,7 +133567,7 @@
         },
         {
           "file": "app/reading-workspace.mjs",
-          "line": 125,
+          "line": 126,
           "column": 794
         },
         {
@@ -133639,12 +133639,12 @@
         },
         {
           "file": "app/reading-workspace.mjs",
-          "line": 120,
+          "line": 121,
           "column": 111
         },
         {
           "file": "app/reading-workspace.mjs",
-          "line": 125,
+          "line": 126,
           "column": 813
         },
         {
@@ -133868,7 +133868,13 @@
       },
       "missingLocales": [],
       "duplicates": [],
-      "consumers": [],
+      "consumers": [
+        {
+          "file": "app/portal.js",
+          "line": 99,
+          "column": 874
+        }
+      ],
       "hints": [
         {
           "kind": "key-namespace",
@@ -133919,7 +133925,13 @@
       },
       "missingLocales": [],
       "duplicates": [],
-      "consumers": [],
+      "consumers": [
+        {
+          "file": "app/portal.js",
+          "line": 99,
+          "column": 822
+        }
+      ],
       "hints": [
         {
           "kind": "key-namespace",
@@ -135407,7 +135419,7 @@
       "consumers": [
         {
           "file": "app/reading-workspace.mjs",
-          "line": 120,
+          "line": 121,
           "column": 177
         }
       ],
@@ -135464,7 +135476,7 @@
       "consumers": [
         {
           "file": "app/reading-workspace.mjs",
-          "line": 120,
+          "line": 121,
           "column": 202
         }
       ],
@@ -135521,7 +135533,7 @@
       "consumers": [
         {
           "file": "app/reading-workspace.mjs",
-          "line": 120,
+          "line": 121,
           "column": 229
         }
       ],
@@ -135884,12 +135896,12 @@
       "consumers": [
         {
           "file": "app/reading-workspace.mjs",
-          "line": 120,
+          "line": 121,
           "column": 352
         },
         {
           "file": "app/reading-workspace.mjs",
-          "line": 120,
+          "line": 121,
           "column": 376
         }
       ],
@@ -135946,7 +135958,7 @@
       "consumers": [
         {
           "file": "app/reading-workspace.mjs",
-          "line": 120,
+          "line": 121,
           "column": 253
         }
       ],
@@ -136003,7 +136015,7 @@
       "consumers": [
         {
           "file": "app/reading-workspace.mjs",
-          "line": 120,
+          "line": 121,
           "column": 288
         }
       ],
@@ -136060,7 +136072,7 @@
       "consumers": [
         {
           "file": "app/reading-workspace.mjs",
-          "line": 120,
+          "line": 121,
           "column": 325
         }
       ],
@@ -136117,12 +136129,12 @@
       "consumers": [
         {
           "file": "app/reading-workspace.mjs",
-          "line": 114,
+          "line": 115,
           "column": 141
         },
         {
           "file": "app/reading-workspace.mjs",
-          "line": 120,
+          "line": 121,
           "column": 409
         }
       ],
@@ -136346,33 +136358,84 @@
       }
     },
     {
-      "id": "ws.localDraft",
+      "id": "ws.draftVolatile",
       "kind": "catalogue",
       "values": {
         "en": {
           "file": "app/ui-catalogs/en.mjs",
           "line": 2399,
           "column": 3,
+          "value": "This browser cannot keep the draft. Save or copy these words before refreshing.",
+          "sha256": "e247309569581004d355c64dd22440d35e910560acb875ea4f188fda936cd9cd"
+        },
+        "zh-Hans": {
+          "file": "app/ui-catalogs/zh-Hans.mjs",
+          "line": 2398,
+          "column": 3,
+          "value": "浏览器暂时无法保留草稿。刷新前请保存或复制这些文字。",
+          "sha256": "9986e668f45154ea8d73191a6423e60f2f6ccd4bff4d06d14445ec832a53494a"
+        },
+        "zh-Hant": {
+          "file": "app/ui-catalogs/zh-Hant.mjs",
+          "line": 2398,
+          "column": 3,
+          "value": "瀏覽器暫時無法保留草稿。重新整理前請儲存或複製這些文字。",
+          "sha256": "156cdd9a9f16493995c68cb581ae69de5b1d3bea3b39e5ad094a93feee4536ce"
+        },
+        "ja": {
+          "file": "app/ui-catalogs/ja.mjs",
+          "line": 2398,
+          "column": 3,
+          "value": "このブラウザに下書きを残せません。再読み込みの前に保存するか、言葉をコピーしてください。",
+          "sha256": "1ac272ac717b676ac8d4597a1c98d98e149904166f97d5f6a261cc8ec72bbea8"
+        }
+      },
+      "missingLocales": [],
+      "duplicates": [],
+      "consumers": [],
+      "hints": [
+        {
+          "kind": "key-namespace",
+          "evidence": "key-namespace:ws",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unreviewed",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "ws.localDraft",
+      "kind": "catalogue",
+      "values": {
+        "en": {
+          "file": "app/ui-catalogs/en.mjs",
+          "line": 2400,
+          "column": 3,
           "value": "Unsaved words are kept in this browser.",
           "sha256": "eda537f44fbcd5c14db1dda1058c4bceae5f79564c4b8dbd7a53fb46f02967ea"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
-          "line": 2398,
+          "line": 2399,
           "column": 3,
           "value": "未保存的文字已留在当前浏览器。",
           "sha256": "3f3b4bc5ca8b18109cfa0acf9a053d0caeec422c4e28d07cfcf41954770883cf"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
-          "line": 2398,
+          "line": 2399,
           "column": 3,
           "value": "未儲存的文字已留在目前瀏覽器。",
           "sha256": "3df4077d340239e7347460b2c912f400d8b2035943d633adbc61ba976692a3f2"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
-          "line": 2398,
+          "line": 2399,
           "column": 3,
           "value": "未保存の言葉はこのブラウザに残ります。",
           "sha256": "5a54c7637106bd93efdc881de7931eea5b4af848ee880291cb610db9e034d937"
@@ -136402,28 +136465,28 @@
       "values": {
         "en": {
           "file": "app/ui-catalogs/en.mjs",
-          "line": 2400,
+          "line": 2401,
           "column": 3,
           "value": "This note changed elsewhere. Your words are kept here; reopen the latest note before saving.",
           "sha256": "4d80a4b9b4d1dc4f4607b2621ecb18b36e7b3cddca61db1f2223ed0d18682acd"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
-          "line": 2399,
+          "line": 2400,
           "column": 3,
           "value": "这条笔记已在别处修改。当前文字已保留，请先重新打开较新的笔记。",
           "sha256": "5cb4de772ac6fd3fe99ebc9a03cbd4110324297466b88058bf1a6b55e89e9e11"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
-          "line": 2399,
+          "line": 2400,
           "column": 3,
           "value": "這條筆記已在別處修改。目前文字已保留，請先重新開啟較新的筆記。",
           "sha256": "9fb0c541cc806a2c952247af2c29ffd87d2ab2e27b5aadab6439f32ceef16fd6"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
-          "line": 2399,
+          "line": 2400,
           "column": 3,
           "value": "別の場所で変更されています。入力はここに残るので、最新のノートを開き直してください。",
           "sha256": "5c6819a48a2b4ad9f682b612cc3ab4baf4a4b106f642b4172c49bd5b3b868412"
@@ -136453,28 +136516,28 @@
       "values": {
         "en": {
           "file": "app/ui-catalogs/en.mjs",
-          "line": 2401,
+          "line": 2402,
           "column": 3,
           "value": "Undo last edit",
           "sha256": "1ddb9bf30d5ba0eab784fdbc44d6c5847c1c9fa9c736f090677419586ee095b7"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
-          "line": 2400,
+          "line": 2401,
           "column": 3,
           "value": "撤销上次修改",
           "sha256": "fa0503a36b394ba9744b1cb967f8bb964778d4c33f0c5b3c12288e221c6ea05a"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
-          "line": 2400,
+          "line": 2401,
           "column": 3,
           "value": "復原上次修改",
           "sha256": "0d14a7790ef976879182c31503efe501a0a17d7898f9e592c26f4478f93fc7a2"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
-          "line": 2400,
+          "line": 2401,
           "column": 3,
           "value": "直前の編集を戻す",
           "sha256": "1fa6f28dc7e609579921d743690fef0d94a97ec12633d5622a2377c0f8705f55"
@@ -136504,28 +136567,28 @@
       "values": {
         "en": {
           "file": "app/ui-catalogs/en.mjs",
-          "line": 2402,
+          "line": 2403,
           "column": 3,
           "value": "To continue",
           "sha256": "ab0e25ee216738c39dcf0e7eee552c798ca5b5597a3da6f4ff590d1b8ef69355"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
-          "line": 2401,
+          "line": 2402,
           "column": 3,
           "value": "待继续",
           "sha256": "8f1a92ce717a8b3f64f6384a1e19719cb69908d34dde7637515cc407b8ba1403"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
-          "line": 2401,
+          "line": 2402,
           "column": 3,
           "value": "待繼續",
           "sha256": "4f57145b24c2d833a0553aeac2543b1b08ca70534bf0dd1aa667cd2a6f701671"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
-          "line": 2401,
+          "line": 2402,
           "column": 3,
           "value": "考え中",
           "sha256": "68bf8405ee46e4cb8bfbefe1fae03ec0334b9c889b162e2ba62750a3a1b05722"
@@ -136555,28 +136618,28 @@
       "values": {
         "en": {
           "file": "app/ui-catalogs/en.mjs",
-          "line": 2403,
+          "line": 2404,
           "column": 3,
           "value": "A new understanding",
           "sha256": "665ec0f37f10c1e900ec7feed8cc8001b867dee0be9ea1d9574573704fce57d5"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
-          "line": 2402,
+          "line": 2403,
           "column": 3,
           "value": "有了新理解",
           "sha256": "ec170071cb8db293f270ab0c2bcb5d5615e17c5d2dacc0f0ebecec1dbfcb0a9f"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
-          "line": 2402,
+          "line": 2403,
           "column": 3,
           "value": "有了新理解",
           "sha256": "ec170071cb8db293f270ab0c2bcb5d5615e17c5d2dacc0f0ebecec1dbfcb0a9f"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
-          "line": 2402,
+          "line": 2403,
           "column": 3,
           "value": "新しい理解",
           "sha256": "17a181cc7db27a83a9e94da77cbbb2227a2043e67b50117724013df8121480d7"
@@ -136606,28 +136669,28 @@
       "values": {
         "en": {
           "file": "app/ui-catalogs/en.mjs",
-          "line": 2404,
+          "line": 2405,
           "column": 3,
           "value": "Mark a new understanding",
           "sha256": "9c22aeca4b1487212440d237a24a05ea2b661b9207e0ee3760b06ac95754aab6"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
-          "line": 2403,
+          "line": 2404,
           "column": 3,
           "value": "标记有了新理解",
           "sha256": "865558e76255cab3815a80c529d5e3c80d47c44dc7ca21b1207a71db89be0bff"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
-          "line": 2403,
+          "line": 2404,
           "column": 3,
           "value": "標記有了新理解",
           "sha256": "58929177956e37f239390a736c93618e657dbac95d01a38928ed750bbca745d9"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
-          "line": 2403,
+          "line": 2404,
           "column": 3,
           "value": "新しい理解として記録",
           "sha256": "49b884187e23b73be249a3472ba7665407c0db74c66ce5555e4d3cd7fb6f42da"
@@ -136657,28 +136720,28 @@
       "values": {
         "en": {
           "file": "app/ui-catalogs/en.mjs",
-          "line": 2405,
+          "line": 2406,
           "column": 3,
           "value": "Continue this question",
           "sha256": "372d501119fee746ebc9e3e089b12056eba49289df0087d70b7167e0b2be2cbb"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
-          "line": 2404,
+          "line": 2405,
           "column": 3,
           "value": "继续这个问题",
           "sha256": "cb88446c206d6bebd4b4e00072da4717667a3e9a05dff48578c8b595b8a3a8f2"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
-          "line": 2404,
+          "line": 2405,
           "column": 3,
           "value": "繼續這個問題",
           "sha256": "56af5b36ce1ca86ca80efadf698eff78164344827c6b27294161c530ee705d25"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
-          "line": 2404,
+          "line": 2405,
           "column": 3,
           "value": "この問いを続ける",
           "sha256": "1d60ce5f8c77b77b450eea73afec8e20d8a685235bd757a8ea211077bb6184d7"
@@ -136708,28 +136771,28 @@
       "values": {
         "en": {
           "file": "app/ui-catalogs/en.mjs",
-          "line": 2406,
+          "line": 2407,
           "column": 3,
           "value": "Later thoughts",
           "sha256": "368d30075259896af092f410749626f4b6fe241d2c9dcc8fb92c426dba109d6d"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
-          "line": 2405,
+          "line": 2406,
           "column": 3,
           "value": "后来的理解",
           "sha256": "3199755ae77bd100be382157833dac954b458bcd084bd393153c4e0f415a1502"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
-          "line": 2405,
+          "line": 2406,
           "column": 3,
           "value": "後來的理解",
           "sha256": "a1f1eaf024df69d44a562a2d9b7e47550066bcfed3327dd2c69dadb4b6097511"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
-          "line": 2405,
+          "line": 2406,
           "column": 3,
           "value": "その後の考え",
           "sha256": "be6ab5f105fec886fc7bdb418b34b0903021b59b9d647bc90f1f8487a55b7157"
@@ -136759,28 +136822,28 @@
       "values": {
         "en": {
           "file": "app/ui-catalogs/en.mjs",
-          "line": 2407,
+          "line": 2408,
           "column": 3,
           "value": "Add your current understanding",
           "sha256": "57b50aaa3197757c142b531e443426f00bce86b64ca1fb63894f715ed131edf6"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
-          "line": 2406,
+          "line": 2407,
           "column": 3,
           "value": "补上现在的理解",
           "sha256": "9c3d763d7912faa673f6c74f30090d1d99db35589ba207ff8b3adf6cca0f7241"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
-          "line": 2406,
+          "line": 2407,
           "column": 3,
           "value": "補上現在的理解",
           "sha256": "7eef74b4c16ac153a1759f704203c6abc5ba11f83705defe2bce76c845b3c9c4"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
-          "line": 2406,
+          "line": 2407,
           "column": 3,
           "value": "今の理解を書き足す",
           "sha256": "2782c35a59138fa9ec534220188f8fd3ad2b7366bdc12ea19fe66d5dd00a5d28"
@@ -136810,28 +136873,28 @@
       "values": {
         "en": {
           "file": "app/ui-catalogs/en.mjs",
-          "line": 2408,
+          "line": 2409,
           "column": 3,
           "value": "Kept separately from your earlier words.",
           "sha256": "0e3460d2429b6880f81842f494e2172327eabe917de641be4cf280cced60ad37"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
-          "line": 2407,
+          "line": 2408,
           "column": 3,
           "value": "与以前的原话分开保留。",
           "sha256": "d4a1860a92ddcc24d55d1dc271d142832209a520a85f711211ec8764c2703fa3"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
-          "line": 2407,
+          "line": 2408,
           "column": 3,
           "value": "與以前的原話分開保留。",
           "sha256": "284dbb239b0aa30da913142d9af8105822eb666c90cb43a85e5479e8837c6b4c"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
-          "line": 2407,
+          "line": 2408,
           "column": 3,
           "value": "以前の言葉と分けて残します。",
           "sha256": "97f32473e8d9e87672aaadb7b60d5ca88cd27a77bba7fdd5189950478631863f"
@@ -136861,28 +136924,28 @@
       "values": {
         "en": {
           "file": "app/ui-catalogs/en.mjs",
-          "line": 2409,
+          "line": 2410,
           "column": 3,
           "value": "New topic",
           "sha256": "ed7c2b116cadd98ad5c992e49af50554d6dffc11925222bf376c9e0e551d54c4"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
-          "line": 2408,
+          "line": 2409,
           "column": 3,
           "value": "新建主题",
           "sha256": "14001ee144830a016324190df25bc2672315d461643b7890dff62848a91e1f68"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
-          "line": 2408,
+          "line": 2409,
           "column": 3,
           "value": "新增主題",
           "sha256": "ec7987cd6048891af0142178ed3b9cf55e4c467e2665aaa75c31559d3555670e"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
-          "line": 2408,
+          "line": 2409,
           "column": 3,
           "value": "テーマを作る",
           "sha256": "e17b048f41dbf9ca80b391bb868c88c244f4897c3b5c802eb031fbd83324c09f"
@@ -136912,28 +136975,28 @@
       "values": {
         "en": {
           "file": "app/ui-catalogs/en.mjs",
-          "line": 2410,
+          "line": 2411,
           "column": 3,
           "value": "Topic name",
           "sha256": "c05cbe5c782b84ad8c11bd0f61e25d44958a6e8322c11173c9f6228499aa2ce2"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
-          "line": 2409,
+          "line": 2410,
           "column": 3,
           "value": "主题名称",
           "sha256": "e479c05c94a10744919b56a32ddec6c33f8546afd0c5104d1181bd4d9ce465f2"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
-          "line": 2409,
+          "line": 2410,
           "column": 3,
           "value": "主題名稱",
           "sha256": "c3d568bdc3e75f4659f9422d94614d45c7cd99cb2e7a94b2bf2425891f27f29f"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
-          "line": 2409,
+          "line": 2410,
           "column": 3,
           "value": "テーマ名",
           "sha256": "4d0aac7a52cd7106bc71acea539eca2f21b9077c357a0aa239c3c4b3bc8c26a1"
@@ -136963,28 +137026,28 @@
       "values": {
         "en": {
           "file": "app/ui-catalogs/en.mjs",
-          "line": 2411,
+          "line": 2412,
           "column": 3,
           "value": "Create",
           "sha256": "4759498ac2a719c619e2c8cf8ee60af2d2407425e95d308eb208425b2a6d427a"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
-          "line": 2410,
+          "line": 2411,
           "column": 3,
           "value": "创建",
           "sha256": "cde2cd071d25bbab4fab3c1956d3034b08c979a25c65bef0c816999e355f6561"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
-          "line": 2410,
+          "line": 2411,
           "column": 3,
           "value": "建立",
           "sha256": "da34023b4bdaa4d8201bbbbfb34a621e161b887375be451128f5f0654b756ca9"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
-          "line": 2410,
+          "line": 2411,
           "column": 3,
           "value": "作成",
           "sha256": "900f8294213e0ec0ea1b2a90b2c869fe27df3322a5f8e0f2771650e82f79e7d2"
@@ -137014,28 +137077,28 @@
       "values": {
         "en": {
           "file": "app/ui-catalogs/en.mjs",
-          "line": 2412,
+          "line": 2413,
           "column": 3,
           "value": "Topics",
           "sha256": "e22820fcf5cd90e3fdd99a7569e0ee2f30eb7ebadfb2fe4d159b30c166ff81b7"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
-          "line": 2411,
+          "line": 2412,
           "column": 3,
           "value": "主题",
           "sha256": "788db1cfec2a3db586e72037c22ed21d09b3a370adc6212f896956a729e59cd3"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
-          "line": 2411,
+          "line": 2412,
           "column": 3,
           "value": "主題",
           "sha256": "e9666224fbb7481e757a6b7c4c7ce0062ed853c0d4a5bcb39bceb151274dbc4f"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
-          "line": 2411,
+          "line": 2412,
           "column": 3,
           "value": "テーマ",
           "sha256": "e94d83648592e6fb82c83226733e8eae5471f075bcf42fcf3af450400290739d"
@@ -137065,28 +137128,28 @@
       "values": {
         "en": {
           "file": "app/ui-catalogs/en.mjs",
-          "line": 2413,
+          "line": 2414,
           "column": 3,
           "value": "Find by meaning",
           "sha256": "91599af9502a671558a9353e474b74ed57df25ecce2abb34ebffaf36a76e8eb8"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
-          "line": 2412,
+          "line": 2413,
           "column": 3,
           "value": "按大意查找",
           "sha256": "54824d8a5ab318012f617df2c41613e95c21f88cc24d57cc1290248eafe66652"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
-          "line": 2412,
+          "line": 2413,
           "column": 3,
           "value": "按大意查找",
           "sha256": "54824d8a5ab318012f617df2c41613e95c21f88cc24d57cc1290248eafe66652"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
-          "line": 2412,
+          "line": 2413,
           "column": 3,
           "value": "意味から探す",
           "sha256": "94541af6f57dd629c08e2cdc9121e74b363ef92360f3faa03d12bc2e2470b59e"
@@ -137116,28 +137179,28 @@
       "values": {
         "en": {
           "file": "app/ui-catalogs/en.mjs",
-          "line": 2414,
+          "line": 2415,
           "column": 3,
           "value": "Compare notes",
           "sha256": "47373670f1926c06ab00a69d2cd7b360e6821cb8b2861017b887f8cac3cc7e8f"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
-          "line": 2413,
+          "line": 2414,
           "column": 3,
           "value": "比较所选笔记",
           "sha256": "8dd230529b5f55a201806b65cecd0d3342a5cfd251647530ad45e11d89a984f8"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
-          "line": 2413,
+          "line": 2414,
           "column": 3,
           "value": "比較所選筆記",
           "sha256": "23e5120d737b7b9dec02f6386b7200510dbceaa541626e38633e1e2df114e034"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
-          "line": 2413,
+          "line": 2414,
           "column": 3,
           "value": "ノートを比べる",
           "sha256": "102dcd13e08100c42dc76164c8e8711760f977ed2629e5ee2662d37ab663de03"
@@ -137167,28 +137230,28 @@
       "values": {
         "en": {
           "file": "app/ui-catalogs/en.mjs",
-          "line": 2415,
+          "line": 2416,
           "column": 3,
           "value": "Review this period",
           "sha256": "00fef341129774dd3634e42d863eb943de07f9865a47213cce08d237489f41c1"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
-          "line": 2414,
+          "line": 2415,
           "column": 3,
           "value": "回顾这段时间",
           "sha256": "d809ad407d6c629ae92e1b4e23b9affa33a03605af2a636d437f3a2a5e611f0d"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
-          "line": 2414,
+          "line": 2415,
           "column": 3,
           "value": "回顧這段時間",
           "sha256": "001c1e4f45dd8753d1f0ca9764c98a69027b8d2c5bd88ff2bb05c147ae117845"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
-          "line": 2414,
+          "line": 2415,
           "column": 3,
           "value": "この期間を振り返る",
           "sha256": "61d42d1aec9aa8de08089df4d4a16f0ba7572d486d9bbaa745ec07899679c1bb"
@@ -137218,28 +137281,28 @@
       "values": {
         "en": {
           "file": "app/ui-catalogs/en.mjs",
-          "line": 2416,
+          "line": 2417,
           "column": 3,
           "value": "Choose the saved notes to use",
           "sha256": "f0ab25024e081a88b30742c0ff40efaddf193a57c79daec461ba0428e52bee17"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
-          "line": 2415,
+          "line": 2416,
           "column": 3,
           "value": "选择本次使用的笔记",
           "sha256": "fea45a044575688ec827a2c52e4b104e01f70f18a52f0166c0ac1c4db88dbd19"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
-          "line": 2415,
+          "line": 2416,
           "column": 3,
           "value": "選擇本次使用的筆記",
           "sha256": "2a15db10ec1e23e44a3751fa1f0462a35b20c690c31fc6c32fd996b82d3500a4"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
-          "line": 2415,
+          "line": 2416,
           "column": 3,
           "value": "今回使う保存済みノートを選ぶ",
           "sha256": "3746fa370f0ed6528e76c5f9eb2b62da5858490386a81ab781f56aeb4849318a"
@@ -137269,28 +137332,28 @@
       "values": {
         "en": {
           "file": "app/ui-catalogs/en.mjs",
-          "line": 2417,
+          "line": 2418,
           "column": 3,
           "value": "{count} selected · up to 24",
           "sha256": "29b18eb26689fd358e2af016741aaffe097a9e03ac108bb4ab2912f7ddc12b24"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
-          "line": 2416,
+          "line": 2417,
           "column": 3,
           "value": "已选 {count} 条，最多 24 条",
           "sha256": "952d365a8ef12ab85096c8a25d074c6b368bbabd3dc28aab76f97ba4a518b929"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
-          "line": 2416,
+          "line": 2417,
           "column": 3,
           "value": "已選 {count} 條，最多 24 條",
           "sha256": "89ba10fd7536012204d108d98e4c09f870845a9b294e18b0496806dd491f6d55"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
-          "line": 2416,
+          "line": 2417,
           "column": 3,
           "value": "{count} 件選択・最大 24 件",
           "sha256": "57b020a3abe29fd6576a4dcc6b187bf30d440bb65631b928d8bd3023c8a2c5d1"
@@ -137320,28 +137383,28 @@
       "values": {
         "en": {
           "file": "app/ui-catalogs/en.mjs",
-          "line": 2418,
+          "line": 2419,
           "column": 3,
           "value": "Select the first 24 shown",
           "sha256": "873447582f04bb4a5f182b54708fab6be6f96d76d288943dfbd0d43f43985f70"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
-          "line": 2417,
+          "line": 2418,
           "column": 3,
           "value": "选择当前前 24 条",
           "sha256": "5e58e12d7969faa5778b2ca08146775beb49583ae96b80737dc732173c235dbc"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
-          "line": 2417,
+          "line": 2418,
           "column": 3,
           "value": "選擇目前前 24 條",
           "sha256": "69dfa93ba505555d1f0f58be56b3584a86c0e5d7f6af8750b201192aded8bb18"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
-          "line": 2417,
+          "line": 2418,
           "column": 3,
           "value": "表示中の先頭 24 件を選ぶ",
           "sha256": "87f0410d0ed2e45302dc4474ad51430d6d37a168dc39177391423d188d5df3df"
@@ -137371,28 +137434,28 @@
       "values": {
         "en": {
           "file": "app/ui-catalogs/en.mjs",
-          "line": 2419,
+          "line": 2420,
           "column": 3,
           "value": "Clear selection",
           "sha256": "cea4d2e010b8fd52bc28a66eca24ff0d616b2c7d982545757780c196c5cc04c7"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
-          "line": 2418,
+          "line": 2419,
           "column": 3,
           "value": "清空选择",
           "sha256": "a3c9748924640c32492aee3f15e5249bee3e8e30e13413efb6e255823d823fb8"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
-          "line": 2418,
+          "line": 2419,
           "column": 3,
           "value": "清空選擇",
           "sha256": "bb43abb21a1fb8822f1f1b27f0c015a8450783dca62678d6cb3ae0828f5f8491"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
-          "line": 2418,
+          "line": 2419,
           "column": 3,
           "value": "選択を解除",
           "sha256": "618a09c130d312bf0ff5d8548bdcecb9610f30f4052f142602a3c779cabf164f"
@@ -137422,28 +137485,28 @@
       "values": {
         "en": {
           "file": "app/ui-catalogs/en.mjs",
-          "line": 2420,
+          "line": 2421,
           "column": 3,
           "value": "What would you like to find or compare?",
           "sha256": "92321940a93a59452b089c094626e773e0747c3b9868058cc835ec090522a233"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
-          "line": 2419,
+          "line": 2420,
           "column": 3,
           "value": "想找什么，或想比较什么？",
           "sha256": "42e96aa450f867ce6d35fc0870d54500d67bcc61fc1bfb6e8d34af0486b739cc"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
-          "line": 2419,
+          "line": 2420,
           "column": 3,
           "value": "想找什麼，或想比較什麼？",
           "sha256": "a88d6757e99295b03d164aa6fc9bae34f9b864f382e2befd6c89d720feee71ca"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
-          "line": 2419,
+          "line": 2420,
           "column": 3,
           "value": "何を探したり比べたりしますか？",
           "sha256": "70c0a7f3c1fd59b633155b3f76919a694560103f77397ed163a493a9cb52ea84"
@@ -137473,28 +137536,28 @@
       "values": {
         "en": {
           "file": "app/ui-catalogs/en.mjs",
-          "line": 2421,
+          "line": 2422,
           "column": 3,
           "value": "Use only the saved notes selected above for this analysis.",
           "sha256": "11cb7fd3a83f9170973859ac4abe9a76ec9e95a3ea09d6d3fbd1ce3e6f1d0db2"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
-          "line": 2420,
+          "line": 2421,
           "column": 3,
           "value": "同意本次整理使用上面选中的已保存笔记。",
           "sha256": "0459ac53905e08f688c2ffecd0c50c2c80b222ae05687787e5f06eb7dc032f76"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
-          "line": 2420,
+          "line": 2421,
           "column": 3,
           "value": "同意本次整理使用上面選中的已儲存筆記。",
           "sha256": "cc854e837194674a877e7c37ce22909ba446b60d9a9f238208dab959a99dfd84"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
-          "line": 2420,
+          "line": 2421,
           "column": 3,
           "value": "今回の整理に、上で選んだ保存済みノートだけを使います。",
           "sha256": "5218d64bbcb50afd4351e7714693c2b8dfbc78156f30fd87e74d71907425e347"
@@ -137524,28 +137587,28 @@
       "values": {
         "en": {
           "file": "app/ui-catalogs/en.mjs",
-          "line": 2422,
+          "line": 2423,
           "column": 3,
           "value": "No reading points are used. Daily note analysis is limited.",
           "sha256": "f59825c662fb89ada9e17f4e1d084d0e624092775529127fc6e48cd67c7383d4"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
-          "line": 2421,
+          "line": 2422,
           "column": 3,
           "value": "本次不扣阅读点数，每日整理次数有限。",
           "sha256": "2a0db3c04e3d3905085c97a859e10d2bbaf66f7780d2a755750fe3616157228d"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
-          "line": 2421,
+          "line": 2422,
           "column": 3,
           "value": "本次不扣閱讀點數，每日整理次數有限。",
           "sha256": "f71ca08db5782cfc82efdf0c37f7a738b4705ecf76a5d7b7bac670609cd753a7"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
-          "line": 2421,
+          "line": 2422,
           "column": 3,
           "value": "読書ポイントは使用しません。1日の整理回数には上限があります。",
           "sha256": "f8a31897d6f83081035e44b2ffacca4d757cb9a7c55ad4aea66318935a9186ce"
@@ -137575,28 +137638,28 @@
       "values": {
         "en": {
           "file": "app/ui-catalogs/en.mjs",
-          "line": 2423,
+          "line": 2424,
           "column": 3,
           "value": "Start",
           "sha256": "e4bb9f1ece9af9264a3b9e3913bbdb2cf497457167b14ced5f85688bfde74644"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
-          "line": 2422,
+          "line": 2423,
           "column": 3,
           "value": "开始整理",
           "sha256": "794a5135f51c868c4e03584524c47fc9bd64ef2dd0593e5c3e20cbf055232dde"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
-          "line": 2422,
+          "line": 2423,
           "column": 3,
           "value": "開始整理",
           "sha256": "49664af8fb356ac16e083847b8ca8a45c125857d8ecc797f3c906f84fd4ed1ac"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
-          "line": 2422,
+          "line": 2423,
           "column": 3,
           "value": "整理を始める",
           "sha256": "b72f46223e7c771c973bcac1d49d6339639eb70c5541d24471d9187d3a275524"
@@ -137626,28 +137689,28 @@
       "values": {
         "en": {
           "file": "app/ui-catalogs/en.mjs",
-          "line": 2424,
+          "line": 2425,
           "column": 3,
           "value": "Working with the selected notes…",
           "sha256": "78b1288b13d298ac88936946854f638088d743c12a6a63c5bef8e50a93f5c952"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
-          "line": 2423,
+          "line": 2424,
           "column": 3,
           "value": "正在整理所选笔记…",
           "sha256": "6e2042dc76abc43ac6894a5ab9f28b31ca4cb06a2d10bc26d880f8a368d75f7b"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
-          "line": 2423,
+          "line": 2424,
           "column": 3,
           "value": "正在整理所選筆記…",
           "sha256": "e37e3dc3def1f59dd0aeb41e837e16b921b3ef921ecb293ba6324c311780d93e"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
-          "line": 2423,
+          "line": 2424,
           "column": 3,
           "value": "選んだノートを整理しています…",
           "sha256": "53c558d00cfe9143fd7749488b27b081ab902c1640db3a348e906bb49c9f95bc"
@@ -137677,28 +137740,28 @@
       "values": {
         "en": {
           "file": "app/ui-catalogs/en.mjs",
-          "line": 2425,
+          "line": 2426,
           "column": 3,
           "value": "Stop",
           "sha256": "cae7d57bc067a514b8e34c9589631a95c7dc051638ddd2a190773269279a99df"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
-          "line": 2424,
+          "line": 2425,
           "column": 3,
           "value": "停止",
           "sha256": "ca4d973c0b006b758c0766235c74abca876c5c7842200234aebb2af0fa69a7c4"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
-          "line": 2424,
+          "line": 2425,
           "column": 3,
           "value": "停止",
           "sha256": "ca4d973c0b006b758c0766235c74abca876c5c7842200234aebb2af0fa69a7c4"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
-          "line": 2424,
+          "line": 2425,
           "column": 3,
           "value": "停止",
           "sha256": "ca4d973c0b006b758c0766235c74abca876c5c7842200234aebb2af0fa69a7c4"
@@ -137728,28 +137791,28 @@
       "values": {
         "en": {
           "file": "app/ui-catalogs/en.mjs",
-          "line": 2426,
+          "line": 2427,
           "column": 3,
           "value": "Stopped waiting. Saved content is kept.",
           "sha256": "8eb1abd388c51edcfb83d8c69abdb418819fa56660b99a67687da86dde7c3b9e"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
-          "line": 2425,
+          "line": 2426,
           "column": 3,
           "value": "已停止等待，已有内容仍保留。",
           "sha256": "eb15b0f69a1b5db81abe74cd64c196b42d6b62888d762b2ce60e73ad10acf7c1"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
-          "line": 2425,
+          "line": 2426,
           "column": 3,
           "value": "已停止等待，已有內容仍保留。",
           "sha256": "5e46a42bff1ee39af31ed0b5ae5c1717e5a7e56c0ce1aebf57b657745f34f700"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
-          "line": 2425,
+          "line": 2426,
           "column": 3,
           "value": "待機を停止しました。保存済みの内容は残っています。",
           "sha256": "ffe3023158fa8fcef64dd918e5d5ecb7450d024c4e7264d7fe023ded6eaa5d10"
@@ -137779,28 +137842,28 @@
       "values": {
         "en": {
           "file": "app/ui-catalogs/en.mjs",
-          "line": 2427,
+          "line": 2428,
           "column": 3,
           "value": "This reading room has not enabled note analysis. Reading and editing are available.",
           "sha256": "07556f54a6c074b00499c616cd3a288124dde13d0158ff372c7f41dc8db14138"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
-          "line": 2426,
+          "line": 2427,
           "column": 3,
           "value": "此书房暂未开启笔记整理，阅读和编辑仍可使用。",
           "sha256": "2080e0aaba8cd35f4c89d987994473ad381813202774d2012cc26d148422c1c2"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
-          "line": 2426,
+          "line": 2427,
           "column": 3,
           "value": "此書房暫未開啟筆記整理，閱讀和編輯仍可使用。",
           "sha256": "2c62eb27feb3d29080980a702c7733f3d973ec5f66cf61c5119d88f9f84c041d"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
-          "line": 2426,
+          "line": 2427,
           "column": 3,
           "value": "この書斎ではノート整理が未設定です。閲覧と編集は使えます。",
           "sha256": "0e2648e3fc540cec57aa8c8e5e8cf04104d5382608e324d0319e8668d38e4d70"
@@ -137830,28 +137893,28 @@
       "values": {
         "en": {
           "file": "app/ui-catalogs/en.mjs",
-          "line": 2428,
+          "line": 2429,
           "column": 3,
           "value": "Save edits before using these notes.",
           "sha256": "2be42b3bd1003393b1dfaca45532ec22fc95b5c052652877674f2546a068eee1"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
-          "line": 2427,
+          "line": 2428,
           "column": 3,
           "value": "请先保存所选笔记的修改。",
           "sha256": "d902297498cd1573d5a17aff153ceacae4dd826f7c72b841a0fe2811ddc1e2f8"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
-          "line": 2427,
+          "line": 2428,
           "column": 3,
           "value": "請先儲存所選筆記的修改。",
           "sha256": "ba2a48643cfee8e0ba7b30f65af629ec9d48c4be89404f343d8b05f45aa7c487"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
-          "line": 2427,
+          "line": 2428,
           "column": 3,
           "value": "選んだノートの編集を先に保存してください。",
           "sha256": "f72411b2c182e886d7fd2ca0e8351468d61cb06f0e7a05741dc70b3222749c64"
@@ -137881,28 +137944,28 @@
       "values": {
         "en": {
           "file": "app/ui-catalogs/en.mjs",
-          "line": 2429,
+          "line": 2430,
           "column": 3,
           "value": "Select fewer notes; this content is too long for one analysis.",
           "sha256": "034ad236ff7b3f2de7696ac4455bc16eb042ccaaabd5bccbd28e8daddd90af1b"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
-          "line": 2428,
+          "line": 2429,
           "column": 3,
           "value": "所选内容较长，请减少笔记数量。",
           "sha256": "3e7ad26908f17608479351238ebc3a73f2d9c0ff7fdc75eecee4a2ce1a06fb0c"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
-          "line": 2428,
+          "line": 2429,
           "column": 3,
           "value": "所選內容較長，請減少筆記數量。",
           "sha256": "9bb6168ffb6a31e9a7b49024339904dcdcbc38ee8dd242704b608313e58a32f2"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
-          "line": 2428,
+          "line": 2429,
           "column": 3,
           "value": "内容が長いため、選ぶノートを減らしてください。",
           "sha256": "0df089b68e8eadc65991b751780912bdba6f205fa4e5606a70e1cc43a76860c9"
@@ -137932,28 +137995,28 @@
       "values": {
         "en": {
           "file": "app/ui-catalogs/en.mjs",
-          "line": 2430,
+          "line": 2431,
           "column": 3,
           "value": "Today’s note analysis allowance is used up. Your records are available.",
           "sha256": "9d6aba595f84b7e149654469240d81989c325cef639a4266949c37db36a76282"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
-          "line": 2429,
+          "line": 2430,
           "column": 3,
           "value": "今天的笔记整理次数已用完，已有记录仍可使用。",
           "sha256": "8694f322471ab87930613a37292987abf4697cd950cfcc890cbc4eef04c06e11"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
-          "line": 2429,
+          "line": 2430,
           "column": 3,
           "value": "今天的筆記整理次數已用完，已有記錄仍可使用。",
           "sha256": "e5d032afa0b4d8e5b1ad3ec474a06545ff3f0e973c8fd394bb6799f373917911"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
-          "line": 2429,
+          "line": 2430,
           "column": 3,
           "value": "今日の整理回数を使い切りました。保存済みの記録は使えます。",
           "sha256": "b15f422abcbbc767f968edb4ae566ecc8e678b8ec591cb15db4eae9e445af99a"
@@ -137983,28 +138046,28 @@
       "values": {
         "en": {
           "file": "app/ui-catalogs/en.mjs",
-          "line": 2431,
+          "line": 2432,
           "column": 3,
           "value": "Choose at least two notes to compare.",
           "sha256": "0350accd70a6f531c1a24fae19879666ea82dec3647c4a76324442755117a375"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
-          "line": 2430,
+          "line": 2431,
           "column": 3,
           "value": "请选择至少两条笔记比较。",
           "sha256": "6c15095e4187c8ec0b6a0784471c0e314f357cd499df67dbad329e068a2d8c74"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
-          "line": 2430,
+          "line": 2431,
           "column": 3,
           "value": "請選擇至少兩條筆記比較。",
           "sha256": "966e51cec28afc59631fe47ce18d8f1e02dec683f7978283efbec56423ca990d"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
-          "line": 2430,
+          "line": 2431,
           "column": 3,
           "value": "比較するノートを 2 件以上選んでください。",
           "sha256": "a4589d3e9048930bca51526cc393116cdc9e975ac4de4a668c75eee55102a370"
@@ -138034,28 +138097,28 @@
       "values": {
         "en": {
           "file": "app/ui-catalogs/en.mjs",
-          "line": 2432,
+          "line": 2433,
           "column": 3,
           "value": "Choose between 1 and 24 saved notes and confirm their use.",
           "sha256": "bde2801d32883415cbdfc3ace88132004947819d94d237cb1a279b12fc551464"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
-          "line": 2431,
+          "line": 2432,
           "column": 3,
           "value": "请选择 1 至 24 条笔记，并确认本次使用范围。",
           "sha256": "aa3fa4d27231ef1b37ed507a41a415419d0534ca8f673684e248ba87281aed24"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
-          "line": 2431,
+          "line": 2432,
           "column": 3,
           "value": "請選擇 1 至 24 條筆記，並確認本次使用範圍。",
           "sha256": "9d6685acd213a1f5dd75d7bad405fbc0f92472caf1420195266e3e09986ac5a6"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
-          "line": 2431,
+          "line": 2432,
           "column": 3,
           "value": "保存済みノートを 1〜24 件選び、使用範囲を確認してください。",
           "sha256": "925c67918a8474866bf99d673c3b4ac56d8c8dfeedac9cfad35c0dfc695c4942"
@@ -138085,28 +138148,28 @@
       "values": {
         "en": {
           "file": "app/ui-catalogs/en.mjs",
-          "line": 2433,
+          "line": 2434,
           "column": 3,
           "value": "Proposed reading connections",
           "sha256": "771a5ec25387725b7481e2be30bd8823b6b17c19f5a46f1e70a775e00fe7d286"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
-          "line": 2432,
+          "line": 2433,
           "column": 3,
           "value": "整理建议",
           "sha256": "a0f93b5dfe448ae46e051b7ef575fe0108df4247d79639cbb49dcbfd20d7e54a"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
-          "line": 2432,
+          "line": 2433,
           "column": 3,
           "value": "整理建議",
           "sha256": "319d6e659bf84beb2d490676ff769eed38356e2b5992b2d340f1c420061f2f9d"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
-          "line": 2432,
+          "line": 2433,
           "column": 3,
           "value": "整理の提案",
           "sha256": "2ed764a27558a8ac63249743860b8471ad21efaa1bfaac622152d1ea0da42ca3"
@@ -138136,28 +138199,28 @@
       "values": {
         "en": {
           "file": "app/ui-catalogs/en.mjs",
-          "line": 2434,
+          "line": 2435,
           "column": 3,
           "value": "No supported matches were found in the selected notes.",
           "sha256": "39bc2b2468c9a4a7cf50635304680a7c8eb4a781ed91d0f001b07282916e971d"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
-          "line": 2433,
+          "line": 2434,
           "column": 3,
           "value": "在所选笔记里没有找到有依据的结果。",
           "sha256": "10c2b39a67fee5e87b2f3cc7fbfa5cfbe2dfc70db51f877ed4910e928f7362ac"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
-          "line": 2433,
+          "line": 2434,
           "column": 3,
           "value": "在所選筆記裡沒有找到有依據的結果。",
           "sha256": "4b5ef9dcd03f47ef2c3cd3196e468f35e8893dd6455b20fe970db2d777c8a4e1"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
-          "line": 2433,
+          "line": 2434,
           "column": 3,
           "value": "選んだノートに、根拠のある結果は見つかりませんでした。",
           "sha256": "e2aeb89e94560cb49cd96119243b8316bca19b5ba93451cf4e2e3d90952978c6"
@@ -138187,28 +138250,28 @@
       "values": {
         "en": {
           "file": "app/ui-catalogs/en.mjs",
-          "line": 2435,
+          "line": 2436,
           "column": 3,
           "value": "Evidence",
           "sha256": "03867aea70acaf4c5dce37a76cf5a04dab1716d6ff70bf03761c439daa8be984"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
-          "line": 2434,
+          "line": 2435,
           "column": 3,
           "value": "依据",
           "sha256": "2e9f011743981bcd1fda076f2521c57789c834afc2bb1c69d3b7145fb1743a2e"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
-          "line": 2434,
+          "line": 2435,
           "column": 3,
           "value": "依據",
           "sha256": "5e21185d523c9e1f9a5e7beb7cd6703a57c32ae8190af96ee4ac3a21a3c35d23"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
-          "line": 2434,
+          "line": 2435,
           "column": 3,
           "value": "根拠",
           "sha256": "628de6dceaa3d43947a715b739963daa376f0adac9f211b34bb5e1bb6b3a50c8"
@@ -138238,28 +138301,28 @@
       "values": {
         "en": {
           "file": "app/ui-catalogs/en.mjs",
-          "line": 2436,
+          "line": 2437,
           "column": 3,
           "value": "Keep this suggestion",
           "sha256": "fd7218161660dd8c97b188100880178df4a985d5d26bac1ddddde95e5e22f49b"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
-          "line": 2435,
+          "line": 2436,
           "column": 3,
           "value": "采用这份建议",
           "sha256": "fbfb82d385833a57c5581f2bdb32f519672e97fa72c8168a4fe5cc032b170a2b"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
-          "line": 2435,
+          "line": 2436,
           "column": 3,
           "value": "採用這份建議",
           "sha256": "c6c0e2baf36018e8a0ca1ee53b4c34ab3a72688f3c9fd958f8798f640cee9209"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
-          "line": 2435,
+          "line": 2436,
           "column": 3,
           "value": "この提案を残す",
           "sha256": "c8d8ba6e23a465eeeb2a9e18ccb29a1a5fbf756d7a607301087d1480f832a796"
@@ -138289,28 +138352,28 @@
       "values": {
         "en": {
           "file": "app/ui-catalogs/en.mjs",
-          "line": 2437,
+          "line": 2438,
           "column": 3,
           "value": "Dismiss",
           "sha256": "48845bff334a50a59aaecf499f28a7a24c3b4b891b8b18a9f1169ad8e8a6b261"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
-          "line": 2436,
+          "line": 2437,
           "column": 3,
           "value": "不采用",
           "sha256": "63278160d1b51379a5e48b2fda67b942f78869869e6c4729b9ada592b9f3ad11"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
-          "line": 2436,
+          "line": 2437,
           "column": 3,
           "value": "不採用",
           "sha256": "d0aa27cb60ff3b34bcb6a638742288b3d622c5ada176d03408609c14dd45a6bf"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
-          "line": 2436,
+          "line": 2437,
           "column": 3,
           "value": "採用しない",
           "sha256": "76a010129d4c3d6ca952ca4b7f9a4b09f2175f1116b872d49acdb5a5094cbbc3"
@@ -138340,28 +138403,28 @@
       "values": {
         "en": {
           "file": "app/ui-catalogs/en.mjs",
-          "line": 2438,
+          "line": 2439,
           "column": 3,
           "value": "Kept suggestions",
           "sha256": "9c480beebae3c9c70f102eb39b370a80a0753a61aff765b2c77b90f8b9dd0acf"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
-          "line": 2437,
+          "line": 2438,
           "column": 3,
           "value": "已采用的建议",
           "sha256": "72d3f414251d7e844bc20f87cca58f8f9c40301c8a61009045a45e798acd2a2e"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
-          "line": 2437,
+          "line": 2438,
           "column": 3,
           "value": "已採用的建議",
           "sha256": "77430cdf443ea1cd1e1f50f9d1cecd6bf55a5083da26e95cd764e1d3c3560292"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
-          "line": 2437,
+          "line": 2438,
           "column": 3,
           "value": "残した提案",
           "sha256": "4b022f858ddfe1aea45c5e0da18c8bdfca09fefe31a3def89d9d65aee8b9b396"
@@ -138391,28 +138454,28 @@
       "values": {
         "en": {
           "file": "app/ui-catalogs/en.mjs",
-          "line": 2439,
+          "line": 2440,
           "column": 3,
           "value": "Remove this connection",
           "sha256": "5faa9d2c901b5cdd691d0fef28fd74d0db60ad82aeff8e5ad1b2f9d07749b23b"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
-          "line": 2438,
+          "line": 2439,
           "column": 3,
           "value": "移除这条关联",
           "sha256": "b42ee45163e1636856686ad947afbf3d6fe87e0c26eda24553593b15deba3284"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
-          "line": 2438,
+          "line": 2439,
           "column": 3,
           "value": "移除此關聯",
           "sha256": "49d3055ef92941d56d2c2a7f47ecf4a13727f854a3f1c67b2bc1f3028924f100"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
-          "line": 2438,
+          "line": 2439,
           "column": 3,
           "value": "この関連を外す",
           "sha256": "71f48fc21fafc81383c55c8288fee97fdc0ee3c7fd4d7d390bd6374700cd34ff"
@@ -138442,28 +138505,28 @@
       "values": {
         "en": {
           "file": "app/ui-catalogs/en.mjs",
-          "line": 2440,
+          "line": 2441,
           "column": 3,
           "value": "Supports",
           "sha256": "f52bdea88ef9b226c44c4463ae1511e51c4ef384453f6541394adc2b79bb338d"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
-          "line": 2439,
+          "line": 2440,
           "column": 3,
           "value": "相互支持",
           "sha256": "369dd16c8f73444e9206b3900bbb4e571a57c54376f41f7a44468765bc906aba"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
-          "line": 2439,
+          "line": 2440,
           "column": 3,
           "value": "相互支持",
           "sha256": "369dd16c8f73444e9206b3900bbb4e571a57c54376f41f7a44468765bc906aba"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
-          "line": 2439,
+          "line": 2440,
           "column": 3,
           "value": "支え合う",
           "sha256": "b2051dfb326be2c53a396109102864c14378e8bb39d51422bb6de8e55cefff90"
@@ -138493,28 +138556,28 @@
       "values": {
         "en": {
           "file": "app/ui-catalogs/en.mjs",
-          "line": 2441,
+          "line": 2442,
           "column": 3,
           "value": "Adds another angle",
           "sha256": "055065e27eecad3b591ca97e2479311636075a61901787bc93ca2ad4b29b2490"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
-          "line": 2440,
+          "line": 2441,
           "column": 3,
           "value": "补充视角",
           "sha256": "645d96828ea13e785220e76cabc64ed2e6e11e7651317836e8a8d398687646fe"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
-          "line": 2440,
+          "line": 2441,
           "column": 3,
           "value": "補充視角",
           "sha256": "778157ac0f63762d0091b5667a1b0cb8448bf48e550637c594316df82adda055"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
-          "line": 2440,
+          "line": 2441,
           "column": 3,
           "value": "別の視点を加える",
           "sha256": "3bdfd7cba05fb558547c989affdf79786f6d9ef393ece7e595e9eb8958be4a75"
@@ -138544,28 +138607,28 @@
       "values": {
         "en": {
           "file": "app/ui-catalogs/en.mjs",
-          "line": 2442,
+          "line": 2443,
           "column": 3,
           "value": "Different views",
           "sha256": "415fd5e7fb6b036025f7e93e6c356804146976623cd6aff9f73b88d812df20ec"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
-          "line": 2441,
+          "line": 2442,
           "column": 3,
           "value": "观点相左",
           "sha256": "bca78e2907b356e817668f9d7791b466c0e73e9f27d2d762db51090b43e300f2"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
-          "line": 2441,
+          "line": 2442,
           "column": 3,
           "value": "觀點相左",
           "sha256": "1fb7152dcd1ada8d96d00ef3e97af542997ce73045db88a2503e5a8f8f1eb842"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
-          "line": 2441,
+          "line": 2442,
           "column": 3,
           "value": "異なる見方",
           "sha256": "5037e0811ef2433407991c852c16e1b478131b3910edd3bdcd35005c584a670b"
@@ -138595,28 +138658,28 @@
       "values": {
         "en": {
           "file": "app/ui-catalogs/en.mjs",
-          "line": 2443,
+          "line": 2444,
           "column": 3,
           "value": "May be related",
           "sha256": "20c754b4c85987898608cdc609993e73d71693959ba8336ea99495de4b761204"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
-          "line": 2442,
+          "line": 2443,
           "column": 3,
           "value": "可能相关",
           "sha256": "c71a22cee493c0afbc4376405c77c4ffbc54d4604f5ee96e0fbbd9201a4487f0"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
-          "line": 2442,
+          "line": 2443,
           "column": 3,
           "value": "可能相關",
           "sha256": "93c9442bff5f804b82cbd89fb0a3b907f72cd599885acda91cc983961e2d3430"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
-          "line": 2442,
+          "line": 2443,
           "column": 3,
           "value": "関連の候補",
           "sha256": "0681a52860c1c1ff09b3f270a2384cf31d90c9381b6905949973bb4dae3296c5"
@@ -138646,28 +138709,28 @@
       "values": {
         "en": {
           "file": "app/ui-catalogs/en.mjs",
-          "line": 2444,
+          "line": 2445,
           "column": 3,
           "value": "Export notes",
           "sha256": "7672569979ce084aa80c13d33b7638e361ab779078fc6489703fb2bdb9d0bf60"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
-          "line": 2443,
+          "line": 2444,
           "column": 3,
           "value": "导出笔记",
           "sha256": "07523e462e304372f727b427d27f3b5e0ea745a58ca3ebee1d7f3dbf70e40c18"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
-          "line": 2443,
+          "line": 2444,
           "column": 3,
           "value": "匯出筆記",
           "sha256": "7b7c83586ca0cfd2f35979a0b089149c199d8d35de7a1a9e79881d25595bbe71"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
-          "line": 2443,
+          "line": 2444,
           "column": 3,
           "value": "ノートを書き出す",
           "sha256": "f76fea71831dce5ed1661a326698cafafc69de37e2d34ab00fe9fb26bc102d6a"
@@ -138697,28 +138760,28 @@
       "values": {
         "en": {
           "file": "app/ui-catalogs/en.mjs",
-          "line": 2445,
+          "line": 2446,
           "column": 3,
           "value": "Export topics and later thoughts",
           "sha256": "da20d80a75990c84995e65f76f2dce2cd3d74d98815880f2896e0bcef73d8caf"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
-          "line": 2444,
+          "line": 2445,
           "column": 3,
           "value": "导出主题与后续理解",
           "sha256": "68af1a76664ba796089255eab68e28ddc04eb91821c1a2cfb9685413f59248ca"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
-          "line": 2444,
+          "line": 2445,
           "column": 3,
           "value": "匯出主題與後續理解",
           "sha256": "263584ee87e10a44298cc53e83f32936d25b5b846fa15ea6dd5e9504e5277226"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
-          "line": 2444,
+          "line": 2445,
           "column": 3,
           "value": "テーマとその後の考えを書き出す",
           "sha256": "ffea227ae1efc7eb834a991098133c3d73899912fea91d383c383c089cf2e0b3"
@@ -138748,28 +138811,28 @@
       "values": {
         "en": {
           "file": "app/ui-catalogs/en.mjs",
-          "line": 2446,
+          "line": 2447,
           "column": 3,
           "value": "Restore topics and later thoughts",
           "sha256": "c1b186faa298aa0d13b6b189568fc7edc60b8934f380b90d3f0a9155f6522f40"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
-          "line": 2445,
+          "line": 2446,
           "column": 3,
           "value": "恢复主题与后续理解",
           "sha256": "52285c5480075e29a9c29a49373e8c7d0b43787675d2874021f8b1350148bcbb"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
-          "line": 2445,
+          "line": 2446,
           "column": 3,
           "value": "還原主題與後續理解",
           "sha256": "7fb6222298801ef16e0481cebcd635f09d66c72c4ab3082c316b6d143145c715"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
-          "line": 2445,
+          "line": 2446,
           "column": 3,
           "value": "テーマとその後の考えを復元",
           "sha256": "e708ad2d79ad46dd9661a4bd2729e98a004e19205bb2057e6db34b34cb9b880e"
@@ -138799,28 +138862,28 @@
       "values": {
         "en": {
           "file": "app/ui-catalogs/en.mjs",
-          "line": 2447,
+          "line": 2448,
           "column": 3,
           "value": "Restore base books and notes first. This restores their topics, later thoughts and attributed suggestions.",
           "sha256": "4e77e9fc3825ecf740fb8e0eec7fc08242ecee1606bbecad15875f23d033f13e"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
-          "line": 2446,
+          "line": 2447,
           "column": 3,
           "value": "对应书籍和笔记恢复后，导入其主题、后续理解与整理建议。",
           "sha256": "89aadf16047f55110bcff1363132bb78bf6eacc007292396417337f86704f99a"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
-          "line": 2446,
+          "line": 2447,
           "column": 3,
           "value": "對應書籍和筆記還原後，匯入其主題、後續理解與整理建議。",
           "sha256": "f26355d6b36c142fc22c9fd0c86eac7b9eb0cae219d4a11800655bc12ebe5005"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
-          "line": 2446,
+          "line": 2447,
           "column": 3,
           "value": "先に元の本とノートを復元し、そのテーマ、その後の考え、整理の提案を読み込みます。",
           "sha256": "4a091a9367e9e5d2bf538cd8f585a3e0e407a9dc2a324abdd0a39c15e92fa6d9"
@@ -138850,28 +138913,28 @@
       "values": {
         "en": {
           "file": "app/ui-catalogs/en.mjs",
-          "line": 2448,
+          "line": 2449,
           "column": 3,
           "value": "Restore this file’s topics, later thoughts and suggestions over the current workspace state? Original notes are kept.",
           "sha256": "2b34f049df36ca3998305865b93b11ee76610a18b81bdb7e7f1e212336d285ba"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
-          "line": 2447,
+          "line": 2448,
           "column": 3,
           "value": "用这份文件恢复当前的主题、后续理解与整理建议？原始笔记仍保留。",
           "sha256": "79aca09b4b132e7711aa915b522e53589727a1c13b3e36352eee5efe27f8ad81"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
-          "line": 2447,
+          "line": 2448,
           "column": 3,
           "value": "用這份檔案還原目前的主題、後續理解與整理建議？原始筆記仍保留。",
           "sha256": "c801a3dfa16862079075f2e0fe3250b5ca0ac13f4f13d724e37bbfa3f9ca5ddd"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
-          "line": 2447,
+          "line": 2448,
           "column": 3,
           "value": "このファイルのテーマ、その後の考え、提案を復元しますか？ 元のノートは残ります。",
           "sha256": "15b8e5e8e82c8d524268dbf30e7ea31a9aa6a36c8ad5043d5fcde648a9b04291"
@@ -138882,7 +138945,7 @@
       "consumers": [
         {
           "file": "app/reading-workspace.mjs",
-          "line": 122,
+          "line": 123,
           "column": 130
         }
       ],
@@ -138907,28 +138970,28 @@
       "values": {
         "en": {
           "file": "app/ui-catalogs/en.mjs",
-          "line": 2449,
+          "line": 2450,
           "column": 3,
           "value": "Review these saved notes. Suggest at most three evidence-linked next reading, writing or question steps.",
           "sha256": "0b3a7f280ffed8661f356e252e05e4854c68d1d21111ff020671cf7231359bd9"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
-          "line": 2448,
+          "line": 2449,
           "column": 3,
           "value": "回顾这些已保存笔记，提出最多三条有依据的重读、补写或继续问题的建议。",
           "sha256": "d2815c8bfa69fc77a68cb798765ddc272b00e3ddbbe66341a035e33d83f3fd81"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
-          "line": 2448,
+          "line": 2449,
           "column": 3,
           "value": "回顧這些已儲存筆記，提出最多三條有依據的重讀、補寫或繼續問題的建議。",
           "sha256": "f29e0c01b45431e5621c486b1c528812ad06ca9cea1f731d8c3c56ccdd775768"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
-          "line": 2448,
+          "line": 2449,
           "column": 3,
           "value": "保存済みノートを振り返り、根拠を示して読み直し、書き足し、問いの続きを最大 3 件提案してください。",
           "sha256": "1d75b2575fd0c585ff24094f975f3bda75fe8cbfff0c4527ab79cc15e137af38"
@@ -138964,28 +139027,28 @@
       "values": {
         "en": {
           "file": "app/ui-catalogs/en.mjs",
-          "line": 2450,
+          "line": 2451,
           "column": 3,
           "value": "Compare the selected notes and explain supported relationships, preserving each original viewpoint.",
           "sha256": "793a95b9dc69af31898312daa83d95878f3f34f6cfc03f52494617d815d34998"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
-          "line": 2449,
+          "line": 2450,
           "column": 3,
           "value": "比较所选笔记，保留各自观点，说明有依据的关系。",
           "sha256": "cff96554f035c41da30605a6a59a94fa5072d6604b0bce969e53a4d8d1d8cf94"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
-          "line": 2449,
+          "line": 2450,
           "column": 3,
           "value": "比較所選筆記，保留各自觀點，說明有依據的關係。",
           "sha256": "d2eb0fd4772044c34102da0055d9a8f4dd81954bd44c57ff4188e6797c7c772e"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
-          "line": 2449,
+          "line": 2450,
           "column": 3,
           "value": "それぞれの見方を保ち、選んだノートの根拠ある関係を比べてください。",
           "sha256": "91f69b8800bb5e09c07fafd8b81f4c22d393bdb470ca51353a00baaf120badc5"
@@ -139021,28 +139084,28 @@
       "values": {
         "en": {
           "file": "app/ui-catalogs/en.mjs",
-          "line": 2451,
+          "line": 2452,
           "column": 3,
           "value": "Open this note",
           "sha256": "c6505f5129f9e141a6bb58da1094b16e1f68825202ea513379a2d28b717b4a1d"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
-          "line": 2450,
+          "line": 2451,
           "column": 3,
           "value": "查看这条笔记",
           "sha256": "f837fa7279ec5bc120b6353ac2faf4bd3c3fe75262d9468ed1187dda695da1d7"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
-          "line": 2450,
+          "line": 2451,
           "column": 3,
           "value": "查看這條筆記",
           "sha256": "6c40c3fd96601abb6da4d9c539791ed3a593546faabe3917990ae97d84c5128a"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
-          "line": 2450,
+          "line": 2451,
           "column": 3,
           "value": "このノートを開く",
           "sha256": "ec82d8a5907526f36d13b2430942912e28f7f905d90c7d89795fd17bf7dd4b2a"
@@ -139072,28 +139135,28 @@
       "values": {
         "en": {
           "file": "app/ui-catalogs/en.mjs",
-          "line": 2452,
+          "line": 2453,
           "column": 3,
           "value": "Words used at the time",
           "sha256": "e03ce7bd07caeb3ea7763b439957176464537cccb71d9ac05e6f8b869d96b850"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
-          "line": 2451,
+          "line": 2452,
           "column": 3,
           "value": "当时的依据",
           "sha256": "9ac1c6a4e3cc389490fce1baeb5e893f9af7a6142211f0016e8dd6d04c53fced"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
-          "line": 2451,
+          "line": 2452,
           "column": 3,
           "value": "當時的依據",
           "sha256": "a5d7d92f2ed343495183031ffc09d86c376502987265d9479356df7626302fc8"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
-          "line": 2451,
+          "line": 2452,
           "column": 3,
           "value": "当時の根拠",
           "sha256": "0a18a77fbdf9b40051a34d0f2918813b80ca94407b39e0921eee4f2758abd3b2"
@@ -139123,28 +139186,28 @@
       "values": {
         "en": {
           "file": "app/ui-catalogs/en.mjs",
-          "line": 2453,
+          "line": 2454,
           "column": 3,
           "value": "Original words, quotations and later thoughts",
           "sha256": "cf45fb171aa08348fc18f07207efd45aab3a628c2a77e2a19871e024235f346f"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
-          "line": 2452,
+          "line": 2453,
           "column": 3,
           "value": "原话、引文与后续理解",
           "sha256": "98f47842d0d36eef7dd0a4b8e282dcd03921693c52a7ed3f57d9a605c1b0589e"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
-          "line": 2452,
+          "line": 2453,
           "column": 3,
           "value": "原話、引文與後續理解",
           "sha256": "ca3ad9f905194cbcd3fcd9205effc47e20bfe956375b01b6335c6964a86f8f7b"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
-          "line": 2452,
+          "line": 2453,
           "column": 3,
           "value": "元の言葉、引用、その後の考え",
           "sha256": "bdf827bf169e92248726c6e2e1d0beb869decc2cbf619d975c9dc3dad7780a9e"
@@ -139174,28 +139237,28 @@
       "values": {
         "en": {
           "file": "app/ui-catalogs/en.mjs",
-          "line": 2454,
+          "line": 2455,
           "column": 3,
           "value": "Saved words",
           "sha256": "36b9d71ed1c6d648f9081f326bcfe9cbae45f63831ab14b6a4aa7bea3f0d3bf7"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
-          "line": 2453,
+          "line": 2454,
           "column": 3,
           "value": "当前已保存的文字",
           "sha256": "ae99d3a1c71ecdb5da4e24f52e96f008046f7e30708f4d0ed2773055339a1432"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
-          "line": 2453,
+          "line": 2454,
           "column": 3,
           "value": "目前已儲存的文字",
           "sha256": "d9dad97ae6a57db2984049386181157f63a033897ba930fe774b5089a86129ba"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
-          "line": 2453,
+          "line": 2454,
           "column": 3,
           "value": "保存済みの文章",
           "sha256": "cae24eba81333585283acb7877fdd4a47cfd55356d7f9b28f88f8beb8f730775"
@@ -139225,28 +139288,28 @@
       "values": {
         "en": {
           "file": "app/ui-catalogs/en.mjs",
-          "line": 2455,
+          "line": 2456,
           "column": 3,
           "value": "Keep the local version and use saved words",
           "sha256": "ac2026ae7c978a3c4b5c29dfb51c8c34ab694092598424764ffef040f7116411"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
-          "line": 2454,
+          "line": 2455,
           "column": 3,
           "value": "保留本地副本，使用已保存文字",
           "sha256": "45b596a7eb7eb4274fab3d02e68b919ebe15539667201a883e4363d462642df8"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
-          "line": 2454,
+          "line": 2455,
           "column": 3,
           "value": "保留本機副本，使用已儲存文字",
           "sha256": "bac9af8f565dafc509dadba61abc40ed273a04774f7cb1304c4ab73dee2aa584"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
-          "line": 2454,
+          "line": 2455,
           "column": 3,
           "value": "ローカルの文章を残して保存済みの文章を使う",
           "sha256": "e0fa83232de377fb2ec6965a5a201a1861e282aef7addc2dcd9708132a8f2fd6"
@@ -139276,28 +139339,28 @@
       "values": {
         "en": {
           "file": "app/ui-catalogs/en.mjs",
-          "line": 2456,
+          "line": 2457,
           "column": 3,
           "value": "Your unsaved words remain below in recovered versions.",
           "sha256": "eea4b09201e6c3730e227bdea2db212702a34cc10776a9f4584deaa9fe233760"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
-          "line": 2455,
+          "line": 2456,
           "column": 3,
           "value": "未保存的文字仍在下方保留，可以取回。",
           "sha256": "a58db9d42a3209cacd8ecbd050a66a0871d78155b36f3b51be6158ca9ea9f78a"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
-          "line": 2455,
+          "line": 2456,
           "column": 3,
           "value": "尚未儲存的文字仍在下方保留，可以取回。",
           "sha256": "b510c1d18922f634da3cec8e92a1c05d0a8b2dade6c00e725f5f08a7b4ef118f"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
-          "line": 2455,
+          "line": 2456,
           "column": 3,
           "value": "未保存の文章は下のローカル復元版に残ります。",
           "sha256": "0f97792bb57e34ac6a5cf2f0a81b91cffa281b4f74ba66e4594f8a22f5d31866"
@@ -139327,28 +139390,28 @@
       "values": {
         "en": {
           "file": "app/ui-catalogs/en.mjs",
-          "line": 2457,
+          "line": 2458,
           "column": 3,
           "value": "Recovered local versions",
           "sha256": "bddf0225f9b367509e7877c38efc26bc200171863982be0eb9efed3d6efc2b58"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
-          "line": 2456,
+          "line": 2457,
           "column": 3,
           "value": "先前未保存的文字",
           "sha256": "ddb3ec5fab81c04d6a4af3c1fd4bccf2c9863d16eb35f041acf5812506e4d913"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
-          "line": 2456,
+          "line": 2457,
           "column": 3,
           "value": "先前未儲存的文字",
           "sha256": "ab0c85daa4efe79fa49d99eb58c92844ff002484fc3e68f2634500d1ce1df76f"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
-          "line": 2456,
+          "line": 2457,
           "column": 3,
           "value": "ローカル復元版",
           "sha256": "38401cab13ed5790da0c419332b7a4c854e95d6dc6dd4b7f6f3a7e1dccdd4888"
@@ -139378,28 +139441,28 @@
       "values": {
         "en": {
           "file": "app/ui-catalogs/en.mjs",
-          "line": 2458,
+          "line": 2459,
           "column": 3,
           "value": "Retry the unfinished change before making another change.",
           "sha256": "eba6231fa9ee902e32c836b94b49cbdb8856fcdcacf5a741633613ad02af060d"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
-          "line": 2457,
+          "line": 2458,
           "column": 3,
           "value": "还有一次修改未完成，请重试后继续。",
           "sha256": "3ed1dfa1254914b10e51ca093b9e03636b6faee04d5d9cfd259b1abd98e8a30b"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
-          "line": 2457,
+          "line": 2458,
           "column": 3,
           "value": "還有一次修改尚未完成，請重試後繼續。",
           "sha256": "e4e20f4280d6d0af1c871b54c37c2f1c41e7b7db3a06babe64cf0799d3a4ff0a"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
-          "line": 2457,
+          "line": 2458,
           "column": 3,
           "value": "未完了の変更を再試行してから、ほかの変更を行ってください。",
           "sha256": "439ddee0c2da8bf2741791934e8248f8802841f5d7603f508a3603398de4a2ce"
@@ -139429,28 +139492,28 @@
       "values": {
         "en": {
           "file": "app/ui-catalogs/en.mjs",
-          "line": 2459,
+          "line": 2460,
           "column": 3,
           "value": "Read the source again",
           "sha256": "73d45505fa2395d54ac403f9b7eb4108bb232df2b67214039db7b47eac46449f"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
-          "line": 2458,
+          "line": 2459,
           "column": 3,
           "value": "重读原文",
           "sha256": "be7597ffd5a2583673e1c9f79a2ae639d5edb002771204a2d910e5487a96ece9"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
-          "line": 2458,
+          "line": 2459,
           "column": 3,
           "value": "重讀原文",
           "sha256": "57ac1711625015f62917a63ab9f1f88c2f4e915d5bb1784ed21d4ce9f9478e40"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
-          "line": 2458,
+          "line": 2459,
           "column": 3,
           "value": "原文を読み返す",
           "sha256": "9a8d1210b25d33e1c54bae7da76c32ea5f3596d39cd67064ece228398def31dd"
@@ -139480,28 +139543,28 @@
       "values": {
         "en": {
           "file": "app/ui-catalogs/en.mjs",
-          "line": 2460,
+          "line": 2461,
           "column": 3,
           "value": "Write about this note",
           "sha256": "a2b22fcff09c78bb58ebba37977bd1cf9754d95d9ab4659ab2d6911f953cc402"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
-          "line": 2459,
+          "line": 2460,
           "column": 3,
           "value": "继续写这条笔记",
           "sha256": "e8677677036f0ea89ddb7a18c91636087a86f7b7c21c9bc94d0a0150950418eb"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
-          "line": 2459,
+          "line": 2460,
           "column": 3,
           "value": "繼續寫這則筆記",
           "sha256": "1a1847ac093a99c1cb3446e7bd7cc53f0a721347d86827db8018746413de8adc"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
-          "line": 2459,
+          "line": 2460,
           "column": 3,
           "value": "このノートに書き足す",
           "sha256": "c250a064423e79591304af009e2fad5f7e11f766bd1a48040f37cf9b99f3a7c0"
@@ -139531,28 +139594,28 @@
       "values": {
         "en": {
           "file": "app/ui-catalogs/en.mjs",
-          "line": 2461,
+          "line": 2462,
           "column": 3,
           "value": "Return to this note’s question",
           "sha256": "5d9796561945b29ca840d7e04677bac8d3ac39b5e20298784a4e42b42fc93165"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
-          "line": 2460,
+          "line": 2461,
           "column": 3,
           "value": "回到这条笔记追问",
           "sha256": "a4d7a5448e99b02615c515b6438ca310e7430ba85312d3c1470d110cb4564dfd"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
-          "line": 2460,
+          "line": 2461,
           "column": 3,
           "value": "回到這則筆記追問",
           "sha256": "fd2c4279ddfc1708ef26c24f5cab55b131969e9f80bdfeeb7b70b0ce3fbca844"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
-          "line": 2460,
+          "line": 2461,
           "column": 3,
           "value": "このノートの問いに戻る",
           "sha256": "108c06433a58a9d8d93df1a2a0bb21210227c14820682c79a92aaea4c0c84f28"
@@ -139582,28 +139645,28 @@
       "values": {
         "en": {
           "file": "app/ui-catalogs/en.mjs",
-          "line": 2462,
+          "line": 2463,
           "column": 3,
           "value": "Review suggestion",
           "sha256": "9cb1e7b463ff6b2d6c58f625fa7a77a035a1eb1fd031648745db85a0561d8052"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
-          "line": 2461,
+          "line": 2462,
           "column": 3,
           "value": "回顾建议",
           "sha256": "476804e7869cddeb6157ee71e26d510adcca28d8e2135ca3f80463b57ae17b97"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
-          "line": 2461,
+          "line": 2462,
           "column": 3,
           "value": "回顧建議",
           "sha256": "f3278d77321cbd31a817fef532e7437e5e52812bc9c8ca2ef4bfd740a1d4839a"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
-          "line": 2461,
+          "line": 2462,
           "column": 3,
           "value": "振り返りの提案",
           "sha256": "445b6c04e918ebdf66d0b720098a003c7091c5a7a5ff16e035a3a312eecb4da9"
@@ -139633,28 +139696,28 @@
       "values": {
         "en": {
           "file": "app/ui-catalogs/en.mjs",
-          "line": 2463,
+          "line": 2464,
           "column": 3,
           "value": "Comparison suggestion",
           "sha256": "71a10ecc27ecfce9b76ce8ce811631af5f095ee722a470c65a40b68dfea616b6"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
-          "line": 2462,
+          "line": 2463,
           "column": 3,
           "value": "对照建议",
           "sha256": "822604004fe9425295b7123d06cf81e361ca30abd8785455e95600c5f3c3dcee"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
-          "line": 2462,
+          "line": 2463,
           "column": 3,
           "value": "對照建議",
           "sha256": "ff256373e18b1ed56184fe02f973db6f863ee665892311f9336791a9d4af90f3"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
-          "line": 2462,
+          "line": 2463,
           "column": 3,
           "value": "比較の提案",
           "sha256": "e890effc315b21ef48ba6957d206cd79b7cee32dce0b7cf1aece860ab111ec4d"
@@ -139684,28 +139747,28 @@
       "values": {
         "en": {
           "file": "app/ui-catalogs/en.mjs",
-          "line": 2464,
+          "line": 2465,
           "column": 3,
           "value": "Search suggestion",
           "sha256": "0e461d9ea29196bee87cb7ce18ea45d376e1eda03441832a19ce7727c8322407"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
-          "line": 2463,
+          "line": 2464,
           "column": 3,
           "value": "检索建议",
           "sha256": "57a629400b4f78a7fafb3189ef53c324601a100e888ea3886d2f79353aa5a5c8"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
-          "line": 2463,
+          "line": 2464,
           "column": 3,
           "value": "檢索建議",
           "sha256": "fbe35000c39184a5e3ea5c03f087b872c0208e230221cb1915c39f5cdac66bab"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
-          "line": 2463,
+          "line": 2464,
           "column": 3,
           "value": "検索の提案",
           "sha256": "033561e8df12d0d33ea625c4e349e08b0c654afed72c54b27ef929162f19b099"
@@ -139735,28 +139798,28 @@
       "values": {
         "en": {
           "file": "app/ui-catalogs/en.mjs",
-          "line": 2465,
+          "line": 2466,
           "column": 3,
           "value": "Abandon this change and keep my words",
           "sha256": "11a6e79c2154c8ada43ecdc4f3e0d26c888b2418d467f8a925bd8dfa7b177d32"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
-          "line": 2464,
+          "line": 2465,
           "column": 3,
           "value": "放弃这次操作，保留文字",
           "sha256": "1e4c28238a2a973972fbdf382bf45d829cd5a28b1988eab2b5b3b931c53626a9"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
-          "line": 2464,
+          "line": 2465,
           "column": 3,
           "value": "放棄這次操作，保留文字",
           "sha256": "94448816429231872297f373c37887227ed1eb991719d630f1e71f40f6b264ec"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
-          "line": 2464,
+          "line": 2465,
           "column": 3,
           "value": "この操作を取り消し、文章を残す",
           "sha256": "66143e8e661e95f0532dfb0f8615bd8e3de7638c7a45cd594b69670aa086d2de"
@@ -139786,28 +139849,28 @@
       "values": {
         "en": {
           "file": "app/ui-catalogs/en.mjs",
-          "line": 2466,
+          "line": 2467,
           "column": 3,
           "value": "Change abandoned. Your unsaved words are kept.",
           "sha256": "ca4bbd9bb0b774845b37c226ddd13481dec32f5bd841a3a86237cbbcdc7abae0"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
-          "line": 2465,
+          "line": 2466,
           "column": 3,
           "value": "已放弃这次操作，未保存的文字仍保留。",
           "sha256": "5673a210eb3d9796b56a7a6e79b34957545156c18189d07fe61596657cf6e59b"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
-          "line": 2465,
+          "line": 2466,
           "column": 3,
           "value": "已放棄這次操作，尚未儲存的文字仍保留。",
           "sha256": "1f58edf6c04b6294c50d4e6049436a6931b675473bc6a7b6ce6cca5cfe115181"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
-          "line": 2465,
+          "line": 2466,
           "column": 3,
           "value": "操作を取り消しました。未保存の文章は残っています。",
           "sha256": "dbbbb16e884fb19393e82994b46c79f9f3c733caa7451208f1f0c84d85aa9991"
@@ -139837,28 +139900,28 @@
       "values": {
         "en": {
           "file": "app/ui-catalogs/en.mjs",
-          "line": 2467,
+          "line": 2468,
           "column": 3,
           "value": "Selected week",
           "sha256": "23900c8ae0ba967de5583b6744bb772c6289a5bcfe7e96414bd25fa340adff59"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
-          "line": 2466,
+          "line": 2467,
           "column": 3,
           "value": "所选一周",
           "sha256": "78a39f776e8d869fe63d1357bee446b0dd75b056f23acef367d58422cdd8b142"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
-          "line": 2466,
+          "line": 2467,
           "column": 3,
           "value": "所選一週",
           "sha256": "b9dbb305ac8670dbdc38cb227bdef59f9471b93918c3e9da7929457d0b234af5"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
-          "line": 2466,
+          "line": 2467,
           "column": 3,
           "value": "選んだ週",
           "sha256": "586754a178280ad04ac2e1114f474547360bd6f795bcc185744e306a357c31ff"
@@ -139888,28 +139951,28 @@
       "values": {
         "en": {
           "file": "app/ui-catalogs/en.mjs",
-          "line": 2468,
+          "line": 2469,
           "column": 3,
           "value": "Selected month",
           "sha256": "a915b974bedf5fc35f4bcc0af57f7251d9da42b52a7b62d5cc914bf8e9764161"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
-          "line": 2467,
+          "line": 2468,
           "column": 3,
           "value": "所选月份",
           "sha256": "21981e9506e138bdd02020a13b8fb066970f75d6bcb6d3e323de03c2f1025d1f"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
-          "line": 2467,
+          "line": 2468,
           "column": 3,
           "value": "所選月份",
           "sha256": "55ae8f2df39213654695dc96eeeac9d5b51802d885b753ca5d578cf60734e238"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
-          "line": 2467,
+          "line": 2468,
           "column": 3,
           "value": "選んだ月",
           "sha256": "d0a2b980ab851aac19bd96ac7037e8913e6050d887a9e895e485340b9150a3db"
@@ -139939,28 +140002,28 @@
       "values": {
         "en": {
           "file": "app/ui-catalogs/en.mjs",
-          "line": 2469,
+          "line": 2470,
           "column": 3,
           "value": "Review period",
           "sha256": "152415c585d31200d6d81c5fb30e51a14a52b02a88132ca126fdf5e61a389d5c"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
-          "line": 2468,
+          "line": 2469,
           "column": 3,
           "value": "回顾日期范围",
           "sha256": "d13200e9b5af2c2215782800f2d72207aee33eb4ac60491a54b09bad14381de8"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
-          "line": 2468,
+          "line": 2469,
           "column": 3,
           "value": "回顧日期範圍",
           "sha256": "c26a19e7c2c000ddf43a162fab2363e4807579170eee174ee420c46f0a7d1a5d"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
-          "line": 2468,
+          "line": 2469,
           "column": 3,
           "value": "振り返る期間",
           "sha256": "df477ce250146b49201fc553eddf984d33eeaa5a284bbb3c2dd403706f590940"
@@ -139990,28 +140053,28 @@
       "values": {
         "en": {
           "file": "app/ui-catalogs/en.mjs",
-          "line": 2470,
+          "line": 2471,
           "column": 3,
           "value": "Date range: {start} to {end}. Review only entries from this period; older original notes are context.",
           "sha256": "844635a47362e2d11ceaecc29d9756782333242f61cae8e442261aa0b166388f"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
-          "line": 2469,
+          "line": 2470,
           "column": 3,
           "value": "日期范围：{start} 至 {end}。仅回顾这个时段的记录，较早原话仅作上下文。",
           "sha256": "47fd947e01a32cf8b30139fb6f0ce7be045c7837e474a3c66ee45702fe548336"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
-          "line": 2469,
+          "line": 2470,
           "column": 3,
           "value": "日期範圍：{start} 至 {end}。僅回顧這個時段的記錄，較早原話僅作上下文。",
           "sha256": "439dec150803bd418c398feb9124d07de1efdb1190f10ed07273c8ccfe243b4c"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
-          "line": 2469,
+          "line": 2470,
           "column": 3,
           "value": "対象期間：{start} から {end}。この期間の記録を振り返り、以前のノートは文脈として扱います。",
           "sha256": "f5a647881a56ba85c41b06eca930c123b6ab38b0f8b29e1037c708b33479ef3d"
@@ -140022,8 +140085,8 @@
       "consumers": [
         {
           "file": "app/reading-workspace.mjs",
-          "line": 113,
-          "column": 844
+          "line": 114,
+          "column": 939
         }
       ],
       "hints": [
@@ -230039,6 +230102,26 @@
       }
     },
     {
+      "id": "candidate:app/portal.js:99:790",
+      "file": "app/portal.js",
+      "line": 99,
+      "column": 790,
+      "kind": "js-attribute",
+      "property": "role",
+      "value": "status",
+      "sha256": "073c1634c496cdb649d1afe0a312bbb4b7e1741b271542e4a436c3b8824b1761",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
       "id": "candidate:app/portal.js:189:111",
       "file": "app/portal.js",
       "line": 189,
@@ -236459,9 +236542,9 @@
       }
     },
     {
-      "id": "candidate:app/reading-workspace.mjs:116:295",
+      "id": "candidate:app/reading-workspace.mjs:117:295",
       "file": "app/reading-workspace.mjs",
-      "line": 116,
+      "line": 117,
       "column": 295,
       "kind": "js-attribute",
       "property": "aria-disabled",
@@ -236479,9 +236562,9 @@
       }
     },
     {
-      "id": "candidate:app/reading-workspace.mjs:125:319",
+      "id": "candidate:app/reading-workspace.mjs:126:319",
       "file": "app/reading-workspace.mjs",
-      "line": 125,
+      "line": 126,
       "column": 319,
       "kind": "js-attribute",
       "property": "aria-current",
@@ -259983,9 +260066,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:439:158",
+      "id": "candidate:server/library-service.mjs:448:158",
       "file": "server/library-service.mjs",
-      "line": 439,
+      "line": 448,
       "column": 158,
       "kind": "js-cjk-literal",
       "property": null,
@@ -260003,9 +260086,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:441:37",
+      "id": "candidate:server/library-service.mjs:450:37",
       "file": "server/library-service.mjs",
-      "line": 441,
+      "line": 450,
       "column": 37,
       "kind": "js-cjk-literal",
       "property": null,
@@ -260023,9 +260106,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:442:75",
+      "id": "candidate:server/library-service.mjs:451:75",
       "file": "server/library-service.mjs",
-      "line": 442,
+      "line": 451,
       "column": 75,
       "kind": "js-cjk-literal",
       "property": null,
@@ -260043,9 +260126,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:449:70",
+      "id": "candidate:server/library-service.mjs:458:70",
       "file": "server/library-service.mjs",
-      "line": 449,
+      "line": 458,
       "column": 70,
       "kind": "js-cjk-literal",
       "property": null,
@@ -260063,9 +260146,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:456:171",
+      "id": "candidate:server/library-service.mjs:465:171",
       "file": "server/library-service.mjs",
-      "line": 456,
+      "line": 465,
       "column": 171,
       "kind": "js-cjk-literal",
       "property": null,
@@ -260083,9 +260166,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:466:350",
+      "id": "candidate:server/library-service.mjs:475:350",
       "file": "server/library-service.mjs",
-      "line": 466,
+      "line": 475,
       "column": 350,
       "kind": "js-cjk-literal",
       "property": null,
@@ -260103,9 +260186,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:469:191",
+      "id": "candidate:server/library-service.mjs:478:191",
       "file": "server/library-service.mjs",
-      "line": 469,
+      "line": 478,
       "column": 191,
       "kind": "js-cjk-literal",
       "property": null,
@@ -260123,9 +260206,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:469:256",
+      "id": "candidate:server/library-service.mjs:478:256",
       "file": "server/library-service.mjs",
-      "line": 469,
+      "line": 478,
       "column": 256,
       "kind": "js-cjk-literal",
       "property": null,
@@ -260143,9 +260226,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:473:120",
+      "id": "candidate:server/library-service.mjs:482:120",
       "file": "server/library-service.mjs",
-      "line": 473,
+      "line": 482,
       "column": 120,
       "kind": "js-cjk-literal",
       "property": null,
@@ -260163,9 +260246,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:475:82",
+      "id": "candidate:server/library-service.mjs:484:82",
       "file": "server/library-service.mjs",
-      "line": 475,
+      "line": 484,
       "column": 82,
       "kind": "js-cjk-literal",
       "property": null,
@@ -260183,9 +260266,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:481:194",
+      "id": "candidate:server/library-service.mjs:490:194",
       "file": "server/library-service.mjs",
-      "line": 481,
+      "line": 490,
       "column": 194,
       "kind": "js-cjk-literal",
       "property": null,
@@ -260203,9 +260286,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:482:85",
+      "id": "candidate:server/library-service.mjs:491:85",
       "file": "server/library-service.mjs",
-      "line": 482,
+      "line": 491,
       "column": 85,
       "kind": "js-cjk-literal",
       "property": null,
@@ -260223,9 +260306,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:483:113",
+      "id": "candidate:server/library-service.mjs:492:113",
       "file": "server/library-service.mjs",
-      "line": 483,
+      "line": 492,
       "column": 113,
       "kind": "js-cjk-literal",
       "property": null,
@@ -260243,9 +260326,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:485:183",
+      "id": "candidate:server/library-service.mjs:494:183",
       "file": "server/library-service.mjs",
-      "line": 485,
+      "line": 494,
       "column": 183,
       "kind": "js-cjk-literal",
       "property": null,
@@ -260263,9 +260346,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:490:23",
+      "id": "candidate:server/library-service.mjs:499:23",
       "file": "server/library-service.mjs",
-      "line": 490,
+      "line": 499,
       "column": 23,
       "kind": "js-cjk-literal",
       "property": null,
@@ -260283,9 +260366,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:495:68",
+      "id": "candidate:server/library-service.mjs:504:68",
       "file": "server/library-service.mjs",
-      "line": 495,
+      "line": 504,
       "column": 68,
       "kind": "js-cjk-literal",
       "property": null,
@@ -260303,9 +260386,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:496:31",
+      "id": "candidate:server/library-service.mjs:505:31",
       "file": "server/library-service.mjs",
-      "line": 496,
+      "line": 505,
       "column": 31,
       "kind": "js-cjk-literal",
       "property": null,
@@ -260323,9 +260406,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:497:173",
+      "id": "candidate:server/library-service.mjs:506:173",
       "file": "server/library-service.mjs",
-      "line": 497,
+      "line": 506,
       "column": 173,
       "kind": "js-cjk-literal",
       "property": null,
@@ -260343,9 +260426,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:497:254",
+      "id": "candidate:server/library-service.mjs:506:254",
       "file": "server/library-service.mjs",
-      "line": 497,
+      "line": 506,
       "column": 254,
       "kind": "js-cjk-literal",
       "property": null,
@@ -260363,9 +260446,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:497:317",
+      "id": "candidate:server/library-service.mjs:506:317",
       "file": "server/library-service.mjs",
-      "line": 497,
+      "line": 506,
       "column": 317,
       "kind": "js-cjk-literal",
       "property": null,
@@ -260383,9 +260466,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:502:101",
+      "id": "candidate:server/library-service.mjs:511:101",
       "file": "server/library-service.mjs",
-      "line": 502,
+      "line": 511,
       "column": 101,
       "kind": "js-cjk-literal",
       "property": null,
@@ -260403,9 +260486,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:509:139",
+      "id": "candidate:server/library-service.mjs:518:139",
       "file": "server/library-service.mjs",
-      "line": 509,
+      "line": 518,
       "column": 139,
       "kind": "js-cjk-literal",
       "property": null,
@@ -260423,9 +260506,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:536:164",
+      "id": "candidate:server/library-service.mjs:545:164",
       "file": "server/library-service.mjs",
-      "line": 536,
+      "line": 545,
       "column": 164,
       "kind": "js-cjk-literal",
       "property": null,
@@ -260443,9 +260526,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:541:139",
+      "id": "candidate:server/library-service.mjs:550:139",
       "file": "server/library-service.mjs",
-      "line": 541,
+      "line": 550,
       "column": 139,
       "kind": "js-cjk-literal",
       "property": null,
@@ -260463,9 +260546,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:545:239",
+      "id": "candidate:server/library-service.mjs:554:239",
       "file": "server/library-service.mjs",
-      "line": 545,
+      "line": 554,
       "column": 239,
       "kind": "js-cjk-literal",
       "property": null,
@@ -260483,9 +260566,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:548:269",
+      "id": "candidate:server/library-service.mjs:557:269",
       "file": "server/library-service.mjs",
-      "line": 548,
+      "line": 557,
       "column": 269,
       "kind": "js-cjk-literal",
       "property": null,
@@ -260503,9 +260586,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:553:324",
+      "id": "candidate:server/library-service.mjs:562:324",
       "file": "server/library-service.mjs",
-      "line": 553,
+      "line": 562,
       "column": 324,
       "kind": "js-cjk-literal",
       "property": null,
@@ -260523,9 +260606,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:556:144",
+      "id": "candidate:server/library-service.mjs:565:144",
       "file": "server/library-service.mjs",
-      "line": 556,
+      "line": 565,
       "column": 144,
       "kind": "js-cjk-literal",
       "property": null,
@@ -260543,9 +260626,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:575:146",
+      "id": "candidate:server/library-service.mjs:584:146",
       "file": "server/library-service.mjs",
-      "line": 575,
+      "line": 584,
       "column": 146,
       "kind": "js-cjk-literal",
       "property": null,
@@ -260563,9 +260646,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:592:89",
+      "id": "candidate:server/library-service.mjs:601:89",
       "file": "server/library-service.mjs",
-      "line": 592,
+      "line": 601,
       "column": 89,
       "kind": "js-cjk-literal",
       "property": null,
@@ -260583,9 +260666,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:602:139",
+      "id": "candidate:server/library-service.mjs:611:139",
       "file": "server/library-service.mjs",
-      "line": 602,
+      "line": 611,
       "column": 139,
       "kind": "js-cjk-literal",
       "property": null,
@@ -260603,9 +260686,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:610:183",
+      "id": "candidate:server/library-service.mjs:619:183",
       "file": "server/library-service.mjs",
-      "line": 610,
+      "line": 619,
       "column": 183,
       "kind": "js-cjk-literal",
       "property": null,
@@ -260623,9 +260706,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:615:46",
+      "id": "candidate:server/library-service.mjs:624:46",
       "file": "server/library-service.mjs",
-      "line": 615,
+      "line": 624,
       "column": 46,
       "kind": "js-cjk-literal",
       "property": null,
@@ -260643,9 +260726,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:616:45",
+      "id": "candidate:server/library-service.mjs:625:45",
       "file": "server/library-service.mjs",
-      "line": 616,
+      "line": 625,
       "column": 45,
       "kind": "js-cjk-literal",
       "property": null,
@@ -260663,9 +260746,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:617:40",
+      "id": "candidate:server/library-service.mjs:626:40",
       "file": "server/library-service.mjs",
-      "line": 617,
+      "line": 626,
       "column": 40,
       "kind": "js-cjk-literal",
       "property": null,
@@ -260683,9 +260766,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:625:158",
+      "id": "candidate:server/library-service.mjs:634:158",
       "file": "server/library-service.mjs",
-      "line": 625,
+      "line": 634,
       "column": 158,
       "kind": "js-cjk-literal",
       "property": null,
@@ -260703,9 +260786,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:627:460",
+      "id": "candidate:server/library-service.mjs:636:460",
       "file": "server/library-service.mjs",
-      "line": 627,
+      "line": 636,
       "column": 460,
       "kind": "js-cjk-literal",
       "property": null,
@@ -260723,9 +260806,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:628:84",
+      "id": "candidate:server/library-service.mjs:637:84",
       "file": "server/library-service.mjs",
-      "line": 628,
+      "line": 637,
       "column": 84,
       "kind": "js-cjk-literal",
       "property": null,
@@ -260743,9 +260826,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:629:283",
+      "id": "candidate:server/library-service.mjs:638:283",
       "file": "server/library-service.mjs",
-      "line": 629,
+      "line": 638,
       "column": 283,
       "kind": "js-cjk-literal",
       "property": null,
@@ -260763,9 +260846,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:630:330",
+      "id": "candidate:server/library-service.mjs:639:330",
       "file": "server/library-service.mjs",
-      "line": 630,
+      "line": 639,
       "column": 330,
       "kind": "js-cjk-literal",
       "property": null,
@@ -260783,9 +260866,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:631:265",
+      "id": "candidate:server/library-service.mjs:640:265",
       "file": "server/library-service.mjs",
-      "line": 631,
+      "line": 640,
       "column": 265,
       "kind": "js-cjk-literal",
       "property": null,
@@ -260803,9 +260886,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:632:116",
+      "id": "candidate:server/library-service.mjs:641:116",
       "file": "server/library-service.mjs",
-      "line": 632,
+      "line": 641,
       "column": 116,
       "kind": "js-cjk-literal",
       "property": null,
@@ -260823,9 +260906,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:651:86",
+      "id": "candidate:server/library-service.mjs:660:86",
       "file": "server/library-service.mjs",
-      "line": 651,
+      "line": 660,
       "column": 86,
       "kind": "js-cjk-literal",
       "property": null,
@@ -260843,9 +260926,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:660:101",
+      "id": "candidate:server/library-service.mjs:669:101",
       "file": "server/library-service.mjs",
-      "line": 660,
+      "line": 669,
       "column": 101,
       "kind": "js-cjk-literal",
       "property": null,
@@ -260863,9 +260946,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:662:232",
+      "id": "candidate:server/library-service.mjs:671:232",
       "file": "server/library-service.mjs",
-      "line": 662,
+      "line": 671,
       "column": 232,
       "kind": "js-cjk-literal",
       "property": null,
@@ -260883,9 +260966,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:663:57",
+      "id": "candidate:server/library-service.mjs:672:57",
       "file": "server/library-service.mjs",
-      "line": 663,
+      "line": 672,
       "column": 57,
       "kind": "js-cjk-literal",
       "property": null,
@@ -260903,9 +260986,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:664:31",
+      "id": "candidate:server/library-service.mjs:673:31",
       "file": "server/library-service.mjs",
-      "line": 664,
+      "line": 673,
       "column": 31,
       "kind": "js-cjk-literal",
       "property": null,
@@ -260923,9 +261006,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:670:124",
+      "id": "candidate:server/library-service.mjs:679:124",
       "file": "server/library-service.mjs",
-      "line": 670,
+      "line": 679,
       "column": 124,
       "kind": "js-cjk-literal",
       "property": null,
@@ -260943,9 +261026,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:673:69",
+      "id": "candidate:server/library-service.mjs:682:69",
       "file": "server/library-service.mjs",
-      "line": 673,
+      "line": 682,
       "column": 69,
       "kind": "js-cjk-literal",
       "property": null,
@@ -260963,9 +261046,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:680:91",
+      "id": "candidate:server/library-service.mjs:689:91",
       "file": "server/library-service.mjs",
-      "line": 680,
+      "line": 689,
       "column": 91,
       "kind": "js-cjk-literal",
       "property": null,
@@ -260983,9 +261066,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:685:104",
+      "id": "candidate:server/library-service.mjs:694:104",
       "file": "server/library-service.mjs",
-      "line": 685,
+      "line": 694,
       "column": 104,
       "kind": "js-cjk-literal",
       "property": null,
@@ -261003,9 +261086,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:699:46",
+      "id": "candidate:server/library-service.mjs:708:46",
       "file": "server/library-service.mjs",
-      "line": 699,
+      "line": 708,
       "column": 46,
       "kind": "js-cjk-literal",
       "property": null,
@@ -261023,9 +261106,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:700:92",
+      "id": "candidate:server/library-service.mjs:709:92",
       "file": "server/library-service.mjs",
-      "line": 700,
+      "line": 709,
       "column": 92,
       "kind": "js-cjk-literal",
       "property": null,
@@ -261043,9 +261126,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:707:89",
+      "id": "candidate:server/library-service.mjs:716:89",
       "file": "server/library-service.mjs",
-      "line": 707,
+      "line": 716,
       "column": 89,
       "kind": "js-cjk-literal",
       "property": null,
@@ -294071,7 +294154,7 @@
     {
       "kind": "concatenation",
       "file": "app/reading-workspace.mjs",
-      "line": 113,
+      "line": 114,
       "expression": "'\\n'+t('ws.reviewRange',{start:range.start,end:range.end})",
       "fragments": [
         "\n"
@@ -294081,7 +294164,7 @@
     {
       "kind": "concatenation",
       "file": "app/reading-workspace.mjs",
-      "line": 113,
+      "line": 114,
       "expression": "endpoint+'/analyze'",
       "fragments": [
         "/analyze"
@@ -294091,7 +294174,7 @@
     {
       "kind": "concatenation",
       "file": "app/reading-workspace.mjs",
-      "line": 114,
+      "line": 115,
       "expression": "title(note)+' · '",
       "fragments": [
         " · "
@@ -294101,7 +294184,7 @@
     {
       "kind": "concatenation",
       "file": "app/reading-workspace.mjs",
-      "line": 117,
+      "line": 118,
       "expression": "t('ws.'+(candidate?.kind==='review'?'reviewKind':candidate?.kind==='compare'?'compareKind':'searchKind'))+' · '",
       "fragments": [
         " · "
@@ -294111,7 +294194,7 @@
     {
       "kind": "concatenation",
       "file": "app/reading-workspace.mjs",
-      "line": 117,
+      "line": 118,
       "expression": "'ws.'+(candidate?.kind==='review'?'reviewKind':candidate?.kind==='compare'?'compareKind':'searchKind')",
       "fragments": [
         "ws."
@@ -294121,7 +294204,7 @@
     {
       "kind": "concatenation",
       "file": "app/reading-workspace.mjs",
-      "line": 121,
+      "line": 122,
       "expression": "endpoint+'/export'",
       "fragments": [
         "/export"
@@ -294131,7 +294214,7 @@
     {
       "kind": "concatenation",
       "file": "app/reading-workspace.mjs",
-      "line": 122,
+      "line": 123,
       "expression": "endpoint+'/import'",
       "fragments": [
         "/import"
@@ -294141,7 +294224,7 @@
     {
       "kind": "concatenation",
       "file": "app/reading-workspace.mjs",
-      "line": 123,
+      "line": 124,
       "expression": "'/api/library/reading-summary?'+new URLSearchParams({month:view.month,timeZone})",
       "fragments": [
         "/api/library/reading-summary?"
@@ -294151,7 +294234,7 @@
     {
       "kind": "computed-member",
       "file": "app/reading-workspace.mjs",
-      "line": 124,
+      "line": 125,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -294159,7 +294242,7 @@
     {
       "kind": "computed-member",
       "file": "app/reading-workspace.mjs",
-      "line": 124,
+      "line": 125,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -294167,7 +294250,7 @@
     {
       "kind": "computed-member",
       "file": "app/reading-workspace.mjs",
-      "line": 124,
+      "line": 125,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -294175,7 +294258,7 @@
     {
       "kind": "concatenation",
       "file": "app/reading-workspace.mjs",
-      "line": 125,
+      "line": 126,
       "expression": "t(view.page==='calendar'?'ws.calendarTitle':'ws.notesTitle')+' · Leafhour'",
       "fragments": [
         " · Leafhour"
@@ -294185,7 +294268,7 @@
     {
       "kind": "computed-member",
       "file": "app/reading-workspace.mjs",
-      "line": 128,
+      "line": 129,
       "expression": "key",
       "fragments": [],
       "unresolved": true
@@ -300798,39 +300881,7 @@
     {
       "kind": "computed-member",
       "file": "server/library-service.mjs",
-      "line": 412,
-      "expression": "index",
-      "fragments": [],
-      "unresolved": true
-    },
-    {
-      "kind": "computed-member",
-      "file": "server/library-service.mjs",
-      "line": 412,
-      "expression": "index",
-      "fragments": [],
-      "unresolved": true
-    },
-    {
-      "kind": "computed-member",
-      "file": "server/library-service.mjs",
-      "line": 421,
-      "expression": "1",
-      "fragments": [],
-      "unresolved": true
-    },
-    {
-      "kind": "computed-member",
-      "file": "server/library-service.mjs",
-      "line": 422,
-      "expression": "kind",
-      "fragments": [],
-      "unresolved": true
-    },
-    {
-      "kind": "computed-member",
-      "file": "server/library-service.mjs",
-      "line": 423,
+      "line": 413,
       "expression": "field",
       "fragments": [],
       "unresolved": true
@@ -300838,7 +300889,63 @@
     {
       "kind": "computed-member",
       "file": "server/library-service.mjs",
-      "line": 469,
+      "line": 415,
+      "expression": "index",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/library-service.mjs",
+      "line": 418,
+      "expression": "index",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/library-service.mjs",
+      "line": 419,
+      "expression": "index",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/library-service.mjs",
+      "line": 420,
+      "expression": "index",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/library-service.mjs",
+      "line": 430,
+      "expression": "1",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/library-service.mjs",
+      "line": 431,
+      "expression": "kind",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/library-service.mjs",
+      "line": 432,
+      "expression": "field",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/library-service.mjs",
+      "line": 478,
       "expression": "type",
       "fragments": [],
       "unresolved": true
@@ -300846,7 +300953,7 @@
     {
       "kind": "computed-member",
       "file": "server/library-service.mjs",
-      "line": 469,
+      "line": 478,
       "expression": "type",
       "fragments": [],
       "unresolved": true
@@ -300854,7 +300961,7 @@
     {
       "kind": "computed-member",
       "file": "server/library-service.mjs",
-      "line": 469,
+      "line": 478,
       "expression": "type",
       "fragments": [],
       "unresolved": true
@@ -300862,7 +300969,7 @@
     {
       "kind": "computed-member",
       "file": "server/library-service.mjs",
-      "line": 475,
+      "line": 484,
       "expression": "type",
       "fragments": [],
       "unresolved": true
@@ -300870,7 +300977,7 @@
     {
       "kind": "computed-member",
       "file": "server/library-service.mjs",
-      "line": 493,
+      "line": 502,
       "expression": "i",
       "fragments": [],
       "unresolved": true
@@ -300878,7 +300985,7 @@
     {
       "kind": "computed-member",
       "file": "server/library-service.mjs",
-      "line": 494,
+      "line": 503,
       "expression": "i",
       "fragments": [],
       "unresolved": true
@@ -300886,7 +300993,7 @@
     {
       "kind": "computed-member",
       "file": "server/library-service.mjs",
-      "line": 494,
+      "line": 503,
       "expression": "i",
       "fragments": [],
       "unresolved": true
@@ -300894,7 +301001,7 @@
     {
       "kind": "computed-member",
       "file": "server/library-service.mjs",
-      "line": 494,
+      "line": 503,
       "expression": "i",
       "fragments": [],
       "unresolved": true
@@ -300902,7 +301009,7 @@
     {
       "kind": "computed-member",
       "file": "server/library-service.mjs",
-      "line": 495,
+      "line": 504,
       "expression": "i",
       "fragments": [],
       "unresolved": true
@@ -300910,7 +301017,7 @@
     {
       "kind": "concatenation",
       "file": "server/library-service.mjs",
-      "line": 497,
+      "line": 506,
       "expression": "path.resolve(dataDir)+'|'+user.id+'|'",
       "fragments": [
         "|",
@@ -300921,7 +301028,7 @@
     {
       "kind": "concatenation",
       "file": "server/library-service.mjs",
-      "line": 497,
+      "line": 506,
       "expression": "path.resolve(dataDir)+'|'",
       "fragments": [
         "|"
@@ -300931,7 +301038,7 @@
     {
       "kind": "concatenation",
       "file": "server/library-service.mjs",
-      "line": 497,
+      "line": 506,
       "expression": "user.id+'|'+id+'|'",
       "fragments": [
         "|",
@@ -300942,7 +301049,7 @@
     {
       "kind": "concatenation",
       "file": "server/library-service.mjs",
-      "line": 497,
+      "line": 506,
       "expression": "user.id+'|'",
       "fragments": [
         "|"
@@ -300952,56 +301059,8 @@
     {
       "kind": "computed-member",
       "file": "server/library-service.mjs",
-      "line": 501,
+      "line": 510,
       "expression": "i",
-      "fragments": [],
-      "unresolved": true
-    },
-    {
-      "kind": "computed-member",
-      "file": "server/library-service.mjs",
-      "line": 506,
-      "expression": "i",
-      "fragments": [],
-      "unresolved": true
-    },
-    {
-      "kind": "computed-member",
-      "file": "server/library-service.mjs",
-      "line": 508,
-      "expression": "i",
-      "fragments": [],
-      "unresolved": true
-    },
-    {
-      "kind": "computed-member",
-      "file": "server/library-service.mjs",
-      "line": 509,
-      "expression": "k",
-      "fragments": [],
-      "unresolved": true
-    },
-    {
-      "kind": "computed-member",
-      "file": "server/library-service.mjs",
-      "line": 509,
-      "expression": "k",
-      "fragments": [],
-      "unresolved": true
-    },
-    {
-      "kind": "computed-member",
-      "file": "server/library-service.mjs",
-      "line": 509,
-      "expression": "k",
-      "fragments": [],
-      "unresolved": true
-    },
-    {
-      "kind": "computed-member",
-      "file": "server/library-service.mjs",
-      "line": 511,
-      "expression": "variant",
       "fragments": [],
       "unresolved": true
     },
@@ -301014,9 +301073,57 @@
       "unresolved": true
     },
     {
-      "kind": "concatenation",
+      "kind": "computed-member",
       "file": "server/library-service.mjs",
       "line": 517,
+      "expression": "i",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/library-service.mjs",
+      "line": 518,
+      "expression": "k",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/library-service.mjs",
+      "line": 518,
+      "expression": "k",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/library-service.mjs",
+      "line": 518,
+      "expression": "k",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/library-service.mjs",
+      "line": 520,
+      "expression": "variant",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/library-service.mjs",
+      "line": 524,
+      "expression": "i",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "server/library-service.mjs",
+      "line": 526,
       "expression": "digest(id)+'.json'",
       "fragments": [
         ".json"
@@ -301026,7 +301133,7 @@
     {
       "kind": "computed-member",
       "file": "server/library-service.mjs",
-      "line": 519,
+      "line": 528,
       "expression": "passageId",
       "fragments": [],
       "unresolved": true
@@ -301034,7 +301141,7 @@
     {
       "kind": "computed-member",
       "file": "server/library-service.mjs",
-      "line": 519,
+      "line": 528,
       "expression": "passageId",
       "fragments": [],
       "unresolved": true
@@ -301042,7 +301149,7 @@
     {
       "kind": "computed-member",
       "file": "server/library-service.mjs",
-      "line": 521,
+      "line": 530,
       "expression": "p.id",
       "fragments": [],
       "unresolved": true
@@ -301050,7 +301157,7 @@
     {
       "kind": "computed-member",
       "file": "server/library-service.mjs",
-      "line": 521,
+      "line": 530,
       "expression": "p.id",
       "fragments": [],
       "unresolved": true
@@ -301058,7 +301165,7 @@
     {
       "kind": "computed-member",
       "file": "server/library-service.mjs",
-      "line": 522,
+      "line": 531,
       "expression": "passageId",
       "fragments": [],
       "unresolved": true
@@ -301066,7 +301173,7 @@
     {
       "kind": "computed-member",
       "file": "server/library-service.mjs",
-      "line": 556,
+      "line": 565,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -301074,7 +301181,7 @@
     {
       "kind": "computed-member",
       "file": "server/library-service.mjs",
-      "line": 588,
+      "line": 597,
       "expression": "id",
       "fragments": [],
       "unresolved": true
@@ -301082,7 +301189,7 @@
     {
       "kind": "concatenation",
       "file": "server/library-service.mjs",
-      "line": 605,
+      "line": 614,
       "expression": "file+'.'+randomUUID()+'.pending'",
       "fragments": [
         ".",
@@ -301093,7 +301200,7 @@
     {
       "kind": "concatenation",
       "file": "server/library-service.mjs",
-      "line": 605,
+      "line": 614,
       "expression": "file+'.'",
       "fragments": [
         "."
@@ -301103,7 +301210,7 @@
     {
       "kind": "computed-member",
       "file": "server/library-service.mjs",
-      "line": 644,
+      "line": 653,
       "expression": "p.id",
       "fragments": [],
       "unresolved": true
@@ -301111,7 +301218,7 @@
     {
       "kind": "concatenation",
       "file": "server/library-service.mjs",
-      "line": 645,
+      "line": 654,
       "expression": "digest(book.bookId)+'.json'",
       "fragments": [
         ".json"
@@ -301121,7 +301228,7 @@
     {
       "kind": "computed-member",
       "file": "server/library-service.mjs",
-      "line": 645,
+      "line": 654,
       "expression": "id",
       "fragments": [],
       "unresolved": true
@@ -301129,7 +301236,7 @@
     {
       "kind": "computed-member",
       "file": "server/library-service.mjs",
-      "line": 661,
+      "line": 670,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -301137,7 +301244,7 @@
     {
       "kind": "computed-member",
       "file": "server/library-service.mjs",
-      "line": 662,
+      "line": 671,
       "expression": "key",
       "fragments": [],
       "unresolved": true
@@ -301145,7 +301252,7 @@
     {
       "kind": "computed-member",
       "file": "server/library-service.mjs",
-      "line": 667,
+      "line": 676,
       "expression": "paragraph.id",
       "fragments": [],
       "unresolved": true
@@ -301153,7 +301260,7 @@
     {
       "kind": "computed-member",
       "file": "server/library-service.mjs",
-      "line": 675,
+      "line": 684,
       "expression": "paragraph.id",
       "fragments": [],
       "unresolved": true
@@ -301161,7 +301268,7 @@
     {
       "kind": "computed-member",
       "file": "server/library-service.mjs",
-      "line": 675,
+      "line": 684,
       "expression": "paragraph.id",
       "fragments": [],
       "unresolved": true
@@ -301169,7 +301276,7 @@
     {
       "kind": "concatenation",
       "file": "server/library-service.mjs",
-      "line": 683,
+      "line": 692,
       "expression": "digest(incoming.bookId)+'.json'",
       "fragments": [
         ".json"
@@ -301179,7 +301286,7 @@
     {
       "kind": "computed-member",
       "file": "server/library-service.mjs",
-      "line": 685,
+      "line": 694,
       "expression": "id",
       "fragments": [],
       "unresolved": true
@@ -301187,7 +301294,7 @@
     {
       "kind": "computed-member",
       "file": "server/library-service.mjs",
-      "line": 687,
+      "line": 696,
       "expression": "id",
       "fragments": [],
       "unresolved": true
@@ -301195,7 +301302,7 @@
     {
       "kind": "concatenation",
       "file": "server/library-service.mjs",
-      "line": 705,
+      "line": 714,
       "expression": "digest(incoming.bookId)+'.json'",
       "fragments": [
         ".json"
@@ -301205,7 +301312,7 @@
     {
       "kind": "computed-member",
       "file": "server/library-service.mjs",
-      "line": 707,
+      "line": 716,
       "expression": "id",
       "fragments": [],
       "unresolved": true
@@ -301213,7 +301320,7 @@
     {
       "kind": "computed-member",
       "file": "server/library-service.mjs",
-      "line": 707,
+      "line": 716,
       "expression": "id",
       "fragments": [],
       "unresolved": true
@@ -301221,7 +301328,7 @@
     {
       "kind": "computed-member",
       "file": "server/library-service.mjs",
-      "line": 708,
+      "line": 717,
       "expression": "id",
       "fragments": [],
       "unresolved": true
@@ -301229,7 +301336,7 @@
     {
       "kind": "computed-member",
       "file": "server/library-service.mjs",
-      "line": 708,
+      "line": 717,
       "expression": "id",
       "fragments": [],
       "unresolved": true
@@ -308087,22 +308194,22 @@
   },
   "counts": {
     "catalogueFiles": 4,
-    "catalogueKeys": 2458,
-    "localeValues": 9832,
-    "itemsComplete": 2458,
+    "catalogueKeys": 2459,
+    "localeValues": 9836,
+    "itemsComplete": 2459,
     "itemsWithMissingLocales": 0,
     "duplicateKeys": 0,
     "reviewedItems": 11,
-    "unreviewedItems": 2447,
-    "candidates": 6189,
-    "candidatesUnreviewed": 6188,
+    "unreviewedItems": 2448,
+    "candidates": 6190,
+    "candidatesUnreviewed": 6189,
     "candidatesProtected": 143,
     "itemsProtected": 9,
-    "dynamicConsumers": 3968,
-    "consumerReferences": 2082,
-    "keysWithoutStaticConsumers": 1330,
+    "dynamicConsumers": 3971,
+    "consumerReferences": 2084,
+    "keysWithoutStaticConsumers": 1329,
     "reviewedLocaleValues": 44,
-    "unreviewedLocaleValues": 9788,
+    "unreviewedLocaleValues": 9792,
     "reviewedStaticItems": 1
   },
   "auditLedger": {

@@ -1,0 +1,26 @@
+{
+  "recordedTotalSeconds": 900,
+  "perBookSeconds": [
+    600,
+    600
+  ],
+  "generationCalls": 3,
+  "layoutCases": 32,
+  "errors": [],
+  "checks": [
+    "slow stylesheet keeps loading shell",
+    "failed stylesheet explicit retry",
+    "time union",
+    "per-book time",
+    "edit undo",
+    "owner draft refresh",
+    "topics",
+    "dated understanding",
+    "question state",
+    "scoped compare/search/review",
+    "adopt/dismiss",
+    "structured export/import",
+    "forced locale survives reload",
+    "no automatic generation"
+  ]
+}

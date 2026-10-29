@@ -2395,6 +2395,7 @@ export default Object.freeze({
   "ws.save": "保存",
   "ws.saving": "保存中…",
   "ws.saved": "保存しました",
+  "ws.draftVolatile": "このブラウザに下書きを残せません。再読み込みの前に保存するか、言葉をコピーしてください。",
   "ws.localDraft": "未保存の言葉はこのブラウザに残ります。",
   "ws.conflict": "別の場所で変更されています。入力はここに残るので、最新のノートを開き直してください。",
   "ws.undo": "直前の編集を戻す",

@@ -24,22 +24,22 @@
 ### Task 1: Domain services, reading summary and bounded analysis
 Files: server/reading-workspace-service.mjs, server/reading-summary.mjs, harness/notebook-generator.mjs, limited server/library-service.mjs; tests/reading-workspace-service.test.mjs and tests/reading-summary.test.mjs.
 Interfaces: exact HTTP-facing service signatures and shapes in spec.
-- [ ] Add failing fixtures for time union and account-bound notebook mutation/analysis/portability.
-- [ ] Implement recorded totals and selected-month stories without fetching source text unnecessarily.
-- [ ] Implement state, topics, followups, candidates, adoption, portable restore and scoped bounded generator.
-- [ ] Run focused tests; provide root integration notes; independent review and fixes.
+- [x] Add failing fixtures for time union and account-bound notebook mutation/analysis/portability.
+- [x] Implement recorded totals and selected-month stories without fetching source text unnecessarily.
+- [x] Implement state, topics, followups, candidates, adoption, portable restore and scoped bounded generator.
+- [x] Run focused tests; provide root integration notes; independent review and fixes.
 
 ### Task 2: Independent pages and complete UI
 Files: app/reading-workspace.mjs, app/reading-workspace.css, app/reading-workspace-state.mjs, app/portal.js, app/home.html, server/portal-document.mjs, server/portal.mjs, ui catalogs.
-- [ ] Lazy mount workspaces and route/sidebar/history/auth return, first paint and owner clearing.
-- [ ] Calendar month/day content and daily/month/book/all-time time presentation.
-- [ ] Notebook detail, editing/drafts/undo, questions/followups, topics and source return.
-- [ ] Scope picker, explicit analysis actions, evidence candidates, adoption/rejection and export/import.
-- [ ] Four locales, keyboard, phone/desktop and paper/night; meaningful UI-state regressions.
+- [x] Lazy mount workspaces and route/sidebar/history/auth return, first paint and owner clearing.
+- [x] Calendar month/day content and daily/month/book/all-time time presentation.
+- [x] Notebook detail, editing/drafts/undo, questions/followups, topics and source return.
+- [x] Scope picker, explicit analysis actions, evidence candidates, adoption/rejection and export/import.
+- [x] Four locales, keyboard, phone/desktop and paper/night; meaningful UI-state regressions.
 
 ### Task 3: Integration, review and delivery
-- [ ] Server endpoints and no-store/owner guards; generation injection, abort/authorize plumbing; release allowlist/asset maps.
+- [x] Server endpoints and no-store/owner guards; generation injection, abort/authorize plumbing; release allowlist/asset maps.
 - [ ] Synthetic complete-flow and real default-account read-only production acceptance; no cloud test garbage.
-- [ ] Copy export/lint/canaries, complete tests/build/release checks; independent adversarial review and repairs.
+- [x] Copy export/lint/canaries, complete tests/build/release checks; independent adversarial review and repairs.
 - [ ] Sync main, commit task files, push, create/attach PR, required CI, normal merge.
 - [ ] Follow own deployed commit (or verified descendant with unchanged web files), verify source and actual UI/account flow; distinguish merge/deploy/acceptance.

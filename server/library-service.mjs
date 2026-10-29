@@ -370,7 +370,7 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
       if(decoded.scope!==scope)throw fail('Notebook shelf changed; retry',409);offset=decoded.offset;if(offset>books.length)throw fail('Invalid notebook cursor',400);
     }
     const batch=books.slice(offset,offset+limit),results=new Array(batch.length);let work=0;
-    const fields=['id','bookId','origin','text','quote','quoteOrigin','passageId','parts','contentVersion','createdAt','updatedAt','revision','status'];
+    const fields=['id','bookId','origin','text','quote','quoteOrigin','passageId','parts','contentVersion','createdAt','updatedAt','revision','lastEditId','status'];
     async function worker(){while(work<batch.length){const index=work++,book=batch[index];try{
       const stored=await read(recordFile(user,book.bookId),emptyRecords(book));if(stored?.bookId!==book.bookId)throw Error('Unmatched records');
       const records={bookId:book.bookId,contentVersion:stored.contentVersion};
@@ -409,7 +409,16 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
   async function readingSummary(user,query){
     requireUser(user);buildReadingSummary([],query);
     const rows=[...new Map((await allShelfRows(user)).map(row=>[row.bookId,row])).values()],entries=new Array(rows.length);let offset=0;
-    async function worker(){while(offset<rows.length){const index=offset++,row=rows[index],snapshot=await chapterReads.manifest(user,row.bookId),book=snapshot.book;entries[index]={book,records:await read(recordFile(user,row.bookId),emptyRecords(book))};await chapterReads.assertCurrent(user,row.bookId,snapshot);}}
+    const array=value=>Array.isArray(value)?value:[];
+    const needsSource=(row,records)=>records?.bookId===row.bookId&&(array(records.readingSessions).some(session=>session?.bookId===row.bookId&&session.contentVersion===row.contentVersion&&isReadingTimeSource(session.source)&&array(session.segments).length>0)||['comments','questions'].some(field=>array(records[field]).some(note=>note?.origin==='user'&&!note.deletedAt&&typeof note.text==='string'))||array(records.readingMilestones).some(mark=>mark?.origin==='user'&&['chapter_read','book_finished'].includes(mark.type)));
+    async function worker(){while(offset<rows.length){
+      const index=offset++,row=rows[index],records=await read(recordFile(user,row.bookId),null);
+      // Keep zero-duration catalog rows without building account chapter caches.
+      // Only real personal activity needs source anchors/version validation.
+      if(!needsSource(row,records)){const book={...row,sections:[],chapters:row.chapterIndex||[]};entries[index]={book,records:emptyRecords(book)};continue;}
+      const shared=publicBooks.get(row.bookId);if(shared){entries[index]={book:shared,records};continue;}
+      const snapshot=await chapterReads.manifest(user,row.bookId);entries[index]={book:snapshot.book,records};await chapterReads.assertCurrent(user,row.bookId,snapshot);
+    }}
     await Promise.all(Array.from({length:Math.min(3,rows.length)},worker));return buildReadingSummary(entries,query);
   }
   // Selected saved user records only. Caller supplies keys, never note text.

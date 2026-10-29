@@ -2396,6 +2396,7 @@ export default Object.freeze({
   "ws.save": "Save",
   "ws.saving": "Saving…",
   "ws.saved": "Saved",
+  "ws.draftVolatile": "This browser cannot keep the draft. Save or copy these words before refreshing.",
   "ws.localDraft": "Unsaved words are kept in this browser.",
   "ws.conflict": "This note changed elsewhere. Your words are kept here; reopen the latest note before saving.",
   "ws.undo": "Undo last edit",

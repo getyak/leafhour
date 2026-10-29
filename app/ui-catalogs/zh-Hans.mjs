@@ -2395,6 +2395,7 @@ export default Object.freeze({
   "ws.save": "保存",
   "ws.saving": "正在保存…",
   "ws.saved": "已保存",
+  "ws.draftVolatile": "浏览器暂时无法保留草稿。刷新前请保存或复制这些文字。",
   "ws.localDraft": "未保存的文字已留在当前浏览器。",
   "ws.conflict": "这条笔记已在别处修改。当前文字已保留，请先重新打开较新的笔记。",
   "ws.undo": "撤销上次修改",
