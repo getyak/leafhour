@@ -448,7 +448,8 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = org.leafhour.local.uitests;
+				LEAFHOUR_UI_TEST_BUNDLE_ID = "$(LEAFHOUR_BUNDLE_ID).uitests";
+				PRODUCT_BUNDLE_IDENTIFIER = "$(LEAFHOUR_UI_TEST_BUNDLE_ID)";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_TARGET_NAME = Leafhour;
@@ -599,7 +600,8 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = org.leafhour.local.uitests;
+				LEAFHOUR_UI_TEST_BUNDLE_ID = "$(LEAFHOUR_BUNDLE_ID).uitests";
+				PRODUCT_BUNDLE_IDENTIFIER = "$(LEAFHOUR_UI_TEST_BUNDLE_ID)";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_TARGET_NAME = Leafhour;

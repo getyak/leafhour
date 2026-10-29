@@ -50,7 +50,8 @@ targets:
       base:
         GENERATE_INFOPLIST_FILE: YES
         INFOPLIST_FILE: ""
-        PRODUCT_BUNDLE_IDENTIFIER: org.leafhour.local.uitests
+        LEAFHOUR_UI_TEST_BUNDLE_ID: $(LEAFHOUR_BUNDLE_ID).uitests
+        PRODUCT_BUNDLE_IDENTIFIER: $(LEAFHOUR_UI_TEST_BUNDLE_ID)
         CODE_SIGN_STYLE: Automatic
   LeafhourAppTests:
     type: bundle.unit-test
