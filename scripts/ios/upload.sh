@@ -22,6 +22,9 @@ case "$probe_status" in
     xcrun altool --upload-app --type ios --file build/ios/Leafhour.ipa --apiKey "$ASC_API_KEY_ID" --apiIssuer "$ASC_ISSUER_ID" --output-format json > "$RUNNER_TEMP/leafhour-altool.log" 2>&1
     transport_status=$?
     set -e
+    if [[ "$transport_status" -ne 0 ]]; then
+      node scripts/ios/transport-diagnostics.mjs "$RUNNER_TEMP/leafhour-altool.log"
+    fi
     echo "Transport exit status: $transport_status; independent Apple confirmation follows"
     else
       echo 'Later workflow attempts are reconciliation-only, including when Apple visibility is delayed. No additional transport submission.'

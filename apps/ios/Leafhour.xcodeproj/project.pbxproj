@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		22DA8FD4AF2DACA7EBF72C01 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 26736FE5A8D7DA1CE1FEC4BC /* Assets.xcassets */; };
 		497B1C91B1E5BF35DF45198E /* LibraryScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03E537D8BE04773F738DBB85 /* LibraryScreen.swift */; };
 		56ED28FA1DAC8B395A183C43 /* TextReadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 878434EEA066C19B2F60BD71 /* TextReadingView.swift */; };
 		61125147E5FCF4B7597F8348 /* ReaderScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9E14C10861765251864D27F /* ReaderScreen.swift */; };
@@ -33,6 +34,7 @@
 		03E537D8BE04773F738DBB85 /* LibraryScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryScreen.swift; sourceTree = "<group>"; };
 		0A90A4D814926D7BDD928EFA /* Debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Debug.xcconfig; sourceTree = "<group>"; };
 		190E595DF8E356D9375375C3 /* ReaderPanels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReaderPanels.swift; sourceTree = "<group>"; };
+		26736FE5A8D7DA1CE1FEC4BC /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		38902495F2632E28241A145D /* LeafhourUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = LeafhourUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		546006DD160B938C9A0F4BED /* Leafhour.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Leafhour.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5C7589B4E02534E97DD36795 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
@@ -71,6 +73,7 @@
 		3857077CED4C8DABB0A5F2D9 /* Leafhour */ = {
 			isa = PBXGroup;
 			children = (
+				26736FE5A8D7DA1CE1FEC4BC /* Assets.xcassets */,
 				9CB602653F224B78330B371B /* BookDetailScreen.swift */,
 				E7711E02A82CAE93CC04FC45 /* Info.plist */,
 				C5BA4DE90DC37B23A3034EB2 /* LeafhourApp.swift */,
@@ -207,6 +210,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				22DA8FD4AF2DACA7EBF72C01 /* Assets.xcassets in Resources */,
 				9A89F5B2C98DB10C91B3BD53 /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
