@@ -62,6 +62,24 @@ final class CloudSyncTests: XCTestCase {
         XCTAssertEqual(cached["passage-one"]?.literal,"Reviewed wording")
         XCTAssertEqual(cached["passage-one"]?.literalStatus,"reviewed")
     }
+    func testChangingReadingModeAtTheSameAnchorStillSynchronizes() async throws {
+        let library=try library(owner),book=try await library.importCloud(fixtureCopy()),sync=CloudBookSync(client:client(),library:library)
+        let anchor=ReadingAnchor(chapterID:"chapter-one",passageID:"passage-one")
+        var state=ReaderState();state.anchor=anchor;try await library.saveState(state,bookID:book.id)
+        var revision=0,modes:[String]=[],variants:[String]=[]
+        CloudMockProtocol.handler = { request in
+            if request.httpMethod == "POST" {
+                let value=try CloudJSON.decode(Self.body(request));revision += 1
+                modes.append(value["mode"].string ?? "");variants.append(value["variant"].string ?? "")
+                return (200,try CloudJSON.encode(["revision":.number(Double(revision))]))
+            }
+            return (200,try self.records(position:.object(["chapterId":.string(anchor.chapterID),"passageId":.string(anchor.passageID),"contentVersion":.string("version-one"),"withinParagraph":.number(0),"revision":.number(Double(revision))])))
+        }
+        try await sync.synchronize(book.id)
+        state.preferences.viewMode = .parallel;state.preferences.translationVariant = .interpretive
+        try await library.saveState(state,bookID:book.id);try await sync.synchronize(book.id)
+        XCTAssertEqual(modes,["en","parallel"]);XCTAssertEqual(variants,["literal","interpretive"])
+    }
     func testCloudCopiesCannotEnterDeviceOrOtherAccount() async throws {
         let device = try library(), another = try library(other), value = try fixtureCopy()
         do { _ = try await device.importCloud(value); XCTFail("Device scope accepted private account content") } catch {}

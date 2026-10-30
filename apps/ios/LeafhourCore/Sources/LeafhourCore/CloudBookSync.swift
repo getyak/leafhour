@@ -26,6 +26,8 @@ public struct CloudSyncMetadata: Codable, Sendable {
     public var noteConflict: Bool = false
     public var noteErrors: [String: String] = [:]
     public var positionRevision: Int = 0
+    public var lastSyncedViewMode: String?
+    public var lastSyncedTranslationVariant: String?
     public var lastSyncedAnchor: ReadingAnchor?
     public var positionConflict: Bool = false
     public var remoteAnchor: ReadingAnchor?
@@ -325,7 +327,8 @@ public actor CloudBookSync {
             let position = records["position"]
             let remoteRevision = Int(position["revision"].number ?? 0)
             let remoteAnchor = Self.anchor(position, book: book)
-            let pendingPosition = snapshot.anchor != metadata.lastSyncedAnchor
+            let pendingPreferences = snapshot.preferences.viewMode.rawValue != (metadata.lastSyncedViewMode ?? "source") || snapshot.preferences.translationVariant.rawValue != (metadata.lastSyncedTranslationVariant ?? "literal")
+            let pendingPosition = snapshot.anchor != metadata.lastSyncedAnchor || pendingPreferences
             if pendingPosition, let anchor = snapshot.anchor {
                 if remoteRevision != metadata.positionRevision {
                     metadata.positionConflict = true; metadata.remoteAnchor = remoteAnchor; metadata.remotePositionRevision = remoteRevision
@@ -334,7 +337,7 @@ public actor CloudBookSync {
                     let body = try CloudJSON.encode(["chapterId": .string(anchor.chapterID), "passageId": .string(anchor.passageID), "contentVersion": .string(identity.contentVersion), "offset": .number(0), "withinParagraph": .number(count > 0 ? min(1, Double(anchor.characterOffset) / Double(count)) : 0), "mode": .string(snapshot.preferences.viewMode.webMode), "variant": .string(snapshot.preferences.translationVariant.rawValue), "baseRevision": .number(Double(metadata.positionRevision))])
                     do {
                         let saved = try CloudJSON.decode(await client.data(path: path + "/progress", method: "POST", body: body, ownerID: identity.ownerID))
-                        metadata.positionRevision = Int(saved["revision"].number ?? Double(remoteRevision + 1)); metadata.lastSyncedAnchor = anchor; metadata.positionConflict = false
+                        metadata.positionRevision = Int(saved["revision"].number ?? Double(remoteRevision + 1)); metadata.lastSyncedAnchor = anchor; metadata.lastSyncedViewMode = snapshot.preferences.viewMode.rawValue; metadata.lastSyncedTranslationVariant = snapshot.preferences.translationVariant.rawValue; metadata.positionConflict = false
                     } catch let error as CloudRequestError where error.status == 409 {
                         metadata.positionConflict = true; metadata.remoteAnchor = remoteAnchor; metadata.remotePositionRevision = remoteRevision
                     }
