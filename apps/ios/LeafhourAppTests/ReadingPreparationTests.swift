@@ -55,6 +55,40 @@ final class ReadingPreparationTests: XCTestCase {
         let remaining = try await fixture.library.pendingReadingTranslation(bookID:fixture.session.book.id)
         XCTAssertNil(remaining)
     }
+    func testAuthenticationFailureWhileRecoveringKeepsTheOriginalIdempotencyKey() async throws {
+        let fixture = try await fixture(), probe = PreparationProbe(owner:owner)
+        probe.generationStatuses = [503,401]; PreparationProtocol.install(probe)
+        for _ in 0..<2 {
+            let reading=ReaderReadingContent();await reading.prepare(fixture.session,cloud:fixture.cloud,library:fixture.library)
+            reading.confirm(try XCTUnwrap(reading.proposed),session:fixture.session,cloud:fixture.cloud,library:fixture.library)
+            try await waitForCompletion(reading)
+            let savedData=try await fixture.library.pendingReadingTranslation(bookID:fixture.session.book.id)
+            let saved=try JSONDecoder().decode(ReaderTranslationRun.self,from:XCTUnwrap(savedData))
+            XCTAssertNotNil(saved.pending,"An auth failure cannot retire a previously uncertain request")
+        }
+        let loginConfiguration=URLSessionConfiguration.ephemeral;loginConfiguration.protocolClasses=[PreparationProtocol.self]
+        let loggedInAgain=CloudLibraryClient(baseURL:URL(string:"https://reading.test")!,credential:CloudCredential(account:CloudAccount(id:owner,email:nil),token:"isolated-new-login"),configuration:loginConfiguration)
+        let resumed=ReaderReadingContent();await resumed.prepare(fixture.session,cloud:loggedInAgain,library:fixture.library)
+        resumed.confirm(try XCTUnwrap(resumed.proposed),session:fixture.session,cloud:loggedInAgain,library:fixture.library)
+        try await waitForCompletion(resumed)
+        XCTAssertNil(resumed.error)
+        let requests=probe.snapshot().filter { $0.0.hasSuffix("/translate") }
+        XCTAssertEqual(requests.count,4)
+        XCTAssertEqual(requests[0].1 as NSDictionary,requests[1].1 as NSDictionary)
+        XCTAssertEqual(requests[0].1 as NSDictionary,requests[2].1 as NSDictionary)
+        XCTAssertEqual(probe.snapshot().filter { $0.0 == "/api/billing/quotes" }.count,2)
+    }
+    func testTerminalBillingReceiptAllowsAnUnsubmittedRequestToBeRetired() async throws {
+        let fixture=try await fixture(),probe=PreparationProbe(owner:owner)
+        probe.generationStatuses=[400];probe.terminalStatus="not_started";PreparationProtocol.install(probe)
+        let reading=ReaderReadingContent();await reading.prepare(fixture.session,cloud:fixture.cloud,library:fixture.library)
+        reading.confirm(try XCTUnwrap(reading.proposed),session:fixture.session,cloud:fixture.cloud,library:fixture.library)
+        try await waitForCompletion(reading)
+        let savedData=try await fixture.library.pendingReadingTranslation(bookID:fixture.session.book.id)
+        let saved=try JSONDecoder().decode(ReaderTranslationRun.self,from:XCTUnwrap(savedData))
+        XCTAssertNil(saved.pending);XCTAssertEqual(saved.next,0)
+        XCTAssertEqual(probe.snapshot().filter { $0.0.hasSuffix("/translate") }.count,1)
+    }
     func testBackgroundStopsFollowingPassagesAndRetainsSubmittedRequest() async throws {
         let fixture = try await fixture(), probe = PreparationProbe(owner:owner)
         probe.delay = 0.5; PreparationProtocol.install(probe)
@@ -86,6 +120,8 @@ final class ReadingPreparationTests: XCTestCase {
 private final class PreparationProbe: @unchecked Sendable {
     let owner: String
     var failFirst = false
+    var generationStatuses: [Int] = []
+    var terminalStatus: String?
     var delay: TimeInterval = 0
     private let lock = NSLock()
     private var requests: [(String,[String:Any])] = []
@@ -102,7 +138,12 @@ private final class PreparationProbe: @unchecked Sendable {
         }
         if path.hasSuffix("/translate") {
             generationCount += 1
-            if failFirst && generationCount == 1 { return (503,["error":"Uncertain synthetic response"],0) }
+            let status = generationStatuses.indices.contains(generationCount-1) ? generationStatuses[generationCount-1] : failFirst && generationCount == 1 ? 503 : 200
+            if status != 200 {
+                var value: [String:Any] = ["error":"Synthetic rejected recovery"]
+                if let terminalStatus { value["billingOperation"]=["status":terminalStatus] }
+                return (status,value,0)
+            }
             let id=body["passageId"] as? String ?? "", source=id=="p1" ? "Original one." : id=="p2" ? "Original two." : "Original three."
             return (200,["id":id,"original":source,"translations":["literal":["text":"Literal "+id,"status":"draft"],"interpretive":["text":"Interpretive "+id,"status":"draft"]]],delay)
         }

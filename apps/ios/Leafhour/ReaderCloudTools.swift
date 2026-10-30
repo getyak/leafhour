@@ -30,6 +30,7 @@ struct ReaderGenerationConsent: Identifiable, Codable {
 /// Read-only loading is separate from the explicitly confirmed generation path.
 @MainActor @Observable
 final class ReaderCloudTools {
+    private(set) var generationTerminalStatus: String?
     var completedTranslation: CloudJSON?
     var translation: ReaderTranslation?
     var introduction = ""
@@ -200,7 +201,7 @@ final class ReaderCloudTools {
     }
     func perform(_ intent: ReaderGenerationConsent, cloud: CloudLibraryClient?) async {
         guard !generating, let cloud else { return }
-        consent = nil; retry = intent; error = nil; generating = true; completedTranslation = nil
+        consent = nil; retry = intent; error = nil; generating = true; completedTranslation = nil; generationTerminalStatus = nil
         defer { generating = false }
         do {
             let value = try object(await cloud.data(path: intent.path, method: "POST", body: intent.body, ownerID: intent.ownerID))
@@ -226,6 +227,10 @@ final class ReaderCloudTools {
             retry = nil
         } catch is CancellationError { }
         catch {
+            if let rejection = error as? CloudRequestError,
+               let status = rejection.billingOperationStatus, ["not_started", "released", "cancelled", "reversed"].contains(status) {
+                generationTerminalStatus = status
+            }
             if let rejection = error as? CloudRequestError, Self.definitivelyRejected(rejection) {
                 retry = nil
                 self.error = error.localizedDescription + "\n请更新当前段落或查阅范围后重新准备，你的问题仍保留。"

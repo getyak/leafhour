@@ -160,9 +160,10 @@ final class ReaderReadingContent {
                 status = "正在准备译文 · \(run.next + 1)/\(run.plan.passageIDs.count)"
                 await worker.perform(intent, cloud: cloud)
                 guard let result = worker.completedTranslation else {
-                    // Definitively rejected requests may obtain a fresh quote only after
-                    // another explicit confirmation; uncertainty always retains the key.
-                    if worker.retry == nil && !Task.isCancelled { run.pending = nil; try await persist() }
+                    // Only a scoped terminal billing receipt can retire a durable
+                    // request. Authentication/rate-limit failures during recovery say
+                    // nothing about whether an earlier submission executed.
+                    if worker.generationTerminalStatus != nil && !Task.isCancelled { run.pending = nil; try await persist() }
                     throw LibraryError.invalid(worker.error ?? "已停止后续预译；当前请求的结果仍可恢复核对。")
                 }
                 guard result["id"].string == id, result["original"].string == passage.text,
