@@ -252,7 +252,9 @@ struct ReaderPreferencesPanel: View {
     private var preview: String? { previewLayer.map { Self.sourceExcerpt($0.text) } }
     private var previewTitle: String { previewLayer?.translationMissing == true ? "暂无译文 · 原著预览" : previewLayer?.isTranslation == true ? "译文预览" : "原著预览" }
     private static func sourceExcerpt(_ source: String) -> String {
-        let limit = 120, prefix = source.prefix(120)
+        let sample = source.prefix(120)
+        let limit = sample.filter { !$0.isASCII }.count > sample.count / 4 ? 56 : 120
+        let prefix = source.prefix(limit)
         guard prefix.endIndex != source.endIndex else { return source }
         func isASCIIWord(_ character: Character) -> Bool {
             character.isASCII && (character.isLetter || character.isNumber || character == "_" || character == "'" || character == "-")
