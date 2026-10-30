@@ -56,6 +56,23 @@
       "passed": 1,
       "failed": 0,
       "log": "background-reading-final.log"
+    },
+    {
+      "name": "iOS release contracts without node_modules",
+      "passed": 100,
+      "failed": 0,
+      "log": "ci-contracts-clean.log"
+    },
+    {
+      "name": "Pricing, chat/search bounds and native-library domain follow-up",
+      "passed": 68,
+      "failed": 0,
+      "log": "ci-fix-final-focused.log"
+    },
+    {
+      "name": "Official pricing response hashes",
+      "result": "matched",
+      "log": "pricing-source-check-final.log"
     }
   ],
   "ownAccountHTTP": {
@@ -82,5 +99,13 @@
     "physical-device acceptance",
     "real paid AI generation",
     "TestFlight processing or installation before its separate release receipt"
-  ]
+  ],
+  "fullHostAttempt": {
+    "passed": 4363,
+    "failed": 14,
+    "skipped": 16,
+    "acceptedAsFullPass": false,
+    "log": "host-full.log",
+    "notes": "Reusable-dependency/native PostgreSQL/runtime prerequisites and the existing pricing release window were not satisfied; pricing admission was then repaired. Clean Linux/SQL validation remains a remote CI gate."
+  }
 }

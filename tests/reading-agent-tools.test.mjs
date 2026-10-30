@@ -1,4 +1,5 @@
 import test from 'node:test';
+import {createChatBudget} from '../harness/chat-generator.mjs';
 import assert from 'node:assert/strict';
 import {createReadingAgentTools} from '../server/reading-agent-tools.mjs';
 import {createWebSearch,searchOpenLibrary} from '../server/reading-agent-search.mjs';
@@ -40,3 +41,26 @@ test('partial translated paragraph exposes only a continuation cursor then allow
 test('continuation offsets apply only to selected paragraph and preserve the following paragraph',async()=>{const {tools}=setup([book('one','x'.repeat(9000)+'UNSEEN_TAIL')]);const first=await tools.execute('reader_read_chapter',{bookId:'one',chapterId:'c1'});assert.ok(first.nextCursor);assert.ok((await tools.execute('reader_cite',{bookId:'one',passageId:'p1',quote:'UNSEEN_TAIL'})).error);const continued=await tools.execute('reader_read_chapter',first.nextCursor);assert.equal(continued.error,undefined);assert.equal(continued.passages[1].original,'Second passage.');assert.equal((await tools.execute('reader_cite',{bookId:'one',passageId:'p1',quote:'UNSEEN_TAIL'})).quote,'UNSEEN_TAIL');});
 test('failed page delivery cannot register unseen text or a failed citation',async()=>{const s=setup();let rejectCompletion=true;const tools=createReadingAgentTools({scope:'library',...s,bookId:'one',onActivity:async a=>{if(rejectCompletion&&a.status==='completed')throw Error('delivery failed');}});assert.ok((await tools.execute('reader_get_context',{})).error);rejectCompletion=false;assert.ok((await tools.execute('reader_cite',{bookId:'one',passageId:'p1',quote:'First'})).error);await tools.execute('reader_get_context',{});rejectCompletion=true;assert.ok((await tools.execute('reader_cite',{bookId:'one',passageId:'p1',quote:'First'})).error);assert.deepEqual(tools.sources(),[]);});
 test('hard result limits never publish staged page ranges or source references',async()=>{const s=setup();s.data.get('one').chapters[0].title='大'.repeat(9000);assert.ok((await s.tools.execute('reader_read_chapter',{bookId:'one',chapterId:'c1'})).error);assert.ok((await s.tools.execute('reader_cite',{bookId:'one',passageId:'p1',quote:'First'})).error);s.data.get('one').chapters[0].title='Chapter';await s.tools.execute('reader_get_context',{});s.data.get('one').chapters[0].title='大'.repeat(9000);assert.ok((await s.tools.execute('reader_cite',{bookId:'one',passageId:'p1',quote:'First'})).error);assert.deepEqual(s.tools.sources(),[]);});
+
+test('the pinned auxiliary request admits exactly one charged search and no hidden retry',async()=>{
+ const previous=globalThis.fetch,requests=[],reservations=[];
+ globalThis.fetch=async(url,options)=>{requests.push({url:String(url),body:JSON.parse(options.body)});throw Error('fixture stopped before external transport');};
+ try{
+  const search=createWebSearch({env:{DEEPSEEK_API_KEY:'isolated-fixture'}});
+  await assert.rejects(search('one isolated query',{reserveRequest:r=>{reservations.push(r);return {maxTokens:r.maxTokens};}}));
+  assert.equal(requests.length,1);assert.equal(reservations.length,1);
+  assert.equal(reservations[0].kind,'web');assert.equal(reservations[0].maxTokens,1024);
+  assert.equal(requests[0].body.model,'deepseek-flash');assert.equal(requests[0].body.max_tokens,1024);
+  assert.deepEqual(requests[0].body.tools,[{type:'web_search_20250305',name:'web_search',max_uses:1}]);
+ }finally{globalThis.fetch=previous;}
+});
+test('an unaffordable legacy standalone tool fee rejects before any auxiliary HTTP dispatch',async()=>{
+ const previous=globalThis.fetch;let calls=0;
+ globalThis.fetch=async()=>{calls++;throw Error('must not dispatch');};
+ try{
+  const pricing={checkedAt:'2026-10-30T00:00:00Z',validUntil:'2026-11-03T00:00:00Z',inputMissPerMillion:2,outputPerMillion:8,searchPerThousand:5,fetchPerThousand:5,toolFeeBasis:'standalone-upper-bound'};
+  const budget=createChatBudget({pricing,maxCostCny:.01,clock:()=>Date.parse('2026-11-01T00:00:00Z')});
+  await assert.rejects(createWebSearch({env:{DEEPSEEK_API_KEY:'isolated-fixture'}})('one isolated query',{reserveRequest:budget.reserveRequest}),/budget/i);
+  assert.equal(calls,0);assert.equal(budget.snapshot().requests,0);assert.equal(budget.snapshot().reservedCostCny,0);
+ }finally{globalThis.fetch=previous;}
+});

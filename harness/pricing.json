@@ -4,8 +4,11 @@
   "inputMissPerMillion": 2,
   "outputPerMillion": 8,
   "source": "https://api-docs.deepseek.com/zh-cn/quick_start/pricing/",
-  "checkedAt": "2026-10-27T00:19:49.314Z",
-  "validUntil": "2026-10-31T16:00:00.000Z",
-  "version": "deepseek-flash-cny-2026-10-27",
-  "modelVersion": "DeepSeek-V4.1-Flash-1017"
+  "checkedAt": "2026-10-30T17:11:51.667Z",
+  "validUntil": "2026-11-06T17:11:51.667Z",
+  "version": "deepseek-flash-cny-2026-10-31",
+  "modelVersion": "DeepSeek-V4.1-Flash-1017",
+  "searchPerThousand": 5,
+  "fetchPerThousand": 5,
+  "toolFeeBasis": "standalone-upper-bound"
 }
