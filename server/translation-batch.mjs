@@ -11,13 +11,16 @@ import {isDeepStrictEqual} from 'node:util';
 export function translationRequestOptions(options){
   if(options===undefined)return {};
   if(!options||typeof options!=='object'||Array.isArray(options))throw fail('翻译请求参数不正确');
-  if(Object.keys(options).some(key=>!['expectedContentVersion','generationReceipt','authorizeGeneration'].includes(key)))throw fail('翻译请求参数不正确');
+  if(Object.keys(options).some(key=>!['expectedContentVersion','generationReceipt','authorizeGeneration','allowedChapterIds','preserveExistingTranslations'].includes(key)))throw fail('翻译请求参数不正确');
   const expected=options.expectedContentVersion;
   if(expected!==undefined&&(typeof expected!=='string'||!expected.length||expected.length>128))throw fail('翻译请求的原文版本不正确');
   const authorizeGeneration=options.authorizeGeneration;if(authorizeGeneration!==undefined&&typeof authorizeGeneration!=='function')throw fail('翻译授权参数不正确');
+  const preserveExistingTranslations=options.preserveExistingTranslations;if(preserveExistingTranslations!==undefined&&typeof preserveExistingTranslations!=='boolean')throw fail('翻译保留参数不正确');
+  const allowedChapterIds=options.allowedChapterIds;
+  if(allowedChapterIds!==undefined&&(!Array.isArray(allowedChapterIds)||allowedChapterIds.length<1||allowedChapterIds.length>2||new Set(allowedChapterIds).size!==allowedChapterIds.length||allowedChapterIds.some(id=>typeof id!=='string'||!id||id.length>128)))throw fail('翻译章节范围不正确');
   const receipt=options.generationReceipt;
   if(receipt!==undefined&&(!receipt||typeof receipt!=='object'||Array.isArray(receipt)||Object.keys(receipt).some(k=>!['operationId','requestId'].includes(k))||['operationId','requestId'].some(k=>typeof receipt[k]!=='string'||!receipt[k]||receipt[k].length>200)))throw fail('翻译任务凭证不正确');
-  return {...(expected===undefined?{}:{expectedContentVersion:expected}),...(authorizeGeneration?{authorizeGeneration}:{}),...(receipt?{generationReceipt:{operationId:receipt.operationId,requestId:receipt.requestId}}:{})};
+  return {...(expected===undefined?{}:{expectedContentVersion:expected}),...(authorizeGeneration?{authorizeGeneration}:{}),...(preserveExistingTranslations?{preserveExistingTranslations}:{}),...(allowedChapterIds?{allowedChapterIds:[...allowedChapterIds]}:{}),...(receipt?{generationReceipt:{operationId:receipt.operationId,requestId:receipt.requestId}}:{})};
 }
 
 export function assertExpectedContentVersion(book,expected){
@@ -26,8 +29,8 @@ export function assertExpectedContentVersion(book,expected){
 
 // Versioned requests are batch requests: either both variants are absent,
 // or no generation is authorized. Complete pairs may be returned unchanged.
-export function assertBatchPassage(passage,expected){
-  if(expected===undefined)return;
+export function assertBatchPassage(passage,expected,{preserveExistingTranslations=false}={}){
+  if(expected===undefined||preserveExistingTranslations)return;
   const present=['literal','interpretive'].filter(key=>typeof passage?.translations?.[key]?.text==='string'&&passage.translations[key].text.trim());
   if(present.length===1)throw fail('已有部分译文，请先复核；批处理不会覆盖或补写该段',409);
 }
@@ -44,11 +47,11 @@ export function assertGenerationSource({book,fresh,passage,freshPassage}){
 // added or changed concurrently while this generation was in flight. Only an
 // unchanged pre-existing draft may be regenerated, which keeps the legacy
 // single-paragraph retry compatible.
-export function mergeGeneratedTranslations({existing,before,generated}){
+export function mergeGeneratedTranslations({existing,before,generated,preserveExistingTranslations=false}){
   const merged={};
   for(const variant of ['literal','interpretive']){
     const current=existing?.[variant],prior=before?.[variant];
-    const preserve=current&&(current.status==='reviewed'||!prior||!isDeepStrictEqual(current,prior));
+    const preserve=current&&(preserveExistingTranslations?typeof current.text==='string'&&current.text.trim():current.status==='reviewed'||!prior||!isDeepStrictEqual(current,prior));
     merged[variant]=preserve?current:generated[variant];
   }
   return merged;

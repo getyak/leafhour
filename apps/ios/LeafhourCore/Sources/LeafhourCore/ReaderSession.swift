@@ -22,6 +22,8 @@ public final class ReaderSession: Identifiable {
     private let library: any ReaderStateStore
     public nonisolated let id: String
     public var state: ReaderState
+    public var translations: [String: [ReaderTranslationVariant: ReaderTranslationValue]] = [:]
+    public var translationRevision = 0
     public var chapterIndex: Int
     public var navigationID = UUID()
     public var message: String?
@@ -149,10 +151,10 @@ public final class ReaderSession: Identifiable {
     }
     public func changePreferences(_ value: ReaderPreferences) { state.preferences = value; save() }
     public func draft(_ quote: SelectedQuote, text: String) {
-        state.drafts[quote.anchor.key] = NoteDraft(anchor: quote.anchor, quote: quote.text, body: text); save()
+        state.drafts[quote.anchor.key] = NoteDraft(anchor: quote.anchor, quote: quote.text, body: text, quoteOrigin: quote.origin, quoteLanguage: quote.language); save()
     }
     public func keepNoteDraft(_ quote: SelectedQuote, text: String, submissionID: UUID) {
-        let draft = NoteDraft(anchor: quote.anchor, quote: quote.text, body: text)
+        let draft = NoteDraft(anchor: quote.anchor, quote: quote.text, body: text, quoteOrigin: quote.origin, quoteLanguage: quote.language)
         let confirmed = persistedState.notes.first { $0.id == submissionID && $0.anchor == quote.anchor && $0.quote == quote.text && $0.body == text }
         if let confirmed, state.notes.contains(confirmed) {
             if state.drafts[quote.anchor.key] == draft { state.drafts.removeValue(forKey: quote.anchor.key) }
@@ -164,7 +166,7 @@ public final class ReaderSession: Identifiable {
     @discardableResult public func saveNote(_ quote: SelectedQuote, text: String, id: UUID = UUID()) async -> Bool {
         guard noteSubmission == nil, !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return false }
         let previous = state.notes.first { $0.id == id }
-        let note = ReaderNote(id: id, anchor: quote.anchor, quote: quote.text, body: text)
+        let note = ReaderNote(id: id, anchor: quote.anchor, quote: quote.text, body: text, quoteOrigin: quote.origin, quoteLanguage: quote.language)
         noteSubmission = note; noteSubmissionWasPersisted = false
         defer { noteSubmission = nil; noteSubmissionWasPersisted = false }
         if let index = state.notes.firstIndex(where: { $0.id == id }) { state.notes[index] = note }
@@ -181,7 +183,7 @@ public final class ReaderSession: Identifiable {
                     if let previous { state.notes[index] = previous } else { state.notes.remove(at: index) }
                 }
                 if state.drafts[quote.anchor.key] == nil {
-                    state.drafts[quote.anchor.key] = NoteDraft(anchor: quote.anchor, quote: quote.text, body: text)
+                    state.drafts[quote.anchor.key] = NoteDraft(anchor: quote.anchor, quote: quote.text, body: text, quoteOrigin: quote.origin, quoteLanguage: quote.language)
                 }
             }
             return false
@@ -193,6 +195,8 @@ public struct SelectedQuote: Identifiable {
     public let text: String
     /// Exact underlying source for a formatted selection, independent of its displayed characters.
     public let sourceText: String?
-    public init(anchor: ReadingAnchor, text: String, sourceText: String? = nil) { self.anchor = anchor; self.text = text; self.sourceText = sourceText }
+    public let origin: String?
+    public let language: String?
+    public init(anchor: ReadingAnchor, text: String, sourceText: String? = nil, origin: String? = nil, language: String? = nil) { self.anchor = anchor; self.text = text; self.sourceText = sourceText; self.origin = origin; self.language = language }
     public var id: String { anchor.key }
 }

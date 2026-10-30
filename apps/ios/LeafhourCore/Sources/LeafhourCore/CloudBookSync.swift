@@ -281,7 +281,7 @@ public actor CloudBookSync {
                             anchor = local.anchor
                         }
                     }
-                    let remoteNote = ReaderNote(id: id, anchor: anchor, quote: quote, body: text, modifiedAt: Self.date(row["updatedAt"].string ?? row["createdAt"].string))
+                    let remoteNote = ReaderNote(id: id, anchor: anchor, quote: quote, body: text, modifiedAt: Self.date(row["updatedAt"].string ?? row["createdAt"].string), quoteOrigin: row["quoteOrigin"].string, quoteLanguage: row["quoteLanguage"].string)
                     if let existing {
                         if localChanged && state.notes[existing].body != text { metadata.noteConflict = true }
                         else { state.notes[existing] = remoteNote }
@@ -297,7 +297,7 @@ public actor CloudBookSync {
                     metadata.noteErrors[key] = "这条笔记超过云端 2000 字元上限，完整内容仍保存在设备，可从书籍详情导出。"
                     continue
                 }
-                var payload: [String: CloudJSON] = ["id": .string(id), "passageId": .string(note.anchor.passageID), "contentVersion": .string(identity.contentVersion), "text": .string(note.body), "quoteOrigin": .string("original"), "quoteLanguage": .string("en"), "origin": .string("user")]
+                var payload: [String: CloudJSON] = ["id": .string(id), "passageId": .string(note.anchor.passageID), "contentVersion": .string(identity.contentVersion), "text": .string(note.body), "quoteOrigin": .string(note.quoteOrigin ?? "original"), "quoteLanguage": .string(note.quoteLanguage ?? "en"), "origin": .string("user")]
                 if (note.quote as NSString).length <= 4000 { payload["quote"] = .string(note.quote) }
                 do {
                     _ = try await client.data(path: path + "/comments", method: "POST", body: CloudJSON.encode(payload), ownerID: identity.ownerID)

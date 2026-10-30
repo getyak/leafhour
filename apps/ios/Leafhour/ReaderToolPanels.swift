@@ -120,12 +120,18 @@ struct ReaderTranslationPanel: View {
     @Bindable var session: ReaderSession
     @Bindable var tools: ReaderCloudTools
     let cloud: CloudLibraryClient?
+    var selection: SelectedQuote? = nil
     @State private var variant = "parallel"
     @State private var loadedKey: String?
-    private var passage: Passage? { ReaderCloudTools.currentPassage(session) }
-    private var key: String { session.chapter.id + ":" + (passage?.id ?? "") }
+    private var passage: Passage? { ReaderCloudTools.currentPassage(session, selection: selection) }
+    private var key: String { (selection?.anchor.chapterID ?? session.chapter.id) + ":" + (passage?.id ?? "") }
     private var reading: Bool { loadedKey != key || tools.loading }
-    private var translation: ReaderTranslation? { loadedKey == key ? tools.translation : nil }
+    private var translation: ReaderTranslation? {
+        if let passage, let saved = session.translations[passage.id], !saved.isEmpty {
+            return ReaderTranslation(original: passage.text, literal: saved[.literal]?.text, interpretive: saved[.interpretive]?.text, literalStatus: saved[.literal]?.status, interpretiveStatus: saved[.interpretive]?.status)
+        }
+        return loadedKey == key ? tools.translation : nil
+    }
     private var sourceDescription: String { session.book.title + " · " + session.chapter.title }
     private var original: String {
         let text = translation?.original ?? passage?.text ?? ""
@@ -158,7 +164,7 @@ struct ReaderTranslationPanel: View {
                 }
                 if let translation, !hasText(translation.literal) || !hasText(translation.interpretive), tools.error == nil {
                     Section {
-                        Button("翻译这一段", systemImage: "character.book.closed") { Task { await tools.prepare("translation", session: session, cloud: cloud) } }
+                        Button("翻译这一段", systemImage: "character.book.closed") { Task { await tools.prepare("translation", session: session, cloud: cloud, selection: selection) } }
                             .frame(minHeight: 44).disabled(reading || tools.generating || session.book.cloud == nil || cloud == nil)
                         Text(session.book.cloud == nil || cloud == nil ? "在书房登录并同步这本书后，可以翻译当前段落。" : "只在你确认后提交当前段落；如需阅读点，会先展示本次点数。")
                             .font(.footnote).foregroundStyle(.secondary)
@@ -179,7 +185,7 @@ struct ReaderTranslationPanel: View {
     }
     @MainActor private func load(_ requestedKey: String) async {
         loadedKey = nil
-        await tools.loadTranslation(session, cloud: cloud)
+        await tools.loadTranslation(session, cloud: cloud, selection: selection)
         if !Task.isCancelled && requestedKey == key { loadedKey = requestedKey }
     }
 }
@@ -342,7 +348,7 @@ struct ReaderConversationPanel: View {
             }
         }
         .navigationTitle(title)
-        .task { await load() }
+        .task(id: selection?.id) { await load() }
         .modifier(ReaderGenerationConfirmation(tools: tools, cloud: cloud))
     }
     private var composer: some View {

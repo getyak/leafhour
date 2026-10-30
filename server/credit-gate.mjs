@@ -5,6 +5,7 @@ const allowed={translation:['id','passageId','contentVersion'],conversation:['id
 const stable=value=>value===null||typeof value!=='object'?value:Array.isArray(value)?value.map(stable):Object.fromEntries(Object.keys(value).sort().map(k=>[k,stable(value[k])]));
 const hash=value=>createHash('sha256').update(JSON.stringify(stable(value))).digest('hex');
 const paragraphs=book=>book.sections.flatMap(s=>s.paragraphs);
+const dualTranslation=p=>['literal','interpretive'].every(k=>typeof p?.translations?.[k]?.text==='string'&&p.translations[k].text.trim());
 const operationId=(user,action,bookId,id)=>'credit-'+hash([user.id,action,bookId,id]);
 function cleanInput(input,action){
  if(!input||typeof input!=='object'||Array.isArray(input)||!allowed[action]||Object.keys(input).some(k=>k!=='billing'&&!allowed[action].includes(k)))throw fail('收费请求格式不正确',400);
@@ -14,7 +15,7 @@ function cleanInput(input,action){
 }
 export function createCreditGate({billing,library,chat,record,clock=Date.now}={}){
  const enabled=()=>billing?.enabled===true;
- async function scopeFor(user,{action,bookId,input}){
+ async function scopeFor(user,{action,bookId,input,preserveExistingTranslations=false}){
   if(!user?.id)throw fail('请先进入自己的书房',401);
   const body=cleanInput(input,action),book=await library.getBook(user,bookId),rows=paragraphs(book);
   let sourceQuote=body.quote;
@@ -28,24 +29,29 @@ export function createCreditGate({billing,library,chat,record,clock=Date.now}={}
    const i=rows.indexOf(source),context=rows.slice(Math.max(0,i-1),i+2).map(p=>({id:p.id,original:p.original}));
    if([...source.original].length>4000||Buffer.byteLength(JSON.stringify(context))>24576)throw fail('这一段或邻近上下文超过单段处理范围，原文仍可阅读',413);
   }
-  return {body,book,scope:{bookId:book.bookId,contentVersion:book.contentVersion,passageId,requestId:body.id,requestHash:hash(body),contextPolicy:'reading-v1',costLimitMicrousd:action==='translation'?15000:120000}};
+  const existing=action==='translation'&&preserveExistingTranslations?['literal','interpretive'].filter(k=>typeof source.translations?.[k]?.text==='string'&&source.translations[k].text.trim()):[];
+  const preserved=existing.length===1?existing[0]:null;
+  return {body,book,scope:{bookId:book.bookId,contentVersion:book.contentVersion,passageId,requestId:body.id,requestHash:hash(body),contextPolicy:preserved?'reading-fill-'+preserved+'-v1':'reading-v1',...(preserved?{inputHash:hash(source.translations[preserved])}:{}),costLimitMicrousd:action==='translation'?15000:120000}};
  }
  async function cache(user,action,bookId,body){
-  if(action==='translation'){const book=await library.getBook(user,bookId),p=paragraphs(book).find(p=>p.id===body.passageId);return p?.translations?.literal?.text&&p?.translations?.interpretive?.text?p:null;}
+  if(action==='translation'){const book=await library.getBook(user,bookId),p=paragraphs(book).find(p=>p.id===body.passageId);return dualTranslation(p)?p:null;}
   if(action==='conversation'&&chat)return (await chat.view(user,bookId)).turns.find(t=>t.id===body.id)||null;
   if(action==='annotation'&&chat){const view=await chat.annotations.view(user,bookId),request=view.requests.find(r=>r.id===body.id);return request?{request,thread:view.archive.threads.find(t=>t.id===request.threadId)||null}:null;}
   return null;
  }
  async function saved(user,action,bookId,scope){
   const current=await library.getBook(user,bookId);if(current.contentVersion!==scope.contentVersion)throw fail('原文版本已变化，本次结果不能结算',409);
-  if(action==='translation')return paragraphs(current).find(p=>p.id===scope.passageId&&p.translations?.literal?.text&&p.translations?.interpretive?.text)||null;
+  if(action==='translation')return paragraphs(current).find(p=>p.id===scope.passageId&&dualTranslation(p))||null;
   if(action==='conversation'&&chat)return (await chat.view(user,bookId)).turns.find(t=>t.id===scope.requestId)||null;
   if(action==='annotation'&&chat){const view=await chat.annotations.view(user,bookId),request=view.requests.find(t=>t.id===scope.requestId);return request?{request,thread:view.archive.threads.find(t=>t.id===request.threadId)||null}:null;}
   return null;
  }
  const statusOf=(action,value)=>action==='annotation'?value?.request?.status:value?.status;
  function completed(action,value,scope,id){
-  if(action==='translation')return value?.id===scope.passageId&&value?.translations?.literal?.text&&value?.translations?.interpretive?.text&&['literal','interpretive'].every(k=>value.translations[k].sourceVersion===scope.contentVersion&&value.translations[k].generationReceipt?.operationId===id&&value.translations[k].generationReceipt?.requestId===scope.requestId);
+  if(action==='translation'){
+   const preserved=scope.contextPolicy?.match(/^reading-fill-(literal|interpretive)-v1$/)?.[1];
+   return value?.id===scope.passageId&&['literal','interpretive'].every(k=>typeof value.translations?.[k]?.text==='string'&&value.translations[k].text.trim()&&(k===preserved?hash(value.translations[k])===scope.inputHash:value.translations[k].sourceVersion===scope.contentVersion&&value.translations[k].generationReceipt?.operationId===id&&value.translations[k].generationReceipt?.requestId===scope.requestId));
+  }
   if(action==='conversation')return value?.id===scope.requestId&&value.contentVersion===scope.contentVersion&&value.passageId===scope.passageId&&value.status==='completed'&&value.answer;
   return value?.request?.id===scope.requestId&&value.request.status==='completed'&&!value.thread?.deletedAt&&value.thread?.quote?.contentVersion===scope.contentVersion&&value.thread.quote.parts?.some(p=>p.passageId===scope.passageId);
  }
@@ -62,7 +68,7 @@ export function createCreditGate({billing,library,chat,record,clock=Date.now}={}
   if(!enabled())throw fail('此实例尚未开启付费服务',503);
   const {scope}=await scopeFor(user,request);return billing.quote({ownerId:user.id,action:request.action,scope});
  }
- async function run({user,action,bookId,input,execute,signal}){
+ async function run({user,action,bookId,input,execute,signal,preserveExistingTranslations=false}){
   if(!enabled())return execute(input);
   const body=cleanInput(input,action);
   const cached=await cache(user,action,bookId,body);
@@ -80,7 +86,7 @@ export function createCreditGate({billing,library,chat,record,clock=Date.now}={}
   }
   const meta=input.billing;
   if(!meta||typeof meta.quoteId!=='string'||typeof meta.idempotencyKey!=='string'||Object.keys(meta).some(k=>!['quoteId','idempotencyKey'].includes(k)))throw fail('请先查看本次阅读点数并确认使用',402);
-  const {scope}=await scopeFor(user,{action,bookId,input:body});
+  const {scope}=await scopeFor(user,{action,bookId,input:body,preserveExistingTranslations});
   const opId=operationId(user,action,bookId,body.id);let result;
   let operation;
   try{operation=await billing.run({ownerId:user.id,quoteId:meta.quoteId,operationId:opId,idempotencyKey:meta.idempotencyKey,scope,signal,execute:async({operationId:id})=>{

@@ -322,6 +322,28 @@ final class CloudSyncTests: XCTestCase {
         XCTAssertEqual(pulled.first?.anchor, local.anchor, "A cloud receipt without an offset must preserve the verified local selection")
         XCTAssertEqual(pulled.first?.quote, "quiet page")
     }
+    func testTranslatedQuoteKeepsItsAttributionAfterUploadAndPull() async throws {
+        let library = try library(owner), book = try await library.importCloud(fixtureCopy()), sync = CloudBookSync(client: client(), library: library)
+        let local = ReaderNote(anchor:ReadingAnchor(chapterID:"chapter-one",passageID:"passage-one"),quote:"选中译文",body:"自己的想法",quoteOrigin:"translation",quoteLanguage:"zh")
+        var state = ReaderState(); state.notes = [local]
+        try await library.saveState(state,bookID:book.id)
+        var remote:[CloudJSON] = []
+        CloudMockProtocol.handler = { request in
+            if request.httpMethod == "POST" {
+                let record = try CloudJSON.decode(Self.body(request))
+                XCTAssertEqual(record["quoteOrigin"].string,"translation")
+                XCTAssertEqual(record["quoteLanguage"].string,"zh")
+                remote.append(record); return (201,Data("{}".utf8))
+            }
+            return (200,try self.records(notes:remote))
+        }
+        try await sync.synchronize(book.id,pull:false)
+        try await sync.synchronize(book.id)
+        let pulled = try await library.state(book.id).notes.first
+        XCTAssertEqual(pulled?.quoteOrigin,"translation")
+        XCTAssertEqual(pulled?.quoteLanguage,"zh")
+        XCTAssertEqual(pulled?.quote,"选中译文")
+    }
     func testPullDoesNotReuseLocalOffsetWhenRemoteQuoteChanges() async throws {
         let library = try library(owner), book = try await library.importCloud(fixtureCopy()), sync = CloudBookSync(client: client(), library: library)
         let local = ReaderNote(id: CloudBookSync.noteID("web-note"), anchor: ReadingAnchor(chapterID: "chapter-one", passageID: "passage-one", characterOffset: 2), quote: "quiet page", body: "A thought")

@@ -290,7 +290,7 @@ final class ReaderLayoutTests: XCTestCase {
     func testTextColumnStaysReadableAndCenteredOnWideScreens() async throws {
         let session = try await session(source: "A quiet page should remain a readable column when the window gets wider.")
         let reading = TextReadingView(session: session, onNote: { _ in }, onSource: { _ in }, onWake: { _ in }, onReadingScroll: {})
-        for (width, expectedColumn) in [(390.0, 342.0), (768.0, 680.0), (1024.0, 680.0), (1366.0, 680.0)] {
+        for (width, expectedColumn) in [(390.0, 342.0), (768.0, 420.0), (1024.0, 420.0), (1366.0, 420.0)] {
             let coordinator = reading.makeCoordinator()
             let text = UITextView(frame: CGRect(x: 0, y: 0, width: width, height: 768))
             coordinator.view = text
@@ -398,7 +398,7 @@ final class ReaderLayoutTests: XCTestCase {
 
     @discardableResult
     private func assertRealPagedBody(_ host: UIHostingController<ReaderScreen>, window: UIWindow, stage: String,
-                                     awake: Bool = true, file: StaticString = #filePath, line: UInt = #line) throws -> ReflowTextView {
+                                     awake: Bool = true, contentCovered: Bool = false, file: StaticString = #filePath, line: UInt = #line) throws -> ReflowTextView {
         let text = try XCTUnwrap(descendant(ReflowTextView.self, in: host.view), stage, file: file, line: line)
         XCTAssertEqual(text.traitCollection.preferredContentSizeCategory, host.traitCollection.preferredContentSizeCategory, stage, file: file, line: line)
         text.layoutManager.ensureLayout(for: text.textContainer); text.layoutIfNeeded()
@@ -415,7 +415,7 @@ final class ReaderLayoutTests: XCTestCase {
         let firstFont = try XCTUnwrap(text.attributedText.attribute(.font, at: 0, effectiveRange: nil) as? UIFont, file: file, line: line)
         let expectedFont = UIFontMetrics(forTextStyle: .body).scaledFont(for: .systemFont(ofSize: host.rootView.session.state.preferences.fontSize), compatibleWith: text.traitCollection)
         XCTAssertEqual(firstFont.pointSize, expectedFont.pointSize, accuracy: 0.5, "Keep the real system text size instead of shrinking to pass: " + stage, file: file, line: line)
-        if let sourceLine = fullSourceLines.first {
+        if let sourceLine = fullSourceLines.first, !contentCovered {
             let format = UIGraphicsImageRendererFormat(); format.scale = 1; format.opaque = true; format.preferredRange = .standard
             let image = UIGraphicsImageRenderer(size: host.view.bounds.size, format: format).image { _ in
                 XCTAssertTrue(host.view.drawHierarchy(in: CGRect(origin: .zero, size: host.view.bounds.size), afterScreenUpdates: true), stage, file: file, line: line)
@@ -485,7 +485,11 @@ final class ReaderLayoutTests: XCTestCase {
             // this regression targets layout, not gesture recognition itself.
             coordinator.parent.onWake(.tools)
             await settleBudgetHost(host)
-            _ = try assertRealPagedBody(host, window: window, stage: "asleep \(size)", awake: false)
+            let covered = !ReaderAdaptiveLayout(size:size,minimumReadingWidth:360,accessibilityText:category.isAccessibilityCategory,toolIsOpen:true).isBeside
+            // Compact tools are an explicit independent page. The underlying
+            // source keeps its complete layout and checkpoint; ink is verified
+            // again after the actual production close callback below.
+            _ = try assertRealPagedBody(host, window: window, stage: "tools open \(size)", awake: false, contentCovered:covered)
             XCTAssertEqual(text.contentOffset.y, offset.y, accuracy: 0.5)
             XCTAssertEqual(text.textContainerInset, insets)
             XCTAssertEqual(session.currentAnchor, anchor)

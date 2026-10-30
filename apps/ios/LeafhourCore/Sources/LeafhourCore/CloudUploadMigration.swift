@@ -61,7 +61,7 @@ public enum CloudUploadMigration {
                 if existing.body != draft.body || existing.quote != draft.quote { unresolved += 1 }
                 continue
             }
-            result.drafts[anchor.key] = NoteDraft(anchor: anchor, quote: draft.quote, body: draft.body)
+            result.drafts[anchor.key] = NoteDraft(anchor: anchor, quote: draft.quote, body: draft.body, quoteOrigin: draft.quoteOrigin, quoteLanguage: draft.quoteLanguage)
         }
         if let original = state.anchor {
             if let mapped = remap(original) {

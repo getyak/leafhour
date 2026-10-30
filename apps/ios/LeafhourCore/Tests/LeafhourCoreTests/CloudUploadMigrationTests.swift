@@ -36,6 +36,16 @@ final class CloudUploadMigrationTests: XCTestCase {
         XCTAssertTrue(result.state.notes.isEmpty)
         XCTAssertEqual(state.notes.first?.body, "Personal")
     }
+    func testTranslatedDraftRetainsItsLayerWhenAnExactSourceMovesToCloud() {
+        let source = book([("local", "Unique original source")],chapter:"local-chapter")
+        let target = book([("remote", "Unique original source")],chapter:"cloud-chapter")
+        let anchor = ReadingAnchor(chapterID:"local-chapter",passageID:"local")
+        var state = ReaderState()
+        state.drafts[anchor.key] = NoteDraft(anchor:anchor,quote:"选中译文",body:"未完成",quoteOrigin:"translation",quoteLanguage:"zh")
+        let result = CloudUploadMigration.remap(source:source,state:state,destination:target,destinationState:ReaderState())
+        XCTAssertEqual(result.state.drafts.values.first?.quoteOrigin,"translation")
+        XCTAssertEqual(result.state.drafts.values.first?.quoteLanguage,"zh")
+    }
     func testRepeatedMigrationDeduplicatesAndDoesNotReplaceExistingPosition() {
         let source = book([("local", "Unique source paragraph")], chapter: "local-chapter")
         let target = book([("remote", "Unique source paragraph")], chapter: "cloud-chapter")

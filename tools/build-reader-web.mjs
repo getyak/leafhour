@@ -410,6 +410,7 @@ export async function buildReaderWeb({root,outputDir,html}){
   'share-model.mjs':{kind:'dynamic-import',importer:'share.js'},
   'original-download.mjs':{kind:'dynamic-import',importer:'reader-translation.js'},
   'translation-first-use.mjs':{kind:'dynamic-import',importer:'reader-translation.js'},
+  'reader-auto-translation.mjs':{kind:'dynamic-import',importer:'reader-translation.js'},
   'credit-client.mjs':{kind:'dynamic-import',importer:'reader-api.mjs'},
   // One raw offline boundary keeps durable storage outside the fixed reader budget.
   'offline-reading.mjs':{kind:'import-statement',importer:'reader-api.mjs'},
@@ -486,7 +487,7 @@ export async function buildReaderWeb({root,outputDir,html}){
    if(!candidates.some(file=>file&&file.startsWith('app/ui-catalogs/')))return undefined;
    throw Error('Non-public ui-catalogue bundle edge: '+args.path);
   });
-  b.onResolve({filter:/^\.\/(?:observability-bridge|reader-account|atmosphere-audio|original-download|translation-first-use|credit-client|offline-reading|offline-position|chat-book-upload|library-chat-markdown|reader-book-actions|gift-compose|book-cover-ui|arrival-catalog|share-fonts|share-model|reader-settings-choices|reader-page-inputs|reader-page-surface|reader-location|person-return-controller|reader-companion-loader|command-palette)\.mjs(?:\?.*)?$/},args=>{
+  b.onResolve({filter:/^\.\/(?:observability-bridge|reader-account|atmosphere-audio|original-download|translation-first-use|reader-auto-translation|credit-client|offline-reading|offline-position|chat-book-upload|library-chat-markdown|reader-book-actions|gift-compose|book-cover-ui|arrival-catalog|share-fonts|share-model|reader-settings-choices|reader-page-inputs|reader-page-surface|reader-location|person-return-controller|reader-companion-loader|command-palette)\.mjs(?:\?.*)?$/},args=>{
   const at=args.path.indexOf('?'),query=at<0?'':args.path.slice(at);
   if(query&&args.path!==paletteRetry&&args.path!==accountRetry)throw Error('Non-public lazy reader module: '+args.path);
   const entry=lazyModules[args.path.slice(2,query?at:undefined)];
