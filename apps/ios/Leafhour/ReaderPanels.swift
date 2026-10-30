@@ -275,63 +275,60 @@ struct ReaderPreferencesPanel: View {
     }
     var body: some View {
         Form {
-            Section {
+            if let preview, session.book.kind != .pdf {
+                Section {
+                    VStack(alignment: .leading, spacing: 18) {
+                        HStack {
+                            Text("这页的样子").font(.caption.weight(.medium)).foregroundStyle(.secondary)
+                            Spacer()
+                            Image(systemName: "leaf").font(.footnote).foregroundStyle(Color.leafInk)
+                        }
+                        TypographyPreview(text: preview, fontSize: session.state.preferences.fontSize, lineSpacing: session.state.preferences.lineSpacing)
+                    }
+                    .padding(20)
+                    .background(session.state.preferences.theme == "paper" ? Color.readingPaper : Color(uiColor: .secondarySystemGroupedBackground))
+                }.listRowInsets(EdgeInsets()).listRowSeparator(.hidden)
+            }
+            if session.book.kind != .pdf {
+                Section {
+                    HStack {
+                        Text("文字").font(.headline)
+                        Spacer()
+                        if !usesDefaultTypography {
+                            Button("重置") {
+                                var preferences = session.state.preferences
+                                preferences.fontSize = defaults.fontSize; preferences.lineSpacing = defaults.lineSpacing
+                                session.changePreferences(preferences)
+                            }.font(.subheadline).frame(minHeight: 44).accessibilityLabel("恢复默认排版")
+                        }
+                    }
+                    VStack(alignment: .leading, spacing: 8) {
+                        HStack { Text("字号"); Spacer(); Text("\(Int(session.state.preferences.fontSize))").monospacedDigit().foregroundStyle(.secondary) }
+                        Slider(value: binding(\.fontSize), in: 16...36, step: 1) {
+                            Text("正文字号")
+                        } minimumValueLabel: { Text("A").font(.caption) } maximumValueLabel: { Text("A").font(.title3) }
+                        .accessibilityValue("\(Int(session.state.preferences.fontSize)) 磅")
+                    }.padding(.vertical, 5)
+                    VStack(alignment: .leading, spacing: 8) {
+                        HStack { Text("行间距"); Spacer(); Text("\(Int(session.state.preferences.lineSpacing))").monospacedDigit().foregroundStyle(.secondary) }
+                        Slider(value: binding(\.lineSpacing), in: 4...18, step: 1).accessibilityLabel("正文行间距")
+                            .accessibilityValue("\(Int(session.state.preferences.lineSpacing)) 磅")
+                    }.padding(.vertical, 5)
+                } footer: { Text("随系统大字设置缩放，调整自动保存。") }
+            } else {
+                Section { Label("保留 PDF 原页，可双指缩放。", systemImage: "doc.richtext").font(.subheadline) }
+            }
+            Section("纸面") { ReaderThemeChoices(session: session).padding(.vertical, 8) }
+                .listRowBackground(Color.clear).listRowInsets(EdgeInsets())
+            Section("翻页") {
                 Picker("翻页方式", selection: binding(\.navigationMode)) {
                     Text("上下滚动").tag(ReaderNavigationMode.scroll)
                     Text("左右翻页").tag(ReaderNavigationMode.paged)
-                }.pickerStyle(.segmented).accessibilityIdentifier("reader-navigation-mode")
-            } header: { Text("阅读方式").foregroundStyle(Color.primary) } footer: {
-                Text(session.state.preferences.navigationMode == .paged ? "向左滑动下一页，向右滑动上一页。轻点书页显示阅读工具。" : "上下滑动继续阅读，轻点书页显示阅读工具。")
-                    .font(.subheadline).foregroundStyle(Color.primary).fixedSize(horizontal: false, vertical: true)
-            }
-            if session.book.kind == .pdf {
-                Section {
-                    Label("PDF 保留原来的字体与排版，可在书页上双指缩放。", systemImage: "doc.richtext")
-                        .font(.subheadline)
-                } header: { Text("原页排版").foregroundStyle(Color.primary) }
-            } else {
-                if let preview {
-                    Section {
-                        TypographyPreview(text: preview, fontSize: session.state.preferences.fontSize, lineSpacing: session.state.preferences.lineSpacing)
-                            .listRowBackground(session.state.preferences.theme == "paper" ? Color.readingPaper : Color(uiColor: .systemBackground))
-                    } header: { Text("排版预览 · 原文片段").foregroundStyle(Color.primary) }
-                }
-                Section {
-                    LabeledContent {
-                        Text("\(Int(session.state.preferences.fontSize)) pt").foregroundStyle(Color.primary).monospacedDigit()
-                    } label: { Text("字号").font(.body).fixedSize(horizontal: false, vertical: true) }
-                    Slider(value: binding(\.fontSize), in: 16...36, step: 1)
-                        .accessibilityLabel("正文字号")
-                        .accessibilityValue("\(Int(session.state.preferences.fontSize)) 磅")
-                    LabeledContent {
-                        Text("\(Int(session.state.preferences.lineSpacing)) pt").foregroundStyle(Color.primary).monospacedDigit()
-                    } label: { Text("行间距").font(.body).fixedSize(horizontal: false, vertical: true) }
-                    Slider(value: binding(\.lineSpacing), in: 4...18, step: 1)
-                        .accessibilityLabel("正文行间距")
-                        .accessibilityValue("\(Int(session.state.preferences.lineSpacing)) 磅")
-                    if usesDefaultTypography {
-                        Label("当前为默认排版", systemImage: "checkmark").font(.body).foregroundStyle(Color.primary)
-                    } else {
-                        Button {
-                            var preferences = session.state.preferences
-                            preferences.fontSize = defaults.fontSize
-                            preferences.lineSpacing = defaults.lineSpacing
-                            session.changePreferences(preferences)
-                        } label: { Text("恢复默认排版").font(.body).fixedSize(horizontal: false, vertical: true).frame(minHeight: 44) }
-                    }
-                } header: { Text("正文").foregroundStyle(Color.primary) } footer: {
-                    Text("字号随系统大字设置继续缩放。更改会自动保存到此设备。")
-                        .font(.subheadline).foregroundStyle(Color.primary).fixedSize(horizontal: false, vertical: true)
-                }
-            }
-            Section {
-                Picker("主题", selection: binding(\.theme)) { Text("清纸").tag("paper"); Text("夜读").tag("night"); Text("跟随系统").tag("system") }.pickerStyle(.segmented)
-            } header: { Text("阅读纸面").foregroundStyle(Color.primary) }
-            Section {
-                Text("从阅读工具的“翻译”查看当前段的直译、意译和原文。切换排版不生成内容；未翻译的段落保留原文。")
-                    .font(.subheadline).foregroundStyle(Color.primary).fixedSize(horizontal: false, vertical: true)
-            } header: { Text("原文与译文").foregroundStyle(Color.primary) }
-        }.accessibilityIdentifier("reader-preferences-form").navigationTitle("阅读设置")
+                }.pickerStyle(.segmented).accessibilityIdentifier("reader-navigation-mode").padding(.vertical, 7)
+            } footer: { Text("轻点书页唤回阅读工具，长按可以选字。") }
+        }
+        .scrollContentBackground(.hidden).background(Color(uiColor: .systemGroupedBackground))
+        .accessibilityIdentifier("reader-preferences-form").navigationTitle("阅读设置")
     }
 
     struct TypographyPreview: View {
