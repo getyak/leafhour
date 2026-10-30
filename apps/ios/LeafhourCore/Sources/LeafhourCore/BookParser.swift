@@ -133,9 +133,12 @@ enum BookParser {
         }
         func excludeOpener(_ href: String, relativeTo source: String) {
             guard let path = openingPath(href, relativeTo: source) else { return }
-            excluded.insert(path)
             let parts = href.split(separator: "#", maxSplits: 1, omittingEmptySubsequences: false)
-            if parts.count == 2, let fragment = String(parts[1]).removingPercentEncoding, !fragment.isEmpty {
+            if parts.count == 1 || parts[1].isEmpty {
+                excluded.insert(path)
+            } else if let fragment = String(parts[1]).removingPercentEncoding, !fragment.isEmpty {
+                // A cover fragment marks only that region. Without an explicit
+                // body target, retain the first linear chapter in source order.
                 openerFragments[path, default: []].insert(fragment)
             }
         }

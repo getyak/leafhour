@@ -72,8 +72,44 @@ final class CoverOpeningTests: XCTestCase {
     @MainActor func testBodyFragmentCannotOverrideWholeDocumentCoverOrTheSameCoverFragment() async throws {
         let wholeCover = try await fixture(coverLinear: true, landmark: "art.xhtml#body-start", combinedOpening: true, coverLandmark: "art.xhtml#cover")
         XCTAssertEqual(wholeCover.session().chapter.sourcePath, "OPS/preface.xhtml")
-        let sameFragment = try await fixture(coverLinear: true, markCover: false, landmark: "art.xhtml#cover", combinedOpening: true, coverLandmark: "art.xhtml#cover")
-        XCTAssertEqual(sameFragment.session().chapter.sourcePath, "OPS/preface.xhtml")
+        // A contradictory cover/body fragment is not a trusted body target.
+        // It must not exclude the mixed chapter either. Put original source
+        // before the cover so rejecting that hint has a distinct observable
+        // result from following its cover target.
+        let firstText = "Original source before the explicitly marked cover fragment."
+        let sameFragment = try await fixture(coverLinear: true, markCover: false,
+            landmark: "art.xhtml#cover", combinedOpening: true,
+            coverMarkup: "<p id=\"first-source\">\(firstText)</p><img id=\"cover\" src=\"cover.png\" alt=\"Source artwork\"/>",
+            coverLandmark: "art.xhtml#cover")
+        let chapter = try XCTUnwrap(sameFragment.book.chapters.first)
+        let first = try XCTUnwrap(chapter.passages.first)
+        let cover = try XCTUnwrap(chapter.passages.first(where: { $0.resourcePath == "OPS/cover.png" }))
+        XCTAssertEqual(first.text, firstText)
+        XCTAssertEqual(first.id, "p-35b737df5c84f1b19fa03d8fe9e91e55a6935b5c55ac0e53fdde635b8fec57ba")
+        XCTAssertEqual(cover.id, "p-b3e65e3199ce2f27022a9f991715e0718eecedf6299b1672bed2b2ad502a11d9")
+        XCTAssertTrue(chapter.passages.contains(where: { $0.text == "Actual main prose after source artwork." }))
+        let fallback = ReadingAnchor(chapterID: chapter.id, passageID: first.id)
+        let wrongBodyTarget = ReadingAnchor(chapterID: chapter.id, passageID: cover.id)
+        XCTAssertNotEqual(fallback, wrongBodyTarget)
+        var legacy = sameFragment.book
+        legacy.readingStartChapterID = nil; legacy.readingStartAnchor = nil
+        let indexBefore = try Data(contentsOf: sameFragment.directory.appendingPathComponent("book.json"))
+        let manifestBefore = try Data(contentsOf: sameFragment.directory.appendingPathComponent("manifest.json"))
+        for book in [sameFragment.book, legacy] {
+            let reader = sameFragment.session(book: book)
+            XCTAssertEqual(reader.chapter.sourcePath, "OPS/art.xhtml", "Do not discard mixed Chapter I because one fragment is contradictory")
+            XCTAssertEqual(reader.currentAnchor, fallback, "Reject the erroneous bodymatter target instead of following it to the cover")
+            XCTAssertEqual(reader.declaredReadingStart(), fallback)
+            XCTAssertNotEqual(reader.currentAnchor, wrongBodyTarget)
+            var saved = ReaderState()
+            saved.anchor = wrongBodyTarget
+            saved.drafts[wrongBodyTarget.key] = NoteDraft(anchor: wrongBodyTarget, quote: "Source artwork", body: "Keep my saved-cover draft")
+            let resumed = sameFragment.session(book: book, state: saved)
+            XCTAssertEqual(resumed.currentAnchor, wrongBodyTarget, "A valid user-saved cover position remains authoritative")
+            XCTAssertEqual(resumed.state, saved)
+        }
+        XCTAssertEqual(try Data(contentsOf: sameFragment.directory.appendingPathComponent("book.json")), indexBefore)
+        XCTAssertEqual(try Data(contentsOf: sameFragment.directory.appendingPathComponent("manifest.json")), manifestBefore)
     }
 
     @MainActor func testLinearNavigationDocumentCanDeclareBodyOutsideNavigationElements() async throws {
@@ -156,6 +192,67 @@ final class CoverOpeningTests: XCTestCase {
     @MainActor func testGuideCoverReferenceSkipsOnlyItsExplicitTarget() async throws {
         let fixture = try await fixture(coverLinear: true, markCover: false, guide: "<reference type=\"cover\" href=\"art.xhtml\"/>")
         XCTAssertEqual(fixture.session().chapter.sourcePath, "OPS/preface.xhtml")
+    }
+
+    @MainActor func testFragmentOnlyCoverReferenceKeepsMixedFirstLinearChapterWithoutGuessingBody() async throws {
+        // A cover fragment does not declare its entire XHTML to be front matter.
+        // There is intentionally no bodymatter/text start hint, so preserve the
+        // first linear chapter and its source order rather than guessing a heading.
+        for landmarks in [false, true] {
+            let file = root.appendingPathComponent(UUID().uuidString + ".epub")
+            let archive = try Archive(url: file, accessMode: .create)
+            let navItem = landmarks ? "<item id=\"nav\" href=\"nav.xhtml\" properties=\"nav\" media-type=\"application/xhtml+xml\"/>" : ""
+            let guide = landmarks ? "" : "<guide><reference type=\"cover\" href=\"opening.xhtml#cover\"/></guide>"
+            var entries = [
+                ("mimetype", "application/epub+zip"),
+                ("META-INF/container.xml", "<container><rootfiles><rootfile full-path=\"OPS/book.opf\"/></rootfiles></container>"),
+                ("OPS/book.opf", "<package><metadata><title>Mixed source opening</title></metadata><manifest><item id=\"opening\" href=\"opening.xhtml\" media-type=\"application/xhtml+xml\"/><item id=\"second\" href=\"second.xhtml\" media-type=\"application/xhtml+xml\"/>\(navItem)</manifest><spine><itemref idref=\"opening\"/><itemref idref=\"second\"/></spine>\(guide)</package>"),
+                ("OPS/opening.xhtml", "<html xmlns:epub=\"http://www.idpf.org/2007/ops\"><body><section id=\"cover\" epub:type=\"cover\"><img id=\"cover-art\" src=\"cover.png\" alt=\"Retained source cover\"/></section><section id=\"chapter-one\"><h1>CHAPTER I.</h1><p id=\"first-prose\">The first chapter's original prose must remain before chapter two.</p></section></body></html>"),
+                ("OPS/second.xhtml", "<html><body><h1>CHAPTER II.</h1><p>The second chapter follows the complete first chapter.</p></body></html>"),
+                ("OPS/cover.png", "Synthetic retained source resource; this Core test does not assert image rendering")
+            ]
+            if landmarks {
+                entries.append(("OPS/nav.xhtml", "<html xmlns:epub=\"http://www.idpf.org/2007/ops\"><body><nav epub:type=\"landmarks\"><ol><li><a epub:type=\"cover\" href=\"opening.xhtml#cover\">Cover</a></li></ol></nav></body></html>"))
+            }
+            for (path, text) in entries {
+                let data = Data(text.utf8)
+                try archive.addEntry(with: path, type: .file, uncompressedSize: Int64(data.count), compressionMethod: .deflate) { position, size in
+                    data.subdata(in: Int(position)..<min(Int(position) + size, data.count))
+                }
+            }
+            let library = try OfflineLibrary(root: root.appendingPathComponent(UUID().uuidString), scope: .device)
+            let book = try await library.importFile(file)
+            let directory = try await library.bookDirectory(book.id), original = try await library.originalURL(book.id)
+            XCTAssertEqual(Array(book.chapters.prefix(2).map(\.sourcePath)), ["OPS/opening.xhtml", "OPS/second.xhtml"])
+            let opening = try XCTUnwrap(book.chapters.first)
+            let cover = try XCTUnwrap(opening.passages.first)
+            let prose = try XCTUnwrap(opening.passages.first(where: { $0.text == "The first chapter's original prose must remain before chapter two." }))
+            XCTAssertEqual(opening.id, "ch-2eb320527c69b30f42a87b5966778a6c1acee2da2849fd57480ce1992f3a8e9f")
+            XCTAssertEqual(cover.id, "p-305b8b92c2610f15567589524adcdb4340e239be72c1fbdae7c461ee1d06cfbf")
+            XCTAssertEqual(cover.resourcePath, "OPS/cover.png")
+            XCTAssertEqual(prose.id, "p-10e7e9a07b304e2c06c31a5ff33dbc72a3654e20868646f9ec0081e53b18c40f")
+            let conservative = ReadingAnchor(chapterID: opening.id, passageID: cover.id)
+            var legacy = book
+            legacy.readingStartChapterID = nil; legacy.readingStartAnchor = nil
+            let indexBefore = try Data(contentsOf: directory.appendingPathComponent("book.json"))
+            let manifestBefore = try Data(contentsOf: directory.appendingPathComponent("manifest.json"))
+            for candidate in [book, legacy] {
+                let reader = ReaderSession(book: candidate, state: ReaderState(), original: original, directory: directory, library: library)
+                XCTAssertEqual(reader.chapterIndex, 0, "A fragment cover cannot skip all first-chapter prose; landmarks=\(landmarks)")
+                XCTAssertEqual(reader.chapter.sourcePath, "OPS/opening.xhtml")
+                XCTAssertEqual(reader.currentAnchor, conservative, "Without a trusted body target, keep original order including the cover")
+                XCTAssertEqual(reader.declaredReadingStart(), conservative)
+                var saved = ReaderState()
+                saved.anchor = conservative
+                saved.drafts[conservative.key] = NoteDraft(anchor: conservative, quote: "Retained source cover", body: "Keep this existing cover draft")
+                let resumed = ReaderSession(book: candidate, state: saved, original: original, directory: directory, library: library)
+                XCTAssertEqual(resumed.chapterIndex, 0)
+                XCTAssertEqual(resumed.currentAnchor, conservative)
+                XCTAssertEqual(resumed.state, saved, "Valid saved cover anchors and user drafts always win")
+            }
+            XCTAssertEqual(try Data(contentsOf: directory.appendingPathComponent("book.json")), indexBefore)
+            XCTAssertEqual(try Data(contentsOf: directory.appendingPathComponent("manifest.json")), manifestBefore)
+        }
     }
 
     @MainActor func testUnmarkedOpeningIllustrationIsNotAssumedToBeCover() async throws {
