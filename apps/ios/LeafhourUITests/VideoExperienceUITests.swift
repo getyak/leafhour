@@ -99,8 +99,8 @@ final class VideoExperienceUITests: XCTestCase {
         let search = shelfSearch
         guard search.exists else { return }
         if let value = search.value as? String, !value.isEmpty && value != search.placeholderValue {
-            search.tap()
-            search.typeText(String(repeating: XCUIKeyboardKey.delete.rawValue, count: value.count))
+            let clear = app.buttons["library-search-clear"]
+            require(clear); clear.tap()
             dismissSearchKeyboardIfAvailable()
         }
     }

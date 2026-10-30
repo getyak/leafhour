@@ -84,7 +84,15 @@ struct LibraryScreen: View {
                         TextField("书名或作者", text: $query).focused($searchFocused)
                             .textInputAutocapitalization(.never).autocorrectionDisabled().submitLabel(.search).onSubmit { searchFocused = false }
                             .accessibilityIdentifier("library-search-field")
-                        Button("取消") { query = ""; searching = false; searchFocused = false }.frame(minHeight: 44)
+                        if !query.isEmpty {
+                            Button { query = "" } label: {
+                                Image(systemName: "xmark.circle.fill").foregroundStyle(.secondary)
+                                    .frame(width: 44, height: 44).contentShape(Rectangle())
+                            }.accessibilityLabel("清除搜索").accessibilityIdentifier("library-search-clear")
+                        }
+                        Button { query = ""; searching = false; searchFocused = false } label: {
+                            Text("取消").frame(minWidth: 44, minHeight: 44).contentShape(Rectangle())
+                        }.accessibilityIdentifier("library-search-cancel")
                     }.padding(.horizontal, 20).background(Color.shelfPaper)
                 }
             }
