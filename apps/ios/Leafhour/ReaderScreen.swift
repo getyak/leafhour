@@ -85,9 +85,11 @@ struct ReaderScreen: View {
                 }
                 if chrome == .progress || chrome == .tools {
                     VStack(spacing: 8) {
-                        Text(progressDescription).font(.caption).foregroundStyle(.secondary).lineLimit(1)
+                        Text(progressCaption).font(.caption).foregroundStyle(Color.primary)
+                            .fixedSize(horizontal: false, vertical: true).multilineTextAlignment(.center)
                             .padding(.horizontal, 12).padding(.vertical, 4)
-                            .background(paper, in: Capsule()).accessibilityHidden(true)
+                            .background(paper, in: Capsule())
+                            .accessibilityIdentifier("reader-progress-caption")
                         ReaderBottomBar(
                             mode: speech.playing ? .listening : .reading,
                             chapterAccessibilityValue: progressDescription,
@@ -219,6 +221,13 @@ struct ReaderScreen: View {
         guard session.book.kind != .pdf, session.state.preferences.navigationMode == .paged,
               let pagePosition, pagePosition.chapterIndex == session.chapterIndex else { return chapter }
         return chapter + " · 本章第 \(pagePosition.index + 1) / \(pagePosition.count) 屏"
+    }
+    private var progressCaption: String {
+        let unit = session.book.kind == .pdf ? "页" : "章"
+        let chapter = "第 \(session.chapterIndex + 1) / \(session.book.chapters.count) \(unit)"
+        guard session.book.kind != .pdf, session.state.preferences.navigationMode == .paged,
+              let pagePosition, pagePosition.chapterIndex == session.chapterIndex else { return chapter }
+        return chapter + " · 本章 \(pagePosition.index + 1) / \(pagePosition.count) 屏"
     }
     private func sleepChrome() {
         guard chrome != .asleep, !bottomBarFocused, focusedControl == nil, panel == nil, session.selection == nil, !hasNativeTextSelection, !UIAccessibility.isVoiceOverRunning else { return }
