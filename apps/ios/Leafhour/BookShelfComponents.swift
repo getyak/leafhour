@@ -10,10 +10,16 @@ struct ShelfBookCover: View {
     var body: some View {
         VStack(alignment: .leading, spacing: compact ? 5 : 12) {
             Capsule().fill(Color.leafInk.opacity(0.55)).frame(width: compact ? 15 : 28, height: 2)
-            Text(title)
-                .font(.system(size: compact ? 10 : 19, weight: .semibold, design: .serif))
-                .lineLimit(compact ? 4 : 5)
-                .minimumScaleFactor(0.8)
+            if compact {
+                Image(systemName: "book.closed")
+                    .font(.system(size: 22, weight: .light))
+                    .frame(maxWidth: .infinity, minHeight: 44)
+            } else {
+                Text(title)
+                    .font(.system(size: 19, weight: .semibold, design: .serif))
+                    .lineLimit(5)
+                    .minimumScaleFactor(0.8)
+            }
             Spacer(minLength: 2)
             if !compact && !author.isEmpty {
                 Text(author).font(.caption).lineLimit(2)
