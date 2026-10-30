@@ -21,8 +21,15 @@ struct ReaderPanelView: View {
     let cloud: CloudLibraryClient?
     let onJump: (Int, ReadingAnchor?) -> Void
     let onCompanion: () -> Void
+    var onPresent: ((ReaderPanel) -> Void)? = nil
+    var onNote: (() -> Void)? = nil
+    var onReturnToLibrary: (() -> Void)? = nil
+    var onClose: (() -> Void)? = nil
+    var pinnedSelection: SelectedQuote? = nil
+    var onUseCurrentPassage: (() -> Void)? = nil
     @Environment(\.dismiss) private var dismiss
     private var isNoteEditor: Bool { if case .note = panel { return true }; return false }
+    private var paper: Color { session.state.preferences.theme == "paper" ? .readingPaper : Color(uiColor: .systemBackground) }
     var body: some View {
         NavigationStack {
             Group {
@@ -33,9 +40,13 @@ struct ReaderPanelView: View {
                 case .preferences: ReaderPreferencesPanel(session: session)
                 case .appearance: ReaderAppearancePanel(session: session)
                 case .records: ReaderRecordsPanel(session: session, onJump: onJump)
-                case .tools: ReaderMorePanel(session: session, speech: speech, tools: tools, cloud: cloud, onJump: onJump, onCompanion: onCompanion)
+                case .tools:
+                    ReaderQuietToolsPanel(session: session, speech: speech,
+                        onPresent: { onPresent?($0) }, onNote: { onNote?() },
+                        onCompanion: onCompanion, onReturnToLibrary: { onReturnToLibrary?() })
+                case .webTools: ReaderWebToolsPanel(session: session, cloud: cloud).onAppear { speech.pause() }
                 case .listening: ReaderListeningPanel(session: session, speech: speech)
-                case .translation: ReaderTranslationPanel(session: session, tools: tools, cloud: cloud)
+                case .translation: ReaderTranslationPanel(session: session, tools: tools, cloud: cloud, selection: pinnedSelection)
                 case .introduction: ReaderIntroductionPanel(session: session, tools: tools, cloud: cloud)
                 case .conversation: ReaderConversationPanel(session: session, tools: tools, cloud: cloud)
                 case .bookInformation: ReaderBookInformationPanel(book: session.book)
@@ -46,7 +57,7 @@ struct ReaderPanelView: View {
                     ScrollView {
                         VStack(alignment: .leading, spacing: 18) {
                             Text("作者原文").font(.caption).foregroundStyle(.secondary)
-                            Text(quote.text).font(.title3).textSelection(.enabled)
+                            Text(quote.sourceText ?? quote.text).font(.title3).textSelection(.enabled)
                             Text("\(session.book.title) · \(session.book.chapters.first { $0.id == quote.anchor.chapterID }?.title ?? "")").font(.footnote).foregroundStyle(.secondary)
                             Divider()
                             Text("原文与译文分别保留。已有译文可从阅读工具的“翻译”核对，未翻译的内容仍显示原文。").font(.subheadline).foregroundStyle(.secondary)
@@ -54,27 +65,50 @@ struct ReaderPanelView: View {
                     }.navigationTitle("核对原文")
                 }
             }
+            .safeAreaInset(edge: .top, spacing: 0) {
+                if (panel.isCompanion || panel.id == ReaderPanel.translation.id), let onUseCurrentPassage {
+                    HStack(spacing: 12) {
+                        Text("固定引用").font(.caption).foregroundStyle(.secondary)
+                        Spacer(minLength: 0)
+                        Button("使用当前段落", action: onUseCurrentPassage)
+                            .font(.caption).frame(minHeight: 44)
+                            .disabled(tools.loading || tools.generating || tools.retry != nil)
+                            .accessibilityIdentifier("reader-tool-use-current")
+                    }.padding(.horizontal, 16).background(.bar)
+                }
+            }
             .interactiveDismissDisabled(!panel.isCompanion && (session.saving || session.saveError != nil))
             .navigationBarTitleDisplayMode(.inline)
-            .toolbarBackground(Color(uiColor: .systemBackground), for: .navigationBar)
+            .toolbarBackground(paper, for: .navigationBar)
             .toolbarBackground(.visible, for: .navigationBar)
             .toolbar {
                 if !isNoteEditor {
                     ToolbarItem(placement: .cancellationAction) {
                         Button(action: continueReading) {
                             Text("继续读").font(.body).frame(minHeight: 44).contentShape(Rectangle())
+                        }.keyboardShortcut(.cancelAction)
+                    }
+                    if panel.id != ReaderPanel.tools.id, let onPresent {
+                        ToolbarItem(placement: .primaryAction) {
+                            Button("阅读工具", systemImage: "ellipsis") { onPresent(.tools) }
+                                .labelStyle(.iconOnly).frame(minWidth: 44, minHeight: 44)
                         }
                     }
                 }
             }
         }
         .environment(\.readerContinueReading, continueReading)
+        .background(paper)
+        .tint(Color.leafInk)
         .preferredColorScheme(session.state.preferences.colorScheme(following: systemColorScheme))
-        .presentationBackground(Color(uiColor: .systemBackground))
+        .presentationBackground(paper)
     }
     private func continueReading() {
-        if panel.isCompanion { dismiss() }
-        else { Task { let receipt = await session.flush(); if session.isCurrent(receipt) { dismiss() } } }
+        if panel.isCompanion { finishPresentation() }
+        else { Task { let receipt = await session.flush(); if session.isCurrent(receipt) { finishPresentation() } } }
+    }
+    private func finishPresentation() {
+        if let onClose { onClose() } else { dismiss() }
     }
 }
 struct ReaderBookInformationPanel: View {
@@ -393,11 +427,11 @@ struct ReaderRecordsPanel: View {
             if !session.state.drafts.isEmpty {
                 Section("未完成草稿") {
                     ForEach(session.state.drafts.values.sorted { $0.anchor.key < $1.anchor.key }, id: \.anchor.key) { draft in
-                        Button { editing = SelectedQuote(anchor: draft.anchor, text: draft.quote) } label: {
+                        Button { editing = SelectedQuote(anchor: draft.anchor, text: draft.quote, origin: draft.quoteOrigin, language: draft.quoteLanguage) } label: {
                             VStack(alignment: .leading, spacing: 8) {
                                 Text(location(draft.anchor)).font(.caption).foregroundStyle(.secondary)
                                 Text(draft.body.isEmpty ? "尚未写完" : draft.body).foregroundStyle(.primary).lineLimit(3)
-                                Text("原文 · " + draft.quote).font(.footnote).foregroundStyle(.secondary).lineLimit(2)
+                                Text((draft.quoteOrigin == "translation" ? "译文 · " : "原文 · ") + draft.quote).font(.footnote).foregroundStyle(.secondary).lineLimit(2)
                             }.padding(.vertical, 6)
                         }
                     }
@@ -408,7 +442,7 @@ struct ReaderRecordsPanel: View {
                     VStack(alignment: .leading, spacing: 8) {
                         Text(location(note.anchor)).font(.caption).foregroundStyle(Color.primary).fixedSize(horizontal: false, vertical: true)
                         Text(note.body).textSelection(.enabled)
-                        Text("原文 · " + note.quote).font(.footnote).foregroundStyle(Color.primary).lineLimit(3)
+                        Text((note.quoteOrigin == "translation" ? "译文 · " : "原文 · ") + note.quote).font(.footnote).foregroundStyle(Color.primary).lineLimit(3)
                         Text(note.modifiedAt, format: .dateTime.year().month().day().hour().minute())
                             .font(.subheadline).foregroundStyle(Color.primary).fixedSize(horizontal: false, vertical: true)
                             .accessibilityLabel("修改于 \(note.modifiedAt.formatted(date: .abbreviated, time: .shortened))")
@@ -426,6 +460,9 @@ struct ReaderRecordsPanel: View {
         }.accessibilityIdentifier("reader-records-list").navigationTitle("我的记录")
             .sheet(item: $editing) { quote in
                 NavigationStack { NoteEditorPanel(quote: quote, session: session) }
+                    // This editor is an explicit records modal. Its close
+                    // returns to records rather than closing the reader tool.
+                    .environment(\.readerContinueReading, nil)
                     .presentationDetents([.large])
                     .presentationBackground(Color(uiColor: .systemBackground))
             }
@@ -440,6 +477,7 @@ struct NoteEditorPanel: View {
     let quote: SelectedQuote
     @Bindable var session: ReaderSession
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.readerContinueReading) private var continueReading
     @State private var text = ""
     @State private var didLoad = false
     @State private var submissionID = UUID()
@@ -450,7 +488,7 @@ struct NoteEditorPanel: View {
     private var noteIsPersisted: Bool { session.isNotePersisted(id: submissionID, body: text) }
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
-            DisclosureGroup("作者原文", isExpanded: $showingQuote) {
+            DisclosureGroup(quote.origin == "translation" ? "选中译文" : "作者原文", isExpanded: $showingQuote) {
                 ScrollView { Text(quote.text).font(.subheadline).foregroundStyle(.secondary).textSelection(.enabled).frame(maxWidth: .infinity, alignment: .leading) }
                     .frame(maxHeight: 120)
             }.font(.caption).foregroundStyle(.secondary)
@@ -465,7 +503,7 @@ struct NoteEditorPanel: View {
             .interactiveDismissDisabled(pendingAction != nil || session.saving || session.saveError != nil)
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) { Button("保存笔记") { submit(.note) }.disabled(pendingAction != nil || text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty) }
-                ToolbarItem(placement: .cancellationAction) { Button(noteIsPersisted ? "关闭" : "保留草稿") { submit(.draft) }.disabled(pendingAction != nil) }
+                ToolbarItem(placement: .cancellationAction) { Button(noteIsPersisted ? "关闭" : "保留草稿") { submit(.draft) }.disabled(pendingAction != nil).keyboardShortcut(.cancelAction) }
                 ToolbarItemGroup(placement: .keyboard) { Spacer(); Button("收起键盘") { editorFocused = false }.accessibilityLabel("收起笔记键盘") }
             }
             .onAppear { session.noteEditorID = submissionID; if !didLoad { text = session.state.drafts[quote.anchor.key]?.body ?? ""; didLoad = true } }
@@ -492,7 +530,9 @@ struct NoteEditorPanel: View {
             }
             let receipt = await session.flush()
             pendingAction = nil
-            if submitted && session.isCurrent(receipt) { dismiss() }
+            if submitted && session.isCurrent(receipt) {
+                if let continueReading { continueReading() } else { dismiss() }
+            }
         }
     }
 }

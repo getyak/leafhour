@@ -4,6 +4,8 @@ test('paper-turn rendering loads only after page mode while the ordinary reader 
  try{const result=await buildReaderWeb({root,outputDir:out,html:await readFile(path.join(root,'app/index.html'),'utf8')});
   for(const file of ['app/reader-page-surface.mjs','app/reader-page-turn.mjs'])assert.equal(result.inputs.includes(file),false,file+' must not execute in the ordinary reader');
   const js=await readFile(path.join(out,result.files.find(file=>file.endsWith('.js'))),'utf8');assert.match(js,/from["']\/reader-page-inputs\.mjs["']/);
+  assert.match(js,/import\(["']\/reader-auto-translation\.mjs["']\)/,'automatic preparation starts after a readable book is ready');
+  assert.doesNotMatch(js,/Prepare translations automatically/,'automatic controls and their locale copy stay outside the initial reading bundle');
   assert.equal(result.inputs.includes('app/reader-page-inputs.mjs'),false,'the small stable input owner remains an audited shared module');
   assert.equal(result.inputs.includes('app/reader-paper.css'),false,'the optional paper surface must not enlarge ordinary reading styles');
  }finally{await rm(out,{recursive:true,force:true});}

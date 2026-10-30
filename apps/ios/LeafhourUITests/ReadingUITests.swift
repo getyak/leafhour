@@ -15,7 +15,7 @@ final class ReadingUITests: XCTestCase {
     func capture(_ name: String) {
         let attachment = XCTAttachment(screenshot: app.screenshot()); attachment.name = name; attachment.lifetime = .keepAlways; add(attachment)
     }
-    private let primaryReaderIDs = ["reader-contents", "reader-read", "reader-listen", "reader-appearance", "reader-typography"]
+    private let primaryReaderIDs = ["reader-contents", "reader-listen", "reader-appearance", "reader-typography"]
     private func readerControlIsAwake(_ control: XCUIElement) -> Bool {
         control.exists && control.isEnabled && control.isHittable
     }
@@ -30,20 +30,11 @@ final class ReadingUITests: XCTestCase {
         XCTAssertTrue(waitForReaderControlAwake(control, timeout: timeout), "Reader control must be visible, enabled and hittable: \(control)\n\(app.debugDescription)", file: file, line: line)
     }
     private var readerChromeIsAsleep: Bool {
-        let grip = app.buttons["显示阅读进度、目录、搜索与记录"]
-        guard grip.exists && grip.isEnabled && grip.isHittable else { return false }
-        let queries = primaryReaderIDs.map { app.buttons.matching(identifier: $0) } + [
-            app.buttons.matching(identifier: "reader-book-title"),
-            app.buttons.matching(identifier: "reader-more"),
-            app.buttons.matching(NSPredicate(format: "label == %@", "返回书房"))
-        ]
-        // Keep every matching node, including retained/unused layout children.
-        // Hierarchy existence is not visibility or VoiceOver focus membership.
-        return queries.allSatisfy { query in
-            query.allElementsBoundByIndex.allSatisfy { control in
-                !control.exists || (!control.isEnabled && !control.isHittable)
-            }
-        }
+        let entry = app.buttons["reader-tools"]
+        guard entry.exists && entry.isEnabled && entry.isHittable else { return false }
+        return !app.navigationBars["阅读工具"].exists
+            && !app.navigationBars["陪我读"].exists
+            && !app.buttons["reader-contents"].isHittable
     }
     private func waitForReaderChromeAsleep(timeout: TimeInterval) -> Bool {
         if readerChromeIsAsleep { return true }
@@ -54,14 +45,15 @@ final class ReadingUITests: XCTestCase {
     func testCompanionExplicitSummonAndQuietDismissal() {
         let reader = app.textViews["leafhour-epub-reader"]
         XCTAssertTrue(reader.waitForExistence(timeout: 10))
-        XCTAssertTrue(waitForReaderChromeAsleep(timeout: 8), "Entry tools become quiet after a short idle")
-        reader.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).tap()
-        XCTAssertTrue(waitForReaderControlAwake(app.buttons["reader-more"], timeout: 3), "A middle tap reveals the reading tools")
+        XCTAssertTrue(waitForReaderChromeAsleep(timeout: 3), "The book opens directly in quiet reading")
+        requireReaderControlAwake(app.buttons["reader-tools"])
+        XCTAssertGreaterThanOrEqual(app.buttons["reader-tools"].frame.width, 44)
+        XCTAssertGreaterThanOrEqual(app.buttons["reader-tools"].frame.height, 44)
         openMoreTool("阅读陪读")
         assertCompanionAndDismiss("explicit")
         app.terminate(); app.launch()
         XCTAssertTrue(reader.waitForExistence(timeout: 10))
-        XCTAssertTrue(readerControlIsAwake(app.buttons["reader-more"]), "The More entry keeps companion tools discoverable after a cold launch")
+        XCTAssertTrue(readerControlIsAwake(app.buttons["reader-tools"]), "The More entry keeps companion tools discoverable after a cold launch")
         XCTAssertTrue(waitForReaderChromeAsleep(timeout: 8))
     }
     func testCompanionSystemSelectionAndQuietDismissal() {
@@ -77,26 +69,23 @@ final class ReadingUITests: XCTestCase {
     private func assertCompanionAndDismiss(_ origin: String) {
         let title = app.navigationBars["陪我读"]
         XCTAssertTrue(title.waitForExistence(timeout: 3))
-        XCTAssertGreaterThan(title.frame.minY, app.windows.firstMatch.frame.height * 0.3,
-                             "The companion must leave the upper book visible")
+        XCTAssertTrue(app.staticTexts["作者原文"].exists || app.staticTexts["正在读的原文"].exists,
+                      "The compact companion retains the captured source on its independent tool page")
         XCTAssertTrue(app.textFields["reader-question"].exists || app.textViews["reader-question"].exists, "The real conversation composer replaces the old placeholder")
         XCTAssertFalse(app.staticTexts["此设备尚未连接 AI 陪读。原文仍在这里，可以继续阅读。"].exists)
-        capture("GET312-" + origin + "-conversation-half-sheet")
+        capture("GET312-" + origin + "-conversation-tool-page")
         app.buttons["继续读"].tap()
         capture("GET274-" + origin + "-after-close-tap")
         XCTAssertTrue(title.waitForNonExistence(timeout: 1), app.debugDescription)
-        XCTAssertTrue(readerChromeIsAsleep, "Dismissed companion leaves the real grip available and all retained chrome controls noninteractive")
+        XCTAssertTrue(readerChromeIsAsleep, "Dismissed companion returns to quiet source and its single tools entry")
         capture("GET274-" + origin + "-quiet")
     }
     func progress() {
         let contents = app.buttons["reader-contents"]
         if readerControlIsAwake(contents) { return }
-        let text = app.textViews["leafhour-epub-reader"]
-        let surface = text.exists ? text : app.otherElements["leafhour-pdf-reader"]
-        XCTAssertTrue(surface.waitForExistence(timeout: 10), app.debugDescription)
-        let grip = app.buttons["显示阅读进度、目录、搜索与记录"]
-        if readerControlIsAwake(grip) { grip.tap() }
-        else { surface.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).tap() }
+        let entry = app.buttons["reader-tools"]
+        requireReaderControlAwake(entry)
+        entry.tap()
         XCTAssertTrue(waitForReaderControlAwake(contents, timeout: 3), app.debugDescription)
     }
     private func revealInPanel(_ control: XCUIElement, scrollingUp: Bool = true) {
@@ -110,17 +99,18 @@ final class ReadingUITests: XCTestCase {
     }
     private func openMoreTool(_ title: String) {
         progress()
-        let more = app.buttons["reader-more"]
-        XCTAssertTrue(waitForReaderControlAwake(more, timeout: 3), app.debugDescription); more.tap()
         XCTAssertTrue(app.navigationBars["阅读工具"].waitForExistence(timeout: 3), app.debugDescription)
         let tool = app.buttons[title].firstMatch
         revealInPanel(tool); tool.tap()
     }
     func library() {
-        if readerControlIsAwake(app.buttons["返回书房"]) { app.buttons["返回书房"].tap(); return }
         let text = app.textViews["leafhour-epub-reader"]
         let surface = text.exists ? text : app.otherElements["leafhour-pdf-reader"]
-        if surface.waitForExistence(timeout: 3) { progress(); requireReaderControlAwake(app.buttons["返回书房"], timeout: 3); app.buttons["返回书房"].tap() }
+        if surface.waitForExistence(timeout: 3) {
+            progress()
+            let back = app.buttons["reader-return-library"]
+            revealInPanel(back); back.tap()
+        }
     }
     func testCompleteEPUBLastChapterAndColdResume() {
         library()
@@ -142,7 +132,7 @@ final class ReadingUITests: XCTestCase {
         app.terminate(); app.launch()
         XCTAssertTrue(text.waitForExistence(timeout: 10))
         XCTAssertTrue((text.value as? String)?.contains("CHAPTER XII.") == true)
-        XCTAssertTrue(readerControlIsAwake(app.buttons["reader-more"]), "Reading tools are discoverable on entry")
+        XCTAssertTrue(readerControlIsAwake(app.buttons["reader-tools"]), "Reading tools are discoverable on entry")
         capture("EPUB-cold-resume-tools")
         openMoreTool("我的记录")
         XCTAssertTrue(app.navigationBars["我的记录"].waitForExistence(timeout: 3), app.debugDescription)
@@ -228,40 +218,36 @@ final class ReadingUITests: XCTestCase {
         return candidates.firstMatch
     }
     /// GET-272 uses a separate task app seeded through the normal OfflineLibrary import service.
-    func testQuietChromeEdgesAndTenSecondIdle() {
+    func testQuietEntryAndEdgesKeepSourceAndColdResume() {
         let reader = app.textViews["leafhour-epub-reader"]
         XCTAssertTrue(reader.waitForExistence(timeout: 15), app.debugDescription)
-        // Entry tools are intentionally discoverable. Wait for the real idle
-        // transition before exercising the asleep page's edge hit region.
-        XCTAssertTrue(waitForReaderChromeAsleep(timeout: 8))
+        XCTAssertTrue(waitForReaderChromeAsleep(timeout: 3))
         let original = reader.value as? String
         reader.coordinate(withNormalizedOffset: .zero).withOffset(CGVector(dx: reader.frame.width / 2, dy: min(22, reader.frame.height / 2))).tap()
-        XCTAssertTrue(waitForReaderControlAwake(app.buttons["返回书房"], timeout: 3), app.debugDescription)
-        capture("GET272-native-top-awake")
-        Thread.sleep(forTimeInterval: 10)
-        XCTAssertTrue(readerChromeIsAsleep, "Ten-second idle leaves the real grip available and all retained chrome controls noninteractive")
+        requireReaderControlAwake(app.buttons["reader-contents"], timeout: 3)
+        capture("quiet-native-top-edge-tools")
+        app.buttons["继续读"].tap()
+        XCTAssertTrue(waitForReaderChromeAsleep(timeout: 3))
         XCTAssertEqual(reader.value as? String, original)
-        capture("GET272-native-idle-ten-seconds")
+        Thread.sleep(forTimeInterval: 10)
+        XCTAssertTrue(readerChromeIsAsleep)
         reader.coordinate(withNormalizedOffset: .zero).withOffset(CGVector(dx: reader.frame.width / 2, dy: reader.frame.height - min(22, reader.frame.height / 2))).tap()
-        XCTAssertTrue(waitForReaderControlAwake(app.buttons["目录"], timeout: 3), app.debugDescription)
-        capture("GET272-native-bottom-awake")
+        requireReaderControlAwake(app.buttons["reader-contents"], timeout: 3)
+        capture("quiet-native-bottom-edge-tools")
+        app.buttons["继续读"].tap()
         reader.swipeUp()
-        XCTAssertTrue(waitForReaderChromeAsleep(timeout: 0.3))
-        capture("GET272-native-scroll-asleep")
+        XCTAssertTrue(waitForReaderChromeAsleep(timeout: 3))
         let scrolledOriginal = reader.value as? String
-        reader.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).tap()
-        XCTAssertTrue(waitForReaderControlAwake(app.buttons["reader-contents"], timeout: 3), "A scrolled middle tap reveals the compact reading controls")
+        progress()
+        app.buttons["继续读"].tap()
+        XCTAssertTrue(waitForReaderChromeAsleep(timeout: 3))
         XCTAssertEqual(reader.value as? String, scrolledOriginal)
-        reader.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).tap()
-        XCTAssertTrue(waitForReaderChromeAsleep(timeout: 3), "A second middle tap hides the reading controls")
-        XCTAssertEqual(reader.value as? String, scrolledOriginal)
-        reader.coordinate(withNormalizedOffset: .zero).withOffset(CGVector(dx: reader.frame.width / 2, dy: min(22, reader.frame.height / 2))).tap()
-        XCTAssertTrue(waitForReaderControlAwake(app.buttons["返回书房"], timeout: 3), app.debugDescription)
-        Thread.sleep(forTimeInterval: 4)
         app.terminate(); app.launch()
         XCTAssertTrue(reader.waitForExistence(timeout: 10))
-        XCTAssertTrue(readerControlIsAwake(app.buttons["目录"]))
-        capture("GET312-native-cold-resume-tools")
+        requireReaderControlAwake(app.buttons["reader-tools"])
+        XCTAssertTrue(readerChromeIsAsleep)
+        capture("quiet-native-cold-resume-entry")
     }
+
 
 }

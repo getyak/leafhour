@@ -47,7 +47,7 @@ struct ReaderPanelPresentation: ViewModifier {
 }
 
 private struct CompanionKeyboardPresentation: ViewModifier {
-    @State private var geometry = CompanionSheetGeometry(windowSize: UIScreen.main.bounds.size, bottomSafeArea: 0, keyboardFrame: .null)
+    @State private var geometry = CompanionSheetGeometry(windowSize: .zero, bottomSafeArea: 0, keyboardFrame: .null)
     @State private var composerHeight: CGFloat = 0
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 

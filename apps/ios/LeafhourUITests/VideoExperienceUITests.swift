@@ -2541,4 +2541,70 @@ final class VideoExperienceUITests: XCTestCase {
         XCTAssertEqual(app.buttons["reader-contents"].value as? String, before, "Dismissing the system selection must not also advance the book")
     }
 
+    @MainActor
+    func test62QuietReaderEntryAndOnDemandNoteSurviveColdRelaunch() throws {
+        launch(); openBook(textTitle)
+        let entry = app.buttons["reader-tools"]
+        requireReaderControlAwake(entry)
+        XCTAssertEqual(entry.label, "阅读工具")
+        XCTAssertGreaterThanOrEqual(entry.frame.width, 44)
+        XCTAssertGreaterThanOrEqual(entry.frame.height, 44)
+        for identifier in ["reader-contents", "reader-listen", "reader-appearance", "reader-typography"] {
+            XCTAssertFalse(app.buttons[identifier].isHittable, "The quiet source must not start with a permanent dock")
+        }
+        let sourceBefore = reader.value as? String
+        capture("quiet-reader-default-paper-and-entry")
+        entry.tap()
+        require(app.navigationBars["阅读工具"])
+        let information = app.buttons["reader-book-title"]
+        scrollTo(information, in: foregroundForm()); information.tap()
+        require(app.navigationBars["书籍信息"])
+        require(app.staticTexts["reader-book-full-title"])
+        closePanel()
+        requireReaderControlAwake(entry)
+        XCTAssertEqual(reader.value as? String, sourceBefore)
+        entry.tap()
+        let note = app.buttons["reader-note"]
+        scrollTo(note, in: foregroundForm()); note.tap()
+        let editor = app.textViews["我的笔记正文"]
+        require(editor)
+        let draft = "Quiet reader draft " + UUID().uuidString
+        editor.tap(); editor.typeText(draft)
+        XCTAssertTrue((editor.value as? String)?.contains(draft) == true)
+        capture("quiet-reader-on-demand-note-draft")
+        app.buttons["保留草稿"].tap()
+        requireReaderControlAwake(entry)
+        coldRelaunch(); require(reader)
+        requireReaderControlAwake(entry)
+        entry.tap()
+        let records = app.buttons["我的记录"]
+        scrollTo(records, in: foregroundForm()); records.tap()
+        require(app.navigationBars["我的记录"])
+        let recovered = app.buttons.matching(NSPredicate(format: "label CONTAINS %@", draft)).firstMatch
+        scrollTo(recovered, in: foregroundForm()); require(recovered); recovered.tap()
+        require(editor)
+        XCTAssertTrue((editor.value as? String)?.contains(draft) == true)
+        capture("quiet-reader-note-draft-cold-restored")
+    }
+
+    @MainActor
+    func test63CachedTranslationRemainsReadableAfterAutomaticPreparationIsDisabled() throws {
+        launch(); openBook(translatedTitle)
+        let translated = NSPredicate(format:"value CONTAINS %@","GET317 合成意译样本")
+        expectation(for:translated,evaluatedWith:reader)
+        waitForExpectations(timeout:10)
+        XCTAssertFalse((reader.value as? String)?.contains("尚无译文，以下保留原文") == true)
+        capture("quiet-reader-cached-interpretive-body")
+        let entry = app.buttons["reader-tools"]; requireReaderControlAwake(entry); entry.tap()
+        let automatic = app.switches["自动准备译文"]
+        scrollTo(automatic,in:foregroundForm()); require(automatic)
+        if automatic.value as? String == "1" { automatic.tap() }
+        closePanel()
+        coldRelaunch(); require(reader)
+        expectation(for:translated,evaluatedWith:reader)
+        waitForExpectations(timeout:10)
+        XCTAssertTrue((reader.value as? String)?.contains("GET317 合成意译样本") == true)
+        capture("quiet-reader-cached-translation-auto-disabled-cold-restored")
+    }
+
 }

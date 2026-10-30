@@ -156,6 +156,12 @@ export function mountReaderTranslation({bookId,session,document:doc=globalThis.d
 await uiReady;
 if(selectedBookId&&globalThis.document){
  const translation=mountReaderTranslation({bookId:selectedBookId,session:readerSession});
- const pagehide=event=>{if(event.persisted)return;globalThis.removeEventListener?.('pagehide',pagehide);translation?.dispose();};
+ let automatic,automaticDisposed=false;
+ const startAutomatic=()=>{
+  if(automaticDisposed)return;
+  void import('./reader-auto-translation.mjs').then(module=>{if(!automaticDisposed)automatic=module.mountReaderAutomaticTranslation({bookId:selectedBookId,session:readerSession,request:readerFetch,getLocale:getUiLocale,onLocaleChange:onUiLocaleChange});}).catch(()=>{});
+ };
+ if(window.marginaliaReader?.getBook?.())startAutomatic();else document.addEventListener('reader:ready',startAutomatic,{once:true});
+ const pagehide=event=>{if(event.persisted)return;globalThis.removeEventListener?.('pagehide',pagehide);automaticDisposed=true;document.removeEventListener('reader:ready',startAutomatic);translation?.dispose();automatic?.dispose();};
  globalThis.addEventListener?.('pagehide',pagehide);
 }

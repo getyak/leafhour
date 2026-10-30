@@ -1407,5 +1407,19 @@
   "tests/reader-tool-focus.test.mjs",
   "tests/helpers/packaged-tool-focus.mjs",
   "tests/reader-tool-focus-boundary.test.mjs",
-  "tests/platform-cjk-subrun.test.mjs"
+  "tests/platform-cjk-subrun.test.mjs",
+  "app/reader-auto-translation.mjs",
+  "apps/ios/Leafhour/ReaderAdaptiveTools.swift",
+  "apps/ios/Leafhour/ReaderContentView.swift",
+  "apps/ios/LeafhourAppTests/ReaderAdaptiveToolsTests.swift",
+  "apps/ios/LeafhourAppTests/ReaderDisplayTranslationTests.swift",
+  "apps/ios/LeafhourCore/Sources/LeafhourCore/ReaderAutomaticTranslation.swift",
+  "apps/ios/LeafhourCore/Sources/LeafhourCore/ReaderTranslationContent.swift",
+  "apps/ios/LeafhourCore/Tests/LeafhourCoreTests/ReaderAutomaticTranslationTests.swift",
+  "apps/ios/LeafhourCore/Tests/LeafhourCoreTests/ReaderTranslationContentTests.swift",
+  "server/reading-translation.mjs",
+  "tests/reader-auto-translation-dom.test.mjs",
+  "tests/reader-auto-translation.test.mjs",
+  "tests/reading-translation-http.test.mjs",
+  "tests/reading-translation.test.mjs"
 ]

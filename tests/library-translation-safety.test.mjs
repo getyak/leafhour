@@ -8,6 +8,30 @@ import {digest} from '../server/document-import.mjs';
 
 const stamp='2026-10-18T00:00:00.000Z';
 const generated={literal:{text:'生成直译',status:'draft',variant:'literal',origin:'ai',model:'synthetic',sourceVersion:'',createdAt:stamp},interpretive:{text:'生成意译',status:'draft',variant:'interpretive',origin:'ai',model:'synthetic',sourceVersion:'',createdAt:stamp}};
+
+test('automatic partial completion preserves the exact existing draft or reviewed variant',async t=>{
+ for(const variant of ['literal','interpretive'])for(const status of ['draft','reviewed']){
+  const dir=await mkdtemp(path.join(tmpdir(),'translation-partial-'));t.after(()=>rm(dir,{recursive:true,force:true}));const user={id:'reader'};
+  const library=await createLibraryService({dataDir:dir,catalogDir:null,translator:async()=>({literal:'Fresh literal',interpretive:'Fresh interpretive'})});
+  const book=await library.importDocument(user,{filename:'source.txt',bytes:Buffer.from('An original paragraph.')}),p=book.sections[0].paragraphs[0],saved={...generated[variant],text:'Exact saved '+variant,status,sourceVersion:book.contentVersion};
+  const overlayFile=path.join(dir,'users',digest(user.id),'translations',digest(book.bookId)+'.json');await mkdir(path.dirname(overlayFile),{recursive:true});await writeFile(overlayFile,JSON.stringify({[p.id]:{contentVersion:book.contentVersion,translations:{[variant]:saved}}}));
+  const result=await library.translate(user,book.bookId,p.id,{expectedContentVersion:book.contentVersion,preserveExistingTranslations:true,allowedChapterIds:[book.chapters[0].id]});
+  assert.deepEqual(result.translations[variant],saved);assert.equal(result.translations[variant==='literal'?'interpretive':'literal'].text,variant==='literal'?'Fresh interpretive':'Fresh literal');
+ }
+});
+
+test('automatic chapter context excludes third-chapter text while manual translation keeps its original neighbors',async t=>{
+ const dir=await mkdtemp(path.join(tmpdir(),'translation-chapter-bound-'));t.after(()=>rm(dir,{recursive:true,force:true}));const user={id:'reader'},contexts=[];
+ const library=await createLibraryService({dataDir:dir,catalogDir:null,translator:async context=>{contexts.push(context);return {literal:'Literal draft',interpretive:'Independent draft'};}});
+ const book=await library.importDocument(user,{filename:'source.txt',bytes:Buffer.from('First chapter paragraph.\n\nNext chapter first paragraph.\n\nNext chapter last paragraph.\n\nThird chapter private future paragraph.')}),paragraphs=book.sections[0].paragraphs;
+ book.chapters=['current','next','third'].map((id,i)=>({...book.chapters[0],id,number:i+1,startPassageId:paragraphs[i===0?0:i===1?1:3].id}));
+ book.sections=[{...book.sections[0],chapterId:'current',paragraphs:[paragraphs[0]]},{...book.sections[0],number:2,chapterId:'next',paragraphs:paragraphs.slice(1,3)},{...book.sections[0],number:3,chapterId:'third',paragraphs:[paragraphs[3]]}];
+ await writeFile(path.join(dir,'users',digest(user.id),'books',digest(book.bookId)+'.json'),JSON.stringify(book));
+ await library.translate(user,book.bookId,paragraphs[2].id,{expectedContentVersion:book.contentVersion,allowedChapterIds:['current','next']});
+ assert.deepEqual(contexts[0].passages.map(p=>p.id),[paragraphs[1].id,paragraphs[2].id]);assert.doesNotMatch(JSON.stringify(contexts[0]),/private future/);
+ await library.translate(user,book.bookId,paragraphs[1].id);assert.deepEqual(contexts[1].passages.map(p=>p.id),paragraphs.slice(0,3).map(p=>p.id));
+ await assert.rejects(library.translate(user,book.bookId,paragraphs[3].id,{allowedChapterIds:['current','next']}),{status:400});
+});
 test('an expected content version is rejected before any provider request while unversioned callers stay compatible',async t=>{
   const dir=await mkdtemp(path.join(tmpdir(),'translation-version-'));t.after(()=>rm(dir,{recursive:true,force:true}));
   let calls=0,context=null;

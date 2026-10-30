@@ -494,13 +494,15 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
     return mutate(recordFile(user,id),emptyRecords(book),data=>{const revision=data.position?.revision||0;if(input.baseRevision!==undefined&&input.baseRevision!==revision)throw fail('阅读位置已在另一处更新，请选择从哪里继续',409);data.position={...position,revision:revision+1,updatedAt:new Date().toISOString()};guardRecordSize(data);return data.position;});
   }
   async function translate(user,id,passageId,options={}){
-    requireUser(user);const {expectedContentVersion,generationReceipt,authorizeGeneration}=translationRequestOptions(options);
+    requireUser(user);const {expectedContentVersion,generationReceipt,authorizeGeneration,allowedChapterIds,preserveExistingTranslations}=translationRequestOptions(options);
     const book=await getBook(user,id),passages=allPassages(book),i=passages.findIndex(p=>p.id===passageId);
     if(i<0)throw fail('找不到当前段落',404);
+    if(allowedChapterIds&&(!allowedChapterIds.includes(passages[i].chapterId)||allowedChapterIds.some(id=>!book.chapters.some(chapter=>chapter.id===id))))throw fail('段落不属于本次翻译章节范围',400);
     // A stale expected version is refused before any charged provider request.
     assertExpectedContentVersion(book,expectedContentVersion);
-    assertBatchPassage(passages[i],expectedContentVersion);
-    if(passages[i].translations.literal&&passages[i].translations.interpretive){await notifySourceMutation(user,id,{type:'translation-ack',bookId:id,passageId});return passages[i];}
+    assertBatchPassage(passages[i],expectedContentVersion,{preserveExistingTranslations});
+    const complete=p=>['literal','interpretive'].every(k=>typeof p?.translations?.[k]?.text==='string'&&p.translations[k].text.trim());
+    if(complete(passages[i])){await notifySourceMutation(user,id,{type:'translation-ack',bookId:id,passageId});return passages[i];}
     if(inferSourceLanguage(passages[i].original)==='zh')throw fail('这段原文为中文，无需生成中文译文；原文与个人记录仍可使用');
     if(!translator)throw fail('翻译服务尚未配置，原文仍可继续阅读',503);
     const localKey=!dataStore?path.resolve(dataDir)+'|'+user.id+'|'+id:null,key=user.id+'|'+id+'|'+passageId;if(localKey&&localTranslationsRunning.has(localKey))throw fail('这本书正在保存另一段译文，请稍后再试；当前段落尚未提交翻译。',409);if(translationsRunning.has(key))throw fail('这一段正在翻译，请稍后查看',409);if(translationsRunning.size>=2)throw fail('翻译服务正在处理其他段落，请稍后再试',429);
@@ -512,9 +514,10 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
     try{
       bookCapacity(book,TRANSLATION_RESERVE_BYTES);
       if(dataStore?.reserveTranslation)ticket=await dataStore.reserveTranslation(user,id,passageId);
-      {const latest=await getBook(user,id),saved=allPassages(latest).find(p=>p.id===passageId);assertGenerationSource({book,fresh:latest,passage:passages[i],freshPassage:saved});assertExpectedContentVersion(latest,expectedContentVersion);assertBatchPassage(saved,expectedContentVersion);if(saved?.translations.literal&&saved.translations.interpretive){await notifySourceMutation(user,id,{type:'translation-ack',bookId:id,passageId});return saved;}bookCapacity(latest,TRANSLATION_RESERVE_BYTES);}
+      {const latest=await getBook(user,id),saved=allPassages(latest).find(p=>p.id===passageId);assertGenerationSource({book,fresh:latest,passage:passages[i],freshPassage:saved});assertExpectedContentVersion(latest,expectedContentVersion);assertBatchPassage(saved,expectedContentVersion,{preserveExistingTranslations});if(complete(saved)){await notifySourceMutation(user,id,{type:'translation-ack',bookId:id,passageId});return saved;}bookCapacity(latest,TRANSLATION_RESERVE_BYTES);}
       await checkPermission();
-      const result=await translator({passageId,sourceLanguage:inferSourceLanguage(passages[i].original),targetLanguage:'zh',passages:passages.slice(Math.max(0,i-1),i+2).map(p=>({id:p.id,original:p.original})),sourceVersion:book.contentVersion});
+      const context=passages.slice(Math.max(0,i-1),i+2).filter(p=>!allowedChapterIds||allowedChapterIds.includes(p.chapterId));
+      const result=await translator({passageId,sourceLanguage:inferSourceLanguage(passages[i].original),targetLanguage:'zh',passages:context.map(p=>({id:p.id,original:p.original})),sourceVersion:book.contentVersion});
       if(!result||!['literal','interpretive'].every(k=>typeof result[k]==='string'&&result[k].trim()&&result[k].length<=12000))throw fail('翻译结果不完整，请重试；原文已保留',502);
       await checkPermission();
       const translations=Object.fromEntries(['literal','interpretive'].map(variant=>[variant,{text:result[variant],status:'draft',variant,origin:'ai',model:result.model||'configured-provider',sourceVersion:book.contentVersion,createdAt:new Date().toISOString(),...(generationReceipt?{generationReceipt}:{})}]));
@@ -526,7 +529,7 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
       await mutate(path.join(userDir(user),'translations',digest(id)+'.json'),{},async data=>{
         await checkPermission();
         const existing={...freshPassage.translations,...(data[passageId]?.contentVersion===fresh.contentVersion?data[passageId].translations:{})};
-        saved={contentVersion:fresh.contentVersion,translations:mergeGeneratedTranslations({existing,before,generated:translations})};
+        saved={contentVersion:fresh.contentVersion,translations:mergeGeneratedTranslations({existing,before,generated:translations,preserveExistingTranslations})};
         {const projected={...fresh,sections:fresh.sections.map(s=>({...s,paragraphs:s.paragraphs.map(p=>p.id===passageId?{...p,translations:saved.translations}:data[p.id]?.contentVersion===fresh.contentVersion?{...p,translations:data[p.id].translations}:p)}))};bookCapacity(projected);}
         data[passageId]=saved;
       });

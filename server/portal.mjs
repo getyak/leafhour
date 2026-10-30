@@ -59,6 +59,7 @@ import {createRemoteMcp} from './mcp-http.mjs';
 import {createBillingRuntime} from './billing-runtime.mjs';
 import {createBillingRoutes} from './billing-routes.mjs';
 import {createCreditGate} from './credit-gate.mjs';
+import {createReadingTranslation} from './reading-translation.mjs';
 import {withProviderMeter} from './provider-metering.mjs';
 import {commercePage} from '../app/commerce-pages.mjs';
 
@@ -115,6 +116,7 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
   const proactiveGenerator=companionGenerator===undefined?createReaderChatGenerator({makeGenerator:createCompanionGenerator}):companionGenerator;
   const chat=await createReaderChatService({companionGenerator:proactiveGenerator,library,people,dataDir:path.join(dataDir,'library'),dataStore,generator:readingGenerator,annotationGenerator:annotationGenerator===undefined?createReaderAnnotationGenerator({env}):annotationGenerator,onError:(error,context)=>readingGenerator?.reportFailure?.(error,context),onCompanionOutcome:domainOutcome});
   const creditGate=createCreditGate({billing,library,chat,record:facts=>billing.recordProviderCall(facts)});
+  const readingTranslation=createReadingTranslation({library,billing,creditGate});
   const billingRoutes=createBillingRoutes({billing,publicOrigin,gate:creditGate,verifyEmail:({req})=>typeof auth.emailVerifiedFor==='function'?auth.emailVerifiedFor(cookieToken(req)):false});
   // One quiet daily companion plan per account; no schedule, model job or
   // generation happens in this process. The external host owns the heartbeat.
@@ -178,6 +180,7 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
     files['/reading-tool-focus.mjs']='reading-tool-focus.mjs';
     for(const file of ['library-notebook.mjs', 'library-notebook-state.mjs', 'library-notebook.css', 'reading-journal.mjs', 'reading-journal.css', 'paper-companion.mjs', 'reading-hub.mjs', 'reading-hub.css', 'reader-style-ready.mjs', 'reader-loading.mjs'])files['/'+file]=file;
     files['/reader-tools.mjs']='reader-tools.mjs';
+    files['/reader-auto-translation.mjs']='reader-auto-translation.mjs';
     files['/reading-flow.mjs']='reading-flow.mjs';files['/reading-load.mjs']='reading-load.mjs';files['/personal-records.mjs']='personal-records.mjs';files['/reading-chat-scope.mjs']='reading-chat-scope.mjs';files['/personal-record-editor.mjs']='personal-record-editor.mjs';
     for(const file of ['highlights.mjs','reader-highlights.mjs','reader-annotations.mjs','reader-annotation-margins.mjs','reader-annotation-pending.mjs','reader-annotation-records.mjs','reader-annotations.css','book-introduction.mjs','note-drafts.mjs','reading-preferences.mjs'])files['/'+file]=file;
     files['/reading-flow.css']='reading-flow.css';
@@ -530,6 +533,15 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
       if(action==='reading-goal'&&req.method==='POST'){send(200,await library.setReadingGoal(user,id,body));return true;}
       // Legacy callers send only passageId and stay compatible; batch callers
       // may pin the optional expected content version.
+      if(action==='reading-translation'&&req.method==='POST'){
+        res.setHeader('Cache-Control','private, no-store');
+        // A disconnected reader stops scheduling further passages. Its already
+        // accepted single step may still save and settle under the same owner;
+        // retry reconciles that receipt rather than paying for another run.
+        const receipt=await readingTranslation.step(user,id,body,{authorize:async()=>(await auth.userFor(token))?.id===user?.id});
+        if(!res.destroyed)send(200,receipt);
+        return true;
+      }
       if(action==='translate'&&req.method==='POST'){send(200,await creditGate.run({user,action:'translation',bookId:id,input:body,execute:(input,generationReceipt)=>library.translate(user,id,input.passageId,{...(input.contentVersion!==undefined?{expectedContentVersion:input.contentVersion}:{}),...(generationReceipt?{generationReceipt,authorizeGeneration:async()=>{const op=await billing.operation({ownerId:user.id,operationId:generationReceipt.operationId});return op?.status==='running'&&Date.now()-Date.parse(op.startedAt||op.createdAt)<15*60*1000;}}:{})})}));return true;}
       if(action==='experiences'&&req.method==='GET'){const book=await library.getBook(user,id);send(200,{bookId:id,contentVersion:book.contentVersion,xrays:[],cards:[],invitations:[],states:{},echoes:[],echoAvailable:false});return true;}
       if(action==='experience-events'&&req.method==='POST'){await library.getBook(user,id);send(200,{accepted:0,reason:'本书尚未开启探索体验统计'});return true;}
