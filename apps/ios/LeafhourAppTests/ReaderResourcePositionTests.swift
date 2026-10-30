@@ -71,10 +71,10 @@ final class ReaderResourcePositionTests: XCTestCase {
         return Fixture(library: library, book: book, original: original, directory: directory, imageID: image.id,
                        imageURL: imageURL, originalBytes: try Data(contentsOf: original), imageBytes: imageBytes)
     }
-    private func open(_ fixture: Fixture, state: ReaderState? = nil) async throws -> Host {
+    private func open(_ fixture: Fixture, state: ReaderState? = nil, navigationMode: ReaderNavigationMode = .paged) async throws -> Host {
         var initial: ReaderState
         if let state { initial = state } else { initial = try await fixture.library.state(fixture.book.id) }
-        initial.preferences.navigationMode = .paged
+        initial.preferences.navigationMode = navigationMode
         let session = ReaderSession(book: try await fixture.library.book(fixture.book.id), state: initial,
                                     original: fixture.original, directory: fixture.directory, library: fixture.library)
         let parent = TextReadingView(session: session, pageInsets: insets, onNote: { _ in }, onSource: { _ in }, onWake: { _ in }, onReadingScroll: {})
@@ -206,6 +206,76 @@ final class ReaderResourcePositionTests: XCTestCase {
         XCTAssertEqual(disk.chapters, fixture.book.chapters); XCTAssertEqual(disk.sourceVersion, fixture.book.sourceVersion)
         XCTAssertEqual(try Data(contentsOf: fixture.original), fixture.originalBytes)
         XCTAssertEqual(try Data(contentsOf: fixture.imageURL), fixture.imageBytes)
+    }
+
+    private func descriptionRect(_ host: Host, fixture: Fixture) throws -> CGRect {
+        let span = try XCTUnwrap(host.coordinator.spans.first { $0.passage.id == fixture.imageID })
+        XCTAssertTrue(span.passage.text.isEmpty, "Image metadata must not become author prose")
+        let alternative = try XCTUnwrap(span.passage.alternative)
+        let range = (host.view.attributedText.string as NSString).range(of: "插图说明 · " + alternative, options: [], range: span.range)
+        let description = try XCTUnwrap(range.location == NSNotFound ? nil : range, "Exercise the real imported image's displayed description")
+        host.view.layoutManager.ensureLayout(for: host.view.textContainer)
+        let glyphs = host.view.layoutManager.glyphRange(forCharacterRange: description, actualCharacterRange: nil)
+        let rect = host.view.layoutManager.boundingRect(forGlyphRange: glyphs, in: host.view.textContainer)
+        XCTAssertGreaterThan(rect.width, 0); XCTAssertGreaterThan(rect.height, 0)
+        return rect
+    }
+    private func assertDescriptionVisible(_ host: Host, fixture: Fixture, name: String) async throws {
+        let description = try descriptionRect(host, fixture: fixture)
+            .offsetBy(dx: host.view.textContainerInset.left, dy: host.view.textContainerInset.top)
+        let body = host.view.bounds.inset(by: insets)
+        let fits = body.insetBy(dx: -0.5, dy: -0.5).contains(description)
+        XCTAssertTrue(fits, "The actual description glyphs must fit in the visible reading body: \(description), body \(body)")
+        let image = try await screenshot(host, name: name)
+        // An offscreen description already fails visibility above. Keep the real
+        // screenshot, without turning that product failure into an invalid crop.
+        guard fits else { return }
+        let pixelRect = description.offsetBy(dx: -host.view.bounds.minX, dy: -host.view.bounds.minY).integral
+        let captionImage = try XCTUnwrap(try XCTUnwrap(image.cgImage).cropping(to: pixelRect))
+        let width = captionImage.width, height = captionImage.height
+        let space = try XCTUnwrap(CGColorSpace(name: CGColorSpace.sRGB))
+        var rgba = [UInt8](repeating: 0, count: width * height * 4)
+        try rgba.withUnsafeMutableBytes { buffer in
+            let context = try XCTUnwrap(CGContext(data: buffer.baseAddress, width: width, height: height, bitsPerComponent: 8, bytesPerRow: width * 4,
+                                                 space: space, bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue | CGBitmapInfo.byteOrder32Big.rawValue))
+            context.draw(captionImage, in: CGRect(x: 0, y: 0, width: CGFloat(width), height: CGFloat(height)))
+        }
+        let inkPixels = stride(from: 0, to: rgba.count, by: 4).reduce(0) { count, index in
+            count + (rgba[index] < 220 && rgba[index + 1] < 220 && rgba[index + 2] < 220 ? 1 : 0)
+        }
+        XCTAssertGreaterThan(inkPixels, 20, "The displayed description must actually draw text, not merely report an offscreen glyph rectangle")
+    }
+
+    func testImageDescriptionCheckpointRestoresTheImageEndpointAfterColdOpen() async throws {
+        let fixture = try await fixture(), host = try await open(fixture, navigationMode: .scroll)
+        let description = try descriptionRect(host, fixture: fixture)
+        let image = try imageRect(host, fixture: fixture)
+        XCTAssertGreaterThanOrEqual(description.minY, image.maxY, "This checkpoint must be outside the image interior, on its own description")
+        host.coordinator.scrollViewWillBeginDragging(host.view)
+        host.view.setContentOffset(CGPoint(x: 0, y: description.minY + host.view.textContainerInset.top - insets.top), animated: false)
+        await drain()
+        XCTAssertEqual(host.view.contentOffset.y + insets.top - host.view.textContainerInset.top, description.minY, accuracy: 0.5, "The reading edge must actually reach the description beyond the image")
+        try await assertDescriptionVisible(host, fixture: fixture, name: "Actual source image description before closing")
+        XCTAssertTrue(host.coordinator.checkpointVisible())
+        host.coordinator.capture()
+        let captured = try XCTUnwrap(host.session.currentAnchor)
+        let expected = ReadingAnchor(chapterID: fixture.book.chapters[0].id, passageID: fixture.imageID, resourceY: 1)
+        XCTAssertEqual(captured.passageID, fixture.imageID)
+        XCTAssertEqual(captured.characterOffset, 0, "The alternative is metadata, not source author text")
+        XCTAssertNil(captured.pageY)
+        XCTAssertEqual(captured.key, ReadingAnchor(chapterID: expected.chapterID, passageID: expected.passageID).key, "An image endpoint cannot rename note/draft identities")
+        XCTAssertEqual(captured, expected, "An image description checkpoint must retain its conservative source-image endpoint rather than dropping resourceY")
+        let receipt = await host.session.flush(); XCTAssertTrue(receipt.succeeded); XCTAssertNil(host.session.saveError)
+        let saved = try await fixture.library.state(fixture.book.id)
+        XCTAssertEqual(saved.anchor, expected, "The endpoint must reach disk, not only an in-memory display anchor")
+        let cold = try await open(fixture, state: saved, navigationMode: .scroll)
+        XCTAssertFalse(cold.session === host.session)
+        XCTAssertFalse(cold.window === host.window)
+        XCTAssertEqual(cold.session.currentAnchor, expected)
+        XCTAssertEqual(try visibleRatio(cold, fixture: fixture), 1, accuracy: 0.002, "Cold opening must reach the image end, not jump to the top of a many-screen image")
+        try await assertDescriptionVisible(cold, fixture: fixture, name: "Actual source image endpoint and description after cold opening")
+        XCTAssertEqual(cold.session.currentAnchor?.characterOffset, 0)
+        try await assertSourceUnchanged(fixture)
     }
 
     func testTallImportedImageKeepsItsInternalPositionAfterSaveAndColdOpen() async throws {

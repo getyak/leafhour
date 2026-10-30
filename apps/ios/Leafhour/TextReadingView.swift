@@ -272,7 +272,10 @@ struct TextReadingView: UIViewRepresentable {
             // The image's rendered height changes with column width. Preserve a
             // source-relative point, not a page number or old display offset.
             let readingY = view.contentOffset.y + readingTop - view.textContainerInset.top
-            if let image = renderedImageRect(in: span, view: view), readingY >= image.minY, readingY < image.maxY {
+            // An image span also contains its displayed alternative and trailing
+            // spacing. Keep those at the source-image endpoint, never an invented
+            // author-text scalar or a fallback to the top of a tall illustration.
+            if let image = renderedImageRect(in: span, view: view), readingY >= image.minY {
                 anchor.characterOffset = 0
                 anchor.resourceY = min(1, max(0, Double((readingY - image.minY) / image.height)))
             }
