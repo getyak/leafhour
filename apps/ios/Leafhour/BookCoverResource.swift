@@ -19,20 +19,13 @@ struct BookCoverResource {
             return Self.thumbnail(bytes)
         }
         guard !Task.isCancelled, let book, book.cloud == nil, let library else { return nil }
-        let directory = try? await library.bookDirectory(book.id)
+        let localCover = try? await library.localCoverURL(book.id)
         let original = try? await library.originalURL(book.id)
         return await Task.detached(priority: .utility) {
             if book.kind == .pdf, let original, let page = PDFDocument(url: original)?.page(at: 0) {
                 return page.thumbnail(of: CGSize(width: 420, height: 630), for: .mediaBox)
             }
-            if let resource = book.coverResourcePath, let directory, !resource.hasPrefix("/"), !resource.split(separator: "/").contains("..") {
-                let assets = directory.appendingPathComponent("assets", isDirectory: true).standardizedFileURL
-                let source = assets.appendingPathComponent(resource).standardizedFileURL
-                guard source.path.hasPrefix(assets.path + "/"),
-                      let size = try? source.resourceValues(forKeys: [.fileSizeKey]).fileSize, size <= 4 * 1024 * 1024,
-                      let bytes = try? Data(contentsOf: source) else { return nil }
-                return Self.thumbnail(bytes)
-            }
+            if let localCover, let bytes = try? Data(contentsOf: localCover) { return Self.thumbnail(bytes) }
             return nil
         }.value
     }

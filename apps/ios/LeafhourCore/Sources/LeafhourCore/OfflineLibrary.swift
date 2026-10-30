@@ -116,6 +116,15 @@ public actor OfflineLibrary {
         try Disk.write(job, to: importsFolder(job.id).appendingPathComponent("job.json"))
     }
     public func bookDirectory(_ id: String) throws -> URL { try Disk.validID(id); return try Disk.url(root, "books/" + id) }
+    public func localCoverURL(_ id: String) throws -> URL? {
+        let directory = try bookDirectory(id)
+        let book = try Disk.read(LocalBook.self, from: directory.appendingPathComponent("book.json"))
+        guard book.cloud == nil, book.kind == .epub,
+              let resource = book.coverResourcePath ?? BookParser.legacyCoverResource(for: book, directory: directory) else { return nil }
+        let url = try Disk.url(directory.appendingPathComponent("assets"), resource)
+        guard try Disk.size(url) <= 4 * 1024 * 1024 else { return nil }
+        return url
+    }
     public func originalURL(_ id: String) throws -> URL {
         let book = try book(id)
         return try Disk.url(bookDirectory(id), "source." + book.kind.rawValue)

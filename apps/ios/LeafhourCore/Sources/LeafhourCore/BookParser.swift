@@ -24,10 +24,7 @@ enum BookParser {
             title = index.elements.first(where: { $0.name == "title" && !$0.text.isEmpty })?.text ?? title
             author = index.elements.first(where: { $0.name == "creator" })?.text ?? ""
             let items = index.elements.filter { $0.name == "item" }
-            let coverID = index.elements.first { $0.name == "meta" && $0.attributes["name"] == "cover" }?.attributes["content"]
-            if let item = items.first(where: { ($0.attributes["properties"] ?? "").split(separator: " ").contains("cover-image") || (coverID != nil && $0.attributes["id"] == coverID) }), let href = item.attributes["href"] {
-                coverResourcePath = try Disk.resolve(href, relativeTo: opf)
-            }
+            coverResourcePath = try declaredCover(index: index, opf: opf)
             var byID: [String: XMLElementValue] = [:]
             for item in items {
                 guard let key = item.attributes["id"], byID[key] == nil else { throw LibraryError.invalid("EPUB 内容目录有重复或缺失标识。") }
@@ -78,6 +75,24 @@ enum BookParser {
         return LocalBook(id: id, title: title, author: author, kind: kind, sourceVersion: "sha256-" + id, originalFilename: filename, importedAt: Date(), chapters: chapters, readingStartChapterID: readingStartChapterID, readingStartAnchor: readingStartAnchor, coverResourcePath: coverResourcePath)
     }
 
+    private static func declaredCover(index: XMLIndex, opf: String) throws -> String? {
+        let coverID = index.elements.first { $0.name == "meta" && $0.attributes["name"] == "cover" }?.attributes["content"]
+        guard let item = index.elements.first(where: { $0.name == "item" && (($0.attributes["properties"] ?? "").split(separator: " ").contains("cover-image") || (coverID != nil && $0.attributes["id"] == coverID)) }),
+              let href = item.attributes["href"] else { return nil }
+        return try Disk.resolve(href, relativeTo: opf)
+    }
+    /// Read declared artwork in older packages without rewriting their index.
+    static func legacyCoverResource(for book: LocalBook, directory: URL) -> String? {
+        guard book.kind == .epub else { return nil }
+        do {
+            let assets = try Disk.url(directory, "assets")
+            let container = try XMLIndex(data: readingMetadata(try Disk.url(assets, "META-INF/container.xml")))
+            guard let rootfile = container.elements.first(where: { $0.name == "rootfile" })?.attributes["full-path"] else { return nil }
+            let opf = try Disk.safePath(rootfile)
+            let index = try XMLIndex(data: readingMetadata(try Disk.url(assets, opf)))
+            return try declaredCover(index: index, opf: opf)
+        } catch { return nil }
+    }
     /// Older cached indexes have no hint. Read their already-verified local metadata
     /// without replacing book.json, its integrity manifest, or any personal state.
     static func legacyReadingStart(for book: LocalBook, directory: URL) -> ReadingAnchor? {
