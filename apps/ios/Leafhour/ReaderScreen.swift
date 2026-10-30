@@ -158,7 +158,7 @@ struct ReaderScreen: View {
                                 .allowsHitTesting(false).accessibilityHidden(true)
                         }
                         .background { GeometryReader { geometry in Color.clear.preference(key: ReaderChromeHeightKey.self, value: [ReaderChromeMeasurement(layout: layout, region: .bottom, height: geometry.size.height)]) } }
-                        .modifier(ReaderChromeVisibility(isVisible: showingBottom)).allowsHitTesting(showingBottom).disabled(!showingBottom).accessibilityHidden(!showingBottom)
+                        .modifier(ReaderChromeVisibility(isVisible: showingBottom)).allowsHitTesting(showingBottom).disabled(!showingBottom)
                         if !showingBottom { quietReadingControl }
                     }
                 }
