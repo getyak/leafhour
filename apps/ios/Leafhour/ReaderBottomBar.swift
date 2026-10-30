@@ -15,8 +15,8 @@ struct ReaderBottomBar: View {
     let onTypography: () -> Void
     var onInteraction: () -> Void = {}
     var onFocusChange: (Bool) -> Void = { _ in }
+    var controlsVisible = true
 
-    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @Environment(\.colorScheme) private var colorScheme
     @ScaledMetric(relativeTo: .body) private var iconSize = 20.0
     private enum Control: Hashable {
@@ -38,37 +38,26 @@ struct ReaderBottomBar: View {
     }
 
     var body: some View {
-        Group {
-            if dynamicTypeSize.isAccessibilitySize {
-                VStack(spacing: 10) {
-                    readingModes(expanded: true)
-                    HStack(spacing: 8) {
-                        contentsButton(expanded: false, fillsWidth: true)
-                        appearanceButton(expanded: false, fillsWidth: true)
-                        typographyButton(expanded: false, fillsWidth: true)
-                    }
-                }
-            } else {
-                ViewThatFits(in: .horizontal) {
-                    HStack(spacing: 8) {
-                        contentsButton(expanded: false)
-                        readingModes(expanded: false)
-                        appearanceButton(expanded: false)
-                        typographyButton(expanded: false)
-                    }.fixedSize(horizontal: true, vertical: false)
-                    VStack(spacing: 10) {
-                        readingModes(expanded: true)
-                        HStack(spacing: 8) {
-                            contentsButton(expanded: false, fillsWidth: true)
-                            appearanceButton(expanded: false, fillsWidth: true)
-                            typographyButton(expanded: false, fillsWidth: true)
-                        }
-                    }
+        ViewThatFits(in: .horizontal) {
+            HStack(spacing: 8) {
+                contentsButton(expanded: false)
+                readingModes(expanded: false)
+                appearanceButton(expanded: false)
+                typographyButton(expanded: false)
+            }.fixedSize(horizontal: true, vertical: false)
+            VStack(spacing: 10) {
+                readingModes(expanded: true)
+                HStack(spacing: 8) {
+                    contentsButton(expanded: false, fillsWidth: true)
+                    appearanceButton(expanded: false, fillsWidth: true)
+                    typographyButton(expanded: false, fillsWidth: true)
                 }
             }
         }
         .frame(maxWidth: .infinity)
+        .accessibilityHidden(!controlsVisible)
         .onChange(of: focusedControl) { _, control in onFocusChange(control != nil) }
+        .onChange(of: controlsVisible) { _, visible in if !visible { focusedControl = nil } }
         .onDisappear { onFocusChange(false) }
     }
 
@@ -76,11 +65,13 @@ struct ReaderBottomBar: View {
         iconButton("目录", symbol: "list.bullet", control: .contents, expanded: expanded, fillsWidth: fillsWidth, action: onContents)
             .accessibilityValue(chapterAccessibilityValue)
             .accessibilityHint("打开目录与阅读进度")
+            .accessibilityHidden(!controlsVisible)
     }
 
     private func appearanceButton(expanded: Bool, fillsWidth: Bool = false) -> some View {
         iconButton("外观", symbol: "circle.lefthalf.filled", control: .appearance, expanded: expanded, fillsWidth: fillsWidth, action: onAppearance)
             .accessibilityHint("选择阅读纸面与夜读外观")
+            .accessibilityHidden(!controlsVisible)
     }
 
     private func iconButton(_ title: String, symbol: String, control: Control, expanded: Bool, fillsWidth: Bool = false, action: @escaping () -> Void) -> some View {
@@ -122,14 +113,17 @@ struct ReaderBottomBar: View {
         .accessibilityLabel("阅读设置")
         .accessibilityHint("调整字号与行间距")
         .accessibilityIdentifier(Control.typography.identifier)
+        .accessibilityHidden(!controlsVisible)
     }
 
     private func readingModes(expanded: Bool) -> some View {
         HStack(spacing: 2) {
             modeButton("阅读", control: .read, selected: mode == .reading, expanded: expanded, action: onRead)
                 .accessibilityHint("继续看书，暂停当前朗读并保留听书位置")
+                .accessibilityHidden(!controlsVisible)
             modeButton("听书", control: .listen, selected: mode == .listening, expanded: expanded, action: onListen)
                 .accessibilityHint(listeningAccessibilityHint)
+                .accessibilityHidden(!controlsVisible)
         }
         .padding(3)
         .background { pillSurface }

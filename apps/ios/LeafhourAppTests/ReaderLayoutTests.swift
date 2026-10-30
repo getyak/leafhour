@@ -360,6 +360,145 @@ final class ReaderLayoutTests: XCTestCase {
         }
     }
 
+    private func sourceInkPixels(_ image: UIImage, in rect: CGRect) throws -> Int {
+        let cgImage = try XCTUnwrap(image.cgImage), bytes = try XCTUnwrap(cgImage.dataProvider?.data)
+        let data = try XCTUnwrap(CFDataGetBytePtr(bytes))
+        let clipped = rect.integral.intersection(CGRect(x: 0, y: 0, width: CGFloat(cgImage.width), height: CGFloat(cgImage.height)))
+        guard !clipped.isNull, !clipped.isEmpty else { return 0 }
+        var count = 0
+        for y in Int(clipped.minY)..<Int(clipped.maxY) {
+            for x in Int(clipped.minX)..<Int(clipped.maxX) {
+                let offset = y * cgImage.bytesPerRow + x * (cgImage.bitsPerPixel / 8)
+                if min(data[offset], data[offset + 1], data[offset + 2]) < 180 { count += 1 }
+            }
+        }
+        return count
+    }
+
+    private func settleBudgetHost(_ host: UIHostingController<ReaderScreen>) async {
+        host.view.setNeedsLayout(); host.view.layoutIfNeeded()
+        try? await Task.sleep(for: .milliseconds(120))
+        host.view.layoutIfNeeded()
+        await drainMainQueue()
+    }
+
+    private func budgetHost(_ session: ReaderSession, size: CGSize, category: UIContentSizeCategory) async -> (UIWindow, UIHostingController<ReaderScreen>) {
+        let host = UIHostingController(rootView: ReaderScreen(session: session, systemColorScheme: .light))
+        // Override the actual UIKit trait environment, not only SwiftUI's
+        // dynamicTypeSize. UIFontMetrics and real TextKit must see AX5 too.
+        host.traitOverrides.preferredContentSizeCategory = category
+        let window = UIWindow(frame: CGRect(origin: .zero, size: size))
+        window.overrideUserInterfaceStyle = .light
+        window.rootViewController = host; window.makeKeyAndVisible()
+        host.view.frame = window.bounds
+        await settleBudgetHost(host)
+        addTeardownBlock { await MainActor.run { window.isHidden = true; window.rootViewController = nil } }
+        return (window, host)
+    }
+
+    @discardableResult
+    private func assertRealPagedBody(_ host: UIHostingController<ReaderScreen>, window: UIWindow, stage: String,
+                                     awake: Bool = true, file: StaticString = #filePath, line: UInt = #line) throws -> ReflowTextView {
+        let text = try XCTUnwrap(descendant(ReflowTextView.self, in: host.view), stage, file: file, line: line)
+        XCTAssertEqual(text.traitCollection.preferredContentSizeCategory, host.traitCollection.preferredContentSizeCategory, stage, file: file, line: line)
+        text.layoutManager.ensureLayout(for: text.textContainer); text.layoutIfNeeded()
+        let body = try XCTUnwrap(text.visibleReadingRect, "Measure the actual paged ink viewport: " + stage, file: file, line: line)
+        XCTAssertGreaterThan(body.height, 0, "All source ink was clipped away: " + stage, file: file, line: line)
+        var fullSourceLines: [CGRect] = []
+        text.layoutManager.enumerateLineFragments(forGlyphRange: NSRange(location: 0, length: text.layoutManager.numberOfGlyphs)) { _, used, _, glyphs, _ in
+            guard glyphs.length > 0, used.height > 0, used.width > 0 else { return }
+            let actualLine = used.offsetBy(dx: text.textContainerInset.left, dy: text.textContainerInset.top)
+            if body.insetBy(dx: -0.5, dy: -0.5).contains(actualLine) { fullSourceLines.append(actualLine) }
+        }
+        XCTAssertFalse(fullSourceLines.isEmpty, "The actual OS-scaled TextKit source must fit at least one whole line: " + stage, file: file, line: line)
+        guard text.attributedText.length > 0 else { XCTFail("No real source text: " + stage, file: file, line: line); return text }
+        let firstFont = try XCTUnwrap(text.attributedText.attribute(.font, at: 0, effectiveRange: nil) as? UIFont, file: file, line: line)
+        let expectedFont = UIFontMetrics(forTextStyle: .body).scaledFont(for: .systemFont(ofSize: host.rootView.session.state.preferences.fontSize), compatibleWith: text.traitCollection)
+        XCTAssertEqual(firstFont.pointSize, expectedFont.pointSize, accuracy: 0.5, "Keep the real system text size instead of shrinking to pass: " + stage, file: file, line: line)
+        if let sourceLine = fullSourceLines.first {
+            let format = UIGraphicsImageRendererFormat(); format.scale = 1; format.opaque = true; format.preferredRange = .standard
+            let image = UIGraphicsImageRenderer(size: host.view.bounds.size, format: format).image { _ in
+                XCTAssertTrue(host.view.drawHierarchy(in: CGRect(origin: .zero, size: host.view.bounds.size), afterScreenUpdates: true), stage, file: file, line: line)
+            }
+            let actualLine = text.convert(sourceLine, to: host.view)
+            XCTAssertGreaterThan(try sourceInkPixels(image, in: actualLine), 5, "The geometrically complete source line must actually draw readable ink: " + stage, file: file, line: line)
+            let screenshot = XCTAttachment(image: image); screenshot.name = "Real reader viewport · " + stage
+            screenshot.lifetime = .keepAlways; add(screenshot)
+        }
+        // SwiftUI's in-process public AX containers do not vend a complete
+        // automation tree. Real 44pt buttons, all actions and overlay separation
+        // remain Native UI40/UI57 responsibilities; do not turn an empty walk
+        // into either a product failure or a vacuous control-accessibility pass.
+        let attachment = XCTAttachment(string: "Stage: " + stage + "\nOS category: " + text.traitCollection.preferredContentSizeCategory.rawValue
+            + "\nText bounds: " + String(describing: text.bounds) + "\nActual body: " + String(describing: body)
+            + "\nContainer insets: " + String(describing: text.textContainerInset) + "\nActual font pt: " + String(describing: firstFont.pointSize)
+            + "\nWhole source lines: " + String(fullSourceLines.count) + "\nChrome expected: " + (awake ? "awake" : "asleep")
+            + "\nActual host window: " + String(describing: window.bounds)
+            + "\n44pt/control reachability gate: pending real Native UI40/UI57, not claimed by this layout test")
+        attachment.name = "Actual paged source budget · " + stage; attachment.lifetime = .keepAlways
+        add(attachment)
+        return text
+    }
+
+    func testAX5RealPagedReaderKeepsAWholeSourceLineWithAwakeChromeInPortraitAndShortLandscape() async throws {
+        // Cover both the default and the largest legitimate in-app settings.
+        // The view-trait font oracle below follows each actual base size.
+        for settings in [(font: 22.0, spacing: 9.0), (font: 36.0, spacing: 18.0)] {
+            for size in [CGSize(width: 402, height: 780), CGSize(width: 874, height: 340)] {
+                let source = (1...45).map { "Original paragraph \($0). The actual system font and measured reader controls must leave at least one complete source line visible." }.joined(separator: "\n\n")
+                let session = try await session(source: source)
+                session.state.preferences.fontSize = settings.font
+                session.state.preferences.lineSpacing = settings.spacing
+                session.state.preferences.navigationMode = .paged
+                let (window, host) = await budgetHost(session, size: size, category: .accessibilityExtraExtraExtraLarge)
+                XCTAssertEqual(host.view.bounds.size, size, "The probe must exercise the requested real hosting geometry")
+                XCTAssertEqual(host.traitCollection.preferredContentSizeCategory, .accessibilityExtraExtraExtraLarge)
+                _ = try assertRealPagedBody(host, window: window, stage: "AX5 \(size), base \(settings.font), spacing \(settings.spacing)")
+                let receipt = await session.flush(); XCTAssertTrue(receipt.succeeded); XCTAssertTrue(session.isCurrent(receipt))
+                window.isHidden = true; window.rootViewController = nil
+            }
+        }
+    }
+
+    func testRealReaderBudgetUpdatesAcrossResizeAndOSTypeButChromeWakeKeepsItsSource() async throws {
+        let source = (1...60).map { "Original paragraph \($0). Source identity survives real window and system typography changes while reading tools stay separate from the book." }.joined(separator: "\n\n")
+        let session = try await session(source: source)
+        session.state.preferences.navigationMode = .paged
+        let target = ReadingAnchor(chapterID: session.chapter.id, passageID: session.chapter.passages[14].id)
+        session.go(to: 0, anchor: target)
+        let (window, host) = await budgetHost(session, size: CGSize(width: 402, height: 780), category: .accessibilityExtraExtraExtraLarge)
+        let profiles: [(CGSize, UIContentSizeCategory)] = [
+            (CGSize(width: 402, height: 780), .accessibilityExtraExtraExtraLarge),
+            (CGSize(width: 874, height: 340), .accessibilityExtraExtraExtraLarge),
+            (CGSize(width: 874, height: 340), .large),
+            (CGSize(width: 402, height: 780), .accessibilityExtraExtraExtraLarge)
+        ]
+        for (size, category) in profiles {
+            window.frame = CGRect(origin: .zero, size: size); host.view.frame = window.bounds
+            host.traitOverrides.preferredContentSizeCategory = category
+            await settleBudgetHost(host)
+            let text = try assertRealPagedBody(host, window: window, stage: "resized \(size), \(category.rawValue)")
+            XCTAssertEqual(session.currentAnchor?.passageID, target.passageID, "A responsive chrome budget cannot move to another source paragraph")
+            let offset = text.contentOffset, insets = text.textContainerInset, anchor = session.currentAnchor
+            let coordinator = try XCTUnwrap(text.delegate as? TextReadingView.Coordinator)
+            // Exercise the same production callback used by a real page tap;
+            // this regression targets layout, not gesture recognition itself.
+            coordinator.parent.onWake(.tools)
+            await settleBudgetHost(host)
+            _ = try assertRealPagedBody(host, window: window, stage: "asleep \(size)", awake: false)
+            XCTAssertEqual(text.contentOffset.y, offset.y, accuracy: 0.5)
+            XCTAssertEqual(text.textContainerInset, insets)
+            XCTAssertEqual(session.currentAnchor, anchor)
+            coordinator.parent.onWake(.tools)
+            await settleBudgetHost(host)
+            _ = try assertRealPagedBody(host, window: window, stage: "awake again \(size)")
+            XCTAssertEqual(text.contentOffset.y, offset.y, accuracy: 0.5)
+            XCTAssertEqual(text.textContainerInset, insets)
+            XCTAssertEqual(session.currentAnchor, anchor)
+        }
+        let receipt = await session.flush(); XCTAssertTrue(receipt.succeeded); XCTAssertTrue(session.isCurrent(receipt))
+    }
+
     private func actions(in menu: UIMenu) -> [UIAction] {
         menu.children.flatMap { element -> [UIAction] in
             if let action = element as? UIAction { return [action] }
