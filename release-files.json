@@ -508,6 +508,7 @@
   "app/reading-session.js",
   "app/reading-time-policy.mjs",
   "app/reading-toolbar.mjs",
+  "app/reading-tool-focus.mjs",
   "app/robots.txt",
   "app/save-receipts.mjs",
   "app/settings-appearance.mjs",
@@ -1394,5 +1395,17 @@
   "tools/ci-resource-gate.mjs",
   "tools/production-status.mjs",
   "tests/ci-resource-plan.test.mjs",
-  "tests/production-status.test.mjs"
+  "tests/production-status.test.mjs",
+  "tests/book-upload-polling.test.mjs",
+  "tests/palette-book-performance.test.mjs",
+  "tests/reader-api-transfer.test.mjs",
+  "tests/reader-highlight-intent.test.mjs",
+  "tests/reader-note-refresh.test.mjs",
+  "tests/catalog-checkout-bytes.test.mjs",
+  "tests/platform-home-contract.test.mjs",
+  "tests/platform-shelf-contract.test.mjs",
+  "tests/reader-tool-focus.test.mjs",
+  "tests/helpers/packaged-tool-focus.mjs",
+  "tests/reader-tool-focus-boundary.test.mjs",
+  "tests/platform-cjk-subrun.test.mjs"
 ]

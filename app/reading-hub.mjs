@@ -1,4 +1,6 @@
 import {t,onUiLocaleChange} from './ui-locale.mjs';
+import {handoffReadingToolFocus} from './reading-tool-focus.mjs';
+import {overlayOpen} from './popover-controls.mjs';
 
 // Optional presentation loads with the external enhancement, after the reader.
 // A failed stylesheet keeps the original controls in their existing locations.
@@ -21,7 +23,7 @@ export function loadReadingHubStyles(document){
 export function mountReadingHub({document,panel,toolbar,onHandoff=()=>toolbar?.conceal({restoreFocus:false})}={}){
  if(!document?.createElement||!panel?.append)return {updateLabels(){},unmount(){}};
  const $=id=>document.getElementById(id),make=(tag,cls)=>{const node=document.createElement(tag);node.className=cls;return node;},moved=[],labels=[],removers=[];
- let disposed=false;
+ let disposed=false,cancelToolFocus=()=>{};
  const focusedAtMount=document.activeElement;
  const primary=make('div','reading-hub-primary');primary.id='reading-hub-primary';
  const more=make('details','reading-hub-more');more.id='reading-hub-more';
@@ -38,7 +40,7 @@ export function mountReadingHub({document,panel,toolbar,onHandoff=()=>toolbar?.c
  const move=(node,parent)=>{if(!node?.parentElement)return;const previous=node.parentElement,next=node.nextSibling;moved.push(()=>{if(next?.parentElement===previous)previous.insertBefore(node,next);else previous.append(node);});parent.append(node);};
  const addLabel=(node,key)=>{const label=make('span','reading-hub-label');label.dataset.readingHubLabel='';labels.push([label,key]);node.append(label);removers.push(()=>label.remove());};
  const listen=(node,event,fn)=>{node?.addEventListener(event,fn);removers.push(()=>node?.removeEventListener(event,fn));};
- listen($('reading-tools-trigger'),'click',event=>{if(event.detail!==1)queueMicrotask(()=>{if(!disposed&&$('reading-session')?.dataset.expanded==='true')primary.querySelector('button:not([disabled]):not([hidden])')?.focus({preventScroll:true});});});
+ listen($('reading-tools-trigger'),'click',event=>{if(event.detail!==1&&$('reading-session')?.dataset.expanded==='true')cancelToolFocus=handoffReadingToolFocus({document,target:()=>primary.querySelector('button:not([disabled]):not([hidden])'),blocked:()=>overlayOpen(document),current:()=>!disposed&&$('reading-session')?.dataset.expanded==='true'&&!panel.inert});});
  const contents=$('open-toc'),settings=$('open-settings'),notes=$('show-all-records');
  move(contents,primary);move(settings,primary);move(notes,primary);move($('listen-chapter')?.parentElement,primary);
  if(settings)addLabel(settings,'reader.hub.appearance');
@@ -62,5 +64,5 @@ export function mountReadingHub({document,panel,toolbar,onHandoff=()=>toolbar?.c
  const adoptAnnotations=()=>{const controls=panel.querySelector('.reader-annotation-controls');if(controls&&controls.parentElement!==more){const focused=document.activeElement;move(controls,more);restoreFocus(focused,{reveal:true});}};
  const Observer=document.defaultView?.MutationObserver,observer=Observer?new Observer(adoptAnnotations):null;observer?.observe(panel,{childList:true});adoptAnnotations();
  const offLocale=onUiLocaleChange(updateLabels);updateLabels();restoreFocus(focusedAtMount,{reveal:true});
- return {updateLabels,unmount(){if(disposed)return;const focused=document.activeElement;disposed=true;offLocale();observer?.disconnect();for(const remove of removers)remove();for(const restore of moved.reverse())restore();if(recordSection)recordSection.hidden=sectionHidden;primary.remove();more.remove();restoreFocus(focused);}};
+ return {updateLabels,unmount(){if(disposed)return;const focused=document.activeElement;disposed=true;cancelToolFocus();offLocale();observer?.disconnect();for(const remove of removers)remove();for(const restore of moved.reverse())restore();if(recordSection)recordSection.hidden=sectionHidden;primary.remove();more.remove();restoreFocus(focused);}};
 }

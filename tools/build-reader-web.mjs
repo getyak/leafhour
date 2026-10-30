@@ -111,7 +111,7 @@ export function targetFileOf(importerRelative,specifier){
         targets.push('app'+url.pathname,url.pathname.slice(1));
       }catch{}
   }
-  const protectedFile=file=>/^app\/(reader-annotations|reading-retained-backup)(?:\.mjs|\.js)?$/.test(file)||file==='app/reader-audio'||file==='app/reader-audio.js'||file==='app/reader-audio.mjs'||file==='app/ui-locale'||file==='app/ui-locale.mjs'||file==='app/ui-locale.js'||file.startsWith('app/ui-catalogs/');
+  const protectedFile=file=>/^app\/(reader-annotations|reading-retained-backup|reading-tool-focus)(?:\.mjs|\.js)?$/.test(file)||file==='app/reader-audio'||file==='app/reader-audio.js'||file==='app/reader-audio.mjs'||file==='app/ui-locale'||file==='app/ui-locale.mjs'||file==='app/ui-locale.js'||file.startsWith('app/ui-catalogs/');
   const protectedTarget=targets.find(protectedFile);if(protectedTarget)return protectedTarget;
   // Ordinary bare package names still have no local release backing. URL
   // parsing above is conservative only for the protected runtime/catalogues.
@@ -286,6 +286,24 @@ export function assertRetainedBackupBoundaryEdges({edges,release,sources=[]}){
  visit('app/reading-retained-backup.mjs');return [...visited].sort();
 }
 
+// The bundled header and raw optional hub must share one keyboard-intent
+// registry. Only these literal static edges can reach its canonical URL.
+export const READING_TOOL_FOCUS_OWNERS=Object.freeze(['app/reading-toolbar.mjs','app/reader-immersion.mjs','app/reading-hub.mjs']);
+export const READING_TOOL_FOCUS_PUBLIC_FILES=Object.freeze(['app/reading-tool-focus.mjs']);
+const toolFocusTarget=file=>/^app\/reading-tool-focus(?:\.mjs|\.js)?$/.test(file);
+function assertReadingToolFocusEdge(edge){
+ if(!READING_TOOL_FOCUS_OWNERS.includes(edge.importer)||edge.kind!=='import-statement'||edge.specifier!=='./reading-tool-focus.mjs')throw Error('Unauthorized reading tool focus edge: '+edge.importer+' '+edge.specifier);
+}
+export function assertReadingToolFocusBoundaryEdges({edges,release,sources=[]}){
+ const incoming=edges.filter(edge=>toolFocusTarget(targetFileOf(edge.importer,edge.specifier)));
+ for(const edge of incoming)assertReadingToolFocusEdge(edge);
+ if(!incoming.length&&!sources.includes('app/reading-tool-focus.mjs'))return [];
+ const file='app/reading-tool-focus.mjs';
+ if(!release.has(file))throw Error('Non-public reading tool focus dependency: '+file);
+ for(const edge of edges.filter(edge=>edge.importer===file))throw Error('Unauthorized raw reading tool focus edge: '+edge.specifier);
+ return [file];
+}
+
 export async function auditUiLocaleGraph({root,allowed=null}={}){
   root=await realpath(root);
   const release=allowed||new Set(await releaseFiles(root));
@@ -315,6 +333,7 @@ export async function auditUiLocaleGraph({root,allowed=null}={}){
   assertAudioBoundaryEdges({edges,release,sources:audited.map(file=>file.relative)});
   const annotationFiles=assertAnnotationBoundaryEdges({edges,release,sources:audited.map(file=>file.relative)});
   assertRetainedBackupBoundaryEdges({edges,release,sources:audited.map(file=>file.relative)});
+  assertReadingToolFocusBoundaryEdges({edges,release,sources:audited.map(file=>file.relative)});
   if(annotationFiles.length)for(const [file,cap]of [['app/reader-annotations.mjs',32768],['app/reader-annotation-pending.mjs',8192]])if((await readFile(path.join(root,file))).length>cap)throw Error('Annotation module exceeds public asset budget: '+file);
   for(const edge of edges){
     const base=targetFileOf(edge.importer,edge.specifier);
@@ -420,6 +439,11 @@ export async function buildReaderWeb({root,outputDir,html}){
  const publicModules={name:'public-reader-modules',setup(b){
   b.onResolve({filter:/.*/},args=>{
    const relative=path.relative(root,args.importer).replaceAll('\\','/'),target=targetFileOf(relative,args.path);
+   if(toolFocusTarget(target)){
+    assertReadingToolFocusEdge({importer:relative,specifier:args.path,kind:args.kind});
+    for(const file of READING_TOOL_FOCUS_PUBLIC_FILES)if(!allowed.has(file))throw Error('Non-public reading tool focus dependency: '+file);
+    return {path:'/reading-tool-focus.mjs',external:true};
+   }
    if(retainedTarget(target)){
     if(relative!=='app/reading-session.js'||args.kind!=='dynamic-import'||args.path!=='./reading-retained-backup.mjs')throw Error('Unauthorized retained backup edge: '+relative+' '+args.path);
     for(const file of RETAINED_BACKUP_PUBLIC_FILES)if(!allowed.has(file))throw Error('Non-public retained backup dependency: '+file);
@@ -475,7 +499,7 @@ export async function buildReaderWeb({root,outputDir,html}){
  });}};
  const compile=async(contents,loader)=>{
   const result=await build({stdin:{contents,resolveDir:path.join(root,'app'),sourcefile:'reader-entry.'+(loader==='css'?'css':'js'),loader},bundle:true,format:'esm',platform:'browser',target:'es2022',minify:true,charset:'utf8',legalComments:'none',plugins:loader==='css'?[{name:'public-css-urls',setup(b){b.onResolve({filter:/^\//},args=>{if(args.kind==='url-token')return {path:args.path,external:true};if(args.kind==='import-rule'&&args.path==='/fonts/noto-serif-sc/font-faces.css'&&path.resolve(args.importer)===path.join(root,'app/typography.css')){if(!allowed.has('app/fonts/noto-serif-sc/font-faces.css'))throw Error('Non-public CJK stylesheet');return {path:args.path,external:true};}return undefined;});}}]:[publicModules],write:false,metafile:true,logLevel:'silent',...(loader==='js'?{inject:[path.join(root,'app/browser-globals.mjs')]}:{})});
-  for(const key of Object.keys(result.metafile.inputs)){if(key==='reader-entry.js'||key==='reader-entry.css')continue;const relative=path.relative(root,path.resolve(key)).replaceAll('\\','/');if(relative==='app/reader-entry.js'||relative==='app/reader-entry.css')continue;if(relative==='app/ui-locale.mjs')throw Error('Mutable ui-locale API bundled by alias: '+key);if(!relative.startsWith('app/')||!allowed.has(relative))throw Error('Non-public reader bundle input: '+relative);inputs.add(relative);}
+  for(const key of Object.keys(result.metafile.inputs)){if(key==='reader-entry.js'||key==='reader-entry.css')continue;const relative=path.relative(root,path.resolve(key)).replaceAll('\\','/');if(relative==='app/reader-entry.js'||relative==='app/reader-entry.css')continue;if(relative==='app/ui-locale.mjs')throw Error('Mutable ui-locale API bundled by alias: '+key);if(relative==='app/reading-tool-focus.mjs')throw Error('Shared reading tool focus bundled by alias: '+key);if(!relative.startsWith('app/')||!allowed.has(relative))throw Error('Non-public reader bundle input: '+relative);inputs.add(relative);}
   return result.outputFiles[0].contents;
  };
  await auditUiLocaleGraph({root,allowed});
@@ -492,6 +516,7 @@ export async function buildReaderWeb({root,outputDir,html}){
   await writeFile(path.join(outputDir,'reader-quiet.css'),bytes);files.push('reader-quiet.css');inputs.add('app/reader-quiet.css');
  }
  html=html.replace(/<script\s+type="module"\s+src="\/[^"]+"\s*><\/script>/g,'').replace(/<link\s+rel="stylesheet"\s+href="\/[^"]+"\s*>/g,'');
- html=html.replace('</head>','<style data-reader-critical>'+READER_CRITICAL_CSS+'</style><link rel="preload" as="style" href="/'+files[1]+'" data-reader-styles><script type="module" src="/'+files[0]+'"></script></head>');
+ const focusPreload=Buffer.from(js).includes('/reading-tool-focus.mjs')?'<link rel="modulepreload" href="/reading-tool-focus.mjs">':'';
+ html=html.replace('</head>','<style data-reader-critical>'+READER_CRITICAL_CSS+'</style><link rel="preload" as="style" href="/'+files[1]+'" data-reader-styles>'+focusPreload+'<script type="module" src="/'+files[0]+'"></script></head>');
  return {html,files,inputs:[...inputs].sort()};
 }

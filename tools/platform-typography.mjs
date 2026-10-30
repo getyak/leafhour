@@ -20,7 +20,6 @@ import {
   validateDevtoolsTarget,
   validateEffectiveChromeCommandLine,
   resolveLanguageEntrance,
-  resolveOriginalTitleProbe,
   assessNativeForeground,
   assessFirstRunOverlay,
   verifyNativeStartup,
@@ -226,66 +225,48 @@ try{
   // font warming on every mode.
   lifecycle.guard('product evidence');
   await session.installFontHold();
-  await session.navigateProduct(origin+'/');
-  await session.until(async()=>session.paused.size&&await cdp.evaluate(`['/en','/zh-hans','/zh-hant','/ja'].includes(location.pathname)&&document.readyState!=='loading'&&!!document.querySelector('.hero-copy h1 .hero-line')`),'font-paused authored hero after automatic root entry');
+  // Bind cold-font evidence to one authored document. The automatic root entry
+  // replaces its loader and can retire its only held preload; test that entry
+  // separately after the real cold/loaded glyph observations are complete.
+  await session.navigateProduct(origin+'/en');
+  await session.until(async()=>session.paused.size&&await cdp.evaluate(`location.pathname==='/en'&&document.readyState!=='loading'&&!!document.querySelector('#home-view .hero-copy h1')`),'font-paused authored homepage');
   if(args.mode==='android')viewport=await bindAndroidProductViewport({receipt,label:'home-cold',read:()=>session.viewport('home-cold')});
-  // Current surfaces use stock sans for the headline and Leafhour Serif for
-  // the actual source quotation. Exercise the font owner that the product
-  // really renders; never restyle a node to satisfy the font assertions.
+  // The current authored headline and source quotation both use Leafhour Serif.
+  // Exercise their real font owners without restyling or adding probe wrappers.
   await delay(500);const cold=await session.fonts('#home-view .sample-original','cold font-withheld source quotation',{awaitFonts:false});assert.ok(cold.fonts.some(font=>!font.isCustomFont&&font.glyphCount>0),'Cold fallback must have visible actual glyphs');assert.ok(!cold.fonts.some(font=>font.isCustomFont&&font.glyphCount>0),'Cold run must not use warmed custom face');await session.capture('home-controlled-font-delay');
   await session.releaseFontHold();
   await cdp.evaluate('document.fonts.ready.then(()=>true)');await session.capture('home-loaded');customNewsreader(await session.fonts('#home-view .sample-original','loaded source quotation'));
-  const headline=await session.fonts('.hero-copy h1 .hero-line','current stock-sans headline');assert.ok(headline.fonts.some(font=>!font.isCustomFont&&font.glyphCount>0),'Current headline must render its actual stock sans glyphs');
+  customNewsreader(await session.fonts('#home-view .hero-copy h1','current serif headline'));
+  await session.navigateProduct(origin+'/',{page:'home-root-entry'});
+  await session.until(()=>cdp.evaluate(`({'/en':'en','/zh-hans':'zh-Hans','/zh-hant':'zh-Hant','/ja':'ja'})[location.pathname]===document.documentElement.lang&&document.readyState!=='loading'&&!!document.querySelector('#home-view .hero-copy h1')`),'automatic root entry to an authored locale homepage');
+  receipt.rootEntry=await cdp.evaluate('({pathname:location.pathname,lang:document.documentElement.lang})');
   for(const [route,locale] of [['/zh-hans','zh-Hans'],['/zh-hant','zh-Hant'],['/ja','ja']]){
     await session.navigateProduct(origin+route,{page:'home-'+locale});
     await session.until(()=>cdp.evaluate(`location.pathname===${JSON.stringify(route)}&&document.readyState==='complete'&&document.documentElement.lang===${JSON.stringify(locale)}&&document.querySelector('#home-menu-trigger')?.getAttribute('lang')===${JSON.stringify(locale)}&&!!document.querySelector('#how .section-copy h2')`),'authored '+locale+' home and initialized navigation');
     if(args.mode==='android')viewport=await bindAndroidProductViewport({receipt,label:'home-'+locale,read:()=>session.viewport('home-'+locale)});
     const entrance=resolveLanguageEntrance({viewportWidth:viewport.width,locale});
     if(args.mode==='android')assert.ok(await cdp.evaluate(`[...document.querySelectorAll('.home-navigation .home-nav')].every(node=>!node.getClientRects().length)`),'Desktop navigation must stay hidden at the actual mobile width');
-    await session.cjkGlyphs('#how .section-copy h2','actual '+locale+' stock-sans heading CJK fallback');
+    await session.cjkGlyphs('#how .section-copy h2','actual '+locale+' serif heading CJK fallback',{serif:true});
     (receipt.languageMenuInteractions??=[]).push(await exercisePopoverKeyboard({cdp,trigger:'#home-menu-trigger',panel:'#home-menu',guard:()=>lifecycle.guard('owned language-menu input'),afterOpened:()=>session.cjkGlyphs(entrance,'actual '+locale+' language entrance'),capture:()=>session.capture('home-'+locale+'-cjk-loaded')}));
     receipt.cjkNeedsHumanReview=true;
   }
   lifecycle.guard('library evidence');
-  await session.navigateProduct(origin+'/library',{page:'library'});
-  await session.until(()=>cdp.evaluate(`location.pathname==='/library'&&document.readyState==='complete'&&!!document.querySelector('#library-books .binding-original')`),'actual public shelf');await cdp.evaluate('document.fonts.ready.then(()=>true)');
+  // Current public covers have selectable localized labels, not the old
+  // private-binding originals. Choose an actual English UI route for Latin
+  // punctuation, then an actual Chinese route for the CJK metadata owner.
+  const aliceCard='#library-books [data-book-id="gutenberg-alice"]',titleSelector=aliceCard+' .book-title-link',coverSelector=aliceCard+' .cover-title';
+  await session.navigateProduct(origin+'/library?ui=en',{page:'library'});
+  await session.until(()=>cdp.evaluate(`location.pathname==='/library'&&document.documentElement.lang==='en'&&document.readyState==='complete'&&!!document.querySelector(${JSON.stringify(titleSelector)})&&!!document.querySelector(${JSON.stringify(coverSelector)})`),'actual English public shelf');await cdp.evaluate('document.fonts.ready.then(()=>true)');
   if(args.mode==='android')viewport=await bindAndroidProductViewport({receipt,label:'library',read:()=>session.viewport('library')});
-  let originalSelector='#library-books .binding-original';
-  if(args.mode==='android'){
-    // .binding-original is hidden at <=380 CSS px. Use a genuine visible
-    // same-title node when the page offers one, otherwise record a truthful
-    // unsupported result instead of enlarging the viewport.
-    const candidates=await cdp.evaluate(String.raw`(()=>{
-      const original=document.querySelector('#library-books .binding-original');
-      const title=original?original.textContent.trim():'';
-      const nodes=[...document.querySelectorAll('#library-books .binding-original, #library-books .binding-title, #library-books strong, #library-books small, #library-books h3')];
-      const seen=new Set(),probes=[];
-      for(const node of nodes){
-        if(seen.has(node))continue;seen.add(node);
-        const text=node.textContent.trim();
-        if(!title||text!==title)continue;
-        const rect=node.getBoundingClientRect(),style=getComputedStyle(node);
-        node.setAttribute('data-platform-original-probe',String(probes.length));
-        probes.push({selector:'[data-platform-original-probe="'+probes.length+'"]',text,visible:!!node.getClientRects().length&&style.visibility!=='hidden'&&style.display!=='none'&&rect.width>0&&rect.height>0});
-      }
-      return {title,nodes:probes};
-    })()`);
-    const decision=resolveOriginalTitleProbe({viewportWidth:viewport.width,titleText:candidates.title,nodes:candidates.nodes});
-    receipt.android.originalTitleProbe=decision;
-    if(decision.kind==='probe')originalSelector=decision.selector;
-    else{
-      originalSelector=null;
-      receipt.checks.push({label:'actual Alice cover original title',selector:null,status:'unsupported',reason:decision.reason});
-      receipt.android.limitations.push('Library original title probe unsupported at the actual CSS width '+viewport.width+': '+decision.reason);
-    }
-  }
-  if(originalSelector){
-    stockSans(await session.fonts(originalSelector,'actual Alice cover original title'));
-    // Isolate a glyph in the actual text while preserving inherited typography.
-    const punctuation=await cdp.evaluate(`(()=>{const n=[...document.querySelectorAll(${JSON.stringify(originalSelector)})].find(n=>n.textContent.includes('Alice’s'));if(!n)throw Error('Actual Alice’s title missing');const raw=n.textContent,node=[...n.childNodes].find(n=>n.nodeType===3&&n.textContent.includes('’'));if(!node)throw Error('Actual apostrophe text missing');const i=node.textContent.indexOf('’'),r=document.createRange();r.setStart(node,i);r.setEnd(node,i+1);const before=r.getBoundingClientRect().width,span=document.createElement('span');span.id='platform-apostrophe-probe';r.surroundContents(span);const after=span.getBoundingClientRect().width;return {raw,before,after,em:parseFloat(getComputedStyle(span).fontSize)};})()`);
-    const apostrophe=await session.fonts('#platform-apostrophe-probe','actual inherited U+2019 glyph');stockSans(apostrophe);assert.equal(apostrophe.text,'’');assert.ok(punctuation.after<punctuation.em*.5,'Apostrophe must be proportional');assert.ok(Math.abs(punctuation.before-punctuation.after)<.1,'Probe must preserve actual glyph width');receipt.punctuation=punctuation;
-  }
-  await session.fonts('#library-books .binding-title','stock CJK book title fallback');await session.capture('library-loaded');
+  stockSans(await session.fonts(titleSelector,'actual Alice shelf metadata title'));
+  customNewsreader(await session.fonts(coverSelector,'actual Alice cover title'));
+  // Isolate a real glyph without changing its text or inherited typography.
+  const punctuation=await cdp.evaluate(`(()=>{const n=document.querySelector(${JSON.stringify(titleSelector)});if(!n?.textContent.includes('Alice’s'))throw Error('Actual Alice’s title missing');const raw=n.textContent,node=[...n.childNodes].find(n=>n.nodeType===3&&n.textContent.includes('’'));if(!node)throw Error('Actual apostrophe text missing');const i=node.textContent.indexOf('’'),r=document.createRange();r.setStart(node,i);r.setEnd(node,i+1);const before=r.getBoundingClientRect().width,span=document.createElement('span');span.id='platform-apostrophe-probe';r.surroundContents(span);const after=span.getBoundingClientRect().width;return {raw,before,after,em:parseFloat(getComputedStyle(span).fontSize)};})()`);
+  const apostrophe=await session.fonts('#platform-apostrophe-probe','actual inherited U+2019 glyph');stockSans(apostrophe);assert.equal(apostrophe.text,'’');assert.ok(punctuation.after<punctuation.em*.5,'Apostrophe must be proportional');assert.ok(Math.abs(punctuation.before-punctuation.after)<.1,'Probe must preserve actual glyph width');receipt.punctuation=punctuation;
+  await session.navigateProduct(origin+'/library?ui=zh-Hans',{page:'library-zh-Hans'});
+  await session.until(()=>cdp.evaluate(`location.pathname==='/library'&&document.documentElement.lang==='zh-Hans'&&document.readyState==='complete'&&!!document.querySelector(${JSON.stringify(titleSelector)})`),'actual Chinese public shelf');
+  if(args.mode==='android')viewport=await bindAndroidProductViewport({receipt,label:'library-zh-Hans',read:()=>session.viewport('library-zh-Hans')});
+  await session.cjkGlyphs(titleSelector,'actual Chinese shelf metadata title CJK fallback');await session.capture('library-loaded');
   const shelfPopovers=await cdp.evaluate('('+observeInitialPopovers.toString()+')()');
   (receipt.initialPopovers??=[]).push({page:'library',nodes:shelfPopovers});
   assertInitialPopoversClosed(shelfPopovers,['shelf-filter-panel','library-book-menu']);
@@ -314,7 +295,7 @@ try{
   assert.equal(receipt.readerBookActions.before.shareEnabled,false,'Uninitialized optional actions must stay disabled');
   const remoteGuard=()=>lifecycle.guard('owned remote reader keyboard input');
   const activation=await activateRemoteButton({cdp,trigger:'#reading-tools-trigger',guard:remoteGuard});
-  const toolsOpened=await until(async()=>{remoteGuard();const value=await cdp.evaluate('('+observeReaderTools.toString()+')()');return value.expanded==='true'&&value.headerVisible&&!value.headerInert&&value.focusInHeader?value:false;},'actual reading pill to expose navigation',4000);
+  const toolsOpened=await until(async()=>{remoteGuard();const value=await cdp.evaluate('('+observeReaderTools.toString()+')()');return value.ready?value:false;},'actual reading pill to expose navigation',4000);
   receipt.readerTools={...activation,opened:toolsOpened};
   receipt.popoverInteractions.push(await exercisePopoverKeyboard({cdp,trigger:'#open-book-info',panel:'#book-info',guard:remoteGuard,capture:()=>session.capture('reader-book-info-open'),afterOpened:async()=>{
     receipt.readerBookActions.opened=await until(async()=>{remoteGuard();const value=await cdp.evaluate('('+observeReaderBookActions.toString()+')()');return value.ready?value:false;},'actual optional book actions to initialize',4000);

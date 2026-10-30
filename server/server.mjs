@@ -49,7 +49,7 @@ assets.set('/catalog-sample.mjs',['app/catalog-sample.mjs','text/javascript']);
 assets.set('/reader-account.mjs',['app/reader-account.mjs','text/javascript']);
 assets.set('/reader-navigation.mjs',['app/reader-navigation.mjs','text/javascript']);
 // GET-173 shared popover boundary plus its real user-open bookplate bootstrap.
-for(const file of ['popover-controls.mjs','reader-book-actions-bootstrap.mjs'])assets.set('/'+file,['app/'+file,'text/javascript']);
+for(const file of ['popover-controls.mjs','reading-tool-focus.mjs','reader-book-actions-bootstrap.mjs'])assets.set('/'+file,['app/'+file,'text/javascript']);
 for(const file of ['book-introduction.mjs','book-introduction-controller.mjs','reader-book-actions.mjs','reader-book-actions.css'])assets.set('/'+file,['app/'+file,file.endsWith('.css')?'text/css':'text/javascript']);
 for(const file of ['paper-companion.mjs','reader-style-ready.mjs','reader-loading.mjs'])assets.set('/'+file,['app/'+file,'text/javascript']);
 assets.set('/reader-immersion.mjs',['app/reader-immersion.mjs','text/javascript']);

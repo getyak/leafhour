@@ -3,6 +3,12 @@ import {normalizePaletteQuery,PALETTE_RESULT_LIMIT} from './palette-library.mjs'
 const fold=value=>String(value||'').normalize('NFKC').toLowerCase();
 const segmenter=new Intl.Segmenter(undefined,{granularity:'grapheme'});
 const title=value=>value?.en||value?.zh||'';
+function excerpt(text,at){
+ const iterator=segmenter.segment(text)[Symbol.iterator](),chars=[];let width=0,start=0;
+ while(width<at){const next=iterator.next();if(next.done)break;chars.push(next.value.segment);width+=fold(next.value.segment).length;if(chars.length>36){chars.shift();start++;}}
+ while(chars.length<180){const next=iterator.next();if(next.done)return (start?'…':'')+chars.join('');chars.push(next.value.segment);}
+ return (start?'…':'')+chars.join('')+(iterator.next().done?'':'…');
+}
 // Search only the current reader's already authorized content. Sparse chapters
 // have real IDs/titles but unloaded text; they must never become fake matches.
 // No fetch, persistence, personal records or model/indexing service is involved.
@@ -17,12 +23,9 @@ export function matchPaletteBook(book,query){
    const chapter=chapters.find(c=>c.id===section.chapterId);if(!chapter)continue;
    for(const p of section.paragraphs){
     if(p.unloaded)continue;
-    const text=p.original;if(typeof text!=='string'||!fold(text).includes(needle))continue;
+    const text=p.original;if(typeof text!=='string')continue;const at=fold(text).indexOf(needle);if(at<0)continue;
     // Retain exact source characters in the excerpt, including surrogate pairs.
-    const chars=[...segmenter.segment(text)].map(part=>part.segment),at=fold(text).indexOf(needle);let width=0,index=0;
-    while(index<chars.length&&width<at)width+=fold(chars[index++]).length;
-    const start=Math.max(0,index-36),snippet=chars.slice(start,start+180).join('');
-    hits.push({id:'passage:'+p.id,passageId:p.id,chapterId:chapter.id,label:(start?'…':'')+snippet+(start+180<chars.length?'…':''),chapter:title(chapter.title)});
+    hits.push({id:'passage:'+p.id,passageId:p.id,chapterId:chapter.id,label:excerpt(text,at),chapter:title(chapter.title)});
     if(hits.length===PALETTE_RESULT_LIMIT)break;
    }
    if(hits.length===PALETTE_RESULT_LIMIT)break;

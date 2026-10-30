@@ -2986,8 +2986,8 @@ candidate:app/index.html:46:176,html-attribute,app/index.html,46,aria-label,unkn
 candidate:app/index.html:57:172,html-attribute,app/index.html,57,aria-label,unknown,reviewable,,Close reading prompts
 candidate:app/index.html:64:168,html-attribute,app/index.html,64,aria-label,unknown,reviewable,,Close draft list
 candidate:app/index.html:68:169,html-attribute,app/index.html,68,aria-label,unknown,reviewable,,Close after-reading notes
-candidate:app/index.html:70:366,html-attribute,app/index.html,70,placeholder,unknown,reviewable,,Try explaining in your own words without looking…
-candidate:app/index.html:71:359,html-attribute,app/index.html,71,placeholder,unknown,reviewable,,Leave a question worth returning to…
+candidate:app/index.html:70:286,html-attribute,app/index.html,70,placeholder,unknown,reviewable,,Try explaining in your own words without looking…
+candidate:app/index.html:71:279,html-attribute,app/index.html,71,placeholder,unknown,reviewable,,Leave a question worth returning to…
 candidate:app/index.html:74:80,html-attribute,app/index.html,74,aria-label,unknown,reviewable,,Current passage actions
 candidate:app/index.html:75:754,html-attribute,app/index.html,75,aria-label,unknown,reviewable,,More passage actions
 candidate:app/index.html:79:57,html-attribute,app/index.html,79,aria-label,unknown,reviewable,,Passage notes and personal records
@@ -3034,8 +3034,8 @@ candidate:app/index.html:24:253,html-text,app/index.html,24,,unknown,reviewable,
 candidate:app/index.html:25:158,html-text,app/index.html,25,,unknown,reviewable,,I finished this chapter
 candidate:app/index.html:29:610,html-text,app/index.html,29,,unknown,reviewable,,Read
 candidate:app/index.html:32:109,html-text,app/index.html,32,,unknown,reviewable,,Make time for a book
-candidate:app/index.html:32:403,html-text,app/index.html,32,,unknown,reviewable,,Collapse
-candidate:app/index.html:32:444,html-text,app/index.html,32,,unknown,reviewable,,↓
+candidate:app/index.html:32:323,html-text,app/index.html,32,,unknown,reviewable,,Collapse
+candidate:app/index.html:32:364,html-text,app/index.html,32,,unknown,reviewable,,↓
 candidate:app/index.html:33:290,html-text,app/index.html,33,,unknown,reviewable,,← Previous page
 candidate:app/index.html:33:536,html-text,app/index.html,33,,unknown,reviewable,,Next page →
 candidate:app/index.html:34:138,html-text,app/index.html,34,,unknown,reviewable,,Today’s reading
@@ -3058,8 +3058,8 @@ candidate:app/index.html:42:262,html-text,app/index.html,42,,unknown,reviewable,
 candidate:app/index.html:46:85,html-text,app/index.html,46,,unknown,reviewable,,Manual entry (self-reported)
 candidate:app/index.html:46:242,html-text,app/index.html,46,,unknown,reviewable,,×
 candidate:app/index.html:48:74,html-text,app/index.html,48,,unknown,reviewable,,Opening this pauses the current timer. Resume it yourself after closing. Enter a completed period up to 24 hours. Unsubmitted inputs are not retained; unconfirmed entries retry with the same ID. Overlapping time is merged. Self-reported time does not prove understanding.
-candidate:app/index.html:50:183,html-text,app/index.html,50,,unknown,reviewable,,Start time
-candidate:app/index.html:50:424,html-text,app/index.html,50,,unknown,reviewable,,End time
+candidate:app/index.html:50:103,html-text,app/index.html,50,,unknown,reviewable,,Start time
+candidate:app/index.html:50:264,html-text,app/index.html,50,,unknown,reviewable,,End time
 candidate:app/index.html:53:100,html-text,app/index.html,53,,unknown,reviewable,,Save reading entry
 candidate:app/index.html:57:84,html-text,app/index.html,57,,unknown,reviewable,,Begin with a question.
 candidate:app/index.html:57:240,html-text,app/index.html,57,,unknown,reviewable,,×
@@ -3072,9 +3072,9 @@ candidate:app/index.html:59:507,html-text,app/index.html,59,,unknown,reviewable,
 candidate:app/index.html:59:580,html-text,app/index.html,59,,unknown,reviewable,,"Check what the author actually wrote. What is in the text, and what did you infer? Compare difficult sentences with the translation."
 candidate:app/index.html:59:775,html-text,app/index.html,59,,unknown,reviewable,,Keep an unresolved question
 candidate:app/index.html:59:850,html-text,app/index.html,59,,unknown,reviewable,,"Write a question to return to. With fiction, you can simply keep a scene or feeling."
-candidate:app/index.html:60:182,html-text,app/index.html,60,,unknown,reviewable,,"Questioning, retelling and reviewing textbooks draw on"
-candidate:app/index.html:60:409,html-text,app/index.html,60,,unknown,reviewable,,Cornell reading strategies ↗
-candidate:app/index.html:60:583,html-text,app/index.html,60,,unknown,reviewable,,. These prompts are optional; choose what suits your book and pace.
+candidate:app/index.html:60:102,html-text,app/index.html,60,,unknown,reviewable,,"Questioning, retelling and reviewing textbooks draw on"
+candidate:app/index.html:60:329,html-text,app/index.html,60,,unknown,reviewable,,Cornell reading strategies ↗
+candidate:app/index.html:60:423,html-text,app/index.html,60,,unknown,reviewable,,. These prompts are optional; choose what suits your book and pace.
 candidate:app/index.html:61:114,html-text,app/index.html,61,,unknown,reviewable,,Return to reading
 candidate:app/index.html:64:82,html-text,app/index.html,64,,unknown,reviewable,,Unfinished thoughts
 candidate:app/index.html:64:232,html-text,app/index.html,64,,unknown,reviewable,,×
@@ -3083,12 +3083,12 @@ candidate:app/index.html:68:242,html-text,app/index.html,68,,unknown,reviewable,
 candidate:app/index.html:68:315,html-text,app/index.html,68,,unknown,reviewable,,A place to stop for today.
 candidate:app/index.html:69:297,html-text,app/index.html,69,,unknown,reviewable,,Retry saving
 candidate:app/index.html:69:430,html-text,app/index.html,69,,unknown,reviewable,,Where you stopped
-candidate:app/index.html:70:198,html-text,app/index.html,70,,unknown,reviewable,,One sentence in your own words
-candidate:app/index.html:70:274,html-text,app/index.html,70,,unknown,reviewable,,Optional
-candidate:app/index.html:70:634,html-text,app/index.html,70,,unknown,reviewable,,Save understanding
-candidate:app/index.html:71:198,html-text,app/index.html,71,,unknown,reviewable,,What is still unclear?
-candidate:app/index.html:71:266,html-text,app/index.html,71,,unknown,reviewable,,Optional
-candidate:app/index.html:71:606,html-text,app/index.html,71,,unknown,reviewable,,Save question
+candidate:app/index.html:70:118,html-text,app/index.html,70,,unknown,reviewable,,One sentence in your own words
+candidate:app/index.html:70:194,html-text,app/index.html,70,,unknown,reviewable,,Optional
+candidate:app/index.html:70:554,html-text,app/index.html,70,,unknown,reviewable,,Save understanding
+candidate:app/index.html:71:118,html-text,app/index.html,71,,unknown,reviewable,,What is still unclear?
+candidate:app/index.html:71:186,html-text,app/index.html,71,,unknown,reviewable,,Optional
+candidate:app/index.html:71:526,html-text,app/index.html,71,,unknown,reviewable,,Save question
 candidate:app/index.html:72:125,html-text,app/index.html,72,,unknown,reviewable,,Return to library and calendar →
 candidate:app/index.html:72:254,html-text,app/index.html,72,,unknown,reviewable,,Keep reading
 candidate:app/index.html:72:342,html-text,app/index.html,72,,unknown,reviewable,,Ending the timer does not mark a chapter as read. Save thoughts and questions separately; check notices for unsent text.
@@ -3112,8 +3112,8 @@ candidate:app/index.html:76:691,html-text,app/index.html,76,,unknown,reviewable,
 candidate:app/index.html:76:788,html-text,app/index.html,76,,unknown,reviewable,,Leave a question
 candidate:app/index.html:80:93,html-text,app/index.html,80,,unknown,reviewable,,Passage notes
 candidate:app/index.html:80:300,html-text,app/index.html,80,,unknown,reviewable,,Close
-candidate:app/index.html:81:366,html-text,app/index.html,81,,unknown,reviewable,,Return to text
-candidate:app/index.html:81:413,html-text,app/index.html,81,,unknown,reviewable,,↗
+candidate:app/index.html:81:286,html-text,app/index.html,81,,unknown,reviewable,,Return to text
+candidate:app/index.html:81:333,html-text,app/index.html,81,,unknown,reviewable,,↗
 candidate:app/index.html:82:288,html-text,app/index.html,82,,unknown,reviewable,,Annotations
 candidate:app/index.html:82:475,html-text,app/index.html,82,,unknown,reviewable,,My thoughts
 candidate:app/index.html:82:654,html-text,app/index.html,82,,unknown,reviewable,,Question
@@ -3125,8 +3125,8 @@ candidate:app/index.html:90:226,html-text,app/index.html,90,,unknown,reviewable,
 candidate:app/index.html:90:438,html-text,app/index.html,90,,unknown,reviewable,,Share this book
 candidate:app/index.html:90:594,html-text,app/index.html,90,,unknown,reviewable,,Export this book
 candidate:app/index.html:90:704,html-text,app/index.html,90,,unknown,reviewable,,Reload introduction and sharing
-candidate:app/index.html:91:285,html-text,app/index.html,91,,unknown,reviewable,,Original source
-candidate:app/index.html:91:333,html-text,app/index.html,91,,unknown,reviewable,,↗
+candidate:app/index.html:91:205,html-text,app/index.html,91,,unknown,reviewable,,Original source
+candidate:app/index.html:91:253,html-text,app/index.html,91,,unknown,reviewable,,↗
 candidate:app/index.html:93:148,html-text,app/index.html,93,,unknown,reviewable,,Leafhour
 candidate:app/index.html:93:222,html-text,app/index.html,93,,unknown,reviewable,,Book contents
 candidate:app/index.html:95:101,html-text,app/index.html,95,,unknown,reviewable,,Your reading style
@@ -3136,8 +3136,8 @@ candidate:app/index.html:98:172,html-text,app/index.html,98,,unknown,reviewable,
 candidate:app/index.html:99:176,html-text,app/index.html,99,,unknown,reviewable,,Habits
 candidate:app/index.html:100:168,html-text,app/index.html,100,,unknown,reviewable,,Data
 candidate:app/index.html:104:129,html-text,app/index.html,104,,unknown,reviewable,,Text and paper
-candidate:app/index.html:105:204,html-text,app/index.html,105,,unknown,reviewable,,Font size
-candidate:app/index.html:105:250,html-text,app/index.html,105,,unknown,reviewable,,22
+candidate:app/index.html:105:124,html-text,app/index.html,105,,unknown,reviewable,,Font size
+candidate:app/index.html:105:170,html-text,app/index.html,105,,unknown,reviewable,,22
 candidate:app/index.html:106:82,html-text,app/index.html,106,,unknown,reviewable,,Paper
 candidate:app/index.html:106:146,html-text,app/index.html,106,,unknown,reviewable,,Follow the system
 candidate:app/index.html:108:167,html-text,app/index.html,108,,unknown,reviewable,,◐
@@ -3146,7 +3146,7 @@ candidate:app/index.html:108:477,html-text,app/index.html,108,,unknown,reviewabl
 candidate:app/index.html:108:630,html-text,app/index.html,108,,unknown,reviewable,,A
 candidate:app/index.html:108:783,html-text,app/index.html,108,,unknown,reviewable,,A
 candidate:app/index.html:108:940,html-text,app/index.html,108,,unknown,reviewable,,A
-candidate:app/index.html:110:194,html-text,app/index.html,110,,unknown,reviewable,,Fine typography
+candidate:app/index.html:110:114,html-text,app/index.html,110,,unknown,reviewable,,Fine typography
 candidate:app/index.html:111:200,html-text,app/index.html,111,,unknown,reviewable,,Serif (Song)
 candidate:app/index.html:111:302,html-text,app/index.html,111,,unknown,reviewable,,Regular (Kai)
 candidate:app/index.html:111:407,html-text,app/index.html,111,,unknown,reviewable,,Sans serif
@@ -3208,8 +3208,8 @@ candidate:app/index.html:140:703,html-text,app/index.html,140,,unknown,reviewabl
 candidate:app/index.html:144:125,html-text,app/index.html,144,,unknown,reviewable,,Reading atmosphere
 candidate:app/index.html:144:239,html-text,app/index.html,144,,unknown,reviewable,,Play
 candidate:app/index.html:145:122,html-text,app/index.html,145,,unknown,reviewable,,No atmosphere selected
-candidate:app/index.html:146:207,html-text,app/index.html,146,,unknown,reviewable,,Choose a scene
-candidate:app/index.html:146:296,html-text,app/index.html,146,,unknown,reviewable,,"Forest, rain, hearth, sea"
+candidate:app/index.html:146:127,html-text,app/index.html,146,,unknown,reviewable,,Choose a scene
+candidate:app/index.html:146:216,html-text,app/index.html,146,,unknown,reviewable,,"Forest, rain, hearth, sea"
 candidate:app/index.html:148:110,html-text,app/index.html,148,,unknown,reviewable,,Music
 candidate:app/index.html:148:280,html-text,app/index.html,148,,unknown,reviewable,,28%
 candidate:app/index.html:149:112,html-text,app/index.html,149,,unknown,reviewable,,Nature sounds
@@ -3219,9 +3219,9 @@ candidate:app/index.html:150:215,html-text,app/index.html,150,,unknown,reviewabl
 candidate:app/index.html:150:413,html-text,app/index.html,150,,unknown,reviewable,,Respects the system’s reduced-motion preference.
 candidate:app/index.html:152:73,html-text,app/index.html,152,,unknown,reviewable,,Playback continues in other tabs or apps. Pause with the button above.
 candidate:app/index.html:154:153,html-text,app/index.html,154,,unknown,reviewable,,Listen to the text
-candidate:app/index.html:154:379,html-text,app/index.html,154,,unknown,reviewable,,Voice and speed
-candidate:app/index.html:154:473,html-text,app/index.html,154,,unknown,reviewable,,"Choose voice, speed and following"
-candidate:app/index.html:154:577,html-text,app/index.html,154,,unknown,reviewable,,Background sounds soften during narration.
+candidate:app/index.html:154:299,html-text,app/index.html,154,,unknown,reviewable,,Voice and speed
+candidate:app/index.html:154:393,html-text,app/index.html,154,,unknown,reviewable,,"Choose voice, speed and following"
+candidate:app/index.html:154:497,html-text,app/index.html,154,,unknown,reviewable,,Background sounds soften during narration.
 candidate:app/index.html:157:130,html-text,app/index.html,157,,unknown,reviewable,,Immersive reading
 candidate:app/index.html:157:290,html-text,app/index.html,157,,unknown,reviewable,,Hide the header; tools are always available. Enabled by default when opening a book.
 candidate:app/index.html:158:132,html-text,app/index.html,158,,unknown,reviewable,,Continuous reading
@@ -3232,8 +3232,8 @@ candidate:app/index.html:160:117,html-text,app/index.html,160,,unknown,reviewabl
 candidate:app/index.html:160:202,html-text,app/index.html,160,,unknown,reviewable,,Use this book’s view and typography for new books. This book’s position and records stay unchanged; each book keeps its own choices.
 candidate:app/index.html:160:442,html-text,app/index.html,160,,unknown,reviewable,,Use for new books
 candidate:app/index.html:163:80,html-text,app/index.html,163,,unknown,reviewable,,My records
-candidate:app/index.html:163:288,html-text,app/index.html,163,,unknown,reviewable,,"View highlights, thoughts and questions"
-candidate:app/index.html:163:378,html-text,app/index.html,163,,unknown,reviewable,,Filed by source
+candidate:app/index.html:163:208,html-text,app/index.html,163,,unknown,reviewable,,"View highlights, thoughts and questions"
+candidate:app/index.html:163:298,html-text,app/index.html,163,,unknown,reviewable,,Filed by source
 candidate:app/index.html:164:84,html-text,app/index.html,164,,unknown,reviewable,,Reading backup
 candidate:app/index.html:164:253,html-text,app/index.html,164,,unknown,reviewable,,Export records and appearance
 candidate:app/index.html:164:375,html-text,app/index.html,164,,unknown,reviewable,,Import reading records
@@ -3247,9 +3247,9 @@ candidate:app/index.html:166:94,html-text,app/index.html,166,,unknown,reviewable
 candidate:app/index.html:166:263,html-text,app/index.html,166,,unknown,reviewable,,"Keeps your choices, retellings and comparisons."
 candidate:app/index.html:170:112,html-text,app/index.html,170,,unknown,reviewable,,Book contents
 candidate:app/index.html:170:212,html-text,app/index.html,170,,unknown,reviewable,,Return to the page
-candidate:app/index.html:174:195,html-text,app/index.html,174,,unknown,reviewable,,Keep these words
-candidate:app/index.html:174:260,html-text,app/index.html,174,,unknown,reviewable,,Leafhour · Excerpt
-candidate:app/index.html:174:371,html-text,app/index.html,174,,unknown,reviewable,,Back to reading
+candidate:app/index.html:174:115,html-text,app/index.html,174,,unknown,reviewable,,Keep these words
+candidate:app/index.html:174:180,html-text,app/index.html,174,,unknown,reviewable,,Leafhour · Excerpt
+candidate:app/index.html:174:291,html-text,app/index.html,174,,unknown,reviewable,,Back to reading
 candidate:app/index.html:179:98,html-text,app/index.html,179,,unknown,reviewable,,Language
 candidate:app/index.html:179:190,html-text,app/index.html,179,,unknown,reviewable,,Chinese
 candidate:app/index.html:179:254,html-text,app/index.html,179,,unknown,reviewable,,English
@@ -3277,9 +3277,9 @@ candidate:app/index.html:187:92,html-text,app/index.html,187,,unknown,reviewable
 candidate:app/index.html:187:184,html-text,app/index.html,187,,unknown,reviewable,,Fade
 candidate:app/index.html:187:247,html-text,app/index.html,187,,unknown,reviewable,,Hide
 candidate:app/index.html:187:309,html-text,app/index.html,187,,unknown,reviewable,,Keep
-candidate:app/index.html:188:198,html-text,app/index.html,188,,unknown,reviewable,,Font size
-candidate:app/index.html:188:245,html-text,app/index.html,188,,unknown,reviewable,,48
-candidate:app/index.html:189:197,html-text,app/index.html,189,,unknown,reviewable,,Book source
+candidate:app/index.html:188:118,html-text,app/index.html,188,,unknown,reviewable,,Font size
+candidate:app/index.html:188:165,html-text,app/index.html,188,,unknown,reviewable,,48
+candidate:app/index.html:189:117,html-text,app/index.html,189,,unknown,reviewable,,Book source
 candidate:app/index.html:191:121,html-text,app/index.html,191,,unknown,reviewable,,Save image
 candidate:app/index.html:191:197,html-text,app/index.html,191,,unknown,reviewable,,Copy image
 candidate:app/index.html:191:284,html-text,app/index.html,191,,unknown,reviewable,,System share
@@ -4368,7 +4368,7 @@ candidate:app/reader-annotations.mjs:34:121,js-attribute,app/reader-annotations.
 candidate:app/reader-api.mjs:26:96,js-cjk-literal,app/reader-api.mjs,26,,unknown,reviewable,,账户已切换，请重新进入书房。
 candidate:app/reader-api.mjs:36:148,js-cjk-literal,app/reader-api.mjs,36,,unknown,reviewable,,账户已切换，请重新进入书房。
 candidate:app/reader-api.mjs:37:75,js-cjk-literal,app/reader-api.mjs,37,,unknown,reviewable,,阅读点数请求格式不正确。
-candidate:app/reader-api.mjs:45:466,js-cjk-literal,app/reader-api.mjs,45,,unknown,reviewable,,正文已更新或传输中断，请重新载入。
+candidate:app/reader-api.mjs:45:490,js-cjk-literal,app/reader-api.mjs,45,,unknown,reviewable,,正文已更新或传输中断，请重新载入。
 candidate:app/reader-atmosphere.js:24:152,js-attribute,app/reader-atmosphere.js,24,aria-labelledby,unknown,protected,identifier,atmosphere-title
 candidate:app/reader-atmosphere.js:25:18,js-dom-literal,app/reader-atmosphere.js,25,innerHTML,unknown,protected,path+quotation,"
   <div class=""atmosphere-shell"">
@@ -4379,14 +4379,14 @@ candidate:app/reader-atmosphere.js:25:18,js-dom-literal,app/reader-atmosphere.js
     <div class=""atmosphere-panel"">
       <header class=""atmosphere-heading""><div><p data-ui=""reader.shell.readingAtmosphere""></p><h2 id=""atmosphere-title"" data-ui=""reader.atmosphere.heading""></h2></div><button id=""close-atmosphere"" aria-label=""Close reading atmosphere"" data-ui-aria-label=""reader.atmosphere.close"" data-ui=""reader.shell.close""></button></header>
       <div class=""atmosphere-choices"" role=""group"" aria-label=""Choose a reading atmosphere"" data-ui-aria-label=""reader.atmosphere.choices""></div>
-      <button id=""atmosphere-none"" class=""atmosphere-none"" aria-pressed=""true""><span data-ui=""reader.atmosphere.none"" style=""display:contents;font:inherit;color:inherit;letter-spacing:inherit;text-transform:inherit""></span> <span data-ui=""reader.atmosphere.quiet""></span><span class=""atmosphere-choice-check"" aria-hidden=""true"">✓</span></button>
+      <button id=""atmosphere-none"" class=""atmosphere-none"" aria-pressed=""true""><span data-ui=""reader.atmosphere.none"" class=""ui-inline""></span> <span data-ui=""reader.atmosphere.quiet""></span><span class=""atmosphere-choice-check"" aria-hidden=""true"">✓</span></button>
       <section class=""atmosphere-sound"" aria-labelledby=""atmosphere-sound-title"">
         <div class=""atmosphere-sound-heading""><h3 id=""atmosphere-sound-title"" data-ui=""reader.atmosphere.withSound""></h3><span id=""atmosphere-sound-kind"" data-ui=""reader.atmosphere.soundKind""></span></div>
-        <div class=""atmosphere-volume""><label for=""atmosphere-music""><span data-ui=""reader.shell.music"" style=""display:contents;font:inherit;color:inherit;letter-spacing:inherit;text-transform:inherit""></span> <span id=""atmosphere-music-name""></span></label><input id=""atmosphere-music"" type=""range"" min=""0"" max=""100"" step=""1"" value=""28""><output for=""atmosphere-music"" id=""atmosphere-music-value"">28%</output></div>
-        <div class=""atmosphere-volume""><label for=""atmosphere-nature""><span data-ui=""reader.shell.nature"" style=""display:contents;font:inherit;color:inherit;letter-spacing:inherit;text-transform:inherit""></span> <span id=""atmosphere-nature-name""></span></label><input id=""atmosphere-nature"" type=""range"" min=""0"" max=""100"" step=""1"" value=""32""><output for=""atmosphere-nature"" id=""atmosphere-nature-value"">32%</output></div>
-        <div class=""atmosphere-motion""><label for=""atmosphere-motion""><span data-ui=""reader.shell.motion"" style=""display:contents;font:inherit;color:inherit;letter-spacing:inherit;text-transform:inherit""></span> <span id=""atmosphere-motion-hint"" data-ui=""reader.atmosphere.motionHint""></span></label><input id=""atmosphere-motion"" type=""checkbox"" role=""switch"" aria-describedby=""atmosphere-motion-hint"" checked></div>
+        <div class=""atmosphere-volume""><label for=""atmosphere-music""><span data-ui=""reader.shell.music"" class=""ui-inline""></span> <span id=""atmosphere-music-name""></span></label><input id=""atmosphere-music"" type=""range"" min=""0"" max=""100"" step=""1"" value=""28""><output for=""atmosphere-music"" id=""atmosphere-music-value"">28%</output></div>
+        <div class=""atmosphere-volume""><label for=""atmosphere-nature""><span data-ui=""reader.shell.nature"" class=""ui-inline""></span> <span id=""atmosphere-nature-name""></span></label><input id=""atmosphere-nature"" type=""range"" min=""0"" max=""100"" step=""1"" value=""32""><output for=""atmosphere-nature"" id=""atmosphere-nature-value"">32%</output></div>
+        <div class=""atmosphere-motion""><label for=""atmosphere-motion""><span data-ui=""reader.shell.motion"" class=""ui-inline""></span> <span id=""atmosphere-motion-hint"" data-ui=""reader.atmosphere.motionHint""></span></label><input id=""atmosphere-motion"" type=""checkbox"" role=""switch"" aria-describedby=""atmosphere-motion-hint"" checked></div>
       </section>
-      <footer class=""atmosphere-footer""><button id=""atmosphere-play"" class=""atmosphere-play"" disabled><span aria-hidden=""true"">▷</span><span id=""atmosphere-play-label"" data-ui=""reader.atmosphere.choose""></span></button><button id=""atmosphere-return""><span data-ui=""reader.shell.returnPage"" style=""display:contents;font:inherit;color:inherit;letter-spacing:inherit;text-transform:inherit""></span> <span aria-hidden=""true"">↗</span></button></footer>
+      <footer class=""atmosphere-footer""><button id=""atmosphere-play"" class=""atmosphere-play"" disabled><span aria-hidden=""true"">▷</span><span id=""atmosphere-play-label"" data-ui=""reader.atmosphere.choose""></span></button><button id=""atmosphere-return""><span data-ui=""reader.shell.returnPage"" class=""ui-inline""></span> <span aria-hidden=""true"">↗</span></button></footer>
       <p id=""atmosphere-status"" class=""atmosphere-status"" role=""status"" aria-live=""polite"" data-ui=""reader.atmosphere.pick""></p>
       <details class=""atmosphere-about""><summary data-ui=""reader.atmosphere.about""></summary><p data-ui=""reader.atmosphere.aboutHelp""></p><a href=""/assets/atmospheres/NOTICE.md"" target=""_blank"" rel=""noopener"" data-ui=""reader.atmosphere.sources""></a><p data-ui=""reader.atmosphere.localPrefs""></p></details>
     </div>
@@ -4454,26 +4454,26 @@ candidate:app/reader-settings.mjs:57:132,js-attribute,app/reader-settings.mjs,57
 candidate:app/reader-tools.mjs:49:36,js-attribute,app/reader-tools.mjs,49,role,unknown,reviewable,,group
 candidate:app/reader-translation.js:16:115,js-attribute,app/reader-translation.js,16,role,unknown,reviewable,,status
 candidate:app/reader-translation.js:76:220,js-attribute,app/reader-translation.js,76,role,unknown,reviewable,,status
-candidate:app/reader.js:155:36,js-attribute,app/reader.js,155,aria-busy,unknown,reviewable,,true
-candidate:app/reader.js:236:282,js-attribute,app/reader.js,236,aria-describedby,unknown,protected,identifier,reading-instructions
-candidate:app/reader.js:293:188,js-attribute,app/reader.js,293,aria-expanded,unknown,reviewable,,false
-candidate:app/reader.js:378:395,js-attribute,app/reader.js,378,role,unknown,reviewable,,status
-candidate:app/reader.js:383:124,js-cjk-literal,app/reader.js,383,,unknown,reviewable,,记录格式不完整
-candidate:app/reader.js:417:139,js-attribute,app/reader.js,417,aria-live,unknown,reviewable,,polite
-candidate:app/reader.js:424:153,js-cjk-literal,app/reader.js,424,,unknown,reviewable,,服务尚未确认这次提交。
-candidate:app/reader.js:424:350,js-attribute,app/reader.js,424,role,unknown,reviewable,,status
-candidate:app/reader.js:425:85,js-attribute,app/reader.js,425,role,unknown,reviewable,,alert
-candidate:app/reader.js:543:168,js-attribute,app/reader.js,543,aria-expanded,unknown,reviewable,,false
-candidate:app/reader.js:586:129,js-attribute,app/reader.js,586,aria-busy,unknown,reviewable,,true
-candidate:app/reader.js:587:41,js-cjk-literal,app/reader.js,587,,unknown,reviewable,,请先重新读取个人记录，再导出。
-candidate:app/reader.js:587:122,js-cjk-literal,app/reader.js,587,,unknown,reviewable,,请先选择从哪里继续，再导出当前阅读记录。
-candidate:app/reader.js:587:311,js-cjk-literal,app/reader.js,587,,unknown,reviewable,,阅读位置正在确认，请确认后再导出。
-candidate:app/reader.js:587:669,js-attribute,app/reader.js,587,role,unknown,reviewable,,status
-candidate:app/reader.js:588:106,js-attribute,app/reader.js,588,role,unknown,reviewable,,alert
-candidate:app/reader.js:590:224,js-cjk-literal,app/reader.js,590,,unknown,reviewable,,记录包过大
-candidate:app/reader.js:590:648,js-attribute,app/reader.js,590,role,unknown,reviewable,,status
-candidate:app/reader.js:590:809,js-attribute,app/reader.js,590,role,unknown,reviewable,,alert
-candidate:app/reader.js:604:41,js-cjk-literal,app/reader.js,604,,unknown,reviewable,,较新的位置暂时无法对应原文，请继续读这里。
+candidate:app/reader.js:156:36,js-attribute,app/reader.js,156,aria-busy,unknown,reviewable,,true
+candidate:app/reader.js:237:282,js-attribute,app/reader.js,237,aria-describedby,unknown,protected,identifier,reading-instructions
+candidate:app/reader.js:294:188,js-attribute,app/reader.js,294,aria-expanded,unknown,reviewable,,false
+candidate:app/reader.js:379:395,js-attribute,app/reader.js,379,role,unknown,reviewable,,status
+candidate:app/reader.js:384:124,js-cjk-literal,app/reader.js,384,,unknown,reviewable,,记录格式不完整
+candidate:app/reader.js:425:139,js-attribute,app/reader.js,425,aria-live,unknown,reviewable,,polite
+candidate:app/reader.js:435:153,js-cjk-literal,app/reader.js,435,,unknown,reviewable,,服务尚未确认这次提交。
+candidate:app/reader.js:435:350,js-attribute,app/reader.js,435,role,unknown,reviewable,,status
+candidate:app/reader.js:436:85,js-attribute,app/reader.js,436,role,unknown,reviewable,,alert
+candidate:app/reader.js:554:168,js-attribute,app/reader.js,554,aria-expanded,unknown,reviewable,,false
+candidate:app/reader.js:597:129,js-attribute,app/reader.js,597,aria-busy,unknown,reviewable,,true
+candidate:app/reader.js:598:41,js-cjk-literal,app/reader.js,598,,unknown,reviewable,,请先重新读取个人记录，再导出。
+candidate:app/reader.js:598:122,js-cjk-literal,app/reader.js,598,,unknown,reviewable,,请先选择从哪里继续，再导出当前阅读记录。
+candidate:app/reader.js:598:311,js-cjk-literal,app/reader.js,598,,unknown,reviewable,,阅读位置正在确认，请确认后再导出。
+candidate:app/reader.js:598:669,js-attribute,app/reader.js,598,role,unknown,reviewable,,status
+candidate:app/reader.js:599:106,js-attribute,app/reader.js,599,role,unknown,reviewable,,alert
+candidate:app/reader.js:601:224,js-cjk-literal,app/reader.js,601,,unknown,reviewable,,记录包过大
+candidate:app/reader.js:601:648,js-attribute,app/reader.js,601,role,unknown,reviewable,,status
+candidate:app/reader.js:601:809,js-attribute,app/reader.js,601,role,unknown,reviewable,,alert
+candidate:app/reader.js:615:41,js-cjk-literal,app/reader.js,615,,unknown,reviewable,,较新的位置暂时无法对应原文，请继续读这里。
 candidate:app/reading-arrival.mjs:7:35,js-cjk-literal,app/reading-arrival.mjs,7,,unknown,reviewable,,爱丽丝梦游仙境
 candidate:app/reading-arrival.mjs:7:52,js-cjk-literal,app/reading-arrival.mjs,7,,unknown,reviewable,,刘易斯·卡罗尔
 candidate:app/reading-arrival.mjs:7:70,js-cjk-literal,app/reading-arrival.mjs,7,,unknown,reviewable,,第一章
@@ -4601,7 +4601,7 @@ candidate:app/reading-time-policy.mjs:10:79,js-cjk-literal,app/reading-time-poli
 candidate:app/reading-time-policy.mjs:10:93,js-cjk-literal,app/reading-time-policy.mjs,10,,unknown,reviewable,,手动补记（自报）
 candidate:app/reading-time-policy.mjs:10:111,js-cjk-literal,app/reading-time-policy.mjs,10,,unknown,reviewable,,旧预览记录
 candidate:app/reading-time-policy.mjs:14:35,js-cjk-literal,app/reading-time-policy.mjs,14,,unknown,reviewable,,总时长按所有书籍、设备与口径的区间合并，重叠只计一次；各口径分别去重，彼此可能重叠，不能相加。前台估计在2分钟无操作后暂停；主动专注允许停留思考，隐藏、失焦或手动暂停时不计。手动补记为自报，时长不代表理解程度。
-candidate:app/reading-toolbar.mjs:97:53,js-attribute,app/reading-toolbar.mjs,97,aria-hidden,unknown,reviewable,,true
+candidate:app/reading-toolbar.mjs:102:53,js-attribute,app/reading-toolbar.mjs,102,aria-hidden,unknown,reviewable,,true
 candidate:app/reading-workspace.mjs:45:62,js-attribute,app/reading-workspace.mjs,45,role,unknown,reviewable,,status
 candidate:app/reading-workspace.mjs:51:19,js-dom-literal,app/reading-workspace.mjs,51,textContent,unknown,reviewable,,←
 candidate:app/reading-workspace.mjs:51:40,js-dom-literal,app/reading-workspace.mjs,51,textContent,unknown,reviewable,,→
@@ -5941,64 +5941,64 @@ candidate:server/portal.mjs:76:91,js-cjk-literal,server/portal.mjs,76,,unknown,r
 candidate:server/portal.mjs:110:16,js-cjk-literal,server/portal.mjs,110,,unknown,reviewable,,书架正在另一处更新，请稍后刷新
 candidate:server/portal.mjs:136:69,js-cjk-literal,server/portal.mjs,136,,unknown,reviewable,,不支持这个请求
 candidate:server/portal.mjs:137:134,js-cjk-literal,server/portal.mjs,137,,unknown,reviewable,,找不到这个操作
-candidate:server/portal.mjs:210:58,js-cjk-literal,server/portal.mjs,210,,unknown,reviewable,,不支持这个请求
-candidate:server/portal.mjs:220:61,js-cjk-literal,server/portal.mjs,220,,unknown,reviewable,,不支持这个请求
-candidate:server/portal.mjs:227:70,js-cjk-literal,server/portal.mjs,227,,unknown,reviewable,,不支持这个请求
-candidate:server/portal.mjs:228:59,js-cjk-literal,server/portal.mjs,228,,unknown,reviewable,,不支持这个请求
-candidate:server/portal.mjs:231:54,js-cjk-literal,server/portal.mjs,231,,unknown,reviewable,,请求来源未授权
-candidate:server/portal.mjs:232:85,js-cjk-literal,server/portal.mjs,232,,unknown,reviewable,,请求来源未授权
-candidate:server/portal.mjs:233:148,js-cjk-literal,server/portal.mjs,233,,unknown,reviewable,,"请在 "
-candidate:server/portal.mjs:233:167,js-cjk-literal,server/portal.mjs,233,,unknown,reviewable,," 使用 Google 或 Apple 登录。当前页面仍可使用邮箱或密码登录。"
-candidate:server/portal.mjs:240:79,js-cjk-literal,server/portal.mjs,240,,unknown,reviewable,,原生登录服务正在更新，请稍后重试。
-candidate:server/portal.mjs:241:107,js-cjk-literal,server/portal.mjs,241,,unknown,reviewable,,登录地址已失效，请重新开始。
-candidate:server/portal.mjs:246:79,js-cjk-literal,server/portal.mjs,246,,unknown,reviewable,,这个登录入口尚未开放
-candidate:server/portal.mjs:250:68,js-cjk-literal,server/portal.mjs,250,,unknown,reviewable,,原生登录服务暂不可用。
-candidate:server/portal.mjs:271:162,js-cjk-literal,server/portal.mjs,271,,unknown,reviewable,,账户已切换，请重新进入书房。原账户草稿仍留在原处。
-candidate:server/portal.mjs:278:52,js-cjk-literal,server/portal.mjs,278,,unknown,reviewable,,请先进入自己的书房。
-candidate:server/portal.mjs:279:82,js-cjk-literal,server/portal.mjs,279,,unknown,reviewable,,请重新核对当前书房账户。
-candidate:server/portal.mjs:282:18,js-cjk-literal,server/portal.mjs,282,,unknown,reviewable,,找不到这个人物操作。
-candidate:server/portal.mjs:291:60,js-cjk-literal,server/portal.mjs,291,,unknown,reviewable,,账号绑定服务正在更新，请稍后重试。
-candidate:server/portal.mjs:295:63,js-cjk-literal,server/portal.mjs,295,,unknown,reviewable,,原生登录服务正在更新，请稍后重试。
-candidate:server/portal.mjs:299:66,js-cjk-literal,server/portal.mjs,299,,unknown,reviewable,,原生登录服务正在更新，请稍后重试。
-candidate:server/portal.mjs:303:64,js-cjk-literal,server/portal.mjs,303,,unknown,reviewable,,原生登录服务正在更新，请稍后重试。
-candidate:server/portal.mjs:308:27,js-cjk-literal,server/portal.mjs,308,,unknown,reviewable,,请先进入自己的书房
-candidate:server/portal.mjs:310:41,js-cjk-literal,server/portal.mjs,310,,unknown,reviewable,,不支持这个请求
-candidate:server/portal.mjs:311:61,js-cjk-literal,server/portal.mjs,311,,unknown,reviewable,,请重新核对当前书房账户
-candidate:server/portal.mjs:325:27,js-cjk-literal,server/portal.mjs,325,,unknown,reviewable,,请先进入自己的书房
-candidate:server/portal.mjs:327:94,js-cjk-literal,server/portal.mjs,327,,unknown,reviewable,,请重新核对当前书房账户
-candidate:server/portal.mjs:330:41,js-cjk-literal,server/portal.mjs,330,,unknown,reviewable,,不支持这个请求
-candidate:server/portal.mjs:331:61,js-cjk-literal,server/portal.mjs,331,,unknown,reviewable,,请重新核对当前书房账户
-candidate:server/portal.mjs:336:27,js-cjk-literal,server/portal.mjs,336,,unknown,reviewable,,请先进入自己的书房
-candidate:server/portal.mjs:338:41,js-cjk-literal,server/portal.mjs,338,,unknown,reviewable,,不支持这个请求
-candidate:server/portal.mjs:339:61,js-cjk-literal,server/portal.mjs,339,,unknown,reviewable,,请重新核对当前书房账户
-candidate:server/portal.mjs:346:95,js-cjk-literal,server/portal.mjs,346,,unknown,reviewable,,这个登录方式正在准备中
-candidate:server/portal.mjs:350:146,js-cjk-literal,server/portal.mjs,350,,unknown,reviewable,,此书房尚未开启密码登录，可以使用验证码或本机书房
-candidate:server/portal.mjs:351:146,js-cjk-literal,server/portal.mjs,351,,unknown,reviewable,,此书房尚未开启密码设置
-candidate:server/portal.mjs:353:151,js-cjk-literal,server/portal.mjs,353,,unknown,reviewable,,此书房尚未开启密码设置
-candidate:server/portal.mjs:357:80,js-cjk-literal,server/portal.mjs,357,,unknown,reviewable,,本机书房只在本机模式可用
-candidate:server/portal.mjs:377:27,js-cjk-literal,server/portal.mjs,377,,unknown,reviewable,,请先进入自己的书房
-candidate:server/portal.mjs:378:149,js-cjk-literal,server/portal.mjs,378,,unknown,reviewable,,线上版本尚未准备好，请稍后重新读取接入配置。
-candidate:server/portal.mjs:379:35,js-cjk-literal,server/portal.mjs,379,,unknown,reviewable,,本机接入配置只能在运行 Leafhour 的电脑上读取。远程接入尚未支持。
-candidate:server/portal.mjs:388:446,js-cjk-literal,server/portal.mjs,388,,unknown,reviewable,,不支持这个请求
-candidate:server/portal.mjs:390:45,js-cjk-literal,server/portal.mjs,390,,unknown,reviewable,,此书房使用本机上传
-candidate:server/portal.mjs:394:48,js-cjk-literal,server/portal.mjs,394,,unknown,reviewable,,此书房使用本机上传
-candidate:server/portal.mjs:398:27,js-cjk-literal,server/portal.mjs,398,,unknown,reviewable,,请先进入自己的书房
-candidate:server/portal.mjs:398:187,js-cjk-literal,server/portal.mjs,398,,unknown,reviewable,,文件编码不正确
-candidate:server/portal.mjs:412:27,js-cjk-literal,server/portal.mjs,412,,unknown,reviewable,,请先进入自己的书房
-candidate:server/portal.mjs:412:98,js-cjk-literal,server/portal.mjs,412,,unknown,reviewable,,请重新核对当前书房账户
-candidate:server/portal.mjs:414:41,js-cjk-literal,server/portal.mjs,414,,unknown,reviewable,,不支持这个请求
-candidate:server/portal.mjs:427:164,js-cjk-literal,server/portal.mjs,427,,unknown,reviewable,,这份阅读包较大，请从赠书信页面分段下载
-candidate:server/portal.mjs:441:25,js-cjk-literal,server/portal.mjs,441,,unknown,reviewable,,不支持这个请求
-candidate:server/portal.mjs:534:120,js-cjk-literal,server/portal.mjs,534,,unknown,reviewable,,本书尚未开启探索体验统计
-candidate:server/portal.mjs:535:175,js-cjk-literal,server/portal.mjs,535,,unknown,reviewable,,请选择这本书的记录包
-candidate:server/portal.mjs:536:99,js-cjk-literal,server/portal.mjs,536,,unknown,reviewable,,这本书的探索体验尚未接入，可以按段翻译并保存自己的笔记
-candidate:server/portal.mjs:543:43,js-cjk-literal,server/portal.mjs,543,,unknown,reviewable,,不支持这个请求
-candidate:server/portal.mjs:548:430,js-cjk-literal,server/portal.mjs,548,,unknown,reviewable,,找不到这个工具
-candidate:server/portal.mjs:551:30,js-cjk-literal,server/portal.mjs,551,,unknown,reviewable,,此实例暂未开启听读，请在本机书房使用。
-candidate:server/portal.mjs:557:20,js-cjk-literal,server/portal.mjs,557,,unknown,reviewable,,不支持这个听读操作
-candidate:server/portal.mjs:566:86,js-cjk-literal,server/portal.mjs,566,,unknown,reviewable,,只保存用户明确提供的原话
-candidate:server/portal.mjs:567:18,js-cjk-literal,server/portal.mjs,567,,unknown,reviewable,,不支持这个请求
-candidate:server/portal.mjs:569:16,js-cjk-literal,server/portal.mjs,569,,unknown,reviewable,,找不到这个操作
+candidate:server/portal.mjs:211:58,js-cjk-literal,server/portal.mjs,211,,unknown,reviewable,,不支持这个请求
+candidate:server/portal.mjs:221:61,js-cjk-literal,server/portal.mjs,221,,unknown,reviewable,,不支持这个请求
+candidate:server/portal.mjs:228:70,js-cjk-literal,server/portal.mjs,228,,unknown,reviewable,,不支持这个请求
+candidate:server/portal.mjs:229:59,js-cjk-literal,server/portal.mjs,229,,unknown,reviewable,,不支持这个请求
+candidate:server/portal.mjs:232:54,js-cjk-literal,server/portal.mjs,232,,unknown,reviewable,,请求来源未授权
+candidate:server/portal.mjs:233:85,js-cjk-literal,server/portal.mjs,233,,unknown,reviewable,,请求来源未授权
+candidate:server/portal.mjs:234:148,js-cjk-literal,server/portal.mjs,234,,unknown,reviewable,,"请在 "
+candidate:server/portal.mjs:234:167,js-cjk-literal,server/portal.mjs,234,,unknown,reviewable,," 使用 Google 或 Apple 登录。当前页面仍可使用邮箱或密码登录。"
+candidate:server/portal.mjs:241:79,js-cjk-literal,server/portal.mjs,241,,unknown,reviewable,,原生登录服务正在更新，请稍后重试。
+candidate:server/portal.mjs:242:107,js-cjk-literal,server/portal.mjs,242,,unknown,reviewable,,登录地址已失效，请重新开始。
+candidate:server/portal.mjs:247:79,js-cjk-literal,server/portal.mjs,247,,unknown,reviewable,,这个登录入口尚未开放
+candidate:server/portal.mjs:251:68,js-cjk-literal,server/portal.mjs,251,,unknown,reviewable,,原生登录服务暂不可用。
+candidate:server/portal.mjs:272:162,js-cjk-literal,server/portal.mjs,272,,unknown,reviewable,,账户已切换，请重新进入书房。原账户草稿仍留在原处。
+candidate:server/portal.mjs:279:52,js-cjk-literal,server/portal.mjs,279,,unknown,reviewable,,请先进入自己的书房。
+candidate:server/portal.mjs:280:82,js-cjk-literal,server/portal.mjs,280,,unknown,reviewable,,请重新核对当前书房账户。
+candidate:server/portal.mjs:283:18,js-cjk-literal,server/portal.mjs,283,,unknown,reviewable,,找不到这个人物操作。
+candidate:server/portal.mjs:292:60,js-cjk-literal,server/portal.mjs,292,,unknown,reviewable,,账号绑定服务正在更新，请稍后重试。
+candidate:server/portal.mjs:296:63,js-cjk-literal,server/portal.mjs,296,,unknown,reviewable,,原生登录服务正在更新，请稍后重试。
+candidate:server/portal.mjs:300:66,js-cjk-literal,server/portal.mjs,300,,unknown,reviewable,,原生登录服务正在更新，请稍后重试。
+candidate:server/portal.mjs:304:64,js-cjk-literal,server/portal.mjs,304,,unknown,reviewable,,原生登录服务正在更新，请稍后重试。
+candidate:server/portal.mjs:309:27,js-cjk-literal,server/portal.mjs,309,,unknown,reviewable,,请先进入自己的书房
+candidate:server/portal.mjs:311:41,js-cjk-literal,server/portal.mjs,311,,unknown,reviewable,,不支持这个请求
+candidate:server/portal.mjs:312:61,js-cjk-literal,server/portal.mjs,312,,unknown,reviewable,,请重新核对当前书房账户
+candidate:server/portal.mjs:326:27,js-cjk-literal,server/portal.mjs,326,,unknown,reviewable,,请先进入自己的书房
+candidate:server/portal.mjs:328:94,js-cjk-literal,server/portal.mjs,328,,unknown,reviewable,,请重新核对当前书房账户
+candidate:server/portal.mjs:331:41,js-cjk-literal,server/portal.mjs,331,,unknown,reviewable,,不支持这个请求
+candidate:server/portal.mjs:332:61,js-cjk-literal,server/portal.mjs,332,,unknown,reviewable,,请重新核对当前书房账户
+candidate:server/portal.mjs:337:27,js-cjk-literal,server/portal.mjs,337,,unknown,reviewable,,请先进入自己的书房
+candidate:server/portal.mjs:339:41,js-cjk-literal,server/portal.mjs,339,,unknown,reviewable,,不支持这个请求
+candidate:server/portal.mjs:340:61,js-cjk-literal,server/portal.mjs,340,,unknown,reviewable,,请重新核对当前书房账户
+candidate:server/portal.mjs:347:95,js-cjk-literal,server/portal.mjs,347,,unknown,reviewable,,这个登录方式正在准备中
+candidate:server/portal.mjs:351:146,js-cjk-literal,server/portal.mjs,351,,unknown,reviewable,,此书房尚未开启密码登录，可以使用验证码或本机书房
+candidate:server/portal.mjs:352:146,js-cjk-literal,server/portal.mjs,352,,unknown,reviewable,,此书房尚未开启密码设置
+candidate:server/portal.mjs:354:151,js-cjk-literal,server/portal.mjs,354,,unknown,reviewable,,此书房尚未开启密码设置
+candidate:server/portal.mjs:358:80,js-cjk-literal,server/portal.mjs,358,,unknown,reviewable,,本机书房只在本机模式可用
+candidate:server/portal.mjs:378:27,js-cjk-literal,server/portal.mjs,378,,unknown,reviewable,,请先进入自己的书房
+candidate:server/portal.mjs:379:149,js-cjk-literal,server/portal.mjs,379,,unknown,reviewable,,线上版本尚未准备好，请稍后重新读取接入配置。
+candidate:server/portal.mjs:380:35,js-cjk-literal,server/portal.mjs,380,,unknown,reviewable,,本机接入配置只能在运行 Leafhour 的电脑上读取。远程接入尚未支持。
+candidate:server/portal.mjs:389:446,js-cjk-literal,server/portal.mjs,389,,unknown,reviewable,,不支持这个请求
+candidate:server/portal.mjs:391:45,js-cjk-literal,server/portal.mjs,391,,unknown,reviewable,,此书房使用本机上传
+candidate:server/portal.mjs:395:48,js-cjk-literal,server/portal.mjs,395,,unknown,reviewable,,此书房使用本机上传
+candidate:server/portal.mjs:399:27,js-cjk-literal,server/portal.mjs,399,,unknown,reviewable,,请先进入自己的书房
+candidate:server/portal.mjs:399:187,js-cjk-literal,server/portal.mjs,399,,unknown,reviewable,,文件编码不正确
+candidate:server/portal.mjs:413:27,js-cjk-literal,server/portal.mjs,413,,unknown,reviewable,,请先进入自己的书房
+candidate:server/portal.mjs:413:98,js-cjk-literal,server/portal.mjs,413,,unknown,reviewable,,请重新核对当前书房账户
+candidate:server/portal.mjs:415:41,js-cjk-literal,server/portal.mjs,415,,unknown,reviewable,,不支持这个请求
+candidate:server/portal.mjs:428:164,js-cjk-literal,server/portal.mjs,428,,unknown,reviewable,,这份阅读包较大，请从赠书信页面分段下载
+candidate:server/portal.mjs:442:25,js-cjk-literal,server/portal.mjs,442,,unknown,reviewable,,不支持这个请求
+candidate:server/portal.mjs:535:120,js-cjk-literal,server/portal.mjs,535,,unknown,reviewable,,本书尚未开启探索体验统计
+candidate:server/portal.mjs:536:175,js-cjk-literal,server/portal.mjs,536,,unknown,reviewable,,请选择这本书的记录包
+candidate:server/portal.mjs:537:99,js-cjk-literal,server/portal.mjs,537,,unknown,reviewable,,这本书的探索体验尚未接入，可以按段翻译并保存自己的笔记
+candidate:server/portal.mjs:544:43,js-cjk-literal,server/portal.mjs,544,,unknown,reviewable,,不支持这个请求
+candidate:server/portal.mjs:549:430,js-cjk-literal,server/portal.mjs,549,,unknown,reviewable,,找不到这个工具
+candidate:server/portal.mjs:552:30,js-cjk-literal,server/portal.mjs,552,,unknown,reviewable,,此实例暂未开启听读，请在本机书房使用。
+candidate:server/portal.mjs:558:20,js-cjk-literal,server/portal.mjs,558,,unknown,reviewable,,不支持这个听读操作
+candidate:server/portal.mjs:567:86,js-cjk-literal,server/portal.mjs,567,,unknown,reviewable,,只保存用户明确提供的原话
+candidate:server/portal.mjs:568:18,js-cjk-literal,server/portal.mjs,568,,unknown,reviewable,,不支持这个请求
+candidate:server/portal.mjs:570:16,js-cjk-literal,server/portal.mjs,570,,unknown,reviewable,,找不到这个操作
 candidate:server/preference-memory.mjs:5:97,js-cjk-literal,server/preference-memory.mjs,5,,unknown,reviewable,,阅读偏好记录无法识别，已保持原样
 candidate:server/preference-memory.mjs:15:245,js-cjk-literal,server/preference-memory.mjs,15,,unknown,reviewable,,阅读偏好请求格式不正确
 candidate:server/preference-memory.mjs:16:56,js-cjk-literal,server/preference-memory.mjs,16,,unknown,reviewable,,阅读偏好已在另一处更新，请读取最新版本

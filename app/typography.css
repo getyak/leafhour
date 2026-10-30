@@ -62,3 +62,12 @@
   --track-hero: var(--track-cjk);
   --track-heading: var(--track-cjk);
 }
+
+/* Localized fragments stay in their parent text flow under the self-only CSP. */
+body span.ui-inline:not([hidden]) {
+  display: contents;
+  font: inherit;
+  color: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+}
