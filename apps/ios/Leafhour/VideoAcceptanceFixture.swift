@@ -153,7 +153,7 @@ private final class GET317Transport: URLProtocol, @unchecked Sendable {
         DispatchQueue.global(qos: .utility).asyncAfter(deadline: .now() + result.delay) { [self] in
             completionLock.lock(); defer { completionLock.unlock() }
             guard !stopped, let url = request.url else { return }
-            guard let response = HTTPURLResponse(url: url, statusCode: result.status, httpVersion: "HTTP/1.1", headerFields: ["Content-Type": "application/json"]) else { return }
+            guard let response = HTTPURLResponse(url: url, statusCode: result.status, httpVersion: "HTTP/1.1", headerFields: ["Content-Type": result.mimeType]) else { return }
             client?.urlProtocol(self, didReceive: response, cacheStoragePolicy: .notAllowed)
             client?.urlProtocol(self, didLoad: result.data)
             client?.urlProtocolDidFinishLoading(self)
@@ -164,7 +164,7 @@ private final class GET317Transport: URLProtocol, @unchecked Sendable {
         Self.removePendingDownload(self)
     }
 
-    private struct Response: Sendable { var status: Int; var data: Data; var delay: TimeInterval }
+    private struct Response: Sendable { var status: Int; var data: Data; var delay: TimeInterval; var mimeType = "application/json" }
     private final class PendingDownload {
         weak var transport: GET317Transport?
         let response: Response
@@ -204,6 +204,13 @@ private final class GET317Transport: URLProtocol, @unchecked Sendable {
         }
         let path = request.url!.path
         let method = request.httpMethod ?? "GET"
+        if arguments.contains("--get344-cover-fixtures"), path.hasPrefix("/book-covers/") {
+            let name = request.url!.lastPathComponent
+            guard ["alice-640.webp", "walden-640.webp", "meditations-640.webp"].contains(name),
+                  let file = root?.deletingLastPathComponent().appendingPathComponent("GET344CoverFixtures").appendingPathComponent(name),
+                  let bytes = try? Data(contentsOf: file), bytes.count <= 4 * 1024 * 1024 else { return reply(["error": "Synthetic cover fixture unavailable"], status: 404) }
+            return Response(status: 200, data: bytes, delay: 0.03, mimeType: "image/webp")
+        }
         if path == "/api/auth/session" {
             var value: [String: Any] = ["user": ["id": owner, "email": "get317-synthetic@example.invalid"], "billing": ["enabled": false]]
             if arguments.contains("--get317-native-auth") {
@@ -299,11 +306,15 @@ private final class GET317Transport: URLProtocol, @unchecked Sendable {
     }
 
     private static var shelf: [[String: Any]] {
-        [
+        var rows: [[String: Any]] = [
             ["bookId": "get317-translated", "title": "GET317 合成验收 · 双译", "author": "GET317 合成作者甲", "contentVersion": "get317-v1"],
             ["bookId": "get317-cloud", "title": "GET317 合成验收 · 云端未下载", "author": "GET317 合成作者乙", "contentVersion": "get317-v1"],
             ["bookId": "get317-slow", "title": "GET317 合成验收 · 慢速下载", "author": "GET317 合成作者丙", "contentVersion": "get317-v1"]
         ]
+        if arguments.contains("--get344-cover-fixtures") {
+            for (index, name) in ["alice", "walden", "meditations"].enumerated() { rows[index]["coverImage"] = "/book-covers/" + name + "-640.webp?v=get344" }
+        }
+        return rows
     }
     private static func manifest(_ id: String) -> [String: Any] {
         let metadata = shelf.first(where: { $0["bookId"] as? String == id })!

@@ -1,4 +1,5 @@
 import Foundation
+import CryptoKit
 import Observation
 
 /// The reading session can persist to the local library or another explicitly supplied state store.
@@ -28,6 +29,21 @@ public final class ReaderSession: Identifiable {
     public var saveMessage: String?
     public var saving = false
     public var saveError: String?
+    public private(set) var translations: [String: ReadingTranslation] = [:]
+    public private(set) var contentRevision = 0
+    public func updateTranslations(_ rows: [String: ReadingTranslation]) {
+        let sources = Dictionary(uniqueKeysWithValues: book.chapters.flatMap(\.passages).map { ($0.id, $0.text) })
+        var updated = translations
+        for (id, value) in rows where sources[id] == value.original {
+            var incoming = value
+            if let prior = updated[id], prior.original == value.original {
+                if incoming.text(.literal) == nil || (prior.literalStatus == "reviewed" && incoming.literalStatus != "reviewed") { incoming.literal = prior.literal; incoming.literalStatus = prior.literalStatus }
+                if incoming.text(.interpretive) == nil || (prior.interpretiveStatus == "reviewed" && incoming.interpretiveStatus != "reviewed") { incoming.interpretive = prior.interpretive; incoming.interpretiveStatus = prior.interpretiveStatus }
+            }
+            updated[id] = incoming
+        }
+        if updated != translations { translations = updated; contentRevision += 1 }
+    }
     public var selection: SelectedQuote?
     public var noteEditorID: UUID?
     @ObservationIgnored private var pending: Task<Void, Never>?
@@ -149,13 +165,13 @@ public final class ReaderSession: Identifiable {
     }
     public func changePreferences(_ value: ReaderPreferences) { state.preferences = value; save() }
     public func draft(_ quote: SelectedQuote, text: String) {
-        state.drafts[quote.anchor.key] = NoteDraft(anchor: quote.anchor, quote: quote.text, body: text); save()
+        state.drafts[quote.id] = NoteDraft(anchor: quote.anchor, quote: quote.text, body: text, quoteOrigin: quote.origin, quoteVariant: quote.variant, quoteOffset: quote.translationOffset); save()
     }
     public func keepNoteDraft(_ quote: SelectedQuote, text: String, submissionID: UUID) {
-        let draft = NoteDraft(anchor: quote.anchor, quote: quote.text, body: text)
+        let draft = NoteDraft(anchor: quote.anchor, quote: quote.text, body: text, quoteOrigin: quote.origin, quoteVariant: quote.variant, quoteOffset: quote.translationOffset)
         let confirmed = persistedState.notes.first { $0.id == submissionID && $0.anchor == quote.anchor && $0.quote == quote.text && $0.body == text }
         if let confirmed, state.notes.contains(confirmed) {
-            if state.drafts[quote.anchor.key] == draft { state.drafts.removeValue(forKey: quote.anchor.key) }
+            if state.drafts[quote.id] == draft { state.drafts.removeValue(forKey: quote.id) }
             save()
         } else {
             self.draft(quote, text: text)
@@ -164,12 +180,12 @@ public final class ReaderSession: Identifiable {
     @discardableResult public func saveNote(_ quote: SelectedQuote, text: String, id: UUID = UUID()) async -> Bool {
         guard noteSubmission == nil, !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return false }
         let previous = state.notes.first { $0.id == id }
-        let note = ReaderNote(id: id, anchor: quote.anchor, quote: quote.text, body: text)
+        let note = ReaderNote(id: id, anchor: quote.anchor, quote: quote.text, body: text, quoteOrigin: quote.origin, quoteVariant: quote.variant)
         noteSubmission = note; noteSubmissionWasPersisted = false
         defer { noteSubmission = nil; noteSubmissionWasPersisted = false }
         if let index = state.notes.firstIndex(where: { $0.id == id }) { state.notes[index] = note }
         else { state.notes.append(note) }
-        state.drafts.removeValue(forKey: quote.anchor.key)
+        state.drafts.removeValue(forKey: quote.id)
         save()
         while true {
             let receipt = await flush()
@@ -180,8 +196,8 @@ public final class ReaderSession: Identifiable {
                 if let index = state.notes.firstIndex(where: { $0 == note }) {
                     if let previous { state.notes[index] = previous } else { state.notes.remove(at: index) }
                 }
-                if state.drafts[quote.anchor.key] == nil {
-                    state.drafts[quote.anchor.key] = NoteDraft(anchor: quote.anchor, quote: quote.text, body: text)
+                if state.drafts[quote.id] == nil {
+                    state.drafts[quote.id] = NoteDraft(anchor: quote.anchor, quote: quote.text, body: text, quoteOrigin: quote.origin, quoteVariant: quote.variant, quoteOffset: quote.translationOffset)
                 }
             }
             return false
@@ -193,6 +209,15 @@ public struct SelectedQuote: Identifiable {
     public let text: String
     /// Exact underlying source for a formatted selection, independent of its displayed characters.
     public let sourceText: String?
-    public init(anchor: ReadingAnchor, text: String, sourceText: String? = nil) { self.anchor = anchor; self.text = text; self.sourceText = sourceText }
-    public var id: String { anchor.key }
+    public let origin: String?
+    public let variant: String?
+    public let translationOffset: Int?
+    public init(anchor: ReadingAnchor, text: String, sourceText: String? = nil, origin: String? = nil, variant: String? = nil, translationOffset: Int? = nil) {
+        self.anchor = anchor; self.text = text; self.sourceText = sourceText; self.origin = origin; self.variant = variant; self.translationOffset = translationOffset
+    }
+    public var id: String {
+        guard origin == "translation" else { return anchor.key }
+        let digest = SHA256.hash(data: Data(text.utf8)).prefix(8).map { String(format: "%02x", $0) }.joined()
+        return anchor.key + ":translation:" + (variant ?? "literal") + ":" + String(translationOffset ?? 0) + ":" + digest
+    }
 }

@@ -5,6 +5,18 @@ import LeafhourCore
 
 @MainActor
 final class LibraryActivityTests: XCTestCase {
+    func testShelfReloadKeepsRemoteCoverMetadataOffline() async throws {
+        let root=FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        let owner="00000000-0000-4000-8000-000000000344", path="/book-covers/alice-640.webp?v=abc123"
+        addTeardownBlock { try? FileManager.default.removeItem(at:root);ActivityURLProtocol.respond=nil }
+        ActivityURLProtocol.respond = { _ in (0,["user":["id":owner],"books":[["bookId":"alice","title":"Alice","author":"Carroll","contentVersion":"v1","coverImage":path]]]) }
+        let configuration=URLSessionConfiguration.ephemeral;configuration.protocolClasses=[ActivityURLProtocol.self]
+        let credential=CloudCredential(account:CloudAccount(id:owner,email:nil),token:"isolated-fixture")
+        let cloud=CloudLibraryClient(baseURL:URL(string:"https://leafhour.test")!,credential:credential,configuration:configuration)
+        let model=LibraryModel(root:root,cloud:cloud,credential:credential,monitorNetwork:false)
+        await model.synchronize();await model.reload()
+        XCTAssertEqual(model.cloudBooks.first?.coverPath,path,"A successful sync and its reload must retain the actual remote artwork URL")
+    }
     func testCancellingCloudDownloadDoesNotPublishIncompleteBookOrShowAnError() async throws {
         let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
         try FileManager.default.createDirectory(at: root, withIntermediateDirectories: true)

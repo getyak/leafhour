@@ -82,7 +82,7 @@ struct LibraryScreen: View {
                     HStack(spacing: 10) {
                         Image(systemName: "magnifyingglass").foregroundStyle(.secondary)
                         TextField("书名或作者", text: $query).focused($searchFocused)
-                            .textInputAutocapitalization(.never).autocorrectionDisabled().submitLabel(.search)
+                            .textInputAutocapitalization(.never).autocorrectionDisabled().submitLabel(.search).onSubmit { searchFocused = false }
                             .accessibilityIdentifier("library-search-field")
                         Button("取消") { query = ""; searching = false; searchFocused = false }.frame(minHeight: 44)
                     }.padding(.horizontal, 20).background(Color.shelfPaper)
@@ -154,6 +154,7 @@ struct LibraryScreen: View {
                 else {
                     ForEach(visibleItems) { item in
                         LibraryShelfRow(item: item, downloadUnavailable: model.busy, isActive: isActive(item), progress: model.activityProgress, status: model.status, resource: model.coverResource(item), cancel: model.activityCanCancel ? { model.cancelImport() } : nil, open: { open(item) }, details: { details(item) })
+                            .listRowBackground(Color.clear)
                     }
                 }
             } header: { shelfHeader.textCase(nil) }
@@ -247,15 +248,6 @@ struct LibraryScreen: View {
         }
     }
 
-    private var libraryFooter: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Label(model.account?.email ?? "本机书房", systemImage: model.account == nil ? "iphone" : "person.crop.circle").font(.footnote).foregroundStyle(.secondary)
-            if !model.syncStatus.isEmpty { Text(model.syncStatus).font(.footnote).foregroundStyle(.secondary) }
-            if model.account != nil { Button("我的笔记与阅读记录", systemImage: "books.vertical") { info = true } }
-        }
-        .padding(.vertical, 8)
-    }
-
     private var activityBar: some View {
         HStack(spacing: 12) {
             VStack(alignment: .leading, spacing: 5) {
@@ -277,7 +269,7 @@ struct LibraryScreen: View {
             }
         }
         .padding(.horizontal, 20).padding(.vertical, 10)
-        .background(.regularMaterial)
+        .background(.regularMaterial).accessibilityIdentifier("library-global-activity")
     }
 
     private func resumeCard(_ book: LocalBook) -> some View {

@@ -373,7 +373,7 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
       if(decoded.scope!==scope)throw fail('Notebook shelf changed; retry',409);offset=decoded.offset;if(offset>books.length)throw fail('Invalid notebook cursor',400);
     }
     const batch=books.slice(offset,offset+limit),results=new Array(batch.length);let work=0;
-    const fields=['id','bookId','origin','text','quote','quoteOrigin','passageId','parts','contentVersion','createdAt','updatedAt','revision','lastEditId','status'];
+    const fields=['id','bookId','origin','text','quote','quoteOrigin','quoteLanguage','quoteVariant','passageId','parts','contentVersion','createdAt','updatedAt','revision','lastEditId','status'];
     async function worker(){while(work<batch.length){const index=work++,book=batch[index];try{
       const stored=await read(recordFile(user,book.bookId),emptyRecords(book));if(stored?.bookId!==book.bookId)throw Error('Unmatched records');
       const records={bookId:book.bookId,contentVersion:stored.contentVersion};
@@ -477,7 +477,7 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
     requireUser(user);const book=await getBook(user,id);
     if(!['comments','questions'].includes(type)||typeof input?.id!=='string'||!input.id||input.id.length>128||typeof input.text!=='string'||!input.text.trim()||input.text.length>2000||!allPassages(book).some(p=>p.id===input.passageId)||input.origin&&input.origin!=='user'||input.contentVersion&&input.contentVersion!==book.contentVersion)throw fail('记录无法对应当前原文');
     const createdAt=new Date().toISOString(),record={id:input.id,bookId:id,contentVersion:book.contentVersion,passageId:input.passageId,text:input.text,origin:'user',createdAt,updatedAt:createdAt,revision:0,...(type==='questions'?{status:'open'}:{})};
-    if(typeof input.quote==='string'&&input.quote.length<=4000){record.quote=input.quote;record.quoteLanguage=input.quoteLanguage==='en'?'en':'zh';if(['original','translation'].includes(input.quoteOrigin))record.quoteOrigin=input.quoteOrigin;}
+    if(typeof input.quote==='string'&&input.quote.length<=4000){record.quote=input.quote;record.quoteLanguage=input.quoteLanguage==='en'?'en':'zh';if(['original','translation'].includes(input.quoteOrigin))record.quoteOrigin=input.quoteOrigin;if(input.quoteOrigin==='translation'&&['literal','interpretive'].includes(input.quoteVariant))record.quoteVariant=input.quoteVariant;}
     return mutate(recordFile(user,id),emptyRecords(book),data=>{const old=data[type].find(r=>r.id===record.id);if(old){if(old.passageId!==record.passageId||old.text!==record.text)throw fail('记录标识冲突',409);return old;}if(data[type].length>=10000)throw fail('请先导出记录',413);data[type].push(record);guardRecordSize(data);return record;});
   }
   async function editComment(user,id,recordId,input,type='comments'){

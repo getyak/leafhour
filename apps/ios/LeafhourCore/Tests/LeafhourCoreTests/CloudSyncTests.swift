@@ -30,6 +30,38 @@ final class CloudSyncTests: XCTestCase {
     private func note(_ text: String, deleted: Bool = false) -> CloudJSON {
         .object(["id": .string("web-note"), "origin": .string("user"), "passageId": .string("passage-one"), "text": .string(text), "quote": .string("quiet page"), "deletedAt": deleted ? .string("2026-10-29T01:00:00.000Z") : .null])
     }
+    func testTranslatedNotesAndReadingModeSyncTheirActualLayers() async throws {
+        let library = try library(owner), book = try await library.importCloud(fixtureCopy()), sync = CloudBookSync(client: client(), library: library)
+        let anchor = ReadingAnchor(chapterID: "chapter-one", passageID: "passage-one")
+        var state = ReaderState(); state.anchor = anchor
+        state.preferences.viewMode = .parallel; state.preferences.translationVariant = .interpretive
+        state.notes = [ReaderNote(anchor: anchor, quote: "译文引句", body: "自己的想法", quoteOrigin: "translation", quoteVariant: "interpretive")]
+        try await library.saveState(state, bookID: book.id)
+        let empty = try records()
+        CloudMockProtocol.handler = { request in
+            guard request.httpMethod == "POST" else { return (200, empty) }
+            let value = try CloudJSON.decode(Self.body(request))
+            if request.url?.path.hasSuffix("comments") == true {
+                XCTAssertEqual(value["quoteOrigin"].string, "translation"); XCTAssertEqual(value["quoteLanguage"].string, "zh")
+                XCTAssertEqual(value["quoteVariant"].string, "interpretive")
+            } else {
+                XCTAssertEqual(value["mode"].string, "parallel"); XCTAssertEqual(value["variant"].string, "interpretive")
+            }
+            return (200, Data(#"{"revision":1}"#.utf8))
+        }
+        try await sync.synchronize(book.id)
+    }
+    func testOlderChapterRefreshDoesNotReplaceReviewedTranslation() async throws {
+        let library = try library(owner), book = try await library.importCloud(fixtureCopy())
+        func row(_ text: String, status: String) -> CloudJSON {
+            .object(["id":.string("passage-one"),"original":.string("A quiet page for reading."),"translations":.object(["literal":.object(["text":.string(text),"status":.string(status)]),"interpretive":.object(["text":.string("Independent meaning"),"status":.string(status)])])])
+        }
+        try await library.cacheCloudPassage(row("Reviewed wording", status: "reviewed"),bookID:book.id)
+        try await library.cacheCloudPassages([row("Old draft",status:"draft")],bookID:book.id)
+        let cached = try await library.readingTranslations(bookID:book.id)
+        XCTAssertEqual(cached["passage-one"]?.literal,"Reviewed wording")
+        XCTAssertEqual(cached["passage-one"]?.literalStatus,"reviewed")
+    }
     func testCloudCopiesCannotEnterDeviceOrOtherAccount() async throws {
         let device = try library(), another = try library(other), value = try fixtureCopy()
         do { _ = try await device.importCloud(value); XCTFail("Device scope accepted private account content") } catch {}

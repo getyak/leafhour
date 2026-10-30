@@ -14,7 +14,7 @@ public actor CloudCoverCache {
     public init(directory: URL) { self.directory = directory }
     public func data(path: String, ownerID: String, client: CloudLibraryClient) async throws -> Data {
         guard CloudCoverPath.isAllowed(path), await client.activeAccount()?.id == ownerID else { throw CancellationError() }
-        let origin = await client.baseURL.absoluteString
+        let origin = client.baseURL.absoluteString
         let key = SHA256.hash(data: Data((origin + "\n" + ownerID + "\n" + path).utf8)).map { String(format: "%02x", $0) }.joined()
         let file = directory.appendingPathComponent(key + ".image")
         if let cached = try? Data(contentsOf: file), !cached.isEmpty, cached.count <= 4 * 1024 * 1024 {

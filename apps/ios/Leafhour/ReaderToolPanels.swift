@@ -27,6 +27,7 @@ struct ReaderMorePanel: View {
     @Bindable var speech: ReaderSpeech
     @Bindable var tools: ReaderCloudTools
     let cloud: CloudLibraryClient?
+    var reading: ReaderReadingContent? = nil
     let onJump: (Int, ReadingAnchor?) -> Void
     let onCompanion: () -> Void
     @State private var export: RecordsDocument?
@@ -37,7 +38,7 @@ struct ReaderMorePanel: View {
                 NavigationLink { BookSearchPanel(session: session, onJump: onJump).modifier(ReaderToolContinuation()) } label: { Label("搜索原文", systemImage: "magnifyingglass").frame(minHeight: 44) }
                 NavigationLink { ReaderTranslationPanel(session: session, tools: tools, cloud: cloud).modifier(ReaderToolContinuation()) } label: { Label("翻译", systemImage: "character.book.closed").frame(minHeight: 44) }
                 NavigationLink { ReaderRecordsPanel(session: session, onJump: onJump).modifier(ReaderToolContinuation()) } label: { Label("我的记录", systemImage: "square.and.pencil").frame(minHeight: 44) }
-                NavigationLink { ReaderPreferencesPanel(session: session).modifier(ReaderToolContinuation()) } label: { Label("文字与纸面", systemImage: "textformat.size").frame(minHeight: 44) }
+                NavigationLink { ReaderPreferencesPanel(session: session, reading: reading).modifier(ReaderToolContinuation()) } label: { Label("文字与纸面", systemImage: "textformat.size").frame(minHeight: 44) }
                 NavigationLink { ReaderIntroductionPanel(session: session, tools: tools, cloud: cloud).modifier(ReaderToolContinuation()) } label: { Label("导读与摘要", systemImage: "text.book.closed").frame(minHeight: 44) }
                 Button(action: onCompanion) { Label("阅读陪读", systemImage: "bubble.left.and.bubble.right").frame(minHeight: 44) }
                 NavigationLink { ReaderWebToolsPanel(session: session, cloud: cloud).onAppear { speech.pause() }.modifier(ReaderToolContinuation()) } label: {

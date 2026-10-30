@@ -47,10 +47,17 @@ public struct ReadingAnchor: Codable, Equatable, Hashable, Sendable {
     public var key: String { chapterID + ":" + passageID + ":" + String(characterOffset) }
 }
 public struct NoteDraft: Codable, Equatable, Sendable {
+    public var id: String { SelectedQuote(anchor: anchor, text: quote, origin: quoteOrigin, variant: quoteVariant, translationOffset: quoteOffset).id }
     public var anchor: ReadingAnchor
     public var quote: String
     public var body: String
-    public init(anchor: ReadingAnchor, quote: String, body: String) { self.anchor = anchor; self.quote = quote; self.body = body }
+    public var quoteOrigin: String? = nil
+    public var quoteVariant: String? = nil
+    public var quoteOffset: Int? = nil
+    public init(anchor: ReadingAnchor, quote: String, body: String, quoteOrigin: String? = nil, quoteVariant: String? = nil, quoteOffset: Int? = nil) {
+        self.anchor = anchor; self.quote = quote; self.body = body
+        self.quoteOrigin = quoteOrigin; self.quoteVariant = quoteVariant; self.quoteOffset = quoteOffset
+    }
 }
 public struct ReaderNote: Codable, Identifiable, Equatable, Sendable {
     public var id: UUID
@@ -58,8 +65,11 @@ public struct ReaderNote: Codable, Identifiable, Equatable, Sendable {
     public var quote: String
     public var body: String
     public var modifiedAt: Date
-    public init(id: UUID = UUID(), anchor: ReadingAnchor, quote: String, body: String, modifiedAt: Date = Date()) {
+    public var quoteOrigin: String? = nil
+    public var quoteVariant: String? = nil
+    public init(id: UUID = UUID(), anchor: ReadingAnchor, quote: String, body: String, modifiedAt: Date = Date(), quoteOrigin: String? = nil, quoteVariant: String? = nil) {
         self.id = id; self.anchor = anchor; self.quote = quote; self.body = body; self.modifiedAt = modifiedAt
+        self.quoteOrigin = quoteOrigin; self.quoteVariant = quoteVariant
     }
 }
 public enum ReaderNavigationMode: String, Codable, Sendable { case scroll, paged }
@@ -68,8 +78,10 @@ public struct ReaderPreferences: Codable, Equatable, Sendable {
     public var lineSpacing: Double = 9
     public var theme: String = "paper"
     public var navigationMode: ReaderNavigationMode = .scroll
+    public var viewMode: ReaderViewMode = .source
+    public var translationVariant: ReaderTranslationVariant = .literal
     public init() {}
-    private enum CodingKeys: String, CodingKey { case fontSize, lineSpacing, theme, navigationMode }
+    private enum CodingKeys: String, CodingKey { case fontSize, lineSpacing, theme, navigationMode, viewMode, translationVariant }
     public init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
         fontSize = try values.decodeIfPresent(Double.self, forKey: .fontSize) ?? 22
@@ -78,6 +90,8 @@ public struct ReaderPreferences: Codable, Equatable, Sendable {
         // Old state and a future mode remain readable without discarding notes or position.
         let mode = try values.decodeIfPresent(String.self, forKey: .navigationMode)
         navigationMode = mode.flatMap(ReaderNavigationMode.init(rawValue:)) ?? .scroll
+        viewMode = (try values.decodeIfPresent(String.self, forKey: .viewMode)).flatMap(ReaderViewMode.init(rawValue:)) ?? .source
+        translationVariant = (try values.decodeIfPresent(String.self, forKey: .translationVariant)).flatMap(ReaderTranslationVariant.init(rawValue:)) ?? .literal
     }
 }
 public struct ReaderState: Codable, Equatable, Sendable {

@@ -14,7 +14,8 @@ struct ShelfBookCover: View {
             fallback
             if loadedKey == resource?.key, let artwork {
                 GeometryReader { geometry in
-                    Image(uiImage: artwork).resizable().scaledToFill().frame(width: geometry.size.width, height: geometry.size.height).clipped()
+                    Image(uiImage: artwork).resizable().scaledToFit().frame(width: geometry.size.width, height: geometry.size.height)
+                        .background(Color(uiColor: .secondarySystemGroupedBackground)).clipped()
                 }
             }
         }

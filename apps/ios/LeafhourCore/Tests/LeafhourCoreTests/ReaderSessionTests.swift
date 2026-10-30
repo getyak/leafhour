@@ -4,6 +4,26 @@ import Observation
 
 final class ReaderSessionTests: XCTestCase {
     @MainActor
+    func testTranslationDraftsRemainSeparateAndRetainProvenanceAfterReopening() async throws {
+        let fixture = try await fixture(), session = fixture.session(state: fixture.state, store: fixture.library)
+        let first = SelectedQuote(anchor: fixture.quote.anchor, text: "相同译词", origin: "translation", variant: "interpretive", translationOffset: 0)
+        let second = SelectedQuote(anchor: fixture.quote.anchor, text: "相同译词", origin: "translation", variant: "interpretive", translationOffset: 20)
+        session.draft(first,text:"First thought"); session.draft(second,text:"Another thought")
+        _ = await session.flush()
+        let restored = try await fixture.library.state(fixture.book.id)
+        XCTAssertEqual(restored.drafts.count,2)
+        let draft = try XCTUnwrap(restored.drafts[first.id])
+        let reopened = SelectedQuote(anchor:draft.anchor,text:draft.quote,origin:draft.quoteOrigin,variant:draft.quoteVariant,translationOffset:draft.quoteOffset)
+        XCTAssertEqual(reopened.id,first.id)
+        let resumed = fixture.session(state:restored,store:fixture.library)
+        let saved = await resumed.saveNote(reopened,text:draft.body)
+        XCTAssertTrue(saved)
+        let noteState = try await fixture.library.state(fixture.book.id)
+        XCTAssertEqual(noteState.notes.first?.quoteOrigin,"translation")
+        XCTAssertEqual(noteState.notes.first?.quoteVariant,"interpretive")
+        XCTAssertEqual(noteState.drafts[second.id]?.body,"Another thought")
+    }
+    @MainActor
     func testFailedNoteSaveRetainsEditableDraftInsteadOfAnUnconfirmedNote() async throws {
         let fixture = try await fixture()
         let started = expectation(description: "note write started")

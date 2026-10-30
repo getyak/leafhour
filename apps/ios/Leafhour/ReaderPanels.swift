@@ -19,6 +19,7 @@ struct ReaderPanelView: View {
     @Bindable var speech: ReaderSpeech
     @Bindable var tools: ReaderCloudTools
     let cloud: CloudLibraryClient?
+    var reading: ReaderReadingContent? = nil
     let onJump: (Int, ReadingAnchor?) -> Void
     let onCompanion: () -> Void
     @Environment(\.dismiss) private var dismiss
@@ -30,10 +31,10 @@ struct ReaderPanelView: View {
                 case .contents:
                     ReaderContentsPanel(session: session, onJump: onJump)
                 case .search: BookSearchPanel(session: session, onJump: onJump)
-                case .preferences: ReaderPreferencesPanel(session: session)
+                case .preferences: ReaderPreferencesPanel(session: session, reading: reading)
                 case .appearance: ReaderAppearancePanel(session: session)
                 case .records: ReaderRecordsPanel(session: session, onJump: onJump)
-                case .tools: ReaderMorePanel(session: session, speech: speech, tools: tools, cloud: cloud, onJump: onJump, onCompanion: onCompanion)
+                case .tools: ReaderMorePanel(session: session, speech: speech, tools: tools, cloud: cloud, reading: reading, onJump: onJump, onCompanion: onCompanion)
                 case .listening: ReaderListeningPanel(session: session, speech: speech)
                 case .translation: ReaderTranslationPanel(session: session, tools: tools, cloud: cloud)
                 case .introduction: ReaderIntroductionPanel(session: session, tools: tools, cloud: cloud)
@@ -46,7 +47,7 @@ struct ReaderPanelView: View {
                     ScrollView {
                         VStack(alignment: .leading, spacing: 18) {
                             Text("作者原文").font(.caption).foregroundStyle(.secondary)
-                            Text(quote.text).font(.title3).textSelection(.enabled)
+                            Text(quote.sourceText ?? quote.text).font(.title3).textSelection(.enabled)
                             Text("\(session.book.title) · \(session.book.chapters.first { $0.id == quote.anchor.chapterID }?.title ?? "")").font(.footnote).foregroundStyle(.secondary)
                             Divider()
                             Text("原文与译文分别保留。已有译文可从阅读工具的“翻译”核对，未翻译的内容仍显示原文。").font(.subheadline).foregroundStyle(.secondary)
@@ -240,12 +241,16 @@ struct BookSearchPanel: View {
 }
 struct ReaderPreferencesPanel: View {
     @Bindable var session: ReaderSession
+    var reading: ReaderReadingContent? = nil
     private var defaults: ReaderPreferences { ReaderPreferences() }
-    private var preview: String? {
+    private var previewLayer: ReadingLayerSegment? {
         let passages = session.chapter.passages
         let current = passages.first { $0.id == session.currentAnchor?.passageID && !$0.heading && $0.resourcePath == nil && !$0.text.isEmpty }
-        return (current ?? passages.first { !$0.heading && $0.resourcePath == nil && !$0.text.isEmpty }).map { Self.sourceExcerpt($0.text) }
+        guard let passage = current ?? passages.first(where: { !$0.heading && $0.resourcePath == nil && !$0.text.isEmpty }) else { return nil }
+        return ReadingLayers.segments(passage: passage, preferences: session.state.preferences, translation: session.translations[passage.id]).last
     }
+    private var preview: String? { previewLayer.map { Self.sourceExcerpt($0.text) } }
+    private var previewTitle: String { previewLayer?.translationMissing == true ? "暂无译文 · 原著预览" : previewLayer?.isTranslation == true ? "译文预览" : "原著预览" }
     private static func sourceExcerpt(_ source: String) -> String {
         let limit = 120, prefix = source.prefix(120)
         guard prefix.endIndex != source.endIndex else { return source }
@@ -275,11 +280,26 @@ struct ReaderPreferencesPanel: View {
     }
     var body: some View {
         Form {
-            if let preview, session.book.kind != .pdf {
+            Section {
+                Picker("阅读内容", selection: binding(\.viewMode)) {
+                    Text("原著").tag(ReaderViewMode.source)
+                    Text("译文").tag(ReaderViewMode.translation)
+                    Text("对照").tag(ReaderViewMode.parallel)
+                }.pickerStyle(.segmented).accessibilityIdentifier("reader-view-mode").padding(.vertical, 4)
+                if session.state.preferences.viewMode != .source {
+                    Picker("译文版本", selection: binding(\.translationVariant)) {
+                        Text("直译").tag(ReaderTranslationVariant.literal)
+                        Text("意译").tag(ReaderTranslationVariant.interpretive)
+                    }.pickerStyle(.segmented).accessibilityIdentifier("reader-reading-variant")
+                }
+            } header: { Text("阅读内容") } footer: {
+                if session.state.preferences.viewMode != .source { Text("未准备译文的段落保留原文，切换模式不生成内容。") }
+            }
+            if let preview, session.book.kind != .pdf || session.state.preferences.viewMode != .source {
                 Section {
                     VStack(alignment: .leading, spacing: 18) {
                         HStack {
-                            Text("这页的样子").font(.caption.weight(.medium)).foregroundStyle(.secondary)
+                            Text(previewTitle).font(.caption.weight(.medium)).foregroundStyle(.secondary)
                             Spacer()
                             Image(systemName: "leaf").font(.footnote).foregroundStyle(Color.leafInk)
                         }
@@ -289,7 +309,7 @@ struct ReaderPreferencesPanel: View {
                     .background(session.state.preferences.theme == "paper" ? Color.readingPaper : Color(uiColor: .secondarySystemGroupedBackground))
                 }.listRowInsets(EdgeInsets()).listRowSeparator(.hidden)
             }
-            if session.book.kind != .pdf {
+            if session.book.kind != .pdf || session.state.preferences.viewMode != .source {
                 Section {
                     HStack {
                         Text("文字").font(.headline)
@@ -318,14 +338,17 @@ struct ReaderPreferencesPanel: View {
             } else {
                 Section { Label("保留 PDF 原页，可双指缩放。", systemImage: "doc.richtext").font(.subheadline) }
             }
+            if let reading, session.state.preferences.viewMode != .source {
+                ReaderTranslationPreparation(session: session, reading: reading)
+            }
             Section("纸面") { ReaderThemeChoices(session: session).padding(.vertical, 8) }
                 .listRowBackground(Color.clear).listRowInsets(EdgeInsets())
-            Section("翻页") {
+            Section {
                 Picker("翻页方式", selection: binding(\.navigationMode)) {
                     Text("上下滚动").tag(ReaderNavigationMode.scroll)
                     Text("左右翻页").tag(ReaderNavigationMode.paged)
                 }.pickerStyle(.segmented).accessibilityIdentifier("reader-navigation-mode").padding(.vertical, 7)
-            } footer: { Text("轻点书页唤回阅读工具，长按可以选字。") }
+            } header: { Text("翻页") } footer: { Text("轻点书页唤回阅读工具，长按可以选字。") }
         }
         .scrollContentBackground(.hidden).background(Color(uiColor: .systemGroupedBackground))
         .accessibilityIdentifier("reader-preferences-form").navigationTitle("阅读设置")
@@ -359,23 +382,12 @@ struct ReaderAppearancePanel: View {
     @Bindable var session: ReaderSession
     var body: some View {
         Form {
-            Section {
-                ForEach([("paper", "清纸", "sun.max"), ("night", "夜读", "moon"), ("system", "跟随系统", "circle.lefthalf.filled")], id: \.0) { value, title, symbol in
-                    Button {
-                        var preferences = session.state.preferences
-                        preferences.theme = value
-                        session.changePreferences(preferences)
-                    } label: {
-                        HStack {
-                            Label(title, systemImage: symbol)
-                            Spacer()
-                            if session.state.preferences.theme == value { Image(systemName: "checkmark").accessibilityHidden(true) }
-                        }.frame(minHeight: 44).contentShape(Rectangle())
-                    }.buttonStyle(.plain).foregroundStyle(Color.primary)
-                        .accessibilityAddTraits(session.state.preferences.theme == value ? .isSelected : [])
-                }
-            } header: { Text("阅读纸面") } footer: { Text("仅调整这本书的阅读外观。屏幕亮度可在系统控制中心调整。") }
-        }.navigationTitle("外观").accessibilityIdentifier("reader-appearance-form")
+            Section { ReaderThemeChoices(session: session).padding(.vertical, 8) }
+                .listRowBackground(Color.clear).listRowInsets(EdgeInsets())
+            Section { Text("只调整这本书的纸面；屏幕亮度可在控制中心调整。").font(.footnote).foregroundStyle(.secondary) }
+                .listRowBackground(Color.clear)
+        }.scrollContentBackground(.hidden).background(Color(uiColor: .systemGroupedBackground))
+            .navigationTitle("外观").accessibilityIdentifier("reader-appearance-form")
     }
 }
 struct ReaderRecordsPanel: View {
@@ -389,13 +401,15 @@ struct ReaderRecordsPanel: View {
             }
             if !session.state.drafts.isEmpty {
                 Section("未完成草稿") {
-                    ForEach(session.state.drafts.values.sorted { $0.anchor.key < $1.anchor.key }, id: \.anchor.key) { draft in
-                        Button { editing = SelectedQuote(anchor: draft.anchor, text: draft.quote) } label: {
+                    ForEach(session.state.drafts.keys.sorted(), id: \.self) { key in
+                        if let draft = session.state.drafts[key] {
+                        Button { editing = SelectedQuote(anchor: draft.anchor, text: draft.quote, origin: draft.quoteOrigin, variant: draft.quoteVariant, translationOffset: draft.quoteOffset) } label: {
                             VStack(alignment: .leading, spacing: 8) {
                                 Text(location(draft.anchor)).font(.caption).foregroundStyle(.secondary)
                                 Text(draft.body.isEmpty ? "尚未写完" : draft.body).foregroundStyle(.primary).lineLimit(3)
-                                Text("原文 · " + draft.quote).font(.footnote).foregroundStyle(.secondary).lineLimit(2)
+                                Text((draft.quoteOrigin == "translation" ? "译文 · " : "原文 · ") + draft.quote).font(.footnote).foregroundStyle(.secondary).lineLimit(2)
                             }.padding(.vertical, 6)
+                        }
                         }
                     }
                 }
@@ -405,7 +419,7 @@ struct ReaderRecordsPanel: View {
                     VStack(alignment: .leading, spacing: 8) {
                         Text(location(note.anchor)).font(.caption).foregroundStyle(Color.primary).fixedSize(horizontal: false, vertical: true)
                         Text(note.body).textSelection(.enabled)
-                        Text("原文 · " + note.quote).font(.footnote).foregroundStyle(Color.primary).lineLimit(3)
+                        Text((note.quoteOrigin == "translation" ? "译文 · " : "原文 · ") + note.quote).font(.footnote).foregroundStyle(Color.primary).lineLimit(3)
                         Text(note.modifiedAt, format: .dateTime.year().month().day().hour().minute())
                             .font(.subheadline).foregroundStyle(Color.primary).fixedSize(horizontal: false, vertical: true)
                             .accessibilityLabel("修改于 \(note.modifiedAt.formatted(date: .abbreviated, time: .shortened))")
@@ -447,7 +461,7 @@ struct NoteEditorPanel: View {
     private var noteIsPersisted: Bool { session.isNotePersisted(id: submissionID, body: text) }
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
-            DisclosureGroup("作者原文", isExpanded: $showingQuote) {
+            DisclosureGroup(quote.origin == "translation" ? "引用的译文" : "作者原文", isExpanded: $showingQuote) {
                 ScrollView { Text(quote.text).font(.subheadline).foregroundStyle(.secondary).textSelection(.enabled).frame(maxWidth: .infinity, alignment: .leading) }
                     .frame(maxHeight: 120)
             }.font(.caption).foregroundStyle(.secondary)
@@ -465,7 +479,7 @@ struct NoteEditorPanel: View {
                 ToolbarItem(placement: .cancellationAction) { Button(noteIsPersisted ? "关闭" : "保留草稿") { submit(.draft) }.disabled(pendingAction != nil) }
                 ToolbarItemGroup(placement: .keyboard) { Spacer(); Button("收起键盘") { editorFocused = false }.accessibilityLabel("收起笔记键盘") }
             }
-            .onAppear { session.noteEditorID = submissionID; if !didLoad { text = session.state.drafts[quote.anchor.key]?.body ?? ""; didLoad = true } }
+            .onAppear { session.noteEditorID = submissionID; if !didLoad { text = session.state.drafts[quote.id]?.body ?? ""; didLoad = true } }
             .task { await Task.yield(); editorFocused = true }
             .onDisappear { if session.noteEditorID == submissionID { session.noteEditorID = nil } }
     }

@@ -191,7 +191,7 @@ public actor OfflineLibrary {
             }
         }
         if let anchor = state.anchor { try validate(anchor) }
-        for (key, draft) in state.drafts { try validate(draft.anchor); guard key == draft.anchor.key else { throw LibraryError.invalid("草稿引用无效。") } }
+        for (key, draft) in state.drafts { try validate(draft.anchor); guard key == draft.id else { throw LibraryError.invalid("草稿引用无效。") } }
         for note in state.notes { try validate(note.anchor) }
         guard (16...36).contains(state.preferences.fontSize), (4...18).contains(state.preferences.lineSpacing), ["paper", "night", "system"].contains(state.preferences.theme) else { throw LibraryError.invalid("阅读设置超出支持范围。") }
         try Disk.write(state, to: root.appendingPathComponent("states/" + bookID + ".json"))
@@ -300,22 +300,66 @@ public actor OfflineLibrary {
         else { try Disk.fm.moveItem(at: stage, to: target) }
         return value
     }
-    public func cacheCloudPassage(_ passage: CloudJSON, bookID: String) throws {
+    public func readingTranslations(bookID: String) throws -> [String: ReadingTranslation] {
         let book = try book(bookID)
-        guard book.cloud != nil, let passageID = passage["id"].string, !passage["translations"].object.isEmpty else { throw LibraryError.invalid("译文缓存回执不完整。") }
+        guard let identity = book.cloud else { return [:] }
         let folder = try bookDirectory(bookID)
         let content = try CloudJSON.decode(Data(contentsOf: folder.appendingPathComponent("cloud-content.json")))
-        var found = false
+        guard content["contentVersion"].string == identity.contentVersion else { throw LibraryError.invalid("离线译文版本无法核对。") }
+        var rows: [String: ReadingTranslation] = [:]
+        for row in content["sections"].array.flatMap({ $0["paragraphs"].array }) {
+            if let id = row["id"].string, let translation = ReadingTranslation(row) { rows[id] = translation }
+        }
+        return rows
+    }
+    public func pendingReadingTranslation(bookID: String) throws -> Data? {
+        _ = try book(bookID)
+        let file = root.appendingPathComponent("states/" + bookID + "-translation-run.json")
+        guard Disk.fm.fileExists(atPath: file.path) else { return nil }
+        guard try Disk.size(file) <= 8 * 1024 * 1024 else { throw LibraryError.invalid("预译恢复记录过大，请先保留并核对。") }
+        return try Data(contentsOf: file)
+    }
+    public func savePendingReadingTranslation(_ data: Data?, bookID: String) throws {
+        _ = try book(bookID)
+        let file = root.appendingPathComponent("states/" + bookID + "-translation-run.json")
+        if let data {
+            guard data.count <= 8 * 1024 * 1024 else { throw LibraryError.invalid("预译恢复记录超过容量，尚未提交后续段落。") }
+            try data.write(to: file, options: .atomic)
+        } else if Disk.fm.fileExists(atPath: file.path) { try Disk.fm.removeItem(at: file) }
+    }
+    public func cacheCloudPassage(_ passage: CloudJSON, bookID: String) throws { try cacheCloudPassages([passage], bookID: bookID) }
+    public func cacheCloudPassages(_ passages: [CloudJSON], bookID: String) throws {
+        guard !passages.isEmpty else { return }
+        let book = try book(bookID)
+        var updates: [String: CloudJSON] = [:]
+        for passage in passages {
+            guard book.cloud != nil, let id = passage["id"].string, !passage["translations"].object.isEmpty, updates[id] == nil else { throw LibraryError.invalid("译文缓存回执不完整。") }
+            updates[id] = passage
+        }
+        let folder = try bookDirectory(bookID)
+        let content = try CloudJSON.decode(Data(contentsOf: folder.appendingPathComponent("cloud-content.json")))
+        var found = Set<String>()
         let sections = content["sections"].array.map { section -> CloudJSON in
             var object = section.object
             object["paragraphs"] = .array(section["paragraphs"].array.map { row in
-                guard row["id"].string == passageID, row["original"].string == passage["original"].string else { return row }
-                found = true; var changed = row.object; changed["translations"] = passage["translations"]; return .object(changed)
+                guard let id = row["id"].string, let passage = updates[id], row["original"].string == passage["original"].string else { return row }
+                found.insert(id)
+                var changed = row.object, translations = row["translations"].object
+                for variant in ["literal", "interpretive"] {
+                    let incoming = passage["translations"][variant], prior = translations[variant] ?? .null
+                    guard let text = incoming["text"].string, !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { continue }
+                    if prior["status"].string == "reviewed", incoming["status"].string != "reviewed" { continue }
+                    if let oldDate = prior["createdAt"].string, let newDate = incoming["createdAt"].string, oldDate > newDate { continue }
+                    translations[variant] = incoming
+                }
+                changed["translations"] = .object(translations)
+                return .object(changed)
             })
             return .object(object)
         }
-        guard found else { throw LibraryError.invalid("译文与当前离线原文版本不一致。") }
+        guard found.count == updates.count else { throw LibraryError.invalid("译文与当前离线原文版本不一致。") }
         var object = content.object; object["sections"] = .array(sections)
+        guard object["sections"] != content["sections"] else { return }
         let stage = root.appendingPathComponent("staging/repair-cloud-cache-" + UUID().uuidString)
         try Disk.fm.copyItem(at: folder, to: stage)
         defer { try? Disk.fm.removeItem(at: stage) }

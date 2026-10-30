@@ -34,3 +34,36 @@ struct ReaderThemeChoices: View {
         .accessibilityAddTraits(selected ? .isSelected : [])
     }
 }
+
+struct ReaderTranslationPreparation: View {
+    @Bindable var session: ReaderSession
+    @Bindable var reading: ReaderReadingContent
+    var body: some View {
+        Section {
+            if session.book.cloud != nil {
+                if reading.running {
+                    Button("停止后续预译", systemImage: "stop.circle") { reading.stop() }.frame(minHeight: 44)
+                } else {
+                    Button("准备本章与下一章的译文", systemImage: "character.book.closed") {
+                        // Dependencies are owned by ReaderScreen, not by this settings view.
+                        reading.requestPreparation?()
+                    }.frame(minHeight: 44).disabled(reading.loading)
+                }
+                if reading.loading { ProgressView("正在更新译文").font(.footnote) }
+                if let status = reading.status { Text(status).font(.footnote).foregroundStyle(.secondary) }
+                if let error = reading.error { Text(error).font(.footnote).foregroundStyle(.secondary).textSelection(.enabled) }
+            } else {
+                Text("本机原件仍可阅读。将书同步到自己的账号后，可以准备译文。")
+                    .font(.subheadline).foregroundStyle(.secondary)
+            }
+        } header: { Text("AI 译文") } footer: {
+            Text("只准备这两章，每次最多 100 段。在前台阅读时逐段更新；停止后，已提交的一段仍可能完成并计点。")
+        }
+        .alert("准备或恢复译文", isPresented: Binding(get: { reading.proposed != nil }, set: { if !$0 { reading.proposed = nil } }), presenting: reading.proposed) { run in
+            Button("开始预译") { reading.confirmPreparation?(run) }
+            Button("暂不", role: .cancel) { reading.proposed = nil }
+        } message: { run in
+            Text("本次范围：\(session.book.chapters.filter { run.plan.chapterIDs.contains($0.id) }.map(\.title).joined(separator: "、"))。还剩 \(max(0, run.plan.passageIDs.count - run.next)) 段。启用阅读点时费用最多 \(run.plan.maximumPoints) 点，每段提交前核对报价。上次未确认的请求会沿用原请求核对；已有双译不会重做。切回原著模式或进入后台后停止后续段落。")
+        }
+    }
+}
