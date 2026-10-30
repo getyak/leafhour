@@ -21,7 +21,7 @@ struct PDFReadingView: UIViewRepresentable {
     }
     func updateUIView(_ view: PDFView, context: Context) {
         let coordinator = context.coordinator; coordinator.parent = self
-        coordinator.update(view)
+        coordinator.scheduleUpdate(view)
     }
     static func dismantleUIView(_ view: PDFView, coordinator: Coordinator) {
         coordinator.invalidate()
@@ -42,9 +42,55 @@ struct PDFReadingView: UIViewRepresentable {
         private var loadedSource: URL?
         private var renderedMode: ReaderNavigationMode?
         private var restorationGeneration = 0
+        private var updateGeneration = 0
+        private var pendingUpdate: DispatchWorkItem?
+        private var renderedOwner: ObjectIdentifier?
+        private var forceScheduledRestore = false
+        private var nativeSelectionRevision = 0
+        private var scheduledDismissalID: UUID?
+        private var scheduledSelectionRevision = 0
         private var lastReportedPage: ReaderPagePosition?
         init(parent: PDFReadingView) { self.parent = parent }
-        deinit { observers.forEach { NotificationCenter.default.removeObserver($0) }; scrolling?.invalidate(); delayed?.cancel() }
+        deinit { observers.forEach { NotificationCenter.default.removeObserver($0) }; scrolling?.invalidate(); delayed?.cancel(); pendingUpdate?.cancel() }
+        func scheduleUpdate(_ view: PDFView) {
+            let session = parent.session, owner = ObjectIdentifier(session)
+            let mode = session.state.preferences.navigationMode, source = session.original
+            let navigation = session.navigationID, dismissal = parent.selectionDismissalID
+            if self.view !== view || renderedOwner != owner || navigationID != navigation || renderedMode != mode || loadedSource != source {
+                // Old native notifications must not write into the new session
+                // while its hierarchy update waits for the next main turn.
+                restoring = true; restorationGeneration += 1; cancelPendingScroll(); userScrolled = false
+                forceScheduledRestore = true
+            }
+            self.view = view
+            updateGeneration += 1; pendingUpdate?.cancel()
+            let generation = updateGeneration
+            if scheduledDismissalID != dismissal {
+                scheduledDismissalID = dismissal
+                scheduledSelectionRevision = nativeSelectionRevision
+            }
+            let selectionRevision = scheduledSelectionRevision
+            // PDFKit replaces its scroll hierarchy when changing page controllers.
+            // Responder changes must run after SwiftUI finishes this update pass.
+            let work = DispatchWorkItem { [weak self, weak view] in
+                guard let self, let view, self.updateGeneration == generation, self.view === view else { return }
+                guard ObjectIdentifier(self.parent.session) == owner, self.parent.session.navigationID == navigation,
+                      self.parent.session.state.preferences.navigationMode == mode, self.parent.session.original == source,
+                      self.parent.selectionDismissalID == dismissal else {
+                    self.scheduleUpdate(view)
+                    return
+                }
+                self.pendingUpdate = nil
+                if self.selectionDismissalID != dismissal, self.nativeSelectionRevision != selectionRevision {
+                    // Consume only the old request; keep a selection made while
+                    // it was queued and still apply the required native update.
+                    self.selectionDismissalID = dismissal
+                }
+                self.update(view)
+            }
+            pendingUpdate = work
+            DispatchQueue.main.async(execute: work)
+        }
         func update(_ view: PDFView) {
             self.view = view
             let session = parent.session, mode = session.state.preferences.navigationMode
@@ -53,7 +99,8 @@ struct PDFReadingView: UIViewRepresentable {
             }
             let sourceChanged = loadedSource != session.original || view.document == nil
             let modeChanged = renderedMode != mode
-            let needsRestore = sourceChanged || modeChanged || navigationID != session.navigationID
+            let needsRestore = sourceChanged || modeChanged || navigationID != session.navigationID || renderedOwner != ObjectIdentifier(session) || forceScheduledRestore
+            renderedOwner = ObjectIdentifier(session); forceScheduledRestore = false
             // SwiftUI has already resized an externally padded paged PDF by
             // this point. Its old-mode geometry is no longer a source snapshot.
             let anchor = session.currentAnchor
@@ -101,13 +148,14 @@ struct PDFReadingView: UIViewRepresentable {
                         self.revealDestinationBelowChrome(page: page, sourceY: sourceY)
                     }
                     self.restoring = false
+                    self.selectionChanged()
                     if modeChanged && !sourceChanged { self.capture(force: true) }
                     self.reportPagePosition()
                 }
             }
         }
         func observe(_ view: PDFView) {
-            observers.append(NotificationCenter.default.addObserver(forName: .PDFViewSelectionChanged, object: view, queue: .main) { [weak self] _ in MainActor.assumeIsolated { self?.selectionChanged() } })
+            observers.append(NotificationCenter.default.addObserver(forName: .PDFViewSelectionChanged, object: view, queue: .main) { [weak self] _ in MainActor.assumeIsolated { self?.nativeSelectionChanged() } })
             observers.append(NotificationCenter.default.addObserver(forName: .PDFViewPageChanged, object: view, queue: .main) { [weak self] _ in
                 MainActor.assumeIsolated { self?.pageChanged() }
             })
@@ -202,11 +250,17 @@ struct PDFReadingView: UIViewRepresentable {
             }
         }
         func invalidate() {
+            updateGeneration += 1; pendingUpdate?.cancel(); pendingUpdate = nil
             restorationGeneration += 1; cancelPendingScroll(); scrolling?.invalidate(); scrolling = nil
             observers.forEach { NotificationCenter.default.removeObserver($0) }; observers = []
             observedScroll = nil; view = nil
         }
+        private func nativeSelectionChanged() {
+            nativeSelectionRevision += 1
+            selectionChanged()
+        }
         func selectionChanged() {
+            guard !restoring else { return }
             guard let view, let selection = view.currentSelection, selection.pages.count == 1, let page = selection.pages.first, let index = view.document?.index(for: page), parent.session.book.chapters.indices.contains(index), let text = selection.string, !text.isEmpty else { parent.onSelection(nil); return }
             let chapter = parent.session.book.chapters[index], passage = chapter.passages[0]
             guard let anchor = PDFTextAnchor.make(selection: selection, page: page, chapterID: chapter.id, passageID: passage.id) else { parent.onSelection(nil); return }

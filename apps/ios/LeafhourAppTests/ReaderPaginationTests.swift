@@ -17,6 +17,8 @@ import LeafhourCore
     func preferredFrame(for rect: CGRect) -> CGRect { rect }
 }
 
+@MainActor private final class PDFPageEventLog { var indices: [Int] = []; var selectionChanges = 0; var selectionStrings: [String] = [] }
+
 /// GET-328: real TextKit/PDFKit fixtures, with no account or provider calls.
 /// These cases were written before the implementation; execution belongs to
 /// the shared native runner and has not been performed by the authoring agent.
@@ -38,6 +40,9 @@ final class ReaderPaginationTests: XCTestCase {
                 for number in 1...3 {
                     context.beginPage()
                     ("SYNTHETIC PDF PAGE \(number)" as NSString).draw(at: CGPoint(x: 24, y: 80), withAttributes: [.font: UIFont.systemFont(ofSize: 18)])
+                    if let source {
+                        ((source + " PAGE \(number)") as NSString).draw(at: CGPoint(x: 24, y: 220), withAttributes: [.font: UIFont.systemFont(ofSize: 18)])
+                    }
                 }
             }
         } else { try Data((source ?? (longParagraph + "\n\nSecond distinct source paragraph.")).utf8).write(to: file) }
@@ -70,14 +75,32 @@ final class ReaderPaginationTests: XCTestCase {
             // stable IDs and reading state must agree after a fresh session.
             book = try await library.importCloud(CloudReadingCopy(identity: identity, title: "Synthetic paging source", author: "Fixture", chapters: cloudChapters, content: content))
         }
-        return (ReaderSession(book: book, state: try await library.state(book.id), original: try await library.originalURL(book.id), directory: try await library.bookDirectory(book.id), library: library), library)
+        let original = try await library.originalURL(book.id)
+        if pdf, let source {
+            let document = try XCTUnwrap(PDFDocument(url: original), "Read the freshly imported fixture's real original before creating the reader")
+            XCTAssertEqual(document.pageCount, 3)
+            for index in 0..<document.pageCount {
+                let page = try XCTUnwrap(document.page(at: index)), expected = source + " PAGE \(index + 1)"
+                let actual = page.string
+                let containsExactMarker = (actual ?? "").contains(expected)
+                XCTAssertTrue(containsExactMarker, "Fixture preflight expected exact marker \(String(reflecting: expected)); actual fresh PDFKit page text \(String(reflecting: actual)); page index \(index)")
+                guard containsExactMarker else { throw NSError(domain: "ReaderPaginationPDFSourceFixture", code: 1) }
+            }
+        }
+        return (ReaderSession(book: book, state: try await library.state(book.id), original: original, directory: try await library.bookDirectory(book.id), library: library), library)
     }
-    private func host(_ view: UIView, size: CGSize = CGSize(width: 390, height: 700)) {
-        let controller = UIViewController(), window = UIWindow(frame: CGRect(origin: .zero, size: size))
+    private func host(_ view: UIView, size: CGSize = CGSize(width: 390, height: 700), scene: UIWindowScene? = nil) {
+        let controller = UIViewController()
+        let previousKeyWindow = scene?.windows.first { $0.isKeyWindow }
+        let window = scene.map { UIWindow(windowScene: $0) } ?? UIWindow(frame: CGRect(origin: .zero, size: size))
+        window.frame = CGRect(origin: .zero, size: size)
         window.rootViewController = controller; window.makeKeyAndVisible()
         controller.view.frame = window.bounds; view.frame = window.bounds
         controller.view.addSubview(view); view.layoutIfNeeded()
-        addTeardownBlock { await MainActor.run { window.isHidden = true; window.rootViewController = nil } }
+        addTeardownBlock { await MainActor.run {
+            window.isHidden = true; window.rootViewController = nil
+            if let previousKeyWindow, !previousKeyWindow.isHidden { previousKeyWindow.makeKey() }
+        } }
     }
     private func drain() async {
         await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in DispatchQueue.main.async { continuation.resume() } }
@@ -602,6 +625,148 @@ final class ReaderPaginationTests: XCTestCase {
         XCTAssertEqual(afterImage.text, marker); XCTAssertEqual(afterImage.sourceText, marker)
         XCTAssertEqual(afterImage.anchor.passageID, illustratedBook.chapters[0].passages[1].id)
         _ = await illustratedSession.flush()
+    }
+
+    private func replacingPDFDismissal(_ parent: PDFReadingView, with id: UUID) -> PDFReadingView {
+        PDFReadingView(session: parent.session, pageInsets: parent.pageInsets, selectionDismissalID: id,
+                       onSelection: parent.onSelection, onWake: parent.onWake, onReadingScroll: parent.onReadingScroll,
+                       onPageChange: parent.onPageChange)
+    }
+    private func pdfHost(_ session: ReaderSession, onPageChange: ((ReaderPagePosition) -> Void)? = nil) throws -> (PDFView, PDFReadingView.Coordinator) {
+        let parent = PDFReadingView(session: session, pageInsets: UIEdgeInsets(top: 64, left: 0, bottom: 124, right: 0), selectionDismissalID: UUID(), onSelection: { _ in }, onWake: { _ in }, onReadingScroll: {}, onPageChange: onPageChange)
+        let coordinator = parent.makeCoordinator(), view = PDFView()
+        view.autoScales = true; view.backgroundColor = .white; view.overrideUserInterfaceStyle = .light
+        let scene = try XCTUnwrap(UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }.first { $0.activationState == .foregroundActive })
+        host(view, scene: scene); coordinator.view = view; coordinator.observe(view)
+        addTeardownBlock { await MainActor.run { coordinator.invalidate() } }
+        return (view, coordinator)
+    }
+    private func settlePDF(_ view: PDFView, coordinator: PDFReadingView.Coordinator, source: URL, page index: Int, mode: ReaderNavigationMode) async throws {
+        let deadline = ProcessInfo.processInfo.systemUptime + 3
+        var stableFrames = 0
+        repeat {
+            view.layoutDocumentView(); view.layoutIfNeeded()
+            let pageIndex = view.currentPage.flatMap { view.document?.index(for: $0) }
+            let ready = view.document?.documentURL == source && pageIndex == index && !coordinator.restoring && view.scaleFactor > 0
+                && view.isUsingPageViewController == (mode == .paged)
+                && view.window?.isKeyWindow == true && (view.window?.layer.presentation()?.opacity ?? 0) >= 0.999
+            stableFrames = ready ? stableFrames + 1 : 0
+            if stableFrames >= 2 { await drain(); return }
+            try await Task.sleep(for: .milliseconds(20))
+        } while ProcessInfo.processInfo.systemUptime < deadline
+        XCTFail("The real PDF view did not settle at its requested source/page/mode; restoring=\(coordinator.restoring), page=\(String(describing: view.currentPage.flatMap { view.document?.index(for: $0) }))")
+        throw NSError(domain: "ReaderPaginationPDFFixture", code: 1)
+    }
+    func testPDFScheduledConfigurationWaitsAndCoalescesToTheLatestReaderAndAnchor() async throws {
+        let first = try await importedSession(pdf: true, source: "Old PDF witness"), latest = try await importedSession(pdf: true, source: "Latest PDF witness")
+        var reported: [(String, ReaderPagePosition)] = []
+        let (oldView, coordinator) = try pdfHost(first.session, onPageChange: { reported.append(("old", $0)) })
+        coordinator.scheduleUpdate(oldView)
+        XCTAssertNil(oldView.document, "updateUIView must return before document/page-controller configuration")
+        let (view, unused) = try pdfHost(latest.session); unused.invalidate()
+        latest.session.state.preferences.navigationMode = .scroll
+        latest.session.go(to: 1, anchor: ReadingAnchor(chapterID: "page-2", passageID: "page-2", pageY: 450))
+        coordinator.parent = PDFReadingView(session: latest.session, pageInsets: UIEdgeInsets(top: 64, left: 0, bottom: 124, right: 0), selectionDismissalID: UUID(), onSelection: { _ in }, onWake: { _ in }, onReadingScroll: {}, onPageChange: { reported.append(("latest", $0)) })
+        coordinator.observe(view); coordinator.scheduleUpdate(view)
+        latest.session.state.preferences.navigationMode = .paged
+        latest.session.go(to: 2, anchor: ReadingAnchor(chapterID: "page-3", passageID: "page-3", pageY: 420))
+        coordinator.scheduleUpdate(view)
+        let target = ReadingAnchor(chapterID: "page-3", passageID: "page-3", pageY: 400)
+        latest.session.moved(target) // Same nav: read the latest canonical point when work executes.
+        XCTAssertNil(view.document, "Coalescing cannot synchronously configure the newer native view either")
+        try await settlePDF(view, coordinator: coordinator, source: latest.session.original, page: 2, mode: .paged)
+        XCTAssertNil(oldView.document, "An abandoned view/book request must never acquire the newer reader's source")
+        XCTAssertEqual(latest.session.currentAnchor, target)
+        XCTAssertEqual(view.displayMode, .singlePage); XCTAssertEqual(view.displayDirection, .horizontal)
+        let expectedNativeText = "Latest PDF witness PAGE 3", actualNativeText = view.currentPage?.string
+        XCTAssertTrue((actualNativeText ?? "").contains(expectedNativeText), "Expected exact marker \(String(reflecting: expectedNativeText)); actual PDFKit page text \(String(reflecting: actualNativeText)); native page index \(String(describing: view.currentPage.flatMap { view.document?.index(for: $0) }))")
+        XCTAssertFalse(reported.isEmpty)
+        XCTAssertTrue(reported.allSatisfy { $0.0 == "latest" && $0.1.index == 2 && $0.1.count == 3 }, "Stale callbacks cannot report the old owner/page")
+        let receipt = await latest.session.flush(); XCTAssertTrue(receipt.succeeded)
+        _ = await first.session.flush()
+    }
+
+    func testPDFQueuedNavigationRejectsOldNativePageChangesAndInvalidationCancels() async throws {
+        let fixture = try await importedSession(pdf: true, source: "Queued PDF witness"), session = fixture.session
+        session.state.preferences.navigationMode = .paged
+        let (view, coordinator) = try pdfHost(session)
+        coordinator.scheduleUpdate(view)
+        try await settlePDF(view, coordinator: coordinator, source: session.original, page: 0, mode: .paged)
+        let events = PDFPageEventLog()
+        let observer = NotificationCenter.default.addObserver(forName: .PDFViewPageChanged, object: view, queue: .main) { [weak view] _ in
+            MainActor.assumeIsolated {
+                if let view, let page = view.currentPage, let index = view.document?.index(for: page) { events.indices.append(index) }
+            }
+        }
+        defer { NotificationCenter.default.removeObserver(observer) }
+        let target = ReadingAnchor(chapterID: "page-3", passageID: "page-3", pageY: 400)
+        session.go(to: 2, anchor: target); let navigation = session.navigationID
+        coordinator.scheduleUpdate(view)
+        view.go(to: try XCTUnwrap(view.document?.page(at: 1))) // Real old-view notification, never a fabricated NotificationCenter post.
+        XCTAssertTrue(events.indices.contains(1), "The old native page notification must actually arrive before the queued update; otherwise this fixture has not proved the pending-window guard")
+        XCTAssertEqual(session.navigationID, navigation)
+        XCTAssertEqual(session.currentAnchor, target, "Old native geometry between scheduling and execution cannot overwrite a newly chosen source anchor")
+        try await settlePDF(view, coordinator: coordinator, source: session.original, page: 2, mode: .paged)
+        XCTAssertEqual(session.navigationID, navigation); XCTAssertEqual(session.currentAnchor, target)
+        let abandoned = PDFView(); host(abandoned)
+        coordinator.scheduleUpdate(abandoned); coordinator.invalidate()
+        for _ in 0..<4 { await drain() }
+        XCTAssertNil(abandoned.document, "Dismantling cancels queued native document/page-controller work")
+        XCTAssertEqual(session.currentAnchor, target)
+        let receipt = await session.flush(); XCTAssertTrue(receipt.succeeded)
+        let saved = try await fixture.library.state(session.book.id); XCTAssertEqual(saved.anchor, target)
+    }
+
+    func testPDFCoalescedOldDismissalKeepsANewerRealNativeSelectionAndFreshDismissalClearsIt() async throws {
+        let fixture = try await importedSession(pdf: true, source: "Revision PDF witness"), session = fixture.session
+        session.state.preferences.navigationMode = .scroll
+        let (view, coordinator) = try pdfHost(session)
+        coordinator.scheduleUpdate(view)
+        try await settlePDF(view, coordinator: coordinator, source: session.original, page: 0, mode: .scroll)
+        let page = try XCTUnwrap(view.currentPage), original = try XCTUnwrap(page.string) as NSString
+        func selection(_ words: String) throws -> PDFSelection {
+            let range = original.range(of: words)
+            let result = try XCTUnwrap(range.location == NSNotFound ? nil : page.selection(for: range),
+                "Expected exact native selection marker \(String(reflecting: words)); actual PDFKit page text \(String(reflecting: original as String)); source range \(range.location),\(range.length); native page index \(String(describing: view.document?.index(for: page)))")
+            XCTAssertEqual(result.string, words)
+            return result
+        }
+        let first = try selection("SYNTHETIC PDF PAGE 1"), newest = try selection("Revision PDF witness PAGE 1")
+        XCTAssertNotEqual(first.string, newest.string)
+        let events = PDFPageEventLog()
+        let observer = NotificationCenter.default.addObserver(forName: .PDFViewSelectionChanged, object: view, queue: .main) { [weak view] _ in
+            MainActor.assumeIsolated {
+                events.selectionChanges += 1
+                events.selectionStrings.append(view?.currentSelection?.string ?? "<none>")
+            }
+        }
+        defer { NotificationCenter.default.removeObserver(observer) }
+        view.setCurrentSelection(first, animate: false)
+        XCTAssertEqual(view.currentSelection?.string, first.string)
+        XCTAssertGreaterThan(events.selectionChanges, 0, "Selection A must deliver an actual native notification before queueing the dismissal")
+        XCTAssertEqual(events.selectionStrings.last, first.string)
+        let afterFirstSelection = events.selectionChanges
+        coordinator.parent = replacingPDFDismissal(coordinator.parent, with: UUID())
+        let dismissal = coordinator.parent.selectionDismissalID
+        coordinator.scheduleUpdate(view)
+        XCTAssertEqual(view.currentSelection?.string, first.string, "Scheduling cannot synchronously clear a real native selection")
+        view.setCurrentSelection(newest, animate: false)
+        XCTAssertEqual(view.currentSelection?.string, newest.string)
+        XCTAssertGreaterThan(events.selectionChanges, afterFirstSelection, "Selection B must notify while actually current and before queued work; later notifications cannot prove this race")
+        XCTAssertEqual(events.selectionStrings.last, newest.string)
+        coordinator.scheduleUpdate(view) // Same dismissal ID must retain its first-enqueue revision.
+        XCTAssertEqual(coordinator.parent.selectionDismissalID, dismissal)
+        try await settlePDF(view, coordinator: coordinator, source: session.original, page: 0, mode: .scroll)
+        XCTAssertGreaterThanOrEqual(events.selectionChanges, 2, "Both selections must deliver real PDFKit notifications; no synthetic post is used")
+        XCTAssertEqual(view.currentSelection?.string, newest.string, "A stale dismissal coalesced after a newer real selection must not clear that selection")
+        let beforeFreshDismissal = events.selectionChanges
+        coordinator.parent = replacingPDFDismissal(coordinator.parent, with: UUID())
+        XCTAssertNotEqual(coordinator.parent.selectionDismissalID, dismissal)
+        coordinator.scheduleUpdate(view)
+        try await settlePDF(view, coordinator: coordinator, source: session.original, page: 0, mode: .scroll)
+        XCTAssertNil(view.currentSelection, "A genuinely fresh dismissal with no intervening selection still has to clear the native selection")
+        XCTAssertGreaterThan(events.selectionChanges, beforeFreshDismissal)
+        let receipt = await session.flush(); XCTAssertTrue(receipt.succeeded)
     }
 
     func testPagedPDFOuterPaddingCapturesItsActualLocalTopWithoutAddingChromeTwice() async throws {
