@@ -261,6 +261,7 @@ struct ReaderPreferencesPanel: View {
                 }.pickerStyle(.segmented).accessibilityIdentifier("reader-navigation-mode")
             } header: { Text("阅读方式").foregroundStyle(Color.primary) } footer: {
                 Text(session.state.preferences.navigationMode == .paged ? "向左滑动下一页，向右滑动上一页。轻点书页显示阅读工具。" : "上下滑动继续阅读，轻点书页显示阅读工具。")
+                    .font(.subheadline).foregroundStyle(Color.primary).fixedSize(horizontal: false, vertical: true)
             }
             if session.book.kind == .pdf {
                 Section {
