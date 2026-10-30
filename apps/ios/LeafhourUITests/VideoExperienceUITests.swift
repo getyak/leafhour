@@ -2340,4 +2340,123 @@ final class VideoExperienceUITests: XCTestCase {
         capture("GET328-UI57-visible-body-keeps-native-copy")
     }
 
+    @MainActor
+    func test58PDFNativeCopyPastesActualSourceIntoNotesInBothReadingModes() throws {
+        // Fresh drafts and PDF -> SYNTHETIC -> PDF prove both modes replace
+        // the prior clipboard content without any test clipboard access.
+        let sourceLine = "GET317 SYNTHETIC PDF"
+        let font = UIFont.systemFont(ofSize: 20) // VideoAcceptanceFixture's PDF renderer.
+        let attributes: [NSAttributedString.Key: Any] = [.font: font]
+        let lineWidth = (sourceLine as NSString).size(withAttributes: attributes).width
+        var evidence: [[String: Any]] = []
+        func frame(_ rect: CGRect) -> [String: Double] {
+            ["x": Double(rect.minX), "y": Double(rect.minY), "width": Double(rect.width), "height": Double(rect.height)]
+        }
+        func attachGeometry(_ mode: String, _ pdf: XCUIElement) {
+            let attachment = XCTAttachment(string: pdf.debugDescription + "\n\n" + app.debugDescription)
+            attachment.name = "GET328-UI58-" + mode + "-actual-PDF-AX.txt"
+            attachment.lifetime = .keepAlways; add(attachment)
+            capture("GET328-UI58-" + mode + "-actual-source-geometry")
+        }
+        for (round, scenario) in [("上下滚动", "PDF"), ("左右翻页", "SYNTHETIC"), ("上下滚动", "PDF")].enumerated() {
+            let (mode, word) = scenario
+            let stage = "round-\(round + 1)-" + mode
+            app.terminate(); launch(); openBook(pdfTitle); chooseNavigation(mode)
+            let pdf = app.otherElements["leafhour-pdf-reader"]
+            require(pdf)
+            XCTAssertTrue(waitForReaderChromeAsleep(timeout: 8), "Select actual source without chrome covering it")
+            let viewport = pdf.frame.intersection(app.frame)
+            let grip = app.buttons["显示阅读进度、目录、搜索与记录"]
+            let gripFrame = grip.frame
+            func usable(_ rect: CGRect) -> Bool {
+                !rect.isEmpty && [rect.minX, rect.minY, rect.width, rect.height].allSatisfy { $0.isFinite }
+                    && viewport.contains(rect) && !rect.intersects(gripFrame)
+            }
+            var target: (point: CGPoint, rect: CGRect, label: String, kind: String)?
+            // Prefer a real word-level source accessibility frame. A full-page
+            // aggregate is not accepted as a word rectangle.
+            let wordWidth = (word as NSString).size(withAttributes: attributes).width
+            for node in pdf.staticTexts.matching(NSPredicate(format: "label == %@", word)).allElementsBoundByIndex {
+                let rect = node.frame
+                let scale = rect.width / wordWidth
+                guard usable(rect), scale > 0,
+                      rect.height >= font.lineHeight * scale * 0.4,
+                      rect.height <= font.lineHeight * scale * 1.75 else { continue }
+                target = (CGPoint(x: rect.midX, y: rect.midY), rect, node.label, "actual-word-AX-frame")
+                break
+            }
+            // An exact single-line AX frame is also source geometry. Project
+            // the renderer's measured word advances into that observed line;
+            // never infer a page rectangle from the PDFView's overall bounds.
+            if target == nil {
+                for node in pdf.staticTexts.matching(NSPredicate(format: "label == %@", sourceLine)).allElementsBoundByIndex {
+                    let rect = node.frame
+                    let scale = rect.width / lineWidth
+                    guard usable(rect), scale > 0,
+                          rect.height >= font.lineHeight * scale * 0.4,
+                          rect.height <= font.lineHeight * scale * 1.75,
+                          let range = sourceLine.range(of: word) else { continue }
+                    let prefix = String(sourceLine[..<range.lowerBound])
+                    let advance = (prefix as NSString).size(withAttributes: attributes).width
+                    let x = rect.minX + (advance + wordWidth / 2) * scale
+                    let point = CGPoint(x: x, y: rect.midY)
+                    guard rect.contains(point) else { continue }
+                    target = (point, rect, node.label, "actual-line-AX-frame-and-fixture-font-advances")
+                    break
+                }
+            }
+            attachGeometry(stage, pdf)
+            let actual = try XCTUnwrap(target, "PDFKit must expose an actual visible source word/line frame. A whole-page aggregate or missing source frame is a geometry failure, not permission to guess a selection point.")
+            XCTAssertTrue(viewport.contains(actual.point))
+            evidence.append(["round": round + 1, "mode": mode, "expectedSourceWord": word, "geometry": actual.kind,
+                "sourceAXLabel": actual.label, "sourceAXFrame": frame(actual.rect), "pdfFrame": frame(pdf.frame),
+                "visibleViewport": frame(viewport), "pressX": Double(actual.point.x), "pressY": Double(actual.point.y)])
+            let origin = app.coordinate(withNormalizedOffset: .zero)
+            origin.withOffset(CGVector(dx: actual.point.x - app.frame.minX, dy: actual.point.y - app.frame.minY))
+                .press(forDuration: 1.2)
+            waitForSystemEditMenu(timeout: 5)
+            systemEditAction(["复制", "Copy"])
+            // PDF's note action is the real selected-source toolbar Button,
+            // rather than a custom native edit-menu item used by text readers.
+            require(app.staticTexts["已选择原文"])
+            let notes = app.buttons.matching(NSPredicate(format: "label == %@", "记笔记"))
+            XCTAssertEqual(notes.count, 1, "Use the unique actual PDF selected-source note action")
+            let note = notes.firstMatch
+            requireReaderControlAwake(note); note.tap()
+            let noteBar = app.navigationBars["记下自己的想法"]
+            require(noteBar)
+            let editor = app.textViews["我的笔记正文"]
+            require(editor)
+            // The sheet's actual source quote must match this PDF selection.
+            // Underlying PDF words are excluded by foreground hit testing and
+            // the visible region between this note bar and this editor.
+            let barFrame = noteBar.frame, editorFrame = editor.frame
+            let quoteRegion = CGRect(x: barFrame.minX, y: barFrame.maxY,
+                width: barFrame.width, height: max(0, editorFrame.minY - barFrame.maxY))
+            let quote = try XCTUnwrap(app.staticTexts.matching(NSPredicate(format: "label == %@", word))
+                .allElementsBoundByIndex.first { node in
+                    node.exists && node.isEnabled && node.isHittable && !node.frame.isEmpty
+                        && app.frame.contains(node.frame) && quoteRegion.contains(node.frame)
+                }, "The foreground Note panel must show this exact selected PDF source above its editor, rather than matching a covered PDF word")
+            XCTAssertEqual(quote.label, word)
+            evidence.append(["round": round + 1, "mode": mode, "foregroundSelectedQuote": quote.label,
+                "noteBarFrame": frame(barFrame), "noteEditorFrame": frame(editorFrame), "quoteFrame": frame(quote.frame)])
+            XCTAssertEqual(try XCTUnwrap(editor.value as? String), "", "Fresh mode setup must not supply an existing note or draft")
+            editor.tap(); editor.press(forDuration: 1.2)
+            systemEditAction(["粘贴", "Paste"])
+            let pasted = try XCTUnwrap(editor.value as? String)
+            XCTAssertEqual(pasted, word, "Native Paste must insert the exact synthetic PDF source word selected and copied in this mode")
+            evidence.append(["round": round + 1, "mode": mode, "nativePasteMatchesActualSource": pasted == word, "pastedSourceWord": pasted])
+            capture("GET328-UI58-" + stage + "-native-PDF-copy-paste")
+            app.buttons["保留草稿"].tap()
+            XCTAssertTrue(editor.waitForNonExistence(timeout: 5))
+            XCTAssertTrue(app.staticTexts["已选择原文"].waitForNonExistence(timeout: 5), "Returning from Notes must clear the transient PDF selection toolbar")
+            require(pdf)
+        }
+        let data = try JSONSerialization.data(withJSONObject: evidence, options: [.sortedKeys, .prettyPrinted])
+        let attachment = XCTAttachment(string: String(decoding: data, as: UTF8.self))
+        attachment.name = "GET328-UI58-PDF-native-copy-paste-source-evidence.json"
+        attachment.lifetime = .keepAlways; add(attachment)
+    }
+
 }
