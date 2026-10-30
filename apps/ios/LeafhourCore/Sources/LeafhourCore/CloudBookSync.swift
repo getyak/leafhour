@@ -6,12 +6,16 @@ public struct CloudShelfBook: Codable, Identifiable, Equatable, Sendable {
     public var title: String
     public var author: String
     public var contentVersion: String
-    public init(id: String, title: String, author: String, contentVersion: String) {
+    public var coverPath: String? = nil
+    public init(id: String, title: String, author: String, contentVersion: String, coverPath: String? = nil) {
         self.id = id; self.title = title; self.author = author; self.contentVersion = contentVersion
+        self.coverPath = coverPath.flatMap { CloudCoverPath.isAllowed($0) ? $0 : nil }
     }
     public init?(json: CloudJSON) {
         guard let id = json["bookId"].string, let version = json["contentVersion"].string else { return nil }
-        self.init(id: id, title: Self.title(json["title"]), author: json["author"].string ?? "", contentVersion: version)
+        let legacyCover = json["visibility"].string == "private" && ["epub", "pdf"].contains(json["source"]["format"].string ?? "")
+            ? "/api/library/books/" + CloudJSON.component(id) + "/cover?v=" + CloudJSON.component(json["source"]["sha256"].string ?? version) : nil
+        self.init(id: id, title: Self.title(json["title"]), author: json["author"].string ?? "", contentVersion: version, coverPath: json["coverImage"].string ?? legacyCover)
     }
     public static func title(_ json: CloudJSON) -> String { json.string ?? json["zh"].string ?? json["en"].string ?? json.object.values.compactMap(\.string).first ?? "未命名书籍" }
 }

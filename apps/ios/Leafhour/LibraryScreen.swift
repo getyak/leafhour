@@ -133,7 +133,7 @@ struct LibraryScreen: View {
             else {
                 Section {
                     ForEach(visibleItems) { item in
-                        LibraryShelfRow(item: item, downloadUnavailable: model.busy, isActive: isActive(item), progress: model.activityProgress, status: model.status, open: { open(item) }, details: { details(item) })
+                        LibraryShelfRow(item: item, downloadUnavailable: model.busy, isActive: isActive(item), progress: model.activityProgress, status: model.status, resource: model.coverResource(item), open: { open(item) }, details: { details(item) })
                     }
                 } header: { Text("\(visibleItems.count) 本书").foregroundStyle(Color.primary) }
             }
@@ -157,7 +157,7 @@ struct LibraryScreen: View {
                     Text("\(visibleItems.count) 本书").font(.subheadline).foregroundStyle(Color.primary)
                     LazyVGrid(columns: shelfColumns, alignment: .leading, spacing: 24) {
                         ForEach(visibleItems) { item in
-                            LibraryShelfTile(item: item, downloadUnavailable: model.busy, isActive: isActive(item), progress: model.activityProgress, status: model.status, open: { open(item) }, details: { details(item) })
+                            LibraryShelfTile(item: item, downloadUnavailable: model.busy, isActive: isActive(item), progress: model.activityProgress, status: model.status, resource: model.coverResource(item), open: { open(item) }, details: { details(item) })
                         }
                     }
                 }
@@ -263,7 +263,7 @@ struct LibraryScreen: View {
     private func resumeCard(_ book: LocalBook) -> some View {
         Button { Task { await model.open(book) } } label: {
             HStack(spacing: 14) {
-                if !dynamicTypeSize.isAccessibilitySize { BookCover(book: book) }
+                if !dynamicTypeSize.isAccessibilitySize { BookCover(book: book, resource: model.coverResource(book)) }
                 VStack(alignment: .leading, spacing: 6) {
                     Text("继续读").font(.caption.weight(.semibold)).foregroundStyle(Color.leafInk)
                     Text(book.title).font(.headline).foregroundStyle(.primary)
@@ -320,8 +320,9 @@ struct LibraryScreen: View {
 
 struct BookCover: View {
     let book: LocalBook
+    var resource: BookCoverResource? = nil
     var body: some View {
-        ShelfBookCover(title: book.title, author: book.author, compact: true).frame(width: 58, height: 80)
+        ShelfBookCover(title: book.title, author: book.author, compact: true, resource: resource).frame(width: 58, height: 80)
     }
 }
 struct LocalLibraryInfo: View {

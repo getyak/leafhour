@@ -30,6 +30,7 @@ public struct LocalBook: Codable, Identifiable, Equatable, Sendable {
     /// A first-open hint; every source chapter and saved reading position remains available.
     public var readingStartChapterID: String? = nil
     public var readingStartAnchor: ReadingAnchor? = nil
+    public var coverResourcePath: String? = nil
 }
 public struct ReadingAnchor: Codable, Equatable, Hashable, Sendable {
     public var chapterID: String

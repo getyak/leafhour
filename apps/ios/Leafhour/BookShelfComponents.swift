@@ -1,13 +1,34 @@
 import SwiftUI
 import LeafhourCore
 
-/// A typographic fallback, not a downloaded or generated book-cover image.
 struct ShelfBookCover: View {
     let title: String
     let author: String
     var compact = false
+    var resource: BookCoverResource? = nil
+    @State private var artwork: UIImage?
+    @State private var loadedKey: String?
 
     var body: some View {
+        ZStack {
+            fallback
+            if loadedKey == resource?.key, let artwork {
+                GeometryReader { geometry in
+                    Image(uiImage: artwork).resizable().scaledToFill().frame(width: geometry.size.width, height: geometry.size.height).clipped()
+                }
+            }
+        }
+        .clipShape(RoundedRectangle(cornerRadius: compact ? 4 : 6))
+        .accessibilityHidden(true)
+        .task(id: resource?.key) {
+            artwork = nil; loadedKey = nil
+            let key = resource?.key
+            let image = await resource?.load()
+            guard !Task.isCancelled, key == resource?.key else { return }
+            artwork = image; loadedKey = key
+        }
+    }
+    private var fallback: some View {
         VStack(alignment: .leading, spacing: compact ? 5 : 12) {
             Capsule().fill(Color.leafInk.opacity(0.55)).frame(width: compact ? 15 : 28, height: 2)
             if compact {
@@ -80,6 +101,7 @@ struct LibraryShelfRow: View {
     var isActive = false
     var progress: Double? = nil
     var status = ""
+    var resource: BookCoverResource? = nil
     let open: () -> Void
     let details: () -> Void
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
@@ -149,7 +171,7 @@ struct LibraryShelfRow: View {
             // This cover repeats the nearby title. At accessibility sizes, give
             // its width to the full-size book information rather than tiny art.
             if !dynamicTypeSize.isAccessibilitySize {
-                ShelfBookCover(title: item.title, author: item.author, compact: true).frame(width: 58, height: 80)
+                ShelfBookCover(title: item.title, author: item.author, compact: true, resource: resource).frame(width: 58, height: 80)
             }
             VStack(alignment: .leading, spacing: 6) {
                 Text(item.title).font(.headline).foregroundStyle(.primary)
@@ -176,6 +198,7 @@ struct LibraryShelfTile: View {
     var isActive = false
     var progress: Double? = nil
     var status = ""
+    var resource: BookCoverResource? = nil
     let open: () -> Void
     let details: () -> Void
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
@@ -183,7 +206,7 @@ struct LibraryShelfTile: View {
     var body: some View {
         Group {
             if dynamicTypeSize.isAccessibilitySize {
-                LibraryShelfRow(item: item, downloadUnavailable: downloadUnavailable, isActive: isActive, progress: progress, status: status, open: open, details: details)
+                LibraryShelfRow(item: item, downloadUnavailable: downloadUnavailable, isActive: isActive, progress: progress, status: status, resource: resource, open: open, details: details)
                     .padding(16)
                     .background(Color(uiColor: .secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 16))
             } else {
@@ -234,7 +257,7 @@ struct LibraryShelfTile: View {
     }
 
     private var cover: some View {
-        ShelfBookCover(title: item.title, author: item.author)
+        ShelfBookCover(title: item.title, author: item.author, resource: resource)
             .aspectRatio(0.70, contentMode: .fit)
     }
 }

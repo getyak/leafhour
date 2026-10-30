@@ -9,6 +9,7 @@ enum BookParser {
         var title = URL(fileURLWithPath: filename).deletingPathExtension().lastPathComponent
         var author = ""
         var readingStartChapterID: String? = nil
+        var coverResourcePath: String?
         var readingStartAnchor: ReadingAnchor? = nil
         switch kind {
         case .epub:
@@ -23,6 +24,10 @@ enum BookParser {
             title = index.elements.first(where: { $0.name == "title" && !$0.text.isEmpty })?.text ?? title
             author = index.elements.first(where: { $0.name == "creator" })?.text ?? ""
             let items = index.elements.filter { $0.name == "item" }
+            let coverID = index.elements.first { $0.name == "meta" && $0.attributes["name"] == "cover" }?.attributes["content"]
+            if let item = items.first(where: { ($0.attributes["properties"] ?? "").split(separator: " ").contains("cover-image") || (coverID != nil && $0.attributes["id"] == coverID) }), let href = item.attributes["href"] {
+                coverResourcePath = try Disk.resolve(href, relativeTo: opf)
+            }
             var byID: [String: XMLElementValue] = [:]
             for item in items {
                 guard let key = item.attributes["id"], byID[key] == nil else { throw LibraryError.invalid("EPUB 内容目录有重复或缺失标识。") }
@@ -70,7 +75,7 @@ enum BookParser {
             let paragraphs = text.replacingOccurrences(of: "\r\n", with: "\n").components(separatedBy: "\n\n").filter { !$0.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }
             chapters = [BookChapter(id: "text", title: title, sourcePath: "text", passages: paragraphs.enumerated().map { Passage(id: "text-\($0.offset)", text: $0.element) })]
         }
-        return LocalBook(id: id, title: title, author: author, kind: kind, sourceVersion: "sha256-" + id, originalFilename: filename, importedAt: Date(), chapters: chapters, readingStartChapterID: readingStartChapterID, readingStartAnchor: readingStartAnchor)
+        return LocalBook(id: id, title: title, author: author, kind: kind, sourceVersion: "sha256-" + id, originalFilename: filename, importedAt: Date(), chapters: chapters, readingStartChapterID: readingStartChapterID, readingStartAnchor: readingStartAnchor, coverResourcePath: coverResourcePath)
     }
 
     /// Older cached indexes have no hint. Read their already-verified local metadata
@@ -95,6 +100,7 @@ enum BookParser {
 
     private static func epubReadingStart(chapters: [BookChapter], assets: URL, opf: String, index: XMLIndex, elementIDsByPath: [String: [String: String]] = [:]) -> ReadingAnchor? {
         let items = index.elements.filter { $0.name == "item" }
+
         var byID: [String: XMLElementValue] = [:]
         for item in items { if let id = item.attributes["id"] { byID[id] = item } }
         let chapterPaths = Set(chapters.map(\.sourcePath))

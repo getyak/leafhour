@@ -14,7 +14,7 @@ struct BookDetailScreen: View {
     var body: some View {
         List {
             Section {
-                HStack(spacing: 18) { BookCover(book: book); VStack(alignment: .leading, spacing: 8) { Text(book.title).font(.title3).bold(); Text(book.author).foregroundStyle(.secondary); Text("\(book.chapters.count) \(book.kind == .pdf ? "页" : "章") · \(book.kind.rawValue.uppercased())").font(.footnote).foregroundStyle(.secondary) } }.padding(.vertical, 12)
+                HStack(spacing: 18) { BookCover(book: book, resource: model.coverResource(book)); VStack(alignment: .leading, spacing: 8) { Text(book.title).font(.title3).bold(); Text(book.author).foregroundStyle(.secondary); Text("\(book.chapters.count) \(book.kind == .pdf ? "页" : "章") · \(book.kind.rawValue.uppercased())").font(.footnote).foregroundStyle(.secondary) } }.padding(.vertical, 12)
                 Button("继续阅读", systemImage: "book") { Task { await model.open(book) } }
             }
             Section("离线文件") {

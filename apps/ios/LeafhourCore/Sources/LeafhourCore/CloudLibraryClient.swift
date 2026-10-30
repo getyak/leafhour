@@ -112,6 +112,29 @@ public actor CloudLibraryClient {
     public func data(path: String, method: String = "GET", body: Data? = nil, ownerID: String? = nil) async throws -> Data {
         try await perform(path: path, method: method, body: body, ownerID: ownerID).0
     }
+    public func coverData(path: String, ownerID: String) async throws -> Data {
+        guard CloudCoverPath.isAllowed(path), credential?.account.id == ownerID else { throw Self.changed() }
+        let marker = generation
+        let bytes: Data
+        let response: HTTPURLResponse
+        if path.hasPrefix("/api/") {
+            (bytes, response) = try await perform(path: path, method: "GET", body: nil, ownerID: ownerID)
+        } else {
+            // Public artwork never receives account credentials or shared cookies.
+            guard let url = URL(string: path, relativeTo: baseURL)?.absoluteURL, url.host == baseURL.host,
+                  url.scheme == baseURL.scheme else { throw Self.changed() }
+            var request = URLRequest(url: url)
+            request.setValue("image/webp,image/*", forHTTPHeaderField: "Accept")
+            let (data, reply) = try await session.data(for: request)
+            guard let http = reply as? HTTPURLResponse, http.statusCode == 200 else { throw CloudRequestError(status: 404, message: "封面暂不可用。") }
+            bytes = data; response = http
+        }
+        guard marker == generation, credential?.account.id == ownerID else { throw Self.changed() }
+        guard bytes.count <= 4 * 1024 * 1024, !bytes.isEmpty, response.mimeType?.hasPrefix("image/") == true else {
+            throw CloudRequestError(status: 413, message: "封面暂不可用。")
+        }
+        return bytes
+    }
     public func nativeAuthenticationStatus() async throws -> NativeAuthenticationStatus {
         let owner = credential?.account.id
         let value = try CloudJSON.decode(await data(path: "/api/auth/session", ownerID: owner))
