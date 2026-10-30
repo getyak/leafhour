@@ -24,32 +24,33 @@
 - Background/mode exit/account switch stops new generation; old responses stay scoped.
 
 ### Task 1: Remote covers
-- [ ] Add metadata/transport tests that fail before cover support.
-- [ ] Extend brief/CloudShelfBook, bounded authenticated/static image client and owner-keyed disk cache; pass real cover to shelf/resume/detail.
-- [ ] Run affected server/core tests, commit.
+- [x] Add metadata/transport tests that fail before cover support.
+- [x] Extend brief/CloudShelfBook, bounded authenticated/static image client and owner-keyed disk cache; pass real cover to shelf/resume/detail.
+- [x] Run affected server/core tests, commit.
 
 ### Task 2: Quiet book interactions
-- [ ] Make entire book one open action; remove resting availability/action text and preserve accessible intent/details context menu.
-- [ ] Add small offline corner mark; verify blocked download still allows downloaded book reading; commit.
+- [x] Make entire book one open action; remove resting availability/action text and preserve accessible intent/details context menu.
+- [x] Add small offline corner mark; verify blocked download still allows downloaded book reading; commit.
 
 ### Task 3: Settings
-- [ ] Recompose account and reading settings with preview, focused groups, tactile controls and progressive disclosure.
-- [ ] Verify native large text, themes, persisted preferences and account flows; commit.
+- [x] Recompose account and reading settings with preview, focused groups, tactile controls and progressive disclosure.
+- [x] Verify native large text, themes, persisted preferences and account flows; commit.
 
 ### Task 4: Compact shelf controls
-- [ ] Replace pinned segmented filter/search stack with one shelf heading range menu; place sort/layout and search on demand.
-- [ ] Preserve search/filter/sort persistence, empty/retry/resume; verify native layout; commit.
+- [x] Replace pinned segmented filter/search stack with one shelf heading range menu; place sort/layout and search on demand.
+- [x] Preserve search/filter/sort persistence, empty/retry/resume; verify native layout; commit.
 
 ### Task 5: Single download progress
-- [ ] Show progress and cancel inside active book; keep global activity only for imports not represented on shelf.
-- [ ] Verify slow download/cancel and reading another local book; commit.
+- [x] Show progress and cancel inside active book; keep global activity only for imports not represented on shelf.
+- [x] Verify slow download/cancel and reading another local book; commit.
 
 ### Task 6: Source/translation/parallel and bounded AI
-- [ ] Add failing compatibility/rendering/anchor/scope/idempotency tests.
-- [ ] Implement ReadingLayers model, cached/current-next refresh, source-aware rendering/selection and foreground sequential translator with durable pending request.
-- [ ] Run core/app/native UI tests, commit.
+- [x] Add failing compatibility/rendering/anchor/scope/idempotency tests.
+- [x] Implement ReadingLayers model, cached/current-next refresh, source-aware rendering/selection and foreground sequential translator with durable pending request.
+- [x] Run core/app/native UI tests, commit.
 
 ### Final delivery
-- [ ] Independent whole-branch review; fix confirmed P0/P1 and material defects.
-- [ ] Impacted local checks and native evidence; one push/PR linked to Linear, current-head CI gate.
-- [ ] Normal merge and source/deployment readback; distinguish TestFlight availability from simulator acceptance.
+- [x] Independent whole-branch review and confirmed findings repaired.
+- [x] Impacted host checks, native units and UI evidence recorded in `docs/verification/2026-10-31-get-344-ios-quiet-shelf/`.
+
+Remote CI, normal merge and the distinct Production/TestFlight receipts are tracked on GET-344 and its consolidated PR after this evidence commit. Source evidence alone does not claim those external outcomes.

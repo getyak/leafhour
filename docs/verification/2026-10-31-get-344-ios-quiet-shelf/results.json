@@ -1,0 +1,86 @@
+{
+  "scope": "isolated synthetic native acceptance; own-account cover HTTP readback separately",
+  "applicationCodeReviewedThrough": "fdff1de610d64828b555acec5e56740eccf30b00",
+  "baseline": "430cf68",
+  "checks": [
+    {
+      "name": "Core full suite",
+      "passed": 160,
+      "failed": 0,
+      "log": "core-final.log"
+    },
+    {
+      "name": "Native application full unit suite",
+      "passed": 132,
+      "failed": 0,
+      "log": "native-reviewed.log"
+    },
+    {
+      "name": "Native primary shelf/modes/progress/night UI",
+      "passed": 4,
+      "failed": 0,
+      "log": "native-reviewed.log"
+    },
+    {
+      "name": "Affected host contracts",
+      "passed": 217,
+      "failed": 0,
+      "log": "host-affected.log"
+    },
+    {
+      "name": "Typography after compact preview",
+      "passed": 2,
+      "failed": 0,
+      "log": "preview-final.log"
+    },
+    {
+      "name": "Reading modes after compact preview",
+      "passed": 1,
+      "failed": 0,
+      "log": "preview-final.log"
+    },
+    {
+      "name": "New-login uncertain request recovery",
+      "passed": 1,
+      "failed": 0,
+      "log": "final-focused.log"
+    },
+    {
+      "name": "Downloaded range menu",
+      "passed": 1,
+      "failed": 0,
+      "log": "final-focused.log"
+    },
+    {
+      "name": "Read another local book during background download",
+      "passed": 1,
+      "failed": 0,
+      "log": "background-reading-final.log"
+    }
+  ],
+  "ownAccountHTTP": {
+    "accountVerified": true,
+    "shelfRead": true,
+    "bookCount": 103,
+    "privateCover": {
+      "status": 200,
+      "type": "image/webp",
+      "bytes": 41872
+    },
+    "publicCoverWithoutSession": {
+      "status": 200,
+      "type": "image/webp",
+      "bytes": 151814
+    }
+  },
+  "independentReview": {
+    "agent": "design_review",
+    "result": "No remaining P0/P1 or material P2",
+    "type": "static read-only review; no independent test run"
+  },
+  "notClaimed": [
+    "physical-device acceptance",
+    "real paid AI generation",
+    "TestFlight processing or installation before its separate release receipt"
+  ]
+}
