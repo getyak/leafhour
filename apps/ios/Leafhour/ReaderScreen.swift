@@ -21,6 +21,15 @@ private struct ReaderChromeMetrics: Equatable {
     let top: CGFloat
     let bottom: CGFloat
 }
+/// Keep the real chrome's layout while sleeping, and give its visible branch
+/// a fresh native/AX lifecycle when controls return above the reader.
+private struct ReaderChromeVisibility: ViewModifier {
+    let isVisible: Bool
+    @ViewBuilder func body(content: Content) -> some View {
+        if isVisible { content }
+        else { content.hidden() }
+    }
+}
 private struct ReaderChromeHeightKey: PreferenceKey {
     static var defaultValue: [ReaderChromeMeasurement] = []
     static func reduce(value: inout [ReaderChromeMeasurement], nextValue: () -> [ReaderChromeMeasurement]) {
@@ -102,7 +111,7 @@ struct ReaderScreen: View {
                     navigationHeader(compact: layout.compact).padding(.horizontal, 10).background(paper)
                         .overlay(alignment: .bottom) { Divider() }
                         .background { GeometryReader { geometry in Color.clear.preference(key: ReaderChromeHeightKey.self, value: [ReaderChromeMeasurement(layout: layout, region: .top, height: geometry.size.height)]) } }
-                        .opacity(showingTop ? 1 : 0).allowsHitTesting(showingTop).disabled(!showingTop).accessibilityHidden(!showingTop)
+                        .modifier(ReaderChromeVisibility(isVisible: showingTop)).allowsHitTesting(showingTop).disabled(!showingTop).accessibilityHidden(!showingTop)
                         .overlay {
                             if !showingTop {
                                 Button { wake(.top) } label: { Color.clear.frame(maxWidth: .infinity).frame(height: 44) }.allowsHitTesting(false)
@@ -149,7 +158,7 @@ struct ReaderScreen: View {
                                 .allowsHitTesting(false).accessibilityHidden(true)
                         }
                         .background { GeometryReader { geometry in Color.clear.preference(key: ReaderChromeHeightKey.self, value: [ReaderChromeMeasurement(layout: layout, region: .bottom, height: geometry.size.height)]) } }
-                        .opacity(showingBottom ? 1 : 0).allowsHitTesting(showingBottom).disabled(!showingBottom).accessibilityHidden(!showingBottom)
+                        .modifier(ReaderChromeVisibility(isVisible: showingBottom)).allowsHitTesting(showingBottom).disabled(!showingBottom).accessibilityHidden(!showingBottom)
                         if !showingBottom { quietReadingControl }
                     }
                 }
