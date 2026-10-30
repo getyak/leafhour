@@ -1,5 +1,6 @@
 import {buildReadingSummary} from './reading-summary.mjs';
 import {deriveImportedCover} from './imported-cover.mjs';
+import {bookCoverArtwork} from '../app/book-cover-artwork.mjs';
 import {buildLibraryArrival} from './library-arrival.mjs';
 import {memoryFor,recordPreference,applyMemoryChange} from './preference-memory.mjs';
 import {resolveVerifiedSource} from './verified-source.mjs';
@@ -54,7 +55,8 @@ function mergedPersonalRecords(book,current,incoming,{preserveExisting=false}={}
   validatePendingAnchors(data,book);return data;
 }
 const allPassages=book=>book.sections.flatMap(s=>s.paragraphs.map(p=>({...p,chapterId:s.chapterId})));
-const brief=book=>({bookId:book.bookId,contentVersion:book.contentVersion,title:book.title,author:book.author,visibility:book.visibility,...bookReadingLanguages(book),topics:book.topics||[],source:book.source,cover:book.cover,description:book.description,...(book.introduction?{introduction:book.introduction}:{}),chineseSample:book.chineseSample,paragraphs:allPassages(book).length,chapters:book.chapters.length,chapterIndex:book.chapters.map(c=>({id:c.id,kind:c.kind,number:c.number,title:c.title})),createdAt:book.createdAt});
+const coverImage=book=>book.visibility==='public'?bookCoverArtwork[book.bookId]?.src||null:book.visibility==='private'&&['pdf','epub'].includes(book.source?.format)&&/^[a-f0-9]{64}$/.test(book.source?.sha256||'')?'/api/library/books/'+encodeURIComponent(book.bookId)+'/cover?v='+book.source.sha256:null;
+const brief=book=>({bookId:book.bookId,contentVersion:book.contentVersion,title:book.title,author:book.author,visibility:book.visibility,...bookReadingLanguages(book),topics:book.topics||[],source:book.source,cover:book.cover,coverImage:coverImage(book),description:book.description,...(book.introduction?{introduction:book.introduction}:{}),chineseSample:book.chineseSample,paragraphs:allPassages(book).length,chapters:book.chapters.length,chapterIndex:book.chapters.map(c=>({id:c.id,kind:c.kind,number:c.number,title:c.title})),createdAt:book.createdAt});
 const emptyShelf=()=>({revision:0,order:[],archived:{}});
 const shelfLimit=1000;
 const shelfId=id=>typeof id==='string'&&/^[A-Za-z0-9_-]{1,128}$/.test(id);
@@ -239,7 +241,8 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
   async function list(user,{metadataOnly=false}={}){
     const [all,shelf]=await Promise.all([allShelfRows(user),user?read(shelfFile(user),emptyShelf()):emptyShelf()]),order=shelf.order.length?activeOrder(shelf,all):null,positions=order&&new Map(order.map((id,index)=>[id,index])),rows=all.filter(row=>!Object.hasOwn(shelf.archived,row.bookId));
     if(positions)rows.sort((a,b)=>positions.get(a.bookId)-positions.get(b.bookId));
-    return Promise.all(rows.map(async row=>{
+    return Promise.all(rows.map(async originalRow=>{
+      const row={...originalRow,coverImage:coverImage(originalRow)};
       if(!user||metadataOnly)return {...row,...(positions?{shelfPosition:positions.get(row.bookId)}:{}),resume:null,journey:null,...(user?{personalizationPending:true}:{})};
       const data=await read(recordFile(user,row.bookId),{position:null});
       // Older indexes lack language metadata. Derive it without rewriting the account's files.
@@ -370,7 +373,7 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
       if(decoded.scope!==scope)throw fail('Notebook shelf changed; retry',409);offset=decoded.offset;if(offset>books.length)throw fail('Invalid notebook cursor',400);
     }
     const batch=books.slice(offset,offset+limit),results=new Array(batch.length);let work=0;
-    const fields=['id','bookId','origin','text','quote','quoteOrigin','passageId','parts','contentVersion','createdAt','updatedAt','revision','lastEditId','status'];
+    const fields=['id','bookId','origin','text','quote','quoteOrigin','quoteLanguage','quoteVariant','passageId','parts','contentVersion','createdAt','updatedAt','revision','lastEditId','status'];
     async function worker(){while(work<batch.length){const index=work++,book=batch[index];try{
       const stored=await read(recordFile(user,book.bookId),emptyRecords(book));if(stored?.bookId!==book.bookId)throw Error('Unmatched records');
       const records={bookId:book.bookId,contentVersion:stored.contentVersion};
@@ -474,7 +477,7 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
     requireUser(user);const book=await getBook(user,id);
     if(!['comments','questions'].includes(type)||typeof input?.id!=='string'||!input.id||input.id.length>128||typeof input.text!=='string'||!input.text.trim()||input.text.length>2000||!allPassages(book).some(p=>p.id===input.passageId)||input.origin&&input.origin!=='user'||input.contentVersion&&input.contentVersion!==book.contentVersion)throw fail('记录无法对应当前原文');
     const createdAt=new Date().toISOString(),record={id:input.id,bookId:id,contentVersion:book.contentVersion,passageId:input.passageId,text:input.text,origin:'user',createdAt,updatedAt:createdAt,revision:0,...(type==='questions'?{status:'open'}:{})};
-    if(typeof input.quote==='string'&&input.quote.length<=4000){record.quote=input.quote;record.quoteLanguage=input.quoteLanguage==='en'?'en':'zh';if(['original','translation'].includes(input.quoteOrigin))record.quoteOrigin=input.quoteOrigin;}
+    if(typeof input.quote==='string'&&input.quote.length<=4000){record.quote=input.quote;record.quoteLanguage=input.quoteLanguage==='en'?'en':'zh';if(['original','translation'].includes(input.quoteOrigin))record.quoteOrigin=input.quoteOrigin;if(input.quoteOrigin==='translation'&&['literal','interpretive'].includes(input.quoteVariant))record.quoteVariant=input.quoteVariant;}
     return mutate(recordFile(user,id),emptyRecords(book),data=>{const old=data[type].find(r=>r.id===record.id);if(old){if(old.passageId!==record.passageId||old.text!==record.text)throw fail('记录标识冲突',409);return old;}if(data[type].length>=10000)throw fail('请先导出记录',413);data[type].push(record);guardRecordSize(data);return record;});
   }
   async function editComment(user,id,recordId,input,type='comments'){

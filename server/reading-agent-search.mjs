@@ -17,7 +17,8 @@ export function createWebSearch({env=process.env}={}){
     const id=randomUUID(),startedAt=new Date().toISOString();let submitted=false,status='failed';
     await recordProviderDispatch({id,provider:'deepseek',model,startedAt});
     const provider=new DeepSeekSearchProvider(()=>({apiKey:env.DEEPSEEK_API_KEY,model:DEFAULT_MODELS.reading,baseURL:'https://api.deepseek.com/anthropic/v1',apiVersion:'2023-06-01',maxTokens:1024,maxUses:1,recordRequest:request=>{
-      if(request.body.max_tokens!==maxTokens||Buffer.byteLength(JSON.stringify(request.body))>inputBytes)throw new Error('Search request exceeded its admitted budget');
+      const body=request.body,tools=body.tools;
+      if(body.model!==model||body.max_tokens!==maxTokens||!Array.isArray(tools)||tools.length!==1||tools[0].type!=='web_search_20250305'||tools[0].name!=='web_search'||tools[0].max_uses!==1||Buffer.byteLength(JSON.stringify(body))>inputBytes)throw new Error('Search request exceeded its admitted budget');
       signal?.throwIfAborted();submitted=true;
     }}));
     try{const result=await provider.search({query},signal);status='completed';return result;}

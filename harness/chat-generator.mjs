@@ -15,22 +15,29 @@ const project=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 function createLegacyChatBudget({pricing,maxCostCny=.75,maxRequests=8,maxToolCalls=24,clock=Date.now}={}){
  assertPricingWindow(pricing,clock());
  if(pricing.inputMissPerMillion!==2||pricing.outputPerMillion!==8)throw Error('Pricing reference expired or unavailable');
- if(!Number.isFinite(maxCostCny)||maxCostCny<=0)throw Error('Invalid cost budget');
- let requests=0,toolCalls=0,reservedCostCny=0,blocked=false;const requestSizes=[];
+ const maximumMicros=Math.floor(maxCostCny*1e6);
+ if(!Number.isFinite(maxCostCny)||maxCostCny<=0||!Number.isSafeInteger(maximumMicros)||maximumMicros<1)throw Error('Invalid cost budget');
+ let requests=0,toolCalls=0,reservedMicros=0,blocked=false;const requestSizes=[];
  const fail=()=>{blocked=true;throw Error('Generation budget exhausted');};
  return {
   reserveRequest({inputBytes,maxTokens,kind}={}){
    assertPricingWindow(pricing,clock());
    if(blocked||!['main','web'].includes(kind)||!Number.isSafeInteger(inputBytes)||inputBytes<0||inputBytes>65536||!Number.isSafeInteger(maxTokens)||maxTokens<=0||requests>=maxRequests)return fail();
-   const inputCost=inputBytes*2/1e6,remaining=maxCostCny-reservedCostCny-inputCost;
-   const permitted=Math.min(maxTokens,kind==='main'?3072:1024,Math.floor((remaining+1e-12)*1e6/8));
+   // One admitted auxiliary request can search once. Always reserve its
+   // standalone fee, including during the free promotion; domain tools are free.
+   if(kind==='web'&&(pricing.toolFeeBasis!=='standalone-upper-bound'||pricing.searchPerThousand!==5))throw Error('Pricing reference tool fee unavailable');
+   const toolMicros=kind==='web'?Math.ceil(pricing.searchPerThousand*1000):0;
+   const inputMicros=inputBytes*2,remaining=maximumMicros-reservedMicros-inputMicros-toolMicros;
+   const permitted=Math.min(maxTokens,kind==='main'?3072:1024,Math.floor(remaining/8));
    // The SDK freezes prepared call controls. Refuse before dispatch instead of mutating them.
    if(permitted<=0||permitted!==maxTokens)return fail();
-   const cost=inputCost+permitted*8/1e6;requests++;reservedCostCny+=cost;requestSizes.push({kind,inputBytes,maxTokens});
+   const cost=inputMicros+toolMicros+permitted*8;
+   if(!Number.isSafeInteger(cost)||cost+reservedMicros>maximumMicros)return fail();
+   requests++;reservedMicros+=cost;requestSizes.push({kind,inputBytes,maxTokens});
    return {maxTokens:permitted};
   },
   tool(){if(blocked||++toolCalls>maxToolCalls)return fail();},
-  snapshot:()=>({requests,toolCalls,reservedCostCny,maxCostCny,settlement:'reservation-not-invoice',requestSizes:requestSizes.map(r=>({...r})),pricing:{source:pricing.source,checkedAt:pricing.checkedAt,validUntil:pricing.validUntil}})
+  snapshot:()=>({requests,toolCalls,reservedCostCny:reservedMicros/1e6,maxCostCny,toolFeeBasis:'standalone-upper-bound',settlement:'reservation-not-invoice',requestSizes:requestSizes.map(r=>({...r})),pricing:{source:pricing.source,checkedAt:pricing.checkedAt,validUntil:pricing.validUntil}})
  };
 }
 

@@ -2,26 +2,28 @@
   "schemaVersion": 1,
   "model": "deepseek-flash",
   "modelVersion": "DeepSeek-V4.1-Flash-1017",
-  "observedAt": "2026-10-27T00:19:49.314Z",
-  "reviewer": "Release maintenance",
+  "observedAt": "2026-10-30T17:11:51.667Z",
+  "reviewer": "GET-344 release maintenance",
   "sources": [
     {
       "currency": "CNY",
       "source": "https://api-docs.deepseek.com/zh-cn/quick_start/pricing/",
-      "sha256": "556097caba8adfeeed6455714bffd731c7f60db520fcee06a922eba5840663a3",
-      "bytes": 26182
+      "sha256": "ed99e49bde750ddc29b9ca4cd9855f4b68667f48c906cc7adc24a952a13b675b",
+      "bytes": 27987
     },
     {
       "currency": "USD",
       "source": "https://api-docs.deepseek.com/quick_start/pricing/",
-      "sha256": "b856a6e93fa4793ecc8f3fd03a01bb7d8f7572f78a4739da8ce6dbdb09328d66",
-      "bytes": 26043
+      "sha256": "579412351262de19f1b067420542d042dc9433f389be6d252d0f4c41b82f515b",
+      "bytes": 27815
     }
   ],
   "verifiedRates": {
     "CNY": {
       "peakInputMiss": 2,
-      "peakOutput": 8
+      "peakOutput": 8,
+      "searchPerThousand": 5,
+      "fetchPerThousand": 5
     },
     "USD": {
       "peakInputMiss": 0.3,
@@ -37,7 +39,8 @@
   "policy": {
     "maximumValidityDays": 7,
     "minimumReleaseRemainingHours": 24,
-    "legacyExpiryCeiling": "2026-10-31T16:00:00.000Z",
-    "reason": "Legacy reservations do not include standalone Search/Fetch fees. Reverify before the promotion boundary."
+    "harnessToolsFreeUntil": "2026-10-31T16:00:00.000Z",
+    "legacyToolFeeBasis": "standalone-upper-bound",
+    "reason": "Legacy auxiliary search now reserves the standalone tool price within its existing cost cap. The pinned adapter permits one Search call and no Fetch or internal retry; the published free-tool boundary is unchanged."
   }
 }

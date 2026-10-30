@@ -5,7 +5,7 @@ import {tmpdir} from 'node:os';
 import path from 'node:path';
 import {createChatBudget,createChatBridge,createChatGenerator} from '../harness/chat-generator.mjs';
 import {apply} from '../harness/chat-plugin.mjs';
-const pricing={validUntil:'2099-01-01',inputMissPerMillion:2,outputPerMillion:8,source:'fixture',checkedAt:'2026-10-16'};
+const pricing={validUntil:'2099-01-01',inputMissPerMillion:2,outputPerMillion:8,searchPerThousand:5,fetchPerThousand:5,toolFeeBasis:'standalone-upper-bound',source:'fixture',checkedAt:'2026-10-16'};
 const tools={definitions:[{name:'reader_get_context',description:'context',parameters:{type:'object'}}],async execute(name,args,{reserveRequest}){if(args.search)reserveRequest({inputBytes:10,maxTokens:1024,kind:'web'});return {name};},sources:()=>[],recommendations:()=>[]};
 test('shared synchronous reservations cap requests, input, output and concurrent auxiliary spend',async()=>{
  const b=createChatBudget({pricing,maxCostCny:.01});

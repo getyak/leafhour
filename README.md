@@ -203,4 +203,6 @@ Reading time supports explicitly chosen active focus, foreground estimates and m
 
 Install `skills/leafhour-reading` for a skills-compatible host. Connect ChatGPT to `https://leafhour.com/api/mcp` with OAuth/DCR, sign in on Leafhour, and approve one book for one hour. Call `reader_get_connection` to identify that book. The remote connection is read-only. See [installation, permissions and real-host acceptance](docs/mcp-oauth.md); existing stdio configurations remain supported.
 
-Native iOS source (device-local EPUB/PDF and offline reading): [build and scope](apps/ios/README.md). TestFlight and physical acceptance are tracked separately.
+The [native iOS reader](apps/ios/README.md) supports device-local EPUB/PDF import, offline reading and optional account sync. Its shelf uses public-edition artwork and your original-file covers; tap a book to open or download it, with progress beside that book. Reading settings preview the selected source, translation or parallel view, with literal and interpretive translations kept separately.
+
+Preparing missing translations requires an explicit cost confirmation and covers at most 100 passages from the current and next chapter. Stopping prevents later submissions; a passage already submitted may still finish and use its quoted reading point. See the [2026-10-31 local acceptance record](docs/verification/2026-10-31-get-344-ios-quiet-shelf/README.md). Real paid generation, the current TestFlight release and physical-device acceptance require separate evidence.

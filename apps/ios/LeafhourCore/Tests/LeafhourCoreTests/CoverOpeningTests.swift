@@ -12,6 +12,22 @@ final class CoverOpeningTests: XCTestCase {
     }
     override func tearDownWithError() throws { try FileManager.default.removeItem(at: root) }
 
+    @MainActor func testLegacyEPUBCoverIsReadFromExistingOPFWithoutRewritingTheIndex() async throws {
+        let fixture = try await fixture(declareCoverImage: true)
+        var legacy=fixture.book;legacy.coverResourcePath=nil
+        let index=fixture.directory.appendingPathComponent("book.json")
+        try Disk.write(legacy,to:index)
+        let manifestFile=fixture.directory.appendingPathComponent("manifest.json")
+        var manifest=try Disk.read(OfflineManifest.self,from:manifestFile)
+        let slot=try XCTUnwrap(manifest.files.firstIndex { $0.path == "book.json" })
+        manifest.files[slot]=FileDigest(path:"book.json",sha256:try Disk.hashFile(index),bytes:try Disk.size(index))
+        try Disk.write(manifest,to:manifestFile)
+        let before=try Data(contentsOf:index)
+        let url=try await fixture.library.localCoverURL(legacy.id)
+        XCTAssertEqual(url?.lastPathComponent,"cover.png")
+        XCTAssertEqual(try Data(contentsOf:index),before)
+        let verified=try await fixture.library.verify(legacy.id);XCTAssertTrue(verified)
+    }
     @MainActor func testNewReadingStartsAtFirstLinearChapterAndRetainsCover() async throws {
         let fixture = try await fixture(coverLinear: false)
         let reader = fixture.session()
@@ -359,7 +375,7 @@ final class CoverOpeningTests: XCTestCase {
         }
     }
 
-    @MainActor private func fixture(coverLinear: Bool = false, markCover: Bool = true, landmark: String? = nil, guide: String = "", combinedOpening: Bool = false, coverMarkup: String? = nil, coverLandmark: String? = nil, navInSpine: Bool = false, navSupplement: String = "") async throws -> CoverFixture {
+    @MainActor private func fixture(coverLinear: Bool = false, markCover: Bool = true, landmark: String? = nil, guide: String = "", combinedOpening: Bool = false, coverMarkup: String? = nil, coverLandmark: String? = nil, navInSpine: Bool = false, navSupplement: String = "", declareCoverImage: Bool = false) async throws -> CoverFixture {
         let file = root.appendingPathComponent(UUID().uuidString + ".epub")
         let archive = try Archive(url: file, accessMode: .create)
         let coverLink = coverLandmark.map { "<li><a epub:type=\"cover\" href=\"\($0)\">Source cover</a></li>" } ?? ""
@@ -367,7 +383,7 @@ final class CoverOpeningTests: XCTestCase {
         let entries = [
             ("mimetype", "application/epub+zip"),
             ("META-INF/container.xml", "<container><rootfiles><rootfile full-path=\"OPS/book.opf\"/></rootfiles></container>"),
-            ("OPS/book.opf", "<package><metadata><title>Synthetic opening</title></metadata><manifest><item id=\"art\" href=\"art.xhtml\" media-type=\"application/xhtml+xml\"/><item id=\"title\" href=\"title.xhtml\" media-type=\"application/xhtml+xml\"/><item id=\"preface\" href=\"preface.xhtml\" media-type=\"application/xhtml+xml\"/><item id=\"body\" href=\"body.xhtml\" media-type=\"application/xhtml+xml\"/><item id=\"nav\" href=\"nav.xhtml\" properties=\"nav\" media-type=\"application/xhtml+xml\"/></manifest><spine><itemref idref=\"art\" linear=\"\(coverLinear ? "yes" : "no")\"/><itemref idref=\"title\"/><itemref idref=\"preface\"/><itemref idref=\"body\"/>\(navInSpine ? "<itemref idref=\"nav\"/>" : "")</spine><guide>\(guide)</guide></package>"),
+            ("OPS/book.opf", "<package><metadata><title>Synthetic opening</title></metadata><manifest>\(declareCoverImage ? "<item id=\"image\" href=\"cover.png\" media-type=\"image/png\" properties=\"cover-image\"/>" : "")<item id=\"art\" href=\"art.xhtml\" media-type=\"application/xhtml+xml\"/><item id=\"title\" href=\"title.xhtml\" media-type=\"application/xhtml+xml\"/><item id=\"preface\" href=\"preface.xhtml\" media-type=\"application/xhtml+xml\"/><item id=\"body\" href=\"body.xhtml\" media-type=\"application/xhtml+xml\"/><item id=\"nav\" href=\"nav.xhtml\" properties=\"nav\" media-type=\"application/xhtml+xml\"/></manifest><spine><itemref idref=\"art\" linear=\"\(coverLinear ? "yes" : "no")\"/><itemref idref=\"title\"/><itemref idref=\"preface\"/><itemref idref=\"body\"/>\(navInSpine ? "<itemref idref=\"nav\"/>" : "")</spine><guide>\(guide)</guide></package>"),
             ("OPS/art.xhtml", "<html xmlns:epub=\"http://www.idpf.org/2007/ops\"><body\(markCover ? " epub:type=\"cover\"" : "")>\(coverMarkup ?? "<img id=\"cover\" src=\"cover.png\" alt=\"Source artwork\"/>")\(combinedOpening ? "<section id=\"body-start\"><h1>Chapter one inside the cover document</h1><p>Actual main prose after source artwork.</p></section>" : "")</body></html>"),
             ("OPS/title.xhtml", "<html xmlns:epub=\"http://www.idpf.org/2007/ops\"><body><section epub:type=\"titlepage\"><h1>Synthetic opening</h1><p>Author metadata</p></section></body></html>"),
             ("OPS/preface.xhtml", "<html><body><h1>Preface</h1><p>A real preface is retained.</p></body></html>"),

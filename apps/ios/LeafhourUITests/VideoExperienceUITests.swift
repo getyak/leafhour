@@ -13,7 +13,7 @@ final class VideoExperienceUITests: XCTestCase {
     private let slowTitle = "GET317 合成验收 · 慢速下载"
     private var reader: XCUIElement { app.textViews["leafhour-epub-reader"] }
     private var shelfSearch: XCUIElement {
-        app.searchFields.matching(NSPredicate(format: "label IN %@ OR placeholderValue IN %@", ["书名或作者", "搜索书名或作者"], ["书名或作者", "搜索书名或作者"])).firstMatch
+        app.textFields["library-search-field"]
     }
     private var originalSearch: XCUIElement {
         app.searchFields.matching(NSPredicate(format: "label == %@ OR placeholderValue == %@", "搜索原文", "搜索原文")).firstMatch
@@ -62,7 +62,7 @@ final class VideoExperienceUITests: XCTestCase {
         app.launch()
         require(app.buttons["书房显示与排序"], timeout: 25)
         setLayout("列表")
-        app.segmentedControls.buttons["全部"].tap()
+        setShelfFilter("全部")
         // A lazy List need not create its third row at accessibility sizes.
         // The exact aggregate count proves seed completion; each flow then
         // searches and operates its own real book instead of requiring it onscreen.
@@ -85,17 +85,21 @@ final class VideoExperienceUITests: XCTestCase {
         require(choice); choice.tap()
     }
     private func setLayout(_ title: String) { menuChoice(title, submenu: "显示方式") }
+    private func setShelfFilter(_ title: String) {
+        app.buttons["书房范围"].tap()
+        let choice = app.buttons[title].firstMatch; require(choice); choice.tap()
+    }
     private func searchShelf(_ text: String) {
+        if !shelfSearch.exists { app.buttons["搜索书房"].tap() }
         let search = shelfSearch
         require(search); search.tap(); search.typeText(text)
         dismissSearchKeyboardIfAvailable()
     }
     private func clearShelfSearch() {
         let search = shelfSearch
-        require(search)
+        guard search.exists else { return }
         if let value = search.value as? String, !value.isEmpty && value != search.placeholderValue {
-            search.tap()
-            let clear = search.buttons.firstMatch
+            let clear = app.buttons["library-search-clear"]
             require(clear); clear.tap()
             dismissSearchKeyboardIfAvailable()
         }
@@ -464,7 +468,7 @@ final class VideoExperienceUITests: XCTestCase {
             let entry = app.buttons["我的笔记与阅读记录"]
             scrollTo(entry, in: foregroundForm()); entry.tap()
         }
-        require(app.navigationBars["我的账号"])
+        require(app.navigationBars["书房设置"])
     }
     private func waitForEnabledState(_ element: XCUIElement, enabled: Bool) {
         require(element)
@@ -586,11 +590,11 @@ final class VideoExperienceUITests: XCTestCase {
     }
 
     func test03DownloadedScopeOnlyShowsOfflineBooks() {
-        launch(); app.segmentedControls.buttons["已下载"].tap()
+        launch(); setShelfFilter("已下载")
         require(app.staticTexts["4 本书"])
         require(app.staticTexts[textTitle])
         XCTAssertFalse(app.buttons["下载并阅读，" + cloudTitle].exists)
-        app.segmentedControls.buttons["全部"].tap(); require(app.staticTexts["6 本书"])
+        setShelfFilter("全部"); require(app.staticTexts["6 本书"])
     }
 
     func test04GridAndListChoicePersistsAcrossColdLaunch() {
@@ -604,11 +608,11 @@ final class VideoExperienceUITests: XCTestCase {
     }
 
     func test05SortMenuKeepsTheSearchAndFilter() {
-        launch(); app.segmentedControls.buttons["已下载"].tap(); searchShelf("GET317")
+        launch(); setShelfFilter("已下载"); searchShelf("GET317")
         menuChoice("书名", submenu: "排列书籍"); require(app.staticTexts["4 本书"])
         menuChoice("作者", submenu: "排列书籍"); require(app.staticTexts["4 本书"])
         XCTAssertEqual(shelfSearch.value as? String, "GET317")
-        XCTAssertTrue(app.segmentedControls.buttons["已下载"].isSelected)
+        XCTAssertEqual(app.buttons["书房范围"].value as? String, "已下载")
     }
 
     func test06ZeroSearchExplainsAndCanRecover() {
@@ -692,7 +696,7 @@ final class VideoExperienceUITests: XCTestCase {
         spacing.adjust(toNormalizedSliderPosition: 0.75)
         let savedSpacing = spacing.value as? String
         XCTAssertNotEqual(savedFont, "22 磅")
-        let night = app.segmentedControls.buttons["夜读"]
+        let night = app.buttons["夜读"]
         scrollTo(night, in: form); night.tap(); closePanel()
         coldRelaunch(); require(reader, timeout: 20); wakeTop(); app.buttons["阅读设置"].tap(); expandPanel()
         let restoredForm = foregroundForm()
@@ -703,13 +707,13 @@ final class VideoExperienceUITests: XCTestCase {
 
     func test14ResetTypographyKeepsTheChosenTheme() {
         launch(); openBook(textTitle); wakeTop(); app.buttons["阅读设置"].tap(); expandPanel()
-        let form = foregroundForm(), font = app.sliders["正文字号"], night = app.segmentedControls.buttons["夜读"]
+        let form = foregroundForm(), font = app.sliders["正文字号"], night = app.buttons["夜读"]
         scrollTo(font, in: form, direction: .down); font.adjust(toNormalizedSliderPosition: 0.9)
         scrollTo(night, in: form); night.tap()
         let reset = app.buttons["恢复默认排版"]
         scrollTo(reset, in: form, direction: .down); reset.tap()
         scrollTo(font, in: form, direction: .down); XCTAssertEqual(font.value as? String, "22 磅")
-        let defaultStatus = app.staticTexts["当前为默认排版"]
+        let defaultStatus = app.sliders["正文字号"]
         scrollTo(defaultStatus, in: form); require(defaultStatus)
         XCTAssertFalse(reset.exists)
         scrollTo(night, in: form); XCTAssertTrue(night.isSelected)
@@ -855,7 +859,9 @@ final class VideoExperienceUITests: XCTestCase {
 
     func test24BookDetailsExposeOriginalAndRecordExports() {
         launch(); searchShelf(textTitle)
-        let details = app.buttons[textTitle + "，书籍详情"]
+        let bookEntry = app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", "阅读，" + textTitle)).firstMatch
+        require(bookEntry); bookEntry.press(forDuration: 0.8)
+        let details = app.buttons["书籍详情"]
         require(details); details.tap()
         require(app.buttons["导出我的笔记与草稿"])
         require(app.buttons["导出原件"])
@@ -877,7 +883,7 @@ final class VideoExperienceUITests: XCTestCase {
         let download = app.buttons["下载并阅读，" + slowTitle]
         require(download); download.tap()
         let cancel = app.buttons["library-activity-cancel"]
-        require(cancel); require(containsText("正在下载"))
+        require(cancel); require(app.progressIndicators["library-book-progress"])
         cancel.tap()
         XCTAssertTrue(cancel.waitForNonExistence(timeout: 8))
         require(download)
@@ -1007,7 +1013,9 @@ final class VideoExperienceUITests: XCTestCase {
         let sentinel = "GET317_UI35_EXPORT_CONTENT_" + UUID().uuidString
         editor.tap(); editor.typeText(sentinel); app.buttons["保存笔记"].tap()
         shelf(); clearShelfSearch(); searchShelf(textTitle)
-        let details = app.buttons[textTitle + "，书籍详情"]
+        let bookEntry = app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", "阅读，" + textTitle)).firstMatch
+        require(bookEntry); bookEntry.press(forDuration: 0.8)
+        let details = app.buttons["书籍详情"]
         require(details); details.tap()
         openRecordExporterFromDetails()
         capture("GET317-system-export-before-save")
@@ -1090,7 +1098,7 @@ final class VideoExperienceUITests: XCTestCase {
         capture("GET317-a11y-settings-foreground-top")
         try auditVisibleInterface()
 
-        let systemTheme = app.segmentedControls.buttons["跟随系统"]
+        let systemTheme = app.buttons["跟随系统"]
         scrollTo(systemTheme, in: settings)
         settings.swipeUp()
         XCTAssertTrue(systemTheme.exists && systemTheme.isHittable, "Audit the exposed theme controls in the actual foreground Form")
@@ -1467,15 +1475,15 @@ final class VideoExperienceUITests: XCTestCase {
         let reset = app.buttons["恢复默认排版"]
         scrollTo(reset, in: settings)
         XCTAssertTrue(reset.isEnabled && reset.isHittable); reset.tap()
-        let defaults = app.staticTexts["当前为默认排版"]
+        let defaults = app.sliders["正文字号"]
         scrollTo(defaults, in: settings); require(defaults); record("settings.default-state", defaults)
         XCTAssertFalse(reset.exists)
         recordText("settings.body-label", settings.staticTexts["字号"], style: .body)
-        recordText("settings.body-value", settings.staticTexts["22 pt"], style: .body, monospaced: true)
+        recordText("settings.body-value", settings.staticTexts["22"], style: .body, monospaced: true)
         recordText("settings.spacing-label", settings.staticTexts["行间距"], style: .body)
-        recordText("settings.spacing-value", settings.staticTexts["9 pt"], style: .body, monospaced: true)
+        recordText("settings.spacing-value", settings.staticTexts["9"], style: .body, monospaced: true)
         recordText("settings.default-state", defaults, style: .body)
-        recordText("settings.system-type-footnote", settings.staticTexts["字号随系统大字设置继续缩放。更改会自动保存到此设备。"], style: .subheadline)
+        recordText("settings.system-type-footnote", settings.staticTexts["随系统大字设置缩放，调整自动保存。"], style: .subheadline)
         capture("GET317-UI41-restored-default-settings")
         closePanel(); require(reader)
     }
@@ -1605,7 +1613,7 @@ final class VideoExperienceUITests: XCTestCase {
         let grid = app.scrollViews["library-shelf-grid"]
         require(grid)
         func gridViewport() -> CGRect {
-            let filter = app.segmentedControls.buttons["全部"], menu = app.buttons["书房显示与排序"].firstMatch
+            let filter = app.buttons["书房范围"], menu = app.buttons["书房显示与排序"].firstMatch
             // The production filter row has 8 pt vertical padding. Its actual
             // controls plus that padding, rather than a guessed target size,
             // determine the top edge that can cover the grid.
@@ -1668,7 +1676,9 @@ final class VideoExperienceUITests: XCTestCase {
         let readCount = reads.count
         XCTAssertGreaterThan(readCount, 0)
         for index in 0..<readCount { fullyReachable(reads.element(boundBy: index)) }
-        let details = grid.buttons[textTitle + "，书籍详情"]
+        let bookEntry = grid.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", "阅读，" + textTitle)).firstMatch
+        require(bookEntry); bookEntry.press(forDuration: 0.8)
+        let details = app.buttons["书籍详情"]
         fullyReachable(details); capture("GET317-UI43-grid-reading-and-details-targets"); details.tap()
         require(app.navigationBars["书籍详情"])
         require(app.collectionViews["book-details-list"])
@@ -2229,7 +2239,7 @@ final class VideoExperienceUITests: XCTestCase {
             let surface = app.descendants(matching: .any).matching(identifier: identifier).firstMatch
             require(surface)
             func viewport() -> CGRect {
-                let filter = app.segmentedControls.buttons["全部"], menu = app.buttons["书房显示与排序"]
+                let filter = app.buttons["书房范围"], menu = app.buttons["书房显示与排序"]
                 return recordProfileContentViewport(surface, navigationTitle: "我的书房", topLimit: max(filter.frame.maxY, menu.frame.maxY) + 8)
             }
             func fullyReachable(_ element: XCUIElement) {
@@ -2252,7 +2262,7 @@ final class VideoExperienceUITests: XCTestCase {
             }
             // Verify the real visual text as well as the reading action's
             // separate VoiceOver label. A changed catalog must not add a book.
-            for text in [translatedTitle, author, status] {
+            for text in [translatedTitle, author] {
                 let visibleText = surface.staticTexts[text].firstMatch
                 fullyReachable(visibleText)
                 XCTAssertEqual(visibleText.label, text)
@@ -2263,7 +2273,7 @@ final class VideoExperienceUITests: XCTestCase {
             }
             let reads = surface.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", "阅读，" + translatedTitle))
             let count = reads.count
-            XCTAssertEqual(count, layout == "列表" || accessibilityCategory ? 1 : 2, "Check every actual reading entry, including both regular grid actions")
+            XCTAssertEqual(count, 1, "Every book has a single direct reading action")
             for index in 0..<count {
                 let read = reads.element(boundBy: index)
                 fullyReachable(read)
@@ -2281,7 +2291,7 @@ final class VideoExperienceUITests: XCTestCase {
                 read.tap(); require(reader)
                 XCTAssertTrue((reader.value as? String)?.contains("CLOUD_ORCHARD_c1_1") == true, "An update notice must keep the actual existing offline copy readable")
                 shelf(); require(surface)
-                fullyReachable(surface.staticTexts[status].firstMatch)
+                XCTAssertFalse(surface.staticTexts[status].exists)
             }
             clearShelfSearch(); require(app.staticTexts["6 本书"])
         }
@@ -2539,6 +2549,77 @@ final class VideoExperienceUITests: XCTestCase {
         reader.coordinate(withNormalizedOffset: CGVector(dx: 0.85, dy: 0.4)).tap()
         wakeTools()
         XCTAssertEqual(app.buttons["reader-contents"].value as? String, before, "Dismissing the system selection must not also advance the book")
+    }
+
+    func test90QuietShelfHasCompactMenusAndNoRestingDownloadCopy() {
+        launch(["--get344-cover-fixtures"]); setLayout("封面网格")
+        XCTAssertFalse(app.segmentedControls.buttons["全部"].exists)
+        XCTAssertFalse(app.staticTexts["尚未下载"].exists)
+        XCTAssertFalse(app.staticTexts["下载并阅读"].exists)
+        XCTAssertFalse(shelfSearch.exists)
+        require(app.buttons["书房范围"]); require(app.buttons["搜索书房"])
+        let book = app.buttons.matching(NSPredicate(format:"label BEGINSWITH %@", "阅读，" + translatedTitle)).firstMatch
+        require(book)
+        let ready = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in
+            let image = self.app.screenshot().image
+            guard let cg = image.cgImage else { return false }
+            let scale = CGFloat(cg.width) / self.app.frame.width, frame = book.frame
+            let crop = CGRect(x:(frame.minX+frame.width*0.3)*scale,y:(frame.minY+frame.width*0.8)*scale,width:frame.width*0.3*scale,height:frame.width*0.3*scale)
+            guard let cover = cg.cropping(to:crop.integral) else { return false }
+            var pixels=[UInt8](repeating:0,count:16*16*4)
+            guard let context=CGContext(data:&pixels,width:16,height:16,bitsPerComponent:8,bytesPerRow:16*4,space:CGColorSpaceCreateDeviceRGB(),bitmapInfo:CGImageAlphaInfo.premultipliedLast.rawValue) else { return false }
+            context.draw(cover,in:CGRect(x:0,y:0,width:16,height:16))
+            return Set(stride(from:0,to:pixels.count,by:4).map { "\(pixels[$0]),\(pixels[$0+1]),\(pixels[$0+2])" }).count > 24
+        },object:nil)
+        XCTAssertEqual(XCTWaiter.wait(for:[ready],timeout:8),.completed,"The visible book must have actual remote artwork")
+        capture("GET344-quiet-cover-shelf")
+        openAccountSheet(); capture("GET344-account-settings")
+    }
+    func test91ReadingModesUseIndependentTranslationsAndPersist() {
+        launch(); openBook(translatedTitle)
+        XCTAssertTrue((reader.value as? String)?.contains("GET317 SYNTHETIC") == true)
+        wakeTop(); app.buttons["阅读设置"].tap(); expandPanel()
+        let modes = app.segmentedControls["reader-view-mode"]
+        require(modes); modes.buttons["译文"].tap()
+        capture("GET344-reading-settings")
+        closePanel(); require(reader)
+        XCTAssertTrue((reader.value as? String)?.contains("GET317 合成直译样本") == true)
+        XCTAssertFalse((reader.value as? String)?.contains("GET317 SYNTHETIC") == true)
+        capture("GET344-translation-only")
+        wakeTop(); app.buttons["阅读设置"].tap(); expandPanel()
+        modes.buttons["对照"].tap()
+        app.segmentedControls["reader-reading-variant"].buttons["意译"].tap()
+        closePanel(); require(reader)
+        XCTAssertTrue((reader.value as? String)?.contains("GET317 合成意译样本") == true)
+        XCTAssertTrue((reader.value as? String)?.contains("GET317 SYNTHETIC") == true)
+        capture("GET344-parallel-reading")
+        coldRelaunch(); require(reader, timeout: 20)
+        XCTAssertTrue((reader.value as? String)?.contains("GET317 合成意译样本") == true)
+    }
+    func test92DownloadProgressAppearsOnlyWithItsBook() {
+        launch(["--get317-slow-download"]); searchShelf(slowTitle)
+        let download = app.buttons["下载并阅读，" + slowTitle]; require(download); download.tap()
+        let progress = app.progressIndicators["library-book-progress"]
+        require(progress); XCTAssertEqual(app.progressIndicators.matching(identifier: "library-book-progress").count, 1)
+        XCTAssertFalse(app.otherElements["library-global-activity"].exists)
+        capture("GET344-single-book-progress")
+        let cancel = app.buttons["library-activity-cancel"]; require(cancel); cancel.tap()
+        XCTAssertTrue(cancel.waitForNonExistence(timeout: 8))
+    }
+
+    func test93NightReadingAndLargeTypeKeepSettingsAndSourceUsable() {
+        launch(); openBook(translatedTitle); wakeTop(); app.buttons["阅读设置"].tap(); expandPanel()
+        let form = foregroundForm(), font = app.sliders["正文字号"]
+        scrollTo(font,in:form); font.adjust(toNormalizedSliderPosition:1)
+        let night = app.buttons["夜读"]; scrollTo(night,in:form); night.tap()
+        XCTAssertTrue(night.isSelected)
+        capture("GET344-night-reading-settings")
+        closePanel(); require(reader)
+        XCTAssertTrue((reader.value as? String)?.contains("GET317 SYNTHETIC") == true)
+        capture("GET344-night-large-source")
+        wakeTop(); app.buttons["阅读设置"].tap(); expandPanel()
+        let restored = foregroundForm(); scrollTo(font,in:restored)
+        XCTAssertEqual(font.value as? String,"36 磅")
     }
 
 }

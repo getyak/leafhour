@@ -31,3 +31,33 @@ test('release pricing check detects near expiry and never renews on source failu
  await assert.rejects(checkPublishedPricing({verifySources:true,fetcher:async()=>{throw Error('fixture network failure');}}),/fixture network failure/);
  assert.equal(await readFile(new URL('../harness/pricing.json',import.meta.url),'utf8'),before);
 });
+
+const feeBoundary=Date.parse('2026-10-31T16:00:00Z');
+const feePricing={...pricing,checkedAt:'2026-10-30T00:00:00Z',validUntil:'2026-11-03T00:00:00Z',searchPerThousand:5,fetchPerThousand:5,toolFeeBasis:'standalone-upper-bound'};
+test('legacy auxiliary search reserves its standalone fee on both sides of the promotion boundary',()=>{
+ for(const now of [feeBoundary-1,feeBoundary+1]){
+  const budget=createChatBudget({pricing:feePricing,clock:()=>now});
+  budget.tool();assert.equal(budget.snapshot().reservedCostCny,0,'domain tool calls do not imply paid web search');
+  budget.reserveRequest({kind:'web',inputBytes:1,maxTokens:1});
+  assert.equal(budget.snapshot().reservedCostCny,.005010);
+ }
+});
+test('legacy tool fees are admitted atomically and missing or invalid fees cannot submit',()=>{
+ const budget=createChatBudget({pricing:feePricing,maxCostCny:.005009,clock:()=>feeBoundary});let submitted=0;
+ assert.throws(()=>{budget.reserveRequest({kind:'web',inputBytes:1,maxTokens:1});submitted++;},/budget/i);
+ assert.equal(submitted,0);assert.equal(budget.snapshot().requests,0);assert.equal(budget.snapshot().reservedCostCny,0);
+ for(const value of [undefined,0,-1,.5,10,NaN,Infinity]){
+  const b=createChatBudget({pricing:{...feePricing,searchPerThousand:value},clock:()=>feeBoundary});
+  assert.throws(()=>b.reserveRequest({kind:'web',inputBytes:1,maxTokens:1}),/Pricing reference/);
+  assert.equal(b.snapshot().requests,0);assert.equal(b.snapshot().reservedCostCny,0);
+ }
+});
+
+test('concurrent legacy auxiliary work shares the unchanged main cost ceiling',async()=>{
+ const budget=createChatBudget({pricing:feePricing,maxCostCny:.05,clock:()=>feeBoundary+1});
+ budget.reserveRequest({kind:'main',inputBytes:1000,maxTokens:3072});
+ const results=await Promise.allSettled([1,2].map(()=>Promise.resolve().then(()=>budget.reserveRequest({kind:'web',inputBytes:0,maxTokens:1024}))));
+ assert.equal(results.filter(r=>r.status==='fulfilled').length,1);
+ assert.equal(budget.snapshot().requests,2);assert.equal(budget.snapshot().reservedCostCny,.039768);
+ assert.equal(budget.snapshot().maxCostCny,.05);
+});

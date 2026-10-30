@@ -18,6 +18,9 @@ extension Color {
             ? UIColor(red: 181.0 / 255, green: 205.0 / 255, blue: 189.0 / 255, alpha: 1)
             : UIColor(red: 0.24, green: 0.40, blue: 0.31, alpha: 1)
     })
+    static let shelfPaper = Color(uiColor: UIColor { traits in
+        traits.userInterfaceStyle == .dark ? UIColor(white: 0.07, alpha: 1) : UIColor(red: 0.985, green: 0.981, blue: 0.965, alpha: 1)
+    })
     static let readingPaper = Color(red: 0.97, green: 0.96, blue: 0.92)
 }
 
@@ -233,7 +236,7 @@ final class LibraryModel {
             let shelf = try await cloud.shelf(ownerID: account.id)
             guard marker == contextID else { return }
             cloudBooks = shelf
-            let rows = shelf.map { CloudJSON.object(["bookId": .string($0.id), "contentVersion": .string($0.contentVersion), "title": .string($0.title), "author": .string($0.author)]) }
+            let rows = shelf.map { CloudJSON.object(["bookId": .string($0.id), "contentVersion": .string($0.contentVersion), "title": .string($0.title), "author": .string($0.author), "coverImage": $0.coverPath.map(CloudJSON.string) ?? .null]) }
             try await library.cacheCloudView("shelf", data: CloudJSON.encode(["books": .array(rows)]))
             var errors: [String] = []
             for book in books where book.cloud != nil {

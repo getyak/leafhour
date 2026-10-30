@@ -6,12 +6,16 @@ public struct CloudShelfBook: Codable, Identifiable, Equatable, Sendable {
     public var title: String
     public var author: String
     public var contentVersion: String
-    public init(id: String, title: String, author: String, contentVersion: String) {
+    public var coverPath: String? = nil
+    public init(id: String, title: String, author: String, contentVersion: String, coverPath: String? = nil) {
         self.id = id; self.title = title; self.author = author; self.contentVersion = contentVersion
+        self.coverPath = coverPath.flatMap { CloudCoverPath.isAllowed($0) ? $0 : nil }
     }
     public init?(json: CloudJSON) {
         guard let id = json["bookId"].string, let version = json["contentVersion"].string else { return nil }
-        self.init(id: id, title: Self.title(json["title"]), author: json["author"].string ?? "", contentVersion: version)
+        let legacyCover = json["visibility"].string == "private" && ["epub", "pdf"].contains(json["source"]["format"].string ?? "")
+            ? "/api/library/books/" + CloudJSON.component(id) + "/cover?v=" + CloudJSON.component(json["source"]["sha256"].string ?? version) : nil
+        self.init(id: id, title: Self.title(json["title"]), author: json["author"].string ?? "", contentVersion: version, coverPath: json["coverImage"].string ?? legacyCover)
     }
     public static func title(_ json: CloudJSON) -> String { json.string ?? json["zh"].string ?? json["en"].string ?? json.object.values.compactMap(\.string).first ?? "未命名书籍" }
 }
@@ -22,6 +26,8 @@ public struct CloudSyncMetadata: Codable, Sendable {
     public var noteConflict: Bool = false
     public var noteErrors: [String: String] = [:]
     public var positionRevision: Int = 0
+    public var lastSyncedViewMode: String?
+    public var lastSyncedTranslationVariant: String?
     public var lastSyncedAnchor: ReadingAnchor?
     public var positionConflict: Bool = false
     public var remoteAnchor: ReadingAnchor?
@@ -158,6 +164,9 @@ public extension CloudLibraryClient {
         let identity = CloudBookIdentity(ownerID: ownerID, bookID: remote.id, contentVersion: version, sourceFormat: manifest["source"]["format"].string ?? "text")
         return CloudReadingCopy(identity: identity, title: CloudShelfBook.title(manifest["title"]), author: manifest["author"].string ?? remote.author, chapters: chapters, content: try JSONEncoder().encode(manifest), readingStart: CloudReadingStartResolver.hint(from: manifest, identity: identity, chapters: chapters))
     }
+    func readingChapter(bookID: String, chapterID: String, contentVersion: String, ownerID: String) async throws -> CloudJSON {
+        try await readingJSON(path: "/api/library/books/" + CloudJSON.component(bookID) + "/chapters/" + CloudJSON.component(chapterID) + "?contentVersion=" + CloudJSON.component(contentVersion), ownerID: ownerID)
+    }
     /// The web transport switches to stable base64 parts for a chapter over its response limit.
     private func readingJSON(path: String, ownerID: String) async throws -> CloudJSON {
         let first = try CloudJSON.decode(await data(path: path, ownerID: ownerID))
@@ -281,7 +290,7 @@ public actor CloudBookSync {
                             anchor = local.anchor
                         }
                     }
-                    let remoteNote = ReaderNote(id: id, anchor: anchor, quote: quote, body: text, modifiedAt: Self.date(row["updatedAt"].string ?? row["createdAt"].string))
+                    let remoteNote = ReaderNote(id: id, anchor: anchor, quote: quote, body: text, modifiedAt: Self.date(row["updatedAt"].string ?? row["createdAt"].string), quoteOrigin: row["quoteOrigin"].string == "translation" ? "translation" : nil, quoteVariant: row["quoteVariant"].string)
                     if let existing {
                         if localChanged && state.notes[existing].body != text { metadata.noteConflict = true }
                         else { state.notes[existing] = remoteNote }
@@ -297,8 +306,9 @@ public actor CloudBookSync {
                     metadata.noteErrors[key] = "这条笔记超过云端 2000 字元上限，完整内容仍保存在设备，可从书籍详情导出。"
                     continue
                 }
-                var payload: [String: CloudJSON] = ["id": .string(id), "passageId": .string(note.anchor.passageID), "contentVersion": .string(identity.contentVersion), "text": .string(note.body), "quoteOrigin": .string("original"), "quoteLanguage": .string("en"), "origin": .string("user")]
+                var payload: [String: CloudJSON] = ["id": .string(id), "passageId": .string(note.anchor.passageID), "contentVersion": .string(identity.contentVersion), "text": .string(note.body), "quoteOrigin": .string(note.quoteOrigin == "translation" ? "translation" : "original"), "quoteLanguage": .string(note.quoteOrigin == "translation" ? "zh" : "en"), "origin": .string("user")]
                 if (note.quote as NSString).length <= 4000 { payload["quote"] = .string(note.quote) }
+                if let variant = note.quoteVariant, ["literal", "interpretive"].contains(variant) { payload["quoteVariant"] = .string(variant) }
                 do {
                     _ = try await client.data(path: path + "/comments", method: "POST", body: CloudJSON.encode(payload), ownerID: identity.ownerID)
                     metadata.syncedNotes[key] = id; metadata.syncedNoteBodies[key] = note.body
@@ -317,16 +327,17 @@ public actor CloudBookSync {
             let position = records["position"]
             let remoteRevision = Int(position["revision"].number ?? 0)
             let remoteAnchor = Self.anchor(position, book: book)
-            let pendingPosition = snapshot.anchor != metadata.lastSyncedAnchor
+            let pendingPreferences = snapshot.preferences.viewMode.rawValue != (metadata.lastSyncedViewMode ?? "source") || snapshot.preferences.translationVariant.rawValue != (metadata.lastSyncedTranslationVariant ?? "literal")
+            let pendingPosition = snapshot.anchor != metadata.lastSyncedAnchor || pendingPreferences
             if pendingPosition, let anchor = snapshot.anchor {
                 if remoteRevision != metadata.positionRevision {
                     metadata.positionConflict = true; metadata.remoteAnchor = remoteAnchor; metadata.remotePositionRevision = remoteRevision
                 } else {
                     let count = byID[anchor.passageID]?.1.unicodeScalars.count ?? 0
-                    let body = try CloudJSON.encode(["chapterId": .string(anchor.chapterID), "passageId": .string(anchor.passageID), "contentVersion": .string(identity.contentVersion), "offset": .number(0), "withinParagraph": .number(count > 0 ? min(1, Double(anchor.characterOffset) / Double(count)) : 0), "mode": .string("en"), "variant": .string("literal"), "baseRevision": .number(Double(metadata.positionRevision))])
+                    let body = try CloudJSON.encode(["chapterId": .string(anchor.chapterID), "passageId": .string(anchor.passageID), "contentVersion": .string(identity.contentVersion), "offset": .number(0), "withinParagraph": .number(count > 0 ? min(1, Double(anchor.characterOffset) / Double(count)) : 0), "mode": .string(snapshot.preferences.viewMode.webMode), "variant": .string(snapshot.preferences.translationVariant.rawValue), "baseRevision": .number(Double(metadata.positionRevision))])
                     do {
                         let saved = try CloudJSON.decode(await client.data(path: path + "/progress", method: "POST", body: body, ownerID: identity.ownerID))
-                        metadata.positionRevision = Int(saved["revision"].number ?? Double(remoteRevision + 1)); metadata.lastSyncedAnchor = anchor; metadata.positionConflict = false
+                        metadata.positionRevision = Int(saved["revision"].number ?? Double(remoteRevision + 1)); metadata.lastSyncedAnchor = anchor; metadata.lastSyncedViewMode = snapshot.preferences.viewMode.rawValue; metadata.lastSyncedTranslationVariant = snapshot.preferences.translationVariant.rawValue; metadata.positionConflict = false
                     } catch let error as CloudRequestError where error.status == 409 {
                         metadata.positionConflict = true; metadata.remoteAnchor = remoteAnchor; metadata.remotePositionRevision = remoteRevision
                     }

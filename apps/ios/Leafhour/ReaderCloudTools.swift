@@ -16,7 +16,7 @@ struct ReaderConversationTurn: Identifiable {
     let answer: String?
     let status: String
 }
-struct ReaderGenerationConsent: Identifiable {
+struct ReaderGenerationConsent: Identifiable, Codable {
     let id: String
     let title: String
     let explanation: String
@@ -30,6 +30,8 @@ struct ReaderGenerationConsent: Identifiable {
 /// Read-only loading is separate from the explicitly confirmed generation path.
 @MainActor @Observable
 final class ReaderCloudTools {
+    private(set) var generationTerminalStatus: String?
+    var completedTranslation: CloudJSON?
     var translation: ReaderTranslation?
     var introduction = ""
     var introductionOrigin = ""
@@ -199,7 +201,7 @@ final class ReaderCloudTools {
     }
     func perform(_ intent: ReaderGenerationConsent, cloud: CloudLibraryClient?) async {
         guard !generating, let cloud else { return }
-        consent = nil; retry = intent; error = nil; generating = true
+        consent = nil; retry = intent; error = nil; generating = true; completedTranslation = nil; generationTerminalStatus = nil
         defer { generating = false }
         do {
             let value = try object(await cloud.data(path: intent.path, method: "POST", body: intent.body, ownerID: intent.ownerID))
@@ -207,6 +209,7 @@ final class ReaderCloudTools {
             if intent.action == "translation" {
                 guard value["id"] as? String == intent.passageID else { throw LibraryError.invalid("译文的来源暂时无法核对，尚未显示。") }
                 if translationPassageID == intent.passageID { translation = readTranslation(value, fallback: translation?.original ?? "") }
+                completedTranslation = try CloudJSON.decode(JSONSerialization.data(withJSONObject: value))
                 if let library, let localBookID {
                     do { try await library.cacheCloudPassage(CloudJSON.decode(JSONSerialization.data(withJSONObject: value)), bookID: localBookID) }
                     catch { self.error = "译文已保存到云端，此设备的离线副本暂未更新。可以回书房重新同步。" }
@@ -224,6 +227,10 @@ final class ReaderCloudTools {
             retry = nil
         } catch is CancellationError { }
         catch {
+            if let rejection = error as? CloudRequestError,
+               let status = rejection.billingOperationStatus, ["not_started", "released", "cancelled", "reversed"].contains(status) {
+                generationTerminalStatus = status
+            }
             if let rejection = error as? CloudRequestError, Self.definitivelyRejected(rejection) {
                 retry = nil
                 self.error = error.localizedDescription + "\n请更新当前段落或查阅范围后重新准备，你的问题仍保留。"
