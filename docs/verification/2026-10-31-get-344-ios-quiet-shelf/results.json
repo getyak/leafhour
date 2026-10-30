@@ -73,6 +73,12 @@
       "name": "Official pricing response hashes",
       "result": "matched",
       "log": "pricing-source-check-final.log"
+    },
+    {
+      "name": "Image-only PDF source fallback and reading layouts",
+      "passed": 23,
+      "failed": 0,
+      "log": "pdf-fallback.log"
     }
   ],
   "ownAccountHTTP": {

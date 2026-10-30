@@ -72,6 +72,8 @@ struct ReaderScreen: View {
     @State private var chromeMetrics: ReaderChromeMetrics?
     private enum ChromeFocus: Hashable { case back, bookInformation, tools }
     @FocusState private var focusedControl: ChromeFocus?
+    private var hasPDFText: Bool { session.chapter.passages.contains { !$0.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty } }
+    private var needsPDFSourceFallback: Bool { session.book.kind == .pdf && session.state.preferences.viewMode != .source && !hasPDFText }
     private var paper: Color { session.state.preferences.theme == "paper" ? .readingPaper : Color(uiColor: .systemBackground) }
     // Keep page margins stable when chrome sleeps. Only a real control-size change
     // updates them, so waking the tools never reflows the chapter or moves its anchor.
@@ -91,15 +93,23 @@ struct ReaderScreen: View {
             let showingBottom = chrome == .progress || chrome == .tools
             ZStack(alignment: .top) {
                 paper.ignoresSafeArea()
-                if session.book.kind == .pdf && session.state.preferences.viewMode == .source {
+                if session.book.kind == .pdf && (session.state.preferences.viewMode == .source || needsPDFSourceFallback) {
                     PDFReadingView(session: session, pageInsets: pageInsets, selectionDismissalID: selectionDismissalID, onSelection: { quote in
                         // PDFView can synchronously notify while its native selection is being cleared.
                         if quote != nil || session.selection != nil { session.selection = quote }
                     }, onWake: wake, onReadingScroll: readingDidScroll)
+                    .safeAreaInset(edge: .bottom, spacing: 0) {
+                        if needsPDFSourceFallback {
+                            Text("此页没有可对照文字，先显示原页。")
+                                .font(.footnote).foregroundStyle(.secondary).frame(maxWidth: .infinity, alignment: .leading)
+                                .padding(.horizontal, 24).padding(.vertical, 8).background(paper)
+                                .accessibilityIdentifier("reader-pdf-source-fallback")
+                        }
+                    }
                     // PDFKit's page controller scales into its complete bounds.
                     // Give it an unobscured page instead of covering source lines.
                     .padding(.top, session.state.preferences.navigationMode == .paged ? pageInsets.top : 0)
-                    .padding(.bottom, session.state.preferences.navigationMode == .paged ? pageInsets.bottom : 0)
+                    .padding(.bottom, session.state.preferences.navigationMode == .paged || needsPDFSourceFallback ? pageInsets.bottom : 0)
                 } else {
                     TextReadingView(session: session, pageInsets: pageInsets, selectionDismissalID: selectionDismissalID, onNote: { showNote($0) }, onSource: { panel = .source($0); chrome = .asleep }, onExplain: { showCompanion($0) }, onWake: wake, onReadingScroll: readingDidScroll,
                         onTranslate: { session.selection = $0; present(.translation) },

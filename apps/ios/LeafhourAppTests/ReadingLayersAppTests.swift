@@ -2,6 +2,7 @@ import XCTest
 import SwiftUI
 import UIKit
 import ImageIO
+import PDFKit
 import LeafhourCore
 @testable import Leafhour
 
@@ -53,6 +54,28 @@ final class ReadingLayersAppTests: XCTestCase {
         let context=try XCTUnwrap(CGContext(data:&pixels,width:16,height:16,bitsPerComponent:8,bytesPerRow:64,space:CGColorSpaceCreateDeviceRGB(),bitmapInfo:CGImageAlphaInfo.premultipliedLast.rawValue))
         context.draw(crop,in:CGRect(x:0,y:0,width:16,height:16))
         XCTAssertGreaterThan(Set(stride(from:0,to:pixels.count,by:4).map { "\(pixels[$0]),\(pixels[$0+1]),\(pixels[$0+2])" }).count,24)
+    }
+    func testImageOnlyPDFKeepsItsOriginalPageInTranslationAndParallelModes() async throws {
+        let root=FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        try FileManager.default.createDirectory(at:root,withIntermediateDirectories:true)
+        addTeardownBlock { try? FileManager.default.removeItem(at:root) }
+        let file=root.appendingPathComponent("image-only.pdf")
+        let bytes=UIGraphicsPDFRenderer(bounds:CGRect(x:0,y:0,width:300,height:450)).pdfData { context in
+            context.beginPage();UIColor.gray.setFill();context.cgContext.fill(CGRect(x:30,y:30,width:240,height:390))
+        };try bytes.write(to:file)
+        let library=try OfflineLibrary(root:root.appendingPathComponent("library"),scope:.device)
+        let book=try await library.importFile(file)
+        var state=try await library.state(book.id);state.preferences.viewMode = .translation
+        let session=ReaderSession(book:book,state:state,original:file,directory:try await library.bookDirectory(book.id),library:library)
+        let host=UIHostingController(rootView:ReaderScreen(session:session,systemColorScheme:.light,library:library))
+        let window=UIWindow(frame:CGRect(x:0,y:0,width:375,height:812));window.rootViewController=host;window.makeKeyAndVisible()
+        defer { window.isHidden=true;window.rootViewController=nil }
+        func containsPDF(_ view:UIView)->Bool { view is PDFView || view.subviews.contains(where:containsPDF) }
+        try await Task.sleep(for:.milliseconds(40));host.view.layoutIfNeeded()
+        XCTAssertTrue(containsPDF(host.view),"A page without text must retain PDFKit's real source instead of an empty translated text view")
+        var preferences=session.state.preferences;preferences.viewMode = .parallel;session.changePreferences(preferences)
+        try await Task.sleep(for:.milliseconds(40));host.view.layoutIfNeeded()
+        XCTAssertTrue(containsPDF(host.view));_ = await session.flush()
     }
     private func renderer(_ session: ReaderSession) -> (UITextView, TextReadingView.Coordinator) {
         let reader = TextReadingView(session: session, onNote: { _ in }, onSource: { _ in }, onWake: { _ in }, onReadingScroll: {})
