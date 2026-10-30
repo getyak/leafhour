@@ -31,7 +31,11 @@ struct TextReadingView: UIViewRepresentable {
         view.onSizeChange = { [weak coordinator = context.coordinator, weak view] in
             guard let coordinator, let view else { return }; coordinator.updateContent(view)
         }
-        context.coordinator.edgeTap = ReaderEdgeTapHandler(view: view, blocked: { [weak view] in (view?.selectedRange.length ?? 0) > 0 }, onWake: { [weak coordinator = context.coordinator] edge in coordinator?.parent.onWake(edge) })
+        context.coordinator.edgeTap = ReaderEdgeTapHandler(view: view, blocked: { [weak view, weak coordinator = context.coordinator] in
+            (view?.selectedRange.length ?? 0) > 0 || coordinator?.restoring != false
+        }, onWake: { [weak coordinator = context.coordinator] edge in coordinator?.parent.onWake(edge) },
+        isPaged: { [weak coordinator = context.coordinator] in coordinator?.parent.session.state.preferences.navigationMode == .paged },
+        onTurn: { [weak coordinator = context.coordinator] direction in _ = coordinator?.turnPage(direction) })
         context.coordinator.pageTurn = ReaderPageTurnGestureHandler(view: view, blocked: { [weak view, weak coordinator = context.coordinator] in
             (view?.selectedRange.length ?? 0) > 0 || coordinator?.restoring != false
         }, onTurn: { [weak coordinator = context.coordinator] direction in _ = coordinator?.turnPage(direction) })

@@ -37,14 +37,23 @@ import PDFKit
     }
 }
 
-/// A short page tap discloses reader controls without taking ownership of native selection.
+enum ReaderTapAction: Equatable {
+    case wake(ReaderChrome)
+    case turn(ReaderPageDirection)
+}
+
+/// Native selection owns long/multiple taps; short body-edge taps can turn pages.
 @MainActor final class ReaderEdgeTapHandler: NSObject, UIGestureRecognizerDelegate {
     private weak var view: UIView?
     private let blocked: () -> Bool
     private let onWake: (ReaderChrome) -> Void
+    private let isPaged: () -> Bool
+    private let onTurn: (ReaderPageDirection) -> Void
     private(set) var recognizer: UITapGestureRecognizer!
-    init(view: UIView, blocked: @escaping () -> Bool, onWake: @escaping (ReaderChrome) -> Void) {
+    init(view: UIView, blocked: @escaping () -> Bool, onWake: @escaping (ReaderChrome) -> Void,
+         isPaged: @escaping () -> Bool = { false }, onTurn: @escaping (ReaderPageDirection) -> Void = { _ in }) {
         self.view = view; self.blocked = blocked; self.onWake = onWake
+        self.isPaged = isPaged; self.onTurn = onTurn
         super.init()
         let tap = ReaderShortTapGestureRecognizer(target: self, action: #selector(activate(_:)))
         recognizer = tap
@@ -65,6 +74,15 @@ import PDFKit
         if point.y > view.bounds.maxY - 44 { return .progress }
         return .tools
     }
+    func action(at point: CGPoint) -> ReaderTapAction? {
+        guard let destination = destination(at: point), let view else { return nil }
+        if destination == .tools, isPaged(), !UIAccessibility.isVoiceOverRunning {
+            let x = (point.x - view.bounds.minX) / max(1, view.bounds.width)
+            if x < 0.3 { return .turn(.previous) }
+            if x > 0.7 { return .turn(.next) }
+        }
+        return .wake(destination)
+    }
     static func isLink(at point: CGPoint, in view: UIView) -> Bool {
         if let text = view as? ReflowTextView, let body = text.visibleReadingRect, !body.contains(point) { return false }
         if let text = view as? UITextView, text.attributedText.length > 0 {
@@ -84,13 +102,27 @@ import PDFKit
         return false
     }
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
-        guard !(touch.view is UIControl), touch.type == .direct || touch.type == .indirectPointer else { return false }
-        return destination(at: touch.location(in: view)) != nil
+        guard touch.type == .direct || touch.type == .indirectPointer else { return false }
+        var touched = touch.view
+        while let current = touched, current !== view {
+            if current is UIControl { return false }
+            touched = current.superview
+        }
+        return action(at: touch.location(in: view)) != nil
+    }
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRequireFailureOf other: UIGestureRecognizer) -> Bool {
+        // UITextView/PDFKit can install selection/zoom recognizers after attachment.
+        guard let view, let owner = other.view, owner === view || owner.isDescendant(of: view) else { return false }
+        if let tap = other as? UITapGestureRecognizer { return tap.numberOfTapsRequired > 1 }
+        return other is UILongPressGestureRecognizer
     }
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool { true }
     @objc private func activate(_ tap: UITapGestureRecognizer) {
         guard tap.state == .ended, let tap = tap as? ReaderShortTapGestureRecognizer, tap.isShortTap,
-              let destination = destination(at: tap.location(in: view)) else { return }
-        onWake(destination)
+              let action = action(at: tap.location(in: view)) else { return }
+        switch action {
+        case .wake(let chrome): onWake(chrome)
+        case .turn(let direction): onTurn(direction)
+        }
     }
 }

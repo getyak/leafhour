@@ -77,9 +77,9 @@ struct ReaderScreen: View {
     private func readingInsets(for layout: ReaderChromeLayout) -> UIEdgeInsets {
         let metrics = chromeMetrics?.layout == layout ? chromeMetrics : nil
         let top = metrics?.top ?? 44
-        let bottom = metrics?.bottom ?? (layout.compact ? 44 : 100)
-        return UIEdgeInsets(top: max(layout.compact ? 52 : 64, top + (layout.compact ? 8 : 16)), left: 24,
-                            bottom: max(52, bottom + (layout.compact ? 8 : 24)), right: 24)
+        let bottom = metrics?.bottom ?? (layout.compact ? 44 : 82)
+        return UIEdgeInsets(top: max(52, top + 8), left: 24,
+                            bottom: max(52, bottom + 8), right: 24)
     }
     var body: some View {
         GeometryReader { geometry in
@@ -154,7 +154,7 @@ struct ReaderScreen: View {
                                                    .init(color: paper, location: 0.35),
                                                    .init(color: paper, location: 1)],
                                            startPoint: .top, endPoint: .bottom)
-                                .padding(.top, layout.compact ? -8 : -24).ignoresSafeArea(edges: .bottom)
+                                .padding(.top, -8).ignoresSafeArea(edges: .bottom)
                                 .allowsHitTesting(false).accessibilityHidden(true)
                         }
                         .background { GeometryReader { geometry in Color.clear.preference(key: ReaderChromeHeightKey.self, value: [ReaderChromeMeasurement(layout: layout, region: .bottom, height: geometry.size.height)]) } }
@@ -204,8 +204,8 @@ struct ReaderScreen: View {
         let previous = chromeMetrics?.layout == layout ? chromeMetrics : nil
         // Retain space only inside the same width/height/type/book context.
         // A true resize or OS text change must release the previous tall dock.
-        let updated = ReaderChromeMetrics(layout: layout, top: max(previous?.top ?? 44, top),
-                                          bottom: max(previous?.bottom ?? (layout.compact ? 44 : 100), bottom))
+        let updated = ReaderChromeMetrics(layout: layout, top: max(previous?.top ?? 0, top),
+                                          bottom: max(previous?.bottom ?? 0, bottom))
         if chromeMetrics?.layout != layout || abs((chromeMetrics?.top ?? 0) - updated.top) > 0.5 || abs((chromeMetrics?.bottom ?? 0) - updated.bottom) > 0.5 {
             chromeMetrics = updated
         }
