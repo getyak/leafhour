@@ -1,6 +1,42 @@
 import UIKit
 import PDFKit
 
+/// Measure the actual touch, excluding UIKit's wait for native selection gestures.
+@MainActor private final class ReaderShortTapGestureRecognizer: UITapGestureRecognizer {
+    private var activeTouch: ObjectIdentifier?
+    private var beganTimestamp: TimeInterval?
+    private var invalidSequence = false
+    private var completedDuration: TimeInterval?
+    var isShortTap: Bool { completedDuration.map { $0 <= 0.35 } ?? false }
+
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent) {
+        completedDuration = nil
+        if !invalidSequence, activeTouch == nil, touches.count == 1, let touch = touches.first {
+            activeTouch = ObjectIdentifier(touch)
+            beganTimestamp = touch.timestamp
+        } else { invalidSequence = true }
+        super.touchesBegan(touches, with: event)
+    }
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent) {
+        // The target may run during superclass recognition, so record this first.
+        if !invalidSequence, touches.count == 1, let touch = touches.first,
+           activeTouch == ObjectIdentifier(touch), let beganTimestamp {
+            let duration = touch.timestamp - beganTimestamp
+            completedDuration = duration.isFinite && duration >= 0 ? duration : nil
+        } else { completedDuration = nil }
+        super.touchesEnded(touches, with: event)
+    }
+    override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent) {
+        invalidSequence = true; completedDuration = nil
+        super.touchesCancelled(touches, with: event)
+    }
+    override func reset() {
+        activeTouch = nil; beganTimestamp = nil
+        invalidSequence = false; completedDuration = nil
+        super.reset()
+    }
+}
+
 /// A short page tap discloses reader controls without taking ownership of native selection.
 @MainActor final class ReaderEdgeTapHandler: NSObject, UIGestureRecognizerDelegate {
     private weak var view: UIView?
@@ -10,7 +46,7 @@ import PDFKit
     init(view: UIView, blocked: @escaping () -> Bool, onWake: @escaping (ReaderChrome) -> Void) {
         self.view = view; self.blocked = blocked; self.onWake = onWake
         super.init()
-        let tap = UITapGestureRecognizer(target: self, action: #selector(activate(_:)))
+        let tap = ReaderShortTapGestureRecognizer(target: self, action: #selector(activate(_:)))
         recognizer = tap
         tap.cancelsTouchesInView = false
         tap.delegate = self
@@ -53,7 +89,8 @@ import PDFKit
     }
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool { true }
     @objc private func activate(_ tap: UITapGestureRecognizer) {
-        guard tap.state == .ended, let destination = destination(at: tap.location(in: view)) else { return }
+        guard tap.state == .ended, let tap = tap as? ReaderShortTapGestureRecognizer, tap.isShortTap,
+              let destination = destination(at: tap.location(in: view)) else { return }
         onWake(destination)
     }
 }
