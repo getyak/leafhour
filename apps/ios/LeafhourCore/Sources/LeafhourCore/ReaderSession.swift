@@ -46,6 +46,9 @@ public final class ReaderSession: Identifiable {
             if let passage = chapter.passages.first(where: { $0.id == anchor.passageID }) {
                 restored.anchor?.characterOffset = min(max(0, anchor.characterOffset), passage.text.unicodeScalars.count)
                 if anchor.pageY?.isFinite == false { restored.anchor?.pageY = nil }
+                if let y = anchor.resourceY, !y.isFinite || !(0...1).contains(y) || passage.resourcePath == nil || book.kind == .pdf || anchor.pageY != nil || anchor.characterOffset != 0 {
+                    restored.anchor?.resourceY = nil
+                }
             } else {
                 // An old passage must not send an otherwise known chapter back
                 // to the new-book entry point, including a saved cover chapter.
@@ -74,6 +77,9 @@ public final class ReaderSession: Identifiable {
                   let passage = chapter.passages.first(where: { $0.id == candidate.passageID }) else { return nil }
             candidate.characterOffset = min(max(0, candidate.characterOffset), passage.text.unicodeScalars.count)
             if candidate.pageY?.isFinite == false { candidate.pageY = nil }
+            if let y = candidate.resourceY, !y.isFinite || !(0...1).contains(y) || passage.resourcePath == nil || book.kind == .pdf || candidate.pageY != nil || candidate.characterOffset != 0 {
+                candidate.resourceY = nil
+            }
             return candidate
         }
         if let start = validated(book.readingStartAnchor) { return start }

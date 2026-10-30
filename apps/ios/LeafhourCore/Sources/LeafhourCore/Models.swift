@@ -37,8 +37,11 @@ public struct ReadingAnchor: Codable, Equatable, Hashable, Sendable {
     /// Unicode scalar offset, independent of UTF-16 and layout geometry.
     public var characterOffset: Int
     public var pageY: Double?
-    public init(chapterID: String, passageID: String, characterOffset: Int = 0, pageY: Double? = nil) {
-        self.chapterID = chapterID; self.passageID = passageID; self.characterOffset = characterOffset; self.pageY = pageY
+    /// Local source-image position, normalized from its top. PDF pageY remains
+    /// an absolute PDF coordinate; textual progress remains a Unicode scalar.
+    public var resourceY: Double?
+    public init(chapterID: String, passageID: String, characterOffset: Int = 0, pageY: Double? = nil, resourceY: Double? = nil) {
+        self.chapterID = chapterID; self.passageID = passageID; self.characterOffset = characterOffset; self.pageY = pageY; self.resourceY = resourceY
     }
     public var key: String { chapterID + ":" + passageID + ":" + String(characterOffset) }
 }

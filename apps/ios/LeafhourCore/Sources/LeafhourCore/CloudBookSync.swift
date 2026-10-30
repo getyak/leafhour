@@ -54,7 +54,7 @@ enum CloudReadingStartResolver {
     static let maximumContentBytes = 32 * 1024 * 1024
     private static let maximumMetadataBytes = 16 * 1024
     static func validated(_ hint: CloudReadingStartHint?, identity: CloudBookIdentity, chapters: [BookChapter]) -> ReadingAnchor? {
-        guard let hint, hint.identity == identity, hint.anchor.characterOffset == 0, hint.anchor.pageY == nil,
+        guard let hint, hint.identity == identity, hint.anchor.characterOffset == 0, hint.anchor.pageY == nil, hint.anchor.resourceY == nil,
               identity.ownerID.utf8.count + identity.bookID.utf8.count + identity.contentVersion.utf8.count + hint.anchor.chapterID.utf8.count + hint.anchor.passageID.utf8.count <= maximumMetadataBytes,
               let chapter = chapters.first(where: { $0.id == hint.anchor.chapterID }),
               chapter.passages.contains(where: { $0.id == hint.anchor.passageID }) else { return nil }

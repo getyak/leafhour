@@ -185,6 +185,10 @@ public actor OfflineLibrary {
         let book = try Disk.read(LocalBook.self, from: directory.appendingPathComponent("book.json"))
         func validate(_ anchor: ReadingAnchor) throws {
             guard let chapter = book.chapters.first(where: { $0.id == anchor.chapterID }), let passage = chapter.passages.first(where: { $0.id == anchor.passageID }), anchor.characterOffset >= 0, anchor.characterOffset <= passage.text.unicodeScalars.count, anchor.pageY?.isFinite != false else { throw LibraryError.invalid("引用与当前原文版本不匹配，未覆盖已有记录。") }
+            if let y = anchor.resourceY {
+                guard y.isFinite, (0...1).contains(y), passage.resourcePath != nil, book.kind != .pdf,
+                      anchor.characterOffset == 0, anchor.pageY == nil else { throw LibraryError.invalid("插图位置与当前原文资源不匹配，未覆盖已有记录。") }
+            }
         }
         if let anchor = state.anchor { try validate(anchor) }
         for (key, draft) in state.drafts { try validate(draft.anchor); guard key == draft.anchor.key else { throw LibraryError.invalid("草稿引用无效。") } }

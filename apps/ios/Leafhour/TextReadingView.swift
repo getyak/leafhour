@@ -243,6 +243,16 @@ struct TextReadingView: UIViewRepresentable {
         func capture() {
             if checkpointVisible() { cancelPendingCapture(); persistCheckpoint() }
         }
+        private func renderedImageRect(in span: Span, view: UITextView) -> CGRect? {
+            guard span.passage.resourcePath != nil, span.range.length > 0,
+                  span.range.location < view.attributedText.length,
+                  let attachment = view.attributedText.attribute(.attachment, at: span.range.location, effectiveRange: nil) as? NSTextAttachment,
+                  attachment.image != nil else { return nil }
+            let glyphs = view.layoutManager.glyphRange(forCharacterRange: NSRange(location: span.range.location, length: 1), actualCharacterRange: nil)
+            let rect = view.layoutManager.boundingRect(forGlyphRange: glyphs, in: view.textContainer)
+            guard rect.minY.isFinite, rect.height.isFinite, rect.height > 0 else { return nil }
+            return rect
+        }
         @discardableResult func checkpointVisible() -> Bool {
             guard !restoring, let view, view.bounds.width > 0, !spans.isEmpty,
                   indexedSessionID == ObjectIdentifier(parent.session), indexedChapterIndex == parent.session.chapterIndex,
@@ -258,7 +268,15 @@ struct TextReadingView: UIViewRepresentable {
             let span = spans.last(where: { $0.range.location <= index }) ?? spans[0]
             let utf16Offset = sourceOffset(in: span, displayedIndex: index)
             let scalarOffset = span.sourceOffsets.scalarOffset(forUTF16Offset: utf16Offset)
-            parent.session.recordVisible(ReadingAnchor(chapterID: parent.session.chapter.id, passageID: span.passage.id, characterOffset: scalarOffset), navigationID: parent.session.navigationID)
+            var anchor = ReadingAnchor(chapterID: parent.session.chapter.id, passageID: span.passage.id, characterOffset: scalarOffset)
+            // The image's rendered height changes with column width. Preserve a
+            // source-relative point, not a page number or old display offset.
+            let readingY = view.contentOffset.y + readingTop - view.textContainerInset.top
+            if let image = renderedImageRect(in: span, view: view), readingY >= image.minY, readingY < image.maxY {
+                anchor.characterOffset = 0
+                anchor.resourceY = min(1, max(0, Double((readingY - image.minY) / image.height)))
+            }
+            parent.session.recordVisible(anchor, navigationID: parent.session.navigationID)
             return true
         }
         private func sourceOffset(in span: Span, displayedIndex: Int) -> Int {
@@ -410,7 +428,12 @@ struct TextReadingView: UIViewRepresentable {
                     let glyph = view.layoutManager.glyphRange(forCharacterRange: NSRange(location: position, length: 1), actualCharacterRange: nil)
                     let rect = view.layoutManager.boundingRect(forGlyphRange: glyph, in: view.textContainer)
                     let readingTop = max(50, self.parent.pageInsets.top)
-                    let y = max(-view.adjustedContentInset.top, rect.minY + view.textContainerInset.top - readingTop)
+                    let sourceY: CGFloat
+                    if let resourceY = anchor.resourceY, resourceY.isFinite, (0...1).contains(resourceY), anchor.pageY == nil,
+                       let image = self.renderedImageRect(in: span, view: view) {
+                        sourceY = image.minY + CGFloat(resourceY) * image.height
+                    } else { sourceY = rect.minY }
+                    let y = max(-view.adjustedContentInset.top, sourceY + view.textContainerInset.top - readingTop)
                     let maximum = self.parent.session.state.preferences.navigationMode == .paged
                         ? (self.pagination?.origins.last ?? -view.adjustedContentInset.top)
                         : max(-view.adjustedContentInset.top, view.contentSize.height - view.bounds.height + view.adjustedContentInset.bottom)

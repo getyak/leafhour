@@ -25,6 +25,7 @@
 		5BB37738726545C0BD433BA2 /* LibraryPresentationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD59337F6515526CF8CEF9ED /* LibraryPresentationTests.swift */; };
 		60025F26EBEA67F646C96BDC /* NativeProviderAuthentication.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0453B8082F72BDACB0777356 /* NativeProviderAuthentication.swift */; };
 		61125147E5FCF4B7597F8348 /* ReaderScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9E14C10861765251864D27F /* ReaderScreen.swift */; };
+		629AFD1C09C02E81F317CB9E /* ReaderResourcePositionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D8B657CF0975FC45FE81FF1 /* ReaderResourcePositionTests.swift */; };
 		651CDF903D82A8192DBD27D2 /* ReaderToolPanels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5478FC5BEB93EE6E0F2DE3C9 /* ReaderToolPanels.swift */; };
 		67E38652DE67F8D51447519C /* CompanionSheetLayoutTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B990EE96A8AEB468EA6D62B /* CompanionSheetLayoutTests.swift */; };
 		6A8146E69FEAC043FF1ADA5D /* ReaderLayoutTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7641090783C39C25000F011 /* ReaderLayoutTests.swift */; };
@@ -49,6 +50,7 @@
 		EACEAB43EF576F1E2999D808 /* ReaderPaginationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B883EF38064061434E76F52 /* ReaderPaginationTests.swift */; };
 		EDABB255B4EC29596C4D47ED /* BookDetailScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CB602653F224B78330B371B /* BookDetailScreen.swift */; };
 		EDC4D5A3E43E9336BFC60FFE /* ReaderCloudTools.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCF573520407A93144E699EC /* ReaderCloudTools.swift */; };
+		EE4B61929207BACBF8CBDBEB /* ZIPFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = 328C76F5D6D1B07F1EEE7C99 /* ZIPFoundation */; };
 		F48522D668D56A3C6815517A /* MarkdownTextRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61E087460D41217FEAE7CC0B /* MarkdownTextRenderer.swift */; };
 		FD5562DABEFEADF16AF28795 /* LeafhourApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5BA4DE90DC37B23A3034EB2 /* LeafhourApp.swift */; };
 /* End PBXBuildFile section */
@@ -94,6 +96,7 @@
 		73AEEA50ADFCDF1B40F4A92F /* LeafhourAppTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = LeafhourAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		750657EA8612A5AD41512D13 /* ReaderWebTools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReaderWebTools.swift; sourceTree = "<group>"; };
 		799FDD0E8DD22C84B320C0FD /* ReaderPreferencesLayoutTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReaderPreferencesLayoutTests.swift; sourceTree = "<group>"; };
+		7D8B657CF0975FC45FE81FF1 /* ReaderResourcePositionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReaderResourcePositionTests.swift; sourceTree = "<group>"; };
 		878434EEA066C19B2F60BD71 /* TextReadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextReadingView.swift; sourceTree = "<group>"; };
 		8BEF25972E3AD2742AB020DD /* ReadingUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadingUITests.swift; sourceTree = "<group>"; };
 		933A454F757161CE4F2491E7 /* LeafhourCore */ = {isa = PBXFileReference; lastKnownFileType = folder; name = LeafhourCore; path = LeafhourCore; sourceTree = SOURCE_ROOT; };
@@ -124,6 +127,14 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		B9FB6CA8B46602CBAE54A776 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EE4B61929207BACBF8CBDBEB /* ZIPFoundation in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		E6EA2DE6E83621FF99019637 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -148,6 +159,7 @@
 				E7641090783C39C25000F011 /* ReaderLayoutTests.swift */,
 				5B883EF38064061434E76F52 /* ReaderPaginationTests.swift */,
 				799FDD0E8DD22C84B320C0FD /* ReaderPreferencesLayoutTests.swift */,
+				7D8B657CF0975FC45FE81FF1 /* ReaderResourcePositionTests.swift */,
 				12EBD7ECEFA325EC3A662796 /* ReaderSelectionStateTests.swift */,
 				D56B8084ADA917624ADE8BF5 /* ReaderTapTests.swift */,
 				F9E9843F780C3B8064BC647F /* ReaderToolsTests.swift */,
@@ -293,6 +305,7 @@
 			buildConfigurationList = 7849E126701AACF6BA3812E9 /* Build configuration list for PBXNativeTarget "LeafhourAppTests" */;
 			buildPhases = (
 				F18D0352B5C33FC8B047C96E /* Sources */,
+				B9FB6CA8B46602CBAE54A776 /* Frameworks */,
 			);
 			buildRules = (
 			);
@@ -301,6 +314,7 @@
 			);
 			name = LeafhourAppTests;
 			packageProductDependencies = (
+				328C76F5D6D1B07F1EEE7C99 /* ZIPFoundation */,
 			);
 			productName = LeafhourAppTests;
 			productReference = 73AEEA50ADFCDF1B40F4A92F /* LeafhourAppTests.xctest */;
@@ -418,6 +432,7 @@
 				6A8146E69FEAC043FF1ADA5D /* ReaderLayoutTests.swift in Sources */,
 				EACEAB43EF576F1E2999D808 /* ReaderPaginationTests.swift in Sources */,
 				0FEF4DA021185B0FC2A9C579 /* ReaderPreferencesLayoutTests.swift in Sources */,
+				629AFD1C09C02E81F317CB9E /* ReaderResourcePositionTests.swift in Sources */,
 				BC376C8AE977B6B1499DC504 /* ReaderSelectionStateTests.swift in Sources */,
 				E904B0CEEE34727C095872E5 /* ReaderTapTests.swift in Sources */,
 				3D28103353174CF11FA15522 /* ReaderToolsTests.swift in Sources */,
@@ -750,6 +765,10 @@
 /* End XCLocalSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		328C76F5D6D1B07F1EEE7C99 /* ZIPFoundation */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = ZIPFoundation;
+		};
 		C6097A4216730EFB1A068F30 /* LeafhourCore */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = LeafhourCore;
