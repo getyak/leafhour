@@ -10,6 +10,8 @@ struct LibraryScreen: View {
     @AppStorage("leafhour.library.filter") private var filterRaw = LibraryShelfFilter.all.rawValue
     @AppStorage("leafhour.library.sort") private var sortRaw = LibraryShelfSort.added.rawValue
     @AppStorage("leafhour.library.layout") private var layoutRaw = LibraryShelfLayout.grid.rawValue
+    @State private var searching = false
+    @FocusState private var searchFocused: Bool
     @State private var importing = false
     @State private var info = false
     @State private var path: [String] = []
@@ -57,33 +59,33 @@ struct LibraryScreen: View {
                     gridShelf
                 }
             }
-            .background(Color(uiColor: .systemGroupedBackground))
+            .background(Color.shelfPaper)
             .navigationDestination(for: String.self) { id in
                 if let book = model.books.first(where: { $0.id == id }) { BookDetailScreen(book: book, model: model) }
                 else { ContentUnavailableView("书籍暂不可用", systemImage: "book.closed") }
             }
             .navigationTitle("我的书房")
-            .navigationBarTitleDisplayMode(.inline)
-            .searchable(text: $query, placement: .navigationBarDrawer(displayMode: .always), prompt: "书名或作者")
+            .navigationBarTitleDisplayMode(.large)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     Button(model.account == nil ? "登录书房" : "我的账号", systemImage: model.account == nil ? "person.crop.circle" : "person.crop.circle.fill") { info = true }
                         .labelStyle(.iconOnly)
                 }
                 ToolbarItemGroup(placement: .topBarTrailing) {
+                    Button("搜索书房", systemImage: "magnifyingglass") { searching.toggle(); searchFocused = searching }
+                        .labelStyle(.iconOnly)
                     Button("导入书籍", systemImage: "plus") { importing = true }.labelStyle(.iconOnly).disabled(model.busy)
                 }
             }
             .safeAreaInset(edge: .top, spacing: 0) {
-                if !allItems.isEmpty {
-                    HStack(spacing: 12) {
-                        Picker("书房范围", selection: filterBinding) {
-                            ForEach(LibraryShelfFilter.allCases, id: \.rawValue) { Text($0.title).tag($0) }
-                        }.pickerStyle(.segmented)
-                        presentationMenu.labelStyle(.iconOnly).frame(minWidth: 44, minHeight: 44)
-                    }
-                    .padding(.horizontal, 20).padding(.vertical, 8)
-                    .background(.regularMaterial)
+                if searching {
+                    HStack(spacing: 10) {
+                        Image(systemName: "magnifyingglass").foregroundStyle(.secondary)
+                        TextField("书名或作者", text: $query).focused($searchFocused)
+                            .textInputAutocapitalization(.never).autocorrectionDisabled().submitLabel(.search)
+                            .accessibilityIdentifier("library-search-field")
+                        Button("取消") { query = ""; searching = false; searchFocused = false }.frame(minHeight: 44)
+                    }.padding(.horizontal, 20).background(Color.shelfPaper)
                 }
             }
             .safeAreaInset(edge: .bottom) {
@@ -105,6 +107,24 @@ struct LibraryScreen: View {
                 Button("知道了") { model.message = nil }
             } message: { Text(model.message ?? "") }
         }
+    }
+
+    private var shelfHeader: some View {
+        HStack(spacing: 12) {
+            Menu {
+                Picker("书房范围", selection: filterBinding) {
+                    ForEach(LibraryShelfFilter.allCases, id: \.rawValue) { Text($0.title).tag($0) }
+                }
+            } label: {
+                HStack(spacing: 6) {
+                    Text(filter == .all ? "全部书籍" : "已下载").font(.subheadline.weight(.medium))
+                    Image(systemName: "chevron.down").font(.system(size: 9, weight: .semibold))
+                }.frame(minHeight: 44).contentShape(Rectangle())
+            }.accessibilityLabel("书房范围").accessibilityValue(filter.title)
+            Text("\(visibleItems.count) 本书").font(.caption).foregroundStyle(.secondary)
+            Spacer(minLength: 0)
+            presentationMenu.labelStyle(.iconOnly).frame(minWidth: 44, minHeight: 44)
+        }.foregroundStyle(Color.primary)
     }
 
     private var presentationMenu: some View {
@@ -129,32 +149,33 @@ struct LibraryScreen: View {
             if let book = resumeBook, query.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
                 Section("继续读") { resumeCard(book) }
             }
-            if visibleItems.isEmpty { filteredEmptyState.listRowBackground(Color.clear) }
-            else {
-                Section {
+            Section {
+                if visibleItems.isEmpty { filteredEmptyState.listRowBackground(Color.clear) }
+                else {
                     ForEach(visibleItems) { item in
                         LibraryShelfRow(item: item, downloadUnavailable: model.busy, isActive: isActive(item), progress: model.activityProgress, status: model.status, resource: model.coverResource(item), open: { open(item) }, details: { details(item) })
                     }
-                } header: { Text("\(visibleItems.count) 本书").foregroundStyle(Color.primary) }
-            }
+                }
+            } header: { shelfHeader.textCase(nil) }
             if !model.jobs.isEmpty { Section("待继续的导入") { importRows } }
-            Section { libraryFooter }
+
         }
-        .listStyle(.insetGrouped)
+        .listStyle(.plain).scrollContentBackground(.hidden)
         .accessibilityIdentifier("library-shelf-list")
     }
 
     private var gridShelf: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 22) {
+            VStack(alignment: .leading, spacing: 16) {
                 if let book = resumeBook, query.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
                     resumeCard(book)
                         .padding(16)
                         .background(Color(uiColor: .secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 16))
                 }
+                shelfHeader
+                if model.syncStatus.hasPrefix("暂") { Text(model.syncStatus).font(.footnote).foregroundStyle(.secondary) }
                 if visibleItems.isEmpty { filteredEmptyState.frame(maxWidth: .infinity) }
                 else {
-                    Text("\(visibleItems.count) 本书").font(.subheadline).foregroundStyle(Color.primary)
                     LazyVGrid(columns: shelfColumns, alignment: .leading, spacing: 24) {
                         ForEach(visibleItems) { item in
                             LibraryShelfTile(item: item, downloadUnavailable: model.busy, isActive: isActive(item), progress: model.activityProgress, status: model.status, resource: model.coverResource(item), open: { open(item) }, details: { details(item) })
@@ -169,7 +190,6 @@ struct LibraryScreen: View {
                     .padding().frame(maxWidth: .infinity, alignment: .leading)
                     .background(Color(uiColor: .secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 16))
                 }
-                libraryFooter
             }
             .padding(20)
         }
