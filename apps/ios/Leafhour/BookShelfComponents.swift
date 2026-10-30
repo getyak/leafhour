@@ -60,14 +60,15 @@ struct ShelfBookCover: View {
 
 struct ShelfBookAvailability: View {
     let item: LibraryShelfItem
-
     var body: some View {
         if item.isDownloaded {
-            Label(item.isAdditionalVersion ? "其他离线版本 · 记录保留" : (item.hasCloudUpdate ? "已下载 · 云端有更新" : "已下载 · 可离线阅读"), systemImage: item.isAdditionalVersion ? "books.vertical" : "checkmark.circle")
-                .foregroundStyle(Color.leafInk)
-        } else {
-            Label("尚未下载", systemImage: "icloud")
-                .foregroundStyle(Color.primary.opacity(0.68))
+            Image(systemName: item.isAdditionalVersion ? "books.vertical.circle.fill" : item.hasCloudUpdate ? "arrow.triangle.2.circlepath.circle.fill" : "checkmark.circle.fill")
+                .font(.system(size: 16, weight: .medium))
+                .symbolRenderingMode(.palette)
+                .foregroundStyle(Color.leafInk, Color(uiColor: .systemBackground))
+                .padding(5)
+                .background(.regularMaterial, in: Circle())
+                .accessibilityHidden(true)
         }
     }
 }
@@ -75,23 +76,20 @@ struct ShelfBookAvailability: View {
 struct ShelfBookActivity: View {
     let progress: Double?
     let status: String
-
     var body: some View {
         VStack(alignment: .leading, spacing: 5) {
             if let progress {
-                ProgressView(value: min(1, max(0, progress)))
-                    .accessibilityLabel("书籍处理进度")
-            } else {
-                HStack(spacing: 6) {
-                    ProgressView().controlSize(.mini)
-                    Text("正在处理").font(.caption)
-                }
-            }
-            if !status.isEmpty {
-                Text(status).font(.caption).foregroundStyle(.secondary)
-            }
+                ProgressView(value: min(1, max(0, progress))).accessibilityLabel("书籍处理进度")
+            } else { ProgressView().controlSize(.mini) }
+            if !status.isEmpty { Text(status).font(.caption).foregroundStyle(.secondary) }
         }
         .accessibilityElement(children: .combine)
+    }
+}
+
+private extension LibraryShelfItem {
+    var readingAccessibilityLabel: String {
+        (isDownloaded ? "阅读，" : "下载并阅读，") + title + (isAdditionalVersion ? "，其他离线版本，个人记录保留" : hasCloudUpdate ? "，已下载，云端有更新" : isDownloaded ? "，已下载可离线阅读" : "")
     }
 }
 
@@ -107,88 +105,35 @@ struct LibraryShelfRow: View {
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     var body: some View {
-        Group {
-            if dynamicTypeSize.isAccessibilitySize {
-                VStack(alignment: .leading, spacing: 12) {
-                    readingLabel
-                    secondaryAction
-                }
-            } else {
-                HStack(spacing: 10) {
-                    readingLabel
-                    secondaryAction
-                }
-            }
-        }
-        .padding(.vertical, 7)
-    }
-
-    @ViewBuilder private var readingLabel: some View {
-        if item.isDownloaded {
-            Button(action: open) { bookLabel.frame(minHeight: 44) }
-                .buttonStyle(.plain)
-                .accessibilityLabel("阅读，\(item.title)，" + (item.isAdditionalVersion ? "其他离线版本，个人记录保留" : (item.hasCloudUpdate ? "已下载，云端有更新" : "已下载可离线阅读")))
-                .accessibilityValue(item.author)
-        } else {
-            bookLabel
-        }
-    }
-
-    @ViewBuilder private var secondaryAction: some View {
-        if item.isDownloaded {
-            Button(action: details) {
-                Group {
-                    if dynamicTypeSize.isAccessibilitySize {
-                        Text("书籍详情").font(.body).fixedSize(horizontal: false, vertical: true)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                    } else { Image(systemName: "info.circle") }
-                }
-                .frame(minWidth: 44, minHeight: 44)
-                .contentShape(Rectangle())
-            }
-            .buttonStyle(.borderless)
-            .accessibilityLabel("\(item.title)，书籍详情")
-        } else if !isActive {
+        VStack(alignment: .leading, spacing: 8) {
             Button(action: open) {
-                Group {
-                    if dynamicTypeSize.isAccessibilitySize {
-                        Text("下载并阅读").font(.body).fixedSize(horizontal: false, vertical: true)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                    } else { Image(systemName: "icloud.and.arrow.down") }
+                HStack(spacing: 16) {
+                    ShelfBookCover(title: item.title, author: item.author, compact: true, resource: resource)
+                        .frame(width: dynamicTypeSize.isAccessibilitySize ? 48 : 58, height: dynamicTypeSize.isAccessibilitySize ? 68 : 84)
+                    VStack(alignment: .leading, spacing: 6) {
+                        Text(item.title).font(.headline).foregroundStyle(.primary)
+                            .lineLimit(dynamicTypeSize.isAccessibilitySize ? nil : 2)
+                            .fixedSize(horizontal: false, vertical: true)
+                        if !item.author.isEmpty {
+                            Text(item.author).font(.subheadline).foregroundStyle(.secondary)
+                                .lineLimit(dynamicTypeSize.isAccessibilitySize ? nil : 2)
+                                .fixedSize(horizontal: false, vertical: true)
+                        }
+                    }
+                    Spacer(minLength: 0)
+                    ShelfBookAvailability(item: item)
                 }
-                .frame(minWidth: 44, minHeight: 44)
+                .frame(maxWidth: .infinity, minHeight: 44, alignment: .leading)
                 .contentShape(Rectangle())
             }
-            .buttonStyle(.borderless)
-            .disabled(downloadUnavailable)
-            .accessibilityLabel("下载并阅读，\(item.title)")
-            .accessibilityValue(item.author)
+            .buttonStyle(.plain)
+            .disabled(isActive || (!item.isDownloaded && downloadUnavailable))
+            .accessibilityLabel(item.readingAccessibilityLabel).accessibilityValue(item.author)
+            .contextMenu { if item.isDownloaded { Button("书籍详情", systemImage: "info.circle", action: details) } }
+            .accessibilityAction(named: Text("书籍详情")) { if item.isDownloaded { details() } }
+            if isActive { ShelfBookActivity(progress: progress, status: status) }
         }
-    }
-
-    private var bookLabel: some View {
-        HStack(spacing: 14) {
-            // This cover repeats the nearby title. At accessibility sizes, give
-            // its width to the full-size book information rather than tiny art.
-            if !dynamicTypeSize.isAccessibilitySize {
-                ShelfBookCover(title: item.title, author: item.author, compact: true, resource: resource).frame(width: 58, height: 80)
-            }
-            VStack(alignment: .leading, spacing: 6) {
-                Text(item.title).font(.headline).foregroundStyle(.primary)
-                    .lineLimit(dynamicTypeSize.isAccessibilitySize ? nil : 2)
-                    .fixedSize(horizontal: false, vertical: dynamicTypeSize.isAccessibilitySize)
-                if !item.author.isEmpty {
-                    Text(item.author).font(.subheadline).foregroundStyle(Color.primary.opacity(0.68))
-                        .lineLimit(dynamicTypeSize.isAccessibilitySize ? nil : 1)
-                        .fixedSize(horizontal: false, vertical: dynamicTypeSize.isAccessibilitySize)
-                }
-                if isActive { ShelfBookActivity(progress: progress, status: status) }
-                else { ShelfBookAvailability(item: item).font(.caption) }
-            }
-            Spacer(minLength: 0)
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .contentShape(Rectangle())
+        .padding(.vertical, 8)
     }
 }
 
@@ -204,60 +149,29 @@ struct LibraryShelfTile: View {
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     var body: some View {
-        Group {
-            if dynamicTypeSize.isAccessibilitySize {
-                LibraryShelfRow(item: item, downloadUnavailable: downloadUnavailable, isActive: isActive, progress: progress, status: status, resource: resource, open: open, details: details)
-                    .padding(16)
-                    .background(Color(uiColor: .secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 16))
-            } else {
-                standardTile
-            }
-        }
-        .frame(maxWidth: .infinity, alignment: .topLeading)
-    }
-
-    private var standardTile: some View {
-        VStack(alignment: .leading, spacing: 9) {
-            if item.isDownloaded {
-                Button(action: open) { cover }
-                    .buttonStyle(.plain)
-                    .accessibilityLabel("阅读，\(item.title)，" + (item.isAdditionalVersion ? "其他离线版本，个人记录保留" : (item.hasCloudUpdate ? "已下载，云端有更新" : "已下载可离线阅读")))
-            } else {
-                cover
-            }
-            Text(item.title).font(.subheadline.weight(.semibold)).lineLimit(2)
-            if !item.author.isEmpty { Text(item.author).font(.caption).foregroundStyle(Color.primary.opacity(0.68)).lineLimit(1) }
-            if isActive {
-                ShelfBookActivity(progress: progress, status: status)
-            } else {
-                ShelfBookAvailability(item: item).font(.caption2)
-            }
-            HStack {
-                if item.isDownloaded {
-                    Button(action: open) {
-                        Text("阅读").font(.subheadline)
-                            .frame(minWidth: 44, minHeight: 44).contentShape(Rectangle())
-                    }.accessibilityLabel("阅读，\(item.title)" + (!item.isAdditionalVersion && item.hasCloudUpdate ? "，已下载，云端有更新" : ""))
-                    Spacer(minLength: 2)
-                    Button(action: details) { Image(systemName: "info.circle").frame(width: 44, height: 44).contentShape(Rectangle()) }
-                        .accessibilityLabel("\(item.title)，书籍详情")
-                } else if !isActive {
-                    Button(action: open) {
-                        Label("下载并阅读", systemImage: "icloud.and.arrow.down").font(.subheadline)
-                            .fixedSize(horizontal: false, vertical: true)
-                            .frame(minWidth: 44, minHeight: 44, alignment: .leading).contentShape(Rectangle())
-                    }
-                        .disabled(downloadUnavailable)
-                        .accessibilityLabel("下载并阅读，\(item.title)")
+        if dynamicTypeSize.isAccessibilitySize {
+            LibraryShelfRow(item: item, downloadUnavailable: downloadUnavailable, isActive: isActive, progress: progress, status: status, resource: resource, open: open, details: details)
+        } else {
+            VStack(alignment: .leading, spacing: 8) {
+                Button(action: open) {
+                    VStack(alignment: .leading, spacing: 8) {
+                        ShelfBookCover(title: item.title, author: item.author, resource: resource)
+                            .aspectRatio(2.0 / 3, contentMode: .fit)
+                            .overlay(alignment: .topTrailing) { ShelfBookAvailability(item: item).padding(7) }
+                            .shadow(color: .black.opacity(0.07), radius: 5, x: 0, y: 3)
+                        Text(item.title).font(.subheadline.weight(.medium)).foregroundStyle(.primary).lineLimit(2)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                        if !item.author.isEmpty { Text(item.author).font(.caption).foregroundStyle(.secondary).lineLimit(1) }
+                    }.contentShape(Rectangle())
                 }
+                .buttonStyle(.plain)
+                .disabled(isActive || (!item.isDownloaded && downloadUnavailable))
+                .accessibilityLabel(item.readingAccessibilityLabel).accessibilityValue(item.author)
+                .contextMenu { if item.isDownloaded { Button("书籍详情", systemImage: "info.circle", action: details) } }
+                .accessibilityAction(named: Text("书籍详情")) { if item.isDownloaded { details() } }
+                if isActive { ShelfBookActivity(progress: progress, status: status) }
             }
-            .buttonStyle(.borderless)
+            .frame(maxWidth: .infinity, alignment: .topLeading)
         }
-        .frame(maxWidth: .infinity, alignment: .topLeading)
-    }
-
-    private var cover: some View {
-        ShelfBookCover(title: item.title, author: item.author, resource: resource)
-            .aspectRatio(0.70, contentMode: .fit)
     }
 }

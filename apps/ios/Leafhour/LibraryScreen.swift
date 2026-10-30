@@ -274,7 +274,6 @@ struct LibraryScreen: View {
                             .lineLimit(dynamicTypeSize.isAccessibilitySize ? nil : 2)
                             .fixedSize(horizontal: false, vertical: dynamicTypeSize.isAccessibilitySize)
                     }
-                    Label("此设备已下载，可离线继续", systemImage: "checkmark.circle").font(.caption).foregroundStyle(.secondary)
                 }
                 Spacer(minLength: 0)
                 Image(systemName: "chevron.right").font(.footnote.weight(.semibold)).foregroundStyle(.secondary)
