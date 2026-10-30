@@ -232,6 +232,13 @@ final class VideoExperienceUITests: XCTestCase {
         // distinguish it from all of the underlying reader's ordinary Buttons.
         return actions
     }
+    private func hasVisibleNativeMenuItem() -> Bool {
+        // This is an existence oracle: stop after the first confirmed visible
+        // native action instead of resolving every later MenuItem by index.
+        return app.menuItems.allElementsBoundByIndex.contains {
+            visibleInApp($0) && (nativeReadingActions.contains($0.label) || nativeEditingActions.contains($0.label))
+        }
+    }
     private func nativeButtonEditMenu() -> XCUIElement? {
         // Filter inside XCTest's query before resolving any collection/button
         // properties. Covered shelf collections are not native edit overlays.
@@ -266,7 +273,7 @@ final class VideoExperienceUITests: XCTestCase {
             // A native edit-menu window can temporarily hide the underlying
             // reader from existence queries. Verify the actual overlay roles
             // and action group rather than requiring both AX layers at once.
-            return !self.visibleNativeMenuItems().isEmpty
+            return self.hasVisibleNativeMenuItem()
                 || self.nativeButtonEditMenu() != nil
         }, object: nil)
         XCTAssertEqual(XCTWaiter.wait(for: [present], timeout: timeout), .completed, "No actual native edit-menu overlay. \(app.debugDescription)")
