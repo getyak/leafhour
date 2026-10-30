@@ -123,7 +123,7 @@ struct ReaderScreen: View {
                                 Label(speech.playing ? "正在听书" : "听书已暂停", systemImage: speech.playing ? "waveform" : "pause.fill").font(.caption).padding(.horizontal, 16).frame(minHeight: 44)
                             }.background(.regularMaterial, in: Capsule())
                         } else {
-                            Button { wake(.tools) } label: {
+                            Button { revealTools() } label: {
                                 Capsule().fill(.secondary.opacity(0.4)).frame(width: 30, height: 4).frame(width: 72, height: 44)
                             }.accessibilityLabel("显示阅读进度、目录、搜索与记录").accessibilityHint("轻点书页也能打开阅读工具")
                         }
@@ -235,6 +235,10 @@ struct ReaderScreen: View {
     }
     private func readingDidScroll() { hasNativeTextSelection = false; session.clearTransientSelection(); selectionDismissalID = UUID(); sleepChrome() }
     private func wake(_: ReaderChrome) { withAnimation(reduceMotion ? nil : .easeOut(duration: 0.16)) { chrome = chrome == .tools ? .asleep : .tools } }
+    private func revealTools() {
+        withAnimation(reduceMotion ? nil : .easeOut(duration: 0.16)) { chrome = .tools }
+        clockID = UUID()
+    }
     private func present(_ value: ReaderPanel) { panel = value; chrome = .asleep }
     private func showNote(_ quote: SelectedQuote) {
         let draft = session.state.drafts[quote.anchor.key]
