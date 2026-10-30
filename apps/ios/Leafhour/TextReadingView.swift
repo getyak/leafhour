@@ -140,6 +140,10 @@ struct TextReadingView: UIViewRepresentable {
                     coordinator.spans.append(Span(passage: passage, range: NSRange(location: start, length: result.length - start), sourceOffsets: sourceOffsets(for: passage, at: passageIndex)))
                 }
                 }
+                // TextKit's extra trailing line also needs the real body font on
+                // its first layout. Set the default before restoring every run's
+                // own heading, caption and link attributes below.
+                view.font = font
                 view.attributedText = result
                 if let selection, NSMaxRange(selection.range) <= result.length,
                    (result.string as NSString).substring(with: selection.range) == selection.text {
