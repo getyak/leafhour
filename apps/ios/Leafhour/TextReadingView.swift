@@ -42,11 +42,7 @@ struct TextReadingView: UIViewRepresentable {
         let coordinator = context.coordinator
         coordinator.parent = self
         coordinator.updateContent(view)
-        if coordinator.selectionDismissalID != selectionDismissalID {
-            coordinator.selectionDismissalID = selectionDismissalID
-            view.selectedRange = NSRange(location: 0, length: 0)
-            view.resignFirstResponder()
-        }
+        coordinator.dismissSelection(in: view, id: selectionDismissalID)
     }
     static func dismantleUIView(_ view: UITextView, coordinator: Coordinator) {
         (view as? ReflowTextView)?.onSizeChange = nil
@@ -187,6 +183,29 @@ struct TextReadingView: UIViewRepresentable {
             resignObserver = NotificationCenter.default.addObserver(forName: UIApplication.willResignActiveNotification, object: nil, queue: .main) { [weak self] _ in MainActor.assumeIsolated { self?.capture() } }
         }
         deinit { delayed?.cancel(); if let resignObserver { NotificationCenter.default.removeObserver(resignObserver) } }
+        func dismissSelection(in textView: UITextView, id: UUID) {
+            guard selectionDismissalID != id else { return }
+            selectionDismissalID = id
+            guard let window = textView.window else { return }
+            let owner = ObjectIdentifier(parent.session), navigation = parent.session.navigationID
+            let chapterIndex = parent.session.chapterIndex, chapter = parent.session.chapter.id
+            let generation = restorationGeneration, range = textView.selectedRange
+            // Resigning here synchronously can ask SwiftUI for its next responder
+            // while updateUIView is still updating that same responder graph.
+            DispatchQueue.main.async { [weak self, weak textView, weak window] in
+                guard let self, let textView, let window, self.view === textView,
+                      self.selectionDismissalID == id, textView.window === window,
+                      self.indexedSessionID == owner, owner == ObjectIdentifier(self.parent.session),
+                      self.indexedChapterIndex == chapterIndex, chapterIndex == self.parent.session.chapterIndex,
+                      self.renderedChapterID == chapter, chapter == self.parent.session.chapter.id,
+                      self.navigationID == navigation, navigation == self.parent.session.navigationID,
+                      self.restorationGeneration == generation, textView.selectedRange == range else { return }
+                if textView.selectedRange != NSRange(location: 0, length: 0) {
+                    textView.selectedRange = NSRange(location: 0, length: 0)
+                }
+                if textView.isFirstResponder { textView.resignFirstResponder() }
+            }
+        }
         func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
             restorationGeneration += 1; restoring = false; cancelPendingCapture()
             parent.session.clearTransientSelection()

@@ -7,6 +7,11 @@ import LeafhourCore
 @MainActor
 final class ReaderLayoutTests: XCTestCase {
     private func session(source: String, imageAlternative: String? = nil) async throws -> ReaderSession {
+        let fixture = try await importedSession(source: source, imageAlternative: imageAlternative)
+        return fixture.session
+    }
+
+    private func importedSession(source: String, imageAlternative: String? = nil) async throws -> (session: ReaderSession, library: OfflineLibrary) {
         let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
         try FileManager.default.createDirectory(at: root, withIntermediateDirectories: true)
         addTeardownBlock { try? FileManager.default.removeItem(at: root) }
@@ -26,12 +31,86 @@ final class ReaderLayoutTests: XCTestCase {
             book.chapters[0].passages[0].resourcePath = "illustration.png"
             book.chapters[0].passages[0].alternative = imageAlternative
         }
-        return ReaderSession(book: book, state: try await library.state(book.id), original: try await library.originalURL(book.id), directory: directory, library: library)
+        return (ReaderSession(book: book, state: try await library.state(book.id), original: try await library.originalURL(book.id), directory: directory, library: library), library)
     }
 
     private func descendant<T: UIView>(_ type: T.Type, in view: UIView) -> T? {
         if let found = view as? T { return found }
         return view.subviews.lazy.compactMap { self.descendant(type, in: $0) }.first
+    }
+
+    private func drainMainQueue() async {
+        await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
+            DispatchQueue.main.async { continuation.resume() }
+        }
+    }
+
+    private func selectableText(_ session: ReaderSession) async throws -> (UITextView, TextReadingView.Coordinator) {
+        let controller = UIViewController(), window = UIWindow(frame: CGRect(x: 0, y: 0, width: 390, height: 700))
+        window.rootViewController = controller; window.makeKeyAndVisible(); controller.view.frame = window.bounds
+        let reading = TextReadingView(session: session, onNote: { _ in }, onSource: { _ in }, onWake: { _ in }, onReadingScroll: {})
+        let coordinator = reading.makeCoordinator(), text = UITextView(usingTextLayoutManager: false)
+        text.frame = controller.view.bounds; text.isEditable = false; text.isSelectable = true
+        text.delegate = coordinator; coordinator.view = text; controller.view.addSubview(text)
+        coordinator.updateContent(text)
+        await drainMainQueue()
+        XCTAssertFalse(coordinator.restoring)
+        XCTAssertNotNil(text.window)
+        text.selectedRange = NSRange(location: 0, length: 5)
+        XCTAssertTrue(text.becomeFirstResponder())
+        XCTAssertTrue(text.isFirstResponder)
+        addTeardownBlock { await MainActor.run {
+            coordinator.invalidate(); text.delegate = nil; text.resignFirstResponder()
+            window.isHidden = true; window.rootViewController = nil
+        } }
+        return (text, coordinator)
+    }
+
+    func testSelectionDismissalWaitsUntilTheNextMainTurnBeforeClearingAndResigning() async throws {
+        let session = try await session(source: "First source paragraph keeps its position.")
+        let (text, coordinator) = try await selectableText(session)
+        let selection = text.selectedRange, anchor = session.currentAnchor
+        coordinator.dismissSelection(in: text, id: UUID())
+        XCTAssertEqual(text.selectedRange, selection, "A representable update must not synchronously alter UIKit selection")
+        XCTAssertTrue(text.isFirstResponder, "Resigning inside updateUIView can re-enter SwiftUI's active responder graph")
+        await drainMainQueue()
+        XCTAssertEqual(text.selectedRange, NSRange(location: 0, length: 0))
+        XCTAssertFalse(text.isFirstResponder)
+        XCTAssertEqual(session.currentAnchor, anchor, "Dismissing selection must not move the source checkpoint")
+    }
+
+    func testPendingSelectionDismissalDoesNotClearANewerNativeSelection() async throws {
+        let session = try await session(source: "First source paragraph keeps its position.")
+        let (text, coordinator) = try await selectableText(session)
+        let navigation = session.navigationID, newerSelection = NSRange(location: 6, length: 6)
+        coordinator.dismissSelection(in: text, id: UUID())
+        text.selectedRange = newerSelection
+        await drainMainQueue()
+        XCTAssertEqual(session.navigationID, navigation, "Only the native selection changed in this regression")
+        XCTAssertEqual(text.selectedRange, newerSelection)
+        XCTAssertTrue(text.isFirstResponder, "An old request must not dismiss a newer selection in the same book and navigation")
+    }
+
+    func testPendingSelectionDismissalDoesNotResignAfterSourceNavigationEvenWithTheSameRange() async throws {
+        let fixture = try await importedSession(source: "First source paragraph keeps its position.\n\nSecond source paragraph remains the chosen destination.")
+        let session = fixture.session
+        let (text, coordinator) = try await selectableText(session)
+        let selection = text.selectedRange, navigation = session.navigationID
+        let target = ReadingAnchor(chapterID: session.chapter.id, passageID: session.chapter.passages[1].id, characterOffset: 2)
+        coordinator.dismissSelection(in: text, id: UUID())
+        session.go(to: 0, anchor: target)
+        XCTAssertNotEqual(session.navigationID, navigation)
+        XCTAssertEqual(text.selectedRange, selection, "Keep the range unchanged so it cannot mask a missing navigation guard")
+        await drainMainQueue()
+        XCTAssertEqual(session.chapterIndex, 0, "A same-chapter source jump isolates navigation identity from the chapter guards")
+        XCTAssertEqual(session.currentAnchor, target)
+        XCTAssertEqual(text.selectedRange, selection)
+        XCTAssertTrue(text.isFirstResponder, "A queued request must not change the new source navigation's responder")
+        let receipt = await session.flush()
+        XCTAssertTrue(receipt.succeeded)
+        XCTAssertNil(session.saveError)
+        let saved = try await fixture.library.state(session.book.id)
+        XCTAssertEqual(saved.anchor, target, "Verify the valid imported source anchor was actually saved")
     }
 
     private func host(_ session: ReaderSession, size: CGSize = CGSize(width: 390, height: 844)) async -> UIHostingController<ReaderScreen> {
