@@ -233,15 +233,33 @@ final class VideoExperienceUITests: XCTestCase {
         return actions
     }
     private func nativeButtonEditMenu() -> XCUIElement? {
-        return app.collectionViews.allElementsBoundByIndex.reversed().first { collection in
-            guard collection.exists, !collection.frame.intersection(app.frame).isEmpty else { return false }
-            let labels = Set(collection.buttons.allElementsBoundByIndex
-                .filter { visibleInApp($0) && $0.isEnabled }.map(\.label))
-            // The system's expanded edit overlay changes MenuItems into Buttons.
-            // Require an edit-action group within one front collection instead
-            // of matching a similarly named button in the underlying reader.
-            return labels.intersection(nativeReadingActions).count >= 2 || labels.intersection(nativeEditingActions).count >= 2
+        // Filter inside XCTest's query before resolving any collection/button
+        // properties. Covered shelf collections are not native edit overlays.
+        let titles = Array(nativeReadingActions.union(nativeEditingActions))
+        let descendant = NSPredicate(format: "elementType == %@ AND label IN %@",
+            NSNumber(value: XCUIElement.ElementType.button.rawValue), titles)
+        let candidates = app.collectionViews.containing(descendant).allElementsBoundByIndex
+        guard !candidates.isEmpty else { return nil }
+        let screen = app.frame
+        for collection in candidates.reversed() {
+            guard collection.exists else { continue }
+            let frame = collection.frame
+            guard !frame.isEmpty, !frame.intersection(screen).isEmpty else { continue }
+            let actions = collection.buttons.matching(NSPredicate(format: "label IN %@ AND enabled == true", titles))
+            var reading = Set<String>(), editing = Set<String>()
+            for action in actions.allElementsBoundByIndex {
+                guard action.exists else { continue }
+                let frame = action.frame
+                guard !frame.isEmpty, !frame.intersection(screen).isEmpty else { continue }
+                let label = action.label
+                if nativeReadingActions.contains(label) { reading.insert(label) }
+                if nativeEditingActions.contains(label) { editing.insert(label) }
+                // The system's expanded AX5 overlay uses Buttons, which need
+                // not report isHittable. Preserve its actual visible action group.
+                if reading.count >= 2 || editing.count >= 2 { return collection }
+            }
         }
+        return nil
     }
     private func waitForSystemEditMenu(timeout: TimeInterval) {
         let present = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in
