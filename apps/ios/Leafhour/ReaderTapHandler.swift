@@ -6,10 +6,12 @@ import PDFKit
     private weak var view: UIView?
     private let blocked: () -> Bool
     private let onWake: (ReaderChrome) -> Void
+    private(set) var recognizer: UITapGestureRecognizer!
     init(view: UIView, blocked: @escaping () -> Bool, onWake: @escaping (ReaderChrome) -> Void) {
         self.view = view; self.blocked = blocked; self.onWake = onWake
         super.init()
         let tap = UITapGestureRecognizer(target: self, action: #selector(activate(_:)))
+        recognizer = tap
         tap.cancelsTouchesInView = false
         tap.delegate = self
         view.addGestureRecognizer(tap)
@@ -28,6 +30,7 @@ import PDFKit
         return .tools
     }
     static func isLink(at point: CGPoint, in view: UIView) -> Bool {
+        if let text = view as? ReflowTextView, let body = text.visibleReadingRect, !body.contains(point) { return false }
         if let text = view as? UITextView, text.attributedText.length > 0 {
             let local = CGPoint(x: point.x - text.textContainerInset.left, y: point.y - text.textContainerInset.top)
             var fraction: CGFloat = 0

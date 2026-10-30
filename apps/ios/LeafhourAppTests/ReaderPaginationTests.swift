@@ -4,6 +4,19 @@ import PDFKit
 import LeafhourCore
 @testable import Leafhour
 
+@MainActor private final class LocatedLongPress: UILongPressGestureRecognizer {
+    var point: CGPoint
+    init(point: CGPoint) { self.point = point; super.init(target: nil, action: nil) }
+    override func location(in view: UIView?) -> CGPoint { point }
+}
+
+@MainActor private final class PublicSelectionHandle: UIView, UITextSelectionHandleView {
+    var direction: NSDirectionalRectEdge = .leading
+    var isVertical: Bool { false }
+    var customShape: UIBezierPath?
+    func preferredFrame(for rect: CGRect) -> CGRect { rect }
+}
+
 /// GET-328: real TextKit/PDFKit fixtures, with no account or provider calls.
 /// These cases were written before the implementation; execution belongs to
 /// the shared native runner and has not been performed by the authoring agent.
@@ -12,6 +25,10 @@ final class ReaderPaginationTests: XCTestCase {
     private let longParagraph = String(repeating: "A source sentence with café, 中文 and 🐿️ keeps its exact anchor. ", count: 70)
 
     private func session(pdf: Bool = false, chapters: Int = 1, source: String? = nil) async throws -> ReaderSession {
+        let fixture = try await importedSession(pdf: pdf, chapters: chapters, source: source)
+        return fixture.session
+    }
+    private func importedSession(pdf: Bool = false, chapters: Int = 1, source: String? = nil) async throws -> (session: ReaderSession, library: OfflineLibrary) {
         let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
         try FileManager.default.createDirectory(at: root, withIntermediateDirectories: true)
         addTeardownBlock { try? FileManager.default.removeItem(at: root) }
@@ -24,11 +41,12 @@ final class ReaderPaginationTests: XCTestCase {
                 }
             }
         } else { try Data((source ?? (longParagraph + "\n\nSecond distinct source paragraph.")).utf8).write(to: file) }
-        let library = try OfflineLibrary(root: root.appendingPathComponent("library"), scope: .device)
+        let account = !pdf && chapters > 1 ? UUID() : nil
+        let library = try OfflineLibrary(root: root.appendingPathComponent("library"), scope: account.map { .account($0) } ?? .device)
         var book = try await library.importFile(file)
-        if !pdf, chapters > 1 {
+        if let account {
             let original = book.chapters[0]
-            book.chapters = (0..<chapters).map { index in
+            let cloudChapters = (0..<chapters).map { index in
                 var chapter = original
                 chapter.id = "synthetic-chapter-\(index)"; chapter.title = "Chapter \(index + 1)"
                 chapter.passages = original.passages.enumerated().map { offset, original in
@@ -36,8 +54,23 @@ final class ReaderPaginationTests: XCTestCase {
                 }
                 return chapter
             }
+            let identity = CloudBookIdentity(ownerID: account.uuidString.lowercased(), bookID: "synthetic-paging-book", contentVersion: "paging-fixture-v1", sourceFormat: "text")
+            let sections: [CloudJSON] = cloudChapters.map { chapter in
+                .object(["chapterId": .string(chapter.id), "paragraphs": .array(chapter.passages.map { passage in
+                    .object(["id": .string(passage.id), "original": .string(passage.text), "translations": .object([:]),
+                             "source": .object(["type": .string(passage.heading ? "heading" : "paragraph")])])
+                })])
+            }
+            let content = try CloudJSON.encode(["bookId": .string(identity.bookID), "contentVersion": .string(identity.contentVersion),
+                                               "title": .string("Synthetic paging source"), "author": .string("Fixture"),
+                                               "source": .object(["format": .string("text")]),
+                                               "chapters": .array(cloudChapters.map { .object(["id": .string($0.id), "title": .string($0.title)]) }),
+                                               "sections": .array(sections)])
+            // Import through the public persistence path: book.json, manifest,
+            // stable IDs and reading state must agree after a fresh session.
+            book = try await library.importCloud(CloudReadingCopy(identity: identity, title: "Synthetic paging source", author: "Fixture", chapters: cloudChapters, content: content))
         }
-        return ReaderSession(book: book, state: try await library.state(book.id), original: try await library.originalURL(book.id), directory: try await library.bookDirectory(book.id), library: library)
+        return (ReaderSession(book: book, state: try await library.state(book.id), original: try await library.originalURL(book.id), directory: try await library.bookDirectory(book.id), library: library), library)
     }
     private func host(_ view: UIView, size: CGSize = CGSize(width: 390, height: 700)) {
         let controller = UIViewController(), window = UIWindow(frame: CGRect(origin: .zero, size: size))
@@ -49,14 +82,225 @@ final class ReaderPaginationTests: XCTestCase {
     private func drain() async {
         await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in DispatchQueue.main.async { continuation.resume() } }
     }
-    private func text(_ session: ReaderSession, onPageChange: ((ReaderPagePosition) -> Void)? = nil) async -> (UITextView, TextReadingView.Coordinator) {
-        let parent = TextReadingView(session: session, onNote: { _ in }, onSource: { _ in }, onWake: { _ in }, onReadingScroll: {}, onPageChange: onPageChange)
-        let coordinator = parent.makeCoordinator(), view = UITextView(usingTextLayoutManager: false)
+    private func text(_ session: ReaderSession, pageInsets: UIEdgeInsets = UIEdgeInsets(top: 64, left: 24, bottom: 24, right: 24), onPageChange: ((ReaderPagePosition) -> Void)? = nil) async -> (ReflowTextView, TextReadingView.Coordinator) {
+        let parent = TextReadingView(session: session, pageInsets: pageInsets, onNote: { _ in }, onSource: { _ in }, onWake: { _ in }, onReadingScroll: {}, onPageChange: onPageChange)
+        let coordinator = parent.makeCoordinator(), view = ReflowTextView()
         view.isEditable = false; view.isSelectable = true; view.textContainer.lineFragmentPadding = 0
         view.contentInsetAdjustmentBehavior = .never; view.delegate = coordinator
         coordinator.view = view; host(view); coordinator.updateContent(view); await drain()
         addTeardownBlock { await MainActor.run { coordinator.invalidate(); view.delegate = nil } }
         return (view, coordinator)
+    }
+
+    private func image(of view: UIView) -> UIImage {
+        view.layoutIfNeeded()
+        let format = UIGraphicsImageRendererFormat(); format.scale = 1; format.opaque = true; format.preferredRange = .standard
+        return UIGraphicsImageRenderer(size: view.bounds.size, format: format).image { _ in
+            XCTAssertTrue(view.drawHierarchy(in: CGRect(origin: .zero, size: view.bounds.size), afterScreenUpdates: true))
+        }
+    }
+    private func inkPixels(in rect: CGRect, image: UIImage) throws -> Int {
+        let cgImage = try XCTUnwrap(image.cgImage), bytes = try XCTUnwrap(cgImage.dataProvider?.data)
+        let data = try XCTUnwrap(CFDataGetBytePtr(bytes))
+        let area = rect.integral.intersection(CGRect(x: 0, y: 0, width: CGFloat(cgImage.width), height: CGFloat(cgImage.height)))
+        var count = 0
+        for y in Int(area.minY)..<Int(area.maxY) {
+            for x in Int(area.minX)..<Int(area.maxX) {
+                let offset = y * cgImage.bytesPerRow + x * (cgImage.bitsPerPixel / 8)
+                if min(data[offset], data[offset + 1], data[offset + 2]) < 180 { count += 1 }
+            }
+        }
+        return count
+    }
+
+    func testBodyFontFollowsTheReadingViewsOwnDynamicTypeTrait() async throws {
+        let session = try await session(), (view, coordinator) = await text(session)
+        let host = try XCTUnwrap(view.window?.rootViewController)
+        for category in [UIContentSizeCategory.large, .accessibilityExtraExtraExtraLarge, .large] {
+            host.traitOverrides.preferredContentSizeCategory = category
+            host.view.setNeedsLayout(); host.view.layoutIfNeeded()
+            // Propagate through the real controller/window environment before
+            // asking the renderer to rebuild for its view's new OS category.
+            for _ in 0..<10 {
+                host.updateTraitsIfNeeded(); host.view.updateTraitsIfNeeded(); view.updateTraitsIfNeeded()
+                if view.traitCollection.preferredContentSizeCategory == category { break }
+                await drain()
+            }
+            host.view.layoutIfNeeded(); await drain()
+            coordinator.updateContent(view); await drain()
+            XCTAssertEqual(view.traitCollection.preferredContentSizeCategory, category)
+            let font = try XCTUnwrap(view.attributedText.attribute(.font, at: 0, effectiveRange: nil) as? UIFont)
+            let expected = UIFontMetrics(forTextStyle: .body).scaledValue(for: session.state.preferences.fontSize, compatibleWith: UITraitCollection(preferredContentSizeCategory: category))
+            XCTAssertEqual(font.pointSize, expected, accuracy: 0.1, "The reading view's actual OS trait, including AX5, must determine its rendered source font")
+        }
+        let receipt = await session.flush(); XCTAssertTrue(receipt.succeeded)
+    }
+
+    func testChangedViewportAndInsetsKeepCanonicalSourceWhileUnchangedLayoutKeepsItsOffset() async throws {
+        let source = (1...40).map { "Paragraph \($0). This original passage keeps its source position through changes to the real viewport and reader margins." }.joined(separator: "\n\n")
+        let session = try await session(source: source)
+        session.state.preferences.navigationMode = .paged
+        let target = ReadingAnchor(chapterID: session.chapter.id, passageID: session.chapter.passages[14].id, characterOffset: 5)
+        session.go(to: 0, anchor: target)
+        let (view, coordinator) = await text(session)
+        coordinator.parent.pageInsets = UIEdgeInsets(top: 112, left: 24, bottom: 120, right: 24)
+        view.frame.size.height = 443; view.layoutIfNeeded()
+        coordinator.scrollViewDidScroll(view)
+        XCTAssertEqual(session.currentAnchor, target, "An intermediate UIKit resize/clamp before updateContent cannot become a user reading checkpoint")
+        XCTAssertFalse(coordinator.checkpointVisible())
+        coordinator.updateContent(view); await drain()
+        XCTAssertEqual(session.currentAnchor, target)
+        let span = try XCTUnwrap(coordinator.spans.first { $0.passage.id == target.passageID })
+        let index = span.range.location + span.sourceOffsets.utf16Offset(forScalarOffset: target.characterOffset)
+        let glyphs = view.layoutManager.glyphRange(forCharacterRange: NSRange(location: index, length: 1), actualCharacterRange: nil)
+        let sourceRect = view.layoutManager.boundingRect(forGlyphRange: glyphs, in: view.textContainer)
+            .offsetBy(dx: view.textContainerInset.left, dy: view.textContainerInset.top)
+        XCTAssertGreaterThan(sourceRect.intersection(try XCTUnwrap(view.visibleReadingRect)).height, 0)
+        let stable = view.contentOffset
+        for _ in 0..<3 {
+            coordinator.updateContent(view); await drain()
+            XCTAssertEqual(view.contentOffset, stable); XCTAssertEqual(session.currentAnchor, target)
+        }
+        view.setContentOffset(CGPoint(x: 0, y: stable.y + 100), animated: false)
+        XCTAssertTrue(coordinator.checkpointVisible(), "A real content scroll in the same geometry must still capture immediately")
+        XCTAssertNotEqual(session.currentAnchor, target)
+        coordinator.capture(); let receipt = await session.flush(); XCTAssertTrue(receipt.succeeded)
+    }
+
+    func testPagedTextHidesAdjacentPageInkWithoutReflowingOrMovingTheSourceAnchor() async throws {
+        let session = try await session(), insets = UIEdgeInsets(top: 80, left: 24, bottom: 180, right: 24)
+        let (view, coordinator) = await text(session, pageInsets: insets)
+        view.overrideUserInterfaceStyle = .light; view.backgroundColor = .white
+        let initialLayout = ReaderTextPagination(textView: view, readingTop: 80, bottomInset: 180)
+        let offset = try XCTUnwrap(initialLayout.origins.dropFirst().first)
+        view.setContentOffset(CGPoint(x: 0, y: offset), animated: false); await drain()
+        XCTAssertTrue(coordinator.checkpointVisible())
+        let bounds = view.bounds, contentSize = view.contentSize, anchor = session.currentAnchor
+        let top = CGRect(x: 24, y: 0, width: 342, height: 79)
+        let bottom = CGRect(x: 24, y: 521, width: 342, height: 179)
+        let continuous = image(of: view)
+        XCTAssertGreaterThan(try inkPixels(in: top, image: continuous), 30, "The fixture must expose the preceding screen's text")
+        XCTAssertGreaterThan(try inkPixels(in: bottom, image: continuous), 30, "The fixture must expose the following screen's text")
+
+        session.state.preferences.navigationMode = .paged; coordinator.updateContent(view); await drain()
+        for y in [offset, offset + 91] {
+            // Restored source lines need not coincide with a precomputed page origin.
+            view.setContentOffset(CGPoint(x: 0, y: y), animated: false); await drain()
+            let screenshot = image(of: view)
+            XCTAssertEqual(try inkPixels(in: top, image: screenshot), 0)
+            XCTAssertEqual(try inkPixels(in: bottom, image: screenshot), 0)
+            XCTAssertGreaterThan(try inkPixels(in: CGRect(x: 24, y: 100, width: 342, height: 380), image: screenshot), 500, "Clipping must keep the actual current body, including between page origins")
+        }
+        view.setContentOffset(CGPoint(x: 0, y: offset), animated: false)
+        XCTAssertEqual(view.bounds, bounds); XCTAssertEqual(view.contentSize, contentSize)
+        XCTAssertEqual(view.textContainerInset, insets)
+        XCTAssertEqual(ReaderTextPagination(textView: view, readingTop: 80, bottomInset: 180).origins, initialLayout.origins)
+        XCTAssertTrue(coordinator.checkpointVisible()); XCTAssertEqual(session.currentAnchor, anchor)
+
+        session.state.preferences.navigationMode = .scroll; coordinator.updateContent(view); await drain()
+        let restored = image(of: view)
+        XCTAssertGreaterThan(try inkPixels(in: top, image: restored), 30, "Switching back to scrolling must redraw the complete viewport")
+        let receipt = await session.flush(); XCTAssertTrue(receipt.succeeded)
+    }
+
+    func testPagedMarginsRejectNewNativeSelectionButKeepReaderTapAndPagePan() async throws {
+        let session = try await session(); session.state.preferences.navigationMode = .paged
+        let (view, _) = await text(session, pageInsets: UIEdgeInsets(top: 80, left: 24, bottom: 180, right: 24))
+        let tap = ReaderEdgeTapHandler(view: view, blocked: { false }, onWake: { _ in })
+        let page = ReaderPageTurnGestureHandler(view: view, blocked: { false }, onTurn: { _ in })
+        view.readerTapRecognizer = tap.recognizer; view.readerPageRecognizer = page.recognizer
+        let hidden = CGPoint(x: 100, y: view.bounds.minY + 20)
+        let body = CGPoint(x: 100, y: view.bounds.minY + 140)
+        let native = LocatedLongPress(point: hidden); view.addGestureRecognizer(native)
+        XCTAssertTrue(view.hitTest(hidden, with: nil) === view, "Hidden text must not receive a text-input canvas touch")
+        XCTAssertFalse(view.gestureRecognizerShouldBegin(native), "A long press cannot select source that is not drawn")
+        native.point = body; XCTAssertTrue(view.gestureRecognizerShouldBegin(native))
+        XCTAssertNotNil(tap.destination(at: hidden), "The paper margin must still wake the reader")
+        XCTAssertTrue(view.gestureRecognizerShouldBegin(tap.recognizer))
+        XCTAssertTrue(view.gestureRecognizerShouldBegin(page.recognizer))
+        page.invalidate(); let receipt = await session.flush(); XCTAssertTrue(receipt.succeeded)
+    }
+
+    func testPagedMarginPreservesPublicNativeSelectionHandleHit() async throws {
+        let session = try await session(); session.state.preferences.navigationMode = .paged
+        let (view, _) = await text(session, pageInsets: UIEdgeInsets(top: 80, left: 24, bottom: 180, right: 24))
+        let handle = PublicSelectionHandle(frame: CGRect(x: 40, y: view.bounds.minY + 60, width: 20, height: 30))
+        view.addSubview(handle)
+        let point = CGPoint(x: 50, y: view.bounds.minY + 70)
+        XCTAssertTrue(view.hitTest(point, with: nil) === handle, "The selection handle can extend into the paper margin")
+        let drag = LocatedLongPress(point: point); view.addGestureRecognizer(drag)
+        XCTAssertTrue(view.gestureRecognizerShouldBegin(drag))
+        let receipt = await session.flush(); XCTAssertTrue(receipt.succeeded)
+    }
+
+    func testEveryOrdinaryLineAppearsWholeAndTheLastScreenHasNoClippedTopLine() async throws {
+        let session = try await session(), insets = UIEdgeInsets(top: 80, left: 24, bottom: 180, right: 24)
+        let (view, coordinator) = await text(session, pageInsets: insets)
+        var lines: [CGRect] = []
+        view.layoutManager.enumerateLineFragments(forGlyphRange: NSRange(location: 0, length: view.layoutManager.numberOfGlyphs)) { _, used, _, glyphs, _ in
+            if glyphs.length > 0, used.height > 0 { lines.append(used) }
+        }
+        XCTAssertGreaterThan(lines.count, 20)
+        // Deliberately put the continuous scroll maximum in the middle of a real
+        // ordinary line. This is a deterministic RED oracle for forced-max paging,
+        // independent of the pager's own choices or the current Dynamic Type size.
+        let cutLine = lines[lines.count - 12]
+        view.frame.size.height = view.contentSize.height + view.adjustedContentInset.bottom + 80 - view.textContainerInset.top - cutLine.midY
+        view.layoutIfNeeded()
+        session.state.preferences.navigationMode = .paged; coordinator.updateContent(view); await drain()
+        let pages = ReaderTextPagination(textView: view, readingTop: 80, bottomInset: 180)
+        XCTAssertGreaterThan(pages.origins.count, 3)
+        var bodies: [CGRect] = []
+        for origin in pages.origins {
+            view.setContentOffset(CGPoint(x: 0, y: origin), animated: false); view.layoutIfNeeded()
+            let body = try XCTUnwrap(view.visibleReadingRect).offsetBy(dx: -view.textContainerInset.left, dy: -view.textContainerInset.top)
+            bodies.append(body)
+            for line in lines where min(line.maxY, body.maxY) - max(line.minY, body.minY) > 0.5 {
+                XCTAssertGreaterThanOrEqual(line.minY + 0.5, body.minY, "A screen must not begin halfway through an ordinary source line")
+                XCTAssertLessThanOrEqual(line.maxY - 0.5, body.maxY, "A screen must not end halfway through an ordinary source line")
+            }
+        }
+        for line in lines {
+            XCTAssertTrue(bodies.contains { $0.minY <= line.minY + 0.5 && $0.maxY >= line.maxY - 0.5 }, "Every ordinary source line must appear completely on at least one screen; clipping both ends cannot hide a missing line")
+        }
+        let receipt = await session.flush(); XCTAssertTrue(receipt.succeeded)
+    }
+
+    func testPagedEndAllowanceDoesNotAccumulateAndScrollRestoresItsInsetAndSource() async throws {
+        let session = try await session(), insets = UIEdgeInsets(top: 80, left: 24, bottom: 180, right: 24)
+        let (view, coordinator) = await text(session, pageInsets: insets)
+        view.frame.size.height = 697; view.contentInset.bottom = 11; view.layoutIfNeeded(); await drain()
+        let baseline = view.contentInset
+        session.state.preferences.navigationMode = .paged; coordinator.updateContent(view); await drain()
+        for height in [CGFloat(695), 699, 697] {
+            // Force distinct geometry keys so each pass really recalculates the
+            // allowance, rather than merely hitting the pagination cache.
+            view.frame.size.height = height; view.layoutIfNeeded(); coordinator.configureNavigation(view); await drain()
+            view.layoutManager.ensureLayout(for: view.textContainer); view.layoutIfNeeded()
+            let last = try XCTUnwrap(ReaderTextPagination(textView: view, readingTop: 80, bottomInset: 180).origins.last)
+            // Measure the final rebuilt document, using the independently saved
+            // raw inset. UIKit's extra line fragment can settle after replacement
+            // of attributedText; its earlier contentSize is not a stable oracle.
+            let automaticBottom = view.adjustedContentInset.bottom - view.contentInset.bottom
+            let naturalMaximum = max(-view.adjustedContentInset.top, view.contentSize.height - view.bounds.height + baseline.bottom + automaticBottom)
+            let expected = baseline.bottom + max(0, last - naturalMaximum)
+            XCTAssertGreaterThan(expected, baseline.bottom + 1, "Exercise a real extra bottom allowance")
+            XCTAssertEqual(view.contentInset.bottom, expected, accuracy: 0.5, "Paging owns only the exact extra space needed to display its final complete screen")
+        }
+        let last = try XCTUnwrap(ReaderTextPagination(textView: view, readingTop: 80, bottomInset: 180).origins.last)
+        view.setContentOffset(CGPoint(x: 0, y: last), animated: false); coordinator.capture()
+        let saved = try XCTUnwrap(session.currentAnchor)
+        view.frame.size.width = 360; view.layoutIfNeeded(); coordinator.updateContent(view); await drain()
+        XCTAssertEqual(session.currentAnchor, saved, "Reflow must retain the exact canonical source, not a proportional screen offset")
+        session.state.preferences.navigationMode = .scroll; coordinator.updateContent(view); await drain()
+        XCTAssertEqual(view.contentInset, baseline); XCTAssertTrue(view.panGestureRecognizer.isEnabled)
+        XCTAssertEqual(session.currentAnchor, saved)
+        let span = try XCTUnwrap(coordinator.spans.first { $0.passage.id == saved.passageID })
+        let index = span.range.location + span.sourceOffsets.utf16Offset(forScalarOffset: saved.characterOffset)
+        let glyphs = view.layoutManager.glyphRange(forCharacterRange: NSRange(location: index, length: 1), actualCharacterRange: nil)
+        let sourceRect = view.layoutManager.boundingRect(forGlyphRange: glyphs, in: view.textContainer).offsetBy(dx: view.textContainerInset.left, dy: view.textContainerInset.top)
+        XCTAssertGreaterThan(sourceRect.intersection(view.bounds).height, 0, "The source kept in state must also remain physically visible after removing the paged allowance")
+        let receipt = await session.flush(); XCTAssertTrue(receipt.succeeded)
     }
 
     func testOneLongParagraphSpansRealGlyphPagesWithoutSkippingVisibleLines() async throws {
@@ -67,12 +311,13 @@ final class ReaderPaginationTests: XCTestCase {
             XCTAssertGreaterThan(end, start)
             XCTAssertLessThanOrEqual(end - start, view.bounds.height - 64 - 180 + 1, "Successive screens must not skip any vertical text interval")
         }
-        XCTAssertEqual(layout.origins.last!, max(0, view.contentSize.height - view.bounds.height), accuracy: 1)
+        let lastBodyEnd = layout.origins.last! + 64 - view.textContainerInset.top + view.bounds.height - 64 - 180
+        XCTAssertGreaterThanOrEqual(lastBodyEnd + 0.5, view.layoutManager.usedRect(for: view.textContainer).maxY)
         _ = await session.flush()
     }
 
     func testOversizedAttachmentMakesForwardProgressInsteadOfDroppingTheIllustration() {
-        let view = UITextView(usingTextLayoutManager: false)
+        let view = ReflowTextView()
         view.frame = CGRect(x: 0, y: 0, width: 390, height: 700)
         view.textContainerInset = UIEdgeInsets(top: 64, left: 24, bottom: 180, right: 24)
         let attachment = NSTextAttachment(); attachment.bounds = CGRect(x: 0, y: 0, width: 342, height: 1600)
@@ -84,7 +329,8 @@ final class ReaderPaginationTests: XCTestCase {
         for (start, end) in zip(layout.origins, layout.origins.dropFirst()) {
             XCTAssertGreaterThan(end, start); XCTAssertLessThanOrEqual(end - start, 457)
         }
-        XCTAssertEqual(layout.origins.last!, max(0, view.contentSize.height - view.bounds.height), accuracy: 1)
+        let lastBodyEnd = layout.origins.last! + 64 - view.textContainerInset.top + view.bounds.height - 64 - 180
+        XCTAssertGreaterThanOrEqual(lastBodyEnd + 0.5, view.layoutManager.usedRect(for: view.textContainer).maxY)
     }
 
     func testCommittedPageTurnPersistsTheVisibleScalarAnchorAndPreviousRestoresTheScreen() async throws {
@@ -113,20 +359,36 @@ final class ReaderPaginationTests: XCTestCase {
     }
 
     func testLastScreenCrossesChaptersAndPreviousEntersThePreviousChapterLastScreen() async throws {
-        let session = try await session(chapters: 2); session.state.preferences.navigationMode = .paged
+        let fixture = try await importedSession(chapters: 2), session = fixture.session
+        session.state.preferences.navigationMode = .paged
         let (view, coordinator) = await text(session)
-        view.setContentOffset(CGPoint(x: 0, y: max(0, view.contentSize.height - view.bounds.height)), animated: false)
+        let lastOrigin = try XCTUnwrap(ReaderTextPagination(textView: view, readingTop: 64, bottomInset: 24).origins.last)
+        view.setContentOffset(CGPoint(x: 0, y: lastOrigin), animated: false)
         coordinator.capture()
         XCTAssertTrue(coordinator.turnPage(.next)); await drain()
         XCTAssertEqual(session.chapterIndex, 1); XCTAssertEqual(view.contentOffset.y, 0, accuracy: 1)
         XCTAssertTrue(coordinator.turnPage(.previous)); await drain()
         XCTAssertEqual(session.chapterIndex, 0)
-        XCTAssertEqual(view.contentOffset.y, max(0, view.contentSize.height - view.bounds.height), accuracy: 1)
+        XCTAssertEqual(view.contentOffset.y, lastOrigin, accuracy: 1)
         session.go(to: 1); coordinator.updateContent(view); await drain()
-        view.setContentOffset(CGPoint(x: 0, y: max(0, view.contentSize.height - view.bounds.height)), animated: false)
+        view.setContentOffset(CGPoint(x: 0, y: try XCTUnwrap(ReaderTextPagination(textView: view, readingTop: 64, bottomInset: 24).origins.last)), animated: false)
         coordinator.capture()
         XCTAssertFalse(coordinator.turnPage(.next), "The book end must not loop to chapter one")
-        _ = await session.flush()
+        let saved = try XCTUnwrap(session.currentAnchor), receipt = await session.flush()
+        XCTAssertTrue(receipt.succeeded); XCTAssertNil(session.saveError)
+        let state = try await fixture.library.state(session.book.id)
+        XCTAssertEqual(state.anchor, saved)
+        let reopened = ReaderSession(book: try await fixture.library.book(session.book.id), state: state,
+                                     original: try await fixture.library.originalURL(session.book.id), directory: try await fixture.library.bookDirectory(session.book.id), library: fixture.library)
+        let (reopenedView, reopenedCoordinator) = await text(reopened)
+        XCTAssertEqual(reopened.chapterIndex, 1); XCTAssertEqual(reopened.currentAnchor, saved)
+        let span = try XCTUnwrap(reopenedCoordinator.spans.first { $0.passage.id == saved.passageID })
+        let index = span.range.location + span.sourceOffsets.utf16Offset(forScalarOffset: saved.characterOffset)
+        let glyphs = reopenedView.layoutManager.glyphRange(forCharacterRange: NSRange(location: index, length: 1), actualCharacterRange: nil)
+        let sourceRect = reopenedView.layoutManager.boundingRect(forGlyphRange: glyphs, in: reopenedView.textContainer)
+            .offsetBy(dx: reopenedView.textContainerInset.left, dy: reopenedView.textContainerInset.top)
+        let body = try XCTUnwrap(reopenedView.visibleReadingRect)
+        XCTAssertGreaterThan(sourceRect.intersection(body).height, 0, "A fresh persisted session must physically show the same source on the last chapter's final screen")
     }
 
     func testScrollModeKeepsItsNativePanAndDoesNotTurnOnHorizontalPageRequests() async throws {

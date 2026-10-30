@@ -16,31 +16,30 @@ struct ReaderTextPagination {
         textView.layoutManager.ensureLayout(for: textView.textContainer)
         textView.layoutIfNeeded()
         let minimum = -textView.adjustedContentInset.top
-        let maximum = max(minimum, textView.contentSize.height - textView.bounds.height + textView.adjustedContentInset.bottom)
         let firstFont = textView.attributedText.length > 0 ? textView.attributedText.attribute(.font, at: 0, effectiveRange: nil) as? UIFont : nil
         let defaultLine = (textView.font ?? firstFont ?? UIFont.preferredFont(forTextStyle: .body)).lineHeight
         let height = max(1, max(defaultLine, textView.bounds.height - readingTop - bottomInset))
-        var lines: [CGFloat] = []
+        var result = [minimum]
         textView.layoutManager.enumerateLineFragments(forGlyphRange: NSRange(location: 0, length: textView.layoutManager.numberOfGlyphs)) { _, used, _, glyphs, _ in
-            guard glyphs.length > 0, used.height > 0 else { return }
-            lines.append(used.minY + textView.textContainerInset.top - readingTop)
-        }
-        var result = [minimum], lineIndex = 0
-        while let current = result.last, current < maximum - 0.5 {
-            let limit = min(maximum, current + height)
-            var next: CGFloat?
-            while lineIndex < lines.count && lines[lineIndex] <= limit {
-                if lines[lineIndex] > current + 0.5 { next = lines[lineIndex] }
-                lineIndex += 1
+            guard glyphs.length > 0, used.height > 0, let current = result.last else { return }
+            let start = used.minY + textView.textContainerInset.top - readingTop
+            let end = used.maxY + textView.textContainerInset.top - readingTop
+            guard end > current + height + 0.5 else { return }
+            // Start the first line that cannot fit on a new screen. A forced
+            // contentSize-derived final offset can put that screen mid-glyph.
+            if start > current + 0.5 { result.append(start) }
+            // Only a line containing an oversized attachment may be sliced.
+            // Ordinary source lines retain a real line boundary as their origin.
+            let characters = textView.layoutManager.characterRange(forGlyphRange: glyphs, actualGlyphRange: nil)
+            var hasAttachment = false
+            textView.attributedText.enumerateAttribute(.attachment, in: characters) { attachment, _, stop in
+                if attachment != nil { hasAttachment = true; stop.pointee = true }
             }
-            // The final screen clamps to the actual bottom. An attachment taller
-            // than a screen is traversed in screen-sized slices, never omitted.
-            let destination = limit >= maximum - 0.5 ? maximum : (next ?? limit)
-            guard destination > current + 0.5 else { break }
-            result.append(destination)
-            // A line considered beyond the chosen start can still be the next
-            // screen's start when a long attachment spans several viewports.
-            while lineIndex > 0 && lines[lineIndex - 1] > destination + 0.5 { lineIndex -= 1 }
+            if hasAttachment {
+                while let origin = result.last, end > origin + height + 0.5 {
+                    result.append(origin + height)
+                }
+            }
         }
         origins = result
     }
@@ -82,15 +81,7 @@ final class ReaderPageTurnGestureHandler: NSObject, UIGestureRecognizerDelegate 
             if current is UIControl { return false }
             touched = current.superview
         }
-        if let text = view as? UITextView, text.attributedText.length > 0 {
-            let point = touch.location(in: text)
-            let containerPoint = CGPoint(x: point.x - text.textContainerInset.left, y: point.y - text.textContainerInset.top)
-            let index = text.layoutManager.characterIndex(for: containerPoint, in: text.textContainer, fractionOfDistanceBetweenInsertionPoints: nil)
-            if index < text.attributedText.length, text.attributedText.attribute(.link, at: index, effectiveRange: nil) != nil {
-                let glyphs = text.layoutManager.glyphRange(forCharacterRange: NSRange(location: index, length: 1), actualCharacterRange: nil)
-                if text.layoutManager.boundingRect(forGlyphRange: glyphs, in: text.textContainer).contains(containerPoint) { return false }
-            }
-        }
+        if ReaderEdgeTapHandler.isLink(at: touch.location(in: view), in: view) { return false }
         return true
     }
     func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {

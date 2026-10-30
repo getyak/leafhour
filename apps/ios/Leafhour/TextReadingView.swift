@@ -19,7 +19,7 @@ struct TextReadingView: UIViewRepresentable {
     var onPageChange: ((ReaderPagePosition) -> Void)? = nil
     func makeCoordinator() -> Coordinator { Coordinator(parent: self) }
     func makeUIView(context: Context) -> UITextView {
-        let view = ReflowTextView(usingTextLayoutManager: false)
+        let view = ReflowTextView()
         view.isEditable = false; view.isSelectable = true; view.backgroundColor = .clear
         // Entry tools overlay the page. A stable first-page margin keeps the title
         // below navigation without reflowing the text when those tools go to sleep.
@@ -35,6 +35,8 @@ struct TextReadingView: UIViewRepresentable {
         context.coordinator.pageTurn = ReaderPageTurnGestureHandler(view: view, blocked: { [weak view, weak coordinator = context.coordinator] in
             (view?.selectedRange.length ?? 0) > 0 || coordinator?.restoring != false
         }, onTurn: { [weak coordinator = context.coordinator] direction in _ = coordinator?.turnPage(direction) })
+        view.readerTapRecognizer = context.coordinator.edgeTap?.recognizer
+        view.readerPageRecognizer = context.coordinator.pageTurn?.recognizer
         context.coordinator.configureNavigation(view)
         return view
     }
@@ -62,13 +64,15 @@ struct TextReadingView: UIViewRepresentable {
         func updateContent(_ view: UITextView) {
             let coordinator = self, session = parent.session
             let column = layout(for: view)
+            let layoutChanged = coordinator.renderedSize != view.bounds.size || coordinator.renderedInsets != column.insets
+            let anchor = session.currentAnchor
+            // UIKit can clamp the scroll offset while changing its container or
+            // viewport. Keep those intermediate callbacks out of reading progress.
+            if layoutChanged { coordinator.restoring = true; coordinator.cancelPendingCapture() }
             if view.textContainerInset != column.insets {
-                let topChange = column.insets.top - view.textContainerInset.top
                 view.textContainerInset = column.insets
-                // A larger accessibility toolbar may change the first-page margin.
-                // Preserve the same visible line; changing the bottom margin needs no scrolling.
-                if topChange != 0 { view.contentOffset.y += topChange }
             }
+            coordinator.renderedSize = view.bounds.size; coordinator.renderedInsets = column.insets
             let preferences = session.state.preferences
             let width = column.contentWidth
             let signature = "\(session.chapter.id)-\(preferences)-\(view.traitCollection.preferredContentSizeCategory.rawValue)-\(Int(width))"
@@ -85,8 +89,9 @@ struct TextReadingView: UIViewRepresentable {
                     return SourceTextOffsets(passage.text)
                 }
                 let selection = !navigating && sameSource ? coordinator.selectedText() : nil
-                if !navigating { coordinator.checkpointVisible() }
-                let anchor = session.currentAnchor
+                // Real scrolling and committed page turns already checkpoint
+                // immediately. Re-sampling a restored line for a preference
+                // change would replace its canonical scalar with a new line start.
                 coordinator.signature = signature; coordinator.restoring = true
                 coordinator.cancelPendingCapture()
                 coordinator.renderedChapterID = session.chapter.id; coordinator.renderedWidth = Int(width)
@@ -94,7 +99,7 @@ struct TextReadingView: UIViewRepresentable {
                 let result = NSMutableAttributedString(string: "")
                 coordinator.spans = []
                 let base = UIFont.systemFont(ofSize: preferences.fontSize)
-                let font = UIFontMetrics(forTextStyle: .body).scaledFont(for: UIFont(descriptor: base.fontDescriptor.withDesign(.serif) ?? base.fontDescriptor, size: preferences.fontSize))
+                let font = UIFontMetrics(forTextStyle: .body).scaledFont(for: UIFont(descriptor: base.fontDescriptor.withDesign(.serif) ?? base.fontDescriptor, size: preferences.fontSize), compatibleWith: view.traitCollection)
                 if session.book.rendersMarkdown {
                     if !sameSource || coordinator.markdownChapterID != session.chapter.id {
                         coordinator.markdown = MarkdownChapterLayout(book: session.book, chapter: session.chapter, original: session.original)
@@ -126,14 +131,14 @@ struct TextReadingView: UIViewRepresentable {
                             if !alternative.isEmpty && alternative != next {
                                 // Keep source image metadata reachable to system reading and
                                 // selection, without inventing prose or an author-text anchor.
-                                let captionFont = UIFontMetrics(forTextStyle: .footnote).scaledFont(for: .systemFont(ofSize: max(14, preferences.fontSize * 0.72)))
+                                let captionFont = UIFontMetrics(forTextStyle: .footnote).scaledFont(for: .systemFont(ofSize: max(14, preferences.fontSize * 0.72)), compatibleWith: view.traitCollection)
                                 result.append(NSAttributedString(string: "\n插图说明 · " + alternative + "\n\n", attributes: [.font: captionFont, .foregroundColor: UIColor.secondaryLabel, .paragraphStyle: style]))
                             } else { result.append(NSAttributedString(string: "\n\n")) }
                         } else {
                             result.append(NSAttributedString(string: "[插图：\(passage.alternative ?? "此设备暂不支持显示，原件仍保留")]\n\n", attributes: [.font: font, .foregroundColor: UIColor.secondaryLabel, .paragraphStyle: style]))
                         }
                     } else {
-                        let actualFont = passage.heading ? UIFontMetrics(forTextStyle: .title2).scaledFont(for: .systemFont(ofSize: preferences.fontSize + 5, weight: .semibold)) : font
+                        let actualFont = passage.heading ? UIFontMetrics(forTextStyle: .title2).scaledFont(for: .systemFont(ofSize: preferences.fontSize + 5, weight: .semibold), compatibleWith: view.traitCollection) : font
                         result.append(NSAttributedString(string: passage.text, attributes: [.font: actualFont, .foregroundColor: UIColor.label, .paragraphStyle: style]))
                         result.append(NSAttributedString(string: "\n", attributes: [.font: font, .paragraphStyle: style]))
                     }
@@ -151,11 +156,11 @@ struct TextReadingView: UIViewRepresentable {
                 } else { view.selectedRange = NSRange(location: 0, length: 0) }
                 coordinator.navigationID = session.navigationID
                 coordinator.restore(anchor, persistCheckpoint: !navigating)
-            } else if navigating {
+            } else if navigating || layoutChanged {
                 coordinator.navigationID = session.navigationID
                 coordinator.restoring = true
-                view.selectedRange = NSRange(location: 0, length: 0)
-                coordinator.restore(session.currentAnchor)
+                if navigating { view.selectedRange = NSRange(location: 0, length: 0) }
+                coordinator.restore(anchor, persistCheckpoint: !navigating)
             }
             coordinator.configureNavigation(view)
         }
@@ -168,6 +173,8 @@ struct TextReadingView: UIViewRepresentable {
         var navigationID: UUID?
         var renderedChapterID: String?
         var renderedWidth = 0
+        private var renderedSize = CGSize.zero
+        private var renderedInsets = UIEdgeInsets.zero
         private var indexedSessionID: ObjectIdentifier?
         private var indexedChapterIndex: Int?
         var restoring = false
@@ -240,7 +247,9 @@ struct TextReadingView: UIViewRepresentable {
             guard !restoring, let view, view.bounds.width > 0, !spans.isEmpty,
                   indexedSessionID == ObjectIdentifier(parent.session), indexedChapterIndex == parent.session.chapterIndex,
                   renderedChapterID == parent.session.chapter.id, navigationID == parent.session.navigationID,
-                  renderedWidth == Int(layout(for: view).contentWidth) else { return false }
+                  renderedWidth == Int(layout(for: view).contentWidth), renderedSize == view.bounds.size,
+                  renderedInsets == view.textContainerInset, renderedInsets == layout(for: view).insets,
+                  signature == "\(parent.session.chapter.id)-\(parent.session.state.preferences)-\(view.traitCollection.preferredContentSizeCategory.rawValue)-\(renderedWidth)" else { return false }
             // Sample inside the visible line. Its exact top edge may resolve to
             // the previous paragraph's trailing newline after a width reflow.
             let readingTop = max(50, parent.pageInsets.top)
@@ -296,6 +305,7 @@ struct TextReadingView: UIViewRepresentable {
             view.panGestureRecognizer.isEnabled = !paged
             if let reflow = view as? ReflowTextView {
                 reflow.onPageScroll = paged ? { [weak self] direction in self?.turnPage(direction) ?? false } : nil
+                reflow.pagedReadingInsets = paged ? UIEdgeInsets(top: max(50, parent.pageInsets.top), left: 0, bottom: parent.pageInsets.bottom, right: 0) : nil
             }
             if paged {
                 view.accessibilityCustomActions = [
@@ -306,15 +316,36 @@ struct TextReadingView: UIViewRepresentable {
                 reportPagePosition()
             } else {
                 view.accessibilityCustomActions = nil
+                setPaginationBottomAllowance(nil)
                 pagination = nil; paginationKey = nil; lastReportedPage = nil
             }
         }
         private func refreshPagination() {
-            guard let view, !restoring, parent.session.state.preferences.navigationMode == .paged else { return }
+            // Restoration needs the new last line-aligned origin and its scroll
+            // allowance before positioning the saved source glyph.
+            guard let view, parent.session.state.preferences.navigationMode == .paged else { return }
             let key = "\(ObjectIdentifier(parent.session))-\(signature)-\(view.bounds.size)-\(view.textContainerInset)-\(parent.pageInsets)"
             guard key != paginationKey else { return }
             paginationKey = key
             pagination = ReaderTextPagination(textView: view, readingTop: max(50, parent.pageInsets.top), bottomInset: parent.pageInsets.bottom)
+            setPaginationBottomAllowance(pagination?.origins.last)
+        }
+        private var paginationBottomAllowance: CGFloat = 0
+        private func setPaginationBottomAllowance(_ lastOrigin: CGFloat?) {
+            guard let view else { return }
+            let minimum = -view.adjustedContentInset.top
+            let naturalMaximum = max(minimum, view.contentSize.height - view.bounds.height + view.adjustedContentInset.bottom - paginationBottomAllowance)
+            let allowance = lastOrigin.map { max(0, $0 - naturalMaximum) } ?? 0
+            guard allowance != paginationBottomAllowance else { return }
+            let offset = view.contentOffset, wasRestoring = restoring
+            restoring = true; defer { restoring = wasRestoring }
+            let change = allowance - paginationBottomAllowance
+            paginationBottomAllowance = allowance
+            view.contentInset.bottom += change
+            // Changing insets must not record UIKit's intermediate adjustment as
+            // new reading progress. Returning to scrolling clamps naturally; the
+            // same saved source remains visible within the continuous viewport.
+            view.setContentOffset(CGPoint(x: offset.x, y: min(max(minimum, offset.y), naturalMaximum + allowance)), animated: false)
         }
         private func reportPagePosition() {
             guard !restoring, let view, parent.session.state.preferences.navigationMode == .paged else { return }
@@ -368,6 +399,7 @@ struct TextReadingView: UIViewRepresentable {
                       self.renderedChapterID == chapter, self.parent.session.chapter.id == chapter,
                       self.navigationID == navigation, self.parent.session.navigationID == navigation else { return }
                 view.layoutManager.ensureLayout(for: view.textContainer)
+                self.refreshPagination()
                 if let anchor, anchor.chapterID == chapter, view.attributedText.length > 0,
                    let span = self.spans.first(where: { $0.passage.id == anchor.passageID }) {
                     let offset = span.sourceOffsets.utf16Offset(forScalarOffset: anchor.characterOffset)
@@ -379,14 +411,17 @@ struct TextReadingView: UIViewRepresentable {
                     let rect = view.layoutManager.boundingRect(forGlyphRange: glyph, in: view.textContainer)
                     let readingTop = max(50, self.parent.pageInsets.top)
                     let y = max(-view.adjustedContentInset.top, rect.minY + view.textContainerInset.top - readingTop)
-                    view.setContentOffset(CGPoint(x: 0, y: min(y, max(0, view.contentSize.height - view.bounds.height))), animated: false)
+                    let maximum = self.parent.session.state.preferences.navigationMode == .paged
+                        ? (self.pagination?.origins.last ?? -view.adjustedContentInset.top)
+                        : max(-view.adjustedContentInset.top, view.contentSize.height - view.bounds.height + view.adjustedContentInset.bottom)
+                    view.setContentOffset(CGPoint(x: 0, y: min(y, maximum)), animated: false)
                 } else { view.setContentOffset(.zero, animated: false) }
                 self.restoring = false
                 if let direction = self.pendingPageTransition {
                     self.pendingPageTransition = nil
                     ReaderPageTransition.apply(to: view, direction: direction)
                     if self.parent.session.state.preferences.navigationMode == .paged, direction == .previous {
-                        view.setContentOffset(CGPoint(x: 0, y: max(-view.adjustedContentInset.top, view.contentSize.height - view.bounds.height + view.adjustedContentInset.bottom)), animated: false)
+                        view.setContentOffset(CGPoint(x: 0, y: self.pagination?.origins.last ?? -view.adjustedContentInset.top), animated: false)
                     }
                     self.capture()
                 }
@@ -467,11 +502,109 @@ struct TextReadingView: UIViewRepresentable {
     }
 }
 
+/// Clip only TextKit's ink, leaving UIKit's selection handles outside the paper
+/// body intact. The text container, page origins and source geometry never move.
+private final class ReaderPageLayoutManager: NSLayoutManager {
+    var readingClip: CGRect?
+    override func drawGlyphs(forGlyphRange glyphsToShow: NSRange, at origin: CGPoint) {
+        guard let readingClip, let context = UIGraphicsGetCurrentContext() else {
+            super.drawGlyphs(forGlyphRange: glyphsToShow, at: origin); return
+        }
+        context.saveGState(); context.clip(to: readingClip.offsetBy(dx: origin.x, dy: origin.y))
+        super.drawGlyphs(forGlyphRange: glyphsToShow, at: origin)
+        context.restoreGState()
+    }
+    override func drawBackground(forGlyphRange glyphsToShow: NSRange, at origin: CGPoint) {
+        guard let readingClip, let context = UIGraphicsGetCurrentContext() else {
+            super.drawBackground(forGlyphRange: glyphsToShow, at: origin); return
+        }
+        context.saveGState(); context.clip(to: readingClip.offsetBy(dx: origin.x, dy: origin.y))
+        super.drawBackground(forGlyphRange: glyphsToShow, at: origin)
+        context.restoreGState()
+    }
+}
+
 /// UIKit can resize the text container without a new SwiftUI state update.
-private final class ReflowTextView: UITextView {
+final class ReflowTextView: UITextView {
     var onSizeChange: (() -> Void)?
     var onPageScroll: ((ReaderPageDirection) -> Bool)?
+    weak var readerTapRecognizer: UIGestureRecognizer?
+    weak var readerPageRecognizer: UIGestureRecognizer?
+    var pagedReadingInsets: UIEdgeInsets? { didSet { updateReadingClip() } }
+    private(set) var visibleReadingRect: CGRect?
     private var laidOutSize = CGSize.zero
+    private var updatingClip = false
+    private var selectionTouchBeganInBody: Bool?
+    init() {
+        let storage = NSTextStorage(), manager = ReaderPageLayoutManager()
+        let container = NSTextContainer(size: CGSize(width: 0, height: CGFloat.greatestFiniteMagnitude))
+        container.widthTracksTextView = true; container.heightTracksTextView = false
+        storage.addLayoutManager(manager); manager.addTextContainer(container)
+        super.init(frame: .zero, textContainer: container)
+    }
+    required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
+    override var contentOffset: CGPoint { didSet { updateReadingClip() } }
+
+    private func updateReadingClip() {
+        guard !updatingClip, let manager = layoutManager as? ReaderPageLayoutManager else { return }
+        updatingClip = true; defer { updatingClip = false }
+        var body = pagedReadingInsets.map { insets in
+            CGRect(x: bounds.minX, y: bounds.minY + insets.top, width: bounds.width,
+                   height: max(0, bounds.height - insets.top - insets.bottom))
+        }
+        if var rect = body, rect.height > 0 {
+            let containerRect = rect.offsetBy(dx: -textContainerInset.left, dy: -textContainerInset.top)
+            let range = manager.glyphRange(forBoundingRect: containerRect, in: textContainer)
+            // A normal next-page line must not leave half its glyphs at the foot
+            // of this page. Oversized illustrations still render in page slices.
+            manager.enumerateLineFragments(forGlyphRange: range) { _, used, _, _, _ in
+                let bottom = used.maxY + self.textContainerInset.top
+                let top = used.minY + self.textContainerInset.top
+                if top < rect.maxY, bottom > rect.maxY + 0.5, used.height <= rect.height {
+                    rect.size.height = max(0, top - rect.minY)
+                }
+            }
+            body = rect
+        }
+        let clip = body?.offsetBy(dx: -textContainerInset.left, dy: -textContainerInset.top)
+        guard clip != manager.readingClip else { visibleReadingRect = body; return }
+        // TextKit can cache glyph tiles between page turns. Invalidate both the
+        // old and new viewport so clipped ink is redrawn when it becomes visible.
+        let dirty = bounds.union(visibleReadingRect ?? bounds).union(body ?? bounds)
+        visibleReadingRect = body; manager.readingClip = clip
+        let containerDirty = dirty.offsetBy(dx: -textContainerInset.left, dy: -textContainerInset.top)
+        let glyphs = manager.glyphRange(forBoundingRect: containerDirty, in: textContainer)
+        manager.invalidateDisplay(forGlyphRange: glyphs)
+        textInputView.setNeedsDisplay(convert(dirty, to: textInputView))
+    }
+
+    private func isSelectionHandle(_ view: UIView?) -> Bool {
+        var candidate = view
+        while let current = candidate, current !== self {
+            if #available(iOS 17.0, *), current is any UITextSelectionHandleView { return true }
+            candidate = current.superview
+        }
+        return false
+    }
+    override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+        let hit = super.hitTest(point, with: event)
+        guard let body = visibleReadingRect, bounds.contains(point), hit != nil else { return hit }
+        let selectable = body.contains(point) || isSelectionHandle(hit)
+        // Record the touch origin, not its later pan position: a native handle
+        // or selection drag begun in the body may continue across the margin.
+        if event?.allTouches?.contains(where: { $0.phase == .began }) == true {
+            selectionTouchBeganInBody = selectable
+        }
+        return selectable ? hit : self
+    }
+    override func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+        guard let body = visibleReadingRect else { return super.gestureRecognizerShouldBegin(gestureRecognizer) }
+        if gestureRecognizer === readerTapRecognizer || gestureRecognizer === readerPageRecognizer { return true }
+        let point = gestureRecognizer.location(in: self)
+        let handle = isSelectionHandle(super.hitTest(point, with: nil))
+        guard selectionTouchBeganInBody ?? (body.contains(point) || handle) else { return false }
+        return super.gestureRecognizerShouldBegin(gestureRecognizer)
+    }
     override func accessibilityScroll(_ direction: UIAccessibilityScrollDirection) -> Bool {
         if let onPageScroll {
             switch direction {
@@ -487,6 +620,7 @@ private final class ReflowTextView: UITextView {
         let changed = size.width > 0 && size != laidOutSize
         if changed { laidOutSize = size }
         super.layoutSubviews()
+        updateReadingClip()
         if changed { onSizeChange?() }
     }
 }
