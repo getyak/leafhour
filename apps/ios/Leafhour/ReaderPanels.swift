@@ -125,7 +125,7 @@ struct ReaderContentsPanel: View {
         ScrollViewReader { proxy in
             List {
                 Section {
-                    if session.book.kind == .epub {
+                    if session.book.kind == .epub || (session.book.cloud != nil && session.book.readingStartAnchor != nil) {
                         Button {
                             guard let anchor = session.declaredReadingStart(),
                                   let index = session.book.chapters.firstIndex(where: { $0.id == anchor.chapterID }) else {

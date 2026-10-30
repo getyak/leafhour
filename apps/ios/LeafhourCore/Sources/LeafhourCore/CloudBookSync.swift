@@ -30,14 +30,78 @@ public struct CloudSyncMetadata: Codable, Sendable {
     public init() {}
 }
 
+public struct CloudReadingStartHint: Sendable {
+    public var identity: CloudBookIdentity
+    public var anchor: ReadingAnchor
+    public init(identity: CloudBookIdentity, anchor: ReadingAnchor) { self.identity = identity; self.anchor = anchor }
+}
+
 public struct CloudReadingCopy: Sendable {
     public var identity: CloudBookIdentity
     public var title: String
     public var author: String
     public var chapters: [BookChapter]
     public var content: Data
-    public init(identity: CloudBookIdentity, title: String, author: String, chapters: [BookChapter], content: Data) {
+    public var readingStart: CloudReadingStartHint?
+    public init(identity: CloudBookIdentity, title: String, author: String, chapters: [BookChapter], content: Data, readingStart: CloudReadingStartHint? = nil) {
         self.identity = identity; self.title = title; self.author = author; self.chapters = chapters; self.content = content
+        self.readingStart = readingStart
+    }
+}
+
+/// The service supplies only IDs, never an inferred heading or a source-file path.
+enum CloudReadingStartResolver {
+    static let maximumContentBytes = 32 * 1024 * 1024
+    private static let maximumMetadataBytes = 16 * 1024
+    static func validated(_ hint: CloudReadingStartHint?, identity: CloudBookIdentity, chapters: [BookChapter]) -> ReadingAnchor? {
+        guard let hint, hint.identity == identity, hint.anchor.characterOffset == 0, hint.anchor.pageY == nil,
+              identity.ownerID.utf8.count + identity.bookID.utf8.count + identity.contentVersion.utf8.count + hint.anchor.chapterID.utf8.count + hint.anchor.passageID.utf8.count <= maximumMetadataBytes,
+              let chapter = chapters.first(where: { $0.id == hint.anchor.chapterID }),
+              chapter.passages.contains(where: { $0.id == hint.anchor.passageID }) else { return nil }
+        return ReadingAnchor(chapterID: chapter.id, passageID: hint.anchor.passageID)
+    }
+    static func hint(from manifest: CloudJSON, identity: CloudBookIdentity, chapters: [BookChapter]) -> CloudReadingStartHint? {
+        let start = manifest["readingStart"]
+        guard manifest["bookId"].string == identity.bookID, manifest["contentVersion"].string == identity.contentVersion,
+              Set(start.object.keys) == ["chapterId", "passageId"],
+              let chapter = start["chapterId"].string, let passage = start["passageId"].string,
+              identity.bookID.utf8.count + identity.contentVersion.utf8.count + chapter.utf8.count + passage.utf8.count <= maximumMetadataBytes else { return nil }
+        let hint = CloudReadingStartHint(identity: identity, anchor: ReadingAnchor(chapterID: chapter, passageID: passage))
+        return validated(hint, identity: identity, chapters: chapters) == nil ? nil : hint
+    }
+    /// Called on OfflineLibrary's actor after package verification. Only the
+    /// small envelope is decoded; sections are not materialized as CloudJSON.
+    static func legacy(at url: URL, identity: CloudBookIdentity, chapters: [BookChapter]) -> ReadingAnchor? {
+        guard let size = try? Disk.size(url), size > 0, size <= Int64(maximumContentBytes),
+              let data = try? Data(contentsOf: url, options: .mappedIfSafe),
+              let metadata = try? JSONDecoder().decode(Metadata.self, from: data),
+              metadata.bookId == identity.bookID, metadata.contentVersion == identity.contentVersion,
+              let start = metadata.readingStart,
+              metadata.bookId.utf8.count + metadata.contentVersion.utf8.count + start.chapterId.utf8.count + start.passageId.utf8.count <= maximumMetadataBytes else { return nil }
+        return validated(CloudReadingStartHint(identity: identity, anchor: ReadingAnchor(chapterID: start.chapterId, passageID: start.passageId)), identity: identity, chapters: chapters)
+    }
+    private struct Metadata: Decodable {
+        let bookId: String
+        let contentVersion: String
+        let readingStart: Start?
+    }
+    private struct Start: Decodable {
+        let chapterId: String
+        let passageId: String
+        init(from decoder: Decoder) throws {
+            let values = try decoder.container(keyedBy: Key.self)
+            guard Set(values.allKeys.map(\.stringValue)) == ["chapterId", "passageId"] else {
+                throw DecodingError.dataCorrupted(.init(codingPath: decoder.codingPath, debugDescription: "Unexpected reading-start fields"))
+            }
+            chapterId = try values.decode(String.self, forKey: Key(stringValue: "chapterId")!)
+            passageId = try values.decode(String.self, forKey: Key(stringValue: "passageId")!)
+        }
+    }
+    private struct Key: CodingKey {
+        let stringValue: String
+        var intValue: Int? { nil }
+        init?(stringValue: String) { self.stringValue = stringValue }
+        init?(intValue: Int) { return nil }
     }
 }
 
@@ -91,7 +155,8 @@ public extension CloudLibraryClient {
         }
         var object = manifest.object; object["sections"] = .array(sections); manifest = .object(object)
         try Task.checkCancellation()
-        return CloudReadingCopy(identity: CloudBookIdentity(ownerID: ownerID, bookID: remote.id, contentVersion: version, sourceFormat: manifest["source"]["format"].string ?? "text"), title: CloudShelfBook.title(manifest["title"]), author: manifest["author"].string ?? remote.author, chapters: chapters, content: try JSONEncoder().encode(manifest))
+        let identity = CloudBookIdentity(ownerID: ownerID, bookID: remote.id, contentVersion: version, sourceFormat: manifest["source"]["format"].string ?? "text")
+        return CloudReadingCopy(identity: identity, title: CloudShelfBook.title(manifest["title"]), author: manifest["author"].string ?? remote.author, chapters: chapters, content: try JSONEncoder().encode(manifest), readingStart: CloudReadingStartResolver.hint(from: manifest, identity: identity, chapters: chapters))
     }
     /// The web transport switches to stable base64 parts for a chapter over its response limit.
     private func readingJSON(path: String, ownerID: String) async throws -> CloudJSON {

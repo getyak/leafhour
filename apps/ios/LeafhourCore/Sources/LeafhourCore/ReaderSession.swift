@@ -68,7 +68,7 @@ public final class ReaderSession: Identifiable {
     /// Call once on presentation or on demand, not from a repeatedly evaluated body.
     public func declaredReadingStart() -> ReadingAnchor? { Self.readingStart(for: book, directory: directory) }
     private static func readingStart(for book: LocalBook, directory: URL) -> ReadingAnchor? {
-        guard book.kind == .epub else { return nil }
+        guard book.kind == .epub || book.cloud != nil else { return nil }
         func validated(_ candidate: ReadingAnchor?) -> ReadingAnchor? {
             guard var candidate, let chapter = book.chapters.first(where: { $0.id == candidate.chapterID }),
                   let passage = chapter.passages.first(where: { $0.id == candidate.passageID }) else { return nil }
@@ -77,6 +77,9 @@ public final class ReaderSession: Identifiable {
             return candidate
         }
         if let start = validated(book.readingStartAnchor) { return start }
+        // Cloud caches prepare their hint on OfflineLibrary's actor. Never
+        // decode cloud-content.json from this main-actor session or SwiftUI body.
+        guard book.kind == .epub else { return nil }
         if let start = validated(BookParser.legacyReadingStart(for: book, directory: directory)) { return start }
         if let chapter = book.chapters.first(where: { $0.id == book.readingStartChapterID }), let passage = chapter.passages.first {
             return ReadingAnchor(chapterID: chapter.id, passageID: passage.id)

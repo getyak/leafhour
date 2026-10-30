@@ -10,6 +10,8 @@ Reading settings persist a choice between vertical scrolling and horizontal page
 
 New EPUB reading starts from publisher-declared bodymatter/guide text when trustworthy; otherwise linear spine order is respected and only explicitly marked cover/title/nav material is bypassed. Cover and front matter remain in contents. Existing valid source anchors always win, including an intentionally saved cover position. Existing cached EPUBs can derive start metadata from validated local package assets without rewriting records. Unmarked image openings, prefaces and PDF first pages are not guessed away.
 
+Cloud reading copies must also consume the domain's existing `readingStart` hint when it names an actual chapter and passage in the same owner/book/content version. Cached copies may recover that hint from retained local metadata through a bounded read without rewriting personal data. A missing or invalid cloud hint preserves the existing chapter order. This follow-up was added after tracing the existing server-to-native contract; it does not authorize guessing a body start for arbitrary uploads or changing their source text.
+
 ## Approaches and decisions
 
 1. Reuse the existing native attributed-text reader, system selection and source-anchor mapping; add measured viewport page navigation and native transitions. This keeps source identities and editing behavior intact. Chosen as the implementation direction, subject to measured layout tests.
@@ -24,6 +26,7 @@ Warm paper, ink controls and restrained grouping follow the existing product. Th
 - Horizontal turn advances actual visible text in both directions and crosses chapters without loops, omissions or invalid anchors; restore the same source after changing mode, font, orientation and cold launch.
 - All primary/secondary tools stay reachable on regular and accessibility text sizes, including paused listening and return to reading.
 - Synthetic EPUB cases prove bodymatter, cover, front matter, linear=no, old cache and saved-anchor behavior; PDF/TXT retain faithful source opening.
+- Cloud regressions prove trusted hint propagation, owner/version/membership validation, old-cache compatibility and saved-anchor precedence. Missing hints keep their prior behavior.
 - One native build/test session at a time under dev-ios-session; synthetic source only in public evidence. Keep CI, merge, Apple upload and physical-device acceptance separate. Retain GET-317's existing incomplete acceptance.
 
 ## Sources
