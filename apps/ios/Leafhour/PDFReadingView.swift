@@ -15,7 +15,11 @@ struct PDFReadingView: UIViewRepresentable {
         let view = PDFView(); view.autoScales = true; view.backgroundColor = .clear
         view.accessibilityIdentifier = "leafhour-pdf-reader"
         context.coordinator.view = view
-        context.coordinator.edgeTap = ReaderEdgeTapHandler(view: view, blocked: { [weak view] in view?.currentSelection != nil }, onWake: { [weak coordinator = context.coordinator] edge in coordinator?.parent.onWake(edge) })
+        context.coordinator.edgeTap = ReaderEdgeTapHandler(view: view, blocked: { [weak view, weak coordinator = context.coordinator] in
+            view?.currentSelection != nil || coordinator?.restoring != false
+        }, onWake: { [weak coordinator = context.coordinator] edge in coordinator?.parent.onWake(edge) },
+        isPaged: { [weak coordinator = context.coordinator] in coordinator?.parent.session.state.preferences.navigationMode == .paged },
+        onTurn: { [weak coordinator = context.coordinator] direction in _ = coordinator?.turnPage(direction) })
         context.coordinator.observe(view)
         return view
     }
@@ -220,6 +224,19 @@ struct PDFReadingView: UIViewRepresentable {
             let bounds = page.bounds(for: view.displayBox)
             let y = mode == .paged ? min(bounds.maxY, max(bounds.minY, visiblePoint.y)) : visiblePoint.y
             return ReadingAnchor(chapterID: chapter.id, passageID: passage.id, pageY: Double(y))
+        }
+        @discardableResult func turnPage(_ direction: ReaderPageDirection) -> Bool {
+            guard !restoring, parent.session.state.preferences.navigationMode == .paged,
+                  let view, view.currentSelection == nil else { return false }
+            switch direction {
+            case .next:
+                guard view.canGoToNextPage else { return false }
+                view.goToNextPage(nil)
+            case .previous:
+                guard view.canGoToPreviousPage else { return false }
+                view.goToPreviousPage(nil)
+            }
+            return true
         }
         func capture(force: Bool = false) {
             guard !restoring, force || userScrolled, let anchor = visibleAnchor(),

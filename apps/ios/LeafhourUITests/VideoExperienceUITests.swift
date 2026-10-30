@@ -4,7 +4,7 @@ import UIKit
 /// GET-317 synthetic native acceptance. These tests do not establish real-cloud,
 /// paid-model, physical-device, TestFlight, or production acceptance.
 final class VideoExperienceUITests: XCTestCase {
-    private let app = XCUIApplication(bundleIdentifier: "org.leafhour.get317.testing")
+    private let app = XCUIApplication()
     private let textTitle = "GET317 合成验收 · 本机文本"
     private let markdownTitle = "GET317 合成验收 · Markdown"
     private let translatedTitle = "GET317 合成验收 · 双译"
@@ -1888,7 +1888,7 @@ final class VideoExperienceUITests: XCTestCase {
 
     @MainActor
     func test47HorizontalSwipesTurnTheActualTextWithinTheSameChapter() throws {
-        launch(); openBook(translatedTitle); chooseNavigation("左右翻页")
+        launch(["--get341-unique-source"]); openBook(translatedTitle); chooseNavigation("左右翻页")
         let source = reader.value as? String ?? ""
         XCTAssertTrue(source.contains("SYNTHETIC c1 paragraph"))
         let first = try settledOriginalBand()
@@ -2464,6 +2464,81 @@ final class VideoExperienceUITests: XCTestCase {
         let attachment = XCTAttachment(string: String(decoding: data, as: UTF8.self))
         attachment.name = "GET328-UI58-PDF-native-copy-paste-source-evidence.json"
         attachment.lifetime = .keepAlways; add(attachment)
+    }
+
+    @MainActor
+    func test59PagedSideTapsTurnRealSourceAndCenterKeepsThePage() throws {
+        launch(["--get341-unique-source"]); openBook(translatedTitle); chooseNavigation("左右翻页")
+        let source = reader.value as? String
+        let first = try settledOriginalBand()
+        reader.coordinate(withNormalizedOffset: CGVector(dx: 0.85, dy: 0.4)).tap()
+        wakeTools()
+        let actualPage = app.buttons["reader-contents"].value as? String ?? "missing"
+        let actualPageAttachment = XCTAttachment(string: actualPage)
+        actualPageAttachment.name = "GET341 UI59 actual page after right tap"; actualPageAttachment.lifetime = .keepAlways; add(actualPageAttachment)
+        print("GET341 UI59 actual page after right tap: " + actualPage)
+        XCTAssertTrue(actualPage.contains("本章第 2 /"), "A real right tap must advance the independently reported TextKit screen")
+        app.buttons["reader-read"].tap()
+        XCTAssertTrue(waitForReaderChromeAsleep(timeout: 3))
+        let second = try settledOriginalBand()
+        XCTAssertNotEqual(second, first, "A real short tap on the right must turn the actual source screen")
+        XCTAssertEqual(reader.value as? String, source)
+        capture("GET341 right tap advances actual source")
+        reader.coordinate(withNormalizedOffset: CGVector(dx: 0.15, dy: 0.4)).tap()
+        XCTAssertEqual(try settledOriginalBand(), first, "Left tap must return to the exact original reading band")
+        reader.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.4)).tap()
+        requireReaderControlAwake(app.buttons["reader-contents"])
+        XCTAssertEqual(try settledOriginalBand(), first, "Center disclosure must not turn or reflow source")
+        reader.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.4)).tap()
+        XCTAssertTrue(waitForReaderChromeAsleep(timeout: 3))
+        reader.coordinate(withNormalizedOffset: CGVector(dx: 0.85, dy: 0.4)).tap()
+        XCTAssertEqual(try settledOriginalBand(), second)
+        coldRelaunch(); require(reader, timeout: 20)
+        XCTAssertEqual(try settledOriginalBand(), second, "A tap-created source checkpoint survives cold reopening")
+        capture("GET341 tap-created checkpoint cold restore")
+    }
+
+    @MainActor
+    func test60PDFSideTapsRespectBookEndsAndColdRestoreTheActualPage() throws {
+        launch(); openBook(pdfTitle); chooseNavigation("左右翻页")
+        let pdf = app.otherElements["leafhour-pdf-reader"]
+        require(pdf)
+        func expectPage(_ index: Int) {
+            wakeTools()
+            let contents = app.buttons["reader-contents"]
+            let expected = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in
+                contents.exists && (contents.value as? String)?.contains("第 \(index) / 3 页") == true
+            }, object: nil)
+            XCTAssertEqual(XCTWaiter.wait(for: [expected], timeout: 6), .completed)
+            app.buttons["reader-read"].tap()
+            XCTAssertTrue(waitForReaderChromeAsleep(timeout: 3))
+        }
+        expectPage(1)
+        pdf.coordinate(withNormalizedOffset: CGVector(dx: 0.15, dy: 0.4)).tap(); expectPage(1)
+        pdf.coordinate(withNormalizedOffset: CGVector(dx: 0.85, dy: 0.4)).tap(); expectPage(2)
+        pdf.coordinate(withNormalizedOffset: CGVector(dx: 0.15, dy: 0.4)).tap(); expectPage(1)
+        pdf.coordinate(withNormalizedOffset: CGVector(dx: 0.85, dy: 0.4)).tap(); expectPage(2)
+        pdf.coordinate(withNormalizedOffset: CGVector(dx: 0.85, dy: 0.4)).tap(); expectPage(3)
+        pdf.coordinate(withNormalizedOffset: CGVector(dx: 0.85, dy: 0.4)).tap(); expectPage(3)
+        coldRelaunch(); require(pdf, timeout: 20); expectPage(3)
+        capture("GET341 native PDF taps and final page cold restore")
+    }
+
+    @MainActor
+    func test61NativeSideLongPressCopyAndSelectionDismissalDoNotTurnThePage() throws {
+        launch(); openBook(textTitle); chooseNavigation("左右翻页")
+        reader.coordinate(withNormalizedOffset: CGVector(dx: 0.85, dy: 0.4)).tap()
+        wakeTools()
+        let before = try XCTUnwrap(app.buttons["reader-contents"].value as? String)
+        XCTAssertTrue(before.contains("本章第 2 /"))
+        app.buttons["reader-read"].tap()
+        XCTAssertTrue(waitForReaderChromeAsleep(timeout: 3))
+        reader.coordinate(withNormalizedOffset: CGVector(dx: 0.15, dy: 0.4)).press(forDuration: 1.2)
+        systemEditAction(["复制", "Copy"])
+        capture("GET341 real side selection and native Copy")
+        reader.coordinate(withNormalizedOffset: CGVector(dx: 0.85, dy: 0.4)).tap()
+        wakeTools()
+        XCTAssertEqual(app.buttons["reader-contents"].value as? String, before, "Dismissing the system selection must not also advance the book")
     }
 
 }

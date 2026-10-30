@@ -499,6 +499,23 @@ final class ReaderLayoutTests: XCTestCase {
         let receipt = await session.flush(); XCTAssertTrue(receipt.succeeded); XCTAssertTrue(session.isCurrent(receipt))
     }
 
+    func testStandardPagedMarginsUseMeasuredChromeWithoutBlanketPortraitReserves() async throws {
+        let source = (1...40).map { "Original paragraph \($0) keeps enough source to measure real paged reading space." }.joined(separator: "\n\n")
+        let session = try await session(source: source)
+        session.state.preferences.navigationMode = .paged
+        let (window, host) = await budgetHost(session, size: CGSize(width: 402, height: 780), category: .large)
+        let text = try assertRealPagedBody(host, window: window, stage: "GET341 standard measured margins")
+        XCTAssertLessThanOrEqual(text.textContainerInset.top, 52.5, "A standard 44pt header needs only an 8pt source gap inside the existing safe area")
+        XCTAssertLessThan(text.textContainerInset.bottom, 110, "Use the actual compact dock and caption rather than a 100pt floor plus 24pt padding")
+        let offset = text.contentOffset, insets = text.textContainerInset, anchor = session.currentAnchor
+        let coordinator = try XCTUnwrap(text.delegate as? TextReadingView.Coordinator)
+        coordinator.parent.onWake(.tools)
+        await settleBudgetHost(host)
+        XCTAssertEqual(text.textContainerInset, insets)
+        XCTAssertEqual(text.contentOffset, offset)
+        XCTAssertEqual(session.currentAnchor, anchor)
+    }
+
     private func actions(in menu: UIMenu) -> [UIAction] {
         menu.children.flatMap { element -> [UIAction] in
             if let action = element as? UIAction { return [action] }

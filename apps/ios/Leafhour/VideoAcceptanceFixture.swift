@@ -8,7 +8,7 @@ enum VideoAcceptanceFixture {
     @MainActor static func makeModelIfRequested() -> LibraryModel? {
         #if DEBUG
         let arguments = ProcessInfo.processInfo.arguments
-        guard Bundle.main.bundleIdentifier == "org.leafhour.get317.testing" else { return nil }
+        guard ["org.leafhour.get317.testing", "org.leafhour.get341.testing"].contains(Bundle.main.bundleIdentifier ?? "") else { return nil }
         let hostedUnitTest = ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] != nil
             || NSClassFromString("XCTestCase") != nil || NSClassFromString("XCTest.XCTestCase") != nil
         guard arguments.contains("--get317-acceptance") || hostedUnitTest else { return nil }
@@ -329,6 +329,13 @@ private final class GET317Transport: URLProtocol, @unchecked Sendable {
         let generated = record(bookID)["syntheticTranslations"] as? [String: Any] ?? [:]
         let paragraphs: [[String: Any]] = (1...12).map { number in
             var row: [String: Any] = ["id": "\(id)-p\(number)", "original": "GET317 SYNTHETIC \(id) paragraph \(number). This invented orchard is acceptance material written solely for the test. The stable search marker CLOUD_ORCHARD_\(id)_\(number) helps a reader return to exactly this passage. " + String(repeating: "The river stays beside the orchard while the tools open and close. ", count: 5), "source": ["review": "extracted_unreviewed"]]
+            // UI47/UI59 need a unique visible witness inside every cropped body band.
+            // The default fixture remains unchanged for the existing acceptance suite.
+            if arguments.contains("--get341-unique-source") {
+                row["original"] = "GET317 SYNTHETIC \(id) paragraph \(number). " + (1...12).map { sentence in
+                    "Source witness \(id)-p\(number)-s\(sentence): the orchard and river identify this exact invented sentence."
+                }.joined(separator: " ")
+            }
             if bookID == "get317-translated" { row["translations"] = translations }
             else if let saved = generated["\(id)-p\(number)"] { row["translations"] = saved }
             return row
