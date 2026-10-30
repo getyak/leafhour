@@ -84,3 +84,55 @@ test('paid conversation quotes and preserves explicit per-turn preference consen
 test('point confirmation includes explicit per-question preference authority',()=>{
  const text=helper('creditConsentText');assert.match(text({action:'conversation',units:4000000,locale:'en',preferenceWrites:true}),/updates are allowed/);assert.match(text({action:'conversation',units:4000000,locale:'en',preferenceWrites:false}),/updates are off/);
 });
+
+function conversationSetup(){
+ const t=setup();
+ t.f.fetcher=async(url,options)=>{
+  t.calls.push({url,options});
+  if(url==='/api/auth/session')return reply({user:{id:'A'}});
+  const body=JSON.parse(options.body).input;
+  return reply({id:'q-'+body.id,ownerId:'A',action:'conversation',units:4000000,scope:{bookId:'book-1',requestId:body.id,passageId:body.passageId,contentVersion:body.contentVersion}});
+ };
+ return t;
+}
+
+test('paid conversations preserve explicit people authority and keep absent authority absent',async()=>{
+ for(const authority of [undefined,false,true]){
+  const t=conversationSetup(),data={...input,text:'Explain this.',...(authority===undefined?{}:{peopleWrites:authority})};
+  const prepared=await helper('prepareCreditRequest')({...t.f,url:'/api/library/books/book-1/chat',data});
+  assert.equal(Object.hasOwn(prepared,'peopleWrites'),authority!==undefined);
+  assert.equal(prepared.peopleWrites,authority);
+  assert.deepEqual(JSON.parse(t.calls.find(c=>c.url==='/api/billing/quotes').options.body).input,data);
+ }
+});
+
+test('invalid people authority is rejected before identity, quote or consent requests',async()=>{
+ for(const peopleWrites of [null,0,1,'true',[],{}]){
+  const t=conversationSetup();
+  await assert.rejects(helper('prepareCreditRequest')({...t.f,url:'/api/library/books/book-1/chat',data:{...input,text:'Explain this.',peopleWrites}}),{code:'BILLING_INVALID_INPUT',preSubmit:true});
+  assert.equal(t.calls.length,0);assert.equal(t.confirmations.length,0);assert.equal(t.storage.size,0);
+ }
+});
+
+test('people authority requires its own confirmation and cannot change within a paid retry',async()=>{
+ const t=conversationSetup(),prepare=helper('prepareCreditRequest'),url='/api/library/books/book-1/chat',data={...input,text:'Explain this.',peopleWrites:false};
+ const first=await prepare({...t.f,url,data});
+ const retry=await prepare({...t.f,url,data});
+ assert.deepEqual(retry,first);assert.equal(t.confirmations.length,1);
+ await assert.rejects(prepare({...t.f,url,data:{...data,peopleWrites:true}}),{code:'BILLING_INPUT_CHANGED'});
+ assert.equal(t.calls.filter(c=>c.url==='/api/billing/quotes').length,1);
+ await prepare({...t.f,url,data:{...data,id:'people-enabled',peopleWrites:true}});
+ assert.equal(t.confirmations.length,2);assert.match(t.confirmations[1],/create, edit or delete/);
+ await prepare({...t.f,url,data:{...data,id:'people-enabled-again',peopleWrites:true}});
+ assert.equal(t.confirmations.length,2,'the same explicit authority and price schedule can reuse consent');
+ for(const saved of t.storage.values())assert.doesNotMatch(saved,/Explain this\./,'questions stay out of financial session storage');
+});
+
+test('point confirmation describes enabled and disabled people authority in every supported language',()=>{
+ const text=helper('creditConsentText');
+ for(const [locale,enabled,disabled] of [['en',/create, edit or delete/,/Person records cannot be changed/],['zh-Hans',/创建、修改或删除人物资料/,/不可修改人物资料/],['zh-Hant',/建立、修改或刪除人物資料/,/不可修改人物資料/],['ja',/人物資料の作成・変更・削除/,/人物資料は変更できません/]]){
+  assert.match(text({action:'conversation',units:4000000,locale,peopleWrites:true}),enabled);
+  assert.match(text({action:'conversation',units:4000000,locale}),disabled);
+  assert.doesNotMatch(text({action:'translation',units:1000000,locale,peopleWrites:true}),enabled);
+ }
+});

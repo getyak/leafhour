@@ -39,8 +39,8 @@ test('stale and oversized source requests cannot submit paid generation',async()
  await assert.rejects(f.gate.quote({id:'account-a'},{action:'translation',bookId:'book-a',input:{id:'t-a',passageId:'p1'}}),{status:413});
  assert.deepEqual(f.calls,[]);
 });
-async function realFixture(){
- const now=Date.parse('2026-10-21T00:00:00Z'),store=createBillingMemoryStore({clock:()=>now}),billing=createBillingService({enabled:true,store,clock:()=>now}),user={id:'account-a'};
+async function realFixture({now=Date.parse('2026-10-21T00:00:00Z')}={}){
+ const store=createBillingMemoryStore({clock:()=>now}),billing=createBillingService({enabled:true,store,clock:()=>now}),user={id:'account-a'};
  await billing.trial({ownerId:user.id,verified:true});
  const savedBook=structuredClone(book),turns=[];const library={getBook:async()=>structuredClone(savedBook)},chat={view:async()=>({turns:structuredClone(turns)})};
  const gate=createCreditGate({billing,library,chat,clock:()=>now});return {gate,billing,store,user,savedBook,turns,now,chat,library};
@@ -156,4 +156,29 @@ test('paid preference consent survives generation and is bound to the quote dige
  const result=await f.gate.run({user:f.user,action:'conversation',bookId:'book-a',input:{...input,billing:{quoteId:quote.id,idempotencyKey:input.id}},execute});
  assert.equal(result.preferenceWrites,true);assert.equal(dispatched,1);assert.equal((await f.billing.account({ownerId:f.user.id})).consumedUnits,4_000_000);
  await assert.rejects(f.gate.quote(f.user,{action:'conversation',bookId:'book-a',input:{...input,preferenceWrites:'yes'}}),{status:400});
+});
+
+test('browser people consent reaches the real quote gate and paid retries cannot expand authority',async()=>{
+ const {prepareCreditRequest}=await import('../app/credit-client.mjs');
+ for(const peopleWrites of [false,true]){
+  const f=await realFixture({now:Date.now()}),input={id:'people-consent-'+peopleWrites,text:'Explain this paragraph.',passageId:'p1',contentVersion:'version-a',peopleWrites};
+  const rows=new Map();let dispatched=0,quoted=0;
+  const options={url:'/api/library/books/book-a/chat',data:input,session:{user:f.user,billing:{enabled:true,mode:'test',unitsPerPoint:1_000_000,prices:{translation:1_000_000,conversation:4_000_000,annotation:4_000_000}}},owner:f.user.id,storage:{getItem:k=>rows.get(k)||null,setItem:(k,v)=>rows.set(k,v)},confirm:()=>true,fetcher:async(url,options)=>{
+   const value=url==='/api/auth/session'?{user:f.user}:(quoted++,await f.gate.quote(f.user,JSON.parse(options.body)));
+   return {ok:true,json:async()=>value};
+  }};
+  const prepared=await prepareCreditRequest(options),execute=async body=>{
+   dispatched++;assert.equal(body.peopleWrites,peopleWrites);assert.equal(Object.hasOwn(body,'billing'),false);
+   const turn={...body,status:'completed',answer:{summary:'Saved answer'}};f.turns.push(turn);return turn;
+  };
+  await assert.rejects(f.gate.run({user:f.user,action:'conversation',bookId:'book-a',input:{...prepared,peopleWrites:!peopleWrites},execute}),{status:409});
+  assert.equal(dispatched,0);
+  await f.gate.run({user:f.user,action:'conversation',bookId:'book-a',input:prepared,execute});
+  const retry=await prepareCreditRequest(options);
+  assert.deepEqual(retry,prepared);
+  await f.gate.run({user:f.user,action:'conversation',bookId:'book-a',input:retry,execute});
+  assert.equal(quoted,1);assert.equal(dispatched,1);
+  assert.equal((await f.billing.account({ownerId:f.user.id})).consumedUnits,4_000_000);
+  await assert.rejects(f.gate.quote(f.user,{action:'conversation',bookId:'book-a',input:{...input,peopleWrites:'yes'}}),{status:400});
+ }
 });

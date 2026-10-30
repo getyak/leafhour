@@ -1716,6 +1716,12 @@ candidate:app/credit-client.mjs:16:142,js-cjk-literal,app/credit-client.mjs,16,,
 candidate:app/credit-client.mjs:16:154,js-cjk-literal,app/credit-client.mjs,16,,unknown,reviewable,,允許修改閱讀偏好。
 candidate:app/credit-client.mjs:16:171,js-cjk-literal,app/credit-client.mjs,16,,unknown,reviewable,,設定は変更できません。
 candidate:app/credit-client.mjs:16:185,js-cjk-literal,app/credit-client.mjs,16,,unknown,reviewable,,設定の変更を許可。
+candidate:app/credit-client.mjs:17:141,js-cjk-literal,app/credit-client.mjs,17,,unknown,reviewable,,不可修改人物资料。
+candidate:app/credit-client.mjs:17:153,js-cjk-literal,app/credit-client.mjs,17,,unknown,reviewable,,允许本次提问创建、修改或删除人物资料。
+candidate:app/credit-client.mjs:17:187,js-cjk-literal,app/credit-client.mjs,17,,unknown,reviewable,,不可修改人物資料。
+candidate:app/credit-client.mjs:17:199,js-cjk-literal,app/credit-client.mjs,17,,unknown,reviewable,,允許本次提問建立、修改或刪除人物資料。
+candidate:app/credit-client.mjs:17:226,js-cjk-literal,app/credit-client.mjs,17,,unknown,reviewable,,人物資料は変更できません。
+candidate:app/credit-client.mjs:17:242,js-cjk-literal,app/credit-client.mjs,17,,unknown,reviewable,,この質問で人物資料の作成・変更・削除を許可する。
 candidate:app/document-source.mjs:2:28,js-cjk-literal,app/document-source.mjs,2,,unknown,reviewable,,EPUB 原文保留在自己的书房，尚未逐段校对。
 candidate:app/document-source.mjs:3:38,js-cjk-literal,app/document-source.mjs,3,,unknown,reviewable,,章节依据 EPUB 目录及源文件锚点整理。
 candidate:app/document-source.mjs:4:33,js-cjk-literal,app/document-source.mjs,4,,unknown,reviewable,,缺少可用目录，按 EPUB 阅读顺序整理片段，不代表原书章节。
