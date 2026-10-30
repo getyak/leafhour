@@ -89,7 +89,7 @@ struct LibraryScreen: View {
                 }
             }
             .safeAreaInset(edge: .bottom) {
-                if model.busy { activityBar }
+                if model.busy && activeItem == nil { activityBar }
             }
             .fileImporter(isPresented: $importing, allowedContentTypes: [.epub, .pdf, .plainText, UTType(filenameExtension: "md") ?? .plainText]) { result in
                 switch result { case .success(let url): model.importFile(url); case .failure(let error): model.message = error.localizedDescription }
@@ -153,7 +153,7 @@ struct LibraryScreen: View {
                 if visibleItems.isEmpty { filteredEmptyState.listRowBackground(Color.clear) }
                 else {
                     ForEach(visibleItems) { item in
-                        LibraryShelfRow(item: item, downloadUnavailable: model.busy, isActive: isActive(item), progress: model.activityProgress, status: model.status, resource: model.coverResource(item), open: { open(item) }, details: { details(item) })
+                        LibraryShelfRow(item: item, downloadUnavailable: model.busy, isActive: isActive(item), progress: model.activityProgress, status: model.status, resource: model.coverResource(item), cancel: model.activityCanCancel ? { model.cancelImport() } : nil, open: { open(item) }, details: { details(item) })
                     }
                 }
             } header: { shelfHeader.textCase(nil) }
@@ -178,7 +178,7 @@ struct LibraryScreen: View {
                 else {
                     LazyVGrid(columns: shelfColumns, alignment: .leading, spacing: 24) {
                         ForEach(visibleItems) { item in
-                            LibraryShelfTile(item: item, downloadUnavailable: model.busy, isActive: isActive(item), progress: model.activityProgress, status: model.status, resource: model.coverResource(item), open: { open(item) }, details: { details(item) })
+                            LibraryShelfTile(item: item, downloadUnavailable: model.busy, isActive: isActive(item), progress: model.activityProgress, status: model.status, resource: model.coverResource(item), cancel: model.activityCanCancel ? { model.cancelImport() } : nil, open: { open(item) }, details: { details(item) })
                         }
                     }
                 }

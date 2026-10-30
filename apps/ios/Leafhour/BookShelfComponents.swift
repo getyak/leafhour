@@ -76,14 +76,22 @@ struct ShelfBookAvailability: View {
 struct ShelfBookActivity: View {
     let progress: Double?
     let status: String
+    var cancel: (() -> Void)? = nil
     var body: some View {
-        VStack(alignment: .leading, spacing: 5) {
-            if let progress {
-                ProgressView(value: min(1, max(0, progress))).accessibilityLabel("书籍处理进度")
-            } else { ProgressView().controlSize(.mini) }
-            if !status.isEmpty { Text(status).font(.caption).foregroundStyle(.secondary) }
+        HStack(spacing: 10) {
+            Group {
+                if let progress { ProgressView(value: min(1, max(0, progress))) }
+                else { ProgressView().controlSize(.mini) }
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .accessibilityLabel("书籍处理进度").accessibilityValue(status)
+            .accessibilityIdentifier("library-book-progress")
+            if let cancel {
+                Button(action: cancel) { Image(systemName: "xmark").font(.caption.weight(.semibold)).frame(width: 44, height: 44).contentShape(Rectangle()) }
+                    .buttonStyle(.plain).foregroundStyle(.secondary).accessibilityLabel("取消下载")
+                    .accessibilityIdentifier("library-activity-cancel")
+            }
         }
-        .accessibilityElement(children: .combine)
     }
 }
 
@@ -100,6 +108,7 @@ struct LibraryShelfRow: View {
     var progress: Double? = nil
     var status = ""
     var resource: BookCoverResource? = nil
+    var cancel: (() -> Void)? = nil
     let open: () -> Void
     let details: () -> Void
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
@@ -131,7 +140,7 @@ struct LibraryShelfRow: View {
             .accessibilityLabel(item.readingAccessibilityLabel).accessibilityValue(item.author)
             .contextMenu { if item.isDownloaded { Button("书籍详情", systemImage: "info.circle", action: details) } }
             .accessibilityAction(named: Text("书籍详情")) { if item.isDownloaded { details() } }
-            if isActive { ShelfBookActivity(progress: progress, status: status) }
+            if isActive { ShelfBookActivity(progress: progress, status: status, cancel: cancel) }
         }
         .padding(.vertical, 8)
     }
@@ -144,13 +153,14 @@ struct LibraryShelfTile: View {
     var progress: Double? = nil
     var status = ""
     var resource: BookCoverResource? = nil
+    var cancel: (() -> Void)? = nil
     let open: () -> Void
     let details: () -> Void
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     var body: some View {
         if dynamicTypeSize.isAccessibilitySize {
-            LibraryShelfRow(item: item, downloadUnavailable: downloadUnavailable, isActive: isActive, progress: progress, status: status, resource: resource, open: open, details: details)
+            LibraryShelfRow(item: item, downloadUnavailable: downloadUnavailable, isActive: isActive, progress: progress, status: status, resource: resource, cancel: cancel, open: open, details: details)
         } else {
             VStack(alignment: .leading, spacing: 8) {
                 Button(action: open) {
@@ -169,7 +179,7 @@ struct LibraryShelfTile: View {
                 .accessibilityLabel(item.readingAccessibilityLabel).accessibilityValue(item.author)
                 .contextMenu { if item.isDownloaded { Button("书籍详情", systemImage: "info.circle", action: details) } }
                 .accessibilityAction(named: Text("书籍详情")) { if item.isDownloaded { details() } }
-                if isActive { ShelfBookActivity(progress: progress, status: status) }
+                if isActive { ShelfBookActivity(progress: progress, status: status, cancel: cancel) }
             }
             .frame(maxWidth: .infinity, alignment: .topLeading)
         }
