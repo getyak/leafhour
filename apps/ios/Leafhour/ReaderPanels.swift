@@ -244,7 +244,28 @@ struct ReaderPreferencesPanel: View {
     private var preview: String? {
         let passages = session.chapter.passages
         let current = passages.first { $0.id == session.currentAnchor?.passageID && !$0.heading && $0.resourcePath == nil && !$0.text.isEmpty }
-        return (current ?? passages.first { !$0.heading && $0.resourcePath == nil && !$0.text.isEmpty }).map { String($0.text.prefix(120)) }
+        return (current ?? passages.first { !$0.heading && $0.resourcePath == nil && !$0.text.isEmpty }).map { Self.sourceExcerpt($0.text) }
+    }
+    private static func sourceExcerpt(_ source: String) -> String {
+        let limit = 120, prefix = source.prefix(120)
+        guard prefix.endIndex != source.endIndex else { return source }
+        func isASCIIWord(_ character: Character) -> Bool {
+            character.isASCII && (character.isLetter || character.isNumber || character == "_" || character == "'" || character == "-")
+        }
+        var excerpt = prefix
+        if let last = prefix.last, isASCIIWord(last), isASCIIWord(source[prefix.endIndex]),
+           let boundary = prefix.lastIndex(where: { $0.isWhitespace }) {
+            let tokenStart = source.index(after: boundary)
+            let token = prefix[tokenStart...], complete = prefix[..<boundary]
+            if token.allSatisfy(isASCIIWord), complete.contains(where: { !$0.isWhitespace }),
+               source[tokenStart...].prefix(limit + 1).prefix(while: isASCIIWord).count <= limit {
+                excerpt = complete
+            }
+        }
+        if excerpt.contains(where: { !$0.isWhitespace }) {
+            while excerpt.last?.isWhitespace == true { excerpt = excerpt.dropLast() }
+        }
+        return String(excerpt) + "…"
     }
     private var usesDefaultTypography: Bool {
         session.state.preferences.fontSize == defaults.fontSize && session.state.preferences.lineSpacing == defaults.lineSpacing
