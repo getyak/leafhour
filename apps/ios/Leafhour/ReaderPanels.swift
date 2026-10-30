@@ -393,11 +393,11 @@ struct ReaderRecordsPanel: View {
                         Button {
                             if let index = session.book.chapters.firstIndex(where: { $0.id == note.anchor.chapterID }) { onJump(index, note.anchor) }
                         } label: {
-                            Label {
+                            HStack(spacing: 8) {
+                                Image(systemName: "arrow.uturn.backward").accessibilityHidden(true)
                                 Text("回到原句").font(.body).fixedSize(horizontal: false, vertical: true)
-                            } icon: { Image(systemName: "arrow.uturn.backward") }
-                                .frame(minHeight: 44).contentShape(Rectangle())
-                        }.buttonStyle(.borderless)
+                            }.frame(minHeight: 44).contentShape(Rectangle())
+                        }.buttonStyle(.borderless).accessibilityLabel("回到原句")
                     }.padding(.vertical, 6)
                 }
             } header: { Text("我的笔记").foregroundStyle(Color.primary) } }
