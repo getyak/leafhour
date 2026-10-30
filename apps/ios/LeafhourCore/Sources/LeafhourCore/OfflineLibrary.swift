@@ -4,6 +4,8 @@ import Foundation
 public actor OfflineLibrary {
     private let root: URL
     private let limits: ImportLimits
+    private struct CloudStartCache { var identity: CloudBookIdentity; var digest: String; var anchor: ReadingAnchor? }
+    private var cloudStarts: [String: CloudStartCache] = [:]
     public init(root: URL, scope: LibraryScope, limits: ImportLimits = ImportLimits()) throws {
         guard limits.maximumFileBytes > 0, limits.maximumExpandedBytes > 0, limits.maximumEntryBytes > 0, limits.maximumEntries > 0 else { throw LibraryError.invalid("导入上限必须大于零。") }
         self.root = root.appendingPathComponent(scope.folder, isDirectory: true); self.limits = limits
@@ -120,9 +122,28 @@ public actor OfflineLibrary {
     }
     public func book(_ id: String) throws -> LocalBook {
         let directory = try bookDirectory(id)
-        try checkPackage(directory, id: id)
-        let book = try Disk.read(LocalBook.self, from: directory.appendingPathComponent("book.json"))
+        let manifest = try checkPackage(directory, id: id)
+        var book = try Disk.read(LocalBook.self, from: directory.appendingPathComponent("book.json"))
         guard book.id == id, book.sourceVersion == "sha256-" + id, !book.chapters.isEmpty else { throw LibraryError.invalid("书籍索引无效。原文件仍保留。") }
+        if let identity = book.cloud {
+            guard let owner = UUID(uuidString: identity.ownerID), root.lastPathComponent == "account-" + owner.uuidString.lowercased() else {
+                book.readingStartAnchor = nil
+                return book
+            }
+            let current = CloudReadingStartResolver.validated(book.readingStartAnchor.map { CloudReadingStartHint(identity: identity, anchor: $0) }, identity: identity, chapters: book.chapters)
+            book.readingStartAnchor = current
+            if let current { book.readingStartAnchor = current }
+            else if let file = manifest.files.first(where: { $0.path == "cloud-content.json" }) {
+                let digest = file.sha256 + ":" + (manifest.files.first(where: { $0.path == "book.json" })?.sha256 ?? "")
+                if let cached = cloudStarts[id], cached.identity == identity, cached.digest == digest { book.readingStartAnchor = cached.anchor }
+                else {
+                    let anchor = CloudReadingStartResolver.legacy(at: try Disk.url(directory, file.path), identity: identity, chapters: book.chapters)
+                    if cloudStarts.count >= 128 { cloudStarts.removeAll() }
+                    cloudStarts[id] = CloudStartCache(identity: identity, digest: digest, anchor: anchor)
+                    book.readingStartAnchor = anchor
+                }
+            }
+        }
         return book
     }
     public func books() throws -> [LocalBook] {
@@ -137,7 +158,7 @@ public actor OfflineLibrary {
     }
 
     @discardableResult public func verify(_ id: String) throws -> Bool { _ = try book(id); return true }
-    private func checkPackage(_ folder: URL, id: String) throws {
+    @discardableResult private func checkPackage(_ folder: URL, id: String) throws -> OfflineManifest {
         let manifest = try Disk.read(OfflineManifest.self, from: folder.appendingPathComponent("manifest.json"))
         guard manifest.version == 1, manifest.bookID == id, !manifest.files.isEmpty, manifest.files.contains(where: { $0.path == "book.json" }), Set(manifest.files.map(\.path)).count == manifest.files.count else { throw LibraryError.invalid("离线清单不完整。") }
         var originalFound = false
@@ -148,6 +169,7 @@ public actor OfflineLibrary {
             if file.path.hasPrefix("source.") { guard file.sha256 == id else { throw LibraryError.invalid("原件版本不匹配。") }; originalFound = true }
         }
         guard originalFound else { throw LibraryError.invalid("离线清单缺少原件。") }
+        return manifest
     }
     public func state(_ id: String) throws -> ReaderState {
         _ = try bookDirectory(id)
@@ -163,6 +185,10 @@ public actor OfflineLibrary {
         let book = try Disk.read(LocalBook.self, from: directory.appendingPathComponent("book.json"))
         func validate(_ anchor: ReadingAnchor) throws {
             guard let chapter = book.chapters.first(where: { $0.id == anchor.chapterID }), let passage = chapter.passages.first(where: { $0.id == anchor.passageID }), anchor.characterOffset >= 0, anchor.characterOffset <= passage.text.unicodeScalars.count, anchor.pageY?.isFinite != false else { throw LibraryError.invalid("引用与当前原文版本不匹配，未覆盖已有记录。") }
+            if let y = anchor.resourceY {
+                guard y.isFinite, (0...1).contains(y), passage.resourcePath != nil, book.kind != .pdf,
+                      anchor.characterOffset == 0, anchor.pageY == nil else { throw LibraryError.invalid("插图位置与当前原文资源不匹配，未覆盖已有记录。") }
+            }
         }
         if let anchor = state.anchor { try validate(anchor) }
         for (key, draft) in state.drafts { try validate(draft.anchor); guard key == draft.anchor.key else { throw LibraryError.invalid("草稿引用无效。") } }
@@ -258,6 +284,7 @@ public actor OfflineLibrary {
         try copy.content.write(to: stage.appendingPathComponent("cloud-content.json"), options: .atomic)
         var value = LocalBook(id: id, title: copy.title, author: copy.author, kind: .txt, sourceVersion: "sha256-" + id, originalFilename: "Leafhour-reading-copy.txt", importedAt: Date(), chapters: copy.chapters)
         value.cloud = copy.identity
+        value.readingStartAnchor = CloudReadingStartResolver.validated(copy.readingStart, identity: copy.identity, chapters: copy.chapters)
         try Disk.write(value, to: stage.appendingPathComponent("book.json"))
         var digests: [FileDigest] = []
         for name in ["source.txt", "book.json", "cloud-content.json"] {

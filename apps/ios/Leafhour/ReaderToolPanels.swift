@@ -2,6 +2,26 @@ import SwiftUI
 import AVFoundation
 import LeafhourCore
 
+/// Every pushed tool keeps a direct route back to the book. The action belongs
+/// to the enclosing reader sheet, so it waits for its save receipt and dismisses
+/// the whole sheet rather than merely popping this destination.
+private struct ReaderToolContinuation: ViewModifier {
+    var identifier = "reader-tool-continue"
+    @Environment(\.readerContinueReading) private var continueReading
+    func body(content: Content) -> some View {
+        content.toolbar {
+            if let continueReading {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button(action: continueReading) {
+                        Text("继续读").font(.body)
+                            .frame(minWidth: 44, minHeight: 44).contentShape(Rectangle())
+                    }.accessibilityIdentifier(identifier)
+                }
+            }
+        }
+    }
+}
+
 struct ReaderMorePanel: View {
     @Bindable var session: ReaderSession
     @Bindable var speech: ReaderSpeech
@@ -14,11 +34,13 @@ struct ReaderMorePanel: View {
     var body: some View {
         List {
             Section("读这本书") {
-                NavigationLink { BookSearchPanel(session: session, onJump: onJump) } label: { Label("搜索原文", systemImage: "magnifyingglass").frame(minHeight: 44) }
-                NavigationLink { ReaderPreferencesPanel(session: session) } label: { Label("文字与纸面", systemImage: "textformat.size").frame(minHeight: 44) }
-                NavigationLink { ReaderIntroductionPanel(session: session, tools: tools, cloud: cloud) } label: { Label("导读与摘要", systemImage: "text.book.closed").frame(minHeight: 44) }
+                NavigationLink { BookSearchPanel(session: session, onJump: onJump).modifier(ReaderToolContinuation()) } label: { Label("搜索原文", systemImage: "magnifyingglass").frame(minHeight: 44) }
+                NavigationLink { ReaderTranslationPanel(session: session, tools: tools, cloud: cloud).modifier(ReaderToolContinuation()) } label: { Label("翻译", systemImage: "character.book.closed").frame(minHeight: 44) }
+                NavigationLink { ReaderRecordsPanel(session: session, onJump: onJump).modifier(ReaderToolContinuation()) } label: { Label("我的记录", systemImage: "square.and.pencil").frame(minHeight: 44) }
+                NavigationLink { ReaderPreferencesPanel(session: session).modifier(ReaderToolContinuation()) } label: { Label("文字与纸面", systemImage: "textformat.size").frame(minHeight: 44) }
+                NavigationLink { ReaderIntroductionPanel(session: session, tools: tools, cloud: cloud).modifier(ReaderToolContinuation()) } label: { Label("导读与摘要", systemImage: "text.book.closed").frame(minHeight: 44) }
                 Button(action: onCompanion) { Label("阅读陪读", systemImage: "bubble.left.and.bubble.right").frame(minHeight: 44) }
-                NavigationLink { ReaderWebToolsPanel(session: session, cloud: cloud).onAppear { speech.pause() } } label: {
+                NavigationLink { ReaderWebToolsPanel(session: session, cloud: cloud).onAppear { speech.pause() }.modifier(ReaderToolContinuation()) } label: {
                     VStack(alignment: .leading, spacing: 5) {
                         Label("更多书房工具（网页版）", systemImage: "globe")
                         Text("云端听读、讲稿、氛围和摘录等已有工具").font(.caption).foregroundStyle(.secondary)
@@ -35,7 +57,7 @@ struct ReaderMorePanel: View {
                 } label: { Label("导出笔记与草稿", systemImage: "doc.text").frame(minHeight: 44) }
             }
             Section {
-                Text("轻点书页底边找回工具。滑动继续阅读时，工具会轻轻收起；长按正文仍使用系统选字。").font(.footnote).foregroundStyle(.secondary)
+                Text("轻点书页找回工具，再轻点可收起。长按正文仍使用系统选字；翻页方式可在阅读设置中更改。").font(.footnote).foregroundStyle(.secondary)
             }
         }.navigationTitle("阅读工具")
             .fileExporter(isPresented: $exporting, document: export, contentType: .json, defaultFilename: "Leafhour-records") { result in
@@ -209,7 +231,6 @@ private struct ReaderExpandedTextPanel: View {
     let source: String
     let text: String
     var serif = false
-    @Environment(\.readerContinueReading) private var continueReading
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 18) {
@@ -221,13 +242,7 @@ private struct ReaderExpandedTextPanel: View {
             .frame(maxWidth: 680, alignment: .leading)
             .frame(maxWidth: .infinity)
         }.navigationTitle(title).navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                if let continueReading {
-                    ToolbarItem(placement: .confirmationAction) {
-                        Button("继续读", action: continueReading).accessibilityIdentifier("reader-expanded-continue")
-                    }
-                }
-            }
+            .modifier(ReaderToolContinuation(identifier: "reader-expanded-continue"))
     }
 }
 

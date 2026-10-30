@@ -10,10 +10,16 @@ struct ShelfBookCover: View {
     var body: some View {
         VStack(alignment: .leading, spacing: compact ? 5 : 12) {
             Capsule().fill(Color.leafInk.opacity(0.55)).frame(width: compact ? 15 : 28, height: 2)
-            Text(title)
-                .font(.system(size: compact ? 10 : 19, weight: .semibold, design: .serif))
-                .lineLimit(compact ? 4 : 5)
-                .minimumScaleFactor(0.8)
+            if compact {
+                Image(systemName: "book.closed")
+                    .font(.system(size: 22, weight: .light))
+                    .frame(maxWidth: .infinity, minHeight: 44)
+            } else {
+                Text(title)
+                    .font(.system(size: 19, weight: .semibold, design: .serif))
+                    .lineLimit(5)
+                    .minimumScaleFactor(0.8)
+            }
             Spacer(minLength: 2)
             if !compact && !author.isEmpty {
                 Text(author).font(.caption).lineLimit(2)
@@ -99,7 +105,7 @@ struct LibraryShelfRow: View {
         if item.isDownloaded {
             Button(action: open) { bookLabel.frame(minHeight: 44) }
                 .buttonStyle(.plain)
-                .accessibilityLabel("阅读，\(item.title)，" + (item.isAdditionalVersion ? "其他离线版本，个人记录保留" : "已下载可离线阅读"))
+                .accessibilityLabel("阅读，\(item.title)，" + (item.isAdditionalVersion ? "其他离线版本，个人记录保留" : (item.hasCloudUpdate ? "已下载，云端有更新" : "已下载可离线阅读")))
                 .accessibilityValue(item.author)
         } else {
             bookLabel
@@ -192,7 +198,7 @@ struct LibraryShelfTile: View {
             if item.isDownloaded {
                 Button(action: open) { cover }
                     .buttonStyle(.plain)
-                    .accessibilityLabel("阅读，\(item.title)，" + (item.isAdditionalVersion ? "其他离线版本，个人记录保留" : "已下载可离线阅读"))
+                    .accessibilityLabel("阅读，\(item.title)，" + (item.isAdditionalVersion ? "其他离线版本，个人记录保留" : (item.hasCloudUpdate ? "已下载，云端有更新" : "已下载可离线阅读")))
             } else {
                 cover
             }
@@ -208,7 +214,7 @@ struct LibraryShelfTile: View {
                     Button(action: open) {
                         Text("阅读").font(.subheadline)
                             .frame(minWidth: 44, minHeight: 44).contentShape(Rectangle())
-                    }.accessibilityLabel("阅读，\(item.title)")
+                    }.accessibilityLabel("阅读，\(item.title)" + (!item.isAdditionalVersion && item.hasCloudUpdate ? "，已下载，云端有更新" : ""))
                     Spacer(minLength: 2)
                     Button(action: details) { Image(systemName: "info.circle").frame(width: 44, height: 44).contentShape(Rectangle()) }
                         .accessibilityLabel("\(item.title)，书籍详情")

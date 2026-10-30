@@ -38,13 +38,60 @@ public final class ReaderSession: Identifiable {
     @ObservationIgnored private var noteSubmissionWasPersisted = false
     @ObservationIgnored private var visibleAnchor: ReadingAnchor?
     public init(book: LocalBook, state: ReaderState, original: URL, directory: URL, library: any ReaderStateStore) {
-        self.id = book.id; self.book = book; self.state = state; self.original = original; self.directory = directory; self.library = library
-        persistedState = state
-        chapterIndex = book.chapters.firstIndex { $0.id == state.anchor?.chapterID } ?? 0
+        var restored = state
+        let initialChapter: Int
+        if let anchor = state.anchor, let index = book.chapters.firstIndex(where: { $0.id == anchor.chapterID }) {
+            initialChapter = index
+            let chapter = book.chapters[index]
+            if let passage = chapter.passages.first(where: { $0.id == anchor.passageID }) {
+                restored.anchor?.characterOffset = min(max(0, anchor.characterOffset), passage.text.unicodeScalars.count)
+                if anchor.pageY?.isFinite == false { restored.anchor?.pageY = nil }
+                if let y = anchor.resourceY, !y.isFinite || !(0...1).contains(y) || passage.resourcePath == nil || book.kind == .pdf || anchor.pageY != nil || anchor.characterOffset != 0 {
+                    restored.anchor?.resourceY = nil
+                }
+            } else {
+                // An old passage must not send an otherwise known chapter back
+                // to the new-book entry point, including a saved cover chapter.
+                restored.anchor = chapter.passages.first.map { ReadingAnchor(chapterID: chapter.id, passageID: $0.id) }
+            }
+        } else {
+            let start = Self.readingStart(for: book, directory: directory)
+            initialChapter = book.chapters.firstIndex { $0.id == start?.chapterID } ?? 0
+            restored.anchor = start
+        }
+        self.id = book.id; self.book = book; self.state = restored; self.original = original; self.directory = directory; self.library = library
+        persistedState = restored
+        chapterIndex = initialChapter
     }
     public var chapter: BookChapter { book.chapters[chapterIndex] }
     /// Scroll checkpoints are immediate, while observed state and disk writes remain coalesced.
     public var currentAnchor: ReadingAnchor? { visibleAnchor ?? state.anchor }
+    /// A read-only destination for an explicit “start reading” action. A valid
+    /// saved cover position is never changed merely by asking for this hint.
+    /// Call once on presentation or on demand, not from a repeatedly evaluated body.
+    public func declaredReadingStart() -> ReadingAnchor? { Self.readingStart(for: book, directory: directory) }
+    private static func readingStart(for book: LocalBook, directory: URL) -> ReadingAnchor? {
+        guard book.kind == .epub || book.cloud != nil else { return nil }
+        func validated(_ candidate: ReadingAnchor?) -> ReadingAnchor? {
+            guard var candidate, let chapter = book.chapters.first(where: { $0.id == candidate.chapterID }),
+                  let passage = chapter.passages.first(where: { $0.id == candidate.passageID }) else { return nil }
+            candidate.characterOffset = min(max(0, candidate.characterOffset), passage.text.unicodeScalars.count)
+            if candidate.pageY?.isFinite == false { candidate.pageY = nil }
+            if let y = candidate.resourceY, !y.isFinite || !(0...1).contains(y) || passage.resourcePath == nil || book.kind == .pdf || candidate.pageY != nil || candidate.characterOffset != 0 {
+                candidate.resourceY = nil
+            }
+            return candidate
+        }
+        if let start = validated(book.readingStartAnchor) { return start }
+        // Cloud caches prepare their hint on OfflineLibrary's actor. Never
+        // decode cloud-content.json from this main-actor session or SwiftUI body.
+        guard book.kind == .epub else { return nil }
+        if let start = validated(BookParser.legacyReadingStart(for: book, directory: directory)) { return start }
+        if let chapter = book.chapters.first(where: { $0.id == book.readingStartChapterID }), let passage = chapter.passages.first {
+            return ReadingAnchor(chapterID: chapter.id, passageID: passage.id)
+        }
+        return nil
+    }
     /// A tool's selected excerpt is temporary; returning to reading must follow the visible passage.
     public func clearTransientSelection() { selection = nil }
     public func recordVisible(_ anchor: ReadingAnchor, navigationID: UUID) {

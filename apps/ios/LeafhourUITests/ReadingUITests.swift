@@ -1,28 +1,68 @@
 import XCTest
 
 /// Runs against the task-owned unsigned local app and public-domain acceptance documents.
-/// Seed Alice-complete.epub/pdf into this app's Documents through the guarded setup first.
+/// Prepare each case through the guarded legacy HostSeed using the complete public-domain originals.
 final class ReadingUITests: XCTestCase {
-    let app = XCUIApplication()
-    override func setUpWithError() throws { continueAfterFailure = false; app.terminate(); app.launch() }
+    let app = XCUIApplication(bundleIdentifier: "org.leafhour.get317.testing")
+    override func setUpWithError() throws {
+        continueAfterFailure = false
+        // The host prepares each case while this task app is stopped. Never
+        // reset here: terminate/launch inside a case must retain real records.
+        app.launchArguments = ["--get317-acceptance", "-leafhour.library.layout", "list",
+                               "-leafhour.library.filter", "all", "-leafhour.library.sort", "added"]
+        app.terminate(); app.launch()
+    }
     func capture(_ name: String) {
         let attachment = XCTAttachment(screenshot: app.screenshot()); attachment.name = name; attachment.lifetime = .keepAlways; add(attachment)
+    }
+    private let primaryReaderIDs = ["reader-contents", "reader-read", "reader-listen", "reader-appearance", "reader-typography"]
+    private func readerControlIsAwake(_ control: XCUIElement) -> Bool {
+        control.exists && control.isEnabled && control.isHittable
+    }
+    private func waitForReaderControlAwake(_ control: XCUIElement, timeout: TimeInterval) -> Bool {
+        if readerControlIsAwake(control) { return true }
+        let ready = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in
+            control.exists && control.isEnabled && control.isHittable
+        }, object: nil)
+        return XCTWaiter.wait(for: [ready], timeout: timeout) == .completed
+    }
+    private func requireReaderControlAwake(_ control: XCUIElement, timeout: TimeInterval = 10, file: StaticString = #filePath, line: UInt = #line) {
+        XCTAssertTrue(waitForReaderControlAwake(control, timeout: timeout), "Reader control must be visible, enabled and hittable: \(control)\n\(app.debugDescription)", file: file, line: line)
+    }
+    private var readerChromeIsAsleep: Bool {
+        let grip = app.buttons["显示阅读进度、目录、搜索与记录"]
+        guard grip.exists && grip.isEnabled && grip.isHittable else { return false }
+        let queries = primaryReaderIDs.map { app.buttons.matching(identifier: $0) } + [
+            app.buttons.matching(identifier: "reader-book-title"),
+            app.buttons.matching(identifier: "reader-more"),
+            app.buttons.matching(NSPredicate(format: "label == %@", "返回书房"))
+        ]
+        // Keep every matching node, including retained/unused layout children.
+        // Hierarchy existence is not visibility or VoiceOver focus membership.
+        return queries.allSatisfy { query in
+            query.allElementsBoundByIndex.allSatisfy { control in
+                !control.exists || (!control.isEnabled && !control.isHittable)
+            }
+        }
+    }
+    private func waitForReaderChromeAsleep(timeout: TimeInterval) -> Bool {
+        if readerChromeIsAsleep { return true }
+        let quiet = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in self.readerChromeIsAsleep }, object: nil)
+        return XCTWaiter.wait(for: [quiet], timeout: timeout) == .completed
     }
     /// GET-274 uses a separate task bundle seeded through OfflineLibrary with public-domain text.
     func testCompanionExplicitSummonAndQuietDismissal() {
         let reader = app.textViews["leafhour-epub-reader"]
         XCTAssertTrue(reader.waitForExistence(timeout: 10))
-        XCTAssertTrue(app.buttons["陪我读"].waitForNonExistence(timeout: 8), "Entry tools become quiet after a short idle")
+        XCTAssertTrue(waitForReaderChromeAsleep(timeout: 8), "Entry tools become quiet after a short idle")
         reader.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).tap()
-        XCTAssertFalse(app.buttons["陪我读"].exists)
-        app.buttons["显示书名、返回与阅读设置"].tap()
-        let summon = app.buttons["陪我读"]
-        XCTAssertTrue(summon.waitForExistence(timeout: 3)); summon.tap()
+        XCTAssertTrue(waitForReaderControlAwake(app.buttons["reader-more"], timeout: 3), "A middle tap reveals the reading tools")
+        openMoreTool("阅读陪读")
         assertCompanionAndDismiss("explicit")
         app.terminate(); app.launch()
         XCTAssertTrue(reader.waitForExistence(timeout: 10))
-        XCTAssertTrue(app.buttons["陪我读"].exists, "Entry tools remain discoverable after a cold launch")
-        XCTAssertTrue(app.buttons["陪我读"].waitForNonExistence(timeout: 8))
+        XCTAssertTrue(readerControlIsAwake(app.buttons["reader-more"]), "The More entry keeps companion tools discoverable after a cold launch")
+        XCTAssertTrue(waitForReaderChromeAsleep(timeout: 8))
     }
     func testCompanionSystemSelectionAndQuietDismissal() {
         let reader = app.textViews["leafhour-epub-reader"]
@@ -45,27 +85,52 @@ final class ReadingUITests: XCTestCase {
         app.buttons["继续读"].tap()
         capture("GET274-" + origin + "-after-close-tap")
         XCTAssertTrue(title.waitForNonExistence(timeout: 1), app.debugDescription)
-        XCTAssertFalse(app.buttons["陪我读"].exists)
-        XCTAssertFalse(app.buttons["目录"].exists)
-        XCTAssertFalse(app.buttons["阅读设置"].exists)
+        XCTAssertTrue(readerChromeIsAsleep, "Dismissed companion leaves the real grip available and all retained chrome controls noninteractive")
         capture("GET274-" + origin + "-quiet")
     }
     func progress() {
-        if app.buttons["目录"].exists { return }
-        let wake = app.buttons["显示阅读进度、目录、搜索与记录"]
-        XCTAssertTrue(wake.waitForExistence(timeout: 10)); wake.tap()
+        let contents = app.buttons["reader-contents"]
+        if readerControlIsAwake(contents) { return }
+        let text = app.textViews["leafhour-epub-reader"]
+        let surface = text.exists ? text : app.otherElements["leafhour-pdf-reader"]
+        XCTAssertTrue(surface.waitForExistence(timeout: 10), app.debugDescription)
+        let grip = app.buttons["显示阅读进度、目录、搜索与记录"]
+        if readerControlIsAwake(grip) { grip.tap() }
+        else { surface.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).tap() }
+        XCTAssertTrue(waitForReaderControlAwake(contents, timeout: 3), app.debugDescription)
+    }
+    private func revealInPanel(_ control: XCUIElement, scrollingUp: Bool = true) {
+        let forms = (app.collectionViews.allElementsBoundByIndex + app.tables.allElementsBoundByIndex)
+            .filter { $0.exists && !$0.frame.intersection(app.frame).isEmpty }
+        guard let form = forms.last else { XCTFail("No foreground reader panel. \(app.debugDescription)"); return }
+        for _ in 0..<8 where !control.isHittable {
+            if scrollingUp { form.swipeUp() } else { form.swipeDown() }
+        }
+        XCTAssertTrue(control.exists && control.isHittable, app.debugDescription)
+    }
+    private func openMoreTool(_ title: String) {
+        progress()
+        let more = app.buttons["reader-more"]
+        XCTAssertTrue(waitForReaderControlAwake(more, timeout: 3), app.debugDescription); more.tap()
+        XCTAssertTrue(app.navigationBars["阅读工具"].waitForExistence(timeout: 3), app.debugDescription)
+        let tool = app.buttons[title].firstMatch
+        revealInPanel(tool); tool.tap()
     }
     func library() {
-        if app.buttons["返回书房"].exists { app.buttons["返回书房"].tap(); return }
-        let wake = app.buttons["显示书名、返回与阅读设置"]
-        if wake.waitForExistence(timeout: 3) { wake.tap(); app.buttons["返回书房"].tap() }
+        if readerControlIsAwake(app.buttons["返回书房"]) { app.buttons["返回书房"].tap(); return }
+        let text = app.textViews["leafhour-epub-reader"]
+        let surface = text.exists ? text : app.otherElements["leafhour-pdf-reader"]
+        if surface.waitForExistence(timeout: 3) { progress(); requireReaderControlAwake(app.buttons["返回书房"], timeout: 3); app.buttons["返回书房"].tap() }
     }
     func testCompleteEPUBLastChapterAndColdResume() {
         library()
-        let book = app.buttons["阅读，Alice’s Adventures in Wonderland"]
-        XCTAssertTrue(book.waitForExistence(timeout: 10)); book.tap()
+        let books = app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", "阅读，Alice’s Adventures in Wonderland，"))
+        let book = books.firstMatch
+        XCTAssertTrue(book.waitForExistence(timeout: 10))
+        XCTAssertEqual(books.count, 1, "The complete Alice title must identify one readable shelf row")
+        book.tap()
         XCTAssertTrue(app.textViews["leafhour-epub-reader"].waitForExistence(timeout: 10))
-        progress(); app.buttons["目录"].tap()
+        progress(); app.buttons["reader-contents"].tap()
         let last = app.buttons["CHAPTER XII."]
         for _ in 0..<8 where !last.isHittable {
             app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.86)).press(forDuration: 0.15, thenDragTo: app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.54)))
@@ -77,14 +142,19 @@ final class ReadingUITests: XCTestCase {
         app.terminate(); app.launch()
         XCTAssertTrue(text.waitForExistence(timeout: 10))
         XCTAssertTrue((text.value as? String)?.contains("CHAPTER XII.") == true)
-        XCTAssertTrue(app.buttons["我的记录"].exists, "Reading tools are discoverable on entry")
+        XCTAssertTrue(readerControlIsAwake(app.buttons["reader-more"]), "Reading tools are discoverable on entry")
         capture("EPUB-cold-resume-tools")
+        openMoreTool("我的记录")
+        XCTAssertTrue(app.navigationBars["我的记录"].waitForExistence(timeout: 3), app.debugDescription)
     }
     func testNativeSelectionDraftAndRelaunch() {
         library()
-        let book = app.buttons["阅读，Alice’s Adventures in Wonderland"]
-        XCTAssertTrue(book.waitForExistence(timeout: 10)); book.tap()
-        progress(); app.buttons["目录"].tap(); app.buttons["CHAPTER I."].tap()
+        let books = app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", "阅读，Alice’s Adventures in Wonderland，"))
+        let book = books.firstMatch
+        XCTAssertTrue(book.waitForExistence(timeout: 10))
+        XCTAssertEqual(books.count, 1, "The complete Alice title must identify one readable shelf row")
+        book.tap()
+        progress(); app.buttons["reader-contents"].tap(); app.buttons["CHAPTER I."].tap()
         let reader = app.textViews["leafhour-epub-reader"]
         XCTAssertTrue(reader.waitForExistence(timeout: 10))
         reader.coordinate(withNormalizedOffset: CGVector(dx: 0.45, dy: 0.48)).press(forDuration: 1.2)
@@ -97,7 +167,7 @@ final class ReadingUITests: XCTestCase {
         XCTAssertTrue(expected.contains(draft))
         app.buttons["保留草稿"].tap()
         app.terminate(); app.launch()
-        progress(); app.buttons["我的记录"].tap()
+        openMoreTool("我的记录")
         let recovered = app.buttons.matching(NSPredicate(format: "label CONTAINS %@", draft)).firstMatch
         XCTAssertTrue(recovered.waitForExistence(timeout: 8), app.debugDescription); recovered.tap()
         XCTAssertTrue(editor.waitForExistence(timeout: 5)); XCTAssertEqual(editor.value as? String, expected)
@@ -107,51 +177,90 @@ final class ReadingUITests: XCTestCase {
         library()
         let importButton = app.buttons["导入书籍"]
         XCTAssertTrue(importButton.waitForExistence(timeout: 10)); importButton.tap()
-        if app.buttons["Browse"].exists { app.buttons["Browse"].tap() }
-        let file = app.cells["Alice-complete, pdf"]
-        XCTAssertTrue(file.waitForExistence(timeout: 10), app.debugDescription)
+        let file = preparedPDFInSystemFiles()
+        XCTAssertTrue(file.exists && file.isHittable, app.debugDescription)
         file.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.25)).tap()
         XCTAssertTrue(app.otherElements["leafhour-pdf-reader"].waitForExistence(timeout: 15), app.debugDescription)
-        progress()
-        if !app.sliders["页码"].exists { app.buttons["调整阅读进度"].tap() }
+        progress(); app.buttons["reader-contents"].tap()
         let slider = app.sliders["页码"]
-        XCTAssertTrue(slider.exists); slider.adjust(toNormalizedSliderPosition: 1)
+        XCTAssertTrue(slider.waitForExistence(timeout: 3)); revealInPanel(slider, scrollingUp: false)
+        slider.adjust(toNormalizedSliderPosition: 1)
         // XCUI normalized slider adjustment is approximate for a stepped 73-page range.
         // Use the actual enabled next-page control to reach the final boundary exactly.
-        if !app.buttons["下一页"].exists { progress() }
         let next = app.buttons["下一页"]
+        revealInPanel(next, scrollingUp: false)
         if next.isEnabled { next.tap() }
         XCTAssertTrue(app.staticTexts.matching(NSPredicate(format: "label CONTAINS %@", "73 / 73")).firstMatch.waitForExistence(timeout: 5), app.debugDescription)
         capture("PDF-page-73-of-73")
+        app.buttons["继续读"].tap()
+        XCTAssertTrue(app.navigationBars["目录"].waitForNonExistence(timeout: 5))
+        app.terminate(); app.launch()
+        XCTAssertTrue(app.otherElements["leafhour-pdf-reader"].waitForExistence(timeout: 15))
+        progress(); app.buttons["reader-contents"].tap()
+        XCTAssertTrue(app.staticTexts.matching(NSPredicate(format: "label CONTAINS %@", "73 / 73")).firstMatch.waitForExistence(timeout: 5), "The actual 73-page PDF must cold-resume at its saved last page")
+        revealInPanel(next, scrollingUp: false)
+        XCTAssertFalse(next.isEnabled, "The cold-restored real PDF is at its true last page")
+        capture("PDF-page-73-cold-resume")
+    }
+    private func preparedPDFInSystemFiles() -> XCUIElement {
+        // Files retains its last directory. The real previous run started in
+        // GET317AcceptanceExports; Browse alone did not leave that folder.
+        // Stay in the prepared task directory and use native breadcrumbs only.
+        let files = app.collectionViews["File View"].firstMatch
+        XCTAssertTrue(files.waitForExistence(timeout: 15), app.debugDescription)
+        let candidates = files.cells.matching(NSPredicate(format: "(identifier BEGINSWITH %@ OR label BEGINSWITH %@) AND (identifier CONTAINS[c] %@ OR label CONTAINS[c] %@)", "Alice-complete", "Alice-complete", "pdf", "pdf"))
+        for _ in 0..<6 {
+            let visible = candidates.allElementsBoundByIndex.filter { $0.exists && $0.isHittable }
+            if let file = visible.first {
+                XCTAssertEqual(visible.count, 1, "Select the unique prepared PDF, not the similarly named EPUB")
+                capture("PDF-real-system-source-before-selection")
+                return file
+            }
+            let sources = files.cells.matching(NSPredicate(format: "identifier == %@ OR identifier BEGINSWITH %@ OR label == %@ OR label BEGINSWITH %@", "GET317AcceptanceSources", "GET317AcceptanceSources,", "GET317AcceptanceSources", "GET317AcceptanceSources,")).allElementsBoundByIndex.first { $0.isEnabled && $0.isHittable }
+            if let sources { sources.tap(); continue }
+            let parent = app.navigationBars["FullDocumentManagerViewControllerNavigationBar"].buttons["BackButton"]
+            if parent.exists && parent.isEnabled && parent.isHittable { parent.tap(); continue }
+            if let browse = ["浏览", "Browse"].map({ app.buttons[$0] }).first(where: { $0.exists && $0.isHittable && !$0.isSelected }) { browse.tap(); continue }
+            XCTFail("The actual Files picker has no visible route to the prepared task PDF. " + app.debugDescription)
+            return candidates.firstMatch
+        }
+        XCTFail("Native Files navigation exceeded its bounded route to GET317AcceptanceSources/Alice-complete.pdf. " + app.debugDescription)
+        return candidates.firstMatch
     }
     /// GET-272 uses a separate task app seeded through the normal OfflineLibrary import service.
     func testQuietChromeEdgesAndTenSecondIdle() {
         let reader = app.textViews["leafhour-epub-reader"]
         XCTAssertTrue(reader.waitForExistence(timeout: 15), app.debugDescription)
+        // Entry tools are intentionally discoverable. Wait for the real idle
+        // transition before exercising the asleep page's edge hit region.
+        XCTAssertTrue(waitForReaderChromeAsleep(timeout: 8))
         let original = reader.value as? String
-        reader.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.01)).tap()
-        XCTAssertTrue(app.buttons["返回书房"].waitForExistence(timeout: 3), app.debugDescription)
+        reader.coordinate(withNormalizedOffset: .zero).withOffset(CGVector(dx: reader.frame.width / 2, dy: min(22, reader.frame.height / 2))).tap()
+        XCTAssertTrue(waitForReaderControlAwake(app.buttons["返回书房"], timeout: 3), app.debugDescription)
         capture("GET272-native-top-awake")
         Thread.sleep(forTimeInterval: 10)
-        XCTAssertFalse(app.buttons["返回书房"].exists)
-        XCTAssertFalse(app.buttons["目录"].exists)
-        XCTAssertFalse(app.buttons["阅读设置"].exists)
+        XCTAssertTrue(readerChromeIsAsleep, "Ten-second idle leaves the real grip available and all retained chrome controls noninteractive")
         XCTAssertEqual(reader.value as? String, original)
         capture("GET272-native-idle-ten-seconds")
-        reader.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.99)).tap()
-        XCTAssertTrue(app.buttons["目录"].waitForExistence(timeout: 3), app.debugDescription)
+        reader.coordinate(withNormalizedOffset: .zero).withOffset(CGVector(dx: reader.frame.width / 2, dy: reader.frame.height - min(22, reader.frame.height / 2))).tap()
+        XCTAssertTrue(waitForReaderControlAwake(app.buttons["目录"], timeout: 3), app.debugDescription)
         capture("GET272-native-bottom-awake")
         reader.swipeUp()
-        XCTAssertFalse(app.buttons["目录"].waitForExistence(timeout: 0.3))
+        XCTAssertTrue(waitForReaderChromeAsleep(timeout: 0.3))
         capture("GET272-native-scroll-asleep")
+        let scrolledOriginal = reader.value as? String
         reader.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).tap()
-        XCTAssertFalse(app.buttons["目录"].exists, "A scrolled middle tap must not wake bottom controls")
-        reader.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.01)).tap()
-        XCTAssertTrue(app.buttons["返回书房"].waitForExistence(timeout: 3), app.debugDescription)
+        XCTAssertTrue(waitForReaderControlAwake(app.buttons["reader-contents"], timeout: 3), "A scrolled middle tap reveals the compact reading controls")
+        XCTAssertEqual(reader.value as? String, scrolledOriginal)
+        reader.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).tap()
+        XCTAssertTrue(waitForReaderChromeAsleep(timeout: 3), "A second middle tap hides the reading controls")
+        XCTAssertEqual(reader.value as? String, scrolledOriginal)
+        reader.coordinate(withNormalizedOffset: .zero).withOffset(CGVector(dx: reader.frame.width / 2, dy: min(22, reader.frame.height / 2))).tap()
+        XCTAssertTrue(waitForReaderControlAwake(app.buttons["返回书房"], timeout: 3), app.debugDescription)
         Thread.sleep(forTimeInterval: 4)
         app.terminate(); app.launch()
         XCTAssertTrue(reader.waitForExistence(timeout: 10))
-        XCTAssertTrue(app.buttons["目录"].exists)
+        XCTAssertTrue(readerControlIsAwake(app.buttons["目录"]))
         capture("GET312-native-cold-resume-tools")
     }
 

@@ -59,6 +59,8 @@ targets:
     sources: [LeafhourAppTests]
     dependencies:
       - target: Leafhour
+      - package: LeafhourCore
+        product: ZIPFoundation
     settings:
       base:
         GENERATE_INFOPLIST_FILE: YES
