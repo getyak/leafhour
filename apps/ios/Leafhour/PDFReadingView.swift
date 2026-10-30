@@ -149,7 +149,8 @@ struct PDFReadingView: UIViewRepresentable {
                     }
                     self.restoring = false
                     self.selectionChanged()
-                    if modeChanged && !sourceChanged { self.capture(force: true) }
+                    // A layout change reveals the saved source; only actual
+                    // reading gestures should advance its canonical bookmark.
                     self.reportPagePosition()
                 }
             }

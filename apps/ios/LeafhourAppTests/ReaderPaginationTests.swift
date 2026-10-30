@@ -657,6 +657,27 @@ final class ReaderPaginationTests: XCTestCase {
         XCTFail("The real PDF view did not settle at its requested source/page/mode; restoring=\(coordinator.restoring), page=\(String(describing: view.currentPage.flatMap { view.document?.index(for: $0) }))")
         throw NSError(domain: "ReaderPaginationPDFFixture", code: 1)
     }
+    private func assertPDFWitnessVisible(_ marker: String, in view: PDFView, page index: Int, mode: ReaderNavigationMode, name: String) throws {
+        let document = try XCTUnwrap(view.document), page = try XCTUnwrap(document.page(at: index))
+        XCTAssertTrue(view.visiblePages.contains { $0 === page }, "The source page must actually intersect the PDFKit viewport")
+        let text = try XCTUnwrap(page.string) as NSString, range = text.range(of: marker)
+        XCTAssertNotEqual(range.location, NSNotFound)
+        let selection = try XCTUnwrap(range.location == NSNotFound ? nil : page.selection(for: range))
+        let glyphs = view.convert(selection.bounds(for: page), from: page)
+        let body = mode == .paged ? view.bounds : view.bounds.inset(by: UIEdgeInsets(top: 64, left: 0, bottom: 124, right: 0))
+        XCTAssertGreaterThan(glyphs.height, 0)
+        let fits = body.insetBy(dx: -1, dy: -1).contains(glyphs)
+        XCTAssertTrue(fits, "Real source glyphs must lie in the readable viewport, not only exist in document text")
+        let screenshot = image(of: view)
+        let attachment = XCTAttachment(image: screenshot); attachment.name = name; attachment.lifetime = .keepAlways; add(attachment)
+        guard fits else { return } // Visibility already failed; avoid an invalid bitmap crop.
+        let pixels = glyphs.offsetBy(dx: -view.bounds.minX, dy: -view.bounds.minY).integral
+            .intersection(CGRect(origin: .zero, size: screenshot.size))
+        let ink = try inkPixels(in: pixels, image: screenshot)
+        XCTAssertGreaterThan(ink, 20, "The original PDF witness must actually draw")
+        XCTAssertLessThan(Double(ink), Double(pixels.width * pixels.height * 0.9), "An all-black/unsettled fixture cannot stand in for source text on its page")
+    }
+
     func testPDFScheduledConfigurationWaitsAndCoalescesToTheLatestReaderAndAnchor() async throws {
         let first = try await importedSession(pdf: true, source: "Old PDF witness"), latest = try await importedSession(pdf: true, source: "Latest PDF witness")
         var reported: [(String, ReaderPagePosition)] = []
@@ -715,6 +736,55 @@ final class ReaderPaginationTests: XCTestCase {
         XCTAssertEqual(session.currentAnchor, target)
         let receipt = await session.flush(); XCTAssertTrue(receipt.succeeded)
         let saved = try await fixture.library.state(session.book.id); XCTAssertEqual(saved.anchor, target)
+    }
+
+    func testPDFNonzeroScrollSourceSurvivesQueuedModeRoundTripAndColdReadback() async throws {
+        let fixture = try await importedSession(pdf: true, source: "Nonzero PDF witness"), session = fixture.session
+        let sourceBytes = try Data(contentsOf: session.original)
+        session.state.preferences.navigationMode = .scroll
+        session.go(to: 1, anchor: ReadingAnchor(chapterID: "page-2", passageID: "page-2", pageY: 400))
+        let (view, coordinator) = try pdfHost(session)
+        coordinator.scheduleUpdate(view)
+        try await settlePDF(view, coordinator: coordinator, source: session.original, page: 1, mode: .scroll)
+        let readingPoint = CGPoint(x: view.bounds.midX, y: 65), page = try XCTUnwrap(view.page(for: readingPoint, nearest: true))
+        XCTAssertEqual(view.document?.index(for: page), 1)
+        let actualY = Double(view.convert(readingPoint, to: page).y)
+        XCTAssertEqual(actualY, 400, accuracy: max(3, Double(2 / view.scaleFactor)))
+        coordinator.userScrolled = true; coordinator.capture()
+        let saved = try XCTUnwrap(session.currentAnchor), savedY = try XCTUnwrap(saved.pageY)
+        XCTAssertEqual(savedY, actualY, accuracy: 1); XCTAssertGreaterThan(savedY, 150); XCTAssertLessThan(savedY, 500)
+        try assertPDFWitnessVisible("Nonzero PDF witness PAGE 2", in: view, page: 1, mode: .scroll, name: "Actual nonzero PDF source before mode change")
+        session.state.preferences.navigationMode = .paged; coordinator.scheduleUpdate(view)
+        session.state.preferences.navigationMode = .scroll; coordinator.scheduleUpdate(view)
+        try await settlePDF(view, coordinator: coordinator, source: session.original, page: 1, mode: .scroll)
+        XCTAssertEqual(session.currentAnchor, saved, "A same-turn mode round trip must clear its barrier without inventing progress")
+        session.state.preferences.navigationMode = .paged; coordinator.scheduleUpdate(view)
+        view.frame = CGRect(x: 0, y: 64, width: 390, height: 512); view.layoutIfNeeded()
+        try await settlePDF(view, coordinator: coordinator, source: session.original, page: 1, mode: .paged)
+        XCTAssertEqual(session.currentAnchor, saved, "Fitting the whole PDF page must not replace the canonical nonzero source point with page top")
+        let pagedPage = try XCTUnwrap(view.currentPage)
+        XCTAssertTrue(view.bounds.insetBy(dx: -1, dy: -1).contains(view.convert(CGPoint(x: pagedPage.bounds(for: .mediaBox).midX, y: savedY), from: pagedPage)))
+        try assertPDFWitnessVisible("Nonzero PDF witness PAGE 2", in: view, page: 1, mode: .paged, name: "Actual nonzero PDF source in paged mode")
+        session.state.preferences.navigationMode = .scroll; coordinator.scheduleUpdate(view)
+        view.frame = CGRect(x: 0, y: 0, width: 390, height: 700); view.layoutIfNeeded()
+        try await settlePDF(view, coordinator: coordinator, source: session.original, page: 1, mode: .scroll)
+        let resumedPage = try XCTUnwrap(view.page(for: readingPoint, nearest: true))
+        XCTAssertEqual(view.document?.index(for: resumedPage), 1)
+        XCTAssertEqual(Double(view.convert(readingPoint, to: resumedPage).y), savedY, accuracy: max(3, Double(2 / view.scaleFactor)))
+        XCTAssertEqual(session.currentAnchor, saved)
+        let receipt = await session.flush(); XCTAssertTrue(receipt.succeeded); XCTAssertNil(session.saveError)
+        let state = try await fixture.library.state(session.book.id); XCTAssertEqual(state.anchor, saved)
+        let cold = ReaderSession(book: try await fixture.library.book(session.book.id), state: state, original: try await fixture.library.originalURL(session.book.id), directory: try await fixture.library.bookDirectory(session.book.id), library: fixture.library)
+        let (coldView, coldCoordinator) = try pdfHost(cold); coldCoordinator.scheduleUpdate(coldView)
+        try await settlePDF(coldView, coordinator: coldCoordinator, source: cold.original, page: 1, mode: .scroll)
+        let coldPoint = CGPoint(x: coldView.bounds.midX, y: 65), coldPage = try XCTUnwrap(coldView.page(for: coldPoint, nearest: true))
+        XCTAssertEqual(coldView.document?.index(for: coldPage), 1)
+        XCTAssertEqual(Double(coldView.convert(coldPoint, to: coldPage).y), savedY, accuracy: max(3, Double(2 / coldView.scaleFactor)))
+        XCTAssertEqual(cold.currentAnchor, saved)
+        try assertPDFWitnessVisible("Nonzero PDF witness PAGE 2", in: coldView, page: 1, mode: .scroll, name: "Actual nonzero PDF source after cold readback")
+        XCTAssertEqual(try Data(contentsOf: cold.original), sourceBytes)
+        XCTAssertEqual(cold.book.chapters, session.book.chapters)
+        _ = await cold.flush()
     }
 
     func testPDFCoalescedOldDismissalKeepsANewerRealNativeSelectionAndFreshDismissalClearsIt() async throws {
