@@ -170,7 +170,7 @@
       },
       {
         "file": "app/credit-client.mjs",
-        "sha256": "7f3ba2f0bfc5bcc0844147f5d4779fc89a7754ec39107ccf801726890adca6ab"
+        "sha256": "134e7c8fb1018e2bb66203d7122610877dd4adbc2ba82bff2e0e80847cadd6b4"
       },
       {
         "file": "app/credit-labels.mjs",
@@ -1405,7 +1405,7 @@
         "sha256": "531202f1814314b6c76bfef38b2ea66636425b1ca9b445db349e70ebb8bcd00e"
       }
     ],
-    "inputDigest": "d3fec1eff050a61047a72b3909ce916feae611d6a2b19b988e0fe3465e5b96dc"
+    "inputDigest": "66b0bba650c84c9f7251cd822dfcf3192be2b6c1f4e13e197182683aa94d3b05"
   },
   "locales": [
     "en",
@@ -174963,6 +174963,126 @@
       }
     },
     {
+      "id": "candidate:app/credit-client.mjs:17:141",
+      "file": "app/credit-client.mjs",
+      "line": 17,
+      "column": 141,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "不可修改人物资料。",
+      "sha256": "852d1aa3a83a8836e02236cb49cd93f89113fd24fdeae6ec3f0e7dd9c90d12d3",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/credit-client.mjs:17:153",
+      "file": "app/credit-client.mjs",
+      "line": 17,
+      "column": 153,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "允许本次提问创建、修改或删除人物资料。",
+      "sha256": "a8571d281cbea901fc73a3e4a6dc3d6deeccb245468f407664d44260ced3dae1",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/credit-client.mjs:17:187",
+      "file": "app/credit-client.mjs",
+      "line": 17,
+      "column": 187,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "不可修改人物資料。",
+      "sha256": "7001f504dc2ece1d271b6595166b862f3ae2d20ccba677b403c89542a807ec8b",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/credit-client.mjs:17:199",
+      "file": "app/credit-client.mjs",
+      "line": 17,
+      "column": 199,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "允許本次提問建立、修改或刪除人物資料。",
+      "sha256": "5c4da6e06483d942e9df9d87d771bdfb88e13a8ccc550595f636ddb9eab389fe",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/credit-client.mjs:17:226",
+      "file": "app/credit-client.mjs",
+      "line": 17,
+      "column": 226,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "人物資料は変更できません。",
+      "sha256": "0cb173b67fcc096d2295cbae97bc57431095242cd8d4d748366253c81eb36299",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/credit-client.mjs:17:242",
+      "file": "app/credit-client.mjs",
+      "line": 17,
+      "column": 242,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "この質問で人物資料の作成・変更・削除を許可する。",
+      "sha256": "46926dc1280da1f5c37d49552e129761d7c1b27a988e17e4a1ac26777d6794b4",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
       "id": "candidate:app/document-source.mjs:2:28",
       "file": "app/document-source.mjs",
       "line": 2,
@@ -274870,7 +274990,7 @@
     {
       "kind": "computed-member",
       "file": "app/credit-client.mjs",
-      "line": 17,
+      "line": 18,
       "expression": "action",
       "fragments": [],
       "unresolved": true
@@ -274878,8 +274998,19 @@
     {
       "kind": "concatenation",
       "file": "app/credit-client.mjs",
-      "line": 17,
-      "expression": "'\\n\\n'+preferenceSummary[localeCode(locale)][preferenceWrites===true?1:0]",
+      "line": 18,
+      "expression": "'\\n\\n'+preferenceSummary[code][preferenceWrites===true?1:0]+'\\n'",
+      "fragments": [
+        "\n\n",
+        "\n"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "app/credit-client.mjs",
+      "line": 18,
+      "expression": "'\\n\\n'+preferenceSummary[code][preferenceWrites===true?1:0]",
       "fragments": [
         "\n\n"
       ],
@@ -274888,7 +275019,7 @@
     {
       "kind": "computed-member",
       "file": "app/credit-client.mjs",
-      "line": 17,
+      "line": 18,
       "expression": "preferenceWrites===true?1:0",
       "fragments": [],
       "unresolved": true
@@ -274896,15 +275027,31 @@
     {
       "kind": "computed-member",
       "file": "app/credit-client.mjs",
-      "line": 17,
-      "expression": "localeCode(locale)",
+      "line": 18,
+      "expression": "code",
       "fragments": [],
       "unresolved": true
     },
     {
       "kind": "computed-member",
       "file": "app/credit-client.mjs",
-      "line": 26,
+      "line": 18,
+      "expression": "peopleWrites===true?1:0",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "app/credit-client.mjs",
+      "line": 18,
+      "expression": "code",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "app/credit-client.mjs",
+      "line": 27,
       "expression": "1",
       "fragments": [],
       "unresolved": true
@@ -274912,7 +275059,7 @@
     {
       "kind": "computed-member",
       "file": "app/credit-client.mjs",
-      "line": 28,
+      "line": 29,
       "expression": "match[2]",
       "fragments": [],
       "unresolved": true
@@ -274920,7 +275067,7 @@
     {
       "kind": "computed-member",
       "file": "app/credit-client.mjs",
-      "line": 28,
+      "line": 29,
       "expression": "2",
       "fragments": [],
       "unresolved": true
@@ -274928,7 +275075,7 @@
     {
       "kind": "computed-member",
       "file": "app/credit-client.mjs",
-      "line": 44,
+      "line": 45,
       "expression": "action",
       "fragments": [],
       "unresolved": true
@@ -274936,7 +275083,7 @@
     {
       "kind": "computed-member",
       "file": "app/credit-client.mjs",
-      "line": 46,
+      "line": 48,
       "expression": "action",
       "fragments": [],
       "unresolved": true
@@ -274944,7 +275091,7 @@
     {
       "kind": "computed-member",
       "file": "app/credit-client.mjs",
-      "line": 47,
+      "line": 49,
       "expression": "action",
       "fragments": [],
       "unresolved": true
@@ -274952,7 +275099,7 @@
     {
       "kind": "computed-member",
       "file": "app/credit-client.mjs",
-      "line": 65,
+      "line": 67,
       "expression": "key",
       "fragments": [],
       "unresolved": true
@@ -274960,7 +275107,7 @@
     {
       "kind": "concatenation",
       "file": "app/credit-client.mjs",
-      "line": 68,
+      "line": 70,
       "expression": "'marginalia-credit-request:v1:owner='+encodeURIComponent(capturedOwner)+':'",
       "fragments": [
         "marginalia-credit-request:v1:owner=",
@@ -274971,7 +275118,7 @@
     {
       "kind": "concatenation",
       "file": "app/credit-client.mjs",
-      "line": 68,
+      "line": 70,
       "expression": "'marginalia-credit-request:v1:owner='+encodeURIComponent(capturedOwner)",
       "fragments": [
         "marginalia-credit-request:v1:owner="
@@ -274981,7 +275128,7 @@
     {
       "kind": "computed-member",
       "file": "app/credit-client.mjs",
-      "line": 76,
+      "line": 78,
       "expression": "key",
       "fragments": [],
       "unresolved": true
@@ -274989,7 +275136,7 @@
     {
       "kind": "concatenation",
       "file": "app/credit-client.mjs",
-      "line": 77,
+      "line": 79,
       "expression": "'marginalia-credit-consent:v1:'+encodeURIComponent(capturedOwner)+':'",
       "fragments": [
         "marginalia-credit-consent:v1:",
@@ -275000,7 +275147,7 @@
     {
       "kind": "concatenation",
       "file": "app/credit-client.mjs",
-      "line": 77,
+      "line": 79,
       "expression": "'marginalia-credit-consent:v1:'+encodeURIComponent(capturedOwner)",
       "fragments": [
         "marginalia-credit-consent:v1:"
@@ -275010,7 +275157,7 @@
     {
       "kind": "computed-member",
       "file": "app/credit-client.mjs",
-      "line": 87,
+      "line": 89,
       "expression": "key",
       "fragments": [],
       "unresolved": true
@@ -275018,7 +275165,7 @@
     {
       "kind": "computed-member",
       "file": "app/credit-client.mjs",
-      "line": 87,
+      "line": 89,
       "expression": "key",
       "fragments": [],
       "unresolved": true
@@ -275026,7 +275173,7 @@
     {
       "kind": "computed-member",
       "file": "app/credit-client.mjs",
-      "line": 88,
+      "line": 90,
       "expression": "key",
       "fragments": [],
       "unresolved": true
@@ -275034,7 +275181,7 @@
     {
       "kind": "computed-member",
       "file": "app/credit-client.mjs",
-      "line": 88,
+      "line": 90,
       "expression": "key",
       "fragments": [],
       "unresolved": true
@@ -308603,11 +308750,11 @@
     "duplicateKeys": 0,
     "reviewedItems": 11,
     "unreviewedItems": 2448,
-    "candidates": 6205,
-    "candidatesUnreviewed": 6204,
+    "candidates": 6211,
+    "candidatesUnreviewed": 6210,
     "candidatesProtected": 143,
     "itemsProtected": 9,
-    "dynamicConsumers": 3979,
+    "dynamicConsumers": 3982,
     "consumerReferences": 2089,
     "keysWithoutStaticConsumers": 1328,
     "reviewedLocaleValues": 44,
