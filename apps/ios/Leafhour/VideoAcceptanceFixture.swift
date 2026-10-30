@@ -228,7 +228,14 @@ private final class GET317Transport: URLProtocol, @unchecked Sendable {
         }
         if path == "/api/library" {
             if arguments.contains("--get317-cloud-error") { return reply(["error": "GET317 合成云书房读取失败"], status: 503) }
-            return reply(["user": ["id": owner], "books": shelf])
+            var catalog = shelf
+            if arguments.contains("--get328-cloud-update"),
+               let index = catalog.firstIndex(where: { $0["bookId"] as? String == "get317-translated" }) {
+                // Only the catalog advertises an update. The seeded offline
+                // copy and reading manifest retain their actual v1 identity.
+                catalog[index]["contentVersion"] = "get317-v2"
+            }
+            return reply(["user": ["id": owner], "books": catalog])
         }
         if path == "/api/library/notebook" || path == "/api/library/reading-summary" {
             if arguments.contains("--get317-records-error") { return reply(["error": "GET317 合成记录读取失败"], status: 503) }
@@ -304,6 +311,11 @@ private final class GET317Transport: URLProtocol, @unchecked Sendable {
         value["source"] = ["format": "txt"]
         value["description"] = "明确标注的合成验收资料，未使用真实用户书籍。"
         value["chapters"] = (1...3).map { ["id": "c\($0)", "title": "GET317 合成第 \($0) 章"] }
+        // This isolated case exercises the normal downloaded-copy importer.
+        // Default manifests and the six-book seed keep their existing content.
+        if id == "get317-translated", arguments.contains("--get328-cloud-reading-start") {
+            value["readingStart"] = ["chapterId": "c2", "passageId": "c2-p4"]
+        }
         return value
     }
     private static var translations: [String: Any] {
