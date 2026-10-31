@@ -1082,7 +1082,7 @@
       },
       {
         "file": "server/book-ingestion.mjs",
-        "sha256": "c120f92aadd9ab0cc563cc1d921de648b609e283f4a7da2ae2ecbe31ae07b4be"
+        "sha256": "6f803c4805f9d8b7c13c0c8596b45220e18c0f333889807808fe73ff81576577"
       },
       {
         "file": "server/book-introduction-store.mjs",
@@ -1409,7 +1409,7 @@
         "sha256": "531202f1814314b6c76bfef38b2ea66636425b1ca9b445db349e70ebb8bcd00e"
       }
     ],
-    "inputDigest": "fe469aa01fa0a0de3cf1ffcafecdb60cd4e58ab697961d4d35f7707daee00f12"
+    "inputDigest": "216d67d38a415cbe487f0d4bcd483366fcd0c7a8c2214745547f69a42d156fee"
   },
   "locales": [
     "en",
