@@ -803,6 +803,7 @@
   "server/library-arrival.mjs",
   "server/library-portability.mjs",
   "server/library-service.mjs",
+  "server/native-reading-copy.mjs",
   "server/listening-guide-content.mjs",
   "server/listening-guide-generator.mjs",
   "server/listening-guide-service.mjs",

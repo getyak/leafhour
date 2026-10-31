@@ -279,6 +279,7 @@ private final class RecordsProbe: @unchecked Sendable {
     var summaryRequests: Int { lock.lock(); defer { lock.unlock() }; return captured.filter { $0 == "/api/library/reading-summary" }.count }
     init(owner: String) { self.owner = owner }
     func response(_ request: URLRequest) -> (Int, CloudJSON) {
+        if request.url!.path.hasSuffix("/native-copy") { return (404, .object([:])) }
         let path = request.url!.path
         lock.lock(); captured.append(path); lock.unlock()
         if path.hasSuffix("/reading-manifest") {

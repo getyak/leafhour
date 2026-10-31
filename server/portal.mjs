@@ -458,6 +458,16 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
       // never publishes a link and the sealing endpoint alone creates a gift.
       if(action==='gift-quote'&&req.method==='POST'){send(200,await sponsored(user,'gift-quote',()=>giftQuotes.prepare(user,id)));return true;}
       if(action?.startsWith('audio/'))return audioRoutes.handle({req,res,url,user,bookId:id,action:action.slice(6),body,send});
+      if(['native-copy','native-copy/part','native-copy/verify'].includes(action)){
+        res.setHeader('Cache-Control','private, no-store');
+        if(req.method!=='GET')throw fail('不支持这个请求',405);
+        if(action==='native-copy'){send(200,await library.nativeCopy(user,id));return true;}
+        const archive=url.searchParams.get('archive');
+        if(action==='native-copy/verify'){send(200,await library.verifyNativeCopy(user,id,{archive}));return true;}
+        const rawOffset=url.searchParams.get('offset'),offset=/^(?:0|[1-9][0-9]*)$/.test(rawOffset||'')?Number(rawOffset):NaN;
+        const part=await library.nativeCopyPart(user,id,{archive,offset});
+        res.statusCode=200;res.setHeader('Content-Type','application/octet-stream');res.setHeader('X-Content-Type-Options','nosniff');res.setHeader('Content-Length',part.bytes.length);res.end(part.bytes);return true;
+      }
       if(action==='document-export'&&req.method==='GET'){send(200,await library.bookTransfer(user,id));return true;}
       if(action==='content-part'&&req.method==='GET'){send(200,await library.bookTransfer(user,id,Number(url.searchParams.get('offset')),url.searchParams.get('snapshot')));return true;}
       if(!action&&req.method==='GET'){const book=await library.getBook(user,id);if(req.headers['x-reader-book-transfer']==='1'&&Buffer.byteLength(JSON.stringify(book))>3000000&&(dataStore||Buffer.byteLength(JSON.stringify(book))<=96*1024*1024)){res.setHeader('X-Reader-Book-Transfer','parts');send(200,await library.bookTransfer(user,id));}else send(200,book);return true;}

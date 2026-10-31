@@ -1202,7 +1202,7 @@
       },
       {
         "file": "server/library-service.mjs",
-        "sha256": "4dbc19d35734f918ca33a44b393af57d9868b2d74f291e9f363b80704c0ef58e"
+        "sha256": "821abaf35d73b5946801387115198f79f980a9962e567ba62a733a0183d4a141"
       },
       {
         "file": "server/listening-guide-content.mjs",
@@ -1243,6 +1243,10 @@
       {
         "file": "server/model-config.mjs",
         "sha256": "f4f796e77a41d833f6d9a03a9d38feb796a04ae9c9accfc8d1634e748368169c"
+      },
+      {
+        "file": "server/native-reading-copy.mjs",
+        "sha256": "0647c8058e363dec388ab8300514cc9f6829d971a379a62cd8011c16bfa347f4"
       },
       {
         "file": "server/observability.mjs",
@@ -1306,7 +1310,7 @@
       },
       {
         "file": "server/portal.mjs",
-        "sha256": "c5e3c09b93afd838ccd64a764e242e47efe2eeecb8973033fd91f532e7690c3e"
+        "sha256": "c14d7251787633396bc1666d0bbddd024508c37be277b865b11e7c16a85b58c1"
       },
       {
         "file": "server/preference-memory.mjs",
@@ -1409,7 +1413,7 @@
         "sha256": "531202f1814314b6c76bfef38b2ea66636425b1ca9b445db349e70ebb8bcd00e"
       }
     ],
-    "inputDigest": "38bb2d2433453a29dccdb04a7e00ba0d6c3e2f4dbdef31fc3f0407c91ac542b1"
+    "inputDigest": "9e8547089f7e65ed475e64825d43a832da51468b5c7c3b1f82eae4975f367c58"
   },
   "locales": [
     "en",
@@ -18118,7 +18122,7 @@
         },
         {
           "file": "server/library-service.mjs",
-          "line": 482,
+          "line": 494,
           "column": 239
         },
         {
@@ -18445,12 +18449,12 @@
         },
         {
           "file": "server/portal.mjs",
-          "line": 501,
+          "line": 511,
           "column": 110
         },
         {
           "file": "server/portal.mjs",
-          "line": 503,
+          "line": 513,
           "column": 290
         }
       ],
@@ -260743,9 +260747,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:37:50",
+      "id": "candidate:server/library-service.mjs:38:50",
       "file": "server/library-service.mjs",
-      "line": 37,
+      "line": 38,
       "column": 50,
       "kind": "js-cjk-literal",
       "property": null,
@@ -260763,9 +260767,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:44:178",
+      "id": "candidate:server/library-service.mjs:45:178",
       "file": "server/library-service.mjs",
-      "line": 44,
+      "line": 45,
       "column": 178,
       "kind": "js-cjk-literal",
       "property": null,
@@ -260783,9 +260787,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:48:264",
+      "id": "candidate:server/library-service.mjs:49:264",
       "file": "server/library-service.mjs",
-      "line": 48,
+      "line": 49,
       "column": 264,
       "kind": "js-cjk-literal",
       "property": null,
@@ -260803,9 +260807,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:51:198",
+      "id": "candidate:server/library-service.mjs:52:198",
       "file": "server/library-service.mjs",
-      "line": 51,
+      "line": 52,
       "column": 198,
       "kind": "js-cjk-literal",
       "property": null,
@@ -260823,9 +260827,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:64:130",
+      "id": "candidate:server/library-service.mjs:65:130",
       "file": "server/library-service.mjs",
-      "line": 64,
+      "line": 65,
       "column": 130,
       "kind": "js-cjk-literal",
       "property": null,
@@ -260843,9 +260847,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:68:140",
+      "id": "candidate:server/library-service.mjs:69:140",
       "file": "server/library-service.mjs",
-      "line": 68,
+      "line": 69,
       "column": 140,
       "kind": "js-cjk-literal",
       "property": null,
@@ -260863,9 +260867,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:70:132",
+      "id": "candidate:server/library-service.mjs:71:132",
       "file": "server/library-service.mjs",
-      "line": 70,
+      "line": 71,
       "column": 132,
       "kind": "js-cjk-literal",
       "property": null,
@@ -260883,9 +260887,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:110:55",
+      "id": "candidate:server/library-service.mjs:111:55",
       "file": "server/library-service.mjs",
-      "line": 110,
+      "line": 111,
       "column": 55,
       "kind": "js-cjk-literal",
       "property": null,
@@ -260903,9 +260907,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:112:35",
+      "id": "candidate:server/library-service.mjs:113:35",
       "file": "server/library-service.mjs",
-      "line": 112,
+      "line": 113,
       "column": 35,
       "kind": "js-cjk-literal",
       "property": null,
@@ -260923,9 +260927,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:113:25",
+      "id": "candidate:server/library-service.mjs:114:25",
       "file": "server/library-service.mjs",
-      "line": 113,
+      "line": 114,
       "column": 25,
       "kind": "js-cjk-literal",
       "property": null,
@@ -260943,9 +260947,49 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:146:60",
+      "id": "candidate:server/library-service.mjs:124:78",
       "file": "server/library-service.mjs",
-      "line": 146,
+      "line": 124,
+      "column": 78,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "找不到这本书",
+      "sha256": "b8e1a4178943128600a9038c514084be04368ecc1e3aae1167374b0d2f85a4f5",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/library-service.mjs:126:163",
+      "file": "server/library-service.mjs",
+      "line": 126,
+      "column": 163,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "找不到这本书",
+      "sha256": "b8e1a4178943128600a9038c514084be04368ecc1e3aae1167374b0d2f85a4f5",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/library-service.mjs:158:60",
+      "file": "server/library-service.mjs",
+      "line": 158,
       "column": 60,
       "kind": "js-cjk-literal",
       "property": null,
@@ -260963,9 +261007,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:156:196",
+      "id": "candidate:server/library-service.mjs:168:196",
       "file": "server/library-service.mjs",
-      "line": 156,
+      "line": 168,
       "column": 196,
       "kind": "js-cjk-literal",
       "property": null,
@@ -260983,9 +261027,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:162:103",
+      "id": "candidate:server/library-service.mjs:174:103",
       "file": "server/library-service.mjs",
-      "line": 162,
+      "line": 174,
       "column": 103,
       "kind": "js-cjk-literal",
       "property": null,
@@ -261003,9 +261047,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:177:168",
+      "id": "candidate:server/library-service.mjs:189:168",
       "file": "server/library-service.mjs",
-      "line": 177,
+      "line": 189,
       "column": 168,
       "kind": "js-cjk-literal",
       "property": null,
@@ -261023,9 +261067,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:178:83",
+      "id": "candidate:server/library-service.mjs:190:83",
       "file": "server/library-service.mjs",
-      "line": 178,
+      "line": 190,
       "column": 83,
       "kind": "js-cjk-literal",
       "property": null,
@@ -261043,9 +261087,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:179:101",
+      "id": "candidate:server/library-service.mjs:191:101",
       "file": "server/library-service.mjs",
-      "line": 179,
+      "line": 191,
       "column": 101,
       "kind": "js-cjk-literal",
       "property": null,
@@ -261063,9 +261107,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:182:51",
+      "id": "candidate:server/library-service.mjs:194:51",
       "file": "server/library-service.mjs",
-      "line": 182,
+      "line": 194,
       "column": 51,
       "kind": "js-cjk-literal",
       "property": null,
@@ -261083,9 +261127,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:183:55",
+      "id": "candidate:server/library-service.mjs:195:55",
       "file": "server/library-service.mjs",
-      "line": 183,
+      "line": 195,
       "column": 55,
       "kind": "js-cjk-literal",
       "property": null,
@@ -261103,9 +261147,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:192:111",
+      "id": "candidate:server/library-service.mjs:204:111",
       "file": "server/library-service.mjs",
-      "line": 192,
+      "line": 204,
       "column": 111,
       "kind": "js-cjk-literal",
       "property": null,
@@ -261123,9 +261167,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:200:54",
+      "id": "candidate:server/library-service.mjs:212:54",
       "file": "server/library-service.mjs",
-      "line": 200,
+      "line": 212,
       "column": 54,
       "kind": "js-cjk-literal",
       "property": null,
@@ -261143,9 +261187,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:212:117",
+      "id": "candidate:server/library-service.mjs:224:117",
       "file": "server/library-service.mjs",
-      "line": 212,
+      "line": 224,
       "column": 117,
       "kind": "js-cjk-literal",
       "property": null,
@@ -261163,9 +261207,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:213:87",
+      "id": "candidate:server/library-service.mjs:225:87",
       "file": "server/library-service.mjs",
-      "line": 213,
+      "line": 225,
       "column": 87,
       "kind": "js-cjk-literal",
       "property": null,
@@ -261183,9 +261227,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:213:165",
+      "id": "candidate:server/library-service.mjs:225:165",
       "file": "server/library-service.mjs",
-      "line": 213,
+      "line": 225,
       "column": 165,
       "kind": "js-cjk-literal",
       "property": null,
@@ -261203,9 +261247,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:218:98",
+      "id": "candidate:server/library-service.mjs:230:98",
       "file": "server/library-service.mjs",
-      "line": 218,
+      "line": 230,
       "column": 98,
       "kind": "js-cjk-literal",
       "property": null,
@@ -261223,9 +261267,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:219:58",
+      "id": "candidate:server/library-service.mjs:231:58",
       "file": "server/library-service.mjs",
-      "line": 219,
+      "line": 231,
       "column": 58,
       "kind": "js-cjk-literal",
       "property": null,
@@ -261243,9 +261287,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:222:51",
+      "id": "candidate:server/library-service.mjs:234:51",
       "file": "server/library-service.mjs",
-      "line": 222,
+      "line": 234,
       "column": 51,
       "kind": "js-cjk-literal",
       "property": null,
@@ -261263,9 +261307,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:230:54",
+      "id": "candidate:server/library-service.mjs:242:54",
       "file": "server/library-service.mjs",
-      "line": 230,
+      "line": 242,
       "column": 54,
       "kind": "js-cjk-literal",
       "property": null,
@@ -261283,9 +261327,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:233:87",
+      "id": "candidate:server/library-service.mjs:245:87",
       "file": "server/library-service.mjs",
-      "line": 233,
+      "line": 245,
       "column": 87,
       "kind": "js-cjk-literal",
       "property": null,
@@ -261303,9 +261347,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:258:72",
+      "id": "candidate:server/library-service.mjs:270:72",
       "file": "server/library-service.mjs",
-      "line": 258,
+      "line": 270,
       "column": 72,
       "kind": "js-cjk-literal",
       "property": null,
@@ -261323,9 +261367,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:259:82",
+      "id": "candidate:server/library-service.mjs:271:82",
       "file": "server/library-service.mjs",
-      "line": 259,
+      "line": 271,
       "column": 82,
       "kind": "js-cjk-literal",
       "property": null,
@@ -261343,9 +261387,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:261:35",
+      "id": "candidate:server/library-service.mjs:273:35",
       "file": "server/library-service.mjs",
-      "line": 261,
+      "line": 273,
       "column": 35,
       "kind": "js-cjk-literal",
       "property": null,
@@ -261363,9 +261407,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:267:142",
+      "id": "candidate:server/library-service.mjs:279:142",
       "file": "server/library-service.mjs",
-      "line": 267,
+      "line": 279,
       "column": 142,
       "kind": "js-cjk-literal",
       "property": null,
@@ -261383,9 +261427,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:268:55",
+      "id": "candidate:server/library-service.mjs:280:55",
       "file": "server/library-service.mjs",
-      "line": 268,
+      "line": 280,
       "column": 55,
       "kind": "js-cjk-literal",
       "property": null,
@@ -261403,9 +261447,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:270:73",
+      "id": "candidate:server/library-service.mjs:282:73",
       "file": "server/library-service.mjs",
-      "line": 270,
+      "line": 282,
       "column": 73,
       "kind": "js-cjk-literal",
       "property": null,
@@ -261423,9 +261467,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:273:30",
+      "id": "candidate:server/library-service.mjs:285:30",
       "file": "server/library-service.mjs",
-      "line": 273,
+      "line": 285,
       "column": 30,
       "kind": "js-cjk-literal",
       "property": null,
@@ -261443,9 +261487,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:285:60",
+      "id": "candidate:server/library-service.mjs:297:60",
       "file": "server/library-service.mjs",
-      "line": 285,
+      "line": 297,
       "column": 60,
       "kind": "js-cjk-literal",
       "property": null,
@@ -261463,9 +261507,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:299:139",
+      "id": "candidate:server/library-service.mjs:311:139",
       "file": "server/library-service.mjs",
-      "line": 299,
+      "line": 311,
       "column": 139,
       "kind": "js-cjk-literal",
       "property": null,
@@ -261483,9 +261527,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:305:99",
+      "id": "candidate:server/library-service.mjs:317:99",
       "file": "server/library-service.mjs",
-      "line": 305,
+      "line": 317,
       "column": 99,
       "kind": "js-cjk-literal",
       "property": null,
@@ -261503,9 +261547,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:310:103",
+      "id": "candidate:server/library-service.mjs:322:103",
       "file": "server/library-service.mjs",
-      "line": 310,
+      "line": 322,
       "column": 103,
       "kind": "js-cjk-literal",
       "property": null,
@@ -261523,9 +261567,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:311:69",
+      "id": "candidate:server/library-service.mjs:323:69",
       "file": "server/library-service.mjs",
-      "line": 311,
+      "line": 323,
       "column": 69,
       "kind": "js-cjk-literal",
       "property": null,
@@ -261543,9 +261587,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:313:204",
+      "id": "candidate:server/library-service.mjs:325:204",
       "file": "server/library-service.mjs",
-      "line": 313,
+      "line": 325,
       "column": 204,
       "kind": "js-cjk-literal",
       "property": null,
@@ -261563,9 +261607,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:321:171",
+      "id": "candidate:server/library-service.mjs:333:171",
       "file": "server/library-service.mjs",
-      "line": 321,
+      "line": 333,
       "column": 171,
       "kind": "js-cjk-literal",
       "property": null,
@@ -261583,9 +261627,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:330:174",
+      "id": "candidate:server/library-service.mjs:342:174",
       "file": "server/library-service.mjs",
-      "line": 330,
+      "line": 342,
       "column": 174,
       "kind": "js-cjk-literal",
       "property": null,
@@ -261603,9 +261647,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:331:159",
+      "id": "candidate:server/library-service.mjs:343:159",
       "file": "server/library-service.mjs",
-      "line": 331,
+      "line": 343,
       "column": 159,
       "kind": "js-cjk-literal",
       "property": null,
@@ -261623,9 +261667,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:332:88",
+      "id": "candidate:server/library-service.mjs:344:88",
       "file": "server/library-service.mjs",
-      "line": 332,
+      "line": 344,
       "column": 88,
       "kind": "js-cjk-literal",
       "property": null,
@@ -261643,9 +261687,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:334:26",
+      "id": "candidate:server/library-service.mjs:346:26",
       "file": "server/library-service.mjs",
-      "line": 334,
+      "line": 346,
       "column": 26,
       "kind": "js-cjk-literal",
       "property": null,
@@ -261663,9 +261707,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:339:99",
+      "id": "candidate:server/library-service.mjs:351:99",
       "file": "server/library-service.mjs",
-      "line": 339,
+      "line": 351,
       "column": 99,
       "kind": "js-cjk-literal",
       "property": null,
@@ -261683,9 +261727,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:340:82",
+      "id": "candidate:server/library-service.mjs:352:82",
       "file": "server/library-service.mjs",
-      "line": 340,
+      "line": 352,
       "column": 82,
       "kind": "js-cjk-literal",
       "property": null,
@@ -261703,9 +261747,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:342:298",
+      "id": "candidate:server/library-service.mjs:354:298",
       "file": "server/library-service.mjs",
-      "line": 342,
+      "line": 354,
       "column": 298,
       "kind": "js-cjk-literal",
       "property": null,
@@ -261723,9 +261767,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:343:121",
+      "id": "candidate:server/library-service.mjs:355:121",
       "file": "server/library-service.mjs",
-      "line": 343,
+      "line": 355,
       "column": 121,
       "kind": "js-cjk-literal",
       "property": null,
@@ -261743,9 +261787,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:347:83",
+      "id": "candidate:server/library-service.mjs:359:83",
       "file": "server/library-service.mjs",
-      "line": 347,
+      "line": 359,
       "column": 83,
       "kind": "js-cjk-literal",
       "property": null,
@@ -261763,9 +261807,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:350:167",
+      "id": "candidate:server/library-service.mjs:362:167",
       "file": "server/library-service.mjs",
-      "line": 350,
+      "line": 362,
       "column": 167,
       "kind": "js-cjk-literal",
       "property": null,
@@ -261783,9 +261827,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:352:73",
+      "id": "candidate:server/library-service.mjs:364:73",
       "file": "server/library-service.mjs",
-      "line": 352,
+      "line": 364,
       "column": 73,
       "kind": "js-cjk-literal",
       "property": null,
@@ -261803,9 +261847,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:352:198",
+      "id": "candidate:server/library-service.mjs:364:198",
       "file": "server/library-service.mjs",
-      "line": 352,
+      "line": 364,
       "column": 198,
       "kind": "js-cjk-literal",
       "property": null,
@@ -261823,9 +261867,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:354:26",
+      "id": "candidate:server/library-service.mjs:366:26",
       "file": "server/library-service.mjs",
-      "line": 354,
+      "line": 366,
       "column": 26,
       "kind": "js-cjk-literal",
       "property": null,
@@ -261843,9 +261887,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:355:87",
+      "id": "candidate:server/library-service.mjs:367:87",
       "file": "server/library-service.mjs",
-      "line": 355,
+      "line": 367,
       "column": 87,
       "kind": "js-cjk-literal",
       "property": null,
@@ -261863,9 +261907,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:358:130",
+      "id": "candidate:server/library-service.mjs:370:130",
       "file": "server/library-service.mjs",
-      "line": 358,
+      "line": 370,
       "column": 130,
       "kind": "js-cjk-literal",
       "property": null,
@@ -261883,9 +261927,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:358:264",
+      "id": "candidate:server/library-service.mjs:370:264",
       "file": "server/library-service.mjs",
-      "line": 358,
+      "line": 370,
       "column": 264,
       "kind": "js-cjk-literal",
       "property": null,
@@ -261903,9 +261947,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:361:115",
+      "id": "candidate:server/library-service.mjs:373:115",
       "file": "server/library-service.mjs",
-      "line": 361,
+      "line": 373,
       "column": 115,
       "kind": "js-cjk-literal",
       "property": null,
@@ -261923,9 +261967,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:393:105",
+      "id": "candidate:server/library-service.mjs:405:105",
       "file": "server/library-service.mjs",
-      "line": 393,
+      "line": 405,
       "column": 105,
       "kind": "js-cjk-literal",
       "property": null,
@@ -261943,9 +261987,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:396:263",
+      "id": "candidate:server/library-service.mjs:408:263",
       "file": "server/library-service.mjs",
-      "line": 396,
+      "line": 408,
       "column": 263,
       "kind": "js-cjk-literal",
       "property": null,
@@ -261963,9 +262007,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:400:264",
+      "id": "candidate:server/library-service.mjs:412:264",
       "file": "server/library-service.mjs",
-      "line": 400,
+      "line": 412,
       "column": 264,
       "kind": "js-cjk-literal",
       "property": null,
@@ -261983,9 +262027,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:400:350",
+      "id": "candidate:server/library-service.mjs:412:350",
       "file": "server/library-service.mjs",
-      "line": 400,
+      "line": 412,
       "column": 350,
       "kind": "js-cjk-literal",
       "property": null,
@@ -262003,9 +262047,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:454:158",
+      "id": "candidate:server/library-service.mjs:466:158",
       "file": "server/library-service.mjs",
-      "line": 454,
+      "line": 466,
       "column": 158,
       "kind": "js-cjk-literal",
       "property": null,
@@ -262023,9 +262067,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:456:37",
+      "id": "candidate:server/library-service.mjs:468:37",
       "file": "server/library-service.mjs",
-      "line": 456,
+      "line": 468,
       "column": 37,
       "kind": "js-cjk-literal",
       "property": null,
@@ -262043,9 +262087,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:457:75",
+      "id": "candidate:server/library-service.mjs:469:75",
       "file": "server/library-service.mjs",
-      "line": 457,
+      "line": 469,
       "column": 75,
       "kind": "js-cjk-literal",
       "property": null,
@@ -262063,9 +262107,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:464:70",
+      "id": "candidate:server/library-service.mjs:476:70",
       "file": "server/library-service.mjs",
-      "line": 464,
+      "line": 476,
       "column": 70,
       "kind": "js-cjk-literal",
       "property": null,
@@ -262083,9 +262127,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:471:171",
+      "id": "candidate:server/library-service.mjs:483:171",
       "file": "server/library-service.mjs",
-      "line": 471,
+      "line": 483,
       "column": 171,
       "kind": "js-cjk-literal",
       "property": null,
@@ -262103,9 +262147,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:481:350",
+      "id": "candidate:server/library-service.mjs:493:350",
       "file": "server/library-service.mjs",
-      "line": 481,
+      "line": 493,
       "column": 350,
       "kind": "js-cjk-literal",
       "property": null,
@@ -262123,9 +262167,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:484:191",
+      "id": "candidate:server/library-service.mjs:496:191",
       "file": "server/library-service.mjs",
-      "line": 484,
+      "line": 496,
       "column": 191,
       "kind": "js-cjk-literal",
       "property": null,
@@ -262143,9 +262187,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:484:256",
+      "id": "candidate:server/library-service.mjs:496:256",
       "file": "server/library-service.mjs",
-      "line": 484,
+      "line": 496,
       "column": 256,
       "kind": "js-cjk-literal",
       "property": null,
@@ -262163,9 +262207,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:488:120",
+      "id": "candidate:server/library-service.mjs:500:120",
       "file": "server/library-service.mjs",
-      "line": 488,
+      "line": 500,
       "column": 120,
       "kind": "js-cjk-literal",
       "property": null,
@@ -262183,9 +262227,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:490:82",
+      "id": "candidate:server/library-service.mjs:502:82",
       "file": "server/library-service.mjs",
-      "line": 490,
+      "line": 502,
       "column": 82,
       "kind": "js-cjk-literal",
       "property": null,
@@ -262203,9 +262247,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:496:194",
+      "id": "candidate:server/library-service.mjs:508:194",
       "file": "server/library-service.mjs",
-      "line": 496,
+      "line": 508,
       "column": 194,
       "kind": "js-cjk-literal",
       "property": null,
@@ -262223,9 +262267,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:497:85",
+      "id": "candidate:server/library-service.mjs:509:85",
       "file": "server/library-service.mjs",
-      "line": 497,
+      "line": 509,
       "column": 85,
       "kind": "js-cjk-literal",
       "property": null,
@@ -262243,9 +262287,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:498:113",
+      "id": "candidate:server/library-service.mjs:510:113",
       "file": "server/library-service.mjs",
-      "line": 498,
+      "line": 510,
       "column": 113,
       "kind": "js-cjk-literal",
       "property": null,
@@ -262263,9 +262307,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:500:183",
+      "id": "candidate:server/library-service.mjs:512:183",
       "file": "server/library-service.mjs",
-      "line": 500,
+      "line": 512,
       "column": 183,
       "kind": "js-cjk-literal",
       "property": null,
@@ -262283,9 +262327,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:505:23",
+      "id": "candidate:server/library-service.mjs:517:23",
       "file": "server/library-service.mjs",
-      "line": 505,
+      "line": 517,
       "column": 23,
       "kind": "js-cjk-literal",
       "property": null,
@@ -262303,9 +262347,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:510:68",
+      "id": "candidate:server/library-service.mjs:522:68",
       "file": "server/library-service.mjs",
-      "line": 510,
+      "line": 522,
       "column": 68,
       "kind": "js-cjk-literal",
       "property": null,
@@ -262323,9 +262367,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:511:31",
+      "id": "candidate:server/library-service.mjs:523:31",
       "file": "server/library-service.mjs",
-      "line": 511,
+      "line": 523,
       "column": 31,
       "kind": "js-cjk-literal",
       "property": null,
@@ -262343,9 +262387,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:512:173",
+      "id": "candidate:server/library-service.mjs:524:173",
       "file": "server/library-service.mjs",
-      "line": 512,
+      "line": 524,
       "column": 173,
       "kind": "js-cjk-literal",
       "property": null,
@@ -262363,9 +262407,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:512:254",
+      "id": "candidate:server/library-service.mjs:524:254",
       "file": "server/library-service.mjs",
-      "line": 512,
+      "line": 524,
       "column": 254,
       "kind": "js-cjk-literal",
       "property": null,
@@ -262383,9 +262427,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:512:317",
+      "id": "candidate:server/library-service.mjs:524:317",
       "file": "server/library-service.mjs",
-      "line": 512,
+      "line": 524,
       "column": 317,
       "kind": "js-cjk-literal",
       "property": null,
@@ -262403,9 +262447,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:517:101",
+      "id": "candidate:server/library-service.mjs:529:101",
       "file": "server/library-service.mjs",
-      "line": 517,
+      "line": 529,
       "column": 101,
       "kind": "js-cjk-literal",
       "property": null,
@@ -262423,9 +262467,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:524:139",
+      "id": "candidate:server/library-service.mjs:536:139",
       "file": "server/library-service.mjs",
-      "line": 524,
+      "line": 536,
       "column": 139,
       "kind": "js-cjk-literal",
       "property": null,
@@ -262443,9 +262487,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:551:164",
+      "id": "candidate:server/library-service.mjs:563:164",
       "file": "server/library-service.mjs",
-      "line": 551,
+      "line": 563,
       "column": 164,
       "kind": "js-cjk-literal",
       "property": null,
@@ -262463,9 +262507,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:556:139",
+      "id": "candidate:server/library-service.mjs:568:139",
       "file": "server/library-service.mjs",
-      "line": 556,
+      "line": 568,
       "column": 139,
       "kind": "js-cjk-literal",
       "property": null,
@@ -262483,9 +262527,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:560:239",
+      "id": "candidate:server/library-service.mjs:572:239",
       "file": "server/library-service.mjs",
-      "line": 560,
+      "line": 572,
       "column": 239,
       "kind": "js-cjk-literal",
       "property": null,
@@ -262503,9 +262547,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:563:269",
+      "id": "candidate:server/library-service.mjs:575:269",
       "file": "server/library-service.mjs",
-      "line": 563,
+      "line": 575,
       "column": 269,
       "kind": "js-cjk-literal",
       "property": null,
@@ -262523,9 +262567,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:568:324",
+      "id": "candidate:server/library-service.mjs:580:324",
       "file": "server/library-service.mjs",
-      "line": 568,
+      "line": 580,
       "column": 324,
       "kind": "js-cjk-literal",
       "property": null,
@@ -262543,9 +262587,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:571:144",
+      "id": "candidate:server/library-service.mjs:583:144",
       "file": "server/library-service.mjs",
-      "line": 571,
+      "line": 583,
       "column": 144,
       "kind": "js-cjk-literal",
       "property": null,
@@ -262563,9 +262607,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:590:146",
+      "id": "candidate:server/library-service.mjs:602:146",
       "file": "server/library-service.mjs",
-      "line": 590,
+      "line": 602,
       "column": 146,
       "kind": "js-cjk-literal",
       "property": null,
@@ -262583,9 +262627,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:607:89",
+      "id": "candidate:server/library-service.mjs:619:89",
       "file": "server/library-service.mjs",
-      "line": 607,
+      "line": 619,
       "column": 89,
       "kind": "js-cjk-literal",
       "property": null,
@@ -262603,9 +262647,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:617:139",
+      "id": "candidate:server/library-service.mjs:629:139",
       "file": "server/library-service.mjs",
-      "line": 617,
+      "line": 629,
       "column": 139,
       "kind": "js-cjk-literal",
       "property": null,
@@ -262623,9 +262667,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:625:183",
+      "id": "candidate:server/library-service.mjs:637:183",
       "file": "server/library-service.mjs",
-      "line": 625,
+      "line": 637,
       "column": 183,
       "kind": "js-cjk-literal",
       "property": null,
@@ -262643,9 +262687,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:630:46",
+      "id": "candidate:server/library-service.mjs:642:46",
       "file": "server/library-service.mjs",
-      "line": 630,
+      "line": 642,
       "column": 46,
       "kind": "js-cjk-literal",
       "property": null,
@@ -262663,9 +262707,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:631:45",
+      "id": "candidate:server/library-service.mjs:643:45",
       "file": "server/library-service.mjs",
-      "line": 631,
+      "line": 643,
       "column": 45,
       "kind": "js-cjk-literal",
       "property": null,
@@ -262683,9 +262727,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:632:40",
+      "id": "candidate:server/library-service.mjs:644:40",
       "file": "server/library-service.mjs",
-      "line": 632,
+      "line": 644,
       "column": 40,
       "kind": "js-cjk-literal",
       "property": null,
@@ -262703,9 +262747,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:640:158",
+      "id": "candidate:server/library-service.mjs:652:158",
       "file": "server/library-service.mjs",
-      "line": 640,
+      "line": 652,
       "column": 158,
       "kind": "js-cjk-literal",
       "property": null,
@@ -262723,9 +262767,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:642:460",
+      "id": "candidate:server/library-service.mjs:654:460",
       "file": "server/library-service.mjs",
-      "line": 642,
+      "line": 654,
       "column": 460,
       "kind": "js-cjk-literal",
       "property": null,
@@ -262743,9 +262787,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:643:84",
+      "id": "candidate:server/library-service.mjs:655:84",
       "file": "server/library-service.mjs",
-      "line": 643,
+      "line": 655,
       "column": 84,
       "kind": "js-cjk-literal",
       "property": null,
@@ -262763,9 +262807,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:644:283",
+      "id": "candidate:server/library-service.mjs:656:283",
       "file": "server/library-service.mjs",
-      "line": 644,
+      "line": 656,
       "column": 283,
       "kind": "js-cjk-literal",
       "property": null,
@@ -262783,9 +262827,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:645:330",
+      "id": "candidate:server/library-service.mjs:657:330",
       "file": "server/library-service.mjs",
-      "line": 645,
+      "line": 657,
       "column": 330,
       "kind": "js-cjk-literal",
       "property": null,
@@ -262803,9 +262847,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:646:265",
+      "id": "candidate:server/library-service.mjs:658:265",
       "file": "server/library-service.mjs",
-      "line": 646,
+      "line": 658,
       "column": 265,
       "kind": "js-cjk-literal",
       "property": null,
@@ -262823,9 +262867,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:647:116",
+      "id": "candidate:server/library-service.mjs:659:116",
       "file": "server/library-service.mjs",
-      "line": 647,
+      "line": 659,
       "column": 116,
       "kind": "js-cjk-literal",
       "property": null,
@@ -262843,9 +262887,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:666:86",
+      "id": "candidate:server/library-service.mjs:678:86",
       "file": "server/library-service.mjs",
-      "line": 666,
+      "line": 678,
       "column": 86,
       "kind": "js-cjk-literal",
       "property": null,
@@ -262863,9 +262907,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:675:101",
+      "id": "candidate:server/library-service.mjs:687:101",
       "file": "server/library-service.mjs",
-      "line": 675,
+      "line": 687,
       "column": 101,
       "kind": "js-cjk-literal",
       "property": null,
@@ -262883,9 +262927,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:677:232",
+      "id": "candidate:server/library-service.mjs:689:232",
       "file": "server/library-service.mjs",
-      "line": 677,
+      "line": 689,
       "column": 232,
       "kind": "js-cjk-literal",
       "property": null,
@@ -262903,9 +262947,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:678:57",
+      "id": "candidate:server/library-service.mjs:690:57",
       "file": "server/library-service.mjs",
-      "line": 678,
+      "line": 690,
       "column": 57,
       "kind": "js-cjk-literal",
       "property": null,
@@ -262923,9 +262967,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:679:31",
+      "id": "candidate:server/library-service.mjs:691:31",
       "file": "server/library-service.mjs",
-      "line": 679,
+      "line": 691,
       "column": 31,
       "kind": "js-cjk-literal",
       "property": null,
@@ -262943,9 +262987,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:685:124",
+      "id": "candidate:server/library-service.mjs:697:124",
       "file": "server/library-service.mjs",
-      "line": 685,
+      "line": 697,
       "column": 124,
       "kind": "js-cjk-literal",
       "property": null,
@@ -262963,9 +263007,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:688:69",
+      "id": "candidate:server/library-service.mjs:700:69",
       "file": "server/library-service.mjs",
-      "line": 688,
+      "line": 700,
       "column": 69,
       "kind": "js-cjk-literal",
       "property": null,
@@ -262983,9 +263027,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:695:91",
+      "id": "candidate:server/library-service.mjs:707:91",
       "file": "server/library-service.mjs",
-      "line": 695,
+      "line": 707,
       "column": 91,
       "kind": "js-cjk-literal",
       "property": null,
@@ -263003,9 +263047,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:700:104",
+      "id": "candidate:server/library-service.mjs:712:104",
       "file": "server/library-service.mjs",
-      "line": 700,
+      "line": 712,
       "column": 104,
       "kind": "js-cjk-literal",
       "property": null,
@@ -263023,9 +263067,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:714:46",
+      "id": "candidate:server/library-service.mjs:726:46",
       "file": "server/library-service.mjs",
-      "line": 714,
+      "line": 726,
       "column": 46,
       "kind": "js-cjk-literal",
       "property": null,
@@ -263043,9 +263087,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:715:92",
+      "id": "candidate:server/library-service.mjs:727:92",
       "file": "server/library-service.mjs",
-      "line": 715,
+      "line": 727,
       "column": 92,
       "kind": "js-cjk-literal",
       "property": null,
@@ -263063,9 +263107,9 @@
       }
     },
     {
-      "id": "candidate:server/library-service.mjs:722:89",
+      "id": "candidate:server/library-service.mjs:734:89",
       "file": "server/library-service.mjs",
-      "line": 722,
+      "line": 734,
       "column": 89,
       "kind": "js-cjk-literal",
       "property": null,
@@ -265291,6 +265335,246 @@
       "property": null,
       "value": "  语音：",
       "sha256": "62045ba1048e0ff81fbe15701e3610aa334bd63452031b8584538973160bd271",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/native-reading-copy.mjs:14:22",
+      "file": "server/native-reading-copy.mjs",
+      "line": 14,
+      "column": 22,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "书籍内容已更新，请重新下载阅读副本",
+      "sha256": "d1760b36e8df27dc1a5319a5a93c368818ba64cd7f70bb33e2699555a1cb7f41",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/native-reading-copy.mjs:15:24",
+      "file": "server/native-reading-copy.mjs",
+      "line": 15,
+      "column": 24,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "阅读副本无法核验，请重新下载",
+      "sha256": "818f1ca670990dfa5b4aba78da80bb53c21f8e4e6a02a1df07abeb19bd67f77a",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/native-reading-copy.mjs:27:134",
+      "file": "server/native-reading-copy.mjs",
+      "line": 27,
+      "column": 134,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "云端阅读副本暂时不可用",
+      "sha256": "fd0c181cb5e430c76d2bf6b4e0c466492b1088181609fcac94afcc575aab5a96",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/native-reading-copy.mjs:29:33",
+      "file": "server/native-reading-copy.mjs",
+      "line": 29,
+      "column": 33,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "找不到这份阅读副本",
+      "sha256": "c7a7adfb25cdf5247676fc90145d48abb2c7a041ae3683e15451f24d8acf9535",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/native-reading-copy.mjs:30:84",
+      "file": "server/native-reading-copy.mjs",
+      "line": 30,
+      "column": 84,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "找不到这份阅读副本",
+      "sha256": "c7a7adfb25cdf5247676fc90145d48abb2c7a041ae3683e15451f24d8acf9535",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/native-reading-copy.mjs:32:40",
+      "file": "server/native-reading-copy.mjs",
+      "line": 32,
+      "column": 40,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "阅读副本已过期，请重新下载",
+      "sha256": "64bc84e266a97f68d56568123ba1a844146002b364de5f236b0431925b762573",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/native-reading-copy.mjs:36:72",
+      "file": "server/native-reading-copy.mjs",
+      "line": 36,
+      "column": 72,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "阅读副本标识无效",
+      "sha256": "e5931255854a73652d076330ff2f84961e4bc92b1bbfd69db01930376b4b0d7c",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/native-reading-copy.mjs:51:98",
+      "file": "server/native-reading-copy.mjs",
+      "line": 51,
+      "column": 98,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "这本书超过本机完整阅读副本容量，请按章阅读",
+      "sha256": "3f2c986bd1b1a765e4d7f7582e2e8ecfb6a3843852bae763f6aa2e8cbd309f74",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/native-reading-copy.mjs:52:99",
+      "file": "server/native-reading-copy.mjs",
+      "line": 52,
+      "column": 99,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "这本书超过压缩阅读副本容量，请按章阅读",
+      "sha256": "3d0f0299e716f8b15bc029240b3bf3a3e0957159ea7db63fcbaccc638ff98f5c",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/native-reading-copy.mjs:67:121",
+      "file": "server/native-reading-copy.mjs",
+      "line": 67,
+      "column": 121,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "阅读副本分段位置无效",
+      "sha256": "20a3d133a06d5fbef16395126f51c29c42dcd2705bd32bd43ea0d1180993855d",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/native-reading-copy.mjs:74:40",
+      "file": "server/native-reading-copy.mjs",
+      "line": 74,
+      "column": 40,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "阅读副本已过期，请重新下载",
+      "sha256": "64bc84e266a97f68d56568123ba1a844146002b364de5f236b0431925b762573",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/native-reading-copy.mjs:79:40",
+      "file": "server/native-reading-copy.mjs",
+      "line": 79,
+      "column": 40,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "阅读副本已过期，请重新下载",
+      "sha256": "64bc84e266a97f68d56568123ba1a844146002b364de5f236b0431925b762573",
       "protected": false,
       "protectionReason": null,
       "hints": [],
@@ -268043,9 +268327,29 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:548:120",
+      "id": "candidate:server/portal.mjs:463:42",
       "file": "server/portal.mjs",
-      "line": 548,
+      "line": 463,
+      "column": 42,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "不支持这个请求",
+      "sha256": "e24548b44b2d13e8cee9843f40238accdbecc9113789d173cb4f1847f5bfbec5",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/portal.mjs:558:120",
+      "file": "server/portal.mjs",
+      "line": 558,
       "column": 120,
       "kind": "js-cjk-literal",
       "property": null,
@@ -268063,9 +268367,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:549:175",
+      "id": "candidate:server/portal.mjs:559:175",
       "file": "server/portal.mjs",
-      "line": 549,
+      "line": 559,
       "column": 175,
       "kind": "js-cjk-literal",
       "property": null,
@@ -268083,9 +268387,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:550:99",
+      "id": "candidate:server/portal.mjs:560:99",
       "file": "server/portal.mjs",
-      "line": 550,
+      "line": 560,
       "column": 99,
       "kind": "js-cjk-literal",
       "property": null,
@@ -268103,9 +268407,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:557:43",
+      "id": "candidate:server/portal.mjs:567:43",
       "file": "server/portal.mjs",
-      "line": 557,
+      "line": 567,
       "column": 43,
       "kind": "js-cjk-literal",
       "property": null,
@@ -268123,9 +268427,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:562:430",
+      "id": "candidate:server/portal.mjs:572:430",
       "file": "server/portal.mjs",
-      "line": 562,
+      "line": 572,
       "column": 430,
       "kind": "js-cjk-literal",
       "property": null,
@@ -268143,9 +268447,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:565:30",
+      "id": "candidate:server/portal.mjs:575:30",
       "file": "server/portal.mjs",
-      "line": 565,
+      "line": 575,
       "column": 30,
       "kind": "js-cjk-literal",
       "property": null,
@@ -268163,9 +268467,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:571:20",
+      "id": "candidate:server/portal.mjs:581:20",
       "file": "server/portal.mjs",
-      "line": 571,
+      "line": 581,
       "column": 20,
       "kind": "js-cjk-literal",
       "property": null,
@@ -268183,9 +268487,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:580:86",
+      "id": "candidate:server/portal.mjs:590:86",
       "file": "server/portal.mjs",
-      "line": 580,
+      "line": 590,
       "column": 86,
       "kind": "js-cjk-literal",
       "property": null,
@@ -268203,9 +268507,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:581:18",
+      "id": "candidate:server/portal.mjs:591:18",
       "file": "server/portal.mjs",
-      "line": 581,
+      "line": 591,
       "column": 18,
       "kind": "js-cjk-literal",
       "property": null,
@@ -268223,9 +268527,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:583:16",
+      "id": "candidate:server/portal.mjs:593:16",
       "file": "server/portal.mjs",
-      "line": 583,
+      "line": 593,
       "column": 16,
       "kind": "js-cjk-literal",
       "property": null,
@@ -302991,7 +303295,7 @@
     {
       "kind": "computed-member",
       "file": "server/library-service.mjs",
-      "line": 38,
+      "line": 39,
       "expression": "key",
       "fragments": [],
       "unresolved": true
@@ -302999,7 +303303,7 @@
     {
       "kind": "computed-member",
       "file": "server/library-service.mjs",
-      "line": 46,
+      "line": 47,
       "expression": "key",
       "fragments": [],
       "unresolved": true
@@ -303007,7 +303311,7 @@
     {
       "kind": "computed-member",
       "file": "server/library-service.mjs",
-      "line": 46,
+      "line": 47,
       "expression": "key",
       "fragments": [],
       "unresolved": true
@@ -303015,7 +303319,7 @@
     {
       "kind": "computed-member",
       "file": "server/library-service.mjs",
-      "line": 46,
+      "line": 47,
       "expression": "key",
       "fragments": [],
       "unresolved": true
@@ -303023,7 +303327,7 @@
     {
       "kind": "computed-member",
       "file": "server/library-service.mjs",
-      "line": 58,
+      "line": 59,
       "expression": "book.bookId",
       "fragments": [],
       "unresolved": true
@@ -303031,7 +303335,7 @@
     {
       "kind": "concatenation",
       "file": "server/library-service.mjs",
-      "line": 58,
+      "line": 59,
       "expression": "'/api/library/books/'+encodeURIComponent(book.bookId)+'/cover?v='",
       "fragments": [
         "/api/library/books/",
@@ -303042,7 +303346,7 @@
     {
       "kind": "concatenation",
       "file": "server/library-service.mjs",
-      "line": 58,
+      "line": 59,
       "expression": "'/api/library/books/'+encodeURIComponent(book.bookId)",
       "fragments": [
         "/api/library/books/"
@@ -303052,7 +303356,7 @@
     {
       "kind": "concatenation",
       "file": "server/library-service.mjs",
-      "line": 86,
+      "line": 87,
       "expression": "file+'.'+randomUUID()+'.pending'",
       "fragments": [
         ".",
@@ -303063,7 +303367,7 @@
     {
       "kind": "concatenation",
       "file": "server/library-service.mjs",
-      "line": 86,
+      "line": 87,
       "expression": "file+'.'",
       "fragments": [
         "."
@@ -303073,14 +303377,6 @@
     {
       "kind": "computed-member",
       "file": "server/library-service.mjs",
-      "line": 96,
-      "expression": "0",
-      "fragments": [],
-      "unresolved": true
-    },
-    {
-      "kind": "computed-member",
-      "file": "server/library-service.mjs",
       "line": 97,
       "expression": "0",
       "fragments": [],
@@ -303089,7 +303385,15 @@
     {
       "kind": "computed-member",
       "file": "server/library-service.mjs",
-      "line": 97,
+      "line": 98,
+      "expression": "0",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/library-service.mjs",
+      "line": 98,
       "expression": "1",
       "fragments": [],
       "unresolved": true
@@ -303097,7 +303401,7 @@
     {
       "kind": "concatenation",
       "file": "server/library-service.mjs",
-      "line": 100,
+      "line": 101,
       "expression": "entry.id+'.zh.json'",
       "fragments": [
         ".zh.json"
@@ -303107,7 +303411,7 @@
     {
       "kind": "computed-member",
       "file": "server/library-service.mjs",
-      "line": 104,
+      "line": 105,
       "expression": "key",
       "fragments": [],
       "unresolved": true
@@ -303115,7 +303419,7 @@
     {
       "kind": "computed-member",
       "file": "server/library-service.mjs",
-      "line": 104,
+      "line": 105,
       "expression": "key",
       "fragments": [],
       "unresolved": true
@@ -303123,7 +303427,7 @@
     {
       "kind": "computed-member",
       "file": "server/library-service.mjs",
-      "line": 104,
+      "line": 105,
       "expression": "key",
       "fragments": [],
       "unresolved": true
@@ -303131,7 +303435,7 @@
     {
       "kind": "computed-member",
       "file": "server/library-service.mjs",
-      "line": 104,
+      "line": 105,
       "expression": "entry.id",
       "fragments": [],
       "unresolved": true
@@ -303139,7 +303443,7 @@
     {
       "kind": "computed-member",
       "file": "server/library-service.mjs",
-      "line": 104,
+      "line": 105,
       "expression": "entry.id",
       "fragments": [],
       "unresolved": true
@@ -303147,20 +303451,10 @@
     {
       "kind": "concatenation",
       "file": "server/library-service.mjs",
-      "line": 105,
+      "line": 106,
       "expression": "'Unknown catalog reading metadata: '+id",
       "fragments": [
         "Unknown catalog reading metadata: "
-      ],
-      "unresolved": true
-    },
-    {
-      "kind": "concatenation",
-      "file": "server/library-service.mjs",
-      "line": 107,
-      "expression": "digest(id)+'.json'",
-      "fragments": [
-        ".json"
       ],
       "unresolved": true
     },
@@ -303177,7 +303471,17 @@
     {
       "kind": "concatenation",
       "file": "server/library-service.mjs",
-      "line": 118,
+      "line": 109,
+      "expression": "digest(id)+'.json'",
+      "fragments": [
+        ".json"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "server/library-service.mjs",
+      "line": 119,
       "expression": "digest(id)+'.json'",
       "fragments": [
         ".json"
@@ -303187,7 +303491,7 @@
     {
       "kind": "computed-member",
       "file": "server/library-service.mjs",
-      "line": 118,
+      "line": 119,
       "expression": "p.id",
       "fragments": [],
       "unresolved": true
@@ -303195,7 +303499,7 @@
     {
       "kind": "computed-member",
       "file": "server/library-service.mjs",
-      "line": 118,
+      "line": 119,
       "expression": "p.id",
       "fragments": [],
       "unresolved": true
@@ -303203,7 +303507,7 @@
     {
       "kind": "computed-member",
       "file": "server/library-service.mjs",
-      "line": 137,
+      "line": 149,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -303211,7 +303515,7 @@
     {
       "kind": "computed-member",
       "file": "server/library-service.mjs",
-      "line": 140,
+      "line": 152,
       "expression": "offset",
       "fragments": [],
       "unresolved": true
@@ -303219,7 +303523,7 @@
     {
       "kind": "concatenation",
       "file": "server/library-service.mjs",
-      "line": 152,
+      "line": 164,
       "expression": "digest(book.bookId)+'.json'",
       "fragments": [
         ".json"
@@ -303229,7 +303533,7 @@
     {
       "kind": "computed-member",
       "file": "server/library-service.mjs",
-      "line": 153,
+      "line": 165,
       "expression": "p.id",
       "fragments": [],
       "unresolved": true
@@ -303237,7 +303541,7 @@
     {
       "kind": "computed-member",
       "file": "server/library-service.mjs",
-      "line": 158,
+      "line": 170,
       "expression": "p.id",
       "fragments": [],
       "unresolved": true
@@ -303245,7 +303549,7 @@
     {
       "kind": "computed-member",
       "file": "server/library-service.mjs",
-      "line": 158,
+      "line": 170,
       "expression": "p.id",
       "fragments": [],
       "unresolved": true
@@ -303253,7 +303557,7 @@
     {
       "kind": "computed-member",
       "file": "server/library-service.mjs",
-      "line": 185,
+      "line": 197,
       "expression": "key",
       "fragments": [],
       "unresolved": true
@@ -303261,7 +303565,7 @@
     {
       "kind": "computed-member",
       "file": "server/library-service.mjs",
-      "line": 185,
+      "line": 197,
       "expression": "key",
       "fragments": [],
       "unresolved": true
@@ -303269,7 +303573,7 @@
     {
       "kind": "computed-member",
       "file": "server/library-service.mjs",
-      "line": 185,
+      "line": 197,
       "expression": "key",
       "fragments": [],
       "unresolved": true
@@ -303277,7 +303581,7 @@
     {
       "kind": "computed-member",
       "file": "server/library-service.mjs",
-      "line": 232,
+      "line": 244,
       "expression": "id",
       "fragments": [],
       "unresolved": true
@@ -303285,7 +303589,7 @@
     {
       "kind": "computed-member",
       "file": "server/library-service.mjs",
-      "line": 240,
+      "line": 252,
       "expression": "row.bookId",
       "fragments": [],
       "unresolved": true
@@ -303293,7 +303597,7 @@
     {
       "kind": "concatenation",
       "file": "server/library-service.mjs",
-      "line": 251,
+      "line": 263,
       "expression": "digest(row.bookId)+'.json'",
       "fragments": [
         ".json"
@@ -303303,7 +303607,7 @@
     {
       "kind": "concatenation",
       "file": "server/library-service.mjs",
-      "line": 260,
+      "line": 272,
       "expression": "hash+'-v1.json'",
       "fragments": [
         "-v1.json"
@@ -303313,7 +303617,7 @@
     {
       "kind": "concatenation",
       "file": "server/library-service.mjs",
-      "line": 263,
+      "line": 275,
       "expression": "user.id+':'",
       "fragments": [
         ":"
@@ -303323,7 +303627,7 @@
     {
       "kind": "concatenation",
       "file": "server/library-service.mjs",
-      "line": 283,
+      "line": 295,
       "expression": "'private-'+digest(user.id+hash).slice(0,24)",
       "fragments": [
         "private-"
@@ -303333,7 +303637,7 @@
     {
       "kind": "concatenation",
       "file": "server/library-service.mjs",
-      "line": 291,
+      "line": 303,
       "expression": "hash+'.'+randomUUID()+'.pending'",
       "fragments": [
         ".",
@@ -303344,7 +303648,7 @@
     {
       "kind": "concatenation",
       "file": "server/library-service.mjs",
-      "line": 291,
+      "line": 303,
       "expression": "hash+'.'",
       "fragments": [
         "."
@@ -303354,7 +303658,7 @@
     {
       "kind": "computed-member",
       "file": "server/library-service.mjs",
-      "line": 333,
+      "line": 345,
       "expression": "pending.type",
       "fragments": [],
       "unresolved": true
@@ -303362,7 +303666,7 @@
     {
       "kind": "computed-member",
       "file": "server/library-service.mjs",
-      "line": 335,
+      "line": 347,
       "expression": "pending.type",
       "fragments": [],
       "unresolved": true
@@ -303370,7 +303674,7 @@
     {
       "kind": "concatenation",
       "file": "server/library-service.mjs",
-      "line": 341,
+      "line": 353,
       "expression": "'original.'+book.source.format",
       "fragments": [
         "original."
@@ -303380,7 +303684,7 @@
     {
       "kind": "computed-member",
       "file": "server/library-service.mjs",
-      "line": 380,
+      "line": 392,
       "expression": "index",
       "fragments": [],
       "unresolved": true
@@ -303388,7 +303692,7 @@
     {
       "kind": "computed-member",
       "file": "server/library-service.mjs",
-      "line": 383,
+      "line": 395,
       "expression": "kind",
       "fragments": [],
       "unresolved": true
@@ -303396,7 +303700,7 @@
     {
       "kind": "computed-member",
       "file": "server/library-service.mjs",
-      "line": 383,
+      "line": 395,
       "expression": "kind",
       "fragments": [],
       "unresolved": true
@@ -303404,7 +303708,7 @@
     {
       "kind": "computed-member",
       "file": "server/library-service.mjs",
-      "line": 383,
+      "line": 395,
       "expression": "kind",
       "fragments": [],
       "unresolved": true
@@ -303412,7 +303716,7 @@
     {
       "kind": "computed-member",
       "file": "server/library-service.mjs",
-      "line": 383,
+      "line": 395,
       "expression": "key",
       "fragments": [],
       "unresolved": true
@@ -303420,38 +303724,6 @@
     {
       "kind": "computed-member",
       "file": "server/library-service.mjs",
-      "line": 384,
-      "expression": "index",
-      "fragments": [],
-      "unresolved": true
-    },
-    {
-      "kind": "computed-member",
-      "file": "server/library-service.mjs",
-      "line": 385,
-      "expression": "index",
-      "fragments": [],
-      "unresolved": true
-    },
-    {
-      "kind": "computed-member",
-      "file": "server/library-service.mjs",
-      "line": 388,
-      "expression": "index",
-      "fragments": [],
-      "unresolved": true
-    },
-    {
-      "kind": "computed-member",
-      "file": "server/library-service.mjs",
-      "line": 388,
-      "expression": "index",
-      "fragments": [],
-      "unresolved": true
-    },
-    {
-      "kind": "computed-member",
-      "file": "server/library-service.mjs",
       "line": 396,
       "expression": "index",
       "fragments": [],
@@ -303460,7 +303732,7 @@
     {
       "kind": "computed-member",
       "file": "server/library-service.mjs",
-      "line": 396,
+      "line": 397,
       "expression": "index",
       "fragments": [],
       "unresolved": true
@@ -303468,7 +303740,39 @@
     {
       "kind": "computed-member",
       "file": "server/library-service.mjs",
-      "line": 419,
+      "line": 400,
+      "expression": "index",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/library-service.mjs",
+      "line": 400,
+      "expression": "index",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/library-service.mjs",
+      "line": 408,
+      "expression": "index",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/library-service.mjs",
+      "line": 408,
+      "expression": "index",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/library-service.mjs",
+      "line": 431,
       "expression": "field",
       "fragments": [],
       "unresolved": true
@@ -303476,31 +303780,7 @@
     {
       "kind": "computed-member",
       "file": "server/library-service.mjs",
-      "line": 421,
-      "expression": "index",
-      "fragments": [],
-      "unresolved": true
-    },
-    {
-      "kind": "computed-member",
-      "file": "server/library-service.mjs",
-      "line": 424,
-      "expression": "index",
-      "fragments": [],
-      "unresolved": true
-    },
-    {
-      "kind": "computed-member",
-      "file": "server/library-service.mjs",
-      "line": 425,
-      "expression": "index",
-      "fragments": [],
-      "unresolved": true
-    },
-    {
-      "kind": "computed-member",
-      "file": "server/library-service.mjs",
-      "line": 426,
+      "line": 433,
       "expression": "index",
       "fragments": [],
       "unresolved": true
@@ -303509,7 +303789,7 @@
       "kind": "computed-member",
       "file": "server/library-service.mjs",
       "line": 436,
-      "expression": "1",
+      "expression": "index",
       "fragments": [],
       "unresolved": true
     },
@@ -303517,7 +303797,7 @@
       "kind": "computed-member",
       "file": "server/library-service.mjs",
       "line": 437,
-      "expression": "kind",
+      "expression": "index",
       "fragments": [],
       "unresolved": true
     },
@@ -303525,6 +303805,30 @@
       "kind": "computed-member",
       "file": "server/library-service.mjs",
       "line": 438,
+      "expression": "index",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/library-service.mjs",
+      "line": 448,
+      "expression": "1",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/library-service.mjs",
+      "line": 449,
+      "expression": "kind",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/library-service.mjs",
+      "line": 450,
       "expression": "field",
       "fragments": [],
       "unresolved": true
@@ -303532,7 +303836,7 @@
     {
       "kind": "computed-member",
       "file": "server/library-service.mjs",
-      "line": 484,
+      "line": 496,
       "expression": "type",
       "fragments": [],
       "unresolved": true
@@ -303540,7 +303844,7 @@
     {
       "kind": "computed-member",
       "file": "server/library-service.mjs",
-      "line": 484,
+      "line": 496,
       "expression": "type",
       "fragments": [],
       "unresolved": true
@@ -303548,7 +303852,7 @@
     {
       "kind": "computed-member",
       "file": "server/library-service.mjs",
-      "line": 484,
+      "line": 496,
       "expression": "type",
       "fragments": [],
       "unresolved": true
@@ -303556,7 +303860,7 @@
     {
       "kind": "computed-member",
       "file": "server/library-service.mjs",
-      "line": 490,
+      "line": 502,
       "expression": "type",
       "fragments": [],
       "unresolved": true
@@ -303564,89 +303868,7 @@
     {
       "kind": "computed-member",
       "file": "server/library-service.mjs",
-      "line": 508,
-      "expression": "i",
-      "fragments": [],
-      "unresolved": true
-    },
-    {
-      "kind": "computed-member",
-      "file": "server/library-service.mjs",
-      "line": 509,
-      "expression": "i",
-      "fragments": [],
-      "unresolved": true
-    },
-    {
-      "kind": "computed-member",
-      "file": "server/library-service.mjs",
-      "line": 509,
-      "expression": "i",
-      "fragments": [],
-      "unresolved": true
-    },
-    {
-      "kind": "computed-member",
-      "file": "server/library-service.mjs",
-      "line": 509,
-      "expression": "i",
-      "fragments": [],
-      "unresolved": true
-    },
-    {
-      "kind": "computed-member",
-      "file": "server/library-service.mjs",
-      "line": 510,
-      "expression": "i",
-      "fragments": [],
-      "unresolved": true
-    },
-    {
-      "kind": "concatenation",
-      "file": "server/library-service.mjs",
-      "line": 512,
-      "expression": "path.resolve(dataDir)+'|'+user.id+'|'",
-      "fragments": [
-        "|",
-        "|"
-      ],
-      "unresolved": true
-    },
-    {
-      "kind": "concatenation",
-      "file": "server/library-service.mjs",
-      "line": 512,
-      "expression": "path.resolve(dataDir)+'|'",
-      "fragments": [
-        "|"
-      ],
-      "unresolved": true
-    },
-    {
-      "kind": "concatenation",
-      "file": "server/library-service.mjs",
-      "line": 512,
-      "expression": "user.id+'|'+id+'|'",
-      "fragments": [
-        "|",
-        "|"
-      ],
-      "unresolved": true
-    },
-    {
-      "kind": "concatenation",
-      "file": "server/library-service.mjs",
-      "line": 512,
-      "expression": "user.id+'|'",
-      "fragments": [
-        "|"
-      ],
-      "unresolved": true
-    },
-    {
-      "kind": "computed-member",
-      "file": "server/library-service.mjs",
-      "line": 516,
+      "line": 520,
       "expression": "i",
       "fragments": [],
       "unresolved": true
@@ -303662,7 +303884,7 @@
     {
       "kind": "computed-member",
       "file": "server/library-service.mjs",
-      "line": 523,
+      "line": 521,
       "expression": "i",
       "fragments": [],
       "unresolved": true
@@ -303670,39 +303892,15 @@
     {
       "kind": "computed-member",
       "file": "server/library-service.mjs",
-      "line": 524,
-      "expression": "k",
+      "line": 521,
+      "expression": "i",
       "fragments": [],
       "unresolved": true
     },
     {
       "kind": "computed-member",
       "file": "server/library-service.mjs",
-      "line": 524,
-      "expression": "k",
-      "fragments": [],
-      "unresolved": true
-    },
-    {
-      "kind": "computed-member",
-      "file": "server/library-service.mjs",
-      "line": 524,
-      "expression": "k",
-      "fragments": [],
-      "unresolved": true
-    },
-    {
-      "kind": "computed-member",
-      "file": "server/library-service.mjs",
-      "line": 526,
-      "expression": "variant",
-      "fragments": [],
-      "unresolved": true
-    },
-    {
-      "kind": "computed-member",
-      "file": "server/library-service.mjs",
-      "line": 530,
+      "line": 522,
       "expression": "i",
       "fragments": [],
       "unresolved": true
@@ -303710,7 +303908,113 @@
     {
       "kind": "concatenation",
       "file": "server/library-service.mjs",
-      "line": 532,
+      "line": 524,
+      "expression": "path.resolve(dataDir)+'|'+user.id+'|'",
+      "fragments": [
+        "|",
+        "|"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "server/library-service.mjs",
+      "line": 524,
+      "expression": "path.resolve(dataDir)+'|'",
+      "fragments": [
+        "|"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "server/library-service.mjs",
+      "line": 524,
+      "expression": "user.id+'|'+id+'|'",
+      "fragments": [
+        "|",
+        "|"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "server/library-service.mjs",
+      "line": 524,
+      "expression": "user.id+'|'",
+      "fragments": [
+        "|"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/library-service.mjs",
+      "line": 528,
+      "expression": "i",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/library-service.mjs",
+      "line": 533,
+      "expression": "i",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/library-service.mjs",
+      "line": 535,
+      "expression": "i",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/library-service.mjs",
+      "line": 536,
+      "expression": "k",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/library-service.mjs",
+      "line": 536,
+      "expression": "k",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/library-service.mjs",
+      "line": 536,
+      "expression": "k",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/library-service.mjs",
+      "line": 538,
+      "expression": "variant",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/library-service.mjs",
+      "line": 542,
+      "expression": "i",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "server/library-service.mjs",
+      "line": 544,
       "expression": "digest(id)+'.json'",
       "fragments": [
         ".json"
@@ -303720,7 +304024,7 @@
     {
       "kind": "computed-member",
       "file": "server/library-service.mjs",
-      "line": 534,
+      "line": 546,
       "expression": "passageId",
       "fragments": [],
       "unresolved": true
@@ -303728,7 +304032,7 @@
     {
       "kind": "computed-member",
       "file": "server/library-service.mjs",
-      "line": 534,
+      "line": 546,
       "expression": "passageId",
       "fragments": [],
       "unresolved": true
@@ -303736,7 +304040,7 @@
     {
       "kind": "computed-member",
       "file": "server/library-service.mjs",
-      "line": 536,
+      "line": 548,
       "expression": "p.id",
       "fragments": [],
       "unresolved": true
@@ -303744,7 +304048,7 @@
     {
       "kind": "computed-member",
       "file": "server/library-service.mjs",
-      "line": 536,
+      "line": 548,
       "expression": "p.id",
       "fragments": [],
       "unresolved": true
@@ -303752,7 +304056,7 @@
     {
       "kind": "computed-member",
       "file": "server/library-service.mjs",
-      "line": 537,
+      "line": 549,
       "expression": "passageId",
       "fragments": [],
       "unresolved": true
@@ -303760,7 +304064,7 @@
     {
       "kind": "computed-member",
       "file": "server/library-service.mjs",
-      "line": 571,
+      "line": 583,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -303768,7 +304072,7 @@
     {
       "kind": "computed-member",
       "file": "server/library-service.mjs",
-      "line": 603,
+      "line": 615,
       "expression": "id",
       "fragments": [],
       "unresolved": true
@@ -303776,7 +304080,7 @@
     {
       "kind": "concatenation",
       "file": "server/library-service.mjs",
-      "line": 620,
+      "line": 632,
       "expression": "file+'.'+randomUUID()+'.pending'",
       "fragments": [
         ".",
@@ -303787,7 +304091,7 @@
     {
       "kind": "concatenation",
       "file": "server/library-service.mjs",
-      "line": 620,
+      "line": 632,
       "expression": "file+'.'",
       "fragments": [
         "."
@@ -303797,7 +304101,7 @@
     {
       "kind": "computed-member",
       "file": "server/library-service.mjs",
-      "line": 659,
+      "line": 671,
       "expression": "p.id",
       "fragments": [],
       "unresolved": true
@@ -303805,7 +304109,7 @@
     {
       "kind": "concatenation",
       "file": "server/library-service.mjs",
-      "line": 660,
+      "line": 672,
       "expression": "digest(book.bookId)+'.json'",
       "fragments": [
         ".json"
@@ -303815,7 +304119,7 @@
     {
       "kind": "computed-member",
       "file": "server/library-service.mjs",
-      "line": 660,
+      "line": 672,
       "expression": "id",
       "fragments": [],
       "unresolved": true
@@ -303823,7 +304127,7 @@
     {
       "kind": "computed-member",
       "file": "server/library-service.mjs",
-      "line": 676,
+      "line": 688,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -303831,7 +304135,7 @@
     {
       "kind": "computed-member",
       "file": "server/library-service.mjs",
-      "line": 677,
+      "line": 689,
       "expression": "key",
       "fragments": [],
       "unresolved": true
@@ -303839,42 +304143,8 @@
     {
       "kind": "computed-member",
       "file": "server/library-service.mjs",
-      "line": 682,
+      "line": 694,
       "expression": "paragraph.id",
-      "fragments": [],
-      "unresolved": true
-    },
-    {
-      "kind": "computed-member",
-      "file": "server/library-service.mjs",
-      "line": 690,
-      "expression": "paragraph.id",
-      "fragments": [],
-      "unresolved": true
-    },
-    {
-      "kind": "computed-member",
-      "file": "server/library-service.mjs",
-      "line": 690,
-      "expression": "paragraph.id",
-      "fragments": [],
-      "unresolved": true
-    },
-    {
-      "kind": "concatenation",
-      "file": "server/library-service.mjs",
-      "line": 698,
-      "expression": "digest(incoming.bookId)+'.json'",
-      "fragments": [
-        ".json"
-      ],
-      "unresolved": true
-    },
-    {
-      "kind": "computed-member",
-      "file": "server/library-service.mjs",
-      "line": 700,
-      "expression": "id",
       "fragments": [],
       "unresolved": true
     },
@@ -303882,14 +304152,22 @@
       "kind": "computed-member",
       "file": "server/library-service.mjs",
       "line": 702,
-      "expression": "id",
+      "expression": "paragraph.id",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/library-service.mjs",
+      "line": 702,
+      "expression": "paragraph.id",
       "fragments": [],
       "unresolved": true
     },
     {
       "kind": "concatenation",
       "file": "server/library-service.mjs",
-      "line": 720,
+      "line": 710,
       "expression": "digest(incoming.bookId)+'.json'",
       "fragments": [
         ".json"
@@ -303899,7 +304177,7 @@
     {
       "kind": "computed-member",
       "file": "server/library-service.mjs",
-      "line": 722,
+      "line": 712,
       "expression": "id",
       "fragments": [],
       "unresolved": true
@@ -303907,7 +304185,25 @@
     {
       "kind": "computed-member",
       "file": "server/library-service.mjs",
-      "line": 722,
+      "line": 714,
+      "expression": "id",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "server/library-service.mjs",
+      "line": 732,
+      "expression": "digest(incoming.bookId)+'.json'",
+      "fragments": [
+        ".json"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/library-service.mjs",
+      "line": 734,
       "expression": "id",
       "fragments": [],
       "unresolved": true
@@ -303915,7 +304211,7 @@
     {
       "kind": "computed-member",
       "file": "server/library-service.mjs",
-      "line": 723,
+      "line": 734,
       "expression": "id",
       "fragments": [],
       "unresolved": true
@@ -303923,7 +304219,15 @@
     {
       "kind": "computed-member",
       "file": "server/library-service.mjs",
-      "line": 723,
+      "line": 735,
+      "expression": "id",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/library-service.mjs",
+      "line": 735,
       "expression": "id",
       "fragments": [],
       "unresolved": true
@@ -304763,6 +305067,71 @@
       "fragments": [
         "  语音："
       ],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/native-reading-copy.mjs",
+      "line": 17,
+      "expression": "key",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "server/native-reading-copy.mjs",
+      "line": 24,
+      "expression": "archive+'.json'",
+      "fragments": [
+        ".json"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "server/native-reading-copy.mjs",
+      "line": 25,
+      "expression": "archive+'.gzip'",
+      "fragments": [
+        ".gzip"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/native-reading-copy.mjs",
+      "line": 27,
+      "expression": "key",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "server/native-reading-copy.mjs",
+      "line": 42,
+      "expression": "file+'.'+randomUUID()+'.pending'",
+      "fragments": [
+        ".",
+        ".pending"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "server/native-reading-copy.mjs",
+      "line": 42,
+      "expression": "file+'.'",
+      "fragments": [
+        "."
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/native-reading-copy.mjs",
+      "line": 73,
+      "expression": "offset/NATIVE_COPY_PART_BYTES",
+      "fragments": [],
       "unresolved": true
     },
     {
@@ -307609,7 +307978,7 @@
     {
       "kind": "concatenation",
       "file": "server/portal.mjs",
-      "line": 481,
+      "line": 491,
       "expression": "JSON.stringify(value)+'\\n'",
       "fragments": [
         "\n"
@@ -307619,7 +307988,7 @@
     {
       "kind": "concatenation",
       "file": "server/portal.mjs",
-      "line": 485,
+      "line": 495,
       "expression": "'chat-failed:'+result.id",
       "fragments": [
         "chat-failed:"
@@ -307629,7 +307998,7 @@
     {
       "kind": "computed-member",
       "file": "server/portal.mjs",
-      "line": 494,
+      "line": 504,
       "expression": "1",
       "fragments": [],
       "unresolved": true
@@ -307637,7 +308006,7 @@
     {
       "kind": "computed-member",
       "file": "server/portal.mjs",
-      "line": 494,
+      "line": 504,
       "expression": "1",
       "fragments": [],
       "unresolved": true
@@ -307645,7 +308014,7 @@
     {
       "kind": "computed-member",
       "file": "server/portal.mjs",
-      "line": 506,
+      "line": 516,
       "expression": "1",
       "fragments": [],
       "unresolved": true
@@ -307653,7 +308022,7 @@
     {
       "kind": "computed-member",
       "file": "server/portal.mjs",
-      "line": 506,
+      "line": 516,
       "expression": "1",
       "fragments": [],
       "unresolved": true
@@ -307661,7 +308030,7 @@
     {
       "kind": "computed-member",
       "file": "server/portal.mjs",
-      "line": 507,
+      "line": 517,
       "expression": "1",
       "fragments": [],
       "unresolved": true
@@ -307669,7 +308038,7 @@
     {
       "kind": "concatenation",
       "file": "server/portal.mjs",
-      "line": 523,
+      "line": 533,
       "expression": "'W/\"'+createHash('sha256').update(JSON.stringify(manifest,(_key,value)=>value&&typeof value==='object'&&!Array.isArray(value)?Object.fromEntries(Object.entries(",
       "fragments": [
         "W/\"",
@@ -307680,99 +308049,11 @@
     {
       "kind": "concatenation",
       "file": "server/portal.mjs",
-      "line": 523,
+      "line": 533,
       "expression": "'W/\"'+createHash('sha256').update(JSON.stringify(manifest,(_key,value)=>value&&typeof value==='object'&&!Array.isArray(value)?Object.fromEntries(Object.entries(",
       "fragments": [
         "W/\""
       ],
-      "unresolved": true
-    },
-    {
-      "kind": "computed-member",
-      "file": "server/portal.mjs",
-      "line": 529,
-      "expression": "1",
-      "fragments": [],
-      "unresolved": true
-    },
-    {
-      "kind": "concatenation",
-      "file": "server/portal.mjs",
-      "line": 531,
-      "expression": "'bytes '+part.offset+'-'+(part.offset+part.bytes.length-1)+'/'",
-      "fragments": [
-        "bytes ",
-        "-",
-        "/"
-      ],
-      "unresolved": true
-    },
-    {
-      "kind": "concatenation",
-      "file": "server/portal.mjs",
-      "line": 531,
-      "expression": "'bytes '+part.offset+'-'",
-      "fragments": [
-        "bytes ",
-        "-"
-      ],
-      "unresolved": true
-    },
-    {
-      "kind": "concatenation",
-      "file": "server/portal.mjs",
-      "line": 531,
-      "expression": "'bytes '+part.offset",
-      "fragments": [
-        "bytes "
-      ],
-      "unresolved": true
-    },
-    {
-      "kind": "concatenation",
-      "file": "server/portal.mjs",
-      "line": 534,
-      "expression": "file.url+'&download=original.'",
-      "fragments": [
-        "&download=original."
-      ],
-      "unresolved": true
-    },
-    {
-      "kind": "concatenation",
-      "file": "server/portal.mjs",
-      "line": 534,
-      "expression": "'attachment; filename=\"original.'+(['pdf','epub','txt','md'].includes(file.format)?file.format:'bin')+'\"'",
-      "fragments": [
-        "attachment; filename=\"original.",
-        "\""
-      ],
-      "unresolved": true
-    },
-    {
-      "kind": "concatenation",
-      "file": "server/portal.mjs",
-      "line": 534,
-      "expression": "'attachment; filename=\"original.'+(['pdf','epub','txt','md'].includes(file.format)?file.format:'bin')",
-      "fragments": [
-        "attachment; filename=\"original."
-      ],
-      "unresolved": true
-    },
-    {
-      "kind": "computed-member",
-      "file": "server/portal.mjs",
-      "line": 537,
-      "expression": "2",
-      "fragments": [],
-      "unresolved": true
-    },
-    {
-      "kind": "computed-member",
-      "file": "server/portal.mjs",
-      "line": 537,
-      "expression": "1",
-      "fragments": [],
       "unresolved": true
     },
     {
@@ -307784,9 +308065,81 @@
       "unresolved": true
     },
     {
+      "kind": "concatenation",
+      "file": "server/portal.mjs",
+      "line": 541,
+      "expression": "'bytes '+part.offset+'-'+(part.offset+part.bytes.length-1)+'/'",
+      "fragments": [
+        "bytes ",
+        "-",
+        "/"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "server/portal.mjs",
+      "line": 541,
+      "expression": "'bytes '+part.offset+'-'",
+      "fragments": [
+        "bytes ",
+        "-"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "server/portal.mjs",
+      "line": 541,
+      "expression": "'bytes '+part.offset",
+      "fragments": [
+        "bytes "
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "server/portal.mjs",
+      "line": 544,
+      "expression": "file.url+'&download=original.'",
+      "fragments": [
+        "&download=original."
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "server/portal.mjs",
+      "line": 544,
+      "expression": "'attachment; filename=\"original.'+(['pdf','epub','txt','md'].includes(file.format)?file.format:'bin')+'\"'",
+      "fragments": [
+        "attachment; filename=\"original.",
+        "\""
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "server/portal.mjs",
+      "line": 544,
+      "expression": "'attachment; filename=\"original.'+(['pdf','epub','txt','md'].includes(file.format)?file.format:'bin')",
+      "fragments": [
+        "attachment; filename=\"original."
+      ],
+      "unresolved": true
+    },
+    {
       "kind": "computed-member",
       "file": "server/portal.mjs",
-      "line": 553,
+      "line": 547,
+      "expression": "2",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/portal.mjs",
+      "line": 547,
       "expression": "1",
       "fragments": [],
       "unresolved": true
@@ -307794,8 +308147,8 @@
     {
       "kind": "computed-member",
       "file": "server/portal.mjs",
-      "line": 562,
-      "expression": "action",
+      "line": 549,
+      "expression": "1",
       "fragments": [],
       "unresolved": true
     },
@@ -307803,6 +308156,22 @@
       "kind": "computed-member",
       "file": "server/portal.mjs",
       "line": 563,
+      "expression": "1",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/portal.mjs",
+      "line": 572,
+      "expression": "action",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/portal.mjs",
+      "line": 573,
       "expression": "action",
       "fragments": [],
       "unresolved": true
@@ -307810,7 +308179,7 @@
     {
       "kind": "template",
       "file": "server/portal.mjs",
-      "line": 568,
+      "line": 578,
       "expression": "`reader://books/${bookId}/audio/clips/${c.id}`",
       "fragments": [
         "reader://books/",
@@ -310882,11 +311251,11 @@
     "duplicateKeys": 0,
     "reviewedItems": 11,
     "unreviewedItems": 2462,
-    "candidates": 6248,
-    "candidatesUnreviewed": 6247,
+    "candidates": 6263,
+    "candidatesUnreviewed": 6262,
     "candidatesProtected": 143,
     "itemsProtected": 9,
-    "dynamicConsumers": 4033,
+    "dynamicConsumers": 4040,
     "consumerReferences": 2113,
     "keysWithoutStaticConsumers": 1335,
     "reviewedLocaleValues": 44,

@@ -112,6 +112,20 @@ public actor CloudLibraryClient {
     public func data(path: String, method: String = "GET", body: Data? = nil, ownerID: String? = nil) async throws -> Data {
         try await perform(path: path, method: method, body: body, ownerID: ownerID).0
     }
+    // A whole download spans many requests and progress callbacks. A new request's
+    // own fence cannot detect a sign-out/sign-in of the same owner between parts.
+    func readingDownloadGeneration(ownerID: String) throws -> UUID {
+        try Task.checkCancellation()
+        guard credential?.account.id == ownerID else { throw Self.changed() }
+        return generation
+    }
+    func validateReadingDownload(ownerID: String, generation marker: UUID) throws {
+        try Task.checkCancellation()
+        guard marker == generation, credential?.account.id == ownerID else { throw Self.changed() }
+    }
+    func readingCopyData(path: String, ownerID: String, preparing: Bool = false) async throws -> Data {
+        try await perform(path: path, method: "GET", body: nil, ownerID: ownerID, timeout: preparing ? 180 : 45).0
+    }
     public func coverData(path: String, ownerID: String) async throws -> Data {
         guard CloudCoverPath.isAllowed(path), credential?.account.id == ownerID else { throw Self.changed() }
         let marker = generation
@@ -226,7 +240,7 @@ public actor CloudLibraryClient {
         guard let response = response as? HTTPURLResponse, (200..<300).contains(response.statusCode) else { throw CloudRequestError(status: 502, message: "文件尚未完整上传，请重试；原件仍保留在此设备。") }
         return try CloudJSON.decode(await data(path: "/api/library/upload/complete", method: "POST", body: CloudJSON.encode(["id": .string(id)]), ownerID: ownerID))
     }
-    private func perform(path: String, method: String, body: Data?, ownerID: String?) async throws -> (Data, HTTPURLResponse) {
+    private func perform(path: String, method: String, body: Data?, ownerID: String?, timeout: TimeInterval = 45) async throws -> (Data, HTTPURLResponse) {
         guard path.hasPrefix("/api/"), !path.hasPrefix("//"), let url = URL(string: path, relativeTo: baseURL)?.absoluteURL,
               url.host == baseURL.host, url.scheme == baseURL.scheme,
               url.scheme == "https" || ["localhost", "127.0.0.1", "::1"].contains(url.host ?? "") else {
@@ -238,6 +252,7 @@ public actor CloudLibraryClient {
         if let owner, owner != credential?.account.id { throw Self.changed() }
         let marker = generation
         var request = URLRequest(url: url)
+        request.timeoutInterval = timeout
         request.httpMethod = method; request.httpBody = body
         request.setValue("application/json", forHTTPHeaderField: "Accept")
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")

@@ -5,6 +5,7 @@ import {buildLibraryArrival} from './library-arrival.mjs';
 import {memoryFor,recordPreference,applyMemoryChange} from './preference-memory.mjs';
 import {resolveVerifiedSource} from './verified-source.mjs';
 import {createChapterReadStore} from './chapter-read-store.mjs';
+import {createNativeReadingCopy} from './native-reading-copy.mjs';
 import {renderPdfEvidence} from './pdf-source-evidence.mjs';
 import {epubSourceEvidence} from './epub-import.mjs';
 import {buildSourceRevision,migrateSourceNotes} from './source-revisions.mjs';
@@ -119,6 +120,17 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
     if(user){const introduction=await introductions.get(user,book);if(introduction)book.introduction=introduction;}
     return book;
   }
+  const nativeCopies=createNativeReadingCopy({dataDir,dataStore,loadBook:getBook,assertAccess:async(user,id)=>{
+    requireUser(user);if(typeof id!=='string'||!id||id.length>128)throw fail('找不到这本书',404);
+    if(publicBooks.has(id))return;
+    const index=await read(path.join(userDir(user),'index.json'),{books:[]});if(!index.books.some(book=>book.bookId===id&&book.visibility==='private'))throw fail('找不到这本书',404);
+  },captureSnapshot:async(user,id)=>{
+    const snapshot=await chapterReads.manifest(user,id),introduction=await introductions.get(user,{...snapshot.book,sections:snapshot.introductionSections});
+    await chapterReads.assertCurrent(user,id,snapshot);
+    // Introductions are saved independently of chapter writes. Include their
+    // actual saved value so final verification fences those editorial changes.
+    return {snapshotId:digest(JSON.stringify([snapshot.id,introduction||null])),contentVersion:snapshot.contentVersion};
+  }});
   const readingCache=snapshot=>({schemaVersion:1,snapshotId:snapshot.id,chapters:structuredClone(snapshot.chapters)});
   async function readingMetadata(user,snapshot){
     const book=structuredClone(snapshot.book);
@@ -729,5 +741,5 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
     await chapterReads.manifest(user,incoming.bookId);
     return {bookId:incoming.bookId,alreadyOwned:!claim.created};
   }
-  return {getCover,introductions,sourceEvidence,sourceReview,createSourceRevision,resolveSourceAnchor,bookTransfer:async(user,id,offset,snapshot)=>transferBook(await getBook(user,id),offset,snapshot),list,shelfState,reorderShelf,archiveBook,restoreBook,trash,getBook,readingView,readingManifest,readingChapter,importDocument,importExtracted,originalInfo,getOriginal,originalDownload,originalParts,originalRange,records,notebookPage,workspaceRecords,workspaceStateFile,readingSummary,getReadingPreferences,saveReadingPreferences,getPreferenceMemory,changePreferenceMemory,addComment,editComment,addHighlight,addAgentHighlight,removeHighlight,saveProgress,saveReadingSession,recordReadingMilestone,setReadingGoal,readingActivity,arrival,translate,createGrant,createMcpGrant,createDailyGrant,authorize,authorizeDaily,isGrantActive,registerGrantRevocation:listener=>{grantRevocationListeners.add(listener);return()=>grantRevocationListeners.delete(listener);},registerSourceMutation:listener=>{sourceMutationListeners.add(listener);return()=>sourceMutationListeners.delete(listener);},grants,revokeGrant,exportLibrary,exportManifest,exportBookPart,exportBookEntry,restoreOriginal,validateRestore,previewRestoreBooks,restoreLibrary,receiveGift,translationAvailable:!!translator};
+  return {nativeCopy:nativeCopies.prepare,nativeCopyPart:nativeCopies.part,verifyNativeCopy:nativeCopies.verify,getCover,introductions,sourceEvidence,sourceReview,createSourceRevision,resolveSourceAnchor,bookTransfer:async(user,id,offset,snapshot)=>transferBook(await getBook(user,id),offset,snapshot),list,shelfState,reorderShelf,archiveBook,restoreBook,trash,getBook,readingView,readingManifest,readingChapter,importDocument,importExtracted,originalInfo,getOriginal,originalDownload,originalParts,originalRange,records,notebookPage,workspaceRecords,workspaceStateFile,readingSummary,getReadingPreferences,saveReadingPreferences,getPreferenceMemory,changePreferenceMemory,addComment,editComment,addHighlight,addAgentHighlight,removeHighlight,saveProgress,saveReadingSession,recordReadingMilestone,setReadingGoal,readingActivity,arrival,translate,createGrant,createMcpGrant,createDailyGrant,authorize,authorizeDaily,isGrantActive,registerGrantRevocation:listener=>{grantRevocationListeners.add(listener);return()=>grantRevocationListeners.delete(listener);},registerSourceMutation:listener=>{sourceMutationListeners.add(listener);return()=>sourceMutationListeners.delete(listener);},grants,revokeGrant,exportLibrary,exportManifest,exportBookPart,exportBookEntry,restoreOriginal,validateRestore,previewRestoreBooks,restoreLibrary,receiveGift,translationAvailable:!!translator};
 }

@@ -236,7 +236,14 @@ final class LibraryModel {
             let shelf = try await cloud.shelf(ownerID: account.id)
             guard marker == contextID else { return }
             cloudBooks = shelf
-            let rows = shelf.map { CloudJSON.object(["bookId": .string($0.id), "contentVersion": .string($0.contentVersion), "title": .string($0.title), "author": .string($0.author), "coverImage": $0.coverPath.map(CloudJSON.string) ?? .null]) }
+            let dateFormatter = ISO8601DateFormatter()
+            dateFormatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+            let rows = shelf.map { book in CloudJSON.object([
+                "bookId": .string(book.id), "contentVersion": .string(book.contentVersion),
+                "title": .string(book.title), "author": .string(book.author),
+                "coverImage": book.coverPath.map(CloudJSON.string) ?? .null,
+                "addedAt": book.addedAt.map { .string(dateFormatter.string(from: $0)) } ?? .null
+            ]) }
             try await library.cacheCloudView("shelf", data: CloudJSON.encode(["books": .array(rows)]))
             var errors: [String] = []
             for book in books where book.cloud != nil {

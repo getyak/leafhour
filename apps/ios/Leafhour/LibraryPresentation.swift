@@ -30,6 +30,7 @@ struct LibraryShelfItem: Identifiable {
     var title: String { local?.title ?? cloud?.title ?? "" }
     var author: String { local?.author ?? cloud?.author ?? "" }
     var isDownloaded: Bool { local != nil }
+    var addedAt: Date? { cloud?.addedAt ?? local?.importedAt }
     var shareText: String { [title, author].filter { !$0.isEmpty }.joined(separator: "\n") }
     // Cloud reading copies contain internal ownership metadata. A source-only
     // text export deliberately does not serialize their manifest or ReaderState.
@@ -85,8 +86,8 @@ enum LibraryPresentation {
             guard seen.insert(id).inserted else { continue }
             result.append(LibraryShelfItem(id: id, local: book, cloud: additional ? nil : book.cloud.flatMap { remoteByID[$0.bookID] }, isAdditionalVersion: additional))
         }
-        // CloudShelfBook has no added-at field. Preserve the service's shelf order
-        // instead of inventing dates for books that have not been downloaded.
+        // Retain service order as a stable fallback for cloud books whose
+        // actual addition date is unavailable.
         for book in cloud {
             let id = "cloud:" + book.id
             guard seen.insert(id).inserted else { continue }
@@ -98,7 +99,13 @@ enum LibraryPresentation {
                 && (search.isEmpty || normalized($0.title).contains(search) || normalized($0.author).contains(search))
         }
         switch sort {
-        case .added: break
+        case .added:
+            result = result.enumerated().sorted { lhs, rhs in
+                let left = lhs.element.addedAt, right = rhs.element.addedAt
+                if let left, let right, left != right { return left > right }
+                if (left != nil) != (right != nil) { return left != nil }
+                return lhs.offset < rhs.offset
+            }.map(\.element)
         case .title: result.sort(by: titlePrecedes)
         case .author:
             result.sort { lhs, rhs in
