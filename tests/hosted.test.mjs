@@ -1,4 +1,5 @@
 import test from 'node:test';
+import {MAX_BOOK_BYTES} from '../server/book-capacity.mjs';
 import assert from 'node:assert/strict';
 import {createHostedStore} from '../deploy/hosted-store.mjs';
 import {createHostedAuth} from '../deploy/hosted-auth.mjs';
@@ -91,7 +92,7 @@ test('disabled hosted email never sends an OTP and hosted MCP uses only explicit
 });
 test('oversized extracted cloud books are rejected before originals or shelf entries are saved',async()=>{
   const fixture=database(),store=createHostedStore({env,fetcher:fixture.fetcher}),library=await createLibraryService({dataDir:'hosted',catalogDir:null,dataStore:store}),user={id:'large-source'};
-  await assert.rejects(library.importExtracted(user,{filename:'large.pdf',bytes:Buffer.from('%PDF-synthetic'),extracted:{format:'pdf',review:'extracted_unreviewed',pages:[{page:1,text:'This synthetic line is ordinary text. '.repeat(1000000)}]}}),e=>e.status===413);
+  await assert.rejects(library.importExtracted(user,{filename:'large.pdf',bytes:Buffer.from('%PDF-synthetic'),extracted:{format:'pdf',review:'extracted_unreviewed',pages:[{page:1,text:'This synthetic line is ordinary text. '.repeat(Math.ceil(MAX_BOOK_BYTES/36))}]}}),e=>e.status===413);
   assert.equal((await library.list(user)).length,0);assert.equal(fixture.rows.size,0);
 });
 test('a native book above the former small-document ceiling imports and saves real separate translation variants',async()=>{
@@ -109,7 +110,7 @@ test('translation capacity is checked before a provider call or reservation is s
  const f=database(),store=createHostedStore({env,fetcher:f.fetcher});let calls=0;
  const library=await createLibraryService({dataDir:'hosted',catalogDir:null,dataStore:store,translator:async()=>{calls++;return {literal:'直译',interpretive:'意译'};}}),owner={id:'near-capacity'};
  const book=await library.importDocument(owner,{filename:'book.txt',bytes:Buffer.from('A readable source paragraph.')}),row=[...f.rows.values()].find(r=>r.value.sections);
- row.value.padding='x'.repeat(32*1024*1024-Buffer.byteLength(JSON.stringify(row.value))-80000);
+ row.value.padding='x'.repeat(MAX_BOOK_BYTES-Buffer.byteLength(JSON.stringify(row.value))-80000);
  await assert.rejects(library.translate(owner,book.bookId,book.sections[0].paragraphs[0].id),e=>e.status===413);assert.equal(calls,0);
 });
 test('hosted authentication uses verified provider identity, keeps tokens server-side and observes logout',async()=>{

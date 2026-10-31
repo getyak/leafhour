@@ -2,10 +2,10 @@
 // owner so this module never creates another interface-locale runtime.
 const WIDTH_KEY='marginalia:ui:reader-chat-width';
 const clamp=(value,min,max)=>Math.max(min,Math.min(max,value));
-export function mountReaderChatWorkspace({root,document=globalThis.document,window=globalThis.window,storage,getReader=()=>null,labels={}}={}){
+export function mountReaderChatWorkspace({root,document=globalThis.document,window=globalThis.window,storage,getReader=()=>null,labels={},initialWidth=400,storageKey=WIDTH_KEY}={}){
  const body=document?.body;
  if(!root?.classList||!body?.classList||!document.createElement||!window?.addEventListener)return {setOpen(){},setLabels(){},isMobile:()=>false,dispose(){}};
- let disposed=false,opened=false,preferred=400,drag=null,observer=null,scrollLock=null,layoutFrame=null,pendingLayout=null;
+ let disposed=false,opened=false,preferred=initialWidth,drag=null,observer=null,scrollLock=null,layoutFrame=null,pendingLayout=null;
  const removers=[],inert=new Map(),originalModal=root.getAttribute('aria-modal'),originalTab=root.getAttribute('tabindex');
  const originalWidth=root.style.getPropertyValue('--reader-chat-width');
  const originalBodyWidth=body.style.getPropertyValue('--reader-chat-width');
@@ -21,7 +21,7 @@ export function mountReaderChatWorkspace({root,document=globalThis.document,wind
    (pending.reader.restoreLayoutAnchor||pending.reader.restoreAnchor)?.call(pending.reader,pending.anchor);
   });
  }
- try{storage??=window.localStorage;const saved=storage?.getItem(WIDTH_KEY);if(typeof saved==='string'&&/^\d{3}$/.test(saved)&&Number(saved)>=320&&Number(saved)<=640)preferred=Number(saved);}catch{}
+ try{storage??=window.localStorage;const saved=storage?.getItem(storageKey);if(typeof saved==='string'&&/^\d{3}$/.test(saved)&&Number(saved)>=320&&Number(saved)<=640)preferred=Number(saved);}catch{}
  const separator=document.createElement('div');separator.className='reader-chat-separator';separator.setAttribute('role','separator');separator.setAttribute('aria-orientation','vertical');separator.setAttribute('tabindex','0');root.prepend(separator);
  root.classList.add('reader-chat-workspace');
  const listen=(target,type,fn,options)=>{target.addEventListener(type,fn,options);removers.push(()=>target.removeEventListener(type,fn,options));};
@@ -45,7 +45,7 @@ export function mountReaderChatWorkspace({root,document=globalThis.document,wind
   else{restoreInert();root.setAttribute('aria-modal','false');}
   if(!narrow)document.dispatchEvent(new Event('reader:chat-layout'));
  }
- const save=()=>{try{storage?.setItem(WIDTH_KEY,String(Math.round(preferred)));}catch{}};
+ const save=()=>{try{storage?.setItem(storageKey,String(Math.round(preferred)));}catch{}};
  function resize(value,{persist=false}={}){preferred=clamp(Math.round(value),320,Math.min(640,Math.max(320,window.innerWidth-640)));paint();if(persist)save();}
  function endDrag(persist){const previous=drag;if(!previous)return;drag=null;root.classList.remove('is-resizing');if(persist)save();else resize(previous.width);if(separator.hasPointerCapture?.(previous.id))separator.releasePointerCapture(previous.id);}
  listen(separator,'keydown',event=>{

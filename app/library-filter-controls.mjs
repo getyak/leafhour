@@ -11,7 +11,7 @@ import {mountPopover} from './popover-controls.mjs';
 // choice commits immediately (no Done step) and mirrors the native select so
 // existing change side effects stay identical; option/value writes go through
 // the explicit sync() call only.
-const defaults=()=>({scope:'all',status:'all',topic:'all',language:'all',form:'all'});
+const defaults=()=>({scope:'all',status:'all',topic:'all',language:'all',form:'all',sort:'recent'});
 const languageName=value=>{
   if(['all','unknown','en','zh'].includes(value))return t('filter.language.'+value);
   try{return new Intl.DisplayNames([getUiLocale()],{type:'language'}).of(value)||value;}catch{return value;}
@@ -21,10 +21,11 @@ export function mountShelfFilters({root,onChange,onOpenChange=()=>{}}){
   const doc=root.ownerDocument;
   const find=id=>root.querySelector('#'+id),search=find('book-search'),panel=find('shelf-filter-panel'),trigger=find('shelf-filter-button');
   const fields={scope:find('shelf-source'),topic:find('shelf-topic'),language:find('shelf-language'),form:find('shelf-form')};
+  if(find('shelf-sort'))fields.sort=find('shelf-sort');
   const states=[...root.querySelectorAll('[data-reading-status]')],chips=find('shelf-filter-chips'),clearButton=find('shelf-filter-clear'),selection=find('shelf-filter-selection'),count=find('shelf-filter-count');
   let values=defaults(),optionsKey='',lastBooks=null,disposed=false,summaryRows=[];
   const unbind=bindUi(root),listeners=[];const listen=(node,event,handler)=>{node.addEventListener(event,handler);listeners.push(()=>node.removeEventListener(event,handler));};
-  const read=()=>({...values,query:normalizeLibraryQuery(search.value)});
+  const read=()=>{const result={...values,query:normalizeLibraryQuery(search.value)};if(!fields.sort)delete result.sort;return result;};
   const popover=mountPopover({document:doc,element:panel,trigger}),offPopover=popover.subscribe({beforeOpen:position,onChange:onOpenChange});
   const close=()=>popover.close();
   const open=()=>popover.open();
@@ -32,7 +33,7 @@ export function mountShelfFilters({root,onChange,onOpenChange=()=>{}}){
     const changed={};
     for(const [key,value] of Object.entries(patch||{})){
       if(key==='query'){search.value=String(value||'');values={...values};changed.query=String(value||'');continue;}
-      if(!['scope','status','topic','language','form'].includes(key))continue;
+      if(!['scope','status','topic','language','form','sort'].includes(key))continue;
       values={...values,[key]:value};changed[key]=value;
     }
     if(lastBooks)update(lastBooks);
@@ -46,7 +47,7 @@ export function mountShelfFilters({root,onChange,onOpenChange=()=>{}}){
     focusAfterClear(key);
   };
   const clearAll=()=>{
-    values=defaults();search.value='';
+    values={...defaults(),sort:values.sort};search.value='';
     if(lastBooks)update(lastBooks);
     onChange({clearAll:true});
     search.focus?.();
@@ -65,7 +66,7 @@ export function mountShelfFilters({root,onChange,onOpenChange=()=>{}}){
   writeOptions([...LIBRARY_TOPICS],['all','zh','en']);
   const choiceLabel=key=>t('filter.'+key);
   const choices={};
-  for(const [key,field] of Object.entries(fields))choices[key]=mountChoiceControl({document:doc,select:field,label:choiceLabel(key)});
+  for(const [key,field] of Object.entries(fields))if(key!=='sort')choices[key]=mountChoiceControl({document:doc,select:field,label:choiceLabel(key)});
   const choiceFocusTarget=control=>!control?null:control.mode==='chips'?control.chips[0]:control.input;
   function focusAfterClear(key){
     let target=key==='query'?search:key==='status'?states[0]:popover.isOpen()?choiceFocusTarget(choices[key]):null;
@@ -149,7 +150,7 @@ export function mountShelfFilters({root,onChange,onOpenChange=()=>{}}){
     setPending(value){for(const b of states)b.disabled=value&&b.dataset.readingStatus!=='all';for(const key of ['language','form']){fields[key].disabled=value;choices[key]?.sync();}},
     dispose(){if(disposed)return;disposed=true;offLocale();unbind();for(const off of listeners)off();for(const choice of Object.values(choices))choice?.destroy();offPopover();popover.close({focus:false});if(typeof window!=='undefined'){window.removeEventListener('resize',reposition);window.removeEventListener('scroll',reposition);}},
     apply(view){
-      values={scope:view.scope||'all',status:view.status||'all',topic:view.topic||'all',language:view.language||'all',form:view.form||'all'};
+      values={scope:view.scope||'all',status:view.status||'all',topic:view.topic||'all',language:view.language||'all',form:view.form||'all',sort:view.sort||'recent'};
       search.value=view.query||'';
       if(lastBooks)update(lastBooks);
     },

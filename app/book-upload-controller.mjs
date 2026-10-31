@@ -15,9 +15,9 @@ export function createBookUploadController({api,getOwner,getSession,uploadPdf=se
  const schedule=()=>{clearTimeout(timer);if(!disposed&&owner&&!document?.hidden&&[...records.values()].some(r=>['preparing','running','publishing'].includes(r.job?.state))){timer=setTimeout(()=>void refresh(),pollMs);timer.unref?.();}};
  function syncOwner(){const next=getOwner()||null;if(next===owner)return false;owner=next;revision++;clearTimeout(timer);refreshing=null;records.clear();emit();return true;}
  const fence=(captured,version,record,run)=>{if(!current(captured,version)||record.stage==='cancelled'||run!==record.run)throw Error('inactive-upload');};
- function accept(record,job){record.job=job;record.stage=stage(job);record.bookId=job.bookId||null;record.percent=null;record.busy=false;record.error=false;if(job.id&&record.stage!=='ready')memory.watch(owner,job.id);emit();if(record.stage==='ready'&&!record.notified){record.notified=true;record.file=null;try{onReady({bookId:job.bookId,title:job.title||{en:record.filename},job});}catch{}}schedule();}
+ function accept(record,job){for(const [id,other]of records)if(other!==record&&job.id&&other.job?.id===job.id)records.delete(id);record.job=job;record.stage=stage(job);record.bookId=job.bookId||null;record.percent=null;record.busy=false;record.error=false;record.errorMessage=null;if(job.id&&record.stage!=='ready')memory.watch(owner,job.id);emit();if(record.stage==='ready'&&!record.notified){record.notified=true;record.file=null;try{onReady({bookId:job.bookId,title:job.title||{en:record.filename},job});}catch{}}schedule();}
  async function transfer(record){
-  const captured=owner,version=revision,run=++record.run;record.stage='receiving';record.percent=null;record.busy=true;record.error=false;emit();
+  const captured=owner,version=revision,run=++record.run;record.stage='receiving';record.percent=null;record.busy=true;record.error=false;record.errorMessage=null;emit();
   const assertCurrent=()=>fence(captured,version,record,run);
   const scopedApi=async(path,body)=>{
    assertCurrent();const result=await api(path,body);
@@ -31,15 +31,15 @@ export function createBookUploadController({api,getOwner,getSession,uploadPdf=se
    if(/\.pdf$/i.test(record.filename))result=await uploadPdf({file:record.file,api:scopedApi,assertCurrent,onProgress:update=>{if(current(captured,version)&&record.run===run&&record.stage!=='cancelled'){record.percent=Number.isFinite(update.params?.percent)?update.params.percent:null;if(update.id==='pdf.upload.verifying')record.stage='organizing';emit();}}});
    else if(getSession()?.directUpload){
     const target=await scopedApi('/api/library/upload/start',{filename:record.filename,bytes:record.file.size});assertCurrent();
-    const response=await request(target.url,{method:'PUT',headers:{'Content-Type':'application/octet-stream'},body:record.file});assertCurrent();if(!response.ok)throw Error('upload');record.stage='organizing';emit();result=await scopedApi('/api/library/upload/complete',{id:target.id});
-   }else{const base64=await readBase64(record.file);assertCurrent();record.stage='organizing';emit();result=await scopedApi('/api/library/upload',{filename:record.filename,base64});}
+    const response=await request(target.url,{method:'PUT',headers:{'Content-Type':'application/octet-stream'},body:record.file});assertCurrent();if(!response.ok)throw Error('upload');record.stage='organizing';emit();result=await scopedApi('/api/library/upload/complete',{id:target.id,...(getSession()?.documentJobs?{defer:true}:{})});
+   }else{const base64=await readBase64(record.file);assertCurrent();record.stage='organizing';emit();result=await scopedApi('/api/library/upload',{filename:record.filename,base64,...(getSession()?.documentJobs?{defer:true}:{})});}
    if(!current(captured,version))return;
    if(record.stage==='cancelled'){if(result?.id&&result.state!=='done')await api('/api/library/ingestion/'+encodeURIComponent(result.id)+'/cancel',{});return;}
    assertCurrent();accept(record,result.state?result:{...result,state:'done'});
-  }catch{if(current(captured,version)&&record.run===run&&record.stage!=='cancelled'){record.stage='interrupted';record.busy=false;record.error=true;emit();}}
+  }catch(error){if(current(captured,version)&&record.run===run&&record.stage!=='cancelled'){record.stage='interrupted';record.busy=false;record.error=true;record.errorMessage=Number.isInteger(error.status)&&error.status>=400&&error.status<500?String(error.message).slice(0,400):null;emit();}}
  }
  function start(file){if(disposed)return null;syncOwner();if(!owner)return null;const validator=createUploadState();validator.select(file);const duplicate=[...records.values()].find(r=>r.file===file&&!['ready','cancelled'].includes(r.stage));if(duplicate)return duplicate.id;
-  const id='upload-'+(++sequence),record={id,filename:file.name,file,stage:'receiving',percent:null,job:null,bookId:null,busy:true,run:0};records.set(id,record);void transfer(record);return id;
+  const id='upload-'+(++sequence),record={id,filename:file.name,file,createdAt:new Date().toISOString(),stage:'receiving',percent:null,job:null,bookId:null,busy:true,run:0};records.set(id,record);void transfer(record);return id;
  }
  async function act(id,action){syncOwner();const record=records.get(id);if(disposed||!record?.job||record.busy)return;const captured=owner,version=revision;record.run++;record.busy=true;record.error=false;emit();
   try{const job=record.job,path=action==='consent'?'consent':action==='cancel'?'cancel':'resume';const result=await api('/api/library/ingestion/'+encodeURIComponent(job.id)+'/'+path,action==='consent'?{confirm:true,sourceHash:job.sourceHash}:{});if(current(captured,version))accept(record,result);}

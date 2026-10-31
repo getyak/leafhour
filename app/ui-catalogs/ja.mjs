@@ -2467,5 +2467,14 @@ export default Object.freeze({
   "ws.reviewWeek": "選んだ週",
   "ws.reviewMonth": "選んだ月",
   "ws.reviewPeriod": "振り返る期間",
-  "ws.reviewRange": "対象期間：{start} から {end}。この期間の記録を振り返り、以前のノートは文脈として扱います。"
+  "ws.reviewRange": "対象期間：{start} から {end}。この期間の記録を振り返り、以前のノートは文脈として扱います。",
+  "filter.sort": "本の並び順",
+  "filter.sort.recent": "最近読んだ本・追加した本",
+  "filter.sort.added": "最近追加した本",
+  "filter.sort.published-asc": "出版年の古い順",
+  "filter.sort.published-desc": "出版年の新しい順",
+  "filter.sort.manual": "手動の並び順",
+  "bookUpload.imports": "本棚に追加中",
+  "bookUpload.parsing": "章を整理しています · {completed} / {total}",
+  "bookUpload.tasks": "本の取り込み"
 });

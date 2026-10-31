@@ -29,6 +29,9 @@ function dragFixture({getOwner=()=> 'fixture'}={}){
  const event=target=>({target,clientX:390,clientY:80,pointerId:7,button:0,preventDefault(){this.prevented=true;},dataTransfer:{setData(){},setDragImage(){}}});
  return {controller,handlers,grid,art,handle,a,b,event,orders,removed:()=>removed};
 }
+test('recent and publication sorts reject native cover drag and touch long press',async()=>{
+ for(const sort of ['recent','added','published-asc','published-desc']){const f=dragFixture();f.grid.dataset={sort};const native=f.event(f.art);f.handlers.get('dragstart')(native);assert.equal(native.prevented,true);assert.equal(f.grid.classList.contains('is-sorting'),false);const touch=f.event(f.art);touch.pointerType='touch';f.handlers.get('pointerdown')(touch);await new Promise(r=>setTimeout(r,470));assert.equal(f.grid.classList.contains('is-sorting'),false);assert.deepEqual(f.orders,[]);}
+});
 test('the native drag handoff pointercancel does not discard a cover before its drop',async()=>{
  const f=dragFixture();f.handlers.get('dragstart')(f.event(f.art));f.handlers.get('pointercancel')(f.event(f.art));
  assert.equal(f.grid.classList.contains('is-sorting'),true);

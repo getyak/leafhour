@@ -2468,5 +2468,14 @@ export default Object.freeze({
   "ws.reviewWeek": "Selected week",
   "ws.reviewMonth": "Selected month",
   "ws.reviewPeriod": "Review period",
-  "ws.reviewRange": "Date range: {start} to {end}. Review only entries from this period; older original notes are context."
+  "ws.reviewRange": "Date range: {start} to {end}. Review only entries from this period; older original notes are context.",
+  "filter.sort": "Sort books",
+  "filter.sort.recent": "Recently read or added",
+  "filter.sort.added": "Recently added",
+  "filter.sort.published-asc": "Publication: oldest first",
+  "filter.sort.published-desc": "Publication: newest first",
+  "filter.sort.manual": "Manual order",
+  "bookUpload.imports": "Bringing in your books",
+  "bookUpload.parsing": "Organizing chapters · {completed} / {total}",
+  "bookUpload.tasks": "Book imports"
 });

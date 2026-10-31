@@ -150,7 +150,7 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
     for(const file of ['reader-audio.js','reader-audio-bootstrap.mjs','reader-audio-metadata.mjs','audio-state.mjs','listening-guide-state.mjs','action-focus.mjs'])files['/'+file]=file;
     for(const file of ['ui-first-paint-codec.mjs','ui-first-paint-bootstrap.mjs','ui-locale.mjs','ui-locale-codec.mjs','ui-locale-controls.mjs','ui-catalogs/en.mjs','ui-catalogs/zh-Hans.mjs','ui-catalogs/zh-Hant.mjs','ui-catalogs/ja.mjs'])files['/'+file]=file;
     for(const file of ['library-portability.mjs','portable-chat.mjs','library-data.mjs','library-data.css','fflate.mjs','fflate-LICENSE.txt'])files['/'+file]=file;
-    files['/document-source.mjs']='document-source.mjs';files['/pdf-ingestion.mjs']='pdf-ingestion.mjs';files['/pdf-onboarding.mjs']='pdf-onboarding.mjs';files['/pdf-onboarding-state.mjs']='pdf-onboarding-state.mjs';files['/book-transfer.mjs']='book-transfer.mjs';files['/book-upload-controller.mjs']='book-upload-controller.mjs';files['/chat-book-upload.mjs']='chat-book-upload.mjs';
+    files['/document-source.mjs']='document-source.mjs';files['/pdf-ingestion.mjs']='pdf-ingestion.mjs';files['/pdf-onboarding.mjs']='pdf-onboarding.mjs';files['/pdf-onboarding-state.mjs']='pdf-onboarding-state.mjs';files['/book-transfer.mjs']='book-transfer.mjs';files['/book-upload-controller.mjs']='book-upload-controller.mjs';files['/chat-book-upload.mjs']='chat-book-upload.mjs';files['/book-import-shelf.mjs']='book-import-shelf.mjs';
     files['/source-review']='source-review.html';for(const file of ['source-review.mjs','source-review.css','source-revisions.mjs'])files['/'+file]=file;
     files['/original-download.mjs']='original-download.mjs';files['/reading-book.mjs']='reading-book.mjs';
     // GET-186/190 reader modules: shared entry policy and the conservative
@@ -286,7 +286,7 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
       const capabilities=auth.capabilities?await auth.capabilities():{email:auth.emailAvailable,providers:{google:false,apple:false},otp:{digits:6,expiresIn:600,retryAfter:60}};
       // Host only hides unusable OAuth buttons; it never authorizes a web origin.
       const providers=publicOrigin&&req.headers.host!==new URL(publicOrigin).host?{google:false,apple:false}:capabilities.providers;
-      send(200,{user:await visibleUser(user),emailAvailable:capabilities.email,passwordAvailable:capabilities.password===true,providers,...(typeof auth.beginNativeOAuth==='function'?{nativeOAuth:{version:1}}:{}),otp:capabilities.otp,localAvailable:localAllowed,translationAvailable:library.translationAvailable,directUpload:!!dataStore?.beginUpload,pdfOcrAvailable:!!provider,readingPreferences:user?await library.getReadingPreferences(user):null,billing:{enabled:billing.enabled,mode:billing.mode,prices:{translation:1000000,conversation:4000000,annotation:4000000},unitsPerPoint:1000000},preferenceMemory:user?await library.getPreferenceMemory(user):null});return true;
+      send(200,{user:await visibleUser(user),emailAvailable:capabilities.email,passwordAvailable:capabilities.password===true,providers,...(typeof auth.beginNativeOAuth==='function'?{nativeOAuth:{version:1}}:{}),otp:capabilities.otp,localAvailable:localAllowed,translationAvailable:library.translationAvailable,directUpload:!!dataStore?.beginUpload,documentJobs:true,pdfOcrAvailable:!!provider,readingPreferences:user?await library.getReadingPreferences(user):null,billing:{enabled:billing.enabled,mode:billing.mode,prices:{translation:1000000,conversation:4000000,annotation:4000000},unitsPerPoint:1000000},preferenceMemory:user?await library.getPreferenceMemory(user):null});return true;
     }
     if(p==='/api/auth/identities'&&req.method==='GET'){
       if(typeof auth.identitiesFor!=='function')throw fail('账号绑定服务正在更新，请稍后重试。',503);
@@ -385,6 +385,8 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
     const partUpload=p.match(/^\/api\/library\/pdf-upload\/([-a-z0-9]{36})\/(part|target|commit|complete)$/);
     if(partUpload&&req.method==='POST'){const result=partUpload[2]==='complete'?await ingestionUpload.complete(user,partUpload[1]):await ingestionUpload[partUpload[2]](user,partUpload[1],body);if(partUpload[2]==='complete')await ingestionRunner.enqueue(user,result.id);send(200,result);return true;}
     if(p==='/api/library/ingestion'&&req.method==='GET'){const jobs=await ingestion.list(user);for(const job of jobs)if(['preparing','running','publishing'].includes(job.state))await ingestionRunner.enqueue(user,job.id);send(200,{jobs});return true;}
+    const importCover=p.match(/^\/api\/library\/ingestion\/([-a-z0-9]{36})\/cover$/);
+    if(importCover&&req.method==='GET'){const cover=await ingestion.cover(user,importCover[1]);res.setHeader('Content-Type',cover.mimeType);res.setHeader('Cache-Control','private, no-store');res.end(cover.bytes);return true;}
     const ingestRoute=p.match(/^\/api\/library\/ingestion\/([-a-z0-9]{36})(?:\/(advance|cancel|resume|consent|preview))?$/);
     if(ingestRoute){const [,id,action]=ingestRoute;if(req.method==='GET'&&action==='preview')send(200,await ingestion.preview(user,id));else if(req.method==='GET'&&!action)send(200,await ingestion.view(user,id));else if(req.method==='POST'&&action&&action!=='preview'){const result=action==='consent'?await ingestion.consent(user,id,body):await ingestion[action](user,id);await ingestionRunner.enqueue(user,id);send(200,result);}else throw fail('不支持这个请求',405);return true;}
     if(p==='/api/library/upload/start'&&req.method==='POST'){
@@ -393,11 +395,12 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
     }
     if(p==='/api/library/upload/complete'&&req.method==='POST'){
       if(!dataStore?.completeUpload)throw fail('此书房使用本机上传',404);
-      send(201,await dataStore.completeUpload(user,body.id,library));return true;
+      const result=await dataStore.completeUpload(user,body.id,library,body.defer===true?{ingestion}:{});if(body.defer===true&&result.id)await ingestionRunner.enqueue(user,result.id);send(body.defer===true?202:201,result);return true;
     }
     if(p==='/api/library/upload'&&req.method==='POST'){
       if(!user)throw fail('请先进入自己的书房',401);if(typeof body.base64!=='string'||!body.base64.length||body.base64.length>28*1024*1024||!/^[A-Za-z0-9+/]*={0,2}$/.test(body.base64))throw fail('文件编码不正确');
-      send(201,await library.importDocument(user,{filename:body.filename,bytes:Buffer.from(body.base64,'base64')}));return true;
+      const input={filename:body.filename,bytes:Buffer.from(body.base64,'base64')};
+      if(body.defer===true){const job=await ingestion.prepareDocument(user,input);await ingestionRunner.enqueue(user,job.id);send(202,job);}else send(201,await library.importDocument(user,input));return true;
     }
     if(p==='/api/library/restore/start'&&req.method==='POST'){send(201,await portability.start(user,body));return true;}
     const restoreOperation=p.match(/^\/api\/library\/restore\/([a-f0-9-]{36})\/(part|commit|cancel)$/);
@@ -456,7 +459,7 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
       if(action?.startsWith('audio/'))return audioRoutes.handle({req,res,url,user,bookId:id,action:action.slice(6),body,send});
       if(action==='document-export'&&req.method==='GET'){send(200,await library.bookTransfer(user,id));return true;}
       if(action==='content-part'&&req.method==='GET'){send(200,await library.bookTransfer(user,id,Number(url.searchParams.get('offset')),url.searchParams.get('snapshot')));return true;}
-      if(!action&&req.method==='GET'){const book=await library.getBook(user,id);if(req.headers['x-reader-book-transfer']==='1'&&Buffer.byteLength(JSON.stringify(book))>3000000&&(dataStore||Buffer.byteLength(JSON.stringify(book))<=32*1024*1024)){res.setHeader('X-Reader-Book-Transfer','parts');send(200,await library.bookTransfer(user,id));}else send(200,book);return true;}
+      if(!action&&req.method==='GET'){const book=await library.getBook(user,id);if(req.headers['x-reader-book-transfer']==='1'&&Buffer.byteLength(JSON.stringify(book))>3000000&&(dataStore||Buffer.byteLength(JSON.stringify(book))<=96*1024*1024)){res.setHeader('X-Reader-Book-Transfer','parts');send(200,await library.bookTransfer(user,id));}else send(200,book);return true;}
       if(action==='preview'&&req.method==='GET'){
         const book=await library.getBook(user,id),excerpt=roomExcerpt(book,url.searchParams.get('passageId')||undefined);
         let question=null;

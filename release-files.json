@@ -80,6 +80,7 @@
   "app/book-gift.css",
   "app/book-gift.html",
   "app/book-gift.mjs",
+  "app/book-import-shelf.mjs",
   "app/book-introduction-controller.mjs",
   "app/book-introduction.mjs",
   "app/book-reading-languages.mjs",

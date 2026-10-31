@@ -6,12 +6,12 @@ export const fail=(message,status=400)=>Object.assign(new Error(message),{status
 export const digest=value=>createHash('sha256').update(value).digest('hex');
 export const MAX_FILE_BYTES=256*1024*1024;
 
-export async function extractDocument({filename,bytes}){
+export async function extractDocument({filename,bytes,onProgress}){
   if(typeof filename!=='string'||!filename.trim()||filename.length>240||!Buffer.isBuffer(bytes)||!bytes.length)throw fail('请选择有内容的书籍文件');
   if(bytes.length>MAX_FILE_BYTES||!filename.toLowerCase().endsWith('.pdf')&&bytes.length>20*1024*1024)throw fail('PDF 最多 256 MB，EPUB 与文本最多 20 MB',413);
   const ext=path.extname(filename).toLowerCase();
   if(!['.pdf','.epub','.txt','.md'].includes(ext))throw fail('目前支持 PDF、EPUB、TXT 和 Markdown');
-  if(ext==='.epub')return extractEpub(bytes);
+  if(ext==='.epub')return extractEpub(bytes,{onProgress});
   if(ext!=='.pdf'){
     let text;try{text=new TextDecoder('utf-8',{fatal:true}).decode(bytes);}catch{throw fail('请将文本保存为 UTF-8 编码');}
     if(/[\u0000-\u0008\u000e-\u001f]/.test(text))throw fail('这个文件不是可阅读的文本');
@@ -56,10 +56,11 @@ export function makeBook({bookId,filename,sourceHash,extracted,title,author='',v
   const chapters=[],sections=[];let structure='automatic_groups';
   let epubCuts=[];
   if(extracted.format==='epub'){
-    const seen=new Set();for(const nav of extracted.navigation||[]){const at=paragraphs.findIndex(p=>p.source.href===nav.href&&(!nav.fragment||p.source.elementIds.includes(nav.fragment)));if(at>=0&&!seen.has(at)){seen.add(at);epubCuts.push({at,title:nav.title});}}
+    const starts=new Map(),anchors=new Map();for(const [i,p] of paragraphs.entries()){if(!starts.has(p.source.href))starts.set(p.source.href,i);for(const id of p.source.elementIds||[]){const key=p.source.href+'#'+id;if(!anchors.has(key))anchors.set(key,i);}}
+    const seen=new Set();for(const nav of extracted.navigation||[]){const at=nav.fragment?anchors.get(nav.href+'#'+nav.fragment):starts.get(nav.href);if(at!==undefined&&!seen.has(at)){seen.add(at);epubCuts.push({at,title:nav.title});}}
     epubCuts.sort((a,b)=>a.at-b.at);
     if(epubCuts.length)structure='epub_navigation';
-    else{epubCuts=extracted.pages.map(page=>({at:paragraphs.findIndex(p=>p.source.href===page.href),title:page.title})).filter(row=>row.at>=0);structure='epub_spine';}
+    else{epubCuts=extracted.pages.map(page=>({at:starts.get(page.href),title:page.title})).filter(row=>row.at!==undefined);structure='epub_spine';}
   }
   const outline=(extracted.outline||[]).filter((r,i,all)=>Number.isSafeInteger(r.page)&&r.page>=1&&typeof r.title==='string'&&r.title.trim()&&r.title.length<=120&&(!i||r.page>all[i-1].page));
   let cuts=epubCuts.length?epubCuts:outline.length>=2?outline.map(r=>({at:paragraphs.findIndex(p=>p.source.pdfPage>=r.page),title:r.title.trim()})).filter(r=>r.at>=0):[];
@@ -69,5 +70,5 @@ export function makeBook({bookId,filename,sourceHash,extracted,title,author='',v
 
   for(let i=0;!cuts.length&&i<paragraphs.length;i+=30){const number=chapters.length+1,id='ch'+String(number).padStart(2,'0');chapters.push({id,number,title:{zh:paragraphs.length<=30?'开始阅读':`阅读片段 ${number}`,en:''}});sections.push({number,chapterId:id,title:'自动分段 · 原文未逐段校对',paragraphs:paragraphs.slice(i,i+30)});}
   const text=paragraphs.slice(0,10).map(p=>p.original).join('');
-  return {bookId,contentVersion:extracted.contentVersion||sourceHash,title:{zh:title||extracted.title||path.basename(filename,path.extname(filename)),en:title||extracted.title||path.basename(filename,path.extname(filename))},author:author||extracted.author||'',visibility,sourceLanguage:inferSourceLanguage(text),targetLanguage:'zh',source:{filename:path.basename(filename),sha256:sourceHash,format:extracted.format,url:sourceUrl,license,review:extracted.review,structure,...(extracted.processor?{processor:extracted.processor,pages:extracted.pages.length,quality:extracted.quality}: {})},chapters,sections,annotations:[],glossary:[],createdAt:new Date().toISOString()};
+  return {bookId,contentVersion:extracted.contentVersion||sourceHash,title:{zh:title||extracted.title||path.basename(filename,path.extname(filename)),en:title||extracted.title||path.basename(filename,path.extname(filename))},author:author||extracted.author||'',visibility,sourceLanguage:inferSourceLanguage(text),targetLanguage:'zh',source:{filename:path.basename(filename),sha256:sourceHash,format:extracted.format,url:sourceUrl,license,review:extracted.review,structure,...(extracted.publicationDate?{publicationDate:extracted.publicationDate}:{}),...(extracted.processor?{processor:extracted.processor,pages:extracted.pages.length,quality:extracted.quality}: {})},chapters,sections,annotations:[],glossary:[],createdAt:new Date().toISOString()};
 }

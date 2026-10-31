@@ -110,13 +110,15 @@ export function createHostedStore({env=process.env,fetcher=fetch}={}){
     if(target.origin!==new URL(base).origin||!target.pathname.startsWith('/storage/v1/object/upload/sign/'))throw fail('上传地址无效',503);
     return {id,url:target.href};
   }
-  async function completeUpload(user,id,library){
+  async function completeUpload(user,id,library,{ingestion}={}){
     if(!user?.id)throw fail('请先进入自己的书房',401);if(typeof id!=='string'||!/^[-a-z0-9]{36}$/.test(id))throw fail('上传标识无效');
     const document='uploads/'+digest(user.id)+'/'+id,{data}=await snapshot(document,null);
     if(!data||data.expiresAt<=Date.now())throw fail('上传已过期，请重新选择文件',410);
+    if(ingestion&&data.ingestionId)return ingestion.view(user,data.ingestionId);
     if(data.bookId)return library.getBook(user,data.bookId);
     const bytes=Buffer.from(await (await request(objectRoute(data.key))).arrayBuffer());
     if(bytes.length!==data.bytes||bytes.length>MAX_FILE_BYTES)throw fail('上传文件不完整，请重新上传',422);
+    if(ingestion){const job=await ingestion.prepareDocument(user,{filename:data.filename,bytes});await mutate(document,{},row=>{row.ingestionId=job.id;});return job;}
     const book=await library.importDocument(user,{filename:data.filename,bytes});
     await mutate(document,{},row=>{row.bookId=book.bookId;});
     // Staging copies expire; the verified original is in its separate hash-addressed object.

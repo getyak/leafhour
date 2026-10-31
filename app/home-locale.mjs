@@ -6,6 +6,12 @@ import {withUiParam} from './ui-locale-codec.mjs';
 // other public languages next to it, so one source document serves all locales:
 // [source, English, Traditional Chinese, Japanese].
 const strings=[
+  ["书架排序", "Sort books", "書架排序", "本の並び順"],
+  ["最近阅读与添加", "Recently read or added", "最近閱讀與加入", "最近読んだ本・追加した本"],
+  ["最近添加", "Recently added", "最近加入", "最近追加した本"],
+  ["出版时间：由早到晚", "Publication: oldest first", "出版時間：由早到晚", "出版年の古い順"],
+  ["出版时间：由晚到早", "Publication: newest first", "出版時間：由晚到早", "出版年の新しい順"],
+  ["手动排列", "Manual order", "手動排列", "手動の並び順"],
   ["给一本书，<br>多一点时间。", "Stay with a book.<br>A little longer.", "給一本書，<br>多一點時間。", "一冊の本に、<br>もう少し時間を。"],
   ["读原文，对照译文，<br>把想法留在原句旁。", "Read the words. Compare a translation.<br>Keep your thoughts beside the passage.", "讀原文，對照譯文，<br>把想法留在原句旁。", "原文を読み、訳文と見比べる。<br>考えたことは、その一節のそばに。"],
   ["看看怎么读", "See how it reads", "看看怎麼讀", "読み方を見る"],

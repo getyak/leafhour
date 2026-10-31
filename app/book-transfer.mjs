@@ -1,6 +1,6 @@
 const invalid=()=>Error('正文传输未完整通过校验，请重新载入；原文件仍保留。');
 export async function assembleBookTransfer(manifest,readPart){
- if(manifest?.kind!=='leafhour-book-transfer-v1'||typeof manifest.bookId!=='string'||typeof manifest.contentVersion!=='string'||!/^[a-f0-9]{64}$/.test(manifest.snapshot)||!Number.isSafeInteger(manifest.totalBytes)||manifest.totalBytes<1||manifest.totalBytes>32*1024*1024||manifest.partBytes!==1048576)throw invalid();
+ if(manifest?.kind!=='leafhour-book-transfer-v1'||typeof manifest.bookId!=='string'||typeof manifest.contentVersion!=='string'||!/^[a-f0-9]{64}$/.test(manifest.snapshot)||!Number.isSafeInteger(manifest.totalBytes)||manifest.totalBytes<1||manifest.totalBytes>96*1024*1024||manifest.partBytes!==1048576)throw invalid();
  const bytes=new Uint8Array(manifest.totalBytes);let offset=0;
  while(offset<bytes.length){
   const part=await readPart(offset,manifest.snapshot),size=Math.min(manifest.partBytes,bytes.length-offset),end=offset+size;

@@ -23,7 +23,7 @@ export const chatRetryMatchesDraft=view=>{
  return view.draft.trim()===old.text&&view.data?.context?.passageId===old.passageId&&view.data?.contentVersion===old.contentVersion&&JSON.stringify(view.quote??null)===JSON.stringify(old.quote??null)&&(view.data?.scope?.revision??0)===(old.scopeRevision??0);
 };
 
-export function mountLibraryChat({root,api,getSession,getBooks,getOwner,openAuth,getCurrentBook=()=>null,getCurrentPassage=()=>null,onNavigateToPassage=null,externalLauncher=null,positionLauncher=null,onViewChange=()=>{},dismissOnOutside=()=>true,uploadController=null,mountUpload=null,uploadOptions=null,loadUpload=()=>import('./chat-book-upload.mjs'),renderMarkdown=null,loadMarkdown=()=>import('./library-chat-markdown.mjs')}){
+export function mountLibraryChat({root,api,getSession,getBooks,getOwner,openAuth,getCurrentBook=()=>null,getCurrentPassage=()=>null,onNavigateToPassage=null,externalLauncher=null,positionLauncher=null,onViewChange=()=>{},dismissOnOutside=()=>true,uploadController=null,mountUpload=null,uploadOptions=null,uploadPlacement='inline',loadUpload=()=>import('./chat-book-upload.mjs'),renderMarkdown=null,loadMarkdown=()=>import('./library-chat-markdown.mjs')}){
   let markdownRenderer=renderMarkdown,decorations=renderMarkdown?.decorations,markdownLoad=null;
   const ensureMarkdown=()=>markdownRenderer&&decorations?Promise.resolve():markdownLoad||(markdownLoad=loadMarkdown().then(module=>{if(!disposed){markdownRenderer??=module.renderChatMarkdown;decorations=module.renderChatMarkdown.decorations;if(!decorations)throw Error('Missing chat presentation');}}).finally(()=>{markdownLoad=null;}));
   const state=createLibraryChatState({readQuoteHead:(owner,book)=>JSON.parse(localStorage.getItem(quoteHeadKey(owner,book))||'null'),writeQuoteHead:(owner,book,head)=>localStorage.setItem(quoteHeadKey(owner,book),JSON.stringify(head)),readQuoteAck:(owner,book,revision)=>JSON.parse(localStorage.getItem(quoteAckKey(owner,book,revision))||'null'),writeQuoteAck:(owner,book,revision,ack)=>localStorage.setItem(quoteAckKey(owner,book,revision),JSON.stringify(ack)),readDraft:(owner,book)=>localStorage.getItem(draftKey(owner,book))||'',writeDraft:(owner,book,text)=>{if(text)localStorage.setItem(draftKey(owner,book),text);else localStorage.removeItem(draftKey(owner,book));},readPending:(owner,book)=>JSON.parse(localStorage.getItem(pendingKey(owner,book))||'null'),writePending:(owner,book,record)=>{if(record)localStorage.setItem(pendingKey(owner,book),JSON.stringify(record));else localStorage.removeItem(pendingKey(owner,book));}});
@@ -84,7 +84,9 @@ export function mountLibraryChat({root,api,getSession,getBooks,getOwner,openAuth
   const settings=node('details','library-chat-settings'),settingsSummary=ui('summary','','chat.settings'),explanation=node('details','library-chat-explanation'),explanationSummary=ui('summary','','chat.dataScope'),companionHost=node('section','library-chat-companion-settings');
   explanation.append(explanationSummary,hint,menuHint);settings.append(settingsSummary,scopeRow,preferenceConsent,peopleConsent,companionHost,explanation);menuItems.append(context,settings,exportButton);
   const latestButton=ui('button','library-chat-latest','chat.latest');latestButton.type='button';latestButton.hidden=true;
-  frame.append(header,onboardingHost,uploadHost,messages,latestButton,statusBar,form,footer);root.replaceChildren(frame);
+  frame.append(header,onboardingHost,...(uploadPlacement==='menu'?[]:[uploadHost]),messages,latestButton,statusBar,form,footer);root.replaceChildren(frame);
+  const uploadHistory=uploadPlacement==='menu'?node('details','library-chat-settings library-chat-upload-history'):null;
+  if(uploadHistory){uploadHistory.hidden=true;uploadHistory.append(ui('summary','','bookUpload.tasks'),uploadHost);menuItems.append(uploadHistory);}
   // Composed scope hints repaint from cached state on business renders and on
   // language commits alike; the wording itself lives in the catalogues.
   function paintHint(){
@@ -103,6 +105,7 @@ export function mountLibraryChat({root,api,getSession,getBooks,getOwner,openAuth
   const uploadAttach=uploadEnabled?ui('button','chat-book-attach','chat.importBook'):null;if(uploadAttach){uploadAttach.type='button';uiAttr(uploadAttach,'aria-label','nav.bring');uiAttr(uploadAttach,'title','nav.bring');uploadAttach.disabled=true;menuItems.insertBefore(uploadAttach,exportButton);}
   const uploadConfig=()=>({root,attachment:uploadAttach,host:uploadHost,actionsHost:composerActions,controller:uploadController,api,getOwner:activeOwner,getSession,signedIn,openAuth,...uploadOptions,onSelect:bookId=>{if(choose(bookId)){render();void load();}}});
   if(uploadController&&mountUpload)uploadView=mountUpload(uploadConfig());
+  if(uploadHistory&&uploadController){let known=new Set(uploadController.tasks().map(task=>task.id));listeners.push(uploadController.subscribe(tasks=>{uploadHistory.hidden=!tasks.length;if(tasks.some(task=>!known.has(task.id)&&task.stage==='receiving')){menu.open=true;uploadHistory.open=true;}known=new Set(tasks.map(task=>task.id));}));}
   function addUpload(file){
     if(disposed||!uploadEnabled)return null;
     if(uploadView)return uploadView.add(file);

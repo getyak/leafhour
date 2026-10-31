@@ -1,4 +1,11 @@
 import test from 'node:test';
+import {MAX_BOOK_BYTES} from '../server/book-capacity.mjs';
+
+test('a book is listed only after its chapter projection is readable, and publication retries are idempotent',async()=>{
+ const rows=new Map(),blobs=new Map();let failChapters=true;
+ const store={read:async(k,d)=>structuredClone(rows.get(k)??d),mutate:async(k,d,fn)=>{if(failChapters&&k.includes('/reading/')&&k.includes('/chapters/'))throw Object.assign(Error('temporary chapter storage failure'),{status:503});const value=structuredClone(rows.get(k)??d),result=await fn(value);rows.set(k,value);return result;},putBlob:async(k,b)=>{blobs.set(k,Buffer.from(b));},blob:async k=>blobs.get(k)};
+ const library=await createLibraryService({dataDir:'synthetic-import-publication',catalogDir:null,dataStore:store}),user={id:'synthetic-owner'},input={filename:'publication.txt',bytes:Buffer.from('An original synthetic paragraph.')};await assert.rejects(library.importDocument(user,input),{status:503});assert.deepEqual(await library.list(user,{metadataOnly:true}),[]);failChapters=false;const book=await library.importDocument(user,input);assert.equal((await library.list(user,{metadataOnly:true}))[0].bookId,book.bookId);
+});
 import assert from 'node:assert/strict';
 import {mkdtemp,rm} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
@@ -166,5 +173,5 @@ test('automatic native and mixed PDF books retain source-checked original downlo
 
 test('local imports enforce logical capacity before saving a shelf entry',async t=>{
  const dir=await mkdtemp(path.join(tmpdir(),'reader-local-capacity-'));t.after(()=>rm(dir,{recursive:true,force:true}));const library=await createLibraryService({dataDir:dir,catalogDir:null,translator:null}),user={id:'capacity-fixture'};
- await assert.rejects(library.importExtracted(user,{filename:'large.pdf',bytes:Buffer.from('%PDF-synthetic'),extracted:{format:'pdf',review:'extracted_unreviewed',pages:[{page:1,text:'A'+'\0'.repeat(6000000)}]}}),e=>e.status===413);assert.deepEqual(await library.list(user),[]);
+ await assert.rejects(library.importExtracted(user,{filename:'large.pdf',bytes:Buffer.from('%PDF-synthetic'),extracted:{format:'pdf',review:'extracted_unreviewed',pages:[{page:1,text:'A'+'\0'.repeat(Math.ceil(MAX_BOOK_BYTES/6))}]}}),e=>e.status===413);assert.deepEqual(await library.list(user),[]);
 });
