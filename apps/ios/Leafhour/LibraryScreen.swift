@@ -10,6 +10,10 @@ struct LibraryScreen: View {
     @AppStorage("leafhour.library.filter") private var filterRaw = LibraryShelfFilter.all.rawValue
     @AppStorage("leafhour.library.sort") private var sortRaw = LibraryShelfSort.added.rawValue
     @AppStorage("leafhour.library.layout") private var layoutRaw = LibraryShelfLayout.grid.rawValue
+    @AppStorage("leafhour.library.pins.v1") private var pinData = Data()
+    @State private var selecting = false
+    @State private var selectedIDs: Set<String> = []
+    @State private var sharing: ShelfShareSelection?
     @State private var searching = false
     @FocusState private var searchFocused: Bool
     @State private var importing = false
@@ -25,11 +29,16 @@ struct LibraryScreen: View {
     private var filter: LibraryShelfFilter { LibraryShelfFilter(rawValue: filterRaw) ?? .all }
     private var sort: LibraryShelfSort { LibraryShelfSort(rawValue: sortRaw) ?? .added }
     private var layout: LibraryShelfLayout { LibraryShelfLayout(rawValue: layoutRaw) ?? .grid }
+    private var pinOwner: String { model.account?.id ?? "device" }
+    private var pins: LibraryShelfPins { (try? JSONDecoder().decode(LibraryShelfPins.self, from: pinData)) ?? LibraryShelfPins() }
+    private var pinnedIDs: Set<String> { pins.ids(owner: pinOwner) }
+    private var selectedItems: [LibraryShelfItem] { visibleItems.filter { selectedIDs.contains($0.id) } }
+    private var selectionIsPinned: Bool { !selectedIDs.isEmpty && selectedIDs.isSubset(of: pinnedIDs) }
     private var allItems: [LibraryShelfItem] {
         LibraryPresentation.items(local: model.books, cloud: model.account == nil ? [] : model.cloudBooks)
     }
     private var visibleItems: [LibraryShelfItem] {
-        LibraryPresentation.items(local: model.books, cloud: model.account == nil ? [] : model.cloudBooks, query: query, filter: filter, sort: sort)
+        LibraryPresentation.items(local: model.books, cloud: model.account == nil ? [] : model.cloudBooks, query: query, filter: filter, sort: sort, pinnedIDs: pinnedIDs)
     }
     private var filterBinding: Binding<LibraryShelfFilter> { Binding(get: { filter }, set: { filterRaw = $0.rawValue }) }
     private var sortBinding: Binding<LibraryShelfSort> { Binding(get: { sort }, set: { sortRaw = $0.rawValue }) }
@@ -97,7 +106,8 @@ struct LibraryScreen: View {
                 }
             }
             .safeAreaInset(edge: .bottom) {
-                if model.busy && activeItem == nil { activityBar }
+                if selecting { selectionToolbar }
+                else if model.busy && activeItem == nil { activityBar }
             }
             .fileImporter(isPresented: $importing, allowedContentTypes: [.epub, .pdf, .plainText, UTType(filenameExtension: "md") ?? .plainText]) { result in
                 switch result { case .success(let url): model.importFile(url); case .failure(let error): model.message = error.localizedDescription }
@@ -107,10 +117,13 @@ struct LibraryScreen: View {
             .task(id: resumeLookupKey) { await loadResume() }
             .refreshable { await model.synchronize(); await model.reload() }
             .onChange(of: scenePhase) { _, phase in if phase == .active { Task { await model.synchronize() } } }
+            .onChange(of: model.account?.id) { _, _ in selecting = false; selectedIDs = []; sharing = nil }
+            .onChange(of: visibleItems.map(\.id)) { _, ids in selectedIDs.formIntersection(Set(ids)) }
             .fullScreenCover(item: $model.reader, onDismiss: { Task { await model.reload(); await loadResume(); await model.synchronize() } }) { session in
                 ReaderScreen(session: session, systemColorScheme: systemColorScheme, cloud: session.book.cloud == nil ? nil : model.cloud, library: model.library)
             }
             .sheet(isPresented: $info, onDismiss: { Task { await model.cancelNativeAuthentication() } }) { AccountScreen(model: model) }
+            .sheet(item: $sharing) { selection in ShelfSharePanel(selection: selection, model: model) }
             .alert("书房提示", isPresented: Binding(get: { model.message != nil }, set: { if !$0 { model.message = nil } })) {
                 Button("知道了") { model.message = nil }
             } message: { Text(model.message ?? "") }
@@ -131,12 +144,20 @@ struct LibraryScreen: View {
             }.accessibilityLabel("书房范围").accessibilityValue(filter.title)
             Text("\(visibleItems.count) 本书").font(.caption).foregroundStyle(.secondary)
             Spacer(minLength: 0)
-            presentationMenu.labelStyle(.iconOnly).frame(minWidth: 44, minHeight: 44)
+            if selecting {
+                Button(selectedIDs.count == visibleItems.count ? "取消全选" : "全选") {
+                    selectedIDs = selectedIDs.count == visibleItems.count ? [] : Set(visibleItems.map(\.id))
+                }.frame(minWidth: 44, minHeight: 44)
+                Button("完成") { selecting = false; selectedIDs = [] }.frame(minWidth: 44, minHeight: 44)
+            } else {
+                presentationMenu.labelStyle(.iconOnly).frame(minWidth: 44, minHeight: 44)
+            }
         }.foregroundStyle(Color.primary)
     }
 
     private var presentationMenu: some View {
         Menu {
+            Button("选择多本", systemImage: "checkmark.circle") { selecting = true; selectedIDs = [] }
             Picker("显示方式", selection: layoutBinding) {
                 ForEach(LibraryShelfLayout.allCases, id: \.rawValue) { Text($0.title).tag($0) }
             }
@@ -161,7 +182,7 @@ struct LibraryScreen: View {
                 if visibleItems.isEmpty { filteredEmptyState.listRowBackground(Color.clear) }
                 else {
                     ForEach(visibleItems) { item in
-                        LibraryShelfRow(item: item, downloadUnavailable: model.busy, isActive: isActive(item), progress: model.activityProgress, status: model.status, resource: model.coverResource(item), cancel: model.activityCanCancel ? { model.cancelImport() } : nil, open: { open(item) }, details: { details(item) })
+                        LibraryShelfRow(item: item, downloadUnavailable: model.busy, isActive: isActive(item), progress: model.activityProgress, status: model.status, resource: model.coverResource(item), cancel: model.activityCanCancel ? { model.cancelImport() } : nil, selecting: selecting, selected: selectedIDs.contains(item.id), pinned: pinnedIDs.contains(item.id), select: { beginSelection(item) }, togglePin: { setPins([item.id], pinned: !pinnedIDs.contains(item.id)) }, share: { sharing = ShelfShareSelection(items: [item]) }, open: { open(item) }, details: { details(item) })
                             .listRowBackground(Color.clear)
                     }
                 }
@@ -187,7 +208,7 @@ struct LibraryScreen: View {
                 else {
                     LazyVGrid(columns: shelfColumns, alignment: .leading, spacing: 24) {
                         ForEach(visibleItems) { item in
-                            LibraryShelfTile(item: item, downloadUnavailable: model.busy, isActive: isActive(item), progress: model.activityProgress, status: model.status, resource: model.coverResource(item), cancel: model.activityCanCancel ? { model.cancelImport() } : nil, open: { open(item) }, details: { details(item) })
+                            LibraryShelfTile(item: item, downloadUnavailable: model.busy, isActive: isActive(item), progress: model.activityProgress, status: model.status, resource: model.coverResource(item), cancel: model.activityCanCancel ? { model.cancelImport() } : nil, selecting: selecting, selected: selectedIDs.contains(item.id), pinned: pinnedIDs.contains(item.id), select: { beginSelection(item) }, togglePin: { setPins([item.id], pinned: !pinnedIDs.contains(item.id)) }, share: { sharing = ShelfShareSelection(items: [item]) }, open: { open(item) }, details: { details(item) })
                         }
                     }
                 }
@@ -328,12 +349,34 @@ struct LibraryScreen: View {
     }
 
     private func open(_ item: LibraryShelfItem) {
+        if selecting {
+            if !selectedIDs.insert(item.id).inserted { selectedIDs.remove(item.id) }
+            return
+        }
         if let book = item.local { Task { await model.open(book) } }
         else if let book = item.cloud { Task { await model.download(book) } }
     }
 
     private func details(_ item: LibraryShelfItem) {
         if let book = item.local { path.append(book.id) }
+    }
+
+    private func beginSelection(_ item: LibraryShelfItem) { selecting = true; selectedIDs.insert(item.id) }
+    private func setPins(_ ids: Set<String>, pinned: Bool) {
+        var value = pins; value.set(ids, pinned: pinned, owner: pinOwner)
+        if let data = try? JSONEncoder().encode(value) { pinData = data }
+    }
+    private var selectionToolbar: some View {
+        HStack(spacing: 12) {
+            Text("已选 \(selectedIDs.count) 本").font(.subheadline).monospacedDigit()
+            Spacer(minLength: 4)
+            Button(selectionIsPinned ? "取消置顶" : "置顶", systemImage: selectionIsPinned ? "pin.slash" : "pin") {
+                setPins(selectedIDs, pinned: !selectionIsPinned)
+            }.frame(minHeight: 44).disabled(selectedIDs.isEmpty)
+            Button("分享", systemImage: "square.and.arrow.up") { sharing = ShelfShareSelection(items: selectedItems) }
+                .frame(minHeight: 44).disabled(selectedItems.isEmpty)
+        }.font(.subheadline).padding(.horizontal, 16).padding(.vertical, 4).background(.regularMaterial)
+            .accessibilityIdentifier("library-selection-toolbar")
     }
 }
 

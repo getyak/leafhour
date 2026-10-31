@@ -107,6 +107,12 @@ struct LibraryShelfRow: View {
     var status = ""
     var resource: BookCoverResource? = nil
     var cancel: (() -> Void)? = nil
+    var selecting = false
+    var selected = false
+    var pinned = false
+    var select: (() -> Void)? = nil
+    var togglePin: (() -> Void)? = nil
+    var share: (() -> Void)? = nil
     let open: () -> Void
     let details: () -> Void
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
@@ -131,14 +137,20 @@ struct LibraryShelfRow: View {
                         }
                     }
                     Spacer(minLength: 0)
+                    if selecting { ShelfSelectionMark(selected: selected) }
+                    else if pinned { Image(systemName: "pin.fill").font(.caption).foregroundStyle(.secondary).accessibilityHidden(true) }
                 }
                 .frame(maxWidth: .infinity, minHeight: 44, alignment: .leading)
                 .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
-            .disabled(isActive || (!item.isDownloaded && downloadUnavailable))
-            .accessibilityLabel(item.readingAccessibilityLabel).accessibilityValue(item.author)
-            .contextMenu { if item.isDownloaded { Button("书籍详情", systemImage: "info.circle", action: details) } }
+            .disabled(!selecting && (isActive || (!item.isDownloaded && downloadUnavailable)))
+            .accessibilityLabel(selecting ? "选择，" + item.title : item.readingAccessibilityLabel).accessibilityValue(item.author)
+            .accessibilityAddTraits(selected ? .isSelected : [])
+            .contextMenu { ShelfBookActions(item: item, pinned: pinned, select: select, togglePin: togglePin, share: share, details: details) }
+            .accessibilityAction(named: Text("选择多本")) { select?() }
+            .accessibilityAction(named: Text(pinned ? "取消置顶" : "置顶")) { togglePin?() }
+            .accessibilityAction(named: Text("分享本书")) { share?() }
             .accessibilityAction(named: Text("书籍详情")) { if item.isDownloaded { details() } }
             if isActive { ShelfBookActivity(progress: progress, status: status, cancel: cancel) }
         }
@@ -154,13 +166,19 @@ struct LibraryShelfTile: View {
     var status = ""
     var resource: BookCoverResource? = nil
     var cancel: (() -> Void)? = nil
+    var selecting = false
+    var selected = false
+    var pinned = false
+    var select: (() -> Void)? = nil
+    var togglePin: (() -> Void)? = nil
+    var share: (() -> Void)? = nil
     let open: () -> Void
     let details: () -> Void
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     var body: some View {
         if dynamicTypeSize.isAccessibilitySize {
-            LibraryShelfRow(item: item, downloadUnavailable: downloadUnavailable, isActive: isActive, progress: progress, status: status, resource: resource, cancel: cancel, open: open, details: details)
+            LibraryShelfRow(item: item, downloadUnavailable: downloadUnavailable, isActive: isActive, progress: progress, status: status, resource: resource, cancel: cancel, selecting: selecting, selected: selected, pinned: pinned, select: select, togglePin: togglePin, share: share, open: open, details: details)
         } else {
             VStack(alignment: .leading, spacing: 8) {
                 Button(action: open) {
@@ -168,6 +186,12 @@ struct LibraryShelfTile: View {
                         ShelfBookCover(title: item.title, author: item.author, resource: resource)
                             .aspectRatio(2.0 / 3, contentMode: .fit)
                             .shadow(color: .black.opacity(0.07), radius: 5, x: 0, y: 3)
+                            .overlay(alignment: .topTrailing) {
+                                if selecting { ShelfSelectionMark(selected: selected).padding(7) }
+                                else if pinned {
+                                    Image(systemName: "pin.fill").font(.caption).padding(6).background(.regularMaterial, in: Circle()).padding(6).accessibilityHidden(true)
+                                }
+                            }
                         HStack(alignment: .firstTextBaseline, spacing: 4) {
                             ShelfBookAvailability(item: item)
                             Text(item.title).font(.subheadline.weight(.medium)).foregroundStyle(.primary).lineLimit(2)
@@ -177,13 +201,41 @@ struct LibraryShelfTile: View {
                     }.contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
-                .disabled(isActive || (!item.isDownloaded && downloadUnavailable))
-                .accessibilityLabel(item.readingAccessibilityLabel).accessibilityValue(item.author)
-                .contextMenu { if item.isDownloaded { Button("书籍详情", systemImage: "info.circle", action: details) } }
+                .disabled(!selecting && (isActive || (!item.isDownloaded && downloadUnavailable)))
+                .accessibilityLabel(selecting ? "选择，" + item.title : item.readingAccessibilityLabel).accessibilityValue(item.author)
+                .accessibilityAddTraits(selected ? .isSelected : [])
+                .contextMenu { ShelfBookActions(item: item, pinned: pinned, select: select, togglePin: togglePin, share: share, details: details) }
+                .accessibilityAction(named: Text("选择多本")) { select?() }
+                .accessibilityAction(named: Text(pinned ? "取消置顶" : "置顶")) { togglePin?() }
+                .accessibilityAction(named: Text("分享本书")) { share?() }
                 .accessibilityAction(named: Text("书籍详情")) { if item.isDownloaded { details() } }
                 if isActive { ShelfBookActivity(progress: progress, status: status, cancel: cancel) }
             }
             .frame(maxWidth: .infinity, alignment: .topLeading)
         }
+    }
+}
+
+private struct ShelfSelectionMark: View {
+    let selected: Bool
+    var body: some View {
+        Image(systemName: selected ? "checkmark.circle.fill" : "circle")
+            .font(.system(size: 24, weight: .medium)).foregroundStyle(selected ? Color.leafInk : Color.secondary)
+            .background(Color(uiColor: .systemBackground), in: Circle()).accessibilityHidden(true)
+    }
+}
+
+private struct ShelfBookActions: View {
+    let item: LibraryShelfItem
+    let pinned: Bool
+    let select: (() -> Void)?
+    let togglePin: (() -> Void)?
+    let share: (() -> Void)?
+    let details: () -> Void
+    var body: some View {
+        if let select { Button("选择多本", systemImage: "checkmark.circle", action: select) }
+        if let togglePin { Button(pinned ? "取消置顶" : "置顶", systemImage: pinned ? "pin.slash" : "pin", action: togglePin) }
+        if let share { Button("分享本书", systemImage: "square.and.arrow.up", action: share) }
+        if item.isDownloaded { Button("书籍详情", systemImage: "info.circle", action: details) }
     }
 }

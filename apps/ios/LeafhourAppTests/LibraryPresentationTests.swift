@@ -79,4 +79,25 @@ final class LibraryPresentationTests: XCTestCase {
         ]
         XCTAssertEqual(LibraryPresentation.items(local: [older, newer], cloud: remote).map(\.title), ["Newer", "Older", "Cloud Z", "Cloud A"])
     }
+    func testPinnedBooksKeepNaturalSortWithinEachGroupAndRemainAccountScoped() throws {
+        let books = [CloudShelfBook(id: "b", title: "Book 2", author: "", contentVersion: "v1"), CloudShelfBook(id: "a", title: "Book 1", author: "", contentVersion: "v1"), CloudShelfBook(id: "c", title: "Book 3", author: "", contentVersion: "v1")]
+        var pins = LibraryShelfPins()
+        pins.set(["cloud:c", "cloud:b"], pinned: true, owner: "account-a")
+        pins = try JSONDecoder().decode(LibraryShelfPins.self, from: JSONEncoder().encode(pins))
+        XCTAssertEqual(LibraryPresentation.items(local: [], cloud: books, sort: .title, pinnedIDs: pins.ids(owner: "account-a")).map(\.title), ["Book 2", "Book 3", "Book 1"])
+        XCTAssertTrue(pins.ids(owner: "account-b").isEmpty)
+        XCTAssertTrue(pins.ids(owner: "device").isEmpty)
+        pins.set(["cloud:c"], pinned: false, owner: "account-a")
+        XCTAssertEqual(pins.ids(owner: "account-a"), ["cloud:b"])
+    }
+
+    func testBookRecommendationContainsOnlyTitleAndAuthor() throws {
+        let book = try local("private-device-id", title: "Book title", author: "Book author", cloudID: "private-cloud-id")
+        let item = try XCTUnwrap(LibraryPresentation.items(local: [book], cloud: []).first)
+        XCTAssertEqual(item.shareText, "Book title\nBook author")
+        XCTAssertFalse(item.shareText.contains("private-"))
+        XCTAssertFalse(item.sourceShareText.contains("isolated-fixture"))
+        XCTAssertFalse(item.sourceShareText.contains("sourceVersion"))
+    }
+
 }
