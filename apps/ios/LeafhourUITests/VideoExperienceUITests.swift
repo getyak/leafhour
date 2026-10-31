@@ -825,25 +825,18 @@ final class VideoExperienceUITests: XCTestCase {
 
     func test22ListeningPauseAndSpeedDoNotResumeUnexpectedly() {
         launch(); openBook(textTitle); openTool("听书"); expandPanel()
-        let form = foregroundForm()
-        let play = app.buttons["reader-speech-play"]
-        scrollTo(play, in: form); play.tap()
-        let firstPassage = app.staticTexts["第 1 / 35 段"]
-        require(app.buttons["暂停朗读"], timeout: 8)
-        require(firstPassage, timeout: 5)
-        play.tap()
+        app.buttons["reader-speech-play"].tap()
+        let toggle = app.buttons["reader-speech-toggle"]; require(toggle); toggle.tap()
         require(app.buttons["继续朗读"])
-        require(firstPassage)
-        let speed = app.segmentedControls.buttons["1.5×"]
+        app.buttons["reader-speech-status"].tap(); expandPanel()
+        let form = foregroundForm(), speed = app.segmentedControls.buttons["1.5×"]
         scrollTo(speed, in: form); speed.tap()
-        scrollTo(play, in: form, direction: .down)
+        let play = app.buttons["reader-speech-play"]; scrollTo(play, in: form, direction: .down)
         require(app.buttons["继续朗读"])
-        require(firstPassage)
         XCTAssertFalse(app.buttons["暂停朗读"].exists)
-        let stop = app.buttons["结束听书"]
-        scrollTo(stop, in: form); stop.tap()
+        let stop = app.buttons["结束听书"]; scrollTo(stop, in: form); stop.tap()
         scrollTo(play, in: form, direction: .down)
-        require(app.buttons["从当前段开始朗读"])
+        require(app.buttons["继续上次朗读"])
     }
 
     func test23ExistingSyntheticPDFReachesLastPageAndColdRestores() {
@@ -1939,26 +1932,19 @@ final class VideoExperienceUITests: XCTestCase {
     @MainActor
     func test49ReadingPausesTheExistingSpeechAndListenDoesNotAutoplay() throws {
         launch(); openBook(textTitle); openTool("听书"); expandPanel()
-        require(app.buttons["从当前段开始朗读"])
-        XCTAssertFalse(app.buttons["暂停朗读"].exists, "Opening Listen alone must not start the synthesizer")
-        let play = app.buttons["reader-speech-play"]
-        scrollTo(play, in: foregroundForm(), direction: .down); play.tap()
-        require(app.buttons["暂停朗读"], timeout: 8)
-        let passage = app.staticTexts.matching(NSPredicate(format: "label BEGINSWITH %@ AND label ENDSWITH %@", "第 ", " / 35 段")).firstMatch
-        require(passage); let currentPassage = passage.label
-        closePanel(); wakeTools()
-        let read = app.buttons["reader-read"]
-        require(read); read.tap()
+        require(app.buttons["从当前句开始朗读"])
+        XCTAssertFalse(app.buttons["暂停朗读"].exists)
+        app.buttons["reader-speech-play"].tap(); require(reader)
+        wakeTools(); app.buttons["reader-read"].tap()
         require(app.buttons["听书已暂停"])
         openTool("听书"); expandPanel()
         require(app.buttons["继续朗读"])
-        require(app.staticTexts[currentPassage])
-        XCTAssertFalse(app.buttons["从当前段开始朗读"].exists, "Read must pause the existing utterance, not stop and discard its session")
+        XCTAssertFalse(app.buttons["从当前句开始朗读"].exists)
         XCTAssertFalse(app.buttons["暂停朗读"].exists)
         closePanel(); openTool("听书")
         require(app.buttons["继续朗读"])
-        XCTAssertFalse(app.buttons["暂停朗读"].exists, "Reopening Listen must retain explicit pause intent")
-        capture("GET328-UI49-read-pauses-with-resume-position")
+        XCTAssertFalse(app.buttons["暂停朗读"].exists)
+        capture("GET347-read-pauses-with-sentence-position")
     }
 
     @MainActor
@@ -2678,6 +2664,28 @@ final class VideoExperienceUITests: XCTestCase {
         coldRelaunch(); require(reader, timeout: 20)
         XCTAssertTrue((reader.value as? String)?.contains("GET317 合成直译样本") == true)
         XCTAssertFalse(app.alerts["准备或恢复译文"].exists, "Reopening an existing translated view must not offer another paid request")
+    }
+
+    func test97RealSystemSpeechHighlightsTheSentenceAndFollowsAcrossChapters() {
+        executionTimeAllowance = 120
+        launch(["--get347-short-speech"]); openBook(translatedTitle)
+        openTool("听书"); expandPanel()
+        let play = app.buttons["reader-speech-play"]; require(play); play.tap()
+        require(reader)
+        XCTAssertTrue(app.navigationBars["听一会儿"].waitForNonExistence(timeout: 5), "Starting speech returns to the actual book")
+        let status = app.buttons["reader-speech-status"]; require(status)
+        let second = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in
+            (status.value as? String)?.contains("Chapter one second sentence.") == true
+        }, object: nil)
+        XCTAssertEqual(XCTWaiter.wait(for: [second], timeout: 20), .completed, "Only real willSpeak callbacks advance the sentence within an utterance")
+        capture("GET347-real-system-sentence-highlight")
+        let next = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in
+            (self.reader.value as? String)?.contains("Chapter two first sentence.") == true
+        }, object: nil)
+        XCTAssertEqual(XCTWaiter.wait(for: [next], timeout: 15), .completed, "Continuous speech must bring the next source chapter onto the screen")
+        let toggle = app.buttons["reader-speech-toggle"]; require(toggle); toggle.tap()
+        require(app.buttons["继续朗读"])
+        capture("GET347-cross-chapter-speech-paused")
     }
 
 }

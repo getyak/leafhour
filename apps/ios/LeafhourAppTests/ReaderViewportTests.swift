@@ -178,4 +178,38 @@ final class ReaderViewportTests: XCTestCase {
         coordinator.cancelPendingScroll()
         _ = await session.flush()
     }
+    func testPDFSpeechCursorUsesTheVisibleRightColumnAndPaintDoesNotSelectText() async throws {
+        let session = try await session(filename: "speech-columns.pdf") { url in
+            let renderer = UIGraphicsPDFRenderer(bounds: CGRect(x: 0, y: 0, width: 420, height: 900))
+            try renderer.writePDF(to: url) { context in
+                context.beginPage()
+                (String(repeating: "LEFT_UNSEEN one.\n", count: 20) as NSString).draw(in: CGRect(x: 20, y: 40, width: 150, height: 800), withAttributes: [.font: UIFont.systemFont(ofSize: 14)])
+                (String(repeating: "RIGHT_VISIBLE two.\n", count: 20) as NSString).draw(in: CGRect(x: 250, y: 40, width: 150, height: 800), withAttributes: [.font: UIFont.systemFont(ofSize: 14)])
+            }
+        }
+        var location: ReaderSpeechLocation?
+        var reading = PDFReadingView(session: session, pageInsets: UIEdgeInsets(top: 16, left: 0, bottom: 44, right: 0), selectionDismissalID: UUID(), onSelection: { _ in }, onWake: { _ in }, onReadingScroll: {}, onReadingPosition: { location = $0 })
+        let coordinator = reading.makeCoordinator(), pdf = PDFView()
+        pdf.autoScales = false; coordinator.view = pdf
+        _ = host(pdf, size: CGSize(width: 300, height: 500))
+        coordinator.update(pdf)
+        for _ in 0..<4 { await drainMainQueue() }
+        pdf.scaleFactor = 2; pdf.layoutDocumentView(); pdf.layoutIfNeeded(); coordinator.observeScroll(in: pdf)
+        let scroll = try XCTUnwrap(descendant(UIScrollView.self, in: pdf))
+        let maximum = max(0, scroll.contentSize.width - scroll.bounds.width)
+        XCTAssertGreaterThan(maximum, 0)
+        scroll.setContentOffset(CGPoint(x: maximum, y: -scroll.adjustedContentInset.top), animated: false)
+        pdf.layoutIfNeeded(); coordinator.restoring = false; coordinator.reportReadingPosition()
+        let page = try XCTUnwrap(pdf.document?.page(at: 0)), source = try XCTUnwrap(page.string)
+        let reported = try XCTUnwrap(location)
+        let character = page.characterBounds(at: reported.utf16Offset)
+        XCTAssertGreaterThan(character.minX, 200, "A zoomed right column cannot begin with invisible left-column text")
+        let right = (source as NSString).rangeOfComposedCharacterSequence(at: reported.utf16Offset)
+        reading.speechHighlight = ReaderSpeechHighlight(location: ReaderSpeechLocation(chapterID: session.chapter.id, passageID: session.chapter.passages[0].id, layer: "original", snapshot: source, utf16Offset: right.location), sentenceRange: right, wordRange: right)
+        coordinator.parent = reading; coordinator.updateSpeech()
+        XCTAssertEqual(pdf.highlightedSelections?.count, 1)
+        XCTAssertNil(pdf.currentSelection, "Speech paint must never replace the native editable selection")
+        coordinator.invalidate()
+    }
+
 }

@@ -17,6 +17,10 @@ struct TextReadingView: UIViewRepresentable {
     var onDiscuss: ((SelectedQuote) -> Void)? = nil
     var onSelectionChange: ((SelectedQuote?, Bool) -> Void)? = nil
     var onPageChange: ((ReaderPagePosition) -> Void)? = nil
+    var speechHighlight: ReaderSpeechHighlight? = nil
+    var followsSpeech = false
+    var onReadingPosition: ((ReaderSpeechLocation) -> Void)? = nil
+    var onTouchActivity: ((Bool) -> Void)? = nil
     func makeCoordinator() -> Coordinator { Coordinator(parent: self) }
     func makeUIView(context: Context) -> UITextView {
         let view = ReflowTextView()
@@ -42,6 +46,16 @@ struct TextReadingView: UIViewRepresentable {
         view.readerTapRecognizer = context.coordinator.edgeTap?.recognizer
         view.readerPageRecognizer = context.coordinator.pageTurn?.recognizer
         context.coordinator.configureNavigation(view)
+        let coordinator = context.coordinator
+        let observer = ReaderParagraphSelectionObserver(view: view, eligible: { [weak view, weak coordinator] point in
+            guard let view, coordinator?.restoring == false, view.selectedRange.length == 0,
+                  (view.visibleReadingRect ?? view.bounds).contains(point) else { return false }
+            return !ReaderEdgeTapHandler.isLink(at: point, in: view)
+        }, context: { [weak coordinator, weak view] in
+            guard let coordinator, let view, !coordinator.restoring else { return nil }
+            return coordinator.parent.session.navigationID.uuidString + coordinator.signature + String(describing: view.bounds.width)
+        }, selectionActive: { [weak view] in (view?.selectedRange.length ?? 0) > 0 }, expand: { false }, activity: { [weak coordinator] in coordinator?.parent.onTouchActivity?($0) })
+        coordinator.paragraphSelection = observer; view.paragraphSelection = observer; observer.install()
         return view
     }
     func updateUIView(_ view: UITextView, context: Context) {
@@ -49,6 +63,7 @@ struct TextReadingView: UIViewRepresentable {
         coordinator.parent = self
         coordinator.updateContent(view)
         coordinator.dismissSelection(in: view, id: selectionDismissalID)
+        coordinator.updateSpeech(view)
     }
     static func dismantleUIView(_ view: UITextView, coordinator: Coordinator) {
         (view as? ReflowTextView)?.onSizeChange = nil
@@ -176,6 +191,7 @@ struct TextReadingView: UIViewRepresentable {
                 // its first layout. Set the default before restoring every run's
                 // own heading, caption and link attributes below.
                 view.font = font
+                coordinator.speechFollower.invalidate(in: view)
                 view.attributedText = result
                 if let selection, NSMaxRange(selection.range) <= result.length,
                    (result.string as NSString).substring(with: selection.range) == selection.text {
@@ -196,6 +212,9 @@ struct TextReadingView: UIViewRepresentable {
         var spans: [Span] = []
         var markdown: MarkdownChapterLayout?
         var markdownChapterID: String?
+        private let speechFollower = ReaderSpeechTextFollower()
+        var paragraphSelection: ReaderParagraphSelectionObserver?
+        private var paragraphMenu: ReaderParagraphEditMenu?
         struct TranslatedViewport {
             let passageID: String
             let offset: Int
@@ -262,6 +281,7 @@ struct TextReadingView: UIViewRepresentable {
             }
         }
         func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+            paragraphSelection?.cancel()
             restorationGeneration += 1; restoring = false; pendingTranslatedViewport = nil; cancelPendingCapture()
             parent.session.clearTransientSelection()
             parent.onReadingScroll()
@@ -324,7 +344,56 @@ struct TextReadingView: UIViewRepresentable {
                 anchor.resourceY = min(1, max(0, Double((readingY - image.minY) / image.height)))
             }
             parent.session.recordVisible(anchor, navigationID: parent.session.navigationID)
+            reportReadingPosition(span: span, displayedIndex: index)
             return true
+        }
+        private func reportReadingPosition(span: Span, displayedIndex: Int) {
+            guard span.passage.resourcePath == nil else { return }
+            let layer = span.isTranslation ? parent.session.state.preferences.translationVariant.rawValue : "original"
+            let text = span.isTranslation ? parent.session.translations[span.passage.id]?.text(parent.session.state.preferences.translationVariant) : span.passage.text
+            guard let text else { return }
+            let offset = span.isTranslation ? min(text.utf16.count, max(0, displayedIndex - span.range.location)) : sourceOffset(in: span, displayedIndex: displayedIndex)
+            parent.onReadingPosition?(ReaderSpeechLocation(chapterID: parent.session.chapter.id, passageID: span.passage.id, layer: layer, snapshot: text, utf16Offset: offset))
+        }
+        private func reportReadingPosition(in view: UITextView) {
+            guard !restoring, !spans.isEmpty else { return }
+            let point = CGPoint(x: 1, y: max(0, view.contentOffset.y + parent.pageInsets.top + 1 - view.textContainerInset.top))
+            let index = view.layoutManager.characterIndex(for: point, in: view.textContainer, fractionOfDistanceBetweenInsertionPoints: nil)
+            let span = spans.last(where: { $0.range.location <= index }) ?? spans[0]
+            reportReadingPosition(span: span, displayedIndex: index)
+        }
+        func updateSpeech(_ view: UITextView) {
+            guard !restoring else { return }
+            var target: ReaderSpeechTextTarget?
+            if view.selectedRange.length == 0, let highlight = parent.speechHighlight,
+               highlight.location.chapterID == parent.session.chapter.id,
+               let span = spans.first(where: { $0.passage.id == highlight.location.passageID && ($0.isTranslation == (highlight.location.layer != "original")) }) {
+                let snapshot = span.isTranslation ? parent.session.translations[span.passage.id]?.text(parent.session.state.preferences.translationVariant) : span.passage.text
+                let layerMatches = !span.isTranslation || parent.session.state.preferences.translationVariant.rawValue == highlight.location.layer
+                func displayed(_ range: NSRange) -> NSRange? {
+                    guard range.location >= 0, range.length > 0, NSMaxRange(range) <= highlight.location.snapshot.utf16.count else { return nil }
+                    if let source = span.sourceRange, let markdown {
+                        let start = markdown.document.displayedUTF16Offset(forSourceUTF16Offset: source.location + range.location)
+                        let end = markdown.document.displayedUTF16Offset(forSourceUTF16Offset: source.location + NSMaxRange(range))
+                        return NSRange(location: start, length: max(0, end - start))
+                    }
+                    return NSRange(location: span.range.location + range.location, length: range.length)
+                }
+                if snapshot == highlight.location.snapshot, layerMatches, let sentence = displayed(highlight.sentenceRange), let word = displayed(highlight.wordRange) {
+                    target = ReaderSpeechTextTarget(sentence: sentence, word: word)
+                }
+            }
+            let viewport = (view as? ReflowTextView)?.visibleReadingRect ?? CGRect(x: view.bounds.minX, y: view.bounds.minY + parent.pageInsets.top, width: view.bounds.width, height: max(1, view.bounds.height - parent.pageInsets.top - parent.pageInsets.bottom))
+            let wasRestoring = restoring; restoring = true
+            speechFollower.apply(to: view, target: target, following: parent.followsSpeech, viewport: viewport, pages: parent.session.state.preferences.navigationMode == .paged ? pagination : nil)
+            restoring = wasRestoring
+            if target != nil {
+                let generation = restorationGeneration, navigation = navigationID
+                DispatchQueue.main.async { [weak self] in
+                    guard let self, self.restorationGeneration == generation, self.navigationID == navigation else { return }
+                    self.capture(); self.reportPagePosition()
+                }
+            }
         }
         private func sourceOffset(in span: Span, displayedIndex: Int) -> Int {
             if span.isTranslation { return 0 }
@@ -344,6 +413,7 @@ struct TextReadingView: UIViewRepresentable {
             return (view.selectedRange, (view.attributedText.string as NSString).substring(with: view.selectedRange))
         }
         func textViewDidChangeSelection(_ textView: UITextView) {
+            paragraphSelection?.selectionChanged()
             let range = textView.selectedRange, navigation = navigationID
             // UIKit can notify synchronously during representable updates. Publish
             // only the latest user selection after that update has completed.
@@ -358,6 +428,8 @@ struct TextReadingView: UIViewRepresentable {
             }
         }
         func invalidate() {
+            paragraphMenu?.invalidate(); paragraphMenu = nil
+            paragraphSelection?.invalidate(); paragraphSelection = nil
             restorationGeneration += 1; cancelPendingCapture(); view = nil
             spans = []; indexedSessionID = nil; indexedChapterIndex = nil
             markdown = nil; markdownChapterID = nil
@@ -507,6 +579,8 @@ struct TextReadingView: UIViewRepresentable {
                     self.capture()
                 }
                 self.configureNavigation(view)
+                self.updateSpeech(view)
+                self.reportReadingPosition(in: view)
                 if persistCheckpoint { self.schedulePersistence() }
             }
         }
@@ -590,7 +664,16 @@ struct TextReadingView: UIViewRepresentable {
 
 /// Clip only TextKit's ink, leaving UIKit's selection handles outside the paper
 /// body intact. The text container, page origins and source geometry never move.
-private final class ReaderPageLayoutManager: NSLayoutManager {
+private final class ReaderPageLayoutManager: NSLayoutManager, ReaderSpeechPaintingLayout {
+    var speechHighlightRange: NSRange? {
+        didSet {
+            guard oldValue != speechHighlightRange else { return }
+            let count = textStorage?.length ?? 0
+            for range in [oldValue, speechHighlightRange].compactMap({ $0 }) where range.location >= 0 && range.location < count {
+                invalidateDisplay(forCharacterRange: NSRange(location: range.location, length: min(range.length, count - range.location)))
+            }
+        }
+    }
     var readingClip: CGRect?
     override func drawGlyphs(forGlyphRange glyphsToShow: NSRange, at origin: CGPoint) {
         guard let readingClip, let context = UIGraphicsGetCurrentContext() else {
@@ -601,17 +684,26 @@ private final class ReaderPageLayoutManager: NSLayoutManager {
         context.restoreGState()
     }
     override func drawBackground(forGlyphRange glyphsToShow: NSRange, at origin: CGPoint) {
-        guard let readingClip, let context = UIGraphicsGetCurrentContext() else {
-            super.drawBackground(forGlyphRange: glyphsToShow, at: origin); return
-        }
-        context.saveGState(); context.clip(to: readingClip.offsetBy(dx: origin.x, dy: origin.y))
+        guard let context = UIGraphicsGetCurrentContext() else { super.drawBackground(forGlyphRange: glyphsToShow, at: origin); return }
+        context.saveGState()
+        if let readingClip { context.clip(to: readingClip.offsetBy(dx: origin.x, dy: origin.y)) }
         super.drawBackground(forGlyphRange: glyphsToShow, at: origin)
+        if let range = speechHighlightRange, range.length > 0, range.location >= 0, NSMaxRange(range) <= (textStorage?.length ?? 0), let container = textContainers.first {
+            let glyphs = NSIntersectionRange(glyphRange(forCharacterRange: range, actualCharacterRange: nil), glyphsToShow)
+            if glyphs.length > 0 {
+                UIColor { traits in UIColor(red: 0.38, green: 0.66, blue: 0.43, alpha: traits.userInterfaceStyle == .dark ? 0.35 : 0.20) }.setFill()
+                enumerateEnclosingRects(forGlyphRange: glyphs, withinSelectedGlyphRange: NSRange(location: NSNotFound, length: 0), in: container) { rect, _ in
+                    UIBezierPath(roundedRect: rect.offsetBy(dx: origin.x, dy: origin.y), cornerRadius: 3).fill()
+                }
+            }
+        }
         context.restoreGState()
     }
 }
 
 /// UIKit can resize the text container without a new SwiftUI state update.
 final class ReflowTextView: UITextView {
+    var paragraphSelection: ReaderParagraphSelectionObserver?
     var onSizeChange: (() -> Void)?
     var onPageScroll: ((ReaderPageDirection) -> Bool)?
     weak var readerTapRecognizer: UIGestureRecognizer?
@@ -706,6 +798,7 @@ final class ReflowTextView: UITextView {
         let changed = size.width > 0 && size != laidOutSize
         if changed { laidOutSize = size }
         super.layoutSubviews()
+        paragraphSelection?.install()
         updateReadingClip()
         if changed { onSizeChange?() }
     }

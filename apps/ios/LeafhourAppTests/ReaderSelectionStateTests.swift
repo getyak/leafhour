@@ -43,4 +43,31 @@ final class ReaderSelectionStateTests: XCTestCase {
         XCTAssertTrue(session.state.drafts.isEmpty)
         coordinator.invalidate(); view.delegate = nil
     }
+    func testSpeechPaintAndFollowingPreserveTheAttributedSourceAndNativeSelection() throws {
+        for paged in [false, true] {
+            let view = ReflowTextView()
+            view.frame = CGRect(x: 0, y: 0, width: 390, height: 600)
+            view.textContainerInset = UIEdgeInsets(top: 16, left: 22, bottom: 44, right: 22)
+            view.textContainer.lineFragmentPadding = 0
+            let source = "Sentence starts. " + (1...250).map { "witness\($0)" }.joined(separator: " ") + "."
+            let original = NSAttributedString(string: source, attributes: [.font: UIFont.systemFont(ofSize: 22)])
+            view.attributedText = original; view.layoutManager.ensureLayout(for: view.textContainer); view.layoutIfNeeded()
+            let word = (source as NSString).range(of: "witness180")
+            let sentence = NSRange(location: 0, length: source.utf16.count)
+            let follower = ReaderSpeechTextFollower()
+            let pages = paged ? ReaderTextPagination(textView: view, readingTop: 16, bottomInset: 44) : nil
+            let viewport = CGRect(x: 0, y: 16, width: 390, height: 540)
+            follower.apply(to: view, target: ReaderSpeechTextTarget(sentence: sentence, word: word), following: true, viewport: viewport, pages: pages)
+            XCTAssertTrue(view.attributedText.isEqual(to: original))
+            XCTAssertEqual((view.layoutManager as? ReaderSpeechPaintingLayout)?.speechHighlightRange, sentence)
+            XCTAssertGreaterThan(view.contentOffset.y, 0, "Follow the currently spoken word inside a sentence taller than a screen")
+            view.selectedRange = NSRange(location: 0, length: 8)
+            let offset = view.contentOffset
+            follower.apply(to: view, target: ReaderSpeechTextTarget(sentence: sentence, word: word), following: true, viewport: viewport, pages: pages)
+            XCTAssertEqual(view.selectedRange, NSRange(location: 0, length: 8))
+            XCTAssertEqual(view.contentOffset, offset, "Speech must not pull a live native selection away")
+            follower.apply(to: view, target: nil, following: false, viewport: viewport, pages: pages)
+            XCTAssertNil((view.layoutManager as? ReaderSpeechPaintingLayout)?.speechHighlightRange)
+        }
+    }
 }
