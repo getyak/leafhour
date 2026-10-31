@@ -5307,50 +5307,50 @@ candidate:server/book-ingestion.mjs:19:88,js-cjk-literal,server/book-ingestion.m
 candidate:server/book-ingestion.mjs:22:90,js-cjk-literal,server/book-ingestion.mjs,22,,unknown,reviewable,,找不到解析任务
 candidate:server/book-ingestion.mjs:33:221,js-cjk-literal,server/book-ingestion.mjs,33,,unknown,reviewable,,今日识别额度已用完，原文件与进度保留，明天可以继续。
 candidate:server/book-ingestion.mjs:37:172,js-cjk-literal,server/book-ingestion.mjs,37,,unknown,reviewable,,请选择 20 MB 内的 EPUB 或文本文件
-candidate:server/book-ingestion.mjs:42:107,js-cjk-literal,server/book-ingestion.mjs,42,,unknown,reviewable,,同一文件正在建立任务，请稍后重试
-candidate:server/book-ingestion.mjs:49:191,js-cjk-literal,server/book-ingestion.mjs,49,,unknown,reviewable,,请选择 256 MB 内的有效 PDF
-candidate:server/book-ingestion.mjs:52:46,js-cjk-literal,server/book-ingestion.mjs,52,,unknown,reviewable,,请先允许将本书发送给 PaddleOCR 官方服务识别
-candidate:server/book-ingestion.mjs:53:41,js-cjk-literal,server/book-ingestion.mjs,53,,unknown,reviewable,,文字识别服务尚未配置
-candidate:server/book-ingestion.mjs:54:90,js-cjk-literal,server/book-ingestion.mjs,54,,unknown,reviewable,,PDF 无法读取，请检查是否加密或损坏
-candidate:server/book-ingestion.mjs:55:83,js-cjk-literal,server/book-ingestion.mjs,55,,unknown,reviewable,,PDF 最多支持 1200 页
-candidate:server/book-ingestion.mjs:61:108,js-cjk-literal,server/book-ingestion.mjs,61,,unknown,reviewable,,同一文件正在建立任务，请稍后重试
-candidate:server/book-ingestion.mjs:71:66,js-cjk-literal,server/book-ingestion.mjs,71,,unknown,reviewable,,请确认允许识别本书需要识别的页面。
-candidate:server/book-ingestion.mjs:71:137,js-cjk-literal,server/book-ingestion.mjs,71,,unknown,reviewable,,原文件已变化，请重新核对。
-candidate:server/book-ingestion.mjs:72:27,js-cjk-literal,server/book-ingestion.mjs,72,,unknown,reviewable,,当前文字识别服务尚未配置，原文件与进度保留。
-candidate:server/book-ingestion.mjs:83:68,js-cjk-literal,server/book-ingestion.mjs,83,,unknown,reviewable,,找不到解析任务
-candidate:server/book-ingestion.mjs:85:114,js-cjk-literal,server/book-ingestion.mjs,85,,unknown,reviewable,,解析已取消或由另一任务接管
-candidate:server/book-ingestion.mjs:86:111,js-cjk-literal,server/book-ingestion.mjs,86,,unknown,reviewable,,解析已取消或已过期
-candidate:server/book-ingestion.mjs:91:118,js-cjk-literal,server/book-ingestion.mjs,91,,unknown,reviewable,,原文件校验失败，请重新上传
-candidate:server/book-ingestion.mjs:98:70,js-cjk-literal,server/book-ingestion.mjs,98,,unknown,reviewable,,原文件引用无法核验
-candidate:server/book-ingestion.mjs:98:224,js-cjk-literal,server/book-ingestion.mjs,98,,unknown,reviewable,,原文件引用无法核验
-candidate:server/book-ingestion.mjs:99:95,js-cjk-literal,server/book-ingestion.mjs,99,,unknown,reviewable,,原文件引用存储尚未配置
-candidate:server/book-ingestion.mjs:105:157,js-cjk-literal,server/book-ingestion.mjs,105,,unknown,reviewable,,原文件校验失败
-candidate:server/book-ingestion.mjs:107:96,js-cjk-literal,server/book-ingestion.mjs,107,,unknown,reviewable,,PDF 页数发生变化
-candidate:server/book-ingestion.mjs:118:82,js-cjk-literal,server/book-ingestion.mjs,118,,unknown,reviewable,,页码覆盖不完整，未加入书房
-candidate:server/book-ingestion.mjs:123:70,js-cjk-literal,server/book-ingestion.mjs,123,,unknown,reviewable,,原文件引用无法核验
-candidate:server/book-ingestion.mjs:123:222,js-cjk-literal,server/book-ingestion.mjs,123,,unknown,reviewable,,原文件引用无法核验
-candidate:server/book-ingestion.mjs:125:22,js-cjk-literal,server/book-ingestion.mjs,125,,unknown,reviewable,,原文件引用存储尚未配置
-candidate:server/book-ingestion.mjs:137:122,js-cjk-literal,server/book-ingestion.mjs,137,,unknown,reviewable,,逐页检查未完整返回，原文件仍保留。
-candidate:server/book-ingestion.mjs:139:162,js-cjk-literal,server/book-ingestion.mjs,139,,unknown,reviewable,,这本书超过当前文字处理容量，原文件与已完成页保留。
-candidate:server/book-ingestion.mjs:144:351,js-cjk-literal,server/book-ingestion.mjs,144,,unknown,reviewable,,上次请求未确认是否提交成功，为避免重复计费已暂停，请保留任务并联系管理员。
-candidate:server/book-ingestion.mjs:146:72,js-cjk-literal,server/book-ingestion.mjs,146,,unknown,reviewable,,原文件仍在检查
-candidate:server/book-ingestion.mjs:147:32,js-cjk-literal,server/book-ingestion.mjs,147,,unknown,reviewable,,请先允许识别本书
-candidate:server/book-ingestion.mjs:149:66,js-cjk-literal,server/book-ingestion.mjs,149,,unknown,reviewable,,单页扫描文件超过 20 MB，请减小页面图片后重试
-candidate:server/book-ingestion.mjs:156:171,js-cjk-literal,server/book-ingestion.mjs,156,,unknown,reviewable,,PaddleOCR 未能完成这一批页面，请保留任务后重试
-candidate:server/book-ingestion.mjs:158:249,js-cjk-literal,server/book-ingestion.mjs,158,,unknown,reviewable,,识别返回页数不完整，未加入书房
-candidate:server/book-ingestion.mjs:159:301,js-cjk-literal,server/book-ingestion.mjs,159,,unknown,reviewable,,页面覆盖不完整，原文件与结果保留。
-candidate:server/book-ingestion.mjs:167:94,js-cjk-literal,server/book-ingestion.mjs,167,,unknown,reviewable,,入库结果正在核对，请稍候。
-candidate:server/book-ingestion.mjs:167:215,js-cjk-literal,server/book-ingestion.mjs,167,,unknown,reviewable,,整理暂未完成，原文件已保存，请重试。
-candidate:server/book-ingestion.mjs:173:544,js-cjk-literal,server/book-ingestion.mjs,173,,unknown,reviewable,,已整理内容超过单本容量，原文件与识别结果保留，可取消整理。
-candidate:server/book-ingestion.mjs:173:576,js-cjk-literal,server/book-ingestion.mjs,173,,unknown,reviewable,,整理结果未通过正文校验，原文件与识别结果保留。
-candidate:server/book-ingestion.mjs:173:616,js-cjk-literal,server/book-ingestion.mjs,173,,unknown,reviewable,,入库结果正在核对，请继续处理任务。
-candidate:server/book-ingestion.mjs:173:762,js-cjk-literal,server/book-ingestion.mjs,173,,unknown,reviewable,,请求结果未确认，为避免重复提交已暂停。
-candidate:server/book-ingestion.mjs:173:784,js-cjk-literal,server/book-ingestion.mjs,173,,unknown,reviewable,,解析未完成，原文件和已完成页面已保留。
-candidate:server/book-ingestion.mjs:173:1237,js-cjk-literal,server/book-ingestion.mjs,173,,unknown,reviewable,,解析暂未完成，已保存进度。可重新打开上传窗口查看。
-candidate:server/book-ingestion.mjs:176:85,js-cjk-literal,server/book-ingestion.mjs,176,,unknown,reviewable,,找不到解析任务
-candidate:server/book-ingestion.mjs:177:152,js-cjk-literal,server/book-ingestion.mjs,177,,unknown,reviewable,,原文件没有封面
-candidate:server/book-ingestion.mjs:177:499,js-cjk-literal,server/book-ingestion.mjs,177,,unknown,reviewable,,找不到解析任务
-candidate:server/book-ingestion.mjs:177:551,js-cjk-literal,server/book-ingestion.mjs,177,,unknown,reviewable,,正在完成入库，请稍后查看
+candidate:server/book-ingestion.mjs:43:107,js-cjk-literal,server/book-ingestion.mjs,43,,unknown,reviewable,,同一文件正在建立任务，请稍后重试
+candidate:server/book-ingestion.mjs:50:191,js-cjk-literal,server/book-ingestion.mjs,50,,unknown,reviewable,,请选择 256 MB 内的有效 PDF
+candidate:server/book-ingestion.mjs:53:46,js-cjk-literal,server/book-ingestion.mjs,53,,unknown,reviewable,,请先允许将本书发送给 PaddleOCR 官方服务识别
+candidate:server/book-ingestion.mjs:54:41,js-cjk-literal,server/book-ingestion.mjs,54,,unknown,reviewable,,文字识别服务尚未配置
+candidate:server/book-ingestion.mjs:55:90,js-cjk-literal,server/book-ingestion.mjs,55,,unknown,reviewable,,PDF 无法读取，请检查是否加密或损坏
+candidate:server/book-ingestion.mjs:56:83,js-cjk-literal,server/book-ingestion.mjs,56,,unknown,reviewable,,PDF 最多支持 1200 页
+candidate:server/book-ingestion.mjs:62:108,js-cjk-literal,server/book-ingestion.mjs,62,,unknown,reviewable,,同一文件正在建立任务，请稍后重试
+candidate:server/book-ingestion.mjs:72:66,js-cjk-literal,server/book-ingestion.mjs,72,,unknown,reviewable,,请确认允许识别本书需要识别的页面。
+candidate:server/book-ingestion.mjs:72:137,js-cjk-literal,server/book-ingestion.mjs,72,,unknown,reviewable,,原文件已变化，请重新核对。
+candidate:server/book-ingestion.mjs:73:27,js-cjk-literal,server/book-ingestion.mjs,73,,unknown,reviewable,,当前文字识别服务尚未配置，原文件与进度保留。
+candidate:server/book-ingestion.mjs:84:68,js-cjk-literal,server/book-ingestion.mjs,84,,unknown,reviewable,,找不到解析任务
+candidate:server/book-ingestion.mjs:86:114,js-cjk-literal,server/book-ingestion.mjs,86,,unknown,reviewable,,解析已取消或由另一任务接管
+candidate:server/book-ingestion.mjs:87:111,js-cjk-literal,server/book-ingestion.mjs,87,,unknown,reviewable,,解析已取消或已过期
+candidate:server/book-ingestion.mjs:92:118,js-cjk-literal,server/book-ingestion.mjs,92,,unknown,reviewable,,原文件校验失败，请重新上传
+candidate:server/book-ingestion.mjs:99:70,js-cjk-literal,server/book-ingestion.mjs,99,,unknown,reviewable,,原文件引用无法核验
+candidate:server/book-ingestion.mjs:99:224,js-cjk-literal,server/book-ingestion.mjs,99,,unknown,reviewable,,原文件引用无法核验
+candidate:server/book-ingestion.mjs:100:95,js-cjk-literal,server/book-ingestion.mjs,100,,unknown,reviewable,,原文件引用存储尚未配置
+candidate:server/book-ingestion.mjs:106:157,js-cjk-literal,server/book-ingestion.mjs,106,,unknown,reviewable,,原文件校验失败
+candidate:server/book-ingestion.mjs:108:96,js-cjk-literal,server/book-ingestion.mjs,108,,unknown,reviewable,,PDF 页数发生变化
+candidate:server/book-ingestion.mjs:119:82,js-cjk-literal,server/book-ingestion.mjs,119,,unknown,reviewable,,页码覆盖不完整，未加入书房
+candidate:server/book-ingestion.mjs:124:70,js-cjk-literal,server/book-ingestion.mjs,124,,unknown,reviewable,,原文件引用无法核验
+candidate:server/book-ingestion.mjs:124:222,js-cjk-literal,server/book-ingestion.mjs,124,,unknown,reviewable,,原文件引用无法核验
+candidate:server/book-ingestion.mjs:126:22,js-cjk-literal,server/book-ingestion.mjs,126,,unknown,reviewable,,原文件引用存储尚未配置
+candidate:server/book-ingestion.mjs:138:122,js-cjk-literal,server/book-ingestion.mjs,138,,unknown,reviewable,,逐页检查未完整返回，原文件仍保留。
+candidate:server/book-ingestion.mjs:140:162,js-cjk-literal,server/book-ingestion.mjs,140,,unknown,reviewable,,这本书超过当前文字处理容量，原文件与已完成页保留。
+candidate:server/book-ingestion.mjs:145:351,js-cjk-literal,server/book-ingestion.mjs,145,,unknown,reviewable,,上次请求未确认是否提交成功，为避免重复计费已暂停，请保留任务并联系管理员。
+candidate:server/book-ingestion.mjs:147:72,js-cjk-literal,server/book-ingestion.mjs,147,,unknown,reviewable,,原文件仍在检查
+candidate:server/book-ingestion.mjs:148:32,js-cjk-literal,server/book-ingestion.mjs,148,,unknown,reviewable,,请先允许识别本书
+candidate:server/book-ingestion.mjs:150:66,js-cjk-literal,server/book-ingestion.mjs,150,,unknown,reviewable,,单页扫描文件超过 20 MB，请减小页面图片后重试
+candidate:server/book-ingestion.mjs:157:171,js-cjk-literal,server/book-ingestion.mjs,157,,unknown,reviewable,,PaddleOCR 未能完成这一批页面，请保留任务后重试
+candidate:server/book-ingestion.mjs:159:249,js-cjk-literal,server/book-ingestion.mjs,159,,unknown,reviewable,,识别返回页数不完整，未加入书房
+candidate:server/book-ingestion.mjs:160:301,js-cjk-literal,server/book-ingestion.mjs,160,,unknown,reviewable,,页面覆盖不完整，原文件与结果保留。
+candidate:server/book-ingestion.mjs:168:94,js-cjk-literal,server/book-ingestion.mjs,168,,unknown,reviewable,,入库结果正在核对，请稍候。
+candidate:server/book-ingestion.mjs:168:215,js-cjk-literal,server/book-ingestion.mjs,168,,unknown,reviewable,,整理暂未完成，原文件已保存，请重试。
+candidate:server/book-ingestion.mjs:174:544,js-cjk-literal,server/book-ingestion.mjs,174,,unknown,reviewable,,已整理内容超过单本容量，原文件与识别结果保留，可取消整理。
+candidate:server/book-ingestion.mjs:174:576,js-cjk-literal,server/book-ingestion.mjs,174,,unknown,reviewable,,整理结果未通过正文校验，原文件与识别结果保留。
+candidate:server/book-ingestion.mjs:174:616,js-cjk-literal,server/book-ingestion.mjs,174,,unknown,reviewable,,入库结果正在核对，请继续处理任务。
+candidate:server/book-ingestion.mjs:174:762,js-cjk-literal,server/book-ingestion.mjs,174,,unknown,reviewable,,请求结果未确认，为避免重复提交已暂停。
+candidate:server/book-ingestion.mjs:174:784,js-cjk-literal,server/book-ingestion.mjs,174,,unknown,reviewable,,解析未完成，原文件和已完成页面已保留。
+candidate:server/book-ingestion.mjs:174:1237,js-cjk-literal,server/book-ingestion.mjs,174,,unknown,reviewable,,解析暂未完成，已保存进度。可重新打开上传窗口查看。
+candidate:server/book-ingestion.mjs:177:85,js-cjk-literal,server/book-ingestion.mjs,177,,unknown,reviewable,,找不到解析任务
+candidate:server/book-ingestion.mjs:178:152,js-cjk-literal,server/book-ingestion.mjs,178,,unknown,reviewable,,原文件没有封面
+candidate:server/book-ingestion.mjs:178:499,js-cjk-literal,server/book-ingestion.mjs,178,,unknown,reviewable,,找不到解析任务
+candidate:server/book-ingestion.mjs:178:551,js-cjk-literal,server/book-ingestion.mjs,178,,unknown,reviewable,,正在完成入库，请稍后查看
 candidate:server/book-introduction-store.mjs:9:53,js-cjk-literal,server/book-introduction-store.mjs,9,,unknown,reviewable,,简介正在保存，请稍后重试
 candidate:server/book-introduction-store.mjs:13:114,js-cjk-literal,server/book-introduction-store.mjs,13,,unknown,reviewable,,请先进入自己的书房
 candidate:server/book-introduction-store.mjs:20:46,js-cjk-literal,server/book-introduction-store.mjs,20,,unknown,reviewable,,这本书的 AI 简介正在生成，请稍后再打开
@@ -5618,8 +5618,8 @@ candidate:server/ingestion-runner.mjs:11:127,js-cjk-literal,server/ingestion-run
 candidate:server/ingestion-runner.mjs:14:185,js-cjk-literal,server/ingestion-runner.mjs,14,,unknown,reviewable,,当前整理任务较多，原文件已保留，请稍后继续。
 candidate:server/ingestion-upload.mjs:6:38,js-cjk-literal,server/ingestion-upload.mjs,6,,unknown,reviewable,,请先进入自己的书房
 candidate:server/ingestion-upload.mjs:8:85,js-cjk-literal,server/ingestion-upload.mjs,8,,unknown,reviewable,,找不到上传任务
-candidate:server/ingestion-upload.mjs:10:241,js-cjk-literal,server/ingestion-upload.mjs,10,,unknown,reviewable,,请选择 256 MB 内的 PDF
-candidate:server/ingestion-upload.mjs:12:59,js-cjk-literal,server/ingestion-upload.mjs,12,,unknown,reviewable,,请允许 PaddleOCR 官方服务识别本书
+candidate:server/ingestion-upload.mjs:10:404,js-cjk-literal,server/ingestion-upload.mjs,10,,unknown,reviewable,,请选择容量内的 PDF、EPUB 或文本文件
+candidate:server/ingestion-upload.mjs:12:64,js-cjk-literal,server/ingestion-upload.mjs,12,,unknown,reviewable,,请允许 PaddleOCR 官方服务识别本书
 candidate:server/ingestion-upload.mjs:14:246,js-cjk-literal,server/ingestion-upload.mjs,14,,unknown,reviewable,,原文件仍在核对，请稍后重试
 candidate:server/ingestion-upload.mjs:17:197,js-cjk-literal,server/ingestion-upload.mjs,17,,unknown,reviewable,,这段时间上传较多，请稍后再试
 candidate:server/ingestion-upload.mjs:20:115,js-cjk-literal,server/ingestion-upload.mjs,20,,unknown,reviewable,,上传任务不存在或已过期
@@ -5641,7 +5641,7 @@ candidate:server/ingestion-upload.mjs:40:273,js-cjk-literal,server/ingestion-upl
 candidate:server/ingestion-upload.mjs:41:78,js-cjk-literal,server/ingestion-upload.mjs,41,,unknown,reviewable,,原文件尚未上传完整
 candidate:server/ingestion-upload.mjs:41:567,js-cjk-literal,server/ingestion-upload.mjs,41,,unknown,reviewable,,上传分块校验失败
 candidate:server/ingestion-upload.mjs:41:698,js-cjk-literal,server/ingestion-upload.mjs,41,,unknown,reviewable,,原文件校验失败
-candidate:server/ingestion-upload.mjs:41:937,js-cjk-literal,server/ingestion-upload.mjs,41,,unknown,reviewable,,上传状态已变化，请重新选择原文件
+candidate:server/ingestion-upload.mjs:41:980,js-cjk-literal,server/ingestion-upload.mjs,41,,unknown,reviewable,,上传状态已变化，请重新选择原文件
 candidate:server/library-portability.mjs:14:56,js-cjk-literal,server/library-portability.mjs,14,,unknown,reviewable,,请先进入自己的书房
 candidate:server/library-portability.mjs:18:69,js-cjk-literal,server/library-portability.mjs,18,,unknown,reviewable,,恢复操作已过期，请重新选择备份
 candidate:server/library-portability.mjs:20:130,js-cjk-literal,server/library-portability.mjs,20,,unknown,reviewable,,备份大小或校验值不正确
