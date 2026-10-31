@@ -2477,5 +2477,6 @@ export default Object.freeze({
   "filter.sort.manual": "Manual order",
   "bookUpload.imports": "Bringing in your books",
   "bookUpload.parsing": "Organizing chapters · {completed} / {total}",
-  "bookUpload.tasks": "Book imports"
+  "bookUpload.tasks": "Book imports",
+  "bookUpload.saving": "Saving chapters…"
 });
