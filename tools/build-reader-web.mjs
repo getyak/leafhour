@@ -406,6 +406,8 @@ export async function buildReaderWeb({root,outputDir,html}){
   // Optional observability loads after usable paint; it has one literal lazy owner.
   'observability-bridge.mjs':{kind:'dynamic-import',importer:'reader.js'},
   'reader-account.mjs':{kind:'dynamic-import',importer:'reader.js'},
+  'reader-progress-refresh.mjs':{kind:'dynamic-import',importer:'reader.js'},
+  'atmosphere-motion.mjs':{kind:'dynamic-import',importer:'reader-atmosphere.js'},
   'reader-location.mjs':{kind:'dynamic-import',importer:'reader.js'},
   // Pure canvas layout waits for Share, preserving the fixed reader budget.
   'share-model.mjs':{kind:'dynamic-import',importer:'share.js'},
@@ -487,7 +489,7 @@ export async function buildReaderWeb({root,outputDir,html}){
    if(!candidates.some(file=>file&&file.startsWith('app/ui-catalogs/')))return undefined;
    throw Error('Non-public ui-catalogue bundle edge: '+args.path);
   });
-  b.onResolve({filter:/^\.\/(?:observability-bridge|reader-account|atmosphere-audio|original-download|translation-first-use|credit-client|offline-reading|offline-position|chat-book-upload|library-chat-markdown|reader-book-actions|gift-compose|book-cover-ui|arrival-catalog|share-fonts|share-model|reader-settings-choices|reader-page-inputs|reader-page-surface|reader-location|person-return-controller|reader-companion-loader|command-palette)\.mjs(?:\?.*)?$/},args=>{
+  b.onResolve({filter:/^\.\/(?:observability-bridge|reader-account|reader-progress-refresh|atmosphere-motion|atmosphere-audio|original-download|translation-first-use|credit-client|offline-reading|offline-position|chat-book-upload|library-chat-markdown|reader-book-actions|gift-compose|book-cover-ui|arrival-catalog|share-fonts|share-model|reader-settings-choices|reader-page-inputs|reader-page-surface|reader-location|person-return-controller|reader-companion-loader|command-palette)\.mjs(?:\?.*)?$/},args=>{
   const at=args.path.indexOf('?'),query=at<0?'':args.path.slice(at);
   if(query&&args.path!==paletteRetry&&args.path!==accountRetry)throw Error('Non-public lazy reader module: '+args.path);
   const entry=lazyModules[args.path.slice(2,query?at:undefined)];

@@ -4,6 +4,7 @@ import {createReaderObservabilitySignals,findVisibleReaderContent} from '../app/
 import {mountObservabilitySettings} from '../app/observability-settings.mjs';
 import {readFile} from 'node:fs/promises';
 import {runInNewContext} from 'node:vm';
+import {createReadingActivityCheckpoint} from '../app/reading-activity-checkpoint.mjs';
 
 function fixture(t){
   const document=new EventTarget();document.hidden=false;document.hasFocus=()=>true;
@@ -89,7 +90,7 @@ async function delayedRecordsFixture(){
   assert.ok(start>0&&end>start);let finish,restored=false;const reports=[],nodes=new Map();
   const context={loadGeneration:1,recordsPending:true,document:{body:{dataset:{}}},records:{comments:[],questions:[]},selectedBookId:'fixture',readerOwner:()=> 'alice',recordsUnavailable:false,book:{},entryInteracted:false,localStorage:{getItem:()=>null},progressKey:'fixture',recordsPositionUnresolved:false,progressSync:{revision:0,adopt(){}},deferredProgress:false,persistTimer:null,clearTimeout(){},READER_UI:'',state:{},restoringProgress:false,readingBook:{ensure:()=>new Promise(resolve=>{finish=resolve;})},
     mergeLoadedReadingRecords:remote=>remote,resolveReadingPosition:(_book,position)=>position,chooseReadingPosition:({remote})=>remote,openingReadingPreferences:()=>({}),chineseOriginalOnly:()=>false,resumeSummary:()=>null,recoveredPositionNeedsChoice:()=>true,cachePosition(){},renderChapter(){},restoreAnchor(){restored=true;},reportReadingResume:(position,options)=>reports.push({position,options,restored}),readingSignals:{resumeResult:value=>reports.push(value)},announceUi(){},renderPanel(){},dispatchReaderEvent(){},queueReadingFlow(){},persist(){},$:id=>{if(!nodes.has(id))nodes.set(id,{hidden:true});return nodes.get(id);}};
-  const adopt=runInNewContext('('+source.slice(start,end)+')',context);return {adopt,context,reports,release:()=>finish(),fresh:{comments:[],questions:[],position:{chapterId:'ch02',passageId:'PRIVATE_ID',revision:1}}};
+  context.progressActivity=createReadingActivityCheckpoint();const adopt=runInNewContext('('+source.slice(start,end)+')',context);return {adopt,context,reports,release:()=>finish(),fresh:{comments:[],questions:[],position:{chapterId:'ch02',passageId:'PRIVATE_ID',revision:1}}};
 }
 test('the real delayed-record adoption waits for chapter load and anchor restoration before reporting resume',async()=>{
   const s=await delayedRecordsFixture(),pending=s.adopt(s.fresh,{generation:1,explicitEntry:false});assert.equal(s.reports.length,0);s.release();await pending;assert.equal(s.reports.length,1);assert.equal(s.reports[0].restored,true);assert.equal(s.reports[0].position.chapterId,'ch02');

@@ -134,4 +134,4 @@
   <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
   <path d="m7 10 5 5 5-5" />
 </symbol>
-<symbol id="notebook-pen" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h12v16H4zM8 4v16M2 8h4M2 12h4M2 16h4M14 13l6-6 2 2-6 6-3 1z"/></symbol></svg>
+<symbol id="notebook-pen" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h12v16H4zM8 4v16M2 8h4M2 12h4M2 16h4M14 13l6-6 2 2-6 6-3 1z"/></symbol><symbol id="pin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3H8l1 6-4 4v2h14v-2l-4-4 1-6ZM12 15v6"/></symbol></svg>

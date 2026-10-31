@@ -14,7 +14,7 @@ const localInput=date=>new Date(date.getTime()-date.getTimezoneOffset()*60000).t
 function download(text,name,type){const url=URL.createObjectURL(new Blob([text],{type})),link=node('a');link.href=url;link.download=name;link.click();setTimeout(()=>URL.revokeObjectURL(url),10000);}
 const filename=value=>value.replace(/[\\/:*?"<>|\u0000-\u001f]/g,'').slice(0,70)||'读书日程';
 
-export function mountLibraryBookActions({api,getSession,getBooks,getOwner,getRevision,setRevision,onReorder,onChanged,openAuth,onOverlay=()=>{},onClose=()=>{}}){
+export function mountLibraryBookActions({api,getSession,getBooks,getOwner,getRevision,setRevision,onReorder,onChanged,onPinsChanged=onChanged,openAuth,onOverlay=()=>{},onClose=()=>{}}){
   const labels=new Map(),menuLabels=new Map(),triggers=new Map();let disposed=false,headingId=null,pruneScheduled=false;
   function scheduleTriggerPrune(){if(pruneScheduled)return;pruneScheduled=true;queueMicrotask(()=>{pruneScheduled=false;if(disposed)return;for(const trigger of triggers.keys())if(!trigger.isConnected)triggers.delete(trigger);});}
   const label=(node,id,params,scope=labels)=>{scope.set(node,{id,params});node.textContent=t(id,params);return node;};
@@ -62,6 +62,13 @@ export function mountLibraryBookActions({api,getSession,getBooks,getOwner,getRev
     const actions=node('div','action-dialog-buttons'),cancel=uiButton('book.archive.cancel','outline'),confirm=uiButton('book.archive.confirm','danger-action');actions.append(cancel,confirm);body.append(actions);cancel.addEventListener('click',()=>dialog.close());
     confirm.addEventListener('click',async()=>{if(disposed||confirm.disabled)return;const focus=trackActionFocus(document,confirm);confirm.disabled=true;label(confirm,'book.archive.busy');try{const saved=await api('/api/library/books/'+encodeURIComponent(book.bookId)+'/archive',{baseRevision:getRevision()});if(disposed||owner!==getOwner())return;setRevision(saved.revision);await onChanged();if(current(ticket))dialog.close();}catch(error){if(current(ticket)&&owner===getOwner()){notice('book.error',null,true);confirm.disabled=false;label(confirm,'book.archive.confirm');}}finally{if(current(ticket)&&owner===getOwner())focus.restore(confirm);else focus.stop();}});
   }
+  const pinning=new Set();
+  async function setPin(book){
+    if(!authenticated()||pinning.has(book.bookId))return;
+    const owner=getOwner(),currentBook=getBooks().find(row=>row.bookId===book.bookId)||book;pinning.add(book.bookId);
+    try{const saved=await api('/api/library/pins',{bookIds:[book.bookId],pinned:!currentBook.pinned,baseRevision:getRevision()});if(disposed||owner!==getOwner())return;setRevision(saved.revision);await onPinsChanged(saved);}
+    finally{pinning.delete(book.bookId);}
+  }
   async function trash(){
     if(!authenticated())return;const ticket=show(null,{id:'book.trash'},'trash'),owner=getOwner();notice('book.trash.loading');onOverlay({kind:'trash'});
     try{const data=await api('/api/library/trash');if(!current(ticket)||owner!==getOwner())return;setRevision(data.revision);message('');body.append(uiNode('p','action-scope','book.trash.help'));if(!data.books.length){body.append(uiNode('p','trash-empty','book.trash.empty'));return;}
@@ -81,6 +88,7 @@ export function mountLibraryBookActions({api,getSession,getBooks,getOwner,getRev
     if(disposed)return;closeMenu();menuControl.setTrigger(trigger);selected=book;menuLabels.clear();const ids=getBooks().map(b=>b.bookId),index=ids.indexOf(book.bookId);menu.replaceChildren(node('p','book-menu-title',title(book)));
     const items=[['info','book.info',()=>bookInfo(book)],['mail','book.gift',()=>share(book)],['calendar-plus','book.schedule.add',()=>calendar(book)],['arrow-left','book.move.before',()=>{menuControl.trigger?.focus({preventScroll:true});return onReorder(moveShelfBook(ids,book.bookId,ids[index-1],'before'));},index<1],['arrow-right','book.move.after',()=>{menuControl.trigger?.focus({preventScroll:true});return onReorder(moveShelfBook(ids,book.bookId,ids[index+1],'after'));},index===ids.length-1],['trash-2','book.archive.confirm',()=>archive(book)]];
     items.push(['download','export.title',()=>exportBook(book)]);
+    items.push(['pin',book.pinned?'book.unpin':'book.pin',()=>setPin(book),pinning.has(book.bookId)]);
     for(const [name,label,run,disabled]of items){const item=button('','book-menu-item'+(name==='trash-2'?' is-destructive':''));item.setAttribute('role','menuitem');item.disabled=!!disabled;item.append(icon(name),uiNode('span','',label,undefined,menuLabels));item.addEventListener('click',()=>{if(disposed)return;closeMenu();const ticket=menuSequence,owner=getOwner();Promise.resolve().then(()=>{if(!disposed&&ticket===menuSequence&&owner===getOwner())return run();}).catch(error=>{if(disposed||ticket!==menuSequence||owner!==getOwner())return;const status=document.getElementById('library-status');if(status)status.textContent=t('book.error');});});menu.append(item);}roomIcons(menu);menuControl.open();const r=trigger.getBoundingClientRect(),width=menu.offsetWidth;menu.style.left=Math.max(12,Math.min(innerWidth-width-12,r.right-width))+'px';menu.style.top=Math.max(12,Math.min(innerHeight-menu.offsetHeight-12,r.bottom+8))+'px';menu.querySelector('button:not(:disabled)')?.focus({preventScroll:true});
   }
   function decorate(card,book){

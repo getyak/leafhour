@@ -25,6 +25,63 @@ final class LibraryRecordsTests: XCTestCase {
         .object(["allTime": .object(["durationSeconds": .number(seconds), "readingDays": .number(1)]), "books": .array([])])
     }
 
+    func testForegroundSyncRefreshesAnAlreadyLoadedReadingSummaryWithoutReloadingNotebook() async throws {
+        let (model, probe) = try fixture()
+        probe.summary = summary(120)
+        await model.loadAccountRecords()
+        let notebookRequests = probe.notebookRequests
+        probe.summary = summary(900)
+        await model.synchronize()
+        XCTAssertEqual(model.summary["allTime"]["durationSeconds"].number, 900)
+        XCTAssertEqual(probe.summaryRequests, 2)
+        XCTAssertEqual(probe.notebookRequests, notebookRequests, "A foreground time refresh must not reload unrelated notes")
+    }
+
+    func testForegroundSyncDoesNotRequestReadingSummaryBeforeStatisticsWereOpened() async throws {
+        let (model, probe) = try fixture()
+        await model.synchronize()
+        XCTAssertEqual(probe.summaryRequests, 0)
+        XCTAssertEqual(probe.notebookRequests, 0)
+        XCTAssertEqual(model.summaryState, .idle)
+    }
+
+    func testForegroundSyncCoalescesWithAnOlderInFlightSummaryAndKeepsTheNewestCache() async throws {
+        let (model, probe) = try fixture()
+        probe.summary = summary(120); await model.loadAccountRecords()
+        probe.summary = summary(240)
+        let started = expectation(description: "older summary response captured and held")
+        probe.blockSummary(started)
+        let older = Task { await model.loadAccountRecords() }
+        await fulfillment(of: [started], timeout: 5)
+        probe.summary = summary(900)
+        let refresh = Task { await model.synchronize() }
+        for _ in 0..<200 where probe.libraryRequests < 2 { try await Task.sleep(for: .milliseconds(5)) }
+        XCTAssertGreaterThanOrEqual(probe.libraryRequests, 2)
+        probe.releaseSummary()
+        await older.value; await refresh.value
+        XCTAssertEqual(model.summary["allTime"]["durationSeconds"].number, 900)
+        XCTAssertEqual(probe.summaryRequests, 3, "Concurrent refreshes need one follow-up after the old response")
+        XCTAssertEqual(probe.notebookRequests, 2, "Only the two explicit records requests may read notes")
+        let library = try XCTUnwrap(model.library), data = try await library.cloudView("summary")
+        let cached = try CloudJSON.decode(XCTUnwrap(data))
+        XCTAssertEqual(cached["allTime"]["durationSeconds"].number, 900)
+    }
+
+    func testAnInFlightSummaryCannotReappearAfterSigningOut() async throws {
+        let (model, probe) = try fixture()
+        probe.summary = summary(240)
+        let started = expectation(description: "summary in flight before sign-out")
+        probe.blockSummary(started)
+        let pending = Task { await model.loadAccountRecords() }
+        await fulfillment(of: [started], timeout: 5)
+        await model.signOut()
+        probe.releaseSummary(); await pending.value
+        XCTAssertNil(model.account)
+        XCTAssertEqual(model.summary, .null)
+        XCTAssertEqual(model.summaryState, .idle)
+        XCTAssertEqual(probe.summaryRequests, 1)
+    }
+
     func testNotebookFailureDoesNotBlockIndependentReadingSummary() async throws {
         let (model, probe) = try fixture()
         probe.notebookStatus = 503
@@ -262,9 +319,18 @@ private final class RecordsProbe: @unchecked Sendable {
     private var chaptersBlocked = false
     private var chapterStarted: XCTestExpectation?
     private var heldChapters: [() -> Void] = []
+    private var summaryBlocked = false
+    private var summaryStarted: XCTestExpectation?
+    private var heldSummaries: [() -> Void] = []
+    func blockSummary(_ started: XCTestExpectation) { lock.lock(); summaryBlocked = true; summaryStarted = started; lock.unlock() }
     func blockChapters(_ started: XCTestExpectation) { lock.lock(); chaptersBlocked = true; chapterStarted = started; lock.unlock() }
     func holdIfBlocked(_ request: URLRequest, deliver: @escaping () -> Void) -> Bool {
         lock.lock()
+        if summaryBlocked, request.url!.path == "/api/library/reading-summary" {
+            heldSummaries.append(deliver)
+            let started = summaryStarted; summaryStarted = nil
+            lock.unlock(); started?.fulfill(); return true
+        }
         guard chaptersBlocked, request.url!.path.contains("/chapters/") else { lock.unlock(); return false }
         heldChapters.append(deliver)
         let started = chapterStarted; chapterStarted = nil
@@ -276,7 +342,13 @@ private final class RecordsProbe: @unchecked Sendable {
         lock.lock(); chaptersBlocked = false; let pending = heldChapters; heldChapters = []; lock.unlock()
         pending.forEach { $0() }
     }
+    func releaseSummary() {
+        lock.lock(); summaryBlocked = false; let pending = heldSummaries; heldSummaries = []; lock.unlock()
+        pending.forEach { $0() }
+    }
     var summaryRequests: Int { lock.lock(); defer { lock.unlock() }; return captured.filter { $0 == "/api/library/reading-summary" }.count }
+    var notebookRequests: Int { lock.lock(); defer { lock.unlock() }; return captured.filter { $0 == "/api/library/notebook" }.count }
+    var libraryRequests: Int { lock.lock(); defer { lock.unlock() }; return captured.filter { $0 == "/api/library" }.count }
     init(owner: String) { self.owner = owner }
     func response(_ request: URLRequest) -> (Int, CloudJSON) {
         if request.url!.path.hasSuffix("/native-copy") { return (404, .object([:])) }

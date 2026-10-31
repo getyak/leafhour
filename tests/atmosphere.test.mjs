@@ -56,7 +56,7 @@ test('volume or narration changes made while recordings load reach the accepted 
 
 // Run the real UI controller; only the DOM and the audio device are stand-ins.
 const controller=await readFile(new URL('../app/reader-atmosphere.js',import.meta.url),'utf8');
-async function readerFixture({saved=null,reduced=false,delayed=false,blocked=false,confirmIdentity=async()=>true}={}){
+async function readerFixture({saved=null,reduced=false,delayed=false,blocked=false,confirmIdentity=async()=>true,motionGate=null}={}){
   const elements=new Map(),started=[],stopped=[],pending=[],hearthMotion=[],natureMotion=[];
   class Element extends EventTarget{
     constructor(){super();this.dataset={};this.attributes=new Map();this.children=[];this.firstElementChild={};}
@@ -79,17 +79,27 @@ async function readerFixture({saved=null,reduced=false,delayed=false,blocked=fal
     started.push({scene,mix:getMix()});if(blocked){blocked=false;const error=Error('gesture required');error.name='NotAllowedError';throw error;}if(delayed)await new Promise(resolve=>pending.push(resolve));
     return {stop:()=>stopped.push(scene),setMix(){}};
   }};
-  await vm.runInNewContext('(async()=>{'+controller.replace(/^import .*;\n/gm,'')+'\nwindow.testGesture=resumeOnGesture;})()',{document:doc,window:win,location:{search:''},URLSearchParams,
+  let motionLoads=0;const motionModule={createHearthMotion:()=>{const layer={active:false,setActive(value){this.active=!!value;}};hearthMotion.push(layer);return layer;},createNatureMotion:()=>{const layer={active:false,scene:null,setActive(value){this.active=!!value;},setScene(value){this.scene=value;}};natureMotion.push(layer);return layer;}};
+  await vm.runInNewContext('(async()=>{'+controller.replace(/^import .*;\n/gm,'').replace(['import',"('./atmosphere-motion.mjs')"].join(''),'loadMotion()')+'\nwindow.testGesture=resumeOnGesture;})()',{document:doc,window:win,location:{search:''},URLSearchParams,
     t:uiLocale.t,uiReady:uiLocale.uiReady,bindUi:uiLocale.bindUi,onUiLocaleChange:uiLocale.onUiLocaleChange,
     localStorage:{getItem:key=>storage.get(key)||null,setItem:(key,value)=>storage.set(key,value)},readerStorageKey:key=>key,confirmReaderIdentity:confirmIdentity,
     atmospheres,normalizeAtmosphere,atmosphereMix,createAtmosphereSession,createAtmosphereAudio:()=>engine,
-    createHearthMotion:()=>{const layer={active:false,setActive(value){this.active=!!value;}};hearthMotion.push(layer);return layer;},
-    createNatureMotion:()=>{const layer={active:false,scene:null,setActive(value){this.active=!!value;},setScene(value){this.scene=value;}};natureMotion.push(layer);return layer;},requestAnimationFrame:fn=>fn()});
+    ...motionModule,loadMotion:async()=>{motionLoads++;if(motionGate)await motionGate;return motionModule;},requestAnimationFrame:fn=>fn()});
   const dialog=doc.body.children[0],root=doc.documentElement,$=id=>elements.get(id);
   const tick=()=>new Promise(resolve=>setImmediate(resolve));
   const choose=async id=>{(id==='none'?$('atmosphere-none'):dialog.querySelectorAll().find(button=>button.dataset.scene===id)).dispatchEvent(new Event('click'));await tick();};
-  return {doc,win,root,dialog,motion,$,started,stopped,pending,storage,tick,choose,hearthMotion,natureMotion};
+  return {doc,win,root,dialog,motion,$,started,stopped,pending,storage,tick,choose,hearthMotion,natureMotion,motionLoads:()=>motionLoads};
 }
+test('decorative renderers wait for a scene that needs visible motion and never load for reduced motion',async()=>{
+ const f=await readerFixture();assert.equal(f.hearthMotion.length,0);assert.equal(f.natureMotion.length,0);assert.equal(f.motionLoads(),0);await f.choose('rain');assert.equal(f.motionLoads(),0);await f.choose('hearth');assert.equal(f.motionLoads(),1);assert.equal(f.hearthMotion.length,2);
+ const reduced=await readerFixture({saved:{scene:'forest',motion:true},reduced:true});assert.equal(reduced.motionLoads(),0);assert.equal(reduced.natureMotion.length,0);
+});
+test('a decorative module resolving after page exit cannot start a hidden renderer',async()=>{
+ let finish;const gate=new Promise(resolve=>finish=resolve),f=await readerFixture({motionGate:gate});await f.choose('forest');assert.equal(f.motionLoads(),1);f.win.dispatchEvent(Object.assign(new Event('pagehide'),{persisted:false}));finish();await f.tick();assert.equal(f.natureMotion.length,0);
+});
+test('a late decorative module remains paused through bfcache until pageshow even before visibility changes',async()=>{
+ let finish;const gate=new Promise(resolve=>finish=resolve),f=await readerFixture({motionGate:gate});await f.choose('forest');f.win.dispatchEvent(Object.assign(new Event('pagehide'),{persisted:true}));finish();await f.tick();assert.equal(f.natureMotion.length,0);f.win.dispatchEvent(Object.assign(new Event('pageshow'),{persisted:true}));await f.tick();assert.equal(f.natureMotion.length,2);assert.equal(f.natureMotion[0].active,true);
+});
 
 test('selecting a scene starts its matching sound immediately, including after an explicit pause',async()=>{
   const f=await readerFixture();assert.equal(f.started.length,0);

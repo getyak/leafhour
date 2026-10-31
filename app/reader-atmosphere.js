@@ -1,15 +1,13 @@
 import {readerStorageKey,confirmReaderIdentity} from './reader-api.mjs';
 import {atmospheres,normalizeAtmosphere,atmosphereMix,createAtmosphereSession} from './atmosphere-state.mjs';
 import {createAtmosphereAudio} from './atmosphere-audio.mjs';
-import {createHearthMotion} from './hearth-motion.mjs';
-import {createNatureMotion} from './nature-motion.mjs';
 
 import {t,uiReady,bindUi,onUiLocaleChange} from './ui-locale.mjs';
 await uiReady;
 
 const SCENE_UI='reader.atmosphere.',READER_SHELL='reader.shell.';
 const imageLabel=state=>t(SCENE_UI+(state==='error'?'imageError':'imageLoading'));
-let atmosphereDisposed=false,pageGeneration=0;
+let atmosphereDisposed=false,pageGeneration=0,motionPagePresent=true;
 const listenerDisposers=[];
 function listen(target,event,handler,options){const owned=e=>{if(!atmosphereDisposed)return handler(e);};target.addEventListener(event,owned,options);listenerDisposers.push(()=>target.removeEventListener(event,owned,options));}
 
@@ -45,8 +43,19 @@ dialog.innerHTML=`
   </div>`;
 document.body.append(dialog);
 const hearthLayers=[...document.querySelectorAll('.atmosphere-backdrop,.atmosphere-preview')].map(host=>({
-  preview:host.classList.contains('atmosphere-preview'),motion:createHearthMotion(host.querySelector('.atmosphere-elements')),nature:createNatureMotion(host.querySelector('.atmosphere-elements')),
+  preview:host.classList.contains('atmosphere-preview'),target:host.querySelector('.atmosphere-elements'),motion:null,nature:null,
 }));
+let motionLoad=null;
+function ensureMotion(){
+  if(motionLoad||hearthLayers.every(layer=>layer.motion))return;
+  const generation=pageGeneration;
+  motionLoad=import('./atmosphere-motion.mjs').then(({createHearthMotion,createNatureMotion})=>{
+    if(atmosphereDisposed)return;
+    if(generation!==pageGeneration){motionLoad=null;if(motionPagePresent&&!document.hidden)renderMotion();return;}
+    for(const layer of hearthLayers){layer.motion=createHearthMotion(layer.target);layer.nature=createNatureMotion(layer.target);}
+    renderMotion();
+  }).catch(()=>{motionLoad=null;});
+}
 const session=createAtmosphereSession({start:scene=>engine.start(scene,()=>atmosphereMix(prefs,{narrating})),onState:()=>renderPlayback()});
 function sceneNode(tag,className){const node=document.createElement(tag);node.className=className;return node;}
 for(const scene of atmospheres){
@@ -66,15 +75,16 @@ for(const scene of atmospheres){
 }
 function save(){try{localStorage.setItem(key,JSON.stringify(prefs));}catch{notice=SCENE_UI+'storageError';}}
 function renderMotion(){
-  const still=reducedMotion.matches,running=prefs.motion&&!still&&!document.hidden;
+  const still=reducedMotion.matches,running=prefs.motion&&!still&&!document.hidden&&motionPagePresent;
   document.documentElement.dataset.atmosphereMotion=String(prefs.motion&&!still);
   document.documentElement.dataset.atmosphereActive=String(!document.hidden);
+  if(running&&['hearth','forest','sea'].includes(prefs.scene))ensureMotion();
   for(const layer of hearthLayers){
     const visible=!layer.preview||dialog.open;
-    layer.motion.setActive(prefs.scene==='hearth'&&running&&visible);
+    layer.motion?.setActive(prefs.scene==='hearth'&&running&&visible);
     // Forest light and sea water move on their own layer; sound never follows it.
-    layer.nature.setScene(prefs.scene);
-    layer.nature.setActive((prefs.scene==='forest'||prefs.scene==='sea')&&running&&visible);
+    layer.nature?.setScene(prefs.scene);
+    layer.nature?.setActive((prefs.scene==='forest'||prefs.scene==='sea')&&running&&visible);
   }
   for(const prefix of ['atmosphere-','settings-atmosphere-']){
     const control=$(prefix+'motion');if(!control)continue;
@@ -155,8 +165,8 @@ function syncNarration(){narrating=[...document.querySelectorAll('audio:not([dat
 for(const event of ['play','pause','ended','emptied'])listen(document,event,syncNarration,true);
 // Visibility controls visual motion, never the listener's playback choice.
 listen(document,'visibilitychange',renderMotion);
-listen(window,'pagehide',()=>{pageGeneration++;session.stop();for(const layer of hearthLayers){layer.motion.setActive(false);layer.nature.setActive(false);}});
-listen(window,'pageshow',async event=>{renderMotion();if(!event.persisted||!prefs.playing)return;const generation=pageGeneration;if(await confirmReaderIdentity()&&generation===pageGeneration&&!atmosphereDisposed&&prefs.playing&&session.status==='paused')session.play(prefs.scene);});
+listen(window,'pagehide',()=>{motionPagePresent=false;pageGeneration++;session.stop();for(const layer of hearthLayers){layer.motion?.setActive(false);layer.nature?.setActive(false);}});
+listen(window,'pageshow',async event=>{motionPagePresent=true;renderMotion();if(!event.persisted||!prefs.playing)return;const generation=pageGeneration;if(await confirmReaderIdentity()&&generation===pageGeneration&&!atmosphereDisposed&&prefs.playing&&session.status==='paused')session.play(prefs.scene);});
 // Only browser-delivered activation can satisfy autoplay restrictions.
 function resumeOnGesture(event){if(!event.isTrusted||!prefs.playing)return;if(event.target?.closest?.('#atmosphere-play,#settings-atmosphere-toggle,#atmosphere-quick-pause,.atmosphere-choice,#atmosphere-none'))return;if(session.status==='blocked')session.play(prefs.scene);else if(session.status==='loading')engine.unlock().catch(()=>{});}
 listen(document,'pointerdown',resumeOnGesture);listen(document,'keydown',resumeOnGesture);

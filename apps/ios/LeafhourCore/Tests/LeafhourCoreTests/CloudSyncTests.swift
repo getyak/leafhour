@@ -30,6 +30,91 @@ final class CloudSyncTests: XCTestCase {
     private func note(_ text: String, deleted: Bool = false) -> CloudJSON {
         .object(["id": .string("web-note"), "origin": .string("user"), "passageId": .string("passage-one"), "text": .string(text), "quote": .string("quiet page"), "deletedAt": deleted ? .string("2026-10-29T01:00:00.000Z") : .null])
     }
+    func testReadingTimeDrainsEvenWhenPositionConflictsAndNotesFail() async throws {
+        let library = try library(owner), book = try await library.importCloud(fixtureCopy()), sync = CloudBookSync(client: client(), library: library)
+        let anchor = ReadingAnchor(chapterID: "chapter-one", passageID: "passage-one")
+        var state = ReaderState(); state.anchor = anchor; state.notes = [ReaderNote(anchor: anchor, quote: "quiet page", body: "Pending note")]
+        try await library.saveState(state, bookID: book.id)
+        let base = Date(timeIntervalSince1970: 1_793_491_200)
+        var clock = ReadingActivityClock(); try clock.start(bookID: "book-one", contentVersion: "version-one", anchor: anchor, at: base)
+        clock.tick(at: base.addingTimeInterval(2)); let row = try XCTUnwrap(clock.finish(at: base.addingTimeInterval(2)))
+        try await library.retainReadingTime(row, bookID: book.id)
+        let response = try records(position: .object(["chapterId": .string("chapter-one"), "passageId": .string("passage-one"), "revision": .number(8)]))
+        var sent = 0
+        CloudMockProtocol.handler = { request in
+            if request.url!.path.hasSuffix("reading-sessions") { sent += 1; return (201, try Self.body(request)) }
+            return request.httpMethod == "POST" ? (503, Data("{}".utf8)) : (200, response)
+        }
+        try await sync.synchronize(book.id, pull: false)
+        XCTAssertEqual(sent, 1)
+        let pending = try await library.readingTimeLedger(bookID: book.id).pending
+        XCTAssertTrue(pending.isEmpty)
+        let metadata = try await library.cloudMetadata(book.id)
+        XCTAssertTrue(metadata.positionConflict)
+        XCTAssertNotNil(metadata.noteErrors.values.first)
+    }
+    func testMalformedTimeReceiptRetainsExactPendingSnapshotForRetry() async throws {
+        let library = try library(owner), book = try await library.importCloud(fixtureCopy()), sync = CloudBookSync(client: client(), library: library)
+        var clock = ReadingActivityClock(); let base = Date(timeIntervalSince1970: 1_793_491_200)
+        try clock.start(bookID: "book-one", contentVersion: "version-one", anchor: ReadingAnchor(chapterID: "chapter-one", passageID: "passage-one"), at: base)
+        clock.tick(at: base.addingTimeInterval(2)); let row = try XCTUnwrap(clock.finish(at: base.addingTimeInterval(2)))
+        try await library.retainReadingTime(row, bookID: book.id)
+        let response = try records()
+        CloudMockProtocol.handler = { request in
+            if request.url!.path.hasSuffix("reading-sessions") { var value = try CloudJSON.decode(Self.body(request)).object; value["contentVersion"] = .string("another"); return (201, try CloudJSON.encode(value)) }
+            return (200, response)
+        }
+        try await sync.synchronize(book.id)
+        let pending = try await library.readingTimeLedger(bookID: book.id).pending
+        XCTAssertEqual(pending, [row])
+        let metadata = try await library.cloudMetadata(book.id)
+        XCTAssertNotNil(metadata.readingTimeError)
+    }
+    func testTimeAcknowledgementCannotRemoveCheckpointCreatedWhileRequestWasInFlight() async throws {
+        let library = try library(owner), book = try await library.importCloud(fixtureCopy()), sync = CloudBookSync(client: client(), library: library)
+        var clock = ReadingActivityClock(); let base = Date(timeIntervalSince1970: 1_793_491_200)
+        try clock.start(bookID: "book-one", contentVersion: "version-one", anchor: ReadingAnchor(chapterID: "chapter-one", passageID: "passage-one"), at: base)
+        clock.tick(at: base.addingTimeInterval(1)); let first = try XCTUnwrap(clock.snapshot(at: base.addingTimeInterval(1)))
+        try await library.retainReadingTime(first, bookID: book.id)
+        let response = try records(), started = expectation(description: "First time snapshot reached service"), release = DispatchSemaphore(value: 0)
+        CloudMockProtocol.handler = { request in
+            if request.url!.path.hasSuffix("reading-sessions") { started.fulfill(); guard release.wait(timeout: .now() + 5) == .success else { throw URLError(.timedOut) }; return (201, try Self.body(request)) }
+            return (200, response)
+        }
+        let work = Task { try await sync.synchronize(book.id, pull: false) }
+        await fulfillment(of: [started], timeout: 3)
+        clock.tick(at: base.addingTimeInterval(2)); let newer = try XCTUnwrap(clock.snapshot(at: base.addingTimeInterval(2)))
+        try await library.retainReadingTime(newer, bookID: book.id)
+        release.signal(); try await work.value
+        let pending = try await library.readingTimeLedger(bookID: book.id).pending
+        XCTAssertEqual(pending, [newer])
+    }
+    func testProgressPreservesActualOfflineInteractionTimeInsteadOfUploadTime() async throws {
+        let library = try library(owner), book = try await library.importCloud(fixtureCopy()), sync = CloudBookSync(client: client(), library: library)
+        var state = ReaderState(); state.anchor = ReadingAnchor(chapterID: "chapter-one", passageID: "passage-one"); state.lastActivityAt = Date(timeIntervalSince1970: 1_793_491_200)
+        try await library.saveState(state, bookID: book.id)
+        let response = try records(); var sent: CloudJSON = .null
+        CloudMockProtocol.handler = { request in
+            if request.httpMethod == "POST" { sent = try CloudJSON.decode(Self.body(request)); var receipt = sent.object; receipt["revision"] = .number(1); return (200, try CloudJSON.encode(receipt)) }
+            return (200, response)
+        }
+        try await sync.synchronize(book.id)
+        XCTAssertEqual(ReadingTimeDate.parse(sent["observedAt"].string), state.lastActivityAt)
+        let metadata = try await library.cloudMetadata(book.id)
+        XCTAssertEqual(metadata.lastSyncedActivityAt, state.lastActivityAt)
+    }
+    func testPushDetectsRemoteOnlyPositionChangeWithoutJumpingLiveState() async throws {
+        let library = try library(owner), book = try await library.importCloud(fixtureCopy()), sync = CloudBookSync(client: client(), library: library)
+        var state = ReaderState(); state.anchor = ReadingAnchor(chapterID: "chapter-one", passageID: "passage-one")
+        try await library.saveState(state, bookID: book.id)
+        var metadata = CloudSyncMetadata(); metadata.lastSyncedAnchor = state.anchor
+        try await library.saveCloudMetadata(metadata, bookID: book.id)
+        let response = try records(position: .object(["chapterId": .string("chapter-one"), "passageId": .string("passage-one"), "withinParagraph": .number(0.8), "revision": .number(9)]))
+        CloudMockProtocol.handler = { request in XCTAssertEqual(request.httpMethod, "GET"); return (200, response) }
+        try await sync.synchronize(book.id, pull: false)
+        let after = try await library.state(book.id), synced = try await library.cloudMetadata(book.id)
+        XCTAssertEqual(after, state); XCTAssertTrue(synced.positionConflict); XCTAssertEqual(synced.remotePositionRevision, 9)
+    }
     func testTranslatedNotesAndReadingModeSyncTheirActualLayers() async throws {
         let library = try library(owner), book = try await library.importCloud(fixtureCopy()), sync = CloudBookSync(client: client(), library: library)
         let anchor = ReadingAnchor(chapterID: "chapter-one", passageID: "passage-one")
@@ -47,7 +132,7 @@ final class CloudSyncTests: XCTestCase {
             } else {
                 XCTAssertEqual(value["mode"].string, "parallel"); XCTAssertEqual(value["variant"].string, "interpretive")
             }
-            return (200, Data(#"{"revision":1}"#.utf8))
+            return (200, try Self.progressReceipt(request, revision: 1))
         }
         try await sync.synchronize(book.id)
     }
@@ -71,7 +156,7 @@ final class CloudSyncTests: XCTestCase {
             if request.httpMethod == "POST" {
                 let value=try CloudJSON.decode(Self.body(request));revision += 1
                 modes.append(value["mode"].string ?? "");variants.append(value["variant"].string ?? "")
-                return (200,try CloudJSON.encode(["revision":.number(Double(revision))]))
+                return (200,try Self.progressReceipt(request, revision: revision))
             }
             return (200,try self.records(position:.object(["chapterId":.string(anchor.chapterID),"passageId":.string(anchor.passageID),"contentVersion":.string("version-one"),"withinParagraph":.number(0),"revision":.number(Double(revision))])))
         }
@@ -208,7 +293,7 @@ final class CloudSyncTests: XCTestCase {
                     return (201, Data("{}".utf8))
                 }
                 XCTAssertTrue(request.url!.path.hasSuffix("progress"))
-                return (200, Data("{\"revision\":1}".utf8))
+                return (200, try Self.progressReceipt(request, revision: 1))
             }
             return (200, empty)
         }
@@ -313,7 +398,7 @@ final class CloudSyncTests: XCTestCase {
             }
             revision += 1
             var position = value.object; position["revision"] = .number(Double(revision)); remotePosition = .object(position)
-            return (200, try CloudJSON.encode(["revision": .number(Double(revision))]))
+            return (200, try Self.progressReceipt(request, revision: revision))
         }
         let pushing = Task { try await sync.synchronize(book.id, pull: false) }
         await fulfillment(of: [uploading], timeout: 3)
@@ -430,7 +515,7 @@ final class CloudSyncTests: XCTestCase {
             }
             var position = try CloudJSON.decode(Self.body(request)).object
             position["revision"] = .number(Double(4 + writes)); remotePosition = .object(position)
-            return (200, try CloudJSON.encode(["revision": .number(Double(4 + writes))]))
+            return (200, try Self.progressReceipt(request, revision: 4 + writes))
         }
         let resolving = Task { try await sync.resolvePosition(book.id, useDevice: true) }
         await fulfillment(of: [saving], timeout: 3)
@@ -461,7 +546,7 @@ final class CloudSyncTests: XCTestCase {
             let body = try CloudJSON.decode(Self.body(request))
             XCTAssertEqual(body["baseRevision"].number, 4)
             XCTAssertEqual(body["withinParagraph"].number, 0.08)
-            return (200, Data("{\"revision\":5}".utf8))
+            return (200, try Self.progressReceipt(request, revision: 5))
         }
         try await sync.resolvePosition(book.id, useDevice: true)
         let saved = try await library.state(book.id), resolved = try await library.cloudMetadata(book.id)
@@ -492,7 +577,7 @@ final class CloudSyncTests: XCTestCase {
         var writes = 0
         CloudMockProtocol.handler = { request in
             if request.httpMethod != "POST" { return (200, response) }
-            writes += 1; return (200, Data("{\"revision\":5}".utf8))
+            writes += 1; return (200, try Self.progressReceipt(request, revision: 5))
         }
         try await sync.synchronize(book.id)
         let retried = try await library.cloudMetadata(book.id), saved = try await library.state(book.id)
@@ -554,6 +639,11 @@ final class CloudSyncTests: XCTestCase {
         do { _ = try await client().downloadReadingCopy(CloudShelfBook(id: "book-one", title: "Book", author: "", contentVersion: "version-one"), ownerID: owner); XCTFail("Duplicate IDs accepted") }
         catch let error as CloudRequestError { XCTAssertEqual(error.status, 409) }
     }
+    private static func progressReceipt(_ request: URLRequest, revision: Int) throws -> Data {
+        var position = try CloudJSON.decode(body(request)).object
+        position.removeValue(forKey: "baseRevision"); position["revision"] = .number(Double(revision))
+        return try CloudJSON.encode(position)
+    }
     private static func body(_ request: URLRequest) throws -> Data {
         if let body = request.httpBody { return body }
         guard let stream = request.httpBodyStream else { return Data() }
@@ -574,7 +664,7 @@ private extension CloudBookSync {
     }
 }
 
-private final class CloudMockProtocol: URLProtocol, @unchecked Sendable {
+final class CloudMockProtocol: URLProtocol, @unchecked Sendable {
     static var handler: ((URLRequest) throws -> (Int, Data))?
     override class func canInit(with request: URLRequest) -> Bool { true }
     override class func canonicalRequest(for request: URLRequest) -> URLRequest { request }

@@ -4,12 +4,13 @@ public struct CloudUploadMigrationResult: Sendable {
     public let state: ReaderState
     /// Unmatched or conflicting records remain in the source book, never discarded.
     public let unresolvedCount: Int
+    public let readingTimeSnapshots: [ReadingTimeSnapshot]
 }
 
 /// Upload reparses the retained original on the server, so local and cloud passage IDs
 /// may differ. Only unique, exact source matches can transfer a personal reference.
 public enum CloudUploadMigration {
-    public static func remap(source: LocalBook, state: ReaderState, destination: LocalBook, destinationState: ReaderState) -> CloudUploadMigrationResult {
+    public static func remap(source: LocalBook, state: ReaderState, destination: LocalBook, destinationState: ReaderState, readingTime: [ReadingTimeSnapshot] = []) -> CloudUploadMigrationResult {
         var result = destinationState, unresolved = 0
         let targets = destination.chapters.flatMap { chapter in chapter.passages.filter { $0.resourcePath == nil }.map { (chapter.id, $0) } }
 
@@ -65,10 +66,27 @@ public enum CloudUploadMigration {
         }
         if let original = state.anchor {
             if let mapped = remap(original) {
-                if result.anchor == nil || result.anchor == mapped { result.anchor = mapped }
+                if result.anchor == nil || result.anchor == mapped {
+                    result.anchor = mapped
+                    if let activity = state.lastActivityAt { result.lastActivityAt = max(result.lastActivityAt ?? activity, activity) }
+                }
                 else { unresolved += 1 }
             } else { unresolved += 1 }
         }
-        return CloudUploadMigrationResult(state: result, unresolvedCount: unresolved)
+        var mappedTime: [ReadingTimeSnapshot] = []
+        for row in readingTime {
+            guard source.cloud == nil, let cloud = destination.cloud,
+                  row.bookId == source.id, row.contentVersion == source.sourceVersion,
+                  let start = remap(row.start), let end = remap(row.end), (try? row.validate()) != nil else { unresolved += 1; continue }
+            var mapped = row
+            mapped.bookId = cloud.bookID; mapped.contentVersion = cloud.contentVersion
+            mapped.start = ReadingAnchor(chapterID: start.chapterID, passageID: start.passageID)
+            mapped.end = ReadingAnchor(chapterID: end.chapterID, passageID: end.passageID)
+            // A persisted checkpoint describes only captured intervals, never
+            // the time spent uploading or waiting for the new cloud copy.
+            if mapped.status != .finished { mapped.status = .finished; mapped.sequence += 1 }
+            mappedTime.append(mapped)
+        }
+        return CloudUploadMigrationResult(state: result, unresolvedCount: unresolved, readingTimeSnapshots: mappedTime)
     }
 }

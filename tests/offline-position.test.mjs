@@ -7,6 +7,7 @@ import {resolveReadingPosition,chooseReadingPosition,resumeSummary,recoveredPosi
 import {resolveReaderOpening} from '../app/reader-entry.mjs';
 import {openingReadingPreferences} from '../app/reading-preferences.mjs';
 import {mergeLoadedReadingRecords} from '../app/reading-load.mjs';
+import {createReadingActivityCheckpoint} from '../app/reading-activity-checkpoint.mjs';
 
 let offline={};try{offline=await import('../app/offline-position.mjs');}catch(error){if(error.code!=='ERR_MODULE_NOT_FOUND')throw error;}
 const book={bookId:'book',contentVersion:'source-v1',chapters:[{id:'one'},{id:'two'}],sections:[{chapterId:'one',paragraphs:[{id:'p1'}]},{chapterId:'two',paragraphs:[{id:'p2'}]}]};
@@ -58,7 +59,7 @@ const reader=await readFile(new URL('../app/reader.js',import.meta.url),'utf8'),
 function readerContext(){
  const storage=memoryStorage(),local=pending(),remote=position('p1',2),nodes=new Map();storage.setItem('position',JSON.stringify(local));
  const context={book:structuredClone(book),localStorage:storage,progressKey:'position',recordsPositionUnresolved:false,progressSync:{revision:1,adopt(value){this.revision=value;}},deferredProgress:false,persistTimer:null,clearTimeout,READER_UI:'reader.b1.',positionRecovery:offline.createOfflinePositionRecovery?.({storage,key:'position'}),offlinePositionChoice:offline.offlinePositionChoice,refreshPositionRecovery(){},announceUi(){},$:id=>{if(!nodes.has(id))nodes.set(id,{hidden:true});return nodes.get(id);},recordsPending:true,loadGeneration:1,records:{comments:[],questions:[],position:null},recordsUnavailable:true,selectedBookId:'book',readerOwner:()=> 'account-a',document:{body:{dataset:{}}},entryInteracted:false,resolveReadingPosition,chooseReadingPosition,resumeSummary,recoveredPositionNeedsChoice,mergeLoadedReadingRecords,openingReadingPreferences,chineseOriginalOnly:()=>false,state:{chapterId:'two'},readingBook:{async ensure(){}},renderChapter(){},restoreAnchor(value){context.restored=value;},cachePosition(value){storage.setItem('position',JSON.stringify(value));},reportReadingResume(){},dispatchReaderEvent(){},queueReadingFlow(){},renderPanel(){},persist(){context.sent=true;}};
- vm.createContext(context);return {context,storage,local,remote,nodes};
+ context.progressActivity=createReadingActivityCheckpoint();vm.createContext(context);return {context,storage,local,remote,nodes};
 }
 test('the actual early opening preserves a conflicting local anchor and exposes the existing choice UI',()=>{
  const {context,local,remote,storage,nodes}=readerContext();vm.runInContext(declaration('preparePositionOpening')+';this.prepare=preparePositionOpening;',context);

@@ -51,6 +51,10 @@ function uploadFixture(bindings={}){
   vm.runInContext(['chromeLabels','specText','applySpec','own','uploadProgressMessage','paintStatus','status','showUploadProgress','updateUploadProgressLabel','clearPrivateUI'].map(declaration).join('\n')+'\nthis.progress=showUploadProgress;this.relabel=updateUploadProgressLabel;this.replace=status;this.clear=clearPrivateUI;',context);
   return {context,ownerScope,upload,el,ticket:ownerScope.capture()};
 }
+test('the synchronous account reset removes public-book account state even if the next read fails',()=>{
+ const f=uploadFixture();f.context.books=[{bookId:'public',visibility:'public',title:{en:'Literal title'},pinned:true,readingStateReady:true,lastReadAt:'2026-11-01T00:00:00Z',shelfPosition:3,addedAt:'2026-10-01T00:00:00Z',archivedAt:'2026-10-01T00:00:00Z',personalizationPending:true,resume:{passageId:'private-position'},journey:{status:'finished'}},{bookId:'private',visibility:'private'}];f.ownerScope.adopt('synthetic-b');f.context.clear();
+ assert.equal(f.context.books.length,1);const book=f.context.books[0];for(const key of ['pinned','readingStateReady','lastReadAt','shelfPosition','addedAt','archivedAt','personalizationPending'])assert.equal(Object.hasOwn(book,key),false,key);assert.equal(book.resume,null);assert.equal(book.journey,null);assert.equal(book.title.en,'Literal title');
+});
 
 test('upload progress relabels only its current operation and never revives a replaced status',()=>{
   for(const replacement of ['', 'completed', 'different error']){
@@ -174,7 +178,7 @@ test('opening and refreshing an account never replaces the explicit shelf view w
    shell:{update(){},refreshDaily(){}},setupInvite:{update(){}},
    shelfControls:{applyReadingPreferences(){assert.fail('account language cannot filter the shelf');},applyMemoryPreferences(){assert.fail('account topic or mode cannot filter the shelf');}},
    api:async route=>{assert.equal(route,'/api/library?view=books');return {books:[]};},$:()=>({hidden:false,setAttribute(){}}),own(){},status(){},renderBooks(){renders++;},pdfOnboarding:{refresh(){}}};
-  vm.createContext(context);vm.runInContext(declaration('refresh')+'\nthis.refreshAccount=refresh;',context);
+  context.accountStateEpoch=0;context.accountForeground=null;context.refreshAccountForeground=async()=>null;vm.createContext(context);vm.runInContext(declaration('refresh')+'\nthis.refreshAccount=refresh;',context);
   await context.refreshAccount(session);await context.refreshAccount(session);
   assert.equal(renders,4);assert.deepEqual(explicit,{query:'kept',topic:'history',language:'en',form:'translated'});
   assert.equal(context.session.readingPreferences.preferences.preferredLanguage,'zh');

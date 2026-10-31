@@ -662,6 +662,8 @@ export default Object.freeze({
   "book.schedule.add": "読書の予定を追加",
   "book.move.before": "前に移動",
   "book.move.after": "後ろに移動",
+  "book.pin": "先頭に固定",
+  "book.unpin": "固定を解除",
   "book.more": "{title} のその他の操作",
   "book.error": "操作を完了できませんでした。もう一度お試しください。",
   "reading.schedule.invalidStart": "有効な開始日時を選択してください。",

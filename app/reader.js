@@ -9,6 +9,7 @@ import {readerFetch,readerStorageKey,selectedBookId,readerSession,readerObservab
 import {chooseReadingPosition,resolveReadingPosition,resumeSummary,acknowledgePosition,recoveredPositionNeedsChoice} from './reading-progress.mjs';
 import {offlinePositionChoice,createOfflinePositionRecovery,resolveReaderOpening} from './offline-position.mjs';
 import {createProgressSync} from './progress-sync.mjs';
+import {createReadingActivityCheckpoint} from './reading-activity-checkpoint.mjs';
 import {chineseOriginalOnly} from './source-language.mjs';
 import {captureParagraphAnchor,paragraphScrollDelta} from './paragraph-anchor.mjs';
 import {createNoteDrafts} from './note-drafts.mjs';
@@ -87,7 +88,7 @@ let continuous=true;try{continuous=localStorage.getItem(readerStorageKey('margin
 $('continuous-reading').checked=continuous;document.body.dataset.continuous=String(continuous);
 const state={chapterId:'ch01',...openingReadingPreferences()};
 const revealedTranslations=new Set();
-const pagination=mountReaderPagination({document,isBlocked:target=>readerInteractionBlocked(document,target)||!$('note-panel').hidden,hasBoundary:direction=>!!book&&!!book.chapters[book.chapters.findIndex(c=>c.id===state.chapterId)+direction],onTurn:source=>{dismissTools();persist();dispatchReaderEvent('reader:page',source);},onBoundary:(direction,source)=>{const chapter=book?.chapters[book.chapters.findIndex(c=>c.id===state.chapterId)+direction];if(!chapter)return false;changeChapter(chapter.id).then(changed=>{if(changed){if(direction<0)pagination.last();dispatchReaderEvent('reader:page',source);persist();}});return true;}});
+const pagination=mountReaderPagination({document,isBlocked:target=>readerInteractionBlocked(document,target)||!$('note-panel').hidden,hasBoundary:direction=>!!book&&!!book.chapters[book.chapters.findIndex(c=>c.id===state.chapterId)+direction],onTurn:source=>{progressActivity.interact({isTrusted:source.trusted===true});dismissTools();persist();dispatchReaderEvent('reader:page',source);},onBoundary:(direction,source)=>{progressActivity.interact({isTrusted:source.trusted===true});const chapter=book?.chapters[book.chapters.findIndex(c=>c.id===state.chapterId)+direction];if(!chapter)return false;changeChapter(chapter.id).then(changed=>{if(changed){if(direction<0)pagination.last();dispatchReaderEvent('reader:page',source);persist();}});return true;}});
 const settingsUI=mountReaderSettings({document});
 syncLocaleChoice=()=>settingsUI.choices['reader-ui-choice']?.sync();
 let readerToolsHandle=null;
@@ -109,6 +110,7 @@ const personalRecordsUI=createPersonalRecordRenderer({document,getBook:()=>book,
 const panelComposers=new WeakMap();
 const highlights=mountReaderHighlights({document,getSession:()=>readerSession,getRecords:()=>records,signedIn:()=>!selectedBookId||!!readerOwner(),available:()=>!recordsUnavailable,selectionMatches:snapshot=>{try{const native=captureDOMSelection(getSelection(),paragraphMap,book);return !!native&&highlightKey(native)===highlightKey(snapshot);}catch{return false;}},api,onSelect:selectHighlight,onNote:()=>openPanel('comment'),onChange:()=>{flow?.invalidatePrepared();if(!$('note-panel').hidden)renderPanel();dispatchReaderEvent('reader:records-updated');},announce,loginUrl:link=>link?loginLink(link,{bookId:selectedBookId,passageId:selectedId}):readerLoginUrl({ui:getUiLinkLocale(),bookId:selectedBookId,passageId:selectedId})});
 const progressKey=readerStorageKey('marginalia-focus-position-v1'),localWriterId=crypto.randomUUID();let progressSequence=0,restoringProgress=true,allowScrollSave=false;
+const progressActivity=createReadingActivityCheckpoint();
 let positionStorage=null;try{positionStorage=localStorage;}catch{}
 const positionRecovery=createOfflinePositionRecovery({storage:positionStorage,key:progressKey,bookId:selectedBookId});
 let latestPositionAttempt=null,latestPositionDurable=false,confirmedPosition=null;
@@ -178,12 +180,13 @@ function restoreAnchor(a){
 }
 function captureProgress(){
   if(!book||restoringProgress)return null;const a=anchor();if(!a)return null;
-  return {...state,...a,chapterId:paragraphMap.get(a.passageId)?.chapterId||state.chapterId,contentVersion:book.contentVersion,baseRevision:progressSync.revision,localWriterId,localSequence:++progressSequence,chapterLabel:resumeSummary(book,{...state,...a})?.label};
+  return {...state,...a,chapterId:paragraphMap.get(a.passageId)?.chapterId||state.chapterId,contentVersion:book.contentVersion,baseRevision:progressSync.revision,...(progressActivity.observedAt?{observedAt:progressActivity.observedAt}:{}),localWriterId,localSequence:++progressSequence,chapterLabel:resumeSummary(book,{...state,...a})?.label};
 }
 function persist(){
   if(book?.reading?.offlineFallback)return;
   const position=captureProgress();if(!position)return;
-  cachePosition({...position,pending:!!readerOwner()||!selectedBookId});
+  cachePosition({...position,pending:!!position.observedAt&&(!!readerOwner()||!selectedBookId)});
+  if(!position.observedAt){clearTimeout(persistTimer);return;}
   clearTimeout(persistTimer);if(recordsUnavailable||recordsPositionUnresolved){deferredProgress=true;return;}deferredProgress=false;persistTimer=setTimeout(()=>progressSync.save(position).catch(()=>{}),450);
 }
 const typographyFields=[['lineHeight',''],['paragraphGap','px'],['letterSpacing','em'],['wordSpacing','em'],['fontWeight','']];
@@ -470,6 +473,7 @@ async function boot(){
     const opening=resolveReaderOpening({book,query:new URLSearchParams(location.search),remote:records.position,local:positionPolicy.local,remoteAvailable:positionPolicy.remoteAvailable,hasPassage:id=>paragraphMap.has(id),chapterOf:id=>paragraphMap.get(id)?.chapterId,state,account:readerOwner()?readerSession.readingPreferences?.preferences:null,sourceOnly:chineseOriginalOnly(book)});
     if(opening.offlineFallback)prepareOfflineFallback(opening,localPosition,records.position);
     let position=opening.position;deferredProgress=!!position?.pending;const requestedEntry=opening.requestedEntry,sampleEntry=opening.sampleEntry;
+    progressActivity.restore(position||opening.chosen,{force:true});
     progressSync.adopt(recordsUnavailable||records.offline?(opening.chosen?.baseRevision??opening.chosen?.revision??0):(records.position?.revision||0));
     state.chapterId=opening.chapterId;
     // Opening precedence: valid per-book saved view over the account defaults, else safe guest defaults.
@@ -501,11 +505,26 @@ async function adoptLoadedRecords(fresh,{generation,explicitEntry,initialPositio
       recordsPositionUnresolved=true;clearTimeout(persistTimer);$('progress-notice').hidden=false;announceUi(READER_UI+'savedPositionReady');
     }
   }
+  if(!entryInteracted&&restoredPosition)progressActivity.restore(restoredPosition);
   reportReadingResume(restoredPosition,{explicitEntry,hadSaved:hadSaved||!!fresh.position,skipped});
   if(!recordsPositionUnresolved){progressSync.adopt(fresh.position?.revision||0);if(deferredProgress)persist();}
   if(!$('note-panel').hidden)renderPanel();dispatchReaderEvent('reader:records-updated');queueReadingFlow();
 }
-for(const type of ['pointerdown','wheel','touchstart','keydown'])listen(document,type,event=>{if(event.isTrusted)entryInteracted=true;},{capture:true,passive:true});
+for(const type of ['pointerdown','wheel','touchstart','touchmove','keydown'])listen(document,type,event=>{if(!event.isTrusted)return;entryInteracted=true;if(!document.hidden&&!restoringProgress&&!event.target?.closest?.('input,textarea,select,dialog,#note-panel,#reader-conversation')&&(type==='wheel'||type==='touchmove'||event.target?.closest?.('#chapter-text,#book-page,#reader-contents')||type==='keydown'&&['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','PageUp','PageDown','Home','End',' '].includes(event.key))){progressActivity.interact(event);persist();}},{capture:true,passive:true});
+let progressRefreshLoad=null;
+listen(document,'reader:identity-confirmed',()=>{
+ if(readerDisposed||document.hidden||!readerOwner()||recordsPending||readerOffline.isOffline())return;
+ progressRefreshLoad??=import('./reader-progress-refresh.mjs').then(({createReaderProgressRefresh})=>createReaderProgressRefresh({
+  current:()=>({owner:readerOwner(),epoch:readerEpoch,book,records,ready:!readerDisposed&&!document.hidden&&!recordsPending&&!readerOffline.isOffline()}),
+  sync:progressSync,read:()=>api('/api/records'),
+  adopt:value=>{records=value;recordsUnavailable=false;},
+  local:()=>JSON.parse(localStorage.getItem(progressKey)||'null'),
+  retain:value=>{positionRecovery.retain(value);refreshPositionRecovery();},
+  conflict:changed=>{recordsPositionUnresolved=true;clearTimeout(persistTimer);$('progress-notice').hidden=false;announceUi(READER_UI+(changed?'savedSourceFailed':'savedPositionReady'));},
+  updated:()=>dispatchReaderEvent('reader:records-updated')
+ }));
+ void progressRefreshLoad.then(controller=>controller.refresh()).catch(()=>{progressRefreshLoad=null;});
+});
 listen($('continuous-reading'),'change',event=>{
   const a=anchor();if(a&&paragraphMap.has(a.passageId))state.chapterId=paragraphMap.get(a.passageId).chapterId;continuous=event.target.checked;document.body.dataset.continuous=String(continuous);try{localStorage.setItem(readerStorageKey('marginalia-continuous-v1'),String(continuous));}catch{}
   closePanel();dismissTools();renderChapter();restoreAnchor(a);queueReadingFlow();persist();
@@ -524,6 +543,7 @@ function touchPassageClick(event){
   return false;
 }
 listen(document,'click',e=>{
+  if(e.isTrusted&&!document.hidden&&!restoringProgress&&e.target?.closest?.('#toc-list button,#previous-chapter,#next-chapter,[data-page-turn]'))progressActivity.interact(e);
   if(e.target.closest('#note-panel,#paragraph-tools,#audio-bootstrap-status,#audio-import-input,#reading-session,dialog,.library-chat-launcher,.reading-header,.focus-actions,.experience-surface,.source-evidence,.source-resource-links,.page-turner,.paper-turn-handle'))return;
   const selection=getSelection();if(selection?.toString().trim()&&selectedExcerpt&&$('paragraph-tools').dataset.excerpt==='true')return;
   const node=e.target.closest('.passage');if(node){if(!touchPassageClick(e)&&!getSelection()?.toString()){const layer=e.target.closest('p')?.dataset.readingLayer;choosePassage(node.dataset.id,e.clientY,'',layer==='original'?'en':layer==='translation'?'zh':null);}return;}
@@ -595,7 +615,7 @@ listen($('close-panel'),'click',()=>{closePanel();$('chapter-text').querySelecto
 listen($('show-all-records'),'click',()=>{$('settings-dialog').close();selectedId=anchor()?.passageId||activeSections()[0].paragraphs[0].id;allRecords=true;$('note-panel').hidden=false;document.body.classList.add('has-panel');renderPanel();});
 listen($('export-records'),'click',async e=>{
   e.preventDefault();const link=e.currentTarget;if(link.getAttribute('aria-busy')==='true')return;link.setAttribute('aria-busy','true');
-  try{if(recordsUnavailable)throw Error('请先重新读取个人记录，再导出。');if(recordsPositionUnresolved||progressSync.paused)throw Error('请先选择从哪里继续，再导出当前阅读记录。');clearTimeout(persistTimer);const position=captureProgress();if(position){cachePosition({...position,pending:true});if(!await progressSync.save(position))throw Error('阅读位置正在确认，请确认后再导出。');}const data=await api('/api/records/export'),url=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:'application/json'})),download=document.createElement('a');download.href=url;download.download='marginalia-records.json';download.click();setTimeout(()=>URL.revokeObjectURL(url),1000);$('import-status').setAttribute('role','status');label($('import-status'),READER_UI+'exported');}
+  try{if(recordsUnavailable)throw Error('请先重新读取个人记录，再导出。');if(recordsPositionUnresolved||progressSync.paused)throw Error('请先选择从哪里继续，再导出当前阅读记录。');clearTimeout(persistTimer);const position=captureProgress();if(position?.observedAt){cachePosition({...position,pending:true});if(!await progressSync.save(position))throw Error('阅读位置正在确认，请确认后再导出。');}const data=await api('/api/records/export'),url=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:'application/json'})),download=document.createElement('a');download.href=url;download.download='marginalia-records.json';download.click();setTimeout(()=>URL.revokeObjectURL(url),1000);$('import-status').setAttribute('role','status');label($('import-status'),READER_UI+'exported');}
   catch(error){label($('import-status'),READER_UI+'exportFailed');$('import-status').setAttribute('role','alert');}finally{link.removeAttribute('aria-busy');}
 });
 listen($('import-records'),'click',()=>$('records-file').click());listen($('records-file'),'change',async e=>{const file=e.target.files[0];if(!file)return;clearTimeout(persistTimer);try{if(file.size>4*1024*1024)throw Error('记录包过大');const imported=JSON.parse(await file.text());await api('/api/records/import',imported);records=await api('/api/records');dispatchReaderEvent('reader:records-updated');if(imported.position&&records.position){state.mode=records.position.mode;state.variant=records.position.variant;overrides={};dispatchReaderEvent('reader:jump');updateText();adjustAppearance(records.position);}$('import-status').setAttribute('role','status');label($('import-status'),READER_UI+'imported');}catch(error){label($('import-status'),READER_UI+'importFailed');$('import-status').setAttribute('role','alert');}finally{e.target.value='';}});
@@ -617,7 +637,7 @@ async function reconcileProgress(useRemote,event){
     if(latest?.pending&&JSON.stringify(latest)!==JSON.stringify(local)){positionRecovery.retain({bookId:book.bookId,local:latest,remote:fresh.position});refreshPositionRecovery();recordsPositionUnresolved=true;$('progress-notice').hidden=false;throw Error('The local reading position changed');}
     clearTimeout(persistTimer);progressSync.adopt(fresh.position?.revision||0);recordsPositionUnresolved=false;
     if(target){closePanel();dismissTools();if(useRemote)records=fresh;Object.assign(state,{chapterId:target.chapterId},openingReadingPreferences(target,{sourceOnly:chineseOriginalOnly(book)}));overrides={};selectedId=null;renderChapter();restoreAnchor(target);}
-    if(useRemote){cachePosition({...position,contentVersion:book.contentVersion,chapterLabel:resumeSummary(book,position)?.label,pending:false});allowScrollSave=false;announceUi(READER_UI+'positionReturned');}
+    if(useRemote){progressActivity.restore(position,{force:true});cachePosition({...position,contentVersion:book.contentVersion,chapterLabel:resumeSummary(book,position)?.label,pending:false});allowScrollSave=false;announceUi(READER_UI+'positionReturned');}
     else{restoringProgress=false;persist();announceUi(READER_UI+'positionKept');}
     $('progress-notice').hidden=true;
   }catch(error){if(current())announceUi(READER_UI+'progressConflict');}finally{restoringProgress=false;buttons.forEach(b=>b.disabled=false);if(current())focus.restore($('progress-notice').hidden?document.getElementById(anchor()?.passageId)||$('book-page'):trigger);}
@@ -627,7 +647,7 @@ const toolsResizeObserver=new ResizeObserver(()=>{if(!$('paragraph-tools').hidde
 listen(document,'reader:layout',queueReadingFlow);for(const dialog of document.querySelectorAll('dialog'))listen(dialog,'close',queueReadingFlow);
 listen(window,'resize',()=>{queueReadingFlow();if(!$('note-panel').hidden)mountPanel();if(!$('paragraph-tools').hidden)positionTools();});
 listen($('retry-load'),'click',async event=>{const focus=trackActionFocus(document,event.currentTarget);$('load-error').hidden=true;$('loading').hidden=false;await boot();focus.restore($('load-error').hidden?$('book-page'):$('retry-load'));});
-window.marginaliaReader={getBook:()=>book,captureLayout:()=>{const active=readingNavigation?.capture()||(()=>false),epoch=readerEpoch,chapter=state.chapterId;return ()=>!readerDisposed&&readerEpoch===epoch&&state.chapterId===chapter&&active();},restoreLayoutAnchor:a=>{if(a&&document.getElementById(a.passageId)){restoreAnchor(a);persist();}},closeNotes:()=>{if(!$('note-panel').hidden)closePanel();},retryPositionSave:()=>{if(recordsUnavailable||recordsPositionUnresolved||progressSync.paused)return Promise.resolve(null);clearTimeout(persistTimer);const position=captureProgress();if(!position)return Promise.resolve(null);cachePosition({...position,pending:true});return progressSync.save(position);},getPositionSaveState:()=>positionSaveState(latestPositionAttempt,confirmedPosition||records?.position,{durable:latestPositionDurable,unresolved:recordsPositionUnresolved||progressSync.paused}),getPersonalRecords:()=>records,areRecordsAvailable:()=>!recordsUnavailable,getState:()=>({...state}),getAudioSelection:()=>{if($('paragraph-tools').hidden&&$('note-panel').hidden)return null;if(selectedExcerpt)return structuredClone(selectedExcerpt);const p=paragraphMap.get(selectedId);if(!p)return null;const v=passageView(p);return paragraphSnapshot(book,p,p.chapterId,selectedQuoteLanguage,v.variant);},getExcerpt:()=>selectedExcerpt?structuredClone(selectedExcerpt):null,isQuoteVisible:snapshot=>readingChatExcerptIsVisible(snapshot,part=>{const prose=proseForPart(part);return prose?{text:prose.textContent,visible:!!prose.getClientRects().length}:null;}),getChapterId:()=>state.chapterId,isPassageVisible:id=>{const node=document.getElementById(id);return !!node&&(pagination.active?!!pagination.visibleRect(node):node.getBoundingClientRect().bottom>0&&node.getBoundingClientRect().top<innerHeight);},getSelectedId:()=>selectedId,isSelectionActive:()=>!$('paragraph-tools').hidden||!$('note-panel').hidden,getAnchor:()=>{const a=anchor();return a?{...a,chapterId:paragraphMap.get(a.passageId)?.chapterId||state.chapterId}:null;},restoreAnchor:a=>{if(a&&document.getElementById(a.passageId)){readingNavigation.invalidate();restoreAnchor(a);persist();}},ensurePassages:async ids=>{for(const id of new Set(ids.map(id=>paragraphMap.get(id)?.chapterId).filter(Boolean)))await readingBook.ensure(id);},goToPassage:async(id,{validate,preserveSelection}={})=>{const selection=selectedId,p=paragraphMap.get(id);if(!p)return false;if(!await changeChapter(p.chapterId,id,{validate}))return false;if(preserveSelection)selectedId=selection;document.dispatchEvent(new CustomEvent('reader:jump',{detail:{passageId:id}}));return true;},dismissTools};
+window.marginaliaReader={getBook:()=>book,captureLayout:()=>{const active=readingNavigation?.capture()||(()=>false),epoch=readerEpoch,chapter=state.chapterId;return ()=>!readerDisposed&&readerEpoch===epoch&&state.chapterId===chapter&&active();},restoreLayoutAnchor:a=>{if(a&&document.getElementById(a.passageId)){restoreAnchor(a);persist();}},closeNotes:()=>{if(!$('note-panel').hidden)closePanel();},retryPositionSave:()=>{if(recordsUnavailable||recordsPositionUnresolved||progressSync.paused)return Promise.resolve(null);clearTimeout(persistTimer);const position=captureProgress();if(!position?.observedAt)return Promise.resolve(null);cachePosition({...position,pending:true});return progressSync.save(position);},getPositionSaveState:()=>positionSaveState(latestPositionAttempt,confirmedPosition||records?.position,{durable:latestPositionDurable,unresolved:recordsPositionUnresolved||progressSync.paused}),getPersonalRecords:()=>records,areRecordsAvailable:()=>!recordsUnavailable,getState:()=>({...state}),getAudioSelection:()=>{if($('paragraph-tools').hidden&&$('note-panel').hidden)return null;if(selectedExcerpt)return structuredClone(selectedExcerpt);const p=paragraphMap.get(selectedId);if(!p)return null;const v=passageView(p);return paragraphSnapshot(book,p,p.chapterId,selectedQuoteLanguage,v.variant);},getExcerpt:()=>selectedExcerpt?structuredClone(selectedExcerpt):null,isQuoteVisible:snapshot=>readingChatExcerptIsVisible(snapshot,part=>{const prose=proseForPart(part);return prose?{text:prose.textContent,visible:!!prose.getClientRects().length}:null;}),getChapterId:()=>state.chapterId,isPassageVisible:id=>{const node=document.getElementById(id);return !!node&&(pagination.active?!!pagination.visibleRect(node):node.getBoundingClientRect().bottom>0&&node.getBoundingClientRect().top<innerHeight);},getSelectedId:()=>selectedId,isSelectionActive:()=>!$('paragraph-tools').hidden||!$('note-panel').hidden,getAnchor:()=>{const a=anchor();return a?{...a,chapterId:paragraphMap.get(a.passageId)?.chapterId||state.chapterId}:null;},restoreAnchor:a=>{if(a&&document.getElementById(a.passageId)){readingNavigation.invalidate();restoreAnchor(a);persist();}},ensurePassages:async ids=>{for(const id of new Set(ids.map(id=>paragraphMap.get(id)?.chapterId).filter(Boolean)))await readingBook.ensure(id);},goToPassage:async(id,{validate,preserveSelection}={})=>{const selection=selectedId,p=paragraphMap.get(id);if(!p)return false;if(!await changeChapter(p.chapterId,id,{validate}))return false;if(preserveSelection)selectedId=selection;document.dispatchEvent(new CustomEvent('reader:jump',{detail:{passageId:id}}));return true;},dismissTools};
 listen(document,'reader:translation',e=>{const p=paragraphMap.get(e.detail.id);if(!p)return;p.translations=e.detail.translations;const raw=book.sections.flatMap(s=>s.paragraphs).find(x=>x.id===p.id);if(raw)raw.translations=p.translations;const reveal=e.detail.reveal!==false&&selectedId===p.id;if(reveal)state.mode='parallel';if(document.getElementById(p.id))updateText();announceUi(reveal?READER_UI+'translationSaved':READER_UI+'previousTranslationSaved');});
 const readerConversation=mountReaderConversation({bookId:selectedBookId,request:readerFetch,session:readerSession,getReader:()=>window.marginaliaReader,root:$('reader-conversation'),integration:readerTools.chatIntegration,announce});
 readerTools.setChat(readerConversation);

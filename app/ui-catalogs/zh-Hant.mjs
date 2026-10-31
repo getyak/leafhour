@@ -662,6 +662,8 @@ export default Object.freeze({
   "book.schedule.add": "新增讀書日程",
   "book.move.before": "向前移動",
   "book.move.after": "向後移動",
+  "book.pin": "置頂",
+  "book.unpin": "取消置頂",
   "book.more": "《{title}》更多操作",
   "book.error": "操作尚未完成，請稍後重試。",
   "reading.schedule.invalidStart": "請選擇有效的開始時間。",

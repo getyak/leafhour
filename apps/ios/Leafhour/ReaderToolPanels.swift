@@ -27,6 +27,7 @@ struct ReaderMorePanel: View {
     @Bindable var speech: ReaderSpeech
     @Bindable var tools: ReaderCloudTools
     let cloud: CloudLibraryClient?
+    var library: OfflineLibrary? = nil
     var reading: ReaderReadingContent? = nil
     let onJump: (Int, ReadingAnchor?) -> Void
     let onCompanion: () -> Void
@@ -34,6 +35,7 @@ struct ReaderMorePanel: View {
     @State private var exporting = false
     var body: some View {
         List {
+            ReaderTimeControls(session: session)
             Section("读这本书") {
                 NavigationLink { BookSearchPanel(session: session, onJump: onJump).modifier(ReaderToolContinuation()) } label: { Label("搜索原文", systemImage: "magnifyingglass").frame(minHeight: 44) }
                 NavigationLink { ReaderTranslationPanel(session: session, tools: tools, cloud: cloud).modifier(ReaderToolContinuation()) } label: { Label("翻译", systemImage: "character.book.closed").frame(minHeight: 44) }
@@ -59,10 +61,14 @@ struct ReaderMorePanel: View {
             Section("带走自己的记录") {
                 ShareLink(item: session.original) { Label("分享此设备上的书籍文件", systemImage: "square.and.arrow.up").frame(minHeight: 44) }
                 Button {
-                    do {
-                        export = RecordsDocument(data: try JSONEncoder().encode(RecordsBackup(book: session.book, state: session.state)))
-                        exporting = true
-                    } catch { session.message = error.localizedDescription }
+                    Task {
+                        do {
+                            guard await session.flushReadingTime() else { return }
+                            let time = try await library?.readingTimeLedger(bookID: session.book.id).snapshots
+                            export = RecordsDocument(data: try JSONEncoder().encode(RecordsBackup(book: session.book, state: session.state, readingTime: time)))
+                            exporting = true
+                        } catch { session.message = error.localizedDescription }
+                    }
                 } label: { Label("导出笔记与草稿", systemImage: "doc.text").frame(minHeight: 44) }
             }
             Section {

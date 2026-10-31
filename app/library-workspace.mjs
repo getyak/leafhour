@@ -1,22 +1,25 @@
 import {chooseCurrentBook} from './reading-calendar.mjs';
 import {contentLanguage,matchesReadingLanguage} from './book-reading-languages.mjs';
-const activityAt=book=>String(book.journey?.lastReadAt||book.resume?.updatedAt||'');
+import {lastReadingTimestamp,finiteReadingTimestamp,compareReadingRecency} from './reading-recency.mjs';
+const activityAt=book=>lastReadingTimestamp(book)??-Infinity;
 // Catalog creation is a build timestamp, not the reader adding that book.
 const addedAt=book=>String(book.addedAt||(book.visibility==='private'?book.createdAt:'')||'');
-const recentAt=book=>[activityAt(book),addedAt(book)].sort().at(-1)||'';
+const recentAt=book=>Math.max(activityAt(book),finiteReadingTimestamp(addedAt(book))??-Infinity);
 const publishedAt=book=>{const value=book.publicationYear??book.source?.publicationDate??book.publicationDate;const year=typeof value==='number'?value:typeof value==='string'&&/^-?\d{1,4}(?:-|$)/.test(value)?Number(value.match(/^-?\d{1,4}/)[0]):NaN;return Number.isFinite(year)?year:null;};
 export function compareShelfBooks(a,b,sort='recent'){
+ if(!!a.pinned!==!!b.pinned)return a.pinned?-1:1;
  if(sort==='published-asc'||sort==='published-desc'){const left=publishedAt(a),right=publishedAt(b);if(left===null||right===null){if(left!==right)return left===null?1:-1;}else if(left!==right)return (left-right)*(sort==='published-desc'?-1:1);}
- if(sort==='manual')return (Number.isFinite(a.shelfPosition)||Number.isFinite(b.shelfPosition)?(a.shelfPosition??Number.MAX_SAFE_INTEGER)-(b.shelfPosition??Number.MAX_SAFE_INTEGER):0)||Number(b.visibility==='private')-Number(a.visibility==='private')||activityAt(b).localeCompare(activityAt(a));
- return (sort==='added'?addedAt(b).localeCompare(addedAt(a)):recentAt(b).localeCompare(recentAt(a)))||String(a.bookId).localeCompare(String(b.bookId));
+ if(sort==='manual')return (Number.isFinite(a.shelfPosition)||Number.isFinite(b.shelfPosition)?(a.shelfPosition??Number.MAX_SAFE_INTEGER)-(b.shelfPosition??Number.MAX_SAFE_INTEGER):0)||Number(b.visibility==='private')-Number(a.visibility==='private')||compareReadingRecency(a,b);
+ return (sort==='added'?(finiteReadingTimestamp(addedAt(b))??-Infinity)-(finiteReadingTimestamp(addedAt(a))??-Infinity):recentAt(b)-recentAt(a))||String(a.bookId).localeCompare(String(b.bookId));
 }
+export function manualShelfBooks(books){return [...books].sort((a,b)=>compareShelfBooks({...a,pinned:false},{...b,pinned:false},'manual'));}
 
 export function currentReadingBookmark(books){
-  return chooseCurrentBook(books.filter(book=>!book.personalizationPending&&typeof book.resume?.passageId==='string'&&book.resume.passageId))||null;
+  return chooseCurrentBook(books.filter(book=>(!book.personalizationPending||book.readingStateReady)&&typeof book.resume?.passageId==='string'&&book.resume.passageId))||null;
 }
 
 export function workspaceCurrentBook(books){
-  return chooseCurrentBook(books)||books.filter(book=>book.resume||book.journey?.status==='finished').sort((a,b)=>activityAt(b).localeCompare(activityAt(a)))[0]||null;
+  return chooseCurrentBook(books)||books.filter(book=>book.resume||book.journey?.status==='finished').sort(compareReadingRecency)[0]||null;
 }
 
 export async function loadWorkspaceActivity(api,{month,date,timeZone}){
@@ -26,7 +29,7 @@ export async function loadWorkspaceActivity(api,{month,date,timeZone}){
 }
 
 export function shelfReadingStatus(book){
-  if(book.personalizationPending)return 'pending';
+  if(book.personalizationPending&&!book.readingStateReady)return 'pending';
   if(book.journey?.status==='finished')return 'finished';
   return book.resume?.passageId||book.journey?.lastReadAt||book.journey?.completedChapters>0?'reading':'unread';
 }
@@ -36,7 +39,7 @@ export const hasShelfFilters=({scope='all',status='all',topic='all',language='al
 
 export function libraryShelf(books,{scope='all',query='',status='all',topic='all',language='all',form='all',sort='manual'}={},{searchText=()=>''}={}){
   const needle=query.trim().toLocaleLowerCase();
-  return books.filter(book=>(scope==='all'||book.visibility===scope)&&(status==='all'||book.personalizationPending||shelfReadingStatus(book)===status)&&(topic==='all'||Array.isArray(book.topics)&&book.topics.includes(topic))&&(book.personalizationPending||matchesReadingLanguage(book,{language,form}))&&(!needle||[book.title?.zh,book.title?.en,book.author,searchText(book)].filter(Boolean).join(' ').toLocaleLowerCase().includes(needle)))
+  return books.filter(book=>(scope==='all'||book.visibility===scope)&&(status==='all'||book.personalizationPending&&!book.readingStateReady||shelfReadingStatus(book)===status)&&(topic==='all'||Array.isArray(book.topics)&&book.topics.includes(topic))&&(book.personalizationPending||matchesReadingLanguage(book,{language,form}))&&(!needle||[book.title?.zh,book.title?.en,book.author,searchText(book)].filter(Boolean).join(' ').toLocaleLowerCase().includes(needle)))
     .sort((a,b)=>compareShelfBooks(a,b,sort));
 }
 

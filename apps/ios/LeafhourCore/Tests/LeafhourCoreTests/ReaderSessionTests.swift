@@ -3,6 +3,56 @@ import Observation
 @testable import LeafhourCore
 
 final class ReaderSessionTests: XCTestCase {
+    @MainActor func testManualPauseInsideHiddenToolsRemainsPausedAfterClosingTools() async throws {
+        let fixture = try await fixture(), session = fixture.session(state: fixture.state, store: fixture.library)
+        session.startReadingTime()
+        XCTAssertTrue(session.readingTimeWantsRunning)
+        session.setReadingVisible(false)
+        XCTAssertEqual(session.readingTimePhase, .paused)
+        XCTAssertTrue(session.readingTimeWantsRunning, "A hidden reader retains the intention to resume")
+        session.pauseReadingTime()
+        XCTAssertFalse(session.readingTimeWantsRunning)
+        session.setReadingVisible(true)
+        XCTAssertEqual(session.readingTimePhase, .paused)
+        XCTAssertFalse(session.readingTimeWantsRunning)
+        let saved = await session.flushReadingTime(); XCTAssertTrue(saved)
+    }
+    @MainActor func testFlushRetainsLatestInteractionInsideActivitySaveThrottleWindow() async throws {
+        let fixture = try await fixture(), session = fixture.session(state: fixture.state, store: fixture.library)
+        session.recordReadingInteraction(); _ = await session.flush()
+        try await Task.sleep(for: .milliseconds(20))
+        session.recordReadingInteraction(); _ = await session.flush()
+        let stored = try await fixture.library.state(fixture.book.id)
+        XCTAssertEqual(stored.lastActivityAt, session.state.lastActivityAt)
+    }
+    @MainActor func testFlushDrainsActivityArrivingWhileEarlierStateWriteIsSuspended() async throws {
+        let fixture = try await fixture(), first = expectation(description: "First state write"), second = expectation(description: "Latest interaction write")
+        let store = GatedStateStore(library: fixture.library, starts: [first, second]), session = fixture.session(state: fixture.state, store: store)
+        session.recordReadingInteraction(); await fulfillment(of: [first], timeout: 3)
+        let flush = Task { await session.flush() }
+        try await Task.sleep(for: .milliseconds(20)); session.recordReadingInteraction()
+        await store.release(1); await fulfillment(of: [second], timeout: 1); await store.release(2)
+        _ = await flush.value
+        let stored = try await fixture.library.state(fixture.book.id)
+        XCTAssertEqual(stored.lastActivityAt, session.state.lastActivityAt)
+    }
+    @MainActor func testOnlyRealForegroundInteractionCreatesRecentReadingEventAndExplicitTimePersists() async throws {
+        let fixture = try await fixture(), session = fixture.session(state: fixture.state, store: fixture.library)
+        session.save(); _ = await session.flush()
+        XCTAssertNil(session.state.lastActivityAt)
+        XCTAssertEqual(session.readingTimePhase, .idle)
+        session.setReadingVisible(false); session.recordReadingInteraction()
+        XCTAssertNil(session.state.lastActivityAt)
+        session.setReadingVisible(true); session.recordReadingInteraction()
+        XCTAssertNotNil(session.state.lastActivityAt)
+        session.startReadingTime(source: .estimate); session.finishReadingTime()
+        let saved = await session.flushReadingTime()
+        XCTAssertTrue(saved)
+        let ledger = try await fixture.library.readingTimeLedger(bookID: fixture.book.id)
+        XCTAssertEqual(ledger.snapshots.count, 1)
+        XCTAssertEqual(ledger.snapshots.first?.status, .finished)
+        XCTAssertEqual(ledger.snapshots.first?.source, .estimate)
+    }
     func testListeningLayerPositionRoundTripsWithoutChangingLegacyStateOrSourceAnchor() throws {
         let state = ReaderState()
         let legacy = try JSONDecoder().decode(ReaderState.self, from: JSONEncoder().encode(state))

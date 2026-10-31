@@ -42,6 +42,12 @@ class Node extends EventTarget{
  click(){this.dispatchEvent(new Event('click',{cancelable:true}));}
 }
 const tick=()=>new Promise(setImmediate);
+test('the existing menu pins and unpins with an account revision without rewriting manual order',async t=>{
+ const f=await fixture(t,{request:async()=>({revision:2,pinned:['synthetic'],pinsInitialized:true})});f.dialog.close();f.trigger.click();
+ const pin=f.doc.getElementById('library-book-menu').querySelectorAll('button').find(item=>item.children.at(-1)?.textContent==='Pin to top');assert.ok(pin,'one explicit pin action');pin.click();await tick();
+ assert.deepEqual(f.calls,[['/api/library/pins',{bookIds:['synthetic'],pinned:true,baseRevision:1}]]);
+ f.book.pinned=true;f.trigger.click();const unpin=f.doc.getElementById('library-book-menu').querySelectorAll('button').find(item=>item.children.at(-1)?.textContent==='Unpin');assert.ok(unpin);await requestUiRoute('ja');assert.notEqual(unpin.children.at(-1).textContent,'Unpin');unpin.click();await tick();assert.equal(f.calls[1][1].pinned,false);
+});
 async function fixture(t,{onReorder=()=>{},other=false,action=2,request=async()=>({}),owner=()=> 'a:1',assertRead=()=>{}}={}){
  await requestUiRoute('en');const doc=new EventTarget(),win=new EventTarget(),posts=[];doc.createElement=tag=>{const n=new Node(tag,doc);if(tag==='iframe')n.contentWindow={postMessage:(data,origin)=>posts.push({frame:n,data,origin})};return n;};doc.body=new Node('body',doc);doc.querySelector=selector=>doc.body.querySelector(selector);doc.querySelectorAll=selector=>doc.body.querySelectorAll(selector);doc.getElementById=id=>doc.querySelector('#'+id);
  const before={document:globalThis.document,window:globalThis.window,location:globalThis.location,innerWidth:globalThis.innerWidth,innerHeight:globalThis.innerHeight};Object.assign(globalThis,{document:doc,window:win,location:{origin:'https://reader.example'},innerWidth:1200,innerHeight:800});

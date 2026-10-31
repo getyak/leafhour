@@ -4,6 +4,7 @@ import {mkdtemp,rm} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
 import path from 'node:path';
 import vm from 'node:vm';
+import {createReadingActivityCheckpoint} from '../app/reading-activity-checkpoint.mjs';
 import {createLibraryService} from '../server/library-service.mjs';
 import {createLibraryPortability} from '../server/library-portability.mjs';
 import {exportLibraryInParts} from '../app/library-export.mjs';
@@ -66,7 +67,7 @@ test('reader integration remembers a manual parallel view and keeps source-only 
     const {createReadingBook,createReadingNavigation}=await import('../app/reading-book.mjs');
     const context={readingNavigation:createReadingNavigation({isLoaded:()=>true,ensure:async()=>{},commit(){}}),readingBook:createReadingBook({book,readChapter:()=>assert.fail('complete books need no chapter read')}),book,state,openingReadingPreferences,chineseOriginalOnly,resolveReadingPosition,chooseReadingPosition,resumeSummary,recoveredPositionNeedsChoice,mergeLoadedReadingRecords,loadGeneration:1,recordsPending:true,records:fresh,selectedBookId:book.bookId,readerSession:{user:{id:'synthetic-owner'},readingPreferences:{preferences:normalizeGlobalPreferences({mode:'zh'})}},entryInteracted:false,localStorage:{getItem:()=>null},progressKey:'synthetic',recordsPositionUnresolved:false,progressSync:{revision:1,adopt(){}},deferredProgress:false,document:{body:{dataset:{}},dispatchEvent(){},getElementById:()=>({})},CustomEvent:class{},$:()=>({hidden:true}),renderChapter:()=>{rendered={...state};},restoreAnchor:value=>{anchor=value;},cachePosition(){},queueReadingFlow(){},renderPanel(){},api:async()=>fresh,trackActionFocus:()=>({stop(){},restore(){}}),closePanel(){},dismissTools(){},announce(){},progressSequence:0,persistTimer:null,clearTimeout};
     context.readerOwner=()=>context.readerSession?.user?.id||null;
-    context.anchor=()=>anchor;vm.createContext(context);
+    context.anchor=()=>anchor;context.progressActivity=createReadingActivityCheckpoint();vm.createContext(context);
     vm.runInContext('let readerOpening=null;\n'+reader.match(/^const reportReadingResume=.*$/m)[0]+'\n'+reader.match(/^const dispatchReaderEvent=.*$/m)[0]+'\n'+delayed+'\nthis.resumeReport=()=>readerOpening;this.restoreDelayed=adoptLoadedRecords;',context);
     await context.restoreDelayed(fresh,{generation:1,explicitEntry:false});
     assert.equal(context.resumeReport().position.passageId,'p22','the actual resume observer sees the position after restoration');

@@ -55,6 +55,8 @@ struct ReaderScreen: View {
     let systemColorScheme: ColorScheme
     var cloud: CloudLibraryClient? = nil
     var library: OfflineLibrary? = nil
+    var positionConflict = false
+    var resolvePosition: ((Bool) -> Void)? = nil
     @Environment(\.dismiss) private var dismiss
     @Environment(\.scenePhase) private var scenePhase
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
@@ -188,8 +190,8 @@ struct ReaderScreen: View {
         .statusBarHidden(false)
         .interactiveDismissDisabled(panel?.isCompanion != true && (session.saving || session.saveError != nil))
         .sheet(item: $panel, onDismiss: { hasNativeTextSelection = false; session.clearTransientSelection(); selectionDismissalID = UUID(); chrome = .asleep }) { destination in
-            ReaderPanelView(panel: destination, session: session, systemColorScheme: systemColorScheme, speech: speech, tools: tools, cloud: cloud, reading: reading,
-                onJump: { index, anchor in speech.userNavigated(); session.go(to: index, anchor: anchor); panel = nil }, onCompanion: { showCompanion(currentQuote) })
+            ReaderPanelView(panel: destination, session: session, systemColorScheme: systemColorScheme, speech: speech, tools: tools, cloud: cloud, library: library, reading: reading,
+                onJump: { index, anchor in speech.userNavigated(); session.go(to: index, anchor: anchor); panel = nil; session.setReadingVisible(scenePhase == .active); session.recordReadingInteraction() }, onCompanion: { showCompanion(currentQuote) })
                 .modifier(ReaderPanelPresentation(isCompanion: destination.isCompanion, isNoteEditor: destination.isNoteEditor))
         }
         .alert(session.saveError == nil ? "阅读提示" : "阅读记录", isPresented: Binding(get: { session.message != nil || (session.noteEditorID == nil && session.saveMessage != nil) }, set: { if !$0 { session.message = nil; session.saveMessage = nil } })) {
@@ -203,6 +205,8 @@ struct ReaderScreen: View {
     private var readingRefreshKey: String { session.chapter.id + ":" + session.state.preferences.viewMode.rawValue + ":" + String(scenePhase == .active) }
     var body: some View {
         presentedReader
+        .modifier(ReaderTimeTracking(session: session, visible: scenePhase == .active && panel == nil))
+        .safeAreaInset(edge: .top, spacing: 0) { remotePositionNotice }
         .onChange(of: focusedControl) { _, _ in clockID = UUID() }
         .onChange(of: session.selection?.id) { _, _ in clockID = UUID() }
         .onChange(of: hasNativeTextSelection) { _, _ in clockID = UUID() }
@@ -239,9 +243,24 @@ struct ReaderScreen: View {
         }
         .sensoryFeedback(.selection, trigger: panel?.id)
         .task(id: clockID) { await settleChrome() }
-        .onChange(of: scenePhase) { _, phase in reading.setForeground(phase == .active); if phase != .active { speech.pause(); session.save(); chrome = .asleep } }
+        .onChange(of: scenePhase) { _, phase in
+            reading.setForeground(phase == .active)
+            if phase != .active { speech.pause(); session.save(); chrome = .asleep }
+        }
         .onAppear { configureReading() }
         .onDisappear { speech.stop(); reading.stop(); reading.requestPreparation = nil; reading.requestPassagePreparation = nil; reading.confirmPreparation = nil }
+    }
+    @ViewBuilder private var remotePositionNotice: some View {
+        if positionConflict {
+            HStack {
+                Text("另一台设备更新了阅读位置").font(.footnote)
+                Spacer()
+                Menu("选择位置") {
+                    Button("从云端位置继续") { resolvePosition?(false) }
+                    Button("保留此设备的位置") { resolvePosition?(true) }
+                }
+            }.padding(.horizontal, 16).padding(.vertical, 8).background(paper)
+        }
     }
     private func settleChrome() async {
         guard chrome != .asleep else { return }
@@ -328,12 +347,21 @@ struct ReaderScreen: View {
         }
     }
     private func backButton(compact: Bool) -> some View {
-        Button { speech.pause(); Task { let receipt = await session.flush(); if session.isCurrent(receipt) { dismiss() } } } label: {
+        Button { speech.pause(); Task { await finishAndDismiss() } } label: {
             Label("返回书房", systemImage: "chevron.left").labelStyle(.iconOnly)
                 .font(compact ? .system(size: 20) : .body)
                 .frame(minWidth: 44, minHeight: 44).contentShape(Rectangle())
         }.focused($focusedControl, equals: .back)
             .accessibilityHidden(chrome != .top && chrome != .tools)
+    }
+    private func finishAndDismiss() async {
+        session.finishReadingTime()
+        guard await session.flushReadingTime() else {
+            session.message = session.readingTimeError ?? "阅读时间尚未保存，请打开阅读工具重试。"
+            return
+        }
+        let receipt = await session.flush()
+        if session.isCurrent(receipt) { dismiss() }
     }
     private func bookTitleButton(compact: Bool) -> some View {
         Button { present(.bookInformation) } label: {
@@ -383,8 +411,8 @@ struct ReaderScreen: View {
         guard chrome != .asleep, !bottomBarFocused, focusedControl == nil, panel == nil, session.selection == nil, !hasNativeTextSelection, !UIAccessibility.isVoiceOverRunning else { return }
         withAnimation(reduceMotion ? nil : .easeOut(duration: 0.18)) { chrome = .asleep }
     }
-    private func readingDidScroll() { speech.userNavigated(); hasNativeTextSelection = false; session.clearTransientSelection(); selectionDismissalID = UUID(); sleepChrome() }
-    private func wake(_: ReaderChrome) { withAnimation(reduceMotion ? nil : .easeOut(duration: 0.16)) { chrome = chrome == .tools ? .asleep : .tools } }
+    private func readingDidScroll() { session.recordReadingInteraction(); speech.userNavigated(); hasNativeTextSelection = false; session.clearTransientSelection(); selectionDismissalID = UUID(); sleepChrome() }
+    private func wake(_: ReaderChrome) { session.recordReadingInteraction(); withAnimation(reduceMotion ? nil : .easeOut(duration: 0.16)) { chrome = chrome == .tools ? .asleep : .tools } }
     private func revealTools() {
         withAnimation(reduceMotion ? nil : .easeOut(duration: 0.16)) { chrome = .tools }
         clockID = UUID()
