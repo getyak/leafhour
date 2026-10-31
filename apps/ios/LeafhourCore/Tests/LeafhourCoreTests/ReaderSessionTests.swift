@@ -3,6 +3,20 @@ import Observation
 @testable import LeafhourCore
 
 final class ReaderSessionTests: XCTestCase {
+    func testListeningLayerPositionRoundTripsWithoutChangingLegacyStateOrSourceAnchor() throws {
+        let state = ReaderState()
+        let legacy = try JSONDecoder().decode(ReaderState.self, from: JSONEncoder().encode(state))
+        XCTAssertNil(legacy.listeningPosition)
+        var saved = legacy
+        saved.anchor = ReadingAnchor(chapterID: "c1", passageID: "p1", characterOffset: 3)
+        saved.listeningPosition = ReaderListeningPosition(sourceVersion: "v1", chapterID: "c1", passageID: "p1", layer: "literal", utf16Offset: 14, textFingerprint: "verified-fixture", viewport: saved.anchor)
+        let restored = try JSONDecoder().decode(ReaderState.self, from: JSONEncoder().encode(saved))
+        XCTAssertEqual(restored, saved)
+        XCTAssertEqual(restored.anchor?.characterOffset, 3)
+        XCTAssertEqual(restored.listeningPosition?.utf16Offset, 14)
+        XCTAssertEqual(restored.listeningPosition?.layer, "literal")
+    }
+
     @MainActor
     func testTranslationDraftsRemainSeparateAndRetainProvenanceAfterReopening() async throws {
         let fixture = try await fixture(), session = fixture.session(state: fixture.state, store: fixture.library)
