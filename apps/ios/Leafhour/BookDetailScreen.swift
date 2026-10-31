@@ -39,7 +39,8 @@ struct BookDetailScreen: View {
                         guard let library = model.library else { return }
                         do {
                             let state = try await library.state(book.id)
-                            export = RecordsDocument(data: try JSONEncoder().encode(RecordsBackup(book: book, state: state)))
+                            let time = try await library.readingTimeLedger(bookID: book.id).snapshots
+                            export = RecordsDocument(data: try JSONEncoder().encode(RecordsBackup(book: book, state: state, readingTime: time)))
                             exporting = true
                         } catch { model.message = error.localizedDescription }
                     }
@@ -110,7 +111,8 @@ struct RecordsBackup: Encodable {
     let sourceVersion: String
     let title: String
     let state: ReaderState
-    init(book: LocalBook, state: ReaderState) { bookID = book.id; sourceVersion = book.sourceVersion; title = book.title; self.state = state }
+    let readingTime: [ReadingTimeSnapshot]?
+    init(book: LocalBook, state: ReaderState, readingTime: [ReadingTimeSnapshot]? = nil) { bookID = book.id; sourceVersion = book.sourceVersion; title = book.title; self.state = state; self.readingTime = readingTime }
 }
 struct RecordsDocument: FileDocument {
     static var readableContentTypes: [UTType] { [.json] }

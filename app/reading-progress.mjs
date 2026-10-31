@@ -27,7 +27,7 @@ export function resumeSummary(book,position,labels={}){
   const fallbackTitle=labels.fallbackTitle||'上次的位置',chapterLabel=labels.chapterLabel||((number,title)=>'第 '+number+' 章 · '+title);
   const title=chapter.title?.zh||chapter.title?.en||fallbackTitle;
   const label=chapter.kind==='body'&&!/^第 .+ [章卷]$/.test(title)?chapterLabel(chapter.number,title):title;
-  return {chapterId:chapter.id,passageId:saved.passageId,chapterTitle:title,label,mode:saved.mode,variant:saved.variant,updatedAt:saved.updatedAt||null,revision:saved.revision||0};
+  return {chapterId:chapter.id,passageId:saved.passageId,chapterTitle:title,label,mode:saved.mode,variant:saved.variant,observedAt:saved.observedAt||null,updatedAt:saved.updatedAt||null,revision:saved.revision||0};
 }
 export const recoveredPositionNeedsChoice=(knownRevision,remote)=>!!remote&&(remote.revision||0)!==knownRevision;
 import {validParagraphAnchor} from './paragraph-anchor.mjs';

@@ -7,6 +7,7 @@ import {mkdtemp,writeFile,readFile,rm} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
 import path from 'node:path';
 import vm from 'node:vm';
+import {createReadingActivityCheckpoint} from '../app/reading-activity-checkpoint.mjs';
 import {createReaderServer} from '../server/server.mjs';
 
 test('opening a saved view restores its chosen manual mode and variant without losing typography',async()=>{
@@ -109,7 +110,7 @@ test('delayed and conflict restoration keep Chinese original-only books readable
     const context={listen:(node,type,handler,options)=>node.addEventListener(type,handler,options),readingNavigation:createReadingNavigation({isLoaded:()=>true,ensure:async()=>{},commit(){}}),readingBook:createReadingBook({book,readChapter:()=>assert.fail('complete books need no chapter read')}),book,state,openingReadingPreferences,chineseOriginalOnly,resolveReadingPosition,chooseReadingPosition,resumeSummary,recoveredPositionNeedsChoice,mergeLoadedReadingRecords,loadGeneration:1,recordsPending:true,records:fresh,selectedBookId:book.bookId,readerSession:{user:{id:'synthetic-owner'}},entryInteracted:false,localStorage:{getItem:()=>null},progressKey:'synthetic',recordsPositionUnresolved:false,progressSync:{revision:1,adopt(){}},deferredProgress:false,document:{body:{dataset:{}},dispatchEvent(){},getElementById:()=>({})},CustomEvent:class{},$:()=>({hidden:true}),renderChapter:()=>{rendered={...state};},restoreAnchor:value=>{anchor=value;},cachePosition(){},queueReadingFlow(){},renderPanel(){},api:async()=>fresh,trackActionFocus:()=>({stop(){},restore(){}}),closePanel(){},dismissTools(){},announce(){},announceUi(){},READER_UI:'reader.b1.',progressSequence:0,persistTimer:null,clearTimeout};
     context.readerOwner=()=>context.readerSession?.user?.id||null;
     context.anchor=()=>anchor;
-    vm.createContext(context);
+    context.progressActivity=createReadingActivityCheckpoint();vm.createContext(context);
     vm.runInContext('let readerOpening=null;\n'+reader.match(/^const reportReadingResume=.*$/m)[0]+'\n'+reader.match(/^const dispatchReaderEvent=.*$/m)[0]+'\n'+delayed+'\n'+conflict+';this.resumeReport=()=>readerOpening;this.restoreDelayed=adoptLoadedRecords;this.restoreConflict=reconcileProgress;',context);
     if(restore==='delayed'){await context.restoreDelayed(fresh,{generation:1,explicitEntry:false});assert.equal(context.resumeReport().position.passageId,'p22','the actual resume observer sees the restored anchor');}else await context.restoreConflict(true);
     assert.equal(rendered?.mode,sourceLanguage==='zh'?'en':'parallel',sourceLanguage+' '+restore);

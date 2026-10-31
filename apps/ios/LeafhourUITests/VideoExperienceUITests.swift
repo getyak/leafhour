@@ -73,6 +73,14 @@ final class VideoExperienceUITests: XCTestCase {
         app.launchArguments.removeAll { $0 == "--get317-reset" }
         app.launch()
     }
+    private func resumeReaderIfOffered(timeout: TimeInterval = 20, file: StaticString = #filePath, line: UInt = #line) {
+        let resume = app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", "继续阅读，")).firstMatch
+        let ready = NSPredicate { [self] _, _ in
+            reader.exists || app.otherElements["leafhour-pdf-reader"].exists || resume.exists
+        }
+        XCTAssertEqual(XCTWaiter.wait(for: [XCTNSPredicateExpectation(predicate: ready, object: nil)], timeout: timeout), .completed, file: file, line: line)
+        if resume.exists && !reader.exists && !app.otherElements["leafhour-pdf-reader"].exists { resume.tap() }
+    }
     private func menuChoice(_ title: String, submenu: String) {
         let menu = app.buttons["书房显示与排序"]
         require(menu); menu.tap()
@@ -649,7 +657,7 @@ final class VideoExperienceUITests: XCTestCase {
         let editor = noteEditor(), draft = "GET317 durable draft at the orchard"
         editor.tap(); editor.typeText(draft)
         app.buttons["保留草稿"].tap()
-        coldRelaunch(); require(reader, timeout: 20)
+        coldRelaunch(); resumeReaderIfOffered(); require(reader, timeout: 20)
         openTool("我的记录")
         let recovered = app.buttons.matching(NSPredicate(format: "label CONTAINS %@", draft)).firstMatch
         require(recovered); recovered.tap(); require(editor)
@@ -664,7 +672,7 @@ final class VideoExperienceUITests: XCTestCase {
         let back = app.buttons["回到原句"].firstMatch
         scrollTo(back); back.tap(); require(reader)
         XCTAssertFalse(app.buttons["继续读"].exists)
-        coldRelaunch(); require(reader, timeout: 20)
+        coldRelaunch(); resumeReaderIfOffered(); require(reader, timeout: 20)
         openTool("我的记录"); require(app.staticTexts[note])
     }
 
@@ -673,7 +681,7 @@ final class VideoExperienceUITests: XCTestCase {
         let chapter = app.buttons["GET317 合成第 3 章"]
         require(chapter); chapter.tap(); require(reader)
         XCTAssertTrue((reader.value as? String)?.contains("SYNTHETIC c3 paragraph") == true)
-        coldRelaunch(); require(reader, timeout: 20)
+        coldRelaunch(); resumeReaderIfOffered(); require(reader, timeout: 20)
         XCTAssertTrue((reader.value as? String)?.contains("SYNTHETIC c3 paragraph") == true)
     }
 
@@ -700,7 +708,7 @@ final class VideoExperienceUITests: XCTestCase {
         XCTAssertNotEqual(savedFont, "22 磅")
         let night = app.buttons["夜读"]
         scrollTo(night, in: form); night.tap(); closePanel()
-        coldRelaunch(); require(reader, timeout: 20); wakeTop(); app.buttons["阅读设置"].tap(); expandPanel()
+        coldRelaunch(); resumeReaderIfOffered(); require(reader, timeout: 20); wakeTop(); app.buttons["阅读设置"].tap(); expandPanel()
         let restoredForm = foregroundForm()
         scrollTo(font, in: restoredForm, direction: .down); XCTAssertEqual(font.value as? String, savedFont)
         scrollTo(spacing, in: restoredForm); XCTAssertEqual(spacing.value as? String, savedSpacing)
@@ -848,7 +856,7 @@ final class VideoExperienceUITests: XCTestCase {
         for _ in 0..<3 where next.isEnabled { next.tap() }
         XCTAssertFalse(next.isEnabled); XCTAssertTrue(app.buttons["上一页"].isEnabled)
         capture("GET317-synthetic-PDF-page-3")
-        coldRelaunch(); require(app.otherElements["leafhour-pdf-reader"], timeout: 20)
+        coldRelaunch(); resumeReaderIfOffered(); require(app.otherElements["leafhour-pdf-reader"], timeout: 20)
         openTool("目录"); expandPanel(); XCTAssertFalse(app.buttons["下一页"].isEnabled)
     }
 
@@ -976,7 +984,7 @@ final class VideoExperienceUITests: XCTestCase {
         require(containsText("GET317 合成直译样本"))
         variants.buttons["意译"].tap()
         require(containsText("GET317 合成意译样本"))
-        closePanel(); coldRelaunch(); require(reader, timeout: 20)
+        closePanel(); coldRelaunch(); resumeReaderIfOffered(); require(reader, timeout: 20)
         openTool("翻译"); expandPanel()
         variants.buttons["直译"].tap(); require(containsText("GET317 合成直译样本"))
         variants.buttons["意译"].tap(); require(containsText("GET317 合成意译样本"))
@@ -996,7 +1004,7 @@ final class VideoExperienceUITests: XCTestCase {
         require(reader, timeout: 20)
         XCTAssertTrue((reader.value as? String)?.contains("GET317_SYSTEM_PICKER_IMPORT_SUCCESS") == true)
         XCTAssertTrue((reader.value as? String)?.contains("GET317_SYSTEM_PICKER_IMPORT_END") == true)
-        coldRelaunch(); require(reader, timeout: 20)
+        coldRelaunch(); resumeReaderIfOffered(); require(reader, timeout: 20)
         XCTAssertTrue((reader.value as? String)?.contains("GET317_SYSTEM_PICKER_IMPORT_SUCCESS") == true)
         shelf(); clearShelfSearch(); searchShelf(title)
         require(app.buttons["阅读，" + title + "，已下载可离线阅读"])
@@ -1884,7 +1892,7 @@ final class VideoExperienceUITests: XCTestCase {
         XCTAssertTrue(waitForReaderChromeAsleep(timeout: 3))
         XCTAssertEqual(try settledOriginalBand(), before)
         chooseNavigation("左右翻页")
-        coldRelaunch(); require(reader, timeout: 20)
+        coldRelaunch(); resumeReaderIfOffered(); require(reader, timeout: 20)
         openTool("阅读设置"); expandPanel()
         require(app.segmentedControls.buttons["左右翻页"])
         XCTAssertTrue(app.segmentedControls.buttons["左右翻页"].isSelected)
@@ -1921,7 +1929,7 @@ final class VideoExperienceUITests: XCTestCase {
         reader.swipeLeft()
         XCTAssertTrue((reader.value as? String)?.contains("SYNTHETIC c2 paragraph") == true)
         XCTAssertEqual(try settledOriginalBand(), nextChapterStart)
-        coldRelaunch(); require(reader, timeout: 20)
+        coldRelaunch(); resumeReaderIfOffered(); require(reader, timeout: 20)
         XCTAssertTrue((reader.value as? String)?.contains("SYNTHETIC c2 paragraph") == true)
         XCTAssertEqual(try settledOriginalBand(), nextChapterStart, "Cold resume must preserve the actual page source position")
         openTool("阅读设置"); expandPanel()
@@ -2138,7 +2146,7 @@ final class VideoExperienceUITests: XCTestCase {
         XCTAssertEqual(portraitResult, .completed)
         _ = try settledOriginalBand()
         assertVisibleSource("after-portrait-return")
-        coldRelaunch(); require(reader, timeout: 20)
+        coldRelaunch(); resumeReaderIfOffered(); require(reader, timeout: 20)
         _ = try settledOriginalBand()
         assertVisibleSource("after-cold-resume")
     }
@@ -2187,7 +2195,7 @@ final class VideoExperienceUITests: XCTestCase {
         require(editor); editor.tap(); editor.typeText(draft)
         XCTAssertEqual(editor.value as? String, draft)
         app.buttons["保留草稿"].tap(); require(reader)
-        coldRelaunch(); require(reader, timeout: 20)
+        coldRelaunch(); resumeReaderIfOffered(); require(reader, timeout: 20)
         XCTAssertTrue((reader.value as? String)?.contains("GET317 SYNTHETIC c1 paragraph") == true, "The saved chapter must win over a publisher hint after cold launch")
         _ = try visiblePassage(chapter: "c1", number: 1, stage: "cold-saved-c1")
         openTool("我的记录"); expandPanel()
@@ -2491,7 +2499,7 @@ final class VideoExperienceUITests: XCTestCase {
         XCTAssertTrue(waitForReaderChromeAsleep(timeout: 3))
         reader.coordinate(withNormalizedOffset: CGVector(dx: 0.85, dy: 0.4)).tap()
         XCTAssertEqual(try settledOriginalBand(), second)
-        coldRelaunch(); require(reader, timeout: 20)
+        coldRelaunch(); resumeReaderIfOffered(); require(reader, timeout: 20)
         XCTAssertEqual(try settledOriginalBand(), second, "A tap-created source checkpoint survives cold reopening")
         capture("GET341 tap-created checkpoint cold restore")
     }
@@ -2581,7 +2589,7 @@ final class VideoExperienceUITests: XCTestCase {
         XCTAssertTrue((reader.value as? String)?.contains("GET317 合成意译样本") == true)
         XCTAssertTrue((reader.value as? String)?.contains("GET317 SYNTHETIC") == true)
         capture("GET344-parallel-reading")
-        coldRelaunch(); require(reader, timeout: 20)
+        coldRelaunch(); resumeReaderIfOffered(); require(reader, timeout: 20)
         XCTAssertTrue((reader.value as? String)?.contains("GET317 合成意译样本") == true)
     }
     func test92DownloadProgressAppearsOnlyWithItsBook() {
@@ -2661,7 +2669,7 @@ final class VideoExperienceUITests: XCTestCase {
         }, object: nil)
         XCTAssertEqual(XCTWaiter.wait(for: [translated], timeout: 15), .completed)
         capture("GET346-first-paragraph-translation")
-        coldRelaunch(); require(reader, timeout: 20)
+        coldRelaunch(); resumeReaderIfOffered(); require(reader, timeout: 20)
         XCTAssertTrue((reader.value as? String)?.contains("GET317 合成直译样本") == true)
         XCTAssertFalse(app.alerts["准备或恢复译文"].exists, "Reopening an existing translated view must not offer another paid request")
     }

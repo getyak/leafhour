@@ -149,4 +149,48 @@ final class LibraryPresentationTests: XCTestCase {
         XCTAssertFalse(item.sourceShareText.contains("sourceVersion"))
     }
 
+    private func snapshot(_ archived: Bool = true, order: [String] = ["b", "a"]) throws -> CloudShelfSnapshot {
+        let row: [String: Any] = ["bookId": "a", "contentVersion": "v1", "title": "A", "readingStateReady": true, "journey": ["status": "finished"], "createdAt": "2026-11-01T10:00:00Z", "visibility": "private"]
+        let other: [String: Any] = ["bookId": "b", "contentVersion": "v1", "title": "B", "readingStateReady": true, "journey": ["status": "reading"], "createdAt": "2026-10-01T10:00:00Z", "visibility": "private"]
+        let wire: [String: Any] = ["kind": "leafhour-account-shelf-v1", "user": ["id": "fixture"], "shelfRevision": 1, "shelf": ["revision": 1, "order": order, "archived": archived ? ["a": "2026-11-01T12:00:00Z"] : [:], "pinned": [], "pinsInitialized": true], "books": archived ? [other] : [row, other], "archivedBooks": archived ? [row] : []]
+        return try CloudShelfSnapshot(json: CloudJSON.decode(JSONSerialization.data(withJSONObject: wire)), ownerID: "fixture")
+    }
+
+    func testAuthoritativeArchiveHidesDownloadedCopiesWithoutRemovingTheirRecoveryEntry() throws {
+        let book = try local("downloaded", title: "Saved A", cloudID: "a")
+        let shelf = try snapshot()
+        XCTAssertEqual(LibraryPresentation.items(local: [book], cloud: shelf.books, snapshot: shelf).map(\.id), ["cloud:b"])
+        let hidden = LibraryPresentation.items(local: [book], cloud: shelf.books, filter: .archived, snapshot: shelf)
+        XCTAssertEqual(hidden.map(\.id), ["cloud:a"])
+        XCTAssertEqual(hidden.first?.local?.id, book.id)
+        XCTAssertTrue(try XCTUnwrap(hidden.first).isDownloaded)
+        XCTAssertEqual(LibraryPresentation.items(local: [book], cloud: []).first?.local?.id, book.id, "Legacy absence must retain downloaded books")
+    }
+
+    func testAccountManualOrderOverridesAdditionDatesAndFinishedIsDerivedFromReadyMetadata() throws {
+        let shelf = try snapshot(false)
+        XCTAssertEqual(LibraryPresentation.items(local: [], cloud: shelf.books, snapshot: shelf).map(\.id), ["cloud:b", "cloud:a"])
+        XCTAssertEqual(LibraryPresentation.items(local: [], cloud: shelf.books, filter: .finished, snapshot: shelf).map(\.id), ["cloud:a"])
+        XCTAssertEqual(LibraryPresentation.items(local: [], cloud: shelf.books, filter: .unread, snapshot: shelf).map(\.id), ["cloud:b"])
+    }
+
+    func testRecentSortUsesLocalActivityWithoutInventingItFromImportDates() throws {
+        let imported = try local("new-import", title: "New import", added: 100)
+        let read = try local("read", title: "Actually read", added: 1)
+        XCTAssertEqual(LibraryPresentation.items(local: [imported, read], cloud: [], sort: .recent, localActivity: [read.id: Date(timeIntervalSince1970: 10)]).map(\.id), ["local:read", "local:new-import"])
+        let activity = [read.id: Date(timeIntervalSince1970: 10)]
+        XCTAssertEqual(LibraryPresentation.items(local: [imported, read], cloud: [], filter: .reading, localActivity: activity).map(\.id), ["local:read"])
+        XCTAssertEqual(LibraryPresentation.items(local: [imported, read], cloud: [], filter: .unread, localActivity: activity).map(\.id), ["local:new-import"])
+        XCTAssertTrue(LibraryPresentation.items(local: [imported, read], cloud: [], filter: .finished, localActivity: activity).isEmpty)
+    }
+
+    func testLegacyPinMigrationCannotOverrideInitializedCloudPinsOrPendingIntent() {
+        var pins = LibraryShelfPins()
+        pins.set(["cloud:a", "cloud:missing", "local:device-book"], pinned: true, owner: "owner")
+        XCTAssertEqual(pins.cloudMigrationIDs(owner: "owner", available: ["a"], pinsInitialized: false, hasPendingPins: false), ["a"])
+        XCTAssertTrue(pins.cloudMigrationIDs(owner: "owner", available: ["a"], pinsInitialized: true, hasPendingPins: false).isEmpty)
+        XCTAssertTrue(pins.cloudMigrationIDs(owner: "owner", available: ["a"], pinsInitialized: false, hasPendingPins: true).isEmpty)
+        XCTAssertEqual(pins.ids(owner: "owner"), ["cloud:a", "cloud:missing", "local:device-book"], "Migration retains the original device preferences")
+    }
+
 }

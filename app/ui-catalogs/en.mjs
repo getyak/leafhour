@@ -663,6 +663,8 @@ export default Object.freeze({
   "book.schedule.add": "Add reading time to calendar",
   "book.move.before": "Move earlier",
   "book.move.after": "Move later",
+  "book.pin": "Pin to top",
+  "book.unpin": "Unpin",
   "book.more": "More actions for {title}",
   "book.error": "The action could not complete. Please try again.",
   "reading.schedule.invalidStart": "Choose a valid start time.",

@@ -2,7 +2,7 @@ import Foundation
 
 /// One actor owns a profile's writes. Device-local and authenticated UUID namespaces never overlap.
 public actor OfflineLibrary {
-    private let root: URL
+    let root: URL
     private let limits: ImportLimits
     private struct CloudStartCache { var identity: CloudBookIdentity; var digest: String; var anchor: ReadingAnchor? }
     private var cloudStarts: [String: CloudStartCache] = [:]
@@ -11,6 +11,7 @@ public actor OfflineLibrary {
         self.root = root.appendingPathComponent(scope.folder, isDirectory: true); self.limits = limits
         for name in ["books", "states", "imports", "staging"] { try Disk.directory(self.root.appendingPathComponent(name, isDirectory: true)) }
         try Self.recoverRepair(root: self.root)
+        try Self.recoverInterruptedReadingTimes(at: self.root)
         // A terminated process leaves a retained source and an honest interrupted job, never a complete book.
         let imports = self.root.appendingPathComponent("imports")
         for folder in try Disk.fm.contentsOfDirectory(at: imports, includingPropertiesForKeys: nil) {

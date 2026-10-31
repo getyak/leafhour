@@ -39,4 +39,6 @@ test('the real cover entry folds its renderer and edition tables into one bounde
  assert.match(coverCode,/from["']\/ui-locale\.mjs["']/);
  assert.doesNotMatch(coverCode,/from["'][^"']*book-(?:binding|cover-(?:labels|artwork))\.mjs["']/,'cover data must not create a second source-module waterfall');
  assert.match(portalCode,/from["']\/book-cover-ui\.mjs["']/);
+ assert.match(portalCode,/import\(["']\/account-shelf-sync\.mjs["']\)/);
+ for(const file of ['app/account-shelf-sync.mjs','app/account-reading-drain.mjs','app/reading-session-record.mjs'])assert.ok(!result.bundles.find(bundle=>bundle.file==='portal.js').inputs.includes(file),file+' waits for a confirmed account');
 });

@@ -25,20 +25,35 @@ struct LibraryScreen: View {
     @State private var resumeChapter: String?
     @State private var resumeLoadID = UUID()
     @State private var resumeOwnerKey: String?
+    @State private var pendingAdjustments = false
+    @State private var pinMigrationOwner: String?
 
     private var filter: LibraryShelfFilter { LibraryShelfFilter(rawValue: filterRaw) ?? .all }
     private var sort: LibraryShelfSort { LibraryShelfSort(rawValue: sortRaw) ?? .added }
     private var layout: LibraryShelfLayout { LibraryShelfLayout(rawValue: layoutRaw) ?? .grid }
     private var pinOwner: String { model.account?.id ?? "device" }
     private var pins: LibraryShelfPins { (try? JSONDecoder().decode(LibraryShelfPins.self, from: pinData)) ?? LibraryShelfPins() }
-    private var pinnedIDs: Set<String> { pins.ids(owner: pinOwner) }
+    private var pinnedIDs: Set<String> {
+        let saved = pins.ids(owner: pinOwner)
+        var ids = saved
+        if let shelf = model.accountShelf, shelf.isAuthoritative, shelf.pinsInitialized {
+            ids = Set(saved.filter { $0.hasPrefix("local:") })
+            ids.formUnion(shelf.pinnedBookIDs.map { "cloud:" + $0 })
+        }
+        for pending in model.accountActions where !pending.conflict {
+            if case .pin(let bookID, let pinned) = pending.action {
+                if pinned { ids.insert("cloud:" + bookID) } else { ids.remove("cloud:" + bookID) }
+            }
+        }
+        return ids
+    }
     private var selectedItems: [LibraryShelfItem] { visibleItems.filter { selectedIDs.contains($0.id) } }
     private var selectionIsPinned: Bool { !selectedIDs.isEmpty && selectedIDs.isSubset(of: pinnedIDs) }
     private var allItems: [LibraryShelfItem] {
-        LibraryPresentation.items(local: model.books, cloud: model.account == nil ? [] : model.cloudBooks)
+        LibraryPresentation.items(local: model.books, cloud: model.account == nil ? [] : model.cloudBooks, snapshot: model.accountShelf)
     }
     private var visibleItems: [LibraryShelfItem] {
-        LibraryPresentation.items(local: model.books, cloud: model.account == nil ? [] : model.cloudBooks, query: query, filter: filter, sort: sort, pinnedIDs: pinnedIDs)
+        LibraryPresentation.items(local: model.books, cloud: model.account == nil ? [] : model.cloudBooks, query: query, filter: filter, sort: sort, pinnedIDs: pinnedIDs, snapshot: model.accountShelf, localActivity: model.localActivity)
     }
     private var filterBinding: Binding<LibraryShelfFilter> { Binding(get: { filter }, set: { filterRaw = $0.rawValue }) }
     private var sortBinding: Binding<LibraryShelfSort> { Binding(get: { sort }, set: { sortRaw = $0.rawValue }) }
@@ -48,11 +63,8 @@ struct LibraryScreen: View {
             ? [GridItem(.flexible(), alignment: .top)]
             : Array(repeating: GridItem(.flexible(minimum: 0), spacing: 12, alignment: .top), count: 3)
     }
-    private var resumeBook: LocalBook? {
-        guard resumeOwnerKey == (model.account?.id ?? "device") else { return nil }
-        return model.books.first(where: { $0.id == resumeBookID })
-    }
-    private var resumeLookupKey: String { (model.account?.id ?? "device") + ":" + model.books.map(\.id).joined(separator: ",") }
+    private var resumeItem: LibraryShelfItem? { model.recentShelfItem }
+    private var resumeLookupKey: String { (model.account?.id ?? "device") + ":" + (resumeItem?.id ?? "") + ":" + String(describing: resumeItem?.cloud?.activityAt) }
     private var activeItem: LibraryShelfItem? { allItems.first(where: isActive) }
 
     var body: some View {
@@ -60,7 +72,7 @@ struct LibraryScreen: View {
             Group {
                 if !didLoad && allItems.isEmpty {
                     ProgressView("正在打开书房…").frame(maxWidth: .infinity, maxHeight: .infinity)
-                } else if allItems.isEmpty && model.jobs.isEmpty {
+                } else if allItems.isEmpty && (model.accountShelf?.archivedBooks.isEmpty ?? true) && model.jobs.isEmpty {
                     emptyLibrary
                 } else if layout == .list {
                     listShelf
@@ -113,16 +125,18 @@ struct LibraryScreen: View {
                 switch result { case .success(let url): model.importFile(url); case .failure(let error): model.message = error.localizedDescription }
             }
             .onOpenURL { url in if url.isFileURL { model.importFile(url) } }
-            .task { await model.reload(restore: true); didLoad = true; await model.synchronize() }
+            .task { await model.reload(restore: true); await model.synchronize(); didLoad = true; await migrateCloudPinsIfNeeded() }
             .task(id: resumeLookupKey) { await loadResume() }
             .refreshable { await model.synchronize(); await model.reload() }
             .onChange(of: scenePhase) { _, phase in if phase == .active { Task { await model.synchronize() } } }
             .onChange(of: model.account?.id) { _, _ in selecting = false; selectedIDs = []; sharing = nil }
+            .onChange(of: model.accountShelf?.pinsInitialized) { _, _ in Task { await migrateCloudPinsIfNeeded() } }
             .onChange(of: visibleItems.map(\.id)) { _, ids in selectedIDs.formIntersection(Set(ids)) }
             .fullScreenCover(item: $model.reader, onDismiss: { Task { await model.reload(); await loadResume(); await model.synchronize() } }) { session in
-                ReaderScreen(session: session, systemColorScheme: systemColorScheme, cloud: session.book.cloud == nil ? nil : model.cloud, library: model.library)
+                ReaderScreen(session: session, systemColorScheme: systemColorScheme, cloud: session.book.cloud == nil ? nil : model.cloud, library: model.library, positionConflict: model.syncIssues[session.book.id]?.positionConflict == true, resolvePosition: { useDevice in Task { await model.resolveActivePosition(useDevice: useDevice) } })
             }
             .sheet(isPresented: $info, onDismiss: { Task { await model.cancelNativeAuthentication() } }) { AccountScreen(model: model) }
+            .sheet(isPresented: $pendingAdjustments) { AccountShelfPendingScreen(model: model) }
             .sheet(item: $sharing) { selection in ShelfSharePanel(selection: selection, model: model) }
             .alert("书房提示", isPresented: Binding(get: { model.message != nil }, set: { if !$0 { model.message = nil } })) {
                 Button("知道了") { model.message = nil }
@@ -138,11 +152,14 @@ struct LibraryScreen: View {
                 }
             } label: {
                 HStack(spacing: 6) {
-                    Text(filter == .all ? "全部书籍" : "已下载").font(.subheadline.weight(.medium))
+                    Text(filter == .all ? "全部书籍" : filter.title).font(.subheadline.weight(.medium))
                     Image(systemName: "chevron.down").font(.system(size: 9, weight: .semibold))
                 }.frame(minHeight: 44).contentShape(Rectangle())
             }.accessibilityLabel("书房范围").accessibilityValue(filter.title)
             Text("\(visibleItems.count) 本书").font(.caption).foregroundStyle(.secondary)
+            if !model.accountActions.isEmpty {
+                Button("待同步 \(model.accountActions.count)") { pendingAdjustments = true }.font(.caption)
+            }
             Spacer(minLength: 0)
             if selecting {
                 Button {
@@ -158,6 +175,7 @@ struct LibraryScreen: View {
     private var presentationMenu: some View {
         Menu {
             Button("选择多本", systemImage: "checkmark.circle") { selecting = true; selectedIDs = [] }
+            if !model.accountActions.isEmpty { Button("待同步调整（\(model.accountActions.count)）", systemImage: "arrow.triangle.2.circlepath") { pendingAdjustments = true } }
             Picker("显示方式", selection: layoutBinding) {
                 ForEach(LibraryShelfLayout.allCases, id: \.rawValue) { Text($0.title).tag($0) }
             }
@@ -175,14 +193,14 @@ struct LibraryScreen: View {
 
     private var listShelf: some View {
         List {
-            if let book = resumeBook, query.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-                Section("继续读") { resumeCard(book) }
+            if let item = resumeItem, filter == .all, query.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                Section("继续读") { resumeCard(item) }
             }
             Section {
                 if visibleItems.isEmpty { filteredEmptyState.listRowBackground(Color.clear) }
                 else {
                     ForEach(visibleItems) { item in
-                        LibraryShelfRow(item: item, downloadUnavailable: model.busy, isActive: isActive(item), progress: model.activityProgress, status: model.status, resource: model.coverResource(item), cancel: model.activityCanCancel ? { model.cancelImport() } : nil, selecting: selecting, selected: selectedIDs.contains(item.id), pinned: pinnedIDs.contains(item.id), select: { beginSelection(item) }, togglePin: { setPins([item.id], pinned: !pinnedIDs.contains(item.id)) }, share: { sharing = ShelfShareSelection(items: [item]) }, open: { open(item) }, details: { details(item) })
+                        LibraryShelfRow(item: item, downloadUnavailable: model.busy, isActive: isActive(item), progress: model.activityProgress, status: model.status, resource: model.coverResource(item), cancel: model.activityCanCancel ? { model.cancelImport() } : nil, selecting: selecting, selected: selectedIDs.contains(item.id), pinned: pinnedIDs.contains(item.id), select: { beginSelection(item) }, togglePin: { setPins([item.id], pinned: !pinnedIDs.contains(item.id)) }, share: { sharing = ShelfShareSelection(items: [item]) }, accountAction: model.accountShelf?.isAuthoritative == true ? { action in Task { await model.changeAccountShelf(action) } } : nil, open: { open(item) }, details: { details(item) })
                             .listRowBackground(Color.clear)
                     }
                 }
@@ -197,8 +215,8 @@ struct LibraryScreen: View {
     private var gridShelf: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
-                if let book = resumeBook, query.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-                    resumeCard(book)
+                if let item = resumeItem, filter == .all, query.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                    resumeCard(item)
                         .padding(16)
                         .background(Color(uiColor: .secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 16))
                 }
@@ -208,7 +226,7 @@ struct LibraryScreen: View {
                 else {
                     LazyVGrid(columns: shelfColumns, alignment: .leading, spacing: 20) {
                         ForEach(visibleItems) { item in
-                            LibraryShelfTile(item: item, downloadUnavailable: model.busy, isActive: isActive(item), progress: model.activityProgress, status: model.status, resource: model.coverResource(item), cancel: model.activityCanCancel ? { model.cancelImport() } : nil, selecting: selecting, selected: selectedIDs.contains(item.id), pinned: pinnedIDs.contains(item.id), select: { beginSelection(item) }, togglePin: { setPins([item.id], pinned: !pinnedIDs.contains(item.id)) }, share: { sharing = ShelfShareSelection(items: [item]) }, open: { open(item) }, details: { details(item) })
+                            LibraryShelfTile(item: item, downloadUnavailable: model.busy, isActive: isActive(item), progress: model.activityProgress, status: model.status, resource: model.coverResource(item), cancel: model.activityCanCancel ? { model.cancelImport() } : nil, selecting: selecting, selected: selectedIDs.contains(item.id), pinned: pinnedIDs.contains(item.id), select: { beginSelection(item) }, togglePin: { setPins([item.id], pinned: !pinnedIDs.contains(item.id)) }, share: { sharing = ShelfShareSelection(items: [item]) }, accountAction: model.accountShelf?.isAuthoritative == true ? { action in Task { await model.changeAccountShelf(action) } } : nil, open: { open(item) }, details: { details(item) })
                         }
                     }
                 }
@@ -301,20 +319,21 @@ struct LibraryScreen: View {
         .background(.regularMaterial).accessibilityIdentifier("library-global-activity")
     }
 
-    private func resumeCard(_ book: LocalBook) -> some View {
-        Button { Task { await model.open(book) } } label: {
+    private func resumeCard(_ item: LibraryShelfItem) -> some View {
+        Button { if item.hasCloudUpdate, let book = item.cloud { Task { await model.download(book) } } else { open(item) } } label: {
             HStack(spacing: 14) {
-                if !dynamicTypeSize.isAccessibilitySize { BookCover(book: book, resource: model.coverResource(book)) }
+                if !dynamicTypeSize.isAccessibilitySize { ShelfBookCover(title: item.title, author: item.author, compact: true, resource: model.coverResource(item)) }
                 VStack(alignment: .leading, spacing: 6) {
                     Text("继续读").font(.caption.weight(.semibold)).foregroundStyle(Color.leafInk)
-                    Text(book.title).font(.headline).foregroundStyle(.primary)
+                    Text(item.title).font(.headline).foregroundStyle(.primary)
                         .lineLimit(dynamicTypeSize.isAccessibilitySize ? nil : 2)
                         .fixedSize(horizontal: false, vertical: dynamicTypeSize.isAccessibilitySize)
-                    if let resumeChapter {
-                        Text(resumeChapter).font(.subheadline).foregroundStyle(.secondary)
+                    if let label = item.cloud?.resume?.label ?? (item.local == nil ? nil : resumeChapter) {
+                        Text(label).font(.subheadline).foregroundStyle(.secondary)
                             .lineLimit(dynamicTypeSize.isAccessibilitySize ? nil : 2)
                             .fixedSize(horizontal: false, vertical: dynamicTypeSize.isAccessibilitySize)
                     }
+                    if !item.isDownloaded || item.hasCloudUpdate { Text(item.hasCloudUpdate ? "轻点后下载新版并继续阅读" : "轻点后下载并继续阅读").font(.caption).foregroundStyle(.secondary) }
                 }
                 Spacer(minLength: 0)
                 Image(systemName: "chevron.right").font(.footnote.weight(.semibold)).foregroundStyle(.secondary)
@@ -323,7 +342,7 @@ struct LibraryScreen: View {
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
-        .accessibilityLabel("继续阅读，\(book.title)" + (resumeChapter.map { "，" + $0 } ?? ""))
+        .accessibilityLabel("继续阅读，\(item.title)" + (!item.isDownloaded ? "，轻点下载" : ""))
     }
 
     private func loadResume() async {
@@ -331,7 +350,7 @@ struct LibraryScreen: View {
         resumeLoadID = requestID
         let owner = model.account?.id
         guard let library = model.library else { resumeBookID = nil; resumeChapter = nil; return }
-        let savedID = try? await library.lastOpenedBook()
+        let savedID = model.recentShelfItem?.local?.id
         guard !Task.isCancelled, owner == model.account?.id, resumeLoadID == requestID else { return }
         guard let savedID, let book = model.books.first(where: { $0.id == savedID }) else {
             resumeBookID = nil; resumeChapter = nil; return
@@ -363,8 +382,22 @@ struct LibraryScreen: View {
 
     private func beginSelection(_ item: LibraryShelfItem) { selecting = true; selectedIDs.insert(item.id) }
     private func setPins(_ ids: Set<String>, pinned: Bool) {
-        var value = pins; value.set(ids, pinned: pinned, owner: pinOwner)
+        let cloudIDs = ids.filter { $0.hasPrefix("cloud:") }.map { String($0.dropFirst(6)) }
+        let localIDs = Set(ids.filter { !$0.hasPrefix("cloud:") })
+        var value = pins; value.set(localIDs, pinned: pinned, owner: pinOwner)
         if let data = try? JSONEncoder().encode(value) { pinData = data }
+        Task { for id in cloudIDs { await model.changeAccountShelf(.pin(bookID: id, pinned: pinned)) } }
+    }
+    private func migrateCloudPinsIfNeeded() async {
+        guard let shelf = model.accountShelf, shelf.isAuthoritative, !shelf.pinsInitialized, pinMigrationOwner != pinOwner else { return }
+        pinMigrationOwner = pinOwner
+        let available = Set(shelf.books.map(\.id)).union(shelf.archivedBookIDs)
+        let hasPendingPins = model.accountActions.contains { if case .pin = $0.action { return true }; return false }
+        let legacy = pins.cloudMigrationIDs(owner: pinOwner, available: available, pinsInitialized: shelf.pinsInitialized, hasPendingPins: hasPendingPins)
+        for id in legacy.sorted() {
+            await model.changeAccountShelf(.pin(bookID: id, pinned: true))
+            if model.accountActions.contains(where: \.conflict) { break }
+        }
     }
     private var selectionToolbar: some View {
         HStack(spacing: 12) {

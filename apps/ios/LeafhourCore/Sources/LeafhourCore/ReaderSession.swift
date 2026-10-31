@@ -29,6 +29,20 @@ public final class ReaderSession: Identifiable {
     public var saveMessage: String?
     public var saving = false
     public var saveError: String?
+    public private(set) var readingTimePhase: ReadingTimePhase = .idle
+    public private(set) var readingTimeDurationSeconds = 0
+    public private(set) var readingTimeSource: ReadingTimeSource = .focus
+    public private(set) var readingTimeWantsRunning = false
+    public private(set) var readingTimeError: String?
+    @ObservationIgnored private var readingClock = ReadingActivityClock()
+    @ObservationIgnored private var timePersistence: Task<Void, Never>?
+    @ObservationIgnored private var timePrepared = false
+    @ObservationIgnored private var timeRevision = 0
+    @ObservationIgnored private var timePersistedRevision = 0
+    @ObservationIgnored private var lastTimeCheckpoint = Date.distantPast
+    @ObservationIgnored private var lastActivitySave = Date.distantPast
+    @ObservationIgnored private var readingVisible = true
+    @ObservationIgnored private var activityNeedsSave = false
     public private(set) var translations: [String: ReadingTranslation] = [:]
     public private(set) var contentRevision = 0
     public func updateTranslations(_ rows: [String: ReadingTranslation]) {
@@ -82,6 +96,69 @@ public final class ReaderSession: Identifiable {
     public var chapter: BookChapter { book.chapters[chapterIndex] }
     /// Scroll checkpoints are immediate, while observed state and disk writes remain coalesced.
     public var currentAnchor: ReadingAnchor? { visibleAnchor ?? state.anchor }
+    public func startReadingTime(source: ReadingTimeSource = .focus) {
+        guard let anchor = currentAnchor else { return }
+        do {
+            try readingClock.start(bookID: book.cloud?.bookID ?? book.id, contentVersion: book.cloud?.contentVersion ?? book.sourceVersion, anchor: anchor, source: source, at: Date())
+            recordReadingInteraction(); checkpointReadingTime(); updateReadingTime()
+        } catch { readingTimeError = error.localizedDescription }
+    }
+    public func pauseReadingTime() { readingClock.pause(at: Date()); checkpointReadingTime(); updateReadingTime() }
+    public func resumeReadingTime() { readingClock.resume(at: Date()); checkpointReadingTime(); updateReadingTime() }
+    public func finishReadingTime() {
+        if let anchor = currentAnchor { readingClock.setContext(anchor) }
+        if let snapshot = readingClock.finish(at: Date()) { persistReadingTime(snapshot) }
+        updateReadingTime()
+    }
+    public func setReadingVisible(_ visible: Bool) {
+        readingVisible = visible; readingClock.setVisible(visible, at: Date()); checkpointReadingTime(); updateReadingTime()
+    }
+    /// Call only for a real reader gesture. Restoring, saving or speech navigation
+    /// deliberately do not call this method or manufacture a recent-reading event.
+    public func recordReadingInteraction() {
+        guard readingVisible else { return }
+        let now = Date(); state.lastActivityAt = ReadingTimeDate.stamp(now); activityNeedsSave = true
+        readingClock.interact(at: now)
+        if let anchor = currentAnchor { readingClock.setContext(anchor) }
+        if now.timeIntervalSince(lastActivitySave) >= 1 { lastActivitySave = now; save() }
+        updateReadingTime()
+    }
+    public func tickReadingTime() {
+        let before = readingClock.phase, now = Date(); readingClock.tick(at: now)
+        if let anchor = currentAnchor { readingClock.setContext(anchor) }
+        if now.timeIntervalSince(lastTimeCheckpoint) >= 30 || readingClock.phase != before { checkpointReadingTime() }
+        updateReadingTime()
+    }
+    @discardableResult public func flushReadingTime() async -> Bool {
+        checkpointReadingTime()
+        while true {
+            let revision = timeRevision, task = timePersistence; await task?.value
+            if revision == timeRevision { return timePersistedRevision == revision && readingTimeError == nil }
+        }
+    }
+    private func updateReadingTime() {
+        readingTimePhase = readingClock.phase; readingTimeDurationSeconds = readingClock.durationSeconds; readingTimeSource = readingClock.source; readingTimeWantsRunning = readingClock.wantsRunning
+    }
+    private func checkpointReadingTime() {
+        if let anchor = currentAnchor { readingClock.setContext(anchor) }
+        if let snapshot = readingClock.snapshot(at: Date()) { persistReadingTime(snapshot) }
+    }
+    private func persistReadingTime(_ snapshot: ReadingTimeSnapshot) {
+        guard let store = library as? any ReadingTimeStore else { readingTimeError = "此阅读空间暂不支持保存计时。"; readingClock.pause(at: Date()); updateReadingTime(); return }
+        lastTimeCheckpoint = Date(); timeRevision += 1
+        let revision = timeRevision, previous = timePersistence
+        timePersistence = Task {
+            await previous?.value
+            do {
+                if !timePrepared { try await store.recoverReadingTime(bookID: book.id); timePrepared = true }
+                try await store.retainReadingTime(snapshot, bookID: book.id)
+                timePersistedRevision = revision
+                if revision == timeRevision { readingTimeError = nil }
+            } catch {
+                if revision == timeRevision { readingTimeError = error.localizedDescription; readingClock.pause(at: Date()); updateReadingTime() }
+            }
+        }
+    }
     /// A read-only destination for an explicit “start reading” action. A valid
     /// saved cover position is never changed merely by asking for this hint.
     /// Call once on presentation or on demand, not from a repeatedly evaluated body.
@@ -116,6 +193,7 @@ public final class ReaderSession: Identifiable {
     }
     public func save() {
         if state.anchor != currentAnchor { state.anchor = currentAnchor }
+        activityNeedsSave = false
         revision += 1
         let version = revision, snapshot = state, previous = pending
         saving = true
@@ -137,16 +215,16 @@ public final class ReaderSession: Identifiable {
     }
     @discardableResult public func flush() async -> ReaderSaveReceipt {
         while true {
-            if state.anchor != currentAnchor { save() }
+            if state.anchor != currentAnchor || activityNeedsSave { save() }
             let version = revision, task = pending
             await task?.value
-            if version == revision && state.anchor == currentAnchor {
+            if version == revision && state.anchor == currentAnchor && !activityNeedsSave {
                 return ReaderSaveReceipt(revision: version, persistedRevision: persistedRevision, succeeded: version == persistedRevision && saveError == nil)
             }
         }
     }
     public func isCurrent(_ receipt: ReaderSaveReceipt) -> Bool {
-        receipt.revision == revision && receipt.succeeded && !saving && saveError == nil && state.anchor == currentAnchor
+        receipt.revision == revision && receipt.succeeded && !saving && saveError == nil && !activityNeedsSave && state.anchor == currentAnchor
     }
     public func isNotePersisted(id: UUID, body: String) -> Bool {
         persistedState.notes.contains { $0.id == id && $0.body == body }

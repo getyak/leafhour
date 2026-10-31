@@ -96,6 +96,8 @@ public struct ReaderPreferences: Codable, Equatable, Sendable {
 }
 public struct ReaderState: Codable, Equatable, Sendable {
     public var anchor: ReadingAnchor?
+    /// Actual foreground reading interaction, distinct from local/cloud save time.
+    public var lastActivityAt: Date?
     public var listeningPosition: ReaderListeningPosition?
     public var drafts: [String: NoteDraft] = [:]
     public var notes: [ReaderNote] = []

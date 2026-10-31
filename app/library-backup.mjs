@@ -23,6 +23,9 @@ export function validateLibraryBackup(backup){
   const bookIds=new Set();let paragraphs=0,notes=0;
   for(const [index,entry] of backup.books.entries()){
     const where='第 '+(index+1)+' 本书',b=entry?.book,r=entry?.records;
+    if(entry.shelf!==undefined){
+      const shelf=entry.shelf;if(!object(shelf)||Object.keys(shelf).some(key=>!['order','archivedAt','pinned'].includes(key))||shelf.pinned!==undefined&&typeof shelf.pinned!=='boolean'||shelf.archivedAt!==undefined&&!date(shelf.archivedAt)||shelf.order!==undefined&&(!Array.isArray(shelf.order)||shelf.order.length>1000||shelf.order.some(value=>!id(value))||new Set(shelf.order).size!==shelf.order.length))invalid(where,'书架信息不完整');
+    }
     if(!object(b)||!id(b.bookId)||bookIds.has(b.bookId)||!text(b.contentVersion,256)||!object(b.title)||!text(b.title.zh,500)||b.title.en!==undefined&&typeof b.title.en!=='string'||b.author!==undefined&&typeof b.author!=='string'||!object(b.source)||!text(b.source.format,20)||!Array.isArray(b.chapters)||!b.chapters.length||!Array.isArray(b.sections)||!b.sections.length||!Array.isArray(b.annotations)||!Array.isArray(b.glossary))invalid(where,'书籍信息不完整或书籍标识重复');
     if(b.source.url!==null&&b.source.url!==undefined){let url;try{url=new URL(b.source.url);}catch{invalid(where,'来源链接不正确');}if(!['https:','http:'].includes(url.protocol))invalid(where,'来源链接只能使用网页地址');}
     bookIds.add(b.bookId);const chapterIds=new Set(),occupiedChapters=new Set(),passageIds=new Map();

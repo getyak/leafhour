@@ -2,15 +2,16 @@ import Foundation
 import LeafhourCore
 
 enum LibraryShelfFilter: String, CaseIterable {
-    case all, downloaded
-    var title: String { self == .all ? "全部" : "已下载" }
+    case all, downloaded, unread, reading, finished, archived
+    var title: String { switch self { case .all: "全部"; case .downloaded: "已下载"; case .unread: "未读"; case .reading: "在读"; case .finished: "已读完"; case .archived: "已移除" } }
 }
 
 enum LibraryShelfSort: String, CaseIterable {
-    case added, title, author
+    case added, recent, title, author
     var title: String {
         switch self {
         case .added: "加入顺序"
+        case .recent: "最近阅读"
         case .title: "书名"
         case .author: "作者"
         }
@@ -27,6 +28,8 @@ struct LibraryShelfItem: Identifiable {
     let local: LocalBook?
     let cloud: CloudShelfBook?
     var isAdditionalVersion = false
+    var isArchived = false
+    var localActivityAt: Date? = nil
     var title: String { local?.title ?? cloud?.title ?? "" }
     var author: String { local?.author ?? cloud?.author ?? "" }
     var isDownloaded: Bool { local != nil }
@@ -43,6 +46,12 @@ struct LibraryShelfItem: Identifiable {
         guard let local, let cloud else { return false }
         return local.cloud?.contentVersion != cloud.contentVersion
     }
+    var accountBookID: String? { cloud?.id ?? local?.cloud?.bookID }
+    var readingStatus: CloudBookReadingStatus {
+        if let cloud { return cloud.readingStatus }
+        if let local, local.cloud == nil { return localActivityAt == nil ? .unread : .reading }
+        return .pending
+    }
 }
 
 struct LibraryShelfPins: Codable {
@@ -53,10 +62,16 @@ struct LibraryShelfPins: Codable {
         if pinned { saved.formUnion(ids) } else { saved.subtract(ids) }
         owners[owner] = saved
     }
+    func cloudMigrationIDs(owner: String, available: Set<String>, pinsInitialized: Bool, hasPendingPins: Bool) -> Set<String> {
+        guard !pinsInitialized, !hasPendingPins else { return [] }
+        return Set(ids(owner: owner).filter { $0.hasPrefix("cloud:") }.map { String($0.dropFirst(6)) }).intersection(available)
+    }
 }
 
 enum LibraryPresentation {
-    static func items(local: [LocalBook], cloud: [CloudShelfBook], query: String = "", filter: LibraryShelfFilter = .all, sort: LibraryShelfSort = .added, pinnedIDs: Set<String> = []) -> [LibraryShelfItem] {
+    static func items(local: [LocalBook], cloud: [CloudShelfBook], query: String = "", filter: LibraryShelfFilter = .all, sort: LibraryShelfSort = .added, pinnedIDs: Set<String> = [], snapshot: CloudShelfSnapshot? = nil, localActivity: [String: Date] = [:]) -> [LibraryShelfItem] {
+        let archived = snapshot?.isAuthoritative == true ? snapshot!.archivedBookIDs : []
+        let cloud = cloud + (snapshot?.archivedBooks ?? [])
         var remoteByID: [String: CloudShelfBook] = [:]
         for book in cloud where remoteByID[book.id] == nil { remoteByID[book.id] = book }
         var seen: Set<String> = []
@@ -84,26 +99,41 @@ enum LibraryPresentation {
             let additional = book.cloud.map { primaryByCloudID[$0.bookID] != book.id } ?? false
             let id = additional ? "local:" + book.id : (book.cloud.map { "cloud:" + $0.bookID } ?? "local:" + book.id)
             guard seen.insert(id).inserted else { continue }
-            result.append(LibraryShelfItem(id: id, local: book, cloud: additional ? nil : book.cloud.flatMap { remoteByID[$0.bookID] }, isAdditionalVersion: additional))
+            result.append(LibraryShelfItem(id: id, local: book, cloud: additional ? nil : book.cloud.flatMap { remoteByID[$0.bookID] }, isAdditionalVersion: additional, isArchived: book.cloud.map { archived.contains($0.bookID) } ?? false, localActivityAt: localActivity[book.id]))
         }
         // Retain service order as a stable fallback for cloud books whose
         // actual addition date is unavailable.
         for book in cloud {
             let id = "cloud:" + book.id
             guard seen.insert(id).inserted else { continue }
-            result.append(LibraryShelfItem(id: id, local: nil, cloud: book))
+            result.append(LibraryShelfItem(id: id, local: nil, cloud: book, isArchived: archived.contains(book.id)))
         }
         let search = normalized(query.trimmingCharacters(in: .whitespacesAndNewlines))
         result = result.filter {
-            (filter == .all || $0.isDownloaded)
+            (filter == .archived ? $0.isArchived : !$0.isArchived)
+                && (filter != .downloaded || $0.isDownloaded)
+                && (filter != .unread || $0.readingStatus == .unread)
+                && (filter != .reading || $0.readingStatus == .reading)
+                && (filter != .finished || $0.readingStatus == .finished)
                 && (search.isEmpty || normalized($0.title).contains(search) || normalized($0.author).contains(search))
         }
         switch sort {
         case .added:
+            let ranks = Dictionary(uniqueKeysWithValues: (snapshot?.order ?? []).enumerated().map { ($0.element, $0.offset) })
             result = result.enumerated().sorted { lhs, rhs in
+                if !ranks.isEmpty {
+                    let l = lhs.element.accountBookID.flatMap { ranks[$0] }, r = rhs.element.accountBookID.flatMap { ranks[$0] }
+                    if l != r { return (l ?? Int.max) < (r ?? Int.max) }
+                }
                 let left = lhs.element.addedAt, right = rhs.element.addedAt
                 if let left, let right, left != right { return left > right }
                 if (left != nil) != (right != nil) { return left != nil }
+                return lhs.offset < rhs.offset
+            }.map(\.element)
+        case .recent:
+            result = result.enumerated().sorted { lhs, rhs in
+                let l = ReadingRecency.maximum([lhs.element.cloud?.activityAt, lhs.element.local.flatMap { localActivity[$0.id] }]), r = ReadingRecency.maximum([rhs.element.cloud?.activityAt, rhs.element.local.flatMap { localActivity[$0.id] }])
+                if l != r { return (l ?? .distantPast) > (r ?? .distantPast) }
                 return lhs.offset < rhs.offset
             }.map(\.element)
         case .title: result.sort(by: titlePrecedes)

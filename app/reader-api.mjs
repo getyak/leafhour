@@ -55,7 +55,7 @@ export function confirmReaderIdentity(){
     const current=await response.json();
     if((current.user?.id||null)!==readerOwner){leaveChangedSession();return false;}
     if(readerOffline.isOffline()){location.reload();return false;}
-    void adoptUiOwner(readerOwner);return sessionCurrent;
+    void adoptUiOwner(readerOwner);if(sessionCurrent)document.dispatchEvent(new Event('reader:identity-confirmed'));return sessionCurrent;
   }catch{return false;}})().finally(()=>{identityCheck=null;});
   return identityCheck;
 }

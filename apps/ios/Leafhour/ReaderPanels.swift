@@ -19,6 +19,7 @@ struct ReaderPanelView: View {
     @Bindable var speech: ReaderSpeech
     @Bindable var tools: ReaderCloudTools
     let cloud: CloudLibraryClient?
+    var library: OfflineLibrary? = nil
     var reading: ReaderReadingContent? = nil
     let onJump: (Int, ReadingAnchor?) -> Void
     let onCompanion: () -> Void
@@ -34,7 +35,7 @@ struct ReaderPanelView: View {
                 case .preferences: ReaderPreferencesPanel(session: session, reading: reading)
                 case .appearance: ReaderAppearancePanel(session: session)
                 case .records: ReaderRecordsPanel(session: session, onJump: onJump)
-                case .tools: ReaderMorePanel(session: session, speech: speech, tools: tools, cloud: cloud, reading: reading, onJump: onJump, onCompanion: onCompanion)
+                case .tools: ReaderMorePanel(session: session, speech: speech, tools: tools, cloud: cloud, library: library, reading: reading, onJump: onJump, onCompanion: onCompanion)
                 case .listening: ReaderListeningPanel(session: session, speech: speech)
                 case .translation: ReaderTranslationPanel(session: session, tools: tools, cloud: cloud)
                 case .introduction: ReaderIntroductionPanel(session: session, tools: tools, cloud: cloud)
@@ -140,20 +141,20 @@ struct ReaderContentsPanel: View {
                         }.accessibilityIdentifier("reader-start-body")
                     }
                     HStack {
-                        Button { session.go(to: session.chapterIndex - 1) } label: {
+                        Button { onJump(session.chapterIndex - 1, nil) } label: {
                             Label(session.book.kind == .pdf ? "上一页" : "上一章", systemImage: "chevron.left")
                                 .frame(minHeight: 44).contentShape(Rectangle())
                         }.disabled(session.chapterIndex == 0)
                         Spacer()
                         Text("\(session.chapterIndex + 1) / \(session.book.chapters.count)").font(.subheadline.monospacedDigit())
                         Spacer()
-                        Button { session.go(to: session.chapterIndex + 1) } label: {
+                        Button { onJump(session.chapterIndex + 1, nil) } label: {
                             Label(session.book.kind == .pdf ? "下一页" : "下一章", systemImage: "chevron.right")
                                 .frame(minHeight: 44).contentShape(Rectangle())
                         }.disabled(session.chapterIndex + 1 == session.book.chapters.count)
                     }.buttonStyle(.plain)
                     if session.book.chapters.count > 1 {
-                        Slider(value: Binding(get: { Double(session.chapterIndex) }, set: { session.go(to: Int($0.rounded())) }), in: 0...Double(session.book.chapters.count - 1), step: 1)
+                        Slider(value: Binding(get: { Double(session.chapterIndex) }, set: { onJump(Int($0.rounded()), nil) }), in: 0...Double(session.book.chapters.count - 1), step: 1)
                             .accessibilityLabel(session.book.kind == .pdf ? "页码" : "章节")
                     }
                 } header: { Text("阅读位置") }

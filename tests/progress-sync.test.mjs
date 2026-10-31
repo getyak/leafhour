@@ -21,3 +21,7 @@ test('a conflict pauses queued autosaves until the reader explicitly adopts the 
   assert.equal(calls,1);assert.equal(conflicts,1);assert.equal(sync.paused,true);
   sync.adopt(5);await sync.save({passageId:'chosen-by-reader'});assert.equal(calls,2);assert.equal(sync.revision,6);
 });
+test('a foreground remote update pauses unsent checkpoints and waits for an outstanding local receipt',async()=>{
+ let release,calls=0;const sync=createProgressSync({revision:2,send:async value=>{calls++;return new Promise(resolve=>release=()=>resolve({...value,revision:3}));}});
+ const first=sync.save({passageId:'local',observedAt:'2026-10-01T00:00:00Z'});await new Promise(setImmediate);assert.equal(sync.pending,1);sync.pause();const second=sync.save({passageId:'queued'});release();await sync.settle();await first;await second;assert.equal(calls,1);assert.equal(sync.paused,true);assert.equal(sync.pending,0);
+});

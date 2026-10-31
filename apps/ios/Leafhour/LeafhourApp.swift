@@ -51,6 +51,10 @@ enum AccountRecordsState: Equatable {
 final class LibraryModel {
     var books: [LocalBook] = []
     var cloudBooks: [CloudShelfBook] = []
+    var accountShelf: CloudShelfSnapshot?
+    var accountActions: [PendingAccountShelfAction] = []
+    var localActivity: [String: Date] = [:]
+    private var lastOpenedLocalID: String?
     var jobs: [ImportJob] = []
     var message: String?
     var busy = false
@@ -67,6 +71,10 @@ final class LibraryModel {
     var notebookCursor: String?
     var notebookState: AccountRecordsState = .idle
     var summaryState: AccountRecordsState = .idle
+    private var summaryRequested = false
+    private var summaryRefreshRequested = false
+    private var summaryWorkerID: UUID?
+    @ObservationIgnored private var summaryWorker: Task<Void, Never>?
     private var notebookIncomplete = false
     var syncIssues: [String: CloudSyncMetadata] = [:]
     var nativeAuthenticating = false
@@ -85,6 +93,8 @@ final class LibraryModel {
     private let persistCredential: Bool
     private var contextID = UUID()
     private var openingBookID: String?
+    private var syncRequested = false
+    private var reloadID = UUID()
     private var nativeOperationID = UUID()
     @ObservationIgnored private weak var activeNativeBrowser: NativeProviderAuthentication?
     @ObservationIgnored private var networkMonitor: NWPathMonitor?
@@ -125,9 +135,9 @@ final class LibraryModel {
                 let restored = try await cloud.restore()
                 if restored != account {
                     contextID = UUID(); account = restored
-                    books = []; cloudBooks = []; syncIssues = [:]; syncing = false; syncStatus = ""
+                    books = []; cloudBooks = []; accountShelf = nil; accountActions = []; localActivity = [:]; syncIssues = [:]; syncing = false; syncStatus = ""
                     notebookEntries = []; notebookCursor = nil; notebookIncomplete = false; notebookState = .idle
-                    summary = .null; summaryState = .idle
+                    resetReadingSummary()
                     linkedIdentities = []; nativeAuthStatus = nil; nativeAuthMessage = nil
                     try configureLibrary()
                 }
@@ -135,18 +145,36 @@ final class LibraryModel {
             } catch { syncStatus = account == nil ? "可先在本机阅读，联网后登录书房。" : "暂时离线，已保留此账号的书籍与记录。" }
         }
         guard let library else { return }
-        let marker = contextID
+        let marker = contextID, owner = account?.id, request = UUID()
+        reloadID = request
         do {
             let local = try await library.books(), imports = try await library.jobs().filter { $0.phase != .complete }
-            guard marker == contextID else { return }
-            books = local; jobs = imports
-            if account != nil, let data = try await library.cloudView("shelf") { cloudBooks = try CloudJSON.decode(data)["books"].array.compactMap(CloudShelfBook.init(json:)) }
-            for book in books where book.cloud != nil { syncIssues[book.id] = try await library.cloudMetadata(book.id) }
+            let opened = try await library.lastOpenedBook()
+            var snapshot: CloudShelfSnapshot?
+            var pending = accountActions
+            var warning: String?
+            do {
+                if let owner, let data = try await library.cloudView("shelf") { snapshot = try CloudShelfSnapshot(cacheData: data, ownerID: owner) }
+            } catch { warning = "此设备的书架缓存暂时无法读取，已保留文件。请联网重试同步。" }
+            if let owner {
+                do { pending = try await library.accountActions(ownerID: owner) }
+                catch { warning = error.localizedDescription }
+            }
+            var events: [String: Date] = [:]
+            for book in local { if let event = try? await library.state(book.id).lastActivityAt { events[book.id] = event } }
+            var issues: [String: CloudSyncMetadata] = [:]
+            for book in local where book.cloud != nil { issues[book.id] = try? await library.cloudMetadata(book.id) }
+            guard marker == contextID, owner == account?.id, request == reloadID else { return }
+            books = local; jobs = imports; lastOpenedLocalID = opened; localActivity = events; syncIssues = issues; accountActions = pending
+            if let snapshot { accountShelf = snapshot; cloudBooks = snapshot.books }
+            if let warning, message == nil { message = warning }
             if restore && !didRestore {
                 didRestore = true
-                if let id = try await library.lastOpenedBook(), let book = books.first(where: { $0.id == id }) { await open(book) }
+                // A cached last-opened ID is a restoration hint, not reading
+                // activity. Let the first account sync settle before continuation.
+                if account == nil, let id = opened, let book = books.first(where: { $0.id == id }) { await open(book) }
             }
-        } catch { message = error.localizedDescription }
+        } catch { if marker == contextID, request == reloadID { message = error.localizedDescription } }
     }
     func signIn(email: String, password: String, code: String? = nil) async throws {
         guard !nativeAuthenticating, !busy, reader == nil, openingBookID == nil else { throw LibraryError.invalid("请先回到书房，再切换账号。") }
@@ -157,7 +185,8 @@ final class LibraryModel {
         try await adoptSignedInAccount(user)
     }
     private func adoptSignedInAccount(_ user: CloudAccount) async throws {
-        contextID = UUID(); account = user; books = []; cloudBooks = []; syncIssues = [:]; notebookEntries = []; notebookCursor = nil; notebookState = .idle; notebookIncomplete = false; summary = .null; summaryState = .idle; didRestore = true; syncing = false
+        contextID = UUID(); account = user; books = []; cloudBooks = []; accountShelf = nil; accountActions = []; localActivity = [:]; syncIssues = [:]; notebookEntries = []; notebookCursor = nil; notebookState = .idle; notebookIncomplete = false; didRestore = true; syncing = false
+        resetReadingSummary()
         linkedIdentities = []
         try configureLibrary(); await reload(); await synchronize()
     }
@@ -223,28 +252,28 @@ final class LibraryModel {
         do {
             await cancelNativeAuthentication()
             if persistCredential { try AccountCredentialStore.write(nil) }
-            contextID = UUID(); account = nil; books = []; cloudBooks = []; syncIssues = [:]; notebookEntries = []; notebookCursor = nil; notebookState = .idle; notebookIncomplete = false; summary = .null; summaryState = .idle; linkedIdentities = []; nativeAuthStatus = nil; syncing = false
+            contextID = UUID(); account = nil; books = []; cloudBooks = []; accountShelf = nil; accountActions = []; localActivity = [:]; syncIssues = [:]; notebookEntries = []; notebookCursor = nil; notebookState = .idle; notebookIncomplete = false; linkedIdentities = []; nativeAuthStatus = nil; syncing = false
+            resetReadingSummary()
             await cloud.signOut(); try configureLibrary(); await reload()
             syncStatus = "已退出，账号书籍与记录保留在各自的离线空间。"
         } catch { message = error.localizedDescription }
     }
     func synchronize() async {
-        guard let account, let library, let sync, !syncing else { return }
+        guard let account, let library, let sync else { return }
+        if syncing { syncRequested = true; return }
         let marker = contextID; syncing = true; syncStatus = "正在同步书房…"
-        defer { if marker == contextID { syncing = false } }
+        defer {
+            if marker == contextID {
+                syncing = false
+                if syncRequested { syncRequested = false; Task { await self.synchronize() } }
+            }
+        }
         do {
-            let shelf = try await cloud.shelf(ownerID: account.id)
+            let shelf = try await cloud.accountShelf(ownerID: account.id)
             guard marker == contextID else { return }
-            cloudBooks = shelf
-            let dateFormatter = ISO8601DateFormatter()
-            dateFormatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
-            let rows = shelf.map { book in CloudJSON.object([
-                "bookId": .string(book.id), "contentVersion": .string(book.contentVersion),
-                "title": .string(book.title), "author": .string(book.author),
-                "coverImage": book.coverPath.map(CloudJSON.string) ?? .null,
-                "addedAt": book.addedAt.map { .string(dateFormatter.string(from: $0)) } ?? .null
-            ]) }
-            try await library.cacheCloudView("shelf", data: CloudJSON.encode(["books": .array(rows)]))
+            accountShelf = shelf; cloudBooks = shelf.books
+            try await library.cacheCloudView("shelf", data: shelf.cacheData())
+            if shelf.isAuthoritative { await drainAccountActions(ownerID: account.id, library: library, marker: marker) }
             var errors: [String] = []
             for book in books where book.cloud != nil {
                 do { try await sync.synchronize(book.id, pull: reader == nil && openingBookID != book.id) }
@@ -252,9 +281,16 @@ final class LibraryModel {
                 guard marker == contextID else { return }
                 syncIssues[book.id] = try await library.cloudMetadata(book.id)
             }
-            syncStatus = errors.first ?? syncIssues.values.compactMap(\.lastError).first ?? "书房已同步"
+            let refreshed = try await cloud.accountShelf(ownerID: account.id)
+            guard marker == contextID else { return }
+            accountShelf = refreshed; cloudBooks = refreshed.books
+            try await library.cacheCloudView("shelf", data: refreshed.cacheData())
+            syncStatus = errors.first ?? accountActions.first?.error ?? syncIssues.values.compactMap(\.lastError).first ?? (accountActions.isEmpty ? "书房已同步" : "书架调整待同步")
             if reader == nil { await reload() }
         } catch { if marker == contextID { syncStatus = "暂未同步：\(error.localizedDescription) 本机书籍与更改仍保留。" } }
+        if marker == contextID, summaryRequested || summary != .null || summaryState.hasSnapshot {
+            await loadReadingSummary(account: account, library: library, marker: marker)
+        }
     }
     func download(_ remote: CloudShelfBook, openAfter: Bool = true, refresh: Bool = false) async {
         guard !busy, let account, let library, let sync else { return }
@@ -351,7 +387,31 @@ final class LibraryModel {
             }
         }
     }
+    private func resetReadingSummary() {
+        summaryWorker?.cancel(); summaryWorker = nil; summaryWorkerID = nil
+        summaryRequested = false; summaryRefreshRequested = false
+        summary = .null; summaryState = .idle
+    }
     private func loadReadingSummary(account: CloudAccount, library: OfflineLibrary, marker: UUID) async {
+        guard marker == contextID else { return }
+        summaryRequested = true; summaryRefreshRequested = true
+        if let worker = summaryWorker { await worker.value; return }
+        let id = UUID(); summaryWorkerID = id
+        // The worker outlives an individual sheet task. A foreground refresh
+        // during an older response sets one dirty bit and joins its follow-up.
+        let worker = Task { @MainActor [weak self] in
+            guard let self else { return }
+            while self.contextID == marker, self.summaryWorkerID == id,
+                  self.summaryRefreshRequested, !Task.isCancelled {
+                self.summaryRefreshRequested = false
+                await self.fetchReadingSummary(account: account, library: library, marker: marker)
+            }
+            if self.contextID == marker, self.summaryWorkerID == id { self.summaryWorker = nil; self.summaryWorkerID = nil }
+        }
+        summaryWorker = worker
+        await worker.value
+    }
+    private func fetchReadingSummary(account: CloudAccount, library: OfflineLibrary, marker: UUID) async {
         guard marker == contextID, !summaryState.isLoading else { return }
         let previous = summaryState, hadSnapshot = summary != .null
         summaryState = .loading
@@ -387,6 +447,23 @@ final class LibraryModel {
         do { try await sync.resolvePosition(book.id, useDevice: useDevice); if marker == contextID { await reload() } }
         catch { if marker == contextID { message = error.localizedDescription } }
     }
+    func resolveActivePosition(useDevice: Bool) async {
+        guard let current = reader, let library, let sync else { return }
+        let marker = contextID
+        let receipt = await current.flush()
+        guard marker == contextID, current.isCurrent(receipt) else { return }
+        do {
+            try await sync.resolvePosition(current.book.id, useDevice: useDevice)
+            guard marker == contextID, reader === current else { return }
+            syncIssues[current.book.id] = try await library.cloudMetadata(current.book.id)
+            if !useDevice {
+                let state = try await library.state(current.book.id)
+                guard marker == contextID, reader === current else { return }
+                current.state = state
+                if let anchor = state.anchor, let index = current.book.chapters.firstIndex(where: { $0.id == anchor.chapterID }) { current.go(to: index, anchor: anchor) }
+            }
+        } catch { if marker == contextID { current.message = error.localizedDescription } }
+    }
     func upload(_ book: LocalBook) async {
         guard let account, let library, !busy, book.cloud == nil else { return }
         let marker = contextID; busy = true; status = "正在上传原件到自己的书房…"
@@ -401,14 +478,35 @@ final class LibraryModel {
             busy = false
             await synchronize()
             await download(CloudShelfBook(id: id, title: book.title, author: book.author, contentVersion: version), openAfter: false)
+            guard marker == contextID else { return }
             guard let target = books.first(where: { $0.cloud?.bookID == id && $0.cloud?.contentVersion == version }) else {
                 message = "原件已上传，正文副本尚未下载完成。本机笔记与草稿仍保留，请同步书房后重试下载。"; return
             }
             let sourceState = try await library.state(book.id), targetState = try await library.state(target.id)
-            let migration = CloudUploadMigration.remap(source: book, state: sourceState, destination: target, destinationState: targetState)
+            let pendingTime = try await library.readingTimeLedger(bookID: book.id).pending
+            guard marker == contextID else { return }
+            let migration = CloudUploadMigration.remap(source: book, state: sourceState, destination: target, destinationState: targetState, readingTime: pendingTime)
             try await library.saveState(migration.state, bookID: target.id)
+            for row in migration.readingTimeSnapshots {
+                if try await library.readingTimeLedger(bookID: target.id).pending.count >= 20 {
+                    if let sync { try await sync.synchronize(target.id) }
+                    guard marker == contextID else { return }
+                    guard try await library.readingTimeLedger(bookID: target.id).pending.count < 20 else {
+                        throw LibraryError.invalid("已有阅读时段尚未同步，请联网后重试上传。完整历史仍保留在原来的本机书中。")
+                    }
+                }
+                try await library.retainReadingTime(row, bookID: target.id)
+                guard marker == contextID else { return }
+            }
             if let sync { try await sync.synchronize(target.id) }
+            guard marker == contextID else { return }
+            let pendingReadingTime = try await library.readingTimeLedger(bookID: target.id).pending.count
             await reload()
+            guard marker == contextID else { return }
+            if pendingReadingTime > 0 {
+                message = "原件已加入云端书房，还有 \(pendingReadingTime) 个阅读时段待同步。完整历史、笔记与草稿仍保留在原来的本机书中。"
+                return
+            }
             message = migration.unresolvedCount == 0
                 ? "原件、可核对的笔记与阅读位置已加入云端书房。原来的本机书与记录仍保留。"
                 : "原件已上传，能核对原句的记录已同步；还有 \(migration.unresolvedCount) 条引用需要核对，已完整保留在原来的本机书中。"
@@ -455,6 +553,8 @@ final class LibraryModel {
         openingBookID = book.id
         defer { openingBookID = nil }
         if let current = reader {
+            current.finishReadingTime()
+            guard await current.flushReadingTime() else { return }
             let receipt = await current.flush()
             guard marker == contextID, current.isCurrent(receipt) else { return }
         }
@@ -479,5 +579,67 @@ final class LibraryModel {
             let store: any ReaderStateStore = verified.cloud != nil && sync != nil ? CloudReaderStateStore(library: library, sync: sync!) : library
             reader = ReaderSession(book: verified, state: state, original: original, directory: folder, library: store)
         } catch { if marker == contextID { message = "暂时无法打开这本书：\(error.localizedDescription) 可在书籍详情中校验或修复。" } }
+    }
+
+    var recentShelfItem: LibraryShelfItem? {
+        let items = LibraryPresentation.items(local: books, cloud: cloudBooks, snapshot: accountShelf)
+        let candidates = items.map { item in ReadingRecency.Candidate(id: item.id, activityAt: ReadingRecency.maximum([item.cloud?.activityAt, item.local.flatMap { localActivity[$0.id] }])) }
+        guard let recent = ReadingRecency.latest(candidates) else { return items.first { $0.local?.id == lastOpenedLocalID } }
+        return items.first { $0.id == recent.id }
+    }
+    func changeAccountShelf(_ action: AccountShelfAction) async {
+        guard let owner = account?.id, let library, let shelf = accountShelf, shelf.isAuthoritative else { message = "请先连接书房，读取此账号的最新书架。"; return }
+        let marker = contextID
+        do {
+            try await library.enqueueAccountAction(ownerID: owner, action: action, baseRevision: shelf.revision)
+            guard marker == contextID else { return }
+            accountActions = try await library.accountActions(ownerID: owner)
+            await synchronize()
+        } catch { if marker == contextID { message = error.localizedDescription } }
+    }
+    func retryAccountShelf(_ action: PendingAccountShelfAction) async {
+        guard let owner = account?.id, action.ownerID == owner, let library else { return }
+        let marker = contextID
+        do {
+            let latest = try await cloud.accountShelf(ownerID: owner)
+            guard marker == contextID, latest.isAuthoritative else { return }
+            accountShelf = latest; cloudBooks = latest.books
+            try await library.cacheCloudView("shelf", data: latest.cacheData())
+            try await library.retryAccountAction(action.id, ownerID: owner, baseRevision: latest.revision)
+            accountActions = try await library.accountActions(ownerID: owner)
+            await synchronize()
+        } catch { if marker == contextID { message = error.localizedDescription } }
+    }
+    func discardAccountShelf(_ action: PendingAccountShelfAction) async {
+        guard let owner = account?.id, action.ownerID == owner, let library else { return }
+        let marker = contextID
+        do {
+            try await library.discardAccountAction(action.id, ownerID: owner)
+            guard marker == contextID else { return }
+            accountActions = try await library.accountActions(ownerID: owner)
+        } catch { if marker == contextID { message = error.localizedDescription } }
+    }
+    private func drainAccountActions(ownerID: String, library: OfflineLibrary, marker: UUID) async {
+        do {
+            guard !(try await library.accountActions(ownerID: ownerID)).isEmpty else { return }
+            while let pending = try await library.accountActions(ownerID: ownerID).first(where: { !$0.conflict }) {
+                guard marker == contextID else { return }
+                do {
+                    let revision = try await cloud.performAccountAction(pending)
+                    guard marker == contextID else { return }
+                    try await library.acknowledgeAccountAction(pending, revision: revision)
+                } catch {
+                    guard marker == contextID else { return }
+                    try await library.failAccountAction(pending, conflict: (error as? CloudRequestError)?.status == 409, message: error.localizedDescription)
+                    break
+                }
+            }
+            guard marker == contextID else { return }
+            accountActions = try await library.accountActions(ownerID: ownerID)
+            let latest = try await cloud.accountShelf(ownerID: ownerID)
+            guard marker == contextID else { return }
+            accountShelf = latest; cloudBooks = latest.books
+            try await library.cacheCloudView("shelf", data: latest.cacheData())
+        } catch { if marker == contextID { syncStatus = "书架调整仍保存在此设备：" + error.localizedDescription } }
     }
 }

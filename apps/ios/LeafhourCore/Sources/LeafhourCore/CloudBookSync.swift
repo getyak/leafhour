@@ -1,36 +1,6 @@
 import Foundation
 import CryptoKit
 
-public struct CloudShelfBook: Codable, Identifiable, Equatable, Sendable {
-    public var id: String
-    public var title: String
-    public var author: String
-    public var contentVersion: String
-    public var coverPath: String? = nil
-    public var addedAt: Date? = nil
-    public init(id: String, title: String, author: String, contentVersion: String, coverPath: String? = nil, addedAt: Date? = nil) {
-        self.id = id; self.title = title; self.author = author; self.contentVersion = contentVersion
-        self.coverPath = coverPath.flatMap { CloudCoverPath.isAllowed($0) ? $0 : nil }
-        self.addedAt = addedAt
-    }
-    public init?(json: CloudJSON) {
-        guard let id = json["bookId"].string, let version = json["contentVersion"].string else { return nil }
-        let legacyCover = json["visibility"].string == "private" && ["epub", "pdf"].contains(json["source"]["format"].string ?? "")
-            ? "/api/library/books/" + CloudJSON.component(id) + "/cover?v=" + CloudJSON.component(json["source"]["sha256"].string ?? version) : nil
-        let addedAt = Self.date(json["addedAt"].string) ?? (json["visibility"].string == "private" ? Self.date(json["createdAt"].string) : nil)
-        self.init(id: id, title: Self.title(json["title"]), author: json["author"].string ?? "", contentVersion: version, coverPath: json["coverImage"].string ?? legacyCover, addedAt: addedAt)
-    }
-    private static func date(_ value: String?) -> Date? {
-        guard let value else { return nil }
-        let formatter = ISO8601DateFormatter()
-        formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
-        if let date = formatter.date(from: value) { return date }
-        formatter.formatOptions = [.withInternetDateTime]
-        return formatter.date(from: value)
-    }
-    public static func title(_ json: CloudJSON) -> String { json.string ?? json["zh"].string ?? json["en"].string ?? json.object.values.compactMap(\.string).first ?? "未命名书籍" }
-}
-
 public struct CloudSyncMetadata: Codable, Sendable {
     public var syncedNotes: [String: String] = [:]
     public var syncedNoteBodies: [String: String] = [:]
@@ -40,6 +10,9 @@ public struct CloudSyncMetadata: Codable, Sendable {
     public var lastSyncedViewMode: String?
     public var lastSyncedTranslationVariant: String?
     public var lastSyncedAnchor: ReadingAnchor?
+    public var lastSyncedActivityAt: Date?
+    public var remoteActivityAt: Date?
+    public var readingTimeError: String?
     public var positionConflict: Bool = false
     public var remoteAnchor: ReadingAnchor?
     public var remotePositionRevision: Int?
@@ -277,6 +250,16 @@ public actor CloudBookSync {
         var canDrain = true
         do {
             let path = "/api/library/books/" + CloudJSON.component(identity.bookID)
+            // Time is its own durable stream. Note or bookmark conflicts cannot
+            // prevent already captured intervals from reaching the account.
+            do {
+                for submitted in try await library.readingTimeLedger(bookID: bookID).pending {
+                    let bytes = try await client.data(path: path + "/reading-sessions", method: "POST", body: submitted.wireData(), ownerID: identity.ownerID)
+                    try await library.acknowledgeReadingTime(ReadingTimeSnapshot(wireData: bytes), submitted: submitted, bookID: bookID, ownerID: identity.ownerID)
+                }
+                metadata.readingTimeError = nil
+            } catch let error as CloudRequestError where error.status == 401 || error.status == 403 { throw error }
+            catch { metadata.readingTimeError = error.localizedDescription; canDrain = false }
             let records = try CloudJSON.decode(await client.data(path: path + "/records", ownerID: identity.ownerID))
             guard records["bookId"].string == identity.bookID, records["contentVersion"].string == identity.contentVersion else { throw CloudRequestError(status: 409, message: "书籍内容已更新，旧副本与个人记录仍保留，请重新下载新版。") }
             var state = try await library.state(bookID)
@@ -349,23 +332,32 @@ public actor CloudBookSync {
             let position = records["position"]
             let remoteRevision = Int(position["revision"].number ?? 0)
             let remoteAnchor = Self.anchor(position, book: book)
+            let remoteActivity = ReadingTimeDate.parse(position["observedAt"].string ?? position["updatedAt"].string)
             let pendingPreferences = snapshot.preferences.viewMode.rawValue != (metadata.lastSyncedViewMode ?? "source") || snapshot.preferences.translationVariant.rawValue != (metadata.lastSyncedTranslationVariant ?? "literal")
-            let pendingPosition = snapshot.anchor != metadata.lastSyncedAnchor || pendingPreferences
+            // A newly restored first-page hint has no observed reading event.
+            let untouchedStart = snapshot.lastActivityAt == nil && metadata.lastSyncedAnchor == nil && book.readingStartAnchor != nil && snapshot.anchor == book.readingStartAnchor && !metadata.positionConflict
+            let changedAnchor = snapshot.anchor != metadata.lastSyncedAnchor && !untouchedStart
+            let pendingPosition = changedAnchor || pendingPreferences || snapshot.lastActivityAt != metadata.lastSyncedActivityAt
             if pendingPosition, let anchor = snapshot.anchor {
                 if remoteRevision != metadata.positionRevision {
-                    metadata.positionConflict = true; metadata.remoteAnchor = remoteAnchor; metadata.remotePositionRevision = remoteRevision
+                    metadata.positionConflict = true; metadata.remoteAnchor = remoteAnchor; metadata.remotePositionRevision = remoteRevision; metadata.remoteActivityAt = remoteActivity
                 } else {
                     let count = byID[anchor.passageID]?.1.unicodeScalars.count ?? 0
-                    let body = try CloudJSON.encode(["chapterId": .string(anchor.chapterID), "passageId": .string(anchor.passageID), "contentVersion": .string(identity.contentVersion), "offset": .number(0), "withinParagraph": .number(count > 0 ? min(1, Double(anchor.characterOffset) / Double(count)) : 0), "mode": .string(snapshot.preferences.viewMode.webMode), "variant": .string(snapshot.preferences.translationVariant.rawValue), "baseRevision": .number(Double(metadata.positionRevision))])
+                    var payload: [String: CloudJSON] = ["chapterId": .string(anchor.chapterID), "passageId": .string(anchor.passageID), "contentVersion": .string(identity.contentVersion), "offset": .number(0), "withinParagraph": .number(count > 0 ? min(1, Double(anchor.characterOffset) / Double(count)) : 0), "mode": .string(snapshot.preferences.viewMode.webMode), "variant": .string(snapshot.preferences.translationVariant.rawValue), "baseRevision": .number(Double(metadata.positionRevision))]
+                    if let observedAt = snapshot.lastActivityAt ?? metadata.lastSyncedActivityAt ?? remoteActivity { payload["observedAt"] = .string(ReadingTimeDate.string(observedAt)) }
+                    let body = try CloudJSON.encode(payload)
                     do {
                         let saved = try CloudJSON.decode(await client.data(path: path + "/progress", method: "POST", body: body, ownerID: identity.ownerID))
-                        metadata.positionRevision = Int(saved["revision"].number ?? Double(remoteRevision + 1)); metadata.lastSyncedAnchor = anchor; metadata.lastSyncedViewMode = snapshot.preferences.viewMode.rawValue; metadata.lastSyncedTranslationVariant = snapshot.preferences.translationVariant.rawValue; metadata.positionConflict = false
+                        guard saved["revision"].number == Double(remoteRevision + 1), payload.filter({ $0.key != "baseRevision" }).allSatisfy({ saved[$0.key] == $0.value }) else { throw CloudRequestError(status: 502, message: "书房尚未确认阅读位置，本机记录仍保留。") }
+                        metadata.positionRevision = remoteRevision + 1; metadata.lastSyncedAnchor = anchor; metadata.lastSyncedActivityAt = snapshot.lastActivityAt; metadata.lastSyncedViewMode = snapshot.preferences.viewMode.rawValue; metadata.lastSyncedTranslationVariant = snapshot.preferences.translationVariant.rawValue; metadata.positionConflict = false
                     } catch let error as CloudRequestError where error.status == 409 {
-                        metadata.positionConflict = true; metadata.remoteAnchor = remoteAnchor; metadata.remotePositionRevision = remoteRevision
+                        metadata.positionConflict = true; metadata.remoteAnchor = remoteAnchor; metadata.remotePositionRevision = remoteRevision; metadata.remoteActivityAt = remoteActivity
                     }
                 }
             } else if pull {
-                state.anchor = remoteAnchor; metadata.lastSyncedAnchor = remoteAnchor; metadata.positionRevision = remoteRevision; metadata.positionConflict = false
+                state.anchor = remoteAnchor; state.lastActivityAt = remoteActivity; metadata.lastSyncedAnchor = remoteAnchor; metadata.lastSyncedActivityAt = remoteActivity; metadata.positionRevision = remoteRevision; metadata.positionConflict = false
+            } else if remoteRevision != metadata.positionRevision {
+                metadata.positionConflict = true; metadata.remoteAnchor = remoteAnchor; metadata.remotePositionRevision = remoteRevision; metadata.remoteActivityAt = remoteActivity
             }
             // Pull is used only while no reader owns this book. Push never rewrites its live state.
             if pull && state != snapshot { try await library.saveState(state, bookID: bookID) }
@@ -373,6 +365,7 @@ public actor CloudBookSync {
             if metadata.positionConflict { issues.append("阅读位置在另一台设备有更新，请选择从哪里继续。") }
             if metadata.noteConflict { issues.append("部分笔记在两处有修改；本机版本已保留，请在网页核对云端版本。") }
             if let error = metadata.noteErrors.values.sorted().first { issues.append(error) }
+            if let error = metadata.readingTimeError { issues.append("阅读时段待同步：" + error) }
             metadata.lastError = issues.isEmpty ? nil : issues.joined(separator: " ")
             try await library.saveCloudMetadata(metadata, bookID: bookID)
             return canDrain
@@ -407,8 +400,8 @@ public actor CloudBookSync {
             try await library.saveCloudMetadata(metadata, bookID: bookID)
             return try await performSynchronization(bookID, pull: true)
         } else {
-            var state = try await library.state(bookID); state.anchor = metadata.remoteAnchor
-            metadata.lastSyncedAnchor = metadata.remoteAnchor; metadata.positionRevision = revision; metadata.positionConflict = false; metadata.lastError = nil
+            var state = try await library.state(bookID); state.anchor = metadata.remoteAnchor; state.lastActivityAt = metadata.remoteActivityAt
+            metadata.lastSyncedAnchor = metadata.remoteAnchor; metadata.lastSyncedActivityAt = metadata.remoteActivityAt; metadata.positionRevision = revision; metadata.positionConflict = false; metadata.lastError = nil
             try await library.saveState(state, bookID: bookID); try await library.saveCloudMetadata(metadata, bookID: bookID)
             return true
         }
@@ -431,7 +424,7 @@ public actor CloudBookSync {
     }
 }
 
-public actor CloudReaderStateStore: ReaderStateStore {
+public actor CloudReaderStateStore: ReaderStateStore, ReadingTimeStore {
     private let library: OfflineLibrary
     private let sync: CloudBookSync
     public init(library: OfflineLibrary, sync: CloudBookSync) { self.library = library; self.sync = sync }
@@ -439,4 +432,6 @@ public actor CloudReaderStateStore: ReaderStateStore {
         try await library.saveState(state, bookID: bookID)
         await sync.schedule(bookID)
     }
+    public func recoverReadingTime(bookID: String) async throws { try await library.recoverReadingTime(bookID: bookID); await sync.schedule(bookID) }
+    public func retainReadingTime(_ snapshot: ReadingTimeSnapshot, bookID: String) async throws { try await library.retainReadingTime(snapshot, bookID: bookID); await sync.schedule(bookID) }
 }

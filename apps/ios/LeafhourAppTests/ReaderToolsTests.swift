@@ -1,6 +1,8 @@
 import XCTest
 import Foundation
 import UIKit
+import SwiftUI
+import Vision
 import LeafhourCore
 @testable import Leafhour
 
@@ -12,7 +14,7 @@ final class ReaderToolsTests: XCTestCase {
         let cloud: CloudLibraryClient
         let passage: Passage
     }
-    private func fixture(source: String = "A 😀 café and a quiet page.", markdown: Bool = false) async throws -> Fixture {
+    private func fixture(source: String = "A 😀 café and a quiet page.", markdown: Bool = false, cloudBook: Bool = true) async throws -> Fixture {
         let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
         try FileManager.default.createDirectory(at: root, withIntermediateDirectories: true)
         addTeardownBlock { try? FileManager.default.removeItem(at: root) }
@@ -20,7 +22,7 @@ final class ReaderToolsTests: XCTestCase {
         try Data(source.utf8).write(to: file)
         let library = try OfflineLibrary(root: root.appendingPathComponent("library"), scope: .device)
         var book = try await library.importFile(file)
-        book.cloud = CloudBookIdentity(ownerID: owner, bookID: "cloud-book", contentVersion: "source-v1", sourceFormat: markdown ? "md" : "txt")
+        if cloudBook { book.cloud = CloudBookIdentity(ownerID: owner, bookID: "cloud-book", contentVersion: "source-v1", sourceFormat: markdown ? "md" : "txt") }
         let state = try await library.state(book.id), directory = try await library.bookDirectory(book.id)
         let original = try await library.originalURL(book.id)
         let session = ReaderSession(book: book, state: state, original: original, directory: directory, library: library)
@@ -41,6 +43,69 @@ final class ReaderToolsTests: XCTestCase {
     override func tearDown() {
         ReaderToolsURLProtocol.install(nil)
         super.tearDown()
+    }
+    func testOpeningToolsKeepsPauseReachableAndManualPauseSurvivesClosingTools() async throws {
+        let fixture = try await fixture(cloudBook: false)
+        let session = fixture.session
+        session.moved(ReadingAnchor(chapterID: session.chapter.id, passageID: fixture.passage.id))
+        session.setReadingVisible(true); session.startReadingTime()
+        XCTAssertNil(session.readingTimeError)
+        session.setReadingVisible(false)
+        XCTAssertEqual(session.readingTimePhase, .paused)
+        XCTAssertTrue(session.readingTimeWantsRunning)
+        let controls = ReaderTimeControls(session: session)
+        let host = UIHostingController(rootView: NavigationStack { Form { controls }.navigationTitle("阅读工具") })
+        let window = UIWindow(frame: CGRect(x: 0, y: 0, width: 390, height: 844))
+        window.rootViewController = host; window.makeKeyAndVisible(); host.view.frame = window.bounds
+        defer { window.isHidden = true; window.rootViewController = nil }
+        try await Task.sleep(for: .milliseconds(180)); host.view.layoutIfNeeded()
+        func renderedText(_ name: String) throws -> String {
+            let image = UIGraphicsImageRenderer(size: window.bounds.size).image { _ in
+                XCTAssertTrue(host.view.drawHierarchy(in: host.view.bounds, afterScreenUpdates: true))
+            }
+            let attachment = XCTAttachment(image: image); attachment.name = name; attachment.lifetime = .keepAlways; add(attachment)
+            let request = VNRecognizeTextRequest()
+            request.recognitionLevel = .accurate; request.recognitionLanguages = ["zh-Hans", "en-US"]; request.usesLanguageCorrection = false
+            try VNImageRequestHandler(cgImage: XCTUnwrap(image.cgImage)).perform([request])
+            return (request.results ?? []).compactMap { $0.topCandidates(1).first?.string }.joined(separator: "\n").replacingOccurrences(of: " ", with: "")
+        }
+        let automaticPause = try renderedText("Reading tools · automatic pause retains Pause action")
+        XCTAssertTrue(automaticPause.contains("暂停计时"), automaticPause)
+        XCTAssertFalse(automaticPause.contains("继续计时"), automaticPause)
+        // Exercise the same action used by the rendered production button.
+        controls.toggleRecording()
+        XCTAssertFalse(session.readingTimeWantsRunning)
+        session.setReadingVisible(true)
+        XCTAssertEqual(session.readingTimePhase, .paused, "Closing a tool must not undo a manual pause")
+        try await Task.sleep(for: .milliseconds(100)); host.view.layoutIfNeeded()
+        let manualPause = try renderedText("Reading tools · manual pause offers Continue")
+        XCTAssertTrue(manualPause.contains("继续计时"), manualPause)
+        session.finishReadingTime(); _ = await session.flushReadingTime()
+    }
+    func testReadingTimeToolsRenderAtSystemSizesWithoutStartingOrStampingActivity() async throws {
+        let fixture = try await fixture()
+        let originalActivity = fixture.session.state.lastActivityAt
+        for typeSize in [DynamicTypeSize.large, .accessibility5] {
+            let content = NavigationStack {
+                Form { ReaderTimeControls(session: fixture.session) }.navigationTitle("阅读时间")
+            }.environment(\.dynamicTypeSize, typeSize)
+            let host = UIHostingController(rootView: content)
+            let window = UIWindow(frame: CGRect(x: 0, y: 0, width: 390, height: 844))
+            window.rootViewController = host; window.makeKeyAndVisible()
+            host.view.frame = window.bounds; host.view.layoutIfNeeded()
+            try await Task.sleep(for: .milliseconds(150))
+            host.view.layoutIfNeeded()
+            let image = UIGraphicsImageRenderer(size: window.bounds.size).image { _ in
+                XCTAssertTrue(host.view.drawHierarchy(in: host.view.bounds, afterScreenUpdates: true))
+            }
+            let attachment = XCTAttachment(image: image)
+            attachment.name = "Reading time tools · " + String(describing: typeSize)
+            attachment.lifetime = .keepAlways; add(attachment)
+            XCTAssertEqual(fixture.session.readingTimePhase, .idle)
+            XCTAssertEqual(fixture.session.readingTimeDurationSeconds, 0)
+            XCTAssertEqual(fixture.session.state.lastActivityAt, originalActivity)
+            window.isHidden = true; window.rootViewController = nil
+        }
     }
     func testOpeningTranslationOnlyReadsAndKeepsVariantsSeparate() async throws {
         let fixture = try await fixture(), probe = ReaderToolsProbe()
