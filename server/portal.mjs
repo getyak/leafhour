@@ -211,7 +211,7 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
       if(!['GET','HEAD'].includes(req.method))throw fail('不支持这个请求',405);
       if(!compiledWeb)throw fail('Offline reading resources unavailable',503);
       const generatedFile=p==='/offline-reader'?'offline-reader.html':p.slice(1),bytes=await readFile(path.join(webDir,generatedFile)),type=generatedFile.endsWith('.json')?'application/json':generatedFile.endsWith('.html')?'text/html':generatedFile.endsWith('.css')?'text/css':'text/javascript';
-      res.setHeader('Cache-Control',p.startsWith('/reader-web/')?'public, max-age=31536000, immutable':'no-cache');if(p==='/reading-worker.js')res.setHeader('Service-Worker-Allowed','/');if(generatedFile==='offline-reader.html')res.setHeader('Content-Security-Policy',contentSecurityPolicy('/read'));
+      res.setHeader('Cache-Control',p.startsWith('/reader-web/')?'public, max-age=31536000, immutable':'no-cache');if(p==='/reading-worker.js')res.setHeader('Service-Worker-Allowed','/');if(generatedFile==='offline-reader.html')res.setHeader('Content-Security-Policy',contentSecurityPolicy('/read',env));
       res.statusCode=200;res.setHeader('Content-Type',type+'; charset=utf-8');res.setHeader('Content-Length',bytes.length);res.end(req.method==='HEAD'?undefined:bytes);return true;
     }
     for(const file of ['reading-workspace.mjs','reading-workspace-state.mjs','reading-workspace.css'])files['/'+file]=file;
@@ -286,7 +286,7 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
       const capabilities=auth.capabilities?await auth.capabilities():{email:auth.emailAvailable,providers:{google:false,apple:false},otp:{digits:6,expiresIn:600,retryAfter:60}};
       // Host only hides unusable OAuth buttons; it never authorizes a web origin.
       const providers=publicOrigin&&req.headers.host!==new URL(publicOrigin).host?{google:false,apple:false}:capabilities.providers;
-      send(200,{user:await visibleUser(user),emailAvailable:capabilities.email,passwordAvailable:capabilities.password===true,providers,...(typeof auth.beginNativeOAuth==='function'?{nativeOAuth:{version:1}}:{}),otp:capabilities.otp,localAvailable:localAllowed,translationAvailable:library.translationAvailable,directUpload:!!dataStore?.beginUpload,documentJobs:true,pdfOcrAvailable:!!provider,readingPreferences:user?await library.getReadingPreferences(user):null,billing:{enabled:billing.enabled,mode:billing.mode,prices:{translation:1000000,conversation:4000000,annotation:4000000},unitsPerPoint:1000000},preferenceMemory:user?await library.getPreferenceMemory(user):null});return true;
+      send(200,{user:await visibleUser(user),emailAvailable:capabilities.email,passwordAvailable:capabilities.password===true,providers,...(typeof auth.beginNativeOAuth==='function'?{nativeOAuth:{version:1}}:{}),otp:capabilities.otp,localAvailable:localAllowed,translationAvailable:library.translationAvailable,directUpload:!!dataStore?.beginUpload,documentJobs:true,documentChunks:true,pdfOcrAvailable:!!provider,readingPreferences:user?await library.getReadingPreferences(user):null,billing:{enabled:billing.enabled,mode:billing.mode,prices:{translation:1000000,conversation:4000000,annotation:4000000},unitsPerPoint:1000000},preferenceMemory:user?await library.getPreferenceMemory(user):null});return true;
     }
     if(p==='/api/auth/identities'&&req.method==='GET'){
       if(typeof auth.identitiesFor!=='function')throw fail('账号绑定服务正在更新，请稍后重试。',503);

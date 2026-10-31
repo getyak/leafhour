@@ -115,14 +115,14 @@ export async function createReaderServer({bookPath=path.join(root,'local/finite-
   };
   const server=http.createServer(async(req,res)=>{
     res.setHeader('X-Content-Type-Options','nosniff');res.setHeader('Referrer-Policy','same-origin');res.setHeader('Cache-Control','no-store');
-    res.setHeader('Content-Security-Policy',contentSecurityPolicy());
+    res.setHeader('Content-Security-Policy',contentSecurityPolicy('',env));
     const send=(status,data,type='application/json')=>{res.statusCode=status;res.setHeader('Content-Type',type+'; charset=utf-8');res.end(type==='application/json'?JSON.stringify(data):data);};
     try{
       const port=server.address()?.port,host=req.headers.host;
       const allowed=new Set(['127.0.0.1:'+port,'localhost:'+port,'[::1]:'+port]);if(publicOrigin)allowed.add(new URL(publicOrigin).host);
       if(!allowed.has(host))throw fail('当前地址未授权',403);
       const url=new URL(req.url,'http://'+host);
-      res.setHeader('Content-Security-Policy',contentSecurityPolicy(url.pathname));
+      res.setHeader('Content-Security-Policy',contentSecurityPolicy(url.pathname,env));
       if(url.pathname==='/read'||url.pathname==='/evals'||url.pathname.startsWith('/api/'))res.setHeader('X-Robots-Tag','noindex, nofollow, noarchive');
       if(url.pathname==='/gift-preview')res.setHeader('Content-Security-Policy',res.getHeader('Content-Security-Policy').replace("frame-ancestors 'none'","frame-ancestors 'self'"));
       if(await portal.handle({req,res,url,send}))return;

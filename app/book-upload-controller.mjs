@@ -28,7 +28,7 @@ export function createBookUploadController({api,getOwner,getSession,uploadPdf=se
   };
   try{
    let result;
-   if(/\.pdf$/i.test(record.filename))result=await uploadPdf({file:record.file,api:scopedApi,assertCurrent,onProgress:update=>{if(current(captured,version)&&record.run===run&&record.stage!=='cancelled'){record.percent=Number.isFinite(update.params?.percent)?update.params.percent:null;if(update.id==='pdf.upload.verifying')record.stage='organizing';emit();}}});
+   if(/\.pdf$/i.test(record.filename)||getSession()?.documentChunks)result=await uploadPdf({file:record.file,api:scopedApi,assertCurrent,onProgress:update=>{if(current(captured,version)&&record.run===run&&record.stage!=='cancelled'){record.percent=Number.isFinite(update.params?.percent)?update.params.percent:null;if(update.id==='pdf.upload.verifying')record.stage='organizing';emit();}}});
    else if(getSession()?.directUpload){
     const target=await scopedApi('/api/library/upload/start',{filename:record.filename,bytes:record.file.size});assertCurrent();
     const response=await request(target.url,{method:'PUT',headers:{'Content-Type':'application/octet-stream'},body:record.file});assertCurrent();if(!response.ok)throw Error('upload');record.stage='organizing';emit();result=await scopedApi('/api/library/upload/complete',{id:target.id,...(getSession()?.documentJobs?{defer:true}:{})});
