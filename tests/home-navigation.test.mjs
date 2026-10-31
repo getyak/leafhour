@@ -421,7 +421,7 @@ function productionRefresh({api,homeMenu,ownerScope,document:doc,observations={}
     let refreshGeneration=0,session=${JSON.stringify(session)},books=[],shelfRevision=0,pendingUpload=false,pendingChat=false,bootstrapped=false,identityResolved=false;
     const adoptUiOwner=id=>{(observations.uiOwners??=[]).push(id);return Promise.resolve({adopted:true});};
     const deviceBookStore=()=>({adopt:async()=>{}}),prepareOfflineResources=async()=>false;
-    const ensureReadingWorkspace=async()=>null;
+    const workspaceBootState=()=>{},ensureReadingWorkspace=async()=>null;
     const document=doc,isLibrary=false,dashboard=null,shell=null,setupInvite=null,shelfControls=null,authDialog={updateCapabilities(){},isSettingPasswordFor(){return false;}},pdfOnboarding={refresh(){}},homeText=x=>x,homeLocale=()=>'en',status=()=>{},renderBooks=()=>{},landingBookCard=()=>doc.createElement('article');
     function clearPrivateUI(options){(observations.resetOptions??=[]).push(options);observations.clearCalls=(observations.clearCalls||0)+1;homeMenu.clear(ownerScope.capture());}
     ${refreshLabelDeclarations}

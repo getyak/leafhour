@@ -1,10 +1,10 @@
 import {createPaperCompanion} from './paper-companion.mjs';
 import {t,getUiLocale,onUiLocaleChange,uiReady} from './ui-locale.mjs';
-import {arrivalExcerpt} from './arrival-excerpt.mjs';
+import {arrivalExcerpt,libraryArrivalQuote,libraryArrivalPresentation} from './arrival-excerpt.mjs';
 import {arrivalCatalog} from './arrival-catalog.mjs';
 // Short, locally bundled excerpts. Translations retain the catalog's draft status.
 const quotes=[
-  {bookId:'gutenberg-alice',title:'爱丽丝梦游仙境',author:'刘易斯·卡罗尔',chapter:'第一章',sourceUrl:'https://www.gutenberg.org/ebooks/11',original:'“and what is the use of a book,” thought Alice “without pictures or conversations?”',translation:'书里连图画和对话都没有，读它有什么意思？',variant:'interpretive',status:'draft',passageId:'01b38ea4c710a84b-p00008',contentVersion:'01b38ea4c710a84bc18d0bd41271a5a1a92b94e97b2812f4dece97d4a694725e'},
+  libraryArrivalQuote,
   {bookId:'gutenberg-walden',title:'瓦尔登湖',author:'亨利·戴维·梭罗',chapter:'经济篇',sourceUrl:'https://www.gutenberg.org/ebooks/205',original:'I should not talk so much about myself if there were anybody else whom I knew as well.',translation:'若我同样了解另一个人，就不会说这么多自己的事。',variant:'literal',status:'draft',passageId:'2d9a76a2e3e8195c-p00013',contentVersion:'2d9a76a2e3e8195c69430516ebd33c4d0757a53ad432ff6186b7b794e6fe99f9'},
   {bookId:'gutenberg-meditations',title:'沉思录',author:'马可·奥勒留',chapter:'卷一 · 第一节',sourceUrl:'https://www.gutenberg.org/ebooks/2680',original:'Of my grandfather Verus I have learned to be gentle and meek, and to refrain from all anger and passion.',translation:'祖父维鲁斯教我待人温和、保持谦逊，不任由怒气和激情支配自己。',variant:'interpretive',status:'draft',passageId:'6977474f82a39dd8-p00055',contentVersion:'6977474f82a39dd88a4af31a59504821658174d33c177732c54357e4d680b96c'}
 ];
@@ -55,7 +55,8 @@ export {createPaperCompanion} from './paper-companion.mjs';
 const mounted=new WeakMap();
 export function mountReadingArrival(root){
   if(mounted.has(root))return mounted.get(root);
-  const doc=root.ownerDocument,win=doc.defaultView,library=root.dataset.readingArrival==='library';
+  const doc=root.ownerDocument,win=doc.defaultView,library=['library','calendar','notes'].includes(root.dataset.readingArrival);
+  let contextTarget=library?root.dataset.readingArrival:'reader';
   const node=(tag,className,text)=>{const element=doc.createElement(tag);element.className=className;if(text!==undefined)element.textContent=text;return element;};
   const query=new URLSearchParams(win.location.search),selectedBookId=query.get('book');
   const initialQuote=library?{...arrivalQuote('gutenberg-alice'),context:'书房拾句',contextId:'arrival.context.library'}:arrivalQuote(selectedBookId);
@@ -71,22 +72,19 @@ export function mountReadingArrival(root){
   let provenanceNode=null;
   function paintChrome(){
     const locale=getUiLocale();root.setAttribute('lang',locale);
-    greeting.textContent=t('arrival.greeting.'+(library?'library':'reader'));
+    greeting.textContent=t(contextTarget==='calendar'?'ws.calendarTitle':contextTarget==='notes'?'ws.notesTitle':'arrival.greeting.'+(library?'library':'reader'));
     retry.textContent=t('arrival.retry');
     const view=model.view;
-    status.textContent=view.phase==='hidden'?'':view.slow?t('arrival.slow',{target:t('arrival.target.'+(library?'library':'reader'))}):t('arrival.status.'+(library?'library':'reader'));
+    status.textContent=view.phase==='hidden'?'':view.slow?t('arrival.slow',{target:t('arrival.target.'+contextTarget)}):t('arrival.status.'+contextTarget);
     const quote=model.quote,opening=quote?.title&&!quote.original;
     if(opening)context.textContent=t('arrival.context.opening',{title:quote.title});
     else context.textContent=t(quote?.contextId||'arrival.context.book');
     let translated=!!quote?.translation;
     if(library&&quote?.original){
-      translated=locale==='zh-Hans'||locale==='zh-Hant';
-      const traditional=locale==='zh-Hant';
-      text.textContent=translated?'“'+(traditional?'書裡連圖畫和對話都沒有，讀它有什麼意思？':quote.translation)+'”':quote.original;
-      text.lang=translated?locale:quote.sourceLanguage;
-      original.hidden=!translated;original.textContent=translated?quote.original:'';
-      source.lang=translated?locale:quote.sourceLanguage;
-      source.textContent=translated?(traditional?'劉易斯·卡羅爾 《愛麗絲夢遊仙境》 · 第一章':quote.author+' 《'+quote.title+'》 · '+quote.chapter):'Lewis Carroll · Alice’s Adventures in Wonderland · Chapter I';
+      const presentation=libraryArrivalPresentation(locale);translated=!!presentation.original;
+      text.textContent=presentation.text;text.lang=presentation.lang;
+      original.hidden=!translated;original.textContent=presentation.original;
+      source.lang=presentation.lang;source.textContent=presentation.source;
       if(provenanceNode)source.append(provenanceNode);
     }
     if(provenanceNode){provenanceNode.lang=locale;provenanceNode.textContent=translated?t('arrival.provenance.'+(quote.variant==='literal'?'literal':'interpretive')):t('arrival.provenance.original');}
@@ -112,6 +110,7 @@ export function mountReadingArrival(root){
   paintChrome();
   let current;
   const controller={
+    setContext(context){if(!library||!['library','calendar','notes'].includes(context))return;contextTarget=context;root.dataset.readingArrival=context;paintChrome();},
     start(){showQuote(initialQuote);current=lifecycle.start();return current;},
     setBook(book,ticket=current){if(library||ticket!==current||!lifecycle.pending)return false;const quote=arrivalBookQuote(book,{bookId:selectedBookId,passageId:query.get('passage')});if(!quote)return false;showQuote(quote);return true;},
     finish(ticket=current){return lifecycle.finish(ticket);},

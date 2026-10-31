@@ -9,3 +9,10 @@ export function createPaperCompanion(doc,{pose='loading'}={}){
   scene.append(floor,person);if(pose!=='bookmark')scene.append(node('i','arrival-leaf arrival-leaf-one'),node('i','arrival-leaf arrival-leaf-two'));
   return scene;
 }
+
+// Render the same decorative drawing on the server, before modules or auth.
+export function paperCompanionHtml(){
+ const doc={createElement:tag=>({tag,className:'',attrs:{},children:[],setAttribute(name,value){this.attrs[name]=value;},append(...nodes){this.children.push(...nodes);}})};
+ const html=node=>'<'+node.tag+' class="'+node.className+'"'+Object.entries(node.attrs).map(([name,value])=>' '+name+'="'+value+'"').join('')+'>'+node.children.map(html).join('')+'</'+node.tag+'>';
+ return html(createPaperCompanion(doc));
+}
