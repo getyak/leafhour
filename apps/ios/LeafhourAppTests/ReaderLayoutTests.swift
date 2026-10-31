@@ -415,7 +415,9 @@ final class ReaderLayoutTests: XCTestCase {
         let firstFont = try XCTUnwrap(text.attributedText.attribute(.font, at: 0, effectiveRange: nil) as? UIFont, file: file, line: line)
         let expectedFont = UIFontMetrics(forTextStyle: .body).scaledFont(for: .systemFont(ofSize: host.rootView.session.state.preferences.fontSize), compatibleWith: text.traitCollection)
         XCTAssertEqual(firstFont.pointSize, expectedFont.pointSize, accuracy: 0.5, "Keep the real system text size instead of shrinking to pass: " + stage, file: file, line: line)
-        if let sourceLine = fullSourceLines.first {
+        // Tools are transient overlays in compact horizontal reading. Sample
+        // the middle source line rather than ink behind an awake toolbar.
+        if let sourceLine = fullSourceLines.isEmpty ? nil : fullSourceLines[fullSourceLines.count / 2] {
             let format = UIGraphicsImageRendererFormat(); format.scale = 1; format.opaque = true; format.preferredRange = .standard
             let image = UIGraphicsImageRenderer(size: host.view.bounds.size, format: format).image { _ in
                 XCTAssertTrue(host.view.drawHierarchy(in: CGRect(origin: .zero, size: host.view.bounds.size), afterScreenUpdates: true), stage, file: file, line: line)
@@ -479,6 +481,8 @@ final class ReaderLayoutTests: XCTestCase {
             await settleBudgetHost(host)
             let text = try assertRealPagedBody(host, window: window, stage: "resized \(size), \(category.rawValue)")
             XCTAssertEqual(session.currentAnchor?.passageID, target.passageID, "A responsive chrome budget cannot move to another source paragraph")
+            XCTAssertEqual(text.textContainerInset.top, 16, accuracy: 0.5, "Paged reading does not reserve the sleeping header")
+            XCTAssertEqual(text.textContainerInset.bottom, 44, accuracy: 0.5, "Only the quiet control's touch target occupies the footer")
             let offset = text.contentOffset, insets = text.textContainerInset, anchor = session.currentAnchor
             let coordinator = try XCTUnwrap(text.delegate as? TextReadingView.Coordinator)
             // Exercise the same production callback used by a real page tap;

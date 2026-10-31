@@ -119,3 +119,78 @@ struct RecordsDocument: FileDocument {
     init(configuration: ReadConfiguration) throws { data = configuration.file.regularFileContents ?? Data() }
     func fileWrapper(configuration: WriteConfiguration) throws -> FileWrapper { FileWrapper(regularFileWithContents: data) }
 }
+
+struct ShelfShareSelection: Identifiable {
+    let id = UUID()
+    let items: [LibraryShelfItem]
+}
+
+struct ShelfSharePanel: View {
+    let selection: ShelfShareSelection
+    @Bindable var model: LibraryModel
+    @Environment(\.dismiss) private var dismiss
+    @State private var files: [URL] = []
+    @State private var folder: URL?
+    @State private var preparing = true
+    @State private var error: String?
+    var body: some View {
+        NavigationStack {
+            List {
+                Section("将分享的书籍") {
+                    ForEach(selection.items) { item in
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text(item.title).font(.subheadline.weight(.medium))
+                            if !item.author.isEmpty { Text(item.author).font(.caption).foregroundStyle(.secondary) }
+                        }
+                    }
+                }
+                Section {
+                    ShareLink(item: selection.items.map(\.shareText).joined(separator: "\n\n")) {
+                        Label("分享书籍信息", systemImage: "square.and.arrow.up")
+                    }
+                    if preparing { ProgressView("正在准备书籍文件") }
+                    else if !files.isEmpty {
+                        ShareLink(items: files) { Label("分享书籍文件", systemImage: "doc") }
+                    }
+                    if let error { Text(error).font(.footnote).foregroundStyle(.secondary) }
+                } footer: {
+                    Text("书籍信息只含书名与作者。本机原件按原格式分享，云端阅读副本只导出原文 TXT；不包含私人笔记、草稿与阅读记录。")
+                }
+            }
+            .navigationTitle("分享本书").navigationBarTitleDisplayMode(.inline)
+            .toolbar { ToolbarItem(placement: .confirmationAction) { Button("完成") { dismiss() } } }
+            .task { await prepareFiles() }
+            .onDisappear { if let folder { try? FileManager.default.removeItem(at: folder) } }
+        }
+    }
+    private func prepareFiles() async {
+        let owner = model.account?.id
+        defer { preparing = false }
+        guard let library = model.library, selection.items.allSatisfy(\.isDownloaded) else {
+            error = "下载到此设备后，可以分享书籍文件。"; return
+        }
+        do {
+            let directory = FileManager.default.temporaryDirectory.appendingPathComponent("Leafhour-share-" + selection.id.uuidString, isDirectory: true)
+            try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+            folder = directory
+            var result: [URL] = []
+            for (index, item) in selection.items.enumerated() {
+                try Task.checkCancellation()
+                guard let book = item.local else { continue }
+                if book.cloud == nil { result.append(try await library.originalURL(book.id)) }
+                else {
+                    guard book.chapters.flatMap(\.passages).contains(where: { $0.resourcePath == nil && !$0.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }) else {
+                        throw LibraryError.invalid("此副本没有可分享的原文，请从网页导出原件。")
+                    }
+                    let file = directory.appendingPathComponent("Leafhour-book-\(index + 1).txt")
+                    try Data(item.sourceShareText.utf8).write(to: file, options: .atomic)
+                    result.append(file)
+                }
+            }
+            try Task.checkCancellation()
+            guard owner == model.account?.id else { return }
+            files = result
+        } catch is CancellationError { }
+        catch { self.error = error.localizedDescription }
+    }
+}

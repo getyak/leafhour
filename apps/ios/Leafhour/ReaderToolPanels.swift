@@ -37,6 +37,14 @@ struct ReaderMorePanel: View {
             Section("读这本书") {
                 NavigationLink { BookSearchPanel(session: session, onJump: onJump).modifier(ReaderToolContinuation()) } label: { Label("搜索原文", systemImage: "magnifyingglass").frame(minHeight: 44) }
                 NavigationLink { ReaderTranslationPanel(session: session, tools: tools, cloud: cloud).modifier(ReaderToolContinuation()) } label: { Label("翻译", systemImage: "character.book.closed").frame(minHeight: 44) }
+                if let reading, session.state.preferences.viewMode != .source {
+                    NavigationLink {
+                        Form { ReaderTranslationPreparation(session: session, reading: reading) }
+                            .navigationTitle("准备译文").modifier(ReaderToolContinuation())
+                    } label: {
+                        Label(reading.running ? "正在翻译 · \(reading.completedCount)/\(reading.totalCount)" : "准备或恢复本章译文", systemImage: "text.book.closed").frame(minHeight: 44)
+                    }
+                }
                 NavigationLink { ReaderRecordsPanel(session: session, onJump: onJump).modifier(ReaderToolContinuation()) } label: { Label("我的记录", systemImage: "square.and.pencil").frame(minHeight: 44) }
                 NavigationLink { ReaderPreferencesPanel(session: session, reading: reading).modifier(ReaderToolContinuation()) } label: { Label("文字与纸面", systemImage: "textformat.size").frame(minHeight: 44) }
                 NavigationLink { ReaderIntroductionPanel(session: session, tools: tools, cloud: cloud).modifier(ReaderToolContinuation()) } label: { Label("导读与摘要", systemImage: "text.book.closed").frame(minHeight: 44) }

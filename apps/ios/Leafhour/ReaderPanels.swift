@@ -280,10 +280,17 @@ struct ReaderPreferencesPanel: View {
     private func binding<T>(_ path: WritableKeyPath<ReaderPreferences, T>) -> Binding<T> {
         Binding(get: { session.state.preferences[keyPath: path] }, set: { value in var preferences = session.state.preferences; preferences[keyPath: path] = value; session.changePreferences(preferences) })
     }
+    private var readingMode: Binding<ReaderViewMode> {
+        Binding(get: { session.state.preferences.viewMode }, set: { mode in
+            reading?.offerFirstPassage = mode != .source
+            var preferences = session.state.preferences; preferences.viewMode = mode
+            session.changePreferences(preferences)
+        })
+    }
     var body: some View {
         Form {
             Section {
-                Picker("阅读内容", selection: binding(\.viewMode)) {
+                Picker("阅读内容", selection: readingMode) {
                     Text("原著").tag(ReaderViewMode.source)
                     Text("译文").tag(ReaderViewMode.translation)
                     Text("对照").tag(ReaderViewMode.parallel)
@@ -295,7 +302,10 @@ struct ReaderPreferencesPanel: View {
                     }.pickerStyle(.segmented).accessibilityIdentifier("reader-reading-variant")
                 }
             } header: { Text("阅读内容") } footer: {
-                if session.state.preferences.viewMode != .source { Text("未准备译文的段落保留原文，切换模式不生成内容。") }
+                if session.state.preferences.viewMode != .source { Text("已有译文会直接显示；缺少译文时，先翻译一段即可开始读。") }
+            }
+            if let reading, session.state.preferences.viewMode != .source {
+                ReaderTranslationPreparation(session: session, reading: reading)
             }
             if let preview, session.book.kind != .pdf || session.state.preferences.viewMode != .source {
                 Section {
@@ -339,9 +349,6 @@ struct ReaderPreferencesPanel: View {
                 } footer: { Text("随系统大字设置缩放，调整自动保存。") }
             } else {
                 Section { Label("保留 PDF 原页，可双指缩放。", systemImage: "doc.richtext").font(.subheadline) }
-            }
-            if let reading, session.state.preferences.viewMode != .source {
-                ReaderTranslationPreparation(session: session, reading: reading)
             }
             Section("纸面") { ReaderThemeChoices(session: session).padding(.vertical, 8) }
                 .listRowBackground(Color.clear).listRowInsets(EdgeInsets())

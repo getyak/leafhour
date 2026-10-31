@@ -202,7 +202,9 @@ final class VideoExperienceUITests: XCTestCase {
     private func chooseNavigation(_ title: String) {
         openTool("阅读设置"); expandPanel()
         let choice = app.segmentedControls.buttons[title]
-        scrollTo(choice, in: foregroundForm(), direction: .down)
+        // The navigation picker follows typography and paper settings. Scroll
+        // toward that lower content; dragging down at the top dismisses a sheet.
+        scrollTo(choice, in: foregroundForm(), direction: .up)
         choice.tap(); XCTAssertTrue(choice.isSelected)
         closePanel()
         require(reader.exists ? reader : app.otherElements["leafhour-pdf-reader"])
@@ -2620,6 +2622,62 @@ final class VideoExperienceUITests: XCTestCase {
         wakeTop(); app.buttons["阅读设置"].tap(); expandPanel()
         let restored = foregroundForm(); scrollTo(font,in:restored)
         XCTAssertEqual(font.value as? String,"36 磅")
+    }
+
+    func test94ThreeColumnShelfAndLongPressSelectionShareAndPin() {
+        launch(); setLayout("封面网格")
+        let grid = app.scrollViews["library-shelf-grid"]; require(grid)
+        let cards = grid.buttons.matching(NSPredicate(format: "label BEGINSWITH %@ OR label BEGINSWITH %@", "阅读，", "下载并阅读，")).allElementsBoundByIndex.filter { $0.isHittable && !$0.frame.isEmpty }
+        let top = cards.map { $0.frame.minY }.min() ?? -1
+        let row = cards.filter { abs($0.frame.minY - top) < 2 }.sorted { $0.frame.minX < $1.frame.minX }
+        XCTAssertEqual(row.count, 3, "A real native shelf row contains three book buttons")
+        if row.count == 3 {
+            XCTAssertEqual(row[0].frame.width, row[1].frame.width, accuracy: 1)
+            XCTAssertGreaterThanOrEqual(row[0].frame.width, 44)
+            XCTAssertLessThan(row[0].frame.maxX, row[1].frame.minX)
+        }
+        capture("GET346-three-column-shelf")
+        searchShelf(textTitle)
+        let book = app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", "阅读，" + textTitle)).firstMatch
+        require(book); book.press(forDuration: 1)
+        app.buttons["选择多本"].tap()
+        require(app.otherElements["library-selection-toolbar"])
+        require(app.staticTexts["已选 1 本"])
+        app.buttons["置顶"].tap()
+        app.buttons["分享"].tap()
+        require(app.navigationBars["分享本书"])
+        require(app.buttons["分享书籍信息"])
+        require(app.buttons["分享书籍文件"])
+        capture("GET346-share-preview")
+        app.navigationBars["分享本书"].buttons["完成"].tap()
+        app.buttons["完成"].tap()
+        coldRelaunch(); require(app.buttons["书房显示与排序"])
+        searchShelf(textTitle)
+        let restored = app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", "阅读，" + textTitle)).firstMatch
+        require(restored); restored.press(forDuration: 1)
+        require(app.buttons["取消置顶"])
+        app.buttons["取消置顶"].tap()
+    }
+
+    func test95ChoosingMissingTranslationOffersAndSavesOneParagraph() {
+        launch(); searchShelf(cloudTitle)
+        let download = app.buttons["下载并阅读，" + cloudTitle]; require(download); download.tap()
+        require(reader, timeout: 25)
+        wakeTop(); app.buttons["阅读设置"].tap(); expandPanel()
+        let modes = app.segmentedControls["reader-view-mode"]; require(modes)
+        modes.buttons["译文"].tap()
+        let offer = app.alerts["准备或恢复译文"]; require(offer)
+        XCTAssertTrue(offer.staticTexts.matching(NSPredicate(format: "label CONTAINS %@", "当前一段")).firstMatch.exists)
+        offer.buttons["开始翻译"].tap()
+        closePanel(); require(reader)
+        let translated = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in
+            (self.reader.value as? String)?.contains("GET317 合成直译样本") == true
+        }, object: nil)
+        XCTAssertEqual(XCTWaiter.wait(for: [translated], timeout: 15), .completed)
+        capture("GET346-first-paragraph-translation")
+        coldRelaunch(); require(reader, timeout: 20)
+        XCTAssertTrue((reader.value as? String)?.contains("GET317 合成直译样本") == true)
+        XCTAssertFalse(app.alerts["准备或恢复译文"].exists, "Reopening an existing translated view must not offer another paid request")
     }
 
 }

@@ -54,4 +54,19 @@ final class ReadingLayerTests: XCTestCase {
         XCTAssertEqual(try ReadingTranslationPlan.make(book: book, chapterIndex: 0, translations: complete).passageIDs, ["p2"])
         XCTAssertThrowsError(try ReadingTranslationPlan.make(book: book, chapterIndex: 0, translations: ["p1": ReadingTranslation(original: "one", literal: "一")]))
     }
+    func testExplicitScopesPrioritizeCurrentPassageAndNeverIncludeAnotherChapter() throws {
+        let data = Data(#"{"id":"local","title":"Book","author":"","kind":"txt","sourceVersion":"v1","originalFilename":"a.txt","importedAt":0,"chapters":[{"id":"c1","title":"1","sourcePath":"1","passages":[{"id":"p1","text":"one","heading":false},{"id":"p2","text":"two","heading":false},{"id":"p3","text":"three","heading":false}]},{"id":"c2","title":"2","sourcePath":"2","passages":[{"id":"p4","text":"four","heading":false}]}],"cloud":{"ownerID":"owner","bookID":"remote","contentVersion":"v1","sourceFormat":"txt"}}"#.utf8)
+        let book = try JSONDecoder().decode(LocalBook.self, from: data)
+        let single = try ReadingTranslationPlan.make(book: book, chapterIndex: 0, translations: [:], scope: .passage, passageID: "p2")
+        XCTAssertEqual(single.passageIDs, ["p2"])
+        XCTAssertEqual(single.chapterIDs, ["c1"])
+        XCTAssertEqual(single.maximumPoints, 1)
+        let chapter = try ReadingTranslationPlan.make(book: book, chapterIndex: 0, translations: [:], scope: .chapter, passageID: "p2")
+        XCTAssertEqual(chapter.passageIDs, ["p2", "p3", "p1"])
+        XCTAssertEqual(chapter.chapterIDs, ["c1"])
+        let ready = ["p2": ReadingTranslation(original: "two", literal: "二", interpretive: "贰")]
+        XCTAssertTrue(try ReadingTranslationPlan.make(book: book, chapterIndex: 0, translations: ready, scope: .passage, passageID: "p2").passageIDs.isEmpty)
+        XCTAssertThrowsError(try ReadingTranslationPlan.make(book: book, chapterIndex: 0, translations: [:], scope: .passage, passageID: "p4"))
+    }
+
 }

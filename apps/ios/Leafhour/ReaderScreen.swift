@@ -75,9 +75,13 @@ struct ReaderScreen: View {
     private var hasPDFText: Bool { session.chapter.passages.contains { !$0.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty } }
     private var needsPDFSourceFallback: Bool { session.book.kind == .pdf && session.state.preferences.viewMode != .source && !hasPDFText }
     private var paper: Color { session.state.preferences.theme == "paper" ? .readingPaper : Color(uiColor: .systemBackground) }
-    // Keep page margins stable when chrome sleeps. Only a real control-size change
-    // updates them, so waking the tools never reflows the chapter or moves its anchor.
+    // Horizontal pages use a compact, stable book viewport. Tools temporarily
+    // overlay that viewport; waking them never changes its source boundaries.
+    // Continuous reading keeps the measured controls budget for its scroll ends.
     private func readingInsets(for layout: ReaderChromeLayout) -> UIEdgeInsets {
+        if session.state.preferences.navigationMode == .paged {
+            return UIEdgeInsets(top: 16, left: 22, bottom: 44, right: 22)
+        }
         let metrics = chromeMetrics?.layout == layout ? chromeMetrics : nil
         let top = metrics?.top ?? 44
         let bottom = metrics?.bottom ?? (layout.compact ? 44 : 82)
@@ -206,8 +210,14 @@ struct ReaderScreen: View {
         .task(id: readingRefreshKey) {
             guard scenePhase == .active else { return }
             await reading.refresh(session, cloud: cloud, library: library)
+            guard !Task.isCancelled, reading.offerFirstPassage, session.state.preferences.viewMode != .source else { return }
+            reading.offerFirstPassage = false
+            if session.book.cloud != nil { await reading.prepare(session, cloud: cloud, library: library, scope: .passage) }
         }
-        .onChange(of: session.state.preferences.viewMode) { _, mode in if mode == .source { reading.stop() }; selectionDismissalID = UUID() }
+        .onChange(of: session.state.preferences.viewMode) { _, mode in
+            if mode == .source { reading.stop(); reading.offerFirstPassage = false }
+            selectionDismissalID = UUID()
+        }
         .onChange(of: tools.completedTranslation) { _, row in
             if let row { session.updateTranslations(ReaderReadingContent.translations([row])) }
         }
@@ -215,7 +225,7 @@ struct ReaderScreen: View {
         .task(id: clockID) { await settleChrome() }
         .onChange(of: scenePhase) { _, phase in reading.setForeground(phase == .active); if phase != .active { speech.pause(); session.save(); chrome = .asleep } }
         .onAppear { configureReading() }
-        .onDisappear { speech.stop(); reading.stop(); reading.requestPreparation = nil; reading.confirmPreparation = nil }
+        .onDisappear { speech.stop(); reading.stop(); reading.requestPreparation = nil; reading.requestPassagePreparation = nil; reading.confirmPreparation = nil }
     }
     private func settleChrome() async {
         guard chrome != .asleep else { return }
@@ -230,7 +240,11 @@ struct ReaderScreen: View {
         let reading = reading, session = session, cloud = cloud, library = library
         reading.requestPreparation = { [weak reading] in
             guard let reading else { return }
-            Task { await reading.prepare(session, cloud: cloud, library: library) }
+            Task { await reading.prepare(session, cloud: cloud, library: library, scope: .chapter) }
+        }
+        reading.requestPassagePreparation = { [weak reading] in
+            guard let reading else { return }
+            Task { await reading.prepare(session, cloud: cloud, library: library, scope: .passage) }
         }
         reading.confirmPreparation = { [weak reading] run in reading?.confirm(run, session: session, cloud: cloud, library: library) }
     }

@@ -30,14 +30,32 @@ struct LibraryShelfItem: Identifiable {
     var title: String { local?.title ?? cloud?.title ?? "" }
     var author: String { local?.author ?? cloud?.author ?? "" }
     var isDownloaded: Bool { local != nil }
+    var shareText: String { [title, author].filter { !$0.isEmpty }.joined(separator: "\n") }
+    // Cloud reading copies contain internal ownership metadata. A source-only
+    // text export deliberately does not serialize their manifest or ReaderState.
+    var sourceShareText: String {
+        ([shareText] + (local?.chapters.map { chapter in
+            ([chapter.title] + chapter.passages.filter { $0.resourcePath == nil }.map(\.text)).joined(separator: "\n\n")
+        } ?? [])).joined(separator: "\n\n")
+    }
     var hasCloudUpdate: Bool {
         guard let local, let cloud else { return false }
         return local.cloud?.contentVersion != cloud.contentVersion
     }
 }
 
+struct LibraryShelfPins: Codable {
+    private var owners: [String: Set<String>] = [:]
+    func ids(owner: String) -> Set<String> { owners[owner] ?? [] }
+    mutating func set(_ ids: Set<String>, pinned: Bool, owner: String) {
+        var saved = self.ids(owner: owner)
+        if pinned { saved.formUnion(ids) } else { saved.subtract(ids) }
+        owners[owner] = saved
+    }
+}
+
 enum LibraryPresentation {
-    static func items(local: [LocalBook], cloud: [CloudShelfBook], query: String = "", filter: LibraryShelfFilter = .all, sort: LibraryShelfSort = .added) -> [LibraryShelfItem] {
+    static func items(local: [LocalBook], cloud: [CloudShelfBook], query: String = "", filter: LibraryShelfFilter = .all, sort: LibraryShelfSort = .added, pinnedIDs: Set<String> = []) -> [LibraryShelfItem] {
         var remoteByID: [String: CloudShelfBook] = [:]
         for book in cloud where remoteByID[book.id] == nil { remoteByID[book.id] = book }
         var seen: Set<String> = []
@@ -91,7 +109,7 @@ enum LibraryPresentation {
                 return order == .orderedSame ? titlePrecedes(lhs, rhs) : order == .orderedAscending
             }
         }
-        return result
+        return result.filter { pinnedIDs.contains($0.id) } + result.filter { !pinnedIDs.contains($0.id) }
     }
 
     private static func normalized(_ value: String) -> String {
