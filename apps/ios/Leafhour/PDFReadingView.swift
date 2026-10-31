@@ -10,6 +10,10 @@ struct PDFReadingView: UIViewRepresentable {
     let onWake: (ReaderChrome) -> Void
     let onReadingScroll: () -> Void
     var onPageChange: ((ReaderPagePosition) -> Void)? = nil
+    var speechHighlight: ReaderSpeechHighlight? = nil
+    var followsSpeech = false
+    var onReadingPosition: ((ReaderSpeechLocation) -> Void)? = nil
+    var onTouchActivity: ((Bool) -> Void)? = nil
     func makeCoordinator() -> Coordinator { Coordinator(parent: self) }
     func makeUIView(context: Context) -> PDFView {
         let view = PDFView(); view.autoScales = true; view.backgroundColor = .clear
@@ -21,6 +25,15 @@ struct PDFReadingView: UIViewRepresentable {
         isPaged: { [weak coordinator = context.coordinator] in coordinator?.parent.session.state.preferences.navigationMode == .paged },
         onTurn: { [weak coordinator = context.coordinator] direction in _ = coordinator?.turnPage(direction) })
         context.coordinator.observe(view)
+        let coordinator = context.coordinator
+        let observer = ReaderParagraphSelectionObserver(view: view, eligible: { [weak view, weak coordinator] point in
+            guard let view, coordinator?.restoring == false, view.currentSelection == nil,
+                  !ReaderEdgeTapHandler.isLink(at: point, in: view), let page = view.page(for: point, nearest: false) else { return false }
+            return page.characterIndex(at: view.convert(point, to: page)) != NSNotFound
+        }, context: { [weak coordinator] in coordinator?.paragraphContext() }, selectionActive: { [weak view] in
+            view?.currentSelection?.string?.isEmpty == false
+        }, expand: { [weak coordinator] in coordinator?.selectParagraph() ?? false }, activity: { [weak coordinator] in coordinator?.parent.onTouchActivity?($0) })
+        coordinator.paragraphSelection = observer; observer.install()
         return view
     }
     func updateUIView(_ view: PDFView, context: Context) {
@@ -54,6 +67,9 @@ struct PDFReadingView: UIViewRepresentable {
         private var scheduledDismissalID: UUID?
         private var scheduledSelectionRevision = 0
         private var lastReportedPage: ReaderPagePosition?
+        private var speechDestination: (page: PDFPage, navigation: UUID)?
+        private var speechSentence: (page: PDFPage, range: NSRange)?
+        var paragraphSelection: ReaderParagraphSelectionObserver?
         init(parent: PDFReadingView) { self.parent = parent }
         deinit { observers.forEach { NotificationCenter.default.removeObserver($0) }; scrolling?.invalidate(); delayed?.cancel(); pendingUpdate?.cancel() }
         func scheduleUpdate(_ view: PDFView) {
@@ -61,6 +77,7 @@ struct PDFReadingView: UIViewRepresentable {
             let mode = session.state.preferences.navigationMode, source = session.original
             let navigation = session.navigationID, dismissal = parent.selectionDismissalID
             if self.view !== view || renderedOwner != owner || navigationID != navigation || renderedMode != mode || loadedSource != source {
+                speechDestination = nil
                 // Old native notifications must not write into the new session
                 // while its hierarchy update waits for the next main turn.
                 restoring = true; restorationGeneration += 1; cancelPendingScroll(); userScrolled = false
@@ -120,7 +137,7 @@ struct PDFReadingView: UIViewRepresentable {
             }
             navigationID = session.navigationID
             observeScroll(in: view)
-            guard needsRestore else { reportPagePosition(); return }
+            guard needsRestore else { updateSpeech(); reportReadingPosition(); reportPagePosition(); return }
             let generation = restorationGeneration, navigation = session.navigationID, owner = ObjectIdentifier(session)
             DispatchQueue.main.async { [weak self, weak view] in
                 guard let self, let view, self.view === view, self.restorationGeneration == generation,
@@ -152,6 +169,7 @@ struct PDFReadingView: UIViewRepresentable {
                         self.revealDestinationBelowChrome(page: page, sourceY: sourceY)
                     }
                     self.restoring = false
+                    self.updateSpeech(); self.reportReadingPosition()
                     self.selectionChanged()
                     // A layout change reveals the saved source; only actual
                     // reading gestures should advance its canonical bookmark.
@@ -167,6 +185,7 @@ struct PDFReadingView: UIViewRepresentable {
             observers.append(NotificationCenter.default.addObserver(forName: UIApplication.willResignActiveNotification, object: nil, queue: .main) { [weak self] _ in MainActor.assumeIsolated { self?.capture() } })
         }
         func observeScroll(in view: UIView) {
+            paragraphSelection?.install()
             // PDFKit's native horizontal page controller owns its own scroll
             // views. Do not attach a second pan or vertical content insets.
             guard parent.session.state.preferences.navigationMode == .scroll else { return }
@@ -225,9 +244,55 @@ struct PDFReadingView: UIViewRepresentable {
             let y = mode == .paged ? min(bounds.maxY, max(bounds.minY, visiblePoint.y)) : visiblePoint.y
             return ReadingAnchor(chapterID: chapter.id, passageID: passage.id, pageY: Double(y))
         }
+        func reportReadingPosition() {
+            guard !restoring, let view, let document = view.document else { return }
+            let paged = parent.session.state.preferences.navigationMode == .paged
+            let point = CGPoint(x: view.bounds.midX, y: min(view.bounds.maxY - 1, view.bounds.minY + (paged ? 1 : parent.pageInsets.top + 1)))
+            guard let page = paged ? view.currentPage : view.page(for: point, nearest: true) else { return }
+            let index = document.index(for: page)
+            guard parent.session.book.chapters.indices.contains(index), let content = page.string,
+                  let passage = parent.session.book.chapters[index].passages.first, passage.text == content else { return }
+            let insets = paged ? UIEdgeInsets.zero : parent.pageInsets
+            let body = view.bounds.inset(by: insets)
+            let visible = view.convert(body, to: page).intersection(page.bounds(for: view.displayBox))
+            guard !visible.isNull, !visible.isEmpty, let selection = page.selection(for: visible),
+                  selection.numberOfTextRanges(on: page) > 0 else { return }
+            let range = selection.range(at: 0, on: page)
+            guard range.location != NSNotFound, range.location <= content.utf16.count else { return }
+            parent.onReadingPosition?(ReaderSpeechLocation(chapterID: parent.session.book.chapters[index].id, passageID: passage.id, layer: "original", snapshot: content, utf16Offset: range.location))
+        }
+        func updateSpeech() {
+            guard !restoring, let view, let document = view.document else { return }
+            guard view.currentSelection == nil, let highlight = parent.speechHighlight, highlight.location.layer == "original",
+                  let index = parent.session.book.chapters.firstIndex(where: { $0.id == highlight.location.chapterID }),
+                  let page = document.page(at: index), page.string == highlight.location.snapshot,
+                  highlight.sentenceRange.location >= 0, highlight.sentenceRange.length > 0,
+                  NSMaxRange(highlight.sentenceRange) <= highlight.location.snapshot.utf16.count,
+                  let sentence = page.selection(for: highlight.sentenceRange) else {
+                view.highlightedSelections = nil; speechSentence = nil; return
+            }
+            if speechSentence?.page !== page || speechSentence?.range != highlight.sentenceRange {
+                sentence.color = UIColor(red: 0.38, green: 0.66, blue: 0.43, alpha: 0.25)
+                view.highlightedSelections = [sentence]; speechSentence = (page, highlight.sentenceRange)
+            }
+            func touching(_ view: UIView) -> Bool {
+                if let scroll = view as? UIScrollView, scroll.isTracking || scroll.isDragging || scroll.isDecelerating { return true }
+                return view.subviews.contains(where: touching)
+            }
+            guard parent.followsSpeech, !touching(view),
+                  highlight.wordRange.length > 0, highlight.wordRange.location >= 0,
+                  NSMaxRange(highlight.wordRange) <= highlight.location.snapshot.utf16.count,
+                  let word = page.selection(for: highlight.wordRange) else { return }
+            let insets = parent.session.state.preferences.navigationMode == .paged ? UIEdgeInsets.zero : parent.pageInsets
+            let body = view.bounds.inset(by: insets), rect = view.convert(word.bounds(for: page), from: page)
+            if view.currentPage === page, body.insetBy(dx: -1, dy: -1).contains(rect) { return }
+            speechDestination = view.currentPage === page ? nil : (page, parent.session.navigationID)
+            view.go(to: word)
+        }
         @discardableResult func turnPage(_ direction: ReaderPageDirection) -> Bool {
             guard !restoring, parent.session.state.preferences.navigationMode == .paged,
                   let view, view.currentSelection == nil else { return false }
+            speechDestination = nil
             switch direction {
             case .next:
                 guard view.canGoToNextPage else { return false }
@@ -243,10 +308,16 @@ struct PDFReadingView: UIViewRepresentable {
                   let index = parent.session.book.chapters.firstIndex(where: { $0.id == anchor.chapterID }) else { return }
             parent.session.chapterIndex = index
             parent.session.moved(anchor)
+            reportReadingPosition()
             reportPagePosition()
         }
         private func pageChanged() {
             guard !restoring else { return }
+            if let destination = speechDestination, destination.navigation == parent.session.navigationID,
+               view?.currentPage === destination.page, paragraphSelection?.isTouchActive != true {
+                speechDestination = nil; reportReadingPosition(); reportPagePosition(); return
+            }
+            speechDestination = nil
             if parent.session.state.preferences.navigationMode == .paged {
                 userScrolled = true
                 parent.onReadingScroll()
@@ -268,12 +339,14 @@ struct PDFReadingView: UIViewRepresentable {
             }
         }
         func invalidate() {
+            paragraphSelection?.invalidate(); paragraphSelection = nil
             updateGeneration += 1; pendingUpdate?.cancel(); pendingUpdate = nil
             restorationGeneration += 1; cancelPendingScroll(); scrolling?.invalidate(); scrolling = nil
             observers.forEach { NotificationCenter.default.removeObserver($0) }; observers = []
             observedScroll = nil; view = nil
         }
         private func nativeSelectionChanged() {
+            paragraphSelection?.selectionChanged()
             nativeSelectionRevision += 1
             selectionChanged()
         }
@@ -283,6 +356,18 @@ struct PDFReadingView: UIViewRepresentable {
             let chapter = parent.session.book.chapters[index], passage = chapter.passages[0]
             guard let anchor = PDFTextAnchor.make(selection: selection, page: page, chapterID: chapter.id, passageID: passage.id) else { parent.onSelection(nil); return }
             parent.onSelection(SelectedQuote(anchor: anchor, text: text))
+        }
+        func paragraphContext() -> String? {
+            guard !restoring, let view, navigationID == parent.session.navigationID else { return nil }
+            return parent.session.navigationID.uuidString + parent.session.book.sourceVersion + String(describing: view.bounds.size) + String(describing: view.scaleFactor)
+        }
+        @discardableResult func selectParagraph() -> Bool {
+            guard !restoring, let view, let selection = view.currentSelection, selection.pages.count == 1,
+                  let page = selection.pages.first, selection.numberOfTextRanges(on: page) == 1, let text = page.string,
+                  let range = ReaderParagraphSelectionObserver.pdfParagraph(in: text, containing: selection.range(at: 0, on: page)),
+                  let paragraph = page.selection(for: range) else { return false }
+            view.setCurrentSelection(paragraph, animate: false)
+            selectionChanged(); return true
         }
     }
 }

@@ -338,7 +338,7 @@ private final class GET317Transport: URLProtocol, @unchecked Sendable {
     private static func chapter(_ bookID: String, id: String) -> [String: Any]? {
         guard ["c1", "c2", "c3"].contains(id) else { return nil }
         let generated = record(bookID)["syntheticTranslations"] as? [String: Any] ?? [:]
-        let paragraphs: [[String: Any]] = (1...12).map { number in
+        let paragraphs: [[String: Any]] = (1...(arguments.contains("--get347-short-speech") ? 1 : 12)).map { number in
             var row: [String: Any] = ["id": "\(id)-p\(number)", "original": "GET317 SYNTHETIC \(id) paragraph \(number). This invented orchard is acceptance material written solely for the test. The stable search marker CLOUD_ORCHARD_\(id)_\(number) helps a reader return to exactly this passage. " + String(repeating: "The river stays beside the orchard while the tools open and close. ", count: 5), "source": ["review": "extracted_unreviewed"]]
             // UI47/UI59 need a unique visible witness inside every cropped body band.
             // The default fixture remains unchanged for the existing acceptance suite.
@@ -346,6 +346,10 @@ private final class GET317Transport: URLProtocol, @unchecked Sendable {
                 row["original"] = "GET317 SYNTHETIC \(id) paragraph \(number). " + (1...12).map { sentence in
                     "Source witness \(id)-p\(number)-s\(sentence): the orchard and river identify this exact invented sentence."
                 }.joined(separator: " ")
+            }
+            if arguments.contains("--get347-short-speech") {
+                let name = ["c1": "one", "c2": "two", "c3": "three"][id] ?? id
+                row["original"] = "Chapter \(name) first sentence. Chapter \(name) second sentence."
             }
             if bookID == "get317-translated" { row["translations"] = translations }
             else if let saved = generated["\(id)-p\(number)"] { row["translations"] = saved }

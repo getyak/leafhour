@@ -83,3 +83,11 @@ The archive/upload/Apple-confirmation chain, signing audit and maintenance workf
 
 
 The [GET-346 acceptance record](../../docs/verification/2026-10-31-get-346-ios-reading-library.md) records compact horizontal pages, paragraph/chapter translation, three-column shelves, native long-press actions and one configured online generation. TestFlight and physical-device acceptance remain separately recorded gates.
+
+## Listening and first paragraph selection
+
+Listening starts at the visible sentence, using the actual original or selected translation layer. The current sentence is painted behind the existing native text using real system speech callbacks; the word being spoken controls scrolling/page following. One passage is queued at a time, continuing through this book. Pause, interruption, backgrounding and explicit stop retain a verified local listening position. Reopening offers the previous position, or an explicit start from the current page. Voice/rate changes restart only the current sentence. Manual browsing and selection suspend following; the quiet footer returns to the spoken position and provides pause/resume.
+
+A first long press on selectable text creates a stable paragraph/layer selection and uses UIKit's native edit menu. Existing selection handles, double taps and links keep system behavior. Copy and note actions read the actual current selection. PDFKit keeps its original pages, separate speech paint, and extracted text boundaries; image-only tails never restart the book. No model, cloud speech or reading-point request is made by this feature.
+
+[GET-347 native verification](../../docs/verification/2026-10-31-get-347-listening-selection.md) separates callback, layout, native UI, CI and release evidence. Simulator speech callbacks do not establish audible physical-device quality or installation.

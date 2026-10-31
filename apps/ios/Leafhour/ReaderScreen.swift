@@ -62,6 +62,7 @@ struct ReaderScreen: View {
     @State private var chrome: ReaderChrome = .tools
     @State private var panel: ReaderPanel?
     @State private var speech = ReaderSpeech()
+    @State private var speechNavigationID: UUID?
     @State private var tools = ReaderCloudTools()
     @State private var reading = ReaderReadingContent()
     @State private var clockID = UUID()
@@ -101,7 +102,9 @@ struct ReaderScreen: View {
                     PDFReadingView(session: session, pageInsets: pageInsets, selectionDismissalID: selectionDismissalID, onSelection: { quote in
                         // PDFView can synchronously notify while its native selection is being cleared.
                         if quote != nil || session.selection != nil { session.selection = quote }
-                    }, onWake: wake, onReadingScroll: readingDidScroll)
+                        if quote != nil { speech.userNavigated() }
+                    }, onWake: wake, onReadingScroll: readingDidScroll, speechHighlight: speech.highlight, followsSpeech: speech.following && !speech.readerIsInteracting,
+                        onReadingPosition: { speech.updateVisible($0) }, onTouchActivity: { speech.readerIsInteracting = $0 })
                     .safeAreaInset(edge: .bottom, spacing: 0) {
                         if needsPDFSourceFallback {
                             Text("此页没有可对照文字，先显示原页。")
@@ -117,8 +120,9 @@ struct ReaderScreen: View {
                 } else {
                     TextReadingView(session: session, pageInsets: pageInsets, selectionDismissalID: selectionDismissalID, onNote: { showNote($0) }, onSource: { panel = .source($0); chrome = .asleep }, onExplain: { showCompanion($0) }, onWake: wake, onReadingScroll: readingDidScroll,
                         onTranslate: { session.selection = $0; present(.translation) },
-                        onSelectionChange: { quote, active in session.selection = quote; hasNativeTextSelection = active },
-                        onPageChange: { pagePosition = $0 })
+                        onSelectionChange: { quote, active in session.selection = quote; hasNativeTextSelection = active; if active { speech.userNavigated() } },
+                        onPageChange: { pagePosition = $0 }, speechHighlight: speech.highlight, followsSpeech: speech.following && !speech.readerIsInteracting,
+                        onReadingPosition: { speech.updateVisible($0) }, onTouchActivity: { speech.readerIsInteracting = $0 })
                 }
                 VStack(spacing: 0) {
                     // Measure the same real controls while asleep. Hiding or waking
@@ -185,7 +189,7 @@ struct ReaderScreen: View {
         .interactiveDismissDisabled(panel?.isCompanion != true && (session.saving || session.saveError != nil))
         .sheet(item: $panel, onDismiss: { hasNativeTextSelection = false; session.clearTransientSelection(); selectionDismissalID = UUID(); chrome = .asleep }) { destination in
             ReaderPanelView(panel: destination, session: session, systemColorScheme: systemColorScheme, speech: speech, tools: tools, cloud: cloud, reading: reading,
-                onJump: { index, anchor in session.go(to: index, anchor: anchor); panel = nil }, onCompanion: { showCompanion(currentQuote) })
+                onJump: { index, anchor in speech.userNavigated(); session.go(to: index, anchor: anchor); panel = nil }, onCompanion: { showCompanion(currentQuote) })
                 .modifier(ReaderPanelPresentation(isCompanion: destination.isCompanion, isNoteEditor: destination.isNoteEditor))
         }
         .alert(session.saveError == nil ? "阅读提示" : "阅读记录", isPresented: Binding(get: { session.message != nil || (session.noteEditorID == nil && session.saveMessage != nil) }, set: { if !$0 { session.message = nil; session.saveMessage = nil } })) {
@@ -206,7 +210,18 @@ struct ReaderScreen: View {
             clockID = UUID()
             if value == .asleep { focusedControl = nil; bottomBarFocused = false }
         }
-        .onChange(of: session.chapterIndex) { _, _ in hasNativeTextSelection = false; speech.stop(); reading.enteredChapter(session.chapter.id); if chrome == .progress || chrome == .tools { clockID = UUID() } }
+        .onChange(of: session.chapterIndex) { _, _ in
+            hasNativeTextSelection = false
+            let belongsToSpeech = speechNavigationID == session.navigationID
+            if belongsToSpeech { speechNavigationID = nil }
+            if !belongsToSpeech && (speech.playing || speech.paused) { speech.userNavigated() }
+            reading.enteredChapter(session.chapter.id)
+            if chrome == .progress || chrome == .tools { clockID = UUID() }
+        }
+        .onChange(of: speech.highlight) { _, _ in followSpeechChapter() }
+        .onChange(of: speech.following) { _, _ in followSpeechChapter() }
+        .onChange(of: session.contentRevision) { _, _ in speech.contentChanged() }
+        .onChange(of: session.state.preferences.translationVariant) { _, _ in speech.stop() }
         .task(id: readingRefreshKey) {
             guard scenePhase == .active else { return }
             await reading.refresh(session, cloud: cloud, library: library)
@@ -215,6 +230,7 @@ struct ReaderScreen: View {
             if session.book.cloud != nil { await reading.prepare(session, cloud: cloud, library: library, scope: .passage) }
         }
         .onChange(of: session.state.preferences.viewMode) { _, mode in
+            speech.stop()
             if mode == .source { reading.stop(); reading.offerFirstPassage = false }
             selectionDismissalID = UUID()
         }
@@ -248,6 +264,14 @@ struct ReaderScreen: View {
         }
         reading.confirmPreparation = { [weak reading] run in reading?.confirm(run, session: session, cloud: cloud, library: library) }
     }
+    private func followSpeechChapter() {
+        guard speech.following, speech.playing || speech.paused, !hasNativeTextSelection, !speech.readerIsInteracting,
+              let highlight = speech.highlight, highlight.location.chapterID != session.chapter.id,
+              let index = session.book.chapters.firstIndex(where: { $0.id == highlight.location.chapterID }) else { return }
+        let offset = highlight.location.layer == "original" ? SourceTextOffsets(highlight.location.snapshot).scalarOffset(forUTF16Offset: highlight.location.utf16Offset) : 0
+        session.go(to: index, anchor: ReadingAnchor(chapterID: highlight.location.chapterID, passageID: highlight.location.passageID, characterOffset: offset))
+        speechNavigationID = session.navigationID
+    }
     private func recordChrome(_ values: [ReaderChromeMeasurement], for layout: ReaderChromeLayout) {
         let current = values.filter { $0.layout == layout }
         guard let top = current.last(where: { $0.region == .top })?.height, top > 0,
@@ -265,9 +289,18 @@ struct ReaderScreen: View {
         HStack {
             Spacer()
             if speech.playing || speech.paused {
-                Button { present(.listening) } label: {
-                    Label(speech.playing ? "正在听书" : "听书已暂停", systemImage: speech.playing ? "waveform" : "pause.fill").font(.caption).padding(.horizontal, 16).frame(minHeight: 44)
-                }.background(.regularMaterial, in: Capsule())
+                HStack(spacing: 0) {
+                    Button {
+                        if !speech.following { speech.following = true }
+                        else { present(.listening) }
+                    } label: {
+                        Label(!speech.following ? "回到朗读" : speech.playing ? "正在听书" : "听书已暂停", systemImage: speech.playing ? "waveform" : "pause.fill")
+                            .font(.caption).padding(.horizontal, 14).frame(minHeight: 44).contentShape(Rectangle())
+                    }.accessibilityIdentifier("reader-speech-status").accessibilityValue(speech.activeSentence)
+                    Button { speech.toggle(session) } label: {
+                        Image(systemName: speech.playing ? "pause.fill" : "play.fill").frame(width: 44, height: 44).contentShape(Rectangle())
+                    }.accessibilityLabel(speech.playing ? "暂停朗读" : "继续朗读").accessibilityIdentifier("reader-speech-toggle")
+                }.buttonStyle(.plain).background(.regularMaterial, in: Capsule())
             } else {
                 Button { revealTools() } label: {
                     Capsule().fill(.secondary.opacity(0.4)).frame(width: 30, height: 4).frame(width: 72, height: 44)
@@ -295,7 +328,7 @@ struct ReaderScreen: View {
         }
     }
     private func backButton(compact: Bool) -> some View {
-        Button { Task { let receipt = await session.flush(); if session.isCurrent(receipt) { dismiss() } } } label: {
+        Button { speech.pause(); Task { let receipt = await session.flush(); if session.isCurrent(receipt) { dismiss() } } } label: {
             Label("返回书房", systemImage: "chevron.left").labelStyle(.iconOnly)
                 .font(compact ? .system(size: 20) : .body)
                 .frame(minWidth: 44, minHeight: 44).contentShape(Rectangle())
@@ -350,7 +383,7 @@ struct ReaderScreen: View {
         guard chrome != .asleep, !bottomBarFocused, focusedControl == nil, panel == nil, session.selection == nil, !hasNativeTextSelection, !UIAccessibility.isVoiceOverRunning else { return }
         withAnimation(reduceMotion ? nil : .easeOut(duration: 0.18)) { chrome = .asleep }
     }
-    private func readingDidScroll() { hasNativeTextSelection = false; session.clearTransientSelection(); selectionDismissalID = UUID(); sleepChrome() }
+    private func readingDidScroll() { speech.userNavigated(); hasNativeTextSelection = false; session.clearTransientSelection(); selectionDismissalID = UUID(); sleepChrome() }
     private func wake(_: ReaderChrome) { withAnimation(reduceMotion ? nil : .easeOut(duration: 0.16)) { chrome = chrome == .tools ? .asleep : .tools } }
     private func revealTools() {
         withAnimation(reduceMotion ? nil : .easeOut(duration: 0.16)) { chrome = .tools }

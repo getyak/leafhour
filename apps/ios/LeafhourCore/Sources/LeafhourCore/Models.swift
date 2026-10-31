@@ -96,10 +96,26 @@ public struct ReaderPreferences: Codable, Equatable, Sendable {
 }
 public struct ReaderState: Codable, Equatable, Sendable {
     public var anchor: ReadingAnchor?
+    public var listeningPosition: ReaderListeningPosition?
     public var drafts: [String: NoteDraft] = [:]
     public var notes: [ReaderNote] = []
     public var preferences = ReaderPreferences()
     public init() {}
+}
+/// Layer offsets are UTF-16 positions in a verified text snapshot, never source
+/// scalar anchors. Optional state preserves older on-device libraries/backups.
+public struct ReaderListeningPosition: Codable, Equatable, Sendable {
+    public var sourceVersion: String
+    public var chapterID: String
+    public var passageID: String
+    public var layer: String
+    public var utf16Offset: Int
+    public var textFingerprint: String
+    public var viewport: ReadingAnchor?
+    public init(sourceVersion: String, chapterID: String, passageID: String, layer: String, utf16Offset: Int, textFingerprint: String, viewport: ReadingAnchor?) {
+        self.sourceVersion = sourceVersion; self.chapterID = chapterID; self.passageID = passageID
+        self.layer = layer; self.utf16Offset = utf16Offset; self.textFingerprint = textFingerprint; self.viewport = viewport
+    }
 }
 public enum ImportPhase: String, Codable, Sendable { case processing, failed, interrupted, cancelled, complete }
 public struct ImportJob: Codable, Identifiable, Sendable {
