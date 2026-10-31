@@ -2480,5 +2480,6 @@ export default Object.freeze({
   "filter.sort.manual": "手動の並び順",
   "bookUpload.imports": "本棚に追加中",
   "bookUpload.parsing": "章を整理しています · {completed} / {total}",
-  "bookUpload.tasks": "本の取り込み"
+  "bookUpload.tasks": "本の取り込み",
+  "bookUpload.saving": "章を保存しています…"
 });

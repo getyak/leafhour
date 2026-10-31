@@ -2480,5 +2480,6 @@ export default Object.freeze({
   "filter.sort.manual": "手動排列",
   "bookUpload.imports": "正在加入書房",
   "bookUpload.parsing": "正在整理章節 · {completed} / {total}",
-  "bookUpload.tasks": "匯入任務"
+  "bookUpload.tasks": "匯入任務",
+  "bookUpload.saving": "正在儲存章節…"
 });

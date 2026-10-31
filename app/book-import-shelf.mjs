@@ -1,6 +1,13 @@
 import {t,onUiLocaleChange} from './ui-locale.mjs';
 import {paintBookCover} from './book-cover-ui.mjs';
 
+export function importShelfPresentation(task,{format=t}={}){
+ const parsed=task.job?.progress,publishing=task.job?.state==='publishing',active=['receiving','organizing'].includes(task.stage);
+ const percent=publishing?null:Number.isFinite(task.percent)?task.percent:parsed?.total>0?Math.round(parsed.completed/parsed.total*100):null;
+ const message=task.job?.error||task.errorMessage||(task.error?format('bookUpload.error'):publishing?format('bookUpload.saving'):task.stage==='organizing'&&parsed?.total?format('bookUpload.parsing',parsed):format(({receiving:'portal.upload.storing',organizing:'portal.upload.organizing'})[task.stage]||'bookUpload.'+task.stage));
+ return {active,percent,message};
+}
+
 // Task cards live beside the shelf, independent of chat, filters and reading progress.
 export function mountBookImportShelf({root,controller,getBooks=()=>[],navigate=url=>location.assign(url)}){
  const doc=root.ownerDocument,rows=new Map();let disposed=false;
@@ -18,8 +25,8 @@ export function mountBookImportShelf({root,controller,getBooks=()=>[],navigate=u
   heading.textContent=t('bookUpload.imports');root.hidden=!tasks.length;
   for(const task of tasks){let row=rows.get(task.id);if(!row){row=create(task);rows.set(task.id,row);}row.task=task;const name=label(task);row.title.textContent=name;row.card.dataset.stage=task.stage;
    const coverKey=JSON.stringify([name,task.job?.author,task.job?.coverAvailable,task.job?.id]);if(row.coverKey!==coverKey){row.coverKey=coverKey;paintBookCover(row.cover,{bookId:task.id,title:{zh:name,en:name},author:task.job?.author||'',visibility:'private'});if(task.job?.coverAvailable){const image=el('img','imported-cover-artwork');image.alt='';image.src='/api/library/ingestion/'+encodeURIComponent(task.job.id)+'/cover';row.cover.dataset.coverStyle='imported';image.addEventListener('load',()=>{row.cover.dataset.coverArtwork='ready';},{once:true});image.addEventListener('error',()=>{image.hidden=true;row.cover.dataset.coverArtwork='failed';},{once:true});row.cover.append(image);}}
-   const parsed=task.job?.progress,active=['receiving','organizing'].includes(task.stage),percent=Number.isFinite(task.percent)?task.percent:parsed?.total>0?Math.round(parsed.completed/parsed.total*100):null;
-   row.status.textContent=task.job?.error||task.errorMessage||(task.stage==='organizing'&&parsed?.total?t('bookUpload.parsing',parsed):t(({receiving:'portal.upload.storing',organizing:'portal.upload.organizing'})[task.stage]||'bookUpload.'+task.stage));
+   const {active,percent,message}=importShelfPresentation(task);
+   row.status.textContent=message;
    row.progress.hidden=!active;row.progress.setAttribute('aria-label',row.status.textContent);if(percent!==null)row.progress.value=percent;else row.progress.removeAttribute('value');
    for(const [action,button]of Object.entries(row.controls)){button.textContent=t(({open:'pdf.action.open',retry:'portal.upload.retry',consent:'bookUpload.action.consent',cancel:'pdf.action.cancel'})[action]);button.hidden=action==='open'?task.stage!=='ready':action==='retry'?task.stage!=='interrupted':action==='consent'?!(task.stage==='permission'&&task.job?.ocrAvailable):['ready','cancelled'].includes(task.stage);button.disabled=!!task.busy&&!(action==='cancel'&&!task.job);}
   }

@@ -522,3 +522,11 @@ test('library upload history belongs to a collapsed menu section',async t=>{
  const controller=createBookUploadController({getOwner:()=> 'alice',getSession:()=>({user:{id:'alice'}}),api:async()=>({jobs:[{id:'job',filename:'ready.txt',state:'done',bookId:'ready',createdAt:new Date().toISOString()}]})});t.after(()=>controller.dispose());await controller.refresh();
  const s=setup(t,{uploadController:controller,uploadPlacement:'menu'});s.chat.open();await flush();const tasks=s.find('chat-book-tasks'),history=s.find('library-chat-upload-history');assert.ok(history);assert.equal(history.contains(tasks),true);assert.equal(s.find('library-chat-menu-items').contains(tasks),true);assert.equal(history.open,false);assert.equal(s.find('library-chat-messages').contains(tasks),false);
 });
+
+test('a shelf upload started while chat is closed cannot open its menu on the next conversation visit',async t=>{
+ let release;const waiting=new Promise(r=>release=r),controller=createBookUploadController({getOwner:()=> 'alice',getSession:()=>({user:{id:'alice'}}),api:async()=>({jobs:[]}),uploadPdf:()=>waiting});t.after(()=>{controller.dispose();release({id:'cancelled',state:'cancelled'});});const s=setup(t,{uploadController:controller,uploadPlacement:'menu'});controller.start({name:'shelf.pdf',size:100});assert.equal(s.find('library-chat-menu').open,false);assert.equal(s.find('library-chat-upload-history').open,false);s.chat.open();await flush();assert.equal(s.find('library-chat-menu').open,false);assert.equal(s.find('library-chat-messages').contains(s.find('chat-book-tasks')),false);
+});
+
+test('a failed cancel is not hidden behind the saving label in upload history',async t=>{
+ const controller=createBookUploadController({getOwner:()=> 'alice',getSession:()=>({user:{id:'alice'}}),uploadPdf:async()=>({id:'saving-job',state:'publishing'}),api:async()=>{throw Error('request failed');}});t.after(()=>controller.dispose());const id=controller.start({name:'saving.pdf',size:100});await flush();const s=setup(t,{uploadController:controller,uploadPlacement:'menu'});s.chat.open();await flush();await controller.cancel(id);assert.equal(controller.tasks()[0].error,true);assert.equal(s.find('chat-book-stage').textContent,uiText('bookUpload.error'));
+});

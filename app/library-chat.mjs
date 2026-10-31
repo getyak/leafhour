@@ -105,7 +105,7 @@ export function mountLibraryChat({root,api,getSession,getBooks,getOwner,openAuth
   const uploadAttach=uploadEnabled?ui('button','chat-book-attach','chat.importBook'):null;if(uploadAttach){uploadAttach.type='button';uiAttr(uploadAttach,'aria-label','nav.bring');uiAttr(uploadAttach,'title','nav.bring');uploadAttach.disabled=true;menuItems.insertBefore(uploadAttach,exportButton);}
   const uploadConfig=()=>({root,attachment:uploadAttach,host:uploadHost,actionsHost:composerActions,controller:uploadController,api,getOwner:activeOwner,getSession,signedIn,openAuth,...uploadOptions,onSelect:bookId=>{if(choose(bookId)){render();void load();}}});
   if(uploadController&&mountUpload)uploadView=mountUpload(uploadConfig());
-  if(uploadHistory&&uploadController){let known=new Set(uploadController.tasks().map(task=>task.id));listeners.push(uploadController.subscribe(tasks=>{uploadHistory.hidden=!tasks.length;if(tasks.some(task=>!known.has(task.id)&&task.stage==='receiving')){menu.open=true;uploadHistory.open=true;}known=new Set(tasks.map(task=>task.id));}));}
+  if(uploadHistory&&uploadController){let known=new Set(uploadController.tasks().map(task=>task.id));listeners.push(uploadController.subscribe(tasks=>{uploadHistory.hidden=!tasks.length;if(root.open&&tasks.some(task=>!known.has(task.id)&&task.stage==='receiving')){menu.open=true;uploadHistory.open=true;}known=new Set(tasks.map(task=>task.id));}));}
   function addUpload(file){
     if(disposed||!uploadEnabled)return null;
     if(uploadView)return uploadView.add(file);
