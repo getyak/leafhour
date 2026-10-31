@@ -1,0 +1,40 @@
+{
+  "base": "24381ff80d65795718582f9f6a76d8f755e142b8",
+  "core": {
+    "passed": 162,
+    "failed": 0
+  },
+  "application": {
+    "passed": 152,
+    "failed": 0,
+    "skipped": 0
+  },
+  "nativeUI": {
+    "passed": 5,
+    "failed": 0,
+    "cases": [
+      22,
+      49,
+      61,
+      96,
+      97
+    ],
+    "systemSpeechCallbacks": "real AVSpeechSynthesizer; second sentence and following chapter observed",
+    "selection": "Text native long press, Copy, Paste, note quote and page-turn precedence"
+  },
+  "hostNode": {
+    "passed": 100,
+    "failed": 0
+  },
+  "hostPython": {
+    "passed": 9,
+    "failed": 0
+  },
+  "review": "No remaining P0/P1/P2 after independent review",
+  "scopeLimits": [
+    "PDF geometry/paint/extracted paragraph boundaries use actual PDFKit unit fixtures; its native long-press menu not claimed by Text UI96",
+    "No physical-device audio quality, tester installation or complete VoiceOver acceptance inferred",
+    "No cloud model or audio request and no reading-point use"
+  ],
+  "resourceBoundary": "Waited for other native sessions; no other build terminated; global pause flag retained under session native-test authorization"
+}
