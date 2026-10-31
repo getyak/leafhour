@@ -3,6 +3,13 @@ import {homeDocument,homeLocales} from '../app/home-locale.mjs';
 import {publicDocumentHeader,publicNavigationMenu} from '../app/public-navigation.mjs';
 import {withoutUiParam} from '../app/ui-locale-codec.mjs';
 import {firstPaintCatalogue,localizeOwnedUiHtml,stampInitialUiDocument} from './ui-first-paint.mjs';
+import {paperCompanionHtml} from '../app/paper-companion.mjs';
+import {libraryArrivalPresentation} from '../app/arrival-excerpt.mjs';
+const escapeArrival=value=>String(value).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;');
+function arrivalShell(context,locale){
+ const c=firstPaintCatalogue(locale),copy=libraryArrivalPresentation(locale),greeting=context==='library'?'arrival.greeting.library':context==='notes'?'ws.notesTitle':'ws.calendarTitle';
+ return `<div data-reading-arrival="${context}" class="reading-arrival arrival-library" lang="${locale}">${paperCompanionHtml()}<p class="arrival-greeting" data-ui="${greeting}">${escapeArrival(c[greeting])}</p><p class="arrival-context" data-ui="arrival.context.library">${escapeArrival(c['arrival.context.library'])}</p><blockquote class="arrival-quote" lang="${copy.lang}">${escapeArrival(copy.text)}</blockquote><p class="arrival-original" lang="en"${copy.original?'':' hidden'}>${escapeArrival(copy.original)}</p><p class="arrival-source" lang="${copy.lang}">${escapeArrival(copy.source)}<span class="arrival-provenance" data-ui="${copy.provenanceId}">${escapeArrival(c[copy.provenanceId])}</span></p><p class="arrival-status" role="status" data-ui="arrival.status.${context}">${escapeArrival(c['arrival.status.'+context])}</p></div>`;
+}
 const homeRoutes=new Map(homeLocales.map(row=>[row.route,row.code]));
 export function portalDocument(source,pathname,decision){
   const support=pathname.match(/^\/(?:(en|zh-hans|zh-hant|ja)\/)?(privacy|mcp)$/);
@@ -36,8 +43,9 @@ function libraryDocument(source,decision={locale:'en',source:'browser',preferenc
     .replace('<div id="home-view">','<div id="home-view" hidden>')
     .replace('<div id="library-view" hidden>','<div id="library-view">')
     .replaceAll('class="home-nav" href=','class="home-nav" hidden href=');
-  const workspace=['calendar','notes'].includes(decision.workspace)?rendered.replace('<body class="library-page">','<body class="library-page workspace-active">').replace('<div id="library-view">','<div id="library-view" hidden>').replace('<section id="reading-workspace" hidden','<section id="reading-workspace"').replace(/<title>[^<]*<\/title>/,'<title>'+firstPaintCatalogue(decision.locale)[decision.workspace==='notes'?'ws.notesTitle':'ws.calendarTitle']+'</title>'):rendered;
-  const native=initialNativeLinks(workspace,decision);
+  const workspace=['calendar','notes'].includes(decision.workspace)?rendered.replace('<body class="library-page">','<body class="library-page workspace-active">').replace('<div id="library-view">','<div id="library-view" hidden>').replace(/(<section\b[^>]*\bid="reading-workspace"[^>]*?)\s+hidden\b/,'$1').replace(/<title>[^<]*<\/title>/,'<title>'+firstPaintCatalogue(decision.locale)[decision.workspace==='notes'?'ws.notesTitle':'ws.calendarTitle']+'</title>'):rendered;
+  const arrivals=workspace.replace(/<div data-reading-arrival="(library|calendar)"><p[^>]*>[\s\S]*?<\/p><\/div>/g,(_,context)=>arrivalShell(context==='library'?'library':decision.workspace||'calendar',decision.locale));
+  const native=initialNativeLinks(arrivals,decision);
   return stampInitialUiDocument(localizeOwnedUiHtml(native,decision.locale),decision);
 }
 

@@ -2,6 +2,21 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 import {portalDocument} from '../server/portal-document.mjs';
+test('calendar and notes arrive with the shared companion and contextual status before JavaScript',async()=>{
+ const source=await readFile(new URL('../app/home.html',import.meta.url),'utf8');
+ for(const locale of ['en','zh-Hans','zh-Hant','ja'])for(const page of ['calendar','notes']){
+  const html=portalDocument(source,'/library',{locale,source:'browser',workspace:page});
+  assert.doesNotMatch(html.match(/<section id="reading-workspace"[^>]*>/)?.[0],/\bhidden\b/,'the arrival must actually be visible before scripts');
+  const section=html.match(/<section id="reading-workspace"[^>]*>([\s\S]*?)<\/section>/)?.[1];
+  assert.match(section,/data-reading-arrival="(?:calendar|notes)"/);
+  assert.match(section,/paper-companion-loading/);
+  assert.match(section,/aria-hidden="true"/);
+  assert.match(section,/role="status"/);
+  assert.match(section,/arrival-quote/);
+  assert.doesNotMatch(section,/<p data-ui="ws.loading">/);
+  assert.doesNotMatch(html,/<section id="reading-workspace"[^>]*aria-live=/,'only the changing status is live');
+ }
+});
 test('the expanded reading story is public-only and keeps its exact source entry',async()=>{
  const source=await readFile(new URL('../app/home.html',import.meta.url),'utf8');
  assert.match(source,/href="\/home-story\.css"/);assert.match(source,/class="story-continuity"/);

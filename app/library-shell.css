@@ -147,3 +147,10 @@ dialog.library-settings-dialog:not([open]){display:none}
 .settings-switch-label,.daily-connection{text-wrap:balance}
 
 .settings-locale .ui-locale-choice:first-of-type{grid-column:1 / -1}
+
+/* Workspace arrival is visible before its lazy stylesheet loads. */
+.workspace-arrival-shell{padding:clamp(24px,5vw,64px) clamp(16px,4vw,52px);min-height:calc(100dvh - 32px)}
+.reading-workspace>.reading-arrival{padding-top:8px}
+.reading-workspace [hidden]{display:none!important}
+.workspace-load-error{max-width:600px;margin:0 auto;padding:32px 16px;text-align:center;font:14px/1.8 var(--interface,system-ui,sans-serif);color:var(--ink)}
+.workspace-load-error :is(button,a){display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:8px 16px;color:var(--accent);background:transparent;border:0;font:inherit;text-decoration:underline;text-underline-offset:4px;cursor:pointer}
