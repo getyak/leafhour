@@ -63,12 +63,9 @@ struct ShelfBookAvailability: View {
     let item: LibraryShelfItem
     var body: some View {
         if item.isDownloaded {
-            Image(systemName: item.isAdditionalVersion ? "books.vertical.circle.fill" : item.hasCloudUpdate ? "arrow.triangle.2.circlepath.circle.fill" : "checkmark.circle.fill")
-                .font(.system(size: 16, weight: .medium))
-                .symbolRenderingMode(.palette)
-                .foregroundStyle(Color.leafInk, Color(uiColor: .systemBackground))
-                .padding(5)
-                .background(.regularMaterial, in: Circle())
+            Image(systemName: "checkmark.circle.fill")
+                .font(.system(size: 11, weight: .medium))
+                .foregroundStyle(Color.leafInk)
                 .accessibilityHidden(true)
         }
     }
@@ -121,9 +118,12 @@ struct LibraryShelfRow: View {
                     ShelfBookCover(title: item.title, author: item.author, compact: true, resource: resource)
                         .frame(width: dynamicTypeSize.isAccessibilitySize ? 48 : 58, height: dynamicTypeSize.isAccessibilitySize ? 68 : 84)
                     VStack(alignment: .leading, spacing: 6) {
-                        Text(item.title).font(.headline).foregroundStyle(.primary)
-                            .lineLimit(dynamicTypeSize.isAccessibilitySize ? nil : 2)
-                            .fixedSize(horizontal: false, vertical: true)
+                        HStack(alignment: .firstTextBaseline, spacing: 5) {
+                            ShelfBookAvailability(item: item)
+                            Text(item.title).font(.headline).foregroundStyle(.primary)
+                                .lineLimit(dynamicTypeSize.isAccessibilitySize ? nil : 2)
+                                .fixedSize(horizontal: false, vertical: true)
+                        }
                         if !item.author.isEmpty {
                             Text(item.author).font(.subheadline).foregroundStyle(.secondary)
                                 .lineLimit(dynamicTypeSize.isAccessibilitySize ? nil : 2)
@@ -131,7 +131,6 @@ struct LibraryShelfRow: View {
                         }
                     }
                     Spacer(minLength: 0)
-                    ShelfBookAvailability(item: item)
                 }
                 .frame(maxWidth: .infinity, minHeight: 44, alignment: .leading)
                 .contentShape(Rectangle())
@@ -168,10 +167,12 @@ struct LibraryShelfTile: View {
                     VStack(alignment: .leading, spacing: 8) {
                         ShelfBookCover(title: item.title, author: item.author, resource: resource)
                             .aspectRatio(2.0 / 3, contentMode: .fit)
-                            .overlay(alignment: .topTrailing) { ShelfBookAvailability(item: item).padding(7) }
                             .shadow(color: .black.opacity(0.07), radius: 5, x: 0, y: 3)
-                        Text(item.title).font(.subheadline.weight(.medium)).foregroundStyle(.primary).lineLimit(2)
-                            .frame(maxWidth: .infinity, alignment: .leading)
+                        HStack(alignment: .firstTextBaseline, spacing: 4) {
+                            ShelfBookAvailability(item: item)
+                            Text(item.title).font(.subheadline.weight(.medium)).foregroundStyle(.primary).lineLimit(2)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                        }
                         if !item.author.isEmpty { Text(item.author).font(.caption).foregroundStyle(.secondary).lineLimit(1) }
                     }.contentShape(Rectangle())
                 }
