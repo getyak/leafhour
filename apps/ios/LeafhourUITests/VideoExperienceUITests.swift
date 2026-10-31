@@ -2666,6 +2666,24 @@ final class VideoExperienceUITests: XCTestCase {
         XCTAssertFalse(app.alerts["准备或恢复译文"].exists, "Reopening an existing translated view must not offer another paid request")
     }
 
+    func test96LongPressDefaultsToTheWholeParagraphAndNativeCopyKeepsItExact() throws {
+        launch(); openBook(textTitle); chooseNavigation("左右翻页")
+        let expected = try XCTUnwrap((reader.value as? String)?.components(separatedBy: "\n").first)
+        XCTAssertTrue(expected.contains("GET317 synthetic paragraph 1."))
+        selectOriginal(); systemEditAction(["复制", "Copy"])
+        // Copy leaves a real native selection. Dismiss it before testing a new
+        // first selection; an existing range/handle adjustment stays native.
+        reader.coordinate(withNormalizedOffset: CGVector(dx: 0.85, dy: 0.8)).tap()
+        let editor = noteEditor()
+        let quote = app.staticTexts.matching(NSPredicate(format: "label BEGINSWITH %@", String(expected.prefix(100)))).firstMatch
+        require(quote)
+        XCTAssertEqual(quote.label.trimmingCharacters(in: .whitespacesAndNewlines), expected.trimmingCharacters(in: .whitespacesAndNewlines))
+        editor.tap(); editor.press(forDuration: 1.2); systemEditAction(["粘贴", "Paste"])
+        XCTAssertEqual(editor.value as? String, expected, "The native clipboard and anchored note both use the complete first paragraph")
+        capture("GET347-native-paragraph-copy")
+        app.buttons["保留草稿"].tap()
+    }
+
     func test97RealSystemSpeechHighlightsTheSentenceAndFollowsAcrossChapters() {
         executionTimeAllowance = 120
         launch(["--get347-short-speech"]); openBook(translatedTitle)

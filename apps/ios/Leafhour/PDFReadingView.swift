@@ -32,7 +32,7 @@ struct PDFReadingView: UIViewRepresentable {
             return page.characterIndex(at: view.convert(point, to: page)) != NSNotFound
         }, context: { [weak coordinator] in coordinator?.paragraphContext() }, selectionActive: { [weak view] in
             view?.currentSelection?.string?.isEmpty == false
-        }, expand: { false }, activity: { [weak coordinator] in coordinator?.parent.onTouchActivity?($0) })
+        }, expand: { [weak coordinator] in coordinator?.selectParagraph() ?? false }, activity: { [weak coordinator] in coordinator?.parent.onTouchActivity?($0) })
         coordinator.paragraphSelection = observer; observer.install()
         return view
     }
@@ -361,6 +361,13 @@ struct PDFReadingView: UIViewRepresentable {
             guard !restoring, let view, navigationID == parent.session.navigationID else { return nil }
             return parent.session.navigationID.uuidString + parent.session.book.sourceVersion + String(describing: view.bounds.size) + String(describing: view.scaleFactor)
         }
-
+        @discardableResult func selectParagraph() -> Bool {
+            guard !restoring, let view, let selection = view.currentSelection, selection.pages.count == 1,
+                  let page = selection.pages.first, selection.numberOfTextRanges(on: page) == 1, let text = page.string,
+                  let range = ReaderParagraphSelectionObserver.pdfParagraph(in: text, containing: selection.range(at: 0, on: page)),
+                  let paragraph = page.selection(for: range) else { return false }
+            view.setCurrentSelection(paragraph, animate: false)
+            selectionChanged(); return true
+        }
     }
 }

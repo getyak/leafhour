@@ -50,11 +50,17 @@ struct TextReadingView: UIViewRepresentable {
         let observer = ReaderParagraphSelectionObserver(view: view, eligible: { [weak view, weak coordinator] point in
             guard let view, coordinator?.restoring == false, view.selectedRange.length == 0,
                   (view.visibleReadingRect ?? view.bounds).contains(point) else { return false }
-            return !ReaderEdgeTapHandler.isLink(at: point, in: view)
+            return !ReaderEdgeTapHandler.isLink(at: point, in: view) && coordinator?.paragraphCharacter(at: point) != nil
         }, context: { [weak coordinator, weak view] in
             guard let coordinator, let view, !coordinator.restoring else { return nil }
             return coordinator.parent.session.navigationID.uuidString + coordinator.signature + String(describing: view.bounds.width)
-        }, selectionActive: { [weak view] in (view?.selectedRange.length ?? 0) > 0 }, expand: { false }, activity: { [weak coordinator] in coordinator?.parent.onTouchActivity?($0) })
+        }, selectionActive: { [weak view] in (view?.selectedRange.length ?? 0) > 0 }, expand: { [weak view, weak coordinator] in
+            guard let view, let coordinator else { return false }
+            return coordinator.selectParagraph(containing: view.selectedRange)
+        }, activity: { [weak coordinator] in coordinator?.parent.onTouchActivity?($0) }, finalized: { [weak coordinator] in coordinator?.presentParagraphMenu() }, initialSelection: { [weak coordinator] point in
+            guard let coordinator, let character = coordinator.paragraphCharacter(at: point) else { return false }
+            return coordinator.selectParagraph(containing: NSRange(location: character, length: 1))
+        })
         coordinator.paragraphSelection = observer; view.paragraphSelection = observer; observer.install()
         return view
     }
@@ -584,6 +590,54 @@ struct TextReadingView: UIViewRepresentable {
                 if persistCheckpoint { self.schedulePersistence() }
             }
         }
+        func paragraphCharacter(at point: CGPoint) -> Int? {
+            guard let view, !restoring, view.attributedText.length > 0 else { return nil }
+            let local = CGPoint(x: point.x - view.textContainerInset.left, y: point.y - view.textContainerInset.top)
+            let glyph = view.layoutManager.glyphIndex(for: local, in: view.textContainer)
+            guard glyph < view.layoutManager.numberOfGlyphs,
+                  view.layoutManager.boundingRect(forGlyphRange: NSRange(location: glyph, length: 1), in: view.textContainer).insetBy(dx: -2, dy: -2).contains(local) else { return nil }
+            let character = view.layoutManager.characterIndexForGlyph(at: glyph)
+            return paragraphRange(containing: NSRange(location: character, length: 1)) == nil ? nil : character
+        }
+        private func paragraphRange(containing range: NSRange) -> NSRange? {
+            guard let view, range.location >= 0, range.length > 0,
+                  let span = spans.first(where: { $0.range.location <= range.location && NSMaxRange(range) <= NSMaxRange($0.range) }),
+                  span.passage.resourcePath == nil else { return nil }
+            var result = span.range
+            let text = view.text as NSString
+            guard NSMaxRange(result) <= text.length else { return nil }
+            while result.length > 0 && [10, 13].contains(text.character(at: NSMaxRange(result) - 1)) { result.length -= 1 }
+            return result.length > 0 ? result : nil
+        }
+        @discardableResult func selectParagraph(containing range: NSRange) -> Bool {
+            guard !restoring, let view, navigationID == parent.session.navigationID,
+                  indexedSessionID == ObjectIdentifier(parent.session), renderedChapterID == parent.session.chapter.id,
+                  let paragraph = paragraphRange(containing: range) else { return false }
+            let offset = view.contentOffset, wasRestoring = restoring
+            cancelPendingCapture(); restoring = true
+            UIView.performWithoutAnimation {
+                view.becomeFirstResponder(); view.selectedRange = paragraph
+                view.setContentOffset(offset, animated: false)
+            }
+            restoring = wasRestoring
+            textViewDidChangeSelection(view)
+            return true
+        }
+        func presentParagraphMenu() {
+            guard let view, !restoring, navigationID == parent.session.navigationID, view.selectedRange.length > 0 else { return }
+            if paragraphMenu == nil {
+                paragraphMenu = ReaderParagraphEditMenu(view: view, makeMenu: { [weak self, weak view] suggested in
+                    guard let self, let view else { return nil }
+                    return self.textView(view, editMenuForTextIn: view.selectedRange, suggestedActions: suggested)
+                }, target: { [weak view] in
+                    guard let view else { return .zero }
+                    let body = (view as? ReflowTextView)?.visibleReadingRect ?? view.bounds
+                    let visible = view.selectedTextRange.map { view.selectionRects(for: $0).map(\.rect).map { $0.intersection(body) }.first { !$0.isNull && !$0.isEmpty } } ?? nil
+                    return visible ?? CGRect(x: body.midX, y: body.minY + 1, width: 1, height: 1)
+                })
+            }
+            paragraphMenu?.present()
+        }
         func selectedQuote(in textView: UITextView, range: NSRange) -> SelectedQuote? {
             guard range.location >= 0, range.length > 0, NSMaxRange(range) <= (textView.text as NSString).length,
                   let span = spans.first(where: { $0.range.location <= range.location && NSMaxRange(range) <= NSMaxRange($0.range) }),
@@ -623,7 +677,7 @@ struct TextReadingView: UIViewRepresentable {
         func textView(_ textView: UITextView, editMenuForTextIn range: NSRange, suggestedActions: [UIMenuElement]) -> UIMenu? {
             let selectionGuidance = "请在同一段内选择文字，以保留准确引用。"
             func quote() -> SelectedQuote? {
-                let value = selectedQuote(in: textView, range: range)
+                let value = selectedQuote(in: textView, range: textView.selectedRange)
                 if value == nil { parent.session.message = selectionGuidance }
                 return value
             }
@@ -634,6 +688,12 @@ struct TextReadingView: UIViewRepresentable {
             }
             let source = UIAction(title: "核对原文", image: UIImage(systemName: "text.quote")) { [weak self] _ in if let value = quote() { self?.parent.onSource(value) } }
             var actions: [UIMenuElement] = [note, source]
+            if let paragraph = paragraphRange(containing: range), paragraph != range {
+                actions.insert(UIAction(title: "选择整段", image: UIImage(systemName: "text.alignleft")) { [weak self, weak textView] _ in
+                    guard let self, let textView else { return }; _ = self.selectParagraph(containing: textView.selectedRange)
+                    self.presentParagraphMenu()
+                }, at: 0)
+            }
             if parent.onExplain != nil {
                 actions.insert(UIAction(title: "解释这句", image: UIImage(systemName: "text.bubble")) { [weak self] _ in
                     guard let self else { return }
