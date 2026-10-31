@@ -29,42 +29,43 @@
 
 Files: `ReaderScreen.swift`, `TextReadingView.swift`, `ReaderLayoutTests.swift`.
 
-- [ ] Add actual viewport checks for compact pages and source-anchor continuity.
-- [ ] Apply stable 16-point top/28-point bottom paged margins; remove the hidden 50-point TextKit floor from capture/restore/pagination.
-- [ ] Verify pagination, native selection and layout through guarded native tests when allowed; record any resource hold explicitly.
-- [ ] Commit the reading-space fix.
+- [x] Add actual viewport checks for compact pages and source-anchor continuity.
+- [x] Apply stable 16-point top/44-point bottom paged margins; remove the hidden 50-point TextKit floor from capture/restore/pagination.
+- [x] Verify pagination, native selection and layout through guarded native tests when allowed; record any resource hold explicitly.
+- [x] Commit the reading-space fix.
 
 ### Task 2: on-demand translation
 
 Files: `ReadingLayers.swift`, `ReaderReadingContent.swift`, `ReaderSettingsControls.swift`, `ReaderPanels.swift`, `ReaderScreen.swift`, existing reading tests.
 
-- [ ] Add single/current-chapter plan tests, current-first ordering and fixed-scope recovery checks.
-- [ ] Add explicit passage/chapter scopes; preserve decoding of existing envelopes. Stream durable completion progress.
-- [ ] Put preparation immediately below the mode picker and make it reachable from missing-translation reading; offer the first paragraph on explicit mode change, without automatic generation.
-- [ ] Verify boundaries, cancellation and cache persistence; commit.
+- [x] Add single/current-chapter plan tests, current-first ordering and fixed-scope recovery checks.
+- [x] Add explicit passage/chapter scopes; preserve decoding of existing envelopes. Stream durable completion progress.
+- [x] Put preparation immediately below the mode picker and make it reachable from missing-translation reading; offer the first paragraph on explicit mode change, without automatic generation.
+- [x] Verify boundaries, cancellation and cache persistence; commit.
 
 ### Task 3: title download mark
 
 Files: `BookShelfComponents.swift`.
 
-- [ ] Move downloaded status before the title in both layouts, retain detailed VoiceOver status, and commit.
+- [x] Move downloaded status before the title in both layouts, retain detailed VoiceOver status, and commit.
 
 ### Task 4: long-press selection, pins and sharing
 
 Files: `LibraryPresentation.swift`, `BookShelfComponents.swift`, `LibraryScreen.swift`, `LibraryPresentationTests.swift`.
 
-- [ ] Cover stable pin ordering, persisted owner scope and metadata-only shares.
-- [ ] Implement contextual actions, explicit selection state and selected-book toolbar; clear stale selections.
-- [ ] Verify both layouts/account changes, then commit.
+- [x] Cover stable pin ordering, persisted owner scope and metadata-only shares.
+- [x] Implement contextual actions, explicit selection state and selected-book toolbar; clear stale selections.
+- [x] Verify both layouts/account changes, then commit.
 
 ### Task 5: three-cover rows
 
 Files: `LibraryScreen.swift`, `BookShelfComponents.swift`, existing layout tests.
 
-- [ ] Use three equal columns and 12-point gaps; scalable 13-point titles and 11-point author text; accessibility row fallback.
-- [ ] Verify narrow widths and title wrapping; commit.
+- [x] Use three equal columns and 12-point gaps; scalable 13-point titles and 11-point author text; accessibility row fallback.
+- [x] Verify narrow widths and title wrapping; commit.
 
 ### Delivery
 
-- [ ] Independent review; fix confirmed correctness findings.
-- [ ] Affected host checks, exact-head required CI, normal merge, release readback and Linear readback. Leave actual native/provider/device acceptance pending unless executed.
+- [x] Independent review; fix confirmed correctness findings.
+- [x] Affected host checks and native/provider acceptance recorded.
+- [ ] Exact-head required CI, normal merge, release readback and Linear readback. Physical-device acceptance remains separate.

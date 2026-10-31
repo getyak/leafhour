@@ -1,0 +1,59 @@
+{
+  "base": "27fe2904c9bef044384542261d955515b38a8b8d",
+  "core": {
+    "passed": 161,
+    "failed": 0
+  },
+  "application": {
+    "passed": 137,
+    "failed": 0,
+    "skipped": 0
+  },
+  "nativeUI": {
+    "passed": 3,
+    "failed": 0,
+    "tests": [
+      "test47HorizontalSwipesTurnTheActualTextWithinTheSameChapter",
+      "test94ThreeColumnShelfAndLongPressSelectionShareAndPin",
+      "test95ChoosingMissingTranslationOffersAndSavesOneParagraph"
+    ]
+  },
+  "hostNode": {
+    "passed": 100,
+    "failed": 0
+  },
+  "hostPython": {
+    "passed": 9,
+    "failed": 0
+  },
+  "pagedInsets": {
+    "top": 16,
+    "bottom": 44,
+    "left": 22,
+    "right": 22
+  },
+  "provider": {
+    "ownerVerified": true,
+    "billingEnabled": false,
+    "billingMode": "test",
+    "translationUnits": 1000000,
+    "publicBookAvailable": true,
+    "boundedUntranslatedPassageAvailable": true,
+    "generation": {
+      "paragraphs": 1,
+      "literalCharacters": 135,
+      "interpretiveCharacters": 141,
+      "literalOrigin": "ai",
+      "interpretiveOrigin": "ai",
+      "status": "draft",
+      "savedReadback": true
+    }
+  },
+  "independentReview": "No remaining P0/P1/P2; original overlay and recovery-copy findings repaired",
+  "pending": [
+    "exact-head remote CI",
+    "normal merge",
+    "TestFlight receipt",
+    "physical-device acceptance"
+  ]
+}
