@@ -205,7 +205,7 @@ struct TextReadingView: UIViewRepresentable {
         private var pendingTranslatedViewport: TranslatedViewport?
         private func translatedViewport() -> TranslatedViewport? {
             guard let view, view.bounds.width > 0, view.attributedText.length > 0 else { return nil }
-            let readingTop = max(50, parent.pageInsets.top)
+            let readingTop = max(0, parent.pageInsets.top)
             let point = CGPoint(x: 1, y: max(0, view.contentOffset.y + readingTop + 1 - view.textContainerInset.top))
             let index = view.layoutManager.characterIndex(for: point, in: view.textContainer, fractionOfDistanceBetweenInsertionPoints: nil)
             guard let span = spans.last(where: { $0.range.location <= index }), span.isTranslation,
@@ -306,7 +306,7 @@ struct TextReadingView: UIViewRepresentable {
                   signature == "\(parent.session.chapter.id)-\(parent.session.state.preferences)-\(parent.session.contentRevision)-\(view.traitCollection.preferredContentSizeCategory.rawValue)-\(renderedWidth)" else { return false }
             // Sample inside the visible line. Its exact top edge may resolve to
             // the previous paragraph's trailing newline after a width reflow.
-            let readingTop = max(50, parent.pageInsets.top)
+            let readingTop = max(0, parent.pageInsets.top)
             let point = CGPoint(x: 1, y: max(0, view.contentOffset.y + readingTop + 1 - view.textContainerInset.top))
             let index = view.layoutManager.characterIndex(for: point, in: view.textContainer, fractionOfDistanceBetweenInsertionPoints: nil)
             let span = spans.last(where: { $0.range.location <= index }) ?? spans[0]
@@ -371,7 +371,7 @@ struct TextReadingView: UIViewRepresentable {
             view.panGestureRecognizer.isEnabled = !paged
             if let reflow = view as? ReflowTextView {
                 reflow.onPageScroll = paged ? { [weak self] direction in self?.turnPage(direction) ?? false } : nil
-                reflow.pagedReadingInsets = paged ? UIEdgeInsets(top: max(50, parent.pageInsets.top), left: 0, bottom: parent.pageInsets.bottom, right: 0) : nil
+                reflow.pagedReadingInsets = paged ? UIEdgeInsets(top: max(0, parent.pageInsets.top), left: 0, bottom: parent.pageInsets.bottom, right: 0) : nil
             }
             if paged {
                 view.accessibilityCustomActions = [
@@ -393,7 +393,7 @@ struct TextReadingView: UIViewRepresentable {
             let key = "\(ObjectIdentifier(parent.session))-\(signature)-\(view.bounds.size)-\(view.textContainerInset)-\(parent.pageInsets)"
             guard key != paginationKey else { return }
             paginationKey = key
-            pagination = ReaderTextPagination(textView: view, readingTop: max(50, parent.pageInsets.top), bottomInset: parent.pageInsets.bottom)
+            pagination = ReaderTextPagination(textView: view, readingTop: max(0, parent.pageInsets.top), bottomInset: parent.pageInsets.bottom)
             setPaginationBottomAllowance(pagination?.origins.last)
         }
         private var paginationBottomAllowance: CGFloat = 0
@@ -485,7 +485,7 @@ struct TextReadingView: UIViewRepresentable {
                     let position = min(max(0, view.attributedText.length - 1), displayedOffset)
                     let glyph = view.layoutManager.glyphRange(forCharacterRange: NSRange(location: position, length: 1), actualCharacterRange: nil)
                     let rect = view.layoutManager.boundingRect(forGlyphRange: glyph, in: view.textContainer)
-                    let readingTop = max(50, self.parent.pageInsets.top)
+                    let readingTop = max(0, self.parent.pageInsets.top)
                     let sourceY: CGFloat
                     if let resourceY = anchor.resourceY, resourceY.isFinite, (0...1).contains(resourceY), anchor.pageY == nil,
                        let image = self.renderedImageRect(in: span, view: view) {
