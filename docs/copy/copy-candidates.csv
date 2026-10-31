@@ -189,6 +189,12 @@ candidate:app/arrival-catalog.mjs:786:15,js-cjk-literal,app/arrival-catalog.mjs,
 candidate:app/arrival-catalog.mjs:787:16,js-cjk-literal,app/arrival-catalog.mjs,787,,unknown,reviewable,,逍遙遊第一
 candidate:app/arrival-catalog.mjs:789:17,js-cjk-literal,app/arrival-catalog.mjs,789,,unknown,reviewable,,北冥有魚，其名為鯤。
 candidate:app/arrival-catalog.mjs:792:16,js-cjk-literal,app/arrival-catalog.mjs,792,,unknown,reviewable,,书中一段
+candidate:app/arrival-excerpt.mjs:2:80,js-cjk-literal,app/arrival-excerpt.mjs,2,,unknown,reviewable,,爱丽丝梦游仙境
+candidate:app/arrival-excerpt.mjs:2:97,js-cjk-literal,app/arrival-excerpt.mjs,2,,unknown,reviewable,,刘易斯·卡罗尔
+candidate:app/arrival-excerpt.mjs:2:115,js-cjk-literal,app/arrival-excerpt.mjs,2,,unknown,reviewable,,第一章
+candidate:app/arrival-excerpt.mjs:2:276,js-cjk-literal,app/arrival-excerpt.mjs,2,,unknown,reviewable,,书里连图画和对话都没有，读它有什么意思？
+candidate:app/arrival-excerpt.mjs:5:40,js-cjk-literal,app/arrival-excerpt.mjs,5,,unknown,reviewable,,書裡連圖畫和對話都沒有，讀它有什麼意思？
+candidate:app/arrival-excerpt.mjs:5:231,js-cjk-literal,app/arrival-excerpt.mjs,5,,unknown,reviewable,,劉易斯·卡羅爾 《愛麗絲夢遊仙境》 · 第一章
 candidate:app/atmosphere-audio.mjs:34:39,js-cjk-literal,app/atmosphere-audio.mjs,34,,unknown,reviewable,,这个浏览器暂不支持氛围声音，可以继续使用阅读主题。
 candidate:app/atmosphere-audio.mjs:48:35,js-cjk-literal,app/atmosphere-audio.mjs,48,,unknown,reviewable,,环境声暂时无法载入，请重试。
 candidate:app/atmosphere-audio.mjs:62:77,js-cjk-literal,app/atmosphere-audio.mjs,62,,unknown,reviewable,,请选择一种阅读氛围。
@@ -2897,7 +2903,7 @@ candidate:app/home.html:66:160,html-text,app/home.html,66,,unknown,reviewable,,�
 candidate:app/home.html:66:171,html-text,app/home.html,66,,unknown,reviewable,,。
 candidate:app/home.html:67:23,html-text,app/home.html,67,,unknown,reviewable,,使用 AI 和朋友共读有哪些限制？
 candidate:app/home.html:67:53,html-text,app/home.html,67,,unknown,reviewable,,直接阅读公版样书不需要调用模型。翻译与对话需要配置模型服务，自托管时由运营者承担供应商费用。赠书信可以分享所选阅读材料；在线好友的实时共读仍是后续设想。
-candidate:app/home.html:70:83,html-text,app/home.html,70,,unknown,reviewable,,Opening your reading records…
+candidate:app/home.html:70:147,html-text,app/home.html,70,,unknown,reviewable,,Opening your reading records…
 candidate:app/home.html:72:407,html-text,app/home.html,72,,unknown,reviewable,,Leafhour
 candidate:app/home.html:73:49,html-text,app/home.html,73,,unknown,reviewable,,我的书房
 candidate:app/home.html:73:156,html-text,app/home.html,73,,unknown,reviewable,,自己的书与阅读记录。
@@ -4266,18 +4272,18 @@ candidate:app/portable-chat.mjs:49:346,js-cjk-literal,app/portable-chat.mjs,49,,
 candidate:app/portable-chat.mjs:52:69,js-cjk-literal,app/portable-chat.mjs,52,,unknown,reviewable,,备份 AI 回答超过容量限制
 candidate:app/portable-chat.mjs:53:55,js-cjk-literal,app/portable-chat.mjs,53,,unknown,reviewable,,未完成对话不能携带回答
 candidate:app/portable-chat.mjs:54:375,js-cjk-literal,app/portable-chat.mjs,54,,unknown,reviewable,,导入前的回答已中断，未恢复生成。
-candidate:app/portal.js:89:528,js-cjk-literal,app/portal.js,89,,unknown,reviewable,,网络暂时无法连接，请稍后重试。
-candidate:app/portal.js:100:790,js-attribute,app/portal.js,100,role,unknown,reviewable,,status
-candidate:app/portal.js:192:111,js-attribute,app/portal.js,192,aria-hidden,unknown,reviewable,,true
-candidate:app/portal.js:202:160,js-cjk-literal,app/portal.js,202,,unknown,reviewable,,"第 "
-candidate:app/portal.js:202:176,js-cjk-literal,app/portal.js,202,,unknown,reviewable,," 章 · "
-candidate:app/portal.js:221:165,js-attribute,app/portal.js,221,lang,unknown,reviewable,,und
-candidate:app/portal.js:224:412,js-cjk-literal,app/portal.js,224,,unknown,reviewable,,文本
-candidate:app/portal.js:227:161,js-attribute,app/portal.js,227,aria-describedby,unknown,protected,identifier,shelf-order-help
-candidate:app/portal.js:227:277,js-attribute,app/portal.js,227,aria-hidden,unknown,reviewable,,true
-candidate:app/portal.js:257:77,js-attribute,app/portal.js,257,aria-hidden,unknown,reviewable,,true
-candidate:app/portal.js:270:47,js-attribute,app/portal.js,270,aria-busy,unknown,reviewable,,false
-candidate:app/portal.js:309:184,js-attribute,app/portal.js,309,aria-busy,unknown,reviewable,,false
+candidate:app/portal.js:90:528,js-cjk-literal,app/portal.js,90,,unknown,reviewable,,网络暂时无法连接，请稍后重试。
+candidate:app/portal.js:114:230,js-attribute,app/portal.js,114,role,unknown,reviewable,,status
+candidate:app/portal.js:207:111,js-attribute,app/portal.js,207,aria-hidden,unknown,reviewable,,true
+candidate:app/portal.js:217:160,js-cjk-literal,app/portal.js,217,,unknown,reviewable,,"第 "
+candidate:app/portal.js:217:176,js-cjk-literal,app/portal.js,217,,unknown,reviewable,," 章 · "
+candidate:app/portal.js:236:165,js-attribute,app/portal.js,236,lang,unknown,reviewable,,und
+candidate:app/portal.js:239:412,js-cjk-literal,app/portal.js,239,,unknown,reviewable,,文本
+candidate:app/portal.js:242:161,js-attribute,app/portal.js,242,aria-describedby,unknown,protected,identifier,shelf-order-help
+candidate:app/portal.js:242:277,js-attribute,app/portal.js,242,aria-hidden,unknown,reviewable,,true
+candidate:app/portal.js:272:77,js-attribute,app/portal.js,272,aria-hidden,unknown,reviewable,,true
+candidate:app/portal.js:285:47,js-attribute,app/portal.js,285,aria-busy,unknown,reviewable,,false
+candidate:app/portal.js:325:209,js-attribute,app/portal.js,325,aria-busy,unknown,reviewable,,false
 candidate:app/pricing-checkout-markup.mjs:2:48,js-cjk-literal,app/pricing-checkout-markup.mjs,2,,unknown,protected,path+quotation,"<dialog autofocus id=""auth-dialog"" class=""auth-dialog"" aria-labelledby=""auth-title"" aria-describedby=""auth-intro"">
   <button class=""dialog-close"" id=""billing-auth-close"" data-close=""auth-dialog"" data-ui-aria-label=""auth.close"" aria-label=""关闭登录"">×</button>
   <div class=""auth-brand"" aria-hidden=""true""><svg viewBox=""0 0 40 40"" fill=""none"" stroke=""currentColor"" stroke-width=""2"" stroke-linecap=""round"" stroke-linejoin=""round"" aria-hidden=""true""><path d=""M8 32V20A13 13 0 0 1 21 7h11v11a14 14 0 0 1-14 14H8Z""/><path d=""M16 23h7v-9""/></svg><span lang=""en"">Leafhour</span></div>
@@ -4507,10 +4513,6 @@ candidate:app/reader.js:601:224,js-cjk-literal,app/reader.js,601,,unknown,review
 candidate:app/reader.js:601:648,js-attribute,app/reader.js,601,role,unknown,reviewable,,status
 candidate:app/reader.js:601:809,js-attribute,app/reader.js,601,role,unknown,reviewable,,alert
 candidate:app/reader.js:615:41,js-cjk-literal,app/reader.js,615,,unknown,reviewable,,较新的位置暂时无法对应原文，请继续读这里。
-candidate:app/reading-arrival.mjs:7:35,js-cjk-literal,app/reading-arrival.mjs,7,,unknown,reviewable,,爱丽丝梦游仙境
-candidate:app/reading-arrival.mjs:7:52,js-cjk-literal,app/reading-arrival.mjs,7,,unknown,reviewable,,刘易斯·卡罗尔
-candidate:app/reading-arrival.mjs:7:70,js-cjk-literal,app/reading-arrival.mjs,7,,unknown,reviewable,,第一章
-candidate:app/reading-arrival.mjs:7:231,js-cjk-literal,app/reading-arrival.mjs,7,,unknown,reviewable,,书里连图画和对话都没有，读它有什么意思？
 candidate:app/reading-arrival.mjs:8:36,js-cjk-literal,app/reading-arrival.mjs,8,,unknown,reviewable,,瓦尔登湖
 candidate:app/reading-arrival.mjs:8:50,js-cjk-literal,app/reading-arrival.mjs,8,,unknown,reviewable,,亨利·戴维·梭罗
 candidate:app/reading-arrival.mjs:8:69,js-cjk-literal,app/reading-arrival.mjs,8,,unknown,reviewable,,经济篇
@@ -4522,11 +4524,9 @@ candidate:app/reading-arrival.mjs:9:260,js-cjk-literal,app/reading-arrival.mjs,9
 candidate:app/reading-arrival.mjs:14:49,js-cjk-literal,app/reading-arrival.mjs,14,,unknown,reviewable,,书中一句
 candidate:app/reading-arrival.mjs:22:77,js-cjk-literal,app/reading-arrival.mjs,22,,unknown,reviewable,,当前书籍
 candidate:app/reading-arrival.mjs:30:263,js-cjk-literal,app/reading-arrival.mjs,30,,unknown,reviewable,,书中一段
-candidate:app/reading-arrival.mjs:61:74,js-cjk-literal,app/reading-arrival.mjs,61,,unknown,reviewable,,书房拾句
-candidate:app/reading-arrival.mjs:85:52,js-cjk-literal,app/reading-arrival.mjs,85,,unknown,reviewable,,書裡連圖畫和對話都沒有，讀它有什麼意思？
-candidate:app/reading-arrival.mjs:89:50,js-cjk-literal,app/reading-arrival.mjs,89,,unknown,reviewable,,劉易斯·卡羅爾 《愛麗絲夢遊仙境》 · 第一章
-candidate:app/reading-arrival.mjs:102:70,js-attribute,app/reading-arrival.mjs,102,role,unknown,reviewable,,status
-candidate:app/reading-arrival.mjs:102:112,js-attribute,app/reading-arrival.mjs,102,aria-live,unknown,reviewable,,polite
+candidate:app/reading-arrival.mjs:62:74,js-cjk-literal,app/reading-arrival.mjs,62,,unknown,reviewable,,书房拾句
+candidate:app/reading-arrival.mjs:100:70,js-attribute,app/reading-arrival.mjs,100,role,unknown,reviewable,,status
+candidate:app/reading-arrival.mjs:100:112,js-attribute,app/reading-arrival.mjs,100,aria-live,unknown,reviewable,,polite
 candidate:app/reading-book.mjs:4:68,js-cjk-literal,app/reading-book.mjs,4,,unknown,reviewable,,找不到这一章
 candidate:app/reading-book.mjs:9:191,js-cjk-literal,app/reading-book.mjs,9,,unknown,reviewable,,章节版本无法核对，请重新打开这本书
 candidate:app/reading-book.mjs:12:245,js-cjk-literal,app/reading-book.mjs,12,,unknown,reviewable,,章节原文不完整，请重试读取
@@ -4635,13 +4635,13 @@ candidate:app/reading-time-policy.mjs:10:93,js-cjk-literal,app/reading-time-poli
 candidate:app/reading-time-policy.mjs:10:111,js-cjk-literal,app/reading-time-policy.mjs,10,,unknown,reviewable,,旧预览记录
 candidate:app/reading-time-policy.mjs:14:35,js-cjk-literal,app/reading-time-policy.mjs,14,,unknown,reviewable,,总时长按所有书籍、设备与口径的区间合并，重叠只计一次；各口径分别去重，彼此可能重叠，不能相加。前台估计在2分钟无操作后暂停；主动专注允许停留思考，隐藏、失焦或手动暂停时不计。手动补记为自报，时长不代表理解程度。
 candidate:app/reading-toolbar.mjs:102:53,js-attribute,app/reading-toolbar.mjs,102,aria-hidden,unknown,reviewable,,true
-candidate:app/reading-workspace.mjs:45:62,js-attribute,app/reading-workspace.mjs,45,role,unknown,reviewable,,status
-candidate:app/reading-workspace.mjs:51:19,js-dom-literal,app/reading-workspace.mjs,51,textContent,unknown,reviewable,,←
-candidate:app/reading-workspace.mjs:51:40,js-dom-literal,app/reading-workspace.mjs,51,textContent,unknown,reviewable,,→
-candidate:app/reading-workspace.mjs:70:364,js-attribute,app/reading-workspace.mjs,70,aria-current,unknown,reviewable,,date
-candidate:app/reading-workspace.mjs:90:108,js-attribute,app/reading-workspace.mjs,90,role,unknown,reviewable,,status
-candidate:app/reading-workspace.mjs:117:295,js-attribute,app/reading-workspace.mjs,117,aria-disabled,unknown,reviewable,,true
-candidate:app/reading-workspace.mjs:126:319,js-attribute,app/reading-workspace.mjs,126,aria-current,unknown,reviewable,,page
+candidate:app/reading-workspace.mjs:48:62,js-attribute,app/reading-workspace.mjs,48,role,unknown,reviewable,,status
+candidate:app/reading-workspace.mjs:54:19,js-dom-literal,app/reading-workspace.mjs,54,textContent,unknown,reviewable,,←
+candidate:app/reading-workspace.mjs:54:40,js-dom-literal,app/reading-workspace.mjs,54,textContent,unknown,reviewable,,→
+candidate:app/reading-workspace.mjs:73:364,js-attribute,app/reading-workspace.mjs,73,aria-current,unknown,reviewable,,date
+candidate:app/reading-workspace.mjs:93:108,js-attribute,app/reading-workspace.mjs,93,role,unknown,reviewable,,status
+candidate:app/reading-workspace.mjs:120:295,js-attribute,app/reading-workspace.mjs,120,aria-disabled,unknown,reviewable,,true
+candidate:app/reading-workspace.mjs:129:319,js-attribute,app/reading-workspace.mjs,129,aria-current,unknown,reviewable,,page
 candidate:app/save-receipts.mjs:6:33,js-cjk-literal,app/save-receipts.mjs,6,,unknown,reviewable,,保存尚未确认。文字仅在当前页面，请先复制；刷新或离开可能丢失。 重试会先确认同一次提交。
 candidate:app/save-receipts.mjs:7:36,js-cjk-literal,app/save-receipts.mjs,7,,unknown,reviewable,,本次时段仅在当前页面，请重试保存或另存记录。
 candidate:app/save-receipts.mjs:8:27,js-cjk-literal,app/save-receipts.mjs,8,,unknown,reviewable,,当前文字是草稿，尚未提交。仅在当前页面，请先复制；刷新或离开可能丢失。
@@ -5971,9 +5971,9 @@ candidate:server/people-runtime-routes.mjs:24:101,js-cjk-literal,server/people-r
 candidate:server/people-runtime-routes.mjs:26:82,js-cjk-literal,server/people-runtime-routes.mjs,26,,unknown,reviewable,,找不到这次整理。
 candidate:server/people-runtime-routes.mjs:27:46,js-cjk-literal,server/people-runtime-routes.mjs,27,,unknown,reviewable,,请使用取消入口。
 candidate:server/people-runtime-routes.mjs:28:41,js-cjk-literal,server/people-runtime-routes.mjs,28,,unknown,reviewable,,请使用查看入口。
-candidate:server/portal-document.mjs:11:50,js-cjk-literal,server/portal-document.mjs,11,,unknown,reviewable,,简体中文
-candidate:server/portal-document.mjs:11:69,js-cjk-literal,server/portal-document.mjs,11,,unknown,reviewable,,繁體中文
-candidate:server/portal-document.mjs:11:83,js-cjk-literal,server/portal-document.mjs,11,,unknown,reviewable,,日本語
+candidate:server/portal-document.mjs:18:50,js-cjk-literal,server/portal-document.mjs,18,,unknown,reviewable,,简体中文
+candidate:server/portal-document.mjs:18:69,js-cjk-literal,server/portal-document.mjs,18,,unknown,reviewable,,繁體中文
+candidate:server/portal-document.mjs:18:83,js-cjk-literal,server/portal-document.mjs,18,,unknown,reviewable,,日本語
 candidate:server/portal.mjs:70:123,js-cjk-literal,server/portal.mjs,70,,unknown,reviewable,,请使用 JSON 请求
 candidate:server/portal.mjs:70:247,js-cjk-literal,server/portal.mjs,70,,unknown,reviewable,,这次导入内容过大，请分书恢复
 candidate:server/portal.mjs:70:387,js-cjk-literal,server/portal.mjs,70,,unknown,reviewable,,这次导入内容过大，请分书恢复
