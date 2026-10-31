@@ -46,7 +46,7 @@ struct LibraryScreen: View {
     private var shelfColumns: [GridItem] {
         dynamicTypeSize.isAccessibilitySize
             ? [GridItem(.flexible(), alignment: .top)]
-            : [GridItem(.adaptive(minimum: 136, maximum: 220), spacing: 20, alignment: .top)]
+            : Array(repeating: GridItem(.flexible(minimum: 0), spacing: 12, alignment: .top), count: 3)
     }
     private var resumeBook: LocalBook? {
         guard resumeOwnerKey == (model.account?.id ?? "device") else { return nil }
@@ -166,7 +166,7 @@ struct LibraryScreen: View {
             }
             if sort == .added { Text("云端书籍沿用书房顺序") }
         } label: {
-            Label("书房显示与排序", systemImage: layout == .grid ? "square.grid.2x2" : "list.bullet")
+            Label("书房显示与排序", systemImage: layout == .grid ? "square.grid.3x3" : "list.bullet")
                 .frame(minWidth: 44, minHeight: 44)
                 .contentShape(Rectangle())
         }
@@ -206,7 +206,7 @@ struct LibraryScreen: View {
                 if model.syncStatus.hasPrefix("暂") { Text(model.syncStatus).font(.footnote).foregroundStyle(.secondary) }
                 if visibleItems.isEmpty { filteredEmptyState.frame(maxWidth: .infinity) }
                 else {
-                    LazyVGrid(columns: shelfColumns, alignment: .leading, spacing: 24) {
+                    LazyVGrid(columns: shelfColumns, alignment: .leading, spacing: 20) {
                         ForEach(visibleItems) { item in
                             LibraryShelfTile(item: item, downloadUnavailable: model.busy, isActive: isActive(item), progress: model.activityProgress, status: model.status, resource: model.coverResource(item), cancel: model.activityCanCancel ? { model.cancelImport() } : nil, selecting: selecting, selected: selectedIDs.contains(item.id), pinned: pinnedIDs.contains(item.id), select: { beginSelection(item) }, togglePin: { setPins([item.id], pinned: !pinnedIDs.contains(item.id)) }, share: { sharing = ShelfShareSelection(items: [item]) }, open: { open(item) }, details: { details(item) })
                         }

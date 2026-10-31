@@ -8,6 +8,7 @@ struct ShelfBookCover: View {
     var resource: BookCoverResource? = nil
     @State private var artwork: UIImage?
     @State private var loadedKey: String?
+    @ScaledMetric(relativeTo: .caption) private var fallbackTitleSize = 14.0
 
     var body: some View {
         ZStack {
@@ -38,7 +39,7 @@ struct ShelfBookCover: View {
                     .frame(maxWidth: .infinity, minHeight: 44)
             } else {
                 Text(title)
-                    .font(.system(size: 19, weight: .semibold, design: .serif))
+                    .font(.system(size: fallbackTitleSize, weight: .semibold, design: .serif))
                     .lineLimit(5)
                     .minimumScaleFactor(0.8)
             }
@@ -48,7 +49,7 @@ struct ShelfBookCover: View {
             }
         }
         .foregroundStyle(Color.leafInk)
-        .padding(compact ? 8 : 16)
+        .padding(compact ? 8 : 12)
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         .background(Color.leafInk.opacity(0.10))
         .clipShape(RoundedRectangle(cornerRadius: compact ? 5 : 9))
@@ -175,6 +176,8 @@ struct LibraryShelfTile: View {
     let open: () -> Void
     let details: () -> Void
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+    @ScaledMetric(relativeTo: .caption) private var titleSize = 13.0
+    @ScaledMetric(relativeTo: .caption2) private var authorSize = 11.0
 
     var body: some View {
         if dynamicTypeSize.isAccessibilitySize {
@@ -194,10 +197,10 @@ struct LibraryShelfTile: View {
                             }
                         HStack(alignment: .firstTextBaseline, spacing: 4) {
                             ShelfBookAvailability(item: item)
-                            Text(item.title).font(.subheadline.weight(.medium)).foregroundStyle(.primary).lineLimit(2)
+                            Text(item.title).font(.system(size: titleSize, weight: .medium)).foregroundStyle(.primary).lineLimit(2, reservesSpace: true)
                                 .frame(maxWidth: .infinity, alignment: .leading)
                         }
-                        if !item.author.isEmpty { Text(item.author).font(.caption).foregroundStyle(.secondary).lineLimit(1) }
+                        if !item.author.isEmpty { Text(item.author).font(.system(size: authorSize)).foregroundStyle(.secondary).lineLimit(1) }
                     }.contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
