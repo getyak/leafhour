@@ -16,6 +16,12 @@ final class LibraryPresentationTests: XCTestCase {
         return try decoder.decode(LocalBook.self, from: JSONSerialization.data(withJSONObject: json))
     }
 
+    private func cloud(_ id: String, title: String, added: TimeInterval? = nil) -> CloudShelfBook {
+        var book = CloudShelfBook(id: id, title: title, author: "", contentVersion: "v1")
+        book.addedAt = added.map(Date.init(timeIntervalSince1970:))
+        return book
+    }
+
     func testDownloadedBookAndNewerCloudVersionRemainOneReadableItem() throws {
         let saved = try local("device-book", title: "A Book", cloudID: "cloud-book")
         let remote = CloudShelfBook(id: "cloud-book", title: "A Book", author: "", contentVersion: "v2")
@@ -79,6 +85,49 @@ final class LibraryPresentationTests: XCTestCase {
         ]
         XCTAssertEqual(LibraryPresentation.items(local: [older, newer], cloud: remote).map(\.title), ["Newer", "Older", "Cloud Z", "Cloud A"])
     }
+
+    func testNewestCloudArrivalPrecedesOlderSavedAndCloudBooksEvenAtEndOfServiceOrder() throws {
+        let saved = try local("saved", title: "Saved", added: 20)
+        let remote = [cloud("older", title: "Older cloud", added: 10), cloud("new", title: "New arrival", added: 30)]
+        XCTAssertEqual(LibraryPresentation.items(local: [saved], cloud: remote).map(\.id), ["cloud:new", "local:saved", "cloud:older"])
+    }
+
+    func testPairedDownloadedBookUsesCloudAdditionDateBeforeDeviceImportDate() throws {
+        let paired = try local("downloaded", title: "Downloaded recently", added: 100, cloudID: "paired")
+        let saved = try local("saved", title: "Added later", added: 20)
+        let remote = [cloud("paired", title: "Downloaded recently", added: 10), cloud("new", title: "New arrival", added: 30)]
+        XCTAssertEqual(LibraryPresentation.items(local: [paired, saved], cloud: remote).map(\.id), ["cloud:new", "local:saved", "cloud:paired"])
+    }
+
+    func testUnknownCloudDatesKeepServiceOrderAfterDatedBooksAndEqualDatesStayStable() throws {
+        let saved = try local("saved", title: "Saved", added: 20)
+        let remote = [
+            cloud("z", title: "Unknown Z"), cloud("equal-z", title: "Equal Z", added: 30),
+            cloud("a", title: "Unknown A"), cloud("equal-a", title: "Equal A", added: 30)
+        ]
+        XCTAssertEqual(LibraryPresentation.items(local: [saved], cloud: remote).map(\.id), ["cloud:equal-z", "cloud:equal-a", "local:saved", "cloud:z", "cloud:a"])
+    }
+
+    func testAddedOrderKeepsAdditionalLocalCopiesAndFallsBackWhenCloudDateIsUnknown() throws {
+        let additional = try local("old-copy", title: "Older copy", added: 40, cloudID: "paired", version: "v0")
+        let current = try local("current-copy", title: "Current copy", added: 30, cloudID: "paired")
+        let remote = [cloud("paired", title: "Current copy"), cloud("new", title: "New arrival", added: 50)]
+        let items = LibraryPresentation.items(local: [additional, current], cloud: remote)
+        XCTAssertEqual(items.map(\.id), ["cloud:new", "local:old-copy", "cloud:paired"])
+        XCTAssertTrue(try XCTUnwrap(items.first { $0.id == "local:old-copy" }).isAdditionalVersion)
+        XCTAssertEqual(items.first { $0.id == "cloud:paired" }?.local?.id, "current-copy")
+    }
+
+    func testCloudArrivalKeepsPinsSearchAndDownloadedFilter() throws {
+        let saved = try local("saved", title: "Saved match", added: 20)
+        let paired = try local("paired-copy", title: "Paired match", added: 100, cloudID: "paired")
+        let remote = [cloud("paired", title: "Paired match", added: 10), cloud("new", title: "New match", added: 30)]
+        let pins: Set<String> = ["cloud:paired"]
+        XCTAssertEqual(LibraryPresentation.items(local: [saved, paired], cloud: remote, query: " MATCH ", pinnedIDs: pins).map(\.id), ["cloud:paired", "cloud:new", "local:saved"])
+        XCTAssertEqual(LibraryPresentation.items(local: [saved, paired], cloud: remote, query: "match", filter: .downloaded, pinnedIDs: pins).map(\.id), ["cloud:paired", "local:saved"])
+        XCTAssertEqual(LibraryPresentation.items(local: [saved, paired], cloud: remote, query: "new", filter: .downloaded, pinnedIDs: pins).map(\.id), [])
+    }
+
     func testPinnedBooksKeepNaturalSortWithinEachGroupAndRemainAccountScoped() throws {
         let books = [CloudShelfBook(id: "b", title: "Book 2", author: "", contentVersion: "v1"), CloudShelfBook(id: "a", title: "Book 1", author: "", contentVersion: "v1"), CloudShelfBook(id: "c", title: "Book 3", author: "", contentVersion: "v1")]
         var pins = LibraryShelfPins()

@@ -579,6 +579,10 @@ private final class CloudMockProtocol: URLProtocol, @unchecked Sendable {
     override class func canInit(with request: URLRequest) -> Bool { true }
     override class func canonicalRequest(for request: URLRequest) -> URLRequest { request }
     override func startLoading() {
+        if request.url?.lastPathComponent == "native-copy" {
+            client?.urlProtocol(self, didReceive: HTTPURLResponse(url: request.url!, statusCode: 404, httpVersion: nil, headerFields: nil)!, cacheStoragePolicy: .notAllowed)
+            client?.urlProtocolDidFinishLoading(self); return
+        }
         do {
             guard let handler = Self.handler else { throw URLError(.badServerResponse) }
             let (status, bytes) = try handler(request)
