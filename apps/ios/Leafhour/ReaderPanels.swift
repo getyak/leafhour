@@ -37,6 +37,9 @@ struct ReaderPanelView: View {
                 case .tools: ReaderMorePanel(session: session, speech: speech, tools: tools, cloud: cloud, reading: reading, onJump: onJump, onCompanion: onCompanion)
                 case .listening: ReaderListeningPanel(session: session, speech: speech)
                 case .translation: ReaderTranslationPanel(session: session, tools: tools, cloud: cloud)
+                case .readingTranslation:
+                    Form { if let reading { ReaderTranslationPreparation(session: session, reading: reading) } }
+                        .navigationTitle("准备译文").navigationBarTitleDisplayMode(.inline)
                 case .introduction: ReaderIntroductionPanel(session: session, tools: tools, cloud: cloud)
                 case .conversation: ReaderConversationPanel(session: session, tools: tools, cloud: cloud)
                 case .bookInformation: ReaderBookInformationPanel(book: session.book)
@@ -295,7 +298,10 @@ struct ReaderPreferencesPanel: View {
                     }.pickerStyle(.segmented).accessibilityIdentifier("reader-reading-variant")
                 }
             } header: { Text("阅读内容") } footer: {
-                if session.state.preferences.viewMode != .source { Text("未准备译文的段落保留原文，切换模式不生成内容。") }
+                if session.state.preferences.viewMode != .source { Text("已有译文会直接显示；缺少译文时，先翻译一段即可开始读。") }
+            }
+            if let reading, session.state.preferences.viewMode != .source {
+                ReaderTranslationPreparation(session: session, reading: reading)
             }
             if let preview, session.book.kind != .pdf || session.state.preferences.viewMode != .source {
                 Section {
@@ -339,9 +345,6 @@ struct ReaderPreferencesPanel: View {
                 } footer: { Text("随系统大字设置缩放，调整自动保存。") }
             } else {
                 Section { Label("保留 PDF 原页，可双指缩放。", systemImage: "doc.richtext").font(.subheadline) }
-            }
-            if let reading, session.state.preferences.viewMode != .source {
-                ReaderTranslationPreparation(session: session, reading: reading)
             }
             Section("纸面") { ReaderThemeChoices(session: session).padding(.vertical, 8) }
                 .listRowBackground(Color.clear).listRowInsets(EdgeInsets())

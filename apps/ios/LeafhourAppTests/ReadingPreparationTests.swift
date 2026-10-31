@@ -55,6 +55,24 @@ final class ReadingPreparationTests: XCTestCase {
         let remaining = try await fixture.library.pendingReadingTranslation(bookID:fixture.session.book.id)
         XCTAssertNil(remaining)
     }
+
+    func testExplicitChapterStreamsOneChapterAndPersistsItsFirstParagraph() async throws {
+        let fixture = try await fixture(), probe = PreparationProbe(owner: owner)
+        PreparationProtocol.install(probe)
+        let reading = ReaderReadingContent()
+        await reading.prepare(fixture.session, cloud: fixture.cloud, library: fixture.library, scope: .chapter)
+        XCTAssertEqual(reading.proposed?.plan.chapterIDs, ["c1"])
+        reading.confirm(try XCTUnwrap(reading.proposed), session: fixture.session, cloud: fixture.cloud, library: fixture.library)
+        try await waitForCompletion(reading)
+        XCTAssertNil(reading.error)
+        XCTAssertEqual(probe.snapshot().filter { $0.0.hasSuffix("/translate") }.compactMap { $0.1["passageId"] as? String }, ["p1"])
+        XCTAssertEqual(reading.completedCount, 1)
+        XCTAssertEqual(reading.totalCount, 1)
+        XCTAssertEqual(fixture.session.translations["p1"]?.literal, "Literal p1")
+        let saved = try await fixture.library.readingTranslations(bookID: fixture.session.book.id)
+        XCTAssertEqual(saved["p1"]?.interpretive, "Interpretive p1")
+        XCTAssertNil(saved["p2"])
+    }
     func testAuthenticationFailureWhileRecoveringKeepsTheOriginalIdempotencyKey() async throws {
         let fixture = try await fixture(), probe = PreparationProbe(owner:owner)
         probe.generationStatuses = [503,401]; PreparationProtocol.install(probe)

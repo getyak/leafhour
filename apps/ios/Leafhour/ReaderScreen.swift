@@ -37,13 +37,14 @@ private struct ReaderChromeHeightKey: PreferenceKey {
     }
 }
 enum ReaderPanel: Identifiable {
-    case contents, search, preferences, appearance, records, tools, listening, translation, introduction, conversation, bookInformation, note(SelectedQuote), source(SelectedQuote), companion(SelectedQuote?)
+    case contents, search, preferences, appearance, records, tools, listening, translation, readingTranslation, introduction, conversation, bookInformation, note(SelectedQuote), source(SelectedQuote), companion(SelectedQuote?)
     var isCompanion: Bool { switch self { case .companion, .conversation: true; default: false } }
     var isNoteEditor: Bool { if case .note = self { true } else { false } }
     var id: String {
         switch self {
         case .contents: "contents"; case .search: "search"; case .preferences: "preferences"; case .records: "records"
         case .appearance: "appearance"; case .tools: "tools"; case .listening: "listening"; case .translation: "translation"
+        case .readingTranslation: "reading-translation"
         case .introduction: "introduction"; case .conversation: "conversation"; case .bookInformation: "book-information"
         case .note(let quote): "note-" + quote.id; case .source(let quote): "source-" + quote.id
         case .companion(let quote): "companion-" + (quote?.id ?? "current")
@@ -64,6 +65,7 @@ struct ReaderScreen: View {
     @State private var speech = ReaderSpeech()
     @State private var tools = ReaderCloudTools()
     @State private var reading = ReaderReadingContent()
+    @State private var offerTranslation = false
     @State private var clockID = UUID()
     @State private var bottomBarFocused = false
     @State private var pagePosition: ReaderPagePosition?
@@ -210,8 +212,15 @@ struct ReaderScreen: View {
         .task(id: readingRefreshKey) {
             guard scenePhase == .active else { return }
             await reading.refresh(session, cloud: cloud, library: library)
+            guard !Task.isCancelled, offerTranslation, session.state.preferences.viewMode != .source else { return }
+            offerTranslation = false
+            if session.book.cloud != nil { await reading.prepare(session, cloud: cloud, library: library, scope: .passage) }
         }
-        .onChange(of: session.state.preferences.viewMode) { _, mode in if mode == .source { reading.stop() }; selectionDismissalID = UUID() }
+        .onChange(of: session.state.preferences.viewMode) { _, mode in
+            offerTranslation = mode != .source
+            if mode == .source { reading.stop() }
+            selectionDismissalID = UUID()
+        }
         .onChange(of: tools.completedTranslation) { _, row in
             if let row { session.updateTranslations(ReaderReadingContent.translations([row])) }
         }
@@ -219,7 +228,7 @@ struct ReaderScreen: View {
         .task(id: clockID) { await settleChrome() }
         .onChange(of: scenePhase) { _, phase in reading.setForeground(phase == .active); if phase != .active { speech.pause(); session.save(); chrome = .asleep } }
         .onAppear { configureReading() }
-        .onDisappear { speech.stop(); reading.stop(); reading.requestPreparation = nil; reading.confirmPreparation = nil }
+        .onDisappear { speech.stop(); reading.stop(); reading.requestPreparation = nil; reading.requestPassagePreparation = nil; reading.confirmPreparation = nil }
     }
     private func settleChrome() async {
         guard chrome != .asleep else { return }
@@ -234,7 +243,11 @@ struct ReaderScreen: View {
         let reading = reading, session = session, cloud = cloud, library = library
         reading.requestPreparation = { [weak reading] in
             guard let reading else { return }
-            Task { await reading.prepare(session, cloud: cloud, library: library) }
+            Task { await reading.prepare(session, cloud: cloud, library: library, scope: .chapter) }
+        }
+        reading.requestPassagePreparation = { [weak reading] in
+            guard let reading else { return }
+            Task { await reading.prepare(session, cloud: cloud, library: library, scope: .passage) }
         }
         reading.confirmPreparation = { [weak reading] run in reading?.confirm(run, session: session, cloud: cloud, library: library) }
     }
@@ -253,6 +266,16 @@ struct ReaderScreen: View {
     }
     private var quietReadingControl: some View {
         HStack {
+            if session.state.preferences.viewMode != .source && session.book.cloud != nil {
+                Button { present(.readingTranslation) } label: {
+                    HStack(spacing: 6) {
+                        if reading.running { ProgressView().controlSize(.mini) }
+                        else { Image(systemName: "character.book.closed") }
+                        Text(reading.running ? "\(reading.completedCount)/\(reading.totalCount)" : "译文").font(.caption).monospacedDigit()
+                    }.padding(.horizontal, 12).frame(minHeight: 44)
+                }.background(.regularMaterial, in: Capsule()).accessibilityLabel(reading.running ? "正在翻译，已完成 \(reading.completedCount) 段，共 \(reading.totalCount) 段" : "准备或恢复译文")
+                    .accessibilityIdentifier("reader-translation-status")
+            }
             Spacer()
             if speech.playing || speech.paused {
                 Button { present(.listening) } label: {

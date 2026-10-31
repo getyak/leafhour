@@ -46,23 +46,33 @@ public enum ReadingLayers {
     }
 }
 
+public enum ReadingTranslationScope: String, Codable, Sendable { case passage, chapter, currentAndNext }
+
 public struct ReadingTranslationPlan: Codable, Equatable, Sendable {
     public let ownerID: String
     public let bookID: String
     public let contentVersion: String
     public let chapterIDs: [String]
     public let passageIDs: [String]
+    // Optional for recovery of envelopes written before explicit scopes existed.
+    public let scope: ReadingTranslationScope?
     public var maximumPoints: Int { passageIDs.count }
-    public static func make(book: LocalBook, chapterIndex: Int, translations: [String: ReadingTranslation]) throws -> Self {
+    public static func make(book: LocalBook, chapterIndex: Int, translations: [String: ReadingTranslation], scope: ReadingTranslationScope = .currentAndNext, passageID: String? = nil) throws -> Self {
         guard let identity = book.cloud, book.chapters.indices.contains(chapterIndex) else { throw LibraryError.invalid("请先登录并同步这本书。") }
-        let chapters = Array(book.chapters.dropFirst(chapterIndex).prefix(2))
+        let chapters = Array(book.chapters.dropFirst(chapterIndex).prefix(scope == .currentAndNext ? 2 : 1))
+        var passages = chapters.flatMap(\.passages)
+        if let passageID {
+            guard let index = chapters[0].passages.firstIndex(where: { $0.id == passageID }) else { throw LibraryError.invalid("当前段落不属于本章，尚未准备译文。") }
+            passages = Array(passages.dropFirst(index)) + Array(passages.prefix(index))
+        }
+        let eligible = passages.filter { !$0.heading && $0.resourcePath == nil && !$0.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }
         var pending: [String] = []
-        for passage in chapters.flatMap(\.passages) where !passage.heading && passage.resourcePath == nil && !passage.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+        for passage in eligible.prefix(scope == .passage ? 1 : eligible.count) {
             let existing = translations[passage.id].flatMap { $0.original == passage.text ? $0 : nil }
             let literal = existing?.text(.literal) != nil, interpretive = existing?.text(.interpretive) != nil
             if literal != interpretive { throw LibraryError.invalid("有段落已有部分译文，请先核对；预译不会覆盖它。") }
             if !literal && pending.count < 100 { pending.append(passage.id) }
         }
-        return Self(ownerID: identity.ownerID, bookID: identity.bookID, contentVersion: identity.contentVersion, chapterIDs: chapters.map(\.id), passageIDs: pending)
+        return Self(ownerID: identity.ownerID, bookID: identity.bookID, contentVersion: identity.contentVersion, chapterIDs: chapters.map(\.id), passageIDs: pending, scope: scope)
     }
 }

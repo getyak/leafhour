@@ -17,7 +17,10 @@ final class ReaderReadingContent {
     var status: String?
     var error: String?
     var proposed: ReaderTranslationRun?
+    var completedCount = 0
+    var totalCount = 0
     @ObservationIgnored var requestPreparation: (() -> Void)?
+    @ObservationIgnored var requestPassagePreparation: (() -> Void)?
     @ObservationIgnored var confirmPreparation: ((ReaderTranslationRun) -> Void)?
     private var task: Task<Void, Never>?
     private var refreshID = UUID()
@@ -69,8 +72,10 @@ final class ReaderReadingContent {
         return result
     }
 
-    func prepare(_ session: ReaderSession, cloud: CloudLibraryClient?, library: OfflineLibrary?) async {
+    func prepare(_ session: ReaderSession, cloud: CloudLibraryClient?, library: OfflineLibrary?, scope: ReadingTranslationScope = .currentAndNext) async {
         guard !running, !loading, let identity = session.book.cloud, let cloud, let library else { error = "请先登录并同步这本书，再准备译文。"; return }
+        let chapterIndex = session.chapterIndex, navigation = session.navigationID
+        let passageID = session.currentAnchor?.passageID
         error = nil; loading = true
         defer { loading = false }
         do {
@@ -78,7 +83,7 @@ final class ReaderReadingContent {
             if let data = try await library.pendingReadingTranslation(bookID: session.book.id) {
                 let saved = try JSONDecoder().decode(ReaderTranslationRun.self, from: data)
                 try Self.validate(saved, session: session)
-                if saved.plan.chapterIDs.contains(session.chapter.id) || saved.pending != nil {
+                if saved.pending != nil || (saved.next > 0 && saved.plan.chapterIDs.contains(session.chapter.id) && saved.plan.scope == scope) {
                     proposed = saved; return
                 }
                 // A new explicit request replaces only unsubmitted work. Preserve
@@ -87,8 +92,9 @@ final class ReaderReadingContent {
                 session.updateTranslations(Self.translations(saved.completed))
                 try await library.savePendingReadingTranslation(nil, bookID: session.book.id)
             }
-            let plan = try ReadingTranslationPlan.make(book: session.book, chapterIndex: session.chapterIndex, translations: session.translations)
-            guard !plan.passageIDs.isEmpty else { status = "当前章与下一章的双译已准备好。"; return }
+            guard !Task.isCancelled, navigation == session.navigationID, chapterIndex == session.chapterIndex else { return }
+            let plan = try ReadingTranslationPlan.make(book: session.book, chapterIndex: chapterIndex, translations: session.translations, scope: scope, passageID: passageID)
+            guard !plan.passageIDs.isEmpty else { status = scope == .passage ? "当前段的双译已准备好。" : "本次范围的双译已准备好。"; return }
             proposed = ReaderTranslationRun(plan: plan)
         } catch { self.error = error.localizedDescription }
     }
@@ -113,7 +119,9 @@ final class ReaderReadingContent {
     }
     func confirm(_ run: ReaderTranslationRun, session: ReaderSession, cloud: CloudLibraryClient?, library: OfflineLibrary?) {
         guard !running, foreground, session.state.preferences.viewMode != .source, let cloud, let library else { return }
+        guard run.pending != nil || run.plan.chapterIDs.contains(session.chapter.id) else { proposed = nil; error = "已切换章节，请从当前章重新准备译文。"; return }
         proposed = nil; running = true; error = nil; activeChapterIDs = run.plan.chapterIDs
+        completedCount = run.next; totalCount = run.plan.passageIDs.count
         task = Task { await execute(run, session: session, cloud: cloud, library: library) }
     }
     func stop() { task?.cancel() }
@@ -146,7 +154,7 @@ final class ReaderReadingContent {
                     // Refresh may have brought a complete result from another device.
                     if let existing = session.translations[id], existing.original == passage.text,
                        existing.text(.literal) != nil, existing.text(.interpretive) != nil {
-                        run.next += 1; try await persist(); continue
+                        run.next += 1; completedCount = run.next; try await persist(); continue
                     }
                     await worker.prepare("translation", session: session, cloud: cloud,
                         selection: SelectedQuote(anchor: ReadingAnchor(chapterID: chapter.id, passageID: id), text: passage.text))
@@ -157,7 +165,7 @@ final class ReaderReadingContent {
                 }
                 try Task.checkCancellation()
                 guard let intent = run.pending else { break }
-                status = "正在准备译文 · \(run.next + 1)/\(run.plan.passageIDs.count)"
+                status = "正在翻译第 \(run.next + 1) 段，共 \(run.plan.passageIDs.count) 段"
                 await worker.perform(intent, cloud: cloud)
                 guard let result = worker.completedTranslation else {
                     // Only a scoped terminal billing receipt can retire a durable
@@ -172,6 +180,7 @@ final class ReaderReadingContent {
                 }
                 run.completed.append(result); run.pending = nil; run.next += 1
                 try await persist() // Completed results survive even before a cache batch flush.
+                completedCount = run.next
                 session.updateTranslations([id: translated])
                 if run.completed.count >= 4 { try await flush() }
                 if !run.plan.chapterIDs.contains(session.chapter.id) {
