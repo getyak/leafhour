@@ -18,7 +18,7 @@
       },
       {
         "file": "api/ui-entry.js",
-        "sha256": "90f58ef1933b9f3c1917153aed82355529f0e1f5b10d0e63a106d74d20659a83"
+        "sha256": "2a3148bfe59a56de0d4665a7af5cab3bf1af54360b7b0909401813bebbe1b9ea"
       },
       {
         "file": "app/account-ui-preferences-browser.mjs",
@@ -138,7 +138,7 @@
       },
       {
         "file": "app/book-upload-controller.mjs",
-        "sha256": "6227ab160092939143cabd52bf3e95d396a55d61c155e44b6a6e00a5ed707ac7"
+        "sha256": "5ef7216a0b18d0aabf4a2f267ea24ef3faeab907045ecda7fd46c02da25bc35b"
       },
       {
         "file": "app/browser-globals.mjs",
@@ -494,7 +494,7 @@
       },
       {
         "file": "app/pdf-ingestion.mjs",
-        "sha256": "6c79f13213657453adc82114e05506095479a3b3758c56c18e184ff3984b473e"
+        "sha256": "022d101d5d9d0f3870ebce176a976e297ceddbcb7821321b3a9d2b48649476fe"
       },
       {
         "file": "app/pdf-onboarding-state.mjs",
@@ -1082,7 +1082,7 @@
       },
       {
         "file": "server/book-ingestion.mjs",
-        "sha256": "6f803c4805f9d8b7c13c0c8596b45220e18c0f333889807808fe73ff81576577"
+        "sha256": "0f80a0c7f46d552981cf66dc07042e4daacbf33a4928bddad24bd651260cfa6c"
       },
       {
         "file": "server/book-introduction-store.mjs",
@@ -1122,7 +1122,7 @@
       },
       {
         "file": "server/content-security.mjs",
-        "sha256": "ded0afa837081672e75cce0e90078a3d2925e6a426e892aafc6aaec04ce0a8e3"
+        "sha256": "0d8473191d29118524d99a0800d149b745a479ea11d26825cc4c297a0967c29e"
       },
       {
         "file": "server/credit-gate.mjs",
@@ -1190,7 +1190,7 @@
       },
       {
         "file": "server/ingestion-upload.mjs",
-        "sha256": "891f49afe932f799ce01139b9b65d93eddb8339b9ca48cd52b950be063b52020"
+        "sha256": "7b5db30122325e8a364b2701105f6a8d94ea73ed0f68d4950649648024e0285d"
       },
       {
         "file": "server/library-arrival.mjs",
@@ -1306,7 +1306,7 @@
       },
       {
         "file": "server/portal.mjs",
-        "sha256": "239f4ddc153b021b8ae316a5a8e0bda18df650313d96c808472e5ed4f79e076e"
+        "sha256": "46d2c14c59fe8ed862f740296f615ae41ea5ff4d97b1cc50ebd77232a2028922"
       },
       {
         "file": "server/preference-memory.mjs",
@@ -1378,7 +1378,7 @@
       },
       {
         "file": "server/server.mjs",
-        "sha256": "ab41772c1a4040052ff4c7328704d5c9e42091b896b23b9dd1cdef43d30b6c8e"
+        "sha256": "5126a5fd6123080d7771c7ecda0bc319d7b805f91ba4b943446977341fd7385b"
       },
       {
         "file": "server/source-revisions.mjs",
@@ -1409,7 +1409,7 @@
         "sha256": "531202f1814314b6c76bfef38b2ea66636425b1ca9b445db349e70ebb8bcd00e"
       }
     ],
-    "inputDigest": "216d67d38a415cbe487f0d4bcd483366fcd0c7a8c2214745547f69a42d156fee"
+    "inputDigest": "75c79f0273112bce0a1ab54818ff60ecfd06fe60faf84b467f392a49594a703c"
   },
   "locales": [
     "en",
@@ -14702,7 +14702,7 @@
       "consumers": [
         {
           "file": "app/pdf-ingestion.mjs",
-          "line": 22,
+          "line": 23,
           "column": 18
         }
       ],
@@ -14759,22 +14759,12 @@
       "consumers": [
         {
           "file": "app/pdf-ingestion.mjs",
-          "line": 16,
-          "column": 46
-        },
-        {
-          "file": "app/pdf-ingestion.mjs",
-          "line": 16,
-          "column": 81
-        },
-        {
-          "file": "app/pdf-ingestion.mjs",
-          "line": 19,
+          "line": 20,
           "column": 185
         },
         {
           "file": "app/pdf-ingestion.mjs",
-          "line": 19,
+          "line": 20,
           "column": 220
         }
       ],
@@ -14832,11 +14822,11 @@
         {
           "file": "app/book-upload-controller.mjs",
           "line": 31,
-          "column": 301
+          "column": 331
         },
         {
           "file": "app/pdf-ingestion.mjs",
-          "line": 26,
+          "line": 27,
           "column": 33
         }
       ],
@@ -14893,7 +14883,7 @@
       "consumers": [
         {
           "file": "app/pdf-ingestion.mjs",
-          "line": 32,
+          "line": 33,
           "column": 42
         }
       ],
@@ -14950,7 +14940,7 @@
       "consumers": [
         {
           "file": "app/pdf-ingestion.mjs",
-          "line": 32,
+          "line": 33,
           "column": 91
         }
       ],
@@ -15007,7 +14997,7 @@
       "consumers": [
         {
           "file": "app/pdf-ingestion.mjs",
-          "line": 32,
+          "line": 33,
           "column": 116
         }
       ],
@@ -15064,7 +15054,7 @@
       "consumers": [
         {
           "file": "app/pdf-ingestion.mjs",
-          "line": 29,
+          "line": 30,
           "column": 164
         }
       ],
@@ -15121,12 +15111,12 @@
       "consumers": [
         {
           "file": "app/pdf-ingestion.mjs",
-          "line": 36,
+          "line": 37,
           "column": 88
         },
         {
           "file": "app/pdf-ingestion.mjs",
-          "line": 36,
+          "line": 37,
           "column": 138
         }
       ],
@@ -27528,12 +27518,12 @@
         },
         {
           "file": "app/pdf-ingestion.mjs",
-          "line": 31,
+          "line": 32,
           "column": 10
         },
         {
           "file": "app/pdf-ingestion.mjs",
-          "line": 35,
+          "line": 36,
           "column": 17
         },
         {
@@ -27583,57 +27573,57 @@
         },
         {
           "file": "server/book-ingestion.mjs",
-          "line": 78,
+          "line": 79,
           "column": 93
         },
         {
           "file": "server/book-ingestion.mjs",
-          "line": 79,
+          "line": 80,
           "column": 108
         },
         {
           "file": "server/book-ingestion.mjs",
-          "line": 79,
+          "line": 80,
           "column": 181
         },
         {
           "file": "server/book-ingestion.mjs",
-          "line": 83,
+          "line": 84,
           "column": 87
         },
         {
           "file": "server/book-ingestion.mjs",
-          "line": 103,
+          "line": 104,
           "column": 28
         },
         {
           "file": "server/book-ingestion.mjs",
-          "line": 115,
+          "line": 116,
           "column": 143
         },
         {
           "file": "server/book-ingestion.mjs",
-          "line": 131,
+          "line": 132,
           "column": 28
         },
         {
           "file": "server/book-ingestion.mjs",
-          "line": 142,
+          "line": 143,
           "column": 201
         },
         {
           "file": "server/book-ingestion.mjs",
-          "line": 157,
+          "line": 158,
           "column": 22
         },
         {
           "file": "server/book-ingestion.mjs",
-          "line": 159,
+          "line": 160,
           "column": 457
         },
         {
           "file": "server/book-ingestion.mjs",
-          "line": 177,
+          "line": 178,
           "column": 584
         },
         {
@@ -253245,9 +253235,9 @@
       }
     },
     {
-      "id": "candidate:server/book-ingestion.mjs:42:107",
+      "id": "candidate:server/book-ingestion.mjs:43:107",
       "file": "server/book-ingestion.mjs",
-      "line": 42,
+      "line": 43,
       "column": 107,
       "kind": "js-cjk-literal",
       "property": null,
@@ -253265,9 +253255,9 @@
       }
     },
     {
-      "id": "candidate:server/book-ingestion.mjs:49:191",
+      "id": "candidate:server/book-ingestion.mjs:50:191",
       "file": "server/book-ingestion.mjs",
-      "line": 49,
+      "line": 50,
       "column": 191,
       "kind": "js-cjk-literal",
       "property": null,
@@ -253285,9 +253275,9 @@
       }
     },
     {
-      "id": "candidate:server/book-ingestion.mjs:52:46",
+      "id": "candidate:server/book-ingestion.mjs:53:46",
       "file": "server/book-ingestion.mjs",
-      "line": 52,
+      "line": 53,
       "column": 46,
       "kind": "js-cjk-literal",
       "property": null,
@@ -253305,9 +253295,9 @@
       }
     },
     {
-      "id": "candidate:server/book-ingestion.mjs:53:41",
+      "id": "candidate:server/book-ingestion.mjs:54:41",
       "file": "server/book-ingestion.mjs",
-      "line": 53,
+      "line": 54,
       "column": 41,
       "kind": "js-cjk-literal",
       "property": null,
@@ -253325,9 +253315,9 @@
       }
     },
     {
-      "id": "candidate:server/book-ingestion.mjs:54:90",
+      "id": "candidate:server/book-ingestion.mjs:55:90",
       "file": "server/book-ingestion.mjs",
-      "line": 54,
+      "line": 55,
       "column": 90,
       "kind": "js-cjk-literal",
       "property": null,
@@ -253345,9 +253335,9 @@
       }
     },
     {
-      "id": "candidate:server/book-ingestion.mjs:55:83",
+      "id": "candidate:server/book-ingestion.mjs:56:83",
       "file": "server/book-ingestion.mjs",
-      "line": 55,
+      "line": 56,
       "column": 83,
       "kind": "js-cjk-literal",
       "property": null,
@@ -253365,9 +253355,9 @@
       }
     },
     {
-      "id": "candidate:server/book-ingestion.mjs:61:108",
+      "id": "candidate:server/book-ingestion.mjs:62:108",
       "file": "server/book-ingestion.mjs",
-      "line": 61,
+      "line": 62,
       "column": 108,
       "kind": "js-cjk-literal",
       "property": null,
@@ -253385,9 +253375,9 @@
       }
     },
     {
-      "id": "candidate:server/book-ingestion.mjs:71:66",
+      "id": "candidate:server/book-ingestion.mjs:72:66",
       "file": "server/book-ingestion.mjs",
-      "line": 71,
+      "line": 72,
       "column": 66,
       "kind": "js-cjk-literal",
       "property": null,
@@ -253405,9 +253395,9 @@
       }
     },
     {
-      "id": "candidate:server/book-ingestion.mjs:71:137",
+      "id": "candidate:server/book-ingestion.mjs:72:137",
       "file": "server/book-ingestion.mjs",
-      "line": 71,
+      "line": 72,
       "column": 137,
       "kind": "js-cjk-literal",
       "property": null,
@@ -253425,9 +253415,9 @@
       }
     },
     {
-      "id": "candidate:server/book-ingestion.mjs:72:27",
+      "id": "candidate:server/book-ingestion.mjs:73:27",
       "file": "server/book-ingestion.mjs",
-      "line": 72,
+      "line": 73,
       "column": 27,
       "kind": "js-cjk-literal",
       "property": null,
@@ -253445,9 +253435,9 @@
       }
     },
     {
-      "id": "candidate:server/book-ingestion.mjs:83:68",
+      "id": "candidate:server/book-ingestion.mjs:84:68",
       "file": "server/book-ingestion.mjs",
-      "line": 83,
+      "line": 84,
       "column": 68,
       "kind": "js-cjk-literal",
       "property": null,
@@ -253465,9 +253455,9 @@
       }
     },
     {
-      "id": "candidate:server/book-ingestion.mjs:85:114",
+      "id": "candidate:server/book-ingestion.mjs:86:114",
       "file": "server/book-ingestion.mjs",
-      "line": 85,
+      "line": 86,
       "column": 114,
       "kind": "js-cjk-literal",
       "property": null,
@@ -253485,9 +253475,9 @@
       }
     },
     {
-      "id": "candidate:server/book-ingestion.mjs:86:111",
+      "id": "candidate:server/book-ingestion.mjs:87:111",
       "file": "server/book-ingestion.mjs",
-      "line": 86,
+      "line": 87,
       "column": 111,
       "kind": "js-cjk-literal",
       "property": null,
@@ -253505,9 +253495,9 @@
       }
     },
     {
-      "id": "candidate:server/book-ingestion.mjs:91:118",
+      "id": "candidate:server/book-ingestion.mjs:92:118",
       "file": "server/book-ingestion.mjs",
-      "line": 91,
+      "line": 92,
       "column": 118,
       "kind": "js-cjk-literal",
       "property": null,
@@ -253525,9 +253515,9 @@
       }
     },
     {
-      "id": "candidate:server/book-ingestion.mjs:98:70",
+      "id": "candidate:server/book-ingestion.mjs:99:70",
       "file": "server/book-ingestion.mjs",
-      "line": 98,
+      "line": 99,
       "column": 70,
       "kind": "js-cjk-literal",
       "property": null,
@@ -253545,9 +253535,9 @@
       }
     },
     {
-      "id": "candidate:server/book-ingestion.mjs:98:224",
+      "id": "candidate:server/book-ingestion.mjs:99:224",
       "file": "server/book-ingestion.mjs",
-      "line": 98,
+      "line": 99,
       "column": 224,
       "kind": "js-cjk-literal",
       "property": null,
@@ -253565,9 +253555,9 @@
       }
     },
     {
-      "id": "candidate:server/book-ingestion.mjs:99:95",
+      "id": "candidate:server/book-ingestion.mjs:100:95",
       "file": "server/book-ingestion.mjs",
-      "line": 99,
+      "line": 100,
       "column": 95,
       "kind": "js-cjk-literal",
       "property": null,
@@ -253585,9 +253575,9 @@
       }
     },
     {
-      "id": "candidate:server/book-ingestion.mjs:105:157",
+      "id": "candidate:server/book-ingestion.mjs:106:157",
       "file": "server/book-ingestion.mjs",
-      "line": 105,
+      "line": 106,
       "column": 157,
       "kind": "js-cjk-literal",
       "property": null,
@@ -253605,9 +253595,9 @@
       }
     },
     {
-      "id": "candidate:server/book-ingestion.mjs:107:96",
+      "id": "candidate:server/book-ingestion.mjs:108:96",
       "file": "server/book-ingestion.mjs",
-      "line": 107,
+      "line": 108,
       "column": 96,
       "kind": "js-cjk-literal",
       "property": null,
@@ -253625,9 +253615,9 @@
       }
     },
     {
-      "id": "candidate:server/book-ingestion.mjs:118:82",
+      "id": "candidate:server/book-ingestion.mjs:119:82",
       "file": "server/book-ingestion.mjs",
-      "line": 118,
+      "line": 119,
       "column": 82,
       "kind": "js-cjk-literal",
       "property": null,
@@ -253645,9 +253635,9 @@
       }
     },
     {
-      "id": "candidate:server/book-ingestion.mjs:123:70",
+      "id": "candidate:server/book-ingestion.mjs:124:70",
       "file": "server/book-ingestion.mjs",
-      "line": 123,
+      "line": 124,
       "column": 70,
       "kind": "js-cjk-literal",
       "property": null,
@@ -253665,9 +253655,9 @@
       }
     },
     {
-      "id": "candidate:server/book-ingestion.mjs:123:222",
+      "id": "candidate:server/book-ingestion.mjs:124:222",
       "file": "server/book-ingestion.mjs",
-      "line": 123,
+      "line": 124,
       "column": 222,
       "kind": "js-cjk-literal",
       "property": null,
@@ -253685,9 +253675,9 @@
       }
     },
     {
-      "id": "candidate:server/book-ingestion.mjs:125:22",
+      "id": "candidate:server/book-ingestion.mjs:126:22",
       "file": "server/book-ingestion.mjs",
-      "line": 125,
+      "line": 126,
       "column": 22,
       "kind": "js-cjk-literal",
       "property": null,
@@ -253705,9 +253695,9 @@
       }
     },
     {
-      "id": "candidate:server/book-ingestion.mjs:137:122",
+      "id": "candidate:server/book-ingestion.mjs:138:122",
       "file": "server/book-ingestion.mjs",
-      "line": 137,
+      "line": 138,
       "column": 122,
       "kind": "js-cjk-literal",
       "property": null,
@@ -253725,9 +253715,9 @@
       }
     },
     {
-      "id": "candidate:server/book-ingestion.mjs:139:162",
+      "id": "candidate:server/book-ingestion.mjs:140:162",
       "file": "server/book-ingestion.mjs",
-      "line": 139,
+      "line": 140,
       "column": 162,
       "kind": "js-cjk-literal",
       "property": null,
@@ -253745,9 +253735,9 @@
       }
     },
     {
-      "id": "candidate:server/book-ingestion.mjs:144:351",
+      "id": "candidate:server/book-ingestion.mjs:145:351",
       "file": "server/book-ingestion.mjs",
-      "line": 144,
+      "line": 145,
       "column": 351,
       "kind": "js-cjk-literal",
       "property": null,
@@ -253765,9 +253755,9 @@
       }
     },
     {
-      "id": "candidate:server/book-ingestion.mjs:146:72",
+      "id": "candidate:server/book-ingestion.mjs:147:72",
       "file": "server/book-ingestion.mjs",
-      "line": 146,
+      "line": 147,
       "column": 72,
       "kind": "js-cjk-literal",
       "property": null,
@@ -253785,9 +253775,9 @@
       }
     },
     {
-      "id": "candidate:server/book-ingestion.mjs:147:32",
+      "id": "candidate:server/book-ingestion.mjs:148:32",
       "file": "server/book-ingestion.mjs",
-      "line": 147,
+      "line": 148,
       "column": 32,
       "kind": "js-cjk-literal",
       "property": null,
@@ -253805,9 +253795,9 @@
       }
     },
     {
-      "id": "candidate:server/book-ingestion.mjs:149:66",
+      "id": "candidate:server/book-ingestion.mjs:150:66",
       "file": "server/book-ingestion.mjs",
-      "line": 149,
+      "line": 150,
       "column": 66,
       "kind": "js-cjk-literal",
       "property": null,
@@ -253825,9 +253815,9 @@
       }
     },
     {
-      "id": "candidate:server/book-ingestion.mjs:156:171",
+      "id": "candidate:server/book-ingestion.mjs:157:171",
       "file": "server/book-ingestion.mjs",
-      "line": 156,
+      "line": 157,
       "column": 171,
       "kind": "js-cjk-literal",
       "property": null,
@@ -253845,9 +253835,9 @@
       }
     },
     {
-      "id": "candidate:server/book-ingestion.mjs:158:249",
+      "id": "candidate:server/book-ingestion.mjs:159:249",
       "file": "server/book-ingestion.mjs",
-      "line": 158,
+      "line": 159,
       "column": 249,
       "kind": "js-cjk-literal",
       "property": null,
@@ -253865,9 +253855,9 @@
       }
     },
     {
-      "id": "candidate:server/book-ingestion.mjs:159:301",
+      "id": "candidate:server/book-ingestion.mjs:160:301",
       "file": "server/book-ingestion.mjs",
-      "line": 159,
+      "line": 160,
       "column": 301,
       "kind": "js-cjk-literal",
       "property": null,
@@ -253885,9 +253875,9 @@
       }
     },
     {
-      "id": "candidate:server/book-ingestion.mjs:167:94",
+      "id": "candidate:server/book-ingestion.mjs:168:94",
       "file": "server/book-ingestion.mjs",
-      "line": 167,
+      "line": 168,
       "column": 94,
       "kind": "js-cjk-literal",
       "property": null,
@@ -253905,9 +253895,9 @@
       }
     },
     {
-      "id": "candidate:server/book-ingestion.mjs:167:215",
+      "id": "candidate:server/book-ingestion.mjs:168:215",
       "file": "server/book-ingestion.mjs",
-      "line": 167,
+      "line": 168,
       "column": 215,
       "kind": "js-cjk-literal",
       "property": null,
@@ -253925,9 +253915,9 @@
       }
     },
     {
-      "id": "candidate:server/book-ingestion.mjs:173:544",
+      "id": "candidate:server/book-ingestion.mjs:174:544",
       "file": "server/book-ingestion.mjs",
-      "line": 173,
+      "line": 174,
       "column": 544,
       "kind": "js-cjk-literal",
       "property": null,
@@ -253945,9 +253935,9 @@
       }
     },
     {
-      "id": "candidate:server/book-ingestion.mjs:173:576",
+      "id": "candidate:server/book-ingestion.mjs:174:576",
       "file": "server/book-ingestion.mjs",
-      "line": 173,
+      "line": 174,
       "column": 576,
       "kind": "js-cjk-literal",
       "property": null,
@@ -253965,9 +253955,9 @@
       }
     },
     {
-      "id": "candidate:server/book-ingestion.mjs:173:616",
+      "id": "candidate:server/book-ingestion.mjs:174:616",
       "file": "server/book-ingestion.mjs",
-      "line": 173,
+      "line": 174,
       "column": 616,
       "kind": "js-cjk-literal",
       "property": null,
@@ -253985,9 +253975,9 @@
       }
     },
     {
-      "id": "candidate:server/book-ingestion.mjs:173:762",
+      "id": "candidate:server/book-ingestion.mjs:174:762",
       "file": "server/book-ingestion.mjs",
-      "line": 173,
+      "line": 174,
       "column": 762,
       "kind": "js-cjk-literal",
       "property": null,
@@ -254005,9 +253995,9 @@
       }
     },
     {
-      "id": "candidate:server/book-ingestion.mjs:173:784",
+      "id": "candidate:server/book-ingestion.mjs:174:784",
       "file": "server/book-ingestion.mjs",
-      "line": 173,
+      "line": 174,
       "column": 784,
       "kind": "js-cjk-literal",
       "property": null,
@@ -254025,9 +254015,9 @@
       }
     },
     {
-      "id": "candidate:server/book-ingestion.mjs:173:1237",
+      "id": "candidate:server/book-ingestion.mjs:174:1237",
       "file": "server/book-ingestion.mjs",
-      "line": 173,
+      "line": 174,
       "column": 1237,
       "kind": "js-cjk-literal",
       "property": null,
@@ -254045,9 +254035,9 @@
       }
     },
     {
-      "id": "candidate:server/book-ingestion.mjs:176:85",
+      "id": "candidate:server/book-ingestion.mjs:177:85",
       "file": "server/book-ingestion.mjs",
-      "line": 176,
+      "line": 177,
       "column": 85,
       "kind": "js-cjk-literal",
       "property": null,
@@ -254065,9 +254055,9 @@
       }
     },
     {
-      "id": "candidate:server/book-ingestion.mjs:177:152",
+      "id": "candidate:server/book-ingestion.mjs:178:152",
       "file": "server/book-ingestion.mjs",
-      "line": 177,
+      "line": 178,
       "column": 152,
       "kind": "js-cjk-literal",
       "property": null,
@@ -254085,9 +254075,9 @@
       }
     },
     {
-      "id": "candidate:server/book-ingestion.mjs:177:499",
+      "id": "candidate:server/book-ingestion.mjs:178:499",
       "file": "server/book-ingestion.mjs",
-      "line": 177,
+      "line": 178,
       "column": 499,
       "kind": "js-cjk-literal",
       "property": null,
@@ -254105,9 +254095,9 @@
       }
     },
     {
-      "id": "candidate:server/book-ingestion.mjs:177:551",
+      "id": "candidate:server/book-ingestion.mjs:178:551",
       "file": "server/book-ingestion.mjs",
-      "line": 177,
+      "line": 178,
       "column": 551,
       "kind": "js-cjk-literal",
       "property": null,
@@ -259465,14 +259455,14 @@
       }
     },
     {
-      "id": "candidate:server/ingestion-upload.mjs:10:241",
+      "id": "candidate:server/ingestion-upload.mjs:10:404",
       "file": "server/ingestion-upload.mjs",
       "line": 10,
-      "column": 241,
+      "column": 404,
       "kind": "js-cjk-literal",
       "property": null,
-      "value": "请选择 256 MB 内的 PDF",
-      "sha256": "afb0ad08b91a703547d313b4a09cf7d5069c99664cf65c7e94857d677b0b36f9",
+      "value": "请选择容量内的 PDF、EPUB 或文本文件",
+      "sha256": "c8c93df4b751fdf1c7b7f0012c464de2c05ff90a0ccd39645c6ef1e09e680f61",
       "protected": false,
       "protectionReason": null,
       "hints": [],
@@ -259485,10 +259475,10 @@
       }
     },
     {
-      "id": "candidate:server/ingestion-upload.mjs:12:59",
+      "id": "candidate:server/ingestion-upload.mjs:12:64",
       "file": "server/ingestion-upload.mjs",
       "line": 12,
-      "column": 59,
+      "column": 64,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "请允许 PaddleOCR 官方服务识别本书",
@@ -259925,10 +259915,10 @@
       }
     },
     {
-      "id": "candidate:server/ingestion-upload.mjs:41:937",
+      "id": "candidate:server/ingestion-upload.mjs:41:980",
       "file": "server/ingestion-upload.mjs",
       "line": 41,
-      "column": 937,
+      "column": 980,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "上传状态已变化，请重新选择原文件",
@@ -285557,7 +285547,7 @@
     {
       "kind": "concatenation",
       "file": "app/pdf-ingestion.mjs",
-      "line": 14,
+      "line": 15,
       "expression": "'/api/library/pdf-upload/'+upload.id+'/target'",
       "fragments": [
         "/api/library/pdf-upload/",
@@ -285568,7 +285558,7 @@
     {
       "kind": "concatenation",
       "file": "app/pdf-ingestion.mjs",
-      "line": 14,
+      "line": 15,
       "expression": "'/api/library/pdf-upload/'+upload.id",
       "fragments": [
         "/api/library/pdf-upload/"
@@ -285599,7 +285589,7 @@
     {
       "kind": "computed-member",
       "file": "app/pdf-ingestion.mjs",
-      "line": 19,
+      "line": 20,
       "expression": "1",
       "fragments": [],
       "unresolved": true
@@ -285607,7 +285597,7 @@
     {
       "kind": "concatenation",
       "file": "app/pdf-ingestion.mjs",
-      "line": 20,
+      "line": 21,
       "expression": "'/api/library/pdf-upload/'+upload.id+'/part'",
       "fragments": [
         "/api/library/pdf-upload/",
@@ -285618,7 +285608,7 @@
     {
       "kind": "concatenation",
       "file": "app/pdf-ingestion.mjs",
-      "line": 20,
+      "line": 21,
       "expression": "'/api/library/pdf-upload/'+upload.id",
       "fragments": [
         "/api/library/pdf-upload/"
@@ -285628,7 +285618,7 @@
     {
       "kind": "concatenation",
       "file": "app/pdf-ingestion.mjs",
-      "line": 26,
+      "line": 27,
       "expression": "'/api/library/pdf-upload/'+upload.id+'/complete'",
       "fragments": [
         "/api/library/pdf-upload/",
@@ -285639,7 +285629,7 @@
     {
       "kind": "concatenation",
       "file": "app/pdf-ingestion.mjs",
-      "line": 26,
+      "line": 27,
       "expression": "'/api/library/pdf-upload/'+upload.id",
       "fragments": [
         "/api/library/pdf-upload/"
@@ -285649,7 +285639,7 @@
     {
       "kind": "concatenation",
       "file": "app/pdf-ingestion.mjs",
-      "line": 29,
+      "line": 30,
       "expression": "'/api/library/ingestion/'+id",
       "fragments": [
         "/api/library/ingestion/"
@@ -300126,7 +300116,7 @@
     {
       "kind": "concatenation",
       "file": "server/book-ingestion.mjs",
-      "line": 39,
+      "line": 40,
       "expression": "'ingestion/'+userId(user)+'/source-'",
       "fragments": [
         "ingestion/",
@@ -300137,7 +300127,7 @@
     {
       "kind": "concatenation",
       "file": "server/book-ingestion.mjs",
-      "line": 39,
+      "line": 40,
       "expression": "'ingestion/'+userId(user)",
       "fragments": [
         "ingestion/"
@@ -300147,7 +300137,7 @@
     {
       "kind": "concatenation",
       "file": "server/book-ingestion.mjs",
-      "line": 43,
+      "line": 44,
       "expression": "base+'/source'",
       "fragments": [
         "/source"
@@ -300157,7 +300147,17 @@
     {
       "kind": "concatenation",
       "file": "server/book-ingestion.mjs",
-      "line": 57,
+      "line": 44,
+      "expression": "base+'/source'",
+      "fragments": [
+        "/source"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "server/book-ingestion.mjs",
+      "line": 58,
       "expression": "'ingestion/'+userId(user)+'/source-'",
       "fragments": [
         "ingestion/",
@@ -300168,7 +300168,7 @@
     {
       "kind": "concatenation",
       "file": "server/book-ingestion.mjs",
-      "line": 57,
+      "line": 58,
       "expression": "'ingestion/'+userId(user)",
       "fragments": [
         "ingestion/"
@@ -300178,7 +300178,7 @@
     {
       "kind": "concatenation",
       "file": "server/book-ingestion.mjs",
-      "line": 64,
+      "line": 65,
       "expression": "base+'/source'",
       "fragments": [
         "/source"
@@ -300188,7 +300188,7 @@
     {
       "kind": "concatenation",
       "file": "server/book-ingestion.mjs",
-      "line": 64,
+      "line": 65,
       "expression": "base+'/source'",
       "fragments": [
         "/source"
@@ -300198,7 +300198,7 @@
     {
       "kind": "computed-member",
       "file": "server/book-ingestion.mjs",
-      "line": 78,
+      "line": 79,
       "expression": "i",
       "fragments": [],
       "unresolved": true
@@ -300206,7 +300206,7 @@
     {
       "kind": "concatenation",
       "file": "server/book-ingestion.mjs",
-      "line": 78,
+      "line": 79,
       "expression": "base+'/result-'",
       "fragments": [
         "/result-"
@@ -300216,7 +300216,7 @@
     {
       "kind": "concatenation",
       "file": "server/book-ingestion.mjs",
-      "line": 91,
+      "line": 92,
       "expression": "base+'/source'",
       "fragments": [
         "/source"
@@ -300226,20 +300226,10 @@
     {
       "kind": "concatenation",
       "file": "server/book-ingestion.mjs",
-      "line": 94,
+      "line": 95,
       "expression": "base+'/cover'",
       "fragments": [
         "/cover"
-      ],
-      "unresolved": true
-    },
-    {
-      "kind": "concatenation",
-      "file": "server/book-ingestion.mjs",
-      "line": 98,
-      "expression": "base+'/source'",
-      "fragments": [
-        "/source"
       ],
       "unresolved": true
     },
@@ -300256,7 +300246,17 @@
     {
       "kind": "concatenation",
       "file": "server/book-ingestion.mjs",
-      "line": 105,
+      "line": 100,
+      "expression": "base+'/source'",
+      "fragments": [
+        "/source"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "server/book-ingestion.mjs",
+      "line": 106,
       "expression": "base+'/source'",
       "fragments": [
         "/source"
@@ -300266,7 +300266,7 @@
     {
       "kind": "computed-member",
       "file": "server/book-ingestion.mjs",
-      "line": 114,
+      "line": 115,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -300274,7 +300274,7 @@
     {
       "kind": "concatenation",
       "file": "server/book-ingestion.mjs",
-      "line": 117,
+      "line": 118,
       "expression": "base+'/result-'",
       "fragments": [
         "/result-"
@@ -300284,19 +300284,9 @@
     {
       "kind": "computed-member",
       "file": "server/book-ingestion.mjs",
-      "line": 117,
+      "line": 118,
       "expression": "n",
       "fragments": [],
-      "unresolved": true
-    },
-    {
-      "kind": "concatenation",
-      "file": "server/book-ingestion.mjs",
-      "line": 123,
-      "expression": "base+'/source'",
-      "fragments": [
-        "/source"
-      ],
       "unresolved": true
     },
     {
@@ -300310,9 +300300,19 @@
       "unresolved": true
     },
     {
+      "kind": "concatenation",
+      "file": "server/book-ingestion.mjs",
+      "line": 125,
+      "expression": "base+'/source'",
+      "fragments": [
+        "/source"
+      ],
+      "unresolved": true
+    },
+    {
       "kind": "computed-member",
       "file": "server/book-ingestion.mjs",
-      "line": 133,
+      "line": 134,
       "expression": "i",
       "fragments": [],
       "unresolved": true
@@ -300320,7 +300320,7 @@
     {
       "kind": "concatenation",
       "file": "server/book-ingestion.mjs",
-      "line": 138,
+      "line": 139,
       "expression": "base+'/native-'",
       "fragments": [
         "/native-"
@@ -300330,7 +300330,7 @@
     {
       "kind": "concatenation",
       "file": "server/book-ingestion.mjs",
-      "line": 141,
+      "line": 142,
       "expression": "base+'/result-'",
       "fragments": [
         "/result-"
@@ -300340,7 +300340,7 @@
     {
       "kind": "computed-member",
       "file": "server/book-ingestion.mjs",
-      "line": 142,
+      "line": 143,
       "expression": "i",
       "fragments": [],
       "unresolved": true
@@ -300348,7 +300348,7 @@
     {
       "kind": "computed-member",
       "file": "server/book-ingestion.mjs",
-      "line": 144,
+      "line": 145,
       "expression": "i",
       "fragments": [],
       "unresolved": true
@@ -300356,7 +300356,7 @@
     {
       "kind": "computed-member",
       "file": "server/book-ingestion.mjs",
-      "line": 144,
+      "line": 145,
       "expression": "i",
       "fragments": [],
       "unresolved": true
@@ -300364,7 +300364,7 @@
     {
       "kind": "concatenation",
       "file": "server/book-ingestion.mjs",
-      "line": 150,
+      "line": 151,
       "expression": "base+'/input-'",
       "fragments": [
         "/input-"
@@ -300374,22 +300374,6 @@
     {
       "kind": "computed-member",
       "file": "server/book-ingestion.mjs",
-      "line": 151,
-      "expression": "i",
-      "fragments": [],
-      "unresolved": true
-    },
-    {
-      "kind": "computed-member",
-      "file": "server/book-ingestion.mjs",
-      "line": 151,
-      "expression": "i",
-      "fragments": [],
-      "unresolved": true
-    },
-    {
-      "kind": "computed-member",
-      "file": "server/book-ingestion.mjs",
       "line": 152,
       "expression": "i",
       "fragments": [],
@@ -300406,7 +300390,15 @@
     {
       "kind": "computed-member",
       "file": "server/book-ingestion.mjs",
-      "line": 155,
+      "line": 153,
+      "expression": "i",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/book-ingestion.mjs",
+      "line": 153,
       "expression": "i",
       "fragments": [],
       "unresolved": true
@@ -300422,7 +300414,15 @@
     {
       "kind": "computed-member",
       "file": "server/book-ingestion.mjs",
-      "line": 156,
+      "line": 157,
+      "expression": "i",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/book-ingestion.mjs",
+      "line": 157,
       "expression": "i",
       "fragments": [],
       "unresolved": true
@@ -300430,7 +300430,7 @@
     {
       "kind": "concatenation",
       "file": "server/book-ingestion.mjs",
-      "line": 158,
+      "line": 159,
       "expression": "base+'/raw-'",
       "fragments": [
         "/raw-"
@@ -300440,7 +300440,7 @@
     {
       "kind": "computed-member",
       "file": "server/book-ingestion.mjs",
-      "line": 159,
+      "line": 160,
       "expression": "n",
       "fragments": [],
       "unresolved": true
@@ -300448,7 +300448,7 @@
     {
       "kind": "concatenation",
       "file": "server/book-ingestion.mjs",
-      "line": 159,
+      "line": 160,
       "expression": "base+'/result-'",
       "fragments": [
         "/result-"
@@ -300458,7 +300458,7 @@
     {
       "kind": "computed-member",
       "file": "server/book-ingestion.mjs",
-      "line": 159,
+      "line": 160,
       "expression": "i",
       "fragments": [],
       "unresolved": true
@@ -300466,7 +300466,7 @@
     {
       "kind": "computed-member",
       "file": "server/book-ingestion.mjs",
-      "line": 161,
+      "line": 162,
       "expression": "i",
       "fragments": [],
       "unresolved": true
@@ -300474,7 +300474,7 @@
     {
       "kind": "computed-member",
       "file": "server/book-ingestion.mjs",
-      "line": 171,
+      "line": 172,
       "expression": "1",
       "fragments": [],
       "unresolved": true
@@ -300482,7 +300482,7 @@
     {
       "kind": "computed-member",
       "file": "server/book-ingestion.mjs",
-      "line": 173,
+      "line": 174,
       "expression": "readIndex",
       "fragments": [],
       "unresolved": true
@@ -300490,7 +300490,7 @@
     {
       "kind": "concatenation",
       "file": "server/book-ingestion.mjs",
-      "line": 177,
+      "line": 178,
       "expression": "key(u,id)+'/cover'",
       "fragments": [
         "/cover"
@@ -301060,6 +301060,16 @@
       "expression": "\"style-src 'self' 'sha256-\"+createHash('sha256').update(READER_CRITICAL_CSS).digest('base64')",
       "fragments": [
         "style-src 'self' 'sha256-"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "server/content-security.mjs",
+      "line": 17,
+      "expression": "\"connect-src 'self' \"+url.origin",
+      "fragments": [
+        "connect-src 'self' "
       ],
       "unresolved": true
     },
@@ -302411,6 +302421,14 @@
       "file": "server/ingestion-upload.mjs",
       "line": 41,
       "expression": "index",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/ingestion-upload.mjs",
+      "line": 41,
+      "expression": "row.mode==='document'?'prepareDocument':'prepare'",
       "fragments": [],
       "unresolved": true
     },
@@ -310358,8 +310376,8 @@
     "candidatesUnreviewed": 6247,
     "candidatesProtected": 143,
     "itemsProtected": 9,
-    "dynamicConsumers": 4012,
-    "consumerReferences": 2105,
+    "dynamicConsumers": 4015,
+    "consumerReferences": 2103,
     "keysWithoutStaticConsumers": 1333,
     "reviewedLocaleValues": 44,
     "unreviewedLocaleValues": 9828,

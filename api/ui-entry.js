@@ -27,14 +27,14 @@ export function createUiEntryHandler({env=process.env,storeFactory=createHostedS
   res.setHeader('Cache-Control','private, no-store');res.setHeader('Vary','Cookie, Accept-Language, Sec-Fetch-Site');res.setHeader('X-Content-Type-Options','nosniff');res.setHeader('Referrer-Policy','no-referrer');res.setHeader('Content-Type','text/html; charset=utf-8');
   const send=(status,html)=>{res.statusCode=status;res.setHeader('Content-Length',Buffer.byteLength(html));res.end(req.method==='HEAD'?undefined:html);};
   try{
-   target=uiEntryTarget(req,origin);if(target.surface!=='home'||target.internal)res.setHeader('X-Robots-Tag','noindex, nofollow, noarchive');res.setHeader('Content-Security-Policy',contentSecurityPolicy(target.url.pathname));
+   target=uiEntryTarget(req,origin);if(target.surface!=='home'||target.internal)res.setHeader('X-Robots-Tag','noindex, nofollow, noarchive');res.setHeader('Content-Security-Policy',contentSecurityPolicy(target.url.pathname,env));
    if(!['GET','HEAD'].includes(req.method)){res.setHeader('Allow','GET, HEAD');return send(405,initialRetryDocument(target.url,fallbackInitialUiLanguage({url:target?.url,cookie:req.headers.cookie,acceptLanguage:req.headers['accept-language']})));}
    if(!target.internal&&needsUiSessionHandoff({url:target.url,cookie:req.headers.cookie,secFetchSite:req.headers['sec-fetch-site']})){res.setHeader('X-Robots-Tag','noindex, nofollow, noarchive');return send(200,sessionUiHandoffDocument(target.url,fallbackInitialUiLanguage({url:target.url,cookie:req.headers.cookie,acceptLanguage:req.headers['accept-language']})));}
    const decision=await selectInitialUiLanguage({url:target.url,cookie:req.headers.cookie,acceptLanguage:req.headers['accept-language'],getUser:token=>current().auth.userFor(token),getAccountPreference:user=>current().preferences.get(user),timeoutMs});
    const source=await readTemplate(target.surface);return send(200,target.surface==='read'?readerDocument(source,decision):portalDocument(source,target.url.pathname,decision));
   }catch(error){
    const url=target?.url||new URL('/library',origin),fallback=fallbackInitialUiLanguage({url:target?.url,cookie:req.headers.cookie,acceptLanguage:req.headers['accept-language']});
-   res.setHeader('X-Robots-Tag','noindex, nofollow, noarchive');res.setHeader('Content-Security-Policy',contentSecurityPolicy(url.pathname));if(error.status!==400)res.setHeader('Retry-After','5');return send(error.status===400?400:503,initialRetryDocument(url,fallback));
+   res.setHeader('X-Robots-Tag','noindex, nofollow, noarchive');res.setHeader('Content-Security-Policy',contentSecurityPolicy(url.pathname,env));if(error.status!==400)res.setHeader('Retry-After','5');return send(error.status===400?400:503,initialRetryDocument(url,fallback));
   }
  };
 }

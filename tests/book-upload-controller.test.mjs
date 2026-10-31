@@ -4,6 +4,9 @@ import {createBookUploadController} from '../app/book-upload-controller.mjs';
 const file={name:'book.pdf',size:100};
 const deferred=()=>{let resolve;const promise=new Promise(r=>resolve=r);return {promise,resolve};};
 const flush=async()=>{for(let i=0;i<12;i++)await Promise.resolve();};
+test('the chunk-capable session uses bounded transport for an EPUB instead of whole-file base64',async t=>{
+ let sent=0;const {controller}=setup({getSession:()=>({user:{id:'a'},documentJobs:true,documentChunks:true}),uploadPdf:async({file,onProgress})=>{assert.equal(file.name,'novel.epub');sent++;onProgress({id:'pdf.upload.saved',params:{percent:100}});return {id:'document',kind:'document',state:'preparing'};},readBase64:()=>{throw Error('whole-file encoding must not run');}});t.after(()=>controller.dispose());controller.start({name:'novel.epub',size:19*1024*1024});await flush();assert.equal(sent,1);assert.equal(controller.tasks()[0].stage,'organizing');
+});
 
 test('document-capable sessions request a small deferred receipt and reconcile a restored job without duplicate cards',async t=>{
  let imported=false;const {controller,calls}=setup({getSession:()=>({user:{id:'a'},documentJobs:true}),readBase64:async()=> 'Ym9vaw==',api:async(path,body)=>{calls.push({path,body});if(body){imported=true;return {id:'restored',filename:'book.epub',state:'preparing',kind:'document'};}return {jobs:[{id:'restored',filename:'book.epub',state:'running',kind:'document'}]};}});t.after(()=>controller.dispose());await controller.refresh();assert.equal(controller.tasks().length,1);controller.start({name:'book.epub',size:4});await flush();assert.equal(imported,true);assert.equal(controller.tasks().length,1);assert.equal(controller.tasks()[0].stage,'organizing');assert.equal(calls.find(c=>c.body)?.body.defer,true);

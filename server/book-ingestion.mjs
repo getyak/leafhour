@@ -32,15 +32,16 @@ export function createBookIngestion({store,library,provider,batchPages=30,maxBat
   const day=new Date(now()).toISOString().slice(0,10);
   await store.mutate('ingestion-budget/'+day,{pages:0,owners:{},jobs:{}},r=>{r.jobs??={};if(Object.hasOwn(r.jobs,job.id))return;const owner=userId(user);if(r.pages+pages>15000||(r.owners[owner]||0)+pages>3000)throw fail('今日识别额度已用完，原文件与进度保留，明天可以继续。',429);r.pages+=pages;r.owners[owner]=(r.owners[owner]||0)+pages;r.jobs[job.id]=pages;});
  }
- async function prepareDocument(user,{filename,bytes}){
+ async function prepareDocument(user,{filename,bytes,sourceParts,assertCurrent=async()=>{}}){
   userId(user);
   if(typeof filename!=='string'||!/^.+\.(epub|txt|md)$/i.test(filename)||filename.length>240||!Buffer.isBuffer(bytes)||!bytes.length||bytes.length>20*1024*1024)throw fail('请选择 20 MB 内的 EPUB 或文本文件',413);
+  await assertCurrent();
   const sourceHash=digest(bytes),previous=await findSource(user,sourceHash);if(previous&&previous.state!=='cancelled')return previous;
   const reservation='ingestion/'+userId(user)+'/source-'+sourceHash,id=randomUUID();
   const prior=await store.read(reservation,null),cancelled=prior?.id?await get(user,prior.id).catch(()=>null):null,restartId=cancelled?.state==='cancelled'?prior.id:null;
   const claim=await store.mutate(reservation,{},r=>{if(r.id&&r.expiresAt>now()&&r.id!==restartId)return {id:r.id};r.id=id;r.expiresAt=now()+120000;return {id,mine:true};});
   if(!claim.mine){const old=await get(user,claim.id).catch(()=>null);if(old)return viewOf(old);throw fail('同一文件正在建立任务，请稍后重试',409);}
-  const base=key(user,id),saved=await store.putBlob(base+'/source',bytes),title=filename.replace(/\.(epub|txt|md)$/i,'');
+  const base=key(user,id);let saved;if(sourceParts&&store.adoptBlob){await store.adoptBlob(base+'/source',sourceParts,{size:bytes.length,sha256:sourceHash});saved={parts:sourceParts};}else saved=await store.putBlob(base+'/source',bytes);await assertCurrent();const title=filename.replace(/\.(epub|txt|md)$/i,'');
   const job={id,kind:'document',mode:'document',filename,sourceHash,sourceBytes:bytes.length,...(saved?.parts?{sourceParts:saved.parts}:{}),title:{zh:title,en:title},state:'preparing',totalPages:0,batches:[],createdAt:new Date(now()).toISOString(),lease:null};
   await store.mutate(base,{},j=>Object.assign(j,job));await store.mutate(index(user),{jobs:[]},j=>{j.jobs.push(id);});return viewOf(job);
  }

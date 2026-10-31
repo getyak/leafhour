@@ -3,19 +3,20 @@ export async function uploadPdf({file,api,onProgress=()=>{},assertCurrent=()=>{}
  onProgress({id:'pdf.upload.checking'});
  const bytes=await file.arrayBuffer();assertCurrent();
  const hash=[...new Uint8Array(await crypto.subtle.digest('SHA-256',bytes))].map(n=>n.toString(16).padStart(2,'0')).join('');assertCurrent();
- const upload=await api('/api/library/pdf-upload/start',{filename:file.name,bytes:file.size,sha256:hash,mode:'auto',consent:false});
+ const upload=await api('/api/library/pdf-upload/start',{filename:file.name,bytes:file.size,sha256:hash,mode:/\.pdf$/i.test(file.name)?'auto':'document',consent:false});
  if(upload.job){assertCurrent();onProgress({id:upload.job.state==='done'?'pdf.upload.existing':'pdf.upload.resumed'});return upload.job;}
- const received=new Set(upload.received||[]);let completed=received.size,failure=null,next=0;
+ const received=new Set(upload.received||[]);let completed=received.size,failure=null,next=0,useInline=upload.transport!=='signed';
  const check=()=>{assertCurrent();if(failure)throw failure;};
  const sendPart=async i=>{
   check();const blob=file.slice(i*upload.partBytes,Math.min(file.size,(i+1)*upload.partBytes));
-  if(upload.transport==='signed'){
+  let inline=useInline;
+  if(!inline){
    const partHash=[...new Uint8Array(await crypto.subtle.digest('SHA-256',await blob.arrayBuffer()))].map(n=>n.toString(16).padStart(2,'0')).join('');check();
    const target=await api('/api/library/pdf-upload/'+upload.id+'/target',{index:i,sha256:partHash});check();
-   const response=await fetch(target.url,{method:target.method||'PUT',headers:target.headers||{'Content-Type':'application/octet-stream'},body:blob,credentials:'omit',referrerPolicy:'no-referrer'});check();
-   if(!response.ok)throw Object.assign(Error('pdf.upload.readError'),{messageId:'pdf.upload.readError'});
-   await api('/api/library/pdf-upload/'+upload.id+'/commit',{index:i,sha256:partHash});check();
-  }else{
+   let response;try{response=await fetch(target.url,{method:target.method||'PUT',headers:target.headers||{'Content-Type':'application/octet-stream'},body:blob,credentials:'omit',referrerPolicy:'no-referrer'});}catch{check();inline=true;useInline=true;}check();
+   if(response?.ok){await api('/api/library/pdf-upload/'+upload.id+'/commit',{index:i,sha256:partHash});check();}else {inline=true;useInline=true;}
+  }
+  if(inline){
    const base64=await new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(reader.result.split(',')[1]);reader.onerror=()=>reject(Object.assign(Error('pdf.upload.readError'),{messageId:'pdf.upload.readError'}));reader.readAsDataURL(blob);});check();
    await api('/api/library/pdf-upload/'+upload.id+'/part',{index:i,base64});check();
   }
