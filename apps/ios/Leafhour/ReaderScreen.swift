@@ -37,14 +37,13 @@ private struct ReaderChromeHeightKey: PreferenceKey {
     }
 }
 enum ReaderPanel: Identifiable {
-    case contents, search, preferences, appearance, records, tools, listening, translation, readingTranslation, introduction, conversation, bookInformation, note(SelectedQuote), source(SelectedQuote), companion(SelectedQuote?)
+    case contents, search, preferences, appearance, records, tools, listening, translation, introduction, conversation, bookInformation, note(SelectedQuote), source(SelectedQuote), companion(SelectedQuote?)
     var isCompanion: Bool { switch self { case .companion, .conversation: true; default: false } }
     var isNoteEditor: Bool { if case .note = self { true } else { false } }
     var id: String {
         switch self {
         case .contents: "contents"; case .search: "search"; case .preferences: "preferences"; case .records: "records"
         case .appearance: "appearance"; case .tools: "tools"; case .listening: "listening"; case .translation: "translation"
-        case .readingTranslation: "reading-translation"
         case .introduction: "introduction"; case .conversation: "conversation"; case .bookInformation: "book-information"
         case .note(let quote): "note-" + quote.id; case .source(let quote): "source-" + quote.id
         case .companion(let quote): "companion-" + (quote?.id ?? "current")
@@ -65,7 +64,6 @@ struct ReaderScreen: View {
     @State private var speech = ReaderSpeech()
     @State private var tools = ReaderCloudTools()
     @State private var reading = ReaderReadingContent()
-    @State private var offerTranslation = false
     @State private var clockID = UUID()
     @State private var bottomBarFocused = false
     @State private var pagePosition: ReaderPagePosition?
@@ -82,7 +80,7 @@ struct ReaderScreen: View {
     // Continuous reading keeps the measured controls budget for its scroll ends.
     private func readingInsets(for layout: ReaderChromeLayout) -> UIEdgeInsets {
         if session.state.preferences.navigationMode == .paged {
-            return UIEdgeInsets(top: 16, left: 22, bottom: 28, right: 22)
+            return UIEdgeInsets(top: 16, left: 22, bottom: 44, right: 22)
         }
         let metrics = chromeMetrics?.layout == layout ? chromeMetrics : nil
         let top = metrics?.top ?? 44
@@ -212,13 +210,12 @@ struct ReaderScreen: View {
         .task(id: readingRefreshKey) {
             guard scenePhase == .active else { return }
             await reading.refresh(session, cloud: cloud, library: library)
-            guard !Task.isCancelled, offerTranslation, session.state.preferences.viewMode != .source else { return }
-            offerTranslation = false
+            guard !Task.isCancelled, reading.offerFirstPassage, session.state.preferences.viewMode != .source else { return }
+            reading.offerFirstPassage = false
             if session.book.cloud != nil { await reading.prepare(session, cloud: cloud, library: library, scope: .passage) }
         }
         .onChange(of: session.state.preferences.viewMode) { _, mode in
-            offerTranslation = mode != .source
-            if mode == .source { reading.stop() }
+            if mode == .source { reading.stop(); reading.offerFirstPassage = false }
             selectionDismissalID = UUID()
         }
         .onChange(of: tools.completedTranslation) { _, row in
@@ -266,16 +263,6 @@ struct ReaderScreen: View {
     }
     private var quietReadingControl: some View {
         HStack {
-            if session.state.preferences.viewMode != .source && session.book.cloud != nil {
-                Button { present(.readingTranslation) } label: {
-                    HStack(spacing: 6) {
-                        if reading.running { ProgressView().controlSize(.mini) }
-                        else { Image(systemName: "character.book.closed") }
-                        Text(reading.running ? "\(reading.completedCount)/\(reading.totalCount)" : "译文").font(.caption).monospacedDigit()
-                    }.padding(.horizontal, 12).frame(minHeight: 44)
-                }.background(.regularMaterial, in: Capsule()).accessibilityLabel(reading.running ? "正在翻译，已完成 \(reading.completedCount) 段，共 \(reading.totalCount) 段" : "准备或恢复译文")
-                    .accessibilityIdentifier("reader-translation-status")
-            }
             Spacer()
             if speech.playing || speech.paused {
                 Button { present(.listening) } label: {

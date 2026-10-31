@@ -37,9 +37,6 @@ struct ReaderPanelView: View {
                 case .tools: ReaderMorePanel(session: session, speech: speech, tools: tools, cloud: cloud, reading: reading, onJump: onJump, onCompanion: onCompanion)
                 case .listening: ReaderListeningPanel(session: session, speech: speech)
                 case .translation: ReaderTranslationPanel(session: session, tools: tools, cloud: cloud)
-                case .readingTranslation:
-                    Form { if let reading { ReaderTranslationPreparation(session: session, reading: reading) } }
-                        .navigationTitle("准备译文").navigationBarTitleDisplayMode(.inline)
                 case .introduction: ReaderIntroductionPanel(session: session, tools: tools, cloud: cloud)
                 case .conversation: ReaderConversationPanel(session: session, tools: tools, cloud: cloud)
                 case .bookInformation: ReaderBookInformationPanel(book: session.book)
@@ -283,10 +280,17 @@ struct ReaderPreferencesPanel: View {
     private func binding<T>(_ path: WritableKeyPath<ReaderPreferences, T>) -> Binding<T> {
         Binding(get: { session.state.preferences[keyPath: path] }, set: { value in var preferences = session.state.preferences; preferences[keyPath: path] = value; session.changePreferences(preferences) })
     }
+    private var readingMode: Binding<ReaderViewMode> {
+        Binding(get: { session.state.preferences.viewMode }, set: { mode in
+            reading?.offerFirstPassage = mode != .source
+            var preferences = session.state.preferences; preferences.viewMode = mode
+            session.changePreferences(preferences)
+        })
+    }
     var body: some View {
         Form {
             Section {
-                Picker("阅读内容", selection: binding(\.viewMode)) {
+                Picker("阅读内容", selection: readingMode) {
                     Text("原著").tag(ReaderViewMode.source)
                     Text("译文").tag(ReaderViewMode.translation)
                     Text("对照").tag(ReaderViewMode.parallel)

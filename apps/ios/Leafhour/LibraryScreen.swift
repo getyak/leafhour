@@ -145,10 +145,10 @@ struct LibraryScreen: View {
             Text("\(visibleItems.count) 本书").font(.caption).foregroundStyle(.secondary)
             Spacer(minLength: 0)
             if selecting {
-                Button(selectedIDs.count == visibleItems.count ? "取消全选" : "全选") {
+                Button {
                     selectedIDs = selectedIDs.count == visibleItems.count ? [] : Set(visibleItems.map(\.id))
-                }.frame(minWidth: 44, minHeight: 44)
-                Button("完成") { selecting = false; selectedIDs = [] }.frame(minWidth: 44, minHeight: 44)
+                } label: { Text(selectedIDs.count == visibleItems.count ? "取消全选" : "全选").frame(minWidth: 44, minHeight: 44).contentShape(Rectangle()) }
+                Button { selecting = false; selectedIDs = [] } label: { Text("完成").frame(minWidth: 44, minHeight: 44).contentShape(Rectangle()) }
             } else {
                 presentationMenu.labelStyle(.iconOnly).frame(minWidth: 44, minHeight: 44)
             }
@@ -370,12 +370,15 @@ struct LibraryScreen: View {
         HStack(spacing: 12) {
             Text("已选 \(selectedIDs.count) 本").font(.subheadline).monospacedDigit()
             Spacer(minLength: 4)
-            Button(selectionIsPinned ? "取消置顶" : "置顶", systemImage: selectionIsPinned ? "pin.slash" : "pin") {
+            Button {
                 setPins(selectedIDs, pinned: !selectionIsPinned)
-            }.frame(minHeight: 44).disabled(selectedIDs.isEmpty)
-            Button("分享", systemImage: "square.and.arrow.up") { sharing = ShelfShareSelection(items: selectedItems) }
-                .frame(minHeight: 44).disabled(selectedItems.isEmpty)
+            } label: { Label(selectionIsPinned ? "取消置顶" : "置顶", systemImage: selectionIsPinned ? "pin.slash" : "pin").frame(minWidth: 44, minHeight: 44).contentShape(Rectangle()) }
+                .disabled(selectedIDs.isEmpty)
+            Button { sharing = ShelfShareSelection(items: selectedItems) } label: {
+                Label("分享", systemImage: "square.and.arrow.up").frame(minWidth: 44, minHeight: 44).contentShape(Rectangle())
+            }.disabled(selectedItems.isEmpty)
         }.font(.subheadline).padding(.horizontal, 16).padding(.vertical, 4).background(.regularMaterial)
+            .accessibilityElement(children: .contain)
             .accessibilityIdentifier("library-selection-toolbar")
     }
 }

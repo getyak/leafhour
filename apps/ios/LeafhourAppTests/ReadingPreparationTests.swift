@@ -71,7 +71,18 @@ final class ReadingPreparationTests: XCTestCase {
         XCTAssertEqual(fixture.session.translations["p1"]?.literal, "Literal p1")
         let saved = try await fixture.library.readingTranslations(bookID: fixture.session.book.id)
         XCTAssertEqual(saved["p1"]?.interpretive, "Interpretive p1")
-        XCTAssertNil(saved["p2"])
+        XCTAssertNil(saved["p2"]?.literal)
+        XCTAssertNil(saved["p2"]?.interpretive)
+    }
+    func testRecoveryRejectsAnEnvelopeWhoseScopeLabelUnderstatesItsActualRange() async throws {
+        let fixture = try await fixture()
+        let run = ReaderTranslationRun(plan: try ReadingTranslationPlan.make(book: fixture.session.book, chapterIndex: 0, translations: [:]))
+        for scope in ["passage", "chapter"] {
+            var value = try XCTUnwrap(JSONSerialization.jsonObject(with: JSONEncoder().encode(run)) as? [String: Any])
+            var plan = try XCTUnwrap(value["plan"] as? [String: Any]); plan["scope"] = scope; value["plan"] = plan
+            let invalid = try JSONDecoder().decode(ReaderTranslationRun.self, from: JSONSerialization.data(withJSONObject: value))
+            XCTAssertThrowsError(try ReaderReadingContent.validate(invalid, session: fixture.session))
+        }
     }
     func testAuthenticationFailureWhileRecoveringKeepsTheOriginalIdempotencyKey() async throws {
         let fixture = try await fixture(), probe = PreparationProbe(owner:owner)

@@ -482,7 +482,7 @@ final class ReaderLayoutTests: XCTestCase {
             let text = try assertRealPagedBody(host, window: window, stage: "resized \(size), \(category.rawValue)")
             XCTAssertEqual(session.currentAnchor?.passageID, target.passageID, "A responsive chrome budget cannot move to another source paragraph")
             XCTAssertEqual(text.textContainerInset.top, 16, accuracy: 0.5, "Paged reading does not reserve the sleeping header")
-            XCTAssertEqual(text.textContainerInset.bottom, 28, accuracy: 0.5, "Paged reading does not reserve the sleeping dock")
+            XCTAssertEqual(text.textContainerInset.bottom, 44, accuracy: 0.5, "Only the quiet control's touch target occupies the footer")
             let offset = text.contentOffset, insets = text.textContainerInset, anchor = session.currentAnchor
             let coordinator = try XCTUnwrap(text.delegate as? TextReadingView.Coordinator)
             // Exercise the same production callback used by a real page tap;

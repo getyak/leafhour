@@ -19,6 +19,7 @@ final class ReaderReadingContent {
     var proposed: ReaderTranslationRun?
     var completedCount = 0
     var totalCount = 0
+    var offerFirstPassage = false
     @ObservationIgnored var requestPreparation: (() -> Void)?
     @ObservationIgnored var requestPassagePreparation: (() -> Void)?
     @ObservationIgnored var confirmPreparation: ((ReaderTranslationRun) -> Void)?
@@ -105,6 +106,10 @@ final class ReaderReadingContent {
               let start = session.book.chapters.firstIndex(where: { $0.id == run.plan.chapterIDs.first }),
               Array(session.book.chapters.dropFirst(start).prefix(run.plan.chapterIDs.count)).map(\.id) == run.plan.chapterIDs else {
             throw LibraryError.invalid("预译恢复记录与这本书不一致，尚未提交。")
+        }
+        guard run.plan.scope != .passage || (run.plan.chapterIDs.count == 1 && run.plan.passageIDs.count <= 1),
+              run.plan.scope != .chapter || run.plan.chapterIDs.count == 1 else {
+            throw LibraryError.invalid("预译恢复记录超过了确认的范围，尚未提交。")
         }
         let ids = Set(session.book.chapters.filter { run.plan.chapterIDs.contains($0.id) }.flatMap(\.passages).map(\.id))
         guard Set(run.plan.passageIDs).count == run.plan.passageIDs.count, Set(run.plan.passageIDs).isSubset(of: ids),
