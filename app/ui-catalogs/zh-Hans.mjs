@@ -2467,5 +2467,14 @@ export default Object.freeze({
   "ws.reviewWeek": "所选一周",
   "ws.reviewMonth": "所选月份",
   "ws.reviewPeriod": "回顾日期范围",
-  "ws.reviewRange": "日期范围：{start} 至 {end}。仅回顾这个时段的记录，较早原话仅作上下文。"
+  "ws.reviewRange": "日期范围：{start} 至 {end}。仅回顾这个时段的记录，较早原话仅作上下文。",
+  "filter.sort": "书架排序",
+  "filter.sort.recent": "最近阅读与添加",
+  "filter.sort.added": "最近添加",
+  "filter.sort.published-asc": "出版时间：由早到晚",
+  "filter.sort.published-desc": "出版时间：由晚到早",
+  "filter.sort.manual": "手动排列",
+  "bookUpload.imports": "正在加入书房",
+  "bookUpload.parsing": "正在整理章节 · {completed} / {total}",
+  "bookUpload.tasks": "导入任务"
 });

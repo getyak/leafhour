@@ -26,6 +26,7 @@ export const UI_LOCALE_OWNERS=Object.freeze([
  'app/library-book-actions.mjs',
  'app/library-chat.mjs',
  'app/chat-book-upload.mjs',
+ 'app/book-import-shelf.mjs',
  'app/library-daily-reading.mjs',
  'app/library-data.mjs',
  'app/library-filter-controls.mjs',

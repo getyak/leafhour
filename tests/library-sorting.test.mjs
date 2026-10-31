@@ -1,0 +1,10 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {libraryShelf} from '../app/library-workspace.mjs';
+import {parseLibraryView,writeLibraryView,safeLibraryReturn} from '../app/library-view-state.mjs';
+const books=[{bookId:'older',visibility:'private',title:{en:'Older'},createdAt:'2026-01-01',publicationYear:1900,shelfPosition:0,journey:{lastReadAt:'2026-10-01'}},{bookId:'new',visibility:'private',title:{en:'New'},createdAt:'2026-10-31',publicationYear:2000,shelfPosition:1},{bookId:'unknown',visibility:'private',title:{en:'Unknown'},createdAt:'2026-01-02',shelfPosition:2}];
+const order=sort=>libraryShelf(books,{sort}).map(b=>b.bookId);
+test('recent activity includes new additions without inventing a reading timestamp',()=>{assert.deepEqual(order('recent'),['new','older','unknown']);assert.equal(books[1].journey,undefined);});
+test('catalog build timestamps do not count as personal additions',()=>{const rows=[{bookId:'public',visibility:'public',createdAt:'2099-01-01'},{bookId:'uploaded',visibility:'private',createdAt:'2026-10-31'}];assert.equal(libraryShelf(rows,{sort:'recent'})[0].bookId,'uploaded');assert.equal(libraryShelf(rows,{sort:'added'})[0].bookId,'uploaded');});
+test('explicit addition, publication and manual sorts do not override one another',()=>{assert.deepEqual(order('added'),['new','unknown','older']);assert.deepEqual(order('published-asc'),['older','new','unknown']);assert.deepEqual(order('published-desc'),['new','older','unknown']);assert.deepEqual(order('manual'),['older','new','unknown']);});
+test('sort composes with filters and round trips through safe library return URLs',()=>{const state=parseLibraryView('?sort=added&scope=private&ui=zh-Hans');assert.equal(state.view.sort,'added');assert.match(writeLibraryView('',state),/sort=added/);assert.match(safeLibraryReturn('/library?sort=published-asc'),/sort=published-asc/);assert.equal(parseLibraryView('?sort=invalid').view.sort,undefined);assert.equal(parseLibraryView('?sort=added&sort=manual').view.sort,undefined);});

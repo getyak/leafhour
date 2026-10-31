@@ -10,6 +10,7 @@ export function moveShelfBook(ids,source,target,side='before'){
 
 export function mountShelfDrag({grid,getBooks,getOwner,onReorder,onError=()=>{},labels={}}){
   let drag=null,pending=null,blockedClick=null;
+  const enabled=()=>!grid.dataset?.sort||grid.dataset.sort==='manual';
   const cards=()=>[...grid.querySelectorAll('.book-card[data-book-id]')];
   function clearHold(){if(pending)clearTimeout(pending.timer);pending=null;}
   function reset(){
@@ -32,10 +33,11 @@ export function mountShelfDrag({grid,getBooks,getOwner,onReorder,onError=()=>{},
   }
   function begin(card){reset();drag={id:card.dataset.bookId,owner:getOwner(),target:null,side:'before'};card.classList.add('is-dragging');grid.classList.add('is-sorting');}
   async function finish(){
-    if(!drag)return;const {id,target,side,owner}=drag;reset();if(!target||target===id||owner!==getOwner())return;
+    if(!drag)return;const {id,target,side,owner}=drag;reset();if(!enabled()||!target||target===id||owner!==getOwner())return;
     try{await onReorder(moveShelfBook(getBooks().map(b=>b.bookId),id,target,side));}catch(error){onError(error);}
   }
   grid.addEventListener('dragstart',event=>{
+    if(!enabled()){event.preventDefault();reset();return;}
     const card=event.target.closest('.book-card[data-book-id]'),link=event.target.closest('a');
     if(!card||!grid.contains(card)||event.target.closest('button,input,select,textarea')||link&&!link.matches('.book-art')||pending?.touch||drag?.touch){event.preventDefault();return;}
     begin(card);event.dataTransfer.effectAllowed='move';event.dataTransfer.setData('application/x-page-by-page-book',drag.id);const cover=card.querySelector('.book-cover');event.dataTransfer.setDragImage(cover,cover.offsetWidth/2,cover.offsetHeight/2);
@@ -50,6 +52,7 @@ export function mountShelfDrag({grid,getBooks,getOwner,onReorder,onError=()=>{},
     const scroll=()=>{if(!drag||drag.pointer===undefined)return;const edge=65,speed=drag.y<edge?-8:drag.y>innerHeight-edge?8:0;if(speed){window.scrollBy(0,speed);over(drag.x,drag.y);}drag.frame=requestAnimationFrame(scroll);};drag.frame=requestAnimationFrame(scroll);
   }
   grid.addEventListener('pointerdown',event=>{
+    if(!enabled()){reset();return;}
     blockedClick=null;
     if(event.isPrimary===false){reset();return;}
     const card=event.target.closest('.book-card[data-book-id]'),handle=event.target.closest('.book-drag-handle'),link=event.target.closest('a');
@@ -58,7 +61,7 @@ export function mountShelfDrag({grid,getBooks,getOwner,onReorder,onError=()=>{},
     if(event.pointerType!=='touch')return;
     reset();const hold={id:event.pointerId,x:event.clientX,y:event.clientY,owner:getOwner(),touch:true};
     hold.timer=setTimeout(()=>{
-      if(pending!==hold||hold.owner!==getOwner()||!card.isConnected||!grid.contains(card)){clearHold();return;}
+      if(!enabled()||pending!==hold||hold.owner!==getOwner()||!card.isConnected||!grid.contains(card)){clearHold();return;}
       beginPointer(card,event,true);
     },450);pending=hold;
   });
@@ -82,6 +85,6 @@ export function mountShelfDrag({grid,getBooks,getOwner,onReorder,onError=()=>{},
   grid.addEventListener('keydown',event=>{if(event.key==='Escape'&&(drag||pending)){event.preventDefault();reset();}});window.addEventListener('blur',reset);
   // The second finger can land outside this grid (sidebar or page margin).
   document.addEventListener('pointerdown',event=>{if(event.isPrimary===false&&(drag||pending))reset();},true);
-  function decorate(card){card.draggable=true;const art=card.querySelector('.book-art');if(art){art.draggable=false;art.setAttribute('aria-describedby','shelf-order-help');}const handle=card.querySelector('.book-drag-handle');if(handle&&labels.dragHint){handle.setAttribute('aria-label',labels.dragHint);handle.setAttribute('title',labels.dragHint);}}
+  function decorate(card){card.draggable=enabled();const art=card.querySelector('.book-art');if(art){art.draggable=false;art.setAttribute('aria-describedby','shelf-order-help');}const handle=card.querySelector('.book-drag-handle');if(handle&&labels.dragHint){handle.setAttribute('aria-label',labels.dragHint);handle.setAttribute('title',labels.dragHint);}}
   return {decorate,reset};
 }

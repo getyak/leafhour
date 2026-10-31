@@ -13,6 +13,7 @@ import {readWorkspaceView,workspaceUrl} from './reading-workspace-state.mjs';
 export const LIBRARY_SCOPES=Object.freeze(['all','public','private']);
 export const LIBRARY_STATUSES=Object.freeze(['all','reading','unread','finished']);
 export const LIBRARY_FORMS=Object.freeze(['all','original','translated','bilingual']);
+export const LIBRARY_SORTS=Object.freeze(['recent','added','published-asc','published-desc','manual']);
 export const LIBRARY_TOPICS=Object.freeze(['all','philosophy','science','literature','history','fiction']);
 export const LIBRARY_SETTINGS_TABS=Object.freeze(['account','reading-habits','daily-reading','appearance','data','about']);
 // GET-201: one parse-only slug alias. Old links say settings=reading while the
@@ -21,7 +22,7 @@ export const LIBRARY_SETTINGS_TABS=Object.freeze(['account','reading-habits','da
 const SETTINGS_TAB_ALIASES=Object.freeze({reading:'reading-habits'});
 const settingsTab=value=>typeof value==='string'?(LIBRARY_SETTINGS_TABS.includes(value)?value:Object.hasOwn(SETTINGS_TAB_ALIASES,value)?SETTINGS_TAB_ALIASES[value]:null):null;
 export const LIBRARY_OVERLAYS=Object.freeze(['settings','calendar','notebook','upload','trash','filter']);
-export const LIBRARY_VIEW_KEYS=Object.freeze(['q','scope','status','topic','language','form','ui']);
+export const LIBRARY_VIEW_KEYS=Object.freeze(['q','scope','status','topic','language','form','sort','ui']);
 export const LIBRARY_OVERLAY_KEYS=Object.freeze(['filter','calendar','notebook','settings','upload','trash']);
 
 import {parseUiParam,isUiLocale,withUiParam} from './ui-locale-codec.mjs';
@@ -71,6 +72,7 @@ export function parseLibraryView(search){
   const topic=raw('topic');if(LIBRARY_TOPICS.includes(topic))view.topic=topic;
   const language=languageValue(raw('language'));if(language)view.language=language;
   const form=raw('form');if(LIBRARY_FORMS.includes(form))view.form=form;
+  const sort=raw('sort');if(LIBRARY_SORTS.includes(sort)&&sort!=='recent')view.sort=sort;
   const settings=settingsTab(raw('settings')),calendar=raw('calendar'),notebook=raw('notebook'),upload=raw('upload'),trash=raw('trash'),filter=raw('filter');
   let overlay=null;
   if(settings!==null)overlay={kind:'settings',tab:settings};
@@ -86,6 +88,7 @@ export function libraryViewParams({view,overlay}){
   const params=[];
   if(view.query)params.push(['q',view.query]);
   for(const key of ['scope','status','topic','language','form'])if(view[key]&&view[key]!=='all')params.push([key,view[key]]);
+  if(LIBRARY_SORTS.includes(view.sort)&&view.sort!=='recent')params.push(['sort',view.sort]);
   if(overlay)params.push(overlay.kind==='settings'?['settings',overlay.tab]:[overlay.kind,'1']);
   return params;
 }
@@ -116,7 +119,8 @@ export function libraryViewReducer(state,action){
     case 'set-view':{
       const patch=action.patch||{};
       for(const key of Object.keys(patch)){
-        if(!['query','scope','status','topic','language','form'].includes(key))continue;
+        if(!['query','scope','status','topic','language','form','sort'].includes(key))continue;
+        if(key==='sort'&&!LIBRARY_SORTS.includes(patch[key]))continue;
         current.view[key]=key==='query'?normalizeLibraryQuery(patch[key]):patch[key];
       }
       return current;
@@ -128,7 +132,7 @@ export function libraryViewReducer(state,action){
       else if(['scope','status','topic','language','form'].includes(key))current.view[key]='all';
       return current;
     }
-    case 'clear-all':current.view=libraryViewDefaults();return current;
+    case 'clear-all':current.view={...libraryViewDefaults(),...(current.view.sort?{sort:current.view.sort}:{})};return current;
     case 'open-overlay':current.overlay=normalizeOverlay(action.overlay);return current;
     case 'close-overlay':current.overlay=null;return current;
     default:return current;

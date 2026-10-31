@@ -290,7 +290,10 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
     else if(dataStore)await dataStore.putBlob(path.join(originals,hash),input.bytes);
     else {await mkdir(originals,{recursive:true,mode:0o700});const temporary=path.join(originals,hash+'.'+randomUUID()+'.pending');await writeFile(temporary,input.bytes,{mode:0o600});await rename(temporary,path.join(originals,hash));}
     if(!existing)await mutate(bookFile(user,id),{},data=>Object.assign(data,book));
-    await mutate(path.join(userDir(user),'index.json'),{books:[]},data=>{if(!data.books.some(b=>b.bookId===id))data.books.push(brief(book));});await chapterReads.manifest(user,id);return getBook(user,id);
+    // Publish the shelf entry after chapter storage is readable. A failed build
+    // keeps the canonical source private and lets the same import reconcile it.
+    await chapterReads.manifest(user,id);
+    await mutate(path.join(userDir(user),'index.json'),{books:[]},data=>{if(!data.books.some(b=>b.bookId===id))data.books.push(brief(book));});return getBook(user,id);
   }
   async function sourceEvidence(user,id,input){
     requireUser(user);const book=await getBook(user,id),passage=allPassages(book).find(p=>p.id===input?.passageId);if(!passage)throw fail('找不到来源段落',404);const original=await getOriginal(user,id);

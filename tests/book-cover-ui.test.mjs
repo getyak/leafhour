@@ -30,7 +30,7 @@ test('actual home and library queries find the displayed Japanese cover and pres
  for(const id of ids){const node=document.createElement('div');node.id=id;document.body.append(node);}
  const $=id=>document.getElementById(id);for(const tag of ['h2','p'])$('empty-shelf').append(document.createElement(tag));
  const books=[{bookId:'gutenberg-walden',visibility:'public',title:{en:'Walden',zh:'瓦尔登湖'},author:'Henry David Thoreau',sourceLanguage:'en',source:{format:'txt'}},{bookId:'gutenberg-alice',visibility:'public',title:{en:'Alice'},author:'Lewis Carroll',sourceLanguage:'en',source:{format:'txt'}}],before=JSON.stringify(books);
- let query='森の生活';Object.assign(context,workspace,{document,$,books,bookCoverSearchText,bootstrapped:true,personalizationPending:false,session:{user:{id:'synthetic'}},homeText,Intl,getOwner:()=> 'synthetic',dashboard:null,chat:null,shelfControls:{read:()=>({query}),update(){},setPending(){},clearAll(){query='';}}});
+ let query='森の生活';Object.assign(context,workspace,{document,$,books,bookCoverSearchText,bootstrapped:true,personalizationPending:false,session:{user:{id:'synthetic'}},homeText,Intl,getOwner:()=> 'synthetic',dashboard:null,chat:null,importShelf:null,shelfControls:{read:()=>({query}),update(){},setPending(){},clearAll(){query='';}}});
  for(const name of ['chromeLabels','specText','num','applySpec','own','landingBookCard','shelfEmptyHelpId','renderHomeBooks','renderReadingBookmark','renderBooks']){const n=ast.body.find(n=>n.id?.name===name||n.declarations?.some(row=>row.id.name===name));vm.runInContext(source.slice(n.start,n.end),context);}
  context.shelfList=mountIncrementalShelf({grid:$('library-books'),controls:$('shelf-more'),renderItem:context.makeCard});
  try{

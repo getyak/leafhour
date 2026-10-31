@@ -162,3 +162,32 @@
 .library-page .resume-cover .binding-type{inset:12% 13% 10% 16%;gap:7cqw}
 .library-page .resume-cover .binding-author,.library-page .resume-cover .binding-original{font-size:9cqw;line-height:1.4}
 .library-page .resume-cover .binding-title{font-size:17cqw;line-height:1.35;letter-spacing:0}
+
+/* Imports occupy their own visible place; filtering never hides their recovery actions. */
+.library-page #library-imports{margin:0 0 32px}
+.import-shelf-title{font:500 13px/1.6 var(--font-sans);color:var(--muted);margin:0 0 16px}
+.import-shelf-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:16px}
+.book-import-card{display:flex;gap:20px;padding:20px;border:1px solid var(--line-control);border-radius:8px;min-width:0;background:var(--surface-soft)}
+.book-import-card .book-cover{position:relative;flex:none;width:78px;height:112px;overflow:hidden;border-radius:2px 5px 5px 2px;align-self:start}
+.book-import-card .book-cover .binding-title{font-size:15px}.book-import-card .book-cover .binding-author{font-size:9px}
+.book-import-copy{min-width:0;flex:1}.book-import-copy h3{font:500 16px/1.6 var(--font-serif);margin:0 0 6px;overflow-wrap:anywhere}
+.book-import-status{font:12px/1.8 var(--font-sans);color:var(--muted);margin:0;overflow-wrap:anywhere}
+.book-import-card progress{display:block;width:100%;height:3px;margin:12px 0 0;accent-color:var(--accent)}
+.book-import-actions{display:flex;flex-wrap:wrap;gap:0 18px}.book-import-actions button{min-height:44px;padding:4px 0;border:0;background:transparent;color:var(--accent);font:12px/1.6 var(--font-sans)}
+.book-import-card[data-stage=interrupted]{border-color:var(--ink)}
+.shelf-sort{max-width:190px;min-width:0;min-height:44px;padding:7px 24px 7px 10px;border:0;border-radius:6px;background:transparent;color:var(--muted);font:12px/1.6 var(--font-sans);text-overflow:ellipsis}
+#library-books:not([data-sort=manual]) .book-drag-handle{display:none}
+.library-page:has(#library-chat[open]) .library-chat-launcher{visibility:hidden}
+.library-page #library-chat .library-chat-messages{min-height:100px}
+.library-page #library-chat .library-chat-menu-items{max-height:calc(var(--chat-viewport-height,100dvh) - 110px);overflow:auto;overscroll-behavior:contain}
+.library-page #library-chat .preference-onboarding{max-height:none;overflow:visible;margin:0;padding:8px 10px}
+.library-page #library-chat .library-chat-count:empty{display:none}
+@media(min-width:1100px){.library-page.has-reader-chat #library-view{padding-inline:32px}.library-page.has-reader-chat .shelf-toolbar{flex-wrap:wrap}.library-page.has-reader-chat .shelf-tools{flex-wrap:wrap}}
+@media(max-width:1099px){.library-page dialog.reader-chat-workspace.is-reader-chat-mobile{inset:var(--chat-viewport-top,0px) 0 auto;width:100vw;height:var(--chat-viewport-height,100dvh);border-radius:0;border:0}.library-page #library-chat .library-chat-frame{height:100%;overflow:hidden}.library-page #library-chat .library-chat-messages{min-height:80px;overflow:auto;flex:1}.library-page #library-chat.is-compact-viewport .library-chat-frame{overflow:auto}.library-page #library-chat.is-compact-viewport .library-chat-messages{max-height:none;overflow:visible}.shelf-sort{max-width:155px}}
+@media(max-width:600px){.shelf-tools{flex-wrap:wrap}.shelf-sort{flex:1;max-width:calc(100% - 74px);text-align:left}.book-import-card{padding:16px;gap:16px}}
+.book-import-card [hidden]{display:none!important}
+.library-page #library-chat :is(.library-chat-markdown,.library-chat-stream-text){font:400 16px/1.85 var(--font-sans)}
+.library-chat-upload-history .chat-book-tasks{max-height:280px;padding:0 10px;overflow:auto}
+/* A keyboard-sized library conversation keeps its composer fixed; only messages scroll. */
+.library-page #library-chat.is-compact-viewport .library-chat-frame{display:flex;overflow:hidden}
+.library-page #library-chat.is-compact-viewport .library-chat-messages{flex:1 1 64px;min-height:48px;overflow:auto}

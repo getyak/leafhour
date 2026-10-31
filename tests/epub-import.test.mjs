@@ -22,6 +22,12 @@ function archive({nav=true,body,extra={},packageText}={}){
 }
 async function book(bytes=archive()){const extracted=await extractDocument({filename:'reading.epub',bytes});return makeBook({bookId:'private-test',filename:'reading.epub',sourceHash:digest(bytes),extracted});}
 
+test('a large bounded EPUB keeps more than 1200 real chapters and source publication metadata',async()=>{
+ const extra={},items=[],refs=[];for(let i=0;i<1301;i++){extra['OPS/part-'+i+'.xhtml']=xhtml('<h1>Chapter '+i+'</h1><p>Original paragraph '+i+'</p>');items.push('<item id="p'+i+'" href="part-'+i+'.xhtml" media-type="application/xhtml+xml"/>');refs.push('<itemref idref="p'+i+'"/>');}
+ const packageText='<package xmlns="http://www.idpf.org/2007/opf" version="3.0"><metadata xmlns:dc="http://purl.org/dc/elements/1.1/"><dc:title>A long synthetic book</dc:title><dc:date>2001-02-03</dc:date></metadata><manifest>'+items.join('')+'</manifest><spine>'+refs.join('')+'</spine></package>',b=await book(archive({nav:false,extra,packageText}));
+ assert.equal(b.chapters.length,1301);assert.equal(b.sections.at(-1).paragraphs.at(-1).original,'Original paragraph 1300');assert.equal(b.source.publicationDate,'2001-02-03');
+});
+
 test('EPUB imports spine order, navigation fragment boundaries, metadata and stable source anchors',async()=>{
  const bytes=archive(),b=await book(bytes),ps=b.sections.flatMap(s=>s.paragraphs);
  assert.equal(b.source.format,'epub');assert.equal(b.source.sha256,digest(bytes));assert.equal(b.source.review,'extracted_unreviewed');

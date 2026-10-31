@@ -21,7 +21,7 @@ export function mountChatBookUpload({root,document=root.ownerDocument||globalThi
  }
  function paint(task){
   const row=rowFor(task);row.task=task;row.name.textContent=task.filename;row.type.textContent=task.filename?.split('.').pop()?.toUpperCase()||'';
-  const status=t(task.error?'bookUpload.error':({receiving:'portal.upload.storing',organizing:'portal.upload.organizing'})[task.stage]||'bookUpload.'+task.stage);if(row.status.textContent!==status)row.status.textContent=status;
+  const status=task.job?.error||task.errorMessage||t(task.error?'bookUpload.error':({receiving:'portal.upload.storing',organizing:'portal.upload.organizing'})[task.stage]||'bookUpload.'+task.stage);if(row.status.textContent!==status)row.status.textContent=status;
   row.progress.hidden=!['receiving','organizing'].includes(task.stage);row.progress.max=100;
   if(Number.isFinite(task.percent))row.progress.value=task.percent;else row.progress.removeAttribute?.('value');
   row.progress.setAttribute('aria-label',t('pdf.progress.label'));row.card.setAttribute('lang',getUiLocale());

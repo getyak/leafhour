@@ -1,6 +1,15 @@
 import {chooseCurrentBook} from './reading-calendar.mjs';
 import {contentLanguage,matchesReadingLanguage} from './book-reading-languages.mjs';
 const activityAt=book=>String(book.journey?.lastReadAt||book.resume?.updatedAt||'');
+// Catalog creation is a build timestamp, not the reader adding that book.
+const addedAt=book=>String(book.addedAt||(book.visibility==='private'?book.createdAt:'')||'');
+const recentAt=book=>[activityAt(book),addedAt(book)].sort().at(-1)||'';
+const publishedAt=book=>{const value=book.publicationYear??book.source?.publicationDate??book.publicationDate;const year=typeof value==='number'?value:typeof value==='string'&&/^-?\d{1,4}(?:-|$)/.test(value)?Number(value.match(/^-?\d{1,4}/)[0]):NaN;return Number.isFinite(year)?year:null;};
+export function compareShelfBooks(a,b,sort='recent'){
+ if(sort==='published-asc'||sort==='published-desc'){const left=publishedAt(a),right=publishedAt(b);if(left===null||right===null){if(left!==right)return left===null?1:-1;}else if(left!==right)return (left-right)*(sort==='published-desc'?-1:1);}
+ if(sort==='manual')return (Number.isFinite(a.shelfPosition)||Number.isFinite(b.shelfPosition)?(a.shelfPosition??Number.MAX_SAFE_INTEGER)-(b.shelfPosition??Number.MAX_SAFE_INTEGER):0)||Number(b.visibility==='private')-Number(a.visibility==='private')||activityAt(b).localeCompare(activityAt(a));
+ return (sort==='added'?addedAt(b).localeCompare(addedAt(a)):recentAt(b).localeCompare(recentAt(a)))||String(a.bookId).localeCompare(String(b.bookId));
+}
 
 export function currentReadingBookmark(books){
   return chooseCurrentBook(books.filter(book=>!book.personalizationPending&&typeof book.resume?.passageId==='string'&&book.resume.passageId))||null;
@@ -25,10 +34,10 @@ export function shelfReadingStatus(book){
 export const shelfLanguage=book=>contentLanguage(book.sourceLanguage);
 export const hasShelfFilters=({scope='all',status='all',topic='all',language='all',form='all',query=''}={})=>scope!=='all'||status!=='all'||topic!=='all'||language!=='all'||form!=='all'||!!query.trim();
 
-export function libraryShelf(books,{scope='all',query='',status='all',topic='all',language='all',form='all'}={},{searchText=()=>''}={}){
+export function libraryShelf(books,{scope='all',query='',status='all',topic='all',language='all',form='all',sort='manual'}={},{searchText=()=>''}={}){
   const needle=query.trim().toLocaleLowerCase();
   return books.filter(book=>(scope==='all'||book.visibility===scope)&&(status==='all'||book.personalizationPending||shelfReadingStatus(book)===status)&&(topic==='all'||Array.isArray(book.topics)&&book.topics.includes(topic))&&(book.personalizationPending||matchesReadingLanguage(book,{language,form}))&&(!needle||[book.title?.zh,book.title?.en,book.author,searchText(book)].filter(Boolean).join(' ').toLocaleLowerCase().includes(needle)))
-    .sort((a,b)=>(Number.isFinite(a.shelfPosition)||Number.isFinite(b.shelfPosition)?(a.shelfPosition??Number.MAX_SAFE_INTEGER)-(b.shelfPosition??Number.MAX_SAFE_INTEGER):0)||Number(b.visibility==='private')-Number(a.visibility==='private')||activityAt(b).localeCompare(activityAt(a)));
+    .sort((a,b)=>compareShelfBooks(a,b,sort));
 }
 
 export function roomShelf(books,{selectedBookId,...filters}={},options={}){
