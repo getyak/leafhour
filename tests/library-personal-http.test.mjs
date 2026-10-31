@@ -173,3 +173,12 @@ test('conditional reading metadata revalidates after authorization and retains p
  const hit=await get(route,a,{'If-None-Match':tag});assert.equal(hit.status,304);assert.equal(await hit.text(),'');assert.equal(hit.headers.get('cache-control'),'private, no-store');
  assert.equal((await get(route,b,{'If-None-Match':tag})).status,404);assert.equal((await get(route,null,{'If-None-Match':tag})).status,404);
 });
+
+test('negotiated gzip opens a large readable projection in one bounded response and keeps legacy part clients',async t=>{
+ const {portal,get,a,b}=await setup(t),book=await seed(portal.library,a.user,'packed-reading'),original=portal.library.readingView;const padding='An original synthetic line. '.repeat(150000);portal.library.readingView=async(...args)=>({...await original(...args),padding});const route='/api/library/books/'+book.bookId+'/reading';
+ const packed=await get(route,a,{'X-Reader-Compression':'gzip'});assert.equal(packed.status,200);assert.equal(packed.headers.get('content-encoding'),'gzip');assert.ok(Number(packed.headers.get('content-length'))<3200000);assert.equal(packed.headers.get('x-reader-book-transfer'),null);assert.equal((await packed.json()).padding,padding);assert.equal((await get(route,b,{'X-Reader-Compression':'gzip'})).status,404);
+ const legacy=await get(route,a),plan=await legacy.json();assert.equal(legacy.headers.get('x-reader-book-transfer'),'parts');const part=await get(route+'?offset=0&snapshot='+plan.snapshot,a,{'X-Reader-Compression':'gzip'});assert.equal(part.headers.get('content-encoding'),null);assert.equal((await part.json()).kind,'leafhour-book-part-v1');
+});
+test('incompressible readable content keeps the existing bounded transfer instead of exceeding the response ceiling',async t=>{
+ const {randomBytes}=await import('node:crypto'),{portal,get,a}=await setup(t),book=await seed(portal.library,a.user,'random-reading'),original=portal.library.readingView,padding=randomBytes(4*1024*1024).toString('base64');portal.library.readingView=async(...args)=>({...await original(...args),padding});const response=await get('/api/library/books/'+book.bookId+'/reading',a,{'X-Reader-Compression':'gzip'});assert.equal(response.headers.get('content-encoding'),null);assert.equal(response.headers.get('x-reader-book-transfer'),'parts');assert.equal((await response.json()).kind,'leafhour-book-transfer-v1');
+});

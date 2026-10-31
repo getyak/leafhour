@@ -4,7 +4,7 @@ import {paintBookCover} from './book-cover-ui.mjs';
 export function importShelfPresentation(task,{format=t}={}){
  const parsed=task.job?.progress,publishing=task.job?.state==='publishing',active=['receiving','organizing'].includes(task.stage);
  const percent=publishing?null:Number.isFinite(task.percent)?task.percent:parsed?.total>0?Math.round(parsed.completed/parsed.total*100):null;
- const message=task.job?.error||task.errorMessage||(publishing?format('bookUpload.saving'):task.stage==='organizing'&&parsed?.total?format('bookUpload.parsing',parsed):format(({receiving:'portal.upload.storing',organizing:'portal.upload.organizing'})[task.stage]||'bookUpload.'+task.stage));
+ const message=task.job?.error||task.errorMessage||(task.error?format('bookUpload.error'):publishing?format('bookUpload.saving'):task.stage==='organizing'&&parsed?.total?format('bookUpload.parsing',parsed):format(({receiving:'portal.upload.storing',organizing:'portal.upload.organizing'})[task.stage]||'bookUpload.'+task.stage));
  return {active,percent,message};
 }
 

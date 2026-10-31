@@ -1,3 +1,4 @@
+import {gzipSync} from 'node:zlib';
 import {createReadingWorkspaceService} from './reading-workspace-service.mjs';
 import {createNotebookGenerator} from '../harness/notebook-generator.mjs';
 import {contentSecurityPolicy} from './content-security.mjs';
@@ -507,7 +508,16 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
       if(action==='portability-part'&&req.method==='GET'){send(200,await portability.exportPart(user,id,{offset:Number(url.searchParams.get('offset')||0),snapshot:url.searchParams.get('snapshot')}));return true;}
       if(action==='portability-original'&&req.method==='GET'){send(200,await portability.originalPart(user,id,{offset:Number(url.searchParams.get('offset')||0),sha256:url.searchParams.get('sha256')}));return true;}
       if(action==='export-part'&&req.method==='GET'){send(200,await portability.exportPart(user,id,{offset:Number(url.searchParams.get('offset')||0),snapshot:url.searchParams.get('snapshot')}));return true;}
-      const sendReading=payload=>{if(url.searchParams.has('offset'))send(200,transferReading(payload,Number(url.searchParams.get('offset')),url.searchParams.get('snapshot')));else if(Buffer.byteLength(JSON.stringify(payload))>3000000){res.setHeader('X-Reader-Book-Transfer','parts');send(200,transferReading(payload));}else send(200,payload);};
+      const sendReading=payload=>{
+        if(url.searchParams.has('offset')){send(200,transferReading(payload,Number(url.searchParams.get('offset')),url.searchParams.get('snapshot')));return;}
+        const bytes=Buffer.from(JSON.stringify(payload));
+        if(bytes.length>3000000&&req.headers['x-reader-compression']==='gzip'){
+          const packed=gzipSync(bytes,{level:9});
+          // Keep even a base64-encoded bridge response below the hosted 4.5 MB ceiling.
+          if(packed.length<=3200000){res.statusCode=200;res.setHeader('Content-Type','application/json; charset=utf-8');res.setHeader('Content-Encoding','gzip');res.setHeader('Content-Length',packed.length);res.setHeader('Cache-Control','private, no-store');res.setHeader('Vary',[...new Set(String(res.getHeader?.('Vary')||'').split(',').map(v=>v.trim()).filter(Boolean).concat(['Accept-Encoding','X-Reader-Compression']))].join(', '));res.end(packed);return;}
+        }
+        if(bytes.length>3000000){res.setHeader('X-Reader-Book-Transfer','parts');send(200,transferReading(payload));}else send(200,payload);
+      };
       if(action==='reading-manifest'&&req.method==='GET'){
         res.setHeader('Cache-Control','private, no-store');const manifest=await library.readingManifest(user,id);
         const tag='W/"'+createHash('sha256').update(JSON.stringify(manifest,(_key,value)=>value&&typeof value==='object'&&!Array.isArray(value)?Object.fromEntries(Object.entries(value).sort(([a],[b])=>a<b?-1:a>b?1:0)):value)).digest('hex')+'"';res.setHeader('ETag',tag);

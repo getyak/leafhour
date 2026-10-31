@@ -2515,3 +2515,4 @@ filter.sort.manual,catalogue,app/ui-catalogs/en.mjs,2481,unknown,unknown,unknown
 bookUpload.imports,catalogue,app/ui-catalogs/en.mjs,2482,unknown,unknown,unknown,unknown,unreviewed,Bringing in your books,正在加入书房,正在加入書房,本棚に追加中
 bookUpload.parsing,catalogue,app/ui-catalogs/en.mjs,2483,unknown,unknown,unknown,unknown,unreviewed,Organizing chapters · {completed} / {total},正在整理章节 · {completed} / {total},正在整理章節 · {completed} / {total},章を整理しています · {completed} / {total}
 bookUpload.tasks,catalogue,app/ui-catalogs/en.mjs,2484,unknown,unknown,unknown,unknown,unreviewed,Book imports,导入任务,匯入任務,本の取り込み
+bookUpload.saving,catalogue,app/ui-catalogs/en.mjs,2485,unknown,unknown,unknown,unknown,unreviewed,Saving chapters…,正在保存章节…,正在儲存章節…,章を保存しています…
