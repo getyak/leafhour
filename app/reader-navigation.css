@@ -133,3 +133,9 @@
 @media(max-width:1023px){body[data-paginated=true] #book-page{padding-bottom:84px}body[data-paginated=true] #page-turner{bottom:24px}}
 
 @media(max-width:560px){.reading-header .running-entries{flex-direction:column;align-items:stretch}.reading-header .chapter-chooser{max-width:100%;flex:none}.reading-header .running-title{flex:none;max-width:100%}.chapter-chooser .running-progress{max-width:60%;overflow:hidden;text-overflow:ellipsis}}
+
+/* Compact contents use interface typography with a full touch target. */
+.toc-heading{padding:18px 20px 12px}.toc-heading h2{font:500 18px/1.4 var(--interface)}.toc-heading p{font-size:12px;margin-bottom:5px}
+.toc-dialog .toc-chapter{min-height:48px;padding:8px 10px;gap:10px;grid-template-columns:22px minmax(0,1fr) 30px}
+.toc-title-main{font:400 13px/1.6 var(--interface)}.toc-title-original{font:400 12px/1.55 var(--interface);margin-top:2px}.toc-number,.toc-current{font-size:12px}
+.toc-dialog .toc-section-disclosure{margin:0 10px 4px 42px}.toc-dialog .toc-section-disclosure>summary,.toc-dialog .toc-sections button{min-height:44px;padding-block:8px;font-size:12px}.toc-dialog .toc-sections{padding-left:0}.toc-dialog .reader-surface-close{min-width:44px}

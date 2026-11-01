@@ -143,7 +143,13 @@ export function mountContentsDialog({document,getBook,getChapterId,onNavigate,on
     const restorable=target&&target.isConnected!==false&&!(target.closest&&target.closest('dialog:not([open])'));
     (restorable?target:$('open-toc'))?.focus?.({preventScroll:true});
   };dialog.addEventListener('close',closed);
-  return {open,close:()=>{if(!disposed&&ownedOpen&&contentsOwners.get(dialog)===token&&dialog.open)dialog.close();},render,getOpener:()=>opener,unmount(){if(disposed)return;disposed=true;offLocale();labels.clear();dialog.removeEventListener('close',closed);if(contentsOwners.get(dialog)===token){contentsOwners.delete(dialog);ownedOpen=false;for(const node of triggers())node.setAttribute('aria-expanded','false');if(dialog.open)dialog.close();}opener=null;}};
+  let outsidePointer=false;
+  const outside=event=>{const rect=dialog.getBoundingClientRect?.();return event.target===dialog&&!!rect&&(event.clientX<rect.left||event.clientX>rect.right||event.clientY<rect.top||event.clientY>rect.bottom);};
+  const pointer=event=>{outsidePointer=event.button===0&&outside(event);if(outsidePointer){event.preventDefault();event.stopPropagation();}};
+  const dismiss=event=>{const close=outsidePointer&&outside(event);outsidePointer=false;if(!close||!dialog.open)return;event.preventDefault();event.stopPropagation();dialog.close();};
+  const cancelPointer=()=>{outsidePointer=false;};
+  dialog.addEventListener('pointerdown',pointer);dialog.addEventListener('click',dismiss);dialog.addEventListener('pointercancel',cancelPointer);
+  return {open,close:()=>{if(!disposed&&ownedOpen&&contentsOwners.get(dialog)===token&&dialog.open)dialog.close();},render,getOpener:()=>opener,unmount(){if(disposed)return;disposed=true;offLocale();labels.clear();dialog.removeEventListener('close',closed);dialog.removeEventListener('pointerdown',pointer);dialog.removeEventListener('click',dismiss);dialog.removeEventListener('pointercancel',cancelPointer);if(contentsOwners.get(dialog)===token){contentsOwners.delete(dialog);ownedOpen=false;for(const node of triggers())node.setAttribute('aria-expanded','false');if(dialog.open)dialog.close();}opener=null;}};
 }
 
 // The single listen entry in the side reading-tools panel. It only reacts to an
