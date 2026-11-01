@@ -6,12 +6,12 @@ import LeafhourCore
 @MainActor
 protocol ReaderSpeechSynthesizing: AnyObject {
     var delegate: (any AVSpeechSynthesizerDelegate)? { get set }
+    var playbackRate: Float { get set }
     func speak(_ utterance: AVSpeechUtterance)
     @discardableResult func stopSpeaking(at boundary: AVSpeechBoundary) -> Bool
     @discardableResult func pauseSpeaking(at boundary: AVSpeechBoundary) -> Bool
     func continueSpeaking() -> Bool
 }
-extension AVSpeechSynthesizer: ReaderSpeechSynthesizing { }
 
 @MainActor
 protocol ReaderSpeechAudioSession: AnyObject {
@@ -33,7 +33,13 @@ final class ReaderSpeech: NSObject, AVSpeechSynthesizerDelegate {
     private(set) var position = 0
     private(set) var count = 0
     var following = true
-    var speed = 1.0
+    var speed = 1.0 {
+        didSet {
+            let valid = speed.isFinite ? min(5, max(0.5, speed)) : 1
+            if speed != valid { speed = valid }
+            synthesizer.playbackRate = Float(valid)
+        }
+    }
     var voiceID = ""
     var message: String?
     @ObservationIgnored private let synthesizer: any ReaderSpeechSynthesizing
@@ -53,7 +59,7 @@ final class ReaderSpeech: NSObject, AVSpeechSynthesizerDelegate {
     @ObservationIgnored private var lastCheckpoint = Date.distantPast
     @ObservationIgnored private var interruption: NSObjectProtocol?
 
-    override convenience init() { self.init(synthesizer: AVSpeechSynthesizer(), audioSession: AVAudioSession.sharedInstance()) }
+    override convenience init() { self.init(synthesizer: ReaderSpeechAudioPlayer(), audioSession: AVAudioSession.sharedInstance()) }
     init(synthesizer: any ReaderSpeechSynthesizing, audioSession: any ReaderSpeechAudioSession) {
         self.synthesizer = synthesizer; self.audioSession = audioSession
         super.init(); synthesizer.delegate = self
@@ -197,7 +203,10 @@ final class ReaderSpeech: NSObject, AVSpeechSynthesizerDelegate {
         activeSentence = (text as NSString).substring(with: sentence)
         highlight = nil
         let value = AVSpeechUtterance(string: (text as NSString).substring(from: utteranceStart))
-        value.rate = min(AVSpeechUtteranceMaximumSpeechRate, max(AVSpeechUtteranceMinimumSpeechRate, AVSpeechUtteranceDefaultSpeechRate * Float(speed)))
+        // Synthesize at one stable baseline. AVAudioUnitTimePitch applies the
+        // actual multiplier without hitting AVSpeechUtterance's rate ceiling.
+        value.rate = AVSpeechUtteranceDefaultSpeechRate
+        synthesizer.playbackRate = Float(speed)
         let recognizer = NLLanguageRecognizer(); recognizer.processString(String(value.speechString.prefix(4000)))
         value.voice = voiceID.isEmpty ? recognizer.dominantLanguage.flatMap { AVSpeechSynthesisVoice(language: $0.rawValue) } : AVSpeechSynthesisVoice(identifier: voiceID)
         utterance = value; voiceChangePending = false; paused = false; playing = true

@@ -115,9 +115,7 @@ struct ReaderListeningPanel: View {
                 }.frame(maxWidth: .infinity).padding(.vertical, 12)
             }
             Section("声音与语速") {
-                Picker("语速", selection: $speech.speed) {
-                    ForEach([0.75, 1.0, 1.25, 1.5], id: \.self) { value in Text(value.formatted() + "×").tag(value) }
-                }.pickerStyle(.segmented)
+                ReaderSpeechSpeedControl(session: session, speech: speech)
                 Picker("朗读声音", selection: $speech.voiceID) {
                     Text("自动匹配原文语言").tag("")
                     ForEach(speech.voices, id: \.identifier) { voice in Text("\(voice.name) · \(voice.language)").tag(voice.identifier) }
@@ -138,7 +136,6 @@ struct ReaderListeningPanel: View {
             if let message = speech.message { Section { Text(message).font(.footnote).foregroundStyle(.secondary) } }
         }
         .navigationTitle("听一会儿")
-        .onChange(of: speech.speed) { _, _ in speech.restartVoice() }
         .onChange(of: speech.voiceID) { _, _ in speech.restartVoice() }
     }
 }

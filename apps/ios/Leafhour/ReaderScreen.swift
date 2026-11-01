@@ -120,7 +120,7 @@ struct ReaderScreen: View {
                     .padding(.top, session.state.preferences.navigationMode == .paged ? pageInsets.top : 0)
                     .padding(.bottom, session.state.preferences.navigationMode == .paged || needsPDFSourceFallback ? pageInsets.bottom : 0)
                 } else {
-                    TextReadingView(session: session, pageInsets: pageInsets, selectionDismissalID: selectionDismissalID, onNote: { showNote($0) }, onSource: { panel = .source($0); chrome = .asleep }, onExplain: { showCompanion($0) }, onWake: wake, onReadingScroll: readingDidScroll,
+                    TextReadingView(session: session, pageInsets: pageInsets, selectionDismissalID: selectionDismissalID, onNote: { showNote($0) }, onSource: { present(.source($0)) }, onExplain: { showCompanion($0) }, onWake: wake, onReadingScroll: readingDidScroll,
                         onTranslate: { session.selection = $0; present(.translation) },
                         onSelectionChange: { quote, active in session.selection = quote; hasNativeTextSelection = active; if active { speech.userNavigated() } },
                         onPageChange: { pagePosition = $0 }, speechHighlight: speech.highlight, followsSpeech: speech.following && !speech.readerIsInteracting,
@@ -189,7 +189,9 @@ struct ReaderScreen: View {
         .preferredColorScheme(session.state.preferences.colorScheme(following: systemColorScheme))
         .statusBarHidden(false)
         .interactiveDismissDisabled(panel?.isCompanion != true && (session.saving || session.saveError != nil))
-        .sheet(item: $panel, onDismiss: { hasNativeTextSelection = false; session.clearTransientSelection(); selectionDismissalID = UUID(); chrome = .asleep }) { destination in
+        .sheet(item: $panel, onDismiss: {
+            hasNativeTextSelection = false; session.clearTransientSelection(); selectionDismissalID = UUID(); chrome = .asleep
+        }) { destination in
             ReaderPanelView(panel: destination, session: session, systemColorScheme: systemColorScheme, speech: speech, tools: tools, cloud: cloud, library: library, reading: reading,
                 onJump: { index, anchor in speech.userNavigated(); session.go(to: index, anchor: anchor); panel = nil; session.setReadingVisible(scenePhase == .active); session.recordReadingInteraction() }, onCompanion: { showCompanion(currentQuote) })
                 .modifier(ReaderPanelPresentation(isCompanion: destination.isCompanion, isNoteEditor: destination.isNoteEditor))
@@ -207,6 +209,9 @@ struct ReaderScreen: View {
         presentedReader
         .modifier(ReaderTimeTracking(session: session, visible: scenePhase == .active && panel == nil))
         .safeAreaInset(edge: .top, spacing: 0) { remotePositionNotice }
+        .onChange(of: session.state.preferences) { old, new in
+            if old.speechSpeed != new.speechSpeed { speech.speed = new.speechSpeed }
+        }
         .onChange(of: focusedControl) { _, _ in clockID = UUID() }
         .onChange(of: session.selection?.id) { _, _ in clockID = UUID() }
         .onChange(of: hasNativeTextSelection) { _, _ in clockID = UUID() }
@@ -226,15 +231,10 @@ struct ReaderScreen: View {
         .onChange(of: speech.following) { _, _ in followSpeechChapter() }
         .onChange(of: session.contentRevision) { _, _ in speech.contentChanged() }
         .onChange(of: session.state.preferences.translationVariant) { _, _ in speech.stop() }
-        .task(id: readingRefreshKey) {
-            guard scenePhase == .active else { return }
-            await reading.refresh(session, cloud: cloud, library: library)
-            guard !Task.isCancelled, reading.offerFirstPassage, session.state.preferences.viewMode != .source else { return }
-            reading.offerFirstPassage = false
-            if session.book.cloud != nil { await reading.prepare(session, cloud: cloud, library: library, scope: .passage) }
-        }
+        .task(id: readingRefreshKey) { await refreshReadingContent() }
         .onChange(of: session.state.preferences.viewMode) { _, mode in
             speech.stop()
+            speech.readerIsInteracting = false
             if mode == .source { reading.stop(); reading.offerFirstPassage = false }
             selectionDismissalID = UUID()
         }
@@ -245,7 +245,7 @@ struct ReaderScreen: View {
         .task(id: clockID) { await settleChrome() }
         .onChange(of: scenePhase) { _, phase in
             reading.setForeground(phase == .active)
-            if phase != .active { speech.pause(); session.save(); chrome = .asleep }
+            if phase != .active { speech.readerIsInteracting = false; speech.pause(); session.save(); chrome = .asleep }
         }
         .onAppear { configureReading() }
         .onDisappear { speech.stop(); reading.stop(); reading.requestPreparation = nil; reading.requestPassagePreparation = nil; reading.confirmPreparation = nil }
@@ -270,6 +270,7 @@ struct ReaderScreen: View {
         sleepChrome()
     }
     private func configureReading() {
+        speech.speed = session.state.preferences.speechSpeed
         tools.configure(library: library, localBookID: session.book.id)
         reading.setForeground(scenePhase == .active)
         let reading = reading, session = session, cloud = cloud, library = library
@@ -282,6 +283,16 @@ struct ReaderScreen: View {
             Task { await reading.prepare(session, cloud: cloud, library: library, scope: .passage) }
         }
         reading.confirmPreparation = { [weak reading] run in reading?.confirm(run, session: session, cloud: cloud, library: library) }
+    }
+    private func refreshReadingContent() async {
+        guard scenePhase == .active else { return }
+        await reading.refresh(session, cloud: cloud, library: library)
+        guard !Task.isCancelled else { return }
+        guard reading.offerFirstPassage, session.state.preferences.viewMode != .source else { return }
+        reading.offerFirstPassage = false
+        if session.book.cloud != nil {
+            await reading.prepare(session, cloud: cloud, library: library, scope: .passage)
+        }
     }
     private func followSpeechChapter() {
         guard speech.following, speech.playing || speech.paused, !hasNativeTextSelection, !speech.readerIsInteracting,

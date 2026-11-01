@@ -2727,6 +2727,22 @@ final class VideoExperienceUITests: XCTestCase {
 
 
 
+    func test103ListeningSpeedSliderKeepsBothEndpointsAndDoesNotAutoplay() {
+        launch(); openBook(textTitle); openTool("听书"); expandPanel()
+        let slider = app.sliders["reader-speech-speed"]
+        scrollTo(slider, in: foregroundForm(), direction: .up); require(slider)
+        slider.adjust(toNormalizedSliderPosition: 1)
+        require(app.staticTexts["reader-speech-speed-value"])
+        XCTAssertEqual(app.staticTexts["reader-speech-speed-value"].label, "5×")
+        slider.adjust(toNormalizedSliderPosition: 0)
+        XCTAssertEqual(app.staticTexts["reader-speech-speed-value"].label, "0.5×")
+        XCTAssertTrue(app.buttons["reader-speech-play"].exists)
+        capture("GET352-draggable-listening-speed")
+        closePanel(); coldRelaunch(); resumeReaderIfOffered(); openTool("听书"); expandPanel()
+        scrollTo(slider, in: foregroundForm(), direction: .up)
+        XCTAssertEqual(app.staticTexts["reader-speech-speed-value"].label, "0.5×")
+        XCTAssertTrue(app.buttons["reader-speech-play"].exists)
+    }
 
 
 

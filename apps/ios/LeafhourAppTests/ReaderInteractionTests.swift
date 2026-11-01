@@ -7,6 +7,22 @@ import LeafhourCore
 
 @MainActor
 final class ReaderInteractionTests: XCTestCase {
+    func testListeningSpeedSanitizesInvalidValuesAndKeepsTheRequestedEndpoints() {
+        let speech = ReaderSpeech(synthesizer: SpeechSynthesizerProbe(), audioSession: SpeechAudioSessionProbe())
+        speech.speed = .nan
+        XCTAssertEqual(speech.speed, 1)
+        speech.speed = -.infinity
+        XCTAssertEqual(speech.speed, 1)
+        speech.speed = 0.1
+        XCTAssertEqual(speech.speed, 0.5)
+        speech.speed = 8
+        XCTAssertEqual(speech.speed, 5)
+        speech.speed = 0.5
+        XCTAssertEqual(speech.speed, 0.5)
+        speech.speed = 5
+        XCTAssertEqual(speech.speed, 5)
+    }
+
     private func session(source: String = "A quiet passage to read aloud.", filename: String = "reader.txt") async throws -> ReaderSession {
         let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
         try FileManager.default.createDirectory(at: root, withIntermediateDirectories: true)
@@ -267,7 +283,8 @@ final class ReaderInteractionTests: XCTestCase {
         XCTAssertTrue(speech.playing)
         XCTAssertFalse(speech.paused)
         XCTAssertEqual(synthesizer.spoken.count, 2)
-        XCTAssertEqual(synthesizer.spoken.last?.rate ?? 0, AVSpeechUtteranceDefaultSpeechRate * 1.5, accuracy: 0.001)
+        XCTAssertEqual(synthesizer.spoken.last?.rate ?? 0, AVSpeechUtteranceDefaultSpeechRate, accuracy: 0.001)
+        XCTAssertEqual(synthesizer.playbackRate, 1.5, accuracy: 0.001)
         XCTAssertEqual(synthesizer.continuations, 0, "Resume must rebuild the passage with the chosen speed")
     }
 
@@ -309,7 +326,8 @@ final class ReaderInteractionTests: XCTestCase {
         speech.speed = 1.25
         speech.restartVoice()
         XCTAssertEqual(synthesizer.spoken.count, 2)
-        XCTAssertEqual(synthesizer.spoken.last?.rate ?? 0, AVSpeechUtteranceDefaultSpeechRate * 1.25, accuracy: 0.001)
+        XCTAssertEqual(synthesizer.spoken.last?.rate ?? 0, AVSpeechUtteranceDefaultSpeechRate, accuracy: 0.001)
+        XCTAssertEqual(synthesizer.playbackRate, 1.25, accuracy: 0.001)
         XCTAssertTrue(speech.playing)
         XCTAssertFalse(speech.paused)
     }
@@ -318,6 +336,7 @@ final class ReaderInteractionTests: XCTestCase {
 @MainActor
 private final class SpeechSynthesizerProbe: ReaderSpeechSynthesizing {
     weak var delegate: (any AVSpeechSynthesizerDelegate)?
+    var playbackRate: Float = 1
     var spoken: [AVSpeechUtterance] = []
     var continuations = 0
     var pauseAccepted = true
