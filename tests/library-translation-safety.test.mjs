@@ -123,3 +123,31 @@ test('revoked generation permission blocks saving a late translation',async t=>{
  assert.equal(calls,1);assert.deepEqual((await library.getBook(user,book.bookId)).sections[0].paragraphs[0].translations,{});
  await assert.rejects(library.translate(user,book.bookId,id,{authorizeGeneration:async()=>false}),e=>e.status===409);assert.equal(calls,1);
 });
+
+test('blank saved draft pairs cannot bypass explicit versioned translation and valid results stay byte-identical on cache reads',async t=>{
+ const dir=await mkdtemp(path.join(tmpdir(),'translation-incomplete-cache-'));t.after(()=>rm(dir,{recursive:true,force:true}));
+ let calls=0;
+ const translated={literal:'  新的直译\n',interpretive:'\t新的意译  ',model:'synthetic-completeness'};
+ const library=await createLibraryService({dataDir:dir,catalogDir:null,translator:async()=>{calls++;return translated;}}),user={id:'reader'};
+ const book=await library.importDocument(user,{filename:'completion.txt',bytes:Buffer.from('A uniquely owned original paragraph.')}),id=book.sections[0].paragraphs[0].id;
+ const overlayFile=path.join(dir,'users',digest(user.id),'translations',digest(book.bookId)+'.json');
+ const blank={literal:{...generated.literal,text:' \n\t',sourceVersion:book.contentVersion},interpretive:{...generated.interpretive,text:'\r  ',sourceVersion:book.contentVersion}};
+ await mkdir(path.dirname(overlayFile),{recursive:true,mode:0o700});
+ await writeFile(overlayFile,JSON.stringify({[id]:{contentVersion:book.contentVersion,translations:blank}}));
+ const reachable=(await library.getBook(user,book.bookId)).sections[0].paragraphs[0];
+ assert.deepEqual(reachable.translations,blank,'the real owned-book loader must actually expose this persisted draft fixture before testing the cache decision');
+ assert.equal(calls,0);
+ const generationReceipt={operationId:'credit-complete-fixture',requestId:'complete-fixture'};
+ const saved=await library.translate(user,book.bookId,id,{expectedContentVersion:book.contentVersion,generationReceipt});
+ assert.equal(calls,1,'blank objects are not a complete cache acknowledgement');
+ assert.equal(saved.translations.literal.text,translated.literal);assert.equal(saved.translations.interpretive.text,translated.interpretive);
+ for(const variant of ['literal','interpretive']){
+  assert.equal(saved.translations[variant].sourceVersion,book.contentVersion);
+  assert.deepEqual(saved.translations[variant].generationReceipt,generationReceipt);
+ }
+ assert.deepEqual((await library.getBook(user,book.bookId)).sections[0].paragraphs[0].translations,saved.translations);
+ const persistedBefore=await readFile(overlayFile,'utf8');
+ const cached=await library.translate(user,book.bookId,id,{expectedContentVersion:book.contentVersion,generationReceipt:{operationId:'different-op',requestId:'different-request'}});
+ assert.deepEqual(cached,saved,'a valid pair retains all text, timestamps, model and original operation metadata');
+ assert.equal(calls,1);assert.equal(await readFile(overlayFile,'utf8'),persistedBefore);
+});

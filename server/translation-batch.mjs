@@ -24,6 +24,12 @@ export function assertExpectedContentVersion(book,expected){
   if(expected!==undefined&&expected!==book.contentVersion)throw fail('原文版本已变化，请重新载入后再翻译',409);
 }
 
+// A usable pair requires text for both variants, not only saved objects or
+// truthy values. Checking completeness never trims or rewrites saved content.
+export function hasCompleteTranslationPair(passage){
+  return ['literal','interpretive'].every(key=>typeof passage?.translations?.[key]?.text==='string'&&passage.translations[key].text.trim());
+}
+
 // Versioned requests are batch requests: either both variants are absent,
 // or no generation is authorized. Complete pairs may be returned unchanged.
 export function assertBatchPassage(passage,expected){

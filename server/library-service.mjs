@@ -29,7 +29,7 @@ import {bookReadingLanguages} from '../app/book-reading-languages.mjs';
 import {validParagraphAnchor} from '../app/paragraph-anchor.mjs';
 import {applyPersonalRecordEdit} from '../app/personal-records.mjs';
 import {isReadingTimeSource} from '../app/reading-time-policy.mjs';
-import {translationRequestOptions,assertExpectedContentVersion,assertBatchPassage,assertGenerationSource,mergeGeneratedTranslations} from './translation-batch.mjs';
+import {translationRequestOptions,assertExpectedContentVersion,assertBatchPassage,assertGenerationSource,mergeGeneratedTranslations,hasCompleteTranslationPair} from './translation-batch.mjs';
 import {applyCatalogReadingMetadata} from './catalog-reading-metadata.mjs';
 import {structuredCatalogBook} from './structured-catalog.mjs';
 import {applyCatalogSample} from './catalog-sample.mjs';
@@ -554,7 +554,7 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
     // A stale expected version is refused before any charged provider request.
     assertExpectedContentVersion(book,expectedContentVersion);
     assertBatchPassage(passages[i],expectedContentVersion);
-    if(passages[i].translations.literal&&passages[i].translations.interpretive){await notifySourceMutation(user,id,{type:'translation-ack',bookId:id,passageId});return passages[i];}
+    if(hasCompleteTranslationPair(passages[i])){await notifySourceMutation(user,id,{type:'translation-ack',bookId:id,passageId});return passages[i];}
     if(inferSourceLanguage(passages[i].original)==='zh')throw fail('这段原文为中文，无需生成中文译文；原文与个人记录仍可使用');
     if(!translator)throw fail('翻译服务尚未配置，原文仍可继续阅读',503);
     const localKey=!dataStore?path.resolve(dataDir)+'|'+user.id+'|'+id:null,key=user.id+'|'+id+'|'+passageId;if(localKey&&localTranslationsRunning.has(localKey))throw fail('这本书正在保存另一段译文，请稍后再试；当前段落尚未提交翻译。',409);if(translationsRunning.has(key))throw fail('这一段正在翻译，请稍后查看',409);if(translationsRunning.size>=2)throw fail('翻译服务正在处理其他段落，请稍后再试',429);
@@ -566,7 +566,7 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
     try{
       bookCapacity(book,TRANSLATION_RESERVE_BYTES);
       if(dataStore?.reserveTranslation)ticket=await dataStore.reserveTranslation(user,id,passageId);
-      {const latest=await getBook(user,id),saved=allPassages(latest).find(p=>p.id===passageId);assertGenerationSource({book,fresh:latest,passage:passages[i],freshPassage:saved});assertExpectedContentVersion(latest,expectedContentVersion);assertBatchPassage(saved,expectedContentVersion);if(saved?.translations.literal&&saved.translations.interpretive){await notifySourceMutation(user,id,{type:'translation-ack',bookId:id,passageId});return saved;}bookCapacity(latest,TRANSLATION_RESERVE_BYTES);}
+      {const latest=await getBook(user,id),saved=allPassages(latest).find(p=>p.id===passageId);assertGenerationSource({book,fresh:latest,passage:passages[i],freshPassage:saved});assertExpectedContentVersion(latest,expectedContentVersion);assertBatchPassage(saved,expectedContentVersion);if(hasCompleteTranslationPair(saved)){await notifySourceMutation(user,id,{type:'translation-ack',bookId:id,passageId});return saved;}bookCapacity(latest,TRANSLATION_RESERVE_BYTES);}
       await checkPermission();
       const result=await translator({passageId,sourceLanguage:inferSourceLanguage(passages[i].original),targetLanguage:'zh',passages:passages.slice(Math.max(0,i-1),i+2).map(p=>({id:p.id,original:p.original})),sourceVersion:book.contentVersion});
       if(!result||!['literal','interpretive'].every(k=>typeof result[k]==='string'&&result[k].trim()&&result[k].length<=12000))throw fail('翻译结果不完整，请重试；原文已保留',502);

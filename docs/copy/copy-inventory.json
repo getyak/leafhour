@@ -1162,7 +1162,7 @@
       },
       {
         "file": "server/credit-gate.mjs",
-        "sha256": "15e201976b2dc2daba10257a633eb70188c9e0e47a8cffd7060b90c13dc9fada"
+        "sha256": "18155f3549fc570f8b451c76a8bd175f1e3247ebafbd9eb05d812a14016c4fbb"
       },
       {
         "file": "server/creem.mjs",
@@ -1242,7 +1242,7 @@
       },
       {
         "file": "server/library-service.mjs",
-        "sha256": "c79c7f3baa734dd18f3af61179f4108757d6140e61e810a3c72f34507d035eb5"
+        "sha256": "ba9d2e7811b6c29b71172cce2a1f5919b8a76472ff405f29480de5738f9e1f3e"
       },
       {
         "file": "server/listening-guide-content.mjs",
@@ -1434,7 +1434,7 @@
       },
       {
         "file": "server/translation-batch.mjs",
-        "sha256": "7df6ec69637b3af2e322e201ce98b320c82476ffc892ecf876e9c0b2c5c40410"
+        "sha256": "0dd729e5d307a7ca788e4b784f24dbcddab00b76d4d4c5fe69c70d7aa629c225"
       },
       {
         "file": "server/translation.mjs",
@@ -1453,7 +1453,7 @@
         "sha256": "531202f1814314b6c76bfef38b2ea66636425b1ca9b445db349e70ebb8bcd00e"
       }
     ],
-    "inputDigest": "52c6665bb08ce8ab3bc1fd34f5ca40b6c8c3c27e44f0a099e32d8b5f45f3dd20"
+    "inputDigest": "968967926577ad5173f3280c1e407e74be46a31407a747b00da0d0e5712553c8"
   },
   "locales": [
     "en",
@@ -256779,9 +256779,9 @@
       }
     },
     {
-      "id": "candidate:server/credit-gate.mjs:11:161",
+      "id": "candidate:server/credit-gate.mjs:12:161",
       "file": "server/credit-gate.mjs",
-      "line": 11,
+      "line": 12,
       "column": 161,
       "kind": "js-cjk-literal",
       "property": null,
@@ -256799,9 +256799,9 @@
       }
     },
     {
-      "id": "candidate:server/credit-gate.mjs:12:111",
+      "id": "candidate:server/credit-gate.mjs:13:111",
       "file": "server/credit-gate.mjs",
-      "line": 12,
+      "line": 13,
       "column": 111,
       "kind": "js-cjk-literal",
       "property": null,
@@ -256819,9 +256819,9 @@
       }
     },
     {
-      "id": "candidate:server/credit-gate.mjs:13:119",
+      "id": "candidate:server/credit-gate.mjs:14:119",
       "file": "server/credit-gate.mjs",
-      "line": 13,
+      "line": 14,
       "column": 119,
       "kind": "js-cjk-literal",
       "property": null,
@@ -256839,9 +256839,9 @@
       }
     },
     {
-      "id": "candidate:server/credit-gate.mjs:22:277",
+      "id": "candidate:server/credit-gate.mjs:23:277",
       "file": "server/credit-gate.mjs",
-      "line": 22,
+      "line": 23,
       "column": 277,
       "kind": "js-cjk-literal",
       "property": null,
@@ -256859,9 +256859,9 @@
       }
     },
     {
-      "id": "candidate:server/credit-gate.mjs:26:46",
+      "id": "candidate:server/credit-gate.mjs:27:46",
       "file": "server/credit-gate.mjs",
-      "line": 26,
+      "line": 27,
       "column": 46,
       "kind": "js-cjk-literal",
       "property": null,
@@ -256879,9 +256879,9 @@
       }
     },
     {
-      "id": "candidate:server/credit-gate.mjs:29:74",
+      "id": "candidate:server/credit-gate.mjs:30:74",
       "file": "server/credit-gate.mjs",
-      "line": 29,
+      "line": 30,
       "column": 74,
       "kind": "js-cjk-literal",
       "property": null,
@@ -256899,9 +256899,9 @@
       }
     },
     {
-      "id": "candidate:server/credit-gate.mjs:36:69",
+      "id": "candidate:server/credit-gate.mjs:37:69",
       "file": "server/credit-gate.mjs",
-      "line": 36,
+      "line": 37,
       "column": 69,
       "kind": "js-cjk-literal",
       "property": null,
@@ -256919,9 +256919,9 @@
       }
     },
     {
-      "id": "candidate:server/credit-gate.mjs:38:58",
+      "id": "candidate:server/credit-gate.mjs:39:58",
       "file": "server/credit-gate.mjs",
-      "line": 38,
+      "line": 39,
       "column": 58,
       "kind": "js-cjk-literal",
       "property": null,
@@ -256939,9 +256939,9 @@
       }
     },
     {
-      "id": "candidate:server/credit-gate.mjs:39:73",
+      "id": "candidate:server/credit-gate.mjs:40:73",
       "file": "server/credit-gate.mjs",
-      "line": 39,
+      "line": 40,
       "column": 73,
       "kind": "js-cjk-literal",
       "property": null,
@@ -256959,9 +256959,9 @@
       }
     },
     {
-      "id": "candidate:server/credit-gate.mjs:42:101",
+      "id": "candidate:server/credit-gate.mjs:43:101",
       "file": "server/credit-gate.mjs",
-      "line": 42,
+      "line": 43,
       "column": 101,
       "kind": "js-cjk-literal",
       "property": null,
@@ -256979,9 +256979,9 @@
       }
     },
     {
-      "id": "candidate:server/credit-gate.mjs:54:112",
+      "id": "candidate:server/credit-gate.mjs:55:112",
       "file": "server/credit-gate.mjs",
-      "line": 54,
+      "line": 55,
       "column": 112,
       "kind": "js-cjk-literal",
       "property": null,
@@ -256999,9 +256999,9 @@
       }
     },
     {
-      "id": "candidate:server/credit-gate.mjs:76:28",
+      "id": "candidate:server/credit-gate.mjs:77:28",
       "file": "server/credit-gate.mjs",
-      "line": 76,
+      "line": 77,
       "column": 28,
       "kind": "js-cjk-literal",
       "property": null,
@@ -257019,9 +257019,9 @@
       }
     },
     {
-      "id": "candidate:server/credit-gate.mjs:84:306",
+      "id": "candidate:server/credit-gate.mjs:85:306",
       "file": "server/credit-gate.mjs",
-      "line": 84,
+      "line": 85,
       "column": 306,
       "kind": "js-cjk-literal",
       "property": null,
@@ -257039,9 +257039,9 @@
       }
     },
     {
-      "id": "candidate:server/credit-gate.mjs:87:53",
+      "id": "candidate:server/credit-gate.mjs:88:53",
       "file": "server/credit-gate.mjs",
-      "line": 87,
+      "line": 88,
       "column": 53,
       "kind": "js-cjk-literal",
       "property": null,
@@ -257059,9 +257059,9 @@
       }
     },
     {
-      "id": "candidate:server/credit-gate.mjs:97:164",
+      "id": "candidate:server/credit-gate.mjs:98:164",
       "file": "server/credit-gate.mjs",
-      "line": 97,
+      "line": 98,
       "column": 164,
       "kind": "js-cjk-literal",
       "property": null,
@@ -257079,9 +257079,9 @@
       }
     },
     {
-      "id": "candidate:server/credit-gate.mjs:105:22",
+      "id": "candidate:server/credit-gate.mjs:106:22",
       "file": "server/credit-gate.mjs",
-      "line": 105,
+      "line": 106,
       "column": 22,
       "kind": "js-cjk-literal",
       "property": null,
@@ -257099,9 +257099,9 @@
       }
     },
     {
-      "id": "candidate:server/credit-gate.mjs:121:22",
+      "id": "candidate:server/credit-gate.mjs:122:22",
       "file": "server/credit-gate.mjs",
-      "line": 121,
+      "line": 122,
       "column": 22,
       "kind": "js-cjk-literal",
       "property": null,
@@ -275619,9 +275619,9 @@
       }
     },
     {
-      "id": "candidate:server/translation-batch.mjs:32:36",
+      "id": "candidate:server/translation-batch.mjs:38:36",
       "file": "server/translation-batch.mjs",
-      "line": 32,
+      "line": 38,
       "column": 36,
       "kind": "js-cjk-literal",
       "property": null,
@@ -275639,9 +275639,9 @@
       }
     },
     {
-      "id": "candidate:server/translation-batch.mjs:39:52",
+      "id": "candidate:server/translation-batch.mjs:45:52",
       "file": "server/translation-batch.mjs",
-      "line": 39,
+      "line": 45,
       "column": 52,
       "kind": "js-cjk-literal",
       "property": null,
@@ -275659,9 +275659,9 @@
       }
     },
     {
-      "id": "candidate:server/translation-batch.mjs:40:147",
+      "id": "candidate:server/translation-batch.mjs:46:147",
       "file": "server/translation-batch.mjs",
-      "line": 40,
+      "line": 46,
       "column": 147,
       "kind": "js-cjk-literal",
       "property": null,
@@ -303386,7 +303386,7 @@
     {
       "kind": "computed-member",
       "file": "server/credit-gate.mjs",
-      "line": 6,
+      "line": 7,
       "expression": "k",
       "fragments": [],
       "unresolved": true
@@ -303394,7 +303394,7 @@
     {
       "kind": "concatenation",
       "file": "server/credit-gate.mjs",
-      "line": 9,
+      "line": 10,
       "expression": "'credit-'+hash([user.id,action,bookId,id])",
       "fragments": [
         "credit-"
@@ -303404,7 +303404,7 @@
     {
       "kind": "computed-member",
       "file": "server/credit-gate.mjs",
-      "line": 11,
+      "line": 12,
       "expression": "action",
       "fragments": [],
       "unresolved": true
@@ -303412,7 +303412,7 @@
     {
       "kind": "computed-member",
       "file": "server/credit-gate.mjs",
-      "line": 11,
+      "line": 12,
       "expression": "action",
       "fragments": [],
       "unresolved": true
@@ -303420,7 +303420,7 @@
     {
       "kind": "computed-member",
       "file": "server/credit-gate.mjs",
-      "line": 35,
+      "line": 36,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -303428,7 +303428,7 @@
     {
       "kind": "computed-member",
       "file": "server/credit-gate.mjs",
-      "line": 62,
+      "line": 63,
       "expression": "k",
       "fragments": [],
       "unresolved": true
@@ -303436,7 +303436,7 @@
     {
       "kind": "computed-member",
       "file": "server/credit-gate.mjs",
-      "line": 62,
+      "line": 63,
       "expression": "k",
       "fragments": [],
       "unresolved": true
@@ -303444,7 +303444,7 @@
     {
       "kind": "computed-member",
       "file": "server/credit-gate.mjs",
-      "line": 62,
+      "line": 63,
       "expression": "k",
       "fragments": [],
       "unresolved": true
@@ -305459,14 +305459,6 @@
       "kind": "computed-member",
       "file": "server/library-service.mjs",
       "line": 556,
-      "expression": "i",
-      "fragments": [],
-      "unresolved": true
-    },
-    {
-      "kind": "computed-member",
-      "file": "server/library-service.mjs",
-      "line": 557,
       "expression": "i",
       "fragments": [],
       "unresolved": true
@@ -312376,7 +312368,7 @@
     {
       "kind": "computed-member",
       "file": "server/translation-batch.mjs",
-      "line": 31,
+      "line": 30,
       "expression": "key",
       "fragments": [],
       "unresolved": true
@@ -312384,7 +312376,7 @@
     {
       "kind": "computed-member",
       "file": "server/translation-batch.mjs",
-      "line": 31,
+      "line": 30,
       "expression": "key",
       "fragments": [],
       "unresolved": true
@@ -312392,7 +312384,23 @@
     {
       "kind": "computed-member",
       "file": "server/translation-batch.mjs",
-      "line": 50,
+      "line": 37,
+      "expression": "key",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/translation-batch.mjs",
+      "line": 37,
+      "expression": "key",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/translation-batch.mjs",
+      "line": 56,
       "expression": "variant",
       "fragments": [],
       "unresolved": true
@@ -312400,7 +312408,7 @@
     {
       "kind": "computed-member",
       "file": "server/translation-batch.mjs",
-      "line": 50,
+      "line": 56,
       "expression": "variant",
       "fragments": [],
       "unresolved": true
@@ -312408,7 +312416,7 @@
     {
       "kind": "computed-member",
       "file": "server/translation-batch.mjs",
-      "line": 52,
+      "line": 58,
       "expression": "variant",
       "fragments": [],
       "unresolved": true
@@ -312416,7 +312424,7 @@
     {
       "kind": "computed-member",
       "file": "server/translation-batch.mjs",
-      "line": 52,
+      "line": 58,
       "expression": "variant",
       "fragments": [],
       "unresolved": true
@@ -312881,7 +312889,7 @@
     "candidatesUnreviewed": 6302,
     "candidatesProtected": 143,
     "itemsProtected": 9,
-    "dynamicConsumers": 4054,
+    "dynamicConsumers": 4055,
     "consumerReferences": 2131,
     "keysWithoutStaticConsumers": 1337,
     "reviewedLocaleValues": 36,
