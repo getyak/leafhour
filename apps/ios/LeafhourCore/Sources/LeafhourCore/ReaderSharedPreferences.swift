@@ -45,7 +45,7 @@ extension OfflineLibrary {
     static func validateReaderPreferences(_ value: ReaderPreferences) throws {
         guard value.fontSize.isFinite, (16...36).contains(value.fontSize),
               value.lineSpacing.isFinite, (4...18).contains(value.lineSpacing),
-              ["paper", "night", "system"].contains(value.theme),
+              ["paper", "white", "sage", "night", "system"].contains(value.theme),
               value.speechSpeed.isFinite, (0.5...5).contains(value.speechSpeed),
               value.autoPageInterval.isFinite, (5...120).contains(value.autoPageInterval),
               value.autoPageInterval.truncatingRemainder(dividingBy: 5) == 0 else {

@@ -448,8 +448,7 @@ struct PDFReadingView: UIViewRepresentable {
                 self.userScrolled = true
                 if turn.origin == .user { self.parent.onReadingScroll() }
                 self.capture(force: true); self.reportPagePosition()
-                let theme = self.parent.session.state.preferences.theme
-                let paper: UIColor = theme == "paper" ? UIColor(Color.readingPaper) : theme == "night" ? UIColor(white: 0.12, alpha: 1) : .systemBackground
+                let paper: UIColor = self.parent.session.state.preferences.paperColor
                 self.pageCurl.animate(from: turn.snapshot, over: view, direction: turn.direction, paper: paper, style: self.parent.session.state.preferences.pageAnimation) { [weak self] completed in
                     guard let self, !self.isInvalidated else { return }
                     guard completed, self.turnGeneration == generation, !self.restoring,
@@ -489,8 +488,7 @@ struct PDFReadingView: UIViewRepresentable {
             speechDestination = nil
             turnGeneration += 1
             let snapshot = pageCurl.snapshot(from: view)
-            let theme = parent.session.state.preferences.theme
-            let paper: UIColor = theme == "paper" ? UIColor(Color.readingPaper) : theme == "night" ? UIColor(white: 0.12, alpha: 1) : .systemBackground
+            let paper: UIColor = parent.session.state.preferences.paperColor
             pageCurl.protect(snapshot, over: view, paper: paper)
             nativePageTurn = NativePageTurn(direction: direction, origin: origin, navigation: parent.session.navigationID,
                 owner: ObjectIdentifier(parent.session), pageIndex: next, snapshot: snapshot)

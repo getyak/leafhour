@@ -11,6 +11,30 @@ import LeafhourCore
         return detector.features(in: exported).compactMap { ($0 as? CIQRCodeFeature)?.messageString }
     }
 
+    func testEveryCardStylePreservesCompleteMultilingualTextAndReadableInk() throws {
+        let text = String(repeating: "阅读的片段与原文都应完整保留。 A quiet page 👩🏽‍💻 café.\n", count: 28)
+        let content = NativeShareContent(title: "A real title", author: "Author", text: text, attribution: "作者原文", location: "Chapter", url: nil)
+        for style in NativeShareCardStyle.allCases {
+            let pages = try NativeShareCardRenderer.pages(content, format: .portrait, style: style)
+            XCTAssertGreaterThan(pages.count, 1)
+            XCTAssertEqual(pages.map(\.text).joined(), text)
+            for page in pages {
+                XCTAssertLessThan(page.bodyBounds.maxY, page.footerY)
+                XCTAssertLessThanOrEqual(page.citationBounds.maxY, page.image.size.height - 30)
+            }
+            func luminance(_ color: UIColor) -> Double {
+                var r: CGFloat = 0, g: CGFloat = 0, b: CGFloat = 0, a: CGFloat = 0
+                color.getRed(&r, green: &g, blue: &b, alpha: &a)
+                func linear(_ v: CGFloat) -> Double { v <= 0.04045 ? Double(v / 12.92) : pow(Double((v + 0.055) / 1.055), 2.4) }
+                return 0.2126 * linear(r) + 0.7152 * linear(g) + 0.0722 * linear(b)
+            }
+            for ink in [style.foreground, style.secondary, style.accent] {
+                let a = luminance(style.background), b = luminance(ink)
+                XCTAssertGreaterThanOrEqual((max(a, b) + 0.05) / (min(a, b) + 0.05), 4.5, style.rawValue)
+            }
+        }
+    }
+
     func testExportedCardsDecodeToTheExactPublicOrGiftURLInEveryFormat() throws {
         for url in [URL(string: "https://leafhour.com/read?book=gutenberg-alice&passage=ch01-p002")!, URL(string: "https://leafhour.com/gift/" + String(repeating: "a", count: 43))!] {
             for format in NativeShareCardFormat.allCases {

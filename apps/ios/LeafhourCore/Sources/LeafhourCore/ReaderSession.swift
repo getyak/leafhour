@@ -305,7 +305,7 @@ public final class ReaderSession: Identifiable {
         }
     }
 }
-public struct SelectedQuote: Identifiable {
+public struct SelectedQuote: Identifiable, Codable, Equatable {
     public let anchor: ReadingAnchor
     public let text: String
     /// Exact underlying source for a formatted selection, independent of its displayed characters.

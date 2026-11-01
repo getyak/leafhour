@@ -81,9 +81,15 @@ struct ReaderScreen: View {
     @State private var chromeMetrics: ReaderChromeMetrics?
     private enum ChromeFocus: Hashable { case back, bookInformation, tools }
     @FocusState private var focusedControl: ChromeFocus?
+    init(session: ReaderSession, systemColorScheme: ColorScheme, cloud: CloudLibraryClient? = nil, library: OfflineLibrary? = nil,
+         positionConflict: Bool = false, resolvePosition: ((Bool) -> Void)? = nil, conversationTools: ReaderCloudTools? = nil) {
+        self.session = session; self.systemColorScheme = systemColorScheme; self.cloud = cloud; self.library = library
+        self.positionConflict = positionConflict; self.resolvePosition = resolvePosition
+        _tools = State(initialValue: conversationTools ?? ReaderCloudTools())
+    }
     private var hasPDFText: Bool { session.chapter.passages.contains { !$0.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty } }
     private var needsPDFSourceFallback: Bool { session.book.kind == .pdf && session.state.preferences.viewMode != .source && !hasPDFText }
-    private var paper: Color { session.state.preferences.theme == "paper" ? .readingPaper : Color(uiColor: .systemBackground) }
+    private var paper: Color { Color(uiColor: session.state.preferences.paperColor) }
     // Horizontal pages use a compact, stable book viewport. Tools temporarily
     // overlay that viewport; waking them never changes its source boundaries.
     // Continuous reading keeps the measured controls budget for its scroll ends.

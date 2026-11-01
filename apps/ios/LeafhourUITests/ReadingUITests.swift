@@ -70,15 +70,15 @@ final class ReadingUITests: XCTestCase {
         reader.coordinate(withNormalizedOffset: CGVector(dx: 0.45, dy: 0.48)).press(forDuration: 1.2)
         let explain = app.menuItems["解释这句"]
         XCTAssertTrue(explain.waitForExistence(timeout: 5), app.debugDescription); explain.tap()
-        XCTAssertTrue(app.staticTexts["作者原文"].waitForExistence(timeout: 3))
+        XCTAssertTrue(app.staticTexts["选中的原文"].waitForExistence(timeout: 3))
         assertCompanionAndDismiss("selection")
         XCTAssertFalse(app.menuItems["解释这句"].exists)
     }
     private func assertCompanionAndDismiss(_ origin: String) {
-        let title = app.navigationBars["陪我读"]
+        let title = app.navigationBars["Chat"]
         XCTAssertTrue(title.waitForExistence(timeout: 3))
-        XCTAssertGreaterThan(title.frame.minY, app.windows.firstMatch.frame.height * 0.3,
-                             "The companion must leave the upper book visible")
+        XCTAssertLessThan(title.frame.minY, app.windows.firstMatch.frame.height * 0.25,
+                             "Chat opens as a full-height conversation")
         XCTAssertTrue(app.textFields["reader-question"].exists || app.textViews["reader-question"].exists, "The real conversation composer replaces the old placeholder")
         XCTAssertFalse(app.staticTexts["此设备尚未连接 AI 陪读。原文仍在这里，可以继续阅读。"].exists)
         capture("GET312-" + origin + "-conversation-half-sheet")

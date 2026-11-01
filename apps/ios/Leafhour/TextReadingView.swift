@@ -653,8 +653,7 @@ struct TextReadingView: UIViewRepresentable {
             parent.onWake(edge)
         }
         private var pagePaper: UIColor {
-            let theme = parent.session.state.preferences.theme
-            return theme == "night" ? UIColor(white: 0.12, alpha: 1) : theme == "paper" ? UIColor(Color.readingPaper) : .systemBackground
+            return parent.session.state.preferences.paperColor
         }
         private func animatePage(from snapshot: UIView?, direction: ReaderPageDirection) {
             guard let view else { finishPageRequest(.notReady); return }

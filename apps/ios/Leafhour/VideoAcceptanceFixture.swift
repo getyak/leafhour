@@ -294,7 +294,7 @@ private final class GET317Transport: URLProtocol, @unchecked Sendable {
         case "chat":
             var records = record(bookID)
             var turns = records["syntheticTurns"] as? [[String: Any]] ?? []
-            if method == "GET" { return reply(["available": true, "scope": ["mode": "book", "revision": 0], "turns": turns]) }
+            if method == "GET" { return reply(["available": true, "bookId": bookID, "contentVersion": "get317-v1", "context": ["passageId": "c1-p1", "chapterTitle": "GET317 合成第一章", "original": "GET317 SYNTHETIC chat context. Invented acceptance text; no model was called."], "scope": ["mode": "book", "revision": 0], "turns": turns]) }
             let turn: [String: Any] = ["id": body["id"] as? String ?? "missing-id", "text": body["text"] as? String ?? "", "status": "completed", "answer": ["summary": "GET317 合成 AI 回答样本：这是离线网络夹具返回的固定测试文字，未调用任何模型。\n\n" + String(repeating: "输入框应继续可见，原文位置应保持稳定。 ", count: 18)]]
             if !turns.contains(where: { $0["id"] as? String == turn["id"] as? String }) { turns.append(turn) }
             records["syntheticTurns"] = turns; persist(records, bookID: bookID)
