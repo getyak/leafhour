@@ -61,11 +61,11 @@ struct ReaderPanelView: View {
                 case .share(let quote): ReaderSharePanel(session: session, quote: quote, cloud: cloud)
                 case .translation: ReaderTranslationPanel(session: session, tools: tools, cloud: cloud)
                 case .introduction: ReaderIntroductionPanel(session: session, tools: tools, cloud: cloud)
-                case .conversation: ReaderConversationPanel(session: session, tools: tools, cloud: cloud)
+                case .conversation: ReaderConversationPanel(session: session, tools: tools, cloud: cloud, library: library)
                 case .bookInformation: ReaderBookInformationPanel(book: session.book)
                 case .note(let quote): NoteEditorPanel(quote: quote, session: session)
                 case .companion(let quote):
-                    ReaderConversationPanel(session: session, tools: tools, cloud: cloud, selection: quote, title: "陪我读")
+                    ReaderConversationPanel(session: session, tools: tools, cloud: cloud, selection: quote, library: library, title: "Chat")
                 case .source(let quote):
                     ScrollView {
                         VStack(alignment: .leading, spacing: 18) {
@@ -198,9 +198,9 @@ struct BookSearchPanel: View {
     }
 }
 struct ReaderPreferencesPanel: View {
+    @Environment(\.colorScheme) private var previewSystemScheme
     @Bindable var session: ReaderSession
     var reading: ReaderReadingContent? = nil
-    private var defaults: ReaderPreferences { ReaderPreferences() }
     private var previewLayer: ReadingLayerSegment? {
         let passages = session.chapter.passages
         let current = passages.first { $0.id == session.currentAnchor?.passageID && !$0.heading && $0.resourcePath == nil && !$0.text.isEmpty }
@@ -232,113 +232,37 @@ struct ReaderPreferencesPanel: View {
         }
         return String(excerpt) + "…"
     }
-    private var usesDefaultTypography: Bool {
-        session.state.preferences.fontStyle == defaults.fontStyle && session.state.preferences.fontSize == defaults.fontSize && session.state.preferences.lineSpacing == defaults.lineSpacing
+    private var preferences: Binding<ReaderPreferences> {
+        Binding(get: { session.state.preferences }, set: { session.changePreferences($0) })
     }
-    private func binding<T>(_ path: WritableKeyPath<ReaderPreferences, T>) -> Binding<T> {
-        Binding(get: { session.state.preferences[keyPath: path] }, set: { value in var preferences = session.state.preferences; preferences[keyPath: path] = value; session.changePreferences(preferences) })
-    }
-    private var readingMode: Binding<ReaderViewMode> {
-        Binding(get: { session.state.preferences.viewMode }, set: { mode in
-            reading?.offerFirstPassage = mode != .source
-            var preferences = session.state.preferences; preferences.viewMode = mode
-            session.changePreferences(preferences)
-        })
-    }
+    private var reflowable: Bool { session.book.kind != .pdf || session.state.preferences.viewMode != .source }
     var body: some View {
         Form {
-            Section {
-                Picker("阅读内容", selection: readingMode) {
-                    Text("原著").tag(ReaderViewMode.source)
-                    Text("译文").tag(ReaderViewMode.translation)
-                    Text("对照").tag(ReaderViewMode.parallel)
-                }.pickerStyle(.segmented).accessibilityIdentifier("reader-view-mode").padding(.vertical, 4)
-                if session.state.preferences.viewMode != .source {
-                    Picker("译文版本", selection: binding(\.translationVariant)) {
-                        Text("直译").tag(ReaderTranslationVariant.literal)
-                        Text("意译").tag(ReaderTranslationVariant.interpretive)
-                    }.pickerStyle(.segmented).accessibilityIdentifier("reader-reading-variant")
-                }
-            } header: { Text("阅读内容") } footer: {
-                if session.state.preferences.viewMode != .source { Text("已有译文会直接显示；缺少译文时，先翻译一段即可开始读。") }
-            }
-            if let reading, session.state.preferences.viewMode != .source {
-                ReaderTranslationPreparation(session: session, reading: reading)
-            }
-            if let preview, session.book.kind != .pdf || session.state.preferences.viewMode != .source {
+            if let preview, reflowable {
                 Section {
-                    VStack(alignment: .leading, spacing: 18) {
-                        HStack {
-                            Text(previewTitle).font(.caption.weight(.medium)).foregroundStyle(.secondary)
-                            Spacer()
-                            Image(systemName: "leaf").font(.footnote).foregroundStyle(Color.leafInk)
-                        }
+                    VStack(alignment: .leading, spacing: 12) {
+                        Text(previewTitle).font(.caption).foregroundStyle(.secondary)
                         TypographyPreview(text: preview, fontSize: session.state.preferences.fontSize, lineSpacing: session.state.preferences.lineSpacing, fontStyle: session.state.preferences.fontStyle)
-                    }
-                    .padding(20)
-                    .background(session.state.preferences.theme == "paper" ? Color.readingPaper : Color(uiColor: .secondarySystemGroupedBackground))
+                    }.padding(20).background(Color(uiColor: session.state.preferences.paperColor))
+                        .environment(\.colorScheme, session.state.preferences.colorScheme(following: previewSystemScheme))
                 }.listRowInsets(EdgeInsets()).listRowSeparator(.hidden)
             }
-            if session.book.kind != .pdf || session.state.preferences.viewMode != .source {
-                Section {
-                    HStack {
-                        Text("文字").font(.headline)
-                        Spacer()
-                        if !usesDefaultTypography {
-                            Button("重置") {
-                                var preferences = session.state.preferences
-                                preferences.fontStyle = defaults.fontStyle
-                                preferences.fontSize = defaults.fontSize; preferences.lineSpacing = defaults.lineSpacing
-                                session.changePreferences(preferences)
-                            }.font(.subheadline).frame(minHeight: 44).accessibilityLabel("恢复默认排版")
-                        }
-                    }
-                    Picker("系统字体风格", selection: binding(\.fontStyle)) {
-                        Text("衬线").tag(ReaderFontStyle.serif)
-                        Text("无衬线").tag(ReaderFontStyle.sans)
-                        Text("圆体").tag(ReaderFontStyle.rounded)
-                    }.accessibilityIdentifier("reader-font-style")
-                    VStack(alignment: .leading, spacing: 8) {
-                        HStack { Text("字号"); Spacer(); Text("\(Int(session.state.preferences.fontSize))").monospacedDigit().foregroundStyle(.secondary) }
-                        Slider(value: binding(\.fontSize), in: 16...36, step: 1) {
-                            Text("正文字号")
-                        } minimumValueLabel: { Text("A").font(.caption) } maximumValueLabel: { Text("A").font(.title3) }
-                        .accessibilityValue("\(Int(session.state.preferences.fontSize)) 磅")
-                    }.padding(.vertical, 5)
-                    VStack(alignment: .leading, spacing: 8) {
-                        HStack { Text("行间距"); Spacer(); Text("\(Int(session.state.preferences.lineSpacing))").monospacedDigit().foregroundStyle(.secondary) }
-                        Slider(value: binding(\.lineSpacing), in: 4...18, step: 1).accessibilityLabel("正文行间距")
-                            .accessibilityValue("\(Int(session.state.preferences.lineSpacing)) 磅")
-                    }.padding(.vertical, 5)
-                } footer: { Text("随系统大字设置缩放，字体风格用于可重排文字。设置自动保存并用于所有书籍。") }
-            } else {
-                Section { Label("保留 PDF 原页，可双指缩放。", systemImage: "doc.richtext").font(.subheadline) }
-            }
-            Section("纸面") { ReaderThemeChoices(session: session).padding(.vertical, 8) }
-                .listRowBackground(Color.clear).listRowInsets(EdgeInsets())
+            ReadingAppearanceControls(preferences: preferences, allowsTypography: reflowable)
             Section {
-                Picker("翻页方式", selection: binding(\.navigationMode)) {
-                    Text("上下滚动").tag(ReaderNavigationMode.scroll)
-                    Text("左右翻页").tag(ReaderNavigationMode.paged)
-                }.pickerStyle(.segmented).accessibilityIdentifier("reader-navigation-mode").padding(.vertical, 7)
-                if session.state.preferences.navigationMode == .paged {
-                    Picker("翻页动画", selection: binding(\.pageAnimation)) {
-                        Text("平移").tag(ReaderPageAnimation.slide)
-                        Text("仿真卷页").tag(ReaderPageAnimation.curl)
-                        Text("无动画").tag(ReaderPageAnimation.none)
-                    }.accessibilityIdentifier("reader-page-animation")
-                    Picker("翻页手势", selection: binding(\.pageInput)) {
-                        Text("轻点与滑动").tag(ReaderPageInput.tapAndSwipe)
-                        Text("仅滑动").tag(ReaderPageInput.swipeOnly)
-                        Text("仅轻点").tag(ReaderPageInput.tapOnly)
-                    }.accessibilityIdentifier("reader-page-input")
-                }
-            } header: { Text("翻页") } footer: {
-                Text(session.state.preferences.navigationMode == .paged ? "按所选手势左右翻页，中间轻点唤回工具，长按可以选字。减弱动态效果时直接切页。设置用于所有书籍。" : "上下滑动阅读，轻点唤回工具，长按可以选字。设置用于所有书籍。")
-            }
-        }
-        .scrollContentBackground(.hidden).background(Color(uiColor: .systemGroupedBackground))
-        .accessibilityIdentifier("reader-preferences-form").navigationTitle("阅读设置")
+                NavigationLink {
+                    ReaderContentSettings(session: session, reading: reading)
+                } label: {
+                    LabeledContent("阅读内容与译文", value: session.state.preferences.viewMode == .source ? "原著" : session.state.preferences.viewMode == .translation ? "译文" : "对照")
+                }.frame(minHeight: 44).accessibilityIdentifier("reader-content-settings")
+                NavigationLink {
+                    ReaderNavigationSettings(preferences: preferences)
+                } label: {
+                    LabeledContent("翻页方式", value: session.state.preferences.navigationMode == .paged ? "左右翻页" : "上下滚动")
+                }.frame(minHeight: 44).accessibilityIdentifier("reader-navigation-settings")
+            } header: { Text("阅读方式") } footer: { Text("设置自动保存，适用于这间书房的所有书籍。") }
+            if !reflowable { Section { Text("PDF 保留原页和字体，可双指缩放；纸面主题用于页面周围。").font(.footnote).foregroundStyle(.secondary) } }
+        }.scrollContentBackground(.hidden).background(Color(uiColor: .systemGroupedBackground))
+            .accessibilityIdentifier("reader-preferences-form").navigationTitle("阅读风格")
     }
 
     struct TypographyPreview: View {
@@ -360,6 +284,35 @@ struct ReaderPreferencesPanel: View {
         }
     }
 }
+struct ReaderContentSettings: View {
+    @Bindable var session: ReaderSession
+    var reading: ReaderReadingContent?
+    private var preferences: Binding<ReaderPreferences> {
+        Binding(get: { session.state.preferences }, set: { session.changePreferences($0) })
+    }
+    var body: some View {
+        Form {
+            Section {
+                Picker("阅读内容", selection: Binding(get: { session.state.preferences.viewMode }, set: { mode in
+                    reading?.offerFirstPassage = mode != .source
+                    var value = session.state.preferences; value.viewMode = mode; session.changePreferences(value)
+                })) {
+                    Text("原著").tag(ReaderViewMode.source); Text("译文").tag(ReaderViewMode.translation); Text("对照").tag(ReaderViewMode.parallel)
+                }.pickerStyle(.segmented).accessibilityIdentifier("reader-view-mode")
+                if session.state.preferences.viewMode != .source {
+                    Picker("译文版本", selection: preferences.translationVariant) {
+                        Text("直译").tag(ReaderTranslationVariant.literal); Text("意译").tag(ReaderTranslationVariant.interpretive)
+                    }.pickerStyle(.segmented).accessibilityIdentifier("reader-reading-variant")
+                }
+            } footer: { Text("原文与译文分别保存。缺少译文时保留原文，切换后仍停在同一段。") }
+            if let reading, session.state.preferences.viewMode != .source {
+                ReaderTranslationPreparation(session: session, reading: reading)
+            }
+        }.navigationTitle("阅读内容与译文")
+            .modifier(ReaderToolContinuation())
+    }
+}
+
 struct ReaderAppearancePanel: View {
     @Bindable var session: ReaderSession
     var body: some View {

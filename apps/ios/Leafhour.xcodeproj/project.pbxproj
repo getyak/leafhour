@@ -19,6 +19,8 @@
 		3834F8DD07B0244D9873FC39 /* AccountScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B7695C525E1FC7F2151463C /* AccountScreen.swift */; };
 		3D28103353174CF11FA15522 /* ReaderToolsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9E9843F780C3B8064BC647F /* ReaderToolsTests.swift */; };
 		3E58E8FFE6213FCB6E08F573 /* ReaderInteractionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C22B4F5F3D92A52E0E1D0E66 /* ReaderInteractionTests.swift */; };
+		435C0CA8678042B6A3EFBF42 /* GlobalChatScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29EBA500F9597E0BADCF2559 /* GlobalChatScreen.swift */; };
+		495ED3A0E1A15C37D9F34426 /* ChatConversationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5F03458809FF5B4280B8095 /* ChatConversationView.swift */; };
 		497B1C91B1E5BF35DF45198E /* LibraryScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03E537D8BE04773F738DBB85 /* LibraryScreen.swift */; };
 		4F497D063E7ACC710F1B35A6 /* ReaderTapHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = C21A98A9828F3737D18C4D6F /* ReaderTapHandler.swift */; };
 		537EE1BC939C4F4603F616E3 /* ReaderViewportTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1265B9001B43065DAD28C45A /* ReaderViewportTests.swift */; };
@@ -41,6 +43,7 @@
 		7C4F1D76946CE32FD92D37B7 /* ReaderSpeechAudioPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36BBEEC8290A0DFD3DE181A6 /* ReaderSpeechAudioPlayer.swift */; };
 		7C5C9C6070E008B85E8E933F /* LibraryActivityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECF6233F5FB15FFC6E721553 /* LibraryActivityTests.swift */; };
 		7E9104FF3CC83ACD0CAF4968 /* ReaderTimeControls.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B50F8AD213EEF9EA8363D25 /* ReaderTimeControls.swift */; };
+		876F137A93410E1A7BE5343F /* ReadingAppearanceControls.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5AEFD87E41B717872C9504B /* ReadingAppearanceControls.swift */; };
 		884CFC1DC97B58387D815CD5 /* ReaderWebTools.swift in Sources */ = {isa = PBXBuildFile; fileRef = 750657EA8612A5AD41512D13 /* ReaderWebTools.swift */; };
 		8D435D9D383F90F6594A8BF1 /* ReaderPageCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64326D8789015245884DE202 /* ReaderPageCommand.swift */; };
 		8F81BED45F2A3F63673DDCE1 /* ReaderSpeechPosition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 027D11297E3F9E1E6029ECD6 /* ReaderSpeechPosition.swift */; };
@@ -64,6 +67,7 @@
 		E07F6F7A6B0E82BD1727CB72 /* NativeBookSharing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DF98ED78E3AF51D6F15424E /* NativeBookSharing.swift */; };
 		E3CA3CFB5E5E904C7FF8DE5A /* ReaderTypography.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4448074AEFB3E7B3F1EB64F7 /* ReaderTypography.swift */; };
 		E46630C1540B0A4F16D3F0C7 /* SavedReadingSummariesScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 418D80DCE48D0AD234207912 /* SavedReadingSummariesScreen.swift */; };
+		E5980D1A0C80A65BAB07BBB4 /* AppSettingsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF6F7938AA16EAFA7061DD3A /* AppSettingsScreen.swift */; };
 		E6D25C0B713D981C1A623FE9 /* ReaderAutoPagePanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61652C5C0334636C53C21BA2 /* ReaderAutoPagePanel.swift */; };
 		E904B0CEEE34727C095872E5 /* ReaderTapTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D56B8084ADA917624ADE8BF5 /* ReaderTapTests.swift */; };
 		EACEAB43EF576F1E2999D808 /* ReaderPaginationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B883EF38064061434E76F52 /* ReaderPaginationTests.swift */; };
@@ -108,6 +112,7 @@
 		23F94B1EC187280BC8365478 /* ReaderSpeechSpeedControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReaderSpeechSpeedControl.swift; sourceTree = "<group>"; };
 		26736FE5A8D7DA1CE1FEC4BC /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		2871B5788CC87078D5D78AAB /* LibraryRecordsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryRecordsTests.swift; sourceTree = "<group>"; };
+		29EBA500F9597E0BADCF2559 /* GlobalChatScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobalChatScreen.swift; sourceTree = "<group>"; };
 		36BBEEC8290A0DFD3DE181A6 /* ReaderSpeechAudioPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReaderSpeechAudioPlayer.swift; sourceTree = "<group>"; };
 		38902495F2632E28241A145D /* LeafhourUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = LeafhourUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		3F930DAB32D36FD10423275E /* ReaderSpeechPlaybackTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReaderSpeechPlaybackTests.swift; sourceTree = "<group>"; };
@@ -146,6 +151,7 @@
 		AB93959D999C96D79B003D7B /* AccountShelfPendingScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountShelfPendingScreen.swift; sourceTree = "<group>"; };
 		ADC3A1E0640007C8E7F5AE08 /* NativeAuthenticationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NativeAuthenticationTests.swift; sourceTree = "<group>"; };
 		BCF573520407A93144E699EC /* ReaderCloudTools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReaderCloudTools.swift; sourceTree = "<group>"; };
+		BF6F7938AA16EAFA7061DD3A /* AppSettingsScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSettingsScreen.swift; sourceTree = "<group>"; };
 		C21A98A9828F3737D18C4D6F /* ReaderTapHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReaderTapHandler.swift; sourceTree = "<group>"; };
 		C22B4F5F3D92A52E0E1D0E66 /* ReaderInteractionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReaderInteractionTests.swift; sourceTree = "<group>"; };
 		C3C9DB6CAF1B5F302986D8E6 /* ReaderAutoPageControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReaderAutoPageControllerTests.swift; sourceTree = "<group>"; };
@@ -158,12 +164,14 @@
 		D61188ACC7FF9AB3F0A8523B /* ReaderPanelPresentation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReaderPanelPresentation.swift; sourceTree = "<group>"; };
 		DC8E7A97B12279197C6C6EAE /* ReaderBottomBarTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReaderBottomBarTests.swift; sourceTree = "<group>"; };
 		E334FEB91510D44EC1F6609A /* BookShelfComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookShelfComponents.swift; sourceTree = "<group>"; };
+		E5AEFD87E41B717872C9504B /* ReadingAppearanceControls.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadingAppearanceControls.swift; sourceTree = "<group>"; };
 		E7641090783C39C25000F011 /* ReaderLayoutTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReaderLayoutTests.swift; sourceTree = "<group>"; };
 		E7711E02A82CAE93CC04FC45 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		E980E209FBA472418C821ED5 /* ReaderTextPagination.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReaderTextPagination.swift; sourceTree = "<group>"; };
 		E9E14C10861765251864D27F /* ReaderScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReaderScreen.swift; sourceTree = "<group>"; };
 		ECF6233F5FB15FFC6E721553 /* LibraryActivityTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryActivityTests.swift; sourceTree = "<group>"; };
 		EF8544F5EF5C92B4414B4C39 /* LibraryPresentation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryPresentation.swift; sourceTree = "<group>"; };
+		F5F03458809FF5B4280B8095 /* ChatConversationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatConversationView.swift; sourceTree = "<group>"; };
 		F968351D32623ED08FD8166A /* ReaderParagraphSelection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReaderParagraphSelection.swift; sourceTree = "<group>"; };
 		F9E9843F780C3B8064BC647F /* ReaderToolsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReaderToolsTests.swift; sourceTree = "<group>"; };
 		FAD4932B39A6BCFB39A21850 /* Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Release.xcconfig; sourceTree = "<group>"; };
@@ -234,10 +242,13 @@
 				481F0681E0F3596BCE8B90A0 /* AccountCredentialStore.swift */,
 				1B7695C525E1FC7F2151463C /* AccountScreen.swift */,
 				AB93959D999C96D79B003D7B /* AccountShelfPendingScreen.swift */,
+				BF6F7938AA16EAFA7061DD3A /* AppSettingsScreen.swift */,
 				26736FE5A8D7DA1CE1FEC4BC /* Assets.xcassets */,
 				7BEE5902719B69C92EF61231 /* BookCoverResource.swift */,
 				9CB602653F224B78330B371B /* BookDetailScreen.swift */,
 				E334FEB91510D44EC1F6609A /* BookShelfComponents.swift */,
+				F5F03458809FF5B4280B8095 /* ChatConversationView.swift */,
+				29EBA500F9597E0BADCF2559 /* GlobalChatScreen.swift */,
 				E7711E02A82CAE93CC04FC45 /* Info.plist */,
 				C5BA4DE90DC37B23A3034EB2 /* LeafhourApp.swift */,
 				EF8544F5EF5C92B4414B4C39 /* LibraryPresentation.swift */,
@@ -270,6 +281,7 @@
 				5478FC5BEB93EE6E0F2DE3C9 /* ReaderToolPanels.swift */,
 				4448074AEFB3E7B3F1EB64F7 /* ReaderTypography.swift */,
 				750657EA8612A5AD41512D13 /* ReaderWebTools.swift */,
+				E5AEFD87E41B717872C9504B /* ReadingAppearanceControls.swift */,
 				418D80DCE48D0AD234207912 /* SavedReadingSummariesScreen.swift */,
 				6344D4DCDED09EC9FB488E88 /* SharedBookImport.swift */,
 				878434EEA066C19B2F60BD71 /* TextReadingView.swift */,
@@ -461,9 +473,12 @@
 				75FB0FE337B7B01724D4DB7F /* AccountCredentialStore.swift in Sources */,
 				3834F8DD07B0244D9873FC39 /* AccountScreen.swift in Sources */,
 				9279C56FE1B39A1AFE6E7864 /* AccountShelfPendingScreen.swift in Sources */,
+				E5980D1A0C80A65BAB07BBB4 /* AppSettingsScreen.swift in Sources */,
 				F6201F0ECE71F6719AEC7C2D /* BookCoverResource.swift in Sources */,
 				EDABB255B4EC29596C4D47ED /* BookDetailScreen.swift in Sources */,
 				2B70EF47AF54AF54B76821CB /* BookShelfComponents.swift in Sources */,
+				495ED3A0E1A15C37D9F34426 /* ChatConversationView.swift in Sources */,
+				435C0CA8678042B6A3EFBF42 /* GlobalChatScreen.swift in Sources */,
 				FD5562DABEFEADF16AF28795 /* LeafhourApp.swift in Sources */,
 				562187E1677FD33C9214C34D /* LibraryPresentation.swift in Sources */,
 				497B1C91B1E5BF35DF45198E /* LibraryScreen.swift in Sources */,
@@ -494,6 +509,7 @@
 				651CDF903D82A8192DBD27D2 /* ReaderToolPanels.swift in Sources */,
 				E3CA3CFB5E5E904C7FF8DE5A /* ReaderTypography.swift in Sources */,
 				884CFC1DC97B58387D815CD5 /* ReaderWebTools.swift in Sources */,
+				876F137A93410E1A7BE5343F /* ReadingAppearanceControls.swift in Sources */,
 				E46630C1540B0A4F16D3F0C7 /* SavedReadingSummariesScreen.swift in Sources */,
 				C22E32AB823F3FE8F6FED523 /* SharedBookImport.swift in Sources */,
 				56ED28FA1DAC8B395A183C43 /* TextReadingView.swift in Sources */,

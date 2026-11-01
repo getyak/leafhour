@@ -35,7 +35,9 @@ struct ReaderPanelPresentation: ViewModifier {
 
     @ViewBuilder func body(content: Content) -> some View {
         if isCompanion {
-            content.modifier(CompanionKeyboardPresentation())
+            content.presentationDetents([.large])
+                .presentationDragIndicator(.visible)
+                .presentationBackgroundInteraction(.disabled)
         } else {
             content
                 .presentationDetents(isNoteEditor ? [.large] : [.medium, .large])

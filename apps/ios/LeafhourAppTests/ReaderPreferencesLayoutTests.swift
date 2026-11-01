@@ -1,6 +1,7 @@
 import XCTest
 import SwiftUI
 import UIKit
+import LeafhourCore
 @testable import Leafhour
 
 @MainActor
@@ -35,4 +36,23 @@ final class ReaderPreferencesLayoutTests: XCTestCase {
         let longer = try renderedSize(text: sample + " " + sample, fontSize: 22, typeSize: .accessibility5)
         XCTAssertGreaterThan(longer.height, short.height * 1.5, "Additional original text must receive layout space instead of a fixed-height or four-line truncation")
     }
+    func testGlobalStyleReentryReadsTheReadersNewPreferences() async throws {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let library = try LeafhourCore.OfflineLibrary(root: root, scope: .device)
+        let style = ReadingStyleModel()
+        await style.load(library)
+        var first = style.preferences; first.theme = "sage"; style.update(first)
+        await style.load(library)
+        var reader = style.preferences; reader.theme = "night"; reader.fontSize = 30; reader.navigationMode = .scroll
+        try await library.saveReaderPreferences(reader)
+        await style.load(library)
+        XCTAssertEqual(style.preferences, reader)
+        var changed = style.preferences; changed.fontSize = 24; style.update(changed)
+        await style.load(library)
+        XCTAssertEqual(style.preferences.theme, "night")
+        XCTAssertEqual(style.preferences.navigationMode, .scroll)
+        XCTAssertEqual(style.preferences.fontSize, 24)
+    }
+
 }

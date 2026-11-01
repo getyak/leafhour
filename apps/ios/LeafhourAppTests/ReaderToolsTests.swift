@@ -412,6 +412,130 @@ final class ReaderToolsTests: XCTestCase {
         XCTAssertTrue(ReaderPanel.conversation.isCompanion)
         XCTAssertFalse(ReaderPanel.records.isCompanion)
     }
+    func testGlobalChatLoadsRealContextWithoutDownloadingAndRetainsHistoryOnRefreshFailure() async throws {
+        let fixture = try await fixture(), tools = ReaderCloudTools()
+        let book = CloudShelfBook(id: "cloud-book", title: "A book", author: "", contentVersion: "source-v1")
+        let probe = ReaderToolsProbe()
+        probe.respond = { request, _ in
+            XCTAssertEqual(request.url?.path, "/api/library/books/cloud-book/chat")
+            XCTAssertNil(request.url?.query)
+            return (200, ["bookId": "cloud-book", "contentVersion": "source-v1", "available": true,
+                "context": ["passageId": "source-p1", "original": "Actual source", "chapterTitle": "Chapter"],
+                "turns": [["id": "old-turn", "text": "My question", "status": "completed", "answer": ["summary": "Saved answer"]]]])
+        }
+        ReaderToolsURLProtocol.install(probe)
+        await tools.loadConversation(book: book, ownerID: owner, cloud: fixture.cloud)
+        XCTAssertEqual(tools.chatContext?.original, "Actual source")
+        XCTAssertEqual(tools.turns.first?.answer, "Saved answer")
+        XCTAssertEqual(probe.requests.count, 1)
+        tools.question = "An unfinished question"
+        let failed = ReaderToolsProbe(); failed.respond = { _, _ in throw URLError(.notConnectedToInternet) }
+        ReaderToolsURLProtocol.install(failed)
+        await tools.loadConversation(book: book, ownerID: owner, cloud: fixture.cloud)
+        XCTAssertEqual(tools.turns.first?.answer, "Saved answer")
+        XCTAssertEqual(tools.question, "An unfinished question")
+        XCTAssertEqual(tools.chatContext?.original, "Actual source")
+        XCTAssertNotNil(tools.error)
+    }
+
+    func testConversationDraftAndUncertainRequestRestoreWithTheSameIdentity() async throws {
+        let fixture = try await fixture()
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let library = try OfflineLibrary(root: root, scope: .account(XCTUnwrap(UUID(uuidString: owner))))
+        let identity = CloudBookIdentity(ownerID: owner, bookID: "cloud-book", contentVersion: "source-v1", sourceFormat: "txt")
+        let tools = ReaderCloudTools()
+        await tools.restoreConversationDraft(identity: identity, library: library)
+        tools.question = "Keep this draft after relaunch"
+        let probe = ReaderToolsProbe(); probe.respond = { [self] request, _ in
+            if request.url?.path == "/api/auth/session" { return (200, metadata(enabled: false)) }
+            throw URLError(.networkConnectionLost)
+        }
+        ReaderToolsURLProtocol.install(probe)
+        await tools.prepare("conversation", session: fixture.session, cloud: fixture.cloud)
+        let intent = try XCTUnwrap(tools.consent)
+        await tools.perform(intent, cloud: fixture.cloud)
+        XCTAssertNotNil(tools.retry)
+        let saved = await tools.flushConversationDraft(); XCTAssertTrue(saved)
+        let restored = ReaderCloudTools()
+        await restored.restoreConversationDraft(identity: identity, library: library)
+        XCTAssertEqual(restored.question, "Keep this draft after relaunch")
+        let retry = try XCTUnwrap(restored.retry)
+        XCTAssertEqual(retry.id, intent.id); XCTAssertEqual(retry.body, intent.body)
+        let completed = ReaderToolsProbe(); completed.respond = { _, body in
+            XCTAssertEqual(body["id"] as? String, intent.id)
+            return (200, ["id": intent.id, "text": "Keep this draft after relaunch", "status": "completed", "answer": ["summary": "Recovered answer"]])
+        }
+        ReaderToolsURLProtocol.install(completed)
+        // A newer edit must survive the earlier request's successful answer.
+        restored.question = "A newer draft"
+        await restored.perform(retry, cloud: fixture.cloud)
+        XCTAssertEqual(restored.question, "A newer draft")
+        XCTAssertEqual(restored.turns.last?.answer, "Recovered answer")
+        XCTAssertNil(restored.retry)
+        let flushed = await restored.flushConversationDraft(); XCTAssertTrue(flushed)
+        let otherBook = ReaderCloudTools()
+        await otherBook.restoreConversationDraft(identity: CloudBookIdentity(ownerID: owner, bookID: "other-book", contentVersion: "source-v1", sourceFormat: "txt"), library: library)
+        XCTAssertTrue(otherBook.question.isEmpty)
+    }
+
+    func testGlobalChatDraftKeepsItsOriginalContextUntilExplicitlyChanged() async throws {
+        let fixture = try await fixture(), tools = ReaderCloudTools()
+        let book = CloudShelfBook(id: "cloud-book", title: "Book", author: "", contentVersion: "source-v1")
+        func install(_ passage: String) {
+            let probe = ReaderToolsProbe(); probe.respond = { _, _ in
+                (200, ["bookId": "cloud-book", "contentVersion": "source-v1", "available": true,
+                    "context": ["passageId": passage, "original": passage, "chapterTitle": "Chapter"], "turns": []])
+            }; ReaderToolsURLProtocol.install(probe)
+        }
+        install("first"); await tools.loadConversation(book: book, ownerID: owner, cloud: fixture.cloud)
+        tools.question = "About the first passage"
+        install("second"); await tools.loadConversation(book: book, ownerID: owner, cloud: fixture.cloud)
+        XCTAssertEqual(tools.chatContext?.passageID, "first")
+        XCTAssertTrue(tools.canUpdateChatContext)
+        tools.updateChatContext()
+        XCTAssertEqual(tools.chatContext?.passageID, "second")
+        XCTAssertEqual(tools.question, "About the first passage")
+    }
+
+    func testAQuestionTypedBeforeContextLoadsPersistsTheFirstVisibleSource() async throws {
+        let fixture = try await fixture(), tools = ReaderCloudTools()
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let library = try OfflineLibrary(root: root, scope: .account(XCTUnwrap(UUID(uuidString: owner))))
+        let identity = CloudBookIdentity(ownerID: owner, bookID: "cloud-book", contentVersion: "source-v1", sourceFormat: "")
+        await tools.restoreConversationDraft(identity: identity, library: library)
+        tools.question = "Written before the first context arrived"
+        let probe = ReaderToolsProbe(); probe.respond = { _, _ in
+            (200, ["bookId": "cloud-book", "contentVersion": "source-v1", "available": true,
+                "context": ["passageId": "p1", "original": "First visible source", "chapterTitle": "Chapter"], "turns": []])
+        }; ReaderToolsURLProtocol.install(probe)
+        await tools.loadConversation(book: CloudShelfBook(id: "cloud-book", title: "Book", author: "", contentVersion: "source-v1"), ownerID: owner, cloud: fixture.cloud)
+        let flushed = await tools.flushConversationDraft(); XCTAssertTrue(flushed)
+        let restored = ReaderCloudTools()
+        await restored.restoreConversationDraft(identity: identity, library: library)
+        XCTAssertEqual(restored.question, "Written before the first context arrived")
+        XCTAssertEqual(restored.chatContext?.original, "First visible source")
+    }
+
+    func testChangingTheEndOfAnOriginalSelectionAllowsAnExplicitContextSwitch() async throws {
+        let fixture = try await fixture(), tools = ReaderCloudTools()
+        let probe = ReaderToolsProbe(); probe.respond = { _, _ in (200, ["available": true, "turns": []]) }
+        ReaderToolsURLProtocol.install(probe)
+        let anchor = ReadingAnchor(chapterID: fixture.session.chapter.id, passageID: fixture.passage.id)
+        let short = SelectedQuote(anchor: anchor, text: "A")
+        let longer = SelectedQuote(anchor: anchor, text: "A 😀")
+        XCTAssertEqual(short.id, longer.id, "Existing note identity remains stable")
+        await tools.loadConversation(fixture.session, cloud: fixture.cloud, selection: short)
+        tools.question = "Keep the original range"
+        await tools.loadConversation(fixture.session, cloud: fixture.cloud, selection: longer)
+        XCTAssertTrue(tools.canUpdateChatContext)
+        XCTAssertEqual(tools.chatContext?.selection?.text, "A")
+        tools.updateChatContext()
+        XCTAssertEqual(tools.chatContext?.selection?.text, "A 😀")
+        XCTAssertEqual(tools.chatContext?.sourceLabel, "选中的原文")
+    }
+
 }
 
 private final class ReaderToolsProbe: @unchecked Sendable {

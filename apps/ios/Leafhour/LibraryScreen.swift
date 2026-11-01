@@ -124,7 +124,6 @@ struct LibraryScreen: View {
             .fileImporter(isPresented: $importing, allowedContentTypes: [.epub, .pdf, .plainText, UTType(filenameExtension: "md") ?? .plainText]) { result in
                 switch result { case .success(let url): model.importFile(url); case .failure(let error): model.message = error.localizedDescription }
             }
-            .onOpenURL { model.receiveIncomingURL($0) }
             .task { await model.reload(restore: true); await model.restoreRecentReading(); didLoad = true; await model.synchronize(); await migrateCloudPinsIfNeeded() }
             .task(id: resumeLookupKey) { await loadResume() }
             .refreshable { await model.synchronize(); await model.reload() }
@@ -133,7 +132,7 @@ struct LibraryScreen: View {
             .onChange(of: model.accountShelf?.pinsInitialized) { _, _ in Task { await migrateCloudPinsIfNeeded() } }
             .onChange(of: visibleItems.map(\.id)) { _, ids in selectedIDs.formIntersection(Set(ids)) }
             .fullScreenCover(item: $model.reader, onDismiss: { Task { await model.reload(); await loadResume(); await model.synchronize() } }) { session in
-                ReaderScreen(session: session, systemColorScheme: systemColorScheme, cloud: session.book.cloud == nil ? nil : model.cloud, library: model.library, positionConflict: model.syncIssues[session.book.id]?.positionConflict == true, resolvePosition: { useDevice in Task { await model.resolveActivePosition(useDevice: useDevice) } })
+                ReaderScreen(session: session, systemColorScheme: systemColorScheme, cloud: session.book.cloud == nil ? nil : model.cloud, library: model.library, positionConflict: model.syncIssues[session.book.id]?.positionConflict == true, resolvePosition: { useDevice in Task { await model.resolveActivePosition(useDevice: useDevice) } }, conversationTools: model.conversationTools(bookID: session.book.cloud?.bookID ?? session.book.id))
             }
             .sheet(isPresented: $info, onDismiss: { Task { await model.cancelNativeAuthentication() } }) { AccountScreen(model: model) }
             .sheet(isPresented: $pendingAdjustments) { AccountShelfPendingScreen(model: model) }

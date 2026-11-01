@@ -7,7 +7,7 @@ import LeafhourCore
 struct LeafhourApp: App {
     @State private var model = VideoAcceptanceFixture.makeModelIfRequested() ?? LibraryModel()
     var body: some Scene {
-        WindowGroup { LibraryScreen(model: model).tint(.leafInk) }
+        WindowGroup { LeafhourRootScreen(model: model).tint(.leafInk) }
     }
 }
 
@@ -27,7 +27,7 @@ extension Color {
 extension ReaderPreferences {
     /// Read the system appearance outside the reader's presentation overrides.
     func colorScheme(following system: ColorScheme) -> ColorScheme {
-        theme == "night" ? .dark : (theme == "paper" ? .light : system)
+        theme == "night" ? .dark : (["paper", "white", "sage"].contains(theme) ? .light : system)
     }
 }
 
@@ -49,6 +49,12 @@ enum AccountRecordsState: Equatable {
 
 @MainActor @Observable
 final class LibraryModel {
+    @ObservationIgnored private var chatWorkspaces: [String: ReaderCloudTools] = [:]
+    func conversationTools(bookID: String) -> ReaderCloudTools {
+        let key = (account?.id ?? "device") + ":" + bookID
+        if let tools = chatWorkspaces[key] { return tools }
+        let tools = ReaderCloudTools(); chatWorkspaces[key] = tools; return tools
+    }
     var books: [LocalBook] = []
     var cloudBooks: [CloudShelfBook] = []
     var accountShelf: CloudShelfSnapshot?
