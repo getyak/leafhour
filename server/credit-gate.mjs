@@ -1,5 +1,6 @@
 import {createHash} from 'node:crypto';
 import {fail} from './document-import.mjs';
+import {hasCompleteTranslationPair} from './translation-batch.mjs';
 import {withProviderMeter} from './provider-metering.mjs';
 import {LIBRARY_CHAT_ID,LIBRARY_CHAT_VERSION,LIBRARY_CHAT_PASSAGE} from '../app/library-chat-context.mjs';
 const allowed={translation:['id','passageId','contentVersion'],conversation:['id','text','passageId','contentVersion','scopeRevision','quote','preferenceWrites','peopleWrites'],annotation:['id','threadId','quote','highlightId','text','responseLocale']};
@@ -44,7 +45,7 @@ export function createCreditGate({billing,library,chat,record,clock=Date.now}={}
   return {body,book,scope:{bookId:book.bookId,contentVersion:book.contentVersion,passageId,requestId:body.id,requestHash:hash(body),contextPolicy:'reading-v1',costLimitMicrousd:action==='translation'?15000:120000}};
  }
  async function cache(user,action,bookId,body){
-  if(action==='translation'){const book=await library.getBook(user,bookId),p=paragraphs(book).find(p=>p.id===body.passageId);return p?.translations?.literal?.text&&p?.translations?.interpretive?.text?p:null;}
+  if(action==='translation'){const book=await library.getBook(user,bookId),p=paragraphs(book).find(p=>p.id===body.passageId);return hasCompleteTranslationPair(p)?p:null;}
   if(action==='conversation'&&chat){if(libraryConversation(action,bookId)&&chat.findLibraryTurn)return chat.findLibraryTurn(user,body.id);return (await (libraryConversation(action,bookId)?chat.viewLibrary(user):chat.view(user,bookId))).turns.find(t=>t.id===body.id)||null;}
   if(action==='annotation'&&chat){const view=await chat.annotations.view(user,bookId),request=view.requests.find(r=>r.id===body.id);return request?{request,thread:view.archive.threads.find(t=>t.id===request.threadId)||null}:null;}
   return null;
@@ -52,14 +53,14 @@ export function createCreditGate({billing,library,chat,record,clock=Date.now}={}
  async function saved(user,action,bookId,scope){
   if(libraryConversation(action,bookId)&&scope.contextPolicy===LIBRARY_CHAT_VERSION)return chat.findLibraryTurn?chat.findLibraryTurn(user,scope.requestId):(await chat.viewLibrary(user)).turns.find(t=>t.id===scope.requestId)||null;
   const current=await library.getBook(user,bookId);if(current.contentVersion!==scope.contentVersion)throw fail('原文版本已变化，本次结果不能结算',409);
-  if(action==='translation')return paragraphs(current).find(p=>p.id===scope.passageId&&p.translations?.literal?.text&&p.translations?.interpretive?.text)||null;
+  if(action==='translation')return paragraphs(current).find(p=>p.id===scope.passageId&&hasCompleteTranslationPair(p))||null;
   if(action==='conversation'&&chat)return (await chat.view(user,bookId)).turns.find(t=>t.id===scope.requestId)||null;
   if(action==='annotation'&&chat){const view=await chat.annotations.view(user,bookId),request=view.requests.find(t=>t.id===scope.requestId);return request?{request,thread:view.archive.threads.find(t=>t.id===request.threadId)||null}:null;}
   return null;
  }
  const statusOf=(action,value)=>action==='annotation'?value?.request?.status:value?.status;
  function completed(action,value,scope,id){
-  if(action==='translation')return value?.id===scope.passageId&&value?.translations?.literal?.text&&value?.translations?.interpretive?.text&&['literal','interpretive'].every(k=>value.translations[k].sourceVersion===scope.contentVersion&&value.translations[k].generationReceipt?.operationId===id&&value.translations[k].generationReceipt?.requestId===scope.requestId);
+  if(action==='translation')return value?.id===scope.passageId&&hasCompleteTranslationPair(value)&&['literal','interpretive'].every(k=>value.translations[k].sourceVersion===scope.contentVersion&&value.translations[k].generationReceipt?.operationId===id&&value.translations[k].generationReceipt?.requestId===scope.requestId);
   if(action==='conversation')return value?.id===scope.requestId&&value.contentVersion===scope.contentVersion&&value.passageId===scope.passageId&&value.status==='completed'&&value.answer;
   return value?.request?.id===scope.requestId&&value.request.status==='completed'&&!value.thread?.deletedAt&&value.thread?.quote?.contentVersion===scope.contentVersion&&value.thread.quote.parts?.some(p=>p.passageId===scope.passageId);
  }

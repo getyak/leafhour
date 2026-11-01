@@ -182,3 +182,51 @@ test('browser people consent reaches the real quote gate and paid retries cannot
   await assert.rejects(f.gate.quote(f.user,{action:'conversation',bookId:'book-a',input:{...input,peopleWrites:'yes'}}),{status:400});
  }
 });
+
+test('incomplete truthy translation pairs require billing confirmation before dispatch while valid reviewed cache remains free',async()=>{
+ for(const [index,invalid]of [' \n\t',{unexpected:'not translation text'}].entries()){
+  const f=await realFixture(),passage=f.savedBook.sections[0].paragraphs[0];
+  passage.translations={literal:{text:invalid,status:'draft'},interpretive:{text:index===0?'\r  ':'Valid other variant',status:'draft'}};
+  const before=structuredClone(f.savedBook);let calls=0;
+  await assert.rejects(f.gate.run({user:f.user,action:'translation',bookId:'book-a',input:{id:'incomplete-cache-'+index,passageId:'p1',contentVersion:'version-a'},execute:async()=>{calls++;return structuredClone(passage);}}),{status:402});
+  assert.equal(calls,0,'neither whitespace nor a nonstring may authorize a free generation dispatch');
+  const account=await f.billing.account({ownerId:f.user.id});assert.equal(account.consumedUnits,0);assert.equal(account.reservedUnits,0);
+  assert.equal((await f.billing.recover({ownerId:f.user.id})).operations.length,0);
+  assert.deepEqual(f.savedBook,before);
+ }
+ const f=await realFixture(),passage=f.savedBook.sections[0].paragraphs[0];
+ passage.translations={literal:{text:'  已复核直译\n',status:'reviewed',sourceVersion:'version-a',model:'retained-model',createdAt:'2026-10-20T00:00:00.000Z'},interpretive:{text:'\t已复核意译  ',status:'reviewed',sourceVersion:'version-a',model:'retained-model',createdAt:'2026-10-20T00:00:00.000Z'}};
+ const before=structuredClone(f.savedBook);let reads=0;
+ const cached=await f.gate.run({user:f.user,action:'translation',bookId:'book-a',input:{passageId:'p1'},execute:async body=>{reads++;assert.deepEqual(body,{passageId:'p1'});return f.library.getBook(f.user,'book-a').then(value=>value.sections[0].paragraphs[0]);}});
+ assert.deepEqual(cached,passage);assert.deepEqual(f.savedBook,before);assert.equal(reads,1);
+ const account=await f.billing.account({ownerId:f.user.id});assert.equal(account.consumedUnits,0);assert.equal(account.reservedUnits,0);
+});
+
+test('blank variants with otherwise matching financial receipts cannot settle or recover as delivered',async()=>{
+ const f=await realFixture(),input={id:'blank-completion',passageId:'p1',contentVersion:'version-a'},quote=await f.gate.quote(f.user,{action:'translation',bookId:'book-a',input});
+ let calls=0,authority,saved;
+ const request={user:f.user,action:'translation',bookId:'book-a',input:{...input,billing:{quoteId:quote.id,idempotencyKey:input.id}},execute:async(body,receipt)=>{
+  calls++;authority=receipt;assert.deepEqual(body,input);
+  const passage=f.savedBook.sections[0].paragraphs[0];
+  passage.translations=Object.fromEntries(['literal','interpretive'].map(variant=>[variant,{text:variant==='literal'?' \n':'\t ',status:'draft',sourceVersion:'version-a',generationReceipt:receipt}]));
+  saved=structuredClone(passage);return saved;
+ }};
+ await assert.rejects(f.gate.run(request),error=>error.status===502&&error.billingOperation?.status==='released');
+ assert.equal(calls,1);assert.equal(authority.requestId,input.id);
+ assert.equal((await f.billing.operation({ownerId:f.user.id,operationId:authority.operationId})).status,'released');
+ let account=await f.billing.account({ownerId:f.user.id});assert.equal(account.consumedUnits,0);assert.equal(account.reservedUnits,0);
+ assert.deepEqual(f.savedBook.sections[0].paragraphs[0],saved,'the gate checks delivery without rewriting stored text or receipts');
+ await assert.rejects(f.gate.run(request),error=>error.status===409&&error.billingOperation?.status==='released');
+ assert.equal(calls,1,'replaying the same released operation never starts another supplier attempt');
+
+ const orphan=await realFixture(),recoveryInput={id:'blank-recovery',passageId:'p1',contentVersion:'version-a'},recoveryQuote=await orphan.gate.quote(orphan.user,{action:'translation',bookId:'book-a',input:recoveryInput});
+ const operation=await orphan.store.command('reserve',{mode:'test',ownerId:orphan.user.id,quoteId:recoveryQuote.id,scopeHash:recoveryQuote.scopeHash,operationId:'blank-running-recovery',idempotencyKey:recoveryInput.id});
+ await orphan.store.command('running',{mode:'test',ownerId:orphan.user.id,operationId:operation.id,reservationToken:operation.reservationToken});
+ const passage=orphan.savedBook.sections[0].paragraphs[0],receipt={operationId:operation.id,requestId:recoveryInput.id};
+ passage.translations=Object.fromEntries(['literal','interpretive'].map(variant=>[variant,{text:' \t',status:'draft',sourceVersion:'version-a',generationReceipt:receipt}]));
+ const before=structuredClone(orphan.savedBook),stale=createCreditGate({billing:orphan.billing,library:orphan.library,clock:()=>orphan.now+16*60000});
+ await stale.recover(orphan.user);
+ assert.equal((await orphan.billing.operation({ownerId:orphan.user.id,operationId:operation.id})).status,'cancelled','expired blank results use the existing orphan-release policy, not a completion receipt');
+ account=await orphan.billing.account({ownerId:orphan.user.id});assert.equal(account.consumedUnits,0);assert.equal(account.reservedUnits,0);
+ assert.deepEqual(orphan.savedBook,before,'background recovery never repairs text or dispatches a model');
+});
