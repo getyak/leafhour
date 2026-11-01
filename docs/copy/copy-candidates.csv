@@ -1305,30 +1305,31 @@ candidate:app/book-gift.html:65:318,html-text,app/book-gift.html,65,,unknown,rev
 candidate:app/book-gift.html:65:447,html-text,app/book-gift.html,65,,unknown,reviewable,,Download reading package
 candidate:app/book-gift.html:65:504,html-text,app/book-gift.html,65,,unknown,reviewable,,↓
 candidate:app/book-gift.html:65:597,html-text,app/book-gift.html,65,,unknown,reviewable,,Read a few pages
-candidate:app/book-gift.html:71:63,html-text,app/book-gift.html,71,,unknown,reviewable,,Enable JavaScript to open the book letter.
-candidate:app/book-gift.html:73:58,html-text,app/book-gift.html,73,,unknown,reviewable,,Leafhour
-candidate:app/book-gift.html:73:98,html-text,app/book-gift.html,73,,unknown,reviewable,,"A book, from one reader to another."
-candidate:app/book-gift.mjs:32:78,js-cjk-literal,app/book-gift.mjs,32,,unknown,reviewable,,赠书链接不完整，未下载阅读包。
-candidate:app/book-gift.mjs:37:416,js-cjk-literal,app/book-gift.mjs,37,,unknown,reviewable,,阅读包分段或版本无法对应，请重新下载。
-candidate:app/book-gift.mjs:39:164,js-cjk-literal,app/book-gift.mjs,39,,unknown,reviewable,,阅读包分段无法读取，请重新下载。
-candidate:app/book-gift.mjs:41:153,js-cjk-literal,app/book-gift.mjs,41,,unknown,reviewable,,阅读包分段校验未通过，请重新下载。
-candidate:app/book-gift.mjs:45:52,js-cjk-literal,app/book-gift.mjs,45,,unknown,reviewable,,阅读包校验未通过，请重新下载。
-candidate:app/book-gift.mjs:46:111,js-cjk-literal,app/book-gift.mjs,46,,unknown,reviewable,,阅读包内容无法读取，请重新下载。
-candidate:app/book-gift.mjs:47:139,js-cjk-literal,app/book-gift.mjs,47,,unknown,reviewable,,阅读包格式无法核验，请重新下载。
-candidate:app/book-gift.mjs:51:15,js-cjk-literal,app/book-gift.mjs,51,,unknown,reviewable,,阅读包分段过多，未生成不完整的下载。
-candidate:app/book-gift.mjs:78:26,js-cjk-literal,app/book-gift.mjs,78,,unknown,reviewable,,收信预览不会创建分享或收取书籍。
-candidate:app/book-gift.mjs:79:316,js-cjk-literal,app/book-gift.mjs,79,,unknown,reviewable,,网络暂时无法连接，请稍后再试。
-candidate:app/book-gift.mjs:80:87,js-cjk-literal,app/book-gift.mjs,80,,unknown,reviewable,,账户已切换，请重新打开信笺再收书。
-candidate:app/book-gift.mjs:81:62,js-cjk-literal,app/book-gift.mjs,81,,unknown,reviewable,,信笺暂时无法读取，请稍后再试。
-candidate:app/book-gift.mjs:82:57,js-cjk-literal,app/book-gift.mjs,82,,unknown,reviewable,,暂时无法完成，请稍后再试。
-candidate:app/book-gift.mjs:138:106,js-attribute,app/book-gift.mjs,138,aria-disabled,unknown,reviewable,,true
-candidate:app/book-gift.mjs:156:43,js-cjk-literal,app/book-gift.mjs,156,,unknown,reviewable,,链接不完整
-candidate:app/book-gift.mjs:165:130,js-cjk-literal,app/book-gift.mjs,165,,unknown,reviewable,,收书结果无法核验，请回到书房确认。
-candidate:app/book-gift.mjs:179:37,js-attribute,app/book-gift.mjs,179,aria-disabled,unknown,reviewable,,true
-candidate:app/book-gift.mjs:179:75,js-attribute,app/book-gift.mjs,179,aria-busy,unknown,reviewable,,true
-candidate:app/book-gift.mjs:188:86,js-attribute,app/book-gift.mjs,188,aria-disabled,unknown,reviewable,,true
-candidate:app/book-gift.mjs:188:142,js-attribute,app/book-gift.mjs,188,aria-disabled,unknown,reviewable,,true
-candidate:app/book-gift.mjs:189:39,js-cjk-literal,app/book-gift.mjs,189,,unknown,reviewable,,请从书房的赠书窗口打开收信预览。
+candidate:app/book-gift.html:67:88,html-text,app/book-gift.html,67,,unknown,reviewable,,Import in the iOS app
+candidate:app/book-gift.html:72:63,html-text,app/book-gift.html,72,,unknown,reviewable,,Enable JavaScript to open the book letter.
+candidate:app/book-gift.html:74:58,html-text,app/book-gift.html,74,,unknown,reviewable,,Leafhour
+candidate:app/book-gift.html:74:98,html-text,app/book-gift.html,74,,unknown,reviewable,,"A book, from one reader to another."
+candidate:app/book-gift.mjs:34:78,js-cjk-literal,app/book-gift.mjs,34,,unknown,reviewable,,赠书链接不完整，未下载阅读包。
+candidate:app/book-gift.mjs:39:416,js-cjk-literal,app/book-gift.mjs,39,,unknown,reviewable,,阅读包分段或版本无法对应，请重新下载。
+candidate:app/book-gift.mjs:41:164,js-cjk-literal,app/book-gift.mjs,41,,unknown,reviewable,,阅读包分段无法读取，请重新下载。
+candidate:app/book-gift.mjs:43:153,js-cjk-literal,app/book-gift.mjs,43,,unknown,reviewable,,阅读包分段校验未通过，请重新下载。
+candidate:app/book-gift.mjs:47:52,js-cjk-literal,app/book-gift.mjs,47,,unknown,reviewable,,阅读包校验未通过，请重新下载。
+candidate:app/book-gift.mjs:48:111,js-cjk-literal,app/book-gift.mjs,48,,unknown,reviewable,,阅读包内容无法读取，请重新下载。
+candidate:app/book-gift.mjs:49:139,js-cjk-literal,app/book-gift.mjs,49,,unknown,reviewable,,阅读包格式无法核验，请重新下载。
+candidate:app/book-gift.mjs:53:15,js-cjk-literal,app/book-gift.mjs,53,,unknown,reviewable,,阅读包分段过多，未生成不完整的下载。
+candidate:app/book-gift.mjs:80:26,js-cjk-literal,app/book-gift.mjs,80,,unknown,reviewable,,收信预览不会创建分享或收取书籍。
+candidate:app/book-gift.mjs:81:316,js-cjk-literal,app/book-gift.mjs,81,,unknown,reviewable,,网络暂时无法连接，请稍后再试。
+candidate:app/book-gift.mjs:82:87,js-cjk-literal,app/book-gift.mjs,82,,unknown,reviewable,,账户已切换，请重新打开信笺再收书。
+candidate:app/book-gift.mjs:83:62,js-cjk-literal,app/book-gift.mjs,83,,unknown,reviewable,,信笺暂时无法读取，请稍后再试。
+candidate:app/book-gift.mjs:84:57,js-cjk-literal,app/book-gift.mjs,84,,unknown,reviewable,,暂时无法完成，请稍后再试。
+candidate:app/book-gift.mjs:142:106,js-attribute,app/book-gift.mjs,142,aria-disabled,unknown,reviewable,,true
+candidate:app/book-gift.mjs:160:43,js-cjk-literal,app/book-gift.mjs,160,,unknown,reviewable,,链接不完整
+candidate:app/book-gift.mjs:169:130,js-cjk-literal,app/book-gift.mjs,169,,unknown,reviewable,,收书结果无法核验，请回到书房确认。
+candidate:app/book-gift.mjs:183:37,js-attribute,app/book-gift.mjs,183,aria-disabled,unknown,reviewable,,true
+candidate:app/book-gift.mjs:183:75,js-attribute,app/book-gift.mjs,183,aria-busy,unknown,reviewable,,true
+candidate:app/book-gift.mjs:192:86,js-attribute,app/book-gift.mjs,192,aria-disabled,unknown,reviewable,,true
+candidate:app/book-gift.mjs:192:142,js-attribute,app/book-gift.mjs,192,aria-disabled,unknown,reviewable,,true
+candidate:app/book-gift.mjs:193:39,js-cjk-literal,app/book-gift.mjs,193,,unknown,reviewable,,请从书房的赠书窗口打开收信预览。
 candidate:app/book-import-shelf.mjs:18:288,js-attribute,app/book-import-shelf.mjs,18,aria-hidden,unknown,reviewable,,true
 candidate:app/book-import-shelf.mjs:18:323,js-attribute,app/book-import-shelf.mjs,18,role,unknown,reviewable,,status
 candidate:app/book-introduction.mjs:2:39,js-cjk-literal,app/book-introduction.mjs,2,,unknown,reviewable,,AI 简介的来源或格式不完整
