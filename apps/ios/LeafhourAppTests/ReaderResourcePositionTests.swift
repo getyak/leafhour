@@ -155,8 +155,13 @@ final class ReaderResourcePositionTests: XCTestCase {
                 if samples.count == 2 { return (samples[0], samples[1]) }
             }
             guard host.coordinator.turnPage(.next) else { break }
-            host.view.layer.removeAnimation(forKey: ReaderPageTransition.key)
-            await drain()
+            let deadline = ProcessInfo.processInfo.systemUptime + 2
+            repeat {
+                await drain()
+                if !host.controller.children.contains(where: { ($0 as? UIPageViewController)?.transitionStyle == .pageCurl }) { break }
+                try await Task.sleep(for: .milliseconds(20))
+            } while ProcessInfo.processInfo.systemUptime < deadline
+            XCTAssertFalse(host.controller.children.contains { ($0 as? UIPageViewController)?.transitionStyle == .pageCurl }, "A measured source screen must wait for the native curl to detach")
         }
         XCTFail("The real imported image must expose two different interior screens")
         throw FixtureError.noTwoMiddleScreens

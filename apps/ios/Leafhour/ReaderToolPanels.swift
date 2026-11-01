@@ -31,12 +31,16 @@ struct ReaderMorePanel: View {
     var reading: ReaderReadingContent? = nil
     let onJump: (Int, ReadingAnchor?) -> Void
     let onCompanion: () -> Void
+    var onAutoPage: () -> Void = {}
+    var onShare: () -> Void = {}
     @State private var export: RecordsDocument?
     @State private var exporting = false
     var body: some View {
         List {
             ReaderTimeControls(session: session)
             Section("读这本书") {
+                Button(action: onAutoPage) { Label("自动翻页", systemImage: "timer").frame(minHeight: 44) }
+                    .accessibilityIdentifier("reader-auto-page-open")
                 NavigationLink { BookSearchPanel(session: session, onJump: onJump).modifier(ReaderToolContinuation()) } label: { Label("搜索原文", systemImage: "magnifyingglass").frame(minHeight: 44) }
                 NavigationLink { ReaderTranslationPanel(session: session, tools: tools, cloud: cloud).modifier(ReaderToolContinuation()) } label: { Label("翻译", systemImage: "character.book.closed").frame(minHeight: 44) }
                 if let reading, session.state.preferences.viewMode != .source {
@@ -59,6 +63,8 @@ struct ReaderMorePanel: View {
                 }.disabled(session.book.cloud == nil || cloud == nil)
             }
             Section("带走自己的记录") {
+                Button(action: onShare) { Label("分享这本书", systemImage: "square.and.arrow.up").frame(minHeight: 44) }
+                    .accessibilityIdentifier("reader-share-book")
                 ShareLink(item: session.original) { Label("分享此设备上的书籍文件", systemImage: "square.and.arrow.up").frame(minHeight: 44) }
                 Button {
                     Task {
@@ -115,9 +121,7 @@ struct ReaderListeningPanel: View {
                 }.frame(maxWidth: .infinity).padding(.vertical, 12)
             }
             Section("声音与语速") {
-                Picker("语速", selection: $speech.speed) {
-                    ForEach([0.75, 1.0, 1.25, 1.5], id: \.self) { value in Text(value.formatted() + "×").tag(value) }
-                }.pickerStyle(.segmented)
+                ReaderSpeechSpeedControl(session: session, speech: speech)
                 Picker("朗读声音", selection: $speech.voiceID) {
                     Text("自动匹配原文语言").tag("")
                     ForEach(speech.voices, id: \.identifier) { voice in Text("\(voice.name) · \(voice.language)").tag(voice.identifier) }
@@ -138,7 +142,6 @@ struct ReaderListeningPanel: View {
             if let message = speech.message { Section { Text(message).font(.footnote).foregroundStyle(.secondary) } }
         }
         .navigationTitle("听一会儿")
-        .onChange(of: speech.speed) { _, _ in speech.restartVoice() }
         .onChange(of: speech.voiceID) { _, _ in speech.restartVoice() }
     }
 }

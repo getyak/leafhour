@@ -2,13 +2,13 @@ import XCTest
 @testable import LeafhourCore
 
 final class ReaderNavigationPreferencesTests: XCTestCase {
-    func testLegacyPreferencesKeepTypographyAndDefaultToScroll() throws {
+    func testLegacyPreferencesKeepTypographyAndDefaultToPages() throws {
         let data = Data(#"{"fontSize":28,"lineSpacing":12,"theme":"night"}"#.utf8)
         let value = try JSONDecoder().decode(ReaderPreferences.self, from: data)
         XCTAssertEqual(value.fontSize, 28)
         XCTAssertEqual(value.lineSpacing, 12)
         XCTAssertEqual(value.theme, "night")
-        XCTAssertEqual(value.navigationMode, .scroll)
+        XCTAssertEqual(value.navigationMode, .paged)
     }
     func testPagedPreferenceRoundTripsWithTheWholeReadingState() throws {
         var state = ReaderState()
@@ -22,6 +22,6 @@ final class ReaderNavigationPreferencesTests: XCTestCase {
     }
     func testUnknownFutureNavigationModeDoesNotDiscardReadingRecords() throws {
         let data = Data(#"{"fontSize":22,"lineSpacing":9,"theme":"paper","navigationMode":"future-mode"}"#.utf8)
-        XCTAssertEqual(try JSONDecoder().decode(ReaderPreferences.self, from: data).navigationMode, .scroll)
+        XCTAssertEqual(try JSONDecoder().decode(ReaderPreferences.self, from: data).navigationMode, .paged)
     }
 }

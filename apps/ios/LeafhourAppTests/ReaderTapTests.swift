@@ -68,4 +68,35 @@ import UIKit
         XCTAssertFalse(handler.gestureRecognizer(handler.recognizer, shouldRequireFailureOf: externalTap))
     }
 
+    func testNativeCurlUsesOneTemporaryContainerAndReleasesItWhenCancelled() throws {
+        try XCTSkipIf(UIAccessibility.isReduceMotionEnabled, "The Reduce Motion path intentionally creates no curl container")
+        let owner = UIViewController(), window = UIWindow(frame: CGRect(x: 0, y: 0, width: 390, height: 700))
+        window.rootViewController = owner; window.makeKeyAndVisible()
+        defer { window.isHidden = true; window.rootViewController = nil }
+        let page = UIView(frame: window.bounds); page.backgroundColor = .white
+        owner.view.addSubview(page)
+        let curl = ReaderPageCurlTransition()
+        var completed: Bool?
+        curl.animate(from: UIView(frame: page.bounds), over: page, direction: .next, paper: .white) { completed = $0 }
+        let controller = try XCTUnwrap(owner.children.compactMap { $0 as? UIPageViewController }.first)
+        XCTAssertEqual(controller.transitionStyle, .pageCurl)
+        XCTAssertEqual(controller.navigationOrientation, .horizontal)
+        XCTAssertFalse(controller.isDoubleSided)
+        XCTAssertTrue(curl.isActive)
+        curl.cancel()
+        XCTAssertFalse(curl.isActive)
+        XCTAssertTrue(owner.children.isEmpty, "Cancellation must release the temporary native curl and both snapshots")
+        XCTAssertEqual(completed, false)
+        XCTAssertTrue(page.superview === owner.view, "The live selectable reader remains the actual page")
+    }
+
+    func testUnavailableCurlStillCompletesAndKeepsTheLivePage() {
+        let page = UIView(frame: CGRect(x: 0, y: 0, width: 390, height: 700))
+        let curl = ReaderPageCurlTransition()
+        var completionCount = 0
+        curl.animate(from: nil, over: page, direction: .next, paper: .white) { _ in completionCount += 1 }
+        XCTAssertEqual(completionCount, 1)
+        XCTAssertFalse(curl.isActive)
+    }
+
 }

@@ -232,7 +232,7 @@ final class VideoExperienceUITests: XCTestCase {
         reader.coordinate(withNormalizedOffset: CGVector(dx: 0.35, dy: 0.30)).press(forDuration: 1.2)
         waitForSystemEditMenu(timeout: 5)
     }
-    private var nativeReadingActions: Set<String> { ["解释这句", "记笔记", "核对原文", "查看译文", "问陪读"] }
+    private var nativeReadingActions: Set<String> { ["解释这句", "记笔记", "核对原文", "查看译文", "问陪读", "分享摘录…"] }
     private var nativeEditingActions: Set<String> { ["Copy", "复制", "Paste", "粘贴", "Look Up", "查询", "Translate", "翻译", "Search Web", "搜索网页", "Share…", "共享…", "Select", "选择", "Select All", "全选", "AutoFill", "自动填充", "Writing Tools", "书写工具"] }
     private func visibleInApp(_ element: XCUIElement) -> Bool {
         element.exists && !element.frame.isEmpty && !element.frame.intersection(app.frame).isEmpty
@@ -464,6 +464,19 @@ final class VideoExperienceUITests: XCTestCase {
         let band = try XCTUnwrap(image.cropping(to: crop))
         // Encode the logical crop; a CGImage data provider may retain backing
         // bytes outside the crop, including the clock or floating controls.
+        return try XCTUnwrap(UIImage(cgImage: band).pngData())
+    }
+    /// Native curl temporarily changes the accessibility subtree. Observe the
+    /// actual paper on the screen without resolving a hidden transitional node.
+    private func screenBodyBand(in readerFrame: CGRect) throws -> Data {
+        let screenshot = XCUIScreen.main.screenshot().image
+        let image = try XCTUnwrap(screenshot.cgImage)
+        let scale = CGFloat(image.width) / screenshot.size.width
+        let paper = CGRect(x: readerFrame.minX + readerFrame.width * 0.12,
+                           y: readerFrame.minY + readerFrame.height * 0.28,
+                           width: readerFrame.width * 0.76, height: readerFrame.height * 0.32)
+        let crop = paper.applying(CGAffineTransform(scaleX: scale, y: scale)).integral
+        let band = try XCTUnwrap(image.cropping(to: crop))
         return try XCTUnwrap(UIImage(cgImage: band).pngData())
     }
     private func accountRecords() {
@@ -849,15 +862,13 @@ final class VideoExperienceUITests: XCTestCase {
 
     func test23ExistingSyntheticPDFReachesLastPageAndColdRestores() {
         launch(); openBook(pdfTitle); openTool("目录"); expandPanel()
-        let slider = app.sliders["页码"]
-        require(slider); slider.adjust(toNormalizedSliderPosition: 1)
-        let next = app.buttons["下一页"]
-        require(next)
-        for _ in 0..<3 where next.isEnabled { next.tap() }
-        XCTAssertFalse(next.isEnabled); XCTAssertTrue(app.buttons["上一页"].isEnabled)
+        let last = app.buttons["reader-contents-entry-2"]
+        require(last); last.tap()
+        require(app.otherElements["leafhour-pdf-reader"])
         capture("GET317-synthetic-PDF-page-3")
         coldRelaunch(); resumeReaderIfOffered(); require(app.otherElements["leafhour-pdf-reader"], timeout: 20)
-        openTool("目录"); expandPanel(); XCTAssertFalse(app.buttons["下一页"].isEnabled)
+        openTool("目录"); expandPanel(); require(last)
+        XCTAssertTrue((last.value as? String)?.contains("当前页") == true)
     }
 
     func test24BookDetailsExposeOriginalAndRecordExports() {
@@ -2690,6 +2701,125 @@ final class VideoExperienceUITests: XCTestCase {
         XCTAssertEqual(editor.value as? String, expected, "The native clipboard and anchored note both use the complete first paragraph")
         capture("GET347-native-paragraph-copy")
         app.buttons["保留草稿"].tap()
+    }
+
+    func test100DefaultPagesAndSharedNavigationSurviveAnotherBookAndRelaunch() {
+        launch(["--get341-unique-source"]); openBook(translatedTitle); wakeTools()
+        let caption = app.staticTexts["reader-progress-caption"]
+        require(caption)
+        XCTAssertTrue(caption.label.contains("屏"), "A new reader starts with real horizontal pages")
+        let first = caption.label
+        reader.swipeLeft(); wakeTools()
+        let nextPage = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in caption.exists && caption.label != first }, object: nil)
+        XCTAssertEqual(XCTWaiter.wait(for: [nextPage], timeout: 8), .completed)
+        capture("GET352-default-native-page-turn")
+        chooseNavigation("上下滚动"); shelf(); openBook(markdownTitle)
+        openTool("阅读设置"); expandPanel()
+        let scroll = app.segmentedControls.buttons["上下滚动"]
+        scrollTo(scroll, in: foregroundForm(), direction: .up)
+        XCTAssertTrue(scroll.isSelected, "Book B inherits the preference saved in book A")
+        closePanel(); coldRelaunch(); resumeReaderIfOffered(); require(reader)
+        openTool("阅读设置"); expandPanel()
+        scrollTo(scroll, in: foregroundForm(), direction: .up)
+        XCTAssertTrue(scroll.isSelected, "Shared navigation persists after a cold app launch")
+        capture("GET352-shared-reading-preferences")
+    }
+
+    func test101AutomaticTurnsTheActualPageAndStaysPausedAfterBackground() throws {
+        launch(["--get341-unique-source"]); openBook(translatedTitle)
+        let readingFrame = reader.frame
+        let initialPage = app.staticTexts["reader-progress-caption"].label
+        openMoreLink("自动翻页"); expandPanel()
+        let interval = app.steppers["reader-auto-page-interval"]
+        require(interval)
+        for _ in 0..<5 { interval.buttons.element(boundBy: 0).tap() }
+        require(app.staticTexts["每 5 秒翻一屏"])
+        app.buttons["reader-auto-page-start"].tap()
+        let pause = app.buttons["reader-auto-page-quick-pause"]
+        require(pause)
+        let first = try screenBodyBand(in: readingFrame)
+        let turned = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in (try? self.screenBodyBand(in: readingFrame)) != first }, object: nil)
+        XCTAssertEqual(XCTWaiter.wait(for: [turned], timeout: 9), .completed, "The actual source ink must move to the next measured page")
+        pause.tap(); require(app.buttons["reader-auto-page-quick-resume"])
+        require(reader)
+        wakeTools()
+        let currentPage = app.staticTexts["reader-progress-caption"]
+        require(currentPage)
+        XCTAssertNotEqual(currentPage.label, initialPage, "The page position must settle at a genuinely later source screen")
+        reader.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.4)).tap()
+        require(app.buttons["reader-auto-page-quick-resume"])
+        capture("GET352-automatic-real-page-paused")
+        app.buttons["reader-auto-page-quick-resume"].tap(); require(pause)
+        XCUIDevice.shared.press(.home); app.activate()
+        require(app.buttons["reader-auto-page-quick-resume"])
+        XCTAssertFalse(pause.exists, "Returning to the app never restarts automatic turns")
+        capture("GET352-background-stays-paused")
+    }
+
+    func test102SelectedTextHasAnExplicitCardPreviewAndSystemImageSharing() {
+        launch(); openBook(textTitle)
+        selectOriginal(); systemEditAction(["分享摘录…"])
+        let image = app.buttons["book-share-image"]
+        scrollTo(image, in: app.scrollViews.firstMatch, direction: .up); require(image)
+        XCTAssertTrue(app.navigationBars["分享摘录"].exists)
+        XCTAssertFalse(app.buttons["book-share-create-gift"].exists, "Sharing a quote cannot silently publish the whole private book")
+        capture("GET352-selected-text-card-preview")
+        let visibleBars = app.navigationBars.allElementsBoundByIndex.filter { $0.isHittable && !$0.frame.isEmpty }
+        let navigationEvidence = app.navigationBars.allElementsBoundByIndex.map { "\($0.identifier) | \($0.label) | \($0.frame) | hittable=\($0.isHittable)" }.joined(separator: "\n")
+        let evidence = XCTAttachment(string: navigationEvidence); evidence.name = "GET352 visible share navigation"; evidence.lifetime = .keepAlways; add(evidence)
+        XCTAssertEqual(visibleBars.count, 1, "The share preview has one visible navigation bar; covered library bars remain in the app snapshot.\n" + navigationEvidence)
+        image.tap()
+        let activity = app.otherElements["ActivityListView"]
+        let opened = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in activity.exists || self.app.buttons["拷贝"].exists || self.app.buttons["复制"].exists || self.app.buttons["存储图像"].exists || self.app.buttons["Copy"].exists }, object: nil)
+        XCTAssertEqual(XCTWaiter.wait(for: [opened], timeout: 8), .completed)
+        capture("GET352-native-image-share-destinations")
+    }
+
+    func test103ListeningSpeedSliderKeepsBothEndpointsAndDoesNotAutoplay() {
+        launch(); openBook(textTitle); openTool("听书"); expandPanel()
+        let slider = app.sliders["reader-speech-speed"]
+        scrollTo(slider, in: foregroundForm(), direction: .up); require(slider)
+        slider.adjust(toNormalizedSliderPosition: 1)
+        require(app.staticTexts["reader-speech-speed-value"])
+        XCTAssertEqual(app.staticTexts["reader-speech-speed-value"].label, "5×")
+        slider.adjust(toNormalizedSliderPosition: 0)
+        XCTAssertEqual(app.staticTexts["reader-speech-speed-value"].label, "0.5×")
+        XCTAssertTrue(app.buttons["reader-speech-play"].exists)
+        capture("GET352-draggable-listening-speed")
+        closePanel(); coldRelaunch(); resumeReaderIfOffered(); openTool("听书"); expandPanel()
+        scrollTo(slider, in: foregroundForm(), direction: .up)
+        XCTAssertEqual(app.staticTexts["reader-speech-speed-value"].label, "0.5×")
+        XCTAssertTrue(app.buttons["reader-speech-play"].exists)
+    }
+
+    func test104GiftLinkOpensTheAppForExplicitPreviewThenDownloadsTheReadingCopy() {
+        launch(["--get352-gift"])
+        app.open(URL(string: "leafhour://gift/" + String(repeating: "a", count: 43))!)
+        let confirm = app.buttons["shared-book-import-confirm"]
+        require(confirm, timeout: 15)
+        require(app.staticTexts["GET352 合成赠书"])
+        XCTAssertFalse(reader.exists, "Opening a gift URL must first preview rather than accept or download automatically")
+        capture("GET352-native-gift-import-preview")
+        confirm.tap()
+        require(reader, timeout: 25)
+        XCTAssertFalse(confirm.exists)
+        XCTAssertTrue((reader.value as? String)?.contains("GET317") == true, "The accepted native reading copy uses the domain service's real synthetic chapters")
+        capture("GET352-gift-imported-readable-copy")
+        coldRelaunch(); resumeReaderIfOffered(); require(reader, timeout: 20)
+        capture("GET352-gift-copy-cold-resume")
+    }
+
+    func test105AReadingLinkKeepsItsPreviewWhenLeavingAnAlreadyOpenBook() {
+        launch(); openBook(textTitle)
+        app.open(URL(string: "leafhour://read?book=get317-cloud")!)
+        let confirm = app.buttons["shared-book-import-confirm"]
+        require(confirm, timeout: 15)
+        XCTAssertFalse(reader.exists)
+        XCTAssertTrue(confirm.isEnabled)
+        capture("GET352-reading-link-after-open-book")
+        confirm.tap(); require(reader, timeout: 25)
+        XCTAssertFalse(confirm.exists)
+        capture("GET352-reading-link-opens-its-own-book")
     }
 
     func test97RealSystemSpeechHighlightsTheSentenceAndFollowsAcrossChapters() {

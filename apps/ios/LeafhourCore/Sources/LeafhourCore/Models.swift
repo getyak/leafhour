@@ -73,25 +73,38 @@ public struct ReaderNote: Codable, Identifiable, Equatable, Sendable {
     }
 }
 public enum ReaderNavigationMode: String, Codable, Sendable { case scroll, paged }
+public enum ReaderFontStyle: String, Codable, CaseIterable, Sendable { case serif, sans, rounded }
 public struct ReaderPreferences: Codable, Equatable, Sendable {
+    public var fontStyle: ReaderFontStyle = .serif
     public var fontSize: Double = 22
     public var lineSpacing: Double = 9
     public var theme: String = "paper"
-    public var navigationMode: ReaderNavigationMode = .scroll
+    public var navigationMode: ReaderNavigationMode = .paged
     public var viewMode: ReaderViewMode = .source
     public var translationVariant: ReaderTranslationVariant = .literal
+    public var speechSpeed: Double = 1
+    public var autoPageInterval: Double = 30
     public init() {}
-    private enum CodingKeys: String, CodingKey { case fontSize, lineSpacing, theme, navigationMode, viewMode, translationVariant }
+    private enum CodingKeys: String, CodingKey { case fontStyle, fontSize, lineSpacing, theme, navigationMode, viewMode, translationVariant, speechSpeed, autoPageInterval }
     public init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
+        fontStyle = (try values.decodeIfPresent(String.self, forKey: .fontStyle)).flatMap(ReaderFontStyle.init(rawValue:)) ?? .serif
         fontSize = try values.decodeIfPresent(Double.self, forKey: .fontSize) ?? 22
         lineSpacing = try values.decodeIfPresent(Double.self, forKey: .lineSpacing) ?? 9
         theme = try values.decodeIfPresent(String.self, forKey: .theme) ?? "paper"
         // Old state and a future mode remain readable without discarding notes or position.
         let mode = try values.decodeIfPresent(String.self, forKey: .navigationMode)
-        navigationMode = mode.flatMap(ReaderNavigationMode.init(rawValue:)) ?? .scroll
+        navigationMode = mode.flatMap(ReaderNavigationMode.init(rawValue:)) ?? .paged
         viewMode = (try values.decodeIfPresent(String.self, forKey: .viewMode)).flatMap(ReaderViewMode.init(rawValue:)) ?? .source
         translationVariant = (try values.decodeIfPresent(String.self, forKey: .translationVariant)).flatMap(ReaderTranslationVariant.init(rawValue:)) ?? .literal
+        speechSpeed = Self.normalizedSpeechSpeed(try values.decodeIfPresent(Double.self, forKey: .speechSpeed) ?? 1)
+        autoPageInterval = Self.normalizedAutoPageInterval(try values.decodeIfPresent(Double.self, forKey: .autoPageInterval) ?? 30)
+    }
+    public static func normalizedSpeechSpeed(_ value: Double) -> Double {
+        value.isFinite ? min(5, max(0.5, value)) : 1
+    }
+    public static func normalizedAutoPageInterval(_ value: Double) -> Double {
+        ReaderAutoPageState.normalizedInterval(value)
     }
 }
 public struct ReaderState: Codable, Equatable, Sendable {

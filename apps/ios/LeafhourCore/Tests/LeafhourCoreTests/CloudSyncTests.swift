@@ -162,6 +162,9 @@ final class CloudSyncTests: XCTestCase {
         }
         try await sync.synchronize(book.id)
         state.preferences.viewMode = .parallel;state.preferences.translationVariant = .interpretive
+        // Display preferences now belong to the library profile; a per-book
+        // progress snapshot cannot override that newer shared authority.
+        try await library.saveReaderPreferences(state.preferences)
         try await library.saveState(state,bookID:book.id);try await sync.synchronize(book.id)
         XCTAssertEqual(modes,["en","parallel"]);XCTAssertEqual(variants,["literal","interpretive"])
     }

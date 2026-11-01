@@ -12,6 +12,7 @@
 <key>LSSupportsOpeningDocumentsInPlace</key><true/>
 <key>UIFileSharingEnabled</key><true/>
 <key>ITSAppUsesNonExemptEncryption</key><false/>
+<key>NSPhotoLibraryAddUsageDescription</key><string>将你选择分享的书摘或书籍卡片保存到照片。</string>
 <key>UIApplicationSceneManifest</key><dict><key>UIApplicationSupportsMultipleScenes</key><false/></dict>
 <key>UILaunchScreen</key><dict/>
 <key>UISupportedInterfaceOrientations</key><array><string>UIInterfaceOrientationPortrait</string><string>UIInterfaceOrientationLandscapeLeft</string><string>UIInterfaceOrientationLandscapeRight</string></array>
@@ -19,7 +20,7 @@
 <key>CFBundleURLTypes</key><array><dict>
 <key>CFBundleURLName</key><string>com.cubxxw.reader.native-auth</string>
 <key>CFBundleTypeRole</key><string>Editor</string>
-<key>CFBundleURLSchemes</key><array><string>com.cubxxw.reader</string></array>
+<key>CFBundleURLSchemes</key><array><string>com.cubxxw.reader</string><string>leafhour</string></array>
 </dict></array>
 <key>CFBundleDocumentTypes</key><array><dict>
 <key>CFBundleTypeName</key><string>Reading documents</string>
