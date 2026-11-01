@@ -106,26 +106,28 @@ struct TextReadingView: UIViewRepresentable {
             coordinator.renderedSize = view.bounds.size; coordinator.renderedInsets = column.insets
             let preferences = session.state.preferences
             let width = column.contentWidth
-            let signature = "\(session.chapter.id)-\(preferences)-\(session.contentRevision)-\(view.traitCollection.preferredContentSizeCategory.rawValue)-\(Int(width))"
+            let signature = contentSignature(in: view, width: Int(width))
+            let navigationModeChanged = renderedNavigationMode != preferences.navigationMode
             let navigating = coordinator.navigationID != session.navigationID
             // A session owns an immutable book/source version. Never carry indices into another source.
             let sameSource = coordinator.indexedSessionID == ObjectIdentifier(session) && coordinator.indexedChapterIndex == session.chapterIndex
             if coordinator.pendingPageTransition != nil, !coordinator.pendingTransitionIsCurrent {
                 coordinator.cancelPageTransition(.notReady)
             }
-            if layoutChanged || navigating || !sameSource || coordinator.signature != signature {
+            if layoutChanged || navigating || navigationModeChanged || !sameSource || coordinator.signature != signature {
                 coordinator.pageCurl.cancel()
                 if coordinator.pendingPageTransition == nil { coordinator.finishPageRequest(.notReady) }
             }
             // A background result must not rebuild UIKit's selected text or its
             // native edit menu. The selection-ending callback requests a fresh render.
             if sameSource, !navigating, !layoutChanged, view.selectedRange.length > 0,
-               coordinator.renderedPreferences == preferences, coordinator.signature != signature { return }
+               coordinator.sameTypography(coordinator.renderedPreferences, preferences), coordinator.signature != signature { return }
             let translatedViewport = sameSource && !navigating
                 && coordinator.renderedPreferences?.viewMode == preferences.viewMode
                 && coordinator.renderedPreferences?.translationVariant == preferences.translationVariant
                 ? (coordinator.pendingTranslatedViewport ?? coordinator.translatedViewport()) : nil
             if !sameSource || coordinator.signature != signature {
+                contentBuildCount += 1
                 let previousSpans = sameSource ? coordinator.spans : []
                 func sourceOffsets(for passage: Passage, at index: Int) -> SourceTextOffsets {
                     if previousSpans.indices.contains(index), previousSpans[index].passage.id == passage.id,
@@ -217,16 +219,30 @@ struct TextReadingView: UIViewRepresentable {
                 } else { view.selectedRange = NSRange(location: 0, length: 0) }
                 coordinator.navigationID = session.navigationID
                 coordinator.restore(anchor, translatedViewport: translatedViewport, persistCheckpoint: !navigating)
-            } else if navigating || layoutChanged {
+            } else if navigating || layoutChanged || navigationModeChanged {
                 coordinator.navigationID = session.navigationID
                 coordinator.restoring = true
                 if navigating { view.selectedRange = NSRange(location: 0, length: 0) }
                 coordinator.restore(anchor, persistCheckpoint: !navigating)
             }
+            coordinator.renderedNavigationMode = preferences.navigationMode
             coordinator.configureNavigation(view)
+        }
+        private var renderedNavigationMode: ReaderNavigationMode?
+        private func sameTypography(_ rendered: ReaderPreferences?, _ current: ReaderPreferences) -> Bool {
+            guard let rendered else { return false }
+            return rendered.fontStyle == current.fontStyle && rendered.fontSize == current.fontSize
+                && rendered.lineSpacing == current.lineSpacing && rendered.viewMode == current.viewMode
+                && rendered.translationVariant == current.translationVariant
+        }
+        private func contentSignature(in view: UITextView, width: Int) -> String {
+            let session = parent.session, p = session.state.preferences
+            return "\(session.chapter.id)-\(p.fontStyle)-\(p.fontSize)-\(p.lineSpacing)-\(p.viewMode)-\(p.translationVariant)-\(p.viewMode == .source ? 0 : session.contentRevision)-\(view.traitCollection.preferredContentSizeCategory.rawValue)-\(width)"
         }
         var parent: TextReadingView
         weak var view: UITextView?
+        private(set) var contentBuildCount = 0
+        private(set) var paginationBuildCount = 0
         var spans: [Span] = []
         var markdown: MarkdownChapterLayout?
         var markdownChapterID: String?
@@ -281,7 +297,8 @@ struct TextReadingView: UIViewRepresentable {
         private var pendingTransitionIsCurrent: Bool {
             guard let pending = pendingPageTransition, let view else { return false }
             return pending.navigation == parent.session.navigationID && pending.owner == ObjectIdentifier(parent.session)
-                && pending.chapterID == parent.session.chapter.id && pending.preferences == parent.session.state.preferences
+                && pending.chapterID == parent.session.chapter.id && sameTypography(pending.preferences, parent.session.state.preferences)
+                && pending.preferences.navigationMode == parent.session.state.preferences.navigationMode
                 && pending.size == view.bounds.size && pending.insets == parent.pageInsets
         }
         private let pageCurl = ReaderPageCurlTransition()
@@ -367,7 +384,7 @@ struct TextReadingView: UIViewRepresentable {
                   renderedChapterID == parent.session.chapter.id, navigationID == parent.session.navigationID,
                   renderedWidth == Int(layout(for: view).contentWidth), renderedSize == view.bounds.size,
                   renderedInsets == view.textContainerInset, renderedInsets == layout(for: view).insets,
-                  signature == "\(parent.session.chapter.id)-\(parent.session.state.preferences)-\(parent.session.contentRevision)-\(view.traitCollection.preferredContentSizeCategory.rawValue)-\(renderedWidth)" else { return false }
+                  signature == contentSignature(in: view, width: renderedWidth) else { return false }
             // Sample inside the visible line. Its exact top edge may resolve to
             // the previous paragraph's trailing newline after a width reflow.
             let readingTop = max(0, parent.pageInsets.top)
@@ -520,6 +537,7 @@ struct TextReadingView: UIViewRepresentable {
             let key = "\(ObjectIdentifier(parent.session))-\(signature)-\(view.bounds.size)-\(view.textContainerInset)-\(parent.pageInsets)"
             guard key != paginationKey else { return }
             paginationKey = key
+            paginationBuildCount += 1
             pagination = ReaderTextPagination(textView: view, readingTop: max(0, parent.pageInsets.top), bottomInset: parent.pageInsets.bottom)
             setPaginationBottomAllowance(pagination?.origins.last)
         }
