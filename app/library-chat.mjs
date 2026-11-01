@@ -173,7 +173,7 @@ export function mountLibraryChat({root,api,getSession,getBooks,getOwner,openAuth
     const displayTurns=[...view.turns];if(view.retry?.uncertain&&!displayTurns.some(turn=>turn.id===view.retry.payload.id))displayTurns.push({...view.retry.payload,origin:'user',status:'running',answer:null});
     if(!displayTurns.length){
       const wide=confirmedScope(view)?.mode==='library',empty=emptyState(accountChat()?'chat.greeting':wide?'h.bk':'ex.fu',accountChat()?'chat.greetingBody':wide?'h.ch':'h.ck');
-      if(accountChat()){const identity=node('span','library-chat-identity');identity.setAttribute('aria-hidden','true');empty.insertBefore(identity,empty.children[0]);}
+      if(accountChat()){const identity=node('span','library-chat-identity');identity.setAttribute('aria-hidden','true');empty.insertBefore(identity,empty.children[0]);showEmpty(empty);return;}
       const suggestions=node('div','library-chat-suggestions');
       for(const id of ['ex.f','ex.c',wide?'ex.r':'ex.a']){
         // A new explicit click writes the CURRENT localized suggestion text;
