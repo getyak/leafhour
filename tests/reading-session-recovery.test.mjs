@@ -41,3 +41,16 @@ test('the page context uses the device timezone when opening each new manual rec
  vm.createContext(context);vm.runInContext(between('const $=id=>','const queueKey=')+'\n'+between('const manualUi=mountManualReading(','function renderTimeSource('),context);
  assert.equal(contextOfForm().timeZone,'UTC');process.env.TZ='Asia/Singapore';assert.equal(contextOfForm().timeZone,'Asia/Singapore');
 });
+
+test('full-page chat and explanations suspend elapsed time and activity, then preserve the prior running choice',()=>{
+ for(const source of ['reader_focus','reader_estimate']){
+  let at=Date.parse('2026-10-14T12:00:00Z'),chat=false;const clock=createReadingClock({now:()=>at,heartbeatGapMs:5000}),listeners=new Map();
+  clock.start({id:'chat-hold-'+source,bookId:readingBook.bookId,contentVersion:readingBook.contentVersion,anchor,timeZone:'UTC',source});
+  const context={clock,ready:true,frozen:false,disposed:false,document:{hidden:false,hasFocus:()=>true,querySelector:()=>chat?{}:null,addEventListener:(type,fn)=>listeners.set(type,fn)},listen:(node,type,fn)=>node.addEventListener(type,fn),checkpoint(){},render(){}};
+  vm.createContext(context);vm.runInContext(between('function lifecycle(){','function renderDraftCount(')+'\n'+between("for(const type of ['pointerdown','keydown','scroll'])","listen(document,'reader:ready'"),context);
+  at+=3000;assert.equal(clock.view().elapsedSeconds,3);chat=true;listeners.get('reader:chat-layout')();assert.equal(clock.view().status,'paused');
+  for(let second=0;second<130;second++){at+=1000;for(const type of ['pointerdown','keydown','scroll'])listeners.get(type)({isTrusted:true,target:{closest:()=>null}});assert.equal(clock.view().elapsedSeconds,3);}
+  chat=false;listeners.get('reader:chat-layout')();if(source==='reader_focus'){assert.equal(clock.view().status,'active');at+=3000;assert.equal(clock.view().elapsedSeconds,6);}else{assert.equal(clock.view().idle,true,'typing in chat cannot refresh the reading estimate');assert.equal(clock.view().elapsedSeconds,3);clock.resume();}
+  clock.pause();const paused=clock.view().elapsedSeconds;chat=true;listeners.get('reader:chat-layout')();at+=3000;chat=false;listeners.get('reader:chat-layout')();assert.equal(clock.view().status,'paused','closing chat cannot resume an explicitly paused session');assert.equal(clock.view().elapsedSeconds,paused);
+ }
+});

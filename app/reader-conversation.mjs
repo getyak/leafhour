@@ -9,7 +9,7 @@ import {overlayOpen} from './popover-controls.mjs';
 import {readChatResponse} from './chat-stream.mjs';
 
 export function readerInteractionBlocked(document,target){
-  return overlayOpen(document,'dialog[open]:not(.library-chat-dialog)')||!!target?.closest?.('dialog,.library-chat-launcher,.squirrel-companion-bubble,.squirrel-companion-pill');
+  return overlayOpen(document,'dialog[open]:not(.library-chat-dialog)')||document.querySelector?.('.is-reader-chat-fullpage')?.classList?.contains('is-reader-chat-fullpage')===true||!!target?.closest?.('dialog,.library-chat-launcher,.squirrel-companion-bubble,.squirrel-companion-pill');
 }
 
 export function readerConversationContext(reader,bookId){
@@ -50,7 +50,7 @@ export function mountReaderConversation({bookId,session,getReader,root,request=f
   };
   let taskStorage=null;try{taskStorage=globalThis.localStorage;}catch{}
   chat=mountChat({root,api,uploadController,mountUpload,renderMarkdown,uploadOptions:{request,storage:taskStorage},getSession:()=>session,getOwner:()=>session?.user?.id||null,getBooks:()=>{const current=context();return current?[current.book]:[];},getCurrentBook:()=>bookId,getCurrentPassage:()=>context()?.passageId||null,externalLauncher,
-    openAuth,dismissOnOutside:()=>workspace?.isMobile()!==false,onViewChange:opened=>{if(opened)getReader()?.dismissTools?.({preserveSelection:true});workspace?.setOpen(opened);},
+    openAuth,dismissOnOutside:()=>false,onViewChange:opened=>{if(opened)getReader()?.dismissTools?.({preserveSelection:true});workspace?.setOpen(opened);},
     onNavigateToPassage:(targetBook,passageId)=>{
       const current=context();if(targetBook!==bookId||!current?.passages.has(passageId))return false;
       const reader=getReader();if(workspace?.isMobile())chat.close();reader.dismissTools?.();
@@ -100,7 +100,7 @@ export function mountReaderConversation({bookId,session,getReader,root,request=f
     queueMicrotask(()=>{if(!disposed&&revision===followSelection)followCandidate(candidate);});
   };
   root.addEventListener?.('reading-chat-open',followOnOpen);listeners.push(()=>root.removeEventListener?.('reading-chat-open',followOnOpen));
-  workspace=mountReaderChatWorkspace({root,getReader,labels:{resize:t('chat.resize')}});
+  workspace=mountReaderChatWorkspace({root,getReader,onBack:()=>chat.close(),labels:{resize:t('chat.resize')}});
   listeners.push(onUiLocaleChange(()=>workspace.setLabels({resize:t('chat.resize')})));
   if(typeof chat.surface==='function'){const options={bookId,getOwner:()=>session?.user?.id||null,getReader,api,chat,openAuth,integration:integration?{anchor:integration.companionAnchor,onUnread:integration.onUnread,onFocusReturn:integration.focusReturn}:null};if(mountCompanion)companion=mountCompanion(options);else chat.companionReady=import('./reader-companion-loader.mjs').then(m=>{if(!disposed)companion=m.mountReaderCompanion(options);}).catch(()=>{});}
   let restoredPerson=false;

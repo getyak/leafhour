@@ -4,7 +4,7 @@ import {readingChatQuoteFromExcerpt,normalizeReadingChatQuote,validateCurrentRea
 import {activeHighlights,highlightKey,normalizeHighlight} from './highlights.mjs';
 import {renderChatMarkdown} from './library-chat-markdown.mjs';
 import {createAnnotationPending} from './reader-annotation-pending.mjs';
-import {mountAnnotationMargins,annotationSheetBounds} from './reader-annotation-margins.mjs';
+import {mountAnnotationMargins} from './reader-annotation-margins.mjs';
 import {createNoteDrafts} from './note-drafts.mjs';
 
 const PREFIX='reader.annotation.',equal=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
@@ -12,7 +12,7 @@ const terminal=value=>['completed','failed','cancelled'].includes(value);
 const failureKey=error=>({401:'login',403:'login',409:'stale',413:'capacity',422:'stale',429:'limit'}[error?.status]||'unconfirmed');
 
 // Uses the live reader's API, highlight acceptance, session and locale owner.
-export function mountReaderAnnotations({document,api,getSession=()=>null,getSelection,getRecords,signedIn,available,accept,notify,isCurrent=()=>true,storage}){
+export function mountReaderAnnotations({document,api,getSession=()=>null,getSelection,getRecords,signedIn,available,accept,notify,isCurrent=()=>true,storage,mountWorkspace}){
  const view=document.defaultView,labels=createUiLabels(),listeners=[],controllers=new Set();
  const reader=()=>view.marginaliaReader,owner=()=>view.marginaliaPaletteAdapter?.getOwner?.();
  let disposed=false,epoch=0,readEpoch=0,scope=null,outbox=null,archive=null,requests=[],activeId=null,opener=null,busy=false,cancelling=false,composing=false,draftVersion=0,poll=null,drafts=Object.create(null),lastMessages='',refusal=null,markThread=null,noteDrafts=createNoteDrafts(),noteBusy=false,noteStorageBad=false;
@@ -27,7 +27,7 @@ export function mountReaderAnnotations({document,api,getSession=()=>null,getSele
  const draftKey=()=> 'marginalia-annotation-drafts-v1|'+scope;
  const thread=()=>archive?.threads.find(row=>row.id===activeId)|| (outbox?.current()?.input.threadId===activeId?{id:activeId,quote:outbox.current().input.quote,highlightId:outbox.current().input.highlightId,messages:[]}:refusal?.id===activeId?{...refusal,messages:[]}:markThread?.id===activeId?markThread:null);
  const lastRequest=()=>requests.findLast(row=>row.threadId===activeId);
- const card=node('section','reader-annotation-card');card.id='reader-annotation-card';card.hidden=true;card.setAttribute('role','region');
+ const card=node('section','reader-annotation-card');card.id='reader-annotation-card';card.hidden=true;card.setAttribute('role','dialog');
  const heading=node('header','reader-annotation-heading'),title=node('span');title.id='reader-annotation-title';write(title,'title');card.setAttribute('aria-labelledby',title.id);
  const close=button('close',()=>hide());close.className='reader-annotation-close';labels.forget(close,'text');close.textContent='×';write(close,'close','aria-label');const previous=button('previous',()=>step(-1)),next=button('next',()=>step(1)),count=node('span','reader-annotation-count');previous.className='reader-annotation-previous';next.className='reader-annotation-next';labels.forget(previous);labels.forget(next);previous.textContent='‹';next.textContent='›';write(previous,'previous','aria-label');write(next,'next','aria-label');heading.append(title,previous,count,next,close);
  const scroll=node('div','reader-annotation-scroll'),source=node('div','reader-annotation-source'),sourceLabel=node('span'),sourceState=node('span'),sourceHistory=node('span'),selected=node('blockquote'),messages=node('div','reader-annotation-messages');source.append(sourceLabel,sourceState,sourceHistory,selected);
@@ -37,7 +37,10 @@ export function mountReaderAnnotations({document,api,getSession=()=>null,getSele
  const explain=button('explain',()=>retryRequest());explain.className='reader-annotation-explain';
  const send=button('send',()=>{}),price=node('small','reader-annotation-price');send.type='submit';const actions=node('div','reader-annotation-actions');
  const retry=button('retry',()=>retryRequest()),cancel=button('cancel',()=>cancelRequest()),remove=button('remove',()=>removeThread()),billLink=node('a','reader-annotation-billing-link');actions.append(retry,cancel,remove,price,explain);
- form.append(area,saveNote,send);scroll.append(source,messages,status,form,actions);card.append(heading,scroll);
+ form.append(area,saveNote,send);scroll.append(source,messages,status);card.append(heading,scroll,form,actions);
+ const workspace=mountWorkspace({root:card,document,window:view,getReader:reader,onBack:()=>hide()});
+ const backLabel=()=>{close.textContent='← '+t('chat.back');close.setAttribute('aria-label',t('reader.shell.returnReading'));};backLabel();
+ heading.insertBefore(close,title);
  const state=key=>{if(key)write(status,key);else{labels.forget(status);status.textContent='';}};
  function paintRefusal(){
   price.hidden=getSession()?.billing?.enabled!==true;price.textContent=price.hidden?'':creditActionLabel('annotation',getUiLocale());
@@ -67,7 +70,7 @@ export function mountReaderAnnotations({document,api,getSession=()=>null,getSele
  function ensureScope(){
   const next=identity();if(next===scope)return !!next;
   epoch++;readEpoch++;clearTimeout(poll);for(const controller of controllers)controller.abort();controllers.clear();
-  card.hidden=true;card.remove();margins.reset();activeId=null;busy=false;cancelling=false;archive=null;requests=[];drafts=Object.create(null);lastMessages='';refusal=null;scope=next;markThread=null;noteBusy=false;noteStorageBad=false;noteDrafts=createNoteDrafts();margins.reset();margins.state('pending');
+  card.hidden=true;workspace.setOpen(false);card.remove();margins.reset();activeId=null;busy=false;cancelling=false;archive=null;requests=[];drafts=Object.create(null);lastMessages='';refusal=null;scope=next;markThread=null;noteBusy=false;noteStorageBad=false;noteDrafts=createNoteDrafts();margins.reset();margins.state('pending');
   delete document.body.dataset.annotationPane;delete document.body.dataset.annotationCompact;document.body.style.removeProperty('--annotation-visible-height');
   if(!next){outbox=null;return false;}
   outbox=createAnnotationPending({storage,owner:owner(),bookId:book().bookId,contentVersion:book().contentVersion});document.body.append(card);
@@ -100,29 +103,9 @@ export function mountReaderAnnotations({document,api,getSession=()=>null,getSele
  function schedule(){clearTimeout(poll);if(outbox?.current()?.phase==='explain'&&(busy||requests.some(row=>row.id===outbox.current()?.input.id&&row.status==='running')))poll=view.setTimeout(()=>refresh(),1000);}
  function place(){
   if(card.hidden)return;
-  const move=(parent,before=null)=>{if(card.parentElement===parent)return;const focused=card.contains(document.activeElement)&&document.activeElement;parent.insertBefore(card,before);if(focused)focused.focus({preventScroll:true});};
-  const chat=document.querySelector('.reader-chat-workspace[open]'),embedded=chat?.classList.contains('is-reader-chat-mobile'),frame=embedded&&chat.querySelector('.library-chat-frame');
-  if(frame){
-   move(frame,frame.querySelector('.library-chat-messages'));
-   card.inert=false;card.dataset.placement='chat';card.style.removeProperty('width');card.style.removeProperty('left');card.style.removeProperty('top');return;
-  }
-  const held=thread(),rect=held&&margins.rectFor(held.quote.parts[0].passageId),rails=margins.rails();
-  const rail=rails.find(r=>r.side==='right')||rails[0];
-  card.dataset.placement=rail?'margin':'sheet';
-  move(document.body);
-  if(rail){card.style.width=rail.width+'px';card.style.left=rail.left+'px';const top=Math.max(76,Math.min(rect?.top||76,view.innerHeight-280));card.style.top=top+'px';card.style.setProperty('--annotation-card-height',Math.max(132,view.innerHeight-top-24)+'px');}
-  else{
-   card.style.removeProperty('width');card.style.removeProperty('left');card.style.removeProperty('top');
-   const blocked=[...document.querySelectorAll('.reader-chat-workspace[open]:not(.is-reader-chat-mobile)')].map(el=>el.getBoundingClientRect()).filter(r=>r.width&&r.height);
-   const bounds=annotationSheetBounds({viewport:view.innerWidth,blocked});
-   card.style.setProperty('--annotation-sheet-left',bounds.left+'px');card.style.setProperty('--annotation-sheet-width',bounds.width+'px');
-   const viewport=view.visualViewport,top=(viewport?.offsetTop||0)+12;
-   let bottom=Math.max(12,view.innerHeight-(viewport?.height||view.innerHeight)-(viewport?.offsetTop||0)+12);
-   const tools=document.getElementById('reading-session')?.getBoundingClientRect();
-   if(tools?.width&&tools.left<bounds.left+bounds.width/2&&tools.right>bounds.left-bounds.width/2)bottom=Math.max(bottom,view.innerHeight-tools.top+12);
-   card.style.setProperty('--annotation-sheet-height',Math.max(0,view.innerHeight-bottom-top)+'px');
-   card.style.setProperty('--annotation-sheet-bottom',bottom+'px');
-  }
+  if(card.parentElement!==document.body)document.body.append(card);
+  card.inert=false;card.dataset.placement='fullpage';
+  const viewport=view.visualViewport;card.style.setProperty('--chat-viewport-top',(viewport?.offsetTop||0)+'px');card.style.setProperty('--chat-viewport-height',(viewport?.height||view.innerHeight)+'px');
  }
  function staleQuote(quote){
   if(quote.contentVersion!==book().contentVersion)return true;
@@ -138,7 +121,7 @@ export function mountReaderAnnotations({document,api,getSession=()=>null,getSele
   const part=held.quote.parts[0];write(sourceLabel,part.layer==='original'?'original':part.layer==='literal'?'literal':'interpretive');
   sourceState.hidden=part.layer==='original';if(!sourceState.hidden)write(sourceState,part.translationStatus==='reviewed'?'reviewed':'draft');const stale=staleQuote(held.quote);sourceHistory.hidden=!stale;if(stale)write(sourceHistory,'savedSelection');
   const signature=JSON.stringify([held.id,held.messages,ownMessages(held)]);
-  if(signature!==lastMessages){lastMessages=signature;messages.replaceChildren();for(const row of ownMessages(held)){const section=node('section','reader-annotation-message'),attribution=node('span','reader-annotation-attribution'),body=node('p');write(attribution,'mine');body.textContent=row.text;section.dataset.origin='user';section.append(attribution,body);messages.append(section);}for(const message of held.messages){const section=node('section','reader-annotation-message'),attribution=node('span','reader-annotation-attribution');write(attribution,message.origin==='user'?'user':message.provenance.source==='site-agent'?'site':'external');const refs=(message.sourceRefs||[]).map(ref=>({...ref,bookId:book().bookId,url:'/read?book='+encodeURIComponent(book().bookId)+'&passage='+encodeURIComponent(ref.passageId)}));const body=message.origin==='ai'?renderChatMarkdown(document,message.body,{sourceRefs:refs,onInternalLink:(event,ref)=>{event.preventDefault();if(ref&&current())reader()?.goToPassage?.(ref.passageId);}}):node('p');if(message.origin==='user')body.textContent=message.body;section.dataset.origin=message.origin;section.append(attribution);if(message.provenance?.label&&!['External Agent','Leafhour reading agent'].includes(message.provenance.label)){const agent=node('span','reader-annotation-agent');agent.textContent=message.provenance.label;section.append(agent);}section.append(body);messages.append(section);}}
+  if(signature!==lastMessages){lastMessages=signature;messages.replaceChildren();for(const row of ownMessages(held)){const section=node('section','reader-annotation-message'),attribution=node('span','reader-annotation-attribution'),body=node('p');write(attribution,'mine');body.textContent=row.text;section.dataset.origin='user';section.append(attribution,body);messages.append(section);}for(const message of held.messages){const section=node('section','reader-annotation-message'),attribution=node('span','reader-annotation-attribution');write(attribution,message.origin==='user'?'user':message.provenance.source==='site-agent'?'site':'external');const refs=(message.sourceRefs||[]).map(ref=>({...ref,bookId:book().bookId,url:'/read?book='+encodeURIComponent(book().bookId)+'&passage='+encodeURIComponent(ref.passageId)}));const body=message.origin==='ai'?renderChatMarkdown(document,message.body,{sourceRefs:refs,onInternalLink:(event,ref)=>{if(event.button>0||event.metaKey||event.ctrlKey||event.shiftKey||event.altKey)return;event.preventDefault();if(!ref||!current())return;const target=reader(),token=epoch,own=scope;hide({restoreFocus:false});const valid=()=>current(token,own)&&reader()===target;Promise.resolve(target?.goToPassage?.(ref.passageId,{validate:valid})).catch(()=>{if(valid())notice('loadFailed');});}}):node('p');if(message.origin==='user')body.textContent=message.body;section.dataset.origin=message.origin;section.append(attribution);if(message.provenance?.label&&!['External Agent','Leafhour reading agent'].includes(message.provenance.label)){const agent=node('span','reader-annotation-agent');agent.textContent=message.provenance.label;section.append(agent);}section.append(body);messages.append(section);}}
   const pending=outbox?.current(),request=lastRequest();
   const key=ownKey(),pendingNote=noteDrafts.pending(key);if(noteDrafts.reconcile(key,getRecords()?.comments||[])){if(area.value===pendingNote.text&&!composing){area.value=noteDrafts.text(key);saveDraft();}else if(composing)noteDrafts.edit(key,area.value);persistOwn();}
   saveNote.disabled=noteBusy||stale||!area.value.trim()&&!noteDrafts.pending(key);send.hidden=held.markOnly===true;explain.hidden=!!pending||request?.status==='running';explain.disabled=stale||busy||noteBusy||!allowsAi(held.quote);
@@ -159,12 +142,12 @@ export function mountReaderAnnotations({document,api,getSession=()=>null,getSele
   if(!area.value)area.value=noteDrafts.text(ownKey());
   view.getSelection?.()?.removeAllRanges();reader()?.dismissTools?.({preserveSelection:true});
   opener=origin||opener;selected.textContent=held.quote.parts.map(part=>part.text).join('\n\n');
-  margins.reveal();margins.select(id);card.hidden=false;render();place();if(opening&&!editingElsewhere)close.focus({preventScroll:true});
+  margins.reveal();margins.select(id);card.hidden=false;render();place();workspace.setOpen(true);if(opening&&!editingElsewhere)close.focus({preventScroll:true});
  }
  const canReturnFocus=target=>!!target&&target.isConnected&&!target.disabled&&!target.hidden&&!target.closest('[hidden],[inert],[aria-hidden="true"]')&&target.getClientRects().length&&target.matches('button,a[href],input,textarea,select,summary,[tabindex]');
  function hide({restoreFocus=true}={}){
   if(card.hidden)return;saveDraft();const returnFocus=restoreFocus&&card.contains(document.activeElement),origin=opener;
-  card.hidden=true;margins.select(null);
+  card.hidden=true;workspace.setOpen(false);margins.select(null);
   if(returnFocus){const badge=document.querySelector('[data-annotation-thread="'+activeId+'"]'),target=card.closest('dialog[open]')?.querySelector('.library-chat-close')||(canReturnFocus(origin)?origin:canReturnFocus(badge)?badge:document.getElementById('book-page'));target?.focus({preventScroll:true});}
  }
  async function openHighlight(row,origin,{validate=()=>true}={}){
@@ -230,9 +213,9 @@ export function mountReaderAnnotations({document,api,getSession=()=>null,getSele
  listen(document,'reader:chat-layout',()=>{paintBadges();place();});
  listen(document,'reader:chapter',event=>{if(event.detail?.chapterId===thread()?.quote.chapterId){paintBadges();place();refresh();return;}epoch++;readEpoch++;busy=false;noteBusy=false;for(const key of Object.keys(noteDrafts.snapshot().entries))noteDrafts.finish(key);cancelling=false;hide({restoreFocus:false});refresh();});
  listen(document,'reader:ready',()=>refresh());
- listen(document,'reader:session-changed',()=>{saveDraft();epoch++;readEpoch++;clearTimeout(poll);for(const controller of controllers)controller.abort();card.hidden=true;card.remove();margins.reset();scope=null;margins.reset();outbox=null;archive=null;requests=[];refusal=null;markThread=null;noteBusy=false;busy=false;cancelling=false;delete document.body.dataset.annotationPane;delete document.body.dataset.annotationCompact;document.body.style.removeProperty('--annotation-visible-height');});
+ listen(document,'reader:session-changed',()=>{saveDraft();epoch++;readEpoch++;clearTimeout(poll);for(const controller of controllers)controller.abort();card.hidden=true;workspace.setOpen(false);card.remove();margins.reset();scope=null;margins.reset();outbox=null;archive=null;requests=[];refusal=null;markThread=null;noteBusy=false;busy=false;cancelling=false;delete document.body.dataset.annotationPane;delete document.body.dataset.annotationCompact;document.body.style.removeProperty('--annotation-visible-height');});
  listen(document,'reader:records-updated',()=>{paintBadges();refresh();});listen(view,'focus',()=>refresh());
- const offLocale=onUiLocaleChange(()=>{labels.refresh();paintRefusal();});
+ const offLocale=onUiLocaleChange(()=>{labels.refresh();backLabel();paintRefusal();});
  ensureScope();refresh();
- return {annotate,openHighlight,openThread:show,refresh,dispose(){if(disposed)return;saveDraft();disposed=true;epoch++;readEpoch++;clearTimeout(poll);for(const controller of controllers)controller.abort();for(const off of listeners)off();offLocale();labels.clear();card.remove();margins.dispose();delete document.body.dataset.annotationPane;delete document.body.dataset.annotationCompact;document.body.style.removeProperty('--annotation-visible-height');}};
+ return {annotate,openHighlight,openThread:show,refresh,dispose(){if(disposed)return;saveDraft();disposed=true;epoch++;readEpoch++;clearTimeout(poll);for(const controller of controllers)controller.abort();for(const off of listeners)off();offLocale();labels.clear();workspace.dispose();card.remove();margins.dispose();delete document.body.dataset.annotationPane;delete document.body.dataset.annotationCompact;document.body.style.removeProperty('--annotation-visible-height');}};
 }

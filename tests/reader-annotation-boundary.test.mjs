@@ -3,7 +3,15 @@ import assert from 'node:assert/strict';
 import {mkdtemp,readFile,rm} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
 import path from 'node:path';
-import {assertAnnotationBoundaryEdges,ANNOTATION_PUBLIC_FILES,assertRetainedBackupBoundaryEdges,RETAINED_BACKUP_PUBLIC_FILES,buildReaderWeb} from '../tools/build-reader-web.mjs';
+import {assertAnnotationBoundaryEdges,ANNOTATION_PUBLIC_FILES,assertRetainedBackupBoundaryEdges,RETAINED_BACKUP_PUBLIC_FILES,buildReaderWeb,syntacticImportEdgesMany} from '../tools/build-reader-web.mjs';
+
+test('annotation receives the full-page lifecycle from its owner without widening its raw dependency closure',async()=>{
+ const root=path.resolve(import.meta.dirname,'..'),files=['app/reader-highlights.mjs',...ANNOTATION_PUBLIC_FILES],edges=await syntacticImportEdgesMany(root,files);
+ const closure=assertAnnotationBoundaryEdges({edges,release:new Set(ANNOTATION_PUBLIC_FILES),sources:files});
+ assert.ok(!closure.includes('app/reader-chat-workspace.mjs'));
+ assert.ok(edges.some(edge=>edge.importer==='app/reader-highlights.mjs'&&edge.specifier==='./reader-chat-workspace.mjs'&&edge.kind==='import-statement'));
+ assert.throws(()=>assertAnnotationBoundaryEdges({edges:[...edges,{importer:'app/reader-annotations.mjs',specifier:'./reader-chat-workspace.mjs',kind:'import-statement'}],release:new Set(ANNOTATION_PUBLIC_FILES),sources:files}),/Non-public annotation dependency/);
+});
 
 test('annotation controller has one exact deferred owner and closed public dependency graph',()=>{
  const edge={importer:'app/reader-highlights.mjs',specifier:'./reader-annotations.mjs',kind:'dynamic-import'},release=new Set(ANNOTATION_PUBLIC_FILES);

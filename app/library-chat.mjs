@@ -4,6 +4,7 @@ import {createLibraryChatState,CHAT_TEXT_LIMIT,chatFailureUncertain} from './lib
 import {readChatScope} from './reading-chat-scope.mjs';
 import {trackActionFocus} from './action-focus.mjs';
 import {normalizeReadingChatQuote} from './reading-chat-quote.mjs';
+import {LIBRARY_CHAT_ID} from './library-chat-context.mjs';
 
 // GET-184: explicit owning-component labels for the injected AI trigger.
 export const CHAT_TEXT={get trigger(){return t('chat.entry');},get triggerLabel(){return t('open');}};
@@ -23,7 +24,7 @@ export const chatRetryMatchesDraft=view=>{
  return view.draft.trim()===old.text&&view.data?.context?.passageId===old.passageId&&view.data?.contentVersion===old.contentVersion&&JSON.stringify(view.quote??null)===JSON.stringify(old.quote??null)&&(view.data?.scope?.revision??0)===(old.scopeRevision??0);
 };
 
-export function mountLibraryChat({root,api,getSession,getBooks,getOwner,openAuth,getCurrentBook=()=>null,getCurrentPassage=()=>null,onNavigateToPassage=null,externalLauncher=null,positionLauncher=null,onViewChange=()=>{},dismissOnOutside=()=>true,uploadController=null,mountUpload=null,uploadOptions=null,uploadPlacement='inline',loadUpload=()=>import('./chat-book-upload.mjs'),renderMarkdown=null,loadMarkdown=()=>import('./library-chat-markdown.mjs')}){
+export function mountLibraryChat({root,api,getSession,getBooks,getOwner,openAuth,accountDefault=false,getCurrentBook=()=>null,getCurrentPassage=()=>null,onNavigateToPassage=null,externalLauncher=null,positionLauncher=null,onViewChange=()=>{},dismissOnOutside=()=>true,uploadController=null,mountUpload=null,uploadOptions=null,uploadPlacement='inline',loadUpload=()=>import('./chat-book-upload.mjs'),renderMarkdown=null,loadMarkdown=()=>import('./library-chat-markdown.mjs')}){
   let markdownRenderer=renderMarkdown,decorations=renderMarkdown?.decorations,markdownLoad=null;
   const ensureMarkdown=()=>markdownRenderer&&decorations?Promise.resolve():markdownLoad||(markdownLoad=loadMarkdown().then(module=>{if(!disposed){markdownRenderer??=module.renderChatMarkdown;decorations=module.renderChatMarkdown.decorations;if(!decorations)throw Error('Missing chat presentation');}}).finally(()=>{markdownLoad=null;}));
   const state=createLibraryChatState({readQuoteHead:(owner,book)=>JSON.parse(localStorage.getItem(quoteHeadKey(owner,book))||'null'),writeQuoteHead:(owner,book,head)=>localStorage.setItem(quoteHeadKey(owner,book),JSON.stringify(head)),readQuoteAck:(owner,book,revision)=>JSON.parse(localStorage.getItem(quoteAckKey(owner,book,revision))||'null'),writeQuoteAck:(owner,book,revision,ack)=>localStorage.setItem(quoteAckKey(owner,book,revision),JSON.stringify(ack)),readDraft:(owner,book)=>localStorage.getItem(draftKey(owner,book))||'',writeDraft:(owner,book,text)=>{if(text)localStorage.setItem(draftKey(owner,book),text);else localStorage.removeItem(draftKey(owner,book));},readPending:(owner,book)=>JSON.parse(localStorage.getItem(pendingKey(owner,book))||'null'),writePending:(owner,book,record)=>{if(record)localStorage.setItem(pendingKey(owner,book),JSON.stringify(record));else localStorage.removeItem(pendingKey(owner,book));}});
@@ -46,9 +47,9 @@ export function mountLibraryChat({root,api,getSession,getBooks,getOwner,openAuth
   root.setAttribute('aria-modal','false');
   const frame=node('div','library-chat-frame'),header=node('header','library-chat-header');
   const heading=node('div','library-chat-heading'),title=ui('h2','','dg');title.id='library-chat-title';
-  const bookRow=node('div','library-chat-book-row'),bookLabel=ui('label','sr-only','rd'),chooser=node('select','library-chat-book-choice');chooser.id='library-chat-book';bookLabel.htmlFor=chooser.id;const singleBookTitle=node('p','library-chat-book-title');bookRow.append(bookLabel,chooser,singleBookTitle);heading.append(title,bookRow);
+  const bookRow=node('div','library-chat-book-row'),bookLabel=ui('label','sr-only','rd'),chooser=node('select','library-chat-book-choice');chooser.id='library-chat-book';bookLabel.htmlFor=chooser.id;uiAttr(chooser,'aria-label','chat.chooseBook');const singleBookTitle=node('p','library-chat-book-title');bookRow.append(bookLabel,chooser,singleBookTitle);heading.append(title,bookRow);
   const menu=node('details','library-chat-menu'),menuSummary=node('summary','','···');uiAttr(menuSummary,'aria-label','moreActions');const menuItems=node('div','library-chat-menu-items');menu.append(menuSummary,menuItems);
-  const closeButton=button('−','library-chat-close');uiAttr(closeButton,'aria-label','close');uiAttr(closeButton,'title','close');header.append(heading,menu,closeButton);
+  const closeButton=ui('button','library-chat-close','chat.back');closeButton.type='button';uiAttr(closeButton,'aria-label',accountDefault?'chat.backLibrary':'reader.shell.returnReading');uiAttr(closeButton,'title',accountDefault?'chat.backLibrary':'reader.shell.returnReading');header.append(closeButton,heading,menu);
   // GET-184: the default launcher is the monochrome Leafhour mark — no cartoon
   // character and therefore no character-motion hooks. An optional external
   // launcher configuration skips generated launcher DOM, cartoon motion, drag
@@ -103,7 +104,8 @@ export function mountLibraryChat({root,api,getSession,getBooks,getOwner,openAuth
   const uploadEnabled=!!uploadController||!!uploadOptions;
   let uploadView=null,uploadEpoch=0;
   const uploadAttach=uploadEnabled?ui('button','chat-book-attach','chat.importBook'):null;if(uploadAttach){uploadAttach.type='button';uiAttr(uploadAttach,'aria-label','nav.bring');uiAttr(uploadAttach,'title','nav.bring');uploadAttach.disabled=true;menuItems.insertBefore(uploadAttach,exportButton);}
-  const uploadConfig=()=>({root,attachment:uploadAttach,host:uploadHost,actionsHost:composerActions,controller:uploadController,api,getOwner:activeOwner,getSession,signedIn,openAuth,...uploadOptions,onSelect:bookId=>{if(choose(bookId)){render();void load();}}});
+  const handoffAuth=message=>{close({focus:false});openAuth(message);};
+  const uploadConfig=()=>({root,attachment:uploadAttach,host:uploadHost,actionsHost:composerActions,controller:uploadController,api,getOwner:activeOwner,getSession,signedIn,openAuth:handoffAuth,...uploadOptions,onSelect:bookId=>{if(choose(bookId)){render();void load();}}});
   if(uploadController&&mountUpload)uploadView=mountUpload(uploadConfig());
   if(uploadHistory&&uploadController){let known=new Set(uploadController.tasks().map(task=>task.id));listeners.push(uploadController.subscribe(tasks=>{uploadHistory.hidden=!tasks.length;if(root.open&&tasks.some(task=>!known.has(task.id)&&task.stage==='receiving')){menu.open=true;uploadHistory.open=true;}known=new Set(tasks.map(task=>task.id));}));}
   function addUpload(file){
@@ -116,10 +118,12 @@ export function mountLibraryChat({root,api,getSession,getBooks,getOwner,openAuth
 
   const books=()=>uploadView?.books?.(getBooks())||(Array.isArray(getBooks())?getBooks():[]);
   const currentBookId=()=>{const current=getCurrentBook();return typeof current==='string'?current:current?.bookId;};
+  const accountChat=()=>selectedBook===LIBRARY_CHAT_ID;
+  const chatEndpoint=(bookId=selectedBook)=>bookId===LIBRARY_CHAT_ID?'/api/library/chat':'/api/library/books/'+encodeURIComponent(bookId)+'/chat';
   function clearPoll(){if(pollTimer)clearTimeout(pollTimer);pollTimer=null;}
   function syncOwner(){
     const next=activeOwner();if(next===owner)return false;forgetFollowedQuote();
-    preferenceCheckbox.checked=false;peopleCheckbox.checked=false;uploadEpoch++;(uploadView?.controller||uploadController)?.syncOwner();owner=next;clearPoll();loadInFlight=null;pollCount=0;pollStarted=0;requestedPassage=null;historySignature='';selectedBook=books().some(book=>book.bookId===currentBookId())?currentBookId():books()[0]?.bookId||null;
+    preferenceCheckbox.checked=false;peopleCheckbox.checked=false;uploadEpoch++;(uploadView?.controller||uploadController)?.syncOwner();owner=next;clearPoll();loadInFlight=null;pollCount=0;pollStarted=0;requestedPassage=null;historySignature='';selectedBook=!accountDefault&&books().some(book=>book.bookId===currentBookId())?currentBookId():LIBRARY_CHAT_ID;
     state.reset();state.setContext(owner,selectedBook);requestedPassage=state.view().retry?.payload.passageId||state.view().quote?.parts[0].passageId||null;input.value='';context.open=false;return true;
   }
   function isCurrent(captured){if(disposed)return false;if(captured===activeOwner()&&captured===owner)return true;syncOwner();render();return false;}
@@ -127,7 +131,7 @@ export function mountLibraryChat({root,api,getSession,getBooks,getOwner,openAuth
   function finishSourceNavigation(){if(!root.classList.contains('reader-chat-workspace')||root.classList.contains('is-reader-chat-mobile'))close();}
   function sourceLink(id,passageId,bookId=selectedBook){const link=ui('a','library-chat-source-link',id);sourceHref(link,readUrl(bookId,passageId));live(link,'click',event=>{if(event.button>0||event.metaKey||event.ctrlKey||event.shiftKey||event.altKey)return;if(bookId===currentBookId()&&onNavigateToPassage?.(bookId,passageId)===true){event.preventDefault();finishSourceNavigation();}});return link;}
   function renderContext(view){
-    const item=view.data?.context;context.hidden=!item||!!view.quote;const signature=JSON.stringify([owner,selectedBook,item]);if(signature===contextSignature)return;contextSignature=signature;contextChapter.textContent=chapterTitle(item?.chapterTitle);
+    const item=accountChat()?null:view.data?.context;context.hidden=!item||!!view.quote;const signature=JSON.stringify([owner,selectedBook,item]);if(signature===contextSignature)return;contextSignature=signature;contextChapter.textContent=chapterTitle(item?.chapterTitle);
     if(!item){contextBody.replaceChildren();return;}
     decorations.renderContext({item,contextBody,sourceLink,node,ui,uiAttr,live});
   }
@@ -161,14 +165,15 @@ export function mountLibraryChat({root,api,getSession,getBooks,getOwner,openAuth
     const signature=JSON.stringify([owner,selectedBook,view.data?'ready':view.phase,view.turns,view.pending?.status,view.retry,view.data?.scope?.mode,signedIn(),books().length]);
     if(signature===historySignature)return;historySignature=signature;const nearBottom=messages.scrollHeight-messages.scrollTop-messages.clientHeight<90,scrollTop=messages.scrollTop;
     if(!signedIn()){
-      const empty=emptyState('prompt','h.sign');const login=ui('button','library-chat-send','sts');live(login,'click',()=>{close();openAuth();});empty.append(login);showEmpty(empty);return;
+      const empty=emptyState('prompt','h.sign');const login=ui('button','library-chat-send','sts');live(login,'click',()=>handoffAuth());empty.append(login);showEmpty(empty);return;
     }
     if(!selectedBook){const empty=emptyState(uploadEnabled?'portal.empty.bringFirst':'pickBook',uploadEnabled?'portal.empty.uploadHelp':'h.nb');empty.append(routeBack());showEmpty(empty);return;}
     if(view.phase==='loading'&&!view.data){const empty=emptyState('turningTo','s.load');empty.classList.add('is-loading');showEmpty(empty);return;}
     if(view.phase==='error'&&!view.data){showEmpty(emptyState('pageNotOpen','r.h'));return;}
     const displayTurns=[...view.turns];if(view.retry?.uncertain&&!displayTurns.some(turn=>turn.id===view.retry.payload.id))displayTurns.push({...view.retry.payload,origin:'user',status:'running',answer:null});
     if(!displayTurns.length){
-      const wide=confirmedScope(view)?.mode==='library',empty=emptyState(wide?'h.bk':'ex.fu',wide?'h.ch':'h.ck');
+      const wide=confirmedScope(view)?.mode==='library',empty=emptyState(accountChat()?'chat.greeting':wide?'h.bk':'ex.fu',accountChat()?'chat.greetingBody':wide?'h.ch':'h.ck');
+      if(accountChat()){const identity=node('span','library-chat-identity');identity.setAttribute('aria-hidden','true');empty.insertBefore(identity,empty.children[0]);}
       const suggestions=node('div','library-chat-suggestions');
       for(const id of ['ex.f','ex.c',wide?'ex.r':'ex.a']){
         // A new explicit click writes the CURRENT localized suggestion text;
@@ -225,8 +230,8 @@ export function mountLibraryChat({root,api,getSession,getBooks,getOwner,openAuth
   }
   function render(){
     applyFollowedQuote();
-    const view=currentView=state.view();const list=books(),visibleDraft=view.pending?'':view.draft;if(input.value!==visibleDraft)input.value=visibleDraft;
-    const listSignature=JSON.stringify(list.map(book=>[book.bookId,bookTitle(book)]));if(listSignature!==booksSignature){booksSignature=listSignature;chooser.replaceChildren(...list.map(book=>{const option=node('option','',bookTitle(book));option.value=book.bookId;return option;}));}chooser.value=selectedBook||'';chooser.hidden=list.length<2;singleBookTitle.hidden=list.length>1;singleBookTitle.textContent=bookTitle(list.find(book=>book.bookId===selectedBook));chooser.disabled=!!view.pending||!!view.retry?.uncertain||!!view.scopePending;bookRow.hidden=!signedIn()||!selectedBook;
+    const view=currentView=state.view();title.setAttribute('data-ui',accountChat()?'chat.companion':'dg');title.textContent=t(accountChat()?'chat.companion':'dg');const list=books(),visibleDraft=view.pending?'':view.draft;if(input.value!==visibleDraft)input.value=visibleDraft;
+    const listSignature=JSON.stringify(list.map(book=>[book.bookId,bookTitle(book)]));if(listSignature!==booksSignature){booksSignature=listSignature;const companion=ui('option','','chat.noBook');companion.value=LIBRARY_CHAT_ID;chooser.replaceChildren(companion,...list.map(book=>{const option=node('option','',bookTitle(book));option.value=book.bookId;return option;}));}chooser.value=selectedBook||'';chooser.hidden=!accountDefault&&list.length<2;singleBookTitle.hidden=!chooser.hidden;singleBookTitle.textContent=accountChat()?t('chat.companion'):bookTitle(list.find(book=>book.bookId===selectedBook));chooser.disabled=!!view.pending||!!view.retry?.uncertain||!!view.scopePending;bookRow.hidden=!signedIn()||!selectedBook;
     quoteChip.hidden=!view.quote;
     const nextQuoteSignature=JSON.stringify(view.quote);if(nextQuoteSignature!==quoteSignature){quoteSignature=nextQuoteSignature;quoteText.textContent=view.quote?.parts.map(part=>part.text).join('\n\n')||'';}
     quoteRemove.disabled=!view.canChangeQuote;quoteStale.hidden=!view.quoteStale;quoteLocal.hidden=!view.quoteLocalOnly;
@@ -235,15 +240,15 @@ export function mountLibraryChat({root,api,getSession,getBooks,getOwner,openAuth
     input.style.setProperty('height','auto');input.style.setProperty('height',Math.min(128,Math.max(36,input.scrollHeight||36))+'px');
     const length=view.draft.length;count.classList.toggle('is-over-limit',length>CHAT_TEXT_LIMIT);input.setAttribute('aria-invalid',String(length>CHAT_TEXT_LIMIT));
     if(length>=1800)countMsg.set(length>CHAT_TEXT_LIMIT?'chat.count.over':'chat.count.left',{count:length>CHAT_TEXT_LIMIT?length-CHAT_TEXT_LIMIT:CHAT_TEXT_LIMIT-length});else countMsg.clear();
-    peopleConsent.hidden=confirmedScope(view)?.mode!=='library';peopleCheckbox.disabled=peopleConsent.hidden||!!view.pending||!!view.retry?.uncertain||!!view.scopePending;if(peopleConsent.hidden)peopleCheckbox.checked=false;
-    preferenceCheckbox.disabled=!!view.pending||!!view.retry?.uncertain||!!view.scopePending;
+    peopleConsent.hidden=accountChat()||confirmedScope(view)?.mode!=='library';peopleCheckbox.disabled=peopleConsent.hidden||!!view.pending||!!view.retry?.uncertain||!!view.scopePending;if(peopleConsent.hidden)peopleCheckbox.checked=false;
+    preferenceConsent.hidden=accountChat();preferenceCheckbox.disabled=accountChat()||!!view.pending||!!view.retry?.uncertain||!!view.scopePending;if(accountChat())preferenceCheckbox.checked=false;
     input.disabled=!selectedBook||!!view.pending||!!view.retry?.uncertain;sendButton.disabled=!view.canSend||!confirmedScope(view);
     price.hidden=getSession()?.billing?.enabled!==true;price.textContent=price.hidden?'':creditActionLabel('conversation',getUiLocale());
     const retrying=chatRetryMatchesDraft(view);sendButton.textContent=retrying?'↻':'↑';uiAttr(sendButton,'aria-label',view.retry?.uncertain?'cont':retrying?'ta':'sd');
     if(launcher){launcher.classList.toggle('is-waiting',!!view.pending);uiAttr(launcher,'aria-label',root.open?'close':view.pending?'op':'open');}
     stopButton.hidden=!view.pending;stopButton.disabled=view.pending?.status==='stopping';
     refreshButton.hidden=!signedIn()||!selectedBook||(!view.loadError&&!view.retry?.uncertain&&!view.pending&&!view.scopeUnconfirmed&&!!confirmedScope(view)&&view.data?.available!==false);refreshButton.disabled=!!loadInFlight||view.pending?.status==='stopping';refreshButton.setAttribute('data-ui',view.pending||view.retry?.uncertain?'a.prog':'a.rel');refreshButton.textContent=t(refreshButton.getAttribute('data-ui'));exportButton.hidden=!view.turns.length;contextHint.setAttribute('data-ui',context.open?'x.cl':'x.op');contextHint.textContent=t(contextHint.getAttribute('data-ui'));
-    const scope=confirmedScope(view);uiAttr(input,'placeholder',scope?.mode==='library'?'h.bk':'h.cmp');scopeChoice.value=view.scopePending?.mode||scope?.mode||'book';scopeChoice.disabled=!scope||view.phase!=='ready'||!!view.scopePending||view.scopeUnconfirmed||!!view.pending||!!view.retry?.uncertain;
+    const scope=confirmedScope(view);uiAttr(input,'placeholder',accountChat()?'chat.askAnything':scope?.mode==='library'?'h.bk':'h.cmp');scopeChoice.value=view.scopePending?.mode||scope?.mode||'book';scopeChoice.disabled=accountChat()||!scope||view.phase!=='ready'||!!view.scopePending||view.scopeUnconfirmed||!!view.pending||!!view.retry?.uncertain;scopeRow.hidden=accountChat();scopeIndicator.hidden=accountChat();
     const scopeId=view.scopeUnconfirmed||!scope?'s.scope':scope.mode==='library'?'scope.library':'scope.currentBook';scopeIndicator.setAttribute('data-ui',scopeId);scopeIndicator.textContent=t(scopeId);scopeIndicator.disabled=scopeChoice.disabled;
     paintHint();
     if(!signedIn()||!selectedBook)statusMsg.clear();
@@ -264,7 +269,7 @@ export function mountLibraryChat({root,api,getSession,getBooks,getOwner,openAuth
     if(disposed)return;syncOwner();if(disposed||!signedIn()||!selectedBook){render();return;}if(loadInFlight)return loadInFlight;
     const wasPending=!!state.view().pending,captured=owner,ticket=state.beginLoad({passageId:requestedPassage}),bookId=selectedBook,passageId=requestedPassage;
     const promise=(async()=>{
-      try{const [data]=await Promise.all([Promise.resolve().then(()=>{if(!isCurrent(captured))return null;return api('/api/library/books/'+encodeURIComponent(bookId)+'/chat'+(passageId?'?passageId='+encodeURIComponent(passageId):''));}),ensureMarkdown()]);if(!isCurrent(captured))return;if(state.resolveLoad(ticket,data)){if(!requestedPassage)requestedPassage=data.context?.passageId||null;if(wasPending&&!state.view().pending)root.dispatchEvent(new Event('reading-preferences-changed'));}}
+      try{const [data]=await Promise.all([Promise.resolve().then(()=>{if(!isCurrent(captured))return null;return api(chatEndpoint(bookId)+(bookId!==LIBRARY_CHAT_ID&&passageId?'?passageId='+encodeURIComponent(passageId):''));}),ensureMarkdown()]);if(!isCurrent(captured))return;if(state.resolveLoad(ticket,data)){if(!requestedPassage)requestedPassage=data.context?.passageId||null;if(wasPending&&!state.view().pending)root.dispatchEvent(new Event('reading-preferences-changed'));}}
       catch(error){if(isCurrent(captured))state.rejectLoad(ticket,error);}
       finally{if(loadInFlight===promise)loadInFlight=null;if(isCurrent(captured)){render();if(state.view().pending&&(poll||root.open))schedulePoll();}}
     })();loadInFlight=promise;render();return promise;
@@ -273,12 +278,12 @@ export function mountLibraryChat({root,api,getSession,getBooks,getOwner,openAuth
   async function send(){
     if(disposed||syncOwner()||!confirmedScope(state.view())){render();return;}const request=state.beginSend({preferenceWrites:preferenceCheckbox.checked,peopleWrites:peopleCheckbox.checked});if(!request)return;preferenceCheckbox.checked=false;peopleCheckbox.checked=false;root.dispatchEvent(new Event('reading-chat-send'));clearPoll();pollCount=0;pollStarted=Date.now();const captured=owner,bookId=selectedBook;render();messages.scrollTop=messages.scrollHeight;void load({poll:true});
     const entry={id:request.payload.id,payload:request.payload,controller:new AbortController(),dispatched:getSession()?.billing?.enabled!==true};sending=entry;
-    try{const turn=await api('/api/library/books/'+encodeURIComponent(bookId)+'/chat',request.payload,{signal:entry.controller.signal,onDispatch:()=>{entry.dispatched=true;},onProgress:value=>{if(isCurrent(captured)&&state.resolveProgress(request.ticket,value))render();}});if(isCurrent(captured)&&state.resolveSend(request.ticket,turn)){render();schedulePoll();if(turn.status!=='running')root.dispatchEvent(new Event('reading-preferences-changed'));}}
+    try{const turn=await api(chatEndpoint(bookId),request.payload,{signal:entry.controller.signal,onDispatch:()=>{entry.dispatched=true;},onProgress:value=>{if(isCurrent(captured)&&state.resolveProgress(request.ticket,value))render();}});if(isCurrent(captured)&&state.resolveSend(request.ticket,turn)){render();schedulePoll();if(turn.status!=='running')root.dispatchEvent(new Event('reading-preferences-changed'));}}
     catch(error){if(!isCurrent(captured))return;const uncertain=chatFailureUncertain(error);if(state.rejectSend(request.ticket,error,{uncertain})){render();if(uncertain||error.status===412)await load();}}
     finally{if(sending===entry)sending=null;if(isCurrent(captured)){render();schedulePoll();}}
   }
   async function saveScope(){
-    if(disposed||syncOwner()){render();return;}const request=state.beginScopeChange(scopeChoice.value);if(!request){render();return;}
+    if(disposed||syncOwner()||accountChat()){render();return;}const request=state.beginScopeChange(scopeChoice.value);if(!request){render();return;}
     const captured=owner,bookId=selectedBook,focus=trackActionFocus(document,scopeChoice);render();
     try{const scope=await api('/api/library/books/'+encodeURIComponent(bookId)+'/chat/scope',request.payload);if(isCurrent(captured)&&bookId===selectedBook&&!state.resolveScopeChange(request.ticket,scope))await load();}
     catch(error){if(isCurrent(captured)&&bookId===selectedBook&&state.rejectScopeChange(request.ticket,error))await load();}
@@ -286,7 +291,7 @@ export function mountLibraryChat({root,api,getSession,getBooks,getOwner,openAuth
   }
   async function stop(){
     if(disposed)return;const ticket=state.beginCancel();if(!ticket)return;const focus=trackActionFocus(document,stopButton);clearPoll();const captured=owner,bookId=selectedBook;render();
-    try{const entry=sending?.id===ticket.id?sending:null;if(entry&&!entry.dispatched){entry.controller.abort();state.resolveCancel(ticket,{...entry.payload,status:'cancelled',answer:null});return;}const turn=await api('/api/library/books/'+encodeURIComponent(bookId)+'/chat/'+encodeURIComponent(ticket.id)+'/cancel',{});if(isCurrent(captured))state.resolveCancel(ticket,turn);}
+    try{const entry=sending?.id===ticket.id?sending:null;if(entry&&!entry.dispatched){entry.controller.abort();state.resolveCancel(ticket,{...entry.payload,status:'cancelled',answer:null});return;}const turn=await api(chatEndpoint(bookId)+'/'+encodeURIComponent(ticket.id)+'/cancel',{});if(isCurrent(captured))state.resolveCancel(ticket,turn);}
     catch(error){if(isCurrent(captured)){state.rejectCancel(ticket,error);render();await load();}}
     finally{if(isCurrent(captured)){render();if(root.open)focus.restore(!input.disabled&&!form.hidden?input:stopButton.hidden?refreshButton.hidden?closeButton:refreshButton:stopButton);else focus.stop();}else focus.stop();}
   }
@@ -298,8 +303,10 @@ export function mountLibraryChat({root,api,getSession,getBooks,getOwner,openAuth
     try{await navigator.clipboard.writeText(text);if(disposed)return;control.setAttribute('data-ui','cpd');control.textContent=t('cpd');}
     catch{if(disposed)return;const range=document.createRange();range.selectNodeContents(element);const selection=window.getSelection();selection.removeAllRanges();selection.addRange(range);control.setAttribute('data-ui','sel');control.textContent=t('sel');}
   }
-  function exportChat(){
-    const view=state.view();if(!view.turns.length)return;const data={kind:'marginalia-book-chat',schemaVersion:1,exportedAt:new Date().toISOString(),bookId:selectedBook,title:view.data?.title,contentVersion:view.data?.contentVersion,turns:view.turns.map(({partial,...turn})=>turn)};
+  async function exportChat(){
+    const view=state.view(),captured=owner,bookId=selectedBook;if(!view.turns.length)return;let data;
+    try{data=bookId===LIBRARY_CHAT_ID?await api('/api/library/chat/export'):{kind:'marginalia-book-chat',schemaVersion:1,exportedAt:new Date().toISOString(),bookId,title:view.data?.title,contentVersion:view.data?.contentVersion,turns:view.turns.map(({partial,...turn})=>turn)};}catch{if(isCurrent(captured))statusMsg.set('cs.loadFailed',null,true);return;}
+    if(!isCurrent(captured)||bookId!==selectedBook)return;
     const url=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:'application/json;charset=utf-8'})),link=node('a');link.href=url;link.download='Leafhour-对话-'+selectedBook+'.json';link.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
   }
   listen(launcher||trigger,'click',()=>root.open?close():controls.open());
@@ -352,8 +359,8 @@ export function mountLibraryChat({root,api,getSession,getBooks,getOwner,openAuth
       externalLauncher?.onOpen?.();
       targetMessageId=messageId||null;root.dispatchEvent(new Event('reading-chat-open'));
       syncOwner();if(uploadEnabled)void addUpload();const view=state.view(),canFollow=!view.draft&&!view.quote&&!view.pending&&!view.retry?.uncertain&&!view.scopePending;
-      const candidate=bookId||(canFollow?currentBookId():null)||selectedBook||books()[0]?.bookId||null,valid=books().some(book=>book.bookId===candidate)?candidate:books()[0]?.bookId||null;
-      const currentPassage=canFollow?(passageId||getCurrentPassage()||null):requestedPassage;
+      const candidate=bookId||(!accountDefault&&canFollow?currentBookId():null)||selectedBook||LIBRARY_CHAT_ID,valid=candidate===LIBRARY_CHAT_ID||books().some(book=>book.bookId===candidate)?candidate:LIBRARY_CHAT_ID;
+      const currentPassage=valid===LIBRARY_CHAT_ID?null:canFollow?(passageId||getCurrentPassage()||null):requestedPassage;
       if(!view.pending&&!view.retry?.uncertain&&(selectedBook!==valid||canFollow&&currentPassage!==requestedPassage))choose(valid,currentPassage);
       if(typeof draft==='string'&&draft.length<=2000&&!state.view().draft&&!state.view().pending&&!state.view().retry?.uncertain)state.setDraft(draft);
       if(!root.open){viewOpen=true;opener=document.activeElement;root.show();onViewChange(true);closeButton.focus();}(launcher||trigger)?.setAttribute('aria-expanded','true');focusComposer=!!messageId;render();pollCount=0;load();
@@ -376,7 +383,7 @@ export function mountLibraryChat({root,api,getSession,getBooks,getOwner,openAuth
     refresh:()=>root.open?load():Promise.resolve(),
     close,
     reset(){if(disposed)return;forgetFollowedQuote();clearPoll();loadInFlight=null;pollCount=0;pollStarted=0;owner=null;selectedBook=null;requestedPassage=null;historySignature='';state.reset();input.value='';context.open=false;render();},
-    update(){if(disposed)return;const changed=syncOwner();if(!books().some(book=>book.bookId===selectedBook)&&!state.view().pending)choose(books().find(book=>book.bookId===currentBookId())?.bookId||books()[0]?.bookId||null);render();if(root.open&&(changed||state.view().phase==='idle'))load();},
+    update(){if(disposed)return;const changed=syncOwner();if(!accountChat()&&!books().some(book=>book.bookId===selectedBook)&&!state.view().pending)choose(LIBRARY_CHAT_ID);render();if(root.open&&(changed||state.view().phase==='idle'))load();},
     updateLabels,
     dispose(){
       if(disposed)return;disposed=true;forgetFollowedQuote();sending?.controller.abort();uploadEpoch++;uploadView?.dispose();offLocale();unbind();for(const off of listeners.splice(0))off();if(viewOpen){viewOpen=false;onViewChange(false);}if(root.open)root.close();launcher?.remove();trigger?.remove();characterPosition?.dispose?.();clearPoll();loadInFlight=null;rowPaints.clear();links.clear();turnNodes.clear();

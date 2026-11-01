@@ -21,31 +21,37 @@ struct GlobalChatScreen: View {
                         }, send: { await tools.prepareConversation(cloud: model.cloud) })
                         .id(book.id)
                 } else {
-                    VStack(spacing: 20) {
-                        Image(systemName: "bubble.left.and.bubble.right").font(.system(size: 44, weight: .ultraLight)).foregroundStyle(Color.leafInk).accessibilityHidden(true)
-                        Text("和一本书聊聊").font(.title2.weight(.medium))
-                        Text(model.account == nil ? "登录自己的书房，把阅读中的问题和对话留在一起。" : "选一本书，继续已有对话，或从新的问题开始。")
-                            .font(.subheadline).foregroundStyle(.secondary).multilineTextAlignment(.center)
-                        Button(model.account == nil ? "登录书房" : "选择一本书") { if model.account == nil { login = true } else { choosing = true } }
-                            .buttonStyle(.borderedProminent).controlSize(.large)
-                            .accessibilityIdentifier("chat-choose-book")
-                    }.padding(32).frame(maxWidth: .infinity, maxHeight: .infinity)
-                        .navigationTitle("Chat")
+                    let tools = model.conversationTools(bookID: ReaderCloudTools.libraryChatID)
+                    ChatConversationView(tools: tools, cloud: model.cloud, title: "松鼠", bookTitle: "", source: "",
+                        localOnly: model.account == nil, isLibraryConversation: true, onSignIn: { login = true },
+                        load: {
+                            guard let owner = model.account?.id else { return }
+                            await tools.restoreConversationDraft(identity: ReaderCloudTools.libraryChatIdentity(ownerID: owner), library: model.library)
+                            await tools.loadLibraryConversation(ownerID: owner, cloud: model.cloud)
+                        }, send: {
+                            guard let owner = model.account?.id else { login = true; return }
+                            await tools.prepareLibraryConversation(ownerID: owner, cloud: model.cloud)
+                        })
                 }
             }.toolbar {
-                if book != nil {
-                    ToolbarItem(placement: .topBarLeading) {
-                        Button("切换书籍", systemImage: "books.vertical") { choosing = true }.labelStyle(.iconOnly).frame(minWidth: 44, minHeight: 44)
-                            .accessibilityIdentifier("chat-switch-book")
+                ToolbarItem(placement: .topBarLeading) {
+                    if book != nil {
+                        Button("和松鼠聊聊", systemImage: "chevron.left") { bookID = nil }
+                            .labelStyle(.iconOnly).frame(minWidth: 44, minHeight: 44).accessibilityIdentifier("chat-return-companion")
                     }
+                }
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button("选择对话的书", systemImage: "books.vertical") { if model.account == nil { login = true } else { choosing = true } }
+                        .labelStyle(.iconOnly).frame(minWidth: 44, minHeight: 44).accessibilityIdentifier("chat-switch-book")
                 }
             }
             .sheet(isPresented: $choosing) {
                 NavigationStack {
                     List {
+                        Button { bookID = nil; choosing = false } label: { Label("和松鼠聊聊", systemImage: "leaf") }.frame(minHeight: 44)
                         if model.syncing && model.cloudBooks.isEmpty { ProgressView("正在读取书房…") }
                         else if model.cloudBooks.isEmpty {
-                            ContentUnavailableView("书房里还没有书", systemImage: "books.vertical", description: Text("先在书房导入并同步一本书，再来继续聊。"))
+                            ContentUnavailableView("书房里还没有书", systemImage: "books.vertical", description: Text("可以直接和松鼠聊，之后再添加书籍。"))
                             if !model.syncStatus.isEmpty { Text(model.syncStatus).font(.footnote).foregroundStyle(.secondary) }
                             Button("重新读取书房") { Task { await model.synchronize() } }.frame(minHeight: 44)
                         }

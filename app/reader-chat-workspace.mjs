@@ -1,77 +1,96 @@
-// Reader-only layout ownership. UI strings are injected by the existing reader
-// owner so this module never creates another interface-locale runtime.
-const WIDTH_KEY='marginalia:ui:reader-chat-width';
-const clamp=(value,min,max)=>Math.max(min,Math.min(max,value));
-export function mountReaderChatWorkspace({root,document=globalThis.document,window=globalThis.window,storage,getReader=()=>null,labels={},initialWidth=400,storageKey=WIDTH_KEY}={}){
+// A full-page conversation keeps the mounted reader, its anchor and its drafts.
+// The history entry lets browser Back return to that same reading session.
+const scrollRestorationLeases=new WeakMap();
+export function mountReaderChatWorkspace({root,document=globalThis.document,window=globalThis.window,getReader=()=>null,onBack=()=>root?.close?.()}={}){
  const body=document?.body;
- if(!root?.classList||!body?.classList||!document.createElement||!window?.addEventListener)return {setOpen(){},setLabels(){},isMobile:()=>false,dispose(){}};
- let disposed=false,opened=false,preferred=initialWidth,drag=null,observer=null,scrollLock=null,layoutFrame=null,pendingLayout=null;
+ if(!root?.classList||!body?.classList||!window?.addEventListener)return {setOpen(){},setLabels(){},isMobile:()=>false,isFullPage:()=>false,dispose(){}};
+ let disposed=false,opened=false,observer=null,scrollLock=null,returnAnchor=null,restoreFrame=null,historyEntry=null,scrollRestoration=null,historyReturnPending=false,historyRevision=0;
  const removers=[],inert=new Map(),originalModal=root.getAttribute('aria-modal'),originalTab=root.getAttribute('tabindex');
- const originalWidth=root.style.getPropertyValue('--reader-chat-width');
- const originalBodyWidth=body.style.getPropertyValue('--reader-chat-width');
- function cancelLayout(){if(layoutFrame!==null)window.cancelAnimationFrame(layoutFrame);layoutFrame=null;pendingLayout=null;}
- function preserveLayout(){
-  if(!window.requestAnimationFrame)return;
-  const reader=getReader(),book=reader?.getBook?.();
-  if(!pendingLayout){const anchor=reader?.getAnchor?.();if(!anchor||!book)return;pendingLayout={reader,book,anchor,valid:reader.captureLayout?.()||(()=>true)};}
-  if(layoutFrame!==null)window.cancelAnimationFrame(layoutFrame);
-  layoutFrame=window.requestAnimationFrame(()=>{
-   const pending=pendingLayout;layoutFrame=null;pendingLayout=null;
-   if(disposed||!pending||getReader()!==pending.reader||pending.reader.getBook?.()!==pending.book||!pending.valid())return;
-   (pending.reader.restoreLayoutAnchor||pending.reader.restoreAnchor)?.call(pending.reader,pending.anchor);
-  });
- }
- try{storage??=window.localStorage;const saved=storage?.getItem(storageKey);if(typeof saved==='string'&&/^\d{3}$/.test(saved)&&Number(saved)>=320&&Number(saved)<=640)preferred=Number(saved);}catch{}
- const separator=document.createElement('div');separator.className='reader-chat-separator';separator.setAttribute('role','separator');separator.setAttribute('aria-orientation','vertical');separator.setAttribute('tabindex','0');root.prepend(separator);
+ const token='leafhour-chat-'+Math.random().toString(36).slice(2),historyKey='leafhourConversation';
  root.classList.add('reader-chat-workspace');
  const listen=(target,type,fn,options)=>{target.addEventListener(type,fn,options);removers.push(()=>target.removeEventListener(type,fn,options));};
- const mobile=()=>window.innerWidth<1100;
- const width=()=>clamp(preferred,320,Math.min(640,Math.max(320,window.innerWidth-640)));
- function restoreInert(){observer?.disconnect();observer=null;if(scrollLock){body.style.setProperty('overflow',scrollLock.overflow);scrollLock=null;}for(const [node,value]of inert)node.inert=value;inert.clear();}
+ function restoreInert(){
+  observer?.disconnect();observer=null;
+  if(scrollLock){body.style.setProperty('overflow',scrollLock.overflow);scrollLock=null;}
+  for(const [node,value]of inert)node.inert=value;inert.clear();
+ }
  function contain(){
   for(const [node,value]of inert)if(root.contains(node)){node.inert=value;inert.delete(node);}
   if(!scrollLock){scrollLock={overflow:body.style.getPropertyValue('overflow')};body.style.setProperty('overflow','hidden');}
   for(const node of body.children)if(node!==root&&!node.contains?.(root)&&!inert.has(node)){inert.set(node,node.inert);node.inert=true;}
   if(!observer&&window.MutationObserver){observer=new window.MutationObserver(contain);observer.observe(body,{childList:true});}
  }
- function paint(){
-  const narrow=opened&&mobile(),wide=opened&&!mobile();
-  if(body.classList.contains('has-reader-chat')!==wide||wide&&body.style.getPropertyValue('--reader-chat-width')!==width()+'px')preserveLayout();
-  body.classList.toggle('has-reader-chat',wide);body.style.setProperty('--reader-chat-width',wide?width()+'px':'0px');
-  root.classList.toggle('is-reader-chat-mobile',narrow);
-  separator.hidden=!wide;root.style.setProperty('--reader-chat-width',width()+'px');
-  separator.setAttribute('aria-valuemin','320');separator.setAttribute('aria-valuemax',String(Math.min(640,Math.max(320,window.innerWidth-640))));separator.setAttribute('aria-valuenow',String(width()));
-  if(narrow){document.dispatchEvent(new Event('reader:chat-layout'));contain();root.setAttribute('aria-modal','true');if(!root.contains(document.activeElement)){root.setAttribute('tabindex','-1');(root.querySelector('.library-chat-close')||root).focus({preventScroll:true});}}
-  else{restoreInert();root.setAttribute('aria-modal','false');}
-  if(!narrow)document.dispatchEvent(new Event('reader:chat-layout'));
+ function capture(){
+  const reader=getReader(),book=reader?.getBook?.(),anchor=reader?.getAnchor?.();
+  returnAnchor=book&&anchor?{reader,book,anchor,valid:reader.captureLayout?.()||(()=>true)}:null;
  }
- const save=()=>{try{storage?.setItem(storageKey,String(Math.round(preferred)));}catch{}};
- function resize(value,{persist=false}={}){preferred=clamp(Math.round(value),320,Math.min(640,Math.max(320,window.innerWidth-640)));paint();if(persist)save();}
- function endDrag(persist){const previous=drag;if(!previous)return;drag=null;root.classList.remove('is-resizing');if(persist)save();else resize(previous.width);if(separator.hasPointerCapture?.(previous.id))separator.releasePointerCapture(previous.id);}
- listen(separator,'keydown',event=>{
-  if(!opened||mobile()||event.altKey||event.ctrlKey||event.metaKey)return;const step=event.shiftKey?64:16,max=Math.min(640,window.innerWidth-640);
-  const next=({ArrowLeft:width()+step,ArrowRight:width()-step,Home:320,End:max})[event.key];if(next===undefined)return;event.preventDefault();resize(next,{persist:true});
+ function restore(){
+  const saved=returnAnchor;returnAnchor=null;
+  if(!saved)return;
+  const apply=()=>{restoreFrame=null;if(disposed||opened||getReader()!==saved.reader||saved.reader.getBook?.()!==saved.book||!saved.valid())return;(saved.reader.restoreLayoutAnchor||saved.reader.restoreAnchor)?.call(saved.reader,saved.anchor);};
+  if(window.requestAnimationFrame)restoreFrame=window.requestAnimationFrame(apply);else apply();
+ }
+ function pushHistory(){
+  if(!window.history?.pushState)return;
+  // Browser restoration happens after popstate and would overwrite a citation
+  // jump made while closing. The reader owns this one return, then gives it back.
+  try{
+   if(scrollRestoration===null){scrollRestoration=scrollRestorationLeases.get(window.history)||{previous:window.history.scrollRestoration,owners:new Set(),waiting:new Map(),pending:null};scrollRestoration.owners.add(token);scrollRestorationLeases.set(window.history,scrollRestoration);if('scrollRestoration' in window.history)window.history.scrollRestoration='manual';}
+   // A close traverses history asynchronously. Reopening waits for that return
+   // so its old popstate cannot close or duplicate the new destination.
+   if(scrollRestoration.pending){scrollRestoration.waiting.set(token,()=>{if(opened&&!disposed)pushHistory();});return;}
+   const previous=window.history.state;historyEntry={...(previous&&typeof previous==='object'?previous:{}),[historyKey]:token};window.history.pushState(historyEntry,'');
+  }catch{historyEntry=null;releaseScrollRestoration();}
+ }
+ function releaseScrollRestoration(){
+  if(scrollRestoration===null)return;
+  const lease=scrollRestoration;scrollRestoration=null;lease.owners.delete(token);lease.waiting.delete(token);
+  if(!lease.owners.size){if(lease.previous!==undefined)window.history.scrollRestoration=lease.previous;scrollRestorationLeases.delete(window.history);}
+ }
+ function finishHistoryReturn(){
+  const revision=historyRevision;
+  if(!opened&&!historyReturnPending&&scrollRestoration!==null)(window.setTimeout||setTimeout)(()=>{if(!opened&&!historyReturnPending&&revision===historyRevision)releaseScrollRestoration();},0);
+ }
+ function paint(){
+  root.classList.toggle('is-reader-chat-mobile',opened&&window.innerWidth<1100);
+  root.classList.toggle('is-reader-chat-fullpage',opened);
+  body.classList.toggle('has-fullpage-chat',opened);
+  if(opened){contain();root.setAttribute('aria-modal','true');}
+  else{restoreInert();root.setAttribute('aria-modal','false');}
+  document.dispatchEvent(new Event('reader:chat-layout'));
+ }
+ listen(window,'popstate',()=>{
+  const lease=scrollRestorationLeases.get(window.history);
+  if(lease?.pending){const finish=lease.pending;lease.pending=null;finish();const waiting=[...lease.waiting.values()];lease.waiting.clear();for(const start of waiting)start();return;}
+  if(opened&&historyEntry&&window.history?.state?.[historyKey]!==token){historyEntry=null;onBack();}finishHistoryReturn();
  });
- listen(separator,'pointerdown',event=>{if(!opened||mobile()||event.button!==0)return;event.preventDefault();endDrag(false);drag={id:event.pointerId,x:event.clientX,width:width()};separator.setPointerCapture(event.pointerId);separator.focus({preventScroll:true});root.classList.add('is-resizing');});
- listen(separator,'pointermove',event=>{if(drag?.id===event.pointerId)resize(drag.width+drag.x-event.clientX);});
- listen(separator,'pointerup',event=>{if(drag?.id===event.pointerId)endDrag(true);});
- listen(separator,'pointercancel',()=>endDrag(false));listen(separator,'lostpointercapture',()=>{if(drag)endDrag(false);});
+ listen(window,'resize',()=>{if(opened)paint();});
+ for(const name of ['reader:page','reader:jump','reader:chapter','reader:session-changed'])listen(document,name,()=>{returnAnchor=null;if(restoreFrame!==null)window.cancelAnimationFrame?.(restoreFrame);restoreFrame=null;});
  listen(root,'keydown',event=>{
-  if(!opened||!mobile()||event.key!=='Tab')return;
+  if(!opened||event.key!=='Tab')return;
   const nodes=[...root.querySelectorAll('button,input,textarea,select,summary,a[href],[tabindex]')].filter(node=>!node.disabled&&node.getAttribute('tabindex')!=='-1'&&!node.closest?.('[hidden],[inert]')&&node.getClientRects().length);
   const first=nodes[0]||root,last=nodes.at(-1)||root;
   if(!nodes.length||!root.contains(document.activeElement)||event.shiftKey&&document.activeElement===first||!event.shiftKey&&document.activeElement===last||document.activeElement===root){event.preventDefault();(event.shiftKey?last:first).focus({preventScroll:true});}
  });
- listen(window,'resize',()=>{if(opened){endDrag(false);paint();}});
- for(const name of ['reader:page','reader:jump','reader:chapter','reader:session-changed','wheel','touchstart'])listen(document,name,cancelLayout,{passive:true});
- listen(document,'pointerdown',event=>{if(!root.contains(event.target))cancelLayout();},true);
- listen(document,'keydown',event=>{if(!root.contains(event.target)&&['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','PageUp','PageDown','Home','End',' '].includes(event.key))cancelLayout();},true);
- function setLabels(next){labels=next||{};separator.setAttribute('aria-label',labels.resize||'Resize AI workspace');}
- setLabels(labels);
- return {setOpen(value){if(disposed||opened===!!value)return;endDrag(false);opened=!!value;paint();},setLabels,isMobile:()=>opened&&mobile(),dispose(){
-  if(disposed)return;disposed=true;cancelLayout();const pointer=drag?.id;drag=null;if(pointer!==undefined&&separator.hasPointerCapture?.(pointer))separator.releasePointerCapture(pointer);for(const remove of removers)remove();restoreInert();separator.remove();root.classList.remove('reader-chat-workspace','is-reader-chat-mobile','is-resizing');
-  body.classList.remove('has-reader-chat');if(originalBodyWidth)body.style.setProperty('--reader-chat-width',originalBodyWidth);else body.style.removeProperty('--reader-chat-width');
-  root.style.setProperty('--reader-chat-width',originalWidth);
-  for(const [name,value]of [['aria-modal',originalModal],['tabindex',originalTab]])if(value===null)root.removeAttribute(name);else root.setAttribute(name,value);
- }};
+ return {
+  setOpen(value){
+   if(disposed||opened===!!value)return;
+   opened=!!value;historyRevision++;
+   if(opened){if(restoreFrame!==null)window.cancelAnimationFrame?.(restoreFrame);restoreFrame=null;capture();pushHistory();}
+   paint();
+   if(!opened){
+    restore();scrollRestoration?.waiting.delete(token);
+    if(historyEntry&&window.history?.state?.[historyKey]===token){historyEntry=null;historyReturnPending=true;if(scrollRestoration)scrollRestoration.pending=()=>{historyReturnPending=false;finishHistoryReturn();};window.history.back();}
+    else{historyEntry=null;finishHistoryReturn();}
+   }
+  },
+  setLabels(){},isMobile:()=>opened,isFullPage:()=>opened,
+  dispose(){
+   if(disposed)return;disposed=true;if(restoreFrame!==null)window.cancelAnimationFrame?.(restoreFrame);
+   for(const remove of removers)remove();restoreInert();root.classList.remove('reader-chat-workspace','is-reader-chat-mobile','is-reader-chat-fullpage');body.classList.remove('has-fullpage-chat');
+   releaseScrollRestoration();
+   if(historyEntry&&window.history?.state?.[historyKey]===token){try{const state={...window.history.state};delete state[historyKey];window.history.replaceState(state,'');}catch{}}
+   for(const [name,value]of [['aria-modal',originalModal],['tabindex',originalTab]])if(value===null||value===undefined)root.removeAttribute?.(name);else root.setAttribute(name,value);
+  }
+ };
 }
