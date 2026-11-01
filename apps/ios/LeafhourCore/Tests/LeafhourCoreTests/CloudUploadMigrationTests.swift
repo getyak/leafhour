@@ -83,4 +83,95 @@ final class CloudUploadMigrationTests: XCTestCase {
         XCTAssertEqual(result.unresolvedCount, 0)
         XCTAssertEqual(result.state.notes.first?.anchor, ReadingAnchor(chapterID: "cloud-chapter", passageID: "remote-2"))
     }
+    func testDraftMigrationPreservesTranslationIdentitiesAlongsideOriginalAndReplaysWithoutDuplicates() {
+        let text = "Unique source paragraph for a translated draft."
+        let source = book([("local", text)], chapter: "local-chapter")
+        let target = book([("remote", "Before " + text + " After")], chapter: "cloud-chapter")
+        let anchor = ReadingAnchor(chapterID: "local-chapter", passageID: "local", characterOffset: 7)
+        let original = NoteDraft(anchor: anchor, quote: "source", body: "Original draft")
+        let literal = NoteDraft(anchor: anchor, quote: "译文选段", body: "Literal draft", quoteOrigin: "translation", quoteVariant: "literal", quoteOffset: 0)
+        let laterLiteral = NoteDraft(anchor: anchor, quote: "译文选段", body: "Later literal draft", quoteOrigin: "translation", quoteVariant: "literal", quoteOffset: 7)
+        let interpretive = NoteDraft(anchor: anchor, quote: "译文选段", body: "Interpretive draft", quoteOrigin: "translation", quoteVariant: "interpretive", quoteOffset: 0)
+        let drafts = [original, literal, laterLiteral, interpretive]
+        var state = ReaderState()
+        for draft in drafts { state.drafts[draft.id] = draft }
+        let sourceBefore = state
+
+        let once = CloudUploadMigration.remap(source: source, state: state, destination: target, destinationState: ReaderState())
+        XCTAssertEqual(once.unresolvedCount, 0)
+        XCTAssertEqual(once.state.drafts.count, 4, "The same source anchor can own distinct original, variant, and translation-offset drafts")
+        let mappedAnchor = ReadingAnchor(chapterID: "cloud-chapter", passageID: "remote", characterOffset: 14)
+        for draft in drafts {
+            let selection = SelectedQuote(anchor: mappedAnchor, text: draft.quote, origin: draft.quoteOrigin, variant: draft.quoteVariant, translationOffset: draft.quoteOffset)
+            let migrated = once.state.drafts[selection.id]
+            XCTAssertEqual(migrated?.anchor, mappedAnchor)
+            XCTAssertEqual(migrated?.quote, draft.quote)
+            XCTAssertEqual(migrated?.body, draft.body)
+            XCTAssertEqual(migrated?.quoteOrigin, draft.quoteOrigin)
+            XCTAssertEqual(migrated?.quoteVariant, draft.quoteVariant)
+            XCTAssertEqual(migrated?.quoteOffset, draft.quoteOffset)
+        }
+        XCTAssertEqual(once.state.drafts[mappedAnchor.key]?.body, "Original draft", "Source-only drafts keep the existing anchor-key contract")
+        let twice = CloudUploadMigration.remap(source: source, state: state, destination: target, destinationState: once.state)
+        XCTAssertEqual(twice.state, once.state)
+        XCTAssertEqual(twice.unresolvedCount, 0)
+        XCTAssertEqual(state, sourceBefore)
+    }
+
+    func testDraftMigrationPreservesConflictingDestinationTranslationAndReportsUnresolved() {
+        let text = "Unique source paragraph"
+        let source = book([("local", text)], chapter: "local-chapter")
+        let target = book([("remote", text)], chapter: "cloud-chapter")
+        let sourceAnchor = ReadingAnchor(chapterID: "local-chapter", passageID: "local", characterOffset: 2)
+        let targetAnchor = ReadingAnchor(chapterID: "cloud-chapter", passageID: "remote", characterOffset: 2)
+        let incoming = NoteDraft(anchor: sourceAnchor, quote: "已选译文", body: "Source unfinished text", quoteOrigin: "translation", quoteVariant: "interpretive", quoteOffset: 4)
+        let existing = NoteDraft(anchor: targetAnchor, quote: "已选译文", body: "Newer destination text", quoteOrigin: "translation", quoteVariant: "interpretive", quoteOffset: 4)
+        var state = ReaderState(); state.drafts[incoming.id] = incoming
+        var destination = ReaderState(); destination.drafts[existing.id] = existing
+        let sourceBefore = state, destinationBefore = destination
+
+        let once = CloudUploadMigration.remap(source: source, state: state, destination: target, destinationState: destination)
+        XCTAssertEqual(once.unresolvedCount, 1)
+        XCTAssertEqual(once.state, destinationBefore)
+        XCTAssertNil(once.state.drafts[targetAnchor.key], "A conflicting translation must not also become an original-layer draft")
+        let twice = CloudUploadMigration.remap(source: source, state: state, destination: target, destinationState: once.state)
+        XCTAssertEqual(twice.unresolvedCount, 1)
+        XCTAssertEqual(twice.state, destinationBefore)
+        XCTAssertEqual(state, sourceBefore)
+    }
+
+    func testTranslationDraftDoesNotUseItsDisplayedQuoteToGuessAChangedSourceAnchor() {
+        let text = "First sentence. Distinct selected quote. Last sentence."
+        let source = book([("local", text)], chapter: "local-chapter")
+        let target = book([("remote-1", "First sentence."), ("remote-2", "Distinct selected quote."), ("remote-3", "Last sentence.")], chapter: "cloud-chapter")
+        let anchor = ReadingAnchor(chapterID: "local-chapter", passageID: "local", characterOffset: 16)
+        // A translation may happen to contain source words. That coincidence is
+        // not proof that its display offset belongs to the reparsed paragraph.
+        let translated = NoteDraft(anchor: anchor, quote: "Distinct selected quote.", body: "Translated selection draft", quoteOrigin: "translation", quoteVariant: "literal", quoteOffset: 6)
+        let original = NoteDraft(anchor: anchor, quote: "Distinct selected quote.", body: "Original selection draft")
+        var state = ReaderState(); state.drafts[translated.id] = translated; state.drafts[original.id] = original
+        let sourceBefore = state
+
+        let result = CloudUploadMigration.remap(source: source, state: state, destination: target, destinationState: ReaderState())
+        XCTAssertEqual(result.unresolvedCount, 1)
+        XCTAssertEqual(result.state.drafts.count, 1)
+        let mappedAnchor = ReadingAnchor(chapterID: "cloud-chapter", passageID: "remote-2")
+        XCTAssertEqual(result.state.drafts[mappedAnchor.key]?.body, original.body, "Existing source-quote fallback remains supported")
+        XCTAssertNil(result.state.drafts[mappedAnchor.key]?.quoteOrigin)
+        XCTAssertEqual(state, sourceBefore, "The unresolved translated draft remains intact in the source book")
+    }
+
+    func testTranslationDraftWithAmbiguousWholeSourceRemainsUnresolved() {
+        let text = "Repeated source paragraph"
+        let source = book([("local", text)], chapter: "local-chapter")
+        let target = book([("remote-1", text), ("remote-2", text)], chapter: "cloud-chapter")
+        let anchor = ReadingAnchor(chapterID: "local-chapter", passageID: "local")
+        let draft = NoteDraft(anchor: anchor, quote: "原文之外的译文", body: "Keep in the original", quoteOrigin: "translation", quoteVariant: "literal", quoteOffset: 3)
+        var state = ReaderState(); state.drafts[draft.id] = draft
+        let sourceBefore = state
+        let result = CloudUploadMigration.remap(source: source, state: state, destination: target, destinationState: ReaderState())
+        XCTAssertEqual(result.unresolvedCount, 1)
+        XCTAssertTrue(result.state.drafts.isEmpty)
+        XCTAssertEqual(state, sourceBefore)
+    }
 }

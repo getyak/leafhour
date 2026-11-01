@@ -29,13 +29,16 @@ public enum CloudUploadMigration {
             }
             return found
         }
-        func remap(_ anchor: ReadingAnchor, quote: String? = nil) -> ReadingAnchor? {
+        func remap(_ anchor: ReadingAnchor, quote: String? = nil, requireExactSource: Bool = false) -> ReadingAnchor? {
             guard let passage = source.chapters.first(where: { $0.id == anchor.chapterID })?.passages.first(where: { $0.id == anchor.passageID }),
                   anchor.characterOffset >= 0, anchor.characterOffset <= passage.text.unicodeScalars.count else { return nil }
             if var exact = unique(passage.text) {
                 exact.characterOffset += anchor.characterOffset
                 return exact
             }
+            // A translated selection is not evidence of a source-text match.
+            // Keep it unresolved unless its entire original passage maps uniquely.
+            guard !requireExactSource else { return nil }
             if let quote, (passage.text as NSString).range(of: quote, options: .literal).location != NSNotFound, let selected = unique(quote) { return selected }
             // Position-only references can survive paragraph splitting if a substantial
             // source context around the exact offset occurs once in the cloud copy.
@@ -57,12 +60,13 @@ public enum CloudUploadMigration {
             var mapped = note; mapped.anchor = anchor; result.notes.append(mapped)
         }
         for draft in state.drafts.values {
-            guard let anchor = remap(draft.anchor, quote: draft.quote) else { unresolved += 1; continue }
-            if let existing = result.drafts[anchor.key] {
-                if existing.body != draft.body || existing.quote != draft.quote { unresolved += 1 }
+            guard let anchor = remap(draft.anchor, quote: draft.quote, requireExactSource: draft.quoteOrigin == "translation") else { unresolved += 1; continue }
+            var mapped = draft; mapped.anchor = anchor
+            if let existing = result.drafts[mapped.id] {
+                if existing != mapped { unresolved += 1 }
                 continue
             }
-            result.drafts[anchor.key] = NoteDraft(anchor: anchor, quote: draft.quote, body: draft.body)
+            result.drafts[mapped.id] = mapped
         }
         if let original = state.anchor {
             if let mapped = remap(original) {
