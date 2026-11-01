@@ -185,8 +185,12 @@ public actor OfflineLibrary {
         _ = try bookDirectory(id)
         guard Disk.fm.fileExists(atPath: try bookDirectory(id).appendingPathComponent("manifest.json").path) else { throw LibraryError.invalid("此书不属于当前书房。") }
         let url = root.appendingPathComponent("states/" + id + ".json")
-        guard Disk.fm.fileExists(atPath: url.path) else { return ReaderState() }
-        do { return try Disk.read(ReaderState.self, from: url) } catch { throw LibraryError.invalid("阅读记录无法读取，已保留原文件。请先导出恢复，勿重置。") }
+        let exists = Disk.fm.fileExists(atPath: url.path)
+        var state: ReaderState
+        do { state = exists ? try Disk.read(ReaderState.self, from: url) : ReaderState() }
+        catch { throw LibraryError.invalid("阅读记录无法读取，已保留原文件。请先导出恢复，勿重置。") }
+        state.preferences = try readerPreferences(legacy: exists ? state.preferences : nil)
+        return state
     }
     public func saveState(_ state: ReaderState, bookID: String) throws {
         let directory = try bookDirectory(bookID)
@@ -203,7 +207,7 @@ public actor OfflineLibrary {
         if let anchor = state.anchor { try validate(anchor) }
         for (key, draft) in state.drafts { try validate(draft.anchor); guard key == draft.id else { throw LibraryError.invalid("草稿引用无效。") } }
         for note in state.notes { try validate(note.anchor) }
-        guard (16...36).contains(state.preferences.fontSize), (4...18).contains(state.preferences.lineSpacing), ["paper", "night", "system"].contains(state.preferences.theme) else { throw LibraryError.invalid("阅读设置超出支持范围。") }
+        try Self.validateReaderPreferences(state.preferences)
         try Disk.write(state, to: root.appendingPathComponent("states/" + bookID + ".json"))
     }
     public func lastOpenedBook() throws -> String? {

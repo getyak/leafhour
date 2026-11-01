@@ -9,6 +9,13 @@ public protocol ReaderStateStore: Sendable {
 
 extension OfflineLibrary: ReaderStateStore {}
 
+/// Preferences belong to this library profile, independent of a book's records.
+public protocol ReaderPreferencesStore: Sendable {
+    func saveReaderPreferences(_ preferences: ReaderPreferences) async throws
+}
+
+extension OfflineLibrary: ReaderPreferencesStore {}
+
 public struct ReaderSaveReceipt: Equatable, Sendable {
     public let revision: Int
     public let persistedRevision: Int
@@ -21,6 +28,8 @@ public final class ReaderSession: Identifiable {
     public let original: URL
     public let directory: URL
     private let library: any ReaderStateStore
+    @ObservationIgnored private let preferencesStore: (any ReaderPreferencesStore)?
+    @ObservationIgnored private var pendingPreferences: ReaderPreferences?
     public nonisolated let id: String
     public var state: ReaderState
     public var chapterIndex: Int
@@ -67,7 +76,7 @@ public final class ReaderSession: Identifiable {
     @ObservationIgnored private var noteSubmission: ReaderNote?
     @ObservationIgnored private var noteSubmissionWasPersisted = false
     @ObservationIgnored private var visibleAnchor: ReadingAnchor?
-    public init(book: LocalBook, state: ReaderState, original: URL, directory: URL, library: any ReaderStateStore) {
+    public init(book: LocalBook, state: ReaderState, original: URL, directory: URL, library: any ReaderStateStore, preferencesStore: (any ReaderPreferencesStore)? = nil) {
         var restored = state
         let initialChapter: Int
         if let anchor = state.anchor, let index = book.chapters.firstIndex(where: { $0.id == anchor.chapterID }) {
@@ -90,6 +99,7 @@ public final class ReaderSession: Identifiable {
             restored.anchor = start
         }
         self.id = book.id; self.book = book; self.state = restored; self.original = original; self.directory = directory; self.library = library
+        self.preferencesStore = preferencesStore ?? (library as? any ReaderPreferencesStore)
         persistedState = restored
         chapterIndex = initialChapter
     }
@@ -195,14 +205,21 @@ public final class ReaderSession: Identifiable {
         if state.anchor != currentAnchor { state.anchor = currentAnchor }
         activityNeedsSave = false
         revision += 1
-        let version = revision, snapshot = state, previous = pending
+        let version = revision, snapshot = state, previous = pending, sharedPreferences = pendingPreferences
         saving = true
         pending = Task {
             await previous?.value
             do {
+                if let sharedPreferences {
+                    try await preferencesStore?.saveReaderPreferences(sharedPreferences)
+                    if pendingPreferences == sharedPreferences { pendingPreferences = nil }
+                }
+                // Cloud state stores may schedule synchronization here. The
+                // shared authority must already expose this preference change.
                 try await library.saveState(snapshot, bookID: book.id)
-                persistedRevision = version; persistedState = snapshot
+                persistedState = snapshot
                 if let noteSubmission, snapshot.notes.contains(noteSubmission) { noteSubmissionWasPersisted = true }
+                persistedRevision = version
                 if version == revision { saving = false; saveError = nil; saveMessage = nil }
             } catch {
                 if version == revision {
@@ -241,7 +258,13 @@ public final class ReaderSession: Identifiable {
         state.anchor = anchor ?? ReadingAnchor(chapterID: chapter.id, passageID: chapter.passages.first?.id ?? "page", characterOffset: 0)
         navigationID = UUID(); selection = nil; save()
     }
-    public func changePreferences(_ value: ReaderPreferences) { state.preferences = value; save() }
+    public func changePreferences(_ value: ReaderPreferences) {
+        var normalized = value
+        normalized.speechSpeed = ReaderPreferences.normalizedSpeechSpeed(value.speechSpeed)
+        normalized.autoPageInterval = ReaderPreferences.normalizedAutoPageInterval(value.autoPageInterval)
+        guard normalized != state.preferences else { return }
+        state.preferences = normalized; pendingPreferences = normalized; save()
+    }
     public func draft(_ quote: SelectedQuote, text: String) {
         state.drafts[quote.id] = NoteDraft(anchor: quote.anchor, quote: quote.text, body: text, quoteOrigin: quote.origin, quoteVariant: quote.variant, quoteOffset: quote.translationOffset); save()
     }

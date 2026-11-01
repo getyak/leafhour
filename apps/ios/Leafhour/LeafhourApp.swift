@@ -577,7 +577,7 @@ final class LibraryModel {
             try await library.setLastOpenedBook(book.id)
             guard marker == contextID else { return }
             let store: any ReaderStateStore = verified.cloud != nil && sync != nil ? CloudReaderStateStore(library: library, sync: sync!) : library
-            reader = ReaderSession(book: verified, state: state, original: original, directory: folder, library: store)
+            reader = ReaderSession(book: verified, state: state, original: original, directory: folder, library: store, preferencesStore: library)
         } catch { if marker == contextID { message = "暂时无法打开这本书：\(error.localizedDescription) 可在书籍详情中校验或修复。" } }
     }
 
