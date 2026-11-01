@@ -91,6 +91,7 @@ final class LibraryModel {
     private var importTask: Task<Void, Never>?
     private var downloadTask: Task<Void, Never>?
     private var downloadOperationID: UUID?
+    private var didAttemptStartupResume = false
     private var didRestore = false
     private var didRestoreAccount = false
     private let persistCredential: Bool
@@ -173,9 +174,8 @@ final class LibraryModel {
             if let warning, message == nil { message = warning }
             if restore && !didRestore {
                 didRestore = true
-                // A cached last-opened ID is a restoration hint, not reading
-                // activity. Let the first account sync settle before continuation.
-                if account == nil, incomingBookRequest == nil, let id = opened, let book = books.first(where: { $0.id == id }) { await open(book) }
+                // All startup selection goes through restoreRecentReading after
+                // account restoration, including this device's offline library.
             }
         } catch { if marker == contextID, request == reloadID { message = error.localizedDescription } }
     }
@@ -551,6 +551,7 @@ final class LibraryModel {
         }
     }
     func open(_ book: LocalBook) async {
+        didAttemptStartupResume = true
         guard let library, openingBookID == nil else { return }
         let marker = contextID
         openingBookID = book.id
@@ -571,6 +572,7 @@ final class LibraryModel {
                 catch { /* Offline content remains readable; pending sync is recorded on disk. */ }
                 guard marker == contextID, await cloud.activeAccount()?.id == identity.ownerID else { return }
             }
+            syncIssues[book.id] = try await library.cloudMetadata(book.id)
             let state = try await library.state(book.id)
             guard marker == contextID else { return }
             let original = try await library.originalURL(book.id)
@@ -582,6 +584,28 @@ final class LibraryModel {
             let store: any ReaderStateStore = verified.cloud != nil && sync != nil ? CloudReaderStateStore(library: library, sync: sync!) : library
             reader = ReaderSession(book: verified, state: state, original: original, directory: folder, library: store, preferencesStore: library)
         } catch { if marker == contextID { message = "暂时无法打开这本书：\(error.localizedDescription) 可在书籍详情中校验或修复。" } }
+    }
+
+    /// Called once after the initial account shelf refresh, never on a return to
+    /// the shelf. Selection follows real reading activity rather than display order.
+    func restoreRecentReading() async {
+        guard !didAttemptStartupResume else { return }
+        let marker = contextID
+        if let account, let library {
+            do {
+                let shelf = try await cloud.accountShelf(ownerID: account.id)
+                guard marker == contextID, !Task.isCancelled, !didAttemptStartupResume else { return }
+                try await library.cacheCloudView("shelf", data: shelf.cacheData())
+                guard marker == contextID else { return }
+                accountShelf = shelf; cloudBooks = shelf.books
+            } catch { /* Retained account shelf and downloaded books work offline. */ }
+        }
+        guard marker == contextID, !Task.isCancelled, !didAttemptStartupResume else { return }
+        didAttemptStartupResume = true
+        guard reader == nil, openingBookID == nil, !busy, incomingBookRequest == nil,
+              let item = recentShelfItem else { return }
+        if let remote = item.cloud, item.local == nil || item.hasCloudUpdate { await download(remote) }
+        else if let book = item.local { await open(book) }
     }
 
     var recentShelfItem: LibraryShelfItem? {

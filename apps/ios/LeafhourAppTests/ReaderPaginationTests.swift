@@ -19,6 +19,23 @@ import LeafhourCore
 
 @MainActor private final class PDFPageEventLog { var indices: [Int] = []; var selectionChanges = 0; var selectionStrings: [String] = [] }
 
+@MainActor private final class ReaderFrameProbe: NSObject {
+    var intervals: [Double] = []
+    var displayPeriods: [Double] = []
+    private var previous: Double?
+    private var link: CADisplayLink?
+    func start() {
+        let link = CADisplayLink(target: self, selector: #selector(sample(_:)))
+        self.link = link; link.add(to: .main, forMode: .common)
+    }
+    @objc private func sample(_ link: CADisplayLink) {
+        if let previous { intervals.append(link.timestamp - previous) }
+        self.previous = link.timestamp
+        displayPeriods.append(link.targetTimestamp - link.timestamp)
+    }
+    func stop() { link?.invalidate(); link = nil }
+}
+
 /// GET-328: real TextKit/PDFKit fixtures, with no account or provider calls.
 /// These cases were written before the implementation; execution belongs to
 /// the shared native runner and has not been performed by the authoring agent.
@@ -112,19 +129,151 @@ final class ReaderPaginationTests: XCTestCase {
             let turning = view.window?.rootViewController?.children.contains {
                 ($0 as? UIPageViewController)?.transitionStyle == .pageCurl
             } ?? false
-            if !turning { return }
+            let covered = view.superview?.subviews.contains { $0.accessibilityIdentifier == "reader-page-transition-cover" } ?? false
+            if !turning && !covered { await drain(); return }
             try? await Task.sleep(for: .milliseconds(20))
         } while ProcessInfo.processInfo.systemUptime < deadline
         XCTFail("The temporary native curl did not finish and detach")
     }
-    private func text(_ session: ReaderSession, pageInsets: UIEdgeInsets = UIEdgeInsets(top: 64, left: 24, bottom: 24, right: 24), onPageChange: ((ReaderPagePosition) -> Void)? = nil) async -> (ReflowTextView, TextReadingView.Coordinator) {
+    private func text(_ session: ReaderSession, scene: UIWindowScene? = nil, pageInsets: UIEdgeInsets = UIEdgeInsets(top: 64, left: 24, bottom: 24, right: 24), onPageChange: ((ReaderPagePosition) -> Void)? = nil) async -> (ReflowTextView, TextReadingView.Coordinator) {
         let parent = TextReadingView(session: session, pageInsets: pageInsets, onNote: { _ in }, onSource: { _ in }, onWake: { _ in }, onReadingScroll: {}, onPageChange: onPageChange)
         let coordinator = parent.makeCoordinator(), view = ReflowTextView()
         view.isEditable = false; view.isSelectable = true; view.textContainer.lineFragmentPadding = 0
         view.contentInsetAdjustmentBehavior = .never; view.delegate = coordinator
-        coordinator.view = view; host(view); coordinator.updateContent(view); await drain()
+        coordinator.view = view; host(view, scene: scene); coordinator.updateContent(view); await drain()
         addTeardownBlock { await MainActor.run { coordinator.invalidate(); view.delegate = nil } }
         return (view, coordinator)
+    }
+
+    func testBehaviorPreferencesKeepTextLayoutSelectionAndCheckpointUsable() async throws {
+        let session = try await session()
+        session.state.preferences.viewMode = .parallel
+        let (view, coordinator) = await text(session)
+        let builds = coordinator.contentBuildCount, pages = coordinator.paginationBuildCount
+        let offset = view.contentOffset
+        view.selectedRange = NSRange(location: 20, length: 12)
+        var preferences = session.state.preferences
+        preferences.speechSpeed = 1.5; preferences.autoPageInterval = 60; preferences.theme = "night"
+        session.changePreferences(preferences)
+        coordinator.updateContent(view)
+        await drain()
+        XCTAssertEqual(coordinator.contentBuildCount, builds)
+        XCTAssertEqual(coordinator.paginationBuildCount, pages)
+        XCTAssertEqual(view.selectedRange, NSRange(location: 20, length: 12))
+        XCTAssertEqual(view.contentOffset, offset)
+        if let passage = session.chapter.passages.first {
+            session.updateTranslations([passage.id: ReadingTranslation(original: passage.text, literal: "保存的真实测试译文", interpretive: nil)])
+            coordinator.updateContent(view); await drain()
+            XCTAssertEqual(coordinator.contentBuildCount, builds)
+            XCTAssertEqual(view.selectedRange, NSRange(location: 20, length: 12))
+        }
+        view.selectedRange = NSRange(location: 0, length: 0)
+        coordinator.updateContent(view); await drain()
+        XCTAssertTrue(coordinator.checkpointVisible(), "The same layout identity must also validate position persistence")
+    }
+
+    func testFiftyTurnsKeepLayoutCachedAndRecordActualSimulatorTiming() async throws {
+        let source = (0..<80).map { "Witness paragraph \($0). " + String(repeating: "Readable unique source with 中文 and café. ", count: 8) }.joined(separator: "\n\n")
+        let session = try await session(source: source)
+        let scene = try XCTUnwrap(UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }.first { $0.activationState == .foregroundActive })
+        let (view, coordinator) = await text(session, scene: scene)
+        view.backgroundColor = .white; view.overrideUserInterfaceStyle = .light
+        let marker = UIView(frame: CGRect(x: 4, y: 4, width: 10, height: 10)); marker.backgroundColor = .green; marker.layer.zPosition = 10_000
+        view.superview?.addSubview(marker); defer { marker.removeFromSuperview() }
+        _ = image(of: view)
+        let builds = coordinator.contentBuildCount, paginationBuilds = coordinator.paginationBuildCount
+        let frameProbe = ReaderFrameProbe(); frameProbe.start(); defer { frameProbe.stop() }
+        var work: [Double] = [], blankSamples = 0
+        for index in 0..<50 {
+            let old = view.contentOffset.y
+            let started = ProcessInfo.processInfo.systemUptime
+            XCTAssertTrue(coordinator.turnPage(index % 2 == 0 ? .next : .previous))
+            work.append((ProcessInfo.processInfo.systemUptime - started) * 1000)
+            await settlePageTurn(view)
+            XCTAssertNotEqual(view.contentOffset.y, old)
+            XCTAssertTrue(coordinator.checkpointVisible())
+            if index % 10 == 0 {
+                let rendered = image(of: view)
+                if try inkPixels(in: CGRect(x: 24, y: 64, width: 300, height: 450), image: rendered) == 0 { blankSamples += 1 }
+            }
+        }
+        let sorted = work.sorted(), p95 = sorted[Int(Double(sorted.count - 1) * 0.95)]
+        let metrics: [String: Any] = ["platform": "shared iOS Simulator", "turns": work.count,
+            "reduceMotion": UIAccessibility.isReduceMotionEnabled,
+            "synchronousTurnMs": work, "p50Ms": sorted[sorted.count / 2], "p95Ms": p95,
+            "displayLinkIntervalsMs": frameProbe.intervals.map { $0 * 1000 },
+            "displayPeriodsMs": frameProbe.displayPeriods.map { $0 * 1000 },
+            "contentRebuilds": coordinator.contentBuildCount - builds,
+            "paginationRebuilds": coordinator.paginationBuildCount - paginationBuilds,
+            "blankSettledSamples": blankSamples, "physicalDeviceAcceptance": false]
+        let attachment = XCTAttachment(data: try JSONSerialization.data(withJSONObject: metrics, options: [.prettyPrinted, .sortedKeys]), uniformTypeIdentifier: "public.json")
+        attachment.name = "GET-356 measured pagination metrics"; attachment.lifetime = .keepAlways; add(attachment)
+        XCTAssertEqual(coordinator.contentBuildCount, builds); XCTAssertEqual(coordinator.paginationBuildCount, paginationBuilds)
+        XCTAssertEqual(blankSamples, 0)
+        XCTAssertLessThanOrEqual(p95, 50, "Shared-Simulator synchronous turn work exceeded the declared budget; inspect the retained timings")
+        let receipt = await session.flush(); XCTAssertTrue(receipt.succeeded)
+    }
+
+    func testCrossChapterCoverIsInstalledBeforeQueuedRestorationAndRemovedAfterward() async throws {
+        let session = try await session(chapters: 2, source: "A short uniquely identified source chapter.")
+        let scene = try XCTUnwrap(UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }.first { $0.activationState == .foregroundActive })
+        let (view, coordinator) = await text(session, scene: scene)
+        _ = image(of: view)
+        XCTAssertTrue(coordinator.turnPage(.next))
+        XCTAssertEqual(session.chapterIndex, 1)
+        let cover = view.superview?.subviews.first { $0.accessibilityIdentifier == "reader-page-transition-cover" }
+        XCTAssertNotNil(cover, "Cover must exist synchronously, before a run-loop turn can reveal the new unpositioned text")
+        XCTAssertTrue(cover?.isOpaque == true); XCTAssertFalse(cover?.subviews.isEmpty ?? true)
+        await settlePageTurn(view)
+        XCTAssertFalse(view.superview?.subviews.contains { $0.accessibilityIdentifier == "reader-page-transition-cover" } ?? true)
+        XCTAssertTrue(coordinator.checkpointVisible())
+    }
+
+    func testManualTouchPreservesAnimationAndCoalescesOneFollowingTurn() async throws {
+        let session = try await session()
+        let scene = try XCTUnwrap(UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }.first { $0.activationState == .foregroundActive })
+        let (view, coordinator) = await text(session, scene: scene)
+        _ = image(of: view)
+        let pages = ReaderTextPagination(textView: view, readingTop: 64, bottomInset: 24)
+        XCTAssertGreaterThan(pages.origins.count, 2)
+        XCTAssertTrue(coordinator.turnPage(.next))
+        coordinator.touchActivity(true)
+        let cover = view.superview?.subviews.first { $0.accessibilityIdentifier == "reader-page-transition-cover" }
+        if !UIAccessibility.isReduceMotionEnabled { XCTAssertNotNil(cover) }
+        XCTAssertTrue(coordinator.turnPage(.next))
+        XCTAssertTrue(coordinator.turnPage(.previous), "The latest pending direction replaces the one pending slot")
+        coordinator.touchActivity(false)
+        await settlePageTurn(view)
+        await settlePageTurn(view)
+        XCTAssertEqual(view.contentOffset.y, pages.origins[0], accuracy: 1)
+        XCTAssertTrue(coordinator.checkpointVisible())
+    }
+
+    func testBackgroundCancelsPendingManualTurnWithoutChangingCommittedPage() async throws {
+        let session = try await session()
+        let scene = try XCTUnwrap(UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }.first { $0.activationState == .foregroundActive })
+        let (view, coordinator) = await text(session, scene: scene); _ = image(of: view)
+        XCTAssertTrue(coordinator.turnPage(.next))
+        let committed = view.contentOffset.y
+        XCTAssertTrue(coordinator.turnPage(.next))
+        NotificationCenter.default.post(name: UIApplication.willResignActiveNotification, object: nil)
+        await settlePageTurn(view); await drain()
+        XCTAssertEqual(view.contentOffset.y, committed)
+        XCTAssertFalse(view.superview?.subviews.contains { $0.accessibilityIdentifier == "reader-page-transition-cover" } ?? true)
+    }
+
+    func testInitialRestorationNeverRevealsTheUnsavedFirstPage() async throws {
+        let session = try await session()
+        session.state.anchor = ReadingAnchor(chapterID: session.chapter.id, passageID: session.chapter.passages[0].id, characterOffset: 800)
+        let parent = TextReadingView(session: session, onNote: { _ in }, onSource: { _ in }, onWake: { _ in }, onReadingScroll: {})
+        let coordinator = parent.makeCoordinator(), view = ReflowTextView()
+        view.textContainer.lineFragmentPadding = 0; coordinator.view = view; host(view)
+        coordinator.updateContent(view)
+        XCTAssertEqual(view.alpha, 0, "The initial unpositioned text must not be visible while restoration is queued")
+        await drain()
+        XCTAssertEqual(view.alpha, 1); XCTAssertGreaterThan(view.contentOffset.y, 0)
+        XCTAssertEqual(session.currentAnchor?.characterOffset, 800)
+        coordinator.invalidate()
     }
 
     private func image(of view: UIView) -> UIImage {
@@ -712,8 +861,24 @@ final class ReaderPaginationTests: XCTestCase {
         throw NSError(domain: "ReaderPaginationPDFFixture", code: 1)
     }
 
+    func testPDFResizeCancelsItsCoverAndRetainsTheSettledSourcePage() async throws {
+        let session = try await session(pdf: true, source: "PDF resize witness")
+        let (view, coordinator) = try pdfHost(session)
+        coordinator.scheduleUpdate(view)
+        try await settlePDF(view, coordinator: coordinator, source: session.original, page: 0, mode: .paged)
+        XCTAssertTrue(coordinator.turnPage(.next))
+        await drain(); await drain()
+        let anchor = try XCTUnwrap(session.currentAnchor)
+        view.frame.size = CGSize(width: 360, height: 600)
+        coordinator.scheduleUpdate(view)
+        try await settlePDF(view, coordinator: coordinator, source: session.original, page: 1, mode: .paged)
+        XCTAssertEqual(session.currentAnchor, anchor)
+        XCTAssertFalse(view.superview?.subviews.contains { $0.accessibilityIdentifier == "reader-page-transition-cover" } ?? true)
+    }
+
     func testFittedPDFHorizontalGestureUsesTheNativeCurlAndPersistsItsActualPage() async throws {
         let fixture = try await importedSession(pdf: true, source: "PDF curl gesture witness"), session = fixture.session
+        var preferences = session.state.preferences; preferences.pageAnimation = .curl; session.changePreferences(preferences)
         let (view, coordinator) = try pdfHost(session)
         coordinator.scheduleUpdate(view)
         try await settlePDF(view, coordinator: coordinator, source: session.original, page: 0, mode: .paged)

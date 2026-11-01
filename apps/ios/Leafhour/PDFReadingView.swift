@@ -39,7 +39,7 @@ struct PDFReadingView: UIViewRepresentable {
         context.coordinator.edgeTap = ReaderEdgeTapHandler(view: view, blocked: { [weak view, weak coordinator = context.coordinator] in
             view?.currentSelection != nil || coordinator?.restoring != false
         }, onWake: { [weak coordinator = context.coordinator] edge in coordinator?.wake(edge) },
-        isPaged: { [weak coordinator = context.coordinator] in coordinator?.parent.session.state.preferences.navigationMode == .paged },
+        isPaged: { [weak coordinator = context.coordinator] in coordinator?.parent.session.state.preferences.navigationMode == .paged && coordinator?.parent.session.state.preferences.pageInput.allowsTap == true },
         onTurn: { [weak coordinator = context.coordinator] direction in _ = coordinator?.turnPage(direction) })
         context.coordinator.observe(view)
         let coordinator = context.coordinator
@@ -81,6 +81,7 @@ struct PDFReadingView: UIViewRepresentable {
         private var delayed: DispatchWorkItem?
         private var loadedSource: URL?
         private var renderedMode: ReaderNavigationMode?
+        private var renderedSize = CGSize.zero
         private var restorationGeneration = 0
         private var updateGeneration = 0
         private var pendingUpdate: DispatchWorkItem?
@@ -114,7 +115,7 @@ struct PDFReadingView: UIViewRepresentable {
             let session = parent.session, owner = ObjectIdentifier(session)
             let mode = session.state.preferences.navigationMode, source = session.original
             let navigation = session.navigationID, dismissal = parent.selectionDismissalID
-            if self.view !== view || renderedOwner != owner || navigationID != navigation || renderedMode != mode || loadedSource != source {
+            if self.view !== view || renderedOwner != owner || navigationID != navigation || renderedMode != mode || loadedSource != source || renderedSize != view.bounds.size {
                 cancelPageTurn()
                 speechDestination = nil
                 // Old native notifications must not write into the new session
@@ -158,15 +159,18 @@ struct PDFReadingView: UIViewRepresentable {
             if selectionDismissalID != parent.selectionDismissalID {
                 selectionDismissalID = parent.selectionDismissalID; view.clearSelection()
             }
+            let sizeChanged = renderedSize != view.bounds.size
+            if sizeChanged { cancelPageTurn() }
+            renderedSize = view.bounds.size
             let sourceChanged = loadedSource != session.original || view.document == nil
             let modeChanged = renderedMode != mode
-            let needsRestore = sourceChanged || modeChanged || navigationID != session.navigationID || renderedOwner != ObjectIdentifier(session) || forceScheduledRestore
+            let needsRestore = sourceChanged || modeChanged || sizeChanged || navigationID != session.navigationID || renderedOwner != ObjectIdentifier(session) || forceScheduledRestore
             renderedOwner = ObjectIdentifier(session); forceScheduledRestore = false
             // SwiftUI has already resized an externally padded paged PDF by
             // this point. Its old-mode geometry is no longer a source snapshot.
             let anchor = session.currentAnchor
             if needsRestore { restoring = true; restorationGeneration += 1; cancelPendingScroll(); userScrolled = false }
-            if sourceChanged { loadedSource = session.original; view.document = PDFDocument(url: session.original) }
+            if sourceChanged { view.alpha = 0; loadedSource = session.original; view.document = PDFDocument(url: session.original) }
             if modeChanged {
                 // singlePage and continuous can share a native scroll view.
                 // Remove only our old chrome insets before changing its layout.
@@ -213,7 +217,7 @@ struct PDFReadingView: UIViewRepresentable {
                         }
                         self.revealDestinationBelowChrome(page: page, sourceY: sourceY)
                     }
-                    self.restoring = false
+                    self.restoring = false; view.alpha = 1
                     self.updateSpeech(); self.reportReadingPosition()
                     self.selectionChanged()
                     // A layout change reveals the saved source; only actual
@@ -277,11 +281,14 @@ struct PDFReadingView: UIViewRepresentable {
                 if let previous = pageGestureView as? ReaderPDFView { previous.onReaderAccessibilityScroll = { _ in .blocked } }
                 pageTurn?.invalidate()
                 pageGestureView = view
-                pageTurn = ReaderPageTurnGestureHandler(view: view, blocked: { [weak self] in self?.canTurnFittedPage != true },
+                pageTurn = ReaderPageTurnGestureHandler(view: view, blocked: { [weak self] in
+                        guard let self else { return true }
+                        return self.isInvalidated || self.restoring || self.view?.currentSelection != nil || !self.pageIsFitted
+                    },
                     onTurn: { [weak self] direction in _ = self?.turnPage(direction) }, prioritizesScrollViewPans: true)
             }
             let paged = parent.session.state.preferences.navigationMode == .paged
-            pageTurn?.isEnabled = paged
+            pageTurn?.isEnabled = paged && parent.session.state.preferences.pageInput.allowsSwipe
             if let native = view as? ReaderPDFView {
                 native.onReaderAccessibilityScroll = { [weak self, weak view] direction in
                     guard let self, let view, self.view === view else { return .blocked }
@@ -407,13 +414,19 @@ struct PDFReadingView: UIViewRepresentable {
             guard let request = pendingPageRequest else { return }
             pendingPageRequest = nil; respond(to: request, with: outcome)
         }
+        private var queueGeneration = 0
+        private var queuedPage: (direction: ReaderPageDirection, owner: ObjectIdentifier, navigation: UUID)?
         private func cancelPageTurn() {
+            queuedPage = nil; queueGeneration += 1
             turnGeneration += 1; nativePageTurn = nil; automaticDestination = nil
             pageCurl.cancel(); finishPageRequest(.notReady)
         }
         func touchActivity(_ active: Bool) {
             guard !isInvalidated else { return }
-            if active { automaticDestination = nil; cancelPageTurn() }
+            if active {
+                automaticDestination = nil
+                if pendingPageRequest?.origin == .automatic { cancelPageTurn() }
+            }
             parent.onTouchActivity?(active)
         }
         fileprivate func wake(_ edge: ReaderChrome) {
@@ -437,7 +450,7 @@ struct PDFReadingView: UIViewRepresentable {
                 self.capture(force: true); self.reportPagePosition()
                 let theme = self.parent.session.state.preferences.theme
                 let paper: UIColor = theme == "paper" ? UIColor(Color.readingPaper) : theme == "night" ? UIColor(white: 0.12, alpha: 1) : .systemBackground
-                self.pageCurl.animate(from: turn.snapshot, over: view, direction: turn.direction, paper: paper) { [weak self] completed in
+                self.pageCurl.animate(from: turn.snapshot, over: view, direction: turn.direction, paper: paper, style: self.parent.session.state.preferences.pageAnimation) { [weak self] completed in
                     guard let self, !self.isInvalidated else { return }
                     guard completed, self.turnGeneration == generation, !self.restoring,
                           self.parent.session.navigationID == turn.navigation,
@@ -445,13 +458,29 @@ struct PDFReadingView: UIViewRepresentable {
                         self.finishPageRequest(.notReady); return
                     }
                     self.finishPageRequest(.settled(navigationID: self.parent.session.navigationID))
+                    self.drainQueuedPage()
                     if turn.origin == .user {
                         UIAccessibility.post(notification: .pageScrolled, argument: "第 \(turn.pageIndex + 1) 页，共 \(view.document?.pageCount ?? 0) 页")
                     }
                 }
             }
         }
+        private func drainQueuedPage() {
+            guard let queued = queuedPage else { return }
+            queuedPage = nil
+            let generation = queueGeneration
+            DispatchQueue.main.async { [weak self] in
+                guard let self, !self.isInvalidated, self.queueGeneration == generation, queued.owner == ObjectIdentifier(self.parent.session),
+                      queued.navigation == self.parent.session.navigationID, self.view?.currentSelection == nil else { return }
+                _ = self.turnPage(queued.direction)
+            }
+        }
         @discardableResult func turnPage(_ direction: ReaderPageDirection, origin: ReaderPageTurnOrigin = .user) -> Bool {
+            if origin == .user, !isInvalidated, !restoring, (pageCurl.isActive || nativePageTurn != nil),
+               view?.currentSelection == nil, pageIsFitted, parent.session.state.preferences.navigationMode == .paged {
+                queuedPage = (direction, ObjectIdentifier(parent.session), parent.session.navigationID)
+                return true
+            }
             guard canTurnFittedPage,
                   let view, view.currentSelection == nil, let document = view.document,
                   let page = view.currentPage else { return false }
@@ -459,8 +488,12 @@ struct PDFReadingView: UIViewRepresentable {
             guard next >= 0, next < document.pageCount else { return false }
             speechDestination = nil
             turnGeneration += 1
+            let snapshot = pageCurl.snapshot(from: view)
+            let theme = parent.session.state.preferences.theme
+            let paper: UIColor = theme == "paper" ? UIColor(Color.readingPaper) : theme == "night" ? UIColor(white: 0.12, alpha: 1) : .systemBackground
+            pageCurl.protect(snapshot, over: view, paper: paper)
             nativePageTurn = NativePageTurn(direction: direction, origin: origin, navigation: parent.session.navigationID,
-                owner: ObjectIdentifier(parent.session), pageIndex: next, snapshot: pageCurl.snapshot(from: view))
+                owner: ObjectIdentifier(parent.session), pageIndex: next, snapshot: snapshot)
             switch direction {
             case .next:
                 view.goToNextPage(nil)

@@ -321,8 +321,20 @@ struct ReaderPreferencesPanel: View {
                     Text("上下滚动").tag(ReaderNavigationMode.scroll)
                     Text("左右翻页").tag(ReaderNavigationMode.paged)
                 }.pickerStyle(.segmented).accessibilityIdentifier("reader-navigation-mode").padding(.vertical, 7)
+                if session.state.preferences.navigationMode == .paged {
+                    Picker("翻页动画", selection: binding(\.pageAnimation)) {
+                        Text("平移").tag(ReaderPageAnimation.slide)
+                        Text("仿真卷页").tag(ReaderPageAnimation.curl)
+                        Text("无动画").tag(ReaderPageAnimation.none)
+                    }.accessibilityIdentifier("reader-page-animation")
+                    Picker("翻页手势", selection: binding(\.pageInput)) {
+                        Text("轻点与滑动").tag(ReaderPageInput.tapAndSwipe)
+                        Text("仅滑动").tag(ReaderPageInput.swipeOnly)
+                        Text("仅轻点").tag(ReaderPageInput.tapOnly)
+                    }.accessibilityIdentifier("reader-page-input")
+                }
             } header: { Text("翻页") } footer: {
-                Text(session.state.preferences.navigationMode == .paged ? "左右轻点翻页，中间轻点唤回工具，长按可以选字。设置用于所有书籍。" : "上下滑动阅读，轻点唤回工具，长按可以选字。设置用于所有书籍。")
+                Text(session.state.preferences.navigationMode == .paged ? "按所选手势左右翻页，中间轻点唤回工具，长按可以选字。减弱动态效果时直接切页。设置用于所有书籍。" : "上下滑动阅读，轻点唤回工具，长按可以选字。设置用于所有书籍。")
             }
         }
         .scrollContentBackground(.hidden).background(Color(uiColor: .systemGroupedBackground))

@@ -24,4 +24,20 @@ final class ReaderNavigationPreferencesTests: XCTestCase {
         let data = Data(#"{"fontSize":22,"lineSpacing":9,"theme":"paper","navigationMode":"future-mode"}"#.utf8)
         XCTAssertEqual(try JSONDecoder().decode(ReaderPreferences.self, from: data).navigationMode, .paged)
     }
+    func testPagePresentationDefaultsAndFutureValuesKeepReadingState() throws {
+        for json in ["{}", #"{"pageAnimation":"future","pageInput":"future"}"#] {
+            let value = try JSONDecoder().decode(ReaderPreferences.self, from: Data(json.utf8))
+            XCTAssertEqual(value.pageAnimation, .slide)
+            XCTAssertEqual(value.pageInput, .tapAndSwipe)
+        }
+        for animation in ReaderPageAnimation.allCases {
+            for input in ReaderPageInput.allCases {
+                var state = ReaderState(); state.preferences.pageAnimation = animation; state.preferences.pageInput = input
+                XCTAssertEqual(try JSONDecoder().decode(ReaderState.self, from: JSONEncoder().encode(state)), state)
+                XCTAssertEqual(input.allowsTap, input != .swipeOnly)
+                XCTAssertEqual(input.allowsSwipe, input != .tapOnly)
+            }
+        }
+    }
+
 }

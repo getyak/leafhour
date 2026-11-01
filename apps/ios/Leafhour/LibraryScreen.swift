@@ -70,7 +70,7 @@ struct LibraryScreen: View {
     var body: some View {
         NavigationStack(path: $path) {
             Group {
-                if !didLoad && allItems.isEmpty {
+                if !didLoad {
                     ProgressView("正在打开书房…").frame(maxWidth: .infinity, maxHeight: .infinity)
                 } else if allItems.isEmpty && (model.accountShelf?.archivedBooks.isEmpty ?? true) && model.jobs.isEmpty {
                     emptyLibrary
@@ -125,7 +125,7 @@ struct LibraryScreen: View {
                 switch result { case .success(let url): model.importFile(url); case .failure(let error): model.message = error.localizedDescription }
             }
             .onOpenURL { model.receiveIncomingURL($0) }
-            .task { await model.reload(restore: true); await model.synchronize(); didLoad = true; await migrateCloudPinsIfNeeded() }
+            .task { await model.reload(restore: true); await model.restoreRecentReading(); didLoad = true; await model.synchronize(); await migrateCloudPinsIfNeeded() }
             .task(id: resumeLookupKey) { await loadResume() }
             .refreshable { await model.synchronize(); await model.reload() }
             .onChange(of: scenePhase) { _, phase in if phase == .active { Task { await model.synchronize() } } }
