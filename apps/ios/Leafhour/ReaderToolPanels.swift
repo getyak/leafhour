@@ -31,6 +31,7 @@ struct ReaderMorePanel: View {
     var reading: ReaderReadingContent? = nil
     let onJump: (Int, ReadingAnchor?) -> Void
     let onCompanion: () -> Void
+    var onShare: () -> Void = {}
     @State private var export: RecordsDocument?
     @State private var exporting = false
     var body: some View {
@@ -59,6 +60,8 @@ struct ReaderMorePanel: View {
                 }.disabled(session.book.cloud == nil || cloud == nil)
             }
             Section("带走自己的记录") {
+                Button(action: onShare) { Label("分享这本书", systemImage: "square.and.arrow.up").frame(minHeight: 44) }
+                    .accessibilityIdentifier("reader-share-book")
                 ShareLink(item: session.original) { Label("分享此设备上的书籍文件", systemImage: "square.and.arrow.up").frame(minHeight: 44) }
                 Button {
                     Task {

@@ -6,6 +6,8 @@ public struct CloudShelfBook: Codable, Identifiable, Equatable, Sendable {
     public var author: String
     public var contentVersion: String
     public var coverPath: String? = nil
+    /// Missing legacy metadata is intentionally not treated as public.
+    public var visibility: String? = nil
     public var addedAt: Date? = nil
     public var resume: CloudShelfResume? = nil
     public var journey: CloudShelfJourney? = nil
@@ -24,6 +26,7 @@ public struct CloudShelfBook: Codable, Identifiable, Equatable, Sendable {
             ? "/api/library/books/" + CloudJSON.component(id) + "/cover?v=" + CloudJSON.component(json["source"]["sha256"].string ?? version) : nil
         let addedAt = Self.date(json["addedAt"].string) ?? (json["visibility"].string == "private" ? Self.date(json["createdAt"].string) : nil)
         self.init(id: id, title: Self.title(json["title"]), author: json["author"].string ?? "", contentVersion: version, coverPath: json["coverImage"].string ?? legacyCover, addedAt: addedAt)
+        visibility = ["public", "private"].contains(json["visibility"].string ?? "") ? json["visibility"].string : nil
         resume = CloudShelfResume(json["resume"])
         journey = CloudShelfJourney(json["journey"])
         lastReadAt = Self.date(json["lastReadAt"].string)

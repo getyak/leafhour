@@ -1732,6 +1732,7 @@ export default Object.freeze({
   "gift.close": "Fold the letter",
   "gift.forYou": "This book is for you",
   "gift.accept": "Add to my shelf",
+  "gift.openApp": "Import in the iOS app",
   "gift.read": "Open this book",
   "gift.download": "Download reading package",
   "gift.readSample": "Read a few pages",

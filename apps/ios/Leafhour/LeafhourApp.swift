@@ -66,6 +66,9 @@ final class LibraryModel {
     var syncStatus = ""
     var account: CloudAccount?
     var reader: ReaderSession?
+    var incomingBookRequest: IncomingBookRequest?
+    var queuedBookRequests: [IncomingBookRequest] = []
+    var importAccountContext: UUID { contextID }
     var summary: CloudJSON = .null
     var notebookEntries: [CloudJSON] = []
     var notebookCursor: String?
@@ -172,7 +175,7 @@ final class LibraryModel {
                 didRestore = true
                 // A cached last-opened ID is a restoration hint, not reading
                 // activity. Let the first account sync settle before continuation.
-                if account == nil, let id = opened, let book = books.first(where: { $0.id == id }) { await open(book) }
+                if account == nil, incomingBookRequest == nil, let id = opened, let book = books.first(where: { $0.id == id }) { await open(book) }
             }
         } catch { if marker == contextID, request == reloadID { message = error.localizedDescription } }
     }

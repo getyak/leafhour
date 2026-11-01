@@ -219,7 +219,16 @@ private final class GET317Transport: URLProtocol, @unchecked Sendable {
             }
             return reply(value)
         }
+        if arguments.contains("--get352-gift"), path == "/api/book-gifts/" + String(repeating: "a", count: 43), method == "GET" {
+            guard request.value(forHTTPHeaderField: "Cookie") == nil, request.value(forHTTPHeaderField: "Authorization") == nil else {
+                return reply(["error": "A public gift preview must not carry account credentials"], status: 403)
+            }
+            return reply(["token": String(repeating: "a", count: 43), "bookId": "get317-cloud", "title": "GET352 合成赠书", "author": "Synthetic author", "sender": "合成验收读者", "message": "Only this explicit preview can offer importing the synthetic book.", "includeTranslations": false])
+        }
         guard request.value(forHTTPHeaderField: "X-Reader-Owner") == owner else { return reply(["error": "GET317 owner mismatch"], status: 403) }
+        if arguments.contains("--get352-gift"), path == "/api/book-gifts/" + String(repeating: "a", count: 43) + "/accept", method == "POST" {
+            return reply(["bookId": "get317-cloud", "alreadyOwned": false, "readUrl": "/read?book=get317-cloud"])
+        }
         if path == "/api/auth/identities", arguments.contains("--get317-native-auth") {
             return reply(["user": ["id": owner], "identities": [["provider": "email", "email": "get317-synthetic@example.invalid", "emailVerified": true]]])
         }

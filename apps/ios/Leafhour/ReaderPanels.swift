@@ -13,6 +13,15 @@ extension EnvironmentValues {
     }
 }
 
+private struct ReaderPanelSaveGate: ViewModifier {
+    let enabled: Bool
+    let blocked: Bool
+    @ViewBuilder func body(content: Content) -> some View {
+        if enabled { content.interactiveDismissDisabled(blocked) }
+        else { content }
+    }
+}
+
 struct ReaderPanelView: View {
     let panel: ReaderPanel
     @Bindable var session: ReaderSession
@@ -24,8 +33,10 @@ struct ReaderPanelView: View {
     var reading: ReaderReadingContent? = nil
     let onJump: (Int, ReadingAnchor?) -> Void
     let onCompanion: () -> Void
+    var onPresent: (ReaderPanel) -> Void = { _ in }
     @Environment(\.dismiss) private var dismiss
     private var isNoteEditor: Bool { if case .note = panel { return true }; return false }
+    private var isShare: Bool { if case .share = panel { return true }; return false }
     var body: some View {
         NavigationStack {
             Group {
@@ -36,8 +47,10 @@ struct ReaderPanelView: View {
                 case .preferences: ReaderPreferencesPanel(session: session, reading: reading)
                 case .appearance: ReaderAppearancePanel(session: session)
                 case .records: ReaderRecordsPanel(session: session, onJump: onJump)
-                case .tools: ReaderMorePanel(session: session, speech: speech, tools: tools, cloud: cloud, library: library, reading: reading, onJump: onJump, onCompanion: onCompanion)
+                case .tools: ReaderMorePanel(session: session, speech: speech, tools: tools, cloud: cloud, library: library, reading: reading, onJump: onJump, onCompanion: onCompanion,
+                    onShare: { onPresent(.share(nil)) })
                 case .listening: ReaderListeningPanel(session: session, speech: speech)
+                case .share(let quote): ReaderSharePanel(session: session, quote: quote, cloud: cloud)
                 case .translation: ReaderTranslationPanel(session: session, tools: tools, cloud: cloud)
                 case .introduction: ReaderIntroductionPanel(session: session, tools: tools, cloud: cloud)
                 case .conversation: ReaderConversationPanel(session: session, tools: tools, cloud: cloud)
@@ -57,12 +70,12 @@ struct ReaderPanelView: View {
                     }.navigationTitle("核对原文")
                 }
             }
-            .interactiveDismissDisabled(!panel.isCompanion && (session.saving || session.saveError != nil))
+            .modifier(ReaderPanelSaveGate(enabled: !isShare, blocked: !panel.isCompanion && (session.saving || session.saveError != nil)))
             .navigationBarTitleDisplayMode(.inline)
             .toolbarBackground(Color(uiColor: .systemBackground), for: .navigationBar)
             .toolbarBackground(.visible, for: .navigationBar)
             .toolbar {
-                if !isNoteEditor {
+                if !isNoteEditor && !isShare {
                     ToolbarItem(placement: .cancellationAction) {
                         Button(action: continueReading) {
                             Text("继续读").font(.body).frame(minHeight: 44).contentShape(Rectangle())

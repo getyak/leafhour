@@ -1731,6 +1731,7 @@ export default Object.freeze({
   "gift.close": "折起信笺",
   "gift.forYou": "送给你的这本书",
   "gift.accept": "放进我的书架",
+  "gift.openApp": "在 iOS App 中导入",
   "gift.read": "打开这本书",
   "gift.download": "下载阅读包",
   "gift.readSample": "先读几页",

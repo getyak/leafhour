@@ -36,7 +36,9 @@ public struct CloudRequestError: Error, LocalizedError, Sendable {
 /// Cookies are private to this client and never enter the shared browser cookie store.
 /// Every request captures its owner and generation before suspension.
 public actor CloudLibraryClient {
-    public let baseURL: URL
+    public nonisolated let baseURL: URL
+    /// Separate public transport retains custom URL loading protocols but never ambient account secrets.
+    let publicPreviewConfiguration: URLSessionConfiguration
     private let session: URLSession
     private var credential: CloudCredential?
     private var generation = UUID()
@@ -50,6 +52,10 @@ public actor CloudLibraryClient {
     private var nativePending: NativePending?
     public init(baseURL: URL = URL(string: "https://leafhour.com")!, credential: CloudCredential? = nil, configuration: URLSessionConfiguration = .ephemeral) {
         self.baseURL = baseURL; self.credential = credential
+        let preview = configuration.copy() as! URLSessionConfiguration
+        preview.httpShouldSetCookies = false; preview.httpCookieStorage = nil; preview.urlCredentialStorage = nil
+        preview.httpAdditionalHeaders = nil; preview.urlCache = nil
+        publicPreviewConfiguration = preview
         configuration.httpShouldSetCookies = false; configuration.httpCookieStorage = nil
         configuration.requestCachePolicy = .reloadIgnoringLocalCacheData
         configuration.timeoutIntervalForRequest = 45

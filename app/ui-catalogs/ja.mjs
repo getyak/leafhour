@@ -1731,6 +1731,7 @@ export default Object.freeze({
   "gift.close": "手紙をたたむ",
   "gift.forYou": "あなたに贈る一冊",
   "gift.accept": "自分の本棚に追加",
+  "gift.openApp": "iOS App に読み込む",
   "gift.read": "この本を開く",
   "gift.download": "読書パッケージを保存",
   "gift.readSample": "数ページ読んでみる",

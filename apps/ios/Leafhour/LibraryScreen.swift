@@ -124,7 +124,7 @@ struct LibraryScreen: View {
             .fileImporter(isPresented: $importing, allowedContentTypes: [.epub, .pdf, .plainText, UTType(filenameExtension: "md") ?? .plainText]) { result in
                 switch result { case .success(let url): model.importFile(url); case .failure(let error): model.message = error.localizedDescription }
             }
-            .onOpenURL { url in if url.isFileURL { model.importFile(url) } }
+            .onOpenURL { model.receiveIncomingURL($0) }
             .task { await model.reload(restore: true); await model.synchronize(); didLoad = true; await migrateCloudPinsIfNeeded() }
             .task(id: resumeLookupKey) { await loadResume() }
             .refreshable { await model.synchronize(); await model.reload() }
@@ -138,6 +138,11 @@ struct LibraryScreen: View {
             .sheet(isPresented: $info, onDismiss: { Task { await model.cancelNativeAuthentication() } }) { AccountScreen(model: model) }
             .sheet(isPresented: $pendingAdjustments) { AccountShelfPendingScreen(model: model) }
             .sheet(item: $sharing) { selection in ShelfSharePanel(selection: selection, model: model) }
+            .sheet(item: Binding(get: { model.reader == nil && !info && !pendingAdjustments && sharing == nil ? model.incomingBookRequest : nil }, set: {
+                if $0 == nil { model.dismissIncomingBookPresentation(presentationAvailable: model.reader == nil && !info && !pendingAdjustments && sharing == nil) }
+            }), onDismiss: { model.nextIncomingBook() }) { request in
+                IncomingBookImportPanel(request: request, model: model)
+            }
             .alert("书房提示", isPresented: Binding(get: { model.message != nil }, set: { if !$0 { model.message = nil } })) {
                 Button("知道了") { model.message = nil }
             } message: { Text(model.message ?? "") }

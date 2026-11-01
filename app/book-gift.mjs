@@ -5,6 +5,8 @@ import {createGiftWavesController,createGiftWaveScene} from './gift-waves.mjs';
 import {readGiftQuote} from './gift-quote.mjs';
 import {readGiftPreview,readGiftUiLocale} from './gift-preview.mjs';
 import {uiLocale,uiReady,t,getUiLocale,onUiLocaleChange,bindUi,uiHref} from './ui-locale.mjs';
+import {nativeGiftImportURL} from './gift-native-link.mjs';
+export {nativeGiftImportURL};
 
 export function mountGiftPreviewUiLocale({window:win=globalThis.window,location:loc=globalThis.location,runtime=uiLocale}={}){
   if(loc?.pathname!=='/gift-preview'||!win?.parent||win.parent===win)return null;
@@ -134,6 +136,8 @@ function present(data){
   $('gift-date').dateTime=data.createdAt;
   own('envelope-date',{render:()=>Number.isFinite(date.getTime())?new Intl.DateTimeFormat(getUiLocale(),{year:'numeric',month:'2-digit',day:'2-digit'}).format(date).replaceAll('/','.') :''});
   if(!preview)$('gift-download').href='/api/book-gifts/'+token+'/download';
+  const nativeLink=$('gift-open-app'),nativeURL=preview?null:nativeGiftImportURL(token);
+  if(nativeLink){nativeLink.hidden=!nativeURL;if(nativeURL)nativeLink.href=nativeURL;}
   $('gift-public-read').hidden=preview?!data.publicRead:!data.readUrl;
   if(preview){$('gift-public-read').href='#gift-main';$('gift-public-read').setAttribute('aria-disabled','true');}
   else if(data.readUrl)ownedLink('gift-public-read','/read?book='+encodeURIComponent(data.bookId));

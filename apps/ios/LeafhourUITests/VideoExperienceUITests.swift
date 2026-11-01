@@ -232,7 +232,7 @@ final class VideoExperienceUITests: XCTestCase {
         reader.coordinate(withNormalizedOffset: CGVector(dx: 0.35, dy: 0.30)).press(forDuration: 1.2)
         waitForSystemEditMenu(timeout: 5)
     }
-    private var nativeReadingActions: Set<String> { ["解释这句", "记笔记", "核对原文", "查看译文", "问陪读"] }
+    private var nativeReadingActions: Set<String> { ["解释这句", "记笔记", "核对原文", "查看译文", "问陪读", "分享摘录…"] }
     private var nativeEditingActions: Set<String> { ["Copy", "复制", "Paste", "粘贴", "Look Up", "查询", "Translate", "翻译", "Search Web", "搜索网页", "Share…", "共享…", "Select", "选择", "Select All", "全选", "AutoFill", "自动填充", "Writing Tools", "书写工具"] }
     private func visibleInApp(_ element: XCUIElement) -> Bool {
         element.exists && !element.frame.isEmpty && !element.frame.intersection(app.frame).isEmpty
@@ -2726,6 +2726,24 @@ final class VideoExperienceUITests: XCTestCase {
     }
 
 
+    func test102SelectedTextHasAnExplicitCardPreviewAndSystemImageSharing() {
+        launch(); openBook(textTitle)
+        selectOriginal(); systemEditAction(["分享摘录…"])
+        let image = app.buttons["book-share-image"]
+        scrollTo(image, in: app.scrollViews.firstMatch, direction: .up); require(image)
+        XCTAssertTrue(app.navigationBars["分享摘录"].exists)
+        XCTAssertFalse(app.buttons["book-share-create-gift"].exists, "Sharing a quote cannot silently publish the whole private book")
+        capture("GET352-selected-text-card-preview")
+        let visibleBars = app.navigationBars.allElementsBoundByIndex.filter { $0.isHittable && !$0.frame.isEmpty }
+        let navigationEvidence = app.navigationBars.allElementsBoundByIndex.map { "\($0.identifier) | \($0.label) | \($0.frame) | hittable=\($0.isHittable)" }.joined(separator: "\n")
+        let evidence = XCTAttachment(string: navigationEvidence); evidence.name = "GET352 visible share navigation"; evidence.lifetime = .keepAlways; add(evidence)
+        XCTAssertEqual(visibleBars.count, 1, "The share preview has one visible navigation bar; covered library bars remain in the app snapshot.\n" + navigationEvidence)
+        image.tap()
+        let activity = app.otherElements["ActivityListView"]
+        let opened = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in activity.exists || self.app.buttons["拷贝"].exists || self.app.buttons["复制"].exists || self.app.buttons["存储图像"].exists || self.app.buttons["Copy"].exists }, object: nil)
+        XCTAssertEqual(XCTWaiter.wait(for: [opened], timeout: 8), .completed)
+        capture("GET352-native-image-share-destinations")
+    }
 
     func test103ListeningSpeedSliderKeepsBothEndpointsAndDoesNotAutoplay() {
         launch(); openBook(textTitle); openTool("听书"); expandPanel()
@@ -2744,7 +2762,35 @@ final class VideoExperienceUITests: XCTestCase {
         XCTAssertTrue(app.buttons["reader-speech-play"].exists)
     }
 
+    func test104GiftLinkOpensTheAppForExplicitPreviewThenDownloadsTheReadingCopy() {
+        launch(["--get352-gift"])
+        app.open(URL(string: "leafhour://gift/" + String(repeating: "a", count: 43))!)
+        let confirm = app.buttons["shared-book-import-confirm"]
+        require(confirm, timeout: 15)
+        require(app.staticTexts["GET352 合成赠书"])
+        XCTAssertFalse(reader.exists, "Opening a gift URL must first preview rather than accept or download automatically")
+        capture("GET352-native-gift-import-preview")
+        confirm.tap()
+        require(reader, timeout: 25)
+        XCTAssertFalse(confirm.exists)
+        XCTAssertTrue((reader.value as? String)?.contains("GET317") == true, "The accepted native reading copy uses the domain service's real synthetic chapters")
+        capture("GET352-gift-imported-readable-copy")
+        coldRelaunch(); resumeReaderIfOffered(); require(reader, timeout: 20)
+        capture("GET352-gift-copy-cold-resume")
+    }
 
+    func test105AReadingLinkKeepsItsPreviewWhenLeavingAnAlreadyOpenBook() {
+        launch(); openBook(textTitle)
+        app.open(URL(string: "leafhour://read?book=get317-cloud")!)
+        let confirm = app.buttons["shared-book-import-confirm"]
+        require(confirm, timeout: 15)
+        XCTAssertFalse(reader.exists)
+        XCTAssertTrue(confirm.isEnabled)
+        capture("GET352-reading-link-after-open-book")
+        confirm.tap(); require(reader, timeout: 25)
+        XCTAssertFalse(confirm.exists)
+        capture("GET352-reading-link-opens-its-own-book")
+    }
 
     func test97RealSystemSpeechHighlightsTheSentenceAndFollowsAcrossChapters() {
         executionTimeAllowance = 120

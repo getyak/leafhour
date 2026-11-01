@@ -37,13 +37,14 @@ private struct ReaderChromeHeightKey: PreferenceKey {
     }
 }
 enum ReaderPanel: Identifiable {
-    case contents, search, preferences, appearance, records, tools, listening, translation, introduction, conversation, bookInformation, note(SelectedQuote), source(SelectedQuote), companion(SelectedQuote?)
+    case contents, search, preferences, appearance, records, tools, listening, translation, introduction, conversation, bookInformation, note(SelectedQuote), source(SelectedQuote), companion(SelectedQuote?), share(SelectedQuote?)
     var isCompanion: Bool { switch self { case .companion, .conversation: true; default: false } }
     var isNoteEditor: Bool { if case .note = self { true } else { false } }
     var id: String {
         switch self {
         case .contents: "contents"; case .search: "search"; case .preferences: "preferences"; case .records: "records"
         case .appearance: "appearance"; case .tools: "tools"; case .listening: "listening"; case .translation: "translation"
+        case .share(let quote): "share-" + (quote?.id ?? "book")
         case .introduction: "introduction"; case .conversation: "conversation"; case .bookInformation: "book-information"
         case .note(let quote): "note-" + quote.id; case .source(let quote): "source-" + quote.id
         case .companion(let quote): "companion-" + (quote?.id ?? "current")
@@ -122,6 +123,7 @@ struct ReaderScreen: View {
                 } else {
                     TextReadingView(session: session, pageInsets: pageInsets, selectionDismissalID: selectionDismissalID, onNote: { showNote($0) }, onSource: { present(.source($0)) }, onExplain: { showCompanion($0) }, onWake: wake, onReadingScroll: readingDidScroll,
                         onTranslate: { session.selection = $0; present(.translation) },
+                        onShare: { present(.share($0)) },
                         onSelectionChange: { quote, active in session.selection = quote; hasNativeTextSelection = active; if active { speech.userNavigated() } },
                         onPageChange: { pagePosition = $0 }, speechHighlight: speech.highlight, followsSpeech: speech.following && !speech.readerIsInteracting,
                         onReadingPosition: { speech.updateVisible($0) }, onTouchActivity: { speech.readerIsInteracting = $0 })
@@ -141,7 +143,13 @@ struct ReaderScreen: View {
                         }
                     Spacer()
                     if let quote = session.selection, session.book.kind == .pdf {
-                        HStack { Text("已选择原文").font(.footnote); Spacer(); Button("解释这句") { showCompanion(quote) }; Button("记笔记", systemImage: "square.and.pencil") { showNote(quote) }; Button("取消") { session.selection = nil; selectionDismissalID = UUID() } }.padding().background(.regularMaterial)
+                        HStack(spacing: 12) {
+                            Text("已选择原文").font(.footnote); Spacer(minLength: 4)
+                            Button("解释这句", systemImage: "text.bubble") { showCompanion(quote) }
+                            Button("分享摘录", systemImage: "square.and.arrow.up") { present(.share(quote)) }
+                            Button("记笔记", systemImage: "square.and.pencil") { showNote(quote) }
+                            Button("取消选择", systemImage: "xmark") { session.selection = nil; selectionDismissalID = UUID() }
+                        }.labelStyle(.iconOnly).buttonStyle(.borderless).controlSize(.large).padding().background(.regularMaterial)
                     }
                     ZStack(alignment: .bottom) {
                         VStack(spacing: layout.compact ? 0 : 8) {
@@ -193,7 +201,8 @@ struct ReaderScreen: View {
             hasNativeTextSelection = false; session.clearTransientSelection(); selectionDismissalID = UUID(); chrome = .asleep
         }) { destination in
             ReaderPanelView(panel: destination, session: session, systemColorScheme: systemColorScheme, speech: speech, tools: tools, cloud: cloud, library: library, reading: reading,
-                onJump: { index, anchor in speech.userNavigated(); session.go(to: index, anchor: anchor); panel = nil; session.setReadingVisible(scenePhase == .active); session.recordReadingInteraction() }, onCompanion: { showCompanion(currentQuote) })
+                onJump: { index, anchor in speech.userNavigated(); session.go(to: index, anchor: anchor); panel = nil; session.setReadingVisible(scenePhase == .active); session.recordReadingInteraction() }, onCompanion: { showCompanion(currentQuote) },
+                onPresent: present)
                 .modifier(ReaderPanelPresentation(isCompanion: destination.isCompanion, isNoteEditor: destination.isNoteEditor))
         }
         .alert(session.saveError == nil ? "阅读提示" : "阅读记录", isPresented: Binding(get: { session.message != nil || (session.noteEditorID == nil && session.saveMessage != nil) }, set: { if !$0 { session.message = nil; session.saveMessage = nil } })) {
