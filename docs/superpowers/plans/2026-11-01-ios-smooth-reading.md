@@ -17,20 +17,21 @@ Unknown/late network results; newer offline events; interrupted cross-chapter tr
 
 ### Task 1: Quiet opening
 
-- [ ] Add Core sync tests for newer remote, newer local, live reader and recoverable displaced positions.
-- [ ] Implement reconciliation at pull boundaries and one-shot startup selection after account shelf refresh, with account/navigation guards.
-- [ ] Verify Core and startup App tests, then commit.
+- [x] Add Core sync tests for newer remote, newer local, live reader and recoverable displaced positions.
+- [x] Implement reconciliation at pull boundaries and one-shot startup selection after account shelf refresh, with account/navigation guards.
+- [x] Verify Core and startup App tests, then commit.
 
 ### Task 2: Configurable transitions
 
-- [ ] Add persistent animation/input preferences with backward-compatible decoding and tests.
-- [ ] Implement lightweight slide/instant around existing native surface, preserve optional curl, and cover before any content mutation.
-- [ ] Keep manual animation intact under touch; coalesce one pending direction with stale-session guards.
-- [ ] Separate text-layout identity from behavior preferences; verify checkpointing, selection and both native readers, then commit each optimization.
+- [x] Add persistent animation/input preferences with backward-compatible decoding and tests.
+- [x] Implement lightweight slide/instant around existing native surface, preserve optional curl, and cover before any content mutation.
+- [x] Keep manual animation intact under touch; coalesce one pending direction with stale-session guards.
+- [x] Separate text-layout identity from behavior preferences; verify checkpointing, selection and both native readers, then commit each optimization.
 
 ### Task 3: Acceptance and delivery
 
-- [ ] Run Core and native App/unit/UI checks sequentially; measure 50 turns and transition coverage with unique witnesses.
-- [ ] Obtain independent review and fix confirmed high-risk findings.
-- [ ] Record actual results, update copy inventory as needed, push once, create linked PR, pass CI and merge normally.
+- [x] Run Core and native App/unit/UI checks sequentially; measure 50 turns and transition coverage with unique witnesses.
+- [x] Obtain independent review and fix confirmed high-risk findings.
+- [x] Record actual local results and update copy inventory as needed.
+- [ ] Push once, create linked PR, pass CI and merge normally.
 - [ ] Read back release/Apple state and retain unmet physical-device gates in the issue.
