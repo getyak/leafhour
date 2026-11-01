@@ -54,3 +54,15 @@ test('restored identity checks share one request, fail closed offline, and inval
   assert.equal(await module.confirmReaderIdentity(),false);assert.equal(replaced,'/library');
   assert.equal(await module.confirmReaderIdentity(),false);
 });
+
+test('readerFetch prepares paid account chat and keeps the same quote on a lost-response retry',async t=>{
+ const previous=Object.fromEntries(['fetch','location','window','document','confirm','sessionStorage'].map(key=>[key,globalThis[key]])),calls=[],storage=new Map();
+ t.after(()=>{for(const [key,value]of Object.entries(previous)){if(value===undefined)delete globalThis[key];else globalThis[key]=value;}});
+ const owner='account-reader-fixture',billing={enabled:true,mode:'test',unitsPerPoint:1000000,prices:{translation:1000000,conversation:4000000,annotation:4000000}},data={id:'account-reader-paid',text:'A question without a book',passageId:'conversation',contentVersion:'library-chat-v1',scopeRevision:0};let quotes=0,confirmations=0,dispatches=0;
+ globalThis.location={search:'?book=fixture-source',origin:'https://reader.example.invalid',replace:()=>{}};globalThis.window={addEventListener:()=>{}};globalThis.document=Object.assign(new EventTarget(),{hidden:false});globalThis.confirm=()=>{confirmations++;return true;};globalThis.sessionStorage={getItem:key=>storage.get(key)||null,setItem:(key,value)=>storage.set(key,value)};
+ globalThis.fetch=async(url,options={})=>{calls.push({url,options});if(url==='/api/auth/session')return new Response(JSON.stringify({user:{id:owner},billing}));if(url==='/api/account/ui-preferences')return new Response(JSON.stringify({revision:0,uiLocale:null,updatedAt:null}));if(url==='/api/billing/quotes'){quotes++;const body=JSON.parse(options.body);assert.equal(body.action,'conversation');assert.equal(body.bookId,'leafhour-library-chat');assert.deepEqual(body.input,data);return new Response(JSON.stringify({id:'reader-account-quote',ownerId:owner,action:'conversation',units:4000000,scope:{bookId:'leafhour-library-chat',requestId:data.id,passageId:data.passageId,contentVersion:data.contentVersion}}));}return new Response('{}');};
+ const {readerFetch}=await import('../app/reader-api.mjs?paid-account-chat');
+ for(let attempt=0;attempt<2;attempt++)await readerFetch('/api/library/chat',{method:'POST',body:JSON.stringify(data),onDispatch:()=>dispatches++});
+ const posted=calls.filter(call=>call.url==='/api/library/chat').map(call=>JSON.parse(call.options.body));assert.equal(posted.length,2);assert.ok(posted[0].billing);assert.deepEqual(posted[1].billing,posted[0].billing);assert.equal(quotes,1);assert.equal(confirmations,1);assert.equal(dispatches,2);
+ await readerFetch('/api/library/chat/'+data.id+'/cancel',{method:'POST',body:'{}'});assert.equal(quotes,1,'cancellation is free and bypasses quote preparation');
+});

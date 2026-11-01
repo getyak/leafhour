@@ -59,6 +59,12 @@ test('native free answer permits no references, encodes role-labelled data, isol
  const f=await fixture(t);assert.deepEqual(await f.generate(job()),{kind:'conversation',summary:good.finalResponse,sourceRefs:[],recommendations:[],origin:'ai'});await f.generate(job());
  assert.notEqual(f.calls[1].opts.sessionId,f.calls[3].opts.sessionId);assert.equal(JSON.parse(f.calls[1].text.split('\n\n读者这次说：\n')[0]).history[0].role,'assistant');assert.equal(f.calls[0].env.DATABASE_SECRET,undefined);assert.equal(f.closed,2);assert.deepEqual(await readdir(f.runRoot),[]);
 });
+test('account conversations use the official bounded runtime without a book or invented source location',async t=>{
+ const f=await fixture(t);await f.generate({...job(),book:null,passageId:undefined});
+ assert.deepEqual(JSON.parse(f.calls[1].text.split('\n\n读者这次说：\n')[0]).location,{scope:'library',currentBook:null});
+ assert.equal(f.calls[0].provider,'deepseek-official');assert.match(f.calls[0].env.DSH_SYSTEM_PROMPT,/直接回应用户，不要求先选书/);assert.match(f.calls[0].env.DSH_SYSTEM_PROMPT,/不写阅读进度、偏好候选或人物资料/);
+ assert.equal(f.closed,1);assert.deepEqual(await readdir(f.runRoot),[]);
+});
 test('intermediate assistant before failed or truncated turn cannot publish',async t=>{for(const kind of ['error','max-tokens','aborted']){const f=await fixture(t,{...good,events:[good.events[0],{type:'turn/end',data:{reason:{kind}}}]});await assert.rejects(f.generate(job()));assert.equal(f.closed,1);}});
 test('timeout and cancellation reject uncooperative runtime and close it',async t=>{const f=await fixture(t,good,()=>new Promise(()=>{}));const ac=new AbortController();const pending=f.generate({...job(),signal:ac.signal});await f.started;ac.abort();await assert.rejects(pending,/取消|cancel/i);assert.equal(f.closed,1);assert.deepEqual(await readdir(f.runRoot),[]);});
 test('main and auxiliary callers atomically share remaining money; refused auxiliary request never dispatches',async()=>{

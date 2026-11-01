@@ -1,6 +1,7 @@
 // Explicit user generation only. Reading, automatic companion work, cancellation
 // and settings never pass this gate. Browser consent is presentation; the server
 // remains the authority for identity, quote scope, balance and settlement.
+import {LIBRARY_CHAT_ID} from './library-chat-context.mjs';
 const PRICES={translation:1000000,conversation:4000000,annotation:4000000};
 const fields={translation:['id','passageId','contentVersion'],conversation:['id','text','passageId','contentVersion','scopeRevision','quote','preferenceWrites','peopleWrites'],annotation:['id','threadId','quote','highlightId','text','responseLocale']};
 const languages={
@@ -23,6 +24,7 @@ const ownerId=value=>typeof value==='string'?value:typeof value?.owner==='string
 function actionRoute(url){
  if(typeof url!=='string'||!url.startsWith('/')||url.startsWith('//'))return null;
  let pathname;try{pathname=new URL(url,'https://leafhour.invalid').pathname;}catch{return null;}
+ if(pathname==='/api/library/chat')return {bookId:LIBRARY_CHAT_ID,action:'conversation'};
  const match=pathname.match(/^\/api\/library\/books\/([^/]+)\/(translate|chat|annotations\/explain)$/);if(!match)return null;
  let bookId;try{bookId=decodeURIComponent(match[1]);}catch{return null;}
  if(!bookId||bookId.length>256||/[\x00-\x1f/?#\\]/.test(bookId))return null;
