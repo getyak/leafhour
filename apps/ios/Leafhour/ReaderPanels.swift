@@ -33,6 +33,8 @@ struct ReaderPanelView: View {
     var reading: ReaderReadingContent? = nil
     let onJump: (Int, ReadingAnchor?) -> Void
     let onCompanion: () -> Void
+    var autoPage: ReaderAutoPageController? = nil
+    var onAutoPageStart: () -> Void = {}
     var onPresent: (ReaderPanel) -> Void = { _ in }
     @Environment(\.dismiss) private var dismiss
     private var isNoteEditor: Bool { if case .note = panel { return true }; return false }
@@ -48,8 +50,14 @@ struct ReaderPanelView: View {
                 case .appearance: ReaderAppearancePanel(session: session)
                 case .records: ReaderRecordsPanel(session: session, onJump: onJump)
                 case .tools: ReaderMorePanel(session: session, speech: speech, tools: tools, cloud: cloud, library: library, reading: reading, onJump: onJump, onCompanion: onCompanion,
-                    onShare: { onPresent(.share(nil)) })
+                    onAutoPage: { onPresent(.autoPage) }, onShare: { onPresent(.share(nil)) })
                 case .listening: ReaderListeningPanel(session: session, speech: speech)
+                case .autoPage:
+                    if let autoPage {
+                        ReaderAutoPagePanel(controller: autoPage, interval: Binding(get: { session.state.preferences.autoPageInterval }, set: { value in
+                            var preferences = session.state.preferences; preferences.autoPageInterval = value; session.changePreferences(preferences)
+                        }), navigationMode: session.state.preferences.navigationMode, onStart: onAutoPageStart)
+                    }
                 case .share(let quote): ReaderSharePanel(session: session, quote: quote, cloud: cloud)
                 case .translation: ReaderTranslationPanel(session: session, tools: tools, cloud: cloud)
                 case .introduction: ReaderIntroductionPanel(session: session, tools: tools, cloud: cloud)

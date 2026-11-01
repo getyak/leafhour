@@ -31,6 +31,7 @@ struct ReaderMorePanel: View {
     var reading: ReaderReadingContent? = nil
     let onJump: (Int, ReadingAnchor?) -> Void
     let onCompanion: () -> Void
+    var onAutoPage: () -> Void = {}
     var onShare: () -> Void = {}
     @State private var export: RecordsDocument?
     @State private var exporting = false
@@ -38,6 +39,8 @@ struct ReaderMorePanel: View {
         List {
             ReaderTimeControls(session: session)
             Section("读这本书") {
+                Button(action: onAutoPage) { Label("自动翻页", systemImage: "timer").frame(minHeight: 44) }
+                    .accessibilityIdentifier("reader-auto-page-open")
                 NavigationLink { BookSearchPanel(session: session, onJump: onJump).modifier(ReaderToolContinuation()) } label: { Label("搜索原文", systemImage: "magnifyingglass").frame(minHeight: 44) }
                 NavigationLink { ReaderTranslationPanel(session: session, tools: tools, cloud: cloud).modifier(ReaderToolContinuation()) } label: { Label("翻译", systemImage: "character.book.closed").frame(minHeight: 44) }
                 if let reading, session.state.preferences.viewMode != .source {

@@ -37,13 +37,14 @@ private struct ReaderChromeHeightKey: PreferenceKey {
     }
 }
 enum ReaderPanel: Identifiable {
-    case contents, search, preferences, appearance, records, tools, listening, translation, introduction, conversation, bookInformation, note(SelectedQuote), source(SelectedQuote), companion(SelectedQuote?), share(SelectedQuote?)
+    case contents, search, preferences, appearance, records, tools, listening, autoPage, translation, introduction, conversation, bookInformation, note(SelectedQuote), source(SelectedQuote), companion(SelectedQuote?), share(SelectedQuote?)
     var isCompanion: Bool { switch self { case .companion, .conversation: true; default: false } }
     var isNoteEditor: Bool { if case .note = self { true } else { false } }
     var id: String {
         switch self {
         case .contents: "contents"; case .search: "search"; case .preferences: "preferences"; case .records: "records"
         case .appearance: "appearance"; case .tools: "tools"; case .listening: "listening"; case .translation: "translation"
+        case .autoPage: "auto-page"
         case .share(let quote): "share-" + (quote?.id ?? "book")
         case .introduction: "introduction"; case .conversation: "conversation"; case .bookInformation: "book-information"
         case .note(let quote): "note-" + quote.id; case .source(let quote): "source-" + quote.id
@@ -65,6 +66,10 @@ struct ReaderScreen: View {
     @State private var chrome: ReaderChrome = .tools
     @State private var panel: ReaderPanel?
     @State private var speech = ReaderSpeech()
+    @State private var autoPage = ReaderAutoPageController()
+    @State private var readerIsTouching = false
+    @State private var voiceOverRunning = UIAccessibility.isVoiceOverRunning
+    @State private var startAutoPageOnDismiss = false
     @State private var speechNavigationID: UUID?
     @State private var tools = ReaderCloudTools()
     @State private var reading = ReaderReadingContent()
@@ -84,7 +89,7 @@ struct ReaderScreen: View {
     // Continuous reading keeps the measured controls budget for its scroll ends.
     private func readingInsets(for layout: ReaderChromeLayout) -> UIEdgeInsets {
         if session.state.preferences.navigationMode == .paged {
-            return UIEdgeInsets(top: 16, left: 22, bottom: 44, right: 22)
+            return UIEdgeInsets(top: 16, left: 22, bottom: autoPage.showsStatus && dynamicTypeSize.isAccessibilitySize ? 104 : 44, right: 22)
         }
         let metrics = chromeMetrics?.layout == layout ? chromeMetrics : nil
         let top = metrics?.top ?? 44
@@ -107,7 +112,8 @@ struct ReaderScreen: View {
                         if quote != nil || session.selection != nil { session.selection = quote }
                         if quote != nil { speech.userNavigated() }
                     }, onWake: wake, onReadingScroll: readingDidScroll, speechHighlight: speech.highlight, followsSpeech: speech.following && !speech.readerIsInteracting,
-                        onReadingPosition: { speech.updateVisible($0) }, onTouchActivity: { speech.readerIsInteracting = $0 })
+                        onReadingPosition: { speech.updateVisible($0) }, onTouchActivity: readingTouchChanged,
+                        pageRequest: autoPage.pageRequest, onPageRequestResult: { autoPage.receive($0, outcome: $1) })
                     .safeAreaInset(edge: .bottom, spacing: 0) {
                         if needsPDFSourceFallback {
                             Text("此页没有可对照文字，先显示原页。")
@@ -126,7 +132,8 @@ struct ReaderScreen: View {
                         onShare: { present(.share($0)) },
                         onSelectionChange: { quote, active in session.selection = quote; hasNativeTextSelection = active; if active { speech.userNavigated() } },
                         onPageChange: { pagePosition = $0 }, speechHighlight: speech.highlight, followsSpeech: speech.following && !speech.readerIsInteracting,
-                        onReadingPosition: { speech.updateVisible($0) }, onTouchActivity: { speech.readerIsInteracting = $0 })
+                        onReadingPosition: { speech.updateVisible($0) }, onTouchActivity: readingTouchChanged,
+                        pageRequest: autoPage.pageRequest, onPageRequestResult: { autoPage.receive($0, outcome: $1) })
                 }
                 VStack(spacing: 0) {
                     // Measure the same real controls while asleep. Hiding or waking
@@ -166,11 +173,11 @@ struct ReaderScreen: View {
                                 chapterAccessibilityValue: progressDescription,
                                 listeningAccessibilityHint: speech.playing ? "正在朗读，打开听书控制" : speech.paused ? "听书已暂停，打开后可继续" : "打开听书控制，点击播放后才开始",
                                 onContents: { present(.contents) },
-                                onRead: { speech.pause(); chrome = .asleep },
+                                onRead: { autoPage.pause(.interaction); speech.pause(); chrome = .asleep },
                                 onListen: { present(.listening) },
                                 onAppearance: { present(.appearance) },
                                 onTypography: { present(.preferences) },
-                                onInteraction: { clockID = UUID() },
+                                onInteraction: { autoPage.pause(.interaction); clockID = UUID() },
                                 onFocusChange: { bottomBarFocused = $0; clockID = UUID() },
                                 controlsVisible: showingBottom
                             )
@@ -199,10 +206,11 @@ struct ReaderScreen: View {
         .interactiveDismissDisabled(panel?.isCompanion != true && (session.saving || session.saveError != nil))
         .sheet(item: $panel, onDismiss: {
             hasNativeTextSelection = false; session.clearTransientSelection(); selectionDismissalID = UUID(); chrome = .asleep
+            if startAutoPageOnDismiss { startAutoPageOnDismiss = false; beginAutoPaging() }
         }) { destination in
             ReaderPanelView(panel: destination, session: session, systemColorScheme: systemColorScheme, speech: speech, tools: tools, cloud: cloud, library: library, reading: reading,
                 onJump: { index, anchor in speech.userNavigated(); session.go(to: index, anchor: anchor); panel = nil; session.setReadingVisible(scenePhase == .active); session.recordReadingInteraction() }, onCompanion: { showCompanion(currentQuote) },
-                onPresent: present)
+                autoPage: autoPage, onAutoPageStart: startAutoPaging, onPresent: present)
                 .modifier(ReaderPanelPresentation(isCompanion: destination.isCompanion, isNoteEditor: destination.isNoteEditor))
         }
         .alert(session.saveError == nil ? "阅读提示" : "阅读记录", isPresented: Binding(get: { session.message != nil || (session.noteEditorID == nil && session.saveMessage != nil) }, set: { if !$0 { session.message = nil; session.saveMessage = nil } })) {
@@ -218,9 +226,13 @@ struct ReaderScreen: View {
         presentedReader
         .modifier(ReaderTimeTracking(session: session, visible: scenePhase == .active && panel == nil))
         .safeAreaInset(edge: .top, spacing: 0) { remotePositionNotice }
+        .onChange(of: autoPageConditions, initial: true) { _, conditions in autoPage.update(conditions, navigationID: session.navigationID) }
+        .onChange(of: session.navigationID) { _, id in autoPage.update(autoPageConditions, navigationID: id) }
         .onChange(of: session.state.preferences) { old, new in
+            if old != new { autoPage.pause(.layout) }
             if old.speechSpeed != new.speechSpeed { speech.speed = new.speechSpeed }
         }
+        .onReceive(NotificationCenter.default.publisher(for: UIAccessibility.voiceOverStatusDidChangeNotification)) { _ in voiceOverRunning = UIAccessibility.isVoiceOverRunning }
         .onChange(of: focusedControl) { _, _ in clockID = UUID() }
         .onChange(of: session.selection?.id) { _, _ in clockID = UUID() }
         .onChange(of: hasNativeTextSelection) { _, _ in clockID = UUID() }
@@ -243,7 +255,7 @@ struct ReaderScreen: View {
         .task(id: readingRefreshKey) { await refreshReadingContent() }
         .onChange(of: session.state.preferences.viewMode) { _, mode in
             speech.stop()
-            speech.readerIsInteracting = false
+            readerIsTouching = false; speech.readerIsInteracting = false
             if mode == .source { reading.stop(); reading.offerFirstPassage = false }
             selectionDismissalID = UUID()
         }
@@ -254,10 +266,10 @@ struct ReaderScreen: View {
         .task(id: clockID) { await settleChrome() }
         .onChange(of: scenePhase) { _, phase in
             reading.setForeground(phase == .active)
-            if phase != .active { speech.readerIsInteracting = false; speech.pause(); session.save(); chrome = .asleep }
+            if phase != .active { readerIsTouching = false; speech.readerIsInteracting = false; speech.pause(); session.save(); chrome = .asleep }
         }
         .onAppear { configureReading() }
-        .onDisappear { speech.stop(); reading.stop(); reading.requestPreparation = nil; reading.requestPassagePreparation = nil; reading.confirmPreparation = nil }
+        .onDisappear { autoPage.stop(); speech.stop(); reading.stop(); reading.requestPreparation = nil; reading.requestPassagePreparation = nil; reading.confirmPreparation = nil }
     }
     @ViewBuilder private var remotePositionNotice: some View {
         if positionConflict {
@@ -280,6 +292,7 @@ struct ReaderScreen: View {
     }
     private func configureReading() {
         speech.speed = session.state.preferences.speechSpeed
+        autoPage.setInterval(session.state.preferences.autoPageInterval)
         tools.configure(library: library, localBookID: session.book.id)
         reading.setForeground(scenePhase == .active)
         let reading = reading, session = session, cloud = cloud, library = library
@@ -312,6 +325,7 @@ struct ReaderScreen: View {
         speechNavigationID = session.navigationID
     }
     private func recordChrome(_ values: [ReaderChromeMeasurement], for layout: ReaderChromeLayout) {
+        if let previous = chromeMetrics?.layout, previous != layout { autoPage.pause(.layout) }
         let current = values.filter { $0.layout == layout }
         guard let top = current.last(where: { $0.region == .top })?.height, top > 0,
               let bottom = current.last(where: { $0.region == .bottom })?.height, bottom > 0 else { return }
@@ -327,7 +341,9 @@ struct ReaderScreen: View {
     private var quietReadingControl: some View {
         HStack {
             Spacer()
-            if speech.playing || speech.paused {
+            if autoPage.showsStatus && !speech.playing && !speech.paused {
+                ReaderAutoPageStatusControl(controller: autoPage, onContinue: startAutoPaging, onSettings: { present(.autoPage) })
+            } else if speech.playing || speech.paused {
                 HStack(spacing: 0) {
                     Button {
                         if !speech.following { speech.following = true }
@@ -431,14 +447,46 @@ struct ReaderScreen: View {
         guard chrome != .asleep, !bottomBarFocused, focusedControl == nil, panel == nil, session.selection == nil, !hasNativeTextSelection, !UIAccessibility.isVoiceOverRunning else { return }
         withAnimation(reduceMotion ? nil : .easeOut(duration: 0.18)) { chrome = .asleep }
     }
-    private func readingDidScroll() { session.recordReadingInteraction(); speech.userNavigated(); hasNativeTextSelection = false; session.clearTransientSelection(); selectionDismissalID = UUID(); sleepChrome() }
+    private func readingDidScroll() { autoPage.pause(.interaction); session.recordReadingInteraction(); speech.userNavigated(); hasNativeTextSelection = false; session.clearTransientSelection(); selectionDismissalID = UUID(); sleepChrome() }
     private func wake(_: ReaderChrome) { session.recordReadingInteraction(); withAnimation(reduceMotion ? nil : .easeOut(duration: 0.16)) { chrome = chrome == .tools ? .asleep : .tools } }
     private func revealTools() {
+        autoPage.pause(.interaction)
         withAnimation(reduceMotion ? nil : .easeOut(duration: 0.16)) { chrome = .tools }
         clockID = UUID()
     }
-    private func present(_ value: ReaderPanel) { panel = value; chrome = .asleep }
+    private func present(_ value: ReaderPanel) { autoPage.pause(.panel); panel = value; chrome = .asleep }
+    private var autoPageConditions: ReaderAutoPageConditions {
+        ReaderAutoPageConditions(isForeground: scenePhase == .active,
+            isPaged: session.state.preferences.navigationMode == .paged,
+            hasSelection: session.selection != nil || hasNativeTextSelection,
+            isTouching: readerIsTouching, hasPanel: panel != nil || bottomBarFocused || focusedControl != nil,
+            isListening: speech.playing, voiceOverEnabled: voiceOverRunning,
+            hasAlert: session.message != nil || session.saveMessage != nil || reading.proposed != nil || tools.consent != nil || positionConflict)
+    }
+    private func readingTouchChanged(_ active: Bool) {
+        speech.readerIsInteracting = active
+        guard readerIsTouching != active else { return }
+        readerIsTouching = active
+        if active { autoPage.pause(.interaction) }
+    }
+    private func startAutoPaging() {
+        speech.stop()
+        focusedControl = nil; bottomBarFocused = false
+        if session.state.preferences.navigationMode != .paged {
+            var preferences = session.state.preferences; preferences.navigationMode = .paged
+            session.changePreferences(preferences)
+        }
+        if panel != nil {
+            startAutoPageOnDismiss = true; panel = nil
+        } else { beginAutoPaging() }
+    }
+    private func beginAutoPaging() {
+        autoPage.setInterval(session.state.preferences.autoPageInterval)
+        autoPage.update(autoPageConditions, navigationID: session.navigationID)
+        autoPage.start(); chrome = .asleep
+    }
     private func showNote(_ quote: SelectedQuote) {
+        autoPage.pause(.panel)
         let draft = session.state.drafts[quote.anchor.key]
         panel = .note(draft.map { SelectedQuote(anchor: $0.anchor, text: $0.quote) } ?? quote)
         chrome = .asleep
@@ -455,6 +503,7 @@ struct ReaderScreen: View {
         return SelectedQuote(anchor: ReadingAnchor(chapterID: session.chapter.id, passageID: passage.id), text: visible, sourceText: source)
     }
     private func showCompanion(_ quote: SelectedQuote?) {
+        autoPage.pause(.panel)
         hasNativeTextSelection = false
         session.selection = nil
         selectionDismissalID = UUID()

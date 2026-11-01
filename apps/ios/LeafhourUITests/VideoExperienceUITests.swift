@@ -2725,6 +2725,36 @@ final class VideoExperienceUITests: XCTestCase {
         capture("GET352-shared-reading-preferences")
     }
 
+    func test101AutomaticTurnsTheActualPageAndStaysPausedAfterBackground() throws {
+        launch(["--get341-unique-source"]); openBook(translatedTitle)
+        let readingFrame = reader.frame
+        let initialPage = app.staticTexts["reader-progress-caption"].label
+        openMoreLink("自动翻页"); expandPanel()
+        let interval = app.steppers["reader-auto-page-interval"]
+        require(interval)
+        for _ in 0..<5 { interval.buttons.element(boundBy: 0).tap() }
+        require(app.staticTexts["每 5 秒翻一屏"])
+        app.buttons["reader-auto-page-start"].tap()
+        let pause = app.buttons["reader-auto-page-quick-pause"]
+        require(pause)
+        let first = try screenBodyBand(in: readingFrame)
+        let turned = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in (try? self.screenBodyBand(in: readingFrame)) != first }, object: nil)
+        XCTAssertEqual(XCTWaiter.wait(for: [turned], timeout: 9), .completed, "The actual source ink must move to the next measured page")
+        pause.tap(); require(app.buttons["reader-auto-page-quick-resume"])
+        require(reader)
+        wakeTools()
+        let currentPage = app.staticTexts["reader-progress-caption"]
+        require(currentPage)
+        XCTAssertNotEqual(currentPage.label, initialPage, "The page position must settle at a genuinely later source screen")
+        reader.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.4)).tap()
+        require(app.buttons["reader-auto-page-quick-resume"])
+        capture("GET352-automatic-real-page-paused")
+        app.buttons["reader-auto-page-quick-resume"].tap(); require(pause)
+        XCUIDevice.shared.press(.home); app.activate()
+        require(app.buttons["reader-auto-page-quick-resume"])
+        XCTAssertFalse(pause.exists, "Returning to the app never restarts automatic turns")
+        capture("GET352-background-stays-paused")
+    }
 
     func test102SelectedTextHasAnExplicitCardPreviewAndSystemImageSharing() {
         launch(); openBook(textTitle)
