@@ -536,6 +536,76 @@ final class ReaderToolsTests: XCTestCase {
         XCTAssertEqual(tools.chatContext?.sourceLabel, "选中的原文")
     }
 
+    func testAccountChatLoadsWithoutABookAndRetainsHistoryWhenRefreshFails() async throws {
+        let fixture = try await fixture(), tools = ReaderCloudTools(), probe = ReaderToolsProbe()
+        probe.respond = { request, _ in
+            XCTAssertEqual(request.url?.path, "/api/library/chat")
+            XCTAssertEqual(request.httpMethod, "GET")
+            return (200, ["bookId": ReaderCloudTools.libraryChatID, "contentVersion": ReaderCloudTools.libraryChatVersion,
+                "scope": ["mode": "library", "revision": 0], "available": true, "context": NSNull(),
+                "turns": [["id": "account-answer", "text": "Hello", "status": "completed", "answer": ["summary": "Saved reply"]]]])
+        }
+        ReaderToolsURLProtocol.install(probe)
+        await tools.loadLibraryConversation(ownerID: owner, cloud: fixture.cloud)
+        XCTAssertTrue(tools.conversationAvailable); XCTAssertEqual(tools.scope, "library")
+        XCTAssertNil(tools.chatContext); XCTAssertEqual(probe.requests.count, 1)
+        tools.question = "An unfinished thought"
+        let failed = ReaderToolsProbe(); failed.respond = { _, _ in throw URLError(.notConnectedToInternet) }
+        ReaderToolsURLProtocol.install(failed)
+        await tools.loadLibraryConversation(ownerID: owner, cloud: fixture.cloud)
+        XCTAssertEqual(tools.turns.first?.answer, "Saved reply")
+        XCTAssertEqual(tools.question, "An unfinished thought"); XCTAssertNotNil(tools.error)
+    }
+
+    func testAccountChatDraftAndUncertainRequestKeepTheirOwnIdentityAfterRestart() async throws {
+        let fixture = try await fixture(), tools = ReaderCloudTools()
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let library = try OfflineLibrary(root: root, scope: .account(XCTUnwrap(UUID(uuidString: owner))))
+        let identity = ReaderCloudTools.libraryChatIdentity(ownerID: owner)
+        await tools.restoreConversationDraft(identity: identity, library: library)
+        tools.question = "No book is needed for this question"; tools.scope = "library"
+        let probe = ReaderToolsProbe(); probe.respond = { [self] request, _ in
+            if request.url?.path == "/api/auth/session" { return (200, metadata(enabled: false)) }
+            XCTAssertEqual(request.url?.path, "/api/library/chat")
+            throw URLError(.networkConnectionLost)
+        }
+        ReaderToolsURLProtocol.install(probe)
+        await tools.prepareLibraryConversation(ownerID: owner, cloud: fixture.cloud)
+        let intent = try XCTUnwrap(tools.consent)
+        XCTAssertEqual(intent.path, "/api/library/chat"); XCTAssertFalse(intent.explanation.contains("原文："))
+        await tools.perform(intent, cloud: fixture.cloud)
+        let flushed = await tools.flushConversationDraft(); XCTAssertTrue(flushed)
+        let restored = ReaderCloudTools()
+        await restored.restoreConversationDraft(identity: identity, library: library)
+        XCTAssertEqual(restored.question, "No book is needed for this question")
+        XCTAssertEqual(restored.retry?.id, intent.id); XCTAssertEqual(restored.retry?.body, intent.body)
+        XCTAssertNil(restored.chatContext)
+        let bookDraft = try await library.conversationDraft(bookID: "cloud-book", ownerID: owner)
+        XCTAssertNil(bookDraft)
+    }
+
+    func testAccountConversationStillValidatesItsPaidQuoteBeforeSending() async throws {
+        let fixture = try await fixture(), tools = ReaderCloudTools(), probe = ReaderToolsProbe()
+        tools.question = "Talk to me"; tools.scope = "library"
+        probe.respond = { [self] request, body in
+            if request.url?.path == "/api/auth/session" { return (200, metadata()) }
+            XCTAssertEqual(request.url?.path, "/api/billing/quotes")
+            XCTAssertEqual(body["bookId"] as? String, ReaderCloudTools.libraryChatID)
+            let input = try XCTUnwrap(body["input"] as? [String: Any])
+            return (200, ["id": "account-quote", "ownerId": owner, "action": "conversation", "units": 4_000_000, "mode": "test",
+                "scope": ["bookId": ReaderCloudTools.libraryChatID, "contentVersion": ReaderCloudTools.libraryChatVersion,
+                    "passageId": ReaderCloudTools.libraryChatPassage, "requestId": try XCTUnwrap(input["id"] as? String)]])
+        }
+        ReaderToolsURLProtocol.install(probe)
+        await tools.prepareLibraryConversation(ownerID: owner, cloud: fixture.cloud)
+        let intent = try XCTUnwrap(tools.consent)
+        XCTAssertEqual(intent.path, "/api/library/chat")
+        let body = try XCTUnwrap(JSONSerialization.jsonObject(with: intent.body) as? [String: Any])
+        XCTAssertEqual((body["billing"] as? [String: Any])?["quoteId"] as? String, "account-quote")
+        XCTAssertTrue(intent.explanation.contains("4 阅读点"))
+    }
+
 }
 
 private final class ReaderToolsProbe: @unchecked Sendable {
