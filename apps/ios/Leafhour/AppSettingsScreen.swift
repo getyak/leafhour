@@ -95,24 +95,22 @@ struct AppSettingsScreen: View {
 struct GlobalReadingStyleScreen: View {
     let library: OfflineLibrary?
     @State private var style = ReadingStyleModel()
+    @State private var category: ReadingStyleCategory = .text
     @Environment(\.colorScheme) private var systemScheme
     private var preferences: Binding<ReaderPreferences> { Binding(get: { style.preferences }, set: { style.update($0) }) }
     var body: some View {
         Form {
             if style.ready {
-                Section {
+                Section { ReadingStyleTabs(selection: $category) }.listRowBackground(Color.clear).listRowInsets(EdgeInsets())
+                if category != .reading { Section {
                     VStack(alignment: .leading, spacing: 12) {
                         Text("排版预览").font(.caption).foregroundStyle(.secondary)
                         ReaderPreferencesPanel.TypographyPreview(text: "留一点时间，读进一本书。\nStay with a book.", fontSize: style.preferences.fontSize, lineSpacing: style.preferences.lineSpacing, fontStyle: style.preferences.fontStyle)
                     }.padding(20).background(Color(uiColor: style.preferences.paperColor))
                         .environment(\.colorScheme, style.preferences.colorScheme(following: systemScheme))
-                }.listRowInsets(EdgeInsets())
-                ReadingAppearanceControls(preferences: preferences)
-                Section {
-                    NavigationLink { ReaderNavigationSettings(preferences: preferences) } label: {
-                        LabeledContent("翻页方式", value: style.preferences.navigationMode == .paged ? "左右翻页" : "上下滚动")
-                    }.frame(minHeight: 44)
-                } footer: { Text("自动保存，适用于这间书房的所有书籍。原版 PDF 保留其字体和纸面。") }
+                }.listRowInsets(EdgeInsets()) }
+                ReadingAppearanceControls(preferences: preferences, category: category)
+                if category == .reading { ReaderNavigationControls(preferences: preferences) }
             } else if style.error == nil { ProgressView("正在读取阅读风格…") }
             if let error = style.error {
                 Section {

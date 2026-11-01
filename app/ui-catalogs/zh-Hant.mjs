@@ -1,6 +1,17 @@
 // GET-192 immutable zh-Hant UI catalogue. Fixed public stateless ID→string
 // data with the same keys as app/ui-catalogs/en.mjs. No logic lives here.
 export default Object.freeze({
+  "reader.settings.text": "文字",
+  "reader.settings.details": "更多排版",
+  "chat.back": "返回",
+  "chat.backLibrary": "返回書房",
+  "chat.companion": "Leafhour 陪讀",
+  "chat.noBook": "不選書 · 直接聊",
+  "chat.chooseBook": "書籍上下文（選填）",
+  "chat.greeting": "今天想聊點什麼？",
+  "chat.greetingBody": "聊一個想法，問一個問題，或找下一本書。也可以隨時選一本書一起讀。",
+  "chat.askAnything": "聊點什麼…",
+
   "arrival.title": "回來接著讀",
   "arrival.close": "收起今天的閱讀回顧",
   "arrival.talk": "聊聊這本書",

@@ -1,6 +1,17 @@
 // GET-192 immutable ja UI catalogue. Fixed public stateless ID→string
 // data with the same keys as app/ui-catalogs/en.mjs. No logic lives here.
 export default Object.freeze({
+  "reader.settings.text": "文字",
+  "reader.settings.details": "その他の文字設定",
+  "chat.back": "戻る",
+  "chat.backLibrary": "読書室に戻る",
+  "chat.companion": "Leafhour 読書パートナー",
+  "chat.noBook": "本を選ばずに話す",
+  "chat.chooseBook": "本のコンテキスト（任意）",
+  "chat.greeting": "今日は何を話しますか？",
+  "chat.greetingBody": "考えを話したり、質問したり、次の一冊を探したり。本はいつでも追加できます。",
+  "chat.askAnything": "何でも聞いてください…",
+
   "arrival.title": "続きから読もう",
   "arrival.close": "今日の振り返りを閉じる",
   "arrival.talk": "本について話す",

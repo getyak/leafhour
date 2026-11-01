@@ -204,7 +204,8 @@ function applyAppearance(){
   $('view-mode').value=state.mode;$('translation-variant').value=state.variant;$('translation-variant').disabled=state.mode==='en';$('font-size').value=state.font;$('font-size-label').value=String(state.font);
   for(const b of document.querySelectorAll('[data-theme-choice]')){const active=b.dataset.themeChoice===state.theme;b.setAttribute('aria-pressed',String(active));if(active)label($('theme-label'),b.getAttribute('data-ui-aria-label'));}
   for(const b of document.querySelectorAll('[data-font-family]'))b.setAttribute('aria-pressed',String(b.dataset.fontFamily===state.fontFamily));
-  for(const [key] of typographyFields){$('setting-'+key).value=prettyValue(key,state[key]);for(const b of document.querySelectorAll('[data-adjust="'+key+'"]'))b.disabled=Number(b.dataset.direction)<0?state[key]<=appearanceBounds[key][0]:state[key]>=appearanceBounds[key][1];}
+  for(const [key] of typographyFields){$('setting-'+key).value=prettyValue(key,state[key]);$('range-'+key).value=state[key];}
+  const preview=$('typography-preview');preview.style.fontFamily=fonts[state.fontFamily];preview.style.fontSize=state.font+'px';preview.style.fontWeight=state.fontWeight;preview.style.lineHeight=state.lineHeight;
   $('first-line-indent').checked=state.indent;
   applyParallelAppearance(document,state);
   pagination.update(state);settingsUI.update(state);settingsUI.sync();
@@ -213,11 +214,10 @@ function adjustAppearance(patch){
   const a=anchor();Object.assign(state,normalizeAppearance({...state,...patch}));dispatchReaderEvent('reader:jump');applyAppearance();restoreAnchor(a);if(!$('paragraph-tools').hidden)positionTools();persist();dispatchReaderEvent('reader:layout');
 }
 for(const [key,unit] of typographyFields){
-  const row=el('div','setting-row typography-row'),name=fixed('span','',READER_UI+'type.'+key),controls=el('div','type-stepper');name.id='label-'+key;
-  const minus=button('−',()=>step(-1)),plus=button('+',()=>step(1)),value=el('output');value.id='setting-'+key;value.setAttribute('aria-labelledby',name.id);value.title=unit;
-  function step(direction){const [min,max,increment]=appearanceBounds[key];adjustAppearance({[key]:Math.max(min,Math.min(max,Number((state[key]+direction*increment).toFixed(2))))});}
-  for(const [b,direction] of [[minus,-1],[plus,1]]){b.dataset.adjust=key;b.dataset.direction=direction;label(b,READER_UI+'type.'+key+(direction<0?'.decrease':'.increase'),null,'aria-label');}
-  controls.append(minus,value,plus);row.append(name,controls);$('typography-controls').append(row);
+  const row=el('div','setting-row typography-row'),name=fixed('label','',READER_UI+'type.'+key),controls=el('div','settings-range'),range=el('input'),value=el('output');name.id='label-'+key;name.htmlFor='range-'+key;
+  const [min,max,increment]=appearanceBounds[key];range.type='range';range.id='range-'+key;range.min=min;range.max=max;range.step=increment;range.value=state[key];range.setAttribute('aria-labelledby',name.id);
+  value.id='setting-'+key;value.setAttribute('for',range.id);value.title=unit;const heading=el('div','settings-slider-heading');heading.append(name,value);
+  range.addEventListener('input',()=>adjustAppearance({[key]:Number(range.value)}));controls.append(range);row.append(heading,controls);$(['lineHeight','paragraphGap'].includes(key)?'typography-controls':'typography-advanced-controls').append(row);
 }
 function passageView(p){return {mode:overrides[p.id]?.mode||(state.mode==='en'?'en':'zh'),variant:overrides[p.id]?.variant||state.variant};}
 function prose(layer,variant){const n=el('p',layer.fallback?'untranslated-original':'',layer.text);if(layer.kind==='original')applySourceLineation(n,layer.lineBreaks,document,layer.emphasis);n.lang=layer.lang;n.dataset.readingLayer=layer.kind;n.dataset.variant=variant;return applySourceFormat(n,layer);}

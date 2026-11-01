@@ -15,44 +15,68 @@ extension ReaderPreferences {
     }
 }
 
+enum ReadingStyleCategory: String, CaseIterable, Identifiable {
+    case text = "文字", paper = "纸面", reading = "阅读"
+    var id: Self { self }
+    var symbol: String {
+        switch self { case .text: "textformat.size"; case .paper: "circle.lefthalf.filled"; case .reading: "book.pages" }
+    }
+}
+
+struct ReadingStyleTabs: View {
+    @Binding var selection: ReadingStyleCategory
+    var body: some View {
+        Picker("阅读设置分类", selection: $selection) {
+            ForEach(ReadingStyleCategory.allCases) { category in
+                Label(category.rawValue, systemImage: category.symbol).tag(category)
+            }
+        }.pickerStyle(.segmented).accessibilityIdentifier("reading-style-categories")
+    }
+}
+
 struct ReadingAppearanceControls: View {
     @Binding var preferences: ReaderPreferences
     var allowsTypography = true
+    var category: ReadingStyleCategory = .text
     private func field<T>(_ path: WritableKeyPath<ReaderPreferences, T>) -> Binding<T> {
         Binding(get: { preferences[keyPath: path] }, set: { preferences[keyPath: path] = $0 })
     }
     var body: some View {
-        Section("纸面主题") {
-            ReaderPaperChoices(preferences: $preferences)
-                .padding(.vertical, 6)
+        if category == .paper {
+            Section {
+                ReaderPaperChoices(preferences: $preferences).padding(.vertical, 8)
+            } header: { Text("纸面") }
         }
-        if allowsTypography {
+        if category == .text && allowsTypography {
             Section {
                 Picker("阅读风格", selection: Binding(get: { ReaderStylePreset.matching(preferences)?.rawValue ?? "custom" }, set: { value in
                     if let style = ReaderStylePreset(rawValue: value) { preferences = style.applying(to: preferences) }
                 })) {
                     if ReaderStylePreset.matching(preferences) == nil { Text("自定义").tag("custom") }
                     ForEach(ReaderStylePreset.allCases, id: \.rawValue) { Text($0.title).tag($0.rawValue) }
-                }.accessibilityIdentifier("reader-style-preset")
+                }.pickerStyle(.segmented).accessibilityIdentifier("reader-style-preset")
                 Picker("字体", selection: field(\.fontStyle)) {
-                    Text("衬线").tag(ReaderFontStyle.serif)
-                    Text("无衬线").tag(ReaderFontStyle.sans)
-                    Text("圆体").tag(ReaderFontStyle.rounded)
-                }.accessibilityIdentifier("reader-font-style")
+                    Text("宋体").font(.system(.body, design: .serif)).tag(ReaderFontStyle.serif)
+                    Text("黑体").font(.system(.body, design: .default)).tag(ReaderFontStyle.sans)
+                    Text("圆体").font(.system(.body, design: .rounded)).tag(ReaderFontStyle.rounded)
+                }.pickerStyle(.segmented).accessibilityIdentifier("reader-font-style")
                 VStack(alignment: .leading, spacing: 8) {
                     HStack { Text("字号"); Spacer(); Text("\(Int(preferences.fontSize))").monospacedDigit().foregroundStyle(.secondary) }
                     Slider(value: field(\.fontSize), in: 16...36, step: 1) { Text("正文字号") }
                     minimumValueLabel: { Text("A").font(.caption) } maximumValueLabel: { Text("A").font(.title3) }
                         .accessibilityValue("\(Int(preferences.fontSize)) 磅")
                 }.padding(.vertical, 5)
-                DisclosureGroup("排版细节") {
-                    VStack(alignment: .leading, spacing: 8) {
-                        HStack { Text("行间距"); Spacer(); Text("\(Int(preferences.lineSpacing))").monospacedDigit().foregroundStyle(.secondary) }
-                        Slider(value: field(\.lineSpacing), in: 4...18, step: 1).accessibilityLabel("正文行间距")
-                    }.padding(.vertical, 8)
-                    Button("恢复默认排版") { preferences = ReaderStylePreset.classic.applying(to: preferences) }.frame(minHeight: 44)
+                VStack(alignment: .leading, spacing: 8) {
+                    HStack { Label("行距", systemImage: "line.3.horizontal"); Spacer(); Text("\(Int(preferences.lineSpacing))").monospacedDigit().foregroundStyle(.secondary) }
+                    Slider(value: field(\.lineSpacing), in: 4...18, step: 1).accessibilityLabel("正文行间距")
+                        .accessibilityValue("\(Int(preferences.lineSpacing)) 磅")
+                }.padding(.vertical, 5)
+                HStack {
+                    Spacer()
+                    Button("恢复默认排版", systemImage: "arrow.counterclockwise") { preferences = ReaderStylePreset.classic.applying(to: preferences) }
+                        .font(.footnote).frame(minHeight: 44)
                 }
-            } header: { Text("文字") } footer: { Text("风格同时调整字体、字号和间距，也可单独修改。随系统文字大小缩放。") }
+            }
         }
     }
 }
@@ -62,28 +86,25 @@ struct ReaderPaperChoices: View {
     @Environment(\.dynamicTypeSize) private var typeSize
     private let themes = [("paper", "暖纸"), ("white", "纯白"), ("sage", "青苔"), ("night", "夜读"), ("system", "系统")]
     var body: some View {
-        LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 8), count: typeSize.isAccessibilitySize ? 2 : 3), spacing: 10) {
+        LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 4), count: typeSize.isAccessibilitySize ? 3 : 5), spacing: 10) {
             ForEach(themes, id: \.0) { theme in
                 let selected = preferences.theme == theme.0
                 Button {
                     preferences.theme = theme.0
                 } label: {
-                    VStack(spacing: 8) {
-                        Text("Aa").font(.system(.title2, design: .serif))
-                        HStack(spacing: 4) {
-                            Text(theme.1).font(.subheadline)
-                            if selected { Image(systemName: "checkmark.circle.fill").font(.caption) }
-                        }
-                    }
+                    ZStack {
+                        Circle().fill(paper(theme.0)).frame(width: 36, height: 36)
+                        if theme.0 == "system" { Image(systemName: "circle.lefthalf.filled").font(.system(size: 28, weight: .ultraLight)) }
+                        if selected { Image(systemName: "checkmark").font(.system(size: 14, weight: .semibold)).padding(4).background(paper(theme.0), in: Circle()) }
+                    }.frame(maxWidth: .infinity, minHeight: 52)
                     .foregroundStyle(theme.0 == "night" ? Color(white: 0.92) : theme.0 == "system" ? Color.primary : Color(white: 0.16))
-                    .frame(maxWidth: .infinity, minHeight: 88).padding(.horizontal, 4).padding(.vertical, 6)
-                    .background(paper(theme.0), in: RoundedRectangle(cornerRadius: 16))
-                    .overlay { RoundedRectangle(cornerRadius: 16).strokeBorder(selected ? Color.leafInk : Color.primary.opacity(0.12), lineWidth: selected ? 2 : 1) }
-                    .contentShape(RoundedRectangle(cornerRadius: 16))
+                    .overlay { Circle().strokeBorder(selected ? Color.leafInk : Color.primary.opacity(0.2), lineWidth: selected ? 2 : 1).frame(width: selected ? 46 : 36, height: selected ? 46 : 36) }
+                    .contentShape(Rectangle())
                 }.buttonStyle(.plain)
                     .accessibilityLabel(theme.0 == "system" ? "跟随系统" : theme.1)
                     .accessibilityIdentifier("reader-theme-" + theme.0)
                     .accessibilityAddTraits(selected ? .isSelected : [])
+                    .help(theme.1)
             }
         }
     }
@@ -96,7 +117,15 @@ struct ReaderPaperChoices: View {
 struct ReaderNavigationSettings: View {
     @Binding var preferences: ReaderPreferences
     var body: some View {
-        Form {
+        Form { ReaderNavigationControls(preferences: $preferences) }
+            .navigationTitle("翻页方式").modifier(ReaderToolContinuation())
+    }
+}
+
+struct ReaderNavigationControls: View {
+    @Binding var preferences: ReaderPreferences
+    var body: some View {
+        Group {
             Section {
                 Picker("翻页方式", selection: $preferences.navigationMode) {
                     Text("上下滚动").tag(ReaderNavigationMode.scroll)
@@ -111,7 +140,6 @@ struct ReaderNavigationSettings: View {
                     }.accessibilityIdentifier("reader-page-input")
                 }
             } footer: { Text("轻点书页中间唤回工具，长按可选字。开启系统“减弱动态效果”时直接切页。") }
-        }.navigationTitle("翻页方式")
-            .modifier(ReaderToolContinuation())
+        }
     }
 }
