@@ -2,7 +2,7 @@ import {normalizeReadingChatQuote} from './reading-chat-quote.mjs';
 const encoder=new TextEncoder(),LIMIT=24576;
 const fail=()=>{throw Object.assign(Error('Conversation input budget exhausted'),{status:413});};
 export function encodeReadingChatInput(job,{inputLabel='读者这次说：'}={}){
- const payload={location:{bookId:job.book.bookId,contentVersion:job.book.contentVersion,title:job.book.title,passageId:job.passageId,...(job.chapterId?{chapterId:job.chapterId}:{}),...(job.chapterTitle?{chapterTitle:job.chapterTitle}:{})},history:[],...(job.quote!==undefined?{selectedQuote:normalizeReadingChatQuote(job.quote)}:{})};
+ const payload={location:job.book===null?{scope:'library',currentBook:null}:{bookId:job.book.bookId,contentVersion:job.book.contentVersion,title:job.book.title,passageId:job.passageId,...(job.chapterId?{chapterId:job.chapterId}:{}),...(job.chapterTitle?{chapterTitle:job.chapterTitle}:{})},history:[],...(job.quote!==undefined?{selectedQuote:normalizeReadingChatQuote(job.quote)}:{})};
  const encode=()=>JSON.stringify(payload)+'\n\n'+inputLabel+'\n'+job.text;
  if(encoder.encode(encode()).length>LIMIT)fail();
  const groups=[];

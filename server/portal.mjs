@@ -34,6 +34,7 @@ import {selectInitialUiLanguage,fallbackInitialUiLanguage,initialRetryDocument,n
 import {canonicalUiEntryPath} from '../app/ui-first-paint-codec.mjs';
 import {roomExcerpt,latestRoomQuestion} from '../app/library-workspace.mjs';
 import {createReaderChatService} from './reader-chat.mjs';
+import {LIBRARY_CHAT_ID} from '../app/library-chat-context.mjs';
 import {createReaderChatGenerator,createReaderAnnotationGenerator} from './reader-chat-generator.mjs';
 import {createBookIntroductionService} from './book-introduction.mjs';
 import {createIntroductionGenerator} from '../harness/introduction-generator.mjs';
@@ -183,7 +184,7 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
     for(const file of ['highlights.mjs','reader-highlights.mjs','reader-annotations.mjs','reader-annotation-margins.mjs','reader-annotation-pending.mjs','reader-annotation-records.mjs','reader-annotations.css','book-introduction.mjs','note-drafts.mjs','reading-preferences.mjs'])files['/'+file]=file;
     files['/reading-flow.css']='reading-flow.css';
     for(const file of ['book-reading-languages.mjs','library-filter-controls.mjs','library-filters.css','choice-control.mjs','choice-control.css','reader-settings-choices.mjs','library-view-state.mjs','library-workspace.mjs','library-workspace.css','reading-calendar.mjs','reading-dashboard.mjs','library-restore.mjs','library-export.mjs','site-appearance.mjs','reading-clock.mjs','reading-outbox.mjs','reading-queue-store.mjs','reading-session-coordinator.mjs','reading-mark-actions.mjs','reading-mark-store.mjs','reading-draft-store.mjs','reading-retained-backup.mjs','reading-journey.mjs','reading-pending-backup.mjs','reading-ending-context.mjs','reading-session.js','reading-session.css','brand-assets/reading-window.webp','brand-assets/page-detail.webp','brand-assets/page-mark.svg','leafhour-brand.css','brand-assets/leafhour-mark.svg','brand-assets/leafhour-social.svg','brand-assets/leafhour-social.png'])files['/'+file]=file;
-    for(const file of ['squirrel-motion.mjs','squirrel-position.mjs','library-shell.mjs','library-shell.css','library-daily-reading.mjs','library-daily-reading.css','reader-presence.mjs','preference-memory-codec.mjs','preference-memory-ui.mjs','library-reading-preferences.mjs','library-chat.mjs','library-chat-state.mjs','reading-chat-quote.mjs','reading-chat-input.mjs','reader-chat-workspace.mjs','reader-chat-workspace.css','library-chat-markdown.mjs','library-chat.css','icons.svg','icons-LICENSE.txt'])files['/'+file]=file;
+    for(const file of ['squirrel-motion.mjs','squirrel-position.mjs','library-shell.mjs','library-shell.css','library-daily-reading.mjs','library-daily-reading.css','reader-presence.mjs','preference-memory-codec.mjs','preference-memory-ui.mjs','library-reading-preferences.mjs','library-chat.mjs','library-chat-state.mjs','library-chat-context.mjs','reading-chat-quote.mjs','reading-chat-input.mjs','reader-chat-workspace.mjs','reader-chat-workspace.css','library-chat-markdown.mjs','library-chat.css','icons.svg','icons-LICENSE.txt'])files['/'+file]=file;
     for(const file of ['library-profile.mjs','library-book-actions.mjs','reading-schedule.mjs','shelf-order.mjs','library-personal.css','book-gift.css','book-gift.mjs','gift-native-link.mjs','gift-preview.mjs','gift-ritual.mjs','gift-compose.mjs','gift-compose.css','gift-identity.mjs','gift-compose-state.mjs','gift-quote.mjs','gift-waves.mjs','reader-return.mjs'])files['/'+file]=file;
     files['/gift-preview']='book-gift.html';for(const file of ['brand-assets/letter-edge.svg','brand-assets/envelope-edge.svg'])files['/'+file]=file;
     if(safeGiftReturn(p)){files[p]='book-gift.html';res.setHeader('Referrer-Policy','no-referrer');res.setHeader('Cache-Control','private, no-store');}
@@ -271,7 +272,7 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
     requestState.user=user;
     const ownerScoped=p==='/api/people'||p.startsWith('/api/people/')||p.startsWith('/api/billing/')||p.startsWith('/api/admin/billing')||p.startsWith('/api/library')||p==='/api/account/preference-memory'||p==='/api/account/reading-preferences'||p==='/api/account/ui-preferences'||p==='/api/account/observability'||p==='/api/account/observability/events'||req.method==='POST'&&(p==='/api/account/profile'||/^\/api\/book-gifts\/[^/]+\/(?:accept|revoke)$/.test(p));
     if(ownerScoped&&req.headers['x-reader-owner']&&req.headers['x-reader-owner']!==(user?.id||'guest')){res.setHeader('X-Reader-Session-Changed','1');throw fail('账户已切换，请重新进入书房。原账户草稿仍留在原处。',409);}
-    const body=req.method==='POST'?await jsonBody(req,p==='/api/library/notebook-workspace/analyze'?32768:p==='/api/library/notebook-workspace/import'?3*1024*1024:p==='/api/library/notebook-workspace'?16384:p.startsWith('/api/people')?1024*1024:p.startsWith('/api/billing/')?32*1024:p==='/api/account/observability/events'?16*1024:p==='/api/account/observability'?1024:p==='/api/account/ui-preferences'?4*1024:['/api/account/reading-preferences','/api/account/preference-memory'].includes(p)?8*1024:p.startsWith('/api/library/daily-reading')||p.startsWith('/api/agent/daily-')?8*1024:p.startsWith('/api/auth/')||p.startsWith('/api/book-gifts/')||p.endsWith('/introduction')?4096:p.startsWith('/api/library/restore/')?2*1024*1024:p==='/api/account/profile'?160*1024:p.endsWith('/audio/import')||p.endsWith('/audio/validate')?32*1024*1024:['/api/library/import','/api/library/validate'].includes(p)?200*1024*1024:29*1024*1024):null;
+    const body=req.method==='POST'?await jsonBody(req,p==='/api/library/chat'||p.startsWith('/api/library/chat/')?32768:p==='/api/library/notebook-workspace/analyze'?32768:p==='/api/library/notebook-workspace/import'?3*1024*1024:p==='/api/library/notebook-workspace'?16384:p.startsWith('/api/people')?1024*1024:p.startsWith('/api/billing/')?32*1024:p==='/api/account/observability/events'?16*1024:p==='/api/account/observability'?1024:p==='/api/account/ui-preferences'?4*1024:['/api/account/reading-preferences','/api/account/preference-memory'].includes(p)?8*1024:p.startsWith('/api/library/daily-reading')||p.startsWith('/api/agent/daily-')?8*1024:p.startsWith('/api/auth/')||p.startsWith('/api/book-gifts/')||p.endsWith('/introduction')?4096:p.startsWith('/api/library/restore/')?2*1024*1024:p==='/api/account/profile'?160*1024:p.endsWith('/audio/import')||p.endsWith('/audio/validate')?32*1024*1024:['/api/library/import','/api/library/validate'].includes(p)?200*1024*1024:29*1024*1024):null;
     if(p==='/api/billing/account'&&user)await creditGate.recover(user);
     if(await billingRoutes.handle({req,res,url,user,body,send}))return true;
     const localAllowed=allowLocal&&['127.0.0.1','::1','::ffff:127.0.0.1'].includes(req.socket.remoteAddress)&&!publicOrigin;
@@ -360,6 +361,32 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
     if(p==='/api/library'&&req.method==='GET'){
       if(url.searchParams.get('view')==='account'){const snapshot=await library.accountShelf(user);send(200,{...snapshot,user:await visibleUser(user)});return true;}
       const view=await shelfView(user,owner=>library.list(owner,{metadataOnly:url.searchParams.get('view')==='books'}));send(200,{books:view.books,user:await visibleUser(user),shelfRevision:view.revision});return true;
+    }
+    if(p==='/api/library/chat'||p.startsWith('/api/library/chat/')){
+      res.setHeader('Cache-Control','private, no-store');
+      if(!user?.id||user.is_anonymous)throw fail('请先进入自己的书房',401);
+      if(req.method==='POST'&&req.headers['x-reader-owner']!==user.id)throw fail('请重新核对当前书房账户',409);
+      if(p==='/api/library/chat/export'&&req.method==='GET'){send(200,await chat.exportLibraryHistory(user));return true;}
+      if(p==='/api/library/chat'&&req.method==='GET'){send(200,await chat.viewLibrary(user));return true;}
+      const cancel=p.match(/^\/api\/library\/chat\/([A-Za-z0-9_-]{1,120})\/cancel$/);
+      if(cancel&&req.method==='POST'){const result=await chat.cancelLibrary(user,cancel[1]);if(result.status==='cancelled')await creditGate.cancel(user,'conversation',LIBRARY_CHAT_ID,cancel[1]);send(200,result);return true;}
+      if(p!=='/api/library/chat')throw fail('找不到这个对话操作',404);
+      if(req.method!=='POST')throw fail('不支持这个请求',405);
+      const streaming=String(req.headers.accept||'').split(',').some(value=>value.trim()==='application/x-ndjson');
+      const frame=value=>{
+        if(res.destroyed||res.writableEnded)return;
+        if(!res.headersSent){res.writeHead(200,{'Content-Type':'application/x-ndjson; charset=utf-8','Cache-Control':'private, no-store, no-transform','X-Accel-Buffering':'no'});res.flushHeaders?.();}
+        res.write(JSON.stringify(value)+'\n');
+      };
+      try{
+        const result=await creditGate.run({user,action:'conversation',bookId:LIBRARY_CHAT_ID,input:body,execute:input=>chat.sendLibrary(user,input,{...(streaming?{onProgress:frame}:{}),authorizePeople:async()=>(await auth.userFor(token))?.id===user.id})});
+        if(result?.status==='failed')domainOutcome(user,{name:'chat_failed',properties:{page:'library',stage:'chat',outcome:'failure',errorKind:'internal'}},{operationId:requestState.operationId,dedupKey:'library-chat-failed:'+result.id});
+        if(streaming){frame({type:'result',turn:result});res.end();}else send(200,result);
+      }catch(error){
+        if(!res.headersSent)throw error;
+        queueFault(requestState,error);frame({type:'error',status:error.status||500,...(error.billingOperation?{billingOperation:error.billingOperation}:{})});res.end();
+      }
+      return true;
     }
     if(p==='/api/library/pins'&&req.method==='POST'){send(200,await library.setShelfPins(user,body));return true;}
     if(p==='/api/library/order'&&req.method==='POST'){send(200,await library.reorderShelf(user,body));return true;}

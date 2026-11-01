@@ -1,6 +1,7 @@
 import {activeHighlights,highlightKey,highlightSegments} from './highlights.mjs';
 import {t,getUiLocale,onUiLocaleChange,createUiLabels} from './ui-locale.mjs';
 import {sourceLineatedNodes} from './passage-layers.mjs';
+import {mountReaderChatWorkspace} from './reader-chat-workspace.mjs';
 
 const HIGHLIGHT_UI='reader.highlight.';
 // Works with text nodes inside persistent marks as well as plain prose.
@@ -16,7 +17,7 @@ export function mountReaderHighlights({document,getRecords,signedIn,available,ge
   const annotate=document.getElementById('annotate-selection');
   let annotation,annotationEpoch=0;
   const openingIntent=(ticket=annotationEpoch)=>{const intent=intentEpoch;return ()=>!disposed&&ticket===annotationEpoch&&intent===intentEpoch;};
-  const loadAnnotations=()=>annotation??=loadAnnotationModule().then(module=>disposed?null:module.mountReaderAnnotations({document,api,getSession,getRecords,getSelection:()=>selected,signedIn,available,accept,notify,isCurrent:()=>!disposed}));
+  const loadAnnotations=()=>annotation??=loadAnnotationModule().then(module=>disposed?null:module.mountReaderAnnotations({document,api,getSession,getRecords,getSelection:()=>selected,signedIn,available,accept,notify,isCurrent:()=>!disposed,mountWorkspace:mountReaderChatWorkspace}));
   function loadFailed(ticket=annotationEpoch){if(!disposed&&ticket===annotationEpoch){document.body.dataset.annotationsState='error';notify('',{error:true,reload:true,id:'reader.annotation.loadFailed'});}}
   async function openAnnotation(row,origin,ticket=annotationEpoch,validate=()=>true){
     try{if(disposed||ticket!==annotationEpoch||!validate())return;const controller=await loadAnnotations();if(!disposed&&ticket===annotationEpoch&&validate())await controller?.openHighlight(row,origin,{validate});}

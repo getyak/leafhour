@@ -50,6 +50,15 @@ private struct ReaderConversationDraft: Codable {
 /// Read-only loading is separate from the explicitly confirmed generation path.
 @MainActor @Observable
 final class ReaderCloudTools {
+    static let libraryChatID = "leafhour-library-chat"
+    static let libraryChatVersion = "library-chat-v1"
+    static let libraryChatPassage = "conversation"
+    static func libraryChatIdentity(ownerID: String) -> CloudBookIdentity {
+        CloudBookIdentity(ownerID: ownerID, bookID: libraryChatID, contentVersion: libraryChatVersion, sourceFormat: "")
+    }
+    private func conversationPath(_ bookID: String) -> String {
+        bookID == Self.libraryChatID ? "/api/library/chat" : bookPath(bookID) + "/chat"
+    }
     private(set) var generationTerminalStatus: String?
     var completedTranslation: CloudJSON?
     var translation: ReaderTranslation?
@@ -96,7 +105,7 @@ final class ReaderCloudTools {
             if let data = try await library.conversationDraft(bookID: identity.bookID, ownerID: identity.ownerID) {
                 let draft = try JSONDecoder().decode(ReaderConversationDraft.self, from: data)
                 if let pending = draft.retry {
-                    guard pending.ownerID == identity.ownerID, pending.path == bookPath(identity.bookID) + "/chat", pending.action == "conversation" else {
+                    guard pending.ownerID == identity.ownerID, pending.path == conversationPath(identity.bookID), pending.action == "conversation" else {
                         throw LibraryError.invalid("已有对话草稿的归属无法核对，原文件已保留。")
                     }
                 }
@@ -146,6 +155,26 @@ final class ReaderCloudTools {
             readConversation(value)
         } catch is CancellationError { }
         catch { if generation == stamp { self.error = error.localizedDescription } }
+    }
+    func loadLibraryConversation(ownerID: String, cloud: CloudLibraryClient) async {
+        guard !generating else { return }
+        let stamp = UUID(); generation = stamp; error = nil; loading = true
+        defer { if generation == stamp { loading = false } }
+        do {
+            let value = try object(await cloud.data(path: "/api/library/chat", ownerID: ownerID))
+            try Task.checkCancellation(); guard generation == stamp else { return }
+            guard value["bookId"] as? String == Self.libraryChatID,
+                  value["contentVersion"] as? String == Self.libraryChatVersion,
+                  (value["scope"] as? [String: Any])?["mode"] as? String == "library" else {
+                throw LibraryError.invalid("对话暂时无法核对，请重新读取。")
+            }
+            readConversation(value)
+        } catch is CancellationError { }
+        catch { if generation == stamp { self.error = error.localizedDescription } }
+    }
+    func prepareLibraryConversation(ownerID: String, cloud: CloudLibraryClient) async {
+        await prepareRequest("conversation", identity: Self.libraryChatIdentity(ownerID: ownerID),
+                             passageID: Self.libraryChatPassage, original: "", cloud: cloud)
     }
     func prepareConversation(cloud: CloudLibraryClient) async {
         guard let context = chatContext else { error = "请先重新读取本次引用的原文。"; return }
@@ -274,8 +303,9 @@ final class ReaderCloudTools {
             let sessionValue = try object(await cloud.data(path: "/api/auth/session", ownerID: identity.ownerID))
             guard (sessionValue["user"] as? [String: Any])?["id"] as? String == identity.ownerID else { throw LibraryError.invalid("账号已变化，请重新打开自己的书房。") }
             let billing = sessionValue["billing"] as? [String: Any] ?? [:]
-            var explanation = action == "translation" ? "只处理当前段落及必要的相邻上下文。直译和意译独立保存为 AI 草稿。" : "发送当前问题与书内位置，沿用本书最近的对话。私人笔记不会发送。"
-            explanation += "\n\n原文：" + String(original.prefix(120))
+            let accountConversation = identity.bookID == Self.libraryChatID && action == "conversation"
+            var explanation = accountConversation ? "发送当前问题与最近六轮对话，可按需查阅自己的书房和公开网络。私人笔记不会发送。" : action == "translation" ? "只处理当前段落及必要的相邻上下文。直译和意译独立保存为 AI 草稿。" : "发送当前问题与书内位置，沿用本书最近的对话。私人笔记不会发送。"
+            if !accountConversation { explanation += "\n\n原文：" + String(original.prefix(120)) }
             if billing["enabled"] as? Bool == true {
                 let units = action == "translation" ? 1_000_000 : 4_000_000
                 let prices = billing["prices"] as? [String: Int] ?? [:]
@@ -304,7 +334,7 @@ final class ReaderCloudTools {
             if action == "conversation" { explanation += scope == "library" ? "\n当前查阅范围：自己的书房与网络。" : "\n当前查阅范围：这本书。" }
             try Task.checkCancellation()
             consent = ReaderGenerationConsent(id: requestID, title: action == "translation" ? "翻译这一段" : "向陪读提问", explanation: explanation,
-                path: bookPath(identity.bookID) + (action == "translation" ? "/translate" : "/chat"), ownerID: identity.ownerID,
+                path: action == "translation" ? bookPath(identity.bookID) + "/translate" : conversationPath(identity.bookID), ownerID: identity.ownerID,
                 body: try JSONSerialization.data(withJSONObject: body), action: action, passageID: passageID)
         } catch is CancellationError { }
         catch { self.error = error.localizedDescription }

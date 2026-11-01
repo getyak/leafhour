@@ -216,7 +216,7 @@ final class VideoExperienceUITests: XCTestCase {
     }
     private func chooseNavigation(_ title: String) {
         openTool("阅读设置"); expandPanel()
-        let details = app.buttons["reader-navigation-settings"]
+        let details = app.segmentedControls["reading-style-categories"].buttons["阅读"]
         scrollTo(details, in: foregroundForm(), direction: .up); require(details); details.tap()
         let choice = app.segmentedControls.buttons[title]
         // The navigation picker follows typography and paper settings. Scroll
@@ -848,7 +848,7 @@ final class VideoExperienceUITests: XCTestCase {
         require(confirmation); require(confirmation.staticTexts.matching(NSPredicate(format: "label CONTAINS %@", "私人笔记不会发送")).firstMatch)
         confirmation.buttons["确认提交"].tap()
         require(containsText("GET317 合成 AI 回答样本"))
-        require(app.staticTexts["AI 陪读"])
+        require(app.staticTexts["松鼠 · AI 陪读"])
         let remaining = question.value as? String ?? ""
         XCTAssertTrue(remaining.isEmpty || remaining == "写下此刻的问题", "Delivered question should leave an empty composer")
     }
@@ -2595,7 +2595,7 @@ final class VideoExperienceUITests: XCTestCase {
         launch(); openBook(translatedTitle)
         XCTAssertTrue((reader.value as? String)?.contains("GET317 SYNTHETIC") == true)
         wakeTop(); app.buttons["阅读设置"].tap(); expandPanel()
-        let content = app.buttons["reader-content-settings"]
+        let content = app.segmentedControls["reading-style-categories"].buttons["阅读"]
         scrollTo(content, in: foregroundForm(), direction: .up); require(content); content.tap()
         let modes = app.segmentedControls["reader-view-mode"]
         require(modes); modes.buttons["译文"].tap()
@@ -2630,6 +2630,7 @@ final class VideoExperienceUITests: XCTestCase {
         launch(); openBook(translatedTitle); wakeTop(); app.buttons["阅读设置"].tap(); expandPanel()
         let form = foregroundForm(), font = app.sliders["正文字号"]
         scrollTo(font,in:form); font.adjust(toNormalizedSliderPosition:1)
+        app.segmentedControls["reading-style-categories"].buttons["纸面"].tap()
         let night = app.buttons["夜读"]; scrollTo(night,in:form); night.tap()
         XCTAssertTrue(night.isSelected)
         capture("GET344-night-reading-settings")
@@ -2681,7 +2682,7 @@ final class VideoExperienceUITests: XCTestCase {
         let download = app.buttons["下载并阅读，" + cloudTitle]; require(download); download.tap()
         require(reader, timeout: 25)
         wakeTop(); app.buttons["阅读设置"].tap(); expandPanel()
-        let content = app.buttons["reader-content-settings"]
+        let content = app.segmentedControls["reading-style-categories"].buttons["阅读"]
         scrollTo(content, in: foregroundForm(), direction: .up); require(content); content.tap()
         let modes = app.segmentedControls["reader-view-mode"]; require(modes)
         modes.buttons["译文"].tap()
@@ -2729,7 +2730,7 @@ final class VideoExperienceUITests: XCTestCase {
         capture("GET352-default-native-page-turn")
         chooseNavigation("上下滚动"); shelf(); openBook(markdownTitle)
         openTool("阅读设置"); expandPanel()
-        let details = app.buttons["reader-navigation-settings"]
+        let details = app.segmentedControls["reading-style-categories"].buttons["阅读"]
         scrollTo(details, in: foregroundForm(), direction: .up); details.tap()
         let scroll = app.segmentedControls.buttons["上下滚动"]
         scrollTo(scroll, in: foregroundForm(), direction: .up)
@@ -2864,7 +2865,7 @@ final class VideoExperienceUITests: XCTestCase {
     func test104PagePresentationAndSwipeOnlyChoiceSurviveColdResume() {
         launch(["--get341-unique-source"]); openBook(translatedTitle)
         openTool("阅读设置"); expandPanel()
-        let details = app.buttons["reader-navigation-settings"]
+        let details = app.segmentedControls["reading-style-categories"].buttons["阅读"]
         scrollTo(details, in: foregroundForm(), direction: .up); details.tap()
         let animation = app.buttons["reader-page-animation"]
         scrollTo(animation, in: foregroundForm(), direction: .up); require(animation); animation.tap()
@@ -2900,6 +2901,7 @@ extension VideoExperienceUITests {
         launch()
         app.tabBars.buttons["设置"].tap()
         app.buttons["settings-reading-style"].tap()
+        app.segmentedControls["reading-style-categories"].buttons["纸面"].tap()
         require(app.buttons["reader-theme-sage"])
         app.buttons["reader-theme-sage"].tap()
         XCTAssertTrue(app.buttons["reader-theme-sage"].isSelected)
@@ -2910,16 +2912,16 @@ extension VideoExperienceUITests {
         coldRelaunch(); resumeReaderIfOffered()
         if reader.exists { shelf() }
         app.tabBars.buttons["设置"].tap(); app.buttons["settings-reading-style"].tap()
+        app.segmentedControls["reading-style-categories"].buttons["纸面"].tap()
         require(app.buttons["reader-theme-night"])
         XCTAssertTrue(app.buttons["reader-theme-night"].isSelected)
     }
 
     func test111GlobalChatKeepsDraftAcrossTabsAndColdLaunch() {
         launch(); app.tabBars.buttons["Chat"].tap()
-        require(app.buttons["chat-choose-book"]); app.buttons["chat-choose-book"].tap()
-        let choice = app.buttons.containing(.staticText, identifier: translatedTitle).firstMatch
-        require(choice); choice.tap()
-        require(app.buttons["chat-source-context"])
+        require(app.descendants(matching: .any)["chat-companion-greeting"])
+        XCTAssertFalse(app.buttons["chat-choose-book"].exists)
+        XCTAssertFalse(app.buttons["chat-source-context"].exists)
         let question = app.descendants(matching: .any)["reader-question"]
         require(question); question.tap(); question.typeText("Keep my unfinished thought")
         require(app.buttons["reader-question-dismiss-keyboard"]); app.buttons["reader-question-dismiss-keyboard"].tap()
@@ -2928,8 +2930,7 @@ extension VideoExperienceUITests {
         XCTAssertEqual(question.value as? String, "Keep my unfinished thought")
         coldRelaunch(); resumeReaderIfOffered()
         if reader.exists { shelf() }
-        app.tabBars.buttons["Chat"].tap(); app.buttons["chat-choose-book"].tap()
-        require(choice); choice.tap(); require(question)
+        app.tabBars.buttons["Chat"].tap(); require(question)
         XCTAssertEqual(question.value as? String, "Keep my unfinished thought")
         capture("GET357-global-chat-restored")
     }
@@ -2953,10 +2954,40 @@ extension VideoExperienceUITests {
         app.tabBars.buttons["设置"].tap()
         let entry = app.buttons["settings-reading-style"]
         scrollTo(entry, in: app.collectionViews.firstMatch); require(entry); entry.tap()
+        app.segmentedControls["reading-style-categories"].buttons["纸面"].tap()
         let night = app.buttons["reader-theme-night"]
         scrollTo(night, in: app.collectionViews.firstMatch); require(night); night.tap()
         XCTAssertTrue(night.isSelected)
         capture("GET357-accessibility-reading-style")
         let back = app.navigationBars.buttons.firstMatch; require(back); XCTAssertTrue(back.isHittable)
     }
+    func test114ContentsOutsideTapReturnsWithoutTurningThePage() {
+        launch(); openBook(translatedTitle); wakeTools()
+        let before = app.buttons["reader-contents"].value as? String
+        app.buttons["reader-contents"].tap()
+        require(app.buttons["reader-contents-backdrop"])
+        require(app.buttons["reader-contents-close"])
+        XCTAssertTrue(app.buttons["reader-contents-close"].isHittable)
+        capture("reading-chat-compact-contents")
+        app.coordinate(withNormalizedOffset: CGVector(dx: 0.98, dy: 0.45)).tap()
+        XCTAssertTrue(app.buttons["reader-contents-backdrop"].waitForNonExistence(timeout: 5))
+        require(reader); wakeTools()
+        XCTAssertEqual(app.buttons["reader-contents"].value as? String, before)
+    }
+    func test115ReadingConversationUsesFullPageAndReturnsToTheSameSource() {
+        launch(); openBook(translatedTitle)
+        let before = reader.value as? String
+        openMoreLink("阅读陪读")
+        let field = app.descendants(matching: .any)["reader-question"]
+        require(field)
+        XCTAssertLessThan(app.navigationBars.firstMatch.frame.minY, 100)
+        field.tap(); field.typeText("Keep this source question")
+        app.buttons["reader-question-dismiss-keyboard"].tap()
+        capture("reading-chat-full-page")
+        app.buttons["reader-chat-return"].tap(); require(reader)
+        XCTAssertEqual(reader.value as? String, before)
+        openMoreLink("阅读陪读"); require(field)
+        XCTAssertEqual(field.value as? String, "Keep this source question")
+    }
+
 }

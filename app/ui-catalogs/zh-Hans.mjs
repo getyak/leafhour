@@ -1,6 +1,17 @@
 // GET-192 immutable zh-Hans UI catalogue. Fixed public stateless ID→string
 // data with the same keys as app/ui-catalogs/en.mjs. No logic lives here.
 export default Object.freeze({
+  "reader.settings.text": "文字",
+  "reader.settings.details": "更多排版",
+  "chat.back": "返回",
+  "chat.backLibrary": "返回书房",
+  "chat.companion": "Leafhour 陪读",
+  "chat.noBook": "不选书 · 直接聊",
+  "chat.chooseBook": "书籍上下文（可选）",
+  "chat.greeting": "今天想聊点什么？",
+  "chat.greetingBody": "聊一个想法，问一个问题，或找下一本书。也可以随时选一本书一起读。",
+  "chat.askAnything": "聊点什么…",
+
   "arrival.title": "回来接着读",
   "arrival.close": "收起今天的阅读回顾",
   "arrival.talk": "聊聊这本书",

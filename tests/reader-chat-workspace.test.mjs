@@ -1,7 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {mountReaderChatWorkspace} from '../app/reader-chat-workspace.mjs';
-import {createReadingNavigation} from '../app/reading-book.mjs';
 
 class Element extends EventTarget{
  constructor(doc){super();this.doc=doc;this.children=[];this.attrs=new Map();this.values=new Map();this.inert=false;this.hidden=false;this.isConnected=true;this.style={setProperty:(k,v)=>this.values.set(k,v),getPropertyValue:k=>this.values.get(k)||'',removeProperty:k=>this.values.delete(k)};const classes=new Set();this.classList={add:k=>classes.add(k),remove:k=>classes.delete(k),contains:k=>classes.has(k),toggle:(k,v)=>v?classes.add(k):classes.delete(k)};}
@@ -25,72 +24,60 @@ function fixture(width=1440,stored){
  const key=(node,key,shiftKey=false)=>{const event=new Event('keydown',{cancelable:true});Object.assign(event,{key,shiftKey});node.dispatchEvent(event);return event;};
  return {workspace,root,book,header,document,window,reader,storage,writes,restored,flush,key,changeBook:()=>{currentBook={bookId:'two',contentVersion:'v1'};}};
 }
-test('desktop reserves sidebar space and bounds keyboard resizing',()=>{
- const f=fixture();f.workspace.setOpen(true);const separator=f.root.children.find(n=>n.getAttribute('role')==='separator');assert.ok(separator);
- assert.equal(f.document.body.classList.contains('has-reader-chat'),true);assert.equal(f.document.body.style.getPropertyValue('--reader-chat-width'),'400px');assert.equal(separator.getAttribute('aria-valuenow'),'400');
- f.key(separator,'End');assert.equal(separator.getAttribute('aria-valuenow'),'640');f.key(separator,'Home');assert.equal(separator.getAttribute('aria-valuenow'),'320');
- f.key(separator,'ArrowLeft',true);assert.equal(separator.getAttribute('aria-valuenow'),'384');
- f.window.innerWidth=1100;f.window.dispatchEvent(new Event('resize'));f.key(separator,'End');assert.equal(separator.getAttribute('aria-valuenow'),'460');
- f.workspace.setOpen(false);assert.equal(f.document.body.classList.contains('has-reader-chat'),false);f.workspace.dispose();
+test('every viewport contains one full-page destination without reflowing the reader',()=>{
+ for(const width of [320,390,1440]){const f=fixture(width);f.workspace.setOpen(true);assert.equal(f.root.getAttribute('aria-modal'),'true');assert.equal(f.root.classList.contains('is-reader-chat-fullpage'),true);assert.equal(f.book.inert,true);assert.equal(f.header.inert,true);assert.equal(f.document.body.style.getPropertyValue('overflow'),'hidden');assert.equal(f.document.body.classList.contains('has-reader-chat'),false);assert.equal(f.document.body.style.getPropertyValue('--reader-chat-width'),'');f.flush();assert.deepEqual(f.restored,[]);f.workspace.setOpen(false);f.flush();assert.deepEqual(f.restored,[{passageId:'p12',offset:104}]);assert.equal(f.book.inert,false);assert.equal(f.header.inert,true);f.workspace.dispose();}
 });
-test('phone containment restores pre-existing inert ownership across breakpoint changes and disposal',()=>{
- const f=fixture(390);f.workspace.setOpen(true);assert.equal(f.book.inert,true);assert.equal(f.header.inert,true);assert.equal(f.root.getAttribute('aria-modal'),'true');
- f.window.innerWidth=1440;f.window.dispatchEvent(new Event('resize'));assert.equal(f.book.inert,false);assert.equal(f.header.inert,true);assert.equal(f.root.getAttribute('aria-modal'),'false');
- f.window.innerWidth=390;f.window.dispatchEvent(new Event('resize'));f.workspace.dispose();assert.equal(f.book.inert,false);assert.equal(f.header.inert,true);assert.equal(f.root.getAttribute('aria-modal'),'false');
+test('closing restores the captured reader position and retains prior overflow ownership',()=>{
+ const f=fixture();f.document.body.style.setProperty('overflow','auto');f.workspace.setOpen(true);f.window.innerWidth=390;f.window.dispatchEvent(new Event('resize'));assert.equal(f.document.body.style.getPropertyValue('overflow'),'hidden');f.workspace.setOpen(false);assert.equal(f.document.body.style.getPropertyValue('overflow'),'auto');f.flush();assert.equal(f.restored.length,1);f.workspace.dispose();
 });
-test('layout callbacks cannot restore a passage from a book that has since changed',()=>{
- const f=fixture();f.workspace.setOpen(true);f.changeBook();f.flush();assert.deepEqual(f.restored,[]);f.workspace.dispose();f.flush();assert.deepEqual(f.restored,[]);
+test('a changed book or navigation ticket defeats the queued reading return',()=>{
+ for(const kind of ['book','ticket','chapter']){const f=fixture();let valid=true;f.reader.captureLayout=()=>()=>valid;f.workspace.setOpen(true);if(kind==='book')f.changeBook();if(kind==='chapter')f.document.dispatchEvent(new Event('reader:chapter'));f.workspace.setOpen(false);if(kind==='ticket')valid=false;f.flush();assert.deepEqual(f.restored,[],kind);f.workspace.dispose();}
 });
-test('opening resizing and closing the sidebar restore the reading anchor',()=>{
- const f=fixture();f.workspace.setOpen(true);f.flush();const separator=f.root.children.find(n=>n.getAttribute('role')==='separator');f.key(separator,'ArrowLeft');f.flush();f.workspace.setOpen(false);f.flush();assert.equal(f.restored.length,3);assert.ok(f.restored.every(a=>a.passageId==='p12'&&a.offset===104));f.workspace.dispose();
+test('browser Back closes the destination once and preserves the surrounding history state',()=>{
+ const f=fixture(),stack=[{libraryView:'shelf'}];let index=0,pushes=0,backs=0,closes=0,workspace;
+ f.window.history={get state(){return stack[index];},pushState(state){stack.splice(++index);stack[index]=state;pushes++;},replaceState(state){stack[index]=state;},back(){backs++;if(index>0)index--;f.window.dispatchEvent(new Event('popstate'));}};
+ f.workspace.dispose();workspace=mountReaderChatWorkspace({root:f.root,document:f.document,window:f.window,getReader:()=>f.reader,onBack:()=>{closes++;workspace.setOpen(false);}});
+ workspace.setOpen(true);assert.equal(pushes,1);assert.equal(f.window.history.state.libraryView,'shelf');f.window.history.back();assert.equal(closes,1);assert.equal(backs,1);assert.equal(workspace.isFullPage(),false);assert.deepEqual(f.window.history.state,{libraryView:'shelf'});f.flush();assert.equal(f.restored.length,1);
+ workspace.setOpen(true);workspace.setOpen(false);assert.equal(backs,2);assert.equal(closes,1);workspace.dispose();
 });
-test('sidebar removes reserved space on mobile and restores prior body width ownership on disposal',()=>{
- const f=fixture();f.workspace.dispose();f.document.body.style.setProperty('--reader-chat-width','28px');
- const workspace=mountReaderChatWorkspace({root:f.root,document:f.document,window:f.window,storage:f.storage});workspace.setOpen(true);
- f.window.innerWidth=390;f.window.dispatchEvent(new Event('resize'));assert.equal(f.document.body.classList.contains('has-reader-chat'),false);
- f.window.innerWidth=1440;f.window.dispatchEvent(new Event('resize'));assert.equal(f.document.body.classList.contains('has-reader-chat'),true);
- workspace.dispose();assert.equal(f.document.body.classList.contains('has-reader-chat'),false);assert.equal(f.document.body.style.getPropertyValue('--reader-chat-width'),'28px');
+test('reopening before the return frame prevents an obsolete anchor restore',()=>{
+ const f=fixture();f.workspace.setOpen(true);f.workspace.setOpen(false);f.workspace.setOpen(true);f.flush();assert.deepEqual(f.restored,[]);f.workspace.dispose();f.flush();assert.deepEqual(f.restored,[]);
 });
-test('pointer resize persists only a completed gesture and releases capture on cancellation',()=>{
- const f=fixture();f.workspace.setOpen(true);const separator=f.root.children.find(n=>n.getAttribute('role')==='separator');
- const pointer=(type,x)=>{const e=new Event(type,{cancelable:true});Object.assign(e,{button:0,pointerId:7,clientX:x});separator.dispatchEvent(e);};
- pointer('pointerdown',1000);pointer('pointermove',900);assert.equal(separator.getAttribute('aria-valuenow'),'500');assert.equal(f.writes.length,0);
- pointer('pointercancel',900);assert.equal(separator.getAttribute('aria-valuenow'),'400');assert.equal(separator.capture,null);
- pointer('pointerdown',1000);pointer('pointermove',900);pointer('pointerup',900);assert.equal(f.writes[0][1],'500');assert.equal(separator.capture,null);
- f.workspace.dispose();pointer('pointermove',800);assert.equal(f.writes.length,1);
+test('Tab and Shift+Tab stay within the conversation at desktop and phone widths',()=>{
+ for(const width of [390,1440]){const f=fixture(width),first=new Element(f.document),last=new Element(f.document);f.root.append(first,last);for(const n of [first,last]){n.getClientRects=()=>[{}];n.closest=()=>null;}f.root.querySelectorAll=()=>[first,last];f.workspace.setOpen(true);last.focus();f.key(f.root,'Tab');assert.equal(f.document.activeElement,first);first.focus();f.key(f.root,'Tab',true);assert.equal(f.document.activeElement,last);f.workspace.dispose();}
 });
-test('invalid stored widths and denied persistence keep a usable bounded in-memory workspace',()=>{
- const f=fixture(1440,'400px');f.storage.setItem=()=>{throw Error('Denied');};f.workspace.setOpen(true);const separator=f.root.children.find(n=>n.getAttribute('role')==='separator');
- assert.equal(separator.getAttribute('aria-valuenow'),'400');assert.doesNotThrow(()=>f.key(separator,'ArrowLeft'));assert.equal(separator.getAttribute('aria-valuenow'),'416');f.workspace.dispose();
-});
-test('phone Tab and Shift+Tab stay in the actual conversation focus order',()=>{
- const f=fixture(390),first=new Element(f.document),last=new Element(f.document);f.root.append(first,last);
- for(const n of [first,last]){n.getClientRects=()=>[{}];n.closest=()=>null;}
- f.root.querySelectorAll=()=>[first,last];f.workspace.setOpen(true);last.focus();f.key(f.root,'Tab');assert.equal(f.document.activeElement,first);
- first.focus();f.key(f.root,'Tab',true);assert.equal(f.document.activeElement,last);f.workspace.dispose();
-});
-test('disposing a drag releases pointer capture without persisting an unfinished gesture',()=>{
- const f=fixture();f.workspace.setOpen(true);const separator=f.root.children.find(n=>n.getAttribute('role')==='separator');const e=new Event('pointerdown',{cancelable:true});Object.assign(e,{button:0,pointerId:9,clientX:1000});separator.dispatchEvent(e);assert.equal(separator.capture,9);f.workspace.dispose();assert.equal(separator.capture,null);assert.equal(f.writes.length,0);
-});
-test('a newer chapter navigation defeats the queued layout restore without cancelling the navigation',async()=>{
- const f=fixture(),commits=[];let ready;const source=new Promise(resolve=>{ready=resolve;});const nav=createReadingNavigation({isLoaded:()=>false,ensure:()=>source,commit:id=>commits.push(id)});
- f.reader.captureLayout=()=>nav.capture();f.workspace.setOpen(true);const pending=nav.navigate('next');f.flush();assert.deepEqual(f.restored,[]);ready();assert.equal(await pending,true);assert.deepEqual(commits,['next']);f.workspace.dispose();
+test('disposal releases only its inert and scroll ownership',()=>{
+ const f=fixture();f.document.body.style.setProperty('overflow','auto');f.workspace.setOpen(true);f.workspace.dispose();assert.equal(f.book.inert,false);assert.equal(f.header.inert,true);assert.equal(f.root.getAttribute('aria-modal'),'false');assert.equal(f.document.body.style.getPropertyValue('overflow'),'auto');assert.equal(f.root.classList.contains('reader-chat-workspace'),false);
 });
 
-test('new page, touch or reading-key intent defeats a queued old layout restore',()=>{
- for(const intent of ['reader:page','touchstart','keydown']){
-  const f=fixture();f.workspace.setOpen(true);const event=new Event(intent);if(intent==='keydown')Object.assign(event,{key:'PageDown'});Object.defineProperty(event,'target',{value:f.book});f.document.dispatchEvent(event);f.flush();assert.deepEqual(f.restored,[],intent);f.workspace.dispose();
+test('an explicit source jump cancels the queued close restore even without a reader layout ticket',()=>{
+ const f=fixture();f.workspace.setOpen(true);f.workspace.setOpen(false);f.document.dispatchEvent(new Event('reader:jump'));f.flush();assert.deepEqual(f.restored,[]);f.workspace.dispose();
+});
+
+test('a citation return holds browser scroll restoration until after popstate, then restores its previous mode',()=>{
+ for(const previous of ['auto','manual']){
+  const f=fixture(),tasks=[];let state={},nativeRestores=0;
+  f.window.setTimeout=fn=>tasks.push(fn);
+  f.window.history={scrollRestoration:previous,get state(){return state;},pushState(next){state=next;},replaceState(next){state=next;},back(){state={};f.window.dispatchEvent(new Event('popstate'));if(this.scrollRestoration==='auto')nativeRestores++;}};
+  f.workspace.setOpen(true);assert.equal(f.window.history.scrollRestoration,'manual');f.workspace.setOpen(false);f.document.dispatchEvent(new Event('reader:jump'));f.flush();assert.equal(nativeRestores,0);assert.deepEqual(f.restored,[]);assert.equal(f.window.history.scrollRestoration,'manual');tasks.splice(0).forEach(fn=>fn());assert.equal(f.window.history.scrollRestoration,previous);f.workspace.dispose();
  }
 });
 
-test('mobile scroll containment restores the prior body overflow on close and desktop resize',()=>{
- const f=fixture(390);f.document.body.style.setProperty('overflow','auto');f.workspace.setOpen(true);assert.equal(f.document.body.style.getPropertyValue('overflow'),'hidden');
- f.window.innerWidth=1440;f.window.dispatchEvent(new Event('resize'));assert.equal(f.document.body.style.getPropertyValue('overflow'),'auto');
- f.window.innerWidth=390;f.window.dispatchEvent(new Event('resize'));f.workspace.dispose();assert.equal(f.document.body.style.getPropertyValue('overflow'),'auto');
+test('a new conversation inherits the original history mode while the previous workspace release is pending',()=>{
+ const f=fixture(),tasks=[];let state={};
+ f.window.setTimeout=fn=>tasks.push(fn);f.window.history={scrollRestoration:'auto',get state(){return state;},pushState(next){state=next;},replaceState(next){state=next;},back(){state={};f.window.dispatchEvent(new Event('popstate'));}};
+ const other=new Element(f.document);f.document.body.append(other);const second=mountReaderChatWorkspace({root:other,document:f.document,window:f.window,getReader:()=>f.reader});
+ f.workspace.setOpen(true);f.workspace.setOpen(false);second.setOpen(true);tasks.splice(0).forEach(fn=>fn());assert.equal(f.window.history.scrollRestoration,'manual','an old close cannot release the new conversation');second.setOpen(false);tasks.splice(0).forEach(fn=>fn());assert.equal(f.window.history.scrollRestoration,'auto');second.dispose();f.workspace.dispose();
 });
 
-test('mobile containment releases its inert ownership when an annotation joins the dialog',()=>{
- const f=fixture(390),annotation=new Element(f.document);f.document.body.append(annotation);f.workspace.setOpen(true);assert.equal(annotation.inert,true);
- annotation.remove();f.root.append(annotation);f.window.dispatchEvent(new Event('resize'));assert.equal(annotation.inert,false);assert.equal(f.book.inert,true);
- f.workspace.setOpen(false);assert.equal(annotation.inert,false);assert.equal(f.book.inert,false);f.workspace.dispose();
+test('reopening waits for an asynchronous history return and does not let its old popstate close the new destination',()=>{
+ const f=fixture(),tasks=[],returns=[],stack=[{reader:true}];let index=0,pushes=0;
+ f.window.setTimeout=fn=>tasks.push(fn);f.window.history={scrollRestoration:'auto',get state(){return stack[index];},pushState(next){stack.splice(++index);stack[index]=next;pushes++;},replaceState(next){stack[index]=next;},back(){const target=index-1;returns.push(()=>{index=target;f.window.dispatchEvent(new Event('popstate'));});}};
+ f.workspace.setOpen(true);f.workspace.setOpen(false);f.workspace.setOpen(true);assert.equal(pushes,1);assert.equal(f.workspace.isFullPage(),true);returns.shift()();assert.equal(pushes,2);assert.equal(index,1);assert.equal(f.workspace.isFullPage(),true);tasks.splice(0).forEach(fn=>fn());assert.equal(f.window.history.scrollRestoration,'manual');f.workspace.setOpen(false);returns.shift()();tasks.splice(0).forEach(fn=>fn());assert.equal(index,0);assert.equal(f.window.history.scrollRestoration,'auto');assert.equal(f.workspace.isFullPage(),false);f.workspace.dispose();
+});
+
+test('an older release timer cannot release a later close before its own history return',()=>{
+ const f=fixture(),tasks=[],returns=[];let state={};
+ f.window.setTimeout=fn=>tasks.push(fn);f.window.history={scrollRestoration:'auto',get state(){return state;},pushState(next){state=next;},replaceState(next){state=next;},back(){returns.push(()=>{state={};f.window.dispatchEvent(new Event('popstate'));});}};
+ f.workspace.setOpen(true);f.workspace.setOpen(false);returns.shift()();f.workspace.setOpen(true);f.workspace.setOpen(false);tasks.splice(0).forEach(fn=>fn());assert.equal(f.window.history.scrollRestoration,'manual');returns.shift()();tasks.splice(0).forEach(fn=>fn());assert.equal(f.window.history.scrollRestoration,'auto');f.workspace.dispose();
 });

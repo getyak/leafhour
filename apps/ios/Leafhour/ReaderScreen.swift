@@ -210,7 +210,13 @@ struct ReaderScreen: View {
         .preferredColorScheme(session.state.preferences.colorScheme(following: systemColorScheme))
         .statusBarHidden(false)
         .interactiveDismissDisabled(panel?.isCompanion != true && (session.saving || session.saveError != nil))
-        .sheet(item: $panel, onDismiss: {
+        .sheet(item: Binding<ReaderPanel?>(get: {
+            guard let panel, !panel.isCompanion, panel.id != "contents" else { return nil }
+            return panel
+        }, set: { value in
+            if value == nil && (panel?.isCompanion == true || panel?.id == "contents") { return }
+            panel = value
+        }), onDismiss: {
             hasNativeTextSelection = false; session.clearTransientSelection(); selectionDismissalID = UUID(); chrome = .asleep
             if startAutoPageOnDismiss { startAutoPageOnDismiss = false; beginAutoPaging() }
         }) { destination in
@@ -227,9 +233,45 @@ struct ReaderScreen: View {
             }
         } message: { Text(session.message ?? session.saveMessage ?? "") }
     }
-    private var readingRefreshKey: String { session.chapter.id + ":" + session.state.preferences.viewMode.rawValue + ":" + String(scenePhase == .active) }
-    var body: some View {
-        presentedReader
+    private var readingRefreshKey: String {
+        let visible = scenePhase == .active && panel?.isCompanion != true
+        return "\(session.chapter.id):\(session.state.preferences.viewMode.rawValue):\(visible)"
+    }
+    private var conversationSelection: SelectedQuote? {
+        if case .companion(let quote)? = panel { return quote }
+        return nil
+    }
+    private var navigationReader: some View {
+        NavigationStack {
+            presentedReader
+                .toolbar(.hidden, for: .navigationBar)
+                .navigationTitle("阅读")
+                .navigationDestination(isPresented: Binding(get: { panel?.isCompanion == true }, set: { value in
+                    if !value && panel?.isCompanion == true { panel = nil; session.clearTransientSelection(); selectionDismissalID = UUID() }
+                })) {
+                    ReaderConversationPanel(session: session, tools: tools, cloud: cloud, selection: conversationSelection, library: library)
+                        .toolbar(.visible, for: .navigationBar)
+                        .toolbar {
+                            ToolbarItem(placement: .confirmationAction) {
+                                Button("继续读", systemImage: "book") { panel = nil }
+                                    .frame(minHeight: 44).accessibilityIdentifier("reader-chat-return")
+                            }
+                        }
+                }
+        }
+        .accessibilityHidden(panel?.id == "contents")
+        .allowsHitTesting(panel?.id != "contents")
+        .overlay {
+            if panel?.id == "contents" {
+                ReaderContentsOverlay(session: session, onJump: { index, anchor in
+                    speech.userNavigated(); session.go(to: index, anchor: anchor); panel = nil
+                    session.setReadingVisible(scenePhase == .active); session.recordReadingInteraction()
+                }, onClose: { panel = nil })
+            }
+        }
+    }
+    private var trackedReader: some View {
+        navigationReader
         .modifier(ReaderTimeTracking(session: session, visible: scenePhase == .active && panel == nil))
         .safeAreaInset(edge: .top, spacing: 0) { remotePositionNotice }
         .onChange(of: autoPageConditions, initial: true) { _, conditions in autoPage.update(conditions, navigationID: session.navigationID) }
@@ -238,6 +280,9 @@ struct ReaderScreen: View {
             if old != new { autoPage.pause(.layout) }
             if old.speechSpeed != new.speechSpeed { speech.speed = new.speechSpeed }
         }
+    }
+    var body: some View {
+        trackedReader
         .onReceive(NotificationCenter.default.publisher(for: UIAccessibility.voiceOverStatusDidChangeNotification)) { _ in voiceOverRunning = UIAccessibility.isVoiceOverRunning }
         .onChange(of: focusedControl) { _, _ in clockID = UUID() }
         .onChange(of: session.selection?.id) { _, _ in clockID = UUID() }
@@ -268,14 +313,22 @@ struct ReaderScreen: View {
         .onChange(of: tools.completedTranslation) { _, row in
             if let row { session.updateTranslations(ReaderReadingContent.translations([row])) }
         }
+        .onChange(of: panel?.isCompanion) { _, active in
+            reading.setForeground(scenePhase == .active && active != true)
+            if active == true { speech.pause() }
+        }
         .sensoryFeedback(.selection, trigger: panel?.id)
         .task(id: clockID) { await settleChrome() }
         .onChange(of: scenePhase) { _, phase in
-            reading.setForeground(phase == .active)
+            reading.setForeground(phase == .active && panel?.isCompanion != true)
             if phase != .active { readerIsTouching = false; speech.readerIsInteracting = false; speech.pause(); session.save(); chrome = .asleep }
         }
         .onAppear { configureReading() }
-        .onDisappear { autoPage.stop(); speech.stop(); reading.stop(); reading.requestPreparation = nil; reading.requestPassagePreparation = nil; reading.confirmPreparation = nil }
+        .onDisappear(perform: releaseReadingResources)
+    }
+    private func releaseReadingResources() {
+        autoPage.stop(); speech.stop(); reading.stop()
+        reading.requestPreparation = nil; reading.requestPassagePreparation = nil; reading.confirmPreparation = nil
     }
     @ViewBuilder private var remotePositionNotice: some View {
         if positionConflict {
@@ -313,7 +366,7 @@ struct ReaderScreen: View {
         reading.confirmPreparation = { [weak reading] run in reading?.confirm(run, session: session, cloud: cloud, library: library) }
     }
     private func refreshReadingContent() async {
-        guard scenePhase == .active else { return }
+        guard scenePhase == .active, panel?.isCompanion != true else { return }
         await reading.refresh(session, cloud: cloud, library: library)
         guard !Task.isCancelled else { return }
         guard reading.offerFirstPassage, session.state.preferences.viewMode != .source else { return }

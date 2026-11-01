@@ -199,6 +199,7 @@ struct BookSearchPanel: View {
 }
 struct ReaderPreferencesPanel: View {
     @Environment(\.colorScheme) private var previewSystemScheme
+    @State private var category: ReadingStyleCategory = .text
     @Bindable var session: ReaderSession
     var reading: ReaderReadingContent? = nil
     private var previewLayer: ReadingLayerSegment? {
@@ -238,7 +239,8 @@ struct ReaderPreferencesPanel: View {
     private var reflowable: Bool { session.book.kind != .pdf || session.state.preferences.viewMode != .source }
     var body: some View {
         Form {
-            if let preview, reflowable {
+            Section { ReadingStyleTabs(selection: $category) }.listRowBackground(Color.clear).listRowInsets(EdgeInsets())
+            if let preview, reflowable, category != .reading {
                 Section {
                     VStack(alignment: .leading, spacing: 12) {
                         Text(previewTitle).font(.caption).foregroundStyle(.secondary)
@@ -247,19 +249,11 @@ struct ReaderPreferencesPanel: View {
                         .environment(\.colorScheme, session.state.preferences.colorScheme(following: previewSystemScheme))
                 }.listRowInsets(EdgeInsets()).listRowSeparator(.hidden)
             }
-            ReadingAppearanceControls(preferences: preferences, allowsTypography: reflowable)
-            Section {
-                NavigationLink {
-                    ReaderContentSettings(session: session, reading: reading)
-                } label: {
-                    LabeledContent("阅读内容与译文", value: session.state.preferences.viewMode == .source ? "原著" : session.state.preferences.viewMode == .translation ? "译文" : "对照")
-                }.frame(minHeight: 44).accessibilityIdentifier("reader-content-settings")
-                NavigationLink {
-                    ReaderNavigationSettings(preferences: preferences)
-                } label: {
-                    LabeledContent("翻页方式", value: session.state.preferences.navigationMode == .paged ? "左右翻页" : "上下滚动")
-                }.frame(minHeight: 44).accessibilityIdentifier("reader-navigation-settings")
-            } header: { Text("阅读方式") } footer: { Text("设置自动保存，适用于这间书房的所有书籍。") }
+            ReadingAppearanceControls(preferences: preferences, allowsTypography: reflowable, category: category)
+            if category == .reading {
+                ReaderContentControls(session: session, reading: reading)
+                ReaderNavigationControls(preferences: preferences)
+            }
             if !reflowable { Section { Text("PDF 保留原页和字体，可双指缩放；纸面主题用于页面周围。").font(.footnote).foregroundStyle(.secondary) } }
         }.scrollContentBackground(.hidden).background(Color(uiColor: .systemGroupedBackground))
             .accessibilityIdentifier("reader-preferences-form").navigationTitle("阅读风格")
@@ -287,11 +281,19 @@ struct ReaderPreferencesPanel: View {
 struct ReaderContentSettings: View {
     @Bindable var session: ReaderSession
     var reading: ReaderReadingContent?
+    var body: some View {
+        Form { ReaderContentControls(session: session, reading: reading) }
+            .navigationTitle("阅读内容与译文").modifier(ReaderToolContinuation())
+    }
+}
+struct ReaderContentControls: View {
+    @Bindable var session: ReaderSession
+    var reading: ReaderReadingContent?
     private var preferences: Binding<ReaderPreferences> {
         Binding(get: { session.state.preferences }, set: { session.changePreferences($0) })
     }
     var body: some View {
-        Form {
+        Group {
             Section {
                 Picker("阅读内容", selection: Binding(get: { session.state.preferences.viewMode }, set: { mode in
                     reading?.offerFirstPassage = mode != .source
@@ -308,8 +310,7 @@ struct ReaderContentSettings: View {
             if let reading, session.state.preferences.viewMode != .source {
                 ReaderTranslationPreparation(session: session, reading: reading)
             }
-        }.navigationTitle("阅读内容与译文")
-            .modifier(ReaderToolContinuation())
+        }
     }
 }
 
@@ -319,8 +320,6 @@ struct ReaderAppearancePanel: View {
         Form {
             Section { ReaderThemeChoices(session: session).padding(.vertical, 8) }
                 .listRowBackground(Color.clear).listRowInsets(EdgeInsets())
-            Section { Text("纸面设置用于所有书籍；屏幕亮度可在控制中心调整。").font(.footnote).foregroundStyle(.secondary) }
-                .listRowBackground(Color.clear)
         }.scrollContentBackground(.hidden).background(Color(uiColor: .systemGroupedBackground))
             .navigationTitle("外观").accessibilityIdentifier("reader-appearance-form")
     }

@@ -8,7 +8,7 @@ enum VideoAcceptanceFixture {
     @MainActor static func makeModelIfRequested() -> LibraryModel? {
         #if DEBUG
         let arguments = ProcessInfo.processInfo.arguments
-        guard ["org.leafhour.get317.testing", "org.leafhour.get341.testing", "org.leafhour.get352.testing", "org.leafhour.shelf-refinement"].contains(Bundle.main.bundleIdentifier ?? "") else { return nil }
+        guard ["org.leafhour.get317.testing", "org.leafhour.get341.testing", "org.leafhour.get352.testing", "org.leafhour.readingchat.testing", "org.leafhour.shelf-refinement"].contains(Bundle.main.bundleIdentifier ?? "") else { return nil }
         let hostedUnitTest = ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] != nil
             || NSClassFromString("XCTestCase") != nil || NSClassFromString("XCTest.XCTestCase") != nil
         guard arguments.contains("--get317-acceptance") || hostedUnitTest else { return nil }
@@ -210,6 +210,20 @@ private final class GET317Transport: URLProtocol, @unchecked Sendable {
                   let file = root?.deletingLastPathComponent().appendingPathComponent("GET344CoverFixtures").appendingPathComponent(name),
                   let bytes = try? Data(contentsOf: file), bytes.count <= 4 * 1024 * 1024 else { return reply(["error": "Synthetic cover fixture unavailable"], status: 404) }
             return Response(status: 200, data: bytes, delay: 0.03, mimeType: "image/webp")
+        }
+        if path == "/api/library/chat" {
+            let body = bodyObject(request)
+            var records = record("account-conversation")
+            var turns = records["syntheticTurns"] as? [[String: Any]] ?? []
+            if method == "GET" {
+                return reply(["available": true, "bookId": ReaderCloudTools.libraryChatID, "contentVersion": ReaderCloudTools.libraryChatVersion,
+                    "context": NSNull(), "scope": ["mode": "library", "revision": 0], "turns": turns])
+            }
+            let turn: [String: Any] = ["id": body["id"] as? String ?? "missing-id", "text": body["text"] as? String ?? "",
+                "status": "completed", "answer": ["summary": "合成陪读回答：这是隔离验收夹具，没有调用模型。"]]
+            if !turns.contains(where: { $0["id"] as? String == turn["id"] as? String }) { turns.append(turn) }
+            records["syntheticTurns"] = turns; persist(records, bookID: "account-conversation")
+            return reply(turn)
         }
         if path == "/api/auth/session" {
             var value: [String: Any] = ["user": ["id": owner, "email": "get317-synthetic@example.invalid"], "billing": ["enabled": false]]

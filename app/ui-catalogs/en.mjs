@@ -2,6 +2,17 @@
 // data, also the safe default for server/static English shells. Complete
 // default data: every other catalogue carries the same keys.
 export default Object.freeze({
+  "reader.settings.text": "Text",
+  "reader.settings.details": "More typography",
+  "chat.back": "Back",
+  "chat.backLibrary": "Back to the reading room",
+  "chat.companion": "Leafhour companion",
+  "chat.noBook": "No book · Just talk",
+  "chat.chooseBook": "Book context (optional)",
+  "chat.greeting": "What’s on your mind?",
+  "chat.greetingBody": "Talk about an idea, ask a question, or find your next read. You can add a book whenever you like.",
+  "chat.askAnything": "Ask anything…",
+
   "arrival.title": "Welcome back",
   "arrival.close": "Dismiss today’s recap",
   "arrival.talk": "Talk about a book",

@@ -136,3 +136,12 @@ test('locale preserves an open contents dialog, opener, row identity and scroll 
   }
   contents.unmount();entry.unmount();const detached=nodes.get('running-chapter').textContent;await requestUiRoute('en');assert.equal(nodes.get('running-chapter').textContent,detached);
 });
+
+test('an outside contents tap closes and consumes the gesture without navigating or turning pages',()=>{
+ const {document,add,focused}=fixture(),dialog=add('toc-dialog','dialog');add('toc-list','nav');const opener=add('open-toc');add('open-chapter');let navigations=0;
+ dialog.getBoundingClientRect=()=>({left:20,right:400,top:80,bottom:560});
+ const contents=navigation.mountContentsDialog({document,getBook:()=>book,getChapterId:()=>book.chapters[1].id,onNavigate:()=>navigations++});
+ const gesture=(type,x,y,target=dialog)=>{const event=new Event(type,{cancelable:true});Object.assign(event,{button:0,clientX:x,clientY:y});Object.defineProperty(event,'target',{value:target});dialog.dispatchEvent(event);return event;};
+ contents.open(opener);assert.equal(gesture('pointerdown',500,200).defaultPrevented,true);assert.equal(gesture('click',500,200).defaultPrevented,true);assert.equal(dialog.open,false);assert.equal(navigations,0);assert.equal(focused.at(-1),opener);
+ contents.open(opener);gesture('pointerdown',100,100);gesture('click',500,200);assert.equal(dialog.open,true,'a drag from the panel cannot dismiss it');gesture('pointerdown',500,200);dialog.dispatchEvent(new Event('pointercancel'));gesture('click',500,200);assert.equal(dialog.open,true,'a cancelled gesture cannot dismiss it');contents.unmount();
+});

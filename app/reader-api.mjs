@@ -31,7 +31,7 @@ export async function readerFetch(url,options={}){
   const target=readerApiUrl(url);
 
   if(readerOffline.isOffline()&&String(options.method||'GET').toUpperCase()!=='GET')throw Object.assign(Error(t('offline.needsNetwork')),{code:'offline_write',status:503});
-  if(readerSession?.billing?.enabled===true&&String(options.method||'GET').toUpperCase()==='POST'&&/^\/api\/library\/books\/[^/]+\/(?:translate|chat|annotations\/explain)$/.test(target.split(/[?#]/,1)[0])){
+  if(readerSession?.billing?.enabled===true&&String(options.method||'GET').toUpperCase()==='POST'&&/^\/api\/library\/(?:chat|books\/[^/]+\/(?:translate|chat|annotations\/explain))$/.test(target.split(/[?#]/,1)[0])){
     const isCurrent=()=>sessionCurrent&&!options.signal?.aborted;
     const guard=()=>{if(!isCurrent())throw options.signal?.aborted?(options.signal.reason||new DOMException('Request aborted','AbortError')):Error('账户已切换，请重新进入书房。');};
     guard();let data;try{data=JSON.parse(options.body);}catch{throw Error('阅读点数请求格式不正确。');}

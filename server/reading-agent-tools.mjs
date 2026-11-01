@@ -34,11 +34,11 @@ const matchesBook=(b,query)=>!query||[...titleNames(b),typeof b.author==='string
 const metadata=b=>({bookId:b.bookId,title:titleNames(b)[0]||'',author:typeof b.author==='string'?b.author.slice(0,500):'',visibility:b.visibility,owned:b.visibility==='private',url:'/read?book='+encodeURIComponent(b.bookId)});
 const readUrl=(b,p)=>'/read?book='+encodeURIComponent(b)+'&passage='+encodeURIComponent(p);
 
-export function createReadingAgentTools({library,user,people=null,bookId,currentBook=null,passageId,scope='book',allowPersonWrites=false,allowPreferenceWrites=false,preferenceAccess=true,signal,onActivity=async()=>{},authorizePeople,directorySearch=searchPeople,searchWeb,searchBooks=searchOpenLibrary,env=process.env}){
+export function createReadingAgentTools({library,user,people=null,bookId,currentBook=null,passageId,scope='book',allowPersonWrites=false,allowPreferenceWrites=false,preferenceAccess=true,readOnly=false,signal,onActivity=async()=>{},authorizePeople,directorySearch=searchPeople,searchWeb,searchBooks=searchOpenLibrary,env=process.env}){
   if(!READING_CHAT_SCOPES.includes(scope))throw TypeError('Invalid reading chat scope');
   if(scope==='library')searchWeb??=createWebSearch({env});
-  const permittedDefinitions=definitions.filter(d=>(preferenceAccess&&user?.id||!['get_preferences','update_preference','delete_preference'].includes(d.name))&&(scope==='library'||!['reader_search_web','reader_recommend_books'].includes(d.name))).map(d=>scope==='book'?{...d,description:d.description+'；仅限当前书，不能读取其他书籍或网络。'}:d);
-  const personTools=people?createPeopleTools({people,user:scope==='book'?null:user,allowedIds:scope==='book'?people.publicIdsForBook(bookId,currentBook):null,allowWrites:scope==='library'&&allowPersonWrites,allowCreate:scope==='library'&&allowPersonWrites,authorize:authorizePeople,signal}):null;
+  const permittedDefinitions=definitions.filter(d=>(!readOnly||!['update_preference','delete_preference'].includes(d.name))&&(preferenceAccess&&user?.id||!['get_preferences','update_preference','delete_preference'].includes(d.name))&&(scope==='library'||!['reader_search_web','reader_recommend_books'].includes(d.name))).map(d=>scope==='book'?{...d,description:d.description+'；仅限当前书，不能读取其他书籍或网络。'}:d);
+  const personTools=people?createPeopleTools({people,user:scope==='book'?null:user,allowedIds:scope==='book'?people.publicIdsForBook(bookId,currentBook):null,allowWrites:!readOnly&&scope==='library'&&allowPersonWrites,allowCreate:!readOnly&&scope==='library'&&allowPersonWrites,authorize:authorizePeople,signal}):null;
   if(personTools)permittedDefinitions.push(...personTools.definitions);
   const directoryDefinition={name:'people_search_directory',description:'Search public identity directories for people. Same-name candidates need a choice; directory descriptions are unverified leads. No save or generation.',parameters:schema({query:str(256),locale:{type:'string',enum:['en','zh-Hans','zh-Hant','ja']},limit:{type:'integer',minimum:1,maximum:8}},['query'])};if(people&&scope==='library')permittedDefinitions.push(directoryDefinition);
   const accessed=new Map(),visible=new Map(),refs=[],candidates=[];
@@ -71,13 +71,14 @@ export function createReadingAgentTools({library,user,people=null,bookId,current
   async function run(name,a,{reserveRequest,signal:runtimeSignal}={},effects){
     const activeSignal=runtimeSignal||signal,checkRun=()=>activeSignal?.throwIfAborted();checkRun();
     if(['get_preferences','update_preference','delete_preference'].includes(name)){
+      if(readOnly&&name!=='get_preferences')return failure('SCOPE_DENIED','当前对话只允许读取资料');
       if(!preferenceAccess||!user?.id)return failure('SCOPE_DENIED','当前工具无权访问阅读偏好');
       if(name==='get_preferences')return library.getPreferenceMemory(user);
       if(!allowPreferenceWrites&&(name==='delete_preference'||a.inferred!==true))return failure('CONSENT_REQUIRED','请先开启本次提问的阅读偏好修改权限，或将推测留待确认');
       return library.changePreferenceMemory(user,{...a,action:name==='delete_preference'?'delete':'update'},'agent');
     }
     if(name==='reader_list_books'){const all=(scope==='book'?[await get(bookId)]:await library.list(user)).filter(b=>matchesBook(b,a.query)).map(metadata);return {books:all.slice(a.offset||0,(a.offset||0)+(a.limit||20)),nextOffset:(a.offset||0)+(a.limit||20)<all.length?(a.offset||0)+(a.limit||20):null};}
-    if(name==='reader_get_context'){const b=await get(bookId),p=rows(b).find(p=>p.id===(passageId||b.readingStart?.passageId))||rows(b)[0];if(!p)throw Error('Missing passage');return {...page(b,p.chapterId,{passageId:p.id,layer:'original',limit:1},effects),passageId:p.id};}
+    if(name==='reader_get_context'){if(scope==='library'&&!bookId)return {scope:'library',currentBook:null,passages:[]};const b=await get(bookId),p=rows(b).find(p=>p.id===(passageId||b.readingStart?.passageId))||rows(b)[0];if(!p)throw Error('Missing passage');return {...page(b,p.chapterId,{passageId:p.id,layer:'original',limit:1},effects),passageId:p.id};}
     if(name==='reader_get_outline'){const b=await get(a.bookId),offset=a.offset||0,limit=a.limit||100;return {bookId:b.bookId,contentVersion:b.contentVersion,chapters:b.chapters.slice(offset,offset+limit).map(c=>({id:c.id,title:c.title,startPassageId:c.startPassageId})),nextOffset:offset+limit<b.chapters.length?offset+limit:null};}
     if(name==='reader_read_chapter')return page(await get(a.bookId),a.chapterId,a,effects);
     if(name==='reader_search'){const ids=a.bookIds||(scope==='book'?[bookId]:(await library.list(user)).map(b=>b.bookId)),results=[];for(const id of ids){const b=await get(id);for(const p of rows(b))for(const l of LAYERS){const value=text(p,l),n=value.toLocaleLowerCase().indexOf(a.query.toLocaleLowerCase());if(n<0)continue;const begin=Array.from(value.slice(0,n)).length,start=Math.max(0,begin-60),end=Math.min(Array.from(value).length,begin+Array.from(a.query).length+100),excerpt=Array.from(value).slice(start,end).join('');results.push({bookId:b.bookId,chapterId:p.chapterId,passageId:p.id,layer:l,excerpt,charOffset:start,charEnd:end,url:readUrl(b.bookId,p.id),_b:b,_p:p});}}

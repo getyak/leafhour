@@ -29,12 +29,12 @@ class Element extends EventTarget {
   querySelectorAll(selector){const visit=n=>[...n.children.flatMap(visit),n];const all=visit(this).slice(0,-1);if(selector==='details')return all.filter(n=>n.tagName==='DETAILS');const keys=selector.split(',').map(part=>part.trim().replace(/^\[|\]$/g,''));return all.filter(n=>keys.some(key=>n.getAttribute&&n.getAttribute(key)!==undefined));}
 }
 const flush=async()=>{for(let i=0;i<12;i++)await Promise.resolve();};
-function setup(t,{handler,billing=false,navigate,onViewChange,uploadController,uploadOptions,loadUpload,uploadPlacement,renderMarkdown=renderChatMarkdown,loadMarkdown,books=[{bookId:'one',title:{zh:'书名'}}]}={}){
+function setup(t,{handler,billing=false,accountDefault=false,navigate,onViewChange,uploadController,uploadOptions,loadUpload,uploadPlacement,renderMarkdown=renderChatMarkdown,loadMarkdown,books=[{bookId:'one',title:{zh:'书名'}}]}={}){
  const doc=new EventTarget();doc.createElement=tag=>new Element(tag,doc);doc.createTextNode=text=>{const n=new Element('#text',doc);n.textContent=text;return n;};doc.body=doc.createElement('body');const all=()=>{const visit=n=>[n,...n.children.flatMap(visit)];return visit(doc.body);};doc.getElementById=id=>all().find(n=>n.id===id);doc.querySelectorAll=()=>[];
  const previous={document:globalThis.document,localStorage:globalThis.localStorage,window:globalThis.window};const storage=new Map();globalThis.document=doc;globalThis.localStorage={getItem:k=>storage.get(k),setItem:(k,v)=>storage.set(k,v),removeItem:k=>storage.delete(k)};const viewport=new EventTarget();viewport.height=800;viewport.offsetTop=0;globalThis.window={matchMedia:()=>({matches:false}),visualViewport:viewport};t.after(()=>Object.assign(globalThis,previous));
  const root=doc.createElement('dialog');root.id='chat';doc.body.append(root);const external=doc.createElement('button');doc.body.append(external);external.focus();let owner='alice',passage='p1',turns=[];const calls=[];
  const api=async(url,payload,options)=>{calls.push({url,payload});if(handler)return handler(url,payload,{turns,setTurns:v=>turns=v,options});if(payload){const turn={...payload,status:'running',answer:null};turns=[...turns,turn];return turn;}return {bookId:'one',available:true,contentVersion:'v1',scope:{mode:'book',revision:0},context:{passageId:new URL(url,'http://local').searchParams.get('passageId')||'p1',chapterTitle:'章节',original:'Source'},turns};};
- const chat=mountLibraryChat({root,api,uploadController,mountUpload:uploadController?mountChatBookUpload:null,uploadOptions,loadUpload,uploadPlacement,renderMarkdown,loadMarkdown,getSession:()=>owner?{user:{id:owner},...(billing?{billing:{enabled:true}}:{})}:null,getOwner:()=>owner,getBooks:()=>books,openAuth(){},getCurrentBook:()=> 'one',getCurrentPassage:()=>passage,onNavigateToPassage:navigate||(()=>true),onViewChange});t.after(()=>chat.close());t.after(()=>chat.dispose?.());
+ const chat=mountLibraryChat({root,api,accountDefault,uploadController,mountUpload:uploadController?mountChatBookUpload:null,uploadOptions,loadUpload,uploadPlacement,renderMarkdown,loadMarkdown,getSession:()=>owner?{user:{id:owner},...(billing?{billing:{enabled:true}}:{})}:null,getOwner:()=>owner,getBooks:()=>books,openAuth(){},getCurrentBook:()=> 'one',getCurrentPassage:()=>passage,onNavigateToPassage:navigate||(()=>true),onViewChange});t.after(()=>chat.close());t.after(()=>chat.dispose?.());
  return {root,chat,doc,calls,external,viewport,all,find:cls=>all().find(n=>n.className.split(' ').includes(cls)),input:()=>doc.getElementById('library-chat-input'),setTurns:v=>turns=v,setOwner:v=>owner=v,setPassage:v=>passage=v,complete:()=>{turns=turns.map(turn=>turn.status==='completed'?turn:({...turn,status:'completed',answer:{summary:'真实回答',sourceRefs:[]}}));}};
 }
 function type(el,text){el.value=text;el.dispatchEvent(new Event('input'));}
@@ -347,7 +347,7 @@ test('disposal before a queued chat load prevents the request and retained contr
 test('queued close from disposed dialog cannot affect a fresh open or unopened controller',async t=>{
  await requestUiRoute('en');const s=setup(t),queued=[],oldSet=globalThis.setTimeout,oldClear=globalThis.clearTimeout,timers=new Map();let serial=0;
  globalThis.setTimeout=fn=>{timers.set(++serial,fn);return serial;};globalThis.clearTimeout=id=>timers.delete(id);s.root.close=function(){this.open=false;queued.push(()=>this.dispatchEvent(new Event('close')));};let fresh;
- try{s.chat.open();await flush();s.chat.dispose();let returned=0;const host=s.doc.createElement('div');s.doc.body.append(host);fresh=mountLibraryChat({root:s.root,renderMarkdown:renderChatMarkdown,api:async()=>response([{id:'pending',text:'Literal pending',status:'running'}]),getSession:()=>({user:{id:'alice'}}),getOwner:()=> 'alice',getBooks:()=>[{bookId:'one',title:{en:'Book'}}],openAuth(){},externalLauncher:{triggerHost:host,onOpen(){},focusReturn(){returned++;}}});
+ try{s.chat.open();await flush();s.chat.dispose();let returned=0;const host=s.doc.createElement('div');s.doc.body.append(host);fresh=mountLibraryChat({root:s.root,renderMarkdown:renderChatMarkdown,api:async()=>response([{id:'pending',text:'Literal pending',status:'running'}]),getCurrentBook:()=> 'one',getSession:()=>({user:{id:'alice'}}),getOwner:()=> 'alice',getBooks:()=>[{bookId:'one',title:{en:'Book'}}],openAuth(){},externalLauncher:{triggerHost:host,onOpen(){},focusReturn(){returned++;}}});
  const focus=s.doc.createElement('button');s.doc.body.append(focus);focus.focus();queued.shift()();assert.equal(returned,0);assert.ok(s.doc.activeElement===focus);
  fresh.open();await flush();const polls=timers.size,focused=s.doc.activeElement;assert.ok(polls>0);s.root.dispatchEvent(new Event('close'));assert.equal(timers.size,polls);assert.ok(s.doc.activeElement===focused);assert.equal(returned,0);
  fresh.close();assert.equal(returned,1);queued.shift()();assert.equal(returned,1);
@@ -355,15 +355,11 @@ test('queued close from disposed dialog cannot affect a fresh open or unopened c
 });
 
 
-test('review chat R2 no-book return uses effective route locale with unavailable storage',async t=>{
- await requestUiRoute('en');const s=setup(t,{books:[]}),destinations=[],previousLocation=globalThis.location;
- globalThis.location={origin:'https://reader.example',assign:value=>destinations.push(value)};
+test('the global empty-library entry localizes its optional context without requiring storage',async t=>{
+ await requestUiRoute('en');const s=setup(t,{accountDefault:true,books:[],handler:async()=>({bookId:'leafhour-library-chat',contentVersion:'library-chat-v1',available:true,scope:{mode:'library',revision:0},context:{passageId:'conversation'},turns:[]})});
  globalThis.localStorage={getItem(){throw Error('denied');},setItem(){throw Error('denied');},removeItem(){throw Error('denied');}};
- t.after(async()=>{globalThis.location=previousLocation;await requestUiRoute('en');});
- s.chat.open();await flush();const back=s.all().find(n=>n.getAttribute('data-ui')==='bts');assert.ok(back);
- await requestUiRoute('ja');back.click();assert.deepEqual(destinations,['/library']);assert.equal(s.calls.length,0);
+ s.chat.open();await flush();assert.equal(s.input().disabled,false);await requestUiRoute('ja');const choice=s.find('library-chat-book-choice');assert.equal(choice.children[0].textContent,uiText('chat.noBook'));s.find('library-chat-close').click();assert.equal(s.root.open,false);assert.equal(s.doc.activeElement,s.external);assert.equal(s.calls.filter(c=>c.payload).length,0);
 });
-
 test('review chat R2 registered inline citations and recommendations retain locale and click semantics',async t=>{
  await requestUiRoute('en');t.after(async()=>{await requestUiRoute('en');});const navigated=[];
  const s=setup(t,{navigate:(...args)=>{navigated.push(args);return true;}});
@@ -459,7 +455,7 @@ test('upload cards retain draft, composing input, focus and card identity across
  progress({id:'pdf.upload.saved',params:{percent:50}});assert.equal(s.find('chat-book-task'),card);assert.equal(s.input().value,'Keep this draft.');assert.equal(s.doc.activeElement,s.input());await requestUiRoute('ja');assert.equal(s.find('chat-book-task'),card);assert.equal(s.input().value,'Keep this draft.');await requestUiRoute('en');complete({id:'job',state:'done',bookId:'new'});await flush();assert.equal(s.find('chat-book-task'),card);assert.equal(s.input().value,'Keep this draft.');assert.equal(s.calls.filter(c=>c.payload).length,0);
 });
 test('empty-library chat accepts an attachment and file drop without a book or model request',async t=>{
- const files=[],controller=createBookUploadController({getOwner:()=> 'alice',getSession:()=>({user:{id:'alice'}}),api:async()=>({jobs:[]}),uploadPdf:async o=>{files.push(o.file);return {id:'j',state:'awaiting_consent',sourceHash:'h',ocrAvailable:true,totalPages:123,recognitionPages:44};}});t.after(()=>controller.dispose());const s=setup(t,{books:[],uploadController:controller});s.chat.open();await flush();assert.equal(s.find('library-chat-composer').hidden,false);assert.equal(s.find('chat-book-attach').disabled,false);const event=new Event('drop',{cancelable:true});event.dataTransfer={files:[{name:'first.pdf',size:20}],types:['Files']};s.root.dispatchEvent(event);await flush();assert.equal(files.length,1);assert.ok(s.find('chat-book-task'));assert.ok(s.find('chat-book-consent'));const text=plain(s.find('chat-book-task'));assert.ok(!/123|44|quota/i.test(text));assert.equal(s.calls.length,0);
+ const files=[],controller=createBookUploadController({getOwner:()=> 'alice',getSession:()=>({user:{id:'alice'}}),api:async()=>({jobs:[]}),uploadPdf:async o=>{files.push(o.file);return {id:'j',state:'awaiting_consent',sourceHash:'h',ocrAvailable:true,totalPages:123,recognitionPages:44};}});t.after(()=>controller.dispose());const s=setup(t,{books:[],uploadController:controller});s.chat.open();await flush();assert.equal(s.find('library-chat-composer').hidden,false);assert.equal(s.find('chat-book-attach').disabled,false);const event=new Event('drop',{cancelable:true});event.dataTransfer={files:[{name:'first.pdf',size:20}],types:['Files']};s.root.dispatchEvent(event);await flush();assert.equal(files.length,1);assert.ok(s.find('chat-book-task'));assert.ok(s.find('chat-book-consent'));const text=plain(s.find('chat-book-task'));assert.ok(!/123|44|quota/i.test(text));assert.equal(s.calls.filter(c=>c.payload).length,0);assert.equal(s.calls[0].url,'/api/library/chat');
 });
 
 test('closing while upload code loads retains the chosen file and draft without reopening or focusing chat',async t=>{
@@ -529,4 +525,25 @@ test('a shelf upload started while chat is closed cannot open its menu on the ne
 
 test('a failed cancel is not hidden behind the saving label in upload history',async t=>{
  const controller=createBookUploadController({getOwner:()=> 'alice',getSession:()=>({user:{id:'alice'}}),uploadPdf:async()=>({id:'saving-job',state:'publishing'}),api:async()=>{throw Error('request failed');}});t.after(()=>controller.dispose());const id=controller.start({name:'saving.pdf',size:100});await flush();const s=setup(t,{uploadController:controller,uploadPlacement:'menu'});s.chat.open();await flush();await controller.cancel(id);assert.equal(controller.tasks()[0].error,true);assert.equal(s.find('chat-book-stage').textContent,uiText('bookUpload.error'));
+});
+
+test('the global companion accepts a question with zero books and uses only the account conversation',async t=>{
+ const s=setup(t,{accountDefault:true,books:[],handler:async(url,payload)=>payload?({...payload,status:'completed',answer:{summary:'Hello from the companion.',sourceRefs:[]}}):({bookId:'leafhour-library-chat',contentVersion:'library-chat-v1',available:true,scope:{mode:'library',revision:0},context:{scope:'library',currentBook:null,passageId:'conversation'},turns:[]})});
+ s.chat.open();await flush();assert.equal(s.input().disabled,false);assert.equal(s.find('library-chat-composer').hidden,false);assert.equal(s.find('library-chat-context').hidden,true);assert.equal(s.find('library-chat-scope-row').hidden,true);assert.ok(s.find('library-chat-identity'));assert.equal(s.find('library-chat-book-choice').value,'leafhour-library-chat');
+ type(s.input(),'Can we talk about an idea?');assert.equal(s.find('library-chat-send').disabled,false);s.find('library-chat-composer').dispatchEvent(new Event('submit',{cancelable:true}));await flush();
+ const sent=s.calls.find(call=>call.payload);assert.equal(sent.url,'/api/library/chat');assert.equal(sent.payload.passageId,'conversation');assert.equal(sent.payload.contentVersion,'library-chat-v1');assert.equal(s.calls.some(call=>call.url.includes('/books/')),false);assert.ok(s.find('library-chat-answer'));
+});
+
+test('book context is optional and explicit, with separate companion and book drafts',async t=>{
+ const s=setup(t,{accountDefault:true,handler:async url=>url==='/api/library/chat'?({bookId:'leafhour-library-chat',contentVersion:'library-chat-v1',available:true,scope:{mode:'library',revision:0},context:{scope:'library',currentBook:null,passageId:'conversation'},turns:[]}):({bookId:'one',contentVersion:'v1',available:true,scope:{mode:'book',revision:0},context:{passageId:'p1',original:'Source'},turns:[]})});
+ s.chat.open();await flush();assert.equal(s.calls[0].url,'/api/library/chat');type(s.input(),'A companion draft');const chooser=s.find('library-chat-book-choice');chooser.value='one';chooser.dispatchEvent(new Event('change'));await flush();assert.equal(s.input().value,'');assert.ok(s.calls.at(-1).url.includes('/books/one/chat'));type(s.input(),'A book draft');chooser.value='leafhour-library-chat';chooser.dispatchEvent(new Event('change'));await flush();assert.equal(s.input().value,'A companion draft');s.chat.close();s.chat.open();await flush();assert.equal(chooser.value,'leafhour-library-chat');assert.equal(s.input().value,'A companion draft');s.setOwner('bob');s.chat.update();await flush();assert.equal(s.input().value,'');assert.equal(chooser.value,'leafhour-library-chat');assert.equal(s.calls.filter(call=>call.payload).length,0);
+});
+
+test('signed-out upload hands focus and containment back before opening authentication',async t=>{
+ const changes=[];let s,authenticated=false;
+ const controller=createBookUploadController({getOwner:()=>null,getSession:()=>null,api:async()=>({jobs:[]})});t.after(()=>controller.dispose());
+ s=setup(t,{uploadController:controller,onViewChange:opened=>changes.push(opened)});s.setOwner(null);
+ // The uploader receives this same auth callback through the mounted chat seam.
+ const fresh=mountLibraryChat({root:s.root,api:async()=>response([]),getSession:()=>null,getOwner:()=>null,getBooks:()=>[],uploadController:controller,mountUpload:mountChatBookUpload,renderMarkdown:renderChatMarkdown,onViewChange:opened=>changes.push(opened),openAuth(){assert.equal(s.root.open,false);assert.equal(changes.at(-1),false);authenticated=true;}});s.chat.dispose();t.after(()=>fresh.dispose());
+ fresh.open();await flush();const attach=s.find('chat-book-attach');assert.ok(attach);attach.click();await flush();assert.equal(authenticated,true);assert.equal(s.root.open,false);
 });

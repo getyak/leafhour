@@ -136,3 +136,11 @@ test('point confirmation describes enabled and disabled people authority in ever
   assert.doesNotMatch(text({action:'translation',units:1000000,locale,peopleWrites:true}),enabled);
  }
 });
+
+test('account chat quotes its real namespace and preserves the same paid request on retry',async()=>{
+ const t=setup(),data={id:'account-question',text:'An idea without a book',passageId:'conversation',contentVersion:'library-chat-v1',scopeRevision:0};let quotes=0;
+ t.f.fetcher=async(url,options)=>{t.calls.push({url,options});if(url==='/api/auth/session')return reply({user:{id:'A'}});quotes++;const posted=JSON.parse(options.body);assert.deepEqual(posted,{action:'conversation',bookId:'leafhour-library-chat',input:data});return reply({id:'q-account',ownerId:'A',action:'conversation',units:4000000,scope:{bookId:'leafhour-library-chat',requestId:data.id,passageId:data.passageId,contentVersion:data.contentVersion}});};
+ const prepare=helper('prepareCreditRequest'),options={...t.f,url:'/api/library/chat',data};const first=await prepare(options),again=await prepare({...options,data:{...data}});assert.equal(first.billing.quoteId,'q-account');assert.deepEqual(again.billing,first.billing);assert.equal(quotes,1);assert.equal(t.confirmations.length,1);assert.match(t.confirmations[0],/4 points/);assert.equal(data.billing,undefined);
+ await assert.rejects(prepare({...options,data:{...data,text:'A changed paid input'}}),{code:'BILLING_INPUT_CHANGED'});
+ for(const url of ['/api/library/chat/account-question/cancel','/api/library/chat/export'])assert.equal(await prepare({...t.f,url,data}),data);
+});
