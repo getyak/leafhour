@@ -81,6 +81,7 @@ struct PDFReadingView: UIViewRepresentable {
         private var delayed: DispatchWorkItem?
         private var loadedSource: URL?
         private var renderedMode: ReaderNavigationMode?
+        private var renderedSize = CGSize.zero
         private var restorationGeneration = 0
         private var updateGeneration = 0
         private var pendingUpdate: DispatchWorkItem?
@@ -114,7 +115,7 @@ struct PDFReadingView: UIViewRepresentable {
             let session = parent.session, owner = ObjectIdentifier(session)
             let mode = session.state.preferences.navigationMode, source = session.original
             let navigation = session.navigationID, dismissal = parent.selectionDismissalID
-            if self.view !== view || renderedOwner != owner || navigationID != navigation || renderedMode != mode || loadedSource != source {
+            if self.view !== view || renderedOwner != owner || navigationID != navigation || renderedMode != mode || loadedSource != source || renderedSize != view.bounds.size {
                 cancelPageTurn()
                 speechDestination = nil
                 // Old native notifications must not write into the new session
@@ -158,9 +159,12 @@ struct PDFReadingView: UIViewRepresentable {
             if selectionDismissalID != parent.selectionDismissalID {
                 selectionDismissalID = parent.selectionDismissalID; view.clearSelection()
             }
+            let sizeChanged = renderedSize != view.bounds.size
+            if sizeChanged { cancelPageTurn() }
+            renderedSize = view.bounds.size
             let sourceChanged = loadedSource != session.original || view.document == nil
             let modeChanged = renderedMode != mode
-            let needsRestore = sourceChanged || modeChanged || navigationID != session.navigationID || renderedOwner != ObjectIdentifier(session) || forceScheduledRestore
+            let needsRestore = sourceChanged || modeChanged || sizeChanged || navigationID != session.navigationID || renderedOwner != ObjectIdentifier(session) || forceScheduledRestore
             renderedOwner = ObjectIdentifier(session); forceScheduledRestore = false
             // SwiftUI has already resized an externally padded paged PDF by
             // this point. Its old-mode geometry is no longer a source snapshot.

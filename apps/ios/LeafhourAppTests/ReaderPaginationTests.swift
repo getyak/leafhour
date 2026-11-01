@@ -861,6 +861,21 @@ final class ReaderPaginationTests: XCTestCase {
         throw NSError(domain: "ReaderPaginationPDFFixture", code: 1)
     }
 
+    func testPDFResizeCancelsItsCoverAndRetainsTheSettledSourcePage() async throws {
+        let session = try await session(pdf: true, source: "PDF resize witness")
+        let (view, coordinator) = try pdfHost(session)
+        coordinator.scheduleUpdate(view)
+        try await settlePDF(view, coordinator: coordinator, source: session.original, page: 0, mode: .paged)
+        XCTAssertTrue(coordinator.turnPage(.next))
+        await drain(); await drain()
+        let anchor = try XCTUnwrap(session.currentAnchor)
+        view.frame.size = CGSize(width: 360, height: 600)
+        coordinator.scheduleUpdate(view)
+        try await settlePDF(view, coordinator: coordinator, source: session.original, page: 1, mode: .paged)
+        XCTAssertEqual(session.currentAnchor, anchor)
+        XCTAssertFalse(view.superview?.subviews.contains { $0.accessibilityIdentifier == "reader-page-transition-cover" } ?? true)
+    }
+
     func testFittedPDFHorizontalGestureUsesTheNativeCurlAndPersistsItsActualPage() async throws {
         let fixture = try await importedSession(pdf: true, source: "PDF curl gesture witness"), session = fixture.session
         var preferences = session.state.preferences; preferences.pageAnimation = .curl; session.changePreferences(preferences)
