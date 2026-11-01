@@ -72,6 +72,11 @@ public struct ReaderNote: Codable, Identifiable, Equatable, Sendable {
         self.quoteOrigin = quoteOrigin; self.quoteVariant = quoteVariant
     }
 }
+public enum ReaderPageAnimation: String, Codable, CaseIterable, Sendable { case slide, curl, none }
+public enum ReaderPageInput: String, Codable, CaseIterable, Sendable { case tapAndSwipe, swipeOnly, tapOnly
+    public var allowsTap: Bool { self != .swipeOnly }
+    public var allowsSwipe: Bool { self != .tapOnly }
+}
 public enum ReaderNavigationMode: String, Codable, Sendable { case scroll, paged }
 public enum ReaderFontStyle: String, Codable, CaseIterable, Sendable { case serif, sans, rounded }
 public struct ReaderPreferences: Codable, Equatable, Sendable {
@@ -80,12 +85,14 @@ public struct ReaderPreferences: Codable, Equatable, Sendable {
     public var lineSpacing: Double = 9
     public var theme: String = "paper"
     public var navigationMode: ReaderNavigationMode = .paged
+    public var pageAnimation: ReaderPageAnimation = .slide
+    public var pageInput: ReaderPageInput = .tapAndSwipe
     public var viewMode: ReaderViewMode = .source
     public var translationVariant: ReaderTranslationVariant = .literal
     public var speechSpeed: Double = 1
     public var autoPageInterval: Double = 30
     public init() {}
-    private enum CodingKeys: String, CodingKey { case fontStyle, fontSize, lineSpacing, theme, navigationMode, viewMode, translationVariant, speechSpeed, autoPageInterval }
+    private enum CodingKeys: String, CodingKey { case fontStyle, fontSize, lineSpacing, theme, navigationMode, pageAnimation, pageInput, viewMode, translationVariant, speechSpeed, autoPageInterval }
     public init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
         fontStyle = (try values.decodeIfPresent(String.self, forKey: .fontStyle)).flatMap(ReaderFontStyle.init(rawValue:)) ?? .serif
@@ -95,6 +102,8 @@ public struct ReaderPreferences: Codable, Equatable, Sendable {
         // Old state and a future mode remain readable without discarding notes or position.
         let mode = try values.decodeIfPresent(String.self, forKey: .navigationMode)
         navigationMode = mode.flatMap(ReaderNavigationMode.init(rawValue:)) ?? .paged
+        pageAnimation = (try values.decodeIfPresent(String.self, forKey: .pageAnimation)).flatMap(ReaderPageAnimation.init(rawValue:)) ?? .slide
+        pageInput = (try values.decodeIfPresent(String.self, forKey: .pageInput)).flatMap(ReaderPageInput.init(rawValue:)) ?? .tapAndSwipe
         viewMode = (try values.decodeIfPresent(String.self, forKey: .viewMode)).flatMap(ReaderViewMode.init(rawValue:)) ?? .source
         translationVariant = (try values.decodeIfPresent(String.self, forKey: .translationVariant)).flatMap(ReaderTranslationVariant.init(rawValue:)) ?? .literal
         speechSpeed = Self.normalizedSpeechSpeed(try values.decodeIfPresent(Double.self, forKey: .speechSpeed) ?? 1)

@@ -77,7 +77,7 @@ import UIKit
         owner.view.addSubview(page)
         let curl = ReaderPageCurlTransition()
         var completed: Bool?
-        curl.animate(from: UIView(frame: page.bounds), over: page, direction: .next, paper: .white) { completed = $0 }
+        curl.animate(from: UIView(frame: page.bounds), over: page, direction: .next, paper: .white, style: .curl) { completed = $0 }
         let controller = try XCTUnwrap(owner.children.compactMap { $0 as? UIPageViewController }.first)
         XCTAssertEqual(controller.transitionStyle, .pageCurl)
         XCTAssertEqual(controller.navigationOrientation, .horizontal)

@@ -158,10 +158,11 @@ final class ReaderResourcePositionTests: XCTestCase {
             let deadline = ProcessInfo.processInfo.systemUptime + 2
             repeat {
                 await drain()
-                if !host.controller.children.contains(where: { ($0 as? UIPageViewController)?.transitionStyle == .pageCurl }) { break }
+                if !host.controller.children.contains(where: { ($0 as? UIPageViewController)?.transitionStyle == .pageCurl })
+                    && !(host.view.superview?.subviews.contains { $0.accessibilityIdentifier == "reader-page-transition-cover" } ?? false) { break }
                 try await Task.sleep(for: .milliseconds(20))
             } while ProcessInfo.processInfo.systemUptime < deadline
-            XCTAssertFalse(host.controller.children.contains { ($0 as? UIPageViewController)?.transitionStyle == .pageCurl }, "A measured source screen must wait for the native curl to detach")
+            XCTAssertFalse(host.view.superview?.subviews.contains { $0.accessibilityIdentifier == "reader-page-transition-cover" } ?? false, "A measured source screen must wait for the transition cover to detach")
         }
         XCTFail("The real imported image must expose two different interior screens")
         throw FixtureError.noTwoMiddleScreens

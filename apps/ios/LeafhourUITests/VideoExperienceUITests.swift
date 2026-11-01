@@ -60,6 +60,13 @@ final class VideoExperienceUITests: XCTestCase {
     private func launch(_ flags: [String] = []) {
         app.launchArguments = ["--get317-acceptance", "--get317-reset", "-AppleLanguages", "(zh-Hans)", "-AppleLocale", "zh_CN"] + flags
         app.launch()
+        let arrival = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in
+            self.reader.exists || self.app.otherElements["leafhour-pdf-reader"].exists || self.app.buttons["书房显示与排序"].isHittable
+        }, object: nil)
+        XCTAssertEqual(XCTWaiter.wait(for: [arrival], timeout: 25), .completed)
+        // Startup now quietly resumes actual reading. Shelf-oriented cases
+        // explicitly return before arranging their synthetic book selection.
+        if reader.exists || app.otherElements["leafhour-pdf-reader"].exists { shelf() }
         require(app.buttons["书房显示与排序"], timeout: 25)
         setLayout("列表")
         setShelfFilter("全部")
@@ -2842,6 +2849,34 @@ final class VideoExperienceUITests: XCTestCase {
         let toggle = app.buttons["reader-speech-toggle"]; require(toggle); toggle.tap()
         require(app.buttons["继续朗读"])
         capture("GET347-cross-chapter-speech-paused")
+    }
+
+    func test104PagePresentationAndSwipeOnlyChoiceSurviveColdResume() {
+        launch(["--get341-unique-source"]); openBook(translatedTitle)
+        openTool("阅读设置"); expandPanel()
+        let animation = app.buttons["reader-page-animation"]
+        scrollTo(animation, in: foregroundForm(), direction: .up); require(animation); animation.tap()
+        let instant = app.buttons["无动画"].firstMatch; require(instant); instant.tap()
+        let input = app.buttons["reader-page-input"]
+        scrollTo(input, in: foregroundForm(), direction: .up); require(input); input.tap()
+        let swipe = app.buttons["仅滑动"].firstMatch; require(swipe); swipe.tap()
+        capture("GET356-page-presentation-preferences")
+        closePanel(); wakeTools()
+        let caption = app.staticTexts["reader-progress-caption"]; require(caption)
+        let first = caption.label
+        reader.coordinate(withNormalizedOffset: CGVector(dx: 0.86, dy: 0.5)).tap()
+        wakeTools(); XCTAssertEqual(caption.label, first, "Swipe-only keeps side taps from turning pages")
+        reader.swipeLeft(); wakeTools()
+        let moved = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in caption.exists && caption.label != first }, object: nil)
+        XCTAssertEqual(XCTWaiter.wait(for: [moved], timeout: 8), .completed)
+        coldRelaunch()
+        require(reader, timeout: 25)
+        XCTAssertFalse(app.staticTexts["另一台设备更新了阅读位置"].exists)
+        openTool("阅读设置"); expandPanel()
+        scrollTo(app.buttons["reader-page-animation"], in: foregroundForm(), direction: .up)
+        XCTAssertTrue(app.buttons["reader-page-animation"].label.contains("无动画"))
+        XCTAssertTrue(app.buttons["reader-page-input"].label.contains("仅滑动"))
+        capture("GET356-cold-resume-preserves-page-choices")
     }
 
 }

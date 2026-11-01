@@ -1,4 +1,5 @@
 import UIKit
+import LeafhourCore
 
 struct ReaderPagePosition: Equatable {
     let index: Int
@@ -116,78 +117,108 @@ final class ReaderPageTurnGestureHandler: NSObject, UIGestureRecognizerDelegate 
     func invalidate() { if let recognizer { view?.removeGestureRecognizer(recognizer) }; view = nil }
 }
 
-/// Native page curl is only a temporary visual transition. At rest the one real
-/// UITextView/PDFView retains selection, links, accessibility and source geometry.
-/// Swipes commit on release; this does not claim interactive finger-following.
+/// The one real native reader stays mounted. A synchronous opaque cover protects
+/// asynchronous layout; only disposable snapshots move during the transition.
 @MainActor final class ReaderPageCurlTransition {
     private var controller: UIPageViewController?
+    private var cover: UIView?
+    private var source: UIView?
+    private var animator: UIViewPropertyAnimator?
     private var completion: ((Bool) -> Void)?
     private var generation = 0
     private var reduceMotionObserver: NSObjectProtocol?
-    var isActive: Bool { controller != nil }
+    var isActive: Bool { cover != nil || controller != nil }
 
     init() {
         reduceMotionObserver = NotificationCenter.default.addObserver(forName: UIAccessibility.reduceMotionStatusDidChangeNotification, object: nil, queue: .main) { [weak self] _ in
-            MainActor.assumeIsolated { if UIAccessibility.isReduceMotionEnabled { self?.cancel() } }
+            MainActor.assumeIsolated {
+                guard UIAccessibility.isReduceMotionEnabled, let self else { return }
+                if let animator = self.animator { animator.stopAnimation(false); animator.finishAnimation(at: .end) }
+                else if self.completion != nil { self.finish(true) }
+                // A cover waiting for asynchronous restoration must stay in place.
+            }
         }
     }
     deinit { if let reduceMotionObserver { NotificationCenter.default.removeObserver(reduceMotionObserver) } }
 
     func snapshot(from view: UIView) -> UIView? {
-        guard !UIAccessibility.isReduceMotionEnabled, view.window != nil,
-              view.bounds.width > 0, view.bounds.height > 0 else { return nil }
+        guard view.window != nil, view.bounds.width > 0, view.bounds.height > 0 else { return nil }
         return view.snapshotView(afterScreenUpdates: false)
     }
 
-    func animate(from before: UIView?, over view: UIView, direction: ReaderPageDirection,
-                 paper: UIColor, completion: @escaping (Bool) -> Void) {
+    func protect(_ snapshot: UIView?, over view: UIView, paper: UIColor) {
+        guard let snapshot, let container = view.superview else { return }
         cancel()
-        guard let before, !UIAccessibility.isReduceMotionEnabled, view.window != nil,
-              let container = view.superview, let after = view.snapshotView(afterScreenUpdates: true),
-              let owner = Self.owner(of: view) else { completion(true); return }
+        let shield = UIView(frame: container.convert(view.bounds, from: view))
+        shield.backgroundColor = paper; shield.isOpaque = true; shield.clipsToBounds = true
+        shield.isUserInteractionEnabled = false; shield.accessibilityElementsHidden = true
+        shield.accessibilityIdentifier = "reader-page-transition-cover"
+        let page = UIView(frame: shield.bounds); page.backgroundColor = paper; page.isOpaque = true
+        page.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        snapshot.frame = page.bounds; snapshot.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        page.addSubview(snapshot); shield.addSubview(page); container.addSubview(shield)
+        cover = shield; source = page
+    }
+
+    func animate(from before: UIView?, over view: UIView, direction: ReaderPageDirection,
+                 paper: UIColor, style: ReaderPageAnimation = .slide, completion: @escaping (Bool) -> Void) {
+        if cover == nil { protect(before, over: view, paper: paper) }
+        self.completion = completion
+        guard let before, let cover, !UIAccessibility.isReduceMotionEnabled, style != .none,
+              view.window != nil else { finish(true); return }
+        generation += 1; let token = generation
+        if style == .slide {
+            guard let source else { finish(true); return }
+            // Reveal the settled live page underneath one moving paper snapshot.
+            // No second snapshot/afterScreenUpdates barrier or new controller is
+            // needed on the normal turn path. The native hit-test surface stays put.
+            view.layoutIfNeeded(); cover.backgroundColor = .clear; cover.isOpaque = false
+            let distance = cover.bounds.width * (direction == .next ? 1 : -1)
+            let motion = UIViewPropertyAnimator(duration: 0.20, curve: .easeOut) {
+                source.transform = CGAffineTransform(translationX: -distance, y: 0)
+            }
+            animator = motion
+            motion.addCompletion { [weak self] position in
+                guard let self, self.generation == token else { return }
+                self.finish(position == .end)
+            }
+            motion.startAnimation()
+            return
+        }
+        guard let after = view.snapshotView(afterScreenUpdates: true) else { finish(true); return }
+        guard let owner = Self.owner(of: view), let container = view.superview else { finish(true); return }
         let source = UIViewController(), destination = UIViewController()
         for (page, snapshot) in [(source, before), (destination, after)] {
             page.view.backgroundColor = paper
             page.view.frame = CGRect(origin: .zero, size: view.bounds.size)
-            snapshot.frame = CGRect(origin: .zero, size: view.bounds.size)
-            snapshot.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-            page.view.addSubview(snapshot)
-            page.view.isAccessibilityElement = false; page.view.accessibilityElementsHidden = true
+            snapshot.frame = page.view.bounds; snapshot.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+            page.view.addSubview(snapshot); page.view.accessibilityElementsHidden = true
         }
         let pager = UIPageViewController(transitionStyle: .pageCurl, navigationOrientation: .horizontal,
             options: [.spineLocation: UIPageViewController.SpineLocation.min.rawValue])
         pager.isDoubleSided = false; pager.view.backgroundColor = paper
         pager.view.isUserInteractionEnabled = false; pager.view.accessibilityElementsHidden = true
         pager.view.frame = container.convert(view.bounds, from: view)
-        pager.view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         owner.addChild(pager); container.addSubview(pager.view); pager.didMove(toParent: owner)
         pager.setViewControllers([source], direction: .forward, animated: false)
-        pager.view.layoutIfNeeded()
-        self.controller = pager; self.completion = completion
-        generation += 1; let token = generation
+        pager.view.layoutIfNeeded(); controller = pager
         pager.setViewControllers([destination], direction: direction == .next ? .forward : .reverse, animated: true) { [weak self] finished in
-            guard let self, self.generation == token else { return }
-            self.finish(finished)
+            guard let self, self.generation == token else { return }; self.finish(finished)
         }
     }
 
-    func cancel() {
-        generation += 1
-        finish(false)
-    }
-
+    func cancel() { generation += 1; animator?.stopAnimation(true); finish(false) }
     private func finish(_ completed: Bool) {
-        let callback = completion; completion = nil
+        let callback = completion; completion = nil; animator = nil
         let pager = controller; controller = nil
         pager?.willMove(toParent: nil); pager?.view.removeFromSuperview(); pager?.removeFromParent()
+        cover?.removeFromSuperview(); cover = nil; source = nil
         callback?(completed)
     }
-
     private static func owner(of view: UIView) -> UIViewController? {
         var responder: UIResponder? = view
         while let current = responder {
-            if let controller = current as? UIViewController { return controller }
-            responder = current.next
+            if let controller = current as? UIViewController { return controller }; responder = current.next
         }
         return nil
     }

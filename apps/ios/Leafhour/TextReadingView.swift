@@ -41,7 +41,7 @@ struct TextReadingView: UIViewRepresentable {
         context.coordinator.edgeTap = ReaderEdgeTapHandler(view: view, blocked: { [weak view, weak coordinator = context.coordinator] in
             (view?.selectedRange.length ?? 0) > 0 || coordinator?.restoring != false
         }, onWake: { [weak coordinator = context.coordinator] edge in coordinator?.wake(edge) },
-        isPaged: { [weak coordinator = context.coordinator] in coordinator?.parent.session.state.preferences.navigationMode == .paged },
+        isPaged: { [weak coordinator = context.coordinator] in coordinator?.parent.session.state.preferences.navigationMode == .paged && coordinator?.parent.session.state.preferences.pageInput.allowsTap == true },
         onTurn: { [weak coordinator = context.coordinator] direction in _ = coordinator?.turnPage(direction) })
         context.coordinator.pageTurn = ReaderPageTurnGestureHandler(view: view, blocked: { [weak view, weak coordinator = context.coordinator] in
             (view?.selectedRange.length ?? 0) > 0 || coordinator?.restoring != false
@@ -94,6 +94,7 @@ struct TextReadingView: UIViewRepresentable {
         func updateContent(_ view: UITextView) {
             guard !isInvalidated else { return }
             let coordinator = self, session = parent.session
+            if renderedChapterID == nil { view.alpha = 0 }
             let column = layout(for: view)
             let layoutChanged = coordinator.renderedSize != view.bounds.size || coordinator.renderedInsets != column.insets
             let anchor = session.currentAnchor
@@ -111,11 +112,16 @@ struct TextReadingView: UIViewRepresentable {
             let navigating = coordinator.navigationID != session.navigationID
             // A session owns an immutable book/source version. Never carry indices into another source.
             let sameSource = coordinator.indexedSessionID == ObjectIdentifier(session) && coordinator.indexedChapterIndex == session.chapterIndex
+            if sameSource, !navigating, !layoutChanged, !navigationModeChanged, coordinator.pageCurl.isActive,
+               coordinator.sameTypography(coordinator.renderedPreferences, preferences), coordinator.signature != signature {
+                coordinator.deferredContentUpdate = true
+                return
+            }
             if coordinator.pendingPageTransition != nil, !coordinator.pendingTransitionIsCurrent {
                 coordinator.cancelPageTransition(.notReady)
             }
             if layoutChanged || navigating || navigationModeChanged || !sameSource || coordinator.signature != signature {
-                coordinator.pageCurl.cancel()
+                if coordinator.pendingPageTransition == nil { coordinator.pageCurl.cancel(); coordinator.queuedPage = nil; coordinator.queueGeneration += 1 }
                 if coordinator.pendingPageTransition == nil { coordinator.finishPageRequest(.notReady) }
             }
             // A background result must not rebuild UIKit's selected text or its
@@ -127,7 +133,9 @@ struct TextReadingView: UIViewRepresentable {
                 && coordinator.renderedPreferences?.translationVariant == preferences.translationVariant
                 ? (coordinator.pendingTranslatedViewport ?? coordinator.translatedViewport()) : nil
             if !sameSource || coordinator.signature != signature {
+                deferredContentUpdate = false
                 contentBuildCount += 1
+                coordinator.protectRestoration(in: view)
                 let previousSpans = sameSource ? coordinator.spans : []
                 func sourceOffsets(for passage: Passage, at index: Int) -> SourceTextOffsets {
                     if previousSpans.indices.contains(index), previousSpans[index].passage.id == passage.id,
@@ -220,6 +228,7 @@ struct TextReadingView: UIViewRepresentable {
                 coordinator.navigationID = session.navigationID
                 coordinator.restore(anchor, translatedViewport: translatedViewport, persistCheckpoint: !navigating)
             } else if navigating || layoutChanged || navigationModeChanged {
+                coordinator.protectRestoration(in: view)
                 coordinator.navigationID = session.navigationID
                 coordinator.restoring = true
                 if navigating { view.selectedRange = NSRange(location: 0, length: 0) }
@@ -227,6 +236,14 @@ struct TextReadingView: UIViewRepresentable {
             }
             coordinator.renderedNavigationMode = preferences.navigationMode
             coordinator.configureNavigation(view)
+        }
+        private var restorationCover = false
+        private var deferredContentUpdate = false
+        private func protectRestoration(in view: UITextView) {
+            guard pendingPageTransition == nil, view.attributedText.length > 0, !pageCurl.isActive else { return }
+            if let snapshot = pageCurl.snapshot(from: view) {
+                pageCurl.protect(snapshot, over: view, paper: pagePaper); restorationCover = true
+            }
         }
         private var renderedNavigationMode: ReaderNavigationMode?
         private func sameTypography(_ rendered: ReaderPreferences?, _ current: ReaderPreferences) -> Bool {
@@ -491,6 +508,7 @@ struct TextReadingView: UIViewRepresentable {
             }
         }
         func invalidate() {
+            queuedPage = nil
             guard !isInvalidated else { return }
             // SwiftUI may be invalidating its graph while native observers are
             // removed. Stop every host callback before any removal can reenter.
@@ -509,7 +527,7 @@ struct TextReadingView: UIViewRepresentable {
         func configureNavigation(_ view: UITextView) {
             guard !isInvalidated else { return }
             let paged = parent.session.state.preferences.navigationMode == .paged
-            pageTurn?.isEnabled = paged
+            pageTurn?.isEnabled = paged && parent.session.state.preferences.pageInput.allowsSwipe
             // Preserve UITextView's selection/editing recognizers and native
             // autoscroll. Only ordinary content-drag navigation changes mode.
             view.panGestureRecognizer.isEnabled = !paged
@@ -620,12 +638,14 @@ struct TextReadingView: UIViewRepresentable {
             pendingPageRequest = nil; respond(to: request, with: outcome)
         }
         private func cancelPageTransition(_ outcome: ReaderPageRequestOutcome) {
-            pendingPageTransition = nil
+            pendingPageTransition = nil; queuedPage = nil; queueGeneration += 1; restorationCover = false; deferredContentUpdate = false
             finishPageRequest(outcome); pageCurl.cancel()
         }
+        private var queueGeneration = 0
+        private var queuedPage: (direction: ReaderPageDirection, owner: ObjectIdentifier, navigation: UUID)?
         func touchActivity(_ active: Bool) {
             guard !isInvalidated else { return }
-            if active { cancelPageTransition(.blocked) }
+            if active, pendingPageRequest?.origin == .automatic { queuedPage = nil; cancelPageTransition(.blocked) }
             parent.onTouchActivity?(active)
         }
         fileprivate func wake(_ edge: ReaderChrome) {
@@ -639,7 +659,7 @@ struct TextReadingView: UIViewRepresentable {
         private func animatePage(from snapshot: UIView?, direction: ReaderPageDirection) {
             guard let view else { finishPageRequest(.notReady); return }
             let generation = restorationGeneration, navigation = navigationID, owner = indexedSessionID
-            pageCurl.animate(from: snapshot, over: view, direction: direction, paper: pagePaper) { [weak self] completed in
+            pageCurl.animate(from: snapshot, over: view, direction: direction, paper: pagePaper, style: parent.session.state.preferences.pageAnimation) { [weak self] completed in
                 guard let self, !self.isInvalidated else { return }
                 guard completed, self.restorationGeneration == generation, self.navigationID == navigation,
                       self.parent.session.navigationID == navigation, self.indexedSessionID == owner,
@@ -647,16 +667,39 @@ struct TextReadingView: UIViewRepresentable {
                     self.finishPageRequest(.notReady); return
                 }
                 self.finishPageRequest(.settled(navigationID: self.parent.session.navigationID))
+                if self.queuedPage != nil { self.drainQueuedPage() }
+                else { self.flushDeferredContentIfIdle() }
+            }
+        }
+        private func flushDeferredContentIfIdle() {
+            guard deferredContentUpdate, queuedPage == nil, !isInvalidated, !restoring,
+                  !pageCurl.isActive, let view, view.selectedRange.length == 0 else { return }
+            deferredContentUpdate = false; updateContent(view)
+        }
+        private func drainQueuedPage() {
+            guard let queued = queuedPage else { return }
+            queuedPage = nil
+            let generation = queueGeneration
+            DispatchQueue.main.async { [weak self] in
+                guard let self, !self.isInvalidated, self.queueGeneration == generation, queued.owner == ObjectIdentifier(self.parent.session),
+                      queued.navigation == self.parent.session.navigationID, self.view?.selectedRange.length == 0 else { return }
+                if !self.turnPage(queued.direction) { self.flushDeferredContentIfIdle() }
             }
         }
         @discardableResult func turnPage(_ direction: ReaderPageDirection, origin: ReaderPageTurnOrigin = .user) -> Bool {
+            if origin == .user, !isInvalidated, (pageCurl.isActive || pendingTransitionIsCurrent),
+               let view, view.selectedRange.length == 0, parent.session.state.preferences.navigationMode == .paged {
+                queuedPage = (direction, ObjectIdentifier(parent.session), parent.session.navigationID)
+                return true
+            }
             guard !isInvalidated, let view, !restoring, !pageCurl.isActive, view.selectedRange.length == 0,
                   parent.session.state.preferences.navigationMode == .paged else { return false }
             refreshPagination()
             guard let pagination else { return false }
             if let offset = pagination.destination(direction, from: view.contentOffset.y) {
                 guard abs(offset - view.contentOffset.y) > 0.5 else { return false }
-                let before = pageCurl.snapshot(from: view)
+                let before = parent.session.state.preferences.pageAnimation == .none || UIAccessibility.isReduceMotionEnabled ? nil : pageCurl.snapshot(from: view)
+                pageCurl.protect(before, over: view, paper: pagePaper)
                 restorationGeneration += 1; cancelPendingCapture()
                 if origin == .user { parent.onReadingScroll() }
                 view.setContentOffset(CGPoint(x: 0, y: offset), animated: false)
@@ -668,6 +711,7 @@ struct TextReadingView: UIViewRepresentable {
             guard session.book.chapters.indices.contains(chapter) else { return false }
             if origin == .user { parent.onReadingScroll() }
             let snapshot = pageCurl.snapshot(from: view)
+            pageCurl.protect(snapshot, over: view, paper: pagePaper)
             var anchor: ReadingAnchor?
             if direction == .previous, let passage = session.book.chapters[chapter].passages.last {
                 anchor = ReadingAnchor(chapterID: session.book.chapters[chapter].id, passageID: passage.id, characterOffset: max(0, passage.text.unicodeScalars.count - 1))
@@ -726,6 +770,7 @@ struct TextReadingView: UIViewRepresentable {
                     view.setContentOffset(CGPoint(x: 0, y: min(y, maximum)), animated: false)
                 } else { view.setContentOffset(.zero, animated: false) }
                 self.restoring = false; self.pendingTranslatedViewport = nil
+                view.alpha = 1
                 if let pending = self.pendingPageTransition, pending.restorationGeneration == generation, self.pendingTransitionIsCurrent {
                     self.pendingPageTransition = nil
                     if self.parent.session.state.preferences.navigationMode == .paged, pending.direction == .previous {
@@ -734,10 +779,14 @@ struct TextReadingView: UIViewRepresentable {
                     self.capture()
                     self.animatePage(from: pending.snapshot, direction: pending.direction)
                 }
+                if self.restorationCover {
+                    self.restorationCover = false; self.pageCurl.cancel()
+                }
                 self.configureNavigation(view)
                 self.updateSpeech(view)
                 self.reportReadingPosition(in: view)
                 if persistCheckpoint { self.schedulePersistence() }
+                self.flushDeferredContentIfIdle()
             }
         }
         func paragraphCharacter(at point: CGPoint) -> Int? {
