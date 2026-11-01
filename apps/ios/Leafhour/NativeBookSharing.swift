@@ -64,6 +64,16 @@ enum NativeShareCardFormat: String, CaseIterable, Identifiable {
     var height: CGFloat { switch self { case .portrait: 1350; case .square: 1080; case .story: 1920 } }
 }
 
+enum NativeShareCardStyle: String, CaseIterable, Identifiable {
+    case paper, ink, night
+    var id: String { rawValue }
+    var title: String { switch self { case .paper: "暖纸"; case .ink: "留白"; case .night: "夜色" } }
+    var background: UIColor { switch self { case .paper: UIColor(red: 0.974, green: 0.965, blue: 0.937, alpha: 1); case .ink: .white; case .night: UIColor(red: 0.10, green: 0.14, blue: 0.12, alpha: 1) } }
+    var foreground: UIColor { self == .night ? UIColor(red: 0.92, green: 0.94, blue: 0.90, alpha: 1) : UIColor(red: 0.13, green: 0.17, blue: 0.14, alpha: 1) }
+    var secondary: UIColor { self == .night ? UIColor(red: 0.69, green: 0.76, blue: 0.70, alpha: 1) : UIColor(red: 0.34, green: 0.39, blue: 0.35, alpha: 1) }
+    var accent: UIColor { self == .night ? UIColor(red: 0.72, green: 0.82, blue: 0.73, alpha: 1) : UIColor(red: 0.24, green: 0.40, blue: 0.31, alpha: 1) }
+}
+
 struct NativeShareCardPage {
     let text: String
     let image: UIImage
@@ -77,7 +87,7 @@ struct NativeShareCardPage {
 /// Actual UIKit text measurement and drawing use the same attributed strings.
 /// https://developer.apple.com/documentation/uikit/uigraphicsimagerenderer
 @MainActor enum NativeShareCardRenderer {
-    static func pages(_ content: NativeShareContent, format: NativeShareCardFormat) throws -> [NativeShareCardPage] {
+    static func pages(_ content: NativeShareContent, format: NativeShareCardFormat, style: NativeShareCardStyle = .paper) throws -> [NativeShareCardPage] {
         guard content.text.utf16.count <= 100_000 else { throw LibraryError.invalid("摘录较长，请使用完整文字分享；所选内容已全部保留。") }
         let width: CGFloat = 1080, inset: CGFloat = 90, usable = width - inset * 2
         let qrCode = try shareQRCode(content.url)
@@ -85,16 +95,16 @@ struct NativeShareCardPage {
         let footerURL = qrCode.flatMap { _ in content.url?.absoluteString }
         let footer = (content.text.isEmpty ? [content.author, footerURL ?? "Leafhour"] : [content.author, content.location, footerURL ?? ""]).filter { !$0.isEmpty }.joined(separator: "\n")
         let citationParagraph = NSMutableParagraphStyle(); citationParagraph.lineSpacing = 5; citationParagraph.lineBreakMode = .byCharWrapping
-        let citation = NSAttributedString(string: footer, attributes: [.font: UIFont.systemFont(ofSize: 23), .foregroundColor: UIColor(red: 0.34, green: 0.39, blue: 0.35, alpha: 1), .paragraphStyle: citationParagraph])
+        let citation = NSAttributedString(string: footer, attributes: [.font: UIFont.systemFont(ofSize: 23), .foregroundColor: style.secondary, .paragraphStyle: citationParagraph])
         let citationHeight = citation.boundingRect(with: CGSize(width: citationWidth, height: .greatestFiniteMagnitude), options: [.usesLineFragmentOrigin, .usesFontLeading], context: nil).height.rounded(.up)
-        let footerY = format.height - 180 - max(0, max(citationHeight, qrCode?.size.height ?? 0) - 32), bodyY: CGFloat = 210
+        let footerY = format.height - 180 - max(0, max(citationHeight, qrCode?.size.height ?? 0) - 32), bodyY: CGFloat = 252
         let qrBounds = qrCode.map { CGRect(x: width - inset - $0.size.width, y: footerY + 84, width: $0.size.width, height: $0.size.height) }
         let body = CGRect(x: inset, y: bodyY, width: usable, height: footerY - bodyY - 55)
         guard body.height >= 160 else { throw LibraryError.invalid("出处信息较长，请使用竖卡、全屏卡片或完整文字分享。") }
         let quoteSize: CGFloat = 48
         let paragraph = NSMutableParagraphStyle(); paragraph.lineSpacing = 14; paragraph.paragraphSpacing = 18
         let descriptor = UIFont.systemFont(ofSize: quoteSize).fontDescriptor.withDesign(.serif) ?? UIFont.systemFont(ofSize: quoteSize).fontDescriptor
-        let attributes: [NSAttributedString.Key: Any] = [.font: UIFont(descriptor: descriptor, size: quoteSize), .foregroundColor: UIColor(red: 0.13, green: 0.17, blue: 0.14, alpha: 1), .paragraphStyle: paragraph]
+        let attributes: [NSAttributedString.Key: Any] = [.font: UIFont(descriptor: descriptor, size: quoteSize), .foregroundColor: style.foreground, .paragraphStyle: paragraph]
         func height(_ text: String) -> CGFloat { NSAttributedString(string: text, attributes: attributes).boundingRect(with: CGSize(width: usable, height: .greatestFiniteMagnitude), options: [.usesLineFragmentOrigin, .usesFontLeading], context: nil).height.rounded(.up) }
         var chunks: [String] = []
         let characters = Array(content.text)
@@ -113,8 +123,7 @@ struct NativeShareCardPage {
             chunks.append(String(characters[start..<end])); start = end
         }
         if chunks.isEmpty { chunks = [""] }
-        let ink = UIColor(red: 0.13, green: 0.17, blue: 0.14, alpha: 1), green = UIColor(red: 0.24, green: 0.40, blue: 0.31, alpha: 1)
-        let muted = UIColor(red: 0.34, green: 0.39, blue: 0.35, alpha: 1)
+        let ink = style.foreground, green = style.accent, muted = style.secondary
         let imageFormat = UIGraphicsImageRendererFormat(); imageFormat.scale = 1; imageFormat.opaque = true
         return try chunks.enumerated().map { index, text in
             var titleSize: CGFloat = content.text.isEmpty ? 76 : 38
@@ -124,11 +133,14 @@ struct NativeShareCardPage {
             guard titleString().boundingRect(with: CGSize(width: usable, height: .greatestFiniteMagnitude), options: [.usesLineFragmentOrigin, .usesFontLeading], context: nil).height <= titleHeightLimit else { throw LibraryError.invalid("书名较长，请使用完整文字分享。") }
             let image = UIGraphicsImageRenderer(size: CGSize(width: width, height: format.height), format: imageFormat).image { renderer in
                 let context = renderer.cgContext
-                UIColor(red: 0.974, green: 0.965, blue: 0.937, alpha: 1).setFill(); context.fill(CGRect(x: 0, y: 0, width: width, height: format.height))
+                style.background.setFill(); context.fill(CGRect(x: 0, y: 0, width: width, height: format.height))
                 func line(_ value: String, y: CGFloat, size: CGFloat, color: UIColor = muted) {
                     NSAttributedString(string: value, attributes: [.font: UIFont.systemFont(ofSize: size), .foregroundColor: color]).draw(in: CGRect(x: inset, y: y, width: usable, height: size * 2.6))
                 }
-                line("Leafhour", y: 74, size: 30, color: green)
+                line("Leafhour", y: 74, size: 28, color: green)
+                if !content.text.isEmpty {
+                    NSAttributedString(string: "“", attributes: [.font: UIFont.systemFont(ofSize: 100, weight: .light), .foregroundColor: green.withAlphaComponent(0.5)]).draw(at: CGPoint(x: inset - 6, y: 181))
+                }
                 context.setStrokeColor(green.withAlphaComponent(0.35).cgColor); context.setLineWidth(1); context.move(to: CGPoint(x: inset, y: 137)); context.addLine(to: CGPoint(x: width - inset, y: 137)); context.strokePath()
                 if content.text.isEmpty {
                     let measured = titleString().boundingRect(with: CGSize(width: usable, height: .greatestFiniteMagnitude), options: [.usesLineFragmentOrigin, .usesFontLeading], context: nil)
@@ -224,6 +236,7 @@ struct NativeActivityItems: Identifiable {
     @Environment(\.readerContinueReading) private var readerContinueReading
     @State private var content: NativeShareContent?
     @State private var format: NativeShareCardFormat = .portrait
+    @State private var cardStyle: NativeShareCardStyle = .paper
     @State private var pages: [NativeShareCardPage] = []
     @State private var activity: NativeActivityItems?
     @State private var status: String?
@@ -245,19 +258,37 @@ struct NativeActivityItems: Identifiable {
                     else if !pages.isEmpty {
                         TabView {
                             ForEach(pages.indices, id: \.self) { index in
-                                Image(uiImage: pages[index].image).resizable().scaledToFit().padding(.horizontal, 4)
+                                Image(uiImage: pages[index].image).resizable().scaledToFit()
+                                    .clipShape(RoundedRectangle(cornerRadius: 8))
+                                    .shadow(color: .black.opacity(0.12), radius: 10, y: 4).padding(16)
                                     .accessibilityLabel("分享卡片，第 \(index + 1) 张，共 \(pages.count) 张")
                             }
-                        }.tabViewStyle(.page(indexDisplayMode: pages.count > 1 ? .always : .never)).frame(height: 360)
+                        }.tabViewStyle(.page(indexDisplayMode: pages.count > 1 ? .always : .never)).frame(height: 380)
+                            .background(Color(uiColor: .secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 24))
                     }
                     if pages.count > 1 { Text("共 \(pages.count) 张，所选文字完整保留。").font(.footnote).foregroundStyle(.secondary) }
-                    DisclosureGroup("将分享的内容") {
-                        Text(current.plainText).font(.subheadline).textSelection(.enabled).frame(maxWidth: .infinity, alignment: .leading).padding(.top, 10)
+                    VStack(alignment: .leading, spacing: 12) {
+                        Text("卡片风格").font(.subheadline.weight(.medium))
+                        HStack(spacing: 10) {
+                            ForEach(NativeShareCardStyle.allCases) { style in
+                                Button { cardStyle = style } label: {
+                                    VStack(spacing: 7) {
+                                        Text("Aa").font(.system(.title3, design: .serif))
+                                        HStack(spacing: 4) { Text(style.title).font(.subheadline); if cardStyle == style { Image(systemName: "checkmark").font(.caption) } }
+                                    }.foregroundStyle(Color(uiColor: style.foreground))
+                                        .frame(maxWidth: .infinity, minHeight: 76).padding(.vertical, 6)
+                                        .background(Color(uiColor: style.background), in: RoundedRectangle(cornerRadius: 14))
+                                        .overlay { RoundedRectangle(cornerRadius: 14).strokeBorder(cardStyle == style ? Color.leafInk : Color.primary.opacity(0.12), lineWidth: cardStyle == style ? 2 : 1) }
+                                }.buttonStyle(.plain).accessibilityLabel(style.title)
+                                    .accessibilityIdentifier("share-style-" + style.rawValue).accessibilityAddTraits(cardStyle == style ? .isSelected : [])
+                            }
+                        }
                     }
                     Picker("卡片比例", selection: $format) { ForEach(NativeShareCardFormat.allCases) { Text($0.label).tag($0) } }.pickerStyle(.segmented)
+                    DisclosureGroup("查看完整文字与出处") {
+                        Text(current.plainText).font(.subheadline).textSelection(.enabled).frame(maxWidth: .infinity, alignment: .leading).padding(.top, 10)
+                    }
                     VStack(spacing: 12) {
-                        Button { activity = NativeActivityItems(values: pages.map(\.image)) } label: { Label("分享图片", systemImage: "square.and.arrow.up").frame(maxWidth: .infinity, minHeight: 44) }
-                            .buttonStyle(.borderedProminent).disabled(pages.isEmpty || rendering).accessibilityIdentifier("book-share-image")
                         HStack {
                             Button { activity = NativeActivityItems(values: [current.plainText]) } label: { Label("分享文字", systemImage: "text.quote").frame(minHeight: 44) }.accessibilityIdentifier("book-share-text")
                             Spacer()
@@ -289,6 +320,13 @@ struct NativeActivityItems: Identifiable {
                     if let status { Text(status).font(.footnote).foregroundStyle(.secondary).accessibilityIdentifier("book-share-status") }
                 }.padding(22)
             }.background(Color.shelfPaper)
+                .safeAreaInset(edge: .bottom) {
+                    Button { activity = NativeActivityItems(values: pages.map(\.image)) } label: {
+                        Label(pages.count > 1 ? "分享 \(pages.count) 张图片" : "分享图片", systemImage: "square.and.arrow.up")
+                            .frame(maxWidth: .infinity, minHeight: 48)
+                    }.buttonStyle(.borderedProminent).disabled(pages.isEmpty || rendering)
+                        .accessibilityIdentifier("book-share-image").padding(.horizontal, 22).padding(.vertical, 10).background(.bar)
+                }
                 .navigationTitle(initial.text.isEmpty ? "分享本书" : "分享摘录").navigationBarTitleDisplayMode(.inline)
                 .toolbar {
                     ToolbarItem(placement: .confirmationAction) {
@@ -300,7 +338,7 @@ struct NativeActivityItems: Identifiable {
                     }
                 }
                 .interactiveDismissDisabled(creating || closingBlocked)
-                .task(id: format) { render() }
+                .task(id: format.rawValue + cardStyle.rawValue) { render() }
                 .task { await loadPublicLink() }
                 .sheet(item: $activity) { selection in
                     NativeActivitySheet(selection: selection) { completed, error in
@@ -333,7 +371,7 @@ struct NativeActivityItems: Identifiable {
     private func render() {
         rendering = true
         defer { rendering = false }
-        do { pages = try NativeShareCardRenderer.pages(current, format: format) }
+        do { pages = try NativeShareCardRenderer.pages(current, format: format, style: cardStyle) }
         catch { pages = []; status = error.localizedDescription }
     }
     private func loadPublicLink() async {

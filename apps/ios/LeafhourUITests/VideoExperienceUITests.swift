@@ -216,6 +216,8 @@ final class VideoExperienceUITests: XCTestCase {
     }
     private func chooseNavigation(_ title: String) {
         openTool("阅读设置"); expandPanel()
+        let details = app.buttons["reader-navigation-settings"]
+        scrollTo(details, in: foregroundForm(), direction: .up); require(details); details.tap()
         let choice = app.segmentedControls.buttons[title]
         // The navigation picker follows typography and paper settings. Scroll
         // toward that lower content; dragging down at the top dismisses a sheet.
@@ -820,18 +822,18 @@ final class VideoExperienceUITests: XCTestCase {
         scrollTo(generate, in: form); XCTAssertFalse(generate.isEnabled)
     }
 
-    func test20CompanionHalfSheetKeepsComposerAboveKeyboard() {
+    func test20FullHeightChatKeepsComposerAboveKeyboard() {
         launch(); openBook(translatedTitle); openMoreLink("阅读陪读")
         let question = app.descendants(matching: .any)["reader-question"]
         require(question)
-        let navigation = app.navigationBars["陪我读"]
+        let navigation = app.navigationBars["Chat"]
         require(navigation)
-        XCTAssertGreaterThan(navigation.frame.minY, app.frame.height * 0.4)
+        XCTAssertLessThan(navigation.frame.minY, app.frame.height * 0.25)
         question.tap(); question.typeText("GET317 question remains visible")
         require(app.keyboards.firstMatch)
         XCTAssertTrue(question.isHittable)
         XCTAssertLessThanOrEqual(question.frame.maxY, app.keyboards.firstMatch.frame.minY + 3)
-        XCTAssertGreaterThan(navigation.frame.minY, app.frame.height * 0.35, "Keyboard must not turn the companion into a full-page sheet")
+        XCTAssertLessThan(navigation.frame.minY, app.frame.height * 0.25, "Chat keeps its full-height layout while typing")
         app.buttons["收起键盘"].tap()
         XCTAssertTrue((question.value as? String)?.contains("GET317 question remains visible") == true)
     }
@@ -1115,7 +1117,7 @@ final class VideoExperienceUITests: XCTestCase {
         closePanel(); wakeTop(); app.buttons["阅读设置"].tap(); expandPanel()
         let settings = foregroundForm()
         scrollTo(app.sliders["正文字号"], in: settings, direction: .down)
-        require(app.navigationBars["阅读设置"])
+        require(app.navigationBars["阅读风格"])
         capture("GET317-a11y-settings-foreground-top")
         try auditVisibleInterface()
 
@@ -1611,8 +1613,8 @@ final class VideoExperienceUITests: XCTestCase {
         wakeTop(); app.buttons["阅读设置"].tap(); expandPanel()
         let continueReading = recordNativeContinue("settings.continue", title: "阅读设置")
         continueReading.tap(); require(reader)
-        XCTAssertTrue(app.navigationBars["阅读设置"].waitForNonExistence(timeout: 5))
-        evidence.append(["key": "settings.continue.result", "readerRestored": reader.exists, "settingsDismissed": !app.navigationBars["阅读设置"].exists])
+        XCTAssertTrue(app.navigationBars["阅读风格"].waitForNonExistence(timeout: 5))
+        evidence.append(["key": "settings.continue.result", "readerRestored": reader.exists, "settingsDismissed": !app.navigationBars["阅读风格"].exists])
         capture("GET317-UI42-native-continue-after-action")
     }
     @MainActor
@@ -1977,14 +1979,14 @@ final class VideoExperienceUITests: XCTestCase {
     func test50AppearanceSecondaryToolsAndNativeCopyRemainReachable() throws {
         executionTimeAllowance = 300
         launch(); openBook(textTitle); openTool("外观"); expandPanel()
-        let night = app.buttons["夜读"], paper = app.buttons["清纸"]
+        let night = app.buttons["夜读"], paper = app.buttons["暖纸"]
         scrollTo(night, in: foregroundForm()); night.tap(); XCTAssertTrue(night.isSelected)
         paper.tap(); XCTAssertTrue(paper.isSelected); closePanel()
         for (tool, title) in [("翻译", "这一段的译文"), ("我的记录", "我的记录")] {
             openTool(tool); require(app.navigationBars[title]); closePanel(); require(reader)
         }
         openMoreLink("搜索原文"); require(app.navigationBars["书内搜索"]); closePanel()
-        openMoreLink("阅读陪读"); require(app.navigationBars["陪我读"]); closePanel()
+        openMoreLink("阅读陪读"); require(app.navigationBars["Chat"]); closePanel()
         let source = reader.value as? String ?? ""
         try selectOriginalForSavedRecordProfile(); systemEditAction(["复制", "Copy"]); wakeTools()
         Thread.sleep(forTimeInterval: 8)
@@ -2593,6 +2595,8 @@ final class VideoExperienceUITests: XCTestCase {
         launch(); openBook(translatedTitle)
         XCTAssertTrue((reader.value as? String)?.contains("GET317 SYNTHETIC") == true)
         wakeTop(); app.buttons["阅读设置"].tap(); expandPanel()
+        let content = app.buttons["reader-content-settings"]
+        scrollTo(content, in: foregroundForm(), direction: .up); require(content); content.tap()
         let modes = app.segmentedControls["reader-view-mode"]
         require(modes); modes.buttons["译文"].tap()
         capture("GET344-reading-settings")
@@ -2601,6 +2605,7 @@ final class VideoExperienceUITests: XCTestCase {
         XCTAssertFalse((reader.value as? String)?.contains("GET317 SYNTHETIC") == true)
         capture("GET344-translation-only")
         wakeTop(); app.buttons["阅读设置"].tap(); expandPanel()
+        scrollTo(content, in: foregroundForm(), direction: .up); content.tap()
         modes.buttons["对照"].tap()
         app.segmentedControls["reader-reading-variant"].buttons["意译"].tap()
         closePanel(); require(reader)
@@ -2676,6 +2681,8 @@ final class VideoExperienceUITests: XCTestCase {
         let download = app.buttons["下载并阅读，" + cloudTitle]; require(download); download.tap()
         require(reader, timeout: 25)
         wakeTop(); app.buttons["阅读设置"].tap(); expandPanel()
+        let content = app.buttons["reader-content-settings"]
+        scrollTo(content, in: foregroundForm(), direction: .up); require(content); content.tap()
         let modes = app.segmentedControls["reader-view-mode"]; require(modes)
         modes.buttons["译文"].tap()
         let offer = app.alerts["准备或恢复译文"]; require(offer)
@@ -2722,11 +2729,14 @@ final class VideoExperienceUITests: XCTestCase {
         capture("GET352-default-native-page-turn")
         chooseNavigation("上下滚动"); shelf(); openBook(markdownTitle)
         openTool("阅读设置"); expandPanel()
+        let details = app.buttons["reader-navigation-settings"]
+        scrollTo(details, in: foregroundForm(), direction: .up); details.tap()
         let scroll = app.segmentedControls.buttons["上下滚动"]
         scrollTo(scroll, in: foregroundForm(), direction: .up)
         XCTAssertTrue(scroll.isSelected, "Book B inherits the preference saved in book A")
         closePanel(); coldRelaunch(); resumeReaderIfOffered(); require(reader)
         openTool("阅读设置"); expandPanel()
+        scrollTo(details, in: foregroundForm(), direction: .up); details.tap()
         scrollTo(scroll, in: foregroundForm(), direction: .up)
         XCTAssertTrue(scroll.isSelected, "Shared navigation persists after a cold app launch")
         capture("GET352-shared-reading-preferences")
@@ -2854,6 +2864,8 @@ final class VideoExperienceUITests: XCTestCase {
     func test104PagePresentationAndSwipeOnlyChoiceSurviveColdResume() {
         launch(["--get341-unique-source"]); openBook(translatedTitle)
         openTool("阅读设置"); expandPanel()
+        let details = app.buttons["reader-navigation-settings"]
+        scrollTo(details, in: foregroundForm(), direction: .up); details.tap()
         let animation = app.buttons["reader-page-animation"]
         scrollTo(animation, in: foregroundForm(), direction: .up); require(animation); animation.tap()
         let instant = app.buttons["无动画"].firstMatch; require(instant); instant.tap()
@@ -2873,10 +2885,78 @@ final class VideoExperienceUITests: XCTestCase {
         require(reader, timeout: 25)
         XCTAssertFalse(app.staticTexts["另一台设备更新了阅读位置"].exists)
         openTool("阅读设置"); expandPanel()
+        scrollTo(details, in: foregroundForm(), direction: .up); details.tap()
         scrollTo(app.buttons["reader-page-animation"], in: foregroundForm(), direction: .up)
         XCTAssertTrue(app.buttons["reader-page-animation"].label.contains("无动画"))
         XCTAssertTrue(app.buttons["reader-page-input"].label.contains("仅滑动"))
         capture("GET356-cold-resume-preserves-page-choices")
     }
 
+}
+
+
+extension VideoExperienceUITests {
+    func test110GlobalSettingsOfferPaperStylesAndKeepTheProfileAfterRestart() {
+        launch()
+        app.tabBars.buttons["设置"].tap()
+        app.buttons["settings-reading-style"].tap()
+        require(app.buttons["reader-theme-sage"])
+        app.buttons["reader-theme-sage"].tap()
+        XCTAssertTrue(app.buttons["reader-theme-sage"].isSelected)
+        capture("GET357-reading-style-sage")
+        app.buttons["reader-theme-night"].tap()
+        XCTAssertTrue(app.buttons["reader-theme-night"].isSelected)
+        capture("GET357-reading-style-night")
+        coldRelaunch(); resumeReaderIfOffered()
+        if reader.exists { shelf() }
+        app.tabBars.buttons["设置"].tap(); app.buttons["settings-reading-style"].tap()
+        require(app.buttons["reader-theme-night"])
+        XCTAssertTrue(app.buttons["reader-theme-night"].isSelected)
+    }
+
+    func test111GlobalChatKeepsDraftAcrossTabsAndColdLaunch() {
+        launch(); app.tabBars.buttons["Chat"].tap()
+        require(app.buttons["chat-choose-book"]); app.buttons["chat-choose-book"].tap()
+        let choice = app.buttons.containing(.staticText, identifier: translatedTitle).firstMatch
+        require(choice); choice.tap()
+        require(app.buttons["chat-source-context"])
+        let question = app.descendants(matching: .any)["reader-question"]
+        require(question); question.tap(); question.typeText("Keep my unfinished thought")
+        require(app.buttons["reader-question-dismiss-keyboard"]); app.buttons["reader-question-dismiss-keyboard"].tap()
+        capture("GET357-global-chat-draft")
+        app.tabBars.buttons["设置"].tap(); app.tabBars.buttons["Chat"].tap()
+        XCTAssertEqual(question.value as? String, "Keep my unfinished thought")
+        coldRelaunch(); resumeReaderIfOffered()
+        if reader.exists { shelf() }
+        app.tabBars.buttons["Chat"].tap(); app.buttons["chat-choose-book"].tap()
+        require(choice); choice.tap(); require(question)
+        XCTAssertEqual(question.value as? String, "Keep my unfinished thought")
+        capture("GET357-global-chat-restored")
+    }
+
+    func test112ExcerptOffersCardStylesBeforeNativeSharing() {
+        launch(); openBook(textTitle); selectOriginal(); systemEditAction(["分享摘录…"])
+        expandPanel()
+        let night = app.buttons["share-style-night"]
+        scrollTo(night, in: app.scrollViews.firstMatch, direction: .up); require(night); night.tap()
+        XCTAssertTrue(night.isSelected)
+        require(app.buttons["book-share-image"])
+        capture("GET357-night-share-card")
+        app.buttons["share-style-ink"].tap(); capture("GET357-white-share-card")
+    }
+}
+
+
+extension VideoExperienceUITests {
+    func test113AccessibleSettingsKeepPaperChoicesAndReturnReachable() {
+        launch(["-UIPreferredContentSizeCategoryName", "UICTContentSizeCategoryAccessibilityXXXL"])
+        app.tabBars.buttons["设置"].tap()
+        let entry = app.buttons["settings-reading-style"]
+        scrollTo(entry, in: app.collectionViews.firstMatch); require(entry); entry.tap()
+        let night = app.buttons["reader-theme-night"]
+        scrollTo(night, in: app.collectionViews.firstMatch); require(night); night.tap()
+        XCTAssertTrue(night.isSelected)
+        capture("GET357-accessibility-reading-style")
+        let back = app.navigationBars.buttons.firstMatch; require(back); XCTAssertTrue(back.isHittable)
+    }
 }
