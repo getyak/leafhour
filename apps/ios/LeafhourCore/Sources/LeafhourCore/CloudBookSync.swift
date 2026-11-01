@@ -1,6 +1,16 @@
 import Foundation
 import CryptoKit
 
+public struct ReadingPositionRecovery: Codable, Equatable, Sendable {
+    public var anchor: ReadingAnchor
+    public var activityAt: Date?
+    public var revision: Int
+    public var origin: String
+    public init(anchor: ReadingAnchor, activityAt: Date?, revision: Int, origin: String) {
+        self.anchor = anchor; self.activityAt = activityAt; self.revision = revision; self.origin = origin
+    }
+}
+
 public struct CloudSyncMetadata: Codable, Sendable {
     public var syncedNotes: [String: String] = [:]
     public var syncedNoteBodies: [String: String] = [:]
@@ -337,7 +347,33 @@ public actor CloudBookSync {
             // A newly restored first-page hint has no observed reading event.
             let untouchedStart = snapshot.lastActivityAt == nil && metadata.lastSyncedAnchor == nil && book.readingStartAnchor != nil && snapshot.anchor == book.readingStartAnchor && !metadata.positionConflict
             let changedAnchor = snapshot.anchor != metadata.lastSyncedAnchor && !untouchedStart
-            let pendingPosition = changedAnchor || pendingPreferences || snapshot.lastActivityAt != metadata.lastSyncedActivityAt
+            var pendingPosition = changedAnchor || pendingPreferences || snapshot.lastActivityAt != metadata.lastSyncedActivityAt
+            var deferredRemote = false
+            if remoteRevision != metadata.positionRevision, let remoteAnchor, let remoteActivity {
+                if pendingPosition, snapshot.anchor != nil, let localActivity = snapshot.lastActivityAt, localActivity > remoteActivity {
+                    // A real newer offline reading event wins. Retain the displaced
+                    // remote checkpoint before rebasing the CAS to this exact GET.
+                    try await library.retainPositionRecovery(ReadingPositionRecovery(anchor: remoteAnchor, activityAt: remoteActivity, revision: remoteRevision, origin: "remote"), bookID: bookID)
+                    metadata.positionRevision = remoteRevision; metadata.positionConflict = false
+                } else if pull {
+                    if pendingPosition, let localAnchor = snapshot.anchor, localAnchor != remoteAnchor {
+                        try await library.retainPositionRecovery(ReadingPositionRecovery(anchor: localAnchor, activityAt: snapshot.lastActivityAt, revision: metadata.positionRevision, origin: "device"), bookID: bookID)
+                    }
+                    state.anchor = remoteAnchor; state.lastActivityAt = remoteActivity
+                    metadata.lastSyncedAnchor = remoteAnchor; metadata.lastSyncedActivityAt = remoteActivity
+                    metadata.lastSyncedViewMode = snapshot.preferences.viewMode.rawValue
+                    metadata.lastSyncedTranslationVariant = snapshot.preferences.translationVariant.rawValue
+                    metadata.positionRevision = remoteRevision; metadata.positionConflict = false
+                    metadata.remoteAnchor = nil; metadata.remotePositionRevision = nil; metadata.remoteActivityAt = nil
+                    pendingPosition = false
+                } else {
+                    // A live reader never jumps or presents an ordinary sync update
+                    // as a conflict. Keep the durable baseline until next opening or
+                    // an actual newer local interaction, without uploading stale state.
+                    metadata.remoteAnchor = remoteAnchor; metadata.remotePositionRevision = remoteRevision; metadata.remoteActivityAt = remoteActivity
+                    metadata.positionConflict = false; pendingPosition = false; deferredRemote = true
+                }
+            }
             if pendingPosition, let anchor = snapshot.anchor {
                 if remoteRevision != metadata.positionRevision {
                     metadata.positionConflict = true; metadata.remoteAnchor = remoteAnchor; metadata.remotePositionRevision = remoteRevision; metadata.remoteActivityAt = remoteActivity
@@ -351,12 +387,12 @@ public actor CloudBookSync {
                         guard saved["revision"].number == Double(remoteRevision + 1), payload.filter({ $0.key != "baseRevision" }).allSatisfy({ saved[$0.key] == $0.value }) else { throw CloudRequestError(status: 502, message: "书房尚未确认阅读位置，本机记录仍保留。") }
                         metadata.positionRevision = remoteRevision + 1; metadata.lastSyncedAnchor = anchor; metadata.lastSyncedActivityAt = snapshot.lastActivityAt; metadata.lastSyncedViewMode = snapshot.preferences.viewMode.rawValue; metadata.lastSyncedTranslationVariant = snapshot.preferences.translationVariant.rawValue; metadata.positionConflict = false
                     } catch let error as CloudRequestError where error.status == 409 {
-                        metadata.positionConflict = true; metadata.remoteAnchor = remoteAnchor; metadata.remotePositionRevision = remoteRevision; metadata.remoteActivityAt = remoteActivity
+                        metadata.positionConflict = remoteActivity == nil; metadata.remoteAnchor = remoteAnchor; metadata.remotePositionRevision = remoteRevision; metadata.remoteActivityAt = remoteActivity
                     }
                 }
             } else if pull {
                 state.anchor = remoteAnchor; state.lastActivityAt = remoteActivity; metadata.lastSyncedAnchor = remoteAnchor; metadata.lastSyncedActivityAt = remoteActivity; metadata.positionRevision = remoteRevision; metadata.positionConflict = false
-            } else if remoteRevision != metadata.positionRevision {
+            } else if remoteRevision != metadata.positionRevision && !deferredRemote {
                 metadata.positionConflict = true; metadata.remoteAnchor = remoteAnchor; metadata.remotePositionRevision = remoteRevision; metadata.remoteActivityAt = remoteActivity
             }
             // Pull is used only while no reader owns this book. Push never rewrites its live state.

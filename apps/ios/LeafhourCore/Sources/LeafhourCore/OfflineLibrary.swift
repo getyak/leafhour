@@ -402,6 +402,24 @@ public actor OfflineLibrary {
         }
         try? Disk.fm.removeItem(at: backup); try Disk.fm.removeItem(at: journal)
     }
+    /// Recovery is additive and scoped to this account/book. A failed write stops
+    /// reconciliation before the only copy of an unsynced checkpoint is replaced.
+    public func retainPositionRecovery(_ position: ReadingPositionRecovery, bookID: String) throws {
+        _ = try book(bookID)
+        let directory = root.appendingPathComponent("position-recovery/" + bookID)
+        try Disk.fm.createDirectory(at: directory, withIntermediateDirectories: true)
+        let encoder = JSONEncoder(); encoder.outputFormatting = [.sortedKeys]
+        let bytes = try encoder.encode(position)
+        let file = directory.appendingPathComponent(Disk.hash(bytes) + ".json")
+        if !Disk.fm.fileExists(atPath: file.path) { try bytes.write(to: file, options: .atomic) }
+    }
+    public func positionRecoveries(_ bookID: String) throws -> [ReadingPositionRecovery] {
+        _ = try book(bookID)
+        let directory = root.appendingPathComponent("position-recovery/" + bookID)
+        guard Disk.fm.fileExists(atPath: directory.path) else { return [] }
+        return try Disk.fm.contentsOfDirectory(at: directory, includingPropertiesForKeys: nil)
+            .filter { $0.pathExtension == "json" }.map { try Disk.read(ReadingPositionRecovery.self, from: $0) }
+    }
     public func cloudMetadata(_ bookID: String) throws -> CloudSyncMetadata {
         _ = try bookDirectory(bookID)
         let url = root.appendingPathComponent("states/" + bookID + "-sync.json")

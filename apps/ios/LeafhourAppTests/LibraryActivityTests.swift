@@ -101,6 +101,31 @@ final class LibraryActivityTests: XCTestCase {
         XCTAssertEqual(preservedRows, fixture.rows)
         XCTAssertEqual(try Data(contentsOf: originalURL), fixture.original)
     }
+    func testStartupOpensLatestActualLocalReadingOnceAndReturnToShelfStaysThere() async throws {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        try FileManager.default.createDirectory(at: root, withIntermediateDirectories: true)
+        addTeardownBlock { try? FileManager.default.removeItem(at: root) }
+        let model = LibraryModel(root: root, monitorNetwork: false), library = try XCTUnwrap(model.library)
+        var imported: [LocalBook] = []
+        for index in 0..<2 {
+            let file = root.appendingPathComponent("book-\(index).txt")
+            try Data("Unique synthetic book \(index). Source for startup continuity.".utf8).write(to: file)
+            let book = try await library.importFile(file); imported.append(book)
+            var state = try await library.state(book.id)
+            state.anchor = ReadingAnchor(chapterID: book.chapters[0].id, passageID: book.chapters[0].passages[0].id, characterOffset: index + 2)
+            state.lastActivityAt = Date(timeIntervalSince1970: Double(100 + index))
+            try await library.saveState(state, bookID: book.id)
+        }
+        try await library.setLastOpenedBook(imported[0].id)
+        await model.reload(restore: true)
+        await model.restoreRecentReading()
+        XCTAssertEqual(model.reader?.book.id, imported[1].id)
+        XCTAssertEqual(model.reader?.currentAnchor?.characterOffset, 3)
+        model.reader = nil
+        await model.restoreRecentReading()
+        XCTAssertNil(model.reader, "Returning to the shelf must never automatically reopen a book")
+    }
+
     func testCompleteAccountSnapshotKeepsArchivedPinsStatusAndCloudOnlyRecentOffline() async throws {
         let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
         let owner = "00000000-0000-4000-8000-000000000344"
