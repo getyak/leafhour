@@ -50,7 +50,7 @@ final class CloudSyncTests: XCTestCase {
         let pending = try await library.readingTimeLedger(bookID: book.id).pending
         XCTAssertTrue(pending.isEmpty)
         let metadata = try await library.cloudMetadata(book.id)
-        XCTAssertTrue(metadata.positionConflict)
+        XCTAssertFalse(metadata.positionConflict)
         XCTAssertNotNil(metadata.noteErrors.values.first)
     }
     func testMalformedTimeReceiptRetainsExactPendingSnapshotForRetry() async throws {
@@ -113,7 +113,7 @@ final class CloudSyncTests: XCTestCase {
         CloudMockProtocol.handler = { request in XCTAssertEqual(request.httpMethod, "GET"); return (200, response) }
         try await sync.synchronize(book.id, pull: false)
         let after = try await library.state(book.id), synced = try await library.cloudMetadata(book.id)
-        XCTAssertEqual(after, state); XCTAssertTrue(synced.positionConflict); XCTAssertEqual(synced.remotePositionRevision, 9)
+        XCTAssertEqual(after, state); XCTAssertFalse(synced.positionConflict); XCTAssertEqual(synced.remotePositionRevision, 9)
     }
     func testTranslatedNotesAndReadingModeSyncTheirActualLayers() async throws {
         let library = try library(owner), book = try await library.importCloud(fixtureCopy()), sync = CloudBookSync(client: client(), library: library)
@@ -321,20 +321,47 @@ final class CloudSyncTests: XCTestCase {
         let assertionValue7 = try await library.cloudMetadata(book.id).noteConflict
         XCTAssertTrue(assertionValue7)
     }
-    func testChangedCloudPositionDoesNotSilentlyOverwriteDevice() async throws {
+    func testExplicitDeviceChoiceIsNeverReversedByANewerRemoteRevision() async throws {
+        for observedAt in [nil, "2026-11-01T11:00:00Z"] as [String?] {
+            let library = try library(owner), book = try await library.importCloud(fixtureCopy()), sync = CloudBookSync(client: client(), library: library)
+            var state = ReaderState(); state.anchor = ReadingAnchor(chapterID: "chapter-one", passageID: "passage-one", characterOffset: 2)
+            state.lastActivityAt = Date(timeIntervalSince1970: 1000)
+            try await library.saveState(state, bookID: book.id)
+            var metadata = CloudSyncMetadata(); metadata.positionConflict = true; metadata.remotePositionRevision = 4
+            metadata.remoteAnchor = ReadingAnchor(chapterID: "chapter-one", passageID: "passage-one", characterOffset: 8)
+            try await library.saveCloudMetadata(metadata, bookID: book.id)
+            var position: [String: CloudJSON] = ["chapterId": .string("chapter-one"), "passageId": .string("passage-one"), "withinParagraph": .number(0.8), "revision": .number(5)]
+            if let observedAt { position["observedAt"] = .string(observedAt) }
+            let response = try records(position: .object(position))
+            CloudMockProtocol.handler = { request in XCTAssertEqual(request.httpMethod, "GET", "An explicit choice cannot overwrite a revision that advanced after the choice"); return (200, response) }
+            try await sync.resolvePosition(book.id, useDevice: true)
+            let retained = try await library.state(book.id), pending = try await library.cloudMetadata(book.id)
+            XCTAssertEqual(retained, state)
+            XCTAssertTrue(pending.positionConflict)
+            XCTAssertEqual(pending.remotePositionRevision, 5)
+            XCTAssertEqual(pending.positionRevision, 4)
+            XCTAssertTrue(pending.explicitDeviceChoice == true)
+            try await sync.synchronize(book.id)
+            let afterBackgroundPull = try await library.state(book.id)
+            XCTAssertEqual(afterBackgroundPull, state, "A queued/background pull must also respect the unresolved deliberate device choice")
+            try await sync.resolvePosition(book.id, useDevice: false)
+            let remoteChoice = try await library.cloudMetadata(book.id)
+            XCTAssertNil(remoteChoice.explicitDeviceChoice)
+        }
+    }
+
+    func testLegacyRemotePositionResumesQuietlyWithDeviceRecovery() async throws {
         let library = try library(owner), book = try await library.importCloud(fixtureCopy()), sync = CloudBookSync(client: client(), library: library)
         var state = ReaderState(); state.anchor = ReadingAnchor(chapterID: "chapter-one", passageID: "passage-one", characterOffset: 8)
         try await library.saveState(state, bookID: book.id)
         let remote = try records(position: .object(["chapterId": .string("chapter-one"), "passageId": .string("passage-one"), "withinParagraph": .number(0.8), "revision": .number(4)]))
         CloudMockProtocol.handler = { request in XCTAssertEqual(request.httpMethod, "GET"); return (200, remote) }
         try await sync.synchronize(book.id)
-        let assertionValue8 = try await library.state(book.id).anchor
-        XCTAssertEqual(assertionValue8, state.anchor)
-        let assertionValue9 = try await library.cloudMetadata(book.id).positionConflict
-        XCTAssertTrue(assertionValue9)
-        try await sync.resolvePosition(book.id, useDevice: false)
-        let assertionValue10 = try await library.state(book.id).anchor
-        XCTAssertNotEqual(assertionValue10, state.anchor)
+        let resumed = try await library.state(book.id), metadata = try await library.cloudMetadata(book.id)
+        XCTAssertNotEqual(resumed.anchor, state.anchor)
+        XCTAssertFalse(metadata.positionConflict); XCTAssertEqual(metadata.positionRevision, 4)
+        let recovery = try await library.positionRecoveries(book.id)
+        XCTAssertEqual(recovery.map(\.anchor), [state.anchor!])
     }
     func testNewerRemoteReadingResumesBeforeOpeningAndRetainsOfflineCheckpoint() async throws {
         let library = try library(owner), book = try await library.importCloud(fixtureCopy()), sync = CloudBookSync(client: client(), library: library)

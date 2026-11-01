@@ -126,6 +126,43 @@ final class LibraryActivityTests: XCTestCase {
         XCTAssertNil(model.reader, "Returning to the shelf must never automatically reopen a book")
     }
 
+    func testStartupRefreshesCloudRecencyAndResolvesPositionBeforePresentingReader() async throws {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        let owner = "00000000-0000-4000-8000-000000000344"
+        addTeardownBlock { try? FileManager.default.removeItem(at: root); ActivityURLProtocol.respond = nil }
+        let configuration = URLSessionConfiguration.ephemeral; configuration.protocolClasses = [ActivityURLProtocol.self]
+        let credential = CloudCredential(account: CloudAccount(id: owner, email: nil), token: "isolated-fixture")
+        let cloud = CloudLibraryClient(baseURL: URL(string: "https://leafhour.test")!, credential: credential, configuration: configuration)
+        let model = LibraryModel(root: root, cloud: cloud, credential: credential, monitorNetwork: false)
+        let library = try XCTUnwrap(model.library)
+        var imported: [LocalBook] = []
+        for id in ["older", "recent"] {
+            let identity = CloudBookIdentity(ownerID: owner, bookID: id, contentVersion: "v1", sourceFormat: "text")
+            let chapter = try JSONDecoder().decode(BookChapter.self, from: JSONSerialization.data(withJSONObject: ["id": "c1", "title": "One", "sourcePath": "one", "passages": [["id": "p1", "text": "A unique source paragraph for " + id + " reading continuity.", "heading": false]]]))
+            let passage = chapter.passages[0]
+            let content = try CloudJSON.encode(["bookId": .string(id), "contentVersion": .string("v1"), "sections": .array([.object(["chapterId": .string("c1"), "paragraphs": .array([.object(["id": .string("p1"), "original": .string(passage.text), "translations": .object([:])])])])])])
+            imported.append(try await library.importCloud(CloudReadingCopy(identity: identity, title: id, author: "Fixture", chapters: [chapter], content: content)))
+        }
+        try await library.setLastOpenedBook(imported[0].id)
+        ActivityURLProtocol.respond = { request in
+            let path = request.url!.path
+            if path == "/api/auth/session" { return (0, ["user": ["id": owner]]) }
+            if path.hasSuffix("/records") {
+                XCTAssertEqual(request.httpMethod, "GET")
+                return (0, ["bookId": "recent", "contentVersion": "v1", "comments": [], "questions": [], "position": ["chapterId": "c1", "passageId": "p1", "withinParagraph": 0.5, "revision": 7, "observedAt": "2026-11-01T11:00:00Z"]])
+            }
+            XCTAssertEqual(path, "/api/library"); XCTAssertEqual(request.url?.query, "view=account")
+            return (0, ["user": ["id": owner], "books": [["bookId": "older", "title": "older", "contentVersion": "v1", "lastReadAt": "2026-11-01T10:00:00Z"], ["bookId": "recent", "title": "recent", "contentVersion": "v1", "lastReadAt": "2026-11-01T11:00:00Z"]]])
+        }
+        await model.reload(restore: true)
+        XCTAssertNil(model.reader)
+        await model.restoreRecentReading()
+        let reader = try XCTUnwrap(model.reader)
+        XCTAssertEqual(reader.book.cloud?.bookID, "recent")
+        XCTAssertEqual(reader.currentAnchor?.characterOffset, reader.book.chapters[0].passages[0].text.unicodeScalars.count / 2)
+        XCTAssertFalse(model.syncIssues[reader.book.id]?.positionConflict ?? true)
+    }
+
     func testCompleteAccountSnapshotKeepsArchivedPinsStatusAndCloudOnlyRecentOffline() async throws {
         let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
         let owner = "00000000-0000-4000-8000-000000000344"
