@@ -15,12 +15,15 @@ struct TextReadingView: UIViewRepresentable {
     let onReadingScroll: () -> Void
     var onTranslate: ((SelectedQuote) -> Void)? = nil
     var onDiscuss: ((SelectedQuote) -> Void)? = nil
+    var onShare: ((SelectedQuote) -> Void)? = nil
     var onSelectionChange: ((SelectedQuote?, Bool) -> Void)? = nil
     var onPageChange: ((ReaderPagePosition) -> Void)? = nil
     var speechHighlight: ReaderSpeechHighlight? = nil
     var followsSpeech = false
     var onReadingPosition: ((ReaderSpeechLocation) -> Void)? = nil
     var onTouchActivity: ((Bool) -> Void)? = nil
+    var pageRequest: ReaderPageRequest? = nil
+    var onPageRequestResult: ((UUID, ReaderPageRequestOutcome) -> Void)? = nil
     func makeCoordinator() -> Coordinator { Coordinator(parent: self) }
     func makeUIView(context: Context) -> UITextView {
         let view = ReflowTextView()
@@ -37,7 +40,7 @@ struct TextReadingView: UIViewRepresentable {
         }
         context.coordinator.edgeTap = ReaderEdgeTapHandler(view: view, blocked: { [weak view, weak coordinator = context.coordinator] in
             (view?.selectedRange.length ?? 0) > 0 || coordinator?.restoring != false
-        }, onWake: { [weak coordinator = context.coordinator] edge in coordinator?.parent.onWake(edge) },
+        }, onWake: { [weak coordinator = context.coordinator] edge in coordinator?.wake(edge) },
         isPaged: { [weak coordinator = context.coordinator] in coordinator?.parent.session.state.preferences.navigationMode == .paged },
         onTurn: { [weak coordinator = context.coordinator] direction in _ = coordinator?.turnPage(direction) })
         context.coordinator.pageTurn = ReaderPageTurnGestureHandler(view: view, blocked: { [weak view, weak coordinator = context.coordinator] in
@@ -57,7 +60,7 @@ struct TextReadingView: UIViewRepresentable {
         }, selectionActive: { [weak view] in (view?.selectedRange.length ?? 0) > 0 }, expand: { [weak view, weak coordinator] in
             guard let view, let coordinator else { return false }
             return coordinator.selectParagraph(containing: view.selectedRange)
-        }, activity: { [weak coordinator] in coordinator?.parent.onTouchActivity?($0) }, finalized: { [weak coordinator] in coordinator?.presentParagraphMenu() }, initialSelection: { [weak coordinator] point in
+        }, activity: { [weak coordinator] in coordinator?.touchActivity($0) }, finalized: { [weak coordinator] in coordinator?.presentParagraphMenu() }, initialSelection: { [weak coordinator] point in
             guard let coordinator, let character = coordinator.paragraphCharacter(at: point) else { return false }
             return coordinator.selectParagraph(containing: NSRange(location: character, length: 1))
         })
@@ -66,10 +69,12 @@ struct TextReadingView: UIViewRepresentable {
     }
     func updateUIView(_ view: UITextView, context: Context) {
         let coordinator = context.coordinator
+        guard !coordinator.isInvalidated else { return }
         coordinator.parent = self
         coordinator.updateContent(view)
         coordinator.dismissSelection(in: view, id: selectionDismissalID)
         coordinator.updateSpeech(view)
+        coordinator.consumePageRequest()
     }
     static func dismantleUIView(_ view: UITextView, coordinator: Coordinator) {
         (view as? ReflowTextView)?.onSizeChange = nil
@@ -87,6 +92,7 @@ struct TextReadingView: UIViewRepresentable {
             return (width, insets)
         }
         func updateContent(_ view: UITextView) {
+            guard !isInvalidated else { return }
             let coordinator = self, session = parent.session
             let column = layout(for: view)
             let layoutChanged = coordinator.renderedSize != view.bounds.size || coordinator.renderedInsets != column.insets
@@ -104,6 +110,13 @@ struct TextReadingView: UIViewRepresentable {
             let navigating = coordinator.navigationID != session.navigationID
             // A session owns an immutable book/source version. Never carry indices into another source.
             let sameSource = coordinator.indexedSessionID == ObjectIdentifier(session) && coordinator.indexedChapterIndex == session.chapterIndex
+            if coordinator.pendingPageTransition != nil, !coordinator.pendingTransitionIsCurrent {
+                coordinator.cancelPageTransition(.notReady)
+            }
+            if layoutChanged || navigating || !sameSource || coordinator.signature != signature {
+                coordinator.pageCurl.cancel()
+                if coordinator.pendingPageTransition == nil { coordinator.finishPageRequest(.notReady) }
+            }
             // A background result must not rebuild UIKit's selected text or its
             // native edit menu. The selection-ending callback requests a fresh render.
             if sameSource, !navigating, !layoutChanged, view.selectedRange.length > 0,
@@ -132,8 +145,7 @@ struct TextReadingView: UIViewRepresentable {
                 coordinator.indexedSessionID = ObjectIdentifier(session); coordinator.indexedChapterIndex = session.chapterIndex
                 let result = NSMutableAttributedString(string: "")
                 coordinator.spans = []
-                let base = UIFont.systemFont(ofSize: preferences.fontSize)
-                let font = UIFontMetrics(forTextStyle: .body).scaledFont(for: UIFont(descriptor: base.fontDescriptor.withDesign(.serif) ?? base.fontDescriptor, size: preferences.fontSize), compatibleWith: view.traitCollection)
+                let font = ReaderTypography.font(style: preferences.fontStyle, size: preferences.fontSize, traits: view.traitCollection)
                 if session.book.rendersMarkdown && (preferences.viewMode == .source || !session.chapter.passages.contains { session.translations[$0.id]?.text(preferences.translationVariant) != nil }) {
                     if !sameSource || coordinator.markdownChapterID != session.chapter.id {
                         coordinator.markdown = MarkdownChapterLayout(book: session.book, chapter: session.chapter, original: session.original)
@@ -247,23 +259,47 @@ struct TextReadingView: UIViewRepresentable {
         private var indexedSessionID: ObjectIdentifier?
         private var indexedChapterIndex: Int?
         var restoring = false
+        private(set) var isInvalidated = false
         var edgeTap: ReaderEdgeTapHandler?
         var pageTurn: ReaderPageTurnGestureHandler?
         var selectionDismissalID: UUID?
         private var pagination: ReaderTextPagination?
         private var paginationKey: String?
         private var lastReportedPage: ReaderPagePosition?
-        private var pendingPageTransition: ReaderPageDirection?
+        private struct PendingPageTransition {
+            let direction: ReaderPageDirection
+            let snapshot: UIView?
+            let navigation: UUID
+            let owner: ObjectIdentifier
+            let chapterID: String
+            let preferences: ReaderPreferences
+            let size: CGSize
+            let insets: UIEdgeInsets
+            var restorationGeneration: Int?
+        }
+        private var pendingPageTransition: PendingPageTransition?
+        private var pendingTransitionIsCurrent: Bool {
+            guard let pending = pendingPageTransition, let view else { return false }
+            return pending.navigation == parent.session.navigationID && pending.owner == ObjectIdentifier(parent.session)
+                && pending.chapterID == parent.session.chapter.id && pending.preferences == parent.session.state.preferences
+                && pending.size == view.bounds.size && pending.insets == parent.pageInsets
+        }
+        private let pageCurl = ReaderPageCurlTransition()
+        private var consumedPageRequests = Set<UUID>()
+        private var pendingPageRequest: ReaderPageRequest?
         private var delayed: DispatchWorkItem?
         private var restorationGeneration = 0
         private var resignObserver: NSObjectProtocol?
         init(parent: TextReadingView) {
             self.parent = parent
             super.init()
-            resignObserver = NotificationCenter.default.addObserver(forName: UIApplication.willResignActiveNotification, object: nil, queue: .main) { [weak self] _ in MainActor.assumeIsolated { self?.capture() } }
+            resignObserver = NotificationCenter.default.addObserver(forName: UIApplication.willResignActiveNotification, object: nil, queue: .main) { [weak self] _ in MainActor.assumeIsolated {
+                self?.cancelPageTransition(.notReady); self?.capture()
+            } }
         }
         deinit { delayed?.cancel(); if let resignObserver { NotificationCenter.default.removeObserver(resignObserver) } }
         func dismissSelection(in textView: UITextView, id: UUID) {
+            guard !isInvalidated else { return }
             guard selectionDismissalID != id else { return }
             selectionDismissalID = id
             guard let window = textView.window else { return }
@@ -273,7 +309,7 @@ struct TextReadingView: UIViewRepresentable {
             // Resigning here synchronously can ask SwiftUI for its next responder
             // while updateUIView is still updating that same responder graph.
             DispatchQueue.main.async { [weak self, weak textView, weak window] in
-                guard let self, let textView, let window, self.view === textView,
+                guard let self, !self.isInvalidated, let textView, let window, self.view === textView,
                       self.selectionDismissalID == id, textView.window === window,
                       self.indexedSessionID == owner, owner == ObjectIdentifier(self.parent.session),
                       self.indexedChapterIndex == chapterIndex, chapterIndex == self.parent.session.chapterIndex,
@@ -287,6 +323,8 @@ struct TextReadingView: UIViewRepresentable {
             }
         }
         func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+            guard !isInvalidated else { return }
+            cancelPageTransition(.blocked)
             paragraphSelection?.cancel()
             restorationGeneration += 1; restoring = false; pendingTranslatedViewport = nil; cancelPendingCapture()
             parent.session.clearTransientSelection()
@@ -302,7 +340,7 @@ struct TextReadingView: UIViewRepresentable {
             cancelPendingCapture()
             let generation = restorationGeneration, navigation = navigationID, chapter = renderedChapterID
             let work = DispatchWorkItem { [weak self] in
-                guard let self, self.restorationGeneration == generation, self.navigationID == navigation,
+                guard let self, !self.isInvalidated, self.restorationGeneration == generation, self.navigationID == navigation,
                       self.renderedChapterID == chapter else { return }
                 self.persistCheckpoint()
             }; delayed = work
@@ -354,7 +392,7 @@ struct TextReadingView: UIViewRepresentable {
             return true
         }
         private func reportReadingPosition(span: Span, displayedIndex: Int) {
-            guard span.passage.resourcePath == nil else { return }
+            guard !isInvalidated, span.passage.resourcePath == nil else { return }
             let layer = span.isTranslation ? parent.session.state.preferences.translationVariant.rawValue : "original"
             let text = span.isTranslation ? parent.session.translations[span.passage.id]?.text(parent.session.state.preferences.translationVariant) : span.passage.text
             guard let text else { return }
@@ -369,7 +407,7 @@ struct TextReadingView: UIViewRepresentable {
             reportReadingPosition(span: span, displayedIndex: index)
         }
         func updateSpeech(_ view: UITextView) {
-            guard !restoring else { return }
+            guard !isInvalidated, !restoring else { return }
             var target: ReaderSpeechTextTarget?
             if view.selectedRange.length == 0, let highlight = parent.speechHighlight,
                highlight.location.chapterID == parent.session.chapter.id,
@@ -396,7 +434,7 @@ struct TextReadingView: UIViewRepresentable {
             if target != nil {
                 let generation = restorationGeneration, navigation = navigationID
                 DispatchQueue.main.async { [weak self] in
-                    guard let self, self.restorationGeneration == generation, self.navigationID == navigation else { return }
+                    guard let self, !self.isInvalidated, self.restorationGeneration == generation, self.navigationID == navigation else { return }
                     self.capture(); self.reportPagePosition()
                 }
             }
@@ -419,12 +457,14 @@ struct TextReadingView: UIViewRepresentable {
             return (view.selectedRange, (view.attributedText.string as NSString).substring(with: view.selectedRange))
         }
         func textViewDidChangeSelection(_ textView: UITextView) {
+            guard !isInvalidated else { return }
+            if textView.selectedRange.length > 0 { cancelPageTransition(.blocked) }
             paragraphSelection?.selectionChanged()
             let range = textView.selectedRange, navigation = navigationID
             // UIKit can notify synchronously during representable updates. Publish
             // only the latest user selection after that update has completed.
             DispatchQueue.main.async { [weak self, weak textView] in
-                guard let self, let textView, self.view === textView, !self.restoring,
+                guard let self, !self.isInvalidated, let textView, self.view === textView, !self.restoring,
                       self.indexedSessionID == ObjectIdentifier(self.parent.session),
                       self.indexedChapterIndex == self.parent.session.chapterIndex,
                       self.navigationID == navigation, self.parent.session.navigationID == navigation,
@@ -434,6 +474,14 @@ struct TextReadingView: UIViewRepresentable {
             }
         }
         func invalidate() {
+            guard !isInvalidated else { return }
+            // SwiftUI may be invalidating its graph while native observers are
+            // removed. Stop every host callback before any removal can reenter.
+            isInvalidated = true; restoring = true
+            parent.onTouchActivity = nil; parent.onSelectionChange = nil
+            parent.onPageChange = nil; parent.onReadingPosition = nil; parent.onPageRequestResult = nil
+            view?.delegate = nil
+            cancelPageTransition(.notReady)
             paragraphMenu?.invalidate(); paragraphMenu = nil
             paragraphSelection?.invalidate(); paragraphSelection = nil
             restorationGeneration += 1; cancelPendingCapture(); view = nil
@@ -442,6 +490,7 @@ struct TextReadingView: UIViewRepresentable {
             pageTurn?.invalidate(); pageTurn = nil; pagination = nil; paginationKey = nil
         }
         func configureNavigation(_ view: UITextView) {
+            guard !isInvalidated else { return }
             let paged = parent.session.state.preferences.navigationMode == .paged
             pageTurn?.isEnabled = paged
             // Preserve UITextView's selection/editing recognizers and native
@@ -500,44 +549,127 @@ struct TextReadingView: UIViewRepresentable {
             lastReportedPage = position
             let navigation = navigationID, generation = restorationGeneration
             DispatchQueue.main.async { [weak self] in
-                guard let self, self.navigationID == navigation, self.restorationGeneration == generation,
+                guard let self, !self.isInvalidated, self.navigationID == navigation, self.restorationGeneration == generation,
                       self.lastReportedPage == position, self.parent.session.state.preferences.navigationMode == .paged else { return }
                 self.parent.onPageChange?(position)
             }
         }
-        @discardableResult func turnPage(_ direction: ReaderPageDirection) -> Bool {
-            guard let view, !restoring, view.selectedRange.length == 0,
+        func consumePageRequest() {
+            guard !isInvalidated else { return }
+            guard let request = parent.pageRequest, consumedPageRequests.insert(request.id).inserted else { return }
+            guard request.expectedNavigationID == parent.session.navigationID,
+                  navigationID == parent.session.navigationID, !restoring,
+                  let view, view.bounds.width > 0, view.bounds.height > 0 else {
+                respond(to: request, with: .notReady); return
+            }
+            guard pendingPageRequest == nil, !pageCurl.isActive,
+                  view.selectedRange.length == 0, paragraphSelection?.isTouchActive != true,
+                  parent.session.state.preferences.navigationMode == .paged else {
+                respond(to: request, with: .blocked); return
+            }
+            pendingPageRequest = request
+            let generation = restorationGeneration, navigation = navigationID, owner = ObjectIdentifier(parent.session)
+            let source = signature, size = view.bounds.size, insets = parent.pageInsets
+            // updateUIView is inside SwiftUI's rendering transaction. Native
+            // snapshotView(afterScreenUpdates: true) must run after that call
+            // returns, otherwise it can wait on the transaction it is blocking.
+            DispatchQueue.main.async { [weak self, weak view] in
+                guard let self, !self.isInvalidated, self.pendingPageRequest?.id == request.id else { return }
+                guard let view, self.view === view, self.parent.pageRequest?.id == request.id,
+                      ObjectIdentifier(self.parent.session) == owner,
+                      self.navigationID == navigation, self.parent.session.navigationID == navigation,
+                      self.restorationGeneration == generation, self.signature == source,
+                      view.bounds.size == size, self.parent.pageInsets == insets else {
+                    self.finishPageRequest(.notReady); return
+                }
+                guard !self.restoring, !self.pageCurl.isActive, view.selectedRange.length == 0,
+                      self.paragraphSelection?.isTouchActive != true,
+                      self.parent.session.state.preferences.navigationMode == .paged else {
+                    self.finishPageRequest(.blocked); return
+                }
+                if !self.turnPage(request.direction, origin: request.origin) { self.finishPageRequest(.end) }
+            }
+        }
+        private func respond(to request: ReaderPageRequest, with outcome: ReaderPageRequestOutcome) {
+            guard !isInvalidated else { return }
+            DispatchQueue.main.async { [weak self] in
+                guard let self, !self.isInvalidated else { return }
+                self.parent.onPageRequestResult?(request.id, outcome)
+            }
+        }
+        private func finishPageRequest(_ outcome: ReaderPageRequestOutcome) {
+            guard let request = pendingPageRequest else { return }
+            pendingPageRequest = nil; respond(to: request, with: outcome)
+        }
+        private func cancelPageTransition(_ outcome: ReaderPageRequestOutcome) {
+            pendingPageTransition = nil
+            finishPageRequest(outcome); pageCurl.cancel()
+        }
+        func touchActivity(_ active: Bool) {
+            guard !isInvalidated else { return }
+            if active { cancelPageTransition(.blocked) }
+            parent.onTouchActivity?(active)
+        }
+        fileprivate func wake(_ edge: ReaderChrome) {
+            guard !isInvalidated else { return }
+            parent.onWake(edge)
+        }
+        private var pagePaper: UIColor {
+            let theme = parent.session.state.preferences.theme
+            return theme == "night" ? UIColor(white: 0.12, alpha: 1) : theme == "paper" ? UIColor(Color.readingPaper) : .systemBackground
+        }
+        private func animatePage(from snapshot: UIView?, direction: ReaderPageDirection) {
+            guard let view else { finishPageRequest(.notReady); return }
+            let generation = restorationGeneration, navigation = navigationID, owner = indexedSessionID
+            pageCurl.animate(from: snapshot, over: view, direction: direction, paper: pagePaper) { [weak self] completed in
+                guard let self, !self.isInvalidated else { return }
+                guard completed, self.restorationGeneration == generation, self.navigationID == navigation,
+                      self.parent.session.navigationID == navigation, self.indexedSessionID == owner,
+                      owner == ObjectIdentifier(self.parent.session), !self.restoring else {
+                    self.finishPageRequest(.notReady); return
+                }
+                self.finishPageRequest(.settled(navigationID: self.parent.session.navigationID))
+            }
+        }
+        @discardableResult func turnPage(_ direction: ReaderPageDirection, origin: ReaderPageTurnOrigin = .user) -> Bool {
+            guard !isInvalidated, let view, !restoring, !pageCurl.isActive, view.selectedRange.length == 0,
                   parent.session.state.preferences.navigationMode == .paged else { return false }
             refreshPagination()
             guard let pagination else { return false }
             if let offset = pagination.destination(direction, from: view.contentOffset.y) {
                 guard abs(offset - view.contentOffset.y) > 0.5 else { return false }
+                let before = pageCurl.snapshot(from: view)
                 restorationGeneration += 1; cancelPendingCapture()
-                parent.onReadingScroll()
-                ReaderPageTransition.apply(to: view, direction: direction)
+                if origin == .user { parent.onReadingScroll() }
                 view.setContentOffset(CGPoint(x: 0, y: offset), animated: false)
                 capture(); reportPagePosition()
+                animatePage(from: before, direction: direction)
                 return true
             }
             let session = parent.session, chapter = session.chapterIndex + (direction == .next ? 1 : -1)
             guard session.book.chapters.indices.contains(chapter) else { return false }
-            parent.onReadingScroll()
-            pendingPageTransition = direction
+            if origin == .user { parent.onReadingScroll() }
+            let snapshot = pageCurl.snapshot(from: view)
             var anchor: ReadingAnchor?
             if direction == .previous, let passage = session.book.chapters[chapter].passages.last {
                 anchor = ReadingAnchor(chapterID: session.book.chapters[chapter].id, passageID: passage.id, characterOffset: max(0, passage.text.unicodeScalars.count - 1))
             }
             session.go(to: chapter, anchor: anchor)
+            pendingPageTransition = PendingPageTransition(direction: direction, snapshot: snapshot, navigation: session.navigationID,
+                owner: ObjectIdentifier(session), chapterID: session.chapter.id, preferences: session.state.preferences,
+                size: view.bounds.size, insets: parent.pageInsets)
             updateContent(view)
             return true
         }
         func restore(_ anchor: ReadingAnchor?, translatedViewport: TranslatedViewport? = nil, persistCheckpoint: Bool = false) {
-            guard let view else { return }
+            guard !isInvalidated, let view else { return }
             restoring = true; cancelPendingCapture(); restorationGeneration += 1
             let generation = restorationGeneration, chapter = renderedChapterID, navigation = navigationID
+            if pendingTransitionIsCurrent { pendingPageTransition?.restorationGeneration = generation }
+            else if pendingPageTransition != nil { cancelPageTransition(.notReady) }
             let owner = indexedSessionID, chapterIndex = indexedChapterIndex
             DispatchQueue.main.async { [weak self, weak view] in
-                guard let self, let view, self.view === view, self.restorationGeneration == generation,
+                guard let self, !self.isInvalidated, let view, self.view === view, self.restorationGeneration == generation,
                       self.indexedSessionID == owner, owner == ObjectIdentifier(self.parent.session),
                       self.indexedChapterIndex == chapterIndex, chapterIndex == self.parent.session.chapterIndex,
                       self.renderedChapterID == chapter, self.parent.session.chapter.id == chapter,
@@ -576,13 +708,13 @@ struct TextReadingView: UIViewRepresentable {
                     view.setContentOffset(CGPoint(x: 0, y: min(y, maximum)), animated: false)
                 } else { view.setContentOffset(.zero, animated: false) }
                 self.restoring = false; self.pendingTranslatedViewport = nil
-                if let direction = self.pendingPageTransition {
+                if let pending = self.pendingPageTransition, pending.restorationGeneration == generation, self.pendingTransitionIsCurrent {
                     self.pendingPageTransition = nil
-                    ReaderPageTransition.apply(to: view, direction: direction)
-                    if self.parent.session.state.preferences.navigationMode == .paged, direction == .previous {
+                    if self.parent.session.state.preferences.navigationMode == .paged, pending.direction == .previous {
                         view.setContentOffset(CGPoint(x: 0, y: self.pagination?.origins.last ?? -view.adjustedContentInset.top), animated: false)
                     }
                     self.capture()
+                    self.animatePage(from: pending.snapshot, direction: pending.direction)
                 }
                 self.configureNavigation(view)
                 self.updateSpeech(view)
@@ -675,8 +807,10 @@ struct TextReadingView: UIViewRepresentable {
             return end
         }
         func textView(_ textView: UITextView, editMenuForTextIn range: NSRange, suggestedActions: [UIMenuElement]) -> UIMenu? {
+            guard !isInvalidated else { return nil }
             let selectionGuidance = "请在同一段内选择文字，以保留准确引用。"
             func quote() -> SelectedQuote? {
+                guard !isInvalidated else { return nil }
                 let value = selectedQuote(in: textView, range: textView.selectedRange)
                 if value == nil { parent.session.message = selectionGuidance }
                 return value
@@ -706,6 +840,11 @@ struct TextReadingView: UIViewRepresentable {
             }
             if parent.onDiscuss != nil {
                 actions.append(UIAction(title: "问陪读", image: UIImage(systemName: "bubble.left.and.bubble.right")) { [weak self] _ in if let value = quote() { self?.parent.onDiscuss?(value) } })
+            }
+            if parent.onShare != nil {
+                actions.append(UIAction(title: "分享摘录…", image: UIImage(systemName: "square.and.arrow.up")) { [weak self] _ in
+                    guard let value = quote() else { return }; self?.parent.onShare?(value)
+                })
             }
             // Keep UIKit's Copy/Select editing group ahead of optional reading
             // actions. Preserve every system element and its original behavior.

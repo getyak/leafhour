@@ -105,6 +105,18 @@ final class ReaderPaginationTests: XCTestCase {
     private func drain() async {
         await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in DispatchQueue.main.async { continuation.resume() } }
     }
+    private func settlePageTurn(_ view: UIView) async {
+        let deadline = ProcessInfo.processInfo.systemUptime + 2
+        repeat {
+            await drain()
+            let turning = view.window?.rootViewController?.children.contains {
+                ($0 as? UIPageViewController)?.transitionStyle == .pageCurl
+            } ?? false
+            if !turning { return }
+            try? await Task.sleep(for: .milliseconds(20))
+        } while ProcessInfo.processInfo.systemUptime < deadline
+        XCTFail("The temporary native curl did not finish and detach")
+    }
     private func text(_ session: ReaderSession, pageInsets: UIEdgeInsets = UIEdgeInsets(top: 64, left: 24, bottom: 24, right: 24), onPageChange: ((ReaderPagePosition) -> Void)? = nil) async -> (ReflowTextView, TextReadingView.Coordinator) {
         let parent = TextReadingView(session: session, pageInsets: pageInsets, onNote: { _ in }, onSource: { _ in }, onWake: { _ in }, onReadingScroll: {}, onPageChange: onPageChange)
         let coordinator = parent.makeCoordinator(), view = ReflowTextView()
@@ -159,6 +171,25 @@ final class ReaderPaginationTests: XCTestCase {
         let receipt = await session.flush(); XCTAssertTrue(receipt.succeeded)
     }
 
+    func testChosenSystemFontStyleReachesTheActualSourceTextWithoutMovingItsAnchor() async throws {
+        let session = try await session()
+        let (view, coordinator) = await text(session)
+        let anchor = session.currentAnchor
+        let designs: [(ReaderFontStyle, UIFontDescriptor.SystemDesign)] = [(.sans, .default), (.rounded, .rounded), (.serif, .serif)]
+        for (style, design) in designs {
+            var preferences = session.state.preferences; preferences.fontStyle = style
+            session.changePreferences(preferences); coordinator.updateContent(view); await drain()
+            let actual = try XCTUnwrap(view.attributedText.attribute(.font, at: 0, effectiveRange: nil) as? UIFont)
+            let base = UIFont.systemFont(ofSize: preferences.fontSize)
+            let descriptor = base.fontDescriptor.withDesign(design) ?? base.fontDescriptor
+            let expected = UIFontMetrics(forTextStyle: .body).scaledFont(for: UIFont(descriptor: descriptor, size: preferences.fontSize), compatibleWith: view.traitCollection)
+            XCTAssertEqual(actual.fontName, expected.fontName)
+            XCTAssertEqual(actual.pointSize, expected.pointSize, accuracy: 0.01)
+            XCTAssertEqual(session.currentAnchor, anchor)
+        }
+        let receipt = await session.flush(); XCTAssertTrue(receipt.succeeded)
+    }
+
     func testChangedViewportAndInsetsKeepCanonicalSourceWhileUnchangedLayoutKeepsItsOffset() async throws {
         let source = (1...40).map { "Paragraph \($0). This original passage keeps its source position through changes to the real viewport and reader margins." }.joined(separator: "\n\n")
         let session = try await session(source: source)
@@ -192,6 +223,7 @@ final class ReaderPaginationTests: XCTestCase {
 
     func testPagedTextHidesAdjacentPageInkWithoutReflowingOrMovingTheSourceAnchor() async throws {
         let session = try await session(), insets = UIEdgeInsets(top: 80, left: 24, bottom: 180, right: 24)
+        session.state.preferences.navigationMode = .scroll
         let (view, coordinator) = await text(session, pageInsets: insets)
         view.overrideUserInterfaceStyle = .light; view.backgroundColor = .white
         let initialLayout = ReaderTextPagination(textView: view, readingTop: 80, bottomInset: 180)
@@ -291,6 +323,7 @@ final class ReaderPaginationTests: XCTestCase {
 
     func testPagedEndAllowanceDoesNotAccumulateAndScrollRestoresItsInsetAndSource() async throws {
         let session = try await session(), insets = UIEdgeInsets(top: 80, left: 24, bottom: 180, right: 24)
+        session.state.preferences.navigationMode = .scroll
         let (view, coordinator) = await text(session, pageInsets: insets)
         view.frame.size.height = 697; view.contentInset.bottom = 11; view.layoutIfNeeded(); await drain()
         let baseline = view.contentInset
@@ -359,12 +392,12 @@ final class ReaderPaginationTests: XCTestCase {
     func testCommittedPageTurnPersistsTheVisibleScalarAnchorAndPreviousRestoresTheScreen() async throws {
         let session = try await session(); session.state.preferences.navigationMode = .paged
         let (view, coordinator) = await text(session), original = view.contentOffset.y
-        XCTAssertTrue(coordinator.turnPage(.next)); await drain()
+        XCTAssertTrue(coordinator.turnPage(.next)); await settlePageTurn(view)
         XCTAssertGreaterThan(view.contentOffset.y, original)
         let moved = try XCTUnwrap(session.currentAnchor)
         XCTAssertEqual(moved.passageID, session.chapter.passages[0].id)
         XCTAssertGreaterThan(moved.characterOffset, 0)
-        XCTAssertTrue(coordinator.turnPage(.previous)); await drain()
+        XCTAssertTrue(coordinator.turnPage(.previous)); await settlePageTurn(view)
         XCTAssertEqual(view.contentOffset.y, original, accuracy: 1)
         XCTAssertFalse(coordinator.turnPage(.previous), "The first screen must not wrap to the end of the book")
         _ = await session.flush()
@@ -388,9 +421,9 @@ final class ReaderPaginationTests: XCTestCase {
         let lastOrigin = try XCTUnwrap(ReaderTextPagination(textView: view, readingTop: 64, bottomInset: 24).origins.last)
         view.setContentOffset(CGPoint(x: 0, y: lastOrigin), animated: false)
         coordinator.capture()
-        XCTAssertTrue(coordinator.turnPage(.next)); await drain()
+        XCTAssertTrue(coordinator.turnPage(.next)); await settlePageTurn(view)
         XCTAssertEqual(session.chapterIndex, 1); XCTAssertEqual(view.contentOffset.y, 0, accuracy: 1)
-        XCTAssertTrue(coordinator.turnPage(.previous)); await drain()
+        XCTAssertTrue(coordinator.turnPage(.previous)); await settlePageTurn(view)
         XCTAssertEqual(session.chapterIndex, 0)
         XCTAssertEqual(view.contentOffset.y, lastOrigin, accuracy: 1)
         session.go(to: 1); coordinator.updateContent(view); await drain()
@@ -414,8 +447,28 @@ final class ReaderPaginationTests: XCTestCase {
         XCTAssertGreaterThan(sourceRect.intersection(body).height, 0, "A fresh persisted session must physically show the same source on the last chapter's final screen")
     }
 
+    func testAQueuedPreviousChapterTurnCannotOverrideANewerExplicitSourceJump() async throws {
+        let fixture = try await importedSession(chapters: 3), session = fixture.session
+        session.go(to: 1)
+        let (view, coordinator) = await text(session)
+        XCTAssertTrue(coordinator.turnPage(.previous), "Start a cross-chapter turn whose restore is still queued")
+        let targetChapter = session.book.chapters[2]
+        let target = ReadingAnchor(chapterID: targetChapter.id, passageID: targetChapter.passages[0].id, characterOffset: 80)
+        session.go(to: 2, anchor: target)
+        coordinator.updateContent(view)
+        await settlePageTurn(view)
+        XCTAssertEqual(session.chapterIndex, 2)
+        XCTAssertEqual(session.currentAnchor, target, "The older previous-page effect must not capture the new chapter's last screen")
+        let last = try XCTUnwrap(ReaderTextPagination(textView: view, readingTop: 64, bottomInset: 24).origins.last)
+        XCTAssertLessThan(view.contentOffset.y, last)
+        let receipt = await session.flush(); XCTAssertTrue(receipt.succeeded)
+        let stored = try await fixture.library.state(session.book.id)
+        XCTAssertEqual(stored.anchor, target)
+    }
+
     func testScrollModeKeepsItsNativePanAndDoesNotTurnOnHorizontalPageRequests() async throws {
-        let session = try await session(), (view, coordinator) = await text(session)
+        let session = try await session(); session.state.preferences.navigationMode = .scroll
+        let (view, coordinator) = await text(session)
         let offset = view.contentOffset
         XCTAssertTrue(view.panGestureRecognizer.isEnabled)
         XCTAssertFalse(coordinator.turnPage(.next)); XCTAssertEqual(view.contentOffset, offset)
@@ -449,18 +502,18 @@ final class ReaderPaginationTests: XCTestCase {
         _ = await session.flush()
     }
 
-    func testPDFNativePageControllerChangesPersistWithoutVerticalTrackingAndModesCanSwitch() async throws {
+    func testPDFSinglePageChangesPersistWithoutVerticalTrackingAndModesCanSwitch() async throws {
         let session = try await session(pdf: true); session.state.preferences.navigationMode = .paged
         let parent = PDFReadingView(session: session, selectionDismissalID: UUID(), onSelection: { _ in }, onWake: { _ in }, onReadingScroll: {})
         let coordinator = parent.makeCoordinator(), view = PDFView()
         coordinator.view = view; host(view); coordinator.observe(view); coordinator.update(view); await drain(); await drain()
-        XCTAssertTrue(view.isUsingPageViewController); XCTAssertEqual(view.displayDirection, .horizontal)
+        XCTAssertEqual(view.displayMode, .singlePage); XCTAssertEqual(view.displayDirection, .horizontal)
         view.goToNextPage(nil); await drain(); await drain()
         XCTAssertEqual(session.chapterIndex, 1)
-        XCTAssertEqual(session.currentAnchor?.chapterID, session.book.chapters[1].id, "PDF's native horizontal controller must save its actual changed page even when vertical-scroll isTracking is false")
+        XCTAssertEqual(session.currentAnchor?.chapterID, session.book.chapters[1].id, "A real PDF page change must save its source even when vertical-scroll isTracking is false")
         session.state.preferences.navigationMode = .scroll
         coordinator.update(view); await drain(); await drain()
-        XCTAssertFalse(view.isUsingPageViewController); XCTAssertEqual(view.displayDirection, .vertical)
+        XCTAssertEqual(view.displayMode, .singlePageContinuous); XCTAssertEqual(view.displayDirection, .vertical)
         XCTAssertEqual(view.document?.index(for: try XCTUnwrap(view.currentPage)), 1)
         coordinator.invalidate(); _ = await session.flush()
     }
@@ -468,7 +521,7 @@ final class ReaderPaginationTests: XCTestCase {
     func testSavedPagedScalarAnchorRemainsVisibleAcrossFontWidthAndModeReflow() async throws {
         let session = try await session(); session.state.preferences.navigationMode = .paged
         let (view, coordinator) = await text(session)
-        XCTAssertTrue(coordinator.turnPage(.next)); await drain(); coordinator.capture()
+        XCTAssertTrue(coordinator.turnPage(.next)); await settlePageTurn(view); coordinator.capture()
         let receipt = await session.flush()
         XCTAssertTrue(session.isCurrent(receipt))
         let saved = try XCTUnwrap(session.state.anchor)
@@ -553,7 +606,7 @@ final class ReaderPaginationTests: XCTestCase {
         let session = ReaderSession(book: book, state: try await library.state(book.id), original: try await library.originalURL(book.id), directory: try await library.bookDirectory(book.id), library: library)
         session.state.preferences.navigationMode = .paged
         let (view, coordinator) = await text(session)
-        XCTAssertTrue(coordinator.turnPage(.next)); await drain()
+        XCTAssertTrue(coordinator.turnPage(.next)); await settlePageTurn(view)
         let visible = CGRect(x: 0, y: view.contentOffset.y + 64 - view.textContainerInset.top,
                              width: view.textContainer.size.width, height: view.bounds.height - 64 - 24)
         let glyphs = view.layoutManager.glyphRange(forBoundingRect: visible, in: view.textContainer)
@@ -616,7 +669,7 @@ final class ReaderPaginationTests: XCTestCase {
         var turns = 0
         while !bodyViewport.insetBy(dx: -1, dy: -1).contains(renderedMarker()) && turns < 20 {
             guard illustratedCoordinator.turnPage(.next) else { XCTFail("Paging stopped before the following original became visible"); break }
-            await drain(); turns += 1
+            await settlePageTurn(illustratedView); turns += 1
         }
         XCTAssertGreaterThan(turns, 1, "The illustration must really be taller than one screen")
         XCTAssertTrue(bodyViewport.insetBy(dx: -1, dy: -1).contains(renderedMarker()), "Following text must physically fit in a reached screen, not merely exist in the chapter value")
@@ -634,7 +687,7 @@ final class ReaderPaginationTests: XCTestCase {
     }
     private func pdfHost(_ session: ReaderSession, onPageChange: ((ReaderPagePosition) -> Void)? = nil) throws -> (PDFView, PDFReadingView.Coordinator) {
         let parent = PDFReadingView(session: session, pageInsets: UIEdgeInsets(top: 64, left: 0, bottom: 124, right: 0), selectionDismissalID: UUID(), onSelection: { _ in }, onWake: { _ in }, onReadingScroll: {}, onPageChange: onPageChange)
-        let coordinator = parent.makeCoordinator(), view = PDFView()
+        let coordinator = parent.makeCoordinator(), view = ReaderPDFView()
         view.autoScales = true; view.backgroundColor = .white; view.overrideUserInterfaceStyle = .light
         let scene = try XCTUnwrap(UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }.first { $0.activationState == .foregroundActive })
         host(view, scene: scene); coordinator.view = view; coordinator.observe(view)
@@ -648,7 +701,8 @@ final class ReaderPaginationTests: XCTestCase {
             view.layoutDocumentView(); view.layoutIfNeeded()
             let pageIndex = view.currentPage.flatMap { view.document?.index(for: $0) }
             let ready = view.document?.documentURL == source && pageIndex == index && !coordinator.restoring && view.scaleFactor > 0
-                && view.isUsingPageViewController == (mode == .paged)
+                && view.displayMode == (mode == .paged ? .singlePage : .singlePageContinuous)
+                && view.displayDirection == (mode == .paged ? .horizontal : .vertical)
                 && view.window?.isKeyWindow == true && (view.window?.layer.presentation()?.opacity ?? 0) >= 0.999
             stableFrames = ready ? stableFrames + 1 : 0
             if stableFrames >= 2 { await drain(); return }
@@ -656,6 +710,163 @@ final class ReaderPaginationTests: XCTestCase {
         } while ProcessInfo.processInfo.systemUptime < deadline
         XCTFail("The real PDF view did not settle at its requested source/page/mode; restoring=\(coordinator.restoring), page=\(String(describing: view.currentPage.flatMap { view.document?.index(for: $0) }))")
         throw NSError(domain: "ReaderPaginationPDFFixture", code: 1)
+    }
+
+    func testFittedPDFHorizontalGestureUsesTheNativeCurlAndPersistsItsActualPage() async throws {
+        let fixture = try await importedSession(pdf: true, source: "PDF curl gesture witness"), session = fixture.session
+        let (view, coordinator) = try pdfHost(session)
+        coordinator.scheduleUpdate(view)
+        try await settlePDF(view, coordinator: coordinator, source: session.original, page: 0, mode: .paged)
+        XCTAssertTrue(view is ReaderPDFView)
+        XCTAssertEqual(view.displayMode, .singlePage)
+        let handler = try XCTUnwrap(coordinator.pageTurn)
+        XCTAssertTrue(handler.isEnabled)
+        let before = image(of: view) // Draw the real source before asking UIKit to snapshot it.
+        let attachment = XCTAttachment(image: before); attachment.name = "PDF before actual curl gesture"; attachment.lifetime = .keepAlways; add(attachment)
+        handler.complete(state: .ended, translation: CGPoint(x: -150, y: 2))
+        await drain()
+        if !UIAccessibility.isReduceMotionEnabled {
+            let curls = view.window?.rootViewController?.children.compactMap { $0 as? UIPageViewController }.filter { $0.transitionStyle == .pageCurl } ?? []
+            XCTAssertEqual(curls.count, 1, "The real gesture must use the public native curl, not PDFKit's scroll transition")
+        }
+        try await settlePDF(view, coordinator: coordinator, source: session.original, page: 1, mode: .paged)
+        await settlePageTurn(view)
+        XCTAssertEqual(session.currentAnchor?.chapterID, session.book.chapters[1].id)
+        handler.complete(state: .ended, translation: CGPoint(x: 150, y: 2))
+        try await settlePDF(view, coordinator: coordinator, source: session.original, page: 0, mode: .paged)
+        await settlePageTurn(view)
+        XCTAssertEqual(session.currentAnchor?.chapterID, session.book.chapters[0].id)
+        let receipt = await session.flush(); XCTAssertTrue(receipt.succeeded)
+        let stored = try await fixture.library.state(session.book.id)
+        XCTAssertEqual(stored.anchor, session.currentAnchor)
+    }
+
+    func testPDFZoomAndSelectionKeepNativeInteractionAndBlockPageCommands() async throws {
+        let session = try await session(pdf: true, source: "PDF zoom and selection witness")
+        let (view, coordinator) = try pdfHost(session)
+        coordinator.scheduleUpdate(view)
+        try await settlePDF(view, coordinator: coordinator, source: session.original, page: 0, mode: .paged)
+        let handler = try XCTUnwrap(coordinator.pageTurn), page = try XCTUnwrap(view.currentPage)
+        func scroll(in view: UIView) -> UIScrollView? {
+            if let found = view as? UIScrollView { return found }
+            return view.subviews.lazy.compactMap { scroll(in: $0) }.first
+        }
+        let nativeScroll = try XCTUnwrap(scroll(in: view))
+        XCTAssertTrue(try XCTUnwrap(scroll(in: view)).panGestureRecognizer.isEnabled)
+        XCTAssertTrue(handler.gestureRecognizer(handler.recognizer, shouldBeRequiredToFailBy: nativeScroll.panGestureRecognizer))
+        if let pinch = nativeScroll.pinchGestureRecognizer {
+            XCTAssertTrue(handler.gestureRecognizer(handler.recognizer, shouldRecognizeSimultaneouslyWith: pinch))
+        }
+        view.autoScales = false
+        view.scaleFactor = view.scaleFactorForSizeToFit * 2
+        view.layoutDocumentView(); view.layoutIfNeeded()
+        XCTAssertGreaterThan(nativeScroll.contentSize.width, nativeScroll.bounds.width, "The source must really be zoomed and pannable")
+        handler.complete(state: .ended, translation: CGPoint(x: -150, y: 1)); await drain()
+        XCTAssertTrue(view.currentPage === page, "Zoomed panning cannot turn the source page")
+        var outcomes: [ReaderPageRequestOutcome] = []
+        coordinator.parent.onPageRequestResult = { _, outcome in outcomes.append(outcome) }
+        coordinator.parent.pageRequest = ReaderPageRequest(expectedNavigationID: session.navigationID)
+        coordinator.consumePageRequest(); await drain()
+        XCTAssertEqual(outcomes, [.blocked], "Automatic paging cannot interrupt a zoomed page")
+        let offset = nativeScroll.contentOffset
+        let maximumX = max(-nativeScroll.adjustedContentInset.left, nativeScroll.contentSize.width - nativeScroll.bounds.width + nativeScroll.adjustedContentInset.right)
+        let targetX = min(maximumX, offset.x + 30)
+        nativeScroll.setContentOffset(CGPoint(x: targetX, y: offset.y), animated: false)
+        XCTAssertEqual(nativeScroll.contentOffset.x, targetX, accuracy: 0.5, "Native pan geometry stays usable while the paging gesture yields")
+
+        view.scaleFactor = view.scaleFactorForSizeToFit; view.layoutDocumentView(); view.layoutIfNeeded()
+        let text = try XCTUnwrap(page.string) as NSString
+        let range = text.range(of: "SYNTHETIC PDF PAGE 1")
+        XCTAssertNotEqual(range.location, NSNotFound)
+        let selection = try XCTUnwrap(page.selection(for: range))
+        view.setCurrentSelection(selection, animate: false)
+        handler.complete(state: .ended, translation: CGPoint(x: -150, y: 1))
+        XCTAssertFalse(view.accessibilityScroll(.left), "Selection blocks the public scroll action without falling through to native page navigation")
+        await drain()
+        XCTAssertTrue(view.currentPage === page)
+        XCTAssertEqual(view.currentSelection?.string, "SYNTHETIC PDF PAGE 1")
+        view.clearSelection()
+        coordinator.restoring = true
+        XCTAssertFalse(view.accessibilityScroll(.left))
+        coordinator.restoring = false
+        XCTAssertTrue(view.currentPage === page)
+        session.state.preferences.navigationMode = .scroll; coordinator.scheduleUpdate(view)
+        try await settlePDF(view, coordinator: coordinator, source: session.original, page: 0, mode: .scroll)
+        XCTAssertFalse(handler.isEnabled)
+        handler.complete(state: .ended, translation: CGPoint(x: -150, y: 1)); await drain()
+        XCTAssertTrue(view.currentPage === page)
+        XCTAssertTrue(try XCTUnwrap(scroll(in: view)).panGestureRecognizer.isEnabled)
+    }
+
+    func testPDFPublicAccessibilityScrollTurnsActualPagesAndNeverFallsThroughWhileTurningOrAtBookBounds() async throws {
+        let session = try await session(pdf: true, source: "PDF accessibility scroll witness")
+        let (view, coordinator) = try pdfHost(session)
+        coordinator.scheduleUpdate(view)
+        try await settlePDF(view, coordinator: coordinator, source: session.original, page: 0, mode: .paged)
+        XCTAssertFalse(view.accessibilityScroll(.right), "The first page cannot wrap through native fallback")
+        XCTAssertTrue(view.accessibilityScroll(.left))
+        XCTAssertFalse(view.accessibilityScroll(.left), "An in-flight turn must not fall through and skip another page")
+        try await settlePDF(view, coordinator: coordinator, source: session.original, page: 1, mode: .paged)
+        await settlePageTurn(view)
+        XCTAssertEqual(session.currentAnchor?.chapterID, session.book.chapters[1].id)
+        XCTAssertTrue(view.accessibilityScroll(.right))
+        try await settlePDF(view, coordinator: coordinator, source: session.original, page: 0, mode: .paged)
+        await settlePageTurn(view)
+        view.go(to: try XCTUnwrap(view.document?.page(at: 2))); await drain()
+        XCTAssertFalse(view.accessibilityScroll(.left), "The final page cannot fall through and wrap")
+        XCTAssertEqual(view.document?.index(for: try XCTUnwrap(view.currentPage)), 2)
+        coordinator.invalidate()
+        XCTAssertFalse(view.accessibilityScroll(.left), "A destroyed reader cannot forward accessibility navigation")
+    }
+
+    func testAutomaticPDFRequestUsesNativePageAndDoesNotRecordAUserGesture() async throws {
+        let session = try await session(pdf: true)
+        let (view, coordinator) = try pdfHost(session)
+        coordinator.scheduleUpdate(view)
+        try await settlePDF(view, coordinator: coordinator, source: session.original, page: 0, mode: .paged)
+        var touches = 0, outcomes: [(UUID, ReaderPageRequestOutcome)] = []
+        coordinator.parent = PDFReadingView(session: session, selectionDismissalID: coordinator.parent.selectionDismissalID,
+            onSelection: { _ in }, onWake: { _ in }, onReadingScroll: { touches += 1; session.recordReadingInteraction() },
+            onPageRequestResult: { outcomes.append(($0, $1)) })
+        let request = ReaderPageRequest(expectedNavigationID: session.navigationID)
+        coordinator.parent.pageRequest = request
+        coordinator.consumePageRequest()
+        try await settlePDF(view, coordinator: coordinator, source: session.original, page: 1, mode: .paged)
+        try await Task.sleep(for: .seconds(1))
+        XCTAssertEqual(outcomes.count, 1)
+        XCTAssertEqual(outcomes.first?.0, request.id)
+        XCTAssertEqual(outcomes.first?.1, .settled(navigationID: session.navigationID))
+        XCTAssertEqual(touches, 0)
+        XCTAssertNil(session.state.lastActivityAt)
+        XCTAssertEqual(session.currentAnchor?.chapterID, session.book.chapters[1].id)
+        coordinator.consumePageRequest(); await drain()
+        XCTAssertEqual(view.currentPage.flatMap { view.document?.index(for: $0) }, 1)
+        XCTAssertEqual(outcomes.count, 1)
+    }
+
+    func testPDFDismantleCutsOffNativeObserverActivityAndQueuedHostReceipts() async throws {
+        let session = try await session(pdf: true)
+        let (view, coordinator) = try pdfHost(session)
+        coordinator.scheduleUpdate(view)
+        try await settlePDF(view, coordinator: coordinator, source: session.original, page: 0, mode: .paged)
+        var touchEvents: [Bool] = [], receipts = 0, selections = 0
+        coordinator.parent = PDFReadingView(session: session, selectionDismissalID: coordinator.parent.selectionDismissalID,
+            onSelection: { _ in selections += 1 }, onWake: { _ in }, onReadingScroll: {},
+            onTouchActivity: { touchEvents.append($0) }, onPageRequestResult: { _, _ in receipts += 1 })
+        let observer = ReaderParagraphSelectionObserver(view: view, eligible: { _ in false }, context: { nil },
+            selectionActive: { false }, expand: { false }, activity: { [weak coordinator] in coordinator?.touchActivity($0) })
+        coordinator.paragraphSelection = observer; observer.install()
+        coordinator.touchActivity(true)
+        XCTAssertEqual(touchEvents, [true])
+        coordinator.parent.pageRequest = ReaderPageRequest(expectedNavigationID: UUID())
+        coordinator.consumePageRequest()
+        PDFReadingView.dismantleUIView(view, coordinator: coordinator)
+        coordinator.touchActivity(false); coordinator.selectionChanged()
+        for _ in 0..<3 { await drain() }
+        XCTAssertEqual(touchEvents, [true], "Native observer removal cannot publish into a destroyed SwiftUI host")
+        XCTAssertEqual(receipts, 0)
+        XCTAssertEqual(selections, 0)
+        XCTAssertNil(coordinator.view)
     }
     private func assertPDFWitnessVisible(_ marker: String, in view: PDFView, page index: Int, mode: ReaderNavigationMode, name: String) throws {
         let document = try XCTUnwrap(view.document), page = try XCTUnwrap(document.page(at: index))
@@ -741,7 +952,8 @@ final class ReaderPaginationTests: XCTestCase {
     func testPDFNonzeroScrollSourceSurvivesQueuedModeRoundTripAndColdReadback() async throws {
         let fixture = try await importedSession(pdf: true, source: "Nonzero PDF witness"), session = fixture.session
         let sourceBytes = try Data(contentsOf: session.original)
-        session.state.preferences.navigationMode = .scroll
+        var preferences = session.state.preferences; preferences.navigationMode = .scroll
+        session.changePreferences(preferences) // Cold restoration reads the profile's explicit preference.
         session.go(to: 1, anchor: ReadingAnchor(chapterID: "page-2", passageID: "page-2", pageY: 400))
         let (view, coordinator) = try pdfHost(session)
         coordinator.scheduleUpdate(view)

@@ -79,6 +79,120 @@ final class ReaderLayoutTests: XCTestCase {
         XCTAssertEqual(session.currentAnchor, anchor, "Dismissing selection must not move the source checkpoint")
     }
 
+    func testAutomaticPageRequestMovesOneRealTextPageWithoutInventingTouchActivity() async throws {
+        let source = (1...80).map { "Witness paragraph \($0). A real source page advances once and keeps a source anchor for the next opening." }.joined(separator: "\n\n")
+        let session = try await session(source: source)
+        let (text, coordinator) = try await selectableText(session)
+        text.selectedRange = NSRange(location: 0, length: 0)
+        let initial = text.contentOffset.y
+        var touches = 0, outcomes: [(UUID, ReaderPageRequestOutcome)] = []
+        coordinator.parent = TextReadingView(session: session, onNote: { _ in }, onSource: { _ in }, onWake: { _ in },
+            onReadingScroll: { touches += 1; session.recordReadingInteraction() }, onPageRequestResult: { outcomes.append(($0, $1)) })
+        let request = ReaderPageRequest(expectedNavigationID: session.navigationID)
+        coordinator.parent.pageRequest = request
+        coordinator.consumePageRequest()
+        XCTAssertEqual(text.contentOffset.y, initial, "A representable update must return before snapshotting or turning the live page")
+        try await Task.sleep(for: .seconds(1))
+        XCTAssertGreaterThan(text.contentOffset.y, initial)
+        XCTAssertEqual(outcomes.count, 1)
+        XCTAssertEqual(outcomes.first?.0, request.id)
+        XCTAssertEqual(outcomes.first?.1, .settled(navigationID: session.navigationID))
+        XCTAssertEqual(touches, 0, "An automatic page turn is not a real reading gesture")
+        XCTAssertNil(session.state.lastActivityAt)
+        let once = text.contentOffset.y
+        coordinator.consumePageRequest()
+        await drainMainQueue()
+        XCTAssertEqual(text.contentOffset.y, once, "One request cannot advance twice after a SwiftUI update")
+        XCTAssertEqual(outcomes.count, 1)
+    }
+
+    func testQueuedAutomaticRequestCannotOverrideANewerExplicitSourceJump() async throws {
+        let source = (1...80).map { "Source paragraph \($0). The next main turn must still belong to the original navigation." }.joined(separator: "\n\n")
+        let session = try await session(source: source)
+        let (text, coordinator) = try await selectableText(session)
+        text.selectedRange = NSRange(location: 0, length: 0)
+        let initial = text.contentOffset
+        var outcomes: [ReaderPageRequestOutcome] = []
+        coordinator.parent.onPageRequestResult = { _, outcome in outcomes.append(outcome) }
+        coordinator.parent.pageRequest = ReaderPageRequest(expectedNavigationID: session.navigationID)
+        coordinator.consumePageRequest()
+        XCTAssertEqual(text.contentOffset, initial)
+        let target = ReadingAnchor(chapterID: session.chapter.id, passageID: session.chapter.passages[1].id, characterOffset: 2)
+        session.go(to: 0, anchor: target)
+        coordinator.updateContent(text)
+        for _ in 0..<4 { await drainMainQueue() }
+        XCTAssertEqual(outcomes, [.notReady])
+        XCTAssertEqual(session.state.anchor, target, "An older automatic request must not checkpoint a page after an explicit source jump")
+    }
+
+    func testQueuedAutomaticRequestRechecksCancellationSelectionTouchAndTeardown() async throws {
+        for interruption in ["request", "selection", "touch", "teardown"] {
+            let session = try await session(source: String(repeating: "Only the live eligible request may turn this actual source page.\n\n", count: 60))
+            let (text, coordinator) = try await selectableText(session)
+            text.selectedRange = NSRange(location: 0, length: 0)
+            let initial = text.contentOffset
+            var outcomes: [ReaderPageRequestOutcome] = []
+            coordinator.parent.onPageRequestResult = { _, outcome in outcomes.append(outcome) }
+            coordinator.parent.pageRequest = ReaderPageRequest(expectedNavigationID: session.navigationID)
+            coordinator.consumePageRequest()
+            XCTAssertEqual(text.contentOffset, initial)
+            switch interruption {
+            case "request": coordinator.parent.pageRequest = nil
+            case "selection": text.selectedRange = NSRange(location: 0, length: 5)
+            case "touch": coordinator.touchActivity(true)
+            default: coordinator.invalidate()
+            }
+            for _ in 0..<4 { await drainMainQueue() }
+            XCTAssertEqual(text.contentOffset, initial, interruption)
+            if interruption == "teardown" { XCTAssertTrue(outcomes.isEmpty) }
+            else { XCTAssertEqual(outcomes, [interruption == "request" ? .notReady : .blocked], interruption) }
+        }
+    }
+
+    func testAutomaticPageRequestRejectsStaleNavigationAndNativeSelection() async throws {
+        let session = try await session(source: String(repeating: "Only an allowed page request may move this source.\n\n", count: 60))
+        let (text, coordinator) = try await selectableText(session)
+        var outcomes: [ReaderPageRequestOutcome] = []
+        coordinator.parent.onPageRequestResult = { _, outcome in outcomes.append(outcome) }
+        let initial = text.contentOffset
+        coordinator.parent.pageRequest = ReaderPageRequest(expectedNavigationID: UUID())
+        coordinator.consumePageRequest()
+        await drainMainQueue()
+        XCTAssertEqual(outcomes, [.notReady])
+        coordinator.parent.pageRequest = ReaderPageRequest(expectedNavigationID: session.navigationID)
+        coordinator.consumePageRequest()
+        await drainMainQueue()
+        XCTAssertEqual(outcomes, [.notReady, .blocked])
+        XCTAssertEqual(text.contentOffset, initial)
+        XCTAssertGreaterThan(text.selectedRange.length, 0)
+    }
+
+    func testTextDismantleCutsOffNativeTouchActivityAndAlreadyQueuedHostReceipts() async throws {
+        let session = try await session(source: "The native observer must stop publishing before the SwiftUI reader graph is torn down.")
+        let host = await host(session)
+        let text = try XCTUnwrap(descendant(ReflowTextView.self, in: host.view))
+        let coordinator = try XCTUnwrap(text.delegate as? TextReadingView.Coordinator)
+        XCTAssertNotNil(coordinator.paragraphSelection, "Exercise the real observer installed by makeUIView")
+        var touchEvents: [Bool] = [], receipts = 0, selections = 0
+        let liveActivity = coordinator.parent.onTouchActivity
+        coordinator.parent.onTouchActivity = { touchEvents.append($0); liveActivity?($0) }
+        coordinator.parent.onPageRequestResult = { _, _ in receipts += 1 }
+        coordinator.parent.onSelectionChange = { _, _ in selections += 1 }
+        coordinator.touchActivity(true)
+        XCTAssertEqual(touchEvents, [true], "Live activity must still reach the reader")
+        coordinator.parent.pageRequest = ReaderPageRequest(expectedNavigationID: UUID())
+        coordinator.consumePageRequest() // A rejected receipt is queued, not delivered yet.
+        text.selectedRange = NSRange(location: 0, length: 5)
+        coordinator.textViewDidChangeSelection(text)
+        TextReadingView.dismantleUIView(text, coordinator: coordinator)
+        coordinator.touchActivity(false) // A late native callback must also remain silent.
+        for _ in 0..<3 { await drainMainQueue() }
+        XCTAssertEqual(touchEvents, [true], "Observer.invalidate must not reenter the destroyed host's @State setter")
+        XCTAssertEqual(receipts, 0)
+        XCTAssertEqual(selections, 0)
+        XCTAssertNil(coordinator.view)
+    }
+
     func testPendingSelectionDismissalDoesNotClearANewerNativeSelection() async throws {
         let session = try await session(source: "First source paragraph keeps its position.")
         let (text, coordinator) = try await selectableText(session)
@@ -234,7 +348,7 @@ final class ReaderLayoutTests: XCTestCase {
 
     func testCrossParagraphSelectionDisablesEveryAnchoredActionButKeepsCopy() async throws {
         let session = try await session(source: "First paragraph.\n\nSecond paragraph.")
-        let reading = TextReadingView(session: session, onNote: { _ in }, onSource: { _ in }, onExplain: { _ in }, onWake: { _ in }, onReadingScroll: {}, onTranslate: { _ in })
+        let reading = TextReadingView(session: session, onNote: { _ in }, onSource: { _ in }, onExplain: { _ in }, onWake: { _ in }, onReadingScroll: {}, onTranslate: { _ in }, onShare: { _ in })
         let coordinator = reading.makeCoordinator()
         let text = UITextView(frame: CGRect(x: 0, y: 0, width: 390, height: 700))
         coordinator.view = text
@@ -245,7 +359,7 @@ final class ReaderLayoutTests: XCTestCase {
         let copy = UIAction(title: "Copy", identifier: UIAction.Identifier("copy-fixture")) { _ in }
         let menu = try XCTUnwrap(coordinator.textView(text, editMenuForTextIn: crossing, suggestedActions: [copy]))
         let actions = self.actions(in: menu)
-        for title in ["解释这句", "记笔记", "核对原文", "查看译文"] {
+        for title in ["解释这句", "记笔记", "核对原文", "查看译文", "分享摘录…"] {
             let action = try XCTUnwrap(actions.first { $0.title == title }, title)
             XCTAssertTrue(action.attributes.contains(.disabled), "\(title) must not accept a quote crossing stable passage anchors")
         }
@@ -285,6 +399,25 @@ final class ReaderLayoutTests: XCTestCase {
         let quote = try XCTUnwrap(coordinator.selectedQuote(in: text, range: range))
         XCTAssertEqual(quote.text, "Second paragraph.")
         XCTAssertEqual(quote.anchor.passageID, session.chapter.passages.last?.id)
+    }
+
+    func testShareMenuKeepsSystemCopyAndResolvesTheLatestNativeSelectionWhenInvoked() async throws {
+        let session = try await session(source: "First paragraph.\n\nSecond paragraph.")
+        var shared: SelectedQuote?
+        let reading = TextReadingView(session: session, onNote: { _ in }, onSource: { _ in }, onWake: { _ in }, onReadingScroll: {}, onShare: { shared = $0 })
+        let coordinator = reading.makeCoordinator(), text = UITextView(frame: CGRect(x: 0, y: 0, width: 390, height: 700))
+        coordinator.view = text; coordinator.updateContent(text); await drainMainQueue()
+        text.selectedRange = (text.text as NSString).range(of: "First paragraph.")
+        let copy = UIAction(title: "Copy") { _ in }
+        let menu = try XCTUnwrap(coordinator.textView(text, editMenuForTextIn: text.selectedRange, suggestedActions: [copy]))
+        XCTAssertTrue(actions(in: menu).first === copy)
+        let share = try XCTUnwrap(actions(in: menu).first { $0.title == "分享摘录…" })
+        text.selectedRange = (text.text as NSString).range(of: "Second paragraph.")
+        let button = UIButton(); button.addAction(share, for: .primaryActionTriggered)
+        button.sendActions(for: .primaryActionTriggered)
+        XCTAssertEqual(shared?.text, "Second paragraph.")
+        XCTAssertEqual(shared?.anchor.passageID, session.chapter.passages.last?.id)
+        XCTAssertFalse(copy.attributes.contains(.disabled))
     }
 
     func testTextColumnStaysReadableAndCenteredOnWideScreens() async throws {

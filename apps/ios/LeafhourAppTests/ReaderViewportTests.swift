@@ -118,6 +118,7 @@ final class ReaderViewportTests: XCTestCase {
             }
         }
         XCTAssertEqual(session.book.chapters.count, 3, "Use the actual imported PDF page index")
+        session.state.preferences.navigationMode = .scroll
         let insets = UIEdgeInsets(top: 120, left: 0, bottom: 180, right: 0)
         let reading = PDFReadingView(session: session, pageInsets: insets, selectionDismissalID: UUID(), onSelection: { _ in }, onWake: { _ in }, onReadingScroll: {})
         let coordinator = reading.makeCoordinator()
@@ -187,6 +188,7 @@ final class ReaderViewportTests: XCTestCase {
                 (String(repeating: "RIGHT_VISIBLE two.\n", count: 20) as NSString).draw(in: CGRect(x: 250, y: 40, width: 150, height: 800), withAttributes: [.font: UIFont.systemFont(ofSize: 14)])
             }
         }
+        session.state.preferences.navigationMode = .scroll
         var location: ReaderSpeechLocation?
         var reading = PDFReadingView(session: session, pageInsets: UIEdgeInsets(top: 16, left: 0, bottom: 44, right: 0), selectionDismissalID: UUID(), onSelection: { _ in }, onWake: { _ in }, onReadingScroll: {}, onReadingPosition: { location = $0 })
         let coordinator = reading.makeCoordinator(), pdf = PDFView()

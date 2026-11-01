@@ -1430,5 +1430,11 @@
   "tests/cross-device-sync-http.test.mjs",
   "tests/cross-device-web.test.mjs",
   "app/reader-progress-refresh.mjs",
-  "app/atmosphere-motion.mjs"
+  "app/atmosphere-motion.mjs",
+  "apps/ios/Leafhour/ReaderPageCommand.swift",
+  "apps/ios/Leafhour/ReaderTypography.swift",
+  "apps/ios/LeafhourCore/Sources/LeafhourCore/ReaderAutoPageState.swift",
+  "apps/ios/LeafhourCore/Sources/LeafhourCore/ReaderSharedPreferences.swift",
+  "apps/ios/LeafhourCore/Tests/LeafhourCoreTests/ReaderAutoPageStateTests.swift",
+  "apps/ios/LeafhourCore/Tests/LeafhourCoreTests/ReaderSharedPreferencesTests.swift"
 ]

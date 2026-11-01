@@ -466,6 +466,19 @@ final class VideoExperienceUITests: XCTestCase {
         // bytes outside the crop, including the clock or floating controls.
         return try XCTUnwrap(UIImage(cgImage: band).pngData())
     }
+    /// Native curl temporarily changes the accessibility subtree. Observe the
+    /// actual paper on the screen without resolving a hidden transitional node.
+    private func screenBodyBand(in readerFrame: CGRect) throws -> Data {
+        let screenshot = XCUIScreen.main.screenshot().image
+        let image = try XCTUnwrap(screenshot.cgImage)
+        let scale = CGFloat(image.width) / screenshot.size.width
+        let paper = CGRect(x: readerFrame.minX + readerFrame.width * 0.12,
+                           y: readerFrame.minY + readerFrame.height * 0.28,
+                           width: readerFrame.width * 0.76, height: readerFrame.height * 0.32)
+        let crop = paper.applying(CGAffineTransform(scaleX: scale, y: scale)).integral
+        let band = try XCTUnwrap(image.cropping(to: crop))
+        return try XCTUnwrap(UIImage(cgImage: band).pngData())
+    }
     private func accountRecords() {
         app.buttons["我的账号"].tap()
         let records = app.buttons["我的笔记与阅读记录"]
@@ -2691,6 +2704,33 @@ final class VideoExperienceUITests: XCTestCase {
         capture("GET347-native-paragraph-copy")
         app.buttons["保留草稿"].tap()
     }
+
+    func test100DefaultPagesAndSharedNavigationSurviveAnotherBookAndRelaunch() {
+        launch(["--get341-unique-source"]); openBook(translatedTitle); wakeTools()
+        let caption = app.staticTexts["reader-progress-caption"]
+        require(caption)
+        XCTAssertTrue(caption.label.contains("屏"), "A new reader starts with real horizontal pages")
+        let first = caption.label
+        reader.swipeLeft(); wakeTools()
+        let nextPage = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in caption.exists && caption.label != first }, object: nil)
+        XCTAssertEqual(XCTWaiter.wait(for: [nextPage], timeout: 8), .completed)
+        capture("GET352-default-native-page-turn")
+        chooseNavigation("上下滚动"); shelf(); openBook(markdownTitle)
+        openTool("阅读设置"); expandPanel()
+        let scroll = app.segmentedControls.buttons["上下滚动"]
+        scrollTo(scroll, in: foregroundForm(), direction: .up)
+        XCTAssertTrue(scroll.isSelected, "Book B inherits the preference saved in book A")
+        closePanel(); coldRelaunch(); resumeReaderIfOffered(); require(reader)
+        openTool("阅读设置"); expandPanel()
+        scrollTo(scroll, in: foregroundForm(), direction: .up)
+        XCTAssertTrue(scroll.isSelected, "Shared navigation persists after a cold app launch")
+        capture("GET352-shared-reading-preferences")
+    }
+
+
+
+
+
 
     func test97RealSystemSpeechHighlightsTheSentenceAndFollowsAcrossChapters() {
         executionTimeAllowance = 120
