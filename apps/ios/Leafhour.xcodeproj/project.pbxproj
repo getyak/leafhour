@@ -21,6 +21,7 @@
 		497B1C91B1E5BF35DF45198E /* LibraryScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03E537D8BE04773F738DBB85 /* LibraryScreen.swift */; };
 		4F497D063E7ACC710F1B35A6 /* ReaderTapHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = C21A98A9828F3737D18C4D6F /* ReaderTapHandler.swift */; };
 		537EE1BC939C4F4603F616E3 /* ReaderViewportTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1265B9001B43065DAD28C45A /* ReaderViewportTests.swift */; };
+		542A7A474316C979650CFF57 /* ReaderContentsPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CADA0D1791AEB52BC864A5F7 /* ReaderContentsPanel.swift */; };
 		562187E1677FD33C9214C34D /* LibraryPresentation.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF8544F5EF5C92B4414B4C39 /* LibraryPresentation.swift */; };
 		56B3FD020B30D8C94BB6BC85 /* NativeAuthenticationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADC3A1E0640007C8E7F5AE08 /* NativeAuthenticationTests.swift */; };
 		56ED28FA1DAC8B395A183C43 /* TextReadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 878434EEA066C19B2F60BD71 /* TextReadingView.swift */; };
@@ -131,6 +132,7 @@
 		C21A98A9828F3737D18C4D6F /* ReaderTapHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReaderTapHandler.swift; sourceTree = "<group>"; };
 		C22B4F5F3D92A52E0E1D0E66 /* ReaderInteractionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReaderInteractionTests.swift; sourceTree = "<group>"; };
 		C5BA4DE90DC37B23A3034EB2 /* LeafhourApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeafhourApp.swift; sourceTree = "<group>"; };
+		CADA0D1791AEB52BC864A5F7 /* ReaderContentsPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReaderContentsPanel.swift; sourceTree = "<group>"; };
 		CB64800D5EB037445832C8F9 /* VideoExperienceUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoExperienceUITests.swift; sourceTree = "<group>"; };
 		CDEB86782104108D1317F7AE /* ReaderSpeech.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReaderSpeech.swift; sourceTree = "<group>"; };
 		D4E7B7F468A47BEFBFAFF155 /* ReaderWebPolicyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReaderWebPolicyTests.swift; sourceTree = "<group>"; };
@@ -225,6 +227,7 @@
 				5C7589B4E02534E97DD36795 /* PrivacyInfo.xcprivacy */,
 				6E0FEB2340F68AD673B247CF /* ReaderBottomBar.swift */,
 				BCF573520407A93144E699EC /* ReaderCloudTools.swift */,
+				CADA0D1791AEB52BC864A5F7 /* ReaderContentsPanel.swift */,
 				64326D8789015245884DE202 /* ReaderPageCommand.swift */,
 				D61188ACC7FF9AB3F0A8523B /* ReaderPanelPresentation.swift */,
 				190E595DF8E356D9375375C3 /* ReaderPanels.swift */,
@@ -442,6 +445,7 @@
 				DD73E33E559037D0DFD080DF /* PDFReadingView.swift in Sources */,
 				27E98AAB52BC14E9DA136EE7 /* ReaderBottomBar.swift in Sources */,
 				EDC4D5A3E43E9336BFC60FFE /* ReaderCloudTools.swift in Sources */,
+				542A7A474316C979650CFF57 /* ReaderContentsPanel.swift in Sources */,
 				8D435D9D383F90F6594A8BF1 /* ReaderPageCommand.swift in Sources */,
 				0E18EFE73898E4A4BC14B2BC /* ReaderPanelPresentation.swift in Sources */,
 				A83D091CB4ADBE1B6AA57126 /* ReaderPanels.swift in Sources */,

@@ -862,15 +862,13 @@ final class VideoExperienceUITests: XCTestCase {
 
     func test23ExistingSyntheticPDFReachesLastPageAndColdRestores() {
         launch(); openBook(pdfTitle); openTool("目录"); expandPanel()
-        let slider = app.sliders["页码"]
-        require(slider); slider.adjust(toNormalizedSliderPosition: 1)
-        let next = app.buttons["下一页"]
-        require(next)
-        for _ in 0..<3 where next.isEnabled { next.tap() }
-        XCTAssertFalse(next.isEnabled); XCTAssertTrue(app.buttons["上一页"].isEnabled)
+        let last = app.buttons["reader-contents-entry-2"]
+        require(last); last.tap()
+        require(app.otherElements["leafhour-pdf-reader"])
         capture("GET317-synthetic-PDF-page-3")
         coldRelaunch(); resumeReaderIfOffered(); require(app.otherElements["leafhour-pdf-reader"], timeout: 20)
-        openTool("目录"); expandPanel(); XCTAssertFalse(app.buttons["下一页"].isEnabled)
+        openTool("目录"); expandPanel(); require(last)
+        XCTAssertTrue((last.value as? String)?.contains("当前页") == true)
     }
 
     func test24BookDetailsExposeOriginalAndRecordExports() {
