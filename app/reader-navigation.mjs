@@ -18,7 +18,7 @@ export function currentChapterLabel(book,chapter,format=legacyLabel){
 }
 export function bookIntroduction(book,chapter,format=legacyLabel){
   const grouped=book.source?.structure==='automatic_groups',chapters=book.chapters||[];
-  const count=grouped?chapters.length:chapters.filter(c=>!c.kind||c.kind==='body').length;
+  const count=grouped?chapters.length:chapters.filter(c=>!c.kind||c.kind==='body'||c.kind==='source-section').length;
   return {title:book.title?.zh||format('reader.b1.untitled',{},'未命名书籍'),originalTitle:book.title?.en&&book.title.en!==book.title.zh?book.title.en:'',author:book.author||'',description:introductionFor(book).text||format('reader.b1.noIntroduction',{},'这本书还没有简介。'),extent:format(grouped?'reader.b1.fragmentCount':'reader.b1.chapterCount',{count},count+(grouped?' 个阅读片段':' 章')),current:currentChapterLabel(book,chapter,format),sourceUrl:sourceLink(book.source?.url),sample:chineseSampleNotice(book),scopeNote:typeof book.source?.scopeNote==='string'?book.source.scopeNote:'',cover:book.cover||'private'};
 }
 
@@ -29,7 +29,7 @@ export function renderBookContents({list,book,chapterId,onNavigate,document=list
   for(const chapter of book.chapters){
     const current=chapter.id===chapterId,row=make('div','toc-entry'),start=make('button','toc-chapter');start.type='button';
     if(current)start.setAttribute('aria-current','location');
-    const number=chapter.kind==='frontmatter'?fixed('span','toc-number','navigation.front',null,'序'):chapter.kind&&chapter.kind!=='body'?fixed('span','toc-number','navigation.back',null,'附'):make('span','toc-number',String(chapter.number).padStart(2,'0'));
+    const number=chapter.kind==='frontmatter'?fixed('span','toc-number','navigation.front',null,'序'):chapter.kind==='appendix'?fixed('span','toc-number','navigation.back',null,'附'):make('span','toc-number',String(chapter.number).padStart(2,'0'));
     const title=make('span','toc-title');title.append(make('span','toc-title-main',chapter.title.zh));
     if(chapter.title.en&&chapter.title.en!==chapter.title.zh)title.append(make('span','toc-title-original',chapter.title.en));
     start.append(number,title,current?fixed('span','toc-current','navigation.reading',null,'在读'):make('span','toc-current',''));
@@ -63,7 +63,7 @@ export function mountBookIntroduction({document,getBook,getChapter,onOpen=()=>{}
   const offLocale=onUiLocaleChange(updateLabels);
   function render(){
     if(disposed)return;const book=getBook();if(!book)return;const chapter=getChapter(),info=bookIntroduction(book,chapter,t);
-    cached={book:{source:{structure:book.source?.structure}},chapter:chapter?{...chapter,title:{...chapter.title}}:null,title:info.title,untitled:!book.title?.zh,grouped:book.source?.structure==='automatic_groups',count:(book.chapters||[]).filter(c=>book.source?.structure==='automatic_groups'||!c.kind||c.kind==='body').length,sample:book.chineseSample?.paragraphs};
+    cached={book:{source:{structure:book.source?.structure}},chapter:chapter?{...chapter,title:{...chapter.title}}:null,title:info.title,untitled:!book.title?.zh,grouped:book.source?.structure==='automatic_groups',count:(book.chapters||[]).filter(c=>book.source?.structure==='automatic_groups'||!c.kind||c.kind==='body'||c.kind==='source-section').length,sample:book.chineseSample?.paragraphs};
     for(const [id,value] of [['book-info-title',info.title],['book-info-cover-title',info.title],['book-info-original-title',info.originalTitle],['book-info-author',info.author],['book-info-description',info.description],['book-info-extent',info.extent],['book-info-current',info.current],['book-info-sample',info.sample],['book-info-scope',info.scopeNote]]){$(id).textContent=value;$(id).hidden=!value;}
     fallbackText=null;if(!introductionFor(book).text){fallbackText=document.createTextNode(t('reader.b1.noIntroduction'));$('book-info-description').replaceChildren(fallbackText);}
     // Until the optional metadata read finishes, absence in the current book

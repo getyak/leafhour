@@ -34,14 +34,14 @@ export function createBookIngestion({store,library,provider,batchPages=30,maxBat
  }
  async function prepareDocument(user,{filename,bytes,sourceParts,assertCurrent=async()=>{}}){
   userId(user);
-  if(typeof filename!=='string'||!/^.+\.(epub|txt|md)$/i.test(filename)||filename.length>240||!Buffer.isBuffer(bytes)||!bytes.length||bytes.length>20*1024*1024)throw fail('请选择 20 MB 内的 EPUB 或文本文件',413);
+  if(typeof filename!=='string'||!/^.+\.(epub|txt|md|markdown)$/i.test(filename)||filename.length>240||!Buffer.isBuffer(bytes)||!bytes.length||bytes.length>20*1024*1024)throw fail('请选择 20 MB 内的 EPUB 或文本文件',413);
   await assertCurrent();
   const sourceHash=digest(bytes),previous=await findSource(user,sourceHash);if(previous&&previous.state!=='cancelled')return previous;
   const reservation='ingestion/'+userId(user)+'/source-'+sourceHash,id=randomUUID();
   const prior=await store.read(reservation,null),cancelled=prior?.id?await get(user,prior.id).catch(()=>null):null,restartId=cancelled?.state==='cancelled'?prior.id:null;
   const claim=await store.mutate(reservation,{},r=>{if(r.id&&r.expiresAt>now()&&r.id!==restartId)return {id:r.id};r.id=id;r.expiresAt=now()+120000;return {id,mine:true};});
   if(!claim.mine){const old=await get(user,claim.id).catch(()=>null);if(old)return viewOf(old);throw fail('同一文件正在建立任务，请稍后重试',409);}
-  const base=key(user,id);let saved;if(sourceParts&&store.adoptBlob){await store.adoptBlob(base+'/source',sourceParts,{size:bytes.length,sha256:sourceHash});saved={parts:sourceParts};}else saved=await store.putBlob(base+'/source',bytes);await assertCurrent();const title=filename.replace(/\.(epub|txt|md)$/i,'');
+  const base=key(user,id);let saved;if(sourceParts&&store.adoptBlob){await store.adoptBlob(base+'/source',sourceParts,{size:bytes.length,sha256:sourceHash});saved={parts:sourceParts};}else saved=await store.putBlob(base+'/source',bytes);await assertCurrent();const title=filename.replace(/\.(epub|txt|md|markdown)$/i,'');
   const job={id,kind:'document',mode:'document',filename,sourceHash,sourceBytes:bytes.length,...(saved?.parts?{sourceParts:saved.parts}:{}),title:{zh:title,en:title},state:'preparing',totalPages:0,batches:[],createdAt:new Date(now()).toISOString(),lease:null};
   await store.mutate(base,{},j=>Object.assign(j,job));await store.mutate(index(user),{jobs:[]},j=>{j.jobs.push(id);});return viewOf(job);
  }

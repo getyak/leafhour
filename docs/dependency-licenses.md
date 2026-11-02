@@ -7,7 +7,7 @@ Deterministic evidence for what the dependency tree **declares**, produced only 
 | File | Role |
 | --- | --- |
 | `tools/dependency-licenses.mjs` | Generator and checker (no network, lockfile only) |
-| `docs/dependency-licenses.json` | Generated report: all 817 third-party records bound to the lockfile SHA256 |
+| `docs/dependency-licenses.json` | Generated report: all 821 third-party records bound to the lockfile SHA256 |
 | `docs/dependency-licenses-reviewed.json` | Maintainer-controlled technical review register for every exact declared expression |
 | `docs/open-source-release.md` | Root AGPL code vs third-party software vs media |
 
@@ -70,4 +70,8 @@ The expression parser checks supported syntax and rejects placeholders. It does 
 
 ## Observability integration (2026-10-28)
 
-The runtime integration pins `@sentry/node`10.77.1 and its MIT-licensed SDK family. Version11.9.0 introduced an additional `sentry` CLI package with a new `FSL-1.1-Apache-2.0` declaration through runtime-injection tooling. That tool is not needed for the isolated manual client, so this integration uses the compatible SDK without that dependency instead of admitting a new expression silently. All817 current lock records use the existing technically reviewed expressions; this records metadata, not a new legal ruling.
+The runtime integration pins `@sentry/node`10.77.1 and its MIT-licensed SDK family. Version11.9.0 introduced an additional `sentry` CLI package with a new `FSL-1.1-Apache-2.0` declaration through runtime-injection tooling. That tool is not needed for the isolated manual client, so this integration uses the compatible SDK without that dependency instead of admitting a new expression silently. All821 current lock records use the existing technically reviewed expressions; this records metadata, not a new legal ruling.
+
+## Format-aware Markdown import
+
+The web importer pins the BSD-2-Clause CommonMark JavaScript reference parser 0.31.2. Its locked dependencies entities 3.0.1, mdurl 1.0.1 and minimist 1.2.8 use already-reviewed BSD/MIT expressions. Import reads the syntax tree and source positions; it does not render or execute source HTML. The 821-record inventory includes the four added packages and preserves their upstream integrity metadata and notices in installed packages.

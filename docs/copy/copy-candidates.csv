@@ -2993,9 +2993,9 @@ candidate:app/home.html:118:232,html-text,app/home.html,118,,unknown,reviewable,
 candidate:app/home.html:118:427,html-text,app/home.html,118,,unknown,reviewable,,↥
 candidate:app/home.html:118:466,html-text,app/home.html,118,,unknown,reviewable,,拖放一本书，或点击选择
 candidate:app/home.html:118:511,html-text,app/home.html,118,,unknown,reviewable,,PDF 最多 256 MB · EPUB、TXT、Markdown 最多 20 MB
-candidate:app/home.html:118:729,html-text,app/home.html,118,,unknown,reviewable,,自动整理文字版与扫描版。需要借助外部识别时，再由你确认；原文件始终保留。
-candidate:app/home.html:118:919,html-text,app/home.html,118,,unknown,reviewable,,放进我的书房
-candidate:app/home.html:118:932,html-text,app/home.html,118,,unknown,reviewable,,→
+candidate:app/home.html:118:739,html-text,app/home.html,118,,unknown,reviewable,,自动整理文字版与扫描版。需要借助外部识别时，再由你确认；原文件始终保留。
+candidate:app/home.html:118:929,html-text,app/home.html,118,,unknown,reviewable,,放进我的书房
+candidate:app/home.html:118:942,html-text,app/home.html,118,,unknown,reviewable,,→
 candidate:app/home.html:120:104,html-text,app/home.html,120,,unknown,reviewable,,×
 candidate:app/home.html:121:47,html-text,app/home.html,121,,unknown,reviewable,,主导航
 candidate:app/home.html:123:163,html-text,app/home.html,123,,unknown,reviewable,,English
@@ -4512,7 +4512,7 @@ candidate:app/reader-navigation.mjs:22:359,js-cjk-literal,app/reader-navigation.
 candidate:app/reader-navigation.mjs:22:368,js-cjk-literal,app/reader-navigation.mjs,22,,unknown,reviewable,," 章"
 candidate:app/reader-navigation.mjs:31:50,js-attribute,app/reader-navigation.mjs,31,aria-current,unknown,reviewable,,location
 candidate:app/reader-navigation.mjs:32:97,js-cjk-literal,app/reader-navigation.mjs,32,,unknown,reviewable,,序
-candidate:app/reader-navigation.mjs:32:187,js-cjk-literal,app/reader-navigation.mjs,32,,unknown,reviewable,,附
+candidate:app/reader-navigation.mjs:32:177,js-cjk-literal,app/reader-navigation.mjs,32,,unknown,reviewable,,附
 candidate:app/reader-navigation.mjs:35:92,js-cjk-literal,app/reader-navigation.mjs,35,,unknown,reviewable,,在读
 candidate:app/reader-navigation.mjs:39:144,js-cjk-literal,app/reader-navigation.mjs,39,,unknown,reviewable,,本章小节
 candidate:app/reader-navigation.mjs:41:202,js-cjk-literal,app/reader-navigation.mjs,41,,unknown,reviewable,," · 小节 "
@@ -4821,7 +4821,7 @@ candidate:app/ui-locale-controls.mjs:71:66,js-attribute,app/ui-locale-controls.m
 candidate:app/ui-locale.mjs:574:101,js-attribute,app/ui-locale.mjs,574,role,unknown,reviewable,,status
 candidate:app/upload-state.mjs:7:86,js-cjk-literal,app/upload-state.mjs,7,,unknown,reviewable,,文件中没有内容，请选择另一份文件。
 candidate:app/upload-state.mjs:8:87,js-cjk-literal,app/upload-state.mjs,8,,unknown,reviewable,,PDF 最多 256 MB，EPUB 与文本最多 20 MB，请按章节拆分。
-candidate:app/upload-state.mjs:9:153,js-cjk-literal,app/upload-state.mjs,9,,unknown,reviewable,,目前支持 PDF、EPUB、TXT 和 Markdown。请重新选择文件。
+candidate:app/upload-state.mjs:9:162,js-cjk-literal,app/upload-state.mjs,9,,unknown,reviewable,,目前支持 PDF、EPUB、TXT 和 Markdown。请重新选择文件。
 candidate:app/upload-state.mjs:12:33,js-cjk-literal,app/upload-state.mjs,12,,unknown,reviewable,,文件正在处理，请稍等。
 candidate:app/upload-state.mjs:12:69,js-cjk-literal,app/upload-state.mjs,12,,unknown,reviewable,,请先选择文件。
 candidate:app/zh-hans/mcp.html:32:53,html-attribute,app/zh-hans/mcp.html,32,aria-label,unknown,reviewable,,权限表，可横向滚动
@@ -5342,7 +5342,7 @@ candidate:server/book-ingestion.mjs:9:45,js-cjk-literal,server/book-ingestion.mj
 candidate:server/book-ingestion.mjs:19:88,js-cjk-literal,server/book-ingestion.mjs,19,,unknown,reviewable,,找不到解析任务
 candidate:server/book-ingestion.mjs:22:90,js-cjk-literal,server/book-ingestion.mjs,22,,unknown,reviewable,,找不到解析任务
 candidate:server/book-ingestion.mjs:33:221,js-cjk-literal,server/book-ingestion.mjs,33,,unknown,reviewable,,今日识别额度已用完，原文件与进度保留，明天可以继续。
-candidate:server/book-ingestion.mjs:37:172,js-cjk-literal,server/book-ingestion.mjs,37,,unknown,reviewable,,请选择 20 MB 内的 EPUB 或文本文件
+candidate:server/book-ingestion.mjs:37:181,js-cjk-literal,server/book-ingestion.mjs,37,,unknown,reviewable,,请选择 20 MB 内的 EPUB 或文本文件
 candidate:server/book-ingestion.mjs:43:107,js-cjk-literal,server/book-ingestion.mjs,43,,unknown,reviewable,,同一文件正在建立任务，请稍后重试
 candidate:server/book-ingestion.mjs:50:191,js-cjk-literal,server/book-ingestion.mjs,50,,unknown,reviewable,,请选择 256 MB 内的有效 PDF
 candidate:server/book-ingestion.mjs:53:46,js-cjk-literal,server/book-ingestion.mjs,53,,unknown,reviewable,,请先允许将本书发送给 PaddleOCR 官方服务识别
@@ -5538,23 +5538,23 @@ candidate:server/dialogue-generator.mjs:9:369,js-cjk-literal,server/dialogue-gen
 candidate:server/dialogue-generator.mjs:10:58,js-cjk-literal,server/dialogue-generator.mjs,10,,unknown,reviewable,,讲稿服务正在忙，请稍后重试。
 candidate:server/dialogue-generator.mjs:10:75,js-cjk-literal,server/dialogue-generator.mjs,10,,unknown,reviewable,,讲稿生成失败，原文仍可阅读。
 candidate:server/dialogue-generator.mjs:11:115,js-cjk-literal,server/dialogue-generator.mjs,11,,unknown,reviewable,,讲稿格式未通过检查，请重新生成。
-candidate:server/document-import.mjs:12:32,js-cjk-literal,server/document-import.mjs,12,,unknown,reviewable,,无法识别文本编码，或文件编码不完整。支持 UTF-8、UTF-16 和 GB18030（含 GBK），请另存为 UTF-8 后重试
-candidate:server/document-import.mjs:14:102,js-cjk-literal,server/document-import.mjs,14,,unknown,reviewable,,这个文件不是可阅读的文本，请选择对应格式的原文件
-candidate:server/document-import.mjs:31:78,js-cjk-literal,server/document-import.mjs,31,,unknown,reviewable,,这个文件不是可阅读的文本
-candidate:server/document-import.mjs:32:30,js-cjk-literal,server/document-import.mjs,32,,unknown,reviewable,,文件中没有可阅读的文字
-candidate:server/document-import.mjs:37:123,js-cjk-literal,server/document-import.mjs,37,,unknown,reviewable,,请选择有内容的书籍文件
-candidate:server/document-import.mjs:38:114,js-cjk-literal,server/document-import.mjs,38,,unknown,reviewable,,PDF 最多 256 MB，EPUB 与文本最多 20 MB
-candidate:server/document-import.mjs:40:62,js-cjk-literal,server/document-import.mjs,40,,unknown,reviewable,,目前支持 PDF、EPUB、TXT 和 Markdown
-candidate:server/document-import.mjs:46:58,js-cjk-literal,server/document-import.mjs,46,,unknown,reviewable,,文件内容不是有效 PDF
-candidate:server/document-import.mjs:55:42,js-cjk-literal,server/document-import.mjs,55,,unknown,reviewable,,PDF 超过当前单本 1200 页的处理容量
-candidate:server/document-import.mjs:61:56,js-cjk-literal,server/document-import.mjs,61,,unknown,reviewable,,PDF 文字量过大，请按章节拆分
-candidate:server/document-import.mjs:64:68,js-cjk-literal,server/document-import.mjs,64,,unknown,reviewable,,这份 PDF 没有可提取文字，可能是扫描件。请先做文字识别（OCR），或上传文字版 PDF。
-candidate:server/document-import.mjs:66:89,js-cjk-literal,server/document-import.mjs,66,,unknown,reviewable,,PDF 已加密，请先解密后上传
-candidate:server/document-import.mjs:66:107,js-cjk-literal,server/document-import.mjs,66,,unknown,reviewable,,PDF 无法解析，请检查文件是否完整
-candidate:server/document-import.mjs:80:36,js-cjk-literal,server/document-import.mjs,80,,unknown,reviewable,,没有找到可阅读的段落
-candidate:server/document-import.mjs:94:60,js-cjk-literal,server/document-import.mjs,94,,unknown,reviewable,,卷首
-candidate:server/document-import.mjs:96:183,js-cjk-literal,server/document-import.mjs,96,,unknown,reviewable,,开始阅读
-candidate:server/document-import.mjs:96:257,js-cjk-literal,server/document-import.mjs,96,,unknown,reviewable,,自动分段 · 原文未逐段校对
+candidate:server/document-import.mjs:14:32,js-cjk-literal,server/document-import.mjs,14,,unknown,reviewable,,无法识别文本编码，或文件编码不完整。支持 UTF-8、UTF-16 和 GB18030（含 GBK），请另存为 UTF-8 后重试
+candidate:server/document-import.mjs:16:102,js-cjk-literal,server/document-import.mjs,16,,unknown,reviewable,,这个文件不是可阅读的文本，请选择对应格式的原文件
+candidate:server/document-import.mjs:33:78,js-cjk-literal,server/document-import.mjs,33,,unknown,reviewable,,这个文件不是可阅读的文本
+candidate:server/document-import.mjs:34:30,js-cjk-literal,server/document-import.mjs,34,,unknown,reviewable,,文件中没有可阅读的文字
+candidate:server/document-import.mjs:39:123,js-cjk-literal,server/document-import.mjs,39,,unknown,reviewable,,请选择有内容的书籍文件
+candidate:server/document-import.mjs:40:114,js-cjk-literal,server/document-import.mjs,40,,unknown,reviewable,,PDF 最多 256 MB，EPUB 与文本最多 20 MB
+candidate:server/document-import.mjs:42:74,js-cjk-literal,server/document-import.mjs,42,,unknown,reviewable,,目前支持 PDF、EPUB、TXT 和 Markdown
+candidate:server/document-import.mjs:48:58,js-cjk-literal,server/document-import.mjs,48,,unknown,reviewable,,文件内容不是有效 PDF
+candidate:server/document-import.mjs:57:42,js-cjk-literal,server/document-import.mjs,57,,unknown,reviewable,,PDF 超过当前单本 1200 页的处理容量
+candidate:server/document-import.mjs:63:56,js-cjk-literal,server/document-import.mjs,63,,unknown,reviewable,,PDF 文字量过大，请按章节拆分
+candidate:server/document-import.mjs:66:68,js-cjk-literal,server/document-import.mjs,66,,unknown,reviewable,,这份 PDF 没有可提取文字，可能是扫描件。请先做文字识别（OCR），或上传文字版 PDF。
+candidate:server/document-import.mjs:68:89,js-cjk-literal,server/document-import.mjs,68,,unknown,reviewable,,PDF 已加密，请先解密后上传
+candidate:server/document-import.mjs:68:107,js-cjk-literal,server/document-import.mjs,68,,unknown,reviewable,,PDF 无法解析，请检查文件是否完整
+candidate:server/document-import.mjs:109:36,js-cjk-literal,server/document-import.mjs,109,,unknown,reviewable,,没有找到可阅读的段落
+candidate:server/document-import.mjs:125:60,js-cjk-literal,server/document-import.mjs,125,,unknown,reviewable,,卷首
+candidate:server/document-import.mjs:127:183,js-cjk-literal,server/document-import.mjs,127,,unknown,reviewable,,开始阅读
+candidate:server/document-import.mjs:127:257,js-cjk-literal,server/document-import.mjs,127,,unknown,reviewable,,自动分段 · 原文未逐段校对
 candidate:server/email-auth.mjs:11:99,js-cjk-literal,server/email-auth.mjs,11,,unknown,reviewable,,Leafhour · Your verification code / 邮箱验证码
 candidate:server/email-auth.mjs:21:94,js-cjk-literal,server/email-auth.mjs,21,,unknown,reviewable,,邮箱服务尚未配置。现在可以试读，或进入本机书房。
 candidate:server/email-auth.mjs:23:135,js-cjk-literal,server/email-auth.mjs,23,,unknown,reviewable,,请一分钟后再获取验证码
@@ -5588,31 +5588,31 @@ candidate:server/epub-import.mjs:57:58,js-cjk-literal,server/epub-import.mjs,57,
 candidate:server/epub-import.mjs:58:183,js-cjk-literal,server/epub-import.mjs,58,,unknown,reviewable,," XML 编码不受支持"
 candidate:server/epub-import.mjs:59:60,js-cjk-literal,server/epub-import.mjs,59,,unknown,reviewable,,XML 不允许实体或内部 DTD
 candidate:server/epub-import.mjs:60:126,js-cjk-literal,server/epub-import.mjs,60,,unknown,reviewable,," XML 无法解析"
-candidate:server/epub-import.mjs:63:164,js-cjk-literal,server/epub-import.mjs,63,,unknown,reviewable,,外部或无效资源路径
-candidate:server/epub-import.mjs:65:91,js-cjk-literal,server/epub-import.mjs,65,,unknown,reviewable,,资源路径编码不正确
-candidate:server/epub-import.mjs:66:120,js-cjk-literal,server/epub-import.mjs,66,,unknown,reviewable,,资源路径不安全
-candidate:server/epub-import.mjs:68:35,js-cjk-literal,server/epub-import.mjs,68,,unknown,reviewable,,资源路径超出 EPUB
-candidate:server/epub-import.mjs:74:105,js-cjk-literal,server/epub-import.mjs,74,,unknown,reviewable,,内容必须为 XHTML
-candidate:server/epub-import.mjs:75:106,js-cjk-literal,server/epub-import.mjs,75,,unknown,reviewable,,XHTML 节点或嵌套超过限制
-candidate:server/epub-import.mjs:75:209,js-cjk-literal,server/epub-import.mjs,75,,unknown,reviewable,,XHTML 元素 ID 重复
-candidate:server/epub-import.mjs:76:60,js-cjk-literal,server/epub-import.mjs,76,,unknown,reviewable,,XHTML 缺少正文
-candidate:server/epub-import.mjs:78:271,js-cjk-literal,server/epub-import.mjs,78,,unknown,reviewable,,正文段落标识重复
-candidate:server/epub-import.mjs:89:75,js-cjk-literal,server/epub-import.mjs,89,,unknown,reviewable,,container 命名空间错误
-candidate:server/epub-import.mjs:90:151,js-cjk-literal,server/epub-import.mjs,90,,unknown,reviewable,,未找到 package
-candidate:server/epub-import.mjs:91:92,js-cjk-literal,server/epub-import.mjs,91,,unknown,reviewable,,package 路径不安全
-candidate:server/epub-import.mjs:92:159,js-cjk-literal,server/epub-import.mjs,92,,unknown,reviewable,,package 命名空间错误
-candidate:server/epub-import.mjs:93:132,js-cjk-literal,server/epub-import.mjs,93,,unknown,reviewable,,manifest 标识缺失或重复
-candidate:server/epub-import.mjs:94:121,js-cjk-literal,server/epub-import.mjs,94,,unknown,reviewable,,阅读顺序缺失或超过 4000 项
-candidate:server/epub-import.mjs:96:147,js-cjk-literal,server/epub-import.mjs,96,,unknown,reviewable,,阅读顺序含不支持的内容，当前只支持 XHTML 正文
-candidate:server/epub-import.mjs:96:214,js-cjk-literal,server/epub-import.mjs,96,,unknown,reviewable,,阅读顺序重复
-candidate:server/epub-import.mjs:96:442,js-cjk-literal,server/epub-import.mjs,96,,unknown,reviewable,,正文文字超过容量
-candidate:server/epub-import.mjs:96:566,js-cjk-literal,server/epub-import.mjs,96,,unknown,reviewable,,"阅读片段 "
-candidate:server/epub-import.mjs:97:34,js-cjk-literal,server/epub-import.mjs,97,,unknown,reviewable,,没有可阅读文字
-candidate:server/epub-import.mjs:103:58,js-cjk-literal,server/epub-import.mjs,103,,unknown,reviewable,,ZIP 或内容无法解析，请检查文件是否完整
-candidate:server/epub-import.mjs:108:35,js-cjk-literal,server/epub-import.mjs,108,,unknown,reviewable,,package 路径不安全
-candidate:server/epub-import.mjs:115:35,js-cjk-literal,server/epub-import.mjs,115,,unknown,reviewable,,来源路径不安全
-candidate:server/epub-import.mjs:116:26,js-cjk-literal,server/epub-import.mjs,116,,unknown,reviewable,,无法定位来源元素，请保留待校对状态
-candidate:server/epub-import.mjs:123:42,js-cjk-literal,server/epub-import.mjs,123,,unknown,reviewable,,package 路径不安全
+candidate:server/epub-import.mjs:72:164,js-cjk-literal,server/epub-import.mjs,72,,unknown,reviewable,,外部或无效资源路径
+candidate:server/epub-import.mjs:74:91,js-cjk-literal,server/epub-import.mjs,74,,unknown,reviewable,,资源路径编码不正确
+candidate:server/epub-import.mjs:75:120,js-cjk-literal,server/epub-import.mjs,75,,unknown,reviewable,,资源路径不安全
+candidate:server/epub-import.mjs:77:35,js-cjk-literal,server/epub-import.mjs,77,,unknown,reviewable,,资源路径超出 EPUB
+candidate:server/epub-import.mjs:83:105,js-cjk-literal,server/epub-import.mjs,83,,unknown,reviewable,,内容必须为 XHTML
+candidate:server/epub-import.mjs:84:106,js-cjk-literal,server/epub-import.mjs,84,,unknown,reviewable,,XHTML 节点或嵌套超过限制
+candidate:server/epub-import.mjs:84:209,js-cjk-literal,server/epub-import.mjs,84,,unknown,reviewable,,XHTML 元素 ID 重复
+candidate:server/epub-import.mjs:85:60,js-cjk-literal,server/epub-import.mjs,85,,unknown,reviewable,,XHTML 缺少正文
+candidate:server/epub-import.mjs:87:271,js-cjk-literal,server/epub-import.mjs,87,,unknown,reviewable,,正文段落标识重复
+candidate:server/epub-import.mjs:144:75,js-cjk-literal,server/epub-import.mjs,144,,unknown,reviewable,,container 命名空间错误
+candidate:server/epub-import.mjs:145:151,js-cjk-literal,server/epub-import.mjs,145,,unknown,reviewable,,未找到 package
+candidate:server/epub-import.mjs:146:92,js-cjk-literal,server/epub-import.mjs,146,,unknown,reviewable,,package 路径不安全
+candidate:server/epub-import.mjs:147:159,js-cjk-literal,server/epub-import.mjs,147,,unknown,reviewable,,package 命名空间错误
+candidate:server/epub-import.mjs:148:132,js-cjk-literal,server/epub-import.mjs,148,,unknown,reviewable,,manifest 标识缺失或重复
+candidate:server/epub-import.mjs:149:121,js-cjk-literal,server/epub-import.mjs,149,,unknown,reviewable,,阅读顺序缺失或超过 4000 项
+candidate:server/epub-import.mjs:151:147,js-cjk-literal,server/epub-import.mjs,151,,unknown,reviewable,,阅读顺序含不支持的内容，当前只支持 XHTML 正文
+candidate:server/epub-import.mjs:151:214,js-cjk-literal,server/epub-import.mjs,151,,unknown,reviewable,,阅读顺序重复
+candidate:server/epub-import.mjs:151:442,js-cjk-literal,server/epub-import.mjs,151,,unknown,reviewable,,正文文字超过容量
+candidate:server/epub-import.mjs:151:566,js-cjk-literal,server/epub-import.mjs,151,,unknown,reviewable,,"阅读片段 "
+candidate:server/epub-import.mjs:152:34,js-cjk-literal,server/epub-import.mjs,152,,unknown,reviewable,,没有可阅读文字
+candidate:server/epub-import.mjs:157:58,js-cjk-literal,server/epub-import.mjs,157,,unknown,reviewable,,ZIP 或内容无法解析，请检查文件是否完整
+candidate:server/epub-import.mjs:162:35,js-cjk-literal,server/epub-import.mjs,162,,unknown,reviewable,,package 路径不安全
+candidate:server/epub-import.mjs:169:35,js-cjk-literal,server/epub-import.mjs,169,,unknown,reviewable,,来源路径不安全
+candidate:server/epub-import.mjs:170:26,js-cjk-literal,server/epub-import.mjs,170,,unknown,reviewable,,无法定位来源元素，请保留待校对状态
+candidate:server/epub-import.mjs:177:42,js-cjk-literal,server/epub-import.mjs,177,,unknown,reviewable,,package 路径不安全
 candidate:server/experience-service.mjs:13:103,js-cjk-literal,server/experience-service.mjs,13,,unknown,reviewable,,上次回声运行已中断，请重新提交
 candidate:server/experience-service.mjs:13:393,js-cjk-literal,server/experience-service.mjs,13,,unknown,reviewable,,保存的回声未通过来源核验，原话已保留
 candidate:server/experience-service.mjs:14:304,js-cjk-literal,server/experience-service.mjs,14,,unknown,reviewable,,站队记录无法对应当前卡片
@@ -5658,7 +5658,7 @@ candidate:server/ingestion-runner.mjs:11:127,js-cjk-literal,server/ingestion-run
 candidate:server/ingestion-runner.mjs:14:185,js-cjk-literal,server/ingestion-runner.mjs,14,,unknown,reviewable,,当前整理任务较多，原文件已保留，请稍后继续。
 candidate:server/ingestion-upload.mjs:6:38,js-cjk-literal,server/ingestion-upload.mjs,6,,unknown,reviewable,,请先进入自己的书房
 candidate:server/ingestion-upload.mjs:8:85,js-cjk-literal,server/ingestion-upload.mjs,8,,unknown,reviewable,,找不到上传任务
-candidate:server/ingestion-upload.mjs:10:404,js-cjk-literal,server/ingestion-upload.mjs,10,,unknown,reviewable,,请选择容量内的 PDF、EPUB 或文本文件
+candidate:server/ingestion-upload.mjs:10:413,js-cjk-literal,server/ingestion-upload.mjs,10,,unknown,reviewable,,请选择容量内的 PDF、EPUB 或文本文件
 candidate:server/ingestion-upload.mjs:12:64,js-cjk-literal,server/ingestion-upload.mjs,12,,unknown,reviewable,,请允许 PaddleOCR 官方服务识别本书
 candidate:server/ingestion-upload.mjs:14:246,js-cjk-literal,server/ingestion-upload.mjs,14,,unknown,reviewable,,原文件仍在核对，请稍后重试
 candidate:server/ingestion-upload.mjs:17:197,js-cjk-literal,server/ingestion-upload.mjs,17,,unknown,reviewable,,这段时间上传较多，请稍后再试
@@ -5961,10 +5961,10 @@ candidate:server/native-reading-copy.mjs:74:40,js-cjk-literal,server/native-read
 candidate:server/native-reading-copy.mjs:79:40,js-cjk-literal,server/native-reading-copy.mjs,79,,unknown,reviewable,,阅读副本已过期，请重新下载
 candidate:server/paddleocr.mjs:18:175,js-cjk-literal,server/paddleocr.mjs,18,,unknown,reviewable,,识别结果缺少页面结构，未发布不完整书籍
 candidate:server/paddleocr.mjs:22:51,js-cjk-literal,server/paddleocr.mjs,22,,unknown,reviewable,,识别结果文字格式无效
-candidate:server/pdf-native.mjs:6:127,js-cjk-literal,server/pdf-native.mjs,6,,unknown,reviewable,,这份 PDF 已加密，请先提供解锁后的副本。
-candidate:server/pdf-native.mjs:6:152,js-cjk-literal,server/pdf-native.mjs,6,,unknown,reviewable,,PDF 无法读取，请检查文件是否完整。
-candidate:server/pdf-native.mjs:11:40,js-cjk-literal,server/pdf-native.mjs,11,,unknown,reviewable,,这份 PDF 超过当前单本 1200 页的处理容量。
-candidate:server/pdf-native.mjs:15:68,js-cjk-literal,server/pdf-native.mjs,15,,unknown,reviewable,,这份 PDF 的文字量超过当前单本处理容量，原文件仍保留。
+candidate:server/pdf-native.mjs:7:127,js-cjk-literal,server/pdf-native.mjs,7,,unknown,reviewable,,这份 PDF 已加密，请先提供解锁后的副本。
+candidate:server/pdf-native.mjs:7:152,js-cjk-literal,server/pdf-native.mjs,7,,unknown,reviewable,,PDF 无法读取，请检查文件是否完整。
+candidate:server/pdf-native.mjs:12:40,js-cjk-literal,server/pdf-native.mjs,12,,unknown,reviewable,,这份 PDF 超过当前单本 1200 页的处理容量。
+candidate:server/pdf-native.mjs:16:68,js-cjk-literal,server/pdf-native.mjs,16,,unknown,reviewable,,这份 PDF 的文字量超过当前单本处理容量，原文件仍保留。
 candidate:server/pdf-source-evidence.mjs:9:64,js-cjk-literal,server/pdf-source-evidence.mjs,9,,unknown,reviewable,,PDF 图像页码不正确
 candidate:server/pdf-source-evidence.mjs:10:26,js-cjk-literal,server/pdf-source-evidence.mjs,10,,unknown,reviewable,,页面图像正在核对，请稍后重试
 candidate:server/pdf-source-evidence.mjs:16:98,js-cjk-literal,server/pdf-source-evidence.mjs,16,,unknown,reviewable,,PDF 图像页码超出原件范围

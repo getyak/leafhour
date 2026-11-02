@@ -112,15 +112,15 @@ public actor OfflineLibrary {
         let worker = Task.detached(priority: .utility) { try Task.checkCancellation(); return try operation() }
         return try await withTaskCancellationHandler { try await worker.value } onCancel: { worker.cancel() }
     }
-    private func build(source: URL, kind: BookKind, filename: String, id: String, destination: URL) throws -> LocalBook {
-        try Self.buildPackage(source: source, kind: kind, filename: filename, id: id, destination: destination, limits: limits)
+    private func build(source: URL, kind: BookKind, filename: String, id: String, destination: URL, preservedTextBook: LocalBook? = nil) throws -> LocalBook {
+        try Self.buildPackage(source: source, kind: kind, filename: filename, id: id, destination: destination, limits: limits, preservedTextBook: preservedTextBook)
     }
-    private nonisolated static func buildPackage(source: URL, kind: BookKind, filename: String, id: String, destination: URL, limits: ImportLimits, progress: @Sendable (ImportProgress) -> Void = { _ in }) throws -> LocalBook {
+    private nonisolated static func buildPackage(source: URL, kind: BookKind, filename: String, id: String, destination: URL, limits: ImportLimits, progress: @Sendable (ImportProgress) -> Void = { _ in }, preservedTextBook: LocalBook? = nil) throws -> LocalBook {
         try Disk.directory(destination)
         let copy = destination.appendingPathComponent("source." + kind.rawValue)
         try Disk.fm.copyItem(at: source, to: copy)
         guard try Disk.hashFile(copy) == id else { throw LibraryError.invalid("原件复制校验失败。") }
-        let book = try BookParser.parse(source: copy, kind: kind, filename: filename, id: id, destination: destination, limits: limits, progress: progress)
+        let book = try preservedTextBook ?? BookParser.parse(source: copy, kind: kind, filename: filename, id: id, destination: destination, limits: limits, progress: progress)
         progress(ImportProgress(stage: .verifying))
         try Task.checkCancellation()
         try Disk.write(book, to: destination.appendingPathComponent("book.json"))
@@ -278,7 +278,11 @@ public actor OfflineLibrary {
         let journal = root.appendingPathComponent("repair-transaction.json")
         var journaled = false
         defer { if !journaled { try? Disk.fm.removeItem(at: stage) } }
-        let rebuilt = try build(source: source, kind: kind, filename: filename, id: id, destination: stage)
+        let preserved = verifiedTextIndex(at: folder, id: id, kind: kind)
+        if (kind == .txt || kind == .markdown) && preserved == nil {
+            throw LibraryError.invalid("原有文本索引无法验证，修复已停止，以免改变笔记和阅读位置。原件与记录仍保留；可在独立书房重新导入原件副本。")
+        }
+        let rebuilt = try build(source: source, kind: kind, filename: filename, id: id, destination: stage, preservedTextBook: preserved)
         try Task.checkCancellation()
         try Disk.write(transaction, to: journal)
         journaled = true
@@ -294,6 +298,23 @@ public actor OfflineLibrary {
         try? Disk.fm.removeItem(at: backup)
         try Disk.fm.removeItem(at: journal)
         return rebuilt
+    }
+    /// A repair rebuilds packaging, not a saved text book's chapter/passage identities.
+    /// Only reuse an index whose bytes still match its manifest; otherwise repair must stop.
+    private func verifiedTextIndex(at folder: URL, id: String, kind: BookKind) -> LocalBook? {
+        guard kind == .txt || kind == .markdown else { return nil }
+        let indexURL = folder.appendingPathComponent("book.json")
+        guard let manifest = try? Disk.read(OfflineManifest.self, from: folder.appendingPathComponent("manifest.json")),
+              manifest.version == 1, manifest.bookID == id,
+              let index = manifest.files.first(where: { $0.path == "book.json" }),
+              (try? Disk.size(indexURL)) == index.bytes, (try? Disk.hashFile(indexURL)) == index.sha256,
+              let book = try? Disk.read(LocalBook.self, from: indexURL), book.id == id,
+              book.kind == kind, book.cloud == nil, book.sourceVersion == "sha256-" + id,
+              !book.chapters.isEmpty, book.chapters.allSatisfy({ !$0.passages.isEmpty }),
+              Set(book.chapters.map(\.id)).count == book.chapters.count else { return nil }
+        let passageIDs = book.chapters.flatMap { $0.passages.map(\.id) }
+        guard Set(passageIDs).count == passageIDs.count else { return nil }
+        return book
     }
     private struct RepairTransaction: Codable { var bookID: String; var stage: String; var backup: String }
     private static func recoverRepair(root: URL) throws {

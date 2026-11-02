@@ -1,6 +1,8 @@
 import path from 'node:path';
 import {extractEpub} from './epub-import.mjs';
 import {createHash} from 'node:crypto';
+import {resolvePdfOutline} from './pdf-outline.mjs';
+import {textSourceBlocks} from './text-structure.mjs';
 import {inferSourceLanguage} from '../app/source-language.mjs';
 export const fail=(message,status=400)=>Object.assign(new Error(message),{status});
 export const digest=value=>createHash('sha256').update(value).digest('hex');
@@ -33,15 +35,15 @@ export function decodePlainText(bytes){
   return text;
 }
 
-export async function extractDocument({filename,bytes,onProgress}){
+export async function extractDocument({filename,bytes,onProgress,textStructure=true}){
   if(typeof filename!=='string'||!filename.trim()||filename.length>240||!Buffer.isBuffer(bytes)||!bytes.length)throw fail('请选择有内容的书籍文件');
   if(bytes.length>MAX_FILE_BYTES||!filename.toLowerCase().endsWith('.pdf')&&bytes.length>20*1024*1024)throw fail('PDF 最多 256 MB，EPUB 与文本最多 20 MB',413);
   const ext=path.extname(filename).toLowerCase();
-  if(!['.pdf','.epub','.txt','.md'].includes(ext))throw fail('目前支持 PDF、EPUB、TXT 和 Markdown');
+  if(!['.pdf','.epub','.txt','.md','.markdown'].includes(ext))throw fail('目前支持 PDF、EPUB、TXT 和 Markdown');
   if(ext==='.epub')return extractEpub(bytes,{onProgress});
   if(ext!=='.pdf'){
     const text=decodePlainText(bytes);
-    return {pages:[{page:null,text}],format:ext.slice(1),review:'extracted_unreviewed'};
+    return {pages:[{page:null,text,...(textStructure?{blocks:textSourceBlocks(text,{markdown:ext!=='.txt'})}: {})}],format:ext==='.txt'?'txt':'md',...(textStructure?{processor:'text-structure-v1'}: {}),review:'extracted_unreviewed'};
   }
   if(bytes.subarray(0,5).toString()!=='%PDF-')throw fail('文件内容不是有效 PDF');
   // Explicitly trace the worker into serverless bundles. PDF.js otherwise imports
@@ -62,19 +64,46 @@ export async function extractDocument({filename,bytes,onProgress}){
       pages.push({page:i,text:text.trim()});page.cleanup();
     }
     if(pages.reduce((n,p)=>n+p.text.trim().length,0)<20)throw fail('这份 PDF 没有可提取文字，可能是扫描件。请先做文字识别（OCR），或上传文字版 PDF。',422);
-    return {pages,format:'pdf',review:'extracted_unreviewed'};
+    return {pages,format:'pdf',review:'extracted_unreviewed',outline:await resolvePdfOutline(document)};
   }catch(error){if(error.status)throw error;throw fail(error.name==='PasswordException'?'PDF 已加密，请先解密后上传':'PDF 无法解析，请检查文件是否完整',422);}
   finally{if(task)await task.destroy();}
 }
 
+// Keep a model context bounded without cutting a supplementary Unicode scalar.
+function splitTextContext(text){
+  const parts=[];
+  for(let at=0;at<text.length;){
+    let end=Math.min(at+5000,text.length);
+    if(end<text.length&&/[\uD800-\uDBFF]/.test(text[end-1])&&/[\uDC00-\uDFFF]/.test(text[end]))end--;
+    parts.push(text.slice(at,end));at=end;
+  }
+  return parts;
+}
+
 export function makeBook({bookId,filename,sourceHash,extracted,title,author='',visibility='private',sourceUrl=null,license=null}){
+  // The bundled public editions have published passage IDs and overlays.
+  // Keep their historical TXT projection even when callers use the new adapter.
+  if(visibility==='public'&&extracted.processor==='text-structure-v1')extracted={...extracted,processor:undefined,pages:extracted.pages.map(({blocks,...page})=>page)};
   const paragraphs=[];
   for(const page of extracted.pages){
     const blocks=page.blocks?.map(b=>b.text)||page.text.replace(/\r\n?/g,'\n').split(/\n\s*\n/).map(x=>x.replace(/([^\n])\n(?=[^\n])/g,'$1 ').trim()).filter(Boolean);
     for(const [blockIndex,block] of blocks.entries()){
       // Bound a single translation context without throwing away any source text.
-      const parts=block.match(/[\s\S]{1,5000}(?:\s|$)|[\s\S]{1,5000}/g)||[];
-      for(const [partIndex,original] of parts.entries())paragraphs.push({id:(page.blocks?.[blockIndex]?.id? page.blocks[blockIndex].id+(parts.length>1?'-'+partIndex:''):null)||`${sourceHash.slice(0,16)}-p${String(paragraphs.length+1).padStart(5,'0')}`,original:original.trim(),translations:{},source:{pdfPage:page.page,printedPage:null,review:extracted.review,...(page.href?{href:page.href,blockIndex,elementId:page.blocks?.[blockIndex]?.elementId||null,elementIds:page.blocks?.[blockIndex]?.elementIds||[]}:{}),...(page.blocks?.[blockIndex]?{bbox:page.blocks[blockIndex].bbox,type:page.blocks[blockIndex].type,processor:extracted.processor}: {})},annotationIds:[],termIds:[]});
+      const structuredText=extracted.processor==='text-structure-v1',sourceBlock=page.blocks?.[blockIndex];
+      const parts=structuredText?splitTextContext(block):(block.match(/[\s\S]{1,5000}(?:\s|$)|[\s\S]{1,5000}/g)||[]);
+      let partOffset=0;
+      for(const [partIndex,original] of parts.entries()){
+        const textSource=Number.isSafeInteger(sourceBlock?.textOffset)?{textOffset:sourceBlock.textOffset+partOffset,textNormalization:'lf',...(partIndex===0&&sourceBlock.headingTitle?{headingTitle:sourceBlock.headingTitle}: {})}:{};
+        paragraphs.push({
+          id:(sourceBlock?.id?sourceBlock.id+(parts.length>1?'-'+partIndex:''):null)||`${sourceHash.slice(0,16)}-p${String(paragraphs.length+1).padStart(5,'0')}`,
+          original:structuredText?original:original.trim(),translations:{},
+          source:{pdfPage:page.page,printedPage:null,review:extracted.review,...textSource,
+            ...(page.href?{href:page.href,blockIndex,elementId:sourceBlock?.elementId||null,elementIds:sourceBlock?.elementIds||[]}:{}),
+            ...(sourceBlock?{bbox:sourceBlock.bbox,type:sourceBlock.type,processor:extracted.processor}: {})},
+          annotationIds:[],termIds:[]
+        });
+        partOffset+=original.length;
+      }
     }
   }
   if(!paragraphs.length)throw fail('没有找到可阅读的段落');
@@ -88,9 +117,11 @@ export function makeBook({bookId,filename,sourceHash,extracted,title,author='',v
     else{epubCuts=extracted.pages.map(page=>({at:starts.get(page.href),title:page.title})).filter(row=>row.at!==undefined);structure='epub_spine';}
   }
   const outline=(extracted.outline||[]).filter((r,i,all)=>Number.isSafeInteger(r.page)&&r.page>=1&&typeof r.title==='string'&&r.title.trim()&&r.title.length<=120&&(!i||r.page>all[i-1].page));
-  let cuts=epubCuts.length?epubCuts:outline.length>=2?outline.map(r=>({at:paragraphs.findIndex(p=>p.source.pdfPage>=r.page),title:r.title.trim()})).filter(r=>r.at>=0):[];
-  if(extracted.format!=='epub'&&cuts.length>=2)structure='pdf_outline';
+  let cuts=epubCuts.length?epubCuts:outline.length>=1?outline.map(r=>({at:paragraphs.findIndex(p=>p.source.pdfPage>=r.page),title:r.title.trim()})).filter(r=>r.at>=0):[];
+  if(['txt','md'].includes(extracted.format)&&paragraphs.some(p=>p.source.headingTitle)){cuts=paragraphs.flatMap((p,i)=>p.source.headingTitle?[{at:i,title:p.source.headingTitle}]:[]);structure=extracted.format==='md'?'markdown_headings':'text_headings';}
+  else if(extracted.format!=='epub'&&cuts.length>=1)structure='pdf_outline';
   else if(extracted.format!=='epub'){cuts=paragraphs.flatMap((p,i)=>['doc_title','paragraph_title','section_title'].includes(p.source.type)&&p.original.length<=100&&/^(?:第.{1,8}[章节篇部]|(?:chapter|part|book)\s+[IVX\d]+)/iu.test(p.original)?[{at:i,title:p.original}]:[]);if(cuts.length>=2&&cuts.length<=200)structure='source_headings';else cuts=[];}
+  const seenCuts=new Set();cuts=cuts.filter(row=>{if(seenCuts.has(row.at))return false;seenCuts.add(row.at);return true;});
   if(cuts.length){if(cuts[0].at>0)cuts.unshift({at:0,title:'卷首'});for(let i=0;i<cuts.length;i++){const row=cuts[i],number=i+1,id='ch'+String(number).padStart(2,'0');chapters.push({id,number,kind:'source-section',title:{zh:row.title,en:''}});sections.push({number,chapterId:id,title:row.title,paragraphs:paragraphs.slice(row.at,cuts[i+1]?.at??paragraphs.length)});}}
 
   for(let i=0;!cuts.length&&i<paragraphs.length;i+=30){const number=chapters.length+1,id='ch'+String(number).padStart(2,'0');chapters.push({id,number,title:{zh:paragraphs.length<=30?'开始阅读':`阅读片段 ${number}`,en:''}});sections.push({number,chapterId:id,title:'自动分段 · 原文未逐段校对',paragraphs:paragraphs.slice(i,i+30)});}

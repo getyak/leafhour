@@ -33,3 +33,8 @@ test('reconciling an EPUB publication never downgrades to a cancellable parsing 
  let attempts=0;const {ingestion,store}=await setup(t,{library:{importExtracted:async()=>{if(++attempts===1)throw Object.assign(Error('unknown commit result'),{status:503});return {bookId:'saved',title:{en:'Saved'}};}}}),job=await ingestion.prepareDocument(user,{filename:'recover.epub',bytes:archive});assert.equal((await ingestion.advance(user,job.id)).state,'publishing');
  const states=[],mutate=store.mutate;store.mutate=(k,d,fn)=>mutate(k,d,async row=>{const result=await fn(row);if(row?.kind==='document')states.push(row.state);return result;});assert.equal((await ingestion.advance(user,job.id)).state,'done');assert.equal(states.includes('running'),false);
 });
+
+test('long Markdown extension survives deferred preparation and format-aware extraction',async t=>{
+ const {ingestion,published}=await setup(t),job=await ingestion.prepareDocument(user,{filename:'notes.markdown',bytes:Buffer.from('# Start\n\nText.\n\n## End\n\nLast.')});
+ assert.equal((await ingestion.advance(user,job.id)).state,'done');assert.equal(published[0].input.extracted.format,'md');assert.deepEqual(published[0].input.extracted.pages[0].blocks.filter(b=>b.headingTitle).map(b=>b.headingTitle),['Start','End']);
+});

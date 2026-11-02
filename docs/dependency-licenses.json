@@ -3,7 +3,7 @@
   "kind": "leafhour-dependency-license-inventory",
   "lockfile": {
     "path": "package-lock.json",
-    "sha256": "4167fc35569f7c12a27ddb08d2d97d351b7af8b70b2610a145179c617574e925",
+    "sha256": "f3e03551847365a79ff43960fc8d31048ec9e68ddac16d6908a3dae8ffa4dc0a",
     "lockfileVersion": 3,
     "name": "leafhour",
     "version": "0.3.0"
@@ -14,7 +14,7 @@
     "license": "AGPL-3.0-only"
   },
   "summary": {
-    "packageCount": 817,
+    "packageCount": 821,
     "licenseExpressions": {
       "(MIT AND Zlib)": 3,
       "(MIT OR CC0-1.0)": 1,
@@ -22,19 +22,19 @@
       "Apache-2.0": 87,
       "Apache-2.0 AND LGPL-3.0-or-later": 3,
       "Apache-2.0 AND LGPL-3.0-or-later AND MIT": 1,
-      "BSD-2-Clause": 4,
+      "BSD-2-Clause": 6,
       "BSD-3-Clause": 20,
       "BlueOak-1.0.0": 8,
       "ISC": 18,
       "LGPL-3.0-or-later": 10,
-      "MIT": 651,
+      "MIT": 653,
       "MIT-0": 1,
       "MPL-2.0": 6,
       "Python-2.0": 1,
       "Unlicense": 1
     },
     "classification": {
-      "production": 664,
+      "production": 668,
       "dev": 37,
       "optional": 90,
       "devOptional": 26
@@ -42,7 +42,7 @@
     "platformGated": 114,
     "provenance": {
       "npm-registry": 817,
-      "hosted-tarball": 0,
+      "hosted-tarball": 4,
       "git": 0,
       "other": 0,
       "unresolved": 0
@@ -6536,6 +6536,17 @@
       "path": "node_modules/commander"
     },
     {
+      "name": "commonmark",
+      "version": "0.31.2",
+      "license": "BSD-2-Clause",
+      "dev": false,
+      "optional": false,
+      "provenance": "hosted-tarball",
+      "resolved": "https://registry.npmmirror.com/commonmark/-/commonmark-0.31.2.tgz",
+      "integrity": "sha512-2fRLTyb9r/2835k5cwcAwOj0DEc44FARnMp5veGsJ+mEAZdi52sNopLu07ZyElQUz058H43whzlERDIaaSw4rg==",
+      "path": "node_modules/commonmark"
+    },
+    {
       "name": "compressible",
       "version": "2.0.18",
       "license": "MIT",
@@ -6930,6 +6941,17 @@
       "resolved": "https://registry.npmjs.org/encodeurl/-/encodeurl-2.0.0.tgz",
       "integrity": "sha512-Q0n9HRi4m6JuGIV1eFlmvJB7ZEVxu93IrMyiMsGC0lrMJMWzRgx6WGquyfQgZVb31vhGgXnfmPNNXmxnOkRBrg==",
       "path": "node_modules/encodeurl"
+    },
+    {
+      "name": "entities",
+      "version": "3.0.1",
+      "license": "BSD-2-Clause",
+      "dev": false,
+      "optional": false,
+      "provenance": "hosted-tarball",
+      "resolved": "https://registry.npmmirror.com/entities/-/entities-3.0.1.tgz",
+      "integrity": "sha512-WiyBqoomrwMdFG1e0kqvASYfnlb0lp8M5o5Fw2OFq1hNZxxcNk8Ik0Xm7LxzBhuidnZB/UtBqVCgUz3kBOP51Q==",
+      "path": "node_modules/entities"
     },
     {
       "name": "es-define-property",
@@ -7878,6 +7900,17 @@
       "path": "node_modules/math-intrinsics"
     },
     {
+      "name": "mdurl",
+      "version": "1.0.1",
+      "license": "MIT",
+      "dev": false,
+      "optional": false,
+      "provenance": "hosted-tarball",
+      "resolved": "https://registry.npmmirror.com/mdurl/-/mdurl-1.0.1.tgz",
+      "integrity": "sha512-/sKlQJCBYVY9Ers9hqzKou4H6V5UWc/M59TH2dvkt+84itfnq7uFOMLpOiOS4ujvHP4etln18fmIxA5R5fll0g==",
+      "path": "node_modules/mdurl"
+    },
+    {
       "name": "media-typer",
       "version": "1.1.1",
       "license": "MIT",
@@ -7964,6 +7997,17 @@
       "resolved": "https://registry.npmjs.org/minimatch/-/minimatch-10.2.6.tgz",
       "integrity": "sha512-vpLQEs+VLCr1nU0BXS07maYoFwlDAH0gngQuuttxIwutDFEMHq2blX+8vpgxDdK3J1PwjCJiep77OitTZ4Ll1A==",
       "path": "node_modules/minimatch"
+    },
+    {
+      "name": "minimist",
+      "version": "1.2.8",
+      "license": "MIT",
+      "dev": false,
+      "optional": false,
+      "provenance": "hosted-tarball",
+      "resolved": "https://registry.npmmirror.com/minimist/-/minimist-1.2.8.tgz",
+      "integrity": "sha512-2yyAR8qBkN3YuheJanUpWC5U3bb5osDywNB8RzDVlDwDHbocAJveqqj1u8+SVD7jkWT4yvsHCpWqqWqAxb0zCA==",
+      "path": "node_modules/minimist"
     },
     {
       "name": "minipass",

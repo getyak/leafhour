@@ -16,6 +16,8 @@ public struct BookChapter: Codable, Identifiable, Equatable, Sendable {
     public var title: String
     public var sourcePath: String
     public var passages: [Passage]
+    /// Range in decoded source with CR/LF normalized to LF; absent in historical indexes.
+    public var sourceUTF16Range: NSRange? = nil
 }
 public struct LocalBook: Codable, Identifiable, Equatable, Sendable {
     public var id: String
