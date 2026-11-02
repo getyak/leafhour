@@ -5,6 +5,18 @@ import FoundationNetworking
 
 public enum CloudUploadPhase: Sendable { case preparing, sending, processing }
 
+public enum CloudOriginalUploadPolicy {
+    public static func maximumBytes(filename: String) -> Int64 {
+        let mebibytes: Int64
+        switch URL(fileURLWithPath: filename).pathExtension.lowercased() {
+        case "txt", "md", "markdown": mebibytes = 64
+        case "pdf": mebibytes = 256
+        default: mebibytes = 20
+        }
+        return mebibytes * 1024 * 1024
+    }
+}
+
 public struct CloudAccount: Codable, Equatable, Sendable {
     public var id: String
     public var email: String?
@@ -230,14 +242,15 @@ public actor CloudLibraryClient {
         return result["duplicate"].object.isEmpty ? nil : result["duplicate"]
     }
     public func uploadOriginal(_ bytes: Data, filename: String, ownerID: String, duplicatePolicy: DuplicateImportPolicy = .keep, operationID: UUID = UUID(), progress: @Sendable (CloudUploadPhase) async -> Void = { _ in }) async throws -> CloudJSON {
-        guard !bytes.isEmpty, bytes.count <= 20 * 1024 * 1024 else { throw CloudRequestError(status: 413, message: "当前云端上传上限为 20 MB，本机原件仍保留。") }
+        let limit = CloudOriginalUploadPolicy.maximumBytes(filename: filename)
+        guard !bytes.isEmpty, Int64(bytes.count) <= limit else { throw CloudRequestError(status: 413, message: "文件为空或超过此格式的云端上传上限（\(limit / 1024 / 1024) MB），本机原件仍保留。") }
         await progress(.preparing)
         let target: CloudJSON
         do {
             target = try CloudJSON.decode(await data(path: "/api/library/upload/start", method: "POST", body: CloudJSON.encode(["filename": .string(filename), "bytes": .number(Double(bytes.count))]), ownerID: ownerID))
         } catch let error as CloudRequestError where error.status == 404 {
             await progress(.sending)
-            return try CloudJSON.decode(await data(path: "/api/library/upload", method: "POST", body: CloudJSON.encode(["filename": .string(filename), "base64": .string(bytes.base64EncodedString()), "duplicatePolicy": .string(duplicatePolicy.rawValue), "operationId": .string(operationID.uuidString.lowercased())]), ownerID: ownerID))
+            return try CloudJSON.decode(await data(path: "/api/library/upload", method: "POST", body: CloudJSON.encode(["filename": .string(filename), "base64": .string(bytes.base64EncodedString()), "duplicatePolicy": .string(duplicatePolicy.rawValue), "operationId": .string(operationID.uuidString.lowercased()), "receiptOnly": .bool(true)]), ownerID: ownerID))
         }
         guard let id = target["id"].string, let address = target["url"].string, let url = URL(string: address),
               url.scheme == "https", url.user == nil, url.password == nil,
@@ -254,7 +267,7 @@ public actor CloudLibraryClient {
         guard marker == generation, credential?.account.id == ownerID else { throw Self.changed() }
         guard let response = response as? HTTPURLResponse, (200..<300).contains(response.statusCode) else { throw CloudRequestError(status: 502, message: "文件尚未完整上传，请重试；原件仍保留在此设备。") }
         await progress(.processing)
-        return try CloudJSON.decode(await data(path: "/api/library/upload/complete", method: "POST", body: CloudJSON.encode(["id": .string(id), "duplicatePolicy": .string(duplicatePolicy.rawValue), "operationId": .string(operationID.uuidString.lowercased())]), ownerID: ownerID))
+        return try CloudJSON.decode(await data(path: "/api/library/upload/complete", method: "POST", body: CloudJSON.encode(["id": .string(id), "duplicatePolicy": .string(duplicatePolicy.rawValue), "operationId": .string(operationID.uuidString.lowercased()), "receiptOnly": .bool(true)]), ownerID: ownerID))
     }
     private func perform(path: String, method: String, body: Data?, ownerID: String?, timeout: TimeInterval = 45) async throws -> (Data, HTTPURLResponse) {
         guard path.hasPrefix("/api/"), !path.hasPrefix("//"), let url = URL(string: path, relativeTo: baseURL)?.absoluteURL,

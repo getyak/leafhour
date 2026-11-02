@@ -18,6 +18,28 @@ final class LibraryActivityTests: XCTestCase {
         await model.loadCachedShelf()
         XCTAssertEqual(model.books.map(\.id), [book.id]); XCTAssertNil(model.reader)
     }
+    func testTwentyFourMiBTXTUploadReachesDuplicateLookup() async throws {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: root); ActivityURLProtocol.respond = nil }
+        try FileManager.default.createDirectory(at: root, withIntermediateDirectories: true)
+        let duplicateReached = expectation(description: "24 MiB TXT passes native model upload guard")
+        ActivityURLProtocol.respond = { request in
+            if request.url!.path == "/api/library/upload/duplicate" { duplicateReached.fulfill() }
+            return (0, [:]) // Stop after duplicate lookup with no valid signed target.
+        }
+        let config = URLSessionConfiguration.ephemeral; config.protocolClasses = [ActivityURLProtocol.self]
+        let credential = CloudCredential(account: CloudAccount(id: "00000000-0000-4000-8000-000000000344", email: nil), token: "synthetic-upload-fixture")
+        let cloud = CloudLibraryClient(baseURL: URL(string: "https://upload.test")!, credential: credential, configuration: config)
+        let model = LibraryModel(root: root.appendingPathComponent("library"), cloud: cloud, credential: credential, monitorNetwork: false)
+        let file = root.appendingPathComponent("Synthetic.txt")
+        try Data(repeating: 97, count: 24 * 1024 * 1024).write(to: file)
+        let library = try XCTUnwrap(model.library), book = try await library.importFile(file)
+        await model.upload(book)
+        await fulfillment(of: [duplicateReached], timeout: 2)
+        XCTAssertFalse(model.busy)
+        XCTAssertTrue(FileManager.default.fileExists(atPath: file.path))
+    }
+
     func testImportCompletesOnShelfWithoutAutomaticallyOpeningReader() async throws {
         let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
         try FileManager.default.createDirectory(at: root, withIntermediateDirectories: true)

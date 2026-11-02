@@ -514,7 +514,8 @@ final class LibraryModel {
         defer { if marker == contextID { busy = false; migratingBookID = nil; activeBookID = nil; activityCanCancel = false; activityProgress = nil } }
         do {
             let source = try await library.originalURL(book.id), attributes = try FileManager.default.attributesOfItem(atPath: source.path)
-            guard let size = attributes[.size] as? NSNumber, size.int64Value <= 20 * 1024 * 1024 else { throw LibraryError.invalid("当前云端上传上限为 20 MB。本机原件与记录已保留，可继续离线阅读。") }
+            let limit = CloudOriginalUploadPolicy.maximumBytes(filename: book.originalFilename)
+            guard let size = attributes[.size] as? NSNumber, size.int64Value <= limit else { throw LibraryError.invalid("此格式的云端上传上限为 \(limit / 1024 / 1024) MB。本机原件与记录已保留，可继续离线阅读。") }
             let read = Task.detached(priority: .utility) { try Task.checkCancellation(); return try Data(contentsOf: source, options: .mappedIfSafe) }
             let bytes = try await withTaskCancellationHandler { try await read.value } onCancel: { read.cancel() }
             var intent = try await library.pendingUpload(book.id, ownerID: account.id, sourceVersion: book.sourceVersion)
