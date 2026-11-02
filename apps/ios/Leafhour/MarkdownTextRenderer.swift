@@ -7,6 +7,8 @@ struct MarkdownChapterLayout {
     let document: MarkdownDocument
     let sourceRanges: [NSRange]
 
+    init(document: MarkdownDocument) { self.document = document; self.sourceRanges = [] }
+
     init(book: LocalBook, chapter: BookChapter, original: URL, useRetainedSource: Bool = true) {
         let retained: String?
         if useRetainedSource && MarkdownChapterDocument.canUseRetainedSource(for: book) {

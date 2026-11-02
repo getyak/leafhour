@@ -7,22 +7,22 @@ function record(value,keys){
  if(!value||typeof value!=='object'||Array.isArray(value)||![Object.prototype,null].includes(Object.getPrototypeOf(value)))fail();
  const names=Reflect.ownKeys(value);if(names.length!==keys.length||names.some(key=>!keys.includes(key)||!Object.getOwnPropertyDescriptor(value,key)?.enumerable||!Object.hasOwn(Object.getOwnPropertyDescriptor(value,key),'value')))fail();
 }
-export function normalizeReadingChatQuote(value){
+export function normalizeReadingChatQuote(value,{bounded=true}={}){
  record(value,['kind','schemaVersion','bookId','contentVersion','chapterId','parts']);
- if(value.kind!=='leafhour-reading-quote'||value.schemaVersion!==1||!id(value.bookId)||!id(value.chapterId)||!text(value.contentVersion,256)||!Array.isArray(value.parts)||Object.getPrototypeOf(value.parts)!==Array.prototype||value.parts.length<1||value.parts.length>8)fail();
+ if(value.kind!=='leafhour-reading-quote'||value.schemaVersion!==1||!id(value.bookId)||!id(value.chapterId)||!text(value.contentVersion,256)||!Array.isArray(value.parts)||Object.getPrototypeOf(value.parts)!==Array.prototype||value.parts.length<1||bounded&&value.parts.length>8)fail();
  const keys=Reflect.ownKeys(value.parts),expected=Array.from({length:value.parts.length},(_,i)=>String(i));if(keys.length!==expected.length+1||expected.some(key=>!Object.hasOwn(value.parts,key))||keys.some(key=>key!=='length'&&(!expected.includes(key)||!Object.hasOwn(Object.getOwnPropertyDescriptor(value.parts,key),'value'))))fail();
  let total=0,layer;const seen=new Set();
  const parts=value.parts.map(part=>{
   const descriptor=part&&Object.getOwnPropertyDescriptor(part,'layer');if(!descriptor||!Object.hasOwn(descriptor,'value'))fail();const original=descriptor.value==='original';
   record(part,['passageId','layer','start','end','text',...(original?[]:['translationStatus'])]);
-  if(!id(part.passageId)||seen.has(part.passageId)||!['original','literal','interpretive'].includes(part.layer)||layer&&layer!==part.layer||!text(part.text,2000)||!Number.isSafeInteger(part.start)||!Number.isSafeInteger(part.end)||part.start<0||part.end<=part.start||part.end>1000000||part.end-part.start!==part.text.length||!original&&!['draft','reviewed'].includes(part.translationStatus))fail();
-  total+=part.text.length;if(total>2000)fail();layer=part.layer;seen.add(part.passageId);
+  if(!id(part.passageId)||seen.has(part.passageId)||!['original','literal','interpretive'].includes(part.layer)||layer&&layer!==part.layer||!text(part.text,bounded?2000:Number.MAX_SAFE_INTEGER)||!Number.isSafeInteger(part.start)||!Number.isSafeInteger(part.end)||part.start<0||part.end<=part.start||bounded&&part.end>1000000||part.end-part.start!==part.text.length||!original&&!['draft','reviewed'].includes(part.translationStatus))fail();
+  total+=part.text.length;if(bounded&&total>2000)fail();layer=part.layer;seen.add(part.passageId);
   return {passageId:part.passageId,layer:part.layer,start:part.start,end:part.end,text:part.text,...(original?{}:{translationStatus:part.translationStatus})};
  });
  return {kind:'leafhour-reading-quote',schemaVersion:1,bookId:value.bookId,contentVersion:value.contentVersion,chapterId:value.chapterId,parts};
 }
-function validate(value,book,current){
- const quote=normalizeReadingChatQuote(value);
+function validate(value,book,current,options){
+ const quote=normalizeReadingChatQuote(value,options);
  if(!book||quote.bookId!==book.bookId||quote.contentVersion!==book.contentVersion||!Array.isArray(book.sections))fail(409);
  const rows=book.sections.flatMap(section=>section.paragraphs.map(paragraph=>({paragraph,chapterId:section.chapterId})));let previous=-1;
  for(const part of quote.parts){
@@ -34,8 +34,8 @@ function validate(value,book,current){
  }
  return quote;
 }
-export const validateCurrentReadingChatQuote=(value,book)=>validate(value,book,true);
-export const validateHistoricalReadingChatQuote=(value,book)=>validate(value,book,false);
+export const validateCurrentReadingChatQuote=(value,book,options)=>validate(value,book,true,options);
+export const validateHistoricalReadingChatQuote=(value,book,options)=>validate(value,book,false,options);
 export function readingChatQuoteFromExcerpt(snapshot,book){
  if(!snapshot||!Array.isArray(snapshot.parts)||snapshot.parts.length<1||snapshot.parts.length>8)fail();
  const parts=snapshot.parts.map(part=>{

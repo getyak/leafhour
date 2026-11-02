@@ -1,3 +1,4 @@
+import {chatRuntimeTimeout} from './chat-context.mjs';
 import path from 'node:path';
 import {tmpdir} from 'node:os';
 import {existsSync} from 'node:fs';
@@ -50,7 +51,7 @@ export function createReaderChatGenerator({env=process.env,makeGenerator=createC
   if(!env.DEEPSEEK_API_KEY)return null;
   // Optional prompt/label forwarding only; runtime diagnostics and credential
   // handling stay in this one factory. Existing callers keep their defaults.
-  const generate=makeGenerator({runRoot:env.VERCEL?path.join(tmpdir(),'marginalia-reading-chat'):undefined,timeoutMs:75000,env,...(inputLabel!==undefined?{inputLabel}:{}),...(systemPrompt!==undefined?{systemPrompt}:{})});
+  const generate=makeGenerator({runRoot:env.VERCEL?path.join(tmpdir(),'marginalia-reading-chat'):undefined,timeoutMs:systemPrompt===undefined?chatRuntimeTimeout(env):75000,env,...(inputLabel!==undefined?{inputLabel}:{}),...(systemPrompt!==undefined?{systemPrompt}:{})});
   const reported=new WeakSet();
   const phases=new Set(['record-question','quota','generation','verify-source','verify-version','save-answer','preparation','initialize','run','publish','cleanup']);
   const reportFailure=(error,{phase,requestId,runId}={})=>{

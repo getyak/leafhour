@@ -1478,5 +1478,7 @@
   "app/fonts/lxgw-wenkai/wenkai-06.woff2",
   "app/fonts/lxgw-wenkai/wenkai-04.woff2",
   "app/fonts/lxgw-wenkai/wenkai-00.woff2",
-  "app/fonts/lxgw-wenkai/wenkai-02.woff2"
+  "app/fonts/lxgw-wenkai/wenkai-02.woff2",
+  "server/chat-context.mjs",
+  "server/chat-voice.mjs"
 ]

@@ -88,37 +88,35 @@ test('account cancellation fences another instance and late answers never replac
  assert.equal((await second.sendLibrary(owner,input())).status,'cancelled');
 });
 
-test('account expiry uses the existing ninety-second lease and rejects late generation',async t=>{
+test('account expiry uses the infrastructure-aligned lease and rejects late generation',async t=>{
  let now=Date.now(),calls=0;const started=deferred(),held=deferred();const {service}=await setup(t,{clock:()=>now,generator:async job=>{calls++;started.resolve(job);await held.promise;return answer;}});
- const pending=service.sendLibrary(owner,input()),job=await started.promise;now+=90001;
+ const pending=service.sendLibrary(owner,input()),job=await started.promise;now+=300001;
  const expired=(await service.viewLibrary(owner)).turns[0];assert.equal(expired.status,'failed');assert.equal(expired.failureCode,'interrupted');
  held.resolve();const result=await pending;assert.equal(result.status,'failed');assert.equal(result.answer,null);assert.equal(job.signal.aborted,true);
  assert.equal((await service.sendLibrary(owner,input())).status,'failed');assert.equal(calls,1);
 });
 
-test('account conversations share the two-active-request global budget across owners',async t=>{
- const started=[deferred(),deferred()],held=deferred();let calls=0;const {service}=await setup(t,{generator:async()=>{started[calls++].resolve();await held.promise;return answer;}});
- const first=service.sendLibrary(owner,input());await started[0].promise;const second=service.sendLibrary(other,input());await started[1].promise;
- await assert.rejects(service.sendLibrary({id:'third-owner'},input()),{status:429});assert.equal(calls,2);
- held.resolve();assert.equal((await first).status,'completed');assert.equal((await second).status,'completed');
+test('ordinary account conversations run independently across owners',async t=>{
+ let calls=0;const {service}=await setup(t,{generator:async()=>{calls++;return answer;}});
+ const results=await Promise.all([owner,other,{id:'third-owner'}].map(u=>service.sendLibrary(u,input())));assert.ok(results.every(t=>t.status==='completed'));assert.equal(calls,3);
 });
 
-test('account and book requests share the existing ten-per-hour owner budget',async t=>{
+test('account and book requests continue past the old hourly quota',async t=>{
  let now=Date.now(),calls=0;const {service,library}=await setup(t,{clock:()=>now,generator:async()=>{calls++;return answer;}});
  for(let i=0;i<9;i++)await service.sendLibrary(owner,input('question-'+i));
  const book=await library.importDocument(owner,{filename:'quota.txt',bytes:Buffer.from('A quota source.')});
  const bookInput={id:'book-question',text:'One source question.',passageId:book.sections[0].paragraphs[0].id,contentVersion:book.contentVersion};
  assert.equal((await service.send(owner,book.bookId,bookInput)).status,'completed');
- await assert.rejects(service.sendLibrary(owner,input('over-quota')),{status:429});assert.equal(calls,10);
- now+=3600001;assert.equal((await service.sendLibrary(owner,input('new-hour'))).status,'completed');assert.equal(calls,11);
+ assert.equal((await service.sendLibrary(owner,input('over-quota'))).status,'completed');assert.equal(calls,11);
+ now+=3600001;assert.equal((await service.sendLibrary(owner,input('new-hour'))).status,'completed');assert.equal(calls,12);
 });
 
-test('account history keeps only six whole turns within the shared input budget',async t=>{
+test('account history retains all turns above the old transport budget',async t=>{
  let last;const {service}=await setup(t,{generator:async job=>{last=job;return answer;}});
  for(let i=0;i<8;i++)await service.sendLibrary(owner,input('history-'+i,'question-'+i));
- assert.equal(last.history.length,12);assert.equal(last.history[0].content,'question-1');assert.ok(Buffer.byteLength(encodeReadingChatInput(last))<=24576);
+ assert.equal(last.history.length,14);assert.equal(last.history[0].content,'question-0');
  const encoded=encodeReadingChatInput({book:null,text:'Current',history:Array.from({length:8},(_,i)=>[{role:'user',content:'问'.repeat(4000)+i},{role:'assistant',content:'答'.repeat(4000)+i}]).flat()});
- assert.ok(Buffer.byteLength(encoded)<=24576);const payload=JSON.parse(encoded.split('\n\n读者这次说：\n')[0]);assert.equal(payload.history.length%2,0);
+ assert.ok(Buffer.byteLength(encoded)>24576);const payload=JSON.parse(encoded.split('\n\n读者这次说：\n')[0]);assert.equal(payload.history.length%2,0);
 });
 
 test('account chat HTTP preserves owner, origin, streaming, cancellation and independent export contracts',async t=>{
@@ -130,10 +128,10 @@ test('account chat HTTP preserves owner, origin, streaming, cancellation and ind
  const post=(suffix,body,extra={})=>fetch(url+suffix,{method:'POST',headers:{...headers,...extra},body:JSON.stringify(body)});
  const response=await fetch(url,{headers});assert.equal(response.status,200);assert.match(response.headers.get('cache-control'),/private, no-store/);assert.equal((await response.json()).bookId,LIBRARY_CHAT_ID);
  assert.equal((await post('',input(),{'X-Reader-Owner':'another'})).status,409);assert.equal((await post('',input(),{'X-Reader-Owner':''})).status,409);assert.equal((await post('',input(),{Origin:'https://untrusted.example'})).status,403);assert.equal(calls,0);
- assert.equal((await post('',input('oversized','x'.repeat(32768)))).status,413);assert.equal(calls,0);
+ assert.equal((await post('',input('long-message','x'.repeat(32768)))).status,200);assert.equal(calls,1);
  const result=await post('',input(),{Accept:'application/x-ndjson'});assert.match(result.headers.get('content-type'),/application\/x-ndjson/);const frames=(await result.text()).trim().split('\n').map(JSON.parse);assert.equal(frames[0].type,'progress');assert.equal(frames.at(-1).turn.status,'completed');
- assert.equal((await (await post('/'+input().id+'/cancel',{})).json()).status,'completed');assert.equal(calls,1);
- const exported=await (await fetch(url+'/export',{headers})).json();assert.equal(exported.kind,'leafhour-library-chat');assert.equal(exported.turns.length,1);
+ assert.equal((await (await post('/'+input().id+'/cancel',{})).json()).status,'completed');assert.equal(calls,2);
+ const exported=await (await fetch(url+'/export',{headers})).json();assert.equal(exported.kind,'leafhour-library-chat');assert.equal(exported.turns.length,2);
  assert.equal((await fetch(base+'/library-chat-context.mjs')).status,200);
 });
 
@@ -244,4 +242,20 @@ test('corrupt or conflicting account archive receipts fail closed without overwr
  dataStore.values.delete(receiptKey);await service.sendLibrary(owner,input('corrupt-100'));const saved=structuredClone(dataStore.values.get(receiptKey));
  dataStore.values.set(receiptKey,{...saved,ownerId:other.id});await assert.rejects(service.sendLibrary(owner,input('corrupt-0')),{status:409});await assert.rejects(service.exportLibraryHistory(owner),{status:409});assert.equal(calls,101);assert.equal(dataStore.values.get(receiptKey).ownerId,other.id);
  dataStore.values.set(receiptKey,saved);assert.equal((await service.exportLibraryHistory(owner)).turns.length,101);
+});
+
+test('ordinary chat accepts long messages and answers, passes all history and has no hourly quota',async t=>{
+ const jobs=[];const {service}=await setup(t,{generator:async job=>{jobs.push(job);return {kind:'conversation',summary:'答'.repeat(15000)};}});
+ for(let i=0;i<12;i++)assert.equal((await service.sendLibrary(owner,input('unlimited-'+i,'问'.repeat(3000)))).status,'completed');
+ assert.equal(jobs.length,12);assert.equal(jobs.at(-1).history.length,22);assert.equal(jobs.at(-1).history[0].content.length,3000);
+ assert.equal((await service.exportLibraryHistory(owner)).turns[0].answer.summary.length,15000);
+});
+
+test('voice receipts are validated by owner, stored and included in exact retry matching',async t=>{
+ const {create}=await setup(t);const receipt={id:'voice-1',mimeType:'audio/mp4',bytes:32,sha256:'a'.repeat(64),durationMs:1200};let validations=0;
+ const service=await create({exportVoice:async(u,receipt)=>({receipt,parts:['c3ludGhldGlj']}),validateVoice:async(user,v)=>{assert.equal(user.id,owner.id);validations++;return v;}});
+ const body={...input('voice-turn'),voice:receipt},turn=await service.sendLibrary(owner,body);
+ assert.deepEqual(turn.voice,receipt);assert.equal((await service.sendLibrary(owner,body)).status,'completed');
+ await assert.rejects(service.sendLibrary(owner,{...body,voice:{...receipt,id:'other'}}),{status:409});
+ assert.ok(validations);assert.deepEqual((await service.exportLibraryHistory(owner)).turns[0].voice,receipt);
 });

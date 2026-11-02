@@ -169,16 +169,16 @@ test('long source paragraphs stay behind paged tools without preventing a greeti
   assert.equal((await service.send(alice,'chat-book',input())).status,'completed');
 });
 
-test('follow-ups retain six complete cross-passage role pairs and unchanged current question',async t=>{
+test('follow-ups retain all complete cross-passage role pairs and unchanged current question',async t=>{
   const jobs=[];const {service}=await fixture(t,{generator:async job=>{jobs.push(job);return {kind:'conversation',summary:'回答 '+job.text};}});
   for(let i=0;i<8;i++)await service.send(alice,'chat-book',input({id:'q'+i,passageId:i%2?'p2':'p1',text:'问题 '+i}));
-  assert.equal(jobs[7].text,'问题 7');assert.equal(jobs[7].history.length,12);assert.deepEqual(jobs[7].history.slice(0,2),[{role:'user',content:'问题 1'},{role:'assistant',content:'回答 问题 1'}]);assert.equal(jobs[7].history.at(-1).content,'回答 问题 6');
+  assert.equal(jobs[7].text,'问题 7');assert.equal(jobs[7].history.length,14);assert.deepEqual(jobs[7].history.slice(0,2),[{role:'user',content:'问题 0'},{role:'assistant',content:'回答 问题 0'}]);assert.equal(jobs[7].history.at(-1).content,'回答 问题 6');
 });
 
 test('native Unicode answers have no echo schema and candidate references never become evidence',async t=>{
   const {service}=await fixture(t,{generator:async()=>({kind:'conversation',summary:'界'.repeat(12000),sourceRefs:[{bookId:'fake',quote:'invented'}]})});
   const turn=await service.send(alice,'chat-book',input());assert.equal(turn.status,'completed');assert.equal(turn.answer.summary.length,12000);assert.deepEqual(turn.answer.sourceRefs,[]);
-  for(const summary of ['', '  ', '界'.repeat(12001)]){const other=await fixture(t,{generator:async()=>({kind:'conversation',summary})});assert.equal((await other.service.send(alice,'chat-book',input())).status,'failed');}
+  for(const summary of ['', '  ', '\ud800']){const other=await fixture(t,{generator:async()=>({kind:'conversation',summary})});assert.equal((await other.service.send(alice,'chat-book',input())).status,'failed');}
 });
 
 test('actual activity is visible during pending generation and cancelled runs cannot revive it',async t=>{
@@ -229,7 +229,7 @@ test('completed conversations survive restart and expired running leases release
   let now=Date.parse('2026-10-15T08:00:00Z');const entered=deferred(),finish=deferred();let calls=0;
   const {service,create}=await fixture(t,{clock:()=>now,generator:async()=>{if(++calls===1)return validAnswer();entered.resolve();await finish.promise;return validAnswer();}});
   await service.send(alice,'chat-book',input());const restarted=await create();assert.equal((await restarted.view(alice,'chat-book')).turns[0].status,'completed');
-  const pending=service.send(alice,'chat-book',input({id:'interrupted'}));await entered.promise;now+=91000;
+  const pending=service.send(alice,'chat-book',input({id:'interrupted'}));await entered.promise;now+=300001;
   assert.equal((await restarted.view(alice,'chat-book')).turns[1].status,'failed');finish.resolve();assert.equal((await pending).status,'failed');
   const fresh=await create({generator:async()=>validAnswer()});assert.equal((await fresh.send(alice,'chat-book',input({id:'after-expiry'}))).status,'completed');
 });
@@ -240,76 +240,26 @@ test('closing the service aborts its own in-flight generation and retains a canc
   assert.equal(signal.aborted,true);assert.equal((await pending).status,'cancelled');assert.equal((await service.view(alice,'chat-book')).turns[0].status,'cancelled');
 });
 
-test('the hourly quota is shared across books, survives restart and resets after the hour',async t=>{
-  let now=Date.parse('2026-10-15T08:00:00Z'),calls=0;const {service,create,seed,book}=await fixture(t,{clock:()=>now,generator:async()=>{calls++;return validAnswer();}});
-  await seed(alice,{...book,bookId:'second-book'});
-  for(let i=0;i<10;i++)assert.equal((await service.send(alice,i%2?'second-book':'chat-book',input({id:'quota-'+i}))).status,'completed');
-  const restarted=await create();await assert.rejects(restarted.send(alice,'second-book',input({id:'quota-over'})),status(429));assert.equal(calls,10);
-  now+=3600001;assert.equal((await restarted.send(alice,'second-book',input({id:'quota-new-hour'}))).status,'completed');assert.equal(calls,11);
-});
-
-for(const persistence of ['local files','shared dataStore'])test('the global two-run gate spans accounts and services and releases only completed or cancelled leases with '+persistence,{timeout:12000},async t=>{
-  const enteredA=deferred(),enteredB=deferred(),enteredC=deferred(),finishA=deferred(),finishB=deferred(),finishC=deferred();let calls=0;
-  const wait=async(job,entered,finish)=>{entered.resolve();await Promise.race([finish.promise,new Promise(resolve=>job.signal.addEventListener('abort',resolve,{once:true}))]);};
-  const {service,create,seed}=await fixture(t,{dataStore:persistence==='shared dataStore'?sharedStore():null,generator:async job=>{
-    calls++;if(calls===1)await wait(job,enteredA,finishA);else if(calls===2)await wait(job,enteredB,finishB);else if(job.text.includes('hold-c'))await wait(job,enteredC,finishC);return validAnswer();
-  }});
-  await seed(bob);await seed(charlie);const other=await create(),third=await create();
-  const pendingA=service.send(alice,'chat-book',input({id:'hold-a'}));await enteredA.promise;
-  const pendingB=other.send(bob,'chat-book',input({id:'hold-b'}));await enteredB.promise;
-  await assert.rejects(third.send(charlie,'chat-book',input({id:'third-rejected'})),status(429));assert.equal(calls,2);
-  finishA.resolve();assert.equal((await pendingA).status,'completed');
-  const pendingC=third.send(charlie,'chat-book',input({id:'hold-c',text:'hold-c'}));await enteredC.promise;
-  await assert.rejects(service.send(alice,'chat-book',input({id:'still-two-running'})),status(429));assert.equal(calls,3);
-  await third.cancel(bob,'chat-book','hold-b');assert.equal((await within(pendingB,2000,'The cancelled run did not release its global lease')).status,'cancelled');
-  assert.equal((await service.send(alice,'chat-book',input({id:'after-cancel'}))).status,'completed');assert.equal(calls,4);
-  finishC.resolve();assert.equal((await pendingC).status,'completed');
-});
-
-test('global leases expire within ninety seconds even when their execution instances never release them',async t=>{
-  const start=Date.parse('2026-10-15T08:00:00Z');let now=start,calls=0;const bothEntered=deferred();
-  const {service,create,seed}=await fixture(t,{clock:()=>start,dataStore:sharedStore(),generator:async job=>{
-    if(++calls<=2){if(calls===2)bothEntered.resolve();await new Promise(resolve=>job.signal.addEventListener('abort',resolve,{once:true}));}return validAnswer();
-  }});
-  await seed(bob);await seed(charlie);const second=await create(),recovering=await create({clock:()=>now});
-  const pendingA=service.send(alice,'chat-book',input({id:'stuck-a'})),pendingB=second.send(bob,'chat-book',input({id:'stuck-b'}));await bothEntered.promise;
-  now=start+89999;await assert.rejects(recovering.send(charlie,'chat-book',input({id:'not-expired'})),status(429));assert.equal(calls,2);
-  now=start+90001;assert.equal((await recovering.send(charlie,'chat-book',input({id:'after-expiry'}))).status,'completed');assert.equal(calls,3);
-  await service.close();await second.close();await Promise.all([pendingA,pendingB]);
-});
-
-test('the shared global hourly budget stops request 101 across accounts and survives CAS callback replay',async t=>{
-  let now=Date.parse('2026-10-15T08:00:00Z'),calls=0;const {service,create,seed}=await fixture(t,{clock:()=>now,dataStore:sharedStore({replay:true}),generator:async()=>{calls++;return validAnswer();}});
-  const users=Array.from({length:11},(_,i)=>({id:'global-hour-reader-'+i}));for(const user of users)await seed(user);
-  const other=await create();
-  for(let i=0;i<100;i++)assert.equal((await (i%2?service:other).send(users[Math.floor(i/10)],'chat-book',input({id:'global-hour-'+i}))).status,'completed');
-  const restarted=await create();await assert.rejects(restarted.send(users[10],'chat-book',input({id:'global-hour-over'})),status(429));assert.equal(calls,100);
-  now+=3600001;assert.equal((await restarted.send(users[10],'chat-book',input({id:'global-new-hour'}))).status,'completed');assert.equal(calls,101);
-});
-
-test('the shared global daily budget stops request 501 while fresh hourly and owner budgets remain available',async t=>{
-  const start=Date.parse('2026-10-15T08:00:00Z');let now=start,calls=0;const {service,create,seed}=await fixture(t,{clock:()=>now,dataStore:sharedStore(),generator:async()=>{calls++;return validAnswer();}});
-  const users=Array.from({length:10},(_,i)=>({id:'global-day-reader-'+i}));for(const user of users)await seed(user);await seed(charlie);
-  const other=await create();
-  for(let hour=0;hour<5;hour++){now=start+hour*3600001;for(let i=0;i<100;i++)assert.equal((await (i%2?service:other).send(users[i%10],'chat-book',input({id:'global-day-'+hour+'-'+i}))).status,'completed');}
-  now=start+5*3600001;const restarted=await create();await assert.rejects(restarted.send(charlie,'chat-book',input({id:'global-day-over'})),status(429));assert.equal(calls,500);
-  now+=86400001;assert.equal((await restarted.send(charlie,'chat-book',input({id:'global-new-day'}))).status,'completed');assert.equal(calls,501);
+test('conversation quotas do not block other owners or more than ten turns per hour',async t=>{
+ let calls=0;const {service,create,seed}=await fixture(t,{generator:async()=>{calls++;return validAnswer();}});await seed(bob);await seed(charlie);
+ for(let i=0;i<12;i++)assert.equal((await service.send(alice,'chat-book',input({id:'unlimited-'+i}))).status,'completed');
+ const restarted=await create();for(const user of [alice,bob,charlie])assert.equal((await restarted.send(user,'chat-book',input({id:'after-restart'}))).status,'completed');assert.equal(calls,15);
 });
 
 test('invalid IDs, question sizes, anchors and versions never invoke the generator',async t=>{
   let calls=0;const {service}=await fixture(t,{generator:async()=>{calls++;return validAnswer();}});
-  for(const patch of [{id:'../escape'},{id:'x'.repeat(121)},{id:''},{text:''},{text:' '},{text:'界'.repeat(2001)},{text:'\ud800'},{passageId:'missing'},{contentVersion:undefined}])await assert.rejects(service.send(alice,'chat-book',input(patch)),status(400));
+  for(const patch of [{id:'../escape'},{id:'x'.repeat(121)},{id:''},{text:''},{text:' '},{text:'\ud800'},{passageId:'missing'},{contentVersion:undefined}])await assert.rejects(service.send(alice,'chat-book',input(patch)),status(400));
   await assert.rejects(service.send(alice,'chat-book',input({contentVersion:'old'})),status(409));
   await assert.rejects(service.cancel(alice,'chat-book','../escape'),status(400));assert.equal(calls,0);
 });
 
-test('a full conversation keeps its original turns and refuses another paid run',async t=>{
+test('a full conversation archives originals and continues without a turn cap',async t=>{
   let calls=0;const {dataDir,service}=await fixture(t,{generator:async()=>{calls++;return validAnswer();}});
   const file=path.join(dataDir,'users',hash(alice.id),'chat',hash('chat-book')+'.json');await mkdir(path.dirname(file),{recursive:true});
   const turns=Array.from({length:100},(_,i)=>({id:'saved-'+i,passageId:'p1',contentVersion:'edition-1',text:'保留的提问 '+i,origin:'user',createdAt:'2026-10-15T08:00:00.000Z',status:'completed',answer:{summary:'保留的回答',origin:'ai',sourceRefs:[{passageId:'p1',quote:'First source sentence.'}]}}));
   await writeFile(file,JSON.stringify({kind:'marginalia-reader-chat',schemaVersion:1,bookId:'chat-book',turns}));
-  await assert.rejects(service.send(alice,'chat-book',input()),status(413));assert.equal(calls,0);
-  const retained=(await service.view(alice,'chat-book')).turns;assert.equal(retained.length,100);assert.equal(retained[0].text,'保留的提问 0');
+  assert.equal((await service.send(alice,'chat-book',input())).status,'completed');assert.equal(calls,1);
+  const retained=(await service.view(alice,'chat-book')).turns;assert.equal(retained.length,100);assert.equal(retained[0].text,'保留的提问 1');assert.equal((await service.exportHistory(alice,'chat-book')).turns[0].text,'保留的提问 0');assert.equal((await service.send(alice,'chat-book',input({id:'saved-0',text:'保留的提问 0'}))).status,'completed');assert.equal(calls,1);
 });
 
 test('a changed source during generation cannot publish an answer against the old edition',async t=>{
@@ -357,10 +307,10 @@ test('a cross-book source is registered under its actual book',async t=>{
   await seed(alice,other);await service.configureScope(alice,'chat-book',{mode:'library',baseRevision:0});const pending=service.send(alice,'chat-book',input({scopeRevision:1}));await entered.promise;finish.resolve();const turn=await pending;
   assert.equal(turn.status,'completed');assert.equal(turn.answer.sourceRefs[0].bookId,'second-book');assert.equal(turn.answer.sourceRefs[0].url,'/read?book=second-book&passage=p1');assert.ok(turn.activity.some(a=>a.bookId==='second-book'&&a.status==='completed'));assert.equal(captured.signal.aborted,true);
 });
-test('history byte limits discard only oldest complete pairs while preserving the current question',async t=>{
+test('history retains complete original pairs beyond the old byte window',async t=>{
  const jobs=[];const {service}=await fixture(t,{generator:async job=>{jobs.push(job);return {kind:'conversation',summary:'中'.repeat(4000)};}});
  for(let i=0;i<4;i++)await service.send(alice,'chat-book',input({id:'large-'+i,text:'提问 '+i}));
- assert.ok(Buffer.byteLength(JSON.stringify(jobs[3].history))<=24576);assert.equal(jobs[3].history[0].role,'user');assert.equal(jobs[3].history.at(-1).role,'assistant');assert.equal(jobs[3].text,'提问 3');assert.ok(jobs[3].history.length<6);
+ assert.ok(Buffer.byteLength(JSON.stringify(jobs[3].history))>24576);assert.equal(jobs[3].history[0].role,'user');assert.equal(jobs[3].history.at(-1).role,'assistant');assert.equal(jobs[3].text,'提问 3');assert.equal(jobs[3].history.length,6);
 });
 
 const selectedQuote=(layer='original',text=layer==='original'?'First':layer==='literal'?'第一句。':'开头提出这个意思。')=>({kind:'leafhour-reading-quote',schemaVersion:1,bookId:'chat-book',contentVersion:'edition-1',chapterId:'ch1',parts:[{passageId:'p1',layer,start:0,end:text.length,text,...(layer==='original'?{}:{translationStatus:layer==='literal'?'draft':'reviewed'})}]});
@@ -386,9 +336,9 @@ test('exact terminal quote replay survives edited translation while changed quot
 test('a quoted translation changed during generation fails truthfully and preserves the stored question snapshot',async t=>{
  let f;f=await fixture(t,{generator:async()=>{const changed=bookFixture();changed.sections[1].paragraphs[0].translations.literal.status='reviewed';await f.seed(alice,changed);return validAnswer();}});const payload=input({quote:selectedQuote('literal')}),turn=await f.service.send(alice,'chat-book',payload);assert.equal(turn.status,'failed');assert.equal(turn.answer,null);assert.deepEqual(turn.quote,payload.quote);assert.equal(turn.text,payload.text);
 });
-test('actual encoded current input rejects oversize metadata before turn, question or generator work',async t=>{
+test('large encoded metadata passes intact to runtime capacity handling',async t=>{
  let calls=0;const f=await fixture(t,{generator:async()=>{calls++;return validAnswer();}}),getBook=f.library.getBook.bind(f.library);f.library.getBook=async(...args)=>({...await getBook(...args),title:{en:'\u0001'.repeat(5000)}});
- await assert.rejects(f.service.send(alice,'chat-book',input({quote:selectedQuote()})),status(413));assert.equal((await f.service.view(alice,'chat-book')).turns.length,0);assert.equal((await f.library.records(alice,'chat-book')).questions.length,0);assert.equal(calls,0);
+ assert.equal((await f.service.send(alice,'chat-book',input({quote:selectedQuote()}))).status,'completed');assert.equal(calls,1);
 });
 
 test('new stale quote is a definite 422 before claim, while exact historical retry and real conflicts keep their semantics',async t=>{
@@ -418,4 +368,29 @@ test('failed persistence never publishes a completed answer and records save rec
  store.mutate=async function(file,fallback,operation){return mutate.call(this,file,fallback,async data=>{const out=await operation(data);if(!injected&&out?.status==='completed'){injected=true;throw Error('synthetic failed final save');}return out;});};
  const {service}=await fixture(t,{dataStore:store,generator:async()=>validAnswer()});
  const result=await service.send(alice,'chat-book',input());assert.equal(result.status,'failed');assert.equal(result.failureCode,'save_failed');assert.equal(result.answer,null);assert.equal((await service.view(alice,'chat-book')).turns[0].status,'failed');
+});
+
+test('voice history exports original assets and validates every asset before restoration writes',async t=>{
+ const f=await fixture(t),voice={id:'voice-fixture',mimeType:'audio/mp4',bytes:8,sha256:'a'.repeat(64),durationMs:1000},writes=[];
+ const media={validateVoice:async()=>voice,exportVoice:async(user,receipt)=>({receipt,parts:['YXVkaW8=']}),restoreVoice:async(user,asset,{validateOnly})=>{if(asset.parts[0]!=='YXVkaW8=')throw Object.assign(Error('Invalid audio checksum'),{status:422});if(!validateOnly)writes.push(user.id);return asset.receipt;}};
+ const service=await f.create(media);await service.send(alice,'chat-book',input({voice}));
+ const backup=await service.exportHistory(alice,'chat-book');assert.deepEqual(backup.voiceAssets,[{receipt:voice,parts:['YXVkaW8=']}]);
+ await f.seed(bob);const corrupt=structuredClone(backup);corrupt.voiceAssets[0].parts[0]='corrupt';
+ await assert.rejects(service.validateHistory(bob,f.book,corrupt,[f.book]),status(422));assert.deepEqual(writes,[]);assert.deepEqual((await service.view(bob,'chat-book')).turns,[]);
+ assert.equal((await service.restoreHistory(bob,f.book,backup,[f.book])).restored,1);assert.deepEqual(writes,[bob.id]);assert.deepEqual((await service.view(bob,'chat-book')).turns[0].voice,voice);
+});
+
+test('a full redundant questions mirror does not block canonical conversation history',async t=>{
+ let calls=0;const f=await fixture(t,{generator:async()=>{calls++;return validAnswer();}});
+ f.library.addComment=async()=>{throw Object.assign(Error('Personal record capacity reached'),{status:413,code:'PERSONAL_RECORD_CAPACITY'});};
+ const turn=await f.service.send(alice,'chat-book',input());assert.equal(turn.status,'completed');assert.equal(calls,1);
+ assert.equal((await f.service.exportHistory(alice,'chat-book')).turns[0].text,input().text);
+});
+
+test('book archives retain trusted book scope while imported library history stays outside narrowed context',async t=>{
+ const jobs=[];const f=await fixture(t,{generator:async job=>{jobs.push(job);return validAnswer();}});
+ for(let i=0;i<102;i++)await f.service.send(alice,'chat-book',input({id:'archive-scope-'+i,text:'Book question '+i}));
+ assert.equal(jobs[101].history[0].content,'Book question 0');assert.equal(jobs[101].history.length,202);
+ const exported=await f.service.exportHistory(alice,'chat-book');await f.seed(bob);await f.service.restoreHistory(bob,f.book,exported,[f.book]);
+ await f.service.send(bob,'chat-book',input({id:'after-import',text:'New book question'}));assert.deepEqual(jobs.at(-1).history,[]);
 });

@@ -137,7 +137,7 @@ struct IncomingBookRequest: Identifiable {
                     }
                 }
                 if let error { Section { Text(error).foregroundStyle(.secondary); Button("重试核对") { Task { await load() } }.disabled(loading || working) } }
-            }.navigationTitle("在 Leafhour 中打开").navigationBarTitleDisplayMode(.inline)
+            }.duplicateImportPrompt(model).navigationTitle("在 Leafhour 中打开").navigationBarTitleDisplayMode(.inline)
                 .toolbar { ToolbarItem(placement: .cancellationAction) { Button("稍后") { model.finishIncomingBook(request) }.disabled(working || startedFile && model.busy) } }
                 .interactiveDismissDisabled(working || startedFile && model.busy)
                 .task(id: model.account?.id) { await load() }

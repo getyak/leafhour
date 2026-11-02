@@ -169,7 +169,7 @@ final class LibraryPresentationTests: XCTestCase {
 
     func testAccountManualOrderOverridesAdditionDatesAndFinishedIsDerivedFromReadyMetadata() throws {
         let shelf = try snapshot(false)
-        XCTAssertEqual(LibraryPresentation.items(local: [], cloud: shelf.books, snapshot: shelf).map(\.id), ["cloud:b", "cloud:a"])
+        XCTAssertEqual(LibraryPresentation.items(local: [], cloud: shelf.books, sort: .added, snapshot: shelf).map(\.id), ["cloud:b", "cloud:a"])
         XCTAssertEqual(LibraryPresentation.items(local: [], cloud: shelf.books, filter: .finished, snapshot: shelf).map(\.id), ["cloud:a"])
         XCTAssertEqual(LibraryPresentation.items(local: [], cloud: shelf.books, filter: .unread, snapshot: shelf).map(\.id), ["cloud:b"])
     }
@@ -191,6 +191,23 @@ final class LibraryPresentationTests: XCTestCase {
         XCTAssertTrue(pins.cloudMigrationIDs(owner: "owner", available: ["a"], pinsInitialized: true, hasPendingPins: false).isEmpty)
         XCTAssertTrue(pins.cloudMigrationIDs(owner: "owner", available: ["a"], pinsInitialized: false, hasPendingPins: true).isEmpty)
         XCTAssertEqual(pins.ids(owner: "owner"), ["cloud:a", "cloud:missing", "local:device-book"], "Migration retains the original device preferences")
+    }
+
+    func testDefaultRecentOrderKeepsReadingFirstAndUsesAdditionDateForUnread() throws {
+        let old = try local("old", title: "Old unread", added: 1)
+        let new = try local("new", title: "New unread", added: 100)
+        let read = try local("read", title: "Reading", added: 2)
+        XCTAssertEqual(LibraryPresentation.items(local: [old, read, new], cloud: [], localActivity: ["read": Date(timeIntervalSince1970: 10)]).map(\.id), ["local:read", "local:new", "local:old"])
+        XCTAssertEqual(LibraryPresentation.items(local: [old, read, new], cloud: [], sort: .added, localActivity: ["read": Date(timeIntervalSince1970: 10)]).map(\.id), ["local:new", "local:read", "local:old"])
+    }
+
+    func testLocalRemovalKeepsRecoveryIdentityAndPins() throws {
+        let hidden = try local("hidden", title: "Hidden")
+        let visible = try local("visible", title: "Visible")
+        XCTAssertEqual(LibraryPresentation.items(local: [hidden, visible], cloud: [], localArchivedIDs: [hidden.id]).map(\.id), ["local:visible"])
+        let removed = LibraryPresentation.items(local: [hidden, visible], cloud: [], filter: .archived, pinnedIDs: ["local:hidden"], localArchivedIDs: [hidden.id])
+        XCTAssertEqual(removed.map(\.id), ["local:hidden"])
+        XCTAssertEqual(removed.first?.local?.id, hidden.id)
     }
 
 }

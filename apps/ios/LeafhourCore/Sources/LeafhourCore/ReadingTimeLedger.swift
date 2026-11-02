@@ -76,7 +76,11 @@ extension OfflineLibrary: ReadingTimeStore {
         let directory = try bookDirectory(bookID)
         guard Disk.fm.fileExists(atPath: directory.appendingPathComponent("manifest.json").path) else { throw ReadingTimeDate.fail() }
         let book = try Disk.read(LocalBook.self, from: directory.appendingPathComponent("book.json"))
-        guard book.id == bookID, book.sourceVersion == "sha256-" + bookID else { throw ReadingTimeDate.fail() }
+        let manifest = try Disk.read(OfflineManifest.self, from: directory.appendingPathComponent("manifest.json"))
+        guard book.id == bookID, manifest.bookID == bookID,
+              let source = manifest.files.first(where: { $0.path == "source." + book.kind.rawValue }),
+              book.sourceVersion == "sha256-" + source.sha256 else { throw ReadingTimeDate.fail() }
+        try Disk.validID(source.sha256)
         if let identity = book.cloud {
             guard let owner = UUID(uuidString: identity.ownerID), root.lastPathComponent == "account-" + owner.uuidString.lowercased() else { throw ReadingTimeDate.fail() }
         }

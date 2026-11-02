@@ -69,8 +69,15 @@ struct LibraryShelfPins: Codable {
 }
 
 enum LibraryPresentation {
-    static func items(local: [LocalBook], cloud: [CloudShelfBook], query: String = "", filter: LibraryShelfFilter = .all, sort: LibraryShelfSort = .added, pinnedIDs: Set<String> = [], snapshot: CloudShelfSnapshot? = nil, localActivity: [String: Date] = [:]) -> [LibraryShelfItem] {
-        let archived = snapshot?.isAuthoritative == true ? snapshot!.archivedBookIDs : []
+    static func items(local: [LocalBook], cloud: [CloudShelfBook], query: String = "", filter: LibraryShelfFilter = .all, sort: LibraryShelfSort = .recent, pinnedIDs: Set<String> = [], snapshot: CloudShelfSnapshot? = nil, localActivity: [String: Date] = [:], localArchivedIDs: Set<String> = [], pendingActions: [PendingAccountShelfAction] = []) -> [LibraryShelfItem] {
+        var archived = snapshot?.isAuthoritative == true ? snapshot!.archivedBookIDs : []
+        for pending in pendingActions where !pending.conflict {
+            switch pending.action {
+            case .archive(let id): archived.insert(id)
+            case .restore(let id): archived.remove(id)
+            default: break
+            }
+        }
         let cloud = cloud + (snapshot?.archivedBooks ?? [])
         var remoteByID: [String: CloudShelfBook] = [:]
         for book in cloud where remoteByID[book.id] == nil { remoteByID[book.id] = book }
@@ -99,7 +106,7 @@ enum LibraryPresentation {
             let additional = book.cloud.map { primaryByCloudID[$0.bookID] != book.id } ?? false
             let id = additional ? "local:" + book.id : (book.cloud.map { "cloud:" + $0.bookID } ?? "local:" + book.id)
             guard seen.insert(id).inserted else { continue }
-            result.append(LibraryShelfItem(id: id, local: book, cloud: additional ? nil : book.cloud.flatMap { remoteByID[$0.bookID] }, isAdditionalVersion: additional, isArchived: book.cloud.map { archived.contains($0.bookID) } ?? false, localActivityAt: localActivity[book.id]))
+            result.append(LibraryShelfItem(id: id, local: book, cloud: additional ? nil : book.cloud.flatMap { remoteByID[$0.bookID] }, isAdditionalVersion: additional, isArchived: localArchivedIDs.contains(book.id) || (book.cloud.map { archived.contains($0.bookID) } ?? false), localActivityAt: localActivity[book.id]))
         }
         // Retain service order as a stable fallback for cloud books whose
         // actual addition date is unavailable.
@@ -134,6 +141,8 @@ enum LibraryPresentation {
             result = result.enumerated().sorted { lhs, rhs in
                 let l = ReadingRecency.maximum([lhs.element.cloud?.activityAt, lhs.element.local.flatMap { localActivity[$0.id] }]), r = ReadingRecency.maximum([rhs.element.cloud?.activityAt, rhs.element.local.flatMap { localActivity[$0.id] }])
                 if l != r { return (l ?? .distantPast) > (r ?? .distantPast) }
+                let la = lhs.element.addedAt, ra = rhs.element.addedAt
+                if la != ra { return (la ?? .distantPast) > (ra ?? .distantPast) }
                 return lhs.offset < rhs.offset
             }.map(\.element)
         case .title: result.sort(by: titlePrecedes)

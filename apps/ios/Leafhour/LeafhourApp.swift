@@ -56,12 +56,14 @@ final class LibraryModel {
         let tools = ReaderCloudTools(); chatWorkspaces[key] = tools; return tools
     }
     var books: [LocalBook] = []
+    var localArchivedIDs: Set<String> = []
     var cloudBooks: [CloudShelfBook] = []
     var accountShelf: CloudShelfSnapshot?
     var accountActions: [PendingAccountShelfAction] = []
     var localActivity: [String: Date] = [:]
     private var lastOpenedLocalID: String?
     var jobs: [ImportJob] = []
+    var duplicateRequest: DuplicateImportRequest?
     var importActivity: LibraryImportActivity?
     var message: String?
     var busy = false
@@ -131,12 +133,14 @@ final class LibraryModel {
     }
     deinit { networkMonitor?.cancel() }
     private func resetBookActivity() {
+        resolveDuplicate(nil)
         importTask?.cancel(); downloadTask?.cancel()
         importTask = nil; downloadTask = nil; downloadOperationID = nil
         importActivity = nil; migratingBookID = nil; busy = false
         activeBookID = nil; activityCanCancel = false; activityProgress = nil; status = ""
     }
     private func configureLibrary() throws {
+        localArchivedIDs = []
         guard let root else { return }
         let scope: LibraryScope
         if let account {
@@ -168,6 +172,7 @@ final class LibraryModel {
         do {
             let local = try await library.books(), imports = try await library.jobs().filter { $0.phase != .complete }
             let opened = try await library.lastOpenedBook()
+            let archivedIDs = try await library.localArchivedBookIDs()
             var snapshot: CloudShelfSnapshot?
             var pending = accountActions
             var warning: String?
@@ -183,7 +188,7 @@ final class LibraryModel {
             var issues: [String: CloudSyncMetadata] = [:]
             for book in local where book.cloud != nil { issues[book.id] = try? await library.cloudMetadata(book.id) }
             guard marker == contextID, owner == account?.id, request == reloadID else { return }
-            books = local; jobs = imports; lastOpenedLocalID = opened; localActivity = events; syncIssues = issues; accountActions = pending
+            books = local; localArchivedIDs = archivedIDs; jobs = imports; lastOpenedLocalID = opened; localActivity = events; syncIssues = issues; accountActions = pending
             if let snapshot { accountShelf = snapshot; cloudBooks = snapshot.books }
             if let warning, message == nil { message = warning }
             if restore && !didRestore {
@@ -506,17 +511,35 @@ final class LibraryModel {
             guard let size = attributes[.size] as? NSNumber, size.int64Value <= 20 * 1024 * 1024 else { throw LibraryError.invalid("当前云端上传上限为 20 MB。本机原件与记录已保留，可继续离线阅读。") }
             let read = Task.detached(priority: .utility) { try Task.checkCancellation(); return try Data(contentsOf: source, options: .mappedIfSafe) }
             let bytes = try await withTaskCancellationHandler { try await read.value } onCancel: { read.cancel() }
-            let result = try await cloud.uploadOriginal(bytes, filename: book.originalFilename, ownerID: account.id) { [weak self, weak activity] phase in
-                await MainActor.run {
-                    guard let self, self.contextID == marker else { return }
-                    switch phase {
-                    case .preparing: activity?.showStatus("正在准备上传…")
-                    case .sending: activity?.showStatus("正在上传原件…")
-                    case .processing: activity?.showStatus("原件已传送，正在整理云端书籍…")
+            var intent = try await library.pendingUpload(book.id, ownerID: account.id, sourceVersion: book.sourceVersion)
+            if intent == nil {
+                var policy = DuplicateImportPolicy.keep
+                if let duplicate = try await cloud.duplicateOriginal(bytes, ownerID: account.id) {
+                    guard marker == contextID else { return }
+                    guard let choice = await chooseDuplicate(title: duplicate["title"].string ?? book.title) else { activity.stop(cancelled: true, message: "已取消上传"); return }
+                    guard marker == contextID else { return }
+                    policy = choice
+                    if choice == .keep { activity.finish(book: book); message = "已保留云端原书，本机书籍与记录也仍保留。"; return }
+                }
+                intent = try await library.beginUpload(book.id, ownerID: account.id, sourceVersion: book.sourceVersion, policy: policy)
+            }
+            guard var transaction = intent, marker == contextID else { return }
+            let duplicatePolicy = transaction.policy
+            if transaction.bookID == nil {
+                let result = try await cloud.uploadOriginal(bytes, filename: book.originalFilename, ownerID: account.id, duplicatePolicy: transaction.policy, operationID: transaction.operationID) { [weak self, weak activity] phase in
+                    await MainActor.run {
+                        guard let self, self.contextID == marker else { return }
+                        switch phase {
+                        case .preparing: activity?.showStatus("正在准备上传…")
+                        case .sending: activity?.showStatus("正在上传原件…")
+                        case .processing: activity?.showStatus("原件已传送，正在整理云端书籍…")
+                        }
                     }
                 }
+                guard marker == contextID, let id = result["bookId"].string, let version = result["contentVersion"].string else { throw LibraryError.invalid("上传回执不完整，请重新同步书架核对。") }
+                transaction = try await library.retainUploadReceipt(transaction, localBookID: book.id, bookID: id, contentVersion: version)
             }
-            guard marker == contextID, let id = result["bookId"].string, let version = result["contentVersion"].string else { throw LibraryError.invalid("上传回执不完整，请重新同步书架核对。") }
+            guard let id = transaction.bookID, let version = transaction.contentVersion else { throw LibraryError.invalid("上传恢复回执不完整。") }
             activity.showStatus("云端正文已就绪，正在同步阅读副本…")
             await synchronize()
             await download(CloudShelfBook(id: id, title: book.title, author: book.author, contentVersion: version), openAfter: false, holdBusy: true)
@@ -528,6 +551,12 @@ final class LibraryModel {
             guard reader?.book.id != target.id, openingBookID != target.id else {
                 activity.finish(book: target)
                 message = "原件已上传。云端副本正在阅读中，本次未迁移个人记录；笔记、草稿与阅读时段仍保留在原来的本机书中，可回到书房后重试。"
+                return
+            }
+            if duplicatePolicy == .new {
+                try await library.finishUpload(transaction, localBookID: book.id)
+                activity.finish(book: target)
+                message = "已作为新书加入云端，阅读记录独立保存。"
                 return
             }
             migratingBookID = target.id
@@ -557,6 +586,7 @@ final class LibraryModel {
                 message = "原件已加入云端书房，还有 \(pendingReadingTime) 个阅读时段待同步。完整历史、笔记与草稿仍保留在原来的本机书中。"
                 return
             }
+            if migration.unresolvedCount == 0 { try await library.finishUpload(transaction, localBookID: book.id) }
             activity.finish(book: target)
             if migration.unresolvedCount > 0 {
                 message = "原件已上传，能核对原句的记录已同步；还有 \(migration.unresolvedCount) 条引用需要核对，已完整保留在原来的本机书中。"
@@ -568,11 +598,37 @@ final class LibraryModel {
             }
         }
     }
+    func chooseDuplicate(title: String) async -> DuplicateImportPolicy? {
+        await withCheckedContinuation { continuation in
+            duplicateRequest = DuplicateImportRequest(title: title, completion: { continuation.resume(returning: $0) })
+        }
+    }
+    func resolveDuplicate(_ choice: DuplicateImportPolicy?) {
+        let request = duplicateRequest; duplicateRequest = nil; request?.completion(choice)
+    }
     func importFile(_ url: URL) {
-        let access = IncomingBookFile(url)
-        startImport(filename: url.lastPathComponent) { library, progress in
-            defer { withExtendedLifetime(access) {} }
-            return try await library.importFile(url, progress: progress)
+        guard !busy, let library else { return }
+        let access = IncomingBookFile(url), marker = contextID
+        busy = true
+        Task {
+            do {
+                let existing = try await library.duplicate(for: url)
+                guard marker == contextID else { return }
+                let choice: DuplicateImportPolicy
+                if let existing {
+                    guard let selected = await chooseDuplicate(title: existing.title) else { busy = false; return }
+                    choice = selected
+                } else { choice = .keep }
+                guard marker == contextID else { return }
+                busy = false
+                let operationID = UUID()
+                startImport(filename: url.lastPathComponent) { library, progress in
+                    defer { withExtendedLifetime(access) {} }
+                    return try await library.importFile(url, duplicatePolicy: choice, operationID: operationID, progress: progress)
+                }
+            } catch {
+                if marker == contextID { busy = false; message = error.localizedDescription }
+            }
         }
     }
     private func startImport(filename: String, operation: @escaping @Sendable (OfflineLibrary, @escaping @Sendable (ImportProgress) -> Void) async throws -> LocalBook) {
@@ -673,10 +729,50 @@ final class LibraryModel {
     }
 
     var recentShelfItem: LibraryShelfItem? {
-        let items = LibraryPresentation.items(local: books, cloud: cloudBooks, snapshot: accountShelf)
+        let items = LibraryPresentation.items(local: books, cloud: cloudBooks, snapshot: accountShelf, localArchivedIDs: localArchivedIDs, pendingActions: accountActions)
         let candidates = items.map { item in ReadingRecency.Candidate(id: item.id, activityAt: ReadingRecency.maximum([item.cloud?.activityAt, item.local.flatMap { localActivity[$0.id] }])) }
-        guard let recent = ReadingRecency.latest(candidates) else { return items.first { $0.local?.id == lastOpenedLocalID } }
+        guard let recent = ReadingRecency.latest(candidates) else {
+            guard let lastOpenedLocalID else { return nil }
+            return items.first { $0.local?.id == lastOpenedLocalID }
+        }
         return items.first { $0.id == recent.id }
+    }
+    /// Reuses the durable account queue; a bulk change drains only once.
+    func changeShelfVisibility(_ items: [LibraryShelfItem], archived: Bool) async {
+        guard let library, !busy else { return }
+        let marker = contextID
+        var accountArchived = accountShelf?.archivedBookIDs ?? []
+        for pending in accountActions where !pending.conflict {
+            switch pending.action {
+            case .archive(let id): accountArchived.insert(id)
+            case .restore(let id): accountArchived.remove(id)
+            default: break
+            }
+        }
+        // An older downloaded copy can also be hidden by its account book's
+        // archive. Recovering that copy must recover the account entry too.
+        let cloudIDs = Set(items.filter {
+            !$0.isAdditionalVersion || (!archived && $0.accountBookID.map { accountArchived.contains($0) } == true)
+        }.compactMap(\.accountBookID))
+        let localIDs = Set(items.filter { $0.isAdditionalVersion || $0.accountBookID == nil }.compactMap { $0.local?.id })
+        do {
+            if !cloudIDs.isEmpty {
+                guard let owner = account?.id, let shelf = accountShelf, shelf.isAuthoritative else {
+                    throw LibraryError.invalid("请先连接书房，读取此账号的最新书架。")
+                }
+                for id in cloudIDs.sorted() {
+                    guard marker == contextID else { return }
+                    try await library.enqueueAccountAction(ownerID: owner, action: archived ? .archive(bookID: id) : .restore(bookID: id), baseRevision: shelf.revision)
+                }
+                guard marker == contextID else { return }
+                accountActions = try await library.accountActions(ownerID: owner)
+            }
+            guard marker == contextID else { return }
+            if !localIDs.isEmpty { try await library.setLocalArchived(localIDs, archived: archived) }
+            guard marker == contextID else { return }
+            localArchivedIDs = try await library.localArchivedBookIDs()
+            if !cloudIDs.isEmpty { await synchronize() }
+        } catch { if marker == contextID { message = error.localizedDescription } }
     }
     func changeAccountShelf(_ action: AccountShelfAction) async {
         guard let owner = account?.id, let library, let shelf = accountShelf, shelf.isAuthoritative else { message = "请先连接书房，读取此账号的最新书架。"; return }

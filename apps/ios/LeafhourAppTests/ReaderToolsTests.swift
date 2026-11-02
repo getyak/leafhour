@@ -221,13 +221,21 @@ final class ReaderToolsTests: XCTestCase {
         fixture.session.state.notes.append(ReaderNote(anchor: fixture.session.selection!.anchor, quote: "😀 café", body: "PRIVATE NOTE MUST STAY LOCAL"))
         probe.respond = { [self] request, body in
             if request.url!.path == "/api/auth/session" { return (200, metadata()) }
-            return (200, self.quote(body, action: "conversation"))
+            if request.url!.path == "/api/billing/quotes" { return (200, self.quote(body, action: "conversation")) }
+            XCTAssertEqual(request.httpMethod, "POST")
+            XCTAssertEqual(request.url!.path, "/api/library/books/cloud-book/chat")
+            return (200, ["id": body["id"] ?? "", "text": body["text"] ?? "", "status": "completed", "answer": ["summary": "Selected source answer"]])
         }
         ReaderToolsURLProtocol.install(probe)
         let tools = ReaderCloudTools(); tools.question = "What does this mean?"
         await tools.prepare("conversation", session: fixture.session, cloud: fixture.cloud)
-        let consent = try XCTUnwrap(tools.consent)
-        let body = try XCTUnwrap(JSONSerialization.jsonObject(with: consent.body) as? [String: Any])
+        XCTAssertNil(tools.consent); XCTAssertNil(tools.retry); XCTAssertNil(tools.error)
+        let posts = probe.posts(to: "/api/library/books/cloud-book/chat")
+        XCTAssertEqual(posts.count, 1)
+        let submitted = try XCTUnwrap(posts.first)
+        let body = submitted.json
+        XCTAssertEqual(tools.turns.last?.id, body["id"] as? String)
+        XCTAssertEqual((body["billing"] as? [String: String])?["quoteId"], "quote-test")
         let quote = try XCTUnwrap(body["quote"] as? [String: Any])
         let part = try XCTUnwrap((quote["parts"] as? [[String: Any]])?.first)
         XCTAssertEqual(part["start"] as? Int, 2)
@@ -237,7 +245,7 @@ final class ReaderToolsTests: XCTestCase {
         XCTAssertNil(body["notes"])
         XCTAssertNil(body["drafts"])
         XCTAssertNil(body["preferenceWrites"])
-        XCTAssertFalse(String(decoding: consent.body, as: UTF8.self).contains("PRIVATE NOTE"))
+        XCTAssertFalse(String(decoding: submitted.data, as: UTF8.self).contains("PRIVATE NOTE"))
     }
     func testMarkdownSpeechUsesRenderedTextWithoutFormattingMarkers() {
         let source = "# A quiet page\n\n**Bold** and [a link](https://example.com).\n\n```swift\nlet n = 1\n```"
@@ -264,15 +272,20 @@ final class ReaderToolsTests: XCTestCase {
         XCTAssertEqual(selected.text, visible)
         XCTAssertEqual(selected.sourceText, raw)
         fixture.session.selection = selected
-        probe.respond = { [self] request, _ in
-            XCTAssertEqual(request.url!.path, "/api/auth/session")
-            return (200, metadata(enabled: false))
+        probe.respond = { [self] request, body in
+            if request.url!.path == "/api/auth/session" { return (200, metadata(enabled: false)) }
+            XCTAssertEqual(request.httpMethod, "POST")
+            XCTAssertEqual(request.url!.path, "/api/library/books/cloud-book/chat")
+            return (200, ["id": body["id"] ?? "", "text": body["text"] ?? "", "status": "completed", "answer": ["summary": "Source answer"]])
         }
         ReaderToolsURLProtocol.install(probe)
         let tools = ReaderCloudTools(); tools.question = "Explain the selected sentence."
         await tools.prepare("conversation", session: fixture.session, cloud: fixture.cloud)
-        let consent = try XCTUnwrap(tools.consent)
-        let body = try XCTUnwrap(JSONSerialization.jsonObject(with: consent.body) as? [String: Any])
+        XCTAssertNil(tools.consent); XCTAssertNil(tools.retry)
+        let posts = probe.posts(to: "/api/library/books/cloud-book/chat")
+        XCTAssertEqual(posts.count, 1)
+        let body = try XCTUnwrap(posts.first).json
+        XCTAssertEqual(tools.turns.last?.id, body["id"] as? String)
         let quote = try XCTUnwrap(body["quote"] as? [String: Any])
         let part = try XCTUnwrap((quote["parts"] as? [[String: Any]])?.first)
         XCTAssertEqual(part["text"] as? String, raw)
@@ -337,17 +350,18 @@ final class ReaderToolsTests: XCTestCase {
         ReaderToolsURLProtocol.install(probe)
         let tools = ReaderCloudTools(); tools.question = "Keep this question."
         await tools.prepare("conversation", session: fixture.session, cloud: fixture.cloud)
-        let original = try XCTUnwrap(tools.consent)
-        await tools.perform(original, cloud: fixture.cloud)
-        XCTAssertNil(tools.retry)
+        XCTAssertNil(tools.consent); XCTAssertNil(tools.retry)
         XCTAssertEqual(tools.question, "Keep this question.")
+        let original = try XCTUnwrap(probe.posts(to: "/api/library/books/cloud-book/chat").first)
         await tools.loadConversation(fixture.session, cloud: fixture.cloud)
         await tools.prepare("conversation", session: fixture.session, cloud: fixture.cloud)
-        let refreshed = try XCTUnwrap(tools.consent)
-        XCTAssertNotEqual(original.id, refreshed.id)
-        let body = try XCTUnwrap(JSONSerialization.jsonObject(with: refreshed.body) as? [String: Any])
-        XCTAssertEqual(body["scopeRevision"] as? Int, 3)
-        XCTAssertEqual(body["text"] as? String, "Keep this question.")
+        let posts = probe.posts(to: "/api/library/books/cloud-book/chat")
+        XCTAssertEqual(posts.count, 2)
+        let refreshed = try XCTUnwrap(posts.last)
+        XCTAssertNotEqual(original.json["id"] as? String, refreshed.json["id"] as? String)
+        XCTAssertEqual(refreshed.json["scopeRevision"] as? Int, 3)
+        XCTAssertEqual(refreshed.json["text"] as? String, "Keep this question.")
+        XCTAssertNil(tools.consent); XCTAssertNil(tools.retry)
     }
     func testUnknownConflictKeepsExactRetryAndBlocksASecondRequest() async throws {
         let fixture = try await fixture(), probe = ReaderToolsProbe()
@@ -358,15 +372,20 @@ final class ReaderToolsTests: XCTestCase {
         ReaderToolsURLProtocol.install(probe)
         let tools = ReaderCloudTools(); tools.question = "Keep the original request."
         await tools.prepare("conversation", session: fixture.session, cloud: fixture.cloud)
-        let original = try XCTUnwrap(tools.consent)
-        await tools.perform(original, cloud: fixture.cloud)
-        XCTAssertEqual(tools.retry?.id, original.id)
-        XCTAssertEqual(tools.retry?.body, original.body)
+        let original = try XCTUnwrap(probe.posts(to: "/api/library/books/cloud-book/chat").first)
+        let retry = try XCTUnwrap(tools.retry)
+        XCTAssertEqual(retry.id, original.json["id"] as? String)
+        XCTAssertEqual(retry.body, original.data)
         let before = probe.requests.count
         await tools.prepare("conversation", session: fixture.session, cloud: fixture.cloud)
         XCTAssertNil(tools.consent)
         XCTAssertEqual(probe.requests.count, before)
         XCTAssertEqual(tools.question, "Keep the original request.")
+        await tools.perform(retry, cloud: fixture.cloud)
+        let posts = probe.posts(to: "/api/library/books/cloud-book/chat")
+        XCTAssertEqual(posts.count, 2)
+        XCTAssertEqual(posts.first?.data, posts.last?.data)
+        XCTAssertEqual(tools.retry?.id, retry.id)
     }
     func testTrustedTerminalLedgerReceiptUnlocksRejectedRequest() async throws {
         let fixture = try await fixture(), probe = ReaderToolsProbe()
@@ -377,13 +396,16 @@ final class ReaderToolsTests: XCTestCase {
         ReaderToolsURLProtocol.install(probe)
         let tools = ReaderCloudTools(); tools.question = "Preserve my words."
         await tools.prepare("conversation", session: fixture.session, cloud: fixture.cloud)
-        let original = try XCTUnwrap(tools.consent)
-        await tools.perform(original, cloud: fixture.cloud)
-        XCTAssertNil(tools.retry)
+        let original = try XCTUnwrap(probe.posts(to: "/api/library/books/cloud-book/chat").first)
+        XCTAssertNil(tools.consent); XCTAssertNil(tools.retry)
+        XCTAssertEqual(tools.generationTerminalStatus, "not_started")
         XCTAssertEqual(tools.question, "Preserve my words.")
         await tools.prepare("conversation", session: fixture.session, cloud: fixture.cloud)
-        XCTAssertNotNil(tools.consent)
-        XCTAssertNotEqual(tools.consent?.id, original.id)
+        let posts = probe.posts(to: "/api/library/books/cloud-book/chat")
+        XCTAssertEqual(posts.count, 2)
+        XCTAssertNotEqual(posts.last?.json["id"] as? String, original.json["id"] as? String)
+        XCTAssertEqual(posts.last?.json["text"] as? String, "Preserve my words.")
+        XCTAssertNil(tools.consent); XCTAssertNil(tools.retry)
     }
     func testCompanionKeepsCapturedQuoteAfterNativeSelectionIsDismissed() async throws {
         let fixture = try await fixture(source: "Selected first thought.\n\nNow reading another thought."), probe = ReaderToolsProbe()
@@ -395,8 +417,12 @@ final class ReaderToolsTests: XCTestCase {
         XCTAssertNotEqual(next.id, selected.anchor.passageID)
         XCTAssertEqual(ReaderCloudTools.currentPassage(fixture.session)?.id, next.id)
         XCTAssertEqual(ReaderCloudTools.currentPassage(fixture.session, selection: selected)?.id, selected.anchor.passageID)
-        probe.respond = { [self] request, _ in
+        probe.respond = { [self] request, body in
             if request.url!.path == "/api/auth/session" { return (200, metadata(enabled: false)) }
+            if request.httpMethod == "POST" {
+                XCTAssertEqual(body["passageId"] as? String, selected.anchor.passageID)
+                return (200, ["id": body["id"] ?? "", "text": body["text"] ?? "", "status": "completed", "answer": ["summary": "Captured source answer"]])
+            }
             let components = URLComponents(url: request.url!, resolvingAgainstBaseURL: false)
             XCTAssertEqual(components?.queryItems?.first { $0.name == "passageId" }?.value, selected.anchor.passageID)
             return (200, ["available": true, "scope": ["mode": "book", "revision": 0], "turns": []])
@@ -405,8 +431,10 @@ final class ReaderToolsTests: XCTestCase {
         let tools = ReaderCloudTools(); tools.question = "Explain my captured selection."
         await tools.loadConversation(fixture.session, cloud: fixture.cloud, selection: selected)
         await tools.prepare("conversation", session: fixture.session, cloud: fixture.cloud, selection: selected)
-        let consent = try XCTUnwrap(tools.consent)
-        let body = try XCTUnwrap(JSONSerialization.jsonObject(with: consent.body) as? [String: Any])
+        XCTAssertNil(tools.consent); XCTAssertNil(tools.retry); XCTAssertNil(tools.error)
+        let posts = probe.posts(to: "/api/library/books/cloud-book/chat")
+        XCTAssertEqual(posts.count, 1)
+        let body = try XCTUnwrap(posts.first).json
         XCTAssertEqual(body["passageId"] as? String, selected.anchor.passageID)
         XCTAssertTrue(ReaderPanel.companion(selected).isCompanion)
         XCTAssertTrue(ReaderPanel.conversation.isCompanion)
@@ -453,9 +481,12 @@ final class ReaderToolsTests: XCTestCase {
         }
         ReaderToolsURLProtocol.install(probe)
         await tools.prepare("conversation", session: fixture.session, cloud: fixture.cloud)
-        let intent = try XCTUnwrap(tools.consent)
-        await tools.perform(intent, cloud: fixture.cloud)
-        XCTAssertNotNil(tools.retry)
+        XCTAssertNil(tools.consent)
+        let intent = try XCTUnwrap(tools.retry)
+        let initialPosts = probe.posts(to: "/api/library/books/cloud-book/chat")
+        XCTAssertEqual(initialPosts.count, 1)
+        XCTAssertEqual(initialPosts.first?.data, intent.body)
+        XCTAssertEqual(initialPosts.first?.json["id"] as? String, intent.id)
         let saved = await tools.flushConversationDraft(); XCTAssertTrue(saved)
         let restored = ReaderCloudTools()
         await restored.restoreConversationDraft(identity: identity, library: library)
@@ -572,9 +603,13 @@ final class ReaderToolsTests: XCTestCase {
         }
         ReaderToolsURLProtocol.install(probe)
         await tools.prepareLibraryConversation(ownerID: owner, cloud: fixture.cloud)
-        let intent = try XCTUnwrap(tools.consent)
+        XCTAssertNil(tools.consent)
+        let intent = try XCTUnwrap(tools.retry)
         XCTAssertEqual(intent.path, "/api/library/chat"); XCTAssertFalse(intent.explanation.contains("原文："))
-        await tools.perform(intent, cloud: fixture.cloud)
+        let posts = probe.posts(to: "/api/library/chat")
+        XCTAssertEqual(posts.count, 1)
+        XCTAssertEqual(posts.first?.data, intent.body)
+        XCTAssertEqual(posts.first?.json["id"] as? String, intent.id)
         let flushed = await tools.flushConversationDraft(); XCTAssertTrue(flushed)
         let restored = ReaderCloudTools()
         await restored.restoreConversationDraft(identity: identity, library: library)
@@ -590,29 +625,117 @@ final class ReaderToolsTests: XCTestCase {
         tools.question = "Talk to me"; tools.scope = "library"
         probe.respond = { [self] request, body in
             if request.url?.path == "/api/auth/session" { return (200, metadata()) }
-            XCTAssertEqual(request.url?.path, "/api/billing/quotes")
-            XCTAssertEqual(body["bookId"] as? String, ReaderCloudTools.libraryChatID)
-            let input = try XCTUnwrap(body["input"] as? [String: Any])
-            return (200, ["id": "account-quote", "ownerId": owner, "action": "conversation", "units": 4_000_000, "mode": "test",
-                "scope": ["bookId": ReaderCloudTools.libraryChatID, "contentVersion": ReaderCloudTools.libraryChatVersion,
-                    "passageId": ReaderCloudTools.libraryChatPassage, "requestId": try XCTUnwrap(input["id"] as? String)]])
+            if request.url?.path == "/api/billing/quotes" {
+                XCTAssertEqual(body["bookId"] as? String, ReaderCloudTools.libraryChatID)
+                let input = try XCTUnwrap(body["input"] as? [String: Any])
+                return (200, ["id": "account-quote", "ownerId": owner, "action": "conversation", "units": 4_000_000, "mode": "test",
+                    "scope": ["bookId": ReaderCloudTools.libraryChatID, "contentVersion": ReaderCloudTools.libraryChatVersion,
+                        "passageId": ReaderCloudTools.libraryChatPassage, "requestId": try XCTUnwrap(input["id"] as? String)]])
+            }
+            XCTAssertEqual(request.url?.path, "/api/library/chat"); XCTAssertEqual(request.httpMethod, "POST")
+            return (200, ["id": body["id"] ?? "", "text": body["text"] ?? "", "status": "completed", "answer": ["summary": "Paid reply"]])
         }
         ReaderToolsURLProtocol.install(probe)
         await tools.prepareLibraryConversation(ownerID: owner, cloud: fixture.cloud)
-        let intent = try XCTUnwrap(tools.consent)
-        XCTAssertEqual(intent.path, "/api/library/chat")
-        let body = try XCTUnwrap(JSONSerialization.jsonObject(with: intent.body) as? [String: Any])
-        XCTAssertEqual((body["billing"] as? [String: Any])?["quoteId"] as? String, "account-quote")
-        XCTAssertTrue(intent.explanation.contains("4 阅读点"))
+        XCTAssertNil(tools.consent); XCTAssertNil(tools.retry); XCTAssertNil(tools.error)
+        let quotes = probe.posts(to: "/api/billing/quotes"), posts = probe.posts(to: "/api/library/chat")
+        XCTAssertEqual(quotes.count, 1); XCTAssertEqual(posts.count, 1)
+        let body = try XCTUnwrap(posts.first).json
+        let input = try XCTUnwrap(quotes.first?.json["input"] as? [String: Any])
+        XCTAssertEqual(body["id"] as? String, input["id"] as? String)
+        XCTAssertEqual((body["billing"] as? [String: String])?["quoteId"], "account-quote")
+        XCTAssertFalse(try XCTUnwrap((body["billing"] as? [String: String])?["idempotencyKey"]).isEmpty)
+        XCTAssertEqual(tools.turns.last?.id, body["id"] as? String)
+        XCTAssertEqual(tools.turns.last?.answer, "Paid reply"); XCTAssertTrue(tools.question.isEmpty)
+        XCTAssertEqual(probe.requests.map { $0.url!.path }, ["/api/auth/session", "/api/billing/quotes", "/api/library/chat"])
     }
 
+    func testDirectPaidConversationRetryReusesWireBodyWithoutAnotherQuote() async throws {
+        let fixture = try await fixture(), tools = ReaderCloudTools(), probe = ReaderToolsProbe()
+        tools.question = "Keep one paid request."
+        var attempts = 0
+        probe.respond = { [self] request, body in
+            if request.url?.path == "/api/auth/session" { return (200, metadata()) }
+            if request.url?.path == "/api/billing/quotes" { return (200, quote(body, action: "conversation")) }
+            XCTAssertEqual(request.url?.path, "/api/library/books/cloud-book/chat")
+            attempts += 1
+            if attempts == 1 { return (503, ["error": "Temporary interruption"]) }
+            return (200, ["id": body["id"] ?? "", "text": body["text"] ?? "", "status": "completed", "answer": ["summary": "One paid answer"]])
+        }
+        ReaderToolsURLProtocol.install(probe)
+        await tools.prepare("conversation", session: fixture.session, cloud: fixture.cloud)
+        XCTAssertNil(tools.consent)
+        let retry = try XCTUnwrap(tools.retry)
+        let original = try XCTUnwrap(probe.posts(to: "/api/library/books/cloud-book/chat").first)
+        XCTAssertEqual(retry.id, original.json["id"] as? String)
+        XCTAssertEqual(retry.body, original.data)
+        XCTAssertEqual(tools.question, "Keep one paid request.")
+        await tools.perform(retry, cloud: fixture.cloud)
+        let posts = probe.posts(to: "/api/library/books/cloud-book/chat")
+        XCTAssertEqual(posts.count, 2)
+        XCTAssertEqual(posts.first?.data, posts.last?.data)
+        XCTAssertEqual(posts.first?.json["billing"] as? [String: String], posts.last?.json["billing"] as? [String: String])
+        XCTAssertEqual(probe.posts(to: "/api/billing/quotes").count, 1)
+        XCTAssertNil(tools.retry); XCTAssertNil(tools.error)
+        XCTAssertEqual(tools.turns.last?.id, retry.id)
+        XCTAssertEqual(tools.turns.last?.answer, "One paid answer"); XCTAssertTrue(tools.question.isEmpty)
+    }
+
+    func testInvalidPaidConversationQuoteNeverSubmitsAndPreservesQuestion() async throws {
+        let fixture = try await fixture(), tools = ReaderCloudTools(), probe = ReaderToolsProbe()
+        tools.question = "Keep my question."
+        probe.respond = { [self] request, body in
+            if request.url?.path == "/api/auth/session" { return (200, metadata()) }
+            XCTAssertEqual(request.url?.path, "/api/billing/quotes")
+            var value = quote(body, action: "conversation")
+            value["ownerId"] = "another-owner"
+            return (200, value)
+        }
+        ReaderToolsURLProtocol.install(probe)
+        await tools.prepare("conversation", session: fixture.session, cloud: fixture.cloud)
+        XCTAssertEqual(probe.posts(to: "/api/billing/quotes").count, 1)
+        XCTAssertTrue(probe.posts(to: "/api/library/books/cloud-book/chat").isEmpty)
+        XCTAssertNil(tools.consent); XCTAssertNil(tools.retry); XCTAssertNotNil(tools.error)
+        XCTAssertEqual(tools.question, "Keep my question."); XCTAssertTrue(tools.turns.isEmpty)
+    }
+
+    func testLongOrdinaryQuestionSubmitsDirectlyWithoutTruncation() async throws {
+        let fixture = try await fixture(), tools = ReaderCloudTools(), probe = ReaderToolsProbe()
+        let text = String(repeating: "中文 question 😀\n", count: 350)
+        XCTAssertGreaterThan(text.count, 2000)
+        tools.question = text
+        probe.respond = { [self] request, body in
+            if request.url?.path == "/api/auth/session" { return (200, metadata(enabled: false)) }
+            XCTAssertEqual(request.url?.path, "/api/library/books/cloud-book/chat"); XCTAssertEqual(request.httpMethod, "POST")
+            return (200, ["id": body["id"] ?? "", "text": body["text"] ?? "", "status": "completed", "answer": ["summary": "Long question received"]])
+        }
+        ReaderToolsURLProtocol.install(probe)
+        await tools.prepare("conversation", session: fixture.session, cloud: fixture.cloud)
+        let posts = probe.posts(to: "/api/library/books/cloud-book/chat")
+        XCTAssertEqual(posts.count, 1)
+        let body = try XCTUnwrap(posts.first).json
+        XCTAssertEqual(body["text"] as? String, text.trimmingCharacters(in: .whitespacesAndNewlines))
+        XCTAssertNil(tools.consent); XCTAssertNil(tools.retry); XCTAssertNil(tools.error)
+        XCTAssertEqual(tools.turns.last?.id, body["id"] as? String)
+        XCTAssertTrue(tools.question.isEmpty)
+    }
 }
 
 private final class ReaderToolsProbe: @unchecked Sendable {
     var respond: ((URLRequest, [String: Any]) throws -> (Int, [String: Any]))?
     private let lock = NSLock()
+    struct Submission {
+        let request: URLRequest
+        let data: Data
+        var json: [String: Any] { (try? JSONSerialization.jsonObject(with: data) as? [String: Any]) ?? [:] }
+    }
     private var captured: [URLRequest] = []
+    private var submissions: [Submission] = []
     var requests: [URLRequest] { lock.lock(); defer { lock.unlock() }; return captured }
+    func posts(to path: String) -> [Submission] {
+        lock.lock(); defer { lock.unlock() }
+        return submissions.filter { $0.request.httpMethod == "POST" && $0.request.url?.path == path }
+    }
     func response(_ request: URLRequest) throws -> (Int, [String: Any]) {
         lock.lock(); captured.append(request); lock.unlock()
         var bytes = request.httpBody
@@ -626,6 +749,7 @@ private final class ReaderToolsProbe: @unchecked Sendable {
             }
             bytes = value
         }
+        if let bytes { lock.lock(); submissions.append(Submission(request: request, data: bytes)); lock.unlock() }
         let body = bytes.flatMap { try? JSONSerialization.jsonObject(with: $0) as? [String: Any] } ?? [:]
         return try XCTUnwrap(respond)(request, body)
     }
@@ -647,4 +771,29 @@ private final class ReaderToolsURLProtocol: URLProtocol, @unchecked Sendable {
         } catch { client?.urlProtocol(self, didFailWithError: error) }
     }
     override func stopLoading() { }
+}
+
+extension ReaderToolsTests {
+    func testVoiceDraftRetainsOriginalAndTranscriptAcrossConversationRecreation() async throws {
+        let fixture = try await fixture()
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: root) }
+        try FileManager.default.createDirectory(at: root, withIntermediateDirectories: true)
+        let library = try OfflineLibrary(root: root, scope: .account(try XCTUnwrap(UUID(uuidString: owner))))
+        let source = root.appendingPathComponent("synthetic-voice.caf")
+        let bytes = Data("caff-synthetic-retained-voice".utf8)
+        try bytes.write(to: source)
+        let tools = ReaderCloudTools(), identity = ReaderCloudTools.libraryChatIdentity(ownerID: owner)
+        await tools.restoreConversationDraft(identity: identity, library: library)
+        try await tools.attachVoice(ChatRecordedVoice(id: UUID(), url: source, durationMs: 1200, transcript: "保留这段转写文字。"))
+        let receipt = try XCTUnwrap(tools.pendingVoice)
+        XCTAssertEqual(tools.question, "保留这段转写文字。")
+        let recreated = ReaderCloudTools()
+        await recreated.restoreConversationDraft(identity: identity, library: library)
+        XCTAssertEqual(recreated.pendingVoice, receipt)
+        XCTAssertEqual(recreated.question, tools.question)
+        let url = try await recreated.voiceURL(receipt, cloud: fixture.cloud)
+        XCTAssertEqual(try Data(contentsOf: url), bytes)
+        XCTAssertNil(recreated.consent)
+    }
 }

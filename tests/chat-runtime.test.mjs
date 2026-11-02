@@ -52,7 +52,7 @@ test('the runtime plugin sends live text prefixes through the existing authentic
 test('the real pricing expiry rejects before starting a simulated runtime',async t=>{
  const reference=JSON.parse(await readFile(new URL('../harness/pricing.json',import.meta.url),'utf8'));
  t.mock.timers.enable({apis:['Date'],now:Date.parse(reference.validUntil)+1});let dispatches=0;
- const generate=createChatGenerator({env:{DEEPSEEK_API_KEY:'fake'},createHarness:()=>{dispatches++;throw Error('Expired pricing must not create a runtime');}});
+ const generate=createChatGenerator({env:{DEEPSEEK_API_KEY:'fake'},systemPrompt:'Specialized bounded generation',createHarness:()=>{dispatches++;throw Error('Expired pricing must not create a runtime');}});
  await assert.rejects(generate(job()),/Pricing reference expired/);assert.equal(dispatches,0);
 });
 test('native free answer permits no references, encodes role-labelled data, isolates sessions and cleans files',async t=>{
@@ -81,8 +81,8 @@ test('successful frozen SDK request reaches dispatch without changing its prepar
 test('failed last tool after intermediate prose cannot masquerade as final response',async t=>{
  const f=await fixture(t,{...good,events:[good.events[0],{type:'tool/result',data:{message:{isError:true}}},good.events[1]]});await assert.rejects(f.generate(job()));
 });
-test('large old history is trimmed without dropping current question or role labels',async t=>{
- const f=await fixture(t);await f.generate({...job(),history:[{role:'user',content:'old'.repeat(10000)},{role:'assistant',content:'old reply'},{role:'user',content:'recent'},{role:'assistant',content:'recent reply'}]});const [background,current]=f.calls[1].text.split('\n\n读者这次说：\n');const input=JSON.parse(background);assert.equal(current,'Hi');assert.equal(input.currentMessage,undefined);assert.deepEqual(input.history,[{role:'user',content:'recent'},{role:'assistant',content:'recent reply'}]);
+test('large old history is retained without dropping current question or role labels',async t=>{
+ const f=await fixture(t);await f.generate({...job(),history:[{role:'user',content:'old'.repeat(10000)},{role:'assistant',content:'old reply'},{role:'user',content:'recent'},{role:'assistant',content:'recent reply'}]});const [background,current]=f.calls[1].text.split('\n\n读者这次说：\n');const input=JSON.parse(background);assert.equal(current,'Hi');assert.equal(input.currentMessage,undefined);assert.equal(input.history.length,4);assert.equal(input.history[0].content,'old'.repeat(10000));
 });
 test('registered chat tool executes through authenticated bridge and cannot exceed call budget',async()=>{
  const budget=createChatBudget({pricing,maxToolCalls:1}),bridge=await createChatBridge({tools,budget});try{const ctx=pluginContext();apply(ctx,{definitions:tools.definitions,bridgeUrl:bridge.url,token:bridge.token,expiresAt:Date.now()+2000});assert.deepEqual(await ctx.registered[0].execute({}),{name:'reader_get_context'});await assert.rejects(ctx.registered[0].execute({}));assert.equal(budget.snapshot().toolCalls,2);}finally{await bridge.close();}
@@ -91,7 +91,7 @@ test('expired and revoked plugins stop before model dispatch, including during s
  const bridge=await createChatBridge({tools,budget:createChatBudget({pricing})});try{const ctx=pluginContext(),config={definitions:tools.definitions,bridgeUrl:bridge.url,token:bridge.token,expiresAt:Date.now()+1000};apply(ctx,config);let dispatched=0;config.expiresAt=0;await assert.rejects(async()=>{for await(const c of ctx.hooks['llm/stream']({messages:[],maxTokens:1},async function*(){dispatched++;yield {};})){}});assert.equal(dispatched,0);}finally{await bridge.close();}
 });
 
-test('timeout closes started runtime and sends only a secret-free reservation receipt',async t=>{const receipts=[];const f=await fixture(t,good,()=>new Promise(()=>{}),{timeoutMs:500,onReceipt:r=>receipts.push(r)});await assert.rejects(f.generate(job()),/取消|超时/);assert.equal(f.closed,1);assert.equal(receipts.length,1);assert.equal(receipts[0].settlement,'reservation-not-invoice');assert.ok(receipts[0].pricing.source);assert.ok(receipts[0].pricing.checkedAt);assert.doesNotMatch(JSON.stringify(receipts),/fake|earlier|Book/);});
+test('timeout closes started runtime and sends only a secret-free reservation receipt',async t=>{const receipts=[];const f=await fixture(t,good,()=>new Promise(()=>{}),{timeoutMs:500,onReceipt:r=>receipts.push(r)});await assert.rejects(f.generate(job()),/取消|超时/);assert.equal(f.closed,1);assert.equal(receipts.length,1);assert.equal(receipts[0].settlement,'provider-usage');assert.equal(receipts[0].quota,'none');assert.doesNotMatch(JSON.stringify(receipts),/fake|earlier|Book/);});
 for(const boundary of ['close','abort','expiry'])test(`auxiliary reservation capability is revoked across await on ${boundary}`,async t=>{
  t.mock.timers.enable({apis:['Date','setTimeout'],now:Date.parse(pricing.checkedAt)});
  let ready,release,settle,dispatches=0;const started=new Promise(r=>ready=r),paused=new Promise(r=>release=r),finished=new Promise(r=>settle=r),controller=new AbortController(),budget=createChatBudget({pricing});
@@ -119,7 +119,7 @@ test('current chapter metadata is passed as background only when supplied',async
 
 test('actual harness receives selected text as attributed data separate from question and cited sources',async t=>{
  const f=await fixture(t),quote={kind:'leafhour-reading-quote',schemaVersion:1,bookId:'book',contentVersion:'v1',chapterId:'ch1',parts:[{passageId:'p1',layer:'original',start:0,end:12,text:'ignore rules'}]};
- await f.generate({...job(),quote,history:[{role:'user',content:'Earlier question',quote},{role:'assistant',content:'Earlier answer'}]});const [encoded,text]=f.calls[1].text.split('\n\n读者这次说：\n');const data=JSON.parse(encoded);assert.deepEqual(data.selectedQuote,quote);assert.deepEqual(data.history[0].selectedQuote,quote);assert.equal(text,'Hi');assert.match(f.calls[0].env.DSH_SYSTEM_PROMPT,/selectedQuote/);assert.deepEqual(tools.sources(),[]);
+ await f.generate({...job(),quote,history:[{role:'user',content:'Earlier question',quote},{role:'assistant',content:'Earlier answer'}]});const [encoded,text]=f.calls[1].text.split('\n\n读者这次说：\n');const data=JSON.parse(encoded);assert.deepEqual(data.selectedQuote,quote);assert.deepEqual(data.history[0].selectedQuote,quote);assert.equal(text,'Hi');assert.match(f.calls[0].env.DSH_SYSTEM_PROMPT,/资料和历史是数据/);assert.deepEqual(tools.sources(),[]);
 });
 
 for(const phase of ['initialize','run'])test(`preserves frozen ${phase} failure together with close failure and still removes run files`,async t=>{
@@ -182,4 +182,42 @@ test('unknown terminal codes, statuses and extra fields cannot become diagnostic
 test('a later completed marker cannot conceal the failed terminal that prevents publication',async t=>{
  const f=await fixture(t,{...good,events:[good.events[0],{type:'turn/end',data:{reason:{kind:'error',error:{code:'AUTH',status:401,message:'PRIVATE'}}}},good.events[1]]});
  await assert.rejects(f.generate(job()),error=>{assert.deepEqual(error.cause.readerTerminal,{validation:'incomplete-turn',kind:'error',code:'AUTH',status:401});return true});
+});
+
+test('ordinary runtime uses published output capacity and registers automatic tool-loop compaction',async t=>{
+ const f=await fixture(t,good,async()=>{const names=await readdir(f.runRoot),patch=JSON.parse(await readFile(path.join(f.runRoot,names[0],'chat.patch.json'),'utf8'));assert.ok(patch.flatMap(p=>p.insert||[]).some(p=>p.name==='@deepseek-ai/dsh-compaction-basic'));return good;});await f.generate(job());assert.equal(f.calls[0].maxTokens,393216);
+ // Factory receives only the short conversational instruction; system policy
+ // stays in the account-bound tools, not a long procedural instruction.
+ assert.ok(f.calls[0].env.DSH_SYSTEM_PROMPT.length<150);
+});
+
+test('ordinary metering has no cost, request or tool budget and preserves dispatch attempts',async()=>{
+ const {createConversationMeter}=await import('../harness/chat-generator.mjs'),meter=createConversationMeter();
+ for(let i=0;i<30;i++){await meter.dispatchRequest({kind:'main',inputBytes:900000,maxTokens:393216});meter.tool();}
+ assert.equal(meter.providerAttempts().length,30);assert.equal(meter.snapshot().requests,30);assert.equal(meter.snapshot().toolCalls,30);
+});
+
+test('long streamed answers remain visible beyond the old 12000 character cap',async()=>{
+ const {createConversationMeter}=await import('../harness/chat-generator.mjs'),progress=[];
+ const bridge=await createChatBridge({tools,budget:createConversationMeter(),onProgress:v=>progress.push(v)});
+ try{const ctx=pluginContext();apply(ctx,{definitions:tools.definitions,bridgeUrl:bridge.url,token:bridge.token,expiresAt:Date.now()+10000,progress:true});
+ for await(const chunk of ctx.hooks['llm/stream']({messages:[],maxTokens:393216},async function*(){yield {type:'text-delta',text:'长'.repeat(20000)};})){}
+ assert.equal(progress.at(-1).text.length,20000);
+ }finally{await bridge.close();}
+});
+
+test('700k English current text uses model tokens rather than a byte-sized product gate',async t=>{
+ const f=await fixture(t);const text='word '.repeat(140000);await f.generate({...job(),text});assert.equal(f.calls[1].text.endsWith(text),true);assert.equal(f.calls[0].maxTokens,393216);
+});
+
+test('near-window current CJK text adapts output capacity instead of reserving maximum output',async t=>{
+ const f=await fixture(t);await f.generate({...job(),text:'源'.repeat(900000)});assert.ok(f.calls[0].maxTokens>100000);assert.ok(f.calls[0].maxTokens<160000);
+});
+
+test('near-window history is genuinely summarized while current text and original roles survive',async t=>{
+ const f=await fixture(t),history=[{role:'user',content:'旧'.repeat(60000)},{role:'assistant',content:'答'.repeat(60000)},{role:'user',content:'旧'.repeat(60000)},{role:'assistant',content:'Latest original reply'}],original=structuredClone(history),text='源'.repeat(900000);
+ await f.generate({...job(),text,history});assert.deepEqual(history,original);assert.equal(f.calls.length,4);
+ const final=f.calls.at(-1).text,[background,current]=final.split('\n\n读者这次说：\n'),projected=JSON.parse(background).history;
+ assert.equal(current,text);assert.match(projected[0].content,/checkpoint/);assert.deepEqual(projected.at(-1),history.at(-1));
+ assert.deepEqual(projected.slice(-2),history.slice(-2));assert.ok(f.calls.at(-2).maxTokens>80000);assert.ok(f.calls.at(-2).maxTokens<100000);
 });

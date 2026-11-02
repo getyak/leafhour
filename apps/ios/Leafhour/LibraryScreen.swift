@@ -8,9 +8,11 @@ struct LibraryScreen: View {
     @Environment(\.scenePhase) private var scenePhase
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @AppStorage("leafhour.library.filter") private var filterRaw = LibraryShelfFilter.all.rawValue
-    @AppStorage("leafhour.library.sort") private var sortRaw = LibraryShelfSort.added.rawValue
+    @AppStorage("leafhour.library.sort") private var sortRaw = LibraryShelfSort.recent.rawValue
     @AppStorage("leafhour.library.layout") private var layoutRaw = LibraryShelfLayout.grid.rawValue
     @AppStorage("leafhour.library.pins.v1") private var pinData = Data()
+    @State private var removalItems: [LibraryShelfItem] = []
+    @State private var confirmingRemoval = false
     @State private var selecting = false
     @State private var selectedIDs: Set<String> = []
     @State private var sharing: ShelfShareSelection?
@@ -29,7 +31,7 @@ struct LibraryScreen: View {
     @State private var pinMigrationOwner: String?
 
     private var filter: LibraryShelfFilter { LibraryShelfFilter(rawValue: filterRaw) ?? .all }
-    private var sort: LibraryShelfSort { LibraryShelfSort(rawValue: sortRaw) ?? .added }
+    private var sort: LibraryShelfSort { LibraryShelfSort(rawValue: sortRaw) ?? .recent }
     private var layout: LibraryShelfLayout { LibraryShelfLayout(rawValue: layoutRaw) ?? .grid }
     private var pinOwner: String { model.account?.id ?? "device" }
     private var pins: LibraryShelfPins { (try? JSONDecoder().decode(LibraryShelfPins.self, from: pinData)) ?? LibraryShelfPins() }
@@ -50,10 +52,10 @@ struct LibraryScreen: View {
     private var selectedItems: [LibraryShelfItem] { visibleItems.filter { selectedIDs.contains($0.id) } }
     private var selectionIsPinned: Bool { !selectedIDs.isEmpty && selectedIDs.isSubset(of: pinnedIDs) }
     private var allItems: [LibraryShelfItem] {
-        LibraryPresentation.items(local: model.books, cloud: model.account == nil ? [] : model.cloudBooks, snapshot: model.accountShelf)
+        LibraryPresentation.items(local: model.books, cloud: model.account == nil ? [] : model.cloudBooks, snapshot: model.accountShelf, localArchivedIDs: model.localArchivedIDs, pendingActions: model.accountActions)
     }
     private var visibleItems: [LibraryShelfItem] {
-        LibraryPresentation.items(local: model.books, cloud: model.account == nil ? [] : model.cloudBooks, query: query, filter: filter, sort: sort, pinnedIDs: pinnedIDs, snapshot: model.accountShelf, localActivity: model.localActivity)
+        LibraryPresentation.items(local: model.books, cloud: model.account == nil ? [] : model.cloudBooks, query: query, filter: filter, sort: sort, pinnedIDs: pinnedIDs, snapshot: model.accountShelf, localActivity: model.localActivity, localArchivedIDs: model.localArchivedIDs, pendingActions: model.accountActions)
     }
     private var filterBinding: Binding<LibraryShelfFilter> { Binding(get: { filter }, set: { filterRaw = $0.rawValue }) }
     private var sortBinding: Binding<LibraryShelfSort> { Binding(get: { sort }, set: { sortRaw = $0.rawValue }) }
@@ -74,10 +76,20 @@ struct LibraryScreen: View {
             .task(id: resumeLookupKey) { await loadResume() }
             .refreshable { await model.synchronize(); await model.reload() }
             .onChange(of: scenePhase) { _, phase in if phase == .active { Task { await model.synchronize() } } }
-            .onChange(of: model.account?.id) { _, _ in selecting = false; selectedIDs = []; sharing = nil }
+            .onChange(of: model.account?.id) { _, _ in selecting = false; selectedIDs = []; sharing = nil; confirmingRemoval = false; removalItems = [] }
             .onChange(of: model.accountShelf?.pinsInitialized) { _, _ in Task { await migrateCloudPinsIfNeeded() } }
             .onChange(of: visibleItems.map(\.id)) { _, ids in selectedIDs.formIntersection(Set(ids)) }
             .onChange(of: model.reader?.id) { _, current in if current == nil { Task { await loadResume() } } }
+            .confirmationDialog("从书架移除 \(removalItems.count) 本书？", isPresented: $confirmingRemoval, titleVisibility: .visible) {
+                Button("移除，保留个人记录", role: .destructive) {
+                    let items = removalItems
+                    Task { await model.changeShelfVisibility(items, archived: true) }
+                    selecting = false; selectedIDs = []
+                }
+                Button("取消", role: .cancel) { removalItems = [] }
+            } message: {
+                Text("书籍会进入「已移除」，可随时恢复。原件、阅读位置、笔记、草稿和阅读时间均保留。云端书籍的移除会同步到当前账号；本机书籍只影响此设备。")
+            }
             .sheet(isPresented: $info, onDismiss: { Task { await model.cancelNativeAuthentication() } }) { AccountScreen(model: model) }
             .sheet(isPresented: $pendingAdjustments) { AccountShelfPendingScreen(model: model) }
             .sheet(item: $sharing) { selection in ShelfSharePanel(selection: selection, model: model) }
@@ -86,6 +98,7 @@ struct LibraryScreen: View {
             }), onDismiss: { model.nextIncomingBook() }) { request in
                 IncomingBookImportPanel(request: request, model: model)
             }
+            .duplicateImportPrompt(model)
             .alert("书房提示", isPresented: Binding(get: { model.message != nil }, set: { if !$0 { model.message = nil } })) {
                 Button("知道了") { model.message = nil }
             } message: { Text(model.message ?? "") }
@@ -98,7 +111,7 @@ struct LibraryScreen: View {
         Group {
             if !didLoad {
                 ProgressView("正在打开书房…").frame(maxWidth: .infinity, maxHeight: .infinity)
-            } else if allItems.isEmpty && (model.accountShelf?.archivedBooks.isEmpty ?? true) && model.jobs.isEmpty {
+            } else if allItems.isEmpty && (model.accountShelf?.archivedBooks.isEmpty ?? true) && model.localArchivedIDs.isEmpty && model.jobs.isEmpty {
                 emptyLibrary
             } else if layout == .list {
                 listShelf
@@ -160,7 +173,10 @@ struct LibraryScreen: View {
     }
 
     private var shelfHeader: some View {
-        HStack(spacing: 12) {
+        let arrangement = dynamicTypeSize.isAccessibilitySize
+            ? AnyLayout(VStackLayout(alignment: .leading, spacing: 4))
+            : AnyLayout(HStackLayout(spacing: 12))
+        return arrangement {
             Menu {
                 Picker("书房范围", selection: filterBinding) {
                     ForEach(LibraryShelfFilter.allCases, id: \.rawValue) { Text($0.title).tag($0) }
@@ -182,6 +198,9 @@ struct LibraryScreen: View {
                 } label: { Text(selectedIDs.count == visibleItems.count ? "取消全选" : "全选").frame(minWidth: 44, minHeight: 44).contentShape(Rectangle()) }
                 Button { selecting = false; selectedIDs = [] } label: { Text("完成").frame(minWidth: 44, minHeight: 44).contentShape(Rectangle()) }
             } else {
+                Button("选择") { selecting = true; selectedIDs = [] }
+                    .frame(minWidth: 44, minHeight: 44)
+                    .accessibilityIdentifier("library-select-books")
                 presentationMenu.labelStyle(.iconOnly).frame(minWidth: 44, minHeight: 44)
             }
         }.foregroundStyle(Color.primary)
@@ -215,7 +234,7 @@ struct LibraryScreen: View {
                 if visibleItems.isEmpty { filteredEmptyState.listRowBackground(Color.clear) }
                 else {
                     ForEach(visibleItems) { item in
-                        LibraryShelfRow(item: item, downloadUnavailable: model.busy, isActive: isActive(item), progress: model.activityProgress, status: model.status, resource: model.coverResource(item), cancel: model.activityCanCancel ? { model.cancelImport() } : nil, selecting: selecting, selected: selectedIDs.contains(item.id), pinned: pinnedIDs.contains(item.id), select: { beginSelection(item) }, togglePin: { setPins([item.id], pinned: !pinnedIDs.contains(item.id)) }, share: { sharing = ShelfShareSelection(items: [item]) }, accountAction: model.accountShelf?.isAuthoritative == true ? { action in Task { await model.changeAccountShelf(action) } } : nil, open: { open(item) }, details: { details(item) })
+                        LibraryShelfRow(item: item, downloadUnavailable: model.busy, isActive: isActive(item), progress: model.activityProgress, status: model.status, resource: model.coverResource(item), cancel: model.activityCanCancel ? { model.cancelImport() } : nil, selecting: selecting, selected: selectedIDs.contains(item.id), pinned: pinnedIDs.contains(item.id), select: { beginSelection(item) }, togglePin: { setPins([item.id], pinned: !pinnedIDs.contains(item.id)) }, share: { sharing = ShelfShareSelection(items: [item]) }, visibilityAction: { changeVisibility([item]) }, accountAction: model.accountShelf?.isAuthoritative == true ? { action in Task { await model.changeAccountShelf(action) } } : nil, open: { open(item) }, details: { details(item) })
                             .listRowBackground(Color.clear)
                     }
                 }
@@ -241,7 +260,7 @@ struct LibraryScreen: View {
                 else {
                     LazyVGrid(columns: shelfColumns, alignment: .leading, spacing: 20) {
                         ForEach(visibleItems) { item in
-                            LibraryShelfTile(item: item, downloadUnavailable: model.busy, isActive: isActive(item), progress: model.activityProgress, status: model.status, resource: model.coverResource(item), cancel: model.activityCanCancel ? { model.cancelImport() } : nil, selecting: selecting, selected: selectedIDs.contains(item.id), pinned: pinnedIDs.contains(item.id), select: { beginSelection(item) }, togglePin: { setPins([item.id], pinned: !pinnedIDs.contains(item.id)) }, share: { sharing = ShelfShareSelection(items: [item]) }, accountAction: model.accountShelf?.isAuthoritative == true ? { action in Task { await model.changeAccountShelf(action) } } : nil, open: { open(item) }, details: { details(item) })
+                            LibraryShelfTile(item: item, downloadUnavailable: model.busy, isActive: isActive(item), progress: model.activityProgress, status: model.status, resource: model.coverResource(item), cancel: model.activityCanCancel ? { model.cancelImport() } : nil, selecting: selecting, selected: selectedIDs.contains(item.id), pinned: pinnedIDs.contains(item.id), select: { beginSelection(item) }, togglePin: { setPins([item.id], pinned: !pinnedIDs.contains(item.id)) }, share: { sharing = ShelfShareSelection(items: [item]) }, visibilityAction: { changeVisibility([item]) }, accountAction: model.accountShelf?.isAuthoritative == true ? { action in Task { await model.changeAccountShelf(action) } } : nil, open: { open(item) }, details: { details(item) })
                         }
                     }
                 }
@@ -269,6 +288,8 @@ struct LibraryScreen: View {
                 Button("清除搜索") { query = "" }
                 if filter == .downloaded { Button("查看全部书籍") { filterRaw = LibraryShelfFilter.all.rawValue } }
             }
+        } else if filter == .archived {
+            ContentUnavailableView("没有已移除的书籍", systemImage: "archivebox", description: Text("移除的书籍会保留在这里，可随时恢复。"))
         } else {
             ContentUnavailableView {
                 Label("还没有离线书籍", systemImage: "arrow.down.circle")
@@ -387,6 +408,7 @@ struct LibraryScreen: View {
             if !selectedIDs.insert(item.id).inserted { selectedIDs.remove(item.id) }
             return
         }
+        if item.isArchived { changeVisibility([item]); return }
         if let book = item.local { Task { await model.open(book) } }
         else if let book = item.cloud { Task { await model.download(book) } }
     }
@@ -414,21 +436,40 @@ struct LibraryScreen: View {
             if model.accountActions.contains(where: \.conflict) { break }
         }
     }
+    private func changeVisibility(_ items: [LibraryShelfItem]) {
+        if filter == .archived {
+            Task { await model.changeShelfVisibility(items, archived: false) }
+        } else {
+            removalItems = items; confirmingRemoval = true
+        }
+    }
+
     private var selectionToolbar: some View {
-        HStack(spacing: 12) {
-            Text("已选 \(selectedIDs.count) 本").font(.subheadline).monospacedDigit()
-            Spacer(minLength: 4)
-            Button {
-                setPins(selectedIDs, pinned: !selectionIsPinned)
-            } label: { Label(selectionIsPinned ? "取消置顶" : "置顶", systemImage: selectionIsPinned ? "pin.slash" : "pin").frame(minWidth: 44, minHeight: 44).contentShape(Rectangle()) }
-                .disabled(selectedIDs.isEmpty)
-            Button { sharing = ShelfShareSelection(items: selectedItems) } label: {
-                Label("分享", systemImage: "square.and.arrow.up").frame(minWidth: 44, minHeight: 44).contentShape(Rectangle())
-            }.disabled(selectedItems.isEmpty)
-        }.font(.subheadline).padding(.horizontal, 16).padding(.vertical, 4).background(.regularMaterial)
+        VStack(alignment: .leading, spacing: 0) {
+            Text("已选 \(selectedIDs.count) 本").font(.caption).monospacedDigit().foregroundStyle(.secondary)
+            ViewThatFits(in: .horizontal) {
+                HStack { selectionActions }
+                VStack(alignment: .leading, spacing: 0) { selectionActions }
+            }
+        }.padding(.horizontal, 16).padding(.vertical, 8).frame(maxWidth: .infinity, alignment: .leading).background(.regularMaterial)
             .accessibilityElement(children: .contain)
             .accessibilityIdentifier("library-selection-toolbar")
     }
+
+    @ViewBuilder private var selectionActions: some View {
+        Button { changeVisibility(selectedItems) } label: {
+            Label(filter == .archived ? "恢复" : "移除", systemImage: filter == .archived ? "arrow.uturn.backward" : "archivebox")
+                .frame(minWidth: 44, minHeight: 44).contentShape(Rectangle())
+        }.disabled(selectedItems.isEmpty || model.busy).accessibilityIdentifier("library-selection-remove-restore")
+        Button { setPins(selectedIDs, pinned: !selectionIsPinned) } label: {
+            Label(selectionIsPinned ? "取消置顶" : "置顶", systemImage: selectionIsPinned ? "pin.slash" : "pin")
+                .frame(minWidth: 44, minHeight: 44).contentShape(Rectangle())
+        }.disabled(selectedIDs.isEmpty)
+        Button { sharing = ShelfShareSelection(items: selectedItems) } label: {
+            Label("分享", systemImage: "square.and.arrow.up").frame(minWidth: 44, minHeight: 44).contentShape(Rectangle())
+        }.disabled(selectedItems.isEmpty)
+    }
+
 }
 
 struct BookCover: View {

@@ -33,3 +33,10 @@ test('noncanonical array keys cannot disguise a missing selected part',()=>{
 test('selected excerpt requires its exact current visible layer and never expands a hidden partial quote',async()=>{
  const {readingChatExcerptIsVisible}=await import('../app/reading-chat-quote.mjs'),snapshot={parts:[{passageId:'p1',language:'en',start:2,end:8,text:'source'}]};assert.equal(typeof readingChatExcerptIsVisible,'function');assert.equal(readingChatExcerptIsVisible(snapshot,()=>({visible:true,text:'A source sentence.'})),true);assert.equal(readingChatExcerptIsVisible(snapshot,()=>({visible:false,text:'A source sentence.'})),false);assert.equal(readingChatExcerptIsVisible(snapshot,()=>null),false);assert.equal(readingChatExcerptIsVisible(snapshot,()=>({visible:true,text:'A changed sentence.'})),false);
 });
+
+test('ordinary chat accepts long multi-paragraph source selections while specialized parsing remains bounded',()=>{
+ const paragraphs=Array.from({length:12},(_,i)=>({id:'large-'+i,original:'源'.repeat(3000),translations:{}}));
+ const b={bookId:'book',contentVersion:'v1',sections:[{chapterId:'ch1',paragraphs}]},q={kind:'leafhour-reading-quote',schemaVersion:1,bookId:'book',contentVersion:'v1',chapterId:'ch1',parts:paragraphs.map(p=>({passageId:p.id,layer:'original',start:0,end:p.original.length,text:p.original}))};
+ assert.deepEqual(validateCurrentReadingChatQuote(q,b,{bounded:false}),q);assert.throws(()=>normalizeReadingChatQuote(q));
+ const changed=structuredClone(q);changed.parts[0].text='伪'.repeat(3000);assert.throws(()=>validateCurrentReadingChatQuote(changed,b,{bounded:false}));
+});
