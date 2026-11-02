@@ -144,13 +144,13 @@ test('actual portal relabels static library chrome in place, including visible n
 
 test('the signed-in home reading-room button opens the shelf without an extra settings dialog',async()=>{
  const accountHandler=ast.body.find(n=>n.type==='ExpressionStatement'&&source.slice(n.start,n.end).startsWith("$('account-button').addEventListener('click'"));assert.ok(accountHandler);
- for(const code of ['en','ja','zh-Hans','zh-Hant']){await requestUiRoute(code);let handler;const location={href:''};const context={$:()=>({addEventListener(_type,fn){handler=fn;}}),session:{user:{id:'synthetic'}},isLibrary:false,shell:{openSettings(){assert.fail('home route');}},location,uiHref};vm.createContext(context);vm.runInContext(source.slice(accountHandler.start,accountHandler.end),context);handler();assert.equal(location.href,"/library");assert.equal(new URL(location.href,'https://leafhour.invalid').searchParams.has('settings'),false,'reading should not require closing a profile dialog');}
+ for(const code of ['en','ja','zh-Hans','zh-Hant']){await requestUiRoute(code);let handler;const location={href:''};const context={$:()=>({addEventListener(_type,fn){handler=fn;}}),session:{user:{id:'synthetic'}},isLibrary:false,shell:{openSettings(){assert.fail('home route');}},location,uiHref};vm.createContext(context);vm.runInContext(source.slice(accountHandler.start,accountHandler.end),context);handler(new Event('click',{cancelable:true}));assert.equal(location.href,"/library");assert.equal(new URL(location.href,'https://leafhour.invalid').searchParams.has('settings'),false,'reading should not require closing a profile dialog');}
  await requestUiRoute('en');
 });
 
 test('the home guest button still opens sign-in and the library account button still opens account settings',()=>{
  const accountHandler=ast.body.find(n=>n.type==='ExpressionStatement'&&source.slice(n.start,n.end).startsWith("$('account-button').addEventListener('click'"));
- for(const signedIn of [false,true]){let handler,logins=0,settings=0;const location={href:''};const context={$:()=>({addEventListener(_type,fn){handler=fn;}}),session:{user:signedIn?{id:'synthetic'}:null},isLibrary:signedIn,openAuth(){logins++;},shell:{openSettings(tab){assert.equal(tab,'account');settings++;}},location,uiHref};vm.createContext(context);vm.runInContext(source.slice(accountHandler.start,accountHandler.end),context);handler();assert.equal(logins,signedIn?0:1);assert.equal(settings,signedIn?1:0);assert.equal(location.href,'');}
+ for(const signedIn of [false,true]){let handler,logins=0,settings=0;const location={href:''};const context={$:()=>({addEventListener(_type,fn){handler=fn;}}),session:{user:signedIn?{id:'synthetic'}:null},isLibrary:signedIn,openAuth(){logins++;},shell:{openSettings(tab){assert.equal(tab,'account');settings++;}},location,uiHref};vm.createContext(context);vm.runInContext(source.slice(accountHandler.start,accountHandler.end),context);handler(new Event('click',{cancelable:true}));assert.equal(logins,signedIn?0:1);assert.equal(settings,signedIn?1:0);assert.equal(location.href,'');}
 });
 
 test('saving, confirming and deleting reading preferences preserves explicit shelf selections and reader defaults',()=>{
@@ -168,11 +168,27 @@ test('saving, confirming and deleting reading preferences preserves explicit she
  assert.equal(updates.length,6);context.adopt({revision:1});assert.equal(context.session.readingPreferences.revision,4,'stale preference responses remain fenced');
 });
 
+test('a login entry settles on identity even when the shelf fails and never reopens after logout',async()=>{
+ for(const initiallySignedIn of [false,true]){
+  let opened=0;
+  const context={accountStateEpoch:0,accountForeground:null,refreshGeneration:0,identityResolved:false,pendingAuthEntry:true,session:null,pendingUpload:false,pendingChat:false,
+   ownerScope:createOwnerScope(),homeMenu:null,isLibrary:true,entryQuery:new URLSearchParams('login=1'),
+   workspaceBootState(){},dashboard:{begin(){},fail(){}},adoptUiOwner(){},deviceBookStore:()=>({adopt:async()=>{}}),
+   clearPrivateUI(){},authDialog:{isSettingPasswordFor:()=>false,updateCapabilities(){}},shell:null,
+   own(){},$:()=>({setAttribute(){}}),openAuth(){opened++;},api:async()=>{throw Error('synthetic shelf failure');}};
+  vm.createContext(context);vm.runInContext(declaration('refresh')+'\nthis.run=refresh;',context);
+  await assert.rejects(context.run({user:initiallySignedIn?{id:'synthetic'}:null}),/synthetic shelf failure/);
+  assert.equal(context.pendingAuthEntry,false);assert.equal(opened,initiallySignedIn?0:1);
+  await assert.rejects(context.run({user:null}),/synthetic shelf failure/);
+  assert.equal(opened,initiallySignedIn?0:1,'retry and logout cannot revive the consumed login entry');
+ }
+});
+
 test('opening and refreshing an account never replaces the explicit shelf view with saved preferences',async()=>{
  for(const firstEntry of [true,false]){
   const explicit={query:'kept',topic:'history',language:'en',form:'translated'},session={user:{id:'reader'},readingPreferences:{preferences:{preferredLanguage:'zh'}},preferenceMemory:{revision:2,memory:{topic:'philosophy',sources:{mode:{source:'settings'}}},preferences:{mode:'en'}}};
   let renders=0;
-  const context={workspaceBootState(){},ensureReadingWorkspace:async()=>null,libraryArrival:null,personalizationPending:false,requestAnimationFrame(){},refreshGeneration:0,isLibrary:true,identityResolved:!firstEntry,ownerScope:createOwnerScope(firstEntry?'guest':'reader'),session,books:[],shelfRevision:0,pendingUpload:false,pendingChat:false,bootstrapped:false,
+  const context={workspaceBootState(){},ensureReadingWorkspace:async()=>null,libraryArrival:null,personalizationPending:false,requestAnimationFrame(){},refreshGeneration:0,isLibrary:true,pendingAuthEntry:false,identityResolved:!firstEntry,ownerScope:createOwnerScope(firstEntry?'guest':'reader'),session,books:[],shelfRevision:0,pendingUpload:false,pendingChat:false,bootstrapped:false,
    dashboard:{begin:()=>1,update(){},fail(){}},homeMenu:null,adoptUiOwner(){},deviceBookStore:()=>({adopt:async()=>{}}),prepareOfflineResources:async()=>false,
    authDialog:{updateCapabilities(){},isSettingPasswordFor:()=>false},clearPrivateUI(options){assert.equal(options.preserveView,true,'first identity keeps the incoming explicit URL');},
    shell:{update(){},refreshDaily(){}},setupInvite:{update(){}},

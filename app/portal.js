@@ -96,6 +96,7 @@ const isLibrary=location.pathname==='/library';$('home-view').hidden=isLibrary;$
 const entryQuery=new URLSearchParams(location.search),workspacePage=['calendar','notes'].includes(entryQuery.get('workspace'))?entryQuery.get('workspace'):null,entryReturn=authEntryReturn(entryQuery),returnToReader=safeGiftReturn(entryReturn)||safeReaderReturn(entryReturn)||safeMcpReturn(entryReturn);
 let returnToLibrary=!returnToReader?safeLibraryReturn(entryReturn):null;
 let pendingSettings=isLibrary&&location.hash==='#agent';
+let pendingAuthEntry=isLibrary&&entryQuery.get('login')==='1';
 if(isLibrary&&workspacePage){$('library-view').hidden=true;document.body.classList.add('workspace-active');$('reading-workspace').hidden=false;}
 if(isLibrary&&workspacePage)for(const control of document.querySelectorAll('.shelf-tabs [data-shelf]'))control.addEventListener('click',event=>{event.preventDefault();event.stopImmediatePropagation();const scope=control.dataset.shelf;location.assign(uiHref('/library'+(scope==='private'?'?scope=private':'')));},true);
 const openReadingWorkspace=page=>location.assign(uiHref('/library?workspace='+page));
@@ -316,6 +317,8 @@ async function refresh(knownSession){
   homeMenu?.updateIdentity(ownerScope.capture());
   if(changed){clearPrivateUI({keepAuthDialog:authDialog.isSettingPasswordFor(next.user?.id),preserveView:firstIdentity});pendingUpload=!!continueUpload;pendingChat=!!continueChat;}authDialog.updateCapabilities();shell?.update();
   own($('account-button'),{id:session?.user?'portal.account.library':'portal.account.signIn'});own($('library-description'),{id:session?.user?'portal.description.user':'portal.description.guest'});
+  // Sign-in depends on identity, never on the optional shelf request below.
+  if(pendingAuthEntry){pendingAuthEntry=false;if(!session?.user){const messages={cancelled:{messageId:'auth.return.cancelled'},expired:{messageId:'auth.return.expired'},unavailable:{messageId:'auth.return.unavailable'}};openAuth(messages[entryQuery.get('auth_error')]);}}
   const library=await api(isLibrary?'/api/library?view=books':'/api/library');if(generation!==refreshGeneration)return;books=library.books;personalizationPending=isLibrary&&!!session.user;shelfRevision=library.shelfRevision||0;
   if(!session.user){try{const order=JSON.parse(localStorage.getItem('marginalia-shelf-order:guest')||'null');if(Array.isArray(order)&&order.length<=1000){const rank=new Map(order.filter(id=>typeof id==='string').map((id,index)=>[id,index]));if(rank.size)books=books.map((book,index)=>({...book,shelfPosition:rank.get(book.bookId)??order.length+index}));}}catch{}}
   if(!session.user)for(const book of books){try{const local=JSON.parse(localStorage.getItem(positionStorageKey(book.bookId))||'null');if(local?.passageId&&local.chapterLabel&&local.contentVersion===book.source.sha256)book.resume={label:local.chapterLabel,passageId:local.passageId,updatedAt:local.updatedAt,mode:local.mode,variant:local.variant};}catch{}}
@@ -349,7 +352,7 @@ async function signOut(){
   const ticket=ownerScope.capture();await deviceBookStore().clear().catch(()=>{});await api('/api/auth/logout',{},ticket);session={...session,user:null};ownerScope.adopt('guest');void adoptUiOwner(null);clearPrivateUI();
   try{await refresh();}catch{status('library-status',{id:'portal.status.signedOut'},true);$('library-retry').hidden=false;}
 }
-$('account-button').addEventListener('click',()=>{if(!session?.user){openAuth();return;}if(isLibrary)shell.openSettings('account');else location.href=uiHref('/library');});
+$('account-button').addEventListener('click',event=>{if(event.metaKey||event.ctrlKey||event.shiftKey||event.altKey||typeof event.button==='number'&&event.button!==0)return;event.preventDefault();if(!session?.user){openAuth();return;}if(isLibrary)shell.openSettings('account');else location.href=uiHref('/library');});
 document.querySelectorAll('[data-close]').forEach(b=>b.addEventListener('click',()=>$(b.dataset.close).close()));
 for(const dialog of document.querySelectorAll('dialog'))dialog.addEventListener('click',event=>{if(event.target!==dialog)return;const r=dialog.getBoundingClientRect();if(event.clientX<r.left||event.clientX>r.right||event.clientY<r.top||event.clientY>r.bottom)dialog.close();});
 document.addEventListener('click',event=>{for(const details of document.querySelectorAll('.book-details[open]'))if(!details.contains(event.target))details.open=false;});
@@ -388,7 +391,7 @@ refresh().then(()=>{
   // stale hydrate target can never resurrect an overlay the user replaced.
   if(isLibrary){const overlay=viewHistory?.takeSessionOverlay();if(overlay)syncOverlay(overlay);}
   if(isLibrary&&pendingSettings){pendingSettings=false;shell.openSettings('account');}
-  if(isLibrary&&entryQuery.get('login')==='1'){if(session?.user){if(!returnAfterAuth())adoptPendingReturn();}else if(!session?.user){const messages={cancelled:{messageId:'auth.return.cancelled'},expired:{messageId:'auth.return.expired'},unavailable:{messageId:'auth.return.unavailable'}};openAuth(messages[entryQuery.get('auth_error')]);}}}).catch(error=>{status('library-status',{id:'ui.generic.error'},true);$('featured-books').replaceChildren(own(make('p','muted'),{id:'portal.books.failed'}));});
+  if(isLibrary&&entryQuery.get('login')==='1'&&session?.user){if(!returnAfterAuth())adoptPendingReturn();}}).catch(error=>{status('library-status',{id:'ui.generic.error'},true);$('featured-books').replaceChildren(own(make('p','muted'),{id:'portal.books.failed'}));});
 
 function updatePortalLabels(){
   // Language commits relabel owned nodes in place only: no refresh(), no

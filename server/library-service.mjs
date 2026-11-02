@@ -17,7 +17,7 @@ import {bookTransfer as transferBook} from './book-transfer.mjs';
 import {mkdir,readFile,writeFile,rename,stat,open} from 'node:fs/promises';
 import path from 'node:path';
 import {randomBytes,randomUUID} from 'node:crypto';
-import {extractDocument,makeBook,digest,fail,MAX_FILE_BYTES} from './document-import.mjs';
+import {extractDocument,makeBook,digest,fail,MAX_FILE_BYTES,decodePlainText} from './document-import.mjs';
 import {normalizeAppearance,normalizeGlobalPreferences,validateGlobalPreferences,validateGlobalPreferencesMetadata,globalPreferencesMetadata,MAX_PREFERENCE_TIMESTAMP} from '../app/reading-preferences.mjs';
 import {applyCatalogChapters,alignReadingPosition} from './catalog-chapters.mjs';
 import {resumeSummary} from '../app/reading-progress.mjs';
@@ -339,7 +339,7 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
     requireUser(user);const book=await getBook(user,id),passage=allPassages(book).find(p=>p.id===input?.passageId);if(!passage)throw fail('找不到来源段落',404);const original=await getOriginal(user,id);
     if(book.source.format==='epub')return {format:'epub',sha256:original.sha256,...epubSourceEvidence(original.bytes,passage.source)};
     if(book.source.format==='pdf'){const page=input?.page??passage.source?.pdfPage;return {format:'pdf',sha256:original.sha256,page,pages:passage.source?.pdfPages||[passage.source?.pdfPage].filter(Boolean),image:await renderPdfEvidence(original.bytes,page)};}
-    const text=new TextDecoder('utf-8',{fatal:true}).decode(original.bytes),offset=Math.max(0,text.indexOf(passage.original)-1000);return {format:book.source.format,sha256:original.sha256,sourceText:text.slice(offset,offset+50000),truncated:offset>0||offset+50000<text.length};
+    const text=decodePlainText(original.bytes),offset=Math.max(0,text.indexOf(passage.original)-1000);return {format:book.source.format,sha256:original.sha256,sourceText:text.slice(offset,offset+50000),truncated:offset>0||offset+50000<text.length};
   }
   async function sourceReview(user,id){
     requireUser(user);const book=await getBook(user,id);if(book.visibility!=='private')throw fail('请在自己的来源文件中校对，公版目录不会被修改',403);

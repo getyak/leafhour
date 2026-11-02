@@ -6,6 +6,33 @@ export const fail=(message,status=400)=>Object.assign(new Error(message),{status
 export const digest=value=>createHash('sha256').update(value).digest('hex');
 export const MAX_FILE_BYTES=256*1024*1024;
 
+// Keep the same conservative text boundary as native import: a BOM is binding,
+// and arbitrary byte pairs must never be accepted merely because UTF-16 decodes.
+export function decodePlainText(bytes){
+  const encodingError=()=>fail('无法识别文本编码，或文件编码不完整。支持 UTF-8、UTF-16 和 GB18030（含 GBK），请另存为 UTF-8 后重试');
+  const starts=prefix=>bytes.subarray(0,prefix.length).equals(Buffer.from(prefix));
+  if(starts(Buffer.from('%PDF-'))||starts([0x50,0x4b,3,4])||starts([0x89,0x50,0x4e,0x47]))throw fail('这个文件不是可阅读的文本，请选择对应格式的原文件');
+  let encoding=null,source=bytes;
+  if(starts([0xff,0xfe,0,0])||starts([0,0,0xfe,0xff]))throw encodingError();
+  if(starts([0xff,0xfe])){encoding='utf-16le';source=bytes.subarray(2);}
+  else if(starts([0xfe,0xff])){encoding='utf-16be';source=bytes.subarray(2);}
+  else if(starts([0xef,0xbb,0xbf])){encoding='utf-8';source=bytes.subarray(3);}
+  else{
+    const pairs=Math.floor(Math.min(bytes.length,4096)/2);let even=0,odd=0;
+    for(let i=0;i<pairs*2;i+=2){if(bytes[i]===0)even++;if(bytes[i+1]===0)odd++;}
+    if(bytes.length%2===0&&pairs>0){if(odd*5>=pairs&&even===0)encoding='utf-16le';else if(even*5>=pairs&&odd===0)encoding='utf-16be';}
+  }
+  let text;
+  if(encoding){try{text=new TextDecoder(encoding,{fatal:true,ignoreBOM:true}).decode(source);}catch{throw encodingError();}}
+  else{
+    try{text=new TextDecoder('utf-8',{fatal:true,ignoreBOM:true}).decode(source);}
+    catch{try{text=new TextDecoder('gb18030',{fatal:true}).decode(source);}catch{throw encodingError();}if(!/\p{Script=Han}/u.test(text))throw encodingError();}
+  }
+  if(/[\u0000-\u0008\u000b\u000e-\u001f\u007f-\u009f]/.test(text))throw fail('这个文件不是可阅读的文本');
+  if(!text.trim())throw fail('文件中没有可阅读的文字');
+  return text;
+}
+
 export async function extractDocument({filename,bytes,onProgress}){
   if(typeof filename!=='string'||!filename.trim()||filename.length>240||!Buffer.isBuffer(bytes)||!bytes.length)throw fail('请选择有内容的书籍文件');
   if(bytes.length>MAX_FILE_BYTES||!filename.toLowerCase().endsWith('.pdf')&&bytes.length>20*1024*1024)throw fail('PDF 最多 256 MB，EPUB 与文本最多 20 MB',413);
@@ -13,9 +40,7 @@ export async function extractDocument({filename,bytes,onProgress}){
   if(!['.pdf','.epub','.txt','.md'].includes(ext))throw fail('目前支持 PDF、EPUB、TXT 和 Markdown');
   if(ext==='.epub')return extractEpub(bytes,{onProgress});
   if(ext!=='.pdf'){
-    let text;try{text=new TextDecoder('utf-8',{fatal:true}).decode(bytes);}catch{throw fail('请将文本保存为 UTF-8 编码');}
-    if(/[\u0000-\u0008\u000e-\u001f]/.test(text))throw fail('这个文件不是可阅读的文本');
-    if(!text.trim())throw fail('文件中没有可阅读的文字');
+    const text=decodePlainText(bytes);
     return {pages:[{page:null,text}],format:ext.slice(1),review:'extracted_unreviewed'};
   }
   if(bytes.subarray(0,5).toString()!=='%PDF-')throw fail('文件内容不是有效 PDF');

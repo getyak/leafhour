@@ -192,6 +192,7 @@ test('the authored home markup ships one trigger and one native sheet with the e
   const nav=header.match(/<nav class="home-navigation"[\s\S]*?<\/nav>/)[0];
   assert.doesNotMatch(nav,/data-palette-open|home-languages|href="\/library"/,'public navigation keeps one account entry and no search or language list');
   assert.equal((header.match(/id="account-button"/g)||[]).length,1);
+  assert.match(header,/<a\b[^>]*id="account-button"[^>]*href="\/library\?login=1"/,'sign-in must navigate even before portal JavaScript is ready');
   assert.doesNotMatch(source,/id="home-menu-(?:signin|account|search|resume)"/,'the menu does not duplicate account, search or reading controls');
   assert.equal((source.match(/id="home-menu"/g)||[]).length,1,'exactly one menu sheet');
 });
@@ -418,7 +419,7 @@ function productionRefresh({api,homeMenu,ownerScope,document:doc,observations={}
   const nodes=new Map();
   const $=id=>{if(!nodes.has(id))nodes.set(id,doc.createElement('div'));return nodes.get(id);};
   return new Function('api','homeMenu','ownerScope','$','doc','observations','t','getUiLocale',`
-    let refreshGeneration=0,session=${JSON.stringify(session)},books=[],shelfRevision=0,pendingUpload=false,pendingChat=false,bootstrapped=false,identityResolved=false;
+    let refreshGeneration=0,session=${JSON.stringify(session)},books=[],shelfRevision=0,pendingUpload=false,pendingChat=false,pendingAuthEntry=false,bootstrapped=false,identityResolved=false;
     const adoptUiOwner=id=>{(observations.uiOwners??=[]).push(id);return Promise.resolve({adopted:true});};
     const deviceBookStore=()=>({adopt:async()=>{}}),prepareOfflineResources=async()=>false;
     const workspaceBootState=()=>{},ensureReadingWorkspace=async()=>null;

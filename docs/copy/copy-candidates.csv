@@ -2810,7 +2810,7 @@ candidate:app/home.html:35:415,html-attribute,app/home.html,35,aria-label,unknow
 candidate:app/home.html:37:128,html-attribute,app/home.html,37,aria-label,unknown,reviewable,,搜索与命令
 candidate:app/home.html:38:41,html-attribute,app/home.html,38,aria-label,unknown,reviewable,,书籍筛选
 candidate:app/home.html:41:135,html-attribute,app/home.html,41,aria-label,unknown,reviewable,,回收站
-candidate:app/home.html:42:256,html-attribute,app/home.html,42,aria-label,unknown,reviewable,,打开导航菜单
+candidate:app/home.html:42:270,html-attribute,app/home.html,42,aria-label,unknown,reviewable,,打开导航菜单
 candidate:app/home.html:50:73,html-attribute,app/home.html,50,aria-label,unknown,reviewable,,打开爱丽丝梦游仙境
 candidate:app/home.html:51:53,html-attribute,app/home.html,51,aria-label,unknown,reviewable,,看看怎么读
 candidate:app/home.html:56:579,html-attribute,app/home.html,56,aria-label,unknown,reviewable,,打开爱丽丝梦游仙境
@@ -2856,8 +2856,8 @@ candidate:app/home.html:39:523,html-text,app/home.html,39,,unknown,reviewable,,�
 candidate:app/home.html:39:679,html-text,app/home.html,39,,unknown,reviewable,,带来一本书
 candidate:app/home.html:41:220,html-text,app/home.html,41,,unknown,reviewable,,回收站
 candidate:app/home.html:41:406,html-text,app/home.html,41,,unknown,reviewable,,设置
-candidate:app/home.html:42:52,html-text,app/home.html,42,,unknown,reviewable,,登录 / 注册
-candidate:app/home.html:42:85,html-text,app/home.html,42,,unknown,reviewable,,↗
+candidate:app/home.html:42:71,html-text,app/home.html,42,,unknown,reviewable,,登录 / 注册
+candidate:app/home.html:42:104,html-text,app/home.html,42,,unknown,reviewable,,↗
 candidate:app/home.html:47:32,html-text,app/home.html,47,,unknown,reviewable,,给一本书，
 candidate:app/home.html:47:41,html-text,app/home.html,47,,unknown,reviewable,,多一点时间。
 candidate:app/home.html:47:80,html-text,app/home.html,47,,unknown,reviewable,,读原文，对照译文，
@@ -4293,17 +4293,17 @@ candidate:app/portable-chat.mjs:52:69,js-cjk-literal,app/portable-chat.mjs,52,,u
 candidate:app/portable-chat.mjs:53:55,js-cjk-literal,app/portable-chat.mjs,53,,unknown,reviewable,,未完成对话不能携带回答
 candidate:app/portable-chat.mjs:54:375,js-cjk-literal,app/portable-chat.mjs,54,,unknown,reviewable,,导入前的回答已中断，未恢复生成。
 candidate:app/portal.js:93:528,js-cjk-literal,app/portal.js,93,,unknown,reviewable,,网络暂时无法连接，请稍后重试。
-candidate:app/portal.js:117:230,js-attribute,app/portal.js,117,role,unknown,reviewable,,status
-candidate:app/portal.js:211:111,js-attribute,app/portal.js,211,aria-hidden,unknown,reviewable,,true
-candidate:app/portal.js:221:160,js-cjk-literal,app/portal.js,221,,unknown,reviewable,,"第 "
-candidate:app/portal.js:221:176,js-cjk-literal,app/portal.js,221,,unknown,reviewable,," 章 · "
-candidate:app/portal.js:240:165,js-attribute,app/portal.js,240,lang,unknown,reviewable,,und
-candidate:app/portal.js:243:412,js-cjk-literal,app/portal.js,243,,unknown,reviewable,,文本
-candidate:app/portal.js:246:161,js-attribute,app/portal.js,246,aria-describedby,unknown,protected,identifier,shelf-order-help
-candidate:app/portal.js:246:277,js-attribute,app/portal.js,246,aria-hidden,unknown,reviewable,,true
-candidate:app/portal.js:276:77,js-attribute,app/portal.js,276,aria-hidden,unknown,reviewable,,true
-candidate:app/portal.js:289:47,js-attribute,app/portal.js,289,aria-busy,unknown,reviewable,,false
-candidate:app/portal.js:331:209,js-attribute,app/portal.js,331,aria-busy,unknown,reviewable,,false
+candidate:app/portal.js:118:230,js-attribute,app/portal.js,118,role,unknown,reviewable,,status
+candidate:app/portal.js:212:111,js-attribute,app/portal.js,212,aria-hidden,unknown,reviewable,,true
+candidate:app/portal.js:222:160,js-cjk-literal,app/portal.js,222,,unknown,reviewable,,"第 "
+candidate:app/portal.js:222:176,js-cjk-literal,app/portal.js,222,,unknown,reviewable,," 章 · "
+candidate:app/portal.js:241:165,js-attribute,app/portal.js,241,lang,unknown,reviewable,,und
+candidate:app/portal.js:244:412,js-cjk-literal,app/portal.js,244,,unknown,reviewable,,文本
+candidate:app/portal.js:247:161,js-attribute,app/portal.js,247,aria-describedby,unknown,protected,identifier,shelf-order-help
+candidate:app/portal.js:247:277,js-attribute,app/portal.js,247,aria-hidden,unknown,reviewable,,true
+candidate:app/portal.js:277:77,js-attribute,app/portal.js,277,aria-hidden,unknown,reviewable,,true
+candidate:app/portal.js:290:47,js-attribute,app/portal.js,290,aria-busy,unknown,reviewable,,false
+candidate:app/portal.js:334:209,js-attribute,app/portal.js,334,aria-busy,unknown,reviewable,,false
 candidate:app/pricing-checkout-markup.mjs:2:48,js-cjk-literal,app/pricing-checkout-markup.mjs,2,,unknown,protected,path+quotation,"<dialog autofocus id=""auth-dialog"" class=""auth-dialog"" aria-labelledby=""auth-title"" aria-describedby=""auth-intro"">
   <button class=""dialog-close"" id=""billing-auth-close"" data-close=""auth-dialog"" data-ui-aria-label=""auth.close"" aria-label=""关闭登录"">×</button>
   <div class=""auth-brand"" aria-hidden=""true""><svg viewBox=""0 0 40 40"" fill=""none"" stroke=""currentColor"" stroke-width=""2"" stroke-linecap=""round"" stroke-linejoin=""round"" aria-hidden=""true""><path d=""M8 32V20A13 13 0 0 1 21 7h11v11a14 14 0 0 1-14 14H8Z""/><path d=""M16 23h7v-9""/></svg><span lang=""en"">Leafhour</span></div>
@@ -5517,22 +5517,23 @@ candidate:server/dialogue-generator.mjs:9:369,js-cjk-literal,server/dialogue-gen
 candidate:server/dialogue-generator.mjs:10:58,js-cjk-literal,server/dialogue-generator.mjs,10,,unknown,reviewable,,讲稿服务正在忙，请稍后重试。
 candidate:server/dialogue-generator.mjs:10:75,js-cjk-literal,server/dialogue-generator.mjs,10,,unknown,reviewable,,讲稿生成失败，原文仍可阅读。
 candidate:server/dialogue-generator.mjs:11:115,js-cjk-literal,server/dialogue-generator.mjs,11,,unknown,reviewable,,讲稿格式未通过检查，请重新生成。
-candidate:server/document-import.mjs:10:123,js-cjk-literal,server/document-import.mjs,10,,unknown,reviewable,,请选择有内容的书籍文件
-candidate:server/document-import.mjs:11:114,js-cjk-literal,server/document-import.mjs,11,,unknown,reviewable,,PDF 最多 256 MB，EPUB 与文本最多 20 MB
-candidate:server/document-import.mjs:13:62,js-cjk-literal,server/document-import.mjs,13,,unknown,reviewable,,目前支持 PDF、EPUB、TXT 和 Markdown
-candidate:server/document-import.mjs:16:93,js-cjk-literal,server/document-import.mjs,16,,unknown,reviewable,,请将文本保存为 UTF-8 编码
-candidate:server/document-import.mjs:17:61,js-cjk-literal,server/document-import.mjs,17,,unknown,reviewable,,这个文件不是可阅读的文本
-candidate:server/document-import.mjs:18:32,js-cjk-literal,server/document-import.mjs,18,,unknown,reviewable,,文件中没有可阅读的文字
-candidate:server/document-import.mjs:21:58,js-cjk-literal,server/document-import.mjs,21,,unknown,reviewable,,文件内容不是有效 PDF
-candidate:server/document-import.mjs:30:42,js-cjk-literal,server/document-import.mjs,30,,unknown,reviewable,,PDF 超过当前单本 1200 页的处理容量
-candidate:server/document-import.mjs:36:56,js-cjk-literal,server/document-import.mjs,36,,unknown,reviewable,,PDF 文字量过大，请按章节拆分
-candidate:server/document-import.mjs:39:68,js-cjk-literal,server/document-import.mjs,39,,unknown,reviewable,,这份 PDF 没有可提取文字，可能是扫描件。请先做文字识别（OCR），或上传文字版 PDF。
-candidate:server/document-import.mjs:41:89,js-cjk-literal,server/document-import.mjs,41,,unknown,reviewable,,PDF 已加密，请先解密后上传
-candidate:server/document-import.mjs:41:107,js-cjk-literal,server/document-import.mjs,41,,unknown,reviewable,,PDF 无法解析，请检查文件是否完整
-candidate:server/document-import.mjs:55:36,js-cjk-literal,server/document-import.mjs,55,,unknown,reviewable,,没有找到可阅读的段落
-candidate:server/document-import.mjs:69:60,js-cjk-literal,server/document-import.mjs,69,,unknown,reviewable,,卷首
-candidate:server/document-import.mjs:71:183,js-cjk-literal,server/document-import.mjs,71,,unknown,reviewable,,开始阅读
-candidate:server/document-import.mjs:71:257,js-cjk-literal,server/document-import.mjs,71,,unknown,reviewable,,自动分段 · 原文未逐段校对
+candidate:server/document-import.mjs:12:32,js-cjk-literal,server/document-import.mjs,12,,unknown,reviewable,,无法识别文本编码，或文件编码不完整。支持 UTF-8、UTF-16 和 GB18030（含 GBK），请另存为 UTF-8 后重试
+candidate:server/document-import.mjs:14:102,js-cjk-literal,server/document-import.mjs,14,,unknown,reviewable,,这个文件不是可阅读的文本，请选择对应格式的原文件
+candidate:server/document-import.mjs:31:78,js-cjk-literal,server/document-import.mjs,31,,unknown,reviewable,,这个文件不是可阅读的文本
+candidate:server/document-import.mjs:32:30,js-cjk-literal,server/document-import.mjs,32,,unknown,reviewable,,文件中没有可阅读的文字
+candidate:server/document-import.mjs:37:123,js-cjk-literal,server/document-import.mjs,37,,unknown,reviewable,,请选择有内容的书籍文件
+candidate:server/document-import.mjs:38:114,js-cjk-literal,server/document-import.mjs,38,,unknown,reviewable,,PDF 最多 256 MB，EPUB 与文本最多 20 MB
+candidate:server/document-import.mjs:40:62,js-cjk-literal,server/document-import.mjs,40,,unknown,reviewable,,目前支持 PDF、EPUB、TXT 和 Markdown
+candidate:server/document-import.mjs:46:58,js-cjk-literal,server/document-import.mjs,46,,unknown,reviewable,,文件内容不是有效 PDF
+candidate:server/document-import.mjs:55:42,js-cjk-literal,server/document-import.mjs,55,,unknown,reviewable,,PDF 超过当前单本 1200 页的处理容量
+candidate:server/document-import.mjs:61:56,js-cjk-literal,server/document-import.mjs,61,,unknown,reviewable,,PDF 文字量过大，请按章节拆分
+candidate:server/document-import.mjs:64:68,js-cjk-literal,server/document-import.mjs,64,,unknown,reviewable,,这份 PDF 没有可提取文字，可能是扫描件。请先做文字识别（OCR），或上传文字版 PDF。
+candidate:server/document-import.mjs:66:89,js-cjk-literal,server/document-import.mjs,66,,unknown,reviewable,,PDF 已加密，请先解密后上传
+candidate:server/document-import.mjs:66:107,js-cjk-literal,server/document-import.mjs,66,,unknown,reviewable,,PDF 无法解析，请检查文件是否完整
+candidate:server/document-import.mjs:80:36,js-cjk-literal,server/document-import.mjs,80,,unknown,reviewable,,没有找到可阅读的段落
+candidate:server/document-import.mjs:94:60,js-cjk-literal,server/document-import.mjs,94,,unknown,reviewable,,卷首
+candidate:server/document-import.mjs:96:183,js-cjk-literal,server/document-import.mjs,96,,unknown,reviewable,,开始阅读
+candidate:server/document-import.mjs:96:257,js-cjk-literal,server/document-import.mjs,96,,unknown,reviewable,,自动分段 · 原文未逐段校对
 candidate:server/email-auth.mjs:11:99,js-cjk-literal,server/email-auth.mjs,11,,unknown,reviewable,,Leafhour · Your verification code / 邮箱验证码
 candidate:server/email-auth.mjs:21:94,js-cjk-literal,server/email-auth.mjs,21,,unknown,reviewable,,邮箱服务尚未配置。现在可以试读，或进入本机书房。
 candidate:server/email-auth.mjs:23:135,js-cjk-literal,server/email-auth.mjs,23,,unknown,reviewable,,请一分钟后再获取验证码
