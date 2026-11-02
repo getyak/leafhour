@@ -1,11 +1,68 @@
 import XCTest
 import SwiftUI
 import UIKit
+import CoreText
 import LeafhourCore
 @testable import Leafhour
 
 @MainActor
 final class ReaderPreferencesLayoutTests: XCTestCase {
+    func testMixedTextUsesSelectedLatinAndChineseGlyphs() throws {
+        for (style, chinese) in [(ReaderFontStyle.serif, "NotoSerif"), (.kai, "LXGWWenKai"), (.sans, "PingFang")] {
+            let font = ReaderTypography.font(style: style, size: 22, traits: UITraitCollection(preferredContentSizeCategory: .large), latin: .baskerville)
+            let line = CTLineCreateWithAttributedString(NSAttributedString(string: "Hello 永远阅读", attributes: [.font: font]))
+            let runs = CTLineGetGlyphRuns(line) as! [CTRun]
+            let names = runs.map { run -> String in
+                let attributes = CTRunGetAttributes(run) as NSDictionary
+                let actual = attributes[kCTFontAttributeName] as! CTFont
+                return CTFontCopyPostScriptName(actual) as String
+            }
+            XCTAssertTrue(names.contains { $0.contains("Baskerville") }, "Actual Latin glyph font: \(names)")
+            XCTAssertTrue(names.contains { $0.localizedCaseInsensitiveContains(chinese) }, "Actual Chinese glyph font for \(style): \(names)")
+        }
+        for family in ReaderLatinFont.allCases {
+            let regular = ReaderTypography.font(style: .serif, size: 22, traits: UITraitCollection(preferredContentSizeCategory: .large), latin: family)
+            let large = ReaderTypography.font(style: .serif, size: 22, traits: UITraitCollection(preferredContentSizeCategory: .accessibilityExtraExtraExtraLarge), latin: family)
+            XCTAssertGreaterThan(large.pointSize, regular.pointSize)
+        }
+    }
+
+    func testChineseMarkdownEmphasisSurvivesTheExplicitCascade() async throws {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: root) }
+        try FileManager.default.createDirectory(at: root, withIntermediateDirectories: true)
+        let original = root.appendingPathComponent("emphasis.md")
+        try "正文与**粗体**，以及*斜体*。".write(to: original, atomically: true, encoding: .utf8)
+        let library = try OfflineLibrary(root: root.appendingPathComponent("library"), scope: .device)
+        let book = try await library.importFile(original)
+        let layout = MarkdownChapterLayout(book: book, chapter: book.chapters[0], original: original)
+        for style in [ReaderFontStyle.serif, .kai, .sans] {
+            let font = ReaderTypography.font(style: style, size: 24, traits: UITraitCollection(preferredContentSizeCategory: .large))
+            let output = layout.attributed(font: font, size: 24, lineSpacing: 9)
+            let bold = (output.string as NSString).range(of: "粗体")
+            XCTAssertEqual(output.attribute(.strokeWidth, at: bold.location, effectiveRange: nil) as? Double, -2)
+            let italic = (output.string as NSString).range(of: "斜体")
+            XCTAssertEqual(output.attribute(.obliqueness, at: italic.location, effectiveRange: nil) as? Double, 0.15)
+            let emphasized = output.attributedSubstring(from: bold)
+            let plain = NSAttributedString(string: "粗体", attributes: [.font: font, .foregroundColor: UIColor.label])
+            func pixels(_ text: NSAttributedString) -> Data? {
+                UIGraphicsImageRenderer(size: CGSize(width: 150, height: 60)).image { context in
+                    UIColor.white.setFill(); context.fill(CGRect(x: 0, y: 0, width: 150, height: 60))
+                    text.draw(at: CGPoint(x: 5, y: 5))
+                }.pngData()
+            }
+            XCTAssertNotEqual(pixels(emphasized), pixels(plain), "Actual Chinese emphasis must draw differently for \(style)")
+        }
+    }
+
+    func testEveryPaperExplicitlyControlsForegroundAppearance() {
+        for paper in ReaderPaper.allCases {
+            var value = ReaderPreferences(); value.theme = paper.rawValue
+            XCTAssertEqual(value.colorScheme(following: .dark), paper == .system || paper.isDark ? .dark : .light)
+            XCTAssertEqual(value.colorScheme(following: .light), paper.isDark ? .dark : .light)
+        }
+    }
+
     private let sample = "The quiet orchard stays beside the river while a reader changes the type size."
 
     private func renderedSize(text: String, fontSize: Double, typeSize: DynamicTypeSize) throws -> CGSize {

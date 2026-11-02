@@ -25,10 +25,10 @@ struct AppSettingsScreen: View {
                 Section("阅读") {
                     NavigationLink {
                         GlobalReadingStyleScreen(library: model.library).id(model.importAccountContext)
-                    } label: { settingsRow("阅读风格", detail: "纸面、字体与排版", symbol: "textformat.size") }
+                    } label: { Label("阅读风格", systemImage: "textformat.size").frame(minHeight: 44) }
                     .accessibilityIdentifier("settings-reading-style")
                     if model.account != nil {
-                        NavigationLink { AccountRecordsScreen(model: model) } label: { settingsRow("笔记与阅读记录", detail: "回到留下想法的地方", symbol: "text.book.closed") }
+                        NavigationLink { AccountRecordsScreen(model: model) } label: { Label("笔记与记录", systemImage: "text.book.closed").frame(minHeight: 44) }
                         NavigationLink { SavedReadingSummariesScreen(model: model) } label: { Label("阅读摘要", systemImage: "doc.text").frame(minHeight: 44) }
                     }
                 }
@@ -57,12 +57,7 @@ struct AppSettingsScreen: View {
                 .sheet(isPresented: $account, onDismiss: { Task { await model.cancelNativeAuthentication() } }) { AccountScreen(model: model) }
         }
     }
-    private func settingsRow(_ title: String, detail: String, symbol: String) -> some View {
-        HStack(spacing: 12) {
-            Image(systemName: symbol).foregroundStyle(Color.leafInk).frame(width: 26)
-            VStack(alignment: .leading, spacing: 4) { Text(title); Text(detail).font(.caption).foregroundStyle(.secondary) }
-        }.frame(minHeight: 48)
-    }
+
 }
 
 @MainActor @Observable final class ReadingStyleModel {
@@ -105,14 +100,14 @@ struct GlobalReadingStyleScreen: View {
         Form {
             if style.ready {
                 Section { ReadingStyleTabs(selection: $category) }.listRowBackground(Color.clear).listRowInsets(EdgeInsets())
+                ReadingAppearanceControls(preferences: preferences, category: category)
                 if category != .reading { Section {
                     VStack(alignment: .leading, spacing: 12) {
                         Text("排版预览").font(.caption).foregroundStyle(.secondary)
-                        ReaderPreferencesPanel.TypographyPreview(text: "留一点时间，读进一本书。\nStay with a book.", fontSize: style.preferences.fontSize, lineSpacing: style.preferences.lineSpacing, fontStyle: style.preferences.fontStyle)
+                        ReaderPreferencesPanel.TypographyPreview(text: "留一点时间，读进一本书。\nStay with a book.", fontSize: style.preferences.fontSize, lineSpacing: style.preferences.lineSpacing, fontStyle: style.preferences.fontStyle, latinFont: style.preferences.latinFont)
                     }.padding(20).background(Color(uiColor: style.preferences.paperColor))
                         .environment(\.colorScheme, style.preferences.colorScheme(following: systemScheme))
                 }.listRowInsets(EdgeInsets()) }
-                ReadingAppearanceControls(preferences: preferences, category: category)
                 if category == .reading { ReaderNavigationControls(preferences: preferences) }
             } else if style.error == nil { ProgressView("正在读取阅读风格…") }
             if let error = style.error {
@@ -121,7 +116,7 @@ struct GlobalReadingStyleScreen: View {
                     Button("重试") { Task { if style.ready { style.save() } else { await style.load(library) } } }.frame(minHeight: 44)
                 }
             }
-        }.navigationTitle("阅读风格").navigationBarTitleDisplayMode(.inline)
+        }.listSectionSpacing(16).navigationTitle("阅读风格").navigationBarTitleDisplayMode(.inline)
             .task { await style.load(library) }
             .accessibilityIdentifier("global-reading-style")
     }

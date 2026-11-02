@@ -78,8 +78,9 @@ public enum ReaderPageInput: String, Codable, CaseIterable, Sendable { case tapA
     public var allowsSwipe: Bool { self != .tapOnly }
 }
 public enum ReaderNavigationMode: String, Codable, Sendable { case scroll, paged }
-public enum ReaderFontStyle: String, Codable, CaseIterable, Sendable { case serif, sans, rounded }
+public enum ReaderFontStyle: String, Codable, CaseIterable, Sendable { case serif, sans, rounded, kai }
 public struct ReaderPreferences: Codable, Equatable, Sendable {
+    public var latinFont: ReaderLatinFont = .automatic
     public var fontStyle: ReaderFontStyle = .serif
     public var fontSize: Double = 22
     public var lineSpacing: Double = 9
@@ -92,9 +93,10 @@ public struct ReaderPreferences: Codable, Equatable, Sendable {
     public var speechSpeed: Double = 1
     public var autoPageInterval: Double = 30
     public init() {}
-    private enum CodingKeys: String, CodingKey { case fontStyle, fontSize, lineSpacing, theme, navigationMode, pageAnimation, pageInput, viewMode, translationVariant, speechSpeed, autoPageInterval }
+    private enum CodingKeys: String, CodingKey { case latinFont, fontStyle, fontSize, lineSpacing, theme, navigationMode, pageAnimation, pageInput, viewMode, translationVariant, speechSpeed, autoPageInterval }
     public init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
+        latinFont = (try values.decodeIfPresent(String.self, forKey: .latinFont)).flatMap(ReaderLatinFont.init(rawValue:)) ?? .automatic
         fontStyle = (try values.decodeIfPresent(String.self, forKey: .fontStyle)).flatMap(ReaderFontStyle.init(rawValue:)) ?? .serif
         fontSize = try values.decodeIfPresent(Double.self, forKey: .fontSize) ?? 22
         lineSpacing = try values.decodeIfPresent(Double.self, forKey: .lineSpacing) ?? 9

@@ -3,18 +3,37 @@ import UIKit
 import LeafhourCore
 
 /// Both the live TextKit reader and SwiftUI preview resolve the same local
-/// system font style. Language-specific fallback remains UIKit/Core Text's job.
+/// fonts. Bundled CJK faces cascade before the operating system fallback.
 @MainActor enum ReaderTypography {
-    static func font(style: ReaderFontStyle, size: Double, traits: UITraitCollection) -> UIFont {
-        let design: UIFontDescriptor.SystemDesign
-        switch style {
-        case .serif: design = .serif
-        case .sans: design = .default
-        case .rounded: design = .rounded
+    static func font(style: ReaderFontStyle, size: Double, traits: UITraitCollection, latin: ReaderLatinFont = .automatic) -> UIFont {
+        let family = latin == .automatic ? pairedLatin(style) : latin
+        let base: UIFont
+        switch family {
+        case .georgia: base = UIFont(name: "Georgia", size: size) ?? .systemFont(ofSize: size)
+        case .palatino: base = UIFont(name: "Palatino-Roman", size: size) ?? .systemFont(ofSize: size)
+        case .baskerville: base = UIFont(name: "Baskerville", size: size) ?? .systemFont(ofSize: size)
+        case .charter: base = UIFont(name: "Charter-Roman", size: size) ?? .systemFont(ofSize: size)
+        case .rounded:
+            let system = UIFont.systemFont(ofSize: size)
+            base = UIFont(descriptor: system.fontDescriptor.withDesign(.rounded) ?? system.fontDescriptor, size: size)
+        case .automatic, .system: base = .systemFont(ofSize: size)
         }
-        let base = UIFont.systemFont(ofSize: size)
-        let descriptor = base.fontDescriptor.withDesign(design) ?? base.fontDescriptor
+        let chineseName: String
+        switch style {
+        case .serif: chineseName = "NotoSerifSC-Regular"
+        case .kai: chineseName = "LXGWWenKaiLite-Regular"
+        case .sans, .rounded: chineseName = "PingFangSC-Regular"
+        }
+        // Explicitly cascade Chinese glyphs; a Latin serif design alone does not
+        // turn UIKit's default Chinese fallback into Songti. Keep OS fallback for
+        // characters/scripts not covered by the selected local face.
+        let chinese = UIFont(name: chineseName, size: size) ?? .systemFont(ofSize: size)
+        let descriptor = base.fontDescriptor.addingAttributes([.cascadeList: [chinese.fontDescriptor]])
         return UIFontMetrics(forTextStyle: .body).scaledFont(for: UIFont(descriptor: descriptor, size: size), compatibleWith: traits)
+    }
+
+    static func pairedLatin(_ style: ReaderFontStyle) -> ReaderLatinFont {
+        switch style { case .serif: .georgia; case .kai: .palatino; case .sans: .system; case .rounded: .rounded }
     }
 
     static func category(for value: DynamicTypeSize) -> UIContentSizeCategory {

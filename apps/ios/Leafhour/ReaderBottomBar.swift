@@ -54,6 +54,8 @@ struct ReaderBottomBar: View {
                 }
             }
         }
+        .padding(6)
+        .background { pillSurface }
         .frame(maxWidth: .infinity)
         .accessibilityHidden(!controlsVisible)
         .onChange(of: focusedControl) { _, control in onFocusChange(control != nil) }
@@ -88,7 +90,6 @@ struct ReaderBottomBar: View {
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
-        .background { pillSurface }
         .focused($focusedControl, equals: control)
         .accessibilityLabel(title)
         .accessibilityIdentifier(control.identifier)
@@ -108,7 +109,6 @@ struct ReaderBottomBar: View {
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
-        .background { pillSurface }
         .focused($focusedControl, equals: .typography)
         .accessibilityLabel("阅读设置")
         .accessibilityHint("调整字号与行间距")
@@ -126,7 +126,6 @@ struct ReaderBottomBar: View {
                 .accessibilityHidden(!controlsVisible)
         }
         .padding(3)
-        .background { pillSurface }
     }
 
     private func modeButton(_ title: String, control: Control, selected: Bool, expanded: Bool, action: @escaping () -> Void) -> some View {

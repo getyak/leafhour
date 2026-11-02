@@ -217,7 +217,7 @@ dialog .status:empty { display: none; }
 .audio-player-details button { min-width: 44px; }
 .library-chat-dialog .library-chat-text-button { min-height: 44px; display: inline-flex; align-items: center; }
 /* New settings and personal shelves share the same target sizes after integration. */
-.settings-dialog .settings-panel .theme-swatches button { width: 44px; height: 44px; min-width: 44px; }
+.settings-dialog .settings-panel .theme-swatches button { min-width: 44px; min-height: 44px; }
 .settings-dialog :is(.settings-footer, .settings-sound-heading) button,
 .settings-dialog .settings-volume input, .audio-role-details > summary { min-height: 44px; }
 .library-page .library-footer > :is(.library-settings, .library-trash) { min-height: 44px; }

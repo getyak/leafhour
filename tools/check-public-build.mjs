@@ -78,6 +78,19 @@ export async function checkPublicBuild(directory){
     for(const font of fonts){const file=path.join(cjkRoot,font.file),info=await lstat(file);if(!info.isFile()||info.size!==font.bytes)throw Error('CJK font must be the approved regular file: '+font.file);const bytes=await readFile(file);if(createHash('sha256').update(bytes).digest('hex')!==font.sha256||bytes.subarray(0,4).toString()!=='wOF2')throw Error('CJK font bytes do not match: '+font.file);registeredFonts.add(file);}
     const license=await readFile(path.join(cjkRoot,'OFL.txt'));if(createHash('sha256').update(license).digest('hex')!==approvedCjkLicense)throw Error('CJK font license does not match');
   }
+  // Fixed review pins stay independent of the font manifest.
+  const wenkaiPins=[{"file":"wenkai-00.woff2","bytes":344912,"sha256":"d6da87d82a3d59bcc0e2b225fbf8333d731efcc524119d5ea23a11998e9f0322","unicodeRange":"U+20-3A04"},{"file":"wenkai-01.woff2","bytes":965680,"sha256":"dcbe0744c334761ff31728b0d338b027ca4d68929865859f288dc05d3bf883a2","unicodeRange":"U+3A11-5D26"},{"file":"wenkai-02.woff2","bytes":1012232,"sha256":"afa712a98b6fa9ec3af53fa71425000ee666edd790b29715a70ff1d807ae271e","unicodeRange":"U+5D27-6EFD"},{"file":"wenkai-03.woff2","bytes":1078396,"sha256":"3e4879b1c9b9aab0517d80db04f3d2572e5447034abfd13cd05f5a86d62df97f","unicodeRange":"U+6EFE-8129"},{"file":"wenkai-04.woff2","bytes":1097700,"sha256":"5a1480f053e90e9dd693ee7e8dfa4ea86add76c6f7e6369492cbfedf3847b296","unicodeRange":"U+812B-92CE"},{"file":"wenkai-05.woff2","bytes":1057176,"sha256":"67526fe8753e128c6fb870731f60e0a2e9ee4b044d6d79d7e351fddf9ca9dc7d","unicodeRange":"U+92CF-20D47"},{"file":"wenkai-06.woff2","bytes":501492,"sha256":"d4eda8dfb3e6fbff579509753631189519c7ab959089b830a2b460097e921399","unicodeRange":"U+20D5D-FFFFD"}];
+  const wenkaiRoot=path.join(root,'fonts/lxgw-wenkai');
+  for(const pin of wenkaiPins){
+    const file=path.join(wenkaiRoot,pin.file);
+    try{
+      const info=await lstat(file),bytes=await readFile(file);
+      if(!info.isFile()||info.size!==pin.bytes||createHash('sha256').update(bytes).digest('hex')!==pin.sha256||bytes.subarray(0,4).toString()!=='wOF2')throw Error('WenKai bytes do not match: '+pin.file);
+      const license=await readFile(path.join(wenkaiRoot,'OFL.txt'));
+      if(createHash('sha256').update(license).digest('hex')!=='0333a85fe077b6849f8e417acc44e8bd879442ceb681e271acf93e2d57fd4e2e')throw Error('WenKai license does not match');
+      registeredFonts.add(file);
+    }catch(error){if(error.code!=='ENOENT')throw error;}
+  }
   const registered=new Map();
   for(const entry of entries){
     if(!entry||!approvedAssets.has(entry.file)||registered.has(entry.file))throw Error('不允许的氛围资源');

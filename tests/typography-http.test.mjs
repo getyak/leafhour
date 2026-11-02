@@ -80,3 +80,15 @@ test('font and CSS serving keeps the CSP and privacy boundaries intact',async()=
     assert.equal(response.headers.get('x-content-type-options'),'nosniff',route);
   }
 });
+
+test('WenKai CSS and font are served locally with the reviewed bytes',async()=>{
+  const expected=JSON.parse(await readFile(path.join(root,'app/fonts/lxgw-wenkai/web-font.json'),'utf8'));
+  for(const face of expected.fonts){
+  const response=await fetch(base+'/fonts/lxgw-wenkai/'+face.file);
+  assert.equal(response.status,200);assert.match(response.headers.get('content-type'),/^font\/woff2/);
+  const bytes=Buffer.from(await response.arrayBuffer());
+  assert.equal(bytes.length,face.bytes);assert.equal(createHash('sha256').update(bytes).digest('hex'),face.sha256);
+  }
+  const css=await (await fetch(base+'/fonts/lxgw-wenkai/font-faces.css')).text();
+  assert.match(css,/font-family:\s*"Leafhour WenKai"/);assert.match(css,/font-display:\s*swap/);assert.doesNotMatch(css,/https?:\/\//);
+});

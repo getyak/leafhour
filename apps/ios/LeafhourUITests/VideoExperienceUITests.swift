@@ -3049,3 +3049,40 @@ extension VideoExperienceUITests {
     }
 
 }
+
+
+extension VideoExperienceUITests {
+    func testQuietTypographyAndPaperPersistAcrossTheReader() {
+        launch(); openBook(translatedTitle); openTool("阅读设置"); expandPanel()
+        let form = foregroundForm()
+        let kai = app.buttons["reader-font-kai"]
+        scrollTo(kai, in: form); require(kai); kai.tap(); XCTAssertTrue(kai.isSelected)
+        capture("quiet-reading-chinese-fonts")
+        app.buttons["reader-latin-font-open"].tap()
+        let latin = app.buttons["reader-latin-baskerville"]
+        scrollTo(latin, in: foregroundForm()); require(latin); latin.tap(); XCTAssertTrue(latin.isSelected)
+        capture("quiet-reading-latin-fonts")
+        app.navigationBars.buttons.firstMatch.tap()
+        app.segmentedControls["reading-style-categories"].buttons["纸面"].tap()
+        let dusk = app.buttons["reader-theme-dusk"]
+        scrollTo(dusk, in: foregroundForm()); require(dusk); dusk.tap(); XCTAssertTrue(dusk.isSelected)
+        capture("quiet-reading-paper")
+        closePanel(); require(reader); capture("quiet-reading-page")
+        coldRelaunch(); resumeReaderIfOffered(); require(reader)
+        openTool("阅读设置"); expandPanel()
+        scrollTo(kai, in: foregroundForm()); require(kai); XCTAssertTrue(kai.isSelected)
+        app.buttons["reader-latin-font-open"].tap(); require(latin); XCTAssertTrue(latin.isSelected)
+    }
+
+    func testQuietToolsGridReachesSearchAndTiming() {
+        launch(); openBook(translatedTitle); openTool("更多"); expandPanel()
+        capture("quiet-reading-tools")
+        let search = app.buttons["搜索原文"]; require(search); search.tap()
+        require(originalSearch)
+        app.navigationBars.buttons.firstMatch.tap()
+        let timing = app.buttons["阅读计时"]; require(timing); timing.tap()
+        require(app.buttons["reader-time-start"])
+        capture("quiet-reading-timing")
+        app.buttons["reader-tool-continue"].tap(); require(reader)
+    }
+}

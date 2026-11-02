@@ -320,22 +320,30 @@ final class ReaderPaginationTests: XCTestCase {
         let receipt = await session.flush(); XCTAssertTrue(receipt.succeeded)
     }
 
-    func testChosenSystemFontStyleReachesTheActualSourceTextWithoutMovingItsAnchor() async throws {
+    func testChosenLocalFontStyleReachesTheActualSourceTextWithoutMovingItsAnchor() async throws {
         let session = try await session()
         let (view, coordinator) = await text(session)
         let anchor = session.currentAnchor
-        let designs: [(ReaderFontStyle, UIFontDescriptor.SystemDesign)] = [(.sans, .default), (.rounded, .rounded), (.serif, .serif)]
+        let designs: [(ReaderFontStyle, UIFontDescriptor.SystemDesign)] = [(.sans, .default), (.rounded, .rounded), (.serif, .serif), (.kai, .serif)]
         for (style, design) in designs {
             var preferences = session.state.preferences; preferences.fontStyle = style
             session.changePreferences(preferences); coordinator.updateContent(view); await drain()
             let actual = try XCTUnwrap(view.attributedText.attribute(.font, at: 0, effectiveRange: nil) as? UIFont)
             let base = UIFont.systemFont(ofSize: preferences.fontSize)
             let descriptor = base.fontDescriptor.withDesign(design) ?? base.fontDescriptor
-            let expected = UIFontMetrics(forTextStyle: .body).scaledFont(for: UIFont(descriptor: descriptor, size: preferences.fontSize), compatibleWith: view.traitCollection)
+            let baseFont = style == .serif ? UIFont(name: "Georgia", size: preferences.fontSize)! : style == .kai ? UIFont(name: "Palatino-Roman", size: preferences.fontSize)! : UIFont(descriptor: descriptor, size: preferences.fontSize)
+            let expected = UIFontMetrics(forTextStyle: .body).scaledFont(for: baseFont, compatibleWith: view.traitCollection)
             XCTAssertEqual(actual.fontName, expected.fontName)
             XCTAssertEqual(actual.pointSize, expected.pointSize, accuracy: 0.01)
             XCTAssertEqual(session.currentAnchor, anchor)
         }
+        let previousBuilds = coordinator.contentBuildCount
+        var changed = session.state.preferences; changed.latinFont = .baskerville
+        session.changePreferences(changed); coordinator.updateContent(view); await drain()
+        let actual = try XCTUnwrap(view.attributedText.attribute(.font, at: 0, effectiveRange: nil) as? UIFont)
+        XCTAssertEqual(actual.fontName, "Baskerville")
+        XCTAssertGreaterThan(coordinator.contentBuildCount, previousBuilds, "A Latin family change must invalidate actual pagination")
+        XCTAssertEqual(session.currentAnchor, anchor)
         let receipt = await session.flush(); XCTAssertTrue(receipt.succeeded)
     }
 
