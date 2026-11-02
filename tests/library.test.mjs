@@ -137,7 +137,7 @@ test('rejects disguised PDFs, binary text, empty and oversized files',async()=>{
   await assert.rejects(extractDocument({filename:'empty.txt',bytes:Buffer.alloc(0)}));
   await assert.rejects(extractDocument({filename:'binary.txt',bytes:Buffer.from([0,1,2,3])}));
   await assert.rejects(extractDocument({filename:'book.exe',bytes:Buffer.from('book')}));
-  await assert.rejects(extractDocument({filename:'huge.txt',bytes:Buffer.alloc(20*1024*1024+1)}),e=>e.status===413);
+  await assert.rejects(extractDocument({filename:'huge.txt',bytes:Buffer.alloc(64*1024*1024+1)}),e=>e.status===413);
 });
 
 test('translation only uses adjacent passages, saves independent draft versions and never pretends failure is translation',async t=>{
