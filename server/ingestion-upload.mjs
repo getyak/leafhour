@@ -1,5 +1,6 @@
 import {randomUUID} from 'node:crypto';
-import {digest,fail,MAX_FILE_BYTES} from './document-import.mjs';
+import {digest,fail} from './document-import.mjs';
+import {documentByteLimit} from '../app/import-limits.mjs';
 export const UPLOAD_PART_BYTES=2*1024*1024;
 const COMPLETION_LEASE_MS=10*60*1000; // Outlives the hosted invocation's 300-second limit.
 export function createIngestionUpload({store,ingestion}){
@@ -7,7 +8,7 @@ export function createIngestionUpload({store,ingestion}){
  const transport=()=>store.signedUpload?{transport:'signed'}:{};
  const key=(u,id)=>{if(typeof id!=='string'||!/^[-a-z0-9]{36}$/.test(id))throw fail('找不到上传任务',404);return root(u)+id;};
  async function start(user,input){
-  root(user);const pdf=typeof input.filename==='string'&&/\.pdf$/i.test(input.filename),mode=pdf?(input.mode==='auto'?'auto':'ocr'):'document';if(typeof input.filename!=='string'||!/^.+\.(pdf|epub|txt|md|markdown)$/i.test(input.filename)||input.filename.length>240||!Number.isSafeInteger(input.bytes)||input.bytes<1||input.bytes>(pdf?MAX_FILE_BYTES:20*1024*1024)||!/^[a-f0-9]{64}$/.test(input.sha256))throw fail('请选择容量内的 PDF、EPUB 或文本文件');
+  root(user);const pdf=typeof input.filename==='string'&&/\.pdf$/i.test(input.filename),mode=pdf?(input.mode==='auto'?'auto':'ocr'):'document';if(typeof input.filename!=='string'||!/^.+\.(pdf|epub|txt|md|markdown)$/i.test(input.filename)||input.filename.length>240||!Number.isSafeInteger(input.bytes)||input.bytes<1||input.bytes>documentByteLimit(input.filename)||!/^[a-f0-9]{64}$/.test(input.sha256))throw fail('请选择容量内的 PDF、EPUB 或文本文件');
   const sourceJob=await ingestion.findSource?.(user,input.sha256);if(sourceJob)return {job:sourceJob,duplicate:true};
   if(pdf&&input.mode!=='auto'&&input.consent!==true)throw fail('请允许 PaddleOCR 官方服务识别本书',403);
   const fingerprint=root(user)+'source-'+input.sha256,existing=await store.read(fingerprint,null);if(existing){const previous=await store.read(key(user,existing.id),null);if(previous&&previous.expiresAt>Date.now()){

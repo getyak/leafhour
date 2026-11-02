@@ -340,6 +340,7 @@
   "app/home.html",
   "app/icons-LICENSE.txt",
   "app/icons.svg",
+  "app/import-limits.mjs",
   "app/index.html",
   "app/interaction-craft.css",
   "app/interaction-craft.mjs",

@@ -1,3 +1,4 @@
+import {documentByteLimit,documentLimitMessage} from './import-limits.mjs';
 export function createUploadState(){
   let file=null,busy=false;
   return {
@@ -5,7 +6,7 @@ export function createUploadState(){
     select(candidate){
       if(busy)return false;file=null;
       if(!candidate||!Number.isFinite(candidate.size)||candidate.size<=0)throw Error('文件中没有内容，请选择另一份文件。');
-      if(candidate.size>(/\.pdf$/i.test(candidate.name)?256:20)*1024*1024)throw Error('PDF 最多 256 MB，EPUB 与文本最多 20 MB，请按章节拆分。');
+      if(candidate.size>documentByteLimit(candidate.name))throw Error(documentLimitMessage+'，请按章节拆分。');
       if(typeof candidate.name!=='string'||!candidate.name.trim()||candidate.name.length>240||!/\.(pdf|epub|txt|md|markdown)$/i.test(candidate.name))throw Error('目前支持 PDF、EPUB、TXT 和 Markdown。请重新选择文件。');
       file=candidate;return true;
     },

@@ -6,6 +6,7 @@ import {digest,fail,MAX_FILE_BYTES,extractDocument} from './document-import.mjs'
 import {epubMetadata} from './epub-import.mjs';
 import {deriveImportedCover} from './imported-cover.mjs';
 import {normalizePaddlePage,PADDLE_MODEL} from './paddleocr.mjs';
+import {documentByteLimit,documentLimitMessage} from '../app/import-limits.mjs';
 const userId=user=>{if(!user?.id)throw fail('请先进入自己的书房',401);return digest(user.id);};
 export function createBookIngestion({store,library,provider,batchPages=30,maxBatchBytes=20*1024*1024,now=Date.now,nativeInspector=inspectNativePdf,onOutcome=()=>{}}={}){
  let cachedDocument=null;
@@ -34,7 +35,7 @@ export function createBookIngestion({store,library,provider,batchPages=30,maxBat
  }
  async function prepareDocument(user,{filename,bytes,sourceParts,assertCurrent=async()=>{}}){
   userId(user);
-  if(typeof filename!=='string'||!/^.+\.(epub|txt|md|markdown)$/i.test(filename)||filename.length>240||!Buffer.isBuffer(bytes)||!bytes.length||bytes.length>20*1024*1024)throw fail('请选择 20 MB 内的 EPUB 或文本文件',413);
+  if(typeof filename!=='string'||!/^.+\.(epub|txt|md|markdown)$/i.test(filename)||filename.length>240||!Buffer.isBuffer(bytes)||!bytes.length||bytes.length>documentByteLimit(filename))throw fail(documentLimitMessage,413);
   await assertCurrent();
   const sourceHash=digest(bytes),previous=await findSource(user,sourceHash);if(previous&&previous.state!=='cancelled')return previous;
   const reservation='ingestion/'+userId(user)+'/source-'+sourceHash,id=randomUUID();

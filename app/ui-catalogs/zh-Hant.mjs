@@ -1198,7 +1198,7 @@ export default Object.freeze({
   "portal.upload.explanation": "自動整理文字版與掃描版。需要藉助外部識別時，再由你確認；原文件始終保留。",
   "portal.upload.failed": "上傳未完成。你可以重試，或選擇另一份文件。",
   "portal.upload.intro": "原文件保存在自己的書房，提取後即可閱讀。",
-  "portal.upload.limits": "PDF 最多 256 MB · EPUB、TXT、Markdown 最多 20 MB",
+  "portal.upload.limits": "PDF 最多 256 MB · EPUB 最多 20 MB · TXT、Markdown 最多 64 MB",
   "portal.upload.opening": "已放進書房，正在打開第一段。",
   "portal.upload.organizing": "正在整理段落…",
   "portal.upload.pdfExtract": "正在提取 PDF 文字，請稍等…",
