@@ -32,6 +32,7 @@ struct CompanionComposerHeightKey: PreferenceKey {
 struct ReaderPanelPresentation: ViewModifier {
     let isCompanion: Bool
     let isNoteEditor: Bool
+    var startsExpanded = false
 
     @ViewBuilder func body(content: Content) -> some View {
         if isCompanion {
@@ -40,7 +41,7 @@ struct ReaderPanelPresentation: ViewModifier {
                 .presentationBackgroundInteraction(.disabled)
         } else {
             content
-                .presentationDetents(isNoteEditor ? [.large] : [.medium, .large])
+                .presentationDetents(isNoteEditor || startsExpanded ? [.large] : [.medium, .large])
                 .presentationDragIndicator(.visible)
                 .presentationCompactAdaptation(.automatic)
                 .presentationBackgroundInteraction(.enabled(upThrough: .medium))

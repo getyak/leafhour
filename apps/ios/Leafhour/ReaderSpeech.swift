@@ -29,6 +29,7 @@ final class ReaderSpeech: NSObject, AVSpeechSynthesizerDelegate {
     private(set) var passageID: String?
     private(set) var text = ""
     private(set) var activeSentence = ""
+    private(set) var spokenWordRange: NSRange?
     private(set) var highlight: ReaderSpeechHighlight?
     private(set) var position = 0
     private(set) var count = 0
@@ -159,7 +160,7 @@ final class ReaderSpeech: NSObject, AVSpeechSynthesizerDelegate {
         checkpoint(force: true)
         utterance = nil; voiceChangePending = false
         synthesizer.stopSpeaking(at: .immediate)
-        playing = false; paused = false; highlight = nil
+        playing = false; paused = false; highlight = nil; spokenWordRange = nil
         try? audioSession.setActive(false, options: .notifyOthersOnDeactivation)
     }
     func move(_ delta: Int) {
@@ -201,7 +202,7 @@ final class ReaderSpeech: NSObject, AVSpeechSynthesizerDelegate {
         message = nil; text = content.text; passageID = content.passageID
         utteranceStart = sentence.location; spokenOffset = utteranceStart
         activeSentence = (text as NSString).substring(with: sentence)
-        highlight = nil
+        highlight = nil; spokenWordRange = nil
         let value = AVSpeechUtterance(string: (text as NSString).substring(from: utteranceStart))
         // Synthesize at one stable baseline. AVAudioUnitTimePitch applies the
         // actual multiplier without hitting AVSpeechUtterance's rate ceiling.
@@ -225,7 +226,7 @@ final class ReaderSpeech: NSObject, AVSpeechSynthesizerDelegate {
               range.location >= 0, range.length > 0, range.location <= utterance.speechString.utf16.count - range.length else { return }
         let word = NSRange(location: utteranceStart + range.location, length: range.length)
         guard word.location >= spokenOffset, let sentence = content.sentence(at: word.location) else { return }
-        spokenOffset = word.location
+        spokenOffset = word.location; spokenWordRange = word
         activeSentence = (content.text as NSString).substring(with: sentence)
         highlight = ReaderSpeechHighlight(location: content.location(at: word.location), sentenceRange: content.sourceRange(sentence), wordRange: content.sourceRange(word))
         checkpoint()

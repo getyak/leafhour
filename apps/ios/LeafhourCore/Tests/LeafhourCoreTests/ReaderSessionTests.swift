@@ -3,6 +3,42 @@ import Observation
 @testable import LeafhourCore
 
 final class ReaderSessionTests: XCTestCase {
+    @MainActor func testFirstVisibleChapterStartsTimeEvenBeforeTheViewportSuppliesAnAnchor() async throws {
+        let fixture = try await fixture(), session = fixture.session(state: fixture.state, store: fixture.library)
+        session.setReadingVisible(true); session.state.anchor = nil
+        session.startAutomaticReadingTimeIfNeeded()
+        XCTAssertEqual(session.readingTimePhase, .active)
+        XCTAssertNil(session.currentAnchor, "Recording a first visible paragraph must not move the reading position")
+        session.finishReadingTime(); _ = await session.flushReadingTime()
+        let rows = try await fixture.library.readingTimeLedger(bookID: fixture.book.id).snapshots
+        XCTAssertEqual(rows.first?.start.chapterID, session.chapter.id)
+        XCTAssertEqual(rows.first?.start.passageID, session.chapter.passages[0].id)
+    }
+
+    @MainActor func testAutomaticEstimateStartsOnlyOnVisibleReaderAndRespectsPauseAndOptOut() async throws {
+        let fixture = try await fixture(), session = fixture.session(state: fixture.state, store: fixture.library)
+        session.setReadingVisible(false)
+        session.startAutomaticReadingTimeIfNeeded()
+        XCTAssertEqual(session.readingTimePhase, .idle)
+        session.setReadingVisible(true)
+        session.startAutomaticReadingTimeIfNeeded()
+        XCTAssertEqual(session.readingTimePhase, .active)
+        XCTAssertEqual(session.readingTimeSource, .estimate)
+        session.pauseReadingTime()
+        session.setReadingVisible(false); session.setReadingVisible(true)
+        session.startAutomaticReadingTimeIfNeeded()
+        XCTAssertEqual(session.readingTimePhase, .paused)
+        XCTAssertFalse(session.readingTimeWantsRunning)
+        session.finishReadingTime()
+        session.startAutomaticReadingTimeIfNeeded()
+        XCTAssertEqual(session.readingTimePhase, .finished)
+        let saved = await session.flushReadingTime(); XCTAssertTrue(saved)
+        var state = fixture.state; state.preferences.automaticReadingTime = false
+        let disabled = fixture.session(state: state, store: fixture.library)
+        disabled.startAutomaticReadingTimeIfNeeded()
+        XCTAssertEqual(disabled.readingTimePhase, .idle)
+    }
+
     @MainActor func testManualPauseInsideHiddenToolsRemainsPausedAfterClosingTools() async throws {
         let fixture = try await fixture(), session = fixture.session(state: fixture.state, store: fixture.library)
         session.startReadingTime()

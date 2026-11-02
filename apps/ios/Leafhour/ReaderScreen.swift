@@ -37,13 +37,13 @@ private struct ReaderChromeHeightKey: PreferenceKey {
     }
 }
 enum ReaderPanel: Identifiable {
-    case contents, search, preferences, appearance, records, tools, listening, autoPage, translation, introduction, conversation, bookInformation, note(SelectedQuote), source(SelectedQuote), companion(SelectedQuote?), share(SelectedQuote?)
+    case contents, search, preferences, appearance, records, tools, listening, time, autoPage, translation, introduction, conversation, bookInformation, note(SelectedQuote), source(SelectedQuote), companion(SelectedQuote?), share(SelectedQuote?)
     var isCompanion: Bool { switch self { case .companion, .conversation: true; default: false } }
     var isNoteEditor: Bool { if case .note = self { true } else { false } }
     var id: String {
         switch self {
         case .contents: "contents"; case .search: "search"; case .preferences: "preferences"; case .records: "records"
-        case .appearance: "appearance"; case .tools: "tools"; case .listening: "listening"; case .translation: "translation"
+        case .time: "time"; case .appearance: "appearance"; case .tools: "tools"; case .listening: "listening"; case .translation: "translation"
         case .autoPage: "auto-page"
         case .share(let quote): "share-" + (quote?.id ?? "book")
         case .introduction: "introduction"; case .conversation: "conversation"; case .bookInformation: "book-information"
@@ -95,13 +95,13 @@ struct ReaderScreen: View {
     // Continuous reading keeps the measured controls budget for its scroll ends.
     private func readingInsets(for layout: ReaderChromeLayout) -> UIEdgeInsets {
         if session.state.preferences.navigationMode == .paged {
-            return UIEdgeInsets(top: 16, left: 22, bottom: autoPage.showsStatus && dynamicTypeSize.isAccessibilitySize ? 104 : 44, right: 22)
+            return UIEdgeInsets(top: 4, left: 22, bottom: layout.width < 320 || autoPage.showsStatus || speech.playing || speech.paused ? 120 : 48, right: 22)
         }
         let metrics = chromeMetrics?.layout == layout ? chromeMetrics : nil
         let top = metrics?.top ?? 44
         let bottom = metrics?.bottom ?? (layout.compact ? 44 : 82)
-        return UIEdgeInsets(top: max(52, top + 8), left: 24,
-                            bottom: max(52, bottom + 8), right: 24)
+        return UIEdgeInsets(top: max(44, top + 2), left: 24,
+                            bottom: max(44, bottom + 2), right: 24)
     }
     private var presentedReader: some View {
         GeometryReader { geometry in
@@ -155,38 +155,37 @@ struct ReaderScreen: View {
                             }
                         }
                     Spacer()
-                    if let quote = session.selection, session.book.kind == .pdf {
-                        HStack(spacing: 12) {
-                            Text("已选择原文").font(.footnote); Spacer(minLength: 4)
-                            Button("解释这句", systemImage: "text.bubble") { showCompanion(quote) }
-                            Button("分享摘录", systemImage: "square.and.arrow.up") { present(.share(quote)) }
-                            Button("记笔记", systemImage: "square.and.pencil") { showNote(quote) }
-                            Button("取消选择", systemImage: "xmark") { session.selection = nil; selectionDismissalID = UUID() }
-                        }.labelStyle(.iconOnly).buttonStyle(.borderless).controlSize(.large).padding().background(.regularMaterial)
-                    }
                     ZStack(alignment: .bottom) {
-                        VStack(spacing: layout.compact ? 0 : 8) {
-                            if !layout.compact {
-                                Text(progressCaption).font(.caption).foregroundStyle(Color.primary)
-                                    .fixedSize(horizontal: false, vertical: true).multilineTextAlignment(.center)
-                                    .padding(.horizontal, 12).padding(.vertical, 4)
-                                    .background(paper, in: Capsule())
-                                    .accessibilityIdentifier("reader-progress-caption")
-                                    .accessibilityHidden(!showingBottom)
+                        ReaderGlassGroup {
+                            VStack(spacing: layout.compact ? 0 : 4) {
+                                if let quote = session.selection {
+                                    ReaderSelectionDock(quote: quote, paper: paper, onAI: { showCompanion(quote) },
+                                        onNote: { showNote(quote) }, onTranslate: { present(.translation) }, onShare: { present(.share(quote)) },
+                                        onClear: { session.selection = nil; hasNativeTextSelection = false; selectionDismissalID = UUID() })
+                                } else {
+                                    if !layout.compact {
+                                        Text(progressCaption).font(.caption).foregroundStyle(Color.primary)
+                                            .fixedSize(horizontal: false, vertical: true).multilineTextAlignment(.center)
+                                            .padding(.horizontal, 12).padding(.vertical, 4)
+                                            .background(paper, in: Capsule())
+                                            .accessibilityIdentifier("reader-progress-caption")
+                                            .accessibilityHidden(!showingBottom)
+                                    }
+                                    ReaderBottomBar(
+                                        paper: paper, mode: speech.playing ? .listening : .reading,
+                                        chapterAccessibilityValue: progressDescription,
+                                        listeningAccessibilityHint: speech.playing ? "正在朗读，打开听书控制" : speech.paused ? "听书已暂停，打开后可继续" : "打开听书控制，点击播放后才开始",
+                                        onContents: { present(.contents) },
+                                        onRead: { autoPage.pause(.interaction); speech.pause(); chrome = .asleep },
+                                        onListen: { present(.listening) },
+                                        onAppearance: { present(.appearance) },
+                                        onTypography: { present(.preferences) },
+                                        onInteraction: { autoPage.pause(.interaction); clockID = UUID() },
+                                        onFocusChange: { bottomBarFocused = $0; clockID = UUID() },
+                                        controlsVisible: showingBottom
+                                    )
+                                }
                             }
-                            ReaderBottomBar(
-                                mode: speech.playing ? .listening : .reading,
-                                chapterAccessibilityValue: progressDescription,
-                                listeningAccessibilityHint: speech.playing ? "正在朗读，打开听书控制" : speech.paused ? "听书已暂停，打开后可继续" : "打开听书控制，点击播放后才开始",
-                                onContents: { present(.contents) },
-                                onRead: { autoPage.pause(.interaction); speech.pause(); chrome = .asleep },
-                                onListen: { present(.listening) },
-                                onAppearance: { present(.appearance) },
-                                onTypography: { present(.preferences) },
-                                onInteraction: { autoPage.pause(.interaction); clockID = UUID() },
-                                onFocusChange: { bottomBarFocused = $0; clockID = UUID() },
-                                controlsVisible: showingBottom
-                            )
                         }
                         .padding(.horizontal, 12).padding(.bottom, layout.compact ? 4 : 6)
                         .background {
@@ -199,9 +198,9 @@ struct ReaderScreen: View {
                                 .padding(.top, -8).ignoresSafeArea(edges: .bottom)
                                 .allowsHitTesting(false).accessibilityHidden(true)
                         }
-                        .background { GeometryReader { geometry in Color.clear.preference(key: ReaderChromeHeightKey.self, value: [ReaderChromeMeasurement(layout: layout, region: .bottom, height: geometry.size.height)]) } }
-                        .modifier(ReaderChromeVisibility(isVisible: showingBottom)).allowsHitTesting(showingBottom).disabled(!showingBottom)
-                        if !showingBottom { quietReadingControl }
+                        .background { GeometryReader { geometry in Color.clear.preference(key: ReaderChromeHeightKey.self, value: session.selection == nil ? [ReaderChromeMeasurement(layout: layout, region: .bottom, height: geometry.size.height)] : []) } }
+                        .modifier(ReaderChromeVisibility(isVisible: showingBottom || session.selection != nil)).allowsHitTesting(showingBottom || session.selection != nil).disabled(!showingBottom && session.selection == nil)
+                        if !showingBottom && session.selection == nil { quietReadingControl }
                     }
                 }
             }
@@ -211,19 +210,19 @@ struct ReaderScreen: View {
         .statusBarHidden(true)
         .interactiveDismissDisabled(panel?.isCompanion != true && (session.saving || session.saveError != nil))
         .sheet(item: Binding<ReaderPanel?>(get: {
-            guard let panel, !panel.isCompanion, panel.id != "contents" else { return nil }
+            guard let panel, !panel.isCompanion, panel.id != "contents", panel.id != "listening" else { return nil }
             return panel
         }, set: { value in
-            if value == nil && (panel?.isCompanion == true || panel?.id == "contents") { return }
+            if value == nil && (panel?.isCompanion == true || panel?.id == "contents" || panel?.id == "listening") { return }
             panel = value
         }), onDismiss: {
             hasNativeTextSelection = false; session.clearTransientSelection(); selectionDismissalID = UUID(); chrome = .asleep
             if startAutoPageOnDismiss { startAutoPageOnDismiss = false; beginAutoPaging() }
         }) { destination in
             ReaderPanelView(panel: destination, session: session, systemColorScheme: systemColorScheme, speech: speech, tools: tools, cloud: cloud, library: library, reading: reading,
-                onJump: { index, anchor in speech.userNavigated(); session.go(to: index, anchor: anchor); panel = nil; session.setReadingVisible(scenePhase == .active); session.recordReadingInteraction() }, onCompanion: { showCompanion(currentQuote) },
+                onJump: { index, anchor in speech.userNavigated(); session.go(to: index, anchor: anchor); panel = nil; session.setReadingVisible(scenePhase == .active && !speech.playing); session.recordReadingInteraction() }, onCompanion: { showCompanion(currentQuote) },
                 autoPage: autoPage, onAutoPageStart: startAutoPaging, onPresent: present)
-                .modifier(ReaderPanelPresentation(isCompanion: destination.isCompanion, isNoteEditor: destination.isNoteEditor))
+                .modifier(ReaderPanelPresentation(isCompanion: destination.isCompanion, isNoteEditor: destination.isNoteEditor, startsExpanded: destination.id == "time"))
         }
         .alert(session.saveError == nil ? "阅读提示" : "阅读记录", isPresented: Binding(get: { session.message != nil || (session.noteEditorID == nil && session.saveMessage != nil) }, set: { if !$0 { session.message = nil; session.saveMessage = nil } })) {
             if session.saveError != nil {
@@ -246,6 +245,14 @@ struct ReaderScreen: View {
             presentedReader
                 .toolbar(.hidden, for: .navigationBar)
                 .navigationTitle("阅读")
+                .navigationDestination(isPresented: Binding(get: { panel?.id == "listening" }, set: { if !$0 && panel?.id == "listening" { panel = nil } })) {
+                    ReaderListeningPanel(session: session, speech: speech)
+                        .preferredColorScheme(session.state.preferences.colorScheme(following: systemColorScheme))
+                        .toolbar(.visible, for: .navigationBar)
+                        .toolbar { ToolbarItem(placement: .confirmationAction) {
+                            Button("继续读", systemImage: "book") { panel = nil }.accessibilityIdentifier("reader-listening-return")
+                        } }
+                }
                 .navigationDestination(isPresented: Binding(get: { panel?.isCompanion == true }, set: { value in
                     if !value && panel?.isCompanion == true { panel = nil; session.clearTransientSelection(); selectionDismissalID = UUID() }
                 })) {
@@ -265,14 +272,14 @@ struct ReaderScreen: View {
             if panel?.id == "contents" {
                 ReaderContentsOverlay(session: session, onJump: { index, anchor in
                     speech.userNavigated(); session.go(to: index, anchor: anchor); panel = nil
-                    session.setReadingVisible(scenePhase == .active); session.recordReadingInteraction()
+                    session.setReadingVisible(scenePhase == .active && !speech.playing); session.recordReadingInteraction()
                 }, onClose: { panel = nil })
             }
         }
     }
     private var trackedReader: some View {
         navigationReader
-        .modifier(ReaderTimeTracking(session: session, visible: scenePhase == .active && panel == nil))
+        .modifier(ReaderTimeTracking(session: session, visible: scenePhase == .active && panel == nil && !speech.playing))
         .safeAreaInset(edge: .top, spacing: 0) { remotePositionNotice }
         .onChange(of: autoPageConditions, initial: true) { _, conditions in autoPage.update(conditions, navigationID: session.navigationID) }
         .onChange(of: session.navigationID) { _, id in autoPage.update(autoPageConditions, navigationID: id) }
@@ -401,29 +408,44 @@ struct ReaderScreen: View {
         }
     }
     private var quietReadingControl: some View {
-        HStack {
-            Spacer()
-            if autoPage.showsStatus && !speech.playing && !speech.paused {
-                ReaderAutoPageStatusControl(controller: autoPage, onContinue: startAutoPaging, onSettings: { present(.autoPage) })
-            } else if speech.playing || speech.paused {
-                HStack(spacing: 0) {
-                    Button {
-                        if !speech.following { speech.following = true }
-                        else { present(.listening) }
-                    } label: {
-                        Label(!speech.following ? "回到朗读" : speech.playing ? "正在听书" : "听书已暂停", systemImage: speech.playing ? "waveform" : "pause.fill")
-                            .font(.caption).padding(.horizontal, 14).frame(minHeight: 44).contentShape(Rectangle())
-                    }.accessibilityIdentifier("reader-speech-status").accessibilityValue(speech.activeSentence)
-                    Button { speech.toggle(session) } label: {
-                        Image(systemName: speech.playing ? "pause.fill" : "play.fill").frame(width: 44, height: 44).contentShape(Rectangle())
-                    }.accessibilityLabel(speech.playing ? "暂停朗读" : "继续朗读").accessibilityIdentifier("reader-speech-toggle")
-                }.buttonStyle(.plain).background(.regularMaterial, in: Capsule())
-            } else {
-                Button { revealTools() } label: {
-                    Capsule().fill(.secondary.opacity(0.4)).frame(width: 30, height: 4).frame(width: 72, height: 44)
-                }.accessibilityLabel("显示阅读进度、目录、搜索与记录").accessibilityHint("轻点书页也能打开阅读工具")
-            }
-            Spacer()
+        ReaderGlassGroup {
+            ViewThatFits(in: .horizontal) {
+                HStack(spacing: 8) {
+                    timeCapsule
+                    quietReadingMiddleControl
+                    ReaderAIButton(paper: paper, quote: nil, onOpen: { showCompanion(currentQuote) })
+                }.fixedSize(horizontal: true, vertical: false)
+                VStack(spacing: 2) {
+                    timeCapsule
+                    HStack(spacing: 10) {
+                        quietReadingMiddleControl
+                        ReaderAIButton(paper: paper, quote: nil, onOpen: { showCompanion(currentQuote) })
+                    }
+                }
+            }.frame(maxWidth: .infinity).padding(.horizontal, 16)
+        }
+    }
+    private var timeCapsule: some View { ReaderTimeCapsule(session: session, paper: paper, onOpen: { present(.time) }) }
+    @ViewBuilder private var quietReadingMiddleControl: some View {
+        if autoPage.showsStatus && !speech.playing && !speech.paused {
+            ReaderAutoPageStatusControl(controller: autoPage, onContinue: startAutoPaging, onSettings: { present(.autoPage) })
+        } else if speech.playing || speech.paused {
+            HStack(spacing: 0) {
+                Button {
+                    if !speech.following { speech.following = true }
+                    else { present(.listening) }
+                } label: {
+                    Label(!speech.following ? "回到朗读" : speech.playing ? "正在听书" : "听书已暂停", systemImage: speech.playing ? "waveform" : "pause.fill")
+                        .font(.caption).padding(.horizontal, 10).frame(minHeight: 44).contentShape(Rectangle())
+                }.accessibilityIdentifier("reader-speech-status").accessibilityValue(speech.activeSentence)
+                Button { speech.toggle(session) } label: {
+                    Image(systemName: speech.playing ? "pause.fill" : "play.fill").frame(width: 44, height: 44).contentShape(Rectangle())
+                }.accessibilityLabel(speech.playing ? "暂停朗读" : "继续朗读").accessibilityIdentifier("reader-speech-toggle")
+            }.buttonStyle(.plain).modifier(ReaderGlassSurface(paper: paper))
+        } else {
+            Button { revealTools() } label: {
+                Capsule().fill(.secondary.opacity(0.4)).frame(width: 24, height: 4).frame(width: 44, height: 44)
+            }.accessibilityLabel("显示阅读进度、目录、搜索与记录").accessibilityHint("轻点书页也能打开阅读工具")
         }
     }
     @ViewBuilder private func navigationHeader(compact: Bool) -> some View {
@@ -516,7 +538,7 @@ struct ReaderScreen: View {
         withAnimation(reduceMotion ? nil : .easeOut(duration: 0.16)) { chrome = .tools }
         clockID = UUID()
     }
-    private func present(_ value: ReaderPanel) { autoPage.pause(.panel); panel = value; chrome = .asleep }
+    private func present(_ value: ReaderPanel) { session.setReadingVisible(false); autoPage.pause(.panel); panel = value; chrome = .asleep }
     private var autoPageConditions: ReaderAutoPageConditions {
         ReaderAutoPageConditions(isForeground: scenePhase == .active,
             isPaged: session.state.preferences.navigationMode == .paged,
@@ -565,6 +587,7 @@ struct ReaderScreen: View {
         return SelectedQuote(anchor: ReadingAnchor(chapterID: session.chapter.id, passageID: passage.id), text: visible, sourceText: source)
     }
     private func showCompanion(_ quote: SelectedQuote?) {
+        session.setReadingVisible(false)
         autoPage.pause(.panel)
         hasNativeTextSelection = false
         session.selection = nil

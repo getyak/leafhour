@@ -50,7 +50,8 @@ struct ReaderPanelView: View {
                 case .appearance: ReaderAppearancePanel(session: session)
                 case .records: ReaderRecordsPanel(session: session, onJump: onJump)
                 case .tools: ReaderMorePanel(session: session, speech: speech, tools: tools, cloud: cloud, library: library, reading: reading, onJump: onJump, onCompanion: onCompanion,
-                    onAutoPage: { onPresent(.autoPage) }, onShare: { onPresent(.share(nil)) })
+                    onAutoPage: { onPresent(.autoPage) }, onShare: { onPresent(.share(nil)) }, onListen: { onPresent(.listening) })
+                case .time: ReaderBookTimePanel(session: session, library: library, cloud: cloud)
                 case .listening: ReaderListeningPanel(session: session, speech: speech)
                 case .autoPage:
                     if let autoPage {

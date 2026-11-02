@@ -121,8 +121,14 @@ public final class ReaderSession: Identifiable {
     public var chapter: BookChapter { book.chapters[chapterIndex] }
     /// Scroll checkpoints are immediate, while observed state and disk writes remain coalesced.
     public var currentAnchor: ReadingAnchor? { visibleAnchor ?? state.anchor }
+    /// Entering a visible reader opts into a labeled estimate, never a focus session.
+    /// Existing paused/finished sessions are owned by the reader's explicit choice.
+    public func startAutomaticReadingTimeIfNeeded() {
+        guard readingVisible, state.preferences.automaticReadingTime, readingTimePhase == .idle else { return }
+        startReadingTime(source: .estimate)
+    }
     public func startReadingTime(source: ReadingTimeSource = .focus) {
-        guard let anchor = currentAnchor else { return }
+        guard let anchor = currentAnchor ?? chapter.passages.first.map({ ReadingAnchor(chapterID: chapter.id, passageID: $0.id) }) else { return }
         do {
             try readingClock.start(bookID: book.cloud?.bookID ?? book.id, contentVersion: book.cloud?.contentVersion ?? book.sourceVersion, anchor: anchor, source: source, at: Date())
             recordReadingInteraction(); checkpointReadingTime(); updateReadingTime()

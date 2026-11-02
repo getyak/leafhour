@@ -854,18 +854,16 @@ final class VideoExperienceUITests: XCTestCase {
     }
 
     func test22ListeningPauseAndSpeedDoNotResumeUnexpectedly() {
-        launch(); openBook(textTitle); openTool("听书"); expandPanel()
-        app.buttons["reader-speech-play"].tap()
-        let toggle = app.buttons["reader-speech-toggle"]; require(toggle); toggle.tap()
-        require(app.buttons["继续朗读"])
-        app.buttons["reader-speech-status"].tap(); expandPanel()
-        let form = foregroundForm(), speed = app.segmentedControls.buttons["1.5×"]
-        scrollTo(speed, in: form); speed.tap()
-        let play = app.buttons["reader-speech-play"]; scrollTo(play, in: form, direction: .down)
-        require(app.buttons["继续朗读"])
-        XCTAssertFalse(app.buttons["暂停朗读"].exists)
-        let stop = app.buttons["结束听书"]; scrollTo(stop, in: form); stop.tap()
-        scrollTo(play, in: form, direction: .down)
+        launch(); openBook(textTitle); openTool("听书")
+        let play = app.buttons["reader-speech-play"]; require(play); play.tap()
+        require(app.buttons["暂停朗读"]); play.tap(); require(app.buttons["继续朗读"])
+        app.buttons["reader-listening-settings"].tap()
+        let speed = app.sliders["reader-speech-speed"]; require(speed)
+        speed.adjust(toNormalizedSliderPosition: 0.23)
+        app.buttons["完成"].tap()
+        require(app.buttons["继续朗读"]); XCTAssertFalse(app.buttons["暂停朗读"].exists)
+        app.buttons["reader-listening-settings"].tap()
+        let stop = app.buttons["结束听书"]; scrollTo(stop, in: foregroundForm()); stop.tap()
         require(app.buttons["继续上次朗读"])
     }
 
@@ -1325,7 +1323,7 @@ final class VideoExperienceUITests: XCTestCase {
         let fullTitle = app.staticTexts["reader-book-full-title"]
         require(fullTitle); XCTAssertEqual(fullTitle.label, textTitle)
         closePanel(); require(reader)
-        for (tool, panelTitle) in [("目录", "目录"), ("听书", "听一会儿"), ("外观", "外观"), ("阅读设置", "阅读设置"), ("翻译", "这一段的译文"), ("我的记录", "我的记录"), ("更多", "阅读工具")] {
+        for (tool, panelTitle) in [("目录", "目录"), ("听书", "听书"), ("外观", "外观"), ("阅读设置", "阅读设置"), ("翻译", "这一段的译文"), ("我的记录", "我的记录"), ("更多", "阅读工具")] {
             openTool(tool)
             require(app.navigationBars[panelTitle])
             capture("GET317-UI40-opened-panel-" + tool)
@@ -2020,7 +2018,7 @@ final class VideoExperienceUITests: XCTestCase {
         launch(); openBook(textTitle); openTool("听书"); expandPanel()
         require(app.buttons["从当前句开始朗读"])
         XCTAssertFalse(app.buttons["暂停朗读"].exists)
-        app.buttons["reader-speech-play"].tap(); require(reader)
+        app.buttons["reader-speech-play"].tap(); closePanel(); require(reader)
         wakeTools(); app.buttons["reader-read"].tap()
         require(app.buttons["听书已暂停"])
         openTool("听书"); expandPanel()
@@ -2852,20 +2850,19 @@ final class VideoExperienceUITests: XCTestCase {
     }
 
     func test103ListeningSpeedSliderKeepsBothEndpointsAndDoesNotAutoplay() {
-        launch(); openBook(textTitle); openTool("听书"); expandPanel()
-        let slider = app.sliders["reader-speech-speed"]
-        scrollTo(slider, in: foregroundForm(), direction: .up); require(slider)
-        slider.adjust(toNormalizedSliderPosition: 1)
-        require(app.staticTexts["reader-speech-speed-value"])
+        launch(); openBook(textTitle); openTool("听书")
+        app.buttons["reader-listening-settings"].tap()
+        let slider = app.sliders["reader-speech-speed"]; require(slider)
+        slider.adjust(toNormalizedSliderPosition: 1); app.buttons["设为5倍"].tap()
         XCTAssertEqual(app.staticTexts["reader-speech-speed-value"].label, "5×")
-        slider.adjust(toNormalizedSliderPosition: 0)
+        slider.adjust(toNormalizedSliderPosition: 0); app.buttons["设为0.5倍"].tap()
         XCTAssertEqual(app.staticTexts["reader-speech-speed-value"].label, "0.5×")
-        XCTAssertTrue(app.buttons["reader-speech-play"].exists)
-        capture("GET352-draggable-listening-speed")
-        closePanel(); coldRelaunch(); resumeReaderIfOffered(); openTool("听书"); expandPanel()
-        scrollTo(slider, in: foregroundForm(), direction: .up)
+        capture("immersive-draggable-listening-speed")
+        app.buttons["完成"].tap(); require(app.buttons["从当前句开始朗读"])
+        closePanel(); coldRelaunch(); resumeReaderIfOffered(); openTool("听书")
+        app.buttons["reader-listening-settings"].tap(); require(slider)
         XCTAssertEqual(app.staticTexts["reader-speech-speed-value"].label, "0.5×")
-        XCTAssertTrue(app.buttons["reader-speech-play"].exists)
+        app.buttons["完成"].tap(); require(app.buttons["从当前句开始朗读"])
     }
 
     func test104GiftLinkOpensTheAppForExplicitPreviewThenDownloadsTheReadingCopy() {
@@ -2903,8 +2900,8 @@ final class VideoExperienceUITests: XCTestCase {
         launch(["--get347-short-speech"]); openBook(translatedTitle)
         openTool("听书"); expandPanel()
         let play = app.buttons["reader-speech-play"]; require(play); play.tap()
-        require(reader)
-        XCTAssertTrue(app.navigationBars["听一会儿"].waitForNonExistence(timeout: 5), "Starting speech returns to the actual book")
+        closePanel(); require(reader)
+        XCTAssertFalse(app.navigationBars["听书"].exists, "Explicit return keeps actual speech running")
         let status = app.buttons["reader-speech-status"]; require(status)
         let second = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in
             (status.value as? String)?.contains("Chapter one second sentence.") == true
@@ -3081,7 +3078,7 @@ extension VideoExperienceUITests {
         require(originalSearch)
         app.navigationBars.buttons.firstMatch.tap()
         let timing = app.buttons["阅读计时"]; require(timing); timing.tap()
-        require(app.buttons["reader-time-start"])
+        require(app.buttons["暂停计时"])
         capture("quiet-reading-timing")
         app.buttons["reader-tool-continue"].tap(); require(reader)
     }

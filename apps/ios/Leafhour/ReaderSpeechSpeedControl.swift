@@ -20,12 +20,12 @@ struct ReaderSpeechSpeedControl: View {
             .accessibilityValue(speech.speed.formatted() + "倍")
             .accessibilityIdentifier("reader-speech-speed")
             HStack {
-                Text("0.5×")
+                Button("0.5×") { speech.speed = 0.5; saveSpeed() }.frame(minWidth: 44, minHeight: 44).accessibilityLabel("设为0.5倍")
                 Spacer()
                 Button("恢复 1×") { speech.speed = 1; saveSpeed() }.frame(minHeight: 44)
                 Spacer()
-                Text("5×")
-            }.font(.caption).foregroundStyle(.secondary)
+                Button("5×") { speech.speed = 5; saveSpeed() }.frame(minWidth: 44, minHeight: 44).accessibilityLabel("设为5倍")
+            }.buttonStyle(.borderless).font(.caption).foregroundStyle(.secondary)
         }.padding(.vertical, 4)
         .onDisappear { saveSpeed() }
     }

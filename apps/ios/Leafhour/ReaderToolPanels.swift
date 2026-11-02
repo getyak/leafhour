@@ -33,6 +33,7 @@ struct ReaderMorePanel: View {
     let onCompanion: () -> Void
     var onAutoPage: () -> Void = {}
     var onShare: () -> Void = {}
+    var onListen: () -> Void = {}
     @Environment(\.dynamicTypeSize) private var typeSize
     @State private var export: RecordsDocument?
     @State private var exporting = false
@@ -47,8 +48,8 @@ struct ReaderMorePanel: View {
                     NavigationLink { ReaderIntroductionPanel(session: session, tools: tools, cloud: cloud).modifier(ReaderToolContinuation()) } label: { toolTile("导读", symbol: "text.book.closed") }.accessibilityLabel("导读与摘要")
                     Button(action: onCompanion) { toolTile("陪读", symbol: "bubble.left.and.bubble.right") }.accessibilityLabel("阅读陪读")
                     NavigationLink { ReaderPreferencesPanel(session: session, reading: reading).modifier(ReaderToolContinuation()) } label: { toolTile("排版", symbol: "textformat.size") }.accessibilityLabel("文字与纸面")
-                    NavigationLink { Form { ReaderTimeControls(session: session) }.navigationTitle("阅读计时").modifier(ReaderToolContinuation()) } label: { toolTile("计时", symbol: "stopwatch") }.accessibilityLabel("阅读计时")
-                    NavigationLink { ReaderListeningPanel(session: session, speech: speech).modifier(ReaderToolContinuation()) } label: { toolTile("听书", symbol: "headphones") }
+                    NavigationLink { ReaderBookTimePanel(session: session, library: library, cloud: cloud).modifier(ReaderToolContinuation()) } label: { toolTile("计时", symbol: "stopwatch") }.accessibilityLabel("阅读计时")
+                    Button(action: onListen) { toolTile("听书", symbol: "headphones") }
                     NavigationLink { ReaderAppearancePanel(session: session).modifier(ReaderToolContinuation()) } label: { toolTile("纸面", symbol: "circle.lefthalf.filled") }
                     Button(action: onAutoPage) { toolTile("自动翻页", symbol: "timer") }.accessibilityIdentifier("reader-auto-page-open")
                     NavigationLink { ReaderWebToolsPanel(session: session, cloud: cloud).onAppear { speech.pause() }.modifier(ReaderToolContinuation()) } label: { toolTile("网页版", symbol: "globe") }
@@ -93,69 +94,6 @@ struct ReaderMorePanel: View {
             .contentShape(Rectangle())
     }
 
-}
-
-struct ReaderListeningPanel: View {
-    @Bindable var session: ReaderSession
-    @Bindable var speech: ReaderSpeech
-    @Environment(\.dismiss) private var dismiss
-    @Environment(\.readerContinueReading) private var continueReading
-    private var chapterTitle: String {
-        let id = speech.playing || speech.paused ? speech.chapterID : speech.hasResumePosition(session) ? session.state.listeningPosition?.chapterID : nil
-        return session.book.chapters.first { $0.id == id }?.title ?? session.chapter.title
-    }
-    var body: some View {
-        Form {
-            Section {
-                VStack(spacing: 16) {
-                    Image(systemName: "headphones").font(.system(size: 36, weight: .light)).foregroundStyle(Color.leafInk).accessibilityHidden(true)
-                    Text(chapterTitle).font(.headline).multilineTextAlignment(.center)
-                    if speech.count > 0 { Text("\(speech.layerTitle) · 本书第 \(speech.position + 1) / \(speech.count) 段").font(.caption).foregroundStyle(.secondary).monospacedDigit() }
-                    HStack(spacing: 30) {
-                        Button { speech.move(-1) } label: {
-                            Label("上一段", systemImage: "backward.end.fill").labelStyle(.iconOnly)
-                                .frame(width: 44, height: 44).contentShape(Rectangle())
-                        }.disabled(!speech.canPrevious)
-                        Button { speech.toggle(session); if speech.playing { returnToReading() } } label: {
-                            Label(speech.playing ? "暂停朗读" : speech.paused ? "继续朗读" : speech.hasResumePosition(session) ? "继续上次朗读" : "从当前句开始朗读", systemImage: speech.playing ? "pause.fill" : "play.fill")
-                                .font(.title2).labelStyle(.iconOnly).frame(width: 60, height: 60)
-                                .background(Color.leafInk.opacity(0.12), in: Circle()).contentShape(Circle())
-                        }.accessibilityIdentifier("reader-speech-play")
-                        Button { speech.move(1) } label: {
-                            Label("下一段", systemImage: "forward.end.fill").labelStyle(.iconOnly)
-                                .frame(width: 44, height: 44).contentShape(Rectangle())
-                        }.disabled(!speech.canNext)
-                    }.buttonStyle(.plain)
-                    if !speech.activeSentence.isEmpty { Text(speech.activeSentence).font(.subheadline).foregroundStyle(.secondary).lineLimit(4).textSelection(.enabled) }
-                }.frame(maxWidth: .infinity).padding(.vertical, 12)
-            }
-            Section("声音与语速") {
-                ReaderSpeechSpeedControl(session: session, speech: speech)
-                Picker("朗读声音", selection: $speech.voiceID) {
-                    Text("自动匹配原文语言").tag("")
-                    ForEach(speech.voices, id: \.identifier) { voice in Text("\(voice.name) · \(voice.language)").tag(voice.identifier) }
-                }
-                if speech.playing || speech.paused { Button("结束听书", systemImage: "stop.fill") { speech.stop() } }
-                if speech.playing || speech.paused {
-                    Toggle("跟随朗读", isOn: $speech.following)
-                }
-                if speech.playing || speech.paused || speech.hasResumePosition(session) {
-                    Button("从当前书页重新开始", systemImage: "play.circle") { speech.start(session, useSavedPosition: false); if speech.playing { returnToReading() } }
-                        .accessibilityIdentifier("reader-speech-start-here")
-                }
-            }
-            Section {
-                Text("使用此设备的系统声音，点击播放后才开始。不上传正文，也不使用阅读点。离线可用性取决于已安装的系统声音；切到后台会暂停，回来后可继续。").font(.footnote).foregroundStyle(.secondary)
-                Text("从当前可见句开始，逐句高亮并接续后文。滚动、翻页或选字后暂时停止跟随，点“回到朗读”即可返回。暂停后保留播放位置。").font(.footnote).foregroundStyle(.secondary)
-            }
-            if let message = speech.message { Section { Text(message).font(.footnote).foregroundStyle(.secondary) } }
-        }
-        .navigationTitle("听一会儿")
-        .onChange(of: speech.voiceID) { _, _ in speech.restartVoice() }
-    }
-    private func returnToReading() {
-        if let continueReading { continueReading() } else { dismiss() }
-    }
 }
 
 struct ReaderTranslationPanel: View {
