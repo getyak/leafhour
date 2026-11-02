@@ -29,26 +29,26 @@
 
 Files: Core `ReadingJournal.swift`, Core `ReadingJournalTests.swift`, app `ReadingJournalModel.swift`.
 
-- [ ] Add failing tests for interval union, midnight, month boundaries, note identity/attribution and unknown dates.
-- [ ] Implement pure date/day/note projection and validate monthly cloud snapshots.
-- [ ] Implement an owner-guarded monthly loader with retained cache/failure state and device scope.
-- [ ] Verify Core tests, commit data and model.
+- [x] Add failing tests for interval union, midnight, month boundaries, note identity/attribution and unknown dates.
+- [x] Implement pure date/day/note projection and validate monthly cloud snapshots.
+- [x] Implement an owner-guarded monthly loader with retained cache/failure state and device scope.
+- [x] Verify Core tests, commit data and model.
 
 ### Task 2: Native journal
 
 Files: `MyReadingScreen.swift`, `ReadingJournalComponents.swift`, `ReadingJournalCalendar.swift`, `ReadingJournalNotes.swift`, `GlobalChatScreen.swift`, `AppSettingsScreen.swift`.
 
-- [ ] Add the overview, interactive time spines, calendar and notes with the approved layout.
-- [ ] Add native day/note detail and verified source return, keeping the reader under one presentation owner.
-- [ ] Move settings under avatar with an explicit Done action; preserve existing settings routes.
-- [ ] Add short stagger, matched selection, press feedback and Reduce Motion alternatives.
-- [ ] Compile and test app behavior; commit interface.
+- [x] Add the overview, interactive time spines, calendar and notes with the approved layout.
+- [x] Add native day/note detail and verified source return, keeping the reader under one presentation owner.
+- [x] Move settings under avatar with an explicit Done action; preserve existing settings routes.
+- [x] Add short stagger, matched selection, press feedback and Reduce Motion alternatives.
+- [x] Compile and test app behavior; commit interface.
 
 ### Task 3: Validation and delivery
 
 Files: isolated Debug acceptance fixture, focused UI/app tests, `docs/verification/2026-11-02-get-358-my-reading.md`.
 
 - [ ] Verify empty/loading/error/data, month navigation, note search/source return, owner transitions, light/night, large text and Reduce Motion with isolated fixture data.
-- [ ] Independent branch review; fix confirmed issues and verify affected behavior.
+- [x] Independent branch review; fix confirmed issues and verify affected behavior.
 - [ ] Sync origin/main, run applicable checks, push once, create linked PR, wait CI, merge normally and track existing iOS release.
 - [ ] Record separate local, CI, merge, Apple and user/device states in Linear and the final response.

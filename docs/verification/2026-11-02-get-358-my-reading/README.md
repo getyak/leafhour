@@ -14,6 +14,7 @@ Account and device records have separate scopes. Cloud totals are not added to d
 - Initial app regression: 235 executed, 234 passed and one existing platform/availability skip. Two existing settings/Chat UI regressions passed.
 - Final affected LibraryRecordsTests: 26 passed, including month-cache recovery, late owner/scope responses, pagination preservation, cancelled source navigation and corrupt local records remaining unknown.
 - Final JournalUITests: 5 passed on the shared Primary iPhone (iPhone 17 Pro, iOS 26.5). Covers overview/day/month navigation, notes/search/source return, settings and retained search, initial error, and maximum accessibility text.
+- Night appearance: one additional overview/day/calendar UI case passed with actual Simulator dark appearance; the original light setting was restored.
 - Host checks: 65 passed across native design interaction, private delivery and vendor checks.
 - Native app and test bundles built successfully with an isolated Debug bundle `org.leafhour.get358.testing`. The fixture is allowlisted only for Debug; records are synthetic and use no real account or paid provider.
 
@@ -28,7 +29,7 @@ Screenshots are actual Simulator captures in `screenshots/`, not generated mocku
 
 ## Independent review
 
-An independent read-only review found no P0/P1 and seven P2 issues. All were addressed: pagination reset, abandoned source navigation, 25-hour day validation, fractional time rounding, time-zone cache invalidation, false empty device records, and targets below 44 pt. Regression tests and final UI checks cover the corrected behavior.
+An independent read-only review found no P0/P1 and seven P2 issues. A final read-only check of implementation commit `5a7c624` confirmed all seven fixes and no remaining P0/P1. All were addressed: pagination reset, abandoned source navigation, 25-hour day validation, fractional time rounding, time-zone cache invalidation, false empty device records, and targets below 44 pt. Regression tests and final UI checks cover the corrected behavior.
 
 ## Remaining acceptance boundaries
 
