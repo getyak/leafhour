@@ -25,8 +25,11 @@ body.is-focused .reading-header{display:none}body.is-focused .book-page{padding-
 .passage.is-locating::before,.passage.is-selected::before{inset:calc(-1 * var(--selection-block-space)) calc(-1 * var(--selection-inline-space));border-color:color-mix(in srgb,var(--accent) 6%,transparent);border-radius:12px;background:color-mix(in srgb,var(--accent) 1.5%,transparent)}
 @media(max-width:767px){.passage{--selection-block-space:10px;--selection-inline-space:14px}}
 /* A quiet, portable reading surface. Only the settings drawer exposes its controls. */
+:root[data-theme=sand]{--paper:#f0e0c2;--panel:#f7ecd7}
+:root[data-theme=rose]{--paper:#faebe0;--panel:#fff5ed}
+:root[data-paper=dusk]{--paper:#2b333d;--panel:#303c48;--wash:#35414e}
 :root[data-theme=warm]{--paper:#f5efdf;--ink:#373027;--muted:#786d5c;--line:#ded4bf;--wash:#ece4d2;--panel:#fbf7ec;--accent:#775535}
-:root[data-theme=mist]{--paper:#edf0f0;--ink:#293334;--muted:#657273;--line:#d0d9d9;--wash:#e1e7e7;--panel:#f5f7f7;--accent:#466569}
+:root[data-theme=mist]{--paper:#e6f0f5;--ink:#293334;--muted:#657273;--line:#d0d9d9;--wash:#e1e7e7;--panel:#f5f7f7;--accent:#466569}
 :root[data-theme=leaf]{--paper:#eaf2e7;--ink:#29372c;--muted:#5f705c;--line:#cedcc9;--wash:#dce9d7;--panel:#f3f8ef;--accent:#47673d}
 .book-page .passage{margin-bottom:var(--paragraph-gap,24px)}
 .book-page .passage p{font-family:var(--book);font-weight:var(--reading-weight,400);line-height:var(--reading-line,1.98);letter-spacing:var(--reading-tracking,.01em);text-indent:var(--reading-indent,0)}
@@ -51,12 +54,12 @@ body.is-focused .reading-header{display:none}body.is-focused .book-page{padding-
 .theme-swatches button{flex:none;width:36px;height:36px;border-radius:50%;border:1px solid #d9d4c6;font:19px/1 var(--font-serif);display:grid;place-items:center;color:#333027;padding:0}
 .theme-swatches button[aria-pressed=true]{outline:2px solid var(--accent);outline-offset:3px}
 .swatch-system{background:linear-gradient(90deg,#333027 50%,#fffdf7 50%)}.swatch-system span{background:#fffdf7;border-radius:50%;font-size:18px}
-.swatch-paper{background:#faf9f5}.swatch-warm{background:#f5efdf}.swatch-mist{background:#edf0f0}.swatch-leaf{background:#dcebd6}.theme-swatches .swatch-night{background:#181b19;color:#e4e5dc;border-color:#575c54}
+.swatch-paper{background:#faf9f5}.swatch-warm{background:#f5efdf}.swatch-mist{background:#e6f0f5}.swatch-leaf{background:#dcebd6}.theme-swatches .swatch-night{background:#181b19;color:#e4e5dc;border-color:#575c54}
 .setting-hint{font-size:12px;line-height:1.8;color:var(--muted);margin:12px 0 0}
 .font-choices{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:22px}
 .font-choices button{border:1px solid var(--line-control);border-radius:var(--radius-control,6px);padding:10px 4px;font-size:13px}
 .font-choices button[aria-pressed=true]{border-color:var(--accent);background:var(--wash);box-shadow:inset 0 0 0 1px var(--accent)}
-.font-choices button[data-font-family=song]{font-family:var(--font-cjk-serif)}.font-choices button[data-font-family=kai]{font-family:"Kaiti SC","STKaiti","Leafhour CJK",serif}
+.font-choices button[data-font-family=song]{font-family:var(--font-cjk-serif)}.font-choices button[data-font-family=kai]{font-family:"Leafhour WenKai","Kaiti SC","STKaiti","Leafhour CJK",serif}
 .settings-dialog .size-row input{width:155px;max-width:55%}.settings-dialog output{font-variant-numeric:tabular-nums}
 .typography-details{margin:20px 0 10px}.typography-details summary,.reading-extras>summary{cursor:pointer;font-size:13px;list-style:none;padding:6px 0;display:flex;justify-content:space-between;align-items:center}
 .typography-details summary::after,.reading-extras>summary::after{content:'＋';color:var(--muted)}.typography-details[open] summary::after,.reading-extras[open]>summary::after{content:'−'}

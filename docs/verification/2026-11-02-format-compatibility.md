@@ -1,5 +1,7 @@
 # Format compatibility verification — 2026-11-02
 
+Integration baseline: `4de2d7fae2ebd4169d81af9c6f38841468008d75` (quiet reading changes); generated copy inventory conflict resolved by exporting the combined source. Native source ranges and renderer integration rechecked.
+
 Scope: new TXT/Markdown chapter recognition on web and native; web EPUB2/EPUB3 navigation and PDF bookmarks; chapter labels/counts; retained-source evidence. No existing book is automatically reparsed and no private source is included here. Design and implementation plan are in `docs/superpowers/specs/2026-11-02-format-compatibility.md` and the matching plan.
 
 ## Behavior
@@ -13,11 +15,11 @@ Scope: new TXT/Markdown chapter recognition on web and native; web EPUB2/EPUB3 n
 
 ## Evidence
 
-- Final Node 22.23.4 `npm run verify:deploy`: 4,550 tests, 4,536 passed, 14 explicitly skipped, 0 failures; runtime/build/public/release checks passed. Skipped optional checks are not claimed as verified.
+- Final Node 22.23.4 `npm run verify:deploy`: 4,553 tests, 4,539 passed, 14 explicitly skipped, 0 failures; runtime/build/public/release checks passed. Skipped optional checks are not claimed as verified.
 
 - Final affected web integration: 63/63 passed, including the long-title regression, catalog compatibility, deferred uploads and dependency evidence. Independent format checks: 32/32 passed.
 - Independent review: no remaining P1/P2 findings after fixes. CommonMark's [official 652 examples](https://spec.commonmark.org/0.31.2/spec.json) were checked against expected top-level nonempty headings: zero count differences; original offsets and non-whitespace content conservation also matched. A synthetic 10,001-chapter Markdown input retained its tail (about 72ms in the review process; this is a local observation, not a production performance guarantee).
-- Native final `swift test --package-path apps/ios/LeafhourCore`: 278 tests, 1 explicit optional private-sample skip, 0 failures. Generic iOS Simulator build: `BUILD SUCCEEDED`. Review reproduced and closed old-index repair, prose-title and source-range issues.
+- Native final `swift test --package-path apps/ios/LeafhourCore`: 279 tests, 1 explicit optional private-sample skip, 0 failures. Generic iOS Simulator build: `BUILD SUCCEEDED`. Review reproduced and closed old-index repair, prose-title and source-range issues.
 - Browser acceptance: isolated local server with synthetic content and identity, no production data or model access. Contents showed front matter, Chinese/full-width chapter titles and epilogue; clicking the second chapter updated the title/current position and displayed its corresponding source paragraph. The existing contents visual style was retained.
 - Packaged runtime, hosted web build, public build and release allowlist checks passed. Real pinned Vale/textlint copy lint passed with documented existing debt retained.
 - New parser and transitive dependency licenses are included in the frozen 821-package inventory; its technical evidence check passed. This is not a new legal approval.

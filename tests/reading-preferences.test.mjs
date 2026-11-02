@@ -137,3 +137,11 @@ test('fresh bilingual reading follows each original with its translation while p
  assert.equal(openingReadingPreferences({mode:'parallel'}).parallelLayout,'stack');
  assert.equal(openingReadingPreferences({mode:'parallel',parallelLayout:'columns'}).parallelLayout,'columns');
 });
+
+test('expanded papers survive normalization and exported global settings',async()=>{
+  const {normalizeAppearance,normalizeGlobalPreferences,validateGlobalPreferences}=await import('../app/reading-preferences.mjs');
+  for(const theme of ['sand','rose','dusk']){
+    assert.equal(normalizeAppearance({theme}).theme,theme);
+    assert.equal(validateGlobalPreferences(normalizeGlobalPreferences({theme})).theme,theme);
+  }
+});

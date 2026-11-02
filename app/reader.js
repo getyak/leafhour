@@ -195,8 +195,8 @@ const typographyFields=[['lineHeight',''],['paragraphGap','px'],['letterSpacing'
 const fonts={song:'var(--font-serif)',kai:'var(--font-hand)',sans:'var(--interface)'};
 const prettyValue=(key,value)=>['letterSpacing','wordSpacing'].includes(key)?value.toFixed(2):key==='lineHeight'?Number(value.toFixed(2)).toString():String(value);
 function applyAppearance(){
-  const night=state.theme==='night'||(state.theme==='system'&&matchMedia('(prefers-color-scheme:dark)').matches);
-  document.documentElement.dataset.theme=state.theme==='system'?(night?'night':'paper'):state.theme;
+  const night=['night','dusk'].includes(state.theme)||(state.theme==='system'&&matchMedia('(prefers-color-scheme:dark)').matches);
+  document.documentElement.dataset.theme=state.theme==='dusk'?'night':state.theme==='system'?(night?'night':'paper'):state.theme;document.documentElement.dataset.paper=state.theme;
   const page=$('book-page');page.style.setProperty('--size',state.font+'px');page.style.setProperty('--book',fonts[state.fontFamily]);page.style.setProperty('--english',state.fontFamily==='sans'?'var(--interface)':'var(--font-latin)');
   for(const [key,property,unit] of [['lineHeight','--reading-line',''],['paragraphGap','--paragraph-gap','px'],['letterSpacing','--reading-tracking','em'],['wordSpacing','--word-spacing','em'],['fontWeight','--reading-weight','']])page.style.setProperty(property,state[key]+unit);
   page.style.setProperty('--reading-indent',state.indent?'2em':'0');document.body.dataset.mode=state.mode;
@@ -210,8 +210,18 @@ function applyAppearance(){
   applyParallelAppearance(document,state);
   pagination.update(state);settingsUI.update(state);settingsUI.sync();
 }
+let fontLayoutSequence=0;
+for(const event of ['pointerdown','wheel','touchstart','keydown','reader:jump','reader:chapter','reader:page','reader:session-changed'])listen(document,event,()=>{fontLayoutSequence++;},{capture:true,passive:true});
 function adjustAppearance(patch){
   const a=anchor();Object.assign(state,normalizeAppearance({...state,...patch}));dispatchReaderEvent('reader:jump');applyAppearance();restoreAnchor(a);if(!$('paragraph-tools').hidden)positionTools();persist();dispatchReaderEvent('reader:layout');
+  if(patch.fontFamily==='kai'&&document.fonts?.load){
+    const sequence=++fontLayoutSequence,generation=loadGeneration,chapter=state.chapterId;
+    document.fonts.load('22px "Leafhour WenKai"','永').then(()=>document.fonts.ready).then(()=>requestAnimationFrame(()=>{
+      if(readerDisposed||generation!==loadGeneration||chapter!==state.chapterId||state.fontFamily!=='kai')return;
+      if(sequence===fontLayoutSequence)restoreAnchor(a);
+      pagination.sync();dispatchReaderEvent('reader:layout');
+    })).catch(()=>{});
+  }
 }
 for(const [key,unit] of typographyFields){
   const row=el('div','setting-row typography-row'),name=fixed('label','',READER_UI+'type.'+key),controls=el('div','settings-range'),range=el('input'),value=el('output');name.id='label-'+key;name.htmlFor='range-'+key;

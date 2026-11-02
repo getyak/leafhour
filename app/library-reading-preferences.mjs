@@ -50,7 +50,7 @@ export function mountReadingPreferencesForm({root,api,getSession,onSaved=()=>{},
   typography.body.append(row({labelId:'prefs.font',control:fontControl,labelFor:font.id}).root,row({labelId:'prefs.typeface',control:family,labelFor:family.id}).root);
   // Page tone.
   const page=group('prefs.group.page');
-  const theme=node('select','profile-input');theme.id='habits-theme';for(const [value,label]of [['system','prefs.paper.system'],['paper','prefs.paper.paper'],['warm','prefs.paper.warm'],['mist','prefs.paper.mist'],['leaf','prefs.paper.sage'],['night','prefs.paper.night']])option(theme,value,label);
+  const theme=node('select','profile-input');theme.id='habits-theme';for(const [value,label]of [['system','prefs.paper.system'],['paper','prefs.paper.paper'],['warm','prefs.paper.warm'],['mist','prefs.paper.mist'],['leaf','prefs.paper.sage'],['sand','prefs.paper.sand'],['rose','prefs.paper.rose'],['dusk','prefs.paper.dusk'],['night','prefs.paper.night']])option(theme,value,label);
   page.body.append(row({labelId:'prefs.paper',control:theme,labelFor:theme.id}).root);
   const help=L.text(node('p','settings-description'),'prefs.help');
   const guestHint=L.text(node('p','settings-description habits-guest'),'prefs.guest');guestHint.id='habits-guest';

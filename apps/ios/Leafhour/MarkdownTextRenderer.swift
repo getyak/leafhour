@@ -52,6 +52,22 @@ struct MarkdownChapterLayout {
             if style.strikethrough { attributes[.strikethroughStyle] = NSUnderlineStyle.single.rawValue }
             if let link = style.link, let url = URL(string: link) { attributes[.link] = url }
             result.addAttributes(attributes, range: run.range)
+            // A fixed CJK cascade has a regular face even when the Latin font
+            // resolves Bold/Italic. Preserve the author's emphasis with local
+            // synthetic weight/slant on CJK only (no additional font download).
+            if (style.bold || style.italic) && !style.code {
+                var offset = run.range.location
+                for scalar in (document.text as NSString).substring(with: run.range).unicodeScalars {
+                    let length = scalar.utf16.count
+                    if (0x2E80...0x9FFF).contains(scalar.value) || (0xF900...0xFAFF).contains(scalar.value) || (0x20000...0x323AF).contains(scalar.value) {
+                        var emphasis: [NSAttributedString.Key: Any] = [:]
+                        if style.bold { emphasis[.strokeWidth] = -2.0 }
+                        if style.italic { emphasis[.obliqueness] = 0.15 }
+                        result.addAttributes(emphasis, range: NSRange(location: offset, length: length))
+                    }
+                    offset += length
+                }
+            }
         }
         // Keep intentional newlines within code, without adding paragraph gaps to every code line.
         // Only its final line receives the same breathing room as other page blocks.

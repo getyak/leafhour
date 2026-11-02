@@ -2,6 +2,25 @@ import XCTest
 @testable import LeafhourCore
 
 final class ReaderSharedPreferencesTests: XCTestCase {
+    func testExpandedPaperAndLanguageFontsPersistWithoutLosingBookState() async throws {
+        let fixture = try await makeLibrary()
+        defer { try? FileManager.default.removeItem(at: fixture.root) }
+        var preferences = ReaderPreferences()
+        preferences.fontStyle = .kai; preferences.latinFont = .baskerville
+        for theme in ReaderPaper.allCases {
+            preferences.theme = theme.rawValue
+            try await fixture.library.saveReaderPreferences(preferences)
+            let restored = try await fixture.library.readingPreferences()
+            XCTAssertEqual(restored, preferences)
+        }
+        let legacy = try JSONDecoder().decode(ReaderPreferences.self, from: Data("{\"fontStyle\":\"sans\",\"theme\":\"sage\"}".utf8))
+        XCTAssertEqual(legacy.latinFont, .automatic)
+        XCTAssertEqual(legacy.fontStyle, .sans)
+        XCTAssertEqual(legacy.theme, "sage")
+        let future = try JSONDecoder().decode(ReaderPreferences.self, from: Data("{\"latinFont\":\"future-font\"}".utf8))
+        XCTAssertEqual(future.latinFont, .automatic)
+    }
+
     @MainActor
     func testChangingOneBookAppliesEveryPreferenceToAnotherWithoutMovingItsRecords() async throws {
         let fixture = try await makeLibrary()
