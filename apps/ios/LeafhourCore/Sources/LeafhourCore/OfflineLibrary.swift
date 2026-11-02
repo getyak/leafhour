@@ -22,7 +22,7 @@ public actor OfflineLibrary {
             }
         }
     }
-    public func importFile(_ url: URL, progress: @escaping @Sendable (ImportProgress) -> Void = { _ in }) async throws -> LocalBook {
+    public func importFile(_ url: URL, duplicatePolicy: DuplicateImportPolicy = .keep, operationID: UUID = UUID(), progress: @escaping @Sendable (ImportProgress) -> Void = { _ in }) async throws -> LocalBook {
         try Task.checkCancellation()
         let ext = url.pathExtension.lowercased()
         let kind: BookKind
@@ -30,7 +30,7 @@ public actor OfflineLibrary {
         let size = try Disk.size(url)
         guard size > 0, size <= limits.maximumFileBytes else { throw LibraryError.invalid("文件为空或超过本机导入上限。原始文件未改动。") }
         if let available = try root.resourceValues(forKeys: [.volumeAvailableCapacityForImportantUsageKey]).volumeAvailableCapacityForImportantUsage, available < size * 2 + 20_000_000 { throw LibraryError.invalid("设备空间不足，请保留原件并释放空间后重试。") }
-        let job = ImportJob(id: UUID(), filename: url.lastPathComponent, kind: kind, phase: .processing)
+        let job = ImportJob(id: UUID(), filename: url.lastPathComponent, kind: kind, phase: .processing, duplicatePolicy: duplicatePolicy, operationID: operationID)
         activeImports.insert(job.id)
         defer { activeImports.remove(job.id) }
         progress(ImportProgress(stage: .retaining))
@@ -48,6 +48,38 @@ public actor OfflineLibrary {
             try? recordFailure(job, error: error)
             throw error
         }
+    }
+    /// The record ID and verified source digest are separate for intentional copies.
+    public func duplicate(for url: URL) async throws -> LocalBook? {
+        let hash = try await Self.importWork { try Disk.hashFile(url) }
+        return try duplicate(sourceDigest: hash)
+    }
+    private func duplicate(sourceDigest: String) throws -> LocalBook? {
+        // Identity discovery is not an integrity pass. Damaged source/assets must
+        // not prevent presenting a new independent import from a valid original.
+        var candidates: [LocalBook] = []
+        for folder in try Disk.fm.contentsOfDirectory(at: root.appendingPathComponent("books"), includingPropertiesForKeys: nil) {
+            guard (try? Disk.validID(folder.lastPathComponent)) != nil else { continue }
+            let index = folder.appendingPathComponent("book.json")
+            guard let size = try? Disk.size(index), size <= limits.maximumExpandedBytes,
+                  let value = try? Disk.read(LocalBook.self, from: index), value.id == folder.lastPathComponent,
+                  value.cloud == nil, value.sourceVersion == "sha256-" + sourceDigest else { continue }
+            candidates.append(value)
+        }
+        if let canonical = candidates.first(where: { $0.id == sourceDigest }) { return canonical }
+        if let first = candidates.sorted(by: { $0.importedAt < $1.importedAt }).first { return first }
+        return nil
+    }
+    private func expectedSourceDigest(_ folder: URL, id: String) throws -> String {
+        if let manifest = try? Disk.read(OfflineManifest.self, from: folder.appendingPathComponent("manifest.json")),
+           manifest.bookID == id, let source = manifest.files.first(where: { $0.path.hasPrefix("source.") }) {
+            try Disk.validID(source.sha256)
+            return source.sha256
+        }
+        // Legacy record IDs were the source hash: this fallback still verifies
+        // exact original bytes, and cannot misidentify an independent copy.
+        try Disk.validID(id)
+        return id
     }
     public func retry(_ id: UUID, progress: @escaping @Sendable (ImportProgress) -> Void = { _ in }) async throws -> LocalBook {
         guard activeImports.insert(id).inserted else { throw LibraryError.invalid("此原件正在处理中，请稍候。") }
@@ -73,12 +105,17 @@ public actor OfflineLibrary {
         var job = initial
         let original = try jobOriginalURL(job.id)
         guard try Disk.size(original) <= limits.maximumFileBytes else { throw LibraryError.invalid("原件超过导入上限。") }
-        let id = try await Self.importWork { try Disk.hashFile(original) }
+        let hash = try await Self.importWork { try Disk.hashFile(original) }
+        let policy = job.duplicatePolicy ?? .keep
+        let duplicate = policy == .new ? nil : try duplicate(sourceDigest: hash)
+        let id = policy == .new ? Disk.hash(Data(("copy:" + (job.operationID ?? job.id).uuidString.lowercased()).utf8)) : duplicate?.id ?? hash
         try Task.checkCancellation()
         let target = try bookDirectory(id)
         if Disk.fm.fileExists(atPath: target.path) {
             // Verify before reusing; do not replace a corrupt package or existing personal data implicitly.
             let existing = try book(id)
+            guard existing.sourceVersion == "sha256-" + hash else { throw LibraryError.invalid("此操作已用于另一份原件，未覆盖已有书籍。") }
+            if policy == .replace { _ = try rebuild(id, source: original, kind: job.kind, filename: existing.originalFilename) }
             job.phase = .complete; job.bookID = id; job.error = nil
             try Disk.write(job, to: importsFolder(job.id).appendingPathComponent("job.json"))
             try? Disk.fm.removeItem(at: original)
@@ -96,6 +133,7 @@ public actor OfflineLibrary {
         // Publication stays serialized here; never replace personal state.
         if Disk.fm.fileExists(atPath: target.path) {
             let existing = try book(id)
+            guard existing.sourceVersion == "sha256-" + hash else { throw LibraryError.invalid("此操作已用于另一份原件。") }
             job.phase = .complete; job.bookID = id; job.error = nil
             try Disk.write(job, to: importsFolder(job.id).appendingPathComponent("job.json"))
             try? Disk.fm.removeItem(at: original)
@@ -119,8 +157,10 @@ public actor OfflineLibrary {
         try Disk.directory(destination)
         let copy = destination.appendingPathComponent("source." + kind.rawValue)
         try Disk.fm.copyItem(at: source, to: copy)
-        guard try Disk.hashFile(copy) == id else { throw LibraryError.invalid("原件复制校验失败。") }
-        let book = try preservedTextBook ?? BookParser.parse(source: copy, kind: kind, filename: filename, id: id, destination: destination, limits: limits, progress: progress)
+        let sourceDigest = try Disk.hashFile(source)
+        guard try Disk.hashFile(copy) == sourceDigest else { throw LibraryError.invalid("原件复制校验失败。") }
+        var book = try preservedTextBook ?? BookParser.parse(source: copy, kind: kind, filename: filename, id: id, destination: destination, limits: limits, progress: progress)
+        book.sourceVersion = "sha256-" + sourceDigest
         progress(ImportProgress(stage: .verifying))
         try Task.checkCancellation()
         try Disk.write(book, to: destination.appendingPathComponent("book.json"))
@@ -164,7 +204,7 @@ public actor OfflineLibrary {
         let directory = try bookDirectory(id)
         let manifest = try checkPackage(directory, id: id)
         var book = try Disk.read(LocalBook.self, from: directory.appendingPathComponent("book.json"))
-        guard book.id == id, book.sourceVersion == "sha256-" + id, !book.chapters.isEmpty else { throw LibraryError.invalid("书籍索引无效。原文件仍保留。") }
+        guard book.id == id, book.sourceVersion == "sha256-" + (manifest.files.first(where: { $0.path == "source." + book.kind.rawValue })?.sha256 ?? ""), !book.chapters.isEmpty else { throw LibraryError.invalid("书籍索引无效。原文件仍保留。") }
         if let identity = book.cloud {
             guard let owner = UUID(uuidString: identity.ownerID), root.lastPathComponent == "account-" + owner.uuidString.lowercased() else {
                 book.readingStartAnchor = nil
@@ -204,12 +244,16 @@ public actor OfflineLibrary {
     @discardableResult private nonisolated static func verifyPackage(_ folder: URL, id: String) throws -> OfflineManifest {
         let manifest = try Disk.read(OfflineManifest.self, from: folder.appendingPathComponent("manifest.json"))
         guard manifest.version == 1, manifest.bookID == id, !manifest.files.isEmpty, manifest.files.contains(where: { $0.path == "book.json" }), Set(manifest.files.map(\.path)).count == manifest.files.count else { throw LibraryError.invalid("离线清单不完整。") }
+        let index = try Disk.read(LocalBook.self, from: folder.appendingPathComponent("book.json"))
+        let sourceDigest = String(index.sourceVersion.dropFirst(7))
+        try Disk.validID(sourceDigest)
+        guard index.id == id, index.sourceVersion == "sha256-" + sourceDigest else { throw LibraryError.invalid("原件版本无效。") }
         var originalFound = false
         for file in manifest.files {
             try Task.checkCancellation()
             let url = try Disk.url(folder, file.path)
             guard file.bytes >= 0, try Disk.size(url) == file.bytes, try Disk.hashFile(url) == file.sha256 else { throw LibraryError.invalid("离线文件缺失或损坏，请从原件修复。") }
-            if file.path.hasPrefix("source.") { guard file.sha256 == id else { throw LibraryError.invalid("原件版本不匹配。") }; originalFound = true }
+            if file.path.hasPrefix("source.") { guard file.path == "source." + index.kind.rawValue, file.sha256 == sourceDigest else { throw LibraryError.invalid("原件版本不匹配。") }; originalFound = true }
         }
         guard originalFound else { throw LibraryError.invalid("离线清单缺少原件。") }
         return manifest
@@ -254,7 +298,7 @@ public actor OfflineLibrary {
     }
     public func repair(_ id: String, usingOriginal source: URL) throws -> LocalBook {
         let folder = try bookDirectory(id)
-        guard Disk.fm.fileExists(atPath: folder.path), try Disk.size(source) <= limits.maximumFileBytes, try Disk.hashFile(source) == id else { throw LibraryError.invalid("所选原件与这本书的来源版本不一致，未覆盖原件或私人记录。") }
+        guard Disk.fm.fileExists(atPath: folder.path), try Disk.size(source) <= limits.maximumFileBytes, try Disk.hashFile(source) == expectedSourceDigest(folder, id: id) else { throw LibraryError.invalid("所选原件与这本书的来源版本不一致，未覆盖原件或私人记录。") }
         let oldBook = try? Disk.read(LocalBook.self, from: folder.appendingPathComponent("book.json"))
         let ext = source.pathExtension.lowercased()
         let kind = oldBook?.kind ?? (ext == "md" ? .markdown : [BookKind.epub, .pdf, .txt, .markdown].first { $0.rawValue == ext })
@@ -266,7 +310,7 @@ public actor OfflineLibrary {
         let kind = [BookKind.epub, .pdf, .txt, .markdown].first { Disk.fm.fileExists(atPath: folder.appendingPathComponent("source." + $0.rawValue).path) }
         guard let kind else { throw LibraryError.invalid("无法定位保留的原件，请重新选择原始文件修复。") }
         let source = try Disk.url(folder, "source." + kind.rawValue)
-        guard try Disk.hashFile(source) == id else { throw LibraryError.invalid("原件本身已损坏，请重新选择原始文件修复。个人记录仍保留。") }
+        guard try Disk.hashFile(source) == expectedSourceDigest(folder, id: id) else { throw LibraryError.invalid("原件本身已损坏，请重新选择原始文件修复。个人记录仍保留。") }
         let oldBook = try? Disk.read(LocalBook.self, from: folder.appendingPathComponent("book.json"))
         return try rebuild(id, source: source, kind: kind, filename: oldBook?.originalFilename ?? "Recovered." + kind.rawValue)
     }
@@ -309,7 +353,7 @@ public actor OfflineLibrary {
               let index = manifest.files.first(where: { $0.path == "book.json" }),
               (try? Disk.size(indexURL)) == index.bytes, (try? Disk.hashFile(indexURL)) == index.sha256,
               let book = try? Disk.read(LocalBook.self, from: indexURL), book.id == id,
-              book.kind == kind, book.cloud == nil, book.sourceVersion == "sha256-" + id,
+              book.kind == kind, book.cloud == nil, book.sourceVersion == "sha256-" + (manifest.files.first(where: { $0.path == "source." + kind.rawValue })?.sha256 ?? ""),
               !book.chapters.isEmpty, book.chapters.allSatisfy({ !$0.passages.isEmpty }),
               Set(book.chapters.map(\.id)).count == book.chapters.count else { return nil }
         let passageIDs = book.chapters.flatMap { $0.passages.map(\.id) }

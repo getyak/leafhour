@@ -68,6 +68,7 @@ final class LibraryActivityTests: XCTestCase {
     }
 
     private struct HistoryFixture {
+        let root: URL
         let model: LibraryModel
         let library: OfflineLibrary
         let source: LocalBook
@@ -115,9 +116,77 @@ final class LibraryActivityTests: XCTestCase {
         let probe = HistoryUploadProbe(owner: owner, library: library, targetID: target.id, original: original)
         HistoryUploadProtocol.install(probe)
         await model.reload()
-        return HistoryFixture(model: model, library: library, source: source, target: target, rows: rows, original: original, state: state, probe: probe)
+        return HistoryFixture(root: root.appendingPathComponent("library"), model: model, library: library, source: source, target: target, rows: rows, original: original, state: state, probe: probe)
     }
 
+    private func reopenedUploadModel(_ fixture: HistoryFixture) async -> LibraryModel {
+        let credential = CloudCredential(account: CloudAccount(id: "00000000-0000-4000-8000-000000000344", email: nil), token: "isolated-history-fixture")
+        let model = LibraryModel(root: fixture.root, cloud: fixture.model.cloud, credential: credential, monitorNetwork: false)
+        await model.reload()
+        return model
+    }
+    func testLostUploadReceiptResumesFrozenKeepWithoutPromptAcrossRestart() async throws {
+        let fixture = try await historyUploadFixture()
+        await fixture.probe.loseNextReceipt()
+        await fixture.model.upload(fixture.source)
+        let model = await reopenedUploadModel(fixture)
+        let retry = Task { await model.upload(fixture.source) }
+        await Task.yield()
+        for _ in 0..<100 {
+            if model.duplicateRequest != nil { XCTFail("Retry must not offer a new choice"); model.resolveDuplicate(.keep) }
+            if !model.busy { break }
+            try await Task.sleep(for: .milliseconds(10))
+        }
+        await retry.value
+        let requests = await fixture.probe.uploadIntents
+        XCTAssertEqual(requests.count, 2)
+        XCTAssertEqual(requests.first, requests.last)
+        XCTAssertEqual(requests.last?["policy"], "keep")
+        let accepted = await fixture.probe.successfulIDs
+        XCTAssertEqual(accepted, fixture.rows.map(\.id))
+        let duplicateCalls = await fixture.probe.duplicateCalls
+        XCTAssertEqual(duplicateCalls, 1)
+    }
+    func testSavedReceiptResumesFailedDownloadWithoutSendingOriginalAgain() async throws {
+        let fixture = try await historyUploadFixture()
+        let directory = try await fixture.library.bookDirectory(fixture.target.id)
+        let backup = fixture.root.appendingPathComponent("target-recovery")
+        try FileManager.default.moveItem(at: directory, to: backup)
+        await fixture.model.reload()
+        await fixture.model.upload(fixture.source)
+        let pending = try await fixture.library.pendingUpload(fixture.source.id, ownerID: "00000000-0000-4000-8000-000000000344", sourceVersion: fixture.source.sourceVersion)
+        XCTAssertEqual(pending?.bookID, "uploaded-history")
+        try FileManager.default.moveItem(at: backup, to: directory)
+        let model = await reopenedUploadModel(fixture)
+        await model.upload(fixture.source)
+        let requests = await fixture.probe.uploadIntents
+        XCTAssertEqual(requests.count, 1, "A trusted saved receipt resumes download/migration directly")
+        let accepted = await fixture.probe.successfulIDs
+        XCTAssertEqual(accepted, fixture.rows.map(\.id))
+    }
+    func testExplicitNewRetryRetainsOperationThenNextDeliberateCopyGetsNewID() async throws {
+        let fixture = try await historyUploadFixture()
+        _ = try await fixture.library.beginUpload(fixture.source.id, ownerID: "00000000-0000-4000-8000-000000000344", sourceVersion: fixture.source.sourceVersion, policy: .new)
+        await fixture.probe.loseNextReceipt()
+        await fixture.model.upload(fixture.source)
+        let model = await reopenedUploadModel(fixture)
+        await model.upload(fixture.source)
+        let firstRequests = await fixture.probe.uploadIntents
+        XCTAssertEqual(firstRequests.count, 2)
+        XCTAssertEqual(firstRequests.first, firstRequests.last)
+        XCTAssertEqual(firstRequests.last?["policy"], "new")
+        let next = Task { await model.upload(fixture.source) }
+        for _ in 0..<200 {
+            if model.duplicateRequest != nil { model.resolveDuplicate(.new); break }
+            try await Task.sleep(for: .milliseconds(10))
+        }
+        await next.value
+        let all = await fixture.probe.uploadIntents
+        XCTAssertEqual(all.count, 3)
+        XCTAssertNotEqual(all.last?["operation"], all.first?["operation"])
+        let targetState = try await fixture.library.state(fixture.target.id)
+        XCTAssertNil(targetState.anchor, "Explicit new must not migrate the source's position")
+    }
     func testUploadingWhileTargetIsOpenPreservesReaderSnapshotAndDefersMigration() async throws {
         let fixture = try await historyUploadFixture()
         await fixture.model.open(fixture.target)
@@ -360,6 +429,11 @@ private actor HistoryUploadProbe {
     let targetID: String
     let original: Data
     private var position: [String: Any] = [:]
+    private var published = false
+    private var loseReceipt = false
+    private(set) var uploadIntents: [[String: String]] = []
+    private(set) var duplicateCalls = 0
+    func loseNextReceipt() { loseReceipt = true }
     private var failureThreshold: Int?
     private(set) var successfulIDs: [String] = []
     private(set) var firstSendPendingCount: Int?
@@ -371,11 +445,18 @@ private actor HistoryUploadProbe {
         func reply(_ status: Int, _ value: [String: Any]) throws -> (Int, Data) { (status, try JSONSerialization.data(withJSONObject: value)) }
         if path == "/api/auth/session" { return try reply(200, ["user": ["id": owner]]) }
         guard request.value(forHTTPHeaderField: "X-Reader-Owner") == owner else { return try reply(403, ["error": "Synthetic owner mismatch"]) }
+        if path == "/api/library/upload/duplicate" {
+            duplicateCalls += 1
+            return try reply(200, ["duplicate": published ? ["bookId": "uploaded-history", "title": "Published synthetic source"] : NSNull()])
+        }
         if path == "/api/library/upload/start" { return try reply(404, ["error": "Use the isolated legacy upload fixture"]) }
         let body = Self.requestBody(request)
         if path == "/api/library/upload" {
             let value = try JSONSerialization.jsonObject(with: body) as! [String: Any]
             guard let base64 = value["base64"] as? String, Data(base64Encoded: base64) == original else { return try reply(400, ["error": "Synthetic original changed"]) }
+            uploadIntents.append(["policy": value["duplicatePolicy"] as? String ?? "keep", "operation": value["operationId"] as? String ?? ""])
+            published = true
+            if loseReceipt { loseReceipt = false; throw URLError(.networkConnectionLost) }
             return try reply(200, ["bookId": "uploaded-history", "contentVersion": "history-v1"])
         }
         if path == "/api/library" {
@@ -456,4 +537,15 @@ private final class ActivityURLProtocol: URLProtocol, @unchecked Sendable {
         }
     }
     override func stopLoading() { lock.lock(); stopped = true; lock.unlock() }
+}
+
+extension LibraryActivityTests {
+    func testUnreadCloudOnlyBookDoesNotBecomeAnInventedStartupResume() {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let cloud = CloudLibraryClient(baseURL: URL(string: "https://fixture.invalid")!)
+        let model = LibraryModel(root: root, cloud: cloud, monitorNetwork: false)
+        model.cloudBooks = [CloudShelfBook(id: "unread-cloud-only", title: "Synthetic unread book", author: "", contentVersion: "v1")]
+        XCTAssertNil(model.recentShelfItem, "No saved position and no real reading activity must keep the user on the shelf")
+    }
 }

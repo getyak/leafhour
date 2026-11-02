@@ -13,7 +13,6 @@ extension OfflineLibrary {
         return FileManager.default.fileExists(atPath: file.path) ? try Data(contentsOf: file) : nil
     }
     public func saveConversationDraft(_ data: Data, bookID: String, ownerID: String) throws {
-        guard data.count <= 131_072 else { throw LibraryError.invalid("对话草稿过长，尚未保存。") }
         try data.write(to: conversationFile(bookID: bookID, ownerID: ownerID), options: .atomic)
     }
 }

@@ -5,12 +5,20 @@ import LeafhourCore
 struct BookDetailScreen: View {
     let book: LocalBook
     @Bindable var model: LibraryModel
+    @Environment(\.dismiss) private var dismiss
+    @State private var confirmingRemoval = false
     @State private var original: URL?
     @State private var integrity = "等待校验"
     @State private var checking = false
     @State private var exporting = false
     @State private var replacingOriginal = false
     @State private var export: RecordsDocument?
+    private var shelfItem: LibraryShelfItem {
+        let active = LibraryPresentation.items(local: model.books, cloud: model.cloudBooks, snapshot: model.accountShelf, localArchivedIDs: model.localArchivedIDs, pendingActions: model.accountActions)
+        let removed = LibraryPresentation.items(local: model.books, cloud: model.cloudBooks, filter: .archived, snapshot: model.accountShelf, localArchivedIDs: model.localArchivedIDs, pendingActions: model.accountActions)
+        return (active + removed).first { $0.local?.id == book.id }
+            ?? LibraryShelfItem(id: "local:" + book.id, local: book, cloud: nil)
+    }
     var body: some View {
         List {
             Section {
@@ -65,6 +73,15 @@ struct BookDetailScreen: View {
                     Button("上传原件到我的书房", systemImage: "icloud.and.arrow.up") { Task { await model.upload(book) } }.disabled(model.busy)
                 }
             }
+            Section("书架管理") {
+                if shelfItem.isArchived {
+                    Button("恢复到书架", systemImage: "arrow.uturn.backward") { Task { await model.changeShelfVisibility([shelfItem], archived: false); dismiss() } }.disabled(model.busy)
+                } else {
+                    Button("从书架移除", systemImage: "archivebox") { confirmingRemoval = true }.disabled(model.busy)
+                }
+                Text("移入「已移除」后可恢复。原件、阅读位置、笔记、草稿与阅读时间保留。移除云端书籍会同步到当前账号。")
+                    .font(.footnote).foregroundStyle(.secondary)
+            }
             Section("来源与归属") {
                 Text(book.originalFilename)
                 LabeledContent("原文版本", value: String(book.sourceVersion.prefix(19))).font(.footnote)
@@ -73,6 +90,13 @@ struct BookDetailScreen: View {
         }
         .accessibilityIdentifier("book-details-list")
         .navigationTitle("书籍详情").navigationBarTitleDisplayMode(.inline)
+        .confirmationDialog("从书架移除这本书？", isPresented: $confirmingRemoval, titleVisibility: .visible) {
+            Button("移除，保留个人记录", role: .destructive) {
+                let item = shelfItem
+                Task { await model.changeShelfVisibility([item], archived: true); if model.message == nil { dismiss() } }
+            }
+            Button("取消", role: .cancel) {}
+        }
         .task { original = try? await model.library?.originalURL(book.id) }
         .fileImporter(isPresented: $replacingOriginal, allowedContentTypes: [.epub, .pdf, .plainText, UTType(filenameExtension: "md") ?? .plainText]) { result in
             switch result {

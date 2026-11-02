@@ -1,3 +1,4 @@
+import {chatRuntimeTimeout} from './chat-context.mjs';
 import {normalizeReadingChatQuote,validateCurrentReadingChatQuote} from '../app/reading-chat-quote.mjs';
 import {encodeReadingChatInput} from '../app/reading-chat-input.mjs';
 import {LIBRARY_CHAT_ID,LIBRARY_CHAT_VERSION,LIBRARY_CHAT_PASSAGE} from '../app/library-chat-context.mjs';
@@ -6,7 +7,7 @@ import path from 'node:path';
 import {randomUUID,createHash} from 'node:crypto';
 import {setTimeout as delay} from 'node:timers/promises';
 import {sourceIndex,invalid} from './experience-validation.mjs';
-import {portableChatTurns,valueEqual,exportChatTurn} from '../app/portable-chat.mjs';
+import {portableChatTurns,valueEqual,exportChatTurn,normalizeChatVoiceReceipt} from '../app/portable-chat.mjs';
 
 import {createReaderCompanionService} from './reader-companion.mjs';
 import {createReaderAnnotationsService} from './reader-annotations.mjs';
@@ -14,6 +15,7 @@ import {createReadingAgentTools} from './reading-agent-tools.mjs';
 import {createLibraryChatHistory} from './library-chat-history.mjs';
 import {readChatScope,changeChatScope,checkChatScopeRevision} from '../app/reading-chat-scope.mjs';
 
+const ACTIVE_BYTES=8*1024*1024; // Storage page size only; archived turns remain context and exports.
 const MAX_TURNS=100,RUN_MS=90000,HOUR_MS=3600000,DAY_MS=86400000,CANCEL_POLL_MS=500;
 const FAILED='这次回答未通过生成或来源核验，你的提问已保留。';
 const FAILURE_CODES=new Set(['generation_failed','pricing_unavailable','save_failed','result_invalid','context_changed','interrupted']);
@@ -23,7 +25,7 @@ const bytes=value=>Buffer.byteLength(JSON.stringify(value));
 const text=(value,max)=>typeof value==='string'&&value.trim().length>0&&value.length<=max&&value.isWellFormed();
 const safeId=value=>typeof value==='string'&&/^[A-Za-z0-9][A-Za-z0-9_-]{0,119}$/.test(value);
 const identity=user=>{if(!text(user?.id,256)||user.is_anonymous)throw invalid('请先进入自己的书房',401);return user;};
-const publicTurn=turn=>structuredClone({id:turn.id,passageId:turn.passageId,contentVersion:turn.contentVersion,...(turn.scopeRevision!==undefined?{scopeRevision:turn.scopeRevision}:{}),text:turn.text,...(turn.peopleWrites===true?{peopleWrites:true}:{}),...(turn.preferenceWrites===true?{preferenceWrites:true}:{}),...(turn.quote!==undefined?{quote:turn.quote}:{}),origin:turn.kind==='companion'?'ai':'user',...(turn.kind==='companion'?{kind:'companion'}:{}),createdAt:turn.createdAt,status:turn.status,answer:turn.answer,activity:safeActivity(turn.activity),...(turn.error?{error:turn.error}:{}),...(turn.status==='failed'&&FAILURE_CODES.has(turn.failureCode)?{failureCode:turn.failureCode}:{})});
+const publicTurn=turn=>structuredClone({id:turn.id,passageId:turn.passageId,contentVersion:turn.contentVersion,...(turn.scopeRevision!==undefined?{scopeRevision:turn.scopeRevision}:{}),text:turn.text,...(turn.voice?{voice:turn.voice}:{}),...(turn.peopleWrites===true?{peopleWrites:true}:{}),...(turn.preferenceWrites===true?{preferenceWrites:true}:{}),...(turn.quote!==undefined?{quote:turn.quote}:{}),origin:turn.kind==='companion'?'ai':'user',...(turn.kind==='companion'?{kind:'companion'}:{}),createdAt:turn.createdAt,status:turn.status,answer:turn.answer,activity:safeActivity(turn.activity),...(turn.error?{error:turn.error}:{}),...(turn.status==='failed'&&FAILURE_CODES.has(turn.failureCode)?{failureCode:turn.failureCode}:{})});
 const safeActivity=value=>(Array.isArray(value)?value:[]).slice(-48).map(item=>Object.fromEntries(['tool','label','status','bookId','chapterId'].filter(key=>typeof item[key]==='string'&&item[key].length<=200).map(key=>[key,item[key]])));
 const empty=bookId=>bookId===null?{kind:'leafhour-library-chat',schemaVersion:1,scope:'library',conversationId:LIBRARY_CHAT_ID,turns:[]}:{kind:'marginalia-reader-chat',schemaVersion:1,bookId,turns:[]};
 
@@ -40,13 +42,13 @@ function contextFor(book,index,passageId,position){
   return {passageId:selected.id,chapterId:selected.chapterId,chapterTitle:book.chapters.find(c=>c.id===selected.chapterId)?.title||null,original:selected.original,literal:literal?.text||null,interpretive:interpretive?.text||null,translationStatus:{literal:literal?.status||'missing',interpretive:interpretive?.status||'missing'}};
 }
 
-function conversationHistory(turns,scope={mode:'book'},contentVersion){
-  const pairs=turns.filter(t=>t.status==='completed'&&typeof t.answer?.summary==='string'&&(!contentVersion||t.contentVersion===contentVersion)&&(scope.mode==='library'||t.scope==='book')).slice(-6).map(t=>t.kind==='companion'?[{role:'assistant',content:t.answer.summary}]:[{role:'user',content:t.text,...(t.quote?{quote:t.quote}:{})},{role:'assistant',content:t.answer.summary}]);
-  while(pairs.length&&bytes(pairs.flat())>24576)pairs.shift();
+function conversationHistory(turns,scope={mode:'book'},contentVersion,bounded=false){
+  const pairs=turns.filter(t=>t.status==='completed'&&typeof t.answer?.summary==='string'&&(!contentVersion||t.contentVersion===contentVersion)&&(scope.mode==='library'||t.scope==='book')).map(t=>t.kind==='companion'?[{role:'assistant',content:t.answer.summary}]:[{role:'user',content:t.text,...(t.quote?{quote:t.quote}:{})},{role:'assistant',content:t.answer.summary}]);
+  if(bounded){pairs.splice(0,Math.max(0,pairs.length-6));while(pairs.length&&bytes(pairs.flat())>24576)pairs.shift();}
   return pairs.flat();
 }
 
-export async function createReaderChatService({library,people=null,dataDir,dataStore=null,generator=null,clock=Date.now,onError=()=>{},companionGenerator=null,annotationGenerator=null,onCompanionOutcome=()=>{}}){
+export async function createReaderChatService({library,people=null,dataDir,dataStore=null,generator=null,clock=Date.now,onError=()=>{},companionGenerator=null,annotationGenerator=null,onCompanionOutcome=()=>{},validateVoice=null,exportVoice=null,restoreVoice=null,conversationTimeoutMs=chatRuntimeTimeout()+30000}){
   if(!library?.getBook||!library?.records||!library?.addComment||!dataDir)throw new TypeError('Reader chat requires a library and data directory');
   let closed=false;const queues=new Map(),active=new Map();
   const ownerDir=user=>path.join(dataDir,'users',digest(identity(user).id),'chat');
@@ -101,13 +103,16 @@ export async function createReaderChatService({library,people=null,dataDir,dataS
   }
   const mutateBook=(user,bookId,operation)=>{const now=clock();return mutate(filename(user,bookId),empty(bookId),data=>{expire(data,now);return operation(data);});};
   const libraryHistory=createLibraryChatHistory({read,mutate,ownerDir,publicTurn});
-  async function archiveLibraryWindow(user){
-    const turns=await mutateBook(user,null,data=>data.turns.length<MAX_TURNS?[]:data.turns.filter(t=>t.status!=='running').slice(0,data.turns.length-MAX_TURNS+1).map(publicTurn));
+  const bookHistories=new Map();
+  const historyFor=bookId=>{if(bookId===null)return libraryHistory;if(!bookHistories.has(bookId))bookHistories.set(bookId,createLibraryChatHistory({read,mutate,ownerDir,publicTurn,bookId}));return bookHistories.get(bookId);};
+  async function archiveLibraryWindow(user,bookId=null){
+    const history=historyFor(bookId);
+    const turns=await mutateBook(user,bookId,data=>{let count=Math.max(0,data.turns.length-MAX_TURNS+1);while(count<data.turns.length&&bytes(data.turns.slice(count))>ACTIVE_BYTES)count++;return data.turns.slice(0,count).filter(t=>t.status!=='running').map(turn=>({...publicTurn(turn),...(bookId!==null&&turn.scope?{scope:turn.scope}:{})}));});
     if(!turns.length)return;
-    await libraryHistory.archive(user,turns);
-    await mutateBook(user,null,data=>{
+    await history.archive(user,turns);
+    await mutateBook(user,bookId,data=>{
       const archived=new Map(turns.map(t=>[t.id,t]));
-      for(const turn of data.turns)if(archived.has(turn.id)&&!valueEqual(publicTurn(turn),archived.get(turn.id)))throw invalid('对话归档与已有记录不一致，未覆盖记录',409);
+      for(const turn of data.turns)if(archived.has(turn.id)&&!valueEqual(publicTurn(turn),publicTurn(archived.get(turn.id))))throw invalid('对话归档与已有记录不一致，未覆盖记录',409);
       data.turns=data.turns.filter(t=>!archived.has(t.id));return null;
     });
   }
@@ -140,6 +145,11 @@ export async function createReaderChatService({library,people=null,dataDir,dataS
     identity(user);
     const turns=await mutateBook(user,null,data=>data.turns.map(publicTurn));
     return {available:!closed&&typeof generator==='function',bookId:LIBRARY_CHAT_ID,conversationId:LIBRARY_CHAT_ID,contentVersion:LIBRARY_CHAT_VERSION,scope:{mode:'library',revision:0},context:{scope:'library',currentBook:null,passageId:LIBRARY_CHAT_PASSAGE},turns};
+  }
+  async function findTurn(user,bookId,id){
+    if(bookId!==null)await bookFor(user,bookId);else identity(user);
+    if(!safeId(id))throw invalid('提问标识不正确');
+    return mutateBook(user,bookId,async data=>{const turn=data.turns.find(t=>t.id===id);return turn?publicTurn(turn):historyFor(bookId).find(user,id);});
   }
   async function findLibraryTurn(user,id){
     identity(user);if(!safeId(id))throw invalid('提问标识不正确');
@@ -179,35 +189,38 @@ export async function createReaderChatService({library,people=null,dataDir,dataS
   async function sendSubject(user,bookId,input,{onProgress,authorizePeople}={}){
     const libraryChat=bookId===null;
     const book=libraryChat?(identity(user),null):await bookFor(user,bookId);
-    if(!input||!safeId(input.id)||!text(input.text,2000)||!text(input.contentVersion,256)||!text(input.passageId,128))throw invalid(libraryChat?'请提交不超过 2,000 字的消息':'请提交当前段落中不超过 2,000 字的提问');
+    if(!input||!safeId(input.id)||!text(input.text,Number.MAX_SAFE_INTEGER)||!text(input.contentVersion,256)||!text(input.passageId,128))throw invalid('请提交有效消息');
     // Normalize without current-source validation: exact terminal retries are
     // historical receipts and survive later account translation edits.
     if(input.peopleWrites!==undefined&&typeof input.peopleWrites!=='boolean')throw invalid('人物资料授权格式不正确');
     if(input.preferenceWrites!==undefined&&typeof input.preferenceWrites!=='boolean')throw invalid('阅读偏好授权格式不正确');
-    input={...input,...(input.quote!==undefined?{quote:normalizeReadingChatQuote(input.quote)}:{})};
+    input={...input,...(input.quote!==undefined?{quote:normalizeReadingChatQuote(input.quote,{bounded:false})}:{})};
     if(libraryChat&&(input.contentVersion!==LIBRARY_CHAT_VERSION||input.passageId!==LIBRARY_CHAT_PASSAGE||input.quote!==undefined||input.peopleWrites===true||input.preferenceWrites===true))throw invalid('书房对话只允许按需查阅资料，不接受书籍锚点或修改授权');
     const index=book?sourceIndex(book):null,contentVersion=book?.contentVersion||LIBRARY_CHAT_VERSION;
     const runId=randomUUID(),now=clock();
     const claimed=await mutateBook(user,bookId,async data=>{
-      const old=data.turns.find(t=>t.id===input.id)||(libraryChat?await libraryHistory.find(user,input.id):null);
-      if(old){if(!!old.peopleWrites!==!!input.peopleWrites||!!old.preferenceWrites!==!!input.preferenceWrites||old.passageId!==input.passageId||old.text!==input.text||old.contentVersion!==input.contentVersion||(old.scopeRevision??0)!==(input.scopeRevision??0)||!valueEqual(old.quote??null,input.quote??null))throw invalid('重复提交标识与原提问或查阅范围不一致',409);if(old.status==='running')throw invalid('这次提问正在回答，请稍后查看',409);return {created:false,turn:publicTurn(old)};}
+      const old=data.turns.find(t=>t.id===input.id)||await historyFor(bookId).find(user,input.id);
+      if(old){if(!!old.peopleWrites!==!!input.peopleWrites||!!old.preferenceWrites!==!!input.preferenceWrites||old.passageId!==input.passageId||old.text!==input.text||old.contentVersion!==input.contentVersion||(old.scopeRevision??0)!==(input.scopeRevision??0)||!valueEqual(old.quote??null,input.quote??null)||!valueEqual(old.voice??null,input.voice??null))throw invalid('重复提交标识与原提问或查阅范围不一致',409);if(old.status==='running')throw invalid('这次提问正在回答，请稍后查看',409);return {created:false,turn:publicTurn(old)};}
       if(book&&!index.byId.has(input.passageId))throw invalid('这段原文不存在');
       if(input.contentVersion!==contentVersion)throw invalid('原文版本已变化，请重新打开这一段',input.quote?422:409);
-      if(input.quote!==undefined){try{validateCurrentReadingChatQuote(input.quote,book);if(input.quote.parts[0].passageId!==input.passageId)throw Error('context');}catch{throw invalid('所选文字已变化，请移除或重新选择后再提问。',422);}}
+      if(input.quote!==undefined){try{validateCurrentReadingChatQuote(input.quote,book,{bounded:false});if(input.quote.parts[0].passageId!==input.passageId)throw Error('context');}catch{throw invalid('所选文字已变化，请移除或重新选择后再提问。',422);}}
       const scope=libraryChat?{mode:'library',revision:0}:readChatScope(data.scope);checkChatScopeRevision(scope,input);
-      const selected=index?.byId.get(input.passageId),location={book:book?{bookId:book.bookId,contentVersion:book.contentVersion,title:book.title}:null,...(book?{passageId:input.passageId,chapterId:selected.chapterId,chapterTitle:book.chapters.find(c=>c.id===selected.chapterId)?.title||null}:{}),text:input.text,...(input.quote?{quote:input.quote}:{})};
+      const selected=index?.byId.get(input.passageId),location={book:book?{bookId:book.bookId,contentVersion:book.contentVersion,title:book.title}:null,...(book?{passageId:input.passageId,chapterId:selected.chapterId,chapterTitle:book.chapters.find(c=>c.id===selected.chapterId)?.title||null}:{}),text:input.text,...(input.voice?{voice:input.voice}:{}),...(input.quote?{quote:input.quote}:{})};
       // Preflight the actual shared encoder before claim/comment/quota/pause.
       encodeReadingChatInput(location);
 
       if(closed||typeof generator!=='function')throw invalid('阅读对话服务尚未配置',503);
       if(data.turns.some(t=>t.status==='running'&&t.kind!=='companion'))throw invalid(libraryChat?'还有一条消息正在回答':'这本书还有一条提问正在回答',409);
-      if(data.turns.length>=MAX_TURNS){if(libraryChat)return {archiveNeeded:true};throw invalid('这本书的对话记录已达上限，请先保留导出备份',413);}
-      const turn={...(input.peopleWrites===true?{peopleWrites:true}:{}),...(input.preferenceWrites===true?{preferenceWrites:true}:{}),id:input.id,passageId:input.passageId,contentVersion:input.contentVersion,text:input.text,...(input.quote?{quote:input.quote}:{}),origin:'user',createdAt:new Date(now).toISOString(),status:'running',answer:null,activity:[],runId,expiresAt:now+RUN_MS,scope:scope.mode,scopeRevision:scope.revision};
-      const history=conversationHistory(data.turns,scope,contentVersion);
+      if(data.turns.length>=MAX_TURNS||bytes(data.turns)>ACTIVE_BYTES)return {archiveNeeded:true};
+      if(input.voice!==undefined){if(typeof validateVoice!=='function')throw invalid('语音服务尚未配置',503);input={...input,voice:await validateVoice(user,input.voice)};}
+      const turn={...(input.peopleWrites===true?{peopleWrites:true}:{}),...(input.preferenceWrites===true?{preferenceWrites:true}:{}),id:input.id,passageId:input.passageId,contentVersion:input.contentVersion,text:input.text,...(input.voice?{voice:input.voice}:{}),...(input.quote?{quote:input.quote}:{}),origin:'user',createdAt:new Date(now).toISOString(),status:'running',answer:null,activity:[],runId,expiresAt:now+conversationTimeoutMs,scope:scope.mode,scopeRevision:scope.revision};
+      const archived=await historyFor(bookId).all(user);
+      const activeIds=new Set(data.turns.map(t=>t.id));
+      const history=conversationHistory([...archived.filter(t=>!activeIds.has(t.id)),...data.turns],scope,contentVersion);
       const paused=data.turns.filter(t=>t.kind==='companion'&&t.status==='running').map(t=>{t.status='cancelled';t.answer=null;return t.id;});
       data.turns.push(turn);return {created:true,turn:publicTurn(turn),history,scope,paused,location};
     });
-    if(claimed.archiveNeeded){await archiveLibraryWindow(user);return sendSubject(user,bookId,input,{onProgress,authorizePeople});}
+    if(claimed.archiveNeeded){await archiveLibraryWindow(user,bookId);return sendSubject(user,bookId,input,{onProgress,authorizePeople});}
     if(!claimed.created)return claimed.turn;
     for(const run of active.values())if(run.user.id===user.id&&run.bookId===bookId&&claimed.paused.includes(run.id))run.controller.abort();
     const controller=new AbortController(),key=runId;
@@ -215,9 +228,14 @@ export async function createReaderChatService({library,people=null,dataDir,dataS
     let timer,ticket=null,stopWatching=()=>{},phase='record-question';
     try{
       if(closed)return await finish(user,bookId,input.id,runId,{status:'cancelled',answer:null});
-      if(book)await library.addComment(user,bookId,{id:'chat-'+input.id,passageId:input.passageId,text:input.text,origin:'user',contentVersion:input.contentVersion},'questions');
-      phase='quota';await quota(user,runId);
-      ticket=await reserveGlobal(runId);
+      if(book)try{await library.addComment(user,bookId,{id:'chat-'+input.id,passageId:input.passageId,text:input.text,origin:'user',contentVersion:input.contentVersion},'questions');}
+      catch(error){
+        // The claimed chat turn is the canonical original. A full redundant
+        // notebook mirror must not impose a second dialogue storage quota.
+        if(error?.status!==413||error?.code!=='PERSONAL_RECORD_CAPACITY')throw error;
+      }
+      // Ordinary chat has no product frequency quota; the durable running turn
+      // still serializes each conversation and cancellation remains authoritative.
       // Cancellation may have been persisted by another process while the
       // original question was entering the library or waiting for its quota.
       const current=await mutateBook(user,bookId,data=>publicTurn(data.turns.find(t=>t.id===input.id)));
@@ -225,7 +243,7 @@ export async function createReaderChatService({library,people=null,dataDir,dataS
       const abort=new Promise((resolve,reject)=>{
         controller.signal.addEventListener('abort',()=>reject(invalid('回答已取消或超时',408)),{once:true});
       });
-      timer=setTimeout(()=>controller.abort(),Math.max(0,now+RUN_MS-clock()));timer.unref?.();
+      timer=setTimeout(()=>controller.abort(),Math.max(0,now+conversationTimeoutMs-clock()));timer.unref?.();
       stopWatching=watchRun(user,bookId,input.id,runId,controller);
       const onActivity=async activity=>{
         if(controller.signal.aborted)return;
@@ -242,20 +260,20 @@ export async function createReaderChatService({library,people=null,dataDir,dataS
       const tools=createReadingAgentTools({library,user,people,allowPersonWrites:input.peopleWrites===true,authorizePeople,currentBook:book,bookId,passageId:book?input.passageId:undefined,scope:claimed.scope.mode,readOnly:libraryChat,allowPreferenceWrites:input.preferenceWrites===true,signal:controller.signal,onActivity});
       let sequence=0;
       const progress=typeof onProgress==='function'?async value=>{
-        if(controller.signal.aborted||!Number.isSafeInteger(value?.sequence)||value.sequence<=sequence||typeof value.text!=='string'||value.text.length>12000||!value.text.isWellFormed())return;
+        if(controller.signal.aborted||!Number.isSafeInteger(value?.sequence)||value.sequence<=sequence||typeof value.text!=='string'||!value.text.isWellFormed())return;
         // watchRun checks shared cancellation every 500ms. Token delivery must
         // not add a cloud-storage read per chunk or persist provisional text.
         sequence=value.sequence;await onProgress({type:'progress',id:input.id,sequence,text:value.text});
       }:undefined;
       phase='generation';const candidate=await Promise.race([Promise.resolve().then(()=>generator({kind:'conversation',...claimed.location,history:claimed.history,runId,requestId:input.id,signal:controller.signal,tools,...(progress?{onProgress:progress}:{})})),abort]);
       phase='verify-source';
-      if(candidate?.kind!=='conversation'||!text(candidate.summary,12000))throw invalid('回答内容无效');
+      if(candidate?.kind!=='conversation'||!text(candidate.summary,Number.MAX_SAFE_INTEGER))throw invalid('回答内容无效');
       await tools.verify();
       const answer={kind:'conversation',summary:candidate.summary,sourceRefs:tools.sources(),recommendations:tools.recommendations(),...(tools.peopleSources?.().length?{personSources:tools.peopleSources()}:{}),origin:'ai'};
-      if(bytes(answer)>96000||bytes(answer.sourceRefs)>32000)throw invalid('回答引用过长');
+      if(bytes(answer.sourceRefs)>32000)throw invalid('回答引用过长');
       phase='verify-version';if(book){const fresh=await bookFor(user,bookId);
       if(fresh.contentVersion!==book.contentVersion||sourceIndex(fresh).byId.get(input.passageId)?.original!==index.byId.get(input.passageId)?.original)throw invalid('原文版本已变化',409);
-      if(input.quote)validateCurrentReadingChatQuote(input.quote,fresh);}
+      if(input.quote)validateCurrentReadingChatQuote(input.quote,fresh,{bounded:false});}
       if(controller.signal.aborted)throw invalid('回答已取消',408);
       phase='save-answer';return await finish(user,bookId,input.id,runId,{status:'completed',answer});
     }catch(error){
@@ -274,7 +292,7 @@ export async function createReaderChatService({library,people=null,dataDir,dataS
   }
   async function cancelSubject(user,bookId,id){
     identity(user);if(!safeId(id))throw invalid('提问标识不正确');
-    const turn=await mutateBook(user,bookId,async data=>{const turn=data.turns.find(t=>t.id===id);if(!turn){const archived=bookId===null?await libraryHistory.find(user,id):null;if(archived)return archived;throw invalid('找不到这次提问',404);}if(turn.status==='running'){turn.status='cancelled';turn.answer=null;}return publicTurn(turn);});
+    const turn=await mutateBook(user,bookId,async data=>{const turn=data.turns.find(t=>t.id===id);if(!turn){const archived=await historyFor(bookId).find(user,id);if(archived)return archived;throw invalid('找不到这次提问',404);}if(turn.status==='running'){turn.status='cancelled';turn.answer=null;}return publicTurn(turn);});
     for(const run of active.values())if(run.user.id===user.id&&run.bookId===bookId&&run.id===id)run.controller.abort();
     return turn;
   }
@@ -288,32 +306,61 @@ export async function createReaderChatService({library,people=null,dataDir,dataS
     await Promise.all([...active.values()].map(async run=>{await finish(run.user,run.bookId,run.id,run.runId,{status:'cancelled',answer:null});run.controller.abort();}));
     await Promise.allSettled([...queues.values()]);
   }
+  async function withVoiceAssets(user,payload){
+    const voices=new Map(payload.turns.filter(t=>t.voice).map(t=>[t.voice.id,t.voice]));
+    if(!voices.size)return payload;
+    if(typeof exportVoice!=='function')throw invalid('语音导出服务尚未配置，请保留原记录',503);
+    const voiceAssets=[];for(const receipt of voices.values()){
+      const asset=await exportVoice(user,receipt);
+      if(!valueEqual(asset?.receipt,receipt)||!Array.isArray(asset?.parts))throw invalid('语音导出无法核对',409);
+      voiceAssets.push(asset);
+    }
+    return {...payload,voiceAssets};
+  }
+  async function validateVoiceAssets(user,history,turns){
+    const voices=new Map(turns.filter(t=>t.voice).map(t=>[t.voice.id,t.voice]));
+    if(history.voiceAssets!==undefined&&!Array.isArray(history.voiceAssets))throw invalid('语音备份格式不正确');
+    const assets=history.voiceAssets||[],seen=new Set();
+    if(!voices.size&&!assets.length)return [];
+    if(typeof restoreVoice!=='function')throw invalid('语音恢复服务尚未配置，原记录未覆盖',503);
+    for(const asset of assets){
+      const receipt=normalizeChatVoiceReceipt(asset?.receipt);
+      if(seen.has(receipt.id)||!valueEqual(voices.get(receipt.id),receipt))throw invalid('语音备份与对话不一致',409);
+      seen.add(receipt.id);const checked=await restoreVoice(user,asset,{validateOnly:true});
+      if(!valueEqual(checked,receipt))throw invalid('语音备份校验失败',409);
+    }
+    if(seen.size!==voices.size)throw invalid('语音备份缺少原始音频，原记录未覆盖',409);
+    return assets;
+  }
   async function exportHistory(user,bookId){
     const book=await bookFor(user,bookId),data=await read(filename(user,bookId),empty(bookId));
-    return {...empty(bookId),turns:data.turns.filter(t=>t.kind!=='companion'||t.status==='completed'&&t.answer).map(t=>exportChatTurn(publicTurn(t),book))};
+    const archived=await historyFor(bookId).all(user),activeIds=new Set(data.turns.map(t=>t.id));
+    return withVoiceAssets(user,{...empty(bookId),turns:[...archived.filter(t=>!activeIds.has(t.id)),...data.turns].filter(t=>t.kind!=='companion'||t.status==='completed'&&t.answer).map(t=>exportChatTurn(publicTurn(t),book))});
   }
   async function exportLibraryHistory(user){
     identity(user);const activeTurns=await mutateBook(user,null,data=>data.turns.map(publicTurn)),turns=await libraryHistory.all(user);
     const archived=new Map(turns.map(t=>[t.id,t]));
     for(const turn of activeTurns){const old=archived.get(turn.id);if(old){if(!valueEqual(old,turn))throw invalid('对话归档与已有记录不一致，未覆盖记录',409);}else turns.push(turn);}
-    return {...empty(null),contentVersion:LIBRARY_CHAT_VERSION,exportedAt:new Date(clock()).toISOString(),turns};
+    return withVoiceAssets(user,{...empty(null),contentVersion:LIBRARY_CHAT_VERSION,exportedAt:new Date(clock()).toISOString(),turns});
   }
   function mergeHistory(data,turns,book,books,storedBook){
     for(const incoming of turns){const existing=data.turns.find(t=>t.id===incoming.id);
-      if(existing){if(existing.passageId!==incoming.passageId||existing.contentVersion!==incoming.contentVersion||existing.text!==incoming.text||!valueEqual(existing.quote??null,incoming.quote??null)||(existing.kind==='companion')!==(incoming.kind==='companion')||incoming.status==='completed'&&(existing.status!=='completed'||!valueEqual(portableChatTurns({...empty(book.bookId),turns:[exportChatTurn(publicTurn(existing),storedBook)]},book,books)[0].answer,incoming.answer)))throw invalid('备份对话标识与已有历史冲突，未覆盖记录',409);}
+      if(existing){if(existing.passageId!==incoming.passageId||existing.contentVersion!==incoming.contentVersion||existing.text!==incoming.text||!valueEqual(existing.quote??null,incoming.quote??null)||!valueEqual(existing.voice??null,incoming.voice??null)||(existing.kind==='companion')!==(incoming.kind==='companion')||incoming.status==='completed'&&(existing.status!=='completed'||!valueEqual(portableChatTurns({...empty(book.bookId),turns:[exportChatTurn(publicTurn(existing),storedBook)]},book,books)[0].answer,incoming.answer)))throw invalid('备份对话标识与已有历史冲突，未覆盖记录',409);}
     }
-    const missing=turns.filter(t=>!data.turns.some(old=>old.id===t.id));if(data.turns.length+missing.length>MAX_TURNS)throw invalid('恢复后对话超过 100 条，请在本机整理',413);
+    const missing=turns.filter(t=>!data.turns.some(old=>old.id===t.id));
     // Imported history cannot silently become context for the narrower book scope.
     return missing.map(t=>({...t,scope:'library'}));
   }
   async function validateHistory(user,book,history,books){
-    identity(user);const turns=portableChatTurns(history,book,books),data=await read(filename(user,book.bookId),empty(book.bookId)),storedBook=data.turns.length?await bookFor(user,book.bookId):book;mergeHistory(data,turns,book,books,storedBook);return turns;
+    identity(user);const turns=portableChatTurns(history,book,books),data=await read(filename(user,book.bookId),empty(book.bookId)),archived=await historyFor(book.bookId).all(user);data.turns=[...archived,...data.turns];const storedBook=data.turns.length?await bookFor(user,book.bookId):book;mergeHistory(data,turns,book,books,storedBook);await validateVoiceAssets(user,history,turns);return turns;
   }
   async function restoreHistory(user,book,history,books){
     const turns=await validateHistory(user,book,history,books),storedBook=await bookFor(user,book.bookId);
-    return mutateBook(user,book.bookId,data=>{const added=mergeHistory(data,turns,book,books,storedBook);data.turns.push(...added);return {restored:added.length};});
+    for(const asset of history.voiceAssets||[]){const restored=await restoreVoice(user,asset,{validateOnly:false});if(!valueEqual(restored,asset.receipt))throw invalid('语音恢复校验失败',409);}
+    const archived=await historyFor(book.bookId).all(user);
+    return mutateBook(user,book.bookId,data=>{const added=mergeHistory({turns:[...archived,...data.turns]},turns,book,books,storedBook);data.turns.push(...added);return {restored:added.length};});
   }
-  const companion=createReaderCompanionService({bookFor,mutateBook,clock,generator:companionGenerator,quota,reserveGlobal,releaseGlobal,watchRun,active,publicTurn,conversationHistory,cancel,getClosed:()=>closed,onOutcome:onCompanionOutcome});
+  const companion=createReaderCompanionService({bookFor,mutateBook,clock,generator:companionGenerator,quota,reserveGlobal,releaseGlobal,watchRun,active,publicTurn,conversationHistory:(turns,scope,version)=>conversationHistory(turns,scope,version,true),cancel,getClosed:()=>closed,onOutcome:onCompanionOutcome});
   // GET-195: the child chat.annotations service reuses these exact closures for
   // identity, paths, transactions and quotas; it keeps its own active map.
   const annotations=createReaderAnnotationsService({library,bookFor,identity,dataDir,read,mutate,quota,reserveGlobal,releaseGlobal,clock,generator:annotationGenerator,onError,getClosed:()=>closed});
@@ -322,5 +369,5 @@ export async function createReaderChatService({library,people=null,dataDir,dataS
   // before the revocation is acknowledged, so a held external put CAS retries,
   // re-authorizes and fails instead of writing after the ACK.
   const unregisterGrantRevocation=typeof library.registerGrantRevocation==='function'?library.registerGrantRevocation((ownerId,grantId)=>annotations.grantRevoked(ownerId,grantId)):null;
-  return {get available(){return !closed&&typeof generator==='function';},view,viewLibrary,findLibraryTurn,configureScope,send,sendLibrary,cancel,cancelLibrary:(user,id)=>cancelSubject(user,null,id),close,companion,annotations,exportHistory,exportLibraryHistory,validateHistory,restoreHistory};
+  return {get available(){return !closed&&typeof generator==='function';},view,viewLibrary,findTurn,findLibraryTurn,configureScope,send,sendLibrary,cancel,cancelLibrary:(user,id)=>cancelSubject(user,null,id),close,companion,annotations,exportHistory,exportLibraryHistory,validateHistory,restoreHistory};
 }

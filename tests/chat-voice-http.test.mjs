@@ -1,0 +1,27 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {mkdtemp,rm} from 'node:fs/promises';
+import {tmpdir} from 'node:os';
+import path from 'node:path';
+import {createHash,randomUUID} from 'node:crypto';
+import {createReaderServer} from '../server/server.mjs';
+test('native voice uploads, sends once, reloads and plays through authenticated routes',async t=>{
+ const dir=await mkdtemp(path.join(tmpdir(),'leafhour-voice-http-'));let calls=0;
+ const server=await createReaderServer({bookPath:path.join(dir,'absent.json'),recordsPath:path.join(dir,'records.json'),translator:null,sendCode:null,chatGenerator:async()=>{calls++;return {kind:'conversation',summary:'A **Markdown** answer.'};}});
+ await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));t.after(async()=>{await new Promise(resolve=>server.close(resolve));await rm(dir,{recursive:true,force:true});});
+ const base='http://127.0.0.1:'+server.address().port,session=await server.portal.auth.localSession();
+ const headers={Cookie:'marginalia_session='+session.token,'X-Reader-Owner':session.user.id,'Content-Type':'application/json',Origin:base};
+ const post=(url,body)=>fetch(base+url,{method:'POST',headers,body:JSON.stringify(body)}),id=randomUUID(),url='/api/library/chat-voice/'+id;
+ const bytes=Buffer.from('caff-synthetic-voice-source'),sha256=createHash('sha256').update(bytes).digest('hex');
+ const started=await post(url+'/start',{bytes:bytes.length,sha256,mimeType:'audio/x-caf',durationMs:950});assert.equal(started.status,201);
+ assert.equal((await post(url+'/part',{index:0,base64:bytes.toString('base64'),sha256})).status,200);
+ const completed=await post(url+'/complete',{});assert.equal(completed.status,200);const voice=await completed.json();
+ const input={id:'voice-question',text:'A spoken question.',voice,passageId:'conversation',contentVersion:'library-chat-v1'};
+ const sent=await post('/api/library/chat',input);assert.equal(sent.status,200);assert.deepEqual((await sent.json()).voice,voice);
+ assert.equal((await post('/api/library/chat',input)).status,200);assert.equal(calls,1);
+ const history=await (await fetch(base+'/api/library/chat',{headers})).json();assert.deepEqual(history.turns[0].voice,voice);
+ const exported=await (await fetch(base+'/api/library/chat/export',{headers})).json();assert.deepEqual(exported.voiceAssets[0].receipt,voice);assert.deepEqual(Buffer.from(exported.voiceAssets[0].parts[0],'base64'),bytes);
+ const audio=await fetch(base+url+'/parts/0',{headers});assert.equal(audio.status,200);assert.deepEqual(Buffer.from(await audio.arrayBuffer()),bytes);
+ assert.equal((await fetch(base+url+'/parts/0')).status,401);
+ assert.equal((await fetch(base+url+'/parts/0',{headers:{...headers,'X-Reader-Owner':'wrong-owner'}})).status,409);
+});

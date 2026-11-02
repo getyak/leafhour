@@ -1,4 +1,5 @@
 import {gzipSync} from 'node:zlib';
+import {once} from 'node:events';
 import {createReadingWorkspaceService} from './reading-workspace-service.mjs';
 import {createNotebookGenerator} from '../harness/notebook-generator.mjs';
 import {contentSecurityPolicy} from './content-security.mjs';
@@ -34,6 +35,8 @@ import {selectInitialUiLanguage,fallbackInitialUiLanguage,initialRetryDocument,n
 import {canonicalUiEntryPath} from '../app/ui-first-paint-codec.mjs';
 import {roomExcerpt,latestRoomQuestion} from '../app/library-workspace.mjs';
 import {createReaderChatService} from './reader-chat.mjs';
+import {createChatVoice} from './chat-voice.mjs';
+import {chatRuntimeTimeout} from './chat-context.mjs';
 import {LIBRARY_CHAT_ID} from '../app/library-chat-context.mjs';
 import {createReaderChatGenerator,createReaderAnnotationGenerator} from './reader-chat-generator.mjs';
 import {createBookIntroductionService} from './book-introduction.mjs';
@@ -115,7 +118,8 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
   const readingGenerator=chatGenerator===undefined?createReaderChatGenerator():chatGenerator;
   const bookIntroductions=createBookIntroductionService({library,generator:introductionGenerator===undefined?createReaderChatGenerator({env,makeGenerator:createIntroductionGenerator}):introductionGenerator});
   const proactiveGenerator=companionGenerator===undefined?createReaderChatGenerator({makeGenerator:createCompanionGenerator}):companionGenerator;
-  const chat=await createReaderChatService({companionGenerator:proactiveGenerator,library,people,dataDir:path.join(dataDir,'library'),dataStore,generator:readingGenerator,annotationGenerator:annotationGenerator===undefined?createReaderAnnotationGenerator({env}):annotationGenerator,onError:(error,context)=>readingGenerator?.reportFailure?.(error,context),onCompanionOutcome:domainOutcome});
+  const voice=createChatVoice({store:ingestionStore});
+  const chat=await createReaderChatService({companionGenerator:proactiveGenerator,library,people,dataDir:path.join(dataDir,'library'),dataStore,generator:readingGenerator,conversationTimeoutMs:chatRuntimeTimeout(env)+30000,validateVoice:(user,receipt)=>voice.validate(user,receipt),exportVoice:(user,receipt)=>voice.exportVoice(user,receipt),restoreVoice:(user,asset,options)=>voice.restoreVoice(user,asset,options),annotationGenerator:annotationGenerator===undefined?createReaderAnnotationGenerator({env}):annotationGenerator,onError:(error,context)=>readingGenerator?.reportFailure?.(error,context),onCompanionOutcome:domainOutcome});
   const creditGate=createCreditGate({billing,library,chat,record:facts=>billing.recordProviderCall(facts)});
   const billingRoutes=createBillingRoutes({billing,publicOrigin,gate:creditGate,verifyEmail:({req})=>typeof auth.emailVerifiedFor==='function'?auth.emailVerifiedFor(cookieToken(req)):false});
   // One quiet daily companion plan per account; no schedule, model job or
@@ -129,6 +133,23 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
   const audio=durableAudio||allowLocal&&!publicOrigin&&!dataStore?await createAudioService({store:await createAudioStore({dataDir:path.join(dataDir,'audio'),dataStore:durableAudio?dataStore:null}),getBook:audioLibrary.getBook,speechProvider:speechProvider===undefined?createSpeechProvider({env}):speechProvider,dialogueGenerator:dialogueGenerator===undefined?createDialogueGenerator({env}):dialogueGenerator,schedule,durable:!!durableAudio,env}):null;
   const audioRoutes=createAudioRoutes({audio,library:audioLibrary,guideGenerator:guideGenerator===undefined?createGuideGenerator({env}):guideGenerator});
   async function handleRequest({req,res,url,send,requestState}){
+    // Keep the JSON contract for native clients while streaming large histories
+    // past the hosted buffered-response envelope. Buffer slices preserve UTF-8.
+    // https://vercel.com/kb/guide/how-to-bypass-vercel-body-size-limit-serverless-functions
+    const sendChat=async(status,value)=>{
+      const bytes=Buffer.from(JSON.stringify(value));
+      if(bytes.length<3*1024*1024){send(status,value);return;}
+      const controller=new AbortController(),closed=()=>controller.abort();
+      res.once('close',closed);
+      try{
+        res.writeHead(status,{'Content-Type':'application/json; charset=utf-8','Cache-Control':'private, no-store, no-transform','X-Accel-Buffering':'no'});res.flushHeaders?.();
+        for(let offset=0;offset<bytes.length;offset+=65536){
+          if(res.destroyed||res.writableEnded||controller.signal.aborted)return;
+          if(!res.write(bytes.subarray(offset,offset+65536)))try{await once(res,'drain',{signal:controller.signal});}catch(error){if(controller.signal.aborted)return;throw error;}
+        }
+        res.end();
+      }finally{res.off('close',closed);}
+    };
     if(await remoteMcp.handle({req,res,url,send}))return true;
     const presenceReceivedAt=url.pathname==='/api/library/daily-reading/presence'?Date.now():null;
     const entryPath=canonicalUiEntryPath(url.pathname),internalEntry=entryPath!==null&&entryPath!==url.pathname,p=entryPath||url.pathname,documentUrl=new URL(url);if(entryPath)documentUrl.pathname=entryPath;if(internalEntry)res.setHeader('X-Robots-Tag','noindex, nofollow, noarchive');
@@ -272,10 +293,21 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
     requestState.user=user;
     const ownerScoped=p==='/api/people'||p.startsWith('/api/people/')||p.startsWith('/api/billing/')||p.startsWith('/api/admin/billing')||p.startsWith('/api/library')||p==='/api/account/preference-memory'||p==='/api/account/reading-preferences'||p==='/api/account/ui-preferences'||p==='/api/account/observability'||p==='/api/account/observability/events'||req.method==='POST'&&(p==='/api/account/profile'||/^\/api\/book-gifts\/[^/]+\/(?:accept|revoke)$/.test(p));
     if(ownerScoped&&req.headers['x-reader-owner']&&req.headers['x-reader-owner']!==(user?.id||'guest')){res.setHeader('X-Reader-Session-Changed','1');throw fail('账户已切换，请重新进入书房。原账户草稿仍留在原处。',409);}
-    const body=req.method==='POST'?await jsonBody(req,p==='/api/library/chat'||p.startsWith('/api/library/chat/')?32768:p==='/api/library/notebook-workspace/analyze'?32768:p==='/api/library/notebook-workspace/import'?3*1024*1024:p==='/api/library/notebook-workspace'?16384:p.startsWith('/api/people')?1024*1024:p.startsWith('/api/billing/')?32*1024:p==='/api/account/observability/events'?16*1024:p==='/api/account/observability'?1024:p==='/api/account/ui-preferences'?4*1024:['/api/account/reading-preferences','/api/account/preference-memory'].includes(p)?8*1024:p.startsWith('/api/library/daily-reading')||p.startsWith('/api/agent/daily-')?8*1024:p.startsWith('/api/auth/')||p.startsWith('/api/book-gifts/')||p.endsWith('/introduction')?4096:p.startsWith('/api/library/restore/')?2*1024*1024:p==='/api/account/profile'?160*1024:p.endsWith('/audio/import')||p.endsWith('/audio/validate')?32*1024*1024:['/api/library/import','/api/library/validate'].includes(p)?200*1024*1024:29*1024*1024):null;
+    const body=req.method==='POST'?await jsonBody(req,p==='/api/library/chat'||p.startsWith('/api/library/chat/')||/^\/api\/library\/books\/[^/]+\/chat$/.test(p)?4*1024*1024:p==='/api/library/notebook-workspace/analyze'?32768:p==='/api/library/notebook-workspace/import'?3*1024*1024:p==='/api/library/notebook-workspace'?16384:p.startsWith('/api/people')?1024*1024:p.startsWith('/api/billing/')?4*1024*1024:p==='/api/account/observability/events'?16*1024:p==='/api/account/observability'?1024:p==='/api/account/ui-preferences'?4*1024:['/api/account/reading-preferences','/api/account/preference-memory'].includes(p)?8*1024:p.startsWith('/api/library/daily-reading')||p.startsWith('/api/agent/daily-')?8*1024:p.startsWith('/api/auth/')||p.startsWith('/api/book-gifts/')||p.endsWith('/introduction')?4096:p.startsWith('/api/library/restore/')?2*1024*1024:p==='/api/account/profile'?160*1024:p.endsWith('/audio/import')||p.endsWith('/audio/validate')?32*1024*1024:['/api/library/import','/api/library/validate'].includes(p)?200*1024*1024:29*1024*1024):null;
     if(p==='/api/billing/account'&&user)await creditGate.recover(user);
     if(await billingRoutes.handle({req,res,url,user,body,send}))return true;
     const localAllowed=allowLocal&&['127.0.0.1','::1','::ffff:127.0.0.1'].includes(req.socket.remoteAddress)&&!publicOrigin;
+    const voiceRoute=p.match(/^\/api\/library\/chat-voice\/([a-f0-9-]{36})(?:\/(start|part|complete|parts\/[0-9]+))?$/i);
+    if(voiceRoute){
+      const [,id,action]=voiceRoute;
+      if(req.method==='POST'&&action==='start')send(201,await voice.start(user,id,body));
+      else if(req.method==='POST'&&action==='part')send(200,await voice.part(user,id,body));
+      else if(req.method==='POST'&&action==='complete')send(200,await voice.complete(user,id));
+      else if(req.method==='GET'&&!action)send(200,await voice.view(user,id));
+      else if(req.method==='GET'&&action?.startsWith('parts/')){const bytes=await voice.bytes(user,id,Number(action.slice(6)));res.writeHead(200,{'Content-Type':'application/octet-stream','Content-Length':bytes.length,'Cache-Control':'private, no-store','X-Content-Type-Options':'nosniff'});res.end(bytes);}
+      else throw fail('不支持这个语音操作',405);
+      return true;
+    }
     const setSession=value=>res.setHeader('Set-Cookie',`marginalia_session=${value}; HttpOnly; SameSite=Strict; Path=/; Max-Age=${value?604800:0}${publicOrigin?.startsWith('https:')?'; Secure':''}`);
     if(p==='/api/people'||p.startsWith('/api/people/')){
       if(req.method==='POST'&&!user?.id)throw fail('请先进入自己的书房。',401);
@@ -366,10 +398,10 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
       res.setHeader('Cache-Control','private, no-store');
       if(!user?.id||user.is_anonymous)throw fail('请先进入自己的书房',401);
       if(req.method==='POST'&&req.headers['x-reader-owner']!==user.id)throw fail('请重新核对当前书房账户',409);
-      if(p==='/api/library/chat/export'&&req.method==='GET'){send(200,await chat.exportLibraryHistory(user));return true;}
-      if(p==='/api/library/chat'&&req.method==='GET'){send(200,await chat.viewLibrary(user));return true;}
+      if(p==='/api/library/chat/export'&&req.method==='GET'){await sendChat(200,await chat.exportLibraryHistory(user));return true;}
+      if(p==='/api/library/chat'&&req.method==='GET'){await sendChat(200,await chat.viewLibrary(user));return true;}
       const cancel=p.match(/^\/api\/library\/chat\/([A-Za-z0-9_-]{1,120})\/cancel$/);
-      if(cancel&&req.method==='POST'){const result=await chat.cancelLibrary(user,cancel[1]);if(result.status==='cancelled')await creditGate.cancel(user,'conversation',LIBRARY_CHAT_ID,cancel[1]);send(200,result);return true;}
+      if(cancel&&req.method==='POST'){const result=await chat.cancelLibrary(user,cancel[1]);if(result.status==='cancelled')await creditGate.cancel(user,'conversation',LIBRARY_CHAT_ID,cancel[1]);await sendChat(200,result);return true;}
       if(p!=='/api/library/chat')throw fail('找不到这个对话操作',404);
       if(req.method!=='POST')throw fail('不支持这个请求',405);
       const streaming=String(req.headers.accept||'').split(',').some(value=>value.trim()==='application/x-ndjson');
@@ -381,7 +413,7 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
       try{
         const result=await creditGate.run({user,action:'conversation',bookId:LIBRARY_CHAT_ID,input:body,execute:input=>chat.sendLibrary(user,input,{...(streaming?{onProgress:frame}:{}),authorizePeople:async()=>(await auth.userFor(token))?.id===user.id})});
         if(result?.status==='failed')domainOutcome(user,{name:'chat_failed',properties:{page:'library',stage:'chat',outcome:'failure',errorKind:'internal'}},{operationId:requestState.operationId,dedupKey:'library-chat-failed:'+result.id});
-        if(streaming){frame({type:'result',turn:result});res.end();}else send(200,result);
+        if(streaming){frame({type:'result',turn:result});res.end();}else await sendChat(200,result);
       }catch(error){
         if(!res.headersSent)throw error;
         queueFault(requestState,error);frame({type:'error',status:error.status||500,...(error.billingOperation?{billingOperation:error.billingOperation}:{})});res.end();
@@ -425,13 +457,16 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
       if(!dataStore?.beginUpload)throw fail('此书房使用本机上传',404);
       send(201,await dataStore.beginUpload(user,body));return true;
     }
+    if(p==='/api/library/upload/duplicate'&&req.method==='POST'){send(200,{duplicate:await library.findDuplicate(user,body)});return true;}
     if(p==='/api/library/upload/complete'&&req.method==='POST'){
       if(!dataStore?.completeUpload)throw fail('此书房使用本机上传',404);
-      const result=await dataStore.completeUpload(user,body.id,library,body.defer===true?{ingestion}:{});if(body.defer===true&&result.id)await ingestionRunner.enqueue(user,result.id);send(body.defer===true?202:201,result);return true;
+      if(body.defer===true&&body.duplicatePolicy&&body.duplicatePolicy!=='keep')throw fail('请使用即时入库处理这次重复文件选择');
+      const result=await dataStore.completeUpload(user,body.id,library,{...(body.defer===true?{ingestion}:{}),duplicatePolicy:body.duplicatePolicy,operationId:body.operationId});if(body.defer===true&&result.id)await ingestionRunner.enqueue(user,result.id);send(body.defer===true?202:201,result);return true;
     }
     if(p==='/api/library/upload'&&req.method==='POST'){
       if(!user)throw fail('请先进入自己的书房',401);if(typeof body.base64!=='string'||!body.base64.length||body.base64.length>28*1024*1024||!/^[A-Za-z0-9+/]*={0,2}$/.test(body.base64))throw fail('文件编码不正确');
-      const input={filename:body.filename,bytes:Buffer.from(body.base64,'base64')};
+      if(body.defer===true&&body.duplicatePolicy&&body.duplicatePolicy!=='keep')throw fail('请使用即时入库处理这次重复文件选择');
+      const input={filename:body.filename,bytes:Buffer.from(body.base64,'base64'),duplicatePolicy:body.duplicatePolicy,operationId:body.operationId};
       if(body.defer===true){const job=await ingestion.prepareDocument(user,input);await ingestionRunner.enqueue(user,job.id);send(202,job);}else send(201,await library.importDocument(user,input));return true;
     }
     if(p==='/api/library/restore/start'&&req.method==='POST'){send(201,await portability.start(user,body));return true;}
@@ -513,7 +548,7 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
       if(action==='companion/observe'&&req.method==='POST'){send(200,await chat.companion.observe(user,id,body));return true;}
       if(action==='companion/messages'&&req.method==='POST'){send(200,await sponsored(user,'companion',()=>chat.companion.generate(user,id,body,{authorize:async()=>(await auth.userFor(token))?.id===user?.id,operationId:requestState.operationId})));return true;}
       if(action==='chat/scope'&&req.method==='POST'){send(200,await chat.configureScope(user,id,body));return true;}
-      if(action==='chat'&&req.method==='GET'){send(200,await chat.view(user,id,{passageId:url.searchParams.get('passageId')||undefined}));return true;}
+      if(action==='chat'&&req.method==='GET'){await sendChat(200,await chat.view(user,id,{passageId:url.searchParams.get('passageId')||undefined}));return true;}
       if(action==='chat'&&req.method==='POST'){
         const streaming=String(req.headers.accept||'').split(',').some(value=>value.trim()==='application/x-ndjson');
         const frame=value=>{
@@ -524,7 +559,7 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
         try{
           const result=await creditGate.run({user,action:'conversation',bookId:id,input:body,execute:input=>chat.send(user,id,input,{...(streaming?{onProgress:frame}:{}),authorizePeople:async()=> (await auth.userFor(token))?.id===user.id})});
           if(result?.status==='failed')domainOutcome(user,{name:'chat_failed',properties:{page:'reader',stage:'chat',outcome:'failure',errorKind:'internal'}},{operationId:requestState.operationId,dedupKey:'chat-failed:'+result.id});
-          if(streaming){frame({type:'result',turn:result});res.end();}else send(200,result);
+          if(streaming){frame({type:'result',turn:result});res.end();}else await sendChat(200,result);
         }catch(error){
           if(!res.headersSent)throw error;
           queueFault(requestState,error);
@@ -532,7 +567,7 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
         }
         return true;
       }
-      const cancelChat=action?.match(/^chat\/([^/]+)\/cancel$/);if(cancelChat&&req.method==='POST'){const result=await chat.cancel(user,id,cancelChat[1]);if(result.status==='cancelled')await creditGate.cancel(user,'conversation',id,cancelChat[1]);send(200,result);return true;}
+      const cancelChat=action?.match(/^chat\/([^/]+)\/cancel$/);if(cancelChat&&req.method==='POST'){const result=await chat.cancel(user,id,cancelChat[1]);if(result.status==='cancelled')await creditGate.cancel(user,'conversation',id,cancelChat[1]);await sendChat(200,result);return true;}
       // GET-195 web API: same owner/session/CSRF gates as the other library
       // routes. The authorize delegate re-reads the actual auth user for the
       // captured session token; request bodies never carry owner identity.

@@ -12,7 +12,7 @@ enum VideoAcceptanceFixture {
         #if DEBUG
         if let selected = SelectedSourceAcceptanceFixture.makeModelIfRequested() { return selected }
         let arguments = ProcessInfo.processInfo.arguments
-        guard ["org.leafhour.get317.testing", "org.leafhour.get341.testing", "org.leafhour.get352.testing", "org.leafhour.readingchat.testing", "org.leafhour.shelf-refinement", "org.leafhour.get358.testing", "org.leafhour.quiet.testing"].contains(Bundle.main.bundleIdentifier ?? "") else { return nil }
+        guard ["org.leafhour.get317.testing", "org.leafhour.get341.testing", "org.leafhour.get352.testing", "org.leafhour.readingchat.testing", "org.leafhour.shelf-refinement", "org.leafhour.get358.testing", "org.leafhour.quiet.testing", "com.cubxxw.leafhour.chat20261102"].contains(Bundle.main.bundleIdentifier ?? "") else { return nil }
         let hostedUnitTest = ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] != nil
             || NSClassFromString("XCTestCase") != nil || NSClassFromString("XCTest.XCTestCase") != nil
         guard arguments.contains("--get317-acceptance") || hostedUnitTest else { return nil }
@@ -79,6 +79,10 @@ enum VideoAcceptanceFixture {
                     }
                     await model.reload()
                     await model.synchronize()
+                    if arguments.contains("--ios-library-chat-duplicate") {
+                        // Exercise the real model import/preflight/decision path, using only this fixture's retained source.
+                        model.importFile(root.appendingPathComponent("sources/GET317 合成验收 · 本机文本.txt"))
+                    }
                 } catch {
                     model.message = "GET317 合成验收夹具未准备完成：" + error.localizedDescription
                 }
@@ -246,7 +250,9 @@ private final class GET317Transport: URLProtocol, @unchecked Sendable {
                     "context": NSNull(), "scope": ["mode": "library", "revision": 0], "turns": turns])
             }
             let turn: [String: Any] = ["id": body["id"] as? String ?? "missing-id", "text": body["text"] as? String ?? "",
-                "status": "completed", "answer": ["summary": "合成陪读回答：这是隔离验收夹具，没有调用模型。"]]
+                "status": "completed", "answer": ["summary": arguments.contains("--ios-library-chat-markdown")
+                    ? "# 合成 Markdown 回答\n\n这是 **加粗** 正文。\n\n- 列表甲\n- 列表乙\n\n> 引用内容\n\n```swift\nlet orchard = 1\n```\n\n| 项目 | 数值 |\n| --- | --- |\n| 果园 | 1 |"
+                    : "合成陪读回答：这是隔离验收夹具，没有调用模型。"]]
             if !turns.contains(where: { $0["id"] as? String == turn["id"] as? String }) { turns.append(turn) }
             records["syntheticTurns"] = turns; persist(records, bookID: "account-conversation")
             return reply(turn)

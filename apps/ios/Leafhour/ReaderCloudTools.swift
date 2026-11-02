@@ -15,6 +15,7 @@ struct ReaderConversationTurn: Identifiable {
     let question: String
     let answer: String?
     let status: String
+    var voice: ChatVoiceReceipt? = nil
 }
 struct ReaderGenerationConsent: Identifiable, Codable {
     let id: String
@@ -45,6 +46,7 @@ private struct ReaderConversationDraft: Codable {
     let question: String
     let retry: ReaderGenerationConsent?
     var context: ReaderChatContext? = nil
+    var voice: ChatVoiceReceipt? = nil
 }
 
 /// Read-only loading is separate from the explicitly confirmed generation path.
@@ -66,6 +68,7 @@ final class ReaderCloudTools {
     var introductionOrigin = ""
     var turns: [ReaderConversationTurn] = []
     var question = "" { didSet { queueDraftSave() } }
+    var pendingVoice: ChatVoiceReceipt? { didSet { queueDraftSave() } }
     var scope = "book"
     var scopeRevision = 0
     var conversationAvailable = false
@@ -117,6 +120,7 @@ final class ReaderCloudTools {
                 }
                 if question.isEmpty { question = draft.question }
                 if retry == nil { retry = draft.retry }
+                if pendingVoice == nil { pendingVoice = draft.voice }
             }
             draftReady = true; draftError = nil; queueDraftSave()
         } catch { draftError = "草稿暂时无法读取，原文件已保留。" }
@@ -131,7 +135,7 @@ final class ReaderCloudTools {
     }
     private func queueDraftSave() {
         guard draftReady, let identity = draftBook, let library else { return }
-        let snapshot = ReaderConversationDraft(question: question, retry: retry?.action == "conversation" ? retry : nil, context: chatContext), previous = draftWriting
+        let snapshot = ReaderConversationDraft(question: question, retry: retry?.action == "conversation" ? retry : nil, context: chatContext, voice: pendingVoice), previous = draftWriting
         draftWriting = Task {
             await previous?.value
             do {
@@ -264,8 +268,28 @@ final class ReaderCloudTools {
         turns = (value["turns"] as? [[String: Any]] ?? []).compactMap { turn in
             guard let id = turn["id"] as? String else { return nil }
             let answer = turn["answer"] as? [String: Any]
-            return ReaderConversationTurn(id: id, question: turn["text"] as? String ?? "", answer: answer?["summary"] as? String, status: turn["status"] as? String ?? "failed")
+            return ReaderConversationTurn(id: id, question: turn["text"] as? String ?? "", answer: answer?["summary"] as? String, status: turn["status"] as? String ?? "failed", voice: Self.voiceReceipt(turn["voice"]))
         }
+    }
+    private static func voiceReceipt(_ value: Any?) -> ChatVoiceReceipt? {
+        guard let value, JSONSerialization.isValidJSONObject(value), let data = try? JSONSerialization.data(withJSONObject: value),
+              let receipt = try? JSONDecoder().decode(ChatVoiceReceipt.self, from: data), receipt.isValid else { return nil }
+        return receipt
+    }
+    func attachVoice(_ recording: ChatRecordedVoice) async throws {
+        guard let identity = draftBook, let library else { throw LibraryError.invalid("请先进入自己的书房，录音仍保留在此设备。") }
+        let receipt = try await library.retainChatVoice(recording.url, id: recording.id, ownerID: identity.ownerID, durationMs: recording.durationMs)
+        pendingVoice = receipt
+        question = recording.transcript
+        guard await flushConversationDraft() else { throw LibraryError.invalid("录音已保留，文字草稿尚未保存，请重试。") }
+        try? FileManager.default.removeItem(at: recording.url)
+    }
+    func voiceURL(_ receipt: ChatVoiceReceipt, cloud: CloudLibraryClient?) async throws -> URL {
+        guard let identity = draftBook, let library else { throw LibraryError.invalid("请先进入自己的书房。") }
+        if let cached = try? await library.chatVoiceURL(receipt, ownerID: identity.ownerID) { return cached }
+        guard let cloud else { throw LibraryError.invalid("语音原件尚未下载，请联网后重试。") }
+        let data = try await cloud.downloadChatVoice(receipt, ownerID: identity.ownerID)
+        return try await library.cacheChatVoice(data, receipt: receipt, ownerID: identity.ownerID)
     }
     func prepare(_ action: String, session: ReaderSession, cloud: CloudLibraryClient?, selection: SelectedQuote? = nil) async {
         guard let cloud, let identity = session.book.cloud, let passage = Self.currentPassage(session, selection: selection) else { error = "请先在书房登录，并将这本书同步到自己的账号。"; return }
@@ -283,11 +307,11 @@ final class ReaderCloudTools {
         var body: [String: Any] = ["id": requestID, "passageId": passageID, "contentVersion": identity.contentVersion]
         if action == "conversation" {
             let text = question.trimmingCharacters(in: .whitespacesAndNewlines)
-            guard !text.isEmpty, text.utf16.count <= 2000 else { error = "请写下不超过 2,000 字的问题。"; return }
+            guard !text.isEmpty else { error = "写点什么，或说一句话。"; return }
             body["text"] = text; body["scopeRevision"] = scopeRevision
             if let quote = selection, quote.anchor.passageID == passageID {
                 let quotedSource = quote.sourceText ?? quote.text
-                guard !quotedSource.isEmpty, quotedSource.utf16.count <= 2000 else { error = "请选择不超过 2,000 字的原文后再提问。"; return }
+                guard !quotedSource.isEmpty else { error = "请先选择要引用的原文。"; return }
                 let scalars = original.unicodeScalars
                 let end = scalars.index(scalars.startIndex, offsetBy: min(max(0, quote.anchor.characterOffset), scalars.count))
                 let start = String(scalars[..<end]).utf16.count
@@ -300,11 +324,17 @@ final class ReaderCloudTools {
             }
         }
         do {
+            if action == "conversation", let voice = pendingVoice {
+                guard let library else { throw LibraryError.invalid("录音尚未保存，请保留此页后重试。") }
+                let url = try await library.chatVoiceURL(voice, ownerID: identity.ownerID)
+                let receipt = try await cloud.uploadChatVoice(voice, source: url, ownerID: identity.ownerID)
+                body["voice"] = try JSONSerialization.jsonObject(with: JSONEncoder().encode(receipt))
+            }
             let sessionValue = try object(await cloud.data(path: "/api/auth/session", ownerID: identity.ownerID))
             guard (sessionValue["user"] as? [String: Any])?["id"] as? String == identity.ownerID else { throw LibraryError.invalid("账号已变化，请重新打开自己的书房。") }
             let billing = sessionValue["billing"] as? [String: Any] ?? [:]
             let accountConversation = identity.bookID == Self.libraryChatID && action == "conversation"
-            var explanation = accountConversation ? "发送当前问题与最近六轮对话，可按需查阅自己的书房和公开网络。私人笔记不会发送。" : action == "translation" ? "只处理当前段落及必要的相邻上下文。直译和意译独立保存为 AI 草稿。" : "发送当前问题与书内位置，沿用本书最近的对话。私人笔记不会发送。"
+            var explanation = accountConversation ? "发送当前问题与对话，可按需查阅自己的书房和公开网络。" : action == "translation" ? "只处理当前段落及必要的相邻上下文。直译和意译独立保存为 AI 草稿。" : "发送当前问题与书内位置，沿用本书的对话。"
             if !accountConversation { explanation += "\n\n原文：" + String(original.prefix(120)) }
             if billing["enabled"] as? Bool == true {
                 let units = action == "translation" ? 1_000_000 : 4_000_000
@@ -333,9 +363,11 @@ final class ReaderCloudTools {
             }
             if action == "conversation" { explanation += scope == "library" ? "\n当前查阅范围：自己的书房与网络。" : "\n当前查阅范围：这本书。" }
             try Task.checkCancellation()
-            consent = ReaderGenerationConsent(id: requestID, title: action == "translation" ? "翻译这一段" : "向陪读提问", explanation: explanation,
+            let intent = ReaderGenerationConsent(id: requestID, title: action == "translation" ? "翻译这一段" : "向陪读提问", explanation: explanation,
                 path: action == "translation" ? bookPath(identity.bookID) + "/translate" : conversationPath(identity.bookID), ownerID: identity.ownerID,
                 body: try JSONSerialization.data(withJSONObject: body), action: action, passageID: passageID)
+            if action == "conversation" { loading = false; await perform(intent, cloud: cloud) }
+            else { consent = intent }
         } catch is CancellationError { }
         catch { self.error = error.localizedDescription }
     }
@@ -345,7 +377,7 @@ final class ReaderCloudTools {
         defer { generating = false }
         if intent.action == "conversation", !(await flushConversationDraft()) { error = draftError; return }
         do {
-            let value = try object(await cloud.data(path: intent.path, method: "POST", body: intent.body, ownerID: intent.ownerID))
+            let value = try object(await cloud.data(path: intent.path, method: "POST", body: intent.body, ownerID: intent.ownerID, timeout: intent.action == "conversation" ? 300 : 45))
             try Task.checkCancellation()
             if intent.action == "translation" {
                 guard value["id"] as? String == intent.passageID else { throw LibraryError.invalid("译文的来源暂时无法核对，尚未显示。") }
@@ -360,12 +392,13 @@ final class ReaderCloudTools {
                 let answer = value["answer"] as? [String: Any]
                 let status = value["status"] as? String ?? "failed"
                 turns.removeAll { $0.id == intent.id }
-                turns.append(ReaderConversationTurn(id: intent.id, question: value["text"] as? String ?? question, answer: answer?["summary"] as? String, status: status))
+                turns.append(ReaderConversationTurn(id: intent.id, question: value["text"] as? String ?? question, answer: answer?["summary"] as? String, status: status, voice: Self.voiceReceipt(value["voice"])))
                 if status == "running" { error = "回答仍在处理中，可稍后重试查看本次结果。"; return }
-                if status != "completed" { error = value["error"] as? String ?? "本次回答未完成，你的问题已经保留。" }
+                if status != "completed" { error = status == "cancelled" ? "已停止回答，消息仍保留。" : value["error"] as? String ?? "本次回答未完成，你的问题已经保留。" }
                 else {
                     let submitted = (try? JSONSerialization.jsonObject(with: intent.body)) as? [String: Any]
                     if question.trimmingCharacters(in: .whitespacesAndNewlines) == submitted?["text"] as? String { question = "" }
+                    pendingVoice = nil
                 }
             }
             retry = nil
@@ -380,6 +413,12 @@ final class ReaderCloudTools {
                 self.error = error.localizedDescription + "\n请更新当前段落或查阅范围后重新准备，你的问题仍保留。"
             } else { self.error = error.localizedDescription + "\n可重试查看本次结果，不会另建同一请求。" }
         }
+    }
+    func cancelConversation(cloud: CloudLibraryClient?) async {
+        guard generating, let intent = retry, intent.action == "conversation", let cloud else { return }
+        do {
+            _ = try await cloud.data(path: intent.path + "/" + component(intent.id) + "/cancel", method: "POST", body: Data("{}".utf8), ownerID: intent.ownerID)
+        } catch { self.error = "暂时无法确认是否已停止，消息仍保留。" }
     }
     private static func definitivelyRejected(_ error: CloudRequestError) -> Bool {
         if ["not_started", "released", "cancelled", "reversed"].contains(error.billingOperationStatus ?? "") { return true }

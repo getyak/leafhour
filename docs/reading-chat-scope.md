@@ -1,17 +1,33 @@
-# 阅读对话的查阅范围
+# Reading conversation scope
 
-发送框旁会显示本次查阅范围和交给实例配置的云模型处理的文字。默认「仅当前书」：可按需分页阅读本书正文、两种译文、目录和其他章节，不默认搜索整个书房。选择「书房、公版与网络」并保存后，才提供当前账号的书房、共享公版目录、外部书目与公开网络工具。私人评论不会自动进入两种范围。
+Updated 2026-11-02 for direct conversation submission and model-sized context. This contract supersedes the earlier six-turn/24 KiB conversational-history projection and 2,000-character ordinary-message limit. Translation preparation and automatic companion generation retain their own explicit scope and trigger policies.
 
-问题原话、书名与当前章段位置、允许范围内最近最多六轮对话，以及按需读取的文字和检索词，可能发送给实例配置的模型。并非只发送屏幕当前可见的一段；也不会预先发送整书或整个书房。模型 Key 留在实例端。部署者应自行确认模型供应商、预算与数据政策，范围选择不会配置或更换供应商。
+## Submission and access
 
-范围按账号和书保存，刷新仍保留。修改范围不调用模型；提问正在处理时需先停止。另一处修改过范围时，旧请求会被拒绝，草稿保留。界面重新读回当前设置后，由读者核对并再次发送，不自动将旧问题转交给更大的范围。网络中断后重试已有提问，仍沿用该提问原先冻结的版本，不产生第二个问题。
+Sending an ordinary message submits it directly. There is no second generation confirmation. A paid conversation still validates the current authenticated owner, price and quote scope before submission, and retains actual provider/billing accounting. An uncertain retry reuses the exact request ID, body and billing identity; it does not create another question or obtain a new quote. A definite scope rejection preserves the draft and requires a fresh send after the current scope is loaded.
 
-缩小范围会保留原来的问题、回答和引用，但广范围回答及无法确认范围的历史记录不会自动加入新一轮本书对话。回答与用户原话分别标注；只有本轮工具实际读到、精确匹配且结束前版本未变的引文才作为来源。模型解释仍需读者核对，引用可回到原段。
+Book chat defaults to the current book. Its tools can page through permitted original text, literal/interpretive translations, contents and other chapters; they do not implicitly search the entire personal library. Saving the wider library/public-catalog/network scope enables those additional read tools for the current owner. Account Chat starts without a book or reading location and can answer directly; it does not infer that the first shelf book is the current source. Private notes are not automatically included, and ordinary account chat does not write progress, preferences or people records. External MCP permissions remain separate.
 
-菜单「导出这段对话」下载当前书的有界对话 JSON，保留用户和 AI 原话、来源版本与真实引用。它不包含 Key、令牌、当前权限设置或整个书房备份；每本书最多保留 100 次提问，模型历史按完整轮裁至 24KiB。完整数据迁移另见 [阅读与数据保留](reading-journey.md)。
+The user's question, the book and chapter/passage location when present, permitted completed conversation history, and text/search terms retrieved through tools may reach the instance-configured model. The app does not preload an entire book or library. Model keys remain on the instance; scope selection does not change the provider. Deployers own their provider configuration and data policy.
 
-## 维护与验证
+Book scope is saved per owner and book. Changing it does not call the model. A stale `scopeRevision` is rejected before a new question, credit reservation or model request is recorded. A larger scope is never adopted silently for an old request. Narrowing scope retains the original messages and sources, while wider-scope or unverified-scope history is excluded from new book-only model context, including after that history moves to archival receipts. Missing or damaged scope data cannot authorize broader access.
 
-兼容旧 chat schemaVersion 1：无范围设置按 `book/revision0` 读取，不需要数据库迁移。设置使用原文件锁或托管 CAS 保存；新提问原子核对 `scopeRevision`，陈旧版本在记录问题、占用额度和调用模型前返回 412。损坏配置拒绝读取或生成，不能默认扩大权限。旧问答继续显示、导出。
+## Context, storage and timeouts
 
-本次验证使用两本隔离合成书、正式领域服务与 HTTP、确定性模型 adapter。覆盖默认工具边界、显式广范围、跨账号拒绝、并发设置、运行中修改拒绝、旧记录、缩小范围后的历史、丢应答和草稿恢复。真实云模型调用为零，合成回答不作为云模型质量验收。真实浏览器、独立 review、当前提交 CI 与生产验收记录随交付补充。
+Ordinary conversation does not impose a product turn-count, daily-message, small token, tool-call or ordinary-message character budget. The runtime uses the configured model's known published capacity and rejects an unknown capacity rather than borrowing a different model's settings. Older model context is summarized only when it must fit the available model window; original messages are retained. Compaction failure must fail the request without silently deleting history. Provider usage continues to be metered.
+
+The active chat document is paged by storage size/count. Terminal messages move to owner- and conversation-bound immutable receipts before leaving that active document; archive receipt identity includes book-versus-account conversation scope. Archival does not remove messages from exports or make them ineligible for authorized model context. A storage page size, tool-result page size or HTTP request limit is not a model context-window setting. Hosting deadlines and cancellation still terminate a run and retain its recoverable request identity; the hosted runtime reserves time for cleanup and receipts.
+
+The short main instruction identifies 松鼠 as Leafhour's conversational assistant. Environment and available tools are supplied separately. Tool handlers and shared domain services continue to enforce owner/source access and exact source citation matching; a model instruction cannot grant itself access.
+
+## Sources, voice and export
+
+User messages and assistant replies remain distinct. A source citation is accepted only if the tool read it during the current run, its exact quote matches, and its source version is still current at completion. Explanations remain model output for the reader to assess; citations link back to original passages.
+
+Recording while composing produces live text. Cancelling recording restores the previous draft and does not upload the cancelled audio. Sending retains the original recording and transcript as a voice message; owner-scoped upload parts and final content hashes must verify before a voice receipt can be attached. Playback retrieval and backup restoration validate the authenticated owner and receipt. Clients that send only text remain compatible.
+
+Conversation export retains original user and assistant text, source versions and verified references, including archived history. Voice-aware backups include verified recordings when present. Exports do not include model keys, access tokens or a complete unrelated library. They remain separate from a full account backup; see [reading and data retention](reading-journey.md). Successful real-instance migration requires a restore check, not just an exported file.
+
+## Implementation and evidence
+
+Old chat schemaVersion 1 records remain readable without a database migration. Scope updates use the existing file-lock or hosted compare-and-swap path. Older malformed records fail safely instead of broadening access. Current implementation and verification are recorded in [the 2026-11-02 library/chat record](verification/2026-11-02-ios-library-chat.md). Deterministic adapters, synthetic answers and simulator screenshots do not establish real model quality, microphone hardware behavior, TestFlight availability or production acceptance.

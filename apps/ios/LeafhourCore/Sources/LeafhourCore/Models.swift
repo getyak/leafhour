@@ -155,6 +155,7 @@ public struct ImportProgress: Sendable {
     }
 }
 
+public enum DuplicateImportPolicy: String, Codable, Sendable { case keep, replace, new }
 public enum ImportPhase: String, Codable, Sendable { case processing, failed, interrupted, cancelled, complete }
 public struct ImportJob: Codable, Identifiable, Sendable {
     public var id: UUID
@@ -163,6 +164,8 @@ public struct ImportJob: Codable, Identifiable, Sendable {
     public var phase: ImportPhase
     public var error: String?
     public var bookID: String?
+    public var duplicatePolicy: DuplicateImportPolicy? = nil
+    public var operationID: UUID? = nil
 }
 public struct ImportLimits: Sendable {
     public var maximumFileBytes: Int64

@@ -82,7 +82,7 @@ export async function buildReaderRuntime({root=project,outputDir=path.join(root,
   const plugins=[...yaml.matchAll(/- id: ([^\n]+)\n\s+name: '([^']+)'/g)].filter(([,id])=>!excluded.has(id.trim())).map(([,id,name])=>({id:id.trim(),name,entry:require.resolve(name)}));
   if(!plugins.length)throw Error('The installed sdk-minimal profile has no recognizable plugins');
   const readerPlugin=path.join(root,'harness/reader-plugin.mjs'),chatPlugin=path.join(root,'harness/chat-plugin.mjs');
-  const entries=[require.resolve('@deepseek-ai/dsh/lib/bin.js'),require.resolve('@deepseek-ai/dsh-sdk-client'),readerPlugin,chatPlugin,...plugins.map(plugin=>plugin.entry)];
+  const entries=[require.resolve('@deepseek-ai/dsh/lib/bin.js'),require.resolve('@deepseek-ai/dsh-sdk-client'),readerPlugin,chatPlugin,require.resolve('@deepseek-ai/dsh-token-meter'),require.resolve('@deepseek-ai/dsh-compaction-basic'),...plugins.map(plugin=>plugin.entry)];
   const allowed=file=>!privateFile(file)&&(inDirectory(modules,file)||file===readerPlugin||file===chatPlugin||file===path.join(root,'package.json'));
   const trace=await nodeFileTrace(entries,{base:root,processCwd:root,ignore:relative=>!allowed(path.resolve(root,relative)),readFile:async file=>{
     if(!allowed(file))return null;

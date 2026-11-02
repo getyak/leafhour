@@ -208,7 +208,7 @@ struct ReaderScreen: View {
             .onPreferenceChange(ReaderChromeHeightKey.self) { recordChrome($0, for: layout) }
         }
         .preferredColorScheme(session.state.preferences.colorScheme(following: systemColorScheme))
-        .statusBarHidden(false)
+        .statusBarHidden(true)
         .interactiveDismissDisabled(panel?.isCompanion != true && (session.saving || session.saveError != nil))
         .sheet(item: Binding<ReaderPanel?>(get: {
             guard let panel, !panel.isCompanion, panel.id != "contents" else { return nil }
