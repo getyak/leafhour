@@ -360,7 +360,12 @@ final class LibraryModel {
             _ = await (notes, reading)
         }
     }
-    private func loadNotebook(more: Bool, account: CloudAccount, library: OfflineLibrary, marker: UUID) async {
+    func loadNotebookRecords(more: Bool = false, refresh: Bool = false) async {
+        guard let account, let library else { return }
+        if !more && !refresh && (notebookState.hasSnapshot || !notebookEntries.isEmpty || notebookCursor != nil) { return }
+        await loadNotebook(more: more, account: account, library: library, marker: contextID, preservePages: refresh)
+    }
+    private func loadNotebook(more: Bool, account: CloudAccount, library: OfflineLibrary, marker: UUID, preservePages: Bool = false) async {
         guard marker == contextID, !notebookState.isLoading, !more || notebookCursor != nil else { return }
         let previous = notebookState
         let hadSnapshot = previous.hasSnapshot || !notebookEntries.isEmpty || notebookCursor != nil
@@ -373,9 +378,17 @@ final class LibraryModel {
             let notebook = try CloudJSON.decode(data)
             guard case .array = notebook["entries"], notebook["nextCursor"] == .null || notebook["nextCursor"].string != nil else { throw LibraryError.invalid("返回的笔记记录暂时无法读取。") }
             guard marker == contextID else { return }
-            notebookEntries = more ? notebookEntries + notebook["entries"].array : notebook["entries"].array
-            notebookCursor = notebook["nextCursor"].string
-            notebookIncomplete = (more && notebookIncomplete) || !notebook["failed"].array.isEmpty
+            let incoming = notebook["entries"].array
+            if preservePages, hadSnapshot {
+                let ids = Set(incoming.compactMap { $0["book"]["bookId"].string })
+                notebookEntries = incoming + notebookEntries.filter { !ids.contains($0["book"]["bookId"].string ?? "") }
+                notebookCursor = notebookCursor ?? notebook["nextCursor"].string
+            } else if more {
+                let ids = Set(incoming.compactMap { $0["book"]["bookId"].string })
+                notebookEntries = notebookEntries.filter { !ids.contains($0["book"]["bookId"].string ?? "") } + incoming
+                notebookCursor = notebook["nextCursor"].string
+            } else { notebookEntries = incoming; notebookCursor = notebook["nextCursor"].string }
+            notebookIncomplete = ((more || preservePages) && notebookIncomplete) || !notebook["failed"].array.isEmpty
             notebookState = notebookIncomplete ? .partial("部分书籍的记录暂未读取，当前列表可能不完整。请重试读取笔记。") : .ready
             let snapshot: [String: CloudJSON] = ["entries": .array(notebookEntries), "nextCursor": notebookCursor.map(CloudJSON.string) ?? .null, "incomplete": .bool(notebookIncomplete)]
             do { try await library.cacheCloudView("notebook", data: CloudJSON.encode(snapshot)) }
@@ -588,6 +601,7 @@ final class LibraryModel {
             try await library.setLastOpenedBook(book.id)
             guard marker == contextID else { return }
             let store: any ReaderStateStore = verified.cloud != nil && sync != nil ? CloudReaderStateStore(library: library, sync: sync!) : library
+            guard marker == contextID, !Task.isCancelled else { return }
             reader = ReaderSession(book: verified, state: state, original: original, directory: folder, library: store, preferencesStore: library)
         } catch { if marker == contextID { message = "暂时无法打开这本书：\(error.localizedDescription) 可在书籍详情中校验或修复。" } }
     }

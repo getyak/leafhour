@@ -8,7 +8,7 @@ enum VideoAcceptanceFixture {
     @MainActor static func makeModelIfRequested() -> LibraryModel? {
         #if DEBUG
         let arguments = ProcessInfo.processInfo.arguments
-        guard ["org.leafhour.get317.testing", "org.leafhour.get341.testing", "org.leafhour.get352.testing", "org.leafhour.readingchat.testing", "org.leafhour.shelf-refinement"].contains(Bundle.main.bundleIdentifier ?? "") else { return nil }
+        guard ["org.leafhour.get317.testing", "org.leafhour.get341.testing", "org.leafhour.get352.testing", "org.leafhour.readingchat.testing", "org.leafhour.shelf-refinement", "org.leafhour.get358.testing"].contains(Bundle.main.bundleIdentifier ?? "") else { return nil }
         let hostedUnitTest = ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] != nil
             || NSClassFromString("XCTestCase") != nil || NSClassFromString("XCTest.XCTestCase") != nil
         guard arguments.contains("--get317-acceptance") || hostedUnitTest else { return nil }
@@ -270,6 +270,11 @@ private final class GET317Transport: URLProtocol, @unchecked Sendable {
         if path == "/api/library/notebook" || path == "/api/library/reading-summary" {
             if arguments.contains("--get317-records-error") { return reply(["error": "GET317 合成记录读取失败"], status: 503) }
             if path.hasSuffix("notebook") {
+                if arguments.contains("--get358-journal") {
+                    let stamp = ISO8601DateFormatter().string(from: Date())
+                    let note: [String: Any] = ["id": "get358-note", "origin": "user", "text": "慢下来，才开始看见生活里真正重要的东西。", "quote": "This invented orchard is acceptance material written solely for the test.", "quoteOrigin": "original", "createdAt": stamp, "passageId": "c1-p1", "chapterId": "c1", "contentVersion": "get317-v1"]
+                    return reply(["entries": [["book": ["bookId": "get317-translated", "title": "合成阅读手账", "contentVersion": "get317-v1"], "records": ["contentVersion": "get317-v1", "comments": [note], "questions": []]]], "nextCursor": NSNull()])
+                }
                 let entries: [[String: Any]] = shelf.compactMap { book in
                     let records = record(book["bookId"] as! String)
                     let comments = records["comments"] as? [[String: Any]] ?? []
@@ -277,6 +282,7 @@ private final class GET317Transport: URLProtocol, @unchecked Sendable {
                 }
                 return reply(["entries": entries, "nextCursor": NSNull(), "completed": shelf.count, "total": shelf.count])
             }
+            if arguments.contains("--get358-journal") { return reply(journalMonth(request)) }
             return reply(["allTime": ["durationSeconds": 0, "readingDays": 0], "books": []])
         }
         let components = path.split(separator: "/").map(String.init)
@@ -381,6 +387,23 @@ private final class GET317Transport: URLProtocol, @unchecked Sendable {
         return ["bookId": bookID, "contentVersion": "get317-v1", "chapterId": id, "sections": [["id": "\(id)-section", "chapterId": id, "paragraphs": paragraphs]]]
     }
     private static func stateURL(_ bookID: String) -> URL { root!.appendingPathComponent("network-" + bookID + ".json") }
+    private static func journalMonth(_ request: URLRequest) -> [String: Any] {
+        let query = URLComponents(url: request.url!, resolvingAgainstBaseURL: false)?.queryItems ?? []
+        let month = query.first { $0.name == "month" }?.value ?? ReadingJournal.monthKey(Date())
+        let zone = query.first { $0.name == "timeZone" }?.value ?? TimeZone.current.identifier
+        var calendar = Calendar(identifier: .gregorian); calendar.timeZone = TimeZone(identifier: zone) ?? .current
+        let formatter = DateFormatter(); formatter.calendar = calendar; formatter.timeZone = calendar.timeZone; formatter.locale = Locale(identifier: "en_US_POSIX"); formatter.dateFormat = "yyyy-MM-dd"
+        let start = formatter.date(from: month + "-01") ?? Date()
+        let recent = ReadingJournal.lastSevenDays(ending: Date(), calendar: calendar)
+        let samples = [18, 32, 25, 0, 45, 42, 42]
+        let days: [[String: Any]] = ReadingJournal.monthDays(start, calendar: calendar).map { date in
+            let index = recent.firstIndex { calendar.isDate($0, inSameDayAs: date) }
+            let seconds = index.map { samples[$0] * 60 } ?? 0
+            let book: [String: Any] = ["bookId": "get317-translated", "title": "合成阅读手账", "author": "合成验收资料", "durationSeconds": seconds, "source": ["chapterId": "c1", "passageId": "c1-p1"]]
+            return ["date": ReadingJournal.dayKey(date, calendar: calendar), "durationSeconds": seconds, "notes": calendar.isDateInToday(date) ? 1 : 0, "books": seconds > 0 ? [book] : [], "sourceDurationSeconds": ["reader_focus": seconds, "reader_estimate": 0]]
+        }
+        return ["month": month, "timeZone": zone, "days": days, "allTime": ["durationSeconds": 12240, "readingDays": 6], "books": []]
+    }
     private static func record(_ bookID: String) -> [String: Any] {
         if let data = try? Data(contentsOf: stateURL(bookID)), let value = try? JSONSerialization.jsonObject(with: data) as? [String: Any] { return value }
         return ["bookId": bookID, "contentVersion": "get317-v1", "comments": [], "questions": [], "position": [:]]

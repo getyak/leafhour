@@ -131,9 +131,7 @@ struct LibraryScreen: View {
             .onChange(of: model.account?.id) { _, _ in selecting = false; selectedIDs = []; sharing = nil }
             .onChange(of: model.accountShelf?.pinsInitialized) { _, _ in Task { await migrateCloudPinsIfNeeded() } }
             .onChange(of: visibleItems.map(\.id)) { _, ids in selectedIDs.formIntersection(Set(ids)) }
-            .fullScreenCover(item: $model.reader, onDismiss: { Task { await model.reload(); await loadResume(); await model.synchronize() } }) { session in
-                ReaderScreen(session: session, systemColorScheme: systemColorScheme, cloud: session.book.cloud == nil ? nil : model.cloud, library: model.library, positionConflict: model.syncIssues[session.book.id]?.positionConflict == true, resolvePosition: { useDevice in Task { await model.resolveActivePosition(useDevice: useDevice) } }, conversationTools: model.conversationTools(bookID: session.book.cloud?.bookID ?? session.book.id))
-            }
+            .onChange(of: model.reader?.id) { _, current in if current == nil { Task { await loadResume() } } }
             .sheet(isPresented: $info, onDismiss: { Task { await model.cancelNativeAuthentication() } }) { AccountScreen(model: model) }
             .sheet(isPresented: $pendingAdjustments) { AccountShelfPendingScreen(model: model) }
             .sheet(item: $sharing) { selection in ShelfSharePanel(selection: selection, model: model) }

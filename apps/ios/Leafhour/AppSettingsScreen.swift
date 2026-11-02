@@ -3,6 +3,8 @@ import LeafhourCore
 
 struct AppSettingsScreen: View {
     @Bindable var model: LibraryModel
+    var presented = false
+    @Environment(\.dismiss) private var dismiss
     @State private var account = false
     var body: some View {
         NavigationStack {
@@ -51,6 +53,7 @@ struct AppSettingsScreen: View {
                 }.listRowBackground(Color.clear)
             }.scrollContentBackground(.hidden).background(Color.shelfPaper)
                 .navigationTitle("设置")
+                .toolbar { if presented { ToolbarItem(placement: .confirmationAction) { Button("完成") { dismiss() } } } }
                 .sheet(isPresented: $account, onDismiss: { Task { await model.cancelNativeAuthentication() } }) { AccountScreen(model: model) }
         }
     }

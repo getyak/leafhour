@@ -79,12 +79,16 @@ struct GlobalChatScreen: View {
 
 struct LeafhourRootScreen: View {
     @Bindable var model: LibraryModel
+    @Environment(\.colorScheme) private var systemColorScheme
     @State private var tab = 0
     var body: some View {
         TabView(selection: $tab) {
             LibraryScreen(model: model).tag(0).tabItem { Label("书房", systemImage: "books.vertical") }
             GlobalChatScreen(model: model).id(model.importAccountContext).tag(1).tabItem { Label("Chat", systemImage: "bubble.left.and.bubble.right") }
-            AppSettingsScreen(model: model).id(model.importAccountContext).tag(2).tabItem { Label("设置", systemImage: "slider.horizontal.3") }
+            MyReadingScreen(model: model).id(model.importAccountContext).tag(2).tabItem { Label("我的阅读", systemImage: "book") }
         }.onOpenURL { url in tab = 0; model.receiveIncomingURL(url) }
+            .fullScreenCover(item: $model.reader, onDismiss: { Task { await model.reload(); await model.synchronize() } }) { session in
+                ReaderScreen(session: session, systemColorScheme: systemColorScheme, cloud: session.book.cloud == nil ? nil : model.cloud, library: model.library, positionConflict: model.syncIssues[session.book.id]?.positionConflict == true, resolvePosition: { useDevice in Task { await model.resolveActivePosition(useDevice: useDevice) } }, conversationTools: model.conversationTools(bookID: session.book.cloud?.bookID ?? session.book.id))
+            }
     }
 }
