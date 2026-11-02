@@ -95,7 +95,7 @@ final class ReaderCloudTools {
     var draftError: String?
     @ObservationIgnored private var draftWriting: Task<Void, Never>?
     @ObservationIgnored private var generation = UUID()
-    @ObservationIgnored private var translationPassageID: String?
+    @ObservationIgnored private var translationContext: (identity: CloudBookIdentity, passageID: String, language: ReadingLanguage)?
     @ObservationIgnored private var library: OfflineLibrary?
     @ObservationIgnored private var localBookID: String?
 
@@ -217,9 +217,10 @@ final class ReaderCloudTools {
     private func bookPath(_ id: String) -> String { "/api/library/books/" + component(id) }
     func loadTranslation(_ session: ReaderSession, cloud: CloudLibraryClient?) async {
         let stamp = UUID(); generation = stamp; error = nil; loading = false
+        translationContext = nil
         guard let passage = Self.currentPassage(session) else { translation = nil; error = "这一页还没有可供翻译的文字。"; return }
-        translationPassageID = passage.id
         let language = session.translationSettings.targetLanguage
+        if let identity = session.book.cloud { translationContext = (identity, passage.id, language) }
         translation = cached(session).flatMap { paragraph($0, id: passage.id) }.map { readTranslation($0, fallback: passage.text, targetLanguage: language) } ?? ReaderTranslation(original: passage.text)
         if let library, let rows = try? await library.readingTranslations(bookID: session.book.id, targetLanguage: language), let saved = rows[passage.id] {
             guard generation == stamp, language == session.translationSettings.targetLanguage else { return }
@@ -399,7 +400,13 @@ final class ReaderCloudTools {
                 guard value["id"] as? String == intent.passageID else { throw LibraryError.invalid("译文的来源暂时无法核对，尚未显示。") }
                 let request = try CloudJSON.decode(intent.body)
                 let language = request["targetLanguage"].string.flatMap(ReadingLanguage.init(rawValue:)) ?? .zh
-                if translationPassageID == intent.passageID { translation = readTranslation(value, fallback: translation?.original ?? "", targetLanguage: language) }
+                if let context = translationContext,
+                   context.identity.ownerID == intent.ownerID,
+                   intent.path == bookPath(context.identity.bookID) + "/translate",
+                   context.identity.contentVersion == request["contentVersion"].string,
+                   context.passageID == intent.passageID, context.language == language {
+                    translation = readTranslation(value, fallback: translation?.original ?? "", targetLanguage: language)
+                }
                 completedTranslation = try CloudJSON.decode(JSONSerialization.data(withJSONObject: value))
                 if let library, let localBookID {
                     do { try await library.cacheCloudPassage(CloudJSON.decode(JSONSerialization.data(withJSONObject: value)), bookID: localBookID, targetLanguage: language) }
