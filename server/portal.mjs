@@ -1,4 +1,5 @@
 import {gzipSync} from 'node:zlib';
+import {once} from 'node:events';
 import {createReadingWorkspaceService} from './reading-workspace-service.mjs';
 import {createNotebookGenerator} from '../harness/notebook-generator.mjs';
 import {contentSecurityPolicy} from './content-security.mjs';
@@ -132,6 +133,23 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
   const audio=durableAudio||allowLocal&&!publicOrigin&&!dataStore?await createAudioService({store:await createAudioStore({dataDir:path.join(dataDir,'audio'),dataStore:durableAudio?dataStore:null}),getBook:audioLibrary.getBook,speechProvider:speechProvider===undefined?createSpeechProvider({env}):speechProvider,dialogueGenerator:dialogueGenerator===undefined?createDialogueGenerator({env}):dialogueGenerator,schedule,durable:!!durableAudio,env}):null;
   const audioRoutes=createAudioRoutes({audio,library:audioLibrary,guideGenerator:guideGenerator===undefined?createGuideGenerator({env}):guideGenerator});
   async function handleRequest({req,res,url,send,requestState}){
+    // Keep the JSON contract for native clients while streaming large histories
+    // past the hosted buffered-response envelope. Buffer slices preserve UTF-8.
+    // https://vercel.com/kb/guide/how-to-bypass-vercel-body-size-limit-serverless-functions
+    const sendChat=async(status,value)=>{
+      const bytes=Buffer.from(JSON.stringify(value));
+      if(bytes.length<3*1024*1024){send(status,value);return;}
+      const controller=new AbortController(),closed=()=>controller.abort();
+      res.once('close',closed);
+      try{
+        res.writeHead(status,{'Content-Type':'application/json; charset=utf-8','Cache-Control':'private, no-store, no-transform','X-Accel-Buffering':'no'});res.flushHeaders?.();
+        for(let offset=0;offset<bytes.length;offset+=65536){
+          if(res.destroyed||res.writableEnded||controller.signal.aborted)return;
+          if(!res.write(bytes.subarray(offset,offset+65536)))try{await once(res,'drain',{signal:controller.signal});}catch(error){if(controller.signal.aborted)return;throw error;}
+        }
+        res.end();
+      }finally{res.off('close',closed);}
+    };
     if(await remoteMcp.handle({req,res,url,send}))return true;
     const presenceReceivedAt=url.pathname==='/api/library/daily-reading/presence'?Date.now():null;
     const entryPath=canonicalUiEntryPath(url.pathname),internalEntry=entryPath!==null&&entryPath!==url.pathname,p=entryPath||url.pathname,documentUrl=new URL(url);if(entryPath)documentUrl.pathname=entryPath;if(internalEntry)res.setHeader('X-Robots-Tag','noindex, nofollow, noarchive');
@@ -380,10 +398,10 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
       res.setHeader('Cache-Control','private, no-store');
       if(!user?.id||user.is_anonymous)throw fail('请先进入自己的书房',401);
       if(req.method==='POST'&&req.headers['x-reader-owner']!==user.id)throw fail('请重新核对当前书房账户',409);
-      if(p==='/api/library/chat/export'&&req.method==='GET'){send(200,await chat.exportLibraryHistory(user));return true;}
-      if(p==='/api/library/chat'&&req.method==='GET'){send(200,await chat.viewLibrary(user));return true;}
+      if(p==='/api/library/chat/export'&&req.method==='GET'){await sendChat(200,await chat.exportLibraryHistory(user));return true;}
+      if(p==='/api/library/chat'&&req.method==='GET'){await sendChat(200,await chat.viewLibrary(user));return true;}
       const cancel=p.match(/^\/api\/library\/chat\/([A-Za-z0-9_-]{1,120})\/cancel$/);
-      if(cancel&&req.method==='POST'){const result=await chat.cancelLibrary(user,cancel[1]);if(result.status==='cancelled')await creditGate.cancel(user,'conversation',LIBRARY_CHAT_ID,cancel[1]);send(200,result);return true;}
+      if(cancel&&req.method==='POST'){const result=await chat.cancelLibrary(user,cancel[1]);if(result.status==='cancelled')await creditGate.cancel(user,'conversation',LIBRARY_CHAT_ID,cancel[1]);await sendChat(200,result);return true;}
       if(p!=='/api/library/chat')throw fail('找不到这个对话操作',404);
       if(req.method!=='POST')throw fail('不支持这个请求',405);
       const streaming=String(req.headers.accept||'').split(',').some(value=>value.trim()==='application/x-ndjson');
@@ -395,7 +413,7 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
       try{
         const result=await creditGate.run({user,action:'conversation',bookId:LIBRARY_CHAT_ID,input:body,execute:input=>chat.sendLibrary(user,input,{...(streaming?{onProgress:frame}:{}),authorizePeople:async()=>(await auth.userFor(token))?.id===user.id})});
         if(result?.status==='failed')domainOutcome(user,{name:'chat_failed',properties:{page:'library',stage:'chat',outcome:'failure',errorKind:'internal'}},{operationId:requestState.operationId,dedupKey:'library-chat-failed:'+result.id});
-        if(streaming){frame({type:'result',turn:result});res.end();}else send(200,result);
+        if(streaming){frame({type:'result',turn:result});res.end();}else await sendChat(200,result);
       }catch(error){
         if(!res.headersSent)throw error;
         queueFault(requestState,error);frame({type:'error',status:error.status||500,...(error.billingOperation?{billingOperation:error.billingOperation}:{})});res.end();
@@ -530,7 +548,7 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
       if(action==='companion/observe'&&req.method==='POST'){send(200,await chat.companion.observe(user,id,body));return true;}
       if(action==='companion/messages'&&req.method==='POST'){send(200,await sponsored(user,'companion',()=>chat.companion.generate(user,id,body,{authorize:async()=>(await auth.userFor(token))?.id===user?.id,operationId:requestState.operationId})));return true;}
       if(action==='chat/scope'&&req.method==='POST'){send(200,await chat.configureScope(user,id,body));return true;}
-      if(action==='chat'&&req.method==='GET'){send(200,await chat.view(user,id,{passageId:url.searchParams.get('passageId')||undefined}));return true;}
+      if(action==='chat'&&req.method==='GET'){await sendChat(200,await chat.view(user,id,{passageId:url.searchParams.get('passageId')||undefined}));return true;}
       if(action==='chat'&&req.method==='POST'){
         const streaming=String(req.headers.accept||'').split(',').some(value=>value.trim()==='application/x-ndjson');
         const frame=value=>{
@@ -541,7 +559,7 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
         try{
           const result=await creditGate.run({user,action:'conversation',bookId:id,input:body,execute:input=>chat.send(user,id,input,{...(streaming?{onProgress:frame}:{}),authorizePeople:async()=> (await auth.userFor(token))?.id===user.id})});
           if(result?.status==='failed')domainOutcome(user,{name:'chat_failed',properties:{page:'reader',stage:'chat',outcome:'failure',errorKind:'internal'}},{operationId:requestState.operationId,dedupKey:'chat-failed:'+result.id});
-          if(streaming){frame({type:'result',turn:result});res.end();}else send(200,result);
+          if(streaming){frame({type:'result',turn:result});res.end();}else await sendChat(200,result);
         }catch(error){
           if(!res.headersSent)throw error;
           queueFault(requestState,error);
@@ -549,7 +567,7 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
         }
         return true;
       }
-      const cancelChat=action?.match(/^chat\/([^/]+)\/cancel$/);if(cancelChat&&req.method==='POST'){const result=await chat.cancel(user,id,cancelChat[1]);if(result.status==='cancelled')await creditGate.cancel(user,'conversation',id,cancelChat[1]);send(200,result);return true;}
+      const cancelChat=action?.match(/^chat\/([^/]+)\/cancel$/);if(cancelChat&&req.method==='POST'){const result=await chat.cancel(user,id,cancelChat[1]);if(result.status==='cancelled')await creditGate.cancel(user,'conversation',id,cancelChat[1]);await sendChat(200,result);return true;}
       // GET-195 web API: same owner/session/CSRF gates as the other library
       // routes. The authorize delegate re-reads the actual auth user for the
       // captured session token; request bodies never carry owner identity.

@@ -86,3 +86,7 @@ Final reviewer closeout: both scoped reviews approved after the compaction termi
 ## PR CI readback
 
 Initial PR CI run 41439122472 passed native iOS, catalog-source and release-contract validation. The host job stopped at its generated-copy inventory consistency check before running the remaining stages. Regenerated source-bound inventory twice (identical bytes), then ran the pinned Vale/textlint checks and planted canaries: both passed, with existing documented copy debt retained. No source behavior or gate was relaxed. The inventory correction is a separate delivery fix; current-head CI remains required before merge.
+
+## Long-history transport correction
+
+After removing product conversation caps, a two-turn synthetic history exceeded the hosting platform buffered response envelope. The regression first failed because the endpoint buffered the complete JSON. Ordinary chat history, result, cancel and account-export responses now stream large JSON in UTF-8-safe Buffer chunks with backpressure and disconnect cleanup; the native JSON contract stays compatible. The focused HTTP/chat suite passed30/30 and the independent reviewer verified Unicode reconstruction, drainage and disconnect behavior. Web build, release export and pinned copy lint passed again. This removes a transport failure rather than dropping old messages or lowering model limits. Actual large-response behavior on the deployed host remains separate acceptance.
