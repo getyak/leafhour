@@ -431,11 +431,11 @@ public actor OfflineLibrary {
         try Disk.write(metadata, to: root.appendingPathComponent("states/" + bookID + "-sync.json"))
     }
     public func cacheCloudView(_ name: String, data: Data) throws {
-        guard ["shelf", "summary", "activity", "notebook", "workspace"].contains(name), root.lastPathComponent.hasPrefix("account-") else { throw LibraryError.invalid("书房缓存归属无效。") }
+        guard ["shelf", "summary", "activity", "notebook", "workspace", "journal"].contains(name), root.lastPathComponent.hasPrefix("account-") else { throw LibraryError.invalid("书房缓存归属无效。") }
         try data.write(to: root.appendingPathComponent("cloud-" + name + ".json"), options: .atomic)
     }
     public func cloudView(_ name: String) throws -> Data? {
-        guard ["shelf", "summary", "activity", "notebook", "workspace"].contains(name), root.lastPathComponent.hasPrefix("account-") else { return nil }
+        guard ["shelf", "summary", "activity", "notebook", "workspace", "journal"].contains(name), root.lastPathComponent.hasPrefix("account-") else { return nil }
         let file = root.appendingPathComponent("cloud-" + name + ".json")
         return Disk.fm.fileExists(atPath: file.path) ? try Data(contentsOf: file) : nil
     }
