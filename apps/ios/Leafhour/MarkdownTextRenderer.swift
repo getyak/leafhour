@@ -7,9 +7,9 @@ struct MarkdownChapterLayout {
     let document: MarkdownDocument
     let sourceRanges: [NSRange]
 
-    init(book: LocalBook, chapter: BookChapter, original: URL) {
+    init(book: LocalBook, chapter: BookChapter, original: URL, useRetainedSource: Bool = true) {
         let retained: String?
-        if MarkdownChapterDocument.canUseRetainedSource(for: book) {
+        if useRetainedSource && MarkdownChapterDocument.canUseRetainedSource(for: book) {
             retained = (try? String(contentsOf: original, encoding: .utf8)) ?? (try? String(contentsOf: original, encoding: .utf16))
         } else { retained = nil }
         let layout = MarkdownChapterDocument(book: book, chapter: chapter, retainedSource: retained)

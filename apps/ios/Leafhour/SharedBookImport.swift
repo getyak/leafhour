@@ -23,6 +23,12 @@ struct IncomingBookRequest: Identifiable {
 
 @MainActor extension LibraryModel {
     func receiveIncomingURL(_ url: URL) {
+        #if DEBUG
+        if Bundle.main.bundleIdentifier == "org.leafhour.selectedsource.testing", url.absoluteString == "leafhour://selected-source-acceptance",
+           let input = try? SelectedSourceAcceptanceFixture.input() {
+            receiveIncomingURL(input.source); return
+        }
+        #endif
         // ASWebAuthenticationSession owns this callback. It must not be consumed by the import router.
         if url.scheme == "com.cubxxw.reader", url.host == "auth" { return }
         do {

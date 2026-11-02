@@ -55,7 +55,14 @@ public final class ReaderSession: Identifiable {
     public private(set) var translations: [String: ReadingTranslation] = [:]
     public private(set) var contentRevision = 0
     public func updateTranslations(_ rows: [String: ReadingTranslation]) {
-        let sources = Dictionary(uniqueKeysWithValues: book.chapters.flatMap(\.passages).map { ($0.id, $0.text) })
+        guard !rows.isEmpty else { return }
+        var needed = Set(rows.keys), sources: [String: String] = [:]
+        sourceScan: for chapter in book.chapters {
+            for passage in chapter.passages where needed.contains(passage.id) {
+                sources[passage.id] = passage.text; needed.remove(passage.id)
+                if needed.isEmpty { break sourceScan }
+            }
+        }
         var updated = translations
         for (id, value) in rows where sources[id] == value.original {
             var incoming = value

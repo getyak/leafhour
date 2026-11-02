@@ -1,0 +1,7 @@
+# Bounded native text layout after import
+
+The user reproduced a frozen reader after importing the supplied TXT and authorized testing that actual source under test@cubxxw.com. Source bytes and book contents remain outside Git. A roughly 24 MB Chinese text currently becomes one logical chapter with around 230,000 paragraphs; constructing one UITextView and forcing full TextKit layout/pagination is unbounded on the main actor.
+
+Keep canonical chapters, passage IDs, originals and saved anchors unchanged. The native text view renders a bounded source window around the current anchor. Windows continue at scrolling/page-turn boundaries, support backward navigation and direct jumps, and restore the same source coordinate. Very long individual paragraphs require bounded source slices with explicit offset mapping. Small chapters retain existing behavior and Markdown rendering. Large Markdown windows explicitly display literal Markdown source instead of reinterpreting a fragment without its fences/reference context. Window-local page totals must never be labeled as whole-chapter totals.
+
+Avoid whole-book source indexing when translation updates are empty. Validate the actual private source as well as synthetic Unicode, selection, forward/backward boundary, state restoration and Markdown cases. Do not call a paid model or upload this private book into public artifacts. The final acceptance includes entering the newly imported book, interaction, leaving, reopening and retained anchors.
