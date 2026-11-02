@@ -8,6 +8,30 @@ import LeafhourCore
 /// These tests do not exercise a real account, model, or physical device.
 @MainActor
 final class ReaderViewportTests: XCTestCase {
+    func testTXTIndentationSwitchRemovesSourcePaddingAndKeepsOriginalSelectionOffsets() async throws {
+        let source = "    原文 🌿 remains selectable."
+        let session = try await session(filename: "indented.txt") { try Data(source.utf8).write(to: $0) }
+        var preferences = session.state.preferences; preferences.navigationMode = .scroll
+        session.changePreferences(preferences)
+        let reading = TextReadingView(session: session, onNote: { _ in }, onSource: { _ in }, onWake: { _ in }, onReadingScroll: {})
+        let coordinator = reading.makeCoordinator(), text = UITextView(usingTextLayoutManager: false)
+        text.isEditable = false; text.isSelectable = true; coordinator.view = text
+        _ = host(text)
+        defer { coordinator.invalidate() }
+        coordinator.updateContent(text); await drainMainQueue()
+        XCTAssertTrue(text.text.hasPrefix("原文"), "Turning indentation off must also hide TXT's source padding")
+        let style = try XCTUnwrap(text.attributedText.attribute(.paragraphStyle, at: 0, effectiveRange: nil) as? NSParagraphStyle)
+        XCTAssertEqual(style.firstLineHeadIndent, 0)
+        text.selectedRange = NSRange(location: 0, length: 2)
+        let selected = try XCTUnwrap(coordinator.selectedQuote(in: text, range: text.selectedRange))
+        XCTAssertEqual(selected.text, "原文"); XCTAssertEqual(selected.anchor.characterOffset, 4)
+        text.selectedRange = NSRange(location: 0, length: 0)
+        preferences.firstLineIndent = .twoCharacters; session.changePreferences(preferences)
+        coordinator.updateContent(text); await drainMainQueue()
+        let indented = try XCTUnwrap(text.attributedText.attribute(.paragraphStyle, at: 0, effectiveRange: nil) as? NSParagraphStyle)
+        XCTAssertGreaterThan(indented.firstLineHeadIndent, 0)
+        XCTAssertEqual(try String(contentsOf: session.original, encoding: .utf8), source)
+    }
     private func session(filename: String, write: (URL) throws -> Void) async throws -> ReaderSession {
         let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString, isDirectory: true)
         try FileManager.default.createDirectory(at: root, withIntermediateDirectories: true)

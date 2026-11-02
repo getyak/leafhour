@@ -38,7 +38,7 @@ final class ReaderToolsTests: XCTestCase {
         let input = request["input"] as? [String: Any] ?? [:]
         return ["id": "quote-test", "ownerId": owner, "action": action, "mode": "test", "units": action == "translation" ? 1_000_000 : 4_000_000,
             "expiresAt": ISO8601DateFormatter().string(from: Date().addingTimeInterval(300)),
-            "scope": ["bookId": "cloud-book", "requestId": input["id"] ?? "", "passageId": input["passageId"] ?? "", "contentVersion": "source-v1"]]
+            "scope": ["bookId": "cloud-book", "requestId": input["id"] ?? "", "passageId": input["passageId"] ?? "", "contentVersion": "source-v1", "sourceLanguage": input["sourceLanguage"] ?? "en", "targetLanguage": input["targetLanguage"] ?? "zh"]]
     }
     override func tearDown() {
         ReaderToolsURLProtocol.install(nil)

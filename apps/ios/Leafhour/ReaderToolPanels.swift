@@ -165,7 +165,7 @@ struct ReaderTranslationPanel: View {
     @State private var variant = "parallel"
     @State private var loadedKey: String?
     private var passage: Passage? { ReaderCloudTools.currentPassage(session) }
-    private var key: String { session.chapter.id + ":" + (passage?.id ?? "") }
+    private var key: String { session.chapter.id + ":" + (passage?.id ?? "") + ":" + session.translationSettings.targetLanguage.rawValue }
     private var reading: Bool { loadedKey != key || tools.loading }
     private var translation: ReaderTranslation? { loadedKey == key ? tools.translation : nil }
     private var sourceDescription: String { session.book.title + " · " + session.chapter.title }
@@ -176,6 +176,7 @@ struct ReaderTranslationPanel: View {
     private func hasText(_ value: String?) -> Bool { !(value?.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ?? true) }
     var body: some View {
         List {
+            ReaderBookLanguageChoices(session: session).disabled(tools.generating)
             if let passage {
                 Section {
                     Text(sourceDescription).font(.footnote).foregroundStyle(.secondary)

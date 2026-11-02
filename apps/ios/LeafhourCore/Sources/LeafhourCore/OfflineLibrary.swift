@@ -7,6 +7,13 @@ public actor OfflineLibrary {
     private let limits: ImportLimits
     private struct CloudStartCache { var identity: CloudBookIdentity; var digest: String; var anchor: ReadingAnchor? }
     private var cloudStarts: [String: CloudStartCache] = [:]
+    private struct ListedIndexCache {
+        let size: Int64
+        let modified: Date
+        let fileNumber: UInt64
+        let book: LocalBook
+    }
+    private var listedIndexes: [String: ListedIndexCache] = [:]
     public init(root: URL, scope: LibraryScope, limits: ImportLimits = ImportLimits()) throws {
         guard limits.maximumFileBytes > 0, limits.maximumExpandedBytes > 0, limits.maximumEntryBytes > 0, limits.maximumEntries > 0 else { throw LibraryError.invalid("导入上限必须大于零。") }
         self.root = root.appendingPathComponent(scope.folder, isDirectory: true); self.limits = limits
@@ -228,10 +235,22 @@ public actor OfflineLibrary {
     }
     public func books() throws -> [LocalBook] {
         // Listing does not claim a new integrity pass. Opening/explicit verification hashes every file.
-        try Disk.fm.contentsOfDirectory(at: root.appendingPathComponent("books"), includingPropertiesForKeys: nil).map { folder in
+        let folders = try Disk.fm.contentsOfDirectory(at: root.appendingPathComponent("books"), includingPropertiesForKeys: nil)
+        let ids = Set(folders.map(\.lastPathComponent))
+        listedIndexes = listedIndexes.filter { ids.contains($0.key) }
+        return try folders.map { folder in
             let id = folder.lastPathComponent
             try Disk.validID(id)
-            if let book = try? Disk.read(LocalBook.self, from: folder.appendingPathComponent("book.json")), book.id == id { return book }
+            let file = folder.appendingPathComponent("book.json"), attributes = try? Disk.fm.attributesOfItem(atPath: file.path)
+            let size = (attributes?[.size] as? NSNumber)?.int64Value
+            let modified = attributes?[.modificationDate] as? Date
+            let number = (attributes?[.systemFileNumber] as? NSNumber)?.uint64Value
+            if let size, let modified, let number, let cached = listedIndexes[id], cached.size == size, cached.modified == modified, cached.fileNumber == number { return cached.book }
+            listedIndexes[id] = nil
+            if let book = try? Disk.read(LocalBook.self, from: file), book.id == id {
+                if let size, let modified, let number { listedIndexes[id] = ListedIndexCache(size: size, modified: modified, fileNumber: number, book: book) }
+                return book
+            }
             let kind = [BookKind.epub, .pdf, .txt, .markdown].first { Disk.fm.fileExists(atPath: folder.appendingPathComponent("source." + $0.rawValue).path) } ?? .unknown
             return LocalBook(id: id, title: "待修复的书籍", author: "", kind: kind, sourceVersion: "sha256-" + id, originalFilename: "Recovered." + kind.rawValue, importedAt: .distantPast, chapters: [])
         }.sorted { $0.importedAt > $1.importedAt }
@@ -412,7 +431,8 @@ public actor OfflineLibrary {
         else { try Disk.fm.moveItem(at: stage, to: target) }
         return value
     }
-    public func readingTranslations(bookID: String) throws -> [String: ReadingTranslation] {
+    public func readingTranslations(bookID: String, targetLanguage: ReadingLanguage = .zh) throws -> [String: ReadingTranslation] {
+        if targetLanguage != .zh { return try cachedLanguageTranslations(bookID: bookID, language: targetLanguage) }
         let book = try book(bookID)
         guard let identity = book.cloud else { return [:] }
         let folder = try bookDirectory(bookID)
@@ -424,23 +444,24 @@ public actor OfflineLibrary {
         }
         return rows
     }
-    public func pendingReadingTranslation(bookID: String) throws -> Data? {
+    public func pendingReadingTranslation(bookID: String, targetLanguage: ReadingLanguage = .zh) throws -> Data? {
         _ = try book(bookID)
-        let file = root.appendingPathComponent("states/" + bookID + "-translation-run.json")
+        let file = root.appendingPathComponent("states/" + bookID + "-translation-run" + (targetLanguage == .zh ? "" : "-" + targetLanguage.rawValue) + ".json")
         guard Disk.fm.fileExists(atPath: file.path) else { return nil }
         guard try Disk.size(file) <= 8 * 1024 * 1024 else { throw LibraryError.invalid("预译恢复记录过大，请先保留并核对。") }
         return try Data(contentsOf: file)
     }
-    public func savePendingReadingTranslation(_ data: Data?, bookID: String) throws {
+    public func savePendingReadingTranslation(_ data: Data?, bookID: String, targetLanguage: ReadingLanguage = .zh) throws {
         _ = try book(bookID)
-        let file = root.appendingPathComponent("states/" + bookID + "-translation-run.json")
+        let file = root.appendingPathComponent("states/" + bookID + "-translation-run" + (targetLanguage == .zh ? "" : "-" + targetLanguage.rawValue) + ".json")
         if let data {
             guard data.count <= 8 * 1024 * 1024 else { throw LibraryError.invalid("预译恢复记录超过容量，尚未提交后续段落。") }
             try data.write(to: file, options: .atomic)
         } else if Disk.fm.fileExists(atPath: file.path) { try Disk.fm.removeItem(at: file) }
     }
-    public func cacheCloudPassage(_ passage: CloudJSON, bookID: String) throws { try cacheCloudPassages([passage], bookID: bookID) }
-    public func cacheCloudPassages(_ passages: [CloudJSON], bookID: String) throws {
+    public func cacheCloudPassage(_ passage: CloudJSON, bookID: String, targetLanguage: ReadingLanguage = .zh) throws { try cacheCloudPassages([passage], bookID: bookID, targetLanguage: targetLanguage) }
+    public func cacheCloudPassages(_ passages: [CloudJSON], bookID: String, targetLanguage: ReadingLanguage = .zh) throws {
+        if targetLanguage != .zh { try cacheLanguageTranslations(passages, bookID: bookID, language: targetLanguage); return }
         guard !passages.isEmpty else { return }
         let book = try book(bookID)
         var updates: [String: CloudJSON] = [:]

@@ -235,7 +235,7 @@ struct ReaderScreen: View {
     }
     private var readingRefreshKey: String {
         let visible = scenePhase == .active && panel?.isCompanion != true
-        return "\(session.chapter.id):\(session.state.preferences.viewMode.rawValue):\(visible)"
+        return "\(session.chapter.id):\(session.state.preferences.viewMode.rawValue):\(session.translationSettings):\(visible)"
     }
     private var conversationSelection: SelectedQuote? {
         if case .companion(let quote)? = panel { return quote }
@@ -303,6 +303,9 @@ struct ReaderScreen: View {
         .onChange(of: speech.following) { _, _ in followSpeechChapter() }
         .onChange(of: session.contentRevision) { _, _ in speech.contentChanged() }
         .onChange(of: session.state.preferences.translationVariant) { _, _ in speech.stop() }
+        .onChange(of: session.translationSettings) { _, _ in
+            reading.stop(); reading.proposed = nil; tools.consent = nil; speech.stop()
+        }
         .task(id: readingRefreshKey) { await refreshReadingContent() }
         .onChange(of: session.state.preferences.viewMode) { _, mode in
             speech.stop()
@@ -311,7 +314,7 @@ struct ReaderScreen: View {
             selectionDismissalID = UUID()
         }
         .onChange(of: tools.completedTranslation) { _, row in
-            if let row { session.updateTranslations(ReaderReadingContent.translations([row])) }
+            if let row { session.updateTranslations(ReaderReadingContent.translations([row], targetLanguage: session.translationSettings.targetLanguage)) }
         }
         .onChange(of: panel?.isCompanion) { _, active in
             reading.setForeground(scenePhase == .active && active != true)

@@ -53,6 +53,13 @@ public final class ReaderSession: Identifiable {
     @ObservationIgnored private var readingVisible = true
     @ObservationIgnored private var activityNeedsSave = false
     public private(set) var translations: [String: ReadingTranslation] = [:]
+    public let detectedSourceLanguage: ReadingLanguage?
+    public var translationSettings: BookTranslationSettings { state.translationSettings ?? .suggested(for: detectedSourceLanguage) }
+    public func changeTranslationSettings(_ value: BookTranslationSettings) {
+        guard value != translationSettings else { return }
+        state.translationSettings = value
+        translations = [:]; contentRevision += 1; selection = nil; save()
+    }
     public private(set) var contentRevision = 0
     public func updateTranslations(_ rows: [String: ReadingTranslation]) {
         guard !rows.isEmpty else { return }
@@ -64,7 +71,7 @@ public final class ReaderSession: Identifiable {
             }
         }
         var updated = translations
-        for (id, value) in rows where sources[id] == value.original {
+        for (id, value) in rows where sources[id] == value.original && (value.targetLanguage ?? .zh) == translationSettings.targetLanguage {
             var incoming = value
             if let prior = updated[id], prior.original == value.original {
                 if incoming.text(.literal) == nil || (prior.literalStatus == "reviewed" && incoming.literalStatus != "reviewed") { incoming.literal = prior.literal; incoming.literalStatus = prior.literalStatus }
@@ -84,6 +91,7 @@ public final class ReaderSession: Identifiable {
     @ObservationIgnored private var noteSubmissionWasPersisted = false
     @ObservationIgnored private var visibleAnchor: ReadingAnchor?
     public init(book: LocalBook, state: ReaderState, original: URL, directory: URL, library: any ReaderStateStore, preferencesStore: (any ReaderPreferencesStore)? = nil) {
+        detectedSourceLanguage = ReadingLanguage.detect(in: book)
         var restored = state
         let initialChapter: Int
         if let anchor = state.anchor, let index = book.chapters.firstIndex(where: { $0.id == anchor.chapterID }) {

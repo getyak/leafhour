@@ -171,8 +171,8 @@ public extension CloudLibraryClient {
         let identity = CloudBookIdentity(ownerID: ownerID, bookID: remote.id, contentVersion: version, sourceFormat: manifest["source"]["format"].string ?? "text")
         return CloudReadingCopy(identity: identity, title: CloudShelfBook.title(manifest["title"]), author: manifest["author"].string ?? remote.author, chapters: chapters, content: try JSONEncoder().encode(manifest), readingStart: CloudReadingStartResolver.hint(from: manifest, identity: identity, chapters: chapters))
     }
-    func readingChapter(bookID: String, chapterID: String, contentVersion: String, ownerID: String) async throws -> CloudJSON {
-        try await readingJSON(path: "/api/library/books/" + CloudJSON.component(bookID) + "/chapters/" + CloudJSON.component(chapterID) + "?contentVersion=" + CloudJSON.component(contentVersion), ownerID: ownerID)
+    func readingChapter(bookID: String, chapterID: String, contentVersion: String, ownerID: String, targetLanguage: ReadingLanguage = .zh) async throws -> CloudJSON {
+        try await readingJSON(path: "/api/library/books/" + CloudJSON.component(bookID) + "/chapters/" + CloudJSON.component(chapterID) + "?contentVersion=" + CloudJSON.component(contentVersion) + (targetLanguage == .zh ? "" : "&targetLanguage=" + targetLanguage.rawValue), ownerID: ownerID)
     }
     /// The web transport switches to stable base64 parts for a chapter over its response limit.
     private func readingJSON(path: String, ownerID: String) async throws -> CloudJSON {

@@ -12,14 +12,21 @@ public struct ReadingTranslation: Codable, Equatable, Sendable {
     public var interpretive: String?
     public var literalStatus: String?
     public var interpretiveStatus: String?
-    public init(original: String, literal: String? = nil, interpretive: String? = nil, literalStatus: String? = nil, interpretiveStatus: String? = nil) {
+    public var targetLanguage: ReadingLanguage? = nil
+    public init(original: String, literal: String? = nil, interpretive: String? = nil, literalStatus: String? = nil, interpretiveStatus: String? = nil, targetLanguage: ReadingLanguage? = nil) {
         self.original = original; self.literal = literal; self.interpretive = interpretive
         self.literalStatus = literalStatus; self.interpretiveStatus = interpretiveStatus
+        self.targetLanguage = targetLanguage
     }
-    public init?(_ row: CloudJSON) {
+    public init?(_ row: CloudJSON, targetLanguage: ReadingLanguage = .zh) {
         guard let original = row["original"].string else { return nil }
-        self.init(original: original, literal: row["translations"]["literal"]["text"].string, interpretive: row["translations"]["interpretive"]["text"].string,
-                  literalStatus: row["translations"]["literal"]["status"].string, interpretiveStatus: row["translations"]["interpretive"]["status"].string)
+        func matching(_ variant: String) -> CloudJSON {
+            let value = row["translations"][variant]
+            return (value["targetLanguage"].string ?? "zh") == targetLanguage.rawValue ? value : .null
+        }
+        let literal = matching("literal"), interpretive = matching("interpretive")
+        self.init(original: original, literal: literal["text"].string, interpretive: interpretive["text"].string,
+                  literalStatus: literal["status"].string, interpretiveStatus: interpretive["status"].string, targetLanguage: targetLanguage)
     }
     public func text(_ variant: ReaderTranslationVariant) -> String? {
         let value = variant == .literal ? literal : interpretive
@@ -56,8 +63,10 @@ public struct ReadingTranslationPlan: Codable, Equatable, Sendable {
     public let passageIDs: [String]
     // Optional for recovery of envelopes written before explicit scopes existed.
     public let scope: ReadingTranslationScope?
+    public var sourceLanguage: ReadingLanguage? = nil
+    public var targetLanguage: ReadingLanguage? = nil
     public var maximumPoints: Int { passageIDs.count }
-    public static func make(book: LocalBook, chapterIndex: Int, translations: [String: ReadingTranslation], scope: ReadingTranslationScope = .currentAndNext, passageID: String? = nil) throws -> Self {
+    public static func make(book: LocalBook, chapterIndex: Int, translations: [String: ReadingTranslation], scope: ReadingTranslationScope = .currentAndNext, passageID: String? = nil, languages: BookTranslationSettings? = nil) throws -> Self {
         guard let identity = book.cloud, book.chapters.indices.contains(chapterIndex) else { throw LibraryError.invalid("请先登录并同步这本书。") }
         let chapters = Array(book.chapters.dropFirst(chapterIndex).prefix(scope == .currentAndNext ? 2 : 1))
         var passages = chapters.flatMap(\.passages)
@@ -73,6 +82,6 @@ public struct ReadingTranslationPlan: Codable, Equatable, Sendable {
             if literal != interpretive { throw LibraryError.invalid("有段落已有部分译文，请先核对；预译不会覆盖它。") }
             if !literal && pending.count < 100 { pending.append(passage.id) }
         }
-        return Self(ownerID: identity.ownerID, bookID: identity.bookID, contentVersion: identity.contentVersion, chapterIDs: chapters.map(\.id), passageIDs: pending, scope: scope)
+        return Self(ownerID: identity.ownerID, bookID: identity.bookID, contentVersion: identity.contentVersion, chapterIDs: chapters.map(\.id), passageIDs: pending, scope: scope, sourceLanguage: languages?.resolvedSource(detected: ReadingLanguage.detect(in: book)), targetLanguage: languages?.targetLanguage)
     }
 }

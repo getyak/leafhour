@@ -5,6 +5,19 @@ import LeafhourCore
 
 @MainActor
 final class LibraryActivityTests: XCTestCase {
+    func testCachedShelfLoadsWithoutAuthenticationOrOpeningLastBook() async throws {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: root); ActivityURLProtocol.respond = nil }
+        try FileManager.default.createDirectory(at: root, withIntermediateDirectories: true)
+        let configuration = URLSessionConfiguration.ephemeral; configuration.protocolClasses = [ActivityURLProtocol.self]
+        ActivityURLProtocol.respond = { _ in XCTFail("Cache presentation must not wait on authentication"); return (0, ["user": NSNull()]) }
+        let model = LibraryModel(root: root, cloud: CloudLibraryClient(baseURL: URL(string: "https://fixture.invalid")!, configuration: configuration), monitorNetwork: false)
+        let file = root.appendingPathComponent("Cached.txt"); try Data("Saved source paragraph.".utf8).write(to: file)
+        let library = try XCTUnwrap(model.library), book = try await library.importFile(file)
+        try await library.setLastOpenedBook(book.id)
+        await model.loadCachedShelf()
+        XCTAssertEqual(model.books.map(\.id), [book.id]); XCTAssertNil(model.reader)
+    }
     func testImportCompletesOnShelfWithoutAutomaticallyOpeningReader() async throws {
         let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
         try FileManager.default.createDirectory(at: root, withIntermediateDirectories: true)
@@ -246,7 +259,7 @@ final class LibraryActivityTests: XCTestCase {
         XCTAssertEqual(preservedRows, fixture.rows)
         XCTAssertEqual(try Data(contentsOf: originalURL), fixture.original)
     }
-    func testStartupOpensLatestActualLocalReadingOnceAndReturnToShelfStaysThere() async throws {
+    func testStartupKeepsLatestActualReadingOnShelfUntilExplicitlyOpened() async throws {
         let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
         try FileManager.default.createDirectory(at: root, withIntermediateDirectories: true)
         addTeardownBlock { try? FileManager.default.removeItem(at: root) }
@@ -262,16 +275,18 @@ final class LibraryActivityTests: XCTestCase {
             try await library.saveState(state, bookID: book.id)
         }
         try await library.setLastOpenedBook(imported[0].id)
-        await model.reload(restore: true)
-        await model.restoreRecentReading()
+        await model.reload()
+        XCTAssertNil(model.reader)
+        XCTAssertEqual(model.recentShelfItem?.local?.id, imported[1].id)
+        await model.open(imported[1])
         XCTAssertEqual(model.reader?.book.id, imported[1].id)
         XCTAssertEqual(model.reader?.currentAnchor?.characterOffset, 3)
         model.reader = nil
-        await model.restoreRecentReading()
+        await model.reload()
         XCTAssertNil(model.reader, "Returning to the shelf must never automatically reopen a book")
     }
 
-    func testStartupRefreshesCloudRecencyAndResolvesPositionBeforePresentingReader() async throws {
+    func testStartupRefreshesCloudShelfWithoutPresentingReaderUntilExplicitOpen() async throws {
         let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
         let owner = "00000000-0000-4000-8000-000000000344"
         addTeardownBlock { try? FileManager.default.removeItem(at: root); ActivityURLProtocol.respond = nil }
@@ -299,9 +314,11 @@ final class LibraryActivityTests: XCTestCase {
             XCTAssertEqual(path, "/api/library"); XCTAssertEqual(request.url?.query, "view=account")
             return (0, ["user": ["id": owner], "books": [["bookId": "older", "title": "older", "contentVersion": "v1", "lastReadAt": "2026-11-01T10:00:00Z"], ["bookId": "recent", "title": "recent", "contentVersion": "v1", "lastReadAt": "2026-11-01T11:00:00Z"]]])
         }
-        await model.reload(restore: true)
+        await model.reload()
+        await model.synchronize()
         XCTAssertNil(model.reader)
-        await model.restoreRecentReading()
+        XCTAssertEqual(model.recentShelfItem?.cloud?.id, "recent")
+        await model.open(imported[1])
         let reader = try XCTUnwrap(model.reader)
         XCTAssertEqual(reader.book.cloud?.bookID, "recent")
         XCTAssertEqual(reader.currentAnchor?.characterOffset, reader.book.chapters[0].passages[0].text.unicodeScalars.count / 2)
@@ -332,7 +349,7 @@ final class LibraryActivityTests: XCTestCase {
         XCTAssertNil(model.reader, "Refreshing account metadata must not auto-download or open a book")
         ActivityURLProtocol.respond = nil
         let offline = LibraryModel(root: root, cloud: cloud, credential: credential, monitorNetwork: false)
-        await offline.reload(restore: true)
+        await offline.reload()
         XCTAssertEqual(offline.accountShelf, model.accountShelf)
         XCTAssertEqual(offline.recentShelfItem?.cloud?.resume?.label, "A saved chapter")
         XCTAssertNil(offline.reader, "Account cold restoration must retain an explicit continuation choice")

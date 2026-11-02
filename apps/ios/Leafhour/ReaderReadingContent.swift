@@ -30,13 +30,14 @@ final class ReaderReadingContent {
 
     func refresh(_ session: ReaderSession, cloud: CloudLibraryClient?, library: OfflineLibrary?) async {
         let marker = UUID(); refreshID = marker
-        if let library, let cached = try? await library.readingTranslations(bookID: session.book.id) {
-            guard !Task.isCancelled, marker == refreshID else { return }
+        let language = session.translationSettings.targetLanguage
+        if let library, let cached = try? await library.readingTranslations(bookID: session.book.id, targetLanguage: language) {
+            guard !Task.isCancelled, marker == refreshID, language == session.translationSettings.targetLanguage else { return }
             session.updateTranslations(cached)
-            if let data = try? await library.pendingReadingTranslation(bookID: session.book.id),
+            if let data = try? await library.pendingReadingTranslation(bookID: session.book.id, targetLanguage: language),
                let saved = try? JSONDecoder().decode(ReaderTranslationRun.self, from: data),
                (try? Self.validate(saved, session: session)) != nil {
-                session.updateTranslations(Self.translations(saved.completed))
+                session.updateTranslations(Self.translations(saved.completed, targetLanguage: language))
             }
         }
         guard session.state.preferences.viewMode != .source, let identity = session.book.cloud, let cloud else { return }
@@ -44,12 +45,12 @@ final class ReaderReadingContent {
         defer { if refreshID == marker { loading = false } }
         do {
             for chapter in session.book.chapters.dropFirst(session.chapterIndex).prefix(2) {
-                let value = try await cloud.readingChapter(bookID: identity.bookID, chapterID: chapter.id, contentVersion: identity.contentVersion, ownerID: identity.ownerID)
+                let value = try await cloud.readingChapter(bookID: identity.bookID, chapterID: chapter.id, contentVersion: identity.contentVersion, ownerID: identity.ownerID, targetLanguage: language)
                 try Task.checkCancellation()
-                guard marker == refreshID else { return }
+                guard marker == refreshID, language == session.translationSettings.targetLanguage else { return }
                 let rows = try Self.validatedRows(value, chapter: chapter, identity: identity)
-                session.updateTranslations(Self.translations(rows))
-                if let library, !running { try await library.cacheCloudPassages(rows.filter { !$0["translations"].object.isEmpty }, bookID: session.book.id) }
+                session.updateTranslations(Self.translations(rows, targetLanguage: language))
+                if let library, !running { try await library.cacheCloudPassages(rows.filter { !$0["translations"].object.isEmpty }, bookID: session.book.id, targetLanguage: language) }
             }
         } catch is CancellationError { }
         catch { if marker == refreshID { self.error = "暂时无法更新译文，已保留原文与此设备上的译文。\n" + error.localizedDescription } }
@@ -67,21 +68,23 @@ final class ReaderReadingContent {
         guard ids == Set(source.keys) else { throw LibraryError.invalid("章节尚未完整返回，已保留本机内容。") }
         return rows
     }
-    static func translations(_ rows: [CloudJSON]) -> [String: ReadingTranslation] {
+    static func translations(_ rows: [CloudJSON], targetLanguage: ReadingLanguage = .zh) -> [String: ReadingTranslation] {
         var result: [String: ReadingTranslation] = [:]
-        for row in rows { if let id = row["id"].string, let translation = ReadingTranslation(row) { result[id] = translation } }
+        for row in rows { if let id = row["id"].string, let translation = ReadingTranslation(row, targetLanguage: targetLanguage) { result[id] = translation } }
         return result
     }
 
     func prepare(_ session: ReaderSession, cloud: CloudLibraryClient?, library: OfflineLibrary?, scope: ReadingTranslationScope = .currentAndNext) async {
         guard !running, !loading, let identity = session.book.cloud, let cloud, let library else { error = "请先登录并同步这本书，再准备译文。"; return }
+        let languages = session.translationSettings, language = languages.targetLanguage
+        guard languages.isValid(detected: session.detectedSourceLanguage) else { error = "请选择不同的原文语言与译入语言，再开始翻译。"; return }
         let chapterIndex = session.chapterIndex, navigation = session.navigationID
         let passageID = session.currentAnchor?.passageID
         error = nil; loading = true
         defer { loading = false }
         do {
             guard await cloud.activeAccount()?.id == identity.ownerID else { throw LibraryError.invalid("账号已变化，请重新打开书房。") }
-            if let data = try await library.pendingReadingTranslation(bookID: session.book.id) {
+            if let data = try await library.pendingReadingTranslation(bookID: session.book.id, targetLanguage: language) {
                 let saved = try JSONDecoder().decode(ReaderTranslationRun.self, from: data)
                 try Self.validate(saved, session: session)
                 if saved.pending != nil || (saved.next > 0 && saved.plan.chapterIDs.contains(session.chapter.id) && saved.plan.scope == scope) {
@@ -89,18 +92,20 @@ final class ReaderReadingContent {
                 }
                 // A new explicit request replaces only unsubmitted work. Preserve
                 // completed results; an uncertain request always goes through recovery.
-                try await library.cacheCloudPassages(saved.completed, bookID: session.book.id)
-                session.updateTranslations(Self.translations(saved.completed))
-                try await library.savePendingReadingTranslation(nil, bookID: session.book.id)
+                try await library.cacheCloudPassages(saved.completed, bookID: session.book.id, targetLanguage: language)
+                session.updateTranslations(Self.translations(saved.completed, targetLanguage: language))
+                try await library.savePendingReadingTranslation(nil, bookID: session.book.id, targetLanguage: language)
             }
-            guard !Task.isCancelled, navigation == session.navigationID, chapterIndex == session.chapterIndex else { return }
-            let plan = try ReadingTranslationPlan.make(book: session.book, chapterIndex: chapterIndex, translations: session.translations, scope: scope, passageID: passageID)
+            guard !Task.isCancelled, navigation == session.navigationID, chapterIndex == session.chapterIndex, languages == session.translationSettings else { return }
+            let plan = try ReadingTranslationPlan.make(book: session.book, chapterIndex: chapterIndex, translations: session.translations, scope: scope, passageID: passageID, languages: languages)
             guard !plan.passageIDs.isEmpty else { status = scope == .passage ? "当前段的双译已准备好。" : "本次范围的双译已准备好。"; return }
             proposed = ReaderTranslationRun(plan: plan)
         } catch { self.error = error.localizedDescription }
     }
     static func validate(_ run: ReaderTranslationRun, session: ReaderSession) throws {
-        guard let identity = session.book.cloud, run.plan.ownerID == identity.ownerID, run.plan.bookID == identity.bookID,
+        guard (run.plan.targetLanguage ?? .zh) == session.translationSettings.targetLanguage,
+              run.plan.sourceLanguage == nil || run.plan.sourceLanguage == session.translationSettings.resolvedSource(detected: session.detectedSourceLanguage),
+              let identity = session.book.cloud, run.plan.ownerID == identity.ownerID, run.plan.bookID == identity.bookID,
               run.plan.contentVersion == identity.contentVersion, (0...run.plan.passageIDs.count).contains(run.next),
               run.plan.passageIDs.count <= 100, (1...2).contains(run.plan.chapterIDs.count),
               let start = session.book.chapters.firstIndex(where: { $0.id == run.plan.chapterIDs.first }),
@@ -119,7 +124,9 @@ final class ReaderReadingContent {
                   pending.passageID == run.plan.passageIDs[run.next], pending.action == "translation",
                   pending.path == "/api/library/books/" + CloudJSON.component(identity.bookID) + "/translate",
                   let body = try? CloudJSON.decode(pending.body), body["id"].string == pending.id,
-                  body["passageId"].string == pending.passageID, body["contentVersion"].string == identity.contentVersion else { throw LibraryError.invalid("未完成的预译请求无法核对，尚未重试。") }
+                  body["passageId"].string == pending.passageID, body["contentVersion"].string == identity.contentVersion,
+                  (body["targetLanguage"].string ?? "zh") == (run.plan.targetLanguage ?? .zh).rawValue,
+                  run.plan.sourceLanguage == nil || body["sourceLanguage"].string == run.plan.sourceLanguage?.rawValue else { throw LibraryError.invalid("未完成的预译请求无法核对，尚未重试。") }
         }
     }
     func confirm(_ run: ReaderTranslationRun, session: ReaderSession, cloud: CloudLibraryClient?, library: OfflineLibrary?) {
@@ -135,22 +142,23 @@ final class ReaderReadingContent {
 
     private func execute(_ saved: ReaderTranslationRun, session: ReaderSession, cloud: CloudLibraryClient, library: OfflineLibrary) async {
         var run = saved
+        let language = run.plan.targetLanguage ?? .zh
         let worker = ReaderCloudTools()
         defer { running = false; task = nil }
-        func persist() async throws { try await library.savePendingReadingTranslation(JSONEncoder().encode(run), bookID: session.book.id) }
+        func persist() async throws { try await library.savePendingReadingTranslation(JSONEncoder().encode(run), bookID: session.book.id, targetLanguage: language) }
         func flush() async throws {
             guard !run.completed.isEmpty else { return }
-            try await library.cacheCloudPassages(run.completed, bookID: session.book.id)
+            try await library.cacheCloudPassages(run.completed, bookID: session.book.id, targetLanguage: language)
             run.completed = []; try await persist()
         }
         do {
             try Self.validate(run, session: session)
             try await persist()
-            session.updateTranslations(Self.translations(run.completed))
+            session.updateTranslations(Self.translations(run.completed, targetLanguage: language))
             try await flush()
             while run.next < run.plan.passageIDs.count {
                 try Task.checkCancellation()
-                guard foreground, session.state.preferences.viewMode != .source, (run.plan.chapterIDs.contains(session.chapter.id) || run.pending != nil),
+                guard foreground, language == session.translationSettings.targetLanguage, session.state.preferences.viewMode != .source, (run.plan.chapterIDs.contains(session.chapter.id) || run.pending != nil),
                       await cloud.activeAccount()?.id == run.plan.ownerID else { throw CancellationError() }
                 let id = run.plan.passageIDs[run.next]
                 guard let chapter = session.book.chapters.first(where: { $0.passages.contains { $0.id == id } }),
@@ -180,7 +188,7 @@ final class ReaderReadingContent {
                     throw LibraryError.invalid(worker.error ?? "已停止后续预译；当前请求的结果仍可恢复核对。")
                 }
                 guard result["id"].string == id, result["original"].string == passage.text,
-                      let translated = ReadingTranslation(result), translated.text(.literal) != nil, translated.text(.interpretive) != nil else {
+                      let translated = ReadingTranslation(result, targetLanguage: language), translated.text(.literal) != nil, translated.text(.interpretive) != nil else {
                     throw LibraryError.invalid("译文结果无法对应原文，已保留请求供核对。")
                 }
                 run.completed.append(result); run.pending = nil; run.next += 1
@@ -190,13 +198,13 @@ final class ReaderReadingContent {
                 if run.completed.count >= 4 { try await flush() }
                 if !run.plan.chapterIDs.contains(session.chapter.id) {
                     try await flush()
-                    try await library.savePendingReadingTranslation(nil, bookID: session.book.id)
+                    try await library.savePendingReadingTranslation(nil, bookID: session.book.id, targetLanguage: language)
                     status = "上次请求已核对，可以准备当前章与下一章。"
                     return
                 }
             }
             try await flush()
-            try await library.savePendingReadingTranslation(nil, bookID: session.book.id)
+            try await library.savePendingReadingTranslation(nil, bookID: session.book.id, targetLanguage: language)
             status = "本次译文已准备好。"
         } catch {
             // Do not cancel an already submitted server task or create another key.

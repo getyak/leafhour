@@ -226,9 +226,13 @@ struct TextReadingView: UIViewRepresentable {
                             }
                             let layerStart = result.length
                             let ink = preferences.viewMode == .parallel && !layer.isTranslation && !passage.heading ? UIColor.secondaryLabel : UIColor.label
-                            result.append(NSAttributedString(string: layer.text, attributes: [.font: actualFont, .foregroundColor: ink, .paragraphStyle: style]))
+                            let prefix = !layer.isTranslation && slice.sourceRange.location == 0 ? ReaderParagraphPresentation.leadingIndentUTF16(layer.text, kind: session.book.kind, heading: passage.heading) : 0
+                            let displayed = (layer.text as NSString).substring(from: prefix)
+                            let bodyStyle = style.mutableCopy() as! NSMutableParagraphStyle
+                            if !passage.heading && (layer.isTranslation || slice.sourceRange.location == 0) { bodyStyle.firstLineHeadIndent = preferences.firstLineIndent == .twoCharacters ? actualFont.pointSize * 2 : 0 }
+                            result.append(NSAttributedString(string: displayed, attributes: [.font: actualFont, .foregroundColor: ink, .paragraphStyle: bodyStyle]))
                             result.append(NSAttributedString(string: preferences.viewMode == .source ? "\n" : "\n\n", attributes: [.font: font, .paragraphStyle: style]))
-                            coordinator.spans.append(Span(passage: slice.original, range: NSRange(location: layerStart, length: result.length - layerStart), sourceOffsets: sourceOffsets(for: passage, at: passageIndex), isTranslation: layer.isTranslation, sourceUTF16Start: slice.sourceRange.location, sourceUTF16End: NSMaxRange(slice.sourceRange)))
+                            coordinator.spans.append(Span(passage: slice.original, range: NSRange(location: layerStart, length: result.length - layerStart), sourceOffsets: sourceOffsets(for: passage, at: passageIndex), isTranslation: layer.isTranslation, sourceUTF16Start: slice.sourceRange.location + prefix, sourceUTF16End: NSMaxRange(slice.sourceRange)))
                         }
                     }
                     if passage.resourcePath != nil {
@@ -271,11 +275,12 @@ struct TextReadingView: UIViewRepresentable {
             guard let rendered else { return false }
             return rendered.fontStyle == current.fontStyle && rendered.latinFont == current.latinFont && rendered.fontSize == current.fontSize
                 && rendered.lineSpacing == current.lineSpacing && rendered.viewMode == current.viewMode
+                && rendered.firstLineIndent == current.firstLineIndent
                 && rendered.translationVariant == current.translationVariant
         }
         private func contentSignature(in view: UITextView, width: Int) -> String {
             let session = parent.session, p = session.state.preferences
-            return "\(textWindow?.signature ?? "")-\(session.chapter.id)-\(p.fontStyle)-\(p.latinFont)-\(p.fontSize)-\(p.lineSpacing)-\(p.viewMode)-\(p.translationVariant)-\(p.viewMode == .source ? 0 : session.contentRevision)-\(view.traitCollection.preferredContentSizeCategory.rawValue)-\(width)"
+            return "\(textWindow?.signature ?? "")-\(session.chapter.id)-\(p.fontStyle)-\(p.latinFont)-\(p.fontSize)-\(p.lineSpacing)-\(p.firstLineIndent)-\(p.viewMode)-\(p.translationVariant)-\(p.viewMode == .source ? 0 : session.contentRevision)-\(view.traitCollection.preferredContentSizeCategory.rawValue)-\(width)"
         }
         var parent: TextReadingView
         weak var view: UITextView?
@@ -806,7 +811,7 @@ struct TextReadingView: UIViewRepresentable {
                         // This is a temporary display offset, never an invented
                         // source-language offset or a persisted sentence alignment.
                         displayedOffset = span.range.location + (translatedSpan == nil ? 0 : min(translatedViewport?.offset ?? 0, max(0, span.range.length - 1)))
-                    } else { displayedOffset = span.range.location + offset - span.sourceUTF16Start }
+                    } else { displayedOffset = span.range.location + max(0, offset - span.sourceUTF16Start) }
                     let position = min(max(0, view.attributedText.length - 1), displayedOffset)
                     let glyph = view.layoutManager.glyphRange(forCharacterRange: NSRange(location: position, length: 1), actualCharacterRange: nil)
                     let rect = view.layoutManager.boundingRect(forGlyphRange: glyph, in: view.textContainer)
