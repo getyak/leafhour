@@ -171,6 +171,14 @@ final class ReaderSharedPreferencesTests: XCTestCase {
         XCTAssertEqual(future.autoPageInterval, 5)
     }
 
+    func testAutomaticTimeOptOutSurvivesEncodingAndLegacySettingsHaveVisibleEstimate() throws {
+        let legacy = try JSONDecoder().decode(ReaderPreferences.self, from: Data("{}".utf8))
+        XCTAssertTrue(legacy.automaticReadingTime)
+        var optedOut = legacy; optedOut.automaticReadingTime = false
+        let restored = try JSONDecoder().decode(ReaderPreferences.self, from: JSONEncoder().encode(optedOut))
+        XCTAssertFalse(restored.automaticReadingTime)
+    }
+
     private func makeLibrary() async throws -> (root: URL, library: OfflineLibrary, first: LocalBook, second: LocalBook) {
         let root = FileManager.default.temporaryDirectory.appendingPathComponent("LeafhourSharedPreferences-" + UUID().uuidString)
         try FileManager.default.createDirectory(at: root, withIntermediateDirectories: true)

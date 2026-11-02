@@ -6,15 +6,21 @@ struct ReaderTimeTracking: ViewModifier {
     let visible: Bool
     func body(content: Content) -> some View {
         content
-            .task {
+            .task(id: visible) {
                 while !Task.isCancelled {
+                    // The reflow/PDF view may establish the first anchor after
+                    // onAppear. Retry only an idle, visible, opted-in clock.
+                    if visible {
+                        session.startAutomaticReadingTimeIfNeeded()
+                    }
                     session.tickReadingTime()
                     do { try await Task.sleep(for: .seconds(1)) } catch { return }
                 }
             }
-            .onAppear { session.setReadingVisible(visible) }
+            .onAppear { session.setReadingVisible(visible); session.startAutomaticReadingTimeIfNeeded() }
             .onChange(of: visible) { _, value in
                 session.setReadingVisible(value)
+                if value { session.startAutomaticReadingTimeIfNeeded() }
                 if !value { Task { _ = await session.flushReadingTime() } }
             }
             .onDisappear {
@@ -34,6 +40,11 @@ struct ReaderTimeControls: View {
     }
     var body: some View {
         Section("阅读时间") {
+            Toggle("自动记录前台阅读估计", isOn: Binding(get: { session.state.preferences.automaticReadingTime }, set: { value in
+                var preferences = session.state.preferences; preferences.automaticReadingTime = value; session.changePreferences(preferences)
+                if !value && session.readingTimeSource == .estimate { session.finishReadingTime() }
+            }))
+
             if session.readingTimePhase == .idle || session.readingTimePhase == .finished {
                 if session.readingTimePhase == .finished { LabeledContent("本次记录", value: duration).monospacedDigit() }
                 Picker("记录方式", selection: $source) {
@@ -55,7 +66,7 @@ struct ReaderTimeControls: View {
                 Text(error).font(.footnote).foregroundStyle(.secondary)
                 Button("重试保存计时") { Task { _ = await session.flushReadingTime() } }
             }
-            Text("手动开始后才记录。离开正文或切到后台会暂停；前台估计在两分钟没有操作后暂停。各设备独立计时，重叠时段在书房中合并。").font(.footnote).foregroundStyle(.secondary)
+            Text("前台估计可自动记录，也可关闭。专注计时由你开始。离开正文或切到后台会暂停；前台估计在两分钟没有操作后暂停。各设备独立计时，重叠时段在书房中合并。").font(.footnote).foregroundStyle(.secondary)
         }
     }
     func toggleRecording() {

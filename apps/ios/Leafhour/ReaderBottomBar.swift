@@ -5,6 +5,7 @@ import UIKit
 struct ReaderBottomBar: View {
     enum Mode { case reading, listening }
 
+    var paper: Color = .readingPaper
     let mode: Mode
     let chapterAccessibilityValue: String
     var listeningAccessibilityHint = "打开听书控制，点击播放后才开始。"
@@ -33,10 +34,6 @@ struct ReaderBottomBar: View {
     }
     @FocusState private var focusedControl: Control?
 
-    private var surface: Color {
-        colorScheme == .dark ? Color(uiColor: .secondarySystemBackground) : .readingPaper
-    }
-
     var body: some View {
         ViewThatFits(in: .horizontal) {
             HStack(spacing: 8) {
@@ -55,7 +52,7 @@ struct ReaderBottomBar: View {
             }
         }
         .padding(6)
-        .background { pillSurface }
+        .modifier(ReaderGlassSurface(paper: paper))
         .frame(maxWidth: .infinity)
         .accessibilityHidden(!controlsVisible)
         .onChange(of: focusedControl) { _, control in onFocusChange(control != nil) }
@@ -142,12 +139,6 @@ struct ReaderBottomBar: View {
         .accessibilityLabel(title)
         .accessibilityAddTraits(selected ? .isSelected : [])
         .accessibilityIdentifier(control.identifier)
-    }
-
-    private var pillSurface: some View {
-        Capsule().fill(surface)
-            .overlay { Capsule().strokeBorder(Color.primary.opacity(colorScheme == .dark ? 0.16 : 0.08), lineWidth: 0.5) }
-            .shadow(color: .black.opacity(colorScheme == .dark ? 0 : 0.05), radius: 8, y: 2)
     }
 
     private func perform(_ action: () -> Void) {

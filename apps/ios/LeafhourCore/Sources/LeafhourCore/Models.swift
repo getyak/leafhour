@@ -95,8 +95,9 @@ public struct ReaderPreferences: Codable, Equatable, Sendable {
     public var translationVariant: ReaderTranslationVariant = .literal
     public var speechSpeed: Double = 1
     public var autoPageInterval: Double = 30
+    public var automaticReadingTime = true
     public init() {}
-    private enum CodingKeys: String, CodingKey { case latinFont, fontStyle, fontSize, lineSpacing, firstLineIndent, theme, navigationMode, pageAnimation, pageInput, viewMode, translationVariant, speechSpeed, autoPageInterval }
+    private enum CodingKeys: String, CodingKey { case latinFont, fontStyle, fontSize, lineSpacing, firstLineIndent, theme, navigationMode, pageAnimation, pageInput, viewMode, translationVariant, speechSpeed, autoPageInterval, automaticReadingTime }
     public init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
         latinFont = (try values.decodeIfPresent(String.self, forKey: .latinFont)).flatMap(ReaderLatinFont.init(rawValue:)) ?? .automatic
@@ -113,6 +114,7 @@ public struct ReaderPreferences: Codable, Equatable, Sendable {
         viewMode = (try values.decodeIfPresent(String.self, forKey: .viewMode)).flatMap(ReaderViewMode.init(rawValue:)) ?? .source
         translationVariant = (try values.decodeIfPresent(String.self, forKey: .translationVariant)).flatMap(ReaderTranslationVariant.init(rawValue:)) ?? .literal
         speechSpeed = Self.normalizedSpeechSpeed(try values.decodeIfPresent(Double.self, forKey: .speechSpeed) ?? 1)
+        automaticReadingTime = try values.decodeIfPresent(Bool.self, forKey: .automaticReadingTime) ?? true
         autoPageInterval = Self.normalizedAutoPageInterval(try values.decodeIfPresent(Double.self, forKey: .autoPageInterval) ?? 30)
     }
     public static func normalizedSpeechSpeed(_ value: Double) -> Double {
