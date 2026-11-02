@@ -11,6 +11,13 @@ import {createHash} from 'node:crypto';
 import {createReadingOutbox} from '../app/reading-outbox.mjs';
 
 const env={SUPABASE_URL:'https://storage.example.com',SUPABASE_SECRET_KEY:'server-fixture',SUPABASE_PUBLISHABLE_KEY:'public-fixture',READER_PUBLIC_ORIGIN:'https://reader.example.com'};
+test('native signed-upload reservations accept 24 MB text and retain the EPUB boundary',async()=>{
+ const f=database(),store=createHostedStore({env,fetcher:f.fetcher}),owner={id:'large-text-owner'};
+ assert.ok((await store.beginUpload(owner,{filename:'long.txt',bytes:23_964_345})).id);
+ assert.ok((await store.beginUpload(owner,{filename:'long.markdown',bytes:23_964_345})).id);
+ await assert.rejects(store.beginUpload(owner,{filename:'oversize.txt',bytes:64*1024*1024+1}),{status:400});
+ await assert.rejects(store.beginUpload(owner,{filename:'oversize.epub',bytes:20*1024*1024+1}),{status:400});
+});
 function database({jsonb=false}={}){
   const rows=new Map(),objects=new Map();
   // JSONB round trips preserve array order and values, but never promise object key order.
