@@ -33,16 +33,27 @@ struct ReaderMorePanel: View {
     let onCompanion: () -> Void
     var onAutoPage: () -> Void = {}
     var onShare: () -> Void = {}
+    @Environment(\.dynamicTypeSize) private var typeSize
     @State private var export: RecordsDocument?
     @State private var exporting = false
     var body: some View {
-        List {
-            ReaderTimeControls(session: session)
-            Section("读这本书") {
-                Button(action: onAutoPage) { Label("自动翻页", systemImage: "timer").frame(minHeight: 44) }
-                    .accessibilityIdentifier("reader-auto-page-open")
-                NavigationLink { BookSearchPanel(session: session, onJump: onJump).modifier(ReaderToolContinuation()) } label: { Label("搜索原文", systemImage: "magnifyingglass").frame(minHeight: 44) }
-                NavigationLink { ReaderTranslationPanel(session: session, tools: tools, cloud: cloud).modifier(ReaderToolContinuation()) } label: { Label("翻译", systemImage: "character.book.closed").frame(minHeight: 44) }
+        ScrollView {
+            VStack(alignment: .leading, spacing: 24) {
+                LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 10), count: typeSize.isAccessibilitySize ? 2 : 3), spacing: 12) {
+                    NavigationLink { BookSearchPanel(session: session, onJump: onJump).modifier(ReaderToolContinuation()) } label: { toolTile("搜索", symbol: "magnifyingglass") }.accessibilityLabel("搜索原文")
+                    NavigationLink { ReaderRecordsPanel(session: session, onJump: onJump).modifier(ReaderToolContinuation()) } label: { toolTile("笔记", symbol: "square.and.pencil") }.accessibilityLabel("我的记录")
+                    Button(action: onShare) { toolTile("分享", symbol: "square.and.arrow.up") }.accessibilityLabel("分享这本书").accessibilityIdentifier("reader-share-book")
+                    NavigationLink { ReaderTranslationPanel(session: session, tools: tools, cloud: cloud).modifier(ReaderToolContinuation()) } label: { toolTile("翻译", symbol: "character.book.closed") }
+                    NavigationLink { ReaderIntroductionPanel(session: session, tools: tools, cloud: cloud).modifier(ReaderToolContinuation()) } label: { toolTile("导读", symbol: "text.book.closed") }.accessibilityLabel("导读与摘要")
+                    Button(action: onCompanion) { toolTile("陪读", symbol: "bubble.left.and.bubble.right") }.accessibilityLabel("阅读陪读")
+                    NavigationLink { ReaderPreferencesPanel(session: session, reading: reading).modifier(ReaderToolContinuation()) } label: { toolTile("排版", symbol: "textformat.size") }.accessibilityLabel("文字与纸面")
+                    NavigationLink { Form { ReaderTimeControls(session: session) }.navigationTitle("阅读计时").modifier(ReaderToolContinuation()) } label: { toolTile("计时", symbol: "stopwatch") }.accessibilityLabel("阅读计时")
+                    NavigationLink { ReaderListeningPanel(session: session, speech: speech).modifier(ReaderToolContinuation()) } label: { toolTile("听书", symbol: "headphones") }
+                    NavigationLink { ReaderAppearancePanel(session: session).modifier(ReaderToolContinuation()) } label: { toolTile("纸面", symbol: "circle.lefthalf.filled") }
+                    Button(action: onAutoPage) { toolTile("自动翻页", symbol: "timer") }.accessibilityIdentifier("reader-auto-page-open")
+                    NavigationLink { ReaderWebToolsPanel(session: session, cloud: cloud).onAppear { speech.pause() }.modifier(ReaderToolContinuation()) } label: { toolTile("网页版", symbol: "globe") }
+                        .accessibilityLabel("更多书房工具（网页版）").disabled(session.book.cloud == nil || cloud == nil)
+                }.buttonStyle(.plain).padding(.vertical, 8)
                 if let reading, session.state.preferences.viewMode != .source {
                     NavigationLink {
                         Form { ReaderTranslationPreparation(session: session, reading: reading) }
@@ -51,20 +62,9 @@ struct ReaderMorePanel: View {
                         Label(reading.running ? "正在翻译 · \(reading.completedCount)/\(reading.totalCount)" : "准备或恢复本章译文", systemImage: "text.book.closed").frame(minHeight: 44)
                     }
                 }
-                NavigationLink { ReaderRecordsPanel(session: session, onJump: onJump).modifier(ReaderToolContinuation()) } label: { Label("我的记录", systemImage: "square.and.pencil").frame(minHeight: 44) }
-                NavigationLink { ReaderPreferencesPanel(session: session, reading: reading).modifier(ReaderToolContinuation()) } label: { Label("文字与纸面", systemImage: "textformat.size").frame(minHeight: 44) }
-                NavigationLink { ReaderIntroductionPanel(session: session, tools: tools, cloud: cloud).modifier(ReaderToolContinuation()) } label: { Label("导读与摘要", systemImage: "text.book.closed").frame(minHeight: 44) }
-                Button(action: onCompanion) { Label("阅读陪读", systemImage: "bubble.left.and.bubble.right").frame(minHeight: 44) }
-                NavigationLink { ReaderWebToolsPanel(session: session, cloud: cloud).onAppear { speech.pause() }.modifier(ReaderToolContinuation()) } label: {
-                    VStack(alignment: .leading, spacing: 5) {
-                        Label("更多书房工具（网页版）", systemImage: "globe")
-                        Text("云端听读、讲稿、氛围和摘录等已有工具").font(.caption).foregroundStyle(.secondary)
-                    }.frame(minHeight: 44)
-                }.disabled(session.book.cloud == nil || cloud == nil)
-            }
-            Section("带走自己的记录") {
-                Button(action: onShare) { Label("分享这本书", systemImage: "square.and.arrow.up").frame(minHeight: 44) }
-                    .accessibilityIdentifier("reader-share-book")
+            Divider()
+            VStack(alignment: .leading, spacing: 12) {
+                Text("带走记录").font(.caption).foregroundStyle(.secondary)
                 ShareLink(item: session.original) { Label("分享此设备上的书籍文件", systemImage: "square.and.arrow.up").frame(minHeight: 44) }
                 Button {
                     Task {
@@ -77,20 +77,29 @@ struct ReaderMorePanel: View {
                     }
                 } label: { Label("导出笔记与草稿", systemImage: "doc.text").frame(minHeight: 44) }
             }
-            Section {
-                Text("轻点书页找回工具，再轻点可收起。长按正文仍使用系统选字；翻页方式可在阅读设置中更改。").font(.footnote).foregroundStyle(.secondary)
-            }
+            }.padding(20)
         }.navigationTitle("阅读工具")
             .fileExporter(isPresented: $exporting, document: export, contentType: .json, defaultFilename: "Leafhour-records") { result in
                 if case .failure(let error) = result { session.message = error.localizedDescription }
             }
     }
+    private func toolTile(_ title: String, symbol: String) -> some View {
+        VStack(spacing: 12) {
+            Image(systemName: symbol).font(.system(size: 24, weight: .regular)).foregroundStyle(Color.leafInk)
+            Text(title).font(.caption).foregroundStyle(.primary).multilineTextAlignment(.center)
+                .fixedSize(horizontal: false, vertical: true)
+        }.padding(.vertical, 18).frame(maxWidth: .infinity, minHeight: 92)
+            .background(Color.primary.opacity(0.035), in: RoundedRectangle(cornerRadius: 16))
+            .contentShape(Rectangle())
+    }
+
 }
 
 struct ReaderListeningPanel: View {
     @Bindable var session: ReaderSession
     @Bindable var speech: ReaderSpeech
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.readerContinueReading) private var continueReading
     private var chapterTitle: String {
         let id = speech.playing || speech.paused ? speech.chapterID : speech.hasResumePosition(session) ? session.state.listeningPosition?.chapterID : nil
         return session.book.chapters.first { $0.id == id }?.title ?? session.chapter.title
@@ -107,7 +116,7 @@ struct ReaderListeningPanel: View {
                             Label("上一段", systemImage: "backward.end.fill").labelStyle(.iconOnly)
                                 .frame(width: 44, height: 44).contentShape(Rectangle())
                         }.disabled(!speech.canPrevious)
-                        Button { speech.toggle(session); if speech.playing { dismiss() } } label: {
+                        Button { speech.toggle(session); if speech.playing { returnToReading() } } label: {
                             Label(speech.playing ? "暂停朗读" : speech.paused ? "继续朗读" : speech.hasResumePosition(session) ? "继续上次朗读" : "从当前句开始朗读", systemImage: speech.playing ? "pause.fill" : "play.fill")
                                 .font(.title2).labelStyle(.iconOnly).frame(width: 60, height: 60)
                                 .background(Color.leafInk.opacity(0.12), in: Circle()).contentShape(Circle())
@@ -131,7 +140,7 @@ struct ReaderListeningPanel: View {
                     Toggle("跟随朗读", isOn: $speech.following)
                 }
                 if speech.playing || speech.paused || speech.hasResumePosition(session) {
-                    Button("从当前书页重新开始", systemImage: "play.circle") { speech.start(session, useSavedPosition: false); if speech.playing { dismiss() } }
+                    Button("从当前书页重新开始", systemImage: "play.circle") { speech.start(session, useSavedPosition: false); if speech.playing { returnToReading() } }
                         .accessibilityIdentifier("reader-speech-start-here")
                 }
             }
@@ -143,6 +152,9 @@ struct ReaderListeningPanel: View {
         }
         .navigationTitle("听一会儿")
         .onChange(of: speech.voiceID) { _, _ in speech.restartVoice() }
+    }
+    private func returnToReading() {
+        if let continueReading { continueReading() } else { dismiss() }
     }
 }
 

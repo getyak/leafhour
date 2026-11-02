@@ -1,5 +1,5 @@
 // Finite account preferences. No free-form biography, private notes or model text.
-export const memoryChoices=Object.freeze({topic:['philosophy','science','literature','history','fiction'],mode:['en','zh','parallel'],preferredLanguage:['source','zh'],theme:['system','paper','warm','mist','leaf','night']});
+export const memoryChoices=Object.freeze({topic:['philosophy','science','literature','history','fiction'],mode:['en','zh','parallel'],preferredLanguage:['source','zh'],theme:['system','paper','warm','mist','leaf','sand','rose','dusk','night']});
 export const onboardingChoices=Object.freeze({topic:memoryChoices.topic,language:['en','zh','parallel'],style:['paper','warm','night']});
 export const memoryKeys=Object.freeze(Object.keys(memoryChoices));
 export function validMemoryValue(key,value){return Object.hasOwn(memoryChoices,key)&&memoryChoices[key].includes(value);}

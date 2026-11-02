@@ -27,7 +27,7 @@ extension Color {
 extension ReaderPreferences {
     /// Read the system appearance outside the reader's presentation overrides.
     func colorScheme(following system: ColorScheme) -> ColorScheme {
-        theme == "night" ? .dark : (["paper", "white", "sage"].contains(theme) ? .light : system)
+        theme == "system" ? system : (ReaderPaper(rawValue: theme)?.isDark == true ? .dark : .light)
     }
 }
 

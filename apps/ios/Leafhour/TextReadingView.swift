@@ -171,7 +171,7 @@ struct TextReadingView: UIViewRepresentable {
                 coordinator.indexedSessionID = ObjectIdentifier(session); coordinator.indexedChapterIndex = session.chapterIndex
                 let result = NSMutableAttributedString(string: "")
                 coordinator.spans = []
-                let font = ReaderTypography.font(style: preferences.fontStyle, size: preferences.fontSize, traits: view.traitCollection)
+                let font = ReaderTypography.font(style: preferences.fontStyle, size: preferences.fontSize, traits: view.traitCollection, latin: preferences.latinFont)
                 if session.book.rendersMarkdown && window.isComplete && window.slices.allSatisfy({ $0.sourceRange.length == $0.offsets.utf16Count }) && (preferences.viewMode == .source || !displayedChapter.passages.contains { session.translations[$0.id]?.text(preferences.translationVariant) != nil }) {
                     if !sameSource || coordinator.markdownChapterID != session.chapter.id + window.signature {
                         coordinator.markdown = MarkdownChapterLayout(book: session.book, chapter: displayedChapter, original: session.original, useRetainedSource: window.isComplete)
@@ -269,13 +269,13 @@ struct TextReadingView: UIViewRepresentable {
         private var renderedNavigationMode: ReaderNavigationMode?
         private func sameTypography(_ rendered: ReaderPreferences?, _ current: ReaderPreferences) -> Bool {
             guard let rendered else { return false }
-            return rendered.fontStyle == current.fontStyle && rendered.fontSize == current.fontSize
+            return rendered.fontStyle == current.fontStyle && rendered.latinFont == current.latinFont && rendered.fontSize == current.fontSize
                 && rendered.lineSpacing == current.lineSpacing && rendered.viewMode == current.viewMode
                 && rendered.translationVariant == current.translationVariant
         }
         private func contentSignature(in view: UITextView, width: Int) -> String {
             let session = parent.session, p = session.state.preferences
-            return "\(textWindow?.signature ?? "")-\(session.chapter.id)-\(p.fontStyle)-\(p.fontSize)-\(p.lineSpacing)-\(p.viewMode)-\(p.translationVariant)-\(p.viewMode == .source ? 0 : session.contentRevision)-\(view.traitCollection.preferredContentSizeCategory.rawValue)-\(width)"
+            return "\(textWindow?.signature ?? "")-\(session.chapter.id)-\(p.fontStyle)-\(p.latinFont)-\(p.fontSize)-\(p.lineSpacing)-\(p.viewMode)-\(p.translationVariant)-\(p.viewMode == .source ? 0 : session.contentRevision)-\(view.traitCollection.preferredContentSizeCategory.rawValue)-\(width)"
         }
         var parent: TextReadingView
         weak var view: UITextView?

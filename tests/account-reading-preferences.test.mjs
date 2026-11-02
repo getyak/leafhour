@@ -169,3 +169,16 @@ test('a restore advances the revision past pending CAS writers on fs and datasto
   await assert.rejects(overflow.saveReadingPreferences(max,{baseRevision:Number.MAX_SAFE_INTEGER,preferences:snapshot({font:18})}),e=>e.status===409);
   assert.equal((await overflow.getReadingPreferences(max)).preferences.font,snapshot().font);
 });
+
+test('new papers remain readable and editable through preference memory history',async t=>{
+  const dir=await mkdtemp(path.join(tmpdir(),'expanded-paper-memory-'));t.after(()=>rm(dir,{recursive:true,force:true}));
+  const library=await createLibraryService({dataDir:dir,catalogDir:null,translator:null});
+  let revision=0;
+  for(const theme of ['sand','rose','dusk','paper']){
+    const saved=await library.saveReadingPreferences(owner,{baseRevision:revision,preferences:snapshot({theme})});
+    revision=saved.revision;
+    const reopened=await createLibraryService({dataDir:dir,catalogDir:null,translator:null});
+    assert.equal((await reopened.getReadingPreferences(owner)).preferences.theme,theme);
+    await reopened.getPreferenceMemory(owner);
+  }
+});

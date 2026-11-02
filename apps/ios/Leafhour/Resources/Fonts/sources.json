@@ -1,0 +1,26 @@
+[
+  {
+    "file": "NotoSerifSC-Regular.otf",
+    "source": "https://raw.githubusercontent.com/notofonts/noto-cjk/f8d157532fbfaeda587e826d4cd5b21a49186f7c/Serif/SubsetOTF/SC/NotoSerifSC-Regular.otf",
+    "bytes": 11625800,
+    "sha256": "e8f396decc1f0963a016a989c3d8852e863d1350996f573860a80767c83a1cd3"
+  },
+  {
+    "file": "NotoSerif-OFL.txt",
+    "source": "https://raw.githubusercontent.com/notofonts/noto-cjk/f8d157532fbfaeda587e826d4cd5b21a49186f7c/Serif/LICENSE",
+    "bytes": 4301,
+    "sha256": "6a73f9541c2de74158c0e7cf6b0a58ef774f5a780bf191f2d7ec9cc53efe2bf2"
+  },
+  {
+    "file": "LXGWWenKaiLite-Regular.ttf",
+    "source": "https://raw.githubusercontent.com/lxgw/LxgwWenKai-Lite/3bca1fc0a0e00f6627f4c8bee60ef07778ab1820/fonts/TTF/LXGWWenKaiLite-Regular.ttf",
+    "bytes": 13949472,
+    "sha256": "f799a538a3355877e597a0ae04050e897932c9ae7689eb9227c2953c5dd549ea"
+  },
+  {
+    "file": "LXGWWenKai-OFL.txt",
+    "source": "https://raw.githubusercontent.com/lxgw/LxgwWenKai-Lite/3bca1fc0a0e00f6627f4c8bee60ef07778ab1820/OFL.txt",
+    "bytes": 5176,
+    "sha256": "0333a85fe077b6849f8e417acc44e8bd879442ceb681e271acf93e2d57fd4e2e"
+  }
+]

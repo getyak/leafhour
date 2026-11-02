@@ -1,0 +1,14 @@
+[
+  {
+    "file": "LXGWWenKaiLite-Regular.ttf",
+    "source": "https://raw.githubusercontent.com/lxgw/LxgwWenKai-Lite/3bca1fc0a0e00f6627f4c8bee60ef07778ab1820/fonts/TTF/LXGWWenKaiLite-Regular.ttf",
+    "bytes": 13949472,
+    "sha256": "f799a538a3355877e597a0ae04050e897932c9ae7689eb9227c2953c5dd549ea"
+  },
+  {
+    "file": "LXGWWenKai-OFL.txt",
+    "source": "https://raw.githubusercontent.com/lxgw/LxgwWenKai-Lite/3bca1fc0a0e00f6627f4c8bee60ef07778ab1820/OFL.txt",
+    "bytes": 5176,
+    "sha256": "0333a85fe077b6849f8e417acc44e8bd879442ceb681e271acf93e2d57fd4e2e"
+  }
+]

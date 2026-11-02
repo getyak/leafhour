@@ -240,22 +240,22 @@ struct ReaderPreferencesPanel: View {
     var body: some View {
         Form {
             Section { ReadingStyleTabs(selection: $category) }.listRowBackground(Color.clear).listRowInsets(EdgeInsets())
+            ReadingAppearanceControls(preferences: preferences, allowsTypography: reflowable, category: category)
             if let preview, reflowable, category != .reading {
                 Section {
                     VStack(alignment: .leading, spacing: 12) {
-                        Text(previewTitle).font(.caption).foregroundStyle(.secondary)
-                        TypographyPreview(text: preview, fontSize: session.state.preferences.fontSize, lineSpacing: session.state.preferences.lineSpacing, fontStyle: session.state.preferences.fontStyle)
+                        Text(previewTitle).font(.caption2).foregroundStyle(.secondary)
+                        TypographyPreview(text: preview, fontSize: session.state.preferences.fontSize, lineSpacing: session.state.preferences.lineSpacing, fontStyle: session.state.preferences.fontStyle, latinFont: session.state.preferences.latinFont)
                     }.padding(20).background(Color(uiColor: session.state.preferences.paperColor))
                         .environment(\.colorScheme, session.state.preferences.colorScheme(following: previewSystemScheme))
                 }.listRowInsets(EdgeInsets()).listRowSeparator(.hidden)
             }
-            ReadingAppearanceControls(preferences: preferences, allowsTypography: reflowable, category: category)
             if category == .reading {
                 ReaderContentControls(session: session, reading: reading)
                 ReaderNavigationControls(preferences: preferences)
             }
             if !reflowable { Section { Text("PDF 保留原页和字体，可双指缩放；纸面主题用于页面周围。").font(.footnote).foregroundStyle(.secondary) } }
-        }.scrollContentBackground(.hidden).background(Color(uiColor: .systemGroupedBackground))
+        }.listSectionSpacing(16).scrollContentBackground(.hidden).background(Color(uiColor: .systemGroupedBackground))
             .accessibilityIdentifier("reader-preferences-form").navigationTitle("阅读风格")
     }
 
@@ -264,10 +264,11 @@ struct ReaderPreferencesPanel: View {
         let fontSize: Double
         let lineSpacing: Double
         var fontStyle: ReaderFontStyle = .serif
+        var latinFont: ReaderLatinFont = .automatic
         @Environment(\.dynamicTypeSize) private var dynamicTypeSize
         private var font: Font {
             let traits = UITraitCollection(preferredContentSizeCategory: ReaderTypography.category(for: dynamicTypeSize))
-            return Font(ReaderTypography.font(style: fontStyle, size: fontSize, traits: traits) as CTFont)
+            return Font(ReaderTypography.font(style: fontStyle, size: fontSize, traits: traits, latin: latinFont) as CTFont)
         }
         var body: some View {
             Text(text).font(font).foregroundStyle(Color.primary).lineSpacing(lineSpacing)
@@ -321,7 +322,7 @@ struct ReaderAppearancePanel: View {
             Section { ReaderThemeChoices(session: session).padding(.vertical, 8) }
                 .listRowBackground(Color.clear).listRowInsets(EdgeInsets())
         }.scrollContentBackground(.hidden).background(Color(uiColor: .systemGroupedBackground))
-            .navigationTitle("外观").accessibilityIdentifier("reader-appearance-form")
+            .navigationTitle("纸面").accessibilityIdentifier("reader-appearance-form")
     }
 }
 struct ReaderRecordsPanel: View {
