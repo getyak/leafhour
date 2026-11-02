@@ -1,4 +1,5 @@
 import Foundation
+import CoreFoundation
 import PDFKit
 import ZIPFoundation
 
@@ -68,11 +69,55 @@ enum BookParser {
         case .unknown: throw LibraryError.invalid("未知格式，请重新选择原件修复。")
         case .txt, .markdown:
             let data = try Data(contentsOf: source)
-            guard let text = String(data: data, encoding: .utf8) ?? String(data: data, encoding: .utf16), !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { throw LibraryError.invalid("文本为空或编码不受支持。请使用 UTF-8 或 UTF-16。") }
+            let text = try decodePlainText(data)
             let paragraphs = text.replacingOccurrences(of: "\r\n", with: "\n").components(separatedBy: "\n\n").filter { !$0.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }
             chapters = [BookChapter(id: "text", title: title, sourcePath: "text", passages: paragraphs.enumerated().map { Passage(id: "text-\($0.offset)", text: $0.element) })]
         }
         return LocalBook(id: id, title: title, author: author, kind: kind, sourceVersion: "sha256-" + id, originalFilename: filename, importedAt: Date(), chapters: chapters, readingStartChapterID: readingStartChapterID, readingStartAnchor: readingStartAnchor, coverResourcePath: coverResourcePath)
+    }
+
+    /// A successful UTF-16 conversion alone is not evidence of UTF-16: GBK byte
+    /// pairs also convert to unrelated Unicode. Require a BOM or alternating NULs.
+    private static func decodePlainText(_ data: Data) throws -> String {
+        let encodingError = LibraryError.invalid("无法识别文本编码，或文件编码不完整。支持 UTF-8、UTF-16 和 GB18030（含 GBK）。请另存为 UTF-8 后重试；原件已保留在待继续的导入中。")
+        if data.starts(with: Data("%PDF-".utf8)) || data.starts(with: [0x50, 0x4b, 0x03, 0x04]) || data.starts(with: [0x89, 0x50, 0x4e, 0x47]) {
+            throw LibraryError.invalid("这个文件不是可阅读的文本，请选择对应格式的原文件。原件已保留。")
+        }
+        var bytes = data
+        let encoding: String.Encoding?
+        if data.starts(with: [0xff, 0xfe, 0, 0]) || data.starts(with: [0, 0, 0xfe, 0xff]) { throw encodingError }
+        else if data.starts(with: [0xff, 0xfe]) { bytes = data.dropFirst(2); encoding = .utf16LittleEndian }
+        else if data.starts(with: [0xfe, 0xff]) { bytes = data.dropFirst(2); encoding = .utf16BigEndian }
+        else if data.starts(with: [0xef, 0xbb, 0xbf]) { bytes = data.dropFirst(3); encoding = .utf8 }
+        else {
+            let sample = Array(data.prefix(4096)), pairs = sample.count / 2
+            let even = stride(from: 0, to: pairs * 2, by: 2).filter { sample[$0] == 0 }.count
+            let odd = stride(from: 1, to: pairs * 2, by: 2).filter { sample[$0] == 0 }.count
+            if data.count % 2 == 0 && pairs > 0 && odd * 5 >= pairs && even == 0 { encoding = .utf16LittleEndian }
+            else if data.count % 2 == 0 && pairs > 0 && even * 5 >= pairs && odd == 0 { encoding = .utf16BigEndian }
+            else { encoding = nil }
+        }
+        let text: String
+        if let encoding {
+            guard let decoded = String(data: bytes, encoding: encoding), decoded.data(using: encoding) == bytes else { throw encodingError }
+            text = decoded
+        } else if let decoded = String(data: bytes, encoding: .utf8) { text = decoded }
+        else {
+            let gb = String.Encoding(rawValue: CFStringConvertEncodingToNSStringEncoding(UInt32(CFStringEncodings.GB_18030_2000.rawValue)))
+            // CP936 aliases such as 0x80 (euro) and A3A0 (space) decode correctly
+            // but re-encode to canonical GB bytes. The retained source, not a
+            // lossy re-encoding comparison, is the byte-for-byte provenance.
+            guard let decoded = String(data: bytes, encoding: gb),
+                  decoded.range(of: "\\p{Han}", options: .regularExpression) != nil else { throw encodingError }
+            text = decoded
+        }
+        guard !text.unicodeScalars.contains(where: { ($0.value < 32 && ![9, 10, 12, 13].contains($0.value)) || (127...159).contains($0.value) }) else {
+            throw LibraryError.invalid("这个文件不是可阅读的文本，请检查文件内容和格式。原件已保留。")
+        }
+        guard !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+            throw LibraryError.invalid("文件中没有可阅读的文字。请选择有正文的 TXT 或 Markdown；原件已保留。")
+        }
+        return text
     }
 
     private static func declaredCover(index: XMLIndex, opf: String) throws -> String? {

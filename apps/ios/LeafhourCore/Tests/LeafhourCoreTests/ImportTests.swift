@@ -2,6 +2,7 @@ import XCTest
 import Foundation
 import PDFKit
 import CoreText
+import CoreFoundation
 import ZIPFoundation
 @testable import LeafhourCore
 
@@ -14,6 +15,75 @@ final class ImportTests: XCTestCase {
         try FileManager.default.createDirectory(at: root, withIntermediateDirectories: true)
     }
     override func tearDownWithError() throws { try FileManager.default.removeItem(at: root) }
+
+    /// Optional local acceptance: private originals stay outside the repository.
+    /// The expected decoded digest comes from an independent decoder.
+    func testUserSelectedTextFixture() async throws {
+        let env = ProcessInfo.processInfo.environment
+        guard let path = env["LEAFHOUR_IMPORT_SAMPLE"], let expected = env["LEAFHOUR_IMPORT_EXPECTED_TEXT_SHA256"] else { throw XCTSkip("No user-selected local sample") }
+        let source = URL(fileURLWithPath: path), bytes = try Data(contentsOf: source)
+        let library = try OfflineLibrary(root: root.appendingPathComponent("library"), scope: .device)
+        let book = try await library.importFile(source)
+        let text = book.chapters.flatMap(\.passages).map(\.text).joined(separator: "\n\n")
+        XCTAssertEqual(Disk.hash(Data(text.utf8)), expected, "All decoded paragraphs must match the independent decoder")
+        let original = try await library.originalURL(book.id)
+        XCTAssertTrue(try Data(contentsOf: original) == bytes, "Original bytes must be unchanged")
+        let verified = try await library.verify(book.id)
+        XCTAssertTrue(verified)
+    }
+
+    func testTextImportDecodesChineseEncodingsWithoutChangingOriginalBytes() async throws {
+        let text = "中文原文 🐿️\n\n第二段，保留。"
+        let gb = String.Encoding(rawValue: CFStringConvertEncodingToNSStringEncoding(UInt32(CFStringEncodings.GB_18030_2000.rawValue)))
+        let cases: [(String, Data)] = [
+            ("utf8", Data(text.utf8)), ("utf8-bom", Data([0xef, 0xbb, 0xbf]) + Data(text.utf8)),
+            ("utf16le", Data([0xff, 0xfe]) + text.data(using: .utf16LittleEndian)!),
+            ("utf16be", Data([0xfe, 0xff]) + text.data(using: .utf16BigEndian)!),
+            ("gb18030", try XCTUnwrap(text.data(using: gb)))
+        ]
+        let library = try OfflineLibrary(root: root.appendingPathComponent("library"), scope: .device)
+        for (name, bytes) in cases {
+            let source = root.appendingPathComponent(name + ".txt")
+            try bytes.write(to: source)
+            let book = try await library.importFile(source)
+            XCTAssertEqual(book.chapters.flatMap(\.passages).map(\.text).joined(separator: "\n\n"), text, name)
+            let original = try await library.originalURL(book.id)
+            XCTAssertEqual(try Data(contentsOf: original), bytes, name)
+            let verified = try await library.verify(book.id)
+            XCTAssertTrue(verified, name)
+        }
+        for (name, bytes, expected) in [
+            ("cp936", Data([0xd6, 0xd0, 0xce, 0xc4, 0x20, 0x80]), "中文 €"),
+            ("gb-alias", Data([0xd6, 0xd0, 0xce, 0xc4, 0xa3, 0xa0, 0xd4, 0xad, 0xce, 0xc4]), "中文　原文")
+        ] {
+            let source = root.appendingPathComponent(name + ".txt")
+            try bytes.write(to: source)
+            let book = try await library.importFile(source)
+            XCTAssertEqual(book.chapters[0].passages[0].text, expected)
+            let original = try await library.originalURL(book.id)
+            XCTAssertEqual(try Data(contentsOf: original), bytes)
+        }
+    }
+
+    func testTextImportRejectsBinaryAndSeparatesEmptyFromUnsupportedEncoding() async throws {
+        let library = try OfflineLibrary(root: root.appendingPathComponent("library"), scope: .device)
+        for (name, bytes, message) in [
+            ("binary", Data([0, 1, 2, 3, 4, 5]), "可阅读的文本"),
+            ("blank", Data(" \n\t".utf8), "没有可阅读的文字"),
+            ("broken-bom", Data([0xff, 0xfe, 0x41]), "编码")
+        ] {
+            let source = root.appendingPathComponent(name + ".txt")
+            try bytes.write(to: source)
+            do { _ = try await library.importFile(source); XCTFail("Must reject \(name)") }
+            catch { XCTAssertTrue(error.localizedDescription.contains(message), error.localizedDescription) }
+        }
+        let jobs = try await library.jobs()
+        XCTAssertEqual(jobs.filter { $0.phase == .failed }.count, 3)
+        for job in jobs {
+            let retained = try await library.jobOriginalURL(job.id)
+            XCTAssertTrue(FileManager.default.fileExists(atPath: retained.path))
+        }
+    }
 
     func epub(chapters: Int = 12, extra: [(String, Data)] = [], firstBody: String? = nil) throws -> URL {
         let url = root.appendingPathComponent(UUID().uuidString + ".epub")

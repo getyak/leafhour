@@ -14,6 +14,29 @@ import {createLibraryService} from '../server/library-service.mjs';
 import {extractDocument} from '../server/document-import.mjs';
 import {textPdf} from './pdf-fixture.mjs';
 
+test('TXT and Markdown decode UTF BOMs and legacy Chinese without silently accepting binary',async()=>{
+  const text='中文\n\n原文';
+  const le=Buffer.from(text,'utf16le'),be=Buffer.from(le).swap16();
+  for(const filename of ['book.txt','book.md'])for(const bytes of [
+    Buffer.from(text),Buffer.concat([Buffer.from([0xef,0xbb,0xbf]),Buffer.from(text)]),
+    Buffer.concat([Buffer.from([0xff,0xfe]),le]),Buffer.concat([Buffer.from([0xfe,0xff]),be]),
+    Buffer.from('d6d0cec40a0ad4adcec4','hex')
+  ])assert.equal((await extractDocument({filename,bytes})).pages[0].text,text);
+  assert.equal((await extractDocument({filename:'four-byte.txt',bytes:Buffer.from('d6d0cec4209439cf37843182350a0ad4adcec4','hex')})).pages[0].text,'中文 🐿️\n\n原文');
+  for(const [hex,text] of [['d6d0cec42080','中文 €'],['d6d0cec4a3a0d4adcec4','中文　原文']]){
+    const dir=await mkdtemp(path.join(tmpdir(),'leafhour-encoding-'));
+    try{const library=await createLibraryService({dataDir:dir,catalogDir:null}),user={id:'encoding-fixture'};
+      const book=await library.importDocument(user,{filename:'cp936.txt',bytes:Buffer.from(hex,'hex')});
+      const evidence=await library.sourceEvidence(user,book.bookId,{passageId:book.sections[0].paragraphs[0].id});
+      assert.equal(evidence.sourceText,text);
+    }finally{await rm(dir,{recursive:true,force:true});}
+  }
+  for(const bytes of [Buffer.from('Text\n\n中文','utf16le'),Buffer.from('Text\n\n中文','utf16le').swap16()])
+    assert.equal((await extractDocument({filename:'no-bom.txt',bytes})).pages[0].text,'Text\n\n中文');
+  for(const bytes of [Buffer.from([0,1,2,3,4,5]),Buffer.from([0xff,0xfe,0x41]),Buffer.from('%PDF-1.7\nbinary')])
+    await assert.rejects(extractDocument({filename:'binary.txt',bytes}));
+});
+
 test('extracts an actual PDF and preserves its page source; refuses a page without readable text',async()=>{
   const extracted=await extractDocument({filename:'reading.pdf',bytes:textPdf()});
   assert.equal(extracted.pages[0].page,1);assert.match(extracted.pages[0].text,/Reading is a conversation/);
