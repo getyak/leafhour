@@ -5,6 +5,7 @@ struct ReaderPagePosition: Equatable {
     let index: Int
     let count: Int
     let chapterIndex: Int
+    var isChapterComplete = true
 }
 enum ReaderPageDirection: Equatable { case previous, next }
 

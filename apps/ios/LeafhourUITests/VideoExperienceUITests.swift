@@ -1056,6 +1056,38 @@ final class VideoExperienceUITests: XCTestCase {
         XCTAssertTrue((reader.value as? String)?.contains("The Quiet Orchard") == true)
     }
 
+    func testSelectedPrivateSourceImportsOpensAndReturnsWithoutFreezing() throws {
+        guard Bundle.main.bundleIdentifier?.hasPrefix("org.leafhour.selectedsource.testing") == true else { throw XCTSkip("Dedicated private-source runner only") }
+        app.launchArguments = ["--selected-source-acceptance", "-AppleLanguages", "(zh-Hans)"]
+        app.launch()
+        if reader.waitForExistence(timeout: 5) { shelf() }
+        require(app.buttons["导入书籍"], timeout: 30)
+        app.open(URL(string: "leafhour://selected-source-acceptance")!)
+        require(app.buttons["导入到此设备"], timeout: 10)
+        app.buttons["导入到此设备"].tap()
+        require(app.buttons["library-import-open"], timeout: 60)
+        let began = Date()
+        app.buttons["library-import-open"].tap()
+        require(reader, timeout: 15)
+        XCTAssertLessThan(Date().timeIntervalSince(began), 15)
+        XCTAssertLessThan((reader.value as? String)?.utf16.count ?? Int.max, 30_000)
+        reader.swipeLeft()
+        shelf()
+        require(app.buttons["library-import-open"], timeout: 15)
+        app.buttons["library-import-open"].tap()
+        require(reader, timeout: 15)
+        XCTAssertLessThan((reader.value as? String)?.utf16.count ?? Int.max, 30_000)
+        reader.swipeLeft(); shelf()
+        app.terminate(); app.launch()
+        if !reader.waitForExistence(timeout: 5) {
+            let resume = app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", "继续阅读，")).firstMatch
+            require(resume, timeout: 15); resume.tap()
+        }
+        require(reader, timeout: 20)
+        XCTAssertLessThan((reader.value as? String)?.utf16.count ?? Int.max, 30_000)
+        shelf()
+    }
+
     func test35PersonalRecordsActuallySaveThroughTheSystemFileExporter() {
         launch(); openBook(textTitle)
         let editor = noteEditor()

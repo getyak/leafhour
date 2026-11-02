@@ -66,6 +66,138 @@ final class ReaderLayoutTests: XCTestCase {
         return (text, coordinator)
     }
 
+    func testSelectedPrivateLargeTextHasBoundedNativeLayoutAndCrossWindowAnchors() async throws {
+        #if DEBUG
+        guard let input = try SelectedSourceAcceptanceFixture.input() else { throw XCTSkip("No selected private source in this dedicated app") }
+        let root = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0].appendingPathComponent("SelectedSourceUnitAcceptance")
+        let library = try OfflineLibrary(root: root, scope: .account(UUID(uuidString: input.ownerID)!))
+        let book = try await library.importFile(input.source)
+        XCTAssertGreaterThan(book.chapters[0].passages.count, 200_000)
+        var state = try await library.state(book.id)
+        state.anchor = ReadingAnchor(chapterID: book.chapters[0].id, passageID: book.chapters[0].passages[0].id)
+        let session = ReaderSession(book: book, state: state, original: try await library.originalURL(book.id), directory: try await library.bookDirectory(book.id), library: library)
+        session.state.preferences.navigationMode = .paged
+        session.state.preferences.pageAnimation = .none
+        let began = Date()
+        let (text, coordinator) = try await selectableText(session)
+        text.selectedRange = NSRange(location: 0, length: 0)
+        XCTAssertLessThan(Date().timeIntervalSince(began), 3)
+        XCTAssertLessThan(text.attributedText.length, 30_000)
+        let layoutSeconds = Date().timeIntervalSince(began)
+        let initialUTF16 = text.attributedText.length
+        let initial = try XCTUnwrap(coordinator.textWindow)
+        let next = try XCTUnwrap(initial.nextAnchor)
+        session.go(to: 0, anchor: next); coordinator.updateContent(text); await drainMainQueue()
+        XCTAssertTrue(coordinator.textWindow!.contains(next))
+        XCTAssertLessThan(text.attributedText.length, 30_000)
+        let last = try XCTUnwrap(book.chapters[0].passages.last)
+        let final = ReadingAnchor(chapterID: book.chapters[0].id, passageID: last.id)
+        session.go(to: 0, anchor: final); coordinator.updateContent(text); await drainMainQueue()
+        XCTAssertNil(coordinator.textWindow?.nextAnchor)
+        XCTAssertTrue(coordinator.textWindow!.contains(final))
+        coordinator.capture(); _ = await session.flush()
+        let saved = try await library.state(book.id)
+        let savedAnchor = try XCTUnwrap(saved.anchor)
+        XCTAssertTrue(coordinator.textWindow!.contains(savedAnchor))
+        XCTAssertTrue(ReadingTextWindow(chapter: book.chapters[0], anchor: savedAnchor).contains(savedAnchor))
+        let original = try await library.originalURL(book.id)
+        XCTAssertEqual(try Data(contentsOf: original), try Data(contentsOf: input.source))
+        print("Selected-source native acceptance: bytes=\((try? Data(contentsOf: input.source).count) ?? 0), paragraphs=\(book.chapters[0].passages.count), initialLayoutSeconds=\(layoutSeconds), initialWindowUTF16=\(initialUTF16), finalWindowUTF16=\(text.attributedText.length)")
+        #else
+        throw XCTSkip("Private source acceptance is debug-only")
+        #endif
+    }
+
+    func testSpeechFollowingLoadsAWindowInTheSameLargeChapter() async throws {
+        let source = (0..<1200).map { "Source paragraph \($0). " + String(repeating: "A real sentence remains available. ", count: 5) }.joined(separator: "\n\n")
+        let session = try await session(source: source)
+        let (text, coordinator) = try await selectableText(session)
+        text.selectedRange = NSRange(location: 0, length: 0)
+        let passage = session.chapter.passages[900]
+        let location = ReaderSpeechLocation(chapterID: session.chapter.id, passageID: passage.id, layer: "original", snapshot: passage.text, utf16Offset: 0)
+        coordinator.parent.speechHighlight = ReaderSpeechHighlight(location: location, sentenceRange: NSRange(location: 0, length: 6), wordRange: NSRange(location: 0, length: 6))
+        coordinator.parent.followsSpeech = true
+        coordinator.updateContent(text); await drainMainQueue(); coordinator.updateSpeech(text)
+        XCTAssertTrue(coordinator.textWindow!.contains(ReadingAnchor(chapterID: session.chapter.id, passageID: passage.id)))
+        XCTAssertLessThan(text.attributedText.length, 30_000)
+    }
+
+    func testSingleLongSentenceFollowsTheCurrentWordAndPreservesSelectionOffsets() async throws {
+        let source = String(repeating: "原文 🐿️ café 继续阅读 ", count: 5000)
+        let session = try await session(source: source)
+        let (text, coordinator) = try await selectableText(session)
+        text.selectedRange = NSRange(location: 0, length: 0)
+        let word = (source as NSString).range(of: "🐿️", options: [], range: NSRange(location: 30_000, length: (source as NSString).length - 30_000))
+        let passage = session.chapter.passages[0]
+        let location = ReaderSpeechLocation(chapterID: session.chapter.id, passageID: passage.id, layer: "original", snapshot: source, utf16Offset: 0)
+        coordinator.parent.speechHighlight = ReaderSpeechHighlight(location: location, sentenceRange: NSRange(location: 0, length: (source as NSString).length), wordRange: word)
+        coordinator.parent.followsSpeech = true
+        coordinator.updateContent(text); await drainMainQueue(); coordinator.updateSpeech(text)
+        let scalar = SourceTextOffsets(source).scalarOffset(forUTF16Offset: word.location)
+        XCTAssertTrue(coordinator.textWindow!.contains(ReadingAnchor(chapterID: session.chapter.id, passageID: passage.id, characterOffset: scalar)))
+        let span = try XCTUnwrap(coordinator.spans.first)
+        let displayed = NSRange(location: span.range.location + word.location - span.sourceUTF16Start, length: word.length)
+        let quote = try XCTUnwrap(coordinator.selectedQuote(in: text, range: displayed))
+        XCTAssertEqual(quote.text, "🐿️")
+        XCTAssertEqual(quote.sourceText, "🐿️")
+        XCTAssertEqual(quote.anchor.characterOffset, scalar)
+        XCTAssertLessThan(text.attributedText.length, 30_000)
+    }
+
+    func testPagedWindowBoundaryMovesForwardAndBackWithoutSkippingSource() async throws {
+        let source = (0..<1200).map { "Source paragraph \($0). " + String(repeating: "Keep this source boundary. ", count: 8) }.joined(separator: "\n\n")
+        let session = try await session(source: source)
+        session.state.preferences.navigationMode = .paged; session.state.preferences.pageAnimation = .none
+        let (text, coordinator) = try await selectableText(session)
+        text.selectedRange = NSRange(location: 0, length: 0)
+        let next = try XCTUnwrap(coordinator.textWindow?.nextAnchor)
+        text.setContentOffset(CGPoint(x: 0, y: text.contentSize.height + text.contentInset.bottom), animated: false)
+        XCTAssertTrue(coordinator.turnPage(.next)); await drainMainQueue(); await drainMainQueue()
+        XCTAssertTrue(coordinator.textWindow!.contains(next))
+        let currentFirst = coordinator.textWindow!.slices.first!.index
+        text.setContentOffset(CGPoint(x: 0, y: -text.adjustedContentInset.top), animated: false)
+        XCTAssertTrue(coordinator.turnPage(.previous)); await drainMainQueue(); await drainMainQueue()
+        XCTAssertEqual(coordinator.textWindow!.slices.last!.index, currentFirst - 1)
+        XCTAssertLessThan(text.attributedText.length, 30_000)
+    }
+
+    func testScrollingWindowsContinueInBothDirectionsAtTheSameSourceAnchor() async throws {
+        let source = (0..<1200).map { "Source paragraph \($0). " + String(repeating: "Continue reading the same source. ", count: 8) }.joined(separator: "\n\n")
+        let session = try await session(source: source)
+        session.state.preferences.navigationMode = .scroll
+        let (text, coordinator) = try await selectableText(session)
+        text.selectedRange = NSRange(location: 0, length: 0)
+        let first = coordinator.textWindow!.slices.first!.index
+        text.setContentOffset(CGPoint(x: 0, y: max(0, text.contentSize.height - text.bounds.height)), animated: false)
+        coordinator.scrollViewDidEndDragging(text, willDecelerate: false)
+        await drainMainQueue(); await drainMainQueue()
+        let forward = coordinator.textWindow!.slices.first!.index
+        XCTAssertGreaterThan(forward, first)
+        XCTAssertTrue(coordinator.textWindow!.contains(session.currentAnchor!))
+        text.setContentOffset(CGPoint(x: 0, y: -text.adjustedContentInset.top), animated: false)
+        coordinator.scrollViewDidEndDragging(text, willDecelerate: false)
+        await drainMainQueue(); await drainMainQueue()
+        XCTAssertLessThan(coordinator.textWindow!.slices.first!.index, forward)
+        XCTAssertTrue(coordinator.textWindow!.contains(session.currentAnchor!))
+        XCTAssertLessThan(text.attributedText.length, 30_000)
+    }
+
+    func testLargeMarkdownWindowPreservesLiteralCodeAndReferenceSource() async throws {
+        let source = (0..<400).map { index in
+            index == 140 ? "```text" : index == 180 ? "```" : "item_\(index) **1** [reference][definition]"
+        }.joined(separator: "\n\n") + "\n\n[definition]: https://example.invalid/"
+        let fixture = try await importedSession(source: source)
+        var book = fixture.session.book; book.kind = .markdown
+        var state = fixture.session.state
+        state.anchor = ReadingAnchor(chapterID: book.chapters[0].id, passageID: book.chapters[0].passages[160].id)
+        let session = ReaderSession(book: book, state: state, original: fixture.session.original, directory: fixture.session.directory, library: fixture.library)
+        let (text, coordinator) = try await selectableText(session)
+        XCTAssertFalse(coordinator.textWindow!.isComplete)
+        XCTAssertTrue(text.text.contains("Markdown 源文"))
+        XCTAssertTrue(text.text.contains("item_160 **1** [reference][definition]"))
+        XCTAssertNil(coordinator.markdown, "A partial Markdown fragment must not silently reinterpret code or unresolved references")
+    }
+
     func testSelectionDismissalWaitsUntilTheNextMainTurnBeforeClearingAndResigning() async throws {
         let session = try await session(source: "First source paragraph keeps its position.")
         let (text, coordinator) = try await selectableText(session)
