@@ -82,3 +82,7 @@ All images are actual isolated simulator screenshots with synthetic content; no 
 `npm run build:vercel` and `npm run check:release` both passed on the final source before commit. A live-model probe found no model credential in this local environment, so no real provider call or long paid-model test is claimed. The configured provider model metadata was checked against its official documentation.
 
 Final reviewer closeout: both scoped reviews approved after the compaction termination regression was fixed. The previous oversized-last-answer reproduction now terminates; the reviewer reran 45/45 runtime/capacity checks.
+
+## PR CI readback
+
+Initial PR CI run 41439122472 passed native iOS, catalog-source and release-contract validation. The host job stopped at its generated-copy inventory consistency check before running the remaining stages. Regenerated source-bound inventory twice (identical bytes), then ran the pinned Vale/textlint checks and planted canaries: both passed, with existing documented copy debt retained. No source behavior or gate was relaxed. The inventory correction is a separate delivery fix; current-head CI remains required before merge.
