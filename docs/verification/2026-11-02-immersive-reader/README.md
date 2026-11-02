@@ -4,7 +4,7 @@ Work began on 2026-11-02; local acceptance continued on 2026-11-03 (Asia/Singapo
 
 ## Behavior
 
-All nine papers tint the reader's control layer. iOS 26 uses native Liquid Glass, earlier systems use material, and increased contrast/reduced transparency use an opaque paper. The quiet footer remains inside the real touchable safe-area bounds. Paged text uses a 4-point top and 48-point bottom budget (eight points more body height than 16/44); awake tools still overlay a stable page. Temporary selection height does not enter the persistent scrolling inset budget.
+All nine papers tint the reader's control layer. SDK 26 builds use native Liquid Glass on iOS 26; earlier systems and older-SDK builds use material, and increased contrast/reduced transparency use an opaque paper. The quiet footer remains inside the real touchable safe-area bounds. Paged text uses a 4-point top and 48-point bottom budget (eight points more body height than 16/44); awake tools still overlay a stable page. Temporary selection height does not enter the persistent scrolling inset budget.
 
 Native long press keeps system handles/menu and reveals a quote/action dock. Copy, note, translation, sharing and AI remain anchored to the actual selected layer. Both dragging the native selection and dragging its excerpt card into AI open the existing full-height Chat with source attribution. Only one exact current quote is accepted; unrelated/multiple drops cannot impersonate book content. Opening Chat does not submit a question. Narrow actions collapse into a menu, with bounded icon sizes at accessibility text sizes.
 
@@ -35,6 +35,6 @@ Reading-time Chinese documentation was checked with lieflat-less-ai-tone before/
 
 ## Limits and delivery
 
-Only iOS 26.4 Simulator was used for runtime UI and speech callback acceptance. Physical touch/haptics, audible hardware quality, full VoiceOver traversal, physical iPad behavior, iOS 17/18 material rendering and TestFlight installation/upgrade are not established by these tests. Cloud month-summary validation reuses the existing authenticated service; synthetic acceptance does not establish a new real-account cloud history audit. Merge, CI, production and Apple processing receipts are tracked separately in the PR and final delivery response.
+Only iOS 26.4 Simulator was used for runtime UI and speech callback acceptance. The repository CI currently builds with Xcode 16.4/SDK 18.5; compiler guards keep its material path buildable, while the SDK 26 release toolchain compiles native glass. Physical touch/haptics, audible hardware quality, full VoiceOver traversal, physical iPad behavior, iOS 17/18 material rendering and TestFlight installation/upgrade are not established by these tests. Cloud month-summary validation reuses the existing authenticated service; synthetic acceptance does not establish a new real-account cloud history audit. Merge, CI, production and Apple processing receipts are tracked separately in the PR and final delivery response.
 
 Apple API references: [custom Liquid Glass](https://developer.apple.com/documentation/SwiftUI/Applying-Liquid-Glass-to-custom-views), [drag and drop](https://developer.apple.com/documentation/SwiftUI/Adopting-drag-and-drop-using-SwiftUI).
