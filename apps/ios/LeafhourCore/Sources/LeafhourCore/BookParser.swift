@@ -2,16 +2,23 @@ import Foundation
 import CoreFoundation
 import PDFKit
 import ZIPFoundation
+#if canImport(UIKit)
+import UIKit
+#elseif canImport(AppKit)
+import AppKit
+#endif
 
 /// Parses only user-selected local source files. No scripts, remote resources, OCR or models run here.
 enum BookParser {
-    static func parse(source: URL, kind: BookKind, filename: String, id: String, destination: URL, limits: ImportLimits) throws -> LocalBook {
+    static func parse(source: URL, kind: BookKind, filename: String, id: String, destination: URL, limits: ImportLimits, progress: @Sendable (ImportProgress) -> Void = { _ in }) throws -> LocalBook {
         let chapters: [BookChapter]
         var title = URL(fileURLWithPath: filename).deletingPathExtension().lastPathComponent
         var author = ""
+        var titleCandidates: [String] = []
         var readingStartChapterID: String? = nil
         var coverResourcePath: String?
         var readingStartAnchor: ReadingAnchor? = nil
+        progress(ImportProgress(stage: .extracting))
         switch kind {
         case .epub:
             let assets = destination.appendingPathComponent("assets", isDirectory: true)
@@ -52,17 +59,20 @@ enum BookParser {
                 guard !parser.passages.isEmpty else { throw LibraryError.invalid("第 \(index + 1) 章没有可读取的正文，未将不完整内容标为可离线。") }
                 elementIDsByPath[path] = parser.elementPassageIDs
                 for passage in parser.passages { if let image = passage.resourcePath { _ = try Data(contentsOf: Disk.url(assets, image)) } }
+                if index == paths.count - 1 || index % 25 == 0 { progress(ImportProgress(stage: .extracting, completed: index + 1, total: paths.count)) }
                 return BookChapter(id: "ch-" + Disk.hash(Data(path.utf8)), title: parser.passages.first(where: { $0.heading })?.text ?? "第 \(index + 1) 章", sourcePath: path, passages: parser.passages)
             }
             readingStartAnchor = epubReadingStart(chapters: chapters, assets: assets, opf: opf, index: index, elementIDsByPath: elementIDsByPath)
             readingStartChapterID = readingStartAnchor?.chapterID
         case .pdf:
             guard let document = PDFDocument(url: source), !document.isLocked, document.pageCount > 0 else { throw LibraryError.invalid("PDF 无法读取或需要密码。原件已保留。") }
+            titleCandidates = pdfTitleCandidates(document)
             title = document.documentAttributes?[PDFDocumentAttribute.titleAttribute] as? String ?? title
             author = document.documentAttributes?[PDFDocumentAttribute.authorAttribute] as? String ?? ""
             chapters = try (0..<document.pageCount).map { index in
                 try Task.checkCancellation()
                 guard let page = document.page(at: index) else { throw LibraryError.invalid("PDF 包含无法读取的页面。") }
+                if index == document.pageCount - 1 || index % 25 == 0 { progress(ImportProgress(stage: .extracting, completed: index + 1, total: document.pageCount)) }
                 let key = "page-\(index + 1)"
                 return BookChapter(id: key, title: "第 \(index + 1) 页", sourcePath: key, passages: [Passage(id: key, text: page.string ?? "")])
             }
@@ -71,9 +81,73 @@ enum BookParser {
             let data = try Data(contentsOf: source)
             let text = try decodePlainText(data)
             let paragraphs = text.replacingOccurrences(of: "\r\n", with: "\n").components(separatedBy: "\n\n").filter { !$0.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }
-            chapters = [BookChapter(id: "text", title: title, sourcePath: "text", passages: paragraphs.enumerated().map { Passage(id: "text-\($0.offset)", text: $0.element) })]
+            chapters = [BookChapter(id: "text", title: title, sourcePath: "text", passages: try paragraphs.enumerated().map { try Task.checkCancellation(); return Passage(id: "text-\($0.offset)", text: $0.element) })]
         }
+        title = recoveredTitle(title, filename: filename, chapters: chapters, kind: kind, candidates: titleCandidates)
         return LocalBook(id: id, title: title, author: author, kind: kind, sourceVersion: "sha256-" + id, originalFilename: filename, importedAt: Date(), chapters: chapters, readingStartChapterID: readingStartChapterID, readingStartAnchor: readingStartAnchor, coverResourcePath: coverResourcePath)
+    }
+
+    /// Conservative local recovery: early explicit titles only, never a generated summary.
+    private static func recoveredTitle(_ supplied: String, filename: String, chapters: [BookChapter], kind: BookKind, candidates: [String]) -> String {
+        func usable(_ value: String) -> Bool {
+            let text = value.trimmingCharacters(in: .whitespacesAndNewlines)
+            guard !text.isEmpty, text.count <= 160 else { return false }
+            let generic = "^(untitled|unknown|document|scan|扫描件|未命名|新建文本文档|download|ebook|book|text)([ _-]*[0-9]+)*$"
+            if text.range(of: generic, options: [.regularExpression, .caseInsensitive]) != nil { return false }
+            if text.range(of: "^[0-9a-f-]{16,}$", options: [.regularExpression, .caseInsensitive]) != nil { return false }
+            return true
+        }
+        let filenameTitle = URL(fileURLWithPath: filename).deletingPathExtension().lastPathComponent
+        let cleaned = supplied.trimmingCharacters(in: .whitespacesAndNewlines)
+        if usable(cleaned) { return cleaned }
+        if usable(filenameTitle) { return filenameTitle }
+        let early = chapters.prefix(5).flatMap { $0.passages.prefix(12) }
+        let headings = early.filter(\.heading).map(\.text)
+        let lines = early.flatMap { String($0.text.prefix(2000)).components(separatedBy: .newlines).prefix(12) }
+        // PDF requires typographic evidence; ordinary wrapped body lines are
+        // never evidence of a title. EPUB uses actual heading elements.
+        let explicit = kind == .pdf ? candidates : headings
+        let textTitles = [.txt, .markdown].contains(kind) ? lines.filter { line in
+            let clean = line.trimmingCharacters(in: .whitespacesAndNewlines)
+            if clean.hasPrefix("# ") { return true }
+            let words = clean.split(whereSeparator: \.isWhitespace)
+            return words.count >= 2 && words.count <= 12 && words.filter { $0.first?.isUppercase == true }.count * 4 >= words.count * 3
+        } : []
+        for raw in explicit + textTitles {
+            let line = raw.trimmingCharacters(in: .whitespacesAndNewlines).replacingOccurrences(of: "^#{1,6} +", with: "", options: .regularExpression)
+            guard usable(line), line.count >= 2, line.count <= 80, line.split(whereSeparator: \.isWhitespace).count <= 14,
+                  line.range(of: "[。！？.!?;；]", options: .regularExpression) == nil,
+                  line.range(of: "^(by |作者|copyright|all rights|目录|contents|table of contents|第.{1,8}[章节页]|chapter |https?://|isbn)", options: [.regularExpression, .caseInsensitive]) == nil else { continue }
+            return line
+        }
+        return filenameTitle
+    }
+
+    private static func pdfTitleCandidates(_ document: PDFDocument) -> [String] {
+        var lines: [(String, CGFloat)] = []
+        var weights: [Int: Int] = [:]
+        for index in 0..<min(5, document.pageCount) {
+            guard let text = document.page(at: index)?.attributedString else { continue }
+            let sample = text.attributedSubstring(from: NSRange(location: 0, length: min(text.length, 6000)))
+            let string = sample.string as NSString
+            var offset = 0
+            while offset < string.length {
+                let range = string.lineRange(for: NSRange(location: offset, length: 0))
+                var maximum: CGFloat = 0
+                sample.enumerateAttribute(.font, in: range) { value, run, _ in
+                    #if canImport(UIKit)
+                    let size = (value as? UIFont)?.pointSize ?? 0
+                    #else
+                    let size = (value as? NSFont)?.pointSize ?? 0
+                    #endif
+                    maximum = max(maximum, size)
+                    weights[Int(size.rounded()), default: 0] += run.length
+                }
+                lines.append((string.substring(with: range), maximum)); offset = NSMaxRange(range)
+            }
+        }
+        let bodySize = weights.max { $0.value < $1.value }?.key ?? 12
+        return lines.filter { $0.1 >= max(18, CGFloat(bodySize) * 1.3) }.map(\.0)
     }
 
     /// A successful UTF-16 conversion alone is not evidence of UTF-16: GBK byte

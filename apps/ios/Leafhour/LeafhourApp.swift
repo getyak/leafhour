@@ -62,6 +62,7 @@ final class LibraryModel {
     var localActivity: [String: Date] = [:]
     private var lastOpenedLocalID: String?
     var jobs: [ImportJob] = []
+    var importActivity: LibraryImportActivity?
     var message: String?
     var busy = false
     var status = ""
@@ -103,6 +104,7 @@ final class LibraryModel {
     private let persistCredential: Bool
     private var contextID = UUID()
     private var openingBookID: String?
+    private var migratingBookID: String?
     private var syncRequested = false
     private var reloadID = UUID()
     private var nativeOperationID = UUID()
@@ -128,6 +130,12 @@ final class LibraryModel {
         monitor.start(queue: DispatchQueue.global(qos: .utility)); networkMonitor = monitor
     }
     deinit { networkMonitor?.cancel() }
+    private func resetBookActivity() {
+        importTask?.cancel(); downloadTask?.cancel()
+        importTask = nil; downloadTask = nil; downloadOperationID = nil
+        importActivity = nil; migratingBookID = nil; busy = false
+        activeBookID = nil; activityCanCancel = false; activityProgress = nil; status = ""
+    }
     private func configureLibrary() throws {
         guard let root else { return }
         let scope: LibraryScope
@@ -144,7 +152,7 @@ final class LibraryModel {
             do {
                 let restored = try await cloud.restore()
                 if restored != account {
-                    contextID = UUID(); account = restored
+                    contextID = UUID(); resetBookActivity(); account = restored
                     books = []; cloudBooks = []; accountShelf = nil; accountActions = []; localActivity = [:]; syncIssues = [:]; syncing = false; syncStatus = ""
                     notebookEntries = []; notebookCursor = nil; notebookIncomplete = false; notebookState = .idle
                     resetReadingSummary()
@@ -194,7 +202,7 @@ final class LibraryModel {
         try await adoptSignedInAccount(user)
     }
     private func adoptSignedInAccount(_ user: CloudAccount) async throws {
-        contextID = UUID(); account = user; books = []; cloudBooks = []; accountShelf = nil; accountActions = []; localActivity = [:]; syncIssues = [:]; notebookEntries = []; notebookCursor = nil; notebookState = .idle; notebookIncomplete = false; didRestore = true; syncing = false
+        contextID = UUID(); resetBookActivity(); account = user; books = []; cloudBooks = []; accountShelf = nil; accountActions = []; localActivity = [:]; syncIssues = [:]; notebookEntries = []; notebookCursor = nil; notebookState = .idle; notebookIncomplete = false; didRestore = true; syncing = false
         resetReadingSummary()
         linkedIdentities = []
         try configureLibrary(); await reload(); await synchronize()
@@ -261,7 +269,7 @@ final class LibraryModel {
         do {
             await cancelNativeAuthentication()
             if persistCredential { try AccountCredentialStore.write(nil) }
-            contextID = UUID(); account = nil; books = []; cloudBooks = []; accountShelf = nil; accountActions = []; localActivity = [:]; syncIssues = [:]; notebookEntries = []; notebookCursor = nil; notebookState = .idle; notebookIncomplete = false; linkedIdentities = []; nativeAuthStatus = nil; syncing = false
+            contextID = UUID(); resetBookActivity(); account = nil; books = []; cloudBooks = []; accountShelf = nil; accountActions = []; localActivity = [:]; syncIssues = [:]; notebookEntries = []; notebookCursor = nil; notebookState = .idle; notebookIncomplete = false; linkedIdentities = []; nativeAuthStatus = nil; syncing = false
             resetReadingSummary()
             await cloud.signOut(); try configureLibrary(); await reload()
             syncStatus = "已退出，账号书籍与记录保留在各自的离线空间。"
@@ -301,8 +309,8 @@ final class LibraryModel {
             await loadReadingSummary(account: account, library: library, marker: marker)
         }
     }
-    func download(_ remote: CloudShelfBook, openAfter: Bool = true, refresh: Bool = false) async {
-        guard !busy, let account, let library, let sync else { return }
+    func download(_ remote: CloudShelfBook, openAfter: Bool = true, refresh: Bool = false, holdBusy: Bool = false) async {
+        guard !busy || holdBusy, let account, let library, let sync else { return }
         if !refresh, let existing = books.first(where: { $0.cloud?.bookID == remote.id && $0.cloud?.contentVersion == remote.contentVersion }) { if openAfter && reader == nil && openingBookID == nil { await open(existing) }; return }
         let marker = contextID, operation = UUID()
         downloadOperationID = operation
@@ -311,7 +319,7 @@ final class LibraryModel {
         defer {
             if downloadOperationID == operation {
                 downloadTask = nil; downloadOperationID = nil
-                if marker == contextID { busy = false; activeBookID = nil; activityProgress = nil; activityCanCancel = false }
+                if marker == contextID { busy = holdBusy; activeBookID = nil; activityProgress = nil; activityCanCancel = false }
             }
         }
         let work = Task { @MainActor [self] in
@@ -489,26 +497,45 @@ final class LibraryModel {
     func upload(_ book: LocalBook) async {
         guard let account, let library, !busy, book.cloud == nil else { return }
         let marker = contextID; busy = true; status = "正在上传原件到自己的书房…"
+        let activity = LibraryImportActivity(filename: book.originalFilename)
+        activity.title = book.title; importActivity = activity
         activeBookID = book.id; activityCanCancel = false; activityProgress = nil
-        defer { if marker == contextID { busy = false; activeBookID = nil; activityCanCancel = false; activityProgress = nil } }
+        defer { if marker == contextID { busy = false; migratingBookID = nil; activeBookID = nil; activityCanCancel = false; activityProgress = nil } }
         do {
             let source = try await library.originalURL(book.id), attributes = try FileManager.default.attributesOfItem(atPath: source.path)
             guard let size = attributes[.size] as? NSNumber, size.int64Value <= 20 * 1024 * 1024 else { throw LibraryError.invalid("当前云端上传上限为 20 MB。本机原件与记录已保留，可继续离线阅读。") }
-            let bytes = try Data(contentsOf: source, options: .mappedIfSafe)
-            let result = try await cloud.uploadOriginal(bytes, filename: book.originalFilename, ownerID: account.id)
+            let read = Task.detached(priority: .utility) { try Task.checkCancellation(); return try Data(contentsOf: source, options: .mappedIfSafe) }
+            let bytes = try await withTaskCancellationHandler { try await read.value } onCancel: { read.cancel() }
+            let result = try await cloud.uploadOriginal(bytes, filename: book.originalFilename, ownerID: account.id) { [weak self, weak activity] phase in
+                await MainActor.run {
+                    guard let self, self.contextID == marker else { return }
+                    switch phase {
+                    case .preparing: activity?.showStatus("正在准备上传…")
+                    case .sending: activity?.showStatus("正在上传原件…")
+                    case .processing: activity?.showStatus("原件已传送，正在整理云端书籍…")
+                    }
+                }
+            }
             guard marker == contextID, let id = result["bookId"].string, let version = result["contentVersion"].string else { throw LibraryError.invalid("上传回执不完整，请重新同步书架核对。") }
-            busy = false
+            activity.showStatus("云端正文已就绪，正在同步阅读副本…")
             await synchronize()
-            await download(CloudShelfBook(id: id, title: book.title, author: book.author, contentVersion: version), openAfter: false)
+            await download(CloudShelfBook(id: id, title: book.title, author: book.author, contentVersion: version), openAfter: false, holdBusy: true)
             guard marker == contextID else { return }
             guard let target = books.first(where: { $0.cloud?.bookID == id && $0.cloud?.contentVersion == version }) else {
+                activity.stop(cancelled: false, message: "原件已上传，阅读副本待同步")
                 message = "原件已上传，正文副本尚未下载完成。本机笔记与草稿仍保留，请同步书房后重试下载。"; return
             }
-            let sourceState = try await library.state(book.id), targetState = try await library.state(target.id)
+            guard reader?.book.id != target.id, openingBookID != target.id else {
+                activity.finish(book: target)
+                message = "原件已上传。云端副本正在阅读中，本次未迁移个人记录；笔记、草稿与阅读时段仍保留在原来的本机书中，可回到书房后重试。"
+                return
+            }
+            migratingBookID = target.id
+            let sourceState = try await library.state(book.id)
             let pendingTime = try await library.readingTimeLedger(bookID: book.id).pending
             guard marker == contextID else { return }
-            let migration = CloudUploadMigration.remap(source: book, state: sourceState, destination: target, destinationState: targetState, readingTime: pendingTime)
-            try await library.saveState(migration.state, bookID: target.id)
+            let migration = try await library.migrateUploadedRecords(source: book, sourceState: sourceState, destination: target, readingTime: pendingTime)
+            guard marker == contextID else { return }
             for row in migration.readingTimeSnapshots {
                 if try await library.readingTimeLedger(bookID: target.id).pending.count >= 20 {
                     if let sync { try await sync.synchronize(target.id) }
@@ -526,28 +553,54 @@ final class LibraryModel {
             await reload()
             guard marker == contextID else { return }
             if pendingReadingTime > 0 {
+                activity.finish(book: target)
                 message = "原件已加入云端书房，还有 \(pendingReadingTime) 个阅读时段待同步。完整历史、笔记与草稿仍保留在原来的本机书中。"
                 return
             }
-            message = migration.unresolvedCount == 0
-                ? "原件、可核对的笔记与阅读位置已加入云端书房。原来的本机书与记录仍保留。"
-                : "原件已上传，能核对原句的记录已同步；还有 \(migration.unresolvedCount) 条引用需要核对，已完整保留在原来的本机书中。"
-        } catch { if marker == contextID { message = "尚未完成上传：\(error.localizedDescription)" } }
+            activity.finish(book: target)
+            if migration.unresolvedCount > 0 {
+                message = "原件已上传，能核对原句的记录已同步；还有 \(migration.unresolvedCount) 条引用需要核对，已完整保留在原来的本机书中。"
+            }
+        } catch {
+            if marker == contextID {
+                activity.stop(cancelled: false, message: "尚未完成上传：\(error.localizedDescription)")
+                message = "尚未完成上传：\(error.localizedDescription)"
+            }
+        }
     }
     func importFile(_ url: URL) {
+        let access = IncomingBookFile(url)
+        startImport(filename: url.lastPathComponent) { library, progress in
+            defer { withExtendedLifetime(access) {} }
+            return try await library.importFile(url, progress: progress)
+        }
+    }
+    private func startImport(filename: String, operation: @escaping @Sendable (OfflineLibrary, @escaping @Sendable (ImportProgress) -> Void) async throws -> LocalBook) {
         guard !busy, let library else { return }
-        busy = true; status = "正在保留原件并处理书籍…"; activityCanCancel = true; activeBookID = nil; activityProgress = nil
+        let activity = LibraryImportActivity(filename: filename)
+        importActivity = activity
+        busy = true; status = "正在保留原件…"; activityCanCancel = true; activeBookID = nil; activityProgress = nil
         let marker = contextID
         importTask = Task {
-            let scoped = url.startAccessingSecurityScopedResource()
-            defer { if scoped { url.stopAccessingSecurityScopedResource() }; busy = false; importTask = nil; activityCanCancel = false }
-            do {
-                let book = try await library.importFile(url)
-                await reload()
-                if marker == contextID && !Task.isCancelled && reader == nil && openingBookID == nil { await open(book) }
+            defer {
+                if marker == contextID { busy = false; importTask = nil; activityCanCancel = false; activityProgress = nil }
             }
-            catch is CancellationError { status = "导入已取消，原件仍保留，可稍后重试。"; await reload() }
-            catch { message = error.localizedDescription; await reload() }
+            do {
+                let book = try await operation(library) { [weak activity] update in
+                    Task { @MainActor in activity?.receive(update) }
+                }
+                guard marker == contextID else { return }
+                // Publication is complete. A late cancellation cannot undo it.
+                activityCanCancel = false
+                await reload()
+                guard marker == contextID else { return }
+                if !books.contains(where: { $0.id == book.id }) { books.insert(book, at: 0) }
+                activity.finish(book: book)
+            } catch {
+                guard marker == contextID else { return }
+                activity.stop(cancelled: Task.isCancelled || error is CancellationError, message: error.localizedDescription)
+                await reload()
+            }
         }
     }
     func cancelImport() {
@@ -555,23 +608,14 @@ final class LibraryModel {
         importTask?.cancel(); downloadTask?.cancel()
     }
     func retry(_ job: ImportJob) {
-        guard !busy, let library else { return }
-        busy = true; status = "正在从保留的原件重试…"; activityCanCancel = true; activeBookID = nil; activityProgress = nil
-        let marker = contextID
-        importTask = Task {
-            defer { busy = false; importTask = nil; activityCanCancel = false }
-            do {
-                let book = try await library.retry(job.id)
-                await reload()
-                if marker == contextID && !Task.isCancelled && reader == nil && openingBookID == nil { await open(book) }
-            }
-            catch is CancellationError { status = "导入已取消，原件仍保留，可稍后重试。"; await reload() }
-            catch { message = error.localizedDescription; await reload() }
+        startImport(filename: job.filename) { library, progress in
+            try await library.retry(job.id, progress: progress)
         }
     }
     func open(_ book: LocalBook) async {
         didAttemptStartupResume = true
         guard let library, openingBookID == nil else { return }
+        guard book.id != migratingBookID else { message = "正在同步这本书的个人记录，完成后即可打开。其他书籍仍可阅读。"; return }
         let marker = contextID
         openingBookID = book.id
         defer { openingBookID = nil }

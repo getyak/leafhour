@@ -125,6 +125,13 @@ struct LibraryScreen: View {
             }
         }
         .safeAreaInset(edge: .top, spacing: 0) {
+            if let activity = model.importActivity {
+                LibraryImportActivityView(activity: activity, canCancel: model.activityCanCancel, cancel: { model.cancelImport() }, dismiss: { model.importActivity = nil }, open: { id in
+                    if let book = model.books.first(where: { $0.id == id }) { Task { await model.open(book) } }
+                })
+            }
+        }
+        .safeAreaInset(edge: .top, spacing: 0) {
             if searching {
                 HStack(spacing: 10) {
                     Image(systemName: "magnifyingglass").foregroundStyle(.secondary)
@@ -145,7 +152,7 @@ struct LibraryScreen: View {
         }
         .safeAreaInset(edge: .bottom) {
             if selecting { selectionToolbar }
-            else if model.busy && activeItem == nil { activityBar }
+            else if model.busy && activeItem == nil && model.importActivity?.isRunning != true { activityBar }
         }
         .fileImporter(isPresented: $importing, allowedContentTypes: [.epub, .pdf, .plainText, UTType(filenameExtension: "md") ?? .plainText]) { result in
             switch result { case .success(let url): model.importFile(url); case .failure(let error): model.message = error.localizedDescription }
@@ -294,7 +301,7 @@ struct LibraryScreen: View {
     }
 
     private var importRows: some View {
-        ForEach(model.jobs) { job in
+        ForEach(model.jobs.filter { $0.phase != .processing }) { job in
             VStack(alignment: .leading, spacing: 8) {
                 Text(job.filename).font(.headline)
                 Text(job.error ?? "导入中断，原件仍保留。").font(.footnote).foregroundStyle(.secondary)

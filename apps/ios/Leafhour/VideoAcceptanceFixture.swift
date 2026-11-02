@@ -2,6 +2,9 @@ import Foundation
 import UIKit
 import Observation
 import LeafhourCore
+#if DEBUG
+import ZIPFoundation
+#endif
 
 /// Synthetic local acceptance only. Production bundles cannot opt into this factory.
 enum VideoAcceptanceFixture {
@@ -15,7 +18,7 @@ enum VideoAcceptanceFixture {
         do {
             let support = try FileManager.default.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
             let root = support.appendingPathComponent("GET317Acceptance", isDirectory: true)
-            if arguments.contains("--get317-reset"), FileManager.default.fileExists(atPath: root.path) {
+            if (arguments.contains("--get317-reset") || hostedUnitTest), FileManager.default.fileExists(atPath: root.path) {
                 // This exact child is the only location the reset flag can remove.
                 guard root.lastPathComponent == "GET317Acceptance", root.deletingLastPathComponent() == support else {
                     preconditionFailure("GET317 fixture root failed its isolation check")
@@ -101,6 +104,28 @@ enum VideoAcceptanceFixture {
         if FileManager.default.fileExists(atPath: selectedFile.path) {
             guard try Data(contentsOf: selectedFile) == bytes else { throw LibraryError.invalid("GET317 系统导入样本路径已有其他内容，未覆盖。") }
         } else { try bytes.write(to: selectedFile, options: .atomic) }
+        if ProcessInfo.processInfo.arguments.contains("--import-lifecycle-acceptance") {
+            let large = sources.appendingPathComponent("document-20261102-2.epub")
+            if !FileManager.default.fileExists(atPath: large.path) {
+                let archive = try Archive(url: large, accessMode: .create)
+                func add(_ name: String, _ text: String) throws {
+                    let bytes = Data(text.utf8)
+                    try archive.addEntry(with: name, type: .file, uncompressedSize: Int64(bytes.count), compressionMethod: .deflate) { offset, count in
+                        bytes.subdata(in: Int(offset)..<min(Int(offset) + count, bytes.count))
+                    }
+                }
+                try add("mimetype", "application/epub+zip")
+                try add("META-INF/container.xml", "<container><rootfiles><rootfile full-path=\"OPS/book.opf\"/></rootfiles></container>")
+                let items = (1...200).map { "<item id=\"c\($0)\" href=\"c\($0).xhtml\" media-type=\"application/xhtml+xml\"/>" }.joined()
+                let spine = (1...200).map { "<itemref idref=\"c\($0)\"/>" }.joined()
+                try add("OPS/book.opf", "<package><metadata><title>Untitled</title></metadata><manifest>" + items + "</manifest><spine>" + spine + "</spine></package>")
+                for chapter in 1...200 {
+                    let title = chapter == 1 ? "The Quiet Orchard" : "Chapter \(chapter)"
+                    let body = (0..<500).map { "<p>Synthetic paragraph \(chapter)-\($0). " + String(repeating: "The orchard stays quiet while another book remains available for reading. ", count: 2) + "</p>" }.joined()
+                    try add("OPS/c\(chapter).xhtml", "<html><body><h1>" + title + "</h1>" + body + "</body></html>")
+                }
+            }
+        }
         // No export JSON is seeded here. UI35 must make the real fileExporter
         // write its own bytes into this otherwise fixture-owned destination.
     }

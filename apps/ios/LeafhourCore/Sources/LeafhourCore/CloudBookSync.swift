@@ -401,7 +401,11 @@ public actor CloudBookSync {
                 metadata.positionConflict = true; metadata.remoteAnchor = remoteAnchor; metadata.remotePositionRevision = remoteRevision; metadata.remoteActivityAt = remoteActivity
             }
             // Pull is used only while no reader owns this book. Push never rewrites its live state.
-            if pull && state != snapshot { try await library.saveState(state, bookID: bookID) }
+            if pull && state != snapshot {
+                guard try await library.saveStateIfUnchanged(state, bookID: bookID, expected: snapshot) else {
+                    throw LibraryError.invalid("本机阅读记录刚有更新，已保留最新内容，请稍后重试同步。")
+                }
+            }
             var issues: [String] = []
             if metadata.positionConflict { issues.append("阅读位置在另一台设备有更新，请选择从哪里继续。") }
             if metadata.noteConflict { issues.append("部分笔记在两处有修改；本机版本已保留，请在网页核对云端版本。") }

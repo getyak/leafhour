@@ -3,6 +3,7 @@ import Foundation
 /// One actor owns a profile's writes. Device-local and authenticated UUID namespaces never overlap.
 public actor OfflineLibrary {
     let root: URL
+    private var activeImports: Set<UUID> = []
     private let limits: ImportLimits
     private struct CloudStartCache { var identity: CloudBookIdentity; var digest: String; var anchor: ReadingAnchor? }
     private var cloudStarts: [String: CloudStartCache] = [:]
@@ -21,7 +22,7 @@ public actor OfflineLibrary {
             }
         }
     }
-    public func importFile(_ url: URL) throws -> LocalBook {
+    public func importFile(_ url: URL, progress: @escaping @Sendable (ImportProgress) -> Void = { _ in }) async throws -> LocalBook {
         try Task.checkCancellation()
         let ext = url.pathExtension.lowercased()
         let kind: BookKind
@@ -30,25 +31,32 @@ public actor OfflineLibrary {
         guard size > 0, size <= limits.maximumFileBytes else { throw LibraryError.invalid("文件为空或超过本机导入上限。原始文件未改动。") }
         if let available = try root.resourceValues(forKeys: [.volumeAvailableCapacityForImportantUsageKey]).volumeAvailableCapacityForImportantUsage, available < size * 2 + 20_000_000 { throw LibraryError.invalid("设备空间不足，请保留原件并释放空间后重试。") }
         let job = ImportJob(id: UUID(), filename: url.lastPathComponent, kind: kind, phase: .processing)
+        activeImports.insert(job.id)
+        defer { activeImports.remove(job.id) }
+        progress(ImportProgress(stage: .retaining))
         let folder = importsFolder(job.id)
         try Disk.directory(folder)
         let original = folder.appendingPathComponent("source." + kind.rawValue)
         do {
             try Disk.write(job, to: folder.appendingPathComponent("job.json"))
-            try Disk.fm.copyItem(at: url, to: original)
+            // Finish retaining the selected source even if cancellation arrives
+            // during this copy, so the cancelled job really can retry offline.
+            try await Task.detached(priority: .utility) { try Disk.fm.copyItem(at: url, to: original) }.value
             guard try Disk.size(original) == size else { throw LibraryError.invalid("原件没有完整复制，请重新选择文件。") }
-            return try process(job)
+            return try await process(job, progress: progress)
         } catch {
             try? recordFailure(job, error: error)
             throw error
         }
     }
-    public func retry(_ id: UUID) throws -> LocalBook {
+    public func retry(_ id: UUID, progress: @escaping @Sendable (ImportProgress) -> Void = { _ in }) async throws -> LocalBook {
+        guard activeImports.insert(id).inserted else { throw LibraryError.invalid("此原件正在处理中，请稍候。") }
+        defer { activeImports.remove(id) }
         var job = try Disk.read(ImportJob.self, from: importsFolder(id).appendingPathComponent("job.json"))
         guard job.id == id, job.phase != .complete else { throw LibraryError.invalid("此导入已完成或记录无效。") }
         job.phase = .processing; job.error = nil
         try Disk.write(job, to: importsFolder(id).appendingPathComponent("job.json"))
-        do { return try process(job) } catch { try? recordFailure(job, error: error); throw error }
+        do { return try await process(job, progress: progress) } catch { try? recordFailure(job, error: error); throw error }
     }
     public func jobs() throws -> [ImportJob] {
         try Disk.fm.contentsOfDirectory(at: root.appendingPathComponent("imports"), includingPropertiesForKeys: nil).compactMap { try? Disk.read(ImportJob.self, from: $0.appendingPathComponent("job.json")) }
@@ -60,12 +68,13 @@ public actor OfflineLibrary {
         guard Disk.fm.fileExists(atPath: url.path) else { throw LibraryError.invalid("保留的原件暂不可用，请重新选择文件。") }
         return url
     }
-    private func process(_ initial: ImportJob) throws -> LocalBook {
+    private func process(_ initial: ImportJob, progress: @escaping @Sendable (ImportProgress) -> Void = { _ in }) async throws -> LocalBook {
         try Task.checkCancellation()
         var job = initial
         let original = try jobOriginalURL(job.id)
         guard try Disk.size(original) <= limits.maximumFileBytes else { throw LibraryError.invalid("原件超过导入上限。") }
-        let id = try Disk.hashFile(original)
+        let id = try await Self.importWork { try Disk.hashFile(original) }
+        try Task.checkCancellation()
         let target = try bookDirectory(id)
         if Disk.fm.fileExists(atPath: target.path) {
             // Verify before reusing; do not replace a corrupt package or existing personal data implicitly.
@@ -78,8 +87,20 @@ public actor OfflineLibrary {
         let stage = root.appendingPathComponent("staging/" + job.id.uuidString, isDirectory: true)
         if Disk.fm.fileExists(atPath: stage.path) { try Disk.fm.removeItem(at: stage) }
         defer { try? Disk.fm.removeItem(at: stage) }
-        let parsed = try build(source: original, kind: job.kind, filename: job.filename, id: id, destination: stage)
+        let limits = self.limits, kind = job.kind, filename = job.filename
+        let parsed = try await Self.importWork {
+            try Self.buildPackage(source: original, kind: kind, filename: filename, id: id, destination: stage, limits: limits, progress: progress)
+        }
         try Task.checkCancellation()
+        // Another job may have published identical bytes while this worker ran.
+        // Publication stays serialized here; never replace personal state.
+        if Disk.fm.fileExists(atPath: target.path) {
+            let existing = try book(id)
+            job.phase = .complete; job.bookID = id; job.error = nil
+            try Disk.write(job, to: importsFolder(job.id).appendingPathComponent("job.json"))
+            try? Disk.fm.removeItem(at: original)
+            return existing
+        }
         try Disk.fm.moveItem(at: stage, to: target)
         job.phase = .complete; job.bookID = id; job.error = nil
         // If this final job receipt fails, the complete book is still safely published and a retry deduplicates it.
@@ -87,12 +108,21 @@ public actor OfflineLibrary {
         try? Disk.fm.removeItem(at: original)
         return parsed
     }
+    private nonisolated static func importWork<T: Sendable>(_ operation: @escaping @Sendable () throws -> T) async throws -> T {
+        let worker = Task.detached(priority: .utility) { try Task.checkCancellation(); return try operation() }
+        return try await withTaskCancellationHandler { try await worker.value } onCancel: { worker.cancel() }
+    }
     private func build(source: URL, kind: BookKind, filename: String, id: String, destination: URL) throws -> LocalBook {
+        try Self.buildPackage(source: source, kind: kind, filename: filename, id: id, destination: destination, limits: limits)
+    }
+    private nonisolated static func buildPackage(source: URL, kind: BookKind, filename: String, id: String, destination: URL, limits: ImportLimits, progress: @Sendable (ImportProgress) -> Void = { _ in }) throws -> LocalBook {
         try Disk.directory(destination)
         let copy = destination.appendingPathComponent("source." + kind.rawValue)
         try Disk.fm.copyItem(at: source, to: copy)
         guard try Disk.hashFile(copy) == id else { throw LibraryError.invalid("原件复制校验失败。") }
-        let book = try BookParser.parse(source: copy, kind: kind, filename: filename, id: id, destination: destination, limits: limits)
+        let book = try BookParser.parse(source: copy, kind: kind, filename: filename, id: id, destination: destination, limits: limits, progress: progress)
+        progress(ImportProgress(stage: .verifying))
+        try Task.checkCancellation()
         try Disk.write(book, to: destination.appendingPathComponent("book.json"))
         let keys: [URLResourceKey] = [.isRegularFileKey, .isSymbolicLinkKey]
         guard let files = Disk.fm.enumerator(atPath: destination.path) else { throw LibraryError.invalid("无法建立离线文件目录。") }
@@ -107,7 +137,7 @@ public actor OfflineLibrary {
         }
         let manifest = OfflineManifest(bookID: id, files: digests.sorted { $0.path < $1.path })
         try Disk.write(manifest, to: destination.appendingPathComponent("manifest.json"))
-        try checkPackage(destination, id: id)
+        try Self.verifyPackage(destination, id: id)
         return book
     }
     private func recordFailure(_ initial: ImportJob, error: Error) throws {
@@ -169,6 +199,9 @@ public actor OfflineLibrary {
 
     @discardableResult public func verify(_ id: String) throws -> Bool { _ = try book(id); return true }
     @discardableResult private func checkPackage(_ folder: URL, id: String) throws -> OfflineManifest {
+        try Self.verifyPackage(folder, id: id)
+    }
+    @discardableResult private nonisolated static func verifyPackage(_ folder: URL, id: String) throws -> OfflineManifest {
         let manifest = try Disk.read(OfflineManifest.self, from: folder.appendingPathComponent("manifest.json"))
         guard manifest.version == 1, manifest.bookID == id, !manifest.files.isEmpty, manifest.files.contains(where: { $0.path == "book.json" }), Set(manifest.files.map(\.path)).count == manifest.files.count else { throw LibraryError.invalid("离线清单不完整。") }
         var originalFound = false
