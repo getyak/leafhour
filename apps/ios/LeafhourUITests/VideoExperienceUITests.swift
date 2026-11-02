@@ -2899,7 +2899,7 @@ final class VideoExperienceUITests: XCTestCase {
 extension VideoExperienceUITests {
     func test110GlobalSettingsOfferPaperStylesAndKeepTheProfileAfterRestart() {
         launch()
-        app.tabBars.buttons["设置"].tap()
+        app.tabBars.buttons["我的阅读"].tap(); app.buttons["journal-settings"].tap()
         app.buttons["settings-reading-style"].tap()
         app.segmentedControls["reading-style-categories"].buttons["纸面"].tap()
         require(app.buttons["reader-theme-sage"])
@@ -2911,7 +2911,7 @@ extension VideoExperienceUITests {
         capture("GET357-reading-style-night")
         coldRelaunch(); resumeReaderIfOffered()
         if reader.exists { shelf() }
-        app.tabBars.buttons["设置"].tap(); app.buttons["settings-reading-style"].tap()
+        app.tabBars.buttons["我的阅读"].tap(); app.buttons["journal-settings"].tap(); app.buttons["settings-reading-style"].tap()
         app.segmentedControls["reading-style-categories"].buttons["纸面"].tap()
         require(app.buttons["reader-theme-night"])
         XCTAssertTrue(app.buttons["reader-theme-night"].isSelected)
@@ -2926,7 +2926,7 @@ extension VideoExperienceUITests {
         require(question); question.tap(); question.typeText("Keep my unfinished thought")
         require(app.buttons["reader-question-dismiss-keyboard"]); app.buttons["reader-question-dismiss-keyboard"].tap()
         capture("GET357-global-chat-draft")
-        app.tabBars.buttons["设置"].tap(); app.tabBars.buttons["Chat"].tap()
+        app.tabBars.buttons["我的阅读"].tap(); app.tabBars.buttons["Chat"].tap()
         XCTAssertEqual(question.value as? String, "Keep my unfinished thought")
         coldRelaunch(); resumeReaderIfOffered()
         if reader.exists { shelf() }
@@ -2951,7 +2951,7 @@ extension VideoExperienceUITests {
 extension VideoExperienceUITests {
     func test113AccessibleSettingsKeepPaperChoicesAndReturnReachable() {
         launch(["-UIPreferredContentSizeCategoryName", "UICTContentSizeCategoryAccessibilityXXXL"])
-        app.tabBars.buttons["设置"].tap()
+        app.tabBars.buttons["我的阅读"].tap(); app.buttons["journal-settings"].tap()
         let entry = app.buttons["settings-reading-style"]
         scrollTo(entry, in: app.collectionViews.firstMatch); require(entry); entry.tap()
         app.segmentedControls["reading-style-categories"].buttons["纸面"].tap()

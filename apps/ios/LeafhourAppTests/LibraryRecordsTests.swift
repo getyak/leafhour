@@ -291,6 +291,87 @@ final class LibraryRecordsTests: XCTestCase {
         XCTAssertEqual(model.summaryState, .idle)
     }
 
+    private func journalMonth() -> CloudJSON {
+        var calendar = Calendar(identifier: .gregorian); calendar.timeZone = .current
+        let days = ReadingJournal.monthDays(Date(), calendar: calendar).map { date in CloudJSON.object(["date": .string(ReadingJournal.dayKey(date, calendar: calendar)), "durationSeconds": .number(120), "books": .array([])]) }
+        return .object(["month": .string(ReadingJournal.monthKey(Date(), calendar: calendar)), "timeZone": .string(calendar.timeZone.identifier), "days": .array(days)])
+    }
+    func testJournalRejectsAnIncompleteMonthInsteadOfShowingZero() async throws {
+        let (model, probe) = try fixture(); probe.summary = summary(120)
+        let journal = ReadingJournalModel()
+        await journal.load(model, scope: .account, month: Date(), recent: false)
+        XCTAssertNil(journal.seconds(on: Date(), scope: .account))
+        guard case .failed = journal.state else { return XCTFail("An incomplete response must remain a failure") }
+    }
+    func testJournalRetainsARealMonthAndItsAccountCacheAfterOfflineRefresh() async throws {
+        let (model, probe) = try fixture(); probe.summary = journalMonth()
+        let journal = ReadingJournalModel()
+        await journal.load(model, scope: .account, month: Date(), recent: false)
+        XCTAssertEqual(journal.state, .ready)
+        XCTAssertEqual(journal.seconds(on: Date(), scope: .account), 120)
+        probe.summaryStatus = 503
+        await journal.load(model, scope: .account, month: Date(), recent: false)
+        XCTAssertEqual(journal.seconds(on: Date(), scope: .account), 120)
+        guard case .cached = journal.state else { return XCTFail("A failed refresh must identify retained data") }
+        let reopened = ReadingJournalModel()
+        await reopened.load(model, scope: .account, month: Date(), recent: false)
+        XCTAssertEqual(reopened.seconds(on: Date(), scope: .account), 120)
+    }
+    func testLateJournalResponseCannotReappearAfterAccountAndScopeChange() async throws {
+        let (model, probe) = try fixture(); probe.summary = journalMonth()
+        let journal = ReadingJournalModel()
+        let started = expectation(description: "journal month held")
+        probe.blockSummary(started)
+        let loading = Task { await journal.load(model, scope: .account, month: Date(), recent: false) }
+        await fulfillment(of: [started], timeout: 5)
+        await model.signOut()
+        await journal.load(model, scope: .device, month: Date(), recent: false)
+        probe.releaseSummary(); await loading.value
+        XCTAssertTrue(journal.months.isEmpty)
+        XCTAssertTrue(journal.localNotes.isEmpty)
+        XCTAssertEqual(journal.state, .ready)
+        XCTAssertEqual(journal.seconds(on: Date(), scope: .device), 0)
+    }
+    func testJournalMonthNavigationAndRefreshPreserveLoadedNotebookPages() async throws {
+        let (model, probe) = try fixture(); probe.summary = journalMonth()
+        model.notebookEntries = [try entry("first"), try entry("later")]
+        model.notebookCursor = "third-page"; model.notebookState = .ready
+        let journal = ReadingJournalModel()
+        await journal.load(model, scope: .account, month: Date(), recent: false)
+        await journal.load(model, scope: .account, month: Date(), recent: false)
+        XCTAssertEqual(probe.notebookRequests, 0, "Switching time views must not replace paginated notes")
+        probe.notebook = .object(["entries": .array([try entry("first")]), "nextCursor": .string("second-page")])
+        await model.loadNotebookRecords(refresh: true)
+        XCTAssertEqual(model.notebookEntries.compactMap { $0["book"]["bookId"].string }, ["first", "later"])
+        XCTAssertEqual(model.notebookCursor, "third-page")
+    }
+    func testCancelledSourceOpenDoesNotPublishAReader() async throws {
+        let (model, _) = try fixture()
+        let source = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString + ".txt")
+        try Data("An isolated source for cancelled navigation.".utf8).write(to: source)
+        addTeardownBlock { try? FileManager.default.removeItem(at: source) }
+        let library = try XCTUnwrap(model.library), book = try await library.importFile(source)
+        let task = Task { await model.open(book) }; task.cancel(); await task.value
+        XCTAssertNil(model.reader)
+    }
+    func testFirstDeviceReadWithCorruptRecordsKeepsTimeUnknown() async throws {
+        let (model, _) = try fixture()
+        let source = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString + ".txt")
+        try Data("An isolated damaged-record fixture.".utf8).write(to: source)
+        addTeardownBlock { try? FileManager.default.removeItem(at: source) }
+        let library = try XCTUnwrap(model.library), book = try await library.importFile(source)
+        let folder = try await library.bookDirectory(book.id)
+        let states = folder.deletingLastPathComponent().deletingLastPathComponent().appendingPathComponent("states")
+        let broken = Data("{broken".utf8)
+        try broken.write(to: states.appendingPathComponent(book.id + ".json"))
+        try broken.write(to: states.appendingPathComponent(book.id + "-reading-time.json"))
+        let journal = ReadingJournalModel()
+        await journal.load(model, scope: .device, month: Date(), recent: false)
+        XCTAssertNil(journal.seconds(on: Date(), scope: .device))
+        XCTAssertFalse(journal.hasCompleteDeviceNotes)
+        guard case .partial = journal.state else { return XCTFail("Corrupt records must be explicit, not empty") }
+        XCTAssertEqual(try Data(contentsOf: states.appendingPathComponent(book.id + ".json")), broken)
+    }
     func testSignOutClearsThePreviousAccountsPaginationCursor() async throws {
         let (model, _) = try fixture()
         model.notebookCursor = "previous-account-cursor"
