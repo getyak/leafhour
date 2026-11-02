@@ -100,18 +100,19 @@ enum TextBookStructure {
         }
         let ns = candidate as NSString
         let full = NSRange(location: 0, length: ns.length)
-        guard !title.isEmpty, title.count <= 100, pageLeader.firstMatch(in: candidate, range: full) == nil,
-              title.range(of: "[。！？!?；;]", options: .regularExpression) == nil else { return nil }
+        guard !title.isEmpty, title.count <= 100, pageLeader.firstMatch(in: candidate, range: full) == nil else { return nil }
         for pattern in [chinese, english, opening] {
             guard let match = pattern.firstMatch(in: candidate, range: full) else { continue }
             let suffix = ns.substring(with: match.range(at: 1))
+            let separatedChinese = pattern === chinese && suffix.first?.isWhitespace == true
+            if !separatedChinese && title.range(of: "[。！？!?；;]", options: .regularExpression) != nil { return nil }
             // An unseparated verb after the chapter marker is normally a prose reference.
             if pattern === chinese, ["介绍", "讨论", "讲述", "主要", "说明", "提到", "解释", "探讨", "阐述", "描述"].contains(where: { suffix.hasPrefix($0) }) { return nil }
             let clean = suffix.trimmingCharacters(in: .whitespaces)
             // English prose references ("Chapter 2 shows …") are not standalone titles.
             if pattern === english, let first = clean.first, first.isLetter && !first.isUppercase { return nil }
             let content = clean.replacingOccurrences(of: "^[.．:：—–-]+\\s*", with: "", options: .regularExpression)
-            guard content.range(of: "[.。！？!?；;]", options: .regularExpression) == nil else { return nil }
+            guard content.range(of: separatedChinese ? "[。；;]" : "[.。！？!?；;]", options: .regularExpression) == nil else { return nil }
             return title
         }
         return nil

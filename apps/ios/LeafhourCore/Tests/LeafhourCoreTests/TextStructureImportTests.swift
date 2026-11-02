@@ -2,6 +2,28 @@ import XCTest
 @testable import LeafhourCore
 
 final class TextStructureImportTests: XCTestCase {
+    func testSeparatedChineseChapterTitlesKeepEllipsesQuestionsAndASCIIPeriods() async throws {
+        let titles = ["第一千零一章 故乡……来人", "第一千零二章 阁下是谁?", "第一千零三章 未完."]
+        let (_, book) = try await load(titles.map { $0 + "\n正文。" }.joined(separator: "\n\n"))
+        XCTAssertEqual(book.chapters.map(\.title), titles)
+    }
+
+    func testSelectedLocalNovelDirectoryAudit() async throws {
+        guard let source = ProcessInfo.processInfo.environment["LEAFHOUR_DIRECTORY_AUDIT_SOURCE"],
+              let expected = ProcessInfo.processInfo.environment["LEAFHOUR_DIRECTORY_AUDIT_SHA256"] else { throw XCTSkip("No user-selected directory audit") }
+        let url = URL(fileURLWithPath: source), bytes = try Data(contentsOf: url)
+        let library = try OfflineLibrary(root: root.appendingPathComponent("audit"), scope: .device)
+        let started = Date(), book = try await library.importFile(url)
+        let titles = book.chapters.filter { $0.passages.first?.heading == true }.map(\.title)
+        XCTAssertEqual(Disk.hash(Data(titles.joined(separator: "\n").utf8)), expected)
+        let retained = try await library.originalURL(book.id)
+        XCTAssertEqual(Disk.hash(try Data(contentsOf: retained)), Disk.hash(bytes))
+        let verified = try await library.verify(book.id); XCTAssertTrue(verified)
+        let cold = Date(); _ = try await library.books(); let coldMs = Date().timeIntervalSince(cold) * 1000
+        let warm = Date(); _ = try await library.books(); let warmMs = Date().timeIntervalSince(warm) * 1000
+        print("Selected TXT directory audit: chapters=\(book.chapters.count), headings=\(titles.count), passages=\(book.chapters.flatMap(\.passages).count), seconds=\(Date().timeIntervalSince(started))")
+        print("Selected TXT shelf index: coldMs=\(coldMs), warmMs=\(warmMs)")
+    }
     private var root: URL!
     override func setUpWithError() throws {
         root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
