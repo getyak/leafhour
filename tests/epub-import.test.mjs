@@ -18,9 +18,51 @@ function archive({nav=true,body,extra={},packageText}={}){
  'OPS/a.xhtml':xhtml('<h1 id="three">Chapter Three</h1><p>Last paragraph.</p>'),
  'OPS/aside.xhtml':xhtml('<p>Not in linear reading order.</p>'),
  ...(nav?{'OPS/nav.xhtml':xhtml('<nav xmlns:epub="http://www.idpf.org/2007/ops" epub:type="toc"><ol><li><a href="z.xhtml#one">One</a></li><li><a href="z.xhtml#two">Two</a></li><li><a href="a.xhtml#three">Three</a></li></ol></nav>')}:{}),...extra};
- return Buffer.from(zipSync(Object.fromEntries(Object.entries(files).map(([name,text])=>[name,strToU8(text)])),{level:0}));
+ return Buffer.from(zipSync(Object.fromEntries(Object.entries(files).filter(([,text])=>text!==null).map(([name,text])=>[name,strToU8(text)])),{level:0}));
 }
 async function book(bytes=archive()){const extracted=await extractDocument({filename:'reading.epub',bytes});return makeBook({bookId:'private-test',filename:'reading.epub',sourceHash:digest(bytes),extracted});}
+
+const ncxPackage=({nav=false,middle=false}={})=>'<package xmlns="http://www.idpf.org/2007/opf" version="2.0"><metadata xmlns:dc="http://purl.org/dc/elements/1.1/"><dc:title>Legacy Reading</dc:title></metadata><manifest><item id="first" href="z.xhtml" media-type="application/xhtml+xml"/><item id="last" href="a.xhtml" media-type="application/xhtml+xml"/><item id="toc" href="navigation/toc.ncx" media-type="application/x-dtbncx+xml"/>'+(nav?'<item id="nav" href="nav.xhtml" properties="nav" media-type="application/xhtml+xml"/>':'')+(middle?'<item id="middle" href="middle.xhtml" media-type="application/xhtml+xml"/>':'')+'</manifest><spine toc="toc"><itemref idref="first"/>'+(middle?'<itemref idref="middle"/>':'')+'<itemref idref="last"/></spine></package>';
+const ncx=contents=>'<?xml version="1.0"?><!DOCTYPE ncx PUBLIC "-//NISO//DTD ncx 2005-1//EN" "http://www.daisy.org/z3986/2005/ncx-2005-1.dtd"><ncx xmlns="http://www.daisy.org/z3986/2005/ncx/" version="2005-1"><navMap>'+contents+'</navMap></ncx>';
+const ncxPoint=(title,src,inside='')=>'<navPoint><navLabel><text>'+title+'</text></navLabel><content src="'+src+'"/>'+inside+'</navPoint>';
+const completeNcx=ncx(ncxPoint('Last NCX','../a.xhtml#three')+ncxPoint('First NCX','../z.xhtml#one',ncxPoint('Nested NCX','../z.xhtml#two')));
+
+test('EPUB2 NCX resolves nested relative fragments in spine order with stable source anchors',async()=>{
+ const bytes=archive({nav:false,packageText:ncxPackage(),extra:{'OPS/navigation/toc.ncx':completeNcx}}),b=await book(bytes);
+ assert.equal(b.source.structure,'epub_navigation');assert.deepEqual(b.chapters.map(c=>c.title.zh),['First NCX','Nested NCX','Last NCX']);
+ assert.deepEqual(b.sections.map(s=>s.paragraphs.map(p=>p.original)),[['Chapter One','First & real paragraph.'],['Chapter Two','Second part.'],['Chapter Three','Last paragraph.']]);
+ const paragraphs=b.sections.flatMap(s=>s.paragraphs);assert.equal(paragraphs[2].source.elementId,'two');
+ assert.deepEqual(paragraphs.map(p=>p.id),(await book(bytes)).sections.flatMap(s=>s.paragraphs.map(p=>p.id)));
+});
+
+test('EPUB3 usable navigation has priority over a legacy NCX',async()=>{
+ const b=await book(archive({packageText:ncxPackage({nav:true}),extra:{'OPS/navigation/toc.ncx':completeNcx}}));
+ assert.deepEqual(b.chapters.map(c=>c.title.zh),['One','Two','Three']);
+});
+
+test('EPUB3 absent, empty, malformed and unresolved optional nav falls back to NCX',async()=>{
+ for(const navContent of [null,xhtml('<nav xmlns:epub="http://www.idpf.org/2007/ops" epub:type="toc"><ol/></nav>'),'<html><body><nav></body></html>',xhtml('<nav xmlns:epub="http://www.idpf.org/2007/ops" epub:type="toc"><a href="z.xhtml#unknown">Unresolved</a></nav>')]){
+  const b=await book(archive({packageText:ncxPackage({nav:true}),extra:{'OPS/nav.xhtml':navContent,'OPS/navigation/toc.ncx':completeNcx}}));
+  assert.deepEqual(b.chapters.map(c=>c.title.zh),['First NCX','Nested NCX','Last NCX']);
+ }
+});
+
+test('partial EPUB navigation keeps unlisted spine documents separate without dropping their text',async()=>{
+ const bytes=archive({packageText:ncxPackage({nav:true,middle:true}),extra:{'OPS/navigation/toc.ncx':completeNcx,'OPS/middle.xhtml':xhtml('<h1>Unlisted Middle</h1><p>Keep this entire middle document.</p>')}}),b=await book(bytes);
+ assert.deepEqual(b.chapters.map(c=>c.title.zh),['One','Two','Unlisted Middle','Three']);
+ assert.deepEqual(b.sections[2].paragraphs.map(p=>p.original),['Unlisted Middle','Keep this entire middle document.']);
+ assert.deepEqual(b.sections.map(s=>[...new Set(s.paragraphs.map(p=>p.source.href))]),[['OPS/z.xhtml'],['OPS/z.xhtml'],['OPS/middle.xhtml'],['OPS/a.xhtml']]);
+});
+
+test('malformed optional NCX falls back to spine while unsafe navigation still rejects',async()=>{
+ const b=await book(archive({nav:false,packageText:ncxPackage(),extra:{'OPS/navigation/toc.ncx':'<ncx><navMap><navPoint></navMap></ncx>'}}));
+ assert.equal(b.source.structure,'epub_spine');assert.deepEqual(b.chapters.map(c=>c.title.zh),['Chapter One','Chapter Three']);
+ for(const src of ['https://invalid.example/book.xhtml','../../../outside.xhtml']){
+  await assert.rejects(book(archive({nav:false,packageText:ncxPackage(),extra:{'OPS/navigation/toc.ncx':ncx(ncxPoint('Unsafe',src))}})),/路径|外部|超出/);
+ }
+ await assert.rejects(book(archive({packageText:ncxPackage({nav:true}),extra:{'OPS/nav.xhtml':xhtml('<nav xmlns:epub="http://www.idpf.org/2007/ops" epub:type="toc"><a href="https://invalid.example/book.xhtml">Unsafe</a></nav>'),'OPS/navigation/toc.ncx':completeNcx}})),/路径|外部/);
+ await assert.rejects(book(archive({nav:false,packageText:ncxPackage(),extra:{'OPS/navigation/toc.ncx':'<!DOCTYPE ncx [<!ENTITY secret SYSTEM "file:///etc/passwd">]><ncx>&secret;</ncx>'}})),/实体|DTD/);
+});
 
 test('a large bounded EPUB keeps more than 1200 real chapters and source publication metadata',async()=>{
  const extra={},items=[],refs=[];for(let i=0;i<1301;i++){extra['OPS/part-'+i+'.xhtml']=xhtml('<h1>Chapter '+i+'</h1><p>Original paragraph '+i+'</p>');items.push('<item id="p'+i+'" href="part-'+i+'.xhtml" media-type="application/xhtml+xml"/>');refs.push('<itemref idref="p'+i+'"/>');}

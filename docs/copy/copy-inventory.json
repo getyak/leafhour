@@ -130,7 +130,7 @@
       },
       {
         "file": "app/book-import-shelf.mjs",
-        "sha256": "90f1e019b0e3d395701e49c20c654ae5d9dbfa3866f55c2f6afe40813677fc80"
+        "sha256": "3da25c9db4beae4724fd9fb91a995ccc60fd103f6d4f8fea6f75c0b7f53408a1"
       },
       {
         "file": "app/book-introduction-controller.mjs",
@@ -162,7 +162,7 @@
       },
       {
         "file": "app/chat-book-upload.mjs",
-        "sha256": "944c3871e649ab56400c5f92364a1f6885a3bfcd209318237cfb9d04c9f89d13"
+        "sha256": "c7c7e49668ce2f8189bfaa083bd150a0776abdebb1da60a5ebc400f0403fe59f"
       },
       {
         "file": "app/chat-stream.mjs",
@@ -306,7 +306,7 @@
       },
       {
         "file": "app/home.html",
-        "sha256": "ea8ff92e0d48f2a766f368c78b6ac4124a7d920c859e948e8f8cf37249efbc18"
+        "sha256": "a7db4bb81e985237e5f0b74c0bde3147069b079a668d3ba025892649293e86e9"
       },
       {
         "file": "app/index.html",
@@ -698,7 +698,7 @@
       },
       {
         "file": "app/reader-navigation.mjs",
-        "sha256": "9e629d4a582cd0c0c7f9b29cadf91d0632a80dd3f77391efb7d6306027ba4d11"
+        "sha256": "44e0263fcab6272c5af0b0712356cdd426d987468cc4f477c80402edaf93e918"
       },
       {
         "file": "app/reader-page-inputs.mjs",
@@ -1014,7 +1014,7 @@
       },
       {
         "file": "app/upload-state.mjs",
-        "sha256": "aa1766223f29a80a0535a0a4c76fa6548f0f45976162c60e02e63b0566d5c362"
+        "sha256": "22ae348f3d538ad67187e36aeb35f7e103dcd65d5dce58bbdf09770369ba1eb9"
       },
       {
         "file": "app/zh-hans/mcp.html",
@@ -1118,7 +1118,7 @@
       },
       {
         "file": "server/book-ingestion.mjs",
-        "sha256": "0f80a0c7f46d552981cf66dc07042e4daacbf33a4928bddad24bd651260cfa6c"
+        "sha256": "e09062060fbc294c5bf4966c5f49329db520fdede2003df8cac0edda1468b0db"
       },
       {
         "file": "server/book-introduction-store.mjs",
@@ -1182,7 +1182,7 @@
       },
       {
         "file": "server/document-import.mjs",
-        "sha256": "8c4df0e97ec9c55b11d2d2c5277e2ae497a0fc70427545d5640fbc57a88b4a8b"
+        "sha256": "45d4a3918803154e8366dd449582585bbc95c079940645adc6a036ad7cef3d11"
       },
       {
         "file": "server/email-auth.mjs",
@@ -1190,7 +1190,7 @@
       },
       {
         "file": "server/epub-import.mjs",
-        "sha256": "d743f8dab3ba74f0780bcf009ec289ac6d7c759b51177283753f4c5c783f1bf7"
+        "sha256": "ff9dad1adb1c7a5cf0ac2bd61f4c093118c8dedecf48b0c2ba638ff6401114a1"
       },
       {
         "file": "server/experience-metrics.mjs",
@@ -1226,7 +1226,7 @@
       },
       {
         "file": "server/ingestion-upload.mjs",
-        "sha256": "7b5db30122325e8a364b2701105f6a8d94ea73ed0f68d4950649648024e0285d"
+        "sha256": "a09e59ad39ed408e9e42658e4ce772865289428dda6f69e1d6571af2662483b0"
       },
       {
         "file": "server/library-arrival.mjs",
@@ -1242,7 +1242,7 @@
       },
       {
         "file": "server/library-service.mjs",
-        "sha256": "cc40e7d380df748a332cea6b6975990da54bdc239cf359dfa018d77756790647"
+        "sha256": "41e685c5ada1f2bdb2268ac88cefcbce7d6abf62593c416bc0b969a6468ffdac"
       },
       {
         "file": "server/listening-guide-content.mjs",
@@ -1298,7 +1298,11 @@
       },
       {
         "file": "server/pdf-native.mjs",
-        "sha256": "be6a93141d6b41d4f034ff3d687eff97b9229e5819528676008f089c4c8d5287"
+        "sha256": "1876c85907541394c13a2d79c179d1654d1acc7604a223ae449ab1297b038d6f"
+      },
+      {
+        "file": "server/pdf-outline.mjs",
+        "sha256": "2df9bba33625913be368c40c369e1d5733a0cd1cd4e52b4e31a2fc9faf8bc740"
       },
       {
         "file": "server/pdf-source-evidence.mjs",
@@ -1433,6 +1437,10 @@
         "sha256": "ff457170a3d9de36d88c66cad58ff94e21adc1458337a57d512133462daff94b"
       },
       {
+        "file": "server/text-structure.mjs",
+        "sha256": "13e8aa6db792a52884e5cbd4feba478a28edd83f9b3951fd7063e8399ae31610"
+      },
+      {
         "file": "server/translation-batch.mjs",
         "sha256": "0dd729e5d307a7ca788e4b784f24dbcddab00b76d4d4c5fe69c70d7aa629c225"
       },
@@ -1453,7 +1461,7 @@
         "sha256": "531202f1814314b6c76bfef38b2ea66636425b1ca9b445db349e70ebb8bcd00e"
       }
     ],
-    "inputDigest": "89edbf0bf4f5714ad7469eada5fc5110ff12dc8dabd5c5dbc802267934d90b91"
+    "inputDigest": "4bd7bfa609997d8b34c607da8e0f14019bf7c81e6b80c93e09fd9ef55e22788e"
   },
   "locales": [
     "en",
@@ -21033,12 +21041,12 @@
         },
         {
           "file": "server/epub-import.mjs",
-          "line": 100,
+          "line": 154,
           "column": 86
         },
         {
           "file": "server/epub-import.mjs",
-          "line": 110,
+          "line": 164,
           "column": 40
         },
         {
@@ -27843,7 +27851,7 @@
         },
         {
           "file": "server/epub-import.mjs",
-          "line": 77,
+          "line": 86,
           "column": 56
         }
       ],
@@ -28419,7 +28427,7 @@
         },
         {
           "file": "server/epub-import.mjs",
-          "line": 77,
+          "line": 86,
           "column": 108
         }
       ],
@@ -52719,7 +52727,7 @@
         {
           "file": "app/reader-navigation.mjs",
           "line": 32,
-          "column": 164
+          "column": 154
         }
       ],
       "hints": [
@@ -204055,10 +204063,10 @@
       }
     },
     {
-      "id": "candidate:app/home.html:118:729",
+      "id": "candidate:app/home.html:118:739",
       "file": "app/home.html",
       "line": 118,
-      "column": 729,
+      "column": 739,
       "kind": "html-text",
       "property": null,
       "value": "自动整理文字版与扫描版。需要借助外部识别时，再由你确认；原文件始终保留。",
@@ -204081,10 +204089,10 @@
       }
     },
     {
-      "id": "candidate:app/home.html:118:919",
+      "id": "candidate:app/home.html:118:929",
       "file": "app/home.html",
       "line": 118,
-      "column": 919,
+      "column": 929,
       "kind": "html-text",
       "property": null,
       "value": "放进我的书房",
@@ -204107,10 +204115,10 @@
       }
     },
     {
-      "id": "candidate:app/home.html:118:932",
+      "id": "candidate:app/home.html:118:942",
       "file": "app/home.html",
       "line": 118,
-      "column": 932,
+      "column": 942,
       "kind": "html-text",
       "property": null,
       "value": "→",
@@ -236035,10 +236043,10 @@
       }
     },
     {
-      "id": "candidate:app/reader-navigation.mjs:32:187",
+      "id": "candidate:app/reader-navigation.mjs:32:177",
       "file": "app/reader-navigation.mjs",
       "line": 32,
-      "column": 187,
+      "column": 177,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "附",
@@ -242399,10 +242407,10 @@
       }
     },
     {
-      "id": "candidate:app/upload-state.mjs:9:153",
+      "id": "candidate:app/upload-state.mjs:9:162",
       "file": "app/upload-state.mjs",
       "line": 9,
-      "column": 153,
+      "column": 162,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "目前支持 PDF、EPUB、TXT 和 Markdown。请重新选择文件。",
@@ -254539,10 +254547,10 @@
       }
     },
     {
-      "id": "candidate:server/book-ingestion.mjs:37:172",
+      "id": "candidate:server/book-ingestion.mjs:37:181",
       "file": "server/book-ingestion.mjs",
       "line": 37,
-      "column": 172,
+      "column": 181,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "请选择 20 MB 内的 EPUB 或文本文件",
@@ -258459,9 +258467,9 @@
       }
     },
     {
-      "id": "candidate:server/document-import.mjs:12:32",
+      "id": "candidate:server/document-import.mjs:14:32",
       "file": "server/document-import.mjs",
-      "line": 12,
+      "line": 14,
       "column": 32,
       "kind": "js-cjk-literal",
       "property": null,
@@ -258479,9 +258487,9 @@
       }
     },
     {
-      "id": "candidate:server/document-import.mjs:14:102",
+      "id": "candidate:server/document-import.mjs:16:102",
       "file": "server/document-import.mjs",
-      "line": 14,
+      "line": 16,
       "column": 102,
       "kind": "js-cjk-literal",
       "property": null,
@@ -258499,9 +258507,9 @@
       }
     },
     {
-      "id": "candidate:server/document-import.mjs:31:78",
+      "id": "candidate:server/document-import.mjs:33:78",
       "file": "server/document-import.mjs",
-      "line": 31,
+      "line": 33,
       "column": 78,
       "kind": "js-cjk-literal",
       "property": null,
@@ -258519,9 +258527,9 @@
       }
     },
     {
-      "id": "candidate:server/document-import.mjs:32:30",
+      "id": "candidate:server/document-import.mjs:34:30",
       "file": "server/document-import.mjs",
-      "line": 32,
+      "line": 34,
       "column": 30,
       "kind": "js-cjk-literal",
       "property": null,
@@ -258539,9 +258547,9 @@
       }
     },
     {
-      "id": "candidate:server/document-import.mjs:37:123",
+      "id": "candidate:server/document-import.mjs:39:123",
       "file": "server/document-import.mjs",
-      "line": 37,
+      "line": 39,
       "column": 123,
       "kind": "js-cjk-literal",
       "property": null,
@@ -258559,9 +258567,9 @@
       }
     },
     {
-      "id": "candidate:server/document-import.mjs:38:114",
+      "id": "candidate:server/document-import.mjs:40:114",
       "file": "server/document-import.mjs",
-      "line": 38,
+      "line": 40,
       "column": 114,
       "kind": "js-cjk-literal",
       "property": null,
@@ -258579,10 +258587,10 @@
       }
     },
     {
-      "id": "candidate:server/document-import.mjs:40:62",
+      "id": "candidate:server/document-import.mjs:42:74",
       "file": "server/document-import.mjs",
-      "line": 40,
-      "column": 62,
+      "line": 42,
+      "column": 74,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "目前支持 PDF、EPUB、TXT 和 Markdown",
@@ -258599,9 +258607,9 @@
       }
     },
     {
-      "id": "candidate:server/document-import.mjs:46:58",
+      "id": "candidate:server/document-import.mjs:48:58",
       "file": "server/document-import.mjs",
-      "line": 46,
+      "line": 48,
       "column": 58,
       "kind": "js-cjk-literal",
       "property": null,
@@ -258619,9 +258627,9 @@
       }
     },
     {
-      "id": "candidate:server/document-import.mjs:55:42",
+      "id": "candidate:server/document-import.mjs:57:42",
       "file": "server/document-import.mjs",
-      "line": 55,
+      "line": 57,
       "column": 42,
       "kind": "js-cjk-literal",
       "property": null,
@@ -258639,9 +258647,9 @@
       }
     },
     {
-      "id": "candidate:server/document-import.mjs:61:56",
+      "id": "candidate:server/document-import.mjs:63:56",
       "file": "server/document-import.mjs",
-      "line": 61,
+      "line": 63,
       "column": 56,
       "kind": "js-cjk-literal",
       "property": null,
@@ -258659,9 +258667,9 @@
       }
     },
     {
-      "id": "candidate:server/document-import.mjs:64:68",
+      "id": "candidate:server/document-import.mjs:66:68",
       "file": "server/document-import.mjs",
-      "line": 64,
+      "line": 66,
       "column": 68,
       "kind": "js-cjk-literal",
       "property": null,
@@ -258679,9 +258687,9 @@
       }
     },
     {
-      "id": "candidate:server/document-import.mjs:66:89",
+      "id": "candidate:server/document-import.mjs:68:89",
       "file": "server/document-import.mjs",
-      "line": 66,
+      "line": 68,
       "column": 89,
       "kind": "js-cjk-literal",
       "property": null,
@@ -258699,9 +258707,9 @@
       }
     },
     {
-      "id": "candidate:server/document-import.mjs:66:107",
+      "id": "candidate:server/document-import.mjs:68:107",
       "file": "server/document-import.mjs",
-      "line": 66,
+      "line": 68,
       "column": 107,
       "kind": "js-cjk-literal",
       "property": null,
@@ -258719,9 +258727,9 @@
       }
     },
     {
-      "id": "candidate:server/document-import.mjs:80:36",
+      "id": "candidate:server/document-import.mjs:109:36",
       "file": "server/document-import.mjs",
-      "line": 80,
+      "line": 109,
       "column": 36,
       "kind": "js-cjk-literal",
       "property": null,
@@ -258739,9 +258747,9 @@
       }
     },
     {
-      "id": "candidate:server/document-import.mjs:94:60",
+      "id": "candidate:server/document-import.mjs:125:60",
       "file": "server/document-import.mjs",
-      "line": 94,
+      "line": 125,
       "column": 60,
       "kind": "js-cjk-literal",
       "property": null,
@@ -258759,9 +258767,9 @@
       }
     },
     {
-      "id": "candidate:server/document-import.mjs:96:183",
+      "id": "candidate:server/document-import.mjs:127:183",
       "file": "server/document-import.mjs",
-      "line": 96,
+      "line": 127,
       "column": 183,
       "kind": "js-cjk-literal",
       "property": null,
@@ -258779,9 +258787,9 @@
       }
     },
     {
-      "id": "candidate:server/document-import.mjs:96:257",
+      "id": "candidate:server/document-import.mjs:127:257",
       "file": "server/document-import.mjs",
-      "line": 96,
+      "line": 127,
       "column": 257,
       "kind": "js-cjk-literal",
       "property": null,
@@ -259459,9 +259467,9 @@
       }
     },
     {
-      "id": "candidate:server/epub-import.mjs:63:164",
+      "id": "candidate:server/epub-import.mjs:72:164",
       "file": "server/epub-import.mjs",
-      "line": 63,
+      "line": 72,
       "column": 164,
       "kind": "js-cjk-literal",
       "property": null,
@@ -259479,9 +259487,9 @@
       }
     },
     {
-      "id": "candidate:server/epub-import.mjs:65:91",
+      "id": "candidate:server/epub-import.mjs:74:91",
       "file": "server/epub-import.mjs",
-      "line": 65,
+      "line": 74,
       "column": 91,
       "kind": "js-cjk-literal",
       "property": null,
@@ -259499,9 +259507,9 @@
       }
     },
     {
-      "id": "candidate:server/epub-import.mjs:66:120",
+      "id": "candidate:server/epub-import.mjs:75:120",
       "file": "server/epub-import.mjs",
-      "line": 66,
+      "line": 75,
       "column": 120,
       "kind": "js-cjk-literal",
       "property": null,
@@ -259519,9 +259527,9 @@
       }
     },
     {
-      "id": "candidate:server/epub-import.mjs:68:35",
+      "id": "candidate:server/epub-import.mjs:77:35",
       "file": "server/epub-import.mjs",
-      "line": 68,
+      "line": 77,
       "column": 35,
       "kind": "js-cjk-literal",
       "property": null,
@@ -259539,9 +259547,9 @@
       }
     },
     {
-      "id": "candidate:server/epub-import.mjs:74:105",
+      "id": "candidate:server/epub-import.mjs:83:105",
       "file": "server/epub-import.mjs",
-      "line": 74,
+      "line": 83,
       "column": 105,
       "kind": "js-cjk-literal",
       "property": null,
@@ -259559,9 +259567,9 @@
       }
     },
     {
-      "id": "candidate:server/epub-import.mjs:75:106",
+      "id": "candidate:server/epub-import.mjs:84:106",
       "file": "server/epub-import.mjs",
-      "line": 75,
+      "line": 84,
       "column": 106,
       "kind": "js-cjk-literal",
       "property": null,
@@ -259579,9 +259587,9 @@
       }
     },
     {
-      "id": "candidate:server/epub-import.mjs:75:209",
+      "id": "candidate:server/epub-import.mjs:84:209",
       "file": "server/epub-import.mjs",
-      "line": 75,
+      "line": 84,
       "column": 209,
       "kind": "js-cjk-literal",
       "property": null,
@@ -259599,9 +259607,9 @@
       }
     },
     {
-      "id": "candidate:server/epub-import.mjs:76:60",
+      "id": "candidate:server/epub-import.mjs:85:60",
       "file": "server/epub-import.mjs",
-      "line": 76,
+      "line": 85,
       "column": 60,
       "kind": "js-cjk-literal",
       "property": null,
@@ -259619,9 +259627,9 @@
       }
     },
     {
-      "id": "candidate:server/epub-import.mjs:78:271",
+      "id": "candidate:server/epub-import.mjs:87:271",
       "file": "server/epub-import.mjs",
-      "line": 78,
+      "line": 87,
       "column": 271,
       "kind": "js-cjk-literal",
       "property": null,
@@ -259639,9 +259647,9 @@
       }
     },
     {
-      "id": "candidate:server/epub-import.mjs:89:75",
+      "id": "candidate:server/epub-import.mjs:144:75",
       "file": "server/epub-import.mjs",
-      "line": 89,
+      "line": 144,
       "column": 75,
       "kind": "js-cjk-literal",
       "property": null,
@@ -259659,9 +259667,9 @@
       }
     },
     {
-      "id": "candidate:server/epub-import.mjs:90:151",
+      "id": "candidate:server/epub-import.mjs:145:151",
       "file": "server/epub-import.mjs",
-      "line": 90,
+      "line": 145,
       "column": 151,
       "kind": "js-cjk-literal",
       "property": null,
@@ -259679,9 +259687,9 @@
       }
     },
     {
-      "id": "candidate:server/epub-import.mjs:91:92",
+      "id": "candidate:server/epub-import.mjs:146:92",
       "file": "server/epub-import.mjs",
-      "line": 91,
+      "line": 146,
       "column": 92,
       "kind": "js-cjk-literal",
       "property": null,
@@ -259699,9 +259707,9 @@
       }
     },
     {
-      "id": "candidate:server/epub-import.mjs:92:159",
+      "id": "candidate:server/epub-import.mjs:147:159",
       "file": "server/epub-import.mjs",
-      "line": 92,
+      "line": 147,
       "column": 159,
       "kind": "js-cjk-literal",
       "property": null,
@@ -259719,9 +259727,9 @@
       }
     },
     {
-      "id": "candidate:server/epub-import.mjs:93:132",
+      "id": "candidate:server/epub-import.mjs:148:132",
       "file": "server/epub-import.mjs",
-      "line": 93,
+      "line": 148,
       "column": 132,
       "kind": "js-cjk-literal",
       "property": null,
@@ -259739,9 +259747,9 @@
       }
     },
     {
-      "id": "candidate:server/epub-import.mjs:94:121",
+      "id": "candidate:server/epub-import.mjs:149:121",
       "file": "server/epub-import.mjs",
-      "line": 94,
+      "line": 149,
       "column": 121,
       "kind": "js-cjk-literal",
       "property": null,
@@ -259759,9 +259767,9 @@
       }
     },
     {
-      "id": "candidate:server/epub-import.mjs:96:147",
+      "id": "candidate:server/epub-import.mjs:151:147",
       "file": "server/epub-import.mjs",
-      "line": 96,
+      "line": 151,
       "column": 147,
       "kind": "js-cjk-literal",
       "property": null,
@@ -259779,9 +259787,9 @@
       }
     },
     {
-      "id": "candidate:server/epub-import.mjs:96:214",
+      "id": "candidate:server/epub-import.mjs:151:214",
       "file": "server/epub-import.mjs",
-      "line": 96,
+      "line": 151,
       "column": 214,
       "kind": "js-cjk-literal",
       "property": null,
@@ -259799,9 +259807,9 @@
       }
     },
     {
-      "id": "candidate:server/epub-import.mjs:96:442",
+      "id": "candidate:server/epub-import.mjs:151:442",
       "file": "server/epub-import.mjs",
-      "line": 96,
+      "line": 151,
       "column": 442,
       "kind": "js-cjk-literal",
       "property": null,
@@ -259819,9 +259827,9 @@
       }
     },
     {
-      "id": "candidate:server/epub-import.mjs:96:566",
+      "id": "candidate:server/epub-import.mjs:151:566",
       "file": "server/epub-import.mjs",
-      "line": 96,
+      "line": 151,
       "column": 566,
       "kind": "js-cjk-literal",
       "property": null,
@@ -259839,9 +259847,9 @@
       }
     },
     {
-      "id": "candidate:server/epub-import.mjs:97:34",
+      "id": "candidate:server/epub-import.mjs:152:34",
       "file": "server/epub-import.mjs",
-      "line": 97,
+      "line": 152,
       "column": 34,
       "kind": "js-cjk-literal",
       "property": null,
@@ -259859,9 +259867,9 @@
       }
     },
     {
-      "id": "candidate:server/epub-import.mjs:103:58",
+      "id": "candidate:server/epub-import.mjs:157:58",
       "file": "server/epub-import.mjs",
-      "line": 103,
+      "line": 157,
       "column": 58,
       "kind": "js-cjk-literal",
       "property": null,
@@ -259879,9 +259887,9 @@
       }
     },
     {
-      "id": "candidate:server/epub-import.mjs:108:35",
+      "id": "candidate:server/epub-import.mjs:162:35",
       "file": "server/epub-import.mjs",
-      "line": 108,
+      "line": 162,
       "column": 35,
       "kind": "js-cjk-literal",
       "property": null,
@@ -259899,9 +259907,9 @@
       }
     },
     {
-      "id": "candidate:server/epub-import.mjs:115:35",
+      "id": "candidate:server/epub-import.mjs:169:35",
       "file": "server/epub-import.mjs",
-      "line": 115,
+      "line": 169,
       "column": 35,
       "kind": "js-cjk-literal",
       "property": null,
@@ -259919,9 +259927,9 @@
       }
     },
     {
-      "id": "candidate:server/epub-import.mjs:116:26",
+      "id": "candidate:server/epub-import.mjs:170:26",
       "file": "server/epub-import.mjs",
-      "line": 116,
+      "line": 170,
       "column": 26,
       "kind": "js-cjk-literal",
       "property": null,
@@ -259939,9 +259947,9 @@
       }
     },
     {
-      "id": "candidate:server/epub-import.mjs:123:42",
+      "id": "candidate:server/epub-import.mjs:177:42",
       "file": "server/epub-import.mjs",
-      "line": 123,
+      "line": 177,
       "column": 42,
       "kind": "js-cjk-literal",
       "property": null,
@@ -260859,10 +260867,10 @@
       }
     },
     {
-      "id": "candidate:server/ingestion-upload.mjs:10:404",
+      "id": "candidate:server/ingestion-upload.mjs:10:413",
       "file": "server/ingestion-upload.mjs",
       "line": 10,
-      "column": 404,
+      "column": 413,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "请选择容量内的 PDF、EPUB 或文本文件",
@@ -266919,9 +266927,9 @@
       }
     },
     {
-      "id": "candidate:server/pdf-native.mjs:6:127",
+      "id": "candidate:server/pdf-native.mjs:7:127",
       "file": "server/pdf-native.mjs",
-      "line": 6,
+      "line": 7,
       "column": 127,
       "kind": "js-cjk-literal",
       "property": null,
@@ -266939,9 +266947,9 @@
       }
     },
     {
-      "id": "candidate:server/pdf-native.mjs:6:152",
+      "id": "candidate:server/pdf-native.mjs:7:152",
       "file": "server/pdf-native.mjs",
-      "line": 6,
+      "line": 7,
       "column": 152,
       "kind": "js-cjk-literal",
       "property": null,
@@ -266959,9 +266967,9 @@
       }
     },
     {
-      "id": "candidate:server/pdf-native.mjs:11:40",
+      "id": "candidate:server/pdf-native.mjs:12:40",
       "file": "server/pdf-native.mjs",
-      "line": 11,
+      "line": 12,
       "column": 40,
       "kind": "js-cjk-literal",
       "property": null,
@@ -266979,9 +266987,9 @@
       }
     },
     {
-      "id": "candidate:server/pdf-native.mjs:15:68",
+      "id": "candidate:server/pdf-native.mjs:16:68",
       "file": "server/pdf-native.mjs",
-      "line": 15,
+      "line": 16,
       "column": 68,
       "kind": "js-cjk-literal",
       "property": null,
@@ -303640,7 +303648,7 @@
     {
       "kind": "computed-member",
       "file": "server/document-import.mjs",
-      "line": 22,
+      "line": 24,
       "expression": "i",
       "fragments": [],
       "unresolved": true
@@ -303648,7 +303656,7 @@
     {
       "kind": "computed-member",
       "file": "server/document-import.mjs",
-      "line": 22,
+      "line": 24,
       "expression": "i+1",
       "fragments": [],
       "unresolved": true
@@ -303656,7 +303664,7 @@
     {
       "kind": "computed-member",
       "file": "server/document-import.mjs",
-      "line": 60,
+      "line": 62,
       "expression": "5",
       "fragments": [],
       "unresolved": true
@@ -303665,7 +303673,7 @@
       "kind": "computed-member",
       "file": "server/document-import.mjs",
       "line": 77,
-      "expression": "blockIndex",
+      "expression": "end-1",
       "fragments": [],
       "unresolved": true
     },
@@ -303673,6 +303681,14 @@
       "kind": "computed-member",
       "file": "server/document-import.mjs",
       "line": 77,
+      "expression": "end",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/document-import.mjs",
+      "line": 92,
       "expression": "blockIndex",
       "fragments": [],
       "unresolved": true
@@ -303680,7 +303696,7 @@
     {
       "kind": "concatenation",
       "file": "server/document-import.mjs",
-      "line": 77,
+      "line": 98,
       "expression": "'-'+partIndex",
       "fragments": [
         "-"
@@ -303690,7 +303706,7 @@
     {
       "kind": "template",
       "file": "server/document-import.mjs",
-      "line": 77,
+      "line": 98,
       "expression": "`${sourceHash.slice(0,16)}-p${String(paragraphs.length+1).padStart(5,'0')}`",
       "fragments": [
         "-p"
@@ -303698,49 +303714,9 @@
       "unresolved": true
     },
     {
-      "kind": "computed-member",
-      "file": "server/document-import.mjs",
-      "line": 77,
-      "expression": "blockIndex",
-      "fragments": [],
-      "unresolved": true
-    },
-    {
-      "kind": "computed-member",
-      "file": "server/document-import.mjs",
-      "line": 77,
-      "expression": "blockIndex",
-      "fragments": [],
-      "unresolved": true
-    },
-    {
-      "kind": "computed-member",
-      "file": "server/document-import.mjs",
-      "line": 77,
-      "expression": "blockIndex",
-      "fragments": [],
-      "unresolved": true
-    },
-    {
-      "kind": "computed-member",
-      "file": "server/document-import.mjs",
-      "line": 77,
-      "expression": "blockIndex",
-      "fragments": [],
-      "unresolved": true
-    },
-    {
-      "kind": "computed-member",
-      "file": "server/document-import.mjs",
-      "line": 77,
-      "expression": "blockIndex",
-      "fragments": [],
-      "unresolved": true
-    },
-    {
       "kind": "concatenation",
       "file": "server/document-import.mjs",
-      "line": 84,
+      "line": 113,
       "expression": "p.source.href+'#'",
       "fragments": [
         "#"
@@ -303750,7 +303726,7 @@
     {
       "kind": "concatenation",
       "file": "server/document-import.mjs",
-      "line": 85,
+      "line": 114,
       "expression": "nav.href+'#'",
       "fragments": [
         "#"
@@ -303760,7 +303736,7 @@
     {
       "kind": "computed-member",
       "file": "server/document-import.mjs",
-      "line": 90,
+      "line": 119,
       "expression": "i-1",
       "fragments": [],
       "unresolved": true
@@ -303768,7 +303744,7 @@
     {
       "kind": "computed-member",
       "file": "server/document-import.mjs",
-      "line": 94,
+      "line": 125,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -303776,7 +303752,7 @@
     {
       "kind": "computed-member",
       "file": "server/document-import.mjs",
-      "line": 94,
+      "line": 125,
       "expression": "i",
       "fragments": [],
       "unresolved": true
@@ -303784,7 +303760,7 @@
     {
       "kind": "concatenation",
       "file": "server/document-import.mjs",
-      "line": 94,
+      "line": 125,
       "expression": "'ch'+String(number).padStart(2,'0')",
       "fragments": [
         "ch"
@@ -303794,7 +303770,7 @@
     {
       "kind": "computed-member",
       "file": "server/document-import.mjs",
-      "line": 94,
+      "line": 125,
       "expression": "i+1",
       "fragments": [],
       "unresolved": true
@@ -303802,7 +303778,7 @@
     {
       "kind": "concatenation",
       "file": "server/document-import.mjs",
-      "line": 96,
+      "line": 127,
       "expression": "'ch'+String(number).padStart(2,'0')",
       "fragments": [
         "ch"
@@ -303812,7 +303788,7 @@
     {
       "kind": "template",
       "file": "server/document-import.mjs",
-      "line": 96,
+      "line": 127,
       "expression": "`阅读片段 ${number}`",
       "fragments": [
         "阅读片段 "
@@ -304022,7 +303998,7 @@
     {
       "kind": "computed-member",
       "file": "server/epub-import.mjs",
-      "line": 76,
+      "line": 85,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -304030,7 +304006,7 @@
     {
       "kind": "concatenation",
       "file": "server/epub-import.mjs",
-      "line": 78,
+      "line": 87,
       "expression": "sourceHash.slice(0,16)+'-e'",
       "fragments": [
         "-e"
@@ -304040,7 +304016,15 @@
     {
       "kind": "computed-member",
       "file": "server/epub-import.mjs",
-      "line": 91,
+      "line": 118,
+      "expression": "0",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/epub-import.mjs",
+      "line": 122,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -304048,7 +304032,25 @@
     {
       "kind": "concatenation",
       "file": "server/epub-import.mjs",
-      "line": 96,
+      "line": 137,
+      "expression": "pageIndex+':'",
+      "fragments": [
+        ":"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/epub-import.mjs",
+      "line": 146,
+      "expression": "0",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "server/epub-import.mjs",
+      "line": 151,
       "expression": "'阅读片段 '+(pages.length+1)",
       "fragments": [
         "阅读片段 "
@@ -304058,7 +304060,7 @@
     {
       "kind": "computed-member",
       "file": "server/epub-import.mjs",
-      "line": 100,
+      "line": 154,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -304066,7 +304068,7 @@
     {
       "kind": "computed-member",
       "file": "server/epub-import.mjs",
-      "line": 100,
+      "line": 154,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -304074,7 +304076,7 @@
     {
       "kind": "computed-member",
       "file": "server/epub-import.mjs",
-      "line": 100,
+      "line": 154,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -304082,7 +304084,7 @@
     {
       "kind": "computed-member",
       "file": "server/epub-import.mjs",
-      "line": 101,
+      "line": 155,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -304090,7 +304092,7 @@
     {
       "kind": "computed-member",
       "file": "server/epub-import.mjs",
-      "line": 109,
+      "line": 163,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -304098,7 +304100,7 @@
     {
       "kind": "computed-member",
       "file": "server/epub-import.mjs",
-      "line": 110,
+      "line": 164,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -304106,7 +304108,7 @@
     {
       "kind": "computed-member",
       "file": "server/epub-import.mjs",
-      "line": 110,
+      "line": 164,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -304114,7 +304116,7 @@
     {
       "kind": "computed-member",
       "file": "server/epub-import.mjs",
-      "line": 115,
+      "line": 169,
       "expression": "blockIndex",
       "fragments": [],
       "unresolved": true
@@ -306941,32 +306943,24 @@
     {
       "kind": "computed-member",
       "file": "server/pdf-native.mjs",
-      "line": 14,
+      "line": 15,
       "expression": "5",
       "fragments": [],
       "unresolved": true
     },
     {
       "kind": "computed-member",
-      "file": "server/pdf-native.mjs",
-      "line": 25,
-      "expression": "0",
+      "file": "server/pdf-outline.mjs",
+      "line": 13,
+      "expression": "i",
       "fragments": [],
       "unresolved": true
     },
     {
       "kind": "computed-member",
-      "file": "server/pdf-native.mjs",
-      "line": 25,
+      "file": "server/pdf-outline.mjs",
+      "line": 19,
       "expression": "0",
-      "fragments": [],
-      "unresolved": true
-    },
-    {
-      "kind": "computed-member",
-      "file": "server/pdf-native.mjs",
-      "line": 26,
-      "expression": "i-1",
       "fragments": [],
       "unresolved": true
     },
@@ -312378,6 +312372,201 @@
       "unresolved": true
     },
     {
+      "kind": "concatenation",
+      "file": "server/text-structure.mjs",
+      "line": 7,
+      "expression": "'^(?:chapter|part|book)\\\\s+(?:the\\\\s+)?(?:[0-9０-９]+|[ivxlcdm]+|(?:' + numberWords + ')(?:[ -](?:' + numberWords + '))*)(?=$|[\\\\s.:：—–-])(.*)$'",
+      "fragments": [
+        "^(?:chapter|part|book)\\s+(?:the\\s+)?(?:[0-9０-９]+|[ivxlcdm]+|(?:",
+        ")(?:[ -](?:",
+        "))*)(?=$|[\\s.:：—–-])(.*)$"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "server/text-structure.mjs",
+      "line": 7,
+      "expression": "'^(?:chapter|part|book)\\\\s+(?:the\\\\s+)?(?:[0-9０-９]+|[ivxlcdm]+|(?:' + numberWords + ')(?:[ -](?:'",
+      "fragments": [
+        "^(?:chapter|part|book)\\s+(?:the\\s+)?(?:[0-9０-９]+|[ivxlcdm]+|(?:",
+        ")(?:[ -](?:"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "server/text-structure.mjs",
+      "line": 7,
+      "expression": "'^(?:chapter|part|book)\\\\s+(?:the\\\\s+)?(?:[0-9０-９]+|[ivxlcdm]+|(?:' + numberWords",
+      "fragments": [
+        "^(?:chapter|part|book)\\s+(?:the\\s+)?(?:[0-9０-９]+|[ivxlcdm]+|(?:"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/text-structure.mjs",
+      "line": 20,
+      "expression": "1",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/text-structure.mjs",
+      "line": 41,
+      "expression": "0",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/text-structure.mjs",
+      "line": 41,
+      "expression": "0",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/text-structure.mjs",
+      "line": 55,
+      "expression": "n",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/text-structure.mjs",
+      "line": 55,
+      "expression": "0",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/text-structure.mjs",
+      "line": 55,
+      "expression": "n + 1",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "server/text-structure.mjs",
+      "line": 67,
+      "expression": "Array.from(heading.title).slice(0,59).join('')+'…'",
+      "fragments": [
+        "…"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/text-structure.mjs",
+      "line": 74,
+      "expression": "n",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/text-structure.mjs",
+      "line": 74,
+      "expression": "i",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/text-structure.mjs",
+      "line": 76,
+      "expression": "n + 1",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/text-structure.mjs",
+      "line": 76,
+      "expression": "entries[n + 1][0]",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/text-structure.mjs",
+      "line": 76,
+      "expression": "0",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/text-structure.mjs",
+      "line": 76,
+      "expression": "n + 1",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/text-structure.mjs",
+      "line": 81,
+      "expression": "begin",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/text-structure.mjs",
+      "line": 83,
+      "expression": "i",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/text-structure.mjs",
+      "line": 83,
+      "expression": "i",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/text-structure.mjs",
+      "line": 83,
+      "expression": "i",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/text-structure.mjs",
+      "line": 83,
+      "expression": "i",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/text-structure.mjs",
+      "line": 84,
+      "expression": "i",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/text-structure.mjs",
+      "line": 84,
+      "expression": "i",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
       "kind": "computed-member",
       "file": "server/translation-batch.mjs",
       "line": 19,
@@ -312925,7 +313114,7 @@
     "candidatesUnreviewed": 6303,
     "candidatesProtected": 143,
     "itemsProtected": 9,
-    "dynamicConsumers": 4057,
+    "dynamicConsumers": 4078,
     "consumerReferences": 2131,
     "keysWithoutStaticConsumers": 1337,
     "reviewedLocaleValues": 36,

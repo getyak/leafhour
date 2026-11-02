@@ -107,3 +107,10 @@ test('current chapter naming covers explicit chapters, auto-grouped fragments an
   assert.equal(navigation.currentChapterLabel(book,null),'');
   assert.equal(navigation.bookIntroduction(book,book.chapters[0]).current,'出版说明','the bookplate and the chooser share one naming');
 });
+
+test('imported source sections count as chapters and never receive appendix badges',()=>{
+ const imported={...book,source:{structure:'text_headings'},chapters:[{id:'one',number:1,kind:'source-section',title:{zh:'第一章'}},{id:'two',number:2,kind:'source-section',title:{zh:'第二章'}}],sections:[]},list=new Element('nav');
+ assert.equal(navigation.bookIntroduction(imported,imported.chapters[0]).extent,'2 章');
+ navigation.renderBookContents({list,book:imported,chapterId:'one',document:doc,onNavigate(){}});
+ assert.deepEqual(list.children.map(row=>row.children[0].children[0].textContent),['01','02']);
+});

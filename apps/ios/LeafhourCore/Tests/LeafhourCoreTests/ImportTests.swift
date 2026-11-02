@@ -473,15 +473,17 @@ final class ImportTests: XCTestCase {
         XCTAssertThrowsError(try XMLIndex(data: be))
     }
 
-    func testMarkdownCanRepairFromSelectedOriginalAfterIndexLoss() async throws {
+    func testMarkdownRepairAfterIndexLossRefusesToRewriteUnknownAnchors() async throws {
         let file = root.appendingPathComponent("notes.md")
         try "# Original\n\nKeep all content.".write(to: file, atomically: true, encoding: .utf8)
         let library = try OfflineLibrary(root: root.appendingPathComponent("library"), scope: .device)
         let book = try await library.importFile(file)
         let folder = try await library.bookDirectory(book.id)
         try FileManager.default.removeItem(at: folder.appendingPathComponent("book.json"))
-        let repaired = try await library.repair(book.id, usingOriginal: file)
-        XCTAssertEqual(repaired.kind, .markdown)
+        do { _ = try await library.repair(book.id, usingOriginal: file); XCTFail("Missing text index cannot safely recover original anchors") }
+        catch { XCTAssertTrue(error.localizedDescription.contains("索引"), error.localizedDescription) }
+        XCTAssertFalse(FileManager.default.fileExists(atPath: folder.appendingPathComponent("book.json").path))
+        XCTAssertEqual(try Data(contentsOf: folder.appendingPathComponent("source.markdown")), try Data(contentsOf: file))
     }
 
     func testFailedRepairCleansUncommittedDerivedStage() async throws {

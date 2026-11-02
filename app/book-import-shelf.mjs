@@ -13,7 +13,7 @@ export function mountBookImportShelf({root,controller,getBooks=()=>[],navigate=u
  const doc=root.ownerDocument,rows=new Map();let disposed=false;
  const el=(tag,cls)=>{const node=doc.createElement(tag);if(cls)node.className=cls;return node;};
  const heading=el('h2','import-shelf-title'),grid=el('div','import-shelf-grid');root.append(heading,grid);
- const label=task=>task.job?.title?.zh||task.job?.title?.en||task.filename.replace(/\.(pdf|epub|txt|md)$/i,'');
+ const label=task=>task.job?.title?.zh||task.job?.title?.en||task.filename.replace(/\.(pdf|epub|txt|md|markdown)$/i,'');
  function create(task){
   const card=el('article','book-import-card'),cover=el('div','book-cover'),copy=el('div','book-import-copy'),title=el('h3'),status=el('p','book-import-status'),progress=el('progress'),actions=el('div','book-import-actions');card.dataset.uploadId=task.id;cover.setAttribute('aria-hidden','true');status.setAttribute('role','status');progress.max=100;
   const controls={};for(const action of ['open','retry','consent','cancel']){const button=el('button');button.type='button';controls[action]=button;button.addEventListener('click',()=>{const current=rows.get(task.id)?.task;if(!current)return;if(action==='open'){controller.opened(current.id);navigate('/read?book='+encodeURIComponent(current.bookId));}else if(action==='retry')void controller.retry(current.id);else if(action==='consent')void controller.act(current.id,'consent');else void controller.cancel(current.id);});actions.append(button);}

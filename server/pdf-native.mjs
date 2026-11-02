@@ -1,4 +1,5 @@
 import {fail} from './document-import.mjs';
+import {resolvePdfOutline} from './pdf-outline.mjs';
 async function open(bytes){
  await import('pdfjs-dist/legacy/build/pdf.worker.mjs');
  const {getDocument}=await import('pdfjs-dist/legacy/build/pdf.mjs');
@@ -20,9 +21,6 @@ export async function inspectNativePdf(bytes){
  }finally{await task.destroy();}
 }
 export async function nativePdfOutline(bytes){
- const {task,document}=await open(bytes);try{
-  const nodes=await document.getOutline(),rows=[];
-  const walk=async list=>{for(const node of list||[]){let dest=node.dest;if(typeof dest==='string')dest=await document.getDestination(dest);if(Array.isArray(dest)&&dest[0]&&typeof node.title==='string'){try{const page=await document.getPageIndex(dest[0])+1;if(page>=1&&page<=document.numPages&&node.title.trim().length<=120)rows.push({page,title:node.title.trim()});}catch{}}await walk(node.items);}};
-  await walk(nodes);const unique=rows.filter((r,i)=>r.title&&(!i||r.page>rows[i-1].page));return unique.length>=2&&unique.length<=200?unique:[];
- }finally{await task.destroy();}
+ const {task,document}=await open(bytes);
+ try{return await resolvePdfOutline(document);}finally{await task.destroy();}
 }

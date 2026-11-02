@@ -4,13 +4,13 @@ import {unzipSync,Unzip,UnzipInflate} from 'fflate';
 import {DOMParser,XMLSerializer} from '@xmldom/xmldom';
 import {setImmediate as yieldToRequests} from 'node:timers/promises';
 
-const invalid=(message,status=422)=>Object.assign(Error('EPUB：'+message),{status});
+const invalid=(message,status=422,code)=>Object.assign(Error('EPUB：'+message),{status,...(code?{code}:{})});
 const hash=value=>createHash('sha256').update(value).digest('hex');
 const plain=value=>value.replace(/\s+/gu,' ').trim();
 const children=node=>Array.from(node.childNodes||[]);
 const elements=(node,name)=>Array.from(node?.getElementsByTagNameNS('*',name)||[]);
 const attr=(node,name)=>node.getAttribute(name)||'';
-const NS={container:'urn:oasis:names:tc:opendocument:xmlns:container',opf:'http://www.idpf.org/2007/opf',xhtml:'http://www.w3.org/1999/xhtml',epub:'http://www.idpf.org/2007/ops'};
+const NS={container:'urn:oasis:names:tc:opendocument:xmlns:container',opf:'http://www.idpf.org/2007/opf',xhtml:'http://www.w3.org/1999/xhtml',epub:'http://www.idpf.org/2007/ops',ncx:'http://www.daisy.org/z3986/2005/ncx/'};
 const table=Uint32Array.from({length:256},(_,i)=>{for(let k=0;k<8;k++)i=i&1?0xedb88320^(i>>>1):i>>>1;return i>>>0;});
 const crc=bytes=>{let c=0xffffffff;for(const b of bytes)c=table[(c^b)&255]^(c>>>8);return (c^0xffffffff)>>>0;};
 const safeName=name=>!!name&&!/[\\\u0000-\u001f]/u.test(name)&&!name.startsWith('/')&&!/^[a-z]:/i.test(name)&&name.split('/').every(p=>p!=='.'&&p!=='..')&&name.length<=1000;
@@ -55,9 +55,18 @@ function readArchive(bytes){
 }
 function parseXML(bytes,label,mime='application/xml'){
  if(!bytes||bytes.length>5*1024*1024)throw invalid(label+' XML 缺失或超过 5 MB');
- let text;try{text=new TextDecoder(bytes[0]===255&&bytes[1]===254?'utf-16le':bytes[0]===254&&bytes[1]===255?'utf-16be':'utf-8',{fatal:true}).decode(bytes);}catch{throw invalid(label+' XML 编码不受支持');}
+ let text;try{text=new TextDecoder(bytes[0]===255&&bytes[1]===254?'utf-16le':bytes[0]===254&&bytes[1]===255?'utf-16be':'utf-8',{fatal:true}).decode(bytes);}catch{throw invalid(label+' XML 编码不受支持',422,'XML_ENCODING');}
  if(/<!ENTITY|<!DOCTYPE[^>]*\[/iu.test(text))throw invalid('XML 不允许实体或内部 DTD');
- try{return new DOMParser({onError:()=>{throw Error('invalid XML');}}).parseFromString(text,mime);}catch{throw invalid(label+' XML 无法解析');}
+ try{return new DOMParser({onError:()=>{throw Error('invalid XML');}}).parseFromString(text,mime);}catch{throw invalid(label+' XML 无法解析',422,'XML_SYNTAX');}
+}
+function optionalNavigationXML(files,item,label,mime){
+ if(!item||!files.has(item.href))return null;
+ try{return parseXML(files.get(item.href),label,mime);}catch(error){
+  // Missing/broken optional navigation may fall back to NCX or the spine. Keep
+  // entity rejection and XML/archive capacity checks binding for every resource.
+  if(['XML_ENCODING','XML_SYNTAX'].includes(error.code))return null;
+  throw error;
+ }
 }
 function reference(base,value){
  if(!value||/[\\\u0000-\u0020]/u.test(value)||value.startsWith('/')||value.startsWith('//')||/^[a-z][a-z\d+.-]*:/iu.test(value)||value.includes('?'))throw invalid('外部或无效资源路径');
@@ -83,6 +92,52 @@ function sourceBlocks(doc,href,sourceHash,includeXML=false){
  }walk(body);return blocks;
 }
 
+function epubNavigation(files,pkg,manifest,pages){
+ const available=new Map(pages.map((page,index)=>{
+  const anchors=new Map();for(const [block,b] of page.blocks.entries())for(const id of b.elementIds)if(!anchors.has(id))anchors.set(id,block);
+  return [page.href,{index,anchors}];
+ }));
+ function entry(base,value,label){
+  if(!value)return null;
+  // Validate even an unresolvable or unlabelled link before considering a
+  // fallback, so an external/traversing URL never becomes a trusted target.
+  const target=reference(base,value),title=plain(label),source=available.get(target.href);
+  if(!title||!source)return null;
+  const block=target.fragment?source.anchors.get(target.fragment):0;
+  return block===undefined?null:{...target,title:title.slice(0,120),pageIndex:source.index,block};
+ }
+ const navItem=[...manifest.values()].find(item=>item.properties.includes('nav'));
+ const navDoc=optionalNavigationXML(files,navItem,'navigation','application/xhtml+xml');
+ let rows=[],source='spine';
+ if(navDoc?.documentElement?.namespaceURI===NS.xhtml){
+  const toc=elements(navDoc,'nav').find(n=>(n.getAttributeNS(NS.epub,'type')||'').split(/\s+/u).includes('toc'));
+  if(toc)rows=elements(toc,'a').map(a=>entry(navItem.href,attr(a,'href'),textOf(a))).filter(Boolean);
+ }
+ if(rows.length)source='epub3_nav';
+ else{
+  const spine=elements(pkg,'spine')[0],declared=spine&&manifest.get(attr(spine,'toc'));
+  const ncxItem=declared||[...manifest.values()].find(item=>item.type==='application/x-dtbncx+xml');
+  const ncxDoc=optionalNavigationXML(files,ncxItem,'NCX');
+  if(ncxDoc?.documentElement?.namespaceURI===NS.ncx&&ncxDoc.documentElement.localName==='ncx'){
+   const navMap=elements(ncxDoc,'navMap')[0];
+   rows=elements(navMap,'navPoint').map(point=>{
+    const label=children(point).find(n=>n.localName==='navLabel'),content=children(point).find(n=>n.localName==='content');
+    return content?entry(ncxItem.href,attr(content,'src'),label?textOf(label):''):null;
+   }).filter(Boolean);
+  }
+  if(rows.length)source='epub2_ncx';
+ }
+ if(!rows.length)return {navigation:[],source};
+ // A partial TOC cannot make the next spine document part of its predecessor.
+ // Also retain text preceding the first named fragment within a document.
+ const pageStarts=new Set(rows.filter(row=>row.block===0).map(row=>row.pageIndex));
+ for(const [pageIndex,page] of pages.entries())if(!pageStarts.has(pageIndex))rows.push({href:page.href,fragment:'',title:page.title,pageIndex,block:0});
+ rows.sort((a,b)=>a.pageIndex-b.pageIndex||a.block-b.block);
+ const seen=new Set(),navigation=[];
+ for(const {pageIndex,block,...row} of rows){const key=pageIndex+':'+block;if(!seen.has(key)){seen.add(key);navigation.push(row);}}
+ return {navigation,source};
+}
+
 export async function extractEpub(bytes,{onProgress=async()=>{}}={}){
  try{
   const files=readArchive(bytes),container=parseXML(files.get('META-INF/container.xml'),'container');
@@ -95,11 +150,10 @@ export async function extractEpub(bytes,{onProgress=async()=>{}}={}){
   const pages=[],used=new Set(),sha=hash(bytes);let chars=0;
   for(const [index,ref] of refs.entries()){const item=manifest.get(attr(ref,'idref'));if(!item||item.type!=='application/xhtml+xml')throw invalid('阅读顺序含不支持的内容，当前只支持 XHTML 正文');if(used.has(item.href))throw invalid('阅读顺序重复');used.add(item.href);const doc=parseXML(files.get(item.href),item.href,'application/xhtml+xml'),blocks=sourceBlocks(doc,item.href,sha);for(const block of blocks){chars+=block.text.length;if(chars>16000000)throw invalid('正文文字超过容量',413);}if(blocks.length)pages.push({page:null,href:item.href,title:blocks.find(b=>b.type==='epub_heading')?.text||'阅读片段 '+(pages.length+1),blocks});if(index%32===31||index===refs.length-1){await onProgress({completed:index+1,total:refs.length});await yieldToRequests();}}
   if(!pages.length)throw invalid('没有可阅读文字');
-  const navItem=[...manifest.values()].find(item=>item.properties.includes('nav')),navigation=[];
-  if(navItem){const doc=parseXML(files.get(navItem.href),'navigation','application/xhtml+xml'),toc=elements(doc,'nav').find(n=>(n.getAttributeNS(NS.epub,'type')||'').split(/\s+/u).includes('toc'));if(toc)for(const a of elements(toc,'a')){const target=reference(navItem.href,attr(a,'href')),title=plain(textOf(a));if(title&&used.has(target.href))navigation.push({...target,title:title.slice(0,120)});}}
+  const {navigation,source:navigationSource}=epubNavigation(files,pkg,manifest,pages);
   const metadata=elements(pkg,'metadata')[0],title=metadata&&plain(elements(metadata,'title')[0]?.textContent||''),author=metadata&&plain(elements(metadata,'creator')[0]?.textContent||'');
   const publicationDate=plain(elements(metadata,'date')[0]?.textContent||'');
-  return {format:'epub',review:'extracted_unreviewed',processor:'epub-spine-v1',pages,navigation,title:title?.slice(0,500),author:author?.slice(0,500),...(/^\d{4}(?:-\d{2}(?:-\d{2})?)?$/.test(publicationDate)?{publicationDate}:{}),quality:{review:'extracted_unreviewed',navigation:navItem?'provided':'missing'}};
+  return {format:'epub',review:'extracted_unreviewed',processor:'epub-spine-v1',pages,navigation,title:title?.slice(0,500),author:author?.slice(0,500),...(/^\d{4}(?:-\d{2}(?:-\d{2})?)?$/.test(publicationDate)?{publicationDate}:{}),quality:{review:'extracted_unreviewed',navigation:navigation.length?'provided':'missing',navigationSource}};
  }catch(error){if(error.status)throw error;throw invalid('ZIP 或内容无法解析，请检查文件是否完整');}
 }
 

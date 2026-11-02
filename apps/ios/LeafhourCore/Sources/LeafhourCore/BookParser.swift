@@ -80,8 +80,7 @@ enum BookParser {
         case .txt, .markdown:
             let data = try Data(contentsOf: source)
             let text = try decodePlainText(data)
-            let paragraphs = text.replacingOccurrences(of: "\r\n", with: "\n").components(separatedBy: "\n\n").filter { !$0.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }
-            chapters = [BookChapter(id: "text", title: title, sourcePath: "text", passages: try paragraphs.enumerated().map { try Task.checkCancellation(); return Passage(id: "text-\($0.offset)", text: $0.element) })]
+            chapters = try TextBookStructure.chapters(source: text, kind: kind, title: title)
         }
         title = recoveredTitle(title, filename: filename, chapters: chapters, kind: kind, candidates: titleCandidates)
         return LocalBook(id: id, title: title, author: author, kind: kind, sourceVersion: "sha256-" + id, originalFilename: filename, importedAt: Date(), chapters: chapters, readingStartChapterID: readingStartChapterID, readingStartAnchor: readingStartAnchor, coverResourcePath: coverResourcePath)
