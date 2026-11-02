@@ -124,6 +124,117 @@ final class ImportTests: XCTestCase {
         return url
     }
 
+    func testPDFPlaceholderMetadataRecoversTitleFromEarlyPages() async throws {
+        let file = root.appendingPathComponent("scan-20261102.pdf")
+        var box = CGRect(x: 0, y: 0, width: 400, height: 600)
+        let metadata = [kCGPDFContextTitle as String: "Untitled"] as CFDictionary
+        let context = try XCTUnwrap(CGContext(file as CFURL, mediaBox: &box, metadata))
+        for line in ["Copyright", "The Quiet Orchard", "This is the complete first sentence of the body."] {
+            context.beginPDFPage(nil); context.textPosition = CGPoint(x: 30, y: 500)
+            let text = NSAttributedString(string: line, attributes: [.font: CTFontCreateWithName("Helvetica" as CFString, line == "The Quiet Orchard" ? 24 : 12, nil)])
+            CTLineDraw(CTLineCreateWithAttributedString(text), context); context.endPDFPage()
+        }
+        context.closePDF()
+        let library = try OfflineLibrary(root: root.appendingPathComponent("pdf-titles"), scope: .device)
+        let book = try await library.importFile(file)
+        XCTAssertEqual(book.title, "The Quiet Orchard")
+        XCTAssertEqual(book.chapters.count, 3)
+        XCTAssertTrue(book.chapters.last!.passages.first!.text.contains("complete first sentence"))
+    }
+
+    func testWrappedPDFBodyIsNotMistakenForTitle() async throws {
+        let file = root.appendingPathComponent("document-20261102.pdf")
+        var box = CGRect(x: 0, y: 0, width: 400, height: 600)
+        let context = try XCTUnwrap(CGContext(file as CFURL, mediaBox: &box, nil))
+        context.beginPDFPage(nil)
+        for (index, line) in ["It was the best of times, it was the worst of times", "and the next ordinary line continues the same sentence"].enumerated() {
+            context.textPosition = CGPoint(x: 30, y: 500 - index * 20)
+            CTLineDraw(CTLineCreateWithAttributedString(NSAttributedString(string: line, attributes: [.font: CTFontCreateWithName("Helvetica" as CFString, 12, nil)])), context)
+        }
+        context.endPDFPage(); context.closePDF()
+        let library = try OfflineLibrary(root: root.appendingPathComponent("pdf-body"), scope: .device)
+        let book = try await library.importFile(file)
+        XCTAssertEqual(book.title, "document-20261102")
+    }
+
+    func testEPUBMetadataWinsOverFilenameAndFirstHeading() async throws {
+        let library = try OfflineLibrary(root: root.appendingPathComponent("epub-titles"), scope: .device)
+        let book = try await library.importFile(epub(chapters: 1, firstBody: "<h1>A different heading</h1><p>Original.</p>"))
+        XCTAssertEqual(book.title, "Complete book")
+    }
+
+    func testCancellationOfWorkerRetainsSourceAndRetryPublishesOnce() async throws {
+        let library = try OfflineLibrary(root: root.appendingPathComponent("cancel-worker"), scope: .device)
+        let file = try epub(chapters: 3)
+        do {
+            _ = try await library.importFile(file) { progress in
+                if progress.stage == .verifying { withUnsafeCurrentTask { $0?.cancel() } }
+            }
+            XCTFail("Cancelled worker must not publish")
+        } catch is CancellationError { }
+        let jobs = try await library.jobs(), books = try await library.books()
+        XCTAssertTrue(books.isEmpty)
+        let job = try XCTUnwrap(jobs.first)
+        XCTAssertEqual(job.phase, .cancelled)
+        let original = try await library.jobOriginalURL(job.id)
+        XCTAssertEqual(try Data(contentsOf: original), try Data(contentsOf: file))
+        _ = try await library.retry(job.id)
+        let restored = try await library.books()
+        XCTAssertEqual(restored.count, 1)
+    }
+
+    func testConcurrentIdenticalWorkersDeduplicateAtPublication() async throws {
+        let library = try OfflineLibrary(root: root.appendingPathComponent("duplicate-workers"), scope: .device)
+        let file = try epub(chapters: 30)
+        async let first = library.importFile(file)
+        async let second = library.importFile(file)
+        let (a, b) = try await (first, second)
+        XCTAssertEqual(a.id, b.id)
+        let books = try await library.books(), jobs = try await library.jobs()
+        XCTAssertEqual(books.count, 1)
+        XCTAssertEqual(jobs.filter { $0.phase == .complete }.count, 2)
+    }
+
+    func testShelfReadsAreNotQueuedBehindBookExtraction() async throws {
+        let library = try OfflineLibrary(root: root.appendingPathComponent("responsive"), scope: .device)
+        let file = try epub(chapters: 1)
+        let extracting = expectation(description: "extracting on worker")
+        let readable = expectation(description: "shelf remains available")
+        let work = Task {
+            try await library.importFile(file) { update in
+                if update.stage == .extracting && update.total == 0 {
+                    extracting.fulfill()
+                    Thread.sleep(forTimeInterval: 1.2) // A deterministic slow parser, never production delay.
+                }
+            }
+        }
+        await fulfillment(of: [extracting], timeout: 5)
+        let read = Task { _ = try await library.books(); readable.fulfill() }
+        await fulfillment(of: [readable], timeout: 0.5)
+        _ = try await work.value; try await read.value
+    }
+
+    func testPlaceholderFilenameUsesFrontMatterTitleWithoutChangingPassages() async throws {
+        let file = root.appendingPathComponent("document-20261102.txt")
+        let text = "The Quiet Orchard\n\nBy A. Reader\n\nThis is a full sentence from the body, kept exactly as supplied."
+        try text.write(to: file, atomically: true, encoding: .utf8)
+        let library = try OfflineLibrary(root: root.appendingPathComponent("library"), scope: .device)
+        let book = try await library.importFile(file)
+        XCTAssertEqual(book.title, "The Quiet Orchard")
+        XCTAssertEqual(book.chapters[0].passages.map(\.text).joined(separator: "\n\n"), text)
+        XCTAssertEqual(book.originalFilename, file.lastPathComponent)
+    }
+
+    func testOrdinaryFilenameIsKeptAndProseIsNeverInventedAsATitle() async throws {
+        let library = try OfflineLibrary(root: root.appendingPathComponent("library"), scope: .device)
+        for filename in ["My reading notes.txt", "untitled.txt"] {
+            let file = root.appendingPathComponent(filename)
+            try ("This is an ordinary complete sentence with no title.\n\nAnother paragraph. " + filename).write(to: file, atomically: true, encoding: .utf8)
+            let book = try await library.importFile(file)
+            XCTAssertEqual(book.title, file.deletingPathExtension().lastPathComponent)
+        }
+    }
+
     func testImportsEntireEPUBSpineAndKeepsStableAnchorsAndOriginal() async throws {
         let url = try epub()
         let library = try OfflineLibrary(root: root.appendingPathComponent("library"), scope: .device)

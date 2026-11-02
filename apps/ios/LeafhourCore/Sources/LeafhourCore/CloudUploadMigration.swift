@@ -94,3 +94,31 @@ public enum CloudUploadMigration {
         return CloudUploadMigrationResult(state: result, unresolvedCount: unresolved, readingTimeSnapshots: mappedTime)
     }
 }
+
+extension OfflineLibrary {
+    /// Match away from the profile actor, then commit only against the exact
+    /// destination snapshot used for that match. Concurrent sync never loses edits.
+    public func migrateUploadedRecords(source: LocalBook, sourceState: ReaderState, destination: LocalBook, readingTime: [ReadingTimeSnapshot]) async throws -> CloudUploadMigrationResult {
+        for _ in 0..<3 {
+            try Task.checkCancellation()
+            let expected = try state(destination.id)
+            let work = Task.detached(priority: .utility) {
+                CloudUploadMigration.remap(source: source, state: sourceState, destination: destination, destinationState: expected, readingTime: readingTime)
+            }
+            let result = await withTaskCancellationHandler { await work.value } onCancel: { work.cancel() }
+            try Task.checkCancellation()
+            if try commitUploadMigration(result, bookID: destination.id, expected: expected) { return result }
+        }
+        throw LibraryError.invalid("阅读记录正在变化，请稍后重试上传。原来的笔记、草稿与位置仍完整保留。")
+    }
+
+    public func saveStateIfUnchanged(_ next: ReaderState, bookID: String, expected: ReaderState) throws -> Bool {
+        guard try state(bookID) == expected else { return false }
+        try saveState(next, bookID: bookID)
+        return true
+    }
+
+    func commitUploadMigration(_ result: CloudUploadMigrationResult, bookID: String, expected: ReaderState) throws -> Bool {
+        try saveStateIfUnchanged(result.state, bookID: bookID, expected: expected)
+    }
+}

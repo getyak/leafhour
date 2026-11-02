@@ -1,7 +1,7 @@
 import SwiftUI
 import LeafhourCore
 
-final class IncomingBookFile {
+final class IncomingBookFile: @unchecked Sendable {
     let url: URL
     private let scoped: Bool
     init(_ url: URL) { self.url = url; scoped = url.startAccessingSecurityScopedResource() }
@@ -99,7 +99,7 @@ struct IncomingBookRequest: Identifiable {
                     Section("将导入的文件") { Label(file.url.lastPathComponent, systemImage: "doc.text").textSelection(.enabled) }
                     Section {
                         Text(model.account == nil ? "文件与阅读记录保存在此设备的本机书房。" : "文件保存在当前账号的设备书房，不会自动上传。")
-                        Button("导入到此设备") { startedFile = true; model.importFile(file.url) }.disabled(model.busy || model.library == nil)
+                        Button("导入到此设备") { model.importFile(file.url); model.finishIncomingBook(request) }.disabled(model.busy || model.library == nil)
                     }
                 } else {
                     if loading { ProgressView("正在核对书籍…") }

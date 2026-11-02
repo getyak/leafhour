@@ -552,13 +552,13 @@ final class VideoExperienceUITests: XCTestCase {
     private func navigateNativeFiles(to folder: String, selecting file: String? = nil) {
         waitForNativeFiles()
         for _ in 0..<10 {
-            if let file, nativeFilesItem([file, file + ".txt"]) != nil { return }
+            if let file, nativeFilesItem([file, file + ".txt", file + ".epub"]) != nil { return }
             let current = app.navigationBars[folder]
             let folderMenu = app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", folder + ", ")).firstMatch
             if current.exists || (folderMenu.exists && folderMenu.label.contains("操作菜单")) {
                 if let file {
                     let loaded = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in
-                        self.nativeFilesItem([file, file + ".txt"], cellsOnly: true) != nil
+                        self.nativeFilesItem([file, file + ".txt", file + ".epub"], cellsOnly: true) != nil
                     }, object: nil)
                     XCTAssertEqual(XCTWaiter.wait(for: [loaded], timeout: 15), .completed, "The selected folder must load its real source file")
                 }
@@ -1013,14 +1013,14 @@ final class VideoExperienceUITests: XCTestCase {
     func test34SystemFilesActuallyImportsSyntheticTextAndColdRestoresIt() {
         launch()
         let title = "GET317-System-Picker-Import"
-        XCTAssertFalse(app.buttons["阅读，" + title + "，已下载可离线阅读"].exists)
         app.buttons["导入书籍"].tap()
-        capture("GET317-system-import-before-file-selection")
         navigateNativeFiles(to: "GET317AcceptanceSources", selecting: title)
-        guard let file = nativeFilesItem([title, title + ".txt"]) else {
-            XCTFail("The actual system picker cannot find the prepared synthetic source. \(app.debugDescription)"); return
-        }
+        guard let file = nativeFilesItem([title, title + ".txt"]) else { XCTFail("Missing synthetic source"); return }
         file.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.25)).tap()
+        require(app.buttons["library-import-open"], timeout: 30)
+        XCTAssertFalse(reader.exists, "Import completion stays in the shelf")
+        capture("import-ready-on-shelf")
+        app.buttons["library-import-open"].tap()
         require(reader, timeout: 20)
         XCTAssertTrue((reader.value as? String)?.contains("GET317_SYSTEM_PICKER_IMPORT_SUCCESS") == true)
         XCTAssertTrue((reader.value as? String)?.contains("GET317_SYSTEM_PICKER_IMPORT_END") == true)
@@ -1028,6 +1028,32 @@ final class VideoExperienceUITests: XCTestCase {
         XCTAssertTrue((reader.value as? String)?.contains("GET317_SYSTEM_PICKER_IMPORT_SUCCESS") == true)
         shelf(); clearShelfSearch(); searchShelf(title)
         require(app.buttons["阅读，" + title + "，已下载可离线阅读"])
+    }
+
+    func testImportLifecycleKeepsShelfInteractiveDuringLargeNativeImport() {
+        launch(["--import-lifecycle-acceptance"])
+        let filename = "document-20261102-2"
+        app.buttons["导入书籍"].tap()
+        navigateNativeFiles(to: "GET317AcceptanceSources", selecting: filename)
+        guard let file = nativeFilesItem([filename, filename + ".epub"]) else { XCTFail("Missing large synthetic source"); return }
+        file.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.25)).tap()
+        require(app.otherElements["library-import-activity"], timeout: 10)
+        XCTAssertFalse(reader.exists)
+        let started = Date()
+        app.buttons["搜索书房"].tap()
+        require(shelfSearch)
+        XCTAssertLessThan(Date().timeIntervalSince(started), 3, "Shelf search responds while processing")
+        capture("import-processing-search-responsive")
+        shelfSearch.tap(); shelfSearch.typeText("GET317 合成验收 · 本机文本")
+        let oldBook = app.buttons["阅读，" + textTitle + "，已下载可离线阅读"]
+        require(oldBook); oldBook.tap(); require(reader, timeout: 10)
+        XCTAssertTrue((reader.value as? String)?.contains("GET317 synthetic paragraph") == true)
+        capture("existing-book-readable-during-import")
+        shelf(); require(app.buttons["library-import-open"], timeout: 40)
+        require(app.staticTexts["The Quiet Orchard"])
+        capture("import-recovered-title-ready")
+        app.buttons["library-import-open"].tap(); require(reader, timeout: 30)
+        XCTAssertTrue((reader.value as? String)?.contains("The Quiet Orchard") == true)
     }
 
     func test35PersonalRecordsActuallySaveThroughTheSystemFileExporter() {

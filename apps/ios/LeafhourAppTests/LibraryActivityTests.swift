@@ -5,6 +5,68 @@ import LeafhourCore
 
 @MainActor
 final class LibraryActivityTests: XCTestCase {
+    func testImportCompletesOnShelfWithoutAutomaticallyOpeningReader() async throws {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        try FileManager.default.createDirectory(at: root, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let file = root.appendingPathComponent("Quiet import.txt")
+        try Data("An isolated source for the shelf completion check.".utf8).write(to: file)
+        let configuration = URLSessionConfiguration.ephemeral
+        configuration.protocolClasses = [ActivityURLProtocol.self]
+        ActivityURLProtocol.respond = { _ in (0, ["user": NSNull(), "books": []]) }
+        defer { ActivityURLProtocol.respond = nil }
+        let model = LibraryModel(root: root.appendingPathComponent("library"), cloud: CloudLibraryClient(baseURL: URL(string: "https://fixture.invalid")!, configuration: configuration), monitorNetwork: false)
+        await model.reload()
+        model.importFile(file)
+        let deadline = Date().addingTimeInterval(10)
+        while model.busy && Date() < deadline { try await Task.sleep(for: .milliseconds(20)) }
+        XCTAssertFalse(model.busy)
+        XCTAssertEqual(model.books.count, 1)
+        XCTAssertNil(model.reader, "Completion must not interrupt another activity or leave the shelf")
+    }
+
+    func testLeavingAccountClearsItsImportFilenameAndCompletion() async throws {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: root); ActivityURLProtocol.respond = nil }
+        let configuration = URLSessionConfiguration.ephemeral
+        configuration.protocolClasses = [ActivityURLProtocol.self]
+        ActivityURLProtocol.respond = { _ in (0, ["user": NSNull(), "books": []]) }
+        let credential = CloudCredential(account: CloudAccount(id: "00000000-0000-4000-8000-000000000344", email: nil), token: "isolated-account-fixture")
+        let cloud = CloudLibraryClient(baseURL: URL(string: "https://fixture.invalid")!, credential: credential, configuration: configuration)
+        let model = LibraryModel(root: root, cloud: cloud, credential: credential, monitorNetwork: false)
+        model.importActivity = LibraryImportActivity(filename: "Account A private filename.txt")
+        await model.signOut()
+        XCTAssertNil(model.account)
+        XCTAssertNil(model.importActivity, "A prior account's source title must never appear in the device or another account's shelf")
+    }
+
+    func testExpiredStartupSessionClearsBusyImportAndItsFilename() async throws {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: root); ActivityURLProtocol.respond = nil }
+        let configuration = URLSessionConfiguration.ephemeral
+        configuration.protocolClasses = [ActivityURLProtocol.self]
+        ActivityURLProtocol.respond = { _ in (0, ["user": NSNull(), "books": []]) }
+        let credential = CloudCredential(account: CloudAccount(id: "00000000-0000-4000-8000-000000000344", email: nil), token: "isolated-expired-fixture")
+        let cloud = CloudLibraryClient(baseURL: URL(string: "https://fixture.invalid")!, credential: credential, configuration: configuration)
+        let model = LibraryModel(root: root, cloud: cloud, credential: credential, monitorNetwork: false)
+        model.busy = true; model.activityCanCancel = true
+        model.importActivity = LibraryImportActivity(filename: "Expired account source.txt")
+        await model.reload()
+        XCTAssertNil(model.account)
+        XCTAssertFalse(model.busy, "The new device library must not inherit a stale operation lock")
+        XCTAssertFalse(model.activityCanCancel)
+        XCTAssertNil(model.importActivity)
+    }
+
+    func testQueuedChapterProgressCannotRegressVerification() {
+        let activity = LibraryImportActivity(filename: "Fixture.epub")
+        activity.receive(ImportProgress(stage: .verifying))
+        let verifiedStatus = activity.status
+        activity.receive(ImportProgress(stage: .extracting, completed: 25, total: 100))
+        XCTAssertEqual(activity.status, verifiedStatus)
+        XCTAssertNil(activity.fraction)
+    }
+
     private struct HistoryFixture {
         let model: LibraryModel
         let library: OfflineLibrary
@@ -54,6 +116,20 @@ final class LibraryActivityTests: XCTestCase {
         HistoryUploadProtocol.install(probe)
         await model.reload()
         return HistoryFixture(model: model, library: library, source: source, target: target, rows: rows, original: original, state: state, probe: probe)
+    }
+
+    func testUploadingWhileTargetIsOpenPreservesReaderSnapshotAndDefersMigration() async throws {
+        let fixture = try await historyUploadFixture()
+        await fixture.model.open(fixture.target)
+        let reader = try XCTUnwrap(fixture.model.reader)
+        let before = try await fixture.library.state(fixture.target.id)
+        await fixture.model.upload(fixture.source)
+        XCTAssertTrue(fixture.model.reader === reader)
+        let after = try await fixture.library.state(fixture.target.id)
+        XCTAssertEqual(after, before)
+        XCTAssertTrue(fixture.model.message?.contains("本次未迁移个人记录") == true)
+        let retained = try await fixture.library.readingTimeLedger(bookID: fixture.source.id)
+        XCTAssertEqual(retained.pending, fixture.rows)
     }
 
     func testUploadingTwentyFiveLocalSessionsDrainsBeforeTheTwentyFirstAndKeepsTheSource() async throws {

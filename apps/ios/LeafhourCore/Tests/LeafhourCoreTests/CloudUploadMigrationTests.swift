@@ -2,6 +2,26 @@ import XCTest
 @testable import LeafhourCore
 
 final class CloudUploadMigrationTests: XCTestCase {
+    func testStaleUploadSnapshotCannotOverwriteNewDraft() async throws {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: root) }
+        try FileManager.default.createDirectory(at: root, withIntermediateDirectories: true)
+        let file = root.appendingPathComponent("Fixture.txt")
+        try Data("Unique source paragraph.".utf8).write(to: file)
+        let library = try OfflineLibrary(root: root.appendingPathComponent("library"), scope: .device)
+        let book = try await library.importFile(file)
+        let expected = try await library.state(book.id)
+        let result = CloudUploadMigration.remap(source: book, state: expected, destination: book, destinationState: expected)
+        var newer = expected
+        let anchor = ReadingAnchor(chapterID: book.chapters[0].id, passageID: book.chapters[0].passages[0].id)
+        newer.drafts[anchor.key] = NoteDraft(anchor: anchor, quote: "Unique", body: "Typed while upload matching ran")
+        try await library.saveState(newer, bookID: book.id)
+        let committed = try await library.commitUploadMigration(result, bookID: book.id, expected: expected)
+        XCTAssertFalse(committed)
+        let saved = try await library.state(book.id)
+        XCTAssertEqual(saved, newer)
+    }
+
     func testReadingTimeMigrationRequiresUniqueSourceAnchorsAndKeepsStableSessionID() throws {
         let source = book([("local", "Unique source paragraph")], chapter: "local-chapter")
         var target = book([("remote", "Unique source paragraph")], chapter: "cloud-chapter")

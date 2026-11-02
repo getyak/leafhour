@@ -141,6 +141,16 @@ public struct ReaderListeningPosition: Codable, Equatable, Sendable {
         self.layer = layer; self.utf16Offset = utf16Offset; self.textFingerprint = textFingerprint; self.viewport = viewport
     }
 }
+public struct ImportProgress: Sendable {
+    public enum Stage: Int, Sendable { case retaining, extracting, verifying }
+    public var stage: Stage
+    public var completed: Int
+    public var total: Int
+    public init(stage: Stage, completed: Int = 0, total: Int = 0) {
+        self.stage = stage; self.completed = completed; self.total = total
+    }
+}
+
 public enum ImportPhase: String, Codable, Sendable { case processing, failed, interrupted, cancelled, complete }
 public struct ImportJob: Codable, Identifiable, Sendable {
     public var id: UUID

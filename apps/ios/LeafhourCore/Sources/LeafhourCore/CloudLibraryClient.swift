@@ -3,6 +3,8 @@ import Foundation
 import FoundationNetworking
 #endif
 
+public enum CloudUploadPhase: Sendable { case preparing, sending, processing }
+
 public struct CloudAccount: Codable, Equatable, Sendable {
     public var id: String
     public var email: String?
@@ -223,12 +225,14 @@ public actor CloudLibraryClient {
         if pending.flow.mode == .signIn { generation = UUID() }
         return account
     }
-    public func uploadOriginal(_ bytes: Data, filename: String, ownerID: String) async throws -> CloudJSON {
+    public func uploadOriginal(_ bytes: Data, filename: String, ownerID: String, progress: @Sendable (CloudUploadPhase) async -> Void = { _ in }) async throws -> CloudJSON {
         guard !bytes.isEmpty, bytes.count <= 20 * 1024 * 1024 else { throw CloudRequestError(status: 413, message: "当前云端上传上限为 20 MB，本机原件仍保留。") }
+        await progress(.preparing)
         let target: CloudJSON
         do {
             target = try CloudJSON.decode(await data(path: "/api/library/upload/start", method: "POST", body: CloudJSON.encode(["filename": .string(filename), "bytes": .number(Double(bytes.count))]), ownerID: ownerID))
         } catch let error as CloudRequestError where error.status == 404 {
+            await progress(.sending)
             return try CloudJSON.decode(await data(path: "/api/library/upload", method: "POST", body: CloudJSON.encode(["filename": .string(filename), "base64": .string(bytes.base64EncodedString())]), ownerID: ownerID))
         }
         guard let id = target["id"].string, let address = target["url"].string, let url = URL(string: address),
@@ -241,9 +245,11 @@ public actor CloudLibraryClient {
         request.httpMethod = "PUT"; request.httpBody = bytes
         request.setValue("application/octet-stream", forHTTPHeaderField: "Content-Type")
         // Signed storage requests never carry the Leafhour session or owner header.
+        await progress(.sending)
         let (_, response) = try await session.data(for: request)
         guard marker == generation, credential?.account.id == ownerID else { throw Self.changed() }
         guard let response = response as? HTTPURLResponse, (200..<300).contains(response.statusCode) else { throw CloudRequestError(status: 502, message: "文件尚未完整上传，请重试；原件仍保留在此设备。") }
+        await progress(.processing)
         return try CloudJSON.decode(await data(path: "/api/library/upload/complete", method: "POST", body: CloudJSON.encode(["id": .string(id)]), ownerID: ownerID))
     }
     private func perform(path: String, method: String, body: Data?, ownerID: String?, timeout: TimeInterval = 45) async throws -> (Data, HTTPURLResponse) {

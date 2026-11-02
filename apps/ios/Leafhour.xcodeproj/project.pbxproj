@@ -15,6 +15,7 @@
 		27D1217525741E28826028A4 /* ReadingLayersAppTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A29BB9B29DBF502F1788D8DE /* ReadingLayersAppTests.swift */; };
 		27E98AAB52BC14E9DA136EE7 /* ReaderBottomBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E0FEB2340F68AD673B247CF /* ReaderBottomBar.swift */; };
 		28E0CA2D264A2A9724F9D836 /* ReaderSpeechSpeedControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23F94B1EC187280BC8365478 /* ReaderSpeechSpeedControl.swift */; };
+		2A7FEA7A8A8613DB9A505FB6 /* LibraryImportActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCBCD433CAA919F173FDF279 /* LibraryImportActivity.swift */; };
 		2B70EF47AF54AF54B76821CB /* BookShelfComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = E334FEB91510D44EC1F6609A /* BookShelfComponents.swift */; };
 		2FA74F5C1E5CEA103B01A56F /* ReaderSettingsControls.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DB33ED242E41CB64391F093 /* ReaderSettingsControls.swift */; };
 		3834F8DD07B0244D9873FC39 /* AccountScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B7695C525E1FC7F2151463C /* AccountScreen.swift */; };
@@ -161,6 +162,7 @@
 		AB93959D999C96D79B003D7B /* AccountShelfPendingScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountShelfPendingScreen.swift; sourceTree = "<group>"; };
 		ADC3A1E0640007C8E7F5AE08 /* NativeAuthenticationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NativeAuthenticationTests.swift; sourceTree = "<group>"; };
 		B5C469621A039D07DB1A0EA9 /* ReadingJournalCalendar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadingJournalCalendar.swift; sourceTree = "<group>"; };
+		BCBCD433CAA919F173FDF279 /* LibraryImportActivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryImportActivity.swift; sourceTree = "<group>"; };
 		BCF573520407A93144E699EC /* ReaderCloudTools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReaderCloudTools.swift; sourceTree = "<group>"; };
 		BF6F7938AA16EAFA7061DD3A /* AppSettingsScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSettingsScreen.swift; sourceTree = "<group>"; };
 		C21A98A9828F3737D18C4D6F /* ReaderTapHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReaderTapHandler.swift; sourceTree = "<group>"; };
@@ -263,6 +265,7 @@
 				29EBA500F9597E0BADCF2559 /* GlobalChatScreen.swift */,
 				E7711E02A82CAE93CC04FC45 /* Info.plist */,
 				C5BA4DE90DC37B23A3034EB2 /* LeafhourApp.swift */,
+				BCBCD433CAA919F173FDF279 /* LibraryImportActivity.swift */,
 				EF8544F5EF5C92B4414B4C39 /* LibraryPresentation.swift */,
 				03E537D8BE04773F738DBB85 /* LibraryScreen.swift */,
 				61E087460D41217FEAE7CC0B /* MarkdownTextRenderer.swift */,
@@ -455,8 +458,8 @@
 			projectRoot = "";
 			targets = (
 				973CAB698F802ED0CA5FEAF8 /* Leafhour */,
-				9E20BC03224E1319D4225E3C /* LeafhourUITests */,
 				E9EBBB130A719C5DC1AA2664 /* LeafhourAppTests */,
+				9E20BC03224E1319D4225E3C /* LeafhourUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -499,6 +502,7 @@
 				495ED3A0E1A15C37D9F34426 /* ChatConversationView.swift in Sources */,
 				435C0CA8678042B6A3EFBF42 /* GlobalChatScreen.swift in Sources */,
 				FD5562DABEFEADF16AF28795 /* LeafhourApp.swift in Sources */,
+				2A7FEA7A8A8613DB9A505FB6 /* LibraryImportActivity.swift in Sources */,
 				562187E1677FD33C9214C34D /* LibraryPresentation.swift in Sources */,
 				497B1C91B1E5BF35DF45198E /* LibraryScreen.swift in Sources */,
 				F48522D668D56A3C6815517A /* MarkdownTextRenderer.swift in Sources */,
