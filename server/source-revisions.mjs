@@ -38,7 +38,9 @@ export function buildSourceRevision({book,input,userId,pdfPages=null,extracted=n
  for(const update of titles)revised.chapters.find(c=>c.id===update.id).title={zh:update.title,en:''};
  const ps=paragraphs(revised);
  if(input.operation==='reextract'){const oldCounts=new Map(),newCounts=new Map();for(const p of original){const rows=oldCounts.get(p.original)||[];rows.push(p);oldCounts.set(p.original,rows);}for(const p of ps)newCounts.set(p.original,(newCounts.get(p.original)||0)+1);for(const [i,p]of ps.entries())p.id=oldCounts.get(p.original)?.length===1&&newCounts.get(p.original)===1?oldCounts.get(p.original)[0].id:'rev-'+identity.slice(0,16)+'-p'+i;}
- for(const p of ps){p.translations={};p.annotationIds=[];p.termIds=[];}revised.annotations=[];revised.glossary=[];
+// All translations belong to the parent source version, including unchanged
+ // paragraphs in a title-only correction. The cloned revision starts untranslated.
+ for(const p of ps){p.translations={};delete p.translationsByLanguage;p.annotationIds=[];p.termIds=[];}revised.annotations=[];revised.glossary=[];
  revised.bookId=revisionId;revised.contentVersion=identity;revised.visibility='private';revised.title=structuredClone(book.title);revised.author=book.author;revised.createdAt=now;
  revised.source={...revised.source,filename:book.source.filename,sha256:book.source.sha256,processor:'source-review-v1',review:ps.every(p=>p.source?.review==='visually_checked')?'visually_checked':'extracted_unreviewed',revision:{kind:'leafhour-source-revision',schemaVersion:1,parentBookId:book.bookId,parentContentVersion:book.contentVersion,operation:input.operation,changes,chapterTitles:titles,createdAt:now}};
  delete revised.introduction;delete revised.legacyReadingResources;delete revised.readingStart;for(const chapter of revised.chapters)delete chapter.startPassageId;
