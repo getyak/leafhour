@@ -1,9 +1,10 @@
+import {translationDirection,projectTranslation} from './translation-languages.mjs';
 import {createHash} from 'node:crypto';
 import {fail} from './document-import.mjs';
 import {hasCompleteTranslationPair} from './translation-batch.mjs';
 import {withProviderMeter} from './provider-metering.mjs';
 import {LIBRARY_CHAT_ID,LIBRARY_CHAT_VERSION,LIBRARY_CHAT_PASSAGE} from '../app/library-chat-context.mjs';
-const allowed={translation:['id','passageId','contentVersion'],conversation:['id','text','passageId','contentVersion','scopeRevision','quote','preferenceWrites','peopleWrites','voice'],annotation:['id','threadId','quote','highlightId','text','responseLocale']};
+const allowed={translation:['id','passageId','contentVersion','sourceLanguage','targetLanguage'],conversation:['id','text','passageId','contentVersion','scopeRevision','quote','preferenceWrites','peopleWrites','voice'],annotation:['id','threadId','quote','highlightId','text','responseLocale']};
 const stable=value=>value===null||typeof value!=='object'?value:Array.isArray(value)?value.map(stable):Object.fromEntries(Object.keys(value).sort().map(k=>[k,stable(value[k])]));
 const hash=value=>createHash('sha256').update(JSON.stringify(stable(value))).digest('hex');
 const paragraphs=book=>book.sections.flatMap(s=>s.paragraphs);
@@ -39,13 +40,14 @@ export function createCreditGate({billing,library,chat,record,clock=Date.now}={}
   if(expected&&expected!==book.contentVersion)throw fail('原文版本已变化，请重新请求',409);
   if(typeof body.id!=='string'||!body.id||body.id.length>128)throw fail('请为这次请求保留唯一标识',400);
   if(action==='translation'){
+   translationDirection(source,body);
    const i=rows.indexOf(source),context=rows.slice(Math.max(0,i-1),i+2).map(p=>({id:p.id,original:p.original}));
    if([...source.original].length>4000||Buffer.byteLength(JSON.stringify(context))>24576)throw fail('这一段或邻近上下文超过单段处理范围，原文仍可阅读',413);
   }
-  return {body,book,scope:{bookId:book.bookId,contentVersion:book.contentVersion,passageId,requestId:body.id,requestHash:hash(body),contextPolicy:'reading-v1',...(action==='conversation'?{}:{costLimitMicrousd:action==='translation'?15000:120000})}};
+  return {body,book,scope:{bookId:book.bookId,contentVersion:book.contentVersion,passageId,requestId:body.id,requestHash:hash(body),contextPolicy:'reading-v1',...(action==='translation'&&(body.sourceLanguage!==undefined||body.targetLanguage!==undefined)?translationDirection(source,body):{}),...(action==='conversation'?{}:{costLimitMicrousd:action==='translation'?15000:120000})}};
  }
  async function cache(user,action,bookId,body){
-  if(action==='translation'){const book=await library.getBook(user,bookId),p=paragraphs(book).find(p=>p.id===body.passageId);return hasCompleteTranslationPair(p)?p:null;}
+  if(action==='translation'){const book=await library.getBook(user,bookId),p=projectTranslation(paragraphs(book).find(p=>p.id===body.passageId),body.targetLanguage??'zh');return hasCompleteTranslationPair(p)?p:null;}
   if(action==='conversation'&&chat){if(chat.findTurn)return chat.findTurn(user,libraryConversation(action,bookId)?null:bookId,body.id);if(libraryConversation(action,bookId)&&chat.findLibraryTurn)return chat.findLibraryTurn(user,body.id);return (await (libraryConversation(action,bookId)?chat.viewLibrary(user):chat.view(user,bookId))).turns.find(t=>t.id===body.id)||null;}
   if(action==='annotation'&&chat){const view=await chat.annotations.view(user,bookId),request=view.requests.find(r=>r.id===body.id);return request?{request,thread:view.archive.threads.find(t=>t.id===request.threadId)||null}:null;}
   return null;
@@ -53,7 +55,7 @@ export function createCreditGate({billing,library,chat,record,clock=Date.now}={}
  async function saved(user,action,bookId,scope){
   if(libraryConversation(action,bookId)&&scope.contextPolicy===LIBRARY_CHAT_VERSION)return chat.findLibraryTurn?chat.findLibraryTurn(user,scope.requestId):(await chat.viewLibrary(user)).turns.find(t=>t.id===scope.requestId)||null;
   const current=await library.getBook(user,bookId);if(current.contentVersion!==scope.contentVersion)throw fail('原文版本已变化，本次结果不能结算',409);
-  if(action==='translation')return paragraphs(current).find(p=>p.id===scope.passageId&&hasCompleteTranslationPair(p))||null;
+  if(action==='translation'){const p=projectTranslation(paragraphs(current).find(p=>p.id===scope.passageId),scope.targetLanguage??'zh');return hasCompleteTranslationPair(p)?p:null;}
   if(action==='conversation'&&chat&&chat.findTurn)return chat.findTurn(user,bookId,scope.requestId);
   if(action==='conversation'&&chat)return (await chat.view(user,bookId)).turns.find(t=>t.id===scope.requestId)||null;
   if(action==='annotation'&&chat){const view=await chat.annotations.view(user,bookId),request=view.requests.find(t=>t.id===scope.requestId);return request?{request,thread:view.archive.threads.find(t=>t.id===request.threadId)||null}:null;}
@@ -61,7 +63,7 @@ export function createCreditGate({billing,library,chat,record,clock=Date.now}={}
  }
  const statusOf=(action,value)=>action==='annotation'?value?.request?.status:value?.status;
  function completed(action,value,scope,id){
-  if(action==='translation')return value?.id===scope.passageId&&hasCompleteTranslationPair(value)&&['literal','interpretive'].every(k=>value.translations[k].sourceVersion===scope.contentVersion&&value.translations[k].generationReceipt?.operationId===id&&value.translations[k].generationReceipt?.requestId===scope.requestId);
+  if(action==='translation')return value?.id===scope.passageId&&hasCompleteTranslationPair(value)&&['literal','interpretive'].every(k=>value.translations[k].sourceVersion===scope.contentVersion&&(value.translations[k].targetLanguage===(scope.targetLanguage??'zh')||value.translations[k].targetLanguage===undefined&&(scope.targetLanguage??'zh')==='zh')&&(!scope.sourceLanguage||value.translations[k].sourceLanguage===scope.sourceLanguage||value.translations[k].sourceLanguage===undefined&&(scope.targetLanguage??'zh')==='zh')&&value.translations[k].generationReceipt?.operationId===id&&value.translations[k].generationReceipt?.requestId===scope.requestId);
   if(action==='conversation')return value?.id===scope.requestId&&value.contentVersion===scope.contentVersion&&value.passageId===scope.passageId&&value.status==='completed'&&value.answer;
   return value?.request?.id===scope.requestId&&value.request.status==='completed'&&!value.thread?.deletedAt&&value.thread?.quote?.contentVersion===scope.contentVersion&&value.thread.quote.parts?.some(p=>p.passageId===scope.passageId);
  }

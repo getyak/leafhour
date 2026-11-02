@@ -1,3 +1,4 @@
+import {hasTranslations} from './translation-languages.mjs';
 import path from 'node:path';
 import {randomUUID} from 'node:crypto';
 import {setTimeout as delay} from 'node:timers/promises';
@@ -49,7 +50,7 @@ export function createChapterReadStore({dataDir,dataStore=null,loadBook,catalogF
   try{
    const full=await loadBook(user,id),book=structuredClone(full);delete book.introduction;delete book._giftReceive;
    const context=introductionContext(book),introductionSections=[{chapterId:book.chapters.find(c=>!c.kind||['body','source-section'].includes(c.kind))?.id,paragraphs:context.passages}];
-   const snapshot={schemaVersion:2,id:token,catalogFingerprint:fingerprint,contentVersion:book.contentVersion,byteLength:Buffer.byteLength(JSON.stringify(book)),hasTranslations:book.sections.some(s=>s.paragraphs.some(p=>Object.keys(p.translations||{}).length)),introductionSections,book:{...book,sections:book.sections.map(s=>({...s,paragraphs:s.paragraphs.map(p=>({id:p.id,unloaded:true}))}))},chapters:Object.create(null)};
+   const snapshot={schemaVersion:2,id:token,catalogFingerprint:fingerprint,contentVersion:book.contentVersion,byteLength:Buffer.byteLength(JSON.stringify(book)),hasTranslations:book.sections.some(s=>s.paragraphs.some(p=>hasTranslations(p))),introductionSections,book:{...book,sections:book.sections.map(s=>({...s,paragraphs:s.paragraphs.map(p=>({id:p.id,unloaded:true}))}))},chapters:Object.create(null)};
    const writes=[];
    for(const chapter of book.chapters){
     const value={bookId:book.bookId,contentVersion:book.contentVersion,chapterId:chapter.id,sections:book.sections.filter(s=>s.chapterId===chapter.id)},hash=contentHash(value);

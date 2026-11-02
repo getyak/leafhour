@@ -15,7 +15,7 @@ const supplierMode=value=>value==='sandbox'?'test':value==='prod'?'live':value;
 const safeScope=scope=>{
   if(!scope||typeof scope!=='object'||Array.isArray(scope))fail('invalid_scope');
   const clean={};
-  for(const key of ['bookId','contentVersion','sourceVersion','passageId','requestId','requestHash','inputHash','contextPolicy'])if(scope[key]!==undefined)clean[key]=identifier(scope[key]);
+  for(const key of ['bookId','contentVersion','sourceVersion','passageId','requestId','requestHash','inputHash','contextPolicy','sourceLanguage','targetLanguage'])if(scope[key]!==undefined)clean[key]=identifier(scope[key]);
   if(!clean.bookId||!(clean.sourceVersion||clean.contentVersion)||!(clean.requestHash||clean.inputHash))fail('invalid_scope');
   if(scope.costLimitMicrousd!==undefined){if(!Number.isSafeInteger(scope.costLimitMicrousd)||scope.costLimitMicrousd<=0)fail('invalid_scope');clean.costLimitMicrousd=scope.costLimitMicrousd;}
   return clean;

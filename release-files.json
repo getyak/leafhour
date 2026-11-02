@@ -855,6 +855,7 @@
   "server/source-revisions.mjs",
   "server/structured-catalog.mjs",
   "server/translation-batch.mjs",
+  "server/translation-languages.mjs",
   "server/translation.mjs",
   "server/ui-first-paint-script.mjs",
   "server/ui-first-paint.mjs",

@@ -246,3 +246,15 @@ test('aborting the run stops future requests and never claims an in-flight refun
   assert.equal(summary.entries[0].state,'saved','the in-flight request keeps its real outcome');
   assert.equal(generation,1);
 });
+
+test('HTTP translation accepts explicit languages and chapter reads project only the selected target',async t=>{
+ const contexts=[];const {base,server,account}=await start(t,{translator:async context=>{contexts.push(context);return {literal:context.targetLanguage+' literal',interpretive:context.targetLanguage+' interpretive'};}}),session=await account('languages@example.test');
+ const book=await importBook(server,session.user,['这是一段中文原文。']),passageId=book.sections[0].paragraphs[0].id;
+ const headers={'Cookie':'marginalia_session='+session.token,Origin:base,'Content-Type':'application/json','X-Reader-Owner':session.user.id};
+ const endpoint=base+'/api/library/books/'+book.bookId;
+ const response=await fetch(endpoint+'/translate',{method:'POST',headers,body:JSON.stringify({passageId,contentVersion:book.contentVersion,sourceLanguage:'zh',targetLanguage:'en'})});
+ assert.equal(response.status,200);assert.equal((await response.json()).translations.literal.targetLanguage,'en');assert.equal(contexts[0].sourceLanguage,'zh');
+ const chapter=endpoint+'/chapters/'+book.chapters[0].id+'?contentVersion='+book.contentVersion;
+ const selected=await fetch(chapter+'&targetLanguage=en',{headers});assert.equal(selected.status,200);assert.equal((await selected.json()).sections[0].paragraphs[0].translations.literal.text,'en literal');
+ const legacy=await fetch(chapter,{headers});assert.equal(legacy.status,200);assert.deepEqual((await legacy.json()).sections[0].paragraphs[0].translations,{});
+});

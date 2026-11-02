@@ -230,3 +230,18 @@ test('blank variants with otherwise matching financial receipts cannot settle or
  account=await orphan.billing.account({ownerId:orphan.user.id});assert.equal(account.consumedUnits,0);assert.equal(account.reservedUnits,0);
  assert.deepEqual(orphan.savedBook,before,'background recovery never repairs text or dispatches a model');
 });
+
+test('paid language switching cannot reuse a quote or settled request identity',async()=>{
+ const f=await realFixture(),input={id:'language-request',passageId:'p1',contentVersion:'version-a',sourceLanguage:'en',targetLanguage:'ja'};
+ const q=await f.gate.quote(f.user,{action:'translation',bookId:'book-a',input});assert.equal(q.scope.targetLanguage,'ja');assert.equal(q.scope.sourceLanguage,'en');
+ const execute=async(body,authority)=>{const pair=Object.fromEntries(['literal','interpretive'].map(k=>[k,{text:k,sourceVersion:'version-a',sourceLanguage:'en',targetLanguage:'ja',generationReceipt:authority}]));const p=f.savedBook.sections[0].paragraphs[0];p.translationsByLanguage={ja:pair};return {...p,translations:pair};};
+ await assert.rejects(f.gate.run({user:f.user,action:'translation',bookId:'book-a',input:{...input,targetLanguage:'ko',billing:{quoteId:q.id,idempotencyKey:input.id}},execute}),{status:409});
+ await f.gate.run({user:f.user,action:'translation',bookId:'book-a',input:{...input,billing:{quoteId:q.id,idempotencyKey:input.id}},execute});
+ assert.equal((await f.billing.account({ownerId:f.user.id})).consumedUnits,1_000_000);
+ await assert.rejects(f.gate.run({user:f.user,action:'translation',bookId:'book-a',input:{...input,sourceLanguage:'fr',billing:{quoteId:q.id,idempotencyKey:input.id}},execute}),{status:409});
+});
+
+test('a paid Japanese request cannot settle a result labelled as another target language',async()=>{
+ const f=await realFixture(),input={id:'wrong-language-result',passageId:'p1',sourceLanguage:'en',targetLanguage:'ja'},q=await f.gate.quote(f.user,{action:'translation',bookId:'book-a',input});
+ await assert.rejects(f.gate.run({user:f.user,action:'translation',bookId:'book-a',input:{...input,billing:{quoteId:q.id,idempotencyKey:input.id}},execute:async(body,authority)=>({id:'p1',translations:Object.fromEntries(['literal','interpretive'].map(k=>[k,{text:k,sourceVersion:'version-a',sourceLanguage:'en',targetLanguage:'ko',generationReceipt:authority}]))})}),{status:502});
+});
