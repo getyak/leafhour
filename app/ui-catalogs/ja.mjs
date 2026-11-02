@@ -1198,7 +1198,7 @@ export default Object.freeze({
   "portal.upload.explanation": "文字版とスキャン版を自動で整理します。外部の認識を使うときは確認を求めるので、元のファイルは常に残ります。",
   "portal.upload.failed": "アップロードは完了しませんでした。再試行するか、別のファイルを選べます。",
   "portal.upload.intro": "元のファイルは自分の書斎に保存され、抽出できたら読み進めます。",
-  "portal.upload.limits": "PDF は最大 256 MB · EPUB・TXT・Markdown は最大 20 MB",
+  "portal.upload.limits": "PDF は最大 256 MB · EPUB は最大 20 MB · TXT・Markdown は最大 64 MB",
   "portal.upload.opening": "書斎に入れました。最初の一節を開きます。",
   "portal.upload.organizing": "段落を整理しています…",
   "portal.upload.pdfExtract": "PDF の文字を抽出しています。お待ちください…",

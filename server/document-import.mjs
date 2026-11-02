@@ -4,6 +4,7 @@ import {createHash} from 'node:crypto';
 import {resolvePdfOutline} from './pdf-outline.mjs';
 import {textSourceBlocks} from './text-structure.mjs';
 import {inferSourceLanguage} from '../app/source-language.mjs';
+import {documentByteLimit,documentLimitMessage} from '../app/import-limits.mjs';
 export const fail=(message,status=400)=>Object.assign(new Error(message),{status});
 export const digest=value=>createHash('sha256').update(value).digest('hex');
 export const MAX_FILE_BYTES=256*1024*1024;
@@ -37,7 +38,7 @@ export function decodePlainText(bytes){
 
 export async function extractDocument({filename,bytes,onProgress,textStructure=true}){
   if(typeof filename!=='string'||!filename.trim()||filename.length>240||!Buffer.isBuffer(bytes)||!bytes.length)throw fail('请选择有内容的书籍文件');
-  if(bytes.length>MAX_FILE_BYTES||!filename.toLowerCase().endsWith('.pdf')&&bytes.length>20*1024*1024)throw fail('PDF 最多 256 MB，EPUB 与文本最多 20 MB',413);
+  if(bytes.length>documentByteLimit(filename))throw fail(documentLimitMessage,413);
   const ext=path.extname(filename).toLowerCase();
   if(!['.pdf','.epub','.txt','.md','.markdown'].includes(ext))throw fail('目前支持 PDF、EPUB、TXT 和 Markdown');
   if(ext==='.epub')return extractEpub(bytes,{onProgress});

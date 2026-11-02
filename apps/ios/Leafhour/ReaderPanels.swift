@@ -208,7 +208,11 @@ struct ReaderPreferencesPanel: View {
         guard let passage = current ?? passages.first(where: { !$0.heading && $0.resourcePath == nil && !$0.text.isEmpty }) else { return nil }
         return ReadingLayers.segments(passage: passage, preferences: session.state.preferences, translation: session.translations[passage.id]).last
     }
-    private var preview: String? { previewLayer.map { Self.sourceExcerpt($0.text) } }
+    private var preview: String? { previewLayer.map { layer in
+        let prefix = layer.isTranslation ? 0 : ReaderParagraphPresentation.leadingIndentUTF16(layer.text, kind: session.book.kind, heading: false)
+        let text = (layer.text as NSString).substring(from: prefix)
+        return (session.state.preferences.firstLineIndent == .twoCharacters ? "　　" : "") + Self.sourceExcerpt(text)
+    } }
     private var previewTitle: String { previewLayer?.translationMissing == true ? "暂无译文 · 原著预览" : previewLayer?.isTranslation == true ? "译文预览" : "原著预览" }
     private static func sourceExcerpt(_ source: String) -> String {
         let sample = source.prefix(120)
@@ -295,6 +299,7 @@ struct ReaderContentControls: View {
     }
     var body: some View {
         Group {
+            ReaderBookLanguageChoices(session: session).disabled(reading?.running == true)
             Section {
                 Picker("阅读内容", selection: Binding(get: { session.state.preferences.viewMode }, set: { mode in
                     reading?.offerFirstPassage = mode != .source

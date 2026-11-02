@@ -11,25 +11,32 @@ final class ReaderToolsTests: XCTestCase {
     private let owner = "00000000-0000-4000-8000-000000000312"
     private struct Fixture {
         let session: ReaderSession
+        let library: OfflineLibrary
         let cloud: CloudLibraryClient
         let passage: Passage
     }
-    private func fixture(source: String = "A 😀 café and a quiet page.", markdown: Bool = false, cloudBook: Bool = true) async throws -> Fixture {
+    private func fixture(source: String = "A 😀 café and a quiet page.", markdown: Bool = false, cloudBook: Bool = true, persistCloud: Bool = false) async throws -> Fixture {
         let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
         try FileManager.default.createDirectory(at: root, withIntermediateDirectories: true)
         addTeardownBlock { try? FileManager.default.removeItem(at: root) }
         let file = root.appendingPathComponent(markdown ? "reader.md" : "reader.txt")
         try Data(source.utf8).write(to: file)
-        let library = try OfflineLibrary(root: root.appendingPathComponent("library"), scope: .device)
+        let library = try OfflineLibrary(root: root.appendingPathComponent("library"), scope: persistCloud ? .account(UUID(uuidString: owner)!) : .device)
         var book = try await library.importFile(file)
         if cloudBook { book.cloud = CloudBookIdentity(ownerID: owner, bookID: "cloud-book", contentVersion: "source-v1", sourceFormat: markdown ? "md" : "txt") }
+        if persistCloud, let identity = book.cloud {
+            let chapters = try JSONDecoder().decode([BookChapter].self, from: JSONSerialization.data(withJSONObject: [["id": "c1", "title": "One", "sourcePath": "1", "passages": [["id": "p1", "text": source, "heading": false]]]]))
+            let content: [String: Any] = ["bookId": identity.bookID, "contentVersion": identity.contentVersion,
+                "sections": chapters.map { chapter in ["chapterId": chapter.id, "paragraphs": chapter.passages.map { ["id": $0.id, "original": $0.text, "translations": [:]] }] }]
+            book = try await library.importCloud(CloudReadingCopy(identity: identity, title: "Synthetic retry book", author: "", chapters: chapters, content: JSONSerialization.data(withJSONObject: content)))
+        }
         let state = try await library.state(book.id), directory = try await library.bookDirectory(book.id)
         let original = try await library.originalURL(book.id)
         let session = ReaderSession(book: book, state: state, original: original, directory: directory, library: library)
         let configuration = URLSessionConfiguration.ephemeral; configuration.protocolClasses = [ReaderToolsURLProtocol.self]
         let credential = CloudCredential(account: CloudAccount(id: owner, email: nil), token: "isolated-test-token")
         let cloud = CloudLibraryClient(baseURL: URL(string: "https://leafhour.test")!, credential: credential, configuration: configuration)
-        return Fixture(session: session, cloud: cloud, passage: try XCTUnwrap(session.chapter.passages.first))
+        return Fixture(session: session, library: library, cloud: cloud, passage: try XCTUnwrap(session.chapter.passages.first))
     }
     private nonisolated func metadata(enabled: Bool = true) -> [String: Any] {
         ["user": ["id": owner], "billing": ["enabled": enabled, "mode": "test", "unitsPerPoint": 1_000_000, "prices": ["translation": 1_000_000, "conversation": 4_000_000]]]
@@ -38,7 +45,7 @@ final class ReaderToolsTests: XCTestCase {
         let input = request["input"] as? [String: Any] ?? [:]
         return ["id": "quote-test", "ownerId": owner, "action": action, "mode": "test", "units": action == "translation" ? 1_000_000 : 4_000_000,
             "expiresAt": ISO8601DateFormatter().string(from: Date().addingTimeInterval(300)),
-            "scope": ["bookId": "cloud-book", "requestId": input["id"] ?? "", "passageId": input["passageId"] ?? "", "contentVersion": "source-v1"]]
+            "scope": ["bookId": "cloud-book", "requestId": input["id"] ?? "", "passageId": input["passageId"] ?? "", "contentVersion": "source-v1", "sourceLanguage": input["sourceLanguage"] ?? "en", "targetLanguage": input["targetLanguage"] ?? "zh"]]
     }
     override func tearDown() {
         ReaderToolsURLProtocol.install(nil)
@@ -214,6 +221,62 @@ final class ReaderToolsTests: XCTestCase {
         XCTAssertEqual(submitted[0]["id"] as? String, submitted[1]["id"] as? String)
         XCTAssertEqual(submitted[0]["billing"] as? [String: String], submitted[1]["billing"] as? [String: String])
         XCTAssertEqual(probe.requests.filter { $0.url!.path == "/api/billing/quotes" }.count, 1)
+    }
+    func testJapaneseRetryPreservesFrenchPanelAndCachesOriginalLanguage() async throws {
+        let fixture = try await fixture(persistCloud: true), probe = ReaderToolsProbe()
+        var translationAttempts = 0
+        func row(_ target: String, _ literal: String, _ interpretive: String) -> [String: Any] {
+            ["id": fixture.passage.id, "original": fixture.passage.text, "translations": [
+                "literal": ["text": literal, "status": "draft", "targetLanguage": target],
+                "interpretive": ["text": interpretive, "status": "draft", "targetLanguage": target]]]
+        }
+        probe.respond = { [self] request, body in
+            if request.url!.path == "/api/auth/session" { return (200, metadata()) }
+            if request.url!.path == "/api/billing/quotes" { return (200, quote(body)) }
+            if request.httpMethod == "GET" {
+                let language = URLComponents(url: request.url!, resolvingAgainstBaseURL: false)?.queryItems?.first { $0.name == "targetLanguage" }?.value
+                let paragraph: [String: Any] = language == "fr" ? row("fr", "Une page calme.", "Un moment de lecture.") : ["id": fixture.passage.id, "original": fixture.passage.text, "translations": [:]]
+                return (200, ["sections": [["paragraphs": [paragraph]]]])
+            }
+            translationAttempts += 1
+            if translationAttempts == 1 { return (503, ["error": "Temporary interruption"]) }
+            return (200, row("ja", "静かなページ。", "静かな読書のひととき。"))
+        }
+        ReaderToolsURLProtocol.install(probe)
+        let tools = ReaderCloudTools()
+        tools.configure(library: fixture.library, localBookID: fixture.session.book.id)
+        fixture.session.changeTranslationSettings(BookTranslationSettings(sourceLanguage: .en, targetLanguage: .ja))
+        await tools.loadTranslation(fixture.session, cloud: fixture.cloud)
+        await tools.prepare("translation", session: fixture.session, cloud: fixture.cloud)
+        let consent = try XCTUnwrap(tools.consent)
+        await tools.perform(consent, cloud: fixture.cloud)
+        let retry = try XCTUnwrap(tools.retry)
+        XCTAssertEqual(retry.body, consent.body)
+
+        fixture.session.changeTranslationSettings(BookTranslationSettings(sourceLanguage: .en, targetLanguage: .fr))
+        await tools.loadTranslation(fixture.session, cloud: fixture.cloud)
+        XCTAssertEqual(tools.translation?.literal, "Une page calme.")
+        XCTAssertEqual(tools.translation?.interpretive, "Un moment de lecture.")
+        await tools.perform(retry, cloud: fixture.cloud)
+        XCTAssertEqual(tools.translation?.literal, "Une page calme.")
+        XCTAssertEqual(tools.translation?.interpretive, "Un moment de lecture.")
+        XCTAssertNil(tools.retry)
+        XCTAssertNil(tools.error)
+        XCTAssertNotNil(tools.completedTranslation)
+        let submissions = probe.posts(to: "/api/library/books/cloud-book/translate")
+        XCTAssertEqual(submissions.count, 2)
+        XCTAssertEqual(submissions.first?.data, consent.body)
+        XCTAssertEqual(submissions.first?.data, submissions.last?.data, "Recovery must submit the exact original request")
+        XCTAssertEqual(probe.requests.filter { $0.url!.path == "/api/billing/quotes" }.count, 1)
+        let japanese = try await fixture.library.readingTranslations(bookID: fixture.session.book.id, targetLanguage: .ja)
+        let french = try await fixture.library.readingTranslations(bookID: fixture.session.book.id, targetLanguage: .fr)
+        XCTAssertEqual(japanese[fixture.passage.id]?.literal, "静かなページ。")
+        XCTAssertEqual(japanese[fixture.passage.id]?.interpretive, "静かな読書のひととき。")
+        XCTAssertNil(french[fixture.passage.id]?.literal)
+        fixture.session.changeTranslationSettings(BookTranslationSettings(sourceLanguage: .en, targetLanguage: .ja))
+        await tools.loadTranslation(fixture.session, cloud: nil)
+        XCTAssertEqual(tools.translation?.literal, "静かなページ。")
+        XCTAssertEqual(tools.translation?.interpretive, "静かな読書のひととき。")
     }
     func testSelectedUnicodeQuoteUsesUTF16OffsetsAndNoPrivateNotes() async throws {
         let fixture = try await fixture(), probe = ReaderToolsProbe()

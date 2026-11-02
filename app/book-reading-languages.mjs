@@ -1,5 +1,5 @@
-// Content languages are independent of the interface locale. The current
-// translation contract stores Chinese literal/interpretive variants only.
+// Content languages are independent of the interface locale. Chinese keeps
+// its legacy pair; other targets are retained in translationsByLanguage.
 export function contentLanguage(value){
   return typeof value==='string'&&/^[a-z]{2,3}(?:[-_][a-z0-9]{2,8})*$/i.test(value)?value.toLowerCase().split(/[-_]/)[0]:'unknown';
 }
@@ -11,12 +11,13 @@ export function bookReadingLanguages(book,overlay={}){
     if(typeof passage.original!=='string'||!passage.original.trim())continue;
     total++;
     const saved=Object.hasOwn(overlay,passage.id)?overlay[passage.id]:null;
-    const translations=saved?.contentVersion===book.contentVersion?saved.translations:passage.translations;
-    const available=['literal','interpretive'].some(variant=>{
-      const value=translations?.[variant];
-      return typeof value?.text==='string'&&!!value.text.trim()&&(!value.sourceVersion||value.sourceVersion===book.contentVersion);
-    });
-    if(available&&sourceLanguage!=='zh'){languages.add('zh');translatedParagraphs++;}
+    const value=saved?.contentVersion===book.contentVersion?saved:passage;
+    let available=false;
+    for(const [language,pair]of Object.entries({zh:value.translations,...value.translationsByLanguage})){
+      const present=['literal','interpretive'].some(variant=>{const t=pair?.[variant];return typeof t?.text==='string'&&!!t.text.trim()&&(!t.sourceVersion||t.sourceVersion===book.contentVersion);});
+      if(present&&language!==sourceLanguage){languages.add(language);available=true;}
+    }
+    if(available)translatedParagraphs++;
   }
   return {sourceLanguage,translationLanguages:[...languages],supportsParallel:translatedParagraphs>0,translatedParagraphs,translationCoverage:!translatedParagraphs?'none':translatedParagraphs===total?'complete':'partial'};
 }

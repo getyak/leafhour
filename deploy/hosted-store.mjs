@@ -1,6 +1,7 @@
 import {digest,fail,MAX_FILE_BYTES} from '../server/document-import.mjs';
 import {randomUUID} from 'node:crypto';
 import {gzipSync,gunzipSync} from 'node:zlib';
+import {documentByteLimit,documentLimitMessage} from '../app/import-limits.mjs';
 
 export const BLOB_CHUNK_BYTES=8*1024*1024;
 const BLOB_MAGIC=Buffer.from('\0LEAFHOUR_CHUNKS_V1\n');
@@ -100,7 +101,7 @@ export function createHostedStore({env=process.env,fetcher=fetch}={}){
   }
   async function beginUpload(user,input){
     if(!user?.id)throw fail('请先进入自己的书房',401);
-    if(typeof input.filename!=='string'||input.filename.length>240||!/^.+\.(pdf|epub|txt|md)$/i.test(input.filename)||!Number.isSafeInteger(input.bytes)||input.bytes<1||input.bytes>20*1024*1024)throw fail('请选择 20 MB 内的 PDF、EPUB 或文本文件');
+    if(typeof input.filename!=='string'||input.filename.length>240||!/^.+\.(pdf|epub|txt|md|markdown)$/i.test(input.filename)||!Number.isSafeInteger(input.bytes)||input.bytes<1||input.bytes>documentByteLimit(input.filename))throw fail(documentLimitMessage);
     await mutate('limits/uploads/'+digest(user.id),{requests:[]},data=>{data.requests=data.requests.filter(time=>Date.now()-time<86400000);if(data.requests.length>=20||data.requests.filter(time=>Date.now()-time<3600000).length>=6)throw fail('这段时间上传较多，请稍后再试',429);data.requests.push(Date.now());});
     const id=randomUUID(),key='uploads/'+digest(user.id)+'/'+id,document='uploads/'+digest(user.id)+'/'+id;
     await mutate(document,{},data=>Object.assign(data,{key,filename:input.filename,bytes:input.bytes,expiresAt:Date.now()+3600000}));

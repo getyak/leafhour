@@ -72,3 +72,16 @@ test('cross-page PDF paragraphs cannot be visually approved with evidence for ju
 test('PDF source evidence contains a bounded rendered PNG with image and original digests',async t=>{const {library}=await fixture(t),{textPdf}=await import('./pdf-fixture.mjs'),{createHash}=await import('node:crypto'),b=await library.importDocument(owner,{filename:'image.pdf',bytes:textPdf('Visible rendered source evidence.')}),p=b.sections[0].paragraphs[0],e=await library.sourceEvidence(owner,b.bookId,{passageId:p.id});assert.equal(e.image?.mimeType,'image/png');const bytes=Buffer.from(e.image.data,'base64');assert.deepEqual([...bytes.subarray(0,8)],[137,80,78,71,13,10,26,10]);assert.ok(bytes.length<=2*1024*1024);assert.equal(createHash('sha256').update(bytes).digest('hex'),e.image.sha256);assert.equal(e.sha256,b.source.sha256);assert.equal(e.page,1);assert.ok(e.image.width*e.image.height<=1000000);await assert.rejects(library.sourceEvidence(owner,b.bookId,{passageId:p.id,page:2}),{status:400});});
 
 test('a blank render cannot become proof of nonempty extracted source text',async t=>{const {library}=await fixture(t),{PDFDocument}=await import('pdf-lib'),doc=await PDFDocument.create();doc.addPage();const b=await library.importExtracted(owner,{filename:'blank-proof.pdf',bytes:Buffer.from(await doc.save()),extracted:{format:'pdf',review:'extracted_unreviewed',pages:[{page:1,text:'A text layer is not proof that the visible page rendered.'}]}});await assert.rejects(library.sourceEvidence(owner,b.bookId,{passageId:b.sections[0].paragraphs[0].id}),e=>e.status===422&&/空白|图像/.test(e.message));});
+
+test('new source revisions invalidate every target translation while the parent retains its exact pairs',async t=>{
+ for(const kind of ['paragraph','chapter-title','reextract'])await t.test(kind,async t=>{
+  const {book,ps,dir}=await fixture(t),library=await createLibraryService({dataDir:dir,catalogDir:null,translator:async context=>({literal:context.targetLanguage+' literal',interpretive:context.targetLanguage+' interpretive'})});
+  await library.translate(owner,book.bookId,ps[0].id,{targetLanguage:'ja'});await library.translate(owner,book.bookId,ps[1].id);
+  const parent=await library.getBook(owner,book.bookId);
+  const input=kind==='paragraph'?correction(book,ps[0],'Corrected source with different provenance.'):kind==='chapter-title'?{baseContentVersion:book.contentVersion,operation:'correct',chapterTitles:[{id:book.chapters[0].id,title:'Corrected chapter title'}]}:{baseContentVersion:book.contentVersion,operation:'reextract'};
+  const revision=(await library.createSourceRevision(owner,book.bookId,input)).book;
+  for(const p of revision.sections.flatMap(s=>s.paragraphs)){assert.deepEqual(p.translations,{});assert.equal(p.translationsByLanguage,undefined);}
+  assert.deepEqual(await library.getBook(owner,book.bookId),parent);
+  validateLibraryBackup(await library.exportLibrary(owner));
+ });
+});

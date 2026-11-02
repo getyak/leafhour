@@ -69,6 +69,12 @@ struct ReadingAppearanceControls: View {
                 }.padding(.vertical, 6)
             }
             Section {
+                VStack(alignment: .leading, spacing: 10) {
+                    Text("首行缩进").font(.subheadline).foregroundStyle(.secondary)
+                    Picker("首行缩进", selection: field(\.firstLineIndent)) {
+                        ForEach(ReaderFirstLineIndent.allCases, id: \.rawValue) { value in Text(value.title).tag(value) }
+                    }.pickerStyle(.segmented).accessibilityIdentifier("reader-first-line-indent")
+                }.padding(.vertical, 4)
                 VStack(alignment: .leading, spacing: 12) {
                     Text("中文").font(.subheadline).foregroundStyle(.secondary)
                     ReaderChineseFontChoices(preferences: $preferences)

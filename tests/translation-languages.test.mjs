@@ -1,0 +1,41 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {mkdtemp,rm,readFile,writeFile} from 'node:fs/promises';
+import {tmpdir} from 'node:os';
+import path from 'node:path';
+import {createLibraryService} from '../server/library-service.mjs';
+import {digest} from '../server/document-import.mjs';
+import {createCreditGate} from '../server/credit-gate.mjs';
+const user={id:'language-owner'};
+async function setup(t,text='An original paragraph.'){const dir=await mkdtemp(path.join(tmpdir(),'translation-languages-'));t.after(()=>rm(dir,{recursive:true,force:true}));const calls=[];const library=await createLibraryService({dataDir:dir,catalogDir:null,translator:async context=>{calls.push(context);return {literal:context.targetLanguage+' literal',interpretive:context.targetLanguage+' interpretive'};}});const book=await library.importDocument(user,{filename:'source.txt',bytes:Buffer.from(text)});return {dir,library,book,calls,id:book.sections[0].paragraphs[0].id};}
+test('Chinese to English keeps direction metadata and survives full export/restore',async t=>{const {library,book,id,calls}=await setup(t,'这是一个中文原文段落。');const p=await library.translate(user,book.bookId,id,{sourceLanguage:'zh',targetLanguage:'en'});assert.equal(calls[0].targetLanguage,'en');assert.equal(calls[0].sourceLanguage,'zh');assert.equal(p.translations.literal.targetLanguage,'en');assert.equal(p.translations.interpretive.sourceLanguage,'zh');const backup=await library.exportLibrary(user);await library.restoreLibrary({id:'restored-owner'},backup);const restored=await library.getBook({id:'restored-owner'},book.bookId);assert.equal(restored.sections[0].paragraphs[0].translationsByLanguage.en.literal.text,'en literal');assert.deepEqual(restored.sections[0].paragraphs[0].translations,{});});
+test('English to Japanese and legacy Chinese stay independently available in chapter projections',async t=>{const {library,book,id,calls}=await setup(t);await library.translate(user,book.bookId,id);await library.translate(user,book.bookId,id,{sourceLanguage:'en',targetLanguage:'ja'});assert.equal(calls.length,2);const chapterId=book.chapters[0].id;for(const targetLanguage of ['zh','ja','fr']){const value=await library.readingChapter(user,book.bookId,chapterId,book.contentVersion,{targetLanguage});assert.equal(value.sections[0].paragraphs[0].translations.literal?.text,targetLanguage==='fr'?undefined:targetLanguage+' literal');}assert.equal((await library.getBook(user,book.bookId)).sections[0].paragraphs[0].translations.literal.text,'zh literal');});
+test('invalid languages, same language, stale version and wrong account stop before generation',async t=>{const {library,book,id,calls}=await setup(t);for(const options of [{targetLanguage:'xx'},{sourceLanguage:'EN'},{sourceLanguage:'en',targetLanguage:'en'},{targetLanguage:'ja',expectedContentVersion:'stale'}])await assert.rejects(library.translate(user,book.bookId,id,options));await assert.rejects(library.translate({id:'other'},book.bookId,id,{targetLanguage:'ja'}),e=>e.status===404);assert.equal(calls.length,0);});
+test('quotes fingerprint both languages and reject same-language directions before charging',async t=>{const {library,book,id}=await setup(t);const scopes=[];const gate=createCreditGate({library,billing:{enabled:true,quote:async q=>{scopes.push(q.scope);return q;}}});const input={id:'request',passageId:id,contentVersion:book.contentVersion};await gate.quote(user,{action:'translation',bookId:book.bookId,input:{...input,sourceLanguage:'en',targetLanguage:'ja'}});await gate.quote(user,{action:'translation',bookId:book.bookId,input:{...input,sourceLanguage:'fr',targetLanguage:'ja'}});await gate.quote(user,{action:'translation',bookId:book.bookId,input:{...input,sourceLanguage:'en',targetLanguage:'ko'}});assert.equal(new Set(scopes.map(s=>s.requestHash)).size,3);assert.equal(scopes[0].targetLanguage,'ja');await assert.rejects(gate.quote(user,{action:'translation',bookId:book.bookId,input:{...input,sourceLanguage:'en',targetLanguage:'en'}}));});
+test('backup rejects invalid target maps rather than persisting unvalidated translations',async t=>{const {library,book,id}=await setup(t);await library.translate(user,book.bookId,id,{targetLanguage:'ja'});const backup=await library.exportLibrary(user);const p=backup.books[0].book.sections[0].paragraphs[0];p.translationsByLanguage.ja.literal.targetLanguage='en';await assert.rejects(library.restoreLibrary({id:'restore-invalid'},backup),e=>e.status===400);});
+test('reviewed and concurrently saved multilingual variants survive generation and restore merges',async t=>{
+ const {dir,library,book,id}=await setup(t),file=path.join(dir,'users',digest(user.id),'translations',digest(book.bookId)+'.json');
+ await library.translate(user,book.bookId,id,{targetLanguage:'ja'});const backup=await library.exportLibrary(user);
+ const current=JSON.parse(await readFile(file,'utf8'));current[id].translationsByLanguage.ja.literal={...current[id].translationsByLanguage.ja.literal,text:'Reviewed Japanese',status:'reviewed'};await writeFile(file,JSON.stringify(current));
+ await library.restoreLibrary(user,backup,{preserveExisting:true});assert.equal((await library.getBook(user,book.bookId)).sections[0].paragraphs[0].translationsByLanguage.ja.literal.text,'Reviewed Japanese');
+ const race=await createLibraryService({dataDir:dir,catalogDir:null,translator:async()=>{
+  const overlay=JSON.parse(await readFile(file,'utf8'));overlay[id].translationsByLanguage.ko={literal:{...overlay[id].translationsByLanguage.ja.literal,targetLanguage:'ko',text:'Reviewed Korean'},interpretive:{...overlay[id].translationsByLanguage.ja.interpretive,targetLanguage:'ko',text:'Concurrent Korean'}};
+  await writeFile(file,JSON.stringify(overlay));return {literal:'Generated Korean',interpretive:'Generated Korean 2'};
+ }});
+ const saved=await race.translate(user,book.bookId,id,{targetLanguage:'ko'});assert.equal(saved.translations.literal.text,'Reviewed Korean');assert.equal(saved.translations.interpretive.text,'Concurrent Korean');
+ assert.equal((await race.getBook(user,book.bookId)).sections[0].paragraphs[0].translationsByLanguage.ja.literal.text,'Reviewed Japanese');
+});
+test('provider system prompt requests the selected language for both independent variants',async t=>{
+ const {createTranslator}=await import('../server/translation.mjs');let request;
+ t.mock.method(globalThis,'fetch',async(_url,options)=>{request=JSON.parse(options.body);return Response.json({choices:[{message:{content:JSON.stringify({literal:'Bonjour',interpretive:'Salut'})}}]});});
+ await createTranslator({DEEPSEEK_API_KEY:'synthetic-test-key'})({passageId:'p',targetLanguage:'fr',sourceLanguage:'en',passages:[{id:'p',original:'Hello'}]});
+ assert.ok(request.messages[0].content.includes('两种译文均须使用法文'));assert.ok(request.messages[0].content.includes('interpretive 用自然法文'));assert.equal(JSON.parse(request.messages[1].content).sourceLanguage,'en');
+});
+test('a gift with translations preserves each target without financial receipts',async t=>{
+ const {createBookGifts}=await import('../server/book-gifts.mjs'),{dir,library,book,id}=await setup(t);
+ await library.translate(user,book.bookId,id,{sourceLanguage:'en',targetLanguage:'ja',generationReceipt:{operationId:'private-financial-operation',requestId:'private-request'}});
+ const gifts=createBookGifts({library,dataDir:dir}),gift=await gifts.create(user,book.bookId,{includeTranslations:true});await gifts.accept({id:'gift-recipient'},gift.token);
+ const received=await library.getBook({id:'gift-recipient'},book.bookId),pair=received.sections[0].paragraphs[0].translationsByLanguage.ja;
+ assert.equal(pair.literal.text,'ja literal');assert.equal(pair.literal.targetLanguage,'ja');assert.equal(pair.literal.sourceLanguage,'en');assert.equal(pair.literal.generationReceipt,undefined);assert.deepEqual(received.sections[0].paragraphs[0].translations,{});
+});
+test('reading manifests acknowledge non-Chinese translations without changing the legacy projection',async t=>{const {library,book,id}=await setup(t,'这是中文原文。');await library.translate(user,book.bookId,id,{sourceLanguage:'zh',targetLanguage:'en'});assert.equal((await library.readingManifest(user,book.bookId)).reading.hasTranslations,true);});

@@ -13,6 +13,13 @@ async function book(text,filename='reading.txt'){
 const titles=b=>b.chapters.map(c=>c.title.zh);
 const originals=b=>b.sections.flatMap(s=>s.paragraphs.map(p=>p.original));
 
+test('separated Chinese chapter titles retain ellipses, questions and terminal ASCII periods',async()=>{
+ const text='第一千零一章 故乡……来人\n正文。\n\n第一千零二章 阁下是谁?\n正文。\n\n第一千零三章 未完.\n末段。';
+ const b=await book(text);
+ assert.deepEqual(titles(b),['第一千零一章 故乡……来人','第一千零二章 阁下是谁?','第一千零三章 未完.']);
+ assert.equal(originals(b).join('\n').replace(/\s/g,''),text.replace(/\s/g,''));
+});
+
 test('TXT recognizes real Chinese chapters without blank lines and keeps front matter, volumes and tail',async()=>{
  const text='书名\r\n作者\r\n第一卷 起点\r\n第一章 相遇\r\n　　第一段。\r\n第二段。\r\n第２章 归途\r\n最后的正文。\r\n尾声\r\n尾声正文。';
  const b=await book(text);

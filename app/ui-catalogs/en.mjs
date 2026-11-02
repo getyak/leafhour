@@ -1199,7 +1199,7 @@ export default Object.freeze({
   "portal.upload.explanation": "Text and scanned editions are organized automatically. External recognition asks for your confirmation first; the original file is always kept.",
   "portal.upload.failed": "The upload did not finish. You can try again, or choose another file.",
   "portal.upload.intro": "The original file stays in your reading room; extracted text becomes readable.",
-  "portal.upload.limits": "PDF up to 256 MB · EPUB, TXT and Markdown up to 20 MB",
+  "portal.upload.limits": "PDF up to 256 MB · EPUB up to 20 MB · TXT and Markdown up to 64 MB",
   "portal.upload.opening": "In your reading room; opening the first passage.",
   "portal.upload.organizing": "Organizing the passages…",
   "portal.upload.pdfExtract": "Extracting PDF text, please wait…",

@@ -5,6 +5,24 @@ import LeafhourCore
 
 @MainActor
 final class ReadingPreparationTests: XCTestCase {
+    func testExplicitLanguageDirectionSurvivesPreparationAndCachesOnlyThatLanguage() async throws {
+        let fixture = try await fixture(), probe = PreparationProbe(owner: owner)
+        PreparationProtocol.install(probe)
+        fixture.session.changeTranslationSettings(BookTranslationSettings(sourceLanguage: .en, targetLanguage: .ja))
+        let reading = ReaderReadingContent()
+        await reading.prepare(fixture.session, cloud: fixture.cloud, library: fixture.library, scope: .passage)
+        let proposed = try XCTUnwrap(reading.proposed)
+        XCTAssertEqual(proposed.plan.sourceLanguage, .en); XCTAssertEqual(proposed.plan.targetLanguage, .ja)
+        reading.confirm(proposed, session: fixture.session, cloud: fixture.cloud, library: fixture.library)
+        try await waitForCompletion(reading)
+        XCTAssertNil(reading.error)
+        let generated = try XCTUnwrap(probe.snapshot().first { $0.0.hasSuffix("/translate") }?.1)
+        XCTAssertEqual(generated["sourceLanguage"] as? String, "en"); XCTAssertEqual(generated["targetLanguage"] as? String, "ja")
+        let saved = try await fixture.library.readingTranslations(bookID: fixture.session.book.id, targetLanguage: .ja)
+        XCTAssertEqual(saved["p1"]?.targetLanguage, .ja)
+        let chinese = try await fixture.library.readingTranslations(bookID: fixture.session.book.id)
+        XCTAssertNil(chinese["p1"]?.literal)
+    }
     private let owner = "00000000-0000-4000-8000-000000000344"
     private struct Fixture { let session: ReaderSession; let library: OfflineLibrary; let cloud: CloudLibraryClient }
     private func fixture() async throws -> Fixture {
@@ -163,7 +181,7 @@ private final class PreparationProbe: @unchecked Sendable {
         if path == "/api/auth/session" { return (200,["user":["id":owner],"billing":["enabled":true,"mode":"test","unitsPerPoint":1_000_000,"prices":["translation":1_000_000]]],0) }
         if path == "/api/billing/quotes" {
             let input=body["input"] as? [String:Any] ?? [:]
-            return (200,["id":"quote-"+(input["id"] as? String ?? ""),"ownerId":owner,"action":"translation","mode":"test","units":1_000_000,"expiresAt":ISO8601DateFormatter().string(from:Date().addingTimeInterval(300)),"scope":["bookId":"reading-book","contentVersion":"v1","requestId":input["id"] ?? "","passageId":input["passageId"] ?? ""]],0)
+            return (200,["id":"quote-"+(input["id"] as? String ?? ""),"ownerId":owner,"action":"translation","mode":"test","units":1_000_000,"expiresAt":ISO8601DateFormatter().string(from:Date().addingTimeInterval(300)),"scope":["bookId":"reading-book","contentVersion":"v1","requestId":input["id"] ?? "","passageId":input["passageId"] ?? "","sourceLanguage":input["sourceLanguage"] ?? "en","targetLanguage":input["targetLanguage"] ?? "zh"]],0)
         }
         if path.hasSuffix("/translate") {
             generationCount += 1
@@ -174,7 +192,8 @@ private final class PreparationProbe: @unchecked Sendable {
                 return (status,value,0)
             }
             let id=body["passageId"] as? String ?? "", source=id=="p1" ? "Original one." : id=="p2" ? "Original two." : "Original three."
-            return (200,["id":id,"original":source,"translations":["literal":["text":"Literal "+id,"status":"draft"],"interpretive":["text":"Interpretive "+id,"status":"draft"]]],delay)
+            let target = body["targetLanguage"] as? String ?? "zh"
+            return (200,["id":id,"original":source,"translations":["literal":["text":"Literal "+id,"status":"draft","targetLanguage":target],"interpretive":["text":"Interpretive "+id,"status":"draft","targetLanguage":target]]],delay)
         }
         return (404,["error":"Unconfigured synthetic endpoint"],0)
     }

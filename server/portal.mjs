@@ -22,7 +22,8 @@ import {fileURLToPath} from 'node:url';
 import {createLibraryService} from './library-service.mjs';
 import {createEmailAuth,smtpSender} from './email-auth.mjs';
 import {createTranslator} from './translation.mjs';
-import {fail} from './document-import.mjs';
+import {fail,MAX_FILE_BYTES} from './document-import.mjs';
+import {documentByteLimit} from '../app/import-limits.mjs';
 import {audioHash} from './audio-content.mjs';
 import {createAudioStore} from './audio-store.mjs';
 import {createAudioService} from './audio-service.mjs';
@@ -293,7 +294,9 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
     requestState.user=user;
     const ownerScoped=p==='/api/people'||p.startsWith('/api/people/')||p.startsWith('/api/billing/')||p.startsWith('/api/admin/billing')||p.startsWith('/api/library')||p==='/api/account/preference-memory'||p==='/api/account/reading-preferences'||p==='/api/account/ui-preferences'||p==='/api/account/observability'||p==='/api/account/observability/events'||req.method==='POST'&&(p==='/api/account/profile'||/^\/api\/book-gifts\/[^/]+\/(?:accept|revoke)$/.test(p));
     if(ownerScoped&&req.headers['x-reader-owner']&&req.headers['x-reader-owner']!==(user?.id||'guest')){res.setHeader('X-Reader-Session-Changed','1');throw fail('账户已切换，请重新进入书房。原账户草稿仍留在原处。',409);}
-    const body=req.method==='POST'?await jsonBody(req,p==='/api/library/chat'||p.startsWith('/api/library/chat/')||/^\/api\/library\/books\/[^/]+\/chat$/.test(p)?4*1024*1024:p==='/api/library/notebook-workspace/analyze'?32768:p==='/api/library/notebook-workspace/import'?3*1024*1024:p==='/api/library/notebook-workspace'?16384:p.startsWith('/api/people')?1024*1024:p.startsWith('/api/billing/')?4*1024*1024:p==='/api/account/observability/events'?16*1024:p==='/api/account/observability'?1024:p==='/api/account/ui-preferences'?4*1024:['/api/account/reading-preferences','/api/account/preference-memory'].includes(p)?8*1024:p.startsWith('/api/library/daily-reading')||p.startsWith('/api/agent/daily-')?8*1024:p.startsWith('/api/auth/')||p.startsWith('/api/book-gifts/')||p.endsWith('/introduction')?4096:p.startsWith('/api/library/restore/')?2*1024*1024:p==='/api/account/profile'?160*1024:p.endsWith('/audio/import')||p.endsWith('/audio/validate')?32*1024*1024:['/api/library/import','/api/library/validate'].includes(p)?200*1024*1024:29*1024*1024):null;
+    // Large original fallback is authenticated before accepting its JSON body.
+    if(p==='/api/library/upload'&&req.method==='POST'&&!user)throw fail('请先进入自己的书房',401);
+    const body=req.method==='POST'?await jsonBody(req,p==='/api/library/upload'?Math.ceil(MAX_FILE_BYTES/3)*4+4096:p==='/api/library/chat'||p.startsWith('/api/library/chat/')||/^\/api\/library\/books\/[^/]+\/chat$/.test(p)?4*1024*1024:p==='/api/library/notebook-workspace/analyze'?32768:p==='/api/library/notebook-workspace/import'?3*1024*1024:p==='/api/library/notebook-workspace'?16384:p.startsWith('/api/people')?1024*1024:p.startsWith('/api/billing/')?4*1024*1024:p==='/api/account/observability/events'?16*1024:p==='/api/account/observability'?1024:p==='/api/account/ui-preferences'?4*1024:['/api/account/reading-preferences','/api/account/preference-memory'].includes(p)?8*1024:p.startsWith('/api/library/daily-reading')||p.startsWith('/api/agent/daily-')?8*1024:p.startsWith('/api/auth/')||p.startsWith('/api/book-gifts/')||p.endsWith('/introduction')?4096:p.startsWith('/api/library/restore/')?2*1024*1024:p==='/api/account/profile'?160*1024:p.endsWith('/audio/import')||p.endsWith('/audio/validate')?32*1024*1024:['/api/library/import','/api/library/validate'].includes(p)?200*1024*1024:29*1024*1024):null;
     if(p==='/api/billing/account'&&user)await creditGate.recover(user);
     if(await billingRoutes.handle({req,res,url,user,body,send}))return true;
     const localAllowed=allowLocal&&['127.0.0.1','::1','::ffff:127.0.0.1'].includes(req.socket.remoteAddress)&&!publicOrigin;
@@ -461,13 +464,13 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
     if(p==='/api/library/upload/complete'&&req.method==='POST'){
       if(!dataStore?.completeUpload)throw fail('此书房使用本机上传',404);
       if(body.defer===true&&body.duplicatePolicy&&body.duplicatePolicy!=='keep')throw fail('请使用即时入库处理这次重复文件选择');
-      const result=await dataStore.completeUpload(user,body.id,library,{...(body.defer===true?{ingestion}:{}),duplicatePolicy:body.duplicatePolicy,operationId:body.operationId});if(body.defer===true&&result.id)await ingestionRunner.enqueue(user,result.id);send(body.defer===true?202:201,result);return true;
+      const result=await dataStore.completeUpload(user,body.id,library,{...(body.defer===true?{ingestion}:{}),duplicatePolicy:body.duplicatePolicy,operationId:body.operationId});if(body.defer===true&&result.id)await ingestionRunner.enqueue(user,result.id);send(body.defer===true?202:201,body.receiptOnly===true&&body.defer!==true?{bookId:result.bookId,contentVersion:result.contentVersion}:result);return true;
     }
     if(p==='/api/library/upload'&&req.method==='POST'){
-      if(!user)throw fail('请先进入自己的书房',401);if(typeof body.base64!=='string'||!body.base64.length||body.base64.length>28*1024*1024||!/^[A-Za-z0-9+/]*={0,2}$/.test(body.base64))throw fail('文件编码不正确');
+      if(!user)throw fail('请先进入自己的书房',401);if(typeof body.base64!=='string'||!body.base64.length||body.base64.length>Math.ceil(documentByteLimit(body.filename)/3)*4||!/^[A-Za-z0-9+/]*={0,2}$/.test(body.base64))throw fail('文件编码不正确');
       if(body.defer===true&&body.duplicatePolicy&&body.duplicatePolicy!=='keep')throw fail('请使用即时入库处理这次重复文件选择');
       const input={filename:body.filename,bytes:Buffer.from(body.base64,'base64'),duplicatePolicy:body.duplicatePolicy,operationId:body.operationId};
-      if(body.defer===true){const job=await ingestion.prepareDocument(user,input);await ingestionRunner.enqueue(user,job.id);send(202,job);}else send(201,await library.importDocument(user,input));return true;
+      if(body.defer===true){const job=await ingestion.prepareDocument(user,input);await ingestionRunner.enqueue(user,job.id);send(202,job);}else{const result=await library.importDocument(user,input);send(201,body.receiptOnly===true?{bookId:result.bookId,contentVersion:result.contentVersion}:result);}return true;
     }
     if(p==='/api/library/restore/start'&&req.method==='POST'){send(201,await portability.start(user,body));return true;}
     const restoreOperation=p.match(/^\/api\/library\/restore\/([a-f0-9-]{36})\/(part|commit|cancel)$/);
@@ -602,7 +605,7 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
       }
       if(action==='reading'&&req.method==='GET'){sendReading(await library.readingView(user,id,{chapterId:url.searchParams.get('chapterId'),passageId:url.searchParams.get('passageId')}));return true;}
       const chapterRead=action?.match(/^chapters\/([A-Za-z0-9_.:-]{1,128})$/);
-      if(chapterRead&&req.method==='GET'){sendReading(await library.readingChapter(user,id,chapterRead[1],url.searchParams.get('contentVersion')));return true;}
+      if(chapterRead&&req.method==='GET'){sendReading(await library.readingChapter(user,id,chapterRead[1],url.searchParams.get('contentVersion'),{targetLanguage:url.searchParams.get('targetLanguage')??'zh'}));return true;}
       if(action==='cover'&&req.method==='GET'){const cover=await library.getCover(user,id);res.statusCode=200;res.setHeader('Content-Type',cover.mimeType);res.setHeader('Cache-Control','private, no-store');res.setHeader('X-Content-Type-Options','nosniff');res.setHeader('Content-Length',cover.bytes.length);res.end(cover.bytes);return true;}
       if(action==='original/range'&&req.method==='GET'){const part=await library.originalRange(user,id,{offset:Number(url.searchParams.get('offset')),length:Number(url.searchParams.get('length')),sha256:url.searchParams.get('sha256')});res.statusCode=206;res.setHeader('Content-Type','application/octet-stream');res.setHeader('Cache-Control','private, no-store');res.setHeader('Content-Length',part.bytes.length);res.setHeader('Content-Range','bytes '+part.offset+'-'+(part.offset+part.bytes.length-1)+'/'+part.total);res.end(part.bytes);return true;}
       if(action==='original/parts'&&req.method==='GET'){send(200,await library.originalParts(user,id));return true;}
@@ -619,7 +622,7 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
       if(action==='reading-goal'&&req.method==='POST'){send(200,await library.setReadingGoal(user,id,body));return true;}
       // Legacy callers send only passageId and stay compatible; batch callers
       // may pin the optional expected content version.
-      if(action==='translate'&&req.method==='POST'){send(200,await creditGate.run({user,action:'translation',bookId:id,input:body,execute:(input,generationReceipt)=>library.translate(user,id,input.passageId,{...(input.contentVersion!==undefined?{expectedContentVersion:input.contentVersion}:{}),...(generationReceipt?{generationReceipt,authorizeGeneration:async()=>{const op=await billing.operation({ownerId:user.id,operationId:generationReceipt.operationId});return op?.status==='running'&&Date.now()-Date.parse(op.startedAt||op.createdAt)<15*60*1000;}}:{})})}));return true;}
+      if(action==='translate'&&req.method==='POST'){send(200,await creditGate.run({user,action:'translation',bookId:id,input:body,execute:(input,generationReceipt)=>library.translate(user,id,input.passageId,{...(input.sourceLanguage!==undefined?{sourceLanguage:input.sourceLanguage}:{}),...(input.targetLanguage!==undefined?{targetLanguage:input.targetLanguage}:{}),...(input.contentVersion!==undefined?{expectedContentVersion:input.contentVersion}:{}),...(generationReceipt?{generationReceipt,authorizeGeneration:async()=>{const op=await billing.operation({ownerId:user.id,operationId:generationReceipt.operationId});return op?.status==='running'&&Date.now()-Date.parse(op.startedAt||op.createdAt)<15*60*1000;}}:{})})}));return true;}
       if(action==='experiences'&&req.method==='GET'){const book=await library.getBook(user,id);send(200,{bookId:id,contentVersion:book.contentVersion,xrays:[],cards:[],invitations:[],states:{},echoes:[],echoAvailable:false});return true;}
       if(action==='experience-events'&&req.method==='POST'){await library.getBook(user,id);send(200,{accepted:0,reason:'本书尚未开启探索体验统计'});return true;}
       if(action==='records/import'&&req.method==='POST'){const book=await library.getBook(user,id);if(body?.bookId!==id||body.kind!=='marginalia-personal-records')throw fail('请选择这本书的记录包');send(200,await library.restoreLibrary(user,{kind:'marginalia-library',schemaVersion:1,books:[{book,records:body}]}));return true;}

@@ -233,7 +233,7 @@ const strings=[
   ['这次，你想读什么？','What would you like to read?','這次，你想讀什麼？','今回は、何を読みますか？'],
   ['原文件保存在自己的书房，提取后即可阅读。','The original file stays in your reading room; extracted text becomes readable.','原文件保存在自己的書房，提取後即可閱讀。','元のファイルは自分の書斎に保存され、抽出できたら読み進めます。'],
   ['拖放一本书，或点击选择','Drop a book here, or click to choose','拖放一本書，或點擊選擇','本をドロップするか、クリックして選択'],
-  ['PDF 最多 256 MB · EPUB、TXT、Markdown 最多 20 MB','PDF up to 256 MB · EPUB, TXT and Markdown up to 20 MB','PDF 最多 256 MB · EPUB、TXT、Markdown 最多 20 MB','PDF は最大 256 MB · EPUB・TXT・Markdown は最大 20 MB'],
+  ['PDF 最多 256 MB · EPUB 最多 20 MB · TXT、Markdown 最多 64 MB','PDF up to 256 MB · EPUB up to 20 MB · TXT and Markdown up to 64 MB','PDF 最多 256 MB · EPUB 最多 20 MB · TXT、Markdown 最多 64 MB','PDF は最大 256 MB · EPUB は最大 20 MB · TXT・Markdown は最大 64 MB'],
   ['自动整理文字版与扫描版。需要借助外部识别时，再由你确认；原文件始终保留。','Text and scanned editions are organized automatically. External recognition asks for your confirmation first; the original file is always kept.','自動整理文字版與掃描版。需要藉助外部識別時，再由你確認；原文件始終保留。','文字版とスキャン版を自動で整理します。外部の認識を使うときは確認を求めるので、元のファイルは常に残ります。'],
   ['放进我的书房','Put it in my reading room','放進我的書房','自分の書斎に入れる'],
   ['关闭上传','Close upload','關閉上傳','アップロードを閉じる'],

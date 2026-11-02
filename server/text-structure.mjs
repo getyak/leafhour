@@ -9,16 +9,18 @@ const chineseNumber = /^第\s*[〇零一二三四五六七八九十百千万兩�
 const named = /^(?:序章|序言|前言|楔子|引子|后记|後記|尾声|尾聲|终章|終章|附录|附錄|引言|prologue|epilogue|preface|foreword|afterword|introduction|appendix)(?=$|[\s:：—–-])(.*)$/iu;
 export function textHeading(line) {
   const title = line.trim();
-  if (!title || title.length > 100 || /[。！？!?;；]|\.{2,}|…|[·．]{2,}/u.test(title)) return null;
+  if (!title || title.length > 100) return null;
   let marker = title;
   for (const [open, close] of [['【', '】'], ['[', ']'], ['（', '）'], ['(', ')']]) {
     if (marker.startsWith(open) && marker.endsWith(close)) { marker = marker.slice(1, -1).trim(); break; }
   }
+  const numbered = chineseNumber.exec(marker), separatedChinese = numbered && /^\s+\S/u.test(numbered[1]);
+  if ((!separatedChinese && /[。！？!?;；]|\.{2,}|…|[·．]{2,}/u.test(title)) || /[.．·…_]{2,}\s*[0-9０-９ivxlcdm]+\s*$/iu.test(marker)) return null;
   for (const pattern of [chineseNumber, englishNumber, named]) {
     const match = pattern.exec(marker);
     if (!match) continue;
     const suffix = match[1], content = suffix.trim().replace(/^[.．:：—–-]+\s*/u, '');
-    if (/[.。！？!?;；]/u.test(content)) return null;
+    if ((pattern === chineseNumber && separatedChinese ? /[。;；]/u : /[.。！？!?;；]/u).test(content)) return null;
     if (pattern === englishNumber && /^[a-z]/u.test(content)) return null;
     if (pattern === chineseNumber && /^(?:介绍|介紹|讨论|討論|讲述|講述|主要|说明|說明|提到|解释|解釋|探讨|探討|阐述|闡述|描述)/u.test(suffix)) return null;
     if (/\S\s{2,}[0-9０-９ivxlcdm]+$/iu.test(suffix)) return null;

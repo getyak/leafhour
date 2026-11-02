@@ -72,9 +72,9 @@ struct LibraryScreen: View {
     var body: some View {
         NavigationStack(path: $path) {
             shelfScaffold
-            .task { await model.reload(restore: true); await model.restoreRecentReading(); didLoad = true; await model.synchronize(); await migrateCloudPinsIfNeeded() }
+            .task { await model.loadCachedShelf(); didLoad = true; await model.reload(); await model.synchronize(); await migrateCloudPinsIfNeeded() }
             .task(id: resumeLookupKey) { await loadResume() }
-            .refreshable { await model.synchronize(); await model.reload() }
+            .refreshable { await model.synchronize(force: true); await model.reload() }
             .onChange(of: scenePhase) { _, phase in if phase == .active { Task { await model.synchronize() } } }
             .onChange(of: model.account?.id) { _, _ in selecting = false; selectedIDs = []; sharing = nil; confirmingRemoval = false; removalItems = [] }
             .onChange(of: model.accountShelf?.pinsInitialized) { _, _ in Task { await migrateCloudPinsIfNeeded() } }

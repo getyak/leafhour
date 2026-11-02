@@ -7,6 +7,24 @@ import LeafhourCore
 
 @MainActor
 final class ReaderPreferencesLayoutTests: XCTestCase {
+    func testBookLanguageSettingsAndIndentChoicesAtNormalAndLargeType() async throws {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        try FileManager.default.createDirectory(at: root, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let file = root.appendingPathComponent("Synthetic.txt"); try Data("    这是一段用于排版验收的原创文字。阅读仍从原文出发。".utf8).write(to: file)
+        let library = try OfflineLibrary(root: root, scope: .device), book = try await library.importFile(file)
+        let session = ReaderSession(book: book, state: try await library.state(book.id), original: file, directory: root, library: library)
+        for size in [DynamicTypeSize.large, .accessibility5] {
+            let view = NavigationStack { Form { ReaderBookLanguageChoices(session: session); ReadingAppearanceControls(preferences: Binding(get: { session.state.preferences }, set: { session.changePreferences($0) })) }.navigationTitle("阅读设置") }.environment(\.dynamicTypeSize, size)
+            let controller = UIHostingController(rootView: view), window = UIWindow(frame: CGRect(x: 0, y: 0, width: 390, height: 844))
+            window.rootViewController = controller; window.makeKeyAndVisible(); controller.view.frame = window.bounds
+            try await Task.sleep(for: .milliseconds(150)); controller.view.layoutIfNeeded()
+            let image = UIGraphicsImageRenderer(size: window.bounds.size).image { _ in _ = controller.view.drawHierarchy(in: controller.view.bounds, afterScreenUpdates: true) }
+            let attachment = XCTAttachment(image: image); attachment.name = "Book language and indentation · " + String(describing: size); attachment.lifetime = .keepAlways; add(attachment)
+            XCTAssertEqual(session.translationSettings.targetLanguage, .en)
+            window.isHidden = true; window.rootViewController = nil
+        }
+    }
     func testMixedTextUsesSelectedLatinAndChineseGlyphs() throws {
         for (style, chinese) in [(ReaderFontStyle.serif, "NotoSerif"), (.kai, "LXGWWenKai"), (.sans, "PingFang")] {
             let font = ReaderTypography.font(style: style, size: 22, traits: UITraitCollection(preferredContentSizeCategory: .large), latin: .baskerville)

@@ -86,6 +86,7 @@ public struct ReaderPreferences: Codable, Equatable, Sendable {
     public var fontStyle: ReaderFontStyle = .serif
     public var fontSize: Double = 22
     public var lineSpacing: Double = 9
+    public var firstLineIndent: ReaderFirstLineIndent = .none
     public var theme: String = "paper"
     public var navigationMode: ReaderNavigationMode = .paged
     public var pageAnimation: ReaderPageAnimation = .slide
@@ -95,13 +96,14 @@ public struct ReaderPreferences: Codable, Equatable, Sendable {
     public var speechSpeed: Double = 1
     public var autoPageInterval: Double = 30
     public init() {}
-    private enum CodingKeys: String, CodingKey { case latinFont, fontStyle, fontSize, lineSpacing, theme, navigationMode, pageAnimation, pageInput, viewMode, translationVariant, speechSpeed, autoPageInterval }
+    private enum CodingKeys: String, CodingKey { case latinFont, fontStyle, fontSize, lineSpacing, firstLineIndent, theme, navigationMode, pageAnimation, pageInput, viewMode, translationVariant, speechSpeed, autoPageInterval }
     public init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
         latinFont = (try values.decodeIfPresent(String.self, forKey: .latinFont)).flatMap(ReaderLatinFont.init(rawValue:)) ?? .automatic
         fontStyle = (try values.decodeIfPresent(String.self, forKey: .fontStyle)).flatMap(ReaderFontStyle.init(rawValue:)) ?? .serif
         fontSize = try values.decodeIfPresent(Double.self, forKey: .fontSize) ?? 22
         lineSpacing = try values.decodeIfPresent(Double.self, forKey: .lineSpacing) ?? 9
+        firstLineIndent = (try values.decodeIfPresent(String.self, forKey: .firstLineIndent)).flatMap(ReaderFirstLineIndent.init(rawValue:)) ?? .none
         theme = try values.decodeIfPresent(String.self, forKey: .theme) ?? "paper"
         // Old state and a future mode remain readable without discarding notes or position.
         let mode = try values.decodeIfPresent(String.self, forKey: .navigationMode)
@@ -128,6 +130,7 @@ public struct ReaderState: Codable, Equatable, Sendable {
     public var drafts: [String: NoteDraft] = [:]
     public var notes: [ReaderNote] = []
     public var preferences = ReaderPreferences()
+    public var translationSettings: BookTranslationSettings? = nil
     public init() {}
 }
 /// Layer offsets are UTF-16 positions in a verified text snapshot, never source

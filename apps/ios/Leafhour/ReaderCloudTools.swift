@@ -95,7 +95,7 @@ final class ReaderCloudTools {
     var draftError: String?
     @ObservationIgnored private var draftWriting: Task<Void, Never>?
     @ObservationIgnored private var generation = UUID()
-    @ObservationIgnored private var translationPassageID: String?
+    @ObservationIgnored private var translationContext: (identity: CloudBookIdentity, passageID: String, language: ReadingLanguage)?
     @ObservationIgnored private var library: OfflineLibrary?
     @ObservationIgnored private var localBookID: String?
 
@@ -205,9 +205,10 @@ final class ReaderCloudTools {
     private func paragraph(_ value: [String: Any], id: String) -> [String: Any]? {
         (value["sections"] as? [[String: Any]] ?? []).flatMap { $0["paragraphs"] as? [[String: Any]] ?? [] }.first { $0["id"] as? String == id }
     }
-    private func readTranslation(_ value: [String: Any], fallback: String) -> ReaderTranslation {
+    private func readTranslation(_ value: [String: Any], fallback: String, targetLanguage: ReadingLanguage = .zh) -> ReaderTranslation {
         let translations = value["translations"] as? [String: [String: Any]] ?? [:]
-        let literal = translations["literal"], interpretive = translations["interpretive"]
+        let literal = translations["literal"].flatMap { ($0["targetLanguage"] as? String ?? "zh") == targetLanguage.rawValue ? $0 : nil }
+        let interpretive = translations["interpretive"].flatMap { ($0["targetLanguage"] as? String ?? "zh") == targetLanguage.rawValue ? $0 : nil }
         return ReaderTranslation(original: value["original"] as? String ?? fallback,
             literal: literal?["text"] as? String, interpretive: interpretive?["text"] as? String,
             literalStatus: literal?["status"] as? String, interpretiveStatus: interpretive?["status"] as? String)
@@ -216,17 +217,23 @@ final class ReaderCloudTools {
     private func bookPath(_ id: String) -> String { "/api/library/books/" + component(id) }
     func loadTranslation(_ session: ReaderSession, cloud: CloudLibraryClient?) async {
         let stamp = UUID(); generation = stamp; error = nil; loading = false
+        translationContext = nil
         guard let passage = Self.currentPassage(session) else { translation = nil; error = "这一页还没有可供翻译的文字。"; return }
-        translationPassageID = passage.id
-        translation = cached(session).flatMap { paragraph($0, id: passage.id) }.map { readTranslation($0, fallback: passage.text) } ?? ReaderTranslation(original: passage.text)
+        let language = session.translationSettings.targetLanguage
+        if let identity = session.book.cloud { translationContext = (identity, passage.id, language) }
+        translation = cached(session).flatMap { paragraph($0, id: passage.id) }.map { readTranslation($0, fallback: passage.text, targetLanguage: language) } ?? ReaderTranslation(original: passage.text)
+        if let library, let rows = try? await library.readingTranslations(bookID: session.book.id, targetLanguage: language), let saved = rows[passage.id] {
+            guard generation == stamp, language == session.translationSettings.targetLanguage else { return }
+            translation = ReaderTranslation(original: saved.original, literal: saved.literal, interpretive: saved.interpretive, literalStatus: saved.literalStatus, interpretiveStatus: saved.interpretiveStatus)
+        }
         guard let identity = session.book.cloud, let cloud else { return }
         loading = true
         defer { if generation == stamp { loading = false } }
         do {
-            let value = try object(await cloud.data(path: bookPath(identity.bookID) + "/chapters/" + component(session.chapter.id) + "?contentVersion=" + component(identity.contentVersion), ownerID: identity.ownerID))
-            try Task.checkCancellation(); guard generation == stamp else { return }
+            let value = try object(try JSONEncoder().encode(await cloud.readingChapter(bookID: identity.bookID, chapterID: session.chapter.id, contentVersion: identity.contentVersion, ownerID: identity.ownerID, targetLanguage: language)))
+            try Task.checkCancellation(); guard generation == stamp, language == session.translationSettings.targetLanguage else { return }
             guard let p = paragraph(value, id: passage.id) else { throw LibraryError.invalid("这一段暂时无法核对，请重新打开这本书。") }
-            translation = readTranslation(p, fallback: passage.text)
+            translation = readTranslation(p, fallback: passage.text, targetLanguage: language)
         } catch is CancellationError { }
         catch { if generation == stamp { self.error = "暂时无法更新译文，已保留此设备上的内容。\n" + error.localizedDescription } }
     }
@@ -296,15 +303,23 @@ final class ReaderCloudTools {
         if action == "conversation", let context = chatContext {
             await prepareRequest(action, identity: context.identity, passageID: context.passageID, original: context.original, selection: context.selection, cloud: cloud)
         } else {
-            await prepareRequest(action, identity: identity, passageID: passage.id, original: passage.text, selection: selection ?? session.selection, cloud: cloud)
+            let languages = session.translationSettings
+            if action == "translation", !languages.isValid(detected: session.detectedSourceLanguage) { error = "请先设置不同的原文语言与译入语言。"; return }
+            await prepareRequest(action, identity: identity, passageID: passage.id, original: passage.text, selection: selection ?? session.selection, cloud: cloud,
+                languages: action == "translation" ? languages : nil, detectedSource: session.detectedSourceLanguage)
+            if action == "translation", languages != session.translationSettings { consent = nil }
         }
     }
-    private func prepareRequest(_ action: String, identity: CloudBookIdentity, passageID: String, original: String, selection: SelectedQuote? = nil, cloud: CloudLibraryClient) async {
+    private func prepareRequest(_ action: String, identity: CloudBookIdentity, passageID: String, original: String, selection: SelectedQuote? = nil, cloud: CloudLibraryClient, languages: BookTranslationSettings? = nil, detectedSource: ReadingLanguage? = nil) async {
         guard !generating, !loading else { return }
         guard retry == nil else { error = "上一次请求的结果尚待确认，请先重试查看本次结果。"; return }
         error = nil; loading = true; defer { loading = false }
         let requestID = UUID().uuidString.lowercased()
         var body: [String: Any] = ["id": requestID, "passageId": passageID, "contentVersion": identity.contentVersion]
+        if let languages {
+            body["sourceLanguage"] = languages.resolvedSource(detected: detectedSource)?.rawValue
+            body["targetLanguage"] = languages.targetLanguage.rawValue
+        }
         if action == "conversation" {
             let text = question.trimmingCharacters(in: .whitespacesAndNewlines)
             guard !text.isEmpty else { error = "写点什么，或说一句话。"; return }
@@ -335,6 +350,7 @@ final class ReaderCloudTools {
             let billing = sessionValue["billing"] as? [String: Any] ?? [:]
             let accountConversation = identity.bookID == Self.libraryChatID && action == "conversation"
             var explanation = accountConversation ? "发送当前问题与对话，可按需查阅自己的书房和公开网络。" : action == "translation" ? "只处理当前段落及必要的相邻上下文。直译和意译独立保存为 AI 草稿。" : "发送当前问题与书内位置，沿用本书的对话。"
+            if let languages { explanation += "\n" + (languages.resolvedSource(detected: detectedSource)?.title ?? "待选择") + " → " + languages.targetLanguage.title }
             if !accountConversation { explanation += "\n\n原文：" + String(original.prefix(120)) }
             if billing["enabled"] as? Bool == true {
                 let units = action == "translation" ? 1_000_000 : 4_000_000
@@ -349,7 +365,8 @@ final class ReaderCloudTools {
                       quote["ownerId"] as? String == identity.ownerID, quote["action"] as? String == action,
                       quote["units"] as? Int == units, quotedScope["bookId"] as? String == identity.bookID,
                       quotedScope["requestId"] as? String == requestID, quotedScope["passageId"] as? String == passageID,
-                      quotedScope["contentVersion"] as? String == identity.contentVersion else { throw LibraryError.invalid("本次点数报价无法核对，尚未提交。") }
+                      quotedScope["contentVersion"] as? String == identity.contentVersion,
+                      languages == nil || (quotedScope["sourceLanguage"] as? String == body["sourceLanguage"] as? String && quotedScope["targetLanguage"] as? String == body["targetLanguage"] as? String) else { throw LibraryError.invalid("本次点数报价无法核对，尚未提交。") }
                 if let quotedMode = quote["mode"] as? String, quotedMode != mode { throw LibraryError.invalid("本次点数报价的模式已变化，尚未提交。") }
                 if let expiry = quote["expiresAt"] as? String {
                     let formatter = ISO8601DateFormatter(); formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
@@ -381,10 +398,18 @@ final class ReaderCloudTools {
             try Task.checkCancellation()
             if intent.action == "translation" {
                 guard value["id"] as? String == intent.passageID else { throw LibraryError.invalid("译文的来源暂时无法核对，尚未显示。") }
-                if translationPassageID == intent.passageID { translation = readTranslation(value, fallback: translation?.original ?? "") }
+                let request = try CloudJSON.decode(intent.body)
+                let language = request["targetLanguage"].string.flatMap(ReadingLanguage.init(rawValue:)) ?? .zh
+                if let context = translationContext,
+                   context.identity.ownerID == intent.ownerID,
+                   intent.path == bookPath(context.identity.bookID) + "/translate",
+                   context.identity.contentVersion == request["contentVersion"].string,
+                   context.passageID == intent.passageID, context.language == language {
+                    translation = readTranslation(value, fallback: translation?.original ?? "", targetLanguage: language)
+                }
                 completedTranslation = try CloudJSON.decode(JSONSerialization.data(withJSONObject: value))
                 if let library, let localBookID {
-                    do { try await library.cacheCloudPassage(CloudJSON.decode(JSONSerialization.data(withJSONObject: value)), bookID: localBookID) }
+                    do { try await library.cacheCloudPassage(CloudJSON.decode(JSONSerialization.data(withJSONObject: value)), bookID: localBookID, targetLanguage: language) }
                     catch { self.error = "译文已保存到云端，此设备的离线副本暂未更新。可以回书房重新同步。" }
                 }
             } else {

@@ -36,7 +36,10 @@ export function validateLibraryBackup(backup){
       for(const p of s.paragraphs){
         if(!object(p)||!id(p.id)||passageIds.has(p.id)||!text(p.original,100000)||!object(p.translations)||!Array.isArray(p.annotationIds)||!Array.isArray(p.termIds))invalid(where,'原文锚点缺失或重复');
         passageIds.set(p.id,s.chapterId);occupiedChapters.add(s.chapterId);paragraphs++;
-        for(const [variant,t] of Object.entries(p.translations))if(!['literal','interpretive'].includes(variant)||!object(t)||!text(t.text)||t.origin!=='ai'||!['draft','reviewed'].includes(t.status)||t.variant!==undefined&&t.variant!==variant||t.sourceVersion!==undefined&&t.sourceVersion!==b.contentVersion||t.createdAt!==undefined&&!date(t.createdAt))invalid(where,'译文内容、归属或来源版本不正确');
+        const languages=['zh','en','ja','ko','fr','de','es'];
+        const validatePair=(pair,target,explicit=false)=>{if(!object(pair))invalid(where,'译文语言信息不正确');for(const [variant,t]of Object.entries(pair))if(!['literal','interpretive'].includes(variant)||!object(t)||!text(t.text)||t.origin!=='ai'||!['draft','reviewed'].includes(t.status)||t.variant!==undefined&&t.variant!==variant||t.sourceVersion!==undefined&&t.sourceVersion!==b.contentVersion||t.createdAt!==undefined&&!date(t.createdAt)||t.sourceLanguage!==undefined&&!languages.includes(t.sourceLanguage)||t.targetLanguage!==undefined&&t.targetLanguage!==target||explicit&&(!languages.includes(t.sourceLanguage)||t.targetLanguage!==target)||t.sourceLanguage!==undefined&&t.sourceLanguage===t.targetLanguage)invalid(where,'译文内容、语言、归属或来源版本不正确');};
+        validatePair(p.translations,'zh');
+        if(p.translationsByLanguage!==undefined){if(!object(p.translationsByLanguage))invalid(where,'译文语言信息不正确');for(const [language,pair]of Object.entries(p.translationsByLanguage)){if(!languages.includes(language)||language==='zh')invalid(where,'译入语言不正确');validatePair(pair,language,true);}}
       }
     }
     if([...chapterIds].some(chapter=>!occupiedChapters.has(chapter)))invalid(where,'存在没有原文的章节');

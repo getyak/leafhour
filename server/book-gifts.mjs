@@ -32,8 +32,10 @@ function snapshotBook(raw,includeTranslations){
   const book={...primitives(raw,['bookId','contentVersion','author','sourceLanguage','targetLanguage','createdAt','description']),title:title(raw.title),visibility:raw.visibility==='public'?'public':'private',source,
     chapters:raw.chapters.map(c=>({...primitives(c,['id','number','kind','startPassageId']),title:title(c.title)})),
     sections:raw.sections.map(s=>({...primitives(s,['number','chapterId','title']),paragraphs:s.paragraphs.map(p=>{
-      const translations={};if(includeTranslations)for(const variant of ['literal','interpretive'])if(object(p.translations?.[variant]))translations[variant]=primitives(p.translations[variant],['text','status','variant','origin','model','translator','sourceVersion','createdAt','reviewedAt','license']);
-      return {...primitives(p,['id','original','kind']),source:primitives(p.source,['pdfPage','printedPage','review']),translations,annotationIds:(p.annotationIds||[]).filter(id=>annotationIds.has(id)),termIds:(p.termIds||[]).filter(id=>termIds.has(id))};
+      const pair=source=>Object.fromEntries(['literal','interpretive'].filter(variant=>object(source?.[variant])).map(variant=>[variant,primitives(source[variant],['text','status','variant','origin','model','translator','sourceVersion','sourceLanguage','targetLanguage','createdAt','reviewedAt','license'])]));
+      const translations=includeTranslations?pair(p.translations):{},translationsByLanguage={};
+      if(includeTranslations)for(const language of ['en','ja','ko','fr','de','es'])if(object(p.translationsByLanguage?.[language]))translationsByLanguage[language]=pair(p.translationsByLanguage[language]);
+      return {...primitives(p,['id','original','kind']),source:primitives(p.source,['pdfPage','printedPage','review']),translations,...(Object.keys(translationsByLanguage).length?{translationsByLanguage}:{}),annotationIds:(p.annotationIds||[]).filter(id=>annotationIds.has(id)),termIds:(p.termIds||[]).filter(id=>termIds.has(id))};
     })})),annotations,glossary};
   // Cover values identify bundled bindings; external image URLs can disclose a
   // private upload location and are never needed to render this letter.
