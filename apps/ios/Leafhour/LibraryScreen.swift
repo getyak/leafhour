@@ -69,61 +69,7 @@ struct LibraryScreen: View {
 
     var body: some View {
         NavigationStack(path: $path) {
-            Group {
-                if !didLoad {
-                    ProgressView("正在打开书房…").frame(maxWidth: .infinity, maxHeight: .infinity)
-                } else if allItems.isEmpty && (model.accountShelf?.archivedBooks.isEmpty ?? true) && model.jobs.isEmpty {
-                    emptyLibrary
-                } else if layout == .list {
-                    listShelf
-                } else {
-                    gridShelf
-                }
-            }
-            .background(Color.shelfPaper)
-            .navigationDestination(for: String.self) { id in
-                if let book = model.books.first(where: { $0.id == id }) { BookDetailScreen(book: book, model: model) }
-                else { ContentUnavailableView("书籍暂不可用", systemImage: "book.closed") }
-            }
-            .navigationTitle("我的书房")
-            .navigationBarTitleDisplayMode(.large)
-            .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
-                    Button(model.account == nil ? "登录书房" : "我的账号", systemImage: model.account == nil ? "person.crop.circle" : "person.crop.circle.fill") { info = true }
-                        .labelStyle(.iconOnly)
-                }
-                ToolbarItemGroup(placement: .topBarTrailing) {
-                    Button("搜索书房", systemImage: "magnifyingglass") { searching.toggle(); searchFocused = searching }
-                        .labelStyle(.iconOnly)
-                    Button("导入书籍", systemImage: "plus") { importing = true }.labelStyle(.iconOnly).disabled(model.busy)
-                }
-            }
-            .safeAreaInset(edge: .top, spacing: 0) {
-                if searching {
-                    HStack(spacing: 10) {
-                        Image(systemName: "magnifyingglass").foregroundStyle(.secondary)
-                        TextField("书名或作者", text: $query).focused($searchFocused)
-                            .textInputAutocapitalization(.never).autocorrectionDisabled().submitLabel(.search).onSubmit { searchFocused = false }
-                            .accessibilityIdentifier("library-search-field")
-                        if !query.isEmpty {
-                            Button { query = "" } label: {
-                                Image(systemName: "xmark.circle.fill").foregroundStyle(.secondary)
-                                    .frame(width: 44, height: 44).contentShape(Rectangle())
-                            }.accessibilityLabel("清除搜索").accessibilityIdentifier("library-search-clear")
-                        }
-                        Button { query = ""; searching = false; searchFocused = false } label: {
-                            Text("取消").frame(minWidth: 44, minHeight: 44).contentShape(Rectangle())
-                        }.accessibilityIdentifier("library-search-cancel")
-                    }.padding(.horizontal, 20).background(Color.shelfPaper)
-                }
-            }
-            .safeAreaInset(edge: .bottom) {
-                if selecting { selectionToolbar }
-                else if model.busy && activeItem == nil { activityBar }
-            }
-            .fileImporter(isPresented: $importing, allowedContentTypes: [.epub, .pdf, .plainText, UTType(filenameExtension: "md") ?? .plainText]) { result in
-                switch result { case .success(let url): model.importFile(url); case .failure(let error): model.message = error.localizedDescription }
-            }
+            shelfScaffold
             .task { await model.reload(restore: true); await model.restoreRecentReading(); didLoad = true; await model.synchronize(); await migrateCloudPinsIfNeeded() }
             .task(id: resumeLookupKey) { await loadResume() }
             .refreshable { await model.synchronize(); await model.reload() }
@@ -143,6 +89,66 @@ struct LibraryScreen: View {
             .alert("书房提示", isPresented: Binding(get: { model.message != nil }, set: { if !$0 { model.message = nil } })) {
                 Button("知道了") { model.message = nil }
             } message: { Text(model.message ?? "") }
+        }
+    }
+
+    // Keep the shelf structure separate from lifecycle modifiers so the
+    // minimum supported Xcode compiler can type-check each expression.
+    private var shelfScaffold: some View {
+        Group {
+            if !didLoad {
+                ProgressView("正在打开书房…").frame(maxWidth: .infinity, maxHeight: .infinity)
+            } else if allItems.isEmpty && (model.accountShelf?.archivedBooks.isEmpty ?? true) && model.jobs.isEmpty {
+                emptyLibrary
+            } else if layout == .list {
+                listShelf
+            } else {
+                gridShelf
+            }
+        }
+        .background(Color.shelfPaper)
+        .navigationDestination(for: String.self) { id in
+            if let book = model.books.first(where: { $0.id == id }) { BookDetailScreen(book: book, model: model) }
+            else { ContentUnavailableView("书籍暂不可用", systemImage: "book.closed") }
+        }
+        .navigationTitle("我的书房")
+        .navigationBarTitleDisplayMode(.large)
+        .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                Button(model.account == nil ? "登录书房" : "我的账号", systemImage: model.account == nil ? "person.crop.circle" : "person.crop.circle.fill") { info = true }
+                    .labelStyle(.iconOnly)
+            }
+            ToolbarItemGroup(placement: .topBarTrailing) {
+                Button("搜索书房", systemImage: "magnifyingglass") { searching.toggle(); searchFocused = searching }
+                    .labelStyle(.iconOnly)
+                Button("导入书籍", systemImage: "plus") { importing = true }.labelStyle(.iconOnly).disabled(model.busy)
+            }
+        }
+        .safeAreaInset(edge: .top, spacing: 0) {
+            if searching {
+                HStack(spacing: 10) {
+                    Image(systemName: "magnifyingglass").foregroundStyle(.secondary)
+                    TextField("书名或作者", text: $query).focused($searchFocused)
+                        .textInputAutocapitalization(.never).autocorrectionDisabled().submitLabel(.search).onSubmit { searchFocused = false }
+                        .accessibilityIdentifier("library-search-field")
+                    if !query.isEmpty {
+                        Button { query = "" } label: {
+                            Image(systemName: "xmark.circle.fill").foregroundStyle(.secondary)
+                                .frame(width: 44, height: 44).contentShape(Rectangle())
+                        }.accessibilityLabel("清除搜索").accessibilityIdentifier("library-search-clear")
+                    }
+                    Button { query = ""; searching = false; searchFocused = false } label: {
+                        Text("取消").frame(minWidth: 44, minHeight: 44).contentShape(Rectangle())
+                    }.accessibilityIdentifier("library-search-cancel")
+                }.padding(.horizontal, 20).background(Color.shelfPaper)
+            }
+        }
+        .safeAreaInset(edge: .bottom) {
+            if selecting { selectionToolbar }
+            else if model.busy && activeItem == nil { activityBar }
+        }
+        .fileImporter(isPresented: $importing, allowedContentTypes: [.epub, .pdf, .plainText, UTType(filenameExtension: "md") ?? .plainText]) { result in
+            switch result { case .success(let url): model.importFile(url); case .failure(let error): model.message = error.localizedDescription }
         }
     }
 

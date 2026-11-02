@@ -34,3 +34,7 @@ An independent read-only review found no P0/P1 and seven P2 issues. A final read
 ## Remaining acceptance boundaries
 
 Physical iPhone feel, VoiceOver completion, real-account data continuity, a separate compact/iPad Simulator run and an actual tester installation are not established by these local tests. Reduced-motion branching is implemented; no system-setting end-to-end result is claimed. CI, merge and Apple processing are recorded separately after delivery.
+
+## First remote CI
+
+PR run `41383161239` passed the full host/deploy tests, catalog and release contracts. Its Xcode 16.4 native build failed at `LibraryScreen.swift:70` with a type-check timeout; the same source had built locally in Xcode 26.5. The shelf presentation was extracted into a separate computed view, keeping the navigation, modifiers, state and bindings in their original scope. Local generic Simulator compilation passed, and an independent review confirmed the extraction preserves behavior. The new commit requires fresh CI; the failed run is not counted as passing.
