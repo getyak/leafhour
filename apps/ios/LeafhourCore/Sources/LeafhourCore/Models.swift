@@ -91,13 +91,15 @@ public struct ReaderPreferences: Codable, Equatable, Sendable {
     public var navigationMode: ReaderNavigationMode = .paged
     public var pageAnimation: ReaderPageAnimation = .slide
     public var pageInput: ReaderPageInput = .tapAndSwipe
+    public var pageTapDelay: Double = 0
+    public var alwaysShowReadingProgress = false
     public var viewMode: ReaderViewMode = .source
     public var translationVariant: ReaderTranslationVariant = .literal
     public var speechSpeed: Double = 1
     public var autoPageInterval: Double = 30
     public var automaticReadingTime = true
     public init() {}
-    private enum CodingKeys: String, CodingKey { case latinFont, fontStyle, fontSize, lineSpacing, firstLineIndent, theme, navigationMode, pageAnimation, pageInput, viewMode, translationVariant, speechSpeed, autoPageInterval, automaticReadingTime }
+    private enum CodingKeys: String, CodingKey { case latinFont, fontStyle, fontSize, lineSpacing, firstLineIndent, theme, navigationMode, pageAnimation, pageInput, pageTapDelay, alwaysShowReadingProgress, viewMode, translationVariant, speechSpeed, autoPageInterval, automaticReadingTime }
     public init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
         latinFont = (try values.decodeIfPresent(String.self, forKey: .latinFont)).flatMap(ReaderLatinFont.init(rawValue:)) ?? .automatic
@@ -111,6 +113,8 @@ public struct ReaderPreferences: Codable, Equatable, Sendable {
         navigationMode = mode.flatMap(ReaderNavigationMode.init(rawValue:)) ?? .paged
         pageAnimation = (try values.decodeIfPresent(String.self, forKey: .pageAnimation)).flatMap(ReaderPageAnimation.init(rawValue:)) ?? .slide
         pageInput = (try values.decodeIfPresent(String.self, forKey: .pageInput)).flatMap(ReaderPageInput.init(rawValue:)) ?? .tapAndSwipe
+        pageTapDelay = Self.normalizedPageTapDelay(try values.decodeIfPresent(Double.self, forKey: .pageTapDelay) ?? 0)
+        alwaysShowReadingProgress = try values.decodeIfPresent(Bool.self, forKey: .alwaysShowReadingProgress) ?? false
         viewMode = (try values.decodeIfPresent(String.self, forKey: .viewMode)).flatMap(ReaderViewMode.init(rawValue:)) ?? .source
         translationVariant = (try values.decodeIfPresent(String.self, forKey: .translationVariant)).flatMap(ReaderTranslationVariant.init(rawValue:)) ?? .literal
         speechSpeed = Self.normalizedSpeechSpeed(try values.decodeIfPresent(Double.self, forKey: .speechSpeed) ?? 1)
@@ -119,6 +123,9 @@ public struct ReaderPreferences: Codable, Equatable, Sendable {
     }
     public static func normalizedSpeechSpeed(_ value: Double) -> Double {
         value.isFinite ? min(5, max(0.5, value)) : 1
+    }
+    public static func normalizedPageTapDelay(_ value: Double) -> Double {
+        value.isFinite ? min(0.5, max(0, value)) : 0
     }
     public static func normalizedAutoPageInterval(_ value: Double) -> Double {
         ReaderAutoPageState.normalizedInterval(value)

@@ -16,6 +16,20 @@ struct ReaderConversationTurn: Identifiable {
     let answer: String?
     let status: String
     var voice: ChatVoiceReceipt? = nil
+    var quote: ReaderTurnQuote? = nil
+}
+struct ReaderTurnQuote: Codable, Equatable {
+    struct Part: Codable, Equatable {
+        let passageId: String
+        let layer: String
+        let text: String
+        var label: String { layer == "literal" ? "直译" : layer == "interpretive" ? "意译" : "原文" }
+    }
+    let kind: String
+    let schemaVersion: Int
+    let bookId: String
+    let chapterId: String
+    let parts: [Part]
 }
 struct ReaderGenerationConsent: Identifiable, Codable {
     let id: String
@@ -47,6 +61,9 @@ private struct ReaderConversationDraft: Codable {
     let retry: ReaderGenerationConsent?
     var context: ReaderChatContext? = nil
     var voice: ChatVoiceReceipt? = nil
+    var contextPinned: Bool? = nil
+    var quoteRemoved: Bool? = nil
+    var pendingContext: ReaderChatContext? = nil
 }
 
 /// Read-only loading is separate from the explicitly confirmed generation path.
@@ -79,16 +96,33 @@ final class ReaderCloudTools {
     private(set) var retry: ReaderGenerationConsent? { didSet { queueDraftSave() } }
     var chatContext: ReaderChatContext?
     var latestChatContext: ReaderChatContext?
+    private var pendingChatContext: ReaderChatContext?
+    private var preparingConversation = false
+    private var contextPinned = false
+    private(set) var chatQuoteRemoved = false
     var canUpdateChatContext: Bool {
-        guard let old = chatContext, let latest = latestChatContext, retry == nil, !generating else { return false }
-        return old.identity.ownerID != latest.identity.ownerID || old.identity.bookID != latest.identity.bookID || old.identity.contentVersion != latest.identity.contentVersion || old.passageID != latest.passageID || old.original != latest.original || old.selection != latest.selection
+        guard let latest = pendingChatContext ?? latestChatContext, retry == nil, !generating, !preparingConversation else { return false }
+        return chatContext != latest
     }
     func updateChatContext() {
-        guard canUpdateChatContext else { return }; chatContext = latestChatContext; queueDraftSave()
+        guard canUpdateChatContext else { return }
+        chatContext = pendingChatContext ?? latestChatContext; latestChatContext = chatContext; pendingChatContext = nil
+        contextPinned = true; chatQuoteRemoved = false; queueDraftSave()
     }
-    private func proposeChatContext(_ context: ReaderChatContext) {
+    func removeChatSelection() {
+        guard retry == nil, !generating, !loading else { return }
+        chatContext?.selection = nil; contextPinned = true; chatQuoteRemoved = true; queueDraftSave()
+    }
+    private func proposeChatContext(_ context: ReaderChatContext, attachSelection: Bool = false) {
         latestChatContext = context
-        if chatContext == nil || (question.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty && retry == nil) { chatContext = context; queueDraftSave() }
+        let busy = retry != nil || generating || preparingConversation
+        if attachSelection {
+            if busy { pendingChatContext = context; queueDraftSave(); return }
+            pendingChatContext = nil; chatContext = context; contextPinned = true; chatQuoteRemoved = false
+        } else if !busy && pendingChatContext == nil && (chatContext == nil || (!contextPinned && question.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)) {
+            chatContext = context
+        }
+        queueDraftSave()
     }
     private var draftBook: CloudBookIdentity?
     private var draftReady = false
@@ -117,6 +151,14 @@ final class ReaderCloudTools {
                         throw LibraryError.invalid("已有草稿的原文归属无法核对。")
                     }
                     chatContext = context
+                    contextPinned = draft.contextPinned ?? false
+                    chatQuoteRemoved = draft.quoteRemoved ?? false
+                }
+                if let pending = draft.pendingContext {
+                    guard pending.identity.ownerID == identity.ownerID, pending.identity.bookID == identity.bookID else {
+                        throw LibraryError.invalid("待引用选文的归属无法核对。")
+                    }
+                    pendingChatContext = pending
                 }
                 if question.isEmpty { question = draft.question }
                 if retry == nil { retry = draft.retry }
@@ -135,7 +177,7 @@ final class ReaderCloudTools {
     }
     private func queueDraftSave() {
         guard draftReady, let identity = draftBook, let library else { return }
-        let snapshot = ReaderConversationDraft(question: question, retry: retry?.action == "conversation" ? retry : nil, context: chatContext, voice: pendingVoice), previous = draftWriting
+        let snapshot = ReaderConversationDraft(question: question, retry: retry?.action == "conversation" ? retry : nil, context: chatContext, voice: pendingVoice, contextPinned: contextPinned, quoteRemoved: chatQuoteRemoved, pendingContext: pendingChatContext), previous = draftWriting
         draftWriting = Task {
             await previous?.value
             do {
@@ -145,7 +187,7 @@ final class ReaderCloudTools {
         }
     }
     func loadConversation(book: CloudShelfBook, ownerID: String, cloud: CloudLibraryClient) async {
-        guard !generating else { return }
+        guard !generating, !preparingConversation else { return }
         let stamp = UUID(); generation = stamp; error = nil; loading = true
         defer { if generation == stamp { loading = false } }
         do {
@@ -161,7 +203,7 @@ final class ReaderCloudTools {
         catch { if generation == stamp { self.error = error.localizedDescription } }
     }
     func loadLibraryConversation(ownerID: String, cloud: CloudLibraryClient) async {
-        guard !generating else { return }
+        guard !generating, !preparingConversation else { return }
         let stamp = UUID(); generation = stamp; error = nil; loading = true
         defer { if generation == stamp { loading = false } }
         do {
@@ -253,19 +295,31 @@ final class ReaderCloudTools {
         } catch is CancellationError { }
         catch { if generation == stamp { self.error = error.localizedDescription } }
     }
-    func loadConversation(_ session: ReaderSession, cloud: CloudLibraryClient?, selection: SelectedQuote? = nil) async {
-        guard !generating else { return }
-        let stamp = UUID(); generation = stamp; error = nil; loading = false
-        guard let identity = session.book.cloud, let cloud, let passage = Self.currentPassage(session, selection: selection) else { return }
+    func loadConversation(_ session: ReaderSession, cloud: CloudLibraryClient?, selection: SelectedQuote? = nil, attachSelection: Bool = false) async {
+        guard let identity = session.book.cloud, let cloud, let passage = Self.currentPassage(session, selection: selection) else {
+            if attachSelection && !generating && !preparingConversation && retry == nil { chatQuoteRemoved = false }
+            return
+        }
         let chapter = session.book.chapters.first { $0.passages.contains { $0.id == passage.id } }
-        proposeChatContext(ReaderChatContext(identity: identity, passageID: passage.id, chapterTitle: chapter?.title ?? "", original: passage.text, selection: selection))
-        loading = true; defer { if generation == stamp { loading = false } }
+        proposeChatContext(ReaderChatContext(identity: identity, passageID: passage.id, chapterTitle: chapter?.title ?? "", original: passage.text, selection: selection), attachSelection: attachSelection)
+        // Capture an explicitly attached quote even while another immutable send
+        // is preparing or running. A read must not reset that send's loading flag.
+        guard !generating, !preparingConversation else { return }
+        let stamp = UUID(); generation = stamp; error = nil; loading = true
+        defer { if generation == stamp { loading = false } }
         do {
             let value = try object(await cloud.data(path: bookPath(identity.bookID) + "/chat?passageId=" + component(passage.id), ownerID: identity.ownerID))
             try Task.checkCancellation(); guard generation == stamp else { return }
             readConversation(value)
         } catch is CancellationError { }
         catch { if generation == stamp { self.error = error.localizedDescription } }
+    }
+    private static func readTurnQuote(_ value: Any?) -> ReaderTurnQuote? {
+        guard let object = value as? [String: Any], let data = try? JSONSerialization.data(withJSONObject: object),
+              let quote = try? JSONDecoder().decode(ReaderTurnQuote.self, from: data),
+              quote.kind == "leafhour-reading-quote", quote.schemaVersion == 1, !quote.parts.isEmpty,
+              quote.parts.allSatisfy({ !$0.text.isEmpty && ["original", "literal", "interpretive"].contains($0.layer) }) else { return nil }
+        return quote
     }
     private func readConversation(_ value: [String: Any]) {
         let currentScope = value["scope"] as? [String: Any] ?? [:]
@@ -275,7 +329,7 @@ final class ReaderCloudTools {
         turns = (value["turns"] as? [[String: Any]] ?? []).compactMap { turn in
             guard let id = turn["id"] as? String else { return nil }
             let answer = turn["answer"] as? [String: Any]
-            return ReaderConversationTurn(id: id, question: turn["text"] as? String ?? "", answer: answer?["summary"] as? String, status: turn["status"] as? String ?? "failed", voice: Self.voiceReceipt(turn["voice"]))
+            return ReaderConversationTurn(id: id, question: turn["text"] as? String ?? "", answer: answer?["summary"] as? String, status: turn["status"] as? String ?? "failed", voice: Self.voiceReceipt(turn["voice"]), quote: Self.readTurnQuote(turn["quote"]))
         }
     }
     private static func voiceReceipt(_ value: Any?) -> ChatVoiceReceipt? {
@@ -313,7 +367,9 @@ final class ReaderCloudTools {
     private func prepareRequest(_ action: String, identity: CloudBookIdentity, passageID: String, original: String, selection: SelectedQuote? = nil, cloud: CloudLibraryClient, languages: BookTranslationSettings? = nil, detectedSource: ReadingLanguage? = nil) async {
         guard !generating, !loading else { return }
         guard retry == nil else { error = "上一次请求的结果尚待确认，请先重试查看本次结果。"; return }
-        error = nil; loading = true; defer { loading = false }
+        error = nil; loading = true
+        if action == "conversation" { preparingConversation = true }
+        defer { loading = false; if action == "conversation" { preparingConversation = false } }
         let requestID = UUID().uuidString.lowercased()
         var body: [String: Any] = ["id": requestID, "passageId": passageID, "contentVersion": identity.contentVersion]
         if let languages {
@@ -417,13 +473,16 @@ final class ReaderCloudTools {
                 let answer = value["answer"] as? [String: Any]
                 let status = value["status"] as? String ?? "failed"
                 turns.removeAll { $0.id == intent.id }
-                turns.append(ReaderConversationTurn(id: intent.id, question: value["text"] as? String ?? question, answer: answer?["summary"] as? String, status: status, voice: Self.voiceReceipt(value["voice"])))
+                turns.append(ReaderConversationTurn(id: intent.id, question: value["text"] as? String ?? question, answer: answer?["summary"] as? String, status: status, voice: Self.voiceReceipt(value["voice"]), quote: Self.readTurnQuote(value["quote"])))
                 if status == "running" { error = "回答仍在处理中，可稍后重试查看本次结果。"; return }
                 if status != "completed" { error = status == "cancelled" ? "已停止回答，消息仍保留。" : value["error"] as? String ?? "本次回答未完成，你的问题已经保留。" }
                 else {
                     let submitted = (try? JSONSerialization.jsonObject(with: intent.body)) as? [String: Any]
                     if question.trimmingCharacters(in: .whitespacesAndNewlines) == submitted?["text"] as? String { question = "" }
                     pendingVoice = nil
+                    if submitted?["quote"] != nil {
+                        chatContext?.selection = nil; contextPinned = true; chatQuoteRemoved = true; queueDraftSave()
+                    }
                 }
             }
             retry = nil

@@ -42,7 +42,7 @@ final class ReaderSharedPreferencesTests: XCTestCase {
         preferences.fontSize = 29; preferences.lineSpacing = 13; preferences.theme = "night"
         preferences.navigationMode = .scroll; preferences.viewMode = .parallel
         preferences.translationVariant = .interpretive; preferences.speechSpeed = 2.5
-        preferences.autoPageInterval = 45
+        preferences.autoPageInterval = 45; preferences.pageTapDelay = 0.15; preferences.alwaysShowReadingProgress = true
         session.changePreferences(preferences)
         let receipt = await session.flush()
         XCTAssertTrue(receipt.succeeded)

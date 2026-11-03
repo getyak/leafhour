@@ -229,7 +229,7 @@ final class ReaderPaginationTests: XCTestCase {
         XCTAssertTrue(coordinator.checkpointVisible())
     }
 
-    func testManualTouchPreservesAnimationAndCoalescesOneFollowingTurn() async throws {
+    func testManualTouchPreservesAnimationAndRunsEveryFollowingTurn() async throws {
         let session = try await session()
         let scene = try XCTUnwrap(UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }.first { $0.activationState == .foregroundActive })
         let (view, coordinator) = await text(session, scene: scene)
@@ -241,12 +241,49 @@ final class ReaderPaginationTests: XCTestCase {
         let cover = view.superview?.subviews.first { $0.accessibilityIdentifier == "reader-page-transition-cover" }
         if !UIAccessibility.isReduceMotionEnabled { XCTAssertNotNil(cover) }
         XCTAssertTrue(coordinator.turnPage(.next))
-        XCTAssertTrue(coordinator.turnPage(.previous), "The latest pending direction replaces the one pending slot")
+        XCTAssertTrue(coordinator.turnPage(.previous), "Each accepted direction remains in order")
         coordinator.touchActivity(false)
         await settlePageTurn(view)
         await settlePageTurn(view)
-        XCTAssertEqual(view.contentOffset.y, pages.origins[0], accuracy: 1)
+        XCTAssertEqual(view.contentOffset.y, pages.origins[1], accuracy: 1)
         XCTAssertTrue(coordinator.checkpointVisible())
+    }
+
+    func testFIFORebasesItsOwnChapterTurnsButKeepsLaterReverseTurnsAtTheBoundary() async throws {
+        let session = try await session(chapters: 3, source: "Short chapter with a single screen.")
+        let scene = try XCTUnwrap(UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }.first { $0.activationState == .foregroundActive })
+        let (view, coordinator) = await text(session, scene: scene)
+        _ = image(of: view)
+        for direction in [ReaderPageDirection.next, .next, .next, .previous] { XCTAssertTrue(coordinator.turnPage(direction)) }
+        for _ in 0..<5 { await settlePageTurn(view) }
+        XCTAssertEqual(session.chapterIndex, 1, "A boundary no-op must not swallow the later reverse turn")
+    }
+
+    func testDelayedReadyTapsCrossNativeChapterRestorationWithoutLosingTheirOrder() async throws {
+        let session = try await session(chapters: 3, source: "A short chapter for consecutive delayed taps.")
+        session.state.preferences.pageTapDelay = 0.05
+        let scene = try XCTUnwrap(UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }.first { $0.activationState == .foregroundActive })
+        let (view, coordinator) = await text(session, scene: scene); _ = image(of: view)
+        let handler = ReaderEdgeTapHandler(view: view, blocked: { coordinator.blocksEdgeTaps }, onWake: { _ in }, isPaged: { true }, onTurn: { _ = coordinator.turnPage($0) }, delay: { 0.05 }, context: {
+            ReaderTapContext(owner: ObjectIdentifier(session), navigation: session.navigationID, preferences: session.state.preferences, size: view.bounds.size)
+        })
+        coordinator.edgeTap = handler
+        for x in [360.0, 360, 360, 30] { handler.handleTap(at: CGPoint(x: x, y: 350)) }
+        handler.touchActivity(true)
+        try await Task.sleep(for: .milliseconds(100)); XCTAssertEqual(session.chapterIndex, 0)
+        handler.touchActivity(false)
+        for _ in 0..<5 { await settlePageTurn(view) }
+        XCTAssertEqual(session.chapterIndex, 1)
+    }
+    func testPDFFIFOAtBookEndStillExecutesTheLaterReverseTurn() async throws {
+        let session = try await session(pdf: true)
+        let (view, coordinator) = try pdfHost(session)
+        coordinator.scheduleUpdate(view)
+        try await settlePDF(view, coordinator: coordinator, source: session.original, page: 0, mode: .paged)
+        _ = image(of: view)
+        for direction in [ReaderPageDirection.next, .next, .next, .previous] { XCTAssertTrue(coordinator.turnPage(direction)) }
+        for _ in 0..<5 { await settlePageTurn(view) }
+        XCTAssertEqual(view.document?.index(for: try XCTUnwrap(view.currentPage)), 1)
     }
 
     func testBackgroundCancelsPendingManualTurnWithoutChangingCommittedPage() async throws {

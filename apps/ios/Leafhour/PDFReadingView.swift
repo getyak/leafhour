@@ -29,6 +29,7 @@ struct PDFReadingView: UIViewRepresentable {
     var followsSpeech = false
     var onReadingPosition: ((ReaderSpeechLocation) -> Void)? = nil
     var onTouchActivity: ((Bool) -> Void)? = nil
+    var isReadingSurfaceActive = true
     var pageRequest: ReaderPageRequest? = nil
     var onPageRequestResult: ((UUID, ReaderPageRequestOutcome) -> Void)? = nil
     func makeCoordinator() -> Coordinator { Coordinator(parent: self) }
@@ -37,10 +38,15 @@ struct PDFReadingView: UIViewRepresentable {
         view.accessibilityIdentifier = "leafhour-pdf-reader"
         context.coordinator.view = view
         context.coordinator.edgeTap = ReaderEdgeTapHandler(view: view, blocked: { [weak view, weak coordinator = context.coordinator] in
-            view?.currentSelection != nil || coordinator?.restoring != false
+            view?.currentSelection != nil || coordinator?.restoring != false || coordinator?.parent.isReadingSurfaceActive != true
         }, onWake: { [weak coordinator = context.coordinator] edge in coordinator?.wake(edge) },
         isPaged: { [weak coordinator = context.coordinator] in coordinator?.parent.session.state.preferences.navigationMode == .paged && coordinator?.parent.session.state.preferences.pageInput.allowsTap == true },
-        onTurn: { [weak coordinator = context.coordinator] direction in _ = coordinator?.turnPage(direction) })
+        onTurn: { [weak coordinator = context.coordinator] direction in _ = coordinator?.turnPage(direction) },
+        delay: { [weak coordinator = context.coordinator] in coordinator?.parent.session.state.preferences.pageTapDelay ?? 0 },
+        context: { [weak coordinator = context.coordinator] in
+            guard let session = coordinator?.parent.session else { return nil }
+            return ReaderTapContext(owner: ObjectIdentifier(session), navigation: session.navigationID, preferences: session.state.preferences, size: coordinator?.view?.bounds.size ?? .zero)
+        })
         context.coordinator.observe(view)
         let coordinator = context.coordinator
         let observer = ReaderParagraphSelectionObserver(view: view, eligible: { [weak view, weak coordinator] point in
@@ -57,6 +63,7 @@ struct PDFReadingView: UIViewRepresentable {
         let coordinator = context.coordinator
         guard !coordinator.isInvalidated else { return }
         coordinator.parent = self
+        if !isReadingSurfaceActive { coordinator.edgeTap?.cancelPending(); coordinator.cancelQueuedUserTurns() }
         coordinator.scheduleUpdate(view)
     }
     static func dismantleUIView(_ view: PDFView, coordinator: Coordinator) {
@@ -239,6 +246,7 @@ struct PDFReadingView: UIViewRepresentable {
             guard !isInvalidated else { return }
             if let pdf = view as? PDFView { configurePageNavigation(pdf) }
             paragraphSelection?.install()
+            edgeTap?.refreshSelectionGestures()
             func scroll(_ view: UIView) -> UIScrollView? { if let result = view as? UIScrollView { return result }; return view.subviews.lazy.compactMap { scroll($0) }.first }
             guard let target = scroll(view) else { return }
             if target !== observedScroll { originalScrollInsets = target.contentInset; originalIndicatorInsets = target.verticalScrollIndicatorInsets }
@@ -283,7 +291,7 @@ struct PDFReadingView: UIViewRepresentable {
                 pageGestureView = view
                 pageTurn = ReaderPageTurnGestureHandler(view: view, blocked: { [weak self] in
                         guard let self else { return true }
-                        return self.isInvalidated || self.restoring || self.view?.currentSelection != nil || !self.pageIsFitted
+                        return self.isInvalidated || !self.parent.isReadingSurfaceActive || self.restoring || self.view?.currentSelection != nil || !self.pageIsFitted
                     },
                     onTurn: { [weak self] direction in _ = self?.turnPage(direction) }, prioritizesScrollViewPans: true)
             }
@@ -415,13 +423,16 @@ struct PDFReadingView: UIViewRepresentable {
             pendingPageRequest = nil; respond(to: request, with: outcome)
         }
         private var queueGeneration = 0
-        private var queuedPage: (direction: ReaderPageDirection, owner: ObjectIdentifier, navigation: UUID)?
+        private var drainingQueuedPage = false
+        private var queuedPages: [(direction: ReaderPageDirection, owner: ObjectIdentifier, navigation: UUID)] = []
         private func cancelPageTurn() {
-            queuedPage = nil; queueGeneration += 1
+            cancelQueuedUserTurns()
             turnGeneration += 1; nativePageTurn = nil; automaticDestination = nil
             pageCurl.cancel(); finishPageRequest(.notReady)
         }
         func touchActivity(_ active: Bool) {
+            edgeTap?.touchActivity(active)
+            if !active { DispatchQueue.main.async { [weak self] in self?.drainQueuedPage() } }
             guard !isInvalidated else { return }
             if active {
                 automaticDestination = nil
@@ -465,20 +476,34 @@ struct PDFReadingView: UIViewRepresentable {
             }
         }
         private func drainQueuedPage() {
-            guard let queued = queuedPage else { return }
-            queuedPage = nil
-            let generation = queueGeneration
+            guard !queuedPages.isEmpty, !drainingQueuedPage, !restoring, !pageCurl.isActive,
+                  nativePageTurn == nil, paragraphSelection?.isTouchActive != true else { return }
+            let queued = queuedPages.removeFirst(), generation = queueGeneration
+            drainingQueuedPage = true
             DispatchQueue.main.async { [weak self] in
-                guard let self, !self.isInvalidated, self.queueGeneration == generation, queued.owner == ObjectIdentifier(self.parent.session),
-                      queued.navigation == self.parent.session.navigationID, self.view?.currentSelection == nil else { return }
-                _ = self.turnPage(queued.direction)
+                guard let self, self.queueGeneration == generation else { return }
+                self.drainingQueuedPage = false
+                guard !self.isInvalidated, self.parent.isReadingSurfaceActive,
+                      queued.owner == ObjectIdentifier(self.parent.session), queued.navigation == self.parent.session.navigationID,
+                      self.view?.currentSelection == nil else {
+                    self.cancelQueuedUserTurns(); return
+                }
+                if self.paragraphSelection?.isTouchActive == true {
+                    self.queuedPages.insert(queued, at: 0); return
+                }
+                if !self.turnPage(queued.direction, fromQueue: true) {
+                    self.drainQueuedPage()
+                }
             }
         }
-        @discardableResult func turnPage(_ direction: ReaderPageDirection, origin: ReaderPageTurnOrigin = .user) -> Bool {
-            if origin == .user, !isInvalidated, !restoring, (pageCurl.isActive || nativePageTurn != nil),
+        fileprivate func cancelQueuedUserTurns() { queuedPages = []; queueGeneration += 1; drainingQueuedPage = false }
+        @discardableResult func turnPage(_ direction: ReaderPageDirection, origin: ReaderPageTurnOrigin = .user, fromQueue: Bool = false) -> Bool {
+            guard parent.isReadingSurfaceActive else { return false }
+            if origin == .user, !fromQueue, !isInvalidated, !restoring,
+               (pageCurl.isActive || nativePageTurn != nil || drainingQueuedPage || !queuedPages.isEmpty),
                view?.currentSelection == nil, pageIsFitted, parent.session.state.preferences.navigationMode == .paged {
-                queuedPage = (direction, ObjectIdentifier(parent.session), parent.session.navigationID)
-                return true
+                queuedPages.append((direction, ObjectIdentifier(parent.session), parent.session.navigationID))
+                drainQueuedPage(); return true
             }
             guard canTurnFittedPage,
                   let view, view.currentSelection == nil, let document = view.document,
@@ -544,6 +569,7 @@ struct PDFReadingView: UIViewRepresentable {
             }
         }
         func invalidate() {
+            edgeTap?.invalidate(); edgeTap = nil
             guard !isInvalidated else { return }
             isInvalidated = true; restoring = true
             parent.onTouchActivity = nil; parent.onPageChange = nil
@@ -560,6 +586,7 @@ struct PDFReadingView: UIViewRepresentable {
         }
         private func nativeSelectionChanged() {
             guard !isInvalidated else { return }
+            if view?.currentSelection != nil { edgeTap?.cancelPending(); cancelQueuedUserTurns() }
             paragraphSelection?.selectionChanged()
             nativeSelectionRevision += 1
             selectionChanged()
