@@ -265,7 +265,7 @@ struct ReaderConversationPanel: View {
     let cloud: CloudLibraryClient?
     var selection: SelectedQuote? = nil
     var library: OfflineLibrary? = nil
-    var title = "Chat"
+    var title = "旁注"
     @State private var initialSelectionAttached = false
     private var source: String {
         let localSelection = tools.chatQuoteRemoved ? nil : selection
@@ -276,7 +276,7 @@ struct ReaderConversationPanel: View {
     var body: some View {
         ChatConversationView(tools: tools, cloud: cloud, title: title, bookTitle: session.book.title,
             source: source, sourceChapter: tools.chatContext?.chapterTitle ?? session.chapter.title,
-            canRemoveSource: tools.chatContext.map { $0.selection != nil } ?? (selection != nil), sourceLabel: tools.chatQuoteRemoved ? "当前段落 · 未附加选文" : tools.chatContext?.sourceLabel ?? (selection?.origin == "translation" ? "选中的译文 · 提问时引用对应原文" : selection == nil ? "引用的原文" : "选中的原文"),
+            canRemoveSource: tools.chatContext.map { $0.selection != nil } ?? (selection != nil), sourceLabel: tools.chatQuoteRemoved ? "" : tools.chatContext?.sourceLabel ?? (selection?.origin == "translation" ? "选中的译文 · 提问时引用对应原文" : selection == nil ? "引用的原文" : "选中的原文"),
             localOnly: cloud == nil,
             load: {
                 if let identity = session.book.cloud { await tools.restoreConversationDraft(identity: identity, library: library) }

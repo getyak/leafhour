@@ -75,7 +75,7 @@ extension OfflineLibrary: ReadingTimeStore {
         // opened; hashing the complete original every 30 seconds blocks writes.
         let directory = try bookDirectory(bookID)
         guard Disk.fm.fileExists(atPath: directory.appendingPathComponent("manifest.json").path) else { throw ReadingTimeDate.fail() }
-        let book = try Disk.read(LocalBook.self, from: directory.appendingPathComponent("book.json"))
+        let book = try indexedBook(bookID, at: directory)
         let manifest = try Disk.read(OfflineManifest.self, from: directory.appendingPathComponent("manifest.json"))
         guard book.id == bookID, manifest.bookID == bookID,
               let source = manifest.files.first(where: { $0.path == "source." + book.kind.rawValue }),

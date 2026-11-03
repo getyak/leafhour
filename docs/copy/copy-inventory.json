@@ -574,7 +574,7 @@
       },
       {
         "file": "app/portable-chat.mjs",
-        "sha256": "3f1e680ff5d8efb75a320d7714e634e4712a6194c65365f39b099831b7f646f8"
+        "sha256": "09da68d3d5edd92fda92c81a94dcd9d668cc112150033603ca5d6771c3eba2ed"
       },
       {
         "file": "app/portal.js",
@@ -774,7 +774,7 @@
       },
       {
         "file": "app/reading-chat-input.mjs",
-        "sha256": "4da9079e6e94a3f64b034bdc27aaf064a8aac27f4eed140127d0de19467425d4"
+        "sha256": "c54b405ebf017b65af496a8ac526ff8cb562786b6654710ffdd8df91c34baeb4"
       },
       {
         "file": "app/reading-chat-quote.mjs",
@@ -1174,7 +1174,7 @@
       },
       {
         "file": "server/credit-gate.mjs",
-        "sha256": "08855f3964cc4f3cbef3602b050a04fb32d01e6f03bfe43398896afe780c44eb"
+        "sha256": "7ef3a7d84b98563022771aa05fcee953323334e18c8dfec4647587378f201271"
       },
       {
         "file": "server/creem.mjs",
@@ -1274,7 +1274,7 @@
       },
       {
         "file": "server/local-reader-chat.mjs",
-        "sha256": "266a2334a28f63ffac0d6b1d20685e2a105622ce1b65a2d7ec95ec5da4087976"
+        "sha256": "c0f0532022d01a0b1da4425913de2d049dd56a7adf9efd8147a3f4c00003fd4c"
       },
       {
         "file": "server/locked-json-store.mjs",
@@ -1402,7 +1402,7 @@
       },
       {
         "file": "server/reader-chat.mjs",
-        "sha256": "9b0cc5a47480d4539222debdd63dd5f547206587954e4b65b8b24e5937103574"
+        "sha256": "4a2b35ac3bb9741d1a8f6a004db35b507fa7dc8508674359b765cecc5c863425"
       },
       {
         "file": "server/reader-companion.mjs",
@@ -1481,7 +1481,7 @@
         "sha256": "531202f1814314b6c76bfef38b2ea66636425b1ca9b445db349e70ebb8bcd00e"
       }
     ],
-    "inputDigest": "dcec14f6b14b63dc40324e1cb5b04c365570e7b0764eb66833523d425840d23b"
+    "inputDigest": "14c5dc488e17d18856e92df1c5fd9b12967e01213bb43a3158be52fe1c37131f"
   },
   "locales": [
     "en",
@@ -20996,7 +20996,7 @@
         },
         {
           "file": "app/portable-chat.mjs",
-          "line": 27,
+          "line": 45,
           "column": 101
         },
         {
@@ -233295,9 +233295,109 @@
       }
     },
     {
-      "id": "candidate:app/portable-chat.mjs:9:335",
+      "id": "candidate:app/portable-chat.mjs:9:154",
       "file": "app/portable-chat.mjs",
       "line": 9,
+      "column": 154,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "引用消息格式不正确",
+      "sha256": "8392e00bbffa497f37efd4e014a6299b734998cc1e194ae4735e816ea11e0ce0",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/portable-chat.mjs:13:97",
+      "file": "app/portable-chat.mjs",
+      "line": 13,
+      "column": 97,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "引用消息内容不完整",
+      "sha256": "1b20a62328aff7e9da879654a8bb9be932ef42b3c493fa91cd5b88290ff02d5e",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/portable-chat.mjs:19:16",
+      "file": "app/portable-chat.mjs",
+      "line": 19,
+      "column": 16,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "找不到所引用的消息，请重新选择",
+      "sha256": "54b01f7a16dcdf16776d091a54663984a8a200c4df323cdd84dc02afaf7f93e2",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/portable-chat.mjs:20:47",
+      "file": "app/portable-chat.mjs",
+      "line": 20,
+      "column": 47,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "所引用消息属于其他原文版本，请重新选择",
+      "sha256": "ab6ac20de298a7c3573e04d18306db0ec4860dc8510509633ecd9ee00843f784",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/portable-chat.mjs:22:49",
+      "file": "app/portable-chat.mjs",
+      "line": 22,
+      "column": 49,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "这条消息尚不可引用，请重新选择",
+      "sha256": "2b0e0f8b1501947de9c1f6183f92297f733622fa9e4a344aca94dca25b3fc878",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/portable-chat.mjs:27:335",
+      "file": "app/portable-chat.mjs",
+      "line": 27,
       "column": 335,
       "kind": "js-cjk-literal",
       "property": null,
@@ -233315,9 +233415,9 @@
       }
     },
     {
-      "id": "candidate:app/portable-chat.mjs:14:241",
+      "id": "candidate:app/portable-chat.mjs:32:241",
       "file": "app/portable-chat.mjs",
-      "line": 14,
+      "line": 32,
       "column": 241,
       "kind": "js-cjk-literal",
       "property": null,
@@ -233335,9 +233435,9 @@
       }
     },
     {
-      "id": "candidate:app/portable-chat.mjs:17:111",
+      "id": "candidate:app/portable-chat.mjs:35:111",
       "file": "app/portable-chat.mjs",
-      "line": 17,
+      "line": 35,
       "column": 111,
       "kind": "js-cjk-literal",
       "property": null,
@@ -233355,9 +233455,9 @@
       }
     },
     {
-      "id": "candidate:app/portable-chat.mjs:19:198",
+      "id": "candidate:app/portable-chat.mjs:37:198",
       "file": "app/portable-chat.mjs",
-      "line": 19,
+      "line": 37,
       "column": 198,
       "kind": "js-cjk-literal",
       "property": null,
@@ -233375,9 +233475,9 @@
       }
     },
     {
-      "id": "candidate:app/portable-chat.mjs:26:94",
+      "id": "candidate:app/portable-chat.mjs:44:94",
       "file": "app/portable-chat.mjs",
-      "line": 26,
+      "line": 44,
       "column": 94,
       "kind": "js-cjk-literal",
       "property": null,
@@ -233395,9 +233495,9 @@
       }
     },
     {
-      "id": "candidate:app/portable-chat.mjs:27:419",
+      "id": "candidate:app/portable-chat.mjs:45:419",
       "file": "app/portable-chat.mjs",
-      "line": 27,
+      "line": 45,
       "column": 419,
       "kind": "js-cjk-literal",
       "property": null,
@@ -233415,9 +233515,9 @@
       }
     },
     {
-      "id": "candidate:app/portable-chat.mjs:27:477",
+      "id": "candidate:app/portable-chat.mjs:45:477",
       "file": "app/portable-chat.mjs",
-      "line": 27,
+      "line": 45,
       "column": 477,
       "kind": "js-cjk-literal",
       "property": null,
@@ -233435,9 +233535,9 @@
       }
     },
     {
-      "id": "candidate:app/portable-chat.mjs:27:570",
+      "id": "candidate:app/portable-chat.mjs:45:570",
       "file": "app/portable-chat.mjs",
-      "line": 27,
+      "line": 45,
       "column": 570,
       "kind": "js-cjk-literal",
       "property": null,
@@ -233455,9 +233555,9 @@
       }
     },
     {
-      "id": "candidate:app/portable-chat.mjs:33:52",
+      "id": "candidate:app/portable-chat.mjs:51:52",
       "file": "app/portable-chat.mjs",
-      "line": 33,
+      "line": 51,
       "column": 52,
       "kind": "js-cjk-literal",
       "property": null,
@@ -233475,9 +233575,9 @@
       }
     },
     {
-      "id": "candidate:app/portable-chat.mjs:36:67",
+      "id": "candidate:app/portable-chat.mjs:54:67",
       "file": "app/portable-chat.mjs",
-      "line": 36,
+      "line": 54,
       "column": 67,
       "kind": "js-cjk-literal",
       "property": null,
@@ -233495,9 +233595,9 @@
       }
     },
     {
-      "id": "candidate:app/portable-chat.mjs:43:140",
+      "id": "candidate:app/portable-chat.mjs:61:140",
       "file": "app/portable-chat.mjs",
-      "line": 43,
+      "line": 61,
       "column": 140,
       "kind": "js-cjk-literal",
       "property": null,
@@ -233515,9 +233615,9 @@
       }
     },
     {
-      "id": "candidate:app/portable-chat.mjs:47:314",
+      "id": "candidate:app/portable-chat.mjs:65:314",
       "file": "app/portable-chat.mjs",
-      "line": 47,
+      "line": 65,
       "column": 314,
       "kind": "js-cjk-literal",
       "property": null,
@@ -233535,9 +233635,9 @@
       }
     },
     {
-      "id": "candidate:app/portable-chat.mjs:48:177",
+      "id": "candidate:app/portable-chat.mjs:66:177",
       "file": "app/portable-chat.mjs",
-      "line": 48,
+      "line": 66,
       "column": 177,
       "kind": "js-cjk-literal",
       "property": null,
@@ -233555,9 +233655,9 @@
       }
     },
     {
-      "id": "candidate:app/portable-chat.mjs:49:100",
+      "id": "candidate:app/portable-chat.mjs:67:100",
       "file": "app/portable-chat.mjs",
-      "line": 49,
+      "line": 67,
       "column": 100,
       "kind": "js-cjk-literal",
       "property": null,
@@ -233575,9 +233675,9 @@
       }
     },
     {
-      "id": "candidate:app/portable-chat.mjs:51:282",
+      "id": "candidate:app/portable-chat.mjs:69:282",
       "file": "app/portable-chat.mjs",
-      "line": 51,
+      "line": 69,
       "column": 282,
       "kind": "js-cjk-literal",
       "property": null,
@@ -233595,9 +233695,9 @@
       }
     },
     {
-      "id": "candidate:app/portable-chat.mjs:54:346",
+      "id": "candidate:app/portable-chat.mjs:72:346",
       "file": "app/portable-chat.mjs",
-      "line": 54,
+      "line": 72,
       "column": 346,
       "kind": "js-cjk-literal",
       "property": null,
@@ -233615,9 +233715,9 @@
       }
     },
     {
-      "id": "candidate:app/portable-chat.mjs:57:80",
+      "id": "candidate:app/portable-chat.mjs:75:80",
       "file": "app/portable-chat.mjs",
-      "line": 57,
+      "line": 75,
       "column": 80,
       "kind": "js-cjk-literal",
       "property": null,
@@ -233635,9 +233735,9 @@
       }
     },
     {
-      "id": "candidate:app/portable-chat.mjs:58:55",
+      "id": "candidate:app/portable-chat.mjs:76:55",
       "file": "app/portable-chat.mjs",
-      "line": 58,
+      "line": 76,
       "column": 55,
       "kind": "js-cjk-literal",
       "property": null,
@@ -233655,14 +233755,34 @@
       }
     },
     {
-      "id": "candidate:app/portable-chat.mjs:59:446",
+      "id": "candidate:app/portable-chat.mjs:77:525",
       "file": "app/portable-chat.mjs",
-      "line": 59,
-      "column": 446,
+      "line": 77,
+      "column": 525,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "导入前的回答已中断，未恢复生成。",
       "sha256": "ae0c899de7e58a73bbe5e3f07144e792f6afa8dd2828d2a8d5911909f6b7ecb6",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/portable-chat.mjs:82:116",
+      "file": "app/portable-chat.mjs",
+      "line": 82,
+      "column": 116,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "备份引用消息无法对应原对话",
+      "sha256": "08981be61ac5332b6cc50c0ef9d59e0d8cf44521d6a1a506148ecc421baceac1",
       "protected": false,
       "protectionReason": null,
       "hints": [],
@@ -237955,9 +238075,9 @@
       }
     },
     {
-      "id": "candidate:app/reading-chat-input.mjs:2:56",
+      "id": "candidate:app/reading-chat-input.mjs:3:56",
       "file": "app/reading-chat-input.mjs",
-      "line": 2,
+      "line": 3,
       "column": 56,
       "kind": "js-cjk-literal",
       "property": null,
@@ -257979,9 +258099,9 @@
       }
     },
     {
-      "id": "candidate:server/credit-gate.mjs:14:161",
+      "id": "candidate:server/credit-gate.mjs:15:161",
       "file": "server/credit-gate.mjs",
-      "line": 14,
+      "line": 15,
       "column": 161,
       "kind": "js-cjk-literal",
       "property": null,
@@ -257999,9 +258119,9 @@
       }
     },
     {
-      "id": "candidate:server/credit-gate.mjs:15:111",
+      "id": "candidate:server/credit-gate.mjs:16:111",
       "file": "server/credit-gate.mjs",
-      "line": 15,
+      "line": 16,
       "column": 111,
       "kind": "js-cjk-literal",
       "property": null,
@@ -258019,9 +258139,9 @@
       }
     },
     {
-      "id": "candidate:server/credit-gate.mjs:16:119",
+      "id": "candidate:server/credit-gate.mjs:17:119",
       "file": "server/credit-gate.mjs",
-      "line": 16,
+      "line": 17,
       "column": 119,
       "kind": "js-cjk-literal",
       "property": null,
@@ -258039,9 +258159,9 @@
       }
     },
     {
-      "id": "candidate:server/credit-gate.mjs:27:277",
+      "id": "candidate:server/credit-gate.mjs:28:277",
       "file": "server/credit-gate.mjs",
-      "line": 27,
+      "line": 28,
       "column": 277,
       "kind": "js-cjk-literal",
       "property": null,
@@ -258059,9 +258179,9 @@
       }
     },
     {
-      "id": "candidate:server/credit-gate.mjs:31:46",
+      "id": "candidate:server/credit-gate.mjs:32:46",
       "file": "server/credit-gate.mjs",
-      "line": 31,
+      "line": 32,
       "column": 46,
       "kind": "js-cjk-literal",
       "property": null,
@@ -258079,9 +258199,9 @@
       }
     },
     {
-      "id": "candidate:server/credit-gate.mjs:35:74",
+      "id": "candidate:server/credit-gate.mjs:36:74",
       "file": "server/credit-gate.mjs",
-      "line": 35,
+      "line": 36,
       "column": 74,
       "kind": "js-cjk-literal",
       "property": null,
@@ -258099,9 +258219,9 @@
       }
     },
     {
-      "id": "candidate:server/credit-gate.mjs:42:69",
+      "id": "candidate:server/credit-gate.mjs:43:69",
       "file": "server/credit-gate.mjs",
-      "line": 42,
+      "line": 43,
       "column": 69,
       "kind": "js-cjk-literal",
       "property": null,
@@ -258119,9 +258239,9 @@
       }
     },
     {
-      "id": "candidate:server/credit-gate.mjs:44:58",
+      "id": "candidate:server/credit-gate.mjs:45:58",
       "file": "server/credit-gate.mjs",
-      "line": 44,
+      "line": 45,
       "column": 58,
       "kind": "js-cjk-literal",
       "property": null,
@@ -258139,9 +258259,9 @@
       }
     },
     {
-      "id": "candidate:server/credit-gate.mjs:45:73",
+      "id": "candidate:server/credit-gate.mjs:46:73",
       "file": "server/credit-gate.mjs",
-      "line": 45,
+      "line": 46,
       "column": 73,
       "kind": "js-cjk-literal",
       "property": null,
@@ -258159,9 +258279,9 @@
       }
     },
     {
-      "id": "candidate:server/credit-gate.mjs:49:101",
+      "id": "candidate:server/credit-gate.mjs:50:101",
       "file": "server/credit-gate.mjs",
-      "line": 49,
+      "line": 50,
       "column": 101,
       "kind": "js-cjk-literal",
       "property": null,
@@ -258179,9 +258299,9 @@
       }
     },
     {
-      "id": "candidate:server/credit-gate.mjs:63:112",
+      "id": "candidate:server/credit-gate.mjs:64:112",
       "file": "server/credit-gate.mjs",
-      "line": 63,
+      "line": 64,
       "column": 112,
       "kind": "js-cjk-literal",
       "property": null,
@@ -258199,9 +258319,9 @@
       }
     },
     {
-      "id": "candidate:server/credit-gate.mjs:87:28",
+      "id": "candidate:server/credit-gate.mjs:88:28",
       "file": "server/credit-gate.mjs",
-      "line": 87,
+      "line": 88,
       "column": 28,
       "kind": "js-cjk-literal",
       "property": null,
@@ -258219,9 +258339,9 @@
       }
     },
     {
-      "id": "candidate:server/credit-gate.mjs:95:78",
+      "id": "candidate:server/credit-gate.mjs:96:78",
       "file": "server/credit-gate.mjs",
-      "line": 95,
+      "line": 96,
       "column": 78,
       "kind": "js-cjk-literal",
       "property": null,
@@ -258239,10 +258359,10 @@
       }
     },
     {
-      "id": "candidate:server/credit-gate.mjs:96:402",
+      "id": "candidate:server/credit-gate.mjs:97:497",
       "file": "server/credit-gate.mjs",
-      "line": 96,
-      "column": 402,
+      "line": 97,
+      "column": 497,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "重复提交标识与原请求不一致",
@@ -258259,9 +258379,9 @@
       }
     },
     {
-      "id": "candidate:server/credit-gate.mjs:99:53",
+      "id": "candidate:server/credit-gate.mjs:100:53",
       "file": "server/credit-gate.mjs",
-      "line": 99,
+      "line": 100,
       "column": 53,
       "kind": "js-cjk-literal",
       "property": null,
@@ -258279,9 +258399,9 @@
       }
     },
     {
-      "id": "candidate:server/credit-gate.mjs:109:164",
+      "id": "candidate:server/credit-gate.mjs:110:164",
       "file": "server/credit-gate.mjs",
-      "line": 109,
+      "line": 110,
       "column": 164,
       "kind": "js-cjk-literal",
       "property": null,
@@ -258299,9 +258419,9 @@
       }
     },
     {
-      "id": "candidate:server/credit-gate.mjs:117:22",
+      "id": "candidate:server/credit-gate.mjs:118:22",
       "file": "server/credit-gate.mjs",
-      "line": 117,
+      "line": 118,
       "column": 22,
       "kind": "js-cjk-literal",
       "property": null,
@@ -258319,9 +258439,9 @@
       }
     },
     {
-      "id": "candidate:server/credit-gate.mjs:133:22",
+      "id": "candidate:server/credit-gate.mjs:134:22",
       "file": "server/credit-gate.mjs",
-      "line": 133,
+      "line": 134,
       "column": 22,
       "kind": "js-cjk-literal",
       "property": null,
@@ -266939,10 +267059,10 @@
       }
     },
     {
-      "id": "candidate:server/local-reader-chat.mjs:23:210",
+      "id": "candidate:server/local-reader-chat.mjs:23:220",
       "file": "server/local-reader-chat.mjs",
       "line": 23,
-      "column": 210,
+      "column": 220,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "请提交有效的本机阅读消息",
@@ -267539,9 +267659,29 @@
       }
     },
     {
-      "id": "candidate:server/local-reader-chat.mjs:122:104",
+      "id": "candidate:server/local-reader-chat.mjs:112:183",
       "file": "server/local-reader-chat.mjs",
-      "line": 122,
+      "line": 112,
+      "column": 183,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "所引用消息属于其他本机书籍，请重新选择",
+      "sha256": "f73e91c4beb9bbfc807cc20e88433a61bc026e5a85cb6fab6e9ad50e15f67a8b",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/local-reader-chat.mjs:123:104",
+      "file": "server/local-reader-chat.mjs",
+      "line": 123,
       "column": 104,
       "kind": "js-cjk-literal",
       "property": null,
@@ -267559,9 +267699,9 @@
       }
     },
     {
-      "id": "candidate:server/local-reader-chat.mjs:125:79",
+      "id": "candidate:server/local-reader-chat.mjs:126:79",
       "file": "server/local-reader-chat.mjs",
-      "line": 125,
+      "line": 126,
       "column": 79,
       "kind": "js-cjk-literal",
       "property": null,
@@ -267579,9 +267719,9 @@
       }
     },
     {
-      "id": "candidate:server/local-reader-chat.mjs:126:78",
+      "id": "candidate:server/local-reader-chat.mjs:127:78",
       "file": "server/local-reader-chat.mjs",
-      "line": 126,
+      "line": 127,
       "column": 78,
       "kind": "js-cjk-literal",
       "property": null,
@@ -267599,9 +267739,9 @@
       }
     },
     {
-      "id": "candidate:server/local-reader-chat.mjs:130:59",
+      "id": "candidate:server/local-reader-chat.mjs:131:59",
       "file": "server/local-reader-chat.mjs",
-      "line": 130,
+      "line": 131,
       "column": 59,
       "kind": "js-cjk-literal",
       "property": null,
@@ -274639,10 +274779,10 @@
       }
     },
     {
-      "id": "candidate:server/reader-chat.mjs:204:371",
+      "id": "candidate:server/reader-chat.mjs:204:460",
       "file": "server/reader-chat.mjs",
       "line": 204,
-      "column": 371,
+      "column": 460,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "重复提交标识与原提问或查阅范围不一致",
@@ -274659,10 +274799,10 @@
       }
     },
     {
-      "id": "candidate:server/reader-chat.mjs:204:437",
+      "id": "candidate:server/reader-chat.mjs:204:526",
       "file": "server/reader-chat.mjs",
       "line": 204,
-      "column": 437,
+      "column": 526,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "这次提问正在回答，请稍后查看",
@@ -274739,9 +274879,9 @@
       }
     },
     {
-      "id": "candidate:server/reader-chat.mjs:213:62",
+      "id": "candidate:server/reader-chat.mjs:214:62",
       "file": "server/reader-chat.mjs",
-      "line": 213,
+      "line": 214,
       "column": 62,
       "kind": "js-cjk-literal",
       "property": null,
@@ -274759,9 +274899,9 @@
       }
     },
     {
-      "id": "candidate:server/reader-chat.mjs:214:99",
+      "id": "candidate:server/reader-chat.mjs:215:99",
       "file": "server/reader-chat.mjs",
-      "line": 214,
+      "line": 215,
       "column": 99,
       "kind": "js-cjk-literal",
       "property": null,
@@ -274779,9 +274919,9 @@
       }
     },
     {
-      "id": "candidate:server/reader-chat.mjs:214:112",
+      "id": "candidate:server/reader-chat.mjs:215:112",
       "file": "server/reader-chat.mjs",
-      "line": 214,
+      "line": 215,
       "column": 112,
       "kind": "js-cjk-literal",
       "property": null,
@@ -274799,9 +274939,9 @@
       }
     },
     {
-      "id": "candidate:server/reader-chat.mjs:216:86",
+      "id": "candidate:server/reader-chat.mjs:217:86",
       "file": "server/reader-chat.mjs",
-      "line": 216,
+      "line": 217,
       "column": 86,
       "kind": "js-cjk-literal",
       "property": null,
@@ -274819,9 +274959,9 @@
       }
     },
     {
-      "id": "candidate:server/reader-chat.mjs:245:71",
+      "id": "candidate:server/reader-chat.mjs:246:71",
       "file": "server/reader-chat.mjs",
-      "line": 245,
+      "line": 246,
       "column": 71,
       "kind": "js-cjk-literal",
       "property": null,
@@ -274839,9 +274979,9 @@
       }
     },
     {
-      "id": "candidate:server/reader-chat.mjs:271:107",
+      "id": "candidate:server/reader-chat.mjs:272:107",
       "file": "server/reader-chat.mjs",
-      "line": 271,
+      "line": 272,
       "column": 107,
       "kind": "js-cjk-literal",
       "property": null,
@@ -274859,9 +274999,9 @@
       }
     },
     {
-      "id": "candidate:server/reader-chat.mjs:274:55",
+      "id": "candidate:server/reader-chat.mjs:275:55",
       "file": "server/reader-chat.mjs",
-      "line": 274,
+      "line": 275,
       "column": 55,
       "kind": "js-cjk-literal",
       "property": null,
@@ -274879,9 +275019,9 @@
       }
     },
     {
-      "id": "candidate:server/reader-chat.mjs:276:167",
+      "id": "candidate:server/reader-chat.mjs:277:167",
       "file": "server/reader-chat.mjs",
-      "line": 276,
+      "line": 277,
       "column": 167,
       "kind": "js-cjk-literal",
       "property": null,
@@ -274899,9 +275039,9 @@
       }
     },
     {
-      "id": "candidate:server/reader-chat.mjs:278:50",
+      "id": "candidate:server/reader-chat.mjs:279:50",
       "file": "server/reader-chat.mjs",
-      "line": 278,
+      "line": 279,
       "column": 50,
       "kind": "js-cjk-literal",
       "property": null,
@@ -274919,9 +275059,9 @@
       }
     },
     {
-      "id": "candidate:server/reader-chat.mjs:289:91",
+      "id": "candidate:server/reader-chat.mjs:290:91",
       "file": "server/reader-chat.mjs",
-      "line": 289,
+      "line": 290,
       "column": 91,
       "kind": "js-cjk-literal",
       "property": null,
@@ -274939,9 +275079,9 @@
       }
     },
     {
-      "id": "candidate:server/reader-chat.mjs:295:49",
+      "id": "candidate:server/reader-chat.mjs:296:49",
       "file": "server/reader-chat.mjs",
-      "line": 295,
+      "line": 296,
       "column": 49,
       "kind": "js-cjk-literal",
       "property": null,
@@ -274959,9 +275099,9 @@
       }
     },
     {
-      "id": "candidate:server/reader-chat.mjs:296:205",
+      "id": "candidate:server/reader-chat.mjs:297:205",
       "file": "server/reader-chat.mjs",
-      "line": 296,
+      "line": 297,
       "column": 205,
       "kind": "js-cjk-literal",
       "property": null,
@@ -274979,9 +275119,9 @@
       }
     },
     {
-      "id": "candidate:server/reader-chat.mjs:314:54",
+      "id": "candidate:server/reader-chat.mjs:315:54",
       "file": "server/reader-chat.mjs",
-      "line": 314,
+      "line": 315,
       "column": 54,
       "kind": "js-cjk-literal",
       "property": null,
@@ -274999,9 +275139,9 @@
       }
     },
     {
-      "id": "candidate:server/reader-chat.mjs:317:90",
+      "id": "candidate:server/reader-chat.mjs:318:90",
       "file": "server/reader-chat.mjs",
-      "line": 317,
+      "line": 318,
       "column": 90,
       "kind": "js-cjk-literal",
       "property": null,
@@ -275019,9 +275159,9 @@
       }
     },
     {
-      "id": "candidate:server/reader-chat.mjs:324:91",
+      "id": "candidate:server/reader-chat.mjs:325:91",
       "file": "server/reader-chat.mjs",
-      "line": 324,
+      "line": 325,
       "column": 91,
       "kind": "js-cjk-literal",
       "property": null,
@@ -275039,9 +275179,9 @@
       }
     },
     {
-      "id": "candidate:server/reader-chat.mjs:327:55",
+      "id": "candidate:server/reader-chat.mjs:328:55",
       "file": "server/reader-chat.mjs",
-      "line": 327,
+      "line": 328,
       "column": 55,
       "kind": "js-cjk-literal",
       "property": null,
@@ -275059,9 +275199,9 @@
       }
     },
     {
-      "id": "candidate:server/reader-chat.mjs:330:90",
+      "id": "candidate:server/reader-chat.mjs:331:90",
       "file": "server/reader-chat.mjs",
-      "line": 330,
+      "line": 331,
       "column": 90,
       "kind": "js-cjk-literal",
       "property": null,
@@ -275079,9 +275219,9 @@
       }
     },
     {
-      "id": "candidate:server/reader-chat.mjs:332:53",
+      "id": "candidate:server/reader-chat.mjs:333:53",
       "file": "server/reader-chat.mjs",
-      "line": 332,
+      "line": 333,
       "column": 53,
       "kind": "js-cjk-literal",
       "property": null,
@@ -275099,9 +275239,9 @@
       }
     },
     {
-      "id": "candidate:server/reader-chat.mjs:334:46",
+      "id": "candidate:server/reader-chat.mjs:335:46",
       "file": "server/reader-chat.mjs",
-      "line": 334,
+      "line": 335,
       "column": 46,
       "kind": "js-cjk-literal",
       "property": null,
@@ -275119,9 +275259,9 @@
       }
     },
     {
-      "id": "candidate:server/reader-chat.mjs:345:115",
+      "id": "candidate:server/reader-chat.mjs:346:115",
       "file": "server/reader-chat.mjs",
-      "line": 345,
+      "line": 346,
       "column": 115,
       "kind": "js-cjk-literal",
       "property": null,
@@ -275139,10 +275279,10 @@
       }
     },
     {
-      "id": "candidate:server/reader-chat.mjs:350:548",
+      "id": "candidate:server/reader-chat.mjs:351:631",
       "file": "server/reader-chat.mjs",
-      "line": 350,
-      "column": 548,
+      "line": 351,
+      "column": 631,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "备份对话标识与已有历史冲突，未覆盖记录",
@@ -275159,9 +275299,9 @@
       }
     },
     {
-      "id": "candidate:server/reader-chat.mjs:361:169",
+      "id": "candidate:server/reader-chat.mjs:362:169",
       "file": "server/reader-chat.mjs",
-      "line": 361,
+      "line": 362,
       "column": 169,
       "kind": "js-cjk-literal",
       "property": null,
@@ -292385,7 +292525,7 @@
     {
       "kind": "computed-member",
       "file": "app/portable-chat.mjs",
-      "line": 10,
+      "line": 28,
       "expression": "k",
       "fragments": [],
       "unresolved": true
@@ -292393,7 +292533,7 @@
     {
       "kind": "concatenation",
       "file": "app/portable-chat.mjs",
-      "line": 19,
+      "line": 37,
       "expression": "'/read?book='+encodeURIComponent(row.bookId)",
       "fragments": [
         "/read?book="
@@ -292403,7 +292543,7 @@
     {
       "kind": "concatenation",
       "file": "app/portable-chat.mjs",
-      "line": 37,
+      "line": 55,
       "expression": "'/read?book='+encodeURIComponent(book.bookId)+'&passage='",
       "fragments": [
         "/read?book=",
@@ -292414,7 +292554,7 @@
     {
       "kind": "concatenation",
       "file": "app/portable-chat.mjs",
-      "line": 37,
+      "line": 55,
       "expression": "'/read?book='+encodeURIComponent(book.bookId)",
       "fragments": [
         "/read?book="
@@ -292424,7 +292564,7 @@
     {
       "kind": "computed-member",
       "file": "app/portable-chat.mjs",
-      "line": 41,
+      "line": 59,
       "expression": "k",
       "fragments": [],
       "unresolved": true
@@ -292432,7 +292572,7 @@
     {
       "kind": "computed-member",
       "file": "app/portable-chat.mjs",
-      "line": 41,
+      "line": 59,
       "expression": "k",
       "fragments": [],
       "unresolved": true
@@ -292440,7 +292580,7 @@
     {
       "kind": "computed-member",
       "file": "app/portable-chat.mjs",
-      "line": 48,
+      "line": 66,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -292448,7 +292588,7 @@
     {
       "kind": "computed-member",
       "file": "app/portable-chat.mjs",
-      "line": 54,
+      "line": 72,
       "expression": "layer",
       "fragments": [],
       "unresolved": true
@@ -292456,7 +292596,7 @@
     {
       "kind": "concatenation",
       "file": "app/portable-chat.mjs",
-      "line": 55,
+      "line": 73,
       "expression": "'/read?book='+encodeURIComponent(r.bookId)+'&passage='",
       "fragments": [
         "/read?book=",
@@ -292467,7 +292607,7 @@
     {
       "kind": "concatenation",
       "file": "app/portable-chat.mjs",
-      "line": 55,
+      "line": 73,
       "expression": "'/read?book='+encodeURIComponent(r.bookId)",
       "fragments": [
         "/read?book="
@@ -292477,7 +292617,7 @@
     {
       "kind": "computed-member",
       "file": "app/portable-chat.mjs",
-      "line": 55,
+      "line": 73,
       "expression": "layer",
       "fragments": [],
       "unresolved": true
@@ -297801,7 +297941,7 @@
     {
       "kind": "concatenation",
       "file": "app/reading-chat-input.mjs",
-      "line": 4,
+      "line": 5,
       "expression": "JSON.stringify(payload)+'\\n\\n'+inputLabel+'\\n'",
       "fragments": [
         "\n\n",
@@ -297812,7 +297952,7 @@
     {
       "kind": "concatenation",
       "file": "app/reading-chat-input.mjs",
-      "line": 4,
+      "line": 5,
       "expression": "JSON.stringify(payload)+'\\n\\n'",
       "fragments": [
         "\n\n"
@@ -297822,7 +297962,7 @@
     {
       "kind": "computed-member",
       "file": "app/reading-chat-input.mjs",
-      "line": 8,
+      "line": 9,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -306128,7 +306268,7 @@
     {
       "kind": "computed-member",
       "file": "server/credit-gate.mjs",
-      "line": 9,
+      "line": 10,
       "expression": "k",
       "fragments": [],
       "unresolved": true
@@ -306136,7 +306276,7 @@
     {
       "kind": "concatenation",
       "file": "server/credit-gate.mjs",
-      "line": 12,
+      "line": 13,
       "expression": "'credit-'+hash([user.id,action,bookId,id])",
       "fragments": [
         "credit-"
@@ -306146,7 +306286,7 @@
     {
       "kind": "computed-member",
       "file": "server/credit-gate.mjs",
-      "line": 14,
+      "line": 15,
       "expression": "action",
       "fragments": [],
       "unresolved": true
@@ -306154,7 +306294,7 @@
     {
       "kind": "computed-member",
       "file": "server/credit-gate.mjs",
-      "line": 14,
+      "line": 15,
       "expression": "action",
       "fragments": [],
       "unresolved": true
@@ -306162,7 +306302,7 @@
     {
       "kind": "computed-member",
       "file": "server/credit-gate.mjs",
-      "line": 41,
+      "line": 42,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -306170,7 +306310,7 @@
     {
       "kind": "computed-member",
       "file": "server/credit-gate.mjs",
-      "line": 73,
+      "line": 74,
       "expression": "k",
       "fragments": [],
       "unresolved": true
@@ -306178,7 +306318,7 @@
     {
       "kind": "computed-member",
       "file": "server/credit-gate.mjs",
-      "line": 73,
+      "line": 74,
       "expression": "k",
       "fragments": [],
       "unresolved": true
@@ -306186,7 +306326,7 @@
     {
       "kind": "computed-member",
       "file": "server/credit-gate.mjs",
-      "line": 73,
+      "line": 74,
       "expression": "k",
       "fragments": [],
       "unresolved": true
@@ -306194,7 +306334,7 @@
     {
       "kind": "computed-member",
       "file": "server/credit-gate.mjs",
-      "line": 73,
+      "line": 74,
       "expression": "k",
       "fragments": [],
       "unresolved": true
@@ -306202,7 +306342,7 @@
     {
       "kind": "computed-member",
       "file": "server/credit-gate.mjs",
-      "line": 73,
+      "line": 74,
       "expression": "k",
       "fragments": [],
       "unresolved": true
@@ -306210,7 +306350,7 @@
     {
       "kind": "computed-member",
       "file": "server/credit-gate.mjs",
-      "line": 73,
+      "line": 74,
       "expression": "k",
       "fragments": [],
       "unresolved": true
@@ -306218,7 +306358,7 @@
     {
       "kind": "computed-member",
       "file": "server/credit-gate.mjs",
-      "line": 73,
+      "line": 74,
       "expression": "k",
       "fragments": [],
       "unresolved": true
@@ -313309,7 +313449,7 @@
     {
       "kind": "concatenation",
       "file": "server/reader-chat.mjs",
-      "line": 232,
+      "line": 233,
       "expression": "'chat-'+input.id",
       "fragments": [
         "chat-"
@@ -313319,7 +313459,7 @@
     {
       "kind": "computed-member",
       "file": "server/reader-chat.mjs",
-      "line": 254,
+      "line": 255,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -313327,7 +313467,7 @@
     {
       "kind": "computed-member",
       "file": "server/reader-chat.mjs",
-      "line": 257,
+      "line": 258,
       "expression": "prior",
       "fragments": [],
       "unresolved": true
@@ -313335,7 +313475,7 @@
     {
       "kind": "computed-member",
       "file": "server/reader-chat.mjs",
-      "line": 350,
+      "line": 351,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -316135,8 +316275,8 @@
     "duplicateKeys": 0,
     "reviewedItems": 8,
     "unreviewedItems": 2481,
-    "candidates": 6415,
-    "candidatesUnreviewed": 6414,
+    "candidates": 6422,
+    "candidatesUnreviewed": 6421,
     "candidatesProtected": 143,
     "itemsProtected": 9,
     "dynamicConsumers": 4144,

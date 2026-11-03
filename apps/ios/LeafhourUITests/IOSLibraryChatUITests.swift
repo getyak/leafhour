@@ -81,6 +81,37 @@ final class IOSLibraryChatUITests: XCTestCase {
         capture("Chat · native Markdown direct answer")
     }
 
+    func testMessageLongPressQuotesLikesAndWakesTheQuietComposer() {
+        launch()
+        app.tabBars.buttons["Chat"].tap()
+        let input = app.textFields["reader-question"]
+        require(input); input.tap()
+        if !app.keyboards.firstMatch.waitForExistence(timeout: 2) { input.tap() }
+        require(app.keyboards.firstMatch); input.typeText("第一句问题")
+        app.buttons["reader-question-send"].tap()
+        let answer = app.textViews.matching(NSPredicate(format: "label CONTAINS %@", "合成陪读回答")).firstMatch
+        require(answer)
+        require(app.buttons["chat-wake-composer"])
+        answer.coordinate(withNormalizedOffset: CGVector(dx: 0.12, dy: 0.18)).press(forDuration: 1.1)
+        let quote = app.menuItems["引用"].firstMatch; require(quote); quote.tap()
+        require(app.descendants(matching: .any)["chat-message-reference"].firstMatch)
+        require(input); input.tap(); require(app.keyboards.firstMatch)
+        input.typeText("接着解释一下")
+        app.buttons["reader-question-send"].tap()
+        let saved = app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", "回复 松鼠")).firstMatch
+        require(saved); XCTAssertTrue(saved.label.contains("合成陪读回答"))
+        capture("message-reference-follow-up")
+        let latest = app.textViews.matching(NSPredicate(format: "label CONTAINS %@", "合成陪读回答")).allElementsBoundByIndex.last!
+        latest.coordinate(withNormalizedOffset: CGVector(dx: 0.12, dy: 0.18)).press(forDuration: 1.1)
+        let like = app.menuItems["点赞"].firstMatch; require(like); like.tap()
+        require(app.images["已点赞"].firstMatch)
+        latest.coordinate(withNormalizedOffset: CGVector(dx: 0.12, dy: 0.18)).press(forDuration: 1.1)
+        require(app.menuItems["取消点赞"].firstMatch)
+        app.menuItems["取消点赞"].firstMatch.tap()
+        app.buttons["chat-wake-composer"].tap(); require(input); XCTAssertTrue(input.isHittable)
+        capture("quiet-composer-woken")
+    }
+
     func testSingleAndMultipleLocalRemovalRemainRecoverable() {
         launch(); layoutList(); filter("全部"); search(textTitle)
         let actions = app.buttons["书籍操作，" + textTitle]; require(actions); actions.tap()

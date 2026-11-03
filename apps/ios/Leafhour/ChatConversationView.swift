@@ -22,6 +22,7 @@ struct ChatConversationView: View {
     var onSignIn: (() -> Void)? = nil
     let load: () async -> Void
     let send: () async -> Void
+    @State private var composerAwake = true
     @State private var didLoad = false
     @State private var sourceExpanded = false
     @State private var speech = ChatSpeechRecorder()
@@ -45,7 +46,10 @@ struct ChatConversationView: View {
                             responseStatus: tools.responseStatus,
                             error: turn.id == failedTurnID ? tools.error : nil,
                             retry: tools.retry?.id == turn.id ? { retryRequest() } : nil,
-                            resolveVoice: { try await tools.voiceURL($0, cloud: cloud) }, playbackAllowed: !speech.isActive)
+                            resolveVoice: { try await tools.voiceURL($0, cloud: cloud) }, playbackAllowed: !speech.isActive,
+                            onReference: { role in tools.referenceMessage(turn, role: role); composerAwake = true; focused = true },
+                            onLike: { role in tools.toggleMessageLike(turnID: turn.id, role: role) },
+                            isLiked: { role in tools.isMessageLiked(turnID: turn.id, role: role) })
                     }
                     status
                     Color.clear.frame(height: 1).id("chat-bottom")
@@ -61,6 +65,9 @@ struct ChatConversationView: View {
                 } }
                 .onPreferenceChange(ChatBottomPositionKey.self) { bottom in followsResponse = bottom <= viewportHeight + 44 }
                 .defaultScrollAnchor(.bottom)
+                .simultaneousGesture(DragGesture(minimumDistance: 12).onChanged { _ in
+                    if !focused { composerAwake = false }
+                })
                 .scrollDismissesKeyboard(.interactively)
                 .safeAreaInset(edge: .bottom, spacing: 0) { composer }
                 .onChange(of: tools.turns.last?.id) { _, _ in scroll(proxy) }
@@ -87,7 +94,17 @@ struct ChatConversationView: View {
             }
             .onDisappear { if speech.isActive { tools.question = speech.cancel() } }
     }
-    private func reload() async { await load(); if !Task.isCancelled { didLoad = true } }
+    private func reload() async {
+        await load()
+        if !Task.isCancelled { didLoad = true; if !tools.turns.isEmpty { composerAwake = false } }
+    }
+    private var composerIsCompact: Bool {
+        !composerAwake && !focused && !tools.turns.isEmpty && tools.question.isEmpty && tools.pendingVoice == nil && tools.pendingMessageReference == nil && !speech.isActive && speech.error == nil && (tools.retry == nil || tools.generating || (tools.loading && tools.turns.last?.status == "running")) && tools.error == nil && tools.draftError == nil && !sendingVoice
+    }
+    private func submit() async {
+        focused = false; composerAwake = false
+        await send()
+    }
     private var activeTurnID: String? { tools.retry?.id ?? tools.turns.last?.id }
     private var failedTurnID: String? {
         if let retry = tools.retry, tools.turns.contains(where: { $0.id == retry.id }) { return retry.id }
@@ -114,8 +131,8 @@ struct ChatConversationView: View {
                     VStack(alignment: .leading, spacing: 4) {
                         if !sourceExpanded { Text(source).font(.subheadline).foregroundStyle(.primary).lineLimit(1) }
                         HStack(spacing: 6) {
-                            Text(sourceLabel).fixedSize()
                             Text([bookTitle, sourceChapter].filter { !$0.isEmpty }.joined(separator: " · ")).lineLimit(1)
+                            if tools.chatContext?.selection?.origin == "translation" { Text("译文 · 随附原文").fixedSize() }
                         }.font(.caption2).foregroundStyle(.secondary)
                     }
                 }
@@ -157,17 +174,45 @@ struct ChatConversationView: View {
             Button("重试保存与恢复草稿", systemImage: "arrow.clockwise") { Task { await tools.retryConversationDraftSave(); await reload() } }.frame(minHeight: 44)
         }
     }
-    private var composer: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            if !source.isEmpty {
-                if !tools.chatQuoteRemoved { context }
-                else if !isLibraryConversation {
-                    Text(sourceLabel).font(.caption2).foregroundStyle(.secondary).padding(.horizontal, 8)
+    @ViewBuilder private var composer: some View {
+        if composerIsCompact {
+            HStack(spacing: 12) {
+                Button {
+                    composerAwake = true; focused = true
+                } label: {
+                    HStack(spacing: 8) {
+                        Image(systemName: "square.and.pencil").font(.subheadline)
+                        Text("继续问…").font(.subheadline)
+                        Spacer(minLength: 0)
+                    }.frame(minHeight: 44).contentShape(Rectangle())
+                }.buttonStyle(.plain).foregroundStyle(.secondary).accessibilityIdentifier("chat-wake-composer")
+                if tools.generating {
+                    Button { Task { await tools.cancelConversation(cloud: cloud) } } label: {
+                        Image(systemName: "stop.fill").frame(width: 44, height: 44)
+                    }.buttonStyle(.plain).accessibilityLabel("停止回答").accessibilityIdentifier("reader-question-send")
                 }
+            }.padding(.horizontal, 24).background(Color(uiColor: .systemBackground))
+        } else { expandedComposer }
+    }
+    private var expandedComposer: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            if !source.isEmpty && !tools.chatQuoteRemoved && (canRemoveSource || tools.chatContext?.selection != nil) { context }
+            if let reference = tools.pendingMessageReference {
+                HStack(alignment: .top, spacing: 8) {
+                    VStack(alignment: .leading, spacing: 3) {
+                        Text("回复 " + reference.authorLabel).font(.caption2).foregroundStyle(.secondary)
+                        Text(reference.text).font(.subheadline).lineLimit(2)
+                    }.frame(maxWidth: .infinity, alignment: .leading)
+                    Button { tools.pendingMessageReference = nil } label: {
+                        Image(systemName: "xmark").frame(width: 44, height: 44)
+                    }.buttonStyle(.plain).accessibilityLabel("移除消息引用")
+                }.padding(.leading, 10)
+                    .overlay(alignment: .leading) { Rectangle().fill(Color.leafInk.opacity(0.4)).frame(width: 2) }
+                    .accessibilityIdentifier("chat-message-reference")
             }
-            if tools.canUpdateChatContext {
-                Button("使用当前选文或原文", systemImage: "arrow.triangle.2.circlepath") { tools.updateChatContext(); sourceExpanded = false }
-                    .font(.subheadline).frame(minHeight: 44)
+            if tools.canUpdateChatContext && tools.pendingMessageReference == nil {
+                Button("引用刚才选的文字", systemImage: "text.quote") { tools.updateChatContext(); sourceExpanded = false }
+                    .font(.caption).frame(minHeight: 44)
             }
             if let voice = tools.pendingVoice {
                 HStack(spacing: 8) {
@@ -191,7 +236,7 @@ struct ChatConversationView: View {
                     .disabled(speech.isActive || sendingVoice)
                     .accessibilityAction(named: Text("收起键盘")) { focused = false }
                     .accessibilityIdentifier("reader-question").layoutPriority(1)
-                Button { Task { if tools.generating { await tools.cancelConversation(cloud: cloud) } else if speech.recording { await captureVoice(sendAfter: true) } else { await send() } } } label: {
+                Button { Task { if tools.generating { await tools.cancelConversation(cloud: cloud) } else if speech.recording { await captureVoice(sendAfter: true) } else { await submit() } } } label: {
                     Group { if sendingVoice || speech.finishing { ProgressView() } else { Image(systemName: tools.generating ? "stop.fill" : "arrow.up").font(.system(size: tools.generating ? 14 : 17, weight: .semibold)) } }
                         .frame(width: 40, height: 40)
                         .foregroundStyle(canAsk || speech.recording || tools.generating ? Color.primary : Color.secondary)
@@ -213,7 +258,7 @@ struct ChatConversationView: View {
             let recording = try await speech.finish()
             try await tools.attachVoice(recording)
             sendingVoice = false
-            if sendAfter && !tools.question.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty { await send() }
+            if sendAfter && !tools.question.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty { await submit() }
             else if sendAfter { speech.error = "录音已保留，可以补充文字后发送。" }
         } catch is CancellationError { }
         catch { speech.error = error.localizedDescription }
@@ -229,6 +274,9 @@ private struct ChatTurnView: View {
     var retry: (() -> Void)?
     let resolveVoice: (ChatVoiceReceipt) async throws -> URL
     let playbackAllowed: Bool
+    let onReference: (String) -> Void
+    let onLike: (String) -> Void
+    let isLiked: (String) -> Bool
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
             HStack(alignment: .top, spacing: 24) {
@@ -238,14 +286,28 @@ private struct ChatTurnView: View {
                     ChatVoiceMessageView(voice: voice, resolve: { try await resolveVoice(voice) }, playbackAllowed: playbackAllowed)
                     Text("转写文字").font(.caption2).foregroundStyle(.secondary)
                 }
+                if let reference = turn.replyTo { ChatMessageReferenceView(reference: reference) }
                 if let quote = turn.quote { ChatSavedQuoteView(quote: quote) }
-                Text(turn.question).font(.body).textSelection(.enabled)
-            }.padding(.horizontal, 14).padding(.vertical, 12)
-                .background(Color(uiColor: .secondarySystemBackground), in: RoundedRectangle(cornerRadius: 10))
+                ChatMarkdownView(source: turn.question, plainText: true,
+                    onReference: { onReference("user") }, onLike: { onLike("user") }, liked: isLiked("user"))
+                    .accessibilityIdentifier("chat-user-message-" + turn.id)
+                if isLiked("user") { Image(systemName: "hand.thumbsup.fill").font(.caption2).foregroundStyle(Color.leafInk).accessibilityLabel("已点赞") }
+            }.padding(.leading, 12).padding(.vertical, 8)
+                .overlay(alignment: .leading) { Rectangle().fill(Color.leafInk.opacity(0.18)).frame(width: 1) }
+                .contextMenu { messageActions(role: "user", text: turn.question) }
+                .accessibilityAction(named: Text("引用消息")) { onReference("user") }
+                .accessibilityAction(named: Text(isLiked("user") ? "取消点赞" : "点赞")) { onLike("user") }
             }
             VStack(alignment: .leading, spacing: 8) {
-                if let answer = turn.answer, !answer.isEmpty { ChatMarkdownView(source: answer) }
-                else if !responseText.isEmpty { ChatMarkdownView(source: responseText) }
+                if let answer = turn.answer, !answer.isEmpty {
+                    ChatMarkdownView(source: answer,
+                        onReference: turn.status == "completed" ? { onReference("assistant") } : nil,
+                        onLike: { onLike("assistant") }, liked: isLiked("assistant"))
+                        .accessibilityAction(named: Text("引用消息")) { if turn.status == "completed" { onReference("assistant") } }
+                        .accessibilityAction(named: Text(isLiked("assistant") ? "取消点赞" : "点赞")) { onLike("assistant") }
+                        .accessibilityIdentifier("chat-assistant-message-" + turn.id)
+                    if isLiked("assistant") { Image(systemName: "hand.thumbsup.fill").font(.caption2).foregroundStyle(Color.leafInk).accessibilityLabel("已点赞") }
+                } else if !responseText.isEmpty { ChatMarkdownView(source: responseText) }
                 if responding {
                     HStack(spacing: 8) {
                         ProgressView().controlSize(.mini)
@@ -264,6 +326,12 @@ private struct ChatTurnView: View {
             }.frame(maxWidth: .infinity, alignment: .leading)
         }.accessibilityIdentifier("reader-conversation-turn-" + turn.id)
     }
+    @ViewBuilder private func messageActions(role: String, text: String) -> some View {
+        Button("引用", systemImage: "arrowshape.turn.up.left") { onReference(role) }.disabled(role == "assistant" && turn.status != "completed")
+        Button("复制", systemImage: "doc.on.doc") { UIPasteboard.general.string = text }
+        Button(isLiked(role) ? "取消点赞" : "点赞", systemImage: isLiked(role) ? "hand.thumbsup.fill" : "hand.thumbsup") { onLike(role) }
+    }
+
 }
 
 private struct ChatSavedQuoteView: View {
@@ -283,5 +351,20 @@ private struct ChatSavedQuoteView: View {
         }.padding(.leading, 10)
             .overlay(alignment: .leading) { Rectangle().fill(Color.secondary.opacity(0.3)).frame(width: 1) }
             .accessibilityIdentifier("chat-saved-quote")
+    }
+}
+
+private struct ChatMessageReferenceView: View {
+    let reference: ReaderMessageReference
+    @State private var expanded = false
+    var body: some View {
+        DisclosureGroup(isExpanded: $expanded) {
+            Text(reference.text).font(.subheadline).textSelection(.enabled)
+        } label: {
+            VStack(alignment: .leading, spacing: 3) {
+                Text("回复 " + reference.authorLabel).font(.caption2).foregroundStyle(.secondary)
+                if !expanded { Text(reference.text).font(.caption).foregroundStyle(.secondary).lineLimit(2) }
+            }
+        }.tint(.secondary).accessibilityIdentifier("chat-saved-message-reference")
     }
 }

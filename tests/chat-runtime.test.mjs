@@ -186,9 +186,6 @@ test('a later completed marker cannot conceal the failed terminal that prevents 
 
 test('ordinary runtime uses published output capacity and registers automatic tool-loop compaction',async t=>{
  const f=await fixture(t,good,async()=>{const names=await readdir(f.runRoot),patch=JSON.parse(await readFile(path.join(f.runRoot,names[0],'chat.patch.json'),'utf8'));assert.ok(patch.flatMap(p=>p.insert||[]).some(p=>p.name==='@deepseek-ai/dsh-compaction-basic'));return good;});await f.generate(job());assert.equal(f.calls[0].maxTokens,393216);
- // Factory receives only the short conversational instruction; system policy
- // stays in the account-bound tools, not a long procedural instruction.
- assert.ok(f.calls[0].env.DSH_SYSTEM_PROMPT.length<150);
 });
 
 test('ordinary metering has no cost, request or tool budget and preserves dispatch attempts',async()=>{

@@ -4,6 +4,24 @@ const id=v=>typeof v==='string'&&/^[A-Za-z0-9][A-Za-z0-9_-]{0,127}$/.test(v);
 const text=(v,n)=>typeof v==='string'&&v.trim()&&v.length<=n&&v.isWellFormed();
 const date=v=>typeof v==='string'&&v.length<=64&&Number.isFinite(Date.parse(v));
 const plain=v=>v&&typeof v==='object'&&!Array.isArray(v);
+// Requests identify a saved message. Client preview text never supplies its content.
+export function normalizeChatReplyTarget(value){
+ if(!plain(value)||Object.keys(value).some(k=>!['turnId','role','text'].includes(k))||!id(value.turnId)||!['user','assistant'].includes(value.role))fail('引用消息格式不正确');
+ return {turnId:value.turnId,role:value.role};
+}
+export function normalizeChatReplyReference(value){
+ const target=normalizeChatReplyTarget(value);if(!text(value.text,Number.MAX_SAFE_INTEGER))fail('引用消息内容不完整');
+ return {...target,text:value.text};
+}
+// The caller finds the source inside the captured owner's conversation. A
+// reference is data; it never widens book, tool or write permissions.
+export function resolveChatReplyReference(target,turn,contentVersion){
+ if(!turn)fail('找不到所引用的消息，请重新选择',404);
+ if(turn.contentVersion!==contentVersion)fail('所引用消息属于其他原文版本，请重新选择',409);
+ const content=target.role==='user'&&turn.kind!=='companion'?turn.text:target.role==='assistant'&&turn.status==='completed'?turn.answer?.summary:null;
+ if(!text(content,Number.MAX_SAFE_INTEGER))fail('这条消息尚不可引用，请重新选择',409);
+ return {...target,text:content};
+}
 export function normalizeChatVoiceReceipt(value){
  const keys=['id','mimeType','bytes','sha256','durationMs'];
  if(!plain(value)||Object.keys(value).some(k=>!keys.includes(k))||!id(value.id)||!['audio/x-caf','audio/mp4','audio/wav'].includes(value.mimeType)||!Number.isSafeInteger(value.bytes)||value.bytes<1||typeof value.sha256!=='string'||!/^[a-f0-9]{64}$/.test(value.sha256)||!Number.isSafeInteger(value.durationMs)||value.durationMs<1)fail('备份语音信息无法核对');
@@ -42,7 +60,7 @@ export function valueEqual(a,b){if(a===b)return true;if(!a||!b||typeof a!=='obje
 export function portableChatTurns(chat,book,books=[book]){
  if(!plain(chat)||chat.kind!=='marginalia-reader-chat'||chat.schemaVersion!==1||chat.bookId!==book.bookId||!Array.isArray(chat.turns))fail('备份对话格式不正确');
  const sources=new Map(books.map(b=>[b.bookId,b])),ids=new Set(),passages=new Set(book.sections.flatMap(s=>s.paragraphs.map(p=>p.id)));
- return chat.turns.map(t=>{
+ const turns=chat.turns.map(t=>{
   const companion=t?.kind==='companion';
   if(!plain(t)||!id(t.id)||ids.has(t.id)||!passages.has(t.passageId)||t.contentVersion!==book.contentVersion||!date(t.createdAt)||t.origin!==(companion?'ai':'user')||!companion&&!text(t.text,Number.MAX_SAFE_INTEGER)||companion&&t.text!==null||!['running','completed','failed','cancelled'].includes(t.status))fail('备份对话的归属、版本或锚点不正确');
   const quote=t.quote===undefined?undefined:validateHistoricalReadingChatQuote(t.quote,book,{bounded:false});if(quote&&(companion||quote.parts[0].passageId!==t.passageId))fail('备份摘录的提问归属不正确');
@@ -56,6 +74,12 @@ export function portableChatTurns(chat,book,books=[book]){
    });
    if(companion&&new TextEncoder().encode(JSON.stringify(a)).length>96000)fail('备份 AI 回答超过容量限制');answer={kind:a.kind,summary:a.summary,origin:'ai',sourceRefs:refs,recommendations:recommendations(a.recommendations,sources),...(a.personSources!==undefined?{personSources:personCitations(a.personSources)}:{})};
   }else if(t.answer!==null&&t.answer!==undefined)fail('未完成对话不能携带回答');
-  return {id:t.id,passageId:t.passageId,contentVersion:t.contentVersion,...(t.scopeRevision!==undefined?{scopeRevision:t.scopeRevision}:{}),text:companion?null:t.text,...(t.voice!==undefined?{voice:normalizeChatVoiceReceipt(t.voice)}:{}),...(quote?{quote}:{}),origin:companion?'ai':'user',...(companion?{kind:'companion'}:{}),createdAt:t.createdAt,status:t.status==='running'?'failed':t.status,answer,activity:[],...(t.status==='running'?{error:'导入前的回答已中断，未恢复生成。'}:t.error?{error:String(t.error).slice(0,2000)}:{})};
+  return {id:t.id,passageId:t.passageId,contentVersion:t.contentVersion,...(t.scopeRevision!==undefined?{scopeRevision:t.scopeRevision}:{}),text:companion?null:t.text,...(t.voice!==undefined?{voice:normalizeChatVoiceReceipt(t.voice)}:{}),...(quote?{quote}:{}),...(t.replyTo!==undefined?{replyTo:normalizeChatReplyReference(t.replyTo)}:{}),origin:companion?'ai':'user',...(companion?{kind:'companion'}:{}),createdAt:t.createdAt,status:t.status==='running'?'failed':t.status,answer,activity:[],...(t.status==='running'?{error:'导入前的回答已中断，未恢复生成。'}:t.error?{error:String(t.error).slice(0,2000)}:{})};
  });
+ const byId=new Map(turns.map(t=>[t.id,t]));
+ for(const turn of turns)if(turn.replyTo){
+  const ref=turn.replyTo,source=byId.get(ref.turnId),content=ref.role==='user'&&source?.kind!=='companion'?source?.text:ref.role==='assistant'&&source?.status==='completed'?source.answer?.summary:null;
+  if(turn.kind==='companion'||source===turn||source?.contentVersion!==turn.contentVersion||content!==ref.text)fail('备份引用消息无法对应原对话');
+ }
+ return turns;
 }
