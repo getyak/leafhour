@@ -188,6 +188,60 @@ final class ImmersiveReaderUITests: XCTestCase {
         capture("background-audio-continued")
     }
 
+    func testControlCenterPublishesListeningIdentityWhenSystemControlsAreAvailable() throws {
+        open(); wake(); app.buttons["reader-listen"].tap(); require(app.buttons["reader-speech-play"])
+        app.buttons["reader-speech-play"].tap()
+        let status = app.staticTexts["reader-listening-playback-status"]
+        let ready = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in (status.value as? String)?.contains("正在朗读") == true }, object: nil)
+        XCTAssertEqual(XCTWaiter.wait(for: [ready], timeout: 20), .completed)
+        XCUIDevice.shared.press(.home)
+        let springboard = XCUIApplication(bundleIdentifier: "com.apple.springboard")
+        springboard.coordinate(withNormalizedOffset: CGVector(dx: 0.96, dy: 0.01)).press(forDuration: 0.1,
+            thenDragTo: springboard.coordinate(withNormalizedOffset: CGVector(dx: 0.9, dy: 0.72)))
+        capture("control-center-system-availability")
+        // Some iOS 26.4 Simulator images render an entirely empty system panel,
+        // including no Wi-Fi, brightness or volume controls. That cannot prove
+        // either presence or absence of the app's system media tile.
+        try XCTSkipIf(springboard.buttons.count == 0 && springboard.sliders.count == 0,
+            "Simulator Control Center has no system controls; verify system media presentation on a physical device")
+        let media = springboard.descendants(matching: .any).matching(NSPredicate(format: "label CONTAINS %@", "GET317 合成验收")).firstMatch
+        XCTAssertTrue(media.waitForExistence(timeout: 10), "Control Center must publish the actual listening identity: " + springboard.debugDescription)
+    }
+
+    func testListeningActivityPausesResumesAndEndsWithoutOpeningTheApp() {
+        open(); wake(); app.buttons["reader-listen"].tap(); require(app.buttons["reader-speech-play"])
+        app.buttons["reader-speech-play"].tap()
+        let status = app.staticTexts["reader-listening-playback-status"]
+        let ready = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in (status.value as? String)?.contains("正在朗读") == true }, object: nil)
+        XCTAssertEqual(XCTWaiter.wait(for: [ready], timeout: 20), .completed)
+        require(app.buttons["reader-listening-stop"])
+        XCUIDevice.shared.press(.home)
+        let springboard = XCUIApplication(bundleIdentifier: "com.apple.springboard")
+        springboard.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.01)).press(forDuration: 0.1,
+            thenDragTo: springboard.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.72)))
+        let end = springboard.buttons["结束听书"].firstMatch
+        XCTAssertTrue(end.waitForExistence(timeout: 10), springboard.debugDescription)
+        let pause = springboard.buttons["暂停"].firstMatch
+        XCTAssertTrue(pause.waitForExistence(timeout: 5), springboard.debugDescription)
+        capture("live-activity-playing")
+        pause.tap()
+        let resume = springboard.buttons["继续"].firstMatch
+        XCTAssertTrue(resume.waitForExistence(timeout: 10), springboard.debugDescription)
+        XCTAssertNotEqual(app.state, .runningForeground)
+        capture("live-activity-paused")
+        resume.tap()
+        XCTAssertTrue(pause.waitForExistence(timeout: 10), springboard.debugDescription)
+        end.tap()
+        let removed = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in !end.exists }, object: nil)
+        XCTAssertEqual(XCTWaiter.wait(for: [removed], timeout: 10), .completed)
+        capture("live-activity-ended")
+        XCUIDevice.shared.press(.home); app.activate()
+        if app.buttons["reader-listening-reveal"].exists { app.buttons["reader-listening-reveal"].tap() }
+        require(app.buttons["reader-speech-play"])
+        XCTAssertFalse(app.buttons["reader-listening-stop"].exists)
+        XCTAssertFalse(app.buttons["暂停朗读"].exists)
+    }
+
     func testLargeTextListeningKeepsPlaybackAndSharedReadingActionReachable() {
         open(extra: ["-UIPreferredContentSizeCategoryName", "UICTContentSizeCategoryAccessibilityXXXL"])
         wake(); app.buttons["reader-listen"].tap()

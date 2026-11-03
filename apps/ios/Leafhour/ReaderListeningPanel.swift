@@ -106,6 +106,12 @@ struct ReaderListeningPanel: View {
         .navigationTitle("听书").navigationBarTitleDisplayMode(.inline)
         .toolbar(controlsVisible ? .visible : .hidden, for: .navigationBar)
         .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                if hasPlayback {
+                    Button("结束听书", systemImage: "xmark") { speech.stop(); wake() }
+                        .accessibilityIdentifier("reader-listening-stop")
+                }
+            }
             ToolbarItem(placement: .primaryAction) {
                 Button("声音与语速", systemImage: "slider.horizontal.3") { wake(); sheet = .settings }
                     .accessibilityIdentifier("reader-listening-settings")

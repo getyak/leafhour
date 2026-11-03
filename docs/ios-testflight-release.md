@@ -33,6 +33,7 @@ Proposed **GitHub Environment secrets**, after explicit approval:
 | `IOS_DISTRIBUTION_P12_BASE64` | Existing authorized distribution certificate plus private key | `testflight`; retain a separately encrypted recovery copy |
 | `IOS_DISTRIBUTION_P12_PASSWORD` | Decrypt the P12 | `testflight`; separate private secret |
 | `IOS_APP_STORE_PROFILE_BASE64` | Exact app's App Store provisioning profile | `testflight`; verify certificate, team, app and expiry |
+| `IOS_LISTENING_PROFILE_BASE64` | Exact `IOS_BUNDLE_ID + .listening` widget profile | `testflight`; same existing certificate/team, distinct exact profile |
 | `IOS_SIGNING_MAINTENANCE_TOKEN` | Update **only this repository's** environment secret during an approved refresh | `signing-maintenance`; fine-grained GitHub credential, repository Environments write; do not expand the ordinary workflow token |
 
 `signing-maintenance` needs its own approved ASC key entries and the same audited app/team/certificate repository variables. A key with certificate/profile write permissions can change Apple signing resources; do not copy Capri's key, repository, deployment identity, signing store, token or backend settings. If a separately scoped maintenance identity cannot be provided, keep refresh disabled and replace the profile manually after review. Existing certificate ownership and cross-app use must be reviewed before any future certificate rotation.
@@ -42,6 +43,12 @@ Before enabling either environment, configure required reviewers, main-only depl
 Notion is a **metadata register**: name, purpose, owning app/repository, environment or vault reference, responsible person, last verified/rotated date, expiration and next action. Never put raw P8/P12/profile bytes, passwords, tokens, recovery codes or live values in Notion. The parent task owns the Notion page and its checklist.
 
 ## Release path
+
+### Listening extension prerequisite (2026-11-04)
+
+The listening Live Activity is an embedded `ListeningWidget.appex` with the exact parent identifier plus `.listening`. Release now validates independent App Store profiles for both targets and checks the embedded extension's identifier, version/build and WidgetKit extension point. Xcode receives `LEAFHOUR_BUNDLE_ID`, `LEAFHOUR_MAIN_PROFILE` and `LEAFHOUR_LISTENING_PROFILE`; do not override `PRODUCT_BUNDLE_IDENTIFIER` or `PROVISIONING_PROFILE_SPECIFIER` globally because that would apply the main app identity/profile to the extension.
+
+The original table above records the initial proposed setup, not the current live settings. A read-only check for this task found automatic TestFlight enabled, the main profile present, the listening profile absent, and signing maintenance disabled. The missing extension registration/profile is a release prerequisite requiring the separate maintenance authorization already defined by this runbook. Do not enable maintenance, create Apple resources or claim an uploaded build merely because source compilation and tests pass. Keep ordinary releases free of signing-resource creation and repair.
 
 1. `CI` validates the actual source, the native core and an unsigned simulator app, plus the offline release contracts and actionlint. PR branches only run CI; there is no preview deployment.
 2. `Release iOS / prepare` requires `getyak/leafhour`, `main`, current tip and successful same-repository push CI. Manual dispatch additionally requires `publish_testflight=true`, the master switch, and the latest exact-SHA CI success. `publish_testflight=false` is a harmless policy check.

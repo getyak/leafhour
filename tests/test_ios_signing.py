@@ -32,6 +32,21 @@ class SigningTest(unittest.TestCase):
             with self.subTest(change=change), self.assertRaises(ValueError):
                 self.validate(Entitlements={**self.profile['Entitlements'], **change})
 
+    def test_listening_extension_requires_its_own_exact_profile(self):
+        child = {**self.profile, 'UUID': '11111111-1111-1111-1111-111111111111',
+                 'Entitlements': {**self.profile['Entitlements'], 'application-identifier': 'OLDPREFIX1.example.verified.listening'}}
+        profiles = {'example.verified': self.profile, 'example.verified.listening': child}
+        result = signing.validate_release_profiles(profiles, {'bundleId': 'example.verified'}, 'EXAMPLETE1', b'synthetic-cert', self.now)
+        self.assertEqual(result, {key: value['UUID'] for key, value in profiles.items()})
+        for bad in [
+            {'example.verified': self.profile},
+            {**profiles, 'example.other': child},
+            {**profiles, 'example.verified.listening': self.profile},
+            {**profiles, 'example.verified.listening': {**child, 'UUID': self.profile['UUID']}},
+        ]:
+            with self.subTest(keys=list(bad)), self.assertRaises(ValueError):
+                signing.validate_release_profiles(bad, {'bundleId': 'example.verified'}, 'EXAMPLETE1', b'synthetic-cert', self.now)
+
 
 if __name__ == '__main__':
     unittest.main()

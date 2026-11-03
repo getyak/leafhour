@@ -127,6 +127,7 @@ final class ReaderInteractionTests: XCTestCase {
         let session = try await session(), engine = ListeningOutputProbe(), audio = SpeechAudioSessionProbe()
         let speech = ReaderSpeech(synthesizer: engine, audioSession: audio)
         speech.speed = 1.25; speech.start(session); engine.output(true)
+        XCTAssertEqual(audio.categoryOptions.first, [], "Long-form listening must own primary playback, not duck/mix with another Now Playing app")
         speech.beginSpeedBoost()
         let pauses = engine.pauses, deactivations = audio.activations.filter { !$0 }.count
         speech.applicationDidBackground()
@@ -650,7 +651,8 @@ private final class SpeechSynthesizerProbe: ReaderSpeechSynthesizing {
 @MainActor
 private final class SpeechAudioSessionProbe: ReaderSpeechAudioSession {
     var activations: [Bool] = []
-    func setCategory(_ category: AVAudioSession.Category, mode: AVAudioSession.Mode, options: AVAudioSession.CategoryOptions) throws { }
+    var categoryOptions: [AVAudioSession.CategoryOptions] = []
+    func setCategory(_ category: AVAudioSession.Category, mode: AVAudioSession.Mode, options: AVAudioSession.CategoryOptions) throws { categoryOptions.append(options) }
     func setActive(_ active: Bool, options: AVAudioSession.SetActiveOptions) throws { activations.append(active) }
 }
 

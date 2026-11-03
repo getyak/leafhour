@@ -23,6 +23,7 @@ struct ReaderNowPlayingSnapshot {
     let artwork: UIImage?
     let canPreviousChapter: Bool
     let canNextChapter: Bool
+    var isPreparing = false
 }
 
 @MainActor protocol ReaderNowPlayingSink: AnyObject {
@@ -30,7 +31,7 @@ struct ReaderNowPlayingSnapshot {
 }
 
 enum ReaderRemoteCommand: CaseIterable, Hashable {
-    case play, pause, previousChapter, nextChapter
+    case play, pause, togglePlayback, stop, previousChapter, nextChapter
 }
 
 @MainActor protocol ReaderRemoteCommandRegistering: AnyObject {
@@ -42,15 +43,20 @@ enum ReaderRemoteCommand: CaseIterable, Hashable {
 /// One owner arbitrates the app-wide system center. Tests supply an isolated
 /// sink and registrar, so exercising ownership never mutates the live session.
 @MainActor final class ReaderNowPlayingCenter {
-    static let shared = ReaderNowPlayingCenter(sink: SystemReaderNowPlayingSink(), commands: SystemReaderRemoteCommands())
+    static let shared = ReaderNowPlayingCenter(sink: SystemReaderNowPlayingSink(), commands: SystemReaderRemoteCommands(),
+        activities: ReaderListeningActivityPublisher(), intentCommands: .shared)
 
     private let sink: any ReaderNowPlayingSink
     private let commands: any ReaderRemoteCommandRegistering
+    private let activities: (any ReaderListeningActivityPublishing)?
+    private let intentCommands: ListeningPlaybackCommandCenter?
     private var owner: UUID?
     private var revokeOwner: (() -> Void)?
 
-    init(sink: any ReaderNowPlayingSink, commands: any ReaderRemoteCommandRegistering) {
+    init(sink: any ReaderNowPlayingSink, commands: any ReaderRemoteCommandRegistering,
+         activities: (any ReaderListeningActivityPublishing)? = nil, intentCommands: ListeningPlaybackCommandCenter? = nil) {
         self.sink = sink; self.commands = commands
+        self.activities = activities; self.intentCommands = intentCommands
     }
 
     fileprivate func isOwner(_ candidate: UUID) -> Bool { owner == candidate }
@@ -58,6 +64,10 @@ enum ReaderRemoteCommand: CaseIterable, Hashable {
     fileprivate func claim(_ candidate: UUID, revoke: @escaping () -> Void) {
         guard owner != candidate else { return }
         let previous = revokeOwner
+        if let owner {
+            activities?.end(sessionID: owner.uuidString)
+            intentCommands?.unbind(sessionID: owner.uuidString)
+        }
         owner = candidate; revokeOwner = revoke
         previous?()
     }
@@ -91,8 +101,18 @@ enum ReaderRemoteCommand: CaseIterable, Hashable {
         sink.nowPlayingInfo = info
         commands.setEnabled(true, for: .play)
         commands.setEnabled(true, for: .pause)
+        commands.setEnabled(true, for: .togglePlayback)
+        commands.setEnabled(true, for: .stop)
         commands.setEnabled(snapshot.canPreviousChapter, for: .previousChapter)
         commands.setEnabled(snapshot.canNextChapter, for: .nextChapter)
+        activities?.publish(sessionID: candidate.uuidString, state: .init(title: snapshot.title, chapter: snapshot.chapterTitle,
+            phase: snapshot.isPlaying ? .playing : snapshot.isPreparing ? .preparing : .paused,
+            speed: ReaderPreferences.normalizedSpeechSpeed(snapshot.playbackRate)))
+    }
+
+    fileprivate func bindIntents(owner: UUID, handler: @escaping (ListeningPlaybackAction) -> Bool) {
+        guard isOwner(owner) else { return }
+        intentCommands?.bind(sessionID: owner.uuidString, completion: { [weak self] in await self?.activities?.flush() }, handler: handler)
     }
 
     fileprivate func register(_ command: ReaderRemoteCommand, handler: @escaping @MainActor () -> MPRemoteCommandHandlerStatus) -> UUID {
@@ -103,6 +123,8 @@ enum ReaderRemoteCommand: CaseIterable, Hashable {
     fileprivate func clear(owner candidate: UUID) {
         guard isOwner(candidate) else { return }
         owner = nil; revokeOwner = nil
+        activities?.end(sessionID: candidate.uuidString)
+        intentCommands?.unbind(sessionID: candidate.uuidString)
         sink.nowPlayingInfo = nil
         for command in ReaderRemoteCommand.allCases { commands.setEnabled(false, for: command) }
     }
@@ -119,15 +141,17 @@ enum ReaderRemoteCommand: CaseIterable, Hashable {
     private let pause: () -> Void
     private let previousChapter: () -> Void
     private let nextChapter: () -> Void
+    private let stop: () -> Void
     private var snapshot: ReaderNowPlayingSnapshot?
     private var registrations: [UUID] = []
     private var revoked = false
 
     init(identity: ReaderNowPlayingIdentity, center: ReaderNowPlayingCenter? = nil,
          play: @escaping () -> Void, pause: @escaping () -> Void,
-         previousChapter: @escaping () -> Void, nextChapter: @escaping () -> Void) {
+         previousChapter: @escaping () -> Void, nextChapter: @escaping () -> Void, stop: @escaping () -> Void = {}) {
         self.identity = identity; self.center = center ?? .shared
         self.play = play; self.pause = pause; self.previousChapter = previousChapter; self.nextChapter = nextChapter
+        self.stop = stop
     }
 
     @discardableResult func publish(_ value: ReaderNowPlayingSnapshot) -> Bool {
@@ -135,6 +159,9 @@ enum ReaderRemoteCommand: CaseIterable, Hashable {
         center.claim(owner) { [weak self] in self?.revoke() }
         snapshot = value
         if registrations.isEmpty {
+            center.bindIntents(owner: owner) { [weak self] action in
+                self?.handle(action == .stop ? .stop : .togglePlayback) == .success
+            }
             registrations = ReaderRemoteCommand.allCases.map { command in
                 center.register(command) { [weak self] in self?.handle(command) ?? .commandFailed }
             }
@@ -165,6 +192,11 @@ enum ReaderRemoteCommand: CaseIterable, Hashable {
         switch command {
         case .play: play()
         case .pause: pause()
+        case .togglePlayback:
+            if snapshot.isPlaying || snapshot.isPreparing { pause() } else { play() }
+        case .stop:
+            stop()
+            clear()
         case .previousChapter:
             guard snapshot.canPreviousChapter else { return .noSuchContent }
             previousChapter()
@@ -224,6 +256,8 @@ enum ReaderRemoteCommand: CaseIterable, Hashable {
         switch command {
         case .play: center.playCommand
         case .pause: center.pauseCommand
+        case .togglePlayback: center.togglePlayPauseCommand
+        case .stop: center.stopCommand
         case .previousChapter: center.previousTrackCommand
         case .nextChapter: center.nextTrackCommand
         }
