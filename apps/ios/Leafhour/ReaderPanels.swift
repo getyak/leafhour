@@ -31,6 +31,7 @@ struct ReaderPanelView: View {
     let cloud: CloudLibraryClient?
     var library: OfflineLibrary? = nil
     var reading: ReaderReadingContent? = nil
+    var visiblePage: ReaderVisiblePage? = nil
     let onJump: (Int, ReadingAnchor?) -> Void
     let onCompanion: () -> Void
     var autoPage: ReaderAutoPageController? = nil
@@ -61,6 +62,8 @@ struct ReaderPanelView: View {
                     }
                 case .share(let quote): ReaderSharePanel(session: session, quote: quote, cloud: cloud)
                 case .translation: ReaderTranslationPanel(session: session, tools: tools, cloud: cloud)
+                case .pageTranslation:
+                    if let reading { ReaderPageTranslationPanel(session: session, reading: reading, cloud: cloud, library: library, page: visiblePage) }
                 case .introduction: ReaderIntroductionPanel(session: session, tools: tools, cloud: cloud)
                 case .conversation: ReaderConversationPanel(session: session, tools: tools, cloud: cloud, library: library)
                 case .bookInformation: ReaderBookInformationPanel(book: session.book)

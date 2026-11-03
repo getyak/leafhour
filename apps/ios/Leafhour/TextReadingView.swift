@@ -18,6 +18,7 @@ struct TextReadingView: UIViewRepresentable {
     var onShare: ((SelectedQuote) -> Void)? = nil
     var onSelectionChange: ((SelectedQuote?, Bool) -> Void)? = nil
     var onPageChange: ((ReaderPagePosition) -> Void)? = nil
+    var onVisiblePage: ((ReaderVisiblePage?) -> Void)? = nil
     var speechHighlight: ReaderSpeechHighlight? = nil
     var followsSpeech = false
     var onReadingPosition: ((ReaderSpeechLocation) -> Void)? = nil
@@ -110,7 +111,7 @@ struct TextReadingView: UIViewRepresentable {
             var anchor = session.currentAnchor
             // UIKit can clamp the scroll offset while changing its container or
             // viewport. Keep those intermediate callbacks out of reading progress.
-            if layoutChanged { coordinator.restoring = true; coordinator.cancelPendingCapture() }
+            if layoutChanged { coordinator.invalidateVisiblePage(); coordinator.restoring = true; coordinator.cancelPendingCapture() }
             if view.textContainerInset != column.insets {
                 view.textContainerInset = column.insets
             }
@@ -150,6 +151,7 @@ struct TextReadingView: UIViewRepresentable {
                 coordinator.cancelPageTransition(.notReady)
             }
             if layoutChanged || navigating || navigationModeChanged || !sameSource || coordinator.signature != signature {
+                coordinator.invalidateVisiblePage()
                 if coordinator.pendingPageTransition == nil { coordinator.pageCurl.cancel(); coordinator.cancelQueuedUserTurns() }
                 if coordinator.pendingPageTransition == nil { coordinator.finishPageRequest(.notReady) }
             }
@@ -269,6 +271,7 @@ struct TextReadingView: UIViewRepresentable {
             }
             coordinator.renderedNavigationMode = preferences.navigationMode
             coordinator.configureNavigation(view)
+            coordinator.reportVisiblePage()
         }
         private var restorationCover = false
         private var deferredContentUpdate = false
@@ -333,6 +336,10 @@ struct TextReadingView: UIViewRepresentable {
         private var pagination: ReaderTextPagination?
         private var paginationKey: String?
         private var lastReportedPage: ReaderPagePosition?
+        private let visiblePageLayout = ReaderVisiblePageLayout()
+        private var visiblePageGeometry: String?
+        private var lastVisiblePage: ReaderVisiblePage?
+        private var visiblePageReportGeneration = 0
         private struct PendingPageTransition {
             let direction: ReaderPageDirection
             let snapshot: UIView?
@@ -392,6 +399,7 @@ struct TextReadingView: UIViewRepresentable {
         }
         func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
             guard !isInvalidated else { return }
+            invalidateVisiblePage()
             cancelPageTransition(.blocked)
             paragraphSelection?.cancel()
             restorationGeneration += 1; restoring = false; pendingTranslatedViewport = nil; cancelPendingCapture()
@@ -399,6 +407,7 @@ struct TextReadingView: UIViewRepresentable {
             parent.onReadingScroll()
         }
         func scrollViewDidScroll(_ scrollView: UIScrollView) {
+            invalidateVisiblePage()
             guard checkpointVisible() else { return }
             schedulePersistence()
             reportPagePosition()
@@ -434,6 +443,60 @@ struct TextReadingView: UIViewRepresentable {
         }
         func capture() {
             if checkpointVisible() { cancelPendingCapture(); persistCheckpoint() }
+            reportVisiblePage()
+        }
+        private func currentVisiblePageGeometry() -> String? {
+            guard !isInvalidated, !restoring, !pageCurl.isActive, pendingPageTransition == nil,
+                  let view, view.window != nil, !view.isDragging, !view.isDecelerating,
+                  view.bounds.width > 0, view.bounds.height > 0, !spans.isEmpty,
+                  indexedSessionID == ObjectIdentifier(parent.session), indexedChapterIndex == parent.session.chapterIndex,
+                  renderedChapterID == parent.session.chapter.id, navigationID == parent.session.navigationID,
+                  renderedSize == view.bounds.size, renderedInsets == view.textContainerInset,
+                  renderedInsets == layout(for: view).insets,
+                  signature == contentSignature(in: view, width: renderedWidth) else { return nil }
+            return "\(signature)-\(view.bounds)-\(view.textContainerInset)-\(parent.pageInsets)-\(parent.session.state.preferences)-\(parent.session.contentRevision)"
+        }
+        func visiblePage() -> ReaderVisiblePage? {
+            guard let geometry = currentVisiblePageGeometry(), let view else { return nil }
+            view.layoutManager.ensureLayout(for: view.textContainer)
+            let viewport = (view as? ReflowTextView)?.visibleReadingRect ?? view.bounds.inset(by: parent.pageInsets)
+            let reading = viewport.offsetBy(dx: -view.textContainerInset.left, dy: -view.textContainerInset.top)
+            guard reading.width > 0, reading.height > 0 else { return nil }
+            let displayed = view.attributedText.string as NSString
+            var ids = Set<String>()
+            for span in spans where ReadingTranslationPlan.isPageText(span.passage, in: parent.session.book) && span.range.length > 0 {
+                guard span.range.location >= 0, NSMaxRange(span.range) <= displayed.length else { return nil }
+                var range = span.range
+                while range.length > 0, let scalar = UnicodeScalar(displayed.character(at: NSMaxRange(range) - 1)), CharacterSet.whitespacesAndNewlines.contains(scalar) { range.length -= 1 }
+                guard range.length > 0 else { continue }
+                let glyphs = view.layoutManager.glyphRange(forCharacterRange: range, actualCharacterRange: nil)
+                var intersects = false
+                view.layoutManager.enumerateEnclosingRects(forGlyphRange: glyphs, withinSelectedGlyphRange: NSRange(location: NSNotFound, length: 0), in: view.textContainer) { rect, _ in
+                    let intersection = rect.intersection(reading)
+                    if !intersection.isNull, intersection.width > 0, intersection.height > 0 { intersects = true }
+                }
+                if intersects { ids.insert(span.passage.id) }
+            }
+            guard !ids.isEmpty else { return nil }
+            if visiblePageGeometry != geometry { visiblePageLayout.invalidate(); visiblePageGeometry = geometry }
+            visiblePageLayout.bind { [weak self] in self?.currentVisiblePageGeometry() == geometry }
+            return ReaderVisiblePage(session: parent.session, chapterID: parent.session.chapter.id,
+                passageIDs: parent.session.chapter.passages.filter { ids.contains($0.id) }.map(\.id), layout: visiblePageLayout)
+        }
+        private func invalidateVisiblePage() {
+            visiblePageLayout.invalidate(); visiblePageGeometry = nil
+            publishVisiblePage(nil)
+        }
+        private func reportVisiblePage() { publishVisiblePage(visiblePage()) }
+        private func publishVisiblePage(_ page: ReaderVisiblePage?) {
+            guard page != lastVisiblePage else { return }
+            lastVisiblePage = page; visiblePageReportGeneration += 1
+            let generation = visiblePageReportGeneration
+            DispatchQueue.main.async { [weak self] in
+                guard let self, !self.isInvalidated, self.visiblePageReportGeneration == generation else { return }
+                guard page?.isCurrent(self.parent.session) != false else { return }
+                self.parent.onVisiblePage?(page)
+            }
         }
         private func renderedImageRect(in span: Span, view: UITextView) -> CGRect? {
             guard span.passage.resourcePath != nil, span.range.length > 0,
@@ -568,6 +631,9 @@ struct TextReadingView: UIViewRepresentable {
             // SwiftUI may be invalidating its graph while native observers are
             // removed. Stop every host callback before any removal can reenter.
             isInvalidated = true; restoring = true
+            visiblePageLayout.invalidate(); visiblePageGeometry = nil
+            let onVisiblePage = parent.onVisiblePage; parent.onVisiblePage = nil
+            DispatchQueue.main.async { onVisiblePage?(nil) }
             parent.onTouchActivity = nil; parent.onSelectionChange = nil
             parent.onPageChange = nil; parent.onReadingPosition = nil; parent.onPageRequestResult = nil
             view?.delegate = nil
@@ -632,6 +698,7 @@ struct TextReadingView: UIViewRepresentable {
             view.setContentOffset(CGPoint(x: offset.x, y: min(max(minimum, offset.y), naturalMaximum + allowance)), animated: false)
         }
         private func reportPagePosition() {
+            reportVisiblePage()
             guard !restoring, let view, parent.session.state.preferences.navigationMode == .paged else { return }
             refreshPagination()
             guard let pagination else { return }
@@ -727,6 +794,7 @@ struct TextReadingView: UIViewRepresentable {
                     self.finishPageRequest(.notReady); return
                 }
                 self.finishPageRequest(.settled(navigationID: self.parent.session.navigationID))
+                self.reportVisiblePage()
                 if !self.queuedPages.isEmpty { self.drainQueuedPage() }
                 else { self.flushDeferredContentIfIdle() }
             }
@@ -884,6 +952,7 @@ struct TextReadingView: UIViewRepresentable {
                 self.configureNavigation(view)
                 self.updateSpeech(view)
                 self.reportReadingPosition(in: view)
+                self.reportVisiblePage()
                 if persistCheckpoint { self.schedulePersistence() }
                 self.flushDeferredContentIfIdle()
             }

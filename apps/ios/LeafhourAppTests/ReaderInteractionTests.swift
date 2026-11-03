@@ -1,5 +1,6 @@
 import XCTest
 import AVFoundation
+import MediaPlayer
 import SwiftUI
 import UIKit
 import LeafhourCore
@@ -51,6 +52,48 @@ final class ReaderInteractionTests: XCTestCase {
         speech.stop()
     }
 
+    func testSeekingAnOriginalFallbackRetainsTheConfiguredTranslationForFollowingParagraphs() async throws {
+        let session = try await session(source: "Missing translation here.\n\nNext source paragraph."), engine = SpeechSynthesizerProbe()
+        var preferences = session.state.preferences; preferences.viewMode = .translation; preferences.translationVariant = .literal
+        session.changePreferences(preferences)
+        let first = session.chapter.passages[0], next = session.chapter.passages[1]
+        session.updateTranslations([next.id: ReadingTranslation(original: next.text, literal: "下一段的直译。")])
+        let speech = ReaderSpeech(synthesizer: engine, audioSession: SpeechAudioSessionProbe())
+        XCTAssertTrue(speech.seek(session, to: .init(chapterID: session.chapter.id, passageID: first.id, layer: "original", snapshot: first.text, utf16Offset: 0)))
+        XCTAssertEqual(speech.layer, "original")
+        XCTAssertEqual(speech.requestedLayer, "literal", "A displayed source fallback must not discard the configured narration layer")
+        speech.move(1)
+        XCTAssertEqual(speech.layer, "literal"); XCTAssertEqual(engine.spoken.last?.speechString, "下一段的直译。")
+        speech.releasePresentation(); _ = await session.flush()
+    }
+
+    func testSeekingAnExplicitOriginalWithARealTranslationKeepsOriginalNarration() async throws {
+        let session = try await session(source: "First source paragraph.\n\nNext source paragraph."), engine = SpeechSynthesizerProbe()
+        var preferences = session.state.preferences; preferences.viewMode = .translation; session.changePreferences(preferences)
+        let first = session.chapter.passages[0], next = session.chapter.passages[1]
+        session.updateTranslations([first.id: ReadingTranslation(original: first.text, literal: "第一段直译。"), next.id: ReadingTranslation(original: next.text, literal: "下一段直译。")])
+        let speech = ReaderSpeech(synthesizer: engine, audioSession: SpeechAudioSessionProbe())
+        XCTAssertTrue(speech.seek(session, to: .init(chapterID: session.chapter.id, passageID: first.id, layer: "original", snapshot: first.text, utf16Offset: 0)))
+        XCTAssertEqual(speech.requestedLayer, "original")
+        speech.move(1)
+        XCTAssertEqual(speech.layer, "original"); XCTAssertEqual(engine.spoken.last?.speechString, "Next source paragraph.")
+        speech.releasePresentation(); _ = await session.flush()
+    }
+
+    func testParallelSeekOfAMissingRowRetainsTheActiveTranslatedNarrationLayer() async throws {
+        let session = try await session(source: "First source paragraph.\n\nMissing translation here.\n\nLast source paragraph."), engine = SpeechSynthesizerProbe()
+        var preferences = session.state.preferences; preferences.viewMode = .parallel; session.changePreferences(preferences)
+        let first = session.chapter.passages[0], missing = session.chapter.passages[1], last = session.chapter.passages[2]
+        session.updateTranslations([first.id: ReadingTranslation(original: first.text, literal: "第一段直译。"), last.id: ReadingTranslation(original: last.text, literal: "最后一段直译。")])
+        let speech = ReaderSpeech(synthesizer: engine, audioSession: SpeechAudioSessionProbe())
+        XCTAssertTrue(speech.seek(session, to: .init(chapterID: session.chapter.id, passageID: first.id, layer: "literal", snapshot: "第一段直译。", utf16Offset: 0)))
+        XCTAssertTrue(speech.seek(session, to: .init(chapterID: session.chapter.id, passageID: missing.id, layer: "original", snapshot: missing.text, utf16Offset: 0)))
+        XCTAssertEqual(speech.requestedLayer, "literal")
+        speech.move(1)
+        XCTAssertEqual(engine.spoken.last?.speechString, "最后一段直译。")
+        speech.releasePresentation(); _ = await session.flush()
+    }
+
     func testTemporarySpeedBoostIsBoundedAndRestoresOnPauseStopAndRelease() async throws {
         let session = try await session(), engine = SpeechSynthesizerProbe()
         let speech = ReaderSpeech(synthesizer: engine, audioSession: SpeechAudioSessionProbe())
@@ -78,6 +121,157 @@ final class ReaderInteractionTests: XCTestCase {
         XCTAssertEqual(speech.speed, 0.5)
         speech.speed = 5
         XCTAssertEqual(speech.speed, 5)
+    }
+
+    func testBackgroundRestoresBoostAndCheckpointsWithoutPausingAuthorizedOutput() async throws {
+        let session = try await session(), engine = ListeningOutputProbe(), audio = SpeechAudioSessionProbe()
+        let speech = ReaderSpeech(synthesizer: engine, audioSession: audio)
+        speech.speed = 1.25; speech.start(session); engine.output(true)
+        speech.beginSpeedBoost()
+        let pauses = engine.pauses, deactivations = audio.activations.filter { !$0 }.count
+        speech.applicationDidBackground()
+        XCTAssertTrue(speech.playing); XCTAssertTrue(speech.isOutputPlaying); XCTAssertFalse(speech.paused)
+        XCTAssertFalse(speech.boosting); XCTAssertEqual(speech.speed, 1.25)
+        XCTAssertEqual(engine.pauses, pauses)
+        XCTAssertEqual(audio.activations.filter { !$0 }.count, deactivations)
+        XCTAssertNotNil(session.state.listeningPosition)
+        speech.releasePresentation(); _ = await session.flush()
+    }
+
+    func testMediaStateWaitsForPCMOutputAndRemotePlayDoesNotTogglePlayingAudio() async throws {
+        let session = try await session(), engine = ListeningOutputProbe()
+        let sink = ListeningMediaSink(), commands = ListeningRemoteCommands()
+        let center = ReaderNowPlayingCenter(sink: sink, commands: commands)
+        let speech = ReaderSpeech(synthesizer: engine, audioSession: SpeechAudioSessionProbe(), nowPlayingCenter: center)
+        speech.start(session)
+        XCTAssertTrue(speech.playing); XCTAssertFalse(speech.isOutputPlaying)
+        XCTAssertEqual(sink.nowPlayingInfo?[MPNowPlayingInfoPropertyPlaybackRate] as? Double, 0)
+        engine.output(true)
+        XCTAssertTrue(speech.isOutputPlaying)
+        XCTAssertEqual(sink.nowPlayingInfo?[MPNowPlayingInfoPropertyPlaybackRate] as? Double, 1)
+        let play = try XCTUnwrap(commands.handlers[.play])
+        XCTAssertEqual(play(), .success)
+        XCTAssertTrue(speech.playing); XCTAssertEqual(engine.pauses, 0)
+        XCTAssertEqual(try XCTUnwrap(commands.handlers[.pause])(), .success)
+        XCTAssertFalse(speech.playing); XCTAssertTrue(speech.paused)
+        XCTAssertEqual(sink.nowPlayingInfo?[MPNowPlayingInfoPropertyPlaybackRate] as? Double, 0)
+        XCTAssertEqual(play(), .success)
+        XCTAssertTrue(speech.playing); XCTAssertEqual(engine.continuations, 1)
+        speech.releasePresentation()
+        XCTAssertNil(sink.nowPlayingInfo)
+        engine.output(true)
+        XCTAssertFalse(speech.isOutputPlaying)
+        XCTAssertNil(sink.nowPlayingInfo, "A late engine callback after teardown cannot restore lock-screen identity")
+        XCTAssertEqual(play(), .commandFailed)
+        _ = await session.flush()
+    }
+
+    func testListeningChapterCommandsSkipImageOnlyChaptersAndNeverBecomeParagraphSteps() async throws {
+        let data = Data(#"{"id":"chapter-controls","title":"Actual Book","author":"Actual Author","kind":"txt","sourceVersion":"v1","originalFilename":"fixture.txt","importedAt":0,"chapters":[{"id":"c1","title":"One","sourcePath":"1","passages":[{"id":"p1","text":"First chapter starts.","heading":false},{"id":"p2","text":"First chapter continues.","heading":false}]},{"id":"c2","title":"Image only","sourcePath":"2","passages":[{"id":"image","text":"","heading":false,"resourcePath":"image.png"}]},{"id":"c3","title":"Three","sourcePath":"3","passages":[{"id":"p3","text":"Third chapter starts.","heading":false},{"id":"p4","text":"Third chapter continues.","heading":false}]}]}"#.utf8)
+        let book = try JSONDecoder().decode(LocalBook.self, from: data), root = FileManager.default.temporaryDirectory
+        let session = ReaderSession(book: book, state: ReaderState(), original: root.appendingPathComponent("chapter-controls.txt"), directory: root, library: SpeechStateStoreProbe())
+        let engine = ListeningOutputProbe(), sink = ListeningMediaSink(), commands = ListeningRemoteCommands()
+        let speech = ReaderSpeech(synthesizer: engine, audioSession: SpeechAudioSessionProbe(), nowPlayingCenter: ReaderNowPlayingCenter(sink: sink, commands: commands))
+        speech.start(session); speech.move(1)
+        XCTAssertFalse(speech.canPreviousChapter); XCTAssertTrue(speech.canNextChapter)
+        XCTAssertEqual(try XCTUnwrap(commands.handlers[.nextChapter])(), .success)
+        XCTAssertEqual(speech.chapterID, "c3"); XCTAssertEqual(speech.passageID, "p3")
+        XCTAssertEqual(engine.spoken.last?.speechString, "Third chapter starts.")
+        XCTAssertTrue(speech.canPreviousChapter); XCTAssertFalse(speech.canNextChapter)
+        XCTAssertEqual(sink.nowPlayingInfo?[MPMediaItemPropertyAlbumTitle] as? String, "Three")
+        speech.move(1); speech.moveChapter(-1)
+        XCTAssertEqual(speech.chapterID, "c1"); XCTAssertEqual(speech.passageID, "p1")
+        XCTAssertEqual(session.chapterIndex, 0, "Listening chapter navigation does not write an invented reading position")
+        speech.releasePresentation(); _ = await session.flush()
+    }
+
+    func testOldReaderTeardownCannotDeactivateAReplacementReadersAudioSession() async throws {
+        let session = try await session(), sink = ListeningMediaSink(), commands = ListeningRemoteCommands()
+        let center = ReaderNowPlayingCenter(sink: sink, commands: commands), audio = SpeechAudioSessionProbe()
+        let firstEngine = ListeningOutputProbe(), secondEngine = ListeningOutputProbe()
+        let first = ReaderSpeech(synthesizer: firstEngine, audioSession: audio, nowPlayingCenter: center)
+        let second = ReaderSpeech(synthesizer: secondEngine, audioSession: audio, nowPlayingCenter: center)
+        first.start(session); second.start(session)
+        XCTAssertEqual(firstEngine.pauses, 1, "A replacement must pause the prior PCM before taking the shared audio session")
+        XCTAssertFalse(first.playing); XCTAssertTrue(first.paused)
+        let deactivations = audio.activations.filter { !$0 }.count
+        first.releasePresentation()
+        XCTAssertEqual(audio.activations.filter { !$0 }.count, deactivations, "A superseded reader releases its own engine without deactivating the current shared audio session")
+        XCTAssertNotNil(sink.nowPlayingInfo)
+        second.releasePresentation(); _ = await session.flush()
+    }
+
+    func testSupersededReadersLateRateUpdateCannotReclaimNewRemoteCommands() async throws {
+        let session = try await session(), sink = ListeningMediaSink(), commands = ListeningRemoteCommands()
+        let center = ReaderNowPlayingCenter(sink: sink, commands: commands), audio = SpeechAudioSessionProbe()
+        let first = ReaderSpeech(synthesizer: ListeningOutputProbe(), audioSession: audio, nowPlayingCenter: center)
+        let second = ReaderSpeech(synthesizer: ListeningOutputProbe(), audioSession: audio, nowPlayingCenter: center)
+        first.start(session); second.start(session)
+        let currentPlay = try XCTUnwrap(commands.handlers[.play])
+        first.speed = 1.5
+        XCTAssertEqual(currentPlay(), .success, "A paused former reader's late state or artwork update cannot reclaim the replacement's media session")
+        XCTAssertTrue(second.playing)
+        first.toggle(session)
+        XCTAssertTrue(first.playing); XCTAssertTrue(second.paused)
+        XCTAssertEqual(sink.nowPlayingInfo?[MPNowPlayingInfoPropertyPlaybackRate] as? Double, 1.5,
+                       "Only explicit resume may take ownership back")
+        first.releasePresentation(); second.releasePresentation(); _ = await session.flush()
+    }
+
+    func testReleasedArtworkCannotPublishWhenItsOldLoadCompletes() async throws {
+        let session = try await session(), loader = SuspendedListeningCoverLoader()
+        let engine = ListeningOutputProbe(), sink = ListeningMediaSink(), commands = ListeningRemoteCommands()
+        let speech = ReaderSpeech(synthesizer: engine, audioSession: SpeechAudioSessionProbe(), nowPlayingCenter: ReaderNowPlayingCenter(sink: sink, commands: commands), coverLoader: loader)
+        let loading = expectation(description: "Isolated cover load starts")
+        loader.started = loading
+        let preparing = Task { await speech.prepareArtwork(session, cloud: nil, library: nil, traits: UITraitCollection(userInterfaceStyle: .light)) }
+        await fulfillment(of: [loading], timeout: 2)
+        speech.start(session); speech.releasePresentation()
+        let cover = UIGraphicsImageRenderer(size: CGSize(width: 4, height: 8)).image { context in
+            UIColor.red.setFill(); context.fill(CGRect(x: 0, y: 0, width: 4, height: 8))
+        }
+        loader.complete(cover); await preparing.value
+        XCTAssertNil(speech.bookCoverImage); XCTAssertNil(speech.lockScreenArtwork)
+        XCTAssertNil(sink.nowPlayingInfo)
+        XCTAssertFalse(speech.playing)
+        _ = await session.flush()
+    }
+
+    func testMicrophoneHandoffPausesAndRevokesRemotePlaybackUntilExplicitContinue() async throws {
+        let session = try await session(), engine = ListeningOutputProbe(), sink = ListeningMediaSink(), commands = ListeningRemoteCommands()
+        let speech = ReaderSpeech(synthesizer: engine, audioSession: SpeechAudioSessionProbe(), nowPlayingCenter: ReaderNowPlayingCenter(sink: sink, commands: commands))
+        speech.start(session); engine.output(true)
+        let play = try XCTUnwrap(commands.handlers[.play])
+        NotificationCenter.default.post(name: .leafhourChatMicrophoneWillStart, object: nil)
+        await Task.yield()
+        XCTAssertTrue(speech.paused); XCTAssertFalse(speech.playing); XCTAssertFalse(speech.isOutputPlaying)
+        XCTAssertNotNil(session.state.listeningPosition)
+        XCTAssertNil(sink.nowPlayingInfo)
+        XCTAssertEqual(play(), .commandFailed, "An old lock-screen play command cannot take audio back from microphone capture")
+        speech.speed = 1.5
+        XCTAssertNil(sink.nowPlayingInfo)
+        speech.toggle(session)
+        XCTAssertTrue(speech.playing)
+        XCTAssertEqual(engine.spoken.count, 2, "After handoff, explicit continue rebuilds the saved passage rather than retaining a microphone-competing PCM engine")
+        speech.releasePresentation(); _ = await session.flush()
+    }
+
+    func testLostAudioRoutePausesWithoutResumingForANewDeviceOrEndedInterruption() async throws {
+        let session = try await session(), engine = ListeningOutputProbe()
+        let speech = ReaderSpeech(synthesizer: engine, audioSession: SpeechAudioSessionProbe())
+        speech.start(session); engine.output(true); speech.beginSpeedBoost()
+        NotificationCenter.default.post(name: AVAudioSession.routeChangeNotification, object: nil,
+            userInfo: [AVAudioSessionRouteChangeReasonKey: AVAudioSession.RouteChangeReason.oldDeviceUnavailable.rawValue])
+        try await Task.sleep(for: .milliseconds(20))
+        XCTAssertFalse(speech.playing); XCTAssertTrue(speech.paused); XCTAssertFalse(speech.boosting)
+        NotificationCenter.default.post(name: AVAudioSession.routeChangeNotification, object: nil,
+            userInfo: [AVAudioSessionRouteChangeReasonKey: AVAudioSession.RouteChangeReason.newDeviceAvailable.rawValue])
+        NotificationCenter.default.post(name: AVAudioSession.interruptionNotification, object: nil,
+            userInfo: [AVAudioSessionInterruptionTypeKey: AVAudioSession.InterruptionType.ended.rawValue,
+                       AVAudioSessionInterruptionOptionKey: AVAudioSession.InterruptionOptions.shouldResume.rawValue])
+        try await Task.sleep(for: .milliseconds(20))
+        XCTAssertFalse(speech.playing); XCTAssertEqual(engine.continuations, 0)
+        speech.releasePresentation(); _ = await session.flush()
     }
 
     private func session(source: String = "A quiet passage to read aloud.", filename: String = "reader.txt") async throws -> ReaderSession {
@@ -412,4 +606,42 @@ private final class SpeechAudioSessionProbe: ReaderSpeechAudioSession {
 
 private actor SpeechStateStoreProbe: ReaderStateStore {
     func saveState(_ state: ReaderState, bookID: String) async throws { }
+}
+
+@MainActor private final class ListeningOutputProbe: ReaderSpeechSynthesizing {
+    weak var delegate: (any AVSpeechSynthesizerDelegate)?
+    var playbackRate: Float = 1
+    var isOutputPlaying = false
+    var onOutputStateChange: (@MainActor (Bool) -> Void)?
+    var spoken: [AVSpeechUtterance] = []
+    var pauses = 0
+    var continuations = 0
+    func output(_ playing: Bool) { isOutputPlaying = playing; onOutputStateChange?(playing) }
+    func speak(_ utterance: AVSpeechUtterance) { spoken.append(utterance); output(false) }
+    func stopSpeaking(at boundary: AVSpeechBoundary) -> Bool { output(false); return true }
+    func pauseSpeaking(at boundary: AVSpeechBoundary) -> Bool { pauses += 1; output(false); return true }
+    func continueSpeaking() -> Bool { continuations += 1; output(true); return true }
+}
+
+@MainActor private final class ListeningMediaSink: ReaderNowPlayingSink {
+    var nowPlayingInfo: [String: Any]?
+}
+
+@MainActor private final class ListeningRemoteCommands: ReaderRemoteCommandRegistering {
+    var handlers: [ReaderRemoteCommand: @MainActor () -> MPRemoteCommandHandlerStatus] = [:]
+    var registrations: [UUID: ReaderRemoteCommand] = [:]
+    func register(_ command: ReaderRemoteCommand, handler: @escaping @MainActor () -> MPRemoteCommandHandlerStatus) -> UUID {
+        let token = UUID(); registrations[token] = command; handlers[command] = handler; return token
+    }
+    func remove(_ token: UUID) { if let command = registrations.removeValue(forKey: token) { handlers[command] = nil } }
+    func setEnabled(_ enabled: Bool, for command: ReaderRemoteCommand) {}
+}
+
+@MainActor private final class SuspendedListeningCoverLoader: ReaderListeningCoverLoading {
+    var pending: CheckedContinuation<UIImage?, Never>?
+    var started: XCTestExpectation?
+    func load(book: LocalBook, original: URL, directory: URL, cloud: CloudLibraryClient?, library: OfflineLibrary?) async -> UIImage? {
+        await withCheckedContinuation { pending = $0; started?.fulfill() }
+    }
+    func complete(_ image: UIImage?) { let continuation = pending; pending = nil; continuation?.resume(returning: image) }
 }
