@@ -23,6 +23,19 @@ def validate_app_icons(app, info):
             raise ValueError('Exported AppIcon PNG is missing or invalid')
 
 
+def validate_embedded_extensions(app, plan):
+    extensions = list((app / 'PlugIns').glob('*.appex'))
+    if len(extensions) != 1 or extensions[0].name != 'ListeningWidget.appex':
+        raise ValueError('Expected exactly the embedded listening widget extension')
+    info = plistlib.loads((extensions[0] / 'Info.plist').read_bytes())
+    for key, value in {'CFBundleIdentifier': plan['bundleId'] + '.listening',
+                       'CFBundleShortVersionString': plan['version'], 'CFBundleVersion': plan['buildNumber']}.items():
+        if info.get(key) != value:
+            raise ValueError('Embedded listening extension differs from plan: ' + key)
+    if info.get('NSExtension', {}).get('NSExtensionPointIdentifier') != 'com.apple.widgetkit-extension':
+        raise ValueError('Embedded listening extension has the wrong extension point')
+
+
 def main():
     ipa, plan_path, team = sys.argv[1:]
     plan = json.loads(Path(plan_path).read_text())
@@ -41,6 +54,7 @@ def main():
             if info.get(key) != value:
                 sys.exit('Exported app differs from plan: ' + key)
         validate_app_icons(app, info)
+        validate_embedded_extensions(app, plan)
         subprocess.run(['codesign','--verify','--deep','--strict',str(app)],check=True,capture_output=True)
         entitlements = subprocess.run(['codesign','-d','--entitlements',':-',str(app)],check=True,capture_output=True).stdout
         entitlements = plistlib.loads(entitlements)

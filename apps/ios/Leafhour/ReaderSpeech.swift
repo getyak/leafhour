@@ -81,6 +81,7 @@ final class ReaderSpeech: NSObject, AVSpeechSynthesizerDelegate {
     @ObservationIgnored private var speedBeforeBoost: Double?
     @ObservationIgnored private var routeChange: NSObjectProtocol?
     @ObservationIgnored private var microphoneStart: NSObjectProtocol?
+    @ObservationIgnored private var clockChange: NSObjectProtocol?
     @ObservationIgnored private let nowPlayingCenter: ReaderNowPlayingCenter?
     @ObservationIgnored private var nowPlaying: ReaderNowPlayingController?
     @ObservationIgnored private let coverLoader: any ReaderListeningCoverLoading
@@ -113,11 +114,17 @@ final class ReaderSpeech: NSObject, AVSpeechSynthesizerDelegate {
             // handoff now, so a deferred pause cannot deactivate its capture.
             MainActor.assumeIsolated { self?.microphoneWillStart() }
         }
+        clockChange = NotificationCenter.default.addObserver(forName: UIApplication.significantTimeChangeNotification, object: nil, queue: .main) { [weak self] _ in
+            // Reproject the system timer from monotonic output time, without a
+            // polling timer or counting a wall-clock adjustment as listening.
+            MainActor.assumeIsolated { self?.refreshNowPlaying() }
+        }
     }
     deinit {
         if let interruption { NotificationCenter.default.removeObserver(interruption) }
         if let routeChange { NotificationCenter.default.removeObserver(routeChange) }
         if let microphoneStart { NotificationCenter.default.removeObserver(microphoneStart) }
+        if let clockChange { NotificationCenter.default.removeObserver(clockChange) }
         artworkTask?.cancel()
         let audio = audioSession, owner = audioOwnershipID
         Task { @MainActor in
@@ -390,7 +397,10 @@ final class ReaderSpeech: NSObject, AVSpeechSynthesizerDelegate {
         }
         do {
             claimAudioSession()
-            try audioSession.setCategory(.playback, mode: .spokenAudio, options: .duckOthers)
+            // Long-form listening owns primary media playback. duckOthers
+            // implicitly enables mixing and makes the app ineligible for the
+            // system's Now Playing presentation (including its native motion).
+            try audioSession.setCategory(.playback, mode: .spokenAudio, options: [])
             try audioSession.setActive(true, options: [])
         } catch { message = "声音暂时无法播放，请检查当前音频设备后重试。"; playing = false; paused = false; nowPlaying?.clear(); nowPlaying = nil; deactivateAudioSession(); return }
         message = nil; text = content.text; passageID = content.passageID
@@ -477,10 +487,11 @@ final class ReaderSpeech: NSObject, AVSpeechSynthesizerDelegate {
               playing || paused, let content else { return }
         let identity = ReaderNowPlayingIdentity(accountID: artworkOwnerID ?? session.book.cloud?.ownerID,
             bookID: session.book.id, sourceVersion: session.book.sourceVersion)
-        let snapshot = ReaderNowPlayingSnapshot(identity: identity, title: session.book.title, author: session.book.author,
+        var snapshot = ReaderNowPlayingSnapshot(identity: identity, title: session.book.title, author: session.book.author,
             chapterTitle: session.book.chapters.first { $0.id == content.chapterID }?.title,
             isPlaying: playing && isOutputPlaying, playbackRate: speed, artwork: lockScreenArtwork,
             canPreviousChapter: canPreviousChapter, canNextChapter: canNextChapter)
+        snapshot.isPreparing = playing && !isOutputPlaying
         if nowPlaying?.identity != identity {
             nowPlaying?.clear()
             let controller = ReaderNowPlayingController(identity: identity, center: center,
@@ -488,7 +499,8 @@ final class ReaderSpeech: NSObject, AVSpeechSynthesizerDelegate {
                     guard let self, !self.playing, let session = self.session, self.presentationSession === session else { return }
                     self.toggle(session)
                 }, pause: { [weak self] in self?.pause() },
-                previousChapter: { [weak self] in self?.moveChapter(-1) }, nextChapter: { [weak self] in self?.moveChapter(1) })
+                previousChapter: { [weak self] in self?.moveChapter(-1) }, nextChapter: { [weak self] in self?.moveChapter(1) },
+                stop: { [weak self] in self?.stop() })
             nowPlaying = controller; controller.publish(snapshot)
         } else {
             nowPlaying?.update(snapshot)

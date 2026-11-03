@@ -44,6 +44,17 @@ def validate_profile(profile, plan, team_id, certificate_der, now=None):
     return uuid
 
 
+def validate_release_profiles(profiles, plan, team_id, certificate_der, now=None):
+    expected = {plan['bundleId'], plan['bundleId'] + '.listening'}
+    if set(profiles) != expected:
+        raise ValueError('Release requires exact main app and listening extension profiles')
+    result = {bundle: validate_profile(profile, {'bundleId': bundle}, team_id, certificate_der, now)
+              for bundle, profile in profiles.items()}
+    if len(set(result.values())) != len(result):
+        raise ValueError('Main app and listening extension require distinct profile UUIDs')
+    return result
+
+
 if __name__ == '__main__':
     try:
         with open(sys.argv[1], 'rb') as file:
@@ -52,6 +63,11 @@ if __name__ == '__main__':
             plan = json.load(file)
         with open(sys.argv[4], 'rb') as file:
             certificate = file.read()
-        print(validate_profile(profile, plan, sys.argv[3], certificate))
+        if len(sys.argv) == 6:
+            with open(sys.argv[5], 'rb') as file:
+                child = plistlib.load(file)
+            print(json.dumps(validate_release_profiles({plan['bundleId']: profile, plan['bundleId'] + '.listening': child}, plan, sys.argv[3], certificate)))
+        else:
+            print(validate_profile(profile, plan, sys.argv[3], certificate))
     except Exception as error:
         sys.exit(str(error))
