@@ -6,6 +6,31 @@ import LeafhourCore
 
 @MainActor
 final class ReaderLayoutTests: XCTestCase {
+    func testCoveredReaderKeepsNativeViewWithoutRebuildingForChatUpdates() async throws {
+        let state = CoveredReaderTestState(), probe = CoveredReaderTestProbe()
+        let host = UIHostingController(rootView: CoveredReaderTestHost(state: state, probe: probe))
+        let window = UIWindow(frame: CGRect(x: 0, y: 0, width: 390, height: 700))
+        window.rootViewController = host; window.makeKeyAndVisible(); host.view.frame = window.bounds
+        defer { window.isHidden = true; window.rootViewController = nil }
+        try await Task.sleep(for: .milliseconds(100)); host.view.layoutIfNeeded()
+        let original = try XCTUnwrap(probe.view)
+        original.selectedRange = NSRange(location: 2, length: 0)
+        state.covered = true
+        try await Task.sleep(for: .milliseconds(80)); host.view.layoutIfNeeded()
+        let coveredUpdates = probe.updates
+        for revision in 1...30 {
+            state.revision = revision
+            await drainMainQueue(); host.view.layoutIfNeeded()
+        }
+        XCTAssertEqual(probe.updates, coveredUpdates, "Stream/status updates must leave the covered native reader alone")
+        XCTAssertTrue(probe.view === original)
+        XCTAssertEqual(original.selectedRange.location, 2)
+        state.covered = false
+        try await Task.sleep(for: .milliseconds(80)); host.view.layoutIfNeeded()
+        XCTAssertEqual(probe.lastRevision, 30, "Returning applies the latest reader state")
+        XCTAssertTrue(probe.view === original, "Returning must retain native layout/scroll state")
+    }
+
     private func session(source: String, imageAlternative: String? = nil) async throws -> ReaderSession {
         let fixture = try await importedSession(source: source, imageAlternative: imageAlternative)
         return fixture.session
@@ -804,4 +829,33 @@ final class ReaderLayoutTests: XCTestCase {
             return []
         }
     }
+}
+
+@MainActor private final class CoveredReaderTestState: ObservableObject {
+    @Published var covered = false
+    @Published var revision = 0
+}
+@MainActor private final class CoveredReaderTestProbe {
+    weak var view: UITextView?
+    var updates = 0
+    var lastRevision = 0
+}
+private struct CoveredReaderTestHost: View {
+    @ObservedObject var state: CoveredReaderTestState
+    let probe: CoveredReaderTestProbe
+    var body: some View {
+        let revision = state.revision
+        ReaderBackgroundSurface(isCovered: state.covered) {
+            CoveredReaderTestView(revision: revision, probe: probe)
+        }.equatable()
+    }
+}
+private struct CoveredReaderTestView: UIViewRepresentable {
+    let revision: Int
+    let probe: CoveredReaderTestProbe
+    func makeUIView(context: Context) -> UITextView {
+        let view = UITextView(); view.text = "A retained reading position."
+        probe.view = view; return view
+    }
+    func updateUIView(_ view: UITextView, context: Context) { probe.updates += 1; probe.lastRevision = revision }
 }

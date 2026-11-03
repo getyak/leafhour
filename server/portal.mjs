@@ -1,3 +1,4 @@
+import {LOCAL_CHAT_ID} from './local-reader-chat.mjs';
 import {gzipSync} from 'node:zlib';
 import {once} from 'node:events';
 import {createReadingWorkspaceService} from './reading-workspace-service.mjs';
@@ -296,7 +297,7 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
     if(ownerScoped&&req.headers['x-reader-owner']&&req.headers['x-reader-owner']!==(user?.id||'guest')){res.setHeader('X-Reader-Session-Changed','1');throw fail('账户已切换，请重新进入书房。原账户草稿仍留在原处。',409);}
     // Large original fallback is authenticated before accepting its JSON body.
     if(p==='/api/library/upload'&&req.method==='POST'&&!user)throw fail('请先进入自己的书房',401);
-    const body=req.method==='POST'?await jsonBody(req,p==='/api/library/upload'?Math.ceil(MAX_FILE_BYTES/3)*4+4096:p==='/api/library/chat'||p.startsWith('/api/library/chat/')||/^\/api\/library\/books\/[^/]+\/chat$/.test(p)?4*1024*1024:p==='/api/library/notebook-workspace/analyze'?32768:p==='/api/library/notebook-workspace/import'?3*1024*1024:p==='/api/library/notebook-workspace'?16384:p.startsWith('/api/people')?1024*1024:p.startsWith('/api/billing/')?4*1024*1024:p==='/api/account/observability/events'?16*1024:p==='/api/account/observability'?1024:p==='/api/account/ui-preferences'?4*1024:['/api/account/reading-preferences','/api/account/preference-memory'].includes(p)?8*1024:p.startsWith('/api/library/daily-reading')||p.startsWith('/api/agent/daily-')?8*1024:p.startsWith('/api/auth/')||p.startsWith('/api/book-gifts/')||p.endsWith('/introduction')?4096:p.startsWith('/api/library/restore/')?2*1024*1024:p==='/api/account/profile'?160*1024:p.endsWith('/audio/import')||p.endsWith('/audio/validate')?32*1024*1024:['/api/library/import','/api/library/validate'].includes(p)?200*1024*1024:29*1024*1024):null;
+    const body=req.method==='POST'?await jsonBody(req,p==='/api/library/upload'?Math.ceil(MAX_FILE_BYTES/3)*4+4096:p==='/api/library/chat'||p.startsWith('/api/library/chat/')||p==='/api/library/local-chat'||p.startsWith('/api/library/local-chat/')||/^\/api\/library\/books\/[^/]+\/chat$/.test(p)?4*1024*1024:p==='/api/library/notebook-workspace/analyze'?32768:p==='/api/library/notebook-workspace/import'?3*1024*1024:p==='/api/library/notebook-workspace'?16384:p.startsWith('/api/people')?1024*1024:p.startsWith('/api/billing/')?4*1024*1024:p==='/api/account/observability/events'?16*1024:p==='/api/account/observability'?1024:p==='/api/account/ui-preferences'?4*1024:['/api/account/reading-preferences','/api/account/preference-memory'].includes(p)?8*1024:p.startsWith('/api/library/daily-reading')||p.startsWith('/api/agent/daily-')?8*1024:p.startsWith('/api/auth/')||p.startsWith('/api/book-gifts/')||p.endsWith('/introduction')?4096:p.startsWith('/api/library/restore/')?2*1024*1024:p==='/api/account/profile'?160*1024:p.endsWith('/audio/import')||p.endsWith('/audio/validate')?32*1024*1024:['/api/library/import','/api/library/validate'].includes(p)?200*1024*1024:29*1024*1024):null;
     if(p==='/api/billing/account'&&user)await creditGate.recover(user);
     if(await billingRoutes.handle({req,res,url,user,body,send}))return true;
     const localAllowed=allowLocal&&['127.0.0.1','::1','::ffff:127.0.0.1'].includes(req.socket.remoteAddress)&&!publicOrigin;
@@ -396,6 +397,34 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
     if(p==='/api/library'&&req.method==='GET'){
       if(url.searchParams.get('view')==='account'){const snapshot=await library.accountShelf(user);send(200,{...snapshot,user:await visibleUser(user)});return true;}
       const view=await shelfView(user,owner=>library.list(owner,{metadataOnly:url.searchParams.get('view')==='books'}));send(200,{books:view.books,user:await visibleUser(user),shelfRevision:view.revision});return true;
+    }
+    if(p==='/api/library/local-chat'||p.startsWith('/api/library/local-chat/')){
+      res.setHeader('Cache-Control','private, no-store');
+      if(!user?.id||user.is_anonymous)throw fail('请先进入自己的书房',401);
+      if(req.method==='POST'&&req.headers['x-reader-owner']!==user.id)throw fail('请重新核对当前书房账户',409);
+      if(p==='/api/library/local-chat'&&req.method==='GET'){send(200,{available:chat.local.available,source:'local-device'});return true;}
+      const status=p.match(/^\/api\/library\/local-chat\/([A-Za-z0-9_-]{1,128})$/);
+      if(status&&req.method==='GET'){send(200,await chat.local.view(user,status[1]));return true;}
+      const tool=p.match(/^\/api\/library\/local-chat\/([A-Za-z0-9_-]{1,128})\/tools\/([A-Za-z0-9_-]{1,128})$/);
+      if(tool&&req.method==='POST'){send(200,await chat.local.submitTool(user,tool[1],tool[2],body));return true;}
+      const cancel=p.match(/^\/api\/library\/local-chat\/([A-Za-z0-9_-]{1,128})\/cancel$/);
+      if(cancel&&req.method==='POST'){const turn=await chat.local.cancel(user,cancel[1]);if(turn.status==='cancelled')await creditGate.cancel(user,'conversation',LOCAL_CHAT_ID,cancel[1]);send(200,turn);return true;}
+      if(p!=='/api/library/local-chat')throw fail('找不到这个本机对话操作',404);
+      if(req.method!=='POST')throw fail('不支持这个请求',405);
+      if(!String(req.headers.accept||'').split(',').some(value=>value.trim()==='application/x-ndjson'))throw fail('本机对话需要流式连接',406);
+      const frame=value=>{
+        if(res.destroyed||res.writableEnded)return;
+        if(!res.headersSent){res.writeHead(200,{'Content-Type':'application/x-ndjson; charset=utf-8','Cache-Control':'private, no-store, no-transform','X-Accel-Buffering':'no'});res.flushHeaders?.();}
+        res.write(JSON.stringify(value)+'\n');
+      };
+      try{
+        const result=await creditGate.run({user,action:'conversation',bookId:LOCAL_CHAT_ID,input:body,execute:input=>chat.local.send(user,input,{onProgress:frame,onToolRequest:frame})});
+        frame({type:'result',turn:result});res.end();
+      }catch(error){
+        if(!res.headersSent)throw error;
+        queueFault(requestState,error);frame({type:'error',status:error.status||500,...(error.billingOperation?{billingOperation:error.billingOperation}:{})});res.end();
+      }
+      return true;
     }
     if(p==='/api/library/chat'||p.startsWith('/api/library/chat/')){
       res.setHeader('Cache-Control','private, no-store');

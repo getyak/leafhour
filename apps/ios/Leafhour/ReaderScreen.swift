@@ -3,6 +3,17 @@ import UIKit
 import LeafhourCore
 
 enum ReaderChrome: Equatable { case asleep, top, progress, tools }
+/// Keep the native book surface alive underneath Chat. Repeated tool/status
+/// changes must not traverse TextKit/PDFKit while that surface is covered.
+/// Cover and uncover both update once, preserving the view and its viewport.
+struct ReaderBackgroundSurface<Content: View>: View, Equatable {
+    let isCovered: Bool
+    private let content: () -> Content
+    init(isCovered: Bool, @ViewBuilder content: @escaping () -> Content) { self.isCovered = isCovered; self.content = content }
+    static func == (lhs: Self, rhs: Self) -> Bool { lhs.isCovered && rhs.isCovered }
+    var body: some View { content() }
+}
+
 private enum ReaderChromeRegion: Hashable { case top, bottom }
 private struct ReaderChromeLayout: Equatable {
     let width: Int
@@ -97,6 +108,34 @@ struct ReaderScreen: View {
         UIEdgeInsets(top: 4, left: 22, bottom: session.state.preferences.alwaysShowReadingProgress ? quietProgressHeight + 8 : 8, right: 22)
     }
     private var presentedReader: some View {
+        ReaderBackgroundSurface(isCovered: panel?.isCompanion == true) { readingSurface }.equatable()
+        .preferredColorScheme(session.state.preferences.colorScheme(following: systemColorScheme))
+        .statusBarHidden(true)
+        .interactiveDismissDisabled(panel?.isCompanion != true && (session.saving || session.saveError != nil))
+        .sheet(item: Binding<ReaderPanel?>(get: {
+            guard let panel, !panel.isCompanion, panel.id != "contents", panel.id != "listening" else { return nil }
+            return panel
+        }, set: { value in
+            if value == nil && (panel?.isCompanion == true || panel?.id == "contents" || panel?.id == "listening") { return }
+            panel = value
+        }), onDismiss: {
+            hasNativeTextSelection = false; session.clearTransientSelection(); selectionDismissalID = UUID(); chrome = .asleep
+            if startAutoPageOnDismiss { startAutoPageOnDismiss = false; beginAutoPaging() }
+        }) { destination in
+            ReaderPanelView(panel: destination, session: session, systemColorScheme: systemColorScheme, speech: speech, tools: tools, cloud: cloud, library: library, reading: reading,
+                onJump: { index, anchor in speech.userNavigated(); session.go(to: index, anchor: anchor); panel = nil; session.setReadingVisible(scenePhase == .active && !speech.playing); session.recordReadingInteraction() }, onCompanion: { showCompanion(currentQuote) },
+                autoPage: autoPage, onAutoPageStart: startAutoPaging, onPresent: present)
+                .modifier(ReaderPanelPresentation(isCompanion: destination.isCompanion, isNoteEditor: destination.isNoteEditor, startsExpanded: destination.id == "time"))
+        }
+        .alert(session.saveError == nil ? "阅读提示" : "阅读记录", isPresented: Binding(get: { session.message != nil || (session.noteEditorID == nil && session.saveMessage != nil) }, set: { if !$0 { session.message = nil; session.saveMessage = nil } })) {
+            if session.saveError != nil {
+                Button("重试保存") { session.message = nil; session.saveMessage = nil; session.save() }
+            } else {
+                Button("知道了") { session.message = nil; session.saveMessage = nil }
+            }
+        } message: { Text(session.message ?? session.saveMessage ?? "") }
+    }
+    private var readingSurface: some View {
         GeometryReader { geometry in
             let layout = ReaderChromeLayout(width: Int(geometry.size.width.rounded()), height: Int(geometry.size.height.rounded()),
                                             typeSize: dynamicTypeSize, bookID: session.book.id)
@@ -200,31 +239,6 @@ struct ReaderScreen: View {
             }
             .onPreferenceChange(ReaderChromeHeightKey.self) { recordChrome($0, for: layout) }
         }
-        .preferredColorScheme(session.state.preferences.colorScheme(following: systemColorScheme))
-        .statusBarHidden(true)
-        .interactiveDismissDisabled(panel?.isCompanion != true && (session.saving || session.saveError != nil))
-        .sheet(item: Binding<ReaderPanel?>(get: {
-            guard let panel, !panel.isCompanion, panel.id != "contents", panel.id != "listening" else { return nil }
-            return panel
-        }, set: { value in
-            if value == nil && (panel?.isCompanion == true || panel?.id == "contents" || panel?.id == "listening") { return }
-            panel = value
-        }), onDismiss: {
-            hasNativeTextSelection = false; session.clearTransientSelection(); selectionDismissalID = UUID(); chrome = .asleep
-            if startAutoPageOnDismiss { startAutoPageOnDismiss = false; beginAutoPaging() }
-        }) { destination in
-            ReaderPanelView(panel: destination, session: session, systemColorScheme: systemColorScheme, speech: speech, tools: tools, cloud: cloud, library: library, reading: reading,
-                onJump: { index, anchor in speech.userNavigated(); session.go(to: index, anchor: anchor); panel = nil; session.setReadingVisible(scenePhase == .active && !speech.playing); session.recordReadingInteraction() }, onCompanion: { showCompanion(currentQuote) },
-                autoPage: autoPage, onAutoPageStart: startAutoPaging, onPresent: present)
-                .modifier(ReaderPanelPresentation(isCompanion: destination.isCompanion, isNoteEditor: destination.isNoteEditor, startsExpanded: destination.id == "time"))
-        }
-        .alert(session.saveError == nil ? "阅读提示" : "阅读记录", isPresented: Binding(get: { session.message != nil || (session.noteEditorID == nil && session.saveMessage != nil) }, set: { if !$0 { session.message = nil; session.saveMessage = nil } })) {
-            if session.saveError != nil {
-                Button("重试保存") { session.message = nil; session.saveMessage = nil; session.save() }
-            } else {
-                Button("知道了") { session.message = nil; session.saveMessage = nil }
-            }
-        } message: { Text(session.message ?? session.saveMessage ?? "") }
     }
     private var readingRefreshKey: String {
         let visible = scenePhase == .active && panel?.isCompanion != true

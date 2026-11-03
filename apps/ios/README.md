@@ -93,6 +93,14 @@ The [2026-10-30 design](../../docs/superpowers/specs/2026-10-30-ios-quiet-shelf-
 
 See [GET-357 reading style, settings, Chat and sharing verification](../../docs/verification/2026-11-01-get-357-ios-style-chat.md) for the current changes, simulator screens and delivery evidence.
 
+## Local-book conversations
+
+A book imported into the current device/account library can use AI without uploading its original or creating a cloud-library entry. Sign-in connects the existing model service independently of book synchronization. The official DSH runtime requests read-only context, outline, chapter pages and search from the iOS device; each result is bound to the current account, frozen book version and request. Private notes, arbitrary paths and other books are unavailable in this scope. Requested excerpts reach the model service; “local book” does not mean offline model inference. Image-only pages require extracted text first.
+
+Send publishes an immutable outgoing message before session/billing round trips, then streams provisional answer text. A completed receipt remains distinct from partial output. Unknown outcomes retain the exact request and billing key for recovery; original messages and local drafts are preserved separately. Shared tool receipts support reconnecting to a live run across hosted processes. An expired/killed runtime becomes interrupted rather than silently creating another paid generation.
+
+The conversation uses a compact assistant text style with Dynamic Type, one sent quote and one response status. Returning keeps the underlying native reader and selection; Markdown and immutable book-index caches avoid repeated parsing during layout and local state saving. Durable reading records still flush before returning to the shelf.
+
 ## Conversational context and voice
 
 Ordinary chat uses the configured model's known context/output capacities, with summaries of older context when needed to fit the model window. Original messages remain in owner-scoped active storage and immutable history receipts; the active storage page size is not a conversation retention or model-context limit. Ordinary chat has no product turn-count, daily-conversation, tool-call or 2,000-character message cap. Provider capacity, authenticated source permissions, request transport sizes, cancellation and hosting deadlines still apply. Specialized translation and automatic-companion policies remain separate. See [conversation scope](../../docs/reading-chat-scope.md).

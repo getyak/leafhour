@@ -269,6 +269,64 @@ public actor CloudLibraryClient {
         await progress(.processing)
         return try CloudJSON.decode(await data(path: "/api/library/upload/complete", method: "POST", body: CloudJSON.encode(["id": .string(id), "duplicatePolicy": .string(duplicatePolicy.rawValue), "operationId": .string(operationID.uuidString.lowercased()), "receiptOnly": .bool(true)]), ownerID: ownerID))
     }
+    /// Streams only public answer text and typed tool requests; account fencing is checked at every suspension.
+    public func streamChat(path: String, body: Data, ownerID: String,
+                           onEvent: @escaping @Sendable (CloudJSON) async throws -> Void) async throws -> CloudJSON {
+        guard path.hasPrefix("/api/library/"), !path.hasPrefix("//"),
+              let url = URL(string: path, relativeTo: baseURL)?.absoluteURL,
+              url.host == baseURL.host, url.scheme == baseURL.scheme,
+              url.scheme == "https" || ["localhost", "127.0.0.1", "::1"].contains(url.host ?? ""),
+              credential?.account.id == ownerID else { throw Self.changed() }
+        let marker = generation
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"; request.httpBody = body; request.timeoutInterval = 300
+        request.setValue("application/x-ndjson", forHTTPHeaderField: "Accept")
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue(baseURL.absoluteString.trimmingCharacters(in: CharacterSet(charactersIn: "/")), forHTTPHeaderField: "Origin")
+        request.setValue(ownerID, forHTTPHeaderField: "X-Reader-Owner")
+        request.setValue("marginalia_session=" + (credential?.token ?? ""), forHTTPHeaderField: "Cookie")
+        let (bytes, response) = try await session.bytes(for: request)
+        guard marker == generation, credential?.account.id == ownerID else { throw Self.changed() }
+        guard let response = response as? HTTPURLResponse else { throw CloudRequestError(status: 502, message: "陪读暂时没有回应。") }
+        let streaming = response.value(forHTTPHeaderField: "Content-Type")?.contains("application/x-ndjson") == true
+        if !(200..<300).contains(response.statusCode) || !streaming {
+            var data = Data()
+            for try await byte in bytes {
+                guard marker == generation, credential?.account.id == ownerID else { throw Self.changed() }
+                guard data.count < 16 * 1024 * 1024 else { throw LibraryError.invalid("回答数据过大，请重试查看结果。") }
+                data.append(byte)
+            }
+            let value = try CloudJSON.decode(data)
+            guard (200..<300).contains(response.statusCode) else {
+                throw CloudRequestError(status: response.statusCode, message: value["error"].string ?? "暂时无法完成回答。", billingOperationStatus: value["billingOperation"]["status"].string)
+            }
+            return value
+        }
+        var decoder = ChatStreamDecoder(), line = Data(), result: CloudJSON?
+        func consume(_ event: CloudJSON) async throws {
+            guard marker == generation, credential?.account.id == ownerID else { throw Self.changed() }
+            if event["type"].string == "error" {
+                throw CloudRequestError(status: Int(event["status"].number ?? 500), message: event["error"].string ?? "回答中断，可重试查看结果。", billingOperationStatus: event["billingOperation"]["status"].string)
+            }
+            if event["type"].string == "result" { result = event["turn"] }
+            try await onEvent(event)
+            guard marker == generation, credential?.account.id == ownerID else { throw Self.changed() }
+        }
+        for try await byte in bytes {
+            try Task.checkCancellation()
+            guard marker == generation, credential?.account.id == ownerID else { throw Self.changed() }
+            line.append(byte)
+            guard line.count <= 16 * 1024 * 1024 else { throw LibraryError.invalid("回答片段过大，请重试查看结果。") }
+            if byte == 10 {
+                for event in try decoder.append(line) { try await consume(event) }
+                line.removeAll(keepingCapacity: true)
+            }
+        }
+        for event in try decoder.append(line) + decoder.finish() { try await consume(event) }
+        guard let result else { throw CloudRequestError(status: 502, message: "连接已中断，消息已保留，可重试查看结果。") }
+        return result
+    }
+
     private func perform(path: String, method: String, body: Data?, ownerID: String?, timeout: TimeInterval = 45) async throws -> (Data, HTTPURLResponse) {
         guard path.hasPrefix("/api/"), !path.hasPrefix("//"), let url = URL(string: path, relativeTo: baseURL)?.absoluteURL,
               url.host == baseURL.host, url.scheme == baseURL.scheme,

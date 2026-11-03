@@ -51,6 +51,129 @@ final class ReaderToolsTests: XCTestCase {
         ReaderToolsURLProtocol.install(nil)
         super.tearDown()
     }
+    func testLocalStreamReadsPinnedContextAfterReopeningOnAnotherPage() async throws {
+        let fixture = try await fixture(source: "First paragraph.\n\nSecond paragraph.", cloudBook: false, persistCloud: true)
+        let probe = ReaderToolsProbe(), initial = ReaderCloudTools()
+        let first = fixture.session.chapter.passages[0], second = fixture.session.chapter.passages[1]
+        var sawLocalTool = false
+        probe.respond = { [self] request, body in
+            if request.url!.path == "/api/auth/session" { return (200, metadata(enabled: false)) }
+            if request.url!.path == "/api/library/local-chat" { return (200, ["available": true]) }
+            if request.url!.path.contains("/tools/") {
+                let result = try XCTUnwrap(body["result"] as? [String: Any])
+                let passages = try XCTUnwrap(result["passages"] as? [[String: Any]])
+                XCTAssertEqual(passages.first?["passageId"] as? String, first.id, "The tool must read the frozen conversation context, not the later visible page")
+                sawLocalTool = true
+                return (200, ["accepted": true])
+            }
+            XCTFail("Unexpected route " + request.url!.path); return (500, [:])
+        }
+        probe.frames = { request in
+            guard request.httpMethod == "POST", request.url!.path == "/api/library/local-chat" else { return nil }
+            let input = probe.posts(to: "/api/library/local-chat").last!.json, id = input["id"] as! String
+            return [
+                .object(["type": .string("tool_request"), "id": .string(id), "callId": .string("call-one"), "name": .string("reader_get_context"), "args": .object([:]), "bookId": .string(fixture.session.book.id), "contentVersion": .string(fixture.session.book.sourceVersion)]),
+                .object(["type": .string("progress"), "id": .string(id), "sequence": .number(1), "text": .string("A partial answer")]),
+                .object(["type": .string("result"), "turn": .object(["id": .string(id), "text": .string("A pinned question"), "status": .string("completed"), "answer": .object(["summary": .string("A complete answer")])])])
+            ]
+        }
+        ReaderToolsURLProtocol.install(probe)
+        initial.configure(library: fixture.library, localBookID: fixture.session.book.id)
+        await initial.loadConversation(fixture.session, cloud: fixture.cloud)
+        initial.question = "A pinned question"
+        let saved = await initial.flushConversationDraft(); XCTAssertTrue(saved)
+        fixture.session.moved(ReadingAnchor(chapterID: fixture.session.chapter.id, passageID: second.id))
+        let restored = ReaderCloudTools(); restored.configure(library: fixture.library, localBookID: fixture.session.book.id)
+        await restored.loadConversation(fixture.session, cloud: fixture.cloud)
+        XCTAssertEqual(restored.chatContext?.passageID, first.id)
+        await restored.prepare("conversation", session: fixture.session, cloud: fixture.cloud)
+        XCTAssertTrue(sawLocalTool)
+        XCTAssertEqual(restored.turns.last?.answer, "A complete answer")
+        XCTAssertTrue(restored.responseText.isEmpty)
+    }
+    func testConversationPublishesOutgoingMessageBeforeSessionRequest() async throws {
+        let fixture = try await fixture(), tools = ReaderCloudTools(), probe = ReaderToolsProbe()
+        tools.question = "Explain this now"
+        var sawImmediateMessage = false
+        probe.respond = { [self] request, body in
+            if request.url!.path == "/api/auth/session" {
+                sawImmediateMessage = tools.turns.last?.question == "Explain this now" && tools.question.isEmpty && tools.loading
+                XCTAssertTrue(sawImmediateMessage, "Send must publish before authentication or billing round trips")
+                tools.question = "A later draft"
+                return (200, metadata(enabled: false))
+            }
+            let input = body
+            return (200, ["id": input["id"]!, "text": input["text"]!, "status": "completed", "answer": ["summary": "An answer"]])
+        }
+        ReaderToolsURLProtocol.install(probe)
+        await tools.prepare("conversation", session: fixture.session, cloud: fixture.cloud)
+        XCTAssertTrue(sawImmediateMessage)
+        XCTAssertEqual(tools.question, "A later draft")
+        XCTAssertEqual(tools.turns.count, 1)
+        XCTAssertEqual(tools.turns.last?.answer, "An answer")
+    }
+    func testSameTextTypedAfterSendSurvivesEarlierReply() async throws {
+        let fixture = try await fixture(), tools = ReaderCloudTools(), probe = ReaderToolsProbe()
+        tools.question = "Explain this now"
+        var sawImmediateMessage = false
+        probe.respond = { [self] request, body in
+            if request.url!.path == "/api/auth/session" {
+                sawImmediateMessage = tools.turns.last?.question == "Explain this now" && tools.question.isEmpty && tools.loading
+                XCTAssertTrue(sawImmediateMessage, "Send must publish before authentication or billing round trips")
+                tools.question = "Explain this now"
+                return (200, metadata(enabled: false))
+            }
+            let input = body
+            return (200, ["id": input["id"]!, "text": input["text"]!, "status": "completed", "answer": ["summary": "An answer"]])
+        }
+        ReaderToolsURLProtocol.install(probe)
+        await tools.prepare("conversation", session: fixture.session, cloud: fixture.cloud)
+        XCTAssertTrue(sawImmediateMessage)
+        XCTAssertEqual(tools.question, "Explain this now")
+        XCTAssertEqual(tools.turns.count, 1)
+        XCTAssertEqual(tools.turns.last?.answer, "An answer")
+    }
+    func testPreflightFailureRestoresRecordedVoice() async throws {
+        let fixture = try await fixture(persistCloud: true), tools = ReaderCloudTools(), probe = ReaderToolsProbe()
+        await tools.restoreConversationDraft(identity: ReaderCloudTools.libraryChatIdentity(ownerID: owner), library: fixture.library)
+        let source = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString + ".caf")
+        try Data("synthetic voice original".utf8).write(to: source)
+        try await tools.attachVoice(ChatRecordedVoice(id: UUID(), url: source, durationMs: 1200, transcript: "Preserve this voice"))
+        let receipt = try XCTUnwrap(tools.pendingVoice)
+        probe.respond = { request, _ in
+            XCTAssertTrue(request.url!.path.hasSuffix("/start")); return (200, [:])
+        }
+        ReaderToolsURLProtocol.install(probe)
+        await tools.prepareLibraryConversation(ownerID: owner, cloud: fixture.cloud)
+        XCTAssertEqual(tools.pendingVoice, receipt, "A preflight rejection must restore the playable recording")
+        XCTAssertEqual(tools.question, "Preserve this voice")
+        XCTAssertNotNil(tools.error)
+    }
+    func testLocalBookConversationDoesNotUploadBook() async throws {
+        let fixture = try await fixture(cloudBook: false, persistCloud: true), tools = ReaderCloudTools(), probe = ReaderToolsProbe()
+        probe.respond = { [self] request, body in
+            switch request.url!.path {
+            case "/api/auth/session": return (200, metadata(enabled: false))
+            case "/api/library/local-chat" where request.httpMethod == "GET": return (200, ["available": true])
+            case "/api/library/local-chat":
+                let input = body
+                let local = try XCTUnwrap(input["localBook"] as? [String: Any])
+                XCTAssertEqual(local["bookId"] as? String, fixture.session.book.id)
+                XCTAssertEqual(local["contentVersion"] as? String, fixture.session.book.sourceVersion)
+                XCTAssertEqual(input["text"] as? String, "Read my local book")
+                return (200, ["id": input["id"]!, "text": input["text"]!, "status": "completed", "answer": ["summary": "Local answer"]])
+            default: XCTFail("Local chat must not upload or require a cloud book: " + request.url!.path); return (500, [:])
+            }
+        }
+        ReaderToolsURLProtocol.install(probe)
+        tools.configure(library: fixture.library, localBookID: fixture.session.book.id)
+        await tools.loadConversation(fixture.session, cloud: fixture.cloud)
+        XCTAssertTrue(tools.conversationAvailable)
+        tools.question = "Read my local book"
+        await tools.prepare("conversation", session: fixture.session, cloud: fixture.cloud)
+        XCTAssertEqual(tools.turns.last?.answer, "Local answer")
+        XCTAssertNil(fixture.session.book.cloud)
+    }
     func testOpeningToolsKeepsPauseReachableAndManualPauseSurvivesClosingTools() async throws {
         let fixture = try await fixture(cloudBook: false)
         let session = fixture.session
@@ -443,7 +566,8 @@ final class ReaderToolsTests: XCTestCase {
         await tools.prepare("conversation", session: fixture.session, cloud: fixture.cloud)
         XCTAssertNil(tools.consent)
         XCTAssertEqual(probe.requests.count, before)
-        XCTAssertEqual(tools.question, "Keep the original request.")
+        XCTAssertTrue(tools.question.isEmpty)
+        XCTAssertEqual(tools.turns.last?.question, "Keep the original request.")
         await tools.perform(retry, cloud: fixture.cloud)
         let posts = probe.posts(to: "/api/library/books/cloud-book/chat")
         XCTAssertEqual(posts.count, 2)
@@ -553,7 +677,8 @@ final class ReaderToolsTests: XCTestCase {
         let saved = await tools.flushConversationDraft(); XCTAssertTrue(saved)
         let restored = ReaderCloudTools()
         await restored.restoreConversationDraft(identity: identity, library: library)
-        XCTAssertEqual(restored.question, "Keep this draft after relaunch")
+        XCTAssertTrue(restored.question.isEmpty)
+        XCTAssertEqual(restored.turns.last?.question, "Keep this draft after relaunch")
         let retry = try XCTUnwrap(restored.retry)
         XCTAssertEqual(retry.id, intent.id); XCTAssertEqual(retry.body, intent.body)
         let completed = ReaderToolsProbe(); completed.respond = { _, body in
@@ -729,7 +854,8 @@ final class ReaderToolsTests: XCTestCase {
         let flushed = await tools.flushConversationDraft(); XCTAssertTrue(flushed)
         let restored = ReaderCloudTools()
         await restored.restoreConversationDraft(identity: identity, library: library)
-        XCTAssertEqual(restored.question, "No book is needed for this question")
+        XCTAssertTrue(restored.question.isEmpty)
+        XCTAssertEqual(restored.turns.last?.question, "No book is needed for this question")
         XCTAssertEqual(restored.retry?.id, intent.id); XCTAssertEqual(restored.retry?.body, intent.body)
         XCTAssertNil(restored.chatContext)
         let bookDraft = try await library.conversationDraft(bookID: "cloud-book", ownerID: owner)
@@ -785,7 +911,8 @@ final class ReaderToolsTests: XCTestCase {
         let original = try XCTUnwrap(probe.posts(to: "/api/library/books/cloud-book/chat").first)
         XCTAssertEqual(retry.id, original.json["id"] as? String)
         XCTAssertEqual(retry.body, original.data)
-        XCTAssertEqual(tools.question, "Keep one paid request.")
+        XCTAssertTrue(tools.question.isEmpty)
+        XCTAssertEqual(tools.turns.last?.question, "Keep one paid request.")
         await tools.perform(retry, cloud: fixture.cloud)
         let posts = probe.posts(to: "/api/library/books/cloud-book/chat")
         XCTAssertEqual(posts.count, 2)
@@ -839,6 +966,7 @@ final class ReaderToolsTests: XCTestCase {
 
 private final class ReaderToolsProbe: @unchecked Sendable {
     var respond: ((URLRequest, [String: Any]) throws -> (Int, [String: Any]))?
+    var frames: ((URLRequest) -> [CloudJSON]?)?
     private let lock = NSLock()
     struct Submission {
         let request: URLRequest
@@ -880,9 +1008,12 @@ private final class ReaderToolsURLProtocol: URLProtocol, @unchecked Sendable {
         Self.lock.lock(); let probe = Self.probe; Self.lock.unlock()
         do {
             let (status, value) = try XCTUnwrap(probe).response(request)
-            let response = try XCTUnwrap(HTTPURLResponse(url: request.url!, statusCode: status, httpVersion: nil, headerFields: ["Content-Type": "application/json"]))
+            let frames = probe?.frames?(request)
+            let response = try XCTUnwrap(HTTPURLResponse(url: request.url!, statusCode: status, httpVersion: nil, headerFields: ["Content-Type": frames == nil ? "application/json" : "application/x-ndjson"]))
             client?.urlProtocol(self, didReceive: response, cacheStoragePolicy: .notAllowed)
-            client?.urlProtocol(self, didLoad: try JSONSerialization.data(withJSONObject: value))
+            if let frames {
+                for frame in frames { var line = try JSONEncoder().encode(frame); line.append(10); client?.urlProtocol(self, didLoad: line) }
+            } else { client?.urlProtocol(self, didLoad: try JSONSerialization.data(withJSONObject: value)) }
             client?.urlProtocolDidFinishLoading(self)
         } catch { client?.urlProtocol(self, didFailWithError: error) }
     }

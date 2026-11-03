@@ -241,19 +241,26 @@ public actor OfflineLibrary {
         return try folders.map { folder in
             let id = folder.lastPathComponent
             try Disk.validID(id)
-            let file = folder.appendingPathComponent("book.json"), attributes = try? Disk.fm.attributesOfItem(atPath: file.path)
-            let size = (attributes?[.size] as? NSNumber)?.int64Value
-            let modified = attributes?[.modificationDate] as? Date
-            let number = (attributes?[.systemFileNumber] as? NSNumber)?.uint64Value
-            if let size, let modified, let number, let cached = listedIndexes[id], cached.size == size, cached.modified == modified, cached.fileNumber == number { return cached.book }
-            listedIndexes[id] = nil
-            if let book = try? Disk.read(LocalBook.self, from: file), book.id == id {
-                if let size, let modified, let number { listedIndexes[id] = ListedIndexCache(size: size, modified: modified, fileNumber: number, book: book) }
-                return book
-            }
+            if let book = try? indexedBook(id, at: folder) { return book }
             let kind = [BookKind.epub, .pdf, .txt, .markdown].first { Disk.fm.fileExists(atPath: folder.appendingPathComponent("source." + $0.rawValue).path) } ?? .unknown
             return LocalBook(id: id, title: "待修复的书籍", author: "", kind: kind, sourceVersion: "sha256-" + id, originalFilename: "Recovered." + kind.rawValue, importedAt: .distantPast, chapters: [])
         }.sorted { $0.importedAt > $1.importedAt }
+    }
+
+    /// Decode an unchanged index once for listing and frequent durable state
+    /// saves. Opening/verify still perform their existing full integrity checks.
+    private func indexedBook(_ id: String, at folder: URL) throws -> LocalBook {
+        let file = folder.appendingPathComponent("book.json"), attributes = try? Disk.fm.attributesOfItem(atPath: file.path)
+        let size = (attributes?[.size] as? NSNumber)?.int64Value
+        let modified = attributes?[.modificationDate] as? Date
+        let number = (attributes?[.systemFileNumber] as? NSNumber)?.uint64Value
+        if let size, let modified, let number, let cached = listedIndexes[id], cached.size == size, cached.modified == modified, cached.fileNumber == number { return cached.book }
+        // A damaged/replaced index must never revive an older cached anchor.
+        listedIndexes[id] = nil
+        let book = try Disk.read(LocalBook.self, from: file)
+        guard book.id == id else { throw LibraryError.invalid("书籍索引与当前书房不匹配，未覆盖已有记录。") }
+        if let size, let modified, let number { listedIndexes[id] = ListedIndexCache(size: size, modified: modified, fileNumber: number, book: book) }
+        return book
     }
 
     @discardableResult public func verify(_ id: String) throws -> Bool { _ = try book(id); return true }
@@ -292,7 +299,7 @@ public actor OfflineLibrary {
         let directory = try bookDirectory(bookID)
         // Content was verified on open; avoid rehashing a 150 MB book on every keystroke.
         guard Disk.fm.fileExists(atPath: directory.appendingPathComponent("manifest.json").path) else { throw LibraryError.invalid("此书不属于当前书房。") }
-        let book = try Disk.read(LocalBook.self, from: directory.appendingPathComponent("book.json"))
+        let book = try indexedBook(bookID, at: directory)
         func validate(_ anchor: ReadingAnchor) throws {
             guard let chapter = book.chapters.first(where: { $0.id == anchor.chapterID }), let passage = chapter.passages.first(where: { $0.id == anchor.passageID }), anchor.characterOffset >= 0, anchor.characterOffset <= passage.text.unicodeScalars.count, anchor.pageY?.isFinite != false else { throw LibraryError.invalid("引用与当前原文版本不匹配，未覆盖已有记录。") }
             if let y = anchor.resourceY {
