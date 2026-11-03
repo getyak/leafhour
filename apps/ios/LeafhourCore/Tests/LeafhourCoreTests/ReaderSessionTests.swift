@@ -3,6 +3,22 @@ import Observation
 @testable import LeafhourCore
 
 final class ReaderSessionTests: XCTestCase {
+    @MainActor func testIntegrityFailureCancelsQueuedWritesAndRetainsTheirWorkForRecovery() async throws {
+        let fixture = try await fixture(), first = expectation(description: "Earlier state write suspended")
+        let store = GatedStateStore(library: fixture.library, starts: [first])
+        let session = fixture.session(state: fixture.state, store: store)
+        session.state.notes.append(ReaderNote(anchor: fixture.quote.anchor, quote: fixture.quote.text, body: "Earlier work"))
+        session.save(); await fulfillment(of: [first], timeout: 3)
+        session.state.notes.append(ReaderNote(anchor: fixture.quote.anchor, quote: fixture.quote.text, body: "Queued new work"))
+        session.save(); session.failPackageVerification("Synthetic integrity failure")
+        await store.release(1)
+        try await Task.sleep(for: .milliseconds(80))
+        let saved = try await fixture.library.state(fixture.book.id)
+        XCTAssertEqual(saved.notes.map(\.body), ["Earlier work"], "No queued state write may start after the session freezes")
+        XCTAssertEqual(session.openingRecoverySnapshot.notes.map(\.body), ["Earlier work", "Queued new work"])
+        let receipt = await session.flush()
+        XCTAssertFalse(receipt.succeeded)
+    }
     @MainActor func testFirstVisibleChapterStartsTimeEvenBeforeTheViewportSuppliesAnAnchor() async throws {
         let fixture = try await fixture(), session = fixture.session(state: fixture.state, store: fixture.library)
         session.setReadingVisible(true); session.state.anchor = nil

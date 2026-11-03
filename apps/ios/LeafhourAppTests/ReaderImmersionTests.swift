@@ -39,6 +39,34 @@ import LeafhourCore
         XCTAssertEqual(font?.pointSize, ReaderTypography.font(style: .sans, size: 28, traits: UITraitCollection(preferredContentSizeCategory: .large)).pointSize)
     }
 
+    func testOnlyAnExplicitLocateDismissalClearsNativeListeningSelection() async throws {
+        let source = "A quiet 🙂 sentence remains selectable."
+        let selected = (source as NSString).range(of: "quiet 🙂")
+        let dismissal = UUID()
+        var changes: [Bool] = []
+        let initial = ReaderListeningText(text: source, preferences: ReaderPreferences(), selectionDismissalID: dismissal, onSelection: { changes.append($0) })
+        let coordinator = ReaderListeningText.Coordinator(initial), view = UITextView()
+        view.isEditable = false; view.delegate = coordinator
+        coordinator.update(view, category: .large)
+        view.selectedRange = selected
+        coordinator.parent = ReaderListeningText(text: source, preferences: ReaderPreferences(), wordRange: NSRange(location: 0, length: 1), active: true,
+            follows: true, followRevision: UUID(), selectionDismissalID: dismissal, onSelection: { changes.append($0) })
+        coordinator.update(view, category: .large)
+        XCTAssertEqual(view.selectedRange, selected, "Automatic sentence/follow updates keep native handles and copy intact")
+
+        let explicitLocate = UUID(), eventCount = changes.count
+        coordinator.parent.selectionDismissalID = explicitLocate
+        coordinator.update(view, category: .large)
+        XCTAssertEqual(view.selectedRange.length, 0, "An explicit locate releases native selection so the current sentence can be shown")
+        XCTAssertEqual(view.attributedText.string, source)
+        try await Task.sleep(for: .milliseconds(20))
+        XCTAssertEqual(Array(changes.dropFirst(eventCount)), [false])
+
+        view.selectedRange = selected
+        coordinator.update(view, category: .large)
+        XCTAssertEqual(view.selectedRange, selected, "Reusing the dismissal event must not clear a newly made selection")
+    }
+
     func testDropKeepsExactCurrentSelectionAndRejectsExternalOrMultipleQuotes() {
         let quote = SelectedQuote(anchor: .init(chapterID: "chapter", passageID: "paragraph"), text: "中文🙂 selected source", origin: "translation", variant: "literal", translationOffset: 3)
         XCTAssertTrue(ReaderSelectionDrop.accepts([quote.text], quote: quote))

@@ -137,18 +137,19 @@ final class ImmersiveReaderUITests: XCTestCase {
         capture("approved-player-comparison-and-transport")
     }
 
-    func testReadingControllerHasPageChapterAndPageTranslationActions() {
+    func testReadingControllerHasChapterAndPageTranslationActions() {
         open(title: "GET317 合成验收 · 双译"); wake()
-        let ids = ["reader-previous-chapter", "reader-next-chapter", "reader-previous-page", "reader-next-page", "reader-page-translation"]
+        let ids = ["reader-previous-chapter", "reader-next-chapter", "reader-page-translation"]
         XCTAssertEqual(app.buttons.matching(NSPredicate(format: "identifier IN %@", ids)).count, ids.count, app.debugDescription)
+        XCTAssertEqual(app.buttons.matching(NSPredicate(format: "identifier IN %@", ["reader-previous-page", "reader-next-page"])).count, 0)
         let initial = app.staticTexts["reader-progress-caption"].label
-        app.buttons["reader-next-page"].tap(); wake()
+        app.buttons["reader-next-chapter"].tap()
         XCTAssertNotEqual(app.staticTexts["reader-progress-caption"].label, initial)
-        app.buttons["reader-previous-page"].tap(); wake()
+        app.buttons["reader-previous-chapter"].tap()
         XCTAssertEqual(app.staticTexts["reader-progress-caption"].label, initial)
         app.buttons["reader-page-translation"].tap()
         require(app.staticTexts["当前页翻译"])
-        capture("reading-page-translation-controller")
+        capture("reading-chapter-and-page-translation-controller")
     }
 
     func testListeningStartsAtChapterChosenWhileIdle() {
@@ -197,6 +198,41 @@ final class ImmersiveReaderUITests: XCTestCase {
         capture("large-text-player-returned-to-reading")
     }
 
+    func testListeningWithoutTranslationUsesTheWholeSourceArea() {
+        open(); wake(); app.buttons["reader-listen"].tap()
+        require(app.buttons["reader-speech-play"])
+        let ids = ["reader-listening-comparison-region", "reader-listening-missing-comparison", "reader-listening-comparison-toggle"]
+        XCTAssertEqual(app.descendants(matching: .any).matching(NSPredicate(format: "identifier IN %@", ids)).count, 0, app.debugDescription)
+        let source = app.scrollViews["reader-listening-transcript"], transport = app.otherElements["reader-listening-transport"]
+        XCTAssertLessThanOrEqual(transport.frame.minY - source.frame.maxY, 24)
+        capture("listening-source-only-no-empty-translation")
+    }
+
+    func testLocateReturnsToTheLiveSentenceWithoutPausingPlayback() {
+        open(); wake(); app.buttons["reader-listen"].tap(); require(app.buttons["reader-speech-play"])
+        app.buttons["reader-speech-play"].tap()
+        let status = app.staticTexts["reader-listening-playback-status"]
+        let ready = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in (status.value as? String)?.contains("正在朗读") == true }, object: nil)
+        XCTAssertEqual(XCTWaiter.wait(for: [ready], timeout: 20), .completed)
+        app.scrollViews["reader-listening-transcript"].swipeUp()
+        let locate = app.buttons["reader-listening-locate"]; require(locate); locate.tap()
+        require(app.buttons["暂停朗读"])
+        XCTAssertTrue((status.value as? String)?.contains("正在朗读") == true)
+        XCTAssertFalse(locate.exists)
+        capture("locate-current-audio-without-restart")
+    }
+
+    func testListeningSideControlsSelectChapterWithoutStartingIdleAudio() {
+        open(title: "GET317 合成验收 · 双译"); wake(); app.buttons["reader-listen"].tap()
+        let next = app.buttons["reader-speech-next-chapter"]; require(next); next.tap()
+        let chapter = app.staticTexts["reader-listening-chapter-title"]; require(chapter)
+        XCTAssertTrue(chapter.label.contains("2"), chapter.label)
+        XCTAssertFalse(app.buttons["暂停朗读"].exists)
+        let previous = app.buttons["reader-speech-previous-chapter"]; require(previous); previous.tap()
+        XCTAssertTrue(chapter.label.contains("1"), chapter.label)
+        capture("chapter-transport-no-idle-autoplay")
+    }
+
     func testListeningJumpDoesNotResumeReadingTime() {
         open(); wake(); app.buttons["reader-listen"].tap()
         require(app.buttons["reader-speech-play"]); app.buttons["reader-speech-play"].tap()
@@ -230,6 +266,7 @@ final class ImmersiveReaderUITests: XCTestCase {
     }
     func testSelectionAIButtonOpensAttributedChatAndReturnsToSameBook() {
         open(); select(); capture("selected-dock")
+        XCTAssertEqual(app.buttons["reader-ai"].label, "AI 引用")
         app.buttons["reader-ai"].tap()
         require(app.navigationBars["Chat"])
         require(app.staticTexts["选中的原文"])

@@ -1,9 +1,27 @@
 import Foundation
 import CryptoKit
+import Darwin
 
 struct FileDigest: Codable, Sendable { var path: String; var sha256: String; var bytes: Int64 }
 struct OfflineManifest: Codable, Sendable { var version: Int = 1; var bookID: String; var files: [FileDigest] }
 enum Disk {
+    struct FileStamp: Equatable, Sendable {
+        let device: Int32
+        let inode: UInt64
+        let size: Int64
+        let modifiedSeconds: Int
+        let modifiedNanoseconds: Int
+        let changedSeconds: Int
+        let changedNanoseconds: Int
+    }
+    /// ctime also invalidates an in-place edit whose size and mtime were restored.
+    static func fileStamp(_ url: URL) throws -> FileStamp {
+        var value = stat()
+        guard lstat(url.path, &value) == 0, value.st_mode & S_IFMT == S_IFREG else { throw LibraryError.invalid("离线文件缺失或不是普通文件，请从原件修复。") }
+        return FileStamp(device: value.st_dev, inode: value.st_ino, size: value.st_size,
+                         modifiedSeconds: value.st_mtimespec.tv_sec, modifiedNanoseconds: value.st_mtimespec.tv_nsec,
+                         changedSeconds: value.st_ctimespec.tv_sec, changedNanoseconds: value.st_ctimespec.tv_nsec)
+    }
     static let fm = FileManager.default
     static func hash(_ data: Data) -> String { SHA256.hash(data: data).map { String(format: "%02x", $0) }.joined() }
     static func hashFile(_ url: URL) throws -> String {

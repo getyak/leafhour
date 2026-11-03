@@ -18,6 +18,7 @@ struct ReaderListeningPanel: View {
     @Environment(\.dismiss) private var dismiss
     @State private var sheet: ListeningSheet?
     @State private var followsTranscript = true
+    @State private var browsedAway = false
     @State private var controlsVisible = true
     @State private var controlsFocused = false
     @State private var activity = UUID()
@@ -30,6 +31,7 @@ struct ReaderListeningPanel: View {
     @State private var chosenStartAnchor: ReadingAnchor?
     @State private var expandedComparison: (label: String, text: String)?
     @State private var followRevision = UUID()
+    @State private var selectionDismissalID = UUID()
     private var paper: Color { Color(uiColor: session.state.preferences.paperColor) }
     private var hasPlayback: Bool { speech.playing || speech.paused }
     private var chapter: BookChapter {
@@ -59,6 +61,19 @@ struct ReaderListeningPanel: View {
     private var comparisonRow: ReaderListeningPassage? {
         let id = comparisonPassageID ?? focusID ?? visiblePassageID ?? session.currentAnchor?.passageID
         return rows.first { $0.id == id } ?? rows.first
+    }
+    private var hasComparison: Bool { comparisonRow?.comparison != nil }
+    private var canLocate: Bool { hasPlayback && (browsedAway || !selectedLines.isEmpty) }
+    private func chapterTarget(_ delta: Int) -> String? {
+        guard delta == -1 || delta == 1 else { return nil }
+        if hasPlayback { return speech.chapterID(adjacentTo: chapter.id, delta: delta) }
+        var index = chapterIndex + delta
+        while session.book.chapters.indices.contains(index) {
+            let candidate = session.book.chapters[index]
+            if candidate.passages.contains(where: { $0.resourcePath == nil && !$0.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }) { return candidate.id }
+            index += delta
+        }
+        return nil
     }
     var body: some View {
         GeometryReader { geometry in
@@ -130,11 +145,28 @@ struct ReaderListeningPanel: View {
             } else { reveal.padding(.horizontal, 20).padding(.bottom, 8) }
         }
     }
-    private func pauseFollowing() { browsingChapterID = chapter.id; followsTranscript = false; wake() }
+    private func pauseFollowing() { browsingChapterID = chapter.id; browsedAway = true; followsTranscript = false; wake() }
     private func wake() { controlsVisible = true; activity = UUID() }
     private func resumeFollowing() {
         guard selectedLines.isEmpty, !voiceOver else { return }
-        browsingChapterID = nil; comparisonPassageID = nil; followsTranscript = true; followRevision = UUID()
+        browsingChapterID = nil; comparisonPassageID = nil; browsedAway = false; followsTranscript = true; followRevision = UUID()
+    }
+    private func locatePlayback() {
+        guard hasPlayback, let passageID = speech.passageID, speech.chapterID != nil else { return }
+        // Locate changes the viewport only. The speech callback remains the
+        // owner of its actual chapter, layer, sentence, speed and audio cursor.
+        selectedLines.removeAll(); selectionDismissalID = UUID()
+        browsingChapterID = nil; comparisonPassageID = nil; chosenStartAnchor = nil; browsedAway = false
+        requestedScrollID = passageID; followsTranscript = true; followRevision = UUID(); wake()
+    }
+    private func moveChapter(_ delta: Int) {
+        guard selectedLines.isEmpty, let target = chapterTarget(delta) else { return }
+        if hasPlayback {
+            guard speech.selectChapter(target) else { wake(); return }
+            browsingChapterID = nil; comparisonPassageID = nil; chosenStartAnchor = nil; browsedAway = false
+            requestedScrollID = speech.passageID
+            resumeFollowing(); wake()
+        } else if let index = session.book.chapters.firstIndex(where: { $0.id == target }) { changeChapter(index) }
     }
     private var identity: some View {
         HStack(spacing: 12) {
@@ -178,11 +210,12 @@ struct ReaderListeningPanel: View {
                             sentenceRange: current ? row.content.sentence(at: speech.displayOffset) : idle ? row.content.sentence(at: idleOffset(row)) : nil,
                             follows: followsTranscript && selectedLines.isEmpty && !voiceOver,
                             followRevision: followRevision,
+                            selectionDismissalID: selectionDismissalID,
                             onSeek: { offset in
                                 guard selectedLines.isEmpty else { return }
                                 if speech.seek(session, to: row.content.location(at: offset)) { chosenStartAnchor = nil; resumeFollowing() }; wake()
                             }, onSelection: { selected in
-                                if selected { browsingChapterID = chapter.id; comparisonPassageID = row.id; selectedLines.insert(row.id); followsTranscript = false; wake() }
+                                if selected { browsingChapterID = chapter.id; comparisonPassageID = row.id; selectedLines.insert(row.id); browsedAway = true; followsTranscript = false; wake() }
                                 else { selectedLines.remove(row.id) }
                             }).id(row.id)
                     }
@@ -191,33 +224,35 @@ struct ReaderListeningPanel: View {
                 .accessibilityIdentifier("reader-listening-transcript")
                 .simultaneousGesture(DragGesture(minimumDistance: 12).onChanged { _ in pauseFollowing() })
                 .onChange(of: rows.first?.id) { _, _ in
-                    guard selectedLines.isEmpty, !voiceOver else { return }
+                    guard selectedLines.isEmpty else { return }
                     if let target = requestedScrollID, rows.contains(where: { $0.id == target }) { proxy.scrollTo(target, anchor: .top); requestedScrollID = nil }
+                    else if voiceOver { return }
                     else if let focusID, followsTranscript { proxy.scrollTo(focusID, anchor: .top) }
                     else if let first = rows.first { proxy.scrollTo(first.id, anchor: .top) }
                 }
                 .onChange(of: requestedScrollID) { _, id in if let id, rows.contains(where: { $0.id == id }) { proxy.scrollTo(id, anchor: .top); requestedScrollID = nil } }
                 .onChange(of: followsTranscript) { _, follows in if follows, let focusID { proxy.scrollTo(focusID, anchor: .top) } }
+                .onChange(of: activeID) { _, id in
+                    if followsTranscript, selectedLines.isEmpty, !voiceOver, let id { proxy.scrollTo(id, anchor: .top) }
+                }
         }
     }
     @ViewBuilder private func comparison(maxHeight: CGFloat) -> some View {
-        if session.state.preferences.listeningShowsComparison, let row = comparisonRow {
+        if session.state.preferences.listeningShowsComparison, let row = comparisonRow, let text = row.comparison {
             VStack(alignment: .leading, spacing: 4) {
                 Divider()
-                if let text = row.comparison {
-                    HStack {
-                        Text(row.comparisonLabel).font(.caption2).foregroundStyle(.secondary)
-                        Spacer()
-                        Button("展开") { expandedComparison = (row.comparisonLabel, text); wake(); sheet = .comparison }.font(.caption).frame(minWidth: 44, minHeight: 44).buttonStyle(.plain).foregroundStyle(.secondary)
-                    }
-                    ScrollView {
-                        ReaderListeningText(text: text, preferences: session.state.preferences, secondary: true, onSelection: { selected in
-                            let key = row.id + ":comparison"
-                            if selected { selectedLines.insert(key); browsingChapterID = chapter.id; comparisonPassageID = row.id; followsTranscript = false; wake() }
-                            else { selectedLines.remove(key) }
-                        }).frame(maxWidth: .infinity, alignment: .leading)
-                    }.frame(maxHeight: max(40, maxHeight - 52))
-                } else { Text("此段暂无所选译文").font(.caption).foregroundStyle(.secondary).padding(.vertical, 10).accessibilityIdentifier("reader-listening-missing-comparison") }
+                HStack {
+                    Text(row.comparisonLabel).font(.caption2).foregroundStyle(.secondary)
+                    Spacer()
+                    Button("展开") { expandedComparison = (row.comparisonLabel, text); wake(); sheet = .comparison }.font(.caption).frame(minWidth: 44, minHeight: 44).buttonStyle(.plain).foregroundStyle(.secondary)
+                }
+                ScrollView {
+                    ReaderListeningText(text: text, preferences: session.state.preferences, selectionDismissalID: selectionDismissalID, secondary: true, onSelection: { selected in
+                        let key = row.id + ":comparison"
+                        if selected { selectedLines.insert(key); browsingChapterID = chapter.id; comparisonPassageID = row.id; browsedAway = true; followsTranscript = false; wake() }
+                        else { selectedLines.remove(key) }
+                    }).frame(maxWidth: .infinity, alignment: .leading)
+                }.frame(maxHeight: max(40, maxHeight - 52))
             }.frame(maxHeight: maxHeight).accessibilityElement(children: .contain).accessibilityIdentifier("reader-listening-comparison-region")
         }
     }
@@ -236,21 +271,35 @@ struct ReaderListeningPanel: View {
                     .accessibilityIdentifier("reader-listening-playback-status")
                     .accessibilityValue(speech.isOutputPlaying ? "正在朗读 · \(speech.activeSentence)" : speech.playing ? "正在准备声音" : "已暂停")
                 Spacer()
+                if !hasComparison { ReaderListeningBoostButton(speech: speech, onSettings: { wake(); sheet = .settings }).frame(width: 54, height: 44) }
+                Group {
+                    if canLocate {
+                        Button(action: locatePlayback) { Image(systemName: "location").frame(width: 44, height: 44).contentShape(Rectangle()) }
+                            .buttonStyle(.plain).foregroundStyle(.secondary)
+                            .accessibilityLabel("定位当前朗读").accessibilityHint("回到当前句，保持播放状态和语速")
+                            .accessibilityIdentifier("reader-listening-locate")
+                    } else { Color.clear.accessibilityHidden(true) }
+                }.frame(width: 44, height: 44)
                 Button { controlsVisible = false } label: { Image(systemName: "chevron.down").frame(width: 44, height: 44).contentShape(Rectangle()) }
                     .buttonStyle(.plain).foregroundStyle(.secondary).accessibilityLabel("收起").accessibilityIdentifier("reader-listening-hide")
             }
             HStack(spacing: 4) {
-                ReaderListeningBoostButton(speech: speech, onSettings: { wake(); sheet = .settings }).frame(maxWidth: .infinity)
-                Button { speech.move(-1); resumeFollowing(); wake() } label: { Image(systemName: "backward.end.fill").frame(width: 44, height: 44) }
-                    .accessibilityLabel("上一段").disabled(!hasPlayback || !speech.canPrevious)
+                if hasComparison { ReaderListeningBoostButton(speech: speech, onSettings: { wake(); sheet = .settings }).frame(maxWidth: .infinity) }
+                else { Spacer(minLength: 0) }
+                Button { moveChapter(-1) } label: { Image(systemName: "backward.end.fill").frame(width: 44, height: 44) }
+                    .accessibilityLabel("上一章").accessibilityIdentifier("reader-speech-previous-chapter")
+                    .disabled(!selectedLines.isEmpty || chapterTarget(-1) == nil)
                 Button(action: togglePlayback) { Image(systemName: speech.playing ? "pause.fill" : "play.fill").font(.title2).frame(width: 60, height: 60)
                         .background(Color.primary.opacity(0.035), in: Circle()).overlay { Circle().strokeBorder(Color.primary.opacity(0.08), lineWidth: 0.5) } }
                     .accessibilityLabel(speech.playing ? "暂停朗读" : speech.paused ? "继续朗读" : idleResumePosition != nil ? "继续上次朗读" : "从当前句开始朗读").accessibilityIdentifier("reader-speech-play")
-                Button { speech.move(1); resumeFollowing(); wake() } label: { Image(systemName: "forward.end.fill").frame(width: 44, height: 44) }
-                    .accessibilityLabel("下一段").disabled(!hasPlayback || !speech.canNext)
-                Button { var prefs = session.state.preferences; prefs.listeningShowsComparison.toggle(); session.changePreferences(prefs); wake() } label: {
-                    Image(systemName: "character.bubble").frame(minWidth: 44, maxWidth: .infinity, minHeight: 44).contentShape(Rectangle())
-                }.accessibilityLabel("对照").accessibilityValue(session.state.preferences.listeningShowsComparison ? "开启" : "关闭").accessibilityIdentifier("reader-listening-comparison-toggle")
+                Button { moveChapter(1) } label: { Image(systemName: "forward.end.fill").frame(width: 44, height: 44) }
+                    .accessibilityLabel("下一章").accessibilityIdentifier("reader-speech-next-chapter")
+                    .disabled(!selectedLines.isEmpty || chapterTarget(1) == nil)
+                if hasComparison {
+                    Button { var prefs = session.state.preferences; prefs.listeningShowsComparison.toggle(); session.changePreferences(prefs); wake() } label: {
+                        Image(systemName: "character.bubble").frame(minWidth: 44, maxWidth: .infinity, minHeight: 44).contentShape(Rectangle())
+                    }.accessibilityLabel("对照").accessibilityValue(session.state.preferences.listeningShowsComparison ? "开启" : "关闭").accessibilityIdentifier("reader-listening-comparison-toggle")
+                } else { Spacer(minLength: 0) }
             }.buttonStyle(.plain)
             if let message = speech.message { Text(message).font(.caption).foregroundStyle(.secondary) }
         }.accessibilityElement(children: .contain).accessibilityIdentifier("reader-listening-transport")
@@ -277,7 +326,7 @@ struct ReaderListeningPanel: View {
     private func changeChapter(_ index: Int, anchor: ReadingAnchor? = nil) {
         guard session.book.chapters.indices.contains(index), selectedLines.isEmpty else { return }
         browsingChapterID = session.book.chapters[index].id; comparisonPassageID = anchor?.passageID
-        requestedScrollID = anchor?.passageID; chosenStartAnchor = anchor; followsTranscript = false; wake()
+        requestedScrollID = anchor?.passageID; chosenStartAnchor = anchor; browsedAway = true; followsTranscript = false; wake()
     }
     @ViewBuilder private func sheetContent(_ destination: ListeningSheet) -> some View {
         NavigationStack {
@@ -310,10 +359,10 @@ struct ReaderListeningPanel: View {
                 }
                 Text("播放时长按倍速，逐步加速；松开恢复原速。").font(.footnote).foregroundStyle(.secondary)
             }
-            Section("对照与跟随") {
-                Toggle("显示段落对照", isOn: Binding(get: { session.state.preferences.listeningShowsComparison }, set: { value in var prefs = session.state.preferences; prefs.listeningShowsComparison = value; session.changePreferences(prefs) }))
+            Section(hasComparison ? "对照与跟随" : "逐句跟随") {
+                if hasComparison { Toggle("显示段落对照", isOn: Binding(get: { session.state.preferences.listeningShowsComparison }, set: { value in var prefs = session.state.preferences; prefs.listeningShowsComparison = value; session.changePreferences(prefs) })) }
                 Toggle("逐句跟随", isOn: $followsTranscript)
-                Text("字体、字号、行距与纸面和阅读共用；对照开关只改变显示，不切换朗读语言。").font(.footnote).foregroundStyle(.secondary)
+                Text(hasComparison ? "字体、字号、行距与纸面和阅读共用；对照开关只改变显示，不切换朗读语言。" : "字体、字号、行距与纸面和阅读共用。").font(.footnote).foregroundStyle(.secondary)
                 Button("从当前书页重新开始", systemImage: "play.circle") { browsingChapterID = nil; comparisonPassageID = nil; chosenStartAnchor = nil; speech.start(session, useSavedPosition: false); sheet = nil }
                     .accessibilityIdentifier("reader-speech-start-here")
                 if hasPlayback { Button("结束听书", systemImage: "stop.fill") { speech.stop(); sheet = nil } }

@@ -250,7 +250,7 @@ final class ReaderCloudTools {
         return value
     }
     private func cached(_ session: ReaderSession) -> [String: Any]? {
-        guard let data = try? Data(contentsOf: session.directory.appendingPathComponent("cloud-content.json")),
+        guard !session.packageVerificationPending, session.packageVerificationError == nil, let data = try? Data(contentsOf: session.directory.appendingPathComponent("cloud-content.json")),
               let value = try? object(data), value["contentVersion"] as? String == session.book.cloud?.contentVersion else { return nil }
         return value
     }
@@ -382,6 +382,7 @@ final class ReaderCloudTools {
         return try await library.cacheChatVoice(data, receipt: receipt, ownerID: identity.ownerID)
     }
     func prepare(_ action: String, session: ReaderSession, cloud: CloudLibraryClient?, selection: SelectedQuote? = nil) async {
+        guard !session.packageVerificationPending, session.packageVerificationError == nil else { error = "书籍文件正在校验，请稍后重试。"; return }
         guard let cloud else { error = "请先登录以连接模型服务，书籍可以保留在本机。"; return }
         if action == "conversation", session.book.cloud == nil {
             if chatContext == nil { await loadLocalConversation(session, cloud: cloud, selection: selection, attachSelection: selection != nil) }

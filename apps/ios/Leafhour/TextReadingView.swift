@@ -208,7 +208,7 @@ struct TextReadingView: UIViewRepresentable {
                     let style = NSMutableParagraphStyle(); style.lineSpacing = preferences.lineSpacing; style.paragraphSpacing = 20; style.baseWritingDirection = .natural
                     if let resource = passage.resourcePath {
                         let source = session.directory.appendingPathComponent("assets").appendingPathComponent(resource)
-                        if let imageSource = CGImageSourceCreateWithURL(source as CFURL, nil), let cgImage = CGImageSourceCreateThumbnailAtIndex(imageSource, 0, [kCGImageSourceCreateThumbnailFromImageAlways: true, kCGImageSourceThumbnailMaxPixelSize: 2048] as CFDictionary) {
+                        if session.canReadResource(resource), let imageSource = CGImageSourceCreateWithURL(source as CFURL, nil), let cgImage = CGImageSourceCreateThumbnailAtIndex(imageSource, 0, [kCGImageSourceCreateThumbnailFromImageAlways: true, kCGImageSourceThumbnailMaxPixelSize: 2048] as CFDictionary) {
                             let image = UIImage(cgImage: cgImage), attachment = NSTextAttachment()
                             attachment.image = image
                             attachment.bounds = CGRect(x: 0, y: 0, width: width, height: width * image.size.height / max(1, image.size.width))
@@ -291,7 +291,7 @@ struct TextReadingView: UIViewRepresentable {
         }
         private func contentSignature(in view: UITextView, width: Int) -> String {
             let session = parent.session, p = session.state.preferences
-            return "\(textWindow?.signature ?? "")-\(session.chapter.id)-\(p.fontStyle)-\(p.latinFont)-\(p.fontSize)-\(p.lineSpacing)-\(p.firstLineIndent)-\(p.viewMode)-\(p.translationVariant)-\(p.viewMode == .source ? 0 : session.contentRevision)-\(view.traitCollection.preferredContentSizeCategory.rawValue)-\(width)"
+            return "\(textWindow?.signature ?? "")-\(session.chapter.id)-\(p.fontStyle)-\(p.latinFont)-\(p.fontSize)-\(p.lineSpacing)-\(p.firstLineIndent)-\(p.viewMode)-\(p.translationVariant)-\(p.viewMode == .source ? 0 : session.contentRevision)-\(session.packageVerificationPending)-\(view.traitCollection.preferredContentSizeCategory.rawValue)-\(width)"
         }
         var parent: TextReadingView
         weak var view: UITextView?
@@ -1064,7 +1064,7 @@ struct TextReadingView: UIViewRepresentable {
                 }, at: 0)
             }
             if parent.onExplain != nil {
-                actions.insert(UIAction(title: "解释这句", image: UIImage(systemName: "text.bubble")) { [weak self] _ in
+                actions.insert(UIAction(title: "AI 引用", image: UIImage(systemName: "text.bubble")) { [weak self] _ in
                     guard let self else { return }
                     guard let value = quote() else { return }
                     self.parent.onExplain?(value)

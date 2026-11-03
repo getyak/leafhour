@@ -2,6 +2,66 @@ import XCTest
 @testable import LeafhourCore
 
 final class CloudSyncTests: XCTestCase {
+    func testSuspendedSecondPushCannotErasePositionChoicePublishedAfterItStarted() async throws {
+        let library = try library(owner), book = try await library.importCloud(fixtureCopy()), sync = CloudBookSync(client: client(), library: library)
+        var state = ReaderState(); state.anchor = ReadingAnchor(chapterID: "chapter-one", passageID: "passage-one", characterOffset: 3)
+        try await library.saveState(state, bookID: book.id)
+        var metadata = CloudSyncMetadata(); metadata.remoteAnchor = ReadingAnchor(chapterID: "chapter-one", passageID: "passage-one"); metadata.remotePositionRevision = 8
+        try await library.saveCloudMetadata(metadata, bookID: book.id)
+        let bytes = try records(position: .object(["chapterId": .string("chapter-one"), "passageId": .string("passage-one"), "revision": .number(8)]))
+        let started = expectation(description: "Second push waiting for records"), release = DispatchSemaphore(value: 0)
+        CloudMockProtocol.handler = { request in
+            if request.url!.path.hasSuffix("records") { started.fulfill(); guard release.wait(timeout: .now() + 5) == .success else { throw URLError(.timedOut) } }
+            return (200, bytes)
+        }
+        let work = Task { try await sync.synchronize(book.id, pull: false) }
+        await fulfillment(of: [started], timeout: 3)
+        _ = try await library.requireDeferredPositionChoice(book.id)
+        release.signal(); try await work.value
+        let saved = try await library.state(book.id), pending = try await library.cloudMetadata(book.id)
+        XCTAssertEqual(saved.anchor, state.anchor)
+        XCTAssertTrue(pending.positionConflict, "A stale metadata snapshot cannot consume a choice published while its request was suspended")
+        XCTAssertEqual(pending.remotePositionRevision, 8)
+    }
+    func testUnresolvedReaderFirstPositionChoiceSurvivesAutomaticShelfPull() async throws {
+        let library = try library(owner), book = try await library.importCloud(fixtureCopy()), sync = CloudBookSync(client: client(), library: library)
+        var state = ReaderState(); state.anchor = ReadingAnchor(chapterID: "chapter-one", passageID: "passage-one", characterOffset: 3)
+        try await library.saveState(state, bookID: book.id)
+        var metadata = CloudSyncMetadata(); metadata.positionConflict = true
+        metadata.remoteAnchor = ReadingAnchor(chapterID: "chapter-one", passageID: "passage-one"); metadata.remotePositionRevision = 8
+        try await library.saveCloudMetadata(metadata, bookID: book.id)
+        let bytes = try records(position: .object(["chapterId": .string("chapter-one"), "passageId": .string("passage-one"), "revision": .number(8)]))
+        CloudMockProtocol.handler = { _ in (200, bytes) }
+        for pull in [false, true] {
+            try await sync.synchronize(book.id, pull: pull)
+            let saved = try await library.state(book.id), pending = try await library.cloudMetadata(book.id)
+            XCTAssertEqual(saved.anchor, state.anchor)
+            XCTAssertTrue(pending.positionConflict, "Neither a queued push nor leaving the reader can resolve its explicit position choice")
+        }
+    }
+    func testPullAlreadyInFlightCannotReplaceStateAfterReaderTakesOwnership() async throws {
+        let library = try library(owner), book = try await library.importCloud(fixtureCopy()), sync = CloudBookSync(client: client(), library: library)
+        var state = ReaderState(); state.anchor = ReadingAnchor(chapterID: "chapter-one", passageID: "passage-one", characterOffset: 3)
+        try await library.saveState(state, bookID: book.id)
+        let bytes = try records(position: .object(["chapterId": .string("chapter-one"), "passageId": .string("passage-one"), "revision": .number(8)]))
+        let started = expectation(description: "Pull is suspended at records"), release = DispatchSemaphore(value: 0)
+        var first = true
+        CloudMockProtocol.handler = { request in
+            if request.url!.path.hasSuffix("records"), first {
+                first = false; started.fulfill()
+                guard release.wait(timeout: .now() + 5) == .success else { throw URLError(.timedOut) }
+            }
+            return (200, bytes)
+        }
+        let work = Task { try await sync.synchronize(book.id) }
+        await fulfillment(of: [started], timeout: 3)
+        await sync.claimReadingBook(book.id, token: UUID())
+        release.signal(); try await work.value
+        let saved = try await library.state(book.id)
+        XCTAssertEqual(saved.anchor, state.anchor, "A late pull cannot move the active reader's durable anchor")
+        let metadata = try await library.cloudMetadata(book.id)
+        XCTAssertNotNil(metadata.remoteAnchor)
+    }
     private let owner = "11111111-1111-4111-8111-111111111111"
     private let other = "22222222-2222-4222-8222-222222222222"
     private var roots: [URL] = []

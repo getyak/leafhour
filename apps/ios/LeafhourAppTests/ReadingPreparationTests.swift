@@ -23,6 +23,25 @@ final class ReadingPreparationTests: XCTestCase {
         let chinese = try await fixture.library.readingTranslations(bookID: fixture.session.book.id)
         XCTAssertNil(chinese["p1"]?.literal)
     }
+    func testDeferredOpeningDefersTranslationPublicationAndPreparationUntilVerified() async throws {
+        let fixture = try await fixture(), probe = PreparationProbe(owner: owner)
+        PreparationProtocol.install(probe)
+        let opening = try await fixture.library.readingOpening(fixture.session.book.id)
+        var state = opening.state; state.preferences.viewMode = .translation
+        let session = ReaderSession(book: opening.book, state: state, original: opening.original, directory: opening.directory,
+                                    library: fixture.library, preparation: opening.preparation)
+        let reading = ReaderReadingContent()
+        await reading.refresh(session, cloud: fixture.cloud, library: fixture.library)
+        await reading.prepare(session, cloud: fixture.cloud, library: fixture.library, scope: .passage)
+        XCTAssertTrue(probe.snapshot().isEmpty, "Entry cannot publish a replacement package while its opening receipt is pending")
+        XCTAssertNil(reading.proposed)
+        XCTAssertTrue(session.packageVerificationPending)
+        try await fixture.library.verifyReadingOpening(opening)
+        session.completePackageVerification()
+        await reading.prepare(session, cloud: fixture.cloud, library: fixture.library, scope: .passage)
+        XCTAssertNotNil(reading.proposed, "The same explicit action is available once the package pass succeeds")
+    }
+
     private let owner = "00000000-0000-4000-8000-000000000344"
     private struct Fixture { let session: ReaderSession; let library: OfflineLibrary; let cloud: CloudLibraryClient }
     private func fixture(pageParagraphs: Bool = false) async throws -> Fixture {

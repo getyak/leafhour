@@ -185,6 +185,56 @@ final class ReaderInteractionTests: XCTestCase {
         speech.releasePresentation(); _ = await session.flush()
     }
 
+    func testPausedChapterNavigationChangesChapterWithoutStartingAudio() async throws {
+        let book = try JSONDecoder().decode(LocalBook.self, from: Data(#"{"id":"paused-chapters","title":"Paused chapters","author":"","kind":"txt","sourceVersion":"v1","originalFilename":"fixture.txt","importedAt":0,"chapters":[{"id":"c1","title":"One","sourcePath":"1","passages":[{"id":"p1","text":"First chapter starts.","heading":false}]},{"id":"c2","title":"Two","sourcePath":"2","passages":[{"id":"p2","text":"Second chapter starts.","heading":false}]}]}"#.utf8))
+        let root = FileManager.default.temporaryDirectory
+        let session = ReaderSession(book: book, state: ReaderState(), original: root.appendingPathComponent("paused-chapters.txt"), directory: root, library: SpeechStateStoreProbe())
+        let engine = ListeningOutputProbe(), audio = SpeechAudioSessionProbe()
+        let speech = ReaderSpeech(synthesizer: engine, audioSession: audio)
+        speech.start(session); engine.output(true); speech.pause()
+        let spoken = engine.spoken.count, activations = audio.activations.filter { $0 }.count
+
+        speech.moveChapter(1)
+
+        XCTAssertEqual(speech.chapterID, "c2"); XCTAssertEqual(speech.passageID, "p2")
+        XCTAssertEqual(speech.activeSentence, "Second chapter starts.")
+        XCTAssertFalse(speech.playing); XCTAssertTrue(speech.paused); XCTAssertFalse(speech.isOutputPlaying)
+        XCTAssertEqual(engine.spoken.count, spoken, "Selecting a chapter while paused must not synthesize or begin playing")
+        XCTAssertEqual(audio.activations.filter { $0 }.count, activations, "A paused chapter selection must not claim audio output")
+        XCTAssertEqual(engine.continuations, 0)
+        XCTAssertEqual(session.state.listeningPosition?.chapterID, "c2", "The paused destination is the next explicit resume position")
+
+        speech.toggle(session)
+        XCTAssertTrue(speech.playing); XCTAssertFalse(speech.paused)
+        XCTAssertEqual(engine.spoken.last?.speechString, "Second chapter starts.")
+        XCTAssertEqual(engine.spoken.count, spoken + 1)
+        XCTAssertEqual(engine.continuations, 0, "The previous chapter's paused buffer must not be resumed")
+        speech.releasePresentation(); _ = await session.flush()
+    }
+
+    func testChapterNavigationFromBrowsedChapterSelectsItsNeighborWithoutPlayingIntermediateChapters() async throws {
+        let book = try JSONDecoder().decode(LocalBook.self, from: Data(#"{"id":"browsed-chapters","title":"Browsed chapters","author":"","kind":"txt","sourceVersion":"v1","originalFilename":"fixture.txt","importedAt":0,"chapters":[{"id":"c1","title":"One","sourcePath":"1","passages":[{"id":"p1","text":"First chapter starts.","heading":false}]},{"id":"c2","title":"Two","sourcePath":"2","passages":[{"id":"p2","text":"Second chapter starts.","heading":false}]},{"id":"c3","title":"Three","sourcePath":"3","passages":[{"id":"p3","text":"Third chapter starts.","heading":false}]}]}"#.utf8))
+        let root = FileManager.default.temporaryDirectory
+        let session = ReaderSession(book: book, state: ReaderState(), original: root.appendingPathComponent("browsed-chapters.txt"), directory: root, library: SpeechStateStoreProbe())
+        let engine = ListeningOutputProbe(), audio = SpeechAudioSessionProbe()
+        let speech = ReaderSpeech(synthesizer: engine, audioSession: audio)
+        speech.start(session)
+        XCTAssertEqual(speech.chapterID, "c1")
+        XCTAssertEqual(speech.chapterID(adjacentTo: "c3", delta: -1), "c2", "Transport follows the displayed chapter, independently of the audio chapter")
+        XCTAssertNil(speech.chapterID(adjacentTo: "c3", delta: 1))
+        XCTAssertTrue(speech.selectChapter("c2"))
+        XCTAssertEqual(speech.chapterID, "c2"); XCTAssertTrue(speech.playing)
+        XCTAssertEqual(engine.spoken.map(\.speechString), ["First chapter starts.", "Second chapter starts."])
+        XCTAssertFalse(speech.selectChapter("outside-book"))
+        XCTAssertEqual(engine.spoken.count, 2)
+
+        let replacement = ReaderSpeech(synthesizer: ListeningOutputProbe(), audioSession: audio)
+        replacement.start(session)
+        XCTAssertFalse(speech.selectChapter("c3"), "A superseded reader must not take back another reader's audio through navigation")
+        XCTAssertEqual(engine.spoken.count, 2)
+        speech.releasePresentation(); replacement.releasePresentation(); _ = await session.flush()
+    }
+
     func testOldReaderTeardownCannotDeactivateAReplacementReadersAudioSession() async throws {
         let session = try await session(), sink = ListeningMediaSink(), commands = ListeningRemoteCommands()
         let center = ReaderNowPlayingCenter(sink: sink, commands: commands), audio = SpeechAudioSessionProbe()

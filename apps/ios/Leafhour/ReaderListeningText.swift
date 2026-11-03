@@ -12,6 +12,7 @@ struct ReaderListeningText: UIViewRepresentable {
     var sentenceRange: NSRange? = nil
     var follows = false
     var followRevision: UUID? = nil
+    var selectionDismissalID: UUID? = nil
     var secondary = false
     var onSeek: ((Int) -> Void)? = nil
     var onSelection: (Bool) -> Void = { _ in }
@@ -53,7 +54,8 @@ struct ReaderListeningText: UIViewRepresentable {
         private var updating = false
         private var followedRange: NSRange?
         private var followedRevision: UUID?
-        init(_ parent: ReaderListeningText) { self.parent = parent }
+        private var selectionDismissalID: UUID?
+        init(_ parent: ReaderListeningText) { self.parent = parent; selectionDismissalID = parent.selectionDismissalID }
         func install(_ view: UITextView) {
             self.view = view
             let tap = ReaderShortTapGestureRecognizer(target: self, action: #selector(seek(_:)))
@@ -73,6 +75,14 @@ struct ReaderListeningText: UIViewRepresentable {
                 view.attributedText = NSAttributedString(string: text, attributes: [.font: font, .paragraphStyle: paragraph])
                 if !textChanged, selection.length > 0, NSMaxRange(selection) <= view.attributedText.length { view.selectedRange = selection }
                 else if selection.length > 0 {
+                    DispatchQueue.main.async { [weak self] in self?.parent.onSelection(false) }
+                }
+            }
+            if selectionDismissalID != parent.selectionDismissalID {
+                selectionDismissalID = parent.selectionDismissalID
+                if view.selectedRange.length > 0 {
+                    view.selectedRange = NSRange(location: 0, length: 0)
+                    view.resignFirstResponder()
                     DispatchQueue.main.async { [weak self] in self?.parent.onSelection(false) }
                 }
             }
