@@ -36,9 +36,7 @@ struct ReaderPanelPresentation: ViewModifier {
 
     @ViewBuilder func body(content: Content) -> some View {
         if isCompanion {
-            content.presentationDetents([.large])
-                .presentationDragIndicator(.visible)
-                .presentationBackgroundInteraction(.disabled)
+            content.modifier(CompanionKeyboardPresentation())
         } else {
             content
                 .presentationDetents(isNoteEditor || startsExpanded ? [.large] : [.medium, .large])
@@ -70,11 +68,11 @@ private struct CompanionKeyboardPresentation: ViewModifier {
             .onPreferenceChange(CompanionComposerHeightKey.self) { height in
                 if abs(composerHeight - height) > 0.5 { composerHeight = height }
             }
-            .presentationDetents([detent])
+            .presentationDetents([detent, .large])
             .presentationDragIndicator(.visible)
             .presentationContentInteraction(.scrolls)
             .presentationCompactAdaptation(.none)
-            .presentationBackgroundInteraction(.enabled(upThrough: detent))
+            .presentationBackgroundInteraction(.disabled)
     }
 }
 

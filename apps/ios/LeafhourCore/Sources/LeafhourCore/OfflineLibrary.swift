@@ -406,8 +406,8 @@ public actor OfflineLibrary {
     }
 
     /// Decode an unchanged index once for listing and frequent durable state
-    /// saves. Opening/verify still perform their existing full integrity checks.
-    private func indexedBook(_ id: String, at folder: URL) throws -> LocalBook {
+    /// and reading-time saves. Opening/verify keep their full integrity checks.
+    func indexedBook(_ id: String, at folder: URL) throws -> LocalBook {
         let file = try Disk.url(folder, "book.json"), stamp = try Disk.fileStamp(file)
         if let cached = listedIndexes[id], cached.stamp == stamp { return cached.book }
         // A damaged/replaced index must never revive an older cached anchor.

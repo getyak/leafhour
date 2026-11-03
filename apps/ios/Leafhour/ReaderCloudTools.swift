@@ -17,6 +17,7 @@ struct ReaderConversationTurn: Identifiable, Codable {
     var status: String
     var voice: ChatVoiceReceipt? = nil
     var quote: ReaderTurnQuote? = nil
+    var replyTo: ReaderMessageReference? = nil
 }
 struct ReaderTurnQuote: Codable, Equatable {
     struct Part: Codable, Equatable {
@@ -66,6 +67,8 @@ private struct ReaderConversationDraft: Codable {
     var quoteRemoved: Bool? = nil
     var pendingContext: ReaderChatContext? = nil
     var turns: [ReaderConversationTurn]? = nil
+    var messageReference: ReaderMessageReference? = nil
+    var likedMessages: Set<String>? = nil
 }
 
 /// Read-only loading is separate from the explicitly confirmed generation path.
@@ -87,6 +90,20 @@ final class ReaderCloudTools {
     var introduction = ""
     var introductionOrigin = ""
     var turns: [ReaderConversationTurn] = []
+    var pendingMessageReference: ReaderMessageReference? { didSet { queueDraftSave() } }
+    private var likedMessages: Set<String> = []
+    func referenceMessage(_ turn: ReaderConversationTurn, role: String) {
+        guard role == "user" || (role == "assistant" && turn.status == "completed") else { return }
+        let text = role == "user" ? turn.question : (turn.answer ?? "")
+        guard !text.isEmpty else { return }
+        pendingMessageReference = ReaderMessageReference(turnId: turn.id, role: role, text: text)
+    }
+    func isMessageLiked(turnID: String, role: String) -> Bool { likedMessages.contains(turnID + ":" + role) }
+    func toggleMessageLike(turnID: String, role: String) {
+        let key = turnID + ":" + role
+        if likedMessages.contains(key) { likedMessages.remove(key) } else { likedMessages.insert(key) }
+        queueDraftSave()
+    }
     var question = "" { didSet { queueDraftSave() } }
     var pendingVoice: ChatVoiceReceipt? { didSet { queueDraftSave() } }
     var scope = "book"
@@ -169,6 +186,8 @@ final class ReaderCloudTools {
                     pendingChatContext = pending
                 }
                 if turns.isEmpty { turns = draft.turns ?? [] }
+                if pendingMessageReference == nil { pendingMessageReference = draft.messageReference }
+                likedMessages.formUnion(draft.likedMessages ?? [])
                 if question.isEmpty { question = draft.question }
                 if retry == nil { retry = draft.retry }
                 if pendingVoice == nil { pendingVoice = draft.voice }
@@ -186,7 +205,7 @@ final class ReaderCloudTools {
     }
     private func queueDraftSave() {
         guard draftReady, let identity = draftBook, let library else { return }
-        let snapshot = ReaderConversationDraft(question: question, retry: retry?.action == "conversation" ? retry : nil, context: chatContext, voice: pendingVoice, contextPinned: contextPinned, quoteRemoved: chatQuoteRemoved, pendingContext: pendingChatContext, turns: turns), previous = draftWriting
+        let snapshot = ReaderConversationDraft(question: question, retry: retry?.action == "conversation" ? retry : nil, context: chatContext, voice: pendingVoice, contextPinned: contextPinned, quoteRemoved: chatQuoteRemoved, pendingContext: pendingChatContext, turns: turns, messageReference: pendingMessageReference, likedMessages: likedMessages), previous = draftWriting
         draftWriting = Task {
             await previous?.value
             do {
@@ -343,6 +362,11 @@ final class ReaderCloudTools {
         } catch is CancellationError { }
         catch { if generation == stamp { self.error = error.localizedDescription } }
     }
+    private static func readMessageReference(_ value: Any?) -> ReaderMessageReference? {
+        guard let value = value as? [String: Any], let turnID = value["turnId"] as? String,
+              let role = value["role"] as? String, ["user", "assistant"].contains(role), let text = value["text"] as? String, !text.isEmpty else { return nil }
+        return ReaderMessageReference(turnId: turnID, role: role, text: text)
+    }
     private static func readTurnQuote(_ value: Any?) -> ReaderTurnQuote? {
         guard let object = value as? [String: Any], let data = try? JSONSerialization.data(withJSONObject: object),
               let quote = try? JSONDecoder().decode(ReaderTurnQuote.self, from: data),
@@ -358,7 +382,7 @@ final class ReaderCloudTools {
         turns = (value["turns"] as? [[String: Any]] ?? []).compactMap { turn in
             guard let id = turn["id"] as? String else { return nil }
             let answer = turn["answer"] as? [String: Any]
-            return ReaderConversationTurn(id: id, question: turn["text"] as? String ?? "", answer: answer?["summary"] as? String, status: turn["status"] as? String ?? "failed", voice: Self.voiceReceipt(turn["voice"]), quote: Self.readTurnQuote(turn["quote"]))
+            return ReaderConversationTurn(id: id, question: turn["text"] as? String ?? "", answer: answer?["summary"] as? String, status: turn["status"] as? String ?? "failed", voice: Self.voiceReceipt(turn["voice"]), quote: Self.readTurnQuote(turn["quote"]), replyTo: Self.readMessageReference(turn["replyTo"]))
         }
     }
     private static func voiceReceipt(_ value: Any?) -> ChatVoiceReceipt? {
@@ -418,6 +442,9 @@ final class ReaderCloudTools {
             let text = (restored?["text"] as? String ?? question).trimmingCharacters(in: .whitespacesAndNewlines)
             guard !text.isEmpty else { error = "写点什么，或说一句话。"; return }
             body["text"] = text; body["scopeRevision"] = scopeRevision
+            if resuming == nil, let reference = pendingMessageReference {
+                body["replyTo"] = ["turnId": reference.turnId, "role": reference.role]
+            }
             if let restored { body = restored }
             if let quote = selection, quote.anchor.passageID == passageID {
                 let quotedSource = quote.sourceText ?? quote.text
@@ -433,6 +460,7 @@ final class ReaderCloudTools {
                     "chapterId": quote.anchor.chapterID, "parts": [["passageId": passageID, "layer": "original", "start": start, "end": start + quotedSource.utf16.count, "text": quotedSource]]]
             }
         }
+        let submittedReference = action == "conversation" ? pendingMessageReference : nil
         let submittedVoice = action == "conversation" ? pendingVoice : nil
         if action == "conversation" {
             if let book = localConversationBook, identity.bookID == book.id {
@@ -455,9 +483,9 @@ final class ReaderCloudTools {
                     body: frozen, action: action, passageID: passageID, preparing: true)
                 if !turns.contains(where: { $0.id == requestID }) {
                     let savedQuote = Self.readTurnQuote(body["quote"])
-                    turns.append(ReaderConversationTurn(id: requestID, question: body["text"] as? String ?? "", answer: nil, status: "running", voice: submittedVoice, quote: savedQuote))
+                    turns.append(ReaderConversationTurn(id: requestID, question: body["text"] as? String ?? "", answer: nil, status: "running", voice: submittedVoice, quote: savedQuote, replyTo: resuming == nil ? submittedReference : Self.readMessageReference(body["replyTo"])))
                 } else if let index = turns.firstIndex(where: { $0.id == requestID }) { turns[index].status = "running" }
-                if resuming == nil { question = ""; pendingVoice = nil }
+                if resuming == nil { question = ""; pendingVoice = nil; pendingMessageReference = nil }
                 chatQuoteRemoved = true; contextPinned = true
                 responseText = ""; responseStatus = "正在连接…"; queueDraftSave()
                 guard await flushConversationDraft() else { error = draftError; responseStatus = nil; return }
@@ -519,6 +547,7 @@ final class ReaderCloudTools {
                 // No generation was submitted; restore the draft without losing a newer edit.
                 if question.isEmpty { question = body["text"] as? String ?? "" }
                 if pendingVoice == nil { pendingVoice = submittedVoice ?? Self.voiceReceipt(body["voice"]) }
+                if pendingMessageReference == nil { pendingMessageReference = submittedReference }
                 chatQuoteRemoved = false
                 turns.removeAll { $0.id == requestID }; retry = nil
             } else if let index = turns.firstIndex(where: { $0.id == requestID }) { turns[index].status = "failed" }
@@ -611,7 +640,8 @@ final class ReaderCloudTools {
                 let index = turns.firstIndex { $0.id == intent.id }
                 let submitted = (try? JSONSerialization.jsonObject(with: intent.body)) as? [String: Any] ?? [:]
                 let turn = ReaderConversationTurn(id: intent.id, question: value["text"] as? String ?? submitted["text"] as? String ?? "", answer: answer?["summary"] as? String, status: status,
-                    voice: Self.voiceReceipt(value["voice"]) ?? index.flatMap { turns[$0].voice }, quote: Self.readTurnQuote(value["quote"]) ?? index.flatMap { turns[$0].quote })
+                    voice: Self.voiceReceipt(value["voice"]) ?? index.flatMap { turns[$0].voice }, quote: Self.readTurnQuote(value["quote"]) ?? index.flatMap { turns[$0].quote },
+                    replyTo: Self.readMessageReference(value["replyTo"]) ?? index.flatMap { turns[$0].replyTo })
                 if let index { turns[index] = turn } else { turns.append(turn) }
                 responseText = ""
                 if status == "running" { error = "回答仍在处理中，可稍后重试查看本次结果。"; return }
@@ -635,6 +665,9 @@ final class ReaderCloudTools {
                 retry = nil
                 if intent.action == "conversation", question.isEmpty,
                    let submitted = (try? JSONSerialization.jsonObject(with: intent.body)) as? [String: Any] { question = submitted["text"] as? String ?? "" }
+                if intent.action == "conversation", pendingMessageReference == nil {
+                    pendingMessageReference = turns.first { $0.id == intent.id }?.replyTo
+                }
                 self.error = error.localizedDescription + "\n请更新当前段落或查阅范围后重新准备，你的问题仍保留。"
             } else { self.error = error.localizedDescription + "\n可重试查看本次结果，不会另建同一请求。" }
         }

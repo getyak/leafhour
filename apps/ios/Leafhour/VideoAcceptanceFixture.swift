@@ -241,20 +241,28 @@ private final class GET317Transport: URLProtocol, @unchecked Sendable {
                   let bytes = try? Data(contentsOf: file), bytes.count <= 4 * 1024 * 1024 else { return reply(["error": "Synthetic cover fixture unavailable"], status: 404) }
             return Response(status: 200, data: bytes, delay: 0.03, mimeType: "image/webp")
         }
-        if path == "/api/library/chat" {
+        if path == "/api/library/chat" || path == "/api/library/local-chat" {
             let body = bodyObject(request)
-            var records = record("account-conversation")
+            let isLocal = path == "/api/library/local-chat"
+            if isLocal && method == "GET" { return reply(["available": true]) }
+            let conversation = isLocal ? "local-conversation-" + ((body["localBook"] as? [String: Any])?["bookId"] as? String ?? "missing") : "account-conversation"
+            var records = record(conversation)
             var turns = records["syntheticTurns"] as? [[String: Any]] ?? []
             if method == "GET" {
                 return reply(["available": true, "bookId": ReaderCloudTools.libraryChatID, "contentVersion": ReaderCloudTools.libraryChatVersion,
                     "context": NSNull(), "scope": ["mode": "library", "revision": 0], "turns": turns])
             }
-            let turn: [String: Any] = ["id": body["id"] as? String ?? "missing-id", "text": body["text"] as? String ?? "",
+            var turn: [String: Any] = ["id": body["id"] as? String ?? "missing-id", "text": body["text"] as? String ?? "",
                 "status": "completed", "answer": ["summary": arguments.contains("--ios-library-chat-markdown")
                     ? "# 合成 Markdown 回答\n\n这是 **加粗** 正文。\n\n- 列表甲\n- 列表乙\n\n> 引用内容\n\n```swift\nlet orchard = 1\n```\n\n| 项目 | 数值 |\n| --- | --- |\n| 果园 | 1 |"
                     : "合成陪读回答：这是隔离验收夹具，没有调用模型。"]]
+            if let source = body["quote"] { turn["quote"] = source }
+            if let reference = body["replyTo"] as? [String: String], let target = turns.first(where: { $0["id"] as? String == reference["turnId"] }) {
+                let text = reference["role"] == "assistant" ? (target["answer"] as? [String: Any])?["summary"] as? String : target["text"] as? String
+                turn["replyTo"] = ["turnId": reference["turnId"] ?? "", "role": reference["role"] ?? "", "text": text ?? ""]
+            }
             if !turns.contains(where: { $0["id"] as? String == turn["id"] as? String }) { turns.append(turn) }
-            records["syntheticTurns"] = turns; persist(records, bookID: "account-conversation")
+            records["syntheticTurns"] = turns; persist(records, bookID: conversation)
             return reply(turn)
         }
         if path == "/api/auth/session" {
