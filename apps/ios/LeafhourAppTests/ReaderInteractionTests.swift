@@ -7,6 +7,63 @@ import LeafhourCore
 
 @MainActor
 final class ReaderInteractionTests: XCTestCase {
+    func testTranscriptSeekStartsAtTappedSentenceAndRejectsStaleText() async throws {
+        let source = "First sentence. Second 🙂 sentence. Third sentence."
+        let session = try await session(source: source), engine = SpeechSynthesizerProbe()
+        let speech = ReaderSpeech(synthesizer: engine, audioSession: SpeechAudioSessionProbe())
+        let passage = try XCTUnwrap(session.chapter.passages.first)
+        let originalAnchor = session.currentAnchor
+        let location = ReaderSpeechLocation(chapterID: session.chapter.id, passageID: passage.id, layer: "original", snapshot: passage.text, utf16Offset: (passage.text as NSString).range(of: "Second").location + 3)
+        XCTAssertTrue(speech.seek(session, to: location))
+        XCTAssertEqual(engine.spoken.last?.speechString, "Second 🙂 sentence. Third sentence.")
+        let count = engine.spoken.count
+        XCTAssertFalse(speech.seek(session, to: .init(chapterID: location.chapterID, passageID: location.passageID, layer: "original", snapshot: "stale text", utf16Offset: 0)))
+        XCTAssertEqual(engine.spoken.count, count)
+        XCTAssertTrue(speech.playing)
+        XCTAssertEqual(session.currentAnchor, originalAnchor, "A listening seek does not write an invented reading position")
+        speech.stop()
+    }
+
+    func testTranslatedTranscriptSeekUsesItsOwnLayerAndRejectsInvalidOffsets() async throws {
+        let session = try await session(), engine = SpeechSynthesizerProbe()
+        let passage = try XCTUnwrap(session.chapter.passages.first)
+        session.updateTranslations([passage.id: ReadingTranslation(original: passage.text, literal: "第一句。第二句🙂。", interpretive: "另一种译法。")])
+        let speech = ReaderSpeech(synthesizer: engine, audioSession: SpeechAudioSessionProbe())
+        let text = "第一句。第二句🙂。"
+        XCTAssertTrue(speech.seek(session, to: .init(chapterID: session.chapter.id, passageID: passage.id, layer: "literal", snapshot: text, utf16Offset: 4)))
+        XCTAssertEqual(speech.layerTitle, "直译")
+        XCTAssertEqual(engine.spoken.last?.speechString, "第二句🙂。")
+        for offset in [-1, 500, (text as NSString).range(of: "🙂").location + 1] {
+            XCTAssertFalse(speech.seek(session, to: .init(chapterID: session.chapter.id, passageID: passage.id, layer: "literal", snapshot: text, utf16Offset: offset)))
+        }
+        speech.stop()
+    }
+
+    func testMissingTranslationFallbackDoesNotChangeTheChosenTranscriptLayer() async throws {
+        let session = try await session(source: "First source paragraph.\n\nA paragraph with no translation."), engine = SpeechSynthesizerProbe()
+        var preferences = session.state.preferences; preferences.viewMode = .translation; session.changePreferences(preferences)
+        let first = session.chapter.passages[0]
+        session.updateTranslations([first.id: ReadingTranslation(original: first.text, literal: "第一段的直译。")])
+        let speech = ReaderSpeech(synthesizer: engine, audioSession: SpeechAudioSessionProbe())
+        speech.start(session); XCTAssertEqual(speech.requestedLayer, "literal")
+        speech.move(1); XCTAssertEqual(speech.layer, "original")
+        XCTAssertEqual(speech.requestedLayer, "literal", "A missing row must not replace the whole transcript or selection layer")
+        speech.stop()
+    }
+
+    func testTemporarySpeedBoostIsBoundedAndRestoresOnPauseStopAndRelease() async throws {
+        let session = try await session(), engine = SpeechSynthesizerProbe()
+        let speech = ReaderSpeech(synthesizer: engine, audioSession: SpeechAudioSessionProbe())
+        speech.speed = 1.25; speech.start(session)
+        speech.beginSpeedBoost(); XCTAssertGreaterThan(speech.speed, 1.25)
+        for _ in 0..<30 { speech.increaseSpeedBoost() }
+        XCTAssertEqual(speech.speed, 5)
+        speech.endSpeedBoost(); XCTAssertEqual(speech.speed, 1.25)
+        speech.beginSpeedBoost(); speech.pause(); XCTAssertEqual(speech.speed, 1.25)
+        speech.toggle(session); speech.beginSpeedBoost(); speech.stop(); XCTAssertEqual(speech.speed, 1.25)
+        XCTAssertEqual(session.state.preferences.speechSpeed, 1, "A temporary boost must not persist")
+    }
+
     func testListeningSpeedSanitizesInvalidValuesAndKeepsTheRequestedEndpoints() {
         let speech = ReaderSpeech(synthesizer: SpeechSynthesizerProbe(), audioSession: SpeechAudioSessionProbe())
         speech.speed = .nan

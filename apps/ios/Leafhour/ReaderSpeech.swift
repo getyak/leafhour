@@ -34,6 +34,7 @@ final class ReaderSpeech: NSObject, AVSpeechSynthesizerDelegate {
     private(set) var position = 0
     private(set) var count = 0
     var following = true
+    private(set) var boosting = false
     var speed = 1.0 {
         didSet {
             let valid = speed.isFinite ? min(5, max(0.5, speed)) : 1
@@ -59,6 +60,7 @@ final class ReaderSpeech: NSObject, AVSpeechSynthesizerDelegate {
     @ObservationIgnored private var voiceChangePending = false
     @ObservationIgnored private var lastCheckpoint = Date.distantPast
     @ObservationIgnored private var interruption: NSObjectProtocol?
+    @ObservationIgnored private var speedBeforeBoost: Double?
 
     override convenience init() { self.init(synthesizer: ReaderSpeechAudioPlayer(), audioSession: AVAudioSession.sharedInstance()) }
     init(synthesizer: any ReaderSpeechSynthesizing, audioSession: any ReaderSpeechAudioSession) {
@@ -74,6 +76,41 @@ final class ReaderSpeech: NSObject, AVSpeechSynthesizerDelegate {
     var canNext: Bool { position + 1 < count }
     var chapterID: String? { content?.chapterID }
     var layerTitle: String { content?.layer == "literal" ? "直译" : content?.layer == "interpretive" ? "意译" : "原文" }
+    var displayOffset: Int { spokenWordRange?.location ?? spokenOffset }
+    var layer: String { content?.layer ?? "original" }
+    var requestedLayer: String { variant?.rawValue ?? "original" }
+    func beginSpeedBoost() {
+        guard playing, speedBeforeBoost == nil else { return }
+        speedBeforeBoost = speed; boosting = true; speed = min(5, max(2, speed + 0.5))
+    }
+    func increaseSpeedBoost() { if speedBeforeBoost != nil { speed = min(5, speed + 0.25) } }
+    func endSpeedBoost() {
+        guard let previous = speedBeforeBoost else { return }
+        speedBeforeBoost = nil; boosting = false; speed = previous
+    }
+    /// Validate a transcript's immutable source before interrupting live audio.
+    @discardableResult func seek(_ session: ReaderSession, to location: ReaderSpeechLocation) -> Bool {
+        guard let chapterIndex = session.book.chapters.firstIndex(where: { $0.id == location.chapterID }),
+              let passageIndex = session.book.chapters[chapterIndex].passages.firstIndex(where: { $0.id == location.passageID }),
+              location.layer == "original" || ReaderTranslationVariant(rawValue: location.layer) != nil else { return false }
+        let passage = session.book.chapters[chapterIndex].passages[passageIndex]
+        guard passage.resourcePath == nil else { return false }
+        let requestedVariant = ReaderTranslationVariant(rawValue: location.layer)
+        let candidate = ReaderSpeechContent(chapterID: location.chapterID, passage: passage, variant: requestedVariant, translation: session.translations[passage.id])
+        guard candidate.layer == location.layer, candidate.source == location.snapshot,
+              location.utf16Offset >= 0, location.utf16Offset < candidate.source.utf16.count,
+              SourceTextOffsets(candidate.source).utf16Offset(forScalarOffset: SourceTextOffsets(candidate.source).scalarOffset(forUTF16Offset: location.utf16Offset)) == location.utf16Offset else { return false }
+        stop(); self.session = session; variant = requestedVariant; markdown = nil
+        passages = session.book.chapters.enumerated().flatMap { chapter, value in
+            value.passages.enumerated().compactMap { index, item in
+                item.resourcePath == nil && !item.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? (chapter, index) : nil
+            }
+        }
+        guard let index = passages.firstIndex(where: { $0.chapter == chapterIndex && $0.passage == passageIndex }) else { return false }
+        count = passages.count; position = index; following = true; manuallyMoved = false
+        speakCurrent(sourceOffset: location.utf16Offset)
+        return playing
+    }
     func hasResumePosition(_ session: ReaderSession) -> Bool {
         guard !manuallyMoved, let saved = session.state.listeningPosition,
               saved.sourceVersion == session.book.sourceVersion, saved.viewport == session.currentAnchor,
@@ -149,6 +186,7 @@ final class ReaderSpeech: NSObject, AVSpeechSynthesizerDelegate {
         } catch { message = "声音暂时无法继续，请检查音频设备后重试。" }
     }
     func pause() {
+        endSpeedBoost()
         guard playing else { return }
         checkpoint(force: true); paused = true; playing = false
         if !synthesizer.pauseSpeaking(at: .immediate) {
@@ -157,6 +195,7 @@ final class ReaderSpeech: NSObject, AVSpeechSynthesizerDelegate {
         try? audioSession.setActive(false, options: .notifyOthersOnDeactivation)
     }
     func stop() {
+        endSpeedBoost()
         checkpoint(force: true)
         utterance = nil; voiceChangePending = false
         synthesizer.stopSpeaking(at: .immediate)
@@ -174,6 +213,7 @@ final class ReaderSpeech: NSObject, AVSpeechSynthesizerDelegate {
         else if paused { voiceChangePending = true }
     }
     func contentChanged() {
+        markdown = nil
         guard playing || paused, let current = content, let fresh = makeContent(), current.source != fresh.source || current.layer != fresh.layer || current.text != fresh.text else { return }
         stop(); message = "当前正文或译文已更新，已暂停听书。可以从当前书页重新开始。"
     }

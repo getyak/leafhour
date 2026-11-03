@@ -4,7 +4,7 @@ import LeafhourCore
 
 /// Recognize each short contact independently, including the second contact of
 /// a rapid double tap. UITapGestureRecognizer can group those contacts together.
-@MainActor private final class ReaderShortTapGestureRecognizer: UIGestureRecognizer {
+@MainActor final class ReaderShortTapGestureRecognizer: UIGestureRecognizer {
     private var activeTouch: ObjectIdentifier?
     private var beganTimestamp: TimeInterval?
     private var beganPoint = CGPoint.zero
@@ -133,7 +133,9 @@ struct ReaderTapContext: Equatable {
     }
     func action(at point: CGPoint) -> ReaderTapAction? {
         guard let destination = destination(at: point), let view else { return nil }
-        if destination == .tools, isPaged(), !UIAccessibility.isVoiceOverRunning {
+        // Side gutters have one meaning along their full height. Previously
+        // their top/bottom 44 points opened tools, making nearby taps disagree.
+        if isPaged(), !UIAccessibility.isVoiceOverRunning {
             let x = (point.x - view.bounds.minX) / max(1, view.bounds.width)
             if x < 0.3 { return .turn(.previous) }
             if x > 0.7 { return .turn(.next) }

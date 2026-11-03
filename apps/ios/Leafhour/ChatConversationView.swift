@@ -112,10 +112,11 @@ struct ChatConversationView: View {
                 HStack(alignment: .top, spacing: 8) {
                     Image(systemName: "text.quote").foregroundStyle(Color.leafInk).padding(.top, 2)
                     VStack(alignment: .leading, spacing: 4) {
-                        if !sourceExpanded { Text(source).font(.subheadline).foregroundStyle(.primary).lineLimit(2) }
-                        Text([bookTitle, sourceChapter].filter { !$0.isEmpty }.joined(separator: " · "))
-                            .font(.caption2).foregroundStyle(.secondary).lineLimit(1)
-                        Text(sourceLabel).font(.caption2).foregroundStyle(.secondary)
+                        if !sourceExpanded { Text(source).font(.subheadline).foregroundStyle(.primary).lineLimit(1) }
+                        HStack(spacing: 6) {
+                            Text(sourceLabel).fixedSize()
+                            Text([bookTitle, sourceChapter].filter { !$0.isEmpty }.joined(separator: " · ")).lineLimit(1)
+                        }.font(.caption2).foregroundStyle(.secondary)
                     }
                 }
             }.tint(Color.leafInk)
@@ -125,7 +126,8 @@ struct ChatConversationView: View {
             }.buttonStyle(.plain).foregroundStyle(.secondary).accessibilityLabel("移除本次引用")
                 .accessibilityIdentifier("chat-remove-source").disabled(tools.generating || tools.loading || tools.retry != nil)
             }
-        }.padding(10).background(Color(uiColor: .secondarySystemBackground), in: RoundedRectangle(cornerRadius: 16))
+        }.padding(.horizontal, 8).padding(.vertical, 4)
+            .overlay(alignment: .leading) { Rectangle().fill(Color.secondary.opacity(0.22)).frame(width: 1).padding(.vertical, 6) }
             .accessibilityElement(children: .contain).accessibilityIdentifier("chat-source-context")
     }
     @ViewBuilder private var status: some View {
@@ -157,7 +159,12 @@ struct ChatConversationView: View {
     }
     private var composer: some View {
         VStack(alignment: .leading, spacing: 8) {
-            if !source.isEmpty && !tools.chatQuoteRemoved { context }
+            if !source.isEmpty {
+                if !tools.chatQuoteRemoved { context }
+                else if !isLibraryConversation {
+                    Text(sourceLabel).font(.caption2).foregroundStyle(.secondary).padding(.horizontal, 8)
+                }
+            }
             if tools.canUpdateChatContext {
                 Button("使用当前选文或原文", systemImage: "arrow.triangle.2.circlepath") { tools.updateChatContext(); sourceExpanded = false }
                     .font(.subheadline).frame(minHeight: 44)
@@ -187,12 +194,13 @@ struct ChatConversationView: View {
                 Button { Task { if tools.generating { await tools.cancelConversation(cloud: cloud) } else if speech.recording { await captureVoice(sendAfter: true) } else { await send() } } } label: {
                     Group { if sendingVoice || speech.finishing { ProgressView() } else { Image(systemName: tools.generating ? "stop.fill" : "arrow.up").font(.system(size: tools.generating ? 14 : 17, weight: .semibold)) } }
                         .frame(width: 40, height: 40)
-                        .foregroundStyle(canAsk || speech.recording || tools.generating ? Color(uiColor: .systemBackground) : Color.secondary)
-                        .background(canAsk || speech.recording || tools.generating ? Color.primary : Color(uiColor: .tertiarySystemFill), in: Circle())
+                        .foregroundStyle(canAsk || speech.recording || tools.generating ? Color.primary : Color.secondary)
+                        .background(canAsk || speech.recording || tools.generating ? Color.primary.opacity(0.06) : .clear, in: RoundedRectangle(cornerRadius: 10))
                 }.buttonStyle(.plain).disabled((!canAsk && !speech.recording && !tools.generating) || speech.preparing || speech.finishing || sendingVoice)
                     .accessibilityLabel(tools.generating ? "停止回答" : speech.recording ? "发送语音和文字" : "发送消息").accessibilityIdentifier("reader-question-send")
             }.padding(.leading, 3).padding(.trailing, 6).padding(.vertical, 4)
-                .background(Color(uiColor: .secondarySystemBackground), in: RoundedRectangle(cornerRadius: 26))
+                .background(Color(uiColor: .secondarySystemBackground).opacity(0.5), in: RoundedRectangle(cornerRadius: 16))
+                .overlay { RoundedRectangle(cornerRadius: 16).strokeBorder(Color.primary.opacity(0.12), lineWidth: 0.5) }
             if speech.isActive { Text(speech.preparing ? "正在打开麦克风…" : speech.finishing ? "正在整理语音…" : "正在录音 · 点麦克风取消，点箭头发送").font(.caption).foregroundStyle(.secondary).padding(.horizontal, 8) }
             if let error = speech.error { Text(error).font(.caption).foregroundStyle(.secondary).padding(.horizontal, 8) }
         }.frame(maxWidth: 680).padding(.horizontal, 16).padding(.vertical, 10).frame(maxWidth: .infinity)
@@ -233,7 +241,7 @@ private struct ChatTurnView: View {
                 if let quote = turn.quote { ChatSavedQuoteView(quote: quote) }
                 Text(turn.question).font(.body).textSelection(.enabled)
             }.padding(.horizontal, 14).padding(.vertical, 12)
-                .background(Color(uiColor: .secondarySystemBackground), in: RoundedRectangle(cornerRadius: 18))
+                .background(Color(uiColor: .secondarySystemBackground), in: RoundedRectangle(cornerRadius: 10))
             }
             VStack(alignment: .leading, spacing: 8) {
                 if let answer = turn.answer, !answer.isEmpty { ChatMarkdownView(source: answer) }
@@ -272,6 +280,8 @@ private struct ChatSavedQuoteView: View {
         } label: {
             Label(quote.parts.map(\.text).joined(separator: "\n"), systemImage: "text.quote")
                 .font(.caption).foregroundStyle(.secondary).lineLimit(2)
-        }.accessibilityIdentifier("chat-saved-quote")
+        }.padding(.leading, 10)
+            .overlay(alignment: .leading) { Rectangle().fill(Color.secondary.opacity(0.3)).frame(width: 1) }
+            .accessibilityIdentifier("chat-saved-quote")
     }
 }

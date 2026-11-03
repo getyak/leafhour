@@ -198,10 +198,14 @@ struct ReaderScreen: View {
                                         onClear: { session.selection = nil; hasNativeTextSelection = false; selectionDismissalID = UUID() })
                                 } else {
                                     HStack(spacing: 8) {
+                                        Button { jumpChapter(-1) } label: { Image(systemName: "chevron.left").frame(width: 44, height: 44) }
+                                            .disabled(session.chapterIndex == 0).accessibilityLabel("上一章").accessibilityIdentifier("reader-previous-chapter")
                                         Text(progressCaption).font(.caption).foregroundStyle(Color.primary)
                                             .fixedSize(horizontal: false, vertical: true).multilineTextAlignment(.leading)
                                             .frame(maxWidth: .infinity, alignment: .leading)
                                             .accessibilityIdentifier("reader-progress-caption")
+                                        Button { jumpChapter(1) } label: { Image(systemName: "chevron.right").frame(width: 44, height: 44) }
+                                            .disabled(session.chapterIndex + 1 >= session.book.chapters.count).accessibilityLabel("下一章").accessibilityIdentifier("reader-next-chapter")
                                         ReaderAIButton(paper: paper, quote: nil, onOpen: { showCompanion(currentQuote) })
                                     }.padding(.horizontal, 12).accessibilityHidden(!showingBottom)
                                     ReaderBottomBar(
@@ -256,9 +260,8 @@ struct ReaderScreen: View {
                 .navigationDestination(isPresented: Binding(get: { panel?.id == "listening" }, set: { if !$0 && panel?.id == "listening" { panel = nil } })) {
                     ReaderListeningPanel(session: session, speech: speech)
                         .preferredColorScheme(session.state.preferences.colorScheme(following: systemColorScheme))
-                        .toolbar(.visible, for: .navigationBar)
                         .toolbar { ToolbarItem(placement: .confirmationAction) {
-                            Button("继续读", systemImage: "book") { panel = nil }.accessibilityIdentifier("reader-listening-return")
+                            Button("继续读", systemImage: "book") { speech.pause(); panel = nil }.accessibilityIdentifier("reader-listening-return")
                         } }
                 }
                 .navigationDestination(isPresented: Binding(get: { panel?.isCompanion == true }, set: { value in
@@ -507,6 +510,12 @@ struct ReaderScreen: View {
     private func sleepChrome() {
         guard chrome != .asleep, !bottomBarFocused, focusedControl == nil, panel == nil, session.selection == nil, !hasNativeTextSelection, !UIAccessibility.isVoiceOverRunning else { return }
         withAnimation(reduceMotion ? nil : .easeOut(duration: 0.18)) { chrome = .asleep }
+    }
+    private func jumpChapter(_ delta: Int) {
+        let index = session.chapterIndex + delta
+        guard session.book.chapters.indices.contains(index) else { return }
+        autoPage.pause(.interaction); speech.userNavigated(); session.go(to: index)
+        hasNativeTextSelection = false; session.clearTransientSelection(); selectionDismissalID = UUID(); sleepChrome()
     }
     private func readingDidScroll() { autoPage.pause(.interaction); session.recordReadingInteraction(); speech.userNavigated(); hasNativeTextSelection = false; session.clearTransientSelection(); selectionDismissalID = UUID(); sleepChrome() }
     private func wake(_: ReaderChrome) { session.recordReadingInteraction(); withAnimation(reduceMotion ? nil : .easeOut(duration: 0.16)) { chrome = chrome == .tools ? .asleep : .tools } }
