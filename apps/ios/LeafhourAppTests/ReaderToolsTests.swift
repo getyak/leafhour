@@ -51,6 +51,73 @@ final class ReaderToolsTests: XCTestCase {
         ReaderToolsURLProtocol.install(nil)
         super.tearDown()
     }
+    func testMessageReferenceAndLikesRestoreWithoutChangingTheQuestion() async throws {
+        let fixture = try await fixture(cloudBook: false, persistCloud: true), tools = ReaderCloudTools(), probe = ReaderToolsProbe()
+        probe.respond = { [self] request, body in
+            if request.url!.path == "/api/auth/session" { return (200, metadata(enabled: false)) }
+            if request.httpMethod == "GET" { return (200, ["available": true]) }
+            let reference = body["replyTo"] as? [String: String]
+            XCTAssertEqual(reference?["turnId"], "earlier")
+            XCTAssertEqual(reference?["role"], "assistant")
+            XCTAssertEqual(body["text"] as? String, "Why this phrase?")
+            return (200, ["id": body["id"]!, "text": body["text"]!, "replyTo": reference!, "status": "completed", "answer": ["summary": "A follow-up"]])
+        }
+        ReaderToolsURLProtocol.install(probe)
+        tools.configure(library: fixture.library, localBookID: fixture.session.book.id)
+        await tools.loadConversation(fixture.session, cloud: fixture.cloud)
+        tools.turns = [ReaderConversationTurn(id: "earlier", question: "An earlier question", answer: "An earlier answer", status: "completed")]
+        tools.question = "Why this phrase?"
+        tools.referenceMessage(tools.turns[0], role: "assistant")
+        tools.toggleMessageLike(turnID: "earlier", role: "assistant")
+        let saved = await tools.flushConversationDraft(); XCTAssertTrue(saved)
+        let restored = ReaderCloudTools()
+        restored.configure(library: fixture.library, localBookID: fixture.session.book.id)
+        await restored.loadConversation(fixture.session, cloud: fixture.cloud)
+        XCTAssertEqual(restored.pendingMessageReference?.text, "An earlier answer")
+        XCTAssertEqual(restored.question, "Why this phrase?")
+        XCTAssertTrue(restored.isMessageLiked(turnID: "earlier", role: "assistant"))
+        await restored.prepare("conversation", session: fixture.session, cloud: fixture.cloud)
+        XCTAssertNil(restored.pendingMessageReference)
+        XCTAssertEqual(restored.turns.last?.replyTo?.text, "An earlier answer")
+        XCTAssertEqual(restored.turns.last?.question, "Why this phrase?")
+    }
+
+    func testDefinitiveReferenceRejectionRestoresTheQuoteButPreservesANewerDraftQuote() async throws {
+        for failAtAuthentication in [true, false] {
+            for selectNewerReference in [true, false] {
+                let fixture = try await fixture(), tools = ReaderCloudTools(), probe = ReaderToolsProbe()
+                let original = ReaderConversationTurn(id: "original", question: "Earlier", answer: "Earlier answer", status: "completed")
+                let newer = ReaderConversationTurn(id: "newer", question: "Newer", answer: "Newer answer", status: "completed")
+                tools.turns = [original, newer]; tools.question = "Follow up"
+                tools.referenceMessage(original, role: "assistant")
+                probe.respond = { [self] request, _ in
+                    if request.url!.path == "/api/auth/session" {
+                        if selectNewerReference { tools.referenceMessage(newer, role: "assistant") }
+                        if failAtAuthentication { return (401, ["error": "Synthetic session rejection"]) }
+                        return (200, metadata(enabled: false))
+                    }
+                    return (422, ["error": "Synthetic definitive rejection"])
+                }
+                ReaderToolsURLProtocol.install(probe)
+                await tools.prepare("conversation", session: fixture.session, cloud: fixture.cloud)
+                XCTAssertEqual(tools.question, "Follow up")
+                XCTAssertEqual(tools.pendingMessageReference?.turnId, selectNewerReference ? "newer" : "original")
+                XCTAssertNil(tools.retry)
+            }
+        }
+    }
+
+    func testPartialAssistantCannotBecomeAQuotedMessage() {
+        let tools = ReaderCloudTools()
+        let turn = ReaderConversationTurn(id: "partial", question: "Keep my words", answer: "Provisional", status: "running")
+        tools.referenceMessage(turn, role: "assistant")
+        XCTAssertNil(tools.pendingMessageReference)
+        tools.referenceMessage(turn, role: "user")
+        XCTAssertEqual(tools.pendingMessageReference?.text, "Keep my words")
+        tools.referenceMessage(turn, role: "tool")
+        XCTAssertEqual(tools.pendingMessageReference?.role, "user")
+    }
+
     func testLocalStreamReadsPinnedContextAfterReopeningOnAnotherPage() async throws {
         let fixture = try await fixture(source: "First paragraph.\n\nSecond paragraph.", cloudBook: false, persistCloud: true)
         let probe = ReaderToolsProbe(), initial = ReaderCloudTools()

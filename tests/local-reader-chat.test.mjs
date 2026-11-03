@@ -150,3 +150,14 @@ test('local chapter cursor schemas preserve large legitimate offsets for native 
  let count=0;const turn=await f.chat.local.send(owner,input(),{onToolRequest:async frame=>{count++;await f.chat.local.submitTool(owner,frame.id,frame.callId,envelope({error:{code:'INVALID_CURSOR',message:'Native validated actual source length'}}));}});
  assert.equal(turn.status,'completed');assert.equal(count,1);
 });
+
+test('local message replies use same-account receipts and match the exact local book version',async t=>{
+ const jobs=[];const f=await fixture(t,async job=>{jobs.push(job);return answer;});await f.chat.local.send(owner,input('local-source'));
+ const request={...input('local-reply'),text:'Explain that claim',replyTo:{turnId:'local-source',role:'assistant',text:'Untrusted replacement'}};
+ const saved=await f.chat.local.send(owner,request);assert.equal(saved.status,'completed');assert.deepEqual(saved.replyTo,{turnId:'local-source',role:'assistant',text:'An isolated explanation.'});assert.deepEqual(jobs[1].replyTo,saved.replyTo);assert.equal(saved.text,'Explain that claim');
+ const second=await f.make();assert.deepEqual(await second.local.send(owner,{...request,replyTo:{turnId:'local-source',role:'assistant'}}),saved);assert.equal(jobs.length,2);
+ await assert.rejects(second.local.send(owner,{...request,replyTo:{turnId:'local-source',role:'user'}}),{status:409});
+ await assert.rejects(second.local.send(other,{...input('foreign-reference'),replyTo:{turnId:'local-source',role:'assistant'}}),{status:404});
+ for(const patch of [{localBook:{...input().localBook,bookId:'other-local-book'}},{contentVersion:'other-version',localBook:{...input().localBook,contentVersion:'other-version'}}])await assert.rejects(second.local.send(owner,{...input('mismatched-local-reference'),...patch,replyTo:{turnId:'local-source',role:'assistant'}}),{status:409});
+ assert.equal(await second.local.findTurn(owner,'mismatched-local-reference'),null);assert.equal(jobs.length,2);
+});

@@ -76,6 +76,7 @@ struct ReaderScreen: View {
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @ScaledMetric(relativeTo: .caption2) private var quietProgressHeight: CGFloat = 16
     @State private var chrome: ReaderChrome = .asleep
+    @State private var returningToLibrary = false
     @State private var panel: ReaderPanel?
     @State private var speech = ReaderSpeech()
     @State private var autoPage = ReaderAutoPageController()
@@ -88,6 +89,9 @@ struct ReaderScreen: View {
     @State private var clockID = UUID()
     @State private var bottomBarFocused = false
     @State private var pagePosition: ReaderPagePosition?
+    @State private var progressIndex: ReaderProgressIndex?
+    @State private var progressVisible = false
+    @State private var progressPulse = UUID()
     @State private var visiblePage: ReaderVisiblePage?
     @State private var recoveryExport: RecordsDocument?
     @State private var exportingRecovery = false
@@ -118,10 +122,10 @@ struct ReaderScreen: View {
         .statusBarHidden(true)
         .interactiveDismissDisabled(panel?.isCompanion != true && (session.saving || session.saveError != nil))
         .sheet(item: Binding<ReaderPanel?>(get: {
-            guard let panel, !panel.isCompanion, panel.id != "contents", panel.id != "listening" else { return nil }
+            guard let panel, panel.id != "contents", panel.id != "listening" else { return nil }
             return panel
         }, set: { value in
-            if value == nil && (panel?.isCompanion == true || panel?.id == "contents" || panel?.id == "listening") { return }
+            if value == nil && (panel?.id == "contents" || panel?.id == "listening") { return }
             panel = value
         }), onDismiss: {
             hasNativeTextSelection = false; session.clearTransientSelection(); selectionDismissalID = UUID(); chrome = .asleep
@@ -203,10 +207,7 @@ struct ReaderScreen: View {
                                         onClear: { session.selection = nil; hasNativeTextSelection = false; selectionDismissalID = UUID() })
                                 } else {
                                     HStack(spacing: 8) {
-                                        Text(progressCaption).font(.caption).foregroundStyle(Color.primary)
-                                            .fixedSize(horizontal: false, vertical: true).multilineTextAlignment(.leading)
-                                            .frame(maxWidth: .infinity, alignment: .leading)
-                                            .accessibilityIdentifier("reader-progress-caption")
+                                        Spacer(minLength: 0)
                                         ReaderAIButton(paper: paper, quote: nil, onOpen: { showCompanion(currentQuote) })
                                     }.padding(.horizontal, 12).accessibilityHidden(!showingBottom)
                                     ReaderReadingTransport(canPreviousChapter: session.chapterIndex > 0,
@@ -246,16 +247,24 @@ struct ReaderScreen: View {
                     }
                 }
             }
+            .overlay(alignment: .bottomTrailing) { floatingProgress(showingBottom: showingBottom) }
             .onPreferenceChange(ReaderChromeHeightKey.self) { recordChrome($0, for: layout) }
+        }
+    }
+    @ViewBuilder private func floatingProgress(showingBottom: Bool) -> some View {
+        if panel == nil && session.selection == nil && !hasNativeTextSelection && (progressVisible || showingBottom || session.state.preferences.alwaysShowReadingProgress) {
+            Text(progressCaption).font(.caption2.monospacedDigit()).foregroundStyle(.secondary)
+                .padding(.horizontal, 10).padding(.vertical, 6)
+                .background(paper.opacity(0.96), in: Capsule())
+                .padding(.trailing, 18)
+                .padding(.bottom, showingBottom ? (chromeMetrics?.bottom ?? 180) + 8 : 8)
+                .allowsHitTesting(false).accessibilityLabel(progressDescription)
+                .accessibilityIdentifier("reader-progress-caption")
         }
     }
     private var readingRefreshKey: String {
         let visible = scenePhase == .active && panel?.isCompanion != true
         return "\(session.chapter.id):\(session.state.preferences.viewMode.rawValue):\(session.translationSettings):\(session.packageVerificationPending):\(visible)"
-    }
-    private var conversationSelection: SelectedQuote? {
-        if case .companion(let quote)? = panel { return quote }
-        return nil
     }
     private var navigationReader: some View {
         NavigationStack {
@@ -269,18 +278,7 @@ struct ReaderScreen: View {
                             Button("继续读", systemImage: "book") { speech.pause(); panel = nil }.accessibilityIdentifier("reader-listening-return")
                         } }
                 }
-                .navigationDestination(isPresented: Binding(get: { panel?.isCompanion == true }, set: { value in
-                    if !value && panel?.isCompanion == true { panel = nil; session.clearTransientSelection(); selectionDismissalID = UUID() }
-                })) {
-                    ReaderConversationPanel(session: session, tools: tools, cloud: cloud, selection: conversationSelection, library: library)
-                        .toolbar(.visible, for: .navigationBar)
-                        .toolbar {
-                            ToolbarItem(placement: .confirmationAction) {
-                                Button("继续读", systemImage: "book") { panel = nil }
-                                    .frame(minHeight: 44).accessibilityIdentifier("reader-chat-return")
-                            }
-                        }
-                }
+
         }
         .accessibilityHidden(panel?.id == "contents")
         .allowsHitTesting(panel?.id != "contents")
@@ -304,8 +302,23 @@ struct ReaderScreen: View {
             if old.speechSpeed != new.speechSpeed { speech.speed = new.speechSpeed }
         }
     }
-    private var synchronizedReader: some View {
+    private var progressTrackedReader: some View {
         trackedReader
+        .task(id: session.book.sourceVersion) {
+            let book = session.book
+            let index = await Task.detached(priority: .utility) { ReaderProgressIndex(book: book) }.value
+            if !Task.isCancelled { progressIndex = index }
+        }
+        .onChange(of: pagePosition) { _, _ in revealProgress() }
+        .onChange(of: session.currentAnchor) { _, _ in revealProgress() }
+        .task(id: progressPulse) {
+            do { try await Task.sleep(for: .seconds(2)) } catch { return }
+            guard !Task.isCancelled else { return }
+            withAnimation(reduceMotion ? nil : .easeOut(duration: 0.18)) { progressVisible = false }
+        }
+    }
+    private var synchronizedReader: some View {
+        progressTrackedReader
         .onReceive(NotificationCenter.default.publisher(for: UIAccessibility.voiceOverStatusDidChangeNotification)) { _ in voiceOverRunning = UIAccessibility.isVoiceOverRunning }
         .onChange(of: focusedControl) { _, _ in clockID = UUID() }
         .onChange(of: session.selection?.id) { _, _ in clockID = UUID() }
@@ -414,7 +427,7 @@ struct ReaderScreen: View {
     private func settleChrome() async {
         guard chrome != .asleep else { return }
         do { try await Task.sleep(for: .seconds(6)) } catch { return }
-        guard !Task.isCancelled, !bottomBarFocused, focusedControl == nil, panel == nil,
+        guard !Task.isCancelled, !returningToLibrary, !bottomBarFocused, focusedControl == nil, panel == nil,
               session.selection == nil, !hasNativeTextSelection, !UIAccessibility.isVoiceOverRunning else { return }
         sleepChrome()
     }
@@ -471,10 +484,7 @@ struct ReaderScreen: View {
         if autoPage.showsStatus && !speech.playing && !speech.paused {
             ReaderAutoPageStatusControl(controller: autoPage, onContinue: startAutoPaging, onSettings: { present(.autoPage) })
                 .padding(.horizontal, 16)
-        } else if session.state.preferences.alwaysShowReadingProgress {
-            Text(progressCaption).font(.caption2).foregroundStyle(.secondary).lineLimit(1).frame(height: quietProgressHeight)
-                .frame(maxWidth: .infinity).padding(.bottom, 2).allowsHitTesting(false)
-                .accessibilityIdentifier("reader-quiet-progress")
+
         }
     }
     @ViewBuilder private func navigationHeader(compact: Bool) -> some View {
@@ -497,19 +507,29 @@ struct ReaderScreen: View {
     }
     private func backButton(compact: Bool) -> some View {
         Button { speech.pause(); Task { await finishAndDismiss() } } label: {
-            Label("返回书房", systemImage: "chevron.left").labelStyle(.iconOnly)
-                .font(compact ? .system(size: 20) : .body)
+            Group {
+                if returningToLibrary { ProgressView() }
+                else { Label("返回书房", systemImage: "chevron.left").labelStyle(.iconOnly) }
+            }.font(compact ? .system(size: 20) : .body)
                 .frame(minWidth: 44, minHeight: 44).contentShape(Rectangle())
-        }.focused($focusedControl, equals: .back)
+        }.disabled(returningToLibrary)
+            .accessibilityLabel(returningToLibrary ? "正在保存阅读记录" : "返回书房")
+            .focused($focusedControl, equals: .back)
             .accessibilityHidden(chrome != .top && chrome != .tools)
     }
     private func finishAndDismiss() async {
+        guard !returningToLibrary else { return }
+        returningToLibrary = true
+        defer { returningToLibrary = false }
+        autoPage.pause(.panel)
         session.finishReadingTime()
-        guard await session.flushReadingTime() else {
+        async let savedTime = session.flushReadingTime()
+        async let savedState = session.flush()
+        let (timeSaved, receipt) = await (savedTime, savedState)
+        guard timeSaved else {
             session.message = session.readingTimeError ?? "阅读时间尚未保存，请打开阅读工具重试。"
             return
         }
-        let receipt = await session.flush()
         if session.isCurrent(receipt) { dismiss() }
     }
     private func bookTitleButton(compact: Bool) -> some View {
@@ -544,17 +564,13 @@ struct ReaderScreen: View {
     }
     private var progressDescription: String {
         let unit = session.book.kind == .pdf ? "页" : "章"
-        let chapter = "第 \(session.chapterIndex + 1) / \(session.book.chapters.count) \(unit) · \(session.chapter.title)"
-        guard session.book.kind != .pdf, session.state.preferences.navigationMode == .paged,
-              let pagePosition, pagePosition.chapterIndex == session.chapterIndex, pagePosition.isChapterComplete else { return chapter }
-        return chapter + " · 本章第 \(pagePosition.index + 1) / \(pagePosition.count) 屏"
+        return "第 \(session.chapterIndex + 1) / \(session.book.chapters.count) \(unit) · \(session.chapter.title) · " + progressCaption
     }
     private var progressCaption: String {
-        let unit = session.book.kind == .pdf ? "页" : "章"
-        let chapter = "第 \(session.chapterIndex + 1) / \(session.book.chapters.count) \(unit)"
-        guard session.book.kind != .pdf, session.state.preferences.navigationMode == .paged,
-              let pagePosition, pagePosition.chapterIndex == session.chapterIndex, pagePosition.isChapterComplete else { return chapter }
-        return chapter + " · 本章 \(pagePosition.index + 1) / \(pagePosition.count) 屏"
+        if let fraction = progressIndex?.fraction(chapterIndex: session.chapterIndex, anchor: session.currentAnchor) {
+            return (session.book.kind == .pdf ? "" : "约 ") + "\(Int((fraction * 100).rounded()))%"
+        }
+        return "第 \(session.chapterIndex + 1) / \(session.book.chapters.count) " + (session.book.kind == .pdf ? "页" : "章")
     }
     private func sleepChrome() {
         guard chrome != .asleep, !bottomBarFocused, focusedControl == nil, panel == nil, session.selection == nil, !hasNativeTextSelection, !UIAccessibility.isVoiceOverRunning else { return }
@@ -573,7 +589,8 @@ struct ReaderScreen: View {
         autoPage.pause(.interaction); speech.userNavigated(); session.go(to: index)
         hasNativeTextSelection = false; session.clearTransientSelection(); selectionDismissalID = UUID(); chrome = .tools; clockID = UUID()
     }
-    private func readingDidScroll() { autoPage.pause(.interaction); session.recordReadingInteraction(); speech.userNavigated(); hasNativeTextSelection = false; session.clearTransientSelection(); selectionDismissalID = UUID(); sleepChrome() }
+    private func revealProgress() { progressVisible = true; progressPulse = UUID() }
+    private func readingDidScroll() { revealProgress(); autoPage.pause(.interaction); session.recordReadingInteraction(); speech.userNavigated(); hasNativeTextSelection = false; session.clearTransientSelection(); selectionDismissalID = UUID(); sleepChrome() }
     private func wake(_: ReaderChrome) { session.recordReadingInteraction(); withAnimation(reduceMotion ? nil : .easeOut(duration: 0.16)) { chrome = chrome == .tools ? .asleep : .tools } }
     private func revealTools() {
         autoPage.pause(.interaction)

@@ -3,6 +3,53 @@ import Observation
 @testable import LeafhourCore
 
 final class ReaderSessionTests: XCTestCase {
+    @MainActor func testSlowWriteCoalescesQueuedDraftsAndRetainsLatestVisiblePosition() async throws {
+        let fixture = try await fixture(), first = expectation(description: "Earlier state write suspended"), latest = expectation(description: "Latest state write suspended")
+        let store = GatedStateStore(library: fixture.library, starts: [first, latest])
+        let session = fixture.session(state: fixture.state, store: store)
+        session.draft(fixture.quote, text: "First durable edit")
+        await fulfillment(of: [first], timeout: 3)
+        for number in 1...100 { session.draft(fixture.quote, text: "Latest edit \(number)") }
+        var visible = fixture.quote.anchor; visible.characterOffset = 7
+        session.recordVisible(visible, navigationID: session.navigationID)
+        let flush = Task { await session.flush() }
+        await Task.yield()
+        await store.release(1)
+        await fulfillment(of: [latest], timeout: 3)
+        await store.release(2)
+        let receipt = await flush.value
+        XCTAssertTrue(session.isCurrent(receipt))
+        let saved = try await fixture.library.state(fixture.book.id)
+        XCTAssertEqual(saved.drafts[fixture.quote.id]?.body, "Latest edit 100")
+        XCTAssertEqual(saved.anchor, visible)
+        let count = await store.count
+        XCTAssertEqual(count, 2, "A return must drain the in-flight write and latest complete state, rather than replay every superseded keystroke")
+    }
+
+    @MainActor func testCoalescedLatestWriteFailurePreservesDurableStateAndEditableWorkForRetry() async throws {
+        let fixture = try await fixture(), first = expectation(description: "Earlier state write suspended"), latest = expectation(description: "Latest state write suspended")
+        let store = GatedStateStore(library: fixture.library, starts: [first, latest])
+        let session = fixture.session(state: fixture.state, store: store)
+        session.draft(fixture.quote, text: "Previously saved")
+        await fulfillment(of: [first], timeout: 3)
+        for number in 1...100 { session.draft(fixture.quote, text: "Unsaved edit \(number)") }
+        await store.release(1)
+        await fulfillment(of: [latest], timeout: 3)
+        await store.release(2, failing: true)
+        let failed = await session.flush()
+        XCTAssertFalse(failed.succeeded)
+        XCTAssertNotNil(session.saveError)
+        XCTAssertEqual(session.state.drafts[fixture.quote.id]?.body, "Unsaved edit 100")
+        let durable = try await fixture.library.state(fixture.book.id)
+        XCTAssertEqual(durable.drafts[fixture.quote.id]?.body, "Previously saved")
+        session.save()
+        let retried = await session.flush()
+        XCTAssertTrue(session.isCurrent(retried))
+        let saved = try await fixture.library.state(fixture.book.id)
+        XCTAssertEqual(saved.drafts[fixture.quote.id]?.body, "Unsaved edit 100")
+        XCTAssertNil(session.saveError)
+    }
+
     @MainActor func testIntegrityFailureCancelsQueuedWritesAndRetainsTheirWorkForRecovery() async throws {
         let fixture = try await fixture(), first = expectation(description: "Earlier state write suspended")
         let store = GatedStateStore(library: fixture.library, starts: [first])

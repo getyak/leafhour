@@ -69,7 +69,7 @@ struct ReaderPanelView: View {
                 case .bookInformation: ReaderBookInformationPanel(book: session.book)
                 case .note(let quote): NoteEditorPanel(quote: quote, session: session)
                 case .companion(let quote):
-                    ReaderConversationPanel(session: session, tools: tools, cloud: cloud, selection: quote, library: library, title: "Chat")
+                    ReaderConversationPanel(session: session, tools: tools, cloud: cloud, selection: quote, library: library, title: "旁注")
                 case .source(let quote):
                     ScrollView {
                         VStack(alignment: .leading, spacing: 18) {
@@ -90,8 +90,9 @@ struct ReaderPanelView: View {
                 if !isNoteEditor && !isShare {
                     ToolbarItem(placement: .cancellationAction) {
                         Button(action: continueReading) {
-                            Text("继续读").font(.body).frame(minHeight: 44).contentShape(Rectangle())
-                        }
+                            if panel.isCompanion { Image(systemName: "xmark").frame(width: 44, height: 44) }
+                            else { Text("继续读").font(.body).frame(minHeight: 44).contentShape(Rectangle()) }
+                        }.accessibilityLabel("继续读").accessibilityIdentifier(panel.isCompanion ? "reader-chat-return" : "reader-panel-return")
                     }
                 }
             }

@@ -258,6 +258,9 @@ public final class ReaderSession: Identifiable {
         saving = true
         pending = Task {
             await previous?.value
+            // Every snapshot is complete. Keep an in-flight durable write, but
+            // let the latest queued snapshot carry superseded edits together.
+            guard version == revision else { return }
             guard !Task.isCancelled, packageVerificationError == nil else { if version == revision { saving = false }; return }
             do {
                 if let sharedPreferences {
@@ -266,6 +269,7 @@ public final class ReaderSession: Identifiable {
                 }
                 // Cloud state stores may schedule synchronization here. The
                 // shared authority must already expose this preference change.
+                guard version == revision else { return }
                 guard !Task.isCancelled, packageVerificationError == nil else { if version == revision { saving = false }; return }
                 try await library.saveState(snapshot, bookID: book.id)
                 persistedState = snapshot

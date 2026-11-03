@@ -1,3 +1,4 @@
+import {normalizeChatReplyTarget} from '../app/portable-chat.mjs';
 import {LOCAL_CHAT_ID,normalizeLocalChatInput} from './local-reader-chat.mjs';
 import {translationDirection,projectTranslation} from './translation-languages.mjs';
 import {createHash} from 'node:crypto';
@@ -5,7 +6,7 @@ import {fail} from './document-import.mjs';
 import {hasCompleteTranslationPair} from './translation-batch.mjs';
 import {withProviderMeter} from './provider-metering.mjs';
 import {LIBRARY_CHAT_ID,LIBRARY_CHAT_VERSION,LIBRARY_CHAT_PASSAGE} from '../app/library-chat-context.mjs';
-const allowed={translation:['id','passageId','contentVersion','sourceLanguage','targetLanguage'],conversation:['id','text','passageId','contentVersion','scopeRevision','quote','preferenceWrites','peopleWrites','voice'],annotation:['id','threadId','quote','highlightId','text','responseLocale']};
+const allowed={translation:['id','passageId','contentVersion','sourceLanguage','targetLanguage'],conversation:['id','text','passageId','contentVersion','scopeRevision','quote','replyTo','preferenceWrites','peopleWrites','voice'],annotation:['id','threadId','quote','highlightId','text','responseLocale']};
 const stable=value=>value===null||typeof value!=='object'?value:Array.isArray(value)?value.map(stable):Object.fromEntries(Object.keys(value).sort().map(k=>[k,stable(value[k])]));
 const hash=value=>createHash('sha256').update(JSON.stringify(stable(value))).digest('hex');
 const paragraphs=book=>book.sections.flatMap(s=>s.paragraphs);
@@ -14,7 +15,7 @@ function cleanInput(input,action){
  if(!input||typeof input!=='object'||Array.isArray(input)||!allowed[action]||Object.keys(input).some(k=>k!=='billing'&&!allowed[action].includes(k)))throw fail('收费请求格式不正确',400);
  if(action==='conversation'&&input.peopleWrites!==undefined&&typeof input.peopleWrites!=='boolean')throw fail('收费请求格式不正确',400);
  if(action==='conversation'&&input.preferenceWrites!==undefined&&typeof input.preferenceWrites!=='boolean')throw fail('收费请求格式不正确',400);
- const {billing,...body}=input;return body;
+ const {billing,...body}=input;return {...body,...(action==='conversation'&&body.replyTo!==undefined?{replyTo:normalizeChatReplyTarget(body.replyTo)}:{})};
 }
 export function createCreditGate({billing,library,chat,record,clock=Date.now}={}){
  const enabled=()=>billing?.enabled===true;
@@ -93,7 +94,7 @@ export function createCreditGate({billing,library,chat,record,clock=Date.now}={}
   const cached=await cache(user,action,bookId,body);
   if(cached){
    if(localConversation(action,bookId)&&(!sameLocal(cached,body)))throw fail('重复提交标识与原本机请求不一致',409);
-   if(action==='conversation'&&(cached.text!==body.text||cached.passageId!==body.passageId||cached.contentVersion!==body.contentVersion||(cached.scopeRevision??0)!==(body.scopeRevision??0)||!!cached.peopleWrites!==!!body.peopleWrites||!!cached.preferenceWrites!==!!body.preferenceWrites||hash(cached.voice??null)!==hash(body.voice??null)||hash(cached.quote??null)!==hash(body.quote??null)))throw fail('重复提交标识与原请求不一致',409);
+   if(action==='conversation'&&(cached.text!==body.text||cached.passageId!==body.passageId||cached.contentVersion!==body.contentVersion||(cached.scopeRevision??0)!==(body.scopeRevision??0)||!!cached.peopleWrites!==!!body.peopleWrites||!!cached.preferenceWrites!==!!body.preferenceWrites||hash(cached.voice??null)!==hash(body.voice??null)||hash(cached.quote??null)!==hash(body.quote??null)||hash(cached.replyTo?normalizeChatReplyTarget(cached.replyTo):null)!==hash(body.replyTo??null)))throw fail('重复提交标识与原请求不一致',409);
    const op=body.id&&user?.id?await billing.operation({ownerId:user.id,operationId:operationId(user,action,bookId,body.id)}):null;
    if(op){
     if(op.scope.requestHash!==hash(body))throw fail('重复提交标识与原请求不一致',409);

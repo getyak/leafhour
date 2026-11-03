@@ -259,3 +259,25 @@ test('voice receipts are validated by owner, stored and included in exact retry 
  await assert.rejects(service.sendLibrary(owner,{...body,voice:{...receipt,id:'other'}}),{status:409});
  assert.ok(validations);assert.deepEqual((await service.exportLibraryHistory(owner)).turns[0].voice,receipt);
 });
+
+test('account message replies stay in their conversation and pass the billing gate as structured references',async t=>{
+ const jobs=[];const {service,library}=await setup(t,{generator:async job=>{jobs.push(job);return answer;}});
+ await service.sendLibrary(owner,input('account-source','Original account question'));
+ const book=await library.importDocument(owner,{filename:'reply.txt',bytes:Buffer.from('Separate book source.')}),passageId=book.sections[0].paragraphs[0].id;
+ await service.send(owner,book.bookId,{id:'book-only-source',text:'Book question',passageId,contentVersion:book.contentVersion});
+ await assert.rejects(service.sendLibrary(owner,{...input('cross-book-reply'),replyTo:{turnId:'book-only-source',role:'user'}}),{status:404});
+ await assert.rejects(service.sendLibrary(other,{...input('cross-owner-reply'),replyTo:{turnId:'account-source',role:'user'}}),{status:404});
+ const billing=createBillingService({store:createBillingMemoryStore(),enabled:false}),gate=createCreditGate({billing,library,chat:service}),body={...input('account-reply','Why?'),replyTo:{turnId:'account-source',role:'assistant',text:'Client text is not authoritative'}};
+ const saved=await gate.run({user:owner,action:'conversation',bookId:LIBRARY_CHAT_ID,input:body,execute:normalized=>service.sendLibrary(owner,normalized)});
+ assert.deepEqual(saved.replyTo,{turnId:'account-source',role:'assistant',text:'A synthetic direct answer.'});assert.deepEqual(jobs.at(-1).replyTo,saved.replyTo);assert.deepEqual((await service.exportLibraryHistory(owner)).turns.at(-1).replyTo,saved.replyTo);
+});
+
+test('paid message replies normalize preview text and reject changing a pre-existing uncharged reference',async t=>{
+ let calls=0;const {service,library}=await setup(t,{generator:async()=>{calls++;return answer;}}),billing=createBillingService({store:createBillingMemoryStore(),enabled:true}),gate=createCreditGate({billing,library,chat:service});
+ await billing.trial({ownerId:owner.id,verified:true});await service.sendLibrary(owner,input('paid-reference-source','Original source'));
+ const body={...input('paid-reference-reply','Continue'),replyTo:{turnId:'paid-reference-source',role:'assistant',text:'Forged preview'}},quote=await gate.quote(owner,{action:'conversation',bookId:LIBRARY_CHAT_ID,input:body}),request={...body,billing:{quoteId:quote.id,idempotencyKey:'paid-reference-charge'}};
+ const params={user:owner,action:'conversation',bookId:LIBRARY_CHAT_ID,input:request,execute:normalized=>service.sendLibrary(owner,normalized)},saved=await gate.run(params);assert.equal(saved.replyTo.text,answer.summary);
+ assert.deepEqual(await gate.run({...params,input:{...request,replyTo:{turnId:'paid-reference-source',role:'assistant',text:'Another preview'}}}),saved);assert.equal(calls,2);assert.equal((await billing.account({ownerId:owner.id})).consumedUnits,4000000);
+ const uncharged={...input('uncharged-reference'),replyTo:{turnId:'paid-reference-source',role:'user'}};await service.sendLibrary(owner,uncharged);
+ await assert.rejects(gate.run({...params,input:{...uncharged,replyTo:{turnId:'paid-reference-source',role:'assistant'}}}),{status:409});
+});

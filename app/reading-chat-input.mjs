@@ -1,10 +1,11 @@
 import {normalizeReadingChatQuote} from './reading-chat-quote.mjs';
+import {normalizeChatReplyReference} from './portable-chat.mjs';
 export function encodeReadingChatInput(job,{inputLabel='读者这次说：',bounded=false}={}){
- const payload={location:job.book===null?{scope:'library',currentBook:null}:{bookId:job.book.bookId,contentVersion:job.book.contentVersion,title:job.book.title,passageId:job.passageId,...(job.chapterId?{chapterId:job.chapterId}:{}),...(job.chapterTitle?{chapterTitle:job.chapterTitle}:{})},history:[],...(job.quote!==undefined?{selectedQuote:normalizeReadingChatQuote(job.quote,{bounded})}:{})};
+ const payload={location:job.book===null?{scope:'library',currentBook:null}:{bookId:job.book.bookId,contentVersion:job.book.contentVersion,title:job.book.title,passageId:job.passageId,...(job.chapterId?{chapterId:job.chapterId}:{}),...(job.chapterTitle?{chapterTitle:job.chapterTitle}:{})},history:[],...(job.quote!==undefined?{selectedQuote:normalizeReadingChatQuote(job.quote,{bounded})}:{}),...(job.replyTo!==undefined?{replyTo:normalizeChatReplyReference(job.replyTo)}:{})};
  const encode=()=>JSON.stringify(payload)+'\n\n'+inputLabel+'\n'+job.text;
  const groups=[];
  for(const message of (job.history||[]).filter(m=>['user','assistant'].includes(m.role)&&typeof m.content==='string')){
-  const row={role:message.role,content:message.content,...(message.role==='user'&&message.quote!==undefined?{selectedQuote:normalizeReadingChatQuote(message.quote,{bounded})}:{})};
+  const row={role:message.role,content:message.content,...(message.role==='user'&&message.quote!==undefined?{selectedQuote:normalizeReadingChatQuote(message.quote,{bounded})}:{}),...(message.role==='user'&&message.replyTo!==undefined?{replyTo:normalizeChatReplyReference(message.replyTo)}:{})};
   if(row.role==='assistant'&&groups.at(-1)?.length===1&&groups.at(-1)[0].role==='user')groups.at(-1).push(row);else groups.push([row]);
  }
  if(bounded){

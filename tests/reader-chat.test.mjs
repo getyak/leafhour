@@ -394,3 +394,39 @@ test('book archives retain trusted book scope while imported library history sta
  const exported=await f.service.exportHistory(alice,'chat-book');await f.seed(bob);await f.service.restoreHistory(bob,f.book,exported,[f.book]);
  await f.service.send(bob,'chat-book',input({id:'after-import',text:'New book question'}));assert.deepEqual(jobs.at(-1).history,[]);
 });
+
+test('message replies resolve the saved speaker text, retain structured history, and survive export/restore',async t=>{
+ const jobs=[];let calls=0;const f=await fixture(t,{generator:async job=>{jobs.push(job);calls++;return validAnswer();}});
+ const original=await f.service.send(alice,'chat-book',input({id:'reply-source',text:'Original reader question'}));
+ const reply={...input({id:'reply-user',text:'Why?',replyTo:{turnId:original.id,role:'user',text:'FORGED CONTENT'}})};
+ const result=await f.service.send(alice,'chat-book',reply);
+ assert.equal(result.status,'completed');assert.equal(result.text,'Why?');assert.deepEqual(result.replyTo,{turnId:'reply-source',role:'user',text:'Original reader question'});assert.deepEqual(jobs[1].replyTo,result.replyTo);
+ const toAssistant=await f.service.send(alice,'chat-book',input({id:'reply-assistant',replyTo:{turnId:original.id,role:'assistant'}}));
+ assert.deepEqual(toAssistant.replyTo,{turnId:'reply-source',role:'assistant',text:'这里解释当前原文的意思。'});
+ assert.deepEqual(jobs[2].history.find(m=>m.content==='Why?').replyTo,result.replyTo);
+ assert.deepEqual(await f.service.send(alice,'chat-book',{...reply,replyTo:{turnId:original.id,role:'user',text:'Another forgery'}}),result);assert.equal(calls,3);
+ await assert.rejects(f.service.send(alice,'chat-book',{...reply,replyTo:{turnId:original.id,role:'assistant'}}),{status:409});
+ const exported=await f.service.exportHistory(alice,'chat-book');assert.deepEqual(exported.turns[1].replyTo,result.replyTo);
+ await f.seed(bob);await f.service.restoreHistory(bob,f.book,exported,[f.book]);assert.deepEqual((await f.service.findTurn(bob,'chat-book','reply-user')).replyTo,result.replyTo);
+ const forged=structuredClone(exported);forged.turns[1].replyTo.text='Invented archive reference';await assert.rejects(f.service.validateHistory(bob,f.book,forged,[f.book]));
+});
+
+test('message replies reject missing, foreign, stale or unfinished assistant targets before saving or generating',async t=>{
+ let calls=0;const f=await fixture(t,{generator:async()=>{calls++;return validAnswer();}});await f.seed(bob);
+ await f.service.send(bob,'chat-book',input({id:'foreign-message'}));
+ for(const replyTo of [{turnId:'foreign-message',role:'user'},{turnId:'missing',role:'assistant'},{turnId:'missing',role:'system'},{turnId:'missing',role:'user',bookId:'other'}])await assert.rejects(f.service.send(alice,'chat-book',input({id:'rejected-reply',replyTo})));
+ assert.equal(calls,1);assert.deepEqual((await f.service.view(alice,'chat-book')).turns,[]);
+ const failedService=await f.create({generator:async()=>{throw Error('Synthetic failure');}});const failed=await failedService.send(alice,'chat-book',input({id:'failed-source'}));assert.equal(failed.status,'failed');
+ await assert.rejects(f.service.send(alice,'chat-book',input({id:'unfinished-reply',replyTo:{turnId:'failed-source',role:'assistant'}})),{status:409});
+ const userReply=await f.service.send(alice,'chat-book',input({id:'failed-user-reply',replyTo:{turnId:'failed-source',role:'user'}}));assert.equal(userReply.replyTo.text,input().text);
+ await f.seed(alice,{...f.book,contentVersion:'edition-2'});await assert.rejects(f.service.send(alice,'chat-book',input({id:'stale-reply',contentVersion:'edition-2',replyTo:{turnId:'failed-source',role:'user'}})),{status:409});
+});
+
+test('message replies resolve archived receipts and restored references remain idempotent',async t=>{
+ const f=await fixture(t,{generator:async()=>validAnswer()});
+ for(let i=0;i<101;i++)await f.service.send(alice,'chat-book',input({id:'archived-'+i,text:'Question '+i}));
+ assert.equal((await f.service.view(alice,'chat-book')).turns.some(t=>t.id==='archived-0'),false);
+ const request=input({id:'reply-archived',replyTo:{turnId:'archived-0',role:'user'}}),reply=await f.service.send(alice,'chat-book',request);assert.deepEqual(reply.replyTo,{turnId:'archived-0',role:'user',text:'Question 0'});
+ const exported=await f.service.exportHistory(alice,'chat-book');await f.seed(bob);assert.equal((await f.service.restoreHistory(bob,f.book,exported,[f.book])).restored,102);assert.equal((await f.service.restoreHistory(bob,f.book,exported,[f.book])).restored,0);
+ const restoredReply=await f.service.send(bob,'chat-book',request);assert.deepEqual(restoredReply.replyTo,reply.replyTo);
+});
