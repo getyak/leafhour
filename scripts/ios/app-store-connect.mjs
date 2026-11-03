@@ -80,8 +80,8 @@ export async function waitForBuild({lookup,now=Date.now,sleep=delay,timeoutMs=60
       // Do not log server bodies, tokens, URLs, or arbitrary transport messages.
       log('Transient Apple read failed; bounded polling continues');
     }
-    if (now()>=deadline) throw Error(`Apple processing remains unconfirmed (last state: ${state}); inspect before retrying upload`);
-    log(`Apple processing: ${state}`);
+    if (now()>=deadline) throw Error(`Apple upload/build confirmation remains unconfirmed (last state: ${state}); inspect before retrying upload`);
+    log(`Apple upload/build confirmation: ${state}`);
     await sleep(Math.min(pollMs,deadline-now()));
   }
 }

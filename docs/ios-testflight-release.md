@@ -63,6 +63,8 @@ Release and signing refresh share `leafhour-ios-publish` with `cancel-in-progres
 
 ## Failed run and uncertain upload
 
+Transport errors are normalized to fixed categories and bounded Apple error codes. Current altool may emit a launcher banner and plaintext errors even with JSON output requested; both plaintext and banner-prefixed JSON are handled without printing messages, paths, credentials or arbitrary fields. An unsuccessful transport is explicitly distinguished from Apple upload/build confirmation; `not visible` never means Apple has accepted the bytes or started processing. Independent Apple confirmation and the one-submission policy remain in force.
+
 | Stage | Recovery |
 | --- | --- |
 | CI or prepare | Fix source/configuration; require exact current-SHA CI. Disabled switch is intentional. Do not bypass failed checks. |

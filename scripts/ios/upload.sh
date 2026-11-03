@@ -24,6 +24,7 @@ case "$probe_status" in
     set -e
     if [[ "$transport_status" -ne 0 ]]; then
       node scripts/ios/transport-diagnostics.mjs "$RUNNER_TEMP/leafhour-altool.log"
+      echo 'Transport did not confirm delivery. Checking Apple without another upload attempt.'
     fi
     echo "Transport exit status: $transport_status; independent Apple confirmation follows"
     else
