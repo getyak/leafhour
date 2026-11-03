@@ -1482,5 +1482,13 @@
   "app/fonts/lxgw-wenkai/wenkai-00.woff2",
   "app/fonts/lxgw-wenkai/wenkai-02.woff2",
   "server/chat-context.mjs",
-  "server/chat-voice.mjs"
+  "server/chat-voice.mjs",
+  "server/local-reader-chat.mjs",
+  "tests/local-reader-chat.test.mjs",
+  "apps/ios/LeafhourCore/Sources/LeafhourCore/ChatStreamDecoder.swift",
+  "apps/ios/LeafhourCore/Sources/LeafhourCore/LocalReadingTools.swift",
+  "apps/ios/LeafhourCore/Tests/LeafhourCoreTests/ChatStreamDecoderTests.swift",
+  "apps/ios/LeafhourCore/Tests/LeafhourCoreTests/CloudChatStreamTests.swift",
+  "apps/ios/LeafhourCore/Tests/LeafhourCoreTests/LocalReadingToolsTests.swift",
+  "apps/ios/LeafhourCore/Tests/LeafhourCoreTests/OfflineStateIndexCacheTests.swift"
 ]

@@ -822,6 +822,25 @@ final class VideoExperienceUITests: XCTestCase {
         scrollTo(generate, in: form); XCTAssertFalse(generate.isEnabled)
     }
 
+    func testLocalChatReturnsToReaderAndShelfWithDraftPreserved() {
+        launch(); openBook(textTitle); openMoreLink("阅读陪读")
+        let question = app.descendants(matching: .any)["reader-question"]
+        require(question); question.tap(); question.typeText("Keep my local-book question")
+        let started = Date()
+        app.buttons["reader-chat-return"].tap()
+        require(reader)
+        let chatReturnSeconds = Date().timeIntervalSince(started)
+        let shelfStarted = Date()
+        shelf()
+        let shelfReturnSeconds = Date().timeIntervalSince(shelfStarted)
+        let timing = XCTAttachment(string: "Synthetic local-book return: chat-to-reader=\(chatReturnSeconds)s; reader-to-shelf including wake/tap automation=\(shelfReturnSeconds)s. Simulator timing only.")
+        timing.name = "Local chat return timing"; timing.lifetime = .keepAlways; add(timing)
+        openBook(textTitle); openMoreLink("阅读陪读")
+        require(question)
+        XCTAssertEqual(question.value as? String, "Keep my local-book question")
+        capture("Local-book Chat restored after returning to shelf")
+    }
+
     func test20FullHeightChatKeepsComposerAboveKeyboard() {
         launch(); openBook(translatedTitle); openMoreLink("阅读陪读")
         let question = app.descendants(matching: .any)["reader-question"]

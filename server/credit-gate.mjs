@@ -1,3 +1,4 @@
+import {LOCAL_CHAT_ID,normalizeLocalChatInput} from './local-reader-chat.mjs';
 import {translationDirection,projectTranslation} from './translation-languages.mjs';
 import {createHash} from 'node:crypto';
 import {fail} from './document-import.mjs';
@@ -17,8 +18,10 @@ function cleanInput(input,action){
 }
 export function createCreditGate({billing,library,chat,record,clock=Date.now}={}){
  const enabled=()=>billing?.enabled===true;
+ const localConversation=(action,bookId)=>action==='conversation'&&bookId===LOCAL_CHAT_ID;
  const libraryConversation=(action,bookId)=>action==='conversation'&&bookId===LIBRARY_CHAT_ID;
  const bodyFor=(input,action,bookId)=>{
+  if(localConversation(action,bookId))return normalizeLocalChatInput(input);
   const body=cleanInput(input,action);if(!libraryConversation(action,bookId))return body;
   const normalized={...body,contentVersion:body.contentVersion??LIBRARY_CHAT_VERSION,passageId:body.passageId??LIBRARY_CHAT_PASSAGE,scopeRevision:body.scopeRevision??0};
   if(normalized.contentVersion!==LIBRARY_CHAT_VERSION||normalized.passageId!==LIBRARY_CHAT_PASSAGE||normalized.quote!==undefined||normalized.peopleWrites===true||normalized.preferenceWrites===true||normalized.scopeRevision!==undefined&&normalized.scopeRevision!==0)throw fail('书房对话只允许按需查阅资料，不接受书籍锚点或修改授权',400);
@@ -27,6 +30,7 @@ export function createCreditGate({billing,library,chat,record,clock=Date.now}={}
  async function scopeFor(user,{action,bookId,input}){
   if(!user?.id||user.is_anonymous)throw fail('请先进入自己的书房',401);
   const body=bodyFor(input,action,bookId);
+  if(localConversation(action,bookId))return {body,book:null,scope:{bookId:LOCAL_CHAT_ID,contentVersion:body.contentVersion,passageId:body.passageId,requestId:body.id,requestHash:hash(body),contextPolicy:'local-device-v1'}};
   if(libraryConversation(action,bookId)){
    if(typeof body.id!=='string'||!body.id||body.id.length>128)throw fail('请为这次请求保留唯一标识',400);
    return {body,book:null,scope:{bookId:LIBRARY_CHAT_ID,contentVersion:LIBRARY_CHAT_VERSION,passageId:LIBRARY_CHAT_PASSAGE,requestId:body.id,requestHash:hash(body),contextPolicy:LIBRARY_CHAT_VERSION}};
@@ -48,11 +52,13 @@ export function createCreditGate({billing,library,chat,record,clock=Date.now}={}
  }
  async function cache(user,action,bookId,body){
   if(action==='translation'){const book=await library.getBook(user,bookId),p=projectTranslation(paragraphs(book).find(p=>p.id===body.passageId),body.targetLanguage??'zh');return hasCompleteTranslationPair(p)?p:null;}
+  if(localConversation(action,bookId))return chat.local.findTurn(user,body.id);
   if(action==='conversation'&&chat){if(chat.findTurn)return chat.findTurn(user,libraryConversation(action,bookId)?null:bookId,body.id);if(libraryConversation(action,bookId)&&chat.findLibraryTurn)return chat.findLibraryTurn(user,body.id);return (await (libraryConversation(action,bookId)?chat.viewLibrary(user):chat.view(user,bookId))).turns.find(t=>t.id===body.id)||null;}
   if(action==='annotation'&&chat){const view=await chat.annotations.view(user,bookId),request=view.requests.find(r=>r.id===body.id);return request?{request,thread:view.archive.threads.find(t=>t.id===request.threadId)||null}:null;}
   return null;
  }
  async function saved(user,action,bookId,scope){
+  if(localConversation(action,bookId)&&scope.contextPolicy==='local-device-v1')return chat.local.findTurn(user,scope.requestId);
   if(libraryConversation(action,bookId)&&scope.contextPolicy===LIBRARY_CHAT_VERSION)return chat.findLibraryTurn?chat.findLibraryTurn(user,scope.requestId):(await chat.viewLibrary(user)).turns.find(t=>t.id===scope.requestId)||null;
   const current=await library.getBook(user,bookId);if(current.contentVersion!==scope.contentVersion)throw fail('原文版本已变化，本次结果不能结算',409);
   if(action==='translation'){const p=projectTranslation(paragraphs(current).find(p=>p.id===scope.passageId),scope.targetLanguage??'zh');return hasCompleteTranslationPair(p)?p:null;}
@@ -61,6 +67,7 @@ export function createCreditGate({billing,library,chat,record,clock=Date.now}={}
   if(action==='annotation'&&chat){const view=await chat.annotations.view(user,bookId),request=view.requests.find(t=>t.id===scope.requestId);return request?{request,thread:view.archive.threads.find(t=>t.id===request.threadId)||null}:null;}
   return null;
  }
+ const sameLocal=(cached,body)=>cached.requestHash===hash(body);
  const statusOf=(action,value)=>action==='annotation'?value?.request?.status:value?.status;
  function completed(action,value,scope,id){
   if(action==='translation')return value?.id===scope.passageId&&hasCompleteTranslationPair(value)&&['literal','interpretive'].every(k=>value.translations[k].sourceVersion===scope.contentVersion&&(value.translations[k].targetLanguage===(scope.targetLanguage??'zh')||value.translations[k].targetLanguage===undefined&&(scope.targetLanguage??'zh')==='zh')&&(!scope.sourceLanguage||value.translations[k].sourceLanguage===scope.sourceLanguage||value.translations[k].sourceLanguage===undefined&&(scope.targetLanguage??'zh')==='zh')&&value.translations[k].generationReceipt?.operationId===id&&value.translations[k].generationReceipt?.requestId===scope.requestId);
@@ -85,6 +92,7 @@ export function createCreditGate({billing,library,chat,record,clock=Date.now}={}
   const body=bodyFor(input,action,bookId);
   const cached=await cache(user,action,bookId,body);
   if(cached){
+   if(localConversation(action,bookId)&&(!sameLocal(cached,body)))throw fail('重复提交标识与原本机请求不一致',409);
    if(action==='conversation'&&(cached.text!==body.text||cached.passageId!==body.passageId||cached.contentVersion!==body.contentVersion||(cached.scopeRevision??0)!==(body.scopeRevision??0)||!!cached.peopleWrites!==!!body.peopleWrites||!!cached.preferenceWrites!==!!body.preferenceWrites||hash(cached.voice??null)!==hash(body.voice??null)||hash(cached.quote??null)!==hash(body.quote??null)))throw fail('重复提交标识与原请求不一致',409);
    const op=body.id&&user?.id?await billing.operation({ownerId:user.id,operationId:operationId(user,action,bookId,body.id)}):null;
    if(op){
@@ -146,7 +154,7 @@ export function createCreditGate({billing,library,chat,record,clock=Date.now}={}
      if(op.status==='running'&&op.action==='translation')await billing.cancel({ownerId:user.id,operationId:op.id,expectedStatus:'running'});
      // Account history has its own authority. A lost record cannot supply the
      // chat lease terminal, so an expired orphan hold must also be released.
-     if(op.status==='running'&&!previous&&libraryConversation(op.action,op.scope.bookId)&&op.scope.contextPolicy===LIBRARY_CHAT_VERSION)await billing.cancel({ownerId:user.id,operationId:op.id,expectedStatus:'running'});
+     if(op.status==='running'&&!previous&&(libraryConversation(op.action,op.scope.bookId)&&op.scope.contextPolicy===LIBRARY_CHAT_VERSION||localConversation(op.action,op.scope.bookId)&&op.scope.contextPolicy==='local-device-v1'))await billing.cancel({ownerId:user.id,operationId:op.id,expectedStatus:'running'});
     }
    }catch(error){
     if([403,404,409].includes(error.status)){if(op.status==='settled')await billing.reverse({ownerId:user.id,operationId:op.id,reason:'source_or_authorization_changed'});else await billing.cancel({ownerId:user.id,operationId:op.id});}

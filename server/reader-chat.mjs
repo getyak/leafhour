@@ -1,3 +1,4 @@
+import {createLocalReaderChatService} from './local-reader-chat.mjs';
 import {chatRuntimeTimeout} from './chat-context.mjs';
 import {normalizeReadingChatQuote,validateCurrentReadingChatQuote} from '../app/reading-chat-quote.mjs';
 import {encodeReadingChatInput} from '../app/reading-chat-input.mjs';
@@ -301,6 +302,7 @@ export async function createReaderChatService({library,people=null,dataDir,dataS
     // The annotation child closes first with its own active map; parent close
     // then finishes conversation runs and queues as before.
     await annotations.close().catch(()=>{});
+    await local.close();
     unregisterGrantRevocation?.();
     unregisterSourceMutation?.();
     await Promise.all([...active.values()].map(async run=>{await finish(run.user,run.bookId,run.id,run.runId,{status:'cancelled',answer:null});run.controller.abort();}));
@@ -360,6 +362,7 @@ export async function createReaderChatService({library,people=null,dataDir,dataS
     const archived=await historyFor(book.bookId).all(user);
     return mutateBook(user,book.bookId,data=>{const added=mergeHistory({turns:[...archived,...data.turns]},turns,book,books,storedBook);data.turns.push(...added);return {restored:added.length};});
   }
+  const local=createLocalReaderChatService({read,mutate,ownerDir,identity,generator,clock,timeoutMs:conversationTimeoutMs,onError,validateVoice});
   const companion=createReaderCompanionService({bookFor,mutateBook,clock,generator:companionGenerator,quota,reserveGlobal,releaseGlobal,watchRun,active,publicTurn,conversationHistory:(turns,scope,version)=>conversationHistory(turns,scope,version,true),cancel,getClosed:()=>closed,onOutcome:onCompanionOutcome});
   // GET-195: the child chat.annotations service reuses these exact closures for
   // identity, paths, transactions and quotas; it keeps its own active map.
@@ -369,5 +372,5 @@ export async function createReaderChatService({library,people=null,dataDir,dataS
   // before the revocation is acknowledged, so a held external put CAS retries,
   // re-authorizes and fails instead of writing after the ACK.
   const unregisterGrantRevocation=typeof library.registerGrantRevocation==='function'?library.registerGrantRevocation((ownerId,grantId)=>annotations.grantRevoked(ownerId,grantId)):null;
-  return {get available(){return !closed&&typeof generator==='function';},view,viewLibrary,findTurn,findLibraryTurn,configureScope,send,sendLibrary,cancel,cancelLibrary:(user,id)=>cancelSubject(user,null,id),close,companion,annotations,exportHistory,exportLibraryHistory,validateHistory,restoreHistory};
+  return {get available(){return !closed&&typeof generator==='function';},view,viewLibrary,findTurn,findLibraryTurn,configureScope,send,sendLibrary,cancel,cancelLibrary:(user,id)=>cancelSubject(user,null,id),close,companion,annotations,exportHistory,exportLibraryHistory,validateHistory,restoreHistory,local};
 }
