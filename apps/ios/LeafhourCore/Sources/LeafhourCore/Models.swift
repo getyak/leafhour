@@ -95,11 +95,12 @@ public struct ReaderPreferences: Codable, Equatable, Sendable {
     public var alwaysShowReadingProgress = false
     public var viewMode: ReaderViewMode = .source
     public var translationVariant: ReaderTranslationVariant = .literal
+    public var listeningShowsComparison = true
     public var speechSpeed: Double = 1
     public var autoPageInterval: Double = 30
     public var automaticReadingTime = true
     public init() {}
-    private enum CodingKeys: String, CodingKey { case latinFont, fontStyle, fontSize, lineSpacing, firstLineIndent, theme, navigationMode, pageAnimation, pageInput, pageTapDelay, alwaysShowReadingProgress, viewMode, translationVariant, speechSpeed, autoPageInterval, automaticReadingTime }
+    private enum CodingKeys: String, CodingKey { case latinFont, fontStyle, fontSize, lineSpacing, firstLineIndent, theme, navigationMode, pageAnimation, pageInput, pageTapDelay, alwaysShowReadingProgress, viewMode, translationVariant, listeningShowsComparison, speechSpeed, autoPageInterval, automaticReadingTime }
     public init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
         latinFont = (try values.decodeIfPresent(String.self, forKey: .latinFont)).flatMap(ReaderLatinFont.init(rawValue:)) ?? .automatic
@@ -117,6 +118,7 @@ public struct ReaderPreferences: Codable, Equatable, Sendable {
         alwaysShowReadingProgress = try values.decodeIfPresent(Bool.self, forKey: .alwaysShowReadingProgress) ?? false
         viewMode = (try values.decodeIfPresent(String.self, forKey: .viewMode)).flatMap(ReaderViewMode.init(rawValue:)) ?? .source
         translationVariant = (try values.decodeIfPresent(String.self, forKey: .translationVariant)).flatMap(ReaderTranslationVariant.init(rawValue:)) ?? .literal
+        listeningShowsComparison = try values.decodeIfPresent(Bool.self, forKey: .listeningShowsComparison) ?? true
         speechSpeed = Self.normalizedSpeechSpeed(try values.decodeIfPresent(Double.self, forKey: .speechSpeed) ?? 1)
         automaticReadingTime = try values.decodeIfPresent(Bool.self, forKey: .automaticReadingTime) ?? true
         autoPageInterval = Self.normalizedAutoPageInterval(try values.decodeIfPresent(Double.self, forKey: .autoPageInterval) ?? 30)

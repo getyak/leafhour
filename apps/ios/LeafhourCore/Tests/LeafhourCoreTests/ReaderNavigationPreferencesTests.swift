@@ -2,6 +2,14 @@ import XCTest
 @testable import LeafhourCore
 
 final class ReaderNavigationPreferencesTests: XCTestCase {
+    func testListeningComparisonDefaultsOnAndPersistsWithoutChangingReadingLayer() throws {
+        var preferences = try JSONDecoder().decode(ReaderPreferences.self, from: Data("{}".utf8))
+        XCTAssertTrue(preferences.listeningShowsComparison)
+        preferences.listeningShowsComparison = false
+        let restored = try JSONDecoder().decode(ReaderPreferences.self, from: JSONEncoder().encode(preferences))
+        XCTAssertFalse(restored.listeningShowsComparison)
+        XCTAssertEqual(restored.viewMode, .source)
+    }
     func testInteractionPreferencesPersistAndLegacyDefaultsStayQuietAndImmediate() throws {
         for (json, delay, progress) in [("{}", 0.0, false), (#"{"pageTapDelay":0.15,"alwaysShowReadingProgress":true}"#, 0.15, true)] {
             let decoded = try JSONDecoder().decode(ReaderPreferences.self, from: Data(json.utf8))

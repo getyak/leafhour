@@ -12,7 +12,7 @@ final class ImmersiveReaderUITests: XCTestCase {
     private func capture(_ name: String) {
         let attachment = XCTAttachment(screenshot: XCUIScreen.main.screenshot()); attachment.name = "Immersive-" + name; attachment.lifetime = .keepAlways; add(attachment)
     }
-    private func open(_ style: String = "Light", extra: [String] = []) {
+    private func open(_ style: String = "Light", extra: [String] = [], title: String = "GET317 合成验收 · 本机文本") {
         app.launchArguments = ["--get317-acceptance", "--get317-reset", "-AppleLanguages", "(zh-Hans)", "-AppleLocale", "zh_CN", "-AppleInterfaceStyle", style] + extra
         app.launch()
         let ready = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in self.reader.exists || self.app.buttons["书房显示与排序"].exists }, object: nil)
@@ -20,9 +20,9 @@ final class ImmersiveReaderUITests: XCTestCase {
         if reader.exists { wake(); app.buttons["返回书房"].tap() }
         require(app.buttons["书房显示与排序"], timeout: 25)
         app.buttons["搜索书房"].tap()
-        let search = app.textFields["library-search-field"]; require(search); search.tap(); search.typeText("GET317 合成验收 · 本机文本")
+        let search = app.textFields["library-search-field"]; require(search); search.tap(); search.typeText(title)
         if app.keyboards.buttons["搜索"].exists { app.keyboards.buttons["搜索"].tap() }
-        let book = app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", "阅读，GET317 合成验收 · 本机文本")).firstMatch
+        let book = app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", "阅读，" + title)).firstMatch
         require(book); book.tap(); require(reader)
     }
     private func wake() {
@@ -82,6 +82,43 @@ final class ImmersiveReaderUITests: XCTestCase {
         XCTAssertTrue(question.isHittable)
         capture("removed-excerpt-keeps-captured-paragraph")
     }
+    func testListeningShowsParagraphComparisonAndCanHideControlsWithoutStoppingAudio() {
+        open(title: "GET317 合成验收 · 双译"); wake(); app.buttons["reader-listen"].tap()
+        require(app.textViews["reader-listening-comparison"].firstMatch)
+        let toggle = app.buttons["reader-listening-comparison-toggle"]; require(toggle)
+        XCTAssertEqual(toggle.value as? String, "开启")
+        toggle.tap(); XCTAssertFalse(app.textViews["reader-listening-comparison"].firstMatch.exists)
+        XCTAssertFalse(app.buttons["暂停朗读"].exists, "Comparison must not autoplay")
+        toggle.tap(); require(app.textViews["reader-listening-comparison"].firstMatch)
+        capture("bilingual-listening")
+        let sentence = app.textViews["reader-listening-sentence"].firstMatch; require(sentence)
+        sentence.tap(); require(app.buttons["暂停朗读"])
+        app.buttons["reader-listening-hide"].tap()
+        let reveal = app.buttons["reader-listening-reveal"]; require(reveal)
+        XCTAssertFalse(app.buttons["reader-speech-play"].exists)
+        capture("immersive-listening-hidden-controls")
+        reveal.tap(); require(app.buttons["暂停朗读"])
+        require(reveal, timeout: 10)
+        capture("listening-controls-hide-after-idle")
+        reveal.tap(); require(app.buttons["暂停朗读"])
+        app.buttons["reader-speech-play"].tap(); require(app.buttons["继续朗读"])
+        let text = app.textViews["reader-listening-active-sentence"].firstMatch
+        require(text); text.press(forDuration: 1.1)
+        XCTAssertTrue(app.menuItems.firstMatch.waitForExistence(timeout: 3) || app.buttons["复制"].exists || app.buttons["Copy"].exists, app.debugDescription)
+        capture("listening-native-selection")
+    }
+
+    func testReadingChapterButtonsReturnToThePreviousChapter() {
+        open(title: "GET317 合成验收 · 双译"); wake()
+        let progress = app.staticTexts["reader-progress-caption"], next = app.buttons["reader-next-chapter"]
+        require(next); XCTAssertTrue(next.isEnabled)
+        let initial = progress.label
+        next.tap(); wake(); XCTAssertNotEqual(progress.label, initial)
+        let previous = app.buttons["reader-previous-chapter"]; require(previous); XCTAssertTrue(previous.isEnabled)
+        previous.tap(); wake(); XCTAssertEqual(progress.label, initial)
+        capture("explicit-chapter-navigation")
+    }
+
     func testListeningJumpDoesNotResumeReadingTime() {
         open(); wake(); app.buttons["reader-listen"].tap()
         require(app.buttons["reader-speech-play"]); app.buttons["reader-speech-play"].tap()
@@ -156,7 +193,11 @@ final class ImmersiveReaderUITests: XCTestCase {
         XCTAssertEqual(app.staticTexts["reader-speech-speed-value"].label, "0.5×")
         app.buttons["完成"].tap(); XCTAssertFalse(app.buttons["暂停朗读"].exists)
         play.tap(); require(app.buttons["暂停朗读"])
-        require(app.staticTexts["reader-listening-active-sentence"])
+        let boost = app.buttons["reader-listening-speed-open"]
+        boost.press(forDuration: 1.2)
+        XCTAssertEqual(boost.value as? String, "0.5倍")
+        XCTAssertFalse(app.sliders["reader-speech-speed"].exists, "A hold must not also open settings")
+        require(app.textViews["reader-listening-active-sentence"].firstMatch)
         capture("listening-portrait")
         play.tap(); require(app.buttons["继续朗读"])
         XCUIDevice.shared.orientation = .landscapeLeft

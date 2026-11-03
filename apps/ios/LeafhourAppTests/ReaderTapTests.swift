@@ -39,16 +39,27 @@ import LeafhourCore
         XCTAssertEqual(handler.action(at: CGPoint(x: 30, y: 350)), .turn(.previous))
         XCTAssertEqual(handler.action(at: CGPoint(x: 360, y: 350)), .turn(.next))
         XCTAssertEqual(handler.action(at: CGPoint(x: 195, y: 350)), .wake(.tools))
-        XCTAssertEqual(handler.action(at: CGPoint(x: 30, y: 22)), .wake(.top))
-        XCTAssertEqual(handler.action(at: CGPoint(x: 360, y: 678)), .wake(.progress))
+        XCTAssertEqual(handler.action(at: CGPoint(x: 30, y: 22)), .turn(.previous))
+        XCTAssertEqual(handler.action(at: CGPoint(x: 360, y: 678)), .turn(.next))
         text.bounds.origin = CGPoint(x: 10, y: 800)
         XCTAssertEqual(handler.action(at: CGPoint(x: 370, y: 1150)), .turn(.next))
-        XCTAssertEqual(handler.action(at: CGPoint(x: 40, y: 810)), .wake(.top))
+        XCTAssertEqual(handler.action(at: CGPoint(x: 40, y: 810)), .turn(.previous))
         paged = false
         XCTAssertEqual(handler.action(at: CGPoint(x: 370, y: 1150)), .wake(.tools))
         paged = true; blocked = true
         XCTAssertNil(handler.action(at: CGPoint(x: 370, y: 1150)))
     }
+    func testPageSideRegionsIncludeTheTopAndBottomCorners() {
+        let text = UITextView(frame: CGRect(x: 0, y: 0, width: 390, height: 700))
+        let handler = ReaderEdgeTapHandler(view: text, blocked: { false }, onWake: { _ in }, isPaged: { true })
+        for y in [CGFloat(10), 350, 690] {
+            XCTAssertEqual(handler.action(at: CGPoint(x: 20, y: y)), .turn(.previous))
+            XCTAssertEqual(handler.action(at: CGPoint(x: 370, y: y)), .turn(.next))
+        }
+        XCTAssertEqual(handler.action(at: CGPoint(x: 195, y: 10)), .wake(.top))
+        XCTAssertEqual(handler.action(at: CGPoint(x: 195, y: 690)), .wake(.progress))
+    }
+
     func testPagedLinksStayProtectedWithoutNativeTapOrHoldFailureDependencies() throws {
         let text = UITextView(frame: CGRect(x: 0, y: 0, width: 390, height: 700), textContainer: nil)
         text.attributedText = NSAttributedString(string: "Source link", attributes: [.font: UIFont.systemFont(ofSize: 22), .link: URL(string: "https://example.invalid")!])
