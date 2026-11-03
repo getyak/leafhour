@@ -528,7 +528,7 @@ final class ReaderLayoutTests: XCTestCase {
         let copy = UIAction(title: "Copy", identifier: UIAction.Identifier("copy-fixture")) { _ in }
         let menu = try XCTUnwrap(coordinator.textView(text, editMenuForTextIn: crossing, suggestedActions: [copy]))
         let actions = self.actions(in: menu)
-        for title in ["解释这句", "记笔记", "核对原文", "查看译文", "分享摘录…"] {
+        for title in ["AI 引用", "记笔记", "核对原文", "查看译文", "分享摘录…"] {
             let action = try XCTUnwrap(actions.first { $0.title == title }, title)
             XCTAssertTrue(action.attributes.contains(.disabled), "\(title) must not accept a quote crossing stable passage anchors")
         }

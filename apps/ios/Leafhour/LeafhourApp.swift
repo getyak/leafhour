@@ -74,7 +74,16 @@ final class LibraryModel {
     var syncing = false
     var syncStatus = ""
     var account: CloudAccount?
-    var reader: ReaderSession?
+    var reader: ReaderSession? {
+        didSet {
+            guard oldValue !== reader else { return }
+            openingMaintenance?.cancel()
+            if let owner = readerOwnership, owner.bookID == oldValue?.book.id {
+                readerOwnership = nil
+                Task { await owner.sync.releaseReadingBook(owner.bookID, token: owner.token) }
+            }
+        }
+    }
     var incomingBookRequest: IncomingBookRequest?
     var queuedBookRequests: [IncomingBookRequest] = []
     var importAccountContext: UUID { contextID }
@@ -105,6 +114,9 @@ final class LibraryModel {
     private let persistCredential: Bool
     private var contextID = UUID()
     private var openingBookID: String?
+    private struct ReadingOwnership { let bookID: String; let token: UUID; let sync: CloudBookSync }
+    @ObservationIgnored private var readerOwnership: ReadingOwnership?
+    @ObservationIgnored private var openingMaintenance: Task<Void, Never>?
     private var migratingBookID: String?
     private var syncRequested = false
     private var reloadID = UUID()
@@ -687,28 +699,58 @@ final class LibraryModel {
             let receipt = await current.flush()
             guard marker == contextID, current.isCurrent(receipt) else { return }
         }
+        let token = UUID(), sync = self.sync
+        var presented = false
+        if let sync { await sync.claimReadingBook(book.id, token: token) }
+        defer { if !presented, let sync { Task { await sync.releaseReadingBook(book.id, token: token) } } }
         do {
-            let verified = try await library.book(book.id)
+            let opening = try await library.readingOpening(book.id), verified = opening.book
             guard marker == contextID else { return }
             guard verified.cloud?.ownerID == nil || verified.cloud?.ownerID == account?.id else { throw LibraryError.invalid("这本书不属于当前账号。") }
-            if let identity = verified.cloud, reader == nil, let sync {
-                do { try await sync.synchronize(book.id) }
-                catch let error as CloudRequestError where error.status == 401 || error.status == 403 { throw error }
-                catch { /* Offline content remains readable; pending sync is recorded on disk. */ }
-                guard marker == contextID, await cloud.activeAccount()?.id == identity.ownerID else { return }
-            }
             syncIssues[book.id] = try await library.cloudMetadata(book.id)
-            let state = try await library.state(book.id)
-            guard marker == contextID else { return }
-            let original = try await library.originalURL(book.id)
-            guard marker == contextID else { return }
-            let folder = try await library.bookDirectory(book.id)
-            guard marker == contextID else { return }
             try await library.setLastOpenedBook(book.id)
             guard marker == contextID else { return }
             let store: any ReaderStateStore = verified.cloud != nil && sync != nil ? CloudReaderStateStore(library: library, sync: sync!) : library
             guard marker == contextID, !Task.isCancelled else { return }
-            reader = ReaderSession(book: verified, state: state, original: original, directory: folder, library: store, preferencesStore: library)
+            let session = ReaderSession(book: verified, state: opening.state, original: opening.original, directory: opening.directory,
+                                        library: store, preferencesStore: library, preparation: opening.preparation)
+            reader = session
+            if let sync { readerOwnership = ReadingOwnership(bookID: book.id, token: token, sync: sync) }
+            presented = true
+            openingMaintenance = Task { [weak self, weak session] in
+                // Let the published local reader reach presentation before
+                // unrelated package work and cloud requests begin.
+                await Task.yield()
+                guard let self, let session else { return }
+                do {
+                    try await library.verifyReadingOpening(opening)
+                    guard !Task.isCancelled, marker == self.contextID, self.reader === session else { return }
+                    session.completePackageVerification()
+                } catch is CancellationError { return }
+                catch {
+                    guard !Task.isCancelled, marker == self.contextID, self.reader === session else { return }
+                    let failure = error.localizedDescription
+                    // Freeze the exact live snapshot before the actor hop so a
+                    // late viewport/note callback cannot alter recovery work.
+                    session.failPackageVerification(failure)
+                    var retained = false
+                    do { try await library.retainReaderOpeningRecovery(session.openingRecoverySnapshot, opening: opening); retained = true }
+                    catch { /* Keep the exact session in memory; repair UI offers an export before exit. */ }
+                    guard marker == self.contextID, self.reader === session else { return }
+                    session.failPackageVerification(failure, recoveryRetained: retained)
+                    return
+                }
+                guard let identity = verified.cloud, let sync, marker == self.contextID, self.reader === session,
+                      await self.cloud.activeAccount()?.id == identity.ownerID else { return }
+                do { try await sync.synchronize(book.id, pull: false) }
+                catch { /* The durable outbox and sync metadata retain offline/auth failures. */ }
+                guard !Task.isCancelled, marker == self.contextID, self.reader === session,
+                      await self.cloud.activeAccount()?.id == identity.ownerID else { return }
+                if let metadata = try? await library.requireDeferredPositionChoice(book.id) {
+                    guard marker == self.contextID, self.reader === session else { return }
+                    self.syncIssues[book.id] = metadata
+                }
+            }
         } catch { if marker == contextID { message = "暂时无法打开这本书：\(error.localizedDescription) 可在书籍详情中校验或修复。" } }
     }
 

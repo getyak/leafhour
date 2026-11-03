@@ -89,7 +89,10 @@ struct ReaderScreen: View {
     @State private var bottomBarFocused = false
     @State private var pagePosition: ReaderPagePosition?
     @State private var visiblePage: ReaderVisiblePage?
-    @State private var manualPageRequest: ReaderPageRequest?
+    @State private var recoveryExport: RecordsDocument?
+    @State private var exportingRecovery = false
+    @State private var recoveryExported = false
+    @State private var recoveryExportError: String?
     @State private var selectionDismissalID = UUID()
     @State private var hasNativeTextSelection = false
     @State private var chromeMetrics: ReaderChromeMetrics?
@@ -154,7 +157,7 @@ struct ReaderScreen: View {
                     }, onWake: wake, onReadingScroll: readingDidScroll, onPageChange: { pagePosition = $0 }, onVisiblePage: receiveVisiblePage, speechHighlight: speech.highlight, followsSpeech: speech.following && !speech.readerIsInteracting,
                         onReadingPosition: { speech.updateVisible($0) }, onTouchActivity: readingTouchChanged,
                         isReadingSurfaceActive: panel == nil && scenePhase == .active,
-                        pageRequest: manualPageRequest ?? autoPage.pageRequest, onPageRequestResult: receivePageOutcome)
+                        pageRequest: autoPage.pageRequest, onPageRequestResult: autoPage.receive)
                     .safeAreaInset(edge: .bottom, spacing: 0) {
                         if needsPDFSourceFallback {
                             Text("此页没有可对照文字，先显示原页。")
@@ -175,7 +178,7 @@ struct ReaderScreen: View {
                         onPageChange: { pagePosition = $0 }, onVisiblePage: receiveVisiblePage, speechHighlight: speech.highlight, followsSpeech: speech.following && !speech.readerIsInteracting,
                         onReadingPosition: { speech.updateVisible($0) }, onTouchActivity: readingTouchChanged,
                         isReadingSurfaceActive: panel == nil && scenePhase == .active,
-                        pageRequest: manualPageRequest ?? autoPage.pageRequest, onPageRequestResult: receivePageOutcome)
+                        pageRequest: autoPage.pageRequest, onPageRequestResult: autoPage.receive)
                 }
                 VStack(spacing: 0) {
                     // Measure the same real controls while asleep. Hiding or waking
@@ -208,9 +211,7 @@ struct ReaderScreen: View {
                                     }.padding(.horizontal, 12).accessibilityHidden(!showingBottom)
                                     ReaderReadingTransport(canPreviousChapter: session.chapterIndex > 0,
                                         canNextChapter: session.chapterIndex + 1 < session.book.chapters.count,
-                                        canPreviousPage: canTurnPage(.previous), canNextPage: canTurnPage(.next),
                                         onPreviousChapter: { jumpChapter(-1) }, onNextChapter: { jumpChapter(1) },
-                                        onPreviousPage: { turnPage(.previous) }, onNextPage: { turnPage(.next) },
                                         onTranslatePage: { present(.pageTranslation) })
                                     ReaderBottomBar(
                                         paper: paper, mode: .reading,
@@ -250,7 +251,7 @@ struct ReaderScreen: View {
     }
     private var readingRefreshKey: String {
         let visible = scenePhase == .active && panel?.isCompanion != true
-        return "\(session.chapter.id):\(session.state.preferences.viewMode.rawValue):\(session.translationSettings):\(visible)"
+        return "\(session.chapter.id):\(session.state.preferences.viewMode.rawValue):\(session.translationSettings):\(session.packageVerificationPending):\(visible)"
     }
     private var conversationSelection: SelectedQuote? {
         if case .companion(let quote)? = panel { return quote }
@@ -299,7 +300,7 @@ struct ReaderScreen: View {
         .onChange(of: autoPageConditions, initial: true) { _, conditions in autoPage.update(conditions, navigationID: session.navigationID) }
         .onChange(of: session.navigationID) { _, id in autoPage.update(autoPageConditions, navigationID: id) }
         .onChange(of: session.state.preferences) { old, new in
-            if old != new { autoPage.pause(.layout); manualPageRequest = nil }
+            if old != new { autoPage.pause(.layout) }
             if old.speechSpeed != new.speechSpeed { speech.speed = new.speechSpeed }
         }
     }
@@ -346,17 +347,53 @@ struct ReaderScreen: View {
         .task(id: clockID) { await settleChrome() }
         .onChange(of: scenePhase) { _, phase in
             reading.setForeground(phase == .active && panel?.isCompanion != true)
-            if phase != .active { readerIsTouching = false; speech.readerIsInteracting = false; speech.applicationDidBackground(); manualPageRequest = nil; session.save(); chrome = .asleep }
+            if phase != .active { readerIsTouching = false; speech.readerIsInteracting = false; speech.applicationDidBackground(); session.save(); chrome = .asleep }
         }
     }
     var body: some View {
-        synchronizedReader
+        Group {
+            if let error = session.packageVerificationError { recoveryNotice(error) }
+            else { synchronizedReader }
+        }
+        .onChange(of: session.packageVerificationError) { _, error in
+            if error != nil { releaseReadingResources(); panel = nil; session.setReadingVisible(false) }
+        }
         .task(id: speechArtworkKey) {
+            guard session.packageVerificationError == nil else { return }
             let scheme = session.state.preferences.colorScheme(following: systemColorScheme)
             await speech.prepareArtwork(session, cloud: cloud, library: library, traits: UITraitCollection(userInterfaceStyle: scheme == .dark ? .dark : .light))
         }
         .onAppear { configureReading() }
         .onDisappear(perform: releaseReadingResources)
+    }
+    private func recoveryNotice(_ error: String) -> some View {
+        VStack(alignment: .leading, spacing: 20) {
+            Image(systemName: "book.closed").font(.largeTitle).foregroundStyle(.secondary)
+            Text("书籍文件需要修复").font(.title2)
+            Text(error).font(.body).foregroundStyle(.secondary)
+            Text(session.packageRecoveryRetained
+                 ? "刚才的阅读位置、笔记与草稿已单独保留。请回书房，在书籍详情中修复文件。"
+                 : "当前记录仍保留在这里。请先导出笔记与草稿，再返回书房修复文件。")
+                .font(.footnote).foregroundStyle(.secondary)
+            Button("导出笔记与草稿", systemImage: "square.and.arrow.up") {
+                do {
+                    recoveryExport = RecordsDocument(data: try JSONEncoder().encode(RecordsBackup(book: session.book, state: session.openingRecoverySnapshot)))
+                    exportingRecovery = true
+                } catch { recoveryExportError = error.localizedDescription }
+            }.frame(minHeight: 44)
+            Button("返回书房") { dismiss() }.frame(minHeight: 44)
+                .disabled(!session.packageRecoveryRetained && !recoveryExported)
+            if let recoveryExportError { Text(recoveryExportError).font(.footnote).foregroundStyle(.secondary) }
+        }.padding(28).frame(maxWidth: 560, maxHeight: .infinity, alignment: .leading)
+            .frame(maxWidth: .infinity).background(paper.ignoresSafeArea())
+            .interactiveDismissDisabled(!session.packageRecoveryRetained && !recoveryExported)
+            .accessibilityIdentifier("reader-opening-recovery")
+            .fileExporter(isPresented: $exportingRecovery, document: recoveryExport, contentType: .json, defaultFilename: "Leafhour-recovered-records") { result in
+                switch result {
+                case .success: recoveryExported = true; recoveryExportError = nil
+                case .failure(let error): recoveryExportError = error.localizedDescription
+                }
+            }
     }
     private func releaseReadingResources() {
         autoPage.stop(); speech.stop(); speech.releasePresentation(); reading.stop()
@@ -382,6 +419,7 @@ struct ReaderScreen: View {
         sleepChrome()
     }
     private func configureReading() {
+        guard session.packageVerificationError == nil else { return }
         speech.speed = session.state.preferences.speechSpeed
         autoPage.setInterval(session.state.preferences.autoPageInterval)
         tools.configure(library: library, localBookID: session.book.id)
@@ -398,7 +436,7 @@ struct ReaderScreen: View {
         reading.confirmPreparation = { [weak reading] run in reading?.confirm(run, session: session, cloud: cloud, library: library) }
     }
     private func refreshReadingContent() async {
-        guard scenePhase == .active, panel?.isCompanion != true else { return }
+        guard !session.packageVerificationPending, session.packageVerificationError == nil, scenePhase == .active, panel?.isCompanion != true else { return }
         await reading.refresh(session, cloud: cloud, library: library)
         guard !Task.isCancelled else { return }
         guard panel?.id != "page-translation", reading.offerFirstPassage, session.state.preferences.viewMode != .source else { return }
@@ -529,27 +567,13 @@ struct ReaderScreen: View {
         if let page, page.isCurrent(session) { visiblePage = page }
         else if visiblePage?.isCurrent(session) != true { visiblePage = nil }
     }
-    private func canTurnPage(_ direction: ReaderPageDirection) -> Bool {
-        guard session.state.preferences.navigationMode == .paged, manualPageRequest == nil, let page = pagePosition, page.chapterIndex == session.chapterIndex else { return false }
-        if direction == .previous { return page.index > 0 || !page.isChapterComplete || session.chapterIndex > 0 }
-        return page.index + 1 < page.count || !page.isChapterComplete || session.chapterIndex + 1 < session.book.chapters.count
-    }
-    private func turnPage(_ direction: ReaderPageDirection) {
-        guard canTurnPage(direction) else { return }
-        autoPage.pause(.interaction); speech.userNavigated(); session.recordReadingInteraction(); clockID = UUID()
-        manualPageRequest = ReaderPageRequest(expectedNavigationID: session.navigationID, direction: direction, origin: .user)
-    }
-    private func receivePageOutcome(_ id: UUID, _ outcome: ReaderPageRequestOutcome) {
-        if manualPageRequest?.id == id { manualPageRequest = nil; clockID = UUID() }
-        else { autoPage.receive(id, outcome: outcome) }
-    }
     private func jumpChapter(_ delta: Int) {
         let index = session.chapterIndex + delta
         guard session.book.chapters.indices.contains(index) else { return }
         autoPage.pause(.interaction); speech.userNavigated(); session.go(to: index)
-        hasNativeTextSelection = false; session.clearTransientSelection(); selectionDismissalID = UUID(); sleepChrome()
+        hasNativeTextSelection = false; session.clearTransientSelection(); selectionDismissalID = UUID(); chrome = .tools; clockID = UUID()
     }
-    private func readingDidScroll() { autoPage.pause(.interaction); session.recordReadingInteraction(); speech.userNavigated(); hasNativeTextSelection = false; session.clearTransientSelection(); selectionDismissalID = UUID(); if manualPageRequest == nil { sleepChrome() } else { clockID = UUID() } }
+    private func readingDidScroll() { autoPage.pause(.interaction); session.recordReadingInteraction(); speech.userNavigated(); hasNativeTextSelection = false; session.clearTransientSelection(); selectionDismissalID = UUID(); sleepChrome() }
     private func wake(_: ReaderChrome) { session.recordReadingInteraction(); withAnimation(reduceMotion ? nil : .easeOut(duration: 0.16)) { chrome = chrome == .tools ? .asleep : .tools } }
     private func revealTools() {
         autoPage.pause(.interaction)

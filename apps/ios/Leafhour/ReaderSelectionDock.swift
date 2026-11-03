@@ -16,17 +16,19 @@ struct ReaderAIButton: View {
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     var body: some View {
         Button(action: onOpen) {
-            Image(systemName: targeted ? "quote.bubble.fill" : "sparkles")
-                .font(.system(size: 21, weight: .medium))
-                .frame(width: 48, height: 48)
-                .background(.primary.opacity(targeted ? 0.12 : 0), in: Circle())
-                .modifier(ReaderGlassSurface(paper: paper, cornerRadius: 24)).contentShape(Circle())
+            VStack(spacing: 2) {
+                Image(systemName: targeted ? "quote.bubble.fill" : "sparkles")
+                    .font(.system(size: quote == nil ? 21 : 18, weight: .medium))
+                if quote != nil { Text("AI 引用").font(.caption2).fixedSize(horizontal: true, vertical: false) }
+            }.frame(minWidth: quote == nil ? 48 : 64, minHeight: 48)
+                .background(.primary.opacity(targeted ? 0.12 : 0), in: Capsule())
+                .modifier(ReaderGlassSurface(paper: paper, cornerRadius: 24)).contentShape(Capsule())
         }.buttonStyle(.plain)
             .scaleEffect(targeted && !reduceMotion ? 1.08 : 1)
             .animation(reduceMotion ? nil : .smooth(duration: 0.2), value: targeted)
             .sensoryFeedback(.selection, trigger: targeted)
-            .accessibilityLabel(quote == nil ? "与 AI 聊这本书" : "引用选文与 AI 聊天")
-            .accessibilityHint("也可把选文卡片拖到这里，引用后再输入问题")
+            .accessibilityLabel(quote == nil ? "与 AI 聊这本书" : "AI 引用")
+            .accessibilityHint(quote == nil ? "打开这本书的聊天" : "引用选文打开聊天，再输入问题；也可拖动选文引用")
             .accessibilityIdentifier("reader-ai")
             .dropDestination(for: String.self) { items, _ in
                 guard let quote, ReaderSelectionDrop.accepts(items, quote: quote) else { return false }
@@ -50,14 +52,15 @@ struct ReaderSelectionDock: View {
             HStack(spacing: 8) {
                 Image(systemName: "text.quote").accessibilityHidden(true)
                 VStack(alignment: .leading, spacing: 2) {
-                    Text(quote.origin == "translation" ? "选中的译文 · 拖到 AI 引用" : "选中的原文 · 拖到 AI 引用").font(.caption2).foregroundStyle(.secondary)
+                    Text(quote.origin == "translation" ? "选中的译文" : "选中的原文").font(.caption2).foregroundStyle(.secondary)
                     Text(quote.text).font(.footnote).lineLimit(2)
                 }.frame(maxWidth: .infinity, alignment: .leading)
                 Image(systemName: "hand.draw").font(.caption).accessibilityHidden(true)
             }.padding(12).modifier(ReaderGlassSurface(paper: paper, cornerRadius: 18, interactive: false))
                 .draggable(quote.text)
                 .accessibilityElement(children: .combine)
-                .accessibilityLabel("可拖动的选文，" + quote.text)
+                .accessibilityLabel((quote.origin == "translation" ? "选中的译文，" : "选中的原文，") + quote.text)
+                .accessibilityHint("点 AI 引用打开聊天，也可拖动选文引用")
                 .accessibilityIdentifier("reader-selection-drag")
             ViewThatFits(in: .horizontal) {
                 HStack(spacing: 10) { actions(compact: false); ReaderAIButton(paper: paper, quote: quote, onOpen: onAI) }.fixedSize(horizontal: true, vertical: false)

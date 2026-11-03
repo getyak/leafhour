@@ -1,19 +1,62 @@
 import Foundation
 
+/// An authorized source/index snapshot. This does not claim that every retained resource was verified.
+public struct LocalReadingOpening: Sendable {
+    public let book: LocalBook
+    public let state: ReaderState
+    public let original: URL
+    public let directory: URL
+    public let preparation: ReaderOpeningPreparation
+    fileprivate let id: UUID
+    fileprivate let profile: URL
+    fileprivate let stamps: [String: Disk.FileStamp]
+    fileprivate let indexDigest: String
+}
+
+public struct ReaderOpeningPreparation: Sendable {
+    public let sourceLanguage: ReadingLanguage?
+    public let verifiedResourcePaths: Set<String>
+}
+
+public struct ReaderOpeningRecovery: Codable, Sendable {
+    public let bookID: String
+    public let sourceVersion: String
+    public let indexDigest: String
+    public let profile: String
+    public let state: ReaderState
+    public let recordedAt: Date
+}
+
 /// One actor owns a profile's writes. Device-local and authenticated UUID namespaces never overlap.
 public actor OfflineLibrary {
     let root: URL
     private var activeImports: Set<UUID> = []
     private let limits: ImportLimits
-    private struct CloudStartCache { var identity: CloudBookIdentity; var digest: String; var anchor: ReadingAnchor? }
+    private struct CloudStartCache { var identity: CloudBookIdentity; var digest: String; var anchor: ReadingAnchor?; var stamp: Disk.FileStamp? = nil }
     private var cloudStarts: [String: CloudStartCache] = [:]
     private struct ListedIndexCache {
-        let size: Int64
-        let modified: Date
-        let fileNumber: UInt64
+        let stamp: Disk.FileStamp
         let book: LocalBook
     }
     private var listedIndexes: [String: ListedIndexCache] = [:]
+    private struct ReadingIndexCache {
+        let stamps: [String: Disk.FileStamp]
+        let book: LocalBook
+        let language: ReadingLanguage?
+    }
+    private var readingIndexes: [String: ReadingIndexCache] = [:]
+    private var readingOpenings: [String: UUID] = [:]
+    private var rejectedReadingPackages: Set<String> = []
+    private var readingOwners: [String: UUID] = [:]
+    func claimReadingOwnership(_ id: String, token: UUID) { readingOwners[id] = token }
+    func releaseReadingOwnership(_ id: String, token: UUID) { if readingOwners[id] == token { readingOwners[id] = nil } }
+    func hasReadingOwnership(_ id: String) -> Bool { readingOwners[id] != nil }
+    func savePulledStateIfUnchanged(_ state: ReaderState, bookID: String, expected: ReaderState) throws -> Bool {
+        guard readingOwners[bookID] == nil else { return false }
+        let metadata = try cloudMetadata(bookID)
+        guard !metadata.positionConflict || metadata.explicitDeviceChoice == true else { return false }
+        return try saveStateIfUnchanged(state, bookID: bookID, expected: expected)
+    }
     public init(root: URL, scope: LibraryScope, limits: ImportLimits = ImportLimits()) throws {
         guard limits.maximumFileBytes > 0, limits.maximumExpandedBytes > 0, limits.maximumEntryBytes > 0, limits.maximumEntries > 0 else { throw LibraryError.invalid("导入上限必须大于零。") }
         self.root = root.appendingPathComponent(scope.folder, isDirectory: true); self.limits = limits
@@ -207,6 +250,120 @@ public actor OfflineLibrary {
         let book = try book(id)
         return try Disk.url(bookDirectory(id), "source." + book.kind.rawValue)
     }
+    public func readingOpening(_ id: String) throws -> LocalReadingOpening {
+        let directory = try bookDirectory(id)
+        // A failed deferred pass cannot be hidden by another fast opening. Only
+        // a real full pass (after repair, if needed) releases the write barrier.
+        if rejectedReadingPackages.contains(id) { _ = try book(id) }
+        let manifestURL = try Disk.url(directory, "manifest.json"), manifestStamp = try Disk.fileStamp(manifestURL)
+        let manifest = try Disk.read(OfflineManifest.self, from: manifestURL)
+        guard manifest.version == 1, manifest.bookID == id, !manifest.files.isEmpty,
+              Set(manifest.files.map(\.path)).count == manifest.files.count,
+              let index = manifest.files.first(where: { $0.path == "book.json" }),
+              let source = manifest.files.first(where: { $0.path.hasPrefix("source.") }) else { throw LibraryError.invalid("离线清单不完整，原件与记录仍保留。") }
+        let criticalPaths = ["manifest.json", index.path, source.path]
+        let stamps = try readingStamps(criticalPaths, directory: directory)
+        guard stamps["manifest.json"] == manifestStamp else { throw LibraryError.invalid("离线清单在打开时发生变化，请重新打开。") }
+        let value: LocalBook, language: ReadingLanguage?
+        if let cached = readingIndexes[id], cached.stamps == stamps {
+            value = cached.book; language = cached.language
+        } else {
+            readingIndexes[id] = nil
+            try Self.verifyFile(index, directory: directory)
+            try Self.verifyFile(source, directory: directory)
+            value = try indexedBook(id, at: directory)
+            guard value.id == id, !value.chapters.isEmpty,
+                  source.path == "source." + value.kind.rawValue,
+                  value.sourceVersion == "sha256-" + source.sha256 else { throw LibraryError.invalid("书籍索引与原件版本不匹配，原件与记录仍保留。") }
+            if let identity = value.cloud {
+                guard let owner = UUID(uuidString: identity.ownerID), root.lastPathComponent == "account-" + owner.uuidString.lowercased() else { throw LibraryError.invalid("这本书不属于当前账号。") }
+            }
+            language = ReadingLanguage.detect(in: value)
+            guard try readingStamps(criticalPaths, directory: directory) == stamps else { throw LibraryError.invalid("书籍在打开时发生变化，请重新打开。") }
+            if readingIndexes.count >= 4 { readingIndexes.removeAll() }
+            readingIndexes[id] = ReadingIndexCache(stamps: stamps, book: value, language: language)
+        }
+        var prepared = value
+        if let identity = value.cloud {
+            prepared.readingStartAnchor = CloudReadingStartResolver.validated(value.readingStartAnchor.map { CloudReadingStartHint(identity: identity, anchor: $0) }, identity: identity, chapters: value.chapters)
+            // Legacy hints are auxiliary cloud metadata, so verify their own
+            // bytes before decoding rather than trusting the critical-file cache.
+            if prepared.readingStartAnchor == nil, let file = manifest.files.first(where: { $0.path == "cloud-content.json" }) {
+                let url = try Disk.url(directory, file.path), stamp = try Disk.fileStamp(url)
+                let digest = file.sha256 + ":" + index.sha256
+                if let cached = cloudStarts[id], cached.identity == identity, cached.digest == digest, cached.stamp == stamp { prepared.readingStartAnchor = cached.anchor }
+                else {
+                    try Self.verifyFile(file, directory: directory)
+                    let anchor = CloudReadingStartResolver.legacy(at: url, identity: identity, chapters: value.chapters)
+                    guard try Disk.fileStamp(url) == stamp else { throw LibraryError.invalid("书籍起始信息在打开时发生变化，请重新打开。") }
+                    if cloudStarts.count >= 128 { cloudStarts.removeAll() }
+                    cloudStarts[id] = CloudStartCache(identity: identity, digest: digest, anchor: anchor, stamp: stamp)
+                    prepared.readingStartAnchor = anchor
+                }
+            }
+        }
+        let saved = try state(id)
+        let anchor = saved.anchor ?? prepared.readingStartAnchor
+        let chapter = anchor.flatMap { a in prepared.chapters.first { $0.id == a.chapterID } } ?? prepared.chapters[0]
+        let resources = Set(ReadingTextWindow(chapter: chapter, anchor: anchor).slices.compactMap { $0.original.resourcePath })
+        for resource in resources {
+            guard let file = manifest.files.first(where: { $0.path == "assets/" + resource }) else { throw LibraryError.invalid("当前书页资源没有校验记录，请从原件修复。") }
+            try Self.verifyFile(file, directory: directory)
+        }
+        guard try readingStamps(criticalPaths, directory: directory) == stamps else { throw LibraryError.invalid("书籍在打开时发生变化，请重新打开。") }
+        let marker = UUID(); readingOpenings[id] = marker
+        return LocalReadingOpening(book: prepared, state: saved, original: try Disk.url(directory, source.path), directory: directory,
+                                   preparation: ReaderOpeningPreparation(sourceLanguage: language, verifiedResourcePaths: resources), id: marker, profile: root, stamps: stamps, indexDigest: index.sha256)
+    }
+    /// Hashes every retained file off this actor so reading checkpoints do not
+    /// queue behind the full-book pass. The receipt is bound to one opening.
+    public func verifyReadingOpening(_ opening: LocalReadingOpening) async throws {
+        let id = opening.book.id
+        guard opening.profile == root, readingOpenings[id] == opening.id else { throw LibraryError.invalid("阅读校验已过期，未更新当前书籍。") }
+        do {
+            guard try readingStamps(Array(opening.stamps.keys), directory: opening.directory) == opening.stamps else { throw LibraryError.invalid("书籍原件或索引已变化，请重新打开。") }
+            _ = try await Self.importWork { try Self.verifyPackage(opening.directory, id: id) }
+            guard readingOpenings[id] == opening.id,
+                  try readingStamps(Array(opening.stamps.keys), directory: opening.directory) == opening.stamps else { throw LibraryError.invalid("书籍在校验时发生变化，请重新打开。") }
+            rejectedReadingPackages.remove(id)
+        } catch {
+            if !(error is CancellationError), readingOpenings[id] == opening.id {
+                rejectedReadingPackages.insert(id); readingIndexes[id] = nil
+            }
+            throw error
+        }
+    }
+    private func readingStamps(_ paths: [String], directory: URL) throws -> [String: Disk.FileStamp] {
+        try Dictionary(uniqueKeysWithValues: paths.map { ($0, try Disk.fileStamp(Disk.url(directory, $0))) })
+    }
+    /// Preserve live work against the opening's original identity even when its
+    /// current on-disk index no longer authorizes canonical record writes.
+    public func retainReaderOpeningRecovery(_ state: ReaderState, opening: LocalReadingOpening) throws {
+        guard opening.profile == root else { throw LibraryError.invalid("恢复记录不属于当前书房。") }
+        let folder = try openingRecoveryDirectory(opening.book.id)
+        try Disk.directory(folder)
+        let value = ReaderOpeningRecovery(bookID: opening.book.id, sourceVersion: opening.book.sourceVersion, indexDigest: opening.indexDigest,
+                                          profile: root.lastPathComponent, state: state, recordedAt: Date())
+        // Unique receipts never overwrite a prior recovery or canonical state.
+        try Disk.write(value, to: folder.appendingPathComponent(UUID().uuidString.lowercased() + ".json"))
+    }
+    public func readerOpeningRecoveries(_ id: String) throws -> [ReaderOpeningRecovery] {
+        let folder = try openingRecoveryDirectory(id)
+        guard Disk.fm.fileExists(atPath: folder.path) else { return [] }
+        return try Disk.fm.contentsOfDirectory(at: folder, includingPropertiesForKeys: nil).filter { $0.pathExtension == "json" }.map {
+            let value = try Disk.read(ReaderOpeningRecovery.self, from: $0)
+            guard value.bookID == id, value.profile == root.lastPathComponent else { throw LibraryError.invalid("恢复记录的书籍或账号不匹配，已保留文件。") }
+            return value
+        }.sorted { $0.recordedAt > $1.recordedAt }
+    }
+    private func openingRecoveryDirectory(_ id: String) throws -> URL {
+        try Disk.validID(id)
+        return try Disk.url(root, "states/" + id + "-opening-recovery")
+    }
+    private nonisolated static func verifyFile(_ file: FileDigest, directory: URL) throws {
+        let url = try Disk.url(directory, file.path)
+        guard file.bytes >= 0, try Disk.fileStamp(url).size == file.bytes, try Disk.hashFile(url) == file.sha256 else { throw LibraryError.invalid("离线文件缺失或损坏，请从原件修复。") }
+    }
     public func book(_ id: String) throws -> LocalBook {
         let directory = try bookDirectory(id)
         let manifest = try checkPackage(directory, id: id)
@@ -231,6 +388,7 @@ public actor OfflineLibrary {
                 }
             }
         }
+        rejectedReadingPackages.remove(id)
         return book
     }
     public func books() throws -> [LocalBook] {
@@ -250,16 +408,13 @@ public actor OfflineLibrary {
     /// Decode an unchanged index once for listing and frequent durable state
     /// saves. Opening/verify still perform their existing full integrity checks.
     private func indexedBook(_ id: String, at folder: URL) throws -> LocalBook {
-        let file = folder.appendingPathComponent("book.json"), attributes = try? Disk.fm.attributesOfItem(atPath: file.path)
-        let size = (attributes?[.size] as? NSNumber)?.int64Value
-        let modified = attributes?[.modificationDate] as? Date
-        let number = (attributes?[.systemFileNumber] as? NSNumber)?.uint64Value
-        if let size, let modified, let number, let cached = listedIndexes[id], cached.size == size, cached.modified == modified, cached.fileNumber == number { return cached.book }
+        let file = try Disk.url(folder, "book.json"), stamp = try Disk.fileStamp(file)
+        if let cached = listedIndexes[id], cached.stamp == stamp { return cached.book }
         // A damaged/replaced index must never revive an older cached anchor.
         listedIndexes[id] = nil
         let book = try Disk.read(LocalBook.self, from: file)
         guard book.id == id else { throw LibraryError.invalid("书籍索引与当前书房不匹配，未覆盖已有记录。") }
-        if let size, let modified, let number { listedIndexes[id] = ListedIndexCache(size: size, modified: modified, fileNumber: number, book: book) }
+        listedIndexes[id] = ListedIndexCache(stamp: stamp, book: book)
         return book
     }
 
@@ -296,6 +451,7 @@ public actor OfflineLibrary {
         return state
     }
     public func saveState(_ state: ReaderState, bookID: String) throws {
+        guard !rejectedReadingPackages.contains(bookID) else { throw LibraryError.invalid("此阅读副本未通过校验，已保留原件与已有记录。请先修复。") }
         let directory = try bookDirectory(bookID)
         // Content was verified on open; avoid rehashing a 150 MB book on every keystroke.
         guard Disk.fm.fileExists(atPath: directory.appendingPathComponent("manifest.json").path) else { throw LibraryError.invalid("此书不属于当前书房。") }
@@ -552,9 +708,41 @@ public actor OfflineLibrary {
         guard Disk.fm.fileExists(atPath: url.path) else { return CloudSyncMetadata() }
         return try Disk.read(CloudSyncMetadata.self, from: url)
     }
+    /// A reader-first opening defers a remote anchor to the existing explicit
+    /// choice UI. This atomic metadata edit never rewrites notes or progress.
+    public func requireDeferredPositionChoice(_ bookID: String) throws -> CloudSyncMetadata {
+        var metadata = try cloudMetadata(bookID)
+        if let remote = metadata.remoteAnchor, remote != (try state(bookID)).anchor {
+            metadata.positionConflict = true
+            try saveCloudMetadata(metadata, bookID: bookID)
+        }
+        return metadata
+    }
     public func saveCloudMetadata(_ metadata: CloudSyncMetadata, bookID: String) throws {
         _ = try bookDirectory(bookID)
         try Disk.write(metadata, to: root.appendingPathComponent("states/" + bookID + "-sync.json"))
+    }
+    /// The choice UI may publish while a request is suspended. Merge its current
+    /// position fields atomically instead of replacing them with that request's
+    /// older snapshot. Explicit position resolution uses the ordinary writer.
+    func saveSynchronizationMetadata(_ incoming: CloudSyncMetadata, bookID: String, preservePositionChoice: Bool) throws -> CloudSyncMetadata {
+        var value = incoming
+        let current = try cloudMetadata(bookID)
+        if preservePositionChoice, current.positionConflict, current.explicitDeviceChoice != true {
+            value.positionConflict = true
+            value.positionRevision = current.positionRevision
+            value.lastSyncedAnchor = current.lastSyncedAnchor
+            value.lastSyncedActivityAt = current.lastSyncedActivityAt
+            value.lastSyncedViewMode = current.lastSyncedViewMode
+            value.lastSyncedTranslationVariant = current.lastSyncedTranslationVariant
+            value.explicitDeviceChoice = current.explicitDeviceChoice
+            if (current.remotePositionRevision ?? -1) >= (value.remotePositionRevision ?? -1) {
+                value.remoteAnchor = current.remoteAnchor; value.remotePositionRevision = current.remotePositionRevision; value.remoteActivityAt = current.remoteActivityAt
+            }
+            if value.lastError == nil { value.lastError = "阅读位置在另一台设备有更新，请选择从哪里继续。" }
+        }
+        try saveCloudMetadata(value, bookID: bookID)
+        return value
     }
     public func cacheCloudView(_ name: String, data: Data) throws {
         guard ["shelf", "summary", "activity", "notebook", "workspace", "journal"].contains(name), root.lastPathComponent.hasPrefix("account-") else { throw LibraryError.invalid("书房缓存归属无效。") }

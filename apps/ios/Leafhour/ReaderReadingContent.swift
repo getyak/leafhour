@@ -34,6 +34,7 @@ final class ReaderReadingContent {
     private var proposedPage: ReaderVisiblePage?
 
     func refresh(_ session: ReaderSession, cloud: CloudLibraryClient?, library: OfflineLibrary?) async {
+        guard !session.packageVerificationPending, session.packageVerificationError == nil else { return }
         let marker = UUID(); refreshID = marker
         let language = session.translationSettings.targetLanguage
         if let library, let cached = try? await library.readingTranslations(bookID: session.book.id, targetLanguage: language) {
@@ -81,6 +82,7 @@ final class ReaderReadingContent {
 
     func prepare(_ session: ReaderSession, cloud: CloudLibraryClient?, library: OfflineLibrary?, scope: ReadingTranslationScope = .currentAndNext, page: ReaderVisiblePage? = nil) async {
         proposed = nil; proposedPage = nil
+        guard !session.packageVerificationPending, session.packageVerificationError == nil else { error = "书籍文件正在校验，请稍后重试。"; return }
         guard scope != .page || page?.isCurrent(session) == true else { error = "当前页范围尚未确定，请等书页排版完成后重试。"; return }
         guard !running, !loading, let identity = session.book.cloud, let cloud, let library else { error = "请先登录并同步这本书，再准备译文。"; return }
         let languages = session.translationSettings, language = languages.targetLanguage
@@ -170,6 +172,7 @@ final class ReaderReadingContent {
         }
     }
     func confirm(_ run: ReaderTranslationRun, session: ReaderSession, cloud: CloudLibraryClient?, library: OfflineLibrary?) {
+        guard !session.packageVerificationPending, session.packageVerificationError == nil else { error = "书籍文件正在校验，请稍后重试。"; return }
         guard !running, foreground, session.state.preferences.viewMode != .source, let cloud, let library else { return }
         if run.plan.scope == .page, run.pending == nil {
             guard let proposedPage, proposedPage.isCurrent(session), proposedPage.passageIDs == run.plan.visiblePassageIDs else {

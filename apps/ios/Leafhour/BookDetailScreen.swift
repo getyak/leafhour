@@ -13,6 +13,7 @@ struct BookDetailScreen: View {
     @State private var exporting = false
     @State private var replacingOriginal = false
     @State private var export: RecordsDocument?
+    @State private var openingRecoveries: [ReaderOpeningRecovery] = []
     private var shelfItem: LibraryShelfItem {
         let active = LibraryPresentation.items(local: model.books, cloud: model.cloudBooks, snapshot: model.accountShelf, localArchivedIDs: model.localArchivedIDs, pendingActions: model.accountActions)
         let removed = LibraryPresentation.items(local: model.books, cloud: model.cloudBooks, filter: .archived, snapshot: model.accountShelf, localArchivedIDs: model.localArchivedIDs, pendingActions: model.accountActions)
@@ -52,6 +53,16 @@ struct BookDetailScreen: View {
                             exporting = true
                         } catch { model.message = error.localizedDescription }
                     }
+                }
+            }
+            if !openingRecoveries.isEmpty {
+                Section("修复前保留的记录") {
+                    Text("校验中断时单独保留的阅读位置、笔记与草稿，可在修复后继续导出。它们与当前记录分开保存。")
+                        .font(.footnote).foregroundStyle(.secondary)
+                    Button("导出修复前的记录", systemImage: "doc.badge.arrow.up") {
+                        do { export = RecordsDocument(data: try JSONEncoder().encode(openingRecoveries)); exporting = true }
+                        catch { model.message = error.localizedDescription }
+                    }.accessibilityIdentifier("book-export-opening-recovery")
                 }
             }
             if let identity = book.cloud {
@@ -97,7 +108,12 @@ struct BookDetailScreen: View {
             }
             Button("取消", role: .cancel) {}
         }
-        .task { original = try? await model.library?.originalURL(book.id) }
+        .task {
+            guard let library = model.library else { return }
+            do { openingRecoveries = try await library.readerOpeningRecoveries(book.id) }
+            catch { model.message = error.localizedDescription }
+            original = try? await library.originalURL(book.id)
+        }
         .fileImporter(isPresented: $replacingOriginal, allowedContentTypes: [.epub, .pdf, .plainText, UTType(filenameExtension: "md") ?? .plainText]) { result in
             switch result {
             case .failure(let error): integrity = error.localizedDescription

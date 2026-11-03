@@ -282,9 +282,34 @@ final class ReaderSpeech: NSObject, AVSpeechSynthesizerDelegate {
         speakCurrent(sourceOffset: 0)
     }
     func moveChapter(_ delta: Int) {
-        guard let next = chapterTarget(delta) else { return }
+        guard let session, let next = chapterTarget(delta) else { return }
+        selectChapter(session.book.chapters[passages[next].chapter].id)
+    }
+    func chapterID(adjacentTo chapterID: String, delta: Int) -> String? {
+        guard let session, let chapter = session.book.chapters.firstIndex(where: { $0.id == chapterID }),
+              let next = chapterTarget(delta, from: chapter) else { return nil }
+        return session.book.chapters[passages[next].chapter].id
+    }
+    @discardableResult func selectChapter(_ chapterID: String) -> Bool {
+        guard playing || paused, !wasSuperseded, nowPlaying?.isCurrentOwner != false,
+              let session, presentationSession === session,
+              let chapter = session.book.chapters.firstIndex(where: { $0.id == chapterID }),
+              let next = chapterStart(chapter) else { return false }
+        let continuesPlayback = playing
         checkpoint(force: true); position = next; content = nil; following = true
-        speakCurrent(sourceOffset: 0)
+        if continuesPlayback { speakCurrent(sourceOffset: 0); return playing }
+        // A paused destination owns no audio output. Discard the previous
+        // chapter's buffer and prepare the new cursor for explicit resume.
+        utterance = nil; voiceChangePending = true
+        synthesizer.stopSpeaking(at: .immediate)
+        content = makeContent()
+        guard let content, let sentence = content.sentences.first else { return false }
+        text = content.text; passageID = content.passageID
+        utteranceStart = sentence.location; spokenOffset = sentence.location
+        activeSentence = (text as NSString).substring(with: sentence)
+        highlight = nil; spokenWordRange = nil; isOutputPlaying = false; message = nil
+        checkpoint(force: true); refreshNowPlaying()
+        return true
     }
     func applicationDidBackground() {
         endSpeedBoost()
@@ -412,21 +437,24 @@ final class ReaderSpeech: NSObject, AVSpeechSynthesizerDelegate {
             chapterRanges[chapter] = (chapterRanges[chapter]?.lowerBound ?? index)..<(index + 1)
         }
     }
-    private func chapterTarget(_ delta: Int) -> Int? {
-        guard session != nil, delta == -1 || delta == 1, passages.indices.contains(position) else { return nil }
-        let currentChapter = passages[position].chapter
-        let candidates = chapterRanges.keys.filter { delta < 0 ? $0 < currentChapter : $0 > currentChapter }
-            .sorted { delta < 0 ? $0 > $1 : $0 < $1 }
-        for chapter in candidates {
-            if let cached = chapterStarts[chapter] { return cached }
-            guard !unavailableChapters.contains(chapter), let range = chapterRanges[chapter] else { continue }
-            for index in range {
-                if let candidate = makeContent(at: index), !candidate.sentences.isEmpty {
-                    chapterStarts[chapter] = index; return index
-                }
-            }
-            unavailableChapters.insert(chapter)
+    private func chapterTarget(_ delta: Int, from chapter: Int? = nil) -> Int? {
+        guard let session, delta == -1 || delta == 1, passages.indices.contains(position) else { return nil }
+        var candidate = (chapter ?? passages[position].chapter) + delta
+        while session.book.chapters.indices.contains(candidate) {
+            if let target = chapterStart(candidate) { return target }
+            candidate += delta
         }
+        return nil
+    }
+    private func chapterStart(_ chapter: Int) -> Int? {
+        if let cached = chapterStarts[chapter] { return cached }
+        guard !unavailableChapters.contains(chapter), let range = chapterRanges[chapter] else { return nil }
+        for index in range {
+            if let candidate = makeContent(at: index), !candidate.sentences.isEmpty {
+                chapterStarts[chapter] = index; return index
+            }
+        }
+        unavailableChapters.insert(chapter)
         return nil
     }
     private func bindPresentation(_ session: ReaderSession) {

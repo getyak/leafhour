@@ -56,13 +56,13 @@ public final class ReaderSession: Identifiable {
     public let detectedSourceLanguage: ReadingLanguage?
     public var translationSettings: BookTranslationSettings { state.translationSettings ?? .suggested(for: detectedSourceLanguage) }
     public func changeTranslationSettings(_ value: BookTranslationSettings) {
-        guard value != translationSettings else { return }
+        guard packageVerificationError == nil, value != translationSettings else { return }
         state.translationSettings = value
         translations = [:]; contentRevision += 1; selection = nil; save()
     }
     public private(set) var contentRevision = 0
     public func updateTranslations(_ rows: [String: ReadingTranslation]) {
-        guard !rows.isEmpty else { return }
+        guard packageVerificationError == nil, !rows.isEmpty else { return }
         var needed = Set(rows.keys), sources: [String: String] = [:]
         sourceScan: for chapter in book.chapters {
             for passage in chapter.passages where needed.contains(passage.id) {
@@ -90,8 +90,33 @@ public final class ReaderSession: Identifiable {
     @ObservationIgnored private var noteSubmission: ReaderNote?
     @ObservationIgnored private var noteSubmissionWasPersisted = false
     @ObservationIgnored private var visibleAnchor: ReadingAnchor?
-    public init(book: LocalBook, state: ReaderState, original: URL, directory: URL, library: any ReaderStateStore, preferencesStore: (any ReaderPreferencesStore)? = nil) {
-        detectedSourceLanguage = ReadingLanguage.detect(in: book)
+    public private(set) var packageVerificationPending = false
+    public private(set) var packageVerificationError: String?
+    public private(set) var packageRecoveryRetained = false
+    @ObservationIgnored private var frozenOpeningRecovery: ReaderState?
+    public var openingRecoverySnapshot: ReaderState {
+        if let frozenOpeningRecovery { return frozenOpeningRecovery }
+        var value = state; value.anchor = currentAnchor; return value
+    }
+    public func failPackageVerification(_ message: String, recoveryRetained: Bool = false) {
+        if frozenOpeningRecovery == nil { frozenOpeningRecovery = openingRecoverySnapshot }
+        pending?.cancel()
+        packageRecoveryRetained = recoveryRetained
+        packageVerificationError = message
+        setReadingVisible(false)
+    }
+    @ObservationIgnored private var openingVerifiedResources: Set<String> = []
+    public func canReadResource(_ path: String) -> Bool { packageVerificationError == nil && (!packageVerificationPending || openingVerifiedResources.contains(path)) }
+    /// The model calls this only after the exact opening's full pass succeeds.
+    public func completePackageVerification() {
+        guard packageVerificationPending, packageVerificationError == nil else { return }
+        packageVerificationPending = false; contentRevision += 1
+    }
+    public init(book: LocalBook, state: ReaderState, original: URL, directory: URL, library: any ReaderStateStore, preferencesStore: (any ReaderPreferencesStore)? = nil, preparation: ReaderOpeningPreparation? = nil) {
+        if let preparation {
+            detectedSourceLanguage = preparation.sourceLanguage
+            packageVerificationPending = true; openingVerifiedResources = preparation.verifiedResourcePaths
+        } else { detectedSourceLanguage = ReadingLanguage.detect(in: book) }
         var restored = state
         let initialChapter: Int
         if let anchor = state.anchor, let index = book.chapters.firstIndex(where: { $0.id == anchor.chapterID }) {
@@ -128,6 +153,7 @@ public final class ReaderSession: Identifiable {
         startReadingTime(source: .estimate)
     }
     public func startReadingTime(source: ReadingTimeSource = .focus) {
+        guard packageVerificationError == nil else { return }
         guard let anchor = currentAnchor ?? chapter.passages.first.map({ ReadingAnchor(chapterID: chapter.id, passageID: $0.id) }) else { return }
         do {
             try readingClock.start(bookID: book.cloud?.bookID ?? book.id, contentVersion: book.cloud?.contentVersion ?? book.sourceVersion, anchor: anchor, source: source, at: Date())
@@ -135,19 +161,20 @@ public final class ReaderSession: Identifiable {
         } catch { readingTimeError = error.localizedDescription }
     }
     public func pauseReadingTime() { readingClock.pause(at: Date()); checkpointReadingTime(); updateReadingTime() }
-    public func resumeReadingTime() { readingClock.resume(at: Date()); checkpointReadingTime(); updateReadingTime() }
+    public func resumeReadingTime() { guard packageVerificationError == nil else { return }; readingClock.resume(at: Date()); checkpointReadingTime(); updateReadingTime() }
     public func finishReadingTime() {
         if let anchor = currentAnchor { readingClock.setContext(anchor) }
         if let snapshot = readingClock.finish(at: Date()) { persistReadingTime(snapshot) }
         updateReadingTime()
     }
     public func setReadingVisible(_ visible: Bool) {
+        let visible = visible && packageVerificationError == nil
         readingVisible = visible; readingClock.setVisible(visible, at: Date()); checkpointReadingTime(); updateReadingTime()
     }
     /// Call only for a real reader gesture. Restoring, saving or speech navigation
     /// deliberately do not call this method or manufacture a recent-reading event.
     public func recordReadingInteraction() {
-        guard readingVisible else { return }
+        guard packageVerificationError == nil, readingVisible else { return }
         let now = Date(); state.lastActivityAt = ReadingTimeDate.stamp(now); activityNeedsSave = true
         readingClock.interact(at: now)
         if let anchor = currentAnchor { readingClock.setContext(anchor) }
@@ -219,10 +246,11 @@ public final class ReaderSession: Identifiable {
     /// A tool's selected excerpt is temporary; returning to reading must follow the visible passage.
     public func clearTransientSelection() { selection = nil }
     public func recordVisible(_ anchor: ReadingAnchor, navigationID: UUID) {
-        guard navigationID == self.navigationID, anchor.chapterID == chapter.id else { return }
+        guard packageVerificationError == nil, navigationID == self.navigationID, anchor.chapterID == chapter.id else { return }
         visibleAnchor = anchor
     }
     public func save() {
+        guard packageVerificationError == nil else { return }
         if state.anchor != currentAnchor { state.anchor = currentAnchor }
         activityNeedsSave = false
         revision += 1
@@ -230,6 +258,7 @@ public final class ReaderSession: Identifiable {
         saving = true
         pending = Task {
             await previous?.value
+            guard !Task.isCancelled, packageVerificationError == nil else { if version == revision { saving = false }; return }
             do {
                 if let sharedPreferences {
                     try await preferencesStore?.saveReaderPreferences(sharedPreferences)
@@ -237,6 +266,7 @@ public final class ReaderSession: Identifiable {
                 }
                 // Cloud state stores may schedule synchronization here. The
                 // shared authority must already expose this preference change.
+                guard !Task.isCancelled, packageVerificationError == nil else { if version == revision { saving = false }; return }
                 try await library.saveState(snapshot, bookID: book.id)
                 persistedState = snapshot
                 if let noteSubmission, snapshot.notes.contains(noteSubmission) { noteSubmissionWasPersisted = true }
@@ -253,6 +283,7 @@ public final class ReaderSession: Identifiable {
     }
     @discardableResult public func flush() async -> ReaderSaveReceipt {
         while true {
+            if packageVerificationError != nil { return ReaderSaveReceipt(revision: revision, persistedRevision: persistedRevision, succeeded: false) }
             if state.anchor != currentAnchor || activityNeedsSave { save() }
             let version = revision, task = pending
             await task?.value
@@ -268,18 +299,20 @@ public final class ReaderSession: Identifiable {
         persistedState.notes.contains { $0.id == id && $0.body == body }
     }
     public func moved(_ anchor: ReadingAnchor) {
+        guard packageVerificationError == nil else { return }
         recordVisible(anchor, navigationID: navigationID)
         guard anchor != state.anchor else { return }
         state.anchor = anchor; save()
     }
     public func go(to index: Int, anchor: ReadingAnchor? = nil) {
-        guard book.chapters.indices.contains(index) else { return }
+        guard packageVerificationError == nil, book.chapters.indices.contains(index) else { return }
         visibleAnchor = nil
         chapterIndex = index
         state.anchor = anchor ?? ReadingAnchor(chapterID: chapter.id, passageID: chapter.passages.first?.id ?? "page", characterOffset: 0)
         navigationID = UUID(); selection = nil; save()
     }
     public func changePreferences(_ value: ReaderPreferences) {
+        guard packageVerificationError == nil else { return }
         var normalized = value
         normalized.speechSpeed = ReaderPreferences.normalizedSpeechSpeed(value.speechSpeed)
         normalized.autoPageInterval = ReaderPreferences.normalizedAutoPageInterval(value.autoPageInterval)
@@ -287,9 +320,11 @@ public final class ReaderSession: Identifiable {
         state.preferences = normalized; pendingPreferences = normalized; save()
     }
     public func draft(_ quote: SelectedQuote, text: String) {
+        guard packageVerificationError == nil else { return }
         state.drafts[quote.id] = NoteDraft(anchor: quote.anchor, quote: quote.text, body: text, quoteOrigin: quote.origin, quoteVariant: quote.variant, quoteOffset: quote.translationOffset); save()
     }
     public func keepNoteDraft(_ quote: SelectedQuote, text: String, submissionID: UUID) {
+        guard packageVerificationError == nil else { return }
         let draft = NoteDraft(anchor: quote.anchor, quote: quote.text, body: text, quoteOrigin: quote.origin, quoteVariant: quote.variant, quoteOffset: quote.translationOffset)
         let confirmed = persistedState.notes.first { $0.id == submissionID && $0.anchor == quote.anchor && $0.quote == quote.text && $0.body == text }
         if let confirmed, state.notes.contains(confirmed) {
@@ -300,7 +335,7 @@ public final class ReaderSession: Identifiable {
         }
     }
     @discardableResult public func saveNote(_ quote: SelectedQuote, text: String, id: UUID = UUID()) async -> Bool {
-        guard noteSubmission == nil, !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return false }
+        guard packageVerificationError == nil, noteSubmission == nil, !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return false }
         let previous = state.notes.first { $0.id == id }
         let note = ReaderNote(id: id, anchor: quote.anchor, quote: quote.text, body: text, quoteOrigin: quote.origin, quoteVariant: quote.variant)
         noteSubmission = note; noteSubmissionWasPersisted = false
@@ -311,6 +346,7 @@ public final class ReaderSession: Identifiable {
         save()
         while true {
             let receipt = await flush()
+            if packageVerificationError != nil { return false }
             guard receipt.revision == revision && state.anchor == currentAnchor else { continue }
             if isCurrent(receipt) { return true }
             // A later failure must not undo a note that an earlier successful snapshot already confirmed.

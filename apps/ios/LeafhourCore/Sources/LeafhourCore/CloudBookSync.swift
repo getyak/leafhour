@@ -209,7 +209,16 @@ public actor CloudBookSync {
     }
     private var running: [String: Work] = [:]
     private var deferred: [String: Task<Void, Never>] = [:]
+    private var readingBooks: [String: UUID] = [:]
     public init(client: CloudLibraryClient, library: OfflineLibrary) { self.client = client; self.library = library }
+    public func claimReadingBook(_ bookID: String, token: UUID) async {
+        readingBooks[bookID] = token
+        await library.claimReadingOwnership(bookID, token: token)
+    }
+    public func releaseReadingBook(_ bookID: String, token: UUID) async {
+        if readingBooks[bookID] == token { readingBooks[bookID] = nil }
+        await library.releaseReadingOwnership(bookID, token: token)
+    }
     public func schedule(_ bookID: String) {
         deferred[bookID]?.cancel()
         deferred[bookID] = Task { [weak self] in
@@ -274,6 +283,8 @@ public actor CloudBookSync {
             catch { metadata.readingTimeError = error.localizedDescription; canDrain = false }
             let records = try CloudJSON.decode(await client.data(path: path + "/records", ownerID: identity.ownerID))
             guard records["bookId"].string == identity.bookID, records["contentVersion"].string == identity.contentVersion else { throw CloudRequestError(status: 409, message: "书籍内容已更新，旧副本与个人记录仍保留，请重新下载新版。") }
+            let awaitingPositionChoice = metadata.positionConflict && metadata.explicitDeviceChoice != true && !explicitDeviceResolution
+            let pull = pull && (explicitDeviceResolution || (readingBooks[bookID] == nil && !awaitingPositionChoice))
             var state = try await library.state(bookID)
             let snapshot = state
             var byID: [String: (String, String)] = [:]
@@ -329,7 +340,7 @@ public actor CloudBookSync {
                 do {
                     _ = try await client.data(path: path + "/comments", method: "POST", body: CloudJSON.encode(payload), ownerID: identity.ownerID)
                     metadata.syncedNotes[key] = id; metadata.syncedNoteBodies[key] = note.body
-                    try await library.saveCloudMetadata(metadata, bookID: bookID)
+                    metadata = try await library.saveSynchronizationMetadata(metadata, bookID: bookID, preservePositionChoice: !explicitDeviceResolution)
                 } catch let error as CloudRequestError {
                     if error.status == 401 || error.status == 403 { throw error }
                     canDrain = false
@@ -341,6 +352,9 @@ public actor CloudBookSync {
                     break
                 }
             }
+            // Opening can acquire ownership while an older pull awaits a note
+            // POST. Re-read as push before adopting any remote records/position.
+            if pull, !explicitDeviceResolution, readingBooks[bookID] != nil { return try await performSynchronization(bookID, pull: false) }
             let position = records["position"]
             let remoteRevision = Int(position["revision"].number ?? 0)
             let remoteAnchor = Self.anchor(position, book: book)
@@ -351,7 +365,14 @@ public actor CloudBookSync {
             let changedAnchor = snapshot.anchor != metadata.lastSyncedAnchor && !untouchedStart
             var pendingPosition = changedAnchor || pendingPreferences || snapshot.lastActivityAt != metadata.lastSyncedActivityAt
             var deferredRemote = false
-            if !explicitDeviceResolution, metadata.explicitDeviceChoice != true, remoteRevision != metadata.positionRevision, let remoteAnchor {
+            if awaitingPositionChoice {
+                // An unresolved reader-first choice survives queued pushes and
+                // the ordinary shelf pull after dismissal, even without dates.
+                if let remoteAnchor {
+                    metadata.remoteAnchor = remoteAnchor; metadata.remotePositionRevision = remoteRevision; metadata.remoteActivityAt = remoteActivity
+                }
+                pendingPosition = false; deferredRemote = true
+            } else if !explicitDeviceResolution, metadata.explicitDeviceChoice != true, remoteRevision != metadata.positionRevision, let remoteAnchor {
                 if pendingPosition, snapshot.anchor != nil, let localActivity = snapshot.lastActivityAt, let remoteActivity, localActivity > remoteActivity {
                     // A real newer offline reading event wins. Retain the displaced
                     // remote checkpoint before rebasing the CAS to this exact GET.
@@ -401,8 +422,13 @@ public actor CloudBookSync {
                 metadata.positionConflict = true; metadata.remoteAnchor = remoteAnchor; metadata.remotePositionRevision = remoteRevision; metadata.remoteActivityAt = remoteActivity
             }
             // Pull is used only while no reader owns this book. Push never rewrites its live state.
+            if pull, !explicitDeviceResolution, readingBooks[bookID] != nil { return try await performSynchronization(bookID, pull: false) }
             if pull && state != snapshot {
-                guard try await library.saveStateIfUnchanged(state, bookID: bookID, expected: snapshot) else {
+                let saved = try await (explicitDeviceResolution
+                    ? library.saveStateIfUnchanged(state, bookID: bookID, expected: snapshot)
+                    : library.savePulledStateIfUnchanged(state, bookID: bookID, expected: snapshot))
+                if !saved, await library.hasReadingOwnership(bookID), !explicitDeviceResolution { return try await performSynchronization(bookID, pull: false) }
+                guard saved else {
                     throw LibraryError.invalid("本机阅读记录刚有更新，已保留最新内容，请稍后重试同步。")
                 }
             }
@@ -412,11 +438,11 @@ public actor CloudBookSync {
             if let error = metadata.noteErrors.values.sorted().first { issues.append(error) }
             if let error = metadata.readingTimeError { issues.append("阅读时段待同步：" + error) }
             metadata.lastError = issues.isEmpty ? nil : issues.joined(separator: " ")
-            try await library.saveCloudMetadata(metadata, bookID: bookID)
+            metadata = try await library.saveSynchronizationMetadata(metadata, bookID: bookID, preservePositionChoice: !explicitDeviceResolution)
             return canDrain
         } catch {
             metadata.lastError = error.localizedDescription
-            try? await library.saveCloudMetadata(metadata, bookID: bookID)
+            _ = try? await library.saveSynchronizationMetadata(metadata, bookID: bookID, preservePositionChoice: !explicitDeviceResolution)
             throw error
         }
     }
