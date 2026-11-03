@@ -52,6 +52,7 @@ enum ReaderRemoteCommand: CaseIterable, Hashable {
     private let intentCommands: ListeningPlaybackCommandCenter?
     private var owner: UUID?
     private var revokeOwner: (() -> Void)?
+    private var outputClock = ListeningOutputClock()
 
     init(sink: any ReaderNowPlayingSink, commands: any ReaderRemoteCommandRegistering,
          activities: (any ReaderListeningActivityPublishing)? = nil, intentCommands: ListeningPlaybackCommandCenter? = nil) {
@@ -69,6 +70,7 @@ enum ReaderRemoteCommand: CaseIterable, Hashable {
             intentCommands?.unbind(sessionID: owner.uuidString)
         }
         owner = candidate; revokeOwner = revoke
+        outputClock = ListeningOutputClock()
         previous?()
     }
 
@@ -105,9 +107,13 @@ enum ReaderRemoteCommand: CaseIterable, Hashable {
         commands.setEnabled(true, for: .stop)
         commands.setEnabled(snapshot.canPreviousChapter, for: .previousChapter)
         commands.setEnabled(snapshot.canNextChapter, for: .nextChapter)
-        activities?.publish(sessionID: candidate.uuidString, state: .init(title: snapshot.title, chapter: snapshot.chapterTitle,
+        outputClock.setOutputPlaying(snapshot.isPlaying, at: Date(), uptime: ProcessInfo.processInfo.systemUptime)
+        var state = ListeningActivityAttributes.ContentState(title: snapshot.title, chapter: snapshot.chapterTitle,
             phase: snapshot.isPlaying ? .playing : snapshot.isPreparing ? .preparing : .paused,
-            speed: ReaderPreferences.normalizedSpeechSpeed(snapshot.playbackRate)))
+            speed: ReaderPreferences.normalizedSpeechSpeed(snapshot.playbackRate))
+        state.elapsedOutputSeconds = outputClock.elapsedSeconds
+        state.outputTimerStartDate = outputClock.timerStartDate
+        activities?.publish(sessionID: candidate.uuidString, state: state)
     }
 
     fileprivate func bindIntents(owner: UUID, handler: @escaping (ListeningPlaybackAction) -> Bool) {
@@ -123,6 +129,7 @@ enum ReaderRemoteCommand: CaseIterable, Hashable {
     fileprivate func clear(owner candidate: UUID) {
         guard isOwner(candidate) else { return }
         owner = nil; revokeOwner = nil
+        outputClock = ListeningOutputClock()
         activities?.end(sessionID: candidate.uuidString)
         intentCommands?.unbind(sessionID: candidate.uuidString)
         sink.nowPlayingInfo = nil

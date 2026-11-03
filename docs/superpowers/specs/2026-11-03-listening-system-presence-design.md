@@ -12,6 +12,8 @@ The Activity's buttons execute AudioPlaybackIntent in the app process and target
 
 Activity updates follow changes to phase, chapter or chosen speed, not words or a periodic animation timer. Small symbol transitions may accompany state changes; Always-On/reduced-motion presentations stay still. Dynamic Island/Lock Screen layout and final iOS 27 behavior require device acceptance separately.
 
+To satisfy the requested visible background motion, compact/expanded and Lock Screen presentations also show a native system-owned elapsed-listening timer. It advances only during actual PCM output, freezes during preparation/pause, resets with the playback owner and never writes reading statistics. Monotonic uptime measures output intervals; significant wall-clock changes reproject the date anchor used by WidgetKit. The app declares the elapsed-time/timer privacy reason `35F9.1` and never exports raw uptime.
+
 ## Verification
 
 Use isolated synthetic books and injectable media/activity/command sinks. Test toggle while preparing/playing/paused, stop cleanup, rejected delayed actions, session replacement, disabled activities, deduplication and late asynchronous activity creation. Build the app and embedded widget. Run affected speech, now-playing and UI checks, then reviewed PR/CI/merge under repository policy. Record simulator, physical device, TestFlight and production statuses separately.

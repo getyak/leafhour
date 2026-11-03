@@ -81,6 +81,7 @@ final class ReaderSpeech: NSObject, AVSpeechSynthesizerDelegate {
     @ObservationIgnored private var speedBeforeBoost: Double?
     @ObservationIgnored private var routeChange: NSObjectProtocol?
     @ObservationIgnored private var microphoneStart: NSObjectProtocol?
+    @ObservationIgnored private var clockChange: NSObjectProtocol?
     @ObservationIgnored private let nowPlayingCenter: ReaderNowPlayingCenter?
     @ObservationIgnored private var nowPlaying: ReaderNowPlayingController?
     @ObservationIgnored private let coverLoader: any ReaderListeningCoverLoading
@@ -113,11 +114,17 @@ final class ReaderSpeech: NSObject, AVSpeechSynthesizerDelegate {
             // handoff now, so a deferred pause cannot deactivate its capture.
             MainActor.assumeIsolated { self?.microphoneWillStart() }
         }
+        clockChange = NotificationCenter.default.addObserver(forName: UIApplication.significantTimeChangeNotification, object: nil, queue: .main) { [weak self] _ in
+            // Reproject the system timer from monotonic output time, without a
+            // polling timer or counting a wall-clock adjustment as listening.
+            MainActor.assumeIsolated { self?.refreshNowPlaying() }
+        }
     }
     deinit {
         if let interruption { NotificationCenter.default.removeObserver(interruption) }
         if let routeChange { NotificationCenter.default.removeObserver(routeChange) }
         if let microphoneStart { NotificationCenter.default.removeObserver(microphoneStart) }
+        if let clockChange { NotificationCenter.default.removeObserver(clockChange) }
         artworkTask?.cancel()
         let audio = audioSession, owner = audioOwnershipID
         Task { @MainActor in

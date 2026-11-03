@@ -10,6 +10,8 @@ struct ListeningActivityAttributes: ActivityAttributes {
         var chapter: String?
         var phase: Phase
         var speed: Double
+        var elapsedOutputSeconds: TimeInterval = 0
+        var outputTimerStartDate: Date?
     }
     enum Phase: String, Codable, Hashable, Sendable {
         case preparing, playing, paused

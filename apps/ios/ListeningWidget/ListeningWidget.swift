@@ -15,7 +15,12 @@ struct ListeningLiveActivity: Widget {
         } dynamicIsland: { context in
             DynamicIsland {
                 DynamicIslandExpandedRegion(.leading) { stateSymbol(context.state).padding(.top, 8) }
-                DynamicIslandExpandedRegion(.trailing) { Text(context.state.phase.label).font(.caption.weight(.medium)).padding(.top, 8) }
+                DynamicIslandExpandedRegion(.trailing) {
+                    VStack(alignment: .trailing, spacing: 3) {
+                        Text(context.state.phase.label)
+                        ListeningElapsedTime(state: context.state)
+                    }.font(.caption.weight(.medium)).padding(.top, 8)
+                }
                 DynamicIslandExpandedRegion(.bottom) {
                     VStack(alignment: .leading, spacing: 10) {
                         identity(context.state)
@@ -25,7 +30,7 @@ struct ListeningLiveActivity: Widget {
             } compactLeading: { stateSymbol(context.state) }
               compactTrailing: {
                 if context.state.phase == .playing {
-                    Text(context.state.speed, format: .number.precision(.fractionLength(0...2))) + Text("×")
+                    ListeningElapsedTime(state: context.state)
                 } else { Image(systemName: context.state.phase == .paused ? "pause.fill" : "ellipsis") }
             } minimal: { stateSymbol(context.state) }
                 .keylineTint(.green.opacity(0.5))
@@ -59,9 +64,29 @@ private struct ListeningActivityView: View {
                 Spacer(minLength: 4)
                 Text(context.state.phase.label).font(.caption.weight(.medium)).foregroundStyle(.secondary)
             }
+            HStack(spacing: 6) {
+                Text("本次已听")
+                ListeningElapsedTime(state: context.state)
+                Spacer()
+                Text(context.state.speed, format: .number.precision(.fractionLength(0...2))) + Text("×")
+            }.font(.caption.weight(.medium)).foregroundStyle(.secondary)
             ListeningActivityActions(sessionID: context.attributes.sessionID, state: context.state)
         }.padding(16)
             .animation(dimmed || reduceMotion ? nil : .easeInOut(duration: 0.25), value: context.state.phase)
+    }
+}
+
+private struct ListeningElapsedTime: View {
+    let state: ListeningActivityAttributes.ContentState
+    var body: some View {
+        Group {
+            if state.phase == .playing, let start = state.outputTimerStartDate {
+                Text(timerInterval: start...start.addingTimeInterval(8 * 3600), countsDown: false, showsHours: false)
+            } else {
+                let seconds = max(0, Int(state.elapsedOutputSeconds))
+                Text("\(seconds / 60):\(String(format: "%02d", seconds % 60))")
+            }
+        }.monospacedDigit().accessibilityIdentifier("listening-output-elapsed")
     }
 }
 

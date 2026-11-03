@@ -32,9 +32,9 @@
 
 **Interfaces:** `ListeningPlaybackCommandCenter.bind(sessionID:handler:)`, `perform(_:sessionID:) -> Bool`, `unbind(sessionID:)`; media commands add `togglePlayback` and `stop`; snapshots distinguish preparation.
 
-- [ ] Add tests for preparing/playing/paused toggle, stopped state and stale handlers; run the targeted tests and observe expected failures.
-- [ ] Implement owner-checked command routing, media stop/toggle mappings and real output/preparation state publication.
-- [ ] Run Now Playing and reader interaction tests green, including existing background and takeover cases.
+- [x] Add tests for preparing/playing/paused toggle, stopped state and stale handlers; run the targeted tests and observe expected failures.
+- [x] Implement owner-checked command routing, media stop/toggle mappings and real output/preparation state publication.
+- [x] Run Now Playing and reader interaction tests green, including existing background and takeover cases.
 
 ### Task 2: Live Activity lifecycle and interactive native views
 
@@ -42,17 +42,18 @@
 
 **Interfaces:** `ReaderListeningActivityPublishing.publish(sessionID:state:)`, `end(sessionID:)`; async backend start/update/end injected for isolated race tests.
 
-- [ ] Write lifecycle tests first: deduplication, stop-before-create, replacement and dismissed activities; observe failures.
-- [ ] Add serialized ActivityKit publishing, random session routing, explicit pause/end actions, legible compact/minimal/expanded/lock layouts and finite state transitions.
-- [ ] Add/embedded widget target and generate project; build app and widget. Run lifecycle and action tests green.
+- [x] Write lifecycle tests first: deduplication, stop-before-create, replacement and dismissed activities; observe failures.
+- [x] Add serialized ActivityKit publishing, random session routing, explicit pause/end actions, legible compact/minimal/expanded/lock layouts and finite state transitions.
+- [x] Add/embedded widget target and generate project; build app and widget. Run lifecycle and action tests green.
+- [x] Add a truthful output-only system timer; test paused/preparing intervals and forward/backward wall-clock changes RED→GREEN, then verify background advancement/freeze in system UI.
 
 ### Task 3: Listening UI and delivery verification
 
 **Files:** `ReaderListeningPanel.swift`, focused UI tests and `docs/verification/2026-11-03-listening-system-presence.md`.
 
-- [ ] Make ending listening directly discoverable in the player and verify the same state lifecycle.
-- [ ] Run affected tests and simulator build/visual inspection with isolated fixtures. Record actual results and physical/iOS 27 limits.
-- [ ] Obtain fresh whole-branch review, address material findings, synchronize main and rerun affected checks if needed.
+- [x] Make ending listening directly discoverable in the player and verify the same state lifecycle.
+- [x] Run affected tests and simulator build/visual inspection with isolated fixtures. Record actual results and physical/iOS 27 limits.
+- [x] Obtain fresh whole-branch review, address material findings, synchronize main and rerun affected checks if needed.
 - [ ] Commit this task only, push once, create PR, wait for required CI, normally merge and inspect existing release workflow outcomes.
 
 ### Necessary release integration

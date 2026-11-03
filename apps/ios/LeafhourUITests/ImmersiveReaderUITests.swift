@@ -203,7 +203,8 @@ final class ImmersiveReaderUITests: XCTestCase {
         // Some iOS 26.4 Simulator images render an entirely empty system panel,
         // including no Wi-Fi, brightness or volume controls. That cannot prove
         // either presence or absence of the app's system media tile.
-        try XCTSkipIf(springboard.buttons.count == 0 && springboard.sliders.count == 0,
+        let folder = springboard.otherElements["cc-root-folder-view"].firstMatch
+        try XCTSkipIf(folder.exists && folder.buttons.count == 0 && folder.sliders.count == 0,
             "Simulator Control Center has no system controls; verify system media presentation on a physical device")
         let media = springboard.descendants(matching: .any).matching(NSPredicate(format: "label CONTAINS %@", "GET317 合成验收")).firstMatch
         XCTAssertTrue(media.waitForExistence(timeout: 10), "Control Center must publish the actual listening identity: " + springboard.debugDescription)
@@ -224,11 +225,20 @@ final class ImmersiveReaderUITests: XCTestCase {
         XCTAssertTrue(end.waitForExistence(timeout: 10), springboard.debugDescription)
         let pause = springboard.buttons["暂停"].firstMatch
         XCTAssertTrue(pause.waitForExistence(timeout: 5), springboard.debugDescription)
+        let elapsed = springboard.descendants(matching: .any).matching(identifier: "listening-output-elapsed").firstMatch
+        XCTAssertTrue(elapsed.waitForExistence(timeout: 5), springboard.debugDescription)
+        let initialTime = elapsed.label
+        let advancing = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in elapsed.label != initialTime }, object: nil)
+        XCTAssertEqual(XCTWaiter.wait(for: [advancing], timeout: 5), .completed, "The system-owned listening timer must advance while the app is in background")
         capture("live-activity-playing")
         pause.tap()
         let resume = springboard.buttons["继续"].firstMatch
         XCTAssertTrue(resume.waitForExistence(timeout: 10), springboard.debugDescription)
         XCTAssertNotEqual(app.state, .runningForeground)
+        let pausedTime = elapsed.label
+        let changedWhilePaused = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in elapsed.label != pausedTime }, object: nil)
+        changedWhilePaused.isInverted = true
+        XCTAssertEqual(XCTWaiter.wait(for: [changedWhilePaused], timeout: 2), .completed)
         capture("live-activity-paused")
         resume.tap()
         XCTAssertTrue(pause.waitForExistence(timeout: 10), springboard.debugDescription)
