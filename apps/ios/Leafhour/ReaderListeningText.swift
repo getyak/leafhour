@@ -11,6 +11,7 @@ struct ReaderListeningText: UIViewRepresentable {
     var active = false
     var sentenceRange: NSRange? = nil
     var follows = false
+    var followRevision: UUID? = nil
     var secondary = false
     var onSeek: ((Int) -> Void)? = nil
     var onSelection: (Bool) -> Void = { _ in }
@@ -51,6 +52,7 @@ struct ReaderListeningText: UIViewRepresentable {
         private var paintedRange: NSRange?
         private var updating = false
         private var followedRange: NSRange?
+        private var followedRevision: UUID?
         init(_ parent: ReaderListeningText) { self.parent = parent }
         func install(_ view: UITextView) {
             self.view = view
@@ -83,13 +85,14 @@ struct ReaderListeningText: UIViewRepresentable {
             if let paintedRange, NSMaxRange(paintedRange) <= full.length { view.textStorage.removeAttribute(.backgroundColor, range: paintedRange) }
             paintedRange = nil
             if let range = parent.wordRange, range.length > 0, range.location >= 0, NSMaxRange(range) <= full.length, Range(range, in: text) != nil {
-                view.textStorage.addAttributes([.foregroundColor: UIColor.label, .backgroundColor: UIColor.label.withAlphaComponent(0.10)], range: range)
+                view.textStorage.addAttribute(.foregroundColor, value: UIColor(Color.leafInk), range: range)
                 paintedRange = range
             }
             view.textStorage.endEditing()
             view.accessibilityIdentifier = parent.secondary ? "reader-listening-comparison" : parent.active ? "reader-listening-active-sentence" : "reader-listening-sentence"
             view.accessibilityCustomActions = parent.onSeek == nil ? [] : [UIAccessibilityCustomAction(name: "从这句朗读", actionHandler: { [weak self] _ in self?.parent.onSeek?(0); return true })]
             refreshGestures(view)
+            if followedRevision != parent.followRevision { followedRange = nil; followedRevision = parent.followRevision }
             if !parent.follows { followedRange = nil }
             else if let sentence = parent.sentenceRange, sentence != followedRange {
                 followedRange = sentence

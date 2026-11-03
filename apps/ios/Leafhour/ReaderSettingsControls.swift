@@ -76,10 +76,6 @@ struct ReaderTranslationPreparation: View {
         }
     }
     private func confirmation(_ run: ReaderTranslationRun) -> String {
-        let id = run.pending?.passageID ?? run.plan.passageIDs.dropFirst(run.next).first
-        let passage = session.book.chapters.flatMap(\.passages).first { $0.id == id }
-        let scope = run.pending != nil ? "先恢复上次未确认的一段" : run.plan.scope == .passage ? "当前一段" : "逐段处理"
-        let preview = passage.map { "\n原文：" + String($0.text.prefix(120)) } ?? ""
-        return "本次范围：\(session.book.chapters.filter { run.plan.chapterIDs.contains($0.id) }.map(\.title).joined(separator: "、"))，\(scope)。还剩 \(max(0, run.plan.passageIDs.count - run.next)) 段，启用阅读点时最多 \(max(0, run.plan.passageIDs.count - run.next)) 点。每段提交前核对报价；未确认的请求沿用原请求恢复，已有双译不会重做。进入后台或切回原著会暂停。" + preview
+        ReaderTranslationConfirmation.text(run, session: session)
     }
 }

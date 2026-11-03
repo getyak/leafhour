@@ -25,6 +25,7 @@ struct PDFReadingView: UIViewRepresentable {
     let onWake: (ReaderChrome) -> Void
     let onReadingScroll: () -> Void
     var onPageChange: ((ReaderPagePosition) -> Void)? = nil
+    var onVisiblePage: ((ReaderVisiblePage?) -> Void)? = nil
     var speechHighlight: ReaderSpeechHighlight? = nil
     var followsSpeech = false
     var onReadingPosition: ((ReaderSpeechLocation) -> Void)? = nil
@@ -98,6 +99,10 @@ struct PDFReadingView: UIViewRepresentable {
         private var scheduledDismissalID: UUID?
         private var scheduledSelectionRevision = 0
         private var lastReportedPage: ReaderPagePosition?
+        private let visiblePageLayout = ReaderVisiblePageLayout()
+        private var visiblePageGeometry: String?
+        private var lastVisiblePage: ReaderVisiblePage?
+        private var visiblePageReportGeneration = 0
         private var speechDestination: (page: PDFPage, navigation: UUID)?
         private var speechSentence: (page: PDFPage, range: NSRange)?
         private let pageCurl = ReaderPageCurlTransition()
@@ -123,6 +128,7 @@ struct PDFReadingView: UIViewRepresentable {
             let mode = session.state.preferences.navigationMode, source = session.original
             let navigation = session.navigationID, dismissal = parent.selectionDismissalID
             if self.view !== view || renderedOwner != owner || navigationID != navigation || renderedMode != mode || loadedSource != source || renderedSize != view.bounds.size {
+                invalidateVisiblePage()
                 cancelPageTurn()
                 speechDestination = nil
                 // Old native notifications must not write into the new session
@@ -176,7 +182,7 @@ struct PDFReadingView: UIViewRepresentable {
             // SwiftUI has already resized an externally padded paged PDF by
             // this point. Its old-mode geometry is no longer a source snapshot.
             let anchor = session.currentAnchor
-            if needsRestore { restoring = true; restorationGeneration += 1; cancelPendingScroll(); userScrolled = false }
+            if needsRestore { invalidateVisiblePage(); restoring = true; restorationGeneration += 1; cancelPendingScroll(); userScrolled = false }
             if sourceChanged { view.alpha = 0; loadedSource = session.original; view.document = PDFDocument(url: session.original) }
             if modeChanged {
                 // singlePage and continuous can share a native scroll view.
@@ -240,6 +246,9 @@ struct PDFReadingView: UIViewRepresentable {
             observers.append(NotificationCenter.default.addObserver(forName: .PDFViewPageChanged, object: view, queue: .main) { [weak self] _ in
                 MainActor.assumeIsolated { self?.pageChanged() }
             })
+            observers.append(NotificationCenter.default.addObserver(forName: .PDFViewScaleChanged, object: view, queue: .main) { [weak self] _ in
+                MainActor.assumeIsolated { self?.invalidateVisiblePage(); self?.reportVisiblePage() }
+            })
             observers.append(NotificationCenter.default.addObserver(forName: UIApplication.willResignActiveNotification, object: nil, queue: .main) { [weak self] _ in MainActor.assumeIsolated { self?.cancelPageTurn(); self?.capture() } })
         }
         func observeScroll(in view: UIView) {
@@ -264,6 +273,7 @@ struct PDFReadingView: UIViewRepresentable {
             observedScroll = target
             scrolling = target.observe(\.contentOffset, options: .new) { [weak self, weak target] _, _ in
                 DispatchQueue.main.async { [weak self] in
+                    self?.invalidateVisiblePage(); self?.reportVisiblePage()
                     guard let self, !self.isInvalidated, !self.restoring, let target, self.observedScroll === target,
                           self.renderedMode == .scroll || self.renderedMode == .paged && !self.pageIsFitted,
                           self.navigationID == self.parent.session.navigationID,
@@ -468,6 +478,7 @@ struct PDFReadingView: UIViewRepresentable {
                         self.finishPageRequest(.notReady); return
                     }
                     self.finishPageRequest(.settled(navigationID: self.parent.session.navigationID))
+                    self.reportVisiblePage()
                     self.drainQueuedPage()
                     if turn.origin == .user {
                         UIAccessibility.post(notification: .pageScrolled, argument: "第 \(turn.pageIndex + 1) 页，共 \(view.document?.pageCount ?? 0) 页")
@@ -527,6 +538,7 @@ struct PDFReadingView: UIViewRepresentable {
             return true
         }
         func capture(force: Bool = false) {
+            defer { reportVisiblePage() }
             guard !isInvalidated, !restoring, force || userScrolled, let anchor = visibleAnchor(),
                   let index = parent.session.book.chapters.firstIndex(where: { $0.id == anchor.chapterID }) else { return }
             parent.session.chapterIndex = index
@@ -535,6 +547,7 @@ struct PDFReadingView: UIViewRepresentable {
             reportPagePosition()
         }
         private func pageChanged() {
+            invalidateVisiblePage()
             guard !isInvalidated, !restoring else { return }
             if nativePageTurn != nil { settleNativePageTurn(); return }
             if let automatic = automaticDestination, automatic.navigation == parent.session.navigationID,
@@ -556,6 +569,7 @@ struct PDFReadingView: UIViewRepresentable {
             reportPagePosition()
         }
         private func reportPagePosition() {
+            reportVisiblePage()
             guard !restoring, let view, let document = view.document, let page = view.currentPage else { return }
             let index = document.index(for: page)
             guard index >= 0, index < document.pageCount else { return }
@@ -568,10 +582,65 @@ struct PDFReadingView: UIViewRepresentable {
                 self.parent.onPageChange?(position)
             }
         }
+        private func currentVisiblePageGeometry() -> String? {
+            guard !isInvalidated, !restoring, !pageCurl.isActive, nativePageTurn == nil,
+                  let view, view.window != nil, view.bounds.width > 0, view.bounds.height > 0,
+                  let document = view.document, let page = document.page(at: parent.session.chapterIndex),
+                  view.visiblePages.contains(where: { $0 === page }),
+                  renderedOwner == ObjectIdentifier(parent.session), navigationID == parent.session.navigationID,
+                  loadedSource == parent.session.original, renderedSize == view.bounds.size,
+                  renderedMode == parent.session.state.preferences.navigationMode,
+                  observedScroll?.isDragging != true, observedScroll?.isDecelerating != true,
+                  view.scaleFactor.isFinite, view.scaleFactor > 0 else { return nil }
+            return "\(ObjectIdentifier(page))-\(view.bounds)-\(view.scaleFactor)-\(view.convert(view.bounds, to: page))-\(parent.pageInsets)-\(parent.session.state.preferences)-\(parent.session.contentRevision)"
+        }
+        func visiblePage() -> ReaderVisiblePage? {
+            guard let geometry = currentVisiblePageGeometry(), let view,
+                  let page = view.document?.page(at: parent.session.chapterIndex),
+                  let text = page.string, !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return nil }
+            // Paged PDF is already padded externally; continuous PDF keeps its
+            // stable reading insets inside the native surface.
+            let viewport = parent.session.state.preferences.navigationMode == .paged ? view.bounds : view.bounds.inset(by: parent.pageInsets)
+            guard viewport.width > 0, viewport.height > 0 else { return nil }
+            let reading = view.convert(viewport, to: page), source = text as NSString
+            var searchStart = 0, ids: [String] = []
+            for passage in parent.session.chapter.passages where ReadingTranslationPlan.isPageText(passage, in: parent.session.book) {
+                let range = source.range(of: passage.text, range: NSRange(location: searchStart, length: source.length - searchStart))
+                guard range.location != NSNotFound, let selection = page.selection(for: range) else { return nil }
+                searchStart = NSMaxRange(range)
+                let intersects = selection.selectionsByLine().contains { line in
+                    let rect = line.bounds(for: page).intersection(reading)
+                    return !rect.isNull && rect.width > 0 && rect.height > 0
+                }
+                if intersects { ids.append(passage.id) }
+            }
+            guard !ids.isEmpty else { return nil }
+            if visiblePageGeometry != geometry { visiblePageLayout.invalidate(); visiblePageGeometry = geometry }
+            visiblePageLayout.bind { [weak self] in self?.currentVisiblePageGeometry() == geometry }
+            return ReaderVisiblePage(session: parent.session, chapterID: parent.session.chapter.id, passageIDs: ids, layout: visiblePageLayout)
+        }
+        private func invalidateVisiblePage() {
+            visiblePageLayout.invalidate(); visiblePageGeometry = nil
+            publishVisiblePage(nil)
+        }
+        private func reportVisiblePage() { publishVisiblePage(visiblePage()) }
+        private func publishVisiblePage(_ page: ReaderVisiblePage?) {
+            guard page != lastVisiblePage else { return }
+            lastVisiblePage = page; visiblePageReportGeneration += 1
+            let generation = visiblePageReportGeneration
+            DispatchQueue.main.async { [weak self] in
+                guard let self, !self.isInvalidated, self.visiblePageReportGeneration == generation else { return }
+                guard page?.isCurrent(self.parent.session) != false else { return }
+                self.parent.onVisiblePage?(page)
+            }
+        }
         func invalidate() {
             edgeTap?.invalidate(); edgeTap = nil
             guard !isInvalidated else { return }
             isInvalidated = true; restoring = true
+            visiblePageLayout.invalidate(); visiblePageGeometry = nil
+            let onVisiblePage = parent.onVisiblePage; parent.onVisiblePage = nil
+            DispatchQueue.main.async { onVisiblePage?(nil) }
             parent.onTouchActivity = nil; parent.onPageChange = nil
             parent.onReadingPosition = nil; parent.onPageRequestResult = nil
             if let native = pageGestureView as? ReaderPDFView { native.onReaderAccessibilityScroll = { _ in .blocked } }

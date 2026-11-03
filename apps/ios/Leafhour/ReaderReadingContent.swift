@@ -7,6 +7,10 @@ struct ReaderTranslationRun: Codable {
     var next = 0
     var pending: ReaderGenerationConsent?
     var completed: [CloudJSON] = []
+    var recoverPendingOnly: Bool? = nil
+    var remainingParagraphCount: Int {
+        recoverPendingOnly == true ? (pending == nil ? 0 : 1) : max(0, plan.passageIDs.count - next)
+    }
 }
 
 /// One foreground, explicitly confirmed budget. Navigation never expands it.
@@ -27,6 +31,7 @@ final class ReaderReadingContent {
     private var refreshID = UUID()
     private var activeChapterIDs: [String] = []
     private var foreground = true
+    private var proposedPage: ReaderVisiblePage?
 
     func refresh(_ session: ReaderSession, cloud: CloudLibraryClient?, library: OfflineLibrary?) async {
         let marker = UUID(); refreshID = marker
@@ -74,7 +79,9 @@ final class ReaderReadingContent {
         return result
     }
 
-    func prepare(_ session: ReaderSession, cloud: CloudLibraryClient?, library: OfflineLibrary?, scope: ReadingTranslationScope = .currentAndNext) async {
+    func prepare(_ session: ReaderSession, cloud: CloudLibraryClient?, library: OfflineLibrary?, scope: ReadingTranslationScope = .currentAndNext, page: ReaderVisiblePage? = nil) async {
+        proposed = nil; proposedPage = nil
+        guard scope != .page || page?.isCurrent(session) == true else { error = "当前页范围尚未确定，请等书页排版完成后重试。"; return }
         guard !running, !loading, let identity = session.book.cloud, let cloud, let library else { error = "请先登录并同步这本书，再准备译文。"; return }
         let languages = session.translationSettings, language = languages.targetLanguage
         guard languages.isValid(detected: session.detectedSourceLanguage) else { error = "请选择不同的原文语言与译入语言，再开始翻译。"; return }
@@ -82,23 +89,41 @@ final class ReaderReadingContent {
         let passageID = session.currentAnchor?.passageID
         error = nil; loading = true
         defer { loading = false }
+        func validatePreparation() throws {
+            try Task.checkCancellation()
+            guard navigation == session.navigationID, chapterIndex == session.chapterIndex, languages == session.translationSettings,
+                  scope != .page || page?.isCurrent(session) == true else { throw LibraryError.invalid("书页或翻译设置已变化，请从当前页重新准备译文。") }
+        }
         do {
             guard await cloud.activeAccount()?.id == identity.ownerID else { throw LibraryError.invalid("账号已变化，请重新打开书房。") }
-            if let data = try await library.pendingReadingTranslation(bookID: session.book.id, targetLanguage: language) {
-                let saved = try JSONDecoder().decode(ReaderTranslationRun.self, from: data)
+            try validatePreparation()
+            let data = try await library.pendingReadingTranslation(bookID: session.book.id, targetLanguage: language)
+            try validatePreparation()
+            if let data {
+                var saved = try JSONDecoder().decode(ReaderTranslationRun.self, from: data)
                 try Self.validate(saved, session: session)
-                if saved.pending != nil || (saved.next > 0 && saved.plan.chapterIDs.contains(session.chapter.id) && saved.plan.scope == scope) {
+                let samePage = scope != .page || saved.plan.visiblePassageIDs == page?.passageIDs
+                saved.recoverPendingOnly = nil
+                if saved.pending != nil || (saved.next > 0 && saved.plan.chapterIDs.contains(session.chapter.id) && saved.plan.scope == scope && samePage) {
+                    if saved.pending != nil, scope == .page,
+                       saved.plan.scope != .page || !samePage || saved.plan.chapterIDs != [page?.chapterID ?? ""] {
+                        saved.recoverPendingOnly = true
+                    }
+                    if scope == .page && saved.pending == nil { proposedPage = page }
                     proposed = saved; return
                 }
                 // A new explicit request replaces only unsubmitted work. Preserve
                 // completed results; an uncertain request always goes through recovery.
                 try await library.cacheCloudPassages(saved.completed, bookID: session.book.id, targetLanguage: language)
+                try validatePreparation()
                 session.updateTranslations(Self.translations(saved.completed, targetLanguage: language))
                 try await library.savePendingReadingTranslation(nil, bookID: session.book.id, targetLanguage: language)
+                try validatePreparation()
             }
-            guard !Task.isCancelled, navigation == session.navigationID, chapterIndex == session.chapterIndex, languages == session.translationSettings else { return }
-            let plan = try ReadingTranslationPlan.make(book: session.book, chapterIndex: chapterIndex, translations: session.translations, scope: scope, passageID: passageID, languages: languages)
+            try validatePreparation()
+            let plan = try ReadingTranslationPlan.make(book: session.book, chapterIndex: chapterIndex, translations: session.translations, scope: scope, passageID: passageID, languages: languages, visiblePassageIDs: scope == .page ? page?.passageIDs : nil)
             guard !plan.passageIDs.isEmpty else { status = scope == .passage ? "当前段的双译已准备好。" : "本次范围的双译已准备好。"; return }
+            proposedPage = scope == .page ? page : nil
             proposed = ReaderTranslationRun(plan: plan)
         } catch { self.error = error.localizedDescription }
     }
@@ -113,12 +138,27 @@ final class ReaderReadingContent {
             throw LibraryError.invalid("预译恢复记录与这本书不一致，尚未提交。")
         }
         guard run.plan.scope != .passage || (run.plan.chapterIDs.count == 1 && run.plan.passageIDs.count <= 1),
-              run.plan.scope != .chapter || run.plan.chapterIDs.count == 1 else {
+              run.plan.scope != .chapter || run.plan.chapterIDs.count == 1,
+              run.plan.scope != .page || run.plan.chapterIDs.count == 1 else {
             throw LibraryError.invalid("预译恢复记录超过了确认的范围，尚未提交。")
         }
         let ids = Set(session.book.chapters.filter { run.plan.chapterIDs.contains($0.id) }.flatMap(\.passages).map(\.id))
         guard Set(run.plan.passageIDs).count == run.plan.passageIDs.count, Set(run.plan.passageIDs).isSubset(of: ids),
               run.completed.allSatisfy({ ids.contains($0["id"].string ?? "") }) else { throw LibraryError.invalid("预译范围无法核对。") }
+        if run.plan.scope == .page {
+            guard let visible = run.plan.visiblePassageIDs, !visible.isEmpty, visible.count <= 100,
+                  Set(visible).count == visible.count else { throw LibraryError.invalid("当前页恢复记录缺少原始确认范围。") }
+            let source = session.book.chapters[start].passages
+            let selected = Set(visible), pending = Set(run.plan.passageIDs)
+            let eligible = source.filter { selected.contains($0.id) && ReadingTranslationPlan.isPageText($0, in: session.book) }
+            let completed = Set(run.plan.passageIDs.prefix(run.next))
+            guard eligible.map(\.id) == visible, pending.isSubset(of: selected),
+                  eligible.filter({ pending.contains($0.id) }).map(\.id) == run.plan.passageIDs,
+                  Set(run.completed.compactMap { $0["id"].string }).count == run.completed.count,
+                  run.completed.allSatisfy({ row in completed.contains(row["id"].string ?? "") && source.first(where: { $0.id == row["id"].string })?.text == row["original"].string }) else {
+                throw LibraryError.invalid("当前页恢复记录超过了确认的原文范围。")
+            }
+        }
         if let pending = run.pending {
             guard run.next < run.plan.passageIDs.count, pending.ownerID == identity.ownerID,
                   pending.passageID == run.plan.passageIDs[run.next], pending.action == "translation",
@@ -131,17 +171,28 @@ final class ReaderReadingContent {
     }
     func confirm(_ run: ReaderTranslationRun, session: ReaderSession, cloud: CloudLibraryClient?, library: OfflineLibrary?) {
         guard !running, foreground, session.state.preferences.viewMode != .source, let cloud, let library else { return }
+        if run.plan.scope == .page, run.pending == nil {
+            guard let proposedPage, proposedPage.isCurrent(session), proposedPage.passageIDs == run.plan.visiblePassageIDs else {
+                proposed = nil; self.proposedPage = nil; error = "书页已变化，请从当前页重新准备译文。"; return
+            }
+        }
         guard run.pending != nil || run.plan.chapterIDs.contains(session.chapter.id) else { proposed = nil; error = "已切换章节，请从当前章重新准备译文。"; return }
-        proposed = nil; running = true; error = nil; activeChapterIDs = run.plan.chapterIDs
-        completedCount = run.next; totalCount = run.plan.passageIDs.count
-        task = Task { await execute(run, session: session, cloud: cloud, library: library) }
+        let pageAtConfirmation = proposedPage
+        proposed = nil; proposedPage = nil; running = true; error = nil; activeChapterIDs = run.plan.chapterIDs
+        completedCount = run.next; totalCount = run.next + run.remainingParagraphCount
+        task = Task { await execute(run, page: pageAtConfirmation, session: session, cloud: cloud, library: library) }
     }
     func stop() { task?.cancel() }
     func setForeground(_ active: Bool) { foreground = active; if !active { stop() } }
     func enteredChapter(_ id: String) { if running && !activeChapterIDs.contains(id) { stop() } }
 
-    private func execute(_ saved: ReaderTranslationRun, session: ReaderSession, cloud: CloudLibraryClient, library: OfflineLibrary) async {
+    private func execute(_ saved: ReaderTranslationRun, page: ReaderVisiblePage?, session: ReaderSession, cloud: CloudLibraryClient, library: OfflineLibrary) async {
         var run = saved
+        let recoverPendingOnly = saved.recoverPendingOnly == true
+        var pageSubmissionStarted = saved.pending != nil
+        // Only this execution can prove a newly prepared intent has never
+        // entered perform. A recovered pending request is always uncertain.
+        var freshlyPreparedIntentID: String?
         let language = run.plan.targetLanguage ?? .zh
         let worker = ReaderCloudTools()
         defer { running = false; task = nil }
@@ -160,10 +211,17 @@ final class ReaderReadingContent {
                 try Task.checkCancellation()
                 guard foreground, language == session.translationSettings.targetLanguage, session.state.preferences.viewMode != .source, (run.plan.chapterIDs.contains(session.chapter.id) || run.pending != nil),
                       await cloud.activeAccount()?.id == run.plan.ownerID else { throw CancellationError() }
+                if run.plan.scope == .page, !pageSubmissionStarted, page?.isCurrent(session) != true {
+                    throw LibraryError.invalid("书页已变化，本页翻译尚未提交，请重新准备。")
+                }
                 let id = run.plan.passageIDs[run.next]
                 guard let chapter = session.book.chapters.first(where: { $0.passages.contains { $0.id == id } }),
                       let passage = chapter.passages.first(where: { $0.id == id }) else { throw LibraryError.invalid("原文段落已变化，预译已停止。") }
                 if run.pending == nil {
+                    if run.plan.scope == .page, let existing = session.translations[id],
+                       existing.original != passage.text || (existing.text(.literal) != nil) != (existing.text(.interpretive) != nil) {
+                        throw LibraryError.invalid("原文或已有译文已变化，本页翻译已停止，未覆盖已有内容。")
+                    }
                     // Refresh may have brought a complete result from another device.
                     if let existing = session.translations[id], existing.original == passage.text,
                        existing.text(.literal) != nil, existing.text(.interpretive) != nil {
@@ -173,12 +231,19 @@ final class ReaderReadingContent {
                         selection: SelectedQuote(anchor: ReadingAnchor(chapterID: chapter.id, passageID: id), text: passage.text))
                     try Task.checkCancellation()
                     guard let intent = worker.consent else { throw LibraryError.invalid(worker.error ?? "预译暂时无法开始。") }
+                    freshlyPreparedIntentID = intent.id
                     run.pending = intent
                     try await persist() // Durable idempotency key before the first submission.
                 }
                 try Task.checkCancellation()
                 guard let intent = run.pending else { break }
-                status = "正在翻译第 \(run.next + 1) 段，共 \(run.plan.passageIDs.count) 段"
+                if run.plan.scope == .page, !pageSubmissionStarted, page?.isCurrent(session) != true {
+                    throw LibraryError.invalid("书页已变化，本页翻译尚未提交，请重新准备。")
+                }
+                try Task.checkCancellation()
+                pageSubmissionStarted = true
+                status = recoverPendingOnly ? "正在核对上次未确认的一段" : "正在翻译第 \(run.next + 1) 段，共 \(run.plan.passageIDs.count) 段"
+                freshlyPreparedIntentID = nil
                 await worker.perform(intent, cloud: cloud)
                 guard let result = worker.completedTranslation else {
                     // Only a scoped terminal billing receipt can retire a durable
@@ -195,6 +260,14 @@ final class ReaderReadingContent {
                 try await persist() // Completed results survive even before a cache batch flush.
                 completedCount = run.next
                 session.updateTranslations([id: translated])
+                if recoverPendingOnly {
+                    run.recoverPendingOnly = nil
+                    try await flush()
+                    if run.next == run.plan.passageIDs.count { try await library.savePendingReadingTranslation(nil, bookID: session.book.id, targetLanguage: language) }
+                    else { try await persist() }
+                    status = "上次未确认的一段已核对，可以重新准备当前页。"
+                    return
+                }
                 if run.completed.count >= 4 { try await flush() }
                 if !run.plan.chapterIDs.contains(session.chapter.id) {
                     try await flush()
@@ -207,6 +280,22 @@ final class ReaderReadingContent {
             try await library.savePendingReadingTranslation(nil, bookID: session.book.id, targetLanguage: language)
             status = "本次译文已准备好。"
         } catch {
+            if let freshlyPreparedIntentID, run.pending?.id == freshlyPreparedIntentID {
+                // Package validation also checks cancellation. Finish this
+                // required local retirement in an uncancelled child operation.
+                run.pending = nil
+                do {
+                    let data = try JSONEncoder().encode(run), bookID = session.book.id
+                    try await Task.detached {
+                        try await library.savePendingReadingTranslation(data, bookID: bookID, targetLanguage: language)
+                    }.value
+                }
+                catch {
+                    status = nil
+                    self.error = "本次段落尚未提交，但本机恢复记录未能更新。\n" + error.localizedDescription
+                    return
+                }
+            }
             // Do not cancel an already submitted server task or create another key.
             // The saved envelope owns both uncertain and completed work.
             try? await flush()

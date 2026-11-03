@@ -25,11 +25,15 @@ final class ReadingPreparationTests: XCTestCase {
     }
     private let owner = "00000000-0000-4000-8000-000000000344"
     private struct Fixture { let session: ReaderSession; let library: OfflineLibrary; let cloud: CloudLibraryClient }
-    private func fixture() async throws -> Fixture {
+    private func fixture(pageParagraphs: Bool = false) async throws -> Fixture {
         let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
         addTeardownBlock { try? FileManager.default.removeItem(at: root) }
         let library = try OfflineLibrary(root: root, scope: .account(UUID(uuidString: owner)!))
-        let chapters = try JSONDecoder().decode([BookChapter].self, from: Data(#"[{"id":"c1","title":"One","sourcePath":"1","passages":[{"id":"p1","text":"Original one.","heading":false}]},{"id":"c2","title":"Two","sourcePath":"2","passages":[{"id":"p2","text":"Original two.","heading":false}]},{"id":"c3","title":"Three","sourcePath":"3","passages":[{"id":"p3","text":"Original three.","heading":false}]}]"#.utf8))
+        var chapters = try JSONDecoder().decode([BookChapter].self, from: Data(#"[{"id":"c1","title":"One","sourcePath":"1","passages":[{"id":"p1","text":"Original one.","heading":false}]},{"id":"c2","title":"Two","sourcePath":"2","passages":[{"id":"p2","text":"Original two.","heading":false}]},{"id":"c3","title":"Three","sourcePath":"3","passages":[{"id":"p3","text":"Original three.","heading":false}]}]"#.utf8))
+        if pageParagraphs {
+            let additional = try JSONDecoder().decode([Passage].self, from: Data(#"[{"id":"p1b","text":"Second paragraph in first chapter.","heading":false},{"id":"p1c","text":"Third paragraph in first chapter.","heading":false}]"#.utf8))
+            chapters[0].passages.append(contentsOf: additional)
+        }
         let identity = CloudBookIdentity(ownerID: owner, bookID: "reading-book", contentVersion: "v1", sourceFormat: "text")
         let content: [String:Any] = ["bookId":"reading-book","contentVersion":"v1","source":["format":"text"],"sections": chapters.map { chapter in ["chapterId":chapter.id,"paragraphs":chapter.passages.map { ["id":$0.id,"original":$0.text,"translations":[:]] }] }]
         let book = try await library.importCloud(CloudReadingCopy(identity: identity, title: "Synthetic book", author: "", chapters: chapters, content: JSONSerialization.data(withJSONObject: content)))
@@ -162,6 +166,130 @@ final class ReadingPreparationTests: XCTestCase {
         XCTAssertEqual(reading.proposed?.plan.chapterIDs,["c3"])
         XCTAssertEqual(reading.proposed?.plan.passageIDs,["p3"])
     }
+
+    func testPagePreparationRequiresCurrentSnapshotAndNeverFallsBackToChapter() async throws {
+        let fixture = try await fixture(pageParagraphs: true), reading = ReaderReadingContent()
+        await reading.prepare(fixture.session, cloud: fixture.cloud, library: fixture.library, scope: .page)
+        XCTAssertNil(reading.proposed); XCTAssertNotNil(reading.error)
+        let layout = ReaderVisiblePageLayout()
+        let page = try XCTUnwrap(ReaderVisiblePage(session: fixture.session, chapterID: "c1", passageIDs: ["p1b"], layout: layout))
+        await reading.prepare(fixture.session, cloud: fixture.cloud, library: fixture.library, scope: .page, page: page)
+        XCTAssertEqual(reading.proposed?.plan.passageIDs, ["p1b"])
+        layout.invalidate()
+        await reading.prepare(fixture.session, cloud: fixture.cloud, library: fixture.library, scope: .page, page: page)
+        XCTAssertNil(reading.proposed, "An earlier proposal must not remain confirmable after invalid geometry")
+        XCTAssertNotNil(reading.error)
+    }
+
+    func testChangedPageReplacesRemainingUnsubmittedPageWorkWithoutExpandingIt() async throws {
+        let fixture = try await fixture(pageParagraphs: true), reading = ReaderReadingContent()
+        let oldPlan = try ReadingTranslationPlan.make(book: fixture.session.book, chapterIndex: 0, translations: [:], scope: .page, visiblePassageIDs: ["p1", "p1b"])
+        var old = ReaderTranslationRun(plan: oldPlan); old.next = 1
+        try await fixture.library.savePendingReadingTranslation(JSONEncoder().encode(old), bookID: fixture.session.book.id)
+        let page = try XCTUnwrap(ReaderVisiblePage(session: fixture.session, chapterID: "c1", passageIDs: ["p1c"], layout: ReaderVisiblePageLayout()))
+        await reading.prepare(fixture.session, cloud: fixture.cloud, library: fixture.library, scope: .page, page: page)
+        XCTAssertEqual(reading.proposed?.plan.passageIDs, ["p1c"])
+        XCTAssertEqual(reading.proposed?.next, 0)
+    }
+
+    func testPageRecoveryRejectsWidenedOrUnorderedPersistedIDs() async throws {
+        let fixture = try await fixture(pageParagraphs: true)
+        let plan = try ReadingTranslationPlan.make(book: fixture.session.book, chapterIndex: 0, translations: [:], scope: .page, visiblePassageIDs: ["p1", "p1b"])
+        let valid = ReaderTranslationRun(plan: plan)
+        XCTAssertNoThrow(try ReaderReadingContent.validate(valid, session: fixture.session))
+        for ids in [["p1", "p1c"], ["p1b", "p1"]] {
+            var value = try XCTUnwrap(JSONSerialization.jsonObject(with: JSONEncoder().encode(valid)) as? [String: Any])
+            var envelope = try XCTUnwrap(value["plan"] as? [String: Any]); envelope["passageIDs"] = ids; value["plan"] = envelope
+            let invalid = try JSONDecoder().decode(ReaderTranslationRun.self, from: JSONSerialization.data(withJSONObject: value))
+            XCTAssertThrowsError(try ReaderReadingContent.validate(invalid, session: fixture.session))
+        }
+    }
+
+    func testDifferentPageRecoversOnlyTheUncertainSubmissionAndKeepsOriginalRemainingScope() async throws {
+        let fixture = try await fixture(), probe = PreparationProbe(owner: owner)
+        probe.failFirst = true; PreparationProtocol.install(probe)
+        let first = ReaderReadingContent()
+        await first.prepare(fixture.session, cloud: fixture.cloud, library: fixture.library)
+        first.confirm(try XCTUnwrap(first.proposed), session: fixture.session, cloud: fixture.cloud, library: fixture.library)
+        try await waitForCompletion(first)
+        fixture.session.go(to: 1)
+        let page = try XCTUnwrap(ReaderVisiblePage(session: fixture.session, chapterID: "c2", passageIDs: ["p2"], layout: ReaderVisiblePageLayout()))
+        let second = ReaderReadingContent()
+        await second.prepare(fixture.session, cloud: fixture.cloud, library: fixture.library, scope: .page, page: page)
+        let recovery = try XCTUnwrap(second.proposed)
+        XCTAssertEqual(recovery.plan.passageIDs, ["p1", "p2"], "Uncertainty keeps the original immutable scope")
+        XCTAssertEqual(recovery.recoverPendingOnly, true)
+        XCTAssertEqual(recovery.remainingParagraphCount, 1)
+        second.confirm(recovery, session: fixture.session, cloud: fixture.cloud, library: fixture.library)
+        try await waitForCompletion(second)
+        let generated = probe.snapshot().filter { $0.0.hasSuffix("/translate") }
+        XCTAssertEqual(generated.compactMap { $0.1["passageId"] as? String }, ["p1", "p1"])
+        XCTAssertEqual(generated[0].1 as NSDictionary, generated[1].1 as NSDictionary)
+        let data = try await fixture.library.pendingReadingTranslation(bookID: fixture.session.book.id)
+        let remaining = try JSONDecoder().decode(ReaderTranslationRun.self, from: XCTUnwrap(data))
+        XCTAssertEqual(remaining.plan.passageIDs, ["p1", "p2"])
+        XCTAssertEqual(remaining.next, 1); XCTAssertNil(remaining.pending)
+    }
+
+    func testPageInvalidatedWhileQuoteWaitsDoesNotRetainAnUnsubmittedIntent() async throws {
+        try await assertUnsubmittedPageRetired(cancelWhileWaiting: false)
+    }
+
+    func testStoppedWhileQuoteWaitsDoesNotCreateAnUncertainRecovery() async throws {
+        try await assertUnsubmittedPageRetired(cancelWhileWaiting: true)
+    }
+
+    func testPageRevokedAtSubmissionBoundaryClearsFreshDurableIntentWhenCancelled() async throws {
+        try await assertUnsubmittedPageRetired(cancelWhileWaiting: false, cancelAtSubmissionBoundary: true)
+    }
+
+    private func assertUnsubmittedPageRetired(cancelWhileWaiting: Bool, cancelAtSubmissionBoundary: Bool = false) async throws {
+        let fixture = try await fixture(pageParagraphs: true), probe = PreparationProbe(owner: owner)
+        probe.holdQuoteResponses(); PreparationProtocol.install(probe)
+        defer { probe.releaseQuoteResponses() }
+        let layout = ReaderVisiblePageLayout()
+        let page = try XCTUnwrap(ReaderVisiblePage(session: fixture.session, chapterID: "c1", passageIDs: ["p1"], layout: layout))
+        let reading = ReaderReadingContent()
+        var revokeAtBoundary = false
+        var cancellationBoundaryReached = false
+        if cancelAtSubmissionBoundary {
+            layout.bind {
+                guard revokeAtBoundary else { return true }
+                // Native geometry is checked again after the durable intent
+                // write. Revoke the viewport and stop at that exact boundary.
+                cancellationBoundaryReached = true
+                reading.setForeground(false)
+                return false
+            }
+        }
+        await reading.prepare(fixture.session, cloud: fixture.cloud, library: fixture.library, scope: .page, page: page)
+        reading.confirm(try XCTUnwrap(reading.proposed), session: fixture.session, cloud: fixture.cloud, library: fixture.library)
+        for _ in 0..<300 {
+            if probe.snapshot().contains(where: { $0.0 == "/api/billing/quotes" }) { break }
+            try await Task.sleep(for: .milliseconds(10))
+        }
+        XCTAssertTrue(probe.snapshot().contains(where: { $0.0 == "/api/billing/quotes" }))
+        XCTAssertFalse(probe.snapshot().contains(where: { $0.0.hasSuffix("/translate") }))
+        if cancelAtSubmissionBoundary { revokeAtBoundary = true }
+        else { layout.invalidate() }
+        if cancelWhileWaiting { reading.setForeground(false) }
+        probe.releaseQuoteResponses()
+        try await waitForCompletion(reading)
+        if cancelAtSubmissionBoundary { XCTAssertTrue(cancellationBoundaryReached, "The fixture must reach the post-quote geometry check") }
+        if cancelWhileWaiting || cancelAtSubmissionBoundary {
+            XCTAssertNil(reading.error, "Retiring a known-unsubmitted intent must complete despite cancellation; status=\(reading.status ?? "nil")")
+        }
+        XCTAssertFalse(probe.snapshot().contains(where: { $0.0.hasSuffix("/translate") }), "An invalidated, never-submitted page must not reach generation")
+        let savedData = try await fixture.library.pendingReadingTranslation(bookID: fixture.session.book.id)
+        let saved = try savedData.map { try JSONDecoder().decode(ReaderTranslationRun.self, from: $0) }
+        XCTAssertNil(saved?.pending, "A quote is not an uncertain generation; no translate POST was attempted")
+        let nextPage = try XCTUnwrap(ReaderVisiblePage(session: fixture.session, chapterID: "c1", passageIDs: ["p1b"], layout: ReaderVisiblePageLayout()))
+        let next = ReaderReadingContent()
+        await next.prepare(fixture.session, cloud: fixture.cloud, library: fixture.library, scope: .page, page: nextPage)
+        XCTAssertEqual(next.proposed?.plan.passageIDs, ["p1b"])
+        XCTAssertNil(next.proposed?.pending)
+        XCTAssertNotEqual(next.proposed?.recoverPendingOnly, true)
+    }
 }
 
 private final class PreparationProbe: @unchecked Sendable {
@@ -173,8 +301,20 @@ private final class PreparationProbe: @unchecked Sendable {
     private let lock = NSLock()
     private var requests: [(String,[String:Any])] = []
     private var generationCount = 0
+    private var quotesHeld = false
+    private var quoteDeliveries: [() -> Void] = []
     init(owner:String) { self.owner=owner }
     func snapshot() -> [(String,[String:Any])] { lock.lock(); defer { lock.unlock() }; return requests }
+    func holdQuoteResponses() { lock.lock(); quotesHeld = true; lock.unlock() }
+    func holdQuoteDelivery(_ delivery: @escaping () -> Void) -> Bool {
+        lock.lock(); defer { lock.unlock() }
+        guard quotesHeld else { return false }
+        quoteDeliveries.append(delivery); return true
+    }
+    func releaseQuoteResponses() {
+        lock.lock(); quotesHeld = false; let deliveries = quoteDeliveries; quoteDeliveries = []; lock.unlock()
+        deliveries.forEach { $0() }
+    }
     func reply(_ request:URLRequest, body:[String:Any]) -> (Int,[String:Any],TimeInterval) {
         lock.lock(); defer { lock.unlock() }
         let path=request.url!.path; requests.append((path,body))
@@ -218,7 +358,9 @@ private final class PreparationProtocol: URLProtocol, @unchecked Sendable {
             guard let self, let response=HTTPURLResponse(url:self.request.url!,statusCode:status,httpVersion:nil,headerFields:["Content-Type":"application/json"]), let data=try? JSONSerialization.data(withJSONObject:value) else { return }
             self.client?.urlProtocol(self,didReceive:response,cacheStoragePolicy:.notAllowed)
             self.client?.urlProtocol(self,didLoad:data); self.client?.urlProtocolDidFinishLoading(self)
-        }; self.work=work; DispatchQueue.global().asyncAfter(deadline:.now()+delay,execute:work)
+        }; self.work=work
+        if request.url?.path == "/api/billing/quotes", probe.holdQuoteDelivery({ DispatchQueue.global().async(execute: work) }) { return }
+        DispatchQueue.global().asyncAfter(deadline:.now()+delay,execute:work)
     }
     override func stopLoading() { work?.cancel() }
 }

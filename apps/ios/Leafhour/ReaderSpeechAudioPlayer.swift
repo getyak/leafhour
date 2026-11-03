@@ -6,6 +6,10 @@ import Foundation
 @MainActor
 final class ReaderSpeechAudioPlayer: NSObject, ReaderSpeechSynthesizing {
     weak var delegate: (any AVSpeechSynthesizerDelegate)?
+    var onOutputStateChange: (@MainActor (Bool) -> Void)?
+    private(set) var isOutputPlaying = false {
+        didSet { if oldValue != isOutputPlaying { onOutputStateChange?(isOutputPlaying) } }
+    }
     var playbackRate: Float = 1 {
         didSet {
             let valid = playbackRate.isFinite ? min(5, max(0.5, playbackRate)) : 1
@@ -84,7 +88,7 @@ final class ReaderSpeechAudioPlayer: NSObject, ReaderSpeechSynthesizing {
     }
 
     @discardableResult func stopSpeaking(at boundary: AVSpeechBoundary) -> Bool {
-        generation = UUID(); utterance = nil
+        generation = UUID(); utterance = nil; isOutputPlaying = false
         synth.delegate = nil; markerCollector = nil
         player.stop(); engine.stop(); engine.reset()
         synth.stopSpeaking(at: boundary)
@@ -96,7 +100,7 @@ final class ReaderSpeechAudioPlayer: NSObject, ReaderSpeechSynthesizing {
 
     @discardableResult func pauseSpeaking(at boundary: AVSpeechBoundary) -> Bool {
         guard utterance != nil else { return false }
-        paused = true; player.pause(); engine.pause()
+        paused = true; isOutputPlaying = false; player.pause(); engine.pause()
         return true
     }
 
@@ -105,7 +109,9 @@ final class ReaderSpeechAudioPlayer: NSObject, ReaderSpeechSynthesizing {
         paused = false
         guard ready else { return true }
         do {
-            try engine.start(); player.play(); advanceMarkers()
+            try engine.start(); player.play()
+            if playedFrameCount > 0 { isOutputPlaying = true }
+            advanceMarkers()
             if outputFinished { finished(generation: generation) }
             return true
         } catch { fail(); return false }
@@ -132,7 +138,9 @@ final class ReaderSpeechAudioPlayer: NSObject, ReaderSpeechSynthesizing {
                 let frame = AVAudioFramePosition(marker.byteSampleOffset / bytesPerFrame)
                 return frame >= 0 && frame < file.length ? frame + 1 : nil
             })
-            boundaries.insert(file.length)
+            // A voice without word markers still reports real output readiness
+            // at its first played sample, rather than at synthesis completion.
+            boundaries.insert(1); boundaries.insert(file.length)
             var start: AVAudioFramePosition = 0
             for boundary in boundaries.sorted() {
                 while start < boundary {
@@ -156,6 +164,7 @@ final class ReaderSpeechAudioPlayer: NSObject, ReaderSpeechSynthesizing {
     private func outputDidPlay(through frame: AVAudioFramePosition, final: Bool, generation request: UUID) {
         guard generation == request, utterance != nil else { return }
         playedFrameCount = max(playedFrameCount, frame)
+        if !paused { isOutputPlaying = true }
         if final { outputFinished = true }
         advanceMarkers()
         if outputFinished, !paused { finished(generation: request) }
