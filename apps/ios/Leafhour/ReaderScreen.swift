@@ -63,7 +63,8 @@ struct ReaderScreen: View {
     @Environment(\.scenePhase) private var scenePhase
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
-    @State private var chrome: ReaderChrome = .tools
+    @ScaledMetric(relativeTo: .caption2) private var quietProgressHeight: CGFloat = 16
+    @State private var chrome: ReaderChrome = .asleep
     @State private var panel: ReaderPanel?
     @State private var speech = ReaderSpeech()
     @State private var autoPage = ReaderAutoPageController()
@@ -90,18 +91,10 @@ struct ReaderScreen: View {
     private var hasPDFText: Bool { session.chapter.passages.contains { !$0.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty } }
     private var needsPDFSourceFallback: Bool { session.book.kind == .pdf && session.state.preferences.viewMode != .source && !hasPDFText }
     private var paper: Color { Color(uiColor: session.state.preferences.paperColor) }
-    // Horizontal pages use a compact, stable book viewport. Tools temporarily
-    // overlay that viewport; waking them never changes its source boundaries.
-    // Continuous reading keeps the measured controls budget for its scroll ends.
+    // Safe areas belong to the system. Controls overlay this stable viewport;
+    // waking, listening or recording time never changes its page boundaries.
     private func readingInsets(for layout: ReaderChromeLayout) -> UIEdgeInsets {
-        if session.state.preferences.navigationMode == .paged {
-            return UIEdgeInsets(top: 4, left: 22, bottom: layout.width < 320 || autoPage.showsStatus || speech.playing || speech.paused ? 120 : 48, right: 22)
-        }
-        let metrics = chromeMetrics?.layout == layout ? chromeMetrics : nil
-        let top = metrics?.top ?? 44
-        let bottom = metrics?.bottom ?? (layout.compact ? 44 : 82)
-        return UIEdgeInsets(top: max(44, top + 2), left: 24,
-                            bottom: max(44, bottom + 2), right: 24)
+        UIEdgeInsets(top: 4, left: 22, bottom: session.state.preferences.alwaysShowReadingProgress ? quietProgressHeight + 8 : 8, right: 22)
     }
     private var presentedReader: some View {
         GeometryReader { geometry in
@@ -119,6 +112,7 @@ struct ReaderScreen: View {
                         if quote != nil { speech.userNavigated() }
                     }, onWake: wake, onReadingScroll: readingDidScroll, speechHighlight: speech.highlight, followsSpeech: speech.following && !speech.readerIsInteracting,
                         onReadingPosition: { speech.updateVisible($0) }, onTouchActivity: readingTouchChanged,
+                        isReadingSurfaceActive: panel == nil && scenePhase == .active,
                         pageRequest: autoPage.pageRequest, onPageRequestResult: { autoPage.receive($0, outcome: $1) })
                     .safeAreaInset(edge: .bottom, spacing: 0) {
                         if needsPDFSourceFallback {
@@ -139,6 +133,7 @@ struct ReaderScreen: View {
                         onSelectionChange: { quote, active in session.selection = quote; hasNativeTextSelection = active; if active { speech.userNavigated() } },
                         onPageChange: { pagePosition = $0 }, speechHighlight: speech.highlight, followsSpeech: speech.following && !speech.readerIsInteracting,
                         onReadingPosition: { speech.updateVisible($0) }, onTouchActivity: readingTouchChanged,
+                        isReadingSurfaceActive: panel == nil && scenePhase == .active,
                         pageRequest: autoPage.pageRequest, onPageRequestResult: { autoPage.receive($0, outcome: $1) })
                 }
                 VStack(spacing: 0) {
@@ -163,14 +158,13 @@ struct ReaderScreen: View {
                                         onNote: { showNote(quote) }, onTranslate: { present(.translation) }, onShare: { present(.share(quote)) },
                                         onClear: { session.selection = nil; hasNativeTextSelection = false; selectionDismissalID = UUID() })
                                 } else {
-                                    if !layout.compact {
+                                    HStack(spacing: 8) {
                                         Text(progressCaption).font(.caption).foregroundStyle(Color.primary)
-                                            .fixedSize(horizontal: false, vertical: true).multilineTextAlignment(.center)
-                                            .padding(.horizontal, 12).padding(.vertical, 4)
-                                            .background(paper, in: Capsule())
+                                            .fixedSize(horizontal: false, vertical: true).multilineTextAlignment(.leading)
+                                            .frame(maxWidth: .infinity, alignment: .leading)
                                             .accessibilityIdentifier("reader-progress-caption")
-                                            .accessibilityHidden(!showingBottom)
-                                    }
+                                        ReaderAIButton(paper: paper, quote: nil, onOpen: { showCompanion(currentQuote) })
+                                    }.padding(.horizontal, 12).accessibilityHidden(!showingBottom)
                                     ReaderBottomBar(
                                         paper: paper, mode: speech.playing ? .listening : .reading,
                                         chapterAccessibilityValue: progressDescription,
@@ -407,45 +401,14 @@ struct ReaderScreen: View {
             chromeMetrics = updated
         }
     }
-    private var quietReadingControl: some View {
-        ReaderGlassGroup {
-            ViewThatFits(in: .horizontal) {
-                HStack(spacing: 8) {
-                    timeCapsule
-                    quietReadingMiddleControl
-                    ReaderAIButton(paper: paper, quote: nil, onOpen: { showCompanion(currentQuote) })
-                }.fixedSize(horizontal: true, vertical: false)
-                VStack(spacing: 2) {
-                    timeCapsule
-                    HStack(spacing: 10) {
-                        quietReadingMiddleControl
-                        ReaderAIButton(paper: paper, quote: nil, onOpen: { showCompanion(currentQuote) })
-                    }
-                }
-            }.frame(maxWidth: .infinity).padding(.horizontal, 16)
-        }
-    }
-    private var timeCapsule: some View { ReaderTimeCapsule(session: session, paper: paper, onOpen: { present(.time) }) }
-    @ViewBuilder private var quietReadingMiddleControl: some View {
+    @ViewBuilder private var quietReadingControl: some View {
         if autoPage.showsStatus && !speech.playing && !speech.paused {
             ReaderAutoPageStatusControl(controller: autoPage, onContinue: startAutoPaging, onSettings: { present(.autoPage) })
-        } else if speech.playing || speech.paused {
-            HStack(spacing: 0) {
-                Button {
-                    if !speech.following { speech.following = true }
-                    else { present(.listening) }
-                } label: {
-                    Label(!speech.following ? "回到朗读" : speech.playing ? "正在听书" : "听书已暂停", systemImage: speech.playing ? "waveform" : "pause.fill")
-                        .font(.caption).padding(.horizontal, 10).frame(minHeight: 44).contentShape(Rectangle())
-                }.accessibilityIdentifier("reader-speech-status").accessibilityValue(speech.activeSentence)
-                Button { speech.toggle(session) } label: {
-                    Image(systemName: speech.playing ? "pause.fill" : "play.fill").frame(width: 44, height: 44).contentShape(Rectangle())
-                }.accessibilityLabel(speech.playing ? "暂停朗读" : "继续朗读").accessibilityIdentifier("reader-speech-toggle")
-            }.buttonStyle(.plain).modifier(ReaderGlassSurface(paper: paper))
-        } else {
-            Button { revealTools() } label: {
-                Capsule().fill(.secondary.opacity(0.4)).frame(width: 24, height: 4).frame(width: 44, height: 44)
-            }.accessibilityLabel("显示阅读进度、目录、搜索与记录").accessibilityHint("轻点书页也能打开阅读工具")
+                .padding(.horizontal, 16)
+        } else if session.state.preferences.alwaysShowReadingProgress {
+            Text(progressCaption).font(.caption2).foregroundStyle(.secondary).lineLimit(1).frame(height: quietProgressHeight)
+                .frame(maxWidth: .infinity).padding(.bottom, 2).allowsHitTesting(false)
+                .accessibilityIdentifier("reader-quiet-progress")
         }
     }
     @ViewBuilder private func navigationHeader(compact: Bool) -> some View {

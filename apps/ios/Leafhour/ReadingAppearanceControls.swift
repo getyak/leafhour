@@ -217,6 +217,23 @@ struct ReaderNavigationControls: View {
                     }.accessibilityIdentifier("reader-page-input")
                 }
             } footer: { Text("轻点中间唤回工具，长按选字。减弱动态效果开启时直接切页。") }
+            Section {
+                NavigationLink("更多交互设置") {
+                    Form {
+                        Section {
+                            Toggle("始终显示阅读进度", isOn: $preferences.alwaysShowReadingProgress)
+                                .accessibilityIdentifier("reader-always-show-progress")
+                        } footer: { Text("默认只显示正文。轻点书页中间可打开工具和进度。") }
+                        if preferences.navigationMode == .paged {
+                            Section {
+                                LabeledContent("翻页响应", value: preferences.pageTapDelay == 0 ? "立即" : "\(Int((preferences.pageTapDelay * 1000).rounded())) 毫秒")
+                                Slider(value: $preferences.pageTapDelay, in: 0...0.5, step: 0.05)
+                                    .accessibilityLabel("翻页响应延迟").accessibilityIdentifier("reader-page-tap-delay")
+                            } footer: { Text("每次轻点单独翻页。增加等待时间不改变翻页动画；长按仍可选择文字。") }
+                        }
+                    }.navigationTitle("更多交互").modifier(ReaderToolContinuation())
+                }.accessibilityIdentifier("reader-interaction-settings")
+            }
         }
     }
 }

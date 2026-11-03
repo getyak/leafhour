@@ -9,6 +9,8 @@ struct ChatConversationView: View {
     var title = "Chat"
     let bookTitle: String
     let source: String
+    var sourceChapter = ""
+    var canRemoveSource = false
     var sourceLabel = "引用的原文"
     var localOnly = false
     var isLibraryConversation = false
@@ -30,11 +32,6 @@ struct ChatConversationView: View {
             ScrollView {
                 LazyVStack(alignment: .leading, spacing: 28) {
                     if isLibraryConversation && tools.turns.isEmpty { companionGreeting }
-                    if !source.isEmpty { context }
-                    if tools.canUpdateChatContext {
-                        Button("改用当前原文", systemImage: "arrow.triangle.2.circlepath") { tools.updateChatContext() }
-                            .font(.subheadline).frame(minHeight: 44)
-                    }
                     ForEach(tools.turns) { turn in
                         ChatTurnView(turn: turn, resolveVoice: { try await tools.voiceURL($0, cloud: cloud) }, playbackAllowed: !speech.isActive)
                     }
@@ -84,21 +81,31 @@ struct ChatConversationView: View {
         }.padding(.top, 28).padding(.bottom, 12).accessibilityIdentifier("chat-companion-greeting")
     }
     private var context: some View {
-        DisclosureGroup(isExpanded: $sourceExpanded) {
-            Text(source).font(.subheadline).lineSpacing(5).textSelection(.enabled)
-                .frame(maxWidth: .infinity, alignment: .leading).padding(.top, 8)
-        } label: {
-            HStack(alignment: .top, spacing: 10) {
-                Image(systemName: "text.quote").foregroundStyle(Color.leafInk).padding(.top, 2)
-                VStack(alignment: .leading, spacing: 5) {
-                    Text(bookTitle).font(.subheadline.weight(.medium)).foregroundStyle(.primary).lineLimit(2)
-                    if !sourceExpanded { Text(source).font(.caption).foregroundStyle(.secondary).lineLimit(2) }
-                    Text(sourceLabel).font(.caption2).foregroundStyle(.secondary)
+        HStack(alignment: .top, spacing: 6) {
+            DisclosureGroup(isExpanded: $sourceExpanded) {
+                ScrollView {
+                    Text(source).font(.subheadline).lineSpacing(5).textSelection(.enabled)
+                        .frame(maxWidth: .infinity, alignment: .leading).padding(.top, 8)
+                }.frame(maxHeight: 140)
+            } label: {
+                HStack(alignment: .top, spacing: 8) {
+                    Image(systemName: "text.quote").foregroundStyle(Color.leafInk).padding(.top, 2)
+                    VStack(alignment: .leading, spacing: 4) {
+                        if !sourceExpanded { Text(source).font(.subheadline).foregroundStyle(.primary).lineLimit(2) }
+                        Text([bookTitle, sourceChapter].filter { !$0.isEmpty }.joined(separator: " · "))
+                            .font(.caption2).foregroundStyle(.secondary).lineLimit(1)
+                        Text(tools.chatQuoteRemoved ? "当前段落 · 未附加选文" : sourceLabel).font(.caption2).foregroundStyle(.secondary)
+                    }
                 }
+            }.tint(Color.leafInk)
+            if (canRemoveSource || tools.chatContext?.selection != nil) && !tools.chatQuoteRemoved {
+            Button { tools.removeChatSelection(); sourceExpanded = false } label: {
+                Image(systemName: "xmark").font(.caption).frame(width: 44, height: 44).contentShape(Rectangle())
+            }.buttonStyle(.plain).foregroundStyle(.secondary).accessibilityLabel("移除本次引用")
+                .accessibilityIdentifier("chat-remove-source").disabled(tools.generating || tools.loading || tools.retry != nil)
             }
-        }.tint(Color.leafInk).padding(14)
-            .background(Color(uiColor: .secondarySystemBackground), in: RoundedRectangle(cornerRadius: 16))
-            .accessibilityIdentifier("chat-source-context")
+        }.padding(10).background(Color(uiColor: .secondarySystemBackground), in: RoundedRectangle(cornerRadius: 16))
+            .accessibilityElement(children: .contain).accessibilityIdentifier("chat-source-context")
     }
     @ViewBuilder private var status: some View {
         if tools.generating { ProgressView("正在回答…").accessibilityIdentifier("chat-generating") }
@@ -143,6 +150,11 @@ struct ChatConversationView: View {
     }
     private var composer: some View {
         VStack(alignment: .leading, spacing: 8) {
+            if !source.isEmpty { context }
+            if tools.canUpdateChatContext {
+                Button("使用当前选文或原文", systemImage: "arrow.triangle.2.circlepath") { tools.updateChatContext(); sourceExpanded = false }
+                    .font(.subheadline).frame(minHeight: 44)
+            }
             if let voice = tools.pendingVoice {
                 HStack(spacing: 8) {
                     Label("语音 · \(max(1, voice.durationMs / 1000)) 秒", systemImage: "waveform").font(.caption)
@@ -208,6 +220,7 @@ private struct ChatTurnView: View {
                     ChatVoiceMessageView(voice: voice, resolve: { try await resolveVoice(voice) }, playbackAllowed: playbackAllowed)
                     Text("转写文字").font(.caption2).foregroundStyle(.secondary)
                 }
+                if let quote = turn.quote { ChatSavedQuoteView(quote: quote) }
                 Text(turn.question).font(.body).textSelection(.enabled)
             }.padding(16).background(Color(uiColor: .secondarySystemBackground), in: RoundedRectangle(cornerRadius: 18))
                 .frame(maxWidth: .infinity, alignment: .trailing)
@@ -217,5 +230,23 @@ private struct ChatTurnView: View {
                 else { Label(turn.status == "running" ? "回答还在处理中" : "回答未完成，问题已保留", systemImage: turn.status == "running" ? "clock" : "exclamationmark.circle").font(.subheadline).foregroundStyle(.secondary) }
             }.frame(maxWidth: .infinity, alignment: .leading)
         }.accessibilityIdentifier("reader-conversation-turn-" + turn.id)
+    }
+}
+
+private struct ChatSavedQuoteView: View {
+    let quote: ReaderTurnQuote
+    @State private var expanded = false
+    var body: some View {
+        DisclosureGroup(isExpanded: $expanded) {
+            ForEach(Array(quote.parts.enumerated()), id: \.offset) { _, part in
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(part.label).font(.caption2).foregroundStyle(.secondary)
+                    Text(part.text).font(.subheadline).textSelection(.enabled)
+                }.frame(maxWidth: .infinity, alignment: .leading)
+            }
+        } label: {
+            Label(quote.parts.map(\.text).joined(separator: "\n"), systemImage: "text.quote")
+                .font(.caption).foregroundStyle(.secondary).lineLimit(2)
+        }.accessibilityIdentifier("chat-saved-quote")
     }
 }

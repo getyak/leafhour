@@ -34,6 +34,18 @@ final class ReaderLayoutTests: XCTestCase {
         return (ReaderSession(book: book, state: try await library.state(book.id), original: try await library.originalURL(book.id), directory: directory, library: library), library)
     }
 
+    func testRapidUserTurnsDuringAnimationPreserveEveryTap() async throws {
+        let session = try await session(source: String(repeating: "A full page has enough real words to turn again. ", count: 600))
+        session.state.preferences.pageAnimation = .slide
+        let (text, coordinator) = try await selectableText(session)
+        text.selectedRange = NSRange(location: 0, length: 0)
+        let pages = ReaderTextPagination(textView: text, readingTop: 64, bottomInset: 24)
+        XCTAssertGreaterThan(pages.origins.count, 5)
+        for _ in 0..<4 { XCTAssertTrue(coordinator.turnPage(.next)) }
+        try await Task.sleep(for: .milliseconds(1400))
+        XCTAssertEqual(pages.index(at: text.contentOffset.y), 4, "Four taps must advance four pages, including those made during animation")
+    }
+
     private func descendant<T: UIView>(_ type: T.Type, in view: UIView) -> T? {
         if let found = view as? T { return found }
         return view.subviews.lazy.compactMap { self.descendant(type, in: $0) }.first
@@ -747,8 +759,7 @@ final class ReaderLayoutTests: XCTestCase {
             let text = try assertRealPagedBody(host, window: window, stage: "resized \(size), \(category.rawValue)")
             XCTAssertEqual(session.currentAnchor?.passageID, target.passageID, "A responsive chrome budget cannot move to another source paragraph")
             XCTAssertEqual(text.textContainerInset.top, 4, accuracy: 0.5, "Paged reading does not reserve the sleeping header")
-            XCTAssertGreaterThanOrEqual(text.textContainerInset.bottom, 36, "Reserve the quiet controls without consuming unused safe-area space")
-            XCTAssertLessThanOrEqual(text.textContainerInset.bottom, 48, "The quiet footer is bounded by its largest touch target")
+            XCTAssertEqual(text.textContainerInset.bottom, 8, accuracy: 0.5, "Quiet reading releases the footer while system safe areas remain outside the text view")
             let offset = text.contentOffset, insets = text.textContainerInset, anchor = session.currentAnchor
             let coordinator = try XCTUnwrap(text.delegate as? TextReadingView.Coordinator)
             // Exercise the same production callback used by a real page tap;

@@ -266,18 +266,23 @@ struct ReaderConversationPanel: View {
     var selection: SelectedQuote? = nil
     var library: OfflineLibrary? = nil
     var title = "Chat"
+    @State private var initialSelectionAttached = false
     private var source: String {
-        let value = tools.chatContext?.selection?.text ?? tools.chatContext?.original ?? selection?.text ?? ReaderCloudTools.currentPassage(session)?.text ?? "此页暂无可引用的文字。"
-        let selected = tools.chatContext.map { $0.selection != nil } ?? (selection != nil)
+        let localSelection = tools.chatQuoteRemoved ? nil : selection
+        let value = tools.chatContext?.selection?.text ?? tools.chatContext?.original ?? localSelection?.text ?? ReaderCloudTools.currentPassage(session, selection: selection)?.text ?? "此页暂无可引用的文字。"
+        let selected = tools.chatContext.map { $0.selection != nil } ?? (localSelection != nil)
         return session.book.rendersMarkdown && !selected ? MarkdownDocument(source: value).text.trimmingCharacters(in: .whitespacesAndNewlines) : value
     }
     var body: some View {
         ChatConversationView(tools: tools, cloud: cloud, title: title, bookTitle: session.book.title,
-            source: source, sourceLabel: tools.chatContext?.sourceLabel ?? (selection?.origin == "translation" ? "选中的译文 · 提问时引用对应原文" : selection == nil ? "引用的原文" : "选中的原文"),
+            source: source, sourceChapter: tools.chatContext?.chapterTitle ?? session.chapter.title,
+            canRemoveSource: tools.chatContext.map { $0.selection != nil } ?? (selection != nil), sourceLabel: tools.chatQuoteRemoved ? "当前段落 · 未附加选文" : tools.chatContext?.sourceLabel ?? (selection?.origin == "translation" ? "选中的译文 · 提问时引用对应原文" : selection == nil ? "引用的原文" : "选中的原文"),
             localOnly: session.book.cloud == nil || cloud == nil,
             load: {
                 if let identity = session.book.cloud { await tools.restoreConversationDraft(identity: identity, library: library) }
-                await tools.loadConversation(session, cloud: cloud, selection: selection)
+                let attach = !initialSelectionAttached && selection != nil
+                initialSelectionAttached = true
+                await tools.loadConversation(session, cloud: cloud, selection: selection, attachSelection: attach)
             },
             send: { await tools.prepare("conversation", session: session, cloud: cloud, selection: selection) })
     }

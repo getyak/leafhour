@@ -47,6 +47,7 @@ extension OfflineLibrary {
               value.lineSpacing.isFinite, (4...18).contains(value.lineSpacing),
               ReaderPaper(rawValue: value.theme) != nil,
               value.speechSpeed.isFinite, (0.5...5).contains(value.speechSpeed),
+              value.pageTapDelay.isFinite, (0...0.5).contains(value.pageTapDelay),
               value.autoPageInterval.isFinite, (5...120).contains(value.autoPageInterval),
               value.autoPageInterval.truncatingRemainder(dividingBy: 5) == 0 else {
             throw LibraryError.invalid("阅读设置超出支持范围。")

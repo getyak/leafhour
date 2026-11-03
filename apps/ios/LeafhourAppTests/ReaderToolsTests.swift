@@ -630,6 +630,59 @@ final class ReaderToolsTests: XCTestCase {
         XCTAssertEqual(tools.chatContext?.sourceLabel, "选中的原文")
     }
 
+    func testNewSelectionDuringPreparationOrGenerationKeepsSentQuoteAndRestoresPendingSelection() async throws {
+        for suspendedPath in ["/api/auth/session", "/api/library/books/cloud-book/chat"] {
+            let fixture = try await fixture(persistCloud: true), tools = ReaderCloudTools(), probe = ReaderToolsProbe()
+            let entered = expectation(description: "Suspended " + suspendedPath)
+            let release = DispatchSemaphore(value: 0)
+            let anchor = ReadingAnchor(chapterID: fixture.session.chapter.id, passageID: fixture.passage.id)
+            probe.respond = { [self] request, body in
+                if request.httpMethod == "GET", request.url?.path != "/api/auth/session" { return (200, ["available": true, "turns": []]) }
+                if request.url?.path == suspendedPath {
+                    entered.fulfill()
+                    _ = release.wait(timeout: .now() + 5)
+                }
+                if request.url?.path == "/api/auth/session" { return (200, metadata(enabled: false)) }
+                return (200, ["id": body["id"] ?? "", "text": body["text"] ?? "", "quote": body["quote"] ?? [:], "status": "completed", "answer": ["summary": "Synthetic answer"]])
+            }
+            ReaderToolsURLProtocol.install(probe)
+            let identity = try XCTUnwrap(fixture.session.book.cloud)
+            await tools.restoreConversationDraft(identity: identity, library: fixture.library)
+            await tools.loadConversation(fixture.session, cloud: fixture.cloud, selection: SelectedQuote(anchor: anchor, text: "A"), attachSelection: true)
+            tools.question = "Question about A"
+            let sending = Task { await tools.prepare("conversation", session: fixture.session, cloud: fixture.cloud) }
+            await fulfillment(of: [entered], timeout: 3)
+            let loading = Task { await tools.loadConversation(fixture.session, cloud: fixture.cloud, selection: SelectedQuote(anchor: anchor, text: "A 😀"), attachSelection: true) }
+            try await Task.sleep(for: .milliseconds(50))
+            XCTAssertEqual(tools.chatContext?.selection?.text, "A", "The displayed quote must match the sending request")
+            release.signal(); await loading.value; await sending.value
+            XCTAssertEqual(tools.turns.last?.quote?.parts.first?.text, "A")
+            XCTAssertTrue(tools.canUpdateChatContext, "The newly attached quote remains pending after completion")
+            let saved = await tools.flushConversationDraft(); XCTAssertTrue(saved)
+            let restored = ReaderCloudTools(); await restored.restoreConversationDraft(identity: identity, library: fixture.library)
+            XCTAssertTrue(restored.canUpdateChatContext)
+            restored.updateChatContext()
+            XCTAssertEqual(restored.chatContext?.selection?.text, "A 😀")
+        }
+    }
+
+    func testNewExplicitSelectionReplacesDraftQuoteWithoutDiscardingQuestion() async throws {
+        let fixture = try await fixture(), tools = ReaderCloudTools(), probe = ReaderToolsProbe()
+        probe.respond = { _, _ in (200, ["available": true, "turns": []]) }
+        ReaderToolsURLProtocol.install(probe)
+        let anchor = ReadingAnchor(chapterID: fixture.session.chapter.id, passageID: fixture.passage.id)
+        await tools.loadConversation(fixture.session, cloud: fixture.cloud, selection: SelectedQuote(anchor: anchor, text: "A"))
+        tools.question = "Keep this unsent question"
+        await tools.loadConversation(fixture.session, cloud: fixture.cloud, selection: SelectedQuote(anchor: anchor, text: "A 😀"), attachSelection: true)
+        XCTAssertEqual(tools.chatContext?.selection?.text, "A 😀")
+        XCTAssertEqual(tools.question, "Keep this unsent question")
+        tools.removeChatSelection()
+        XCTAssertNil(tools.chatContext?.selection)
+        await tools.loadConversation(fixture.session, cloud: fixture.cloud, selection: SelectedQuote(anchor: anchor, text: "A 😀"))
+        XCTAssertNil(tools.chatContext?.selection, "Refresh must not silently reattach the removed excerpt")
+        XCTAssertEqual(probe.requests.filter { $0.httpMethod == "POST" }.count, 0)
+    }
+
     func testAccountChatLoadsWithoutABookAndRetainsHistoryWhenRefreshFails() async throws {
         let fixture = try await fixture(), tools = ReaderCloudTools(), probe = ReaderToolsProbe()
         probe.respond = { request, _ in

@@ -37,21 +37,50 @@ final class ImmersiveReaderUITests: XCTestCase {
         reader.coordinate(withNormalizedOffset: CGVector(dx: 0.35, dy: 0.3)).press(forDuration: 1.2)
         require(app.descendants(matching: .any)["reader-selection-dock"].firstMatch)
     }
-    func testAccessibilitySizeKeepsQuietControlsAndSelectionActionsOnScreen() {
+    func testAccessibilitySizeKeepsQuietReadingAndRevealsAIOnlyWithToolsOrSelection() {
         open(extra: ["-UIPreferredContentSizeCategoryName", "UICTContentSizeCategoryAccessibilityXXXL"])
         wake(); app.buttons["reader-read"].tap()
-        let timer = app.buttons["reader-time-capsule"], ai = app.buttons["reader-ai"]
-        require(timer); require(ai)
-        for control in [timer, ai] {
-            XCTAssertTrue(control.isHittable)
-            XCTAssertGreaterThanOrEqual(control.frame.minX, 0)
-            XCTAssertLessThanOrEqual(control.frame.maxX, app.frame.width)
-        }
-        capture("accessibility-quiet-footer")
+        XCTAssertFalse(app.buttons["reader-time-capsule"].exists)
+        XCTAssertFalse(app.buttons["reader-ai"].exists)
+        XCTAssertFalse(app.buttons["显示阅读进度、目录、搜索与记录"].exists)
+        capture("accessibility-pure-reading")
+        wake(); let ai = app.buttons["reader-ai"]; require(ai)
+        XCTAssertTrue(ai.isHittable)
+        XCTAssertGreaterThanOrEqual(ai.frame.minX, 0)
+        XCTAssertLessThanOrEqual(ai.frame.maxX, app.frame.width)
+        app.buttons["reader-read"].tap()
         select(); require(app.buttons["reader-selection-copy"])
         XCTAssertTrue(app.buttons["reader-selection-copy"].isHittable)
         XCTAssertTrue(ai.isHittable)
         capture("accessibility-selection-dock")
+    }
+    func testQuietReaderHasNoFooterAndRapidTapsDoNotSelectText() {
+        open(); wake(); app.buttons["reader-read"].tap()
+        XCTAssertFalse(app.buttons["reader-ai"].exists)
+        XCTAssertFalse(app.buttons["reader-time-capsule"].exists)
+        XCTAssertFalse(app.staticTexts["reader-progress-caption"].exists)
+        let page = reader.coordinate(withNormalizedOffset: CGVector(dx: 0.88, dy: 0.5))
+        page.doubleTap()
+        XCTAssertFalse(app.descendants(matching: .any)["reader-selection-dock"].firstMatch.exists)
+        XCTAssertFalse(app.buttons["reader-ai"].exists)
+        capture("pure-reading-after-rapid-taps")
+        wake(); let progress = app.staticTexts["reader-progress-caption"]; require(progress)
+        XCTAssertTrue(progress.label.contains("本章 3 /"), progress.label)
+
+    }
+    func testExpandedQuoteKeepsComposerVisibleAndRemovalShowsTheCapturedParagraph() {
+        open(extra: ["-UIPreferredContentSizeCategoryName", "UICTContentSizeCategoryAccessibilityXXXL"])
+        select(); app.buttons["reader-ai"].tap(); require(app.navigationBars["Chat"])
+        let quote = app.descendants(matching: .any)["chat-source-context"].firstMatch; require(quote)
+        quote.coordinate(withNormalizedOffset: CGVector(dx: 0.3, dy: 0.3)).tap()
+        let question = app.textFields["reader-question"]; require(question); question.tap(); question.typeText("为什么")
+        XCTAssertTrue(question.isHittable)
+        let remove = app.buttons["chat-remove-source"]; require(remove); XCTAssertTrue(remove.isHittable)
+        capture("expanded-quote-keyboard-accessibility")
+        remove.tap(); require(app.staticTexts["当前段落 · 未附加选文"])
+        XCTAssertFalse(remove.exists)
+        XCTAssertTrue(question.isHittable)
+        capture("removed-excerpt-keeps-captured-paragraph")
     }
     func testListeningJumpDoesNotResumeReadingTime() {
         open(); wake(); app.buttons["reader-listen"].tap()
@@ -59,11 +88,9 @@ final class ImmersiveReaderUITests: XCTestCase {
         app.buttons["reader-listening-return"].tap(); require(reader)
         wake(); app.buttons["reader-contents"].tap()
         let current = app.buttons["reader-contents-entry-0"]; require(current); current.tap()
-        let timer = app.buttons["reader-time-capsule"]; require(timer)
-        XCTAssertTrue(timer.label.contains("已暂停"), timer.label)
-        let before = timer.label
-        Thread.sleep(forTimeInterval: 3)
-        XCTAssertEqual(timer.label, before, "Selecting a chapter while audio plays must not start reading time")
+        XCTAssertFalse(app.buttons["reader-time-capsule"].exists)
+        XCTAssertFalse(app.buttons["reader-ai"].exists)
+        XCTAssertFalse(app.buttons["reader-speech-toggle"].exists)
         capture("listening-jump-reading-paused")
     }
 
@@ -140,17 +167,14 @@ final class ImmersiveReaderUITests: XCTestCase {
         require(app.buttons["继续朗读"])
         app.buttons["reader-listening-return"].tap(); require(reader)
     }
-    func testVisibleTimeOpensBookAndDayHistoryAndCanPause() {
+    func testQuietAutomaticTimeRemainsAvailableInReadingTools() {
         open(); wake(); app.buttons["reader-read"].tap()
-        let capsule = app.buttons["reader-time-capsule"]; require(capsule)
-        XCTAssertTrue(capsule.label.contains("前台估计"), capsule.label)
-        capsule.tap(); require(app.descendants(matching: .any)["reader-book-time"].firstMatch)
-        require(app.staticTexts["按日期查看这本书"])
-        require(app.buttons["暂停计时"])
-        app.buttons["暂停计时"].tap()
-        require(app.buttons["继续计时"])
-        capture("book-day-time")
-        app.buttons["继续读"].firstMatch.tap(); require(capsule)
-        XCTAssertTrue(capsule.label.contains("已暂停"))
+        XCTAssertFalse(app.buttons["reader-time-capsule"].exists)
+        wake(); app.buttons["reader-more"].tap()
+        let time = app.buttons["阅读计时"]; require(time)
+        for _ in 0..<3 where !time.isHittable { app.swipeUp() }
+        time.tap(); require(app.buttons["暂停计时"])
+        app.buttons["暂停计时"].tap(); require(app.buttons["继续计时"])
+        capture("time-in-tools-only")
     }
 }

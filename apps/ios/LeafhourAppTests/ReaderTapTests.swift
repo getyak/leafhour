@@ -1,5 +1,6 @@
 import XCTest
 import UIKit
+import LeafhourCore
 @testable import Leafhour
 
 @MainActor final class ReaderTapTests: XCTestCase {
@@ -48,7 +49,7 @@ import UIKit
         paged = true; blocked = true
         XCTAssertNil(handler.action(at: CGPoint(x: 370, y: 1150)))
     }
-    func testPagedLinkAndLateNativeMultipleTapAndLongPressKeepPriority() throws {
+    func testPagedLinksStayProtectedWithoutNativeTapOrHoldFailureDependencies() throws {
         let text = UITextView(frame: CGRect(x: 0, y: 0, width: 390, height: 700), textContainer: nil)
         text.attributedText = NSAttributedString(string: "Source link", attributes: [.font: UIFont.systemFont(ofSize: 22), .link: URL(string: "https://example.invalid")!])
         text.textContainerInset.top = 100
@@ -61,11 +62,57 @@ import UIKit
         let lateLongPress = UILongPressGestureRecognizer()
         let descendant = UIView(); text.addSubview(descendant)
         descendant.addGestureRecognizer(lateDoubleTap); descendant.addGestureRecognizer(lateLongPress)
-        XCTAssertTrue(handler.gestureRecognizer(handler.recognizer, shouldRequireFailureOf: lateDoubleTap))
-        XCTAssertTrue(handler.gestureRecognizer(handler.recognizer, shouldRequireFailureOf: lateLongPress))
+        XCTAssertFalse(handler.gestureRecognizer(handler.recognizer, shouldRequireFailureOf: lateDoubleTap))
+        XCTAssertFalse(handler.gestureRecognizer(handler.recognizer, shouldRequireFailureOf: lateLongPress))
         let outside = UIView(), externalTap = UITapGestureRecognizer(); externalTap.numberOfTapsRequired = 2
         outside.addGestureRecognizer(externalTap)
         XCTAssertFalse(handler.gestureRecognizer(handler.recognizer, shouldRequireFailureOf: externalTap))
+    }
+
+    func testDueTapWaitsForShortContactReleaseInsteadOfDroppingOrMovingTextUnderTheFinger() async throws {
+        let text = UITextView(frame: CGRect(x: 0, y: 0, width: 390, height: 700))
+        var turns = 0
+        let handler = ReaderEdgeTapHandler(view: text, blocked: { false }, onWake: { _ in }, isPaged: { true }, onTurn: { _ in turns += 1 }, delay: { 0.05 })
+        handler.handleTap(at: CGPoint(x: 360, y: 350)); handler.touchActivity(true)
+        try await Task.sleep(for: .milliseconds(100)); XCTAssertEqual(turns, 0)
+        handler.touchActivity(false)
+        handler.handleTap(at: CGPoint(x: 360, y: 350))
+        try await Task.sleep(for: .milliseconds(100)); XCTAssertEqual(turns, 2)
+        handler.invalidate()
+    }
+    func testDelayedTurnsRebaseOnlyNavigationCausedByThePageTurnItself() async throws {
+        let text = UITextView(frame: CGRect(x: 0, y: 0, width: 390, height: 700))
+        var turns = 0, navigation = UUID()
+        let handler = ReaderEdgeTapHandler(view: text, blocked: { false }, onWake: { _ in }, isPaged: { true }, onTurn: { _ in turns += 1; navigation = UUID() }, delay: { 0.05 }, context: {
+            ReaderTapContext(owner: ObjectIdentifier(text), navigation: navigation, preferences: ReaderPreferences())
+        })
+        for _ in 0..<3 { handler.handleTap(at: CGPoint(x: 360, y: 350)) }
+        try await Task.sleep(for: .milliseconds(150)); XCTAssertEqual(turns, 3)
+        handler.handleTap(at: CGPoint(x: 360, y: 350)); navigation = UUID()
+        try await Task.sleep(for: .milliseconds(100)); XCTAssertEqual(turns, 3)
+        handler.invalidate()
+    }
+
+    func testDelayedTapsRemainIndividualAndCancelOnContextOrSelectionChange() async throws {
+        let text = UITextView(frame: CGRect(x: 0, y: 0, width: 390, height: 700))
+        var turns: [ReaderPageDirection] = [], blocked = false, navigation = UUID()
+        let handler = ReaderEdgeTapHandler(view: text, blocked: { blocked }, onWake: { _ in }, isPaged: { true },
+            onTurn: { turns.append($0) }, delay: { 0.05 }, context: {
+                ReaderTapContext(owner: ObjectIdentifier(text), navigation: navigation, preferences: ReaderPreferences())
+            })
+        let point = CGPoint(x: 360, y: 350)
+        handler.handleTap(at: point); handler.handleTap(at: point); handler.handleTap(at: point)
+        XCTAssertTrue(turns.isEmpty)
+        try await Task.sleep(for: .milliseconds(120))
+        XCTAssertEqual(turns, [.next, .next, .next])
+        handler.handleTap(at: point); navigation = UUID()
+        try await Task.sleep(for: .milliseconds(100)); XCTAssertEqual(turns.count, 3)
+        handler.handleTap(at: point); blocked = true
+        try await Task.sleep(for: .milliseconds(100)); XCTAssertEqual(turns.count, 3)
+        blocked = false; handler.handleTap(at: point)
+        NotificationCenter.default.post(name: UIApplication.willResignActiveNotification, object: nil)
+        try await Task.sleep(for: .milliseconds(100)); XCTAssertEqual(turns.count, 3)
+        handler.invalidate()
     }
 
     func testNativeCurlUsesOneTemporaryContainerAndReleasesItWhenCancelled() throws {
