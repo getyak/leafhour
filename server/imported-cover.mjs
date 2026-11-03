@@ -25,6 +25,9 @@ export async function deriveImportedCover(bytes,format){
  if(format==='epub')raster=extractEpubCover(bytes);
  else if(format==='pdf')raster=Buffer.from((await renderPdfEvidence(bytes,1)).data,'base64');
  if(!raster)return null;
+ return normalizeCoverRaster(raster);
+}
+export async function normalizeCoverRaster(raster){
  if(raster.length>12*1024*1024)throw fail('原文件封面过大',422);
  const [width,height]=rasterSize(raster);if(width<1||height<1||width*height>20000000)throw fail('原文件封面尺寸过大',422);
  try{

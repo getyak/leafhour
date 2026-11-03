@@ -15,7 +15,7 @@ import {buildSourceRevision,migrateSourceNotes} from './source-revisions.mjs';
 import {hasOriginalSourceVersion,mergePendingAnchors,validatePendingAnchors} from '../app/source-revisions.mjs';
 import {bookCapacity,MAX_BOOK_BYTES,TRANSLATION_RESERVE_BYTES} from './book-capacity.mjs';
 import {bookTransfer as transferBook} from './book-transfer.mjs';
-import {mkdir,readFile,writeFile,rename,stat,open} from 'node:fs/promises';
+import {mkdir,readFile,writeFile,rename,stat,open,unlink} from 'node:fs/promises';
 import path from 'node:path';
 import {randomBytes,randomUUID} from 'node:crypto';
 import {extractDocument,makeBook,digest,fail,MAX_FILE_BYTES,decodePlainText} from './document-import.mjs';
@@ -59,7 +59,7 @@ function mergedPersonalRecords(book,current,incoming,{preserveExisting=false}={}
   validatePendingAnchors(data,book);return data;
 }
 const allPassages=book=>book.sections.flatMap(s=>s.paragraphs.map(p=>({...p,chapterId:s.chapterId})));
-const coverImage=book=>book.visibility==='public'?bookCoverArtwork[book.bookId]?.src||null:book.visibility==='private'&&['pdf','epub'].includes(book.source?.format)&&/^[a-f0-9]{64}$/.test(book.source?.sha256||'')?'/api/library/books/'+encodeURIComponent(book.bookId)+'/cover?v='+book.source.sha256:null;
+const coverImage=book=>book.visibility==='public'?bookCoverArtwork[book.bookId]?.src||null:book.visibility==='private'&&['pdf','epub','txt','md','markdown'].includes(book.source?.format)&&/^[a-f0-9]{64}$/.test(book.source?.sha256||'')?'/api/library/books/'+encodeURIComponent(book.bookId)+'/cover?v='+book.source.sha256:null;
 const brief=book=>({bookId:book.bookId,contentVersion:book.contentVersion,title:book.title,author:book.author,visibility:book.visibility,...bookReadingLanguages(book),topics:book.topics||[],source:book.source,cover:book.cover,coverImage:coverImage(book),description:book.description,...(book.introduction?{introduction:book.introduction}:{}),chineseSample:book.chineseSample,paragraphs:allPassages(book).length,chapters:book.chapters.length,chapterIndex:book.chapters.map(c=>({id:c.id,kind:c.kind,number:c.number,title:c.title})),createdAt:book.createdAt});
 const emptyShelf=()=>({revision:0,order:[],archived:{}});
 const shelfLimit=1000;
@@ -79,7 +79,7 @@ function validateShelfBackup(entry){
 // sample translations remain defaults, so a clean import can replace them.
 const restoreTranslationValue=(value,current,base,preserveExisting)=>preserveExisting?{contentVersion:value.contentVersion,translations:{...value.translations,...base?.translations,...(current?.contentVersion===value.contentVersion?current.translations:{})},translationsByLanguage:mergeLanguageMaps(value.translationsByLanguage,base?.translationsByLanguage,current?.contentVersion===value.contentVersion?current.translationsByLanguage:null)}:value;
 
-export async function createLibraryService({dataDir,catalogDir=path.resolve('catalog'),translator=null,dataStore=null}={}){
+export async function createLibraryService({dataDir,catalogDir=path.resolve('catalog'),translator=null,dataStore=null,coverGenerator=null}={}){
   if(!dataStore)await mkdir(dataDir,{recursive:true,mode:0o700});
   const introductions=createBookIntroductionStore({dataDir:path.join(dataDir,'book-introductions'),dataStore});
   const publicBooks=new Map(),queues=new Map(),translationsRunning=new Set();
@@ -293,27 +293,59 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
     }));
   }
   const coverJobs=new Map();let coverQueue=Promise.resolve();
+  const coverResult=bytes=>({mimeType:'image/webp',bytes});
+  async function generatedCover(user,book){
+    const file=path.join(userDir(user),'covers',book.source.sha256+'-ai-v1.json'),cached=await read(file,null);
+    if(cached?.data)return coverResult(Buffer.from(cached.data,'base64'));
+    if(!coverGenerator)throw fail('这本书没有原文件封面',404);
+    const token=randomUUID(),leaseMs=150000;let localLock=false;
+    if(!dataStore){
+      await mkdir(path.dirname(file),{recursive:true,mode:0o700});
+      const lock=file+'.lease';
+      try{const info=await stat(lock);if(Date.now()-info.mtimeMs>leaseMs)await unlink(lock);}catch(error){if(error.code!=='ENOENT')throw error;}
+      try{const handle=await open(lock,'wx',0o600);await handle.close();localLock=true;}catch(error){if(error.code==='EEXIST')throw fail('封面正在准备，请稍后再看',503);throw error;}
+    }
+    try{
+      const claim=await mutate(file,{},state=>{
+        if(state.data)return {data:state.data};
+        if(state.retryAfter>Date.now()||state.leaseUntil>Date.now())return {};
+        state.leaseUntil=Date.now()+leaseMs;state.token=token;return {mine:true};
+      });
+      if(claim.data)return coverResult(Buffer.from(claim.data,'base64'));
+      if(!claim.mine)throw fail('封面正在准备，请稍后再看',503);
+      try{
+        const generated=await coverGenerator({title:book.title,author:book.author});
+        if(!Buffer.isBuffer(generated?.bytes)||!generated.bytes.length||generated.bytes.length>1024*1024)throw Error('Invalid cover');
+        await mutate(file,{},state=>{if(state.token!==token)throw fail('封面任务已变化，请稍后再看',503);Object.assign(state,{data:generated.bytes.toString('base64'),kind:'ai-generated',model:generated.model,prompt:generated.prompt,createdAt:new Date().toISOString(),leaseUntil:0,retryAfter:0});delete state.token;});
+        return coverResult(generated.bytes);
+      }catch{
+        await mutate(file,{},state=>{if(state.token===token){state.leaseUntil=0;state.retryAfter=Date.now()+15*60*1000;delete state.token;}});
+        throw fail('封面暂时未能生成，原文可以继续阅读',502);
+      }
+    }finally{if(localLock)await unlink(file+'.lease').catch(()=>{});}
+  }
   async function getCover(user,id){
     requireUser(user);const index=await read(path.join(userDir(user),'index.json'),{books:[]}),book=index.books.find(row=>row.bookId===id&&row.visibility==='private');
-    if(!book||!['pdf','epub'].includes(book.source?.format))throw fail('这本书没有原文件封面',404);
+    if(!book||!['pdf','epub','txt','md','markdown'].includes(book.source?.format))throw fail('这本书没有原文件封面',404);
     const hash=book.source.sha256;if(!/^[a-f0-9]{64}$/.test(hash||''))throw fail('找不到原文件封面',404);
     const file=path.join(userDir(user),'covers',hash+'-v1.json'),cached=await read(file,null);
-    if(cached?.missing)throw fail('原文件没有封面',404);
-    if(cached?.data)return {mimeType:'image/webp',bytes:Buffer.from(cached.data,'base64')};
+    if(cached?.data)return coverResult(Buffer.from(cached.data,'base64'));
     const key=user.id+':'+hash;
     if(!coverJobs.has(key)){
-      const work=coverQueue.catch(()=>{}).then(async()=>{
+      const sourceWork=coverQueue.catch(()=>{}).then(async()=>{
+        if(cached?.missing||!['pdf','epub'].includes(book.source.format))return null;
         const originalFile=path.join(userDir(user),'originals',hash);let info;
         try{info=dataStore?await dataStore.blobInfo(originalFile):await stat(originalFile);}catch(error){if(error.code==='ENOENT')throw fail('找不到原文件封面',404);throw error;}
         if(!info||info.size>MAX_FILE_BYTES)throw fail('找不到原文件封面',404);
         const bytes=await (dataStore?dataStore.blob(originalFile):readFile(originalFile));
         if(bytes.length>MAX_FILE_BYTES||digest(bytes)!==hash)throw fail('原文件校验失败，请重新上传',409);
-        const cover=await deriveImportedCover(bytes,book.source.format);
+        const cover=await deriveImportedCover(bytes,book.source.format).catch(error=>{if(error.status===422)return null;throw error;});
         await mutate(file,{},data=>Object.assign(data,cover?{data:cover.toString('base64')}:{missing:true}));
-        if(!cover)throw fail('原文件没有封面',404);
+        if(!cover)return null;
         return {mimeType:'image/webp',bytes:cover};
       });
-      coverJobs.set(key,work);coverQueue=work.catch(()=>{});
+      coverQueue=sourceWork.catch(()=>{});
+      const work=sourceWork.then(cover=>cover||generatedCover(user,book));coverJobs.set(key,work);
       work.finally(()=>coverJobs.delete(key)).catch(()=>{});
     }
     return coverJobs.get(key);

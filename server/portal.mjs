@@ -21,6 +21,7 @@ import {readFile} from 'node:fs/promises';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {createLibraryService} from './library-service.mjs';
+import {createCoverGenerator} from './generated-cover.mjs';
 import {createEmailAuth,smtpSender} from './email-auth.mjs';
 import {createTranslator} from './translation.mjs';
 import {fail,MAX_FILE_BYTES} from './document-import.mjs';
@@ -86,7 +87,7 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
   const billing=billingService||await createBillingRuntime({env,dataDir:path.join(dataDir,'billing'),publicOrigin:publicOrigin||'http://localhost:3000'});
   const sponsored=(user,feature,execute,maxCostUsd=.015)=>billing.enabled?withProviderMeter({ownerId:user?.id,feature,funding:'sponsored',maxCostUsd,record:facts=>billing.recordProviderCall(facts)},execute):execute();
   const auth=authService||await createEmailAuth({dataDir:path.join(dataDir,'auth'),sendCode:sendCode===undefined?await smtpSender():sendCode});
-  const library=await createLibraryService({dataDir:path.join(dataDir,'library'),catalogDir,translator:translator===undefined?createTranslator(env):translator,dataStore});
+  const library=await createLibraryService({dataDir:path.join(dataDir,'library'),catalogDir,translator:translator===undefined?createTranslator(env):translator,dataStore,coverGenerator:createCoverGenerator(env)});
   const personSeeds=catalogDir===null?[]:await loadPeopleSeeds();
   const publicBookIds=(await library.list(null)).map(book=>book.bookId);
   const people=createPeopleService({dataDir:path.join(dataDir,'library'),dataStore,seeds:personSeeds,publicBookIds});

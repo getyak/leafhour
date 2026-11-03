@@ -798,6 +798,8 @@
   "server/email-auth.mjs",
   "server/epub-import.mjs",
   "server/imported-cover.mjs",
+  "server/generated-cover.mjs",
+  "server/generated-cover-type.mjs",
   "server/experience-metrics.mjs",
   "server/experience-service.mjs",
   "server/experience-validation.mjs",
