@@ -152,7 +152,7 @@ public actor CloudLibraryClient {
         let bytes: Data
         let response: HTTPURLResponse
         if path.hasPrefix("/api/") {
-            (bytes, response) = try await perform(path: path, method: "GET", body: nil, ownerID: ownerID)
+            (bytes, response) = try await privateCoverResponse(path: path, ownerID: ownerID)
         } else {
             // Public artwork never receives account credentials or shared cookies.
             guard let url = URL(string: path, relativeTo: baseURL)?.absoluteURL, url.host == baseURL.host,
@@ -168,6 +168,14 @@ public actor CloudLibraryClient {
             throw CloudRequestError(status: 413, message: "封面暂不可用。")
         }
         return bytes
+    }
+    private func privateCoverResponse(path: String, ownerID: String) async throws -> (Data, HTTPURLResponse) {
+        for delay in [0, 2, 8, 25, 60] {
+            if delay > 0 { try await Task.sleep(for: .seconds(delay)) }
+            do { return try await perform(path: path, method: "GET", body: nil, ownerID: ownerID, timeout: 120) }
+            catch let error as CloudRequestError where error.status == 503 && delay < 60 { continue }
+        }
+        throw CloudRequestError(status: 503, message: "封面暂不可用。")
     }
     public func nativeAuthenticationStatus() async throws -> NativeAuthenticationStatus {
         let owner = credential?.account.id

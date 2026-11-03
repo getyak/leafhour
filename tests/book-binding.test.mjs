@@ -139,8 +139,14 @@ test('repainting a cover replaces old metadata, preserves long titles and insert
   assert.ok(!text(cover).includes('旧作者'));
 });
 
-test('private originals reuse an authenticated image and recover literal typography if it fails',()=>{
-  const book={bookId:'private-one',visibility:'private',title:{zh:'Source title'},author:'Original author',source:{format:'pdf',sha256:'a'.repeat(64)}};
+test('a pending private cover retries and becomes visible after generation finishes',t=>{
+ t.mock.timers.enable({apis:['setTimeout']});
+ const cover=new Element(),book={bookId:'private-pending',visibility:'private',title:{zh:'剑来'},source:{format:'txt',sha256:'b'.repeat(64)}};
+ binding.paintBookCover(cover,book);const image=descendants(cover).find(node=>node.tagName==='img');
+ image.dispatchEvent(new Event('error'));t.mock.timers.tick(2000);assert.equal(image.sourceWrites,2);image.dispatchEvent(new Event('load'));assert.equal(image.hidden,false);assert.equal(cover.dataset.coverArtwork,'ready');
+});
+for(const format of ['pdf','epub','txt','md'])test('private '+format+' covers reuse an authenticated image and recover literal typography if it fails',()=>{
+  const book={bookId:'private-one',visibility:'private',title:{zh:'Source title'},author:'Original author',source:{format,sha256:'a'.repeat(64)}};
   const cover=new Element();binding.paintBookCover(cover,book);
   const image=descendants(cover).find(node=>node.tagName==='img');
   assert.equal(image?.src,'/api/library/books/private-one/cover?v='+'a'.repeat(64));

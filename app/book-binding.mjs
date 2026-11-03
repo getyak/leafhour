@@ -62,16 +62,20 @@ export function paintBookCover(cover,book,options={}){
   let hash=0;for(const character of key)hash=(Math.imul(hash,31)+character.codePointAt(0))>>>0;
   cover.dataset.binding=Object.hasOwn(catalog,book?.cover)?catalog[book.cover]:tones[hash%tones.length];
   const labels=book?.visibility==='public'&&Object.hasOwn(bookCoverLabels,key)?bookCoverLabels[key][locale]:null;
-  const source=book?.source,imported=book?.visibility==='private'&&/^[A-Za-z0-9_-]{1,128}$/.test(key)&&['pdf','epub'].includes(source?.format)&&/^[a-f0-9]{64}$/.test(source?.sha256||'');
+  const source=book?.source,imported=book?.visibility==='private'&&/^[A-Za-z0-9_-]{1,128}$/.test(key)&&['pdf','epub','txt','md','markdown'].includes(source?.format)&&/^[a-f0-9]{64}$/.test(source?.sha256||'');
   if(imported){
     const url='/api/library/books/'+encodeURIComponent(key)+'/cover?v='+source.sha256;
     let view=renderedCovers.get(cover);
     if(view?.key===url)return cover;
     bindNative(cover,book);
     const image=cover.ownerDocument.createElement('img');image.className='imported-cover-artwork';image.alt='';image.loading='lazy';image.decoding='async';image.setAttribute?.('aria-hidden','true');
-    view={key:url,image};renderedCovers.set(cover,view);cover.dataset.coverStyle='imported';cover.dataset.coverArtwork='loading';
-    image.addEventListener('load',()=>{if(renderedCovers.get(cover)!==view)return;cover.dataset.coverArtwork='ready';},{once:true});
-    image.addEventListener('error',()=>{if(renderedCovers.get(cover)!==view)return;image.hidden=true;cover.dataset.coverArtwork='failed';},{once:true});
+    view={key:url,image,retries:0};renderedCovers.set(cover,view);cover.dataset.coverStyle='imported';cover.dataset.coverArtwork='loading';
+    image.addEventListener('load',()=>{if(renderedCovers.get(cover)!==view)return;image.hidden=false;cover.dataset.coverArtwork='ready';});
+    image.addEventListener('error',()=>{
+      if(renderedCovers.get(cover)!==view)return;image.hidden=true;cover.dataset.coverArtwork='failed';
+      const delay=[2000,8000,25000,60000][view.retries++];if(delay===undefined)return;
+      const timer=setTimeout(()=>{if(renderedCovers.get(cover)!==view||cover.isConnected===false||cover.dataset.coverArtwork==='ready')return;cover.dataset.coverArtwork='loading';image.src=url+'&attempt='+view.retries;},delay);timer?.unref?.();
+    });
     cover.append(image);image.src=url;return cover;
   }
   if(!labels?.title){bindNative(cover,book);return cover;}

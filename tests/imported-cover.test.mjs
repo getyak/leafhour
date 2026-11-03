@@ -17,6 +17,37 @@ function epub({legacy=false,bad=false,missing=false}={}){
  return Buffer.from(zipSync(Object.fromEntries(Object.entries(files).map(([key,value])=>[key,typeof value==='string'?strToU8(value):value])),{level:0}));
 }
 async function setup(t){const dir=await mkdtemp(path.join(os.tmpdir(),'leafhour-cover-'));t.after(()=>rm(dir,{recursive:true,force:true}));return createLibraryService({dataDir:dir,catalogDir:null});}
+test('TXT gets one generated cover shared by concurrent requests, copies and service restarts within its account',async t=>{
+ const dir=await mkdtemp(path.join(os.tmpdir(),'leafhour-ai-cover-'));t.after(()=>rm(dir,{recursive:true,force:true}));let calls=0;
+ const generator=async book=>{calls++;assert.equal(book.title.zh,'剑来');assert.equal(book.sections,undefined);return {bytes:epubImage(),model:'test-model',prompt:'metadata only'};};
+ const library=await createLibraryService({dataDir:dir,catalogDir:null,coverGenerator:generator}),owner={id:'ai-owner'},bytes=Buffer.from('陈平安走在山间。');
+ const book=await library.importDocument(owner,{filename:'剑来.txt',bytes});
+ await assert.rejects(library.getCover({id:'other'},book.bookId),{status:404});assert.equal(calls,0);
+ const [first,second]=await Promise.all([library.getCover(owner,book.bookId),library.getCover(owner,book.bookId)]);assert.deepEqual(first.bytes,second.bytes);assert.equal(calls,1);
+ const restarted=await createLibraryService({dataDir:dir,catalogDir:null,coverGenerator:async()=>{throw Error('must stay cached');}});
+ assert.deepEqual((await restarted.getCover(owner,book.bookId)).bytes,first.bytes);assert.deepEqual((await library.getOriginal(owner,book.bookId)).bytes,bytes);
+ const copy=await library.importDocument(owner,{filename:'剑来.txt',bytes,duplicatePolicy:'new',operationId:'23b49f4b-b3b9-4d6a-a001-a44569e13cdd'});assert.deepEqual((await library.getCover(owner,copy.bookId)).bytes,first.bytes);assert.equal(calls,1);
+ assert.match((await library.list(owner))[0].coverImage,/\/cover\?v=/);
+});
+function epubImage(){const canvas=createCanvas(300,450);return canvas.toBuffer('image/webp');}
+test('source cover wins and a missing EPUB cover can generate without losing the original',async t=>{
+ const dir=await mkdtemp(path.join(os.tmpdir(),'leafhour-ai-epub-'));t.after(()=>rm(dir,{recursive:true,force:true}));let calls=0;
+ const library=await createLibraryService({dataDir:dir,catalogDir:null,coverGenerator:async()=>{calls++;return {bytes:epubImage(),model:'test',prompt:'test'};}}),owner={id:'epub-ai'};
+ const original=await library.importDocument(owner,{filename:'with.epub',bytes:epub()});await library.getCover(owner,original.bookId);assert.equal(calls,0);
+ const missing=await library.importDocument(owner,{filename:'missing.epub',bytes:epub({missing:true})});assert.ok((await library.getCover(owner,missing.bookId)).bytes.length);assert.equal(calls,1);
+});
+test('cross-instance lease prevents duplicate generation and errors cool down without harming reading',async t=>{
+ const dir=await mkdtemp(path.join(os.tmpdir(),'leafhour-ai-lease-'));t.after(()=>rm(dir,{recursive:true,force:true}));
+ let calls=0,release,started;const ready=new Promise(r=>started=r),blocked=new Promise(r=>release=r);
+ const generator=async()=>{calls++;started();await blocked;return {bytes:epubImage(),model:'test',prompt:'test'};};
+ const a=await createLibraryService({dataDir:dir,catalogDir:null,coverGenerator:generator}),b=await createLibraryService({dataDir:dir,catalogDir:null,coverGenerator:generator}),owner={id:'lease-owner'};
+ const book=await a.importDocument(owner,{filename:'lease.txt',bytes:Buffer.from('Private words.')});
+ const first=a.getCover(owner,book.bookId);await ready;await assert.rejects(b.getCover(owner,book.bookId),{status:503});release();await first;assert.equal(calls,1);
+ const failed=await a.importDocument(owner,{filename:'failed.txt',bytes:Buffer.from('Reading must continue.')});
+ const broken=await createLibraryService({dataDir:dir,catalogDir:null,coverGenerator:async()=>{calls++;throw Error('sensitive provider response');}});
+ await assert.rejects(broken.getCover(owner,failed.bookId),error=>error.status===502&&!error.message.includes('sensitive'));const count=calls;
+ await assert.rejects(broken.getCover(owner,failed.bookId),{status:503});assert.equal(calls,count);assert.match((await broken.getBook(owner,failed.bookId)).sections[0].paragraphs[0].original,/Reading/);
+});
 for(const legacy of [false,true])test('EPUB '+(legacy?'2':'3')+' embedded cover remains private, cached and separate from the original',async t=>{
  const library=await setup(t),user={id:'cover-owner'},bytes=epub({legacy}),book=await library.importDocument(user,{filename:'source.epub',bytes});
  assert.equal(typeof library.getCover,'function');const cover=await library.getCover(user,book.bookId),image=await loadImage(cover.bytes);
