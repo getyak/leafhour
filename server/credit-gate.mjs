@@ -1,3 +1,4 @@
+import {hasUncertainGenerationCommit} from './generation-commit.mjs';
 import {normalizeChatReactionTargets} from '../app/chat-reactions.mjs';
 import {normalizeChatReplyTarget} from '../app/portable-chat.mjs';
 import {LOCAL_CHAT_ID,normalizeLocalChatInput} from './local-reader-chat.mjs';
@@ -114,7 +115,15 @@ export function createCreditGate({billing,library,chat,record,clock=Date.now}={}
   let operation;
   try{operation=await billing.run({ownerId:user.id,quoteId:meta.quoteId,operationId:opId,idempotencyKey:meta.idempotencyKey,scope,signal,execute:async({operationId:id})=>{
    const generate=()=>execute(body,{operationId:id,requestId:scope.requestId});
-   result=typeof record==='function'?await withProviderMeter({ownerId:user.id,operationId:id,feature:action,funding:'credits',...(action==='conversation'?{}:{maxCostUsd:action==='translation'?.015:.12}),record},generate):await generate();
+   try{result=typeof record==='function'?await withProviderMeter({ownerId:user.id,operationId:id,feature:action,funding:'credits',...(action==='conversation'?{}:{maxCostUsd:action==='translation'?.015:.12}),record},generate):await generate();}
+   catch(error){
+    if(!hasUncertainGenerationCommit(error,id))throw error;
+    // The commit acknowledgement may be lost after publication. Validate the
+    // persisted source-bound financial receipt before releasing or retrying.
+    let committed;try{committed=await saved(user,action,bookId,scope);}catch{throw error;}
+    if(!completed(action,committed,scope,id))throw error;
+    result=committed;
+   }
    const ok=completed(action,result,scope,id);
    if(!ok)throw fail('这次处理未完成，没有扣除阅读点',502);
    return {receipt:receipt(user,action,scope,id)};

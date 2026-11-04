@@ -804,6 +804,7 @@
   "server/experience-metrics.mjs",
   "server/experience-service.mjs",
   "server/experience-validation.mjs",
+  "server/generation-commit.mjs",
   "server/gift-quote.mjs",
   "server/ingestion-runner.mjs",
   "server/ingestion-storage.mjs",
@@ -1493,5 +1494,6 @@
   "apps/ios/LeafhourCore/Tests/LeafhourCoreTests/ChatStreamDecoderTests.swift",
   "apps/ios/LeafhourCore/Tests/LeafhourCoreTests/CloudChatStreamTests.swift",
   "apps/ios/LeafhourCore/Tests/LeafhourCoreTests/LocalReadingToolsTests.swift",
-  "apps/ios/LeafhourCore/Tests/LeafhourCoreTests/OfflineStateIndexCacheTests.swift"
+  "apps/ios/LeafhourCore/Tests/LeafhourCoreTests/OfflineStateIndexCacheTests.swift",
+  "tests/translation-cancellation.test.mjs"
 ]

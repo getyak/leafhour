@@ -1,3 +1,4 @@
+import {hasUncertainGenerationCommit} from './generation-commit.mjs';
 import {BILLING_PLANS,billingPlan} from './billing-plans.mjs';
 import {randomUUID,createHash} from 'node:crypto';
 import {billingError} from './billing-memory-store.mjs';
@@ -170,15 +171,16 @@ export function createBillingService({store,creem,enabled=false,mode='test',publ
           if(running.executionClaimed===false)return running;
           if(typeof execute!=='function')fail('missing_executor');
           const result=await execute({operationId:op.id,reservationToken:op.reservationToken,scope:clean});
-          if(signal?.aborted)fail('cancelled',409);
-          if(result?.status&&['failed','cancelled','error'].includes(result.status)||!result?.receipt)fail('result_not_delivered',409);
+          // A valid receipt means the domain already committed its result. A
+          // later transport cancellation must preserve that durable outcome.
+          if(result?.status&&['failed','cancelled','error'].includes(result.status)||!result?.receipt){if(signal?.aborted)fail('cancelled',409);fail('result_not_delivered',409);}
           const receipt=validReceipt(result.receipt,op);completionKnown=true;
           await command('result',{ownerId,operationId:op.id,reservationToken:op.reservationToken,receipt,now:now()});saved=true;
           return await command('settle',{ownerId,operationId:op.id,reservationToken:op.reservationToken,now:now()});
         }catch(error){
           // A durable receipt is the recovery boundary: never release a result
           // merely because the settlement transaction is temporarily unavailable.
-          if(!saved&&!completionKnown)await command('release',{ownerId,operationId:op.id,reservationToken:op.reservationToken,reason:error.code==='cancelled'?'cancelled':'failed',now:now()}).catch(()=>{});
+          if(!saved&&!completionKnown&&!hasUncertainGenerationCommit(error,op.id))await command('release',{ownerId,operationId:op.id,reservationToken:op.reservationToken,reason:error.code==='cancelled'?'cancelled':'failed',now:now()}).catch(()=>{});
           throw error;
         }
       })();inflight.set(op.id,task);try{return await task;}finally{inflight.delete(op.id);}

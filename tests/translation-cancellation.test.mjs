@@ -43,6 +43,20 @@ test('configured translator aborts its actual provider fetch without serializing
  const rejected=assert.rejects(pending,e=>e.name==='AbortError');await began;controller.abort();await rejected;assert.equal(requestSignal.aborted,true);
 });
 
+test('cancellation releases the domain waiter even before an uncooperative provider settles',async t=>{
+ const controller=new AbortController();let start,finish,calls=0;
+ const began=new Promise(resolve=>start=resolve),f=await fixture(t,async()=>{
+  if(++calls>1)return {literal:'Retry literal',interpretive:'Retry interpretive'};
+  start();return new Promise(resolve=>finish=resolve);
+ });
+ t.after(()=>finish?.({literal:'Discarded late literal',interpretive:'Discarded late interpretive'}));
+ const pending=f.library.translate(f.user,f.book.bookId,f.id,{signal:controller.signal});
+ const rejected=assert.rejects(pending,e=>e.name==='AbortError');await began;controller.abort();
+ let timer;try{await Promise.race([rejected,new Promise((_,reject)=>{timer=setTimeout(()=>reject(Error('cancel still waits on provider')),500);})]);}finally{clearTimeout(timer);}
+ assert.deepEqual((await f.library.getBook(f.user,f.book.bookId)).sections[0].paragraphs[0].translations,{});
+ assert.equal((await f.library.translate(f.user,f.book.bookId,f.id)).translations.literal.text,'Retry literal');
+});
+
 test('hosted commit guard runs after asynchronous blob staging and before the CAS commit',async()=>{
  const controller=new AbortController();let commits=0,staged=0;
  const store=createHostedStore({env:{SUPABASE_URL:'https://synthetic.invalid',SUPABASE_SECRET_KEY:'fixture-only'},fetcher:async(url,options={})=>{
@@ -69,4 +83,40 @@ test('disconnecting translate HTTP aborts server generation and cannot publish l
  for(let attempt=0;attempt<100&&!providerSignal.aborted;attempt++)await new Promise(resolve=>setTimeout(resolve,5));
  assert.equal(providerSignal.aborted,true);finish({literal:'Late literal',interpretive:'Late interpretive'});await done;
  assert.deepEqual((await server.portal.library.getBook(session.user,book.bookId)).sections[0].paragraphs[0].translations,{});
+});
+
+async function lostCommitFixture(t,{hideReceipt=false}={}){
+ const {createCreditGate}=await import('../server/credit-gate.mjs'),{createBillingService}=await import('../server/billing-service.mjs'),{createBillingMemoryStore}=await import('../server/billing-memory-store.mjs');
+ const dir=await mkdtemp(path.join(tmpdir(),'leafhour-translation-ack-'));t.after(()=>rm(dir,{recursive:true,force:true}));
+ const rows=new Map(),blobs=new Map();let loseAck=true,hidden=false,calls=0;
+ const dataStore={
+  read:async(key,fallback)=>{if(hidden&&key.includes('/translations/'))throw Object.assign(Error('Synthetic receipt temporarily unavailable'),{status:503});return structuredClone(rows.get(key)??fallback);},
+  mutate:async(key,fallback,operation,options={})=>{
+   const data=structuredClone(rows.get(key)??fallback),result=await operation(data);await options.beforeCommit?.();rows.set(key,structuredClone(data));
+   if(key.includes('/translations/')&&loseAck){loseAck=false;hidden=hideReceipt;throw Object.assign(Error('Synthetic lost commit acknowledgement'),{status:503});}
+   return result;
+  },
+  putBlob:async(key,bytes)=>{blobs.set(key,Buffer.from(bytes));},blob:async key=>Buffer.from(blobs.get(key))
+ };
+ const library=await createLibraryService({dataDir:dir,catalogDir:null,dataStore,translator:async()=>{calls++;return {literal:'Saved literal',interpretive:'Saved interpretive'};}}),user={id:'isolated-ack-reader'};
+ const book=await library.importDocument(user,{filename:'Ack.txt',bytes:Buffer.from('A synthetic source for acknowledgement recovery.')}),id=book.sections[0].paragraphs[0].id;
+ const store=createBillingMemoryStore(),billing=createBillingService({enabled:true,store}),gate=createCreditGate({billing,library});await billing.trial({ownerId:user.id,verified:true});
+ const input={id:'same-original-request',passageId:id,contentVersion:book.contentVersion},quote=await gate.quote(user,{action:'translation',bookId:book.bookId,input});let authority;
+ const run=()=>gate.run({user,action:'translation',bookId:book.bookId,input:{...input,billing:{quoteId:quote.id,idempotencyKey:input.id}},execute:async(body,receipt)=>{authority=receipt;return library.translate(user,book.bookId,body.passageId,{expectedContentVersion:book.contentVersion,generationReceipt:receipt});}});
+ return {library,user,book,input,billing,gate,run,unhide:()=>{hidden=false;},authority:()=>authority,calls:()=>calls};
+}
+
+test('lost domain commit acknowledgement verifies the persisted matching receipt and settles once',async t=>{
+ const f=await lostCommitFixture(t);assert.equal((await f.run()).translations.literal.text,'Saved literal');assert.equal(f.calls(),1);
+ assert.equal((await f.billing.operation({ownerId:f.user.id,operationId:f.authority().operationId})).status,'settled');
+ assert.equal((await f.billing.account({ownerId:f.user.id})).consumedUnits,1000000);
+ await f.gate.run({user:f.user,action:'translation',bookId:f.book.bookId,input:f.input,execute:()=>assert.fail('saved request must not redispatch')});assert.equal(f.calls(),1);
+});
+
+test('unreadable post-commit receipt keeps the original operation recoverable without redispatch',async t=>{
+ const f=await lostCommitFixture(t,{hideReceipt:true});await assert.rejects(f.run(),{status:503});
+ assert.equal((await f.billing.operation({ownerId:f.user.id,operationId:f.authority().operationId})).status,'running');assert.equal(f.calls(),1);
+ f.unhide();await f.gate.recover(f.user);assert.equal((await f.billing.operation({ownerId:f.user.id,operationId:f.authority().operationId})).status,'settled');
+ assert.equal((await f.billing.account({ownerId:f.user.id})).consumedUnits,1000000);
+ await f.gate.run({user:f.user,action:'translation',bookId:f.book.bookId,input:f.input,execute:()=>assert.fail('recovery must not redispatch')});assert.equal(f.calls(),1);
 });
