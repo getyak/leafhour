@@ -33,6 +33,9 @@ public struct LocalBook: Codable, Identifiable, Equatable, Sendable {
     public var readingStartChapterID: String? = nil
     public var readingStartAnchor: ReadingAnchor? = nil
     public var coverResourcePath: String? = nil
+    /// New imports opt into English defaults. Missing legacy metadata remains
+    /// nil without modifying the retained book index or manifest on read.
+    public var translationDefaultsVersion: Int? = 1
 }
 public struct ReadingAnchor: Codable, Equatable, Hashable, Sendable {
     public var chapterID: String
@@ -154,7 +157,14 @@ public struct ReaderState: Codable, Equatable, Sendable {
     public var bookmarks: [ReaderBookmark]? = nil
     public var preferences = ReaderPreferences()
     public var translationSettings: BookTranslationSettings? = nil
+    /// New books use English. A missing field in an old JSON remains nil so
+    /// unread legacy books retain the language they previously displayed.
+    public var translationDefaultsVersion: Int? = 1
     public init() {}
+    public func resolvedTranslationSettings(detected: ReadingLanguage?) -> BookTranslationSettings {
+        if let translationSettings { return translationSettings }
+        return translationDefaultsVersion == nil ? .legacySuggested(for: detected) : .suggested(for: detected)
+    }
 }
 /// Layer offsets are UTF-16 positions in a verified text snapshot, never source
 /// scalar anchors. Optional state preserves older on-device libraries/backups.

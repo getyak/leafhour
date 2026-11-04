@@ -333,7 +333,9 @@ final class ReaderInteractionTests: XCTestCase {
         try Data(source.utf8).write(to: file)
         let library = try OfflineLibrary(root: root.appendingPathComponent("library"), scope: .device)
         let book = try await library.importFile(file)
-        return ReaderSession(book: book, state: try await library.state(book.id), original: try await library.originalURL(book.id), directory: try await library.bookDirectory(book.id), library: library)
+        var state = try await library.state(book.id)
+        state.translationSettings = BookTranslationSettings(sourceLanguage: .en, targetLanguage: .zh)
+        return ReaderSession(book: book, state: state, original: try await library.originalURL(book.id), directory: try await library.bookDirectory(book.id), library: library)
     }
 
     func testCompanionComposerIsVisibleWithoutScrollingLongHistory() async throws {

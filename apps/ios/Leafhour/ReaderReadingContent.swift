@@ -255,16 +255,20 @@ final class ReaderReadingContent {
         if running { status = "已停止后续翻译，当前请求的停止结果待核对。" }
     }
     func setForeground(_ active: Bool) { foreground = active; if !active { stop() } }
+
+    /// The user's drag/turn invalidates the old window immediately, before a
+    /// settled replacement page exists. Keep only the explicit switch/identity.
+    func suspendForUserNavigation() {
+        guard isFollowing else { if running { stop() }; return }
+        generation = UUID(); revokedNavigationID = followNavigationID ?? revokedNavigationID; followNavigationID = nil
+        task?.cancel(); proposed = nil; proposedPage = nil; loading = false
+        status = "旧范围翻译已停止，等待新的当前页。"
+    }
+
     func enteredChapter(_ id: String) {
         guard !activeChapterIDs.contains(id) else { return }
-        if isFollowing {
-            // Revoke the old window while retaining only the user's explicit
-            // switch. No new chapter can start without both a new real-user
-            // marker and a verified viewport; task completion never advances it.
-            generation = UUID(); revokedNavigationID = followNavigationID ?? revokedNavigationID; followNavigationID = nil
-            task?.cancel(); proposed = nil; proposedPage = nil; loading = false
-            status = "旧章翻译已停止，等待新章的当前页。"
-        } else if running { stop() }
+        if isFollowing { suspendForUserNavigation() }
+        else if running { stop() }
     }
 
     private func execute(_ saved: ReaderTranslationRun, page: ReaderVisiblePage?, session: ReaderSession, cloud: CloudLibraryClient, library: OfflineLibrary, marker: UUID) async {

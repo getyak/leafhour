@@ -62,6 +62,43 @@ import LeafhourCore
         XCTAssertEqual(TranslationFollowingProtocol.translationRequests, 2)
         XCTAssertEqual(Set(session.translations.keys), ["p1"])
     }
+    func testUserNavigationCancelsPendingAuthorizationBeforeNewViewportExists() async throws {
+        let (session, cloud, library) = try await fixture()
+        TranslationFollowingProtocol.setAuthPaused(true)
+        TranslationFollowingProtocol.setImmediateReplies(true)
+        let reading = ReaderReadingContent(), layout = ReaderVisiblePageLayout(), oldMarker = UUID()
+        let page = try XCTUnwrap(ReaderVisiblePage(session: session, chapterID: "c", passageIDs: ["p1"], layout: layout))
+        let originalNavigation = session.navigationID
+        await reading.startFollowing(session, cloud: cloud, library: library, page: page, userNavigationID: oldMarker)
+        for _ in 0..<200 {
+            if TranslationFollowingProtocol.authRequests > 0 { break }
+            try await Task.sleep(for: .milliseconds(10))
+        }
+        XCTAssertEqual(TranslationFollowingProtocol.authRequests, 1)
+        layout.invalidate()
+        reading.suspendForUserNavigation()
+        XCTAssertTrue(reading.isFollowing)
+        XCTAssertEqual(session.navigationID, originalNavigation, "A long same-chapter drag does not need to change the session navigation ID")
+        for _ in 0..<200 {
+            if !reading.running && TranslationFollowingProtocol.authCancelled { break }
+            try await Task.sleep(for: .milliseconds(10))
+        }
+        XCTAssertTrue(TranslationFollowingProtocol.authCancelled)
+        XCTAssertEqual(TranslationFollowingProtocol.translationRequests, 0, "The old window cannot submit while its viewport is invalid")
+        let settled = try XCTUnwrap(ReaderVisiblePage(session: session, chapterID: "c", passageIDs: ["p2"], layout: layout))
+        await reading.follow(session, cloud: cloud, library: library, page: settled, userNavigationID: oldMarker)
+        XCTAssertEqual(TranslationFollowingProtocol.authRequests, 1)
+        let newMarker = UUID()
+        await reading.follow(session, cloud: cloud, library: library, page: nil, userNavigationID: newMarker)
+        XCTAssertEqual(TranslationFollowingProtocol.authRequests, 1)
+        TranslationFollowingProtocol.setAuthPaused(false)
+        await reading.follow(session, cloud: cloud, library: library, page: settled, userNavigationID: newMarker)
+        for _ in 0..<200 { if !reading.running { break }; try await Task.sleep(for: .milliseconds(10)) }
+        XCTAssertEqual(TranslationFollowingProtocol.translationRequests, 1)
+        XCTAssertEqual(Set(session.translations.keys), ["p2"])
+        reading.stopFollowing()
+    }
+
     func testChapterNavigationRetainsSwitchButNeedsNewUserMarkerAndRealPage() async throws {
         let (session, cloud, library) = try await fixture()
         TranslationFollowingProtocol.setImmediateReplies(true)
@@ -98,14 +135,24 @@ private final class TranslationFollowingProtocol: URLProtocol, @unchecked Sendab
     private static var wasCancelled = false
     private static var count = 0
     private static var immediateReplies = false
+    private static var pauseAuth = false
+    private static var authCount = 0
+    private static var wasAuthCancelled = false
     static var pendingBody: Data? { lock.lock(); defer { lock.unlock() }; return savedBody }
     static var cancelled: Bool { lock.lock(); defer { lock.unlock() }; return wasCancelled }
     static var translationRequests: Int { lock.lock(); defer { lock.unlock() }; return count }
-    static func reset() { lock.lock(); defer { lock.unlock() }; savedBody = nil; wasCancelled = false; count = 0; immediateReplies = false }
+    static var authRequests: Int { lock.lock(); defer { lock.unlock() }; return authCount }
+    static var authCancelled: Bool { lock.lock(); defer { lock.unlock() }; return wasAuthCancelled }
+    static func reset() { lock.lock(); defer { lock.unlock() }; savedBody = nil; wasCancelled = false; count = 0; immediateReplies = false; pauseAuth = false; authCount = 0; wasAuthCancelled = false }
     static func setImmediateReplies(_ value: Bool) { lock.lock(); defer { lock.unlock() }; immediateReplies = value }
+    static func setAuthPaused(_ value: Bool) { lock.lock(); defer { lock.unlock() }; pauseAuth = value }
     override class func canInit(with request: URLRequest) -> Bool { true }
     override class func canonicalRequest(for request: URLRequest) -> URLRequest { request }
     override func startLoading() {
+        if request.url?.path == "/api/auth/session" {
+            Self.lock.lock(); Self.authCount += 1; let paused = Self.pauseAuth; Self.lock.unlock()
+            if paused { return }
+        }
         if request.url?.path.hasSuffix("/translate") == true {
             var body = request.httpBody
             if body == nil, let stream = request.httpBodyStream {
@@ -130,6 +177,9 @@ private final class TranslationFollowingProtocol: URLProtocol, @unchecked Sendab
         client?.urlProtocol(self, didLoad: data); client?.urlProtocolDidFinishLoading(self)
     }
     override func stopLoading() {
+        if request.url?.path == "/api/auth/session" {
+            Self.lock.lock(); Self.wasAuthCancelled = true; Self.lock.unlock(); return
+        }
         guard request.url?.path.hasSuffix("/translate") == true else { return }
         Self.lock.lock(); Self.wasCancelled = true; Self.lock.unlock()
     }

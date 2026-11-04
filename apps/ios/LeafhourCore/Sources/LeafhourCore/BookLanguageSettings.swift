@@ -32,6 +32,8 @@ public struct BookTranslationSettings: Codable, Equatable, Sendable {
         self.sourceLanguage = sourceLanguage; self.targetLanguage = targetLanguage
     }
     public static func suggested(for detected: ReadingLanguage?) -> Self { Self(targetLanguage: .en) }
+    /// An absent per-book setting used this rule before defaults were versioned.
+    public static func legacySuggested(for detected: ReadingLanguage?) -> Self { Self(targetLanguage: detected == .zh ? .en : .zh) }
     public func resolvedSource(detected: ReadingLanguage?) -> ReadingLanguage? { sourceLanguage ?? detected }
     public func isValid(detected: ReadingLanguage?) -> Bool {
         guard let source = resolvedSource(detected: detected) else { return false }

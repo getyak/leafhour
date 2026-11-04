@@ -1,7 +1,151 @@
 import XCTest
+import PDFKit
+import CoreText
 @testable import LeafhourCore
 
 final class BookLanguageSettingsTests: XCTestCase {
+    private func makeLegacyPackage(_ book: LocalBook, library: OfflineLibrary) async throws -> (URL, Data, Data) {
+        let folder = try await library.bookDirectory(book.id), indexURL = folder.appendingPathComponent("book.json")
+        var index = try XCTUnwrap(JSONSerialization.jsonObject(with: Data(contentsOf: indexURL)) as? [String: Any])
+        index.removeValue(forKey: "translationDefaultsVersion")
+        try JSONSerialization.data(withJSONObject: index, options: [.sortedKeys]).write(to: indexURL)
+        let manifestURL = folder.appendingPathComponent("manifest.json")
+        var manifest = try Disk.read(OfflineManifest.self, from: manifestURL)
+        let slot = try XCTUnwrap(manifest.files.firstIndex { $0.path == "book.json" })
+        manifest.files[slot] = FileDigest(path: "book.json", sha256: try Disk.hashFile(indexURL), bytes: try Disk.size(indexURL))
+        try Disk.write(manifest, to: manifestURL)
+        return (folder, try Data(contentsOf: indexURL), try Data(contentsOf: manifestURL))
+    }
+
+    func testOldPackagesWithoutStateKeepLegacyDefaultsWithoutRewritingTheirManifest() async throws {
+        for (sourceText, detected, expected) in [
+            ("An English original paragraph in an unread old package.", ReadingLanguage.en, ReadingLanguage.zh),
+            ("这是一个尚未打开过的旧书包，中文原文保持旧有的默认翻译目标。", .zh, .en)
+        ] {
+            let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+            defer { try? FileManager.default.removeItem(at: root) }
+            try FileManager.default.createDirectory(at: root, withIntermediateDirectories: true)
+            let library = try OfflineLibrary(root: root, scope: .device), source = root.appendingPathComponent("old.txt")
+            try Data(sourceText.utf8).write(to: source)
+            let imported = try await library.importFile(source)
+            let (folder, indexBytes, manifestBytes) = try await makeLegacyPackage(imported, library: library)
+            XCTAssertFalse(FileManager.default.fileExists(atPath: root.appendingPathComponent("device/states/" + imported.id + ".json").path))
+            let oldBook = try await library.book(imported.id)
+            XCTAssertNil(oldBook.translationDefaultsVersion)
+            let state = try await library.state(imported.id)
+            XCTAssertNil(state.anchor)
+            XCTAssertNil(state.translationDefaultsVersion)
+            XCTAssertEqual(state.resolvedTranslationSettings(detected: detected).targetLanguage, expected)
+            XCTAssertEqual(try Data(contentsOf: folder.appendingPathComponent("book.json")), indexBytes)
+            XCTAssertEqual(try Data(contentsOf: folder.appendingPathComponent("manifest.json")), manifestBytes)
+        }
+    }
+
+    func testFreshLocalAndCloudCopiesWithoutStateUseVersionedEnglishDefault() async throws {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: root) }
+        try FileManager.default.createDirectory(at: root, withIntermediateDirectories: true)
+        let owner = UUID(), library = try OfflineLibrary(root: root, scope: .account(owner))
+        let source = root.appendingPathComponent("new.txt")
+        try Data("An English original paragraph in a newly imported book.".utf8).write(to: source)
+        let local = try await library.importFile(source)
+        XCTAssertEqual(local.translationDefaultsVersion, 1)
+        let localState = try await library.state(local.id)
+        XCTAssertEqual(localState.translationDefaultsVersion, 1)
+        XCTAssertEqual(localState.resolvedTranslationSettings(detected: .en).targetLanguage, .en)
+        let chapters = try JSONDecoder().decode([BookChapter].self, from: Data(#"[{"id":"c","title":"Chapter","sourcePath":"c","passages":[{"id":"p","text":"An original cloud paragraph.","heading":false}]}]"#.utf8))
+        let identity = CloudBookIdentity(ownerID: owner.uuidString.lowercased(), bookID: "new-cloud", contentVersion: "v1", sourceFormat: "txt")
+        let content = Data(#"{"bookId":"new-cloud","contentVersion":"v1","sections":[{"chapterId":"c","paragraphs":[{"id":"p","original":"An original cloud paragraph.","translations":{}}]}]}"#.utf8)
+        let cloud = try await library.importCloud(CloudReadingCopy(identity: identity, title: "New", author: "", chapters: chapters, content: content))
+        XCTAssertEqual(cloud.translationDefaultsVersion, 1)
+        var cloudState = try await library.state(cloud.id)
+        XCTAssertEqual(cloudState.translationDefaultsVersion, 1)
+        XCTAssertEqual(cloudState.resolvedTranslationSettings(detected: .en).targetLanguage, .en)
+        cloudState.translationSettings = .init(sourceLanguage: .en, targetLanguage: .ja)
+        try await library.saveState(cloudState, bookID: cloud.id)
+        let explicit = try await library.state(cloud.id)
+        XCTAssertEqual(explicit.resolvedTranslationSettings(detected: .en).targetLanguage, .ja)
+        _ = try await makeLegacyPackage(cloud, library: library)
+        let existingState = try await library.state(cloud.id)
+        XCTAssertEqual(existingState.translationDefaultsVersion, 1, "An existing state wins over the package's legacy marker")
+        XCTAssertEqual(existingState.resolvedTranslationSettings(detected: .en).targetLanguage, .ja)
+    }
+
+    func testLegacyCloudCacheRewriteDoesNotUpgradeItsMissingDefaultMarker() async throws {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let owner = UUID(), library = try OfflineLibrary(root: root, scope: .account(owner))
+        let chapters = try JSONDecoder().decode([BookChapter].self, from: Data(#"[{"id":"c","title":"Chapter","sourcePath":"c","passages":[{"id":"p","text":"Legacy English cloud paragraph.","heading":false}]}]"#.utf8))
+        let identity = CloudBookIdentity(ownerID: owner.uuidString.lowercased(), bookID: "old-cloud", contentVersion: "v1", sourceFormat: "txt")
+        let content = Data(#"{"bookId":"old-cloud","contentVersion":"v1","sections":[{"chapterId":"c","paragraphs":[{"id":"p","original":"Legacy English cloud paragraph.","translations":{}}]}]}"#.utf8)
+        let cloud = try await library.importCloud(CloudReadingCopy(identity: identity, title: "Old", author: "", chapters: chapters, content: content))
+        _ = try await makeLegacyPackage(cloud, library: library)
+        let row = try CloudJSON.decode(Data(#"{"id":"p","original":"Legacy English cloud paragraph.","translations":{"literal":{"text":"原有中文。","status":"draft"},"interpretive":{"text":"原有中文意译。","status":"draft"}}}"#.utf8))
+        try await library.cacheCloudPassage(row, bookID: cloud.id)
+        let rewritten = try await library.book(cloud.id), state = try await library.state(cloud.id)
+        XCTAssertNil(rewritten.translationDefaultsVersion)
+        XCTAssertNil(state.translationDefaultsVersion)
+        XCTAssertEqual(state.resolvedTranslationSettings(detected: .en).targetLanguage, .zh)
+        let cached = try await library.readingTranslations(bookID: cloud.id)
+        XCTAssertEqual(cached["p"]?.literal, "原有中文。")
+    }
+
+    func testRepairOfLegacyPDFPreservesItsMissingDefaultMarker() async throws {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: root) }
+        try FileManager.default.createDirectory(at: root, withIntermediateDirectories: true)
+        let source = root.appendingPathComponent("legacy.pdf"), library = try OfflineLibrary(root: root, scope: .device)
+        var box = CGRect(x: 0, y: 0, width: 400, height: 600)
+        let context = try XCTUnwrap(CGContext(source as CFURL, mediaBox: &box, nil))
+        context.beginPDFPage(nil)
+        let text = NSAttributedString(string: "An English page in a legacy PDF.", attributes: [.font: CTFontCreateWithName("Helvetica" as CFString, 18, nil)])
+        context.textPosition = CGPoint(x: 30, y: 500)
+        CTLineDraw(CTLineCreateWithAttributedString(text), context)
+        context.endPDFPage(); context.closePDF()
+        let book = try await library.importFile(source)
+        _ = try await makeLegacyPackage(book, library: library)
+        let repaired = try await library.repair(book.id), state = try await library.state(book.id)
+        XCTAssertNil(repaired.translationDefaultsVersion)
+        XCTAssertNil(state.translationDefaultsVersion)
+        XCTAssertEqual(state.resolvedTranslationSettings(detected: .en).targetLanguage, .zh)
+    }
+
+    @MainActor func testUnreadLegacyStateKeepsChineseCacheButNewStateDefaultsToEnglish() async throws {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: root) }
+        try FileManager.default.createDirectory(at: root, withIntermediateDirectories: true)
+        let library = try OfflineLibrary(root: root.appendingPathComponent("library"), scope: .device)
+        let source = root.appendingPathComponent("legacy.txt")
+        try Data("An English original paragraph for a legacy unread book.".utf8).write(to: source)
+        let book = try await library.importFile(source)
+        let directory = try await library.bookDirectory(book.id), original = try await library.originalURL(book.id)
+        let oldJSON = Data(#"{"drafts":{},"notes":[],"preferences":{}}"#.utf8)
+        let oldState = try JSONDecoder().decode(ReaderState.self, from: oldJSON)
+        XCTAssertNil(oldState.anchor, "Unread old books also retain their old default")
+        let legacy = ReaderSession(book: book, state: oldState, original: original, directory: directory, library: library)
+        XCTAssertEqual(legacy.translationSettings.targetLanguage, .zh)
+        let passage = try XCTUnwrap(book.chapters.first?.passages.first)
+        let cached = ReadingTranslation(original: passage.text, literal: "原有中文直译。", interpretive: "原有中文意译。")
+        legacy.updateTranslations([passage.id: cached])
+        XCTAssertEqual(legacy.translations[passage.id]?.literal, "原有中文直译。")
+        let roundTrip = try JSONDecoder().decode(ReaderState.self, from: JSONEncoder().encode(legacy.state))
+        let reopened = ReaderSession(book: book, state: roundTrip, original: original, directory: directory, library: library)
+        XCTAssertEqual(reopened.translationSettings.targetLanguage, .zh, "Saving an old nil-marker state must not silently opt into the new default")
+
+        let newState = ReaderState()
+        let encoded = try XCTUnwrap(JSONSerialization.jsonObject(with: JSONEncoder().encode(newState)) as? [String: Any])
+        XCTAssertEqual(encoded["translationDefaultsVersion"] as? Int, 1)
+        let fresh = ReaderSession(book: book, state: newState, original: original, directory: directory, library: library)
+        XCTAssertEqual(fresh.translationSettings.targetLanguage, .en)
+        fresh.updateTranslations([passage.id: cached])
+        XCTAssertNil(fresh.translations[passage.id], "New defaults do not weaken target-language isolation")
+        for base in [oldState, newState] {
+            var explicit = base; explicit.translationSettings = .init(sourceLanguage: .en, targetLanguage: .ja)
+            let session = ReaderSession(book: book, state: explicit, original: original, directory: directory, library: library)
+            XCTAssertEqual(session.translationSettings.targetLanguage, .ja)
+        }
+    }
+
     func testLegacyStateKeepsPerBookLanguageUnsetAndIndentationOff() throws {
         let data = try JSONEncoder().encode(ReaderState())
         var object = try XCTUnwrap(JSONSerialization.jsonObject(with: data) as? [String: Any])

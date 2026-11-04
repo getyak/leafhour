@@ -34,6 +34,7 @@ public final class ReaderSession: Identifiable {
     public var state: ReaderState
     public var chapterIndex: Int
     public var navigationID = UUID()
+    public internal(set) var bookmarkNavigation: ReaderBookmarkNavigation?
     public var message: String?
     public var saveMessage: String?
     public var saving = false
@@ -55,7 +56,7 @@ public final class ReaderSession: Identifiable {
     public private(set) var translations: [String: ReadingTranslation] = [:]
     public let detectedSourceLanguage: ReadingLanguage?
     @ObservationIgnored public let preparedTextWindow: ReadingTextWindow?
-    public var translationSettings: BookTranslationSettings { state.translationSettings ?? .suggested(for: detectedSourceLanguage) }
+    public var translationSettings: BookTranslationSettings { state.resolvedTranslationSettings(detected: detectedSourceLanguage) }
     public func changeTranslationSettings(_ value: BookTranslationSettings) {
         guard packageVerificationError == nil, value != translationSettings else { return }
         state.translationSettings = value

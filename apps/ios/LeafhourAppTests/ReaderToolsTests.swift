@@ -30,7 +30,9 @@ final class ReaderToolsTests: XCTestCase {
                 "sections": chapters.map { chapter in ["chapterId": chapter.id, "paragraphs": chapter.passages.map { ["id": $0.id, "original": $0.text, "translations": [:]] }] }]
             book = try await library.importCloud(CloudReadingCopy(identity: identity, title: "Synthetic retry book", author: "", chapters: chapters, content: JSONSerialization.data(withJSONObject: content)))
         }
-        let state = try await library.state(book.id), directory = try await library.bookDirectory(book.id)
+        var state = try await library.state(book.id)
+        state.translationSettings = BookTranslationSettings(sourceLanguage: .en, targetLanguage: .zh)
+        let directory = try await library.bookDirectory(book.id)
         let original = try await library.originalURL(book.id)
         let session = ReaderSession(book: book, state: state, original: original, directory: directory, library: library)
         let configuration = URLSessionConfiguration.ephemeral; configuration.protocolClasses = [ReaderToolsURLProtocol.self]
