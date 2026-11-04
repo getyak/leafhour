@@ -39,11 +39,11 @@ struct BookDetailScreen: View {
                     Button("重新选择原始文件修复", systemImage: "doc.badge.arrow.up") { replacingOriginal = true }.disabled(checking)
                 }
                 if checking { ProgressView("正在检查全部章节和文件…") }
-                Text(book.cloud == nil ? "校验包含原件、全部章节索引及资源。修复保留阅读位置、笔记与草稿；若原件本身损坏，需要重新选择原始文件。" : "此处保存的是完整文字阅读副本，保留原段落与引用。上传的 EPUB、PDF 及图片原件仍在云端；阅读副本不冒充原件。").font(.footnote).foregroundStyle(.secondary)
+                Text(book.cloud == nil ? "校验包含原件、全部章节索引及资源。修复保留阅读位置、书签、笔记与草稿；若原件本身损坏，需要重新选择原始文件。" : "此处保存的是完整文字阅读副本，保留原段落与引用。上传的 EPUB、PDF 及图片原件仍在云端；阅读副本不冒充原件。").font(.footnote).foregroundStyle(.secondary)
             }
             Section("带走自己的书与记录") {
                 if let original { ShareLink(item: original) { Label(book.cloud == nil ? "导出原件" : "导出正文阅读副本", systemImage: "square.and.arrow.up") } }
-                Button("导出我的笔记与草稿", systemImage: "doc.text") {
+                Button("导出我的书签、笔记与草稿", systemImage: "doc.text") {
                     Task {
                         guard let library = model.library else { return }
                         do {
@@ -57,7 +57,7 @@ struct BookDetailScreen: View {
             }
             if !openingRecoveries.isEmpty {
                 Section("修复前保留的记录") {
-                    Text("校验中断时单独保留的阅读位置、笔记与草稿，可在修复后继续导出。它们与当前记录分开保存。")
+                    Text("校验中断时单独保留的阅读位置、书签、笔记与草稿，可在修复后继续导出。它们与当前记录分开保存。")
                         .font(.footnote).foregroundStyle(.secondary)
                     Button("导出修复前的记录", systemImage: "doc.badge.arrow.up") {
                         do { export = RecordsDocument(data: try JSONEncoder().encode(openingRecoveries)); exporting = true }

@@ -1,0 +1,398 @@
+{
+  "meta": {
+    "n_candidates": 39,
+    "n_rename": 17,
+    "n_cohesion": 16,
+    "n_colon": 5,
+    "n_iso3": 1,
+    "truncated": false
+  },
+  "rename": [
+    {
+      "type": "rename",
+      "file": "bookmarks-design.md",
+      "line": 3,
+      "para": "日期：2026-11-05。范围：iPhone 原生阅读器。本文为源代码调查后的实施设计；没有修改产品代码、运行构建或执行设备验收。采用 design-judgment 的功能减法与时间注意模块。100 分是验收分配，当前已验证产品得分为 0/100，待验证上限为 100 分。",
+      "label": "0组",
+      "confidence": "高",
+      "reason": "本段以书签、锚点或具体接口名持续指称同一对象；不同技术字段及阶段不属于换实义名称。"
+    },
+    {
+      "type": "rename",
+      "file": "bookmarks-design.md",
+      "line": 7,
+      "para": "书签保存当前页首实际可见的原文位置。下拉并松手完成添加，右上角保留一个 44pt 书签按钮。没有书签显示轮廓，有书签显示所选颜色与实心形状。点击已有书签打开轻量配置面板，可改色、命名、移除，也能进入本书书签列表。命名可留空，列表以章节和原文短句补足识别信息。书签单独保存，不能创建空笔记或向 notes 写特殊文本。",
+      "label": "0组",
+      "confidence": "高",
+      "reason": "本段以书签、锚点或具体接口名持续指称同一对象；不同技术字段及阶段不属于换实义名称。"
+    },
+    {
+      "type": "rename",
+      "file": "bookmarks-design.md",
+      "line": 9,
+      "para": "配置面板沿用原生 sheet：先显示当前位置，再显示带名称和选中标记的预设颜色，接着为“自定义颜色”和可选名称，最后为移除。预设为墨绿、琥珀、朱红、蓝色、紫色；名称和勾号保证不依赖颜色辨认。自定义颜色存不透明 sRGB 六位十六进制值，显示名称默认“自定义”；用户可为这个书签另写名称。控制间距和点击区域按 44pt，动态字号允许换行。正文不增加常驻浮动卡片，不因保存或改色重新排版。",
+      "label": "0组",
+      "confidence": "高",
+      "reason": "本段以书签、锚点或具体接口名持续指称同一对象；不同技术字段及阶段不属于换实义名称。"
+    },
+    {
+      "type": "rename",
+      "file": "bookmarks-design.md",
+      "line": 11,
+      "para": "下拉中只出现小书签图标与“下拉添加书签／松开添加书签”。越过阈值轻触反馈一次；松手后本地持久化成功才显示“已添加书签”，1.5 秒后收起。失败显示“书签尚未保存”与重试，保留待保存修改。减少动态开启时只换状态，无页面位移。再次添加同一位置返回已有项，不删除，不覆盖用户原色和名称。",
+      "label": "0组",
+      "confidence": "高",
+      "reason": "本段以书签、锚点或具体接口名持续指称同一对象；不同技术字段及阶段不属于换实义名称。"
+    },
+    {
+      "type": "rename",
+      "file": "bookmarks-design.md",
+      "line": 30,
+      "para": "建议新增 ReaderBookmark，字段为 UUID、sourceVersion、ReadingAnchor、可选名称、颜色值、颜色显示名、createdAt、modifiedAt。bookID 与账号由当前 session/store 的容器确定，调用方不能传入任意账号。版本取实际本地 book.sourceVersion；云书另保留 book.cloud.contentVersion（可选），两个版本都匹配才可跳转。不要把源文件哈希与云内容版本混为一个字段。",
+      "label": "0组",
+      "confidence": "高",
+      "reason": "本段以书签、锚点或具体接口名持续指称同一对象；不同技术字段及阶段不属于换实义名称。"
+    },
+    {
+      "type": "rename",
+      "file": "bookmarks-design.md",
+      "line": 32,
+      "para": "ReaderState.bookmarks 首次使用可选数组，读取时 nil 视为空；或者采用明确的 decodeIfPresent 自定义解码，不能假定带默认值的非可选数组会自动兼容旧 JSON。颜色只接收 [0-9A-Fa-f]{6}；名称去除首尾空白，最多 80 个字符。无效颜色回退到有名称的默认色，恶意锚点不得进入当前集合。",
+      "label": "0组",
+      "confidence": "高",
+      "reason": "本段以书签、锚点或具体接口名持续指称同一对象；不同技术字段及阶段不属于换实义名称。"
+    },
+    {
+      "type": "rename",
+      "file": "bookmarks-design.md",
+      "line": 45,
+      "para": "BookmarkCapture 在开始手势时冻结 session owner、navigationID、当前原文版本、模式和锚点。提交前再次核对；换书、跳章、换账号、排版变化、失去前台或浮层开启均取消本次手势。未知位置显示按钮不可用原因，不能悄悄保存章节首段。按钮操作同样先从真实阅读器抓取可见锚点。",
+      "label": "0组",
+      "confidence": "高",
+      "reason": "本段以书签、锚点或具体接口名持续指称同一对象；不同技术字段及阶段不属于换实义名称。"
+    },
+    {
+      "type": "rename",
+      "file": "bookmarks-design.md",
+      "line": 47,
+      "para": "去重键由原文版本和稳定位置组成：文字使用 chapterID/passageID/Unicode scalar offset；PDF 另包含规范化 pageY；插图包含 resourceY。PDF pageY 先按页面 bounds 限制并取整为 PDF point，插图 resourceY 取千分位。手势期间锚点冻结，重复松手复用同一项；两次独立、确实不同的页内位置可以保存。不能使用随机 UUID 作为唯一去重依据。新项持久化只合并本次书签，不回滚期间到来的笔记、位置或其他书签修改。",
+      "label": "0组",
+      "confidence": "高",
+      "reason": "本段以书签、锚点或具体接口名持续指称同一对象；不同技术字段及阶段不属于换实义名称。"
+    },
+    {
+      "type": "rename",
+      "file": "bookmarks-design.md",
+      "line": 49,
+      "para": "当前位置标识先匹配规范化的当前锚点；从列表跳转时按同一个保存锚点显示对应书签。需补充 viewport 范围匹配，确保字体变大后保存点仍在当前可见页时可以识别。现有 ReaderVisiblePage 只有完整段落 ID，不含段内可见范围；不能仅凭同 passageID 就认为长段落每一页都有此书签。最小范围事件包含第一可见源锚点与末端源锚点，PDF 使用实际 pageY 区间。多书签同页时按钮表示最接近页首的一项，面板列出本页全部项。",
+      "label": "0组",
+      "confidence": "高",
+      "reason": "本段以书签、锚点或具体接口名持续指称同一对象；不同技术字段及阶段不属于换实义名称。"
+    },
+    {
+      "type": "rename",
+      "file": "bookmarks-design.md",
+      "line": 51,
+      "para": "版本不符的旧书签保留并标记“原文版本已变化”，不跳到相似百分比，不迁移为新章节首段，也不阻止当前版本新书签保存。saveState 对旧版本项校验结构，对当前版本项校验书章与范围。无法确认的迁移需要独立处理。",
+      "label": "0组",
+      "confidence": "高",
+      "reason": "本段以书签、锚点或具体接口名持续指称同一对象；不同技术字段及阶段不属于换实义名称。"
+    },
+    {
+      "type": "rename",
+      "file": "bookmarks-design.md",
+      "line": 62,
+      "para": "共同门禁：当前没有选文、选文手柄拖动、长按等待、原生编辑菜单、链接触摸、UIControl、多指手势、打开中的 overlay/sheet、翻页/恢复/排版任务；阅读区域 active 且 view/window/session 仍一致。VoiceOver 开启时不接管纵向手势，使用“添加当前位置书签” custom action 和 44pt 按钮。新增 custom action 要合并现有上一屏/下一屏，不能覆盖。",
+      "label": "0组",
+      "confidence": "高",
+      "reason": "本段以书签、锚点或具体接口名持续指称同一对象；不同技术字段及阶段不属于换实义名称。"
+    },
+    {
+      "type": "rename",
+      "file": "bookmarks-design.md",
+      "line": 64,
+      "para": "横向 pan 与纵向 pan 用方向阈值互斥；不设置互相 require-to-fail 形成死锁。选文与双击/长按先于书签，单指下拉不取消 UIKit 正文触摸。scroll 模式观察原生 pan 状态和 overscroll，不创建抢占滚动的第二个 pan。每个触摸序列只提交一次，cancelled/failed 永不保存。",
+      "label": "0组",
+      "confidence": "高",
+      "reason": "本段以书签、锚点或具体接口名持续指称同一对象；不同技术字段及阶段不属于换实义名称。"
+    },
+    {
+      "type": "rename",
+      "file": "bookmarks-design.md",
+      "line": 78,
+      "para": "本轮最小实现可明确为本机书签；本机 records 导出的 JSON 必须可完整解码恢复书签，导出后以新隔离库验证锚点与颜色。当前没有观察到 native records 导入 UI，不能把 Codable roundtrip 写成用户已完成新实例恢复。若交付要求包含网页版完整书房备份或跨设备，需另补服务书签实体、账号授权路由、CloudBookSync、完整备份校验、restore 批次及来源版本迁移；完成这条链之前界面应明确书签保存在此设备。不得借用 notes、comments 或 readingMilestones 夹带书签。",
+      "label": "0组",
+      "confidence": "高",
+      "reason": "本段以书签、锚点或具体接口名持续指称同一对象；不同技术字段及阶段不属于换实义名称。"
+    },
+    {
+      "type": "rename",
+      "file": "bookmarks-design.md",
+      "line": 82,
+      "para": "每个格子按实际通过的证据记分。未知、仅编译和仅源代码推断均为 0；允许报告待验证上限。R9、R10 分别填写同一四维表，不把合并总分代替每项得分。",
+      "label": "0组",
+      "confidence": "高",
+      "reason": "本段以书签、锚点或具体接口名持续指称同一对象；不同技术字段及阶段不属于换实义名称。"
+    },
+    {
+      "type": "rename",
+      "file": "bookmarks-design.md",
+      "line": 91,
+      "para": "数据越权、保存到错误位置、过期版本仍跳转、选文或普通下滚误触均为阻断项，即使累计达到 95 也不验收。性能数值是本设计的目标值，尚无实测。真机手势与 VoiceOver 必须单列；模拟器通过不能替代真机。",
+      "label": "0组",
+      "confidence": "高",
+      "reason": "本段以书签、锚点或具体接口名持续指称同一对象；不同技术字段及阶段不属于换实义名称。"
+    },
+    {
+      "type": "rename",
+      "file": "bookmarks-design.md",
+      "line": 93,
+      "para": "最小自动化：旧 JSON 缺 bookmarks；书签 Codable roundtrip；同锚点并发添加幂等；PDF/resource 锚点不同不碰撞；Unicode scalar 与 UTF-16 区分；颜色校验；改色失败不丢其他状态；过期版本保留但拒绝跳转；账号切换取消迟到完成；手势八种结束状态及所有门禁；原文/译文模式切换仍指向原文；长段落 viewport 匹配。",
+      "label": "0组",
+      "confidence": "高",
+      "reason": "本段以书签、锚点或具体接口名持续指称同一对象；不同技术字段及阶段不属于换实义名称。"
+    },
+    {
+      "type": "rename",
+      "file": "bookmarks-design.md",
+      "line": 95,
+      "para": "文案交付按 lieflat-less-ai-tone 检测并复核；规则清单、接口、路径与数值保持原样。构建与产品验收由主执行统一进行，本文未宣称任何测试通过。",
+      "label": "0组",
+      "confidence": "高",
+      "reason": "本段以书签、锚点或具体接口名持续指称同一对象；不同技术字段及阶段不属于换实义名称。"
+    }
+  ],
+  "cohesion": [
+    {
+      "type": "cohesion",
+      "file": "bookmarks-design.md",
+      "line": 7,
+      "prev_tail": "100 分是验收分配，当前已验证产品得分为 0/100，待验证上限为 100 分",
+      "next_head": "书签保存当前页首实际可见的原文位置",
+      "label": "有关但转换突然",
+      "confidence": "中",
+      "reason": "逐条核对相邻接口；设计说明按状态、存储、交互和验收换题，未用虚假连接词强连逻辑。"
+    },
+    {
+      "type": "cohesion",
+      "file": "bookmarks-design.md",
+      "line": 9,
+      "prev_tail": "书签单独保存，不能创建空笔记或向 notes 写特殊文本",
+      "next_head": "配置面板沿用原生 sheet：先显示当前位置，再显示带名称和选中标记的预设颜色，接着为“自定义颜色”和可选名称，最后为移除",
+      "label": "明确承接",
+      "confidence": "中",
+      "reason": "逐条核对相邻接口；设计说明按状态、存储、交互和验收换题，未用虚假连接词强连逻辑。"
+    },
+    {
+      "type": "cohesion",
+      "file": "bookmarks-design.md",
+      "line": 11,
+      "prev_tail": "正文不增加常驻浮动卡片，不因保存或改色重新排版",
+      "next_head": "下拉中只出现小书签图标与“下拉添加书签／松开添加书签”",
+      "label": "明确承接",
+      "confidence": "中",
+      "reason": "逐条核对相邻接口；设计说明按状态、存储、交互和验收换题，未用虚假连接词强连逻辑。"
+    },
+    {
+      "type": "cohesion",
+      "file": "bookmarks-design.md",
+      "line": 30,
+      "prev_tail": "再次添加同一位置返回已有项，不删除，不覆盖用户原色和名称",
+      "next_head": "建议新增 ReaderBookmark，字段为 UUID、sourceVersion、ReadingAnchor、可选名称、颜色值、颜色显示名、createdAt、modifiedAt",
+      "label": "明确承接",
+      "confidence": "中",
+      "reason": "逐条核对相邻接口；设计说明按状态、存储、交互和验收换题，未用虚假连接词强连逻辑。"
+    },
+    {
+      "type": "cohesion",
+      "file": "bookmarks-design.md",
+      "line": 32,
+      "prev_tail": "不要把源文件哈希与云内容版本混为一个字段",
+      "next_head": "ReaderState.bookmarks 首次使用可选数组，读取时 nil 视为空",
+      "label": "有关但转换突然",
+      "confidence": "中",
+      "reason": "逐条核对相邻接口；设计说明按状态、存储、交互和验收换题，未用虚假连接词强连逻辑。"
+    },
+    {
+      "type": "cohesion",
+      "file": "bookmarks-design.md",
+      "line": 45,
+      "prev_tail": "无效颜色回退到有名称的默认色，恶意锚点不得进入当前集合",
+      "next_head": "BookmarkCapture 在开始手势时冻结 session owner、navigationID、当前原文版本、模式和锚点",
+      "label": "有关但转换突然",
+      "confidence": "中",
+      "reason": "逐条核对相邻接口；设计说明按状态、存储、交互和验收换题，未用虚假连接词强连逻辑。"
+    },
+    {
+      "type": "cohesion",
+      "file": "bookmarks-design.md",
+      "line": 47,
+      "prev_tail": "按钮操作同样先从真实阅读器抓取可见锚点",
+      "next_head": "去重键由原文版本和稳定位置组成：文字使用 chapterID/passageID/Unicode scalar offset",
+      "label": "明确承接",
+      "confidence": "中",
+      "reason": "逐条核对相邻接口；设计说明按状态、存储、交互和验收换题，未用虚假连接词强连逻辑。"
+    },
+    {
+      "type": "cohesion",
+      "file": "bookmarks-design.md",
+      "line": 49,
+      "prev_tail": "新项持久化只合并本次书签，不回滚期间到来的笔记、位置或其他书签修改",
+      "next_head": "当前位置标识先匹配规范化的当前锚点",
+      "label": "明确承接",
+      "confidence": "中",
+      "reason": "逐条核对相邻接口；设计说明按状态、存储、交互和验收换题，未用虚假连接词强连逻辑。"
+    },
+    {
+      "type": "cohesion",
+      "file": "bookmarks-design.md",
+      "line": 51,
+      "prev_tail": "多书签同页时按钮表示最接近页首的一项，面板列出本页全部项",
+      "next_head": "版本不符的旧书签保留并标记“原文版本已变化”，不跳到相似百分比，不迁移为新章节首段，也不阻止当前版本新书签保存",
+      "label": "有关但转换突然",
+      "confidence": "中",
+      "reason": "逐条核对相邻接口；设计说明按状态、存储、交互和验收换题，未用虚假连接词强连逻辑。"
+    },
+    {
+      "type": "cohesion",
+      "file": "bookmarks-design.md",
+      "line": 62,
+      "prev_tail": "无法确认的迁移需要独立处理",
+      "next_head": "共同门禁：当前没有选文、选文手柄拖动、长按等待、原生编辑菜单、链接触摸、UIControl、多指手势、打开中的 overlay/sheet、翻页/恢复/排版任务",
+      "label": "有关但转换突然",
+      "confidence": "中",
+      "reason": "逐条核对相邻接口；设计说明按状态、存储、交互和验收换题，未用虚假连接词强连逻辑。"
+    },
+    {
+      "type": "cohesion",
+      "file": "bookmarks-design.md",
+      "line": 64,
+      "prev_tail": "新增 custom action 要合并现有上一屏/下一屏，不能覆盖",
+      "next_head": "横向 pan 与纵向 pan 用方向阈值互斥",
+      "label": "明确承接",
+      "confidence": "中",
+      "reason": "逐条核对相邻接口；设计说明按状态、存储、交互和验收换题，未用虚假连接词强连逻辑。"
+    },
+    {
+      "type": "cohesion",
+      "file": "bookmarks-design.md",
+      "line": 78,
+      "prev_tail": "每个触摸序列只提交一次，cancelled/failed 永不保存",
+      "next_head": "本轮最小实现可明确为本机书签",
+      "label": "有关但转换突然",
+      "confidence": "中",
+      "reason": "逐条核对相邻接口；设计说明按状态、存储、交互和验收换题，未用虚假连接词强连逻辑。"
+    },
+    {
+      "type": "cohesion",
+      "file": "bookmarks-design.md",
+      "line": 82,
+      "prev_tail": "不得借用 notes、comments 或 readingMilestones 夹带书签",
+      "next_head": "每个格子按实际通过的证据记分",
+      "label": "主题跳转缺少说明",
+      "confidence": "中",
+      "reason": "逐条核对相邻接口；设计说明按状态、存储、交互和验收换题，未用虚假连接词强连逻辑。"
+    },
+    {
+      "type": "cohesion",
+      "file": "bookmarks-design.md",
+      "line": 91,
+      "prev_tail": "R9、R10 分别填写同一四维表，不把合并总分代替每项得分",
+      "next_head": "数据越权、保存到错误位置、过期版本仍跳转、选文或普通下滚误触均为阻断项，即使累计达到 95 也不验收",
+      "label": "明确承接",
+      "confidence": "中",
+      "reason": "逐条核对相邻接口；设计说明按状态、存储、交互和验收换题，未用虚假连接词强连逻辑。"
+    },
+    {
+      "type": "cohesion",
+      "file": "bookmarks-design.md",
+      "line": 93,
+      "prev_tail": "模拟器通过不能替代真机",
+      "next_head": "最小自动化：旧 JSON 缺 bookmarks",
+      "label": "有关但转换突然",
+      "confidence": "中",
+      "reason": "逐条核对相邻接口；设计说明按状态、存储、交互和验收换题，未用虚假连接词强连逻辑。"
+    },
+    {
+      "type": "cohesion",
+      "file": "bookmarks-design.md",
+      "line": 95,
+      "prev_tail": "长段落 viewport 匹配",
+      "next_head": "文案交付按 lieflat-less-ai-tone 检测并复核",
+      "label": "主题跳转缺少说明",
+      "confidence": "中",
+      "reason": "逐条核对相邻接口；设计说明按状态、存储、交互和验收换题，未用虚假连接词强连逻辑。"
+    }
+  ],
+  "colon": [
+    {
+      "type": "colon",
+      "file": "bookmarks-design.md",
+      "line": 3,
+      "colon_before": "日期",
+      "colon_after": "2026-11-05。范围：iPhone 原生阅读器。本文为源代码调查后的实施设计；没有修改产品代码、运行构建或执行设备",
+      "sentence": "日期：2026-11-05。范围：iPhone 原生阅读器。本文为源代码调查后的实施设计；没有修改产品代码、运行构建或执行设备验收。采用 `design-judgment` 的功能减法与时间注意模块。100 分是验收分配，当前已验证产品得分",
+      "label": "标题时间比例元数据或版式用途",
+      "confidence": "高",
+      "reason": "日期元数据或接口/字段/门禁的定义列举，不含结论宣告后展开论证。"
+    },
+    {
+      "type": "colon",
+      "file": "bookmarks-design.md",
+      "line": 9,
+      "colon_before": "配置面板沿用原生 sheet",
+      "colon_after": "先显示当前位置，再显示带名称和选中标记的预设颜色，接着为“自定义颜色”和可选名称，最后为移除。预设为墨绿、琥珀、朱红、蓝",
+      "sentence": "配置面板沿用原生 sheet：先显示当前位置，再显示带名称和选中标记的预设颜色，接着为“自定义颜色”和可选名称，最后为移除。预设为墨绿、琥珀、朱红、蓝色、紫色；名称和勾号保证不依赖颜色辨认。自定义颜色存不透明 sRGB 六位十六进制值，显示",
+      "label": "定义或解释",
+      "confidence": "高",
+      "reason": "日期元数据或接口/字段/门禁的定义列举，不含结论宣告后展开论证。"
+    },
+    {
+      "type": "colon",
+      "file": "bookmarks-design.md",
+      "line": 47,
+      "colon_before": "去重键由原文版本和稳定位置组成",
+      "colon_after": "文字使用 chapterID/passageID/Unicode scalar offset；PDF 另包含规范化 pa",
+      "sentence": "去重键由原文版本和稳定位置组成：文字使用 chapterID/passageID/Unicode scalar offset；PDF 另包含规范化 pageY；插图包含 resourceY。PDF pageY 先按页面 bounds 限制并",
+      "label": "定义或解释",
+      "confidence": "高",
+      "reason": "日期元数据或接口/字段/门禁的定义列举，不含结论宣告后展开论证。"
+    },
+    {
+      "type": "colon",
+      "file": "bookmarks-design.md",
+      "line": 62,
+      "colon_before": "共同门禁",
+      "colon_after": "当前没有选文、选文手柄拖动、长按等待、原生编辑菜单、链接触摸、UIControl、多指手势、打开中的 overlay/s",
+      "sentence": "共同门禁：当前没有选文、选文手柄拖动、长按等待、原生编辑菜单、链接触摸、UIControl、多指手势、打开中的 overlay/sheet、翻页/恢复/排版任务；阅读区域 active 且 view/window/session 仍一致。V",
+      "label": "定义或解释",
+      "confidence": "高",
+      "reason": "日期元数据或接口/字段/门禁的定义列举，不含结论宣告后展开论证。"
+    },
+    {
+      "type": "colon",
+      "file": "bookmarks-design.md",
+      "line": 93,
+      "colon_before": "最小自动化",
+      "colon_after": "旧 JSON 缺 bookmarks；书签 Codable roundtrip；同锚点并发添加幂等；PDF/resour",
+      "sentence": "最小自动化：旧 JSON 缺 bookmarks；书签 Codable roundtrip；同锚点并发添加幂等；PDF/resource 锚点不同不碰撞；Unicode scalar 与 UTF-16 区分；颜色校验；改色失败不丢其他状态；",
+      "label": "定义或解释",
+      "confidence": "高",
+      "reason": "日期元数据或接口/字段/门禁的定义列举，不含结论宣告后展开论证。"
+    }
+  ],
+  "iso3": [
+    {
+      "line": 11,
+      "sents": [
+        "松手后本地持久化成功才显示“已添加书签”，1.5 秒后收起",
+        "失败显示“书签尚未保存”与重试，保留待保存修改",
+        "减少动态开启时只换状态，无页面位移"
+      ],
+      "file": "bookmarks-design.md",
+      "label": "只有语义并列句法不同",
+      "confidence": "高",
+      "reason": "分别描述保存成功、失败与减少动态，主谓与补充成分不一一对应。"
+    }
+  ]
+}

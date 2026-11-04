@@ -469,6 +469,7 @@ public actor OfflineLibrary {
         if let anchor = state.anchor { try validate(anchor) }
         for (key, draft) in state.drafts { try validate(draft.anchor); guard key == draft.id else { throw LibraryError.invalid("草稿引用无效。") } }
         for note in state.notes { try validate(note.anchor) }
+        try Self.validateBookmarks(state.bookmarks ?? [], in: book)
         try Self.validateReaderPreferences(state.preferences)
         try Disk.write(state, to: root.appendingPathComponent("states/" + bookID + ".json"))
     }

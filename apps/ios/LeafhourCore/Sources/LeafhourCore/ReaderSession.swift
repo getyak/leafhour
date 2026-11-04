@@ -304,6 +304,10 @@ public final class ReaderSession: Identifiable {
     public func isCurrent(_ receipt: ReaderSaveReceipt) -> Bool {
         receipt.revision == revision && receipt.succeeded && !saving && saveError == nil && !activityNeedsSave && state.anchor == currentAnchor
     }
+    public func isBookmarkPersisted(id: UUID) -> Bool {
+        guard let bookmark = state.bookmarks?.first(where: { $0.id == id }) else { return false }
+        return persistedState.bookmarks?.contains(bookmark) == true
+    }
     public func isNotePersisted(id: UUID, body: String) -> Bool {
         persistedState.notes.contains { $0.id == id && $0.body == body }
     }
