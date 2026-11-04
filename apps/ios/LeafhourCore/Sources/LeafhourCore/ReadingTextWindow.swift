@@ -16,26 +16,41 @@ public struct ReadingTextWindow: Sendable {
     public let nextAnchor: ReadingAnchor?
     public let isComplete: Bool
     public let signature: String
-    private let chapterID: String
+    public let chapterID: String
+    /// Work counters used by opening/performance regression tests, not content identity.
+    let preparedOffsetUTF16Count: Int
+    let reusedOffsetCount: Int
 
-    public init(chapter: BookChapter, anchor: ReadingAnchor?, maximumUTF16: Int = 24_000, maximumPassages: Int = 160, endingAtAnchor: Bool = false) {
+    public init(chapter: BookChapter, anchor: ReadingAnchor?, maximumUTF16: Int = 24_000, maximumPassages: Int = 160, endingAtAnchor: Bool = false, reusing previous: ReadingTextWindow? = nil) {
         chapterID = chapter.id
         let budget = max(1024, maximumUTF16), limit = max(1, maximumPassages)
         let target = anchor.flatMap { value in chapter.passages.firstIndex { $0.id == value.passageID } } ?? 0
+        var reusable: [String: Slice] = [:]
+        if let previous, previous.chapterID == chapter.id {
+            for slice in previous.slices { reusable[slice.original.id] = slice }
+        }
+        func cached(_ passage: Passage) -> Slice? {
+            guard let slice = reusable[passage.id], slice.original.text == passage.text else { return nil }
+            return slice
+        }
+        func utf16Length(_ passage: Passage) -> Int { cached(passage)?.offsets.utf16Count ?? passage.text.utf16.count }
+        var preparedUTF16 = 0, reused = 0
         var lower = target, behind = 0
         while lower > 0 && target - lower < (endingAtAnchor ? limit - 1 : 12) {
             let passage = chapter.passages[lower - 1]
-            let cost = max(1, passage.text.utf16.count) + (passage.resourcePath == nil ? 2 : 8192)
-            guard behind + cost <= (endingAtAnchor ? budget - chapter.passages[target].text.utf16.count - 2 : budget / 4) else { break }
+            let cost = max(1, utf16Length(passage)) + (passage.resourcePath == nil ? 2 : 8192)
+            guard behind + cost <= (endingAtAnchor ? budget - utf16Length(chapter.passages[target]) - 2 : budget / 4) else { break }
             behind += cost; lower -= 1
         }
-        if chapter.passages.indices.contains(target), behind + chapter.passages[target].text.utf16.count + 2 > budget { lower = target }
+        if chapter.passages.indices.contains(target), behind + utf16Length(chapter.passages[target]) + 2 > budget { lower = target }
         var result: [Slice] = [], used = 0
         for index in lower..<(endingAtAnchor ? min(chapter.passages.count, target + 1) : chapter.passages.count) {
-            let passage = chapter.passages[index], length = passage.text.utf16.count
+            let passage = chapter.passages[index], length = utf16Length(passage)
             let cost = length + (passage.resourcePath == nil ? 2 : 8192)
             if !result.isEmpty && (used + cost > budget || result.count >= limit) { break }
-            let offsets = SourceTextOffsets(passage.text)
+            let offsets: SourceTextOffsets
+            if let prior = cached(passage) { offsets = prior.offsets; reused += 1 }
+            else { offsets = SourceTextOffsets(passage.text); preparedUTF16 += offsets.utf16Count }
             let range: NSRange
             if length > budget {
                 // A single source paragraph can itself contain an entire book.
@@ -53,6 +68,7 @@ public struct ReadingTextWindow: Sendable {
             if NSMaxRange(range) < length { break }
         }
         slices = result
+        preparedOffsetUTF16Count = preparedUTF16; reusedOffsetCount = reused
         if let first = result.first, first.sourceRange.location > 0 {
             previousAnchor = ReadingAnchor(chapterID: chapter.id, passageID: first.original.id, characterOffset: max(0, first.scalarStart - 1))
         } else if let first = result.first, first.index > 0 {
@@ -67,6 +83,11 @@ public struct ReadingTextWindow: Sendable {
         isComplete = previousAnchor == nil && nextAnchor == nil
         signature = (result.first.map { "\($0.index):\($0.sourceRange.location)" } ?? "empty")
             + ":" + (result.last.map { "\($0.index):\(NSMaxRange($0.sourceRange))" } ?? "empty")
+    }
+    public func matchesSource(_ chapter: BookChapter) -> Bool {
+        chapter.id == chapterID && slices.allSatisfy { slice in
+            chapter.passages.indices.contains(slice.index) && chapter.passages[slice.index] == slice.original
+        }
     }
     public func contains(_ anchor: ReadingAnchor) -> Bool {
         anchor.chapterID == chapterID && slices.contains { $0.original.id == anchor.passageID && anchor.characterOffset >= $0.scalarStart && anchor.characterOffset < max($0.scalarStart + 1, $0.scalarEnd) }

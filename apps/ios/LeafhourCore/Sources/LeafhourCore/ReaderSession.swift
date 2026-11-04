@@ -54,6 +54,7 @@ public final class ReaderSession: Identifiable {
     @ObservationIgnored private var activityNeedsSave = false
     public private(set) var translations: [String: ReadingTranslation] = [:]
     public let detectedSourceLanguage: ReadingLanguage?
+    @ObservationIgnored public let preparedTextWindow: ReadingTextWindow?
     public var translationSettings: BookTranslationSettings { state.translationSettings ?? .suggested(for: detectedSourceLanguage) }
     public func changeTranslationSettings(_ value: BookTranslationSettings) {
         guard packageVerificationError == nil, value != translationSettings else { return }
@@ -113,6 +114,10 @@ public final class ReaderSession: Identifiable {
         packageVerificationPending = false; contentRevision += 1
     }
     public init(book: LocalBook, state: ReaderState, original: URL, directory: URL, library: any ReaderStateStore, preferencesStore: (any ReaderPreferencesStore)? = nil, preparation: ReaderOpeningPreparation? = nil) {
+        if let window = preparation?.textWindow,
+           let chapter = book.chapters.first(where: { $0.id == window.chapterID }), window.matchesSource(chapter) {
+            preparedTextWindow = window
+        } else { preparedTextWindow = nil }
         if let preparation {
             detectedSourceLanguage = preparation.sourceLanguage
             packageVerificationPending = true; openingVerifiedResources = preparation.verifiedResourcePaths

@@ -119,7 +119,7 @@ final class LibraryModel {
     private struct ReadingOwnership { let bookID: String; let token: UUID; let sync: CloudBookSync }
     @ObservationIgnored private var readerOwnership: ReadingOwnership?
     @ObservationIgnored private var openingMaintenance: Task<Void, Never>?
-    private var migratingBookID: String?
+    private var migratingBookIDs: Set<String> = []
     private var syncRequested = false
     @ObservationIgnored private var shelfSyncTask: Task<Void, Never>?
     @ObservationIgnored private var shelfSyncContext: UUID?
@@ -153,7 +153,7 @@ final class LibraryModel {
         resolveDuplicate(nil)
         importTask?.cancel(); downloadTask?.cancel()
         importTask = nil; downloadTask = nil; downloadOperationID = nil
-        importActivity = nil; migratingBookID = nil; busy = false
+        importActivity = nil; migratingBookIDs = []; busy = false
         activeBookID = nil; activityCanCancel = false; activityProgress = nil; status = ""
     }
     private func configureLibrary() throws {
@@ -415,12 +415,20 @@ final class LibraryModel {
                 let book = try await library.importCloud(copy, replaceExisting: refresh)
                 // Once the verified package has been published, cancellation cannot undo it.
                 activityCanCancel = false
-                do { try await sync.synchronize(book.id) }
-                catch { syncStatus = "正文已保存，笔记与位置稍后同步。" }
                 guard marker == contextID else { return }
-                await reload()
+                if let index = books.firstIndex(where: { $0.id == book.id }) { books[index] = book }
+                else { books.insert(book, at: 0) }
                 status = Task.isCancelled ? "下载已停止，完整保存的副本仍可阅读。" : "正文和已有译文已保存在此设备"
-                if openAfter && !Task.isCancelled && reader == nil && openingBookID == nil { await open(book) }
+                if openAfter {
+                    // Opening owns its deferred record sync. Never put /records
+                    // between an atomically published source and its first page.
+                    if !Task.isCancelled && reader == nil && openingBookID == nil { await open(book) }
+                } else if !Task.isCancelled {
+                    // Upload migration needs the existing remote records before
+                    // merging, but the local shelf entry is already readable.
+                    do { try await sync.synchronize(book.id) }
+                    catch { syncStatus = "正文已保存，笔记与位置稍后同步。" }
+                }
             } catch {
                 guard marker == contextID else { return }
                 if Task.isCancelled || error is CancellationError || (error as? URLError)?.code == .cancelled {
@@ -573,9 +581,9 @@ final class LibraryModel {
         guard let account, let library, !busy, book.cloud == nil else { return }
         let marker = contextID; busy = true; status = "正在上传原件到自己的书房…"
         let activity = LibraryImportActivity(filename: book.originalFilename)
-        activity.title = book.title; importActivity = activity
+        activity.allowReading(book); importActivity = activity
         activeBookID = book.id; activityCanCancel = false; activityProgress = nil
-        defer { if marker == contextID { busy = false; migratingBookID = nil; activeBookID = nil; activityCanCancel = false; activityProgress = nil } }
+        defer { if marker == contextID { busy = false; migratingBookIDs = []; activeBookID = nil; activityCanCancel = false; activityProgress = nil } }
         do {
             let source = try await library.originalURL(book.id), attributes = try FileManager.default.attributesOfItem(atPath: source.path)
             let limit = CloudOriginalUploadPolicy.maximumBytes(filename: book.originalFilename)
@@ -611,6 +619,16 @@ final class LibraryModel {
                 transaction = try await library.retainUploadReceipt(transaction, localBookID: book.id, bookID: id, contentVersion: version)
             }
             guard let id = transaction.bookID, let version = transaction.contentVersion else { throw LibraryError.invalid("上传恢复回执不完整。") }
+            func migrationNeedsReaderToClose(_ targetID: String?) -> Bool {
+                let ids = Set([book.id] + (targetID.map { [$0] } ?? []))
+                return reader.map { ids.contains($0.book.id) } == true || openingBookID.map { ids.contains($0) } == true
+            }
+            func deferMigration() {
+                activity.stop(cancelled: false, message: "本机可继续阅读 · 阅读记录待迁移")
+                message = "原件已上传，本次未迁移个人记录。请回到书房后重试上传，继续同步最新笔记、草稿和阅读位置；原件不会重复上传。"
+            }
+            let existingTargetID = books.first { $0.cloud?.bookID == id && $0.cloud?.contentVersion == version }?.id
+            if duplicatePolicy != .new, migrationNeedsReaderToClose(existingTargetID) { deferMigration(); return }
             activity.showStatus("云端正文已就绪，正在同步阅读副本…")
             await synchronize()
             await download(CloudShelfBook(id: id, title: book.title, author: book.author, contentVersion: version), openAfter: false, holdBusy: true)
@@ -619,18 +637,16 @@ final class LibraryModel {
                 activity.stop(cancelled: false, message: "原件已上传，阅读副本待同步")
                 message = "原件已上传，正文副本尚未下载完成。本机笔记与草稿仍保留，请同步书房后重试下载。"; return
             }
-            guard reader?.book.id != target.id, openingBookID != target.id else {
-                activity.finish(book: target)
-                message = "原件已上传。云端副本正在阅读中，本次未迁移个人记录；笔记、草稿与阅读时段仍保留在原来的本机书中，可回到书房后重试。"
-                return
-            }
+            if duplicatePolicy != .new, migrationNeedsReaderToClose(target.id) { deferMigration(); return }
             if duplicatePolicy == .new {
                 try await library.finishUpload(transaction, localBookID: book.id)
                 activity.finish(book: target)
                 message = "已作为新书加入云端，阅读记录独立保存。"
                 return
             }
-            migratingBookID = target.id
+            // Reserve both identities before the next actor hop. A reader
+            // cannot begin between the source snapshot and migration commit.
+            migratingBookIDs = [book.id, target.id]
             let sourceState = try await library.state(book.id)
             let pendingTime = try await library.readingTimeLedger(bookID: book.id).pending
             guard marker == contextID else { return }
@@ -741,7 +757,7 @@ final class LibraryModel {
     }
     func open(_ book: LocalBook) async {
         guard let library, openingBookID == nil else { return }
-        guard book.id != migratingBookID else { message = "正在同步这本书的个人记录，完成后即可打开。其他书籍仍可阅读。"; return }
+        guard !migratingBookIDs.contains(book.id) else { message = "正在同步这本书的个人记录，完成后即可打开。其他书籍仍可阅读。"; return }
         let marker = contextID
         openingBookID = book.id
         defer { openingBookID = nil }

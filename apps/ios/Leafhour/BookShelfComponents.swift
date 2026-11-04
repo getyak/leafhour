@@ -157,7 +157,7 @@ struct LibraryShelfRow: View {
                 .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
-            .disabled(!selecting && (isActive || (!item.isDownloaded && downloadUnavailable)))
+            .disabled(!selecting && ((isActive && item.local?.cloud != nil) || (!item.isDownloaded && downloadUnavailable)))
             .accessibilityLabel(selecting ? "选择，" + item.title : item.readingAccessibilityLabel).accessibilityValue(item.author)
             .accessibilityAddTraits(selected ? .isSelected : [])
             .contextMenu { ShelfBookActions(item: item, pinned: pinned, select: select, togglePin: togglePin, share: share, visibilityAction: visibilityAction, accountAction: accountAction, details: details) }
@@ -229,7 +229,7 @@ struct LibraryShelfTile: View {
                     }.contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
-                .disabled(!selecting && (isActive || (!item.isDownloaded && downloadUnavailable)))
+                .disabled(!selecting && ((isActive && item.local?.cloud != nil) || (!item.isDownloaded && downloadUnavailable)))
                 .accessibilityLabel(selecting ? "选择，" + item.title : item.readingAccessibilityLabel).accessibilityValue(item.author)
                 .accessibilityAddTraits(selected ? .isSelected : [])
                 .contextMenu { ShelfBookActions(item: item, pinned: pinned, select: select, togglePin: togglePin, share: share, visibilityAction: visibilityAction, accountAction: accountAction, details: details) }

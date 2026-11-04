@@ -16,6 +16,8 @@ public struct LocalReadingOpening: Sendable {
 public struct ReaderOpeningPreparation: Sendable {
     public let sourceLanguage: ReadingLanguage?
     public let verifiedResourcePaths: Set<String>
+    /// Exact source window already prepared during the critical resource check.
+    public let textWindow: ReadingTextWindow
 }
 
 public struct ReaderOpeningRecovery: Codable, Sendable {
@@ -305,7 +307,8 @@ public actor OfflineLibrary {
         let saved = try state(id)
         let anchor = saved.anchor ?? prepared.readingStartAnchor
         let chapter = anchor.flatMap { a in prepared.chapters.first { $0.id == a.chapterID } } ?? prepared.chapters[0]
-        let resources = Set(ReadingTextWindow(chapter: chapter, anchor: anchor).slices.compactMap { $0.original.resourcePath })
+        let textWindow = ReadingTextWindow(chapter: chapter, anchor: anchor)
+        let resources = Set(textWindow.slices.compactMap { $0.original.resourcePath })
         for resource in resources {
             guard let file = manifest.files.first(where: { $0.path == "assets/" + resource }) else { throw LibraryError.invalid("当前书页资源没有校验记录，请从原件修复。") }
             try Self.verifyFile(file, directory: directory)
@@ -313,7 +316,7 @@ public actor OfflineLibrary {
         guard try readingStamps(criticalPaths, directory: directory) == stamps else { throw LibraryError.invalid("书籍在打开时发生变化，请重新打开。") }
         let marker = UUID(); readingOpenings[id] = marker
         return LocalReadingOpening(book: prepared, state: saved, original: try Disk.url(directory, source.path), directory: directory,
-                                   preparation: ReaderOpeningPreparation(sourceLanguage: language, verifiedResourcePaths: resources), id: marker, profile: root, stamps: stamps, indexDigest: index.sha256)
+                                   preparation: ReaderOpeningPreparation(sourceLanguage: language, verifiedResourcePaths: resources, textWindow: textWindow), id: marker, profile: root, stamps: stamps, indexDigest: index.sha256)
     }
     /// Hashes every retained file off this actor so reading checkpoints do not
     /// queue behind the full-book pass. The receipt is bound to one opening.

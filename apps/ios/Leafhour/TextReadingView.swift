@@ -132,7 +132,15 @@ struct TextReadingView: UIViewRepresentable {
             }
             let windowSourceChanged = coordinator.indexedSessionID != ObjectIdentifier(session) || coordinator.indexedChapterIndex != session.chapterIndex
             if windowSourceChanged || textWindow == nil || followingNewWindow || (coordinator.navigationID != session.navigationID && anchor.map { textWindow?.contains($0) != true } == true) {
-                textWindow = ReadingTextWindow(chapter: session.chapter, anchor: anchor, endingAtAnchor: nextWindowEndsAtAnchor)
+                let prepared = session.preparedTextWindow
+                if textWindow == nil, !nextWindowEndsAtAnchor, let prepared,
+                   prepared.chapterID == session.chapter.id,
+                   anchor.map({ prepared.contains($0) }) ?? (prepared.previousAnchor == nil) {
+                    textWindow = prepared
+                } else {
+                    textWindow = ReadingTextWindow(chapter: session.chapter, anchor: anchor, endingAtAnchor: nextWindowEndsAtAnchor,
+                                                   reusing: coordinator.indexedSessionID == ObjectIdentifier(session) ? textWindow : prepared)
+                }
                 nextWindowEndsAtAnchor = false
             }
             guard let window = textWindow else { return }
@@ -432,7 +440,7 @@ struct TextReadingView: UIViewRepresentable {
             let nearEnd = view.contentOffset.y + view.bounds.height * 2 >= view.contentSize.height && current.nextAnchor != nil
             let nearStart = view.contentOffset.y <= view.bounds.height && current.previousAnchor != nil
             guard nearEnd || nearStart else { return }
-            let next = ReadingTextWindow(chapter: parent.session.chapter, anchor: anchor)
+            let next = ReadingTextWindow(chapter: parent.session.chapter, anchor: anchor, reusing: current)
             guard next.signature != current.signature else { return }
             let navigation = parent.session.navigationID
             DispatchQueue.main.async { [weak self, weak view] in
