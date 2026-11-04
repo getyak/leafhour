@@ -190,6 +190,16 @@ final class ReaderCloudTools {
 
     func configure(library: OfflineLibrary?, localBookID: String, draftNamespace: String? = nil) { self.library = library; self.localBookID = localBookID; self.draftNamespace = draftNamespace }
 
+    /// Guide sends use the same cold-draft restoration as an ordinary Chat opening,
+    /// then load exactly once before its preloaded conversation is presented.
+    func prepareGuideConversation(_ session: ReaderSession, cloud: CloudLibraryClient?, library: OfflineLibrary?) async {
+        configure(library: library, localBookID: session.book.id)
+        if let identity = session.book.cloud { await restoreConversationDraft(identity: identity, library: library) }
+        if let draftError { error = draftError; return }
+        if retry != nil { error = "上次消息的结果还待核对，请先恢复该请求。"; return }
+        await loadConversation(session, cloud: cloud)
+    }
+
     /// Only the isolated contents controller may retire its confirmed cancellation.
     func clearSnapshotSearchRequest(id: String) async -> Bool {
         guard draftNamespace?.hasPrefix("contents-search:") == true,
@@ -299,12 +309,30 @@ final class ReaderCloudTools {
     /// Freeze the selected question at entry. Composer text, voice, quote and reference
     /// remain owned by the user even while the network or pricing check is suspended.
     func sendFollowUp(_ item: ChatFollowUp, parent: ReaderConversationTurn, cloud: CloudLibraryClient?) async {
-        guard canSendFollowUps, let cloud, let context = chatContext, parent.status == "completed",
-              parent.contentVersion == nil || parent.contentVersion == context.identity.contentVersion,
+        guard canSendFollowUps else { return }
+        guard let cloud else { error = "请先登录并重新打开这次对话，已有草稿仍保留。"; return }
+        let target: (identity: CloudBookIdentity, passageID: String, original: String)
+        if let draftBook, draftBook.bookID == Self.libraryChatID {
+            guard draftBook.contentVersion == Self.libraryChatVersion else {
+                error = "书房对话的版本暂时无法核对，请重新打开对话后再发送。"
+                return
+            }
+            target = (Self.libraryChatIdentity(ownerID: draftBook.ownerID), Self.libraryChatPassage, "")
+        } else if let context = chatContext {
+            target = (context.identity, context.passageID, context.original)
+        } else {
+            error = "这次对话的归属暂时无法核对，请重新打开对话后再发送。已有草稿仍保留。"
+            return
+        }
+        guard parent.status == "completed",
               let actual = turns.first(where: { $0.id == parent.id && $0.status == "completed" }),
-              actual.followUpSuggestions.contains(item), let answer = actual.answer else { return }
+              actual.contentVersion == nil || actual.contentVersion == target.identity.contentVersion,
+              actual.followUpSuggestions.contains(item), let answer = actual.answer else {
+            error = "所选追问的回复或版本已变化，请重新读取对话后再发送。"
+            return
+        }
         sendingFollowUp = true; defer { sendingFollowUp = false }
-        await prepareRequest("conversation", identity: context.identity, passageID: context.passageID, original: context.original,
+        await prepareRequest("conversation", identity: target.identity, passageID: target.passageID, original: target.original,
                              cloud: cloud, frozenText: item.text,
                              frozenReference: ReaderMessageReference(turnId: actual.id, role: "assistant", text: answer), preserveComposer: true)
     }
@@ -623,7 +651,7 @@ final class ReaderCloudTools {
                     guard let date, date > Date() else { throw LibraryError.invalid("本次点数报价已过期，尚未提交。") }
                 }
                 body["billing"] = ["quoteId": quoteID, "idempotencyKey": UUID().uuidString.lowercased()]
-                explanation += "\n\n本次使用 \(units / 1_000_000) 阅读点，结果校验并保存后才消费；失败、取消或未交付不消费购买点。"
+                explanation += "\n\n本次使用 \(units / 1_000_000) 阅读点，结果校验并保存后才消费；未完成的请求会停止，已保存结果按原请求核对，不会重复消费。"
                 if mode == "test" { explanation += "\n当前为沙盒点数，不涉及真实付款。" }
             }
             if action == "conversation" { explanation += scope == "library" ? "\n当前查阅范围：自己的书房与网络。" : "\n当前查阅范围：这本书。" }
