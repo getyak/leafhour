@@ -11,7 +11,7 @@ enum LibraryShelfSort: String, CaseIterable {
     var title: String {
         switch self {
         case .added: "加入顺序"
-        case .recent: "最近阅读"
+        case .recent: "最近活动"
         case .title: "书名"
         case .author: "作者"
         }
@@ -34,6 +34,12 @@ struct LibraryShelfItem: Identifiable {
     var author: String { local?.author ?? cloud?.author ?? "" }
     var isDownloaded: Bool { local != nil }
     var addedAt: Date? { cloud?.addedAt ?? local?.importedAt }
+    /// A cloud copy's device import date records its download, not shelf addition.
+    var shelfAdditionAt: Date? {
+        if cloud != nil || (local?.cloud != nil && !isAdditionalVersion) { return cloud?.addedAt }
+        return local?.importedAt
+    }
+    var shelfActivityAt: Date? { ReadingRecency.maximum([cloud?.activityAt, localActivityAt, shelfAdditionAt]) }
     var shareText: String { [title, author].filter { !$0.isEmpty }.joined(separator: "\n") }
     // Cloud reading copies contain internal ownership metadata. A source-only
     // text export deliberately does not serialize their manifest or ReaderState.
@@ -139,10 +145,11 @@ enum LibraryPresentation {
             }.map(\.element)
         case .recent:
             result = result.enumerated().sorted { lhs, rhs in
-                let l = ReadingRecency.maximum([lhs.element.cloud?.activityAt, lhs.element.local.flatMap { localActivity[$0.id] }]), r = ReadingRecency.maximum([rhs.element.cloud?.activityAt, rhs.element.local.flatMap { localActivity[$0.id] }])
+                let l = lhs.element.shelfActivityAt, r = rhs.element.shelfActivityAt
                 if l != r { return (l ?? .distantPast) > (r ?? .distantPast) }
-                let la = lhs.element.addedAt, ra = rhs.element.addedAt
+                let la = lhs.element.shelfAdditionAt, ra = rhs.element.shelfAdditionAt
                 if la != ra { return (la ?? .distantPast) > (ra ?? .distantPast) }
+                if l != nil { return lhs.element.id < rhs.element.id }
                 return lhs.offset < rhs.offset
             }.map(\.element)
         case .title: result.sort(by: titlePrecedes)

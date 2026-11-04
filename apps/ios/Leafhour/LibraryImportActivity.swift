@@ -33,6 +33,8 @@ final class LibraryImportActivity {
         guard isRunning else { return }
         status = text; fraction = nil
     }
+    /// Reading availability is independent of the upload's completion state.
+    func allowReading(_ book: LocalBook) { bookID = book.id; title = book.title }
     func finish(book: LocalBook) {
         isRunning = false; bookID = book.id; title = book.title; fraction = nil
         status = "已加入此设备，可以开始阅读"
@@ -62,14 +64,14 @@ struct LibraryImportActivityView: View {
                     else { ProgressView().controlSize(.mini).accessibilityLabel(activity.status) }
                 }
             }.frame(maxWidth: .infinity, alignment: .leading)
+            if let id = activity.bookID {
+                Button("阅读") { open(id) }.font(.footnote).frame(minWidth: 44, minHeight: 44)
+                    .accessibilityIdentifier("library-import-open")
+            }
             if activity.isRunning && canCancel {
                 Button("取消", action: cancel).font(.footnote).frame(minWidth: 44, minHeight: 44)
                     .accessibilityIdentifier("library-import-cancel")
             } else if !activity.isRunning {
-                if let id = activity.bookID {
-                    Button("阅读") { open(id) }.font(.footnote).frame(minWidth: 44, minHeight: 44)
-                        .accessibilityIdentifier("library-import-open")
-                }
                 Button(action: dismiss) { Image(systemName: "xmark").frame(width: 44, height: 44) }
                     .accessibilityLabel("收起导入状态")
             }

@@ -74,6 +74,12 @@ final class ReaderOpeningTests: XCTestCase {
         let session = ReaderSession(book: opening.book, state: opening.state, original: opening.original, directory: opening.directory,
                                     library: library, preparation: opening.preparation)
         XCTAssertFalse(session.canReadResource("unverified.png"))
+        XCTAssertEqual(session.preparedTextWindow?.signature, opening.preparation.textWindow.signature)
+        XCTAssertTrue(session.preparedTextWindow?.matchesSource(session.chapter) == true)
+        var changed = opening.book; changed.chapters[0].passages[0].text = "Changed source must not reuse another opening's page."
+        let mismatched = ReaderSession(book: changed, state: opening.state, original: opening.original, directory: opening.directory,
+                                       library: library, preparation: opening.preparation)
+        XCTAssertNil(mismatched.preparedTextWindow)
         let anchor = session.currentAnchor, navigation = session.navigationID
         try await library.verifyReadingOpening(opening)
         session.completePackageVerification()

@@ -1,0 +1,135 @@
+{
+ "meta": {
+  "n_candidates": 18,
+  "n_rename": 9,
+  "n_cohesion": 8,
+  "n_colon": 1,
+  "n_iso3": 0,
+  "truncated": false
+ },
+ "rename": [
+  {
+   "type": "rename",
+   "file": "translation-review-fixes.md",
+   "line": 3,
+   "para": "2026-11-05。本次修正来自独立审阅的 P1、P2，尚未运行更新后的 Core 或 native 测试。按统一编译安排，仅执行 Swift parse 与精确文件 diff 检查，不把它们记成运行验收。"
+  },
+  {
+   "type": "rename",
+   "file": "translation-review-fixes.md",
+   "line": 5,
+   "para": "suspendForUserNavigation() 在真实拖动、翻页或跳转开始时同步撤销运行代次并取消当前任务，保留用户已开启的开关和身份。它也拒绝旧用户 marker。新 marker 尚无有效当前页时不提交，旧页失效到惯性滚动结束之间也不继续报价或 POST。ReaderScreen 的真实事件接入由主执行者完成。程序排版、听书及自动跳转不会产生新的用户 marker。"
+  },
+  {
+   "type": "rename",
+   "file": "translation-review-fixes.md",
+   "line": 7,
+   "para": "新增 App 回归把 /api/auth/session 暂停在第一段提交前，保持同章 session.navigationID 不变，模拟开始长拖后旧页失效。测试要求授权请求取消、译文 POST 为零，旧 marker 或缺页不能重启；新 marker 和有效页面齐备后才处理新页。既有两个翻译 App 测试在 native-v3 曾通过，本次新增测试尚未运行。"
+  },
+  {
+   "type": "rename",
+   "file": "translation-review-fixes.md",
+   "line": 9,
+   "para": "LocalBook 与 ReaderState 新建时的 translationDefaultsVersion 为1。旧 JSON 缺字段时保持 nil，按旧规则选择默认目标：中文原文译入英文，其余译入中文。显式 translationSettings 始终优先。旧书即使没有 anchor 或整个 state 文件，也不会被误判成新书；缺 state 时从已有 book marker 继承，有 state 时保留该 state 的语义。"
+  },
+  {
+   "type": "rename",
+   "file": "translation-review-fixes.md",
+   "line": 11,
+   "para": "兼容处理读取旧 book.json 时不会重写书籍或 manifest。正常缓存刷新需要重建 cloud 包时，importCloud 继承现有 marker，包括 nil。PDF/EPUB 修复会重新解析 LocalBook，因此 build/rebuild 同样继承旧 marker，避免修复后升级默认目标。新本地导入与新 cloud copy 均保持 marker 1。没有按导入时间、当前阅读位置或译文内容猜测新旧。"
+  },
+  {
+   "type": "rename",
+   "file": "translation-review-fixes.md",
+   "line": 13,
+   "para": "Core 新增五项回归，覆盖旧 JSON 与中文缓存、英/中旧包完全没有 state、新 local/cloud 包、旧 cloud 缓存重写和旧 PDF 修复。合成旧包只在测试准备时移除 marker 并重建对应校验项；测试再断言读取不改变 book.json 或 manifest。旧值、显式选择与新默认分别验证，未放松译文目标语言隔离。"
+  },
+  {
+   "type": "rename",
+   "file": "translation-review-fixes.md",
+   "line": 15,
+   "para": "ReadingPreparationTests、ReaderInteractionTests、ReaderToolsTests、ReaderVisiblePageTests 和 ReaderPaginationTests 的翻译夹具显式设置英文→中文，保留原测试前提。ReadingPreparation 的状态也落入隔离书房，使 deferred opening 读取同一前提。本次没有访问真实账号或调用真实供应商。"
+  },
+  {
+   "type": "rename",
+   "file": "translation-review-fixes.md",
+   "line": 17,
+   "para": "ReaderSession 仅改默认设置解析，并按书签作者的共享文件约定一并提交其已完成的 bookmarkNavigation 瞬时字段。OfflineLibrary 仅修改 state 初始化及同因的包重建 marker 传递，书签保存与校验逻辑保留。"
+  },
+  {
+   "type": "rename",
+   "file": "translation-review-fixes.md",
+   "line": 19,
+   "para": "更新后的 Core/native 运行结果、真实长拖与惯性画面仍由主执行者补齐。此前 Core 384 项与两个 App 通过的证据只适用于此前版本，不能替代这次修正的验收。"
+  }
+ ],
+ "cohesion": [
+  {
+   "type": "cohesion",
+   "file": "translation-review-fixes.md",
+   "line": 5,
+   "prev_tail": "按统一编译安排，仅执行 Swift parse 与精确文件 diff 检查，不把它们记成运行验收",
+   "next_head": "suspendForUserNavigation() 在真实拖动、翻页或跳转开始时同步撤销运行代次并取消当前任务，保留用户已开启的开关和身份"
+  },
+  {
+   "type": "cohesion",
+   "file": "translation-review-fixes.md",
+   "line": 7,
+   "prev_tail": "程序排版、听书及自动跳转不会产生新的用户 marker",
+   "next_head": "新增 App 回归把 /api/auth/session 暂停在第一段提交前，保持同章 session.navigationID 不变，模拟开始长拖后旧页失效"
+  },
+  {
+   "type": "cohesion",
+   "file": "translation-review-fixes.md",
+   "line": 9,
+   "prev_tail": "既有两个翻译 App 测试在 native-v3 曾通过，本次新增测试尚未运行",
+   "next_head": "LocalBook 与 ReaderState 新建时的 translationDefaultsVersion 为1"
+  },
+  {
+   "type": "cohesion",
+   "file": "translation-review-fixes.md",
+   "line": 11,
+   "prev_tail": "缺 state 时从已有 book marker 继承，有 state 时保留该 state 的语义",
+   "next_head": "兼容处理读取旧 book.json 时不会重写书籍或 manifest"
+  },
+  {
+   "type": "cohesion",
+   "file": "translation-review-fixes.md",
+   "line": 13,
+   "prev_tail": "没有按导入时间、当前阅读位置或译文内容猜测新旧",
+   "next_head": "Core 新增五项回归，覆盖旧 JSON 与中文缓存、英/中旧包完全没有 state、新 local/cloud 包、旧 cloud 缓存重写和旧 PDF 修复"
+  },
+  {
+   "type": "cohesion",
+   "file": "translation-review-fixes.md",
+   "line": 15,
+   "prev_tail": "旧值、显式选择与新默认分别验证，未放松译文目标语言隔离",
+   "next_head": "ReadingPreparationTests、ReaderInteractionTests、ReaderToolsTests、ReaderVisiblePageTests 和 ReaderPaginationTests 的翻译夹具显式设置英文→中文，保留原测试前提"
+  },
+  {
+   "type": "cohesion",
+   "file": "translation-review-fixes.md",
+   "line": 17,
+   "prev_tail": "本次没有访问真实账号或调用真实供应商",
+   "next_head": "ReaderSession 仅改默认设置解析，并按书签作者的共享文件约定一并提交其已完成的 bookmarkNavigation 瞬时字段"
+  },
+  {
+   "type": "cohesion",
+   "file": "translation-review-fixes.md",
+   "line": 19,
+   "prev_tail": "OfflineLibrary 仅修改 state 初始化及同因的包重建 marker 传递，书签保存与校验逻辑保留",
+   "next_head": "更新后的 Core/native 运行结果、真实长拖与惯性画面仍由主执行者补齐"
+  }
+ ],
+ "colon": [
+  {
+   "type": "colon",
+   "file": "translation-review-fixes.md",
+   "line": 9,
+   "colon_before": "按旧规则选择默认目标",
+   "colon_after": "中文原文译入英文，其余译入中文。显式 translationSettings 始终优先。旧书即使没有 anchor 或整",
+   "sentence": "`LocalBook` 与 `ReaderState` 新建时的 translationDefaultsVersion 为1。旧 JSON 缺字段时保持 nil，按旧规则选择默认目标：中文原文译入英文，其余译入中文。显式 translati"
+  }
+ ],
+ "iso3": []
+}

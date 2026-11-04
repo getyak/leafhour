@@ -27,6 +27,11 @@ public struct CloudShelfSnapshot: Codable, Equatable, Sendable {
         revision = Int(number)
         books = json["books"].array.compactMap(CloudShelfBook.init(json:))
         archivedBooks = complete ? json["archivedBooks"].array.compactMap(CloudShelfBook.init(json:)) : []
+        guard books.count == json["books"].array.count,
+              !complete || archivedBooks.count == json["archivedBooks"].array.count,
+              Set((books + archivedBooks).map(\.id)).count == books.count + archivedBooks.count else {
+            throw LibraryError.invalid("书架书目信息不完整或重复，已保留此前记录。")
+        }
         order = complete ? json["shelf"]["order"].array.compactMap(\.string) : []
         guard order.count <= 1000, Set(order).count == order.count, books.count <= 1000, archivedBooks.count <= 1000 else { throw LibraryError.invalid("书架信息较多或重复，已保留此前记录。") }
         archivedBookIDs = complete ? Set(json["shelf"]["archived"].object.keys) : []

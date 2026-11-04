@@ -1,0 +1,632 @@
+{
+  "meta": {
+    "n_candidates": 64,
+    "n_rename": 30,
+    "n_cohesion": 29,
+    "n_colon": 5,
+    "n_iso3": 0,
+    "truncated": false
+  },
+  "rename": [
+    {
+      "type": "rename",
+      "file": "translation-design.md",
+      "line": 3,
+      "para": "日期：2026-11-05。范围：iPhone 阅读翻译，及其必需的共用服务取消链路。本报告只完成源码审阅与设计，未修改产品代码，未运行构建、模型请求或真机测试。实施与最终验收由主执行者统一完成。",
+      "label": "0组",
+      "confidence": "高",
+      "reason": "该段使用固定对象名称；原文/译文/对照、任务/请求/回执分别指不同对象，未用近义实词给同一对象换名。"
+    },
+    {
+      "type": "rename",
+      "file": "translation-design.md",
+      "line": 7,
+      "para": "采用一个显式「随读翻译」开关，范围固定为当前可见页及紧邻的两段。已有译文直接使用；窗口完成后等待真实阅读位置变化，不因任务完成自行向后推进。默认目标为 English；保留已有存档中的目标语言。原版、译文、对照使用三个可点选的小样，切换只改变显示。",
+      "label": "0组",
+      "confidence": "高",
+      "reason": "该段使用固定对象名称；原文/译文/对照、任务/请求/回执分别指不同对象，未用近义实词给同一对象换名。"
+    },
+    {
+      "type": "rename",
+      "file": "translation-design.md",
+      "line": 9,
+      "para": "取消必须沿 Swift Task、URLSession、HTTP 响应断开、服务端 AbortController、领域服务和供应商 fetch 传递，并在保存前再次检查。只有前端取消，无法满足 R12。关闭后保留不确定请求的原幂等凭证，恢复时仅核对这一段，不顺带提交新段。",
+      "label": "0组",
+      "confidence": "高",
+      "reason": "该段使用固定对象名称；原文/译文/对照、任务/请求/回执分别指不同对象，未用近义实词给同一对象换名。"
+    },
+    {
+      "type": "rename",
+      "file": "translation-design.md",
+      "line": 11,
+      "para": "本次设计用 design-judgment 的功能减法和时间与注意模块。主要取舍是去掉源语言选择、整章范围和重复的模式 Picker，保留目标、范围、点数及停止状态。配置即时生效，但不以动效或虚假百分比掩盖模型等待。",
+      "label": "0组",
+      "confidence": "高",
+      "reason": "该段使用固定对象名称；原文/译文/对照、任务/请求/回执分别指不同对象，未用近义实词给同一对象换名。"
+    },
+    {
+      "type": "rename",
+      "file": "translation-design.md",
+      "line": 32,
+      "para": "本次审阅的旧 PR 273 分支含 LeafhourCore/ReaderAutomaticTranslation.swift 与 server/reading-translation.mjs。可借鉴身份快照、运行代次和保留幂等凭证的方式。其 current/next 循环会遍历章节，停止也未完整传至供应商，不符合本次范围。不要整支合入，也不要恢复其旧 textMode 数据模型。",
+      "label": "0组",
+      "confidence": "高",
+      "reason": "该段使用固定对象名称；原文/译文/对照、任务/请求/回执分别指不同对象，未用近义实词给同一对象换名。"
+    },
+    {
+      "type": "rename",
+      "file": "translation-design.md",
+      "line": 36,
+      "para": "翻译面板首先显示一行可编辑目标，例如「翻译成 English」。默认内容为 English，支持「英文」「English」「en」「翻译成日语」等明确表达；空白提交、多个目标、「随便一种」与未支持语言提示修改。支持范围沿用中文、英文、日文、韩文、法文、德文、西班牙文，不用模型猜测用户想要哪一种。源语言由本机识别，不展示必填选择。检测为与目标相同时提示「原文已是 English，请修改目标语言」，不自动换成中文。",
+      "label": "0组",
+      "confidence": "高",
+      "reason": "该段使用固定对象名称；原文/译文/对照、任务/请求/回执分别指不同对象，未用近义实词给同一对象换名。"
+    },
+    {
+      "type": "rename",
+      "file": "translation-design.md",
+      "line": 38,
+      "para": "目标下方为原版、译文、对照三个真实文字小样，每项至少 44 点触控区域，文字标签常驻，选中状态可被 VoiceOver 读取。译文小样使用已缓存的当前段；没有译文时显示原文与「译文尚未准备」。示意线条不能冒充已生成译文。点击模板保留稳定锚点，不触发报价或生成。运行期间模板仍可修改。",
+      "label": "0组",
+      "confidence": "高",
+      "reason": "该段使用固定对象名称；原文/译文/对照、任务/请求/回执分别指不同对象，未用近义实词给同一对象换名。"
+    },
+    {
+      "type": "rename",
+      "file": "translation-design.md",
+      "line": 40,
+      "para": "对照展开「原文在前／译文在前」两种小样；再提供原文相对字号、原文颜色强调程度及段间距。它们使用同一份 preferences 驱动预览和实际 TextKit 正文。iPhone 采用上下排列；横屏仍保持可读的单流，不在本次重写双列选文和锚点逻辑。直译与意译沿用独立版本控件，并保留 AI 草稿或已校订状态。",
+      "label": "0组",
+      "confidence": "高",
+      "reason": "该段使用固定对象名称；原文/译文/对照、任务/请求/回执分别指不同对象，未用近义实词给同一对象换名。"
+    },
+    {
+      "type": "rename",
+      "file": "translation-design.md",
+      "line": 42,
+      "para": "用户首次开启时展示一次具体范围与计点说明：「从当前页开始，准备本页和紧邻两段；每段最多 1 点，逐段核对报价。移动到新页后，按同一窗口继续。关闭即停止。」展示当前窗口的段数与最大点数，单段报价仍逐次校验，不再每段确认。计点价或模型策略变化超出已同意范围时停止并提示重新开启。",
+      "label": "0组",
+      "confidence": "高",
+      "reason": "该段使用固定对象名称；原文/译文/对照、任务/请求/回执分别指不同对象，未用近义实词给同一对象换名。"
+    },
+    {
+      "type": "rename",
+      "file": "translation-design.md",
+      "line": 44,
+      "para": "运行状态按实际事件显示：正在核对范围、正在翻译当前段、当前范围已准备、正在停止、已停止、停止结果待核对、失败可重试。范围已完成后静止等待，不能通过「下一步」自动扩大窗口。进度只表示本次有界窗口，不显示整书翻译百分比。",
+      "label": "0组",
+      "confidence": "高",
+      "reason": "该段使用固定对象名称；原文/译文/对照、任务/请求/回执分别指不同对象，未用近义实词给同一对象换名。"
+    },
+    {
+      "type": "rename",
+      "file": "translation-design.md",
+      "line": 46,
+      "para": "面板右上角叉在运行中明确标为「停止翻译并关闭」，先撤销当前运行代次，再取消网络与后续队列。停止请求未获可靠回执时显示「已停止后续翻译，当前请求待核对」，不能仅凭 Task.cancel 就显示供应商已经停止。关闭后翻译开关为关；返回前台或重新开书不自动重启。用户再次开启才允许规划新窗口。",
+      "label": "0组",
+      "confidence": "高",
+      "reason": "该段使用固定对象名称；原文/译文/对照、任务/请求/回执分别指不同对象，未用近义实词给同一对象换名。"
+    },
+    {
+      "type": "rename",
+      "file": "translation-design.md",
+      "line": 50,
+      "para": "新增随读窗口规划器，与旧 page/chapter 恢复协议分开。输入为 owner、book、contentVersion、chapterID、真实可见 passageIDs、目标语言和运行代次；输出按原书顺序排列的有限 passageIDs。可见页尚未稳定或不可核对时不提交。图片、标题、空白及没有可核对文本的扫描页不进入窗口。",
+      "label": "0组",
+      "confidence": "高",
+      "reason": "该段使用固定对象名称；原文/译文/对照、任务/请求/回执分别指不同对象，未用近义实词给同一对象换名。"
+    },
+    {
+      "type": "rename",
+      "file": "translation-design.md",
+      "line": 52,
+      "para": "默认当前可见页加紧邻两段；建议另设总段数与字节硬上限，防止极小字号或异常分页令「一页」变成无界请求。可先沿用最多 100 段的恢复结构上限，但实际随读窗口上限应更小，例如 12 段；超过时只取从当前锚点向下的前缀并提示范围截断。不得取章头补齐，不得用段数不足为由抓整章或下一章。紧邻两段可止于当前章结尾，用户实际进入下一章后重建窗口。",
+      "label": "0组",
+      "confidence": "高",
+      "reason": "该段使用固定对象名称；原文/译文/对照、任务/请求/回执分别指不同对象，未用近义实词给同一对象换名。"
+    },
+    {
+      "type": "rename",
+      "file": "translation-design.md",
+      "line": 54,
+      "para": "每次最多一个在途生成。每提交一段前重新核对当前可见窗口、身份、版本、前台状态、开关和目标；不在最新窗口内的未提交段立即丢弃。可见位置变化允许替换窗口，不能在旧窗口跑完后接着遍历后续段。程序恢复锚点和异步译文重排不能被当成用户已阅读到新页，避免产生自触发的整书推进。",
+      "label": "0组",
+      "confidence": "高",
+      "reason": "该段使用固定对象名称；原文/译文/对照、任务/请求/回执分别指不同对象，未用近义实词给同一对象换名。"
+    },
+    {
+      "type": "rename",
+      "file": "translation-design.md",
+      "line": 56,
+      "para": "普通继续翻页重算窗口；跳章、关闭、离开阅读器、后台、账号变化、源版本变化及目标语言修改使当前运行失效并取消。切换到原版保留已有缓存，但停止本轮生成，且再次点译文模板不自动开启。字体、对照顺序与间距只重排本地内容，不构成新的生成授权。",
+      "label": "0组",
+      "confidence": "高",
+      "reason": "该段使用固定对象名称；原文/译文/对照、任务/请求/回执分别指不同对象，未用近义实词给同一对象换名。"
+    },
+    {
+      "type": "rename",
+      "file": "translation-design.md",
+      "line": 58,
+      "para": "完整译文跳过且不重计点；部分译文或译文对应另一份原文时停止该段并提示核对，沿用服务端不覆盖保护。运行上下文仅发送当前段和必需邻段，不包含整章、私人笔记或书内指令所要求的额外资料。",
+      "label": "0组",
+      "confidence": "高",
+      "reason": "该段使用固定对象名称；原文/译文/对照、任务/请求/回执分别指不同对象，未用近义实词给同一对象换名。"
+    },
+    {
+      "type": "rename",
+      "file": "translation-design.md",
+      "line": 62,
+      "para": "沿用 /api/library/books/:id/translate，不增设隐式自动翻译服务。路由创建 AbortController，res.once('close', onClose) 在响应未结束时 abort，finally 移除监听。将同一 signal 传给 creditGate.run 和 library.translate；服务端检测到已断开后不再写响应。",
+      "label": "0组",
+      "confidence": "高",
+      "reason": "该段使用固定对象名称；原文/译文/对照、任务/请求/回执分别指不同对象，未用近义实词给同一对象换名。"
+    },
+    {
+      "type": "rename",
+      "file": "translation-design.md",
+      "line": 64,
+      "para": "translationRequestOptions 新增仅供服务内部传递的 signal，验证其 AbortSignal 形态。library.translate 在入队前、reserve 后、供应商返回后以及最终保存前调用统一守卫；守卫先检查 signal，再检查 authorizeGeneration。调用改为 translator(context, {signal})，不把 signal 放入 context，避免序列化给模型。createTranslator 组合外部 signal 与 45 秒超时，检查取消先于 recordProviderDispatch，并将取消原因正确记录为取消，保留真实使用量；不承诺供应商免除已经发生的成本。",
+      "label": "0组",
+      "confidence": "高",
+      "reason": "该段使用固定对象名称；原文/译文/对照、任务/请求/回执分别指不同对象，未用近义实词给同一对象换名。"
+    },
+    {
+      "type": "rename",
+      "file": "translation-design.md",
+      "line": 66,
+      "para": "客户端 stop 必须同步增加 generation 并撤销开关，再 Task.cancel。execute 在每个 await 后，尤其在 completed.append、persist、cache、session.updateTranslations 之前检查 generation、Task.isCancelled、身份、版本和目标。旧任务 defer 仅能清理自己的 task/running 状态，不能覆盖新任务状态。网络取消后的 URLError.cancelled 应映射为停止状态。",
+      "label": "0组",
+      "confidence": "高",
+      "reason": "该段使用固定对象名称；原文/译文/对照、任务/请求/回执分别指不同对象，未用近义实词给同一对象换名。"
+    },
+    {
+      "type": "rename",
+      "file": "translation-design.md",
+      "line": 68,
+      "para": "HTTP 断开可把取消传到供应商请求，但连接断开后客户端无法在同一响应中得到终态确认。最小版本保留 pending，重新连接时通过原请求与可信账单回执核对，核对不得继续新段。若产品需要立即确认停止，另加按 owner/book/requestID 查询的只读状态或显式取消入口；不能把账单余额变化或客户端计时当作取消回执。",
+      "label": "0组",
+      "confidence": "高",
+      "reason": "该段使用固定对象名称；原文/译文/对照、任务/请求/回执分别指不同对象，未用近义实词给同一对象换名。"
+    },
+    {
+      "type": "rename",
+      "file": "translation-design.md",
+      "line": 72,
+      "para": "取消的可执行定义须写清：取消先于服务器保存提交点，则结果不得保存、发布或加入离线缓存；保存提交点已完成后才收到取消，保留已完成译文并核对相同请求的点数。已确认完成的结果不能因断网被描述成已撤销。",
+      "label": "0组",
+      "confidence": "高",
+      "reason": "该段使用固定对象名称；原文/译文/对照、任务/请求/回执分别指不同对象，未用近义实词给同一对象换名。"
+    },
+    {
+      "type": "rename",
+      "file": "translation-design.md",
+      "line": 74,
+      "para": "当前 local rawMutate 在 callback 后还有 mkdir、writeFile、rename，hosted store 同样存在网络持久化边界。因此仅在 mutate callback 开头检查 signal，还不能覆盖保存期间发生的取消。实现时应把最终守卫放到实际提交前，或使取消与保存通过同一任务状态及存储事务竞争；测试需延迟实际存储提交来验证。已进入不能撤销的提交阶段须返回真实结果，不应只在 billing 的最后 signal 检查中释放预留而留下未结算的译文。若本轮只完成常见路径，应将这个窄竞态列为未验收，不能写 R12 完整通过。",
+      "label": "0组",
+      "confidence": "高",
+      "reason": "该段使用固定对象名称；原文/译文/对照、任务/请求/回执分别指不同对象，未用近义实词给同一对象换名。"
+    },
+    {
+      "type": "rename",
+      "file": "translation-design.md",
+      "line": 76,
+      "para": "每段先把 request ID、报价、body、owner、目标语言与 contentVersion 落入 pending，再 POST。取消只移除明确从未提交的 intent；已提交或不确定的 intent 保留原 ID。恢复只读取或核对原段，不为同一未知请求新建 ID。只有可信 terminal receipt（released/cancelled/reversed/notstarted）允许后续显式新尝试；认证失败、429、超时和连接中断均不能证明未生成或未计点。",
+      "label": "0组",
+      "confidence": "高",
+      "reason": "该段使用固定对象名称；原文/译文/对照、任务/请求/回执分别指不同对象，未用近义实词给同一对象换名。"
+    },
+    {
+      "type": "rename",
+      "file": "translation-design.md",
+      "line": 78,
+      "para": "已有 resultsaved/settled 与持久译文 generationReceipt 的恢复规则必须保留。billing.enabled == false 也要依赖 signal 阻止迟到保存，不能因为没有账单守卫而继续写译文。同一账号其他客户端的成功结果可正常同步，但不能被当前已撤销运行冒充为其成功。",
+      "label": "0组",
+      "confidence": "高",
+      "reason": "该段使用固定对象名称；原文/译文/对照、任务/请求/回执分别指不同对象，未用近义实词给同一对象换名。"
+    },
+    {
+      "type": "rename",
+      "file": "translation-design.md",
+      "line": 93,
+      "para": "自动化先用合成文本和受控假供应商，不请求真实付费模型。需要的测试按行为组织：",
+      "label": "0组",
+      "confidence": "高",
+      "reason": "该段使用固定对象名称；原文/译文/对照、任务/请求/回执分别指不同对象，未用近义实词给同一对象换名。"
+    },
+    {
+      "type": "rename",
+      "file": "translation-design.md",
+      "line": 103,
+      "para": "模拟器再记录 320/375/390/430 点宽、横屏、最大辅助字号、深浅主题、VoiceOver 和减少动态。正文测试至少覆盖 TXT、Markdown、可提取 PDF 与扫描 PDF；扫描 PDF 保留原页，不伪造可翻译文本。测量开启开关、停止按钮和配置变化至本地可见反馈的耗时，并记录主线程最慢布局，模型耗时单列。",
+      "label": "0组",
+      "confidence": "高",
+      "reason": "该段使用固定对象名称；原文/译文/对照、任务/请求/回执分别指不同对象，未用近义实词给同一对象换名。"
+    },
+    {
+      "type": "rename",
+      "file": "translation-design.md",
+      "line": 107,
+      "para": "评分只给已实际验证的行为。此次仅做源码设计，未运行测试或设备验收，不能将方案完整度计入产品通过分。",
+      "label": "0组",
+      "confidence": "高",
+      "reason": "该段使用固定对象名称；原文/译文/对照、任务/请求/回执分别指不同对象，未用近义实词给同一对象换名。"
+    },
+    {
+      "type": "rename",
+      "file": "translation-design.md",
+      "line": 117,
+      "para": "实施审阅时按功能30、交互25、性能25、边界20逐项赋分，并记录测试命令、结果、截图与耗时；目标95，未测不得补分。取消只挡UI、持续无界生成、译文错配或读取越权属于阻断，不能用其他分数抵消。",
+      "label": "0组",
+      "confidence": "高",
+      "reason": "该段使用固定对象名称；原文/译文/对照、任务/请求/回执分别指不同对象，未用近义实词给同一对象换名。"
+    },
+    {
+      "type": "rename",
+      "file": "translation-design.md",
+      "line": 119,
+      "para": "尚待实际验证的边界包括 Vercel 响应 close 对客户端 URLSession 取消的传播、供应商对 abort 的网络行为、保存提交点竞态、本地与 hosted 写入的一致性、复杂语言检测以及真机大字/选文。静态方案不能证明这些已通过；生产、TestFlight 和真机验收继续单独记录。",
+      "label": "0组",
+      "confidence": "高",
+      "reason": "该段使用固定对象名称；原文/译文/对照、任务/请求/回执分别指不同对象，未用近义实词给同一对象换名。"
+    },
+    {
+      "type": "rename",
+      "file": "translation-design.md",
+      "line": 125,
+      "para": "中文文案按已授权的 lieflat-less-ai-tone 流程检测并最小复核；检测记录存同目录的 translation-design-tone/。文件路径、代码标识与英文样本保持原样。",
+      "label": "0组",
+      "confidence": "高",
+      "reason": "该段使用固定对象名称；原文/译文/对照、任务/请求/回执分别指不同对象，未用近义实词给同一对象换名。"
+    }
+  ],
+  "cohesion": [
+    {
+      "type": "cohesion",
+      "file": "translation-design.md",
+      "line": 7,
+      "prev_tail": "实施与最终验收由主执行者统一完成",
+      "next_head": "采用一个显式「随读翻译」开关，范围固定为当前可见页及紧邻的两段",
+      "label": "有关但转换突然",
+      "confidence": "中",
+      "reason": "在同一翻译设计内转换到另一个独立约束，非承接上一句结论。"
+    },
+    {
+      "type": "cohesion",
+      "file": "translation-design.md",
+      "line": 9,
+      "prev_tail": "原版、译文、对照使用三个可点选的小样，切换只改变显示",
+      "next_head": "取消必须沿 Swift Task、URLSession、HTTP 响应断开、服务端 AbortController、领域服务和供应商 fetch 传递，并在保存前再次检查",
+      "label": "有关但转换突然",
+      "confidence": "中",
+      "reason": "在同一翻译设计内转换到另一个独立约束，非承接上一句结论。"
+    },
+    {
+      "type": "cohesion",
+      "file": "translation-design.md",
+      "line": 11,
+      "prev_tail": "关闭后保留不确定请求的原幂等凭证，恢复时仅核对这一段，不顺带提交新段",
+      "next_head": "本次设计用 design-judgment 的功能减法和时间与注意模块",
+      "label": "有关但转换突然",
+      "confidence": "中",
+      "reason": "在同一翻译设计内转换到另一个独立约束，非承接上一句结论。"
+    },
+    {
+      "type": "cohesion",
+      "file": "translation-design.md",
+      "line": 32,
+      "prev_tail": "配置即时生效，但不以动效或虚假百分比掩盖模型等待",
+      "next_head": "本次审阅的旧 PR 273 分支含 LeafhourCore/ReaderAutomaticTranslation.swift 与 server/reading-translation.mjs",
+      "label": "有关但转换突然",
+      "confidence": "中",
+      "reason": "在同一翻译设计内转换到另一个独立约束，非承接上一句结论。"
+    },
+    {
+      "type": "cohesion",
+      "file": "translation-design.md",
+      "line": 36,
+      "prev_tail": "不要整支合入，也不要恢复其旧 textMode 数据模型",
+      "next_head": "翻译面板首先显示一行可编辑目标，例如「翻译成 English」",
+      "label": "有关但转换突然",
+      "confidence": "中",
+      "reason": "在同一翻译设计内转换到另一个独立约束，非承接上一句结论。"
+    },
+    {
+      "type": "cohesion",
+      "file": "translation-design.md",
+      "line": 38,
+      "prev_tail": "检测为与目标相同时提示「原文已是 English，请修改目标语言」，不自动换成中文",
+      "next_head": "目标下方为原版、译文、对照三个真实文字小样，每项至少 44 点触控区域，文字标签常驻，选中状态可被 VoiceOver 读取",
+      "label": "明确承接",
+      "confidence": "中",
+      "reason": "继续展开同一交互或取消恢复机制，技术设计所需的因果关系成立。"
+    },
+    {
+      "type": "cohesion",
+      "file": "translation-design.md",
+      "line": 40,
+      "prev_tail": "运行期间模板仍可修改",
+      "next_head": "对照展开「原文在前／译文在前」两种小样",
+      "label": "明确承接",
+      "confidence": "中",
+      "reason": "继续展开同一交互或取消恢复机制，技术设计所需的因果关系成立。"
+    },
+    {
+      "type": "cohesion",
+      "file": "translation-design.md",
+      "line": 42,
+      "prev_tail": "直译与意译沿用独立版本控件，并保留 AI 草稿或已校订状态",
+      "next_head": "用户首次开启时展示一次具体范围与计点说明：「从当前页开始，准备本页和紧邻两段",
+      "label": "有关但转换突然",
+      "confidence": "中",
+      "reason": "在同一翻译设计内转换到另一个独立约束，非承接上一句结论。"
+    },
+    {
+      "type": "cohesion",
+      "file": "translation-design.md",
+      "line": 44,
+      "prev_tail": "计点价或模型策略变化超出已同意范围时停止并提示重新开启",
+      "next_head": "运行状态按实际事件显示：正在核对范围、正在翻译当前段、当前范围已准备、正在停止、已停止、停止结果待核对、失败可重试",
+      "label": "明确承接",
+      "confidence": "中",
+      "reason": "继续展开同一交互或取消恢复机制，技术设计所需的因果关系成立。"
+    },
+    {
+      "type": "cohesion",
+      "file": "translation-design.md",
+      "line": 46,
+      "prev_tail": "进度只表示本次有界窗口，不显示整书翻译百分比",
+      "next_head": "面板右上角叉在运行中明确标为「停止翻译并关闭」，先撤销当前运行代次，再取消网络与后续队列",
+      "label": "有关但转换突然",
+      "confidence": "中",
+      "reason": "在同一翻译设计内转换到另一个独立约束，非承接上一句结论。"
+    },
+    {
+      "type": "cohesion",
+      "file": "translation-design.md",
+      "line": 50,
+      "prev_tail": "用户再次开启才允许规划新窗口",
+      "next_head": "新增随读窗口规划器，与旧 page/chapter 恢复协议分开",
+      "label": "明确承接",
+      "confidence": "中",
+      "reason": "继续展开同一交互或取消恢复机制，技术设计所需的因果关系成立。"
+    },
+    {
+      "type": "cohesion",
+      "file": "translation-design.md",
+      "line": 52,
+      "prev_tail": "图片、标题、空白及没有可核对文本的扫描页不进入窗口",
+      "next_head": "默认当前可见页加紧邻两段",
+      "label": "明确承接",
+      "confidence": "中",
+      "reason": "继续展开同一交互或取消恢复机制，技术设计所需的因果关系成立。"
+    },
+    {
+      "type": "cohesion",
+      "file": "translation-design.md",
+      "line": 54,
+      "prev_tail": "紧邻两段可止于当前章结尾，用户实际进入下一章后重建窗口",
+      "next_head": "每次最多一个在途生成",
+      "label": "明确承接",
+      "confidence": "中",
+      "reason": "继续展开同一交互或取消恢复机制，技术设计所需的因果关系成立。"
+    },
+    {
+      "type": "cohesion",
+      "file": "translation-design.md",
+      "line": 56,
+      "prev_tail": "程序恢复锚点和异步译文重排不能被当成用户已阅读到新页，避免产生自触发的整书推进",
+      "next_head": "普通继续翻页重算窗口",
+      "label": "明确承接",
+      "confidence": "中",
+      "reason": "继续展开同一交互或取消恢复机制，技术设计所需的因果关系成立。"
+    },
+    {
+      "type": "cohesion",
+      "file": "translation-design.md",
+      "line": 58,
+      "prev_tail": "字体、对照顺序与间距只重排本地内容，不构成新的生成授权",
+      "next_head": "完整译文跳过且不重计点",
+      "label": "有关但转换突然",
+      "confidence": "中",
+      "reason": "在同一翻译设计内转换到另一个独立约束，非承接上一句结论。"
+    },
+    {
+      "type": "cohesion",
+      "file": "translation-design.md",
+      "line": 62,
+      "prev_tail": "运行上下文仅发送当前段和必需邻段，不包含整章、私人笔记或书内指令所要求的额外资料",
+      "next_head": "沿用 /api/library/books/:id/translate，不增设隐式自动翻译服务",
+      "label": "明确承接",
+      "confidence": "中",
+      "reason": "继续展开同一交互或取消恢复机制，技术设计所需的因果关系成立。"
+    },
+    {
+      "type": "cohesion",
+      "file": "translation-design.md",
+      "line": 64,
+      "prev_tail": "服务端检测到已断开后不再写响应",
+      "next_head": "translationRequestOptions 新增仅供服务内部传递的 signal，验证其 AbortSignal 形态",
+      "label": "明确承接",
+      "confidence": "中",
+      "reason": "继续展开同一交互或取消恢复机制，技术设计所需的因果关系成立。"
+    },
+    {
+      "type": "cohesion",
+      "file": "translation-design.md",
+      "line": 66,
+      "prev_tail": "不承诺供应商免除已经发生的成本",
+      "next_head": "客户端 stop 必须同步增加 generation 并撤销开关，再 Task.cancel",
+      "label": "有关但转换突然",
+      "confidence": "中",
+      "reason": "在同一翻译设计内转换到另一个独立约束，非承接上一句结论。"
+    },
+    {
+      "type": "cohesion",
+      "file": "translation-design.md",
+      "line": 68,
+      "prev_tail": "网络取消后的 URLError.cancelled 应映射为停止状态",
+      "next_head": "HTTP 断开可把取消传到供应商请求，但连接断开后客户端无法在同一响应中得到终态确认",
+      "label": "明确承接",
+      "confidence": "中",
+      "reason": "继续展开同一交互或取消恢复机制，技术设计所需的因果关系成立。"
+    },
+    {
+      "type": "cohesion",
+      "file": "translation-design.md",
+      "line": 72,
+      "prev_tail": "不能把账单余额变化或客户端计时当作取消回执",
+      "next_head": "取消的可执行定义须写清：取消先于服务器保存提交点，则结果不得保存、发布或加入离线缓存",
+      "label": "明确承接",
+      "confidence": "中",
+      "reason": "继续展开同一交互或取消恢复机制，技术设计所需的因果关系成立。"
+    },
+    {
+      "type": "cohesion",
+      "file": "translation-design.md",
+      "line": 74,
+      "prev_tail": "已确认完成的结果不能因断网被描述成已撤销",
+      "next_head": "当前 local rawMutate 在 callback 后还有 mkdir、writeFile、rename，hosted store 同样存在网络持久化边界",
+      "label": "明确承接",
+      "confidence": "中",
+      "reason": "继续展开同一交互或取消恢复机制，技术设计所需的因果关系成立。"
+    },
+    {
+      "type": "cohesion",
+      "file": "translation-design.md",
+      "line": 76,
+      "prev_tail": "若本轮只完成常见路径，应将这个窄竞态列为未验收，不能写 R12 完整通过",
+      "next_head": "每段先把 request ID、报价、body、owner、目标语言与 contentVersion 落入 pending，再 POST",
+      "label": "有关但转换突然",
+      "confidence": "中",
+      "reason": "在同一翻译设计内转换到另一个独立约束，非承接上一句结论。"
+    },
+    {
+      "type": "cohesion",
+      "file": "translation-design.md",
+      "line": 78,
+      "prev_tail": "认证失败、429、超时和连接中断均不能证明未生成或未计点",
+      "next_head": "已有 resultsaved/settled 与持久译文 generationReceipt 的恢复规则必须保留",
+      "label": "明确承接",
+      "confidence": "中",
+      "reason": "继续展开同一交互或取消恢复机制，技术设计所需的因果关系成立。"
+    },
+    {
+      "type": "cohesion",
+      "file": "translation-design.md",
+      "line": 93,
+      "prev_tail": "同一账号其他客户端的成功结果可正常同步，但不能被当前已撤销运行冒充为其成功",
+      "next_head": "自动化先用合成文本和受控假供应商，不请求真实付费模型",
+      "label": "有关但转换突然",
+      "confidence": "中",
+      "reason": "在同一翻译设计内转换到另一个独立约束，非承接上一句结论。"
+    },
+    {
+      "type": "cohesion",
+      "file": "translation-design.md",
+      "line": 103,
+      "prev_tail": "需要的测试按行为组织：",
+      "next_head": "模拟器再记录 320/375/390/430 点宽、横屏、最大辅助字号、深浅主题、VoiceOver 和减少动态",
+      "label": "有关但转换突然",
+      "confidence": "中",
+      "reason": "在同一翻译设计内转换到另一个独立约束，非承接上一句结论。"
+    },
+    {
+      "type": "cohesion",
+      "file": "translation-design.md",
+      "line": 107,
+      "prev_tail": "测量开启开关、停止按钮和配置变化至本地可见反馈的耗时，并记录主线程最慢布局，模型耗时单列",
+      "next_head": "评分只给已实际验证的行为",
+      "label": "有关但转换突然",
+      "confidence": "中",
+      "reason": "在同一翻译设计内转换到另一个独立约束，非承接上一句结论。"
+    },
+    {
+      "type": "cohesion",
+      "file": "translation-design.md",
+      "line": 117,
+      "prev_tail": "此次仅做源码设计，未运行测试或设备验收，不能将方案完整度计入产品通过分",
+      "next_head": "实施审阅时按功能30、交互25、性能25、边界20逐项赋分，并记录测试命令、结果、截图与耗时",
+      "label": "明确承接",
+      "confidence": "中",
+      "reason": "继续展开同一交互或取消恢复机制，技术设计所需的因果关系成立。"
+    },
+    {
+      "type": "cohesion",
+      "file": "translation-design.md",
+      "line": 119,
+      "prev_tail": "取消只挡UI、持续无界生成、译文错配或读取越权属于阻断，不能用其他分数抵消",
+      "next_head": "尚待实际验证的边界包括 Vercel 响应 close 对客户端 URLSession 取消的传播、供应商对 abort 的网络行为、保存提交点竞态、本地与 hosted 写入的一致性、复杂语言检测以及真机大字/选文",
+      "label": "有关但转换突然",
+      "confidence": "中",
+      "reason": "在同一翻译设计内转换到另一个独立约束，非承接上一句结论。"
+    },
+    {
+      "type": "cohesion",
+      "file": "translation-design.md",
+      "line": 125,
+      "prev_tail": "生产、TestFlight 和真机验收继续单独记录",
+      "next_head": "中文文案按已授权的 lieflat-less-ai-tone 流程检测并最小复核",
+      "label": "有关但转换突然",
+      "confidence": "中",
+      "reason": "在同一翻译设计内转换到另一个独立约束，非承接上一句结论。"
+    }
+  ],
+  "colon": [
+    {
+      "type": "colon",
+      "file": "translation-design.md",
+      "line": 3,
+      "colon_before": "日期",
+      "colon_after": "2026-11-05。范围：iPhone 阅读翻译，及其必需的共用服务取消链路。本报告只完成源码审阅与设计，未修改产品代",
+      "sentence": "日期：2026-11-05。范围：iPhone 阅读翻译，及其必需的共用服务取消链路。本报告只完成源码审阅与设计，未修改产品代码，未运行构建、模型请求或真机测试。实施与最终验收由主执行者统一完成。",
+      "label": "标题时间比例元数据或版式用途",
+      "confidence": "高",
+      "reason": "日期元数据或API路径冒号，不属于正文结论提示。"
+    },
+    {
+      "type": "colon",
+      "file": "translation-design.md",
+      "line": 42,
+      "colon_before": "用户首次开启时展示一次具体范围与计点说明",
+      "colon_after": "「从当前页开始，准备本页和紧邻两段；每段最多 1 点，逐段核对报价。移动到新页后，按同一窗口继续。关闭即停止。」展示当前",
+      "sentence": "用户首次开启时展示一次具体范围与计点说明：「从当前页开始，准备本页和紧邻两段；每段最多 1 点，逐段核对报价。移动到新页后，按同一窗口继续。关闭即停止。」展示当前窗口的段数与最大点数，单段报价仍逐次校验，不再每段确认。计点价或模型策略变化超",
+      "label": "定义或解释",
+      "confidence": "高",
+      "reason": "给出具体UI说明、枚举状态或取消定义，不是结论后再论证。"
+    },
+    {
+      "type": "colon",
+      "file": "translation-design.md",
+      "line": 44,
+      "colon_before": "运行状态按实际事件显示",
+      "colon_after": "正在核对范围、正在翻译当前段、当前范围已准备、正在停止、已停止、停止结果待核对、失败可重试。范围已完成后静止等待，不能通",
+      "sentence": "运行状态按实际事件显示：正在核对范围、正在翻译当前段、当前范围已准备、正在停止、已停止、停止结果待核对、失败可重试。范围已完成后静止等待，不能通过「下一步」自动扩大窗口。进度只表示本次有界窗口，不显示整书翻译百分比。",
+      "label": "定义或解释",
+      "confidence": "高",
+      "reason": "给出具体UI说明、枚举状态或取消定义，不是结论后再论证。"
+    },
+    {
+      "type": "colon",
+      "file": "translation-design.md",
+      "line": 62,
+      "colon_before": "沿用 `/api/library/books/",
+      "colon_after": "id/translate`，不增设隐式自动翻译服务。路由创建 AbortController，`res.once('cl",
+      "sentence": "沿用 `/api/library/books/:id/translate`，不增设隐式自动翻译服务。路由创建 AbortController，`res.once('close', onClose)` 在响应未结束时 abort，finall",
+      "label": "标题时间比例元数据或版式用途",
+      "confidence": "高",
+      "reason": "日期元数据或API路径冒号，不属于正文结论提示。"
+    },
+    {
+      "type": "colon",
+      "file": "translation-design.md",
+      "line": 72,
+      "colon_before": "取消的可执行定义须写清",
+      "colon_after": "取消先于服务器保存提交点，则结果不得保存、发布或加入离线缓存；保存提交点已完成后才收到取消，保留已完成译文并核对相同请求",
+      "sentence": "取消的可执行定义须写清：取消先于服务器保存提交点，则结果不得保存、发布或加入离线缓存；保存提交点已完成后才收到取消，保留已完成译文并核对相同请求的点数。已确认完成的结果不能因断网被描述成已撤销。",
+      "label": "定义或解释",
+      "confidence": "高",
+      "reason": "给出具体UI说明、枚举状态或取消定义，不是结论后再论证。"
+    }
+  ],
+  "iso3": []
+}

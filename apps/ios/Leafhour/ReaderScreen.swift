@@ -54,7 +54,7 @@ private struct ReaderChromeHeightKey: PreferenceKey {
     }
 }
 enum ReaderPanel: Identifiable {
-    case contents, search, preferences, appearance, records, tools, listening, time, autoPage, translation, pageTranslation, introduction, conversation, bookInformation, note(SelectedQuote), source(SelectedQuote), companion(SelectedQuote?), share(SelectedQuote?)
+    case contents, search, preferences, appearance, records, tools, listening, time, autoPage, translation, pageTranslation, introduction, readingGuide, bookmarks, conversation, bookInformation, note(SelectedQuote), source(SelectedQuote), companion(SelectedQuote?), share(SelectedQuote?)
     var isCompanion: Bool { switch self { case .companion, .conversation: true; default: false } }
     var isNoteEditor: Bool { if case .note = self { true } else { false } }
     var id: String {
@@ -63,6 +63,7 @@ enum ReaderPanel: Identifiable {
         case .time: "time"; case .appearance: "appearance"; case .tools: "tools"; case .listening: "listening"; case .translation: "translation"; case .pageTranslation: "page-translation"
         case .autoPage: "auto-page"
         case .share(let quote): "share-" + (quote?.id ?? "book")
+        case .readingGuide: "reading-guide"; case .bookmarks: "bookmarks"
         case .introduction: "introduction"; case .conversation: "conversation"; case .bookInformation: "book-information"
         case .note(let quote): "note-" + quote.id; case .source(let quote): "source-" + quote.id
         case .companion(let quote): "companion-" + (quote?.id ?? "current")
@@ -92,6 +93,13 @@ struct ReaderScreen: View {
     @State private var speechNavigationID: UUID?
     @State private var tools = ReaderCloudTools()
     @State private var reading = ReaderReadingContent()
+    @State private var guide = ReadingGuideController()
+    @State private var readingNavigationID = UUID()
+    @State private var conversationAutoLoad = true
+    @State private var bookmarkRanges: [ReaderBookmarkVisibleRange] = []
+    @State private var bookmarkPull: ReaderBookmarkPullFeedback = .idle
+    @State private var bookmarkMessage: String?
+    @State private var bookmarkSaving = false
     @State private var clockID = UUID()
     @State private var bottomBarFocused = false
     @State private var pagePosition: ReaderPagePosition?
@@ -124,6 +132,12 @@ struct ReaderScreen: View {
     }
     private var presentedReader: some View {
         ReaderBackgroundSurface(isCovered: panel?.isCompanion == true || panel?.id == "listening" || scenePhase != .active) { readingSurface }.equatable()
+        .safeAreaInset(edge: .top, spacing: 4) {
+            if !guide.dismissed {
+                ReaderReadingGuideCompact(controller: guide, onOpen: { present(.readingGuide) })
+                    .frame(minHeight: 72).padding(.horizontal, 12)
+            }
+        }
         .preferredColorScheme(session.state.preferences.colorScheme(following: systemColorScheme))
         .statusBarHidden(true)
         .interactiveDismissDisabled(panel?.isCompanion != true && (session.saving || session.saveError != nil))
@@ -137,10 +151,10 @@ struct ReaderScreen: View {
             hasNativeTextSelection = false; session.clearTransientSelection(); selectionDismissalID = UUID(); chrome = .asleep
             if startAutoPageOnDismiss { startAutoPageOnDismiss = false; beginAutoPaging() }
         }) { destination in
-            ReaderPanelView(panel: destination, session: session, systemColorScheme: systemColorScheme, speech: speech, tools: tools, cloud: cloud, library: library, reading: reading, visiblePage: visiblePage,
-                onJump: { index, anchor in speech.userNavigated(); session.go(to: index, anchor: anchor); panel = nil; session.setReadingVisible(scenePhase == .active && !speech.playing); session.recordReadingInteraction() }, onCompanion: { showCompanion(currentQuote) },
-                autoPage: autoPage, onAutoPageStart: startAutoPaging, onPresent: present)
-                .modifier(ReaderPanelPresentation(isCompanion: destination.isCompanion, isNoteEditor: destination.isNoteEditor, startsExpanded: destination.id == "time"))
+            ReaderPanelView(panel: destination, session: session, systemColorScheme: systemColorScheme, speech: speech, tools: tools, cloud: cloud, library: library, reading: reading, visiblePage: visiblePage, readingNavigationID: readingNavigationID, readingGuide: guide, activeBookmarkID: activeBookmark?.id, currentBookmarkCapture: bookmarkRanges.first?.capture, conversationAutoLoad: conversationAutoLoad,
+                onJump: { index, anchor in reading.suspendForUserNavigation(); readingNavigationID = UUID(); speech.userNavigated(); session.go(to: index, anchor: anchor); panel = nil; session.setReadingVisible(scenePhase == .active && !speech.playing); session.recordReadingInteraction() }, onCompanion: { showCompanion(currentQuote) },
+                autoPage: autoPage, onAutoPageStart: startAutoPaging, onPresent: present, onUserNavigate: { reading.suspendForUserNavigation(); readingNavigationID = UUID() }, onPreparedConversation: presentPreparedGuideConversation)
+                .modifier(ReaderPanelPresentation(isCompanion: destination.isCompanion, isNoteEditor: destination.isNoteEditor, startsExpanded: destination.id == "time" || destination.id == "reading-guide"))
         }
         .alert(session.saveError == nil ? "阅读提示" : "阅读记录", isPresented: Binding(get: { session.message != nil || (session.noteEditorID == nil && session.saveMessage != nil) }, set: { if !$0 { session.message = nil; session.saveMessage = nil } })) {
             if session.saveError != nil {
@@ -167,7 +181,7 @@ struct ReaderScreen: View {
                     }, onWake: wake, onReadingScroll: readingDidScroll, onPageChange: { pagePosition = $0 }, onVisiblePage: receiveVisiblePage, speechHighlight: speech.highlight, followsSpeech: speech.following && !speech.readerIsInteracting,
                         onReadingPosition: { speech.updateVisible($0) }, onTouchActivity: readingTouchChanged,
                         isReadingSurfaceActive: panel == nil && scenePhase == .active,
-                        pageRequest: autoPage.pageRequest, onPageRequestResult: autoPage.receive)
+                        pageRequest: autoPage.pageRequest, onPageRequestResult: autoPage.receive, onBookmark: addBookmark, onBookmarkPull: { bookmarkPull = $0 }, onBookmarkViewport: { bookmarkRanges = $0 })
                     .safeAreaInset(edge: .bottom, spacing: 0) {
                         if needsPDFSourceFallback {
                             Text("此页没有可对照文字，先显示原页。")
@@ -188,7 +202,16 @@ struct ReaderScreen: View {
                         onPageChange: { pagePosition = $0 }, onVisiblePage: receiveVisiblePage, speechHighlight: speech.highlight, followsSpeech: speech.following && !speech.readerIsInteracting,
                         onReadingPosition: { speech.updateVisible($0) }, onTouchActivity: readingTouchChanged,
                         isReadingSurfaceActive: panel == nil && scenePhase == .active,
-                        pageRequest: autoPage.pageRequest, onPageRequestResult: autoPage.receive)
+                        pageRequest: autoPage.pageRequest, onPageRequestResult: autoPage.receive, onBookmark: addBookmark, onBookmarkPull: { bookmarkPull = $0 }, onBookmarkViewport: { bookmarkRanges = $0 }, onBookmarkCapture: { addBookmark(capture: $0) })
+                }
+                if chrome == .asleep, activeBookmark != nil {
+                    VStack { HStack { Spacer(); bookmarkButton }.padding(.trailing, 4); Spacer() }
+                }
+                if bookmarkPull != .idle || bookmarkMessage != nil {
+                    Text(bookmarkMessage ?? (bookmarkPull == .armed ? "松开添加书签" : "下拉添加书签"))
+                        .font(.caption).padding(.horizontal, 14).padding(.vertical, 8)
+                        .background(.regularMaterial, in: Capsule()).padding(.top, 48)
+                        .allowsHitTesting(false).accessibilityIdentifier("reader-bookmark-feedback")
                 }
                 VStack(spacing: 0) {
                     // Measure the same real controls while asleep. Hiding or waking
@@ -291,9 +314,10 @@ struct ReaderScreen: View {
         .overlay {
             if panel?.id == "contents" {
                 ReaderContentsOverlay(session: session, onJump: { index, anchor in
+                    reading.suspendForUserNavigation(); readingNavigationID = UUID()
                     speech.userNavigated(); session.go(to: index, anchor: anchor); panel = nil
                     session.setReadingVisible(scenePhase == .active && !speech.playing); session.recordReadingInteraction()
-                }, onClose: { panel = nil })
+                }, onClose: { panel = nil }, cloud: cloud, library: library)
             }
         }
     }
@@ -302,7 +326,11 @@ struct ReaderScreen: View {
         .modifier(ReaderTimeTracking(session: session, visible: scenePhase == .active && panel == nil && !speech.playing))
         .safeAreaInset(edge: .top, spacing: 0) { remotePositionNotice }
         .onChange(of: autoPageConditions, initial: true) { _, conditions in autoPage.update(conditions, navigationID: session.navigationID) }
-        .onChange(of: session.navigationID) { _, id in autoPage.update(autoPageConditions, navigationID: id) }
+        .onChange(of: session.navigationID) { _, id in
+            reading.suspendForUserNavigation()
+            bookmarkRanges = []; bookmarkPull = .idle
+            autoPage.update(autoPageConditions, navigationID: id)
+        }
         .onChange(of: session.state.preferences) { old, new in
             if old != new { autoPage.pause(.layout) }
             if old.speechSpeed != new.speechSpeed { speech.speed = new.speechSpeed }
@@ -382,6 +410,15 @@ struct ReaderScreen: View {
             let scheme = session.state.preferences.colorScheme(following: systemColorScheme)
             await speech.prepareArtwork(session, cloud: cloud, library: library, traits: UITraitCollection(userInterfaceStyle: scheme == .dark ? .dark : .light))
         }
+        .task(id: "\(session.book.sourceVersion):\(session.packageVerificationPending):\(scenePhase)") {
+            guard scenePhase == .active, !session.packageVerificationPending, session.packageVerificationError == nil else { guide.cancel(); return }
+            await guide.prepare(session: session, library: library, cloud: cloud)
+        }
+        .task(id: bookmarkMessage) {
+            guard bookmarkMessage != nil else { return }
+            do { try await Task.sleep(for: .milliseconds(1500)) } catch { return }
+            guard !Task.isCancelled else { return }; bookmarkMessage = nil
+        }
         .onAppear { configureReading() }
         .onDisappear(perform: releaseReadingResources)
     }
@@ -415,8 +452,8 @@ struct ReaderScreen: View {
             }
     }
     private func releaseReadingResources() {
-        autoPage.stop(); speech.stop(); speech.releasePresentation(); reading.stop()
-        reading.requestPreparation = nil; reading.requestPassagePreparation = nil; reading.confirmPreparation = nil
+        autoPage.stop(); speech.stop(); speech.releasePresentation(); reading.stop(); guide.cancel()
+        reading.requestPreparation = nil; reading.requestPassagePreparation = nil; reading.confirmPreparation = nil; reading.requestFollowingPreparation = nil
     }
     @ViewBuilder private var remotePositionNotice: some View {
         if positionConflict {
@@ -443,6 +480,7 @@ struct ReaderScreen: View {
         autoPage.setInterval(session.state.preferences.autoPageInterval)
         tools.configure(library: library, localBookID: session.book.id)
         reading.setForeground(scenePhase == .active)
+        reading.requestFollowingPreparation = { present(.pageTranslation) }
         let reading = reading, session = session, cloud = cloud, library = library
         reading.requestPreparation = { [weak reading] in
             guard let reading else { return }
@@ -499,6 +537,7 @@ struct ReaderScreen: View {
                 HStack {
                     backButton(compact: false)
                     Spacer(minLength: 8)
+                    bookmarkButton
                     moreButton(compact: false)
                 }
                 bookTitleButton(compact: false)
@@ -507,8 +546,36 @@ struct ReaderScreen: View {
             HStack {
                 backButton(compact: compact)
                 bookTitleButton(compact: compact)
+                bookmarkButton
                 moreButton(compact: compact)
             }
+        }
+    }
+    private var activeBookmark: ReaderBookmark? { session.bookmarks(in: bookmarkRanges).first }
+    private var bookmarkButton: some View {
+        Button {
+            if activeBookmark != nil { present(.bookmarks) }
+            else if let capture = bookmarkRanges.first?.capture { addBookmark(capture: capture) }
+        } label: {
+            Image(systemName: activeBookmark == nil ? "bookmark" : "bookmark.fill")
+                .foregroundStyle(activeBookmark?.color.swiftUIColor ?? Color.leafInk)
+                .frame(minWidth: 44, minHeight: 44).contentShape(Rectangle())
+        }.buttonStyle(.plain).disabled(bookmarkSaving || session.packageVerificationError != nil || bookmarkRanges.isEmpty)
+            .accessibilityLabel(activeBookmark == nil ? "添加当前位置书签" : "编辑本页书签")
+            .accessibilityValue(activeBookmark.map { session.isBookmarkPersisted(id: $0.id) ? $0.color.name : "书签尚未保存" } ?? "尚未添加")
+            .accessibilityIdentifier("reader-bookmark")
+            .contextMenu { Button("查看本书书签", systemImage: "bookmark") { present(.bookmarks) } }
+    }
+    private func addBookmark(_ anchor: ReadingAnchor?) {
+        guard let anchor else { bookmarkMessage = "当前位置尚未准备好"; return }
+        addBookmark(capture: ReaderBookmarkCapture(anchor: anchor))
+    }
+    private func addBookmark(capture: ReaderBookmarkCapture) {
+        guard !bookmarkSaving else { return }
+        bookmarkSaving = true
+        Task {
+            let result = await session.addBookmark(capture: capture)
+            bookmarkMessage = result.message; bookmarkSaving = false; bookmarkPull = .idle
         }
     }
     private func backButton(compact: Bool) -> some View {
@@ -586,24 +653,33 @@ struct ReaderScreen: View {
         "\(session.book.id):\(session.book.sourceVersion):\(session.book.cloud?.ownerID ?? "device"):\(session.state.preferences.theme):\(session.state.preferences.fontStyle.rawValue):\(session.state.preferences.latinFont.rawValue):\(systemColorScheme == .dark)"
     }
     private func receiveVisiblePage(_ page: ReaderVisiblePage?) {
-        if let page, page.isCurrent(session) { visiblePage = page }
+        if let page, page.isCurrent(session) {
+            visiblePage = page
+            let marker = readingNavigationID
+            Task { await reading.follow(session, cloud: cloud, library: library, page: page, userNavigationID: marker) }
+        }
         else if visiblePage?.isCurrent(session) != true { visiblePage = nil }
     }
     private func jumpChapter(_ delta: Int) {
         let index = session.chapterIndex + delta
         guard session.book.chapters.indices.contains(index) else { return }
+        reading.suspendForUserNavigation(); readingNavigationID = UUID()
         autoPage.pause(.interaction); speech.userNavigated(); session.go(to: index)
         hasNativeTextSelection = false; session.clearTransientSelection(); selectionDismissalID = UUID(); chrome = .tools; clockID = UUID()
     }
     private func revealProgress() { progressVisible = true; progressPulse = UUID() }
-    private func readingDidScroll() { revealProgress(); autoPage.pause(.interaction); session.recordReadingInteraction(); speech.userNavigated(); hasNativeTextSelection = false; session.clearTransientSelection(); selectionDismissalID = UUID(); sleepChrome() }
+    private func readingDidScroll() { reading.suspendForUserNavigation(); readingNavigationID = UUID(); revealProgress(); autoPage.pause(.interaction); session.recordReadingInteraction(); speech.userNavigated(); hasNativeTextSelection = false; session.clearTransientSelection(); selectionDismissalID = UUID(); sleepChrome() }
     private func wake(_: ReaderChrome) { session.recordReadingInteraction(); withAnimation(reduceMotion ? nil : .easeOut(duration: 0.16)) { chrome = chrome == .tools ? .asleep : .tools } }
     private func revealTools() {
         autoPage.pause(.interaction)
         withAnimation(reduceMotion ? nil : .easeOut(duration: 0.16)) { chrome = .tools }
         clockID = UUID()
     }
-    private func present(_ value: ReaderPanel) { session.setReadingVisible(false); autoPage.pause(.panel); panel = value; chrome = .asleep }
+    private func present(_ value: ReaderPanel) { conversationAutoLoad = true; session.setReadingVisible(false); autoPage.pause(.panel); panel = value; chrome = .asleep }
+    private func presentPreparedGuideConversation() -> Bool {
+        guard panel?.id == "reading-guide", scenePhase == .active, session.packageVerificationError == nil else { return false }
+        present(.conversation); conversationAutoLoad = false; return true
+    }
     private var autoPageConditions: ReaderAutoPageConditions {
         ReaderAutoPageConditions(isForeground: scenePhase == .active,
             isPaged: session.state.preferences.navigationMode == .paged,

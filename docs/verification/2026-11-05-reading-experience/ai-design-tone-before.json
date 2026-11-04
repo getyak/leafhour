@@ -1,0 +1,210 @@
+{
+ "meta": {
+  "篇数": 1,
+  "万汉字": 0.48,
+  "段数": 33,
+  "小标题数": 13
+ },
+ "density": {
+  "翻案腔": 0.0,
+  "提示语冒号": 0.0,
+  "起手式": 0.0,
+  "当…时从句": 0.21,
+  "前置话题壳": 0.0,
+  "句首连接词": 0.0,
+  "顿号并列≥3": 5.892,
+  "过长前置定语": 0.0,
+  "拟人化喻体": 0.0,
+  "概括替代(已否决)": 0.0,
+  "序数词小标题(已否决)": 0.0,
+  "「这意味着」复述(已否决)": 0.0,
+  "空转句引列表(已否决)": 0.421
+ },
+ "char_density": {
+  "破折号": 0.0,
+  "分号": 21.675,
+  "引号": 0.842
+ },
+ "hits": {
+  "翻案腔": [],
+  "提示语冒号": [],
+  "起手式": [],
+  "当…时从句": [
+   {
+    "file": "ai-design.md",
+    "line": 29,
+    "excerpt": "当前书时，"
+   }
+  ],
+  "前置话题壳": [],
+  "句首连接词": [],
+  "顿号并列≥3": [
+   {
+    "file": "ai-design.md",
+    "line": 15,
+    "excerpt": "ools.swift:13`、`:397`、`:666` | `Read"
+   },
+   {
+    "file": "ai-design.md",
+    "line": 16,
+    "excerpt": "账号／书／原文版本缓存、租约、取消后校验 | 可复用并发与"
+   },
+   {
+    "file": "ai-design.md",
+    "line": 17,
+    "excerpt": "or.mjs:2` | 书名、作者、最多 24 个目录标题"
+   },
+   {
+    "file": "ai-design.md",
+    "line": 20,
+    "excerpt": " | 仅当前本机书的只读分页、目录、检索"
+   },
+   {
+    "file": "ai-design.md",
+    "line": 29,
+    "excerpt": "书页、目录、选择"
+   },
+   {
+    "file": "ai-design.md",
+    "line": 31,
+    "excerpt": "重新打开、切段、改变字号"
+   },
+   {
+    "file": "ai-design.md",
+    "line": 51,
+    "excerpt": "保存前再次核对账号、书、版本与任务标识"
+   },
+   {
+    "file": "ai-design.md",
+    "line": 57,
+    "excerpt": "不由 GET、SSR、导出或后台任务隐式触发"
+   },
+   {
+    "file": "ai-design.md",
+    "line": 59,
+    "excerpt": "每段携带 chapterId、passageId、版本及实际取样范围"
+   },
+   {
+    "file": "ai-design.md",
+    "line": 91,
+    "excerpt": "失败、取消、等待"
+   },
+   {
+    "file": "ai-design.md",
+    "line": 93,
+    "excerpt": "个追问分别可澄清回答中的概念、联系实际例子、核对原文或未决处"
+   },
+   {
+    "file": "ai-design.md",
+    "line": 93,
+    "excerpt": "每条是完整、简短、可直接发出的问句"
+   },
+   {
+    "file": "ai-design.md",
+    "line": 95,
+    "excerpt": "不读数据、不写书房、不发消息"
+   },
+   {
+    "file": "ai-design.md",
+    "line": 99,
+    "excerpt": "不在重新打开、翻阅历史、切换语言或展开回答时重算"
+   },
+   {
+    "file": "ai-design.md",
+    "line": 120,
+    "excerpt": "正文仍可选择、复制、引用"
+   },
+   {
+    "file": "ai-design.md",
+    "line": 122,
+    "excerpt": "然后冻结当前身份、书、版本"
+   },
+   {
+    "file": "ai-design.md",
+    "line": 134,
+    "excerpt": "or.mjs` | 结构校验、取样边界、两路 ensure"
+   },
+   {
+    "file": "ai-design.md",
+    "line": 140,
+    "excerpt": "ft` | 类型化前导／追问、历史与终态解码、分离 guideLoadin"
+   },
+   {
+    "file": "ai-design.md",
+    "line": 142,
+    "excerpt": "t` | 进入后的非阻塞准备、预览关闭状态、原生完整前导"
+   },
+   {
+    "file": "ai-design.md",
+    "line": 153,
+    "excerpt": " / 2 / 3 / 4 条、空串、同义近重复"
+   },
+   {
+    "file": "ai-design.md",
+    "line": 156,
+    "excerpt": "机与辅助功能 | 窄屏／横屏、最大字号、VoiceOver"
+   },
+   {
+    "file": "ai-design.md",
+    "line": 156,
+    "excerpt": "切后台、断网、账号切换"
+   },
+   {
+    "file": "ai-design.md",
+    "line": 166,
+    "excerpt": "| 功能 | 8 | 云书、本机书、无正文文件都完成相应诚实路径"
+   },
+   {
+    "file": "ai-design.md",
+    "line": 170,
+    "excerpt": "大字、窄屏、VoiceOver"
+   },
+   {
+    "file": "ai-design.md",
+    "line": 175,
+    "excerpt": "默认不读网络、其他书、私人笔记"
+   },
+   {
+    "file": "ai-design.md",
+    "line": 185,
+    "excerpt": "覆盖只读打开、重复点击、取消"
+   },
+   {
+    "file": "ai-design.md",
+    "line": 187,
+    "excerpt": "未安装依赖、未测试真实账号、未产生云端书籍／笔记／对话数"
+   },
+   {
+    "file": "ai-design.md",
+    "line": 187,
+    "excerpt": "未执行 Swift 构建、模拟器、真机"
+   }
+  ],
+  "过长前置定语": [],
+  "拟人化喻体": [],
+  "概括替代(已否决)": [],
+  "序数词小标题(已否决)": [],
+  "「这意味着」复述(已否决)": [],
+  "空转句引列表(已否决)": [
+   {
+    "file": "ai-design.md",
+    "line": 35,
+    "excerpt": "不是某本书的真实导览："
+   },
+   {
+    "file": "ai-design.md",
+    "line": 61,
+    "excerpt": "模型只产生文案及资料内的引用标识："
+   }
+  ]
+ },
+ "syn_hits": [],
+ "structure": {
+  "句长CV": 0.467,
+  "节长CV": 0.623,
+  "小标题/千字": 2.736,
+  "两句同构/百段": 18.18,
+  "三句同构/百段": 0.0,
+  "mtld粗估": 1577
+ }
+}

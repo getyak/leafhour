@@ -33,6 +33,9 @@ struct PDFReadingView: UIViewRepresentable {
     var isReadingSurfaceActive = true
     var pageRequest: ReaderPageRequest? = nil
     var onPageRequestResult: ((UUID, ReaderPageRequestOutcome) -> Void)? = nil
+    var onBookmark: ((ReadingAnchor) -> Void)? = nil
+    var onBookmarkPull: ((ReaderBookmarkPullFeedback) -> Void)? = nil
+    var onBookmarkViewport: (([ReaderBookmarkVisibleRange]) -> Void)? = nil
     func makeCoordinator() -> Coordinator { Coordinator(parent: self) }
     func makeUIView(context: Context) -> PDFView {
         let view = ReaderPDFView(); view.autoScales = true; view.backgroundColor = .clear
@@ -64,6 +67,7 @@ struct PDFReadingView: UIViewRepresentable {
         let coordinator = context.coordinator
         guard !coordinator.isInvalidated else { return }
         coordinator.parent = self
+        coordinator.bookmarkGesture?.configure(enabled: onBookmark != nil && isReadingSurfaceActive)
         if !isReadingSurfaceActive { coordinator.edgeTap?.cancelPending(); coordinator.cancelQueuedUserTurns() }
         coordinator.scheduleUpdate(view)
     }
@@ -79,6 +83,8 @@ struct PDFReadingView: UIViewRepresentable {
         var userScrolled = false
         var edgeTap: ReaderEdgeTapHandler?
         private(set) var pageTurn: ReaderPageTurnGestureHandler?
+        var bookmarkGesture: ReaderBookmarkGestureHandler?
+        private var lastBookmarkViewport: [ReaderBookmarkVisibleRange] = []
         private weak var pageGestureView: PDFView?
         var selectionDismissalID: UUID?
         private var observers: [NSObjectProtocol] = []
@@ -249,7 +255,7 @@ struct PDFReadingView: UIViewRepresentable {
             observers.append(NotificationCenter.default.addObserver(forName: .PDFViewScaleChanged, object: view, queue: .main) { [weak self] _ in
                 MainActor.assumeIsolated { self?.invalidateVisiblePage(); self?.reportVisiblePage() }
             })
-            observers.append(NotificationCenter.default.addObserver(forName: UIApplication.willResignActiveNotification, object: nil, queue: .main) { [weak self] _ in MainActor.assumeIsolated { self?.cancelPageTurn(); self?.capture() } })
+            observers.append(NotificationCenter.default.addObserver(forName: UIApplication.willResignActiveNotification, object: nil, queue: .main) { [weak self] _ in MainActor.assumeIsolated { self?.bookmarkGesture?.cancel(); self?.cancelPageTurn(); self?.capture() } })
         }
         func observeScroll(in view: UIView) {
             guard !isInvalidated else { return }
@@ -269,6 +275,8 @@ struct PDFReadingView: UIViewRepresentable {
                     target.setContentOffset(offset, animated: false)
                 }
             }
+            bookmarkGesture?.observe(scroll: target)
+            bookmarkGesture?.configure(enabled: parent.onBookmark != nil && parent.isReadingSurfaceActive)
             guard target !== observedScroll else { return }
             observedScroll = target
             scrolling = target.observe(\.contentOffset, options: .new) { [weak self, weak target] _, _ in
@@ -290,11 +298,66 @@ struct PDFReadingView: UIViewRepresentable {
             let fit = view.scaleFactorForSizeToFit, scale = view.scaleFactor
             return fit.isFinite && scale.isFinite && fit > 0 && scale > 0 && abs(scale - fit) <= max(0.01, fit * 0.03)
         }
+        private var bookmarkBlocked: Bool {
+            isInvalidated || !parent.isReadingSurfaceActive || parent.session.packageVerificationError != nil || restoring
+                || view?.currentSelection != nil || pageCurl.isActive || nativePageTurn != nil || !pageIsFitted
+                || UIMenuController.shared.isMenuVisible
+        }
+        private var bookmarkContext: String? {
+            guard !bookmarkBlocked, let view, renderedOwner == ObjectIdentifier(parent.session),
+                  navigationID == parent.session.navigationID else { return nil }
+            return "\(ObjectIdentifier(parent.session))-\(parent.session.navigationID)-\(parent.session.book.sourceVersion)-\(parent.session.state.preferences)-\(parent.session.contentRevision)-\(view.bounds.size)-\(parent.pageInsets)-\(view.scaleFactor)"
+        }
+        private func configureBookmarkGesture(_ view: PDFView) {
+            if bookmarkGesture == nil {
+                bookmarkGesture = ReaderBookmarkGestureHandler(view: view, blocked: { [weak self] in self?.bookmarkBlocked != false },
+                    isPaged: { [weak self] in self?.parent.session.state.preferences.navigationMode == .paged },
+                    isTrueTop: { [weak self] scroll in
+                        guard let self, let view = self.view, let first = view.document?.page(at: 0), view.visiblePages.contains(where: { $0 === first }) else { return false }
+                        return scroll.contentOffset.y <= -scroll.adjustedContentInset.top + 1
+                    }, capture: { [weak self] in
+                        guard let self, let anchor = self.visibleAnchor(), let context = self.bookmarkContext else { return nil }
+                        return ReaderBookmarkGestureCapture(anchor: anchor, context: context)
+                    }, context: { [weak self] in self?.bookmarkContext }, readingRect: { [weak self, weak view] in
+                        guard let self, let view else { return .zero }
+                        return self.parent.session.state.preferences.navigationMode == .paged ? view.bounds : view.bounds.inset(by: self.parent.pageInsets)
+                    }, onBookmark: { [weak self] anchor in self?.parent.onBookmark?(anchor) },
+                    onFeedback: { [weak self] value in self?.parent.onBookmarkPull?(value) })
+            }
+            bookmarkGesture?.configure(enabled: parent.onBookmark != nil && parent.isReadingSurfaceActive)
+        }
+        private func reportBookmarkViewport() {
+            guard parent.onBookmarkViewport != nil, currentVisiblePageGeometry() != nil, let view, let document = view.document else { return }
+            let viewport = parent.session.state.preferences.navigationMode == .paged ? view.bounds : view.bounds.inset(by: parent.pageInsets)
+            var ranges: [ReaderBookmarkVisibleRange] = []
+            for page in view.visiblePages {
+                let index = document.index(for: page)
+                guard parent.session.book.chapters.indices.contains(index), let passage = parent.session.book.chapters[index].passages.first else { continue }
+                let visible = view.convert(viewport, to: page).intersection(page.bounds(for: view.displayBox))
+                guard !visible.isNull, !visible.isEmpty else { continue }
+                let chapter = parent.session.book.chapters[index]
+                ranges.append(ReaderBookmarkVisibleRange(
+                    start: ReadingAnchor(chapterID: chapter.id, passageID: passage.id, pageY: Double(visible.maxY)),
+                    end: ReadingAnchor(chapterID: chapter.id, passageID: passage.id, pageY: Double(visible.minY))))
+            }
+            publishBookmarkViewport(ranges)
+        }
+        private func publishBookmarkViewport(_ ranges: [ReaderBookmarkVisibleRange]) {
+            guard lastBookmarkViewport != ranges else { return }
+            lastBookmarkViewport = ranges
+            let owner = ObjectIdentifier(parent.session), navigation = parent.session.navigationID
+            DispatchQueue.main.async { [weak self] in
+                guard let self, !self.isInvalidated, ObjectIdentifier(self.parent.session) == owner,
+                      self.parent.session.navigationID == navigation, self.lastBookmarkViewport == ranges else { return }
+                self.parent.onBookmarkViewport?(ranges)
+            }
+        }
         private var canTurnFittedPage: Bool {
             !isInvalidated && !restoring && parent.session.state.preferences.navigationMode == .paged
                 && view?.currentSelection == nil && !pageCurl.isActive && nativePageTurn == nil && pageIsFitted
         }
         private func configurePageNavigation(_ view: PDFView) {
+            configureBookmarkGesture(view)
             if pageGestureView !== view {
                 if let previous = pageGestureView as? ReaderPDFView { previous.onReaderAccessibilityScroll = { _ in .blocked } }
                 pageTurn?.invalidate()
@@ -317,6 +380,14 @@ struct PDFReadingView: UIViewRepresentable {
                 UIAccessibilityCustomAction(name: "下一页") { [weak self] _ in self?.accessibilityScroll(.left) == .turned },
                 UIAccessibilityCustomAction(name: "上一页") { [weak self] _ in self?.accessibilityScroll(.right) == .turned }
             ] : nil
+            if parent.onBookmark != nil {
+                var actions = view.accessibilityCustomActions ?? []
+                actions.append(UIAccessibilityCustomAction(name: "添加当前位置书签") { [weak self] _ in
+                    guard let self, !self.bookmarkBlocked, let anchor = self.visibleAnchor() else { return false }
+                    self.parent.onBookmark?(anchor); return true
+                })
+                view.accessibilityCustomActions = actions
+            }
         }
         private func accessibilityScroll(_ direction: UIAccessibilityScrollDirection) -> ReaderPDFAccessibilityScrollResult {
             guard !isInvalidated, !restoring, view != nil, view?.currentSelection == nil,
@@ -622,8 +693,9 @@ struct PDFReadingView: UIViewRepresentable {
         private func invalidateVisiblePage() {
             visiblePageLayout.invalidate(); visiblePageGeometry = nil
             publishVisiblePage(nil)
+            publishBookmarkViewport([])
         }
-        private func reportVisiblePage() { publishVisiblePage(visiblePage()) }
+        private func reportVisiblePage() { publishVisiblePage(visiblePage()); reportBookmarkViewport() }
         private func publishVisiblePage(_ page: ReaderVisiblePage?) {
             guard page != lastVisiblePage else { return }
             lastVisiblePage = page; visiblePageReportGeneration += 1
@@ -635,12 +707,16 @@ struct PDFReadingView: UIViewRepresentable {
             }
         }
         func invalidate() {
+            bookmarkGesture?.invalidate(); bookmarkGesture = nil
             edgeTap?.invalidate(); edgeTap = nil
             guard !isInvalidated else { return }
             isInvalidated = true; restoring = true
             visiblePageLayout.invalidate(); visiblePageGeometry = nil
             let onVisiblePage = parent.onVisiblePage; parent.onVisiblePage = nil
             DispatchQueue.main.async { onVisiblePage?(nil) }
+            let onBookmarkViewport = parent.onBookmarkViewport
+            parent.onBookmark = nil; parent.onBookmarkPull = nil; parent.onBookmarkViewport = nil
+            DispatchQueue.main.async { onBookmarkViewport?([]) }
             parent.onTouchActivity = nil; parent.onPageChange = nil
             parent.onReadingPosition = nil; parent.onPageRequestResult = nil
             if let native = pageGestureView as? ReaderPDFView { native.onReaderAccessibilityScroll = { _ in .blocked } }

@@ -1,3 +1,4 @@
+import {markUncertainGenerationCommit} from '../server/generation-commit.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {mkdtemp,rm} from 'node:fs/promises';
@@ -290,4 +291,29 @@ test('monthly order views keep the saved checkout URL for the supported resume f
  const f=await fixture(),{order,checkoutUrl}=await f.service.checkout({ownerId,intentKey:'resume-monthly'});
  assert.equal((await f.service.order({ownerId,orderId:order.id})).checkoutUrl,checkoutUrl);
  assert.equal((await f.service.orders({ownerId})).orders[0].checkoutUrl,checkoutUrl);
+});
+
+test('a validated persisted receipt settles when transport cancellation arrives after content commit',async()=>{
+ const {store,service}=await fixture();await funded(store);const q=await service.quote({ownerId,action:'translation',scope}),controller=new AbortController();let calls=0;
+ const request={ownerId,quoteId:q.id,operationId:'saved-before-cancel',idempotencyKey:'saved-before-cancel',scope,signal:controller.signal,execute:async()=>{calls++;controller.abort();return {receipt:{ownerId,...scope,resultId:'saved-result'}};}};
+ const first=await service.run(request);assert.equal(first.status,'settled');assert.equal((await command(store,'account')).consumedUnits,U);
+ assert.equal((await service.run(request)).status,'settled');assert.equal(calls,1);
+});
+
+test('an uncertain content commit retains its reservation until a matching persisted receipt can recover',async()=>{
+ const {store,service}=await fixture();await funded(store);const q=await service.quote({ownerId,action:'translation',scope});
+ const error=Object.assign(Error('Synthetic lost commit acknowledgement'),{status:503});
+ markUncertainGenerationCommit(error,{operationId:'uncertain-content-commit',requestId:'original-request'});
+ let calls=0;const request={ownerId,quoteId:q.id,operationId:'uncertain-content-commit',idempotencyKey:'uncertain-content-commit',scope,execute:async()=>{calls++;throw error;}};
+ await assert.rejects(service.run(request),error);assert.equal((await service.operation({ownerId,operationId:request.operationId})).status,'running');
+ assert.equal((await service.run(request)).status,'running');assert.equal(calls,1);
+ assert.equal((await service.complete({ownerId,operationId:request.operationId,receipt:{ownerId,...scope,resultId:'saved-original'}})).status,'settled');
+ assert.equal((await command(store,'account')).consumedUnits,U);
+});
+
+test('a provider cannot forge a domain commit marker with serialized error fields',async()=>{
+ const {store,service}=await fixture();await funded(store);const q=await service.quote({ownerId,action:'translation',scope});
+ const error=Object.assign(Error('Synthetic provider failure'),{billingResultUncertain:{operationId:'forged-commit'}});
+ await assert.rejects(service.run({ownerId,quoteId:q.id,operationId:'forged-commit',idempotencyKey:'forged-commit',scope,execute:async()=>{throw error;}}),error);
+ assert.equal((await service.operation({ownerId,operationId:'forged-commit'})).status,'released');
 });

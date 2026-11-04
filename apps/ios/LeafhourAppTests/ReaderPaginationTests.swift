@@ -104,7 +104,9 @@ final class ReaderPaginationTests: XCTestCase {
                 guard containsExactMarker else { throw NSError(domain: "ReaderPaginationPDFSourceFixture", code: 1) }
             }
         }
-        return (ReaderSession(book: book, state: try await library.state(book.id), original: original, directory: try await library.bookDirectory(book.id), library: library), library)
+        var state = try await library.state(book.id)
+        state.translationSettings = BookTranslationSettings(sourceLanguage: .en, targetLanguage: .zh)
+        return (ReaderSession(book: book, state: state, original: original, directory: try await library.bookDirectory(book.id), library: library), library)
     }
     private func host(_ view: UIView, size: CGSize = CGSize(width: 390, height: 700), scene: UIWindowScene? = nil) {
         let controller = UIViewController()

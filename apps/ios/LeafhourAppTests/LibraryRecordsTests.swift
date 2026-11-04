@@ -55,8 +55,8 @@ final class LibraryRecordsTests: XCTestCase {
         await fulfillment(of: [started], timeout: 5)
         probe.summary = summary(900)
         let refresh = Task { await model.synchronize() }
-        for _ in 0..<200 where probe.libraryRequests < 2 { try await Task.sleep(for: .milliseconds(5)) }
-        XCTAssertGreaterThanOrEqual(probe.libraryRequests, 2)
+        for _ in 0..<200 where probe.libraryRequests < 1 { try await Task.sleep(for: .milliseconds(5)) }
+        XCTAssertGreaterThanOrEqual(probe.libraryRequests, 1, "The coalesced shelf uses one refresh before summary invalidation")
         probe.releaseSummary()
         await older.value; await refresh.value
         XCTAssertEqual(model.summary["allTime"]["durationSeconds"].number, 900)

@@ -105,7 +105,7 @@ final class LibraryPresentationTests: XCTestCase {
             cloud("z", title: "Unknown Z"), cloud("equal-z", title: "Equal Z", added: 30),
             cloud("a", title: "Unknown A"), cloud("equal-a", title: "Equal A", added: 30)
         ]
-        XCTAssertEqual(LibraryPresentation.items(local: [saved], cloud: remote).map(\.id), ["cloud:equal-z", "cloud:equal-a", "local:saved", "cloud:z", "cloud:a"])
+        XCTAssertEqual(LibraryPresentation.items(local: [saved], cloud: remote).map(\.id), ["cloud:equal-a", "cloud:equal-z", "local:saved", "cloud:z", "cloud:a"])
     }
 
     func testAddedOrderKeepsAdditionalLocalCopiesAndFallsBackWhenCloudDateIsUnknown() throws {
@@ -174,10 +174,10 @@ final class LibraryPresentationTests: XCTestCase {
         XCTAssertEqual(LibraryPresentation.items(local: [], cloud: shelf.books, filter: .unread, snapshot: shelf).map(\.id), ["cloud:b"])
     }
 
-    func testRecentSortUsesLocalActivityWithoutInventingItFromImportDates() throws {
+    func testRecentActivityIncludesNewImportsWithoutInventingReadingState() throws {
         let imported = try local("new-import", title: "New import", added: 100)
         let read = try local("read", title: "Actually read", added: 1)
-        XCTAssertEqual(LibraryPresentation.items(local: [imported, read], cloud: [], sort: .recent, localActivity: [read.id: Date(timeIntervalSince1970: 10)]).map(\.id), ["local:read", "local:new-import"])
+        XCTAssertEqual(LibraryPresentation.items(local: [imported, read], cloud: [], sort: .recent, localActivity: [read.id: Date(timeIntervalSince1970: 10)]).map(\.id), ["local:new-import", "local:read"])
         let activity = [read.id: Date(timeIntervalSince1970: 10)]
         XCTAssertEqual(LibraryPresentation.items(local: [imported, read], cloud: [], filter: .reading, localActivity: activity).map(\.id), ["local:read"])
         XCTAssertEqual(LibraryPresentation.items(local: [imported, read], cloud: [], filter: .unread, localActivity: activity).map(\.id), ["local:new-import"])
@@ -193,12 +193,26 @@ final class LibraryPresentationTests: XCTestCase {
         XCTAssertEqual(pins.ids(owner: "owner"), ["cloud:a", "cloud:missing", "local:device-book"], "Migration retains the original device preferences")
     }
 
-    func testDefaultRecentOrderKeepsReadingFirstAndUsesAdditionDateForUnread() throws {
+    func testDefaultRecentActivityLetsNewImportsAndActualReadingCompete() throws {
         let old = try local("old", title: "Old unread", added: 1)
         let new = try local("new", title: "New unread", added: 100)
         let read = try local("read", title: "Reading", added: 2)
-        XCTAssertEqual(LibraryPresentation.items(local: [old, read, new], cloud: [], localActivity: ["read": Date(timeIntervalSince1970: 10)]).map(\.id), ["local:read", "local:new", "local:old"])
+        XCTAssertEqual(LibraryPresentation.items(local: [old, read, new], cloud: [], localActivity: ["read": Date(timeIntervalSince1970: 10)]).map(\.id), ["local:new", "local:read", "local:old"])
+        XCTAssertEqual(LibraryPresentation.items(local: [old, read, new], cloud: [], localActivity: ["read": Date(timeIntervalSince1970: 101)]).map(\.id), ["local:read", "local:new", "local:old"])
         XCTAssertEqual(LibraryPresentation.items(local: [old, read, new], cloud: [], sort: .added, localActivity: ["read": Date(timeIntervalSince1970: 10)]).map(\.id), ["local:new", "local:read", "local:old"])
+    }
+
+    func testDefaultActivityDoesNotTreatDownloadingAnUndatedCloudBookAsANewAddition() throws {
+        let downloaded = try local("downloaded", title: "Old cloud copy", added: 100, cloudID: "legacy")
+        let added = try local("new-import", title: "Actually added", added: 50)
+        let remote = [cloud("legacy", title: "Old cloud copy")]
+        XCTAssertEqual(LibraryPresentation.items(local: [downloaded, added], cloud: remote).map(\.id), ["local:new-import", "cloud:legacy"])
+    }
+
+    func testEqualKnownActivityDatesUseStableIdentityAcrossServiceOrderChanges() {
+        let books = [cloud("z", title: "Z", added: 30), cloud("a", title: "A", added: 30)]
+        XCTAssertEqual(LibraryPresentation.items(local: [], cloud: books).map(\.id), ["cloud:a", "cloud:z"])
+        XCTAssertEqual(LibraryPresentation.items(local: [], cloud: books.reversed()).map(\.id), ["cloud:a", "cloud:z"])
     }
 
     func testLocalRemovalKeepsRecoveryIdentityAndPins() throws {

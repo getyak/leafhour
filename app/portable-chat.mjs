@@ -1,3 +1,4 @@
+import {normalizeChatGuideContext} from './chat-guide-context.mjs';
 import {normalizeChatReactionTargets,normalizeResolvedChatReactions} from './chat-reactions.mjs';
 import {validateHistoricalReadingChatQuote} from './reading-chat-quote.mjs';
 const fail=(message,status=400)=>{throw Object.assign(Error(message),{status});};
@@ -64,6 +65,7 @@ export function portableChatTurns(chat,book,books=[book]){
  const turns=chat.turns.map(t=>{
   const companion=t?.kind==='companion';
   if(!plain(t)||!id(t.id)||ids.has(t.id)||!passages.has(t.passageId)||t.contentVersion!==book.contentVersion||!date(t.createdAt)||t.origin!==(companion?'ai':'user')||!companion&&!text(t.text,Number.MAX_SAFE_INTEGER)||companion&&t.text!==null||!['running','completed','failed','cancelled'].includes(t.status))fail('备份对话的归属、版本或锚点不正确');
+  const guideContext=t.guideContext===undefined?undefined:normalizeChatGuideContext(t.guideContext);if(guideContext&&(companion||guideContext.bookId!==book.bookId||guideContext.contentVersion!==book.contentVersion))fail('备份阅读前导引用不属于当前书籍版本');
   const quote=t.quote===undefined?undefined:validateHistoricalReadingChatQuote(t.quote,book,{bounded:false});if(quote&&(companion||quote.parts[0].passageId!==t.passageId))fail('备份摘录的提问归属不正确');
   if(t.scopeRevision!==undefined&&(!Number.isSafeInteger(t.scopeRevision)||t.scopeRevision<0))fail('备份对话范围版本不正确');ids.add(t.id);let answer=null;
   if(t.status==='completed'){
@@ -75,7 +77,7 @@ export function portableChatTurns(chat,book,books=[book]){
    });
    if(companion&&new TextEncoder().encode(JSON.stringify(a)).length>96000)fail('备份 AI 回答超过容量限制');answer={kind:a.kind,summary:a.summary,origin:'ai',sourceRefs:refs,recommendations:recommendations(a.recommendations,sources),...(a.personSources!==undefined?{personSources:personCitations(a.personSources)}:{})};
   }else if(t.answer!==null&&t.answer!==undefined)fail('未完成对话不能携带回答');
-  return {...(t.reactions!==undefined?{reactions:normalizeResolvedChatReactions(t.reactions),reactionTargets:normalizeChatReactionTargets(t.reactionTargets)}:{}),id:t.id,passageId:t.passageId,contentVersion:t.contentVersion,...(t.scopeRevision!==undefined?{scopeRevision:t.scopeRevision}:{}),text:companion?null:t.text,...(t.voice!==undefined?{voice:normalizeChatVoiceReceipt(t.voice)}:{}),...(quote?{quote}:{}),...(t.replyTo!==undefined?{replyTo:normalizeChatReplyReference(t.replyTo)}:{}),origin:companion?'ai':'user',...(companion?{kind:'companion'}:{}),createdAt:t.createdAt,status:t.status==='running'?'failed':t.status,answer,activity:[],...(t.status==='running'?{error:'导入前的回答已中断，未恢复生成。'}:t.error?{error:String(t.error).slice(0,2000)}:{})};
+  return {...(t.reactions!==undefined?{reactions:normalizeResolvedChatReactions(t.reactions),reactionTargets:normalizeChatReactionTargets(t.reactionTargets)}:{}),id:t.id,passageId:t.passageId,contentVersion:t.contentVersion,...(t.scopeRevision!==undefined?{scopeRevision:t.scopeRevision}:{}),text:companion?null:t.text,...(guideContext?{guideContext}:{}),...(t.voice!==undefined?{voice:normalizeChatVoiceReceipt(t.voice)}:{}),...(quote?{quote}:{}),...(t.replyTo!==undefined?{replyTo:normalizeChatReplyReference(t.replyTo)}:{}),origin:companion?'ai':'user',...(companion?{kind:'companion'}:{}),createdAt:t.createdAt,status:t.status==='running'?'failed':t.status,answer,activity:[],...(t.status==='running'?{error:'导入前的回答已中断，未恢复生成。'}:t.error?{error:String(t.error).slice(0,2000)}:{})};
  });
  const byId=new Map(turns.map(t=>[t.id,t]));
  for(const turn of turns)if(turn.reactions){

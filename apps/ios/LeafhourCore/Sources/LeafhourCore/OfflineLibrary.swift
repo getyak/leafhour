@@ -16,6 +16,8 @@ public struct LocalReadingOpening: Sendable {
 public struct ReaderOpeningPreparation: Sendable {
     public let sourceLanguage: ReadingLanguage?
     public let verifiedResourcePaths: Set<String>
+    /// Exact source window already prepared during the critical resource check.
+    public let textWindow: ReadingTextWindow
 }
 
 public struct ReaderOpeningRecovery: Codable, Sendable {
@@ -200,10 +202,10 @@ public actor OfflineLibrary {
         let worker = Task.detached(priority: .utility) { try Task.checkCancellation(); return try operation() }
         return try await withTaskCancellationHandler { try await worker.value } onCancel: { worker.cancel() }
     }
-    private func build(source: URL, kind: BookKind, filename: String, id: String, destination: URL, preservedTextBook: LocalBook? = nil) throws -> LocalBook {
-        try Self.buildPackage(source: source, kind: kind, filename: filename, id: id, destination: destination, limits: limits, preservedTextBook: preservedTextBook)
+    private func build(source: URL, kind: BookKind, filename: String, id: String, destination: URL, preservedTextBook: LocalBook? = nil, translationDefaultsVersion: Int? = 1) throws -> LocalBook {
+        try Self.buildPackage(source: source, kind: kind, filename: filename, id: id, destination: destination, limits: limits, preservedTextBook: preservedTextBook, translationDefaultsVersion: translationDefaultsVersion)
     }
-    private nonisolated static func buildPackage(source: URL, kind: BookKind, filename: String, id: String, destination: URL, limits: ImportLimits, progress: @Sendable (ImportProgress) -> Void = { _ in }, preservedTextBook: LocalBook? = nil) throws -> LocalBook {
+    private nonisolated static func buildPackage(source: URL, kind: BookKind, filename: String, id: String, destination: URL, limits: ImportLimits, progress: @Sendable (ImportProgress) -> Void = { _ in }, preservedTextBook: LocalBook? = nil, translationDefaultsVersion: Int? = 1) throws -> LocalBook {
         try Disk.directory(destination)
         let copy = destination.appendingPathComponent("source." + kind.rawValue)
         try Disk.fm.copyItem(at: source, to: copy)
@@ -211,6 +213,7 @@ public actor OfflineLibrary {
         guard try Disk.hashFile(copy) == sourceDigest else { throw LibraryError.invalid("原件复制校验失败。") }
         var book = try preservedTextBook ?? BookParser.parse(source: copy, kind: kind, filename: filename, id: id, destination: destination, limits: limits, progress: progress)
         book.sourceVersion = "sha256-" + sourceDigest
+        book.translationDefaultsVersion = translationDefaultsVersion
         progress(ImportProgress(stage: .verifying))
         try Task.checkCancellation()
         try Disk.write(book, to: destination.appendingPathComponent("book.json"))
@@ -305,7 +308,8 @@ public actor OfflineLibrary {
         let saved = try state(id)
         let anchor = saved.anchor ?? prepared.readingStartAnchor
         let chapter = anchor.flatMap { a in prepared.chapters.first { $0.id == a.chapterID } } ?? prepared.chapters[0]
-        let resources = Set(ReadingTextWindow(chapter: chapter, anchor: anchor).slices.compactMap { $0.original.resourcePath })
+        let textWindow = ReadingTextWindow(chapter: chapter, anchor: anchor)
+        let resources = Set(textWindow.slices.compactMap { $0.original.resourcePath })
         for resource in resources {
             guard let file = manifest.files.first(where: { $0.path == "assets/" + resource }) else { throw LibraryError.invalid("当前书页资源没有校验记录，请从原件修复。") }
             try Self.verifyFile(file, directory: directory)
@@ -313,7 +317,7 @@ public actor OfflineLibrary {
         guard try readingStamps(criticalPaths, directory: directory) == stamps else { throw LibraryError.invalid("书籍在打开时发生变化，请重新打开。") }
         let marker = UUID(); readingOpenings[id] = marker
         return LocalReadingOpening(book: prepared, state: saved, original: try Disk.url(directory, source.path), directory: directory,
-                                   preparation: ReaderOpeningPreparation(sourceLanguage: language, verifiedResourcePaths: resources), id: marker, profile: root, stamps: stamps, indexDigest: index.sha256)
+                                   preparation: ReaderOpeningPreparation(sourceLanguage: language, verifiedResourcePaths: resources, textWindow: textWindow), id: marker, profile: root, stamps: stamps, indexDigest: index.sha256)
     }
     /// Hashes every retained file off this actor so reading checkpoints do not
     /// queue behind the full-book pass. The receipt is bound to one opening.
@@ -440,12 +444,18 @@ public actor OfflineLibrary {
         return manifest
     }
     public func state(_ id: String) throws -> ReaderState {
-        _ = try bookDirectory(id)
-        guard Disk.fm.fileExists(atPath: try bookDirectory(id).appendingPathComponent("manifest.json").path) else { throw LibraryError.invalid("此书不属于当前书房。") }
+        let directory = try bookDirectory(id)
+        guard Disk.fm.fileExists(atPath: directory.appendingPathComponent("manifest.json").path) else { throw LibraryError.invalid("此书不属于当前书房。") }
         let url = root.appendingPathComponent("states/" + id + ".json")
         let exists = Disk.fm.fileExists(atPath: url.path)
         var state: ReaderState
-        do { state = exists ? try Disk.read(ReaderState.self, from: url) : ReaderState() }
+        do {
+            if exists { state = try Disk.read(ReaderState.self, from: url) }
+            else {
+                state = ReaderState()
+                state.translationDefaultsVersion = try indexedBook(id, at: directory).translationDefaultsVersion
+            }
+        }
         catch { throw LibraryError.invalid("阅读记录无法读取，已保留原文件。请先导出恢复，勿重置。") }
         state.preferences = try readerPreferences(legacy: exists ? state.preferences : nil)
         return state
@@ -466,6 +476,7 @@ public actor OfflineLibrary {
         if let anchor = state.anchor { try validate(anchor) }
         for (key, draft) in state.drafts { try validate(draft.anchor); guard key == draft.id else { throw LibraryError.invalid("草稿引用无效。") } }
         for note in state.notes { try validate(note.anchor) }
+        try Self.validateBookmarks(state.bookmarks ?? [], in: book)
         try Self.validateReaderPreferences(state.preferences)
         try Disk.write(state, to: root.appendingPathComponent("states/" + bookID + ".json"))
     }
@@ -508,7 +519,8 @@ public actor OfflineLibrary {
         if (kind == .txt || kind == .markdown) && preserved == nil {
             throw LibraryError.invalid("原有文本索引无法验证，修复已停止，以免改变笔记和阅读位置。原件与记录仍保留；可在独立书房重新导入原件副本。")
         }
-        let rebuilt = try build(source: source, kind: kind, filename: filename, id: id, destination: stage, preservedTextBook: preserved)
+        let defaultsVersion = (try? Disk.read(LocalBook.self, from: folder.appendingPathComponent("book.json")))?.translationDefaultsVersion
+        let rebuilt = try build(source: source, kind: kind, filename: filename, id: id, destination: stage, preservedTextBook: preserved, translationDefaultsVersion: defaultsVersion)
         try Task.checkCancellation()
         try Disk.write(transaction, to: journal)
         journaled = true
@@ -578,6 +590,9 @@ public actor OfflineLibrary {
         try copy.content.write(to: stage.appendingPathComponent("cloud-content.json"), options: .atomic)
         var value = LocalBook(id: id, title: copy.title, author: copy.author, kind: .txt, sourceVersion: "sha256-" + id, originalFilename: "Leafhour-reading-copy.txt", importedAt: Date(), chapters: copy.chapters)
         value.cloud = copy.identity
+        if Disk.fm.fileExists(atPath: target.path) {
+            value.translationDefaultsVersion = (try? indexedBook(id, at: target))?.translationDefaultsVersion
+        }
         value.readingStartAnchor = CloudReadingStartResolver.validated(copy.readingStart, identity: copy.identity, chapters: copy.chapters)
         try Disk.write(value, to: stage.appendingPathComponent("book.json"))
         var digests: [FileDigest] = []

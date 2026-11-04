@@ -1,0 +1,695 @@
+{
+  "meta": {
+    "n_candidates": 70,
+    "n_rename": 31,
+    "n_cohesion": 30,
+    "n_colon": 9,
+    "n_iso3": 0,
+    "truncated": false
+  },
+  "rename": [
+    {
+      "type": "rename",
+      "file": "ai-design.md",
+      "line": 5,
+      "para": "本文件是实施建议与验收标准。此次没有修改产品代码，没有调用真实模型，没有发布或完成真机验收。",
+      "label": "0组",
+      "confidence": "高",
+      "reason": "术语与对象保持一致；类型、状态或所属层的说明不构成同义换名。"
+    },
+    {
+      "type": "rename",
+      "file": "ai-design.md",
+      "line": 7,
+      "para": "建议每本书提供可收起的阅读前导，书页先可读，前导随后准备并按版本缓存。每条完成的 AI 对话回复下固定显示三个追问，点击即发送；追问随原回复保存，不在展示时重新生成。现有简介、聊天幂等与本机只读工具可复用，但目前没有这两个完整行为。按下文目标验收口径，当前为 0 / 100；未实现与未实测都不计通过。",
+      "label": "0组",
+      "confidence": "高",
+      "reason": "术语与对象保持一致；类型、状态或所属层的说明不构成同义换名。"
+    },
+    {
+      "type": "rename",
+      "file": "ai-design.md",
+      "line": 23,
+      "para": "历史资料 docs/book-introduction.md 记录了显式开篇简介；docs/verification/2026-10-16-reading-agent-recommendation-followup.md 的 followup 指荐书工具说明补充。代码检索未找到逐回答 followUps／suggestedQuestions 能力。历史说明不是当前验收证据。",
+      "label": "0组",
+      "confidence": "高",
+      "reason": "术语与对象保持一致；类型、状态或所属层的说明不构成同义换名。"
+    },
+    {
+      "type": "rename",
+      "file": "ai-design.md",
+      "line": 29,
+      "para": "首开当前书时，预留一条可关闭的「阅读前导」入口，不弹出聊天、不抢焦点。书页、目录、选择、翻页和听读立即可用。已有缓存时显示两行预览；无缓存时显示「先开始读，前导正在准备」，可随时收起。完整内容在原生 AI 面板中展开，最多约 300–500 字，采用正常字号和段落；它是 AI 前导，不插入一条伪造的用户提问。",
+      "label": "0组",
+      "confidence": "高",
+      "reason": "术语与对象保持一致；类型、状态或所属层的说明不构成同义换名。"
+    },
+    {
+      "type": "rename",
+      "file": "ai-design.md",
+      "line": 31,
+      "para": "第一次显示预览只发生在本书当前版本。收起状态跨本机重新进入保留；书内 AI 面板始终可再次展开。重新打开、切段、改变字号、恢复前台不重新调用模型。用户主动发送问题时，不等待前导；前导迟到也不能把聊天滚回顶部或覆盖已输入的内容。",
+      "label": "0组",
+      "confidence": "高",
+      "reason": "术语与对象保持一致；类型、状态或所属层的说明不构成同义换名。"
+    },
+    {
+      "type": "rename",
+      "file": "ai-design.md",
+      "line": 33,
+      "para": "前导包含三部分：从已有资料能确认的主题或背景；适合当前材料的阅读方法；一个值得带着读的问题。小说默认避免开篇之后的情节。缺少可核对背景时，直接说材料不足，阅读方法仍可提供。背景不得由书名、作者同名或常识猜测补齐。",
+      "label": "0组",
+      "confidence": "高",
+      "reason": "术语与对象保持一致；类型、状态或所属层的说明不构成同义换名。"
+    },
+    {
+      "type": "rename",
+      "file": "ai-design.md",
+      "line": 43,
+      "para": "没有文字的扫描 PDF 不生成书情介绍，显示「这份文件还没有可读取的文字，可以先阅读页面，识别文字后再准备前导」。未登录／离线无缓存时提供明确标为「阅读提示」的本机静态方法，不冒充 AI 结果；登录与联网不阻塞原书阅读。",
+      "label": "0组",
+      "confidence": "高",
+      "reason": "术语与对象保持一致；类型、状态或所属层的说明不构成同义换名。"
+    },
+    {
+      "type": "rename",
+      "file": "ai-design.md",
+      "line": 47,
+      "para": "新增 readingGuide，不覆盖 description 或旧 introduction。已有简介可作为带来源的书目资料参与上下文；它不等于阅读方法已经完成。旧简介存储与赠书／导出含义保持兼容。",
+      "label": "0组",
+      "confidence": "高",
+      "reason": "术语与对象保持一致；类型、状态或所属层的说明不构成同义换名。"
+    },
+    {
+      "type": "rename",
+      "file": "ai-design.md",
+      "line": 49,
+      "para": "建议缓存键为 ownerID + sourceKind + bookID + contentVersion + locale + guidePolicyVersion。云书以服务端实际身份和版本为准；本机以当前账号与设备书籍版本隔离，退出账号后隐藏该账号内容。书籍替换、来源重建或目录／取样变化使缓存失效，不能用标题命中另一版本。阅读位置变化不使前导失效。",
+      "label": "0组",
+      "confidence": "高",
+      "reason": "术语与对象保持一致；类型、状态或所属层的说明不构成同义换名。"
+    },
+    {
+      "type": "rename",
+      "file": "ai-design.md",
+      "line": 51,
+      "para": "状态为 missing → preparing → ready，另有 unavailable / failed；准备请求去重、限于当前前台书籍。缓存先读，后台取样不在主线程扫全书；离开本书取消本次任务。保存前再次核对账号、书、版本与任务标识，取消后的迟到结果不保存。失败只保留轻量重试入口，不在每次进入时无限重试。两端并发由服务端租约合并，客户端重复打开共享同一任务。",
+      "label": "1组",
+      "confidence": "中",
+      "reason": "准备请求与本次任务指同一生成过程，其余为独立生命周期概念；保留接口和任务的准确含义。"
+    },
+    {
+      "type": "rename",
+      "file": "ai-design.md",
+      "line": 53,
+      "para": "默认生成属于此次 R5 的专门自动前导，不借此恢复普通对话次数／工具预算。可沿用简介的单次有界输入与一次模型请求；自动前导采用平台赞助链路，不创建一笔普通聊天扣点。若当前部署未配置此链路，则返回 unavailable 并保留阅读提示，不能静默改为付费聊天请求。具体模型名称取运行配置与真实回执，不能继续在新协议里硬编码旧简介的模型名。",
+      "label": "0组",
+      "confidence": "高",
+      "reason": "术语与对象保持一致；类型、状态或所属层的说明不构成同义换名。"
+    },
+    {
+      "type": "rename",
+      "file": "ai-design.md",
+      "line": 57,
+      "para": "云书：GET /api/library/books/:bookId/reading-guide?locale=zh-Hans 只读；POST 同路径表示显式的幂等 ensure，body 为 { contentVersion, locale, guidePolicyVersion }。默认进入由前端发起一次 POST，不由 GET、SSR、导出或后台任务隐式触发。身份由会话捕获，不接受模型或 body 切换 owner。POST 返回 ready、preparing 或明确不可用状态，不能让打开书页的请求等待模型完成。",
+      "label": "0组",
+      "confidence": "高",
+      "reason": "术语与对象保持一致；类型、状态或所属层的说明不构成同义换名。"
+    },
+    {
+      "type": "rename",
+      "file": "ai-design.md",
+      "line": 59,
+      "para": "本机书：新增 /api/library/local-reading-guide，客户端先检查设备缓存，再提交相同约束的元数据、目录与开篇样本。样本仅当前书原文；每段携带 chapterId、passageId、版本及实际取样范围。本机原件不上传，必要片段会传给网络模型，不能标为完全离线。服务端可以暂存有界请求与短期租约；最终前导缓存落在本机账号目录，不创建云书、不自动同步原件。服务端能校验格式与会话，不能声称独立验证了设备原件，来源固定为 local-device。",
+      "label": "0组",
+      "confidence": "高",
+      "reason": "术语与对象保持一致；类型、状态或所属层的说明不构成同义换名。"
+    },
+    {
+      "type": "rename",
+      "file": "ai-design.md",
+      "line": 61,
+      "para": "两路输出共用如下结构；真实字段由宿主填充，模型只产生文案及资料内的引用标识：",
+      "label": "0组",
+      "confidence": "高",
+      "reason": "术语与对象保持一致；类型、状态或所属层的说明不构成同义换名。"
+    },
+    {
+      "type": "rename",
+      "file": "ai-design.md",
+      "line": 85,
+      "para": "sampleRanges 必须登记实际发送的范围，不把截断段落的 ID 当作整段已读。元数据来源与原文来源分开；AI 解释、作者文字和已有简介也分开。没有可核对出处的背景不进入 opening。正文书名与作者不能成为提示词指令，资料中的“上传笔记／忽略限制”也不会扩权。",
+      "label": "0组",
+      "confidence": "高",
+      "reason": "术语与对象保持一致；类型、状态或所属层的说明不构成同义换名。"
+    },
+    {
+      "type": "rename",
+      "file": "ai-design.md",
+      "line": 91,
+      "para": "给 ordinary book / local-book conversation 的 answer 增加 followUps；账号普通对话若复用同一组件也遵守三条。导览卡不是 conversation turn，不硬塞三条常见问题充数。失败、取消、等待、只有流式片段的回复没有可点追问。完成的「资料不足／无法核对」回复仍有三个安全的澄清方向，不能建议绕过权限或自动扩大范围。",
+      "label": "0组",
+      "confidence": "高",
+      "reason": "术语与对象保持一致；类型、状态或所属层的说明不构成同义换名。"
+    },
+    {
+      "type": "rename",
+      "file": "ai-design.md",
+      "line": 93,
+      "para": "三个追问分别可澄清回答中的概念、联系实际例子、核对原文或未决处；这是质量检查维度，界面不强加三种栏目，模型也可依据当前问题选更合适的方向。每条是完整、简短、可直接发出的问句，不用“再讲讲”“继续”充数，不重复用户刚问过且已回答的内容。",
+      "label": "0组",
+      "confidence": "高",
+      "reason": "术语与对象保持一致；类型、状态或所属层的说明不构成同义换名。"
+    },
+    {
+      "type": "rename",
+      "file": "ai-design.md",
+      "line": 95,
+      "para": "不另开第二次模型请求。建议在现有生成轮次加入宿主元数据工具 readerproposefollowups({ questions: [string, string, string] })。该工具只登记本轮建议，不读数据、不写书房、不发消息、不提供新权限；与 readercite 一样由本轮宿主持有。云书与本机路由共用此宿主工具，本机客户端不把它转发给 LocalReadingTools。模型在最终正文前登记建议，正文继续按现有 Markdown 流显示，避免把 JSON 或隐藏尾标流给读者。",
+      "label": "0组",
+      "confidence": "高",
+      "reason": "术语与对象保持一致；类型、状态或所属层的说明不构成同义换名。"
+    },
+    {
+      "type": "rename",
+      "file": "ai-design.md",
+      "line": 97,
+      "para": "模型可以漏调或给出无效候选，因此服务端在 completed 保存前统一 normalize：限定非空纯文本与完整 Unicode，去重、过滤和当前范围冲突的操作建议，取三条；不足时从真实问题／已完成回答的短文本锚点生成保守澄清问句，直到恰好三条。锚点必须是已有文本的字面子串，不能由模板制造人名、情节或引文。回退元数据标 origin: fallback，便于质量抽检；不向用户解释内部工具流程。先保证正常回答交付，不能因追问结构失败把正文降为失败或额外收费。",
+      "label": "0组",
+      "confidence": "高",
+      "reason": "术语与对象保持一致；类型、状态或所属层的说明不构成同义换名。"
+    },
+    {
+      "type": "rename",
+      "file": "ai-design.md",
+      "line": 99,
+      "para": "每轮最多保存一个规范后的集合，不在重新打开、翻阅历史、切换语言或展开回答时重算。新回复的三条不能覆盖上一条回复的建议。旧历史没有 followUps 时在读取层用同一保守方法派生，不调用模型；展示时附到原 turn，保留旧备份可读。",
+      "label": "0组",
+      "confidence": "高",
+      "reason": "术语与对象保持一致；类型、状态或所属层的说明不构成同义换名。"
+    },
+    {
+      "type": "rename",
+      "file": "ai-design.md",
+      "line": 116,
+      "para": "上例仅是协议夹具；正式质量验收要求三条具体贴合当轮内容。parentTurnId、版本与稳定 item ID 由宿主产生，模型不能伪造身份或把建议登记成作者原话。",
+      "label": "0组",
+      "confidence": "高",
+      "reason": "术语与对象保持一致；类型、状态或所属层的说明不构成同义换名。"
+    },
+    {
+      "type": "rename",
+      "file": "ai-design.md",
+      "line": 120,
+      "para": "回复正文和来源之后竖排三个原生按钮，使用次级字色但保证可读，不用窄屏横向滚动。每项触区至少 44pt，Dynamic Type 可换行，不能因三行限高截断问题；VoiceOver 朗读完整问句，并提示「点按直接发送」。按钮属于原回复，正文仍可选择、复制、引用，按钮文字不混入回答正文的复制结果。",
+      "label": "0组",
+      "confidence": "高",
+      "reason": "术语与对象保持一致；类型、状态或所属层的说明不构成同义换名。"
+    },
+    {
+      "type": "rename",
+      "file": "ai-design.md",
+      "line": 122,
+      "para": "点击直接调用 sendFollowUp(parentTurnID, itemID)，不先写入输入框等待再按发送，也不要求二次确认。该入口在主执行器同步获取发送锁，然后冻结当前身份、书、版本、建议文本和父回复。请求带新 request ID 与 replyTo 指向对应 assistant 消息；服务端按保存的父回复解析，不能让客户端提供的引用文字成为事实凭据。父回复即使不是最后一条，也能明确续问该条。",
+      "label": "0组",
+      "confidence": "高",
+      "reason": "术语与对象保持一致；类型、状态或所属层的说明不构成同义换名。"
+    },
+    {
+      "type": "rename",
+      "file": "ai-design.md",
+      "line": 124,
+      "para": "loading / preparingConversation / generating / retry != nil / sourceChanged / voiceRecording / sendingVoice 任一成立时，所有历史追问保持可见并禁用。旧回复在新一轮流式期间同样禁用。连续双击、VoiceOver 重复激活与网络重发复用同一次冻结 intent，服务端沿用请求 ID 幂等；未知是否已提交时先恢复同一请求，不能新建一轮。确定未提交才释放锁供重发。",
+      "label": "0组",
+      "confidence": "高",
+      "reason": "术语与对象保持一致；类型、状态或所属层的说明不构成同义换名。"
+    },
+    {
+      "type": "rename",
+      "file": "ai-design.md",
+      "line": 126,
+      "para": "已有文字草稿或未发送语音时，点击追问仍直接发送该追问，同时单独保留原草稿／音频，完成后可继续编辑。不得把录音、转录或新选文悄悄拼入追问，也不得清空用户草稿。录音尚在进行时禁用追问以免打断收音；已完成的语音提问按其 AI 回复同样显示三个追问，追问本身是文字，不重传之前音频。用户正在选择／分享消息时禁用追问，退出选择后恢复。",
+      "label": "0组",
+      "confidence": "高",
+      "reason": "术语与对象保持一致；类型、状态或所属层的说明不构成同义换名。"
+    },
+    {
+      "type": "rename",
+      "file": "ai-design.md",
+      "line": 128,
+      "para": "断网后保留未提交的追问 intent 和原草稿；不自动在后台补发。删除书籍、账号切换或版本变化时禁止点击旧建议，保留历史但提示重新核对当前书。建议只是 AI 提议，只有用户点按后才成为用户提交的问题；发送后的记录可另带 inputOrigin: suggested-follow-up 与父项 ID，导出仍区分 AI 建议和用户实际发送。",
+      "label": "0组",
+      "confidence": "高",
+      "reason": "术语与对象保持一致；类型、状态或所属层的说明不构成同义换名。"
+    },
+    {
+      "type": "rename",
+      "file": "ai-design.md",
+      "line": 148,
+      "para": "先写纯协议与服务层测试，再验证 iOS 交互。新增协议文件需有实际行为断言，避免只比对提示词文字。",
+      "label": "0组",
+      "confidence": "高",
+      "reason": "术语与对象保持一致；类型、状态或所属层的说明不构成同义换名。"
+    },
+    {
+      "type": "rename",
+      "file": "ai-design.md",
+      "line": 161,
+      "para": "每行是完整行为门槛，必须有对应自动化或手工证据才得该行分；“源码存在可复用机制”不等于本次行为通过。性能数值是建议验收目标，尚未测得。",
+      "label": "0组",
+      "confidence": "高",
+      "reason": "术语与对象保持一致；类型、状态或所属层的说明不构成同义换名。"
+    },
+    {
+      "type": "rename",
+      "file": "ai-design.md",
+      "line": 181,
+      "para": "发布门槛建议总分至少 95，功能三项和账号／来源／重复发送门槛全部通过；任何跨账号读取、伪造来源或重复收费都阻止发布，不以其他得分抵消。测试模型夹具与真实模型质量分别记录；模拟器通过不替代真机。",
+      "label": "0组",
+      "confidence": "高",
+      "reason": "术语与对象保持一致；类型、状态或所属层的说明不构成同义换名。"
+    },
+    {
+      "type": "rename",
+      "file": "ai-design.md",
+      "line": 185,
+      "para": "执行了 node --test tests/book-introduction.test.mjs tests/book-introduction-controller.test.mjs tests/reading-agent-tools.test.mjs tests/local-reader-chat.test.mjs。旧简介 controller 的 8 项行为测试通过，覆盖只读打开、重复点击、取消、账号／版本晚到隔离、超时与保留原简介。其余 3 个文件未到测试断言：新 worktree 缺少 fflate、@deepseek-ai/dsh-web-search-deepseek、@deepseek-ai/dsh-token-meter，属于依赖装载失败，不能写成服务层通过。",
+      "label": "0组",
+      "confidence": "高",
+      "reason": "术语与对象保持一致；类型、状态或所属层的说明不构成同义换名。"
+    },
+    {
+      "type": "rename",
+      "file": "ai-design.md",
+      "line": 187,
+      "para": "此次只分析与写报告，未安装依赖、未测试真实账号、未产生云端书籍／笔记／对话数据。未执行 Swift 构建、模拟器、真机、真实模型质量或性能测试。设计判断采用 design-judgment 的功能减法与时间／注意模块；中文报告交付前按 lieflat-less-ai-tone 检测并逐项复核，记录保存在本目录的报告配套文件。",
+      "label": "0组",
+      "confidence": "高",
+      "reason": "术语与对象保持一致；类型、状态或所属层的说明不构成同义换名。"
+    }
+  ],
+  "cohesion": [
+    {
+      "type": "cohesion",
+      "file": "ai-design.md",
+      "line": 7,
+      "prev_tail": "此次没有修改产品代码，没有调用真实模型，没有发布或完成真机验收",
+      "next_head": "建议每本书提供可收起的阅读前导，书页先可读，前导随后准备并按版本缓存",
+      "label": "有关但转换突然",
+      "confidence": "高",
+      "reason": "切换到另一设计层面或章节主题；接口处没有同一论证的直接延续。"
+    },
+    {
+      "type": "cohesion",
+      "file": "ai-design.md",
+      "line": 23,
+      "prev_tail": "未实现与未实测都不计通过",
+      "next_head": "历史资料 docs/book-introduction.md 记录了显式开篇简介",
+      "label": "有关但转换突然",
+      "confidence": "高",
+      "reason": "切换到另一设计层面或章节主题；接口处没有同一论证的直接延续。"
+    },
+    {
+      "type": "cohesion",
+      "file": "ai-design.md",
+      "line": 29,
+      "prev_tail": "历史说明不是当前验收证据",
+      "next_head": "首开当前书时，预留一条可关闭的「阅读前导」入口，不弹出聊天、不抢焦点",
+      "label": "有关但转换突然",
+      "confidence": "高",
+      "reason": "切换到另一设计层面或章节主题；接口处没有同一论证的直接延续。"
+    },
+    {
+      "type": "cohesion",
+      "file": "ai-design.md",
+      "line": 31,
+      "prev_tail": "它是 AI 前导，不插入一条伪造的用户提问",
+      "next_head": "第一次显示预览只发生在本书当前版本",
+      "label": "明确承接",
+      "confidence": "高",
+      "reason": "继续解释同一状态、操作或其相邻验证。"
+    },
+    {
+      "type": "cohesion",
+      "file": "ai-design.md",
+      "line": 33,
+      "prev_tail": "前导迟到也不能把聊天滚回顶部或覆盖已输入的内容",
+      "next_head": "前导包含三部分：从已有资料能确认的主题或背景",
+      "label": "有关但转换突然",
+      "confidence": "高",
+      "reason": "切换到另一设计层面或章节主题；接口处没有同一论证的直接延续。"
+    },
+    {
+      "type": "cohesion",
+      "file": "ai-design.md",
+      "line": 43,
+      "prev_tail": "背景不得由书名、作者同名或常识猜测补齐",
+      "next_head": "没有文字的扫描 PDF 不生成书情介绍，显示「这份文件还没有可读取的文字，可以先阅读页面，识别文字后再准备前导」",
+      "label": "有关但转换突然",
+      "confidence": "高",
+      "reason": "切换到另一设计层面或章节主题；接口处没有同一论证的直接延续。"
+    },
+    {
+      "type": "cohesion",
+      "file": "ai-design.md",
+      "line": 47,
+      "prev_tail": "登录与联网不阻塞原书阅读",
+      "next_head": "新增 readingGuide，不覆盖 description 或旧 introduction",
+      "label": "有关但转换突然",
+      "confidence": "高",
+      "reason": "切换到另一设计层面或章节主题；接口处没有同一论证的直接延续。"
+    },
+    {
+      "type": "cohesion",
+      "file": "ai-design.md",
+      "line": 49,
+      "prev_tail": "旧简介存储与赠书／导出含义保持兼容",
+      "next_head": "建议缓存键为 ownerID + sourceKind + bookID + contentVersion + locale + guidePolicyVersion",
+      "label": "明确承接",
+      "confidence": "高",
+      "reason": "继续解释同一状态、操作或其相邻验证。"
+    },
+    {
+      "type": "cohesion",
+      "file": "ai-design.md",
+      "line": 51,
+      "prev_tail": "阅读位置变化不使前导失效",
+      "next_head": "状态为 missing → preparing → ready，另有 unavailable / failed",
+      "label": "明确承接",
+      "confidence": "高",
+      "reason": "继续解释同一状态、操作或其相邻验证。"
+    },
+    {
+      "type": "cohesion",
+      "file": "ai-design.md",
+      "line": 53,
+      "prev_tail": "两端并发由服务端租约合并，客户端重复打开共享同一任务",
+      "next_head": "默认生成属于此次 R5 的专门自动前导，不借此恢复普通对话次数／工具预算",
+      "label": "有关但转换突然",
+      "confidence": "高",
+      "reason": "切换到另一设计层面或章节主题；接口处没有同一论证的直接延续。"
+    },
+    {
+      "type": "cohesion",
+      "file": "ai-design.md",
+      "line": 57,
+      "prev_tail": "具体模型名称取运行配置与真实回执，不能继续在新协议里硬编码旧简介的模型名",
+      "next_head": "云书：GET /api/library/books/:bookId/reading-guide?locale=zh-Hans 只读",
+      "label": "有关但转换突然",
+      "confidence": "高",
+      "reason": "切换到另一设计层面或章节主题；接口处没有同一论证的直接延续。"
+    },
+    {
+      "type": "cohesion",
+      "file": "ai-design.md",
+      "line": 59,
+      "prev_tail": "POST 返回 ready、preparing 或明确不可用状态，不能让打开书页的请求等待模型完成",
+      "next_head": "本机书：新增 /api/library/local-reading-guide，客户端先检查设备缓存，再提交相同约束的元数据、目录与开篇样本",
+      "label": "明确承接",
+      "confidence": "高",
+      "reason": "继续解释同一状态、操作或其相邻验证。"
+    },
+    {
+      "type": "cohesion",
+      "file": "ai-design.md",
+      "line": 61,
+      "prev_tail": "服务端能校验格式与会话，不能声称独立验证了设备原件，来源固定为 local-device",
+      "next_head": "两路输出共用如下结构",
+      "label": "明确承接",
+      "confidence": "高",
+      "reason": "继续解释同一状态、操作或其相邻验证。"
+    },
+    {
+      "type": "cohesion",
+      "file": "ai-design.md",
+      "line": 85,
+      "prev_tail": "真实字段由宿主填充，模型只产生文案及资料内的引用标识：",
+      "next_head": "sampleRanges 必须登记实际发送的范围，不把截断段落的 ID 当作整段已读",
+      "label": "明确承接",
+      "confidence": "高",
+      "reason": "继续解释同一状态、操作或其相邻验证。"
+    },
+    {
+      "type": "cohesion",
+      "file": "ai-design.md",
+      "line": 91,
+      "prev_tail": "正文书名与作者不能成为提示词指令，资料中的“上传笔记／忽略限制”也不会扩权",
+      "next_head": "给 ordinary book / local-book conversation 的 answer 增加 followUps",
+      "label": "有关但转换突然",
+      "confidence": "高",
+      "reason": "切换到另一设计层面或章节主题；接口处没有同一论证的直接延续。"
+    },
+    {
+      "type": "cohesion",
+      "file": "ai-design.md",
+      "line": 93,
+      "prev_tail": "完成的「资料不足／无法核对」回复仍有三个安全的澄清方向，不能建议绕过权限或自动扩大范围",
+      "next_head": "三个追问分别可澄清回答中的概念、联系实际例子、核对原文或未决处",
+      "label": "明确承接",
+      "confidence": "高",
+      "reason": "继续解释同一状态、操作或其相邻验证。"
+    },
+    {
+      "type": "cohesion",
+      "file": "ai-design.md",
+      "line": 95,
+      "prev_tail": "每条是完整、简短、可直接发出的问句，不用“再讲讲”“继续”充数，不重复用户刚问过且已回答的内容",
+      "next_head": "不另开第二次模型请求",
+      "label": "有关但转换突然",
+      "confidence": "高",
+      "reason": "切换到另一设计层面或章节主题；接口处没有同一论证的直接延续。"
+    },
+    {
+      "type": "cohesion",
+      "file": "ai-design.md",
+      "line": 97,
+      "prev_tail": "模型在最终正文前登记建议，正文继续按现有 Markdown 流显示，避免把 JSON 或隐藏尾标流给读者",
+      "next_head": "模型可以漏调或给出无效候选，因此服务端在 completed 保存前统一 normalize：限定非空纯文本与完整 Unicode，去重、过滤和当前范围冲突的操作建议，取三条",
+      "label": "明确承接",
+      "confidence": "高",
+      "reason": "继续解释同一状态、操作或其相邻验证。"
+    },
+    {
+      "type": "cohesion",
+      "file": "ai-design.md",
+      "line": 99,
+      "prev_tail": "先保证正常回答交付，不能因追问结构失败把正文降为失败或额外收费",
+      "next_head": "每轮最多保存一个规范后的集合，不在重新打开、翻阅历史、切换语言或展开回答时重算",
+      "label": "明确承接",
+      "confidence": "高",
+      "reason": "继续解释同一状态、操作或其相邻验证。"
+    },
+    {
+      "type": "cohesion",
+      "file": "ai-design.md",
+      "line": 116,
+      "prev_tail": "展示时附到原 turn，保留旧备份可读",
+      "next_head": "上例仅是协议夹具",
+      "label": "明确承接",
+      "confidence": "高",
+      "reason": "继续解释同一状态、操作或其相邻验证。"
+    },
+    {
+      "type": "cohesion",
+      "file": "ai-design.md",
+      "line": 120,
+      "prev_tail": "parentTurnId、版本与稳定 item ID 由宿主产生，模型不能伪造身份或把建议登记成作者原话",
+      "next_head": "回复正文和来源之后竖排三个原生按钮，使用次级字色但保证可读，不用窄屏横向滚动",
+      "label": "有关但转换突然",
+      "confidence": "高",
+      "reason": "切换到另一设计层面或章节主题；接口处没有同一论证的直接延续。"
+    },
+    {
+      "type": "cohesion",
+      "file": "ai-design.md",
+      "line": 122,
+      "prev_tail": "按钮属于原回复，正文仍可选择、复制、引用，按钮文字不混入回答正文的复制结果",
+      "next_head": "点击直接调用 sendFollowUp(parentTurnID, itemID)，不先写入输入框等待再按发送，也不要求二次确认",
+      "label": "明确承接",
+      "confidence": "高",
+      "reason": "继续解释同一状态、操作或其相邻验证。"
+    },
+    {
+      "type": "cohesion",
+      "file": "ai-design.md",
+      "line": 124,
+      "prev_tail": "父回复即使不是最后一条，也能明确续问该条",
+      "next_head": "loading / preparingConversation / generating / retry != nil / sourceChanged / voiceRecording / sendingVoice 任一成立时，所有历史追问保持可见并禁用",
+      "label": "明确承接",
+      "confidence": "高",
+      "reason": "继续解释同一状态、操作或其相邻验证。"
+    },
+    {
+      "type": "cohesion",
+      "file": "ai-design.md",
+      "line": 126,
+      "prev_tail": "确定未提交才释放锁供重发",
+      "next_head": "已有文字草稿或未发送语音时，点击追问仍直接发送该追问，同时单独保留原草稿／音频，完成后可继续编辑",
+      "label": "明确承接",
+      "confidence": "高",
+      "reason": "继续解释同一状态、操作或其相邻验证。"
+    },
+    {
+      "type": "cohesion",
+      "file": "ai-design.md",
+      "line": 128,
+      "prev_tail": "用户正在选择／分享消息时禁用追问，退出选择后恢复",
+      "next_head": "断网后保留未提交的追问 intent 和原草稿",
+      "label": "明确承接",
+      "confidence": "高",
+      "reason": "继续解释同一状态、操作或其相邻验证。"
+    },
+    {
+      "type": "cohesion",
+      "file": "ai-design.md",
+      "line": 148,
+      "prev_tail": "发送后的记录可另带 inputOrigin: suggested-follow-up 与父项 ID，导出仍区分 AI 建议和用户实际发送",
+      "next_head": "先写纯协议与服务层测试，再验证 iOS 交互",
+      "label": "有关但转换突然",
+      "confidence": "高",
+      "reason": "切换到另一设计层面或章节主题；接口处没有同一论证的直接延续。"
+    },
+    {
+      "type": "cohesion",
+      "file": "ai-design.md",
+      "line": 161,
+      "prev_tail": "新增协议文件需有实际行为断言，避免只比对提示词文字",
+      "next_head": "每行是完整行为门槛，必须有对应自动化或手工证据才得该行分",
+      "label": "明确承接",
+      "confidence": "高",
+      "reason": "继续解释同一状态、操作或其相邻验证。"
+    },
+    {
+      "type": "cohesion",
+      "file": "ai-design.md",
+      "line": 181,
+      "prev_tail": "性能数值是建议验收目标，尚未测得",
+      "next_head": "发布门槛建议总分至少 95，功能三项和账号／来源／重复发送门槛全部通过",
+      "label": "明确承接",
+      "confidence": "高",
+      "reason": "继续解释同一状态、操作或其相邻验证。"
+    },
+    {
+      "type": "cohesion",
+      "file": "ai-design.md",
+      "line": 185,
+      "prev_tail": "模拟器通过不替代真机",
+      "next_head": "执行了 node --test tests/book-introduction.test.mjs tests/book-introduction-controller.test.mjs tests/reading-agent-tools.test.mjs tests/local-reader-chat.test.mjs",
+      "label": "明确承接",
+      "confidence": "高",
+      "reason": "继续解释同一状态、操作或其相邻验证。"
+    },
+    {
+      "type": "cohesion",
+      "file": "ai-design.md",
+      "line": 187,
+      "prev_tail": "其余 3 个文件未到测试断言：新 worktree 缺少 fflate、@deepseek-ai/dsh-web-search-deepseek、@deepseek-ai/dsh-token-meter，属于依赖装载失败，不能写成服务层通过",
+      "next_head": "此次只分析与写报告，未安装依赖、未测试真实账号、未产生云端书籍／笔记／对话数据",
+      "label": "明确承接",
+      "confidence": "高",
+      "reason": "继续解释同一状态、操作或其相邻验证。"
+    }
+  ],
+  "colon": [
+    {
+      "type": "colon",
+      "file": "ai-design.md",
+      "line": 3,
+      "colon_before": "日期",
+      "colon_after": "2026-11-05。分析基线：`11a89b3b4c047f0230076bfcda4b98d1fd040b26`。",
+      "sentence": "日期：2026-11-05。分析基线：`11a89b3b4c047f0230076bfcda4b98d1fd040b26`。",
+      "label": "标题时间比例元数据或版式用途",
+      "confidence": "高",
+      "reason": "代码字段或路由版式用途，保留。"
+    },
+    {
+      "type": "colon",
+      "file": "ai-design.md",
+      "line": 33,
+      "colon_before": "前导包含三部分",
+      "colon_after": "从已有资料能确认的主题或背景；适合当前材料的阅读方法；一个值得带着读的问题。小说默认避免开篇之后的情节。缺少可核对背景时",
+      "sentence": "前导包含三部分：从已有资料能确认的主题或背景；适合当前材料的阅读方法；一个值得带着读的问题。小说默认避免开篇之后的情节。缺少可核对背景时，直接说材料不足，阅读方法仍可提供。背景不得由书名、作者同名或常识猜测补齐。",
+      "label": "空转提示",
+      "confidence": "高",
+      "reason": "定义具体处理步骤或列举组成内容，保留。"
+    },
+    {
+      "type": "colon",
+      "file": "ai-design.md",
+      "line": 57,
+      "colon_before": "云书",
+      "colon_after": "`GET /api/library/books/:bookId/reading-guide?locale=zh-Hans",
+      "sentence": "云书：`GET /api/library/books/:bookId/reading-guide?locale=zh-Hans` 只读；`POST` 同路径表示显式的幂等 ensure，body 为 `{ contentVersion, l",
+      "label": "标题时间比例元数据或版式用途",
+      "confidence": "高",
+      "reason": "代码字段或路由版式用途，保留。"
+    },
+    {
+      "type": "colon",
+      "file": "ai-design.md",
+      "line": 59,
+      "colon_before": "本机书",
+      "colon_after": "新增 `/api/library/local-reading-guide`，客户端先检查设备缓存，再提交相同约束的元数据",
+      "sentence": "本机书：新增 `/api/library/local-reading-guide`，客户端先检查设备缓存，再提交相同约束的元数据、目录与开篇样本。样本仅当前书原文；每段携带 chapterId、passageId、版本及实际取样范围。本机原",
+      "label": "标题时间比例元数据或版式用途",
+      "confidence": "高",
+      "reason": "代码字段或路由版式用途，保留。"
+    },
+    {
+      "type": "colon",
+      "file": "ai-design.md",
+      "line": 95,
+      "colon_before": "_propose_followups({ questions",
+      "colon_after": " [string, string, string] })`。该工具只登记本轮建议，不读数据、不写书房、不发消息、不提供新",
+      "sentence": "不另开第二次模型请求。建议在现有生成轮次加入宿主元数据工具 `reader_propose_followups({ questions: [string, string, string] })`。该工具只登记本轮建议，不读数据、不写书房、不",
+      "label": "标题时间比例元数据或版式用途",
+      "confidence": "高",
+      "reason": "代码字段或路由版式用途，保留。"
+    },
+    {
+      "type": "colon",
+      "file": "ai-design.md",
+      "line": 97,
+      "colon_before": "端在 `completed` 保存前统一 normalize",
+      "colon_after": "限定非空纯文本与完整 Unicode，去重、过滤和当前范围冲突的操作建议，取三条；不足时从真实问题／已完成回答的短文本锚",
+      "sentence": "模型可以漏调或给出无效候选，因此服务端在 `completed` 保存前统一 normalize：限定非空纯文本与完整 Unicode，去重、过滤和当前范围冲突的操作建议，取三条；不足时从真实问题／已完成回答的短文本锚点生成保守澄清问句，直",
+      "label": "定义或解释",
+      "confidence": "高",
+      "reason": "定义具体处理步骤或列举组成内容，保留。"
+    },
+    {
+      "type": "colon",
+      "file": "ai-design.md",
+      "line": 97,
+      "colon_before": "回退元数据标 `origin",
+      "colon_after": " fallback`，便于质量抽检；不向用户解释内部工具流程。先保证正常回答交付，不能因追问结构失败把正文降为失败或额外",
+      "sentence": "模型可以漏调或给出无效候选，因此服务端在 `completed` 保存前统一 normalize：限定非空纯文本与完整 Unicode，去重、过滤和当前范围冲突的操作建议，取三条；不足时从真实问题／已完成回答的短文本锚点生成保守澄清问句，直",
+      "label": "标题时间比例元数据或版式用途",
+      "confidence": "高",
+      "reason": "代码字段或路由版式用途，保留。"
+    },
+    {
+      "type": "colon",
+      "file": "ai-design.md",
+      "line": 128,
+      "colon_before": "用户提交的问题；发送后的记录可另带 `inputOrigin",
+      "colon_after": " suggested-follow-up` 与父项 ID，导出仍区分 AI 建议和用户实际发送。",
+      "sentence": "断网后保留未提交的追问 intent 和原草稿；不自动在后台补发。删除书籍、账号切换或版本变化时禁止点击旧建议，保留历史但提示重新核对当前书。建议只是 AI 提议，只有用户点按后才成为用户提交的问题；发送后的记录可另带 `inputOrig",
+      "label": "标题时间比例元数据或版式用途",
+      "confidence": "高",
+      "reason": "代码字段或路由版式用途，保留。"
+    },
+    {
+      "type": "colon",
+      "file": "ai-design.md",
+      "line": 185,
+      "colon_before": "其余 3 个文件未到测试断言",
+      "colon_after": "新 worktree 缺少 `fflate`、`@deepseek-ai/dsh-web-search-deepseek",
+      "sentence": "执行了 `node --test tests/book-introduction.test.mjs tests/book-introduction-controller.test.mjs tests/reading-agent-tools.",
+      "label": "结论提示",
+      "confidence": "高",
+      "reason": "测试失败结论后的具体原因，可换句号保留事实。"
+    }
+  ],
+  "iso3": []
+}

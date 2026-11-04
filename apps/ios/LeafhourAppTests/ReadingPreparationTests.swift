@@ -57,6 +57,8 @@ final class ReadingPreparationTests: XCTestCase {
         let content: [String:Any] = ["bookId":"reading-book","contentVersion":"v1","source":["format":"text"],"sections": chapters.map { chapter in ["chapterId":chapter.id,"paragraphs":chapter.passages.map { ["id":$0.id,"original":$0.text,"translations":[:]] }] }]
         let book = try await library.importCloud(CloudReadingCopy(identity: identity, title: "Synthetic book", author: "", chapters: chapters, content: JSONSerialization.data(withJSONObject: content)))
         var state = try await library.state(book.id); state.preferences.viewMode = .translation
+        state.translationSettings = BookTranslationSettings(sourceLanguage: .en, targetLanguage: .zh)
+        try await library.saveState(state, bookID: book.id)
         let session = ReaderSession(book: book, state: state, original: try await library.originalURL(book.id), directory: try await library.bookDirectory(book.id), library: library)
         let configuration = URLSessionConfiguration.ephemeral; configuration.protocolClasses = [PreparationProtocol.self]
         let cloud = CloudLibraryClient(baseURL: URL(string:"https://reading.test")!, credential: CloudCredential(account: CloudAccount(id:owner,email:nil),token:"isolated-fixture"),configuration:configuration)

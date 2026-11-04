@@ -34,6 +34,7 @@ public final class ReaderSession: Identifiable {
     public var state: ReaderState
     public var chapterIndex: Int
     public var navigationID = UUID()
+    public internal(set) var bookmarkNavigation: ReaderBookmarkNavigation?
     public var message: String?
     public var saveMessage: String?
     public var saving = false
@@ -54,7 +55,8 @@ public final class ReaderSession: Identifiable {
     @ObservationIgnored private var activityNeedsSave = false
     public private(set) var translations: [String: ReadingTranslation] = [:]
     public let detectedSourceLanguage: ReadingLanguage?
-    public var translationSettings: BookTranslationSettings { state.translationSettings ?? .suggested(for: detectedSourceLanguage) }
+    @ObservationIgnored public let preparedTextWindow: ReadingTextWindow?
+    public var translationSettings: BookTranslationSettings { state.resolvedTranslationSettings(detected: detectedSourceLanguage) }
     public func changeTranslationSettings(_ value: BookTranslationSettings) {
         guard packageVerificationError == nil, value != translationSettings else { return }
         state.translationSettings = value
@@ -113,6 +115,10 @@ public final class ReaderSession: Identifiable {
         packageVerificationPending = false; contentRevision += 1
     }
     public init(book: LocalBook, state: ReaderState, original: URL, directory: URL, library: any ReaderStateStore, preferencesStore: (any ReaderPreferencesStore)? = nil, preparation: ReaderOpeningPreparation? = nil) {
+        if let window = preparation?.textWindow,
+           let chapter = book.chapters.first(where: { $0.id == window.chapterID }), window.matchesSource(chapter) {
+            preparedTextWindow = window
+        } else { preparedTextWindow = nil }
         if let preparation {
             detectedSourceLanguage = preparation.sourceLanguage
             packageVerificationPending = true; openingVerifiedResources = preparation.verifiedResourcePaths
@@ -298,6 +304,10 @@ public final class ReaderSession: Identifiable {
     }
     public func isCurrent(_ receipt: ReaderSaveReceipt) -> Bool {
         receipt.revision == revision && receipt.succeeded && !saving && saveError == nil && !activityNeedsSave && state.anchor == currentAnchor
+    }
+    public func isBookmarkPersisted(id: UUID) -> Bool {
+        guard let bookmark = state.bookmarks?.first(where: { $0.id == id }) else { return false }
+        return persistedState.bookmarks?.contains(bookmark) == true
     }
     public func isNotePersisted(id: UUID, body: String) -> Bool {
         persistedState.notes.contains { $0.id == id && $0.body == body }

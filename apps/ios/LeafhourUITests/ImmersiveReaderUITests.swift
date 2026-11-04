@@ -37,6 +37,56 @@ final class ImmersiveReaderUITests: XCTestCase {
         reader.coordinate(withNormalizedOffset: CGVector(dx: 0.35, dy: 0.3)).press(forDuration: 1.2)
         require(app.descendants(matching: .any)["reader-selection-dock"].firstMatch)
     }
+    func testReadingGuideShowsThreeDirectFollowUpsAndKeepsThemAfterAnAnswer() {
+        open(title: "GET317 合成验收 · 双译")
+        let guide = app.buttons["reader-reading-guide-open"]; require(guide); guide.tap()
+        require(app.navigationBars["阅读前导"])
+        let choices = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH %@", "chat-follow-up-"))
+        let ready = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in choices.count == 3 }, object: nil)
+        XCTAssertEqual(XCTWaiter.wait(for: [ready], timeout: 15), .completed)
+        if !choices.element(boundBy: 2).isHittable { app.scrollViews.firstMatch.swipeUp() }
+        capture("reading-guide-three-choices")
+        choices.element(boundBy: 0).tap(); require(app.navigationBars["旁注"])
+        let answered = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in choices.count == 3 }, object: nil)
+        XCTAssertEqual(XCTWaiter.wait(for: [answered], timeout: 15), .completed)
+        let history = app.scrollViews["reader-conversation-history"]
+        for _ in 0..<6 { if choices.element(boundBy: 2).isHittable { break }; history.swipeUp() }
+        XCTAssertTrue(choices.element(boundBy: 2).isHittable)
+        capture("answer-three-followups")
+    }
+    func testContentsSearchPlacesBodyHitsUnderTheirRealChapter() {
+        open(); wake(); app.buttons["reader-contents"].tap(); require(app.navigationBars["目录"])
+        let search = app.searchFields.firstMatch; require(search); search.tap(); search.typeText("ORCHARD_3")
+        let hit = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH %@", "reader-contents-hit-")).firstMatch
+        require(hit); capture("contents-body-hit")
+        hit.tap(); require(reader)
+        XCTAssertTrue((reader.value as? String ?? "").contains("ORCHARD_3"))
+        capture("contents-body-precise-return")
+    }
+    func testTranslationTemplatesAndLiveComparisonControlsRemainVisible() {
+        open(title: "GET317 合成验收 · 双译"); wake(); app.buttons["reader-page-translation"].tap()
+        require(app.navigationBars["阅读翻译"])
+        for mode in ["source", "translation", "parallel"] { require(app.buttons["reader-translation-template-" + mode]) }
+        app.buttons["reader-translation-template-parallel"].tap()
+        let scale = app.sliders["reader-parallel-source-scale"]
+        if !scale.isHittable { app.swipeUp() }
+        require(scale); scale.adjust(toNormalizedSliderPosition: 0.25)
+        capture("translation-visual-templates-and-preview")
+        let close = app.buttons["reader-follow-translation-close"]; require(close); close.tap(); require(reader)
+    }
+    func testPullBookmarkCanChangeColorAndReturnToReading() {
+        open(); let start = reader.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.2))
+        start.press(forDuration: 0.05, thenDragTo: reader.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.6)))
+        let bookmark = app.buttons["reader-bookmark"]; require(bookmark)
+        let saved = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in bookmark.label == "编辑本页书签" }, object: nil)
+        XCTAssertEqual(XCTWaiter.wait(for: [saved], timeout: 10), .completed)
+        bookmark.tap(); require(app.buttons["reader-bookmark-color-A66A13"])
+        app.buttons["reader-bookmark-color-A66A13"].tap()
+        capture("bookmark-colors-and-name")
+        app.buttons["reader-bookmark-done"].tap(); require(reader)
+        require(bookmark); XCTAssertEqual(bookmark.value as? String, "琥珀")
+        capture("bookmark-colored-page-marker")
+    }
     func testAccessibilitySizeKeepsQuietReadingAndRevealsAIOnlyWithToolsOrSelection() {
         open(extra: ["-UIPreferredContentSizeCategoryName", "UICTContentSizeCategoryAccessibilityXXXL"])
         wake(); app.buttons["reader-read"].tap()
@@ -227,7 +277,7 @@ final class ImmersiveReaderUITests: XCTestCase {
         app.buttons["reader-previous-chapter"].tap()
         XCTAssertEqual(app.staticTexts["reader-progress-caption"].label, initial)
         app.buttons["reader-page-translation"].tap()
-        require(app.staticTexts["当前页翻译"])
+        require(app.navigationBars["阅读翻译"])
         capture("reading-chapter-and-page-translation-controller")
     }
 

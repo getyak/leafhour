@@ -1,3 +1,4 @@
+import {releaseFiles} from '../tools/release-policy.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {mkdtemp,readFile,rm} from 'node:fs/promises';
@@ -38,4 +39,14 @@ test('retained backup has one explicit gesture owner, rejecting aliases and muta
  assert.throws(()=>assertRetainedBackupBoundaryEdges({edges:[edge,edge],release}),/exactly one/);
  assert.throws(()=>assertRetainedBackupBoundaryEdges({edges:[edge],release:new Set()}),/Non-public retained/);
  assert.throws(()=>assertRetainedBackupBoundaryEdges({edges:[edge,{importer:'app/reading-retained-backup.mjs',specifier:'./reader-api.mjs',kind:'import-statement'}],release}),/Non-public retained/);
+});
+
+test('retained backup carries AI guide attribution through an explicit pure dependency closure',async()=>{
+ const root=path.resolve(import.meta.dirname,'..');
+ const release=new Set(await releaseFiles(root));
+ const sources=['app/reading-session.js',...RETAINED_BACKUP_PUBLIC_FILES];
+ const edges=await syntacticImportEdgesMany(root,sources);
+ const closure=assertRetainedBackupBoundaryEdges({edges,release,sources});
+ assert.ok(closure.includes('app/chat-guide-context.mjs'),'migrated guide snapshots need their strict public validator');
+ assert.throws(()=>assertRetainedBackupBoundaryEdges({edges:[...edges,{importer:'app/chat-guide-context.mjs',specifier:'./reader-api.mjs',kind:'import-statement'}],release,sources}),/Non-public retained backup/,'a pure guide validator must never gain API access through backup imports');
 });

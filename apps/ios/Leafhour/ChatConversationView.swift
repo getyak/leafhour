@@ -209,6 +209,7 @@ struct ChatConversationView: View {
     var isLibraryConversation = false
     var isMarginalNote = false
     var onSignIn: (() -> Void)? = nil
+    var autoLoad = true
     let load: () async -> Void
     let send: () async -> Void
     @State private var composerAwake = true
@@ -235,7 +236,7 @@ struct ChatConversationView: View {
         return 1...(focused || sourceExpanded || referenceExpanded ? 1 : 3)
     }
     private var canAsk: Bool {
-        !localOnly && !tools.loading && !tools.generating && tools.retry == nil && tools.conversationAvailable && !tools.question.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+        !localOnly && !tools.loading && !tools.generating && !tools.sendingFollowUp && tools.retry == nil && tools.conversationAvailable && !tools.question.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
     }
     var body: some View {
         ScrollViewReader { proxy in
@@ -292,7 +293,10 @@ struct ChatConversationView: View {
             .navigationTitle(title).navigationBarTitleDisplayMode(.inline)
             .toolbarBackground(Color(uiColor: .systemBackground), for: .navigationBar)
             .toolbarBackground(.visible, for: .navigationBar)
-            .task { await reload() }
+            .task {
+                if autoLoad { await reload() }
+                else { didLoad = true; if !tools.turns.isEmpty { composerAwake = false } }
+            }
             .sheet(item: $shareSelection) { selection in ChatSharePanel(selection: selection) }
             .sensoryFeedback(.selection, trigger: tools.reactionRevision)
             .overlay(alignment: .top) {
@@ -322,6 +326,12 @@ struct ChatConversationView: View {
             responseStatus: tools.responseStatus,
             error: turn.id == failedTurnID ? tools.error : nil,
             retry: tools.retry?.id == turn.id ? { retryRequest() } : nil,
+            followUpsEnabled: !localOnly && tools.canSendFollowUps && !speech.isActive && !sendingVoice && !selectingMessages,
+            onFollowUp: { item in
+                guard !speech.isActive, !sendingVoice, !selectingMessages else { return }
+                scrollPosition.resumeFollowing(); focused = false; composerAwake = false
+                Task { await tools.sendFollowUp(item, parent: turn, cloud: cloud) }
+            },
             resolveVoice: { try await tools.voiceURL($0, cloud: cloud) }, playbackAllowed: !speech.isActive,
             onReference: { role in tools.referenceMessage(turn, role: role); referenceExpanded = false; composerAwake = true; focused = true },
             onLike: { role in tools.toggleMessageLike(turnID: turn.id, role: role) },
@@ -652,6 +662,8 @@ private struct ChatTurnView: View {
     var responseStatus: String?
     var error: String?
     var retry: (() -> Void)?
+    let followUpsEnabled: Bool
+    let onFollowUp: (ChatFollowUp) -> Void
     let resolveVoice: (ChatVoiceReceipt) async throws -> URL
     let playbackAllowed: Bool
     let onReference: (String) -> Void
@@ -677,6 +689,11 @@ private struct ChatTurnView: View {
                     Text("转写文字").font(.caption2).foregroundStyle(Color.primary.opacity(0.64))
                 }
                 if let reference = turn.replyTo { ChatMessageReferenceView(reference: reference) }
+                if let guide = turn.guideContext, guide.isResolved {
+                    DisclosureGroup("引用的 AI 阅读前导 · 开篇取样") {
+                        Text(guide.text).font(.subheadline).textSelection(.enabled)
+                    }.font(.caption).accessibilityIdentifier("chat-guide-context-" + turn.id)
+                }
                 if let quote = turn.quote { ChatSavedQuoteView(quote: quote) }
                 ChatMarkdownView(source: shownQuestion, plainText: true, copySource: turn.question,
                     onReference: { onReference("user") }, onLike: { onLike("user") }, liked: isLiked("user"),
@@ -716,6 +733,9 @@ private struct ChatTurnView: View {
                         .accessibilityAction(named: Text("多选消息")) { onSelect("assistant") }
                         .accessibilityAction(named: Text("分享消息")) { onShare("assistant") }
                     reactionBadge(role: "assistant")
+                    if turn.status == "completed" {
+                        ChatFollowUpButtons(items: turn.followUpSuggestions, enabled: followUpsEnabled, onSend: onFollowUp)
+                    }
                 } else if !responseText.isEmpty { ChatMarkdownView(source: responseText) }
                 if responding {
                     HStack(spacing: 8) {

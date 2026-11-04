@@ -1,82 +1,84 @@
 import SwiftUI
 import LeafhourCore
 
-/// Presentation is configured before capturing/confirming this page's scope.
-/// Changing a picker never submits model work.
 struct ReaderPageTranslationPanel: View {
     @Bindable var session: ReaderSession
     @Bindable var reading: ReaderReadingContent
     let cloud: CloudLibraryClient?
     let library: OfflineLibrary?
     let page: ReaderVisiblePage?
+    /// The parent should provide its real user-navigation marker, not a reflow ID.
+    var userNavigationID: UUID? = nil
+    @Environment(\.dismiss) private var dismiss
+    @State private var targetValid = false
     private var currentPage: ReaderVisiblePage? { page.flatMap { $0.isCurrent(session) ? $0 : nil } }
-    private var preferences: Binding<ReaderPreferences> { Binding(get: { session.state.preferences }, set: { session.changePreferences($0) }) }
     var body: some View {
         Form {
-            ReaderBookLanguageChoices(session: session).disabled(reading.running)
-            Section("显示方式") {
-                Picker("阅读内容", selection: preferences.viewMode) {
-                    Text("原著").tag(ReaderViewMode.source)
-                    Text("译文").tag(ReaderViewMode.translation)
-                    Text("对照").tag(ReaderViewMode.parallel)
-                }.pickerStyle(.segmented).accessibilityIdentifier("reader-page-translation-mode").disabled(reading.running)
-                Picker("译文版本", selection: preferences.translationVariant) {
-                    Text("直译").tag(ReaderTranslationVariant.literal); Text("意译").tag(ReaderTranslationVariant.interpretive)
-                }.pickerStyle(.segmented).accessibilityIdentifier("reader-page-translation-variant").disabled(reading.running)
-            }
+            ReaderBookLanguageChoices(session: session, onValidityChange: { targetValid = $0 })
+            TranslationDisplayChoices(session: session)
             Section {
                 if let currentPage {
-                    Text("本页涉及 \(currentPage.passageIDs.count) 个原文段落").font(.subheadline)
-                        .accessibilityIdentifier("reader-page-translation-scope")
+                    Text("当前页 \(currentPage.passageIDs.count) 段，及紧邻的最多两段")
+                        .font(.subheadline).accessibilityIdentifier("reader-page-translation-scope")
                 } else {
-                    Text("当前页尚未取得可翻译的正文。页面仍在排版时，请稍等；扫描图片页需要先有可核对文字。")
+                    Text("当前页尚未取得可翻译的正文。请等页面排版完成；扫描图片页需要先有可核对的文字。")
                         .font(.subheadline).foregroundStyle(.secondary).accessibilityIdentifier("reader-page-translation-unavailable")
                 }
-                if reading.running {
-                    ProgressView(value: Double(reading.completedCount), total: Double(max(1, reading.totalCount))) {
-                        Text("译文 \(reading.completedCount)/\(reading.totalCount)").monospacedDigit()
+                if reading.isFollowing || reading.running {
+                    if reading.running {
+                        ProgressView(value: Double(reading.completedCount), total: Double(max(1, reading.totalCount))) {
+                            Text("当前范围 \(reading.completedCount)/\(reading.totalCount)").monospacedDigit()
+                        }
+                    } else {
+                        Label("随读翻译已开启，等待你继续阅读", systemImage: "checkmark.circle")
+                            .font(.subheadline).accessibilityIdentifier("reader-follow-translation-waiting")
                     }
-                    Button("暂停本次翻译", systemImage: "pause.circle") { reading.stop() }.frame(minHeight: 44)
+                    Button("停止随读翻译", systemImage: "stop.circle") { reading.stopFollowing() }
+                        .frame(minHeight: 44).accessibilityIdentifier("reader-follow-translation-stop")
+                    Button("返回阅读", systemImage: "book") { dismiss() }.frame(minHeight: 44)
                 } else {
-                    Button("准备本页译文", systemImage: "character.book.closed") {
+                    Button("开启随读翻译并返回阅读", systemImage: "character.book.closed") {
                         let snapshot = currentPage
-                        Task { await reading.prepare(session, cloud: cloud, library: library, scope: .page, page: snapshot) }
-                    }.frame(minHeight: 44).accessibilityIdentifier("reader-page-translation-prepare")
-                        .disabled(currentPage == nil || reading.loading || session.state.preferences.viewMode == .source || session.book.cloud == nil || cloud == nil || library == nil)
+                        Task {
+                            await reading.startFollowing(session, cloud: cloud, library: library, page: snapshot, userNavigationID: userNavigationID ?? session.navigationID)
+                            if reading.isFollowing { dismiss() }
+                        }
+                    }.frame(minHeight: 44).accessibilityIdentifier("reader-follow-translation-start")
+                        .disabled(currentPage == nil || !targetValid || reading.loading || session.state.preferences.viewMode == .source || session.book.cloud == nil || cloud == nil || library == nil)
                 }
                 if session.state.preferences.viewMode == .source {
-                    Text("选择“译文”或“对照”后，可准备本页译文。").font(.footnote).foregroundStyle(.secondary)
+                    Text("选择译文或对照后，再开启随读翻译。").font(.footnote).foregroundStyle(.secondary)
                 }
                 if session.book.cloud == nil {
-                    Text("已有译文仍可阅读。将这本书同步到自己的账号后，可以准备新的 AI 译文。").font(.footnote).foregroundStyle(.secondary)
+                    Text("已有译文仍可阅读。将书同步到自己的账号后，可以准备新的 AI 译文。").font(.footnote).foregroundStyle(.secondary)
                 }
-                if reading.loading { ProgressView("正在核对本页范围").font(.footnote) }
+                if reading.loading { ProgressView("正在核对当前范围").font(.footnote) }
                 if let status = reading.status { Text(status).font(.footnote).foregroundStyle(.secondary).accessibilityIdentifier("reader-page-translation-status") }
                 if let error = reading.error { Text(error).font(.footnote).foregroundStyle(.secondary).textSelection(.enabled).accessibilityIdentifier("reader-page-translation-error") }
-            } header: { Text("当前页") } footer: {
-                Text(session.book.kind == .pdf
-                    ? "范围只取当前 PDF 原页的可见正文，相邻原页另行处理。页边露出半段时，补齐完整段落；已有双译不重做。"
-                    : "范围按当前排版的一页计算。页边露出半段时，补齐该段的完整双译；已有双译不重做。字号、语言或显示方式改变后，会重新核对本页范围，不提前翻译整章。")
+            } header: { Text("随读翻译") } footer: {
+                Text("仅在开启后从当前页向下准备，每个窗口最多 12 段。每段最多 1 阅读点，提交前核对实际报价；已有完整双译不重做。窗口完成后等待你继续阅读。叉关闭会停止当前请求和后续任务，停止结果不明时保留原请求供核对。")
             }
-        }.navigationTitle("当前页翻译")
+        }.navigationTitle("阅读翻译")
             .onAppear { reading.offerFirstPassage = false }
-            .alert("翻译本页", isPresented: Binding(get: { reading.proposed != nil }, set: { if !$0 { reading.proposed = nil } }), presenting: reading.proposed) { run in
-                Button(run.recoverPendingOnly == true ? "核对上次请求" : "开始翻译") { reading.confirm(run, session: session, cloud: cloud, library: library) }
-                Button("暂不", role: .cancel) { reading.proposed = nil }
-            } message: { run in Text(ReaderTranslationConfirmation.text(run, session: session)) }
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button { reading.stopFollowing(); dismiss() } label: { Image(systemName: "xmark").frame(width: 44, height: 44).contentShape(Rectangle()) }
+                        .frame(minWidth: 44, minHeight: 44).accessibilityLabel("停止翻译并关闭")
+                        .accessibilityIdentifier("reader-follow-translation-close")
+                }
+            }
     }
 }
 
 @MainActor enum ReaderTranslationConfirmation {
     static func text(_ run: ReaderTranslationRun, session: ReaderSession) -> String {
         let scope: String
-        if run.recoverPendingOnly == true { scope = "只核对上次未确认的一段，不继续上次范围中的后续段落" }
-        else if run.pending != nil { scope = "先核对上次未确认的一段，再按原先确认范围继续" }
-        else if run.plan.scope == .page { scope = "只准备当前页涉及的完整段落" }
+        if run.recoverPendingOnly == true { scope = "只核对上次未确认的一段，不继续后续段落" }
+        else if run.pending != nil { scope = "先核对上次未确认的一段" }
+        else if run.plan.scope == .following { scope = "当前页及紧邻的最多两段" }
+        else if run.plan.scope == .page { scope = "当前页涉及的完整段落" }
         else if run.plan.scope == .passage { scope = "当前一段" }
-        else { scope = "逐段处理已选范围" }
-        let count = run.remainingParagraphCount
-        let chapter = session.book.chapters.filter { run.plan.chapterIDs.contains($0.id) }.map(\.title).joined(separator: "、")
-        return "本次范围：\(chapter)，\(scope)。剩余 \(count) 段；启用阅读点时最多 \(count) 点，每段提交前仍核对实际报价。页边的半段按完整段落保存，已有双译不重做。未确认的请求沿用原请求恢复；进入后台或切回原著会暂停后续翻译。"
+        else { scope = "原先明确选择的范围" }
+        return "本次范围：\(scope)，剩余 \(run.remainingParagraphCount) 段。每段最多 1 阅读点，提交前核对实际报价。已有双译不重做。进入后台或切回原版会停止。"
     }
 }

@@ -32,11 +32,18 @@ struct ReaderPanelView: View {
     var library: OfflineLibrary? = nil
     var reading: ReaderReadingContent? = nil
     var visiblePage: ReaderVisiblePage? = nil
+    var readingNavigationID: UUID? = nil
+    var readingGuide: ReadingGuideController? = nil
+    var activeBookmarkID: UUID? = nil
+    var currentBookmarkCapture: ReaderBookmarkCapture? = nil
+    var conversationAutoLoad = true
     let onJump: (Int, ReadingAnchor?) -> Void
     let onCompanion: () -> Void
     var autoPage: ReaderAutoPageController? = nil
     var onAutoPageStart: () -> Void = {}
     var onPresent: (ReaderPanel) -> Void = { _ in }
+    var onUserNavigate: () -> Void = {}
+    var onPreparedConversation: () -> Bool = { false }
     @Environment(\.dismiss) private var dismiss
     private var isNoteEditor: Bool { if case .note = panel { return true }; return false }
     private var isShare: Bool { if case .share = panel { return true }; return false }
@@ -45,13 +52,13 @@ struct ReaderPanelView: View {
             Group {
                 switch panel {
                 case .contents:
-                    ReaderContentsPanel(session: session, onJump: onJump)
+                    ReaderContentsPanel(session: session, onJump: onJump, cloud: cloud, library: library)
                 case .search: BookSearchPanel(session: session, onJump: onJump)
                 case .preferences: ReaderPreferencesPanel(session: session, reading: reading)
                 case .appearance: ReaderAppearancePanel(session: session)
                 case .records: ReaderRecordsPanel(session: session, onJump: onJump)
                 case .tools: ReaderMorePanel(session: session, speech: speech, tools: tools, cloud: cloud, library: library, reading: reading, onJump: onJump, onCompanion: onCompanion,
-                    onAutoPage: { onPresent(.autoPage) }, onShare: { onPresent(.share(nil)) }, onListen: { onPresent(.listening) })
+                    onAutoPage: { onPresent(.autoPage) }, onShare: { onPresent(.share(nil)) }, onListen: { onPresent(.listening) }, onBookmarks: { onPresent(.bookmarks) }, onReadingGuide: { onPresent(.readingGuide) }, onTranslation: { onPresent(.pageTranslation) })
                 case .time: ReaderBookTimePanel(session: session, library: library, cloud: cloud)
                 case .listening: ReaderListeningPanel(session: session, speech: speech)
                 case .autoPage:
@@ -63,9 +70,20 @@ struct ReaderPanelView: View {
                 case .share(let quote): ReaderSharePanel(session: session, quote: quote, cloud: cloud)
                 case .translation: ReaderTranslationPanel(session: session, tools: tools, cloud: cloud)
                 case .pageTranslation:
-                    if let reading { ReaderPageTranslationPanel(session: session, reading: reading, cloud: cloud, library: library, page: visiblePage) }
+                    if let reading { ReaderPageTranslationPanel(session: session, reading: reading, cloud: cloud, library: library, page: visiblePage, userNavigationID: readingNavigationID) }
+                case .bookmarks:
+                    ReaderBookmarkPanel(session: session, initialBookmarkID: activeBookmarkID, currentCapture: currentBookmarkCapture, onJump: { onUserNavigate(); dismiss() })
+                case .readingGuide:
+                    if let readingGuide {
+                        ReaderReadingGuidePanel(controller: readingGuide, canSend: !tools.generating && !tools.loading && !tools.sendingFollowUp && tools.retry == nil) { item in
+                            guard let actual = readingGuide.guide else { return }
+                            await tools.prepareGuideConversation(session, cloud: cloud, library: library)
+                            guard onPreparedConversation() else { return }
+                            await tools.sendGuideFollowUp(item, guide: actual, cloud: cloud)
+                        }
+                    }
                 case .introduction: ReaderIntroductionPanel(session: session, tools: tools, cloud: cloud)
-                case .conversation: ReaderConversationPanel(session: session, tools: tools, cloud: cloud, library: library)
+                case .conversation: ReaderConversationPanel(session: session, tools: tools, cloud: cloud, library: library, autoLoad: conversationAutoLoad)
                 case .bookInformation: ReaderBookInformationPanel(book: session.book)
                 case .note(let quote): NoteEditorPanel(quote: quote, session: session)
                 case .companion(let quote):
@@ -87,7 +105,7 @@ struct ReaderPanelView: View {
             .toolbarBackground(Color(uiColor: .systemBackground), for: .navigationBar)
             .toolbarBackground(.visible, for: .navigationBar)
             .toolbar {
-                if !isNoteEditor && !isShare {
+                if !isNoteEditor && !isShare && panel.id != "page-translation" && panel.id != "bookmarks" {
                     ToolbarItem(placement: .cancellationAction) {
                         Button(action: continueReading) {
                             if panel.isCompanion { Image(systemName: "xmark").frame(width: 44, height: 44) }

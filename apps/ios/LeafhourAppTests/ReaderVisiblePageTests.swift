@@ -15,7 +15,9 @@ final class ReaderVisiblePageTests: XCTestCase {
         else { try Data((1...8).map { "Paragraph \($0). " + String(repeating: "Complete synthetic source words. ", count: 10) }.joined(separator: "\n\n").utf8).write(to: original) }
         let library = try OfflineLibrary(root: root.appendingPathComponent("library"), scope: .device)
         let book = try await library.importFile(original)
-        return ReaderSession(book: book, state: try await library.state(book.id), original: try await library.originalURL(book.id), directory: try await library.bookDirectory(book.id), library: library)
+        var state = try await library.state(book.id)
+        state.translationSettings = BookTranslationSettings(sourceLanguage: .en, targetLanguage: .zh)
+        return ReaderSession(book: book, state: state, original: try await library.originalURL(book.id), directory: try await library.bookDirectory(book.id), library: library)
     }
     private func host(_ view: UIView, size: CGSize = CGSize(width: 360, height: 430)) {
         let window = UIWindow(frame: CGRect(origin: .zero, size: size)), controller = UIViewController()

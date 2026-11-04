@@ -1,0 +1,26 @@
+[
+  {
+    "line": 64,
+    "before": "主执行者统一 Core 测试已实际通过：",
+    "after": "主执行者统一 Core 测试已实际通过。",
+    "rule": "12 结论提示冒号：仅改分隔，不改测试数字"
+  },
+  {
+    "line": 13,
+    "before": "恢复模式只核对旧段，恢复成功后关闭随读状态，等待再次显式开启。它不会在恢复旧段后提交新页。真实阅读 marker 未变化时，译文到达或排版变化调用 follow 也不会扩窗。进入后台或原版会关闭开关。真实跳章只撤销旧窗口，保留用户已开启的开关；新章必须同时取得新用户 marker 与有效当前页，才可提交。",
+    "after": "恢复模式只核对旧段，恢复成功后关闭随读状态，等待再次显式开启。它不会在恢复旧段后提交新页。真实阅读 marker 未变化时，译文到达或排版变化调用 follow 也不会扩窗。进入后台或原版会关闭开关。真实跳章只撤销旧窗口，保留用户已开启的开关。新章必须同时取得新用户 marker 与有效当前页，才可提交。",
+    "rule": "F 分号：独立条件与证据可分句，信息不变"
+  },
+  {
+    "line": 39,
+    "before": "离开阅读器、账号变化、后台和叉关闭时调用 `reading.stopFollowing()`。跳章调用 `enteredChapter`，仅取消旧窗口；不能因为章节变化重新调用完整 stop。现有 `setForeground` 已接入关闭。`reading.requestFollowingPreparation` 绑定到展示 `.pageTranslation`，离开时清空。它取代旧设置页的整章按钮；旧 prepare/confirm 接口保留用于既有明确单段或恢复调用。",
+    "after": "离开阅读器、账号变化、后台和叉关闭时调用 `reading.stopFollowing()`。跳章调用 `enteredChapter`，仅取消旧窗口。不能因为章节变化重新调用完整 stop。现有 `setForeground` 已接入关闭。`reading.requestFollowingPreparation` 绑定到展示 `.pageTranslation`，离开时清空。它取代旧设置页的整章按钮。旧 prepare/confirm 接口保留用于既有明确单段或恢复调用。",
+    "rule": "F 分号：独立条件与证据可分句，信息不变"
+  },
+  {
+    "line": 70,
+    "before": "主执行者的 native green、入口整合画面、性能与设备结果尚待回填。Core 算法测试结果已单独记录；产品操作验收分仍待接入后的独立审阅，未据此补写95分。合并、线上、TestFlight、真机和95分目标不能由 parse 或设计审阅代替。",
+    "after": "主执行者的 native green、入口整合画面、性能与设备结果尚待回填。Core 算法测试结果已单独记录。产品操作验收分仍待接入后的独立审阅，未据此补写95分。合并、线上、TestFlight、真机和95分目标不能由 parse 或设计审阅代替。",
+    "rule": "F 分号：独立条件与证据可分句，信息不变"
+  }
+]

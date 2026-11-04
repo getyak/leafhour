@@ -26,10 +26,13 @@ export function createHostedStore({env=process.env,fetcher=fetch}={}){
   const json=async(route,options)=> (await request(route,options)).json();
   const keyOf=file=>String(file).replaceAll('\\','/');
   async function snapshot(file,fallback){const rows=await json('/rest/v1/reader_documents?key=eq.'+encodeURIComponent(keyOf(file))+'&select=value,version');if(!rows[0])return {data:structuredClone(fallback),version:0};let data=rows[0].value;if(data?.kind==='leafhour-json-blob-v1'){if(typeof data.file!=='string'||!data.file.startsWith('json/'+digest(keyOf(file))+'/'))throw fail('书籍内容引用无效',409);const bytes=await blob(data.file);if(digest(bytes)!==data.sha256)throw fail('书籍内容校验失败',409);data=JSON.parse(gunzipSync(bytes,{maxOutputLength:100*1024*1024}));}return {data,version:rows[0].version};}
-  async function mutate(file,fallback,operation){
+  async function mutate(file,fallback,operation,{beforeCommit}={}){
     for(let attempt=0;attempt<12;attempt++){
       const {data,version}=await snapshot(file,fallback),result=await operation(data);
       let value=data;const encoded=Buffer.from(JSON.stringify(data));if(encoded.length>3500000){const packed=gzipSync(encoded),target='json/'+digest(keyOf(file))+'/'+randomUUID();await putBlob(target,packed);value={kind:'leafhour-json-blob-v1',file:target,sha256:digest(packed)};}
+      // Dispatching this CAS is the commit point. Cancellation before it must
+      // not publish staged generation; after dispatch its receipt is recoverable.
+      await beforeCommit?.();
       const saved=await json('/rest/v1/rpc/reader_document_cas',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({document_key:keyOf(file),expected_version:version,document_value:value})});
       if(saved)return result;
     }
@@ -133,7 +136,10 @@ export function createHostedStore({env=process.env,fetcher=fetch}={}){
       if(Object.values(data.active).some(row=>row.book===book))throw fail('这本书正在保存另一段译文，请稍后再试；当前段落尚未提交翻译。',409);
       if(data.active[key])throw fail('这一段正在翻译，请稍后查看',409);
       if(Object.keys(data.active).length>=2)throw fail('翻译服务正在处理其他段落，请稍后再试',429);
-      const hour=data.requests.filter(r=>now-r.time<3600000);if(hour.filter(r=>r.owner===owner).length>=10||hour.length>=100||data.requests.filter(r=>r.owner===owner).length>=50||data.requests.length>=500)throw fail('今天的翻译请求较多，请稍后再试；原文仍可阅读',429);
+      // Explicit following windows are bounded by source scope, cancellation and
+      // the unchanged platform capacity; a personal ten-request cap would stop
+      // even one valid twelve-passage window before it could finish.
+      const hour=data.requests.filter(r=>now-r.time<3600000);if(hour.length>=100||data.requests.length>=500)throw fail('翻译服务的可用容量暂时用完，请稍后重试；原文和已保存译文仍可阅读',429);
       data.requests.push({owner,time:now});data.active[key]={id,book,expiresAt:now+180000};
     });return {key,id};
   }

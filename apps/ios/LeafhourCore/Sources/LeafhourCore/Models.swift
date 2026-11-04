@@ -33,6 +33,9 @@ public struct LocalBook: Codable, Identifiable, Equatable, Sendable {
     public var readingStartChapterID: String? = nil
     public var readingStartAnchor: ReadingAnchor? = nil
     public var coverResourcePath: String? = nil
+    /// New imports opt into English defaults. Missing legacy metadata remains
+    /// nil without modifying the retained book index or manifest on read.
+    public var translationDefaultsVersion: Int? = 1
 }
 public struct ReadingAnchor: Codable, Equatable, Hashable, Sendable {
     public var chapterID: String
@@ -95,12 +98,16 @@ public struct ReaderPreferences: Codable, Equatable, Sendable {
     public var alwaysShowReadingProgress = false
     public var viewMode: ReaderViewMode = .source
     public var translationVariant: ReaderTranslationVariant = .literal
+    public var parallelOrder: ReaderParallelOrder = .sourceFirst
+    public var parallelSourceScale: Double = 1
+    public var parallelSourceOpacity: Double = 0.8
+    public var parallelSpacing: Double = 20
     public var listeningShowsComparison = true
     public var speechSpeed: Double = 1
     public var autoPageInterval: Double = 30
     public var automaticReadingTime = true
     public init() {}
-    private enum CodingKeys: String, CodingKey { case latinFont, fontStyle, fontSize, lineSpacing, firstLineIndent, theme, navigationMode, pageAnimation, pageInput, pageTapDelay, alwaysShowReadingProgress, viewMode, translationVariant, listeningShowsComparison, speechSpeed, autoPageInterval, automaticReadingTime }
+    private enum CodingKeys: String, CodingKey { case latinFont, fontStyle, fontSize, lineSpacing, firstLineIndent, theme, navigationMode, pageAnimation, pageInput, pageTapDelay, alwaysShowReadingProgress, viewMode, translationVariant, parallelOrder, parallelSourceScale, parallelSourceOpacity, parallelSpacing, listeningShowsComparison, speechSpeed, autoPageInterval, automaticReadingTime }
     public init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
         latinFont = (try values.decodeIfPresent(String.self, forKey: .latinFont)).flatMap(ReaderLatinFont.init(rawValue:)) ?? .automatic
@@ -118,11 +125,18 @@ public struct ReaderPreferences: Codable, Equatable, Sendable {
         alwaysShowReadingProgress = try values.decodeIfPresent(Bool.self, forKey: .alwaysShowReadingProgress) ?? false
         viewMode = (try values.decodeIfPresent(String.self, forKey: .viewMode)).flatMap(ReaderViewMode.init(rawValue:)) ?? .source
         translationVariant = (try values.decodeIfPresent(String.self, forKey: .translationVariant)).flatMap(ReaderTranslationVariant.init(rawValue:)) ?? .literal
+        parallelOrder = (try values.decodeIfPresent(String.self, forKey: .parallelOrder)).flatMap(ReaderParallelOrder.init(rawValue:)) ?? .sourceFirst
+        parallelSourceScale = Self.normalizedParallelSourceScale(try values.decodeIfPresent(Double.self, forKey: .parallelSourceScale) ?? 1)
+        parallelSourceOpacity = Self.normalizedParallelSourceOpacity(try values.decodeIfPresent(Double.self, forKey: .parallelSourceOpacity) ?? 0.8)
+        parallelSpacing = Self.normalizedParallelSpacing(try values.decodeIfPresent(Double.self, forKey: .parallelSpacing) ?? 20)
         listeningShowsComparison = try values.decodeIfPresent(Bool.self, forKey: .listeningShowsComparison) ?? true
         speechSpeed = Self.normalizedSpeechSpeed(try values.decodeIfPresent(Double.self, forKey: .speechSpeed) ?? 1)
         automaticReadingTime = try values.decodeIfPresent(Bool.self, forKey: .automaticReadingTime) ?? true
         autoPageInterval = Self.normalizedAutoPageInterval(try values.decodeIfPresent(Double.self, forKey: .autoPageInterval) ?? 30)
     }
+    public static func normalizedParallelSourceScale(_ value: Double) -> Double { value.isFinite ? min(1.2, max(0.8, value)) : 1 }
+    public static func normalizedParallelSourceOpacity(_ value: Double) -> Double { value.isFinite ? min(1, max(0.7, value)) : 0.8 }
+    public static func normalizedParallelSpacing(_ value: Double) -> Double { value.isFinite ? min(40, max(8, value)) : 20 }
     public static func normalizedSpeechSpeed(_ value: Double) -> Double {
         value.isFinite ? min(5, max(0.5, value)) : 1
     }
@@ -140,9 +154,17 @@ public struct ReaderState: Codable, Equatable, Sendable {
     public var listeningPosition: ReaderListeningPosition?
     public var drafts: [String: NoteDraft] = [:]
     public var notes: [ReaderNote] = []
+    public var bookmarks: [ReaderBookmark]? = nil
     public var preferences = ReaderPreferences()
     public var translationSettings: BookTranslationSettings? = nil
+    /// New books use English. A missing field in an old JSON remains nil so
+    /// unread legacy books retain the language they previously displayed.
+    public var translationDefaultsVersion: Int? = 1
     public init() {}
+    public func resolvedTranslationSettings(detected: ReadingLanguage?) -> BookTranslationSettings {
+        if let translationSettings { return translationSettings }
+        return translationDefaultsVersion == nil ? .legacySuggested(for: detected) : .suggested(for: detected)
+    }
 }
 /// Layer offsets are UTF-16 positions in a verified text snapshot, never source
 /// scalar anchors. Optional state preserves older on-device libraries/backups.
@@ -171,7 +193,7 @@ public struct ImportProgress: Sendable {
 
 public enum DuplicateImportPolicy: String, Codable, Sendable { case keep, replace, new }
 public enum ImportPhase: String, Codable, Sendable { case processing, failed, interrupted, cancelled, complete }
-public struct ImportJob: Codable, Identifiable, Sendable {
+public struct ImportJob: Codable, Identifiable, Equatable, Sendable {
     public var id: UUID
     public var filename: String
     public var kind: BookKind

@@ -3,14 +3,14 @@
   "scope": "One agent source-inspected English content return link. Two removed independent header labels were retired on 2026-10-28; shared-header literals remain unknown. No human review or whole-page review.",
   "reviews": [
     {
-      "candidateId": "candidate:app/en/privacy.html:42:31",
+      "candidateId": "candidate:app/en/privacy.html:44:31",
       "locale": "en",
       "valueSha256": "682ed177a8ef262bf1b114dcf346b5729320488dd7f7730eff7db12bcde22adb",
-      "sourceSha256": "076e5e5e58727dc59f8f5a97d66adb25bf609704b9461ff2473c58c7bdc9c0e9",
+      "sourceSha256": "54033a9301488140622b1adf9bac950947bb897731c14c594cb87ab2d8d0bbd8",
       "by": "agent",
       "surface": "privacy-page content return link",
       "trigger": "reach the end of the English privacy notice; return to library",
-      "rationale": "Visible return action after the notice is ordinary navigation copy. Source-inspected again on 2026-10-28 after replacing the separate header with shared navigation; this exact label and action remain unchanged. The removed header labels are retired from this static-literal review. The legal notice body, new shared-header literals and contact/source data are not admitted by this decision.",
+      "rationale": "Visible return action after the notice is ordinary navigation copy. Source-inspected again on 2026-10-28 after replacing the separate header with shared navigation; this exact label and action remain unchanged. The removed header labels are retired from this static-literal review. The legal notice body, new shared-header literals and contact/source data are not admitted by this decision. Re-inspected on 2026-11-05 after adding the bounded iPhone AI-guide disclosure: the exact content return link remains /library?ui=en with unchanged label and navigation behavior. Only this return action is admitted; the changed notice body is not declared copy-reviewed.",
       "state": "reviewed"
     }
   ]

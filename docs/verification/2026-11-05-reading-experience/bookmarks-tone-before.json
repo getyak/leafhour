@@ -1,0 +1,192 @@
+{
+ "meta": {
+  "篇数": 1,
+  "万汉字": 0.27,
+  "段数": 18,
+  "小标题数": 7
+ },
+ "density": {
+  "翻案腔": 0.0,
+  "提示语冒号": 0.37,
+  "起手式": 0.0,
+  "当…时从句": 0.0,
+  "前置话题壳": 0.0,
+  "句首连接词": 0.0,
+  "顿号并列≥3": 8.872,
+  "过长前置定语": 0.0,
+  "拟人化喻体": 0.0,
+  "概括替代(已否决)": 0.0,
+  "序数词小标题(已否决)": 0.0,
+  "「这意味着」复述(已否决)": 0.0,
+  "空转句引列表(已否决)": 0.37
+ },
+ "char_density": {
+  "破折号": 0.0,
+  "分号": 20.702,
+  "引号": 2.588
+ },
+ "hits": {
+  "翻案腔": [],
+  "提示语冒号": [
+   {
+    "file": "bookmarks-design.md",
+    "line": 34,
+    "excerpt": "建议："
+   }
+  ],
+  "起手式": [],
+  "当…时从句": [],
+  "前置话题壳": [],
+  "句首连接词": [],
+  "顿号并列≥3": [
+   {
+    "file": "bookmarks-design.md",
+    "line": 7,
+    "excerpt": "可改色、命名、移除"
+   },
+   {
+    "file": "bookmarks-design.md",
+    "line": 9,
+    "excerpt": "预设为墨绿、琥珀、朱红"
+   },
+   {
+    "file": "bookmarks-design.md",
+    "line": 17,
+    "excerpt": "` 保存 chapterID、passageID、Unicode scalar"
+   },
+   {
+    "file": "bookmarks-design.md",
+    "line": 17,
+    "excerpt": " offset、PDF pageY、插图 resourceY |"
+   },
+   {
+    "file": "bookmarks-design.md",
+    "line": 19,
+    "excerpt": "derState` 只有笔记、草稿、位置"
+   },
+   {
+    "file": "bookmarks-design.md",
+    "line": 30,
+    "excerpt": "字段为 UUID、sourceVersion、ReadingAnchor"
+   },
+   {
+    "file": "bookmarks-design.md",
+    "line": 30,
+    "excerpt": "可选名称、颜色值、颜色显示名"
+   },
+   {
+    "file": "bookmarks-design.md",
+    "line": 45,
+    "excerpt": " session owner、navigationID、当前原文版本"
+   },
+   {
+    "file": "bookmarks-design.md",
+    "line": 45,
+    "excerpt": "换书、跳章、换账号"
+   },
+   {
+    "file": "bookmarks-design.md",
+    "line": 62,
+    "excerpt": "当前没有选文、选文手柄拖动、长按等待"
+   },
+   {
+    "file": "bookmarks-design.md",
+    "line": 62,
+    "excerpt": "原生编辑菜单、链接触摸、UIControl"
+   },
+   {
+    "file": "bookmarks-design.md",
+    "line": 70,
+    "excerpt": ".swift` | 独立实体、颜色、规范化键"
+   },
+   {
+    "file": "bookmarks-design.md",
+    "line": 71,
+    "excerpt": "swift` | 幂等增改删、持久化 receipt、锚点及账号容器校验"
+   },
+   {
+    "file": "bookmarks-design.md",
+    "line": 72,
+    "excerpt": "ertical pan 适配、冻结 capture、门禁"
+   },
+   {
+    "file": "bookmarks-design.md",
+    "line": 73,
+    "excerpt": ".swift` | 手势适配、真实顶部判定、精确 viewport 与源"
+   },
+   {
+    "file": "bookmarks-design.md",
+    "line": 74,
+    "excerpt": "lay 文件 | 右上角按钮、状态反馈、颜色/名称"
+   },
+   {
+    "file": "bookmarks-design.md",
+    "line": 76,
+    "excerpt": " tests | 下表的模型、持久化、冲突状态机与 UI 验证 |"
+   },
+   {
+    "file": "bookmarks-design.md",
+    "line": 78,
+    "excerpt": "需另补服务书签实体、账号授权路由、`CloudBookSync"
+   },
+   {
+    "file": "bookmarks-design.md",
+    "line": 78,
+    "excerpt": "`、完整备份校验、restore 批次及来源版"
+   },
+   {
+    "file": "bookmarks-design.md",
+    "line": 87,
+    "excerpt": "| 交互 | 25 | 横翻、选文、滚动"
+   },
+   {
+    "file": "bookmarks-design.md",
+    "line": 89,
+    "excerpt": "VoiceOver、动态字号、减少动态"
+   },
+   {
+    "file": "bookmarks-design.md",
+    "line": 89,
+    "excerpt": "长段落、插图、扫描 PDF"
+   },
+   {
+    "file": "bookmarks-design.md",
+    "line": 91,
+    "excerpt": "数据越权、保存到错误位置、过期版本仍跳转"
+   },
+   {
+    "file": "bookmarks-design.md",
+    "line": 95,
+    "excerpt": "规则清单、接口、路径与数值保持原样"
+   }
+  ],
+  "过长前置定语": [],
+  "拟人化喻体": [],
+  "概括替代(已否决)": [],
+  "序数词小标题(已否决)": [],
+  "「这意味着」复述(已否决)": [],
+  "空转句引列表(已否决)": [
+   {
+    "file": "bookmarks-design.md",
+    "line": 34,
+    "excerpt": "最小接口建议："
+   }
+  ]
+ },
+ "syn_hits": [
+  {
+   "file": "bookmarks-design.md",
+   "line": 32,
+   "excerpt": "使用／采用",
+   "context": "`ReaderState.bookmarks` 首次使用可选数组，读取时 `nil` 视为空；或者采用明确的 `decodeIfPresen"
+  }
+ ],
+ "structure": {
+  "句长CV": 0.559,
+  "节长CV": 0.669,
+  "小标题/千字": 2.588,
+  "两句同构/百段": 38.89,
+  "三句同构/百段": 5.56,
+  "mtld粗估": 1625
+ }
+}

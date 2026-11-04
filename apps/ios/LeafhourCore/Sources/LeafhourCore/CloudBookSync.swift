@@ -11,7 +11,7 @@ public struct ReadingPositionRecovery: Codable, Equatable, Sendable {
     }
 }
 
-public struct CloudSyncMetadata: Codable, Sendable {
+public struct CloudSyncMetadata: Codable, Equatable, Sendable {
     public var syncedNotes: [String: String] = [:]
     public var syncedNoteBodies: [String: String] = [:]
     public var noteConflict: Bool = false

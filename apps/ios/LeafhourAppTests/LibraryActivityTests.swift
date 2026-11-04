@@ -1,10 +1,74 @@
 import XCTest
 import Foundation
+import Observation
 import LeafhourCore
 @testable import Leafhour
 
 @MainActor
 final class LibraryActivityTests: XCTestCase {
+    func testRestoredEmailMetadataKeepsTheSameAccountLibraryAndCachedShelf() async throws {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: root); ActivityURLProtocol.respond = nil }
+        let owner = "00000000-0000-4000-8000-000000000344"
+        let configuration = URLSessionConfiguration.ephemeral; configuration.protocolClasses = [ActivityURLProtocol.self]
+        let credential = CloudCredential(account: CloudAccount(id: owner, email: nil), token: "isolated-fixture")
+        let cloud = CloudLibraryClient(baseURL: URL(string: "https://fixture.invalid")!, credential: credential, configuration: configuration)
+        let model = LibraryModel(root: root, cloud: cloud, credential: credential, monitorNetwork: false)
+        let library = try XCTUnwrap(model.library)
+        let file = root.appendingPathComponent("Cached.txt")
+        try Data("Synthetic source retained across account metadata changes.".utf8).write(to: file)
+        let book = try await library.importFile(file)
+        await model.loadCachedShelf()
+        ActivityURLProtocol.respond = { _ in (0.05, ["user": ["id": owner, "email": "synthetic@example.invalid"]]) }
+        await model.reload()
+        XCTAssertTrue(library === model.library, "The account UID owns the library; refreshed email metadata must not recreate it")
+        XCTAssertEqual(model.books.map(\.id), [book.id])
+        XCTAssertEqual(model.account?.email, "synthetic@example.invalid")
+    }
+
+    func testUnchangedShelfRefreshDoesNotRepublishCloudBooks() async throws {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: root); ActivityURLProtocol.respond = nil }
+        let owner = "00000000-0000-4000-8000-000000000344"
+        let configuration = URLSessionConfiguration.ephemeral; configuration.protocolClasses = [ActivityURLProtocol.self]
+        let credential = CloudCredential(account: CloudAccount(id: owner, email: nil), token: "isolated-fixture")
+        let cloud = CloudLibraryClient(baseURL: URL(string: "https://fixture.invalid")!, credential: credential, configuration: configuration)
+        let model = LibraryModel(root: root, cloud: cloud, credential: credential, monitorNetwork: false)
+        ActivityURLProtocol.respond = { _ in (0, ["user": ["id": owner], "books": [["bookId": "saved", "title": "Saved", "contentVersion": "v1"]]]) }
+        await model.synchronize(force: true)
+        let changed = expectation(description: "Unchanged cloud shelf is not published")
+        changed.isInverted = true
+        withObservationTracking {
+            _ = model.cloudBooks
+            _ = model.accountShelf
+        } onChange: { changed.fulfill() }
+        await model.synchronize(force: true)
+        await fulfillment(of: [changed], timeout: 0.05)
+        XCTAssertEqual(model.cloudBooks.map(\.id), ["saved"])
+    }
+    func testForcedRefreshWaitsForTheInFlightShelfAndItsQueuedRecheck() async throws {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: root); ActivityURLProtocol.respond = nil }
+        let owner = "00000000-0000-4000-8000-000000000344"
+        let configuration = URLSessionConfiguration.ephemeral; configuration.protocolClasses = [ActivityURLProtocol.self]
+        let credential = CloudCredential(account: CloudAccount(id: owner, email: nil), token: "isolated-fixture")
+        let cloud = CloudLibraryClient(baseURL: URL(string: "https://fixture.invalid")!, credential: credential, configuration: configuration)
+        let model = LibraryModel(root: root, cloud: cloud, credential: credential, monitorNetwork: false)
+        let started = expectation(description: "First shelf request started")
+        let requestLock = NSLock(); var requestCount = 0
+        ActivityURLProtocol.respond = { _ in
+            let count = requestLock.withLock { requestCount += 1; return requestCount }
+            if count == 1 { started.fulfill() }
+            return (0.1, ["user": ["id": owner], "books": [["bookId": "saved", "title": "Saved", "contentVersion": "v1"]]])
+        }
+        let initial = Task { await model.synchronize() }
+        await fulfillment(of: [started], timeout: 1)
+        await model.synchronize(force: true)
+        XCTAssertEqual(model.cloudBooks.map(\.id), ["saved"], "A refresh caller must not finish before the shared request")
+        XCTAssertFalse(model.syncing, "A forced follow-up must finish before its caller resumes")
+        await initial.value
+        XCTAssertEqual(requestLock.withLock { requestCount }, 2, "The in-flight request and exactly one forced recheck both finish")
+    }
     func testCachedShelfLoadsWithoutAuthenticationOrOpeningLastBook() async throws {
         let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
         defer { try? FileManager.default.removeItem(at: root); ActivityURLProtocol.respond = nil }
@@ -152,6 +216,44 @@ final class LibraryActivityTests: XCTestCase {
         HistoryUploadProtocol.install(probe)
         await model.reload()
         return HistoryFixture(root: root.appendingPathComponent("library"), model: model, library: library, source: source, target: target, rows: rows, original: original, state: state, probe: probe)
+    }
+
+    func testUploadingOriginalKeepsItsSourceReadableBeforeTransferCompletes() async throws {
+        let fixture = try await historyUploadFixture(), gate = HistoryUploadGate()
+        await fixture.probe.holdUpload(gate)
+        let work = Task { await fixture.model.upload(fixture.source) }
+        for _ in 0..<100 {
+            if await gate.arrived { break }
+            try await Task.sleep(for: .milliseconds(5))
+        }
+        let arrived = await gate.arrived
+        let readableID = fixture.model.importActivity?.bookID
+        let wasRunning = fixture.model.importActivity?.isRunning
+        await fixture.model.open(fixture.source)
+        let sourceWasOpened = fixture.model.reader?.book.id == fixture.source.id
+        await gate.release(); await work.value
+        XCTAssertTrue(arrived)
+        XCTAssertEqual(wasRunning, true)
+        XCTAssertEqual(readableID, fixture.source.id, "Upload progress must retain the already readable local source")
+        XCTAssertTrue(sourceWasOpened, "Reading the local source must not await transfer or cloud-copy download")
+    }
+
+    func testUploadDefersMigrationWhileSourceReaderHasNewWork() async throws {
+        let fixture = try await historyUploadFixture()
+        await fixture.model.open(fixture.source)
+        let session = try XCTUnwrap(fixture.model.reader)
+        let anchor = try XCTUnwrap(session.currentAnchor)
+        let note = ReaderNote(anchor: anchor, quote: fixture.source.chapters[0].passages[0].text, body: "New source work stays owned by this active reader.")
+        session.state.notes.append(note); session.save()
+        let saved = await session.flush(); XCTAssertTrue(saved.succeeded)
+        await fixture.model.upload(fixture.source)
+        let pending = try await fixture.library.pendingUpload(fixture.source.id, ownerID: "00000000-0000-4000-8000-000000000344", sourceVersion: fixture.source.sourceVersion)
+        XCTAssertNotNil(pending?.bookID, "A receipt must stay pending until source reading ends and its latest work can migrate")
+        XCTAssertTrue(fixture.model.reader === session)
+        XCTAssertEqual(session.state.notes.last?.id, note.id)
+        XCTAssertEqual(fixture.model.importActivity?.bookID, fixture.source.id, "Deferred upload keeps the actual readable local source, not a completed cloud migration")
+        let target = try await fixture.library.state(fixture.target.id)
+        XCTAssertFalse(target.notes.contains { $0.id == note.id }, "An active source cannot be migrated from an earlier snapshot")
     }
 
     private func reopenedUploadModel(_ fixture: HistoryFixture) async -> LibraryModel {
@@ -470,6 +572,8 @@ private actor HistoryUploadProbe {
     private var position: [String: Any] = [:]
     private var published = false
     private var loseReceipt = false
+    private var uploadGate: HistoryUploadGate?
+    func holdUpload(_ gate: HistoryUploadGate) { uploadGate = gate }
     private(set) var uploadIntents: [[String: String]] = []
     private(set) var duplicateCalls = 0
     func loseNextReceipt() { loseReceipt = true }
@@ -491,6 +595,7 @@ private actor HistoryUploadProbe {
         if path == "/api/library/upload/start" { return try reply(404, ["error": "Use the isolated legacy upload fixture"]) }
         let body = Self.requestBody(request)
         if path == "/api/library/upload" {
+            if let uploadGate { await uploadGate.waitForRelease() }
             let value = try JSONSerialization.jsonObject(with: body) as! [String: Any]
             guard let base64 = value["base64"] as? String, Data(base64Encoded: base64) == original else { return try reply(400, ["error": "Synthetic original changed"]) }
             uploadIntents.append(["policy": value["duplicatePolicy"] as? String ?? "keep", "operation": value["operationId"] as? String ?? ""])
@@ -532,6 +637,17 @@ private actor HistoryUploadProbe {
         while stream.hasBytesAvailable { let count = stream.read(&buffer, maxLength: buffer.count); if count <= 0 { break }; data.append(contentsOf: buffer.prefix(count)) }
         return data
     }
+}
+
+private actor HistoryUploadGate {
+    private(set) var arrived = false
+    private var released = false
+    private var continuation: CheckedContinuation<Void, Never>?
+    func waitForRelease() async {
+        arrived = true
+        if !released { await withCheckedContinuation { continuation = $0 } }
+    }
+    func release() { released = true; continuation?.resume(); continuation = nil }
 }
 
 private final class HistoryUploadProtocol: URLProtocol, @unchecked Sendable {

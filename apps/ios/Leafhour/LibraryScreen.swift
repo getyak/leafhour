@@ -73,11 +73,14 @@ struct LibraryScreen: View {
     var body: some View {
         NavigationStack(path: $path) {
             shelfScaffold
-            .task { await model.loadCachedShelf(); didLoad = true; await model.reload(); await model.synchronize(); await migrateCloudPinsIfNeeded() }
+            .task { await model.loadCachedShelf(); didLoad = true; await model.reload(loadShelf: false); await model.synchronize(); await migrateCloudPinsIfNeeded() }
             .onChange(of: path.isEmpty) { _, empty in rootNavigationDepthChanged(!empty) }
             .onAppear { rootNavigationDepthChanged(!path.isEmpty) }
             .task(id: resumeLookupKey) { await loadResume() }
-            .refreshable { await model.synchronize(force: true); await model.reload() }
+            .refreshable {
+                if model.account == nil { await model.loadCachedShelf() }
+                else { await model.synchronize(force: true) }
+            }
             .onChange(of: scenePhase) { _, phase in if phase == .active { Task { await model.synchronize() } } }
             .onChange(of: model.account?.id) { _, _ in selecting = false; selectedIDs = []; sharing = nil; confirmingRemoval = false; removalItems = [] }
             .onChange(of: model.accountShelf?.pinsInitialized) { _, _ in Task { await migrateCloudPinsIfNeeded() } }
@@ -244,7 +247,12 @@ struct LibraryScreen: View {
                             .listRowBackground(Color.clear)
                     }
                 }
-            } header: { shelfHeader.textCase(nil) }
+            } header: {
+                VStack(alignment: .leading, spacing: 4) {
+                    shelfHeader
+                    LibraryShelfSyncStatus(model: model)
+                }.textCase(nil)
+            }
             if !model.jobs.isEmpty { Section("待继续的导入") { importRows } }
 
         }
@@ -261,7 +269,7 @@ struct LibraryScreen: View {
                         .background(Color(uiColor: .secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 16))
                 }
                 shelfHeader
-                if model.syncStatus.hasPrefix("暂") { Text(model.syncStatus).font(.footnote).foregroundStyle(.secondary) }
+                LibraryShelfSyncStatus(model: model)
                 if visibleItems.isEmpty { filteredEmptyState.frame(maxWidth: .infinity) }
                 else {
                     LazyVGrid(columns: shelfColumns, alignment: .leading, spacing: 20) {
@@ -476,6 +484,16 @@ struct LibraryScreen: View {
         }.disabled(selectedItems.isEmpty)
     }
 
+}
+
+/// Sync text observes its own small subtree instead of invalidating all shelf items.
+private struct LibraryShelfSyncStatus: View {
+    let model: LibraryModel
+    var body: some View {
+        if model.syncStatus.hasPrefix("暂") {
+            Text(model.syncStatus).font(.footnote).foregroundStyle(.secondary)
+        }
+    }
 }
 
 struct BookCover: View {

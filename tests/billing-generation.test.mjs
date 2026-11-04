@@ -245,3 +245,16 @@ test('a paid Japanese request cannot settle a result labelled as another target 
  const f=await realFixture(),input={id:'wrong-language-result',passageId:'p1',sourceLanguage:'en',targetLanguage:'ja'},q=await f.gate.quote(f.user,{action:'translation',bookId:'book-a',input});
  await assert.rejects(f.gate.run({user:f.user,action:'translation',bookId:'book-a',input:{...input,billing:{quoteId:q.id,idempotencyKey:input.id}},execute:async(body,authority)=>({id:'p1',translations:Object.fromEntries(['literal','interpretive'].map(k=>[k,{text:k,sourceVersion:'version-a',sourceLanguage:'en',targetLanguage:'ko',generationReceipt:authority}]))})}),{status:502});
 });
+
+test('transport cancellation after saved translation settles its original receipt without replay',async()=>{
+ const f=await realFixture(),input={id:'committed-before-disconnect',passageId:'p1',contentVersion:'version-a'},controller=new AbortController();
+ const quote=await f.gate.quote(f.user,{action:'translation',bookId:'book-a',input});let authority,calls=0;
+ const result=await f.gate.run({user:f.user,action:'translation',bookId:'book-a',signal:controller.signal,input:{...input,billing:{quoteId:quote.id,idempotencyKey:input.id}},execute:async(_body,receipt)=>{
+  calls++;authority=receipt;const p=f.savedBook.sections[0].paragraphs[0];
+  p.translations=Object.fromEntries(['literal','interpretive'].map(k=>[k,{text:k,sourceVersion:'version-a',generationReceipt:receipt}]));
+  controller.abort();return structuredClone(p);
+ }});
+ assert.equal(result.id,'p1');assert.equal((await f.billing.operation({ownerId:f.user.id,operationId:authority.operationId})).status,'settled');
+ await f.gate.recover(f.user);await f.gate.run({user:f.user,action:'translation',bookId:'book-a',input,execute:()=>assert.fail('saved cancelled transport cannot replay generation')});
+ assert.equal(calls,1);assert.equal((await f.billing.account({ownerId:f.user.id})).consumedUnits,1000000);
+});
