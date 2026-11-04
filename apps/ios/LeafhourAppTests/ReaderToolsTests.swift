@@ -82,6 +82,71 @@ final class ReaderToolsTests: XCTestCase {
         XCTAssertEqual(restored.turns.last?.question, "Why this phrase?")
     }
 
+    func testReactionsRestoreAndOnlySendWithAnExplicitQuestion() async throws {
+        let fixture = try await fixture(cloudBook: false, persistCloud: true), tools = ReaderCloudTools(), probe = ReaderToolsProbe()
+        var sentReactions: [[String: String]]?
+        probe.respond = { [self] request, body in
+            if request.url!.path == "/api/auth/session" { return (200, metadata(enabled: false)) }
+            if request.httpMethod == "GET" { return (200, ["available": true]) }
+            sentReactions = body["reactions"] as? [[String: String]]
+            return (200, ["id": body["id"]!, "text": body["text"]!, "status": "completed", "answer": ["summary": "Follow-up"]])
+        }
+        ReaderToolsURLProtocol.install(probe)
+        tools.configure(library: fixture.library, localBookID: fixture.session.book.id)
+        await tools.loadConversation(fixture.session, cloud: fixture.cloud)
+        tools.turns = [ReaderConversationTurn(id: "earlier", question: "Question", answer: "Answer", status: "completed", contentVersion: fixture.session.book.sourceVersion)]
+        tools.setMessageReaction(turnID: "earlier", role: "assistant", emoji: "💡")
+        XCTAssertNil(sentReactions)
+        let saved = await tools.flushConversationDraft(); XCTAssertTrue(saved)
+        let restored = ReaderCloudTools()
+        restored.configure(library: fixture.library, localBookID: fixture.session.book.id)
+        await restored.loadConversation(fixture.session, cloud: fixture.cloud)
+        XCTAssertEqual(restored.messageReaction(turnID: "earlier", role: "assistant"), "💡")
+        restored.setMessageReaction(turnID: "missing", role: "assistant", emoji: "❤️")
+        XCTAssertNil(restored.messageReaction(turnID: "missing", role: "assistant"))
+        restored.question = "Continue"
+        await restored.prepare("conversation", session: fixture.session, cloud: fixture.cloud)
+        XCTAssertEqual(sentReactions, [["turnId": "earlier", "role": "assistant", "emoji": "💡"]])
+        XCTAssertEqual(restored.turns.last?.question, "Continue")
+    }
+
+    func testStaleAndUnknownVersionReactionsRemainVisibleButNeverBlockANewEditionMessage() {
+        let tools = ReaderCloudTools()
+        tools.turns = [ReaderConversationTurn(id: "old", question: "Old", answer: "Old answer", status: "completed", contentVersion: "v1"), ReaderConversationTurn(id: "new", question: "New", answer: "New answer", status: "completed", contentVersion: "v2"), ReaderConversationTurn(id: "legacy", question: "Legacy", answer: "Legacy answer", status: "completed")]
+        for turn in tools.turns { tools.setMessageReaction(turnID: turn.id, role: "assistant", emoji: "💡") }
+        XCTAssertEqual(tools.messageReactionTargets(contentVersion: "v2"), [["turnId": "new", "role": "assistant", "emoji": "💡"]])
+        XCTAssertEqual(tools.messageReaction(turnID: "old", role: "assistant"), "💡")
+        XCTAssertEqual(tools.messageReaction(turnID: "legacy", role: "assistant"), "💡")
+    }
+
+    func testLegacyLikedMessageCanBeUnmarkedAfterRestoration() async throws {
+        let fixture = try await fixture(cloudBook: false, persistCloud: true)
+        let identity = CloudBookIdentity(ownerID: owner, bookID: "legacy-chat", contentVersion: "v1", sourceFormat: "")
+        let draft: [String: Any] = ["question": "", "likedMessages": ["earlier:assistant"], "turns": [["id": "earlier", "question": "Question", "answer": "Answer", "status": "completed"]]]
+        try await fixture.library.saveConversationDraft(JSONSerialization.data(withJSONObject: draft), bookID: identity.bookID, ownerID: owner)
+        let tools = ReaderCloudTools()
+        await tools.restoreConversationDraft(identity: identity, library: fixture.library)
+        XCTAssertTrue(tools.isMessageLiked(turnID: "earlier", role: "assistant"))
+        tools.toggleMessageLike(turnID: "earlier", role: "assistant")
+        XCTAssertNil(tools.messageReaction(turnID: "earlier", role: "assistant"))
+        let saved = await tools.flushConversationDraft(); XCTAssertTrue(saved)
+        let restored = ReaderCloudTools()
+        await restored.restoreConversationDraft(identity: identity, library: fixture.library)
+        XCTAssertNil(restored.messageReaction(turnID: "earlier", role: "assistant"))
+    }
+
+    func testSharedMessagesRetainOrderAndExplicitRoleAttribution() {
+        let turns = [ReaderConversationTurn(id: "one", question: "Q1", answer: "A1", status: "completed"), ReaderConversationTurn(id: "two", question: "Q2", answer: "Unfinished", status: "running")]
+        let rows = ChatShareMessage.ordered(turns)
+        XCTAssertEqual(rows.map(\.id), ["one:user", "one:assistant", "two:user"])
+        XCTAssertEqual(rows.map(\.attributedText), ["我\nQ1", "松鼠 · AI\nA1", "我\nQ2"])
+        let companion = ReaderConversationTurn(id: "companion", question: "", answer: "A companion thought", status: "completed")
+        XCTAssertEqual(ChatShareMessage.ordered([companion]).map(\.role), ["assistant"])
+        let long = ChatShareMessage(turnID: "long", role: "assistant", text: String(repeating: "字", count: 200))
+        XCTAssertTrue(long.contextExcerpt(fromEnd: true).hasPrefix("松鼠 · AI\n…"))
+        XCTAssertTrue(long.contextExcerpt(fromEnd: false).hasSuffix("…"))
+    }
+
     func testDefinitiveReferenceRejectionRestoresTheQuoteButPreservesANewerDraftQuote() async throws {
         for failAtAuthentication in [true, false] {
             for selectNewerReference in [true, false] {

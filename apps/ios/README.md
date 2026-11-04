@@ -168,3 +168,14 @@ Local source presentation no longer waits for cloud records. Deferred verificati
 Both controllers expose previous/next chapter. Listening chooses the neighbor of its displayed chapter, skips chapters without playable text and preserves idle/paused/playing intent. The source expands when no real comparison exists; existing comparison remains optional. Location only restores the viewport and native selection clears only when explicitly requested. A visible AI 引用 action opens the attributed selection in Chat, with optional drag retained.
 
 See [measurements, tests and delivery boundaries](../../docs/verification/2026-11-03-lazy-reader/README.md). Reported local critical-path timings are not physical-device first-frame measurements; Apple processing, tester installation and device acceptance remain distinct.
+
+
+## Navigation, personal identity and conversation sharing (November 4)
+
+The shelf, squirrel and reading journal share native continuous horizontal paging and bounded vertical scrolling. The native root measures the actual tab-bar height and owns keyboard geometry, so the composer and selection actions stay fully above navigation or keyboard. Pushed destinations retain their back gesture. Bundled DiceBear CC0 avatars work offline; a system-picked photo is downsampled, stripped of metadata and stored per account on this device, with that scope visible in the picker.
+
+The seven-day overview publishes validated account/timezone disk data before network requests, reuses a fresh snapshot for 30 seconds and fetches cross-month data concurrently. Notes load independently. Explicit refresh, reading changes, date/timezone and account changes invalidate freshness. Unknown measurements remain unknown; offline cached values stay available.
+
+Conversations use attributed user/assistant bubbles with native selectable text. Long press adds reactions, reply, copy, multiple selection and system sharing. Marking a reaction never starts a model; the next explicit send resolves its saved owner/book/version message targets before passing them to AI. Sharing previews exact selected messages, optionally adds visible neighboring excerpts, and exports a single measured long image in three styles with a QR instead of a printed URL. The generic chat QR opens Leafhour's homepage and never publishes private chat. Accessible complete text remains available. Oversized images fail explicitly with complete-text export retained.
+
+See [design, independent assessments and actual image evidence](../../docs/verification/2026-11-04-ios-experience/README.md). Local simulator evidence, merge, web deployment, TestFlight distribution and physical-device acceptance are separate.

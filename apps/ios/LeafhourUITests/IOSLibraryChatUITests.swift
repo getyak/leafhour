@@ -136,12 +136,53 @@ final class IOSLibraryChatUITests: XCTestCase {
         let latest = app.textViews.matching(NSPredicate(format: "label CONTAINS %@", "合成陪读回答")).allElementsBoundByIndex.last!
         latest.coordinate(withNormalizedOffset: CGVector(dx: 0.12, dy: 0.18)).press(forDuration: 1.1)
         let like = app.menuItems["点赞"].firstMatch; require(like); like.tap()
-        require(app.images["已点赞"].firstMatch)
+        require(app.buttons["已标记 👍，点按取消"].firstMatch)
         latest.coordinate(withNormalizedOffset: CGVector(dx: 0.12, dy: 0.18)).press(forDuration: 1.1)
         require(app.menuItems["取消点赞"].firstMatch)
         app.menuItems["取消点赞"].firstMatch.tap()
         app.buttons["chat-wake-composer"].tap(); require(input); XCTAssertTrue(input.isHittable)
         capture("quiet-composer-woken")
+    }
+
+    func testMessageReactionMultiselectAndArtisticSharePreview() {
+        launch()
+        app.tabBars.buttons["松鼠"].tap()
+        let input = app.textFields["reader-question"]
+        require(input); input.tap(); input.typeText("把这段想法留下来")
+        app.buttons["reader-question-send"].tap()
+        let answer = app.textViews.matching(NSPredicate(format: "label CONTAINS %@", "合成陪读回答")).firstMatch
+        require(answer)
+        XCTAssertFalse(app.staticTexts["你问"].exists)
+        capture("Chat · asymmetric bubbles")
+        answer.coordinate(withNormalizedOffset: CGVector(dx: 0.12, dy: 0.18)).press(forDuration: 1.1)
+        let reactions = app.menuItems["表情"].firstMatch
+        if reactions.waitForExistence(timeout: 3) { reactions.tap() } else { app.buttons["表情"].firstMatch.tap() }
+        let insight = app.menuItems["💡"].firstMatch
+        if insight.waitForExistence(timeout: 3) { insight.tap() } else { app.buttons["💡"].firstMatch.tap() }
+        require(app.buttons["已标记 💡，点按取消"].firstMatch)
+        capture("Chat · reaction stays attached to its message")
+        answer.coordinate(withNormalizedOffset: CGVector(dx: 0.12, dy: 0.18)).press(forDuration: 1.1)
+        let select = app.menuItems["多选"].firstMatch
+        if select.waitForExistence(timeout: 3) { select.tap() } else { app.buttons["多选"].firstMatch.tap() }
+        require(app.staticTexts["已选 1 条"])
+        app.buttons["分享 / 转发"].firstMatch.tap()
+        require(app.navigationBars["分享对话"])
+        require(app.images["chat-share-preview"])
+        let context = app.switches["chat-share-context"]
+        require(context); context.tap()
+        for style in ["暖纸", "苔墨", "夜色"] {
+            app.segmentedControls["chat-share-style"].buttons[style].tap()
+            capture("Chat share · " + style + " · explicit adjacent context")
+        }
+        XCTAssertTrue(app.buttons["chat-share-long-image"].isEnabled)
+        app.buttons["完成"].firstMatch.tap()
+        app.buttons["全选"].firstMatch.tap()
+        require(app.staticTexts["已选 2 条"])
+        XCTAssertLessThanOrEqual(app.buttons["分享 / 转发"].firstMatch.frame.maxY, app.tabBars.firstMatch.frame.minY + 1, "Message actions must remain entirely above the native tab bar")
+        capture("Chat · ordered multiple selection")
+        app.buttons["复制"].firstMatch.tap()
+        app.buttons["取消"].firstMatch.tap()
+        require(app.buttons["chat-wake-composer"])
     }
 
     func testBrowsingHistoryKeepsItsPositionWhenReplyFinishesAndCanReturnToLatest() {

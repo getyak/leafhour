@@ -1,0 +1,63 @@
+{
+  "styles": [
+    {
+      "name": "Thumbs",
+      "creator": "DiceBear",
+      "license": "CC0-1.0",
+      "source": "https://www.dicebear.com/styles/thumbs/"
+    },
+    {
+      "name": "Shapes",
+      "creator": "DiceBear",
+      "license": "CC0-1.0",
+      "source": "https://www.dicebear.com/styles/shapes/"
+    }
+  ],
+  "assets": [
+    {
+      "name": "avatar-thumbs-0",
+      "source": "https://api.dicebear.com/9.x/thumbs/png?seed=Willow&size=256&backgroundColor=e3eddf,f3e8d4,e5e9ef&radius=50",
+      "sha256": "0a0f0590365bbc1752c7e78f0283df1a8e168f5cc2b2580b889265613b87bc58"
+    },
+    {
+      "name": "avatar-thumbs-1",
+      "source": "https://api.dicebear.com/9.x/thumbs/png?seed=Moss&size=256&backgroundColor=e3eddf,f3e8d4,e5e9ef&radius=50",
+      "sha256": "ecd4c4620fe0b5fe3bb6cc0cfd6fdcd4e9580c5f4a3b0498c245f4ef2689fbcc"
+    },
+    {
+      "name": "avatar-thumbs-2",
+      "source": "https://api.dicebear.com/9.x/thumbs/png?seed=Clover&size=256&backgroundColor=e3eddf,f3e8d4,e5e9ef&radius=50",
+      "sha256": "ac191a7b32695c7e8f4cddff4d16758ae70d9603a932af16f95d65d658a908db"
+    },
+    {
+      "name": "avatar-thumbs-3",
+      "source": "https://api.dicebear.com/9.x/thumbs/png?seed=Acorn&size=256&backgroundColor=e3eddf,f3e8d4,e5e9ef&radius=50",
+      "sha256": "cd62eef0a1776536cef4de2429fa10b2da96d793f07f93c986301ad546195bac"
+    },
+    {
+      "name": "avatar-thumbs-4",
+      "source": "https://api.dicebear.com/9.x/thumbs/png?seed=Fern&size=256&backgroundColor=e3eddf,f3e8d4,e5e9ef&radius=50",
+      "sha256": "0b9e2be66dde52db987201c814aed17a400678501b982cfdb2ca50ca33d1d374"
+    },
+    {
+      "name": "avatar-thumbs-5",
+      "source": "https://api.dicebear.com/9.x/thumbs/png?seed=Hazel&size=256&backgroundColor=e3eddf,f3e8d4,e5e9ef&radius=50",
+      "sha256": "b06579dbc136cb01148b36a9a8d53eb9ae97e8c481a1b52a4df90fabd915ab8e"
+    },
+    {
+      "name": "avatar-shapes-0",
+      "source": "https://api.dicebear.com/9.x/shapes/png?seed=Quiet&size=256&backgroundColor=e3eddf,f3e8d4,e5e9ef&radius=50",
+      "sha256": "ec758c658a3cead7cbd5a750adc925453be4c9ec8fdcd2db49fb340ade8112f6"
+    },
+    {
+      "name": "avatar-shapes-1",
+      "source": "https://api.dicebear.com/9.x/shapes/png?seed=Dawn&size=256&backgroundColor=e3eddf,f3e8d4,e5e9ef&radius=50",
+      "sha256": "4b35e3004c528ef5dd107bc6a5eebef077e9b246d9f46cffd7e40fd17a65c7a7"
+    },
+    {
+      "name": "avatar-shapes-2",
+      "source": "https://api.dicebear.com/9.x/shapes/png?seed=Forest&size=256&backgroundColor=e3eddf,f3e8d4,e5e9ef&radius=50",
+      "sha256": "9f1737f461b5f3d92f8bcb7c83b2dedabff3e2c4a4586dd8d9eb7b73a7757bef"
+    }
+  ]
+}

@@ -10,6 +10,9 @@ struct ChatMarkdownView: UIViewRepresentable {
     var onReference: (() -> Void)? = nil
     var onLike: (() -> Void)? = nil
     var liked = false
+    var onReact: ((String) -> Void)? = nil
+    var onSelectMessage: (() -> Void)? = nil
+    var onShareMessage: (() -> Void)? = nil
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     func makeUIView(context: Context) -> UITextView {
         let view = Self.makeNativeTextView()
@@ -37,6 +40,7 @@ struct ChatMarkdownView: UIViewRepresentable {
     private func configureActions(_ coordinator: Coordinator) {
         coordinator.onReference = onReference; coordinator.onLike = onLike; coordinator.liked = liked
         coordinator.copySource = copySource ?? source
+        coordinator.onReact = onReact; coordinator.onSelectMessage = onSelectMessage; coordinator.onShareMessage = onShareMessage
     }
     func updateUIView(_ view: UITextView, context: Context) {
         configureActions(context.coordinator)
@@ -60,6 +64,9 @@ struct ChatMarkdownView: UIViewRepresentable {
         var onReference: (() -> Void)?
         var onLike: (() -> Void)?
         var liked = false
+        var onReact: ((String) -> Void)?
+        var onSelectMessage: (() -> Void)?
+        var onShareMessage: (() -> Void)?
         var copySource: String?
         private var plainText = false
         private var source: String?
@@ -81,7 +88,7 @@ struct ChatMarkdownView: UIViewRepresentable {
             if attributed == nil || self.width != width || self.category != category {
                 self.width = width; self.category = category; measured = nil
                 if plainText {
-                    attributed = NSAttributedString(string: source, attributes: [.font: UIFont.preferredFont(forTextStyle: .subheadline, compatibleWith: UITraitCollection(preferredContentSizeCategory: category)), .foregroundColor: UIColor.label.withAlphaComponent(0.72)])
+                    attributed = NSAttributedString(string: source, attributes: [.font: UIFont.preferredFont(forTextStyle: .subheadline, compatibleWith: UITraitCollection(preferredContentSizeCategory: category)), .foregroundColor: UIColor.label])
                 } else { attributed = ChatMarkdownView.render(document!, width: width, category: category) }
             }
             return attributed!
@@ -109,6 +116,9 @@ struct ChatMarkdownView: UIViewRepresentable {
             var actions = [UIMenuElement]()
             if let onReference { actions.append(UIAction(title: "引用", image: UIImage(systemName: "arrowshape.turn.up.left")) { _ in onReference() }) }
             if let onLike { actions.append(UIAction(title: liked ? "取消点赞" : "点赞", image: UIImage(systemName: liked ? "hand.thumbsup.fill" : "hand.thumbsup")) { _ in onLike() }) }
+            if let onReact { actions.append(UIMenu(title: "表情", children: ReaderCloudTools.reactionChoices.map { emoji in UIAction(title: emoji) { _ in onReact(emoji) } })) }
+            if let onSelectMessage { actions.append(UIAction(title: "多选", image: UIImage(systemName: "checkmark.circle")) { _ in onSelectMessage() }) }
+            if let onShareMessage { actions.append(UIAction(title: "分享 / 转发", image: UIImage(systemName: "square.and.arrow.up")) { _ in onShareMessage() }) }
             if onReference != nil || onLike != nil {
                 let message = copySource ?? source ?? textView.text ?? ""
                 actions.append(UIAction(title: "复制消息", image: UIImage(systemName: "doc.on.doc")) { _ in UIPasteboard.general.string = message })

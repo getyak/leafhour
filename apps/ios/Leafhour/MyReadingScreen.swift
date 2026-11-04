@@ -7,6 +7,7 @@ struct MyReadingScreen: View {
     @Bindable var model: LibraryModel
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.scenePhase) private var scenePhase
+    @Environment(\.rootNavigationDepthChanged) private var rootNavigationDepthChanged
     @Environment(\.dynamicTypeSize) private var textSize
     @State private var journal = ReadingJournalModel()
     @State private var section: JournalSection = .overview
@@ -43,7 +44,7 @@ struct MyReadingScreen: View {
                         AccountRecordsStatus(state: model.notebookState, title: "笔记") { Task { await model.loadNotebookRecords(refresh: true) } }.padding(.top, 12)
                     }
                 }.padding(.horizontal, 24).padding(.bottom, 32).frame(maxWidth: 640, alignment: .leading).frame(maxWidth: .infinity)
-            }.scrollDismissesKeyboard(.interactively).background(Color.shelfPaper)
+            }.accessibilityIdentifier("journal-history").scrollDismissesKeyboard(.interactively).scrollBounceBehavior(.always, axes: .vertical).background(Color.shelfPaper)
                 .navigationTitle("我的阅读").navigationBarTitleDisplayMode(.large)
                 .toolbar {
                     ToolbarItem(placement: .topBarTrailing) {
@@ -61,6 +62,10 @@ struct MyReadingScreen: View {
                 }
                 .sheet(isPresented: $settings) { AppSettingsScreen(model: model, presented: true) }
                 .task(id: requestKey) { await refresh() }
+                .task(id: model.importAccountContext) { await model.loadNotebookRecords() }
+                .onChange(of: model.readingJournalRevision) { _, _ in Task { await refresh() } }
+                .onAppear { rootNavigationDepthChanged(!path.isEmpty) }
+                .onChange(of: path.isEmpty) { _, empty in rootNavigationDepthChanged(!empty) }
                 .refreshable { await refresh(explicit: true) }
                 .onChange(of: scenePhase) { _, phase in if phase == .active { Task { await refresh() } } }
                 .sensoryFeedback(.selection, trigger: path)
@@ -120,7 +125,16 @@ struct MyReadingScreen: View {
         }.padding(.top, 24)
     }
     private var notesReady: Bool { effectiveScope == .device ? journal.hasCompleteDeviceNotes : model.notebookState.hasSnapshot }
-    private func refresh(explicit: Bool = false) async { await journal.load(model, scope: effectiveScope, month: month, recent: section == .overview, refresh: explicit) }
+    private func refresh(explicit: Bool = false) async {
+        // Notebook pagination and latency never hold back the seven-day measurements.
+        if explicit {
+            async let notes: Void = model.loadNotebookRecords(refresh: true)
+            await journal.load(model, scope: effectiveScope, month: month, recent: section == .overview, refresh: true)
+            _ = await notes
+        } else {
+            await journal.load(model, scope: effectiveScope, month: month, recent: section == .overview)
+        }
+    }
     private func showNote(_ note: ReadingJournal.Note) { openedNotes[note.id] = note; path.append(.note(note.id)) }
     private func openSource(_ note: ReadingJournal.Note) async -> String? {
         let marker = model.importAccountContext, sourceScope = effectiveScope

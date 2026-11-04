@@ -117,9 +117,9 @@ private struct ChatScrollTracking: ViewModifier {
                 fallbackBottom = frame; updateLegacyPosition(frame, layout: fallbackLayout)
             }
             .onChange(of: fallbackLayout) { _, layout in updateLegacyPosition(fallbackBottom, layout: layout) }
-            .simultaneousGesture(DragGesture(minimumDistance: 12)
-                .onChanged { _ in position.beginLegacyBrowsing(layout: fallbackLayout) }
-                .onEnded { _ in position.endLegacyBrowsing(layout: fallbackLayout) })
+            .background(ChatLegacyScrollObserver(
+                begin: { position.beginLegacyBrowsing(layout: fallbackLayout) },
+                end: { position.endLegacyBrowsing(layout: fallbackLayout) }))
             .onDisappear { position.cancelLegacyBrowsing() }
         }
     }
@@ -127,6 +127,46 @@ private struct ChatScrollTracking: ViewModifier {
         guard !frame.isNull, layout.container.height > 0 else { return }
         let visibleBottom = layout.container.height - max(0, layout.insets.bottom)
         position.updateLegacyBottomVisibility(frame.maxY <= visibleBottom + 44, layout: layout)
+    }
+}
+
+/// Observe the existing vertical pan on iOS 17; adding a SwiftUI drag here
+/// would also recognize horizontal movement and compete with the root pager.
+private struct ChatLegacyScrollObserver: UIViewRepresentable {
+    let begin: () -> Void
+    let end: () -> Void
+    func makeUIView(context: Context) -> ObserverView { ObserverView() }
+    func updateUIView(_ view: ObserverView, context: Context) {
+        view.begin = begin; view.end = end; view.attach()
+    }
+    static func dismantleUIView(_ view: ObserverView, coordinator: ()) { view.detach() }
+    final class ObserverView: UIView {
+        var begin: (() -> Void)?
+        var end: (() -> Void)?
+        private weak var scroll: UIScrollView?
+        private var browsing = false
+        override func didMoveToWindow() { super.didMoveToWindow(); attach() }
+        override func layoutSubviews() { super.layoutSubviews(); attach() }
+        func attach() {
+            var ancestor = superview
+            while let view = ancestor {
+                if let candidate = view as? UIScrollView {
+                    guard scroll !== candidate else { return }
+                    detach(); scroll = candidate
+                    candidate.panGestureRecognizer.addTarget(self, action: #selector(panned(_:)))
+                    return
+                }
+                ancestor = view.superview
+            }
+        }
+        func detach() { scroll?.panGestureRecognizer.removeTarget(self, action: #selector(panned(_:))); scroll = nil; browsing = false }
+        @objc private func panned(_ pan: UIPanGestureRecognizer) {
+            let delta = pan.translation(in: self)
+            if pan.state == .changed, !browsing, abs(delta.y) > 8, abs(delta.y) > abs(delta.x) {
+                browsing = true; begin?()
+            }
+            if [.ended, .cancelled, .failed].contains(pan.state), browsing { browsing = false; end?() }
+        }
     }
 }
 
@@ -181,6 +221,10 @@ struct ChatConversationView: View {
     @State private var latestRequest = UUID()
     @State private var expandedQuestions = Set<String>()
     @State private var placedMarginalReply: String?
+    @State private var selectingMessages = false
+    @State private var selectedMessages = Set<String>()
+    @State private var shareSelection: ChatShareSelection?
+    @State private var messageNotice: String?
     @FocusState private var focused: Bool
     @Environment(\.scenePhase) private var scenePhase
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
@@ -214,11 +258,12 @@ struct ChatConversationView: View {
                 .coordinateSpace(name: "conversation-scroll")
                 .modifier(ChatScrollTracking(position: scrollPosition))
                 .modifier(ChatScrollAnchoring(followsLatest: scrollPosition.followsLatest, marginal: isMarginalNote))
-                .simultaneousGesture(DragGesture(minimumDistance: 12).onChanged { _ in
-                    if !focused { composerAwake = false }
-                })
+                .onChange(of: scrollPosition.followsLatest) { _, follows in
+                    if !follows && !focused { composerAwake = false }
+                }
+                .scrollBounceBehavior(.always, axes: .vertical)
                 .scrollDismissesKeyboard(.interactively)
-                .safeAreaInset(edge: .bottom, spacing: 0) { composer }
+                .safeAreaInset(edge: .bottom, spacing: 0) { if selectingMessages { selectionBar } else { composer } }
                 .onChange(of: latestRequest) { _, _ in scroll(proxy) }
                 .onChange(of: tools.turns.last?.id) { _, _ in
                     if !placeCompletedMarginalReply(proxy), scrollPosition.followsLatest { scroll(proxy) }
@@ -248,6 +293,11 @@ struct ChatConversationView: View {
             .toolbarBackground(Color(uiColor: .systemBackground), for: .navigationBar)
             .toolbarBackground(.visible, for: .navigationBar)
             .task { await reload() }
+            .sheet(item: $shareSelection) { selection in ChatSharePanel(selection: selection) }
+            .sensoryFeedback(.selection, trigger: tools.reactionRevision)
+            .overlay(alignment: .top) {
+                if let messageNotice { Text(messageNotice).font(.caption).padding(.horizontal, 14).padding(.vertical, 9).background(.regularMaterial, in: Capsule()).padding(.top, 8).allowsHitTesting(false).accessibilityIdentifier("chat-message-notice") }
+            }
             .onChange(of: sourceExpanded) { _, expanded in if expanded && shortHeight { focused = false } }
             .onChange(of: referenceExpanded) { _, expanded in if expanded && shortHeight { focused = false } }
             .onChange(of: verticalSizeClass) { _, value in
@@ -276,9 +326,55 @@ struct ChatConversationView: View {
             onReference: { role in tools.referenceMessage(turn, role: role); referenceExpanded = false; composerAwake = true; focused = true },
             onLike: { role in tools.toggleMessageLike(turnID: turn.id, role: role) },
             isLiked: { role in tools.isMessageLiked(turnID: turn.id, role: role) },
+            reaction: { role in tools.messageReaction(turnID: turn.id, role: role) },
+            onReact: { role, emoji in
+                tools.setMessageReaction(turnID: turn.id, role: role, emoji: emoji)
+                showNotice(tools.messageReaction(turnID: turn.id, role: role) == nil ? "已取消标记" : "已标记 · 下次发送时松鼠会看到")
+            },
+            selecting: selectingMessages,
+            isSelected: { role in selectedMessages.contains(turn.id + ":" + role) },
+            onSelect: { role in
+                selectingMessages = true; focused = false
+                let key = turn.id + ":" + role
+                if selectedMessages.contains(key) { selectedMessages.remove(key) } else { selectedMessages.insert(key) }
+            },
+            onShare: { role in presentShare(ids: [turn.id + ":" + role]) },
             questionExpanded: Binding(get: { expandedQuestions.contains(turn.id) }, set: { expanded in
                 if expanded { scrollPosition.pauseFollowing(); expandedQuestions.insert(turn.id) } else { expandedQuestions.remove(turn.id) }
             }))
+    }
+    private var chosenMessages: [ChatShareMessage] { ChatShareMessage.ordered(tools.turns).filter { selectedMessages.contains($0.id) } }
+    private var selectionBar: some View {
+        VStack(spacing: 8) {
+            HStack {
+                Button("取消") { selectingMessages = false; selectedMessages.removeAll() }.frame(minHeight: 44)
+                Spacer()
+                Text("已选 \(chosenMessages.count) 条").font(.subheadline)
+                Spacer()
+                Button("全选") { selectedMessages = Set(ChatShareMessage.ordered(tools.turns).map(\.id)) }.frame(minHeight: 44)
+            }
+            HStack(spacing: 16) {
+                Button { UIPasteboard.general.string = chosenMessages.map(\.attributedText).joined(separator: "\n\n"); showNotice("已复制所选消息") } label: { Label("复制", systemImage: "doc.on.doc").frame(maxWidth: .infinity).frame(minHeight: 44) }
+                Button { presentShare(ids: selectedMessages) } label: { Label("分享 / 转发", systemImage: "square.and.arrow.up").frame(maxWidth: .infinity).frame(minHeight: 44) }
+            }.buttonStyle(.bordered).disabled(chosenMessages.isEmpty)
+        }.padding(.horizontal, 20).padding(.bottom, 8).background(.bar)
+    }
+    private func presentShare(ids: Set<String>) {
+        let all = ChatShareMessage.ordered(tools.turns), chosen = all.filter { ids.contains($0.id) }
+        guard !chosen.isEmpty else { return }
+        var before: String?, after: String?
+        if chosen.count == 1, let index = all.firstIndex(where: { $0.id == chosen[0].id }) {
+            if index > 0 { before = all[index - 1].contextExcerpt(fromEnd: true) }
+            if index + 1 < all.count { after = all[index + 1].contextExcerpt(fromEnd: false) }
+        }
+        shareSelection = ChatShareSelection(title: bookTitle.isEmpty ? "和松鼠的一段对话" : bookTitle, messages: chosen, before: before, after: after)
+    }
+    private func showNotice(_ text: String) {
+        messageNotice = text
+        Task { @MainActor in
+            try? await Task.sleep(for: .seconds(2))
+            if messageNotice == text { messageNotice = nil }
+        }
     }
     private func reload() async {
         await load()
@@ -561,6 +657,12 @@ private struct ChatTurnView: View {
     let onReference: (String) -> Void
     let onLike: (String) -> Void
     let isLiked: (String) -> Bool
+    let reaction: (String) -> String?
+    let onReact: (String, String) -> Void
+    let selecting: Bool
+    let isSelected: (String) -> Bool
+    let onSelect: (String) -> Void
+    let onShare: (String) -> Void
     @Binding var questionExpanded: Bool
     private var foldsQuestion: Bool { turn.question.count > 240 }
     private var shownQuestion: String {
@@ -568,8 +670,8 @@ private struct ChatTurnView: View {
     }
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
+            if !turn.question.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || turn.voice != nil || turn.quote != nil {
             VStack(alignment: .leading, spacing: 5) {
-                Text("你问").font(.caption2).foregroundStyle(Color.primary.opacity(0.64))
                 if let voice = turn.voice {
                     ChatVoiceMessageView(voice: voice, resolve: { try await resolveVoice(voice) }, playbackAllowed: playbackAllowed)
                     Text("转写文字").font(.caption2).foregroundStyle(Color.primary.opacity(0.64))
@@ -577,7 +679,8 @@ private struct ChatTurnView: View {
                 if let reference = turn.replyTo { ChatMessageReferenceView(reference: reference) }
                 if let quote = turn.quote { ChatSavedQuoteView(quote: quote) }
                 ChatMarkdownView(source: shownQuestion, plainText: true, copySource: turn.question,
-                    onReference: { onReference("user") }, onLike: { onLike("user") }, liked: isLiked("user"))
+                    onReference: { onReference("user") }, onLike: { onLike("user") }, liked: isLiked("user"),
+                    onReact: { onReact("user", $0) }, onSelectMessage: { onSelect("user") }, onShareMessage: { onShare("user") })
                     .accessibilityIdentifier("chat-user-message-" + turn.id)
                 if foldsQuestion {
                     Button {
@@ -588,20 +691,31 @@ private struct ChatTurnView: View {
                     }.buttonStyle(.plain).foregroundStyle(Color.leafInk)
                         .accessibilityIdentifier("chat-question-expand")
                 }
-                if isLiked("user") { Image(systemName: "hand.thumbsup.fill").font(.caption2).foregroundStyle(Color.leafInk).accessibilityLabel("已点赞") }
-            }.frame(maxWidth: .infinity, alignment: .leading)
+                reactionBadge(role: "user")
+            }.padding(14)
+                .background(Color.leafInk.opacity(0.10), in: RoundedRectangle(cornerRadius: 20))
+                .overlay { RoundedRectangle(cornerRadius: 20).strokeBorder(Color.leafInk.opacity(0.08), lineWidth: 0.5) }
+                .padding(.leading, 38)
+                .frame(maxWidth: .infinity, alignment: .trailing)
+                .overlay(alignment: .leading) { if selecting { selectionButton(role: "user") } }
                 .contextMenu { messageActions(role: "user", text: turn.question) }
                 .accessibilityAction(named: Text("引用消息")) { onReference("user") }
+                .accessibilityAction(named: Text("多选消息")) { onSelect("user") }
+                .accessibilityAction(named: Text("分享消息")) { onShare("user") }
                 .accessibilityAction(named: Text(isLiked("user") ? "取消点赞" : "点赞")) { onLike("user") }
+            }
             VStack(alignment: .leading, spacing: 8) {
                 if let answer = turn.answer, !answer.isEmpty {
                     ChatMarkdownView(source: answer,
                         onReference: turn.status == "completed" ? { onReference("assistant") } : nil,
-                        onLike: { onLike("assistant") }, liked: isLiked("assistant"))
+                        onLike: { onLike("assistant") }, liked: isLiked("assistant"),
+                        onReact: turn.status == "completed" ? { onReact("assistant", $0) } : nil, onSelectMessage: turn.status == "completed" ? { onSelect("assistant") } : nil, onShareMessage: turn.status == "completed" ? { onShare("assistant") } : nil)
                         .accessibilityAction(named: Text("引用消息")) { if turn.status == "completed" { onReference("assistant") } }
                         .accessibilityAction(named: Text(isLiked("assistant") ? "取消点赞" : "点赞")) { onLike("assistant") }
                         .accessibilityIdentifier("chat-assistant-message-" + turn.id)
-                    if isLiked("assistant") { Image(systemName: "hand.thumbsup.fill").font(.caption2).foregroundStyle(Color.leafInk).accessibilityLabel("已点赞") }
+                        .accessibilityAction(named: Text("多选消息")) { onSelect("assistant") }
+                        .accessibilityAction(named: Text("分享消息")) { onShare("assistant") }
+                    reactionBadge(role: "assistant")
                 } else if !responseText.isEmpty { ChatMarkdownView(source: responseText) }
                 if responding {
                     HStack(spacing: 8) {
@@ -618,13 +732,32 @@ private struct ChatTurnView: View {
                         }
                     }.accessibilityIdentifier("reader-conversation-error")
                 }
-            }.frame(maxWidth: .infinity, alignment: .leading).id("chat-reply-" + turn.id)
+            }.padding(14)
+                .background(Color(uiColor: .secondarySystemBackground), in: RoundedRectangle(cornerRadius: 20))
+                .overlay { RoundedRectangle(cornerRadius: 20).strokeBorder(Color.primary.opacity(0.06), lineWidth: 0.5) }
+                .padding(.trailing, 24).padding(.leading, selecting ? 38 : 0)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .overlay(alignment: .leading) { if selecting, turn.answer != nil, turn.status == "completed" { selectionButton(role: "assistant") } }
+                .contextMenu { if let answer = turn.answer, turn.status == "completed" { messageActions(role: "assistant", text: answer) } }
+                .id("chat-reply-" + turn.id)
         }.accessibilityElement(children: .contain).accessibilityIdentifier("reader-conversation-turn-" + turn.id)
+    }
+    private func selectionButton(role: String) -> some View {
+        Button { onSelect(role) } label: { Image(systemName: isSelected(role) ? "checkmark.circle.fill" : "circle").font(.title3).frame(width: 44, height: 44) }.buttonStyle(.plain).foregroundStyle(Color.leafInk)
+            .accessibilityLabel((isSelected(role) ? "取消选择" : "选择") + (role == "user" ? "我的消息" : "松鼠的回答"))
+    }
+    @ViewBuilder private func reactionBadge(role: String) -> some View {
+        if let emoji = reaction(role) {
+            Button { onReact(role, emoji) } label: { Text(emoji).font(.subheadline).padding(.horizontal, 10).frame(minHeight: 44).background(Color(uiColor: .systemBackground).opacity(0.7), in: Capsule()) }
+                .buttonStyle(.plain).accessibilityLabel("已标记 " + emoji + "，点按取消").accessibilityIdentifier("chat-reaction-" + turn.id + ":" + role)
+        }
     }
     @ViewBuilder private func messageActions(role: String, text: String) -> some View {
         Button("引用", systemImage: "arrowshape.turn.up.left") { onReference(role) }.disabled(role == "assistant" && turn.status != "completed")
         Button("复制", systemImage: "doc.on.doc") { UIPasteboard.general.string = text }
-        Button(isLiked(role) ? "取消点赞" : "点赞", systemImage: isLiked(role) ? "hand.thumbsup.fill" : "hand.thumbsup") { onLike(role) }
+        Menu("表情") { ForEach(ReaderCloudTools.reactionChoices, id: \.self) { emoji in Button(emoji) { onReact(role, emoji) } } }
+        Button("多选", systemImage: "checkmark.circle") { onSelect(role) }
+        Button("分享 / 转发", systemImage: "square.and.arrow.up") { onShare(role) }
     }
 
 }

@@ -161,3 +161,21 @@ test('local message replies use same-account receipts and match the exact local 
  for(const patch of [{localBook:{...input().localBook,bookId:'other-local-book'}},{contentVersion:'other-version',localBook:{...input().localBook,contentVersion:'other-version'}}])await assert.rejects(second.local.send(owner,{...input('mismatched-local-reference'),...patch,replyTo:{turnId:'local-source',role:'assistant'}}),{status:409});
  assert.equal(await second.local.findTurn(owner,'mismatched-local-reference'),null);assert.equal(jobs.length,2);
 });
+
+test('local message reactions validate owner, local book and saved text before generation',async t=>{
+ const jobs=[],f=await fixture(t,async job=>{jobs.push(job);return answer;});
+ await f.chat.local.send(owner,input('reaction-source'));
+ const reaction={turnId:'reaction-source',role:'assistant',emoji:'🌱'},request={...input('reaction-followup'),reactions:[reaction]};
+ const saved=await f.chat.local.send(owner,request);assert.deepEqual(jobs[1].reactions,[{...reaction,text:answer.summary}]);
+ assert.deepEqual(await f.chat.local.send(owner,request),saved);assert.equal(jobs.length,2);
+ await assert.rejects(f.chat.local.send(other,{...input('reaction-other'),reactions:[reaction]}),{status:404});
+ await assert.rejects(f.chat.local.send(owner,{...input('reaction-other-book'),localBook:{...input().localBook,bookId:'another-book'},reactions:[reaction]}),{status:404});
+});
+
+test('paid local reactions retain canonical targets for exactly-once receipt recovery',async t=>{
+ const f=await fixture(t,async()=>answer),billing=createBillingService({enabled:true,store:createBillingMemoryStore()}),gate=createCreditGate({billing,library:f.library,chat:f.chat});
+ await billing.trial({ownerId:owner.id,verified:true});await f.chat.local.send(owner,input('local-reaction-paid-source'));
+ const body={...input('local-reaction-paid'),reactions:[{turnId:'local-reaction-paid-source',role:'assistant',emoji:'🌱'}]},quote=await gate.quote(owner,{action:'conversation',bookId:subject,input:body}),request={...body,billing:{quoteId:quote.id,idempotencyKey:'local-reaction-once'}};
+ const params={user:owner,action:'conversation',bookId:subject,input:request,execute:normalized=>f.chat.local.send(owner,normalized)},saved=await gate.run(params);
+ assert.deepEqual(await gate.run(params),saved);assert.equal((await billing.account({ownerId:owner.id})).consumedUnits,4000000);
+});

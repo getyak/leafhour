@@ -418,6 +418,7 @@
   "app/personal-records.mjs",
   "app/popover-controls.mjs",
   "app/portable-chat.mjs",
+  "app/chat-reactions.mjs",
   "app/portal.css",
   "app/portal.js",
   "app/preference-memory-codec.mjs",

@@ -175,7 +175,7 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
     // owns its fixed base/retry import policy.
     for(const file of ['reader-audio.js','reader-audio-bootstrap.mjs','reader-audio-metadata.mjs','audio-state.mjs','listening-guide-state.mjs','action-focus.mjs'])files['/'+file]=file;
     for(const file of ['ui-first-paint-codec.mjs','ui-first-paint-bootstrap.mjs','ui-locale.mjs','ui-locale-codec.mjs','ui-locale-controls.mjs','ui-catalogs/en.mjs','ui-catalogs/zh-Hans.mjs','ui-catalogs/zh-Hant.mjs','ui-catalogs/ja.mjs'])files['/'+file]=file;
-    for(const file of ['library-portability.mjs','portable-chat.mjs','library-data.mjs','library-data.css','fflate.mjs','fflate-LICENSE.txt'])files['/'+file]=file;
+    for(const file of ['library-portability.mjs','portable-chat.mjs','chat-reactions.mjs','library-data.mjs','library-data.css','fflate.mjs','fflate-LICENSE.txt'])files['/'+file]=file;
     files['/document-source.mjs']='document-source.mjs';files['/pdf-ingestion.mjs']='pdf-ingestion.mjs';files['/pdf-onboarding.mjs']='pdf-onboarding.mjs';files['/pdf-onboarding-state.mjs']='pdf-onboarding-state.mjs';files['/book-transfer.mjs']='book-transfer.mjs';files['/book-upload-controller.mjs']='book-upload-controller.mjs';files['/chat-book-upload.mjs']='chat-book-upload.mjs';files['/book-import-shelf.mjs']='book-import-shelf.mjs';
     files['/source-review']='source-review.html';for(const file of ['source-review.mjs','source-review.css','source-revisions.mjs'])files['/'+file]=file;
     files['/original-download.mjs']='original-download.mjs';files['/reading-book.mjs']='reading-book.mjs';
