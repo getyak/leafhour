@@ -169,7 +169,7 @@ struct ChatConversationView: View {
     private var shortHeight: Bool { verticalSizeClass == .compact }
     private var composerLines: ClosedRange<Int> {
         guard shortHeight else { return 1...6 }
-        return 1...(focused ? 1 : (sourceExpanded || referenceExpanded ? 2 : 3))
+        return 1...(focused || sourceExpanded || referenceExpanded ? 1 : 3)
     }
     private var canAsk: Bool {
         !localOnly && !tools.loading && !tools.generating && tools.retry == nil && tools.conversationAvailable && !tools.question.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
@@ -295,7 +295,7 @@ struct ChatConversationView: View {
                 if shortHeight {
                     HStack(spacing: 6) {
                         Image(systemName: "text.quote").foregroundStyle(Color.leafInk)
-                        Text(tools.chatContext?.selection?.origin == "translation" ? "译文" : "原文").foregroundStyle(.secondary).fixedSize()
+                        Text(tools.chatContext?.selection?.origin == "translation" ? "译文" : "原文").foregroundStyle(Color.leafInk).fixedSize()
                         Text(sourceExpanded ? "完整引用" : source).lineLimit(1)
                     }.font(.caption2).frame(minHeight: 44).contentShape(Rectangle())
                 } else {
@@ -374,6 +374,22 @@ struct ChatConversationView: View {
         !source.isEmpty && !tools.chatQuoteRemoved && (canRemoveSource || tools.chatContext?.selection != nil)
     }
     private var canUpdateContext: Bool { tools.canUpdateChatContext && tools.pendingMessageReference == nil }
+    private var hasComposerAttachments: Bool {
+        hasSourceContext || tools.pendingMessageReference != nil || tools.pendingVoice != nil || canUpdateContext
+    }
+    private var compactAttachmentButton: some View {
+        Button {
+            focused = false
+            sourceExpanded = hasSourceContext
+            referenceExpanded = tools.pendingMessageReference != nil
+        } label: {
+            Image(systemName: "paperclip").font(.system(size: 18))
+                .frame(width: 44, height: 44).contentShape(Rectangle())
+        }.buttonStyle(.plain).foregroundStyle(Color.leafInk)
+            .accessibilityLabel("查看本次引用与附件")
+            .accessibilityHint("收起键盘，查看或移除已附加的内容；保留草稿")
+            .accessibilityIdentifier("chat-inspect-attachments")
+    }
     private var attachmentLayout: AnyLayout {
         shortHeight ? AnyLayout(HStackLayout(alignment: .top, spacing: 8)) : AnyLayout(VStackLayout(alignment: .leading, spacing: 6))
     }
@@ -405,7 +421,7 @@ struct ChatConversationView: View {
     }
     private var expandedComposer: some View {
         VStack(alignment: .leading, spacing: shortHeight ? 2 : 6) {
-            if hasSourceContext || tools.pendingMessageReference != nil || tools.pendingVoice != nil || canUpdateContext {
+            if hasComposerAttachments && !(shortHeight && focused) {
                 attachmentLayout {
                     if hasSourceContext { context.frame(maxWidth: .infinity, alignment: .leading) }
                     if let reference = tools.pendingMessageReference { pendingReference(reference).frame(maxWidth: .infinity, alignment: .leading) }
@@ -424,8 +440,11 @@ struct ChatConversationView: View {
                     }
                 }
             }
-            if showsLatest && !(shortHeight && focused) { HStack { Spacer(minLength: 0); latestButton(compact: false) } }
+            if showsLatest && !shortHeight { HStack { Spacer(minLength: 0); latestButton(compact: false) } }
             HStack(alignment: .bottom, spacing: 8) {
+                if shortHeight && focused && hasComposerAttachments {
+                    compactAttachmentButton
+                } else {
                 Button {
                     if speech.isActive { tools.question = speech.cancel() }
                     else { focused = false; Task { await speech.start(draft: tools.question) { tools.question = $0 } } }
@@ -434,11 +453,14 @@ struct ChatConversationView: View {
                         .frame(width: 44, height: 44).contentShape(Rectangle()).foregroundStyle(speech.isActive ? Color.red : Color.secondary)
                 }.buttonStyle(.plain).disabled(localOnly || tools.loading || tools.generating || tools.retry != nil || tools.pendingVoice != nil || sendingVoice)
                     .accessibilityLabel(speech.isActive ? "取消本次录音" : "语音输入").accessibilityIdentifier("chat-microphone")
+                }
                 if shortHeight && focused {
                     Button { focused = false } label: {
                         Image(systemName: "keyboard.chevron.compact.down").font(.system(size: 18)).frame(width: 44, height: 44).contentShape(Rectangle())
                     }.buttonStyle(.plain).foregroundStyle(.secondary).accessibilityLabel("收起键盘")
                         .accessibilityIdentifier("chat-dismiss-keyboard")
+                } else if shortHeight && showsLatest {
+                    latestButton(compact: true)
                 }
                 TextField(isLibraryConversation ? "和松鼠聊聊…" : "写下此刻的问题", text: $tools.question, axis: .vertical)
                     .lineLimit(composerLines).focused($focused).padding(.vertical, shortHeight ? 0 : 12)

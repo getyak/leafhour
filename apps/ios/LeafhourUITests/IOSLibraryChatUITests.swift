@@ -121,6 +121,34 @@ final class IOSLibraryChatUITests: XCTestCase {
         verifyLatestNavigation(extra: ["-UIPreferredContentSizeCategoryName", "UICTContentSizeCategoryAccessibilityXXXL", "-AppleInterfaceStyle", "Dark"])
     }
 
+    func testLandscapeHistoryKeepsLatestAndDraftInOneTypingRow() {
+        launch(["--reading-craft-history", "-UIPreferredContentSizeCategoryName", "UICTContentSizeCategoryAccessibilityXXXL"])
+        defer { XCUIDevice.shared.orientation = .portrait }
+        app.tabBars.buttons["Chat"].tap()
+        XCUIDevice.shared.orientation = .landscapeLeft
+        let rotated = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in self.app.frame.width > self.app.frame.height }, object: nil)
+        XCTAssertEqual(XCTWaiter.wait(for: [rotated], timeout: 10), .completed)
+        let input = app.textFields["reader-question"], send = app.buttons["reader-question-send"]
+        require(input); input.tap(); input.typeText("第一句合成问题"); send.tap()
+        require(app.textViews.matching(NSPredicate(format: "label CONTAINS %@", "合成回答末尾")).firstMatch)
+        let history = app.scrollViews["reader-conversation-history"], latest = app.buttons["chat-latest"]
+        history.swipeDown(); require(latest)
+        app.buttons["chat-wake-composer"].tap(); require(input); input.tap(); input.typeText("保留横屏草稿")
+        let dismiss = app.buttons["chat-dismiss-keyboard"]; require(dismiss); dismiss.tap()
+        let hidden = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in !self.app.keyboards.firstMatch.exists }, object: nil)
+        XCTAssertEqual(XCTWaiter.wait(for: [hidden], timeout: 8), .completed)
+        require(latest)
+        XCTAssertEqual(latest.frame.midY, send.frame.midY, accuracy: 1)
+        XCTAssertGreaterThanOrEqual(latest.frame.height, 44)
+        XCTAssertLessThanOrEqual(send.frame.maxY, history.frame.maxY + 1)
+        XCTAssertEqual(input.value as? String, "保留横屏草稿")
+        capture("landscape-history-latest-and-draft")
+        latest.tap()
+        let returned = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in !latest.exists }, object: nil)
+        XCTAssertEqual(XCTWaiter.wait(for: [returned], timeout: 8), .completed)
+        XCTAssertEqual(input.value as? String, "保留横屏草稿")
+    }
+
     private func verifyLatestNavigation(extra: [String] = []) {
         launch(["--reading-craft-history"] + extra)
         app.tabBars.buttons["Chat"].tap()

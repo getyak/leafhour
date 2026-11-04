@@ -103,11 +103,21 @@ final class ImmersiveReaderUITests: XCTestCase {
         let back = app.buttons["reader-chat-return"]; require(back)
         XCTAssertTrue(back.isHittable)
         capture("landscape-accessible-quote-keyboard")
-        let reference = app.descendants(matching: .any)["chat-source-context"].firstMatch; require(reference)
-        reference.coordinate(withNormalizedOffset: CGVector(dx: 0.3, dy: 0.3)).tap()
+        // The keyboard's AX frame can omit its Chinese candidate bar. The actual
+        // resized chat viewport must contain each entire input control.
+        let available = app.scrollViews["reader-conversation-history"].frame
+        let attachments = app.buttons["chat-inspect-attachments"]; require(attachments)
+        for control in [attachments, app.buttons["chat-dismiss-keyboard"], send] {
+            XCTAssertGreaterThanOrEqual(control.frame.minY, app.navigationBars["旁注"].frame.maxY)
+            XCTAssertLessThanOrEqual(control.frame.maxY, available.maxY + 1)
+            XCTAssertGreaterThanOrEqual(control.frame.height, 44)
+        }
+        attachments.tap()
         let hidden = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in !keyboard.exists }, object: nil)
         XCTAssertEqual(XCTWaiter.wait(for: [hidden], timeout: 8), .completed)
         XCTAssertEqual(question.value as? String, "横屏合成问题")
+        let reference = app.descendants(matching: .any)["chat-source-context"].firstMatch; require(reference)
+        XCTAssertTrue(app.buttons["chat-remove-source"].isHittable)
         capture("landscape-reference-detail-keeps-draft")
         back.tap(); require(reader)
         XCTAssertFalse(app.buttons["reader-ai"].exists)
@@ -128,15 +138,19 @@ final class ImmersiveReaderUITests: XCTestCase {
         XCTAssertGreaterThanOrEqual(send.frame.height, 44)
         XCTAssertGreaterThanOrEqual(send.frame.width, 44)
         XCTAssertLessThanOrEqual(send.frame.maxY, keyboard.frame.minY + 2)
-        XCTAssertTrue(app.buttons["chat-remove-source"].isHittable)
+        XCTAssertTrue(app.buttons["chat-inspect-attachments"].isHittable)
+        XCTAssertLessThanOrEqual(send.frame.maxY, app.scrollViews["reader-conversation-history"].frame.maxY + 1)
         XCTAssertTrue(app.buttons["reader-chat-return"].isHittable)
         capture("landscape-long-draft-keyboard")
-        let dismiss = app.buttons["chat-dismiss-keyboard"]; require(dismiss); dismiss.tap()
+        let inspect = app.buttons["chat-inspect-attachments"]; require(inspect); inspect.tap()
         let hidden = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in !keyboard.exists }, object: nil)
         XCTAssertEqual(XCTWaiter.wait(for: [hidden], timeout: 8), .completed)
         XCTAssertEqual(question.value as? String, draft)
         XCTAssertTrue(send.isHittable)
         XCTAssertTrue(app.buttons["chat-remove-source"].isHittable)
+        let expandedSource = app.descendants(matching: .any)["chat-source-context"].firstMatch
+        XCTAssertGreaterThanOrEqual(expandedSource.frame.minY, app.navigationBars["旁注"].frame.maxY)
+        XCTAssertLessThanOrEqual(send.frame.maxY, app.scrollViews["reader-conversation-history"].frame.maxY + 1)
         capture("landscape-long-draft-retained")
         XCUIDevice.shared.orientation = .portrait
         let portrait = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in self.app.frame.height > self.app.frame.width }, object: nil)
