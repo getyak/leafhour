@@ -1,0 +1,379 @@
+{
+  "meta": {
+    "n_candidates": 37,
+    "n_rename": 15,
+    "n_cohesion": 15,
+    "n_colon": 7,
+    "n_iso3": 0,
+    "truncated": false
+  },
+  "rename": [
+    {
+      "type": "rename",
+      "file": "ai-implementation.md",
+      "line": 5,
+      "para": "已增加按账号、书籍、原文版本及语言保存的 AI 前导。云书由服务端取得当前账号可读的实际书籍后取样；本机书仅发送目录和有限开篇，来源标为设备。输入不超过 24 个目录标题、6 段、6000 Unicode 码点、18000 编码字节，不读取私人笔记。前导包含主题、阅读方法和读前问题，注明 AI 草稿、实际取样范围与未核对后文。",
+      "label": "0组",
+      "confidence": "高",
+      "reason": "技术对象、来源与状态保持原术语；类别说明不是换名。"
+    },
+    {
+      "type": "rename",
+      "file": "ai-implementation.md",
+      "line": 7,
+      "para": "前导请求使用独立的 /api/library/reading-guide 及 sponsored 模型计量，不进入普通聊天或点数报价。模型未配置、失败、取消或来源变化都有明确状态。账号／版本缓存与租约阻止重复生成；关闭预览和失败尝试可在本机恢复。默认准备在独立任务内运行，不占正文打开链路。",
+      "label": "0组",
+      "confidence": "高",
+      "reason": "技术对象、来源与状态保持原术语；类别说明不是换名。"
+    },
+    {
+      "type": "rename",
+      "file": "ai-implementation.md",
+      "line": 9,
+      "para": "导览与所有完成的聊天回复下均有三个追问。客户端优先采用有效的服务端建议，不足时取实际回答中的短语补齐；旧服务和旧历史也适用，没有新增模型请求。失败与流式片段不呈现可点追问。",
+      "label": "0组",
+      "confidence": "高",
+      "reason": "技术对象、来源与状态保持原术语；类别说明不是换名。"
+    },
+    {
+      "type": "rename",
+      "file": "ai-implementation.md",
+      "line": 11,
+      "para": "点击追问直接走普通发送。所选文本和父回复在入口冻结，原输入框、录音、选文及引用保持原样；网络挂起和流式期间的新输入不会被结束回调覆盖。普通追问使用真实父回复的 replyTo，导览追问用独立的 AI 导览引用，用户 text 始终只有所点问题。进行中的发送、未确认请求、录音与消息选择状态禁用追问，服务端仍沿用原请求幂等及计费恢复。",
+      "label": "0组",
+      "confidence": "高",
+      "reason": "技术对象、来源与状态保持原术语；类别说明不是换名。"
+    },
+    {
+      "type": "rename",
+      "file": "ai-implementation.md",
+      "line": 13,
+      "para": "另为主任务的目录 AI 搜索增加独立草稿 namespace、本机 snapshot 会话入口和原始 sourceRefs 保留；这些接口不扩大读取权限。",
+      "label": "0组",
+      "confidence": "高",
+      "reason": "技术对象、来源与状态保持原术语；类别说明不是换名。"
+    },
+    {
+      "type": "rename",
+      "file": "ai-implementation.md",
+      "line": 17,
+      "para": "新增 Node 服务测试先观察到缺少模块、HTTP 先观察到路由 404；实现后新增 6 项通过。其中字符范围夹具曾误写 41，实际为 42，已修正，属于夹具计算错误。受影响的简介、前导、聊天和工具共 8 个文件随后 137 项通过，0 失败，0 跳过。",
+      "label": "0组",
+      "confidence": "高",
+      "reason": "技术对象、来源与状态保持原术语；类别说明不是换名。"
+    },
+    {
+      "type": "rename",
+      "file": "ai-implementation.md",
+      "line": 19,
+      "para": "HTTP 夹具启用测试 billing，并在前导生成函数内核对 funding=sponsored、feature=reading-guide，证明这条路不调用普通聊天。没有购买、充值或真实模型调用。",
+      "label": "0组",
+      "confidence": "高",
+      "reason": "技术对象、来源与状态保持原术语；类别说明不是换名。"
+    },
+    {
+      "type": "rename",
+      "file": "ai-implementation.md",
+      "line": 21,
+      "para": "新增 Core 四项与 App 三项回归，涵盖三条去重与上下文、Unicode 取样上限、无正文扫描页、草稿／语音保留、延迟发送与双击、namespace 隔离、引用保留和前导缓存。主任务统一 Core 测试共执行 384 项、跳过 2 个既有原样本测试、0 失败，其中 ReadingGuideTests 四项通过，日志位于 /tmp/leafhour-reading-experience-20261105/core-integrated.log，已核对对应记录。App 构建和三项交互测试待补；此前整合编译缺少书签模块，不能作为本模块行为红绿证据。",
+      "label": "0组",
+      "confidence": "高",
+      "reason": "技术对象、来源与状态保持原术语；类别说明不是换名。"
+    },
+    {
+      "type": "rename",
+      "file": "ai-implementation.md",
+      "line": 23,
+      "para": "当前没有真实模型质量、iPhone 画面、VoiceOver、冷开性能或生产部署证据。设计报告中的基线 0 分保留为实施前记录；本轮不能据源码或旧测试补写 95 分。完整目标分数由主任务在入口接入及统一验证后按实际证据记录。",
+      "label": "0组",
+      "confidence": "高",
+      "reason": "技术对象、来源与状态保持原术语；类别说明不是换名。"
+    },
+    {
+      "type": "rename",
+      "file": "ai-implementation.md",
+      "line": 27,
+      "para": "持有 ReadingGuideController，进入书籍后调用 prepare(session:library:cloud:)，离开调用 cancel()；预览使用 ReaderReadingGuideCompact(controller:onOpen:)，完整面板用 ReaderReadingGuidePanel(controller:canSend:onFollowUp:)。导览追问先载入当前书会话，再调用 sendGuideFollowUp(:guide:cloud:)。",
+      "label": "0组",
+      "confidence": "高",
+      "reason": "技术对象、来源与状态保持原术语；类别说明不是换名。"
+    },
+    {
+      "type": "rename",
+      "file": "ai-implementation.md",
+      "line": 29,
+      "para": "普通回复追问已在 ChatConversationView 中接入。目录搜索使用 configure(library:localBookID:draftNamespace:) 和 loadSnapshotConversation(:cloud:)，保存路径分开，逻辑书籍身份不变。新增源文件需由主任务统一更新工程与发布文件清单。本提交不包含共享入口、工程清单或其他领域的未完成改动。",
+      "label": "0组",
+      "confidence": "高",
+      "reason": "技术对象、来源与状态保持原术语；类别说明不是换名。"
+    },
+    {
+      "type": "rename",
+      "file": "ai-implementation.md",
+      "line": 33,
+      "para": "含比较符、URL 或代码的回复不会再使三个追问全部被过滤。提问优先取安全的真实短语，无法取得时用不引用事实的澄清问句补齐，原回答保持原样；新增两项 Core 边界回归。",
+      "label": "0组",
+      "confidence": "高",
+      "reason": "技术对象、来源与状态保持原术语；类别说明不是换名。"
+    },
+    {
+      "type": "rename",
+      "file": "ai-implementation.md",
+      "line": 35,
+      "para": "导览点击请求只发送严格白名单的 guideContext 引用；服务端从当前账号缓存核验书籍、版本、来源和标识，再单独填入标为 origin=ai 的导览快照。云书与本机聊天的 normalizer、请求 hash、历史、模型输入及 portable 恢复均保留此独立字段。未向模型增加权限。",
+      "label": "0组",
+      "confidence": "高",
+      "reason": "技术对象、来源与状态保持原术语；类别说明不是换名。"
+    },
+    {
+      "type": "rename",
+      "file": "ai-implementation.md",
+      "line": 37,
+      "para": "前导赞助复用既有简介的 reserve/releaseQuota，限制新书／版本的生成尝试；已有缓存不占额度。autoLoad=false 供唯一加载后打开聊天使用。已捕获有效书籍上下文时，服务离线也会保存冻结的问题与导览引用为可恢复 intent，原输入和语音不受影响。",
+      "label": "0组",
+      "confidence": "高",
+      "reason": "技术对象、来源与状态保持原术语；类别说明不是换名。"
+    },
+    {
+      "type": "rename",
+      "file": "ai-implementation.md",
+      "line": 39,
+      "para": "本次受影响的 10 个 Node 测试文件 134 项通过，0 失败，0 跳过，日志 /tmp/leafhour-guide-context-followup-node.log。新增两项 App 回归覆盖 AI 归属、草稿／语音保留、离线意图和预加载聊天不发第二次读取，待主任务统一运行。源码于 2026-11-04T19:17:59Z 就绪，本修复未自行运行 Swift 编译。",
+      "label": "0组",
+      "confidence": "高",
+      "reason": "技术对象、来源与状态保持原术语；类别说明不是换名。"
+    }
+  ],
+  "cohesion": [
+    {
+      "type": "cohesion",
+      "file": "ai-implementation.md",
+      "line": 5,
+      "prev_tail": "共享阅读入口由主任务接入",
+      "next_head": "已增加按账号、书籍、原文版本及语言保存的 AI 前导",
+      "label": "有关但转换突然",
+      "confidence": "中",
+      "reason": "同一技术对象的延续或独立设计层面之间的切换；不以连环指标制造断裂。"
+    },
+    {
+      "type": "cohesion",
+      "file": "ai-implementation.md",
+      "line": 7,
+      "prev_tail": "前导包含主题、阅读方法和读前问题，注明 AI 草稿、实际取样范围与未核对后文",
+      "next_head": "前导请求使用独立的 /api/library/reading-guide 及 sponsored 模型计量，不进入普通聊天或点数报价",
+      "label": "明确承接",
+      "confidence": "中",
+      "reason": "同一技术对象的延续或独立设计层面之间的切换；不以连环指标制造断裂。"
+    },
+    {
+      "type": "cohesion",
+      "file": "ai-implementation.md",
+      "line": 9,
+      "prev_tail": "默认准备在独立任务内运行，不占正文打开链路",
+      "next_head": "导览与所有完成的聊天回复下均有三个追问",
+      "label": "有关但转换突然",
+      "confidence": "中",
+      "reason": "同一技术对象的延续或独立设计层面之间的切换；不以连环指标制造断裂。"
+    },
+    {
+      "type": "cohesion",
+      "file": "ai-implementation.md",
+      "line": 11,
+      "prev_tail": "失败与流式片段不呈现可点追问",
+      "next_head": "点击追问直接走普通发送",
+      "label": "明确承接",
+      "confidence": "中",
+      "reason": "同一技术对象的延续或独立设计层面之间的切换；不以连环指标制造断裂。"
+    },
+    {
+      "type": "cohesion",
+      "file": "ai-implementation.md",
+      "line": 13,
+      "prev_tail": "进行中的发送、未确认请求、录音与消息选择状态禁用追问，服务端仍沿用原请求幂等及计费恢复",
+      "next_head": "另为主任务的目录 AI 搜索增加独立草稿 namespace、本机 snapshot 会话入口和原始 sourceRefs 保留",
+      "label": "有关但转换突然",
+      "confidence": "中",
+      "reason": "同一技术对象的延续或独立设计层面之间的切换；不以连环指标制造断裂。"
+    },
+    {
+      "type": "cohesion",
+      "file": "ai-implementation.md",
+      "line": 17,
+      "prev_tail": "这些接口不扩大读取权限",
+      "next_head": "新增 Node 服务测试先观察到缺少模块、HTTP 先观察到路由 404",
+      "label": "有关但转换突然",
+      "confidence": "中",
+      "reason": "同一技术对象的延续或独立设计层面之间的切换；不以连环指标制造断裂。"
+    },
+    {
+      "type": "cohesion",
+      "file": "ai-implementation.md",
+      "line": 19,
+      "prev_tail": "受影响的简介、前导、聊天和工具共 8 个文件随后 137 项通过，0 失败，0 跳过",
+      "next_head": "HTTP 夹具启用测试 billing，并在前导生成函数内核对 funding=sponsored、feature=reading-guide，证明这条路不调用普通聊天",
+      "label": "明确承接",
+      "confidence": "中",
+      "reason": "同一技术对象的延续或独立设计层面之间的切换；不以连环指标制造断裂。"
+    },
+    {
+      "type": "cohesion",
+      "file": "ai-implementation.md",
+      "line": 21,
+      "prev_tail": "没有购买、充值或真实模型调用",
+      "next_head": "新增 Core 四项与 App 三项回归，涵盖三条去重与上下文、Unicode 取样上限、无正文扫描页、草稿／语音保留、延迟发送与双击、namespace 隔离、引用保留和前导缓存",
+      "label": "有关但转换突然",
+      "confidence": "中",
+      "reason": "同一技术对象的延续或独立设计层面之间的切换；不以连环指标制造断裂。"
+    },
+    {
+      "type": "cohesion",
+      "file": "ai-implementation.md",
+      "line": 23,
+      "prev_tail": "此前整合编译缺少书签模块，不能作为本模块行为红绿证据",
+      "next_head": "当前没有真实模型质量、iPhone 画面、VoiceOver、冷开性能或生产部署证据",
+      "label": "明确承接",
+      "confidence": "中",
+      "reason": "同一技术对象的延续或独立设计层面之间的切换；不以连环指标制造断裂。"
+    },
+    {
+      "type": "cohesion",
+      "file": "ai-implementation.md",
+      "line": 27,
+      "prev_tail": "完整目标分数由主任务在入口接入及统一验证后按实际证据记录",
+      "next_head": "持有 ReadingGuideController，进入书籍后调用 prepare(session:library:cloud:)，离开调用 cancel()",
+      "label": "有关但转换突然",
+      "confidence": "中",
+      "reason": "同一技术对象的延续或独立设计层面之间的切换；不以连环指标制造断裂。"
+    },
+    {
+      "type": "cohesion",
+      "file": "ai-implementation.md",
+      "line": 29,
+      "prev_tail": "导览追问先载入当前书会话，再调用 sendGuideFollowUp(:guide:cloud:)",
+      "next_head": "普通回复追问已在 ChatConversationView 中接入",
+      "label": "明确承接",
+      "confidence": "中",
+      "reason": "同一技术对象的延续或独立设计层面之间的切换；不以连环指标制造断裂。"
+    },
+    {
+      "type": "cohesion",
+      "file": "ai-implementation.md",
+      "line": 33,
+      "prev_tail": "本提交不包含共享入口、工程清单或其他领域的未完成改动",
+      "next_head": "含比较符、URL 或代码的回复不会再使三个追问全部被过滤",
+      "label": "有关但转换突然",
+      "confidence": "中",
+      "reason": "同一技术对象的延续或独立设计层面之间的切换；不以连环指标制造断裂。"
+    },
+    {
+      "type": "cohesion",
+      "file": "ai-implementation.md",
+      "line": 35,
+      "prev_tail": "新增两项 Core 边界回归",
+      "next_head": "导览点击请求只发送严格白名单的 guideContext 引用",
+      "label": "有关但转换突然",
+      "confidence": "中",
+      "reason": "同一技术对象的延续或独立设计层面之间的切换；不以连环指标制造断裂。"
+    },
+    {
+      "type": "cohesion",
+      "file": "ai-implementation.md",
+      "line": 37,
+      "prev_tail": "未向模型增加权限",
+      "next_head": "前导赞助复用既有简介的 reserve/releaseQuota，限制新书／版本的生成尝试",
+      "label": "明确承接",
+      "confidence": "中",
+      "reason": "同一技术对象的延续或独立设计层面之间的切换；不以连环指标制造断裂。"
+    },
+    {
+      "type": "cohesion",
+      "file": "ai-implementation.md",
+      "line": 39,
+      "prev_tail": "已捕获有效书籍上下文时，服务离线也会保存冻结的问题与导览引用为可恢复 intent，原输入和语音不受影响",
+      "next_head": "本次受影响的 10 个 Node 测试文件 134 项通过，0 失败，0 跳过，日志 /tmp/leafhour-guide-context-followup-node.log",
+      "label": "有关但转换突然",
+      "confidence": "中",
+      "reason": "同一技术对象的延续或独立设计层面之间的切换；不以连环指标制造断裂。"
+    }
+  ],
+  "colon": [
+    {
+      "type": "colon",
+      "file": "ai-implementation.md",
+      "line": 3,
+      "colon_before": "日期",
+      "colon_after": "2026-11-05。Task 3，R5／R6。仅原生 iOS 与所需的前导服务；共享阅读入口由主任务接入。",
+      "sentence": "日期：2026-11-05。Task 3，R5／R6。仅原生 iOS 与所需的前导服务；共享阅读入口由主任务接入。",
+      "label": "标题时间比例元数据或版式用途",
+      "confidence": "高",
+      "reason": "日期、时间、精确API签名中的冒号，保留。"
+    },
+    {
+      "type": "colon",
+      "file": "ai-implementation.md",
+      "line": 27,
+      "colon_before": "进入书籍后调用 `prepare(session",
+      "colon_after": "library:cloud:)`，离开调用 `cancel()`；预览使用 `ReaderReadingGuideCom",
+      "sentence": "持有 `ReadingGuideController`，进入书籍后调用 `prepare(session:library:cloud:)`，离开调用 `cancel()`；预览使用 `ReaderReadingGuideCompact(co",
+      "label": "标题时间比例元数据或版式用途",
+      "confidence": "高",
+      "reason": "日期、时间、精确API签名中的冒号，保留。"
+    },
+    {
+      "type": "colon",
+      "file": "ai-implementation.md",
+      "line": 27,
+      "colon_before": "pact(controller",
+      "colon_after": "onOpen:)`，完整面板用 `ReaderReadingGuidePanel(controller:canSend:",
+      "sentence": "持有 `ReadingGuideController`，进入书籍后调用 `prepare(session:library:cloud:)`，离开调用 `cancel()`；预览使用 `ReaderReadingGuideCompact(co",
+      "label": "标题时间比例元数据或版式用途",
+      "confidence": "高",
+      "reason": "日期、时间、精确API签名中的冒号，保留。"
+    },
+    {
+      "type": "colon",
+      "file": "ai-implementation.md",
+      "line": 27,
+      "colon_before": "onFollowUp",
+      "colon_after": ")`。导览追问先载入当前书会话，再调用 `sendGuideFollowUp(_:guide:cloud:)`。",
+      "sentence": "持有 `ReadingGuideController`，进入书籍后调用 `prepare(session:library:cloud:)`，离开调用 `cancel()`；预览使用 `ReaderReadingGuideCompact(co",
+      "label": "标题时间比例元数据或版式用途",
+      "confidence": "高",
+      "reason": "日期、时间、精确API签名中的冒号，保留。"
+    },
+    {
+      "type": "colon",
+      "file": "ai-implementation.md",
+      "line": 29,
+      "colon_before": "目录搜索使用 `configure(library",
+      "colon_after": "localBookID:draftNamespace:)` 和 `loadSnapshotConversation(_:",
+      "sentence": "普通回复追问已在 `ChatConversationView` 中接入。目录搜索使用 `configure(library:localBookID:draftNamespace:)` 和 `loadSnapshotConversation(",
+      "label": "标题时间比例元数据或版式用途",
+      "confidence": "高",
+      "reason": "日期、时间、精确API签名中的冒号，保留。"
+    },
+    {
+      "type": "colon",
+      "file": "ai-implementation.md",
+      "line": 29,
+      "colon_before": "cloud",
+      "colon_after": ")`，保存路径分开，逻辑书籍身份不变。新增源文件需由主任务统一更新工程与发布文件清单。本提交不包含共享入口、工程清单或其",
+      "sentence": "普通回复追问已在 `ChatConversationView` 中接入。目录搜索使用 `configure(library:localBookID:draftNamespace:)` 和 `loadSnapshotConversation(",
+      "label": "标题时间比例元数据或版式用途",
+      "confidence": "高",
+      "reason": "日期、时间、精确API签名中的冒号，保留。"
+    },
+    {
+      "type": "colon",
+      "file": "ai-implementation.md",
+      "line": 39,
+      "colon_before": "源码于 `2026-11-04T19",
+      "colon_after": "17:59Z` 就绪，本修复未自行运行 Swift 编译。",
+      "sentence": "本次受影响的 10 个 Node 测试文件 **134 项通过，0 失败，0 跳过**，日志 `/tmp/leafhour-guide-context-followup-node.log`。新增两项 App 回归覆盖 AI 归属、草稿／语音",
+      "label": "标题时间比例元数据或版式用途",
+      "confidence": "高",
+      "reason": "日期、时间、精确API签名中的冒号，保留。"
+    }
+  ],
+  "iso3": []
+}

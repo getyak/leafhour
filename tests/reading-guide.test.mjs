@@ -54,3 +54,10 @@ test('failed guide can explicitly retry without storing fake text and anonymous 
  await assert.rejects(service.ensure(user,local));assert.equal((await service.view(user,local)).guide,null);
  assert.equal((await service.ensure(user,local)).guide.method,output.method);assert.equal(calls,2);
 });
+
+test('sponsored guide attempts share bounded introduction capacity while cached reads stay free',async t=>{
+ let calls=0;const service=await fixture(t,async()=>{calls++;return output;});
+ for(let i=0;i<5;i++)await service.ensure(user,{...local,bookId:'local-'+i});
+ await assert.rejects(service.ensure(user,{...local,bookId:'local-over-limit'}),e=>e.status===429);
+ assert.equal(calls,5);await service.ensure(user,{...local,bookId:'local-0'});assert.equal(calls,5);
+});

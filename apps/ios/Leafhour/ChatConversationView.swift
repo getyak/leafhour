@@ -209,6 +209,7 @@ struct ChatConversationView: View {
     var isLibraryConversation = false
     var isMarginalNote = false
     var onSignIn: (() -> Void)? = nil
+    var autoLoad = true
     let load: () async -> Void
     let send: () async -> Void
     @State private var composerAwake = true
@@ -292,7 +293,10 @@ struct ChatConversationView: View {
             .navigationTitle(title).navigationBarTitleDisplayMode(.inline)
             .toolbarBackground(Color(uiColor: .systemBackground), for: .navigationBar)
             .toolbarBackground(.visible, for: .navigationBar)
-            .task { await reload() }
+            .task {
+                if autoLoad { await reload() }
+                else { didLoad = true; if !tools.turns.isEmpty { composerAwake = false } }
+            }
             .sheet(item: $shareSelection) { selection in ChatSharePanel(selection: selection) }
             .sensoryFeedback(.selection, trigger: tools.reactionRevision)
             .overlay(alignment: .top) {
@@ -685,6 +689,11 @@ private struct ChatTurnView: View {
                     Text("转写文字").font(.caption2).foregroundStyle(Color.primary.opacity(0.64))
                 }
                 if let reference = turn.replyTo { ChatMessageReferenceView(reference: reference) }
+                if let guide = turn.guideContext, guide.isResolved {
+                    DisclosureGroup("引用的 AI 阅读前导 · 开篇取样") {
+                        Text(guide.text).font(.subheadline).textSelection(.enabled)
+                    }.font(.caption).accessibilityIdentifier("chat-guide-context-" + turn.id)
+                }
                 if let quote = turn.quote { ChatSavedQuoteView(quote: quote) }
                 ChatMarkdownView(source: shownQuestion, plainText: true, copySource: turn.question,
                     onReference: { onReference("user") }, onLike: { onLike("user") }, liked: isLiked("user"),

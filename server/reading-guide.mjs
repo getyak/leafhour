@@ -3,6 +3,8 @@ import {randomUUID} from 'node:crypto';
 import {digest,fail} from './document-import.mjs';
 import {createLockedJsonStore} from './locked-json-store.mjs';
 import {introductionContext} from '../app/book-introduction.mjs';
+import {createBookIntroductionStore} from './book-introduction-store.mjs';
+import {normalizeChatGuideTarget,normalizeChatGuideContext} from '../app/chat-guide-context.mjs';
 
 const object=x=>x!==null&&typeof x==='object'&&!Array.isArray(x);
 const only=(x,keys)=>object(x)&&Object.keys(x).every(k=>keys.includes(k));
@@ -27,6 +29,7 @@ function cloudContext(book){
 
 export function createReadingGuideService({dataDir,dataStore=null,library,generator=null,clock=Date.now,timeoutMs=60000}){
  const store=dataStore||createLockedJsonStore({dataDir,busyMessage:'阅读前导正在保存，请稍后重试'});
+ const quota=library?.introductions||createBookIntroductionStore({dataDir:path.join(dataDir,'sponsored-capacity'),dataStore});
  const identity=user=>{if(!user?.id||user.is_anonymous)throw fail('登录后可以准备阅读前导，原书仍可阅读',401);};
  const input=raw=>{if(!only(raw,['bookId','contentVersion','sourceKind','locale','context'])||!id(raw.bookId)||!id(raw.contentVersion)||!['cloud','local-device'].includes(raw.sourceKind)||!['zh-Hans','zh-Hant','en','ja'].includes(raw.locale)||raw.sourceKind==='cloud'&&raw.context!==undefined)throw fail('阅读前导的书籍版本或来源不正确');return raw;};
  const key=(user,value)=>path.join(dataDir,'users',digest(user.id),'reading-guides',digest(JSON.stringify([value.sourceKind,value.bookId,value.contentVersion,value.locale,1])));
@@ -40,12 +43,13 @@ export function createReadingGuideService({dataDir,dataStore=null,library,genera
   const nonce=randomUUID(),now=clock();
   const claim=await store.mutate(location,{},row=>{if(row.value)return {value:row.value};if(row.lease?.expiresAt>now)throw fail('阅读前导正在准备，请稍后查看',409);row.lease={nonce,expiresAt:now+timeoutMs};return {};});
   if(claim.value)return {guide:claim.value,available:true};
-  const controller=new AbortController();let timer,abortReject;
+  const controller=new AbortController();let timer,abortReject,reserved=false;
   const interrupted=new Promise((_,reject)=>abortReject=reject);interrupted.catch(()=>{});
   const abort=()=>{const error=fail('阅读前导已取消，原书仍可阅读',409);controller.abort(error);abortReject(error);};
   signal?.addEventListener('abort',abort,{once:true});if(signal?.aborted)abort();
   timer=setTimeout(abort,timeoutMs);timer.unref?.();
   try{
+   await quota.reserve(user,nonce,clock(),timeoutMs);reserved=true;controller.signal.throwIfAborted();
    let generated;
    try{generated=await Promise.race([generator({book:{bookId:value.bookId,contentVersion:value.contentVersion},context:value.context,locale:value.locale,signal:controller.signal}),interrupted]);}
    catch{controller.signal.throwIfAborted();throw fail('AI 阅读前导暂未完成，可以继续阅读并稍后重试',502);}
@@ -58,9 +62,17 @@ export function createReadingGuideService({dataDir,dataStore=null,library,genera
   }finally{
    clearTimeout(timer);signal?.removeEventListener('abort',abort);
    // A durable CAS can finish after local cancellation. Remove only this run's value.
-   await store.mutate(location,{},row=>{if(controller.signal.aborted&&row.completedBy===nonce){delete row.value;delete row.completedBy;}if(row.lease?.nonce===nonce)delete row.lease;});
-   controller.abort();
+   try{await store.mutate(location,{},row=>{if(controller.signal.aborted&&row.completedBy===nonce){delete row.value;delete row.completedBy;}if(row.lease?.nonce===nonce)delete row.lease;});}
+   finally{try{if(reserved)await quota.releaseQuota(nonce);}finally{controller.abort();}}
   }
  }
- return {view,ensure};
+ async function resolveReference(user,raw,{bookId,contentVersion,sourceKind}){
+  identity(user);const target=normalizeChatGuideTarget(raw);
+  if(target.bookId!==bookId||target.contentVersion!==contentVersion||target.sourceKind!==sourceKind)throw fail('阅读前导不属于当前书籍来源或版本',409);
+  if(sourceKind==='cloud'&&(await library.getBook(user,bookId)).contentVersion!==contentVersion)throw fail('阅读前导的原文版本已变化',409);
+  const guide=(await store.read(key(user,target),{})).value;
+  if(!guide||guide.id!==target.guideId||guide.bookId!==bookId||guide.contentVersion!==contentVersion||guide.sourceKind!==sourceKind||guide.locale!==target.locale)throw fail('找不到当前账号已保存的阅读前导，请重新准备',404);
+  return normalizeChatGuideContext({...target,opening:guide.opening,method:guide.method,readingQuestion:guide.readingQuestion});
+ }
+ return {view,ensure,resolveReference};
 }

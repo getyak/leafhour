@@ -8,7 +8,7 @@
 
 导览与所有完成的聊天回复下均有三个追问。客户端优先采用有效的服务端建议，不足时取实际回答中的短语补齐；旧服务和旧历史也适用，没有新增模型请求。失败与流式片段不呈现可点追问。
 
-点击追问直接走普通发送。所选文本和父回复在入口冻结，原输入框、录音、选文及引用保持原样；网络挂起和流式期间的新输入不会被结束回调覆盖。普通追问使用真实父回复的 `replyTo`，导览追问明确附实际 AI 导览文本和标识。进行中的发送、未确认请求、录音与消息选择状态禁用追问，服务端仍沿用原请求幂等及计费恢复。
+点击追问直接走普通发送。所选文本和父回复在入口冻结，原输入框、录音、选文及引用保持原样；网络挂起和流式期间的新输入不会被结束回调覆盖。普通追问使用真实父回复的 `replyTo`，导览追问用独立的 AI 导览引用，用户 text 始终只有所点问题。进行中的发送、未确认请求、录音与消息选择状态禁用追问，服务端仍沿用原请求幂等及计费恢复。
 
 另为主任务的目录 AI 搜索增加独立草稿 namespace、本机 snapshot 会话入口和原始 `sourceRefs` 保留；这些接口不扩大读取权限。
 
@@ -27,3 +27,13 @@ HTTP 夹具启用测试 billing，并在前导生成函数内核对 `funding=spo
 持有 `ReadingGuideController`，进入书籍后调用 `prepare(session:library:cloud:)`，离开调用 `cancel()`；预览使用 `ReaderReadingGuideCompact(controller:onOpen:)`，完整面板用 `ReaderReadingGuidePanel(controller:canSend:onFollowUp:)`。导览追问先载入当前书会话，再调用 `sendGuideFollowUp(_:guide:cloud:)`。
 
 普通回复追问已在 `ChatConversationView` 中接入。目录搜索使用 `configure(library:localBookID:draftNamespace:)` 和 `loadSnapshotConversation(_:cloud:)`，保存路径分开，逻辑书籍身份不变。新增源文件需由主任务统一更新工程与发布文件清单。本提交不包含共享入口、工程清单或其他领域的未完成改动。
+
+## 独立审阅后的修复
+
+含比较符、URL 或代码的回复不会再使三个追问全部被过滤。提问优先取安全的真实短语，无法取得时用不引用事实的澄清问句补齐，原回答保持原样；新增两项 Core 边界回归。
+
+导览点击请求只发送严格白名单的 `guideContext` 引用；服务端从当前账号缓存核验书籍、版本、来源和标识，再单独填入标为 `origin=ai` 的导览快照。云书与本机聊天的 normalizer、请求 hash、历史、模型输入及 portable 恢复均保留此独立字段。未向模型增加权限。
+
+前导赞助复用既有简介的 `reserve/releaseQuota`，限制新书／版本的生成尝试；已有缓存不占额度。`autoLoad=false` 供唯一加载后打开聊天使用。已捕获有效书籍上下文时，服务离线也会保存冻结的问题与导览引用为可恢复 intent，原输入和语音不受影响。
+
+本次受影响的 10 个 Node 测试文件 **134 项通过，0 失败，0 跳过**，日志 `/tmp/leafhour-guide-context-followup-node.log`。新增两项 App 回归覆盖 AI 归属、草稿／语音保留、离线意图和预加载聊天不发第二次读取，待主任务统一运行。源码于 `2026-11-04T19:17:59Z` 就绪，本修复未自行运行 Swift 编译。

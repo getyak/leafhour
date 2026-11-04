@@ -98,6 +98,29 @@ public struct ReadingGuideRecord: Codable, Sendable {
     }
 }
 
+/// Live requests contain only a reference. The server fills the optional AI text
+/// from the captured owner's guide cache; it is never part of the user's words.
+public struct ChatGuideContext: Codable, Equatable, Sendable {
+    public let kind: String
+    public let schemaVersion: Int
+    public let origin: String
+    public let guideId: String
+    public let bookId: String
+    public let contentVersion: String
+    public let sourceKind: String
+    public let locale: String
+    public let opening: String?
+    public let method: String?
+    public let readingQuestion: String?
+    public init(reference guide: ReadingGuide) {
+        kind = "leafhour-reading-guide-context"; schemaVersion = 1; origin = "ai"
+        guideId = guide.id; bookId = guide.bookId; contentVersion = guide.contentVersion; sourceKind = guide.sourceKind; locale = guide.locale
+        opening = nil; method = nil; readingQuestion = nil
+    }
+    public var isResolved: Bool { origin == "ai" && kind == "leafhour-reading-guide-context" && schemaVersion == 1 && opening != nil && method != nil && readingQuestion != nil }
+    public var text: String { [opening, method, readingQuestion].compactMap { $0 }.joined(separator: "\n\n") }
+}
+
 extension OfflineLibrary {
     private func readingGuideFile(bookID: String, ownerID: String, locale: String) throws -> URL {
         guard let owner = UUID(uuidString: ownerID), root.lastPathComponent == LibraryScope.account(owner).folder,
