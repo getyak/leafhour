@@ -11,14 +11,15 @@ extension BookmarkColor {
 struct ReaderBookmarkPanel: View {
     let session: ReaderSession
     let onJump: () -> Void
+    let currentCapture: ReaderBookmarkCapture?
     @Environment(\.dismiss) private var dismiss
     @State private var editingID: UUID?
     @State private var saving = false
     @State private var feedback: String?
 
-    init(session: ReaderSession, initialBookmarkID: UUID? = nil, onJump: @escaping () -> Void = {}) {
-        self.session = session; self.onJump = onJump
-        _editingID = State(initialValue: initialBookmarkID ?? session.bookmark()?.id)
+    init(session: ReaderSession, initialBookmarkID: UUID? = nil, currentCapture: ReaderBookmarkCapture? = nil, onJump: @escaping () -> Void = {}) {
+        self.session = session; self.onJump = onJump; self.currentCapture = currentCapture
+        _editingID = State(initialValue: initialBookmarkID ?? currentCapture.flatMap { session.bookmark(capture: $0)?.id })
     }
     var body: some View {
         Form {
@@ -31,9 +32,11 @@ struct ReaderBookmarkPanel: View {
                         guard !saving else { return }
                         saving = true
                         Task {
-                            let result = await session.addBookmark()
+                            let result: BookmarkSaveResult
+                            if let currentCapture { result = await session.addBookmark(capture: currentCapture) }
+                            else { result = .unavailable("当前位置尚未核验，请返回书页稳定后重试。") }
                             feedback = result.message; saving = false
-                            if result.succeeded { editingID = session.bookmark()?.id }
+                            if result.succeeded, let currentCapture { editingID = session.bookmark(capture: currentCapture)?.id }
                         }
                     } label: { Label(saving ? "正在保存书签…" : "添加当前位置书签", systemImage: "bookmark.badge.plus").frame(minHeight: 44) }
                         .disabled(saving).accessibilityIdentifier("reader-bookmark-add")
@@ -58,7 +61,8 @@ struct ReaderBookmarkPanel: View {
                                         Text(bookmark.name ?? chapterTitle(bookmark)).foregroundStyle(.primary)
                                         Text(bookmark.matchesVersion(of: session.book) ? excerpt(bookmark) : "原文版本已变化")
                                             .font(.footnote).foregroundStyle(.secondary).lineLimit(2)
-                                        Text(bookmark.color.name).font(.caption).foregroundStyle(.secondary)
+                                        Text(bookmark.color.name + (bookmark.presentation.map { " · " + $0.targetLanguage.title + "译文" } ?? ""))
+                                            .font(.caption).foregroundStyle(.secondary)
                                     }
                                     .frame(maxWidth: .infinity, alignment: .leading)
                                 }.frame(minHeight: 44).contentShape(Rectangle())
@@ -98,6 +102,13 @@ struct ReaderBookmarkPanel: View {
         session.book.chapters.first { $0.id == bookmark.anchor.chapterID }?.title ?? "保存的位置"
     }
     private func excerpt(_ bookmark: ReaderBookmark) -> String {
+        if let presentation = bookmark.presentation {
+            guard let text = session.verifiedBookmarkText(anchor: bookmark.anchor, presentation: presentation) else { return "译文已变化或尚未就绪 · 待核对" }
+            let source = text as NSString
+            let offset = min(presentation.utf16Offset, source.length)
+            let start = offset < source.length ? source.rangeOfComposedCharacterSequence(at: offset).location : offset
+            return String(source.substring(from: start).prefix(90)).trimmingCharacters(in: .whitespacesAndNewlines)
+        }
         guard let chapter = session.book.chapters.first(where: { $0.id == bookmark.anchor.chapterID }),
               let passage = chapter.passages.first(where: { $0.id == bookmark.anchor.passageID }) else { return "保存的位置" }
         if passage.resourcePath != nil { return chapter.title + " · 插图" }

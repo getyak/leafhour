@@ -1,4 +1,5 @@
 import Foundation
+import CryptoKit
 
 public struct BookmarkColor: Codable, Equatable, Hashable, Sendable {
     public let hex: String
@@ -22,19 +23,68 @@ public struct BookmarkColor: Codable, Equatable, Hashable, Sendable {
     }
 }
 
+/// A translated display offset belongs to one verified translation snapshot.
+/// It never claims a scalar-to-scalar alignment with the author source.
+public struct ReaderBookmarkPresentation: Codable, Equatable, Sendable {
+    public let layer: ReaderTranslationVariant
+    public let targetLanguage: ReadingLanguage
+    public let textFingerprint: String
+    public var utf16Offset: Int
+    public let viewMode: ReaderViewMode
+    public init?(layer: ReaderTranslationVariant, targetLanguage: ReadingLanguage, text: String, utf16Offset: Int, viewMode: ReaderViewMode = .translation) {
+        guard !text.isEmpty, (0...text.utf16.count).contains(utf16Offset), viewMode != .source else { return nil }
+        self.layer = layer; self.targetLanguage = targetLanguage; self.textFingerprint = Self.fingerprint(text)
+        self.utf16Offset = utf16Offset; self.viewMode = viewMode
+    }
+    public static func fingerprint(_ text: String) -> String {
+        SHA256.hash(data: Data(text.utf8)).map { String(format: "%02x", $0) }.joined()
+    }
+    public var isStructurallyValid: Bool {
+        utf16Offset >= 0 && utf16Offset <= 100_000_000 && viewMode != .source
+            && textFingerprint.range(of: "^[a-f0-9]{64}$", options: .regularExpression) != nil
+    }
+    public func matches(text: String, targetLanguage: ReadingLanguage) -> Bool {
+        isStructurallyValid && self.targetLanguage == targetLanguage && utf16Offset <= text.utf16.count
+            && textFingerprint == Self.fingerprint(text)
+    }
+    public var snapshotKey: String { layer.rawValue + ":" + targetLanguage.rawValue + ":" + textFingerprint }
+    public var positionKey: String { snapshotKey + ":" + String(utf16Offset) }
+}
+
+public struct ReaderBookmarkCapture: Equatable, Sendable {
+    public let anchor: ReadingAnchor
+    public let presentation: ReaderBookmarkPresentation?
+    public init(anchor: ReadingAnchor, presentation: ReaderBookmarkPresentation? = nil) { self.anchor = anchor; self.presentation = presentation }
+}
+
+/// A session-local restore request. It is revoked by any later navigation ID.
+public struct ReaderBookmarkNavigation: Equatable, Sendable {
+    public let navigationID: UUID
+    public let anchor: ReadingAnchor
+    public let presentation: ReaderBookmarkPresentation
+    public let previousChapterIndex: Int
+    public let previousAnchor: ReadingAnchor?
+    public let previousPreferences: ReaderPreferences
+    public init(navigationID: UUID, anchor: ReadingAnchor, presentation: ReaderBookmarkPresentation, previousChapterIndex: Int, previousAnchor: ReadingAnchor?, previousPreferences: ReaderPreferences) {
+        self.navigationID = navigationID; self.anchor = anchor; self.presentation = presentation
+        self.previousChapterIndex = previousChapterIndex; self.previousAnchor = previousAnchor; self.previousPreferences = previousPreferences
+    }
+}
+
 /// A user-owned position, separate from notes, translations and reading progress.
 public struct ReaderBookmark: Codable, Identifiable, Equatable, Sendable {
     public let id: UUID
     public let sourceVersion: String
     public let contentVersion: String?
     public var anchor: ReadingAnchor
+    public let presentation: ReaderBookmarkPresentation?
     public var name: String?
     public var color: BookmarkColor
     public let createdAt: Date
     public var modifiedAt: Date
-    public init(id: UUID = UUID(), sourceVersion: String, contentVersion: String?, anchor: ReadingAnchor, name: String? = nil, color: BookmarkColor = .defaultColor, createdAt: Date = Date(), modifiedAt: Date? = nil) {
+    public init(id: UUID = UUID(), sourceVersion: String, contentVersion: String?, anchor: ReadingAnchor, presentation: ReaderBookmarkPresentation? = nil, name: String? = nil, color: BookmarkColor = .defaultColor, createdAt: Date = Date(), modifiedAt: Date? = nil) {
         self.id = id; self.sourceVersion = sourceVersion; self.contentVersion = contentVersion
-        self.anchor = Self.normalized(anchor); self.name = Self.normalizedName(name); self.color = color
+        self.anchor = Self.normalized(anchor); self.presentation = presentation; self.name = Self.normalizedName(name); self.color = color
         self.createdAt = createdAt; self.modifiedAt = modifiedAt ?? createdAt
     }
     public static func normalizedName(_ value: String?) -> String? {
@@ -53,6 +103,8 @@ public struct ReaderBookmark: Codable, Identifiable, Equatable, Sendable {
         let parts = [anchor.chapterID, anchor.passageID, String(anchor.characterOffset), anchor.pageY.map { String($0) } ?? "", anchor.resourceY.map { String($0) } ?? ""]
         return (try? JSONEncoder().encode(parts)).flatMap { String(data: $0, encoding: .utf8) } ?? ""
     }
+    public var positionKey: String { Self.positionKey(anchor) + "\n" + (presentation?.positionKey ?? "source") }
+    public var capture: ReaderBookmarkCapture { ReaderBookmarkCapture(anchor: anchor, presentation: presentation) }
     public func matchesVersion(of book: LocalBook) -> Bool {
         sourceVersion == book.sourceVersion && contentVersion == book.cloud?.contentVersion
     }
@@ -62,6 +114,7 @@ public struct ReaderBookmark: Codable, Identifiable, Equatable, Sendable {
               let passage = chapter.passages.first(where: { $0.id == anchor.passageID }),
               anchor.characterOffset >= 0, anchor.characterOffset <= passage.text.unicodeScalars.count,
               anchor.pageY?.isFinite != false, anchor.resourceY?.isFinite != false else { return false }
+        if let presentation, !presentation.isStructurallyValid || book.kind == .pdf || anchor.pageY != nil || anchor.resourceY != nil { return false }
         if anchor.pageY != nil, book.kind != .pdf { return false }
         if let y = anchor.resourceY {
             guard (0...1).contains(y), passage.resourcePath != nil, book.kind != .pdf, anchor.pageY == nil, anchor.characterOffset == 0 else { return false }
@@ -86,8 +139,22 @@ public enum BookmarkSaveResult: Equatable, Sendable {
 public struct ReaderBookmarkVisibleRange: Equatable, Sendable {
     public let start: ReadingAnchor
     public let end: ReadingAnchor
-    public init(start: ReadingAnchor, end: ReadingAnchor) { self.start = start; self.end = end }
+    public let presentation: ReaderBookmarkPresentation?
+    public let displayEndOffset: Int?
+    public init(start: ReadingAnchor, end: ReadingAnchor, presentation: ReaderBookmarkPresentation? = nil, displayEndOffset: Int? = nil) {
+        self.start = start; self.end = end; self.presentation = presentation; self.displayEndOffset = displayEndOffset
+    }
+    public var capture: ReaderBookmarkCapture { ReaderBookmarkCapture(anchor: start, presentation: presentation) }
+    public func contains(_ bookmark: ReaderBookmark) -> Bool {
+        guard bookmark.anchor.chapterID == start.chapterID, bookmark.anchor.passageID == start.passageID else { return false }
+        if let presentation, let saved = bookmark.presentation, let end = displayEndOffset {
+            return presentation.snapshotKey == saved.snapshotKey && saved.utf16Offset >= presentation.utf16Offset && saved.utf16Offset <= end
+        }
+        guard presentation == nil, bookmark.presentation == nil else { return false }
+        return contains(bookmark.anchor)
+    }
     public func contains(_ anchor: ReadingAnchor) -> Bool {
+        guard presentation == nil else { return false }
         guard anchor.chapterID == start.chapterID, anchor.passageID == start.passageID,
               end.chapterID == start.chapterID, end.passageID == start.passageID else { return false }
         if let y = anchor.pageY, let first = start.pageY, let last = end.pageY { return y >= min(first, last) - 1 && y <= max(first, last) + 1 }

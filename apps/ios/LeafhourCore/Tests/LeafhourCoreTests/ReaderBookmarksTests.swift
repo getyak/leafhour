@@ -6,6 +6,12 @@ final class ReaderBookmarksTests: XCTestCase {
         let old = Data(#"{"drafts":{},"notes":[],"preferences":{}}"#.utf8)
         let state = try JSONDecoder().decode(ReaderState.self, from: old)
         XCTAssertTrue((state.bookmarks ?? []).isEmpty)
+        let oldSource = ReaderBookmark(sourceVersion: "v1", contentVersion: nil, anchor: ReadingAnchor(chapterID: "c", passageID: "p", characterOffset: 12))
+        var payload = try XCTUnwrap(JSONSerialization.jsonObject(with: JSONEncoder().encode(oldSource)) as? [String: Any])
+        payload.removeValue(forKey: "presentation")
+        let decoded = try JSONDecoder().decode(ReaderBookmark.self, from: JSONSerialization.data(withJSONObject: payload))
+        XCTAssertNil(decoded.presentation)
+        XCTAssertEqual(decoded.anchor.characterOffset, 12)
     }
 
     func testBookmarkColorRejectsMalformedOrTransparentValuesAndKeepsTextName() {
@@ -71,6 +77,64 @@ final class ReaderBookmarksTests: XCTestCase {
         let image = ReaderBookmarkVisibleRange(start: ReadingAnchor(chapterID: "c", passageID: "i", resourceY: 0.4), end: ReadingAnchor(chapterID: "c", passageID: "i", resourceY: 0.8))
         XCTAssertFalse(image.contains(ReadingAnchor(chapterID: "c", passageID: "i", resourceY: 0.1)))
         XCTAssertTrue(image.contains(ReadingAnchor(chapterID: "c", passageID: "i", resourceY: 0.5)))
+    }
+
+    @MainActor func testDistinctTranslationPagesKeepOneCanonicalSourceAndDifferentPresentationBookmarks() async throws {
+        let f = try await fixture(), session = f.session()
+        let passage = session.chapter.passages[0], text = String(repeating: "Translated words 😀 preserve their own positions. ", count: 80)
+        session.changeTranslationSettings(BookTranslationSettings(sourceLanguage: .en, targetLanguage: .zh))
+        session.updateTranslations([passage.id: ReadingTranslation(original: passage.text, literal: text, targetLanguage: .zh)])
+        let first = try XCTUnwrap(ReaderBookmarkPresentation(layer: .literal, targetLanguage: .zh, text: text, utf16Offset: 10, viewMode: .translation))
+        let second = try XCTUnwrap(ReaderBookmarkPresentation(layer: .literal, targetLanguage: .zh, text: text, utf16Offset: 800, viewMode: .translation))
+        let a = await session.addBookmark(capture: ReaderBookmarkCapture(anchor: f.anchor, presentation: first))
+        let b = await session.addBookmark(capture: ReaderBookmarkCapture(anchor: f.anchor, presentation: second))
+        XCTAssertTrue(a.succeeded); XCTAssertTrue(b.succeeded)
+        XCTAssertEqual(session.bookmarks.count, 2)
+        XCTAssertEqual(session.bookmarks.map(\.anchor), [f.anchor, f.anchor], "The source-language scalar is not invented from translated text")
+        let page = ReaderBookmarkVisibleRange(start: f.anchor, end: f.anchor, presentation: second, displayEndOffset: 1000)
+        XCTAssertEqual(session.bookmarks(in: [page]).map { $0.presentation?.utf16Offset }, [800])
+        XCTAssertTrue(page.contains(try XCTUnwrap(session.bookmarks.last)))
+        XCTAssertFalse(page.contains(try XCTUnwrap(session.bookmarks.first)))
+        XCTAssertFalse(page.contains(f.anchor), "A translated display range must not mark a source-only bookmark")
+    }
+
+    @MainActor func testTranslatedBookmarkRestoresVerifiedLayerAfterTemplateSwitchAndRejectsChangedSnapshot() async throws {
+        let f = try await fixture(), session = f.session()
+        let passage = session.chapter.passages[0], text = String(repeating: "Verified translation. ", count: 70)
+        session.changeTranslationSettings(BookTranslationSettings(sourceLanguage: .en, targetLanguage: .zh))
+        session.updateTranslations([passage.id: ReadingTranslation(original: passage.text, interpretive: text, targetLanguage: .zh)])
+        let presentation = try XCTUnwrap(ReaderBookmarkPresentation(layer: .interpretive, targetLanguage: .zh, text: text, utf16Offset: 600, viewMode: .parallel))
+        _ = await session.addBookmark(capture: ReaderBookmarkCapture(anchor: f.anchor, presentation: presentation))
+        let id = try XCTUnwrap(session.bookmarks.first?.id)
+        var preferences = session.state.preferences; preferences.viewMode = .source; session.changePreferences(preferences)
+        XCTAssertTrue(session.goToBookmark(id: id))
+        XCTAssertEqual(session.state.preferences.viewMode, .parallel)
+        XCTAssertEqual(session.state.preferences.translationVariant, .interpretive)
+        XCTAssertEqual(session.bookmarkNavigation?.presentation, presentation)
+        XCTAssertEqual(session.bookmarkNavigation?.navigationID, session.navigationID)
+        session.updateTranslations([passage.id: ReadingTranslation(original: passage.text, interpretive: "Changed " + text, targetLanguage: .zh)])
+        let navigation = session.navigationID
+        XCTAssertFalse(session.goToBookmark(id: id))
+        XCTAssertEqual(session.navigationID, navigation)
+        XCTAssertTrue(session.message?.contains("待核对") == true)
+    }
+
+    @MainActor func testTranslationBookmarkRejectsWrongLanguageAndSourceVersionAndRoundTripsPresentation() async throws {
+        let f = try await fixture(), session = f.session()
+        let passage = session.chapter.passages[0], text = "A real translated snapshot"
+        session.changeTranslationSettings(BookTranslationSettings(sourceLanguage: .en, targetLanguage: .zh))
+        session.updateTranslations([passage.id: ReadingTranslation(original: passage.text, literal: text, targetLanguage: .zh)])
+        let presentation = try XCTUnwrap(ReaderBookmarkPresentation(layer: .literal, targetLanguage: .zh, text: text, utf16Offset: 4))
+        _ = await session.addBookmark(capture: ReaderBookmarkCapture(anchor: f.anchor, presentation: presentation))
+        let row = try XCTUnwrap(session.bookmarks.first)
+        let restored = try JSONDecoder().decode(ReaderState.self, from: JSONEncoder().encode(session.state))
+        XCTAssertEqual(restored.bookmarks?.first?.presentation, presentation)
+        session.changeTranslationSettings(BookTranslationSettings(sourceLanguage: .en, targetLanguage: .ja))
+        XCTAssertFalse(session.goToBookmark(id: row.id))
+        var stale = row; stale = ReaderBookmark(sourceVersion: "old-source", contentVersion: nil, anchor: f.anchor, presentation: presentation)
+        session.state.bookmarks = [stale]
+        XCTAssertFalse(session.goToBookmark(id: stale.id))
+        XCTAssertEqual(session.bookmarks.count, 1)
     }
 
     @MainActor func testAddUsesLatestVisibleSourceAnchorPersistsAndIsIdempotent() async throws {

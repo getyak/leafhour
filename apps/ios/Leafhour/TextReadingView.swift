@@ -26,6 +26,10 @@ struct TextReadingView: UIViewRepresentable {
     var isReadingSurfaceActive = true
     var pageRequest: ReaderPageRequest? = nil
     var onPageRequestResult: ((UUID, ReaderPageRequestOutcome) -> Void)? = nil
+    var onBookmark: ((ReadingAnchor) -> Void)? = nil
+    var onBookmarkPull: ((ReaderBookmarkPullFeedback) -> Void)? = nil
+    var onBookmarkViewport: (([ReaderBookmarkVisibleRange]) -> Void)? = nil
+    var onBookmarkCapture: ((ReaderBookmarkCapture) -> Void)? = nil
     func makeCoordinator() -> Coordinator { Coordinator(parent: self) }
     func makeUIView(context: Context) -> UITextView {
         let view = ReflowTextView()
@@ -73,12 +77,14 @@ struct TextReadingView: UIViewRepresentable {
             return coordinator.selectParagraph(containing: NSRange(location: character, length: 1))
         })
         coordinator.paragraphSelection = observer; view.paragraphSelection = observer; observer.install()
+        coordinator.configureBookmarkGesture(view)
         return view
     }
     func updateUIView(_ view: UITextView, context: Context) {
         let coordinator = context.coordinator
         guard !coordinator.isInvalidated else { return }
         coordinator.parent = self
+        coordinator.configureBookmarkGesture(view)
         if !isReadingSurfaceActive { coordinator.edgeTap?.cancelPending(); coordinator.cancelQueuedUserTurns() }
         coordinator.updateContent(view)
         coordinator.dismissSelection(in: view, id: selectionDismissalID)
@@ -89,7 +95,7 @@ struct TextReadingView: UIViewRepresentable {
         (view as? ReflowTextView)?.onSizeChange = nil
         coordinator.invalidate(); view.delegate = nil
     }
-    struct Span { var passage: Passage; var range: NSRange; var sourceOffsets: SourceTextOffsets; var sourceRange: NSRange? = nil; var isTranslation = false; var sourceUTF16Start = 0; var sourceUTF16End: Int? = nil }
+    struct Span { var passage: Passage; var range: NSRange; var sourceOffsets: SourceTextOffsets; var sourceRange: NSRange? = nil; var isTranslation = false; var sourceUTF16Start = 0; var sourceUTF16End: Int? = nil; var bookmarkPresentation: ReaderBookmarkPresentation? = nil; var presentationTextLength: Int? = nil }
     @MainActor final class Coordinator: NSObject, UITextViewDelegate {
         private func layout(for view: UITextView) -> (contentWidth: CGFloat, insets: UIEdgeInsets) {
             let viewport = view.bounds.width > 0 ? view.bounds.width : UIScreen.main.bounds.width
@@ -167,10 +173,11 @@ struct TextReadingView: UIViewRepresentable {
             // native edit menu. The selection-ending callback requests a fresh render.
             if sameSource, !navigating, !layoutChanged, view.selectedRange.length > 0,
                coordinator.sameTypography(coordinator.renderedPreferences, preferences), coordinator.signature != signature { return }
-            let translatedViewport = sameSource && !navigating
+            let bookmarkViewport = coordinator.requestedBookmarkViewport()
+            let translatedViewport = bookmarkViewport ?? (sameSource && !navigating
                 && coordinator.renderedPreferences?.viewMode == preferences.viewMode
                 && coordinator.renderedPreferences?.translationVariant == preferences.translationVariant
-                ? (coordinator.pendingTranslatedViewport ?? coordinator.translatedViewport()) : nil
+                ? (coordinator.pendingTranslatedViewport ?? coordinator.translatedViewport()) : nil)
             if !sameSource || coordinator.signature != signature {
                 deferredContentUpdate = false
                 contentBuildCount += 1
@@ -188,7 +195,7 @@ struct TextReadingView: UIViewRepresentable {
                 coordinator.renderedChapterID = session.chapter.id; coordinator.renderedWidth = Int(width)
                 coordinator.indexedSessionID = ObjectIdentifier(session); coordinator.indexedChapterIndex = session.chapterIndex
                 let result = NSMutableAttributedString(string: "")
-                coordinator.spans = []
+                coordinator.spans = []; coordinator.markdownDisplayPrefix = 0
                 let font = ReaderTypography.font(style: preferences.fontStyle, size: preferences.fontSize, traits: view.traitCollection, latin: preferences.latinFont)
                 if session.book.rendersMarkdown && window.isComplete && window.slices.allSatisfy({ $0.sourceRange.length == $0.offsets.utf16Count }) && (preferences.viewMode == .source || !displayedChapter.passages.contains { session.translations[$0.id]?.text(preferences.translationVariant) != nil }) {
                     if !sameSource || coordinator.markdownChapterID != session.chapter.id + window.signature {
@@ -196,11 +203,20 @@ struct TextReadingView: UIViewRepresentable {
                         coordinator.markdownChapterID = session.chapter.id + window.signature
                     }
                     if let layout = coordinator.markdown {
-                        result.append(layout.attributed(font: font, size: preferences.fontSize, lineSpacing: preferences.lineSpacing, contentWidth: width))
+                        if preferences.viewMode != .source {
+                            let caption = UIFontMetrics(forTextStyle: .caption1).scaledFont(for: .systemFont(ofSize: 12, weight: .medium), compatibleWith: view.traitCollection)
+                            result.append(NSAttributedString(string: "译文尚未准备 · 原文\n\n", attributes: [.font: caption, .foregroundColor: UIColor.secondaryLabel]))
+                            coordinator.markdownDisplayPrefix = result.length
+                        }
+                        let sourceScale = preferences.viewMode == .parallel ? preferences.parallelSourceScale : 1
+                        result.append(layout.attributed(font: font.withSize(font.pointSize * sourceScale), size: preferences.fontSize * sourceScale,
+                            lineSpacing: preferences.lineSpacing, contentWidth: width,
+                            sourceOpacity: preferences.viewMode == .parallel ? preferences.parallelSourceOpacity : 1,
+                            paragraphSpacing: preferences.viewMode == .parallel ? preferences.parallelSpacing : nil))
                         coordinator.spans = zip(displayedChapter.passages, layout.sourceRanges).enumerated().map { index, pair in
                             let (passage, source) = pair
-                            let start = layout.document.displayedUTF16Offset(forSourceUTF16Offset: source.location)
-                            let end = layout.document.displayedUTF16Offset(forSourceUTF16Offset: NSMaxRange(source))
+                            let start = coordinator.markdownDisplayPrefix + layout.document.displayedUTF16Offset(forSourceUTF16Offset: source.location)
+                            let end = coordinator.markdownDisplayPrefix + layout.document.displayedUTF16Offset(forSourceUTF16Offset: NSMaxRange(source))
                             return Span(passage: passage, range: NSRange(location: start, length: max(0, end - start)), sourceOffsets: sourceOffsets(for: passage, at: index), sourceRange: source)
                         }
                     }
@@ -213,7 +229,7 @@ struct TextReadingView: UIViewRepresentable {
                 for (passageIndex, passage) in displayedChapter.passages.enumerated() {
                     let slice = window.slices[passageIndex]
                     let start = result.length
-                    let style = NSMutableParagraphStyle(); style.lineSpacing = preferences.lineSpacing; style.paragraphSpacing = 20; style.baseWritingDirection = .natural
+                    let style = NSMutableParagraphStyle(); style.lineSpacing = preferences.lineSpacing; style.paragraphSpacing = preferences.viewMode == .parallel ? preferences.parallelSpacing : 20; style.baseWritingDirection = .natural
                     if let resource = passage.resourcePath {
                         let source = session.directory.appendingPathComponent("assets").appendingPathComponent(resource)
                         if session.canReadResource(resource), let imageSource = CGImageSourceCreateWithURL(source as CFURL, nil), let cgImage = CGImageSourceCreateThumbnailAtIndex(imageSource, 0, [kCGImageSourceCreateThumbnailFromImageAlways: true, kCGImageSourceThumbnailMaxPixelSize: 2048] as CFDictionary) {
@@ -243,14 +259,17 @@ struct TextReadingView: UIViewRepresentable {
                                 result.append(NSAttributedString(string: label + "\n", attributes: [.font: caption, .foregroundColor: UIColor.secondaryLabel, .paragraphStyle: style]))
                             }
                             let layerStart = result.length
-                            let ink = preferences.viewMode == .parallel && !layer.isTranslation && !passage.heading ? UIColor.secondaryLabel : UIColor.label
+                            let comparisonSource = preferences.viewMode == .parallel && !layer.isTranslation && !passage.heading
+                            let ink = comparisonSource ? UIColor.label.withAlphaComponent(preferences.parallelSourceOpacity) : UIColor.label
+                            let layerFont = comparisonSource ? actualFont.withSize(actualFont.pointSize * preferences.parallelSourceScale) : actualFont
                             let prefix = !layer.isTranslation && slice.sourceRange.location == 0 ? ReaderParagraphPresentation.leadingIndentUTF16(layer.text, kind: session.book.kind, heading: passage.heading) : 0
                             let displayed = (layer.text as NSString).substring(from: prefix)
                             let bodyStyle = style.mutableCopy() as! NSMutableParagraphStyle
-                            if !passage.heading && (layer.isTranslation || slice.sourceRange.location == 0) { bodyStyle.firstLineHeadIndent = preferences.firstLineIndent == .twoCharacters ? actualFont.pointSize * 2 : 0 }
-                            result.append(NSAttributedString(string: displayed, attributes: [.font: actualFont, .foregroundColor: ink, .paragraphStyle: bodyStyle]))
+                            if !passage.heading && (layer.isTranslation || slice.sourceRange.location == 0) { bodyStyle.firstLineHeadIndent = preferences.firstLineIndent == .twoCharacters ? layerFont.pointSize * 2 : 0 }
+                            result.append(NSAttributedString(string: displayed, attributes: [.font: layerFont, .foregroundColor: ink, .paragraphStyle: bodyStyle]))
                             result.append(NSAttributedString(string: preferences.viewMode == .source ? "\n" : "\n\n", attributes: [.font: font, .paragraphStyle: style]))
-                            coordinator.spans.append(Span(passage: slice.original, range: NSRange(location: layerStart, length: result.length - layerStart), sourceOffsets: sourceOffsets(for: passage, at: passageIndex), isTranslation: layer.isTranslation, sourceUTF16Start: slice.sourceRange.location + prefix, sourceUTF16End: NSMaxRange(slice.sourceRange)))
+                            let presentation = layer.isTranslation ? ReaderBookmarkPresentation(layer: preferences.translationVariant, targetLanguage: session.translationSettings.targetLanguage, text: layer.text, utf16Offset: 0, viewMode: preferences.viewMode) : nil
+                            coordinator.spans.append(Span(passage: slice.original, range: NSRange(location: layerStart, length: result.length - layerStart), sourceOffsets: sourceOffsets(for: passage, at: passageIndex), isTranslation: layer.isTranslation, sourceUTF16Start: slice.sourceRange.location + prefix, sourceUTF16End: NSMaxRange(slice.sourceRange), bookmarkPresentation: presentation, presentationTextLength: layer.isTranslation ? layer.text.utf16.count : nil))
                         }
                     }
                     if passage.resourcePath != nil {
@@ -275,7 +294,7 @@ struct TextReadingView: UIViewRepresentable {
                 coordinator.navigationID = session.navigationID
                 coordinator.restoring = true
                 if navigating { view.selectedRange = NSRange(location: 0, length: 0) }
-                coordinator.restore(anchor, persistCheckpoint: !navigating)
+                coordinator.restore(anchor, translatedViewport: bookmarkViewport, persistCheckpoint: !navigating)
             }
             coordinator.renderedNavigationMode = preferences.navigationMode
             coordinator.configureNavigation(view)
@@ -296,10 +315,12 @@ struct TextReadingView: UIViewRepresentable {
                 && rendered.lineSpacing == current.lineSpacing && rendered.viewMode == current.viewMode
                 && rendered.firstLineIndent == current.firstLineIndent
                 && rendered.translationVariant == current.translationVariant
+                && rendered.parallelOrder == current.parallelOrder && rendered.parallelSourceScale == current.parallelSourceScale
+                && rendered.parallelSourceOpacity == current.parallelSourceOpacity && rendered.parallelSpacing == current.parallelSpacing
         }
         private func contentSignature(in view: UITextView, width: Int) -> String {
             let session = parent.session, p = session.state.preferences
-            return "\(textWindow?.signature ?? "")-\(session.chapter.id)-\(p.fontStyle)-\(p.latinFont)-\(p.fontSize)-\(p.lineSpacing)-\(p.firstLineIndent)-\(p.viewMode)-\(p.translationVariant)-\(p.viewMode == .source ? 0 : session.contentRevision)-\(session.packageVerificationPending)-\(view.traitCollection.preferredContentSizeCategory.rawValue)-\(width)"
+            return "\(textWindow?.signature ?? "")-\(session.chapter.id)-\(p.fontStyle)-\(p.latinFont)-\(p.fontSize)-\(p.lineSpacing)-\(p.firstLineIndent)-\(p.viewMode)-\(p.translationVariant)-\(p.parallelOrder)-\(p.parallelSourceScale)-\(p.parallelSourceOpacity)-\(p.parallelSpacing)-\(p.viewMode == .source ? 0 : session.contentRevision)-\(session.packageVerificationPending)-\(view.traitCollection.preferredContentSizeCategory.rawValue)-\(width)"
         }
         var parent: TextReadingView
         weak var view: UITextView?
@@ -308,6 +329,7 @@ struct TextReadingView: UIViewRepresentable {
         var spans: [Span] = []
         var markdown: MarkdownChapterLayout?
         var markdownChapterID: String?
+        private(set) var markdownDisplayPrefix = 0
         private let speechFollower = ReaderSpeechTextFollower()
         var paragraphSelection: ReaderParagraphSelectionObserver?
         private var paragraphMenu: ReaderParagraphEditMenu?
@@ -315,6 +337,13 @@ struct TextReadingView: UIViewRepresentable {
             let passageID: String
             let offset: Int
             let text: String
+            var bookmarkPresentation: ReaderBookmarkPresentation? = nil
+        }
+        private func requestedBookmarkViewport() -> TranslatedViewport? {
+            guard let request = parent.session.bookmarkNavigation, request.navigationID == parent.session.navigationID,
+                  let text = parent.session.verifiedBookmarkText(anchor: request.anchor, presentation: request.presentation) else { return nil }
+            return TranslatedViewport(passageID: request.anchor.passageID, offset: request.presentation.utf16Offset,
+                text: text, bookmarkPresentation: request.presentation)
         }
         private var renderedPreferences: ReaderPreferences?
         private var pendingTranslatedViewport: TranslatedViewport?
@@ -340,6 +369,8 @@ struct TextReadingView: UIViewRepresentable {
         private(set) var isInvalidated = false
         var edgeTap: ReaderEdgeTapHandler?
         var pageTurn: ReaderPageTurnGestureHandler?
+        private var bookmarkGesture: ReaderBookmarkGestureHandler?
+        private var lastBookmarkViewport: [ReaderBookmarkVisibleRange] = []
         var selectionDismissalID: UUID?
         private var pagination: ReaderTextPagination?
         private var paginationKey: String?
@@ -377,7 +408,7 @@ struct TextReadingView: UIViewRepresentable {
             self.parent = parent
             super.init()
             resignObserver = NotificationCenter.default.addObserver(forName: UIApplication.willResignActiveNotification, object: nil, queue: .main) { [weak self] _ in MainActor.assumeIsolated {
-                self?.cancelPageTransition(.notReady); self?.capture()
+                self?.bookmarkGesture?.cancel(); self?.cancelPageTransition(.notReady); self?.capture()
             } }
         }
         deinit { delayed?.cancel(); if let resignObserver { NotificationCenter.default.removeObserver(resignObserver) } }
@@ -494,8 +525,9 @@ struct TextReadingView: UIViewRepresentable {
         private func invalidateVisiblePage() {
             visiblePageLayout.invalidate(); visiblePageGeometry = nil
             publishVisiblePage(nil)
+            publishBookmarkViewport([])
         }
-        private func reportVisiblePage() { publishVisiblePage(visiblePage()) }
+        private func reportVisiblePage() { publishVisiblePage(visiblePage()); reportBookmarkViewport() }
         private func publishVisiblePage(_ page: ReaderVisiblePage?) {
             guard page != lastVisiblePage else { return }
             lastVisiblePage = page; visiblePageReportGeneration += 1
@@ -572,8 +604,8 @@ struct TextReadingView: UIViewRepresentable {
                 func displayed(_ range: NSRange) -> NSRange? {
                     guard range.location >= 0, range.length > 0, NSMaxRange(range) <= highlight.location.snapshot.utf16.count else { return nil }
                     if let source = span.sourceRange, let markdown {
-                        let start = markdown.document.displayedUTF16Offset(forSourceUTF16Offset: source.location + range.location)
-                        let end = markdown.document.displayedUTF16Offset(forSourceUTF16Offset: source.location + NSMaxRange(range))
+                        let start = self.markdownDisplayPrefix + markdown.document.displayedUTF16Offset(forSourceUTF16Offset: source.location + range.location)
+                        let end = self.markdownDisplayPrefix + markdown.document.displayedUTF16Offset(forSourceUTF16Offset: source.location + NSMaxRange(range))
                         return NSRange(location: start, length: max(0, end - start))
                     }
                     let visible = span.isTranslation ? range : NSIntersectionRange(range, NSRange(location: span.sourceUTF16Start, length: (span.sourceUTF16End ?? span.sourceOffsets.utf16Count) - span.sourceUTF16Start))
@@ -601,7 +633,7 @@ struct TextReadingView: UIViewRepresentable {
         private func sourceOffset(in span: Span, displayedIndex: Int) -> Int {
             if span.isTranslation { return 0 }
             if let source = span.sourceRange, let markdown {
-                return min(max(span.sourceUTF16Start, span.sourceUTF16Start + markdown.document.sourceUTF16Offset(at: displayedIndex) - source.location), span.sourceUTF16End ?? span.sourceOffsets.utf16Count)
+                return min(max(span.sourceUTF16Start, span.sourceUTF16Start + markdown.document.sourceUTF16Offset(at: max(0, displayedIndex - markdownDisplayPrefix)) - source.location), span.sourceUTF16End ?? span.sourceOffsets.utf16Count)
             }
             return min(max(span.sourceUTF16Start, span.sourceUTF16Start + displayedIndex - span.range.location), span.sourceUTF16End ?? span.sourceOffsets.utf16Count)
         }
@@ -633,6 +665,7 @@ struct TextReadingView: UIViewRepresentable {
             }
         }
         func invalidate() {
+            bookmarkGesture?.invalidate(); bookmarkGesture = nil
             edgeTap?.invalidate(); edgeTap = nil
             queuedPages = []
             guard !isInvalidated else { return }
@@ -642,6 +675,9 @@ struct TextReadingView: UIViewRepresentable {
             visiblePageLayout.invalidate(); visiblePageGeometry = nil
             let onVisiblePage = parent.onVisiblePage; parent.onVisiblePage = nil
             DispatchQueue.main.async { onVisiblePage?(nil) }
+            let onBookmarkViewport = parent.onBookmarkViewport
+            parent.onBookmark = nil; parent.onBookmarkPull = nil; parent.onBookmarkViewport = nil; parent.onBookmarkCapture = nil
+            DispatchQueue.main.async { onBookmarkViewport?([]) }
             parent.onTouchActivity = nil; parent.onSelectionChange = nil
             parent.onPageChange = nil; parent.onReadingPosition = nil; parent.onPageRequestResult = nil
             view?.delegate = nil
@@ -653,9 +689,103 @@ struct TextReadingView: UIViewRepresentable {
             markdown = nil; markdownChapterID = nil
             pageTurn?.invalidate(); pageTurn = nil; pagination = nil; paginationKey = nil
         }
+        private var bookmarkBlocked: Bool {
+            isInvalidated || !parent.isReadingSurfaceActive || parent.session.packageVerificationError != nil
+                || restoring || pageCurl.isActive || pendingPageTransition != nil || view?.selectedRange.length != 0
+                || UIMenuController.shared.isMenuVisible
+        }
+        private var bookmarkContext: String? {
+            guard !bookmarkBlocked, let view, renderedChapterID == parent.session.chapter.id,
+                  navigationID == parent.session.navigationID else { return nil }
+            return "\(ObjectIdentifier(parent.session))-\(parent.session.navigationID)-\(parent.session.book.sourceVersion)-\(parent.session.state.preferences)-\(parent.session.contentRevision)-\(view.bounds.size)-\(parent.pageInsets)"
+        }
+        func configureBookmarkGesture(_ view: UITextView) {
+            if bookmarkGesture == nil {
+                bookmarkGesture = ReaderBookmarkGestureHandler(view: view, blocked: { [weak self] in self?.bookmarkBlocked != false },
+                    isPaged: { [weak self] in self?.parent.session.state.preferences.navigationMode == .paged },
+                    isTrueTop: { [weak self] scroll in
+                        guard let self, self.textWindow?.previousAnchor == nil else { return false }
+                        return scroll.contentOffset.y <= -scroll.adjustedContentInset.top + 1
+                    }, capture: { [weak self] in
+                        guard let self, let capture = self.bookmarkCapture(), let context = self.bookmarkContext else { return nil }
+                        return ReaderBookmarkGestureCapture(anchor: capture.anchor, context: context, presentation: capture.presentation)
+                    }, context: { [weak self] in self?.bookmarkContext }, readingRect: { [weak self, weak view] in
+                        guard let self, let view else { return .zero }
+                        return (view as? ReflowTextView)?.visibleReadingRect ?? view.bounds.inset(by: self.parent.pageInsets)
+                    }, onBookmark: { [weak self] anchor in self?.parent.onBookmark?(anchor) },
+                    onFeedback: { [weak self] value in self?.parent.onBookmarkPull?(value) },
+                    onBookmarkCapture: { [weak self] value in _ = self?.emitBookmark(value) })
+                (view as? ReflowTextView)?.readerBookmarkRecognizer = bookmarkGesture?.recognizer
+            }
+            bookmarkGesture?.observe(scroll: view)
+            bookmarkGesture?.configure(enabled: (parent.onBookmark != nil || parent.onBookmarkCapture != nil) && parent.isReadingSurfaceActive)
+        }
+        @discardableResult private func emitBookmark(_ capture: ReaderBookmarkCapture) -> Bool {
+            if let callback = parent.onBookmarkCapture { callback(capture); return true }
+            guard capture.presentation == nil, let callback = parent.onBookmark else { return false }
+            callback(capture.anchor); return true
+        }
+        func bookmarkCapture() -> ReaderBookmarkCapture? {
+            guard !bookmarkBlocked, checkpointVisible(), let view else { return nil }
+            let point = CGPoint(x: 1, y: max(0, view.contentOffset.y + max(0, parent.pageInsets.top) + 1 - view.textContainerInset.top))
+            let index = view.layoutManager.characterIndex(for: point, in: view.textContainer, fractionOfDistanceBetweenInsertionPoints: nil)
+            guard let span = spans.first(where: { NSMaxRange($0.range) > index }) ?? spans.last else { return nil }
+            if var presentation = span.bookmarkPresentation, let length = span.presentationTextLength {
+                presentation.utf16Offset = min(max(0, index - span.range.location), max(0, length - 1))
+                let anchor = ReadingAnchor(chapterID: parent.session.chapter.id, passageID: span.passage.id)
+                guard parent.session.verifiedBookmarkText(anchor: anchor, presentation: presentation) != nil else { return nil }
+                return ReaderBookmarkCapture(anchor: anchor, presentation: presentation)
+            }
+            guard let anchor = parent.session.currentAnchor else { return nil }
+            return ReaderBookmarkCapture(anchor: anchor)
+        }
+        private func reportBookmarkViewport() {
+            guard parent.onBookmarkViewport != nil, currentVisiblePageGeometry() != nil, let view else { return }
+            let viewport = (view as? ReflowTextView)?.visibleReadingRect ?? view.bounds.inset(by: parent.pageInsets)
+            let reading = viewport.offsetBy(dx: -view.textContainerInset.left, dy: -view.textContainerInset.top)
+            guard reading.width > 0, reading.height > 0 else { publishBookmarkViewport([]); return }
+            let manager = view.layoutManager
+            let glyphs = manager.glyphRange(forBoundingRect: reading, in: view.textContainer)
+            let characters = manager.characterRange(forGlyphRange: glyphs, actualGlyphRange: nil)
+            var ranges: [ReaderBookmarkVisibleRange] = []
+            for span in spans where span.range.length > 0 {
+                let overlap = NSIntersectionRange(span.range, characters)
+                guard overlap.length > 0 else { continue }
+                var start = ReadingAnchor(chapterID: parent.session.chapter.id, passageID: span.passage.id,
+                    characterOffset: span.sourceOffsets.scalarOffset(forUTF16Offset: sourceOffset(in: span, displayedIndex: overlap.location)))
+                var end = ReadingAnchor(chapterID: start.chapterID, passageID: start.passageID,
+                    characterOffset: span.sourceOffsets.scalarOffset(forUTF16Offset: sourceOffset(in: span, displayedIndex: NSMaxRange(overlap) - 1)))
+                if let image = renderedImageRect(in: span, view: view) {
+                    let visible = image.intersection(reading)
+                    guard !visible.isNull, !visible.isEmpty else { continue }
+                    start.characterOffset = 0; end.characterOffset = 0
+                    start.resourceY = Double(min(1, max(0, (visible.minY - image.minY) / image.height)))
+                    end.resourceY = Double(min(1, max(0, (visible.maxY - image.minY) / image.height)))
+                }
+                if var presentation = span.bookmarkPresentation, let length = span.presentationTextLength {
+                    let first = max(0, overlap.location - span.range.location)
+                    guard first < length else { continue }
+                    presentation.utf16Offset = first
+                    let last = min(length - 1, NSMaxRange(overlap) - span.range.location - 1)
+                    ranges.append(ReaderBookmarkVisibleRange(start: start, end: end, presentation: presentation, displayEndOffset: last))
+                } else { ranges.append(ReaderBookmarkVisibleRange(start: start, end: end)) }
+            }
+            publishBookmarkViewport(ranges)
+        }
+        private func publishBookmarkViewport(_ ranges: [ReaderBookmarkVisibleRange]) {
+            guard lastBookmarkViewport != ranges else { return }
+            lastBookmarkViewport = ranges
+            let owner = ObjectIdentifier(parent.session), navigation = parent.session.navigationID
+            DispatchQueue.main.async { [weak self] in
+                guard let self, !self.isInvalidated, ObjectIdentifier(self.parent.session) == owner,
+                      self.parent.session.navigationID == navigation, self.lastBookmarkViewport == ranges else { return }
+                self.parent.onBookmarkViewport?(ranges)
+            }
+        }
         func configureNavigation(_ view: UITextView) {
             guard !isInvalidated else { return }
             let paged = parent.session.state.preferences.navigationMode == .paged
+            bookmarkGesture?.configure(enabled: (parent.onBookmark != nil || parent.onBookmarkCapture != nil) && parent.isReadingSurfaceActive)
             pageTurn?.isEnabled = paged && parent.session.state.preferences.pageInput.allowsSwipe
             // Preserve UITextView's selection/editing recognizers and native
             // autoscroll. Only ordinary content-drag navigation changes mode.
@@ -675,6 +805,14 @@ struct TextReadingView: UIViewRepresentable {
                 view.accessibilityCustomActions = nil
                 setPaginationBottomAllowance(nil)
                 pagination = nil; paginationKey = nil; lastReportedPage = nil
+            }
+            if parent.onBookmark != nil || parent.onBookmarkCapture != nil {
+                var actions = view.accessibilityCustomActions ?? []
+                actions.append(UIAccessibilityCustomAction(name: "添加当前位置书签") { [weak self] _ in
+                    guard let self, let capture = self.bookmarkCapture() else { return false }
+                    return self.emitBookmark(capture)
+                })
+                view.accessibilityCustomActions = actions
             }
         }
         private func refreshPagination() {
@@ -913,17 +1051,27 @@ struct TextReadingView: UIViewRepresentable {
                       self.navigationID == navigation, self.parent.session.navigationID == navigation else { return }
                 view.layoutManager.ensureLayout(for: view.textContainer)
                 self.refreshPagination()
+                let requested = self.parent.session.bookmarkNavigation
+                if let requested, requested.navigationID == navigation,
+                   self.parent.session.verifiedBookmarkText(anchor: requested.anchor, presentation: requested.presentation) == nil {
+                    self.parent.session.rejectBookmarkNavigation(requested)
+                    self.restoring = false; view.alpha = 1; return
+                }
                 let positionAnchor = anchor ?? translatedViewport.map { ReadingAnchor(chapterID: self.parent.session.chapter.id, passageID: $0.passageID) }
                 let translatedSpan = translatedViewport.flatMap { viewport in
                     self.spans.first { span in span.isTranslation && span.passage.id == viewport.passageID
                         && NSMaxRange(span.range) <= view.attributedText.length
-                        && (view.attributedText.string as NSString).substring(with: span.range) == viewport.text }
+                        && (viewport.bookmarkPresentation.map { $0.snapshotKey == span.bookmarkPresentation?.snapshotKey } ?? ((view.attributedText.string as NSString).substring(with: span.range) == viewport.text)) }
+                }
+                if translatedViewport?.bookmarkPresentation != nil, translatedSpan == nil {
+                    if let requested, requested.navigationID == navigation { self.parent.session.rejectBookmarkNavigation(requested) }
+                    self.restoring = false; view.alpha = 1; return
                 }
                 if let anchor = positionAnchor, anchor.chapterID == chapter, view.attributedText.length > 0,
-                   let span = translatedSpan ?? self.spans.first(where: { $0.passage.id == anchor.passageID }) {
+                   let span = translatedSpan ?? self.spans.first(where: { $0.passage.id == anchor.passageID && !$0.isTranslation }) ?? self.spans.first(where: { $0.passage.id == anchor.passageID }) {
                     let offset = span.sourceOffsets.utf16Offset(forScalarOffset: anchor.characterOffset)
                     let displayedOffset: Int
-                    if let source = span.sourceRange, let markdown = self.markdown { displayedOffset = markdown.document.displayedUTF16Offset(forSourceUTF16Offset: source.location + offset) }
+                    if let source = span.sourceRange, let markdown = self.markdown { displayedOffset = self.markdownDisplayPrefix + markdown.document.displayedUTF16Offset(forSourceUTF16Offset: source.location + offset) }
                     else if span.isTranslation {
                         // This is a temporary display offset, never an invented
                         // source-language offset or a persisted sentence alignment.
@@ -945,6 +1093,7 @@ struct TextReadingView: UIViewRepresentable {
                     view.setContentOffset(CGPoint(x: 0, y: min(y, maximum)), animated: false)
                 } else { view.setContentOffset(.zero, animated: false) }
                 self.restoring = false; self.pendingTranslatedViewport = nil
+                if requested?.navigationID == self.parent.session.navigationID { self.parent.session.completeBookmarkNavigation(navigationID: self.parent.session.navigationID) }
                 view.alpha = 1
                 if let pending = self.pendingPageTransition, pending.restorationGeneration == generation, self.pendingTransitionIsCurrent {
                     self.pendingPageTransition = nil
@@ -1151,6 +1300,7 @@ final class ReflowTextView: UITextView {
     weak var readerEdgeTapHandler: ReaderEdgeTapHandler?
     weak var readerTapRecognizer: UIGestureRecognizer?
     weak var readerPageRecognizer: UIGestureRecognizer?
+    weak var readerBookmarkRecognizer: UIGestureRecognizer?
     var pagedReadingInsets: UIEdgeInsets? { didSet { updateReadingClip() } }
     private(set) var visibleReadingRect: CGRect?
     private var laidOutSize = CGSize.zero
@@ -1220,7 +1370,7 @@ final class ReflowTextView: UITextView {
     }
     override func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
         guard let body = visibleReadingRect else { return super.gestureRecognizerShouldBegin(gestureRecognizer) }
-        if gestureRecognizer === readerTapRecognizer || gestureRecognizer === readerPageRecognizer { return true }
+        if gestureRecognizer === readerTapRecognizer || gestureRecognizer === readerPageRecognizer || gestureRecognizer === readerBookmarkRecognizer { return true }
         let point = gestureRecognizer.location(in: self)
         let handle = isSelectionHandle(super.hitTest(point, with: nil))
         guard selectionTouchBeganInBody ?? (body.contains(point) || handle) else { return false }

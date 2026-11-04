@@ -4,6 +4,11 @@ import LeafhourCore
 struct ReaderBookmarkGestureCapture {
     let anchor: ReadingAnchor
     let context: String
+    let presentation: ReaderBookmarkPresentation?
+    init(anchor: ReadingAnchor, context: String, presentation: ReaderBookmarkPresentation? = nil) {
+        self.anchor = anchor; self.context = context; self.presentation = presentation
+    }
+    var value: ReaderBookmarkCapture { ReaderBookmarkCapture(anchor: anchor, presentation: presentation) }
 }
 
 /// This observer never recognizes or changes UIKit's selection/scroll ownership.
@@ -34,6 +39,7 @@ struct ReaderBookmarkGestureCapture {
     private let readingRect: () -> CGRect
     private let onBookmark: (ReadingAnchor) -> Void
     private let onFeedback: (ReaderBookmarkPullFeedback) -> Void
+    private let onBookmarkCapture: ((ReaderBookmarkCapture) -> Void)?
     private let observer = ReaderBookmarkTouchObserver()
     private(set) var recognizer: UIPanGestureRecognizer!
     private var snapshot: ReaderBookmarkGestureCapture?
@@ -45,9 +51,9 @@ struct ReaderBookmarkGestureCapture {
 
     init(view: UIView, blocked: @escaping () -> Bool, isPaged: @escaping () -> Bool, isTrueTop: @escaping (UIScrollView) -> Bool,
          capture: @escaping () -> ReaderBookmarkGestureCapture?, context: @escaping () -> String?, readingRect: @escaping () -> CGRect,
-         onBookmark: @escaping (ReadingAnchor) -> Void, onFeedback: @escaping (ReaderBookmarkPullFeedback) -> Void) {
+         onBookmark: @escaping (ReadingAnchor) -> Void, onFeedback: @escaping (ReaderBookmarkPullFeedback) -> Void, onBookmarkCapture: ((ReaderBookmarkCapture) -> Void)? = nil) {
         self.view = view; self.blocked = blocked; self.isPaged = isPaged; self.isTrueTop = isTrueTop
-        self.capture = capture; self.context = context; self.readingRect = readingRect; self.onBookmark = onBookmark; self.onFeedback = onFeedback
+        self.capture = capture; self.context = context; self.readingRect = readingRect; self.onBookmark = onBookmark; self.onFeedback = onFeedback; self.onBookmarkCapture = onBookmarkCapture
         super.init()
         recognizer = UIPanGestureRecognizer(target: self, action: #selector(pagedPan(_:)))
         recognizer.minimumNumberOfTouches = 1; recognizer.maximumNumberOfTouches = 1
@@ -131,9 +137,12 @@ struct ReaderBookmarkGestureCapture {
             publish(value)
         case .ended:
             _ = pull.change(down: down, across: across)
-            let anchor = snapshot?.anchor, committed = pull.end()
+            let value = snapshot?.value, committed = pull.end()
             cancel()
-            if committed, let anchor { onBookmark(anchor) }
+            if committed, let value {
+                if let onBookmarkCapture { onBookmarkCapture(value) }
+                else if value.presentation == nil { onBookmark(value.anchor) }
+            }
         case .cancelled, .failed: cancel()
         default: break
         }

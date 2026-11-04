@@ -10,8 +10,9 @@ extension OfflineLibrary {
                   (bookmark.contentVersion?.utf8.count ?? 0) <= 512, anchor.chapterID.utf8.count <= 512, anchor.passageID.utf8.count <= 512,
                   anchor.characterOffset >= 0, anchor.pageY?.isFinite != false, anchor.resourceY?.isFinite != false,
                   bookmark.createdAt.timeIntervalSinceReferenceDate.isFinite, bookmark.modifiedAt.timeIntervalSinceReferenceDate.isFinite,
+                  bookmark.presentation?.isStructurallyValid != false,
                   bookmark.name == ReaderBookmark.normalizedName(bookmark.name) else { throw LibraryError.invalid("书签数据无效，未覆盖已有记录。") }
-            let key = bookmark.sourceVersion + "\n" + (bookmark.contentVersion ?? "") + "\n" + ReaderBookmark.positionKey(anchor)
+            let key = bookmark.sourceVersion + "\n" + (bookmark.contentVersion ?? "") + "\n" + bookmark.positionKey
             guard positions.insert(key).inserted else { throw LibraryError.invalid("书签位置重复，未覆盖已有记录。") }
             // Stale source anchors remain recoverable without blocking records
             // created against a new verified source. They cannot navigate.
