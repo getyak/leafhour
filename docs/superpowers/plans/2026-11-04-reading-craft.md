@@ -51,9 +51,17 @@ Files: `ReaderPanelPresentation.swift`, `ChatConversationView.swift`, `Immersive
 ## Task 4: Delivery
 
 - [x] Run final affected checks and independent source review; inspect final native screenshots.
-- [ ] Check Chinese documentation, stage only task files, commit and push once.
-- [ ] Create PR, wait for the required CI gate, merge normally, verify remote status and the existing deployment flow.
-- [ ] Distinguish source delivery from TestFlight distribution and physical-device acceptance.
+- [x] Check Chinese documentation, stage only task files, commit and push once.
+- [x] Create PR, wait for the required CI gate, merge normally, verify remote status and the existing deployment flow. PR #308 merged as `789d0e6`; main CI and Production verification passed.
+- [x] Distinguish source delivery from TestFlight distribution and physical-device acceptance. The existing automatic iOS workflow produced Apple VALID `0.1.0 (1.0.62)` from `789d0e6`; physical-device installation is unverified.
+
+## Task 5: Small-screen follow-up
+
+- [x] Reproduce the actual SE3 AX5 landscape failure instead of substituting a larger phone. Native keyboard notification includes the candidate bar at y=169; the keyboard accessibility frame begins at y=213.
+- [x] Confirm the 52.5pt attachment row and typing row overflow the 91pt remaining below navigation. The source overlaps navigation by 17.5pt and the send button crosses the true keyboard boundary by 13.5pt.
+- [x] Use one typing row while compact and focused. Reuse the microphone slot for a 44pt attachment inspector; inspecting dismisses the keyboard and expands existing, unchanged source/reference content. Microphone access returns when the keyboard is dismissed.
+- [x] Keep only one visible, scrollable draft line while short-height attachment details are expanded; preserve the complete raw draft. Make the source-layer label use explicit ink color.
+- [x] Recheck navigation and whole-button bounds against the actual resized viewport, eight-line draft inspection, portrait rotation, and ordinary phone presentation. Final SE run: 17 affected app tests and three UI flows passed. Ordinary phone: 17 app tests and three UI flows passed before the last same-row latest change, which passed the new SE history/draft flow. Independent review found no P1/P2 issues. Submit the combined follow-up once.
 
 ## Verification ledger
 
