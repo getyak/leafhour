@@ -1,5 +1,6 @@
 import SwiftUI
 import UIKit
+import LeafhourCore
 
 struct ChatShareMessage: Identifiable, Equatable {
     let turnID: String
@@ -8,6 +9,14 @@ struct ChatShareMessage: Identifiable, Equatable {
     var id: String { turnID + ":" + role }
     var author: String { role == "user" ? "我" : "松鼠 · AI" }
     var attributedText: String { author + "\n" + text }
+    // Copy and text export retain source. Only the image uses the same readable
+    // CommonMark/GFM text that the native conversation renders.
+    var imageAttributedText: String { author + "\n" + (role == "assistant" ? MarkdownDocument(source: text).text : text) }
+    static func imageContext(_ excerpt: String) -> String {
+        let prefix = "松鼠 · AI\n"
+        guard excerpt.hasPrefix(prefix) else { return excerpt }
+        return prefix + MarkdownDocument(source: String(excerpt.dropFirst(prefix.count))).text
+    }
     func contextExcerpt(fromEnd: Bool) -> String {
         let clipped = text.count > 180
         let excerpt = fromEnd ? String(text.suffix(180)) : String(text.prefix(180))
@@ -28,6 +37,15 @@ struct ChatShareSelection: Identifiable {
     var before: String?
     var after: String?
     var text: String { messages.map(\.attributedText).joined(separator: "\n\n") }
+    func shareContent(includeContext: Bool, forImage: Bool = false) -> NativeShareContent {
+        let body = forImage ? messages.map(\.imageAttributedText).joined(separator: "\n\n") : text
+        var value = NativeShareContent(title: title, author: "", text: body, attribution: "阅读对话 · 由用户选取", location: "", url: URL(string: "https://leafhour.com"))
+        if includeContext {
+            value.contextBefore = before.map { forImage ? ChatShareMessage.imageContext($0) : $0 }
+            value.contextAfter = after.map { forImage ? ChatShareMessage.imageContext($0) : $0 }
+        }
+        return value
+    }
 }
 
 /// The preview owns the exact selected content. Adjacent private messages are
@@ -41,11 +59,7 @@ struct ChatSharePanel: View {
     @State private var error: String?
     @State private var activity: NativeActivityItems?
     private var hasContext: Bool { selection.before != nil || selection.after != nil }
-    private var content: NativeShareContent {
-        var value = NativeShareContent(title: selection.title, author: "", text: selection.text, attribution: "阅读对话 · 由用户选取", location: "", url: URL(string: "https://leafhour.com"))
-        if includeContext { value.contextBefore = selection.before; value.contextAfter = selection.after }
-        return value
-    }
+    private var content: NativeShareContent { selection.shareContent(includeContext: includeContext) }
     var body: some View {
         NavigationStack {
             ScrollView {
@@ -56,8 +70,8 @@ struct ChatSharePanel: View {
                         Toggle("加入相邻消息片段", isOn: $includeContext).accessibilityIdentifier("chat-share-context")
                         Text("相邻内容会出现在分享图中，以柔焦背景突出所选消息。关闭后只分享选中的内容。").font(.footnote).foregroundStyle(.secondary)
                         if includeContext {
-                            if let before = selection.before { contextPreview("前一条", before) }
-                            if let after = selection.after { contextPreview("后一条", after) }
+                            if let before = selection.before { contextPreview("前一条", ChatShareMessage.imageContext(before)) }
+                            if let after = selection.after { contextPreview("后一条", ChatShareMessage.imageContext(after)) }
                         }
                     }
                     if let page { Image(uiImage: page.image).resizable().scaledToFit().clipShape(RoundedRectangle(cornerRadius: 18)).accessibilityLabel("所选对话分享长图预览").accessibilityIdentifier("chat-share-preview") }
@@ -83,7 +97,7 @@ struct ChatSharePanel: View {
         VStack(alignment: .leading, spacing: 6) { Text(title).font(.caption); Text(text).font(.subheadline).textSelection(.enabled) }.foregroundStyle(.secondary)
     }
     private func render() {
-        do { page = try NativeShareCardRenderer.pages(content, format: .portrait, style: style).first; error = nil }
+        do { page = try NativeShareCardRenderer.pages(selection.shareContent(includeContext: includeContext, forImage: true), format: .portrait, style: style).first; error = nil }
         catch { page = nil; self.error = error.localizedDescription }
     }
 }

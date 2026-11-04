@@ -2,6 +2,8 @@
 
 **Final conclusion: groups 4 and 5 pass the independent review within the observed iOS Simulator acceptance scope, each at 9.5/10.** The previously observed tab-bar occlusion and keyboard ownership problems are closed by the native container correction, strict geometry assertions and new screenshots. The first-pass 8.8/8.6 scores are superseded; they describe the rejected earlier layout, not the delivered layout.
 
+**Final scoped follow-up source review: passed, no blocker.** The two-file Markdown share correction transforms only assistant text for image output through the existing `MarkdownDocument.text`. User text, whole-message copy and text export retain their original bytes; AI adjacent excerpts keep their author prefix, and the preview/image paths use the same transformation. The new regression test checks heading/emphasis/list/fence handling, code-body retention, unchanged user literal Markdown/raw export, context attribution and renderer `page.text` equality. The integration owner is running `/tmp/leafhour-experience-markdown-share.log` for the new app test and the existing sharing UI case; this source verdict does not pre-claim that pending run. The previously observed design scores remain 9.5/10 for both groups.
+
 Reviewer: journal-performance agent, who did not implement the chat changes. These are design/UX judgments against the project's rubric, not a measured population satisfaction score or a guarantee across untested devices.
 
 | Criterion (2 points each) | Group 4: bubbles | Group 5: message actions | Basis |

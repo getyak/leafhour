@@ -25,6 +25,7 @@ Independent final observed-scenario scores: navigation/bounce 9.5; avatars 9.5; 
 - Production web build passed; the new pure reaction module is included in release files, the retained-backup dependency boundary and explicit server static routes.
 - Initial UI runs exposed a fixture-identity setup mismatch, an ambiguous test button query, a real horizontal-gesture conflict and actual floating-tab-bar overlap. Failures were retained and drove fixes; passing functional checks did not override image evidence.
 - Final simulator acceptance: six UI cases and three native layout cases passed, zero failures. These cover both-direction paging, gallery selection, repeated bottom overscroll, keyboard/send visibility, dark accessibility-size history, reactions, multiselect, complete action visibility, and three sharing previews.
+- An additional rich Markdown image-sharing regression and the share UI flow passed: AI image text uses the existing CommonMark/GFM readable projection while raw user messages, copy and text export remain unchanged.
 - Native root keyboard ownership is explicit: validated local keyboard notifications set the hosted viewport; children retain container safe areas only. Real geometry diagnostics proved the nested system guide was stale before it was replaced. Temporary diagnostics were removed.
 
 ## Actual image evidence

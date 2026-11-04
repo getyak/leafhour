@@ -147,6 +147,38 @@ final class ReaderToolsTests: XCTestCase {
         XCTAssertTrue(long.contextExcerpt(fromEnd: false).hasSuffix("…"))
     }
 
+    func testChatShareImageUsesReadableAssistantMarkdownWithoutChangingCopyOrTextExport() throws {
+        let markdown = "## 慢读 Reading\n\n**保留问题** and *stay curious*.\n\n- 第一项 first\n- 第二项 second\n\n```swift\nlet orchard = \"果园\"\nprint(orchard)\n```"
+        let question = "请保留我输入的 **字面标记** 与 `code`"
+        let reader = ChatShareMessage(turnID: "user", role: "user", text: question)
+        let assistant = ChatShareMessage(turnID: "answer", role: "assistant", text: markdown)
+        let before = "松鼠 · AI\n## 前文 Context\n\n**先前观点**"
+        let after = "我\n不要改我的 **标记**"
+        let selection = ChatShareSelection(title: "阅读对话", messages: [reader, assistant], before: before, after: after)
+        let raw = selection.shareContent(includeContext: true)
+        let image = selection.shareContent(includeContext: true, forImage: true)
+        XCTAssertEqual(reader.text, question)
+        XCTAssertEqual(assistant.text, markdown)
+        XCTAssertEqual(selection.text, "我\n" + question + "\n\n松鼠 · AI\n" + markdown)
+        XCTAssertEqual(raw.text, selection.text)
+        XCTAssertEqual(raw.contextBefore, before)
+        XCTAssertEqual(raw.contextAfter, after)
+        XCTAssertTrue(raw.plainText.contains(markdown))
+        XCTAssertTrue(image.text.contains("我\n" + question))
+        XCTAssertTrue(image.text.contains("松鼠 · AI\n慢读 Reading"))
+        XCTAssertTrue(image.text.contains("保留问题 and stay curious."))
+        XCTAssertTrue(image.text.contains("• 第一项 first"))
+        XCTAssertTrue(image.text.contains("• 第二项 second"))
+        XCTAssertTrue(image.text.contains("let orchard = \"果园\"\nprint(orchard)"))
+        XCTAssertFalse(image.text.contains("## 慢读"))
+        XCTAssertFalse(image.text.contains("**保留问题**"))
+        XCTAssertFalse(image.text.contains("```"))
+        XCTAssertEqual(image.contextBefore, "松鼠 · AI\n" + MarkdownDocument(source: "## 前文 Context\n\n**先前观点**").text)
+        XCTAssertEqual(image.contextAfter, after)
+        let page = try XCTUnwrap(NativeShareCardRenderer.pages(image, format: .portrait).first)
+        XCTAssertEqual(page.text, image.text)
+    }
+
     func testDefinitiveReferenceRejectionRestoresTheQuoteButPreservesANewerDraftQuote() async throws {
         for failAtAuthentication in [true, false] {
             for selectNewerReference in [true, false] {
