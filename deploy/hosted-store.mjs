@@ -26,10 +26,13 @@ export function createHostedStore({env=process.env,fetcher=fetch}={}){
   const json=async(route,options)=> (await request(route,options)).json();
   const keyOf=file=>String(file).replaceAll('\\','/');
   async function snapshot(file,fallback){const rows=await json('/rest/v1/reader_documents?key=eq.'+encodeURIComponent(keyOf(file))+'&select=value,version');if(!rows[0])return {data:structuredClone(fallback),version:0};let data=rows[0].value;if(data?.kind==='leafhour-json-blob-v1'){if(typeof data.file!=='string'||!data.file.startsWith('json/'+digest(keyOf(file))+'/'))throw fail('书籍内容引用无效',409);const bytes=await blob(data.file);if(digest(bytes)!==data.sha256)throw fail('书籍内容校验失败',409);data=JSON.parse(gunzipSync(bytes,{maxOutputLength:100*1024*1024}));}return {data,version:rows[0].version};}
-  async function mutate(file,fallback,operation){
+  async function mutate(file,fallback,operation,{beforeCommit}={}){
     for(let attempt=0;attempt<12;attempt++){
       const {data,version}=await snapshot(file,fallback),result=await operation(data);
       let value=data;const encoded=Buffer.from(JSON.stringify(data));if(encoded.length>3500000){const packed=gzipSync(encoded),target='json/'+digest(keyOf(file))+'/'+randomUUID();await putBlob(target,packed);value={kind:'leafhour-json-blob-v1',file:target,sha256:digest(packed)};}
+      // Dispatching this CAS is the commit point. Cancellation before it must
+      // not publish staged generation; after dispatch its receipt is recoverable.
+      await beforeCommit?.();
       const saved=await json('/rest/v1/rpc/reader_document_cas',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({document_key:keyOf(file),expected_version:version,document_value:value})});
       if(saved)return result;
     }

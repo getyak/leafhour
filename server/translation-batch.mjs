@@ -12,14 +12,15 @@ import {isDeepStrictEqual} from 'node:util';
 export function translationRequestOptions(options){
   if(options===undefined)return {};
   if(!options||typeof options!=='object'||Array.isArray(options))throw fail('翻译请求参数不正确');
-  if(Object.keys(options).some(key=>!['expectedContentVersion','generationReceipt','authorizeGeneration','sourceLanguage','targetLanguage'].includes(key)))throw fail('翻译请求参数不正确');
+  if(Object.keys(options).some(key=>!['expectedContentVersion','generationReceipt','authorizeGeneration','sourceLanguage','targetLanguage','signal'].includes(key)))throw fail('翻译请求参数不正确');
+  const signal=options.signal;if(signal!==undefined&&!(signal instanceof AbortSignal))throw fail('翻译取消参数不正确');
   const languages={};for(const key of ['sourceLanguage','targetLanguage'])if(options[key]!==undefined)languages[key]=validateTranslationLanguage(options[key]);
   const expected=options.expectedContentVersion;
   if(expected!==undefined&&(typeof expected!=='string'||!expected.length||expected.length>128))throw fail('翻译请求的原文版本不正确');
   const authorizeGeneration=options.authorizeGeneration;if(authorizeGeneration!==undefined&&typeof authorizeGeneration!=='function')throw fail('翻译授权参数不正确');
   const receipt=options.generationReceipt;
   if(receipt!==undefined&&(!receipt||typeof receipt!=='object'||Array.isArray(receipt)||Object.keys(receipt).some(k=>!['operationId','requestId'].includes(k))||['operationId','requestId'].some(k=>typeof receipt[k]!=='string'||!receipt[k]||receipt[k].length>200)))throw fail('翻译任务凭证不正确');
-  return {...languages,...(expected===undefined?{}:{expectedContentVersion:expected}),...(authorizeGeneration?{authorizeGeneration}:{}),...(receipt?{generationReceipt:{operationId:receipt.operationId,requestId:receipt.requestId}}:{})};
+  return {...languages,...(signal?{signal}:{}),...(expected===undefined?{}:{expectedContentVersion:expected}),...(authorizeGeneration?{authorizeGeneration}:{}),...(receipt?{generationReceipt:{operationId:receipt.operationId,requestId:receipt.requestId}}:{})};
 }
 
 export function assertExpectedContentVersion(book,expected){

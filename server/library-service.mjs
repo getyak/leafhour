@@ -85,15 +85,15 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
   const publicBooks=new Map(),queues=new Map(),translationsRunning=new Set();
   const userDir=user=>path.join(dataDir,'users',digest(requireUser(user).id));
   const read=async(file,fallback)=>{if(dataStore)return dataStore.read(file,fallback);try{return JSON.parse(await readFile(file,'utf8'));}catch(e){if(e.code==='ENOENT')return structuredClone(fallback);throw e;}};
-  const rawMutate=async(file,fallback,operation)=>{
-    if(dataStore)return dataStore.mutate(file,fallback,operation);
+  const rawMutate=async(file,fallback,operation,{beforeCommit}={})=>{
+    if(dataStore)return dataStore.mutate(file,fallback,operation,{beforeCommit});
     const prior=queues.get(file)||Promise.resolve();
-    const work=prior.catch(()=>{}).then(async()=>{const data=await read(file,fallback),result=await operation(data);await mkdir(path.dirname(file),{recursive:true,mode:0o700});const pending=file+'.'+randomUUID()+'.pending';await writeFile(pending,JSON.stringify(data),{mode:0o600});await rename(pending,file);return result;});
+    const work=prior.catch(()=>{}).then(async()=>{const data=await read(file,fallback),result=await operation(data);await mkdir(path.dirname(file),{recursive:true,mode:0o700});const pending=file+'.'+randomUUID()+'.pending';let published=false;try{await writeFile(pending,JSON.stringify(data),{mode:0o600});await beforeCommit?.();await rename(pending,file);published=true;return result;}finally{if(!published)await unlink(pending).catch(error=>{if(error.code!=='ENOENT')throw error;});}});
     queues.set(file,work);try{return await work;}finally{if(queues.get(file)===work)queues.delete(file);}
   };
   const catalogFingerprints=new Map();
   const chapterReads=createChapterReadStore({dataDir,dataStore,loadBook:getBook,catalogFingerprint:id=>{const book=publicBooks.get(id);if(!book)return null;if(!catalogFingerprints.has(id))catalogFingerprints.set(id,digest(JSON.stringify({...book,createdAt:undefined})));return catalogFingerprints.get(id);}});
-  const mutate=(file,fallback,operation)=>chapterReads.writing(file,()=>rawMutate(file,fallback,operation));
+  const mutate=(file,fallback,operation,options)=>chapterReads.writing(file,()=>rawMutate(file,fallback,operation,options));
   if(catalogDir){
     const entries=JSON.parse(await readFile(path.join(catalogDir,'manifest.json'),'utf8'));
     for(const entry of entries){const bytes=await readFile(path.join(catalogDir,entry.file));if(entry.format==='structured'){publicBooks.set(entry.id,structuredCatalogBook(entry,bytes));continue;}const extracted=await extractDocument({filename:entry.file,bytes,textStructure:false});
@@ -597,7 +597,8 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
     return mutate(recordFile(user,id),emptyRecords(book),async data=>{await assertRecordSource(user,id,source);const revision=data.position?.revision||0;if(input.baseRevision!==undefined&&input.baseRevision!==revision)throw fail('阅读位置已在另一处更新，请选择从哪里继续',409);data.position={...position,revision:revision+1,updatedAt:new Date().toISOString()};guardRecordSize(data);return data.position;});
   }
   async function translate(user,id,passageId,options={}){
-    requireUser(user);const requestOptions=translationRequestOptions(options),{expectedContentVersion,generationReceipt,authorizeGeneration}=requestOptions;
+    requireUser(user);const requestOptions=translationRequestOptions(options),{expectedContentVersion,generationReceipt,authorizeGeneration,signal}=requestOptions;
+    signal?.throwIfAborted();
     const book=await getBook(user,id),passages=allPassages(book),i=passages.findIndex(p=>p.id===passageId);
     if(i<0)throw fail('找不到当前段落',404);
     // A stale expected version is refused before any charged provider request.
@@ -611,13 +612,13 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
     // Versions saved before this generation may only be replaced when they are
     // unchanged drafts; reviewed and concurrent versions survive untouched.
     const before={...selected.translations};
-    const checkPermission=async()=>{if(authorizeGeneration&&!await authorizeGeneration())throw fail('本次翻译已取消或过期，未保存结果',409);};
+    const checkPermission=async()=>{signal?.throwIfAborted();if(authorizeGeneration&&!await authorizeGeneration())throw fail('本次翻译已取消或过期，未保存结果',409);signal?.throwIfAborted();};
     try{
       bookCapacity(book,TRANSLATION_RESERVE_BYTES);
       if(dataStore?.reserveTranslation)ticket=await dataStore.reserveTranslation(user,id,passageId);
       {const latest=await getBook(user,id),saved=projectTranslation(allPassages(latest).find(p=>p.id===passageId),targetLanguage);assertGenerationSource({book,fresh:latest,passage:passages[i],freshPassage:saved});assertExpectedContentVersion(latest,expectedContentVersion);assertBatchPassage(saved,expectedContentVersion);if(hasCompleteTranslationPair(saved)){await notifySourceMutation(user,id,{type:'translation-ack',bookId:id,passageId});return saved;}bookCapacity(latest,TRANSLATION_RESERVE_BYTES);}
       await checkPermission();
-      const result=await translator({passageId,sourceLanguage,targetLanguage,passages:passages.slice(Math.max(0,i-1),i+2).map(p=>({id:p.id,original:p.original})),sourceVersion:book.contentVersion});
+      const result=await translator({passageId,sourceLanguage,targetLanguage,passages:passages.slice(Math.max(0,i-1),i+2).map(p=>({id:p.id,original:p.original})),sourceVersion:book.contentVersion},{signal});
       if(!result||!['literal','interpretive'].every(k=>typeof result[k]==='string'&&result[k].trim()&&result[k].length<=12000))throw fail('翻译结果不完整，请重试；原文已保留',502);
       await checkPermission();
       const translations=Object.fromEntries(['literal','interpretive'].map(variant=>[variant,{text:result[variant],sourceLanguage,targetLanguage,status:'draft',variant,origin:'ai',model:result.model||'configured-provider',sourceVersion:book.contentVersion,createdAt:new Date().toISOString(),...(generationReceipt?{generationReceipt}:{})}]));
@@ -633,7 +634,7 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
         if(targetLanguage==='zh')saved.translations=pair;else saved.translationsByLanguage[targetLanguage]=pair;
         {const projected={...fresh,sections:fresh.sections.map(s=>({...s,paragraphs:s.paragraphs.map(p=>p.id===passageId?{...p,...translationPayload(saved)}:data[p.id]?.contentVersion===fresh.contentVersion?{...p,...translationPayload(data[p.id])}:p)}))};bookCapacity(projected);}
         data[passageId]=saved;
-      });
+      },{beforeCommit:checkPermission});
       await chapterReads.manifest(user,id);
       await notifySourceMutation(user,id,{type:'translation-ack',bookId:id,passageId});
       return projectTranslation({...freshPassage,...translationPayload(saved)},targetLanguage);

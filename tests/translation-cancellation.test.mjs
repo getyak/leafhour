@@ -1,0 +1,72 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {mkdtemp,rm} from 'node:fs/promises';
+import {tmpdir} from 'node:os';
+import path from 'node:path';
+import {createLibraryService} from '../server/library-service.mjs';
+import {createTranslator} from '../server/translation.mjs';
+import {createHostedStore} from '../deploy/hosted-store.mjs';
+import {createReaderServer} from '../server/server.mjs';
+
+const fixture=async(t,translator)=>{
+ const dir=await mkdtemp(path.join(tmpdir(),'leafhour-translation-cancel-'));t.after(()=>rm(dir,{recursive:true,force:true}));
+ const library=await createLibraryService({dataDir:dir,catalogDir:null,translator});
+ const user={id:'isolated-reader'},book=await library.importDocument(user,{filename:'Synthetic.txt',bytes:Buffer.from('A synthetic first paragraph.\n\nA synthetic second paragraph.')});
+ return {library,user,book,id:book.sections[0].paragraphs[0].id};
+};
+
+test('already cancelled translation never calls the provider',async t=>{
+ let calls=0;const f=await fixture(t,async()=>{calls++;return {literal:'L',interpretive:'I'};}),controller=new AbortController();controller.abort();
+ await assert.rejects(f.library.translate(f.user,f.book.bookId,f.id,{signal:controller.signal}),e=>e.name==='AbortError');
+ assert.equal(calls,0);
+});
+
+test('translation passes cancellation out of band and fences a late provider result',async t=>{
+ const controller=new AbortController();let deliveredSignal,finish,start,calls=0;
+ const began=new Promise(resolve=>start=resolve),f=await fixture(t,async(context,options)=>{assert.equal(Object.hasOwn(context,'signal'),false);deliveredSignal=options?.signal;if(++calls>1)return {literal:'Late literal',interpretive:'Late interpretive'};start();return new Promise(resolve=>finish=resolve);});
+ const pending=f.library.translate(f.user,f.book.bookId,f.id,{signal:controller.signal});const rejected=assert.rejects(pending,e=>e.name==='AbortError');
+ // A validation failure must not leave this regression waiting forever.
+ await Promise.race([began,new Promise((_,reject)=>setTimeout(()=>reject(Error('provider did not start')),1000))]);
+ assert.equal(deliveredSignal,controller.signal);controller.abort();finish({literal:'Late literal',interpretive:'Late interpretive'});await rejected;
+ assert.deepEqual((await f.library.getBook(f.user,f.book.bookId)).sections[0].paragraphs[0].translations,{});
+ const retry=await f.library.translate(f.user,f.book.bookId,f.id);assert.equal(retry.translations.literal.text,'Late literal');
+});
+
+test('configured translator aborts its actual provider fetch without serializing the signal',async t=>{
+ const controller=new AbortController();let started,requestSignal;
+ const began=new Promise(resolve=>started=resolve);
+ t.mock.method(globalThis,'fetch',async(_url,options)=>{
+  requestSignal=options.signal;assert.equal(Object.hasOwn(JSON.parse(JSON.parse(options.body).messages[1].content),'signal'),false);started();
+  return new Promise((_,reject)=>options.signal.addEventListener('abort',()=>reject(options.signal.reason),{once:true}));
+ });
+ const pending=createTranslator({DEEPSEEK_API_KEY:'isolated-fixture-only'})({passageId:'p',targetLanguage:'fr'},{signal:controller.signal});
+ const rejected=assert.rejects(pending,e=>e.name==='AbortError');await began;controller.abort();await rejected;assert.equal(requestSignal.aborted,true);
+});
+
+test('hosted commit guard runs after asynchronous blob staging and before the CAS commit',async()=>{
+ const controller=new AbortController();let commits=0,staged=0;
+ const store=createHostedStore({env:{SUPABASE_URL:'https://synthetic.invalid',SUPABASE_SECRET_KEY:'fixture-only'},fetcher:async(url,options={})=>{
+  if(url.includes('/reader_documents?'))return Response.json([]);
+  if(url.includes('/storage/')){staged++;controller.abort();return Response.json({});}
+  if(url.endsWith('/rpc/reader_document_cas')){commits++;return Response.json(true);}
+  throw Error('Unexpected fixture route');
+ }});
+ await assert.rejects(store.mutate('isolated/translation',{},data=>{data.text='x'.repeat(3500001);},{beforeCommit:()=>controller.signal.throwIfAborted()}),e=>e.name==='AbortError');
+ assert.ok(staged>0);assert.equal(commits,0);
+});
+
+test('disconnecting translate HTTP aborts server generation and cannot publish late text',async t=>{
+ const dir=await mkdtemp(path.join(tmpdir(),'leafhour-translation-http-cancel-'));let started,finish,providerSignal;
+ const began=new Promise(resolve=>started=resolve);
+ const server=await createReaderServer({recordsPath:path.join(dir,'records.json'),sendCode:null,chatGenerator:null,companionGenerator:null,translator:async(_context,options)=>{providerSignal=options?.signal;started();return new Promise(resolve=>finish=resolve);}});
+ await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
+ t.after(async()=>{server.closeAllConnections();await new Promise(resolve=>server.close(resolve));await rm(dir,{recursive:true,force:true});});
+ const base='http://127.0.0.1:'+server.address().port,session=await server.portal.auth.localSession(),book=await server.portal.library.importDocument(session.user,{filename:'Cancel.txt',bytes:Buffer.from('A synthetic source to cancel.')}),id=book.sections[0].paragraphs[0].id;
+ let settled;const done=new Promise(resolve=>settled=resolve),translate=server.portal.library.translate;
+ server.portal.library.translate=async(...args)=>{try{return await translate(...args);}finally{settled();}};
+ const controller=new AbortController(),pending=fetch(base+'/api/library/books/'+book.bookId+'/translate',{method:'POST',signal:controller.signal,headers:{Cookie:'marginalia_session='+session.token,'X-Reader-Owner':session.user.id,Origin:base,'Content-Type':'application/json'},body:JSON.stringify({id:'cancel-request',passageId:id,contentVersion:book.contentVersion})});
+ const rejected=assert.rejects(pending,e=>e.name==='AbortError');await began;assert.ok(providerSignal);controller.abort();await rejected;
+ for(let attempt=0;attempt<100&&!providerSignal.aborted;attempt++)await new Promise(resolve=>setTimeout(resolve,5));
+ assert.equal(providerSignal.aborted,true);finish({literal:'Late literal',interpretive:'Late interpretive'});await done;
+ assert.deepEqual((await server.portal.library.getBook(session.user,book.bookId)).sections[0].paragraphs[0].translations,{});
+});
