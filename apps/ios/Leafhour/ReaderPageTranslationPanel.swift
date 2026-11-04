@@ -25,8 +25,13 @@ struct ReaderPageTranslationPanel: View {
                         .font(.subheadline).foregroundStyle(.secondary).accessibilityIdentifier("reader-page-translation-unavailable")
                 }
                 if reading.isFollowing || reading.running {
-                    ProgressView(value: Double(reading.completedCount), total: Double(max(1, reading.totalCount))) {
-                        Text("当前范围 \(reading.completedCount)/\(reading.totalCount)").monospacedDigit()
+                    if reading.running {
+                        ProgressView(value: Double(reading.completedCount), total: Double(max(1, reading.totalCount))) {
+                            Text("当前范围 \(reading.completedCount)/\(reading.totalCount)").monospacedDigit()
+                        }
+                    } else {
+                        Label("随读翻译已开启，等待你继续阅读", systemImage: "checkmark.circle")
+                            .font(.subheadline).accessibilityIdentifier("reader-follow-translation-waiting")
                     }
                     Button("停止随读翻译", systemImage: "stop.circle") { reading.stopFollowing() }
                         .frame(minHeight: 44).accessibilityIdentifier("reader-follow-translation-stop")

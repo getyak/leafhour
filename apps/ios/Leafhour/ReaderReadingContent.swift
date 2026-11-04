@@ -261,7 +261,7 @@ final class ReaderReadingContent {
             // Revoke the old window while retaining only the user's explicit
             // switch. No new chapter can start without both a new real-user
             // marker and a verified viewport; task completion never advances it.
-            generation = UUID(); revokedNavigationID = followNavigationID; followNavigationID = nil
+            generation = UUID(); revokedNavigationID = followNavigationID ?? revokedNavigationID; followNavigationID = nil
             task?.cancel(); proposed = nil; proposedPage = nil; loading = false
             status = "旧章翻译已停止，等待新章的当前页。"
         } else if running { stop() }
