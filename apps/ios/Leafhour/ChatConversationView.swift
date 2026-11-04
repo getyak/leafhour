@@ -146,8 +146,12 @@ private struct ChatScrollAnchoring: ViewModifier {
 
 private struct ChatReadingEdges: ViewModifier {
     @ViewBuilder func body(content: Content) -> some View {
+        #if compiler(>=6.2)
         if #available(iOS 26, *) { content.scrollEdgeEffectHidden() }
         else { content }
+        #else
+        content
+        #endif
     }
 }
 
