@@ -51,6 +51,7 @@ private struct CompanionKeyboardPresentation: ViewModifier {
     @State private var geometry = CompanionSheetGeometry(windowSize: UIScreen.main.bounds.size, bottomSafeArea: 0, keyboardFrame: .null)
     @State private var composerHeight: CGFloat = 0
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.verticalSizeClass) private var verticalSizeClass
 
     private var detent: PresentationDetent {
         // The extra room accommodates navigation and the native drag affordance.
@@ -68,10 +69,10 @@ private struct CompanionKeyboardPresentation: ViewModifier {
             .onPreferenceChange(CompanionComposerHeightKey.self) { height in
                 if abs(composerHeight - height) > 0.5 { composerHeight = height }
             }
-            .presentationDetents([detent, .large])
+            .presentationDetents(verticalSizeClass == .compact ? [.large] : [detent, .large])
             .presentationDragIndicator(.visible)
             .presentationContentInteraction(.scrolls)
-            .presentationCompactAdaptation(.none)
+            .presentationCompactAdaptation(horizontal: .none, vertical: .fullScreenCover)
             .presentationBackgroundInteraction(.disabled)
     }
 }
