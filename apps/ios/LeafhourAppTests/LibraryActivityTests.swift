@@ -1,10 +1,71 @@
 import XCTest
 import Foundation
+import Observation
 import LeafhourCore
 @testable import Leafhour
 
 @MainActor
 final class LibraryActivityTests: XCTestCase {
+    func testRestoredEmailMetadataKeepsTheSameAccountLibraryAndCachedShelf() async throws {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: root); ActivityURLProtocol.respond = nil }
+        let owner = "00000000-0000-4000-8000-000000000344"
+        let configuration = URLSessionConfiguration.ephemeral; configuration.protocolClasses = [ActivityURLProtocol.self]
+        let credential = CloudCredential(account: CloudAccount(id: owner, email: nil), token: "isolated-fixture")
+        let cloud = CloudLibraryClient(baseURL: URL(string: "https://fixture.invalid")!, credential: credential, configuration: configuration)
+        let model = LibraryModel(root: root, cloud: cloud, credential: credential, monitorNetwork: false)
+        let library = try XCTUnwrap(model.library)
+        let file = root.appendingPathComponent("Cached.txt")
+        try Data("Synthetic source retained across account metadata changes.".utf8).write(to: file)
+        let book = try await library.importFile(file)
+        await model.loadCachedShelf()
+        ActivityURLProtocol.respond = { _ in (0.05, ["user": ["id": owner, "email": "synthetic@example.invalid"]]) }
+        await model.reload()
+        XCTAssertTrue(library === model.library, "The account UID owns the library; refreshed email metadata must not recreate it")
+        XCTAssertEqual(model.books.map(\.id), [book.id])
+        XCTAssertEqual(model.account?.email, "synthetic@example.invalid")
+    }
+
+    func testUnchangedShelfRefreshDoesNotRepublishCloudBooks() async throws {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: root); ActivityURLProtocol.respond = nil }
+        let owner = "00000000-0000-4000-8000-000000000344"
+        let configuration = URLSessionConfiguration.ephemeral; configuration.protocolClasses = [ActivityURLProtocol.self]
+        let credential = CloudCredential(account: CloudAccount(id: owner, email: nil), token: "isolated-fixture")
+        let cloud = CloudLibraryClient(baseURL: URL(string: "https://fixture.invalid")!, credential: credential, configuration: configuration)
+        let model = LibraryModel(root: root, cloud: cloud, credential: credential, monitorNetwork: false)
+        ActivityURLProtocol.respond = { _ in (0, ["user": ["id": owner], "books": [["bookId": "saved", "title": "Saved", "contentVersion": "v1"]]]) }
+        await model.synchronize(force: true)
+        let changed = expectation(description: "Unchanged cloud shelf is not published")
+        changed.isInverted = true
+        withObservationTracking {
+            _ = model.cloudBooks
+            _ = model.accountShelf
+        } onChange: { changed.fulfill() }
+        await model.synchronize(force: true)
+        await fulfillment(of: [changed], timeout: 0.05)
+        XCTAssertEqual(model.cloudBooks.map(\.id), ["saved"])
+    }
+    func testForcedRefreshWaitsForTheInFlightShelfAndItsQueuedRecheck() async throws {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: root); ActivityURLProtocol.respond = nil }
+        let owner = "00000000-0000-4000-8000-000000000344"
+        let configuration = URLSessionConfiguration.ephemeral; configuration.protocolClasses = [ActivityURLProtocol.self]
+        let credential = CloudCredential(account: CloudAccount(id: owner, email: nil), token: "isolated-fixture")
+        let cloud = CloudLibraryClient(baseURL: URL(string: "https://fixture.invalid")!, credential: credential, configuration: configuration)
+        let model = LibraryModel(root: root, cloud: cloud, credential: credential, monitorNetwork: false)
+        let started = expectation(description: "Shelf request started")
+        ActivityURLProtocol.respond = { _ in
+            started.fulfill()
+            return (0.1, ["user": ["id": owner], "books": [["bookId": "saved", "title": "Saved", "contentVersion": "v1"]]])
+        }
+        let initial = Task { await model.synchronize() }
+        await fulfillment(of: [started], timeout: 1)
+        await model.synchronize(force: true)
+        XCTAssertEqual(model.cloudBooks.map(\.id), ["saved"], "A refresh caller must not finish before the shared request")
+        XCTAssertFalse(model.syncing, "A forced follow-up must finish before its caller resumes")
+        await initial.value
+    }
     func testCachedShelfLoadsWithoutAuthenticationOrOpeningLastBook() async throws {
         let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
         defer { try? FileManager.default.removeItem(at: root); ActivityURLProtocol.respond = nil }

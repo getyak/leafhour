@@ -25,6 +25,14 @@ final class AccountShelfTests: XCTestCase {
         XCTAssertEqual(snapshot.books.first?.readingStatus, .pending)
         XCTAssertThrowsError(try CloudShelfSnapshot(json: CloudJSON.decode(Data(#"{"user":{"id":"other"},"books":[]}"#.utf8)), ownerID: owner))
     }
+    func testIncompleteBookRowsRejectTheSnapshotInsteadOfRemovingCachedBooks() throws {
+        let wire = Data(#"{"user":{"id":"b323d184-ce41-4e97-a378-17b107c0fdbb"},"books":[{"bookId":"valid","contentVersion":"v1","title":"Valid"},{"bookId":"incomplete","title":"Missing version"}]}"#.utf8)
+        XCTAssertThrowsError(try CloudShelfSnapshot(json: CloudJSON.decode(wire), ownerID: owner))
+    }
+    func testDuplicateBookIdentitiesRejectTheSnapshot() throws {
+        let wire = Data(#"{"user":{"id":"b323d184-ce41-4e97-a378-17b107c0fdbb"},"books":[{"bookId":"same","contentVersion":"v1"},{"bookId":"same","contentVersion":"v2"}]}"#.utf8)
+        XCTAssertThrowsError(try CloudShelfSnapshot(json: CloudJSON.decode(wire), ownerID: owner))
+    }
     func testActualPositionActivityCompetesWithSessionAndNeverReceiptTime() throws {
         let row = try CloudJSON.decode(Data(#"{"bookId":"a","contentVersion":"v1","title":"A","readingStateReady":true,"resume":{"chapterId":"c","passageId":"p","observedAt":"2026-11-01T09:30:00+01:00","updatedAt":"2026-11-01T23:00:00Z"},"journey":{"status":"reading","lastReadAt":"2026-11-01T09:00:00Z"}}"#.utf8))
         let book = try XCTUnwrap(CloudShelfBook(json: row))

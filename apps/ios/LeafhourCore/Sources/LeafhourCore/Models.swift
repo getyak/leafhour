@@ -171,7 +171,7 @@ public struct ImportProgress: Sendable {
 
 public enum DuplicateImportPolicy: String, Codable, Sendable { case keep, replace, new }
 public enum ImportPhase: String, Codable, Sendable { case processing, failed, interrupted, cancelled, complete }
-public struct ImportJob: Codable, Identifiable, Sendable {
+public struct ImportJob: Codable, Identifiable, Equatable, Sendable {
     public var id: UUID
     public var filename: String
     public var kind: BookKind
