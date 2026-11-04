@@ -1,4 +1,5 @@
 import XCTest
+import Vision
 
 /// Isolated DEBUG fixture acceptance; no real account, paid model, microphone hardware or production claims.
 final class IOSLibraryChatUITests: XCTestCase {
@@ -110,6 +111,88 @@ final class IOSLibraryChatUITests: XCTestCase {
         app.menuItems["取消点赞"].firstMatch.tap()
         app.buttons["chat-wake-composer"].tap(); require(input); XCTAssertTrue(input.isHittable)
         capture("quiet-composer-woken")
+    }
+
+    func testBrowsingHistoryKeepsItsPositionWhenReplyFinishesAndCanReturnToLatest() {
+        verifyLatestNavigation()
+    }
+
+    func testAccessibleDarkChatKeepsLatestNavigationAboveTheComposer() {
+        verifyLatestNavigation(extra: ["-UIPreferredContentSizeCategoryName", "UICTContentSizeCategoryAccessibilityXXXL", "-AppleInterfaceStyle", "Dark"])
+    }
+
+    private func verifyLatestNavigation(extra: [String] = []) {
+        launch(["--reading-craft-history"] + extra)
+        app.tabBars.buttons["Chat"].tap()
+        let input = app.textFields["reader-question"]
+        require(input); input.tap(); input.typeText("第一句合成问题")
+        app.buttons["reader-question-send"].tap()
+        let wake = app.buttons["chat-wake-composer"], latest = app.buttons["chat-latest"]
+        require(wake)
+        let history = app.scrollViews["reader-conversation-history"]
+        // Wait for the fixture's delayed final response before browsing.
+        let answer = app.textViews.matching(NSPredicate(format: "label CONTAINS %@", "合成回答末尾")).firstMatch
+        require(answer)
+        XCTAssertFalse(latest.exists, "Programmatic layout and incoming replies must not imply browsing")
+        let oldAnswer = app.textViews.matching(identifier: answer.identifier)
+            .matching(NSPredicate(format: "label CONTAINS %@", "合成回答末尾")).firstMatch
+        history.swipeDown()
+        require(latest)
+        XCTAssertTrue(latest.isHittable)
+        XCTAssertGreaterThanOrEqual(latest.frame.height, 44)
+        XCTAssertGreaterThanOrEqual(latest.frame.minX, wake.frame.maxX - 1)
+        XCTAssertLessThanOrEqual(latest.frame.maxY, wake.frame.maxY + 1)
+        capture("history-latest-control")
+        latest.tap()
+        let atLatest = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in !latest.exists }, object: nil)
+        XCTAssertEqual(XCTWaiter.wait(for: [atLatest], timeout: 8), .completed)
+        wake.tap(); require(input); input.tap(); input.typeText("第二句合成问题")
+        app.buttons["reader-question-send"].tap()
+        require(app.buttons["停止回答"].firstMatch)
+        history.swipeDown()
+        require(latest)
+        for _ in 0..<4 where !oldAnswer.exists || !oldAnswer.isHittable { history.swipeDown() }
+        XCTAssertTrue(oldAnswer.isHittable, "Browse to the same earlier answer before recording its position")
+        let oldAnswerY = oldAnswer.frame.minY
+        let finished = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in
+            !self.app.buttons["停止回答"].firstMatch.exists
+        }, object: nil)
+        XCTAssertEqual(XCTWaiter.wait(for: [finished], timeout: 20), .completed)
+        XCTAssertTrue(latest.exists, "Reply completion must not pull the reader to the bottom")
+        XCTAssertEqual(oldAnswer.frame.minY, oldAnswerY, accuracy: 3, "The same earlier answer must stay in the same place through streaming and completion")
+        if extra.isEmpty {
+            wake.tap(); require(input); input.tap(); require(app.keyboards.firstMatch)
+            XCTAssertEqual(oldAnswer.frame.minY, oldAnswerY, accuracy: 3, "Waking the keyboard while browsing must preserve the passage")
+            history.swipeDown()
+        }
+        capture("completed-reply-preserves-browsing")
+        latest.tap()
+        let returned = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in !latest.exists }, object: nil)
+        XCTAssertEqual(XCTWaiter.wait(for: [returned], timeout: 8), .completed)
+        XCTAssertTrue(wake.isHittable || input.isHittable)
+        XCTAssertTrue(answer.exists, "Returning to latest must retain the actual answer text")
+        if extra.isEmpty {
+            if wake.exists { wake.tap() }
+            require(input); input.tap(); input.typeText("第三句合成问题")
+            app.buttons["reader-question-send"].tap(); require(app.buttons["停止回答"].firstMatch)
+            let completed = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in !self.app.buttons["停止回答"].firstMatch.exists }, object: nil)
+            XCTAssertEqual(XCTWaiter.wait(for: [completed], timeout: 25), .completed)
+            let request = VNRecognizeTextRequest()
+            request.recognitionLevel = .accurate; request.recognitionLanguages = ["zh-Hans", "en-US"]
+            do {
+                let image = XCUIScreen.main.screenshot().image
+                let cgImage = try XCTUnwrap(image.cgImage)
+                try VNImageRequestHandler(cgImage: cgImage).perform([request])
+                let visible = (request.results ?? []).compactMap { $0.topCandidates(1).first?.string }.joined().uppercased()
+                    .unicodeScalars.filter { CharacterSet.alphanumerics.contains($0) }.map(String.init).joined()
+                XCTAssertTrue(visible.contains("ROUND3END"), "The newest reply's ending must be physically visible, not merely present in accessibility.\n" + visible)
+            } catch { XCTFail("Could not verify the visible reply ending: \(error)") }
+            capture("third-exchange-latest-ending-visible")
+            for _ in 0..<12 where !oldAnswer.exists || !oldAnswer.isHittable { history.swipeDown() }
+            XCTAssertTrue(oldAnswer.isHittable, "The first exchange must remain reachable after it moves into older history")
+            capture("older-history-remains-readable")
+            require(latest); latest.tap()
+        }
     }
 
     func testSingleAndMultipleLocalRemovalRemainRecoverable() {

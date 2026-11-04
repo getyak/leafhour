@@ -12,7 +12,7 @@ enum VideoAcceptanceFixture {
         #if DEBUG
         if let selected = SelectedSourceAcceptanceFixture.makeModelIfRequested() { return selected }
         let arguments = ProcessInfo.processInfo.arguments
-        guard ["org.leafhour.get317.testing", "org.leafhour.get341.testing", "org.leafhour.get352.testing", "org.leafhour.readingchat.testing", "org.leafhour.shelf-refinement", "org.leafhour.get358.testing", "org.leafhour.quiet.testing", "com.cubxxw.leafhour.chat20261102"].contains(Bundle.main.bundleIdentifier ?? "") else { return nil }
+        guard ["org.leafhour.get317.testing", "org.leafhour.get341.testing", "org.leafhour.get352.testing", "org.leafhour.readingchat.testing", "org.leafhour.shelf-refinement", "org.leafhour.get358.testing", "org.leafhour.quiet.testing", "org.leafhour.craft.testing", "com.cubxxw.leafhour.chat20261102"].contains(Bundle.main.bundleIdentifier ?? "") else { return nil }
         let hostedUnitTest = ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] != nil
             || NSClassFromString("XCTestCase") != nil || NSClassFromString("XCTest.XCTestCase") != nil
         guard arguments.contains("--get317-acceptance") || hostedUnitTest else { return nil }
@@ -180,13 +180,18 @@ private final class GET317Transport: URLProtocol, @unchecked Sendable {
         deliver(result)
     }
     private func deliver(_ result: Response) {
-        DispatchQueue.global(qos: .utility).asyncAfter(deadline: .now() + result.delay) { [self] in
-            completionLock.lock(); defer { completionLock.unlock() }
-            guard !stopped, let url = request.url else { return }
-            guard let response = HTTPURLResponse(url: url, statusCode: result.status, httpVersion: "HTTP/1.1", headerFields: ["Content-Type": result.mimeType]) else { return }
-            client?.urlProtocol(self, didReceive: response, cacheStoragePolicy: .notAllowed)
-            client?.urlProtocol(self, didLoad: result.data)
-            client?.urlProtocolDidFinishLoading(self)
+        let chunks = result.chunks.isEmpty ? [result.data] : result.chunks
+        for (index, chunk) in chunks.enumerated() {
+            DispatchQueue.global(qos: .utility).asyncAfter(deadline: .now() + result.delay + Double(index) * result.chunkInterval) { [self] in
+                completionLock.lock(); defer { completionLock.unlock() }
+                guard !stopped, let url = request.url else { return }
+                if index == 0 {
+                    guard let response = HTTPURLResponse(url: url, statusCode: result.status, httpVersion: "HTTP/1.1", headerFields: ["Content-Type": result.mimeType]) else { return }
+                    client?.urlProtocol(self, didReceive: response, cacheStoragePolicy: .notAllowed)
+                }
+                client?.urlProtocol(self, didLoad: chunk)
+                if index == chunks.count - 1 { client?.urlProtocolDidFinishLoading(self) }
+            }
         }
     }
     override func stopLoading() {
@@ -194,7 +199,12 @@ private final class GET317Transport: URLProtocol, @unchecked Sendable {
         Self.removePendingDownload(self)
     }
 
-    private struct Response: Sendable { var status: Int; var data: Data; var delay: TimeInterval; var mimeType = "application/json" }
+    private struct Response: Sendable {
+        var status: Int; var data: Data; var delay: TimeInterval
+        var mimeType = "application/json"
+        var chunks: [Data] = []
+        var chunkInterval: TimeInterval = 0
+    }
     private final class PendingDownload {
         weak var transport: GET317Transport?
         let response: Response
@@ -256,6 +266,10 @@ private final class GET317Transport: URLProtocol, @unchecked Sendable {
                 "status": "completed", "answer": ["summary": arguments.contains("--ios-library-chat-markdown")
                     ? "# 合成 Markdown 回答\n\n这是 **加粗** 正文。\n\n- 列表甲\n- 列表乙\n\n> 引用内容\n\n```swift\nlet orchard = 1\n```\n\n| 项目 | 数值 |\n| --- | --- |\n| 果园 | 1 |"
                     : "合成陪读回答：这是隔离验收夹具，没有调用模型。"]]
+            if arguments.contains("--reading-craft-history") {
+                let ordinal = (turns.firstIndex { ($0["id"] as? String) == (body["id"] as? String) } ?? turns.count) + 1
+                turn["answer"] = ["summary": "合成回答开头\n\n" + (1...28).map { "合成段落 \($0)：回看这段时，新回答完成也应保留阅读位置。" }.joined(separator: "\n\n") + "\n\n合成回答末尾 · ROUND\(ordinal)END"]
+            }
             if let source = body["quote"] { turn["quote"] = source }
             if let reference = body["replyTo"] as? [String: String], let target = turns.first(where: { $0["id"] as? String == reference["turnId"] }) {
                 let text = reference["role"] == "assistant" ? (target["answer"] as? [String: Any])?["summary"] as? String : target["text"] as? String
@@ -263,6 +277,14 @@ private final class GET317Transport: URLProtocol, @unchecked Sendable {
             }
             if !turns.contains(where: { $0["id"] as? String == turn["id"] as? String }) { turns.append(turn) }
             records["syntheticTurns"] = turns; persist(records, bookID: conversation)
+            if arguments.contains("--reading-craft-history"), turns.count > 1 {
+                let events: [[String: Any]] = (1...5).map { step in
+                    ["type": "progress", "id": turn["id"] as? String ?? "", "sequence": step,
+                     "text": "合成流式回答 · 第 \(step) 次更新\n\n" + String(repeating: "这段正在逐步生成，回看之前的回答时应保持阅读位置。\n\n", count: step)]
+                } + [["type": "result", "turn": turn]]
+                let chunks = events.map { ((try? JSONSerialization.data(withJSONObject: $0, options: [.sortedKeys])) ?? Data()) + Data([10]) }
+                return Response(status: 200, data: Data(), delay: 0.03, mimeType: "application/x-ndjson", chunks: chunks, chunkInterval: 3)
+            }
             return reply(turn)
         }
         if path == "/api/auth/session" {

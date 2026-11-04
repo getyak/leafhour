@@ -83,7 +83,11 @@ struct ChatMarkdownView: UIViewRepresentable {
         func size(_ view: UITextView, source: String, width: CGFloat, category: UIContentSizeCategory, plainText: Bool = false) -> CGSize {
             update(view, source: source, width: width, category: category, plainText: plainText)
             if let measured { return measured }
-            let result = view.sizeThatFits(CGSize(width: width, height: .greatestFiniteMagnitude))
+            let native = view.sizeThatFits(CGSize(width: width, height: .greatestFiniteMagnitude))
+                // UITextView prefers the narrowest width that fits its current text.
+            // SwiftUI owns the column width; returning that narrower size makes
+            // updateUIView and the next proposal repeatedly reflow each other.
+            let result = CGSize(width: width, height: native.height)
             measured = result; return result
         }
         func textView(_ textView: UITextView, editMenuForTextIn range: NSRange, suggestedActions: [UIMenuElement]) -> UIMenu? {

@@ -1,10 +1,142 @@
 import SwiftUI
 import LeafhourCore
 import AVFoundation
+import Observation
 
-private struct ChatBottomPositionKey: PreferenceKey {
-    static var defaultValue: CGFloat = .greatestFiniteMagnitude
-    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) { value = nextValue() }
+/// User input owns intent; the bottom marker owns position.
+struct ChatScrollLayout: Equatable {
+    let container: CGSize
+    let insets: EdgeInsets
+}
+
+@MainActor @Observable final class ChatScrollState {
+    private(set) var followsLatest = true
+    private(set) var isAtLatest = false
+    @ObservationIgnored private var userScrolling = false
+    @ObservationIgnored private var followedAtStart = true
+    @ObservationIgnored private var layoutAtStart: ChatScrollLayout?
+    @ObservationIgnored private var legacyGestureActive = false
+    @ObservationIgnored private var legacyWaitingForIdle = false
+    @ObservationIgnored private var legacyLayout: ChatScrollLayout?
+    @ObservationIgnored private var legacySettlement: Task<Void, Never>?
+
+    func updateBottomVisibility(_ visible: Bool) { isAtLatest = visible }
+    func beginBrowsing(layout: ChatScrollLayout? = nil) {
+        cancelLegacySettlement(); legacyGestureActive = false
+        startBrowsing(layout: layout)
+    }
+    private func startBrowsing(layout: ChatScrollLayout?) {
+        followedAtStart = followsLatest; layoutAtStart = layout
+        userScrolling = true; followsLatest = false
+    }
+    func endBrowsing(layout: ChatScrollLayout? = nil) {
+        guard userScrolling else { return }
+        userScrolling = false
+        let resized = layoutAtStart != layout
+        if isAtLatest && (!resized || followedAtStart) { resumeFollowing() }
+        layoutAtStart = nil
+    }
+    func resumeFollowing() {
+        cancelLegacySettlement(); legacyGestureActive = false
+        followsLatest = true; userScrolling = false; layoutAtStart = nil
+    }
+    func beginLegacyBrowsing(layout: ChatScrollLayout? = nil) {
+        cancelLegacySettlement()
+        if !legacyGestureActive { legacyGestureActive = true; startBrowsing(layout: layout) }
+    }
+    func endLegacyBrowsing(layout: ChatScrollLayout? = nil) {
+        guard userScrolling else { return }
+        legacyGestureActive = false; legacyWaitingForIdle = true; legacyLayout = layout
+        settleLegacyScroll()
+    }
+    func updateLegacyBottomVisibility(_ visible: Bool, layout: ChatScrollLayout? = nil) {
+        updateBottomVisibility(visible); legacyLayout = layout
+        if legacyWaitingForIdle { settleLegacyScroll() }
+    }
+    func cancelLegacyBrowsing() {
+        cancelLegacySettlement(); legacyGestureActive = false; userScrolling = false; layoutAtStart = nil
+    }
+    private func cancelLegacySettlement() {
+        legacySettlement?.cancel(); legacySettlement = nil; legacyWaitingForIdle = false
+    }
+    private func settleLegacyScroll() {
+        legacySettlement?.cancel()
+        legacySettlement = Task { @MainActor [weak self] in
+            do { try await Task.sleep(for: .milliseconds(120)) } catch { return }
+            guard let self, !Task.isCancelled else { return }
+            let layout = self.legacyLayout
+            self.legacyWaitingForIdle = false; self.legacySettlement = nil
+            self.endBrowsing(layout: layout)
+        }
+    }
+}
+
+private struct ChatBottomFrameKey: PreferenceKey {
+    static var defaultValue: CGRect = .null
+    static func reduce(value: inout CGRect, nextValue: () -> CGRect) { value = nextValue() }
+}
+
+private struct ChatBottomMarker: ViewModifier {
+    let position: ChatScrollState
+    @ViewBuilder func body(content: Content) -> some View {
+        if #available(iOS 18, *) {
+            content.onScrollVisibilityChange(threshold: 0.5) { position.updateBottomVisibility($0) }
+                .onDisappear { position.updateBottomVisibility(false) }
+        } else {
+            content.background { GeometryReader { geometry in
+                Color.clear.preference(key: ChatBottomFrameKey.self, value: geometry.frame(in: .named("conversation-scroll")))
+            } }
+        }
+    }
+}
+
+private struct ChatScrollTracking: ViewModifier {
+    let position: ChatScrollState
+    @State private var fallbackLayout = ChatScrollLayout(container: .zero, insets: EdgeInsets())
+    @State private var fallbackBottom: CGRect = .null
+    @ViewBuilder func body(content: Content) -> some View {
+        if #available(iOS 18, *) {
+            content.onScrollPhaseChange { _, phase, context in
+                let layout = ChatScrollLayout(container: context.geometry.containerSize, insets: context.geometry.contentInsets)
+                switch phase {
+                case .interacting: position.beginBrowsing(layout: layout)
+                case .idle: position.endBrowsing(layout: layout)
+                default: break
+                }
+            }
+        } else {
+            content.background { GeometryReader { geometry in
+                Color.clear.onAppear { fallbackLayout = ChatScrollLayout(container: geometry.size, insets: geometry.safeAreaInsets) }
+                    .onChange(of: ChatScrollLayout(container: geometry.size, insets: geometry.safeAreaInsets)) { _, layout in fallbackLayout = layout }
+            } }
+            .onPreferenceChange(ChatBottomFrameKey.self) { frame in
+                fallbackBottom = frame; updateLegacyPosition(frame, layout: fallbackLayout)
+            }
+            .onChange(of: fallbackLayout) { _, layout in updateLegacyPosition(fallbackBottom, layout: layout) }
+            .simultaneousGesture(DragGesture(minimumDistance: 12)
+                .onChanged { _ in position.beginLegacyBrowsing(layout: fallbackLayout) }
+                .onEnded { _ in position.endLegacyBrowsing(layout: fallbackLayout) })
+            .onDisappear { position.cancelLegacyBrowsing() }
+        }
+    }
+    private func updateLegacyPosition(_ frame: CGRect, layout: ChatScrollLayout) {
+        guard !frame.isNull, layout.container.height > 0 else { return }
+        let visibleBottom = layout.container.height - max(0, layout.insets.bottom)
+        position.updateLegacyBottomVisibility(frame.maxY <= visibleBottom + 44, layout: layout)
+    }
+}
+
+private struct ChatScrollAnchoring: ViewModifier {
+    let followsLatest: Bool
+    @ViewBuilder func body(content: Content) -> some View {
+        if #available(iOS 18, *) {
+            content.defaultScrollAnchor(.bottom, for: .initialOffset)
+                .defaultScrollAnchor(.bottom, for: .alignment)
+                .defaultScrollAnchor(followsLatest ? .bottom : .top, for: .sizeChanges)
+        } else {
+            content.defaultScrollAnchor(followsLatest ? .bottom : .top)
+        }
+    }
 }
 
 /// One conversation surface serves both global Chat and an anchored selection.
@@ -25,13 +157,20 @@ struct ChatConversationView: View {
     @State private var composerAwake = true
     @State private var didLoad = false
     @State private var sourceExpanded = false
+    @State private var referenceExpanded = false
     @State private var speech = ChatSpeechRecorder()
     @State private var sendingVoice = false
-    @State private var followsResponse = true
-    @State private var viewportHeight: CGFloat = 0
+    @State private var scrollPosition = ChatScrollState()
+    @State private var latestRequest = UUID()
     @FocusState private var focused: Bool
     @Environment(\.scenePhase) private var scenePhase
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.verticalSizeClass) private var verticalSizeClass
+    private var shortHeight: Bool { verticalSizeClass == .compact }
+    private var composerLines: ClosedRange<Int> {
+        guard shortHeight else { return 1...6 }
+        return 1...(focused ? 1 : (sourceExpanded || referenceExpanded ? 2 : 3))
+    }
     private var canAsk: Bool {
         !localOnly && !tools.loading && !tools.generating && tools.retry == nil && tools.conversationAvailable && !tools.question.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
     }
@@ -39,49 +178,47 @@ struct ChatConversationView: View {
         ScrollViewReader { proxy in
             ScrollView {
                 LazyVStack(alignment: .leading, spacing: 24) {
-                    ForEach(tools.turns) { turn in
-                        ChatTurnView(turn: turn,
-                            responseText: turn.id == activeTurnID ? tools.responseText : "",
-                            responding: turn.id == activeTurnID && turn.status == "running" && (tools.generating || tools.loading),
-                            responseStatus: tools.responseStatus,
-                            error: turn.id == failedTurnID ? tools.error : nil,
-                            retry: tools.retry?.id == turn.id ? { retryRequest() } : nil,
-                            resolveVoice: { try await tools.voiceURL($0, cloud: cloud) }, playbackAllowed: !speech.isActive,
-                            onReference: { role in tools.referenceMessage(turn, role: role); composerAwake = true; focused = true },
-                            onLike: { role in tools.toggleMessageLike(turnID: turn.id, role: role) },
-                            isLiked: { role in tools.isMessageLiked(turnID: turn.id, role: role) })
-                    }
-                    status
-                    Color.clear.frame(height: 1).id("chat-bottom")
-                        .background { GeometryReader { geometry in
-                            Color.clear.preference(key: ChatBottomPositionKey.self, value: geometry.frame(in: .named("conversation-scroll")).maxY)
-                        } }
+                    ForEach(tools.turns.dropLast(2)) { turn in conversationTurn(turn) }
+                    // Keep the previous exchange and the live exchange together.
+                    // The streaming row must be measured before scrolling to it;
+                    // older, completed exchanges can remain lazily rendered.
+                    VStack(alignment: .leading, spacing: 24) {
+                        ForEach(tools.turns.suffix(2)) { turn in conversationTurn(turn) }
+                        status
+                        Color.clear.frame(height: 1).modifier(ChatBottomMarker(position: scrollPosition))
+                    }.id("chat-bottom")
                 }.frame(maxWidth: 680).padding(.horizontal, 20).padding(.vertical, 20).frame(maxWidth: .infinity)
             }.accessibilityIdentifier("reader-conversation-history")
                 .coordinateSpace(name: "conversation-scroll")
-                .background { GeometryReader { geometry in
-                    Color.clear.onAppear { viewportHeight = geometry.size.height }
-                        .onChange(of: geometry.size.height) { _, height in viewportHeight = height }
-                } }
-                .onPreferenceChange(ChatBottomPositionKey.self) { bottom in followsResponse = bottom <= viewportHeight + 44 }
-                .defaultScrollAnchor(.bottom)
+                .modifier(ChatScrollTracking(position: scrollPosition))
+                .modifier(ChatScrollAnchoring(followsLatest: scrollPosition.followsLatest))
                 .simultaneousGesture(DragGesture(minimumDistance: 12).onChanged { _ in
                     if !focused { composerAwake = false }
                 })
                 .scrollDismissesKeyboard(.interactively)
                 .safeAreaInset(edge: .bottom, spacing: 0) { composer }
-                .onChange(of: tools.turns.last?.id) { _, _ in scroll(proxy) }
-                .onChange(of: tools.turns.last?.status) { _, _ in scroll(proxy) }
-                .onChange(of: tools.generating) { _, value in if value { scroll(proxy) } }
+                .onChange(of: latestRequest) { _, _ in scroll(proxy) }
+                .onChange(of: tools.turns.last?.id) { _, _ in if scrollPosition.followsLatest { scroll(proxy) } }
+                .onChange(of: tools.turns.last?.status) { _, _ in if scrollPosition.followsLatest { scroll(proxy) } }
+                .onChange(of: tools.generating) { _, value in if value && scrollPosition.followsLatest { scroll(proxy) } }
                 .onChange(of: tools.responseText) { _, _ in
                     // Follow only from the bottom. Reading or selecting an earlier
                     // answer must not be interrupted by each incoming text delta.
-                    if followsResponse { scroll(proxy, animated: false) }
+                    if scrollPosition.followsLatest { scroll(proxy, animated: false) }
                 }
-                .onChange(of: focused) { _, value in if value { scroll(proxy) } }
+                .onChange(of: focused) { _, value in
+                    if value && shortHeight { sourceExpanded = false; referenceExpanded = false }
+                    if value && scrollPosition.followsLatest { scroll(proxy) }
+                }
+                .task { await Task.yield(); if scrollPosition.followsLatest { scroll(proxy, animated: false) } }
         }.background(Color(uiColor: .systemBackground))
             .navigationTitle(title).navigationBarTitleDisplayMode(.inline)
             .task { await reload() }
+            .onChange(of: sourceExpanded) { _, expanded in if expanded && shortHeight { focused = false } }
+            .onChange(of: referenceExpanded) { _, expanded in if expanded && shortHeight { focused = false } }
+            .onChange(of: verticalSizeClass) { _, value in
+                if value == .compact && focused { sourceExpanded = false; referenceExpanded = false }
+            }
             .onChange(of: scenePhase) { _, phase in
                 if phase != .active && speech.recording { Task { await captureVoice(sendAfter: false) } }
             }
@@ -94,6 +231,18 @@ struct ChatConversationView: View {
             }
             .onDisappear { if speech.isActive { tools.question = speech.cancel() } }
     }
+    private func conversationTurn(_ turn: ReaderConversationTurn) -> some View {
+        ChatTurnView(turn: turn,
+            responseText: turn.id == activeTurnID ? tools.responseText : "",
+            responding: turn.id == activeTurnID && turn.status == "running" && (tools.generating || tools.loading),
+            responseStatus: tools.responseStatus,
+            error: turn.id == failedTurnID ? tools.error : nil,
+            retry: tools.retry?.id == turn.id ? { retryRequest() } : nil,
+            resolveVoice: { try await tools.voiceURL($0, cloud: cloud) }, playbackAllowed: !speech.isActive,
+            onReference: { role in tools.referenceMessage(turn, role: role); referenceExpanded = false; composerAwake = true; focused = true },
+            onLike: { role in tools.toggleMessageLike(turnID: turn.id, role: role) },
+            isLiked: { role in tools.isMessageLiked(turnID: turn.id, role: role) })
+    }
     private func reload() async {
         await load()
         if !Task.isCancelled { didLoad = true; if !tools.turns.isEmpty { composerAwake = false } }
@@ -102,6 +251,7 @@ struct ChatConversationView: View {
         !composerAwake && !focused && !tools.turns.isEmpty && tools.question.isEmpty && tools.pendingVoice == nil && tools.pendingMessageReference == nil && !speech.isActive && speech.error == nil && (tools.retry == nil || tools.generating || (tools.loading && tools.turns.last?.status == "running")) && tools.error == nil && tools.draftError == nil && !sendingVoice
     }
     private func submit() async {
+        scrollPosition.resumeFollowing()
         focused = false; composerAwake = false
         await send()
     }
@@ -118,14 +268,37 @@ struct ChatConversationView: View {
     private func scroll(_ proxy: ScrollViewProxy, animated: Bool = true) {
         withAnimation(animated && !reduceMotion ? .easeOut(duration: 0.2) : nil) { proxy.scrollTo("chat-bottom", anchor: .bottom) }
     }
+    private var showsLatest: Bool { !scrollPosition.followsLatest && !tools.turns.isEmpty }
+    private func returnToLatest() { scrollPosition.resumeFollowing(); latestRequest = UUID() }
+    private func latestButton(compact: Bool) -> some View {
+        Button(action: returnToLatest) {
+            Group {
+                if compact { Image(systemName: "arrow.down").font(.system(size: 18, weight: .semibold)).frame(width: 44, height: 44) }
+                else { Label("回到最新", systemImage: "arrow.down").font(.subheadline).lineLimit(1).frame(minHeight: 44) }
+            }.contentShape(Rectangle())
+        }.buttonStyle(.plain).foregroundStyle(Color.leafInk)
+            .accessibilityLabel("回到最新").accessibilityHint("返回对话底部，继续跟随回答")
+            .accessibilityIdentifier("chat-latest")
+    }
     private var context: some View {
         HStack(alignment: .top, spacing: 6) {
             DisclosureGroup(isExpanded: $sourceExpanded) {
                 ScrollView {
+                    if shortHeight {
+                        Text([bookTitle, sourceChapter, tools.chatContext?.sourceLabel ?? sourceLabel].filter { !$0.isEmpty }.joined(separator: " · "))
+                            .font(.caption2).foregroundStyle(.secondary).frame(maxWidth: .infinity, alignment: .leading)
+                    }
                     Text(source).font(.subheadline).lineSpacing(5).textSelection(.enabled)
                         .frame(maxWidth: .infinity, alignment: .leading).padding(.top, 8)
                 }.frame(maxHeight: 140)
             } label: {
+                if shortHeight {
+                    HStack(spacing: 6) {
+                        Image(systemName: "text.quote").foregroundStyle(Color.leafInk)
+                        Text(tools.chatContext?.selection?.origin == "translation" ? "译文" : "原文").foregroundStyle(.secondary).fixedSize()
+                        Text(sourceExpanded ? "完整引用" : source).lineLimit(1)
+                    }.font(.caption2).frame(minHeight: 44).contentShape(Rectangle())
+                } else {
                 HStack(alignment: .top, spacing: 8) {
                     Image(systemName: "text.quote").foregroundStyle(Color.leafInk).padding(.top, 2)
                     VStack(alignment: .leading, spacing: 4) {
@@ -136,14 +309,16 @@ struct ChatConversationView: View {
                         }.font(.caption2).foregroundStyle(.secondary)
                     }
                 }
+                }
             }.tint(Color.leafInk)
+                .font(shortHeight ? .caption2 : .body)
             if (canRemoveSource || tools.chatContext?.selection != nil) && !tools.chatQuoteRemoved {
             Button { tools.removeChatSelection(); sourceExpanded = false } label: {
                 Image(systemName: "xmark").font(.caption).frame(width: 44, height: 44).contentShape(Rectangle())
             }.buttonStyle(.plain).foregroundStyle(.secondary).accessibilityLabel("移除本次引用")
                 .accessibilityIdentifier("chat-remove-source").disabled(tools.generating || tools.loading || tools.retry != nil)
             }
-        }.padding(.horizontal, 8).padding(.vertical, 4)
+        }.padding(.horizontal, 8).padding(.vertical, shortHeight ? 0 : 4)
             .overlay(alignment: .leading) { Rectangle().fill(Color.secondary.opacity(0.22)).frame(width: 1).padding(.vertical, 6) }
             .accessibilityElement(children: .contain).accessibilityIdentifier("chat-source-context")
     }
@@ -182,10 +357,11 @@ struct ChatConversationView: View {
                 } label: {
                     HStack(spacing: 8) {
                         Image(systemName: "square.and.pencil").font(.subheadline)
-                        Text("继续问…").font(.subheadline)
+                        Text("继续问…").font(.subheadline).lineLimit(1)
                         Spacer(minLength: 0)
                     }.frame(minHeight: 44).contentShape(Rectangle())
                 }.buttonStyle(.plain).foregroundStyle(.secondary).accessibilityIdentifier("chat-wake-composer")
+                if showsLatest { latestButton(compact: true) }
                 if tools.generating {
                     Button { Task { await tools.cancelConversation(cloud: cloud) } } label: {
                         Image(systemName: "stop.fill").frame(width: 44, height: 44)
@@ -194,53 +370,87 @@ struct ChatConversationView: View {
             }.padding(.horizontal, 24).background(Color(uiColor: .systemBackground))
         } else { expandedComposer }
     }
-    private var expandedComposer: some View {
-        VStack(alignment: .leading, spacing: 6) {
-            if !source.isEmpty && !tools.chatQuoteRemoved && (canRemoveSource || tools.chatContext?.selection != nil) { context }
-            if let reference = tools.pendingMessageReference {
-                HStack(alignment: .top, spacing: 8) {
+    private var hasSourceContext: Bool {
+        !source.isEmpty && !tools.chatQuoteRemoved && (canRemoveSource || tools.chatContext?.selection != nil)
+    }
+    private var canUpdateContext: Bool { tools.canUpdateChatContext && tools.pendingMessageReference == nil }
+    private var attachmentLayout: AnyLayout {
+        shortHeight ? AnyLayout(HStackLayout(alignment: .top, spacing: 8)) : AnyLayout(VStackLayout(alignment: .leading, spacing: 6))
+    }
+    private func pendingReference(_ reference: ReaderMessageReference) -> some View {
+        HStack(alignment: .top, spacing: 8) {
+            Group {
+                if shortHeight {
+                    DisclosureGroup(isExpanded: $referenceExpanded) {
+                        ScrollView {
+                            Text(reference.text).font(.subheadline).textSelection(.enabled)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                        }.frame(maxHeight: 140)
+                    } label: {
+                        Text("回复 " + reference.authorLabel).font(.caption2).lineLimit(1).frame(minHeight: 44).contentShape(Rectangle())
+                    }.font(.caption2)
+                } else {
                     VStack(alignment: .leading, spacing: 3) {
                         Text("回复 " + reference.authorLabel).font(.caption2).foregroundStyle(.secondary)
                         Text(reference.text).font(.subheadline).lineLimit(2)
-                    }.frame(maxWidth: .infinity, alignment: .leading)
-                    Button { tools.pendingMessageReference = nil } label: {
-                        Image(systemName: "xmark").frame(width: 44, height: 44)
-                    }.buttonStyle(.plain).accessibilityLabel("移除消息引用")
-                }.padding(.leading, 10)
-                    .overlay(alignment: .leading) { Rectangle().fill(Color.leafInk.opacity(0.4)).frame(width: 2) }
-                    .accessibilityIdentifier("chat-message-reference")
+                    }
+                }
+            }.frame(maxWidth: .infinity, alignment: .leading)
+            Button { tools.pendingMessageReference = nil; referenceExpanded = false } label: {
+                Image(systemName: "xmark").frame(width: 44, height: 44).contentShape(Rectangle())
+            }.buttonStyle(.plain).accessibilityLabel("移除消息引用")
+        }.padding(.leading, 10)
+            .overlay(alignment: .leading) { Rectangle().fill(Color.leafInk.opacity(0.4)).frame(width: 2) }
+            .accessibilityIdentifier("chat-message-reference")
+    }
+    private var expandedComposer: some View {
+        VStack(alignment: .leading, spacing: shortHeight ? 2 : 6) {
+            if hasSourceContext || tools.pendingMessageReference != nil || tools.pendingVoice != nil || canUpdateContext {
+                attachmentLayout {
+                    if hasSourceContext { context.frame(maxWidth: .infinity, alignment: .leading) }
+                    if let reference = tools.pendingMessageReference { pendingReference(reference).frame(maxWidth: .infinity, alignment: .leading) }
+                    if canUpdateContext {
+                        Button("引用刚才选的文字", systemImage: "text.quote") { tools.updateChatContext(); sourceExpanded = false }
+                            .font(shortHeight ? .caption2 : .caption).lineLimit(1).frame(minHeight: 44)
+                    }
+                    if let voice = tools.pendingVoice {
+                        HStack(spacing: 8) {
+                            Label("语音 · \(max(1, voice.durationMs / 1000)) 秒", systemImage: "waveform")
+                                .font(shortHeight ? .caption2 : .caption).lineLimit(1)
+                            Spacer(minLength: 0)
+                            Button("移除语音", systemImage: "xmark.circle.fill") { tools.pendingVoice = nil }
+                                .labelStyle(.iconOnly).frame(minWidth: 44, minHeight: 44).disabled(tools.generating || sendingVoice)
+                        }.foregroundStyle(.secondary).padding(.horizontal, shortHeight ? 0 : 12)
+                    }
+                }
             }
-            if tools.canUpdateChatContext && tools.pendingMessageReference == nil {
-                Button("引用刚才选的文字", systemImage: "text.quote") { tools.updateChatContext(); sourceExpanded = false }
-                    .font(.caption).frame(minHeight: 44)
-            }
-            if let voice = tools.pendingVoice {
-                HStack(spacing: 8) {
-                    Label("语音 · \(max(1, voice.durationMs / 1000)) 秒", systemImage: "waveform").font(.caption)
-                    Spacer()
-                    Button("移除语音", systemImage: "xmark.circle.fill") { tools.pendingVoice = nil }
-                        .labelStyle(.iconOnly).frame(minWidth: 44, minHeight: 36).disabled(tools.generating || sendingVoice)
-                }.foregroundStyle(.secondary).padding(.horizontal, 12)
-            }
+            if showsLatest && !(shortHeight && focused) { HStack { Spacer(minLength: 0); latestButton(compact: false) } }
             HStack(alignment: .bottom, spacing: 8) {
                 Button {
                     if speech.isActive { tools.question = speech.cancel() }
                     else { focused = false; Task { await speech.start(draft: tools.question) { tools.question = $0 } } }
                 } label: {
                     Image(systemName: speech.isActive ? "xmark" : "mic.fill").font(.system(size: 17, weight: .medium))
-                        .frame(width: 40, height: 44).foregroundStyle(speech.isActive ? Color.red : Color.secondary)
+                        .frame(width: 44, height: 44).contentShape(Rectangle()).foregroundStyle(speech.isActive ? Color.red : Color.secondary)
                 }.buttonStyle(.plain).disabled(localOnly || tools.loading || tools.generating || tools.retry != nil || tools.pendingVoice != nil || sendingVoice)
                     .accessibilityLabel(speech.isActive ? "取消本次录音" : "语音输入").accessibilityIdentifier("chat-microphone")
+                if shortHeight && focused {
+                    Button { focused = false } label: {
+                        Image(systemName: "keyboard.chevron.compact.down").font(.system(size: 18)).frame(width: 44, height: 44).contentShape(Rectangle())
+                    }.buttonStyle(.plain).foregroundStyle(.secondary).accessibilityLabel("收起键盘")
+                        .accessibilityIdentifier("chat-dismiss-keyboard")
+                }
                 TextField(isLibraryConversation ? "和松鼠聊聊…" : "写下此刻的问题", text: $tools.question, axis: .vertical)
-                    .lineLimit(1...6).focused($focused).padding(.vertical, 12)
+                    .lineLimit(composerLines).focused($focused).padding(.vertical, shortHeight ? 0 : 12)
                     .disabled(speech.isActive || sendingVoice)
                     .accessibilityAction(named: Text("收起键盘")) { focused = false }
                     .accessibilityIdentifier("reader-question").layoutPriority(1)
                 Button { Task { if tools.generating { await tools.cancelConversation(cloud: cloud) } else if speech.recording { await captureVoice(sendAfter: true) } else { await submit() } } } label: {
                     Group { if sendingVoice || speech.finishing { ProgressView() } else { Image(systemName: tools.generating ? "stop.fill" : "arrow.up").font(.system(size: tools.generating ? 14 : 17, weight: .semibold)) } }
-                        .frame(width: 40, height: 40)
+                        .frame(width: 44, height: 44)
                         .foregroundStyle(canAsk || speech.recording || tools.generating ? Color.primary : Color.secondary)
                         .background(canAsk || speech.recording || tools.generating ? Color.primary.opacity(0.06) : .clear, in: RoundedRectangle(cornerRadius: 10))
+                        .contentShape(Rectangle())
                 }.buttonStyle(.plain).disabled((!canAsk && !speech.recording && !tools.generating) || speech.preparing || speech.finishing || sendingVoice)
                     .accessibilityLabel(tools.generating ? "停止回答" : speech.recording ? "发送语音和文字" : "发送消息").accessibilityIdentifier("reader-question-send")
             }.padding(.leading, 3).padding(.trailing, 6).padding(.vertical, 4)
@@ -248,7 +458,7 @@ struct ChatConversationView: View {
                 .overlay { RoundedRectangle(cornerRadius: 16).strokeBorder(Color.primary.opacity(0.12), lineWidth: 0.5) }
             if speech.isActive { Text(speech.preparing ? "正在打开麦克风…" : speech.finishing ? "正在整理语音…" : "正在录音 · 点麦克风取消，点箭头发送").font(.caption).foregroundStyle(.secondary).padding(.horizontal, 8) }
             if let error = speech.error { Text(error).font(.caption).foregroundStyle(.secondary).padding(.horizontal, 8) }
-        }.frame(maxWidth: 680).padding(.horizontal, 16).padding(.vertical, 10).frame(maxWidth: .infinity)
+        }.frame(maxWidth: 680).padding(.horizontal, 16).padding(.vertical, shortHeight ? 2 : 10).frame(maxWidth: .infinity)
             .background(Color(uiColor: .systemBackground))
             .background { GeometryReader { geometry in Color.clear.preference(key: CompanionComposerHeightKey.self, value: geometry.size.height) } }
     }

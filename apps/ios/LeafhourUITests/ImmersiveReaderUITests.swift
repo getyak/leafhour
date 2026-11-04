@@ -83,6 +83,70 @@ final class ImmersiveReaderUITests: XCTestCase {
         XCTAssertTrue(question.isHittable)
         capture("removed-excerpt-keeps-captured-paragraph")
     }
+
+    func testLandscapeAccessibleQuotedQuestionKeepsTypingAndReturnReachable() {
+        open(extra: ["-UIPreferredContentSizeCategoryName", "UICTContentSizeCategoryAccessibilityXXXL"])
+        select(); app.buttons["reader-ai"].tap(); require(app.navigationBars["旁注"])
+        XCUIDevice.shared.orientation = .landscapeLeft
+        let rotated = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in self.app.frame.width > self.app.frame.height }, object: nil)
+        XCTAssertEqual(XCTWaiter.wait(for: [rotated], timeout: 10), .completed, "The interface itself must be landscape before this counts as landscape acceptance")
+        let question = app.textFields["reader-question"], send = app.buttons["reader-question-send"]
+        require(question)
+        XCTAssertGreaterThan(question.frame.width, app.frame.width * 0.5, "Short-height chat should use the available landscape width")
+        question.tap(); question.typeText("横屏合成问题")
+        let keyboard = app.keyboards.firstMatch; require(keyboard)
+        XCTAssertTrue(question.isHittable)
+        XCTAssertTrue(send.isHittable)
+        XCTAssertGreaterThanOrEqual(send.frame.height, 44)
+        XCTAssertGreaterThanOrEqual(send.frame.width, 44)
+        XCTAssertLessThanOrEqual(send.frame.maxY, keyboard.frame.minY + 2)
+        let back = app.buttons["reader-chat-return"]; require(back)
+        XCTAssertTrue(back.isHittable)
+        capture("landscape-accessible-quote-keyboard")
+        let reference = app.descendants(matching: .any)["chat-source-context"].firstMatch; require(reference)
+        reference.coordinate(withNormalizedOffset: CGVector(dx: 0.3, dy: 0.3)).tap()
+        let hidden = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in !keyboard.exists }, object: nil)
+        XCTAssertEqual(XCTWaiter.wait(for: [hidden], timeout: 8), .completed)
+        XCTAssertEqual(question.value as? String, "横屏合成问题")
+        capture("landscape-reference-detail-keeps-draft")
+        back.tap(); require(reader)
+        XCTAssertFalse(app.buttons["reader-ai"].exists)
+    }
+
+    func testLandscapeLongQuotedDraftKeepsSendingAndAllText() {
+        open(extra: ["-UIPreferredContentSizeCategoryName", "UICTContentSizeCategoryAccessibilityXXXL"])
+        select(); app.buttons["reader-ai"].tap(); require(app.navigationBars["旁注"])
+        XCUIDevice.shared.orientation = .landscapeLeft
+        let rotated = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in self.app.frame.width > self.app.frame.height }, object: nil)
+        XCTAssertEqual(XCTWaiter.wait(for: [rotated], timeout: 10), .completed)
+        let question = app.textFields["reader-question"], send = app.buttons["reader-question-send"]
+        let draft = (1...8).map { "横屏合成草稿第 \($0) 行，文字必须完整保留。" }.joined(separator: "\n")
+        require(question); question.tap(); question.typeText(draft)
+        let keyboard = app.keyboards.firstMatch; require(keyboard)
+        XCTAssertEqual(question.value as? String, draft)
+        XCTAssertTrue(send.isHittable)
+        XCTAssertGreaterThanOrEqual(send.frame.height, 44)
+        XCTAssertGreaterThanOrEqual(send.frame.width, 44)
+        XCTAssertLessThanOrEqual(send.frame.maxY, keyboard.frame.minY + 2)
+        XCTAssertTrue(app.buttons["chat-remove-source"].isHittable)
+        XCTAssertTrue(app.buttons["reader-chat-return"].isHittable)
+        capture("landscape-long-draft-keyboard")
+        let dismiss = app.buttons["chat-dismiss-keyboard"]; require(dismiss); dismiss.tap()
+        let hidden = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in !keyboard.exists }, object: nil)
+        XCTAssertEqual(XCTWaiter.wait(for: [hidden], timeout: 8), .completed)
+        XCTAssertEqual(question.value as? String, draft)
+        XCTAssertTrue(send.isHittable)
+        XCTAssertTrue(app.buttons["chat-remove-source"].isHittable)
+        capture("landscape-long-draft-retained")
+        XCUIDevice.shared.orientation = .portrait
+        let portrait = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in self.app.frame.height > self.app.frame.width }, object: nil)
+        XCTAssertEqual(XCTWaiter.wait(for: [portrait], timeout: 10), .completed)
+        XCTAssertEqual(question.value as? String, draft)
+        XCTAssertTrue(send.isHittable)
+        let back = app.buttons["reader-chat-return"]; require(back); XCTAssertTrue(back.isHittable)
+        capture("portrait-long-draft-after-rotation")
+        back.tap(); require(reader)
+    }
     func testListeningShowsParagraphComparisonAndCanHideControlsWithoutStoppingAudio() {
         open(title: "GET317 合成验收 · 双译"); wake(); app.buttons["reader-listen"].tap()
         require(app.textViews["reader-listening-comparison"].firstMatch)
