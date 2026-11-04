@@ -17,7 +17,9 @@ final class ReadingLayersAppTests: XCTestCase {
         let library = try OfflineLibrary(root: root.appendingPathComponent("library"), scope: .device)
         var book = try await library.importFile(file)
         book.cloud = CloudBookIdentity(ownerID: "test-owner", bookID: "cloud-book", contentVersion: "v1", sourceFormat: "txt")
-        return ReaderSession(book: book, state: try await library.state(book.id), original: try await library.originalURL(book.id), directory: try await library.bookDirectory(book.id), library: library)
+        var state = try await library.state(book.id)
+        state.translationSettings = BookTranslationSettings(sourceLanguage: .en, targetLanguage: .zh)
+        return ReaderSession(book: book, state: state, original: try await library.originalURL(book.id), directory: try await library.bookDirectory(book.id), library: library)
     }
     func testRemoteWebPReallyDecodesToANativeCoverImage() async throws {
         let configuration = URLSessionConfiguration.ephemeral; configuration.protocolClasses = [CoverDecodeProtocol.self]

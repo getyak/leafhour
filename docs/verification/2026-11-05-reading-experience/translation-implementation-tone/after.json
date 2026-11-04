@@ -1,0 +1,139 @@
+{
+ "meta": {
+  "篇数": 1,
+  "万汉字": 0.17,
+  "段数": 22,
+  "小标题数": 8
+ },
+ "density": {
+  "翻案腔": 0.0,
+  "提示语冒号": 0.0,
+  "起手式": 0.0,
+  "当…时从句": 0.0,
+  "前置话题壳": 0.0,
+  "句首连接词": 0.0,
+  "顿号并列≥3": 8.656,
+  "过长前置定语": 0.0,
+  "拟人化喻体": 0.0,
+  "概括替代(已否决)": 0.0,
+  "序数词小标题(已否决)": 0.0,
+  "「这意味着」复述(已否决)": 0.0,
+  "空转句引列表(已否决)": 1.154
+ },
+ "char_density": {
+  "破折号": 0.0,
+  "分号": 0.0,
+  "引号": 0.0
+ },
+ "hits": {
+  "翻案腔": [],
+  "提示语冒号": [],
+  "起手式": [],
+  "当…时从句": [],
+  "前置话题壳": [],
+  "句首连接词": [],
+  "顿号并列≥3": [
+   {
+    "file": "translation-implementation.md",
+    "line": 7,
+    "excerpt": "拒绝无序、重复、跨章及不连续的可见 ID"
+   },
+   {
+    "file": "translation-implementation.md",
+    "line": 11,
+    "excerpt": "身份、源版本、原件 URL"
+   },
+   {
+    "file": "translation-implementation.md",
+    "line": 11,
+    "excerpt": " POST 保留原 body、request ID、报价和计费凭证"
+   },
+   {
+    "file": "translation-implementation.md",
+    "line": 17,
+    "excerpt": "面板使用原版、译文、对照三个真实缓存文字小样"
+   },
+   {
+    "file": "translation-implementation.md",
+    "line": 37,
+    "excerpt": "ontentRevision、layoutRevision、字体变化或译文触发的重排作为"
+   },
+   {
+    "file": "translation-implementation.md",
+    "line": 39,
+    "excerpt": "离开阅读器、账号变化、后台和叉关闭时调用 `rea"
+   },
+   {
+    "file": "translation-implementation.md",
+    "line": 56,
+    "excerpt": " ReaderSession、OfflineLibrary、项目文件或服务端"
+   },
+   {
+    "file": "translation-implementation.md",
+    "line": 68,
+    "excerpt": "有界窗口与章尾、可见 ID 拒绝、缓存不扩窗"
+   },
+   {
+    "file": "translation-implementation.md",
+    "line": 68,
+    "excerpt": "原文/邻文超限、12 段硬上限、English 默认及旧目标"
+   },
+   {
+    "file": "translation-implementation.md",
+    "line": 68,
+    "excerpt": "保留、自然语言解析、对照顺序与独立译法"
+   },
+   {
+    "file": "translation-implementation.md",
+    "line": 68,
+    "excerpt": "验证未开启不会提交、关闭取消 transport、pending 保留相同 b"
+   },
+   {
+    "file": "translation-implementation.md",
+    "line": 70,
+    "excerpt": "的 native green、入口整合画面、性能与设备结果尚待回填"
+   },
+   {
+    "file": "translation-implementation.md",
+    "line": 70,
+    "excerpt": "合并、线上、TestFlight"
+   },
+   {
+    "file": "translation-implementation.md",
+    "line": 74,
+    "excerpt": "iOS 主线程重排耗时、最大辅助字号、VoiceOver"
+   },
+   {
+    "file": "translation-implementation.md",
+    "line": 74,
+    "excerpt": "横屏、扫描 PDF、复杂语言识别和选文恢复尚未实"
+   }
+  ],
+  "过长前置定语": [],
+  "拟人化喻体": [],
+  "概括替代(已否决)": [],
+  "序数词小标题(已否决)": [],
+  "「这意味着」复述(已否决)": [],
+  "空转句引列表(已否决)": [
+   {
+    "file": "translation-implementation.md",
+    "line": 23,
+    "excerpt": "显式按钮调用："
+   },
+   {
+    "file": "translation-implementation.md",
+    "line": 30,
+    "excerpt": "可见页稳定后调用："
+   }
+  ]
+ },
+ "syn_hits": [],
+ "structure": {
+  "句长CV": 0.504,
+  "节长CV": 0.685,
+  "小标题/千字": 4.616,
+  "两句同构/百段": 0.0,
+  "三句同构/百段": 0.0,
+  "mtld粗估": 1448
+ }
+}

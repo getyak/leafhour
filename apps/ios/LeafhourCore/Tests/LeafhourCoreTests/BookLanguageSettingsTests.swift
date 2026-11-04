@@ -13,9 +13,9 @@ final class BookLanguageSettingsTests: XCTestCase {
         XCTAssertEqual(try JSONDecoder().decode(ReaderPreferences.self, from: JSONEncoder().encode(preferences)).firstLineIndent, .twoCharacters)
     }
 
-    func testLanguageSuggestionsFollowOriginalAndManualSelectionIsIndependent() {
+    func testEnglishDefaultKeepsManualSelectionIndependent() {
         XCTAssertEqual(BookTranslationSettings.suggested(for: .zh).targetLanguage, .en)
-        XCTAssertEqual(BookTranslationSettings.suggested(for: .en).targetLanguage, .zh)
+        XCTAssertEqual(BookTranslationSettings.suggested(for: .en).targetLanguage, .en)
         var value = BookTranslationSettings.suggested(for: .zh)
         value.sourceLanguage = .ja; value.targetLanguage = .fr
         XCTAssertEqual(value.resolvedSource(detected: .zh), .ja)

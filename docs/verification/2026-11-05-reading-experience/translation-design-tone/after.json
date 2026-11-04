@@ -1,0 +1,252 @@
+{
+ "meta": {
+  "篇数": 1,
+  "万汉字": 0.41,
+  "段数": 31,
+  "小标题数": 10
+ },
+ "density": {
+  "翻案腔": 0.0,
+  "提示语冒号": 0.0,
+  "起手式": 0.0,
+  "当…时从句": 0.0,
+  "前置话题壳": 0.0,
+  "句首连接词": 0.0,
+  "顿号并列≥3": 8.694,
+  "过长前置定语": 0.0,
+  "拟人化喻体": 0.0,
+  "概括替代(已否决)": 0.0,
+  "序数词小标题(已否决)": 0.0,
+  "「这意味着」复述(已否决)": 0.0,
+  "空转句引列表(已否决)": 0.241
+ },
+ "char_density": {
+  "破折号": 0.0,
+  "分号": 10.625,
+  "引号": 0.0
+ },
+ "hits": {
+  "翻案腔": [],
+  "提示语冒号": [],
+  "起手式": [],
+  "当…时从句": [],
+  "前置话题壳": [],
+  "句首连接词": [],
+  "顿号并列≥3": [
+   {
+    "file": "translation-design.md",
+    "line": 7,
+    "excerpt": "原版、译文、对照使用三个可点选的小样"
+   },
+   {
+    "file": "translation-design.md",
+    "line": 9,
+    "excerpt": "必须沿 Swift Task、URLSession、HTTP 响应断开"
+   },
+   {
+    "file": "translation-design.md",
+    "line": 11,
+    "excerpt": "保留目标、范围、点数及停止状态"
+   },
+   {
+    "file": "translation-design.md",
+    "line": 20,
+    "excerpt": "rs.swift` | 原版、译文、对照已独立"
+   },
+   {
+    "file": "translation-design.md",
+    "line": 24,
+    "excerpt": "en.swift` | 后台、原版、语言变化会 stop"
+   },
+   {
+    "file": "translation-design.md",
+    "line": 24,
+    "excerpt": "| 新窗口要处理页级位置变化、跳章、离开阅读器和账号切换 |"
+   },
+   {
+    "file": "translation-design.md",
+    "line": 36,
+    "excerpt": "空白提交、多个目标、「随便一种」与未支持语言提示"
+   },
+   {
+    "file": "translation-design.md",
+    "line": 36,
+    "excerpt": "支持范围沿用中文、英文、日文"
+   },
+   {
+    "file": "translation-design.md",
+    "line": 36,
+    "excerpt": "韩文、法文、德文"
+   },
+   {
+    "file": "translation-design.md",
+    "line": 38,
+    "excerpt": "目标下方为原版、译文、对照三个真实文字小样"
+   },
+   {
+    "file": "translation-design.md",
+    "line": 44,
+    "excerpt": "正在核对范围、正在翻译当前段、当前范围已准备"
+   },
+   {
+    "file": "translation-design.md",
+    "line": 44,
+    "excerpt": "正在停止、已停止、停止结果待核对"
+   },
+   {
+    "file": "translation-design.md",
+    "line": 50,
+    "excerpt": "输入为 owner、book、contentVersion"
+   },
+   {
+    "file": "translation-design.md",
+    "line": 50,
+    "excerpt": "图片、标题、空白及没有可核对文本的扫描页"
+   },
+   {
+    "file": "translation-design.md",
+    "line": 54,
+    "excerpt": "交一段前重新核对当前可见窗口、身份、版本"
+   },
+   {
+    "file": "translation-design.md",
+    "line": 56,
+    "excerpt": "跳章、关闭、离开阅读器"
+   },
+   {
+    "file": "translation-design.md",
+    "line": 56,
+    "excerpt": "后台、账号变化、源版本变化及目标语言修改使当"
+   },
+   {
+    "file": "translation-design.md",
+    "line": 64,
+    "excerpt": "ranslate` 在入队前、reserve 后、供应商返回后以及最终保存前调"
+   },
+   {
+    "file": "translation-design.md",
+    "line": 66,
+    "excerpt": "mpleted.append、persist、cache"
+   },
+   {
+    "file": "translation-design.md",
+    "line": 66,
+    "excerpt": "sk.isCancelled、身份、版本和目标"
+   },
+   {
+    "file": "translation-design.md",
+    "line": 74,
+    "excerpt": "back 后还有 mkdir、writeFile、rename"
+   },
+   {
+    "file": "translation-design.md",
+    "line": 76,
+    "excerpt": "段先把 request ID、报价、body"
+   },
+   {
+    "file": "translation-design.md",
+    "line": 76,
+    "excerpt": "认证失败、429、超时和连接中断均不能证明未生"
+   },
+   {
+    "file": "translation-design.md",
+    "line": 85,
+    "excerpt": "存档缺字段有默认 | R11、R14、R15 |"
+   },
+   {
+    "file": "translation-design.md",
+    "line": 86,
+    "excerpt": "swift` | 单目标输入、三模板、显式开启/停止"
+   },
+   {
+    "file": "translation-design.md",
+    "line": 87,
+    "excerpt": "wift` | 一个在途请求、可见页驱动、generation"
+   },
+   {
+    "file": "translation-design.md",
+    "line": 88,
+    "excerpt": ".swift` | 取消映射、原请求恢复、迟到回执检查"
+   },
+   {
+    "file": "translation-design.md",
+    "line": 96,
+    "excerpt": "- 关闭、跳章、退后台和账号变化会取消在途 "
+   },
+   {
+    "file": "translation-design.md",
+    "line": 98,
+    "excerpt": "- 在供应商返回前、授权检查后、存储等待中及账本结算阶段分别"
+   },
+   {
+    "file": "translation-design.md",
+    "line": 99,
+    "excerpt": "- 请求返回前断网、已保存后丢响应、取消回执丢失"
+   },
+   {
+    "file": "translation-design.md",
+    "line": 103,
+    "excerpt": "375/390/430 点宽、横屏、最大辅助字号"
+   },
+   {
+    "file": "translation-design.md",
+    "line": 103,
+    "excerpt": "正文测试至少覆盖 TXT、Markdown、可提取 PDF 与扫描 PD"
+   },
+   {
+    "file": "translation-design.md",
+    "line": 117,
+    "excerpt": "实施审阅时按功能30、交互25、性能25"
+   },
+   {
+    "file": "translation-design.md",
+    "line": 117,
+    "excerpt": "并记录测试命令、结果、截图与耗时"
+   },
+   {
+    "file": "translation-design.md",
+    "line": 117,
+    "excerpt": "取消只挡UI、持续无界生成、译文错配或读取越权属于阻断"
+   },
+   {
+    "file": "translation-design.md",
+    "line": 119,
+    "excerpt": "商对 abort 的网络行为、保存提交点竞态、本地与 hosted 写入的"
+   }
+  ],
+  "过长前置定语": [],
+  "拟人化喻体": [],
+  "概括替代(已否决)": [],
+  "序数词小标题(已否决)": [],
+  "「这意味着」复述(已否决)": [],
+  "空转句引列表(已否决)": [
+   {
+    "file": "translation-design.md",
+    "line": 93,
+    "excerpt": "需要的测试按行为组织："
+   }
+  ]
+ },
+ "syn_hits": [
+  {
+   "file": "translation-design.md",
+   "line": 7,
+   "excerpt": "使用／采用",
+   "context": "采用一个显式「随读翻译」开关，范围固定为当前可见页及紧邻的两段。已有译文直接使用。窗口完成后等待真实阅读位置变化，不因任务完成自行向后推进。"
+  },
+  {
+   "file": "translation-design.md",
+   "line": 40,
+   "excerpt": "使用／采用",
+   "context": "对照展开「原文在前／译文在前」两种小样。再提供原文相对字号、原文颜色强调程度及段间距。它们使用同一份 preferences 驱动预览和实际"
+  }
+ ],
+ "structure": {
+  "句长CV": 0.481,
+  "节长CV": 0.632,
+  "小标题/千字": 2.415,
+  "两句同构/百段": 12.9,
+  "三句同构/百段": 0.0,
+  "mtld粗估": 1572
+ }
+}
