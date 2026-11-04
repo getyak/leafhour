@@ -291,10 +291,10 @@ final class LibraryRecordsTests: XCTestCase {
         XCTAssertEqual(model.summaryState, .idle)
     }
 
-    private func journalMonth() -> CloudJSON {
-        var calendar = Calendar(identifier: .gregorian); calendar.timeZone = .current
-        let days = ReadingJournal.monthDays(Date(), calendar: calendar).map { date in CloudJSON.object(["date": .string(ReadingJournal.dayKey(date, calendar: calendar)), "durationSeconds": .number(120), "books": .array([])]) }
-        return .object(["month": .string(ReadingJournal.monthKey(Date(), calendar: calendar)), "timeZone": .string(calendar.timeZone.identifier), "days": .array(days)])
+    private func journalMonth(date: Date = Date(), zone: TimeZone = .current, seconds: Double = 120) -> CloudJSON {
+        var calendar = Calendar(identifier: .gregorian); calendar.timeZone = zone
+        let days = ReadingJournal.monthDays(date, calendar: calendar).map { date in CloudJSON.object(["date": .string(ReadingJournal.dayKey(date, calendar: calendar)), "durationSeconds": .number(seconds), "books": .array([])]) }
+        return .object(["month": .string(ReadingJournal.monthKey(date, calendar: calendar)), "timeZone": .string(calendar.timeZone.identifier), "days": .array(days)])
     }
     func testJournalRejectsAnIncompleteMonthInsteadOfShowingZero() async throws {
         let (model, probe) = try fixture(); probe.summary = summary(120)
@@ -310,7 +310,7 @@ final class LibraryRecordsTests: XCTestCase {
         XCTAssertEqual(journal.state, .ready)
         XCTAssertEqual(journal.seconds(on: Date(), scope: .account), 120)
         probe.summaryStatus = 503
-        await journal.load(model, scope: .account, month: Date(), recent: false)
+        await journal.load(model, scope: .account, month: Date(), recent: false, refresh: true)
         XCTAssertEqual(journal.seconds(on: Date(), scope: .account), 120)
         guard case .cached = journal.state else { return XCTFail("A failed refresh must identify retained data") }
         let reopened = ReadingJournalModel()
@@ -345,6 +345,97 @@ final class LibraryRecordsTests: XCTestCase {
         XCTAssertEqual(model.notebookEntries.compactMap { $0["book"]["bookId"].string }, ["first", "later"])
         XCTAssertEqual(model.notebookCursor, "third-page")
     }
+    func testJournalWarmReadsSkipNetworkUntilThirtySecondsAndExplicitRefreshBypassesIt() async throws {
+        let (model, probe) = try fixture()
+        var now = Date(); let journal = ReadingJournalModel(now: { now })
+        probe.summary = journalMonth()
+        await journal.load(model, scope: .account, month: now, recent: false)
+        let started = ContinuousClock.now
+        for _ in 0..<25 { await journal.load(model, scope: .account, month: now, recent: false) }
+        print("Journal warm cache: 25 loads in \(started.duration(to: .now))")
+        XCTAssertEqual(probe.summaryRequests, 1)
+        XCTAssertEqual(probe.notebookRequests, 0, "Time reads must not request unrelated notebook pages")
+        now = now.addingTimeInterval(29)
+        await journal.load(model, scope: .account, month: now, recent: false)
+        XCTAssertEqual(probe.summaryRequests, 1)
+        now = now.addingTimeInterval(1)
+        await journal.load(model, scope: .account, month: now, recent: false)
+        XCTAssertEqual(probe.summaryRequests, 2)
+        await journal.load(model, scope: .account, month: now, recent: false, refresh: true)
+        XCTAssertEqual(probe.summaryRequests, 3)
+    }
+
+    func testJournalPublishesDiskCacheBeforeSlowNetworkCompletesAndCoalescesDuplicateRead() async throws {
+        let (model, probe) = try fixture(); probe.summary = journalMonth()
+        let library = try XCTUnwrap(model.library), value = journalMonth()
+        let key = TimeZone.current.identifier + ":" + ReadingJournal.monthKey(Date())
+        try await library.cacheCloudView("journal", data: JSONEncoder().encode(CloudJSON.object([key: value])))
+        let journal = ReadingJournalModel(), started = expectation(description: "uncached network read is held")
+        probe.blockSummary(started)
+        let beginning = ContinuousClock.now
+        let first = Task { await journal.load(model, scope: .account, month: Date(), recent: false) }
+        await fulfillment(of: [started], timeout: 5)
+        print("Journal disk cache visible before held response after \(beginning.duration(to: .now))")
+        XCTAssertEqual(journal.seconds(on: Date(), scope: .account), 120)
+        XCTAssertEqual(journal.state, .ready, "A cached overview must not retain loading chrome while refreshing")
+        let duplicate = Task { await journal.load(model, scope: .account, month: Date(), recent: false) }
+        await Task.yield()
+        XCTAssertEqual(probe.summaryRequests, 1)
+        probe.releaseSummary(); await first.value; await duplicate.value
+        XCTAssertEqual(probe.summaryRequests, 1)
+    }
+
+    func testHeldJournalResponseCannotPublishAfterSwitchingToDeviceScope() async throws {
+        let (model, probe) = try fixture(); probe.summary = journalMonth()
+        let journal = ReadingJournalModel(), started = expectation(description: "old account month captured")
+        probe.blockSummary(started)
+        let old = Task { await journal.load(model, scope: .account, month: Date(), recent: false) }
+        await fulfillment(of: [started], timeout: 5)
+        await model.signOut()
+        await journal.load(model, scope: .device, month: Date(), recent: false)
+        probe.releaseSummary(); await old.value
+        XCTAssertTrue(journal.months.isEmpty, "A late old-account month cannot enter the device journal")
+        XCTAssertEqual(journal.seconds(on: Date(), scope: .device), 0)
+        XCTAssertNil(journal.seconds(on: Date(), scope: .account))
+    }
+
+    func testJournalRequestsBothMonthsConcurrentlyForACrossMonthWeek() async throws {
+        let (model, probe) = try fixture()
+        let zone = TimeZone(secondsFromGMT: 0)!, date = ISO8601DateFormatter().date(from: "2026-11-02T12:00:00Z")!
+        let previous = date.addingTimeInterval(-7 * 86400)
+        probe.monthSummaries = ["2026-11": journalMonth(date: date, zone: zone), "2026-10": journalMonth(date: previous, zone: zone)]
+        let journal = ReadingJournalModel(now: { date }, timeZone: { zone })
+        let started = expectation(description: "both months start before either completes"); started.expectedFulfillmentCount = 2
+        probe.blockSummary(started, count: 2)
+        let pending = Task { await journal.load(model, scope: .account, month: date, recent: true) }
+        await fulfillment(of: [started], timeout: 5)
+        XCTAssertEqual(probe.summaryRequests, 2)
+        probe.releaseSummary(); await pending.value
+        XCTAssertEqual(journal.months.count, 2)
+        XCTAssertTrue(ReadingJournal.lastSevenDays(ending: date, calendar: journal.calendar).allSatisfy { journal.seconds(on: $0, scope: .account) == 120 })
+    }
+
+    func testJournalInvalidatesFreshnessForDayTimezoneAndCompletedShelfSynchronization() async throws {
+        let (model, probe) = try fixture()
+        var date = ISO8601DateFormatter().date(from: "2026-11-02T23:59:55Z")!, zone = TimeZone(secondsFromGMT: 0)!
+        probe.summary = journalMonth(date: date, zone: zone)
+        let journal = ReadingJournalModel(now: { date }, timeZone: { zone })
+        await journal.load(model, scope: .account, month: date, recent: false)
+        date = date.addingTimeInterval(10)
+        await journal.load(model, scope: .account, month: date, recent: false)
+        XCTAssertEqual(probe.summaryRequests, 2, "Crossing midnight invalidates a still-young snapshot")
+        zone = TimeZone(secondsFromGMT: 8 * 3600)!
+        probe.summary = journalMonth(date: date, zone: zone)
+        await journal.load(model, scope: .account, month: date, recent: false)
+        XCTAssertEqual(probe.summaryRequests, 3)
+        XCTAssertEqual(journal.calendar.timeZone, zone)
+        let revision = model.readingJournalRevision
+        await model.synchronize(force: true)
+        XCTAssertGreaterThan(model.readingJournalRevision, revision)
+        await journal.load(model, scope: .account, month: date, recent: false)
+        XCTAssertEqual(probe.summaryRequests, 4, "Synced reading checkpoints invalidate the warm overview")
+    }
+
     func testCancelledSourceOpenDoesNotPublishAReader() async throws {
         let (model, _) = try fixture()
         let source = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString + ".txt")
@@ -394,6 +485,7 @@ private final class RecordsProbe: @unchecked Sendable {
     var restoreSignedOut = false
     var workspace: CloudJSON = .object(["relations": .array([]), "candidates": .array([])])
     var notebook: CloudJSON = .object(["entries": .array([]), "nextCursor": .null])
+    var monthSummaries: [String: CloudJSON] = [:]
     var summary: CloudJSON = .object(["allTime": .object(["durationSeconds": .number(0)]), "books": .array([])])
     private let lock = NSLock()
     private var captured: [String] = []
@@ -402,14 +494,17 @@ private final class RecordsProbe: @unchecked Sendable {
     private var heldChapters: [() -> Void] = []
     private var summaryBlocked = false
     private var summaryStarted: XCTestExpectation?
+    private var summaryStartsRemaining = 0
     private var heldSummaries: [() -> Void] = []
-    func blockSummary(_ started: XCTestExpectation) { lock.lock(); summaryBlocked = true; summaryStarted = started; lock.unlock() }
+    func blockSummary(_ started: XCTestExpectation, count: Int = 1) { lock.lock(); summaryBlocked = true; summaryStarted = started; summaryStartsRemaining = count; lock.unlock() }
     func blockChapters(_ started: XCTestExpectation) { lock.lock(); chaptersBlocked = true; chapterStarted = started; lock.unlock() }
     func holdIfBlocked(_ request: URLRequest, deliver: @escaping () -> Void) -> Bool {
         lock.lock()
         if summaryBlocked, request.url!.path == "/api/library/reading-summary" {
             heldSummaries.append(deliver)
-            let started = summaryStarted; summaryStarted = nil
+            let started = summaryStartsRemaining > 0 ? summaryStarted : nil
+            summaryStartsRemaining = max(0, summaryStartsRemaining - 1)
+            if summaryStartsRemaining == 0 { summaryStarted = nil }
             lock.unlock(); started?.fulfill(); return true
         }
         guard chaptersBlocked, request.url!.path.contains("/chapters/") else { lock.unlock(); return false }
@@ -444,7 +539,11 @@ private final class RecordsProbe: @unchecked Sendable {
         if path.hasSuffix("/records") { return (200, .object(["bookId": .string("slow-remote"), "contentVersion": .string("v1"), "comments": .array([]), "questions": .array([])])) }
         if path == "/api/library/notebook" { return (notebookStatus, notebookStatus == 200 ? notebook : .object(["error": .string("Notebook unavailable")])) }
         if path == "/api/library/notebook-workspace" { return (workspaceStatus, workspaceStatus == 200 ? workspace : .object(["error": .string("Workspace unavailable")])) }
-        if path == "/api/library/reading-summary" { return (summaryStatus, summaryStatus == 200 ? summary : .object(["error": .string("Summary unavailable")])) }
+        if path == "/api/library/reading-summary" {
+            let month = URLComponents(url: request.url!, resolvingAgainstBaseURL: false)?.queryItems?.first { $0.name == "month" }?.value
+            let payload = month.flatMap { monthSummaries[$0] } ?? summary
+            return (summaryStatus, summaryStatus == 200 ? payload : .object(["error": .string("Summary unavailable")]))
+        }
         if path == "/api/auth/session" { return (200, .object(["user": restoreSignedOut || request.value(forHTTPHeaderField: "Cookie") == nil ? .null : .object(["id": .string(owner)])])) }
         if path == "/api/library" { return (200, .object(["user": .object(["id": .string(owner)]), "books": .array([])])) }
         return (200, .object([:]))

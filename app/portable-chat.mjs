@@ -1,3 +1,4 @@
+import {normalizeChatReactionTargets,normalizeResolvedChatReactions} from './chat-reactions.mjs';
 import {validateHistoricalReadingChatQuote} from './reading-chat-quote.mjs';
 const fail=(message,status=400)=>{throw Object.assign(Error(message),{status});};
 const id=v=>typeof v==='string'&&/^[A-Za-z0-9][A-Za-z0-9_-]{0,127}$/.test(v);
@@ -74,9 +75,14 @@ export function portableChatTurns(chat,book,books=[book]){
    });
    if(companion&&new TextEncoder().encode(JSON.stringify(a)).length>96000)fail('备份 AI 回答超过容量限制');answer={kind:a.kind,summary:a.summary,origin:'ai',sourceRefs:refs,recommendations:recommendations(a.recommendations,sources),...(a.personSources!==undefined?{personSources:personCitations(a.personSources)}:{})};
   }else if(t.answer!==null&&t.answer!==undefined)fail('未完成对话不能携带回答');
-  return {id:t.id,passageId:t.passageId,contentVersion:t.contentVersion,...(t.scopeRevision!==undefined?{scopeRevision:t.scopeRevision}:{}),text:companion?null:t.text,...(t.voice!==undefined?{voice:normalizeChatVoiceReceipt(t.voice)}:{}),...(quote?{quote}:{}),...(t.replyTo!==undefined?{replyTo:normalizeChatReplyReference(t.replyTo)}:{}),origin:companion?'ai':'user',...(companion?{kind:'companion'}:{}),createdAt:t.createdAt,status:t.status==='running'?'failed':t.status,answer,activity:[],...(t.status==='running'?{error:'导入前的回答已中断，未恢复生成。'}:t.error?{error:String(t.error).slice(0,2000)}:{})};
+  return {...(t.reactions!==undefined?{reactions:normalizeResolvedChatReactions(t.reactions),reactionTargets:normalizeChatReactionTargets(t.reactionTargets)}:{}),id:t.id,passageId:t.passageId,contentVersion:t.contentVersion,...(t.scopeRevision!==undefined?{scopeRevision:t.scopeRevision}:{}),text:companion?null:t.text,...(t.voice!==undefined?{voice:normalizeChatVoiceReceipt(t.voice)}:{}),...(quote?{quote}:{}),...(t.replyTo!==undefined?{replyTo:normalizeChatReplyReference(t.replyTo)}:{}),origin:companion?'ai':'user',...(companion?{kind:'companion'}:{}),createdAt:t.createdAt,status:t.status==='running'?'failed':t.status,answer,activity:[],...(t.status==='running'?{error:'导入前的回答已中断，未恢复生成。'}:t.error?{error:String(t.error).slice(0,2000)}:{})};
  });
  const byId=new Map(turns.map(t=>[t.id,t]));
+ for(const turn of turns)if(turn.reactions){
+  const targets=turn.reactions.map(({turnId,role,emoji})=>({turnId,role,emoji}));
+  if(!valueEqual(targets,turn.reactionTargets))fail('备份消息表情归属不一致');
+  for(const ref of turn.reactions){const source=byId.get(ref.turnId),content=ref.role==='user'&&source?.kind!=='companion'?source?.text:ref.role==='assistant'&&source?.status==='completed'?source.answer?.summary:null;if(source===turn||source?.contentVersion!==turn.contentVersion||content!==ref.text)fail('备份消息表情无法对应原对话');}
+ }
  for(const turn of turns)if(turn.replyTo){
   const ref=turn.replyTo,source=byId.get(ref.turnId),content=ref.role==='user'&&source?.kind!=='companion'?source?.text:ref.role==='assistant'&&source?.status==='completed'?source.answer?.summary:null;
   if(turn.kind==='companion'||source===turn||source?.contentVersion!==turn.contentVersion||content!==ref.text)fail('备份引用消息无法对应原对话');

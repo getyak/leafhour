@@ -82,12 +82,16 @@ struct LeafhourRootScreen: View {
     @Bindable var model: LibraryModel
     @Environment(\.colorScheme) private var systemColorScheme
     @State private var tab = 0
+    @State private var navigationDepth = [false, false, false]
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     var body: some View {
-        TabView(selection: $tab) {
-            LibraryScreen(model: model).tag(0).tabItem { Label("书房", systemImage: "books.vertical") }
-            GlobalChatScreen(model: model).id(model.importAccountContext).tag(1).tabItem { Label("松鼠", systemImage: "leaf") }
-            MyReadingScreen(model: model).id(model.importAccountContext).tag(2).tabItem { Label("我的阅读", systemImage: "book") }
-        }.onOpenURL { url in tab = 0; model.receiveIncomingURL(url) }
+        RootTabPager(selection: $tab, pages: [
+            AnyView(LibraryScreen(model: model).environment(\.rootNavigationDepthChanged, { navigationDepth[0] = $0 })),
+            AnyView(GlobalChatScreen(model: model).id(model.importAccountContext)),
+            AnyView(MyReadingScreen(model: model).id(model.importAccountContext).environment(\.rootNavigationDepthChanged, { navigationDepth[2] = $0 }))
+        ], canSwipe: !navigationDepth[tab], reduceMotion: reduceMotion)
+        .ignoresSafeArea()
+        .onOpenURL { url in tab = 0; model.receiveIncomingURL(url) }
             .fullScreenCover(item: $model.reader, onDismiss: { Task { await model.reload(); await model.synchronize() } }) { session in
                 ReaderScreen(session: session, systemColorScheme: systemColorScheme, cloud: model.account == nil ? nil : model.cloud, library: model.library, positionConflict: model.syncIssues[session.book.id]?.positionConflict == true, resolvePosition: { useDevice in Task { await model.resolveActivePosition(useDevice: useDevice) } }, conversationTools: model.conversationTools(bookID: session.book.cloud?.bookID ?? session.book.id))
             }

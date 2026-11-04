@@ -4,6 +4,7 @@ import LeafhourCore
 
 struct LibraryScreen: View {
     @Bindable var model: LibraryModel
+    @Environment(\.rootNavigationDepthChanged) private var rootNavigationDepthChanged
     @Environment(\.colorScheme) private var systemColorScheme
     @Environment(\.scenePhase) private var scenePhase
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
@@ -73,6 +74,8 @@ struct LibraryScreen: View {
         NavigationStack(path: $path) {
             shelfScaffold
             .task { await model.loadCachedShelf(); didLoad = true; await model.reload(); await model.synchronize(); await migrateCloudPinsIfNeeded() }
+            .onChange(of: path.isEmpty) { _, empty in rootNavigationDepthChanged(!empty) }
+            .onAppear { rootNavigationDepthChanged(!path.isEmpty) }
             .task(id: resumeLookupKey) { await loadResume() }
             .refreshable { await model.synchronize(force: true); await model.reload() }
             .onChange(of: scenePhase) { _, phase in if phase == .active { Task { await model.synchronize() } } }
@@ -120,6 +123,7 @@ struct LibraryScreen: View {
             }
         }
         .background(Color.shelfPaper)
+        .scrollBounceBehavior(.always, axes: .vertical)
         .navigationDestination(for: String.self) { id in
             if let book = model.books.first(where: { $0.id == id }) { BookDetailScreen(book: book, model: model) }
             else { ContentUnavailableView("书籍暂不可用", systemImage: "book.closed") }
@@ -128,8 +132,10 @@ struct LibraryScreen: View {
         .navigationBarTitleDisplayMode(.large)
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
-                Button(model.account == nil ? "登录书房" : "我的账号", systemImage: model.account == nil ? "person.crop.circle" : "person.crop.circle.fill") { info = true }
-                    .labelStyle(.iconOnly)
+                Button { info = true } label: {
+                    ProfileAvatarView(owner: model.account?.id ?? "device").frame(width: 44, height: 44)
+                }.buttonStyle(.plain).accessibilityLabel(model.account == nil ? "登录书房" : "我的账号")
+                    .accessibilityIdentifier("library-avatar")
             }
             ToolbarItemGroup(placement: .topBarTrailing) {
                 Button("搜索书房", systemImage: "magnifyingglass") { searching.toggle(); searchFocused = searching }

@@ -74,9 +74,11 @@ final class LibraryModel {
     var syncing = false
     var syncStatus = ""
     var account: CloudAccount?
+    private(set) var readingJournalRevision: UInt = 0
     var reader: ReaderSession? {
         didSet {
             guard oldValue !== reader else { return }
+            if oldValue != nil && reader == nil { readingJournalRevision &+= 1 }
             openingMaintenance?.cancel()
             if let owner = readerOwnership, owner.bookID == oldValue?.book.id {
                 readerOwnership = nil
@@ -326,6 +328,7 @@ final class LibraryModel {
             try await library.cacheCloudView("shelf", data: refreshed.cacheData())
             syncStatus = errors.first ?? accountActions.first?.error ?? syncIssues.values.compactMap(\.lastError).first ?? (accountActions.isEmpty ? "书房已同步" : "书架调整待同步")
             lastSuccessfulSync = (account.id, Date())
+            readingJournalRevision &+= 1
             if reader == nil { await loadCachedShelf() }
         } catch { if marker == contextID { syncStatus = "暂未同步：\(error.localizedDescription) 本机书籍与更改仍保留。" } }
         if marker == contextID, summaryRequested || summary != .null || summaryState.hasSnapshot {

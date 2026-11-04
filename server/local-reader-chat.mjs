@@ -1,3 +1,4 @@
+import {normalizeChatReactionTargets,resolveChatReactions} from '../app/chat-reactions.mjs';
 import {randomUUID,createHash} from 'node:crypto';
 import path from 'node:path';
 import {setTimeout as delay} from 'node:timers/promises';
@@ -20,7 +21,7 @@ const bytes=value=>Buffer.byteLength(JSON.stringify(value));
 
 // This envelope identifies a device snapshot, never a cloud book or grant.
 export function normalizeLocalChatInput(input){
- if(!only(input,['id','text','contentVersion','passageId','localBook','history','quote','replyTo','voice','billing'])||!id(input.id)||!str(input.text)||!str(input.contentVersion,200)||!id(input.passageId))throw invalid('请提交有效的本机阅读消息');
+ if(!only(input,['id','text','contentVersion','passageId','localBook','history','quote','replyTo','reactions','voice','billing'])||!id(input.id)||!str(input.text)||!str(input.contentVersion,200)||!id(input.passageId))throw invalid('请提交有效的本机阅读消息');
  const book=input.localBook;
  if(!only(book,['bookId','title','author','contentVersion','chapterId','chapterTitle','passageId','original'])||!id(book.bookId)||book.bookId===LOCAL_CHAT_ID||!title(book.title)||book.author!==undefined&&typeof book.author!=='string'||book.author?.length>1000||!str(book.contentVersion,200)||!id(book.chapterId)||book.chapterTitle!==undefined&&!title(book.chapterTitle)||!id(book.passageId)||typeof book.original!=='string'||!book.original.isWellFormed()||book.original.length>24000)throw invalid('本机书籍上下文不正确');
  if(book.contentVersion!==input.contentVersion||book.passageId!==input.passageId)throw invalid('本机原文版本或位置不一致',409);
@@ -28,7 +29,7 @@ export function normalizeLocalChatInput(input){
  const quote=input.quote===undefined?undefined:normalizeReadingChatQuote(input.quote,{bounded:false});
  if(quote&&(quote.bookId!==book.bookId||quote.contentVersion!==book.contentVersion||quote.chapterId!==book.chapterId||quote.parts[0].passageId!==input.passageId))throw invalid('所选本机文字与当前版本不一致',409);
  const {billing,...body}=input;
- return structuredClone({...body,...(quote?{quote}:{}),...(input.replyTo!==undefined?{replyTo:normalizeChatReplyTarget(input.replyTo)}:{}),...(body.voice!==undefined?{voice:normalizeChatVoiceReceipt(body.voice)}:{})});
+ return structuredClone({...body,...(input.reactions!==undefined?{reactions:normalizeChatReactionTargets(input.reactions)}:{}),...(quote?{quote}:{}),...(input.replyTo!==undefined?{replyTo:normalizeChatReplyTarget(input.replyTo)}:{}),...(body.voice!==undefined?{voice:normalizeChatVoiceReceipt(body.voice)}:{})});
 }
 
 export function createLocalReaderChatService({read,mutate,ownerDir,identity,generator,clock=Date.now,timeoutMs,onError=()=>{},validateVoice=null}){
@@ -110,7 +111,8 @@ export function createLocalReaderChatService({read,mutate,ownerDir,identity,gene
    if(closed||typeof generator!=='function')throw invalid('阅读对话服务尚未配置',503);
    let voice;if(input.voice!==undefined){if(typeof validateVoice!=='function')throw invalid('语音服务尚未配置',503);voice=await validateVoice(user,input.voice);}
    let replyTo;if(input.replyTo){const source=await read(key(user,input.replyTo.turnId),empty());if(source.turn&&source.turn.localBook?.bookId!==input.localBook.bookId)throw invalid('所引用消息属于其他本机书籍，请重新选择',409);replyTo=resolveChatReplyReference(input.replyTo,source.turn,input.contentVersion);}
-   row.turn={id:input.id,text:input.text,contentVersion:input.contentVersion,passageId:input.passageId,requestHash:inputHash,...(voice?{voice}:{}),localBook:{...input.localBook,source:'local-device'},...(input.quote?{quote:input.quote}:{}),...(replyTo?{replyTo}:{}),history:input.history||[],inputHash,runId,expiresAt:now+timeoutMs,origin:'user',createdAt:new Date(now).toISOString(),status:'running',answer:null,activity:[]};return {created:true,voice,replyTo};
+   const reactions=input.reactions?.length?await resolveChatReactions(input.reactions,async id=>{const source=await read(key(user,id),empty());if(source.turn?.localBook?.bookId!==input.localBook.bookId)return null;return source.turn;},input.contentVersion):undefined;
+   row.turn={...(reactions?.length?{reactions,reactionTargets:input.reactions}:{}),id:input.id,text:input.text,contentVersion:input.contentVersion,passageId:input.passageId,requestHash:inputHash,...(voice?{voice}:{}),localBook:{...input.localBook,source:'local-device'},...(input.quote?{quote:input.quote}:{}),...(replyTo?{replyTo}:{}),history:input.history||[],inputHash,runId,expiresAt:now+timeoutMs,origin:'user',createdAt:new Date(now).toISOString(),status:'running',answer:null,activity:[]};return {created:true,voice,replyTo,reactions};
   });
   if(!claimed.created)return claimed.turn;
   const controller=new AbortController(),run={user,id:input.id,controller};active.set(runId,run);
@@ -122,7 +124,7 @@ export function createLocalReaderChatService({read,mutate,ownerDir,identity,gene
    const tools=toolsFor(user,input,runId,controller.signal,onToolRequest),book=input.localBook;
    const aborted=new Promise((_,reject)=>controller.signal.addEventListener('abort',()=>reject(invalid('本机回答已取消或超时',408)),{once:true}));
    const progress=async value=>{if(!controller.signal.aborted&&Number.isSafeInteger(value?.sequence)&&value.sequence>sequence&&typeof value.text==='string'&&value.text.isWellFormed()){sequence=value.sequence;await onProgress?.({type:'progress',id:input.id,sequence,text:value.text});}};
-   const candidate=await Promise.race([Promise.resolve().then(()=>generator({kind:'conversation',book:{bookId:book.bookId,title:book.title,contentVersion:book.contentVersion,source:'local-device'},passageId:book.passageId,chapterId:book.chapterId,chapterTitle:book.chapterTitle,text:input.text,...(input.quote?{quote:input.quote}:{}),...(claimed.voice?{voice:claimed.voice}:{}),...(claimed.replyTo?{replyTo:claimed.replyTo}:{}),history:input.history||[],requestId:input.id,runId,signal:controller.signal,tools,onProgress:progress})),aborted]);
+   const candidate=await Promise.race([Promise.resolve().then(()=>generator({kind:'conversation',book:{bookId:book.bookId,title:book.title,contentVersion:book.contentVersion,source:'local-device'},passageId:book.passageId,chapterId:book.chapterId,chapterTitle:book.chapterTitle,text:input.text,...(claimed.reactions?.length?{reactions:claimed.reactions}:{}),...(input.quote?{quote:input.quote}:{}),...(claimed.voice?{voice:claimed.voice}:{}),...(claimed.replyTo?{replyTo:claimed.replyTo}:{}),history:input.history||[],requestId:input.id,runId,signal:controller.signal,tools,onProgress:progress})),aborted]);
    if(candidate?.kind!=='conversation'||!str(candidate.summary))throw invalid('回答内容无效');await tools.verify();
    const sourceRefs=tools.sources();if(bytes(sourceRefs)>32000)throw invalid('回答引用过长');
    return await finish({status:'completed',answer:{kind:'conversation',summary:candidate.summary,sourceRefs,recommendations:[],origin:'ai'}});

@@ -430,3 +430,18 @@ test('message replies resolve archived receipts and restored references remain i
  const exported=await f.service.exportHistory(alice,'chat-book');await f.seed(bob);assert.equal((await f.service.restoreHistory(bob,f.book,exported,[f.book])).restored,102);assert.equal((await f.service.restoreHistory(bob,f.book,exported,[f.book])).restored,0);
  const restoredReply=await f.service.send(bob,'chat-book',request);assert.deepEqual(restoredReply.replyTo,reply.replyTo);
 });
+
+test('message reactions resolve from this owner and conversation, survive retry/export and reach the next explicit send',async t=>{
+ const jobs=[],f=await fixture(t,{generator:async job=>{jobs.push(job);return validAnswer();}});
+ await f.service.send(alice,'chat-book',input({id:'react-source'}));
+ const reaction={turnId:'react-source',role:'assistant',emoji:'💡'},request=input({id:'react-followup',text:'Continue',reactions:[reaction]});
+ const saved=await f.service.send(alice,'chat-book',request);
+ assert.deepEqual(jobs[1].reactions,[{...reaction,text:'这里解释当前原文的意思。'}]);
+ assert.deepEqual(await f.service.send(alice,'chat-book',request),saved);assert.equal(jobs.length,2);
+ await assert.rejects(f.service.send(alice,'chat-book',{...request,reactions:[{...reaction,emoji:'🤔'}]}),{status:409});
+ await assert.rejects(f.service.send(alice,'chat-book',input({id:'react-missing',reactions:[{...reaction,turnId:'not-owned'}]})),{status:404});
+ await f.seed(bob);await assert.rejects(f.service.send(bob,'chat-book',input({id:'react-cross-owner',reactions:[reaction]})),{status:404});
+ const archive=await f.service.exportHistory(alice,'chat-book');assert.deepEqual(archive.turns.at(-1).reactions,saved.reactions);
+ await f.service.restoreHistory(bob,f.book,archive,[f.book]);assert.deepEqual((await f.service.findTurn(bob,'chat-book','react-followup')).reactions,saved.reactions);
+ assert.equal((await f.service.restoreHistory(bob,f.book,archive,[f.book])).restored,0);
+});

@@ -281,3 +281,14 @@ test('paid message replies normalize preview text and reject changing a pre-exis
  const uncharged={...input('uncharged-reference'),replyTo:{turnId:'paid-reference-source',role:'user'}};await service.sendLibrary(owner,uncharged);
  await assert.rejects(gate.run({...params,input:{...uncharged,replyTo:{turnId:'paid-reference-source',role:'assistant'}}}),{status:409});
 });
+
+test('paid account reactions retain canonical targets for exactly-once receipt recovery',async t=>{
+ const jobs=[],{service,library}=await setup(t,{generator:async job=>{jobs.push(job);return answer;}}),billing=createBillingService({store:createBillingMemoryStore(),enabled:true}),gate=createCreditGate({billing,library,chat:service});
+ await billing.trial({ownerId:owner.id,verified:true});await service.sendLibrary(owner,input('reaction-account-source'));
+ const reaction={turnId:'reaction-account-source',role:'assistant',emoji:'❤️'},body={...input('reaction-account-paid'),reactions:[reaction]},quote=await gate.quote(owner,{action:'conversation',bookId:LIBRARY_CHAT_ID,input:body}),request={...body,billing:{quoteId:quote.id,idempotencyKey:'reaction-paid-once'}};
+ const params={user:owner,action:'conversation',bookId:LIBRARY_CHAT_ID,input:request,execute:normalized=>service.sendLibrary(owner,normalized)},saved=await gate.run(params);
+ assert.deepEqual(jobs.at(-1).reactions,[{...reaction,text:answer.summary}]);assert.deepEqual(await gate.run(params),saved);assert.equal(jobs.length,2);
+ assert.equal((await billing.account({ownerId:owner.id})).consumedUnits,4000000);
+ await assert.rejects(gate.run({...params,input:{...request,reactions:[{...reaction,emoji:'🤔'}]}}),{status:409});
+ await assert.rejects(service.sendLibrary(other,{...input('reaction-foreign'),reactions:[reaction]}),{status:404});
+});

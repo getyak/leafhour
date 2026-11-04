@@ -1,0 +1,17 @@
+# iPhone experience refinement
+
+User scope: iPhone first, existing web/API compatibility only. Execute autonomously; independent agents assess every item. 9.5/10 is the requested target, not a claimed measured outcome.
+
+## Direction and alternatives
+Preserve Leafhour's quiet shelf and reading paper. Use native horizontal paging and native vertical elasticity, soft asymmetric chat bubbles, locally available illustrated avatars, and editorial long-form share cards. A fully custom gesture engine adds conflict risk; cloud-only avatar services add latency and disclose identifiers; fixed share pages fragment long content. Prefer native interaction, bundled artwork and content-measured single images.
+
+## Six deliverables and acceptance
+1. Navigation and bounce: shelf / squirrel / journal track horizontal drags and preserve state. Vertical scroll, selection and navigation back gestures retain priority. Native bounded bounce returns to the edge; Reduce Motion supported. Touch targets >=44pt. No accumulating blank space after repeated overscroll.
+2. Avatars: deterministic default from bundled licensed open-source art; curated choice plus system photo picker, account-scoped local persistence, thumbnail decoding and metadata removal. No account identifier sent to avatar providers. Cancellation preserves previous choice; load failure shows recoverable feedback. Device-only customization explicitly labeled if no existing cloud profile API.
+3. Journal: cached seven-day data visible without network/notebook wait. Warm refresh reused for 30 seconds unless forced or invalidated after reading; timezone, day and account changes invalidate correctly. Offline retains real previous values; unknown is never zero. Concurrent month fetches, notebook independent. Measure cached path target <100ms; no invented network percentile.
+4. Chat: user messages right, assistant left, remove recurring role captions. Distinct adaptive fills, generous readable line spacing, continuous Markdown and selection. Large type/narrow screen without clipped controls; preserve pending/failed states and provenance.
+5. Message actions: long press offers quote/reply, copy, reaction, multiselect and share/forward through the system sheet. Reactions persist per account/book and are represented to the AI only in the next explicit message with server-validated turn ownership. Marking a reaction never invokes the model. Bulk copy preserves role/order. Quote identity is stable and visible before submit. Clear, quiet reaction feedback.
+6. Sharing: one measured long image, no printed URL, scannable QR only to validated safe content/app links. Three curated artistic treatments with one editorial grid. Chat selection shares only chosen messages; optional adjacent excerpts are explicit previewable context, visually frosted to prioritize the selected excerpt. No hidden private context. Complete content or explicit export-size error, never silent truncation. Text export remains available.
+
+## Evidence and review
+Each group has an independent agent reviewer responsible for functional evidence and visual/UX critique. Rubric: task clarity 2, responsiveness 2, visual hierarchy 2, control/recovery 2, accessibility/consistency 2. Score only observed criteria; untested hardware, VoiceOver or actual users are pending, never auto-awarded points. Capture actual simulator screenshots, long-image output and QR decoding. Run relevant Core and app tests plus build. Source merged, production deployment, TestFlight and physical-device acceptance are separate statuses.

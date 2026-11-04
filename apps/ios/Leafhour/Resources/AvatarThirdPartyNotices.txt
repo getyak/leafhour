@@ -1,0 +1,13 @@
+Leafhour bundled avatar artwork
+
+Thumbs and Shapes by DiceBear
+https://www.dicebear.com/styles/thumbs/
+https://www.dicebear.com/styles/shapes/
+Licensed under CC0 1.0 Universal (Public Domain Dedication)
+https://creativecommons.org/publicdomain/zero/1.0/legalcode
+
+Nine static PNGs were generated from DiceBear's 9.x API using fixed non-personal seeds.
+Only rasterization, a circular background and size selection were applied. Source URLs
+and SHA-256 hashes are retained in AvatarSources.json. No user ID, email, photo or other
+runtime information is sent to DiceBear. These artwork permissions are independent
+of the application's AGPL-3.0-only software license.

@@ -18,6 +18,7 @@ struct ReaderConversationTurn: Identifiable, Codable {
     var voice: ChatVoiceReceipt? = nil
     var quote: ReaderTurnQuote? = nil
     var replyTo: ReaderMessageReference? = nil
+    var contentVersion: String? = nil
 }
 struct ReaderTurnQuote: Codable, Equatable {
     struct Part: Codable, Equatable {
@@ -69,6 +70,7 @@ private struct ReaderConversationDraft: Codable {
     var turns: [ReaderConversationTurn]? = nil
     var messageReference: ReaderMessageReference? = nil
     var likedMessages: Set<String>? = nil
+    var messageReactions: [String: String]? = nil
 }
 
 /// Read-only loading is separate from the explicitly confirmed generation path.
@@ -91,18 +93,35 @@ final class ReaderCloudTools {
     var introductionOrigin = ""
     var turns: [ReaderConversationTurn] = []
     var pendingMessageReference: ReaderMessageReference? { didSet { queueDraftSave() } }
+    static let reactionChoices = ["❤️", "👍", "💡", "🤔", "🌱", "🎉"]
     private var likedMessages: Set<String> = []
+    private var messageReactions: [String: String] = [:]
+    var reactionRevision = 0
+    func messageReaction(turnID: String, role: String) -> String? { messageReactions[turnID + ":" + role] ?? (likedMessages.contains(turnID + ":" + role) ? "👍" : nil) }
+    func setMessageReaction(turnID: String, role: String, emoji: String?) {
+        guard let turn = turns.first(where: { $0.id == turnID }), role == "user" || (role == "assistant" && turn.status == "completed"),
+              emoji == nil || Self.reactionChoices.contains(emoji!) else { return }
+        let key = turnID + ":" + role
+        let previous = messageReaction(turnID: turnID, role: role)
+        likedMessages.remove(key)
+        if previous == emoji { messageReactions.removeValue(forKey: key) } else { messageReactions[key] = emoji }
+        reactionRevision += 1; queueDraftSave()
+    }
+    func messageReactionTargets(contentVersion: String) -> [[String: String]] {
+        turns.flatMap { turn in ["user", "assistant"].compactMap { role -> [String: String]? in
+            guard turn.contentVersion == contentVersion, (role == "user" || turn.status == "completed"), let emoji = messageReaction(turnID: turn.id, role: role) else { return nil }
+            return ["turnId": turn.id, "role": role, "emoji": emoji]
+        } }
+    }
     func referenceMessage(_ turn: ReaderConversationTurn, role: String) {
         guard role == "user" || (role == "assistant" && turn.status == "completed") else { return }
         let text = role == "user" ? turn.question : (turn.answer ?? "")
         guard !text.isEmpty else { return }
         pendingMessageReference = ReaderMessageReference(turnId: turn.id, role: role, text: text)
     }
-    func isMessageLiked(turnID: String, role: String) -> Bool { likedMessages.contains(turnID + ":" + role) }
+    func isMessageLiked(turnID: String, role: String) -> Bool { messageReaction(turnID: turnID, role: role) == "👍" }
     func toggleMessageLike(turnID: String, role: String) {
-        let key = turnID + ":" + role
-        if likedMessages.contains(key) { likedMessages.remove(key) } else { likedMessages.insert(key) }
-        queueDraftSave()
+        setMessageReaction(turnID: turnID, role: role, emoji: "👍")
     }
     var question = "" { didSet { queueDraftSave() } }
     var pendingVoice: ChatVoiceReceipt? { didSet { queueDraftSave() } }
@@ -188,6 +207,7 @@ final class ReaderCloudTools {
                 if turns.isEmpty { turns = draft.turns ?? [] }
                 if pendingMessageReference == nil { pendingMessageReference = draft.messageReference }
                 likedMessages.formUnion(draft.likedMessages ?? [])
+                messageReactions.merge((draft.messageReactions ?? [:]).filter { Self.reactionChoices.contains($0.value) }) { current, _ in current }
                 if question.isEmpty { question = draft.question }
                 if retry == nil { retry = draft.retry }
                 if pendingVoice == nil { pendingVoice = draft.voice }
@@ -205,7 +225,7 @@ final class ReaderCloudTools {
     }
     private func queueDraftSave() {
         guard draftReady, let identity = draftBook, let library else { return }
-        let snapshot = ReaderConversationDraft(question: question, retry: retry?.action == "conversation" ? retry : nil, context: chatContext, voice: pendingVoice, contextPinned: contextPinned, quoteRemoved: chatQuoteRemoved, pendingContext: pendingChatContext, turns: turns, messageReference: pendingMessageReference, likedMessages: likedMessages), previous = draftWriting
+        let snapshot = ReaderConversationDraft(question: question, retry: retry?.action == "conversation" ? retry : nil, context: chatContext, voice: pendingVoice, contextPinned: contextPinned, quoteRemoved: chatQuoteRemoved, pendingContext: pendingChatContext, turns: turns, messageReference: pendingMessageReference, likedMessages: likedMessages, messageReactions: messageReactions), previous = draftWriting
         draftWriting = Task {
             await previous?.value
             do {
@@ -382,7 +402,7 @@ final class ReaderCloudTools {
         turns = (value["turns"] as? [[String: Any]] ?? []).compactMap { turn in
             guard let id = turn["id"] as? String else { return nil }
             let answer = turn["answer"] as? [String: Any]
-            return ReaderConversationTurn(id: id, question: turn["text"] as? String ?? "", answer: answer?["summary"] as? String, status: turn["status"] as? String ?? "failed", voice: Self.voiceReceipt(turn["voice"]), quote: Self.readTurnQuote(turn["quote"]), replyTo: Self.readMessageReference(turn["replyTo"]))
+            return ReaderConversationTurn(id: id, question: turn["text"] as? String ?? "", answer: answer?["summary"] as? String, status: turn["status"] as? String ?? "failed", voice: Self.voiceReceipt(turn["voice"]), quote: Self.readTurnQuote(turn["quote"]), replyTo: Self.readMessageReference(turn["replyTo"]), contentVersion: turn["contentVersion"] as? String)
         }
     }
     private static func voiceReceipt(_ value: Any?) -> ChatVoiceReceipt? {
@@ -445,6 +465,10 @@ final class ReaderCloudTools {
             if resuming == nil, let reference = pendingMessageReference {
                 body["replyTo"] = ["turnId": reference.turnId, "role": reference.role]
             }
+            if resuming == nil {
+                let reactions = messageReactionTargets(contentVersion: identity.contentVersion)
+                if !reactions.isEmpty { body["reactions"] = reactions }
+            }
             if let restored { body = restored }
             if let quote = selection, quote.anchor.passageID == passageID {
                 let quotedSource = quote.sourceText ?? quote.text
@@ -483,7 +507,7 @@ final class ReaderCloudTools {
                     body: frozen, action: action, passageID: passageID, preparing: true)
                 if !turns.contains(where: { $0.id == requestID }) {
                     let savedQuote = Self.readTurnQuote(body["quote"])
-                    turns.append(ReaderConversationTurn(id: requestID, question: body["text"] as? String ?? "", answer: nil, status: "running", voice: submittedVoice, quote: savedQuote, replyTo: resuming == nil ? submittedReference : Self.readMessageReference(body["replyTo"])))
+                    turns.append(ReaderConversationTurn(id: requestID, question: body["text"] as? String ?? "", answer: nil, status: "running", voice: submittedVoice, quote: savedQuote, replyTo: resuming == nil ? submittedReference : Self.readMessageReference(body["replyTo"]), contentVersion: identity.contentVersion))
                 } else if let index = turns.firstIndex(where: { $0.id == requestID }) { turns[index].status = "running" }
                 if resuming == nil { question = ""; pendingVoice = nil; pendingMessageReference = nil }
                 chatQuoteRemoved = true; contextPinned = true
@@ -641,7 +665,8 @@ final class ReaderCloudTools {
                 let submitted = (try? JSONSerialization.jsonObject(with: intent.body)) as? [String: Any] ?? [:]
                 let turn = ReaderConversationTurn(id: intent.id, question: value["text"] as? String ?? submitted["text"] as? String ?? "", answer: answer?["summary"] as? String, status: status,
                     voice: Self.voiceReceipt(value["voice"]) ?? index.flatMap { turns[$0].voice }, quote: Self.readTurnQuote(value["quote"]) ?? index.flatMap { turns[$0].quote },
-                    replyTo: Self.readMessageReference(value["replyTo"]) ?? index.flatMap { turns[$0].replyTo })
+                    replyTo: Self.readMessageReference(value["replyTo"]) ?? index.flatMap { turns[$0].replyTo },
+                    contentVersion: value["contentVersion"] as? String ?? submitted["contentVersion"] as? String ?? index.flatMap { turns[$0].contentVersion })
                 if let index { turns[index] = turn } else { turns.append(turn) }
                 responseText = ""
                 if status == "running" { error = "回答仍在处理中，可稍后重试查看本次结果。"; return }

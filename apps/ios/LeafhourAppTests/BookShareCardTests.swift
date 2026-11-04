@@ -16,7 +16,7 @@ import LeafhourCore
         let content = NativeShareContent(title: "A real title", author: "Author", text: text, attribution: "作者原文", location: "Chapter", url: nil)
         for style in NativeShareCardStyle.allCases {
             let pages = try NativeShareCardRenderer.pages(content, format: .portrait, style: style)
-            XCTAssertGreaterThan(pages.count, 1)
+            XCTAssertEqual(pages.count, 1)
             XCTAssertEqual(pages.map(\.text).joined(), text)
             for page in pages {
                 XCTAssertLessThan(page.bodyBounds.maxY, page.footerY)
@@ -82,10 +82,11 @@ import LeafhourCore
         let text = String(repeating: "读一段话。Read every word. 👨‍👩‍👧‍👦 e\u{301}\n", count: 90)
         let content = NativeShareContent(title: "A book", author: "An author", text: text, attribution: "作者原文", location: "Chapter 1", url: nil)
         let pages = try NativeShareCardRenderer.pages(content, format: .portrait)
-        XCTAssertGreaterThan(pages.count, 1)
+        XCTAssertEqual(pages.count, 1)
         XCTAssertEqual(pages.map(\.text).joined(), text)
         for page in pages {
-            XCTAssertEqual(page.image.size, CGSize(width: 1080, height: 1350))
+            XCTAssertEqual(page.image.size.width, 1080)
+            XCTAssertGreaterThan(page.image.size.height, 1350)
             XCTAssertGreaterThanOrEqual(page.quoteFontSize, 40)
             XCTAssertLessThanOrEqual(page.bodyBounds.maxY, page.footerY)
             XCTAssertLessThanOrEqual(page.citationBounds.maxY, page.image.size.height - 30)
@@ -108,6 +109,25 @@ import LeafhourCore
         XCTAssertTrue(content.plainText.contains("直译 · 草稿"))
         XCTAssertFalse(content.plainText.contains("https://"))
         XCTAssertEqual(content.text, "Selected words 👩🏽‍💻")
+    }
+
+    func testContextIsExplicitAndLongImagePreservesSelectedText() throws {
+        let content = NativeShareContent(title: "A quiet conversation", author: "", text: "The selected passage", attribution: "AI 回答", location: "", url: URL(string: "https://leafhour.com"), contextBefore: "An earlier question", contextAfter: "The next thought")
+        let page = try XCTUnwrap(NativeShareCardRenderer.pages(content, format: .portrait).first)
+        XCTAssertEqual(page.text, content.text)
+        XCTAssertTrue(content.plainText.contains("前文\nAn earlier question"))
+        XCTAssertTrue(content.plainText.contains("后文\nThe next thought"))
+        XCTAssertFalse(content.plainText.contains("https://"))
+        XCTAssertEqual(try decodedLinks(in: page.image), ["https://leafhour.com"])
+        for style in NativeShareCardStyle.allCases {
+            let image = try XCTUnwrap(NativeShareCardRenderer.pages(content, format: .portrait, style: style).first?.image)
+            let attachment = XCTAttachment(image: image); attachment.name = "experience-share-" + style.rawValue; attachment.lifetime = .keepAlways; add(attachment)
+        }
+    }
+
+    func testOversizedImageFailsExplicitlyWithoutPartialPages() {
+        let content = NativeShareContent(title: "A book", author: "", text: String(repeating: "每一段都不应被悄悄截断。", count: 2000), attribution: "原文", location: "", url: nil)
+        XCTAssertThrowsError(try NativeShareCardRenderer.pages(content, format: .portrait))
     }
 
     func testIncomingIntentsAreQueuedWithoutImportingAndInvalidHostsCannotReplaceThem() throws {

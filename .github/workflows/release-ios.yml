@@ -77,7 +77,8 @@ jobs:
     name: Archive and upload to ASC on one ephemeral runner
     needs: prepare
     if: needs.prepare.outputs.publish == 'true'
-    runs-on: macos-26
+    # Keep macOS 26 / Xcode 26+ while using the standard Intel runner pool.
+    runs-on: macos-26-intel
     timeout-minutes: 130
     environment: testflight
     env:

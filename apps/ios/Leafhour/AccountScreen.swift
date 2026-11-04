@@ -5,6 +5,7 @@ struct AccountScreen: View {
     @Bindable var model: LibraryModel
     @Environment(\.dismiss) private var dismiss
     @Environment(\.scenePhase) private var scenePhase
+    @State private var choosingAvatar = false
     @State private var authentication = NativeProviderAuthentication()
     @State private var email = ""
     @State private var password = ""
@@ -27,6 +28,7 @@ struct AccountScreen: View {
                             Text("登录 Leafhour，继续阅读网页上传的书，找回自己的笔记与阅读记录。").foregroundStyle(.secondary)
                         }.padding(.vertical, 10)
                     }
+                    Section { Button("选择此设备的头像") { choosingAvatar = true }.frame(minHeight: 44) }
                     providerOptions
                     Section("进入自己的书房") {
                         TextField("邮箱", text: $email).textContentType(.username).keyboardType(.emailAddress).textInputAutocapitalization(.never).autocorrectionDisabled().accessibilityIdentifier("leafhour-login-email")
@@ -70,6 +72,7 @@ struct AccountScreen: View {
                 .toolbar { ToolbarItem(placement: .confirmationAction) { Button("完成") { dismiss() }.disabled(working || model.nativeAuthenticating) } }
                 .interactiveDismissDisabled(working || model.nativeAuthenticating)
                 .background(NativeAuthenticationAnchor(onWindow: authentication.setAnchor).frame(width: 0, height: 0))
+                .sheet(isPresented: $choosingAvatar) { ProfileAvatarPicker(owner: model.account?.id ?? "device").id(model.account?.id ?? "device") }
                 .task { await model.loadAuthenticationOptions() }
                 .onChange(of: scenePhase) { _, phase in if phase == .active { authentication.checkExpiry() } }
                 .onChange(of: model.account?.id) { _, _ in if authentication.isActive { Task { await model.cancelNativeAuthentication() } } }
@@ -78,9 +81,16 @@ struct AccountScreen: View {
     @ViewBuilder private func signedInSettings(_ account: CloudAccount) -> some View {
                     Section {
                         HStack(alignment: .center, spacing: 16) {
-                            Image(systemName: "person.crop.circle").font(.system(size: 44, weight: .ultraLight)).foregroundStyle(Color.leafInk)
+                            Button { choosingAvatar = true } label: {
+                                ProfileAvatarView(owner: account.id, size: 64)
+                                    .overlay(alignment: .bottomTrailing) {
+                                        Image(systemName: "pencil.circle.fill").symbolRenderingMode(.palette)
+                                            .foregroundStyle(Color.leafInk, Color(uiColor: .systemBackground)).font(.system(size: 22))
+                                    }
+                            }.buttonStyle(.plain).accessibilityLabel("更换头像").accessibilityIdentifier("account-change-avatar")
                             VStack(alignment: .leading, spacing: 6) {
                                 Text("自己的书与思考").font(.title3.weight(.semibold))
+                                Button("更换头像") { choosingAvatar = true }.font(.caption).frame(minHeight: 44)
                                 Text(account.email ?? "Leafhour 账号").font(.subheadline).foregroundStyle(.secondary).textSelection(.enabled)
                                     .fixedSize(horizontal: false, vertical: true)
                             }
