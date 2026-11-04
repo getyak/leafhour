@@ -78,7 +78,7 @@ struct ReaderBookmarkPanel: View {
             footer: { Text("书签保存在此设备，随本机记录一起导出。它们与私人笔记分开，不会自动同步到云端。") }
         }
         .navigationTitle("书签")
-        .toolbar { ToolbarItem(placement: .confirmationAction) { Button("完成") { dismiss() }.frame(minHeight: 44) } }
+        .toolbar { ToolbarItem(placement: .confirmationAction) { Button { dismiss() } label: { Text("完成").frame(minWidth: 44, minHeight: 44).contentShape(Rectangle()) }.accessibilityIdentifier("reader-bookmark-done") } }
     }
     private var sortedBookmarks: [ReaderBookmark] {
         let chapters = Dictionary(uniqueKeysWithValues: session.book.chapters.enumerated().map { ($0.element.id, $0.offset) })
@@ -129,43 +129,59 @@ private struct ReaderBookmarkEditor: View {
     @State private var customColor = Color.green
     @State private var saving = false
     @State private var feedback: String?
+    @Environment(\.dynamicTypeSize) private var typeSize
     var body: some View {
-        Section("配置书签") {
-            TextField("名称（可选）", text: $name).submitLabel(.done)
-                .onSubmit { save(color: bookmark.color) }.accessibilityIdentifier("reader-bookmark-name")
-            Button("保存名称") { save(color: bookmark.color) }.frame(minHeight: 44).disabled(saving)
-            ForEach(BookmarkColor.presets, id: \.hex) { color in
-                Button { save(color: color) } label: {
-                    HStack {
-                        Circle().fill(color.swiftUIColor).frame(width: 18, height: 18).overlay { Circle().stroke(.primary.opacity(0.4), lineWidth: 1) }.accessibilityHidden(true)
-                        Text(color.name)
-                        Spacer()
-                        if bookmark.color == color { Image(systemName: "checkmark").accessibilityHidden(true) }
-                    }.frame(minHeight: 44).contentShape(Rectangle())
-                }.disabled(saving).accessibilityAddTraits(bookmark.color == color ? .isSelected : [])
-                    .accessibilityIdentifier("reader-bookmark-color-" + String(color.hex.dropFirst()))
-            }
-            ColorPicker("自定义颜色", selection: $customColor, supportsOpacity: false).frame(minHeight: 44)
-                .onChange(of: customColor) { _, color in
-                    let rgb = UIColor(color).cgColor.converted(to: CGColorSpace(name: CGColorSpace.sRGB)!, intent: .defaultIntent, options: nil)?.components
-                    if let rgb, rgb.count >= 3 { customHex = String(format: "#%02X%02X%02X", Int((rgb[0] * 255).rounded()), Int((rgb[1] * 255).rounded()), Int((rgb[2] * 255).rounded())) }
-                }.accessibilityIdentifier("reader-bookmark-custom-color")
-            TextField("颜色代码，例如 #35745A", text: $customHex).textInputAutocapitalization(.characters).autocorrectionDisabled()
-                .accessibilityLabel("自定义颜色代码，六位十六进制").accessibilityIdentifier("reader-bookmark-custom-hex")
-            Button("使用自定义颜色") {
-                guard let color = BookmarkColor(hex: customHex.trimmingCharacters(in: .whitespacesAndNewlines)) else { feedback = "请输入 # 加六位颜色代码，例如 #35745A。"; return }
-                save(color: color)
-            }.frame(minHeight: 44).disabled(saving)
-            if let feedback { Text(feedback).font(.footnote).accessibilityIdentifier("reader-bookmark-editor-feedback") }
-            Button("移除书签", role: .destructive) {
-                guard !saving else { return }; saving = true
-                Task {
-                    let result = await session.removeBookmark(id: bookmark.id); saving = false; feedback = result.message
-                    if result.succeeded { onRemove() }
+        Group {
+            Section("标记颜色") {
+                LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 8), count: typeSize.isAccessibilitySize ? 2 : 5), spacing: 8) {
+                    ForEach(BookmarkColor.presets, id: \.hex) { color in
+                        Button { save(color: color) } label: {
+                            VStack(spacing: 6) {
+                                Circle().fill(color.swiftUIColor).frame(width: 24, height: 24)
+                                    .overlay { Circle().stroke(.primary.opacity(0.4), lineWidth: 1) }
+                                    .overlay { if bookmark.color == color { Image(systemName: "checkmark").font(.caption2.bold()).foregroundStyle(.white) } }
+                                Text(color.name).font(.caption).foregroundStyle(.primary)
+                            }.padding(.vertical, 6).frame(maxWidth: .infinity, minHeight: 56)
+                                .background(bookmark.color == color ? Color.leafInk.opacity(0.08) : Color.clear, in: RoundedRectangle(cornerRadius: 10))
+                                .contentShape(Rectangle())
+                        }.buttonStyle(.plain).disabled(saving).accessibilityLabel(color.name)
+                            .accessibilityValue(bookmark.color == color ? "已选择" : "未选择")
+                            .accessibilityAddTraits(bookmark.color == color ? .isSelected : [])
+                            .accessibilityIdentifier("reader-bookmark-color-" + String(color.hex.dropFirst()))
+                    }
                 }
-            }.frame(minHeight: 44).disabled(saving).accessibilityIdentifier("reader-bookmark-remove")
+                ColorPicker("自定义颜色", selection: $customColor, supportsOpacity: false).frame(minHeight: 44)
+                    .onChange(of: customColor) { _, color in
+                        let rgb = UIColor(color).cgColor.converted(to: CGColorSpace(name: CGColorSpace.sRGB)!, intent: .defaultIntent, options: nil)?.components
+                        if let rgb, rgb.count >= 3 { customHex = String(format: "#%02X%02X%02X", Int((rgb[0] * 255).rounded()), Int((rgb[1] * 255).rounded()), Int((rgb[2] * 255).rounded())) }
+                    }.accessibilityIdentifier("reader-bookmark-custom-color")
+                DisclosureGroup("使用颜色代码") {
+                    TextField("例如 #35745A", text: $customHex).textInputAutocapitalization(.characters).autocorrectionDisabled()
+                        .accessibilityLabel("自定义颜色代码，六位十六进制").accessibilityIdentifier("reader-bookmark-custom-hex")
+                }
+                Button("保存自定义颜色") {
+                    guard let color = BookmarkColor(hex: customHex.trimmingCharacters(in: .whitespacesAndNewlines)) else { feedback = "请输入有效颜色，或重新选择。"; return }
+                    save(color: color)
+                }.frame(minHeight: 44).disabled(saving)
+                if let feedback { Text(feedback).font(.footnote).accessibilityIdentifier("reader-bookmark-editor-feedback") }
+            }
+            Section("名称（可选）") {
+                TextField("为这个位置起个名字", text: $name).submitLabel(.done)
+                    .onSubmit { save(color: bookmark.color) }.accessibilityIdentifier("reader-bookmark-name")
+                Button("保存名称") { save(color: bookmark.color) }.frame(minHeight: 44).disabled(saving)
+            }
+            Section {
+                Button("移除书签", role: .destructive) {
+                    guard !saving else { return }; saving = true
+                    Task {
+                        let result = await session.removeBookmark(id: bookmark.id); saving = false; feedback = result.message
+                        if result.succeeded { onRemove() }
+                    }
+                }.frame(minHeight: 44).disabled(saving).accessibilityIdentifier("reader-bookmark-remove")
+            }
         }
         .onAppear { name = bookmark.name ?? ""; customHex = bookmark.color.hex; customColor = bookmark.color.swiftUIColor }
+        .onChange(of: bookmark.color) { _, color in customHex = color.hex; customColor = color.swiftUIColor }
     }
     private func save(color: BookmarkColor) {
         guard !saving else { return }; saving = true

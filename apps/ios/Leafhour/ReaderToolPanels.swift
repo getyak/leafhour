@@ -34,6 +34,9 @@ struct ReaderMorePanel: View {
     var onAutoPage: () -> Void = {}
     var onShare: () -> Void = {}
     var onListen: () -> Void = {}
+    var onBookmarks: () -> Void = {}
+    var onReadingGuide: () -> Void = {}
+    var onTranslation: () -> Void = {}
     @Environment(\.dynamicTypeSize) private var typeSize
     @State private var export: RecordsDocument?
     @State private var exporting = false
@@ -44,8 +47,9 @@ struct ReaderMorePanel: View {
                     NavigationLink { BookSearchPanel(session: session, onJump: onJump).modifier(ReaderToolContinuation()) } label: { toolTile("搜索", symbol: "magnifyingglass") }.accessibilityLabel("搜索原文")
                     NavigationLink { ReaderRecordsPanel(session: session, onJump: onJump).modifier(ReaderToolContinuation()) } label: { toolTile("笔记", symbol: "square.and.pencil") }.accessibilityLabel("我的记录")
                     Button(action: onShare) { toolTile("分享", symbol: "square.and.arrow.up") }.accessibilityLabel("分享这本书").accessibilityIdentifier("reader-share-book")
-                    NavigationLink { ReaderTranslationPanel(session: session, tools: tools, cloud: cloud).modifier(ReaderToolContinuation()) } label: { toolTile("翻译", symbol: "character.book.closed") }
-                    NavigationLink { ReaderIntroductionPanel(session: session, tools: tools, cloud: cloud).modifier(ReaderToolContinuation()) } label: { toolTile("导读", symbol: "text.book.closed") }.accessibilityLabel("导读与摘要")
+                    Button(action: onTranslation) { toolTile("翻译", symbol: "character.book.closed") }
+                    Button(action: onReadingGuide) { toolTile("阅读前导", symbol: "text.book.closed") }.accessibilityIdentifier("reader-guide-tool")
+                    Button(action: onBookmarks) { toolTile("书签", symbol: "bookmark") }.accessibilityIdentifier("reader-bookmarks-tool")
                     Button(action: onCompanion) { toolTile("陪读", symbol: "bubble.left.and.bubble.right") }.accessibilityLabel("阅读陪读")
                     NavigationLink { ReaderPreferencesPanel(session: session, reading: reading).modifier(ReaderToolContinuation()) } label: { toolTile("排版", symbol: "textformat.size") }.accessibilityLabel("文字与纸面")
                     NavigationLink { ReaderBookTimePanel(session: session, library: library, cloud: cloud).modifier(ReaderToolContinuation()) } label: { toolTile("计时", symbol: "stopwatch") }.accessibilityLabel("阅读计时")
@@ -60,7 +64,7 @@ struct ReaderMorePanel: View {
                         Form { ReaderTranslationPreparation(session: session, reading: reading) }
                             .navigationTitle("准备译文").modifier(ReaderToolContinuation())
                     } label: {
-                        Label(reading.running ? "正在翻译 · \(reading.completedCount)/\(reading.totalCount)" : "准备或恢复本章译文", systemImage: "text.book.closed").frame(minHeight: 44)
+                        Label(reading.running ? "正在翻译 · \(reading.completedCount)/\(reading.totalCount)" : "随读翻译与显示方式", systemImage: "text.book.closed").frame(minHeight: 44)
                     }
                 }
             Divider()
@@ -266,6 +270,7 @@ struct ReaderConversationPanel: View {
     var selection: SelectedQuote? = nil
     var library: OfflineLibrary? = nil
     var title = "旁注"
+    var autoLoad = true
     @State private var initialSelectionAttached = false
     private var source: String {
         let localSelection = tools.chatQuoteRemoved ? nil : selection
@@ -277,7 +282,7 @@ struct ReaderConversationPanel: View {
         ChatConversationView(tools: tools, cloud: cloud, title: title, bookTitle: session.book.title,
             source: source, sourceChapter: tools.chatContext?.chapterTitle ?? session.chapter.title,
             canRemoveSource: tools.chatContext.map { $0.selection != nil } ?? (selection != nil), sourceLabel: tools.chatQuoteRemoved ? "" : tools.chatContext?.sourceLabel ?? (selection?.origin == "translation" ? "选中的译文 · 提问时引用对应原文" : selection == nil ? "引用的原文" : "选中的原文"),
-            localOnly: cloud == nil, isMarginalNote: true,
+            localOnly: cloud == nil, isMarginalNote: true, autoLoad: autoLoad,
             load: {
                 if let identity = session.book.cloud { await tools.restoreConversationDraft(identity: identity, library: library) }
                 let attach = !initialSelectionAttached && selection != nil

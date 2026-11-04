@@ -209,9 +209,9 @@ struct TextReadingView: UIViewRepresentable {
                             coordinator.markdownDisplayPrefix = result.length
                         }
                         let sourceScale = preferences.viewMode == .parallel ? preferences.parallelSourceScale : 1
-                        result.append(layout.attributed(font: font.withSize(font.pointSize * sourceScale), size: preferences.fontSize * sourceScale,
+                        result.append(layout.attributed(font: font, size: preferences.fontSize,
                             lineSpacing: preferences.lineSpacing, contentWidth: width,
-                            sourceOpacity: preferences.viewMode == .parallel ? preferences.parallelSourceOpacity : 1,
+                            sourceOpacity: preferences.viewMode == .parallel ? preferences.parallelSourceOpacity : 1, sourceScale: sourceScale,
                             paragraphSpacing: preferences.viewMode == .parallel ? preferences.parallelSpacing : nil))
                         coordinator.spans = zip(displayedChapter.passages, layout.sourceRanges).enumerated().map { index, pair in
                             let (passage, source) = pair

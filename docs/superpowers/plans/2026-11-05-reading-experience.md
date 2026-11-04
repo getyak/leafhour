@@ -30,55 +30,55 @@
 
 Files: LibraryScreen.swift, LibraryPresentation.swift, LibraryModel.swift, Core shelf models, affected shelf tests. Independent design report: shelf-design.md.
 
-- [ ] Pin default new-book/recent ordering, unchanged snapshots and same-UID metadata behavior in tests; run red.
-- [ ] Keep cached presentation alive and coalesce redundant refresh publication; compare account identity by UID.
-- [ ] Run affected shelf/Core/app checks; review against report and record score evidence.
+- [x] Pin default new-book/recent ordering, unchanged snapshots and same-UID metadata behavior in tests; run red.
+- [x] Keep cached presentation alive and coalesce redundant refresh publication; compare account identity by UID.
+- [x] Run affected shelf/Core/app checks; review against report and record score evidence.
 
 ### Task 2: Local opening and staged work (R3–R4)
 
 Files: LibraryModel.swift, Core OfflineLibrary.swift, ReaderSession.swift, reader text layout and opening tests. Independent report: opening-design.md.
 
-- [ ] Test held cloud requests, local upload mapping and synthetic large book opening; record baseline.
-- [ ] Remove synchronous network dependencies from local opening; defer safe verification/layout work with stable positions.
-- [ ] Run integrity/recovery and opening regression tests and capture before/after timing.
+- [x] Test held cloud requests, local upload mapping and synthetic large book opening; record baseline.
+- [x] Remove synchronous network dependencies from local opening; defer safe verification/layout work with stable positions.
+- [x] Run integrity/recovery and opening regression tests and capture before/after timing.
 
 ### Task 3: Reading guide and follow-ups (R5–R6)
 
 Files: ReaderCloudTools.swift, ChatConversationView.swift, new guide/follow-up helpers, existing introduction/chat services where needed. Independent report: ai-design.md.
 
-- [ ] Test guide caching/version/failed retry and exactly three distinct suggestions per completed turn.
-- [ ] Present a non-blocking default guide; add compact direct-send follow-ups using ordinary send and existing local-book permissions.
-- [ ] Run affected chat/introduction tests and app layout tests; record evaluation.
+- [x] Test guide caching/version/failed retry and exactly three distinct suggestions per completed turn.
+- [x] Present a non-blocking default guide; add compact direct-send follow-ups using ordinary send and existing local-book permissions.
+- [x] Run affected chat/introduction tests and app layout tests; record evaluation.
 
 ### Task 4: Contents search (R7–R8)
 
 Files: ReaderContentsPanel.swift, new ContentsSearch helper, BookSearch.swift and isolated AI source adapters. Independent report: contents-design.md.
 
-- [ ] Test body matches grouped under true chapters, exact Unicode anchors, stale query cancellation and invalid AI references.
-- [ ] Integrate local search and explicit AI search inside contents without moving reading progress during search.
-- [ ] Verify empty/error/offline, jump behavior and dynamic type; record evaluation.
+- [x] Test body matches grouped under true chapters, exact Unicode anchors, stale query cancellation and invalid AI references.
+- [x] Integrate local search and explicit AI search inside contents without moving reading progress during search.
+- [x] Verify empty/error/offline, jump behavior and dynamic type; record evaluation.
 
 ### Task 5: Bookmarks (R9–R10)
 
 Files: new ReadingBookmark model/panel/gesture helper; BookState/ReaderSession persistence and ReaderScreen integrations. Independent report: bookmarks-design.md.
 
-- [ ] Test backward decode, stable anchors, duplicate protection, color/name persistence and scope isolation.
-- [ ] Add pull feedback and right-top bookmark control with explicit accessible alternatives and list navigation.
-- [ ] Test gesture discrimination plus app UI; record evaluation.
+- [x] Test backward decode, stable anchors, duplicate protection, color/name persistence and scope isolation.
+- [x] Add pull feedback and right-top bookmark control with explicit accessible alternatives and list navigation.
+- [x] Test gesture discrimination plus app UI; record evaluation.
 
 ### Task 6: Reading-following translation (R11–R15)
 
 Files: ReaderReadingContent.swift, ReaderPageTranslationPanel.swift, reading language/preferences/layers, server/portal.mjs, translation.mjs, library-service.mjs and translation-batch.mjs. Independent report: translation-design.md.
 
-- [ ] Pin disabled/no calls, bounded scope, language intent parsing, template settings and cancellation races with tests.
-- [ ] Implement explicit enablement, one-line target, visual templates and live parallel configuration.
-- [ ] Propagate cancel to active provider fetch and fence late results; preserve existing uncertain billing/request recovery.
-- [ ] Run affected server and native suites; verify final screen and record evaluation.
+- [x] Pin disabled/no calls, bounded scope, language intent parsing, template settings and cancellation races with tests.
+- [x] Implement explicit enablement, one-line target, visual templates and live parallel configuration.
+- [x] Propagate cancel to active provider fetch and fence late results; preserve existing uncertain billing/request recovery.
+- [x] Run affected server and native suites; verify final screen and record evaluation.
 
 ### Task 7: Integrated review, delivery and acceptance (R16)
 
-- [ ] Independent review of each domain and whole diff; resolve material findings.
-- [ ] Run final affected tests, build, copy and release policy checks appropriate to final paths.
-- [ ] Save evidence, honest scores and remaining physical-device items in docs/verification/2026-11-05-reading-experience/README.md.
+- [x] Independent review of each domain and whole diff; resolve material findings.
+- [x] Run final affected tests, build, copy and release policy checks appropriate to final paths.
+- [x] Save evidence, honest scores and remaining physical-device items in docs/verification/2026-11-05-reading-experience/README.md.
 - [ ] Commit only task files, synchronize origin/main, push once, create PR, wait CI gate and normally merge.
 - [ ] Reconcile remote commit, Production deployment and actual online checks; record iOS release separately.

@@ -12,7 +12,7 @@ enum VideoAcceptanceFixture {
         #if DEBUG
         if let selected = SelectedSourceAcceptanceFixture.makeModelIfRequested() { return selected }
         let arguments = ProcessInfo.processInfo.arguments
-        guard ["org.leafhour.experience.testing", "org.leafhour.get317.testing", "org.leafhour.get341.testing", "org.leafhour.get352.testing", "org.leafhour.readingchat.testing", "org.leafhour.shelf-refinement", "org.leafhour.get358.testing", "org.leafhour.quiet.testing", "org.leafhour.craft.testing", "org.leafhour.get385.testing", "com.cubxxw.leafhour.chat20261102"].contains(Bundle.main.bundleIdentifier ?? "") else { return nil }
+        guard ["org.leafhour.experience.testing", "org.leafhour.get317.testing", "org.leafhour.get341.testing", "org.leafhour.get352.testing", "org.leafhour.readingchat.testing", "org.leafhour.shelf-refinement", "org.leafhour.get358.testing", "org.leafhour.quiet.testing", "org.leafhour.craft.testing", "org.leafhour.get385.testing", "org.leafhour.readingtest20261105", "com.cubxxw.leafhour.chat20261102"].contains(Bundle.main.bundleIdentifier ?? "") else { return nil }
         guard !arguments.contains("--get385-live") else { return nil }
         let hostedUnitTest = ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] != nil
             || NSClassFromString("XCTestCase") != nil || NSClassFromString("XCTest.XCTestCase") != nil
@@ -75,7 +75,10 @@ enum VideoAcceptanceFixture {
                         _ = try await library.importFile(pdf)
                         let remote = CloudShelfBook(id: "get317-translated", title: "GET317 合成验收 · 双译", author: "GET317 合成作者甲", contentVersion: "get317-v1")
                         let copy = try await cloud.downloadReadingCopy(remote, ownerID: GET317Transport.owner)
-                        _ = try await library.importCloud(copy)
+                        let bilingual = try await library.importCloud(copy)
+                        var bilingualState = try await library.state(bilingual.id)
+                        bilingualState.translationSettings = BookTranslationSettings(targetLanguage: .zh)
+                        try await library.saveState(bilingualState, bookID: bilingual.id)
                         try Data("Synthetic acceptance seeded through OfflineLibrary v1".utf8).write(to: marker, options: .atomic)
                     }
                     await model.reload()
@@ -272,6 +275,13 @@ private final class GET317Transport: URLProtocol, @unchecked Sendable {
                 turn["answer"] = ["summary": "合成回答开头\n\n" + (1...28).map { "合成段落 \($0)：回看这段时，新回答完成也应保留阅读位置。" }.joined(separator: "\n\n") + "\n\n合成回答末尾 · ROUND\(ordinal)END"]
             }
             if let source = body["quote"] { turn["quote"] = source }
+            if var context = body["guideContext"] as? [String: Any] {
+                context["opening"] = "合成阅读前导：这里展示界面验收用的固定样本，没有调用模型。"
+                context["method"] = "先读开头一段，留意反复出现的词，再带着自己的问题继续。"
+                context["readingQuestion"] = "这段原文中，哪个限定最值得回头核对？"
+                turn["guideContext"] = context
+            }
+            turn["contentVersion"] = body["contentVersion"]
             if let reference = body["replyTo"] as? [String: String], let target = turns.first(where: { $0["id"] as? String == reference["turnId"] }) {
                 let text = reference["role"] == "assistant" ? (target["answer"] as? [String: Any])?["summary"] as? String : target["text"] as? String
                 turn["replyTo"] = ["turnId": reference["turnId"] ?? "", "role": reference["role"] ?? "", "text": text ?? ""]
@@ -303,6 +313,21 @@ private final class GET317Transport: URLProtocol, @unchecked Sendable {
             return reply(["token": String(repeating: "a", count: 43), "bookId": "get317-cloud", "title": "GET352 合成赠书", "author": "Synthetic author", "sender": "合成验收读者", "message": "Only this explicit preview can offer importing the synthetic book.", "includeTranslations": false])
         }
         guard request.value(forHTTPHeaderField: "X-Reader-Owner") == owner else { return reply(["error": "GET317 owner mismatch"], status: 403) }
+        if path == "/api/library/reading-guide", method == "POST" {
+            let body = bodyObject(request), local = body["sourceKind"] as? String == "local-device"
+            let sample = ((body["context"] as? [String: Any])?["passages"] as? [[String: Any]])?.first
+            let guide: [String: Any] = ["kind": "leafhour-reading-guide", "schemaVersion": 1,
+                "id": "guide-" + (body["bookId"] as? String ?? "synthetic"), "bookId": body["bookId"] ?? "synthetic",
+                "contentVersion": body["contentVersion"] ?? "get317-v1", "sourceKind": local ? "local-device" : "cloud", "locale": "zh-Hans",
+                "origin": "ai", "status": "draft", "scope": "opening-sample",
+                "opening": "合成阅读前导：这里展示界面验收用的固定样本，没有调用模型。",
+                "method": "先读开头一段，留意反复出现的词，再带着自己的问题继续。",
+                "readingQuestion": "这段原文中，哪个限定最值得回头核对？",
+                "sampleRanges": [["passageId": sample?["id"] ?? "c1-p1", "chapterId": sample?["chapterId"] ?? "c1", "charOffset": 0,
+                                  "charEnd": min(6000, (sample?["original"] as? String)?.unicodeScalars.count ?? 20)]],
+                "model": "synthetic-ui-fixture", "createdAt": "2026-11-05T00:00:00Z"]
+            return reply(["guide": guide, "available": true])
+        }
         if arguments.contains("--get352-gift"), path == "/api/book-gifts/" + String(repeating: "a", count: 43) + "/accept", method == "POST" {
             return reply(["bookId": "get317-cloud", "alreadyOwned": false, "readUrl": "/read?book=get317-cloud"])
         }
@@ -378,7 +403,14 @@ private final class GET317Transport: URLProtocol, @unchecked Sendable {
             var records = record(bookID)
             var turns = records["syntheticTurns"] as? [[String: Any]] ?? []
             if method == "GET" { return reply(["available": true, "bookId": bookID, "contentVersion": "get317-v1", "context": ["passageId": "c1-p1", "chapterTitle": "GET317 合成第一章", "original": "GET317 SYNTHETIC chat context. Invented acceptance text; no model was called."], "scope": ["mode": "book", "revision": 0], "turns": turns]) }
-            let turn: [String: Any] = ["id": body["id"] as? String ?? "missing-id", "text": body["text"] as? String ?? "", "status": "completed", "answer": ["summary": "GET317 合成 AI 回答样本：这是离线网络夹具返回的固定测试文字，未调用任何模型。\n\n" + String(repeating: "输入框应继续可见，原文位置应保持稳定。 ", count: 18)]]
+            var turn: [String: Any] = ["id": body["id"] as? String ?? "missing-id", "text": body["text"] as? String ?? "", "status": "completed", "answer": ["summary": "GET317 合成 AI 回答样本：这是离线网络夹具返回的固定测试文字，未调用任何模型。\n\n" + String(repeating: "输入框应继续可见，原文位置应保持稳定。 ", count: 18)]]
+            if var context = body["guideContext"] as? [String: Any] {
+                context["opening"] = "合成阅读前导：这里展示界面验收用的固定样本，没有调用模型。"
+                context["method"] = "先读开头一段，留意反复出现的词，再带着自己的问题继续。"
+                context["readingQuestion"] = "这段原文中，哪个限定最值得回头核对？"
+                turn["guideContext"] = context
+            }
+            turn["contentVersion"] = body["contentVersion"]
             if !turns.contains(where: { $0["id"] as? String == turn["id"] as? String }) { turns.append(turn) }
             records["syntheticTurns"] = turns; persist(records, bookID: bookID)
             return reply(turn)

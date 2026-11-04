@@ -62,7 +62,7 @@ struct ReaderPageTranslationPanel: View {
             .onAppear { reading.offerFirstPassage = false }
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button { reading.stopFollowing(); dismiss() } label: { Image(systemName: "xmark") }
+                    Button { reading.stopFollowing(); dismiss() } label: { Image(systemName: "xmark").frame(width: 44, height: 44).contentShape(Rectangle()) }
                         .frame(minWidth: 44, minHeight: 44).accessibilityLabel("停止翻译并关闭")
                         .accessibilityIdentifier("reader-follow-translation-close")
                 }

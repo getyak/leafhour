@@ -34,10 +34,18 @@ final class ReaderGuideContextTests: XCTestCase {
             context["opening"] = guide.opening; context["method"] = guide.method; context["readingQuestion"] = guide.readingQuestion
             return ["id": body["id"]!, "text": body["text"]!, "contentVersion": "v1", "guideContext": context, "status": "completed", "answer": ["summary": "A guide follow-up answer."]]
         }
-        let tools = ReaderCloudTools(); tools.configure(library: library, localBookID: book.id)
-        await tools.restoreConversationDraft(identity: identity, library: library); await tools.loadConversation(session, cloud: cloud)
-        tools.question = "My unsent transcript"
+        let previous = ReaderCloudTools(); previous.configure(library: library, localBookID: book.id)
+        await previous.restoreConversationDraft(identity: identity, library: library)
+        previous.question = "My unsent transcript"
+        let tools = ReaderCloudTools()
+        _ = await previous.flushConversationDraft()
+        await tools.prepareGuideConversation(session, cloud: cloud, library: library)
+        XCTAssertEqual(tools.question, "My unsent transcript", "The actual cold guide entry restores its existing composer before sending")
         let voice = ChatVoiceReceipt(id: UUID().uuidString.lowercased(), mimeType: "audio/x-caf", bytes: 16, sha256: String(repeating: "a", count: 64), durationMs: 900)
+        previous.pendingVoice = voice; _ = await previous.flushConversationDraft()
+        let cold = ReaderCloudTools()
+        await cold.prepareGuideConversation(session, cloud: cloud, library: library)
+        XCTAssertEqual(cold.pendingVoice, voice)
         tools.pendingVoice = voice
         await tools.sendGuideFollowUp(item, guide: guide, cloud: cloud)
         XCTAssertEqual(tools.turns.last?.question, item.text); XCTAssertEqual(tools.turns.last?.guideContext?.method, guide.method)
@@ -57,6 +65,11 @@ final class ReaderGuideContextTests: XCTestCase {
         XCTAssertEqual(pending["text"] as? String, item.text); XCTAssertNotNil(pending["guideContext"])
         XCTAssertEqual(tools.question, "My unsent transcript"); XCTAssertEqual(tools.pendingVoice, voice)
         XCTAssertNotNil(tools.error)
+        _ = await tools.flushConversationDraft()
+        let pendingCold = ReaderCloudTools()
+        await pendingCold.prepareGuideConversation(session, cloud: cloud, library: library)
+        XCTAssertEqual(pendingCold.retry?.body, frozen)
+        XCTAssertEqual(pendingCold.question, "My unsent transcript"); XCTAssertEqual(pendingCold.pendingVoice, voice)
     }
 
     func testPreloadedConversationDoesNotInvokeAutomaticLoadAgain() async throws {

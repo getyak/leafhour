@@ -104,7 +104,7 @@ struct TranslationDisplayChoices: View {
                     .background(.quaternary.opacity(0.35), in: RoundedRectangle(cornerRadius: 10))
                     .overlay(RoundedRectangle(cornerRadius: 10).stroke(session.state.preferences.viewMode == mode ? Color.accentColor : Color.secondary.opacity(0.25), lineWidth: session.state.preferences.viewMode == mode ? 2 : 1))
             }.buttonStyle(.plain).frame(minHeight: 44)
-                .accessibilityElement(children: .ignore).accessibilityLabel(title)
+                .accessibilityLabel(title)
                 .accessibilityValue(session.state.preferences.viewMode == mode ? "已选择" : "未选择")
                 .accessibilityIdentifier("reader-translation-template-" + mode.rawValue)
         }

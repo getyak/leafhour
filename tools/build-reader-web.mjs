@@ -272,7 +272,7 @@ export function assertAnnotationBoundaryEdges({edges,release,sources=[]}){
 export const RETAINED_BACKUP_PUBLIC_FILES=Object.freeze([
  'app/preference-memory-codec.mjs',
  'app/book-introduction.mjs','app/highlights.mjs','app/library-backup.mjs','app/note-drafts.mjs',
- 'app/paragraph-anchor.mjs','app/personal-records.mjs','app/portable-chat.mjs','app/chat-reactions.mjs',
+ 'app/paragraph-anchor.mjs','app/personal-records.mjs','app/portable-chat.mjs','app/chat-guide-context.mjs','app/chat-reactions.mjs',
  'app/reader-annotation-records.mjs','app/reading-chat-quote.mjs','app/reading-draft-store.mjs',
  'app/reading-mark-store.mjs','app/reading-preferences.mjs','app/reading-queue-store.mjs',
  'app/reading-retained-backup.mjs','app/reading-session-record.mjs','app/reading-time-policy.mjs','app/source-revisions.mjs'

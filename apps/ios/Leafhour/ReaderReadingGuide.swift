@@ -102,7 +102,7 @@ struct ReaderReadingGuideCompact: View {
                         else { Image(systemName: "chevron.right").font(.caption) }
                     }.frame(minHeight: 44).contentShape(Rectangle())
                 }.buttonStyle(.plain).accessibilityIdentifier("reader-reading-guide-open")
-                Button { controller.dismiss() } label: { Image(systemName: "xmark").font(.caption).frame(width: 44, height: 44) }
+                Button { controller.dismiss() } label: { Image(systemName: "xmark").font(.caption).frame(width: 44, height: 44).contentShape(Rectangle()) }
                     .buttonStyle(.plain).accessibilityLabel("收起阅读前导").accessibilityIdentifier("reader-reading-guide-dismiss")
             }.padding(.horizontal, 12).padding(.vertical, 6).background(.regularMaterial, in: RoundedRectangle(cornerRadius: 14))
                 .accessibilityElement(children: .contain)
