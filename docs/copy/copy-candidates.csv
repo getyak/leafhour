@@ -5860,43 +5860,45 @@ candidate:server/library-service.mjs:595:113,js-cjk-literal,server/library-servi
 candidate:server/library-service.mjs:598:230,js-cjk-literal,server/library-service.mjs,598,,unknown,reviewable,,阅读位置已在另一处更新，请选择从哪里继续
 candidate:server/library-service.mjs:604:23,js-cjk-literal,server/library-service.mjs,604,,unknown,reviewable,,找不到当前段落
 candidate:server/library-service.mjs:610:31,js-cjk-literal,server/library-service.mjs,610,,unknown,reviewable,,翻译服务尚未配置，原文仍可继续阅读
-candidate:server/library-service.mjs:611:173,js-cjk-literal,server/library-service.mjs,611,,unknown,reviewable,,这本书正在保存另一段译文，请稍后再试；当前段落尚未提交翻译。
-candidate:server/library-service.mjs:611:254,js-cjk-literal,server/library-service.mjs,611,,unknown,reviewable,,这一段正在翻译，请稍后查看
-candidate:server/library-service.mjs:611:317,js-cjk-literal,server/library-service.mjs,611,,unknown,reviewable,,翻译服务正在处理其他段落，请稍后再试
-candidate:server/library-service.mjs:616:126,js-cjk-literal,server/library-service.mjs,616,,unknown,reviewable,,本次翻译已取消或过期，未保存结果
-candidate:server/library-service.mjs:628:139,js-cjk-literal,server/library-service.mjs,628,,unknown,reviewable,,翻译结果不完整，请重试；原文已保留
-candidate:server/library-service.mjs:657:164,js-cjk-literal,server/library-service.mjs,657,,unknown,reviewable,,请先撤回不再使用的授权
-candidate:server/library-service.mjs:662:139,js-cjk-literal,server/library-service.mjs,662,,unknown,reviewable,,请选择授权范围
-candidate:server/library-service.mjs:666:239,js-cjk-literal,server/library-service.mjs,666,,unknown,reviewable,,请选择授权范围
-candidate:server/library-service.mjs:669:269,js-cjk-literal,server/library-service.mjs,669,,unknown,reviewable,,请选择授权范围
-candidate:server/library-service.mjs:674:324,js-cjk-literal,server/library-service.mjs,674,,unknown,reviewable,,Agent 授权无效或范围不足
-candidate:server/library-service.mjs:677:144,js-cjk-literal,server/library-service.mjs,677,,unknown,reviewable,,Agent 授权无效或范围不足
-candidate:server/library-service.mjs:696:146,js-cjk-literal,server/library-service.mjs,696,,unknown,reviewable,,找不到这条授权
-candidate:server/library-service.mjs:713:89,js-cjk-literal,server/library-service.mjs,713,,unknown,reviewable,,单份备份最多容纳100本书，请在本机按书整理后导出。
-candidate:server/library-service.mjs:723:139,js-cjk-literal,server/library-service.mjs,723,,unknown,reviewable,,原文件与恢复的书籍版本不符
-candidate:server/library-service.mjs:731:183,js-cjk-literal,server/library-service.mjs,731,,unknown,reviewable,,备份分段范围不正确。
-candidate:server/library-service.mjs:736:46,js-cjk-literal,server/library-service.mjs,736,,unknown,reviewable,,这本书的备份过大，请在本机导出。
-candidate:server/library-service.mjs:737:45,js-cjk-literal,server/library-service.mjs,737,,unknown,reviewable,,这本书刚刚有新记录，请重试导出。
-candidate:server/library-service.mjs:738:40,js-cjk-literal,server/library-service.mjs,738,,unknown,reviewable,,备份分段范围不正确。
-candidate:server/library-service.mjs:746:226,js-cjk-literal,server/library-service.mjs,746,,unknown,reviewable,,备份中的书架超过 1000 本，请在本机整理后恢复
-candidate:server/library-service.mjs:748:460,js-cjk-literal,server/library-service.mjs,748,,unknown,reviewable,,书籍格式不完整
-candidate:server/library-service.mjs:749:84,js-cjk-literal,server/library-service.mjs,749,,unknown,reviewable,,这本备份的文字量超过云端限制，请在本机恢复
-candidate:server/library-service.mjs:750:283,js-cjk-literal,server/library-service.mjs,750,,unknown,reviewable,,备份的原文版本与书房已有内容冲突，未覆盖原书或记录
-candidate:server/library-service.mjs:751:330,js-cjk-literal,server/library-service.mjs,751,,unknown,reviewable,,原文锚点不完整
-candidate:server/library-service.mjs:752:309,js-cjk-literal,server/library-service.mjs,752,,unknown,reviewable,,个人记录无法对应原文
-candidate:server/library-service.mjs:753:116,js-cjk-literal,server/library-service.mjs,753,,unknown,reviewable,,阅读位置无法恢复
-candidate:server/library-service.mjs:772:112,js-cjk-literal,server/library-service.mjs,772,,unknown,reviewable,,书架正在另一处更新，请刷新后重新恢复
-candidate:server/library-service.mjs:781:101,js-cjk-literal,server/library-service.mjs,781,,unknown,reviewable,,请选择一份 20 MB 以内的单书阅读包
-candidate:server/library-service.mjs:783:232,js-cjk-literal,server/library-service.mjs,783,,unknown,reviewable,,赠书阅读包不能包含个人记录
-candidate:server/library-service.mjs:784:57,js-cjk-literal,server/library-service.mjs,784,,unknown,reviewable,,赠书阅读包不能包含账户阅读习惯
-candidate:server/library-service.mjs:785:31,js-cjk-literal,server/library-service.mjs,785,,unknown,reviewable,,这份阅读包的原文与译文合计超过云端阅读容量，请下载后在本机接收
-candidate:server/library-service.mjs:791:124,js-cjk-literal,server/library-service.mjs,791,,unknown,reviewable,,阅读包的原文或译文超过云端单份容量，请在本机接收
-candidate:server/library-service.mjs:794:69,js-cjk-literal,server/library-service.mjs,794,,unknown,reviewable,,译文已超过云端单份容量，已有记录已保留
-candidate:server/library-service.mjs:801:91,js-cjk-literal,server/library-service.mjs,801,,unknown,reviewable,,书架已有同标识的另一版本，原书和记录已保留
-candidate:server/library-service.mjs:806:104,js-cjk-literal,server/library-service.mjs,806,,unknown,reviewable,,译文来源版本已变化，已有译文已保留
-candidate:server/library-service.mjs:820:46,js-cjk-literal,server/library-service.mjs,820,,unknown,reviewable,,书架已有同标识的另一版本，原书和记录已保留
-candidate:server/library-service.mjs:821:92,js-cjk-literal,server/library-service.mjs,821,,unknown,reviewable,,另一封赠书尚未收好，请先重试原来的赠书链接
-candidate:server/library-service.mjs:828:89,js-cjk-literal,server/library-service.mjs,828,,unknown,reviewable,,译文来源版本已变化，已有译文已保留
+candidate:server/library-service.mjs:613:97,js-cjk-literal,server/library-service.mjs,613,,unknown,reviewable,,这一段或邻近上下文超过单段处理范围，原文仍可阅读
+candidate:server/library-service.mjs:615:144,js-cjk-literal,server/library-service.mjs,615,,unknown,reviewable,,这一段或邻近上下文超过单段处理范围，原文仍可阅读
+candidate:server/library-service.mjs:616:173,js-cjk-literal,server/library-service.mjs,616,,unknown,reviewable,,这本书正在保存另一段译文，请稍后再试；当前段落尚未提交翻译。
+candidate:server/library-service.mjs:616:254,js-cjk-literal,server/library-service.mjs,616,,unknown,reviewable,,这一段正在翻译，请稍后查看
+candidate:server/library-service.mjs:616:317,js-cjk-literal,server/library-service.mjs,616,,unknown,reviewable,,翻译服务正在处理其他段落，请稍后再试
+candidate:server/library-service.mjs:621:126,js-cjk-literal,server/library-service.mjs,621,,unknown,reviewable,,本次翻译已取消或过期，未保存结果
+candidate:server/library-service.mjs:633:139,js-cjk-literal,server/library-service.mjs,633,,unknown,reviewable,,翻译结果不完整，请重试；原文已保留
+candidate:server/library-service.mjs:662:164,js-cjk-literal,server/library-service.mjs,662,,unknown,reviewable,,请先撤回不再使用的授权
+candidate:server/library-service.mjs:667:139,js-cjk-literal,server/library-service.mjs,667,,unknown,reviewable,,请选择授权范围
+candidate:server/library-service.mjs:671:239,js-cjk-literal,server/library-service.mjs,671,,unknown,reviewable,,请选择授权范围
+candidate:server/library-service.mjs:674:269,js-cjk-literal,server/library-service.mjs,674,,unknown,reviewable,,请选择授权范围
+candidate:server/library-service.mjs:679:324,js-cjk-literal,server/library-service.mjs,679,,unknown,reviewable,,Agent 授权无效或范围不足
+candidate:server/library-service.mjs:682:144,js-cjk-literal,server/library-service.mjs,682,,unknown,reviewable,,Agent 授权无效或范围不足
+candidate:server/library-service.mjs:701:146,js-cjk-literal,server/library-service.mjs,701,,unknown,reviewable,,找不到这条授权
+candidate:server/library-service.mjs:718:89,js-cjk-literal,server/library-service.mjs,718,,unknown,reviewable,,单份备份最多容纳100本书，请在本机按书整理后导出。
+candidate:server/library-service.mjs:728:139,js-cjk-literal,server/library-service.mjs,728,,unknown,reviewable,,原文件与恢复的书籍版本不符
+candidate:server/library-service.mjs:736:183,js-cjk-literal,server/library-service.mjs,736,,unknown,reviewable,,备份分段范围不正确。
+candidate:server/library-service.mjs:741:46,js-cjk-literal,server/library-service.mjs,741,,unknown,reviewable,,这本书的备份过大，请在本机导出。
+candidate:server/library-service.mjs:742:45,js-cjk-literal,server/library-service.mjs,742,,unknown,reviewable,,这本书刚刚有新记录，请重试导出。
+candidate:server/library-service.mjs:743:40,js-cjk-literal,server/library-service.mjs,743,,unknown,reviewable,,备份分段范围不正确。
+candidate:server/library-service.mjs:751:226,js-cjk-literal,server/library-service.mjs,751,,unknown,reviewable,,备份中的书架超过 1000 本，请在本机整理后恢复
+candidate:server/library-service.mjs:753:460,js-cjk-literal,server/library-service.mjs,753,,unknown,reviewable,,书籍格式不完整
+candidate:server/library-service.mjs:754:84,js-cjk-literal,server/library-service.mjs,754,,unknown,reviewable,,这本备份的文字量超过云端限制，请在本机恢复
+candidate:server/library-service.mjs:755:283,js-cjk-literal,server/library-service.mjs,755,,unknown,reviewable,,备份的原文版本与书房已有内容冲突，未覆盖原书或记录
+candidate:server/library-service.mjs:756:330,js-cjk-literal,server/library-service.mjs,756,,unknown,reviewable,,原文锚点不完整
+candidate:server/library-service.mjs:757:309,js-cjk-literal,server/library-service.mjs,757,,unknown,reviewable,,个人记录无法对应原文
+candidate:server/library-service.mjs:758:116,js-cjk-literal,server/library-service.mjs,758,,unknown,reviewable,,阅读位置无法恢复
+candidate:server/library-service.mjs:777:112,js-cjk-literal,server/library-service.mjs,777,,unknown,reviewable,,书架正在另一处更新，请刷新后重新恢复
+candidate:server/library-service.mjs:786:101,js-cjk-literal,server/library-service.mjs,786,,unknown,reviewable,,请选择一份 20 MB 以内的单书阅读包
+candidate:server/library-service.mjs:788:232,js-cjk-literal,server/library-service.mjs,788,,unknown,reviewable,,赠书阅读包不能包含个人记录
+candidate:server/library-service.mjs:789:57,js-cjk-literal,server/library-service.mjs,789,,unknown,reviewable,,赠书阅读包不能包含账户阅读习惯
+candidate:server/library-service.mjs:790:31,js-cjk-literal,server/library-service.mjs,790,,unknown,reviewable,,这份阅读包的原文与译文合计超过云端阅读容量，请下载后在本机接收
+candidate:server/library-service.mjs:796:124,js-cjk-literal,server/library-service.mjs,796,,unknown,reviewable,,阅读包的原文或译文超过云端单份容量，请在本机接收
+candidate:server/library-service.mjs:799:69,js-cjk-literal,server/library-service.mjs,799,,unknown,reviewable,,译文已超过云端单份容量，已有记录已保留
+candidate:server/library-service.mjs:806:91,js-cjk-literal,server/library-service.mjs,806,,unknown,reviewable,,书架已有同标识的另一版本，原书和记录已保留
+candidate:server/library-service.mjs:811:104,js-cjk-literal,server/library-service.mjs,811,,unknown,reviewable,,译文来源版本已变化，已有译文已保留
+candidate:server/library-service.mjs:825:46,js-cjk-literal,server/library-service.mjs,825,,unknown,reviewable,,书架已有同标识的另一版本，原书和记录已保留
+candidate:server/library-service.mjs:826:92,js-cjk-literal,server/library-service.mjs,826,,unknown,reviewable,,另一封赠书尚未收好，请先重试原来的赠书链接
+candidate:server/library-service.mjs:833:89,js-cjk-literal,server/library-service.mjs,833,,unknown,reviewable,,译文来源版本已变化，已有译文已保留
 candidate:server/listening-guide-content.mjs:6:31,js-cjk-literal,server/listening-guide-content.mjs,6,,unknown,reviewable,,这次导听的原文范围太长，请缩小范围；尚未开始生成。
 candidate:server/listening-guide-content.mjs:7:28,js-cjk-literal,server/listening-guide-content.mjs,7,,unknown,reviewable,,导听依据的原文已变化，请重新选择范围。
 candidate:server/listening-guide-content.mjs:13:73,js-cjk-literal,server/listening-guide-content.mjs,13,,unknown,reviewable,,请选择开篇导听、讲解或全书导览。
