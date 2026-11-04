@@ -40,6 +40,10 @@ struct ChatScrollLayout: Equatable {
         cancelLegacySettlement(); legacyGestureActive = false
         followsLatest = true; userScrolling = false; layoutAtStart = nil
     }
+    func pauseFollowing() {
+        cancelLegacySettlement(); legacyGestureActive = false
+        followsLatest = false; userScrolling = false; layoutAtStart = nil
+    }
     func beginLegacyBrowsing(layout: ChatScrollLayout? = nil) {
         cancelLegacySettlement()
         if !legacyGestureActive { legacyGestureActive = true; startBrowsing(layout: layout) }
@@ -128,14 +132,22 @@ private struct ChatScrollTracking: ViewModifier {
 
 private struct ChatScrollAnchoring: ViewModifier {
     let followsLatest: Bool
+    let marginal: Bool
     @ViewBuilder func body(content: Content) -> some View {
         if #available(iOS 18, *) {
-            content.defaultScrollAnchor(.bottom, for: .initialOffset)
-                .defaultScrollAnchor(.bottom, for: .alignment)
+            content.defaultScrollAnchor(marginal ? .top : .bottom, for: .initialOffset)
+                .defaultScrollAnchor(marginal ? .top : .bottom, for: .alignment)
                 .defaultScrollAnchor(followsLatest ? .bottom : .top, for: .sizeChanges)
         } else {
-            content.defaultScrollAnchor(followsLatest ? .bottom : .top)
+            content.defaultScrollAnchor(followsLatest && !marginal ? .bottom : .top)
         }
+    }
+}
+
+private struct ChatReadingEdges: ViewModifier {
+    @ViewBuilder func body(content: Content) -> some View {
+        if #available(iOS 26, *) { content.scrollEdgeEffectHidden() }
+        else { content }
     }
 }
 
@@ -143,7 +155,7 @@ private struct ChatScrollAnchoring: ViewModifier {
 struct ChatConversationView: View {
     @Bindable var tools: ReaderCloudTools
     let cloud: CloudLibraryClient?
-    var title = "Chat"
+    var title = "旁注"
     let bookTitle: String
     let source: String
     var sourceChapter = ""
@@ -151,6 +163,7 @@ struct ChatConversationView: View {
     var sourceLabel = "引用的原文"
     var localOnly = false
     var isLibraryConversation = false
+    var isMarginalNote = false
     var onSignIn: (() -> Void)? = nil
     let load: () async -> Void
     let send: () async -> Void
@@ -162,6 +175,8 @@ struct ChatConversationView: View {
     @State private var sendingVoice = false
     @State private var scrollPosition = ChatScrollState()
     @State private var latestRequest = UUID()
+    @State private var expandedQuestions = Set<String>()
+    @State private var placedMarginalReply: String?
     @FocusState private var focused: Bool
     @Environment(\.scenePhase) private var scenePhase
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
@@ -177,42 +192,57 @@ struct ChatConversationView: View {
     var body: some View {
         ScrollViewReader { proxy in
             ScrollView {
-                LazyVStack(alignment: .leading, spacing: 24) {
-                    ForEach(tools.turns.dropLast(2)) { turn in conversationTurn(turn) }
-                    // Keep the previous exchange and the live exchange together.
-                    // The streaming row must be measured before scrolling to it;
-                    // older, completed exchanges can remain lazily rendered.
+                VStack(alignment: .leading, spacing: 24) {
+                    if tools.turns.count > 2 {
+                        LazyVStack(alignment: .leading, spacing: 24) {
+                            ForEach(tools.turns.dropLast(2)) { turn in conversationTurn(turn) }
+                        }
+                    }
+                    // A long live exchange must not become the lazy stack's row
+                    // height estimate. Measure it outside older, lazy history.
                     VStack(alignment: .leading, spacing: 24) {
                         ForEach(tools.turns.suffix(2)) { turn in conversationTurn(turn) }
                         status
                         Color.clear.frame(height: 1).modifier(ChatBottomMarker(position: scrollPosition))
                     }.id("chat-bottom")
                 }.frame(maxWidth: 680).padding(.horizontal, 20).padding(.vertical, 20).frame(maxWidth: .infinity)
-            }.accessibilityIdentifier("reader-conversation-history")
+            }.modifier(ChatReadingEdges()).accessibilityIdentifier("reader-conversation-history")
                 .coordinateSpace(name: "conversation-scroll")
                 .modifier(ChatScrollTracking(position: scrollPosition))
-                .modifier(ChatScrollAnchoring(followsLatest: scrollPosition.followsLatest))
+                .modifier(ChatScrollAnchoring(followsLatest: scrollPosition.followsLatest, marginal: isMarginalNote))
                 .simultaneousGesture(DragGesture(minimumDistance: 12).onChanged { _ in
                     if !focused { composerAwake = false }
                 })
                 .scrollDismissesKeyboard(.interactively)
                 .safeAreaInset(edge: .bottom, spacing: 0) { composer }
                 .onChange(of: latestRequest) { _, _ in scroll(proxy) }
-                .onChange(of: tools.turns.last?.id) { _, _ in if scrollPosition.followsLatest { scroll(proxy) } }
-                .onChange(of: tools.turns.last?.status) { _, _ in if scrollPosition.followsLatest { scroll(proxy) } }
+                .onChange(of: tools.turns.last?.id) { _, _ in
+                    if !placeCompletedMarginalReply(proxy), scrollPosition.followsLatest { scroll(proxy) }
+                }
+                .onChange(of: tools.turns.last?.status) { _, _ in
+                    if !placeCompletedMarginalReply(proxy), scrollPosition.followsLatest { scroll(proxy) }
+                }
                 .onChange(of: tools.generating) { _, value in if value && scrollPosition.followsLatest { scroll(proxy) } }
-                .onChange(of: tools.responseText) { _, _ in
+                .onChange(of: tools.responseText) { _, value in
                     // Follow only from the bottom. Reading or selecting an earlier
                     // answer must not be interrupted by each incoming text delta.
-                    if scrollPosition.followsLatest { scroll(proxy, animated: false) }
+                    if isMarginalNote, !value.isEmpty, let id = activeTurnID, placedMarginalReply != id {
+                        placedMarginalReply = id
+                        if scrollPosition.followsLatest { scrollPosition.pauseFollowing(); scrollToReply(id, proxy: proxy) }
+                    } else if scrollPosition.followsLatest { scroll(proxy, animated: false) }
                 }
                 .onChange(of: focused) { _, value in
                     if value && shortHeight { sourceExpanded = false; referenceExpanded = false }
                     if value && scrollPosition.followsLatest { scroll(proxy) }
                 }
-                .task { await Task.yield(); if scrollPosition.followsLatest { scroll(proxy, animated: false) } }
+                .task {
+                    await Task.yield()
+                    if !placeCompletedMarginalReply(proxy), scrollPosition.followsLatest { scroll(proxy, animated: false) }
+                }
         }.background(Color(uiColor: .systemBackground))
             .navigationTitle(title).navigationBarTitleDisplayMode(.inline)
+            .toolbarBackground(Color(uiColor: .systemBackground), for: .navigationBar)
+            .toolbarBackground(.visible, for: .navigationBar)
             .task { await reload() }
             .onChange(of: sourceExpanded) { _, expanded in if expanded && shortHeight { focused = false } }
             .onChange(of: referenceExpanded) { _, expanded in if expanded && shortHeight { focused = false } }
@@ -241,7 +271,10 @@ struct ChatConversationView: View {
             resolveVoice: { try await tools.voiceURL($0, cloud: cloud) }, playbackAllowed: !speech.isActive,
             onReference: { role in tools.referenceMessage(turn, role: role); referenceExpanded = false; composerAwake = true; focused = true },
             onLike: { role in tools.toggleMessageLike(turnID: turn.id, role: role) },
-            isLiked: { role in tools.isMessageLiked(turnID: turn.id, role: role) })
+            isLiked: { role in tools.isMessageLiked(turnID: turn.id, role: role) },
+            questionExpanded: Binding(get: { expandedQuestions.contains(turn.id) }, set: { expanded in
+                if expanded { scrollPosition.pauseFollowing(); expandedQuestions.insert(turn.id) } else { expandedQuestions.remove(turn.id) }
+            }))
     }
     private func reload() async {
         await load()
@@ -268,7 +301,21 @@ struct ChatConversationView: View {
     private func scroll(_ proxy: ScrollViewProxy, animated: Bool = true) {
         withAnimation(animated && !reduceMotion ? .easeOut(duration: 0.2) : nil) { proxy.scrollTo("chat-bottom", anchor: .bottom) }
     }
-    private var showsLatest: Bool { !scrollPosition.followsLatest && !tools.turns.isEmpty }
+    private func scrollToReply(_ id: String, proxy: ScrollViewProxy) {
+        withAnimation(reduceMotion ? nil : .easeOut(duration: 0.2)) { proxy.scrollTo("chat-reply-" + id, anchor: .top) }
+    }
+    private func placeCompletedMarginalReply(_ proxy: ScrollViewProxy) -> Bool {
+        guard isMarginalNote, scrollPosition.followsLatest, let last = tools.turns.last,
+              last.status == "completed", placedMarginalReply != last.id else { return false }
+        placedMarginalReply = last.id
+        scrollPosition.pauseFollowing()
+        scrollToReply(last.id, proxy: proxy)
+        return true
+    }
+    private var showsLatest: Bool {
+        !scrollPosition.followsLatest && !tools.turns.isEmpty
+            && (!isMarginalNote || !composerIsCompact || !scrollPosition.isAtLatest)
+    }
     private func returnToLatest() { scrollPosition.resumeFollowing(); latestRequest = UUID() }
     private func latestButton(compact: Bool) -> some View {
         Button(action: returnToLatest) {
@@ -286,7 +333,7 @@ struct ChatConversationView: View {
                 ScrollView {
                     if shortHeight {
                         Text([bookTitle, sourceChapter, tools.chatContext?.sourceLabel ?? sourceLabel].filter { !$0.isEmpty }.joined(separator: " · "))
-                            .font(.caption2).foregroundStyle(.secondary).frame(maxWidth: .infinity, alignment: .leading)
+                            .font(.caption2).foregroundStyle(Color.primary.opacity(0.64)).frame(maxWidth: .infinity, alignment: .leading)
                     }
                     Text(source).font(.subheadline).lineSpacing(5).textSelection(.enabled)
                         .frame(maxWidth: .infinity, alignment: .leading).padding(.top, 8)
@@ -306,7 +353,7 @@ struct ChatConversationView: View {
                         HStack(spacing: 6) {
                             Text([bookTitle, sourceChapter].filter { !$0.isEmpty }.joined(separator: " · ")).lineLimit(1)
                             if tools.chatContext?.selection?.origin == "translation" { Text("译文 · 随附原文").fixedSize() }
-                        }.font(.caption2).foregroundStyle(.secondary)
+                        }.font(.caption2).foregroundStyle(Color.primary.opacity(0.64))
                     }
                 }
                 }
@@ -315,7 +362,7 @@ struct ChatConversationView: View {
             if (canRemoveSource || tools.chatContext?.selection != nil) && !tools.chatQuoteRemoved {
             Button { tools.removeChatSelection(); sourceExpanded = false } label: {
                 Image(systemName: "xmark").font(.caption).frame(width: 44, height: 44).contentShape(Rectangle())
-            }.buttonStyle(.plain).foregroundStyle(.secondary).accessibilityLabel("移除本次引用")
+            }.buttonStyle(.plain).foregroundStyle(Color.primary.opacity(0.64)).accessibilityLabel("移除本次引用")
                 .accessibilityIdentifier("chat-remove-source").disabled(tools.generating || tools.loading || tools.retry != nil)
             }
         }.padding(.horizontal, 8).padding(.vertical, shortHeight ? 0 : 4)
@@ -325,9 +372,10 @@ struct ChatConversationView: View {
     @ViewBuilder private var status: some View {
         if tools.generating && tools.turns.isEmpty { ProgressView(tools.responseStatus ?? "正在回答…").font(.caption).accessibilityIdentifier("chat-generating") }
         else if tools.turns.isEmpty && (tools.loading || !didLoad) { ProgressView("正在读取对话…").font(.caption) }
-        else if tools.turns.isEmpty && tools.error == nil && !isLibraryConversation {
-            Text(localOnly ? "登录后可以继续提问，输入的文字会保留。" : "想聊聊这段里的什么？")
-                .font(.subheadline).foregroundStyle(.secondary).padding(.vertical, 12)
+        else if tools.turns.isEmpty && tools.error == nil {
+            Text(isLibraryConversation ? "书里的一句话，或此刻的一个念头。" : localOnly ? "登录后可以继续提问，输入的文字会保留。" : "想聊聊这段里的什么？")
+                .font(.subheadline).foregroundStyle(Color.primary.opacity(0.64)).padding(.vertical, 12)
+                .accessibilityIdentifier(isLibraryConversation ? "chat-companion-greeting" : "reader-conversation-greeting")
         }
         if isLibraryConversation && localOnly {
             Button("登录后继续聊", systemImage: "person.crop.circle") { onSignIn?() }.frame(minHeight: 44)
@@ -336,7 +384,7 @@ struct ChatConversationView: View {
         }
         if let error = tools.error, failedTurnID == nil, !tools.generating {
             VStack(alignment: .leading, spacing: 4) {
-                Text(error).font(.caption).foregroundStyle(.secondary).textSelection(.enabled)
+                Text(error).font(.caption).foregroundStyle(Color.primary.opacity(0.64)).textSelection(.enabled)
                 if tools.retry == nil { Button("重试") { Task { await reload() } }.font(.subheadline).frame(minHeight: 44).disabled(tools.loading) }
             }.accessibilityIdentifier("reader-conversation-error")
         }
@@ -345,7 +393,7 @@ struct ChatConversationView: View {
                 .font(.subheadline).frame(minHeight: 44).disabled(tools.loading)
         }
         if let error = tools.draftError {
-            Text(error).font(.footnote).foregroundStyle(.secondary)
+            Text(error).font(.footnote).foregroundStyle(Color.primary.opacity(0.64))
             Button("重试保存与恢复草稿", systemImage: "arrow.clockwise") { Task { await tools.retryConversationDraftSave(); await reload() } }.frame(minHeight: 44)
         }
     }
@@ -360,7 +408,7 @@ struct ChatConversationView: View {
                         Text("继续问…").font(.subheadline).lineLimit(1)
                         Spacer(minLength: 0)
                     }.frame(minHeight: 44).contentShape(Rectangle())
-                }.buttonStyle(.plain).foregroundStyle(.secondary).accessibilityIdentifier("chat-wake-composer")
+                }.buttonStyle(.plain).foregroundStyle(Color.primary.opacity(0.64)).accessibilityIdentifier("chat-wake-composer")
                 if showsLatest { latestButton(compact: true) }
                 if tools.generating {
                     Button { Task { await tools.cancelConversation(cloud: cloud) } } label: {
@@ -407,7 +455,7 @@ struct ChatConversationView: View {
                     }.font(.caption2)
                 } else {
                     VStack(alignment: .leading, spacing: 3) {
-                        Text("回复 " + reference.authorLabel).font(.caption2).foregroundStyle(.secondary)
+                        Text("回复 " + reference.authorLabel).font(.caption2).foregroundStyle(Color.primary.opacity(0.64))
                         Text(reference.text).font(.subheadline).lineLimit(2)
                     }
                 }
@@ -436,7 +484,7 @@ struct ChatConversationView: View {
                             Spacer(minLength: 0)
                             Button("移除语音", systemImage: "xmark.circle.fill") { tools.pendingVoice = nil }
                                 .labelStyle(.iconOnly).frame(minWidth: 44, minHeight: 44).disabled(tools.generating || sendingVoice)
-                        }.foregroundStyle(.secondary).padding(.horizontal, shortHeight ? 0 : 12)
+                        }.foregroundStyle(Color.primary.opacity(0.64)).padding(.horizontal, shortHeight ? 0 : 12)
                     }
                 }
             }
@@ -457,7 +505,7 @@ struct ChatConversationView: View {
                 if shortHeight && focused {
                     Button { focused = false } label: {
                         Image(systemName: "keyboard.chevron.compact.down").font(.system(size: 18)).frame(width: 44, height: 44).contentShape(Rectangle())
-                    }.buttonStyle(.plain).foregroundStyle(.secondary).accessibilityLabel("收起键盘")
+                    }.buttonStyle(.plain).foregroundStyle(Color.primary.opacity(0.64)).accessibilityLabel("收起键盘")
                         .accessibilityIdentifier("chat-dismiss-keyboard")
                 } else if shortHeight && showsLatest {
                     latestButton(compact: true)
@@ -478,8 +526,8 @@ struct ChatConversationView: View {
             }.padding(.leading, 3).padding(.trailing, 6).padding(.vertical, 4)
                 .background(Color(uiColor: .secondarySystemBackground).opacity(0.5), in: RoundedRectangle(cornerRadius: 16))
                 .overlay { RoundedRectangle(cornerRadius: 16).strokeBorder(Color.primary.opacity(0.12), lineWidth: 0.5) }
-            if speech.isActive { Text(speech.preparing ? "正在打开麦克风…" : speech.finishing ? "正在整理语音…" : "正在录音 · 点麦克风取消，点箭头发送").font(.caption).foregroundStyle(.secondary).padding(.horizontal, 8) }
-            if let error = speech.error { Text(error).font(.caption).foregroundStyle(.secondary).padding(.horizontal, 8) }
+            if speech.isActive { Text(speech.preparing ? "正在打开麦克风…" : speech.finishing ? "正在整理语音…" : "正在录音 · 点麦克风取消，点箭头发送").font(.caption).foregroundStyle(Color.primary.opacity(0.64)).padding(.horizontal, 8) }
+            if let error = speech.error { Text(error).font(.caption).foregroundStyle(Color.primary.opacity(0.64)).padding(.horizontal, 8) }
         }.frame(maxWidth: 680).padding(.horizontal, 16).padding(.vertical, shortHeight ? 2 : 10).frame(maxWidth: .infinity)
             .background(Color(uiColor: .systemBackground))
             .background { GeometryReader { geometry in Color.clear.preference(key: CompanionComposerHeightKey.self, value: geometry.size.height) } }
@@ -509,27 +557,38 @@ private struct ChatTurnView: View {
     let onReference: (String) -> Void
     let onLike: (String) -> Void
     let isLiked: (String) -> Bool
+    @Binding var questionExpanded: Bool
+    private var foldsQuestion: Bool { turn.question.count > 240 }
+    private var shownQuestion: String {
+        foldsQuestion && !questionExpanded ? String(turn.question.prefix(96)).trimmingCharacters(in: .whitespacesAndNewlines) + "…" : turn.question
+    }
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            HStack(alignment: .top, spacing: 24) {
-                Spacer(minLength: 24)
-            VStack(alignment: .leading, spacing: 6) {
+            VStack(alignment: .leading, spacing: 5) {
+                Text("你问").font(.caption2).foregroundStyle(Color.primary.opacity(0.64))
                 if let voice = turn.voice {
                     ChatVoiceMessageView(voice: voice, resolve: { try await resolveVoice(voice) }, playbackAllowed: playbackAllowed)
-                    Text("转写文字").font(.caption2).foregroundStyle(.secondary)
+                    Text("转写文字").font(.caption2).foregroundStyle(Color.primary.opacity(0.64))
                 }
                 if let reference = turn.replyTo { ChatMessageReferenceView(reference: reference) }
                 if let quote = turn.quote { ChatSavedQuoteView(quote: quote) }
-                ChatMarkdownView(source: turn.question, plainText: true,
+                ChatMarkdownView(source: shownQuestion, plainText: true, copySource: turn.question,
                     onReference: { onReference("user") }, onLike: { onLike("user") }, liked: isLiked("user"))
                     .accessibilityIdentifier("chat-user-message-" + turn.id)
+                if foldsQuestion {
+                    Button {
+                        questionExpanded.toggle()
+                    } label: {
+                        Label(questionExpanded ? "收起问题" : "展开完整问题", systemImage: questionExpanded ? "chevron.up" : "chevron.down")
+                            .font(.caption).frame(minHeight: 44).contentShape(Rectangle())
+                    }.buttonStyle(.plain).foregroundStyle(Color.leafInk)
+                        .accessibilityIdentifier("chat-question-expand")
+                }
                 if isLiked("user") { Image(systemName: "hand.thumbsup.fill").font(.caption2).foregroundStyle(Color.leafInk).accessibilityLabel("已点赞") }
-            }.padding(.leading, 12).padding(.vertical, 8)
-                .overlay(alignment: .leading) { Rectangle().fill(Color.leafInk.opacity(0.18)).frame(width: 1) }
+            }.frame(maxWidth: .infinity, alignment: .leading)
                 .contextMenu { messageActions(role: "user", text: turn.question) }
                 .accessibilityAction(named: Text("引用消息")) { onReference("user") }
                 .accessibilityAction(named: Text(isLiked("user") ? "取消点赞" : "点赞")) { onLike("user") }
-            }
             VStack(alignment: .leading, spacing: 8) {
                 if let answer = turn.answer, !answer.isEmpty {
                     ChatMarkdownView(source: answer,
@@ -544,19 +603,19 @@ private struct ChatTurnView: View {
                     HStack(spacing: 8) {
                         ProgressView().controlSize(.mini)
                         Text(responseStatus ?? (responseText.isEmpty ? "正在思考…" : "正在回答…"))
-                    }.font(.caption).foregroundStyle(.secondary).accessibilityIdentifier("chat-generating")
+                    }.font(.caption).foregroundStyle(Color.primary.opacity(0.64)).accessibilityIdentifier("chat-generating")
                 } else if turn.status != "completed" {
                     VStack(alignment: .leading, spacing: 2) {
                         Text(error ?? (turn.status == "cancelled" ? "已停止回答" : "回答未完成"))
-                            .font(.caption).foregroundStyle(.secondary).textSelection(.enabled)
+                            .font(.caption).foregroundStyle(Color.primary.opacity(0.64)).textSelection(.enabled)
                         if let retry {
                             Button("重试", systemImage: "arrow.clockwise", action: retry)
                                 .font(.subheadline).frame(minHeight: 44).accessibilityIdentifier("chat-turn-retry")
                         }
                     }.accessibilityIdentifier("reader-conversation-error")
                 }
-            }.frame(maxWidth: .infinity, alignment: .leading)
-        }.accessibilityIdentifier("reader-conversation-turn-" + turn.id)
+            }.frame(maxWidth: .infinity, alignment: .leading).id("chat-reply-" + turn.id)
+        }.accessibilityElement(children: .contain).accessibilityIdentifier("reader-conversation-turn-" + turn.id)
     }
     @ViewBuilder private func messageActions(role: String, text: String) -> some View {
         Button("引用", systemImage: "arrowshape.turn.up.left") { onReference(role) }.disabled(role == "assistant" && turn.status != "completed")
@@ -573,13 +632,13 @@ private struct ChatSavedQuoteView: View {
         DisclosureGroup(isExpanded: $expanded) {
             ForEach(Array(quote.parts.enumerated()), id: \.offset) { _, part in
                 VStack(alignment: .leading, spacing: 4) {
-                    Text(part.label).font(.caption2).foregroundStyle(.secondary)
+                    Text(part.label).font(.caption2).foregroundStyle(Color.primary.opacity(0.64))
                     Text(part.text).font(.subheadline).textSelection(.enabled)
                 }.frame(maxWidth: .infinity, alignment: .leading)
             }
         } label: {
             Label(quote.parts.map(\.text).joined(separator: "\n"), systemImage: "text.quote")
-                .font(.caption).foregroundStyle(.secondary).lineLimit(2)
+                .font(.caption).foregroundStyle(Color.primary.opacity(0.64)).lineLimit(2)
         }.padding(.leading, 10)
             .overlay(alignment: .leading) { Rectangle().fill(Color.secondary.opacity(0.3)).frame(width: 1) }
             .accessibilityIdentifier("chat-saved-quote")
@@ -594,8 +653,8 @@ private struct ChatMessageReferenceView: View {
             Text(reference.text).font(.subheadline).textSelection(.enabled)
         } label: {
             VStack(alignment: .leading, spacing: 3) {
-                Text("回复 " + reference.authorLabel).font(.caption2).foregroundStyle(.secondary)
-                if !expanded { Text(reference.text).font(.caption).foregroundStyle(.secondary).lineLimit(2) }
+                Text("回复 " + reference.authorLabel).font(.caption2).foregroundStyle(Color.primary.opacity(0.64))
+                if !expanded { Text(reference.text).font(.caption).foregroundStyle(Color.primary.opacity(0.64)).lineLimit(2) }
             }
         }.tint(.secondary).accessibilityIdentifier("chat-saved-message-reference")
     }

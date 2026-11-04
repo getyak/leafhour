@@ -68,7 +68,7 @@ final class JournalUITests: XCTestCase {
         app.buttons["完成"].tap()
         section("notes")
         let field = app.textFields["journal-note-search"]; field.tap(); field.typeText("not found\n")
-        app.tabBars.buttons["Chat"].tap(); app.tabBars.buttons["我的阅读"].tap()
+        app.tabBars.buttons["松鼠"].tap(); app.tabBars.buttons["我的阅读"].tap()
         XCTAssertEqual(field.value as? String, "not found")
     }
     func testInitialFailureDoesNotPretendThereAreNoRecords() {

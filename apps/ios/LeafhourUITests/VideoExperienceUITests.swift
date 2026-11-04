@@ -841,19 +841,20 @@ final class VideoExperienceUITests: XCTestCase {
         capture("Local-book Chat restored after returning to shelf")
     }
 
-    func test20FullHeightChatKeepsComposerAboveKeyboard() {
+    func test20HalfHeightCompanionKeepsComposerAboveKeyboard() {
         launch(); openBook(translatedTitle); openMoreLink("阅读陪读")
         let question = app.descendants(matching: .any)["reader-question"]
         require(question)
-        let navigation = app.navigationBars["Chat"]
+        let navigation = app.navigationBars["旁注"]
         require(navigation)
-        XCTAssertLessThan(navigation.frame.minY, app.frame.height * 0.25)
+        XCTAssertGreaterThan(navigation.frame.minY, app.frame.height * 0.35, "The companion retains the source above its portrait half-sheet")
         question.tap(); question.typeText("GET317 question remains visible")
         require(app.keyboards.firstMatch)
         XCTAssertTrue(question.isHittable)
         XCTAssertLessThanOrEqual(question.frame.maxY, app.keyboards.firstMatch.frame.minY + 3)
-        XCTAssertLessThan(navigation.frame.minY, app.frame.height * 0.25, "Chat keeps its full-height layout while typing")
-        app.buttons["收起键盘"].tap()
+        app.buttons["reader-chat-return"].tap(); require(reader)
+        openMoreLink("阅读陪读"); require(question)
+        XCTAssertGreaterThan(navigation.frame.minY, app.frame.height * 0.35)
         XCTAssertTrue((question.value as? String)?.contains("GET317 question remains visible") == true)
     }
 
@@ -2061,7 +2062,7 @@ final class VideoExperienceUITests: XCTestCase {
             openTool(tool); require(app.navigationBars[title]); closePanel(); require(reader)
         }
         openMoreLink("搜索原文"); require(app.navigationBars["书内搜索"]); closePanel()
-        openMoreLink("阅读陪读"); require(app.navigationBars["Chat"]); closePanel()
+        openMoreLink("阅读陪读"); require(app.navigationBars["旁注"]); closePanel()
         let source = reader.value as? String ?? ""
         try selectOriginalForSavedRecordProfile(); systemEditAction(["复制", "Copy"]); wakeTools()
         Thread.sleep(forTimeInterval: 8)
@@ -2992,19 +2993,24 @@ extension VideoExperienceUITests {
     }
 
     func test111GlobalChatKeepsDraftAcrossTabsAndColdLaunch() {
-        launch(); app.tabBars.buttons["Chat"].tap()
+        launch(); app.tabBars.buttons["松鼠"].tap()
         require(app.descendants(matching: .any)["chat-companion-greeting"])
         XCTAssertFalse(app.buttons["chat-choose-book"].exists)
         XCTAssertFalse(app.buttons["chat-source-context"].exists)
         let question = app.descendants(matching: .any)["reader-question"]
         require(question); question.tap(); question.typeText("Keep my unfinished thought")
-        require(app.buttons["reader-question-dismiss-keyboard"]); app.buttons["reader-question-dismiss-keyboard"].tap()
+        app.scrollViews["reader-conversation-history"].swipeDown()
+        XCTAssertTrue(app.keyboards.firstMatch.waitForNonExistence(timeout: 5))
         capture("GET357-global-chat-draft")
-        app.tabBars.buttons["我的阅读"].tap(); app.tabBars.buttons["Chat"].tap()
+        app.tabBars.buttons["我的阅读"].tap(); app.tabBars.buttons["松鼠"].tap()
         XCTAssertEqual(question.value as? String, "Keep my unfinished thought")
-        coldRelaunch(); resumeReaderIfOffered()
-        if reader.exists { shelf() }
-        app.tabBars.buttons["Chat"].tap(); require(question)
+        coldRelaunch()
+        let restored = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in
+            self.reader.exists || self.app.otherElements["leafhour-pdf-reader"].exists || self.app.tabBars.buttons["松鼠"].isHittable
+        }, object: nil)
+        XCTAssertEqual(XCTWaiter.wait(for: [restored], timeout: 25), .completed)
+        if reader.exists || app.otherElements["leafhour-pdf-reader"].exists { shelf() }
+        app.tabBars.buttons["松鼠"].tap(); require(question)
         XCTAssertEqual(question.value as? String, "Keep my unfinished thought")
         capture("GET357-global-chat-restored")
     }
@@ -3048,16 +3054,17 @@ extension VideoExperienceUITests {
         require(reader); wakeTools()
         XCTAssertEqual(app.buttons["reader-contents"].value as? String, before)
     }
-    func test115ReadingConversationUsesFullPageAndReturnsToTheSameSource() {
+    func test115ReadingConversationUsesHalfSheetAndReturnsToTheSameSource() {
         launch(); openBook(translatedTitle)
         let before = reader.value as? String
         openMoreLink("阅读陪读")
         let field = app.descendants(matching: .any)["reader-question"]
         require(field)
-        XCTAssertLessThan(app.navigationBars.firstMatch.frame.minY, 100)
+        XCTAssertGreaterThan(app.navigationBars["旁注"].frame.minY, app.frame.height * 0.35)
         field.tap(); field.typeText("Keep this source question")
-        app.buttons["reader-question-dismiss-keyboard"].tap()
-        capture("reading-chat-full-page")
+        XCTAssertTrue(field.isHittable)
+        XCTAssertLessThanOrEqual(field.frame.maxY, app.keyboards.firstMatch.frame.minY + 3)
+        capture("reading-chat-half-sheet-with-keyboard")
         app.buttons["reader-chat-return"].tap(); require(reader)
         XCTAssertEqual(reader.value as? String, before)
         openMoreLink("阅读陪读"); require(field)

@@ -5,13 +5,19 @@ import LeafhourCore
 enum ReaderChrome: Equatable { case asleep, top, progress, tools }
 /// Keep the native book surface alive underneath Chat. Repeated tool/status
 /// changes must not traverse TextKit/PDFKit while that surface is covered.
-/// Cover and uncover both update once, preserving the view and its viewport.
+/// Preserve the same content position and native view when freezing or returning.
 struct ReaderBackgroundSurface<Content: View>: View, Equatable {
     let isCovered: Bool
     private let content: () -> Content
+    @State private var frozen: Content?
     init(isCovered: Bool, @ViewBuilder content: @escaping () -> Content) { self.isCovered = isCovered; self.content = content }
     static func == (lhs: Self, rhs: Self) -> Bool { lhs.isCovered && rhs.isCovered }
-    var body: some View { content() }
+    private var displayed: Content { isCovered ? frozen ?? content() : content() }
+    var body: some View {
+        displayed.onChange(of: isCovered, initial: true) { _, covered in
+            frozen = covered ? content() : nil
+        }
+    }
 }
 
 private enum ReaderChromeRegion: Hashable { case top, bottom }

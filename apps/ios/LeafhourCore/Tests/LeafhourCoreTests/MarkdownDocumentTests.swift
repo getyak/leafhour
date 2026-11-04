@@ -2,6 +2,18 @@ import XCTest
 @testable import LeafhourCore
 
 final class MarkdownDocumentTests: XCTestCase {
+    func testTableCellRangesComeFromASTAndPreserveDecodedWhitespaceAndUnicode() throws {
+        let document = MarkdownDocument(source: "| [源](https://leafhour.com) | B | C | D |\n|---|---|---|---|\n| 🙂&#9;尾 | x&#10;y | *third* | fourth |")
+        let table = try XCTUnwrap(document.tables.first)
+        XCTAssertEqual(table.columns, 4)
+        XCTAssertEqual(table.rows.count, 2)
+        XCTAssertTrue(table.rows[0].isHeader)
+        XCTAssertFalse(table.rows[1].isHeader)
+        XCTAssertEqual(table.rows[1].cells.map { (document.text as NSString).substring(with: $0) }, ["🙂\t尾", "x\ny", "third", "fourth"])
+        XCTAssertTrue(document.runs.contains { $0.style.link == "https://leafhour.com" })
+        XCTAssertTrue(NSMaxRange(table.range) <= document.text.utf16.count)
+    }
+
     func testCommonMarkRendersBlocksAndInlineStylesWithoutSourceDelimiters() {
         let source = "# A quiet page\n\nA **bold** and *gentle* thought with `code` and [a link](https://example.org).\n\n> A quoted thought.\n\n- First\n- Second\n\n```swift\nlet value = 1\n\nprint(value)\n```\n\n---"
         let document = MarkdownDocument(source: source)

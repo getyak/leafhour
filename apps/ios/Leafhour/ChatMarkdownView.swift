@@ -6,22 +6,37 @@ import LeafhourCore
 struct ChatMarkdownView: UIViewRepresentable {
     let source: String
     var plainText = false
+    var copySource: String? = nil
     var onReference: (() -> Void)? = nil
     var onLike: (() -> Void)? = nil
     var liked = false
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     func makeUIView(context: Context) -> UITextView {
-        let view = UITextView()
-        view.isEditable = false; view.isSelectable = true; view.isScrollEnabled = false
-        view.backgroundColor = .clear; view.textContainerInset = .zero; view.textContainer.lineFragmentPadding = 0
-        view.adjustsFontForContentSizeCategory = true; view.delegate = context.coordinator
+        let view = Self.makeNativeTextView()
+        view.delegate = context.coordinator
         configureActions(context.coordinator)
+        return view
+    }
+    static func makeNativeTextView() -> UITextView {
+        let storage = NSTextStorage()
+        let layout = ChatTextLayoutManager()
+        let container = NSTextContainer(size: CGSize(width: 0, height: CGFloat.greatestFiniteMagnitude))
+        container.widthTracksTextView = true
+        container.heightTracksTextView = false
+        storage.addLayoutManager(layout); layout.addTextContainer(container)
+        let view = UITextView(frame: .zero, textContainer: container)
+        view.isEditable = false; view.isSelectable = true; view.isScrollEnabled = false
+        view.clipsToBounds = false // The outer history clips; native italic ink may overhang its advance.
+        view.backgroundColor = .clear; view.textContainerInset = .zero; view.textContainer.lineFragmentPadding = 0
+        // SwiftUI's category owns every rendered font and its measured layout.
+        view.adjustsFontForContentSizeCategory = false
         view.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
         view.linkTextAttributes = [.foregroundColor: UIColor.tintColor, .underlineStyle: NSUnderlineStyle.single.rawValue]
         return view
     }
     private func configureActions(_ coordinator: Coordinator) {
         coordinator.onReference = onReference; coordinator.onLike = onLike; coordinator.liked = liked
+        coordinator.copySource = copySource ?? source
     }
     func updateUIView(_ view: UITextView, context: Context) {
         configureActions(context.coordinator)
@@ -38,15 +53,14 @@ struct ChatMarkdownView: UIViewRepresentable {
         render(MarkdownDocument(source: source), width: width, category: category)
     }
     private static func render(_ document: MarkdownDocument, width: CGFloat, category: UIContentSizeCategory?) -> NSAttributedString {
-        let traits = category.map { UITraitCollection(preferredContentSizeCategory: $0) }
-        let font = UIFont.preferredFont(forTextStyle: .subheadline, compatibleWith: traits)
-        return MarkdownChapterLayout(document: document).attributed(font: font, size: font.pointSize, lineSpacing: 4, contentWidth: width)
+        ChatMarkdownLayout(document: document, width: width, category: category ?? UITraitCollection.current.preferredContentSizeCategory).attributed()
     }
     func makeCoordinator() -> Coordinator { Coordinator() }
     final class Coordinator: NSObject, UITextViewDelegate {
         var onReference: (() -> Void)?
         var onLike: (() -> Void)?
         var liked = false
+        var copySource: String?
         private var plainText = false
         private var source: String?
         private var document: MarkdownDocument?
@@ -67,7 +81,7 @@ struct ChatMarkdownView: UIViewRepresentable {
             if attributed == nil || self.width != width || self.category != category {
                 self.width = width; self.category = category; measured = nil
                 if plainText {
-                    attributed = NSAttributedString(string: source, attributes: [.font: UIFont.preferredFont(forTextStyle: .body, compatibleWith: UITraitCollection(preferredContentSizeCategory: category)), .foregroundColor: UIColor.label])
+                    attributed = NSAttributedString(string: source, attributes: [.font: UIFont.preferredFont(forTextStyle: .subheadline, compatibleWith: UITraitCollection(preferredContentSizeCategory: category)), .foregroundColor: UIColor.label.withAlphaComponent(0.72)])
                 } else { attributed = ChatMarkdownView.render(document!, width: width, category: category) }
             }
             return attributed!
@@ -81,10 +95,11 @@ struct ChatMarkdownView: UIViewRepresentable {
             }
         }
         func size(_ view: UITextView, source: String, width: CGFloat, category: UIContentSizeCategory, plainText: Bool = false) -> CGSize {
+            if view.bounds.width != width { view.bounds.size.width = width }
             update(view, source: source, width: width, category: category, plainText: plainText)
             if let measured { return measured }
             let native = view.sizeThatFits(CGSize(width: width, height: .greatestFiniteMagnitude))
-                // UITextView prefers the narrowest width that fits its current text.
+            // UITextView prefers the narrowest width that fits its current text.
             // SwiftUI owns the column width; returning that narrower size makes
             // updateUIView and the next proposal repeatedly reflow each other.
             let result = CGSize(width: width, height: native.height)
@@ -95,7 +110,7 @@ struct ChatMarkdownView: UIViewRepresentable {
             if let onReference { actions.append(UIAction(title: "引用", image: UIImage(systemName: "arrowshape.turn.up.left")) { _ in onReference() }) }
             if let onLike { actions.append(UIAction(title: liked ? "取消点赞" : "点赞", image: UIImage(systemName: liked ? "hand.thumbsup.fill" : "hand.thumbsup")) { _ in onLike() }) }
             if onReference != nil || onLike != nil {
-                let message = source ?? textView.text ?? ""
+                let message = copySource ?? source ?? textView.text ?? ""
                 actions.append(UIAction(title: "复制消息", image: UIImage(systemName: "doc.on.doc")) { _ in UIPasteboard.general.string = message })
             }
             guard !actions.isEmpty else { return nil }

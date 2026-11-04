@@ -1,5 +1,6 @@
 import XCTest
 import Vision
+import UIKit
 
 /// Isolated DEBUG fixture acceptance; no real account, paid model, microphone hardware or production claims.
 final class IOSLibraryChatUITests: XCTestCase {
@@ -61,7 +62,7 @@ final class IOSLibraryChatUITests: XCTestCase {
 
     func testGlobalChatKeyboardComposerAndDirectMarkdownAnswer() {
         launch(["--ios-library-chat-markdown"])
-        app.tabBars.buttons["Chat"].tap()
+        app.tabBars.buttons["松鼠"].tap()
         let input = app.descendants(matching: .any)["reader-question"], microphone = app.buttons["chat-microphone"], send = app.buttons["reader-question-send"]
         require(input); require(microphone); require(send)
         input.tap(); input.typeText("Show the synthetic Markdown answer.")
@@ -82,9 +83,39 @@ final class IOSLibraryChatUITests: XCTestCase {
         capture("Chat · native Markdown direct answer")
     }
 
+    func testLongQuestionCanFoldExpandAndCopyItsCompleteSource() {
+        launch()
+        app.tabBars.buttons["松鼠"].tap()
+        let input = app.textFields["reader-question"]
+        require(input); input.tap()
+        let original = "GET385 长问题。" + String(repeating: "想慢一点把眼前的问题辨认清楚，不急着给出答案。", count: 20) + "GET385-QUESTION-END"
+        input.typeText(original); app.buttons["reader-question-send"].tap()
+        require(app.textViews.matching(NSPredicate(format: "label CONTAINS %@", "合成陪读回答")).firstMatch)
+        let expand = app.buttons["chat-question-expand"].firstMatch
+        require(expand); XCTAssertTrue(expand.isHittable)
+        XCTAssertGreaterThanOrEqual(expand.frame.height, 44)
+        let question = app.textViews.matching(NSPredicate(format: "label BEGINSWITH %@", "GET385 长问题。")).firstMatch
+        require(question)
+        question.coordinate(withNormalizedOffset: CGVector(dx: 0.15, dy: 0.2)).press(forDuration: 1.1)
+        let copy = app.buttons["复制"].firstMatch; require(copy); copy.tap()
+        let wake = app.buttons["chat-wake-composer"]; require(wake); wake.tap()
+        require(input); input.tap(); input.press(forDuration: 1.1)
+        let paste = app.menuItems.matching(NSPredicate(format: "label == %@ OR label == %@", "粘贴", "Paste")).firstMatch
+        require(paste); paste.tap()
+        XCTAssertTrue((input.value as? String) == original, "Copy and native paste must preserve the entire folded question")
+        app.scrollViews["reader-conversation-history"].swipeDown()
+        for _ in 0..<6 where !expand.isHittable { app.scrollViews["reader-conversation-history"].swipeDown() }
+        expand.tap()
+        XCTAssertTrue(question.label.contains("GET385-QUESTION-END"))
+        let fold = app.buttons["chat-question-expand"].firstMatch
+        XCTAssertEqual(fold.label, "收起问题"); fold.tap()
+        XCTAssertFalse(question.label.contains("GET385-QUESTION-END"))
+        capture("long-question-fold-and-complete-copy")
+    }
+
     func testMessageLongPressQuotesLikesAndWakesTheQuietComposer() {
         launch()
-        app.tabBars.buttons["Chat"].tap()
+        app.tabBars.buttons["松鼠"].tap()
         let input = app.textFields["reader-question"]
         require(input); input.tap()
         if !app.keyboards.firstMatch.waitForExistence(timeout: 2) { input.tap() }
@@ -124,7 +155,7 @@ final class IOSLibraryChatUITests: XCTestCase {
     func testLandscapeHistoryKeepsLatestAndDraftInOneTypingRow() {
         launch(["--reading-craft-history", "-UIPreferredContentSizeCategoryName", "UICTContentSizeCategoryAccessibilityXXXL"])
         defer { XCUIDevice.shared.orientation = .portrait }
-        app.tabBars.buttons["Chat"].tap()
+        app.tabBars.buttons["松鼠"].tap()
         XCUIDevice.shared.orientation = .landscapeLeft
         let rotated = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in self.app.frame.width > self.app.frame.height }, object: nil)
         XCTAssertEqual(XCTWaiter.wait(for: [rotated], timeout: 10), .completed)
@@ -151,7 +182,7 @@ final class IOSLibraryChatUITests: XCTestCase {
 
     private func verifyLatestNavigation(extra: [String] = []) {
         launch(["--reading-craft-history"] + extra)
-        app.tabBars.buttons["Chat"].tap()
+        app.tabBars.buttons["松鼠"].tap()
         let input = app.textFields["reader-question"]
         require(input); input.tap(); input.typeText("第一句合成问题")
         app.buttons["reader-question-send"].tap()

@@ -15,6 +15,7 @@ public struct MarkdownDocument: Sendable {
         public var bold = false, italic = false, code = false, strikethrough = false
         public var heading = 0, listDepth = 0, quoteDepth = 0
         public var codeBlock = false, table = false
+        public var thematicBreak = false
         public var tableColumns = 0, tableHeader = false
         public var link: String?
     }
@@ -22,14 +23,25 @@ public struct MarkdownDocument: Sendable {
         public var range: NSRange
         public var style: Style
     }
+    public struct TableRow: Equatable, Sendable {
+        public let range: NSRange
+        public let cells: [NSRange]
+        public let isHeader: Bool
+    }
+    public struct Table: Equatable, Sendable {
+        public internal(set) var range: NSRange
+        public let columns: Int
+        public internal(set) var rows: [TableRow]
+    }
     public let text: String
     public let runs: [Run]
+    public let tables: [Table]
     private let sourceOffsets: [Int]
 
     public init(source: String) {
         var builder = Builder(source: source)
         builder.parse()
-        text = builder.text; runs = builder.runs; sourceOffsets = builder.sourceOffsets
+        text = builder.text; runs = builder.runs; tables = builder.tables; sourceOffsets = builder.sourceOffsets
     }
     public func sourceUTF16Offset(at displayedUTF16Offset: Int) -> Int {
         sourceOffsets[min(max(0, displayedUTF16Offset), sourceOffsets.count - 1)]
@@ -51,6 +63,8 @@ public struct MarkdownDocument: Sendable {
         let lineOffsets: [Int]
         var text = ""
         var runs: [Run] = []
+        var tables: [Table] = []
+        var activeTable: Int?
         var sourceOffsets: [Int] = []
         init(source: String) {
             self.source = source; sourceText = source as NSString
@@ -143,24 +157,40 @@ public struct MarkdownDocument: Sendable {
                 append("[插图：", sourceRange: range(node), style: style, synthetic: true)
                 children(node, style: style)
                 append("]", sourceRange: NSRange(location: NSMaxRange(range(node)), length: 0), style: style, synthetic: true)
-            case "thematic_break": append("────────", sourceRange: range(node), style: style, synthetic: true); separator(node, style: style)
+            case "thematic_break":
+                next.thematicBreak = true
+                append("────────", sourceRange: range(node), style: next, synthetic: true); separator(node, style: style)
             case "html_inline": break // Tags are never executed; surrounding text remains native text.
             case "html_block":
                 // Raw HTML is not a WebView. Keep its visible characters without tag syntax.
                 append(Self.visibleHTML(literal(node)), sourceRange: range(node), style: style); separator(node, style: style)
             case "table":
                 next.table = true; next.tableColumns = Int(cmark_gfm_extensions_get_table_columns(node))
-                children(node, style: next); separator(node, style: style)
+                let previous = activeTable, index = tables.count, start = sourceOffsets.count
+                tables.append(Table(range: NSRange(location: start, length: 0), columns: next.tableColumns, rows: []))
+                activeTable = index
+                children(node, style: next)
+                tables[index].range.length = sourceOffsets.count - start
+                activeTable = previous
+                separator(node, style: style)
             case "table_header", "table_row":
                 next.table = true
                 next.tableHeader = type == "table_header" || cmark_gfm_extensions_get_table_row_is_header(node) != 0
                 next.bold = next.tableHeader
+                let rowStart = sourceOffsets.count
+                var cellRanges: [NSRange] = []
                 var child = cmark_node_first_child(node), first = true
                 while let cell = child {
                     if !first { append("\t", sourceRange: NSRange(location: max(0, range(cell).location - 1), length: 0), style: next, synthetic: true) }
-                    children(cell, style: next); first = false; child = cmark_node_next(cell)
+                    let start = sourceOffsets.count
+                    children(cell, style: next)
+                    cellRanges.append(NSRange(location: start, length: sourceOffsets.count - start))
+                    first = false; child = cmark_node_next(cell)
                 }
                 separator(node, style: next, count: 1)
+                if let index = activeTable {
+                    tables[index].rows.append(TableRow(range: NSRange(location: rowStart, length: sourceOffsets.count - rowStart), cells: cellRanges, isHeader: next.tableHeader))
+                }
             default: children(node, style: style)
             }
         }
