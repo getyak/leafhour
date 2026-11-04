@@ -1185,6 +1185,76 @@ private final class ReaderToolsURLProtocol: URLProtocol, @unchecked Sendable {
 }
 
 extension ReaderToolsTests {
+    func testDirectFollowUpFreezesQuestionReferencesParentAndPreservesComposerVoiceAcrossSuspension() async throws {
+        let fixture = try await fixture(persistCloud: true), tools = ReaderCloudTools(), probe = ReaderToolsProbe()
+        probe.respond = { [self] request, body in
+            if request.url!.path == "/api/auth/session" { Thread.sleep(forTimeInterval: 0.05); return (200, metadata(enabled: false)) }
+            if request.httpMethod == "GET" { return (200, ["available": true, "turns": []]) }
+            XCTAssertNil(body["voice"]); XCTAssertNil(body["quote"])
+            let reply = body["replyTo"] as? [String: String]; XCTAssertEqual(reply?["turnId"], "parent"); XCTAssertEqual(reply?["role"], "assistant")
+            return (200, ["id": body["id"]!, "text": body["text"]!, "status": "completed", "answer": ["summary": "The finite game has a boundary."]])
+        }
+        ReaderToolsURLProtocol.install(probe)
+        tools.configure(library: fixture.library, localBookID: fixture.session.book.id)
+        await tools.restoreConversationDraft(identity: try XCTUnwrap(fixture.session.book.cloud), library: fixture.library)
+        await tools.loadConversation(fixture.session, cloud: fixture.cloud)
+        let parent = ReaderConversationTurn(id: "parent", question: "What is a game?", answer: "Finite games end with a winner.", status: "completed", contentVersion: "source-v1")
+        tools.turns = [parent]; tools.question = "My unsent voice transcript"
+        let voice = ChatVoiceReceipt(id: UUID().uuidString.lowercased(), mimeType: "audio/x-caf", bytes: 16, sha256: String(repeating: "a", count: 64), durationMs: 1000)
+        tools.pendingVoice = voice
+        let item = try XCTUnwrap(parent.followUpSuggestions.first)
+        let sending = Task { await tools.sendFollowUp(item, parent: parent, cloud: fixture.cloud) }
+        for _ in 0..<100 where !tools.sendingFollowUp { await Task.yield() }
+        XCTAssertTrue(tools.sendingFollowUp)
+        tools.question = "A newer draft written during generation"
+        await tools.sendFollowUp(item, parent: parent, cloud: fixture.cloud)
+        await sending.value
+        let posts = probe.posts(to: "/api/library/books/cloud-book/chat")
+        XCTAssertEqual(posts.count, 1); XCTAssertEqual(posts.first?.json["text"] as? String, item.text)
+        XCTAssertEqual(tools.question, "A newer draft written during generation"); XCTAssertEqual(tools.pendingVoice, voice)
+        XCTAssertEqual(tools.turns.last?.followUpSuggestions.count, 3)
+        let flushed = await tools.flushConversationDraft(); XCTAssertTrue(flushed)
+        let restored = ReaderCloudTools(); await restored.restoreConversationDraft(identity: try XCTUnwrap(fixture.session.book.cloud), library: fixture.library)
+        XCTAssertEqual(restored.question, tools.question); XCTAssertEqual(restored.pendingVoice, voice)
+    }
+
+    func testSnapshotConversationNamespaceDoesNotOverwriteRegularDraftAndRetainsActualSources() async throws {
+        let fixture = try await fixture(persistCloud: true), probe = ReaderToolsProbe()
+        let namespace = "contents-search:" + fixture.session.book.id
+        probe.respond = { [self] request, body in
+            if request.url!.path == "/api/auth/session" { return (200, metadata(enabled: false)) }
+            if request.httpMethod == "GET" { return (200, ["available": true]) }
+            XCTAssertEqual(request.url!.path, "/api/library/local-chat")
+            let local = body["localBook"] as? [String: Any] ?? [:]
+            let ref: [String: Any] = ["bookId": local["bookId"]!, "contentVersion": local["contentVersion"]!, "chapterId": local["chapterId"]!, "passageId": local["passageId"]!, "quote": "A 😀 café", "source": "local-device"]
+            return (200, ["id": body["id"]!, "text": body["text"]!, "status": "completed", "answer": ["summary": "A source-backed answer", "sourceRefs": [ref]]])
+        }
+        ReaderToolsURLProtocol.install(probe)
+        let ordinary = ReaderCloudTools(); ordinary.configure(library: fixture.library, localBookID: fixture.session.book.id)
+        await ordinary.restoreConversationDraft(identity: try XCTUnwrap(fixture.session.book.cloud), library: fixture.library)
+        ordinary.question = "Regular unsent question"; let saved = await ordinary.flushConversationDraft(); XCTAssertTrue(saved)
+        let search = ReaderCloudTools(); search.configure(library: fixture.library, localBookID: fixture.session.book.id, draftNamespace: namespace)
+        await search.loadSnapshotConversation(fixture.session, cloud: fixture.cloud)
+        search.question = "Find the source"; await search.prepare("conversation", session: fixture.session, cloud: fixture.cloud)
+        XCTAssertEqual(search.turns.last?.sourceRefs?.first?["source"].string, "local-device")
+        let regular = ReaderCloudTools(); await regular.restoreConversationDraft(identity: try XCTUnwrap(fixture.session.book.cloud), library: fixture.library)
+        XCTAssertEqual(regular.question, "Regular unsent question")
+        let scoped = try await fixture.library.conversationDraft(bookID: namespace, ownerID: owner); XCTAssertNotNil(scoped)
+    }
+
+    func testReadingGuideReusesVersionedCacheWithoutOrdinaryConversation() async throws {
+        let fixture = try await fixture(persistCloud: true), probe = ReaderToolsProbe()
+        probe.respond = { request, body in
+            XCTAssertEqual(request.url!.path, "/api/library/reading-guide"); XCTAssertNil(body["context"])
+            return (200, ["guide": ["kind": "leafhour-reading-guide", "schemaVersion": 1, "id": "guide-fixture", "bookId": "cloud-book", "contentVersion": "source-v1", "sourceKind": "cloud", "locale": "zh-Hans", "origin": "ai", "status": "draft", "scope": "opening-sample", "opening": "开篇讨论有限游戏。", "method": "先比较游戏如何结束。", "readingQuestion": "谁决定游戏结束？", "sampleRanges": [["passageId": "p1", "chapterId": "c1", "charOffset": 0, "charEnd": 8]], "model": "fixture-model", "createdAt": "2026-11-05T00:00:00Z"]])
+        }
+        ReaderToolsURLProtocol.install(probe)
+        let controller = ReadingGuideController(); await controller.prepare(session: fixture.session, library: fixture.library, cloud: fixture.cloud)
+        XCTAssertNotNil(controller.guide); XCTAssertEqual(controller.guide?.followUps.count, 3)
+        let recreated = ReadingGuideController(); await recreated.prepare(session: fixture.session, library: fixture.library, cloud: fixture.cloud)
+        XCTAssertEqual(recreated.guide, controller.guide); XCTAssertEqual(probe.posts(to: "/api/library/reading-guide").count, 1)
+    }
+
     func testVoiceDraftRetainsOriginalAndTranscriptAcrossConversationRecreation() async throws {
         let fixture = try await fixture()
         let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)

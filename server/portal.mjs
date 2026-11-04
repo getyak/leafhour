@@ -44,6 +44,8 @@ import {LIBRARY_CHAT_ID} from '../app/library-chat-context.mjs';
 import {createReaderChatGenerator,createReaderAnnotationGenerator} from './reader-chat-generator.mjs';
 import {createBookIntroductionService} from './book-introduction.mjs';
 import {createIntroductionGenerator} from '../harness/introduction-generator.mjs';
+import {createReadingGuideService} from './reading-guide.mjs';
+import {createReadingGuideGenerator} from '../harness/reading-guide-generator.mjs';
 import {createCompanionGenerator} from '../harness/companion-generator.mjs';
 import {authPurpose,authFailure} from './auth-policy.mjs';
 import {safeGiftReturn} from '../app/reader-return.mjs';
@@ -76,7 +78,7 @@ const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const publicCoverPaths=new Set(Object.values(bookCoverArtwork).flatMap(artwork=>[artwork.src,...String(artwork.srcSet||'').split(',').map(source=>source.trim().split(/\s+/)[0])]).map(url=>String(url).split('?')[0]).filter(url=>/^\/book-covers\/[a-z0-9-]+-(320|640)\.webp$/.test(url)));
 const cookieToken=req=>(req.headers.cookie||'').split(';').map(s=>s.trim()).find(s=>s.startsWith('marginalia_session='))?.slice('marginalia_session='.length);
 const jsonBody=async(req,limit=29*1024*1024)=>{if(!req.headers['content-type']?.startsWith('application/json'))throw fail('请使用 JSON 请求',415);if(req.body&&typeof req.body==='object'){if(Buffer.byteLength(JSON.stringify(req.body))>limit)throw fail('这次导入内容过大，请分书恢复',413);return req.body;}let size=0;const chunks=[];for await(const chunk of req){size+=chunk.length;if(size>limit)throw fail('这次导入内容过大，请分书恢复',413);chunks.push(chunk);}try{return JSON.parse(Buffer.concat(chunks).toString('utf8'));}catch{throw fail('请求格式不正确');}};
-export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigins=[],sendCode,translator,catalogDir=path.join(root,'catalog'),allowLocal=true,dataStore=null,authService=null,hostedMcp=false,speechProvider,dialogueGenerator,guideGenerator,chatGenerator,companionGenerator,introductionGenerator,schedule=()=>{},paddleProvider,env=process.env,giftQuoteGenerator=null,annotationGenerator,notebookGenerator,billingService=null,compiledWeb=false,webDir=path.join(root,'dist')}={}){
+export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigins=[],sendCode,translator,catalogDir=path.join(root,'catalog'),allowLocal=true,dataStore=null,authService=null,hostedMcp=false,speechProvider,dialogueGenerator,guideGenerator,chatGenerator,companionGenerator,introductionGenerator,readingGuideGenerator,schedule=()=>{},paddleProvider,env=process.env,giftQuoteGenerator=null,annotationGenerator,notebookGenerator,billingService=null,compiledWeb=false,webDir=path.join(root,'dist')}={}){
   const webOrigins=new Set(publicOrigin?[publicOrigin]:[]);
   if(!Array.isArray(additionalWebOrigins))throw fail('额外网页来源配置无效',503);
   for(const value of additionalWebOrigins){
@@ -119,6 +121,7 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
   }
   const readingWorkspace=createReadingWorkspaceService({library,dataDir:path.join(dataDir,'library'),dataStore,env,generator:notebookGenerator===undefined?createReaderChatGenerator({env,makeGenerator:createNotebookGenerator}):notebookGenerator});
   const readingGenerator=chatGenerator===undefined?createReaderChatGenerator():chatGenerator;
+  const readingGuides=createReadingGuideService({dataDir:path.join(dataDir,'library','reading-guides'),dataStore,library,generator:readingGuideGenerator===undefined?createReaderChatGenerator({env,makeGenerator:createReadingGuideGenerator}):readingGuideGenerator});
   const bookIntroductions=createBookIntroductionService({library,generator:introductionGenerator===undefined?createReaderChatGenerator({env,makeGenerator:createIntroductionGenerator}):introductionGenerator});
   const proactiveGenerator=companionGenerator===undefined?createReaderChatGenerator({makeGenerator:createCompanionGenerator}):companionGenerator;
   const voice=createChatVoice({store:ingestionStore});
@@ -298,7 +301,7 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
     if(ownerScoped&&req.headers['x-reader-owner']&&req.headers['x-reader-owner']!==(user?.id||'guest')){res.setHeader('X-Reader-Session-Changed','1');throw fail('账户已切换，请重新进入书房。原账户草稿仍留在原处。',409);}
     // Large original fallback is authenticated before accepting its JSON body.
     if(p==='/api/library/upload'&&req.method==='POST'&&!user)throw fail('请先进入自己的书房',401);
-    const body=req.method==='POST'?await jsonBody(req,p==='/api/library/upload'?Math.ceil(MAX_FILE_BYTES/3)*4+4096:p==='/api/library/chat'||p.startsWith('/api/library/chat/')||p==='/api/library/local-chat'||p.startsWith('/api/library/local-chat/')||/^\/api\/library\/books\/[^/]+\/chat$/.test(p)?4*1024*1024:p==='/api/library/notebook-workspace/analyze'?32768:p==='/api/library/notebook-workspace/import'?3*1024*1024:p==='/api/library/notebook-workspace'?16384:p.startsWith('/api/people')?1024*1024:p.startsWith('/api/billing/')?4*1024*1024:p==='/api/account/observability/events'?16*1024:p==='/api/account/observability'?1024:p==='/api/account/ui-preferences'?4*1024:['/api/account/reading-preferences','/api/account/preference-memory'].includes(p)?8*1024:p.startsWith('/api/library/daily-reading')||p.startsWith('/api/agent/daily-')?8*1024:p.startsWith('/api/auth/')||p.startsWith('/api/book-gifts/')||p.endsWith('/introduction')?4096:p.startsWith('/api/library/restore/')?2*1024*1024:p==='/api/account/profile'?160*1024:p.endsWith('/audio/import')||p.endsWith('/audio/validate')?32*1024*1024:['/api/library/import','/api/library/validate'].includes(p)?200*1024*1024:29*1024*1024):null;
+    const body=req.method==='POST'?await jsonBody(req,p==='/api/library/reading-guide'?24576:p==='/api/library/upload'?Math.ceil(MAX_FILE_BYTES/3)*4+4096:p==='/api/library/chat'||p.startsWith('/api/library/chat/')||p==='/api/library/local-chat'||p.startsWith('/api/library/local-chat/')||/^\/api\/library\/books\/[^/]+\/chat$/.test(p)?4*1024*1024:p==='/api/library/notebook-workspace/analyze'?32768:p==='/api/library/notebook-workspace/import'?3*1024*1024:p==='/api/library/notebook-workspace'?16384:p.startsWith('/api/people')?1024*1024:p.startsWith('/api/billing/')?4*1024*1024:p==='/api/account/observability/events'?16*1024:p==='/api/account/observability'?1024:p==='/api/account/ui-preferences'?4*1024:['/api/account/reading-preferences','/api/account/preference-memory'].includes(p)?8*1024:p.startsWith('/api/library/daily-reading')||p.startsWith('/api/agent/daily-')?8*1024:p.startsWith('/api/auth/')||p.startsWith('/api/book-gifts/')||p.endsWith('/introduction')?4096:p.startsWith('/api/library/restore/')?2*1024*1024:p==='/api/account/profile'?160*1024:p.endsWith('/audio/import')||p.endsWith('/audio/validate')?32*1024*1024:['/api/library/import','/api/library/validate'].includes(p)?200*1024*1024:29*1024*1024):null;
     if(p==='/api/billing/account'&&user)await creditGate.recover(user);
     if(await billingRoutes.handle({req,res,url,user,body,send}))return true;
     const localAllowed=allowLocal&&['127.0.0.1','::1','::ffff:127.0.0.1'].includes(req.socket.remoteAddress)&&!publicOrigin;
@@ -533,6 +536,14 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
       if(action==='accept'&&req.method==='POST'){send(200,await gifts.accept(user,giftToken));return true;}
       if(action==='revoke'&&req.method==='POST'){send(200,await gifts.revoke(user,giftToken));return true;}
     }
+    if(p==='/api/library/reading-guide'){
+      if(req.method!=='POST')throw fail('不支持这个请求',405);
+      if(!user?.id||user.is_anonymous)throw fail('请先登录以准备阅读前导',401);
+      res.setHeader('Cache-Control','private, no-store');
+      const controller=new AbortController(),cancel=()=>{if(!res.writableEnded)controller.abort();};res.once('close',cancel);
+      try{send(200,await sponsored(user,'reading-guide',()=>readingGuides.ensure(user,body,{signal:controller.signal,authorize:async()=>(await auth.userFor(token))?.id===user?.id})));}finally{res.removeListener('close',cancel);}
+      return true;
+    }
     const match=p.match(/^\/api\/library\/books\/([^/]+)(?:\/(.+))?$/);
     if(match){const [,id,action]=match;
       if(action==='introduction'){
@@ -706,5 +717,5 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
     const requestState={operationId:typeof operation==='string'&&/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(operation)?operation:randomUUID(),page:p.startsWith('/api/library/books/')?'reader':p.startsWith('/api/library')?'library':'other',stage:/\/companion(?:\/|$)/.test(p)?'companion':/\/chat(?:\/|$)/.test(p)?'chat':/\/(?:ingestion|pdf-upload|upload)(?:\/|$)/.test(p)?'ingestion':/\/(?:reading|chapters)(?:\/|$)/.test(p)?'reader_load':'request',observabilityRoute:p.startsWith('/api/account/observability')};
     try{return await handleRequest({...context,requestState});}catch(error){queueFault(requestState,error);throw error;}
   }
-  return {handle,observability,library,people,peopleGeneration,peopleGrants,portability,auth,billing,creditGate,profile,uiPreferences,gifts,giftQuotes,audio,audioRoutes,chat,bookIntroductions,dailyReading,ingestionRunner,setLegacyBook:book=>{legacyBook=book;}};
+  return {handle,observability,library,people,peopleGeneration,peopleGrants,portability,auth,billing,creditGate,profile,uiPreferences,gifts,giftQuotes,audio,audioRoutes,chat,bookIntroductions,readingGuides,dailyReading,ingestionRunner,setLegacyBook:book=>{legacyBook=book;}};
 }

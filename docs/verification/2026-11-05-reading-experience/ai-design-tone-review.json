@@ -1,0 +1,107 @@
+{
+  "scope": "技术设计报告；按用户既有授权直接完成检测、最小改写与复测。资料、路径、英文样本与代码不润色。",
+  "before_meta": {
+    "篇数": 1,
+    "万汉字": 0.48,
+    "段数": 33,
+    "小标题数": 13
+  },
+  "after_meta": {
+    "篇数": 1,
+    "万汉字": 0.49,
+    "段数": 33,
+    "小标题数": 13
+  },
+  "script_review": [
+    {
+      "rule": "翻案腔／提示语冒号／起手式／过长前置定语／前置话题壳／句首连接词",
+      "raw": 0,
+      "valid": 0,
+      "rewritten": 0
+    },
+    {
+      "rule": "当…时从句",
+      "raw": 1,
+      "valid": 0,
+      "rewritten": 0,
+      "preserved": 1,
+      "reason": "第29行“首开当前书时”为时间条件；检测把“当前”里的当误作长从句，不适用规则。"
+    },
+    {
+      "rule": "顿号并列≥3",
+      "raw": 28,
+      "valid": 0,
+      "rewritten": 0,
+      "preserved": 28,
+      "reason": "技术枚举、文件位置、状态集合和验收矩阵各项有独立含义；保留协议与检查范围，不能为降密度删项。"
+    },
+    {
+      "rule": "分号指纹",
+      "density_before": 21.675,
+      "density_after": 21.15,
+      "action": "保留",
+      "reason": "用于技术条件、边界和表格并列信息，未发现可安全删去的空转承接；不按指纹密度改写事实。"
+    },
+    {
+      "rule": "已否决空转句引列表",
+      "raw": 2,
+      "action": "保留",
+      "reason": "示例和协议前导属于正常版式用途。"
+    },
+    {
+      "rule": "C级整体结构",
+      "before": {
+        "句长CV": 0.467,
+        "节长CV": 0.623,
+        "小标题/千字": 2.736,
+        "两句同构/百段": 18.18,
+        "三句同构/百段": 0.0,
+        "mtld粗估": 1577
+      },
+      "after": {
+        "句长CV": 0.47,
+        "节长CV": 0.66,
+        "小标题/千字": 2.669,
+        "两句同构/百段": 18.18,
+        "三句同构/百段": 0.0,
+        "mtld粗估": 1619
+      },
+      "action": "只报告，不机械改变句长、段长或标题。"
+    }
+  ],
+  "semantic_summary": {
+    "candidates": {
+      "n_candidates": 70,
+      "n_rename": 31,
+      "n_cohesion": 30,
+      "n_colon": 9,
+      "n_iso3": 0,
+      "truncated": false
+    },
+    "rename_per_paragraph": 0.03225806451612903,
+    "longest_explicit_link_chain": 4,
+    "conclusion_colons": 1,
+    "raw_colons": 9,
+    "highly_isomorphic_triples": 0,
+    "disposition": "逐条封闭标签保留在 ai-design-tone-candidates.json。一个测试结论冒号随验证结果更新改为独立陈述，未扩大文风重写。其余标签为正常术语、主题切换或技术定义。"
+  },
+  "revision_log": [
+    {
+      "type": "scope correction",
+      "change": "明确首期客户端派生三条上下文追问并兼容旧服务；宿主登记工具保留为后续增强。",
+      "reason": "主任务给出的实施范围，非文风清理。"
+    },
+    {
+      "type": "source precision",
+      "change": "把不存在的 ChatTurnView.swift 文件指向 ChatConversationView.swift 内部 ChatTurnView。",
+      "reason": "源码核对。"
+    },
+    {
+      "type": "evidence update / semantic colon",
+      "before": "其余 3 个文件未到测试断言：新 worktree 缺少依赖……",
+      "after": "首次依赖装载失败作为历史保留；补跑 78 项通过以独立句陈述。",
+      "reason": "依赖准备后真实补跑结果，同时去掉结论提示冒号。"
+    }
+  ],
+  "interpretation": "统计只用于本篇筛选，不判断作者身份，也不声称本篇统计显著。"
+}
