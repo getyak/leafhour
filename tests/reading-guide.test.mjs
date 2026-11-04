@@ -4,6 +4,7 @@ import {mkdtemp,rm} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
 import path from 'node:path';
 import {createReadingGuideService,normalizeReadingGuideContext} from '../server/reading-guide.mjs';
+import {createReadingGuideGenerator} from '../harness/reading-guide-generator.mjs';
 
 const user={id:'isolated-guide-owner'},version='v1';
 const context={title:'Synthetic games',author:'Fixture',chapters:[{id:'c1',title:'Opening'}],passages:[{id:'p1',chapterId:'c1',original:'Finite games end. Infinite games continue.'}]};
@@ -60,4 +61,31 @@ test('sponsored guide attempts share bounded introduction capacity while cached 
  for(let i=0;i<5;i++)await service.ensure(user,{...local,bookId:'local-'+i});
  await assert.rejects(service.ensure(user,{...local,bookId:'local-over-limit'}),e=>e.status===429);
  assert.equal(calls,5);await service.ensure(user,{...local,bookId:'local-0'});assert.equal(calls,5);
+});
+
+test('guide adapter freezes its context payload and excludes caller text history and tools while preserving limits',async()=>{
+ let configuration,request,calls=0,callerToolCalls=0;
+ const controller=new AbortController(),snapshot=structuredClone(context);
+ const generate=createReadingGuideGenerator({model:'isolated-guide-model',makeGenerator:options=>{configuration=options;return async job=>{calls++;request=job;return {summary:JSON.stringify(output)};};}});
+ const result=await generate({book:{bookId:'isolated-book',contentVersion:'v1'},context:snapshot,locale:'zh-Hans',signal:controller.signal,text:'HOSTILE_CALLER_TEXT',history:[{role:'user',content:'PRIVATE_CALLER_HISTORY'}],tools:{definitions:[{name:'hostile_read_notes'}],execute(){callerToolCalls++;return 'PRIVATE_NOTE';}}});
+ assert.deepEqual(JSON.parse(request.text),{locale:'zh-Hans',...context});assert.doesNotMatch(request.text,/HOSTILE|PRIVATE|hostile_read_notes/);
+ assert.deepEqual(request.history,[]);assert.deepEqual(request.tools.definitions,[]);assert.deepEqual(request.tools.sources(),[]);assert.deepEqual(request.tools.recommendations(),[]);
+ assert.throws(()=>request.tools.execute('hostile_read_notes',{}),/has no tools/);assert.equal(callerToolCalls,0);assert.equal(request.signal,controller.signal);
+ assert.deepEqual({timeoutMs:configuration.timeoutMs,maxRequests:configuration.maxRequests,maxToolCalls:configuration.maxToolCalls,maxTokens:configuration.maxTokens,maxCostCny:configuration.maxCostCny},{timeoutMs:60000,maxRequests:1,maxToolCalls:0,maxTokens:1000,maxCostCny:.1});
+ snapshot.passages[0].original='Later caller mutation';assert.equal(JSON.parse(request.text).passages[0].original,context.passages[0].original);
+ assert.deepEqual(result,{opening:output.opening,method:output.method,readingQuestion:output.readingQuestion,model:'isolated-guide-model'});assert.equal(calls,1);
+});
+
+test('guide adapter forwards cancellation without replacing it with a JSON failure or retrying',async()=>{
+ let started,calls=0;const began=new Promise(resolve=>started=resolve),controller=new AbortController(),reason=new Error('isolated guide cancelled');
+ const generate=createReadingGuideGenerator({makeGenerator:()=>async job=>{calls++;started();return new Promise((_,reject)=>job.signal.addEventListener('abort',()=>reject(job.signal.reason),{once:true}));}});
+ const pending=generate({context,locale:'zh-Hans',signal:controller.signal});await began;controller.abort(reason);
+ await assert.rejects(pending,error=>error===reason);assert.equal(calls,1);
+});
+
+test('guide adapter rejects malformed or fenced JSON instead of returning a fabricated guide',async()=>{
+ for(const summary of ['not JSON','```json\n{"opening":"partial"}\n```','{"opening":']){
+  let calls=0;const generate=createReadingGuideGenerator({makeGenerator:()=>async()=>{calls++;return {summary};}});
+  await assert.rejects(generate({context,locale:'zh-Hans'}),/Invalid reading guide JSON/);assert.equal(calls,1);
+ }
 });
