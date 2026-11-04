@@ -136,7 +136,10 @@ export function createHostedStore({env=process.env,fetcher=fetch}={}){
       if(Object.values(data.active).some(row=>row.book===book))throw fail('这本书正在保存另一段译文，请稍后再试；当前段落尚未提交翻译。',409);
       if(data.active[key])throw fail('这一段正在翻译，请稍后查看',409);
       if(Object.keys(data.active).length>=2)throw fail('翻译服务正在处理其他段落，请稍后再试',429);
-      const hour=data.requests.filter(r=>now-r.time<3600000);if(hour.filter(r=>r.owner===owner).length>=10||hour.length>=100||data.requests.filter(r=>r.owner===owner).length>=50||data.requests.length>=500)throw fail('今天的翻译请求较多，请稍后再试；原文仍可阅读',429);
+      // Explicit following windows are bounded by source scope, cancellation and
+      // the unchanged platform capacity; a personal ten-request cap would stop
+      // even one valid twelve-passage window before it could finish.
+      const hour=data.requests.filter(r=>now-r.time<3600000);if(hour.length>=100||data.requests.length>=500)throw fail('翻译服务的可用容量暂时用完，请稍后重试；原文和已保存译文仍可阅读',429);
       data.requests.push({owner,time:now});data.active[key]={id,book,expiresAt:now+180000};
     });return {key,id};
   }

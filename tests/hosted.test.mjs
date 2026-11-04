@@ -105,7 +105,7 @@ test('oversized extracted cloud books are rejected before originals or shelf ent
 test('a native book above the former small-document ceiling imports and saves real separate translation variants',async()=>{
  const f=database(),store=createHostedStore({env,fetcher:f.fetcher});let calls=0;
  const library=await createLibraryService({dataDir:'hosted',catalogDir:null,dataStore:store,translator:async()=>{calls++;return {literal:'测试直译。',interpretive:'测试意译。'};}}),owner={id:'large-native'};
- const book=await library.importDocument(owner,{filename:'large.txt',bytes:Buffer.from('This synthetic line is ordinary text. '.repeat(100000))});
+ const book=await library.importDocument(owner,{filename:'large.txt',bytes:Buffer.from('A small translatable source paragraph.\n\nA small adjacent context paragraph.\n\n'+'This synthetic line is ordinary text. '.repeat(100000))});
  assert.ok(Buffer.byteLength(JSON.stringify(book))>3500000);
  const translated=await library.translate(owner,book.bookId,book.sections[0].paragraphs[0].id);
  assert.equal(calls,1);assert.equal(translated.translations.literal.text,'测试直译。');assert.equal(translated.translations.interpretive.text,'测试意译。');
@@ -209,4 +209,31 @@ test('hosted preference memory reaches real owner authentication and persists CA
  assert.equal((await call('POST',payload,owned)).status,409);assert.equal((await call('POST',{...payload,baseRevision:1}, {...owned,origin:'https://unrelated.example'})).status,403);
  assert.equal((await call('POST',{...payload,value:'x'.repeat(9000)},owned)).status,413);
  assert.deepEqual((await call('GET',undefined,owned)).body,saved.body);
+});
+
+test('one authenticated following window can prepare twelve sequential passages without changing platform capacity',async()=>{
+ const fixture=database(),store=createHostedStore({env,fetcher:fixture.fetcher}),owner={id:'following-window-owner'};
+ for(let index=0;index<100;index++){
+  const ticket=await store.reserveTranslation(owner,'synthetic-book','passage-'+index);
+  await store.releaseTranslation(ticket);
+ }
+ await assert.rejects(store.reserveTranslation(owner,'synthetic-book','capacity-exceeded'),{status:429},'The unchanged platform hourly capacity still limits actual requests');
+});
+
+test('following translation retains cross-account concurrency, per-book exclusion and the platform day limit',async t=>{
+ let now=Date.parse('2026-11-05T00:00:00Z');t.mock.method(Date,'now',()=>now);
+ const fixture=database(),store=createHostedStore({env,fetcher:fixture.fetcher}),a={id:'following-a'},b={id:'following-b'},c={id:'following-c'};
+ const first=await store.reserveTranslation(a,'book','p1');
+ await assert.rejects(store.reserveTranslation(a,'book','p2'),{status:409});
+ const second=await store.reserveTranslation(b,'book','p1');
+ await assert.rejects(store.reserveTranslation(c,'book','p1'),{status:429});
+ await store.releaseTranslation(first);await store.releaseTranslation(second);
+ // The first hour already contains the two accepted requests above.
+ for(let hour=0;hour<5;hour++){
+  for(let index=hour===0?2:0;index<100;index++){
+   const ticket=await store.reserveTranslation(a,'book','p-'+hour+'-'+index);await store.releaseTranslation(ticket);
+  }
+  now+=3600001;
+ }
+ await assert.rejects(store.reserveTranslation(a,'book','day-capacity-exceeded'),{status:429});
 });

@@ -608,6 +608,11 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
     assertBatchPassage(selected,expectedContentVersion);
     if(hasCompleteTranslationPair(selected)){await notifySourceMutation(user,id,{type:'translation-ack',bookId:id,passageId});return selected;}
     if(!translator)throw fail('翻译服务尚未配置，原文仍可继续阅读',503);
+    // This domain fence also covers unmetered/self-hosted calls: disabling
+    // billing must never turn a passage request into an unbounded book payload.
+    let sourceScalars=0;for(const _ of passages[i].original){if(++sourceScalars>4000)throw fail('这一段或邻近上下文超过单段处理范围，原文仍可阅读',413);}
+    const translationContext=passages.slice(Math.max(0,i-1),i+2).map(p=>({id:p.id,original:p.original}));
+    if(translationContext.some(p=>Buffer.byteLength(p.original)>24576)||Buffer.byteLength(JSON.stringify(translationContext))>24576)throw fail('这一段或邻近上下文超过单段处理范围，原文仍可阅读',413);
     const localKey=!dataStore?path.resolve(dataDir)+'|'+user.id+'|'+id:null,key=user.id+'|'+id+'|'+passageId;if(localKey&&localTranslationsRunning.has(localKey))throw fail('这本书正在保存另一段译文，请稍后再试；当前段落尚未提交翻译。',409);if(translationsRunning.has(key))throw fail('这一段正在翻译，请稍后查看',409);if(translationsRunning.size>=2)throw fail('翻译服务正在处理其他段落，请稍后再试',429);
     translationsRunning.add(key);if(localKey)localTranslationsRunning.add(localKey);let ticket,stopWaiting,commitAttempted=false;
     // Versions saved before this generation may only be replaced when they are
@@ -623,7 +628,7 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
       // The actual provider receives the signal and aborts its network request.
       const interrupted=signal&&new Promise((_,reject)=>{stopWaiting=()=>reject(signal.reason);signal.addEventListener('abort',stopWaiting,{once:true});});
       signal?.throwIfAborted();
-      const generation=translator({passageId,sourceLanguage,targetLanguage,passages:passages.slice(Math.max(0,i-1),i+2).map(p=>({id:p.id,original:p.original})),sourceVersion:book.contentVersion},{signal});
+      const generation=translator({passageId,sourceLanguage,targetLanguage,passages:translationContext,sourceVersion:book.contentVersion},{signal});
       const result=await (interrupted?Promise.race([generation,interrupted]):generation);
       if(!result||!['literal','interpretive'].every(k=>typeof result[k]==='string'&&result[k].trim()&&result[k].length<=12000))throw fail('翻译结果不完整，请重试；原文已保留',502);
       await checkPermission();

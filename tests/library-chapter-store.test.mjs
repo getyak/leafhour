@@ -45,7 +45,10 @@ test('legacy private books project once and later independent services do not lo
 });
 
 test('generated translations replace the saved chapter snapshot for fresh services',async()=>{
- const f=await fixture({translator:async()=>({literal:'New literal',interpretive:'New interpretation'})}),book=largeBook();await f.library.restoreLibrary(owner,backup(book));
+ const f=await fixture({translator:async()=>({literal:'New literal',interpretive:'New interpretation'})}),book=largeBook();
+ // Keep the large-book projection fixture while bounding the actual translation neighborhood.
+ book.sections[0].paragraphs.push({id:'bounded-chapter-ending',original:'A short ending next to the translated chapter.',translations:{},annotationIds:[],termIds:[]});
+ await f.library.restoreLibrary(owner,backup(book));
  await f.library.readingChapter(owner,book.bookId,'ch02',book.contentVersion);await f.library.translate(owner,book.bookId,'p3');
  f.reads.length=0;const chapter=await (await f.create()).readingChapter(owner,book.bookId,'ch02',book.contentVersion);
  assert.equal(chapter.sections[0].paragraphs[0].translations.literal.text,'New literal');assert.deepEqual(canonicalReads(f.reads),[]);

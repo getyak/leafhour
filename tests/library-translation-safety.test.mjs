@@ -151,3 +151,18 @@ test('blank saved draft pairs cannot bypass explicit versioned translation and v
  assert.deepEqual(cached,saved,'a valid pair retains all text, timestamps, model and original operation metadata');
  assert.equal(calls,1);assert.equal(await readFile(overlayFile,'utf8'),persistedBefore);
 });
+
+test('unmetered legacy translation rejects an oversized passage before provider work or cache writes',async t=>{
+ const dir=await mkdtemp(path.join(tmpdir(),'translation-free-source-bound-'));t.after(()=>rm(dir,{recursive:true,force:true}));let calls=0;
+ const library=await createLibraryService({dataDir:dir,catalogDir:null,translator:async()=>{calls++;return {literal:'Must not be generated',interpretive:'Must not be generated'};}}),user={id:'bounded-free-source'};
+ const book=await library.importDocument(user,{filename:'oversized.txt',bytes:Buffer.from('x'.repeat(4001))}),p=book.sections[0].paragraphs[0];
+ await assert.rejects(library.translate(user,book.bookId,p.id),{status:413});
+ assert.equal(calls,0);assert.deepEqual((await library.getBook(user,book.bookId)).sections[0].paragraphs[0].translations,{});
+});
+
+test('unmetered translation rejects oversized neighboring context without serializing it into a provider request',async t=>{
+ const dir=await mkdtemp(path.join(tmpdir(),'translation-free-context-bound-'));t.after(()=>rm(dir,{recursive:true,force:true}));let calls=0;
+ const library=await createLibraryService({dataDir:dir,catalogDir:null,translator:async()=>{calls++;return {literal:'Must not be generated',interpretive:'Must not be generated'};}}),user={id:'bounded-free-context'};
+ const book=await library.importDocument(user,{filename:'context.txt',bytes:Buffer.from('中'.repeat(5000)+'\n\nA short source paragraph.\n\n'+'文'.repeat(5000))}),p=book.sections[0].paragraphs[1];
+ assert.ok(p.original.length<4000);await assert.rejects(library.translate(user,book.bookId,p.id),{status:413});assert.equal(calls,0);
+});
