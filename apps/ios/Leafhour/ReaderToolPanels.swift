@@ -277,7 +277,7 @@ struct ReaderConversationPanel: View {
         ChatConversationView(tools: tools, cloud: cloud, title: title, bookTitle: session.book.title,
             source: source, sourceChapter: tools.chatContext?.chapterTitle ?? session.chapter.title,
             canRemoveSource: tools.chatContext.map { $0.selection != nil } ?? (selection != nil), sourceLabel: tools.chatQuoteRemoved ? "" : tools.chatContext?.sourceLabel ?? (selection?.origin == "translation" ? "选中的译文 · 提问时引用对应原文" : selection == nil ? "引用的原文" : "选中的原文"),
-            localOnly: cloud == nil,
+            localOnly: cloud == nil, isMarginalNote: true,
             load: {
                 if let identity = session.book.cloud { await tools.restoreConversationDraft(identity: identity, library: library) }
                 let attach = !initialSelectionAttached && selection != nil

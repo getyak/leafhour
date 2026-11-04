@@ -13,7 +13,7 @@ struct GlobalChatScreen: View {
         NavigationStack {
             Group {
                 if let book, let owner = model.account?.id, case let tools = model.conversationTools(bookID: book.id) {
-                    ChatConversationView(tools: tools, cloud: model.cloud, bookTitle: book.title,
+                    ChatConversationView(tools: tools, cloud: model.cloud, title: book.title, bookTitle: book.title,
                         source: tools.chatContext?.selection?.text ?? tools.chatContext?.original ?? "", sourceLabel: tools.chatContext.map { [$0.chapterTitle, $0.sourceLabel].filter { !$0.isEmpty }.joined(separator: " · ") } ?? "引用的原文",
                         load: {
                             await tools.restoreConversationDraft(identity: CloudBookIdentity(ownerID: owner, bookID: book.id, contentVersion: book.contentVersion, sourceFormat: ""), library: model.library)
@@ -41,8 +41,9 @@ struct GlobalChatScreen: View {
                     }
                 }
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button("选择对话的书", systemImage: "books.vertical") { if model.account == nil { login = true } else { choosing = true } }
-                        .labelStyle(.iconOnly).frame(minWidth: 44, minHeight: 44).accessibilityIdentifier("chat-switch-book")
+                    Button { if model.account == nil { login = true } else { choosing = true } } label: {
+                        Image(systemName: "books.vertical").frame(width: 44, height: 44).contentShape(Rectangle())
+                    }.buttonStyle(.plain).accessibilityLabel("选择对话的书").accessibilityIdentifier("chat-switch-book")
                 }
             }
             .sheet(isPresented: $choosing) {
@@ -84,7 +85,7 @@ struct LeafhourRootScreen: View {
     var body: some View {
         TabView(selection: $tab) {
             LibraryScreen(model: model).tag(0).tabItem { Label("书房", systemImage: "books.vertical") }
-            GlobalChatScreen(model: model).id(model.importAccountContext).tag(1).tabItem { Label("Chat", systemImage: "bubble.left.and.bubble.right") }
+            GlobalChatScreen(model: model).id(model.importAccountContext).tag(1).tabItem { Label("松鼠", systemImage: "leaf") }
             MyReadingScreen(model: model).id(model.importAccountContext).tag(2).tabItem { Label("我的阅读", systemImage: "book") }
         }.onOpenURL { url in tab = 0; model.receiveIncomingURL(url) }
             .fullScreenCover(item: $model.reader, onDismiss: { Task { await model.reload(); await model.synchronize() } }) { session in
