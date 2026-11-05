@@ -37,7 +37,7 @@ export function mountLibraryChat({root,api,getSession,getBooks,getOwner,openAuth
   const uiAttr=(n,attr,id)=>{n.setAttribute('data-ui-'+attr,id);n.setAttribute(attr,t(id));return n;};
   const sourceHref=(link,target)=>{link.href=uiHref(target);link.setAttribute('data-ui-owned-href',target);links.add(link);return link;};
   const links=new Set(),rowPaints=new Map();
-  let disposed=false,currentView=state.view(),followedQuote=null;
+  let disposed=false,currentView=state.view(),followedQuote=null,restingComposer=null;
   const listeners=[];
   const listen=(target,type,fn,options)=>{const owned=event=>{if(!disposed)return fn(event);};target.addEventListener(type,owned,options);listeners.push(()=>target.removeEventListener(type,owned,options));};
   const live=(target,type,fn)=>target.addEventListener(type,event=>{if(!disposed)return fn(event);});
@@ -95,7 +95,7 @@ export function mountLibraryChat({root,api,getSession,getBooks,getOwner,openAuth
     hint.textContent=t(base)+t('sc.mod')+(view.retry?.uncertain?t('sc.pn'):'');menuHint.textContent=view.pending?t('sn'):t('sc.chg');
   }
   // Parameterized/status chrome keeps stable cached descriptors.
-  const statusMsg=createUiMessage((text,error)=>{status.textContent=text;status.classList.toggle('has-error',!!error);statusBar.hidden=!text;});
+  const statusMsg=createUiMessage((text,error)=>{status.textContent=text;status.classList.toggle('has-error',!!error);if(error)restingComposer?.wake();statusBar.hidden=!text||!error&&root.classList.contains('is-reading-reply');});
   const countMsg=createUiMessage(text=>{count.textContent=text;});
 
   const signedIn=()=>!!getSession()?.user;
@@ -120,9 +120,16 @@ export function mountLibraryChat({root,api,getSession,getBooks,getOwner,openAuth
   const currentBookId=()=>{const current=getCurrentBook();return typeof current==='string'?current:current?.bookId;};
   const accountChat=()=>selectedBook===LIBRARY_CHAT_ID;
   const chatEndpoint=(bookId=selectedBook)=>bookId===LIBRARY_CHAT_ID?'/api/library/chat':'/api/library/books/'+encodeURIComponent(bookId)+'/chat';
+  const isMarginalNote=()=>!accountDefault&&root.classList.contains('reader-chat-workspace');
+  function paintComposer(view){
+    const visible=signedIn()&&(!!selectedBook||uploadEnabled);
+    if(!restingComposer&&decorations)restingComposer=decorations.mountRestingComposer({root,frame,form,footer,input,status,statusBar,node,ui,listen,isMarginalNote,getView:()=>currentView,hasScope:()=>!!confirmedScope(currentView),isComposing:()=>composing,onStop:stop,onLayout:()=>{fitViewport();updateLatest();}});
+    if(restingComposer)restingComposer.paint(view,visible);else{form.hidden=!visible;footer.hidden=!visible;}
+  }
+  function restComposer(){restingComposer?.rest();}
   function clearPoll(){if(pollTimer)clearTimeout(pollTimer);pollTimer=null;}
   function syncOwner(){
-    const next=activeOwner();if(next===owner)return false;forgetFollowedQuote();
+    const next=activeOwner();if(next===owner)return false;forgetFollowedQuote();restingComposer?.reset();
     preferenceCheckbox.checked=false;peopleCheckbox.checked=false;uploadEpoch++;(uploadView?.controller||uploadController)?.syncOwner();owner=next;clearPoll();loadInFlight=null;pollCount=0;pollStarted=0;requestedPassage=null;historySignature='';selectedBook=!accountDefault&&books().some(book=>book.bookId===currentBookId())?currentBookId():LIBRARY_CHAT_ID;
     state.reset();state.setContext(owner,selectedBook);requestedPassage=state.view().retry?.payload.passageId||state.view().quote?.parts[0].passageId||null;input.value='';context.open=false;return true;
   }
@@ -190,11 +197,11 @@ export function mountLibraryChat({root,api,getSession,getBooks,getOwner,openAuth
       const key=JSON.stringify([owner,selectedBook,turn.id]),rowSignature=JSON.stringify([turn,turn.status==='running'?view.pending?.status:null,turn.status==='running'&&view.retry?.payload.id===turn.id?view.retry:null]);
       const cached=turnNodes.get(key);if(cached?.signature===rowSignature){const retry=[...cached.node.children].find(n=>n.className.split(' ').includes('library-chat-retry'));if(retry)retry.disabled=!!view.pending||!!view.retry?.uncertain;desired.push(cached.node);nextNodes.set(key,cached);continue;}
       if(cached?.node&&turn.status==='running'&&cached.status==='running'){updateActivity(cached.node,turn,view);desired.push(cached.node);nextNodes.set(key,{...cached,signature:rowSignature});continue;}
-      const row=node('article','library-chat-turn');row.setAttribute('data-message-id',turn.id);if(turn.kind!=='companion'){const question=node('div','library-chat-question');question.append(ui('p','library-chat-attribution','mq'));if(turn.quote){const selected=node('blockquote','library-chat-selected-snapshot');selected.append(ui('p','library-chat-source-label','chat.quote.snapshot'),ui('span','library-chat-source-label',({original:'lo',literal:'ll',interpretive:'li'})[turn.quote.parts[0].layer]));if(turn.quote.parts.some(part=>part.translationStatus==='draft'))selected.append(ui('span','library-chat-source-label','ds'));selected.append(node('p','',turn.quote.parts.map(part=>part.text).join('\n\n')),sourceLink('backToQuote',turn.quote.parts[0].passageId,turn.quote.bookId));question.append(selected);}question.append(node('p','library-chat-text',turn.text));row.append(question);}
+      const row=node('article','library-chat-turn');row.setAttribute('data-message-id',turn.id);if(turn.kind!=='companion'){const question=node('div','library-chat-question');question.append(ui('p','library-chat-attribution','mq'));if(turn.quote)decorations.renderSelectedSnapshot({quote:turn.quote,question,node,ui,sourceLink,marginal:isMarginalNote()});question.append(node('p','library-chat-text',turn.text));row.append(question);}
       if(turn.answer?.summary){
-        const answer=node('div','library-chat-answer'),answerHeading=node('div','library-chat-answer-heading'),copy=ui('button','library-chat-text-button library-chat-copy','cp');const answerText=markdownRenderer(document,turn.answer.summary,{sourceRefs:turn.answer.sourceRefs||[],onInternalLinkCreated:sourceHref,onInternalLink:(event,ref)=>{if(disposed)return;if(ref&&ref.bookId===currentBookId()&&!event.metaKey&&!event.ctrlKey&&!event.shiftKey&&!event.altKey&&!(event.button>0)&&onNavigateToPassage?.(ref.bookId,ref.passageId)===true){event.preventDefault();finishSourceNavigation();}}});uiAttr(copy,'aria-label','copyAnswer');live(copy,'click',()=>copyAnswer(turn.answer.summary,answerText,copy));answerHeading.append(turn.kind==='companion'?ui('p','library-chat-attribution','cm'):node('p','library-chat-attribution','AI'));answer.append(answerHeading,answerText);
+        const answer=node('div','library-chat-answer'),answerHeading=node('div','library-chat-answer-heading'),copy=ui('button','library-chat-text-button library-chat-copy','cp');const answerText=markdownRenderer(document,turn.answer.summary,{sourceRefs:turn.answer.sourceRefs||[],onInternalLinkCreated:sourceHref,onInternalLink:(event,ref)=>{if(disposed)return;if(ref&&ref.bookId===currentBookId()&&!event.metaKey&&!event.ctrlKey&&!event.shiftKey&&!event.altKey&&!(event.button>0)&&onNavigateToPassage?.(ref.bookId,ref.passageId)===true){event.preventDefault();finishSourceNavigation();}}});uiAttr(copy,'aria-label','copyAnswer');live(copy,'click',()=>decorations.copyAnswer({text:turn.answer.summary,element:answerText,control:copy,answer,isDisposed:()=>disposed,t}));answerHeading.append(turn.kind==='companion'?ui('p','library-chat-attribution','cm'):node('p','library-chat-attribution','AI'));answer.append(answerHeading,answerText);
         decorations.renderEvidence({parent:answer,turn,node,ui,t,sourceLink,createUiMessage,paintFor,ownerRow:row,bookId:selectedBook});renderRecommendations(answer,turn.answer);answer.append(copy);
-        decorations.addAnswerFold({answer,heading:answerHeading,copy,summary:turn.answer.summary,ui,live,t});row.append(answer);if(cached?.status==='running'&&turn.status==='completed')completedAnswer=answer;
+        decorations.addAnswerFold({answer,heading:answerHeading,copy,summary:turn.answer.summary,ui,live,t,marginal:isMarginalNote()});row.append(answer);if(cached?.status==='running'&&turn.status==='completed')completedAnswer=answer;
       }else{
         const pending=node('p','library-chat-turn-status');latestTurns.set(row,turn);paintFor(row,()=>{pending.textContent=pendingText(latestTurns.get(row),currentView);});
         if(turn.status==='running')pending.classList.add('is-pending');row.append(pending);
@@ -216,8 +223,8 @@ export function mountLibraryChat({root,api,getSession,getBooks,getOwner,openAuth
     updateLatest();
   }
   function updateLatest(){latestButton.hidden=!root.open||messages.scrollHeight-messages.scrollTop-messages.clientHeight<90;}
-  for(const event of ['wheel','touchmove','keydown'])listen(messages,event,()=>{preferLeading=false;});
-  listen(messages,'scroll',updateLatest);listen(latestButton,'click',()=>{messages.scrollTop=messages.scrollHeight;updateLatest();});
+  for(const event of ['wheel','touchmove','keydown'])listen(messages,event,e=>{preferLeading=false;if(event!=='keydown'||['ArrowUp','ArrowDown','PageUp','PageDown','Home','End'].includes(e.key))restComposer();});
+  listen(messages,'pointerdown',event=>{if(!event.target.closest?.('button,a,summary,input,textarea,select'))restComposer();});listen(messages,'scroll',updateLatest);listen(latestButton,'click',()=>{messages.scrollTop=messages.scrollHeight;updateLatest();});
   listen(scopeIndicator,'click',()=>{menu.open=true;settings.open=true;scopeChoice.focus();});
   if(uploadAttach)listen(uploadAttach,'click',()=>{menu.open=false;});
   function forgetFollowedQuote(){followedQuote=null;}
@@ -238,7 +245,7 @@ export function mountLibraryChat({root,api,getSession,getBooks,getOwner,openAuth
     const nextQuoteSignature=JSON.stringify(view.quote);if(nextQuoteSignature!==quoteSignature){quoteSignature=nextQuoteSignature;quoteText.textContent=view.quote?.parts.map(part=>part.text).join('\n\n')||'';}
     quoteRemove.disabled=!view.canChangeQuote;quoteStale.hidden=!view.quoteStale;quoteLocal.hidden=!view.quoteLocalOnly;
     if(view.quote){quoteMeta.replaceChildren(ui('span','',({original:'lo',literal:'ll',interpretive:'li'})[view.quote.parts[0].layer]));if(view.quote.parts.some(part=>part.translationStatus==='draft'))quoteMeta.append(ui('span','','ds'));}
-    renderContext(view);renderMessages(view);if(targetMessageId){const target=[...messages.children].find(n=>n.getAttribute('data-message-id')===targetMessageId);if(target){messages.scrollTop+=target.getBoundingClientRect().top-messages.getBoundingClientRect().top-messages.clientTop;targetMessageId=null;}}form.hidden=!signedIn()||!selectedBook&&!uploadEnabled;footer.hidden=form.hidden;
+    renderContext(view);renderMessages(view);if(targetMessageId){const target=[...messages.children].find(n=>n.getAttribute('data-message-id')===targetMessageId);if(target){messages.scrollTop+=target.getBoundingClientRect().top-messages.getBoundingClientRect().top-messages.clientTop;targetMessageId=null;}}paintComposer(view);
     input.style.setProperty('height','auto');input.style.setProperty('height',Math.min(128,Math.max(36,input.scrollHeight||36))+'px');fitViewport();
     const length=view.draft.length;count.classList.toggle('is-over-limit',length>CHAT_TEXT_LIMIT);input.setAttribute('aria-invalid',String(length>CHAT_TEXT_LIMIT));
     if(length>=1800)countMsg.set(length>CHAT_TEXT_LIMIT?'chat.count.over':'chat.count.left',{count:length>CHAT_TEXT_LIMIT?length-CHAT_TEXT_LIMIT:CHAT_TEXT_LIMIT-length});else countMsg.clear();
@@ -261,7 +268,7 @@ export function mountLibraryChat({root,api,getSession,getBooks,getOwner,openAuth
     else if(view.phase==='loading')statusMsg.set('s.load');
     else if(!confirmedScope(view))statusMsg.set('s.scope');
     else statusMsg.clear();
-    if(focusComposer&&root.open&&!input.disabled&&!form.hidden){focusComposer=false;input.focus();}
+    if(focusComposer&&root.open&&!input.disabled){focusComposer=false;restingComposer?.wake();input.focus();}
   }
   function schedulePoll(){
     clearPoll();if(disposed||!state.view().pending||!root.open)return;if(!pollStarted)pollStarted=Date.now();if(Date.now()-pollStarted>=90000)return;
@@ -278,7 +285,7 @@ export function mountLibraryChat({root,api,getSession,getBooks,getOwner,openAuth
   }
   let sending=null;
   async function send(){
-    if(disposed||syncOwner()||!confirmedScope(state.view())){render();return;}const request=state.beginSend({preferenceWrites:preferenceCheckbox.checked,peopleWrites:peopleCheckbox.checked});if(!request)return;preferenceCheckbox.checked=false;peopleCheckbox.checked=false;preferLeading=false;root.dispatchEvent(new Event('reading-chat-send'));clearPoll();pollCount=0;pollStarted=Date.now();const captured=owner,bookId=selectedBook;render();messages.scrollTop=messages.scrollHeight;void load({poll:true});
+    if(disposed||syncOwner()||!confirmedScope(state.view())){render();return;}const request=state.beginSend({preferenceWrites:preferenceCheckbox.checked,peopleWrites:peopleCheckbox.checked});if(!request)return;restingComposer?.rest();preferenceCheckbox.checked=false;peopleCheckbox.checked=false;preferLeading=false;root.dispatchEvent(new Event('reading-chat-send'));clearPoll();pollCount=0;pollStarted=Date.now();const captured=owner,bookId=selectedBook;render();messages.scrollTop=messages.scrollHeight;void load({poll:true});
     const entry={id:request.payload.id,payload:request.payload,controller:new AbortController(),dispatched:getSession()?.billing?.enabled!==true};sending=entry;
     try{const turn=await api(chatEndpoint(bookId),request.payload,{signal:entry.controller.signal,onDispatch:()=>{entry.dispatched=true;},onProgress:value=>{if(isCurrent(captured)&&state.resolveProgress(request.ticket,value))render();}});if(isCurrent(captured)&&state.resolveSend(request.ticket,turn)){render();schedulePoll();if(turn.status!=='running')root.dispatchEvent(new Event('reading-preferences-changed'));}}
     catch(error){if(!isCurrent(captured))return;const uncertain=chatFailureUncertain(error);if(state.rejectSend(request.ticket,error,{uncertain})){render();if(uncertain||error.status===412)await load();}}
@@ -291,20 +298,14 @@ export function mountLibraryChat({root,api,getSession,getBooks,getOwner,openAuth
     catch(error){if(isCurrent(captured)&&bookId===selectedBook&&state.rejectScopeChange(request.ticket,error))await load();}
     finally{if(isCurrent(captured)&&bookId===selectedBook){render();if(root.open)focus.restore(!scopeChoice.disabled?scopeChoice:!input.disabled?input:closeButton);else focus.stop();}else focus.stop();}
   }
-  async function stop(){
-    if(disposed)return;const ticket=state.beginCancel();if(!ticket)return;const focus=trackActionFocus(document,stopButton);clearPoll();const captured=owner,bookId=selectedBook;render();
+  async function stop(event){
+    if(disposed)return;const ticket=state.beginCancel();if(!ticket)return;const focus=trackActionFocus(document,event?.currentTarget||stopButton);clearPoll();const captured=owner,bookId=selectedBook;render();
     try{const entry=sending?.id===ticket.id?sending:null;if(entry&&!entry.dispatched){entry.controller.abort();state.resolveCancel(ticket,{...entry.payload,status:'cancelled',answer:null});return;}const turn=await api(chatEndpoint(bookId)+'/'+encodeURIComponent(ticket.id)+'/cancel',{});if(isCurrent(captured))state.resolveCancel(ticket,turn);}
     catch(error){if(isCurrent(captured)){state.rejectCancel(ticket,error);render();await load();}}
     finally{if(isCurrent(captured)){render();if(root.open)focus.restore(!input.disabled&&!form.hidden?input:stopButton.hidden?refreshButton.hidden?closeButton:refreshButton:stopButton);else focus.stop();}else focus.stop();}
   }
   function close({focus=true}={}){if(disposed||!viewOpen)return;forgetFollowedQuote();viewOpen=false;clearPoll();focusComposer=false;menu.open=false;if(root.open)root.close();onViewChange(false);trigger?.setAttribute('aria-expanded','false');if(launcher){launcher.setAttribute('aria-expanded','false');uiAttr(launcher,'aria-label',state.view().pending?'op':'open');}if(focus)returnFocus();}
   function choose(bookId,passageId=null){if(state.view().pending||state.view().retry?.uncertain||state.view().scopePending)return false;forgetFollowedQuote();clearPoll();loadInFlight=null;pollCount=0;pollStarted=0;selectedBook=bookId;requestedPassage=passageId;historySignature='';context.open=false;state.setContext(owner,selectedBook);requestedPassage=state.view().retry?.payload.passageId||state.view().quote?.parts[0].passageId||requestedPassage;return true;}
-  async function copyAnswer(text,element,control){
-    // Async copy feedback keeps a stable descriptor and is localized with the
-    // effective locale when it settles; raw remote error text is never shown.
-    try{await navigator.clipboard.writeText(text);if(disposed)return;control.setAttribute('data-ui','cpd');control.textContent=t('cpd');}
-    catch{if(disposed)return;const range=document.createRange();range.selectNodeContents(element);const selection=window.getSelection();selection.removeAllRanges();selection.addRange(range);control.setAttribute('data-ui','sel');control.textContent=t('sel');}
-  }
   async function exportChat(){
     const view=state.view(),captured=owner,bookId=selectedBook;if(!view.turns.length)return;let data;
     try{data=bookId===LIBRARY_CHAT_ID?await api('/api/library/chat/export'):{kind:'marginalia-book-chat',schemaVersion:1,exportedAt:new Date().toISOString(),bookId,title:view.data?.title,contentVersion:view.data?.contentVersion,turns:view.turns.map(({partial,...turn})=>turn)};}catch{if(isCurrent(captured))statusMsg.set('cs.loadFailed',null,true);return;}
@@ -338,7 +339,7 @@ export function mountLibraryChat({root,api,getSession,getBooks,getOwner,openAuth
   // Match the visible viewport when a mobile keyboard reduces or pans it.
   function fitViewport(){const viewport=window.visualViewport;if(!viewport)return;root.style.setProperty('--chat-viewport-height',viewport.height+'px');root.style.setProperty('--chat-viewport-top',viewport.offsetTop+'px');root.classList.toggle('is-compact-viewport',viewport.height<=500);if(root.open&&document.activeElement===input)frame.scrollTop+=Math.max(0,form.getBoundingClientRect().bottom-Math.min(frame.getBoundingClientRect().bottom,viewport.offsetTop+viewport.height-8));}
   if(window.visualViewport){listen(window.visualViewport,'resize',fitViewport);listen(window.visualViewport,'scroll',fitViewport);}fitViewport();
-  listen(input,'focus',fitViewport);
+  listen(input,'focus',()=>{restingComposer?.wake();fitViewport();});
   listen(closeButton,'click',close);listen(root,'cancel',event=>{event.preventDefault();close();});listen(root,'close',()=>{if(root.open||!viewOpen)return;forgetFollowedQuote();viewOpen=false;clearPoll();onViewChange(false);trigger?.setAttribute('aria-expanded','false');returnFocus();});
   listen(scopeChoice,'change',saveScope);
   listen(chooser,'change',()=>{if(choose(chooser.value)){render();load();}});listen(context,'toggle',()=>{contextHint.setAttribute('data-ui',context.open?'x.cl':'x.op');contextHint.textContent=t(contextHint.getAttribute('data-ui'));});

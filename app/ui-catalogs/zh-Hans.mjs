@@ -2508,5 +2508,6 @@ export default Object.freeze({
   "bookUpload.imports": "正在加入书房",
   "bookUpload.parsing": "正在整理章节 · {completed} / {total}",
   "bookUpload.tasks": "导入任务",
-  "bookUpload.saving": "正在保存章节…"
+  "bookUpload.saving": "正在保存章节…",
+  "chat.continue": "继续问…"
 });
