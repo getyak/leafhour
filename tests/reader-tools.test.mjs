@@ -15,9 +15,12 @@ test('source self-host serves the new tools module and its complete direct depen
   t.after(async()=>{server.closeAllConnections();await new Promise(resolve=>server.close(resolve));await rm(base,{recursive:true,force:true});});
   await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
   const origin='http://127.0.0.1:'+server.address().port;
-  for(const file of ['reader-tools.mjs','reading-toolbar.mjs','reader-immersion.mjs','reader-conversation.mjs','palette-bootstrap.mjs','command-palette.mjs','palette-library.mjs']){
+  for(const file of ['reader-tools.mjs','reader-dock.mjs','reader-login.mjs','reader-return.mjs','import-limits.mjs','reading-toolbar.mjs','reader-immersion.mjs','reader-conversation.mjs','palette-bootstrap.mjs','command-palette.mjs','palette-library.mjs']){
     const response=await fetch(origin+'/'+file);assert.equal(response.status,200,file);assert.match(response.headers.get('content-type'),/^text\/javascript/);
     assert.equal(await response.text(),await readFile(new URL('../app/'+file,import.meta.url),'utf8'),file+' must serve exact source bytes');
+  }
+  for(const [file,type] of [['reader-dock.css','text/css'],['brand-assets/reader-companion.svg','image/svg+xml']]){
+    const response=await fetch(origin+'/'+file);assert.equal(response.status,200,file);assert.ok(response.headers.get('content-type').startsWith(type));assert.equal(await response.text(),await readFile(new URL('../app/'+file,import.meta.url),'utf8'));
   }
   const reader=await fetch(origin+'/read?book=alice-wonderland');assert.equal(reader.status,200);assert.match(await reader.text(),/src="\/reader\.js"/);
 });
@@ -51,6 +54,11 @@ function withTools(run){
   const f=fixture();
   try{return run(f);}finally{f.cleanup();}
 }
+
+test('a late enhancement failure can reveal tools while conversation is not yet available',()=>withTools(f=>{
+ const tools=mountReaderTools({sessionRoot:f.sessionRoot,immersion:f.immersion,document:f.document});
+ tools.setChat({});assert.doesNotThrow(()=>tools.toolbar.reveal(false));assert.equal(tools.toolbar.expanded,true);tools.unmount();
+}));
 
 test('a disposed primary-surface owner cannot close a replacement reader dialog',()=>withTools(f=>{
  const tools=mountReaderTools({sessionRoot:f.sessionRoot,immersion:f.immersion,document:f.document});let closed=0;

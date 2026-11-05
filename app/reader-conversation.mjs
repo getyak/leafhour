@@ -9,7 +9,7 @@ import {overlayOpen} from './popover-controls.mjs';
 import {readChatResponse} from './chat-stream.mjs';
 
 export function readerInteractionBlocked(document,target){
-  return overlayOpen(document,'dialog[open]:not(.library-chat-dialog)')||document.querySelector?.('.is-reader-chat-fullpage')?.classList?.contains('is-reader-chat-fullpage')===true||!!target?.closest?.('dialog,.library-chat-launcher,.squirrel-companion-bubble,.squirrel-companion-pill');
+  return overlayOpen(document,'dialog[open]:not(.library-chat-dialog)')||document.querySelector?.('.is-reader-chat-fullpage')?.classList?.contains('is-reader-chat-fullpage')===true||!!target?.closest?.('dialog,.reader-dock,.library-chat-launcher,.squirrel-companion-bubble,.squirrel-companion-pill');
 }
 
 export function readerConversationContext(reader,bookId){
@@ -20,13 +20,13 @@ export function readerConversationContext(reader,bookId){
   return {book,passages,passageId:passages.has(selected)?selected:passages.has(anchor)?anchor:null};
 }
 
-export function mountReaderConversation({bookId,session,getReader,root,request=fetch,navigate=url=>location.assign(url),replace=url=>location.replace(url),mountChat=mountLibraryChat,mountCompanion=null,integration=null,uploadController=null,mountUpload=null,renderMarkdown=null,announce=()=>{}}){
+export function mountReaderConversation({bookId,session,getReader,root,request=fetch,navigate=url=>location.assign(url),replace=url=>location.replace(url),mountChat=mountLibraryChat,mountCompanion=null,integration=null,openLogin=null,uploadController=null,mountUpload=null,renderMarkdown=null,announce=()=>{}}){
   if(!bookId||!root)return null;
   let chat,companion,workspace,disposed=false;
   const events=globalThis.document,listeners=[];
   const on=(name,handler)=>{events.addEventListener(name,handler);listeners.push(()=>events.removeEventListener(name,handler));};
   const requireActive=()=>{if(disposed)throw Object.assign(Error('Conversation disposed'),{code:'READER_CONVERSATION_DISPOSED'});};
-  const openAuth=()=>{if(disposed)return;const passageId=context()?.passageId;navigate(readerLoginUrl({bookId,passageId,ui:getUiLinkLocale()}));};
+  const openAuth=()=>{if(disposed)return;const passageId=context()?.passageId,url=readerLoginUrl({bookId,passageId,ui:getUiLinkLocale(),action:'chat'});if(openLogin){const pending=openLogin();if(pending!==false){Promise.resolve(pending).catch(()=>{if(!disposed)navigate(url);});return;}}navigate(url);};
   let disposeChat;
   const dispose=()=>{if(disposed)return;disposed=true;for(const remove of listeners)remove();companion?.dispose();uploadController?.dispose();disposeChat?.();workspace?.dispose();externalLauncher?.position?.dispose();};
   const sessionChanged=()=>{requireActive();companion?.dispose();chat?.reset();dispose();events.dispatchEvent(new CustomEvent('reader:session-changed'));replace(uiHref('/library'));throw Object.assign(Error(t('conversation.accountChanged')),{status:409});};
@@ -34,7 +34,7 @@ export function mountReaderConversation({bookId,session,getReader,root,request=f
   // the chat-owned AI trigger host, the companion bubble anchor (shared pill),
   // the focus-return callback and the unread callback. No launcher DOM, drag or
   // ARIA is ever attached to the shared pill.
-  const externalLauncher=integration?{anchor:integration.companionAnchor,triggerHost:integration.triggerHost,focusReturn:integration.focusReturn,onOpen:()=>integration.onOpen?.(),position:mountCompanionAnchor({anchor:integration.companionAnchor})}:null;
+  const externalLauncher=integration?{anchor:integration.companionAnchor,triggerHost:integration.triggerHost,focusReturn:integration.focusReturn,onOpen:()=>{if(!session?.user){openAuth();return false;}return integration.onOpen?.();},position:mountCompanionAnchor({anchor:integration.companionAnchor})}:null;
 
   const context=()=>disposed?null:readerConversationContext(getReader(),bookId);
   const api=async(url,data,options={})=>{
@@ -100,7 +100,7 @@ export function mountReaderConversation({bookId,session,getReader,root,request=f
     queueMicrotask(()=>{if(!disposed&&revision===followSelection)followCandidate(candidate);});
   };
   root.addEventListener?.('reading-chat-open',followOnOpen);listeners.push(()=>root.removeEventListener?.('reading-chat-open',followOnOpen));
-  workspace=mountReaderChatWorkspace({root,getReader,onBack:()=>chat.close(),labels:{resize:t('chat.resize')}});
+  workspace=mountReaderChatWorkspace({root,getReader,presentation:'popover',onBack:()=>chat.close(),labels:{resize:t('chat.resize')}});
   listeners.push(onUiLocaleChange(()=>workspace.setLabels({resize:t('chat.resize')})));
   if(typeof chat.surface==='function'){const options={bookId,getOwner:()=>session?.user?.id||null,getReader,api,chat,openAuth,integration:integration?{anchor:integration.companionAnchor,onUnread:integration.onUnread,onFocusReturn:integration.focusReturn}:null};if(mountCompanion)companion=mountCompanion(options);else chat.companionReady=import('./reader-companion-loader.mjs').then(m=>{if(!disposed)companion=m.mountReaderCompanion(options);}).catch(()=>{});}
   let restoredPerson=false;

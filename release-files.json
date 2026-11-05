@@ -1525,5 +1525,11 @@
   "apps/ios/LeafhourCore/Tests/LeafhourCoreTests/LocalReadingToolsTests.swift",
   "apps/ios/LeafhourCore/Tests/LeafhourCoreTests/OfflineStateIndexCacheTests.swift",
   "tests/translation-cancellation.test.mjs",
-  "apps/ios/LeafhourAppTests/FollowUpRoutingTests.swift"
+  "apps/ios/LeafhourAppTests/FollowUpRoutingTests.swift",
+  "app/reader-dock.mjs",
+  "app/brand-assets/reader-companion.svg",
+  "tests/reader-dock.test.mjs",
+  "app/reader-dock.css",
+  "app/reader-login.mjs",
+  "tests/reader-login.test.mjs"
 ]

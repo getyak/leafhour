@@ -153,6 +153,7 @@ export default Object.freeze({
   "chat.quote.tooLong": "Select up to 2,000 characters to quote.",
   "chat.quote.receiptMismatch": "The reply does not match this request. Your question and quote are retained.",
 
+  "reader.dock.settings": "Reading settings",
   "chat.entry": "Reading chat",
   "chat.resize": "Resize AI workspace",
 

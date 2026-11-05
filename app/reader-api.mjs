@@ -49,6 +49,9 @@ let identityCheck=null;
 // Share the in-flight check with focus/pageshow instead of issuing duplicates.
 export function confirmReaderIdentity(){
   if(!sessionCurrent||document.hidden)return Promise.resolve(false);
+  // A guest's native auth modal owns its provisional cookie/password setup.
+  // Captured data access remains guest-scoped until the fresh reader reloads.
+  if(!readerOwner&&document.querySelector?.('dialog[data-reader-login][open]'))return Promise.resolve(false);
   if(!selectedBookId)return Promise.resolve(true);
   if(!identityCheck)identityCheck=(async()=>{try{
     const response=await fetch('/api/auth/session');if(!response.ok)return false;

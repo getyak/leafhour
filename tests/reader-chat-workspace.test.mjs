@@ -30,8 +30,21 @@ test('every viewport contains one full-page destination without reflowing the re
 test('closing restores the captured reader position and retains prior overflow ownership',()=>{
  const f=fixture();f.document.body.style.setProperty('overflow','auto');f.workspace.setOpen(true);f.window.innerWidth=390;f.window.dispatchEvent(new Event('resize'));assert.equal(f.document.body.style.getPropertyValue('overflow'),'hidden');f.workspace.setOpen(false);assert.equal(f.document.body.style.getPropertyValue('overflow'),'auto');f.flush();assert.equal(f.restored.length,1);f.workspace.dispose();
 });
+test('reader popover mode keeps desktop reading available and uses a contained destination on phones',()=>{
+ for(const width of [390,1440]){
+  const f=fixture(width);f.workspace.dispose();const popup=mountReaderChatWorkspace({root:f.root,document:f.document,window:f.window,getReader:()=>f.reader,presentation:'popover'});
+  popup.setOpen(true);assert.equal(popup.isFullPage(),width<900);assert.equal(f.book.inert,width<900);assert.equal(f.root.classList.contains('is-reader-chat-popover'),width>=900);
+  popup.setOpen(false);popup.dispose();assert.equal(f.book.inert,false);
+ }
+});
+
 test('a changed book or navigation ticket defeats the queued reading return',()=>{
  for(const kind of ['book','ticket','chapter']){const f=fixture();let valid=true;f.reader.captureLayout=()=>()=>valid;f.workspace.setOpen(true);if(kind==='book')f.changeBook();if(kind==='chapter')f.document.dispatchEvent(new Event('reader:chapter'));f.workspace.setOpen(false);if(kind==='ticket')valid=false;f.flush();assert.deepEqual(f.restored,[],kind);f.workspace.dispose();}
+});
+test('a phone conversation resized into a desktop popup cannot restore an obsolete reading anchor on close',()=>{
+ const f=fixture(390);f.workspace.dispose();const popup=mountReaderChatWorkspace({root:f.root,document:f.document,window:f.window,getReader:()=>f.reader,presentation:'popover'});
+ popup.setOpen(true);f.window.innerWidth=1440;f.window.dispatchEvent(new Event('resize'));assert.equal(popup.isFullPage(),false);
+ f.reader.getAnchor=()=>({passageId:'p30',offset:300});popup.setOpen(false);f.flush();assert.deepEqual(f.restored,[]);popup.dispose();
 });
 test('browser Back closes the destination once and preserves the surrounding history state',()=>{
  const f=fixture(),stack=[{libraryView:'shelf'}];let index=0,pushes=0,backs=0,closes=0,workspace;

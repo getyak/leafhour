@@ -55,6 +55,18 @@ test('restored identity checks share one request, fail closed offline, and inval
   assert.equal(await module.confirmReaderIdentity(),false);
 });
 
+test('a guest-owned inline login defers focus identity checks until its authentication dialog closes',async t=>{
+ const previous={fetch:globalThis.fetch,location:globalThis.location,window:globalThis.window,document:globalThis.document};
+ t.after(()=>{for(const [key,value]of Object.entries(previous)){if(value===undefined)delete globalThis[key];else globalThis[key]=value;}});
+ let open=true,calls=0,replaced;
+ globalThis.document=Object.assign(new EventTarget(),{hidden:false,querySelector:()=>open?{}:null});globalThis.window={addEventListener(){}};
+ globalThis.location={search:'?book=public-login-fixture',origin:'https://reader.example.invalid',replace:url=>replaced=url};
+ globalThis.fetch=async()=>new Response(JSON.stringify({user:null}));
+ const module=await import('../app/reader-api.mjs?inline-login-confirmation');
+ globalThis.fetch=async()=>{calls++;return new Response(JSON.stringify({user:{id:'verified-setup-owner'}}));};
+ assert.equal(await module.confirmReaderIdentity(),false);assert.equal(calls,0);assert.equal(replaced,undefined);
+ open=false;assert.equal(await module.confirmReaderIdentity(),false);assert.equal(calls,1);assert.equal(replaced,'/library');
+});
 test('readerFetch prepares paid account chat and keeps the same quote on a lost-response retry',async t=>{
  const previous=Object.fromEntries(['fetch','location','window','document','confirm','sessionStorage'].map(key=>[key,globalThis[key]])),calls=[],storage=new Map();
  t.after(()=>{for(const [key,value]of Object.entries(previous)){if(value===undefined)delete globalThis[key];else globalThis[key]=value;}});

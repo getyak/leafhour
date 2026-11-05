@@ -1,12 +1,13 @@
 // A full-page conversation keeps the mounted reader, its anchor and its drafts.
 // The history entry lets browser Back return to that same reading session.
 const scrollRestorationLeases=new WeakMap();
-export function mountReaderChatWorkspace({root,document=globalThis.document,window=globalThis.window,getReader=()=>null,onBack=()=>root?.close?.()}={}){
+export function mountReaderChatWorkspace({root,document=globalThis.document,window=globalThis.window,getReader=()=>null,onBack=()=>root?.close?.(),presentation='fullpage'}={}){
  const body=document?.body;
  if(!root?.classList||!body?.classList||!window?.addEventListener)return {setOpen(){},setLabels(){},isMobile:()=>false,isFullPage:()=>false,dispose(){}};
  let disposed=false,opened=false,observer=null,scrollLock=null,returnAnchor=null,restoreFrame=null,historyEntry=null,scrollRestoration=null,historyReturnPending=false,historyRevision=0;
  const removers=[],inert=new Map(),originalModal=root.getAttribute('aria-modal'),originalTab=root.getAttribute('tabindex');
  const token='leafhour-chat-'+Math.random().toString(36).slice(2),historyKey='leafhourConversation';
+ const fullPage=()=>presentation!=='popover'||window.innerWidth<900;
  root.classList.add('reader-chat-workspace');
  const listen=(target,type,fn,options)=>{target.addEventListener(type,fn,options);removers.push(()=>target.removeEventListener(type,fn,options));};
  function restoreInert(){
@@ -52,10 +53,13 @@ export function mountReaderChatWorkspace({root,document=globalThis.document,wind
   if(!opened&&!historyReturnPending&&scrollRestoration!==null)(window.setTimeout||setTimeout)(()=>{if(!opened&&!historyReturnPending&&revision===historyRevision)releaseScrollRestoration();},0);
  }
  function paint(){
-  root.classList.toggle('is-reader-chat-mobile',opened&&window.innerWidth<1100);
-  root.classList.toggle('is-reader-chat-fullpage',opened);
-  body.classList.toggle('has-fullpage-chat',opened);
-  if(opened){contain();root.setAttribute('aria-modal','true');}
+  const full=opened&&fullPage();
+  if(opened&&!full&&root.classList.contains('is-reader-chat-fullpage'))returnAnchor=null;
+  if(full&&!root.classList.contains('is-reader-chat-fullpage'))capture();
+  root.classList.toggle('is-reader-chat-mobile',full&&window.innerWidth<1100);
+  root.classList.toggle('is-reader-chat-fullpage',full);root.classList.toggle('is-reader-chat-popover',opened&&!full);
+  body.classList.toggle('has-fullpage-chat',full);
+  if(full){contain();root.setAttribute('aria-modal','true');}
   else{restoreInert();root.setAttribute('aria-modal','false');}
   document.dispatchEvent(new Event('reader:chat-layout'));
  }
@@ -67,7 +71,7 @@ export function mountReaderChatWorkspace({root,document=globalThis.document,wind
  listen(window,'resize',()=>{if(opened)paint();});
  for(const name of ['reader:page','reader:jump','reader:chapter','reader:session-changed'])listen(document,name,()=>{returnAnchor=null;if(restoreFrame!==null)window.cancelAnimationFrame?.(restoreFrame);restoreFrame=null;});
  listen(root,'keydown',event=>{
-  if(!opened||event.key!=='Tab')return;
+  if(!opened||!fullPage()||event.key!=='Tab')return;
   const nodes=[...root.querySelectorAll('button,input,textarea,select,summary,a[href],[tabindex]')].filter(node=>!node.disabled&&node.getAttribute('tabindex')!=='-1'&&!node.closest?.('[hidden],[inert]')&&node.getClientRects().length);
   const first=nodes[0]||root,last=nodes.at(-1)||root;
   if(!nodes.length||!root.contains(document.activeElement)||event.shiftKey&&document.activeElement===first||!event.shiftKey&&document.activeElement===last||document.activeElement===root){event.preventDefault();(event.shiftKey?last:first).focus({preventScroll:true});}
@@ -76,7 +80,7 @@ export function mountReaderChatWorkspace({root,document=globalThis.document,wind
   setOpen(value){
    if(disposed||opened===!!value)return;
    opened=!!value;historyRevision++;
-   if(opened){if(restoreFrame!==null)window.cancelAnimationFrame?.(restoreFrame);restoreFrame=null;capture();pushHistory();}
+   if(opened){if(restoreFrame!==null)window.cancelAnimationFrame?.(restoreFrame);restoreFrame=null;if(fullPage())capture();pushHistory();}
    paint();
    if(!opened){
     restore();scrollRestoration?.waiting.delete(token);
@@ -84,10 +88,10 @@ export function mountReaderChatWorkspace({root,document=globalThis.document,wind
     else{historyEntry=null;finishHistoryReturn();}
    }
   },
-  setLabels(){},isMobile:()=>opened,isFullPage:()=>opened,
+  setLabels(){},isMobile:()=>opened&&fullPage(),isFullPage:()=>opened&&fullPage(),
   dispose(){
    if(disposed)return;disposed=true;if(restoreFrame!==null)window.cancelAnimationFrame?.(restoreFrame);
-   for(const remove of removers)remove();restoreInert();root.classList.remove('reader-chat-workspace','is-reader-chat-mobile','is-reader-chat-fullpage');body.classList.remove('has-fullpage-chat');
+   for(const remove of removers)remove();restoreInert();root.classList.remove('reader-chat-workspace','is-reader-chat-mobile','is-reader-chat-fullpage','is-reader-chat-popover');body.classList.remove('has-fullpage-chat');
    releaseScrollRestoration();
    if(historyEntry&&window.history?.state?.[historyKey]===token){try{const state={...window.history.state};delete state[historyKey];window.history.replaceState(state,'');}catch{}}
    for(const [name,value]of [['aria-modal',originalModal],['tabindex',originalTab]])if(value===null||value===undefined)root.removeAttribute?.(name);else root.setAttribute(name,value);
