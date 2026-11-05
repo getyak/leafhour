@@ -208,6 +208,8 @@ struct ChatConversationView: View {
     var localOnly = false
     var isLibraryConversation = false
     var isMarginalNote = false
+    var readingGuide: ReadingGuideController? = nil
+    var onGuideFollowUp: ((ChatFollowUp) async -> Void)? = nil
     var onSignIn: (() -> Void)? = nil
     var autoLoad = true
     let load: () async -> Void
@@ -242,6 +244,13 @@ struct ChatConversationView: View {
         ScrollViewReader { proxy in
             ScrollView {
                 VStack(alignment: .leading, spacing: 24) {
+                    if let readingGuide {
+                        ReaderReadingGuideContent(controller: readingGuide, canSend: !tools.generating && !tools.loading && !tools.sendingFollowUp && tools.retry == nil, onFollowUp: { item in
+                            scrollPosition.resumeFollowing()
+                            await onGuideFollowUp?(item)
+                        }).id("reading-guide-top")
+                        Divider()
+                    }
                     if tools.turns.count > 2 {
                         LazyVStack(alignment: .leading, spacing: 24) {
                             ForEach(tools.turns.dropLast(2)) { turn in conversationTurn(turn) }
@@ -287,7 +296,9 @@ struct ChatConversationView: View {
                 }
                 .task {
                     await Task.yield()
-                    if !placeCompletedMarginalReply(proxy), scrollPosition.followsLatest { scroll(proxy, animated: false) }
+                    if readingGuide != nil {
+                        scrollPosition.pauseFollowing(); proxy.scrollTo("reading-guide-top", anchor: .top)
+                    } else if !placeCompletedMarginalReply(proxy), scrollPosition.followsLatest { scroll(proxy, animated: false) }
                 }
         }.background(Color(uiColor: .systemBackground))
             .navigationTitle(title).navigationBarTitleDisplayMode(.inline)

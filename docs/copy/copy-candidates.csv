@@ -3712,14 +3712,14 @@ candidate:app/library-chat.mjs:72:162,js-attribute,app/library-chat.mjs,72,aria-
 candidate:app/library-chat.mjs:72:210,js-attribute,app/library-chat.mjs,72,aria-relevant,unknown,reviewable,,additions text
 candidate:app/library-chat.mjs:73:155,js-attribute,app/library-chat.mjs,73,role,unknown,reviewable,,status
 candidate:app/library-chat.mjs:76:266,js-attribute,app/library-chat.mjs,76,aria-describedby,unknown,reviewable,,library-chat-status library-chat-count
-candidate:app/library-chat.mjs:161:374,js-attribute,app/library-chat.mjs,161,aria-busy,unknown,reviewable,,true
-candidate:app/library-chat.mjs:161:414,js-attribute,app/library-chat.mjs,161,aria-live,unknown,reviewable,,off
-candidate:app/library-chat.mjs:176:113,js-attribute,app/library-chat.mjs,176,aria-hidden,unknown,reviewable,,true
-candidate:app/library-chat.mjs:298:234,js-attribute,app/library-chat.mjs,298,aria-expanded,unknown,reviewable,,false
-candidate:app/library-chat.mjs:298:294,js-attribute,app/library-chat.mjs,298,aria-expanded,unknown,reviewable,,false
-candidate:app/library-chat.mjs:310:159,js-cjk-literal,app/library-chat.mjs,310,,unknown,reviewable,,Leafhour-对话-
-candidate:app/library-chat.mjs:340:263,js-attribute,app/library-chat.mjs,340,aria-expanded,unknown,reviewable,,false
-candidate:app/library-chat.mjs:366:168,js-attribute,app/library-chat.mjs,366,aria-expanded,unknown,reviewable,,true
+candidate:app/library-chat.mjs:162:374,js-attribute,app/library-chat.mjs,162,aria-busy,unknown,reviewable,,true
+candidate:app/library-chat.mjs:162:414,js-attribute,app/library-chat.mjs,162,aria-live,unknown,reviewable,,off
+candidate:app/library-chat.mjs:177:113,js-attribute,app/library-chat.mjs,177,aria-hidden,unknown,reviewable,,true
+candidate:app/library-chat.mjs:300:234,js-attribute,app/library-chat.mjs,300,aria-expanded,unknown,reviewable,,false
+candidate:app/library-chat.mjs:300:294,js-attribute,app/library-chat.mjs,300,aria-expanded,unknown,reviewable,,false
+candidate:app/library-chat.mjs:312:159,js-cjk-literal,app/library-chat.mjs,312,,unknown,reviewable,,Leafhour-对话-
+candidate:app/library-chat.mjs:342:263,js-attribute,app/library-chat.mjs,342,aria-expanded,unknown,reviewable,,false
+candidate:app/library-chat.mjs:368:168,js-attribute,app/library-chat.mjs,368,aria-expanded,unknown,reviewable,,true
 candidate:app/library-daily-reading.mjs:9:27,js-cjk-literal,app/library-daily-reading.mjs,9,,unknown,reviewable,,每日陪读
 candidate:app/library-daily-reading.mjs:51:172,js-attribute,app/library-daily-reading.mjs,51,aria-hidden,unknown,reviewable,,true
 candidate:app/library-daily-reading.mjs:56:81,js-attribute,app/library-daily-reading.mjs,56,popover,unknown,reviewable,,auto
@@ -4650,6 +4650,7 @@ candidate:app/reader-navigation.mjs:141:68,js-attribute,app/reader-navigation.mj
 candidate:app/reader-navigation.mjs:152:558,js-attribute,app/reader-navigation.mjs,152,aria-expanded,unknown,reviewable,,false
 candidate:app/reader-page-surface.mjs:50:128,js-attribute,app/reader-page-surface.mjs,50,aria-hidden,unknown,reviewable,,true
 candidate:app/reader-page-surface.mjs:87:118,js-attribute,app/reader-page-surface.mjs,87,aria-controls,unknown,protected,identifier,chapter-text
+candidate:app/reader-reading-guide.mjs:51:145,js-attribute,app/reader-reading-guide.mjs,51,role,unknown,reviewable,,status
 candidate:app/reader-return.mjs:44:124,js-cjk-literal,app/reader-return.mjs,44,,unknown,reviewable,,引用参数重复，请从 Agent 重新打开引用。
 candidate:app/reader-return.mjs:44:257,js-cjk-literal,app/reader-return.mjs,44,,unknown,reviewable,,引用的来源版本与当前书籍不同，请让 Agent 重新读取当前目录后打开引用。
 candidate:app/reader-return.mjs:44:359,js-cjk-literal,app/reader-return.mjs,44,,unknown,reviewable,,引用的文本层无效，请从 Agent 重新打开引用。
@@ -6358,18 +6359,19 @@ candidate:server/portal.mjs:564:41,js-cjk-literal,server/portal.mjs,564,,unknown
 candidate:server/portal.mjs:577:164,js-cjk-literal,server/portal.mjs,577,,unknown,reviewable,,这份阅读包较大，请从赠书信页面分段下载
 candidate:server/portal.mjs:583:41,js-cjk-literal,server/portal.mjs,583,,unknown,reviewable,,不支持这个请求
 candidate:server/portal.mjs:584:50,js-cjk-literal,server/portal.mjs,584,,unknown,reviewable,,请先登录以准备阅读前导
-candidate:server/portal.mjs:599:25,js-cjk-literal,server/portal.mjs,599,,unknown,reviewable,,不支持这个请求
-candidate:server/portal.mjs:616:42,js-cjk-literal,server/portal.mjs,616,,unknown,reviewable,,不支持这个请求
-candidate:server/portal.mjs:716:120,js-cjk-literal,server/portal.mjs,716,,unknown,reviewable,,本书尚未开启探索体验统计
-candidate:server/portal.mjs:717:175,js-cjk-literal,server/portal.mjs,717,,unknown,reviewable,,请选择这本书的记录包
-candidate:server/portal.mjs:718:99,js-cjk-literal,server/portal.mjs,718,,unknown,reviewable,,这本书的探索体验尚未接入，可以按段翻译并保存自己的笔记
-candidate:server/portal.mjs:725:43,js-cjk-literal,server/portal.mjs,725,,unknown,reviewable,,不支持这个请求
-candidate:server/portal.mjs:730:430,js-cjk-literal,server/portal.mjs,730,,unknown,reviewable,,找不到这个工具
-candidate:server/portal.mjs:733:30,js-cjk-literal,server/portal.mjs,733,,unknown,reviewable,,此实例暂未开启听读，请在本机书房使用。
-candidate:server/portal.mjs:739:20,js-cjk-literal,server/portal.mjs,739,,unknown,reviewable,,不支持这个听读操作
-candidate:server/portal.mjs:748:86,js-cjk-literal,server/portal.mjs,748,,unknown,reviewable,,只保存用户明确提供的原话
-candidate:server/portal.mjs:749:18,js-cjk-literal,server/portal.mjs,749,,unknown,reviewable,,不支持这个请求
-candidate:server/portal.mjs:751:16,js-cjk-literal,server/portal.mjs,751,,unknown,reviewable,,找不到这个操作
+candidate:server/portal.mjs:587:65,js-cjk-literal,server/portal.mjs,587,,unknown,reviewable,,阅读前导操作不正确
+candidate:server/portal.mjs:603:25,js-cjk-literal,server/portal.mjs,603,,unknown,reviewable,,不支持这个请求
+candidate:server/portal.mjs:620:42,js-cjk-literal,server/portal.mjs,620,,unknown,reviewable,,不支持这个请求
+candidate:server/portal.mjs:720:120,js-cjk-literal,server/portal.mjs,720,,unknown,reviewable,,本书尚未开启探索体验统计
+candidate:server/portal.mjs:721:175,js-cjk-literal,server/portal.mjs,721,,unknown,reviewable,,请选择这本书的记录包
+candidate:server/portal.mjs:722:99,js-cjk-literal,server/portal.mjs,722,,unknown,reviewable,,这本书的探索体验尚未接入，可以按段翻译并保存自己的笔记
+candidate:server/portal.mjs:729:43,js-cjk-literal,server/portal.mjs,729,,unknown,reviewable,,不支持这个请求
+candidate:server/portal.mjs:734:430,js-cjk-literal,server/portal.mjs,734,,unknown,reviewable,,找不到这个工具
+candidate:server/portal.mjs:737:30,js-cjk-literal,server/portal.mjs,737,,unknown,reviewable,,此实例暂未开启听读，请在本机书房使用。
+candidate:server/portal.mjs:743:20,js-cjk-literal,server/portal.mjs,743,,unknown,reviewable,,不支持这个听读操作
+candidate:server/portal.mjs:752:86,js-cjk-literal,server/portal.mjs,752,,unknown,reviewable,,只保存用户明确提供的原话
+candidate:server/portal.mjs:753:18,js-cjk-literal,server/portal.mjs,753,,unknown,reviewable,,不支持这个请求
+candidate:server/portal.mjs:755:16,js-cjk-literal,server/portal.mjs,755,,unknown,reviewable,,找不到这个操作
 candidate:server/preference-memory.mjs:5:97,js-cjk-literal,server/preference-memory.mjs,5,,unknown,reviewable,,阅读偏好记录无法识别，已保持原样
 candidate:server/preference-memory.mjs:15:245,js-cjk-literal,server/preference-memory.mjs,15,,unknown,reviewable,,阅读偏好请求格式不正确
 candidate:server/preference-memory.mjs:16:56,js-cjk-literal,server/preference-memory.mjs,16,,unknown,reviewable,,阅读偏好已在另一处更新，请读取最新版本
@@ -6595,18 +6597,19 @@ candidate:server/reading-guide.mjs:31:68,js-cjk-literal,server/reading-guide.mjs
 candidate:server/reading-guide.mjs:33:67,js-cjk-literal,server/reading-guide.mjs,33,,unknown,reviewable,,登录后可以准备阅读前导，原书仍可阅读
 candidate:server/reading-guide.mjs:34:305,js-cjk-literal,server/reading-guide.mjs,34,,unknown,reviewable,,阅读前导的书籍版本或来源不正确
 candidate:server/reading-guide.mjs:36:213,js-cjk-literal,server/reading-guide.mjs,36,,unknown,reviewable,,原文已更新，请重新打开阅读前导
-candidate:server/reading-guide.mjs:39:97,js-cjk-literal,server/reading-guide.mjs,39,,unknown,reviewable,,登录已变化，未生成阅读前导
-candidate:server/reading-guide.mjs:42:47,js-cjk-literal,server/reading-guide.mjs,42,,unknown,reviewable,,AI 阅读前导暂不可用，可以继续阅读
-candidate:server/reading-guide.mjs:44:129,js-cjk-literal,server/reading-guide.mjs,44,,unknown,reviewable,,阅读前导正在准备，请稍后查看
-candidate:server/reading-guide.mjs:48:37,js-cjk-literal,server/reading-guide.mjs,48,,unknown,reviewable,,阅读前导已取消，原书仍可阅读
-candidate:server/reading-guide.mjs:55:56,js-cjk-literal,server/reading-guide.mjs,55,,unknown,reviewable,,AI 阅读前导暂未完成，可以继续阅读并稍后重试
-candidate:server/reading-guide.mjs:56:72,js-cjk-literal,server/reading-guide.mjs,56,,unknown,reviewable,,登录已变化，未保存阅读前导
-candidate:server/reading-guide.mjs:57:127,js-cjk-literal,server/reading-guide.mjs,57,,unknown,reviewable,,原文已变化，未保存旧导览
-candidate:server/reading-guide.mjs:58:156,js-cjk-literal,server/reading-guide.mjs,58,,unknown,reviewable,,阅读前导未通过格式核验，可以稍后重试
-candidate:server/reading-guide.mjs:60:145,js-cjk-literal,server/reading-guide.mjs,60,,unknown,reviewable,,阅读前导任务已过期，请重试
-candidate:server/reading-guide.mjs:71:112,js-cjk-literal,server/reading-guide.mjs,71,,unknown,reviewable,,阅读前导不属于当前书籍来源或版本
-candidate:server/reading-guide.mjs:72:108,js-cjk-literal,server/reading-guide.mjs,72,,unknown,reviewable,,阅读前导的原文版本已变化
-candidate:server/reading-guide.mjs:74:174,js-cjk-literal,server/reading-guide.mjs,74,,unknown,reviewable,,找不到当前账号已保存的阅读前导，请重新准备
+candidate:server/reading-guide.mjs:42:97,js-cjk-literal,server/reading-guide.mjs,42,,unknown,reviewable,,登录已变化，未生成阅读前导
+candidate:server/reading-guide.mjs:45:47,js-cjk-literal,server/reading-guide.mjs,45,,unknown,reviewable,,AI 阅读前导暂不可用，可以继续阅读
+candidate:server/reading-guide.mjs:55:37,js-cjk-literal,server/reading-guide.mjs,55,,unknown,reviewable,,阅读前导结果待确认，没有重新生成。原书仍可阅读
+candidate:server/reading-guide.mjs:63:37,js-cjk-literal,server/reading-guide.mjs,63,,unknown,reviewable,,登录已变化，未保存阅读前导
+candidate:server/reading-guide.mjs:64:127,js-cjk-literal,server/reading-guide.mjs,64,,unknown,reviewable,,原文已变化，未保存旧导览
+candidate:server/reading-guide.mjs:65:156,js-cjk-literal,server/reading-guide.mjs,65,,unknown,reviewable,,阅读前导未通过格式核验，可以稍后重试
+candidate:server/reading-guide.mjs:67:149,js-cjk-literal,server/reading-guide.mjs,67,,unknown,reviewable,,阅读前导结果待确认，请稍后查看
+candidate:server/reading-guide.mjs:72:35,js-cjk-literal,server/reading-guide.mjs,72,,unknown,reviewable,,阅读前导的生成额度暂时用完，请稍后再试
+candidate:server/reading-guide.mjs:72:80,js-cjk-literal,server/reading-guide.mjs,72,,unknown,reviewable,,阅读前导暂未完成，可以稍后重试
+candidate:server/reading-guide.mjs:72:98,js-cjk-literal,server/reading-guide.mjs,72,,unknown,reviewable,,阅读前导结果待确认，没有重新生成。可以继续阅读
+candidate:server/reading-guide.mjs:80:112,js-cjk-literal,server/reading-guide.mjs,80,,unknown,reviewable,,阅读前导不属于当前书籍来源或版本
+candidate:server/reading-guide.mjs:81:108,js-cjk-literal,server/reading-guide.mjs,81,,unknown,reviewable,,阅读前导的原文版本已变化
+candidate:server/reading-guide.mjs:83:174,js-cjk-literal,server/reading-guide.mjs,83,,unknown,reviewable,,找不到当前账号已保存的阅读前导，请重新准备
 candidate:server/reading-view.mjs:13:53,js-cjk-literal,server/reading-view.mjs,13,,unknown,reviewable,,书籍版本已更新，请重新打开这本书
 candidate:server/reading-view.mjs:14:57,js-cjk-literal,server/reading-view.mjs,14,,unknown,reviewable,,找不到这一章
 candidate:server/scoped-agent-reading.mjs:12:66,js-cjk-literal,server/scoped-agent-reading.mjs,12,,unknown,reviewable,,资料元数据超过读取上限，请在书房中核对来源

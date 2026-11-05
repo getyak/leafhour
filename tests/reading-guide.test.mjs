@@ -45,18 +45,18 @@ test('cancelled and revoked guide completions cannot publish late; duplicate pre
  let release,started;const began=new Promise(r=>started=r);let calls=0;
  const service=await fixture(t,async()=>{calls++;started();return new Promise(r=>release=r);});
  const controller=new AbortController(),pending=service.ensure(user,local,{signal:controller.signal});await began;
- await assert.rejects(service.ensure(user,local),e=>e.status===409);assert.equal(calls,1);
+ assert.equal((await service.ensure(user,local)).state,'preparing');assert.equal(calls,1);
  controller.abort();await assert.rejects(pending);release(output);
  assert.equal((await service.view(user,local)).guide,null);
  const revoked=await fixture(t,async()=>output);await assert.rejects(revoked.ensure(user,local,{authorize:async()=>false}),e=>e.status===401);
  assert.equal((await revoked.view(user,local)).guide,null);
 });
 
-test('failed guide can explicitly retry without storing fake text and anonymous callers never run a model',async t=>{
- let calls=0;const service=await fixture(t,async()=>{calls++;if(calls===1)throw Error('provider unavailable');return output;});
+test('invalid completed guide can explicitly retry without storing fake text and anonymous callers never run a model',async t=>{
+ let calls=0;const service=await fixture(t,async()=>{calls++;if(calls===1)return {};return output;});
  await assert.rejects(service.ensure(null,local),e=>e.status===401);assert.equal(calls,0);
  await assert.rejects(service.ensure(user,local));assert.equal((await service.view(user,local)).guide,null);
- assert.equal((await service.ensure(user,local)).guide.method,output.method);assert.equal(calls,2);
+ assert.equal((await service.ensure(user,local,{retry:true})).guide.method,output.method);assert.equal(calls,2);
 });
 
 test('sponsored guide attempts share bounded introduction capacity while cached reads stay free',async t=>{
@@ -69,7 +69,7 @@ test('sponsored guide attempts share bounded introduction capacity while cached 
 test('guide adapter freezes its context payload and excludes caller text history and tools while preserving limits',async()=>{
  let configuration,request,calls=0,callerToolCalls=0;
  const controller=new AbortController(),snapshot=structuredClone(context);
- const generate=createReadingGuideGenerator({model:'isolated-guide-model',makeGenerator:options=>{configuration=options;return async job=>{calls++;request=job;return {summary:JSON.stringify(selector)};};}});
+ const generate=createReadingGuideGenerator({model:'isolated-guide-model',makeGenerator:options=>{configuration=options;return async job=>{calls++;request=job;return {summary:JSON.stringify({opening:output.opening,method:output.method,readingQuestion:output.readingQuestion})};};}});
  const result=await generate({book:{...adapterBook,notes:'PRIVATE_BOOK_NOTE'},context:snapshot,locale:'zh-Hans',signal:controller.signal,text:'HOSTILE_CALLER_TEXT',history:[{role:'user',content:'PRIVATE_CALLER_HISTORY'}],voice:{id:'PRIVATE_VOICE'},guideContext:{opening:'PRIVATE_GUIDE'},notes:['PRIVATE_JOB_NOTE'],onProgress:()=>{throw Error('PRIVATE_PROGRESS');},tools:{definitions:[{name:'hostile_read_notes'}],execute(){callerToolCalls++;return 'PRIVATE_NOTE';}}});
  assert.deepEqual(JSON.parse(request.text),{locale:'zh-Hans',...context});assert.doesNotMatch(request.text,/HOSTILE|PRIVATE|hostile_read_notes/);
  assert.deepEqual(Object.keys(request).sort(),['book','text','signal','history','tools'].sort());assert.deepEqual(request.book,adapterBook);
@@ -77,7 +77,7 @@ test('guide adapter freezes its context payload and excludes caller text history
  assert.throws(()=>request.tools.execute('hostile_read_notes',{}),/has no tools/);assert.equal(callerToolCalls,0);assert.equal(request.signal,controller.signal);
  assert.deepEqual({timeoutMs:configuration.timeoutMs,maxRequests:configuration.maxRequests,maxToolCalls:configuration.maxToolCalls,maxTokens:configuration.maxTokens,maxCostCny:configuration.maxCostCny},{timeoutMs:60000,maxRequests:1,maxToolCalls:0,maxTokens:1000,maxCostCny:.1});
  snapshot.passages[0].original='Later caller mutation';assert.equal(JSON.parse(request.text).passages[0].original,context.passages[0].original);
- assert.deepEqual(Object.keys(result).sort(),['opening','method','readingQuestion','model'].sort());assert.equal(result.model,'isolated-guide-model');assert.ok(result.opening.includes('Finite games'));assert.ok(result.method.includes('Finite games end.'));assert.equal(calls,1);
+ assert.deepEqual(Object.keys(result).sort(),['opening','method','readingQuestion','model'].sort());assert.equal(result.model,'isolated-guide-model');assert.equal(result.opening,output.opening);assert.equal(result.method,output.method);assert.equal(calls,1);
 });
 
 test('guide adapter forwards cancellation without replacing it with a JSON failure or retrying',async()=>{
@@ -170,7 +170,7 @@ test('quote and focus limits reject otherwise literal selections at the exact le
 });
 
 test('invalid locale, source envelope or identity never reaches a model',async()=>{
- let calls=0;const generate=createReadingGuideGenerator({makeGenerator:()=>async()=>{calls++;return {summary:JSON.stringify(selector)};}});
+ let calls=0;const generate=createReadingGuideGenerator({makeGenerator:()=>async()=>{calls++;return {summary:JSON.stringify({opening:output.opening,method:output.method,readingQuestion:output.readingQuestion})};}});
  const job={book:adapterBook,context,locale:'zh-Hans'};
  const badJobs=[{...job,locale:'fr'},{...job,context:{...context,notes:['private']}},{...job,context:{...context,passages:[...context.passages,...context.passages]}},{...job,book:{bookId:'\ud800',contentVersion:'v1'}},{...job,book:{bookId:'book\nid',contentVersion:'v1'}},
   {...job,context:{...context,passages:[{...context.passages[0],id:'段\n甲'}]}},
@@ -188,14 +188,18 @@ test('the source snapshot and book identity remain frozen across an awaited sele
  const generate=createReadingGuideGenerator({makeGenerator:()=>async job=>{captured=job;started();return new Promise(resolve=>release=resolve);}});
  const pending=generate({book,context:source,locale:'zh-Hans'});await began;
  source.passages[0].original='Changed while model was running';source.passages.push({id:'other',chapterId:'c1',original:'Additional private text'});book.bookId='changed-book';
- release({summary:JSON.stringify(selector)});const result=await pending;
- assert.equal(captured.book.bookId,adapterBook.bookId);assert.equal(JSON.parse(captured.text).passages.length,1);assert.ok(result.method.includes(selector.anchors[0].quote));
+ release({summary:JSON.stringify({opening:output.opening,method:output.method,readingQuestion:output.readingQuestion})});const result=await pending;
+ assert.equal(captured.book.bookId,adapterBook.bookId);assert.equal(JSON.parse(captured.text).passages.length,1);assert.equal(result.method,output.method);
 });
 
 test('pre-aborted and late-aborted selector calls preserve the cancellation reason before JSON parsing',async()=>{
  const reason=new Error('source-focus cancelled'),before=new AbortController();before.abort(reason);let calls=0;
- const generate=createReadingGuideGenerator({makeGenerator:()=>async()=>{calls++;return {summary:JSON.stringify(selector)};}});
+ const generate=createReadingGuideGenerator({makeGenerator:()=>async()=>{calls++;return {summary:JSON.stringify({opening:output.opening,method:output.method,readingQuestion:output.readingQuestion})};}});
  await assert.rejects(generate({book:adapterBook,context,locale:'zh-Hans',signal:before.signal}),error=>error===reason);assert.equal(calls,0);
  const after=new AbortController();const late=createReadingGuideGenerator({makeGenerator:()=>async()=>{after.abort(reason);return {summary:'invalid JSON'};}});
  await assert.rejects(late({book:adapterBook,context,locale:'zh-Hans',signal:after.signal}),error=>error===reason);
+});
+
+test('narrative prompt requires source-grounded context and no spoilers, without raising provider limits',()=>{
+ assert.match(guideModule.readingGuidePrompt,/严格无剧透/);assert.match(guideModule.readingGuidePrompt,/结局/);assert.match(guideModule.readingGuidePrompt,/关键转折/);assert.match(guideModule.readingGuidePrompt,/材料不足/);assert.match(guideModule.readingGuidePrompt,/不凭记忆编造/);assert.match(guideModule.readingGuidePrompt,/像朋友讲故事/);
 });

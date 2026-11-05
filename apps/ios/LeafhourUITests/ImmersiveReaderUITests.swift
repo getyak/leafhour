@@ -39,19 +39,37 @@ final class ImmersiveReaderUITests: XCTestCase {
     }
     func testReadingGuideShowsThreeDirectFollowUpsAndKeepsThemAfterAnAnswer() {
         open(title: "GET317 合成验收 · 双译")
-        let guide = app.buttons["reader-reading-guide-open"]; require(guide); guide.tap()
-        require(app.navigationBars["阅读前导"])
+        XCTAssertFalse(app.buttons["reader-reading-guide-open"].exists)
+        wake()
+        let companion = app.buttons["reader-ai"]; require(companion); companion.tap()
+        require(app.navigationBars["旁注"])
+        require(app.otherElements["reader-reading-guide-content"])
+        XCTAssertTrue(app.staticTexts["阅读前导"].isHittable)
+        capture("reading-guide-in-companion")
         let choices = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH %@", "chat-follow-up-"))
         let ready = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in choices.count == 3 }, object: nil)
         XCTAssertEqual(XCTWaiter.wait(for: [ready], timeout: 15), .completed)
-        if !choices.element(boundBy: 2).isHittable { app.scrollViews.firstMatch.swipeUp() }
+        let history = app.scrollViews["reader-conversation-history"]
+        for _ in 0..<10 {
+            let frame = choices.element(boundBy: 0).frame
+            let source = app.otherElements["chat-source-context"]
+            let bottom = source.exists ? min(history.frame.maxY, source.frame.minY) : history.frame.maxY
+            if frame.minY >= history.frame.minY && frame.maxY <= bottom { break }
+            history.swipeUp()
+        }
+        let source = app.otherElements["chat-source-context"]
+        let bottom = source.exists ? min(history.frame.maxY, source.frame.minY) : history.frame.maxY
+        XCTAssertGreaterThanOrEqual(choices.element(boundBy: 0).frame.minY, history.frame.minY)
+        XCTAssertLessThanOrEqual(choices.element(boundBy: 0).frame.maxY, bottom + 2)
         capture("reading-guide-three-choices")
         choices.element(boundBy: 0).tap(); require(app.navigationBars["旁注"])
-        let answered = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in choices.count == 3 }, object: nil)
-        XCTAssertEqual(XCTWaiter.wait(for: [answered], timeout: 15), .completed)
-        let history = app.scrollViews["reader-conversation-history"]
-        for _ in 0..<6 { if choices.element(boundBy: 2).isHittable { break }; history.swipeUp() }
-        XCTAssertTrue(choices.element(boundBy: 2).isHittable)
+        let answer = app.descendants(matching: .any).matching(NSPredicate(format: "identifier BEGINSWITH %@", "chat-assistant-message-")).firstMatch
+        require(answer)
+        XCTAssertGreaterThanOrEqual(choices.count, 3)
+        let lastChoice = choices.element(boundBy: choices.count - 1)
+        for _ in 0..<8 { if lastChoice.isHittable { break }; history.swipeUp() }
+        XCTAssertTrue(lastChoice.isHittable)
+        XCTAssertTrue(app.otherElements["reader-reading-guide-content"].exists)
         capture("answer-three-followups")
     }
     func testContentsSearchPlacesBodyHitsUnderTheirRealChapter() {

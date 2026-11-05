@@ -21,3 +21,13 @@ test('dedicated guide HTTP authenticates and caches without a normal chat or quo
  assert.equal(calls,1);assert.equal(chatCalls,0);assert.equal((await server.portal.chat.view(session.user,book.bookId)).turns.length,0);
  const unknown=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json',Origin:base},body});assert.equal(unknown.status,401);
 });
+
+test('HTTP read-only status never generates; concurrent ensure shares the original request',async t=>{
+ const dir=await mkdtemp(path.join(tmpdir(),'get407-http-'));let release,started,calls=0;const began=new Promise(r=>started=r);
+ const server=await createReaderServer({recordsPath:path.join(dir,'records.json'),env:{},translator:null,sendCode:null,chatGenerator:null,companionGenerator:null,readingGuideGenerator:async()=>{calls++;started();return new Promise(r=>release=r);}});
+ await new Promise(r=>server.listen(0,'127.0.0.1',r));t.after(async()=>{server.closeAllConnections();await new Promise(r=>server.close(r));await rm(dir,{recursive:true,force:true});});
+ const base='http://127.0.0.1:'+server.address().port,session=await server.portal.auth.localSession(),book=await server.portal.library.importDocument(session.user,{filename:'Opening.txt',bytes:Buffer.from('A bounded original opening.')});
+ const headers={Cookie:'marginalia_session='+session.token,'X-Reader-Owner':session.user.id,'Content-Type':'application/json',Origin:base},target={bookId:book.bookId,contentVersion:book.contentVersion,sourceKind:'cloud',locale:'en'},call=async action=>{const response=await fetch(base+'/api/library/reading-guide',{method:'POST',headers,body:JSON.stringify({...target,action})});assert.equal(response.status,200);return response.json();};
+ assert.equal((await call('view')).state,'missing');assert.equal(calls,0);const pending=call('ensure');await began;assert.equal((await call('ensure')).state,'preparing');assert.equal((await call('view')).state,'preparing');assert.equal(calls,1);
+ release({opening:'Fixed welcome.',method:'Read the opening.',readingQuestion:'What do you notice?',model:'isolated'});assert.equal((await pending).state,'ready');assert.equal((await call('view')).state,'ready');assert.equal(calls,1);
+});

@@ -55,7 +55,7 @@ private struct ReaderChromeHeightKey: PreferenceKey {
 }
 enum ReaderPanel: Identifiable {
     case contents, search, preferences, appearance, records, tools, listening, time, autoPage, translation, pageTranslation, introduction, readingGuide, bookmarks, conversation, bookInformation, note(SelectedQuote), source(SelectedQuote), companion(SelectedQuote?), share(SelectedQuote?)
-    var isCompanion: Bool { switch self { case .companion, .conversation: true; default: false } }
+    var isCompanion: Bool { switch self { case .companion, .conversation, .readingGuide: true; default: false } }
     var isNoteEditor: Bool { if case .note = self { true } else { false } }
     var id: String {
         switch self {
@@ -134,12 +134,6 @@ struct ReaderScreen: View {
     }
     private var presentedReader: some View {
         ReaderBackgroundSurface(isCovered: panel?.isCompanion == true || panel?.id == "listening" || scenePhase != .active) { readingSurface }.equatable()
-        .safeAreaInset(edge: .top, spacing: 4) {
-            if !guide.dismissed {
-                ReaderReadingGuideCompact(controller: guide, onOpen: { present(.readingGuide) })
-                    .frame(minHeight: 72).padding(.horizontal, 12)
-            }
-        }
         .preferredColorScheme(session.state.preferences.colorScheme(following: systemColorScheme))
         .statusBarHidden(true)
         .interactiveDismissDisabled(panel?.isCompanion != true && (session.saving || session.saveError != nil))
@@ -157,7 +151,7 @@ struct ReaderScreen: View {
             ReaderPanelView(panel: destination, session: session, systemColorScheme: systemColorScheme, speech: speech, tools: tools, cloud: cloud, library: library, reading: reading, visiblePage: visiblePage, readingNavigationID: readingNavigationID, readingGuide: guide, activeBookmarkID: bookmarkConfigurationID ?? activeBookmark?.id, currentBookmarkCapture: bookmarkRanges.first?.capture, conversationAutoLoad: conversationAutoLoad,
                 onJump: { index, anchor in reading.suspendForUserNavigation(); readingNavigationID = UUID(); speech.userNavigated(); session.go(to: index, anchor: anchor); panel = nil; session.setReadingVisible(scenePhase == .active && !speech.playing); session.recordReadingInteraction() }, onCompanion: { showCompanion(currentQuote) },
                 autoPage: autoPage, onAutoPageStart: startAutoPaging, onPresent: present, onUserNavigate: { reading.suspendForUserNavigation(); readingNavigationID = UUID() }, onPreparedConversation: presentPreparedGuideConversation)
-                .modifier(ReaderPanelPresentation(isCompanion: destination.isCompanion, isNoteEditor: destination.isNoteEditor, startsExpanded: destination.id == "time" || destination.id == "reading-guide"))
+                .modifier(ReaderPanelPresentation(isCompanion: destination.isCompanion, isNoteEditor: destination.isNoteEditor, startsExpanded: destination.id == "time"))
         }
         .alert(session.saveError == nil ? "阅读提示" : "阅读记录", isPresented: Binding(get: { session.message != nil || (session.noteEditorID == nil && session.saveMessage != nil) }, set: { if !$0 { session.message = nil; session.saveMessage = nil } })) {
             if session.saveError != nil {

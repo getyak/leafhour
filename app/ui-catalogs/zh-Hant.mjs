@@ -1,6 +1,16 @@
 // GET-192 immutable zh-Hant UI catalogue. Fixed public stateless ID→string
 // data with the same keys as app/ui-catalogs/en.mjs. No logic lives here.
 export default Object.freeze({
+"guide.title":"閱讀前導",
+"guide.attribution":"AI · 開篇取樣草稿",
+"guide.boundary":"依據書目資訊與開篇取樣；背景不足處保留未知。",
+"guide.preparing":"前導正在準備，你可以繼續閱讀。",
+"guide.failed":"前導暫未準備好，可以重試。",
+"guide.missing":"前導尚未準備好，原書仍可繼續閱讀。",
+"guide.unknown":"前導結果待確認，沒有重新生成。可以稍後查看已有結果。",
+"guide.retry":"重試準備前導",
+"guide.check":"查看已有結果",
+
   "reader.settings.text": "文字",
   "reader.settings.details": "更多排版",
   "chat.back": "返回",

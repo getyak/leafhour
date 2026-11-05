@@ -1,6 +1,6 @@
 import {billingErrorDetails} from './owner-scope.mjs';
 import {readingChatQuoteFromExcerpt} from './reading-chat-quote.mjs';
-import {getUiLinkLocale,t,uiHref,onUiLocaleChange} from './ui-locale.mjs';
+import {getUiLocale,getUiLinkLocale,t,uiHref,onUiLocaleChange} from './ui-locale.mjs';
 import {mountReaderChatWorkspace} from './reader-chat-workspace.mjs';
 import {readerLoginUrl} from './reader-return.mjs';
 import {mountCompanionAnchor} from './reader-companion.mjs';
@@ -20,15 +20,15 @@ export function readerConversationContext(reader,bookId){
   return {book,passages,passageId:passages.has(selected)?selected:passages.has(anchor)?anchor:null};
 }
 
-export function mountReaderConversation({bookId,session,getReader,root,request=fetch,navigate=url=>location.assign(url),replace=url=>location.replace(url),mountChat=mountLibraryChat,mountCompanion=null,integration=null,uploadController=null,mountUpload=null,renderMarkdown=null,announce=()=>{}}){
+export function mountReaderConversation({bookId,session,getReader,root,request=fetch,navigate=url=>location.assign(url),replace=url=>location.replace(url),mountChat=mountLibraryChat,mountCompanion=null,mountGuide=null,integration=null,uploadController=null,mountUpload=null,renderMarkdown=null,announce=()=>{}}){
   if(!bookId||!root)return null;
-  let chat,companion,workspace,disposed=false;
+  let chat,companion,guide,workspace,disposed=false;
   const events=globalThis.document,listeners=[];
   const on=(name,handler)=>{events.addEventListener(name,handler);listeners.push(()=>events.removeEventListener(name,handler));};
   const requireActive=()=>{if(disposed)throw Object.assign(Error('Conversation disposed'),{code:'READER_CONVERSATION_DISPOSED'});};
   const openAuth=()=>{if(disposed)return;const passageId=context()?.passageId;navigate(readerLoginUrl({bookId,passageId,ui:getUiLinkLocale()}));};
   let disposeChat;
-  const dispose=()=>{if(disposed)return;disposed=true;for(const remove of listeners)remove();companion?.dispose();uploadController?.dispose();disposeChat?.();workspace?.dispose();externalLauncher?.position?.dispose();};
+  const dispose=()=>{if(disposed)return;disposed=true;for(const remove of listeners)remove();companion?.dispose();guide?.dispose();uploadController?.dispose();disposeChat?.();workspace?.dispose();externalLauncher?.position?.dispose();};
   const sessionChanged=()=>{requireActive();companion?.dispose();chat?.reset();dispose();events.dispatchEvent(new CustomEvent('reader:session-changed'));replace(uiHref('/library'));throw Object.assign(Error(t('conversation.accountChanged')),{status:409});};
   // GET-184: one injected seam bundle is split into exactly four contracts —
   // the chat-owned AI trigger host, the companion bubble anchor (shared pill),
@@ -43,7 +43,7 @@ export function mountReaderConversation({bookId,session,getReader,root,request=f
     const response=await request(url,{...requestOptions,...(data===undefined?{}:{method:'POST',body:JSON.stringify(data)}),headers:{'Content-Type':'application/json','X-Reader-Owner':session?.user?.id||'guest',...(onProgress?{Accept:'application/x-ndjson'}:{})}});
     requireActive();
     if(response.headers.get('X-Reader-Session-Changed')==='1')sessionChanged();
-    if(url.endsWith('/companion/messages')&&response.ok){const identity=await request('/api/auth/session',{cache:'no-store'});requireActive();const current=await identity.json();requireActive();if(!identity.ok||(current.user?.id||'guest')!==(session?.user?.id||'guest'))sessionChanged();}
+    if((url.endsWith('/companion/messages')||url==='/api/library/reading-guide')&&response.ok){const identity=await request('/api/auth/session',{cache:'no-store'});requireActive();const current=await identity.json();requireActive();if(!identity.ok||(current.user?.id||'guest')!==(session?.user?.id||'guest'))sessionChanged();}
     const value=await readChatResponse(response,{onProgress,isCurrent:()=>!disposed&&!options.signal?.aborted});requireActive();
     if(!response.ok)throw Object.assign(Error(value.error||'对话暂时无法载入，请重试。'),{status:response.status,...billingErrorDetails(value)});
     return value;
@@ -96,6 +96,7 @@ export function mountReaderConversation({bookId,session,getReader,root,request=f
     queueMicrotask(()=>{if(disposed||revision!==followSelection||!root.open)return;followCandidate(selectedCandidate());});
   });
   const followOnOpen=()=>{
+    guide?.open?.();
     const candidate=selectedCandidate(),revision=++followSelection;
     queueMicrotask(()=>{if(!disposed&&revision===followSelection)followCandidate(candidate);});
   };
@@ -103,9 +104,14 @@ export function mountReaderConversation({bookId,session,getReader,root,request=f
   workspace=mountReaderChatWorkspace({root,getReader,onBack:()=>chat.close(),labels:{resize:t('chat.resize')}});
   listeners.push(onUiLocaleChange(()=>workspace.setLabels({resize:t('chat.resize')})));
   if(typeof chat.surface==='function'){const options={bookId,getOwner:()=>session?.user?.id||null,getReader,api,chat,openAuth,integration:integration?{anchor:integration.companionAnchor,onUnread:integration.onUnread,onFocusReturn:integration.focusReturn}:null};if(mountCompanion)companion=mountCompanion(options);else chat.companionReady=import('./reader-companion-loader.mjs').then(m=>{if(!disposed)companion=m.mountReaderCompanion(options);}).catch(()=>{});}
+  if(typeof chat.surface==='function'){
+    const options={surface:chat.surface(),api,getTarget:()=>{const book=getReader()?.getBook?.(),ownerId=session?.user?.id;return ownerId&&book?.bookId===bookId&&book.contentVersion?{ownerId,bookId,contentVersion:book.contentVersion,sourceKind:'cloud',locale:getUiLocale()}:null;},storage:taskStorage,verifyOwner:async owner=>{const identity=await api('/api/auth/session');if(identity.user?.id!==owner)sessionChanged();return true;}};
+    if(mountGuide)guide=mountGuide(options);
+    else chat.guideReady=import('./reader-reading-guide.mjs').then(module=>{if(!disposed){guide=module.mountReaderGuide(options);void guide?.prepare();}}).catch(()=>{});
+  }
   let restoredPerson=false;
   const restorePerson=()=>{if(disposed||restoredPerson||!context())return;try{const storage=globalThis.sessionStorage;if(!storage?.getItem('leafhour:person-return:1'))return;restoredPerson=true;void import('./person-return-controller.mjs').then(m=>{if(!disposed)return m.restorePersonReadingReturn({storage,owner:session?.user?.id||'guest',bookId,getReader,chat,isCurrent:()=>!disposed});}).catch(()=>{});}catch{}};
-  on('reader:ready',()=>{if(!disposed){chat.update();void restorePerson();}});
+  on('reader:ready',()=>{if(!disposed){chat.update();void guide?.prepare();void restorePerson();}});
   on('reader:audio-question',event=>{
     if(disposed)return;
     const detail=event.detail,current=context();
@@ -113,6 +119,6 @@ export function mountReaderConversation({bookId,session,getReader,root,request=f
     chat.open?.({bookId,passageId:detail.passageId,draft:detail.draft});
   });
   disposeChat=chat.dispose?.bind(chat);chat.dispose=dispose;
-  if(context()){chat.update();void restorePerson();}
+  if(context()){chat.update();void guide?.prepare();void restorePerson();}
   return chat;
 }
