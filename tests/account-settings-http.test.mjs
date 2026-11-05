@@ -4,7 +4,35 @@ import {mkdtemp,rm} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
 import path from 'node:path';
 import {createReaderServer} from '../server/server.mjs';
+import {createServer} from 'node:http';
+import {createHostedHandler} from '../api/[...path].js';
+import {createPortal} from '../server/portal.mjs';
+import {createHostedAuth} from '../deploy/hosted-auth.mjs';
+import {authFixture} from './auth-fixture.mjs';
 import {exportAccountData,exportBrowserRecords} from '../app/account-export.mjs';
+
+test('production catch-all admits account exports and MCP management while preserving owner and path guards',async t=>{
+ const fixture=authFixture(),store=fixture.store(),auth=createHostedAuth({...fixture,store});
+ const portal=await createPortal({dataDir:'hosted-account-settings-fixture',publicOrigin:fixture.env.READER_PUBLIC_ORIGIN,dataStore:store,authService:auth,catalogDir:null,allowLocal:false,hostedMcp:true,translator:null,chatGenerator:null,companionGenerator:null,introductionGenerator:null,speechProvider:null,dialogueGenerator:null,guideGenerator:null,paddleProvider:null,env:fixture.env});
+ const handler=createHostedHandler({env:fixture.env,storeFactory:()=>store,authFactory:()=>auth,portalFactory:async()=>portal});
+ const server=createServer((req,res)=>{req.query=Object.fromEntries(new URL(req.url,'http://fixture.invalid').searchParams);void handler(req,res);});
+ await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));const base='http://127.0.0.1:'+server.address().port;
+ t.after(async()=>{await portal.chat.close();server.closeAllConnections();await new Promise(resolve=>server.close(resolve));});
+ const headers={Origin:fixture.env.READER_PUBLIC_ORIGIN,'Content-Type':'application/json'};
+ const call=(path,{body,owner=fixture.user.id,signedIn=true,catchAll=true}={})=>fetch(base+(catchAll?'/api/service?path='+encodeURIComponent(path.slice('/api/'.length)):path),{headers:{...headers,...(signedIn&&cookie?{Cookie:cookie,'X-Reader-Owner':owner}:{})},...(body===undefined?{}:{method:'POST',body:JSON.stringify(body)})});
+ let cookie='';const login=await call('/api/auth/password',{body:{email:fixture.user.email,password:'synthetic-password'},signedIn:false});assert.equal(login.status,200);cookie=login.headers.get('set-cookie').split(';')[0];
+ const id='00000000-0000-4000-8000-000000000001',connector='/api/account/mcp-connectors/'+id;
+ for(const path of ['/api/account/settings/export','/api/account/export','/api/account/export/manifest','/api/account/mcp-server','/api/account/mcp-connectors']){
+  for(const catchAll of [true,false]){const response=await call(path,{catchAll});assert.equal(response.status,200,path);assert.match(response.headers.get('cache-control'),/no-store/);await response.json();}
+  assert.equal((await call(path,{signedIn:false})).status,401,path);assert.equal((await call(path,{owner:'different-owner'})).status,409,path);
+ }
+ assert.equal((await call('/api/account/mcp-connectors',{body:{name:'Invalid fixture',url:'http://127.0.0.1/mcp'}})).status,400);
+ for(const [action,body,status]of [['tools',undefined,404],['call',{name:'fixture',arguments:{},confirm:true},404],['remove',{},200]]){
+  const path=connector+'/'+action,response=await call(path,{body});assert.equal(response.status,status,path);const value=await response.json();if(status===404)assert.equal(value.error,'连接已移除');else assert.equal(value.removed,true);
+  assert.equal((await call(path,{body,signedIn:false})).status,401,path);assert.equal((await call(path,{body,owner:'different-owner'})).status,409,path);
+ }
+ for(const path of ['/api/account/settings/export/notes','/api/account/export/manifest/','/api/account/export-extra','/api/account/mcp-server/','/api/account/mcp-connectors/not-an-id/tools',connector+'/unknown',connector+'/call/extra'])assert.equal((await call(path)).status,404,path);
+});
 
 test('browser export only includes the captured owner’s reading and conversation data',()=>{
  const entries=new Map([['marginalia:chat-draft:alice:book','my unsent question'],['marginalia:chat-draft:bob:book','other account'],['marginalia-reading-ending-drafts-v1|alice|book|draft|one','my note'],['marginalia-focus-position-v1|alice-other|book','other position'],['marginalia-api-key|alice|provider','secret configuration']]);
