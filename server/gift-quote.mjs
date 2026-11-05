@@ -1,3 +1,4 @@
+import {withCandidateDelivery,transferExecutionCandidate} from '../packages/domain/execution-delivery.mjs';
 // Gift quotation: a bounded, source-only selection over the current book.
 // The built-in model chooses a locally verified sentence ID; source text and
 // code point offsets stay server-owned. Every claim is revalidated against the book snapshot and
@@ -249,7 +250,7 @@ export function createGiftQuoteService({library,gifts,generator=null,fetcher=fet
       // The candidate must survive both the exact submitted pool and the full
       // current snapshot; anything else degrades to the deterministic fallback.
       const selected=candidate?validateGiftQuoteSelection({...candidate,selection:'ai-selected'},book,{pool}):null;
-      if(selected&&wholeSourceSentence(selected,passageOriginal(book,selected.chapterId,selected.passageId)))return selected;
+      if(selected&&wholeSourceSentence(selected,passageOriginal(book,selected.chapterId,selected.passageId)))return transferExecutionCandidate(candidate,selected);
       diagnose(reason);
       const fallback=deterministicQuote(pool,book);return fallback?validateGiftQuoteSelection(fallback,book,{pool}):null;
     })();
@@ -272,7 +273,7 @@ export function createGiftQuoteService({library,gifts,generator=null,fetcher=fet
     const selection=await choose(user,book);
     const header={kind:GIFT_QUOTE_KIND,schemaVersion:GIFT_QUOTE_SCHEMA_VERSION,bookId:book.bookId,contentVersion:book.contentVersion};
     if(!selection)return {...header,quote:null};
-    const prepared=await gifts.prepareQuote(user,selection);
+    const prepared=await withCandidateDelivery(selection,()=>gifts.prepareQuote(user,selection));
     return {...header,quote:{receipt:prepared.receipt,selection:prepared.selection,text:prepared.text,chapterId:prepared.chapterId,chapterTitle:prepared.chapterTitle,passageId:prepared.passageId,start:prepared.start,end:prepared.end,codepoints:prepared.codepoints,expiresAt:prepared.expiresAt}};
   }
   return {prepare,choose};

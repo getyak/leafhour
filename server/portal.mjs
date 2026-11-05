@@ -79,7 +79,7 @@ const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const publicCoverPaths=new Set(Object.values(bookCoverArtwork).flatMap(artwork=>[artwork.src,...String(artwork.srcSet||'').split(',').map(source=>source.trim().split(/\s+/)[0])]).map(url=>String(url).split('?')[0]).filter(url=>/^\/book-covers\/[a-z0-9-]+-(320|640)\.webp$/.test(url)));
 const cookieToken=req=>(req.headers.cookie||'').split(';').map(s=>s.trim()).find(s=>s.startsWith('marginalia_session='))?.slice('marginalia_session='.length);
 const jsonBody=async(req,limit=29*1024*1024)=>{if(!req.headers['content-type']?.startsWith('application/json'))throw fail('请使用 JSON 请求',415);if(req.body&&typeof req.body==='object'){if(Buffer.byteLength(JSON.stringify(req.body))>limit)throw fail('这次导入内容过大，请分书恢复',413);return req.body;}let size=0;const chunks=[];for await(const chunk of req){size+=chunk.length;if(size>limit)throw fail('这次导入内容过大，请分书恢复',413);chunks.push(chunk);}try{return JSON.parse(Buffer.concat(chunks).toString('utf8'));}catch{throw fail('请求格式不正确');}};
-export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigins=[],sendCode,translator,catalogDir=path.join(root,'catalog'),allowLocal=true,dataStore=null,authService=null,hostedMcp=false,speechProvider,dialogueGenerator,guideGenerator,chatGenerator,companionGenerator,introductionGenerator,readingGuideGenerator,schedule=()=>{},paddleProvider,env=process.env,giftQuoteGenerator=null,annotationGenerator,notebookGenerator,billingService=null,compiledWeb=false,webDir=path.join(root,'dist')}={}){
+export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigins=[],sendCode,translator,catalogDir=path.join(root,'catalog'),allowLocal=true,dataStore=null,authService=null,hostedMcp=false,speechProvider,dialogueGenerator,guideGenerator,chatGenerator,companionGenerator,introductionGenerator,readingGuideGenerator,schedule=()=>{},paddleProvider,env=process.env,giftQuoteGenerator=null,annotationGenerator,notebookGenerator,personGenerator,coverGenerator,agentSearchWeb,documentExtractor,documentMetadata,pdfProcessor,billingService=null,compiledWeb=false,webDir=path.join(root,'dist')}={}){
   const webOrigins=new Set(publicOrigin?[publicOrigin]:[]);
   if(!Array.isArray(additionalWebOrigins))throw fail('额外网页来源配置无效',503);
   for(const value of additionalWebOrigins){
@@ -90,20 +90,20 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
   const billing=billingService||await createBillingRuntime({env,dataDir:path.join(dataDir,'billing'),publicOrigin:publicOrigin||'http://localhost:3000'});
   const sponsored=(user,feature,execute,maxCostUsd=.015)=>billing.enabled?withProviderMeter({ownerId:user?.id,feature,funding:'sponsored',maxCostUsd,record:facts=>billing.recordProviderCall(facts)},execute):execute();
   const auth=authService||await createEmailAuth({dataDir:path.join(dataDir,'auth'),sendCode:sendCode===undefined?await smtpSender():sendCode});
-  const library=await createLibraryService({dataDir:path.join(dataDir,'library'),catalogDir,translator:translator===undefined?createTranslator(env):translator,dataStore,coverGenerator:createCoverGenerator(env)});
+  const library=await createLibraryService({dataDir:path.join(dataDir,'library'),catalogDir,documentExtractor,documentMetadata,translator:translator===undefined?createTranslator(env):translator,dataStore,coverGenerator:coverGenerator===undefined?createCoverGenerator(env):coverGenerator});
   const personSeeds=catalogDir===null?[]:await loadPeopleSeeds();
   const publicBookIds=(await library.list(null)).map(book=>book.bookId);
   const people=createPeopleService({dataDir:path.join(dataDir,'library'),dataStore,seeds:personSeeds,publicBookIds});
   const peopleRoutes=createPeopleRoutes({people});
   const peopleFunding=createPeopleFunding({store:people.store});
-  const peopleGeneration=createPeopleGeneration({people,generator:createPersonGenerator({env,validateRecord:people.validateRecord,publicBookIds}),search:searchPeople,sourceReaderFor:(_user,person)=>createSourceReader({sources:person.sources}),store:people.store,schedule,authorize:async(user,{personId})=>{await people.get(user,personId);return true;},fund:peopleFunding.fund});
+  const peopleGeneration=createPeopleGeneration({people,generator:personGenerator===undefined?createPersonGenerator({env,validateRecord:people.validateRecord,publicBookIds}):personGenerator,search:searchPeople,sourceReaderFor:(_user,person)=>createSourceReader({sources:person.sources}),store:people.store,schedule,authorize:async(user,{personId})=>{await people.get(user,personId);return true;},fund:peopleFunding.fund});
   const peopleRuntimeRoutes=createPeopleRuntimeRoutes({people,generation:peopleGeneration,auth,funding:peopleFunding});
   const peopleGrants=createPeopleGrants({store:people.store,people});
   const provider=paddleProvider===undefined?createPaddleProvider({env}):paddleProvider;
   const ingestionStore=dataStore||createIngestionStorage({dataDir:path.join(dataDir,'ingestion')});
   const observability=createObservability({dataDir:path.join(dataDir,'library'),dataStore,env,schedule});
   const domainOutcome=(user,event,context)=>{const work=observability.event(user,event.name,event.properties,context).catch(()=>false);try{schedule(work);}catch{}};
-  const ingestion=createBookIngestion({store:ingestionStore,library,provider,onOutcome:domainOutcome});
+  const ingestion=createBookIngestion({store:ingestionStore,library,provider,documentExtractor,documentMetadata,pdfProcessor,onOutcome:domainOutcome});
   const ingestionUpload=createIngestionUpload({store:ingestionStore,ingestion});
   const ingestionRunner=createIngestionRunner({store:ingestionStore,ingestion,schedule,env,publicOrigin:dataStore?publicOrigin:null});
   const profile=createAccountProfile({dataDir:path.join(dataDir,'library'),dataStore});
@@ -126,7 +126,7 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
   const bookIntroductions=createBookIntroductionService({library,generator:introductionGenerator===undefined?createReaderChatGenerator({env,makeGenerator:createIntroductionGenerator}):introductionGenerator});
   const proactiveGenerator=companionGenerator===undefined?createReaderChatGenerator({makeGenerator:createCompanionGenerator}):companionGenerator;
   const voice=createChatVoice({store:ingestionStore});
-  const chat=await createReaderChatService({companionGenerator:proactiveGenerator,library,people,dataDir:path.join(dataDir,'library'),dataStore,generator:readingGenerator,resolveGuide:readingGuides.resolveReference,conversationTimeoutMs:chatRuntimeTimeout(env)+30000,validateVoice:(user,receipt)=>voice.validate(user,receipt),exportVoice:(user,receipt)=>voice.exportVoice(user,receipt),restoreVoice:(user,asset,options)=>voice.restoreVoice(user,asset,options),annotationGenerator:annotationGenerator===undefined?createReaderAnnotationGenerator({env}):annotationGenerator,onError:(error,context)=>readingGenerator?.reportFailure?.(error,context),onCompanionOutcome:domainOutcome});
+  const chat=await createReaderChatService({searchWeb:agentSearchWeb,companionGenerator:proactiveGenerator,library,people,dataDir:path.join(dataDir,'library'),dataStore,generator:readingGenerator,resolveGuide:readingGuides.resolveReference,conversationTimeoutMs:chatRuntimeTimeout(env)+30000,validateVoice:(user,receipt)=>voice.validate(user,receipt),exportVoice:(user,receipt)=>voice.exportVoice(user,receipt),restoreVoice:(user,asset,options)=>voice.restoreVoice(user,asset,options),annotationGenerator:annotationGenerator===undefined?createReaderAnnotationGenerator({env}):annotationGenerator,onError:(error,context)=>readingGenerator?.reportFailure?.(error,context),onCompanionOutcome:domainOutcome});
   const creditGate=createCreditGate({billing,library,chat,record:facts=>billing.recordProviderCall(facts)});
   const billingRoutes=createBillingRoutes({billing,publicOrigin,gate:creditGate,verifyEmail:({req})=>typeof auth.emailVerifiedFor==='function'?auth.emailVerifiedFor(cookieToken(req)):false});
   // One quiet daily companion plan per account; no schedule, model job or

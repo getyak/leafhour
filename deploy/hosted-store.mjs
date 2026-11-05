@@ -1,3 +1,4 @@
+import {executionDeliveryContext} from '../packages/domain/execution-delivery.mjs';
 import {digest,fail,MAX_FILE_BYTES} from '../server/document-import.mjs';
 import {randomUUID} from 'node:crypto';
 import {gzipSync,gunzipSync} from 'node:zlib';
@@ -29,11 +30,23 @@ export function createHostedStore({env=process.env,fetcher=fetch}={}){
   async function mutate(file,fallback,operation,{beforeCommit}={}){
     for(let attempt=0;attempt<12;attempt++){
       const {data,version}=await snapshot(file,fallback),result=await operation(data);
-      let value=data;const encoded=Buffer.from(JSON.stringify(data));if(encoded.length>3500000){const packed=gzipSync(encoded),target='json/'+digest(keyOf(file))+'/'+randomUUID();await putBlob(target,packed);value={kind:'leafhour-json-blob-v1',file:target,sha256:digest(packed)};}
+      let value=data;const encoded=Buffer.from(JSON.stringify(data));if(encoded.length>3500000&&keyOf(file)!=='execution/queue/v1'){const packed=gzipSync(encoded),target='json/'+digest(keyOf(file))+'/'+randomUUID();await putBlob(target,packed);value={kind:'leafhour-json-blob-v1',file:target,sha256:digest(packed)};}
       // Dispatching this CAS is the commit point. Cancellation before it must
       // not publish staged generation; after dispatch its receipt is recoverable.
       await beforeCommit?.();
-      const saved=await json('/rest/v1/rpc/reader_document_cas',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({document_key:keyOf(file),expected_version:version,document_value:value})});
+      const delivery=executionDeliveryContext(),receipt=delivery?.accept(result)?delivery:null;
+      await receipt?.validate?.();
+      const body={document_key:keyOf(file),expected_version:version,document_value:value,...(receipt?{execution_job_id:receipt.jobId,execution_receipt_id:receipt.receiptId,execution_owner_id:receipt.ownerId,execution_result_digest:receipt.resultDigest}:{})};
+      let saved;
+      try{saved=await json('/rest/v1/rpc/'+(receipt?'reader_document_cas_delivery':'reader_document_cas'),{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});}
+      catch(error){
+        // A lost HTTP response is reconciled from the transaction's unique
+        // receipt. Never rerun the provider or overwrite a later domain edit.
+        if(!receipt)throw error;
+        const committed=await executionReceipt(receipt.jobId).catch(()=>null);
+        if(!committed||committed.receiptId!==receipt.receiptId||committed.resultDigest!==receipt.resultDigest)throw error;
+        return result;
+      }
       if(saved)return result;
     }
     throw fail('书房正在另一处更新，请重试',409);
@@ -145,5 +158,6 @@ export function createHostedStore({env=process.env,fetcher=fetch}={}){
   }
   async function releaseTranslation(ticket){await mutate('limits/translation',{requests:[],active:{}},data=>{if(data.active[ticket.key]?.id===ticket.id)delete data.active[ticket.key];});}
   const configureIngestionWake=(origin,token)=>json('/rest/v1/rpc/reader_configure_ingestion_wake',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({wake_origin:origin,derived_token:token})});
-  return {configureIngestionWake,read:async(file,fallback)=>(await snapshot(file,fallback)).data,mutate,putBlob,putSingleBlob,adoptBlob,blob,blobInfo,signedBlob,blobDownloads,blobReferences,blobRange,uploadedBlob,uploadedBlobInfo,signedUpload,beginUpload,completeUpload,reserveTranslation,releaseTranslation};
+  async function executionReceipt(jobId){if(!/^[a-f0-9-]{36}$/.test(jobId))throw fail('Invalid execution receipt',400);const rows=await json('/rest/v1/reader_execution_deliveries?job_id=eq.'+jobId+'&select=job_id,receipt_id,owner_id,result_digest');return rows[0]?{jobId:rows[0].job_id,receiptId:rows[0].receipt_id,ownerId:rows[0].owner_id,resultDigest:rows[0].result_digest}:null;}
+  return {executionReceipt,configureIngestionWake,read:async(file,fallback)=>(await snapshot(file,fallback)).data,mutate,putBlob,putSingleBlob,adoptBlob,blob,blobInfo,signedBlob,blobDownloads,blobReferences,blobRange,uploadedBlob,uploadedBlobInfo,signedUpload,beginUpload,completeUpload,reserveTranslation,releaseTranslation};
 }

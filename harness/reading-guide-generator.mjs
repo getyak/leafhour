@@ -1,6 +1,6 @@
 import {createChatGenerator} from './chat-generator.mjs';
 import {DEFAULT_MODELS} from '../server/model-config.mjs';
-import {normalizeReadingGuideContext} from '../server/reading-guide.mjs';
+import {normalizeReadingGuideContext} from '../packages/contracts/reading-guide-context.mjs';
 
 // AI selects source-bound expressions; reading actions are rendered locally.
 // Literal membership alone does not establish reading value.

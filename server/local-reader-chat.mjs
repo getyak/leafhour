@@ -1,3 +1,4 @@
+import {withCandidateDelivery} from '../packages/domain/execution-delivery.mjs';
 import {normalizeChatGuideTarget,normalizeChatGuideContext} from '../app/chat-guide-context.mjs';
 import {normalizeChatReactionTargets,resolveChatReactions} from '../app/chat-reactions.mjs';
 import {randomUUID,createHash} from 'node:crypto';
@@ -130,7 +131,7 @@ export function createLocalReaderChatService({read,mutate,ownerDir,identity,gene
    const candidate=await Promise.race([Promise.resolve().then(()=>generator({kind:'conversation',book:{bookId:book.bookId,title:book.title,contentVersion:book.contentVersion,source:'local-device'},passageId:book.passageId,chapterId:book.chapterId,chapterTitle:book.chapterTitle,text:input.text,...(claimed.guideContext?{guideContext:claimed.guideContext}:{}),...(claimed.reactions?.length?{reactions:claimed.reactions}:{}),...(input.quote?{quote:input.quote}:{}),...(claimed.voice?{voice:claimed.voice}:{}),...(claimed.replyTo?{replyTo:claimed.replyTo}:{}),history:input.history||[],requestId:input.id,runId,signal:controller.signal,tools,onProgress:progress})),aborted]);
    if(candidate?.kind!=='conversation'||!str(candidate.summary))throw invalid('回答内容无效');await tools.verify();
    const sourceRefs=tools.sources();if(bytes(sourceRefs)>32000)throw invalid('回答引用过长');
-   return await finish({status:'completed',answer:{kind:'conversation',summary:candidate.summary,sourceRefs,recommendations:[],origin:'ai'}});
+   return await withCandidateDelivery(candidate,()=>finish({status:'completed',answer:{kind:'conversation',summary:candidate.summary,sourceRefs,recommendations:[],origin:'ai'}}),{accept:value=>value?.status==='completed'});
   }catch(error){
    if(!controller.signal.aborted)try{onError(error,{phase:'generation',requestId:input.id,runId});}catch{}
    return await finish({status:'failed',answer:null,error:'这次本机回答未完成，你的提问已保留。',failureCode:'generation_failed'});

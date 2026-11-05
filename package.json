@@ -22,7 +22,12 @@
     "copy:export": "node scripts/export-copy.mjs --root . --out build/copy",
     "copy:lint": "node tools/copy-lint.mjs --manifest build/copy/manifest.json",
     "copy:canaries": "node tools/copy-canaries.mjs",
-    "build:reader-runtime": "node tools/build-reader-runtime.mjs"
+    "build:reader-runtime": "node tools/build-reader-runtime.mjs",
+    "start:api": "node apps/api/server.mjs",
+    "start:agent": "node apps/agent/server.mjs",
+    "build:modules": "node tools/build-modules.mjs",
+    "check:modules": "node tools/check-module-boundaries.mjs",
+    "test:modules": "node --test tests/three-module-*.test.mjs"
   },
   "dependencies": {
     "@deepseek-ai/dsh-sdk-client": "0.2.1-alpha.2",
