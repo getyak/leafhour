@@ -11,9 +11,9 @@ Preserve account/provider/budget boundaries, GET-385 marginalia, GET-409 setting
 
 ## Tasks
 
-- [ ] Add failing domain/HTTP tests for durable states, concurrent cache reads, disconnect and explicit retries; implement in server/reading-guide.mjs and portal route.
-- [ ] Add narrative prompt and strict response validation in harness/reading-guide-generator.mjs; retain source-selection renderer as a compatibility utility.
-- [ ] Remove native top banner; include guide content in ReaderConversationPanel/ChatConversationView. Persist attempted state before POST and use read-only polling after restarts.
-- [ ] Add Web guide controller/view in existing reader-conversation surface; never open a new dialog or overwrite the composer.
-- [ ] Run affected host/native tests, copy checks and builds, then independent agent review. Fix confirmed P0/P1.
+- [x] Add failing domain/HTTP tests for durable states, concurrent cache reads, disconnect and explicit retries; implement in server/reading-guide.mjs and portal route.
+- [x] Add narrative prompt and strict response validation in harness/reading-guide-generator.mjs; retain source-selection renderer as a compatibility utility.
+- [x] Remove native top banner; include guide content in ReaderConversationPanel/ChatConversationView. Persist attempted state before POST and use read-only polling after restarts.
+- [x] Add Web guide controller/view in existing reader-conversation surface; never open a new dialog or overwrite the composer.
+- [x] Run affected host/native tests, copy checks and builds, then independent agent review. Fix confirmed P0/P1.
 - [ ] Refresh main, create the unique GET-407 PR, read back its Linear link, verify latest CI, merge normally, follow existing production release and record precise acceptance.

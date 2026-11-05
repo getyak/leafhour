@@ -6,12 +6,15 @@ The reader no longer shows a guide banner. The existing companion contains the g
 
 - Portable host suite: 4,742 tests, 4,738 passed, zero failed, four database/platform skips. Local native PostgreSQL is absent; the mandatory CI database checks remain separate.
 - Final affected host suite: 63/63 passed, including real service/HTTP/controller integration, concurrent and cold opens, account/book/version isolation, expired/unknown attempts, explicit safe retry, source bounds and fixed startup budgets.
-- Native test build succeeded. Nine affected app unit tests passed, covering owner cache isolation, cold/offline cache reuse, unknown-state read-only recovery, draft/voice preservation and existing half-sheet geometry.
-- Native UI automation uses the dedicated DEBUG bundle `org.leafhour.get407.testing`, with synthetic books and fixed model responses. The normal local bundle does not opt into the synthetic fixture. UI run outcomes and release evidence are recorded on the canonical PR; a build or synthetic response does not certify a physical device or live provider.
+- Native test build succeeded. Nine affected app unit tests and the companion entry UI regression passed (10 total), covering owner cache isolation, cold/offline cache reuse, unknown-state read-only recovery, draft/voice preservation and existing half-sheet geometry.
+- Native UI automation uses the dedicated DEBUG bundle `org.leafhour.get407.testing`, with synthetic books and fixed model responses. The normal local bundle does not opt into the synthetic fixture. The UI regression confirmed no top banner, the guide visible inside the existing companion, a real click on a fully visible guide question, the fixed fixture answer and retained follow-ups. UI run outcomes and release evidence are recorded on the canonical PR; a build or synthetic response does not certify a physical device or live provider.
 - Real pinned Vale/textlint: zero new T1 errors; existing debt and warnings remain reported. Runtime tracing, hosted build, public assets, software release allowlist and source provenance checks passed.
 - Independent agent review found no remaining P0/P1. It prompted fixes for first-open positioning, preserving user scrolling, current-account cache verification and safe failure classification.
 
 Web rendering was checked with Playwright because the Browser plugin was unavailable. The compiled local application used an isolated temporary library and a fixed synthetic generator. The 390×844 and 1440×900 views showed the guide inside the existing companion without horizontal overflow or JavaScript page errors. Closing/reopening and refreshing preserved the composer draft. Offline reading remained visible; Web guide text was hidden when the current cookie account could not be confirmed, with a read-only “Check saved result” action. This is intentionally distinct from native account-scoped offline guide caching.
+
+![iOS guide in the existing half sheet](ios-guide.png)
+![iOS attributed reply and follow-ups](ios-answer.png)
 
 ![Web companion at narrow width](web-guide.png)
 ![Web account verification while offline](web-offline.png)
