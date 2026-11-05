@@ -3023,62 +3023,64 @@ candidate:app/index.html:14:1013,html-attribute,app/index.html,14,aria-label,unk
 candidate:app/index.html:14:1345,html-attribute,app/index.html,14,aria-label,unknown,reviewable,,Search and commands
 candidate:app/index.html:18:83,html-attribute,app/index.html,18,aria-label,unknown,reviewable,,Show navigation and reading tools
 candidate:app/index.html:23:90,html-attribute,app/index.html,23,aria-label,unknown,reviewable,,Book text
-candidate:app/index.html:27:69,html-attribute,app/index.html,27,aria-label,unknown,reviewable,,Today’s reading
-candidate:app/index.html:29:154,html-attribute,app/index.html,29,aria-label,unknown,reviewable,,Expand reading tools
-candidate:app/index.html:29:224,html-attribute,app/index.html,29,title,unknown,reviewable,,Reading tools · Hover or tap to expand
-candidate:app/index.html:32:195,html-attribute,app/index.html,32,aria-label,unknown,reviewable,,Collapse reading tools
-candidate:app/index.html:33:59,html-attribute,app/index.html,33,aria-label,unknown,reviewable,,Page navigation
-candidate:app/index.html:33:204,html-attribute,app/index.html,33,aria-label,unknown,reviewable,,Previous page
-candidate:app/index.html:33:462,html-attribute,app/index.html,33,aria-label,unknown,reviewable,,Next page
-candidate:app/index.html:34:198,html-attribute,app/index.html,34,aria-label,unknown,reviewable,,Time recorded this session
-candidate:app/index.html:40:296,html-attribute,app/index.html,40,aria-label,unknown,reviewable,,More listening options
-candidate:app/index.html:46:176,html-attribute,app/index.html,46,aria-label,unknown,reviewable,,Close manual entry
-candidate:app/index.html:57:172,html-attribute,app/index.html,57,aria-label,unknown,reviewable,,Close reading prompts
-candidate:app/index.html:64:168,html-attribute,app/index.html,64,aria-label,unknown,reviewable,,Close draft list
-candidate:app/index.html:68:169,html-attribute,app/index.html,68,aria-label,unknown,reviewable,,Close after-reading notes
-candidate:app/index.html:70:286,html-attribute,app/index.html,70,placeholder,unknown,reviewable,,Try explaining in your own words without looking…
-candidate:app/index.html:71:279,html-attribute,app/index.html,71,placeholder,unknown,reviewable,,Leave a question worth returning to…
-candidate:app/index.html:74:80,html-attribute,app/index.html,74,aria-label,unknown,reviewable,,Current passage actions
-candidate:app/index.html:75:754,html-attribute,app/index.html,75,aria-label,unknown,reviewable,,More passage actions
-candidate:app/index.html:79:57,html-attribute,app/index.html,79,aria-label,unknown,reviewable,,Passage notes and personal records
-candidate:app/index.html:80:205,html-attribute,app/index.html,80,aria-label,unknown,reviewable,,Close passage notes
-candidate:app/index.html:82:56,html-attribute,app/index.html,82,aria-label,unknown,reviewable,,Note types
-candidate:app/index.html:86:157,html-attribute,app/index.html,86,aria-label,unknown,reviewable,,Close book information
-candidate:app/index.html:93:326,html-attribute,app/index.html,93,aria-label,unknown,reviewable,,Close contents
-candidate:app/index.html:93:519,html-attribute,app/index.html,93,aria-label,unknown,reviewable,,Book contents
-candidate:app/index.html:95:207,html-attribute,app/index.html,95,aria-label,unknown,reviewable,,Close reading settings
-candidate:app/index.html:96:59,html-attribute,app/index.html,96,aria-label,unknown,reviewable,,Reading settings categories
-candidate:app/index.html:105:84,html-attribute,app/index.html,105,aria-label,unknown,reviewable,,Body font
-candidate:app/index.html:105:202,html-attribute,app/index.html,105,aria-label,unknown,reviewable,,Serif (Song)
-candidate:app/index.html:105:223,html-attribute,app/index.html,105,title,unknown,reviewable,,Serif (Song)
-candidate:app/index.html:105:473,html-attribute,app/index.html,105,aria-label,unknown,reviewable,,Regular (Kai)
-candidate:app/index.html:105:495,html-attribute,app/index.html,105,title,unknown,reviewable,,Regular (Kai)
-candidate:app/index.html:105:745,html-attribute,app/index.html,105,aria-label,unknown,reviewable,,Sans serif
-candidate:app/index.html:105:764,html-attribute,app/index.html,105,title,unknown,reviewable,,Sans serif
-candidate:app/index.html:114:82,html-attribute,app/index.html,114,aria-label,unknown,reviewable,,Paper theme
-candidate:app/index.html:115:78,html-attribute,app/index.html,115,aria-label,unknown,reviewable,,Warm
-candidate:app/index.html:115:91,html-attribute,app/index.html,115,title,unknown,reviewable,,Warm
-candidate:app/index.html:116:80,html-attribute,app/index.html,116,aria-label,unknown,reviewable,,White
-candidate:app/index.html:116:94,html-attribute,app/index.html,116,title,unknown,reviewable,,White
-candidate:app/index.html:117:78,html-attribute,app/index.html,117,aria-label,unknown,reviewable,,Sage
-candidate:app/index.html:117:91,html-attribute,app/index.html,117,title,unknown,reviewable,,Sage
-candidate:app/index.html:118:78,html-attribute,app/index.html,118,aria-label,unknown,reviewable,,Mist
-candidate:app/index.html:118:91,html-attribute,app/index.html,118,title,unknown,reviewable,,Mist
-candidate:app/index.html:119:78,html-attribute,app/index.html,119,aria-label,unknown,reviewable,,Sand
-candidate:app/index.html:119:91,html-attribute,app/index.html,119,title,unknown,reviewable,,Sand
-candidate:app/index.html:120:78,html-attribute,app/index.html,120,aria-label,unknown,reviewable,,Apricot
-candidate:app/index.html:120:94,html-attribute,app/index.html,120,title,unknown,reviewable,,Apricot
-candidate:app/index.html:121:78,html-attribute,app/index.html,121,aria-label,unknown,reviewable,,Dusk
-candidate:app/index.html:121:91,html-attribute,app/index.html,121,title,unknown,reviewable,,Dusk
-candidate:app/index.html:122:80,html-attribute,app/index.html,122,aria-label,unknown,reviewable,,Night
-candidate:app/index.html:122:94,html-attribute,app/index.html,122,title,unknown,reviewable,,Night
-candidate:app/index.html:123:82,html-attribute,app/index.html,123,aria-label,unknown,reviewable,,System
-candidate:app/index.html:123:97,html-attribute,app/index.html,123,title,unknown,reviewable,,System
-candidate:app/index.html:137:166,html-attribute,app/index.html,137,aria-label,unknown,reviewable,,Parallel style preview
-candidate:app/index.html:151:353,html-attribute,app/index.html,151,aria-label,unknown,reviewable,,Interface language
-candidate:app/index.html:187:53,html-attribute,app/index.html,187,aria-label,unknown,reviewable,,Share image settings
-candidate:app/index.html:208:86,html-attribute,app/index.html,208,aria-label,unknown,reviewable,,Reading chat
-candidate:app/index.html:212:99,html-attribute,app/index.html,212,aria-label,unknown,reviewable,,Choose listening backup
+candidate:app/index.html:27:59,html-attribute,app/index.html,27,aria-label,unknown,reviewable,,Reading tools
+candidate:app/index.html:27:264,html-attribute,app/index.html,27,aria-label,unknown,reviewable,,Reading settings
+candidate:app/index.html:28:69,html-attribute,app/index.html,28,aria-label,unknown,reviewable,,Today’s reading
+candidate:app/index.html:30:154,html-attribute,app/index.html,30,aria-label,unknown,reviewable,,Expand reading tools
+candidate:app/index.html:30:224,html-attribute,app/index.html,30,title,unknown,reviewable,,Reading tools · Hover or tap to expand
+candidate:app/index.html:33:195,html-attribute,app/index.html,33,aria-label,unknown,reviewable,,Collapse reading tools
+candidate:app/index.html:34:59,html-attribute,app/index.html,34,aria-label,unknown,reviewable,,Page navigation
+candidate:app/index.html:34:204,html-attribute,app/index.html,34,aria-label,unknown,reviewable,,Previous page
+candidate:app/index.html:34:462,html-attribute,app/index.html,34,aria-label,unknown,reviewable,,Next page
+candidate:app/index.html:35:198,html-attribute,app/index.html,35,aria-label,unknown,reviewable,,Time recorded this session
+candidate:app/index.html:41:296,html-attribute,app/index.html,41,aria-label,unknown,reviewable,,More listening options
+candidate:app/index.html:47:176,html-attribute,app/index.html,47,aria-label,unknown,reviewable,,Close manual entry
+candidate:app/index.html:58:172,html-attribute,app/index.html,58,aria-label,unknown,reviewable,,Close reading prompts
+candidate:app/index.html:65:168,html-attribute,app/index.html,65,aria-label,unknown,reviewable,,Close draft list
+candidate:app/index.html:69:169,html-attribute,app/index.html,69,aria-label,unknown,reviewable,,Close after-reading notes
+candidate:app/index.html:71:286,html-attribute,app/index.html,71,placeholder,unknown,reviewable,,Try explaining in your own words without looking…
+candidate:app/index.html:72:279,html-attribute,app/index.html,72,placeholder,unknown,reviewable,,Leave a question worth returning to…
+candidate:app/index.html:75:80,html-attribute,app/index.html,75,aria-label,unknown,reviewable,,Current passage actions
+candidate:app/index.html:76:754,html-attribute,app/index.html,76,aria-label,unknown,reviewable,,More passage actions
+candidate:app/index.html:80:57,html-attribute,app/index.html,80,aria-label,unknown,reviewable,,Passage notes and personal records
+candidate:app/index.html:81:205,html-attribute,app/index.html,81,aria-label,unknown,reviewable,,Close passage notes
+candidate:app/index.html:83:56,html-attribute,app/index.html,83,aria-label,unknown,reviewable,,Note types
+candidate:app/index.html:87:157,html-attribute,app/index.html,87,aria-label,unknown,reviewable,,Close book information
+candidate:app/index.html:94:326,html-attribute,app/index.html,94,aria-label,unknown,reviewable,,Close contents
+candidate:app/index.html:94:519,html-attribute,app/index.html,94,aria-label,unknown,reviewable,,Book contents
+candidate:app/index.html:96:207,html-attribute,app/index.html,96,aria-label,unknown,reviewable,,Close reading settings
+candidate:app/index.html:97:59,html-attribute,app/index.html,97,aria-label,unknown,reviewable,,Reading settings categories
+candidate:app/index.html:106:84,html-attribute,app/index.html,106,aria-label,unknown,reviewable,,Body font
+candidate:app/index.html:106:202,html-attribute,app/index.html,106,aria-label,unknown,reviewable,,Serif (Song)
+candidate:app/index.html:106:223,html-attribute,app/index.html,106,title,unknown,reviewable,,Serif (Song)
+candidate:app/index.html:106:473,html-attribute,app/index.html,106,aria-label,unknown,reviewable,,Regular (Kai)
+candidate:app/index.html:106:495,html-attribute,app/index.html,106,title,unknown,reviewable,,Regular (Kai)
+candidate:app/index.html:106:745,html-attribute,app/index.html,106,aria-label,unknown,reviewable,,Sans serif
+candidate:app/index.html:106:764,html-attribute,app/index.html,106,title,unknown,reviewable,,Sans serif
+candidate:app/index.html:115:82,html-attribute,app/index.html,115,aria-label,unknown,reviewable,,Paper theme
+candidate:app/index.html:116:78,html-attribute,app/index.html,116,aria-label,unknown,reviewable,,Warm
+candidate:app/index.html:116:91,html-attribute,app/index.html,116,title,unknown,reviewable,,Warm
+candidate:app/index.html:117:80,html-attribute,app/index.html,117,aria-label,unknown,reviewable,,White
+candidate:app/index.html:117:94,html-attribute,app/index.html,117,title,unknown,reviewable,,White
+candidate:app/index.html:118:78,html-attribute,app/index.html,118,aria-label,unknown,reviewable,,Sage
+candidate:app/index.html:118:91,html-attribute,app/index.html,118,title,unknown,reviewable,,Sage
+candidate:app/index.html:119:78,html-attribute,app/index.html,119,aria-label,unknown,reviewable,,Mist
+candidate:app/index.html:119:91,html-attribute,app/index.html,119,title,unknown,reviewable,,Mist
+candidate:app/index.html:120:78,html-attribute,app/index.html,120,aria-label,unknown,reviewable,,Sand
+candidate:app/index.html:120:91,html-attribute,app/index.html,120,title,unknown,reviewable,,Sand
+candidate:app/index.html:121:78,html-attribute,app/index.html,121,aria-label,unknown,reviewable,,Apricot
+candidate:app/index.html:121:94,html-attribute,app/index.html,121,title,unknown,reviewable,,Apricot
+candidate:app/index.html:122:78,html-attribute,app/index.html,122,aria-label,unknown,reviewable,,Dusk
+candidate:app/index.html:122:91,html-attribute,app/index.html,122,title,unknown,reviewable,,Dusk
+candidate:app/index.html:123:80,html-attribute,app/index.html,123,aria-label,unknown,reviewable,,Night
+candidate:app/index.html:123:94,html-attribute,app/index.html,123,title,unknown,reviewable,,Night
+candidate:app/index.html:124:82,html-attribute,app/index.html,124,aria-label,unknown,reviewable,,System
+candidate:app/index.html:124:97,html-attribute,app/index.html,124,title,unknown,reviewable,,System
+candidate:app/index.html:138:166,html-attribute,app/index.html,138,aria-label,unknown,reviewable,,Parallel style preview
+candidate:app/index.html:152:353,html-attribute,app/index.html,152,aria-label,unknown,reviewable,,Interface language
+candidate:app/index.html:188:53,html-attribute,app/index.html,188,aria-label,unknown,reviewable,,Share image settings
+candidate:app/index.html:209:86,html-attribute,app/index.html,209,aria-label,unknown,reviewable,,Reading chat
+candidate:app/index.html:213:99,html-attribute,app/index.html,213,aria-label,unknown,reviewable,,Choose listening backup
 candidate:app/index.html:3:240,html-text,app/index.html,3,,unknown,reviewable,,Leafhour · Read
 candidate:app/index.html:10:70,html-text,app/index.html,10,,unknown,reviewable,,Skip to text
 candidate:app/index.html:12:720,html-text,app/index.html,12,,unknown,reviewable,,Reading room
@@ -3100,283 +3102,285 @@ candidate:app/index.html:21:184,html-text,app/index.html,21,,unknown,reviewable,
 candidate:app/index.html:24:132,html-text,app/index.html,24,,unknown,reviewable,,Previous chapter
 candidate:app/index.html:24:253,html-text,app/index.html,24,,unknown,reviewable,,Next chapter
 candidate:app/index.html:25:158,html-text,app/index.html,25,,unknown,reviewable,,I finished this chapter
-candidate:app/index.html:29:610,html-text,app/index.html,29,,unknown,reviewable,,Read
-candidate:app/index.html:32:109,html-text,app/index.html,32,,unknown,reviewable,,Make time for a book
-candidate:app/index.html:32:323,html-text,app/index.html,32,,unknown,reviewable,,Collapse
-candidate:app/index.html:32:364,html-text,app/index.html,32,,unknown,reviewable,,↓
-candidate:app/index.html:33:290,html-text,app/index.html,33,,unknown,reviewable,,← Previous page
-candidate:app/index.html:33:536,html-text,app/index.html,33,,unknown,reviewable,,Next page →
-candidate:app/index.html:34:138,html-text,app/index.html,34,,unknown,reviewable,,Today’s reading
-candidate:app/index.html:34:289,html-text,app/index.html,34,,unknown,reviewable,,00:00
-candidate:app/index.html:34:385,html-text,app/index.html,34,,unknown,reviewable,,Start focus
-candidate:app/index.html:34:480,html-text,app/index.html,34,,unknown,reviewable,,End
-candidate:app/index.html:35:118,html-text,app/index.html,35,,unknown,reviewable,,Timer settings
-candidate:app/index.html:36:133,html-text,app/index.html,36,,unknown,reviewable,,Time measurement
-candidate:app/index.html:36:299,html-text,app/index.html,36,,unknown,reviewable,,Active focus
-candidate:app/index.html:36:398,html-text,app/index.html,36,,unknown,reviewable,,Foreground estimate
-candidate:app/index.html:37:92,html-text,app/index.html,37,,unknown,reviewable,,"Focused reading allows time to think without scrolling. Hidden, unfocused or paused time is excluded."
-candidate:app/index.html:39:122,html-text,app/index.html,39,,unknown,reviewable,,Add reading time
-candidate:app/index.html:40:165,html-text,app/index.html,40,,unknown,reviewable,,Listen to this chapter
-candidate:app/index.html:40:355,html-text,app/index.html,40,,unknown,reviewable,,⋯
-candidate:app/index.html:41:109,html-text,app/index.html,41,,unknown,reviewable,,Sign in to record reading →
-candidate:app/index.html:41:245,html-text,app/index.html,41,,unknown,reviewable,,Reading prompts
-candidate:app/index.html:41:384,html-text,app/index.html,41,,unknown,reviewable,,Drafts
-candidate:app/index.html:42:155,html-text,app/index.html,42,,unknown,reviewable,,Retry saving
-candidate:app/index.html:42:262,html-text,app/index.html,42,,unknown,reviewable,,Save a recovery copy
-candidate:app/index.html:46:85,html-text,app/index.html,46,,unknown,reviewable,,Manual entry (self-reported)
-candidate:app/index.html:46:242,html-text,app/index.html,46,,unknown,reviewable,,×
-candidate:app/index.html:48:74,html-text,app/index.html,48,,unknown,reviewable,,Opening this pauses the current timer. Resume it yourself after closing. Enter a completed period up to 24 hours. Unsubmitted inputs are not retained; unconfirmed entries retry with the same ID. Overlapping time is merged. Self-reported time does not prove understanding.
-candidate:app/index.html:50:103,html-text,app/index.html,50,,unknown,reviewable,,Start time
-candidate:app/index.html:50:264,html-text,app/index.html,50,,unknown,reviewable,,End time
-candidate:app/index.html:53:100,html-text,app/index.html,53,,unknown,reviewable,,Save reading entry
-candidate:app/index.html:57:84,html-text,app/index.html,57,,unknown,reviewable,,Begin with a question.
-candidate:app/index.html:57:240,html-text,app/index.html,57,,unknown,reviewable,,×
-candidate:app/index.html:58:107,html-text,app/index.html,58,,unknown,reviewable,,The timer is paused and resumes when you return.
-candidate:app/index.html:59:87,html-text,app/index.html,59,,unknown,reviewable,,Read with a question
-candidate:app/index.html:59:155,html-text,app/index.html,59,,unknown,reviewable,,What does this section try to answer? Bring your question into the next few pages.
-candidate:app/index.html:59:294,html-text,app/index.html,59,,unknown,reviewable,,Close the book and use your own words
-candidate:app/index.html:59:373,html-text,app/index.html,59,,unknown,reviewable,,Look away and try to explain what you just read. One sentence is enough.
-candidate:app/index.html:59:507,html-text,app/index.html,59,,unknown,reviewable,,Check against the original
-candidate:app/index.html:59:580,html-text,app/index.html,59,,unknown,reviewable,,"Check what the author actually wrote. What is in the text, and what did you infer? Compare difficult sentences with the translation."
-candidate:app/index.html:59:775,html-text,app/index.html,59,,unknown,reviewable,,Keep an unresolved question
-candidate:app/index.html:59:850,html-text,app/index.html,59,,unknown,reviewable,,"Write a question to return to. With fiction, you can simply keep a scene or feeling."
-candidate:app/index.html:60:102,html-text,app/index.html,60,,unknown,reviewable,,"Questioning, retelling and reviewing textbooks draw on"
-candidate:app/index.html:60:329,html-text,app/index.html,60,,unknown,reviewable,,Cornell reading strategies ↗
-candidate:app/index.html:60:423,html-text,app/index.html,60,,unknown,reviewable,,. These prompts are optional; choose what suits your book and pace.
-candidate:app/index.html:61:114,html-text,app/index.html,61,,unknown,reviewable,,Return to reading
-candidate:app/index.html:64:82,html-text,app/index.html,64,,unknown,reviewable,,Unfinished thoughts
-candidate:app/index.html:64:232,html-text,app/index.html,64,,unknown,reviewable,,×
-candidate:app/index.html:65:73,html-text,app/index.html,65,,unknown,reviewable,,Each draft keeps its source location. Drafts from separate reading pages stay separate and enter your notes only after saving.
-candidate:app/index.html:68:242,html-text,app/index.html,68,,unknown,reviewable,,×
-candidate:app/index.html:68:315,html-text,app/index.html,68,,unknown,reviewable,,A place to stop for today.
-candidate:app/index.html:69:297,html-text,app/index.html,69,,unknown,reviewable,,Retry saving
-candidate:app/index.html:69:430,html-text,app/index.html,69,,unknown,reviewable,,Where you stopped
-candidate:app/index.html:70:118,html-text,app/index.html,70,,unknown,reviewable,,One sentence in your own words
-candidate:app/index.html:70:194,html-text,app/index.html,70,,unknown,reviewable,,Optional
-candidate:app/index.html:70:554,html-text,app/index.html,70,,unknown,reviewable,,Save understanding
-candidate:app/index.html:71:118,html-text,app/index.html,71,,unknown,reviewable,,What is still unclear?
-candidate:app/index.html:71:186,html-text,app/index.html,71,,unknown,reviewable,,Optional
-candidate:app/index.html:71:526,html-text,app/index.html,71,,unknown,reviewable,,Save question
-candidate:app/index.html:72:125,html-text,app/index.html,72,,unknown,reviewable,,Return to library and calendar →
-candidate:app/index.html:72:254,html-text,app/index.html,72,,unknown,reviewable,,Keep reading
-candidate:app/index.html:72:342,html-text,app/index.html,72,,unknown,reviewable,,Ending the timer does not mark a chapter as read. Save thoughts and questions separately; check notices for unsent text.
-candidate:app/index.html:75:65,html-text,app/index.html,75,,unknown,reviewable,,Quote to AI
-candidate:app/index.html:75:153,html-text,app/index.html,75,,unknown,reviewable,,Annotate
-candidate:app/index.html:75:244,html-text,app/index.html,75,,unknown,reviewable,,Annotate with AI
-candidate:app/index.html:75:336,html-text,app/index.html,75,,unknown,reviewable,,Share excerpt
-candidate:app/index.html:75:412,html-text,app/index.html,75,,unknown,reviewable,,Inspect
-candidate:app/index.html:75:468,html-text,app/index.html,75,,unknown,reviewable,,Original
-candidate:app/index.html:75:539,html-text,app/index.html,75,,unknown,reviewable,,Read aloud
-candidate:app/index.html:75:623,html-text,app/index.html,75,,unknown,reviewable,,Annotations
-candidate:app/index.html:75:700,html-text,app/index.html,75,,unknown,reviewable,,Thought
-candidate:app/index.html:75:872,html-text,app/index.html,75,,unknown,reviewable,,More
-candidate:app/index.html:76:123,html-text,app/index.html,76,,unknown,reviewable,,Share this passage
-candidate:app/index.html:76:218,html-text,app/index.html,76,,unknown,reviewable,,Listen from here
-candidate:app/index.html:76:300,html-text,app/index.html,76,,unknown,reviewable,,Choose a side
-candidate:app/index.html:76:377,html-text,app/index.html,76,,unknown,reviewable,,In your own words
-candidate:app/index.html:76:471,html-text,app/index.html,76,,unknown,reviewable,,Explain and compare
-candidate:app/index.html:76:576,html-text,app/index.html,76,,unknown,reviewable,,Literal translation
-candidate:app/index.html:76:691,html-text,app/index.html,76,,unknown,reviewable,,Interpretive translation
-candidate:app/index.html:76:788,html-text,app/index.html,76,,unknown,reviewable,,Leave a question
-candidate:app/index.html:80:93,html-text,app/index.html,80,,unknown,reviewable,,Passage notes
-candidate:app/index.html:80:300,html-text,app/index.html,80,,unknown,reviewable,,Close
-candidate:app/index.html:81:286,html-text,app/index.html,81,,unknown,reviewable,,Return to text
-candidate:app/index.html:81:333,html-text,app/index.html,81,,unknown,reviewable,,↗
-candidate:app/index.html:82:288,html-text,app/index.html,82,,unknown,reviewable,,Annotations
-candidate:app/index.html:82:475,html-text,app/index.html,82,,unknown,reviewable,,My thoughts
-candidate:app/index.html:82:654,html-text,app/index.html,82,,unknown,reviewable,,Question
-candidate:app/index.html:86:65,html-text,app/index.html,86,,unknown,reviewable,,About this book
-candidate:app/index.html:87:91,html-text,app/index.html,87,,unknown,reviewable,,Leafhour
-candidate:app/index.html:87:153,html-text,app/index.html,87,,unknown,reviewable,,❦
-candidate:app/index.html:90:127,html-text,app/index.html,90,,unknown,reviewable,,Generate AI introduction
-candidate:app/index.html:90:226,html-text,app/index.html,90,,unknown,reviewable,,Sign in for an AI introduction
-candidate:app/index.html:90:438,html-text,app/index.html,90,,unknown,reviewable,,Share this book
-candidate:app/index.html:90:594,html-text,app/index.html,90,,unknown,reviewable,,Export this book
-candidate:app/index.html:90:704,html-text,app/index.html,90,,unknown,reviewable,,Reload introduction and sharing
-candidate:app/index.html:91:205,html-text,app/index.html,91,,unknown,reviewable,,Original source
-candidate:app/index.html:91:253,html-text,app/index.html,91,,unknown,reviewable,,↗
-candidate:app/index.html:93:148,html-text,app/index.html,93,,unknown,reviewable,,Leafhour
-candidate:app/index.html:93:222,html-text,app/index.html,93,,unknown,reviewable,,Book contents
-candidate:app/index.html:95:101,html-text,app/index.html,95,,unknown,reviewable,,Your reading style
-candidate:app/index.html:95:308,html-text,app/index.html,95,,unknown,reviewable,,Close
-candidate:app/index.html:97:156,html-text,app/index.html,97,,unknown,reviewable,,Text
-candidate:app/index.html:98:172,html-text,app/index.html,98,,unknown,reviewable,,Paper
-candidate:app/index.html:99:177,html-text,app/index.html,99,,unknown,reviewable,,Read
-candidate:app/index.html:104:96,html-text,app/index.html,104,,unknown,reviewable,,Aa 永
-candidate:app/index.html:105:339,html-text,app/index.html,105,,unknown,reviewable,,Aa 永
-candidate:app/index.html:105:387,html-text,app/index.html,105,,unknown,reviewable,,Serif
-candidate:app/index.html:105:610,html-text,app/index.html,105,,unknown,reviewable,,Aa 永
-candidate:app/index.html:105:657,html-text,app/index.html,105,,unknown,reviewable,,WenKai
-candidate:app/index.html:105:878,html-text,app/index.html,105,,unknown,reviewable,,Aa 永
-candidate:app/index.html:105:926,html-text,app/index.html,105,,unknown,reviewable,,Sans
-candidate:app/index.html:106:124,html-text,app/index.html,106,,unknown,reviewable,,Font size
-candidate:app/index.html:106:170,html-text,app/index.html,106,,unknown,reviewable,,22
-candidate:app/index.html:106:267,html-text,app/index.html,106,,unknown,reviewable,,A
-candidate:app/index.html:106:364,html-text,app/index.html,106,,unknown,reviewable,,A
-candidate:app/index.html:108:90,html-text,app/index.html,108,,unknown,reviewable,,More typography
-candidate:app/index.html:108:257,html-text,app/index.html,108,,unknown,reviewable,,First-line indent
-candidate:app/index.html:108:404,html-text,app/index.html,108,,unknown,reviewable,,Latin fonts are hosted here; Chinese uses device fonts. Word spacing applies only to English.
-candidate:app/index.html:109:105,html-text,app/index.html,109,,unknown,reviewable,,Reset appearance
-candidate:app/index.html:113:114,html-text,app/index.html,113,,unknown,reviewable,,Paper
-candidate:app/index.html:113:178,html-text,app/index.html,113,,unknown,reviewable,,Follow the system
-candidate:app/index.html:115:214,html-text,app/index.html,115,,unknown,reviewable,,Aa
-candidate:app/index.html:115:257,html-text,app/index.html,115,,unknown,reviewable,,Warm
-candidate:app/index.html:116:220,html-text,app/index.html,116,,unknown,reviewable,,Aa
-candidate:app/index.html:116:264,html-text,app/index.html,116,,unknown,reviewable,,White
-candidate:app/index.html:117:214,html-text,app/index.html,117,,unknown,reviewable,,Aa
-candidate:app/index.html:117:257,html-text,app/index.html,117,,unknown,reviewable,,Sage
+candidate:app/index.html:27:349,html-text,app/index.html,27,,unknown,reviewable,,Aa
+candidate:app/index.html:27:395,html-text,app/index.html,27,,unknown,reviewable,,Reading settings
+candidate:app/index.html:30:610,html-text,app/index.html,30,,unknown,reviewable,,Read
+candidate:app/index.html:33:109,html-text,app/index.html,33,,unknown,reviewable,,Make time for a book
+candidate:app/index.html:33:323,html-text,app/index.html,33,,unknown,reviewable,,Collapse
+candidate:app/index.html:33:364,html-text,app/index.html,33,,unknown,reviewable,,↓
+candidate:app/index.html:34:290,html-text,app/index.html,34,,unknown,reviewable,,← Previous page
+candidate:app/index.html:34:536,html-text,app/index.html,34,,unknown,reviewable,,Next page →
+candidate:app/index.html:35:138,html-text,app/index.html,35,,unknown,reviewable,,Today’s reading
+candidate:app/index.html:35:289,html-text,app/index.html,35,,unknown,reviewable,,00:00
+candidate:app/index.html:35:385,html-text,app/index.html,35,,unknown,reviewable,,Start focus
+candidate:app/index.html:35:480,html-text,app/index.html,35,,unknown,reviewable,,End
+candidate:app/index.html:36:118,html-text,app/index.html,36,,unknown,reviewable,,Timer settings
+candidate:app/index.html:37:133,html-text,app/index.html,37,,unknown,reviewable,,Time measurement
+candidate:app/index.html:37:299,html-text,app/index.html,37,,unknown,reviewable,,Active focus
+candidate:app/index.html:37:398,html-text,app/index.html,37,,unknown,reviewable,,Foreground estimate
+candidate:app/index.html:38:92,html-text,app/index.html,38,,unknown,reviewable,,"Focused reading allows time to think without scrolling. Hidden, unfocused or paused time is excluded."
+candidate:app/index.html:40:122,html-text,app/index.html,40,,unknown,reviewable,,Add reading time
+candidate:app/index.html:41:165,html-text,app/index.html,41,,unknown,reviewable,,Listen to this chapter
+candidate:app/index.html:41:355,html-text,app/index.html,41,,unknown,reviewable,,⋯
+candidate:app/index.html:42:109,html-text,app/index.html,42,,unknown,reviewable,,Sign in to record reading →
+candidate:app/index.html:42:245,html-text,app/index.html,42,,unknown,reviewable,,Reading prompts
+candidate:app/index.html:42:384,html-text,app/index.html,42,,unknown,reviewable,,Drafts
+candidate:app/index.html:43:155,html-text,app/index.html,43,,unknown,reviewable,,Retry saving
+candidate:app/index.html:43:262,html-text,app/index.html,43,,unknown,reviewable,,Save a recovery copy
+candidate:app/index.html:47:85,html-text,app/index.html,47,,unknown,reviewable,,Manual entry (self-reported)
+candidate:app/index.html:47:242,html-text,app/index.html,47,,unknown,reviewable,,×
+candidate:app/index.html:49:74,html-text,app/index.html,49,,unknown,reviewable,,Opening this pauses the current timer. Resume it yourself after closing. Enter a completed period up to 24 hours. Unsubmitted inputs are not retained; unconfirmed entries retry with the same ID. Overlapping time is merged. Self-reported time does not prove understanding.
+candidate:app/index.html:51:103,html-text,app/index.html,51,,unknown,reviewable,,Start time
+candidate:app/index.html:51:264,html-text,app/index.html,51,,unknown,reviewable,,End time
+candidate:app/index.html:54:100,html-text,app/index.html,54,,unknown,reviewable,,Save reading entry
+candidate:app/index.html:58:84,html-text,app/index.html,58,,unknown,reviewable,,Begin with a question.
+candidate:app/index.html:58:240,html-text,app/index.html,58,,unknown,reviewable,,×
+candidate:app/index.html:59:107,html-text,app/index.html,59,,unknown,reviewable,,The timer is paused and resumes when you return.
+candidate:app/index.html:60:87,html-text,app/index.html,60,,unknown,reviewable,,Read with a question
+candidate:app/index.html:60:155,html-text,app/index.html,60,,unknown,reviewable,,What does this section try to answer? Bring your question into the next few pages.
+candidate:app/index.html:60:294,html-text,app/index.html,60,,unknown,reviewable,,Close the book and use your own words
+candidate:app/index.html:60:373,html-text,app/index.html,60,,unknown,reviewable,,Look away and try to explain what you just read. One sentence is enough.
+candidate:app/index.html:60:507,html-text,app/index.html,60,,unknown,reviewable,,Check against the original
+candidate:app/index.html:60:580,html-text,app/index.html,60,,unknown,reviewable,,"Check what the author actually wrote. What is in the text, and what did you infer? Compare difficult sentences with the translation."
+candidate:app/index.html:60:775,html-text,app/index.html,60,,unknown,reviewable,,Keep an unresolved question
+candidate:app/index.html:60:850,html-text,app/index.html,60,,unknown,reviewable,,"Write a question to return to. With fiction, you can simply keep a scene or feeling."
+candidate:app/index.html:61:102,html-text,app/index.html,61,,unknown,reviewable,,"Questioning, retelling and reviewing textbooks draw on"
+candidate:app/index.html:61:329,html-text,app/index.html,61,,unknown,reviewable,,Cornell reading strategies ↗
+candidate:app/index.html:61:423,html-text,app/index.html,61,,unknown,reviewable,,. These prompts are optional; choose what suits your book and pace.
+candidate:app/index.html:62:114,html-text,app/index.html,62,,unknown,reviewable,,Return to reading
+candidate:app/index.html:65:82,html-text,app/index.html,65,,unknown,reviewable,,Unfinished thoughts
+candidate:app/index.html:65:232,html-text,app/index.html,65,,unknown,reviewable,,×
+candidate:app/index.html:66:73,html-text,app/index.html,66,,unknown,reviewable,,Each draft keeps its source location. Drafts from separate reading pages stay separate and enter your notes only after saving.
+candidate:app/index.html:69:242,html-text,app/index.html,69,,unknown,reviewable,,×
+candidate:app/index.html:69:315,html-text,app/index.html,69,,unknown,reviewable,,A place to stop for today.
+candidate:app/index.html:70:297,html-text,app/index.html,70,,unknown,reviewable,,Retry saving
+candidate:app/index.html:70:430,html-text,app/index.html,70,,unknown,reviewable,,Where you stopped
+candidate:app/index.html:71:118,html-text,app/index.html,71,,unknown,reviewable,,One sentence in your own words
+candidate:app/index.html:71:194,html-text,app/index.html,71,,unknown,reviewable,,Optional
+candidate:app/index.html:71:554,html-text,app/index.html,71,,unknown,reviewable,,Save understanding
+candidate:app/index.html:72:118,html-text,app/index.html,72,,unknown,reviewable,,What is still unclear?
+candidate:app/index.html:72:186,html-text,app/index.html,72,,unknown,reviewable,,Optional
+candidate:app/index.html:72:526,html-text,app/index.html,72,,unknown,reviewable,,Save question
+candidate:app/index.html:73:125,html-text,app/index.html,73,,unknown,reviewable,,Return to library and calendar →
+candidate:app/index.html:73:254,html-text,app/index.html,73,,unknown,reviewable,,Keep reading
+candidate:app/index.html:73:342,html-text,app/index.html,73,,unknown,reviewable,,Ending the timer does not mark a chapter as read. Save thoughts and questions separately; check notices for unsent text.
+candidate:app/index.html:76:65,html-text,app/index.html,76,,unknown,reviewable,,Quote to AI
+candidate:app/index.html:76:153,html-text,app/index.html,76,,unknown,reviewable,,Annotate
+candidate:app/index.html:76:244,html-text,app/index.html,76,,unknown,reviewable,,Annotate with AI
+candidate:app/index.html:76:336,html-text,app/index.html,76,,unknown,reviewable,,Share excerpt
+candidate:app/index.html:76:412,html-text,app/index.html,76,,unknown,reviewable,,Inspect
+candidate:app/index.html:76:468,html-text,app/index.html,76,,unknown,reviewable,,Original
+candidate:app/index.html:76:539,html-text,app/index.html,76,,unknown,reviewable,,Read aloud
+candidate:app/index.html:76:623,html-text,app/index.html,76,,unknown,reviewable,,Annotations
+candidate:app/index.html:76:700,html-text,app/index.html,76,,unknown,reviewable,,Thought
+candidate:app/index.html:76:872,html-text,app/index.html,76,,unknown,reviewable,,More
+candidate:app/index.html:77:123,html-text,app/index.html,77,,unknown,reviewable,,Share this passage
+candidate:app/index.html:77:218,html-text,app/index.html,77,,unknown,reviewable,,Listen from here
+candidate:app/index.html:77:300,html-text,app/index.html,77,,unknown,reviewable,,Choose a side
+candidate:app/index.html:77:377,html-text,app/index.html,77,,unknown,reviewable,,In your own words
+candidate:app/index.html:77:471,html-text,app/index.html,77,,unknown,reviewable,,Explain and compare
+candidate:app/index.html:77:576,html-text,app/index.html,77,,unknown,reviewable,,Literal translation
+candidate:app/index.html:77:691,html-text,app/index.html,77,,unknown,reviewable,,Interpretive translation
+candidate:app/index.html:77:788,html-text,app/index.html,77,,unknown,reviewable,,Leave a question
+candidate:app/index.html:81:93,html-text,app/index.html,81,,unknown,reviewable,,Passage notes
+candidate:app/index.html:81:300,html-text,app/index.html,81,,unknown,reviewable,,Close
+candidate:app/index.html:82:286,html-text,app/index.html,82,,unknown,reviewable,,Return to text
+candidate:app/index.html:82:333,html-text,app/index.html,82,,unknown,reviewable,,↗
+candidate:app/index.html:83:288,html-text,app/index.html,83,,unknown,reviewable,,Annotations
+candidate:app/index.html:83:475,html-text,app/index.html,83,,unknown,reviewable,,My thoughts
+candidate:app/index.html:83:654,html-text,app/index.html,83,,unknown,reviewable,,Question
+candidate:app/index.html:87:65,html-text,app/index.html,87,,unknown,reviewable,,About this book
+candidate:app/index.html:88:91,html-text,app/index.html,88,,unknown,reviewable,,Leafhour
+candidate:app/index.html:88:153,html-text,app/index.html,88,,unknown,reviewable,,❦
+candidate:app/index.html:91:127,html-text,app/index.html,91,,unknown,reviewable,,Generate AI introduction
+candidate:app/index.html:91:226,html-text,app/index.html,91,,unknown,reviewable,,Sign in for an AI introduction
+candidate:app/index.html:91:438,html-text,app/index.html,91,,unknown,reviewable,,Share this book
+candidate:app/index.html:91:594,html-text,app/index.html,91,,unknown,reviewable,,Export this book
+candidate:app/index.html:91:704,html-text,app/index.html,91,,unknown,reviewable,,Reload introduction and sharing
+candidate:app/index.html:92:205,html-text,app/index.html,92,,unknown,reviewable,,Original source
+candidate:app/index.html:92:253,html-text,app/index.html,92,,unknown,reviewable,,↗
+candidate:app/index.html:94:148,html-text,app/index.html,94,,unknown,reviewable,,Leafhour
+candidate:app/index.html:94:222,html-text,app/index.html,94,,unknown,reviewable,,Book contents
+candidate:app/index.html:96:101,html-text,app/index.html,96,,unknown,reviewable,,Your reading style
+candidate:app/index.html:96:308,html-text,app/index.html,96,,unknown,reviewable,,Close
+candidate:app/index.html:98:156,html-text,app/index.html,98,,unknown,reviewable,,Text
+candidate:app/index.html:99:172,html-text,app/index.html,99,,unknown,reviewable,,Paper
+candidate:app/index.html:100:177,html-text,app/index.html,100,,unknown,reviewable,,Read
+candidate:app/index.html:105:96,html-text,app/index.html,105,,unknown,reviewable,,Aa 永
+candidate:app/index.html:106:339,html-text,app/index.html,106,,unknown,reviewable,,Aa 永
+candidate:app/index.html:106:387,html-text,app/index.html,106,,unknown,reviewable,,Serif
+candidate:app/index.html:106:610,html-text,app/index.html,106,,unknown,reviewable,,Aa 永
+candidate:app/index.html:106:657,html-text,app/index.html,106,,unknown,reviewable,,WenKai
+candidate:app/index.html:106:878,html-text,app/index.html,106,,unknown,reviewable,,Aa 永
+candidate:app/index.html:106:926,html-text,app/index.html,106,,unknown,reviewable,,Sans
+candidate:app/index.html:107:124,html-text,app/index.html,107,,unknown,reviewable,,Font size
+candidate:app/index.html:107:170,html-text,app/index.html,107,,unknown,reviewable,,22
+candidate:app/index.html:107:267,html-text,app/index.html,107,,unknown,reviewable,,A
+candidate:app/index.html:107:364,html-text,app/index.html,107,,unknown,reviewable,,A
+candidate:app/index.html:109:90,html-text,app/index.html,109,,unknown,reviewable,,More typography
+candidate:app/index.html:109:257,html-text,app/index.html,109,,unknown,reviewable,,First-line indent
+candidate:app/index.html:109:404,html-text,app/index.html,109,,unknown,reviewable,,Latin fonts are hosted here; Chinese uses device fonts. Word spacing applies only to English.
+candidate:app/index.html:110:105,html-text,app/index.html,110,,unknown,reviewable,,Reset appearance
+candidate:app/index.html:114:114,html-text,app/index.html,114,,unknown,reviewable,,Paper
+candidate:app/index.html:114:178,html-text,app/index.html,114,,unknown,reviewable,,Follow the system
+candidate:app/index.html:116:214,html-text,app/index.html,116,,unknown,reviewable,,Aa
+candidate:app/index.html:116:257,html-text,app/index.html,116,,unknown,reviewable,,Warm
+candidate:app/index.html:117:220,html-text,app/index.html,117,,unknown,reviewable,,Aa
+candidate:app/index.html:117:264,html-text,app/index.html,117,,unknown,reviewable,,White
 candidate:app/index.html:118:214,html-text,app/index.html,118,,unknown,reviewable,,Aa
-candidate:app/index.html:118:257,html-text,app/index.html,118,,unknown,reviewable,,Mist
+candidate:app/index.html:118:257,html-text,app/index.html,118,,unknown,reviewable,,Sage
 candidate:app/index.html:119:214,html-text,app/index.html,119,,unknown,reviewable,,Aa
-candidate:app/index.html:119:257,html-text,app/index.html,119,,unknown,reviewable,,Sand
-candidate:app/index.html:120:220,html-text,app/index.html,120,,unknown,reviewable,,Aa
-candidate:app/index.html:120:263,html-text,app/index.html,120,,unknown,reviewable,,Apricot
-candidate:app/index.html:121:214,html-text,app/index.html,121,,unknown,reviewable,,Aa
-candidate:app/index.html:121:257,html-text,app/index.html,121,,unknown,reviewable,,Dusk
-candidate:app/index.html:122:220,html-text,app/index.html,122,,unknown,reviewable,,Aa
-candidate:app/index.html:122:264,html-text,app/index.html,122,,unknown,reviewable,,Night
-candidate:app/index.html:123:225,html-text,app/index.html,123,,unknown,reviewable,,◐
-candidate:app/index.html:123:269,html-text,app/index.html,123,,unknown,reviewable,,System
-candidate:app/index.html:128:140,html-text,app/index.html,128,,unknown,reviewable,,Reading content
-candidate:app/index.html:130:87,html-text,app/index.html,130,,unknown,reviewable,,Reading view
-candidate:app/index.html:130:197,html-text,app/index.html,130,,unknown,reviewable,,English original
-candidate:app/index.html:130:283,html-text,app/index.html,130,,unknown,reviewable,,Chinese translation
-candidate:app/index.html:130:369,html-text,app/index.html,130,,unknown,reviewable,,English and Chinese
-candidate:app/index.html:131:133,html-text,app/index.html,131,,unknown,reviewable,,Chinese translation style
-candidate:app/index.html:131:241,html-text,app/index.html,131,,unknown,reviewable,,Interpretive
-candidate:app/index.html:131:299,html-text,app/index.html,131,,unknown,reviewable,,Literal
-candidate:app/index.html:133:166,html-text,app/index.html,133,,unknown,reviewable,,Parallel reading
-candidate:app/index.html:134:95,html-text,app/index.html,134,,unknown,reviewable,,Arrangement
-candidate:app/index.html:134:197,html-text,app/index.html,134,,unknown,reviewable,,Side by side
-candidate:app/index.html:134:269,html-text,app/index.html,134,,unknown,reviewable,,Stacked
-candidate:app/index.html:135:92,html-text,app/index.html,135,,unknown,reviewable,,Style
-candidate:app/index.html:137:76,html-text,app/index.html,137,,unknown,reviewable,,Live preview · Example
-candidate:app/index.html:138:84,html-text,app/index.html,138,,unknown,reviewable,,Colors and backgrounds
-candidate:app/index.html:139:105,html-text,app/index.html,139,,unknown,reviewable,,Translation color
-candidate:app/index.html:139:213,html-text,app/index.html,139,,unknown,reviewable,,Follow paper
-candidate:app/index.html:139:284,html-text,app/index.html,139,,unknown,reviewable,,Pine green
-candidate:app/index.html:139:351,html-text,app/index.html,139,,unknown,reviewable,,Ink blue
-candidate:app/index.html:139:417,html-text,app/index.html,139,,unknown,reviewable,,Tea brown
-candidate:app/index.html:140:115,html-text,app/index.html,140,,unknown,reviewable,,Translation background
-candidate:app/index.html:140:233,html-text,app/index.html,140,,unknown,reviewable,,Follow style
-candidate:app/index.html:140:311,html-text,app/index.html,140,,unknown,reviewable,,No background
-candidate:app/index.html:140:389,html-text,app/index.html,140,,unknown,reviewable,,Soft background
-candidate:app/index.html:145:152,html-text,app/index.html,145,,unknown,reviewable,,Page layout
-candidate:app/index.html:145:285,html-text,app/index.html,145,,unknown,reviewable,,Scroll
-candidate:app/index.html:145:352,html-text,app/index.html,145,,unknown,reviewable,,Turn pages
-candidate:app/index.html:145:460,html-text,app/index.html,145,,unknown,reviewable,,Page navigation
-candidate:app/index.html:145:563,html-text,app/index.html,145,,unknown,reviewable,,Page mode shows two pages in wide windows and one in narrow windows. Use ← → or the buttons below.
-candidate:app/index.html:146:145,html-text,app/index.html,146,,unknown,reviewable,,Starting view
-candidate:app/index.html:147:96,html-text,app/index.html,147,,unknown,reviewable,,Reading purpose
-candidate:app/index.html:147:247,html-text,app/index.html,147,,unknown,reviewable,,Not set · Start with original
-candidate:app/index.html:147:340,html-text,app/index.html,147,,unknown,reviewable,,Deep understanding
-candidate:app/index.html:147:429,html-text,app/index.html,147,,unknown,reviewable,,Language learning
-candidate:app/index.html:148:91,html-text,app/index.html,148,,unknown,reviewable,,Deep-reading language
-candidate:app/index.html:148:228,html-text,app/index.html,148,,unknown,reviewable,,Original
-candidate:app/index.html:148:293,html-text,app/index.html,148,,unknown,reviewable,,Chinese
-candidate:app/index.html:149:96,html-text,app/index.html,149,,unknown,reviewable,,Language learning starts with the original; deep reading starts in your preferred language. You can change the view and translation separately. Only existing content is shown; nothing is translated automatically.
-candidate:app/index.html:151:141,html-text,app/index.html,151,,unknown,reviewable,,Interface language
-candidate:app/index.html:151:285,html-text,app/index.html,151,,unknown,reviewable,,Interface language
-candidate:app/index.html:151:480,html-text,app/index.html,151,,unknown,reviewable,,System
-candidate:app/index.html:151:546,html-text,app/index.html,151,,unknown,reviewable,,English
-candidate:app/index.html:151:623,html-text,app/index.html,151,,unknown,reviewable,,简体中文
-candidate:app/index.html:151:697,html-text,app/index.html,151,,unknown,reviewable,,繁體中文
-candidate:app/index.html:151:761,html-text,app/index.html,151,,unknown,reviewable,,日本語
-candidate:app/index.html:151:825,html-text,app/index.html,151,,unknown,reviewable,,Current interface language: English
-candidate:app/index.html:151:1006,html-text,app/index.html,151,,unknown,reviewable,,Retry
-candidate:app/index.html:151:1111,html-text,app/index.html,151,,unknown,reviewable,,Reload page
-candidate:app/index.html:152:120,html-text,app/index.html,152,,unknown,reviewable,,Source and translations
-candidate:app/index.html:152:218,html-text,app/index.html,152,,unknown,reviewable,,Literal and interpretive translations are saved separately. AI output is marked as draft. Untranslated passages keep the original for checking. Chinese chapter navigation titles are editorial additions.
-candidate:app/index.html:152:496,html-text,app/index.html,152,,unknown,reviewable,,Translating sends this paragraph and up to one paragraph before and after it to an AI. Your notes are not included.
-candidate:app/index.html:152:703,html-text,app/index.html,152,,unknown,reviewable,,Privacy details
-candidate:app/index.html:153:100,html-text,app/index.html,153,,unknown,reviewable,,Sound
-candidate:app/index.html:155:125,html-text,app/index.html,155,,unknown,reviewable,,Reading atmosphere
-candidate:app/index.html:155:239,html-text,app/index.html,155,,unknown,reviewable,,Play
-candidate:app/index.html:156:122,html-text,app/index.html,156,,unknown,reviewable,,No atmosphere selected
-candidate:app/index.html:157:127,html-text,app/index.html,157,,unknown,reviewable,,Choose a scene
-candidate:app/index.html:157:216,html-text,app/index.html,157,,unknown,reviewable,,"Forest, rain, hearth, sea"
-candidate:app/index.html:159:110,html-text,app/index.html,159,,unknown,reviewable,,Music
-candidate:app/index.html:159:280,html-text,app/index.html,159,,unknown,reviewable,,28%
-candidate:app/index.html:160:112,html-text,app/index.html,160,,unknown,reviewable,,Nature sounds
-candidate:app/index.html:160:293,html-text,app/index.html,160,,unknown,reviewable,,32%
-candidate:app/index.html:161:92,html-text,app/index.html,161,,unknown,reviewable,,Scene details
-candidate:app/index.html:161:215,html-text,app/index.html,161,,unknown,reviewable,,Scene motion
-candidate:app/index.html:161:413,html-text,app/index.html,161,,unknown,reviewable,,Respects the system’s reduced-motion preference.
-candidate:app/index.html:163:73,html-text,app/index.html,163,,unknown,reviewable,,Playback continues in other tabs or apps. Pause with the button above.
-candidate:app/index.html:165:153,html-text,app/index.html,165,,unknown,reviewable,,Listen to the text
-candidate:app/index.html:165:299,html-text,app/index.html,165,,unknown,reviewable,,Voice and speed
-candidate:app/index.html:165:393,html-text,app/index.html,165,,unknown,reviewable,,"Choose voice, speed and following"
-candidate:app/index.html:165:497,html-text,app/index.html,165,,unknown,reviewable,,Background sounds soften during narration.
-candidate:app/index.html:166:117,html-text,app/index.html,166,,unknown,reviewable,,Habits
-candidate:app/index.html:167:130,html-text,app/index.html,167,,unknown,reviewable,,Immersive reading
-candidate:app/index.html:167:290,html-text,app/index.html,167,,unknown,reviewable,,Hide the header; tools are always available. Enabled by default when opening a book.
-candidate:app/index.html:168:132,html-text,app/index.html,168,,unknown,reviewable,,Continuous reading
-candidate:app/index.html:168:367,html-text,app/index.html,168,,unknown,reviewable,,The next chapter follows naturally. You decide when it is read.
-candidate:app/index.html:169:138,html-text,app/index.html,169,,unknown,reviewable,,A question for each chapter
-candidate:app/index.html:169:308,html-text,app/index.html,169,,unknown,reviewable,,Offers prompts during ordinary reading; stays quiet in immersive mode.
-candidate:app/index.html:170:117,html-text,app/index.html,170,,unknown,reviewable,,New-book defaults
-candidate:app/index.html:170:202,html-text,app/index.html,170,,unknown,reviewable,,Use this book’s view and typography for new books. This book’s position and records stay unchanged; each book keeps its own choices.
-candidate:app/index.html:170:442,html-text,app/index.html,170,,unknown,reviewable,,Use for new books
-candidate:app/index.html:171:115,html-text,app/index.html,171,,unknown,reviewable,,Data
-candidate:app/index.html:172:80,html-text,app/index.html,172,,unknown,reviewable,,My records
-candidate:app/index.html:172:208,html-text,app/index.html,172,,unknown,reviewable,,"View highlights, thoughts and questions"
-candidate:app/index.html:172:298,html-text,app/index.html,172,,unknown,reviewable,,Filed by source
-candidate:app/index.html:173:84,html-text,app/index.html,173,,unknown,reviewable,,Reading backup
-candidate:app/index.html:173:253,html-text,app/index.html,173,,unknown,reviewable,,Export records and appearance
-candidate:app/index.html:173:375,html-text,app/index.html,173,,unknown,reviewable,,Import reading records
-candidate:app/index.html:173:529,html-text,app/index.html,173,,unknown,reviewable,,Backups keep reading position and appearance. Export listening records separately.
-candidate:app/index.html:174:86,html-text,app/index.html,174,,unknown,reviewable,,Listening backup
-candidate:app/index.html:174:238,html-text,app/index.html,174,,unknown,reviewable,,View saved listening
-candidate:app/index.html:174:360,html-text,app/index.html,174,,unknown,reviewable,,Export listening records
-candidate:app/index.html:174:487,html-text,app/index.html,174,,unknown,reviewable,,Restore listening records
-candidate:app/index.html:174:594,html-text,app/index.html,174,,unknown,reviewable,,"Includes scripts, audio and playback position. Atmosphere preferences stay in this browser."
-candidate:app/index.html:175:94,html-text,app/index.html,175,,unknown,reviewable,,Reading experience backup
-candidate:app/index.html:175:263,html-text,app/index.html,175,,unknown,reviewable,,"Keeps your choices, retellings and comparisons."
-candidate:app/index.html:180:112,html-text,app/index.html,180,,unknown,reviewable,,Book contents
-candidate:app/index.html:180:212,html-text,app/index.html,180,,unknown,reviewable,,Return to the page
-candidate:app/index.html:184:115,html-text,app/index.html,184,,unknown,reviewable,,Keep these words
-candidate:app/index.html:184:180,html-text,app/index.html,184,,unknown,reviewable,,Leafhour · Excerpt
-candidate:app/index.html:184:291,html-text,app/index.html,184,,unknown,reviewable,,Back to reading
-candidate:app/index.html:189:98,html-text,app/index.html,189,,unknown,reviewable,,Language
-candidate:app/index.html:189:190,html-text,app/index.html,189,,unknown,reviewable,,Chinese
-candidate:app/index.html:189:254,html-text,app/index.html,189,,unknown,reviewable,,English
-candidate:app/index.html:189:332,html-text,app/index.html,189,,unknown,reviewable,,Bilingual
-candidate:app/index.html:190:134,html-text,app/index.html,190,,unknown,reviewable,,Bilingual layout
-candidate:app/index.html:190:235,html-text,app/index.html,190,,unknown,reviewable,,Stacked
-candidate:app/index.html:190:306,html-text,app/index.html,190,,unknown,reviewable,,Side by side
-candidate:app/index.html:191:121,html-text,app/index.html,191,,unknown,reviewable,,Chinese translation style
-candidate:app/index.html:191:223,html-text,app/index.html,191,,unknown,reviewable,,Interpretive
-candidate:app/index.html:191:281,html-text,app/index.html,191,,unknown,reviewable,,Literal
-candidate:app/index.html:192:92,html-text,app/index.html,192,,unknown,reviewable,,Paper
-candidate:app/index.html:192:180,html-text,app/index.html,192,,unknown,reviewable,,Paper
-candidate:app/index.html:192:242,html-text,app/index.html,192,,unknown,reviewable,,Warm
-candidate:app/index.html:192:309,html-text,app/index.html,192,,unknown,reviewable,,Ink
-candidate:app/index.html:193:92,html-text,app/index.html,193,,unknown,reviewable,,Aspect ratio
-candidate:app/index.html:193:162,html-text,app/index.html,193,,unknown,reviewable,,4 : 5
-candidate:app/index.html:193:199,html-text,app/index.html,193,,unknown,reviewable,,1 : 1
-candidate:app/index.html:193:235,html-text,app/index.html,193,,unknown,reviewable,,9 : 16
-candidate:app/index.html:195:80,html-text,app/index.html,195,,unknown,reviewable,,Context and details
-candidate:app/index.html:196:92,html-text,app/index.html,196,,unknown,reviewable,,Text above
-candidate:app/index.html:196:184,html-text,app/index.html,196,,unknown,reviewable,,Fade
-candidate:app/index.html:196:247,html-text,app/index.html,196,,unknown,reviewable,,Hide
-candidate:app/index.html:196:309,html-text,app/index.html,196,,unknown,reviewable,,Keep
-candidate:app/index.html:197:92,html-text,app/index.html,197,,unknown,reviewable,,Text below
+candidate:app/index.html:119:257,html-text,app/index.html,119,,unknown,reviewable,,Mist
+candidate:app/index.html:120:214,html-text,app/index.html,120,,unknown,reviewable,,Aa
+candidate:app/index.html:120:257,html-text,app/index.html,120,,unknown,reviewable,,Sand
+candidate:app/index.html:121:220,html-text,app/index.html,121,,unknown,reviewable,,Aa
+candidate:app/index.html:121:263,html-text,app/index.html,121,,unknown,reviewable,,Apricot
+candidate:app/index.html:122:214,html-text,app/index.html,122,,unknown,reviewable,,Aa
+candidate:app/index.html:122:257,html-text,app/index.html,122,,unknown,reviewable,,Dusk
+candidate:app/index.html:123:220,html-text,app/index.html,123,,unknown,reviewable,,Aa
+candidate:app/index.html:123:264,html-text,app/index.html,123,,unknown,reviewable,,Night
+candidate:app/index.html:124:225,html-text,app/index.html,124,,unknown,reviewable,,◐
+candidate:app/index.html:124:269,html-text,app/index.html,124,,unknown,reviewable,,System
+candidate:app/index.html:129:140,html-text,app/index.html,129,,unknown,reviewable,,Reading content
+candidate:app/index.html:131:87,html-text,app/index.html,131,,unknown,reviewable,,Reading view
+candidate:app/index.html:131:197,html-text,app/index.html,131,,unknown,reviewable,,English original
+candidate:app/index.html:131:283,html-text,app/index.html,131,,unknown,reviewable,,Chinese translation
+candidate:app/index.html:131:369,html-text,app/index.html,131,,unknown,reviewable,,English and Chinese
+candidate:app/index.html:132:133,html-text,app/index.html,132,,unknown,reviewable,,Chinese translation style
+candidate:app/index.html:132:241,html-text,app/index.html,132,,unknown,reviewable,,Interpretive
+candidate:app/index.html:132:299,html-text,app/index.html,132,,unknown,reviewable,,Literal
+candidate:app/index.html:134:166,html-text,app/index.html,134,,unknown,reviewable,,Parallel reading
+candidate:app/index.html:135:95,html-text,app/index.html,135,,unknown,reviewable,,Arrangement
+candidate:app/index.html:135:197,html-text,app/index.html,135,,unknown,reviewable,,Side by side
+candidate:app/index.html:135:269,html-text,app/index.html,135,,unknown,reviewable,,Stacked
+candidate:app/index.html:136:92,html-text,app/index.html,136,,unknown,reviewable,,Style
+candidate:app/index.html:138:76,html-text,app/index.html,138,,unknown,reviewable,,Live preview · Example
+candidate:app/index.html:139:84,html-text,app/index.html,139,,unknown,reviewable,,Colors and backgrounds
+candidate:app/index.html:140:105,html-text,app/index.html,140,,unknown,reviewable,,Translation color
+candidate:app/index.html:140:213,html-text,app/index.html,140,,unknown,reviewable,,Follow paper
+candidate:app/index.html:140:284,html-text,app/index.html,140,,unknown,reviewable,,Pine green
+candidate:app/index.html:140:351,html-text,app/index.html,140,,unknown,reviewable,,Ink blue
+candidate:app/index.html:140:417,html-text,app/index.html,140,,unknown,reviewable,,Tea brown
+candidate:app/index.html:141:115,html-text,app/index.html,141,,unknown,reviewable,,Translation background
+candidate:app/index.html:141:233,html-text,app/index.html,141,,unknown,reviewable,,Follow style
+candidate:app/index.html:141:311,html-text,app/index.html,141,,unknown,reviewable,,No background
+candidate:app/index.html:141:389,html-text,app/index.html,141,,unknown,reviewable,,Soft background
+candidate:app/index.html:146:152,html-text,app/index.html,146,,unknown,reviewable,,Page layout
+candidate:app/index.html:146:285,html-text,app/index.html,146,,unknown,reviewable,,Scroll
+candidate:app/index.html:146:352,html-text,app/index.html,146,,unknown,reviewable,,Turn pages
+candidate:app/index.html:146:460,html-text,app/index.html,146,,unknown,reviewable,,Page navigation
+candidate:app/index.html:146:563,html-text,app/index.html,146,,unknown,reviewable,,Page mode shows two pages in wide windows and one in narrow windows. Use ← → or the buttons below.
+candidate:app/index.html:147:145,html-text,app/index.html,147,,unknown,reviewable,,Starting view
+candidate:app/index.html:148:96,html-text,app/index.html,148,,unknown,reviewable,,Reading purpose
+candidate:app/index.html:148:247,html-text,app/index.html,148,,unknown,reviewable,,Not set · Start with original
+candidate:app/index.html:148:340,html-text,app/index.html,148,,unknown,reviewable,,Deep understanding
+candidate:app/index.html:148:429,html-text,app/index.html,148,,unknown,reviewable,,Language learning
+candidate:app/index.html:149:91,html-text,app/index.html,149,,unknown,reviewable,,Deep-reading language
+candidate:app/index.html:149:228,html-text,app/index.html,149,,unknown,reviewable,,Original
+candidate:app/index.html:149:293,html-text,app/index.html,149,,unknown,reviewable,,Chinese
+candidate:app/index.html:150:96,html-text,app/index.html,150,,unknown,reviewable,,Language learning starts with the original; deep reading starts in your preferred language. You can change the view and translation separately. Only existing content is shown; nothing is translated automatically.
+candidate:app/index.html:152:141,html-text,app/index.html,152,,unknown,reviewable,,Interface language
+candidate:app/index.html:152:285,html-text,app/index.html,152,,unknown,reviewable,,Interface language
+candidate:app/index.html:152:480,html-text,app/index.html,152,,unknown,reviewable,,System
+candidate:app/index.html:152:546,html-text,app/index.html,152,,unknown,reviewable,,English
+candidate:app/index.html:152:623,html-text,app/index.html,152,,unknown,reviewable,,简体中文
+candidate:app/index.html:152:697,html-text,app/index.html,152,,unknown,reviewable,,繁體中文
+candidate:app/index.html:152:761,html-text,app/index.html,152,,unknown,reviewable,,日本語
+candidate:app/index.html:152:825,html-text,app/index.html,152,,unknown,reviewable,,Current interface language: English
+candidate:app/index.html:152:1006,html-text,app/index.html,152,,unknown,reviewable,,Retry
+candidate:app/index.html:152:1111,html-text,app/index.html,152,,unknown,reviewable,,Reload page
+candidate:app/index.html:153:120,html-text,app/index.html,153,,unknown,reviewable,,Source and translations
+candidate:app/index.html:153:218,html-text,app/index.html,153,,unknown,reviewable,,Literal and interpretive translations are saved separately. AI output is marked as draft. Untranslated passages keep the original for checking. Chinese chapter navigation titles are editorial additions.
+candidate:app/index.html:153:496,html-text,app/index.html,153,,unknown,reviewable,,Translating sends this paragraph and up to one paragraph before and after it to an AI. Your notes are not included.
+candidate:app/index.html:153:703,html-text,app/index.html,153,,unknown,reviewable,,Privacy details
+candidate:app/index.html:154:100,html-text,app/index.html,154,,unknown,reviewable,,Sound
+candidate:app/index.html:156:125,html-text,app/index.html,156,,unknown,reviewable,,Reading atmosphere
+candidate:app/index.html:156:239,html-text,app/index.html,156,,unknown,reviewable,,Play
+candidate:app/index.html:157:122,html-text,app/index.html,157,,unknown,reviewable,,No atmosphere selected
+candidate:app/index.html:158:127,html-text,app/index.html,158,,unknown,reviewable,,Choose a scene
+candidate:app/index.html:158:216,html-text,app/index.html,158,,unknown,reviewable,,"Forest, rain, hearth, sea"
+candidate:app/index.html:160:110,html-text,app/index.html,160,,unknown,reviewable,,Music
+candidate:app/index.html:160:280,html-text,app/index.html,160,,unknown,reviewable,,28%
+candidate:app/index.html:161:112,html-text,app/index.html,161,,unknown,reviewable,,Nature sounds
+candidate:app/index.html:161:293,html-text,app/index.html,161,,unknown,reviewable,,32%
+candidate:app/index.html:162:92,html-text,app/index.html,162,,unknown,reviewable,,Scene details
+candidate:app/index.html:162:215,html-text,app/index.html,162,,unknown,reviewable,,Scene motion
+candidate:app/index.html:162:413,html-text,app/index.html,162,,unknown,reviewable,,Respects the system’s reduced-motion preference.
+candidate:app/index.html:164:73,html-text,app/index.html,164,,unknown,reviewable,,Playback continues in other tabs or apps. Pause with the button above.
+candidate:app/index.html:166:153,html-text,app/index.html,166,,unknown,reviewable,,Listen to the text
+candidate:app/index.html:166:299,html-text,app/index.html,166,,unknown,reviewable,,Voice and speed
+candidate:app/index.html:166:393,html-text,app/index.html,166,,unknown,reviewable,,"Choose voice, speed and following"
+candidate:app/index.html:166:497,html-text,app/index.html,166,,unknown,reviewable,,Background sounds soften during narration.
+candidate:app/index.html:167:117,html-text,app/index.html,167,,unknown,reviewable,,Habits
+candidate:app/index.html:168:130,html-text,app/index.html,168,,unknown,reviewable,,Immersive reading
+candidate:app/index.html:168:290,html-text,app/index.html,168,,unknown,reviewable,,Hide the header; tools are always available. Enabled by default when opening a book.
+candidate:app/index.html:169:132,html-text,app/index.html,169,,unknown,reviewable,,Continuous reading
+candidate:app/index.html:169:367,html-text,app/index.html,169,,unknown,reviewable,,The next chapter follows naturally. You decide when it is read.
+candidate:app/index.html:170:138,html-text,app/index.html,170,,unknown,reviewable,,A question for each chapter
+candidate:app/index.html:170:308,html-text,app/index.html,170,,unknown,reviewable,,Offers prompts during ordinary reading; stays quiet in immersive mode.
+candidate:app/index.html:171:117,html-text,app/index.html,171,,unknown,reviewable,,New-book defaults
+candidate:app/index.html:171:202,html-text,app/index.html,171,,unknown,reviewable,,Use this book’s view and typography for new books. This book’s position and records stay unchanged; each book keeps its own choices.
+candidate:app/index.html:171:442,html-text,app/index.html,171,,unknown,reviewable,,Use for new books
+candidate:app/index.html:172:115,html-text,app/index.html,172,,unknown,reviewable,,Data
+candidate:app/index.html:173:80,html-text,app/index.html,173,,unknown,reviewable,,My records
+candidate:app/index.html:173:208,html-text,app/index.html,173,,unknown,reviewable,,"View highlights, thoughts and questions"
+candidate:app/index.html:173:298,html-text,app/index.html,173,,unknown,reviewable,,Filed by source
+candidate:app/index.html:174:84,html-text,app/index.html,174,,unknown,reviewable,,Reading backup
+candidate:app/index.html:174:253,html-text,app/index.html,174,,unknown,reviewable,,Export records and appearance
+candidate:app/index.html:174:375,html-text,app/index.html,174,,unknown,reviewable,,Import reading records
+candidate:app/index.html:174:529,html-text,app/index.html,174,,unknown,reviewable,,Backups keep reading position and appearance. Export listening records separately.
+candidate:app/index.html:175:86,html-text,app/index.html,175,,unknown,reviewable,,Listening backup
+candidate:app/index.html:175:238,html-text,app/index.html,175,,unknown,reviewable,,View saved listening
+candidate:app/index.html:175:360,html-text,app/index.html,175,,unknown,reviewable,,Export listening records
+candidate:app/index.html:175:487,html-text,app/index.html,175,,unknown,reviewable,,Restore listening records
+candidate:app/index.html:175:594,html-text,app/index.html,175,,unknown,reviewable,,"Includes scripts, audio and playback position. Atmosphere preferences stay in this browser."
+candidate:app/index.html:176:94,html-text,app/index.html,176,,unknown,reviewable,,Reading experience backup
+candidate:app/index.html:176:263,html-text,app/index.html,176,,unknown,reviewable,,"Keeps your choices, retellings and comparisons."
+candidate:app/index.html:181:112,html-text,app/index.html,181,,unknown,reviewable,,Book contents
+candidate:app/index.html:181:212,html-text,app/index.html,181,,unknown,reviewable,,Return to the page
+candidate:app/index.html:185:115,html-text,app/index.html,185,,unknown,reviewable,,Keep these words
+candidate:app/index.html:185:180,html-text,app/index.html,185,,unknown,reviewable,,Leafhour · Excerpt
+candidate:app/index.html:185:291,html-text,app/index.html,185,,unknown,reviewable,,Back to reading
+candidate:app/index.html:190:98,html-text,app/index.html,190,,unknown,reviewable,,Language
+candidate:app/index.html:190:190,html-text,app/index.html,190,,unknown,reviewable,,Chinese
+candidate:app/index.html:190:254,html-text,app/index.html,190,,unknown,reviewable,,English
+candidate:app/index.html:190:332,html-text,app/index.html,190,,unknown,reviewable,,Bilingual
+candidate:app/index.html:191:134,html-text,app/index.html,191,,unknown,reviewable,,Bilingual layout
+candidate:app/index.html:191:235,html-text,app/index.html,191,,unknown,reviewable,,Stacked
+candidate:app/index.html:191:306,html-text,app/index.html,191,,unknown,reviewable,,Side by side
+candidate:app/index.html:192:121,html-text,app/index.html,192,,unknown,reviewable,,Chinese translation style
+candidate:app/index.html:192:223,html-text,app/index.html,192,,unknown,reviewable,,Interpretive
+candidate:app/index.html:192:281,html-text,app/index.html,192,,unknown,reviewable,,Literal
+candidate:app/index.html:193:92,html-text,app/index.html,193,,unknown,reviewable,,Paper
+candidate:app/index.html:193:180,html-text,app/index.html,193,,unknown,reviewable,,Paper
+candidate:app/index.html:193:242,html-text,app/index.html,193,,unknown,reviewable,,Warm
+candidate:app/index.html:193:309,html-text,app/index.html,193,,unknown,reviewable,,Ink
+candidate:app/index.html:194:92,html-text,app/index.html,194,,unknown,reviewable,,Aspect ratio
+candidate:app/index.html:194:162,html-text,app/index.html,194,,unknown,reviewable,,4 : 5
+candidate:app/index.html:194:199,html-text,app/index.html,194,,unknown,reviewable,,1 : 1
+candidate:app/index.html:194:235,html-text,app/index.html,194,,unknown,reviewable,,9 : 16
+candidate:app/index.html:196:80,html-text,app/index.html,196,,unknown,reviewable,,Context and details
+candidate:app/index.html:197:92,html-text,app/index.html,197,,unknown,reviewable,,Text above
 candidate:app/index.html:197:184,html-text,app/index.html,197,,unknown,reviewable,,Fade
 candidate:app/index.html:197:247,html-text,app/index.html,197,,unknown,reviewable,,Hide
 candidate:app/index.html:197:309,html-text,app/index.html,197,,unknown,reviewable,,Keep
-candidate:app/index.html:198:118,html-text,app/index.html,198,,unknown,reviewable,,Font size
-candidate:app/index.html:198:165,html-text,app/index.html,198,,unknown,reviewable,,48
-candidate:app/index.html:199:117,html-text,app/index.html,199,,unknown,reviewable,,Book source
-candidate:app/index.html:201:121,html-text,app/index.html,201,,unknown,reviewable,,Save image
-candidate:app/index.html:201:197,html-text,app/index.html,201,,unknown,reviewable,,Copy image
-candidate:app/index.html:201:284,html-text,app/index.html,201,,unknown,reviewable,,System share
-candidate:app/index.html:207:124,html-text,app/index.html,207,,unknown,reviewable,,Your saved reading position is ready. Return there or keep reading here.
-candidate:app/index.html:207:276,html-text,app/index.html,207,,unknown,reviewable,,Return to saved position
-candidate:app/index.html:207:377,html-text,app/index.html,207,,unknown,reviewable,,Keep reading here
-candidate:app/index.html:210:92,html-text,app/index.html,210,,unknown,reviewable,,"On touch screens, press and hold to select text; tapping keeps reading quiet. With a mouse, click a passage or focus it and press Enter for original text, annotations and records. In page mode use ← → or the buttons below. Esc closes overlays. F toggles full-screen reading."
-candidate:app/index.html:213:187,html-text,app/index.html,213,,unknown,reviewable,,Retry
-candidate:app/index.html:213:258,html-text,app/index.html,213,,unknown,reviewable,,Reload page
-candidate:app/index.html:213:328,html-text,app/index.html,213,,unknown,reviewable,,Cancel
+candidate:app/index.html:198:92,html-text,app/index.html,198,,unknown,reviewable,,Text below
+candidate:app/index.html:198:184,html-text,app/index.html,198,,unknown,reviewable,,Fade
+candidate:app/index.html:198:247,html-text,app/index.html,198,,unknown,reviewable,,Hide
+candidate:app/index.html:198:309,html-text,app/index.html,198,,unknown,reviewable,,Keep
+candidate:app/index.html:199:118,html-text,app/index.html,199,,unknown,reviewable,,Font size
+candidate:app/index.html:199:165,html-text,app/index.html,199,,unknown,reviewable,,48
+candidate:app/index.html:200:117,html-text,app/index.html,200,,unknown,reviewable,,Book source
+candidate:app/index.html:202:121,html-text,app/index.html,202,,unknown,reviewable,,Save image
+candidate:app/index.html:202:197,html-text,app/index.html,202,,unknown,reviewable,,Copy image
+candidate:app/index.html:202:284,html-text,app/index.html,202,,unknown,reviewable,,System share
+candidate:app/index.html:208:124,html-text,app/index.html,208,,unknown,reviewable,,Your saved reading position is ready. Return there or keep reading here.
+candidate:app/index.html:208:276,html-text,app/index.html,208,,unknown,reviewable,,Return to saved position
+candidate:app/index.html:208:377,html-text,app/index.html,208,,unknown,reviewable,,Keep reading here
+candidate:app/index.html:211:92,html-text,app/index.html,211,,unknown,reviewable,,"On touch screens, press and hold to select text; tapping keeps reading quiet. With a mouse, click a passage or focus it and press Enter for original text, annotations and records. In page mode use ← → or the buttons below. Esc closes overlays. F toggles full-screen reading."
+candidate:app/index.html:214:187,html-text,app/index.html,214,,unknown,reviewable,,Retry
+candidate:app/index.html:214:258,html-text,app/index.html,214,,unknown,reviewable,,Reload page
+candidate:app/index.html:214:328,html-text,app/index.html,214,,unknown,reviewable,,Cancel
 candidate:app/ja/mcp.html:32:53,html-attribute,app/ja/mcp.html,32,aria-label,unknown,reviewable,,権限の表、横にスクロール
 candidate:app/ja/mcp.html:42:53,html-attribute,app/ja/mcp.html,42,aria-label,unknown,reviewable,,コマンド例、横にスクロール
 candidate:app/ja/mcp.html:58:215,html-attribute,app/ja/mcp.html,58,aria-label,unknown,reviewable,,表示言語
@@ -4523,8 +4527,8 @@ candidate:app/reader-book-actions.mjs:57:123,js-attribute,app/reader-book-action
 candidate:app/reader-book-actions.mjs:72:93,js-attribute,app/reader-book-actions.mjs,72,aria-hidden,unknown,reviewable,,true
 candidate:app/reader-book-actions.mjs:126:136,js-attribute,app/reader-book-actions.mjs,126,aria-labelledby,unknown,protected,identifier,reader-gift-title
 candidate:app/reader-book-actions.mjs:128:120,js-attribute,app/reader-book-actions.mjs,128,role,unknown,reviewable,,status
-candidate:app/reader-chat-workspace.mjs:58:55,js-attribute,app/reader-chat-workspace.mjs,58,aria-modal,unknown,reviewable,,true
-candidate:app/reader-chat-workspace.mjs:59:54,js-attribute,app/reader-chat-workspace.mjs,59,aria-modal,unknown,reviewable,,false
+candidate:app/reader-chat-workspace.mjs:62:53,js-attribute,app/reader-chat-workspace.mjs,62,aria-modal,unknown,reviewable,,true
+candidate:app/reader-chat-workspace.mjs:63:54,js-attribute,app/reader-chat-workspace.mjs,63,aria-modal,unknown,reviewable,,false
 candidate:app/reader-companion.mjs:39:141,js-attribute,app/reader-companion.mjs,39,aria-pressed,unknown,reviewable,,false
 candidate:app/reader-companion.mjs:42:68,js-attribute,app/reader-companion.mjs,42,role,unknown,reviewable,,status
 candidate:app/reader-conversation.mjs:48:60,js-cjk-literal,app/reader-conversation.mjs,48,,unknown,reviewable,,对话暂时无法载入，请重试。
@@ -4553,27 +4557,27 @@ candidate:app/reader-settings.mjs:57:132,js-attribute,app/reader-settings.mjs,57
 candidate:app/reader-tools.mjs:49:36,js-attribute,app/reader-tools.mjs,49,role,unknown,reviewable,,group
 candidate:app/reader-translation.js:16:115,js-attribute,app/reader-translation.js,16,role,unknown,reviewable,,status
 candidate:app/reader-translation.js:76:220,js-attribute,app/reader-translation.js,76,role,unknown,reviewable,,status
-candidate:app/reader.js:158:36,js-attribute,app/reader.js,158,aria-busy,unknown,reviewable,,true
-candidate:app/reader.js:219:50,js-cjk-literal,app/reader.js,219,,unknown,reviewable,,永
-candidate:app/reader.js:250:282,js-attribute,app/reader.js,250,aria-describedby,unknown,protected,identifier,reading-instructions
-candidate:app/reader.js:307:188,js-attribute,app/reader.js,307,aria-expanded,unknown,reviewable,,false
-candidate:app/reader.js:392:395,js-attribute,app/reader.js,392,role,unknown,reviewable,,status
-candidate:app/reader.js:397:124,js-cjk-literal,app/reader.js,397,,unknown,reviewable,,记录格式不完整
-candidate:app/reader.js:438:139,js-attribute,app/reader.js,438,aria-live,unknown,reviewable,,polite
-candidate:app/reader.js:448:153,js-cjk-literal,app/reader.js,448,,unknown,reviewable,,服务尚未确认这次提交。
-candidate:app/reader.js:448:350,js-attribute,app/reader.js,448,role,unknown,reviewable,,status
-candidate:app/reader.js:449:85,js-attribute,app/reader.js,449,role,unknown,reviewable,,alert
-candidate:app/reader.js:584:168,js-attribute,app/reader.js,584,aria-expanded,unknown,reviewable,,false
-candidate:app/reader.js:627:129,js-attribute,app/reader.js,627,aria-busy,unknown,reviewable,,true
-candidate:app/reader.js:628:41,js-cjk-literal,app/reader.js,628,,unknown,reviewable,,请先重新读取个人记录，再导出。
-candidate:app/reader.js:628:122,js-cjk-literal,app/reader.js,628,,unknown,reviewable,,请先选择从哪里继续，再导出当前阅读记录。
-candidate:app/reader.js:628:323,js-cjk-literal,app/reader.js,628,,unknown,reviewable,,阅读位置正在确认，请确认后再导出。
-candidate:app/reader.js:628:681,js-attribute,app/reader.js,628,role,unknown,reviewable,,status
-candidate:app/reader.js:629:106,js-attribute,app/reader.js,629,role,unknown,reviewable,,alert
-candidate:app/reader.js:631:224,js-cjk-literal,app/reader.js,631,,unknown,reviewable,,记录包过大
-candidate:app/reader.js:631:648,js-attribute,app/reader.js,631,role,unknown,reviewable,,status
-candidate:app/reader.js:631:809,js-attribute,app/reader.js,631,role,unknown,reviewable,,alert
-candidate:app/reader.js:645:41,js-cjk-literal,app/reader.js,645,,unknown,reviewable,,较新的位置暂时无法对应原文，请继续读这里。
+candidate:app/reader.js:159:36,js-attribute,app/reader.js,159,aria-busy,unknown,reviewable,,true
+candidate:app/reader.js:220:50,js-cjk-literal,app/reader.js,220,,unknown,reviewable,,永
+candidate:app/reader.js:251:282,js-attribute,app/reader.js,251,aria-describedby,unknown,protected,identifier,reading-instructions
+candidate:app/reader.js:308:188,js-attribute,app/reader.js,308,aria-expanded,unknown,reviewable,,false
+candidate:app/reader.js:393:395,js-attribute,app/reader.js,393,role,unknown,reviewable,,status
+candidate:app/reader.js:398:124,js-cjk-literal,app/reader.js,398,,unknown,reviewable,,记录格式不完整
+candidate:app/reader.js:439:139,js-attribute,app/reader.js,439,aria-live,unknown,reviewable,,polite
+candidate:app/reader.js:449:153,js-cjk-literal,app/reader.js,449,,unknown,reviewable,,服务尚未确认这次提交。
+candidate:app/reader.js:449:350,js-attribute,app/reader.js,449,role,unknown,reviewable,,status
+candidate:app/reader.js:450:85,js-attribute,app/reader.js,450,role,unknown,reviewable,,alert
+candidate:app/reader.js:585:168,js-attribute,app/reader.js,585,aria-expanded,unknown,reviewable,,false
+candidate:app/reader.js:629:129,js-attribute,app/reader.js,629,aria-busy,unknown,reviewable,,true
+candidate:app/reader.js:630:41,js-cjk-literal,app/reader.js,630,,unknown,reviewable,,请先重新读取个人记录，再导出。
+candidate:app/reader.js:630:122,js-cjk-literal,app/reader.js,630,,unknown,reviewable,,请先选择从哪里继续，再导出当前阅读记录。
+candidate:app/reader.js:630:323,js-cjk-literal,app/reader.js,630,,unknown,reviewable,,阅读位置正在确认，请确认后再导出。
+candidate:app/reader.js:630:681,js-attribute,app/reader.js,630,role,unknown,reviewable,,status
+candidate:app/reader.js:631:106,js-attribute,app/reader.js,631,role,unknown,reviewable,,alert
+candidate:app/reader.js:633:224,js-cjk-literal,app/reader.js,633,,unknown,reviewable,,记录包过大
+candidate:app/reader.js:633:648,js-attribute,app/reader.js,633,role,unknown,reviewable,,status
+candidate:app/reader.js:633:809,js-attribute,app/reader.js,633,role,unknown,reviewable,,alert
+candidate:app/reader.js:647:41,js-cjk-literal,app/reader.js,647,,unknown,reviewable,,较新的位置暂时无法对应原文，请继续读这里。
 candidate:app/reading-arrival.mjs:8:36,js-cjk-literal,app/reading-arrival.mjs,8,,unknown,reviewable,,瓦尔登湖
 candidate:app/reading-arrival.mjs:8:50,js-cjk-literal,app/reading-arrival.mjs,8,,unknown,reviewable,,亨利·戴维·梭罗
 candidate:app/reading-arrival.mjs:8:69,js-cjk-literal,app/reading-arrival.mjs,8,,unknown,reviewable,,经济篇
@@ -4807,8 +4811,8 @@ candidate:app/source-revisions.mjs:33:158,js-cjk-literal,app/source-revisions.mj
 candidate:app/source-revisions.mjs:34:103,js-cjk-literal,app/source-revisions.mjs,34,,unknown,reviewable,,待确认锚点不能伪装为已定位
 candidate:app/source-revisions.mjs:40:109,js-cjk-literal,app/source-revisions.mjs,40,,unknown,reviewable,,待确认记录标识与原话冲突，未覆盖记录
 candidate:app/source-revisions.mjs:41:126,js-cjk-literal,app/source-revisions.mjs,41,,unknown,reviewable,,锚点已在另一处确认，请先读取较新结果
-candidate:app/squirrel-position.mjs:52:36,js-cjk-literal,app/squirrel-position.mjs,52,,unknown,reviewable,,可拖动调整位置，也可按住 Alt 并使用方向键移动。
-candidate:app/squirrel-position.mjs:52:71,js-cjk-literal,app/squirrel-position.mjs,52,,unknown,reviewable,,阅读对话 · 可拖动调整位置
+candidate:app/squirrel-position.mjs:65:36,js-cjk-literal,app/squirrel-position.mjs,65,,unknown,reviewable,,可拖动调整位置，也可按住 Alt 并使用方向键移动。
+candidate:app/squirrel-position.mjs:65:71,js-cjk-literal,app/squirrel-position.mjs,65,,unknown,reviewable,,阅读对话 · 可拖动调整位置
 candidate:app/translation-first-use.mjs:32:132,js-attribute,app/translation-first-use.mjs,32,aria-modal,unknown,reviewable,,true
 candidate:app/translation-state.mjs:5:36,js-cjk-literal,app/translation-state.mjs,5,,unknown,reviewable,,另一段正在翻译，可以继续阅读。
 candidate:app/translation-state.mjs:6:34,js-cjk-literal,app/translation-state.mjs,6,,unknown,reviewable,,之前选择的段落双译已保存。

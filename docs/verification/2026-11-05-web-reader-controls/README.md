@@ -50,3 +50,15 @@ The delivery pass fast-forwarded the branch to public `origin/main` at `48146961
 The code review checked captured account ownership, guest login handoff and fallback, disposal during asynchronous loading, desktop/narrow-window transitions, drag click suppression, focus return and public static dependencies. No additional blocking findings remained. Unrelated local browser artifacts and `output/` files are excluded from the commit.
 
 The delivery branch is ready for PR review. This record does not certify a merge, production publication, real password/OTP login, model generation, actual listening playback or physical-device acceptance.
+
+## CI copy-inventory correction
+
+The first PR run (`42036892891`) failed in the copy-export consistency check: the new `reader.dock.settings` catalogue key and changed source locations were missing from the three tracked generated inventories. The failing command was `git diff --exit-code -- docs/copy`, before copy lint or the main application-test stage. The native iOS job passed in that run. The local delivery checks above had omitted this export-consistency gate.
+
+Regenerated `copy-inventory.json`, `copy-inventory.csv` and `copy-candidates.csv` using the maintained exporter. The catalogue comparison found exactly the one added key, no changed or removed existing values; source hash/location changes correspond to this PR's files. A second export was byte-identical across all three artifacts.
+
+With the real pinned Vale 3.24.0 and textlint 15.8.0, copy lint passed: zero new T1 errors, 371 documented debt alerts, 2,275 retained warnings, zero exceptions and zero stale bindings. Copy canaries passed. All 61 inventory, ledger and lint regression tests passed with no failures or skips. No CI contracts, wording-debt baseline or allowances were changed.
+
+The broader local test run reproduced two shared-style checks failing: the login button's fixed 8px radius and the dock's 11px functional labels. Primary and outlined login actions now use the existing `--action-radius` token, and both labels use the 12px minimum. All 34 typography, component-foundation, dock, login and reader-build tests passed after these corrections under Node 22.23.4, matching CI's Node major version. A fresh `npm run build:vercel` and `node tools/verify-release.mjs` also passed.
+
+The supplementary full run used the machine's default Node 26.10.0: 4,709 tests, 4,700 passed, eight failed and one Linux-only test skipped. Two failures were the style regressions corrected above. The remaining six were the unchanged yearly-test assertion expecting TAP skip formatting and five instance tests whose child permission flags lack Node 26's required `--allow-net`. Yearly PostgreSQL and all five local-instance tests passed when rerun under Node 22; no billing or instance code/tests were changed. The complete Node 26 run is not reported as a passing suite.
