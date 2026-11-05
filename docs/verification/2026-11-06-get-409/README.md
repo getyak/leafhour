@@ -83,6 +83,24 @@ Simulator results do not establish physical-device or VoiceOver acceptance.
 Private logs, screenshots, credentials and actual exported reading data are not
 included in the public repository.
 
+### Hosted entry correction
+
+The first matching-source production check at `1aab086` found that account
+settings export returned 404. The Vercel catch-all had an explicit account-route
+allowlist that omitted the new exports and MCP management endpoints. Local
+`createReaderServer` checks had bypassed this separate admission boundary.
+
+The correction admits only the documented account paths and connector UUID/action
+shape. A real HTTP test now runs `createHostedHandler` and `createPortal` together
+with isolated auth/storage, through both direct paths and the deployed catch-all
+query. It reproduced the 404 before the fix and passed afterward, including
+authenticated access, anonymous 401, changed-owner 409, no-store and invalid-path
+404 checks. The focused hosted/auth/MCP/production-boundary run passed 85 tests.
+Production smoke now probes every new account API for anonymous 401 and no-store.
+The failed acceptance attempt created no MCP connection or grant and signed out
+its own test session. Matching-source functional acceptance continues after the
+corrected entry is deployed.
+
 ## Protocol references
 
 - [Official MCP TypeScript client](https://ts.sdk.modelcontextprotocol.io/client)
