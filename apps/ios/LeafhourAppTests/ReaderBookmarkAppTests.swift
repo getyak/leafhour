@@ -46,6 +46,25 @@ import LeafhourCore
         XCTAssertEqual(text.accessibilityCustomActions?.filter { $0.name == "添加当前位置书签" }.count, 1)
     }
 
+    func testContinuousTextRetainsNativeScrollAndSelectionOwnership() async throws {
+        let session = try await fixture()
+        var preferences = session.state.preferences; preferences.navigationMode = .scroll; session.changePreferences(preferences)
+        let reading = TextReadingView(session: session, onNote: { _ in }, onSource: { _ in }, onWake: { _ in }, onReadingScroll: {}, onBookmark: { _ in })
+        let coordinator = reading.makeCoordinator(), text = UITextView(usingTextLayoutManager: false)
+        text.isEditable = false; text.isSelectable = true
+        coordinator.view = text; host(text); coordinator.configureBookmarkGesture(text); coordinator.updateContent(text)
+        await settle(); defer { coordinator.invalidate() }
+        XCTAssertTrue(text.panGestureRecognizer.isEnabled)
+        let independent = text.gestureRecognizers?.compactMap { $0 as? UIPanGestureRecognizer }.first {
+            $0 !== text.panGestureRecognizer && $0.delegate is ReaderBookmarkGestureHandler
+        }
+        XCTAssertFalse(try XCTUnwrap(independent).isEnabled)
+        let selection = NSRange(location: 12, length: 20)
+        text.selectedRange = selection; coordinator.configureNavigation(text)
+        XCTAssertEqual(text.selectedRange, selection)
+        XCTAssertTrue(text.accessibilityCustomActions?.contains { $0.name == "添加当前位置书签" } == true)
+    }
+
     func testLongParagraphViewportUsesVisibleScalarRangeAndRevokesOnTeardown() async throws {
         let session = try await fixture()
         var ranges: [ReaderBookmarkVisibleRange] = []

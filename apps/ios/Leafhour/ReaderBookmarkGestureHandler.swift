@@ -125,6 +125,9 @@ struct ReaderBookmarkGestureCapture {
     }
     @objc private func scrollingPan(_ pan: UIPanGestureRecognizer) {
         guard !isPaged(), let scroll, pan === scroll.panGestureRecognizer else { return }
+        // Once this touch has scrolled into the document it is ordinary reading,
+        // even if it reverses and returns to the top before release.
+        guard scroll.contentOffset.y <= -scroll.adjustedContentInset.top + 1 else { cancel(); return }
         let overscroll = max(0, -scroll.adjustedContentInset.top - scroll.contentOffset.y)
         // UIScrollView applies rubber-band resistance. The observed overscroll
         // itself must reach 72pt, so an ordinary short bounce never commits.

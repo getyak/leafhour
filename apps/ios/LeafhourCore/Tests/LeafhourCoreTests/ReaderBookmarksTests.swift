@@ -64,6 +64,8 @@ final class ReaderBookmarksTests: XCTestCase {
     func testPullVisualTracksFingerWithBoundedResistanceAndResetsOnRelease() {
         var pull = ReaderBookmarkPullState()
         pull.begin(eligible: true)
+        XCTAssertEqual(pull.change(down: 0, across: 0), .idle)
+        XCTAssertEqual(pull.visual, .idle, "An ordinary scroll with no overscroll must not reveal pull feedback")
         _ = pull.change(down: 36, across: 0)
         XCTAssertEqual(pull.visual.progress, 0.5)
         let first = pull.visual.displacement

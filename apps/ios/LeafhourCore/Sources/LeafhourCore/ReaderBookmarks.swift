@@ -191,6 +191,7 @@ public struct ReaderBookmarkPullState: Sendable {
         // A deliberate reversal or horizontal departure cancels this touch;
         // it cannot accidentally rearm while the finger is still returning.
         guard down >= 0, peak - down <= 18, down < 12 || down > abs(across) * 1.6 else { cancel(); return .idle }
+        guard down > 0 else { feedback = .idle; visual = .idle; return .idle }
         peak = max(peak, down)
         if down >= 72 { feedback = .armed }
         else if down < 56 || feedback != .armed { feedback = .pulling }
