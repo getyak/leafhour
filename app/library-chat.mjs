@@ -128,14 +128,14 @@ export function mountLibraryChat({root,api,getSession,getBooks,getOwner,openAuth
   }
   function isCurrent(captured){if(disposed)return false;if(captured===activeOwner()&&captured===owner)return true;syncOwner();render();return false;}
   function routeBack(){const b=ui('button','library-chat-button','bts');live(b,'click',()=>{close();const shelf=document.getElementById('library-view');if(shelf&&!shelf.hidden)shelf.scrollIntoView({block:'start'});else location.assign(uiHref('/library'));});return b;}
-  function finishSourceNavigation(){if(!root.classList.contains('reader-chat-workspace')||root.classList.contains('is-reader-chat-mobile'))close();}
+  function finishSourceNavigation(){close();}
   function sourceLink(id,passageId,bookId=selectedBook){const link=ui('a','library-chat-source-link',id);sourceHref(link,readUrl(bookId,passageId));live(link,'click',event=>{if(event.button>0||event.metaKey||event.ctrlKey||event.shiftKey||event.altKey)return;if(bookId===currentBookId()&&onNavigateToPassage?.(bookId,passageId)===true){event.preventDefault();finishSourceNavigation();}});return link;}
   function renderContext(view){
     const item=accountChat()?null:view.data?.context;context.hidden=!item||!!view.quote;const signature=JSON.stringify([owner,selectedBook,item]);if(signature===contextSignature)return;contextSignature=signature;contextChapter.textContent=chapterTitle(item?.chapterTitle);
     if(!item){contextBody.replaceChildren();return;}
     decorations.renderContext({item,contextBody,sourceLink,node,ui,uiAttr,live});
   }
-  function emptyState(headingId,bodyId){const empty=node('section','library-chat-empty');empty.append(node('span','library-chat-empty-rule'),ui('h3','',headingId),ui('p','',bodyId));return empty;}
+  function emptyState(headingId,bodyId){const empty=node('section','library-chat-empty');empty.append(node('span','library-chat-empty-rule'),ui('h3','',headingId));if(bodyId)empty.append(ui('p','',bodyId));return empty;}
   const turnNodes=new Map(),latestTurns=new WeakMap();
   const paintFor=(row,fn)=>{let paints=rowPaints.get(row);if(!paints)rowPaints.set(row,paints=[]);paints.push(fn);fn();};
   function showEmpty(element){turnNodes.clear();rowPaints.clear();messages.replaceChildren(element);}
@@ -172,7 +172,7 @@ export function mountLibraryChat({root,api,getSession,getBooks,getOwner,openAuth
     if(view.phase==='error'&&!view.data){showEmpty(emptyState('pageNotOpen','r.h'));return;}
     const displayTurns=[...view.turns];if(view.retry?.uncertain&&!displayTurns.some(turn=>turn.id===view.retry.payload.id))displayTurns.push({...view.retry.payload,origin:'user',status:'running',answer:null});
     if(!displayTurns.length){
-      const wide=confirmedScope(view)?.mode==='library',empty=emptyState(accountChat()?'chat.greeting':wide?'h.bk':'ex.fu',accountChat()?'chat.greetingBody':wide?'h.ch':'h.ck');
+      const wide=confirmedScope(view)?.mode==='library',empty=emptyState(accountChat()?'chat.greeting':wide?'h.bk':'ex.fu',accountChat()?'chat.greetingBody':wide?'h.ch':null);
       if(accountChat()){const identity=node('span','library-chat-identity');identity.setAttribute('aria-hidden','true');empty.insertBefore(identity,empty.children[0]);showEmpty(empty);return;}
       const suggestions=node('div','library-chat-suggestions');
       for(const id of ['ex.f','ex.c',wide?'ex.r':'ex.a']){
@@ -237,7 +237,7 @@ export function mountLibraryChat({root,api,getSession,getBooks,getOwner,openAuth
     quoteRemove.disabled=!view.canChangeQuote;quoteStale.hidden=!view.quoteStale;quoteLocal.hidden=!view.quoteLocalOnly;
     if(view.quote){quoteMeta.replaceChildren(ui('span','',({original:'lo',literal:'ll',interpretive:'li'})[view.quote.parts[0].layer]));if(view.quote.parts.some(part=>part.translationStatus==='draft'))quoteMeta.append(ui('span','','ds'));}
     renderContext(view);renderMessages(view);if(targetMessageId){const target=[...messages.children].find(n=>n.getAttribute('data-message-id')===targetMessageId);if(target){messages.scrollTop+=target.getBoundingClientRect().top-messages.getBoundingClientRect().top-messages.clientTop;targetMessageId=null;}}form.hidden=!signedIn()||!selectedBook&&!uploadEnabled;footer.hidden=form.hidden;
-    input.style.setProperty('height','auto');input.style.setProperty('height',Math.min(128,Math.max(36,input.scrollHeight||36))+'px');
+    input.style.setProperty('height','auto');input.style.setProperty('height',Math.min(128,Math.max(36,input.scrollHeight||36))+'px');fitViewport();
     const length=view.draft.length;count.classList.toggle('is-over-limit',length>CHAT_TEXT_LIMIT);input.setAttribute('aria-invalid',String(length>CHAT_TEXT_LIMIT));
     if(length>=1800)countMsg.set(length>CHAT_TEXT_LIMIT?'chat.count.over':'chat.count.left',{count:length>CHAT_TEXT_LIMIT?length-CHAT_TEXT_LIMIT:CHAT_TEXT_LIMIT-length});else countMsg.clear();
     peopleConsent.hidden=accountChat()||confirmedScope(view)?.mode!=='library';peopleCheckbox.disabled=peopleConsent.hidden||!!view.pending||!!view.retry?.uncertain||!!view.scopePending;if(peopleConsent.hidden)peopleCheckbox.checked=false;
@@ -334,7 +334,7 @@ export function mountLibraryChat({root,api,getSession,getBooks,getOwner,openAuth
     if(dismissOnOutside()&&!inside(event.target)&&(keyboard||!previous||!previous.inside&&!previous.cancelled&&previous.revision===openingRevision))close({focus:false});
   },true);
   // Match the visible viewport when a mobile keyboard reduces or pans it.
-  function fitViewport(){const viewport=window.visualViewport;if(!viewport)return;root.style.setProperty('--chat-viewport-height',viewport.height+'px');root.style.setProperty('--chat-viewport-top',viewport.offsetTop+'px');root.classList.toggle('is-compact-viewport',viewport.height<=500);if(root.open&&viewport.height<=500&&document.activeElement===input)frame.scrollTop+=Math.max(0,form.getBoundingClientRect().bottom-Math.min(frame.getBoundingClientRect().bottom,viewport.offsetTop+viewport.height-8));}
+  function fitViewport(){const viewport=window.visualViewport;if(!viewport)return;root.style.setProperty('--chat-viewport-height',viewport.height+'px');root.style.setProperty('--chat-viewport-top',viewport.offsetTop+'px');root.classList.toggle('is-compact-viewport',viewport.height<=500);if(root.open&&document.activeElement===input)frame.scrollTop+=Math.max(0,form.getBoundingClientRect().bottom-Math.min(frame.getBoundingClientRect().bottom,viewport.offsetTop+viewport.height-8));}
   if(window.visualViewport){listen(window.visualViewport,'resize',fitViewport);listen(window.visualViewport,'scroll',fitViewport);}fitViewport();
   listen(input,'focus',fitViewport);
   listen(closeButton,'click',close);listen(root,'cancel',event=>{event.preventDefault();close();});listen(root,'close',()=>{if(root.open||!viewOpen)return;forgetFollowedQuote();viewOpen=false;clearPoll();onViewChange(false);trigger?.setAttribute('aria-expanded','false');returnFocus();});

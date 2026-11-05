@@ -152,7 +152,7 @@ export default Object.freeze({
   "chat.quote.tooLong": "引用最多 2,000 字，請縮小選取範圍。",
   "chat.quote.receiptMismatch": "回覆與目前請求不一致，問題與引用皆已保留。",
 
-  "chat.entry": "閱讀對話",
+  "chat.entry": "旁註",
   "chat.resize": "調整 AI 工作區寬度",
 
   "audio.voice.Sulafat.label": "溫暖",
@@ -312,7 +312,7 @@ export default Object.freeze({
   "cs.interrupted": "連接中斷，正在確認這次提問的進度。請先確認結果，避免重複提問。",
   "cs.noAnswer": "這次沒有得到回答，問題已保留。",
   "cs.stopUncertain": "還不能確認是否已停止。請先查看進度，再決定是否重試。",
-  "open": "打開閱讀對話",
+  "open": "打開頁邊旁註",
   "close": "收起閱讀對話",
   "currentPosition": "當前閱讀位置",
   "moreActions": "更多對話操作",
@@ -422,7 +422,7 @@ export default Object.freeze({
   "prefs.skipFailed": "暫不設置尚未記錄。",
   "prefs.conflictReload": "閱讀習慣已在另一處更新，請刷新後再試。",
   "bk": "這本書",
-  "dg": "閱讀對話",
+  "dg": "旁註",
   "rd": "正在讀",
   "rel": "重新載入",
   "scope.allowed": "允許查閱",

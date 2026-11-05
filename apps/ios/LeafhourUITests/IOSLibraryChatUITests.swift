@@ -62,7 +62,7 @@ final class IOSLibraryChatUITests: XCTestCase {
 
     func testGlobalChatKeyboardComposerAndDirectMarkdownAnswer() {
         launch(["--ios-library-chat-markdown"])
-        app.tabBars.buttons["松鼠"].tap()
+        app.buttons["library-companion"].tap()
         let input = app.descendants(matching: .any)["reader-question"], microphone = app.buttons["chat-microphone"], send = app.buttons["reader-question-send"]
         require(input); require(microphone); require(send)
         input.tap(); input.typeText("Show the synthetic Markdown answer.")
@@ -83,9 +83,27 @@ final class IOSLibraryChatUITests: XCTestCase {
         capture("Chat · native Markdown direct answer")
     }
 
+    func testShelfSummonsHalfHeightMarginAndKeepsDraftWhenDismissed() {
+        launch()
+        XCTAssertEqual(app.tabBars.buttons.count, 2)
+        XCTAssertFalse(app.tabBars.buttons["松鼠"].exists)
+        app.buttons["library-companion"].tap()
+        let input = app.textFields["reader-question"]
+        require(input)
+        XCTAssertGreaterThan(app.navigationBars["旁注"].frame.minY, app.frame.height * 0.35)
+        input.tap(); input.typeText("回到这句话再想一想")
+        require(app.keyboards.firstMatch)
+        XCTAssertTrue(input.isHittable)
+        app.buttons["companion-dismiss"].tap()
+        require(app.buttons["library-companion"])
+        app.buttons["library-companion"].tap(); require(input)
+        XCTAssertEqual(input.value as? String, "回到这句话再想一想")
+        capture("GET385 · shelf margin and restored draft")
+    }
+
     func testLongQuestionCanFoldExpandAndCopyItsCompleteSource() {
         launch()
-        app.tabBars.buttons["松鼠"].tap()
+        app.buttons["library-companion"].tap()
         let input = app.textFields["reader-question"]
         require(input); input.tap()
         let original = "GET385 长问题。" + String(repeating: "想慢一点把眼前的问题辨认清楚，不急着给出答案。", count: 20) + "GET385-QUESTION-END"
@@ -115,7 +133,7 @@ final class IOSLibraryChatUITests: XCTestCase {
 
     func testMessageLongPressQuotesLikesAndWakesTheQuietComposer() {
         launch()
-        app.tabBars.buttons["松鼠"].tap()
+        app.buttons["library-companion"].tap()
         let input = app.textFields["reader-question"]
         require(input); input.tap()
         if !app.keyboards.firstMatch.waitForExistence(timeout: 2) { input.tap() }
@@ -146,7 +164,7 @@ final class IOSLibraryChatUITests: XCTestCase {
 
     func testMessageReactionMultiselectAndArtisticSharePreview() {
         launch()
-        app.tabBars.buttons["松鼠"].tap()
+        app.buttons["library-companion"].tap()
         let input = app.textFields["reader-question"]
         require(input); input.tap(); input.typeText("把这段想法留下来")
         app.buttons["reader-question-send"].tap()
@@ -196,7 +214,7 @@ final class IOSLibraryChatUITests: XCTestCase {
     func testLandscapeHistoryKeepsLatestAndDraftInOneTypingRow() {
         launch(["--reading-craft-history", "-UIPreferredContentSizeCategoryName", "UICTContentSizeCategoryAccessibilityXXXL"])
         defer { XCUIDevice.shared.orientation = .portrait }
-        app.tabBars.buttons["松鼠"].tap()
+        app.buttons["library-companion"].tap()
         XCUIDevice.shared.orientation = .landscapeLeft
         let rotated = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in self.app.frame.width > self.app.frame.height }, object: nil)
         XCTAssertEqual(XCTWaiter.wait(for: [rotated], timeout: 10), .completed)
@@ -223,7 +241,7 @@ final class IOSLibraryChatUITests: XCTestCase {
 
     private func verifyLatestNavigation(extra: [String] = []) {
         launch(["--reading-craft-history"] + extra)
-        app.tabBars.buttons["松鼠"].tap()
+        app.buttons["library-companion"].tap()
         let input = app.textFields["reader-question"]
         require(input); input.tap(); input.typeText("第一句合成问题")
         app.buttons["reader-question-send"].tap()
@@ -233,7 +251,13 @@ final class IOSLibraryChatUITests: XCTestCase {
         // Wait for the fixture's delayed final response before browsing.
         let answer = app.textViews.matching(NSPredicate(format: "label CONTAINS %@", "合成回答末尾")).firstMatch
         require(answer)
-        XCTAssertFalse(latest.exists, "Programmatic layout and incoming replies must not imply browsing")
+        // A margin note deliberately opens at the first answer line. A long
+        // reply can therefore offer Latest before the reader starts browsing.
+        if latest.exists {
+            latest.tap()
+            let settled = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in !latest.exists }, object: nil)
+            XCTAssertEqual(XCTWaiter.wait(for: [settled], timeout: 8), .completed)
+        }
         let oldAnswer = app.textViews.matching(identifier: answer.identifier)
             .matching(NSPredicate(format: "label CONTAINS %@", "合成回答末尾")).firstMatch
         history.swipeDown()

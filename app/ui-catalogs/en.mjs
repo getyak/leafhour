@@ -153,7 +153,7 @@ export default Object.freeze({
   "chat.quote.tooLong": "Select up to 2,000 characters to quote.",
   "chat.quote.receiptMismatch": "The reply does not match this request. Your question and quote are retained.",
 
-  "chat.entry": "Reading chat",
+  "chat.entry": "Margin notes",
   "chat.resize": "Resize AI workspace",
 
   "audio.voice.Sulafat.label": "Warm",
@@ -313,7 +313,7 @@ export default Object.freeze({
   "cs.interrupted": "The connection dropped; confirming the progress of this question. Check the result first to avoid asking twice.",
   "cs.noAnswer": "No answer this time; your question is kept.",
   "cs.stopUncertain": "It is not yet clear whether the question stopped. Check progress before retrying.",
-  "open": "Open the reading chat",
+  "open": "Open margin notes",
   "close": "Collapse the reading chat",
   "currentPosition": "Current reading position",
   "moreActions": "More conversation actions",
@@ -423,7 +423,7 @@ export default Object.freeze({
   "prefs.skipFailed": "“Set up later” is not recorded yet.",
   "prefs.conflictReload": "Reading preferences were updated elsewhere. Reload and try again.",
   "bk": "this book",
-  "dg": "Reading chat",
+  "dg": "Margin notes",
   "rd": "Reading",
   "rel": "Reload",
   "scope.allowed": "Reading scope",

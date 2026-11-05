@@ -41,9 +41,9 @@ test('reader chat uses a valid selection, then a valid visible paragraph, and re
 
 function mount(options={}){
   const events=new EventTarget();globalThis.document=events;
-  let hooks,updates=0,resets=0;const navigations=[],replacements=[];
-  const instance=mountReaderConversation({renderMarkdown:renderChatMarkdown,bookId:'book-one',session:{user:{id:'reader-one'}},getReader:()=>reader(),root:{},mountChat:value=>{hooks=value;return {update(){updates++;},reset(){resets++;}};},navigate:url=>navigations.push(url),replace:url=>replacements.push(url),...options});
-  return {instance,hooks,events,navigations,replacements,counts:()=>({updates,resets})};
+  let hooks,updates=0,resets=0,closes=0;const navigations=[],replacements=[];
+  const instance=mountReaderConversation({renderMarkdown:renderChatMarkdown,bookId:'book-one',session:{user:{id:'reader-one'}},getReader:()=>reader(),root:{},mountChat:value=>{hooks=value;return {update(){updates++;},reset(){resets++;},close(){closes++;}};},navigate:url=>navigations.push(url),replace:url=>replacements.push(url),...options});
+  return {instance,hooks,events,navigations,replacements,counts:()=>({updates,resets,closes})};
 }
 
 test('reader adapter preserves the real current book and login return paragraph',()=>{
@@ -54,7 +54,7 @@ test('reader adapter preserves the real current book and login return paragraph'
 
 test('source navigation stays within the same book and a real passage',()=>{
   const visits=[],current={...reader(),dismissTools(){visits.push('dismiss');},goToPassage:id=>visits.push(id)},f=mount({getReader:()=>current});
-  assert.equal(f.hooks.onNavigateToPassage('book-one','p1'),true);assert.deepEqual(visits,['dismiss','p1']);
+  assert.equal(f.hooks.onNavigateToPassage('book-one','p1'),true);assert.deepEqual(visits,['dismiss','p1']);assert.equal(f.counts().closes,1);
   assert.equal(f.hooks.onNavigateToPassage('other','p1'),false);assert.equal(f.hooks.onNavigateToPassage('book-one','unknown'),false);assert.equal(visits.length,2);
 });
 test('source return focuses its destination only after successful navigation and fences late completion',async()=>{
@@ -64,7 +64,7 @@ test('source return focuses its destination only after successful navigation and
  f.hooks.onNavigateToPassage('book-one','p1');complete(false);await Promise.resolve();assert.equal(focused,1,'failed chapter load does not claim focus on a destination');
  f.hooks.onNavigateToPassage('book-one','p1');f.instance.dispose();complete(true);await Promise.resolve();assert.equal(focused,1,'disposed view cannot steal focus');
 });
-test('a delayed source return preserves a newer typing focus in the open desktop conversation',async()=>{
+test('a delayed source return preserves a newer focus after closing the margin note',async()=>{
  let complete,focused=0;const current={...reader(),dismissTools(){},goToPassage:()=>new Promise(resolve=>{complete=resolve;})};
  const f=mount({getReader:()=>current});f.events.getElementById=()=>({focus:()=>focused++});f.events.activeElement={kind:'source-link'};
  f.hooks.onNavigateToPassage('book-one','p1');f.events.activeElement={kind:'chat-input'};complete(true);await Promise.resolve();
@@ -166,9 +166,9 @@ test('injected conversation creates one reading-chat trigger in the tools surfac
   assert.equal(all(f.doc.body).filter(n=>n.className==='squirrel-companion-toggle').length,1,'exactly one companion toggle mounts');
   const trigger=all(triggerHost).find(n=>n.tagName==='BUTTON');
   assert.ok(trigger,'the AI trigger lives in the tools surface');
-  assert.match(trigger.getAttribute('aria-label')||trigger.textContent||'',/对话|Reading chat/);
-  await requestUiRoute('en');assert.equal(trigger.textContent,'Reading chat');
-  await requestUiRoute('zh-Hans');assert.equal(trigger.textContent,'阅读对话');
+  assert.match(trigger.getAttribute('aria-label')||trigger.textContent||'',/旁注|Margin notes/);
+  await requestUiRoute('en');assert.equal(trigger.textContent,'Margin notes');
+  await requestUiRoute('zh-Hans');assert.equal(trigger.textContent,'旁注');
   trigger.click();await flush();
   assert.equal(f.dialog.open,true,'the injected trigger opens the conversation');
   assert.equal(calls.opened,1,'opening chat performs the focus handoff to close tools');

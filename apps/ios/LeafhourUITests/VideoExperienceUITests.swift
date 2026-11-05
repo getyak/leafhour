@@ -2993,7 +2993,7 @@ extension VideoExperienceUITests {
     }
 
     func test111GlobalChatKeepsDraftAcrossTabsAndColdLaunch() {
-        launch(); app.tabBars.buttons["松鼠"].tap()
+        launch(); app.buttons["library-companion"].tap()
         require(app.descendants(matching: .any)["chat-companion-greeting"])
         XCTAssertFalse(app.buttons["chat-choose-book"].exists)
         XCTAssertFalse(app.buttons["chat-source-context"].exists)
@@ -3002,15 +3002,15 @@ extension VideoExperienceUITests {
         app.scrollViews["reader-conversation-history"].swipeDown()
         XCTAssertTrue(app.keyboards.firstMatch.waitForNonExistence(timeout: 5))
         capture("GET357-global-chat-draft")
-        app.tabBars.buttons["我的阅读"].tap(); app.tabBars.buttons["松鼠"].tap()
+        app.buttons["companion-dismiss"].tap(); app.tabBars.buttons["我的阅读"].tap(); app.tabBars.buttons["书房"].tap(); app.buttons["library-companion"].tap()
         XCTAssertEqual(question.value as? String, "Keep my unfinished thought")
         coldRelaunch()
         let restored = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in
-            self.reader.exists || self.app.otherElements["leafhour-pdf-reader"].exists || self.app.tabBars.buttons["松鼠"].isHittable
+            self.reader.exists || self.app.otherElements["leafhour-pdf-reader"].exists || self.app.buttons["library-companion"].isHittable
         }, object: nil)
         XCTAssertEqual(XCTWaiter.wait(for: [restored], timeout: 25), .completed)
         if reader.exists || app.otherElements["leafhour-pdf-reader"].exists { shelf() }
-        app.tabBars.buttons["松鼠"].tap(); require(question)
+        app.buttons["library-companion"].tap(); require(question)
         XCTAssertEqual(question.value as? String, "Keep my unfinished thought")
         capture("GET357-global-chat-restored")
     }

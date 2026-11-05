@@ -179,11 +179,11 @@
 #library-books:not([data-sort=manual]) .book-drag-handle{display:none}
 .library-page:has(#library-chat[open]) .library-chat-launcher{visibility:hidden}
 .library-page #library-chat .library-chat-messages{min-height:100px}
-.library-page #library-chat .library-chat-menu-items{max-height:calc(var(--chat-viewport-height,100dvh) - 110px);overflow:auto;overscroll-behavior:contain}
+.library-page #library-chat .library-chat-menu-items{max-height:calc(var(--margin-note-height,50dvh) - 80px);overflow:auto;overscroll-behavior:contain}
 .library-page #library-chat .preference-onboarding{max-height:none;overflow:visible;margin:0;padding:8px 10px}
 .library-page #library-chat .library-chat-count:empty{display:none}
 @media(min-width:1100px){.library-page.has-reader-chat #library-view{padding-inline:32px}.library-page.has-reader-chat .shelf-toolbar{flex-wrap:wrap}.library-page.has-reader-chat .shelf-tools{flex-wrap:wrap}}
-@media(max-width:1099px){.library-page dialog.reader-chat-workspace.is-reader-chat-mobile{inset:var(--chat-viewport-top,0px) 0 auto;width:100vw;height:var(--chat-viewport-height,100dvh);border-radius:0;border:0}.library-page #library-chat .library-chat-frame{height:100%;overflow:hidden}.library-page #library-chat .library-chat-messages{min-height:80px;overflow:auto;flex:1}.library-page #library-chat.is-compact-viewport .library-chat-frame{overflow:auto}.library-page #library-chat.is-compact-viewport .library-chat-messages{max-height:none;overflow:visible}.shelf-sort{max-width:155px}}
+@media(max-width:1099px){.library-page #library-chat .library-chat-frame{height:100%;overflow:hidden}.library-page #library-chat .library-chat-messages{min-height:80px;overflow:auto;flex:1}.library-page #library-chat.is-compact-viewport .library-chat-frame{overflow:auto}.library-page #library-chat.is-compact-viewport .library-chat-messages{max-height:none;overflow:visible}.shelf-sort{max-width:155px}}
 @media(max-width:600px){.shelf-tools{flex-wrap:wrap}.shelf-sort{flex:1;max-width:calc(100% - 74px);text-align:left}.book-import-card{padding:16px;gap:16px}}
 .book-import-card [hidden]{display:none!important}
 .library-page #library-chat :is(.library-chat-markdown,.library-chat-stream-text){font:400 16px/1.85 var(--font-sans)}
