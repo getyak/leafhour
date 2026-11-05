@@ -17,16 +17,16 @@ export function createCoverGenerator(env=process.env,{fetchImpl=fetch}={}){
  const key=env.ARK_API_KEY?.trim();if(!key)return null;
  const base=(env.ARK_BASE_URL||'https://ark.cn-beijing.volces.com/api/v3').replace(/\/$/,''),model=env.ARK_COVER_MODEL||DEFAULT_COVER_MODEL;
  return async book=>{
-  const prompt=coverPrompt(book);
+  const prompt=coverPrompt(book);let rejected=false;
   try{
    const response=await fetchImpl(base+'/images/generations',{method:'POST',headers:{Authorization:'Bearer '+key,'Content-Type':'application/json'},body:JSON.stringify({model,prompt,size:'2K',response_format:'b64_json',output_format:'png',stream:false,watermark:false}),signal:AbortSignal.timeout(90000)});
-   if(!response.ok){await response.body?.cancel();throw Error('provider');}
+   if(!response.ok){rejected=[400,401,403,404,413,422,429].includes(response.status);await response.body?.cancel();throw Error('provider');}
    const data=await boundedJson(response),encoded=data.data?.[0]?.b64_json;
    // Never follow provider-returned URLs or expose their access-bearing query.
    if(typeof encoded!=='string'||!encoded.length||encoded.length>16*1024*1024||!/^[A-Za-z0-9+/]*={0,2}$/.test(encoded))throw Error('image');
    const artwork=await normalizeCoverRaster(Buffer.from(encoded,'base64'));
    const {typesetGeneratedCover}=await import('./generated-cover-type.mjs');
    return {bytes:await typesetGeneratedCover(artwork,book),model,prompt};
-  }catch{throw fail('封面暂时未能生成，原文可以继续阅读',502);}
+  }catch{const error=fail('封面暂时未能生成，原文可以继续阅读',502);error.coverGenerationStatus=rejected?'rejected':'uncertain';throw error;}
  };
 }
