@@ -6,8 +6,16 @@ import LeafhourCore
 @main
 struct LeafhourApp: App {
     @State private var model = VideoAcceptanceFixture.makeModelIfRequested() ?? LibraryModel()
+    @Environment(\.scenePhase) private var scenePhase
     var body: some Scene {
-        WindowGroup { LeafhourRootScreen(model: model).tint(.leafInk) }
+        WindowGroup {
+            LeafhourRootScreen(model: model).tint(.leafInk)
+                .onChange(of: scenePhase, initial: true) { _, phase in
+                    model.setSessionActivityForeground(phase == .active)
+                }
+                .simultaneousGesture(TapGesture().onEnded { model.recordSessionActivity() })
+                .simultaneousGesture(DragGesture(minimumDistance: 12).onEnded { _ in model.recordSessionActivity() })
+        }
     }
 }
 
@@ -105,6 +113,7 @@ final class LibraryModel {
     var linkedIdentities: [CloudLinkedIdentity] = []
     var nativeAuthMessage: String?
     let cloud: CloudLibraryClient
+    @ObservationIgnored private let foregroundSessionActivity: ForegroundSessionActivity
     private(set) var library: OfflineLibrary?
     private var sync: CloudBookSync?
     private var root: URL?
@@ -132,7 +141,9 @@ final class LibraryModel {
     init(root: URL? = nil, cloud: CloudLibraryClient? = nil, credential: CloudCredential? = nil, monitorNetwork: Bool = true) {
         persistCredential = cloud == nil
         let saved = credential ?? (cloud == nil ? AccountCredentialStore.read() : nil)
-        self.cloud = cloud ?? CloudLibraryClient(credential: saved)
+        let client = cloud ?? CloudLibraryClient(credential: saved)
+        self.cloud = client
+        foregroundSessionActivity = ForegroundSessionActivity(client: client)
         self.account = saved?.account
         do {
             let base = try root ?? FileManager.default.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: true).appendingPathComponent("Leafhour", isDirectory: true)
@@ -148,6 +159,21 @@ final class LibraryModel {
         monitor.start(queue: DispatchQueue.global(qos: .utility)); networkMonitor = monitor
     }
     deinit { networkMonitor?.cancel() }
+    func setSessionActivityForeground(_ active: Bool) {
+        foregroundSessionActivity.setForeground(active)
+        if active { recordSessionActivity() }
+    }
+    /// Network recovery and background synchronization deliberately never call this.
+    func recordSessionActivity() {
+        guard foregroundSessionActivity.isForeground, let owner = account?.id else { return }
+        let marker = contextID
+        Task { @MainActor [weak self] in
+            guard let self, marker == self.contextID, owner == self.account?.id else { return }
+            // This receipt changes no offline data or sync-success state. A failed
+            // attempt remains subject to the client's cooldown until real activity.
+            _ = try? await self.foregroundSessionActivity.record(ownerID: owner)
+        }
+    }
     private func resetBookActivity() {
         shelfSyncTask?.cancel(); shelfSyncTask = nil; shelfSyncContext = nil; syncRequested = false
         resolveDuplicate(nil)
@@ -248,7 +274,9 @@ final class LibraryModel {
         contextID = UUID(); resetBookActivity(); account = user; books = []; cloudBooks = []; accountShelf = nil; accountActions = []; localActivity = [:]; syncIssues = [:]; notebookEntries = []; notebookCursor = nil; notebookState = .idle; notebookIncomplete = false; syncing = false
         resetReadingSummary()
         linkedIdentities = []
-        try configureLibrary(); await reload(); await synchronize()
+        try configureLibrary()
+        recordSessionActivity()
+        await reload(); await synchronize()
     }
     func loadAuthenticationOptions() async {
         let marker = contextID, owner = account?.id

@@ -33,6 +33,15 @@ function fixture(options={}){
 }
 async function ready(f,flow){const ticket=new URL(flow.start.url).searchParams.get('ticket');const launch=await f.auth.launchNativeOAuth(ticket);const finished=await f.auth.finishNativeOAuth(launch.transactionId,{code:'provider-auth-code'});const callback=new URL(finished.redirectURL);return {launch,callback,code:callback.searchParams.get('code')};}
 
+test('native OAuth sign-in keeps its own ninety-day idle window',async()=>{
+ const f=fixture(),flow=await f.start(),{code}=await ready(f,flow);
+ const session=await f.auth.exchangeNativeOAuth(null,{code,state:flow.state,codeVerifier:flow.verifier});
+ f.tick(89*86400000);assert.equal((await f.auth.userFor(session.token))?.id,'user-a');
+ await f.auth.touchSession(session.token,{client:'ios',expectedOwner:'user-a'});
+ f.tick(89*86400000);assert.equal((await f.auth.userFor(session.token))?.id,'user-a');
+ f.tick(86400000);assert.equal(await f.auth.userFor(session.token),null);
+});
+
 test('native sign-in launches a first-party ticket and exchanges one verifier-bound handoff',async()=>{
  const f=fixture();assert.equal(typeof f.auth.beginNativeOAuth,'function');
  const flow=await f.start(),url=new URL(flow.start.url);
