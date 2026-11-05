@@ -80,7 +80,7 @@ function validateShelfBackup(entry){
 // sample translations remain defaults, so a clean import can replace them.
 const restoreTranslationValue=(value,current,base,preserveExisting)=>preserveExisting?{contentVersion:value.contentVersion,translations:{...value.translations,...base?.translations,...(current?.contentVersion===value.contentVersion?current.translations:{})},translationsByLanguage:mergeLanguageMaps(value.translationsByLanguage,base?.translationsByLanguage,current?.contentVersion===value.contentVersion?current.translationsByLanguage:null)}:value;
 
-export async function createLibraryService({dataDir,catalogDir=path.resolve('catalog'),translator=null,dataStore=null,coverGenerator=null}={}){
+export async function createLibraryService({dataDir,catalogDir=path.resolve('catalog'),translator=null,dataStore=null,coverGenerator=null,schedule=null}={}){
   if(!dataStore)await mkdir(dataDir,{recursive:true,mode:0o700});
   const introductions=createBookIntroductionStore({dataDir:path.join(dataDir,'book-introductions'),dataStore});
   const publicBooks=new Map(),queues=new Map(),translationsRunning=new Set();
@@ -309,8 +309,10 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
     try{
       const claim=await mutate(file,{},state=>{
         if(state.data)return {data:state.data};
-        if(state.retryAfter>Date.now()||state.leaseUntil>Date.now())return {};
-        state.leaseUntil=Date.now()+leaseMs;state.token=token;return {mine:true};
+        // A lease expiring does not prove the provider did not charge. Only
+        // an explicit rejection can release a dispatched request for retry.
+        if(state.requestedAt||state.token||state.retryAfter>Date.now()||state.leaseUntil>Date.now())return {};
+        state.leaseUntil=Date.now()+leaseMs;state.token=token;state.requestedAt=new Date().toISOString();return {mine:true};
       });
       if(claim.data)return coverResult(Buffer.from(claim.data,'base64'));
       if(!claim.mine)throw fail('封面正在准备，请稍后再看',503);
@@ -319,8 +321,8 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
         if(!Buffer.isBuffer(generated?.bytes)||!generated.bytes.length||generated.bytes.length>1024*1024)throw Error('Invalid cover');
         await mutate(file,{},state=>{if(state.token!==token)throw fail('封面任务已变化，请稍后再看',503);Object.assign(state,{data:generated.bytes.toString('base64'),kind:'ai-generated',model:generated.model,prompt:generated.prompt,createdAt:new Date().toISOString(),leaseUntil:0,retryAfter:0});delete state.token;});
         return coverResult(generated.bytes);
-      }catch{
-        await mutate(file,{},state=>{if(state.token===token){state.leaseUntil=0;state.retryAfter=Date.now()+15*60*1000;delete state.token;}});
+      }catch(error){
+        await mutate(file,{},state=>{if(state.token===token){state.leaseUntil=0;state.retryAfter=Date.now()+15*60*1000;state.failure=error.coverGenerationStatus==='rejected'?'rejected':'uncertain';if(state.failure==='rejected')delete state.requestedAt;delete state.token;}});
         throw fail('封面暂时未能生成，原文可以继续阅读',502);
       }
     }finally{if(localLock)await unlink(file+'.lease').catch(()=>{});}
@@ -383,7 +385,13 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
     await chapterReads.manifest(user,id);
     await mutate(path.join(userDir(user),'index.json'),{books:[]},data=>{if(!data.books.some(b=>b.bookId===id))data.books.push(brief(book));});
     if(existing)await mutate(shelfFile(user),emptyShelf(),shelf=>{if(Object.hasOwn(shelf.archived,id)){if(shelf.revision>=Number.MAX_SAFE_INTEGER)throw fail('书架版本已超过可保存范围',409);delete shelf.archived[id];shelf.revision++;}});
-    return getBook(user,id);
+    const result=await getBook(user,id);
+    if(!existing&&coverGenerator&&schedule&&['txt','md','markdown'].includes(book.source?.format)){
+      // Register with the host's waitUntil before returning the upload receipt.
+      // A visible card joins this same job; text never waits for image generation.
+      const work=getCover(user,id).catch(()=>null);try{schedule(work);}catch{}
+    }
+    return result;
   }
   async function sourceEvidence(user,id,input){
     requireUser(user);const book=await getBook(user,id),passage=allPassages(book).find(p=>p.id===input?.passageId);if(!passage)throw fail('找不到来源段落',404);const original=await getOriginal(user,id);

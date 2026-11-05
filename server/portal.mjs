@@ -92,7 +92,7 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
   const billing=billingService||await createBillingRuntime({env,dataDir:path.join(dataDir,'billing'),publicOrigin:publicOrigin||'http://localhost:3000'});
   const sponsored=(user,feature,execute,maxCostUsd=.015)=>billing.enabled?withProviderMeter({ownerId:user?.id,feature,funding:'sponsored',maxCostUsd,record:facts=>billing.recordProviderCall(facts)},execute):execute();
   const auth=authService||await createEmailAuth({dataDir:path.join(dataDir,'auth'),sendCode:sendCode===undefined?await smtpSender():sendCode});
-  const library=await createLibraryService({dataDir:path.join(dataDir,'library'),catalogDir,translator:translator===undefined?createTranslator(env):translator,dataStore,coverGenerator:createCoverGenerator(env)});
+  const library=await createLibraryService({dataDir:path.join(dataDir,'library'),catalogDir,translator:translator===undefined?createTranslator(env):translator,dataStore,coverGenerator:createCoverGenerator(env),schedule});
   const personSeeds=catalogDir===null?[]:await loadPeopleSeeds();
   const publicBookIds=(await library.list(null)).map(book=>book.bookId);
   const people=createPeopleService({dataDir:path.join(dataDir,'library'),dataStore,seeds:personSeeds,publicBookIds});
