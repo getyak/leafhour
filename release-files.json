@@ -457,6 +457,8 @@
   "app/reader-companion.css",
   "app/reader-companion.mjs",
   "app/reader-conversation.mjs",
+  "app/reader-reading-guide.mjs",
+  "app/reader-reading-guide.css",
   "app/reader-entry.mjs",
   "app/reader-highlights.mjs",
   "app/reader-immersion.mjs",

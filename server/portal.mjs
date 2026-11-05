@@ -190,7 +190,7 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
     // source-emphasis presentation module used by reader and share rendering.
     files['/reader-entry.mjs']='reader-entry.mjs';files['/source-emphasis.mjs']='source-emphasis.mjs';
     files['/reader-conversation.mjs']='reader-conversation.mjs';files['/chat-stream.mjs']='chat-stream.mjs';
-    for(const file of ['reader-companion.mjs','reader-companion-state.mjs','reader-companion.css'])files['/'+file]=file;
+    for(const file of ['reader-companion.mjs','reader-companion-state.mjs','reader-companion.css','reader-reading-guide.mjs','reader-reading-guide.css'])files['/'+file]=file;
     files['/reading-arrival.css']='reading-arrival.css';files['/reading-arrival.mjs']='reading-arrival.mjs';files['/arrival-catalog.mjs']='arrival-catalog.mjs';files['/arrival-excerpt.mjs']='arrival-excerpt.mjs';files['/save-receipts.mjs']='save-receipts.mjs';
     files['/home-motion.css']='home-motion.css';files['/home-motion.mjs']='home-motion.mjs';files['/home-scroll-story.mjs']='home-scroll-story.mjs';
     files['/home-sample.css']='home-sample.css';files['/home-sample.mjs']='home-sample.mjs';
@@ -583,8 +583,12 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
       if(req.method!=='POST')throw fail('不支持这个请求',405);
       if(!user?.id||user.is_anonymous)throw fail('请先登录以准备阅读前导',401);
       res.setHeader('Cache-Control','private, no-store');
-      const controller=new AbortController(),cancel=()=>{if(!res.writableEnded)controller.abort();};res.once('close',cancel);
-      try{send(200,await sponsored(user,'reading-guide',()=>readingGuides.ensure(user,body,{signal:controller.signal,authorize:async()=>(await auth.userFor(token))?.id===user?.id})));}finally{res.removeListener('close',cancel);}
+      const {action='ensure',...target}=body||{};
+      if(!['view','ensure','retry'].includes(action))throw fail('阅读前导操作不正确');
+      // Reading a cached/in-flight attempt never starts a model or billing meter.
+      // Disconnecting a view does not cancel an already accepted book preparation.
+      if(action==='view')send(200,await readingGuides.view(user,target));
+      else send(200,await sponsored(user,'reading-guide',()=>readingGuides.ensure(user,target,{retry:action==='retry',authorize:async()=>(await auth.userFor(token))?.id===user?.id})));
       return true;
     }
     const match=p.match(/^\/api\/library\/books\/([^/]+)(?:\/(.+))?$/);

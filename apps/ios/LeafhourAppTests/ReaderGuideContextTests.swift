@@ -72,6 +72,44 @@ final class ReaderGuideContextTests: XCTestCase {
         XCTAssertEqual(pendingCold.question, "My unsent transcript"); XCTAssertEqual(pendingCold.pendingVoice, voice)
     }
 
+    func testGuidePreparationReadsDurableStateAndColdReopenReusesAccountCache() async throws {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        try FileManager.default.createDirectory(at: root, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let source = root.appendingPathComponent("guide.txt"); try Data("A bounded opening.".utf8).write(to: source)
+        let library = try OfflineLibrary(root: root, scope: .account(try XCTUnwrap(UUID(uuidString: owner))))
+        var book = try await library.importFile(source)
+        book.cloud = CloudBookIdentity(ownerID: owner, bookID: "guide-book", contentVersion: "v1", sourceFormat: "txt")
+        let session = ReaderSession(book: book, state: ReaderState(), original: source, directory: try await library.bookDirectory(book.id), library: library)
+        let configuration = URLSessionConfiguration.ephemeral; configuration.protocolClasses = [GuideContextURLProtocol.self]
+        let cloud = CloudLibraryClient(baseURL: URL(string: "https://guide-context.test")!, credential: CloudCredential(account: CloudAccount(id: owner, email: nil), token: "isolated-token"), configuration: configuration)
+        let saved: [String: Any] = ["kind": "leafhour-reading-guide", "schemaVersion": 1, "id": "guide-lifecycle", "bookId": "guide-book", "contentVersion": "v1", "sourceKind": "cloud", "locale": "zh-Hans", "origin": "ai", "status": "draft", "scope": "opening-sample", "opening": "A source-bound welcome.", "method": "A reading invitation.", "readingQuestion": "What catches your attention?", "sampleRanges": [["passageId": book.chapters[0].passages[0].id, "chapterId": book.chapters[0].id, "charOffset": 0, "charEnd": 8]], "model": "fixture", "createdAt": "2026-11-06T00:00:00Z"]
+        var actions: [String] = []
+        GuideContextURLProtocol.respond = { _, body in
+            let action = body["action"] as? String ?? ""; actions.append(action)
+            if action == "view" { return ["state": "missing", "guide": NSNull(), "available": true] }
+            return ["state": "ready", "guide": saved, "available": true]
+        }
+        let first = ReadingGuideController(); await first.prepare(session: session, library: library, cloud: cloud)
+        XCTAssertEqual(actions, ["view", "ensure"]); XCTAssertEqual(first.guide?.id, "guide-lifecycle")
+        let record = try await library.readingGuideRecord(bookID: book.id, ownerID: owner, contentVersion: "v1", locale: "zh-Hans")
+        XCTAssertEqual(record?.attempted, true)
+        GuideContextURLProtocol.respond = { _, _ in XCTFail("A cached offline reopen must not submit again"); throw URLError(.notConnectedToInternet) }
+        let cold = ReadingGuideController(); await cold.prepare(session: session, library: library, cloud: cloud)
+        XCTAssertEqual(cold.guide?.id, first.guide?.id); XCTAssertFalse(cold.loading)
+        XCTAssertEqual(session.chapterIndex, 0)
+        // A changed version reads state; an unknown provider outcome stays read-only.
+        book.cloud = CloudBookIdentity(ownerID: owner, bookID: "guide-book", contentVersion: "v2", sourceFormat: "txt")
+        let revised = ReaderSession(book: book, state: ReaderState(), original: source, directory: try await library.bookDirectory(book.id), library: library)
+        actions = []
+        GuideContextURLProtocol.respond = { _, body in actions.append(body["action"] as? String ?? ""); return ["state": "unknown", "guide": NSNull(), "available": true] }
+        await cold.prepare(session: revised, library: library, cloud: cloud); XCTAssertNil(cold.guide); XCTAssertEqual(cold.state, "unknown")
+        await cold.retry(); XCTAssertEqual(actions, ["view", "view"])
+        let other = CloudLibraryClient(baseURL: URL(string: "https://guide-context.test")!, credential: CloudCredential(account: CloudAccount(id: "00000000-0000-4000-8000-000000000999", email: nil), token: "other-isolated-token"), configuration: configuration)
+        await cold.prepare(session: revised, library: library, cloud: other)
+        XCTAssertNil(cold.guide); XCTAssertEqual(actions, ["view", "view"])
+    }
+
     func testPreloadedConversationDoesNotInvokeAutomaticLoadAgain() async throws {
         let tools = ReaderCloudTools(), loaded = expectation(description: "normal opening invokes load")
         let normal = ChatConversationView(tools: tools, cloud: nil, bookTitle: "Fixture", source: "", load: { loaded.fulfill() }, send: {})

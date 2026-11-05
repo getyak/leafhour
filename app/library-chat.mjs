@@ -138,7 +138,8 @@ export function mountLibraryChat({root,api,getSession,getBooks,getOwner,openAuth
   function emptyState(headingId,bodyId){const empty=node('section','library-chat-empty');empty.append(node('span','library-chat-empty-rule'),ui('h3','',headingId));if(bodyId)empty.append(ui('p','',bodyId));return empty;}
   const turnNodes=new Map(),latestTurns=new WeakMap();
   const paintFor=(row,fn)=>{let paints=rowPaints.get(row);if(!paints)rowPaints.set(row,paints=[]);paints.push(fn);fn();};
-  function showEmpty(element){turnNodes.clear();rowPaints.clear();messages.replaceChildren(element);}
+  let leadingContent=null,preferLeading=false;
+  function showEmpty(element){turnNodes.clear();rowPaints.clear();messages.replaceChildren(...(leadingContent?[leadingContent]:[]),element);}
   const renderActivity=(parent,turn,completed,ownerRow=parent)=>decorations.renderActivity({parent,turn,completed,ownerRow,node,ui,t,paintFor,createUiMessage});
   function pendingText(turn,view){
     if(turn.status==='failed'){const kind=({not_submitted:'notSubmitted',request_rejected:'rejected',generation_failed:'generation',pricing_unavailable:'pricing',save_failed:'save',result_invalid:'validation',context_changed:'context'})[turn.failureCode];return t(kind?'chat.failure.'+kind:turn.failureCode==='interrupted'?'cs.noAnswerContinue':'cs.noAnswer');}
@@ -184,7 +185,7 @@ export function mountLibraryChat({root,api,getSession,getBooks,getOwner,openAuth
       }
       empty.append(suggestions);showEmpty(empty);return;
     }
-    const desired=[],nextNodes=new Map();let completedAnswer=null;
+    const desired=leadingContent?[leadingContent]:[],nextNodes=new Map();let completedAnswer=null;
     for(const turn of displayTurns){
       const key=JSON.stringify([owner,selectedBook,turn.id]),rowSignature=JSON.stringify([turn,turn.status==='running'?view.pending?.status:null,turn.status==='running'&&view.retry?.payload.id===turn.id?view.retry:null]);
       const cached=turnNodes.get(key);if(cached?.signature===rowSignature){const retry=[...cached.node.children].find(n=>n.className.split(' ').includes('library-chat-retry'));if(retry)retry.disabled=!!view.pending||!!view.retry?.uncertain;desired.push(cached.node);nextNodes.set(key,cached);continue;}
@@ -211,10 +212,11 @@ export function mountLibraryChat({root,api,getSession,getBooks,getOwner,openAuth
     if(nearBottom&&completedAnswer&&root.open){
       // Align inside the log; scrollIntoView would also move the reader page.
       messages.scrollTop+=completedAnswer.getBoundingClientRect().top-messages.getBoundingClientRect().top-messages.clientTop;
-    }else messages.scrollTop=nearBottom?messages.scrollHeight:scrollTop;
+    }else messages.scrollTop=leadingContent&&preferLeading?0:nearBottom?messages.scrollHeight:scrollTop;
     updateLatest();
   }
   function updateLatest(){latestButton.hidden=!root.open||messages.scrollHeight-messages.scrollTop-messages.clientHeight<90;}
+  for(const event of ['wheel','touchmove','keydown'])listen(messages,event,()=>{preferLeading=false;});
   listen(messages,'scroll',updateLatest);listen(latestButton,'click',()=>{messages.scrollTop=messages.scrollHeight;updateLatest();});
   listen(scopeIndicator,'click',()=>{menu.open=true;settings.open=true;scopeChoice.focus();});
   if(uploadAttach)listen(uploadAttach,'click',()=>{menu.open=false;});
@@ -276,7 +278,7 @@ export function mountLibraryChat({root,api,getSession,getBooks,getOwner,openAuth
   }
   let sending=null;
   async function send(){
-    if(disposed||syncOwner()||!confirmedScope(state.view())){render();return;}const request=state.beginSend({preferenceWrites:preferenceCheckbox.checked,peopleWrites:peopleCheckbox.checked});if(!request)return;preferenceCheckbox.checked=false;peopleCheckbox.checked=false;root.dispatchEvent(new Event('reading-chat-send'));clearPoll();pollCount=0;pollStarted=Date.now();const captured=owner,bookId=selectedBook;render();messages.scrollTop=messages.scrollHeight;void load({poll:true});
+    if(disposed||syncOwner()||!confirmedScope(state.view())){render();return;}const request=state.beginSend({preferenceWrites:preferenceCheckbox.checked,peopleWrites:peopleCheckbox.checked});if(!request)return;preferenceCheckbox.checked=false;peopleCheckbox.checked=false;preferLeading=false;root.dispatchEvent(new Event('reading-chat-send'));clearPoll();pollCount=0;pollStarted=Date.now();const captured=owner,bookId=selectedBook;render();messages.scrollTop=messages.scrollHeight;void load({poll:true});
     const entry={id:request.payload.id,payload:request.payload,controller:new AbortController(),dispatched:getSession()?.billing?.enabled!==true};sending=entry;
     try{const turn=await api(chatEndpoint(bookId),request.payload,{signal:entry.controller.signal,onDispatch:()=>{entry.dispatched=true;},onProgress:value=>{if(isCurrent(captured)&&state.resolveProgress(request.ticket,value))render();}});if(isCurrent(captured)&&state.resolveSend(request.ticket,turn)){render();schedulePoll();if(turn.status!=='running')root.dispatchEvent(new Event('reading-preferences-changed'));}}
     catch(error){if(!isCurrent(captured))return;const uncertain=chatFailureUncertain(error);if(state.rejectSend(request.ticket,error,{uncertain})){render();if(uncertain||error.status===412)await load();}}
@@ -379,7 +381,7 @@ export function mountLibraryChat({root,api,getSession,getBooks,getOwner,openAuth
       focusComposer=false;followedQuote={owner,bookId:selectedBook,quote,signature};render();return true;
     },
     upload:addUpload,
-    surface:()=>({launcher,trigger,header,root,onboardingHost,preferenceHost:menuItems,companionPreferenceHost:companionHost,motion:null,position:characterPosition}),
+    surface:()=>({launcher,trigger,header,root,onboardingHost,setLeadingContent:content=>{leadingContent=content;preferLeading=!!content;historySignature=null;render();},focusLeadingContent:()=>{preferLeading=!!leadingContent;messages.scrollTop=0;},preferenceHost:menuItems,companionPreferenceHost:companionHost,motion:null,position:characterPosition}),
     refresh:()=>root.open?load():Promise.resolve(),
     close,
     reset(){if(disposed)return;forgetFollowedQuote();clearPoll();loadInFlight=null;pollCount=0;pollStarted=0;owner=null;selectedBook=null;requestedPassage=null;historySignature='';state.reset();input.value='';context.open=false;render();},

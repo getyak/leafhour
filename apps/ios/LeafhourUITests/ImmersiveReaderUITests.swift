@@ -39,17 +39,28 @@ final class ImmersiveReaderUITests: XCTestCase {
     }
     func testReadingGuideShowsThreeDirectFollowUpsAndKeepsThemAfterAnAnswer() {
         open(title: "GET317 合成验收 · 双译")
-        let guide = app.buttons["reader-reading-guide-open"]; require(guide); guide.tap()
-        require(app.navigationBars["阅读前导"])
+        XCTAssertFalse(app.buttons["reader-reading-guide-open"].exists)
+        wake()
+        let companion = app.buttons["reader-ai"]; require(companion); companion.tap()
+        require(app.navigationBars["旁注"])
+        require(app.otherElements["reader-reading-guide-content"])
+        XCTAssertTrue(app.staticTexts["阅读前导"].isHittable)
+        capture("reading-guide-in-companion")
         let choices = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH %@", "chat-follow-up-"))
         let ready = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in choices.count == 3 }, object: nil)
         XCTAssertEqual(XCTWaiter.wait(for: [ready], timeout: 15), .completed)
-        if !choices.element(boundBy: 2).isHittable { app.scrollViews.firstMatch.swipeUp() }
+        let history = app.scrollViews["reader-conversation-history"]
+        for _ in 0..<10 {
+            let frame = choices.element(boundBy: 0).frame
+            if frame.minY >= history.frame.minY && frame.maxY <= history.frame.maxY { break }
+            history.swipeUp()
+        }
+        XCTAssertTrue(history.frame.contains(choices.element(boundBy: 0).frame))
         capture("reading-guide-three-choices")
         choices.element(boundBy: 0).tap(); require(app.navigationBars["旁注"])
-        let answered = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in choices.count == 3 }, object: nil)
-        XCTAssertEqual(XCTWaiter.wait(for: [answered], timeout: 15), .completed)
-        let history = app.scrollViews["reader-conversation-history"]
+        let answer = app.descendants(matching: .any).matching(NSPredicate(format: "identifier BEGINSWITH %@", "chat-assistant-message-")).firstMatch
+        require(answer)
+        XCTAssertGreaterThanOrEqual(choices.count, 3)
         for _ in 0..<6 { if choices.element(boundBy: 2).isHittable { break }; history.swipeUp() }
         XCTAssertTrue(choices.element(boundBy: 2).isHittable)
         capture("answer-three-followups")

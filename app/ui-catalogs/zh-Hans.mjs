@@ -1,6 +1,16 @@
 // GET-192 immutable zh-Hans UI catalogue. Fixed public stateless ID→string
 // data with the same keys as app/ui-catalogs/en.mjs. No logic lives here.
 export default Object.freeze({
+"guide.title":"阅读前导",
+"guide.attribution":"AI · 开篇取样草稿",
+"guide.boundary":"依据书目信息与开篇取样；背景不足处保留未知。",
+"guide.preparing":"前导正在准备，你可以继续阅读。",
+"guide.failed":"前导暂未准备好，可以重试。",
+"guide.missing":"前导尚未准备好，原书仍可继续阅读。",
+"guide.unknown":"前导结果待确认，没有重新生成。可以稍后查看已有结果。",
+"guide.retry":"重试准备前导",
+"guide.check":"查看已有结果",
+
   "reader.settings.text": "文字",
   "reader.settings.details": "更多排版",
   "chat.back": "返回",

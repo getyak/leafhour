@@ -1,6 +1,16 @@
 // GET-192 immutable ja UI catalogue. Fixed public stateless ID→string
 // data with the same keys as app/ui-catalogs/en.mjs. No logic lives here.
 export default Object.freeze({
+"guide.title":"読書の手引き",
+"guide.attribution":"AI · 冒頭の抜粋に基づく下書き",
+"guide.boundary":"書誌情報と冒頭の抜粋に基づきます。不明な背景は補いません。",
+"guide.preparing":"手引きを準備中です。読書を続けられます。",
+"guide.failed":"まだ準備できていません。再試行できます。",
+"guide.missing":"手引きは未準備です。読書を続けられます。",
+"guide.unknown":"結果を確認できません。再生成せず、保存済みの結果を後で確認できます。",
+"guide.retry":"準備を再試行",
+"guide.check":"保存済みの結果を確認",
+
   "reader.settings.text": "文字",
   "reader.settings.details": "その他の文字設定",
   "chat.back": "戻る",

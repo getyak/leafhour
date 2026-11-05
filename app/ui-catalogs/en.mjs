@@ -2,6 +2,16 @@
 // data, also the safe default for server/static English shells. Complete
 // default data: every other catalogue carries the same keys.
 export default Object.freeze({
+"guide.title":"Reading guide",
+"guide.attribution":"AI · opening sample draft",
+"guide.boundary":"Based on bibliographic details and the opening sample. Missing background stays unknown.",
+"guide.preparing":"Preparing the guide. You can keep reading.",
+"guide.failed":"The guide is not ready. You can retry.",
+"guide.missing":"The guide has not been prepared yet.",
+"guide.unknown":"The result is unconfirmed. Check the saved result later; no new generation was sent.",
+"guide.retry":"Retry preparation",
+"guide.check":"Check saved result",
+
   "reader.settings.text": "Text",
   "reader.settings.details": "More typography",
   "chat.back": "Back",

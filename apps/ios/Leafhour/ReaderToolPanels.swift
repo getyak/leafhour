@@ -270,6 +270,7 @@ struct ReaderConversationPanel: View {
     var selection: SelectedQuote? = nil
     var library: OfflineLibrary? = nil
     var title = "旁注"
+    var readingGuide: ReadingGuideController? = nil
     var autoLoad = true
     @State private var initialSelectionAttached = false
     private var source: String {
@@ -282,7 +283,11 @@ struct ReaderConversationPanel: View {
         ChatConversationView(tools: tools, cloud: cloud, title: title, bookTitle: session.book.title,
             source: source, sourceChapter: tools.chatContext?.chapterTitle ?? session.chapter.title,
             canRemoveSource: tools.chatContext.map { $0.selection != nil } ?? (selection != nil), sourceLabel: tools.chatQuoteRemoved ? "" : tools.chatContext?.sourceLabel ?? (selection?.origin == "translation" ? "选中的译文 · 提问时引用对应原文" : selection == nil ? "引用的原文" : "选中的原文"),
-            localOnly: cloud == nil, isMarginalNote: true, autoLoad: autoLoad,
+            localOnly: cloud == nil, isMarginalNote: true, readingGuide: readingGuide,
+            onGuideFollowUp: { item in
+                guard let actual = readingGuide?.guide else { return }
+                await tools.sendGuideFollowUp(item, guide: actual, cloud: cloud)
+            }, autoLoad: autoLoad,
             load: {
                 if let identity = session.book.cloud { await tools.restoreConversationDraft(identity: identity, library: library) }
                 let attach = !initialSelectionAttached && selection != nil

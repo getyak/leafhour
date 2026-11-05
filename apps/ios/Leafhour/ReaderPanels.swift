@@ -74,20 +74,13 @@ struct ReaderPanelView: View {
                 case .bookmarks:
                     ReaderBookmarkPanel(session: session, initialBookmarkID: activeBookmarkID, currentCapture: currentBookmarkCapture, onJump: { onUserNavigate(); dismiss() })
                 case .readingGuide:
-                    if let readingGuide {
-                        ReaderReadingGuidePanel(controller: readingGuide, canSend: !tools.generating && !tools.loading && !tools.sendingFollowUp && tools.retry == nil) { item in
-                            guard let actual = readingGuide.guide else { return }
-                            await tools.prepareGuideConversation(session, cloud: cloud, library: library)
-                            guard onPreparedConversation() else { return }
-                            await tools.sendGuideFollowUp(item, guide: actual, cloud: cloud)
-                        }
-                    }
+                    ReaderConversationPanel(session: session, tools: tools, cloud: cloud, library: library, readingGuide: readingGuide)
                 case .introduction: ReaderIntroductionPanel(session: session, tools: tools, cloud: cloud)
                 case .conversation: ReaderConversationPanel(session: session, tools: tools, cloud: cloud, library: library, autoLoad: conversationAutoLoad)
                 case .bookInformation: ReaderBookInformationPanel(book: session.book)
                 case .note(let quote): NoteEditorPanel(quote: quote, session: session)
                 case .companion(let quote):
-                    ReaderConversationPanel(session: session, tools: tools, cloud: cloud, selection: quote, library: library, title: "旁注")
+                    ReaderConversationPanel(session: session, tools: tools, cloud: cloud, selection: quote, library: library, title: "旁注", readingGuide: readingGuide)
                 case .source(let quote):
                     ScrollView {
                         VStack(alignment: .leading, spacing: 18) {
