@@ -11,6 +11,7 @@ import {releaseFiles} from './release-policy.mjs';
 // removed at checkpoint A; every other caller/path/kind combination for this
 // resolved mutable file FAILS and is never silently bundled.
 export const UI_LOCALE_OWNERS=Object.freeze([
+ 'app/account-tools.mjs',
  'app/preference-memory-ui.mjs',
  'app/auth-dialog.mjs',
  'app/book-gift.mjs',

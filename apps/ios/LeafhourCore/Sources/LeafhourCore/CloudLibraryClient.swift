@@ -20,7 +20,8 @@ public enum CloudOriginalUploadPolicy {
 public struct CloudAccount: Codable, Equatable, Sendable {
     public var id: String
     public var email: String?
-    public init(id: String, email: String?) { self.id = id; self.email = email }
+    public var displayName: String?
+    public init(id: String, email: String?, displayName: String? = nil) { self.id = id; self.email = email; self.displayName = displayName }
 }
 
 public struct CloudBookIdentity: Codable, Equatable, Sendable {
@@ -86,6 +87,15 @@ public actor CloudLibraryClient {
     }
     public func savedCredential() -> CloudCredential? { credential }
     public func activeAccount() -> CloudAccount? { credential?.account }
+    public func saveDisplayName(_ name: String, ownerID: String) async throws -> CloudAccount {
+        guard credential?.account.id == ownerID else { throw Self.changed() }
+        let marker = generation
+        let bytes = try await data(path: "/api/account/profile", method: "POST", body: CloudJSON.encode(["displayName": .string(name)]), ownerID: ownerID)
+        guard marker == generation, var saved = credential, saved.account.id == ownerID else { throw Self.changed() }
+        saved.account.displayName = try CloudJSON.decode(bytes)["displayName"].string
+        credential = saved
+        return saved.account
+    }
     /// Only explicit foreground activity extends a session. Failed attempts also
     /// observe the cooldown so an expired session cannot retry on every gesture.
     @discardableResult
@@ -399,7 +409,7 @@ public actor CloudLibraryClient {
     }
     private static func account(_ value: CloudJSON) -> CloudAccount? {
         guard let id = value["id"].string else { return nil }
-        return CloudAccount(id: id, email: value["email"].string)
+        return CloudAccount(id: id, email: value["email"].string, displayName: value["displayName"].string)
     }
     private static func changed() -> CloudRequestError { CloudRequestError(status: 409, message: "账号已切换，请重新打开自己的书房。") }
 }
