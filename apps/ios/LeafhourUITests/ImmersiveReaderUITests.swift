@@ -83,9 +83,43 @@ final class ImmersiveReaderUITests: XCTestCase {
         bookmark.tap(); require(app.buttons["reader-bookmark-color-A66A13"])
         app.buttons["reader-bookmark-color-A66A13"].tap()
         capture("bookmark-colors-and-name")
+        let name = app.textFields["reader-bookmark-name"]; require(name); name.tap(); name.typeText("Return here")
         app.buttons["reader-bookmark-done"].tap(); require(reader)
         require(bookmark); XCTAssertEqual(bookmark.value as? String, "琥珀")
         capture("bookmark-colored-page-marker")
+        // Pulling again at this exact page must retain the existing color/name.
+        reader.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.2)).press(forDuration: 0.05, thenDragTo: reader.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.6)))
+        bookmark.tap(); require(name)
+        XCTAssertEqual(name.value as? String, "Return here")
+        let count = app.staticTexts["本书书签 · 1"]
+        for _ in 0..<4 { if count.exists { break }; app.swipeUp() }
+        XCTAssertTrue(count.exists)
+        capture("bookmark-repeat-preserves-name-and-color")
+    }
+
+    func testShortPullDoesNotCreateBookmarkOrChangeReadingText() {
+        open()
+        let before = reader.value as? String
+        let start = reader.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.25))
+        start.press(forDuration: 0.05, thenDragTo: start.withOffset(CGVector(dx: 0, dy: 30)))
+        wake()
+        let bookmark = app.buttons["reader-bookmark"]; require(bookmark)
+        XCTAssertEqual(bookmark.label, "添加当前位置书签")
+        XCTAssertEqual(reader.value as? String, before)
+        capture("bookmark-short-pull-cancelled")
+    }
+
+    func testBookmarkConfigurationAtAccessibilityTextSize() {
+        open(extra: ["-UIPreferredContentSizeCategoryName", "UICTContentSizeCategoryAccessibilityXXXL"])
+        wake(); let bookmark = app.buttons["reader-bookmark"]; require(bookmark); bookmark.tap()
+        capture("bookmark-accessibility-saved-feedback")
+        require(app.buttons["reader-bookmark-quick-edit"]); app.buttons["reader-bookmark-quick-edit"].tap()
+        let firstColor = app.buttons["reader-bookmark-color-35745A"]; require(firstColor)
+        XCTAssertTrue(firstColor.isHittable)
+        capture("bookmark-accessibility-colors")
+        app.swipeUp()
+        require(app.textFields["reader-bookmark-name"])
+        capture("bookmark-accessibility-name")
     }
     func testAccessibilitySizeKeepsQuietReadingAndRevealsAIOnlyWithToolsOrSelection() {
         open(extra: ["-UIPreferredContentSizeCategoryName", "UICTContentSizeCategoryAccessibilityXXXL"])

@@ -34,7 +34,7 @@ struct PDFReadingView: UIViewRepresentable {
     var pageRequest: ReaderPageRequest? = nil
     var onPageRequestResult: ((UUID, ReaderPageRequestOutcome) -> Void)? = nil
     var onBookmark: ((ReadingAnchor) -> Void)? = nil
-    var onBookmarkPull: ((ReaderBookmarkPullFeedback) -> Void)? = nil
+    var onBookmarkPull: ((ReaderBookmarkPullVisual) -> Void)? = nil
     var onBookmarkViewport: (([ReaderBookmarkVisibleRange]) -> Void)? = nil
     func makeCoordinator() -> Coordinator { Coordinator(parent: self) }
     func makeUIView(context: Context) -> PDFView {

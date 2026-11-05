@@ -166,19 +166,39 @@ public struct ReaderBookmarkVisibleRange: Equatable, Sendable {
 
 public enum ReaderBookmarkPullFeedback: Equatable, Sendable { case idle, pulling, armed }
 
+/// Presentation only. Moving the paper never changes its layout or saved anchor.
+public struct ReaderBookmarkPullVisual: Equatable, Sendable {
+    public let feedback: ReaderBookmarkPullFeedback
+    public let progress: Double
+    public let displacement: Double
+    public static let idle = Self(feedback: .idle, progress: 0, displacement: 0)
+    public init(feedback: ReaderBookmarkPullFeedback, progress: Double, displacement: Double) {
+        self.feedback = feedback; self.progress = progress; self.displacement = displacement
+    }
+}
+
 /// One touch sequence, with hysteresis and no commit before release.
 public struct ReaderBookmarkPullState: Sendable {
     private var eligible = false
+    private var peak = 0.0
     public private(set) var feedback: ReaderBookmarkPullFeedback = .idle
+    public private(set) var visual: ReaderBookmarkPullVisual = .idle
     public init() {}
-    public mutating func begin(eligible: Bool) { self.eligible = eligible; feedback = .idle }
+    public mutating func begin(eligible: Bool) { cancel(); self.eligible = eligible }
     @discardableResult public mutating func change(down: Double, across: Double) -> ReaderBookmarkPullFeedback {
-        guard eligible, down.isFinite, across.isFinite else { return .idle }
-        guard down > 0, down > abs(across) * 1.6 else { feedback = .pulling; return feedback }
+        guard eligible else { return .idle }
+        guard down.isFinite, across.isFinite else { cancel(); return .idle }
+        // A deliberate reversal or horizontal departure cancels this touch;
+        // it cannot accidentally rearm while the finger is still returning.
+        guard down >= 0, peak - down <= 18, down < 12 || down > abs(across) * 1.6 else { cancel(); return .idle }
+        peak = max(peak, down)
         if down >= 72 { feedback = .armed }
         else if down < 56 || feedback != .armed { feedback = .pulling }
+        let distance = max(0, down)
+        let displacement = 112 * (1 - 1 / (1 + distance * 0.55 / 112))
+        visual = ReaderBookmarkPullVisual(feedback: feedback, progress: min(1, distance / 72), displacement: displacement)
         return feedback
     }
     public mutating func end() -> Bool { let committed = eligible && feedback == .armed; cancel(); return committed }
-    public mutating func cancel() { eligible = false; feedback = .idle }
+    public mutating func cancel() { eligible = false; peak = 0; feedback = .idle; visual = .idle }
 }

@@ -1,12 +1,36 @@
 import XCTest
 import UIKit
 import PDFKit
+import SwiftUI
 import LeafhourCore
 @testable import Leafhour
 
 /// Real TextKit/PDFKit layout with synthetic files. Physical touch gestures and
 /// VoiceOver remain separate device acceptance; these tests do not claim them.
 @MainActor final class ReaderBookmarkAppTests: XCTestCase {
+    func testBookmarkPanelAtNarrowNormalAndAccessibilitySizes() async throws {
+        let session = try await fixture()
+        let source = ReadingAnchor(chapterID: session.chapter.id, passageID: try XCTUnwrap(session.chapter.passages.first).id)
+        let saved = await session.addBookmark(at: source)
+        XCTAssertTrue(saved.succeeded)
+        let bookmark = try XCTUnwrap(session.bookmarks.first), anchor = session.currentAnchor
+        for size in [DynamicTypeSize.large, .accessibility5] {
+            let controller = UIHostingController(rootView: NavigationStack {
+                ReaderBookmarkPanel(session: session, initialBookmarkID: bookmark.id)
+            }.environment(\.dynamicTypeSize, size))
+            let window = UIWindow(frame: CGRect(x: 0, y: 0, width: 320, height: 568))
+            window.rootViewController = controller; window.makeKeyAndVisible(); controller.view.frame = window.bounds
+            try await Task.sleep(for: .milliseconds(200)); controller.view.layoutIfNeeded()
+            let image = UIGraphicsImageRenderer(size: window.bounds.size).image { _ in
+                controller.view.drawHierarchy(in: controller.view.bounds, afterScreenUpdates: true)
+            }
+            let attachment = XCTAttachment(image: image); attachment.name = "GET408-Narrow-" + String(describing: size)
+            attachment.lifetime = .keepAlways; add(attachment)
+            XCTAssertEqual(session.bookmarks, [bookmark]); XCTAssertEqual(session.currentAnchor, anchor)
+            window.isHidden = true; window.rootViewController = nil
+        }
+    }
+
     func testPagedTextHasAnIndependentVerticalPanAndPreservesPageAccessibilityActions() async throws {
         let session = try await fixture(), reading = TextReadingView(session: session, onNote: { _ in }, onSource: { _ in }, onWake: { _ in }, onReadingScroll: {}, onBookmark: { _ in })
         let coordinator = reading.makeCoordinator(), text = UITextView(usingTextLayoutManager: false)
