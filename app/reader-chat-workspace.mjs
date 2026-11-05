@@ -1,4 +1,4 @@
-// A full-page conversation keeps the mounted reader, its anchor and its drafts.
+// A margin note keeps the mounted reader visible, its anchor and its drafts.
 // The history entry lets browser Back return to that same reading session.
 const scrollRestorationLeases=new WeakMap();
 export function mountReaderChatWorkspace({root,document=globalThis.document,window=globalThis.window,getReader=()=>null,onBack=()=>root?.close?.()}={}){
@@ -53,8 +53,8 @@ export function mountReaderChatWorkspace({root,document=globalThis.document,wind
  }
  function paint(){
   root.classList.toggle('is-reader-chat-mobile',opened&&window.innerWidth<1100);
-  root.classList.toggle('is-reader-chat-fullpage',opened);
-  body.classList.toggle('has-fullpage-chat',opened);
+  root.classList.toggle('is-reader-margin-note',opened);
+  body.classList.toggle('has-margin-note',opened);
   if(opened){contain();root.setAttribute('aria-modal','true');}
   else{restoreInert();root.setAttribute('aria-modal','false');}
   document.dispatchEvent(new Event('reader:chat-layout'));
@@ -84,10 +84,10 @@ export function mountReaderChatWorkspace({root,document=globalThis.document,wind
     else{historyEntry=null;finishHistoryReturn();}
    }
   },
-  setLabels(){},isMobile:()=>opened,isFullPage:()=>opened,
+  setLabels(){},isMobile:()=>opened&&window.innerWidth<1100,isFullPage:()=>false,
   dispose(){
    if(disposed)return;disposed=true;if(restoreFrame!==null)window.cancelAnimationFrame?.(restoreFrame);
-   for(const remove of removers)remove();restoreInert();root.classList.remove('reader-chat-workspace','is-reader-chat-mobile','is-reader-chat-fullpage');body.classList.remove('has-fullpage-chat');
+   for(const remove of removers)remove();restoreInert();root.classList.remove('reader-chat-workspace','is-reader-chat-mobile','is-reader-margin-note');body.classList.remove('has-margin-note');
    releaseScrollRestoration();
    if(historyEntry&&window.history?.state?.[historyKey]===token){try{const state={...window.history.state};delete state[historyKey];window.history.replaceState(state,'');}catch{}}
    for(const [name,value]of [['aria-modal',originalModal],['tabindex',originalTab]])if(value===null||value===undefined)root.removeAttribute?.(name);else root.setAttribute(name,value);

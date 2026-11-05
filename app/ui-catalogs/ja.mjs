@@ -152,7 +152,7 @@ export default Object.freeze({
   "chat.quote.tooLong": "引用は2,000文字までです。選択範囲を短くしてください。",
   "chat.quote.receiptMismatch": "応答がこのリクエストと一致しません。質問と引用は保持されています。",
 
-  "chat.entry": "読書チャット",
+  "chat.entry": "余白のメモ",
   "chat.resize": "AI ワークスペースの幅を調整",
 
   "audio.voice.Sulafat.label": "温かい声",
@@ -312,7 +312,7 @@ export default Object.freeze({
   "cs.interrupted": "接続が切れました。この質問の進捗を確認しています。二重送信を避けるため、先に結果をご確認ください。",
   "cs.noAnswer": "今回は回答を得られませんでした。質問は残っています。",
   "cs.stopUncertain": "停止したかまだ確認できません。進捗を見てから再試行を決めてください。",
-  "open": "読書の対話を開く",
+  "open": "余白のメモを開く",
   "close": "読書の対話を閉じる",
   "currentPosition": "現在の読書位置",
   "moreActions": "対話のその他の操作",
@@ -422,7 +422,7 @@ export default Object.freeze({
   "prefs.skipFailed": "「あとで設定」はまだ記録されていません。",
   "prefs.conflictReload": "読書の好みは別の場所で更新されました。再読み込みしてからお試しください。",
   "bk": "この本",
-  "dg": "読書の対話",
+  "dg": "余白のメモ",
   "rd": "読書中",
   "rel": "再読み込み",
   "scope.allowed": "閲覧範囲",

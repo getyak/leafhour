@@ -127,10 +127,10 @@ test('a retained pending activity relabels the latest tool after a locale change
  assert.equal(s.find('library-chat-turn-status'),pending);assert.equal(pending.textContent,uiText('chat.activity.chapter')+' · '+uiText('chat.activity.running'));
 });
 
-test('desktop source navigation preserves the chat and its unsent question',async t=>{
+test('source navigation closes the modal margin and retains its unsent question',async t=>{
  const s=setup(t);s.root.classList.add('reader-chat-workspace');s.chat.open();await flush();type(s.input(),'Keep this draft');
  const event=new Event('click',{cancelable:true});s.find('library-chat-source-link').dispatchEvent(event);
- assert.equal(event.defaultPrevented,true);assert.equal(s.root.open,true);assert.equal(s.input().value,'Keep this draft');assert.equal(s.calls.filter(c=>c.payload).length,0);
+ assert.equal(event.defaultPrevented,true);assert.equal(s.root.open,false);s.chat.open();await flush();assert.equal(s.input().value,'Keep this draft');assert.equal(s.calls.filter(c=>c.payload).length,0);
 });
 
 test('a failed turn owns its recovery notice without a repeated global no-answer banner',async t=>{

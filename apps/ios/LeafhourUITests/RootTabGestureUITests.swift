@@ -30,15 +30,13 @@ final class RootTabGestureUITests: XCTestCase {
     }
     func testHorizontalPagingUpdatesNativeTabsInBothDirections() {
         launch(); drag(left: true)
-        XCTAssertTrue(app.otherElements["global-chat-screen"].waitForExistence(timeout: 5))
-        XCTAssertTrue(app.tabBars.buttons["松鼠"].isSelected)
-        drag(left: true)
+        XCTAssertFalse(app.tabBars.buttons["松鼠"].exists)
         XCTAssertTrue(app.staticTexts["journal-week-duration"].waitForExistence(timeout: 5))
         XCTAssertTrue(app.tabBars.buttons["我的阅读"].isSelected)
         capture("Journal · real cached overview")
         drag(left: false)
-        XCTAssertTrue(app.tabBars.buttons["松鼠"].waitForExistence(timeout: 5))
-        XCTAssertTrue(app.tabBars.buttons["松鼠"].isSelected)
+        XCTAssertTrue(app.tabBars.buttons["书房"].isSelected)
+        XCTAssertTrue(app.buttons["library-companion"].isHittable)
     }
     func testAvatarGallerySelectionAndCancelAreReachable() {
         launch(); app.buttons["library-avatar"].tap()

@@ -143,7 +143,7 @@ chat.quote.unavailable,catalogue,app/ui-catalogs/en.mjs,151,unknown,unknown,unkn
 chat.quote.changed,catalogue,app/ui-catalogs/en.mjs,152,unknown,unknown,unknown,unknown,unreviewed,This selection has changed or is unavailable. Please select it again.,所选文字已变化或暂不可用，请重新选择。,所選文字已變更或暫時無法使用，請重新選取。,選択した文章が変わったか、利用できません。選び直してください。
 chat.quote.tooLong,catalogue,app/ui-catalogs/en.mjs,153,unknown,unknown,unknown,unknown,unreviewed,"Select up to 2,000 characters to quote.","引用最多 2,000 字，请缩小选择范围。","引用最多 2,000 字，請縮小選取範圍。","引用は2,000文字までです。選択範囲を短くしてください。"
 chat.quote.receiptMismatch,catalogue,app/ui-catalogs/en.mjs,154,unknown,unknown,unknown,unknown,unreviewed,The reply does not match this request. Your question and quote are retained.,回执与当前请求不一致，问题与引用均已保留。,回覆與目前請求不一致，問題與引用皆已保留。,応答がこのリクエストと一致しません。質問と引用は保持されています。
-chat.entry,catalogue,app/ui-catalogs/en.mjs,156,unknown,unknown,unknown,unknown,unreviewed,Reading chat,阅读对话,閱讀對話,読書チャット
+chat.entry,catalogue,app/ui-catalogs/en.mjs,156,unknown,unknown,unknown,unknown,unreviewed,Margin notes,旁注,旁註,余白のメモ
 chat.resize,catalogue,app/ui-catalogs/en.mjs,157,unknown,unknown,unknown,unknown,unreviewed,Resize AI workspace,调整 AI 工作区宽度,調整 AI 工作區寬度,AI ワークスペースの幅を調整
 audio.voice.Sulafat.label,catalogue,app/ui-catalogs/en.mjs,159,unknown,unknown,unknown,unknown,unreviewed,Warm,温暖,溫暖,温かい声
 audio.voice.Sulafat.description,catalogue,app/ui-catalogs/en.mjs,160,unknown,unknown,unknown,unknown,unreviewed,"Calm reading, suited to longer passages",平静地读，适合长一些的段落,平靜地讀，適合長一些的段落,穏やかな読み方で、長めの文章に向いています
@@ -301,7 +301,7 @@ cs.scopeReread,catalogue,app/ui-catalogs/en.mjs,312,unknown,unknown,unknown,unkn
 cs.interrupted,catalogue,app/ui-catalogs/en.mjs,313,unknown,unknown,unknown,unknown,unreviewed,The connection dropped; confirming the progress of this question. Check the result first to avoid asking twice.,连接中断，正在确认这次提问的进度。请先确认结果，避免重复提问。,連接中斷，正在確認這次提問的進度。請先確認結果，避免重複提問。,接続が切れました。この質問の進捗を確認しています。二重送信を避けるため、先に結果をご確認ください。
 cs.noAnswer,catalogue,app/ui-catalogs/en.mjs,314,unknown,unknown,unknown,unknown,unreviewed,No answer this time; your question is kept.,这次没有得到回答，问题已保留。,這次沒有得到回答，問題已保留。,今回は回答を得られませんでした。質問は残っています。
 cs.stopUncertain,catalogue,app/ui-catalogs/en.mjs,315,unknown,unknown,unknown,unknown,unreviewed,It is not yet clear whether the question stopped. Check progress before retrying.,还不能确认是否已停止。请先查看进度，再决定是否重试。,還不能確認是否已停止。請先查看進度，再決定是否重試。,停止したかまだ確認できません。進捗を見てから再試行を決めてください。
-open,catalogue,app/ui-catalogs/en.mjs,316,unknown,unknown,unknown,unknown,unreviewed,Open the reading chat,打开阅读对话,打開閱讀對話,読書の対話を開く
+open,catalogue,app/ui-catalogs/en.mjs,316,unknown,unknown,unknown,unknown,unreviewed,Open margin notes,打开页边旁注,打開頁邊旁註,余白のメモを開く
 close,catalogue,app/ui-catalogs/en.mjs,317,unknown,unknown,unknown,unknown,unreviewed,Collapse the reading chat,收起阅读对话,收起閱讀對話,読書の対話を閉じる
 currentPosition,catalogue,app/ui-catalogs/en.mjs,318,unknown,unknown,unknown,unknown,unreviewed,Current reading position,当前阅读位置,當前閱讀位置,現在の読書位置
 moreActions,catalogue,app/ui-catalogs/en.mjs,319,unknown,unknown,unknown,unknown,unreviewed,More conversation actions,更多对话操作,更多對話操作,対話のその他の操作
@@ -411,7 +411,7 @@ prefs.skipRecorded,catalogue,app/ui-catalogs/en.mjs,422,unknown,unknown,unknown,
 prefs.skipFailed,catalogue,app/ui-catalogs/en.mjs,423,unknown,unknown,unknown,unknown,unreviewed,“Set up later” is not recorded yet.,暂不设置尚未记录。,暫不設置尚未記錄。,「あとで設定」はまだ記録されていません。
 prefs.conflictReload,catalogue,app/ui-catalogs/en.mjs,424,unknown,unknown,unknown,unknown,unreviewed,Reading preferences were updated elsewhere. Reload and try again.,阅读习惯已在另一处更新，请刷新后再试。,閱讀習慣已在另一處更新，請刷新後再試。,読書の好みは別の場所で更新されました。再読み込みしてからお試しください。
 bk,catalogue,app/ui-catalogs/en.mjs,425,unknown,unknown,unknown,unknown,unreviewed,this book,这本书,這本書,この本
-dg,catalogue,app/ui-catalogs/en.mjs,426,unknown,unknown,unknown,unknown,unreviewed,Reading chat,阅读对话,閱讀對話,読書の対話
+dg,catalogue,app/ui-catalogs/en.mjs,426,unknown,unknown,unknown,unknown,unreviewed,Margin notes,旁注,旁註,余白のメモ
 rd,catalogue,app/ui-catalogs/en.mjs,427,unknown,unknown,unknown,unknown,unreviewed,Reading,正在读,正在讀,読書中
 rel,catalogue,app/ui-catalogs/en.mjs,428,unknown,unknown,unknown,unknown,unreviewed,Reload,重新载入,重新載入,再読み込み
 scope.allowed,catalogue,app/ui-catalogs/en.mjs,429,unknown,unknown,unknown,unknown,unreviewed,Reading scope,允许查阅,允許查閱,閲覧範囲

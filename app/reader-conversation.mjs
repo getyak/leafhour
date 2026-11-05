@@ -9,7 +9,7 @@ import {overlayOpen} from './popover-controls.mjs';
 import {readChatResponse} from './chat-stream.mjs';
 
 export function readerInteractionBlocked(document,target){
-  return overlayOpen(document,'dialog[open]:not(.library-chat-dialog)')||document.querySelector?.('.is-reader-chat-fullpage')?.classList?.contains('is-reader-chat-fullpage')===true||!!target?.closest?.('dialog,.library-chat-launcher,.squirrel-companion-bubble,.squirrel-companion-pill');
+  return overlayOpen(document,'dialog[open]:not(.library-chat-dialog)')||document.querySelector?.('.is-reader-margin-note')?.classList?.contains('is-reader-margin-note')===true||!!target?.closest?.('dialog,.library-chat-launcher,.squirrel-companion-bubble,.squirrel-companion-pill');
 }
 
 export function readerConversationContext(reader,bookId){
@@ -53,7 +53,7 @@ export function mountReaderConversation({bookId,session,getReader,root,request=f
     openAuth,dismissOnOutside:()=>false,onViewChange:opened=>{if(opened)getReader()?.dismissTools?.({preserveSelection:true});workspace?.setOpen(opened);},
     onNavigateToPassage:(targetBook,passageId)=>{
       const current=context();if(targetBook!==bookId||!current?.passages.has(passageId))return false;
-      const reader=getReader();if(workspace?.isMobile())chat.close();reader.dismissTools?.();
+      const reader=getReader();chat.close();reader.dismissTools?.();
       const navigationCurrent=()=>!disposed&&getReader()===reader,focusAtStart=events.activeElement;
       Promise.resolve(reader.goToPassage(passageId,{validate:navigationCurrent})).then(changed=>{if(changed&&navigationCurrent()&&events.activeElement===focusAtStart)events.getElementById?.(passageId)?.focus({preventScroll:true});}).catch(()=>{if(navigationCurrent())announce(t('reader.b1.chapterFailed'));});return true;
     }

@@ -119,7 +119,7 @@ final class RootTabContainerController: UIViewController {
         pager.view.translatesAutoresizingMaskIntoConstraints = false
         tabBar.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(pager.view); view.addSubview(tabBar)
-        tabBar.items = [("书房", "books.vertical"), ("松鼠", "leaf"), ("我的阅读", "book")].enumerated().map { index, item in
+        tabBar.items = [("书房", "books.vertical"), ("我的阅读", "book")].enumerated().map { index, item in
             let tab = UITabBarItem(title: item.0, image: UIImage(systemName: item.1), tag: index)
             tab.accessibilityIdentifier = "root-tab-\(index)"
             return tab
