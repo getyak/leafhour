@@ -22,6 +22,12 @@ test('absent credentials disable generation and provider errors never leak crede
  const generate=createCoverGenerator({ARK_API_KEY:'test-secret'},{fetchImpl:async()=>Response.json({error:{message:'test-secret https://private?token=secret'}},{status:403})});
  await assert.rejects(generate({title:{en:'Book'}}),error=>error.status===502&&!/test-secret|token=/.test(error.message));
 });
+test('only a definitive provider rejection permits another paid attempt',async()=>{
+ const rejected=createCoverGenerator({ARK_API_KEY:'test-secret'},{fetchImpl:async()=>new Response(null,{status:429})});
+ await assert.rejects(rejected({title:{en:'Book'}}),error=>error.coverGenerationStatus==='rejected');
+ const lost=createCoverGenerator({ARK_API_KEY:'test-secret'},{fetchImpl:async()=>{throw Error('response lost');}});
+ await assert.rejects(lost({title:{en:'Book'}}),error=>error.coverGenerationStatus==='uncertain');
+});
 test('URL-only or malformed provider images are not fetched or cached',async()=>{
  for(const data of [{url:'http://127.0.0.1/private'},{b64_json:Buffer.from('<svg/>').toString('base64')}]){
   const generate=createCoverGenerator({ARK_API_KEY:'test-secret'},{fetchImpl:async()=>Response.json({data:[data]})});

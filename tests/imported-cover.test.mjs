@@ -30,6 +30,54 @@ test('TXT gets one generated cover shared by concurrent requests, copies and ser
  assert.match((await library.list(owner))[0].coverImage,/\/cover\?v=/);
 });
 function epubImage(){const canvas=createCanvas(300,450);return canvas.toBuffer('image/webp');}
+test('an expired lease or uncertain provider result never dispatches a second paid request',async t=>{
+ const dir=await mkdtemp(path.join(os.tmpdir(),'leafhour-cover-uncertain-'));t.after(()=>rm(dir,{recursive:true,force:true}));
+ let now=Date.now(),calls=0,release,started;t.mock.method(Date,'now',()=>now);
+ const ready=new Promise(resolve=>started=resolve),pending=new Promise(resolve=>release=resolve),owner={id:'uncertain-owner'};
+ const generator=async()=>{calls++;started();await pending;throw Error('response lost after dispatch');};
+ const a=await createLibraryService({dataDir:dir,catalogDir:null,coverGenerator:generator}),b=await createLibraryService({dataDir:dir,catalogDir:null,coverGenerator:generator});
+ const book=await a.importDocument(owner,{filename:'uncertain.txt',bytes:Buffer.from('Keep the original and reading records.')});
+ const first=a.getCover(owner,book.bookId);await ready;now+=160000;
+ const second=b.getCover(owner,book.bookId);release();await assert.rejects(first,{status:502});await assert.rejects(second,{status:503});assert.equal(calls,1);
+ now+=16*60*1000;await assert.rejects(b.getCover(owner,book.bookId),{status:503});assert.equal(calls,1,'cooldown expiry cannot replay an uncertain charge');
+});
+test('a TXT upload schedules its cover without waiting for a shelf image request',async t=>{
+ const dir=await mkdtemp(path.join(os.tmpdir(),'leafhour-upload-cover-'));t.after(()=>rm(dir,{recursive:true,force:true}));
+ const scheduled=[];let calls=0,release;const pending=new Promise(resolve=>release=resolve),owner={id:'upload-cover-owner'};
+ const library=await createLibraryService({dataDir:dir,catalogDir:null,schedule:work=>scheduled.push(work),coverGenerator:async()=>{calls++;await pending;return {bytes:epubImage(),model:'test',prompt:'metadata only'};}});
+ const bytes=Buffer.from('An isolated text book for upload cover verification.'),book=await library.importDocument(owner,{filename:'upload.txt',bytes});
+ assert.equal(scheduled.length,1,'upload registers durable host background work');
+ const image=library.getCover(owner,book.bookId);release();await Promise.all([...scheduled,image]);assert.equal(calls,1);
+ await library.importDocument(owner,{filename:'upload.txt',bytes});await Promise.all(scheduled);assert.equal(calls,1,'repeated uploads keep the saved artwork');
+ const restarted=await createLibraryService({dataDir:dir,catalogDir:null,coverGenerator:async()=>{throw Error('cached cover must survive');}});
+ assert.deepEqual((await restarted.getCover(owner,book.bookId)).bytes,(await image).bytes);assert.deepEqual((await library.getOriginal(owner,book.bookId)).bytes,bytes);
+});
+test('a definitive rejection cools down then retries without changing the reading position',async t=>{
+ const dir=await mkdtemp(path.join(os.tmpdir(),'leafhour-cover-retry-'));t.after(()=>rm(dir,{recursive:true,force:true}));
+ let now=Date.now(),calls=0;t.mock.method(Date,'now',()=>now);
+ const library=await createLibraryService({dataDir:dir,catalogDir:null,coverGenerator:async()=>{if(++calls===1)throw Object.assign(Error('rejected'),{coverGenerationStatus:'rejected'});return {bytes:epubImage(),model:'test',prompt:'metadata only'};}}),owner={id:'rejected-cover-owner'};
+ const book=await library.importDocument(owner,{filename:'retry.txt',bytes:Buffer.from('Keep reading while a cover is unavailable.')}),paragraph=book.sections[0].paragraphs[0];
+ await library.saveProgress(owner,book.bookId,{passageId:paragraph.id,chapterId:book.sections[0].chapterId,contentVersion:book.contentVersion,offset:0,mode:'en',variant:'literal'});const before=(await library.records(owner,book.bookId)).position;
+ await assert.rejects(library.getCover(owner,book.bookId),{status:502});await assert.rejects(library.getCover(owner,book.bookId),{status:503});assert.equal(calls,1);
+ now+=16*60*1000;assert.ok((await library.getCover(owner,book.bookId)).bytes.length);assert.equal(calls,2);assert.deepEqual((await library.records(owner,book.bookId)).position,before);
+});
+test('hosted CAS keeps one generation across services when cover persistence fails before commit',async()=>{
+ const {authFixture}=await import('./auth-fixture.mjs'),fixture=authFixture(),store=fixture.store(),blobs=new Map(),mutate=store.mutate.bind(store);let calls=0,lost=false;
+ store.putBlob=async(file,bytes)=>blobs.set(file,Buffer.from(bytes));
+ store.mutate=async(file,fallback,operation,options)=>mutate(file,fallback,async state=>{const result=await operation(state);if(file.endsWith('-ai-v1.json')&&state.data&&!lost){lost=true;throw Error('storage response lost');}return result;},options);
+ const options={dataDir:'hosted/library',catalogDir:null,dataStore:store,coverGenerator:async()=>{calls++;return {bytes:epubImage(),model:'test',prompt:'metadata only'};}},a=await createLibraryService(options),b=await createLibraryService(options),owner={id:'hosted-cover-owner'};
+ const book=await a.importDocument(owner,{filename:'hosted.txt',bytes:Buffer.from('Hosted persistence failure must not charge again.')});
+ const replies=await Promise.allSettled([a.getCover(owner,book.bookId),b.getCover(owner,book.bookId)]);assert.ok(replies.every(reply=>reply.status==='rejected'));assert.equal(calls,1);
+ const state=[...fixture.rows.entries()].find(([file])=>file.endsWith('-ai-v1.json'))[1].value;assert.equal(state.failure,'uncertain');assert.ok(state.requestedAt);
+ await assert.rejects(b.getCover(owner,book.bookId),{status:503});assert.equal(calls,1);
+});
+test('a hosted CAS response lost after commit is recovered from saved pixels without another charge',async()=>{
+ const {authFixture}=await import('./auth-fixture.mjs'),{createHostedStore}=await import('../deploy/hosted-store.mjs'),fixture=authFixture();let lost=false,calls=0;
+ const store=createHostedStore({env:fixture.env,fetcher:async(url,options={})=>{const result=await fixture.fetcher(url,options),body=options.body?JSON.parse(options.body):null;if(!lost&&body?.document_key?.endsWith('-ai-v1.json')&&body.document_value?.data){lost=true;throw Error('CAS receipt lost after commit');}return result;}});
+ store.putBlob=async()=>{};const options={dataDir:'hosted/library',catalogDir:null,dataStore:store,coverGenerator:async()=>{calls++;return {bytes:epubImage(),model:'test',prompt:'metadata only'};}},library=await createLibraryService(options),owner={id:'lost-cas-owner'};
+ const book=await library.importDocument(owner,{filename:'lost-cas.txt',bytes:Buffer.from('Recover the confirmed stored image.')});await assert.rejects(library.getCover(owner,book.bookId),{status:502});
+ const restarted=await createLibraryService(options);assert.ok((await restarted.getCover(owner,book.bookId)).bytes.length);assert.equal(calls,1);assert.equal(lost,true);
+});
 test('source cover wins and a missing EPUB cover can generate without losing the original',async t=>{
  const dir=await mkdtemp(path.join(os.tmpdir(),'leafhour-ai-epub-'));t.after(()=>rm(dir,{recursive:true,force:true}));let calls=0;
  const library=await createLibraryService({dataDir:dir,catalogDir:null,coverGenerator:async()=>{calls++;return {bytes:epubImage(),model:'test',prompt:'test'};}}),owner={id:'epub-ai'};

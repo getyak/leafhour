@@ -5,6 +5,7 @@ import {bookCoverLabels} from './book-cover-labels.mjs';
 const tones=['sage','lichen','slate','clay','linen'];
 const catalog={alice:'sage',meditations:'clay',walden:'linen'};
 const renderedCovers=new WeakMap();
+const disposeRenderedCover=cover=>{renderedCovers.get(cover)?.dispose?.();renderedCovers.delete(cover);};
 const locales=new Set(['en','zh-Hans','zh-Hant','ja']);
 const assetPattern=/^\/book-covers\/[a-z0-9-]+-(320|640)\.webp\?v=[a-f0-9]{12}$/;
 const colorPattern=/^#[a-f0-9]{6}$/i;
@@ -47,6 +48,7 @@ function artworkFor(id){
 }
 
 function bindNative(cover,book){
+  disposeRenderedCover(cover);
   delete cover.dataset.coverStyle;delete cover.dataset.coverArtwork;delete cover.dataset.coverTitleSize;
   cover.style?.removeProperty?.('--cover-ink');cover.style?.removeProperty?.('--cover-paper');
   cover.setAttribute?.('lang','und');renderedCovers.delete(cover);
@@ -69,18 +71,25 @@ export function paintBookCover(cover,book,options={}){
     if(view?.key===url)return cover;
     bindNative(cover,book);
     const image=cover.ownerDocument.createElement('img');image.className='imported-cover-artwork';image.alt='';image.loading='lazy';image.decoding='async';image.setAttribute?.('aria-hidden','true');
-    view={key:url,image,retries:0};renderedCovers.set(cover,view);cover.dataset.coverStyle='imported';cover.dataset.coverArtwork='loading';
-    image.addEventListener('load',()=>{if(renderedCovers.get(cover)!==view)return;image.hidden=false;cover.dataset.coverArtwork='ready';});
+    const window=cover.ownerDocument.defaultView;let timer,online;
+    const clear=()=>{clearTimeout(timer);window?.removeEventListener('online',online);};
+    const retry=()=>{clear();if(renderedCovers.get(cover)!==view||cover.isConnected===false||cover.dataset.coverArtwork==='ready')return;cover.dataset.coverArtwork='loading';image.src=url+'&attempt='+view.retries;};
+    view={key:url,image,retries:0,dispose:clear};renderedCovers.set(cover,view);cover.dataset.coverStyle='imported';cover.dataset.coverArtwork='loading';
+    image.addEventListener('load',()=>{if(renderedCovers.get(cover)!==view)return;clear();image.hidden=false;cover.dataset.coverArtwork='ready';});
     image.addEventListener('error',()=>{
       if(renderedCovers.get(cover)!==view)return;image.hidden=true;cover.dataset.coverArtwork='failed';
-      const delay=[2000,8000,25000,60000][view.retries++];if(delay===undefined)return;
-      const timer=setTimeout(()=>{if(renderedCovers.get(cover)!==view||cover.isConnected===false||cover.dataset.coverArtwork==='ready')return;cover.dataset.coverArtwork='loading';image.src=url+'&attempt='+view.retries;},delay);timer?.unref?.();
+      clear();online=()=>{view.retries=0;retry();};window?.addEventListener('online',online,{once:true});
+      // Provider failures cool down for fifteen minutes. Keep the same card
+      // recoverable beyond the short pending-generation polling window.
+      const delay=[2000,8000,25000,60000,15*60*1000][view.retries++];if(delay===undefined)return;
+      timer=setTimeout(retry,delay);timer?.unref?.();
     });
     cover.append(image);image.src=url;return cover;
   }
   if(!labels?.title){bindNative(cover,book);return cover;}
   const artwork=artworkFor(key);let view=renderedCovers.get(cover);
   if(!view||view.key!==key){
+    disposeRenderedCover(cover);
     const document=cover.ownerDocument,inner=document.createElement('div');inner.className='cover-labels';
     const line=(tag,className)=>{const node=document.createElement(tag);node.className=className;inner.append(node);return node;};
     const brand=line('small','cover-brand'),title=line('strong','cover-title'),subtitle=line('small','cover-subtitle'),author=line('small','cover-author');brand.textContent='leafhour';brand.setAttribute?.('lang','en');
@@ -113,7 +122,7 @@ export function createBookCoverPainter({getLocale=()=> 'en',onLocaleChange=()=>(
     const record=records.get(cover)||{reference:new WeakRef(cover)};record.book=book;record.field=field;records.set(cover,record);references.add(record.reference);
     if(!pruneQueued){pruneQueued=true;queueMicrotask(()=>{pruneQueued=false;if(!disposed)prune();});}
   };
-  const prune=()=>{for(const reference of references){const cover=reference.deref();if(!cover||cover.isConnected===false)references.delete(reference);}};
+  const prune=()=>{for(const reference of references){const cover=reference.deref();if(!cover||cover.isConnected===false){if(cover)disposeRenderedCover(cover);references.delete(reference);}}};
   const refresh=()=>{
     if(disposed)return;prune();const locale=getLocale();
     for(const reference of references){const cover=reference.deref(),record=cover&&records.get(cover);if(record){if(record.field)paintIdentity(cover,record.book,record.field,locale);else paintBookCover(cover,record.book,{locale});}}
@@ -128,8 +137,8 @@ export function createBookCoverPainter({getLocale=()=> 'en',onLocaleChange=()=>(
     identity(node,book,field='title'){
       if(disposed)return node;const property=field==='author'?'author':'title';remember(node,book,property);return paintIdentity(node,book,property,getLocale());
     },
-    forget(node){const record=records.get(node);if(record)references.delete(record.reference);records.delete(node);},
+    forget(node){const record=records.get(node);if(record)references.delete(record.reference);records.delete(node);disposeRenderedCover(node);},
     refresh,
-    dispose(){if(disposed)return;disposed=true;unsubscribe?.();references.clear();records=new WeakMap();}
+    dispose(){if(disposed)return;disposed=true;unsubscribe?.();for(const reference of references){const cover=reference.deref();if(cover)disposeRenderedCover(cover);}references.clear();records=new WeakMap();}
   };
 }
