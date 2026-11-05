@@ -3701,7 +3701,8 @@ candidate:app/library-book-actions.mjs:58:483,js-cjk-literal,app/library-book-ac
 candidate:app/library-book-actions.mjs:92:154,js-attribute,app/library-book-actions.mjs,92,role,unknown,reviewable,,menuitem
 candidate:app/library-book-actions.mjs:96:220,js-attribute,app/library-book-actions.mjs,96,aria-haspopup,unknown,reviewable,,menu
 candidate:app/library-book-actions.mjs:96:265,js-attribute,app/library-book-actions.mjs,96,aria-expanded,unknown,reviewable,,false
-candidate:app/library-chat-markdown.mjs:90:331,js-attribute,app/library-chat-markdown.mjs,90,aria-expanded,unknown,reviewable,,true
+candidate:app/library-chat-markdown.mjs:123:204,js-attribute,app/library-chat-markdown.mjs,123,aria-expanded,unknown,reviewable,,false
+candidate:app/library-chat-markdown.mjs:129:331,js-attribute,app/library-chat-markdown.mjs,129,aria-expanded,unknown,reviewable,,true
 candidate:app/library-chat.mjs:46:81,js-attribute,app/library-chat.mjs,46,aria-labelledby,unknown,protected,identifier,library-chat-title
 candidate:app/library-chat.mjs:47:34,js-attribute,app/library-chat.mjs,47,aria-modal,unknown,reviewable,,false
 candidate:app/library-chat.mjs:60:157,js-attribute,app/library-chat.mjs,60,aria-haspopup,unknown,reviewable,,dialog
@@ -3712,14 +3713,14 @@ candidate:app/library-chat.mjs:72:162,js-attribute,app/library-chat.mjs,72,aria-
 candidate:app/library-chat.mjs:72:210,js-attribute,app/library-chat.mjs,72,aria-relevant,unknown,reviewable,,additions text
 candidate:app/library-chat.mjs:73:155,js-attribute,app/library-chat.mjs,73,role,unknown,reviewable,,status
 candidate:app/library-chat.mjs:76:266,js-attribute,app/library-chat.mjs,76,aria-describedby,unknown,reviewable,,library-chat-status library-chat-count
-candidate:app/library-chat.mjs:162:374,js-attribute,app/library-chat.mjs,162,aria-busy,unknown,reviewable,,true
-candidate:app/library-chat.mjs:162:414,js-attribute,app/library-chat.mjs,162,aria-live,unknown,reviewable,,off
-candidate:app/library-chat.mjs:177:113,js-attribute,app/library-chat.mjs,177,aria-hidden,unknown,reviewable,,true
-candidate:app/library-chat.mjs:300:234,js-attribute,app/library-chat.mjs,300,aria-expanded,unknown,reviewable,,false
-candidate:app/library-chat.mjs:300:294,js-attribute,app/library-chat.mjs,300,aria-expanded,unknown,reviewable,,false
-candidate:app/library-chat.mjs:312:159,js-cjk-literal,app/library-chat.mjs,312,,unknown,reviewable,,Leafhour-对话-
-candidate:app/library-chat.mjs:342:263,js-attribute,app/library-chat.mjs,342,aria-expanded,unknown,reviewable,,false
-candidate:app/library-chat.mjs:368:168,js-attribute,app/library-chat.mjs,368,aria-expanded,unknown,reviewable,,true
+candidate:app/library-chat.mjs:169:374,js-attribute,app/library-chat.mjs,169,aria-busy,unknown,reviewable,,true
+candidate:app/library-chat.mjs:169:414,js-attribute,app/library-chat.mjs,169,aria-live,unknown,reviewable,,off
+candidate:app/library-chat.mjs:184:113,js-attribute,app/library-chat.mjs,184,aria-hidden,unknown,reviewable,,true
+candidate:app/library-chat.mjs:307:234,js-attribute,app/library-chat.mjs,307,aria-expanded,unknown,reviewable,,false
+candidate:app/library-chat.mjs:307:294,js-attribute,app/library-chat.mjs,307,aria-expanded,unknown,reviewable,,false
+candidate:app/library-chat.mjs:313:159,js-cjk-literal,app/library-chat.mjs,313,,unknown,reviewable,,Leafhour-对话-
+candidate:app/library-chat.mjs:343:263,js-attribute,app/library-chat.mjs,343,aria-expanded,unknown,reviewable,,false
+candidate:app/library-chat.mjs:369:168,js-attribute,app/library-chat.mjs,369,aria-expanded,unknown,reviewable,,true
 candidate:app/library-daily-reading.mjs:9:27,js-cjk-literal,app/library-daily-reading.mjs,9,,unknown,reviewable,,每日陪读
 candidate:app/library-daily-reading.mjs:51:172,js-attribute,app/library-daily-reading.mjs,51,aria-hidden,unknown,reviewable,,true
 candidate:app/library-daily-reading.mjs:56:81,js-attribute,app/library-daily-reading.mjs,56,popover,unknown,reviewable,,auto

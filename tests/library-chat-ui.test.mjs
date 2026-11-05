@@ -39,6 +39,71 @@ function setup(t,{handler,billing=false,accountDefault=false,navigate,onViewChan
 }
 function type(el,text){el.value=text;el.dispatchEvent(new Event('input'));}
 
+test('reader reply rests the composer and wakes it without replacing reply or draft nodes',async t=>{
+ const s=setup(t);s.root.classList.add('reader-chat-workspace');
+ s.setTurns([{id:'rested',status:'completed',text:'Why?',answer:{summary:'A direct answer.',sourceRefs:[]}}]);
+ s.chat.open();await flush();const row=s.find('library-chat-turn'),input=s.input(),form=s.find('library-chat-composer');
+ assert.equal(form.hidden,true);assert.equal(s.find('library-chat-wake').hidden,false);
+ s.find('library-chat-wake').click();assert.equal(form.hidden,false);assert.equal(s.doc.activeElement,input);
+ type(input,'A retained draft');s.find('library-chat-messages').dispatchEvent(new Event('wheel'));
+ assert.equal(input.value,'A retained draft');assert.equal(form.hidden,false,'an unsent draft stays available');
+ assert.equal(s.find('library-chat-turn'),row);assert.equal(s.calls.filter(c=>c.payload).length,0);
+ type(input,'');s.external.focus();s.find('library-chat-messages').dispatchEvent(new Event('wheel'));
+ assert.equal(form.hidden,true);s.find('library-chat-wake').click();assert.equal(s.doc.activeElement,input);
+ s.chat.close();s.chat.open();await flush();assert.equal(s.find('library-chat-turn'),row);
+});
+
+test('reader history folds repeated source and long reply depth while keeping the first answer and exact copy',async t=>{
+ const s=setup(t);s.root.classList.add('reader-chat-workspace');
+ const summary='The answer starts here.\n\n'+Array.from({length:8},(_,i)=>`${i+1}. Detailed point ${i+1}`).join('\n');
+ s.setTurns([{id:'depth',status:'completed',text:'Why?',quote:uiQuote(),answer:{summary,sourceRefs:[]}}]);s.chat.open();await flush();
+ const source=s.find('library-chat-selected-snapshot');assert.equal(source.tagName,'DETAILS');assert.equal(source.open,false);
+ const body=s.find('library-chat-markdown'),fold=s.find('library-chat-answer-toggle');
+ assert.equal(body.children[0].hidden,false);assert.equal(body.children[1].hidden,true);assert.equal(fold.getAttribute('aria-expanded'),'false');
+ fold.click();assert.equal(body.children[1].hidden,false);assert.equal(fold.getAttribute('aria-expanded'),'true');
+ source.open=true;await s.chat.refresh();assert.equal(s.find('library-chat-selected-snapshot'),source);assert.equal(source.open,true);assert.equal(body.children[1].hidden,false);
+});
+
+test('resting reader stop restores the cancelled draft and keyboard focus',async t=>{
+ const cancelled=deferred();let running;
+ const old={id:'old',status:'completed',text:'Earlier?',answer:{summary:'An earlier answer.',sourceRefs:[]}};
+ const s=setup(t,{handler:async(url,payload)=>{if(url.endsWith('/cancel'))return cancelled.promise;if(payload){running={...payload,status:'running',answer:null};return running;}return response(running?[old,running]:[old]);}});
+ s.root.classList.add('reader-chat-workspace');s.chat.open();await flush();s.find('library-chat-wake').click();
+ type(s.input(),'A cancellable question');s.find('library-chat-composer').dispatchEvent(new Event('submit',{cancelable:true}));await flush();
+ // This minimal DOM does not dispatch native blur when disabling the input.
+ s.external.focus();s.find('library-chat-messages').dispatchEvent(new Event('wheel'));
+ assert.equal(s.find('library-chat-composer').hidden,true);const stop=s.find('library-chat-resting-stop');assert.equal(stop.hidden,false);
+ stop.focus();stop.click();s.doc.activeElement=s.doc.body;cancelled.resolve({...running,status:'cancelled'});await flush();
+ assert.equal(s.find('library-chat-composer').hidden,false);assert.equal(s.input().value,'A cancellable question');assert.equal(s.doc.activeElement,s.input());
+});
+
+test('folded reader copy keeps raw Markdown and reveals every block before a denied-clipboard selection',async t=>{
+ const s=setup(t);s.root.classList.add('reader-chat-workspace');
+ const summary='Opening **answer**.\n\n'+Array.from({length:8},(_,i)=>`${i+1}. Exact *point* ${i+1}`).join('\n');
+ s.setTurns([{id:'copy-fold',status:'completed',text:'Explain?',answer:{summary,sourceRefs:[]}}]);s.chat.open();await flush();
+ const descriptor=Object.getOwnPropertyDescriptor(globalThis,'navigator');let copied;
+ Object.defineProperty(globalThis,'navigator',{configurable:true,value:{clipboard:{writeText:async text=>{copied=text;}}}});
+ t.after(()=>descriptor?Object.defineProperty(globalThis,'navigator',descriptor):delete globalThis.navigator);
+ s.find('library-chat-copy').click();await flush();assert.equal(copied,summary);assert.equal(s.find('library-chat-markdown').children[1].hidden,true);
+ let selected;s.doc.createRange=()=>({selectNodeContents:element=>selected=element});window.getSelection=()=>({removeAllRanges(){},addRange(){}});
+ navigator.clipboard.writeText=async()=>{throw Error('Permission denied');};s.find('library-chat-copy').click();await flush();
+ assert.equal(selected,s.find('library-chat-markdown'));assert.equal(selected.children[1].hidden,false);assert.equal(s.find('library-chat-answer-toggle').getAttribute('aria-expanded'),'true');
+});
+
+test('global library chat keeps its composer even when it uses workspace containment',async t=>{
+ const s=setup(t,{accountDefault:true,handler:async()=>({...response([{id:'global',status:'completed',text:'Hi',answer:{summary:'Hello.',sourceRefs:[]}}]),bookId:'leafhour-library-chat'})});
+ s.root.classList.add('reader-chat-workspace');s.chat.open();await flush();assert.equal(s.find('library-chat-composer').hidden,false);
+ s.input().focus();s.input().blur=()=>{s.doc.activeElement=s.doc.body;};type(s.input(),'A global draft');s.find('library-chat-messages').dispatchEvent(new Event('wheel'));assert.equal(s.doc.activeElement,s.input());
+});
+
+test('resting reader exposes asynchronous export errors without another render',async t=>{
+ const s=setup(t,{books:[],handler:async(url)=>{if(url.endsWith('/export'))throw Error('Offline');return {...response([{id:'failed-export',status:'completed',text:'Hi',answer:{summary:'Hello.',sourceRefs:[]}}]),bookId:'leafhour-library-chat'};}});
+ s.root.classList.add('reader-chat-workspace');s.chat.open();await flush();assert.equal(s.find('library-chat-composer').hidden,true);
+ s.all().find(n=>n.getAttribute('data-ui')==='export').click();await flush();
+ assert.equal(s.find('library-chat-status-row').hidden,false);assert.equal(s.find('library-chat-status').classList.contains('has-error'),true);assert.equal(s.find('library-chat-composer').hidden,false);
+ s.find('library-chat-messages').dispatchEvent(new Event('wheel'));assert.equal(s.find('library-chat-status-row').hidden,false);assert.equal(s.find('library-chat-composer').hidden,false);
+});
+
 test('live reply grows in one selectable container before completion and only final answers offer copy',async t=>{
  let progress,release,payload;
  const held=new Promise(r=>release=r);t.after(()=>release?.());

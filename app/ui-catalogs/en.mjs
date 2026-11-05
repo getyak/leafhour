@@ -2509,5 +2509,6 @@ export default Object.freeze({
   "bookUpload.imports": "Bringing in your books",
   "bookUpload.parsing": "Organizing chapters · {completed} / {total}",
   "bookUpload.tasks": "Book imports",
-  "bookUpload.saving": "Saving chapters…"
+  "bookUpload.saving": "Saving chapters…",
+  "chat.continue": "Ask a follow-up…"
 });

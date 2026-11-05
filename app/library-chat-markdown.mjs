@@ -85,9 +85,48 @@ function renderChatEvidence(options){
  renderChatReferences({...options,parent:evidence,refs:turn.answer?.sourceRefs});
  renderChatActivity({...options,parent:evidence,completed:true});parent.append(evidence);
 }
-function addAnswerFold({answer,heading,copy,summary,ui,live,t}){
+async function copyAnswer({text,element,control,answer,isDisposed,t}){
+ try{await navigator.clipboard.writeText(text);if(isDisposed())return;control.setAttribute('data-ui','cpd');control.textContent=t('cpd');}
+ catch{if(isDisposed())return;revealAnswer(answer);const range=document.createRange();range.selectNodeContents(element);const selection=window.getSelection();selection.removeAllRanges();selection.addRange(range);control.setAttribute('data-ui','sel');control.textContent=t('sel');}
+}
+
+function revealAnswer(answer){const fold=[...answer.children].find(n=>n.classList.contains('library-chat-answer-toggle'));if(fold?.getAttribute('aria-expanded')==='false')fold.click();}
+
+function renderSelectedSnapshot({quote,question,node,ui,sourceLink,marginal}){const selected=node(marginal?'details':'blockquote','library-chat-selected-snapshot'+(marginal?' library-chat-references':''));selected.open=false;if(marginal)selected.style.cssText='border:0;padding:0;margin:0 0 8px';selected.append(ui(selected.tagName==='DETAILS'?'summary':'p','library-chat-source-label','chat.quote.snapshot'),ui('span','library-chat-source-label',({original:'lo',literal:'ll',interpretive:'li'})[quote.parts[0].layer]));if(quote.parts.some(part=>part.translationStatus==='draft'))selected.append(ui('span','library-chat-source-label','ds'));selected.append(node('p','',quote.parts.map(part=>part.text).join('\n\n')),sourceLink('backToQuote',quote.parts[0].passageId,quote.bookId));question.append(selected);}
+
+function mountRestingComposer({root,frame,form,footer,input,status,statusBar,node,ui,listen,isMarginalNote,getView,hasScope,isComposing,onStop,onLayout}){
+ let awake=false,visible=false;
+ const bar=node('div','library-chat-resting-composer'),wakeButton=ui('button','library-chat-wake library-chat-text-button','chat.continue'),stop=ui('button','library-chat-resting-stop library-chat-text-button','st');
+ bar.style.cssText='display:flex;align-items:center;gap:12px;padding:0 24px;flex:none';wakeButton.style.cssText='flex:1;min-height:48px;text-align:start;font-size:14px';stop.style.minWidth='44px';wakeButton.type=stop.type='button';bar.hidden=wakeButton.hidden=true;bar.append(wakeButton,stop);frame.insertBefore(bar,form);
+ function paint(view,enabled=visible){
+   visible=enabled;
+   const compact=visible&&isMarginalNote()&&!awake&&!isComposing()&&document.activeElement!==input
+     &&view.turns.some(turn=>turn.answer?.summary||turn.partial?.text)
+     &&(!!view.pending||!view.draft&&!view.quote)&&!view.retry&&!view.loadError&&!view.scopePending&&!view.scopeUnconfirmed
+     &&view.data?.available!==false&&hasScope()&&(!view.notice||!!view.pending)&&!status.classList.contains('has-error');
+   root.classList.toggle('is-reading-reply',compact);form.hidden=!visible||compact;footer.hidden=!visible;footer.style.height=compact?'max(8px,env(safe-area-inset-bottom))':'';
+   bar.hidden=wakeButton.hidden=!compact;wakeButton.disabled=!!view.pending;stop.hidden=!view.pending;stop.disabled=view.pending?.status==='stopping';statusBar.hidden=!status.textContent||compact;
+ }
+ function wake(){awake=true;paint(getView());}
+ function rest(){if(!isMarginalNote()||isComposing())return;awake=false;if(document.activeElement===input)input.blur?.();paint(getView());onLayout();}
+ listen(wakeButton,'click',()=>{wake();input.focus({preventScroll:true});onLayout();});listen(stop,'click',onStop);
+ return {paint,wake,rest,reset(){awake=false;}};
+}
+
+function addAnswerFold({answer,heading,copy,summary,ui,live,t,marginal=false}){
+ const body=[...answer.children].find(n=>n.classList.contains('library-chat-markdown'));
+ // Preserve the actual opening paragraph. Older long lists remain intact and
+ // selectable behind one explicit expansion; copying still uses raw Markdown.
+ const preview=marginal&&body?.children[0]?.tagName==='P'?body.children[0]:null;
+ const longList=body&&[...body.children].some(n=>['OL','UL'].includes(n.tagName)&&n.children.length>=5);
+ if(preview&&body.children.length>1&&(summary.length>1200||longList)){
+   const depth=[...body.children].filter(n=>n!==preview),fold=ui('button','library-chat-text-button library-chat-answer-toggle','chat.answer.expand');fold.type='button';fold.setAttribute('aria-expanded','false');
+   preview.hidden=false;for(const n of depth)n.hidden=true;
+   live(fold,'click',()=>{const expanded=fold.getAttribute('aria-expanded')!=='true';for(const n of depth)n.hidden=!expanded;fold.setAttribute('aria-expanded',String(expanded));const id=expanded?'chat.answer.collapse':'chat.answer.expand';fold.setAttribute('data-ui',id);fold.textContent=t(id);});
+   answer.insertBefore(fold,body.nextSibling||copy);return;
+ }
  if(summary.length<=1200)return;
           const content=[...answer.children].filter(n=>n!==heading&&n!==copy&&!n.classList.contains('library-chat-evidence-warning')&&!n.classList.contains('library-chat-evidence')),fold=ui('button','library-chat-text-button library-chat-answer-toggle','chat.answer.collapse');fold.type='button';fold.setAttribute('aria-expanded','true');
           live(fold,'click',()=>{const collapsed=fold.getAttribute('aria-expanded')==='true';for(const n of content)n.hidden=collapsed;fold.setAttribute('aria-expanded',String(!collapsed));const id=collapsed?'chat.answer.expand':'chat.answer.collapse';fold.setAttribute('data-ui',id);fold.textContent=t(id);});answer.append(fold);
         }
-renderChatMarkdown.decorations=Object.freeze({addAnswerFold,activityLabel:(tool,t)=>t('chat.activity.'+activityKey(tool)),renderEvidence:renderChatEvidence,renderReferences:renderChatReferences,renderActivity:renderChatActivity,renderRecommendations:renderChatRecommendations,renderContext:renderChatContext});
+renderChatMarkdown.decorations=Object.freeze({copyAnswer,revealAnswer,renderSelectedSnapshot,mountRestingComposer,addAnswerFold,activityLabel:(tool,t)=>t('chat.activity.'+activityKey(tool)),renderEvidence:renderChatEvidence,renderReferences:renderChatReferences,renderActivity:renderChatActivity,renderRecommendations:renderChatRecommendations,renderContext:renderChatContext});
