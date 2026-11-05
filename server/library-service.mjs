@@ -714,8 +714,9 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
     return {shelf:{...(shelf.order.length?{order:shelf.order.filter(key=>available.has(key))}:{}),...(Object.hasOwn(shelf.archived,id)?{archivedAt:shelf.archived[id]}:{}),...(pinsInitialized?{pinned}:{})}};
   }
   async function exportLibrary(user){requireUser(user);const books=[];for(const row of await allShelfRows(user)){const book=await getBook(user,row.bookId);books.push({book,records:await records(user,row.bookId),...await shelfBackup(user,row.bookId)});}const prefs=await getPreferenceMemory(user);return {kind:'marginalia-library',schemaVersion:1,exportedAt:new Date().toISOString(),books,includesOriginalFiles:false,...(prefs.preferences?{readingPreferences:globalPreferencesMetadata(prefs)}:{})};}
-  async function exportManifest(user){
-    requireUser(user);const rows=await allShelfRows(user);if(rows.length>100)throw fail('单份备份最多容纳100本书，请在本机按书整理后导出。',413);
+  async function exportManifest(user,{accountData=false}={}){
+    requireUser(user);const rows=[...new Map((await allShelfRows(user)).map(row=>[row.bookId,row])).values()];
+    if(rows.length>(accountData?1000:100))throw fail(accountData?'账号导出最多容纳 1000 本书，请在本机分批导出。':'单份备份最多容纳100本书，请在本机按书整理后导出。',413);
     const prefs=await getPreferenceMemory(user);
     return {kind:'marginalia-export-manifest',schemaVersion:1,exportedAt:new Date().toISOString(),books:rows.map(({bookId,contentVersion})=>({bookId,contentVersion})),...(prefs.preferences?{readingPreferences:globalPreferencesMetadata(prefs)}:{})};
   }

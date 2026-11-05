@@ -67,6 +67,8 @@ import {agentReadArgs,scopedAgentRead} from './scoped-agent-reading.mjs';
 import {annotationReadArgs} from './reader-annotation-tools.mjs';
 import {createDailyReadingService} from './daily-reading.mjs';
 import {createRemoteMcp} from './mcp-http.mjs';
+import {createMcpConnectors} from './mcp-connectors.mjs';
+import {portableExportContent,assertPortableContent} from '../app/library-portability.mjs';
 import {createBillingRuntime} from './billing-runtime.mjs';
 import {createBillingRoutes} from './billing-routes.mjs';
 import {createCreditGate} from './credit-gate.mjs';
@@ -133,6 +135,7 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
   // generation happens in this process. The external host owns the heartbeat.
   const dailyReading=createDailyReadingService({library,dataDir:path.join(dataDir,'library','daily'),dataStore});
   const portability=createLibraryPortability({library,chat,store:ingestionStore});
+  const connectors=createMcpConnectors({store:ingestionStore,dataDir:path.join(dataDir,'mcp-connectors'),env});
   const remoteMcp=createRemoteMcp({origin:publicOrigin,dataDir:path.join(dataDir,'mcp'),dataStore,library,auth,annotations:chat.annotations,people,peopleGrants,generation:peopleGeneration});
   let legacyBook=null;
   const audioLibrary={getBook:(owner,id)=>owner?.id==='legacy-local'&&legacyBook?.bookId===id?Promise.resolve(legacyBook):library.getBook(owner,id)};
@@ -245,7 +248,7 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
       res.setHeader('Cache-Control',p.startsWith('/reader-web/')?'public, max-age=31536000, immutable':'no-cache');if(p==='/reading-worker.js')res.setHeader('Service-Worker-Allowed','/');if(generatedFile==='offline-reader.html')res.setHeader('Content-Security-Policy',contentSecurityPolicy('/read',env));
       res.statusCode=200;res.setHeader('Content-Type',type+'; charset=utf-8');res.setHeader('Content-Length',bytes.length);res.end(req.method==='HEAD'?undefined:bytes);return true;
     }
-    for(const file of ['reading-workspace.mjs','reading-workspace-state.mjs','reading-workspace.css'])files['/'+file]=file;
+    for(const file of ['reading-workspace.mjs','reading-workspace-state.mjs','reading-workspace.css','account-tools.mjs','account-export.mjs'])files['/'+file]=file;
     if(!isAPI&&!files[p])return false;
     if(isAPI||p==='/billing'||p==='/admin/billing'||p==='/source-review'||p==='/library'||p==='/gift-preview'||safeGiftReturn(p))res.setHeader('X-Robots-Tag','noindex, nofollow, noarchive');
     if(!isAPI&&(p==='/'||p==='/library')){
@@ -299,11 +302,11 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
     if(p==='/api/auth/logout'&&req.method==='POST'){await jsonBody(req,4096);try{await auth.logout(token,{expectedOwner:req.headers['x-reader-owner']});if(/^[A-Za-z0-9_-]{43}$/.test(token||''))await people.fenceWrites();}catch(error){if(error.readerSessionChanged)res.setHeader('X-Reader-Session-Changed','1');throw error;}res.setHeader('Set-Cookie',`marginalia_session=; HttpOnly; SameSite=Strict; Path=/; Max-Age=0${publicOrigin?.startsWith('https:')?'; Secure':''}`);send(200,{signedOut:true});return true;}
     const user=req.method==='GET'&&p.startsWith('/api/book-gifts/')?null:await auth.userFor(token);
     requestState.user=user;
-    const ownerScoped=p==='/api/people'||p.startsWith('/api/people/')||p.startsWith('/api/billing/')||p.startsWith('/api/admin/billing')||p.startsWith('/api/library')||p==='/api/account/preference-memory'||p==='/api/account/reading-preferences'||p==='/api/account/ui-preferences'||p==='/api/account/observability'||p==='/api/account/observability/events'||req.method==='POST'&&(p==='/api/account/profile'||/^\/api\/book-gifts\/[^/]+\/(?:accept|revoke)$/.test(p));
+    const ownerScoped=p==='/api/people'||p.startsWith('/api/people/')||p.startsWith('/api/billing/')||p.startsWith('/api/admin/billing')||p.startsWith('/api/library')||p.startsWith('/api/account/')||req.method==='POST'&&/^\/api\/book-gifts\/[^/]+\/(?:accept|revoke)$/.test(p);
     if(ownerScoped&&req.headers['x-reader-owner']&&req.headers['x-reader-owner']!==(user?.id||'guest')){res.setHeader('X-Reader-Session-Changed','1');throw fail('账户已切换，请重新进入书房。原账户草稿仍留在原处。',409);}
     // Large original fallback is authenticated before accepting its JSON body.
     if(p==='/api/library/upload'&&req.method==='POST'&&!user)throw fail('请先进入自己的书房',401);
-    const body=req.method==='POST'?await jsonBody(req,p==='/api/library/reading-guide'?24576:p==='/api/library/upload'?Math.ceil(MAX_FILE_BYTES/3)*4+4096:p==='/api/library/chat'||p.startsWith('/api/library/chat/')||p==='/api/library/local-chat'||p.startsWith('/api/library/local-chat/')||/^\/api\/library\/books\/[^/]+\/chat$/.test(p)?4*1024*1024:p==='/api/library/notebook-workspace/analyze'?32768:p==='/api/library/notebook-workspace/import'?3*1024*1024:p==='/api/library/notebook-workspace'?16384:p.startsWith('/api/people')?1024*1024:p.startsWith('/api/billing/')?4*1024*1024:p==='/api/account/observability/events'?16*1024:p==='/api/account/observability'?1024:p==='/api/account/ui-preferences'?4*1024:['/api/account/reading-preferences','/api/account/preference-memory'].includes(p)?8*1024:p.startsWith('/api/library/daily-reading')||p.startsWith('/api/agent/daily-')?8*1024:p.startsWith('/api/auth/')||p.startsWith('/api/book-gifts/')||p.endsWith('/introduction')?4096:p.startsWith('/api/library/restore/')?2*1024*1024:p==='/api/account/profile'?160*1024:p.endsWith('/audio/import')||p.endsWith('/audio/validate')?32*1024*1024:['/api/library/import','/api/library/validate'].includes(p)?200*1024*1024:29*1024*1024):null;
+    const body=req.method==='POST'?await jsonBody(req,p.startsWith('/api/account/mcp-connectors')?65536:p==='/api/library/reading-guide'?24576:p==='/api/library/upload'?Math.ceil(MAX_FILE_BYTES/3)*4+4096:p==='/api/library/chat'||p.startsWith('/api/library/chat/')||p==='/api/library/local-chat'||p.startsWith('/api/library/local-chat/')||/^\/api\/library\/books\/[^/]+\/chat$/.test(p)?4*1024*1024:p==='/api/library/notebook-workspace/analyze'?32768:p==='/api/library/notebook-workspace/import'?3*1024*1024:p==='/api/library/notebook-workspace'?16384:p.startsWith('/api/people')?1024*1024:p.startsWith('/api/billing/')?4*1024*1024:p==='/api/account/observability/events'?16*1024:p==='/api/account/observability'?1024:p==='/api/account/ui-preferences'?4*1024:['/api/account/reading-preferences','/api/account/preference-memory'].includes(p)?8*1024:p.startsWith('/api/library/daily-reading')||p.startsWith('/api/agent/daily-')?8*1024:p.startsWith('/api/auth/')||p.startsWith('/api/book-gifts/')||p.endsWith('/introduction')?4096:p.startsWith('/api/library/restore/')?2*1024*1024:p==='/api/account/profile'?160*1024:p.endsWith('/audio/import')||p.endsWith('/audio/validate')?32*1024*1024:['/api/library/import','/api/library/validate'].includes(p)?200*1024*1024:29*1024*1024):null;
     if(p==='/api/billing/account'&&user)await creditGate.recover(user);
     if(await billingRoutes.handle({req,res,url,user,body,send}))return true;
     const localAllowed=allowLocal&&['127.0.0.1','::1','::ffff:127.0.0.1'].includes(req.socket.remoteAddress)&&!publicOrigin;
@@ -394,7 +397,37 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
       else send(200,await observability.setConsent(user,body));
       return true;
     }
+    if(p==='/api/account/profile'&&req.method==='GET'){res.setHeader('Cache-Control','private, no-store');send(200,await profile.get(user));return true;}
     if(p==='/api/account/profile'&&req.method==='POST'){send(200,await profile.save(user,body));return true;}
+    if(p==='/api/account/export/manifest'&&req.method==='GET'){res.setHeader('Cache-Control','private, no-store');send(200,await library.exportManifest(user,{accountData:true}));return true;}
+    if(p==='/api/account/export'||p==='/api/account/settings/export'){
+      if(req.method!=='GET')throw fail('不支持这个请求',405);
+      if(!user)throw fail('请先登录',401);
+      if(req.headers['x-reader-owner']!==user.id)throw fail('请重新核对当前账号',409);
+      const settings=portableExportContent({kind:'leafhour-settings',schemaVersion:1,exportedAt:new Date().toISOString(),profile:await profile.get(user),reading:await library.getReadingPreferences(user),preferenceMemory:await library.getPreferenceMemory(user),interface:await uiPreferences.get(user),privacy:await observability.config(user),externalMcpServers:await connectors.list(user)});
+      const value=p==='/api/account/settings/export'?settings:portableExportContent({kind:'leafhour-account-data',schemaVersion:1,settings,libraryChat:await chat.exportLibraryHistory(user),notebookWorkspace:await readingWorkspace.exportState(user),dailyReading:await dailyReading.view(user),people:await people.exportPersonalData(user)});
+      assertPortableContent(value);res.setHeader('Cache-Control','private, no-store');res.setHeader('Content-Disposition','attachment; filename="'+(p.includes('/settings/')?'leafhour-settings':'leafhour-account-data')+'.json"');await sendChat(200,value);return true;
+    }
+    if(p==='/api/account/mcp-server'){
+      if(req.method!=='GET')throw fail('不支持这个请求',405);
+      if(!user)throw fail('请先登录',401);
+      res.setHeader('Cache-Control','private, no-store');send(200,{url:publicOrigin?publicOrigin+'/api/mcp':null,authentication:'OAuth 2.1',grants:(await library.grants(user)).filter(grant=>!grant.scopes.includes('daily:deliver'))});return true;
+    }
+    if(p==='/api/account/mcp-connectors'||p.startsWith('/api/account/mcp-connectors/')){
+      if(!user)throw fail('请先登录',401);
+      if(req.headers['x-reader-owner']!==user.id)throw fail('请重新核对当前账号',409);
+      res.setHeader('Cache-Control','private, no-store');
+      if(p==='/api/account/mcp-connectors'){
+        if(req.method==='GET')send(200,{connections:await connectors.list(user)});
+        else if(req.method==='POST')send(201,await connectors.add(user,body));else throw fail('不支持这个请求',405);
+      }else{
+        const match=p.match(/^\/api\/account\/mcp-connectors\/([a-f0-9-]{36})\/(tools|call|remove)$/);
+        if(!match)throw fail('找不到这个连接',404);const [,id,action]=match;
+        if(action==='tools'&&req.method==='GET')send(200,await connectors.tools(user,id));
+        else if(action==='call'&&req.method==='POST')send(200,await connectors.call(user,id,body));
+        else if(action==='remove'&&req.method==='POST')send(200,await connectors.remove(user,id));else throw fail('不支持这个请求',405);
+      }return true;
+    }
     if(p==='/api/auth/oauth'&&req.method==='POST'){
       if(typeof auth.beginOAuth!=='function')throw authFailure("auth.error.providerPreparing",'这个登录方式正在准备中',503);
       if(flowToken)await auth.cancelOAuth(flowToken);

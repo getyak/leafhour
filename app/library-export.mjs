@@ -11,11 +11,11 @@ export async function readExportResource({api,url,assertCurrent=()=>{},pause=ms=
     catch(error){assertCurrent();if(attempt===2||!([408,500,502,503,504].includes(error.status)||error.retryable===true&&(error.status===undefined||error.status>=200&&error.status<300)))throw error;await pause(attempt===0?200:600);assertCurrent();}
   }
 }
-export async function exportLibraryInParts({api,assertCurrent=()=>{},onProgress=()=>{},partAction='export-part',maxTotalBytes=512*1024*1024,pause}){
+export async function exportLibraryInParts({api,assertCurrent=()=>{},onProgress=()=>{},partAction='export-part',manifestURL='/api/library/export/manifest',maxBooks=100,maxTotalBytes=512*1024*1024,pause}){
   if(!globalThis.crypto?.subtle?.digest)throw Error('当前连接无法校验备份，请使用HTTPS或本机localhost打开书房后再导出。');
   const read=url=>readExportResource({api,url,assertCurrent,pause});
-  assertCurrent();const manifest=await read('/api/library/export/manifest');assertCurrent();
-  if(manifest?.kind!=='marginalia-export-manifest'||manifest.schemaVersion!==1||!Number.isFinite(Date.parse(manifest.exportedAt))||!Array.isArray(manifest.books)||manifest.books.length>100)throw invalid();
+  assertCurrent();const manifest=await read(manifestURL);assertCurrent();
+  if(!Number.isInteger(maxBooks)||maxBooks<1||maxBooks>1000||manifest?.kind!=='marginalia-export-manifest'||manifest.schemaVersion!==1||!Number.isFinite(Date.parse(manifest.exportedAt))||!Array.isArray(manifest.books)||manifest.books.length>maxBooks)throw invalid();
   const seen=new Set();for(const book of manifest.books){if(!/^[A-Za-z0-9_-]{1,128}$/.test(book?.bookId)||seen.has(book.bookId)||typeof book.contentVersion!=='string'||!book.contentVersion||book.contentVersion.length>256)throw invalid();seen.add(book.bookId);}
   let cumulativeBytes=0;
   const backup={kind:'marginalia-library',schemaVersion:1,exportedAt:manifest.exportedAt,books:[],includesOriginalFiles:false,...(manifest.readingPreferences!==undefined?{readingPreferences:manifest.readingPreferences}:{})};
@@ -41,5 +41,10 @@ export async function exportLibraryInParts({api,assertCurrent=()=>{},onProgress=
     }
     cumulativeBytes+=new TextEncoder().encode(JSON.stringify(entry)).length;backup.books.push(entry);
   }
-  assertCurrent();validateLibraryBackup(backup);return backup;
+  assertCurrent();
+  // Account JSON is not a single legacy restore archive. Validate every entry
+  // in bounded groups while retaining the cumulative byte bound above.
+  if(maxBooks<=100)validateLibraryBackup(backup);
+  else for(let offset=0;offset<Math.max(1,backup.books.length);offset+=100)validateLibraryBackup({...backup,books:backup.books.slice(offset,offset+100)});
+  return backup;
 }
