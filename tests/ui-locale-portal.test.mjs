@@ -171,7 +171,7 @@ test('saving, confirming and deleting reading preferences preserves explicit she
 test('a login entry settles on identity even when the shelf fails and never reopens after logout',async()=>{
  for(const initiallySignedIn of [false,true]){
   let opened=0;
-  const context={accountStateEpoch:0,accountForeground:null,refreshGeneration:0,identityResolved:false,pendingAuthEntry:true,session:null,pendingUpload:false,pendingChat:false,
+  const context={sessionActivity:{update:async()=>false},accountStateEpoch:0,accountForeground:null,refreshGeneration:0,identityResolved:false,pendingAuthEntry:true,session:null,pendingUpload:false,pendingChat:false,
    ownerScope:createOwnerScope(),homeMenu:null,isLibrary:true,entryQuery:new URLSearchParams('login=1'),
    workspaceBootState(){},dashboard:{begin(){},fail(){}},adoptUiOwner(){},deviceBookStore:()=>({adopt:async()=>{}}),
    clearPrivateUI(){},authDialog:{isSettingPasswordFor:()=>false,updateCapabilities(){}},shell:null,
@@ -188,7 +188,7 @@ test('opening and refreshing an account never replaces the explicit shelf view w
  for(const firstEntry of [true,false]){
   const explicit={query:'kept',topic:'history',language:'en',form:'translated'},session={user:{id:'reader'},readingPreferences:{preferences:{preferredLanguage:'zh'}},preferenceMemory:{revision:2,memory:{topic:'philosophy',sources:{mode:{source:'settings'}}},preferences:{mode:'en'}}};
   let renders=0;
-  const context={workspaceBootState(){},ensureReadingWorkspace:async()=>null,libraryArrival:null,personalizationPending:false,requestAnimationFrame(){},refreshGeneration:0,isLibrary:true,pendingAuthEntry:false,identityResolved:!firstEntry,ownerScope:createOwnerScope(firstEntry?'guest':'reader'),session,books:[],shelfRevision:0,pendingUpload:false,pendingChat:false,bootstrapped:false,
+  const context={sessionActivity:{update:async()=>false},workspaceBootState(){},ensureReadingWorkspace:async()=>null,libraryArrival:null,personalizationPending:false,requestAnimationFrame(){},refreshGeneration:0,isLibrary:true,pendingAuthEntry:false,identityResolved:!firstEntry,ownerScope:createOwnerScope(firstEntry?'guest':'reader'),session,books:[],shelfRevision:0,pendingUpload:false,pendingChat:false,bootstrapped:false,
    dashboard:{begin:()=>1,update(){},fail(){}},homeMenu:null,adoptUiOwner(){},deviceBookStore:()=>({adopt:async()=>{}}),prepareOfflineResources:async()=>false,
    authDialog:{updateCapabilities(){},isSettingPasswordFor:()=>false},clearPrivateUI(options){assert.equal(options.preserveView,true,'first identity keeps the incoming explicit URL');},
    shell:{update(){},refreshDaily(){}},setupInvite:{update(){}},

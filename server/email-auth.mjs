@@ -3,6 +3,7 @@ import path from 'node:path';
 import {randomBytes,randomInt,randomUUID} from 'node:crypto';
 import {digest} from './document-import.mjs';
 import {normalizeAuthEmail,OTP_POLICY,authFailure} from './auth-policy.mjs';
+import {sessionState,sessionMaxAge,renewSession} from './auth-session-policy.mjs';
 
 export async function smtpSender(env=process.env){
   if(!env.READER_SMTP_HOST||!env.READER_SMTP_FROM)return null;
@@ -16,7 +17,7 @@ export async function createEmailAuth({dataDir,sendCode=null,clock=Date.now}={})
   const read=async()=>{try{return JSON.parse(await readFile(file,'utf8'));}catch(e){if(e.code==='ENOENT')return {codes:{},sessions:[]};throw e;}};
   const mutate=operation=>{const work=queue.catch(()=>{}).then(async()=>{const data=await read(),result=await operation(data);const pending=file+'.pending';await writeFile(pending,JSON.stringify(data),{mode:0o600});await rename(pending,file);return result;});queue=work;return work;};
   const emailOf=normalizeAuthEmail;
-  const session=(data,user)=>{const token=randomBytes(32).toString('base64url');data.sessions=data.sessions.filter(s=>s.expiresAt>clock());data.sessions.push({tokenHash:digest(token),user,expiresAt:clock()+7*86400000});return {token,user};};
+  const session=(data,user,{client='web'}={})=>{const token=randomBytes(32).toString('base64url');data.sessions=data.sessions.filter(s=>s.expiresAt>clock());const row={tokenHash:digest(token),user,...sessionState(clock(),client)};data.sessions.push(row);return {token,user,maxAge:sessionMaxAge(client),expiresAt:row.expiresAt};};
   async function requestCode(value){
     const email=emailOf(value);if(!sendCode)throw authFailure("auth.error.emailUnconfigured",'邮箱服务尚未配置。现在可以试读，或进入本机书房。',503);
     return mutate(async data=>{
@@ -29,14 +30,15 @@ export async function createEmailAuth({dataDir,sendCode=null,clock=Date.now}={})
       data.codes[key]={salt,codeHash:digest(salt+code),requestedAt:clock(),expiresAt:clock()+600000,attempts:0};data.requests.push(clock());return {sent:true,expiresIn:600,retryAfter:60};
     });
   }
-  async function verifyCode(value,code){
+  async function verifyCode(value,code,_purpose='login',options={}){
     const email=emailOf(value);if(typeof code!=='string'||!/^\d{6}$/.test(code))throw authFailure("auth.error.codeSixDigits",'请输入邮件里的六位验证码');
     // Persist failed attempts before returning an error, including across process restarts.
-    const result=await mutate(data=>{const key=digest(email),row=data.codes[key];if(!row||row.expiresAt<=clock()||row.attempts>=5)return {error:true};row.attempts++;if(row.codeHash!==digest(row.salt+code))return {error:true};delete data.codes[key];return session(data,{id:'email-'+digest(email),email,kind:'email'});});
+    const result=await mutate(data=>{const key=digest(email),row=data.codes[key];if(!row||row.expiresAt<=clock()||row.attempts>=5)return {error:true};row.attempts++;if(row.codeHash!==digest(row.salt+code))return {error:true};delete data.codes[key];return session(data,{id:'email-'+digest(email),email,kind:'email'},options);});
     if(result.error)throw authFailure("auth.error.codeInvalid",'验证码不正确或已过期，请重新获取');return result;
   }
-  async function localSession(){return mutate(data=>session(data,{id:'local-owner',email:null,kind:'local'}));}
+  async function localSession(options={}){return mutate(data=>session(data,{id:'local-owner',email:null,kind:'local'},options));}
   async function userFor(token){if(typeof token!=='string'||token.length>128)return null;await queue.catch(()=>{});return (await read()).sessions.find(s=>s.tokenHash===digest(token)&&s.expiresAt>clock())?.user||null;}
+  async function touchSession(token,{client='web',expectedOwner}={}){if(typeof token!=='string'||!token||token.length>128)return null;return mutate(data=>{const row=data.sessions.find(s=>s.tokenHash===digest(token)&&s.expiresAt>clock());if(!row)return null;if(expectedOwner&&row.user.id!==expectedOwner)throw Object.assign(authFailure('auth.error.generic','账户已切换，请重新进入书房',409),{readerSessionChanged:true});return renewSession(row,clock(),client);});}
   async function logout(token,{expectedOwner}={}){return mutate(data=>{const row=data.sessions.find(s=>s.tokenHash===digest(token||''));if(expectedOwner&&row?.user?.id&&row.user.id!==expectedOwner)throw Object.assign(authFailure("auth.error.generic",'账户已切换，请重新进入书房。原账户草稿仍留在原处。',409),{readerSessionChanged:true});data.sessions=data.sessions.filter(s=>s.tokenHash!==digest(token||''));});}
-  return {requestCode,verifyCode,localSession,userFor,logout,capabilities:async()=>({email:!!sendCode,providers:{google:false,apple:false},otp:{...OTP_POLICY}}),emailAvailable:!!sendCode};
+  return {requestCode,verifyCode,localSession,userFor,logout,touchSession,capabilities:async()=>({email:!!sendCode,providers:{google:false,apple:false},otp:{...OTP_POLICY}}),emailAvailable:!!sendCode};
 }

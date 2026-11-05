@@ -155,7 +155,7 @@ export function createHostedNativeAuth({store,env,clock,request,capabilities,cre
      if(!active(row)||row.user.id!==claimed.ownerID||row.user.email!==claimed.parentEmail)throw nativeOAuthFailure('account_changed',409);
      row.user=visible(linkedUser);return row.user;
     });result={token,user};
-   }else result=await createSession(claimed.providerSession);
+   }else result=await createSession(claimed.providerSession,false,{client:'ios'});
    await store.mutate(path,{},row=>{
     if(!live(row)||row.status!=='exchanging'||row.exchangeMarker!==marker)throw nativeOAuthFailure(row.cancelled?'cancelled':'expired');
     row.status='complete';delete row.exchangeMarker;delete row.codeChallenge;

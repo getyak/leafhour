@@ -1,4 +1,5 @@
 import {LOCAL_CHAT_ID} from './local-reader-chat.mjs';
+import {sessionCookie,sessionClient} from './auth-session-policy.mjs';
 import {gzipSync} from 'node:zlib';
 import {once} from 'node:events';
 import {createReadingWorkspaceService} from './reading-workspace-service.mjs';
@@ -203,6 +204,7 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
     for(const file of ['home-atmosphere.css','home-atmosphere.mjs','brand-assets/sunlit-room.webp','brand-assets/foliage-canopy.webp'])files['/'+file]=file;
     files['/reading-session-record.mjs']='reading-session-record.mjs';
     for(const file of ['reading-time-policy.mjs','reading-manual.mjs','reading-manual-ui.mjs'])files['/'+file]=file;
+    files['/auth-session-activity.mjs']='auth-session-activity.mjs';
     files['/reading-toolbar.mjs']='reading-toolbar.mjs';
     files['/reading-tool-focus.mjs']='reading-tool-focus.mjs';
     for(const file of ['library-notebook.mjs', 'library-notebook-state.mjs', 'library-notebook.css', 'reading-journal.mjs', 'reading-journal.css', 'paper-companion.mjs', 'reading-hub.mjs', 'reading-hub.css', 'reader-style-ready.mjs', 'reader-loading.mjs'])files['/'+file]=file;
@@ -290,7 +292,7 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
         else{session=await auth.finishOAuth(flowToken,url.searchParams.get('code'));next=session.next;}
       }catch(error){errorCode=error.status>=500?'unavailable':'expired';returnTo=await auth.cancelOAuth(flowToken).catch(()=>null);}
       if(!session)next=authFailureReturn(returnTo,errorCode);
-      const cookies=[setFlow('')];if(session)cookies.push(`marginalia_session=${session.token}; HttpOnly; SameSite=Strict; Path=/; Max-Age=604800; Secure`);
+      const cookies=[setFlow('')];if(session)cookies.push(sessionCookie(session.token,{secure:true}));
       res.setHeader('Set-Cookie',cookies);res.setHeader('Cache-Control','private, no-store');res.setHeader('Referrer-Policy','no-referrer');res.setHeader('Location',new URL(next,publicOrigin).href);res.statusCode=303;res.end();return true;
     }
     const token=cookieToken(req);
@@ -316,7 +318,15 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
       else throw fail('不支持这个语音操作',405);
       return true;
     }
-    const setSession=value=>res.setHeader('Set-Cookie',`marginalia_session=${value}; HttpOnly; SameSite=Strict; Path=/; Max-Age=${value?604800:0}${publicOrigin?.startsWith('https:')?'; Secure':''}`);
+    const setSession=value=>res.setHeader('Set-Cookie',sessionCookie(value,{secure:publicOrigin?.startsWith('https:')}));
+    if(p==='/api/auth/session/activity'&&req.method==='POST'){
+      if(!user)throw fail('请先进入自己的书房',401);
+      if(req.headers['x-reader-owner']!==user.id){res.setHeader('X-Reader-Session-Changed','1');throw fail('账户已切换，请重新进入书房',409);}
+      if(typeof auth.touchSession!=='function')throw fail('登录更新正在准备中，请稍后重试',503);
+      const renewed=await auth.touchSession(token,{client:sessionClient(body.client),expectedOwner:user.id});
+      if(!renewed)throw fail('登录已失效，请重新进入',401);
+      res.setHeader('Cache-Control','private, no-store');send(200,renewed);return true;
+    }
     if(p==='/api/people'||p.startsWith('/api/people/')){
       if(req.method==='POST'&&!user?.id)throw fail('请先进入自己的书房。',401);
       if(req.method==='POST'&&req.headers['x-reader-owner']!==user.id)throw fail('请重新核对当前书房账户。',409);
@@ -390,14 +400,14 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
       if(flowToken)await auth.cancelOAuth(flowToken);
       const flow=await auth.beginOAuth(body.provider,body.next);res.setHeader('Set-Cookie',setFlow(flow.transactionToken));send(200,{url:flow.authorizeUrl});return true;
     }
-    if(p==='/api/auth/password'&&req.method==='POST'){if(typeof auth.signInPassword!=='function')throw authFailure("auth.error.passwordDisabled",'此书房尚未开启密码登录，可以使用验证码或本机书房',503);const session=await auth.signInPassword(body.email,body.password);setSession(session.token);send(200,{user:session.user});return true;}
+    if(p==='/api/auth/password'&&req.method==='POST'){if(typeof auth.signInPassword!=='function')throw authFailure("auth.error.passwordDisabled",'此书房尚未开启密码登录，可以使用验证码或本机书房',503);const session=await auth.signInPassword(body.email,body.password,{client:sessionClient(body.client)});setSession(session.token);send(200,{user:session.user});return true;}
     if(p==='/api/auth/password/setup'&&req.method==='POST'){if(typeof auth.setPassword!=='function')throw authFailure("auth.error.setupDisabled",'此书房尚未开启密码设置',503);send(200,await auth.setPassword(token,body.password,body.setupToken));return true;}
     if(['/api/auth/code','/api/auth/verify'].includes(p)&&req.method==='POST'){
       const purpose=authPurpose(body.purpose);if(purpose!=='login'&&typeof auth.setPassword!=='function')throw authFailure("auth.error.setupDisabled",'此书房尚未开启密码设置',503);
       if(p==='/api/auth/code'){send(200,await auth.requestCode(body.email,purpose));return true;}
-      const session=await auth.verifyCode(body.email,body.code,purpose);setSession(session.token);send(200,{user:session.user,...(session.passwordSetup?{passwordSetup:true,passwordSetupToken:session.passwordSetupToken}:{})});return true;
+      const session=await auth.verifyCode(body.email,body.code,purpose,{client:sessionClient(body.client)});setSession(session.token);send(200,{user:session.user,...(session.passwordSetup?{passwordSetup:true,passwordSetupToken:session.passwordSetupToken}:{})});return true;
     }
-    if(p==='/api/auth/local'&&req.method==='POST'){if(!localAllowed)throw fail('本机书房只在本机模式可用',403);const session=await auth.localSession();setSession(session.token);send(200,{user:session.user});return true;}
+    if(p==='/api/auth/local'&&req.method==='POST'){if(!localAllowed)throw fail('本机书房只在本机模式可用',403);const session=await auth.localSession({client:sessionClient(body.client)});setSession(session.token);send(200,{user:session.user});return true;}
     if(p==='/api/library'&&req.method==='GET'){
       if(url.searchParams.get('view')==='account'){const snapshot=await library.accountShelf(user);send(200,{...snapshot,user:await visibleUser(user)});return true;}
       const view=await shelfView(user,owner=>library.list(owner,{metadataOnly:url.searchParams.get('view')==='books'}));send(200,{books:view.books,user:await visibleUser(user),shelfRevision:view.revision});return true;

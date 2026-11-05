@@ -56,6 +56,15 @@ public actor CloudLibraryClient {
     private let session: URLSession
     private var credential: CloudCredential?
     private var generation = UUID()
+    private struct SessionActivityAttempt {
+        let id: UUID
+        let generation: UUID
+        let ownerID: String
+        let token: String
+        let date: Date
+        var inFlight: Bool
+    }
+    private var sessionActivityAttempt: SessionActivityAttempt?
     private struct NativePending {
         let flow: NativeOAuthFlow
         let generation: UUID
@@ -77,6 +86,31 @@ public actor CloudLibraryClient {
     }
     public func savedCredential() -> CloudCredential? { credential }
     public func activeAccount() -> CloudAccount? { credential?.account }
+    /// Only explicit foreground activity extends a session. Failed attempts also
+    /// observe the cooldown so an expired session cannot retry on every gesture.
+    @discardableResult
+    public func recordSessionActivity(ownerID: String, now: Date = Date()) async throws -> Bool {
+        try Task.checkCancellation()
+        guard let credential, credential.account.id == ownerID else { throw Self.changed() }
+        let marker = generation
+        if let previous = sessionActivityAttempt,
+           previous.generation == marker, previous.ownerID == ownerID, previous.token == credential.token,
+           previous.inFlight || now.timeIntervalSince(previous.date) < 300 { return false }
+        let attempt = UUID()
+        sessionActivityAttempt = SessionActivityAttempt(id: attempt, generation: marker, ownerID: ownerID, token: credential.token, date: now, inFlight: true)
+        defer { if sessionActivityAttempt?.id == attempt { sessionActivityAttempt?.inFlight = false } }
+        let bytes = try await data(path: "/api/auth/session/activity", method: "POST", body: CloudJSON.encode(["client": .string("ios")]), ownerID: ownerID)
+        try Task.checkCancellation()
+        guard marker == generation, self.credential?.account.id == ownerID, self.credential?.token == credential.token else { throw Self.changed() }
+        let receipt = try CloudJSON.decode(bytes)
+        guard Self.account(receipt["user"])?.id == ownerID,
+              let expiresAt = receipt["expiresAt"].number, expiresAt.isFinite,
+              expiresAt > now.timeIntervalSince1970 * 1000,
+              receipt["maxAge"].number == 7_776_000 else {
+            throw CloudRequestError(status: 502, message: "登录活动尚未确认，已保留本机书籍与记录。")
+        }
+        return true
+    }
     public func restore() async throws -> CloudAccount? {
         let expected = credential?.account.id
         let value = try CloudJSON.decode(await data(path: "/api/auth/session"))
@@ -91,7 +125,7 @@ public actor CloudLibraryClient {
         nativeStartingID = nil; nativePending = nil
         credential = nil; generation = UUID()
         let marker = generation
-        let (bytes, response) = try await perform(path: "/api/auth/password", method: "POST", body: CloudJSON.encode(["email": .string(email), "password": .string(password)]), ownerID: nil)
+        let (bytes, response) = try await perform(path: "/api/auth/password", method: "POST", body: CloudJSON.encode(["email": .string(email), "password": .string(password), "client": .string("ios")]), ownerID: nil)
         guard marker == generation else { throw Self.changed() }
         let value = try CloudJSON.decode(bytes)
         guard let account = Self.account(value["user"]), UUID(uuidString: account.id) != nil,
@@ -108,7 +142,7 @@ public actor CloudLibraryClient {
         nativeStartingID = nil; nativePending = nil
         credential = nil; generation = UUID()
         let marker = generation
-        let (bytes, response) = try await perform(path: "/api/auth/verify", method: "POST", body: CloudJSON.encode(["email": .string(email), "code": .string(code), "purpose": .string("login")]), ownerID: nil)
+        let (bytes, response) = try await perform(path: "/api/auth/verify", method: "POST", body: CloudJSON.encode(["email": .string(email), "code": .string(code), "purpose": .string("login"), "client": .string("ios")]), ownerID: nil)
         guard marker == generation else { throw Self.changed() }
         let value = try CloudJSON.decode(bytes)
         guard let account = Self.account(value["user"]), UUID(uuidString: account.id) != nil,

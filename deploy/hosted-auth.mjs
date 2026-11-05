@@ -3,6 +3,7 @@ import {createHostedNativeAuth,nativeOAuthFailure} from './hosted-native-auth.mj
 import {digest} from '../server/document-import.mjs';
 import {providerProfile} from '../server/account-profile.mjs';
 import {normalizeAuthEmail,OTP_POLICY,safeAuthReturn,authPurpose,validateAuthPassword,authFailure} from '../server/auth-policy.mjs';
+import {sessionState,sessionMaxAge,renewSession} from '../server/auth-session-policy.mjs';
 
 const wait=ms=>new Promise(resolve=>setTimeout(resolve,ms));
 const validToken=token=>typeof token==='string'&&/^[A-Za-z0-9_-]{43}$/.test(token);
@@ -57,16 +58,16 @@ export function createHostedAuth({store,env=process.env,fetcher=fetch,clock=Date
     if(typeof data?.user?.id!=='string'||!data.access_token||!data.refresh_token||!Number.isFinite(data.expires_in)||data.expires_in<=0)throw authFailure("auth.error.unconfirmed",'登录信息未能确认，请重新尝试',502);
     return {user:visible(data.user),access:data.access_token,refresh:data.refresh_token,accessExpiresAt:clock()+data.expires_in*1000};
   }
-  async function createSession(data,passwordSetup=false){
-    const token=randomBytes(32).toString('base64url'),setupToken=passwordSetup?randomBytes(32).toString('base64url'):null,row={...providerTokens(data),expiresAt:clock()+7*86400000,...(passwordSetup?{passwordSetupUntil:clock()+600000,passwordSetupHash:digest(setupToken)}:{})};
-    await store.mutate(sessionKey(token),{},saved=>Object.assign(saved,row));return {token,user:row.user,...(passwordSetup?{passwordSetup:true,passwordSetupToken:setupToken}:{})};
+  async function createSession(data,passwordSetup=false,{client='web'}={}){
+    const token=randomBytes(32).toString('base64url'),setupToken=passwordSetup?randomBytes(32).toString('base64url'):null,row={...providerTokens(data),...sessionState(clock(),client),...(passwordSetup?{passwordSetupUntil:clock()+600000,passwordSetupHash:digest(setupToken)}:{})};
+    await store.mutate(sessionKey(token),{},saved=>Object.assign(saved,row));return {token,user:row.user,maxAge:sessionMaxAge(client),expiresAt:row.expiresAt,...(passwordSetup?{passwordSetup:true,passwordSetupToken:setupToken}:{})};
   }
-  async function verifyCode(value,code,purpose='login'){
+  async function verifyCode(value,code,purpose='login',options={}){
     purpose=authPurpose(purpose);
     const email=normalizeAuthEmail(value);if(typeof code!=='string'||!/^\d{6,8}$/.test(code))throw authFailure("auth.error.codeMissing",'请输入邮件里的验证码');
-    return createSession(await request('verify',{email,token:code,type:purpose==='recovery'?'recovery':'email'}),purpose!=='login');
+    return createSession(await request('verify',{email,token:code,type:purpose==='recovery'?'recovery':'email'}),purpose!=='login',options);
   }
-  async function signInPassword(value,password){
+  async function signInPassword(value,password,options={}){
     const email=normalizeAuthEmail(value);validateAuthPassword(password);const now=clock(),emailKey=digest(email);
     await store.mutate('auth/limits/password',{requests:[]},row=>{
       row.requests=(row.requests||[]).filter(r=>now-r.time<600000);
@@ -76,7 +77,7 @@ export function createHostedAuth({store,env=process.env,fetcher=fetch,clock=Date
     });
     // Passwords go directly to Supabase; application documents never contain them.
     // https://supabase.com/docs/guides/auth/passwords
-    return createSession(await request('token?grant_type=password',{email,password}));
+    return createSession(await request('token?grant_type=password',{email,password}),false,options);
   }
   async function setPassword(token,password,setupToken){
     validateAuthPassword(password,true);const user=await userFor(token);if(!user)throw authFailure("auth.error.verifyAgain",'请重新验证邮箱后设置密码',401);
@@ -179,6 +180,14 @@ export function createHostedAuth({store,env=process.env,fetcher=fetch,clock=Date
     const access=await store.mutate(sessionKey(token),{},saved=>{if(expectedOwner&&saved.user?.id&&saved.user.id!==expectedOwner)throw Object.assign(authFailure("auth.error.generic",'账户已切换，请重新进入书房。原账户草稿仍留在原处。',409),{readerSessionChanged:true});const access=saved.access;saved.revoked=true;delete saved.access;delete saved.refresh;delete saved.refreshLease;return access;});
     if(access)await request('logout?scope=local',{},access).catch(()=>{});
   }
+  async function touchSession(token,{client='web',expectedOwner}={}){
+    const user=await userFor(token);if(!user)return null;
+    return store.mutate(sessionKey(token),{},row=>{
+      if(row.revoked||row.expiresAt<=clock()||row.user?.id!==user.id)return null;
+      if(expectedOwner&&expectedOwner!==user.id)throw Object.assign(authFailure('auth.error.generic','账户已切换，请重新进入书房',409),{readerSessionChanged:true});
+      return renewSession(row,clock(),client);
+    });
+  }
   const native=createHostedNativeAuth({store,env,clock,request,capabilities,createSession,freshSession,freshSessionAt,userFor,visible,sessionKey,validToken});
-  return {requestCode,verifyCode,signInPassword,setPassword,userFor,emailVerifiedFor,logout,capabilities,beginOAuth,finishOAuth,cancelOAuth,...native,emailAvailable:env.READER_EMAIL_ENABLED==='true'};
+  return {requestCode,verifyCode,signInPassword,setPassword,userFor,emailVerifiedFor,logout,touchSession,capabilities,beginOAuth,finishOAuth,cancelOAuth,...native,emailAvailable:env.READER_EMAIL_ENABLED==='true'};
 }

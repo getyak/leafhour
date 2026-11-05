@@ -662,7 +662,13 @@ listen(document,'reader:translation',e=>{const p=paragraphMap.get(e.detail.id);i
 const readerConversation=mountReaderConversation({bookId:selectedBookId,request:readerFetch,session:readerSession,getReader:()=>window.marginaliaReader,root:$('reader-conversation'),integration:readerTools.chatIntegration,announce});
 readerTools.setChat(readerConversation);
 $('quote-to-ai').hidden=typeof readerConversation?.quoteSelection!=='function';
-boot();
+boot().then(async()=>{
+  if(readerDisposed)return;
+  const {mountSessionActivity}=await import('./auth-session-activity.mjs');
+  if(readerDisposed)return;
+  const activity=mountSessionActivity({getOwner:()=>!readerDisposed&&!readerOffline.isOffline()?readerSession?.user?.id:null});
+  listenerDisposers.push(()=>activity.dispose());
+}).catch(()=>{});
 
 listen(document,'reader:record-saved',e=>{const {type,record}=e.detail||{},field=type==='comment'?'comments':type==='question'?'questions':null;if(!field||!record||record.origin!=='user'||!paragraphMap.has(record.passageId)||record.bookId!==book?.bookId||record.contentVersion!==book?.contentVersion)return;if(!records[field].some(r=>r.id===record.id))records[field].push(record);if(!$('note-panel').hidden)renderPanel();dispatchReaderEvent('reader:records-updated');});
 listen(document,'reader:milestone-saved',e=>{const record=e.detail?.record;if(!record||record.origin!=='user'||record.bookId!==book?.bookId||record.contentVersion!==book?.contentVersion)return;records.readingMilestones??=[];if(!records.readingMilestones.some(m=>m.id===record.id))records.readingMilestones.push(record);dispatchReaderEvent('reader:records-updated');});

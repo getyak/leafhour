@@ -66,6 +66,8 @@ let refreshGeneration=0,pdfOnboarding=null,followedPdfId=null;
 let accountStateEpoch=0;
 let accountForeground=null,accountForegroundLoad=null;
 let session=null,books=[],shelfControls=null,selectedCurrent=null,pendingUpload=false,pendingChat=false,pendingNotebook=false,upload=createUploadState(),shell=null,chat=null,dashboard=null,notebook=null,bookActions=null,shelfDrag=null,setupInvite=null,shelfRevision=0,orderOperation=null,homeMenu=null,squirrelPosition=null,readingWorkspace=null,readingWorkspacePromise=null,readingWorkspaceOwner=null;
+let sessionActivity=null;
+void import('./auth-session-activity.mjs').then(({mountSessionActivity})=>{sessionActivity=mountSessionActivity({getOwner:()=>session?.user?.id});}).catch(()=>{});
 // GET-179: one pure view codec plus one explicit lifecycle adapter own the
 // library URL; overlays open/close/tab only through these explicit hooks.
 let viewHistory=null,bootstrapped=false,identityResolved=false,syncingOverlay=false;
@@ -311,7 +313,7 @@ async function refresh(knownSession){
   try{
   const next=knownSession||await api('/api/auth/session');if(generation!==refreshGeneration)return;
   const firstIdentity=!identityResolved;identityResolved=true;
-  const continueUpload=!session?.user&&next.user&&pendingUpload,continueChat=!session?.user&&next.user&&pendingChat,changed=ownerScope.adopt(next.user?.id||'guest');session=next;void deviceBookStore().adopt(next.user?.id||'guest').catch(()=>{});if(globalThis.requestIdleCallback)requestIdleCallback(()=>{void prepareOfflineResources();},{timeout:15000});void adoptUiOwner(next.user?.id||null);
+  const continueUpload=!session?.user&&next.user&&pendingUpload,continueChat=!session?.user&&next.user&&pendingChat,changed=ownerScope.adopt(next.user?.id||'guest');session=next;void sessionActivity?.update({reset:!!knownSession});void deviceBookStore().adopt(next.user?.id||'guest').catch(()=>{});if(globalThis.requestIdleCallback)requestIdleCallback(()=>{void prepareOfflineResources();},{timeout:15000});void adoptUiOwner(next.user?.id||null);
   // GET-188: identity rows follow the settled session immediately, independent
   // of the optional library request below.
   homeMenu?.updateIdentity(ownerScope.capture());
