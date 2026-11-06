@@ -55,3 +55,7 @@ Earlier probes are not counted as passes: the fresh worktree initially lacked ff
 Actual trusted iOS Safari long press, system copy UI, physical selection handles, touch scrolling/edge autoscroll, VoiceOver and physical device continuity remain unverified. The shared Primary iPhone was reserved by another task and was not used. Host and Chromium checks do not establish these outcomes.
 
 The controller reported Production paused with HTTP 402. No manual deployment or release configuration change was made. PR CI, merge, post-merge CI, deployed revision and rendered Production acceptance must be read independently. GET-273 stays In Progress with its existing need human label until the original platform/Production acceptance is completed; this PR must not auto-close it.
+
+## PR CI correction
+
+PR run 42286088505 on head 20d0349 failed two component-foundation tests because the new dialog declared autofocus on its close button rather than on the dialog itself, as required by the repository contract. The full host run had 4,838 passed, 2 failed, 0 skipped; other selected PR jobs passed. The dialog now declares native autofocus directly without tabindex, matching the other served dialogs. Before pushing the correction, 32 focused/component-foundation checks, the same 17-check built-browser matrix, build and copy lint passed. These focused checks overlap the earlier 186 and are not added to that total. The next CI run validates a new fixed head, not a blind retry of the failed head.

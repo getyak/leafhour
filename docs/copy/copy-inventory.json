@@ -354,7 +354,7 @@
       },
       {
         "file": "app/index.html",
-        "sha256": "c55d12b6fd02317ea9ce35ba833e2ee597e912e694ec82a9f806087408db5703"
+        "sha256": "5d40dfe6f043350ec9e6578fe1ef2d966ae031f40200067615651c26c53f6a02"
       },
       {
         "file": "app/interaction-craft.mjs",
@@ -1565,7 +1565,7 @@
         "sha256": "531202f1814314b6c76bfef38b2ea66636425b1ca9b445db349e70ebb8bcd00e"
       }
     ],
-    "inputDigest": "f71534edaa9f74555b9124fc3169f19f25f0d1d84e0de5b8a872ee930f449612"
+    "inputDigest": "a87c21655155de26f3c3922d469206f4cbd1d6d112b40de4cfd6464ffd7e5b40"
   },
   "locales": [
     "en",
@@ -217343,10 +217343,10 @@
       }
     },
     {
-      "id": "candidate:app/index.html:95:202",
+      "id": "candidate:app/index.html:95:212",
       "file": "app/index.html",
       "line": 95,
-      "column": 202,
+      "column": 212,
       "kind": "html-text",
       "property": null,
       "value": "View original",
