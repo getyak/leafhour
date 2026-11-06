@@ -29,6 +29,7 @@ test('version checker rejects a healthy wrong source and drain rejects unconfirm
 });
 
 test('trial initialization stays in a fresh private layout and never overwrites credentials', async t => {
+  if (process.getuid() === 0) t.mock.method(process, 'getuid', () => 1);
   const {initialize} = await import('../controller.mjs');
   const home = await realpath(await mkdtemp(path.join(os.tmpdir(), 'leafhour-trial-'))); t.after(() => rm(home, {recursive: true, force: true}));
   const root = path.join(home, 'Services', 'Leafhour');
@@ -37,6 +38,18 @@ test('trial initialization stays in a fresh private layout and never overwrites 
   assert.equal((await readFile(path.join(root, 'config', 'ipc', 'agent-token'), 'utf8')).trim().length, 64);
   await assert.rejects(initialize({root, mode: 'user-trial', runtimeId: 'different', home, dryRun: false}), /already initialized/);
   await assert.rejects(initialize({root: path.join(home, 'outside'), mode: 'user-trial', runtimeId: 'node-test', home}), /Services/);
+});
+
+test('trial initialization rejects root and the caller mock restores its original identity', async t => {
+  const {initialize} = await import('../controller.mjs');
+  const home = await realpath(await mkdtemp(path.join(os.tmpdir(), 'leafhour-root-trial-'))); t.after(() => rm(home, {recursive: true, force: true}));
+  const root = path.join(home, 'Services', 'Leafhour');
+  const original = process.getuid; const caller = t.mock.method(process, 'getuid', () => 0);
+  try {
+    await assert.rejects(initialize({root, home, mode: 'user-trial', runtimeId: 'node-test', dryRun: false}), /User trial must be below the current user Services directory/);
+    await assert.rejects(stat(root), {code: 'ENOENT'});
+  } finally { caller.mock.restore(); }
+  assert.equal(process.getuid, original);
 });
 
 test('stopping a slot removes only its own launchd registration file so it cannot return on reboot', async t => {
