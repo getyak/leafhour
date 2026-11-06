@@ -1,5 +1,6 @@
 // A small public shell: no library, account, upload or model controllers.
 const doc=document,trigger=doc.getElementById('home-menu-trigger'),menu=doc.getElementById('home-menu');
+trigger?.setAttribute('lang',doc.documentElement.lang);menu?.setAttribute('lang',doc.documentElement.lang);
 const close=()=>{menu?.close();trigger?.setAttribute('aria-expanded','false');};
 if(trigger&&menu){
  const links=doc.getElementById('home-menu-links');

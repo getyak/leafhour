@@ -334,7 +334,7 @@
       },
       {
         "file": "app/home-public.mjs",
-        "sha256": "bf658bd531f210c7f846df77616f3300fdcba2cdb802168092bacf699b29d0ce"
+        "sha256": "22d3f350b23784749082dc0d329802d306aed6d9abe735dfcf2b259ba7c4b12f"
       },
       {
         "file": "app/home-sample.mjs",
@@ -1557,7 +1557,7 @@
         "sha256": "531202f1814314b6c76bfef38b2ea66636425b1ca9b445db349e70ebb8bcd00e"
       }
     ],
-    "inputDigest": "52a1cdc348d33117aa5cc11fab5c4f0cf2e2964abdd0445fa0f2fc42fa9c26b2"
+    "inputDigest": "88f1f4e59f32361db35ee79832eb7f4893d5df59ca214e1c855ff4c64ca26c83"
   },
   "locales": [
     "en",
@@ -19520,7 +19520,7 @@
         },
         {
           "file": "app/home-public.mjs",
-          "line": 9,
+          "line": 10,
           "column": 24
         },
         {
@@ -204694,9 +204694,9 @@
       }
     },
     {
-      "id": "candidate:app/home-public.mjs:3:70",
+      "id": "candidate:app/home-public.mjs:4:70",
       "file": "app/home-public.mjs",
-      "line": 3,
+      "line": 4,
       "column": 70,
       "kind": "js-attribute",
       "property": "aria-expanded",
@@ -204714,9 +204714,9 @@
       }
     },
     {
-      "id": "candidate:app/home-public.mjs:7:124",
+      "id": "candidate:app/home-public.mjs:8:124",
       "file": "app/home-public.mjs",
-      "line": 7,
+      "line": 8,
       "column": 124,
       "kind": "js-attribute",
       "property": "aria-expanded",
@@ -204734,9 +204734,9 @@
       }
     },
     {
-      "id": "candidate:app/home-public.mjs:9:74",
+      "id": "candidate:app/home-public.mjs:10:74",
       "file": "app/home-public.mjs",
-      "line": 9,
+      "line": 10,
       "column": 74,
       "kind": "js-attribute",
       "property": "aria-expanded",

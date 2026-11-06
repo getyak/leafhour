@@ -42,3 +42,9 @@ After synchronizing main (the intervening change was native iOS only), affected 
 Independent reviews found one missing browser-module route and four lifecycle/menu/voice issues. All were fixed and the final targeted re-review reported no remaining blockers.
 
 The live reader endpoint returned “Deployment Paused” during capture. The local scores and screenshots do not assert production availability. Merge, deployment and live acceptance status must be reported separately. No paid CI, plan upgrade or deployment quota bypass was enabled.
+
+## Platform CI follow-up
+
+The first Linux/Windows font run exposed a native-scroll observer defect. Its saved receipt was already at scrollTop 2470 with a quote at y=452.3125 and height=84.5 in the 90–900px padded viewport. A second center request asked for 2469.5625px, which maps to the same physical pixel at DPR 1; Chrome correctly emitted no scroll event. The observer incorrectly required one and timed out. A receipt-based regression test now requires `unchanged` at DPR 1 while still requiring real movement for the distinct half-pixel destination at DPR 2. Edge/padding and fixed-viewport guards remain strict.
+
+The small public menu also stamps its authored language. Its CSS retains the existing byte-verified Noto CJK fallback declarations needed by public copy, so stock Linux/Windows/Android hosts without a native serif CJK face retain real glyphs; the reader keeps its full font index. The focused platform/home/typography checks passed **264/264** after these changes. Actual remote platform outcomes are separate from this local regression evidence.

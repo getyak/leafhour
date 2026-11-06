@@ -3038,9 +3038,9 @@ candidate:app/home-navigation.mjs:205:38,js-attribute,app/home-navigation.mjs,20
 candidate:app/home-navigation.mjs:256:40,js-attribute,app/home-navigation.mjs,256,aria-haspopup,unknown,reviewable,,dialog
 candidate:app/home-navigation.mjs:257:40,js-attribute,app/home-navigation.mjs,257,aria-controls,unknown,protected,identifier,home-menu
 candidate:app/home-navigation.mjs:258:40,js-attribute,app/home-navigation.mjs,258,aria-expanded,unknown,reviewable,,false
-candidate:app/home-public.mjs:3:70,js-attribute,app/home-public.mjs,3,aria-expanded,unknown,reviewable,,false
-candidate:app/home-public.mjs:7:124,js-attribute,app/home-public.mjs,7,aria-expanded,unknown,reviewable,,true
-candidate:app/home-public.mjs:9:74,js-attribute,app/home-public.mjs,9,aria-expanded,unknown,reviewable,,false
+candidate:app/home-public.mjs:4:70,js-attribute,app/home-public.mjs,4,aria-expanded,unknown,reviewable,,false
+candidate:app/home-public.mjs:8:124,js-attribute,app/home-public.mjs,8,aria-expanded,unknown,reviewable,,true
+candidate:app/home-public.mjs:10:74,js-attribute,app/home-public.mjs,10,aria-expanded,unknown,reviewable,,false
 candidate:app/home-sample.mjs:4:24,js-cjk-literal,app/home-sample.mjs,4,,unknown,reviewable,,简体中文
 candidate:app/home-sample.mjs:5:15,js-cjk-literal,app/home-sample.mjs,5,,unknown,reviewable,,中文意译 · 页面示例
 candidate:app/home-sample.mjs:6:15,js-cjk-literal,app/home-sample.mjs,6,,unknown,reviewable,,中文意譯 · 頁面範例

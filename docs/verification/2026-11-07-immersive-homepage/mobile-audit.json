@@ -1,7 +1,7 @@
 {
   "url": "local built /zh-hans, gzip, no private APIs",
   "lighthouseVersion": "13.0.1",
-  "fetchTime": "2026-11-06T16:22:39.520Z",
+  "fetchTime": "2026-11-06T16:39:45.377Z",
   "scores": {
     "performance": 96,
     "accessibility": 100,
@@ -10,11 +10,11 @@
   },
   "metrics": {
     "first-contentful-paint": {
-      "value": 1581.81915,
+      "value": 1578.78,
       "display": "1.6\u00a0s"
     },
     "largest-contentful-paint": {
-      "value": 2556.8191500000003,
+      "value": 2628.7799999999997,
       "display": "2.6\u00a0s"
     },
     "total-blocking-time": {
