@@ -22,7 +22,7 @@ public struct CloudShelfBook: Codable, Identifiable, Equatable, Sendable {
     }
     public init?(json: CloudJSON) {
         guard let id = json["bookId"].string, let version = json["contentVersion"].string else { return nil }
-        let legacyCover = json["visibility"].string == "private" && ["epub", "pdf"].contains(json["source"]["format"].string ?? "")
+        let legacyCover = json["visibility"].string == "private" && ["epub", "pdf", "txt", "md", "markdown"].contains(json["source"]["format"].string ?? "")
             ? "/api/library/books/" + CloudJSON.component(id) + "/cover?v=" + CloudJSON.component(json["source"]["sha256"].string ?? version) : nil
         let addedAt = Self.date(json["addedAt"].string) ?? (json["visibility"].string == "private" ? Self.date(json["createdAt"].string) : nil)
         self.init(id: id, title: Self.title(json["title"]), author: json["author"].string ?? "", contentVersion: version, coverPath: json["coverImage"].string ?? legacyCover, addedAt: addedAt)

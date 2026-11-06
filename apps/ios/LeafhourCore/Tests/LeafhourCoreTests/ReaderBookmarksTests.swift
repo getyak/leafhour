@@ -61,6 +61,36 @@ final class ReaderBookmarksTests: XCTestCase {
         XCTAssertFalse(pull.end())
     }
 
+    func testPullVisualTracksFingerWithBoundedResistanceAndResetsOnRelease() {
+        var pull = ReaderBookmarkPullState()
+        pull.begin(eligible: true)
+        XCTAssertEqual(pull.change(down: 0, across: 0), .idle)
+        XCTAssertEqual(pull.visual, .idle, "An ordinary scroll with no overscroll must not reveal pull feedback")
+        _ = pull.change(down: 36, across: 0)
+        XCTAssertEqual(pull.visual.progress, 0.5)
+        let first = pull.visual.displacement
+        XCTAssertGreaterThan(first, 0); XCTAssertLessThan(first, 36)
+        _ = pull.change(down: 72, across: 0)
+        XCTAssertEqual(pull.visual.progress, 1)
+        XCTAssertGreaterThan(pull.visual.displacement, first)
+        _ = pull.change(down: 10000, across: 0)
+        XCTAssertLessThan(pull.visual.displacement, 112)
+        XCTAssertTrue(pull.end()); XCTAssertEqual(pull.visual, .idle)
+    }
+
+    func testReturningFromLongPullAndInvalidSamplesCannotRearmBeforeANewTouch() {
+        for sample in [120.0, Double.nan, Double.infinity] {
+            var pull = ReaderBookmarkPullState()
+            pull.begin(eligible: true); _ = pull.change(down: 150, across: 0)
+            _ = pull.change(down: sample, across: 0)
+            _ = pull.change(down: 100, across: 0)
+            XCTAssertFalse(pull.end())
+            XCTAssertEqual(pull.visual, .idle)
+            pull.begin(eligible: true); _ = pull.change(down: 80, across: 0)
+            XCTAssertTrue(pull.end())
+        }
+    }
+
     func testViewportMatchingDoesNotMarkAnotherPartOfALongParagraph() {
         let start = ReadingAnchor(chapterID: "c", passageID: "p", characterOffset: 500)
         let end = ReadingAnchor(chapterID: "c", passageID: "p", characterOffset: 600)

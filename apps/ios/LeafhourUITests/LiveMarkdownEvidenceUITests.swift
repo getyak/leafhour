@@ -48,7 +48,7 @@ final class LiveMarkdownEvidenceUITests: XCTestCase {
         leaveResumedReaderIfNeeded()
         app.tabBars.buttons["我的阅读"].tap(); app.buttons["journal-settings"].tap()
         XCTAssertTrue(app.staticTexts["test@cubxxw.com"].waitForExistence(timeout: 20)); app.buttons["完成"].firstMatch.tap()
-        app.tabBars.buttons["松鼠"].tap()
+        app.tabBars.buttons["书房"].tap(); app.buttons["library-companion"].tap()
         let history = app.scrollViews["reader-conversation-history"]
         XCTAssertTrue(history.waitForExistence(timeout: 30))
         let question = "GET385 补充样张：请原样返回下面三句 Markdown，不包代码围栏、不用工具、不重写上一份正文。\n\n***慢一点，也是一种认真。***\n\n~~必须立刻得出结论~~ → 可以先留一个问号。\n\n**可以保留 *尚未完成* 的想法。**\n\n末行写 GET385-EXTRA-END。"

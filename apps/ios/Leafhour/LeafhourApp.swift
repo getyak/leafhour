@@ -267,16 +267,38 @@ final class LibraryModel {
         let user: CloudAccount
         if let code { user = try await cloud.verifyCode(email: email, code: code) }
         else { user = try await cloud.signIn(email: email, password: password) }
-        if persistCredential { try AccountCredentialStore.write(await cloud.savedCredential()) }
         try await adoptSignedInAccount(user)
     }
-    private func adoptSignedInAccount(_ user: CloudAccount) async throws {
+    private func adoptSignedInAccount(_ authenticated: CloudAccount) async throws {
+        let previousContext = contextID
+        let canonical = try await cloud.restore(), credential = await cloud.savedCredential()
+        guard let user = canonical, user.id == authenticated.id, credential?.account.id == authenticated.id,
+              previousContext == contextID else { throw CancellationError() }
+        if persistCredential { try AccountCredentialStore.write(credential) }
         contextID = UUID(); resetBookActivity(); account = user; books = []; cloudBooks = []; accountShelf = nil; accountActions = []; localActivity = [:]; syncIssues = [:]; notebookEntries = []; notebookCursor = nil; notebookState = .idle; notebookIncomplete = false; syncing = false
+        let adoptedContext = contextID
         resetReadingSummary()
         linkedIdentities = []
         try configureLibrary()
         recordSessionActivity()
-        await reload(); await synchronize()
+        await reload()
+        guard contextID == adoptedContext, account?.id == user.id else { throw CancellationError() }
+        // Authentication is complete. Shelf transfer continues in the existing
+        // session-fenced synchronizer without keeping the login form busy.
+        let marker = adoptedContext
+        Task { [weak self] in
+            guard let self, self.contextID == marker else { return }
+            await self.synchronize()
+        }
+    }
+    func saveDisplayName(_ name: String) async throws {
+        guard let owner = account?.id else { throw LibraryError.invalid("请先登录。") }
+        let marker = contextID
+        let saved = try await cloud.saveDisplayName(name, ownerID: owner)
+        let credential = await cloud.savedCredential()
+        guard marker == contextID, account?.id == owner, credential?.account.id == owner else { throw CancellationError() }
+        if persistCredential { try AccountCredentialStore.write(credential) }
+        account = saved
     }
     func loadAuthenticationOptions() async {
         let marker = contextID, owner = account?.id
@@ -317,7 +339,11 @@ final class LibraryModel {
             guard nativeOperationID == operation, marker == contextID, owner == account?.id else { throw CancellationError() }
             if mode == .link {
                 guard user.id == owner else { throw LibraryError.invalid("关联回程的账号已变化，原书房仍保留。") }
-                account = user // Same UID: preserve library, reader, notes, drafts and the current sync context.
+                let canonicalProfile = try await cloud.restore(), credential = await cloud.savedCredential()
+                guard let canonical = canonicalProfile, canonical.id == owner, credential?.account.id == owner,
+                      nativeOperationID == operation, marker == contextID, owner == account?.id else { throw CancellationError() }
+                if persistCredential { try AccountCredentialStore.write(credential) }
+                account = canonical // Preserve the account profile rather than replacing it with provider metadata.
                 nativeAuthMessage = "登录方式已关联到这间书房。"
             } else { try await adoptSignedInAccount(user) }
             await loadAuthenticationOptions()

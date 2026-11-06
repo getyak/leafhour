@@ -11,6 +11,7 @@ import {releaseFiles} from './release-policy.mjs';
 // removed at checkpoint A; every other caller/path/kind combination for this
 // resolved mutable file FAILS and is never silently bundled.
 export const UI_LOCALE_OWNERS=Object.freeze([
+ 'app/account-tools.mjs',
  'app/preference-memory-ui.mjs',
  'app/auth-dialog.mjs',
  'app/book-gift.mjs',
@@ -52,6 +53,7 @@ export const UI_LOCALE_OWNERS=Object.freeze([
  'app/reader-book-actions.mjs',
  'app/reader-companion.mjs',
  'app/reader-conversation.mjs',
+ 'app/reader-reading-guide.mjs',
  'app/reader-highlights.mjs',
  'app/reader-annotations.mjs',
  'app/reader-immersion.mjs',
@@ -425,6 +427,7 @@ export async function buildReaderWeb({root,outputDir,html}){
   'reader-book-actions.mjs':{kind:'dynamic-import',importer:'reader-book-actions-bootstrap.mjs'},
   'person-return-controller.mjs':{kind:'dynamic-import',importer:'reader-conversation.mjs'},
   'reader-companion-loader.mjs':{kind:'dynamic-import',importer:'reader-conversation.mjs'},
+  'reader-reading-guide.mjs':{kind:'dynamic-import',importer:'reader-conversation.mjs'},
   'gift-compose.mjs':{kind:'dynamic-import',importer:'reader-book-actions.mjs'},
   'book-cover-ui.mjs':{kind:'dynamic-import',importer:'reader-book-actions.mjs'},
   'arrival-catalog.mjs':{kind:'import-statement',importer:'reading-arrival.mjs'},
@@ -490,7 +493,7 @@ export async function buildReaderWeb({root,outputDir,html}){
    if(!candidates.some(file=>file&&file.startsWith('app/ui-catalogs/')))return undefined;
    throw Error('Non-public ui-catalogue bundle edge: '+args.path);
   });
-  b.onResolve({filter:/^\.\/(?:auth-session-activity|observability-bridge|reader-account|reader-progress-refresh|atmosphere-motion|atmosphere-audio|original-download|translation-first-use|credit-client|offline-reading|offline-position|chat-book-upload|library-chat-markdown|reader-book-actions|gift-compose|book-cover-ui|arrival-catalog|share-fonts|share-model|reader-settings-choices|reader-page-inputs|reader-page-surface|reader-location|person-return-controller|reader-companion-loader|command-palette)\.mjs(?:\?.*)?$/},args=>{
+  b.onResolve({filter:/^\.\/(?:auth-session-activity|observability-bridge|reader-account|reader-progress-refresh|atmosphere-motion|atmosphere-audio|original-download|translation-first-use|credit-client|offline-reading|offline-position|chat-book-upload|library-chat-markdown|reader-book-actions|gift-compose|book-cover-ui|arrival-catalog|share-fonts|share-model|reader-settings-choices|reader-page-inputs|reader-page-surface|reader-location|person-return-controller|reader-companion-loader|reader-reading-guide|command-palette)\.mjs(?:\?.*)?$/},args=>{
   const at=args.path.indexOf('?'),query=at<0?'':args.path.slice(at);
   if(query&&args.path!==paletteRetry&&args.path!==accountRetry)throw Error('Non-public lazy reader module: '+args.path);
   const entry=lazyModules[args.path.slice(2,query?at:undefined)];

@@ -2,20 +2,20 @@
   "schemaVersion": 1,
   "model": "deepseek-flash",
   "modelVersion": "DeepSeek-V4.1-Flash-1017",
-  "observedAt": "2026-10-30T17:11:51.667Z",
-  "reviewer": "GET-344 release maintenance",
+  "observedAt": "2026-11-05T17:23:15.930Z",
+  "reviewer": "GET-385 release verification; published rates unchanged",
   "sources": [
     {
       "currency": "CNY",
       "source": "https://api-docs.deepseek.com/zh-cn/quick_start/pricing/",
-      "sha256": "ed99e49bde750ddc29b9ca4cd9855f4b68667f48c906cc7adc24a952a13b675b",
-      "bytes": 27987
+      "sha256": "6205cf5d53a7903827bf21938eefb6a8ab6041bb5a73fcf43e4bdd6adc8d344b",
+      "bytes": 27684
     },
     {
       "currency": "USD",
       "source": "https://api-docs.deepseek.com/quick_start/pricing/",
-      "sha256": "579412351262de19f1b067420542d042dc9433f389be6d252d0f4c41b82f515b",
-      "bytes": 27815
+      "sha256": "af6679690eb9a7838c47727bfc5ffdc4ac91c4445a0c1219741ffe00c076ece5",
+      "bytes": 27549
     }
   ],
   "verifiedRates": {

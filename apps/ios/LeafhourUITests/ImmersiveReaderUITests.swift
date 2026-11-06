@@ -39,19 +39,37 @@ final class ImmersiveReaderUITests: XCTestCase {
     }
     func testReadingGuideShowsThreeDirectFollowUpsAndKeepsThemAfterAnAnswer() {
         open(title: "GET317 合成验收 · 双译")
-        let guide = app.buttons["reader-reading-guide-open"]; require(guide); guide.tap()
-        require(app.navigationBars["阅读前导"])
+        XCTAssertFalse(app.buttons["reader-reading-guide-open"].exists)
+        wake()
+        let companion = app.buttons["reader-ai"]; require(companion); companion.tap()
+        require(app.navigationBars["旁注"])
+        require(app.otherElements["reader-reading-guide-content"])
+        XCTAssertTrue(app.staticTexts["阅读前导"].isHittable)
+        capture("reading-guide-in-companion")
         let choices = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH %@", "chat-follow-up-"))
         let ready = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in choices.count == 3 }, object: nil)
         XCTAssertEqual(XCTWaiter.wait(for: [ready], timeout: 15), .completed)
-        if !choices.element(boundBy: 2).isHittable { app.scrollViews.firstMatch.swipeUp() }
+        let history = app.scrollViews["reader-conversation-history"]
+        for _ in 0..<10 {
+            let frame = choices.element(boundBy: 0).frame
+            let source = app.otherElements["chat-source-context"]
+            let bottom = source.exists ? min(history.frame.maxY, source.frame.minY) : history.frame.maxY
+            if frame.minY >= history.frame.minY && frame.maxY <= bottom { break }
+            history.swipeUp()
+        }
+        let source = app.otherElements["chat-source-context"]
+        let bottom = source.exists ? min(history.frame.maxY, source.frame.minY) : history.frame.maxY
+        XCTAssertGreaterThanOrEqual(choices.element(boundBy: 0).frame.minY, history.frame.minY)
+        XCTAssertLessThanOrEqual(choices.element(boundBy: 0).frame.maxY, bottom + 2)
         capture("reading-guide-three-choices")
         choices.element(boundBy: 0).tap(); require(app.navigationBars["旁注"])
-        let answered = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in choices.count == 3 }, object: nil)
-        XCTAssertEqual(XCTWaiter.wait(for: [answered], timeout: 15), .completed)
-        let history = app.scrollViews["reader-conversation-history"]
-        for _ in 0..<6 { if choices.element(boundBy: 2).isHittable { break }; history.swipeUp() }
-        XCTAssertTrue(choices.element(boundBy: 2).isHittable)
+        let answer = app.descendants(matching: .any).matching(NSPredicate(format: "identifier BEGINSWITH %@", "chat-assistant-message-")).firstMatch
+        require(answer)
+        XCTAssertGreaterThanOrEqual(choices.count, 3)
+        let lastChoice = choices.element(boundBy: choices.count - 1)
+        for _ in 0..<8 { if lastChoice.isHittable { break }; history.swipeUp() }
+        XCTAssertTrue(lastChoice.isHittable)
+        XCTAssertTrue(app.otherElements["reader-reading-guide-content"].exists)
         capture("answer-three-followups")
     }
     func testContentsSearchPlacesBodyHitsUnderTheirRealChapter() {
@@ -83,9 +101,43 @@ final class ImmersiveReaderUITests: XCTestCase {
         bookmark.tap(); require(app.buttons["reader-bookmark-color-A66A13"])
         app.buttons["reader-bookmark-color-A66A13"].tap()
         capture("bookmark-colors-and-name")
+        let name = app.textFields["reader-bookmark-name"]; require(name); name.tap(); name.typeText("Return here")
         app.buttons["reader-bookmark-done"].tap(); require(reader)
         require(bookmark); XCTAssertEqual(bookmark.value as? String, "琥珀")
         capture("bookmark-colored-page-marker")
+        // Pulling again at this exact page must retain the existing color/name.
+        reader.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.2)).press(forDuration: 0.05, thenDragTo: reader.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.6)))
+        bookmark.tap(); require(name)
+        XCTAssertEqual(name.value as? String, "Return here")
+        let count = app.staticTexts["本书书签 · 1"]
+        for _ in 0..<4 { if count.exists { break }; app.swipeUp() }
+        XCTAssertTrue(count.exists)
+        capture("bookmark-repeat-preserves-name-and-color")
+    }
+
+    func testShortPullDoesNotCreateBookmarkOrChangeReadingText() {
+        open()
+        let before = reader.value as? String
+        let start = reader.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.25))
+        start.press(forDuration: 0.05, thenDragTo: start.withOffset(CGVector(dx: 0, dy: 30)))
+        wake()
+        let bookmark = app.buttons["reader-bookmark"]; require(bookmark)
+        XCTAssertEqual(bookmark.label, "添加当前位置书签")
+        XCTAssertEqual(reader.value as? String, before)
+        capture("bookmark-short-pull-cancelled")
+    }
+
+    func testBookmarkConfigurationAtAccessibilityTextSize() {
+        open(extra: ["-UIPreferredContentSizeCategoryName", "UICTContentSizeCategoryAccessibilityXXXL"])
+        wake(); let bookmark = app.buttons["reader-bookmark"]; require(bookmark); bookmark.tap()
+        capture("bookmark-accessibility-saved-feedback")
+        require(app.buttons["reader-bookmark-quick-edit"]); app.buttons["reader-bookmark-quick-edit"].tap()
+        let firstColor = app.buttons["reader-bookmark-color-35745A"]; require(firstColor)
+        XCTAssertTrue(firstColor.isHittable)
+        capture("bookmark-accessibility-colors")
+        app.swipeUp()
+        require(app.textFields["reader-bookmark-name"])
+        capture("bookmark-accessibility-name")
     }
     func testAccessibilitySizeKeepsQuietReadingAndRevealsAIOnlyWithToolsOrSelection() {
         open(extra: ["-UIPreferredContentSizeCategoryName", "UICTContentSizeCategoryAccessibilityXXXL"])

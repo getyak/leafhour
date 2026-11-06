@@ -3,7 +3,8 @@ import LeafhourCore
 
 struct GlobalChatScreen: View {
     @Bindable var model: LibraryModel
-    @State private var bookID: String?
+    @Binding var bookID: String?
+    @Environment(\.dismiss) private var dismiss
     @State private var choosing = false
     @State private var query = ""
     @State private var login = false
@@ -14,7 +15,7 @@ struct GlobalChatScreen: View {
             Group {
                 if let book, let owner = model.account?.id, case let tools = model.conversationTools(bookID: book.id) {
                     ChatConversationView(tools: tools, cloud: model.cloud, title: book.title, bookTitle: book.title,
-                        source: tools.chatContext?.selection?.text ?? tools.chatContext?.original ?? "", sourceLabel: tools.chatContext.map { [$0.chapterTitle, $0.sourceLabel].filter { !$0.isEmpty }.joined(separator: " · ") } ?? "引用的原文",
+                        source: tools.chatContext?.selection?.text ?? tools.chatContext?.original ?? "", sourceLabel: tools.chatContext.map { [$0.chapterTitle, $0.sourceLabel].filter { !$0.isEmpty }.joined(separator: " · ") } ?? "引用的原文", isMarginalNote: true,
                         load: {
                             await tools.restoreConversationDraft(identity: CloudBookIdentity(ownerID: owner, bookID: book.id, contentVersion: book.contentVersion, sourceFormat: ""), library: model.library)
                             await tools.loadConversation(book: book, ownerID: owner, cloud: model.cloud)
@@ -22,8 +23,8 @@ struct GlobalChatScreen: View {
                         .id(book.id)
                 } else {
                     let tools = model.conversationTools(bookID: ReaderCloudTools.libraryChatID)
-                    ChatConversationView(tools: tools, cloud: model.cloud, title: "松鼠", bookTitle: "", source: "",
-                        localOnly: model.account == nil, isLibraryConversation: true, onSignIn: { login = true },
+                    ChatConversationView(tools: tools, cloud: model.cloud, title: "旁注", bookTitle: "", source: "",
+                        localOnly: model.account == nil, isLibraryConversation: true, isMarginalNote: true, onSignIn: { login = true },
                         load: {
                             guard let owner = model.account?.id else { return }
                             await tools.restoreConversationDraft(identity: ReaderCloudTools.libraryChatIdentity(ownerID: owner), library: model.library)
@@ -35,10 +36,8 @@ struct GlobalChatScreen: View {
                 }
             }.toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    if book != nil {
-                        Button("和松鼠聊聊", systemImage: "chevron.left") { bookID = nil }
-                            .labelStyle(.iconOnly).frame(minWidth: 44, minHeight: 44).accessibilityIdentifier("chat-return-companion")
-                    }
+                    Button("收起旁注", systemImage: "chevron.down") { dismiss() }
+                        .labelStyle(.iconOnly).frame(minWidth: 44, minHeight: 44).accessibilityIdentifier("companion-dismiss")
                 }
                 ToolbarItem(placement: .topBarTrailing) {
                     Button { if model.account == nil { login = true } else { choosing = true } } label: {
@@ -49,7 +48,7 @@ struct GlobalChatScreen: View {
             .sheet(isPresented: $choosing) {
                 NavigationStack {
                     List {
-                        Button { bookID = nil; choosing = false } label: { Label("和松鼠聊聊", systemImage: "leaf") }.frame(minHeight: 44)
+                        Button { bookID = nil; choosing = false } label: { Label("随手问一句", systemImage: "leaf") }.frame(minHeight: 44)
                         if model.syncing && model.cloudBooks.isEmpty { ProgressView("正在读取书房…") }
                         else if model.cloudBooks.isEmpty {
                             ContentUnavailableView("书房里还没有书", systemImage: "books.vertical", description: Text("可以直接和松鼠聊，之后再添加书籍。"))
@@ -75,6 +74,7 @@ struct GlobalChatScreen: View {
             }
             .sheet(isPresented: $login) { AccountScreen(model: model) }
         }.accessibilityIdentifier("global-chat-screen")
+            .modifier(ReaderPanelPresentation(isCompanion: true, isNoteEditor: false))
     }
 }
 
@@ -82,13 +82,12 @@ struct LeafhourRootScreen: View {
     @Bindable var model: LibraryModel
     @Environment(\.colorScheme) private var systemColorScheme
     @State private var tab = 0
-    @State private var navigationDepth = [false, false, false]
+    @State private var navigationDepth = [false, false]
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     var body: some View {
         RootTabPager(selection: $tab, pages: [
             AnyView(LibraryScreen(model: model).environment(\.rootNavigationDepthChanged, { navigationDepth[0] = $0 })),
-            AnyView(GlobalChatScreen(model: model).id(model.importAccountContext)),
-            AnyView(MyReadingScreen(model: model).id(model.importAccountContext).environment(\.rootNavigationDepthChanged, { navigationDepth[2] = $0 }))
+            AnyView(MyReadingScreen(model: model).id(model.importAccountContext).environment(\.rootNavigationDepthChanged, { navigationDepth[1] = $0 }))
         ], canSwipe: !navigationDepth[tab], reduceMotion: reduceMotion)
         .ignoresSafeArea()
         .onOpenURL { url in tab = 0; model.receiveIncomingURL(url) }
