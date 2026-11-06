@@ -3,13 +3,13 @@ import XCTest
 /// Runs against the task-owned unsigned local app and public-domain acceptance documents.
 /// Prepare each case through the guarded legacy HostSeed using the complete public-domain originals.
 final class ReadingUITests: XCTestCase {
-    let app = XCUIApplication(bundleIdentifier: "org.leafhour.get317.testing")
+    let app = GET328CurrentAcceptance.application(legacy: true)
     override func setUpWithError() throws {
         continueAfterFailure = false
         // The host prepares each case while this task app is stopped. Never
         // reset here: terminate/launch inside a case must retain real records.
         app.launchArguments = ["--get317-acceptance", "-leafhour.library.layout", "list",
-                               "-leafhour.library.filter", "all", "-leafhour.library.sort", "added"]
+                               "-leafhour.library.filter", "all", "-leafhour.library.sort", "added"] + GET328CurrentAcceptance.launchArguments
         app.terminate(); app.launch()
     }
     func capture(_ name: String) {

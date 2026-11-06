@@ -88,6 +88,7 @@
 		88F29CA6A606E9E039D412BA /* ReaderGlassControls.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CFD5C7BB0B8E51957FFF0F8 /* ReaderGlassControls.swift */; };
 		8CEF5922CF87B2AA335DD835 /* TranslationFollowingAppTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4EDEEABD523AEF6457F33B4 /* TranslationFollowingAppTests.swift */; };
 		8D435D9D383F90F6594A8BF1 /* ReaderPageCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64326D8789015245884DE202 /* ReaderPageCommand.swift */; };
+		8E84966EDC19EF03CE68DB98 /* GET328CurrentAcceptance.swift in Sources */ = {isa = PBXBuildFile; fileRef = 821F135BAFCE8D6A02F2A137 /* GET328CurrentAcceptance.swift */; };
 		8F81BED45F2A3F63673DDCE1 /* ReaderSpeechPosition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 027D11297E3F9E1E6029ECD6 /* ReaderSpeechPosition.swift */; };
 		9279C56FE1B39A1AFE6E7864 /* AccountShelfPendingScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB93959D999C96D79B003D7B /* AccountShelfPendingScreen.swift */; };
 		98B74068DD1D07EE551AB767 /* ReaderSpeechFollowing.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0EF660FDEC792E1A1E2F008 /* ReaderSpeechFollowing.swift */; };
@@ -189,6 +190,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		0160EDFD004093DAF1A609B6 /* GET328Acceptance.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = GET328Acceptance.xcconfig; sourceTree = "<group>"; };
 		027D11297E3F9E1E6029ECD6 /* ReaderSpeechPosition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReaderSpeechPosition.swift; sourceTree = "<group>"; };
 		034E98090DD77447DA94B16C /* ReaderReadingContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReaderReadingContent.swift; sourceTree = "<group>"; };
 		03E537D8BE04773F738DBB85 /* LibraryScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryScreen.swift; sourceTree = "<group>"; };
@@ -262,6 +264,7 @@
 		7D8B657CF0975FC45FE81FF1 /* ReaderResourcePositionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReaderResourcePositionTests.swift; sourceTree = "<group>"; };
 		7DB33ED242E41CB64391F093 /* ReaderSettingsControls.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReaderSettingsControls.swift; sourceTree = "<group>"; };
 		7F7C3D4D5257F64C44122CC4 /* ChatMarkdownView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatMarkdownView.swift; sourceTree = "<group>"; };
+		821F135BAFCE8D6A02F2A137 /* GET328CurrentAcceptance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GET328CurrentAcceptance.swift; sourceTree = "<group>"; };
 		8283072689D0FDAAAA2743F8 /* ReadingJournalModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadingJournalModel.swift; sourceTree = "<group>"; };
 		85C951DED8B54C767F59DE0C /* ListeningWidget.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = ListeningWidget.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		878434EEA066C19B2F60BD71 /* TextReadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextReadingView.swift; sourceTree = "<group>"; };
@@ -509,6 +512,7 @@
 			isa = PBXGroup;
 			children = (
 				0A90A4D814926D7BDD928EFA /* Debug.xcconfig */,
+				0160EDFD004093DAF1A609B6 /* GET328Acceptance.xcconfig */,
 				FAD4932B39A6BCFB39A21850 /* Release.xcconfig */,
 			);
 			path = Config;
@@ -573,6 +577,7 @@
 		E496ADEF7CD2152BDB1CE1EE /* LeafhourUITests */ = {
 			isa = PBXGroup;
 			children = (
+				821F135BAFCE8D6A02F2A137 /* GET328CurrentAcceptance.swift */,
 				20F8982CA0E1C9A7878704BA /* ImmersiveReaderUITests.swift */,
 				63960B847F3EAF490A1A0B40 /* IOSLibraryChatUITests.swift */,
 				3C6299806D15B63A4467BA2D /* JournalUITests.swift */,
@@ -707,9 +712,9 @@
 			projectRoot = "";
 			targets = (
 				973CAB698F802ED0CA5FEAF8 /* Leafhour */,
-				E9EBBB130A719C5DC1AA2664 /* LeafhourAppTests */,
-				9E20BC03224E1319D4225E3C /* LeafhourUITests */,
 				C533F50F3240648406E6250E /* ListeningWidget */,
+				9E20BC03224E1319D4225E3C /* LeafhourUITests */,
+				E9EBBB130A719C5DC1AA2664 /* LeafhourAppTests */,
 			);
 		};
 /* End PBXProject section */
@@ -751,6 +756,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8E84966EDC19EF03CE68DB98 /* GET328CurrentAcceptance.swift in Sources */,
 				161419720C6B96BEE62261B9 /* IOSLibraryChatUITests.swift in Sources */,
 				1F7D8529BE292CC9307F09D6 /* ImmersiveReaderUITests.swift in Sources */,
 				58C6EEA284EB1A2D367CA4B0 /* JournalUITests.swift in Sources */,
@@ -912,6 +918,101 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		05859ED1271BAF6357E74368 /* GET328Acceptance */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 0160EDFD004093DAF1A609B6 /* GET328Acceptance.xcconfig */;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = Leafhour/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Leafhour;
+				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
+				INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MARKETING_VERSION = 0.1.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.9;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = GET328Acceptance;
+		};
+		2DAABE3E64EAAEBA9D13D0DE /* GET328Acceptance */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CODE_SIGN_STYLE = Automatic;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ListeningWidget/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "$(LEAFHOUR_BUNDLE_ID).listening";
+				PROVISIONING_PROFILE_SPECIFIER = "$(LEAFHOUR_LISTENING_PROFILE)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = GET328Acceptance;
+		};
 		4655B83A9626856DB9C7AB41 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -1009,6 +1110,26 @@
 			};
 			name = Release;
 		};
+		98980A29CAE7F190FDCF2AF2 /* GET328Acceptance */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = "Config/GET328Acceptance-Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Leafhour GET328";
+				INFOPLIST_KEY_UIFileSharingEnabled = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PROVISIONING_PROFILE_SPECIFIER = "$(LEAFHOUR_MAIN_PROFILE)";
+				SDKROOT = iphoneos;
+				SUPPORTS_MACCATALYST = NO;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = GET328Acceptance;
+		};
 		99F2EDFC368866A874459248 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 0A90A4D814926D7BDD928EFA /* Debug.xcconfig */;
@@ -1084,6 +1205,45 @@
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
+		};
+		A71763056CA650D4A13C5ED0 /* GET328Acceptance */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "$(LEAFHOUR_BUNDLE_ID).apptests";
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Leafhour.app/Leafhour";
+			};
+			name = GET328Acceptance;
+		};
+		A875329586BFF5579EA17043 /* GET328Acceptance */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				LEAFHOUR_UI_TEST_BUNDLE_ID = "$(LEAFHOUR_BUNDLE_ID).uitests";
+				PRODUCT_BUNDLE_IDENTIFIER = "$(LEAFHOUR_UI_TEST_BUNDLE_ID)";
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = Leafhour;
+			};
+			name = GET328Acceptance;
 		};
 		B44B210C6C167C5464C9FF4A /* Debug */ = {
 			isa = XCBuildConfiguration;
@@ -1220,6 +1380,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				BEE979907350F580C9BE4A89 /* Debug */,
+				A875329586BFF5579EA17043 /* GET328Acceptance */,
 				48ECDE080D7678429B501145 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -1229,6 +1390,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				B44B210C6C167C5464C9FF4A /* Debug */,
+				98980A29CAE7F190FDCF2AF2 /* GET328Acceptance */,
 				4655B83A9626856DB9C7AB41 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -1238,6 +1400,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				85D12EB4A5F84B1040CAF2A4 /* Debug */,
+				A71763056CA650D4A13C5ED0 /* GET328Acceptance */,
 				4C1E025889520B1D08099716 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -1247,6 +1410,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				99F2EDFC368866A874459248 /* Debug */,
+				05859ED1271BAF6357E74368 /* GET328Acceptance */,
 				E5D26CD6078E252F29DD1DEF /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -1256,6 +1420,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				E3874A34E71AAB0DBF4FACEC /* Debug */,
+				2DAABE3E64EAAEBA9D13D0DE /* GET328Acceptance */,
 				86BD5C3EDF5C30A33DAB10B2 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;

@@ -10,25 +10,36 @@ import ZIPFoundation
 enum VideoAcceptanceFixture {
     @MainActor static func makeModelIfRequested() -> LibraryModel? {
         #if DEBUG
-        if let selected = SelectedSourceAcceptanceFixture.makeModelIfRequested() { return selected }
         let arguments = ProcessInfo.processInfo.arguments
-        guard ["org.leafhour.experience.testing", "org.leafhour.get317.testing", "org.leafhour.get341.testing", "org.leafhour.get352.testing", "org.leafhour.readingchat.testing", "org.leafhour.shelf-refinement", "org.leafhour.get358.testing", "org.leafhour.quiet.testing", "org.leafhour.craft.testing", "org.leafhour.get385.testing", "org.leafhour.get407.testing", "org.leafhour.get417.testing", "org.leafhour.get427.testing", "org.leafhour.local.get408", "org.leafhour.readingtest20261105", "com.cubxxw.leafhour.chat20261102"].contains(Bundle.main.bundleIdentifier ?? "") else { return nil }
+        let bundleIdentifier = Bundle.main.bundleIdentifier ?? ""
+        let currentAcceptance = bundleIdentifier == "org.leafhour.get328.acceptance20261107"
+        if currentAcceptance || arguments.contains("--get328-current-acceptance") {
+            // This task identity must fail closed, never falling through to a
+            // real credential store if its explicit synthetic opt-in is absent.
+            guard currentAcceptance, arguments.contains("--get328-current-acceptance"),
+                  arguments.contains("--get317-acceptance"), !arguments.contains("--get385-live") else {
+                preconditionFailure("GET-328 requires its exact DEBUG identity and synthetic acceptance flags")
+            }
+        }
+        if let selected = SelectedSourceAcceptanceFixture.makeModelIfRequested() { return selected }
+        guard ["org.leafhour.get328.acceptance20261107", "org.leafhour.experience.testing", "org.leafhour.get317.testing", "org.leafhour.get341.testing", "org.leafhour.get352.testing", "org.leafhour.readingchat.testing", "org.leafhour.shelf-refinement", "org.leafhour.get358.testing", "org.leafhour.quiet.testing", "org.leafhour.craft.testing", "org.leafhour.get385.testing", "org.leafhour.get407.testing", "org.leafhour.get417.testing", "org.leafhour.get427.testing", "org.leafhour.local.get408", "org.leafhour.readingtest20261105", "com.cubxxw.leafhour.chat20261102"].contains(bundleIdentifier) else { return nil }
         guard !arguments.contains("--get385-live") else { return nil }
         let hostedUnitTest = ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] != nil
             || NSClassFromString("XCTestCase") != nil || NSClassFromString("XCTest.XCTestCase") != nil
         guard arguments.contains("--get317-acceptance") || hostedUnitTest else { return nil }
         do {
             let support = try FileManager.default.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
-            let root = support.appendingPathComponent("GET317Acceptance", isDirectory: true)
+            let rootName = currentAcceptance ? "GET328CurrentAcceptance" : "GET317Acceptance"
+            let root = support.appendingPathComponent(rootName, isDirectory: true)
             if (arguments.contains("--get317-reset") || hostedUnitTest), FileManager.default.fileExists(atPath: root.path) {
                 // This exact child is the only location the reset flag can remove.
-                guard root.lastPathComponent == "GET317Acceptance", root.deletingLastPathComponent() == support else {
+                guard root.lastPathComponent == rootName, root.deletingLastPathComponent() == support else {
                     preconditionFailure("GET317 fixture root failed its isolation check")
                 }
                 try FileManager.default.removeItem(at: root)
             }
             try FileManager.default.createDirectory(at: root, withIntermediateDirectories: true)
-            try prepareSystemPickerDocuments()
+            try prepareSystemPickerDocuments(currentAcceptance: currentAcceptance)
             GET317Transport.configure(root: root, arguments: arguments)
             let configuration = URLSessionConfiguration.ephemeral
             configuration.protocolClasses = [GET317Transport.self]
@@ -102,10 +113,10 @@ enum VideoAcceptanceFixture {
     }
 
     #if DEBUG
-    @MainActor private static func prepareSystemPickerDocuments() throws {
+    @MainActor private static func prepareSystemPickerDocuments(currentAcceptance: Bool) throws {
         let documents = try FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
-        let sources = documents.appendingPathComponent("GET317AcceptanceSources", isDirectory: true)
-        let exports = documents.appendingPathComponent("GET317AcceptanceExports", isDirectory: true)
+        let sources = documents.appendingPathComponent(currentAcceptance ? "GET328AcceptanceSources" : "GET317AcceptanceSources", isDirectory: true)
+        let exports = documents.appendingPathComponent(currentAcceptance ? "GET328AcceptanceExports" : "GET317AcceptanceExports", isDirectory: true)
         try FileManager.default.createDirectory(at: sources, withIntermediateDirectories: true)
         try FileManager.default.createDirectory(at: exports, withIntermediateDirectories: true)
         let selectedFile = sources.appendingPathComponent("GET317-System-Picker-Import.txt")

@@ -4,7 +4,7 @@ import UIKit
 /// GET-317 synthetic native acceptance. These tests do not establish real-cloud,
 /// paid-model, physical-device, TestFlight, or production acceptance.
 final class VideoExperienceUITests: XCTestCase {
-    private let app = XCUIApplication()
+    private let app = GET328CurrentAcceptance.application()
     private let textTitle = "GET317 合成验收 · 本机文本"
     private let markdownTitle = "GET317 合成验收 · Markdown"
     private let translatedTitle = "GET317 合成验收 · 双译"
@@ -58,7 +58,7 @@ final class VideoExperienceUITests: XCTestCase {
         app.staticTexts.matching(NSPredicate(format: "label CONTAINS %@", text)).firstMatch
     }
     private func launch(_ flags: [String] = []) {
-        app.launchArguments = ["--get317-acceptance", "--get317-reset", "-AppleLanguages", "(zh-Hans)", "-AppleLocale", "zh_CN"] + flags
+        app.launchArguments = ["--get317-acceptance", "--get317-reset", "-AppleLanguages", "(zh-Hans)", "-AppleLocale", "zh_CN"] + GET328CurrentAcceptance.launchArguments + flags
         app.launch()
         let arrival = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in
             self.reader.exists || self.app.otherElements["leafhour-pdf-reader"].exists || self.app.buttons["书房显示与排序"].isHittable
