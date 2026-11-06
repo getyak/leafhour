@@ -1586,5 +1586,18 @@
   "app/home-locale-codec.mjs",
   "app/brand-assets/product/web-reader-640.webp",
   "app/brand-assets/product/web-translation-640.webp",
-  "app/brand-assets/product/reading-room-900.webp"
+  "app/brand-assets/product/reading-room-900.webp",
+  "tools/hourly-publisher.py",
+  "tools/production-trigger.mjs",
+  "tests/production-trigger.test.mjs",
+  "tools/hourly_publisher/controller.py",
+  "tools/hourly_publisher/ports.py",
+  "tools/hourly_publisher/__init__.py",
+  "tools/hourly_publisher/cli.py",
+  "tools/hourly_publisher/state.py",
+  "tests/test_hourly_publisher_ports.py",
+  "tests/test_hourly_publisher_cli.py",
+  "tests/test_hourly_publisher.py",
+  "deploy/hourly-publisher/com.leafhour.publisher.plist.in",
+  "deploy/hourly-publisher/config.example.json"
 ]

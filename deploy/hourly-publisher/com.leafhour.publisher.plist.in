@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0"><dict>
+  <key>Label</key><string>com.leafhour.publisher</string>
+  <key>ProgramArguments</key><array>
+    <string>__VERIFIED_PYTHON__</string><string>__PINNED_CONTROLLER__/tools/hourly-publisher.py</string>
+    <string>tick</string><string>--config</string><string>__STATE_DIR__/config.json</string>
+    <string>--state</string><string>__STATE_DIR__/publisher.sqlite3</string>
+  </array>
+  <key>StartInterval</key><integer>300</integer>
+  <key>RunAtLoad</key><true/>
+  <key>ProcessType</key><string>Background</string>
+  <key>StandardOutPath</key><string>__STATE_DIR__/scheduler.log</string>
+  <key>StandardErrorPath</key><string>__STATE_DIR__/scheduler-error.log</string>
+</dict></plist>

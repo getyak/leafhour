@@ -39,3 +39,13 @@ test('the actual smoke entry does not swallow provider failure inside the retry 
   assert.equal(result.calls, 1);
   assert.match(result.message, /Vercel rejected deployment/);
 });
+test('the actual smoke entry stops on a hosting pause instead of waiting thirty minutes', () => {
+  const source = `let calls=0;globalThis.fetch=async url=>{calls++;if(new URL(url).origin!=='https://smoke.synthetic.invalid')throw Error('unexpected origin');return new Response('',{status:402});};
+  try{await import(${JSON.stringify(new URL('../tools/smoke-release.mjs',import.meta.url).href)});throw Error('unexpected success');}catch(error){console.log(JSON.stringify({calls,message:error.message}));}`;
+  const result = JSON.parse(execFileSync(process.execPath,['--input-type=module','-e',source],{
+    env:{PATH:process.env.PATH,READER_URL:'https://smoke.synthetic.invalid',EXPECTED_SOURCE_COMMIT:options.commit,RELEASE_WAIT_SECONDS:'1800'},
+    encoding:'utf8',timeout:5000,
+  }));
+  assert.equal(result.calls,1);
+  assert.match(result.message,/HTTP 402/);
+});
