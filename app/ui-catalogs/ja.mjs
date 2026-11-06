@@ -2517,4 +2517,5 @@ export default Object.freeze({
   "reader.selection.explainPrompt": "この引用文を解説してください。",
   "reader.selection.exactOriginal": "原文 · 選択した部分",
   "reader.selection.wholeOriginal": "原文 · 対応する段落",
+  "prefs.reloading": "最新の設定を読み込んでいます…",
 });

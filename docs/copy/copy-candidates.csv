@@ -4016,8 +4016,8 @@ candidate:app/library-portability.mjs:82:1013,js-cjk-literal,app/library-portabi
 candidate:app/library-profile.mjs:18:159,js-attribute,app/library-profile.mjs,18,aria-hidden,unknown,reviewable,,true
 candidate:app/library-profile.mjs:49:113,js-attribute,app/library-profile.mjs,49,role,unknown,reviewable,,status
 candidate:app/library-profile.mjs:49:155,js-attribute,app/library-profile.mjs,49,aria-live,unknown,reviewable,,polite
-candidate:app/library-reading-preferences.mjs:59:112,js-attribute,app/library-reading-preferences.mjs,59,role,unknown,reviewable,,status
-candidate:app/library-reading-preferences.mjs:59:154,js-attribute,app/library-reading-preferences.mjs,59,aria-live,unknown,reviewable,,polite
+candidate:app/library-reading-preferences.mjs:60:112,js-attribute,app/library-reading-preferences.mjs,60,role,unknown,reviewable,,status
+candidate:app/library-reading-preferences.mjs:60:154,js-attribute,app/library-reading-preferences.mjs,60,aria-live,unknown,reviewable,,polite
 candidate:app/library-shell.mjs:33:251,js-attribute,app/library-shell.mjs,33,viewBox,unknown,reviewable,,0 0 24 24
 candidate:app/library-shell.mjs:33:295,js-attribute,app/library-shell.mjs,33,aria-hidden,unknown,reviewable,,true
 candidate:app/library-shell.mjs:54:104,js-attribute,app/library-shell.mjs,54,role,unknown,reviewable,,tablist
@@ -5049,6 +5049,7 @@ candidate:app/settings-controls.mjs:68:36,js-attribute,app/settings-controls.mjs
 candidate:app/settings-controls.mjs:220:39,js-attribute,app/settings-controls.mjs,220,open,unknown,reviewable,,true
 candidate:app/settings-controls.mjs:293:67,js-attribute,app/settings-controls.mjs,293,aria-invalid,unknown,reviewable,,true
 candidate:app/settings-controls.mjs:303:77,js-attribute,app/settings-controls.mjs,303,aria-invalid,unknown,reviewable,,true
+candidate:app/settings-save-feedback.mjs:9:257,js-attribute,app/settings-save-feedback.mjs,9,aria-atomic,unknown,reviewable,,true
 candidate:app/share-model.mjs:30:105,js-cjk-literal,app/share-model.mjs,30,,unknown,reviewable,,摘录的书籍或版本已改变，请重新选择。
 candidate:app/share-model.mjs:31:97,js-cjk-literal,app/share-model.mjs,31,,unknown,reviewable,,请选择一到八段正文。
 candidate:app/share-model.mjs:32:120,js-cjk-literal,app/share-model.mjs,32,,unknown,reviewable,,请选择同一种语言的正文，再开启双语分享。
