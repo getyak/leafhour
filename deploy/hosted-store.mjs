@@ -44,7 +44,7 @@ export function createHostedStore({env=process.env,fetcher=fetch}={}){
         // receipt. Never rerun the provider or overwrite a later domain edit.
         if(!receipt)throw error;
         const committed=await executionReceipt(receipt.jobId).catch(()=>null);
-        if(!committed||committed.receiptId!==receipt.receiptId||committed.resultDigest!==receipt.resultDigest)throw error;
+        if(!committed||committed.receiptId!==receipt.receiptId||committed.resultDigest!==receipt.resultDigest||committed.ownerId!==receipt.ownerId||committed.documentKey!==keyOf(file))throw error;
         return result;
       }
       if(saved)return result;
@@ -158,6 +158,6 @@ export function createHostedStore({env=process.env,fetcher=fetch}={}){
   }
   async function releaseTranslation(ticket){await mutate('limits/translation',{requests:[],active:{}},data=>{if(data.active[ticket.key]?.id===ticket.id)delete data.active[ticket.key];});}
   const configureIngestionWake=(origin,token)=>json('/rest/v1/rpc/reader_configure_ingestion_wake',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({wake_origin:origin,derived_token:token})});
-  async function executionReceipt(jobId){if(!/^[a-f0-9-]{36}$/.test(jobId))throw fail('Invalid execution receipt',400);const rows=await json('/rest/v1/reader_execution_deliveries?job_id=eq.'+jobId+'&select=job_id,receipt_id,owner_id,result_digest');return rows[0]?{jobId:rows[0].job_id,receiptId:rows[0].receipt_id,ownerId:rows[0].owner_id,resultDigest:rows[0].result_digest}:null;}
+  async function executionReceipt(jobId){if(!/^[a-f0-9-]{36}$/.test(jobId))throw fail('Invalid execution receipt',400);const rows=await json('/rest/v1/reader_execution_deliveries?job_id=eq.'+jobId+'&select=job_id,receipt_id,owner_id,result_digest,document_key');return rows[0]?{jobId:rows[0].job_id,receiptId:rows[0].receipt_id,ownerId:rows[0].owner_id,resultDigest:rows[0].result_digest,documentKey:rows[0].document_key}:null;}
   return {executionReceipt,configureIngestionWake,read:async(file,fallback)=>(await snapshot(file,fallback)).data,mutate,putBlob,putSingleBlob,adoptBlob,blob,blobInfo,signedBlob,blobDownloads,blobReferences,blobRange,uploadedBlob,uploadedBlobInfo,signedUpload,beginUpload,completeUpload,reserveTranslation,releaseTranslation};
 }

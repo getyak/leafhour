@@ -1,12 +1,36 @@
 import XCTest
 import UIKit
 import PDFKit
+import SwiftUI
 import LeafhourCore
 @testable import Leafhour
 
 /// Real TextKit/PDFKit layout with synthetic files. Physical touch gestures and
 /// VoiceOver remain separate device acceptance; these tests do not claim them.
 @MainActor final class ReaderBookmarkAppTests: XCTestCase {
+    func testBookmarkPanelAtNarrowNormalAndAccessibilitySizes() async throws {
+        let session = try await fixture()
+        let source = ReadingAnchor(chapterID: session.chapter.id, passageID: try XCTUnwrap(session.chapter.passages.first).id)
+        let saved = await session.addBookmark(at: source)
+        XCTAssertTrue(saved.succeeded)
+        let bookmark = try XCTUnwrap(session.bookmarks.first), anchor = session.currentAnchor
+        for size in [DynamicTypeSize.large, .accessibility5] {
+            let controller = UIHostingController(rootView: NavigationStack {
+                ReaderBookmarkPanel(session: session, initialBookmarkID: bookmark.id)
+            }.environment(\.dynamicTypeSize, size))
+            let window = UIWindow(frame: CGRect(x: 0, y: 0, width: 320, height: 568))
+            window.rootViewController = controller; window.makeKeyAndVisible(); controller.view.frame = window.bounds
+            try await Task.sleep(for: .milliseconds(200)); controller.view.layoutIfNeeded()
+            let image = UIGraphicsImageRenderer(size: window.bounds.size).image { _ in
+                controller.view.drawHierarchy(in: controller.view.bounds, afterScreenUpdates: true)
+            }
+            let attachment = XCTAttachment(image: image); attachment.name = "GET408-Narrow-" + String(describing: size)
+            attachment.lifetime = .keepAlways; add(attachment)
+            XCTAssertEqual(session.bookmarks, [bookmark]); XCTAssertEqual(session.currentAnchor, anchor)
+            window.isHidden = true; window.rootViewController = nil
+        }
+    }
+
     func testPagedTextHasAnIndependentVerticalPanAndPreservesPageAccessibilityActions() async throws {
         let session = try await fixture(), reading = TextReadingView(session: session, onNote: { _ in }, onSource: { _ in }, onWake: { _ in }, onReadingScroll: {}, onBookmark: { _ in })
         let coordinator = reading.makeCoordinator(), text = UITextView(usingTextLayoutManager: false)
@@ -20,6 +44,25 @@ import LeafhourCore
         XCTAssertTrue(names.contains("下一屏")); XCTAssertTrue(names.contains("上一屏"))
         coordinator.configureNavigation(text)
         XCTAssertEqual(text.accessibilityCustomActions?.filter { $0.name == "添加当前位置书签" }.count, 1)
+    }
+
+    func testContinuousTextRetainsNativeScrollAndSelectionOwnership() async throws {
+        let session = try await fixture()
+        var preferences = session.state.preferences; preferences.navigationMode = .scroll; session.changePreferences(preferences)
+        let reading = TextReadingView(session: session, onNote: { _ in }, onSource: { _ in }, onWake: { _ in }, onReadingScroll: {}, onBookmark: { _ in })
+        let coordinator = reading.makeCoordinator(), text = UITextView(usingTextLayoutManager: false)
+        text.isEditable = false; text.isSelectable = true
+        coordinator.view = text; host(text); coordinator.configureBookmarkGesture(text); coordinator.updateContent(text)
+        await settle(); defer { coordinator.invalidate() }
+        XCTAssertTrue(text.panGestureRecognizer.isEnabled)
+        let independent = text.gestureRecognizers?.compactMap { $0 as? UIPanGestureRecognizer }.first {
+            $0 !== text.panGestureRecognizer && $0.delegate is ReaderBookmarkGestureHandler
+        }
+        XCTAssertFalse(try XCTUnwrap(independent).isEnabled)
+        let selection = NSRange(location: 12, length: 20)
+        text.selectedRange = selection; coordinator.configureNavigation(text)
+        XCTAssertEqual(text.selectedRange, selection)
+        XCTAssertTrue(text.accessibilityCustomActions?.contains { $0.name == "添加当前位置书签" } == true)
     }
 
     func testLongParagraphViewportUsesVisibleScalarRangeAndRevokesOnTeardown() async throws {

@@ -3,6 +3,7 @@ import {t,onUiLocaleChange,onUiLocaleStateChange,getUiLocale,getUiLocaleState,se
 import {UI_LOCALES,uiAuthoredPath} from './ui-locale-codec.mjs';
 import {mountLibraryDailyReading} from './library-daily-reading.mjs';
 import {mountLibraryData} from './library-data.mjs';
+import {mountAccountTools} from './account-tools.mjs';
 import {getSiteAppearance,setSiteAppearance} from './site-appearance.mjs';
 import {mountLibraryProfile,renderProfileAvatar} from './library-profile.mjs';
 import {mountReadingPreferencesForm} from './library-reading-preferences.mjs';
@@ -19,8 +20,8 @@ export function settingsOpenerCandidate(document,dialog){
   const active=document.activeElement;
   return active&&active!==document.body&&!(dialog&&dialog.contains(active))?active:null;
 }
-export function settingsFocusTarget(dialog,candidate,fallback){
-  for(const target of [candidate,fallback]){
+export function settingsFocusTarget(dialog,candidate,fallback,...otherFallbacks){
+  for(const target of [candidate,fallback,...otherFallbacks]){
     if(!target||typeof target.focus!=='function'||target.isConnected===false||target.hidden)continue;
     if(dialog&&dialog.contains(target))continue;
     if(typeof target.closest==='function'&&target.closest('[inert]'))continue;
@@ -55,7 +56,7 @@ export function mountLibraryShell({getSession,openAuth,onLogout,onHistory,onOpen
   function select(name,focus=false){
     for(const b of tabButtons){const selected=b.dataset.setting===name;b.setAttribute('aria-selected',String(selected));b.tabIndex=selected?0:-1;panels[b.dataset.setting].hidden=!selected;
       if(selected){description.textContent=t('shell.settings.tabDescription.'+name);if(typeof b.scrollIntoView==='function')b.scrollIntoView({block:'nearest',inline:'center'});if(focus)b.focus();}}
-    if(settings.open)onSettingsTab(name);
+    if(settings.open){onSettingsTab(name);if(name==='data')accountTools.refresh();}
   }
   for(const name of ['account','reading-habits','daily-reading','appearance','data','about']){const b=node('button','',t('shell.settings.tab.'+name));b.type='button';b.dataset.setting=name;b.id='settings-tab-'+name;b.setAttribute('role','tab');b.setAttribute('aria-controls','settings-panel-'+name);b.addEventListener('click',()=>select(name));tabButtons.push(b);tabs.append(b);const p=node('section','settings-panel');p.id='settings-panel-'+name;p.setAttribute('role','tabpanel');p.setAttribute('aria-labelledby',b.id);panels[name]=p;content.append(p);}
   tabs.addEventListener('keydown',event=>{const current=tabButtons.indexOf(document.activeElement);if(current<0)return;let index;if(['ArrowRight','ArrowDown'].includes(event.key))index=(current+1)%tabButtons.length;else if(['ArrowLeft','ArrowUp'].includes(event.key))index=(current+tabButtons.length-1)%tabButtons.length;else if(event.key==='Home')index=0;else if(event.key==='End')index=tabButtons.length-1;else return;event.preventDefault();select(tabButtons[index].dataset.setting,true);});
@@ -94,7 +95,11 @@ export function mountLibraryShell({getSession,openAuth,onLogout,onHistory,onOpen
   const memory=mountPreferenceMemory({root:memoryRoot,api,getSession,onSaved:onPreferenceMemorySaved});
   if(inboxRoot)panels['daily-reading'].append(inboxRoot);
   const daily=mountLibraryDailyReading({root:panels['daily-reading'],inboxRoot,api,getSession,getBooks,getCurrentBook});
-  const data=mountLibraryData({root:panels.data,getSession,api,onRestored});
+  const maintenanceText=()=>({'en':'Back up, restore and export selected records','zh-Hans':'备份、恢复与选定导出','zh-Hant':'備份、還原與選定匯出','ja':'バックアップ・復元・選択した記録の保存'})[getUiLocale()]||'Back up, restore and export selected records';
+  const maintenance=node('details','settings-advanced'),maintenanceLabel=node('summary','',maintenanceText()),dataRoot=node('section');
+  maintenance.append(maintenanceLabel,dataRoot);panels.data.append(maintenance);
+  const data=mountLibraryData({root:dataRoot,getSession,api,onRestored});
+  const accountTools=mountAccountTools({root:panels.data,getSession,api});
   const observability=createBrowserObservability({getOwner:()=>accountUser?.id||null,page:'library'});
   const observabilitySettings=mountObservabilitySettings({document,root:panels.data,client:observability,getOwner:()=>accountUser?.id||null,t});
   let observedOwner=null,observedEpoch=0;
@@ -110,8 +115,8 @@ export function mountLibraryShell({getSession,openAuth,onLogout,onHistory,onOpen
   function appearanceSync(){appearance.sync();}
   // Label-only account refresh: never clears status, never touches in-flight
   // operations and never triggers a business update.
-  function accountLabels(){paintBilling();const user=accountUser;accountTitle.hidden=!!user;accountTitle.textContent=user?t('shell.account.title.signedIn'):t('shell.account.title.guest');accountDetail.textContent=user?(user.kind==='local'?t('shell.account.detail.local'):t('shell.account.detail.email')):t('shell.account.detail.guest');accountName.textContent=user?.displayName||user?.email?.split('@')[0]||(user?t('shell.account.name.local'):t('shell.account.title.guest'));accountEmail.textContent=user?.email||(user?t('shell.account.email.local'):t('shell.account.login'));const accountLabel=user?t('shell.account.settingsLabel',{name:accountName.textContent}):t('shell.account.guestLabel');accountButton.setAttribute('aria-label',accountLabel);accountButton.dataset.hint=accountLabel;if(!logoutBusy)logout.textContent=t('shell.account.logout');}
-  function update(){const user=accountUser=getSession()?.user;const nextOwner=user?.id||null;if(logoutOwner!==nextOwner){logoutOwner=nextOwner;withdrawLogout();}login.hidden=!!user;logout.hidden=!user;accountMessage.clear();renderProfileAvatar(accountAvatar,user);accountLabels();profile.update();habits.update();memory.update();daily.update();data.update();observeLibrary();appearanceSync();}
+  function accountLabels(){paintBilling();const user=accountUser;accountDetail.hidden=!!user&&user.kind!=='local';accountTitle.hidden=!!user;accountTitle.textContent=user?t('shell.account.title.signedIn'):t('shell.account.title.guest');accountDetail.textContent=user?(user.kind==='local'?t('shell.account.detail.local'):t('shell.account.detail.email')):t('shell.account.detail.guest');accountName.textContent=user?.displayName||user?.email?.split('@')[0]||(user?t('shell.account.name.local'):t('shell.account.title.guest'));accountEmail.textContent=user?.email||(user?t('shell.account.email.local'):t('shell.account.login'));const accountLabel=user?t('shell.account.settingsLabel',{name:accountName.textContent}):t('shell.account.guestLabel');accountButton.setAttribute('aria-label',accountLabel);accountButton.dataset.hint=accountLabel;if(!logoutBusy)logout.textContent=t('shell.account.logout');}
+  function update(){const user=accountUser=getSession()?.user;const nextOwner=user?.id||null;if(logoutOwner!==nextOwner){logoutOwner=nextOwner;withdrawLogout();}login.hidden=!!user;logout.hidden=!user;accountMessage.clear();renderProfileAvatar(accountAvatar,user);accountLabels();profile.update();habits.update();memory.update();daily.update();data.update();accountTools.update();observeLibrary();appearanceSync();}
   const sidebarToggle=$('sidebar-toggle');let sidebarLabelId=null,sidebarHintId=null;
   function sidebarLabels(){if(sidebarLabelId)sidebarToggle.setAttribute('aria-label',t(sidebarLabelId));if(sidebarHintId)sidebarToggle.dataset.hint=t(sidebarHintId);}
   function syncSidebar(){$('library-menu').setAttribute('aria-expanded',String(navigation.open));document.body.dataset.sidebarCollapsed=String(collapsed);sidebarToggle.setAttribute('aria-expanded',String(media.matches?navigation.open:!collapsed));sidebarLabelId=media.matches?'shell.sidebar.closeNav':collapsed?'shell.sidebar.expand':'shell.sidebar.collapse';sidebarHintId=collapsed?'shell.sidebar.expand':'shell.sidebar.collapse';sidebarLabels();}
@@ -124,8 +129,8 @@ export function mountLibraryShell({getSession,openAuth,onLogout,onHistory,onOpen
   // to the palette bootstrap without a stale restoration.
   $('sidebar-search-open').addEventListener('click',()=>{if(navigation.open){navigationReturn=null;closeNavigation();}});
   navigation.addEventListener('close',()=>{syncSidebar();if(media.matches)(navigationReturn||$('library-menu')).focus();navigationReturn=null;});media.addEventListener('change',adapt);adapt();
-  function openSettings(name='account'){const opening=!settings.open,changing=tabButtons.find(b=>b.getAttribute('aria-selected')==='true')?.dataset.setting!==name;if(opening)opener=settingsOpenerCandidate(document,settings)||$('library-settings');closeNavigation();update();select(panels[name]?name:'account');if(name==='daily-reading')daily.refresh();if(name==='reading-habits'&&(opening||changing))void memory.refresh();if(opening){settings.showModal();onSettingsOpen(panels[name]?name:'account');}if(opening||changing)tabButtons.find(b=>b.getAttribute('aria-selected')==='true')?.focus();}
-  settings.addEventListener('close',()=>{if(settings.open)return;withdrawLogout();daily.closeTransient?.();data.closeTransient?.();const target=settingsFocusTarget(settings,opener,$('library-settings'));opener=null;target?.focus({preventScroll:true});onSettingsClose();});
+  function openSettings(name='account'){const opening=!settings.open,changing=tabButtons.find(b=>b.getAttribute('aria-selected')==='true')?.dataset.setting!==name;if(opening)opener=settingsOpenerCandidate(document,settings)||$('library-settings');closeNavigation();update();select(panels[name]?name:'account');if(name==='daily-reading')daily.refresh();if(name==='reading-habits'&&(opening||changing))void memory.refresh();if(opening){settings.showModal();if(name==='data')accountTools.refresh();onSettingsOpen(panels[name]?name:'account');}if(opening||changing)tabButtons.find(b=>b.getAttribute('aria-selected')==='true')?.focus();}
+  settings.addEventListener('close',()=>{if(settings.open)return;withdrawLogout();daily.closeTransient?.();data.closeTransient?.();const target=settingsFocusTarget(settings,opener,$('library-settings'),$('library-menu'));opener=null;target?.focus({preventScroll:true});onSettingsClose();});
   $('library-settings').addEventListener('click',()=>openSettings('account'));
   $('library-calendar').addEventListener('click',()=>{closeNavigation();onHistory();});
   $('library-chat-open').addEventListener('click',()=>{closeNavigation();onOpenChat();});
@@ -140,7 +145,7 @@ export function mountLibraryShell({getSession,openAuth,onLogout,onHistory,onOpen
     license.textContent=t('shell.about.license');licenseLine.textContent=t('shell.about.license.agpl');
     about.textContent=t('shell.about.tagline');source.textContent=t('shell.about.source');privacy.textContent=t('shell.about.privacy');privacy.href=uiAuthoredPath('/privacy',getUiLocale());
     appearance.updateLabels();memorySummary.textContent=t('shell.preferences.advanced');
-    profile.updateLabels?.();habits.updateLabels?.();memory.updateLabels();daily.updateLabels?.();data.updateLabels?.();observabilitySettings.updateLabels();
+    maintenanceLabel.textContent=maintenanceText();profile.updateLabels?.();habits.updateLabels?.();memory.updateLabels();daily.updateLabels?.();data.updateLabels?.();observabilitySettings.updateLabels();
     accountLabels();sidebarLabels();accountMessage.refresh();
   }
   onUiLocaleChange(updateLabels);void uiReady.then(()=>updateLabels());

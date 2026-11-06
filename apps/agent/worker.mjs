@@ -6,9 +6,9 @@ export function createAgentWorker({client,handlers,pollMs=500,heartbeatMs=5000,p
  let closed=false,active=null,loop=null,controller=null,completed=0,lastError=null;
  const workerId=randomUUID();
  async function run(lease){
-  controller=new AbortController();let heartbeat;const call=(method,value)=>client.call(method,{lease,...value});
+  const taskController=new AbortController();controller=taskController;let heartbeat;const call=(method,value)=>client.call(method,{lease,...value});
   try{
-   const context=await call('context',{});if(context.protocol!==1)throw Error('Unsupported execution protocol');heartbeat=setInterval(()=>{call('heartbeat',{}).catch(()=>controller.abort());},heartbeatMs);heartbeat.unref?.();
+   const context=await call('context',{});if(context.protocol!==1)throw Error('Unsupported execution protocol');heartbeat=setInterval(()=>{call('heartbeat',{}).catch(()=>taskController.abort());},heartbeatMs);heartbeat.unref?.();
    let sources=[],recommendations=[];
    const tools={definitions:context.toolDefinitions,async execute(name,args,runtime={}){controller.signal.throwIfAborted();let webResult;if(name==='reader_search_web'){if(!handlers['web-search'])throw Error('Web search provider unavailable');await call('tool-check',{name,args});webResult=await handlers['web-search']({query:args.query,signal:controller.signal,reserveRequest:runtime.reserveRequest});}const result=await call('tool',{name,args,...(webResult?{webResult}:{})});sources=result.sources;recommendations=result.recommendations;return result.value;},sources:()=>sources,recommendations:()=>recommendations};
    const job={...decodeData(context.payload),signal:controller.signal,tools,...(context.progress?{onProgress:progress=>call('progress',progress)}:{})};

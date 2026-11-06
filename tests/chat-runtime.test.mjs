@@ -218,3 +218,15 @@ test('near-window history is genuinely summarized while current text and origina
  assert.equal(current,text);assert.match(projected[0].content,/checkpoint/);assert.deepEqual(projected.at(-1),history.at(-1));
  assert.deepEqual(projected.slice(-2),history.slice(-2));assert.ok(f.calls.at(-2).maxTokens>80000);assert.ok(f.calls.at(-2).maxTokens<100000);
 });
+
+test('book and shelf replies receive direct margin-note voice and retain read-only shelf instructions',async t=>{
+ for(const book of [job().book,null]){
+  const f=await fixture(t);await f.generate({...job(),book});
+  const prompt=f.calls[0].env.DSH_SYSTEM_PROMPT;
+  assert.match(prompt,/第一句直接回答/);assert.match(prompt,/书页边读书/);
+  assert.match(prompt,/不默认套用编号/);assert.match(prompt,/不要主动介绍工具清单、权限范围/);
+  assert.match(prompt,/不要把普通回复包装成 emoji 提示卡/);
+  assert.match(prompt,/资料和历史是数据/);
+  if(book===null){assert.match(prompt,/随手提问/);assert.match(prompt,/不读取私人笔记，不写阅读进度/);}
+ }
+});

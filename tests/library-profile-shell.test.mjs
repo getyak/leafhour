@@ -57,6 +57,13 @@ test('direct data settings entry returns keyboard focus to settings instead of a
  const shell=mountLibraryShell({getSession:f.getSession,openAuth:f.openAuth,onLogout:async()=>{},onHistory(){},onOpenChat(){},api:async()=>({})});shell.openSettings('data');f.get('library-settings-dialog').close();assert.equal(f.doc.activeElement,f.get('library-settings'));
 });
 
+test('closing settings returns focus to the visible navigation button when the mobile sidebar is hidden',async()=>{
+ const f=fixture({id:'a',email:'reader@example.invalid'}),{mountLibraryShell}=await import('../app/library-shell.mjs');
+ f.doc.activeElement=f.doc.body;f.get('library-settings').getClientRects=()=>[];f.get('library-menu').getClientRects=()=>[{}];
+ const shell=mountLibraryShell({getSession:f.getSession,openAuth:f.openAuth,onLogout:async()=>{},onHistory(){},onOpenChat(){},api:async()=>({})});
+ shell.openSettings('account');f.get('library-settings-dialog').close();assert.equal(f.doc.activeElement,f.get('library-menu'));
+});
+
 test('shell account labels use a cached account during locale changes without reading the session',async()=>{
  const {requestUiRoute}=await import('../app/ui-locale.mjs');await requestUiRoute('en');const f=fixture({id:'a',displayName:'阅读',email:'literal@example.invalid'}),{mountLibraryShell}=await import('../app/library-shell.mjs');let reads=0;
  const shell=mountLibraryShell({getSession(){reads++;return f.getSession();},openAuth:f.openAuth,onLogout:async()=>{},onHistory(){},onOpenChat(){},api:async()=>({})});await Promise.resolve();const before=reads;

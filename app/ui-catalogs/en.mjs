@@ -2,6 +2,16 @@
 // data, also the safe default for server/static English shells. Complete
 // default data: every other catalogue carries the same keys.
 export default Object.freeze({
+"guide.title":"Reading guide",
+"guide.attribution":"AI · opening sample draft",
+"guide.boundary":"Based on bibliographic details and the opening sample. Missing background stays unknown.",
+"guide.preparing":"Preparing the guide. You can keep reading.",
+"guide.failed":"The guide is not ready. You can retry.",
+"guide.missing":"The guide has not been prepared yet.",
+"guide.unknown":"The result is unconfirmed. Check the saved result later; no new generation was sent.",
+"guide.retry":"Retry preparation",
+"guide.check":"Check saved result",
+
   "reader.settings.text": "Text",
   "reader.settings.details": "More typography",
   "chat.back": "Back",
@@ -153,7 +163,7 @@ export default Object.freeze({
   "chat.quote.tooLong": "Select up to 2,000 characters to quote.",
   "chat.quote.receiptMismatch": "The reply does not match this request. Your question and quote are retained.",
 
-  "chat.entry": "Reading chat",
+  "chat.entry": "Margin notes",
   "chat.resize": "Resize AI workspace",
 
   "audio.voice.Sulafat.label": "Warm",
@@ -313,7 +323,7 @@ export default Object.freeze({
   "cs.interrupted": "The connection dropped; confirming the progress of this question. Check the result first to avoid asking twice.",
   "cs.noAnswer": "No answer this time; your question is kept.",
   "cs.stopUncertain": "It is not yet clear whether the question stopped. Check progress before retrying.",
-  "open": "Open the reading chat",
+  "open": "Open margin notes",
   "close": "Collapse the reading chat",
   "currentPosition": "Current reading position",
   "moreActions": "More conversation actions",
@@ -423,7 +433,7 @@ export default Object.freeze({
   "prefs.skipFailed": "“Set up later” is not recorded yet.",
   "prefs.conflictReload": "Reading preferences were updated elsewhere. Reload and try again.",
   "bk": "this book",
-  "dg": "Reading chat",
+  "dg": "Margin notes",
   "rd": "Reading",
   "rel": "Reload",
   "scope.allowed": "Reading scope",
@@ -2499,5 +2509,6 @@ export default Object.freeze({
   "bookUpload.imports": "Bringing in your books",
   "bookUpload.parsing": "Organizing chapters · {completed} / {total}",
   "bookUpload.tasks": "Book imports",
-  "bookUpload.saving": "Saving chapters…"
+  "bookUpload.saving": "Saving chapters…",
+  "chat.continue": "Ask a follow-up…"
 });

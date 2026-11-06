@@ -74,6 +74,7 @@ export function createPeopleService({dataDir=path.resolve('.data'),dataStore=nul
  const policyExpired=share=>{if(share.projectionVersion===3)return false;const seed=publicPeople.get(share.personId);return !seed||canonical(share.person)!==canonical(projection(seed).person);};
  const previewFor=(state,owner,id)=>{const current=effective(state,owner,id),seed=publicPeople.get(id),projected=projection(seed||current,{privateRecord:!seed});return {...projected,revision:current.revision,previewToken:hash(canonical({owner,id,revision:current.revision,projection:projected.person}))};};
  return {
+  async exportPersonalData(user){const owner=assertUser(user),state=await read(),record=state.accounts[owner];return {kind:'leafhour-personal-people',schemaVersion:1,revision:record?.revision||0,records:clone(record?.records||{})};},
   store,dataDir,validateRecord:validate,
   // A physical same-key mutation fences queued local writes and forces hosted
   // CAS replays to recheck the live session/grant before a withdrawal ACK.

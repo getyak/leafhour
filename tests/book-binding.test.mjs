@@ -145,6 +145,24 @@ test('a pending private cover retries and becomes visible after generation finis
  binding.paintBookCover(cover,book);const image=descendants(cover).find(node=>node.tagName==='img');
  image.dispatchEvent(new Event('error'));t.mock.timers.tick(2000);assert.equal(image.sourceWrites,2);image.dispatchEvent(new Event('load'));assert.equal(image.hidden,false);assert.equal(cover.dataset.coverArtwork,'ready');
 });
+test('a private cover recovers when connectivity returns after its automatic retries are exhausted',t=>{
+ t.mock.timers.enable({apis:['setTimeout']});
+ const cover=new Element(),window=new EventTarget();cover.ownerDocument.defaultView=window;
+ binding.paintBookCover(cover,{bookId:'private-offline',visibility:'private',title:{zh:'Offline'},source:{format:'txt',sha256:'c'.repeat(64)}});
+ const image=descendants(cover).find(node=>node.tagName==='img');
+ for(const delay of [2000,8000,25000,60000]){image.dispatchEvent(new Event('error'));t.mock.timers.tick(delay);}
+ image.dispatchEvent(new Event('error'));const before=image.sourceWrites;window.dispatchEvent(new Event('online'));
+ assert.equal(image.sourceWrites,before+1);image.dispatchEvent(new Event('load'));assert.equal(cover.dataset.coverArtwork,'ready');
+ window.dispatchEvent(new Event('online'));assert.equal(image.sourceWrites,before+1,'ready artwork does not refetch');
+});
+for(const cleanup of ['forget','dispose','replace','prune'])test('private cover retries stop after '+cleanup,t=>{
+ t.mock.timers.enable({apis:['setTimeout']});
+ const cover=new Element(),window=new EventTarget(),painter=binding.createBookCoverPainter();cover.ownerDocument.defaultView=window;
+ painter.paint(cover,{bookId:'private-detached',visibility:'private',source:{format:'txt',sha256:'d'.repeat(64)}});
+ const image=descendants(cover).find(node=>node.tagName==='img');image.dispatchEvent(new Event('error'));const before=image.sourceWrites;
+ if(cleanup==='forget')painter.forget(cover);else if(cleanup==='dispose')painter.dispose();else if(cleanup==='replace')painter.paint(cover,publicBook);else {cover.isConnected=false;painter.refresh();cover.isConnected=true;}
+ window.dispatchEvent(new Event('online'));t.mock.timers.tick(2000);assert.equal(image.sourceWrites,before);
+});
 for(const format of ['pdf','epub','txt','md'])test('private '+format+' covers reuse an authenticated image and recover literal typography if it fails',()=>{
   const book={bookId:'private-one',visibility:'private',title:{zh:'Source title'},author:'Original author',source:{format,sha256:'a'.repeat(64)}};
   const cover=new Element();binding.paintBookCover(cover,book);

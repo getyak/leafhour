@@ -25,6 +25,11 @@ if(!preferenceMemory.headers.get('cache-control')?.split(',').some(value=>value.
 const uiPreferences=await fetch(new URL('/api/account/ui-preferences',base),{signal:AbortSignal.timeout(requestTimeout),headers:{'Cache-Control':'no-cache'}});
 if(uiPreferences.status!==401)throw Error('Anonymous UI preference access did not require authentication');
 if(!uiPreferences.headers.get('cache-control')?.split(',').some(value=>value.trim().toLowerCase()==='no-store'))throw Error('UI preference response must not be cached');
+for(const [endpoint,label] of [['settings/export','settings export'],['export','account export'],['export/manifest','account export manifest'],['mcp-server','MCP server settings'],['mcp-connectors','MCP connections']]){
+ const response=await fetch(new URL('/api/account/'+endpoint,base),{signal:AbortSignal.timeout(requestTimeout),headers:{'Cache-Control':'no-cache'}});
+ if(response.status!==401)throw Error('Anonymous '+label+' access did not require authentication');
+ if(!response.headers.get('cache-control')?.split(',').some(value=>value.trim().toLowerCase()==='no-store'))throw Error(label[0].toUpperCase()+label.slice(1)+' response must not be cached');
+}
 // cleanUrls can redirect an API .js URL before the OAuth handler. Check the
 // actual extensionless consent asset without accepting a redirect or HTML.
 const consentScript=await fetch(new URL('/api/mcp/consent-script',base),{redirect:'manual',signal:AbortSignal.timeout(requestTimeout),headers:{'Cache-Control':'no-cache'}});

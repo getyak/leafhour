@@ -63,3 +63,24 @@ test('large inputs and generated assets use private content-checked references, 
 test('one shared lease runs at a time and explicit chat is chosen ahead of queued automatic work',async t=>{const {queue}=await setup(t);await queue.admit({...input,type:'companion',idempotencyKey:'automatic-one'});const explicit=await queue.admit({...input,type:'chat',idempotencyKey:'explicit-one'});const first=await queue.claim('worker-a');assert.equal(first.id,explicit.id);assert.equal(await queue.claim('worker-b'),null);});
 
 test('task argument schemas preserve existing nullable, enum and constant contracts',async()=>{const {validToolArguments}=await import('../packages/contracts/execution.mjs');const schema={type:'object',properties:{schemaVersion:{const:1},locale:{type:'string',enum:['en','ja']},portrait:{anyOf:[{type:'null'},{type:'object',properties:{url:{type:'string'}},required:['url'],additionalProperties:false}]}},required:['schemaVersion','locale','portrait'],additionalProperties:false};assert.equal(validToolArguments({schemaVersion:1,locale:'ja',portrait:null},schema),true);assert.equal(validToolArguments({schemaVersion:2,locale:'ja',portrait:null},schema),false);assert.equal(validToolArguments({schemaVersion:1,locale:'unknown',portrait:null},schema),false);assert.equal(validToolArguments({schemaVersion:1,locale:'en',portrait:{url:'https://example.invalid'}},schema),true);});
+
+test('a late heartbeat failure from a completed lease cannot abort the next task',async t=>{
+ const firstHeartbeat=Promise.withResolvers(),secondStarted=Promise.withResolvers(),finishSecond=Promise.withResolvers(),secondCompleted=Promise.withResolvers();
+ let claims=0,secondSignal;
+ const client={async call(method,{lease}={}){
+  if(method==='claim')return ++claims<=2?{id:String(claims)}:null;
+  if(method==='context')return {protocol:1,type:'document-extract',payload:{id:lease.id}};
+  if(method==='heartbeat'&&lease.id==='1'){firstHeartbeat.resolve();return new Promise((_,reject)=>{client.rejectOldHeartbeat=reject;});}
+  if(method==='complete'&&lease.id==='2')secondCompleted.resolve();
+  return {};
+ }};
+ const worker=createAgentWorker({client,pollMs:1,heartbeatMs:1,handlers:{'document-extract':async job=>{
+  if(job.id==='1')await firstHeartbeat.promise;
+  else{secondSignal=job.signal;secondStarted.resolve();await finishSecond.promise;}
+  return {text:'synthetic result'};
+ }}});
+ t.after(async()=>{finishSecond.resolve();await worker.close();});worker.start();
+ await secondStarted.promise;client.rejectOldHeartbeat(Error('old lease connection lost'));await new Promise(resolve=>setImmediate(resolve));
+ assert.equal(secondSignal.aborted,false);finishSecond.resolve();await secondCompleted.promise;
+ assert.equal(worker.status().lastError,null);
+});
