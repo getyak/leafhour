@@ -20,6 +20,7 @@ test('runtime logs allow operational fields only and rotate within Leafhour dire
 });
 
 test('service wrapper forwards graceful stop and drops inherited credentials and raw output', async t => {
+  if (process.getuid() === 0) t.mock.method(process, 'getuid', () => 1);
   const {initialize} = await import('../controller.mjs');
   const home = await realpath(await mkdtemp(path.join(os.tmpdir(), 'leafhour-launch-'))); t.after(() => rm(home, {recursive: true, force: true}));
   const root = path.join(home, 'Services', 'Leafhour'); await initialize({root, home, mode: 'user-trial', runtimeId: 'test', dryRun: false});

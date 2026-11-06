@@ -28,3 +28,11 @@ The 15 isolated operations tests passed again with zero failures or skips, and a
 The default-suite entry plus the release and CI resource-plan suites passed 25 tests with zero failures or skips on Node 26.10.0. The release allowlist check passed for 1,534 software files, and `git diff --check` passed. This is affected local verification; the full repository suite and remote CI are tracked separately.
 
 The standalone operations source can be merged before the three-module runtime, but building and operating a real release requires that runtime's `build:modules`, `/version`, `/healthz` and authenticated POST-only Unix Socket control contracts. This delivery does not install or start services, execute the native artifact pipeline, change Tailscale, apply a database migration or validate production/physical-device behavior.
+
+## Root build-host fixtures — 2026-11-06
+
+The production build of merged source `76a5466c` failed in two positive user-trial tests because the hosted build runs as UID 0. `initialize` correctly rejects a root caller for user-session trials; the tests had depended on the build host being non-root. Production safety checks, service code and deployment/CI configuration remain unchanged.
+
+A temporary Node 22.23.4 preload that makes `process.getuid()` return 0 reproduced both failures: the controller and service suites had 4 passes, 2 failures and no skips, with the same user-trial guard error. The two positive fixtures now use test-scoped `t.mock.method` only when the actual caller reports root. A separate regression calls the unchanged initializer as root, verifies rejection before the instance directory is created, and checks that its identity mock restores the original function.
+
+After the change, the same controlled root-caller run passed all 7 controller/service tests, including the new root-refusal regression. The complete isolated operations suite and its default `tests/macos-ops.test.mjs` entry each passed all 16 tests with zero failures or skips on Node 22.23.4. The preload is a controlled caller-identity simulation on macOS, not a claim that a new hosted deployment has already passed. No real service installation or production operation was performed.
