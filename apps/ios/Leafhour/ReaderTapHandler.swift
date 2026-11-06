@@ -37,9 +37,53 @@ import LeafhourCore
     override func canBePrevented(by other: UIGestureRecognizer) -> Bool { false }
 }
 
+/// Observe raw contacts without entering a terminal recognition state between
+/// rapid taps. UIKit may defer resetting a recognized discrete gesture until
+/// after the next contact has already arrived.
+@MainActor final class ReaderShortContactObserver: UIGestureRecognizer {
+    var onShortContact: ((CGPoint) -> Void)?
+    private var activeTouch: ObjectIdentifier?
+    private var beganTimestamp: TimeInterval?
+    private var beganPoint = CGPoint.zero
+    private var rejected = false
+
+    func rejectsAdditionalContact(_ touch: UITouch) -> Bool {
+        guard let activeTouch, activeTouch != ObjectIdentifier(touch) else { return false }
+        rejected = true; return true
+    }
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent) {
+        guard activeTouch == nil, event.allTouches?.count == 1, touches.count == 1, let touch = touches.first else { rejected = true; return }
+        activeTouch = ObjectIdentifier(touch); beganTimestamp = touch.timestamp
+        beganPoint = touch.location(in: view?.window); rejected = false
+    }
+    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent) {
+        guard event.allTouches?.count == 1, let touch = touches.first,
+              activeTouch == ObjectIdentifier(touch) else { rejected = true; return }
+        let point = touch.location(in: view?.window)
+        if hypot(point.x - beganPoint.x, point.y - beganPoint.y) > 10 { rejected = true }
+    }
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent) {
+        guard let touch = touches.first, activeTouch == ObjectIdentifier(touch) else { return }
+        let duration = beganTimestamp.map { touch.timestamp - $0 }
+        let point = touch.location(in: view?.window)
+        let accepts = !rejected && event.allTouches?.count == 1 && touches.count == 1
+            && duration.map { $0.isFinite && (0...0.35).contains($0) } == true
+            && hypot(point.x - beganPoint.x, point.y - beganPoint.y) <= 10
+        let local = touch.location(in: view)
+        clearContact()
+        if accepts { onShortContact?(local) }
+    }
+    override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent) { clearContact() }
+    private func clearContact() { activeTouch = nil; beganTimestamp = nil; rejected = false }
+    override func reset() { clearContact(); super.reset() }
+    override func canPrevent(_ other: UIGestureRecognizer) -> Bool { false }
+    override func canBePrevented(by other: UIGestureRecognizer) -> Bool { false }
+}
+
 enum ReaderTapAction: Equatable {
     case wake(ReaderChrome)
     case turn(ReaderPageDirection)
+    case dismissSelection
 }
 struct ReaderTapContext: Equatable {
     let owner: ObjectIdentifier
@@ -54,6 +98,9 @@ struct ReaderTapContext: Equatable {
     private let blocked: () -> Bool
     private let onWake: (ReaderChrome) -> Void
     private let isPaged: () -> Bool
+    private let isScrolling: () -> Bool
+    private let hasSelection: () -> Bool
+    private let onDismissSelection: () -> Void
     private let onTurn: (ReaderPageDirection) -> Void
     private let delay: () -> TimeInterval
     private let context: () -> ReaderTapContext?
@@ -69,6 +116,8 @@ struct ReaderTapContext: Equatable {
     }
     private var pending: [PendingTap] = []
     private var touching = false
+    private var dismissSelectionOnContact = false
+    private var contactContext: ReaderTapContext?
     private var observers: [NSObjectProtocol] = []
     private final class DisabledTap {
         weak var value: UITapGestureRecognizer?
@@ -77,15 +126,19 @@ struct ReaderTapContext: Equatable {
     private var disabledTaps: [ObjectIdentifier: DisabledTap] = [:]
     private(set) var recognizer: UIGestureRecognizer!
     init(view: UIView, blocked: @escaping () -> Bool, onWake: @escaping (ReaderChrome) -> Void,
-         isPaged: @escaping () -> Bool = { false }, onTurn: @escaping (ReaderPageDirection) -> Void = { _ in },
+         isPaged: @escaping () -> Bool = { false }, isScrolling: @escaping () -> Bool = { false },
+         hasSelection: @escaping () -> Bool = { false }, onDismissSelection: @escaping () -> Void = {},
+         onTurn: @escaping (ReaderPageDirection) -> Void = { _ in },
          delay: @escaping () -> TimeInterval = { 0 }, context: @escaping () -> ReaderTapContext? = { nil }) {
         self.view = view; self.blocked = blocked; self.onWake = onWake
         self.isPaged = isPaged; self.onTurn = onTurn
+        self.isScrolling = isScrolling; self.hasSelection = hasSelection; self.onDismissSelection = onDismissSelection
         self.delay = delay; self.context = context
         super.init()
-        let tap = ReaderShortTapGestureRecognizer(target: self, action: #selector(activate(_:)))
+        let tap = ReaderShortContactObserver(target: nil, action: nil)
+        tap.onShortContact = { [weak self] point in self?.activate(at: point) }
         recognizer = tap
-        tap.cancelsTouchesInView = false
+        tap.cancelsTouchesInView = false; tap.delaysTouchesBegan = false; tap.delaysTouchesEnded = false
         tap.delegate = self
         view.addGestureRecognizer(tap)
         refreshSelectionGestures()
@@ -133,12 +186,17 @@ struct ReaderTapContext: Equatable {
     }
     func action(at point: CGPoint) -> ReaderTapAction? {
         guard let destination = destination(at: point), let view else { return nil }
+        if hasSelection() { return .dismissSelection }
         // Side gutters have one meaning along their full height. Previously
         // their top/bottom 44 points opened tools, making nearby taps disagree.
         if isPaged(), !UIAccessibility.isVoiceOverRunning {
             let x = (point.x - view.bounds.minX) / max(1, view.bounds.width)
-            if x < 0.3 { return .turn(.previous) }
-            if x > 0.7 { return .turn(.next) }
+            if x < 0.25 { return .turn(.previous) }
+            if x > 0.75 { return .turn(.next) }
+        } else if isScrolling(), !UIAccessibility.isVoiceOverRunning {
+            let y = (point.y - view.bounds.minY) / max(1, view.bounds.height)
+            if y < 0.25 { return .turn(.previous) }
+            if y > 0.75 { return .turn(.next) }
         }
         return .wake(destination)
     }
@@ -161,16 +219,20 @@ struct ReaderTapContext: Equatable {
         return false
     }
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
+        refreshSelectionGestures()
         // Reject a second contact before filtering links/controls, so a pinch
         // cannot leave the first stationary finger eligible for a page turn.
-        if (recognizer as? ReaderShortTapGestureRecognizer)?.rejectsAdditionalContact(touch) == true { return false }
+        if (recognizer as? ReaderShortContactObserver)?.rejectsAdditionalContact(touch) == true { return false }
         guard !UIAccessibility.isVoiceOverRunning, touch.type == .direct || touch.type == .indirectPointer else { return false }
         var touched = touch.view
         while let current = touched, current !== view {
             if current is UIControl { return false }
             touched = current.superview
         }
-        return action(at: touch.location(in: view)) != nil
+        let accepts = action(at: touch.location(in: view)) != nil
+        dismissSelectionOnContact = accepts && hasSelection()
+        if accepts { contactContext = context() }
+        return accepts
     }
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRequireFailureOf other: UIGestureRecognizer) -> Bool {
         // The contact's own duration/movement rules reject holds and drags.
@@ -179,16 +241,18 @@ struct ReaderTapContext: Equatable {
         false
     }
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool { true }
-    @objc private func activate(_ tap: UIGestureRecognizer) {
-        guard tap.state == .ended, let tap = tap as? ReaderShortTapGestureRecognizer, tap.isShortTap,
-              view != nil else { return }
-        handleTap(at: tap.location(in: view))
+    private func activate(at point: CGPoint) {
+        guard view != nil, contactContext == context() else { return }
+        if dismissSelectionOnContact {
+            dismissSelectionOnContact = false; cancelPending(); onDismissSelection(); return
+        }
+        handleTap(at: point)
     }
     func handleTap(at point: CGPoint) {
         guard let action = action(at: point) else { return }
         let duration = ReaderPreferences.normalizedPageTapDelay(delay())
         guard case .turn = action, duration > 0 else {
-            if case .wake = action { cancelPending() }
+            cancelPending()
             perform(action); return
         }
         let item = PendingTap(action: action, delay: duration, context: context())
@@ -203,7 +267,7 @@ struct ReaderTapContext: Equatable {
         guard !touching else { return }
         while let item = pending.first, item.ready {
             pending.removeFirst()
-            guard view != nil, !blocked(), isPaged(), context() == item.context, delay() == item.delay else {
+            guard view != nil, !blocked(), !hasSelection(), isPaged() || isScrolling(), context() == item.context, delay() == item.delay else {
                 cancelPending(); return
             }
             perform(item.action)
@@ -211,6 +275,7 @@ struct ReaderTapContext: Equatable {
     }
     private func perform(_ action: ReaderTapAction) {
         switch action {
+        case .dismissSelection: onDismissSelection()
         case .wake(let chrome): onWake(chrome)
         case .turn(let direction):
             let before = context(); onTurn(direction)

@@ -20,12 +20,12 @@ final class ReadingLayerTests: XCTestCase {
         XCTAssertEqual(segments.map(\.isTranslation), [false, true])
         XCTAssertEqual(segments.last?.status, "reviewed")
     }
-    func testMissingOrStaleTranslationKeepsSourceWithExplicitMissingState() {
+    func testMissingOrStaleTranslationWaitsForExplicitSourceReveal() {
         let source = Passage(id: "p", text: "Untouched source")
         var p = ReaderPreferences(); p.viewMode = .translation
         for translation in [nil, ReadingTranslation(original: "Other edition", literal: "错误") ] as [ReadingTranslation?] {
             let segments = ReadingLayers.segments(passage: source, preferences: p, translation: translation)
-            XCTAssertEqual(segments.map(\.text), [source.text]); XCTAssertFalse(segments[0].isTranslation)
+            XCTAssertEqual(segments.map(\.text), [""]); XCTAssertFalse(segments[0].isTranslation)
             XCTAssertTrue(segments[0].translationMissing)
         }
     }
@@ -34,6 +34,17 @@ final class ReadingLayerTests: XCTestCase {
         let note = ReaderNote(anchor: anchor, quote: "译文 🌿", body: "我的想法", quoteOrigin: "translation", quoteVariant: "interpretive")
         let decoded = try JSONDecoder().decode(ReaderNote.self, from: JSONEncoder().encode(note))
         XCTAssertEqual(decoded.quoteOrigin, "translation"); XCTAssertEqual(decoded.quoteVariant, "interpretive")
+    }
+    func testSourceRevealIsExplicitAndDoesNotReplaceTheRequestedTranslationVariant() {
+        let source = Passage(id: "p", text: "Original source")
+        let translation = ReadingTranslation(original: source.text, literal: "Literal text", interpretive: "Interpretive text")
+        var p = ReaderPreferences(); p.viewMode = .translation; p.translationVariant = .interpretive
+        XCTAssertEqual(ReadingLayers.segments(passage: source, preferences: p, translation: translation).map(\.text), ["Interpretive text"])
+        let shown = ReadingLayers.segments(passage: source, preferences: p, translation: translation, showingSource: true)
+        XCTAssertEqual(shown.map(\.text), ["Interpretive text", "Original source"])
+        XCTAssertEqual(shown.map(\.isTranslation), [true, false])
+        let missing = ReadingLayers.segments(passage: source, preferences: p, translation: nil, showingSource: true)
+        XCTAssertTrue(missing[0].translationMissing); XCTAssertEqual(missing.last?.text, source.text)
     }
     func testTranslationDraftKeepsOriginVariantAndSelectionIdentity() throws {
         let anchor = ReadingAnchor(chapterID: "c", passageID: "p")

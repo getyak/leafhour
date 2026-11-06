@@ -8,12 +8,12 @@ import LeafhourCore
 
 @MainActor
 final class ReadingLayersAppTests: XCTestCase {
-    private func fixture() async throws -> ReaderSession {
+    private func fixture(source: String = "Original 🌿 passage with stable source words.", filename: String = "source.txt") async throws -> ReaderSession {
         let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
         try FileManager.default.createDirectory(at: root, withIntermediateDirectories: true)
         addTeardownBlock { try? FileManager.default.removeItem(at: root) }
-        let file = root.appendingPathComponent("source.txt")
-        try Data("Original 🌿 passage with stable source words.".utf8).write(to: file)
+        let file = root.appendingPathComponent(filename)
+        try Data(source.utf8).write(to: file)
         let library = try OfflineLibrary(root: root.appendingPathComponent("library"), scope: .device)
         var book = try await library.importFile(file)
         book.cloud = CloudBookIdentity(ownerID: "test-owner", bookID: "cloud-book", contentVersion: "v1", sourceFormat: "txt")
@@ -86,6 +86,58 @@ final class ReadingLayersAppTests: XCTestCase {
         coordinator.view = view; coordinator.updateContent(view)
         return (view, coordinator)
     }
+    func testParallelBodyHasNoReviewLabelsAndUsesASingleParagraphSeparator() async throws {
+        let session = try await fixture(), passage = try XCTUnwrap(session.chapter.passages.first)
+        session.updateTranslations([passage.id: ReadingTranslation(original: passage.text, literal: "A translated paragraph.", literalStatus: "draft")])
+        var preferences = session.state.preferences; preferences.viewMode = .parallel
+        session.changePreferences(preferences)
+        let (view, coordinator) = renderer(session)
+        defer { coordinator.invalidate() }
+        XCTAssertFalse(view.text.contains("未校订")); XCTAssertFalse(view.text.contains("直译"))
+        XCTAssertTrue(view.text.contains(passage.text + "\nA translated paragraph."))
+        XCTAssertFalse(view.text.contains("\n\n"))
+    }
+    func testEnglishOverlayCacheBecomesReadableInTheSameReader() async throws {
+        let session = try await fixture(source: "这是一段真正的中文原文。")
+        session.changeTranslationSettings(BookTranslationSettings(sourceLanguage: .zh, targetLanguage: .en))
+        let passage = try XCTUnwrap(session.chapter.passages.first)
+        let remote = ReaderTranslation(original: passage.text, literal: "The cached English paragraph.", literalStatus: "draft")
+        session.updateTranslations([passage.id: remote.readingCopy(targetLanguage: .en)])
+        var preferences = session.state.preferences; preferences.viewMode = .translation; session.changePreferences(preferences)
+        let (view, coordinator) = renderer(session)
+        defer { coordinator.invalidate() }
+        XCTAssertTrue(view.text.contains("The cached English paragraph."))
+        XCTAssertFalse(view.text.contains("译文未准备")); XCTAssertEqual(session.translations[passage.id]?.targetLanguage, .en)
+    }
+    func testCachedTranslationOfASourceLongerThanTheSourceWindowIsNotReportedMissing() async throws {
+        let session = try await fixture(source: String(repeating: "Long source 中文 🌿. ", count: 3000))
+        let passage = try XCTUnwrap(session.chapter.passages.first)
+        session.updateTranslations([passage.id: ReadingTranslation(original: passage.text, literal: "The complete real cached translation.")])
+        var preferences = session.state.preferences; preferences.viewMode = .translation; session.changePreferences(preferences)
+        let (view, coordinator) = renderer(session)
+        defer { coordinator.invalidate() }
+        XCTAssertLessThan(try XCTUnwrap(coordinator.textWindow).slices[0].sourceRange.length, passage.text.utf16.count)
+        XCTAssertTrue(view.text.contains("The complete real cached translation."))
+        XCTAssertFalse(view.text.contains("译文未准备"))
+    }
+    func testHeadingInTranslatedReaderDoesNotOfferAnUnrequestedSourceCollapse() async throws {
+        let session = try await fixture(source: "# A heading\n\nA body paragraph.", filename: "heading.md")
+        var preferences = session.state.preferences; preferences.viewMode = .translation; session.changePreferences(preferences)
+        let (view, coordinator) = renderer(session)
+        defer { coordinator.invalidate() }
+        XCTAssertTrue(view.text.contains("A heading")); XCTAssertFalse(view.text.contains("收起"))
+    }
+
+    func testMissingTranslationDoesNotRevealOrQuoteOriginalWithoutExplicitAction() async throws {
+        let session = try await fixture(), passage = try XCTUnwrap(session.chapter.passages.first)
+        var preferences = session.state.preferences; preferences.viewMode = .translation
+        session.changePreferences(preferences)
+        let (view, coordinator) = renderer(session)
+        defer { coordinator.invalidate() }
+        XCTAssertFalse(view.text.contains(passage.text))
+        XCTAssertTrue(view.text.contains("显示原文")); XCTAssertTrue(view.text.contains("译文"))
+        XCTAssertNil(coordinator.selectedQuote(in: view, range: NSRange(location: 0, length: 2)), "Placeholder text is not an author quote")
+    }
     func testActualTextRendererShowsIndependentModesAndTranslationSelectionsKeepSourceProvenance() async throws {
         let session = try await fixture(), passage = try XCTUnwrap(session.chapter.passages.first)
         session.updateTranslations([passage.id: ReadingTranslation(original: passage.text, literal: "直译 🌿 独立文本", interpretive: "这是另一种意译。", literalStatus: "draft", interpretiveStatus: "reviewed")])
@@ -135,11 +187,39 @@ final class ReadingLayersAppTests: XCTestCase {
         let range = (view.text as NSString).range(of:"选中的译文")
         view.selectedRange = range
         let selectedContent = view.text
-        session.updateTranslations([passage.id: ReadingTranslation(original:passage.text,literal:"选中的译文保持可复制。",literalStatus:"reviewed")])
+        session.updateTranslations([passage.id: ReadingTranslation(original:passage.text,literal:"选中的译文更新后仍可复制。",literalStatus:"reviewed")])
         coordinator.updateContent(view)
         XCTAssertEqual(view.selectedRange,range); XCTAssertEqual(view.text,selectedContent)
         view.selectedRange = NSRange(location:0,length:0); coordinator.updateContent(view)
-        XCTAssertTrue(view.text.contains("已校订"))
+        XCTAssertTrue(view.text.contains("选中的译文更新后仍可复制。"))
+        XCTAssertFalse(view.text.contains("已校订"))
+    }
+    func testTranslationParagraphMenuRevealsOnlyItsSourceAndHasNoTranslateAction() async throws {
+        let session = try await fixture(), passage = try XCTUnwrap(session.chapter.passages.first)
+        session.updateTranslations([passage.id: ReadingTranslation(original: passage.text, literal: "Only this translated paragraph.")])
+        var preferences = session.state.preferences; preferences.viewMode = .translation; session.changePreferences(preferences)
+        let (view, coordinator) = renderer(session)
+        defer { coordinator.invalidate() }
+        coordinator.parent.onTranslate = { _ in XCTFail("Viewing source must not submit a translation") }
+        func titles(_ elements: [UIMenuElement]) -> [String] {
+            elements.flatMap { element in
+                if let action = element as? UIAction { return [action.title] }
+                return (element as? UIMenu).map { titles($0.children) } ?? []
+            }
+        }
+        let range = (view.text as NSString).range(of: "Only this translated paragraph.")
+        view.selectedRange = range
+        let menu = try XCTUnwrap(coordinator.textView(view, editMenuForTextIn: range, suggestedActions: []))
+        XCTAssertTrue(titles(menu.children).contains("显示原文"))
+        XCTAssertFalse(titles(menu.children).contains("翻译此段"))
+        XCTAssertFalse(view.text.contains(passage.text))
+        coordinator.toggleSource(passageID: passage.id)
+        await Task.yield()
+        XCTAssertTrue(view.text.contains(passage.text)); XCTAssertTrue(view.text.contains("Only this translated paragraph."))
+        XCTAssertEqual(coordinator.spans.filter(\.isTranslation).map { $0.passage.id }, [passage.id])
+        coordinator.toggleSource(passageID: passage.id)
+        await Task.yield()
+        XCTAssertFalse(view.text.contains(passage.text))
     }
     func testChapterSnapshotRejectsWrongSourceBeforeItCanReachReader() async throws {
         let session = try await fixture(), identity = try XCTUnwrap(session.book.cloud), passage = try XCTUnwrap(session.chapter.passages.first)

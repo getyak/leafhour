@@ -44,14 +44,16 @@ public struct ReadingLayerSegment: Equatable, Sendable {
     public var translationMissing: Bool
 }
 public enum ReadingLayers {
-    public static func segments(passage: Passage, preferences: ReaderPreferences, translation: ReadingTranslation?) -> [ReadingLayerSegment] {
+    public static func segments(passage: Passage, preferences: ReaderPreferences, translation: ReadingTranslation?, showingSource: Bool = false) -> [ReadingLayerSegment] {
         let source = ReadingLayerSegment(text: passage.text, isTranslation: false, status: nil, translationMissing: false)
         guard preferences.viewMode != .source, !passage.heading, passage.resourcePath == nil else { return [source] }
         guard let translation, translation.original == passage.text, let text = translation.text(preferences.translationVariant) else {
-            return [ReadingLayerSegment(text: passage.text, isTranslation: false, status: nil, translationMissing: true)]
+            if preferences.viewMode == .parallel { return [ReadingLayerSegment(text: passage.text, isTranslation: false, status: nil, translationMissing: true)] }
+            let missing = ReadingLayerSegment(text: "", isTranslation: false, status: nil, translationMissing: true)
+            return showingSource ? [missing, source] : [missing]
         }
         let translated = ReadingLayerSegment(text: text, isTranslation: true, status: translation.status(preferences.translationVariant), translationMissing: false)
-        guard preferences.viewMode == .parallel else { return [translated] }
+        guard preferences.viewMode == .parallel else { return showingSource ? [translated, source] : [translated] }
         return preferences.parallelOrder == .translationFirst ? [translated, source] : [source, translated]
     }
 }

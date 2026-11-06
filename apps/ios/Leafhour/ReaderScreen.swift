@@ -54,7 +54,7 @@ private struct ReaderChromeHeightKey: PreferenceKey {
     }
 }
 enum ReaderPanel: Identifiable {
-    case contents, search, preferences, appearance, records, tools, listening, time, autoPage, translation, pageTranslation, introduction, readingGuide, bookmarks, conversation, bookInformation, note(SelectedQuote), source(SelectedQuote), companion(SelectedQuote?), share(SelectedQuote?)
+    case contents, search, preferences, appearance, records, tools, listening, time, autoPage, translation, pageTranslation, introduction, readingGuide, bookmarks, conversation, bookInformation, note(SelectedQuote), source(SelectedQuote), passageTranslation(SelectedQuote), companion(SelectedQuote?), share(SelectedQuote?)
     var isCompanion: Bool { switch self { case .companion, .conversation, .readingGuide: true; default: false } }
     var isNoteEditor: Bool { if case .note = self { true } else { false } }
     var id: String {
@@ -65,6 +65,7 @@ enum ReaderPanel: Identifiable {
         case .share(let quote): "share-" + (quote?.id ?? "book")
         case .readingGuide: "reading-guide"; case .bookmarks: "bookmarks"
         case .introduction: "introduction"; case .conversation: "conversation"; case .bookInformation: "book-information"
+        case .passageTranslation(let quote): "passage-translation-" + quote.id
         case .note(let quote): "note-" + quote.id; case .source(let quote): "source-" + quote.id
         case .companion(let quote): "companion-" + (quote?.id ?? "current")
         }
@@ -92,6 +93,7 @@ struct ReaderScreen: View {
     @State private var startAutoPageOnDismiss = false
     @State private var speechNavigationID: UUID?
     @State private var tools = ReaderCloudTools()
+    @State private var viewedTranslations = Set<String>()
     @State private var reading = ReaderReadingContent()
     @State private var guide = ReadingGuideController()
     @State private var readingNavigationID = UUID()
@@ -194,12 +196,12 @@ struct ReaderScreen: View {
                     .padding(.bottom, session.state.preferences.navigationMode == .paged || needsPDFSourceFallback ? pageInsets.bottom : 0)
                 } else {
                     TextReadingView(session: session, pageInsets: pageInsets, selectionDismissalID: selectionDismissalID, onNote: { showNote($0) }, onSource: { present(.source($0)) }, onExplain: { showCompanion($0) }, onWake: wake, onReadingScroll: readingDidScroll,
-                        onTranslate: { session.selection = $0; present(.translation) },
+                        onTranslate: { viewedTranslations.insert($0.anchor.passageID); present(.passageTranslation($0)) },
                         onShare: { present(.share($0)) },
                         onSelectionChange: { quote, active in session.selection = quote; hasNativeTextSelection = active; if active { speech.userNavigated() } },
                         onPageChange: { pagePosition = $0 }, onVisiblePage: receiveVisiblePage, speechHighlight: speech.highlight, followsSpeech: speech.following && !speech.readerIsInteracting,
                         onReadingPosition: { speech.updateVisible($0) }, onTouchActivity: readingTouchChanged,
-                        isReadingSurfaceActive: panel == nil && scenePhase == .active,
+                        isReadingSurfaceActive: panel == nil && scenePhase == .active, translatedPassageIDs: viewedTranslations,
                         pageRequest: autoPage.pageRequest, onPageRequestResult: autoPage.receive, onBookmark: addBookmark, onBookmarkPull: receiveBookmarkPull, onBookmarkViewport: { bookmarkRanges = $0 }, onBookmarkCapture: { addBookmark(capture: $0) })
                 }
                 }
@@ -232,8 +234,8 @@ struct ReaderScreen: View {
                             VStack(spacing: layout.compact ? 0 : 4) {
                                 if let quote = session.selection {
                                     ReaderSelectionDock(quote: quote, paper: paper, onAI: { showCompanion(quote) },
-                                        onNote: { showNote(quote) }, onTranslate: { present(.translation) }, onShare: { present(.share(quote)) },
-                                        onClear: { session.selection = nil; hasNativeTextSelection = false; selectionDismissalID = UUID() })
+                                        onNote: { showNote(quote) }, onTranslate: { viewedTranslations.insert(quote.anchor.passageID); present(.passageTranslation(quote)) }, onShare: { present(.share(quote)) },
+                                        onClear: { session.selection = nil; hasNativeTextSelection = false; selectionDismissalID = UUID() }, showsTranslation: session.state.preferences.viewMode != .translation)
                                 } else {
                                     HStack(spacing: 8) {
                                         Spacer(minLength: 0)

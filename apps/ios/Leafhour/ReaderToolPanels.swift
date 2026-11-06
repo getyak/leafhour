@@ -100,134 +100,67 @@ struct ReaderMorePanel: View {
 
 }
 
+/// A paragraph lookup floats above the unchanged reader. It never changes viewMode.
 struct ReaderTranslationPanel: View {
     @Bindable var session: ReaderSession
     @Bindable var tools: ReaderCloudTools
     let cloud: CloudLibraryClient?
-    @State private var variant = "parallel"
+    var quote: SelectedQuote? = nil
     @State private var loadedKey: String?
-    private var passage: Passage? { ReaderCloudTools.currentPassage(session) }
-    private var key: String { session.chapter.id + ":" + (passage?.id ?? "") + ":" + session.translationSettings.targetLanguage.rawValue }
-    private var reading: Bool { loadedKey != key || tools.loading }
-    private var translation: ReaderTranslation? { loadedKey == key ? tools.translation : nil }
-    private var sourceDescription: String { session.book.title + " · " + session.chapter.title }
-    private var original: String {
-        let text = translation?.original ?? passage?.text ?? ""
-        return session.book.rendersMarkdown ? MarkdownDocument(source: text).text.trimmingCharacters(in: .whitespacesAndNewlines) : text
+    private var passage: Passage? { ReaderCloudTools.currentPassage(session, selection: quote) }
+    private var key: String { (quote?.anchor.chapterID ?? session.chapter.id) + ":" + (passage?.id ?? "") + ":" + session.translationSettings.targetLanguage.rawValue }
+    private var displayedText: String? {
+        guard let passage else { return nil }
+        if let saved = session.translations[passage.id], saved.original == passage.text {
+            return saved.text(session.state.preferences.translationVariant)
+        }
+        guard loadedKey == key, let value = tools.translation, value.original == passage.text else { return nil }
+        let text = session.state.preferences.translationVariant == .literal ? value.literal : value.interpretive
+        return text?.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty == false ? text : nil
     }
-    private func hasText(_ value: String?) -> Bool { !(value?.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ?? true) }
     var body: some View {
         List {
-            ReaderBookLanguageChoices(session: session).disabled(tools.generating)
-            if let passage {
-                Section {
-                    Text(sourceDescription).font(.footnote).foregroundStyle(.secondary)
-                    Text(original).font(.system(.body, design: .serif)).lineSpacing(5).lineLimit(6).textSelection(.enabled)
-                    NavigationLink {
-                        ReaderExpandedTextPanel(title: "作者原文", source: sourceDescription, text: original, serif: true)
-                    } label: { Label("完整阅读原文", systemImage: "arrow.up.left.and.arrow.down.right").frame(minHeight: 44) }
-                } header: {
-                    Text("当前段 · 作者原文")
-                    if let index = session.chapter.passages.firstIndex(where: { $0.id == passage.id }) { Text("第 \(index + 1) 段") }
+            if let displayedText {
+                Text(displayedText).font(.system(.body, design: .serif)).lineSpacing(6)
+                    .textSelection(.enabled).frame(maxWidth: .infinity, alignment: .leading)
+                    .listRowSeparator(.hidden).accessibilityIdentifier("reader-paragraph-translation-text")
+            } else if let passage {
+                if loadedKey != key || tools.loading { ProgressView().accessibilityLabel("正在读取译文") }
+                else {
+                    Text("这一段暂无译文").foregroundStyle(.secondary)
+                    ReaderBookLanguageChoices(session: session).disabled(tools.generating)
+                    Button("翻译此段", systemImage: "character.book.closed") {
+                        Task { await tools.prepare("translation", session: session, cloud: cloud, selection: quote) }
+                    }.frame(minHeight: 44).disabled(tools.generating || session.book.cloud == nil || cloud == nil)
+                        .accessibilityIdentifier("reader-paragraph-translation-prepare")
                 }
-                Section {
-                    Picker("阅读方式", selection: $variant) {
-                        Text("对照").tag("parallel"); Text("直译").tag("literal"); Text("意译").tag("interpretive")
-                    }.pickerStyle(.segmented).accessibilityIdentifier("reader-translation-variant")
+                if let error = tools.error {
+                    Text(error).font(.footnote).foregroundStyle(.secondary)
+                    Button("重试", systemImage: "arrow.clockwise") { Task { await load(key) } }.disabled(tools.loading || tools.generating)
                 }
-                if variant != "interpretive" {
-                    ReaderTranslationSection(title: "直译", text: translation?.literal, status: translation?.literalStatus, loading: reading, readFailed: tools.error != nil, localOnly: session.book.cloud == nil || cloud == nil, source: sourceDescription)
+                if tools.generating { ProgressView().accessibilityLabel("正在翻译此段") }
+                if let retry = tools.retry {
+                    Button("核对上次结果", systemImage: "arrow.clockwise") { Task { await tools.perform(retry, cloud: cloud) } }.disabled(tools.generating || tools.loading)
                 }
-                if variant != "literal" {
-                    ReaderTranslationSection(title: "意译", text: translation?.interpretive, status: translation?.interpretiveStatus, loading: reading, readFailed: tools.error != nil, localOnly: session.book.cloud == nil || cloud == nil, source: sourceDescription)
-                }
-                if let translation, !hasText(translation.literal) || !hasText(translation.interpretive), tools.error == nil {
-                    Section {
-                        Button("翻译这一段", systemImage: "character.book.closed") { Task { await tools.prepare("translation", session: session, cloud: cloud) } }
-                            .frame(minHeight: 44).disabled(reading || tools.generating || session.book.cloud == nil || cloud == nil)
-                        Text(session.book.cloud == nil || cloud == nil ? "在书房登录并同步这本书后，可以翻译当前段落。" : "只在你确认后提交当前段落；如需阅读点，会先展示本次点数。")
-                            .font(.footnote).foregroundStyle(.secondary)
-                    }
-                }
-            } else {
-                ContentUnavailableView("此页暂无可翻译文字", systemImage: "text.quote", description: Text("原书页面仍保留。选择有文字的段落后，可在这里核对译文。"))
-            }
-            if reading && !tools.loading && passage != nil { Section { ProgressView("正在核对已有译文…") } }
-            ReaderToolStatus(tools: tools, cloud: cloud)
-            if tools.error != nil && session.book.cloud != nil && cloud != nil {
-                Section { Button("重新读取已有译文", systemImage: "arrow.clockwise") { Task { await load(key) } }.frame(minHeight: 44).disabled(reading || tools.generating) }
-            }
-        }
-        .navigationTitle("这一段的译文")
-        .task(id: key) { await load(key) }
-        .modifier(ReaderGenerationConfirmation(tools: tools, cloud: cloud))
+                // Keep the selected passage alive while its asynchronous lookup runs.
+                Color.clear.frame(height: 0).accessibilityHidden(true).id(passage.id)
+            } else { ContentUnavailableView("此处没有可翻译文字", systemImage: "text.quote") }
+        }.listStyle(.plain).scrollContentBackground(.hidden)
+            .navigationTitle("译文").accessibilityIdentifier("reader-paragraph-translation")
+            .task(id: key) { await load(key) }
+            .onChange(of: tools.translation?.literal) { _, _ in cacheTranslation() }
+            .onChange(of: tools.translation?.interpretive) { _, _ in cacheTranslation() }
+            .modifier(ReaderGenerationConfirmation(tools: tools, cloud: cloud))
     }
-    @MainActor private func load(_ requestedKey: String) async {
+    @MainActor private func load(_ requested: String) async {
         loadedKey = nil
-        await tools.loadTranslation(session, cloud: cloud)
-        if !Task.isCancelled && requestedKey == key { loadedKey = requestedKey }
+        await tools.loadTranslation(session, cloud: cloud, selection: quote)
+        guard !Task.isCancelled, requested == key else { return }
+        loadedKey = requested; cacheTranslation()
     }
-}
-
-private struct ReaderTranslationSection: View {
-    let title: String
-    let text: String?
-    let status: String?
-    let loading: Bool
-    let readFailed: Bool
-    let localOnly: Bool
-    let source: String
-    private var savedText: String? {
-        guard let text, !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return nil }
-        return text
-    }
-    private var review: String {
-        switch status {
-        case "reviewed": "已复核"
-        case "draft": "草稿 · 尚未复核"
-        default: "复核状态未标注"
-        }
-    }
-    var body: some View {
-        Section(title) {
-            if let savedText {
-                Label(review, systemImage: status == "reviewed" ? "checkmark.seal" : "doc.text")
-                    .font(.subheadline).foregroundStyle(.secondary)
-                Text(savedText).font(.body).lineSpacing(5).lineLimit(8).textSelection(.enabled)
-                NavigationLink {
-                    ReaderExpandedTextPanel(title: title, source: source + " · 已保存的" + title + " · " + review, text: savedText)
-                } label: { Label("展开阅读" + title, systemImage: "arrow.up.left.and.arrow.down.right").frame(minHeight: 44) }
-            } else if loading {
-                Text("正在核对已有" + title + "…").font(.body).foregroundStyle(.secondary)
-            } else if readFailed {
-                Text("暂时无法核对" + title).font(.body)
-                Text("读取失败，暂不能确定是否已有译文。原文仍可阅读，请重试读取。").font(.subheadline).foregroundStyle(.secondary)
-            } else {
-                Text(localOnly ? "此设备暂无可显示的" + title : "这一段尚无" + title).font(.body)
-                Text(localOnly ? "原文仍可阅读。同步这本书后，可以核对书房中已保存的译文。" : "原文仍保留；直译和意译分别保存，不会互相代替。")
-                    .font(.subheadline).foregroundStyle(.secondary)
-            }
-        }
-    }
-}
-
-private struct ReaderExpandedTextPanel: View {
-    let title: String
-    let source: String
-    let text: String
-    var serif = false
-    var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 18) {
-                Text(source).font(.footnote).foregroundStyle(.secondary)
-                Text(text).font(.system(.body, design: serif ? .serif : .default)).lineSpacing(6).textSelection(.enabled)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-            }
-            .padding(20)
-            .frame(maxWidth: 680, alignment: .leading)
-            .frame(maxWidth: .infinity)
-        }.navigationTitle(title).navigationBarTitleDisplayMode(.inline)
-            .modifier(ReaderToolContinuation(identifier: "reader-expanded-continue"))
+    @MainActor private func cacheTranslation() {
+        guard loadedKey == key, let passage, let value = tools.translation, value.original == passage.text else { return }
+        session.updateTranslations([passage.id: value.readingCopy(targetLanguage: session.translationSettings.targetLanguage)])
     }
 }
 

@@ -205,16 +205,13 @@ struct ReaderNavigationControls: View {
         Group {
             Section {
                 Picker("翻页方式", selection: $preferences.navigationMode) {
-                    Text("滚动").accessibilityLabel("上下滚动").tag(ReaderNavigationMode.scroll)
-                    Text("翻页").accessibilityLabel("左右翻页").tag(ReaderNavigationMode.paged)
+                    Text("上下翻页").accessibilityLabel("上下翻页").tag(ReaderNavigationMode.scroll)
+                    Text("左右翻页").accessibilityLabel("左右翻页").tag(ReaderNavigationMode.paged)
                 }.pickerStyle(.segmented).accessibilityIdentifier("reader-navigation-mode")
                 if preferences.navigationMode == .paged {
                     Picker("动画", selection: $preferences.pageAnimation) {
                         Text("平移").tag(ReaderPageAnimation.slide); Text("仿真卷页").tag(ReaderPageAnimation.curl); Text("无动画").tag(ReaderPageAnimation.none)
                     }.accessibilityIdentifier("reader-page-animation")
-                    Picker("手势", selection: $preferences.pageInput) {
-                        Text("轻点与滑动").tag(ReaderPageInput.tapAndSwipe); Text("仅滑动").tag(ReaderPageInput.swipeOnly); Text("仅轻点").tag(ReaderPageInput.tapOnly)
-                    }.accessibilityIdentifier("reader-page-input")
                 }
             } footer: { Text("轻点中间唤回工具，长按选字。减弱动态效果开启时直接切页。") }
             Section {
@@ -224,13 +221,6 @@ struct ReaderNavigationControls: View {
                             Toggle("始终显示阅读进度", isOn: $preferences.alwaysShowReadingProgress)
                                 .accessibilityIdentifier("reader-always-show-progress")
                         } footer: { Text("默认只显示正文。轻点书页中间可打开工具和进度。") }
-                        if preferences.navigationMode == .paged {
-                            Section {
-                                LabeledContent("翻页响应", value: preferences.pageTapDelay == 0 ? "立即" : "\(Int((preferences.pageTapDelay * 1000).rounded())) 毫秒")
-                                Slider(value: $preferences.pageTapDelay, in: 0...0.5, step: 0.05)
-                                    .accessibilityLabel("翻页响应延迟").accessibilityIdentifier("reader-page-tap-delay")
-                            } footer: { Text("每次轻点单独翻页。增加等待时间不改变翻页动画；长按仍可选择文字。") }
-                        }
                     }.navigationTitle("更多交互").modifier(ReaderToolContinuation())
                 }.accessibilityIdentifier("reader-interaction-settings")
             }

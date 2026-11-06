@@ -230,7 +230,7 @@ final class ReaderLayoutTests: XCTestCase {
         let session = ReaderSession(book: book, state: state, original: fixture.session.original, directory: fixture.session.directory, library: fixture.library)
         let (text, coordinator) = try await selectableText(session)
         XCTAssertFalse(coordinator.textWindow!.isComplete)
-        XCTAssertTrue(text.text.contains("Markdown 源文"))
+        XCTAssertFalse(text.text.contains("Markdown 源文"), "Implementation captions must not be inserted into the book text")
         XCTAssertTrue(text.text.contains("item_160 **1** [reference][definition]"))
         XCTAssertNil(coordinator.markdown, "A partial Markdown fragment must not silently reinterpret code or unresolved references")
     }
@@ -528,11 +528,12 @@ final class ReaderLayoutTests: XCTestCase {
         let copy = UIAction(title: "Copy", identifier: UIAction.Identifier("copy-fixture")) { _ in }
         let menu = try XCTUnwrap(coordinator.textView(text, editMenuForTextIn: crossing, suggestedActions: [copy]))
         let actions = self.actions(in: menu)
-        for title in ["AI 引用", "记笔记", "核对原文", "查看译文", "分享摘录…"] {
+        for title in ["AI 引用", "记笔记", "翻译此段", "分享摘录…"] {
             let action = try XCTUnwrap(actions.first { $0.title == title }, title)
             XCTAssertTrue(action.attributes.contains(.disabled), "\(title) must not accept a quote crossing stable passage anchors")
         }
         XCTAssertTrue(actions.contains { $0 === copy })
+        XCTAssertFalse(actions.contains { $0.title == "核对原文" || $0.title == "显示原文" }, "Original reading must not offer redundant original reveal")
         XCTAssertFalse(copy.attributes.contains(.disabled), "Copy remains a normal system selection action")
         XCTAssertTrue(actions.first === copy, "Cross-paragraph copying must stay ahead of unavailable anchored actions")
     }
@@ -563,7 +564,7 @@ final class ReaderLayoutTests: XCTestCase {
         let range = (text.text as NSString).range(of: "Second paragraph.")
         let menu = try XCTUnwrap(coordinator.textView(text, editMenuForTextIn: range, suggestedActions: []))
         let actions = self.actions(in: menu)
-        XCTAssertEqual(actions.count, 4)
+        XCTAssertEqual(actions.map(\.title), ["AI 引用", "记笔记", "翻译此段"])
         XCTAssertTrue(actions.allSatisfy { !$0.attributes.contains(.disabled) })
         let quote = try XCTUnwrap(coordinator.selectedQuote(in: text, range: range))
         XCTAssertEqual(quote.text, "Second paragraph.")

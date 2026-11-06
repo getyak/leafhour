@@ -146,6 +146,99 @@ final class ReaderPaginationTests: XCTestCase {
         addTeardownBlock { await MainActor.run { coordinator.invalidate(); view.delegate = nil } }
         return (view, coordinator)
     }
+    func testTenActualTurnsAndTenReverseTurnsForBothAxesAndBothContents() async throws {
+        for mode in [ReaderViewMode.source, .translation] {
+            for axis in [ReaderNavigationMode.paged, .scroll] {
+                let session = try await session(source: String(repeating: "Original garden 中文 🐿️ remains readable. ", count: 500))
+                let passage = try XCTUnwrap(session.chapter.passages.first)
+                session.updateTranslations([passage.id: ReadingTranslation(original: passage.text, literal: String(repeating: "译文在安静的果园中继续，保留段落来源与真实偏移。", count: 650))])
+                var preferences = session.state.preferences
+                preferences.viewMode = mode; preferences.navigationMode = axis; preferences.pageAnimation = .none
+                session.changePreferences(preferences)
+                var reported: ReaderPagePosition?
+                let (view, coordinator) = await text(session, onPageChange: { reported = $0 })
+                await settlePageTurn(view)
+                let start = view.contentOffset.y
+                XCTAssertTrue(coordinator.turnPage(.next))
+                let first = view.contentOffset.y - start
+                for _ in 0..<9 { XCTAssertTrue(coordinator.turnPage(.next)) }
+                await settlePageTurn(view)
+                if axis == .paged { XCTAssertEqual(reported?.index, 10, "All ten user contacts must advance a real TextKit page") }
+                else { XCTAssertEqual(view.contentOffset.y, start + first * 10, accuracy: 1, "Every vertical contact advances one screen") }
+                if mode == .translation { XCTAssertEqual(session.currentAnchor?.characterOffset, 0, "Translated offsets never become fabricated source offsets") }
+                for _ in 0..<10 { XCTAssertTrue(coordinator.turnPage(.previous)) }
+                await settlePageTurn(view)
+                XCTAssertEqual(view.contentOffset.y, start, accuracy: 1)
+                XCTAssertEqual(view.selectedRange.length, 0); XCTAssertFalse(view.isEditable)
+            }
+        }
+    }
+    func testPagedTranslationMarkRemainsVisibleAndHittableWithoutInsertingTranslatedText() async throws {
+        let session = try await session(source: "A source paragraph that stays unchanged.")
+        let passage = try XCTUnwrap(session.chapter.passages.first)
+        session.updateTranslations([passage.id: ReadingTranslation(original: passage.text, literal: "Translated paragraph.")])
+        let (view, coordinator) = await text(session)
+        await settlePageTurn(view)
+        var opened = 0
+        coordinator.parent.onTranslate = { quote in opened += 1; XCTAssertEqual(quote.anchor.passageID, passage.id) }
+        let originalBody = view.text
+        coordinator.openTranslation(for: passage)
+        let mark = try XCTUnwrap(view.subviews.compactMap { $0 as? UIButton }.first { $0.currentTitle == "译" })
+        XCTAssertGreaterThanOrEqual(mark.frame.minX, view.bounds.minX)
+        XCTAssertLessThanOrEqual(mark.frame.maxX, view.bounds.maxX)
+        XCTAssertTrue(view.bounds.intersects(mark.frame))
+        let target = view.hitTest(CGPoint(x: mark.frame.midX, y: mark.frame.midY), with: nil)
+        XCTAssertTrue(target === mark || target?.isDescendant(of: mark) == true)
+        mark.sendActions(for: .touchUpInside)
+        XCTAssertEqual(opened, 2); XCTAssertEqual(view.text, originalBody); XCTAssertFalse(view.text.contains("Translated paragraph."))
+    }
+    func testWrappedMissingTranslationNeverBecomesAnAuthorOffsetSpeechCursorOrBookmark() async throws {
+        let session = try await session(source: "Actual source words that are not a status label.")
+        var preferences = session.state.preferences; preferences.navigationMode = .scroll; preferences.viewMode = .translation
+        session.changePreferences(preferences)
+        let (view, coordinator) = await text(session)
+        view.frame = CGRect(x: 0, y: 0, width: 120, height: 110)
+        coordinator.updateContent(view); await drain()
+        var reported: ReaderSpeechLocation?
+        coordinator.parent.onReadingPosition = { reported = $0 }
+        view.setContentOffset(CGPoint(x: 0, y: 24), animated: false)
+        coordinator.capture()
+        XCTAssertEqual(session.currentAnchor?.characterOffset, 0)
+        XCTAssertNil(reported); XCTAssertNil(coordinator.bookmarkCapture())
+    }
+    func testVerticalPreviousChapterReachesTheEndOfALongTranslatedParagraph() async throws {
+        let session = try await session(chapters: 2, source: "A stable short original paragraph.")
+        var rows: [String: ReadingTranslation] = [:]
+        for chapter in session.book.chapters { for passage in chapter.passages {
+            rows[passage.id] = ReadingTranslation(original: passage.text, literal: String(repeating: "译文的尾部仍然需要可读，不可跳回段首。", count: 250) + "TRANSLATION_END")
+        } }
+        session.updateTranslations(rows)
+        var preferences = session.state.preferences; preferences.navigationMode = .scroll; preferences.viewMode = .translation; preferences.pageAnimation = .none
+        session.changePreferences(preferences); session.go(to: 1)
+        let (view, coordinator) = await text(session); await settlePageTurn(view)
+        XCTAssertTrue(coordinator.turnPage(.previous)); await settlePageTurn(view)
+        XCTAssertEqual(session.chapterIndex, 0)
+        XCTAssertEqual(view.contentOffset.y, max(-view.adjustedContentInset.top, view.contentSize.height - view.bounds.height + view.adjustedContentInset.bottom), accuracy: 1)
+    }
+    func testRevealedLongOriginalWithoutTranslationContinuesThroughItsSourceWindows() async throws {
+        let session = try await session(source: String(repeating: "Long original 中文 🌿 still has unread text. ", count: 1500) + "SOURCE_END")
+        let passage = try XCTUnwrap(session.chapter.passages.first)
+        var preferences = session.state.preferences; preferences.viewMode = .translation; preferences.pageAnimation = .none
+        session.changePreferences(preferences)
+        let (view, coordinator) = await text(session); await settlePageTurn(view)
+        coordinator.toggleSource(passageID: passage.id); await settlePageTurn(view)
+        let firstWindow = try XCTUnwrap(coordinator.textWindow).signature
+        for _ in 0..<120 where coordinator.textWindow?.signature == firstWindow {
+            XCTAssertTrue(coordinator.turnPage(.next)); await settlePageTurn(view)
+        }
+        XCTAssertEqual(session.chapterIndex, 0)
+        XCTAssertNotEqual(coordinator.textWindow?.signature, firstWindow)
+        XCTAssertEqual(session.currentAnchor?.passageID, passage.id)
+        XCTAssertGreaterThan(session.currentAnchor?.characterOffset ?? 0, 0)
+        view.setContentOffset(CGPoint(x: 0, y: -view.adjustedContentInset.top), animated: false)
+        XCTAssertTrue(coordinator.turnPage(.previous)); await settlePageTurn(view)
+        XCTAssertEqual(session.chapterIndex, 0)
+    }
 
     func testBehaviorPreferencesKeepTextLayoutSelectionAndCheckpointUsable() async throws {
         let session = try await session()
@@ -662,12 +755,14 @@ final class ReaderPaginationTests: XCTestCase {
         XCTAssertEqual(stored.anchor, target)
     }
 
-    func testScrollModeKeepsItsNativePanAndDoesNotTurnOnHorizontalPageRequests() async throws {
+    func testScrollModeKeepsNativePanAndSupportsUserScreenStepsWithoutAutomaticPaging() async throws {
         let session = try await session(); session.state.preferences.navigationMode = .scroll
         let (view, coordinator) = await text(session)
         let offset = view.contentOffset
         XCTAssertTrue(view.panGestureRecognizer.isEnabled)
-        XCTAssertFalse(coordinator.turnPage(.next)); XCTAssertEqual(view.contentOffset, offset)
+        XCTAssertFalse(coordinator.turnPage(.next, origin: .automatic)); XCTAssertEqual(view.contentOffset, offset)
+        XCTAssertTrue(coordinator.turnPage(.next)); XCTAssertGreaterThan(view.contentOffset.y, offset.y)
+        XCTAssertEqual(view.contentOffset.x, offset.x)
         _ = await session.flush()
     }
 
