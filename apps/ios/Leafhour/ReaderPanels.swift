@@ -69,6 +69,7 @@ struct ReaderPanelView: View {
                     }
                 case .share(let quote): ReaderSharePanel(session: session, quote: quote, cloud: cloud)
                 case .translation: ReaderTranslationPanel(session: session, tools: tools, cloud: cloud)
+                case .passageTranslation(let quote): ReaderTranslationPanel(session: session, tools: tools, cloud: cloud, quote: quote)
                 case .pageTranslation:
                     if let reading { ReaderPageTranslationPanel(session: session, reading: reading, cloud: cloud, library: library, page: visiblePage, userNavigationID: readingNavigationID) }
                 case .bookmarks:
@@ -310,28 +311,12 @@ struct ReaderContentSettings: View {
 struct ReaderContentControls: View {
     @Bindable var session: ReaderSession
     var reading: ReaderReadingContent?
-    private var preferences: Binding<ReaderPreferences> {
-        Binding(get: { session.state.preferences }, set: { session.changePreferences($0) })
-    }
     var body: some View {
-        Group {
+        TranslationDisplayChoices(session: session)
+            .onChange(of: session.state.preferences.viewMode) { _, mode in reading?.offerFirstPassage = mode != .source }
+        if session.state.preferences.viewMode != .source {
             ReaderBookLanguageChoices(session: session).disabled(reading?.running == true)
-            Section {
-                Picker("阅读内容", selection: Binding(get: { session.state.preferences.viewMode }, set: { mode in
-                    reading?.offerFirstPassage = mode != .source
-                    var value = session.state.preferences; value.viewMode = mode; session.changePreferences(value)
-                })) {
-                    Text("原著").tag(ReaderViewMode.source); Text("译文").tag(ReaderViewMode.translation); Text("对照").tag(ReaderViewMode.parallel)
-                }.pickerStyle(.segmented).accessibilityIdentifier("reader-view-mode")
-                if session.state.preferences.viewMode != .source {
-                    Picker("译文版本", selection: preferences.translationVariant) {
-                        Text("直译").tag(ReaderTranslationVariant.literal); Text("意译").tag(ReaderTranslationVariant.interpretive)
-                    }.pickerStyle(.segmented).accessibilityIdentifier("reader-reading-variant")
-                }
-            } footer: { Text("原文与译文分别保存。缺少译文时保留原文，切换后仍停在同一段。") }
-            if let reading, session.state.preferences.viewMode != .source {
-                ReaderTranslationPreparation(session: session, reading: reading)
-            }
+            if let reading { ReaderTranslationPreparation(session: session, reading: reading) }
         }
     }
 }

@@ -24,6 +24,7 @@ struct TextReadingView: UIViewRepresentable {
     var onReadingPosition: ((ReaderSpeechLocation) -> Void)? = nil
     var onTouchActivity: ((Bool) -> Void)? = nil
     var isReadingSurfaceActive = true
+    var translatedPassageIDs: Set<String> = []
     var pageRequest: ReaderPageRequest? = nil
     var onPageRequestResult: ((UUID, ReaderPageRequestOutcome) -> Void)? = nil
     var onBookmark: ((ReadingAnchor) -> Void)? = nil
@@ -47,9 +48,12 @@ struct TextReadingView: UIViewRepresentable {
         context.coordinator.edgeTap = ReaderEdgeTapHandler(view: view, blocked: { [weak coordinator = context.coordinator] in
             coordinator?.blocksEdgeTaps != false
         }, onWake: { [weak coordinator = context.coordinator] edge in coordinator?.wake(edge) },
-        isPaged: { [weak coordinator = context.coordinator] in coordinator?.parent.session.state.preferences.navigationMode == .paged && coordinator?.parent.session.state.preferences.pageInput.allowsTap == true },
+        isPaged: { [weak coordinator = context.coordinator] in coordinator?.parent.session.state.preferences.navigationMode == .paged },
+        isScrolling: { [weak coordinator = context.coordinator] in coordinator?.parent.session.state.preferences.navigationMode == .scroll },
+        hasSelection: { [weak view] in (view?.selectedRange.length ?? 0) > 0 },
+        onDismissSelection: { [weak coordinator = context.coordinator] in coordinator?.clearSelection() },
         onTurn: { [weak coordinator = context.coordinator] direction in _ = coordinator?.turnPage(direction) },
-        delay: { [weak coordinator = context.coordinator] in coordinator?.parent.session.state.preferences.pageTapDelay ?? 0 },
+        delay: { 0 },
         context: { [weak coordinator = context.coordinator] in
             guard let session = coordinator?.parent.session else { return nil }
             return ReaderTapContext(owner: ObjectIdentifier(session), navigation: session.navigationID, preferences: session.state.preferences, size: coordinator?.view?.bounds.size ?? .zero)
@@ -90,12 +94,13 @@ struct TextReadingView: UIViewRepresentable {
         coordinator.dismissSelection(in: view, id: selectionDismissalID)
         coordinator.updateSpeech(view)
         coordinator.consumePageRequest()
+        coordinator.updateTranslationMarkers()
     }
     static func dismantleUIView(_ view: UITextView, coordinator: Coordinator) {
         (view as? ReflowTextView)?.onSizeChange = nil
         coordinator.invalidate(); view.delegate = nil
     }
-    struct Span { var passage: Passage; var range: NSRange; var sourceOffsets: SourceTextOffsets; var sourceRange: NSRange? = nil; var isTranslation = false; var sourceUTF16Start = 0; var sourceUTF16End: Int? = nil; var bookmarkPresentation: ReaderBookmarkPresentation? = nil; var presentationTextLength: Int? = nil }
+    struct Span { var passage: Passage; var range: NSRange; var sourceOffsets: SourceTextOffsets; var sourceRange: NSRange? = nil; var isTranslation = false; var isPlaceholder = false; var sourceUTF16Start = 0; var sourceUTF16End: Int? = nil; var bookmarkPresentation: ReaderBookmarkPresentation? = nil; var presentationTextLength: Int? = nil }
     @MainActor final class Coordinator: NSObject, UITextViewDelegate {
         private func layout(for view: UITextView) -> (contentWidth: CGFloat, insets: UIEdgeInsets) {
             let viewport = view.bounds.width > 0 ? view.bounds.width : UIScreen.main.bounds.width
@@ -108,9 +113,20 @@ struct TextReadingView: UIViewRepresentable {
         }
         private(set) var textWindow: ReadingTextWindow?
         private var nextWindowEndsAtAnchor = false
+        private var revealedSources = Set<String>()
+        private var viewedTranslations = Set<String>()
+        private var translationMarkers: [String: UIButton] = [:]
+        private var displayOwner: ObjectIdentifier?
+        private var displayLanguage: ReadingLanguage?
         func updateContent(_ view: UITextView) {
             guard !isInvalidated else { return }
             let coordinator = self, session = parent.session
+            if displayOwner != ObjectIdentifier(session) || displayLanguage != session.translationSettings.targetLanguage {
+                revealedSources = []; viewedTranslations = []
+                translationMarkers.values.forEach { $0.removeFromSuperview() }; translationMarkers = [:]
+                displayOwner = ObjectIdentifier(session); displayLanguage = session.translationSettings.targetLanguage
+            }
+            viewedTranslations.formUnion(parent.translatedPassageIDs)
             if renderedChapterID == nil { view.alpha = 0 }
             let column = layout(for: view)
             let layoutChanged = coordinator.renderedSize != view.bounds.size || coordinator.renderedInsets != column.insets
@@ -197,17 +213,12 @@ struct TextReadingView: UIViewRepresentable {
                 let result = NSMutableAttributedString(string: "")
                 coordinator.spans = []; coordinator.markdownDisplayPrefix = 0
                 let font = ReaderTypography.font(style: preferences.fontStyle, size: preferences.fontSize, traits: view.traitCollection, latin: preferences.latinFont)
-                if session.book.rendersMarkdown && window.isComplete && window.slices.allSatisfy({ $0.sourceRange.length == $0.offsets.utf16Count }) && (preferences.viewMode == .source || !displayedChapter.passages.contains { session.translations[$0.id]?.text(preferences.translationVariant) != nil }) {
+                if session.book.rendersMarkdown && window.isComplete && window.slices.allSatisfy({ $0.sourceRange.length == $0.offsets.utf16Count }) && preferences.viewMode == .source {
                     if !sameSource || coordinator.markdownChapterID != session.chapter.id + window.signature {
                         coordinator.markdown = MarkdownChapterLayout(book: session.book, chapter: displayedChapter, original: session.original, useRetainedSource: window.isComplete)
                         coordinator.markdownChapterID = session.chapter.id + window.signature
                     }
                     if let layout = coordinator.markdown {
-                        if preferences.viewMode != .source {
-                            let caption = UIFontMetrics(forTextStyle: .caption1).scaledFont(for: .systemFont(ofSize: 12, weight: .medium), compatibleWith: view.traitCollection)
-                            result.append(NSAttributedString(string: "译文尚未准备 · 原文\n\n", attributes: [.font: caption, .foregroundColor: UIColor.secondaryLabel]))
-                            coordinator.markdownDisplayPrefix = result.length
-                        }
                         let sourceScale = preferences.viewMode == .parallel ? preferences.parallelSourceScale : 1
                         result.append(layout.attributed(font: font, size: preferences.fontSize,
                             lineSpacing: preferences.lineSpacing, contentWidth: width,
@@ -222,10 +233,6 @@ struct TextReadingView: UIViewRepresentable {
                     }
                 } else {
                 coordinator.markdown = nil; coordinator.markdownChapterID = nil
-                if session.book.rendersMarkdown && !window.isComplete {
-                    let caption = UIFontMetrics(forTextStyle: .caption1).scaledFont(for: .systemFont(ofSize: 12), compatibleWith: view.traitCollection)
-                    result.append(NSAttributedString(string: "Markdown 源文\n\n", attributes: [.font: caption, .foregroundColor: UIColor.secondaryLabel]))
-                }
                 for (passageIndex, passage) in displayedChapter.passages.enumerated() {
                     let slice = window.slices[passageIndex]
                     let start = result.length
@@ -250,26 +257,52 @@ struct TextReadingView: UIViewRepresentable {
                         }
                     } else {
                         let actualFont = passage.heading ? UIFontMetrics(forTextStyle: .title2).scaledFont(for: .systemFont(ofSize: preferences.fontSize + 5, weight: .semibold), compatibleWith: view.traitCollection) : font
-                        let layers = ReadingLayers.segments(passage: passage, preferences: preferences, translation: slice.sourceRange.length == slice.offsets.utf16Count ? session.translations[passage.id] : nil)
-                        for layer in layers {
-                            if layer.isTranslation || layer.translationMissing {
-                                let variant = preferences.translationVariant == .literal ? "直译" : "意译"
-                                let label = layer.translationMissing ? "译文尚未准备 · 原文" : variant + (layer.status == "reviewed" ? " · 已校订" : " · 未校订")
-                                let caption = UIFontMetrics(forTextStyle: .caption1).scaledFont(for: .systemFont(ofSize: 12, weight: .medium), compatibleWith: view.traitCollection)
-                                result.append(NSAttributedString(string: label + "\n", attributes: [.font: caption, .foregroundColor: UIColor.secondaryLabel, .paragraphStyle: style]))
+                        // A source window can split a long paragraph. Its real cached translation
+                        // still belongs to the complete immutable source, never to a made-up slice.
+                        let saved = session.translations[passage.id].flatMap { $0.original == slice.original.text ? $0 : nil }
+                        let wholeLayer = preferences.viewMode != .source && saved?.text(preferences.translationVariant) != nil
+                        let layerPassage = wholeLayer ? slice.original : passage
+                        let sourceStart = wholeLayer ? 0 : slice.sourceRange.location
+                        let sourceEnd = wholeLayer ? slice.offsets.utf16Count : NSMaxRange(slice.sourceRange)
+                        let layers = ReadingLayers.segments(passage: layerPassage, preferences: preferences, translation: saved, showingSource: revealedSources.contains(passage.id))
+                        for (layerIndex, layer) in layers.enumerated() {
+                            if layer.translationMissing {
+                                let caption = UIFontMetrics(forTextStyle: .caption1).scaledFont(for: .systemFont(ofSize: 14), compatibleWith: view.traitCollection)
+                                let placeholderStart = result.length
+                                let label = layer.text.isEmpty ? "译文未准备　显示原文　重试\n" : "译文未准备　重试\n"
+                                let status = NSMutableAttributedString(string: label, attributes: [.font: caption, .foregroundColor: UIColor.secondaryLabel, .paragraphStyle: style])
+                                for (title, action) in [("显示原文", "source"), ("重试", "translation")] {
+                                    let range = (label as NSString).range(of: title)
+                                    if range.location != NSNotFound, let url = readerURL(action, passageID: passage.id) { status.addAttribute(.link, value: url, range: range) }
+                                }
+                                result.append(status)
+                                if layer.text.isEmpty {
+                                    coordinator.spans.append(Span(passage: slice.original, range: NSRange(location: placeholderStart, length: result.length - placeholderStart), sourceOffsets: sourceOffsets(for: passage, at: passageIndex), isPlaceholder: true, sourceUTF16Start: slice.sourceRange.location, sourceUTF16End: NSMaxRange(slice.sourceRange)))
+                                    continue
+                                }
+                            }
+                            let revealedSource = preferences.viewMode == .translation && !layer.isTranslation && !passage.heading && revealedSources.contains(passage.id)
+                            if revealedSource {
+                                let caption = UIFontMetrics(forTextStyle: .caption1).scaledFont(for: .systemFont(ofSize: 12), compatibleWith: view.traitCollection)
+                                let heading = NSMutableAttributedString(string: "原文　收起\n", attributes: [.font: caption, .foregroundColor: UIColor.secondaryLabel])
+                                if let url = readerURL("source", passageID: passage.id) { heading.addAttribute(.link, value: url, range: NSRange(location: 3, length: 2)) }
+                                result.append(heading)
                             }
                             let layerStart = result.length
                             let comparisonSource = preferences.viewMode == .parallel && !layer.isTranslation && !passage.heading
-                            let ink = comparisonSource ? UIColor.label.withAlphaComponent(preferences.parallelSourceOpacity) : UIColor.label
+                            let ink = revealedSource ? UIColor.secondaryLabel : comparisonSource ? UIColor.label.withAlphaComponent(preferences.parallelSourceOpacity) : UIColor.label
                             let layerFont = comparisonSource ? actualFont.withSize(actualFont.pointSize * preferences.parallelSourceScale) : actualFont
-                            let prefix = !layer.isTranslation && slice.sourceRange.location == 0 ? ReaderParagraphPresentation.leadingIndentUTF16(layer.text, kind: session.book.kind, heading: passage.heading) : 0
+                            let prefix = !layer.isTranslation && sourceStart == 0 ? ReaderParagraphPresentation.leadingIndentUTF16(layer.text, kind: session.book.kind, heading: passage.heading) : 0
                             let displayed = (layer.text as NSString).substring(from: prefix)
                             let bodyStyle = style.mutableCopy() as! NSMutableParagraphStyle
-                            if !passage.heading && (layer.isTranslation || slice.sourceRange.location == 0) { bodyStyle.firstLineHeadIndent = preferences.firstLineIndent == .twoCharacters ? layerFont.pointSize * 2 : 0 }
+                            if preferences.viewMode == .parallel, layerIndex + 1 < layers.count {
+                                bodyStyle.paragraphSpacing = min(8, preferences.parallelSpacing)
+                            }
+                            if !passage.heading && (layer.isTranslation || sourceStart == 0) { bodyStyle.firstLineHeadIndent = preferences.firstLineIndent == .twoCharacters ? layerFont.pointSize * 2 : 0 }
                             result.append(NSAttributedString(string: displayed, attributes: [.font: layerFont, .foregroundColor: ink, .paragraphStyle: bodyStyle]))
-                            result.append(NSAttributedString(string: preferences.viewMode == .source ? "\n" : "\n\n", attributes: [.font: font, .paragraphStyle: style]))
+                            result.append(NSAttributedString(string: "\n", attributes: [.font: font, .paragraphStyle: style]))
                             let presentation = layer.isTranslation ? ReaderBookmarkPresentation(layer: preferences.translationVariant, targetLanguage: session.translationSettings.targetLanguage, text: layer.text, utf16Offset: 0, viewMode: preferences.viewMode) : nil
-                            coordinator.spans.append(Span(passage: slice.original, range: NSRange(location: layerStart, length: result.length - layerStart), sourceOffsets: sourceOffsets(for: passage, at: passageIndex), isTranslation: layer.isTranslation, sourceUTF16Start: slice.sourceRange.location + prefix, sourceUTF16End: NSMaxRange(slice.sourceRange), bookmarkPresentation: presentation, presentationTextLength: layer.isTranslation ? layer.text.utf16.count : nil))
+                            coordinator.spans.append(Span(passage: slice.original, range: NSRange(location: layerStart, length: result.length - layerStart), sourceOffsets: sourceOffsets(for: passage, at: passageIndex), isTranslation: layer.isTranslation, sourceUTF16Start: sourceStart + prefix, sourceUTF16End: sourceEnd, bookmarkPresentation: presentation, presentationTextLength: layer.isTranslation ? layer.text.utf16.count : nil))
                         }
                     }
                     if passage.resourcePath != nil {
@@ -320,7 +353,7 @@ struct TextReadingView: UIViewRepresentable {
         }
         private func contentSignature(in view: UITextView, width: Int) -> String {
             let session = parent.session, p = session.state.preferences
-            return "\(textWindow?.signature ?? "")-\(session.chapter.id)-\(p.fontStyle)-\(p.latinFont)-\(p.fontSize)-\(p.lineSpacing)-\(p.firstLineIndent)-\(p.viewMode)-\(p.translationVariant)-\(p.parallelOrder)-\(p.parallelSourceScale)-\(p.parallelSourceOpacity)-\(p.parallelSpacing)-\(p.viewMode == .source ? 0 : session.contentRevision)-\(session.packageVerificationPending)-\(view.traitCollection.preferredContentSizeCategory.rawValue)-\(width)"
+            return "\(textWindow?.signature ?? "")-\(session.chapter.id)-\(p.fontStyle)-\(p.latinFont)-\(p.fontSize)-\(p.lineSpacing)-\(p.firstLineIndent)-\(p.viewMode)-\(p.translationVariant)-\(p.parallelOrder)-\(p.parallelSourceScale)-\(p.parallelSourceOpacity)-\(p.parallelSpacing)-\(p.viewMode == .source ? 0 : session.contentRevision)-\(revealedSources.sorted().joined(separator: ","))-\(session.packageVerificationPending)-\(view.traitCollection.preferredContentSizeCategory.rawValue)-\(width)"
         }
         var parent: TextReadingView
         weak var view: UITextView?
@@ -446,6 +479,7 @@ struct TextReadingView: UIViewRepresentable {
             parent.onReadingScroll()
         }
         func scrollViewDidScroll(_ scrollView: UIScrollView) {
+            updateTranslationMarkers()
             invalidateVisiblePage()
             guard checkpointVisible() else { return }
             schedulePersistence()
@@ -579,7 +613,7 @@ struct TextReadingView: UIViewRepresentable {
             return true
         }
         private func reportReadingPosition(span: Span, displayedIndex: Int) {
-            guard !isInvalidated, span.passage.resourcePath == nil else { return }
+            guard !isInvalidated, !span.isPlaceholder, span.passage.resourcePath == nil else { return }
             let layer = span.isTranslation ? parent.session.state.preferences.translationVariant.rawValue : "original"
             let text = span.isTranslation ? parent.session.translations[span.passage.id]?.text(parent.session.state.preferences.translationVariant) : span.passage.text
             guard let text else { return }
@@ -598,7 +632,7 @@ struct TextReadingView: UIViewRepresentable {
             var target: ReaderSpeechTextTarget?
             if view.selectedRange.length == 0, let highlight = parent.speechHighlight,
                highlight.location.chapterID == parent.session.chapter.id,
-               let span = spans.first(where: { $0.passage.id == highlight.location.passageID && ($0.isTranslation == (highlight.location.layer != "original")) }) {
+               let span = spans.first(where: { !$0.isPlaceholder && $0.passage.id == highlight.location.passageID && ($0.isTranslation == (highlight.location.layer != "original")) }) {
                 let snapshot = span.isTranslation ? parent.session.translations[span.passage.id]?.text(parent.session.state.preferences.translationVariant) : span.passage.text
                 let layerMatches = !span.isTranslation || parent.session.state.preferences.translationVariant.rawValue == highlight.location.layer
                 func displayed(_ range: NSRange) -> NSRange? {
@@ -632,6 +666,7 @@ struct TextReadingView: UIViewRepresentable {
         }
         private func sourceOffset(in span: Span, displayedIndex: Int) -> Int {
             if span.isTranslation { return 0 }
+            if span.isPlaceholder { return span.sourceUTF16Start }
             if let source = span.sourceRange, let markdown {
                 return min(max(span.sourceUTF16Start, span.sourceUTF16Start + markdown.document.sourceUTF16Offset(at: max(0, displayedIndex - markdownDisplayPrefix)) - source.location), span.sourceUTF16End ?? span.sourceOffsets.utf16Count)
             }
@@ -665,6 +700,7 @@ struct TextReadingView: UIViewRepresentable {
             }
         }
         func invalidate() {
+            translationMarkers.values.forEach { $0.removeFromSuperview() }; translationMarkers = [:]
             bookmarkGesture?.invalidate(); bookmarkGesture = nil
             edgeTap?.invalidate(); edgeTap = nil
             queuedPages = []
@@ -730,6 +766,7 @@ struct TextReadingView: UIViewRepresentable {
             let point = CGPoint(x: 1, y: max(0, view.contentOffset.y + max(0, parent.pageInsets.top) + 1 - view.textContainerInset.top))
             let index = view.layoutManager.characterIndex(for: point, in: view.textContainer, fractionOfDistanceBetweenInsertionPoints: nil)
             guard let span = spans.first(where: { NSMaxRange($0.range) > index }) ?? spans.last else { return nil }
+            guard !span.isPlaceholder else { return nil }
             if var presentation = span.bookmarkPresentation, let length = span.presentationTextLength {
                 presentation.utf16Offset = min(max(0, index - span.range.location), max(0, length - 1))
                 let anchor = ReadingAnchor(chapterID: parent.session.chapter.id, passageID: span.passage.id)
@@ -748,7 +785,7 @@ struct TextReadingView: UIViewRepresentable {
             let glyphs = manager.glyphRange(forBoundingRect: reading, in: view.textContainer)
             let characters = manager.characterRange(forGlyphRange: glyphs, actualGlyphRange: nil)
             var ranges: [ReaderBookmarkVisibleRange] = []
-            for span in spans where span.range.length > 0 {
+            for span in spans where span.range.length > 0 && !span.isPlaceholder {
                 let overlap = NSIntersectionRange(span.range, characters)
                 guard overlap.length > 0 else { continue }
                 var start = ReadingAnchor(chapterID: parent.session.chapter.id, passageID: span.passage.id,
@@ -786,7 +823,7 @@ struct TextReadingView: UIViewRepresentable {
             guard !isInvalidated else { return }
             let paged = parent.session.state.preferences.navigationMode == .paged
             bookmarkGesture?.configure(enabled: (parent.onBookmark != nil || parent.onBookmarkCapture != nil) && parent.isReadingSurfaceActive)
-            pageTurn?.isEnabled = paged && parent.session.state.preferences.pageInput.allowsSwipe
+            pageTurn?.isEnabled = paged
             // Preserve UITextView's selection/editing recognizers and native
             // autoscroll. Only ordinary content-drag navigation changes mode.
             view.panGestureRecognizer.isEnabled = !paged
@@ -794,15 +831,14 @@ struct TextReadingView: UIViewRepresentable {
                 reflow.onPageScroll = paged ? { [weak self] direction in self?.turnPage(direction) ?? false } : nil
                 reflow.pagedReadingInsets = paged ? UIEdgeInsets(top: max(0, parent.pageInsets.top), left: 0, bottom: parent.pageInsets.bottom, right: 0) : nil
             }
+            view.accessibilityCustomActions = [
+                UIAccessibilityCustomAction(name: paged ? "下一页" : "下一屏") { [weak self] _ in self?.turnPage(.next) ?? false },
+                UIAccessibilityCustomAction(name: paged ? "上一页" : "上一屏") { [weak self] _ in self?.turnPage(.previous) ?? false }
+            ]
             if paged {
-                view.accessibilityCustomActions = [
-                    UIAccessibilityCustomAction(name: "下一屏") { [weak self] _ in self?.turnPage(.next) ?? false },
-                    UIAccessibilityCustomAction(name: "上一屏") { [weak self] _ in self?.turnPage(.previous) ?? false }
-                ]
                 refreshPagination()
                 reportPagePosition()
             } else {
-                view.accessibilityCustomActions = nil
                 setPaginationBottomAllowance(nil)
                 pagination = nil; paginationKey = nil; lastReportedPage = nil
             }
@@ -913,7 +949,65 @@ struct TextReadingView: UIViewRepresentable {
         private var drainingQueuedPage = false
         private var queuedPages: [(direction: ReaderPageDirection, owner: ObjectIdentifier, navigation: UUID)] = []
         var blocksEdgeTaps: Bool {
-            isInvalidated || !parent.isReadingSurfaceActive || view?.selectedRange.length != 0 || (restoring && !pendingTransitionIsCurrent)
+            isInvalidated || !parent.isReadingSurfaceActive || (restoring && !pendingTransitionIsCurrent)
+        }
+        func clearSelection() {
+            edgeTap?.cancelPending(); paragraphSelection?.cancel()
+            paragraphMenu?.invalidate(); paragraphMenu = nil
+            view?.selectedRange = NSRange(location: 0, length: 0)
+            view?.resignFirstResponder()
+            parent.session.clearTransientSelection(); parent.onSelectionChange?(nil, false)
+        }
+        private func readerURL(_ action: String, passageID: String) -> URL? {
+            var components = URLComponents(); components.scheme = "leafhour-reader"; components.host = action; components.path = "/" + passageID
+            return components.url
+        }
+        func toggleSource(passageID: String) {
+            guard !isInvalidated, parent.session.state.preferences.viewMode == .translation,
+                  parent.session.chapter.passages.contains(where: { $0.id == passageID }) else { return }
+            clearSelection()
+            if !revealedSources.insert(passageID).inserted { revealedSources.remove(passageID) }
+            if let view { updateContent(view) }
+        }
+        func openTranslation(for passage: Passage) {
+            guard !isInvalidated, let action = parent.onTranslate else { return }
+            viewedTranslations.insert(passage.id)
+            let quote = SelectedQuote(anchor: ReadingAnchor(chapterID: parent.session.chapter.id, passageID: passage.id), text: passage.text)
+            clearSelection(); updateTranslationMarkers(); action(quote)
+        }
+        func textView(_ textView: UITextView, shouldInteractWith url: URL, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
+            guard url.scheme == "leafhour-reader" else { return true }
+            guard !isInvalidated, parent.isReadingSurfaceActive, characterRange.location < textView.attributedText.length,
+                  (textView.attributedText.attribute(.link, at: characterRange.location, effectiveRange: nil) as? URL) == url,
+                  let passage = parent.session.chapter.passages.first(where: { $0.id == String(url.path.dropFirst()) }) else { return false }
+            if url.host == "source" { toggleSource(passageID: passage.id) }
+            else if url.host == "translation" { openTranslation(for: passage) }
+            return false
+        }
+        func updateTranslationMarkers() {
+            guard !isInvalidated, let view else { return }
+            var visible = Set<String>()
+            if parent.session.state.preferences.viewMode == .source, !restoring {
+                let body = (view as? ReflowTextView)?.visibleReadingRect ?? view.bounds.inset(by: parent.pageInsets)
+                for span in spans where viewedTranslations.contains(span.passage.id) && !span.isTranslation && !span.isPlaceholder && span.range.length > 0 {
+                    guard parent.session.translations[span.passage.id]?.text(parent.session.state.preferences.translationVariant) != nil else { continue }
+                    let glyph = view.layoutManager.glyphRange(forCharacterRange: NSRange(location: span.range.location, length: 1), actualCharacterRange: nil)
+                    let line = view.layoutManager.boundingRect(forGlyphRange: glyph, in: view.textContainer).offsetBy(dx: view.textContainerInset.left, dy: view.textContainerInset.top)
+                    guard body.intersects(line) else { continue }
+                    visible.insert(span.passage.id)
+                    let button = translationMarkers[span.passage.id] ?? UIButton(type: .system)
+                    if button.superview == nil {
+                        button.setTitle("译", for: .normal); button.titleLabel?.font = .systemFont(ofSize: 11, weight: .medium)
+                        button.accessibilityLabel = "查看这段译文"; button.accessibilityIdentifier = "reader-translation-mark-" + span.passage.id
+                        button.addAction(UIAction { [weak self] _ in self?.openTranslation(for: span.passage) }, for: .touchUpInside)
+                        view.addSubview(button); translationMarkers[span.passage.id] = button
+                    }
+                    let columnRight = view.bounds.maxX - view.textContainerInset.right
+                    let badgeWidth: CGFloat = min(44, max(22, view.textContainerInset.right))
+                    button.frame = CGRect(x: min(columnRight, view.bounds.maxX - badgeWidth), y: max(body.minY, line.midY - 22), width: badgeWidth, height: 44)
+                }
+            }
+            for id in Array(translationMarkers.keys) where !visible.contains(id) { translationMarkers.removeValue(forKey: id)?.removeFromSuperview() }
         }
         func touchActivity(_ active: Bool) {
             edgeTap?.touchActivity(active)
@@ -932,7 +1026,7 @@ struct TextReadingView: UIViewRepresentable {
         private func animatePage(from snapshot: UIView?, direction: ReaderPageDirection) {
             guard let view else { finishPageRequest(.notReady); return }
             let generation = restorationGeneration, navigation = navigationID, owner = indexedSessionID
-            pageCurl.animate(from: snapshot, over: view, direction: direction, paper: pagePaper, style: parent.session.state.preferences.pageAnimation) { [weak self] completed in
+            pageCurl.animate(from: snapshot, over: view, direction: direction, paper: pagePaper, style: parent.session.state.preferences.navigationMode == .scroll ? .none : parent.session.state.preferences.pageAnimation) { [weak self] completed in
                 guard let self, !self.isInvalidated else { return }
                 guard completed, self.restorationGeneration == generation, self.navigationID == navigation,
                       self.parent.session.navigationID == navigation, self.indexedSessionID == owner,
@@ -980,16 +1074,44 @@ struct TextReadingView: UIViewRepresentable {
             edgeTap?.rebaseNavigation(from: previous, to: next, owner: owner)
         }
         fileprivate func cancelQueuedUserTurns() { queuedPages = []; queueGeneration += 1; drainingQueuedPage = false }
+        private func windowDestination(_ direction: ReaderPageDirection) -> ReadingAnchor? {
+            guard let window = textWindow else { return nil }
+            let proposed = direction == .next ? window.nextAnchor : window.previousAnchor
+            guard let proposed, parent.session.state.preferences.viewMode != .source,
+                  let edge = direction == .next ? window.slices.last : window.slices.first,
+                  proposed.passageID == edge.original.id,
+                  (parent.session.state.preferences.viewMode == .translation && !revealedSources.contains(edge.original.id)) || spans.contains(where: { $0.passage.id == edge.original.id && $0.isTranslation }) else { return proposed }
+            // The displayed translated paragraph is already complete. Advancing a
+            // source-only sub-window would repeat that same complete translation.
+            let index = edge.index + (direction == .next ? 1 : -1)
+            guard parent.session.chapter.passages.indices.contains(index) else { return nil }
+            let passage = parent.session.chapter.passages[index]
+            return ReadingAnchor(chapterID: parent.session.chapter.id, passageID: passage.id,
+                characterOffset: direction == .previous ? max(0, passage.text.unicodeScalars.count - 1) : 0)
+        }
         @discardableResult func turnPage(_ direction: ReaderPageDirection, origin: ReaderPageTurnOrigin = .user, fromQueue: Bool = false) -> Bool {
             guard parent.isReadingSurfaceActive else { return false }
             if origin == .user, !fromQueue, !isInvalidated,
                (pageCurl.isActive || pendingTransitionIsCurrent || drainingQueuedPage || !queuedPages.isEmpty),
-               let view, view.selectedRange.length == 0, parent.session.state.preferences.navigationMode == .paged {
+               let view, view.selectedRange.length == 0 {
                 queuedPages.append((direction, ObjectIdentifier(parent.session), parent.session.navigationID))
                 drainQueuedPage(); return true
             }
-            guard !isInvalidated, let view, !restoring, !pageCurl.isActive, view.selectedRange.length == 0,
-                  parent.session.state.preferences.navigationMode == .paged else { return false }
+            guard !isInvalidated, let view, !restoring, !pageCurl.isActive, view.selectedRange.length == 0 else { return false }
+            if parent.session.state.preferences.navigationMode == .scroll {
+                guard origin == .user else { return false }
+                view.layoutManager.ensureLayout(for: view.textContainer)
+                let minimum = -view.adjustedContentInset.top
+                let maximum = max(minimum, view.contentSize.height - view.bounds.height + view.adjustedContentInset.bottom)
+                let line = view.font?.lineHeight ?? 24
+                let height = max(line, view.bounds.height - parent.pageInsets.top - parent.pageInsets.bottom - line)
+                let target = min(maximum, max(minimum, view.contentOffset.y + (direction == .next ? height : -height)))
+                if abs(target - view.contentOffset.y) > 0.5 {
+                    parent.onReadingScroll()
+                    view.setContentOffset(CGPoint(x: 0, y: target), animated: false)
+                    capture(); continueScrollingWindow(); drainQueuedPage(); return true
+                }
+            } else {
             refreshPagination()
             guard let pagination else { return false }
             if let offset = pagination.destination(direction, from: view.contentOffset.y) {
@@ -1003,7 +1125,8 @@ struct TextReadingView: UIViewRepresentable {
                 animatePage(from: before, direction: direction)
                 return true
             }
-            let windowAnchor = direction == .next ? textWindow?.nextAnchor : textWindow?.previousAnchor
+            }
+            let windowAnchor = windowDestination(direction)
             if let windowAnchor {
                 if origin == .user { parent.onReadingScroll() }
                 let snapshot = pageCurl.snapshot(from: view)
@@ -1097,8 +1220,11 @@ struct TextReadingView: UIViewRepresentable {
                 view.alpha = 1
                 if let pending = self.pendingPageTransition, pending.restorationGeneration == generation, self.pendingTransitionIsCurrent {
                     self.pendingPageTransition = nil
-                    if self.parent.session.state.preferences.navigationMode == .paged, pending.direction == .previous {
-                        view.setContentOffset(CGPoint(x: 0, y: self.pagination?.origins.last ?? -view.adjustedContentInset.top), animated: false)
+                    if pending.direction == .previous {
+                        let bottom = self.parent.session.state.preferences.navigationMode == .paged
+                            ? (self.pagination?.origins.last ?? -view.adjustedContentInset.top)
+                            : max(-view.adjustedContentInset.top, view.contentSize.height - view.bounds.height + view.adjustedContentInset.bottom)
+                        view.setContentOffset(CGPoint(x: 0, y: bottom), animated: false)
                     }
                     self.capture()
                     self.animatePage(from: pending.snapshot, direction: pending.direction)
@@ -1110,6 +1236,7 @@ struct TextReadingView: UIViewRepresentable {
                 self.updateSpeech(view)
                 self.reportReadingPosition(in: view)
                 self.reportVisiblePage()
+                self.updateTranslationMarkers()
                 if persistCheckpoint { self.schedulePersistence() }
                 self.flushDeferredContentIfIdle()
             }
@@ -1165,7 +1292,7 @@ struct TextReadingView: UIViewRepresentable {
         func selectedQuote(in textView: UITextView, range: NSRange) -> SelectedQuote? {
             guard range.location >= 0, range.length > 0, NSMaxRange(range) <= (textView.text as NSString).length,
                   let span = spans.first(where: { $0.range.location <= range.location && NSMaxRange(range) <= NSMaxRange($0.range) }),
-                  span.passage.resourcePath == nil, !span.passage.text.isEmpty else { return nil }
+                  span.passage.resourcePath == nil, !span.isPlaceholder, !span.passage.text.isEmpty else { return nil }
             if span.isTranslation {
                 return SelectedQuote(anchor: ReadingAnchor(chapterID: parent.session.chapter.id, passageID: span.passage.id),
                     text: (textView.text as NSString).substring(with: range), sourceText: span.passage.text,
@@ -1213,7 +1340,11 @@ struct TextReadingView: UIViewRepresentable {
                 self.parent.onNote(value)
             }
             let source = UIAction(title: "核对原文", image: UIImage(systemName: "text.quote")) { [weak self] _ in if let value = quote() { self?.parent.onSource(value) } }
-            var actions: [UIMenuElement] = [note, source]
+            var actions: [UIMenuElement] = [note]
+            if parent.session.state.preferences.viewMode == .translation, let selected = selectedQuote(in: textView, range: range) {
+                let id = selected.anchor.passageID
+                actions.append(UIAction(title: revealedSources.contains(id) ? "收起原文" : "显示原文", image: UIImage(systemName: "text.quote")) { [weak self] _ in self?.toggleSource(passageID: id) })
+            } else if parent.session.state.preferences.viewMode == .parallel { actions.append(source) }
             if let paragraph = paragraphRange(containing: range), paragraph != range {
                 actions.insert(UIAction(title: "选择整段", image: UIImage(systemName: "text.alignleft")) { [weak self, weak textView] _ in
                     guard let self, let textView else { return }; _ = self.selectParagraph(containing: textView.selectedRange)
@@ -1227,8 +1358,11 @@ struct TextReadingView: UIViewRepresentable {
                     self.parent.onExplain?(value)
                 }, at: 0)
             }
-            if parent.onTranslate != nil {
-                actions.append(UIAction(title: "查看译文", image: UIImage(systemName: "character.bubble")) { [weak self] _ in if let value = quote() { self?.parent.onTranslate?(value) } })
+            if parent.onTranslate != nil, parent.session.state.preferences.viewMode != .translation {
+                actions.append(UIAction(title: "翻译此段", image: UIImage(systemName: "character.bubble")) { [weak self] _ in
+                    guard let self, let value = quote(), let passage = self.parent.session.chapter.passages.first(where: { $0.id == value.anchor.passageID }) else { return }
+                    self.openTranslation(for: passage)
+                })
             }
             if parent.onDiscuss != nil {
                 actions.append(UIAction(title: "问陪读", image: UIImage(systemName: "bubble.left.and.bubble.right")) { [weak self] _ in if let value = quote() { self?.parent.onDiscuss?(value) } })
@@ -1369,10 +1503,15 @@ final class ReflowTextView: UITextView {
         return selectable ? hit : self
     }
     override func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
-        guard let body = visibleReadingRect else { return super.gestureRecognizerShouldBegin(gestureRecognizer) }
         if gestureRecognizer === readerTapRecognizer || gestureRecognizer === readerPageRecognizer || gestureRecognizer === readerBookmarkRecognizer { return true }
         let point = gestureRecognizer.location(in: self)
         let handle = isSelectionHandle(super.hitTest(point, with: nil))
+        // Native single taps can still move the caret/scroll after our page turn,
+        // even with editing off and multi-tap selection disabled. Keep ordinary
+        // body contacts in one reader path; long presses, handles and links stay native.
+        if !UIAccessibility.isVoiceOverRunning, gestureRecognizer is UITapGestureRecognizer,
+           !handle, !ReaderEdgeTapHandler.isLink(at: point, in: self) { return false }
+        guard let body = visibleReadingRect else { return super.gestureRecognizerShouldBegin(gestureRecognizer) }
         guard selectionTouchBeganInBody ?? (body.contains(point) || handle) else { return false }
         return super.gestureRecognizerShouldBegin(gestureRecognizer)
     }

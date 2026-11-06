@@ -12,7 +12,7 @@ enum VideoAcceptanceFixture {
         #if DEBUG
         if let selected = SelectedSourceAcceptanceFixture.makeModelIfRequested() { return selected }
         let arguments = ProcessInfo.processInfo.arguments
-        guard ["org.leafhour.experience.testing", "org.leafhour.get317.testing", "org.leafhour.get341.testing", "org.leafhour.get352.testing", "org.leafhour.readingchat.testing", "org.leafhour.shelf-refinement", "org.leafhour.get358.testing", "org.leafhour.quiet.testing", "org.leafhour.craft.testing", "org.leafhour.get385.testing", "org.leafhour.get407.testing", "org.leafhour.local.get408", "org.leafhour.readingtest20261105", "com.cubxxw.leafhour.chat20261102"].contains(Bundle.main.bundleIdentifier ?? "") else { return nil }
+        guard ["org.leafhour.experience.testing", "org.leafhour.get317.testing", "org.leafhour.get341.testing", "org.leafhour.get352.testing", "org.leafhour.readingchat.testing", "org.leafhour.shelf-refinement", "org.leafhour.get358.testing", "org.leafhour.quiet.testing", "org.leafhour.craft.testing", "org.leafhour.get385.testing", "org.leafhour.get407.testing", "org.leafhour.get417.testing", "org.leafhour.local.get408", "org.leafhour.readingtest20261105", "com.cubxxw.leafhour.chat20261102"].contains(Bundle.main.bundleIdentifier ?? "") else { return nil }
         guard !arguments.contains("--get385-live") else { return nil }
         let hostedUnitTest = ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] != nil
             || NSClassFromString("XCTestCase") != nil || NSClassFromString("XCTest.XCTestCase") != nil
@@ -475,7 +475,14 @@ private final class GET317Transport: URLProtocol, @unchecked Sendable {
                 let name = ["c1": "one", "c2": "two", "c3": "three"][id] ?? id
                 row["original"] = "Chapter \(name) first sentence. Chapter \(name) second sentence."
             }
-            if bookID == "get317-translated" { row["translations"] = translations }
+            if bookID == "get317-translated" {
+                var saved = translations
+                if arguments.contains("--get417-unique-reader") {
+                    let text = (1...60).map { line in "译文标记 \(id)-p\(number)-l\(line)：果园与河流只是验收样本，每句保留独立位置。" }.joined(separator: " ")
+                    saved["literal"] = ["text": text, "status": "draft"]
+                }
+                row["translations"] = saved
+            }
             else if let saved = generated["\(id)-p\(number)"] { row["translations"] = saved }
             return row
         }

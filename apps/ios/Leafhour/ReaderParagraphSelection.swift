@@ -39,9 +39,9 @@ import UIKit
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent) { moved?(event) }
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent) {
         guard event.allTouches?.allSatisfy({ $0.phase == .ended || $0.phase == .cancelled }) != false else { return }
-        ended?(); state = .failed
+        ended?()
     }
-    override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent) { cancelled?(); state = .failed }
+    override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent) { cancelled?() }
     override func canPrevent(_ preventedGestureRecognizer: UIGestureRecognizer) -> Bool { false }
     override func canBePrevented(by preventingGestureRecognizer: UIGestureRecognizer) -> Bool { false }
 }
@@ -193,7 +193,7 @@ import UIKit
     }
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldBeRequiredToFailBy other: UIGestureRecognizer) -> Bool {
         guard gestureRecognizer === paragraphPress, other !== gestureRecognizer, other !== touchObserver,
-              !(other is UITapGestureRecognizer), !(other is UIPanGestureRecognizer), !(other is UIPinchGestureRecognizer),
+              !(other is ReaderShortContactObserver), !(other is UITapGestureRecognizer), !(other is UIPanGestureRecognizer), !(other is UIPinchGestureRecognizer),
               !(other is UIRotationGestureRecognizer), !(other is UIHoverGestureRecognizer),
               let view, let owner = other.view else { return false }
         return owner === view || owner.isDescendant(of: view)

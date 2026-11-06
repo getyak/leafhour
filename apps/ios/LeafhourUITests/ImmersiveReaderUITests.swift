@@ -1,4 +1,5 @@
 import XCTest
+import UIKit
 
 /// Isolated synthetic books; no account, paid AI or physical audio acceptance.
 final class ImmersiveReaderUITests: XCTestCase {
@@ -81,13 +82,132 @@ final class ImmersiveReaderUITests: XCTestCase {
         XCTAssertTrue((reader.value as? String ?? "").contains("ORCHARD_3"))
         capture("contents-body-precise-return")
     }
+    private func configureUnifiedReader(translated: Bool, vertical: Bool) {
+        wake(); app.buttons["reader-typography"].tap()
+        let categories = app.segmentedControls["reading-style-categories"]; require(categories); categories.buttons["阅读"].tap()
+        let content = app.segmentedControls["reader-content-mode"]; require(content)
+        content.buttons[translated ? "译文" : "原文"].tap()
+        let navigation = app.segmentedControls["reader-navigation-mode"]
+        for _ in 0..<8 where !navigation.isHittable { app.swipeUp() }
+        require(navigation); navigation.buttons[vertical ? "上下翻页" : "左右翻页"].tap()
+        let back = app.buttons["reader-panel-return"]; require(back); back.tap(); require(reader)
+    }
+    private func bodyImage() throws -> Data {
+        let shot = XCUIScreen.main.screenshot().image
+        let cg = try XCTUnwrap(shot.cgImage)
+        let body = try XCTUnwrap(cg.cropping(to: CGRect(x: CGFloat(cg.width) * 0.1, y: CGFloat(cg.height) * 0.28, width: CGFloat(cg.width) * 0.8, height: CGFloat(cg.height) * 0.38)))
+        return try XCTUnwrap(UIImage(cgImage: body).pngData())
+    }
+    private func settledBody() throws -> Data {
+        var previous: Data?, settled: Data?
+        let stable = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in
+            guard let current = try? self.bodyImage() else { return false }
+            if current == previous { settled = current; return true }
+            previous = current; return false
+        }, object: nil)
+        XCTAssertEqual(XCTWaiter.wait(for: [stable], timeout: 8), .completed, "Compare the paper after its native transition settles")
+        return try XCTUnwrap(settled)
+    }
+    private func tenContacts(translated: Bool, vertical: Bool) throws {
+        open(extra: ["--get341-unique-source", "--get417-unique-reader"], title: "GET317 合成验收 · 双译")
+        configureUnifiedReader(translated: translated, vertical: vertical)
+        // Dismiss the tools without changing content before taking the first body image.
+        wake(); app.buttons["reader-read"].tap()
+        let before = try settledBody()
+        let frame = reader.frame
+        let origin = app.coordinate(withNormalizedOffset: .zero)
+        let point = origin.withOffset(CGVector(dx: frame.minX + frame.width * (vertical ? 0.5 : 0.9), dy: frame.minY + frame.height * (vertical ? 0.85 : 0.5)))
+        var previous = before
+        for _ in 0..<10 {
+            point.tap()
+            let current = try settledBody()
+            XCTAssertNotEqual(current, previous, "Each reference contact must advance the actual body")
+            previous = current
+        }
+        let expectedTenTurns = previous
+        let reverse = origin.withOffset(CGVector(dx: frame.minX + frame.width * (vertical ? 0.5 : 0.1), dy: frame.minY + frame.height * (vertical ? 0.15 : 0.5)))
+        for _ in 0..<10 { reverse.tap() }
+        XCTAssertEqual(try settledBody(), before, "Ten reverse contacts must restore the initial body")
+        for _ in 0..<5 { point.doubleTap() }
+        let reached = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in (try? self.bodyImage()) == expectedTenTurns }, object: nil)
+        let result = XCTWaiter.wait(for: [reached], timeout: 10)
+        if result != .completed {
+            capture("rapid-reference-mismatch")
+            let reference = XCTAttachment(data: expectedTenTurns, uniformTypeIdentifier: "public.png"); reference.name = "ten-reference-body"; reference.lifetime = .keepAlways; add(reference)
+            let actual = XCTAttachment(data: try bodyImage(), uniformTypeIdentifier: "public.png"); actual.name = "ten-rapid-body"; actual.lifetime = .keepAlways; add(actual)
+            let hierarchy = XCTAttachment(string: app.debugDescription); hierarchy.name = "ten-rapid-hierarchy"; hierarchy.lifetime = .keepAlways; add(hierarchy)
+        }
+        XCTAssertEqual(result, .completed, "Rapid ten contacts must reach exactly the same body as ten reference contacts")
+        XCTAssertFalse(app.descendants(matching: .any)["reader-selection-dock"].firstMatch.exists)
+        XCTAssertFalse(app.menuItems["复制"].exists)
+        XCTAssertFalse(app.keyboards.firstMatch.exists)
+        XCTAssertNotEqual(try bodyImage(), before, "Ten real touch contacts must advance the displayed body")
+        capture("ten-contacts-" + (translated ? "translation" : "source") + (vertical ? "-vertical" : "-horizontal"))
+        // After a native long press, blank contact clears selection; the following burst still turns.
+        let afterBurst = try settledBody()
+        origin.withOffset(CGVector(dx: frame.minX + frame.width * 0.35, dy: frame.minY + frame.height * 0.35)).press(forDuration: 1.2)
+        let selection = app.descendants(matching: .any)["reader-selection-dock"].firstMatch
+        require(selection)
+        origin.withOffset(CGVector(dx: frame.minX + frame.width * 0.02, dy: frame.minY + frame.height * 0.5)).tap()
+        XCTAssertFalse(selection.exists, "A blank contact must clear selection")
+        XCTAssertEqual(try settledBody(), afterBurst, "That clearing contact must not turn a page or screen")
+        for _ in 0..<5 { point.doubleTap() }
+        XCTAssertFalse(app.descendants(matching: .any)["reader-selection-dock"].firstMatch.exists)
+    }
+    func testUnifiedOriginalHorizontalTenContacts() throws { try tenContacts(translated: false, vertical: false) }
+    func testUnifiedOriginalVerticalTenContacts() throws { try tenContacts(translated: false, vertical: true) }
+    func testUnifiedTranslationHorizontalTenContacts() throws { try tenContacts(translated: true, vertical: false) }
+    func testUnifiedTranslationVerticalTenContacts() throws { try tenContacts(translated: true, vertical: true) }
+    func testOriginalTranslationFloatsAndLeavesAMarkWithoutAppendingIt() {
+        open(title: "GET317 合成验收 · 双译")
+        configureUnifiedReader(translated: false, vertical: false)
+        select()
+        let translate = app.buttons["reader-selection-translate"]; require(translate); translate.tap()
+        require(app.navigationBars["译文"])
+        require(app.descendants(matching: .any)["reader-paragraph-translation-text"].firstMatch)
+        capture("paragraph-translation-floating")
+        app.buttons["reader-panel-return"].tap(); require(reader)
+        XCTAssertFalse((reader.value as? String ?? "").contains("GET317 合成直译"))
+        let mark = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH %@", "reader-translation-mark-")).firstMatch
+        require(mark); XCTAssertTrue(mark.isHittable)
+        let visible = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in
+            let image = XCUIScreen.main.screenshot().image
+            guard let source = image.cgImage else { return false }
+            let scale = CGFloat(source.width) / self.app.frame.width
+            let crop = mark.frame.applying(CGAffineTransform(scaleX: scale, y: scale)).integral
+            guard let glyph = source.cropping(to: crop) else { return false }
+            var pixels = [UInt8](repeating: 255, count: 16 * 32)
+            guard let context = CGContext(data: &pixels, width: 16, height: 32, bitsPerComponent: 8, bytesPerRow: 16, space: CGColorSpaceCreateDeviceGray(), bitmapInfo: 0) else { return false }
+            context.draw(glyph, in: CGRect(x: 0, y: 0, width: 16, height: 32))
+            return pixels.filter { $0 < 160 }.count > 2
+        }, object: nil)
+        XCTAssertEqual(XCTWaiter.wait(for: [visible], timeout: 5), .completed, "The translation mark must draw visible ink in the paper margin")
+        capture("original-with-translation-mark")
+        mark.tap(); require(app.navigationBars["译文"])
+    }
+    func testTranslatedParagraphShowsOnlyExplicitOriginalAndNoTranslateAction() {
+        open(title: "GET317 合成验收 · 双译")
+        configureUnifiedReader(translated: true, vertical: false)
+        XCTAssertFalse((reader.value as? String ?? "").contains("CLOUD_ORCHARD"))
+        select()
+        XCTAssertFalse(app.buttons["reader-selection-translate"].exists)
+        let source = app.descendants(matching: .any).matching(NSPredicate(format: "label == %@", "显示原文")).firstMatch
+        require(source); source.tap()
+        XCTAssertTrue((reader.value as? String ?? "").contains("CLOUD_ORCHARD"))
+        capture("translation-explicit-source")
+    }
+
     func testTranslationTemplatesAndLiveComparisonControlsRemainVisible() {
         open(title: "GET317 合成验收 · 双译"); wake(); app.buttons["reader-page-translation"].tap()
         require(app.navigationBars["阅读翻译"])
-        for mode in ["source", "translation", "parallel"] { require(app.buttons["reader-translation-template-" + mode]) }
-        app.buttons["reader-translation-template-parallel"].tap()
+        let content = app.segmentedControls["reader-content-mode"]; require(content)
+        content.buttons["译文"].tap()
+        let comparison = app.switches["reader-parallel-display"]; require(comparison)
+        comparison.coordinate(withNormalizedOffset: CGVector(dx: 0.88, dy: 0.5)).tap()
+        let enabled = XCTNSPredicateExpectation(predicate: NSPredicate(format: "value == %@", "1"), object: comparison)
+        XCTAssertEqual(XCTWaiter.wait(for: [enabled], timeout: 5), .completed)
         let scale = app.sliders["reader-parallel-source-scale"]
-        if !scale.isHittable { app.swipeUp() }
+        for _ in 0..<6 where !scale.isHittable { app.swipeUp() }
         require(scale); scale.adjust(toNormalizedSliderPosition: 0.25)
         capture("translation-visual-templates-and-preview")
         let close = app.buttons["reader-follow-translation-close"]; require(close); close.tap(); require(reader)

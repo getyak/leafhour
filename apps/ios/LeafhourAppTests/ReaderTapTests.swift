@@ -4,6 +4,106 @@ import LeafhourCore
 @testable import Leafhour
 
 @MainActor final class ReaderTapTests: XCTestCase {
+    func testTenRawContactsTurnIndividuallyWithoutWaitingForUIKitReset() throws {
+        for vertical in [false, true] {
+            let view = UIView(frame: CGRect(x: 0, y: 0, width: 400, height: 800))
+            var turns = 0
+            let handler = ReaderEdgeTapHandler(view: view, blocked: { false }, onWake: { _ in },
+                isPaged: { !vertical }, isScrolling: { vertical }, onTurn: { _ in turns += 1 })
+            let observer = try XCTUnwrap(handler.recognizer as? ReaderShortContactObserver)
+            let point = vertical ? CGPoint(x: 200, y: 720) : CGPoint(x: 380, y: 400)
+            for index in 0..<10 {
+                let touch = ReaderContactTestTouch(point: point, instant: Double(index) * 0.1)
+                let event = ReaderContactTestEvent(contacts: [touch])
+                XCTAssertTrue(handler.gestureRecognizer(observer, shouldReceive: touch))
+                observer.touchesBegan([touch], with: event)
+                touch.instant += 0.04
+                observer.touchesEnded([touch], with: event)
+                XCTAssertEqual(turns, index + 1)
+                XCTAssertEqual(observer.state, .possible, "A completed contact must not create a terminal-state blind spot")
+            }
+            XCTAssertFalse(observer.cancelsTouchesInView)
+            XCTAssertFalse(observer.delaysTouchesBegan)
+            XCTAssertFalse(observer.delaysTouchesEnded)
+            handler.invalidate()
+        }
+    }
+    func testRawContactRejectsDragHoldAndMultipleFingersAndThenRecovers() throws {
+        let view = UIView(frame: CGRect(x: 0, y: 0, width: 400, height: 800))
+        var turns = 0
+        let handler = ReaderEdgeTapHandler(view: view, blocked: { false }, onWake: { _ in }, isPaged: { true }, onTurn: { _ in turns += 1 })
+        let observer = try XCTUnwrap(handler.recognizer as? ReaderShortContactObserver)
+        for kind in 0..<4 {
+            let touch = ReaderContactTestTouch(point: CGPoint(x: 380, y: 400), instant: Double(kind))
+            let event = ReaderContactTestEvent(contacts: [touch])
+            XCTAssertTrue(handler.gestureRecognizer(observer, shouldReceive: touch))
+            observer.touchesBegan([touch], with: event)
+            if kind == 0 { touch.point.y += 30; observer.touchesMoved([touch], with: event) }
+            if kind == 2 {
+                let second = ReaderContactTestTouch(point: CGPoint(x: 40, y: 400), instant: Double(kind) + 0.01)
+                XCTAssertFalse(handler.gestureRecognizer(observer, shouldReceive: second))
+            }
+            touch.instant += kind == 1 ? 0.8 : 0.04
+            observer.touchesEnded([touch], with: event)
+            XCTAssertEqual(turns, kind == 3 ? 1 : 0)
+        }
+        handler.invalidate()
+    }
+    func testPassiveContactObserverDoesNotBlockParagraphLongPress() throws {
+        let view = UIView(frame: CGRect(x: 0, y: 0, width: 400, height: 800))
+        let handler = ReaderEdgeTapHandler(view: view, blocked: { false }, onWake: { _ in })
+        let paragraphs = ReaderParagraphSelectionObserver(view: view, eligible: { _ in true }, context: { "same" },
+            selectionActive: { false }, expand: { false }, initialSelection: { _ in true })
+        let press = try XCTUnwrap(view.gestureRecognizers?.compactMap { $0 as? UILongPressGestureRecognizer }.first)
+        XCTAssertFalse(paragraphs.gestureRecognizer(press, shouldBeRequiredToFailBy: handler.recognizer))
+        paragraphs.invalidate(); handler.invalidate()
+    }
+    func testReaderBodyRejectsNativeCaretTapsInsteadOfCombiningThemWithPageTurns() {
+        let view = ReflowTextView()
+        view.frame = CGRect(x: 0, y: 0, width: 400, height: 800)
+        view.isEditable = false; view.isSelectable = true; view.text = "A real source paragraph."
+        let nativeTap = UITapGestureRecognizer()
+        view.addGestureRecognizer(nativeTap)
+        for insets in [UIEdgeInsets.zero, nil] as [UIEdgeInsets?] {
+            view.pagedReadingInsets = insets
+            XCTAssertFalse(view.gestureRecognizerShouldBegin(nativeTap), "Both axes must leave ordinary body taps to the reader")
+        }
+    }
+    func testTenVerticalTapsKeepTheirAxisAndSelectionDismissalConsumesOnlyOneTap() {
+        let text = UITextView(frame: CGRect(x: 0, y: 0, width: 400, height: 800))
+        var turns: [ReaderPageDirection] = [], selected = false
+        let handler = ReaderEdgeTapHandler(view: text, blocked: { false }, onWake: { _ in },
+            isScrolling: { true }, hasSelection: { selected }, onDismissSelection: { selected = false },
+            onTurn: { turns.append($0) })
+        for _ in 0..<10 { handler.handleTap(at: CGPoint(x: 200, y: 720)) }
+        XCTAssertEqual(turns, Array(repeating: .next, count: 10))
+        for _ in 0..<10 { handler.handleTap(at: CGPoint(x: 200, y: 80)) }
+        XCTAssertEqual(turns.suffix(10), Array(repeating: .previous, count: 10)[...])
+        handler.handleTap(at: CGPoint(x: 20, y: 400))
+        handler.handleTap(at: CGPoint(x: 380, y: 400))
+        XCTAssertEqual(turns.count, 20)
+        selected = true
+        handler.handleTap(at: CGPoint(x: 200, y: 720))
+        XCTAssertFalse(selected); XCTAssertEqual(turns.count, 20)
+        handler.handleTap(at: CGPoint(x: 200, y: 720))
+        XCTAssertEqual(turns.count, 21)
+        handler.invalidate()
+    }
+
+    func testTenHorizontalTapsAreIndividualAndTheMiddleHalfDoesNotTurn() {
+        let text = UITextView(frame: CGRect(x: 0, y: 0, width: 400, height: 800))
+        var turns: [ReaderPageDirection] = []
+        let handler = ReaderEdgeTapHandler(view: text, blocked: { false }, onWake: { _ in },
+            isPaged: { true }, onTurn: { turns.append($0) })
+        for _ in 0..<10 { handler.handleTap(at: CGPoint(x: 380, y: 400)) }
+        for _ in 0..<10 { handler.handleTap(at: CGPoint(x: 20, y: 400)) }
+        XCTAssertEqual(turns, Array(repeating: .next, count: 10) + Array(repeating: .previous, count: 10))
+        handler.handleTap(at: CGPoint(x: 110, y: 400))
+        handler.handleTap(at: CGPoint(x: 290, y: 400))
+        XCTAssertEqual(turns.count, 20)
+        handler.invalidate()
+    }
+
     func testCenterRevealsFullToolsAndEdgesRemainReachableAfterScrolling() {
         let text = UITextView(frame: CGRect(x: 0, y: 0, width: 390, height: 700))
         let handler = ReaderEdgeTapHandler(view: text, blocked: { false }, onWake: { _ in })
@@ -157,4 +257,19 @@ import LeafhourCore
         XCTAssertFalse(curl.isActive)
     }
 
+}
+
+
+@MainActor private final class ReaderContactTestTouch: UITouch {
+    var point: CGPoint
+    var instant: TimeInterval
+    init(point: CGPoint, instant: TimeInterval) { self.point = point; self.instant = instant; super.init() }
+    override var timestamp: TimeInterval { instant }
+    override var type: UITouch.TouchType { .direct }
+    override func location(in view: UIView?) -> CGPoint { point }
+}
+@MainActor private final class ReaderContactTestEvent: UIEvent {
+    let contacts: Set<UITouch>
+    init(contacts: Set<UITouch>) { self.contacts = contacts; super.init() }
+    override var allTouches: Set<UITouch>? { contacts }
 }

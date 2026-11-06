@@ -51,10 +51,20 @@ struct TranslationDisplayChoices: View {
             ?? session.chapter.passages.first { !$0.heading && $0.resourcePath == nil }
     }
     var body: some View {
-        Section("显示方式") {
-            if dynamicTypeSize.isAccessibilitySize {
-                VStack(spacing: 10) { templates }
-            } else { HStack(alignment: .top, spacing: 8) { templates } }
+        Section("阅读内容") {
+            Picker("阅读内容", selection: Binding(get: { session.state.preferences.viewMode == .source ? ReaderViewMode.source : .translation }, set: { mode in
+                var value = session.state.preferences
+                value.viewMode = mode == .source ? .source : value.viewMode == .parallel ? .parallel : .translation
+                session.changePreferences(value)
+            })) {
+                Text("原文").tag(ReaderViewMode.source)
+                Text("译文").tag(ReaderViewMode.translation)
+            }.pickerStyle(.segmented).accessibilityIdentifier("reader-content-mode")
+            if session.state.preferences.viewMode != .source {
+                Toggle("原译文对照", isOn: Binding(get: { session.state.preferences.viewMode == .parallel }, set: { enabled in
+                    var value = session.state.preferences; value.viewMode = enabled ? .parallel : .translation; session.changePreferences(value)
+                })).accessibilityIdentifier("reader-parallel-display")
+            }
             if session.state.preferences.viewMode != .source {
                 Picker("译文版本", selection: preferences.translationVariant) {
                     Text("直译").tag(ReaderTranslationVariant.literal)
@@ -83,30 +93,7 @@ struct TranslationDisplayChoices: View {
                     Slider(value: preferences.parallelSpacing, in: 8...40, step: 2)
                         .accessibilityLabel("对照段间距").accessibilityIdentifier("reader-parallel-spacing")
                 }
-                Text("立即应用于小样和正文，阅读位置会保留。").font(.footnote).foregroundStyle(.secondary)
             }
-        }
-    }
-    @ViewBuilder private var templates: some View {
-        ForEach(ReaderViewMode.allCases, id: \.rawValue) { mode in
-            let title = mode == .source ? "原版" : mode == .translation ? "译文" : "对照"
-            Button {
-                var value = session.state.preferences; value.viewMode = mode; session.changePreferences(value)
-            } label: {
-                VStack(alignment: .leading, spacing: 8) {
-                    thumbnail(mode: mode, order: session.state.preferences.parallelOrder)
-                        .frame(maxWidth: .infinity, minHeight: 82, maxHeight: 110, alignment: .topLeading)
-                    HStack(spacing: 3) {
-                        Text(title).font(.subheadline)
-                        if session.state.preferences.viewMode == mode { Image(systemName: "checkmark.circle.fill").font(.caption) }
-                    }
-                }.padding(10).frame(maxWidth: .infinity, alignment: .leading)
-                    .background(.quaternary.opacity(0.35), in: RoundedRectangle(cornerRadius: 10))
-                    .overlay(RoundedRectangle(cornerRadius: 10).stroke(session.state.preferences.viewMode == mode ? Color.accentColor : Color.secondary.opacity(0.25), lineWidth: session.state.preferences.viewMode == mode ? 2 : 1))
-            }.buttonStyle(.plain).frame(minHeight: 44)
-                .accessibilityLabel(title)
-                .accessibilityValue(session.state.preferences.viewMode == mode ? "已选择" : "未选择")
-                .accessibilityIdentifier("reader-translation-template-" + mode.rawValue)
         }
     }
     private func orderChoice(_ order: ReaderParallelOrder, title: String) -> some View {

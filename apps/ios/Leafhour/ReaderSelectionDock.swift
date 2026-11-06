@@ -45,6 +45,7 @@ struct ReaderSelectionDock: View {
     let onTranslate: () -> Void
     let onShare: () -> Void
     let onClear: () -> Void
+    var showsTranslation = true
     @State private var copied = false
     @Environment(\.dynamicTypeSize) private var typeSize
     var body: some View {
@@ -75,12 +76,12 @@ struct ReaderSelectionDock: View {
             if compact {
                 Menu("更多选文操作", systemImage: "ellipsis") {
                     Button("记笔记", systemImage: "square.and.pencil", action: onNote)
-                    Button("翻译", systemImage: "character.book.closed", action: onTranslate)
+                    if showsTranslation { Button("翻译此段", systemImage: "character.book.closed", action: onTranslate) }
                     Button("分享摘录", systemImage: "square.and.arrow.up", action: onShare)
                 }.labelStyle(.iconOnly).font(.system(size: typeSize.isAccessibilitySize ? 26 : 20)).frame(minWidth: 44, minHeight: 44)
             } else {
                 action("记笔记", symbol: "square.and.pencil", id: "reader-selection-note", action: onNote)
-                action("翻译", symbol: "character.book.closed", id: "reader-selection-translate", action: onTranslate)
+                if showsTranslation { action("翻译此段", symbol: "character.book.closed", id: "reader-selection-translate", action: onTranslate) }
                 action("分享摘录", symbol: "square.and.arrow.up", id: "reader-selection-share", action: onShare)
             }
             action("取消选择", symbol: "xmark", id: "reader-selection-clear", action: onClear)

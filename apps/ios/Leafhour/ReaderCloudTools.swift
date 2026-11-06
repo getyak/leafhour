@@ -9,6 +9,10 @@ struct ReaderTranslation {
     var literalStatus: String?
     var interpretiveStatus: String?
     var hasBoth: Bool { literal != nil && interpretive != nil }
+    func readingCopy(targetLanguage: ReadingLanguage) -> ReadingTranslation {
+        ReadingTranslation(original: original, literal: literal, interpretive: interpretive,
+            literalStatus: literalStatus, interpretiveStatus: interpretiveStatus, targetLanguage: targetLanguage)
+    }
 }
 struct ReaderConversationTurn: Identifiable, Codable {
     let id: String
@@ -378,13 +382,16 @@ final class ReaderCloudTools {
     }
     private func component(_ value: String) -> String { CloudJSON.component(value) }
     private func bookPath(_ id: String) -> String { "/api/library/books/" + component(id) }
-    func loadTranslation(_ session: ReaderSession, cloud: CloudLibraryClient?) async {
+    func loadTranslation(_ session: ReaderSession, cloud: CloudLibraryClient?, selection: SelectedQuote? = nil) async {
         let stamp = UUID(); generation = stamp; error = nil; loading = false
         translationContext = nil
-        guard let passage = Self.currentPassage(session) else { translation = nil; error = "这一页还没有可供翻译的文字。"; return }
+        guard let passage = Self.currentPassage(session, selection: selection) else { translation = nil; error = "这一页还没有可供翻译的文字。"; return }
         let language = session.translationSettings.targetLanguage
         if let identity = session.book.cloud { translationContext = (identity, passage.id, language) }
         translation = cached(session).flatMap { paragraph($0, id: passage.id) }.map { readTranslation($0, fallback: passage.text, targetLanguage: language) } ?? ReaderTranslation(original: passage.text)
+        if let saved = session.translations[passage.id], saved.original == passage.text {
+            translation = ReaderTranslation(original: saved.original, literal: saved.literal, interpretive: saved.interpretive, literalStatus: saved.literalStatus, interpretiveStatus: saved.interpretiveStatus)
+        }
         if let library, let rows = try? await library.readingTranslations(bookID: session.book.id, targetLanguage: language), let saved = rows[passage.id] {
             guard generation == stamp, language == session.translationSettings.targetLanguage else { return }
             translation = ReaderTranslation(original: saved.original, literal: saved.literal, interpretive: saved.interpretive, literalStatus: saved.literalStatus, interpretiveStatus: saved.interpretiveStatus)
@@ -393,7 +400,7 @@ final class ReaderCloudTools {
         loading = true
         defer { if generation == stamp { loading = false } }
         do {
-            let value = try object(try JSONEncoder().encode(await cloud.readingChapter(bookID: identity.bookID, chapterID: session.chapter.id, contentVersion: identity.contentVersion, ownerID: identity.ownerID, targetLanguage: language)))
+            let value = try object(try JSONEncoder().encode(await cloud.readingChapter(bookID: identity.bookID, chapterID: selection?.anchor.chapterID ?? session.chapter.id, contentVersion: identity.contentVersion, ownerID: identity.ownerID, targetLanguage: language)))
             try Task.checkCancellation(); guard generation == stamp, language == session.translationSettings.targetLanguage else { return }
             guard let p = paragraph(value, id: passage.id) else { throw LibraryError.invalid("这一段暂时无法核对，请重新打开这本书。") }
             translation = readTranslation(p, fallback: passage.text, targetLanguage: language)

@@ -101,7 +101,7 @@ public struct ReaderPreferences: Codable, Equatable, Sendable {
     public var parallelOrder: ReaderParallelOrder = .sourceFirst
     public var parallelSourceScale: Double = 1
     public var parallelSourceOpacity: Double = 0.8
-    public var parallelSpacing: Double = 20
+    public var parallelSpacing: Double = 8
     public var listeningShowsComparison = true
     public var speechSpeed: Double = 1
     public var autoPageInterval: Double = 30
@@ -128,7 +128,7 @@ public struct ReaderPreferences: Codable, Equatable, Sendable {
         parallelOrder = (try values.decodeIfPresent(String.self, forKey: .parallelOrder)).flatMap(ReaderParallelOrder.init(rawValue:)) ?? .sourceFirst
         parallelSourceScale = Self.normalizedParallelSourceScale(try values.decodeIfPresent(Double.self, forKey: .parallelSourceScale) ?? 1)
         parallelSourceOpacity = Self.normalizedParallelSourceOpacity(try values.decodeIfPresent(Double.self, forKey: .parallelSourceOpacity) ?? 0.8)
-        parallelSpacing = Self.normalizedParallelSpacing(try values.decodeIfPresent(Double.self, forKey: .parallelSpacing) ?? 20)
+        parallelSpacing = Self.normalizedParallelSpacing(try values.decodeIfPresent(Double.self, forKey: .parallelSpacing) ?? 8)
         listeningShowsComparison = try values.decodeIfPresent(Bool.self, forKey: .listeningShowsComparison) ?? true
         speechSpeed = Self.normalizedSpeechSpeed(try values.decodeIfPresent(Double.self, forKey: .speechSpeed) ?? 1)
         automaticReadingTime = try values.decodeIfPresent(Bool.self, forKey: .automaticReadingTime) ?? true
@@ -136,7 +136,7 @@ public struct ReaderPreferences: Codable, Equatable, Sendable {
     }
     public static func normalizedParallelSourceScale(_ value: Double) -> Double { value.isFinite ? min(1.2, max(0.8, value)) : 1 }
     public static func normalizedParallelSourceOpacity(_ value: Double) -> Double { value.isFinite ? min(1, max(0.7, value)) : 0.8 }
-    public static func normalizedParallelSpacing(_ value: Double) -> Double { value.isFinite ? min(40, max(8, value)) : 20 }
+    public static func normalizedParallelSpacing(_ value: Double) -> Double { value.isFinite ? min(40, max(8, value)) : 8 }
     public static func normalizedSpeechSpeed(_ value: Double) -> Double {
         value.isFinite ? min(5, max(0.5, value)) : 1
     }
