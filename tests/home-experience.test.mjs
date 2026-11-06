@@ -68,3 +68,14 @@ test('stopping and replaying voice cannot let an old callback clear the new prev
  doc.hidden=true;doc.dispatchEvent(new Event('visibilitychange'));assert.equal(canceled,2);assert.equal(voice.attributes['aria-pressed'],'false');
  dispose();
 });
+
+test('public CJK fallback also covers translations revealed by the sample controls',async()=>{
+ const {sampleInterpretations}=await import('../app/home-sample.mjs');
+ const css=await readFile(new URL('../app/home-public.css',import.meta.url),'utf8');
+ const ranges=[...css.matchAll(/unicode-range:([^}]+)/g)].flatMap(match=>match[1].split(',').map(value=>value.trim().replace(/^U\+/i,'').split('-').map(hex=>parseInt(hex,16))));
+ for(const sample of sampleInterpretations)for(const char of sample.text){
+  if(!/[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}]/u.test(char))continue;
+  const point=char.codePointAt(0);
+  assert.ok(ranges.some(([start,end=start])=>point>=start&&point<=end),sample.code+' loses actual sample glyph '+char);
+ }
+});
