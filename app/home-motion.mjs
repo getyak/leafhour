@@ -2,6 +2,7 @@
 // The library shares the document but must never mount the homepage motion.
 import {mountHomeScrollStory} from './home-scroll-story.mjs';
 export function mountHomeMotion(root,win=root?.ownerDocument?.defaultView){
+  if(root?.querySelector?.('.home-hero')?.dataset?.experience==='immersive')return ()=>{};
   if(root?.querySelector?.('.home-hero')?.dataset?.scrollStory==='true')return mountHomeScrollStory(root,win);
   if(root?.querySelector?.('.home-hero')?.dataset?.visualStyle==='clear')return ()=>{};
   if(!root||root.hidden||!win?.IntersectionObserver||!win.Element?.prototype.animate)return ()=>{};

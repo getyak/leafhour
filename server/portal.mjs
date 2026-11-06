@@ -195,6 +195,7 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
     files['/home-motion.css']='home-motion.css';files['/home-motion.mjs']='home-motion.mjs';files['/home-scroll-story.mjs']='home-scroll-story.mjs';
     files['/home-sample.css']='home-sample.css';files['/home-sample.mjs']='home-sample.mjs';
     files['/home-story.css']='home-story.css';
+    for(const file of ['fonts/newsreader/newsreader-home.woff2','fonts/newsreader/newsreader-home-italic.woff2','home-public.css','home-public.mjs','home-locale-codec.mjs','home-experience-copy.mjs','home-experience.css','home-experience.mjs','vendor/three-scene.mjs','vendor/gsap-scroll.mjs','brand-assets/product/ios-reading.webp','brand-assets/product/ios-listening.webp','brand-assets/product/web-reader-640.webp','brand-assets/product/web-translation-640.webp','brand-assets/product/reading-room-900.webp','brand-assets/product/web-reader.webp','brand-assets/product/web-translation.webp'])files['/'+file]=file;
     files['/home-books.css']='home-books.css';
     // GET-188 authored-home mobile navigation: exactly one module and one
     // stylesheet, mounted by portal.js on the authored home routes only.

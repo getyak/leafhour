@@ -36,7 +36,7 @@ test('localization never rewrites book sample text and leaves no source text in 
   assert.doesNotMatch(stripped,/\p{Script=Han}/u,'the English homepage leaked source-language text');
   const traditional=homeDocument(source,'zh-Hant'),japanese=homeDocument(source,'ja');
   assert.match(traditional,/可以匯入哪些格式？/);assert.match(traditional,/繁體中文/);
-  assert.match(japanese,/本棚を開いています…/);
+  assert.match(japanese,/class="book-card public-sample-book"/);
   assert.match(english,/What files can I import\?/);
   // Fragment rows bridge around inline links; edits must keep each language readable.
   assert.match(english,/are optional\. Unsynced records and drafts remain/);

@@ -345,11 +345,12 @@ test('generated home and library shells carry palette hosts for the self-mount g
   const {portalDocument}=await import('../server/portal-document.mjs');
   const {readFile}=await import('node:fs/promises');
   const source=await readFile(new URL('../app/home.html',import.meta.url),'utf8');
-  for(const route of ['/','/library']){
+  for(const route of ['/library']){
     const shell=portalDocument(source,route);
     assert.ok(/data-palette-open/.test(shell),route+' ships a palette host entry');
     assert.ok(/data-palette-keycap/.test(shell),route+' ships the visible keycap');
   }
+  assert.doesNotMatch(portalDocument(source,'/'),/data-palette-open/,'public marketing never boots a private-library palette');
   const host=fixture();const entry=doc=>doc.createElement('button');
   const button=entry(host);button.dataset.paletteOpen='';host.body.append(button);host.body.classList.add('library-page');
   assert.equal(paletteHasHost(host),true);

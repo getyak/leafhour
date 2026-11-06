@@ -44,7 +44,7 @@ test('every language discovery page exposes usable content and metadata before J
   for(const [route,{lang,canonical}]of Object.entries(pages)){
     const response=await fetch(base+route),html=await response.text();assert.equal(response.status,200);
     assert.match(html,new RegExp('<html\\b[^>]*\\blang="'+lang+'"[^>]*>'));assert.equal(new RegExp('<link rel="canonical" href="'+canonical.replace(/[/.]/g,'\\$&')+'">').test(html),true);
-    assert.match(html,/<h1[^>]*>[^<]+<\/h1>/);assert.match(html,/<meta name="description" content="[^"]{24,}"/);
+    assert.match(html,/<h1[^>]*>(?:[^<]|<br\s*\/?>)+<\/h1>/);assert.match(html,/<meta name="description" content="[^"]{24,}"/);
     const home=['/','/zh-hans','/zh-hant','/ja'].includes(route);
     const entry=home?'/read?book=gutenberg-alice':'/library';
     if(route==='/'){assert.ok(html.includes('href="'+entry+'"'),'automatic root preserves browser/account choice before JavaScript');assert.ok(!html.includes('href="'+entry+'&amp;ui=en"'),'root does not force its English fallback on early navigation');}
