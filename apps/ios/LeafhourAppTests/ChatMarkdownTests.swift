@@ -7,6 +7,36 @@ import LeafhourCore
 @testable import Leafhour
 
 @MainActor final class ChatMarkdownTests: XCTestCase {
+    func testConversationHasAFiniteBoundaryForShortAndLongReplies() async throws {
+        for (turnCount, paragraphs) in [(1, 1), (1, 60), (4, 60)] {
+            let tools = ReaderCloudTools()
+            tools.conversationAvailable = true
+            tools.turns = (1...turnCount).map { ReaderConversationTurn(id: "boundary-\($0)", question: "Synthetic question \($0)", answer: String(repeating: "Synthetic reply stays within the conversation.\n\n", count: paragraphs), status: "completed") }
+            let host = UIHostingController(rootView: NavigationStack {
+                ChatConversationView(tools: tools, cloud: nil, bookTitle: "Synthetic boundary", source: "", isMarginalNote: true, autoLoad: false, load: {}, send: {})
+            })
+            let scene = try XCTUnwrap(UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }.first)
+            let window = UIWindow(windowScene: scene)
+            window.frame = CGRect(x: 0, y: 0, width: 390, height: 844)
+            window.rootViewController = host; window.makeKeyAndVisible()
+            defer { window.isHidden = true; window.rootViewController = nil }
+            func histories(_ view: UIView) -> [UIScrollView] {
+                let own = (view as? UIScrollView).map { $0 is UITextView ? [] : [$0] } ?? []
+                return own + view.subviews.flatMap(histories)
+            }
+            try await Task.sleep(for: .milliseconds(500)); host.view.layoutIfNeeded()
+            let history = try XCTUnwrap(histories(host.view).first { $0.bounds.height > 100 && $0.isScrollEnabled })
+            let contentSize = history.contentSize
+            for _ in 0..<10 { host.view.setNeedsLayout(); host.view.layoutIfNeeded() }
+            XCTAssertEqual(history.contentSize.height, contentSize.height, accuracy: 1, "Settled layout must not accumulate empty content")
+            let evidence = XCTAttachment(string: "turns=\(turnCount), paragraphs=\(paragraphs), bounds=\(history.bounds), content=\(history.contentSize), inset=\(history.adjustedContentInset), bounces=\(history.bounces), alwaysBounceVertical=\(history.alwaysBounceVertical)")
+            evidence.name = "Conversation scroll boundary"; evidence.lifetime = .keepAlways; add(evidence)
+            XCTAssertFalse(history.bounces, "Conversation gestures must stop at the actual content boundary")
+            // SwiftUI may refresh alwaysBounceVertical during layout. UIKit's
+            // bounces=false is the effective boundary, regardless of that flag.
+            XCTAssertTrue(history.isScrollEnabled, "Keep normal history scrolling available")
+        }
+    }
     func testNativeTableMeasurementMatchesPlacementAtAccessibilitySize() {
         let source = "| 起点 | 时刻 | 留下什么 |\n|---|---|---|\n| 一句读不懂的话 | 傍晚光线将要变暗，注意力剩得不多，却又不想马上起身去做别的事的时候 | 一个被反复描过的问号，以及第二天重读时忽然通了的那一下 |"
         for category in [UIContentSizeCategory.large, .accessibilityExtraExtraExtraLarge] {

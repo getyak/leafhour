@@ -72,6 +72,17 @@ import CryptoKit
     }
 }
 
+struct ProfileSettingsButton: View {
+    let owner: String
+    let identifier: String
+    let action: () -> Void
+    var body: some View {
+        Button(action: action) {
+            ProfileAvatarView(owner: owner).frame(width: 44, height: 44).contentShape(Rectangle())
+        }.buttonStyle(.plain).accessibilityLabel("账号与设置").accessibilityIdentifier(identifier)
+    }
+}
+
 struct ProfileAvatarView: View {
     let owner: String
     var size: CGFloat = 34

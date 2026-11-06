@@ -47,9 +47,8 @@ struct MyReadingScreen: View {
             }.accessibilityIdentifier("journal-history").scrollDismissesKeyboard(.interactively).scrollBounceBehavior(.always, axes: .vertical).background(Color.shelfPaper)
                 .navigationTitle("我的阅读").navigationBarTitleDisplayMode(.large)
                 .toolbar {
-                    ToolbarItem(placement: .topBarTrailing) {
-                        Button("账号与设置", systemImage: "person.crop.circle") { settings = true }.labelStyle(.iconOnly)
-                            .frame(minWidth: 44, minHeight: 44).accessibilityIdentifier("journal-settings")
+                    ToolbarItem(placement: .topBarLeading) {
+                        ProfileSettingsButton(owner: model.account?.id ?? "device", identifier: "journal-settings") { settings = true }
                     }
                 }
                 .navigationDestination(for: JournalRoute.self) { route in

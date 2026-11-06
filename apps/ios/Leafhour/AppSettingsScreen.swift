@@ -13,7 +13,7 @@ struct AppSettingsScreen: View {
                 Section {
                     Button { account = true } label: {
                         HStack(spacing: 14) {
-                            Image(systemName: "person.crop.circle").font(.largeTitle).foregroundStyle(Color.leafInk)
+                            ProfileAvatarView(owner: model.account?.id ?? "device", size: 48)
                             VStack(alignment: .leading, spacing: 5) {
                                 Text(model.account?.displayName?.isEmpty == false ? model.account!.displayName! : model.account == nil ? "登录" : "我的账号").font(.headline).foregroundStyle(.primary)
                                 Text(model.account?.email ?? "同步书籍、笔记与阅读位置").font(.subheadline).foregroundStyle(.secondary)

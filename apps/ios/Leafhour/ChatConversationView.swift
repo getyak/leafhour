@@ -195,6 +195,28 @@ private struct ChatReadingEdges: ViewModifier {
     }
 }
 
+/// Configure only the owning history scroll view. Short conversations have no
+/// empty drag range, and long conversations stop at their first/last message.
+private struct ChatHistoryScrollBoundary: UIViewRepresentable {
+    func makeUIView(context: Context) -> BoundaryView { BoundaryView() }
+    func updateUIView(_ view: BoundaryView, context: Context) { view.attach() }
+    final class BoundaryView: UIView {
+        override func didMoveToWindow() { super.didMoveToWindow(); attach() }
+        override func layoutSubviews() { super.layoutSubviews(); attach() }
+        func attach() {
+            var ancestor = superview
+            while let view = ancestor {
+                if let history = view as? UIScrollView {
+                    history.bounces = false
+                    history.alwaysBounceVertical = false
+                    return
+                }
+                ancestor = view.superview
+            }
+        }
+    }
+}
+
 /// One conversation surface serves both global Chat and an anchored selection.
 struct ChatConversationView: View {
     @Bindable var tools: ReaderCloudTools
@@ -264,6 +286,7 @@ struct ChatConversationView: View {
                         Color.clear.frame(height: 1).modifier(ChatBottomMarker(position: scrollPosition))
                     }.id("chat-bottom")
                 }.frame(maxWidth: 680).padding(.horizontal, 20).padding(.vertical, 20).frame(maxWidth: .infinity)
+                    .background(ChatHistoryScrollBoundary())
             }.modifier(ChatReadingEdges()).accessibilityIdentifier("reader-conversation-history")
                 .coordinateSpace(name: "conversation-scroll")
                 .modifier(ChatScrollTracking(position: scrollPosition))
@@ -271,7 +294,6 @@ struct ChatConversationView: View {
                 .onChange(of: scrollPosition.followsLatest) { _, follows in
                     if !follows && !focused { composerAwake = false }
                 }
-                .scrollBounceBehavior(.always, axes: .vertical)
                 .scrollDismissesKeyboard(.interactively)
                 .safeAreaInset(edge: .bottom, spacing: 0) { if selectingMessages { selectionBar } else { composer } }
                 .onChange(of: latestRequest) { _, _ in scroll(proxy) }
@@ -441,7 +463,7 @@ struct ChatConversationView: View {
     private func latestButton(compact: Bool) -> some View {
         Button(action: returnToLatest) {
             Group {
-                if compact { Image(systemName: "arrow.down").font(.system(size: 18, weight: .semibold)).frame(width: 48, height: 48) }
+                if compact { Image(systemName: "arrow.down").font(.system(size: 18, weight: .semibold)).frame(width: 44, height: 44) }
                 else { Label("回到最新", systemImage: "arrow.down").font(.subheadline).lineLimit(1).frame(minHeight: 48) }
             }.contentShape(Rectangle())
         }.buttonStyle(.plain).foregroundStyle(Color.leafInk)
@@ -623,7 +645,7 @@ struct ChatConversationView: View {
                 }.buttonStyle(.plain).disabled(localOnly || tools.loading || tools.generating || tools.retry != nil || tools.pendingVoice != nil || sendingVoice)
                     .accessibilityLabel(speech.isActive ? "取消本次录音" : "语音输入").accessibilityIdentifier("chat-microphone")
                 }
-                if shortHeight && focused {
+                if focused {
                     Button { focused = false } label: {
                         Image(systemName: "keyboard.chevron.compact.down").font(.system(size: 18)).frame(width: 44, height: 44).contentShape(Rectangle())
                     }.buttonStyle(.plain).foregroundStyle(Color.primary.opacity(0.64)).accessibilityLabel("收起键盘")
