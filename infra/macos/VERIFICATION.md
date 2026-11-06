@@ -18,3 +18,13 @@ The runtime implementer confirmed candidate control is persisted under an API So
 The existing front end still uses stable module URLs. Keeping an old release on disk does not prove that an already open page can load every previous resource after a cutover. Cross-version page acceptance remains required before a public-origin switch.
 
 The Chinese runbook was checked with `lieflat-less-ai-tone`. The original detector output, final detector output and all 55 labeled semantic candidates are retained in `verification/tone-*.json`. The review removed decorative semicolons, unified one same-paragraph artifact name and replaced one conclusion preface with a direct statement. Complete technical/configuration/acceptance enumerations were retained. No command, path, environment name, operational requirement or limitation was changed by the wording pass.
+
+## Delivery review — 2026-11-06
+
+Merged public `origin/main` at `754dbf14` into this branch without conflicts. The review checked immutable artifact verification, environment/role isolation, default dry-run commands, private configuration permissions, incremental Tailscale ownership, cutover recovery ordering, launchd registration removal and resource limits. No blocking source finding remained.
+
+The 15 isolated operations tests passed again with zero failures or skips, and all five production JavaScript syntax checks and the shell syntax check passed. `tests/macos-ops.test.mjs` now imports the same suite so the repository's default `npm test` also executes these checks. They still use temporary files, synthetic processes and fake service/Tailscale operations.
+
+The default-suite entry plus the release and CI resource-plan suites passed 25 tests with zero failures or skips on Node 26.10.0. The release allowlist check passed for 1,534 software files, and `git diff --check` passed. This is affected local verification; the full repository suite and remote CI are tracked separately.
+
+The standalone operations source can be merged before the three-module runtime, but building and operating a real release requires that runtime's `build:modules`, `/version`, `/healthz` and authenticated POST-only Unix Socket control contracts. This delivery does not install or start services, execute the native artifact pipeline, change Tailscale, apply a database migration or validate production/physical-device behavior.
