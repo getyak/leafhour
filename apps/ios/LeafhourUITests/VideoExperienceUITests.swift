@@ -1191,17 +1191,44 @@ final class VideoExperienceUITests: XCTestCase {
         try auditVisibleInterface()
 
         closePanel(); wakeTop(); app.buttons["阅读设置"].tap(); expandPanel()
-        let settings = foregroundForm()
+        let settings = app.collectionViews["reader-preferences-form"]
+        require(settings)
+        let categories = app.segmentedControls["reading-style-categories"]
+        func selectCategory(_ title: String) {
+            scrollTo(categories, in: settings, direction: .down)
+            let choice = categories.buttons[title]
+            require(choice); XCTAssertTrue(choice.isEnabled && choice.isHittable)
+            choice.tap(); XCTAssertTrue(choice.isSelected)
+        }
+        selectCategory("文字")
         scrollTo(app.sliders["正文字号"], in: settings, direction: .down)
         require(app.navigationBars["阅读风格"])
         capture("GET317-a11y-settings-foreground-top")
         try auditVisibleInterface()
 
+        // Paper choices are a separate category, not rows below text settings.
+        // Keep each raw .all audit and expose both the real text controls and
+        // preview instead of scrolling inside a category that cannot own them.
+        let preview = app.staticTexts["reading-type-preview"]
+        scrollTo(preview, in: settings)
+        capture("GET317-a11y-settings-text-preview")
+        try auditVisibleInterface()
+        selectCategory("纸面")
+        let firstPaper = app.buttons["reader-theme-paper"]
+        scrollTo(firstPaper, in: settings)
+        XCTAssertTrue(firstPaper.exists && firstPaper.isHittable)
+        capture("GET317-a11y-settings-paper-first-row")
+        try auditVisibleInterface()
         let systemTheme = app.buttons["跟随系统"]
         scrollTo(systemTheme, in: settings)
-        settings.swipeUp()
         XCTAssertTrue(systemTheme.exists && systemTheme.isHittable, "Audit the exposed theme controls in the actual foreground Form")
         capture("GET317-a11y-settings-foreground-bottom")
+        try auditVisibleInterface()
+        selectCategory("阅读")
+        let navigation = app.segmentedControls["reader-navigation-mode"]
+        scrollTo(navigation, in: settings)
+        XCTAssertTrue(navigation.exists && navigation.isHittable)
+        capture("GET317-a11y-settings-reading-controls")
         try auditVisibleInterface()
     }
 
