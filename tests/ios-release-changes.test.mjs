@@ -28,6 +28,7 @@ test('the exact reviewed GET-328 mixed blobs and standalone test/QA changes need
     'apps/ios/Config/GET328Acceptance.xcconfig','apps/ios/Config/GET328Acceptance-Info.plist',
     'apps/ios/Leafhour.xcodeproj/xcshareddata/xcschemes/LeafhourGET328CurrentAcceptance.xcscheme',
     'tests/ios-prepare-changes.test.mjs','tests/test_ios_signing.py','scripts/ios/prepare.mjs','scripts/ios/release-changes.mjs',
+    'scripts/ios/get328_build_only.py','scripts/ios/build_only_budget.py',
     'docs/verification/2026-11-07-get-328-preparation.md']) files.push(file(path));
   const result=await classify(files);
   assert.equal(result.releaseRelevant,false);

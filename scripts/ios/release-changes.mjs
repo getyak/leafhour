@@ -12,7 +12,8 @@ const qaOnly=new Set([
   'apps/ios/Leafhour.xcodeproj/xcshareddata/xcschemes/LeafhourGET328CurrentAcceptance.xcscheme',
 ]);
 const decisionOnly=new Set(['scripts/ios/prepare.mjs','scripts/ios/release-changes.mjs']);
-const hostOnly=new Set(['tools/generate-get328-alice-pdf73.mjs']);
+const hostOnly=new Set(['tools/generate-get328-alice-pdf73.mjs',
+  'scripts/ios/get328_build_only.py','scripts/ios/build_only_budget.py']);
 const statuses=new Set(['added','modified','removed','renamed','copied','changed','unchanged']);
 const isSha=value=>typeof value==='string' && /^[a-f0-9]{40}$/.test(value);
 const isPath=value=>typeof value==='string' && value.length>0 && !/[\\\0\r\n]/.test(value)

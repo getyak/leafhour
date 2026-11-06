@@ -54,8 +54,10 @@ the existing GitHub `contents: read` capability.
   digest/decoding, trusted source/CI provenance and isolated plan-file writes.
 - Final complete affected Node suite: **224/224 passed**, 0 failed/skipped,
   `node --test --test-concurrency=2 tests/ios-*.test.mjs`, exit 0.
-- Final Python signing/release host suite: **11/11 passed**,
-  `python3 -m unittest discover -s tests -p 'test_ios_*.py'`, exit 0.
+- Historical pre-controller Python signing/release check: **11/11 passed**,
+  exit 0. After adding the build controller, the same full host-suite command,
+  `python3 -m unittest discover -s tests -p 'test_ios_*.py'`, passed **128/128**,
+  including 117 new controller/budget/protocol/probe/teardown tests, exit 0.
 - Counterexamples cover mixed product/tests, both rename directions, every
   mixed-file unknown head/baseline/status/type/path, Release/Info/assets/vendor
   changes, CI/dependencies/unknown inputs, incomplete/diverged comparisons,
@@ -74,30 +76,22 @@ still unrun for this branch.
 ## Accurate first-window command and limits
 
 Only after the coordinator hands off the lane: one build-for-testing, jobs 2,
-20-minute active timeout; estimated cold duration 10–25 minutes, final Products
+20-minute child cancellation deadline; estimated cold duration 10–25 minutes, final Products
 0.3–0.8 GiB, total incremental build/cache 2–4 GiB. Proposed task monitoring
 limits are 3 GiB of new task artifacts and 10.5 GiB Data free. These are forecasts
-and cancellation limits, not an OS disk quota. A task-owned monitor and the
-entry/finally wrapper must exist before execution.
+and cancellation limits, not an OS disk quota. The task-owned controller and
+its source-only verification are described in
+[the build controller handoff](2026-11-07-get-328-build-controller.md).
 
 `dev-ios-session --timeout` controls **lock waiting**, not child runtime. The
-inner Python call below provides the active 1,200-second timeout; the session
-owner tears down that child process group before releasing its lock. This command
-is a component of the coordinated wrapper, not a standalone execution permit:
+controller measures from its actual build child's start and initiates cancellation
+at 1,200 seconds; identity checks, graceful termination and owner teardown are
+separate. It preserves the existing session guard's sole authority over the child
+process group. The following is an offline plan only:
 
 ```sh
 cd /Users/cubxxw/.codex/worktrees/get-328-current-acceptance/leafhour
-dev-ios-session select --profile primary > /private/tmp/ai-test-GET-328-build-window.6AWjow/preflight/selected-udid.txt
-read -r GET328_PRIMARY_ID < /private/tmp/ai-test-GET-328-build-window.6AWjow/preflight/selected-udid.txt
-IOS_XCODE_JOBS=2 dev-ios-session run --profile primary --udid "$GET328_PRIMARY_ID" --reason GET-328-build-only --timeout 0 -- \
-  /usr/bin/python3 -c 'import subprocess,sys; subprocess.run(sys.argv[1:], check=True, timeout=1200)' \
-  /usr/bin/xcodebuild -project apps/ios/Leafhour.xcodeproj \
-  -scheme LeafhourGET328CurrentAcceptance -configuration GET328Acceptance \
-  -destination "platform=iOS Simulator,id=$GET328_PRIMARY_ID" \
-  -derivedDataPath /private/tmp/ai-test-GET-328-build-products.s7KGsB/DerivedData \
-  -resultBundlePath /private/tmp/ai-test-GET-328-build-window.6AWjow/build-for-testing.xcresult \
-  -jobs 2 -parallel-testing-enabled NO CODE_SIGNING_ALLOWED=NO build-for-testing \
-  > /private/tmp/ai-test-GET-328-build-window.6AWjow/build.log 2>&1
+python3 scripts/ios/get328_build_only.py --plan
 ```
 
 Fresh source, resources/pause/audit and lane checks precede this. Record the exact
@@ -107,10 +101,11 @@ entry-Shutdown device to read UI preferences during build-only. The later UI
 window restores size/appearance/orientation as well, before restoring Shutdown
 when that was its entry state. Nothing is changed for the next task's convenience.
 
-The registered build root is only a reservation. Planned records are
-`preflight/session-entry.json`, `restore/entry-state.json`, `preflight/git-source.json`,
-`finally/system-readback.json` and `exit.json`. Actual container paths and snapshots
-remain unknown/uncreated. The later seven-case window separately proves the exact
+The older registered build roots were reservations and have not been used. The
+controller allocates fresh registered evidence/products roots per real attempt;
+its actual records and deferred execution command are in the controller handoff.
+Actual container paths and snapshots remain unknown/uncreated. The later
+seven-case window separately proves the exact
 QA identity/ownership and snapshots task-owned data before installation/reset;
 an unexpected existing container or active process aborts without overwrite.
 
@@ -118,10 +113,10 @@ an unexpected existing container or active process aborts without overwrite.
 
 Keep the exact Products for the later seven-case window. After acceptance or
 explicit abandonment, verified retention of unique evidence and absence of live
-references, only the registered rebuildable root is initially eligible:
+references, only that attempt's registered rebuildable products root is initially eligible:
 
 ```sh
-dev-storage-guard remove-artifact /private/tmp/ai-test-GET-328-build-products.s7KGsB
+dev-storage-guard remove-artifact <exact-products-path-from-that-attempt-ledger>
 ```
 
 The formal build root, preparation evidence, original failures, container backups,

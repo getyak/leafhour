@@ -47,6 +47,8 @@
 
 ## Task 3 — Coordinated native phase (not authorized to start in phase A)
 
+- [x] Implement the [one-attempt build controller](../../verification/2026-11-07-get-328-build-controller.md), with fixed actual-child deadline, sampled resource cancellation, durable retry gate, genuine session inheritance and entry-state restoration. Verify its decisions offline and independently review before any real execution.
+
 - [ ] Wait for coordinator lease handoff. Fresh-check pause marker, `dev-storage-guard resources`/`audit`; strictly below 10 GiB pauses new heavy work. Register fresh artifacts, reuse known caches only with exact source/SDK/identity receipts.
 - [ ] Select existing Primary through `dev-ios-session`; use one lineage and `IOS_XCODE_JOBS=2`. Record entry owner/device/system category/appearance/orientation before mutation.
 - [ ] **Before installing**, inspect the exact new bundle, extension and runner identifiers. If any unexpected installation/container/activity exists, stop and coordinate; do not overwrite, uninstall or reset it. No action on `org.leafhour.get317.testing` or any Tormie bundle.

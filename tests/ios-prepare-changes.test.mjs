@@ -32,6 +32,8 @@ const testOnlyFiles=()=>[
   change('tests/test_ios_prepare.py',{status:'added'}),
   change('scripts/ios/prepare.mjs'),
   change('scripts/ios/release-changes.mjs',{status:'added'}),
+  change('scripts/ios/get328_build_only.py',{status:'added'}),
+  change('scripts/ios/build_only_budget.py',{status:'added'}),
 ];
 const docChange=()=>change('docs/verification/2026-11-07-get-328-current-acceptance/README.md');
 
