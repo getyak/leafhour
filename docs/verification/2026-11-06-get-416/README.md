@@ -14,7 +14,7 @@
 
 | 检查 | 实际结果 |
 | --- | --- |
-| 宿主测试 | 146/146 通过：home-locale、home-navigation、support-navigation、billing-ui、site-appearance、home-scroll-story、home-auto-route、home-auto-entry |
+| 宿主测试 | 161/161 通过：home-locale、home-navigation、support-navigation、billing-ui、site-appearance、home-scroll-story、home-auto-route、home-auto-entry、portal、search-discovery |
 | 网页构建 | `npm run build:vercel` 通过 |
 | 文案 | 重新导出清单，使用固定 Vale 与 textlint 执行 `copy-lint` 通过；既有警告和文案债务保留 |
 | 8 组 Chromium 场景 | 1440/en、1024/en、768/繁中、390/简中、320/日文、390/英文深色，以及 1440/英文和 390/日文禁用 JS，均通过 |
@@ -24,6 +24,8 @@
 | 独立审阅 | 只读审阅未发现需修复的 P0/P1/P2；`git diff --check` 通过 |
 
 浏览器插件未提供，复用已安装的 Playwright 与 Chrome 156。浏览器访问构建后的真实本地服务，使用隔离数据目录，无登录、真实书房写入或模型调用。最初源码模式未提供离线 worker，产生 503；改用 `compiledWeb: true` 的正式构建服务后，完整重跑的 8 组均无该错误。
+
+首轮远程全量 Web 测试为 4,813/4,815；失败的两项集成测试仍要求旧的英文 `/privacy`、`/mcp` 链接。本地复现后将其严格断言改为本次要求的 `/en/...`，相关 161 项重跑全部通过，补充独立审阅通过。页面实现没有因此改动。
 
 完整本地日志与报告位于登记产物 `/private/tmp/ai-test-GET-416.PZsC8t`。生成的文案清单包含源文件哈希与行号，因此除新增文案外存在行号更新。以下截图为本地实际应用，不代表线上或实体设备验收；PR、同提交 CI、合并及正式发布状态以远程结果为准。
 
