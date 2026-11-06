@@ -116,6 +116,11 @@ const strings=[
   ['一本想读的书，一点留给自己的时间。','A book you want to read. A little time to yourself.','一本想讀的書，一點留給自己的時間。','読みたい一冊と、自分にあける少しの時間。'],
   ['关于 Leafhour','About Leafhour','關於 Leafhour','Leafhour について'],
   ['隐私说明','Privacy','隱私說明','プライバシー'],
+  ['阅读保障','Reader information','閱讀保障','ご利用について'],
+  ['开放项目','Open source','開放專案','オープンソース'],
+  ['服务条款','Terms','服務條款','利用規約'],
+  ['退款政策','Refunds','退款政策','返金ポリシー'],
+  ['页面外观','Appearance','頁面外觀','外観'],
   ['本地运行 · 可自托管','Runs locally · Self-hostable','本地運行 · 可自託管','ローカル実行 · セルフホスト対応'],
   ['开始阅读','Start reading','開始閱讀','読み始める'],
   ['先读几页','Read a few pages','先讀幾頁','まず数頁読む'],
@@ -347,12 +352,8 @@ export function homeLocaleMeta(locale){
 export function homeDocument(source,locale){
   const meta=homeLocaleMeta(locale);
   const choiceRoute=meta.code==='en'?'/en':meta.route;
-  const commerceLabels=({'en':['Pricing','Terms','Refunds'],'zh-Hans':['价格','服务条款','退款政策'],'zh-Hant':['價格','服務條款','退款政策'],'ja':['料金','利用規約','返金ポリシー']})[meta.code];
-  const commerceLinks='<nav class="home-commerce-links" aria-label="'+commerceLabels[0]+'">'+['pricing','terms','refunds'].map((kind,index)=>'<a href="'+(meta.code==='en'?'/en':meta.route)+'/'+kind+'">'+commerceLabels[index]+'</a>').join(' · ')+'</nav>';
   return homeText(source,locale)
     .replace(/<nav class="home-navigation"[^>]*>[\s\S]*?<\/nav>/,publicNavigation({locale:meta.code}))
-    .replace(/<nav class="home-commerce-links"[^>]*>[\s\S]*?<\/nav>/g,'')
-    .replace('</footer>',commerceLinks+'</footer>')
     // The root is automatic; an explicit English language choice uses /en.
     .replaceAll('href="/" lang="en"','href="/en" lang="en"')
     // Only trusted, authored navigation anchors are owned here. Include the
@@ -363,8 +364,7 @@ export function homeDocument(source,locale){
     .replace('<link rel="canonical" href="https://leafhour.com/">','<link rel="canonical" href="'+meta.canonical+'">')
     .replace('<meta property="og:url" content="https://leafhour.com/">','<meta property="og:url" content="'+meta.canonical+'">')
     .replaceAll('class="brand" href="/"','class="brand" href="'+choiceRoute+'"')
-    .replaceAll('href="/mcp"','href="'+(meta.route==='/'?'/mcp':meta.route+'/mcp')+'"')
-    .replaceAll('href="/privacy"','href="'+(meta.route==='/'?'/privacy':meta.route+'/privacy')+'"')
+    .replace(/href="\/(mcp|privacy|terms|refunds)"/g,(_,page)=>'href="'+choiceRoute+'/'+page+'"')
     .replaceAll('href="'+choiceRoute+'" lang="'+meta.htmlLang+'"','aria-current="true" href="'+choiceRoute+'" lang="'+meta.htmlLang+'"')
     .replace(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g,(_,json)=>{
       const data=JSON.parse(json);
