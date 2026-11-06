@@ -726,7 +726,7 @@
       },
       {
         "file": "app/reader-login.mjs",
-        "sha256": "687d465e29a71d649d820c081cd8bfe816611e735b8ff780bfdd55f44b4b2e27"
+        "sha256": "e2f3f2f86b10a4d150594286cc10f4931668f48357b8c95a911d99aaadfebb74"
       },
       {
         "file": "app/reader-navigation.mjs",
@@ -1537,7 +1537,7 @@
         "sha256": "531202f1814314b6c76bfef38b2ea66636425b1ca9b445db349e70ebb8bcd00e"
       }
     ],
-    "inputDigest": "7aba1e147e225fcf51cd752220d443b03623ddc399f6fca72d8320049fd8f335"
+    "inputDigest": "2c2362ac800b037e0966bb9824590720056eaaf8431f892806e966cf1e0f3758"
   },
   "locales": [
     "en",

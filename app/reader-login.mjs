@@ -27,7 +27,7 @@ export function mountReaderLogin({document=globalThis.document,session,getReturn
  const ensure=()=>pending??=(async()=>{
   const [ready,form]=await Promise.all([styleLoader(document),loadTemplate()]);if(disposed)return;
   if(!ready)throw Error('Login styles unavailable');dialog=form;dialog.setAttribute('data-reader-login','');document.body.append(dialog);
-  auth=mountAuth({dialog,api,getSession:()=>session,getReturnTo:destination,onAuthenticated:resume,onSessionSettled:async()=>{if(disposed)return;const current=await api('/api/auth/session');if(current.user?.id&&!auth.isSettingPasswordFor?.(current.user.id))resume();}});
+  auth=mountAuth({dialog,api,getSession:()=>session,getReturnTo:destination,onAuthenticated:resume,onSessionSettled:async()=>{if(disposed)return;const settledAt=revision,current=await api('/api/auth/session');if(settledAt===revision&&current.user?.id&&!auth.isSettingPasswordFor?.(current.user.id))resume();}});
   const onClose=()=>{const closedAt=++revision;if(!disposed&&opener?.isConnected!==false)opener?.focus?.({preventScroll:true});if(!disposed)void api('/api/auth/session').then(current=>{if(closedAt===revision&&!dialog.open&&current.user?.id&&!auth.isSettingPasswordFor?.(current.user.id))resume();}).catch(()=>{});};
   const close=event=>{event.preventDefault();auth.close();};
   const button=dialog.querySelector('[data-close="auth-dialog"]'),sample=dialog.querySelector('.auth-skip');button?.addEventListener('click',close);sample?.addEventListener('click',close);dialog.addEventListener('close',onClose);

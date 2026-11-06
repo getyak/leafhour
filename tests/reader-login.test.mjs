@@ -44,6 +44,20 @@ test('closing provisional password setup does not navigate through its unresolve
  await controller.open();dialog.close();await new Promise(resolve=>setImmediate(resolve));assert.deepEqual(navigations,[]);controller.dispose();
 });
 
+test('the shared auth close settlement cannot redirect a newly opened login round',async()=>{
+ const {mountReaderLogin}=await import('../app/reader-login.mjs');
+ const {document}=fixture('<body></body>'),dialog=document.createElement('dialog'),pending=[],navigations=[];
+ const controller=mountReaderLogin({document,session:{user:null},getReturnTo:()=>'/read?book=alice&passage=p1&action=chat',navigate:url=>navigations.push(url),request:()=>new Promise(resolve=>pending.push(resolve)),loadStyles:async()=>true,loadTemplate:async()=>dialog,mountAuth:options=>{
+  // The real shared form clears provisional state and reconciles it before
+  // the enclosing reader login's own close listener runs.
+  dialog.addEventListener('close',()=>{void options.onSessionSettled();});
+  return {open(){dialog.showModal();},dispose(){},isSettingPasswordFor:()=>false};
+ }});
+ await controller.open();dialog.close();assert.equal(pending.length,2);await controller.open();
+ for(const resolve of pending){resolve({ok:true,json:async()=>({user:{id:'owner-a'}})});await new Promise(resolve=>setImmediate(resolve));}
+ assert.equal(dialog.open,true);assert.deepEqual(navigations,[]);controller.dispose();
+});
+
 test('validated login return retains only the current book, source paragraph and explicit chat action',async()=>{
  const {readerLoginUrl,safeReaderReturn}=await import('../app/reader-return.mjs');
  const login=new URL(readerLoginUrl({bookId:'alice',passageId:'p1',action:'chat',ui:'zh-Hans'}),'http://reader.test');

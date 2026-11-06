@@ -73,4 +73,6 @@ Independent review reproduced two delayed-authentication failures. A stale close
 
 Reran the real-tool copy ledger, lint and CI-environment suites with both explicit pinned executable paths: all 41 tests passed with zero failures or skips, including the thirteen checks skipped by the first complete run. The Linux-only Node-license case remains unverified on this Mac.
 
+The final auth review also exercised the real shared form's close-listener order: clearing a provisional setup calls `onSessionSettled` before the enclosing close listener. That callback now checks its own captured revision as well. The new close-settlement regression failed before this fix and passed afterward; all 58 affected auth, identity, conversation and reader-build tests passed, followed by a fresh hosted build. Independent follow-up review found no remaining blocking issue in these fixes.
+
 The delivery audit inspected 169 local branches and 25 worktrees. The pending reader-controls PR, three-module runtime branch and macOS operations branch are distinct delivery units. Old branches without public ancestry, already-delivered historical patches, screenshots and local debugging outputs remain local. This audit does not certify production publication, a Mac mini installation, real authentication/model acceptance or physical-device acceptance.
