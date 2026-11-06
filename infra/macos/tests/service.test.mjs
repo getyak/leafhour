@@ -26,10 +26,11 @@ test('service wrapper forwards graceful stop and drops inherited credentials and
   const release = path.join(root, 'releases', 'test'); await mkdir(path.join(release, 'apps', 'api'), {recursive: true});
   await mkdir(path.join(root, 'runtime', 'test', 'bin'), {recursive: true}); await symlink(process.execPath, path.join(root, 'runtime', 'test', 'bin', 'node'));
   const ready = path.join(root, 'data', 'api', 'ready.json'); const stopped = path.join(root, 'data', 'api', 'stopped');
+  // Publishing readiness permits an immediate stop, so install its handler first.
   await writeFile(path.join(release, 'apps', 'api', 'server.mjs'), `import {writeFile} from 'node:fs/promises';
-await writeFile(${JSON.stringify(ready)},JSON.stringify({inherited:!!process.env.DEEPSEEK_API_KEY,home:process.env.HOME}));
+process.on('SIGTERM',async()=>{await writeFile(${JSON.stringify(stopped)},'graceful');process.exit(0)});setInterval(()=>{},1000);
 console.log('synthetic-private-book-text');console.log(JSON.stringify({event:'ready',token:'synthetic-private-token'}));
-process.on('SIGTERM',async()=>{await writeFile(${JSON.stringify(stopped)},'graceful');process.exit(0)});setInterval(()=>{},1000);`);
+await writeFile(${JSON.stringify(ready)},JSON.stringify({inherited:!!process.env.DEEPSEEK_API_KEY,home:process.env.HOME}));`);
   await writeFile(path.join(root, 'config', 'api', 'test.json'), JSON.stringify({id: 'test', release, sourceCommit: 'a'.repeat(40), apiPort: 18331, agentPort: 18332, socket: path.join(root, 'run', 'ipc', 'test.sock')}), {mode: 0o600});
   const child = spawn(process.execPath, [fileURLToPath(new URL('../service.mjs', import.meta.url)), root, 'api', 'test'], {env: {...process.env, DEEPSEEK_API_KEY: 'synthetic-inherited-key'}, stdio: 'ignore'});
   t.after(() => { if (child.exitCode === null) child.kill('SIGKILL'); });
@@ -39,5 +40,6 @@ process.on('SIGTERM',async()=>{await writeFile(${JSON.stringify(stopped)},'grace
   const exit = new Promise(resolve => child.once('exit', code => resolve(code))); child.kill('SIGTERM'); assert.equal(await exit, 0);
   assert.equal(await readFile(stopped, 'utf8'), 'graceful');
   const log = await readFile(path.join(root, 'logs', 'api', 'test.log'), 'utf8');
+  assert.ok(log.trim().split('\n').map(line => JSON.parse(line)).some(event => event.event === 'ready'));
   assert.ok(!log.includes('synthetic-private')); assert.match(log, /service_stopped/);
 });
