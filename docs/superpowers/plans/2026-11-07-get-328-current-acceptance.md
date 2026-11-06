@@ -60,6 +60,6 @@
 ## Task 4 — PR and distribution decision
 
 - [ ] Fresh-sync main, independent review, necessary native and host checks, one linked PR, actual applicable CI, then normal merge under repository gates.
-- [ ] Before merge, resolve publication handling explicitly: current `scripts/ios/prepare.mjs` treats all `apps/ios` changes as release-relevant, including these tests/configs. This preparation does **not** silently change the workflow, flip provider variables or trigger it. If automatic publishing is enabled, a test-only merge needs a reviewed decision that prevents an unnecessary upload.
+- [ ] Before merge, validate the [finite release classifier](../../verification/2026-11-07-get-328-release-classification.md) against actual trusted-receipt metadata and applicable CI. Only exact reviewed Release-equivalent pairs and current non-binary paths can skip; unknown/mixed product inputs keep the conservative decision and API read errors stop preparation. No workflow/provider-variable change or upload is implied by this source preparation.
 - [ ] If Release product content is unchanged from the existing 1.0.83 build, reuse that build and perform later exact Apple/source mapping readback. Phase A has not queried Apple and does not assert that mapping.
 - [ ] Only a real product fix requiring a new binary proceeds through the existing unique release chain; preserve single-upload, exact CI/source and Apple processing/readback requirements. Never duplicate a manual upload.
