@@ -1,6 +1,6 @@
 # GET-201：当前设置验收夹具准备
 
-关联 [GET-201](https://linear.app/getyak/issue/GET-201)；原工程 PR 为 [#149](https://github.com/getyak/leafhour/pull/149)。本批只准备当前组件的合成验收环境，不改变产品功能或原验收范围，不恢复 Symphony 或发布流程。
+关联 [GET-201](https://linear.app/getyak/issue/GET-201)；原工程 PR 为 [#149](https://github.com/getyak/leafhour/pull/149)。初始批次准备当前组件的合成验收环境，随后执行真实 Chrome 采集并修复两项复现问题。下文按阶段记录，不缩减原验收范围，不恢复 Symphony 或发布流程。
 
 ## 来源与用途
 
@@ -21,7 +21,7 @@ node --test --test-concurrency=1 tests/get201-settings-fixture.test.mjs
 
 ## 服务方案：独审后再启动
 
-本批不启动服务或浏览器。后续协调方批准执行窗口后，可运行：
+准备阶段未启动服务或浏览器。协调方批准执行窗口后，运行：
 
 ```sh
 node tools/settings-acceptance/host.mjs serve /absolute/task-artifact/component-build
@@ -60,3 +60,22 @@ Safari、Chrome 已安装；当前标准应用路径及 Spotlight 未找到 Fire
 - 216 行计划截图全部 pending，各浏览器 72 行，首批各 36 行属于子集；两位真人、全部控件状态、参考与线上验收仍 pending。
 
 产物留在登记的任务目录，供协调方安排独占浏览器时段；未恢复旧归档、未占用未知服务、未写 Linear 或启动自动流水线。准备代码通过审查后仍须按仓库交付门禁进入关联 PR；本记录不是 PR 已合并或任务已完成的回执。
+
+## 2026-11-07：真实 Chrome 采集与两项修复
+
+实际执行使用已安装的 Google Chrome `156.0.8078.80`，显式指定该浏览器的 executable，headed、单页串行、隔离临时 profile。夹具提交为 `5650441159d23aa9e40edd679c0be0a3f6cb3ca1`，产品输入仍为 `d302393d4ed01a82af6828d7200969be3b8addc9`。不是 Playwright Chromium 或 WebKit 替代验收。
+
+合成状态的六面板 × 三语言 × 两主题 × 两宽度，72/72 行已采集；原图、facts、截图 SHA 及逐行 source 保留在 `chrome-acceptance/chrome-matrix.json`。页面错误、站外请求和 HTTP 失败均为零。1440×900 的弹窗为 880×640，390×844 为 366×640。这里的 captured 不等于 accepted：初始可见性 probe 未排除 closed details 后代的保留布局盒，不能据其推断这些控件可见或通过。另有 24 条控件状态记录，其中 `reading-save-states` 等待超时；旧 runner 误等 status 出现 Saving，而产品忙态由 form 的 `aria-busy` 表达、status 会清空。失败记录保留，不能改写成通过。
+
+HTTP 边界实测 12/12 通过。Chrome profile 均在关闭上下文后移除，无 profile 内容进入证据。原 loopback HTTP 服务已正常关闭，PID 与端口均读回消失。未操作其他服务或用户浏览器数据。
+
+### 复现、源码绑定与最小修复
+
+1. 数据页的两个导出选项直接创建原生 checkbox，`library-data.css` 明确设为 20×20；原图为 `screenshots/data-paper-en-390.png`。核对了 home 的全部 31 个 CSS link 及顺序，相关 JS/CSS 的 Git、manifest、CSS 输出摘要一致，排除夹具漏样式。改为复用已有 `switchRow`，保留原 checkbox 作为值与键盘行为的拥有者。国际化只更新独立 label span，移除旧 20px 和 label 布局覆盖。切换导出选项仍只改本地值，实际导出继续由显式按钮发起。
+2. 日语 390×844 直接打开外观时，选中项右缘 385 超出弹窗右缘 378，原图为 `screenshots/appearance-paper-ja-390.png`。`selected-tab-reproduction.json` 记录打开后仅诊断性 recenter 即恢复完整边界（右缘 221）。根因为 select 在 closed modal 尚无布局时尝试滚动。修复为 showModal 后定位，并在当次字体 ready 和语言文案更新时对当前选中项重新定位；关闭时不执行滚动。
+
+两项新增行为回归先各自失败，再修复产品源码。修复后，settings-controls、library-profile-shell 和 fixture 边界共 36/36 PASS，library-data-ui 另 16/16 PASS。相邻 library-reading-preferences、account-settings-http 在导入时因复用的本机依赖缺少 commonmark 而失败，未视为通过，未安装或改写共享依赖。独立 source review 未发现新增 P0/P1 或可确认 P2；该 review 没有运行新浏览器或构建。
+
+修复后真实浏览器复验目前等待协调方的串行资源窗口。旧 d302 的 72 图只证明旧来源的采集；不能作为修复后版本完整矩阵。后续应以新的冻结源码产物，只复验受影响的语言、宽度、选中项定位、开关样式、键盘与禁用状态，并逐行记录来源。源码回归不能代替实际几何和视觉验收。
+
+Safari、Firefox、真实账号、完整导出/恢复、MCP 实调用、两名真实读者及 Production 仍未验收。GET-201 保持进行中，人工体验结论继续保留 need human；不能据此关闭原 issue。

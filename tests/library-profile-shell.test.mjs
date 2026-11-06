@@ -57,6 +57,33 @@ test('direct data settings entry returns keyboard focus to settings instead of a
  const shell=mountLibraryShell({getSession:f.getSession,openAuth:f.openAuth,onLogout:async()=>{},onHistory(){},onOpenChat(){},api:async()=>({})});shell.openSettings('data');f.get('library-settings-dialog').close();assert.equal(f.doc.activeElement,f.get('library-settings'));
 });
 
+test('direct settings entry positions the selected tab after the dialog can lay out',async()=>{
+ const f=fixture({id:'tab-position'}),{mountLibraryShell}=await import('../app/library-shell.mjs');
+ const positions=[],original=f.doc.createElement;
+ f.doc.createElement=tag=>{const element=original(tag);element.scrollIntoView=()=>positions.push({id:element.id,open:!!f.get('library-settings-dialog').open});return element;};
+ const shell=mountLibraryShell({getSession:f.getSession,openAuth:f.openAuth,onLogout:async()=>{},onHistory(){},onOpenChat(){},api:async()=>({})});
+ for(const name of ['appearance','data','about']){
+  positions.length=0;shell.openSettings(name);
+  assert.ok(positions.some(row=>row.id==='settings-tab-'+name&&row.open),'the selected tab must be positioned while its modal has layout');
+  f.get('library-settings-dialog').close();
+ }
+});
+
+test('export choices use native-backed switches and preserve their value through locale updates',async()=>{
+ const {requestUiRoute}=await import('../app/ui-locale.mjs');await requestUiRoute('en');
+ const f=fixture({id:'export-switch'}),{mountLibraryShell}=await import('../app/library-shell.mjs');let calls=0;
+ mountLibraryShell({getSession:f.getSession,openAuth:f.openAuth,onLogout:async()=>{},onHistory(){},onOpenChat(){},api:async()=>{calls++;return {};}});
+ const all=root=>[root,...root.children.flatMap(all)],host=all(f.get('settings-panel-data')).find(n=>n.className==='account-tools');
+ const switches=all(host).filter(n=>n.className==='settings-switch');assert.equal(switches.length,2);
+ const input=switches[0].children.find(n=>n.type==='checkbox'),label=all(switches[0]).find(n=>n.className==='settings-switch-label');
+ input.checked=true;input.dispatchEvent(new Event('change'));const before=calls;
+ try{
+  for(const [locale,text]of [['ja','原本ファイルを含める'],['zh-Hans','包含原文件'],['en','Include original files']]){
+   await requestUiRoute(locale);assert.equal(label.textContent,text);assert.ok(all(switches[0]).includes(input));assert.equal(input.checked,true);assert.equal(calls,before,'editing export options must not start an export or refresh');
+  }
+ }finally{await requestUiRoute('en');}
+});
+
 test('closing settings returns focus to the visible navigation button when the mobile sidebar is hidden',async()=>{
  const f=fixture({id:'a',email:'reader@example.invalid'}),{mountLibraryShell}=await import('../app/library-shell.mjs');
  f.doc.activeElement=f.doc.body;f.get('library-settings').getClientRects=()=>[];f.get('library-menu').getClientRects=()=>[{}];

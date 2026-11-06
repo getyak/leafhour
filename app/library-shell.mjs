@@ -53,9 +53,11 @@ export function mountLibraryShell({getSession,openAuth,onLogout,onHistory,onOpen
   const headingRow=node('div','settings-heading'),headingCopy=node('div','settings-heading-copy');headingCopy.append(heading,description);headingRow.append(headingCopy,close);
   const layout=node('div','settings-layout'),tabs=node('div','settings-tabs');tabs.setAttribute('role','tablist');tabs.setAttribute('aria-label',t('shell.settings.categories'));
   const content=node('div','settings-content'),panels={},tabButtons=[];
+  const scrollSelectedTab=()=>{if(settings.open)tabButtons.find(b=>b.getAttribute('aria-selected')==='true')?.scrollIntoView?.({block:'nearest',inline:'center'});};
   function select(name,focus=false){
     for(const b of tabButtons){const selected=b.dataset.setting===name;b.setAttribute('aria-selected',String(selected));b.tabIndex=selected?0:-1;panels[b.dataset.setting].hidden=!selected;
-      if(selected){description.textContent=t('shell.settings.tabDescription.'+name);if(typeof b.scrollIntoView==='function')b.scrollIntoView({block:'nearest',inline:'center'});if(focus)b.focus();}}
+      if(selected){description.textContent=t('shell.settings.tabDescription.'+name);if(focus)b.focus();}}
+    scrollSelectedTab();
     if(settings.open){onSettingsTab(name);if(name==='data')accountTools.refresh();}
   }
   for(const name of ['account','reading-habits','daily-reading','appearance','data','about']){const b=node('button','',t('shell.settings.tab.'+name));b.type='button';b.dataset.setting=name;b.id='settings-tab-'+name;b.setAttribute('role','tab');b.setAttribute('aria-controls','settings-panel-'+name);b.addEventListener('click',()=>select(name));tabButtons.push(b);tabs.append(b);const p=node('section','settings-panel');p.id='settings-panel-'+name;p.setAttribute('role','tabpanel');p.setAttribute('aria-labelledby',b.id);panels[name]=p;content.append(p);}
@@ -129,7 +131,7 @@ export function mountLibraryShell({getSession,openAuth,onLogout,onHistory,onOpen
   // to the palette bootstrap without a stale restoration.
   $('sidebar-search-open').addEventListener('click',()=>{if(navigation.open){navigationReturn=null;closeNavigation();}});
   navigation.addEventListener('close',()=>{syncSidebar();if(media.matches)(navigationReturn||$('library-menu')).focus();navigationReturn=null;});media.addEventListener('change',adapt);adapt();
-  function openSettings(name='account'){const opening=!settings.open,changing=tabButtons.find(b=>b.getAttribute('aria-selected')==='true')?.dataset.setting!==name;if(opening)opener=settingsOpenerCandidate(document,settings)||$('library-settings');closeNavigation();update();select(panels[name]?name:'account');if(name==='daily-reading')daily.refresh();if(name==='reading-habits'&&(opening||changing))void memory.refresh();if(opening){settings.showModal();if(name==='data')accountTools.refresh();onSettingsOpen(panels[name]?name:'account');}if(opening||changing)tabButtons.find(b=>b.getAttribute('aria-selected')==='true')?.focus();}
+  function openSettings(name='account'){const opening=!settings.open,changing=tabButtons.find(b=>b.getAttribute('aria-selected')==='true')?.dataset.setting!==name;if(opening)opener=settingsOpenerCandidate(document,settings)||$('library-settings');closeNavigation();update();select(panels[name]?name:'account');if(name==='daily-reading')daily.refresh();if(name==='reading-habits'&&(opening||changing))void memory.refresh();if(opening){settings.showModal();scrollSelectedTab();void document.fonts?.ready.then(scrollSelectedTab);if(name==='data')accountTools.refresh();onSettingsOpen(panels[name]?name:'account');}if(opening||changing)tabButtons.find(b=>b.getAttribute('aria-selected')==='true')?.focus();}
   settings.addEventListener('close',()=>{if(settings.open)return;withdrawLogout();daily.closeTransient?.();data.closeTransient?.();const target=settingsFocusTarget(settings,opener,$('library-settings'),$('library-menu'));opener=null;target?.focus({preventScroll:true});onSettingsClose();});
   $('library-settings').addEventListener('click',()=>openSettings('account'));
   $('library-calendar').addEventListener('click',()=>{closeNavigation();onHistory();});
@@ -147,6 +149,7 @@ export function mountLibraryShell({getSession,openAuth,onLogout,onHistory,onOpen
     appearance.updateLabels();memorySummary.textContent=t('shell.preferences.advanced');
     maintenanceLabel.textContent=maintenanceText();profile.updateLabels?.();habits.updateLabels?.();memory.updateLabels();daily.updateLabels?.();data.updateLabels?.();observabilitySettings.updateLabels();
     accountLabels();sidebarLabels();accountMessage.refresh();
+    scrollSelectedTab();
   }
   onUiLocaleChange(updateLabels);void uiReady.then(()=>updateLabels());
   return {openSettings,closeNavigation,update,updateLabels,refreshDaily:()=>daily.refresh(),clear(){withdrawLogout();daily.clear();data.clear();closeNavigation();if(settings.open)settings.close();update();}};
