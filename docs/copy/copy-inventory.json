@@ -34,7 +34,7 @@
       },
       {
         "file": "app/account-tools.mjs",
-        "sha256": "cb2157b556b0eb7ed1372004cc250ca6ac3f4a4a0818062a1365641075244c27"
+        "sha256": "0f97b5a80066c3db4eb55859784025e78684558368bdb992171d4b42fde76256"
       },
       {
         "file": "app/account-ui-preferences-browser.mjs",
@@ -446,7 +446,7 @@
       },
       {
         "file": "app/library-shell.mjs",
-        "sha256": "9d94b5909431fa239c7090336c7ed5da81fe0bb150e2fe4fa248a6731bb38486"
+        "sha256": "f0d6250b89b1272dde0a265cb87e90ad3d2edb57234cd86ab6eba5836980ed2f"
       },
       {
         "file": "app/library-transfer-limits.mjs",
@@ -1565,7 +1565,7 @@
         "sha256": "531202f1814314b6c76bfef38b2ea66636425b1ca9b445db349e70ebb8bcd00e"
       }
     ],
-    "inputDigest": "a87c21655155de26f3c3922d469206f4cbd1d6d112b40de4cfd6464ffd7e5b40"
+    "inputDigest": "86e4b45e0cd6e3f76b36f5293f3e9e7189c6c4f86de8d67b268d079a5e0f444e"
   },
   "locales": [
     "en",
@@ -12247,12 +12247,12 @@
       "consumers": [
         {
           "file": "app/library-shell.mjs",
-          "line": 93,
+          "line": 95,
           "column": 93
         },
         {
           "file": "app/library-shell.mjs",
-          "line": 147,
+          "line": 149,
           "column": 59
         }
       ],
@@ -12371,12 +12371,12 @@
       "consumers": [
         {
           "file": "app/library-shell.mjs",
-          "line": 112,
+          "line": 114,
           "column": 55
         },
         {
           "file": "app/library-shell.mjs",
-          "line": 145,
+          "line": 147,
           "column": 76
         }
       ],
@@ -12433,12 +12433,12 @@
       "consumers": [
         {
           "file": "app/library-shell.mjs",
-          "line": 83,
+          "line": 85,
           "column": 33
         },
         {
           "file": "app/library-shell.mjs",
-          "line": 144,
+          "line": 146,
           "column": 41
         },
         {
@@ -12500,12 +12500,12 @@
       "consumers": [
         {
           "file": "app/library-shell.mjs",
-          "line": 83,
+          "line": 85,
           "column": 84
         },
         {
           "file": "app/library-shell.mjs",
-          "line": 144,
+          "line": 146,
           "column": 92
         },
         {
@@ -12567,17 +12567,17 @@
       "consumers": [
         {
           "file": "app/library-shell.mjs",
-          "line": 68,
+          "line": 70,
           "column": 111
         },
         {
           "file": "app/library-shell.mjs",
-          "line": 83,
+          "line": 85,
           "column": 142
         },
         {
           "file": "app/library-shell.mjs",
-          "line": 144,
+          "line": 146,
           "column": 150
         },
         {
@@ -12639,17 +12639,17 @@
       "consumers": [
         {
           "file": "app/library-shell.mjs",
-          "line": 68,
+          "line": 70,
           "column": 63
         },
         {
           "file": "app/library-shell.mjs",
-          "line": 83,
+          "line": 85,
           "column": 194
         },
         {
           "file": "app/library-shell.mjs",
-          "line": 144,
+          "line": 146,
           "column": 202
         },
         {
@@ -12716,7 +12716,7 @@
         },
         {
           "file": "app/library-shell.mjs",
-          "line": 140,
+          "line": 142,
           "column": 39
         }
       ],
@@ -12778,7 +12778,7 @@
         },
         {
           "file": "app/library-shell.mjs",
-          "line": 140,
+          "line": 142,
           "column": 86
         },
         {
@@ -12845,7 +12845,7 @@
         },
         {
           "file": "app/library-shell.mjs",
-          "line": 140,
+          "line": 142,
           "column": 143
         }
       ],
@@ -13220,17 +13220,17 @@
       "consumers": [
         {
           "file": "app/library-shell.mjs",
-          "line": 63,
+          "line": 65,
           "column": 112
         },
         {
           "file": "app/library-shell.mjs",
-          "line": 118,
+          "line": 120,
           "column": 602
         },
         {
           "file": "app/library-shell.mjs",
-          "line": 143,
+          "line": 145,
           "column": 25
         },
         {
@@ -13292,22 +13292,22 @@
       "consumers": [
         {
           "file": "app/library-shell.mjs",
-          "line": 63,
+          "line": 65,
           "column": 169
         },
         {
           "file": "app/library-shell.mjs",
-          "line": 76,
+          "line": 78,
           "column": 73
         },
         {
           "file": "app/library-shell.mjs",
-          "line": 118,
+          "line": 120,
           "column": 874
         },
         {
           "file": "app/library-shell.mjs",
-          "line": 143,
+          "line": 145,
           "column": 107
         },
         {
@@ -13369,12 +13369,12 @@
       "consumers": [
         {
           "file": "app/library-shell.mjs",
-          "line": 73,
+          "line": 75,
           "column": 127
         },
         {
           "file": "app/library-shell.mjs",
-          "line": 143,
+          "line": 145,
           "column": 80
         },
         {
@@ -13436,7 +13436,7 @@
       "consumers": [
         {
           "file": "app/library-shell.mjs",
-          "line": 74,
+          "line": 76,
           "column": 85
         }
       ],
@@ -13493,7 +13493,7 @@
       "consumers": [
         {
           "file": "app/library-shell.mjs",
-          "line": 118,
+          "line": 120,
           "column": 174
         }
       ],
@@ -13550,12 +13550,12 @@
       "consumers": [
         {
           "file": "app/library-shell.mjs",
-          "line": 118,
+          "line": 120,
           "column": 208
         },
         {
           "file": "app/library-shell.mjs",
-          "line": 118,
+          "line": 120,
           "column": 495
         },
         {
@@ -13617,7 +13617,7 @@
       "consumers": [
         {
           "file": "app/library-shell.mjs",
-          "line": 118,
+          "line": 120,
           "column": 291
         }
       ],
@@ -13674,7 +13674,7 @@
       "consumers": [
         {
           "file": "app/library-shell.mjs",
-          "line": 118,
+          "line": 120,
           "column": 323
         }
       ],
@@ -13731,7 +13731,7 @@
       "consumers": [
         {
           "file": "app/library-shell.mjs",
-          "line": 118,
+          "line": 120,
           "column": 356
         }
       ],
@@ -13788,7 +13788,7 @@
       "consumers": [
         {
           "file": "app/library-shell.mjs",
-          "line": 118,
+          "line": 120,
           "column": 465
         }
       ],
@@ -13845,7 +13845,7 @@
       "consumers": [
         {
           "file": "app/library-shell.mjs",
-          "line": 118,
+          "line": 120,
           "column": 571
         }
       ],
@@ -13902,7 +13902,7 @@
       "consumers": [
         {
           "file": "app/library-shell.mjs",
-          "line": 118,
+          "line": 120,
           "column": 652
         }
       ],
@@ -13959,7 +13959,7 @@
       "consumers": [
         {
           "file": "app/library-shell.mjs",
-          "line": 118,
+          "line": 120,
           "column": 716
         }
       ],
@@ -14451,12 +14451,12 @@
       "consumers": [
         {
           "file": "app/library-shell.mjs",
-          "line": 111,
+          "line": 113,
           "column": 94
         },
         {
           "file": "app/library-shell.mjs",
-          "line": 146,
+          "line": 148,
           "column": 25
         }
       ],
@@ -14513,12 +14513,12 @@
       "consumers": [
         {
           "file": "app/library-shell.mjs",
-          "line": 111,
+          "line": 113,
           "column": 160
         },
         {
           "file": "app/library-shell.mjs",
-          "line": 145,
+          "line": 147,
           "column": 27
         }
       ],
@@ -14575,12 +14575,12 @@
       "consumers": [
         {
           "file": "app/library-shell.mjs",
-          "line": 111,
+          "line": 113,
           "column": 255
         },
         {
           "file": "app/library-shell.mjs",
-          "line": 146,
+          "line": 148,
           "column": 69
         }
       ],
@@ -14637,12 +14637,12 @@
       "consumers": [
         {
           "file": "app/library-shell.mjs",
-          "line": 111,
+          "line": 113,
           "column": 309
         },
         {
           "file": "app/library-shell.mjs",
-          "line": 146,
+          "line": 148,
           "column": 113
         }
       ],
@@ -14699,12 +14699,12 @@
       "consumers": [
         {
           "file": "app/library-shell.mjs",
-          "line": 122,
+          "line": 124,
           "column": 335
         },
         {
           "file": "app/library-shell.mjs",
-          "line": 122,
+          "line": 124,
           "column": 407
         }
       ],
@@ -14761,12 +14761,12 @@
       "consumers": [
         {
           "file": "app/library-shell.mjs",
-          "line": 122,
+          "line": 124,
           "column": 312
         },
         {
           "file": "app/library-shell.mjs",
-          "line": 122,
+          "line": 124,
           "column": 384
         }
       ],
@@ -14823,7 +14823,7 @@
       "consumers": [
         {
           "file": "app/library-shell.mjs",
-          "line": 122,
+          "line": 124,
           "column": 277
         }
       ],
@@ -14885,7 +14885,7 @@
         },
         {
           "file": "app/library-shell.mjs",
-          "line": 75,
+          "line": 77,
           "column": 49
         },
         {
@@ -19563,12 +19563,12 @@
         },
         {
           "file": "app/library-shell.mjs",
-          "line": 131,
+          "line": 133,
           "column": 31
         },
         {
           "file": "app/library-shell.mjs",
-          "line": 133,
+          "line": 135,
           "column": 29
         },
         {
@@ -142882,674 +142882,14 @@
       }
     },
     {
-      "id": "candidate:app/account-tools.mjs:5:18",
-      "file": "app/account-tools.mjs",
-      "line": 5,
-      "column": 18,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "导出",
-      "sha256": "76420433f22d1c80eafa86c61398ab3bd4e6d4149271f82525054ccb97f669fd",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/account-tools.mjs:5:32",
-      "file": "app/account-tools.mjs",
-      "line": 5,
-      "column": 32,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "导出此账号的书籍、笔记、译文、对话和阅读记录。包含此浏览器已保存的草稿，其他设备的数据需在原设备导出。",
-      "sha256": "a89ba176cb551a290d52e0efb016b46330887d61b566a3a938191a1e6ec13463",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/account-tools.mjs:5:95",
-      "file": "app/account-tools.mjs",
-      "line": 5,
-      "column": 95,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "导出设置",
-      "sha256": "fe017784aa54885545d5b6280a51252a9929aa3919c1381f31c99238c18417e7",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/account-tools.mjs:5:106",
-      "file": "app/account-tools.mjs",
-      "line": 5,
-      "column": 106,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "导出本人数据",
-      "sha256": "cbafc3e512c63c45e912cc1f65775d905103765806519fd11b5580cf1d941ff4",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/account-tools.mjs:5:125",
-      "file": "app/account-tools.mjs",
-      "line": 5,
-      "column": 125,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "包含原文件",
-      "sha256": "5598af4f6c5a2f90da5294d71179852ec1429e289080cd5f96be7a6f9c7b612e",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/account-tools.mjs:5:139",
-      "file": "app/account-tools.mjs",
-      "line": 5,
-      "column": 139,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "包含听读音频",
-      "sha256": "366bc4765f0220cf43459d22bdf88594960cbf6733e4fe66096705babd997967",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/account-tools.mjs:5:157",
-      "file": "app/account-tools.mjs",
-      "line": 5,
-      "column": 157,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "外部 MCP 服务器",
-      "sha256": "efeb341222649f5076ad1d9a8137fd564cecbe51fdc28b779e9c8920f2f18a9d",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/account-tools.mjs:5:183",
-      "file": "app/account-tools.mjs",
-      "line": 5,
-      "column": 183,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "把外部工具连接到 Leafhour。不会自动发送书房内容。",
-      "sha256": "2b2acbfc25e9176bfcb7c4d3d2b831db683106bfe32a0e8d0f19ad2234995f19",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/account-tools.mjs:5:222",
-      "file": "app/account-tools.mjs",
-      "line": 5,
-      "column": 222,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "Leafhour MCP 服务器",
-      "sha256": "39e74cb45552c2bd21d443062d56897556fcfaa35dafa8767b9aaf7a483e497e",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/account-tools.mjs:5:252",
-      "file": "app/account-tools.mjs",
-      "line": 5,
-      "column": 252,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "让其他应用连接 Leafhour。由对方发起 OAuth 登录，你选择一本书和允许的权限。",
-      "sha256": "b8d2b9722d6e6c8dbfe5b15771deaeea316ce949a3e1df87ca80b3ed6bdb4dc8",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/account-tools.mjs:5:305",
-      "file": "app/account-tools.mjs",
-      "line": 5,
-      "column": 305,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "名称",
-      "sha256": "d44e9b3d3b31d37b4f0cd94f7861383519f9ec0cf59b953596627a3e7706bfbc",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/account-tools.mjs:5:314",
-      "file": "app/account-tools.mjs",
-      "line": 5,
-      "column": 314,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "MCP 服务器地址",
-      "sha256": "e2c3411e37b4a1f903f0dd2dc63f2ef8e5ce04588db28807b0f485e20fdbacf3",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/account-tools.mjs:5:332",
-      "file": "app/account-tools.mjs",
-      "line": 5,
-      "column": 332,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "访问令牌（可选）",
-      "sha256": "5634fad05aace36c6c9833f27c1e6e6fedecf96048a8a68784380e6faa6ed906",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/account-tools.mjs:5:347",
-      "file": "app/account-tools.mjs",
-      "line": 5,
-      "column": 347,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "连接",
-      "sha256": "a5574109f0208e899feb6b620feb3f1f686aded4ec939631420afc1bec51c400",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/account-tools.mjs:5:360",
-      "file": "app/account-tools.mjs",
-      "line": 5,
-      "column": 360,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "刷新",
-      "sha256": "aee88743413144a2ec6c48e348628142cd063832fdb5f1e91242ce7808cee96a",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/account-tools.mjs:5:372",
-      "file": "app/account-tools.mjs",
-      "line": 5,
-      "column": 372,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "断开连接",
-      "sha256": "a33f3804768e68eeb00fb5e9d5a17b810fce12463cdbb49c6448091695e49171",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/account-tools.mjs:5:385",
-      "file": "app/account-tools.mjs",
-      "line": 5,
-      "column": 385,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "查看工具",
-      "sha256": "fe0f69316e1237bc46a193796b293d2d92fc536b1075aa92df6376c3b73a6c54",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/account-tools.mjs:5:397",
-      "file": "app/account-tools.mjs",
-      "line": 5,
-      "column": 397,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "调用工具",
-      "sha256": "1c31ae359a792b3e416f36468b0ad9bddb2442ad7a774580e6dcb1502f2b5bdb",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/account-tools.mjs:5:409",
-      "file": "app/account-tools.mjs",
-      "line": 5,
-      "column": 409,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "参数（JSON）",
-      "sha256": "9840df0a9f3c6be023f3dc4a60cd96a5268a11b65e778d70068a20f312cb0395",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/account-tools.mjs:5:428",
-      "file": "app/account-tools.mjs",
-      "line": 5,
-      "column": 428,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "将向此服务器发送以上参数。工具可能修改对方服务中的数据。",
-      "sha256": "51ade79dbd569ea7d32a73bb963b3d3791526fc90728c25544486d49aed21f0c",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/account-tools.mjs:5:466",
-      "file": "app/account-tools.mjs",
-      "line": 5,
-      "column": 466,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "撤回授权",
-      "sha256": "1d96671062d889a257432bdb450daebbdea83e48b80c4ee4379f2bce28e2f703",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/account-tools.mjs:5:481",
-      "file": "app/account-tools.mjs",
-      "line": 5,
-      "column": 481,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "正在处理…",
-      "sha256": "574ec7517de1474c6d0d3f4003c90bceb6a2740af7e03141b52838256fe51aa0",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/account-tools.mjs:5:494",
-      "file": "app/account-tools.mjs",
-      "line": 5,
-      "column": 494,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "已完成",
-      "sha256": "f28461bb49c8564716309d575f90f72cf15b5c4667e40c2d037434bedb54a01a",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/account-tools.mjs:5:506",
-      "file": "app/account-tools.mjs",
-      "line": 5,
-      "column": 506,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "未能完成，请检查连接后重试。",
-      "sha256": "16b13769dc195b6469f8ed50bfe0580ac7d1d2c3eb12f0f8d0eae5c6e08d6ff2",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/account-tools.mjs:5:529",
-      "file": "app/account-tools.mjs",
-      "line": 5,
-      "column": 529,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "登录后管理自己的数据与连接。",
-      "sha256": "cafe7204e556d66306cdbd4e498e217c384af0e2f2375b69959f45896808d05b",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/account-tools.mjs:5:551",
-      "file": "app/account-tools.mjs",
-      "line": 5,
-      "column": 551,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "复制服务器地址",
-      "sha256": "4c2614bc71a0cb77af42924e074ea6e27007bb7a6c78ee1d802daa0541b2e528",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/account-tools.mjs:5:568",
-      "file": "app/account-tools.mjs",
-      "line": 5,
-      "column": 568,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "已复制",
-      "sha256": "8f6f8d979c981ced1cf17ae96e27690b8a33b9dff1c98c8ce651764ffe9cf235",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/account-tools.mjs:5:579",
-      "file": "app/account-tools.mjs",
-      "line": 5,
-      "column": 579,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "暂无有效授权",
-      "sha256": "c7b5e0d6db990ee814793ef9d9b6c5557d40b3a98c34904dccfff6560da7a356",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/account-tools.mjs:5:600",
-      "file": "app/account-tools.mjs",
-      "line": 5,
-      "column": 600,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "远程 MCP 需要部署在 HTTPS 实例。",
-      "sha256": "35c106d19b928032f2966f1d12c56c5b1f4cc8600961a37a1f877a10fb4d60f8",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/account-tools.mjs:5:634",
-      "file": "app/account-tools.mjs",
-      "line": 5,
-      "column": 634,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "已断开。已经开始的工具调用仍可能完成，请先核对结果再重试。",
-      "sha256": "41f383376888fd79b41146177a3d1f169f93409402b2344be1b131d8ee831a0d",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/account-tools.mjs:5:676",
-      "file": "app/account-tools.mjs",
-      "line": 5,
-      "column": 676,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "工具调用结果尚未确认，请先在对方服务核对，再决定是否重试。",
-      "sha256": "74487d489750ac518b61156cab2690d17a1d0d0ed64f0bde033b2103c3d527c7",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/account-tools.mjs:5:715",
-      "file": "app/account-tools.mjs",
-      "line": 5,
-      "column": 715,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "选择工具",
-      "sha256": "e2c2f3d5e7793f2fc91207e4afd45ef4fb7e93dca82258324ea53f2f2adca15d",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/account-tools.mjs:5:729",
-      "file": "app/account-tools.mjs",
-      "line": 5,
-      "column": 729,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "参数格式",
-      "sha256": "d44966cf957f3143d635475a2283c7627f27d634403c812bf0524758df84da4f",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
       "id": "candidate:app/account-tools.mjs:6:18",
       "file": "app/account-tools.mjs",
       "line": 6,
       "column": 18,
       "kind": "js-cjk-literal",
       "property": null,
-      "value": "匯出",
-      "sha256": "c631952bb11403b61a6824997507e692cb83b580b4074006e8b7f5661ee5f119",
+      "value": "导出",
+      "sha256": "76420433f22d1c80eafa86c61398ab3bd4e6d4149271f82525054ccb97f669fd",
       "protected": false,
       "protectionReason": null,
       "hints": [],
@@ -143568,8 +142908,8 @@
       "column": 32,
       "kind": "js-cjk-literal",
       "property": null,
-      "value": "匯出此帳戶的書籍、筆記、譯文、對話和閱讀紀錄。包含此瀏覽器已儲存的草稿，其他裝置的資料需在原裝置匯出。",
-      "sha256": "f6beafc03e6b68423b0dead05b3f65765a6df11e948cc72e83cec20567533567",
+      "value": "导出此账号的书籍、笔记、译文、对话和阅读记录。包含此浏览器已保存的草稿，其他设备的数据需在原设备导出。",
+      "sha256": "a89ba176cb551a290d52e0efb016b46330887d61b566a3a938191a1e6ec13463",
       "protected": false,
       "protectionReason": null,
       "hints": [],
@@ -143588,8 +142928,8 @@
       "column": 95,
       "kind": "js-cjk-literal",
       "property": null,
-      "value": "匯出設定",
-      "sha256": "9263e6bbcdf704eda23c5befd813546f21f82c506d9bbaff98d9e10f27b53c73",
+      "value": "导出设置",
+      "sha256": "fe017784aa54885545d5b6280a51252a9929aa3919c1381f31c99238c18417e7",
       "protected": false,
       "protectionReason": null,
       "hints": [],
@@ -143608,8 +142948,8 @@
       "column": 106,
       "kind": "js-cjk-literal",
       "property": null,
-      "value": "匯出本人資料",
-      "sha256": "bc4348033bb7102e9b27a61c32546968130ba831d0747da96520ee7af18a53d4",
+      "value": "导出本人数据",
+      "sha256": "cbafc3e512c63c45e912cc1f65775d905103765806519fd11b5580cf1d941ff4",
       "protected": false,
       "protectionReason": null,
       "hints": [],
@@ -143628,8 +142968,8 @@
       "column": 125,
       "kind": "js-cjk-literal",
       "property": null,
-      "value": "包含原始檔",
-      "sha256": "1e5189285a5f08ac36abbc804267e301e6f3e22ce4946853c24469eee169abbe",
+      "value": "包含原文件",
+      "sha256": "5598af4f6c5a2f90da5294d71179852ec1429e289080cd5f96be7a6f9c7b612e",
       "protected": false,
       "protectionReason": null,
       "hints": [],
@@ -143648,8 +142988,8 @@
       "column": 139,
       "kind": "js-cjk-literal",
       "property": null,
-      "value": "包含聽讀音訊",
-      "sha256": "780273e5784cc299e363dbb1f12e7f5e329a84147a8d91e6a577622a9b1794e9",
+      "value": "包含听读音频",
+      "sha256": "366bc4765f0220cf43459d22bdf88594960cbf6733e4fe66096705babd997967",
       "protected": false,
       "protectionReason": null,
       "hints": [],
@@ -143668,8 +143008,8 @@
       "column": 157,
       "kind": "js-cjk-literal",
       "property": null,
-      "value": "外部 MCP 伺服器",
-      "sha256": "8f764ea454b238b7ca6d8cb1863ee9b07414407c1e4db68dbe51d80e2a7f9451",
+      "value": "外部 MCP 服务器",
+      "sha256": "efeb341222649f5076ad1d9a8137fd564cecbe51fdc28b779e9c8920f2f18a9d",
       "protected": false,
       "protectionReason": null,
       "hints": [],
@@ -143688,8 +143028,8 @@
       "column": 183,
       "kind": "js-cjk-literal",
       "property": null,
-      "value": "把外部工具連接到 Leafhour。不會自動傳送書房內容。",
-      "sha256": "d6bb04b5beee5c6da04f0f21466b4ab663d418bd56c8a19b3e5348cc06854306",
+      "value": "把外部工具连接到 Leafhour。不会自动发送书房内容。",
+      "sha256": "2b2acbfc25e9176bfcb7c4d3d2b831db683106bfe32a0e8d0f19ad2234995f19",
       "protected": false,
       "protectionReason": null,
       "hints": [],
@@ -143708,8 +143048,8 @@
       "column": 222,
       "kind": "js-cjk-literal",
       "property": null,
-      "value": "Leafhour MCP 伺服器",
-      "sha256": "8ab3b7306ff84e0e17b0fb8f56b16a78e0fac4484c67d2a3af93d51647c12391",
+      "value": "Leafhour MCP 服务器",
+      "sha256": "39e74cb45552c2bd21d443062d56897556fcfaa35dafa8767b9aaf7a483e497e",
       "protected": false,
       "protectionReason": null,
       "hints": [],
@@ -143728,6 +143068,666 @@
       "column": 252,
       "kind": "js-cjk-literal",
       "property": null,
+      "value": "让其他应用连接 Leafhour。由对方发起 OAuth 登录，你选择一本书和允许的权限。",
+      "sha256": "b8d2b9722d6e6c8dbfe5b15771deaeea316ce949a3e1df87ca80b3ed6bdb4dc8",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/account-tools.mjs:6:305",
+      "file": "app/account-tools.mjs",
+      "line": 6,
+      "column": 305,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "名称",
+      "sha256": "d44e9b3d3b31d37b4f0cd94f7861383519f9ec0cf59b953596627a3e7706bfbc",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/account-tools.mjs:6:314",
+      "file": "app/account-tools.mjs",
+      "line": 6,
+      "column": 314,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "MCP 服务器地址",
+      "sha256": "e2c3411e37b4a1f903f0dd2dc63f2ef8e5ce04588db28807b0f485e20fdbacf3",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/account-tools.mjs:6:332",
+      "file": "app/account-tools.mjs",
+      "line": 6,
+      "column": 332,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "访问令牌（可选）",
+      "sha256": "5634fad05aace36c6c9833f27c1e6e6fedecf96048a8a68784380e6faa6ed906",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/account-tools.mjs:6:347",
+      "file": "app/account-tools.mjs",
+      "line": 6,
+      "column": 347,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "连接",
+      "sha256": "a5574109f0208e899feb6b620feb3f1f686aded4ec939631420afc1bec51c400",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/account-tools.mjs:6:360",
+      "file": "app/account-tools.mjs",
+      "line": 6,
+      "column": 360,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "刷新",
+      "sha256": "aee88743413144a2ec6c48e348628142cd063832fdb5f1e91242ce7808cee96a",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/account-tools.mjs:6:372",
+      "file": "app/account-tools.mjs",
+      "line": 6,
+      "column": 372,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "断开连接",
+      "sha256": "a33f3804768e68eeb00fb5e9d5a17b810fce12463cdbb49c6448091695e49171",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/account-tools.mjs:6:385",
+      "file": "app/account-tools.mjs",
+      "line": 6,
+      "column": 385,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "查看工具",
+      "sha256": "fe0f69316e1237bc46a193796b293d2d92fc536b1075aa92df6376c3b73a6c54",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/account-tools.mjs:6:397",
+      "file": "app/account-tools.mjs",
+      "line": 6,
+      "column": 397,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "调用工具",
+      "sha256": "1c31ae359a792b3e416f36468b0ad9bddb2442ad7a774580e6dcb1502f2b5bdb",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/account-tools.mjs:6:409",
+      "file": "app/account-tools.mjs",
+      "line": 6,
+      "column": 409,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "参数（JSON）",
+      "sha256": "9840df0a9f3c6be023f3dc4a60cd96a5268a11b65e778d70068a20f312cb0395",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/account-tools.mjs:6:428",
+      "file": "app/account-tools.mjs",
+      "line": 6,
+      "column": 428,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "将向此服务器发送以上参数。工具可能修改对方服务中的数据。",
+      "sha256": "51ade79dbd569ea7d32a73bb963b3d3791526fc90728c25544486d49aed21f0c",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/account-tools.mjs:6:466",
+      "file": "app/account-tools.mjs",
+      "line": 6,
+      "column": 466,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "撤回授权",
+      "sha256": "1d96671062d889a257432bdb450daebbdea83e48b80c4ee4379f2bce28e2f703",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/account-tools.mjs:6:481",
+      "file": "app/account-tools.mjs",
+      "line": 6,
+      "column": 481,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "正在处理…",
+      "sha256": "574ec7517de1474c6d0d3f4003c90bceb6a2740af7e03141b52838256fe51aa0",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/account-tools.mjs:6:494",
+      "file": "app/account-tools.mjs",
+      "line": 6,
+      "column": 494,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "已完成",
+      "sha256": "f28461bb49c8564716309d575f90f72cf15b5c4667e40c2d037434bedb54a01a",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/account-tools.mjs:6:506",
+      "file": "app/account-tools.mjs",
+      "line": 6,
+      "column": 506,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "未能完成，请检查连接后重试。",
+      "sha256": "16b13769dc195b6469f8ed50bfe0580ac7d1d2c3eb12f0f8d0eae5c6e08d6ff2",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/account-tools.mjs:6:529",
+      "file": "app/account-tools.mjs",
+      "line": 6,
+      "column": 529,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "登录后管理自己的数据与连接。",
+      "sha256": "cafe7204e556d66306cdbd4e498e217c384af0e2f2375b69959f45896808d05b",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/account-tools.mjs:6:551",
+      "file": "app/account-tools.mjs",
+      "line": 6,
+      "column": 551,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "复制服务器地址",
+      "sha256": "4c2614bc71a0cb77af42924e074ea6e27007bb7a6c78ee1d802daa0541b2e528",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/account-tools.mjs:6:568",
+      "file": "app/account-tools.mjs",
+      "line": 6,
+      "column": 568,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "已复制",
+      "sha256": "8f6f8d979c981ced1cf17ae96e27690b8a33b9dff1c98c8ce651764ffe9cf235",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/account-tools.mjs:6:579",
+      "file": "app/account-tools.mjs",
+      "line": 6,
+      "column": 579,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "暂无有效授权",
+      "sha256": "c7b5e0d6db990ee814793ef9d9b6c5557d40b3a98c34904dccfff6560da7a356",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/account-tools.mjs:6:600",
+      "file": "app/account-tools.mjs",
+      "line": 6,
+      "column": 600,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "远程 MCP 需要部署在 HTTPS 实例。",
+      "sha256": "35c106d19b928032f2966f1d12c56c5b1f4cc8600961a37a1f877a10fb4d60f8",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/account-tools.mjs:6:634",
+      "file": "app/account-tools.mjs",
+      "line": 6,
+      "column": 634,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "已断开。已经开始的工具调用仍可能完成，请先核对结果再重试。",
+      "sha256": "41f383376888fd79b41146177a3d1f169f93409402b2344be1b131d8ee831a0d",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/account-tools.mjs:6:676",
+      "file": "app/account-tools.mjs",
+      "line": 6,
+      "column": 676,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "工具调用结果尚未确认，请先在对方服务核对，再决定是否重试。",
+      "sha256": "74487d489750ac518b61156cab2690d17a1d0d0ed64f0bde033b2103c3d527c7",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/account-tools.mjs:6:715",
+      "file": "app/account-tools.mjs",
+      "line": 6,
+      "column": 715,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "选择工具",
+      "sha256": "e2c2f3d5e7793f2fc91207e4afd45ef4fb7e93dca82258324ea53f2f2adca15d",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/account-tools.mjs:6:729",
+      "file": "app/account-tools.mjs",
+      "line": 6,
+      "column": 729,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "参数格式",
+      "sha256": "d44966cf957f3143d635475a2283c7627f27d634403c812bf0524758df84da4f",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/account-tools.mjs:7:18",
+      "file": "app/account-tools.mjs",
+      "line": 7,
+      "column": 18,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "匯出",
+      "sha256": "c631952bb11403b61a6824997507e692cb83b580b4074006e8b7f5661ee5f119",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/account-tools.mjs:7:32",
+      "file": "app/account-tools.mjs",
+      "line": 7,
+      "column": 32,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "匯出此帳戶的書籍、筆記、譯文、對話和閱讀紀錄。包含此瀏覽器已儲存的草稿，其他裝置的資料需在原裝置匯出。",
+      "sha256": "f6beafc03e6b68423b0dead05b3f65765a6df11e948cc72e83cec20567533567",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/account-tools.mjs:7:95",
+      "file": "app/account-tools.mjs",
+      "line": 7,
+      "column": 95,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "匯出設定",
+      "sha256": "9263e6bbcdf704eda23c5befd813546f21f82c506d9bbaff98d9e10f27b53c73",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/account-tools.mjs:7:106",
+      "file": "app/account-tools.mjs",
+      "line": 7,
+      "column": 106,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "匯出本人資料",
+      "sha256": "bc4348033bb7102e9b27a61c32546968130ba831d0747da96520ee7af18a53d4",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/account-tools.mjs:7:125",
+      "file": "app/account-tools.mjs",
+      "line": 7,
+      "column": 125,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "包含原始檔",
+      "sha256": "1e5189285a5f08ac36abbc804267e301e6f3e22ce4946853c24469eee169abbe",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/account-tools.mjs:7:139",
+      "file": "app/account-tools.mjs",
+      "line": 7,
+      "column": 139,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "包含聽讀音訊",
+      "sha256": "780273e5784cc299e363dbb1f12e7f5e329a84147a8d91e6a577622a9b1794e9",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/account-tools.mjs:7:157",
+      "file": "app/account-tools.mjs",
+      "line": 7,
+      "column": 157,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "外部 MCP 伺服器",
+      "sha256": "8f764ea454b238b7ca6d8cb1863ee9b07414407c1e4db68dbe51d80e2a7f9451",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/account-tools.mjs:7:183",
+      "file": "app/account-tools.mjs",
+      "line": 7,
+      "column": 183,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "把外部工具連接到 Leafhour。不會自動傳送書房內容。",
+      "sha256": "d6bb04b5beee5c6da04f0f21466b4ab663d418bd56c8a19b3e5348cc06854306",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/account-tools.mjs:7:222",
+      "file": "app/account-tools.mjs",
+      "line": 7,
+      "column": 222,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "Leafhour MCP 伺服器",
+      "sha256": "8ab3b7306ff84e0e17b0fb8f56b16a78e0fac4484c67d2a3af93d51647c12391",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/account-tools.mjs:7:252",
+      "file": "app/account-tools.mjs",
+      "line": 7,
+      "column": 252,
+      "kind": "js-cjk-literal",
+      "property": null,
       "value": "讓其他應用程式連接 Leafhour。由對方發起 OAuth 登入，你選擇一本書和允許的權限。",
       "sha256": "b071c4f1feb62326b366bd938a251161bef5a1b729d1850d32be25c9fde405d8",
       "protected": false,
@@ -143742,9 +143742,9 @@
       }
     },
     {
-      "id": "candidate:app/account-tools.mjs:6:307",
+      "id": "candidate:app/account-tools.mjs:7:307",
       "file": "app/account-tools.mjs",
-      "line": 6,
+      "line": 7,
       "column": 307,
       "kind": "js-cjk-literal",
       "property": null,
@@ -143762,9 +143762,9 @@
       }
     },
     {
-      "id": "candidate:app/account-tools.mjs:6:316",
+      "id": "candidate:app/account-tools.mjs:7:316",
       "file": "app/account-tools.mjs",
-      "line": 6,
+      "line": 7,
       "column": 316,
       "kind": "js-cjk-literal",
       "property": null,
@@ -143782,9 +143782,9 @@
       }
     },
     {
-      "id": "candidate:app/account-tools.mjs:6:334",
+      "id": "candidate:app/account-tools.mjs:7:334",
       "file": "app/account-tools.mjs",
-      "line": 6,
+      "line": 7,
       "column": 334,
       "kind": "js-cjk-literal",
       "property": null,
@@ -143802,634 +143802,14 @@
       }
     },
     {
-      "id": "candidate:app/account-tools.mjs:6:349",
+      "id": "candidate:app/account-tools.mjs:7:349",
       "file": "app/account-tools.mjs",
-      "line": 6,
+      "line": 7,
       "column": 349,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "連接",
       "sha256": "86d158506e6afe60d02534546aefff8dbdc3853afb6b7c19a889ca3acb886472",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/account-tools.mjs:6:362",
-      "file": "app/account-tools.mjs",
-      "line": 6,
-      "column": 362,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "重新整理",
-      "sha256": "5f451c71b46a9bb090667dd45a26aae6f5649014fcd0cb2ea65e902a8d88d5b7",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/account-tools.mjs:6:376",
-      "file": "app/account-tools.mjs",
-      "line": 6,
-      "column": 376,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "中斷連接",
-      "sha256": "eab41ae66f1b36b84c20a52bbb59f09d5b918a86f57a02b68f1f79b38b716f34",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/account-tools.mjs:6:389",
-      "file": "app/account-tools.mjs",
-      "line": 6,
-      "column": 389,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "查看工具",
-      "sha256": "fe0f69316e1237bc46a193796b293d2d92fc536b1075aa92df6376c3b73a6c54",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/account-tools.mjs:6:401",
-      "file": "app/account-tools.mjs",
-      "line": 6,
-      "column": 401,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "呼叫工具",
-      "sha256": "62d996f32648d1b52b7f53ff4111ddf2998461f8fbfb02d8578cdcfb7a7dd2d3",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/account-tools.mjs:6:413",
-      "file": "app/account-tools.mjs",
-      "line": 6,
-      "column": 413,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "參數（JSON）",
-      "sha256": "983e0b4235c06ecb55a09cebcaf1503a4d739499e8b615d36055b2a7e62a4936",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/account-tools.mjs:6:432",
-      "file": "app/account-tools.mjs",
-      "line": 6,
-      "column": 432,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "將向此伺服器傳送以上參數。工具可能修改對方服務中的資料。",
-      "sha256": "66c5aa7d2018c4ee3f7896ae790c1f9a88e7c7869ec08f20726f69cab1777876",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/account-tools.mjs:6:470",
-      "file": "app/account-tools.mjs",
-      "line": 6,
-      "column": 470,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "撤回授權",
-      "sha256": "896e09d31800bc0b1a6742c0236c523f5d96d9018d4f6acecb872bb0e5d5d343",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/account-tools.mjs:6:485",
-      "file": "app/account-tools.mjs",
-      "line": 6,
-      "column": 485,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "正在處理…",
-      "sha256": "ba237a0090f6e0d60735621fb5cec8f0a6008f4b70db7a094d4a75ae239fee67",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/account-tools.mjs:6:498",
-      "file": "app/account-tools.mjs",
-      "line": 6,
-      "column": 498,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "已完成",
-      "sha256": "f28461bb49c8564716309d575f90f72cf15b5c4667e40c2d037434bedb54a01a",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/account-tools.mjs:6:510",
-      "file": "app/account-tools.mjs",
-      "line": 6,
-      "column": 510,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "未能完成，請檢查連接後重試。",
-      "sha256": "3015aadd83c7b05b141cb97b62b53979d97cfda5beaf9abe02ad96ac531955c4",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/account-tools.mjs:6:533",
-      "file": "app/account-tools.mjs",
-      "line": 6,
-      "column": 533,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "登入後管理自己的資料與連接。",
-      "sha256": "07823ea6351d6b62f5f95b8f73b56ff28314dabe8a1d53ff6d7579f55c5c3c74",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/account-tools.mjs:6:555",
-      "file": "app/account-tools.mjs",
-      "line": 6,
-      "column": 555,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "複製伺服器位址",
-      "sha256": "9303f04cad2d40527b449153e383940db7e8874f336c9751cbebc437b576dc71",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/account-tools.mjs:6:572",
-      "file": "app/account-tools.mjs",
-      "line": 6,
-      "column": 572,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "已複製",
-      "sha256": "fcce450c45f401a80a36c3b33bb86fc688a0be9dac6ba53f1655c0335c237498",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/account-tools.mjs:6:583",
-      "file": "app/account-tools.mjs",
-      "line": 6,
-      "column": 583,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "暫無有效授權",
-      "sha256": "d39d9d20b400aba30a1893d530aa0d2bed1dc58288e90e6387dc84b6098ccc24",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/account-tools.mjs:6:604",
-      "file": "app/account-tools.mjs",
-      "line": 6,
-      "column": 604,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "遠端 MCP 需要部署在 HTTPS 執行個體。",
-      "sha256": "fdd9614e2b6e693623c998d8822ab70cb0893cc1d38581e3066ac5e9decc8757",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/account-tools.mjs:6:640",
-      "file": "app/account-tools.mjs",
-      "line": 6,
-      "column": 640,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "已中斷。已經開始的工具呼叫仍可能完成，請先核對結果再重試。",
-      "sha256": "032f11a1b645b370988b7995bc8407c0f8621142f4abae6b810f10723b1ee27d",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/account-tools.mjs:6:682",
-      "file": "app/account-tools.mjs",
-      "line": 6,
-      "column": 682,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "工具呼叫結果尚未確認，請先在對方服務核對，再決定是否重試。",
-      "sha256": "da078ab5d1a8c24fb662f6abf1adcdae95d7e43e73a238920ae211ba00f8da3c",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/account-tools.mjs:6:721",
-      "file": "app/account-tools.mjs",
-      "line": 6,
-      "column": 721,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "選擇工具",
-      "sha256": "37f1602c9c7a1597d7ec414db8bdc2e5fdcb8d8c3e21ec0111b35d3a6ef1ac8f",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/account-tools.mjs:6:735",
-      "file": "app/account-tools.mjs",
-      "line": 6,
-      "column": 735,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "參數格式",
-      "sha256": "4817c560b33b29c10c9f632d51e5c6b8a9679466fb505a3db510b5d7494b89a6",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/account-tools.mjs:7:11",
-      "file": "app/account-tools.mjs",
-      "line": 7,
-      "column": 11,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "エクスポート",
-      "sha256": "a66fb7a848ae2e24c218bdfa8580e4e5519e51a6032109d5416013011e0670ae",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/account-tools.mjs:7:29",
-      "file": "app/account-tools.mjs",
-      "line": 7,
-      "column": 29,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "このアカウントの本、メモ、翻訳、会話と読書記録を保存します。このブラウザに保存した下書きも含みます。他の端末では個別に保存してください。",
-      "sha256": "57375c4216d53b2286c6dc9fabbccae4c06f0dae70e2691baf6a7ce76c5f80ff",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/account-tools.mjs:7:109",
-      "file": "app/account-tools.mjs",
-      "line": 7,
-      "column": 109,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "設定を保存",
-      "sha256": "b4fd2d361a819697ba05890051408c28baffe859dcaecc6286fd5e16d1656038",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/account-tools.mjs:7:121",
-      "file": "app/account-tools.mjs",
-      "line": 7,
-      "column": 121,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "自分のデータを保存",
-      "sha256": "60ebe2c5314f8e93d47400391c7e46acf46dc03e8a4763b4d766ca73851919b5",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/account-tools.mjs:7:143",
-      "file": "app/account-tools.mjs",
-      "line": 7,
-      "column": 143,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "原本ファイルを含める",
-      "sha256": "b0bdb91252b7ee7da7ff8228834d659e0454c8866d2b434132a645c3151c7934",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/account-tools.mjs:7:162",
-      "file": "app/account-tools.mjs",
-      "line": 7,
-      "column": 162,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "音声を含める",
-      "sha256": "b45835ea3778d44e44ae80c40e0669bea5242fd036fda3dae180fa2e26ccd9da",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/account-tools.mjs:7:180",
-      "file": "app/account-tools.mjs",
-      "line": 7,
-      "column": 180,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "外部 MCP サーバー",
-      "sha256": "4461db8f92a8a2d3d939769ef965c1dd1ec0899896d7dd6bba80b88b261c5fdf",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/account-tools.mjs:7:207",
-      "file": "app/account-tools.mjs",
-      "line": 7,
-      "column": 207,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "外部ツールを Leafhour に接続します。書斎の内容は自動送信されません。",
-      "sha256": "3b91e88792fe66c38fc487b5eca98972df01b2c819a413fe6d0ac7530abc1c34",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/account-tools.mjs:7:256",
-      "file": "app/account-tools.mjs",
-      "line": 7,
-      "column": 256,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "Leafhour MCP サーバー",
-      "sha256": "e25db92cff5908c75d7a0d3e499367618a996bd14210f3b512f4d363eb5eb70b",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/account-tools.mjs:7:287",
-      "file": "app/account-tools.mjs",
-      "line": 7,
-      "column": 287,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "他のアプリから OAuth ログインを開始し、許可する本と権限を選びます。",
-      "sha256": "4856259d4b44afe16baa9ebff1591f9864fae08248c6ed828bd12127aee83a71",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/account-tools.mjs:7:332",
-      "file": "app/account-tools.mjs",
-      "line": 7,
-      "column": 332,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "名前",
-      "sha256": "7ec26292414bccefa35290004928d8cf8f5e19d2bfb8b0c0322ee9e8b2854349",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/account-tools.mjs:7:341",
-      "file": "app/account-tools.mjs",
-      "line": 7,
-      "column": 341,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "MCP サーバー URL",
-      "sha256": "a3fe03228debc152439e12763cc91aab754ee11a6400a4d2bc158136d1316525",
       "protected": false,
       "protectionReason": null,
       "hints": [],
@@ -144448,6 +143828,626 @@
       "column": 362,
       "kind": "js-cjk-literal",
       "property": null,
+      "value": "重新整理",
+      "sha256": "5f451c71b46a9bb090667dd45a26aae6f5649014fcd0cb2ea65e902a8d88d5b7",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/account-tools.mjs:7:376",
+      "file": "app/account-tools.mjs",
+      "line": 7,
+      "column": 376,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "中斷連接",
+      "sha256": "eab41ae66f1b36b84c20a52bbb59f09d5b918a86f57a02b68f1f79b38b716f34",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/account-tools.mjs:7:389",
+      "file": "app/account-tools.mjs",
+      "line": 7,
+      "column": 389,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "查看工具",
+      "sha256": "fe0f69316e1237bc46a193796b293d2d92fc536b1075aa92df6376c3b73a6c54",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/account-tools.mjs:7:401",
+      "file": "app/account-tools.mjs",
+      "line": 7,
+      "column": 401,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "呼叫工具",
+      "sha256": "62d996f32648d1b52b7f53ff4111ddf2998461f8fbfb02d8578cdcfb7a7dd2d3",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/account-tools.mjs:7:413",
+      "file": "app/account-tools.mjs",
+      "line": 7,
+      "column": 413,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "參數（JSON）",
+      "sha256": "983e0b4235c06ecb55a09cebcaf1503a4d739499e8b615d36055b2a7e62a4936",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/account-tools.mjs:7:432",
+      "file": "app/account-tools.mjs",
+      "line": 7,
+      "column": 432,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "將向此伺服器傳送以上參數。工具可能修改對方服務中的資料。",
+      "sha256": "66c5aa7d2018c4ee3f7896ae790c1f9a88e7c7869ec08f20726f69cab1777876",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/account-tools.mjs:7:470",
+      "file": "app/account-tools.mjs",
+      "line": 7,
+      "column": 470,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "撤回授權",
+      "sha256": "896e09d31800bc0b1a6742c0236c523f5d96d9018d4f6acecb872bb0e5d5d343",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/account-tools.mjs:7:485",
+      "file": "app/account-tools.mjs",
+      "line": 7,
+      "column": 485,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "正在處理…",
+      "sha256": "ba237a0090f6e0d60735621fb5cec8f0a6008f4b70db7a094d4a75ae239fee67",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/account-tools.mjs:7:498",
+      "file": "app/account-tools.mjs",
+      "line": 7,
+      "column": 498,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "已完成",
+      "sha256": "f28461bb49c8564716309d575f90f72cf15b5c4667e40c2d037434bedb54a01a",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/account-tools.mjs:7:510",
+      "file": "app/account-tools.mjs",
+      "line": 7,
+      "column": 510,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "未能完成，請檢查連接後重試。",
+      "sha256": "3015aadd83c7b05b141cb97b62b53979d97cfda5beaf9abe02ad96ac531955c4",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/account-tools.mjs:7:533",
+      "file": "app/account-tools.mjs",
+      "line": 7,
+      "column": 533,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "登入後管理自己的資料與連接。",
+      "sha256": "07823ea6351d6b62f5f95b8f73b56ff28314dabe8a1d53ff6d7579f55c5c3c74",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/account-tools.mjs:7:555",
+      "file": "app/account-tools.mjs",
+      "line": 7,
+      "column": 555,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "複製伺服器位址",
+      "sha256": "9303f04cad2d40527b449153e383940db7e8874f336c9751cbebc437b576dc71",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/account-tools.mjs:7:572",
+      "file": "app/account-tools.mjs",
+      "line": 7,
+      "column": 572,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "已複製",
+      "sha256": "fcce450c45f401a80a36c3b33bb86fc688a0be9dac6ba53f1655c0335c237498",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/account-tools.mjs:7:583",
+      "file": "app/account-tools.mjs",
+      "line": 7,
+      "column": 583,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "暫無有效授權",
+      "sha256": "d39d9d20b400aba30a1893d530aa0d2bed1dc58288e90e6387dc84b6098ccc24",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/account-tools.mjs:7:604",
+      "file": "app/account-tools.mjs",
+      "line": 7,
+      "column": 604,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "遠端 MCP 需要部署在 HTTPS 執行個體。",
+      "sha256": "fdd9614e2b6e693623c998d8822ab70cb0893cc1d38581e3066ac5e9decc8757",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/account-tools.mjs:7:640",
+      "file": "app/account-tools.mjs",
+      "line": 7,
+      "column": 640,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "已中斷。已經開始的工具呼叫仍可能完成，請先核對結果再重試。",
+      "sha256": "032f11a1b645b370988b7995bc8407c0f8621142f4abae6b810f10723b1ee27d",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/account-tools.mjs:7:682",
+      "file": "app/account-tools.mjs",
+      "line": 7,
+      "column": 682,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "工具呼叫結果尚未確認，請先在對方服務核對，再決定是否重試。",
+      "sha256": "da078ab5d1a8c24fb662f6abf1adcdae95d7e43e73a238920ae211ba00f8da3c",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/account-tools.mjs:7:721",
+      "file": "app/account-tools.mjs",
+      "line": 7,
+      "column": 721,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "選擇工具",
+      "sha256": "37f1602c9c7a1597d7ec414db8bdc2e5fdcb8d8c3e21ec0111b35d3a6ef1ac8f",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/account-tools.mjs:7:735",
+      "file": "app/account-tools.mjs",
+      "line": 7,
+      "column": 735,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "參數格式",
+      "sha256": "4817c560b33b29c10c9f632d51e5c6b8a9679466fb505a3db510b5d7494b89a6",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/account-tools.mjs:8:11",
+      "file": "app/account-tools.mjs",
+      "line": 8,
+      "column": 11,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "エクスポート",
+      "sha256": "a66fb7a848ae2e24c218bdfa8580e4e5519e51a6032109d5416013011e0670ae",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/account-tools.mjs:8:29",
+      "file": "app/account-tools.mjs",
+      "line": 8,
+      "column": 29,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "このアカウントの本、メモ、翻訳、会話と読書記録を保存します。このブラウザに保存した下書きも含みます。他の端末では個別に保存してください。",
+      "sha256": "57375c4216d53b2286c6dc9fabbccae4c06f0dae70e2691baf6a7ce76c5f80ff",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/account-tools.mjs:8:109",
+      "file": "app/account-tools.mjs",
+      "line": 8,
+      "column": 109,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "設定を保存",
+      "sha256": "b4fd2d361a819697ba05890051408c28baffe859dcaecc6286fd5e16d1656038",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/account-tools.mjs:8:121",
+      "file": "app/account-tools.mjs",
+      "line": 8,
+      "column": 121,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "自分のデータを保存",
+      "sha256": "60ebe2c5314f8e93d47400391c7e46acf46dc03e8a4763b4d766ca73851919b5",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/account-tools.mjs:8:143",
+      "file": "app/account-tools.mjs",
+      "line": 8,
+      "column": 143,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "原本ファイルを含める",
+      "sha256": "b0bdb91252b7ee7da7ff8228834d659e0454c8866d2b434132a645c3151c7934",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/account-tools.mjs:8:162",
+      "file": "app/account-tools.mjs",
+      "line": 8,
+      "column": 162,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "音声を含める",
+      "sha256": "b45835ea3778d44e44ae80c40e0669bea5242fd036fda3dae180fa2e26ccd9da",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/account-tools.mjs:8:180",
+      "file": "app/account-tools.mjs",
+      "line": 8,
+      "column": 180,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "外部 MCP サーバー",
+      "sha256": "4461db8f92a8a2d3d939769ef965c1dd1ec0899896d7dd6bba80b88b261c5fdf",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/account-tools.mjs:8:207",
+      "file": "app/account-tools.mjs",
+      "line": 8,
+      "column": 207,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "外部ツールを Leafhour に接続します。書斎の内容は自動送信されません。",
+      "sha256": "3b91e88792fe66c38fc487b5eca98972df01b2c819a413fe6d0ac7530abc1c34",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/account-tools.mjs:8:256",
+      "file": "app/account-tools.mjs",
+      "line": 8,
+      "column": 256,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "Leafhour MCP サーバー",
+      "sha256": "e25db92cff5908c75d7a0d3e499367618a996bd14210f3b512f4d363eb5eb70b",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/account-tools.mjs:8:287",
+      "file": "app/account-tools.mjs",
+      "line": 8,
+      "column": 287,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "他のアプリから OAuth ログインを開始し、許可する本と権限を選びます。",
+      "sha256": "4856259d4b44afe16baa9ebff1591f9864fae08248c6ed828bd12127aee83a71",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/account-tools.mjs:8:332",
+      "file": "app/account-tools.mjs",
+      "line": 8,
+      "column": 332,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "名前",
+      "sha256": "7ec26292414bccefa35290004928d8cf8f5e19d2bfb8b0c0322ee9e8b2854349",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/account-tools.mjs:8:341",
+      "file": "app/account-tools.mjs",
+      "line": 8,
+      "column": 341,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "MCP サーバー URL",
+      "sha256": "a3fe03228debc152439e12763cc91aab754ee11a6400a4d2bc158136d1316525",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/account-tools.mjs:8:362",
+      "file": "app/account-tools.mjs",
+      "line": 8,
+      "column": 362,
+      "kind": "js-cjk-literal",
+      "property": null,
       "value": "アクセストークン（任意）",
       "sha256": "1b9e779fcd388baeea9e4b35e8ad58b1e026916f4ccf2f635d0d0fbb0dcc560f",
       "protected": false,
@@ -144462,9 +144462,9 @@
       }
     },
     {
-      "id": "candidate:app/account-tools.mjs:7:381",
+      "id": "candidate:app/account-tools.mjs:8:381",
       "file": "app/account-tools.mjs",
-      "line": 7,
+      "line": 8,
       "column": 381,
       "kind": "js-cjk-literal",
       "property": null,
@@ -144482,9 +144482,9 @@
       }
     },
     {
-      "id": "candidate:app/account-tools.mjs:7:394",
+      "id": "candidate:app/account-tools.mjs:8:394",
       "file": "app/account-tools.mjs",
-      "line": 7,
+      "line": 8,
       "column": 394,
       "kind": "js-cjk-literal",
       "property": null,
@@ -144502,9 +144502,9 @@
       }
     },
     {
-      "id": "candidate:app/account-tools.mjs:7:406",
+      "id": "candidate:app/account-tools.mjs:8:406",
       "file": "app/account-tools.mjs",
-      "line": 7,
+      "line": 8,
       "column": 406,
       "kind": "js-cjk-literal",
       "property": null,
@@ -144522,9 +144522,9 @@
       }
     },
     {
-      "id": "candidate:app/account-tools.mjs:7:419",
+      "id": "candidate:app/account-tools.mjs:8:419",
       "file": "app/account-tools.mjs",
-      "line": 7,
+      "line": 8,
       "column": 419,
       "kind": "js-cjk-literal",
       "property": null,
@@ -144542,9 +144542,9 @@
       }
     },
     {
-      "id": "candidate:app/account-tools.mjs:7:430",
+      "id": "candidate:app/account-tools.mjs:8:430",
       "file": "app/account-tools.mjs",
-      "line": 7,
+      "line": 8,
       "column": 430,
       "kind": "js-cjk-literal",
       "property": null,
@@ -144562,9 +144562,9 @@
       }
     },
     {
-      "id": "candidate:app/account-tools.mjs:7:440",
+      "id": "candidate:app/account-tools.mjs:8:440",
       "file": "app/account-tools.mjs",
-      "line": 7,
+      "line": 8,
       "column": 440,
       "kind": "js-cjk-literal",
       "property": null,
@@ -144582,9 +144582,9 @@
       }
     },
     {
-      "id": "candidate:app/account-tools.mjs:7:459",
+      "id": "candidate:app/account-tools.mjs:8:459",
       "file": "app/account-tools.mjs",
-      "line": 7,
+      "line": 8,
       "column": 459,
       "kind": "js-cjk-literal",
       "property": null,
@@ -144602,9 +144602,9 @@
       }
     },
     {
-      "id": "candidate:app/account-tools.mjs:7:509",
+      "id": "candidate:app/account-tools.mjs:8:509",
       "file": "app/account-tools.mjs",
-      "line": 7,
+      "line": 8,
       "column": 509,
       "kind": "js-cjk-literal",
       "property": null,
@@ -144622,9 +144622,9 @@
       }
     },
     {
-      "id": "candidate:app/account-tools.mjs:7:527",
+      "id": "candidate:app/account-tools.mjs:8:527",
       "file": "app/account-tools.mjs",
-      "line": 7,
+      "line": 8,
       "column": 527,
       "kind": "js-cjk-literal",
       "property": null,
@@ -144642,9 +144642,9 @@
       }
     },
     {
-      "id": "candidate:app/account-tools.mjs:7:539",
+      "id": "candidate:app/account-tools.mjs:8:539",
       "file": "app/account-tools.mjs",
-      "line": 7,
+      "line": 8,
       "column": 539,
       "kind": "js-cjk-literal",
       "property": null,
@@ -144662,9 +144662,9 @@
       }
     },
     {
-      "id": "candidate:app/account-tools.mjs:7:550",
+      "id": "candidate:app/account-tools.mjs:8:550",
       "file": "app/account-tools.mjs",
-      "line": 7,
+      "line": 8,
       "column": 550,
       "kind": "js-cjk-literal",
       "property": null,
@@ -144682,9 +144682,9 @@
       }
     },
     {
-      "id": "candidate:app/account-tools.mjs:7:582",
+      "id": "candidate:app/account-tools.mjs:8:582",
       "file": "app/account-tools.mjs",
-      "line": 7,
+      "line": 8,
       "column": 582,
       "kind": "js-cjk-literal",
       "property": null,
@@ -144702,9 +144702,9 @@
       }
     },
     {
-      "id": "candidate:app/account-tools.mjs:7:612",
+      "id": "candidate:app/account-tools.mjs:8:612",
       "file": "app/account-tools.mjs",
-      "line": 7,
+      "line": 8,
       "column": 612,
       "kind": "js-cjk-literal",
       "property": null,
@@ -144722,9 +144722,9 @@
       }
     },
     {
-      "id": "candidate:app/account-tools.mjs:7:635",
+      "id": "candidate:app/account-tools.mjs:8:635",
       "file": "app/account-tools.mjs",
-      "line": 7,
+      "line": 8,
       "column": 635,
       "kind": "js-cjk-literal",
       "property": null,
@@ -144742,9 +144742,9 @@
       }
     },
     {
-      "id": "candidate:app/account-tools.mjs:7:650",
+      "id": "candidate:app/account-tools.mjs:8:650",
       "file": "app/account-tools.mjs",
-      "line": 7,
+      "line": 8,
       "column": 650,
       "kind": "js-cjk-literal",
       "property": null,
@@ -144762,9 +144762,9 @@
       }
     },
     {
-      "id": "candidate:app/account-tools.mjs:7:676",
+      "id": "candidate:app/account-tools.mjs:8:676",
       "file": "app/account-tools.mjs",
-      "line": 7,
+      "line": 8,
       "column": 676,
       "kind": "js-cjk-literal",
       "property": null,
@@ -144782,9 +144782,9 @@
       }
     },
     {
-      "id": "candidate:app/account-tools.mjs:7:712",
+      "id": "candidate:app/account-tools.mjs:8:712",
       "file": "app/account-tools.mjs",
-      "line": 7,
+      "line": 8,
       "column": 712,
       "kind": "js-cjk-literal",
       "property": null,
@@ -144802,9 +144802,9 @@
       }
     },
     {
-      "id": "candidate:app/account-tools.mjs:7:774",
+      "id": "candidate:app/account-tools.mjs:8:774",
       "file": "app/account-tools.mjs",
-      "line": 7,
+      "line": 8,
       "column": 774,
       "kind": "js-cjk-literal",
       "property": null,
@@ -144822,9 +144822,9 @@
       }
     },
     {
-      "id": "candidate:app/account-tools.mjs:7:811",
+      "id": "candidate:app/account-tools.mjs:8:811",
       "file": "app/account-tools.mjs",
-      "line": 7,
+      "line": 8,
       "column": 811,
       "kind": "js-cjk-literal",
       "property": null,
@@ -144842,9 +144842,9 @@
       }
     },
     {
-      "id": "candidate:app/account-tools.mjs:7:827",
+      "id": "candidate:app/account-tools.mjs:8:827",
       "file": "app/account-tools.mjs",
-      "line": 7,
+      "line": 8,
       "column": 827,
       "kind": "js-cjk-literal",
       "property": null,
@@ -144862,9 +144862,9 @@
       }
     },
     {
-      "id": "candidate:app/account-tools.mjs:13:50",
+      "id": "candidate:app/account-tools.mjs:14:50",
       "file": "app/account-tools.mjs",
-      "line": 13,
+      "line": 14,
       "column": 50,
       "kind": "js-attribute",
       "property": "role",
@@ -144882,9 +144882,9 @@
       }
     },
     {
-      "id": "candidate:app/account-tools.mjs:13:92",
+      "id": "candidate:app/account-tools.mjs:14:92",
       "file": "app/account-tools.mjs",
-      "line": 13,
+      "line": 14,
       "column": 92,
       "kind": "js-attribute",
       "property": "aria-live",
@@ -144902,9 +144902,9 @@
       }
     },
     {
-      "id": "candidate:app/account-tools.mjs:21:226",
+      "id": "candidate:app/account-tools.mjs:22:226",
       "file": "app/account-tools.mjs",
-      "line": 21,
+      "line": 22,
       "column": 226,
       "kind": "js-dom-literal",
       "property": "placeholder",
@@ -229355,9 +229355,9 @@
       }
     },
     {
-      "id": "candidate:app/library-shell.mjs:61:238",
+      "id": "candidate:app/library-shell.mjs:63:238",
       "file": "app/library-shell.mjs",
-      "line": 61,
+      "line": 63,
       "column": 238,
       "kind": "js-attribute",
       "property": "role",
@@ -229375,9 +229375,9 @@
       }
     },
     {
-      "id": "candidate:app/library-shell.mjs:61:470",
+      "id": "candidate:app/library-shell.mjs:63:470",
       "file": "app/library-shell.mjs",
-      "line": 61,
+      "line": 63,
       "column": 470,
       "kind": "js-attribute",
       "property": "role",
@@ -229395,9 +229395,9 @@
       }
     },
     {
-      "id": "candidate:app/library-shell.mjs:63:270",
+      "id": "candidate:app/library-shell.mjs:65:270",
       "file": "app/library-shell.mjs",
-      "line": 63,
+      "line": 65,
       "column": 270,
       "kind": "js-attribute",
       "property": "role",
@@ -229415,9 +229415,9 @@
       }
     },
     {
-      "id": "candidate:app/library-shell.mjs:88:101",
+      "id": "candidate:app/library-shell.mjs:90:101",
       "file": "app/library-shell.mjs",
-      "line": 88,
+      "line": 90,
       "column": 101,
       "kind": "js-cjk-literal",
       "property": null,
@@ -229435,9 +229435,9 @@
       }
     },
     {
-      "id": "candidate:app/library-shell.mjs:88:119",
+      "id": "candidate:app/library-shell.mjs:90:119",
       "file": "app/library-shell.mjs",
-      "line": 88,
+      "line": 90,
       "column": 119,
       "kind": "js-cjk-literal",
       "property": null,
@@ -229455,9 +229455,9 @@
       }
     },
     {
-      "id": "candidate:app/library-shell.mjs:88:132",
+      "id": "candidate:app/library-shell.mjs:90:132",
       "file": "app/library-shell.mjs",
-      "line": 88,
+      "line": 90,
       "column": 132,
       "kind": "js-cjk-literal",
       "property": null,
@@ -229475,9 +229475,9 @@
       }
     },
     {
-      "id": "candidate:app/library-shell.mjs:98:93",
+      "id": "candidate:app/library-shell.mjs:100:93",
       "file": "app/library-shell.mjs",
-      "line": 98,
+      "line": 100,
       "column": 93,
       "kind": "js-cjk-literal",
       "property": null,
@@ -229495,9 +229495,9 @@
       }
     },
     {
-      "id": "candidate:app/library-shell.mjs:98:116",
+      "id": "candidate:app/library-shell.mjs:100:116",
       "file": "app/library-shell.mjs",
-      "line": 98,
+      "line": 100,
       "column": 116,
       "kind": "js-cjk-literal",
       "property": null,
@@ -229515,9 +229515,9 @@
       }
     },
     {
-      "id": "candidate:app/library-shell.mjs:98:134",
+      "id": "candidate:app/library-shell.mjs:100:134",
       "file": "app/library-shell.mjs",
-      "line": 98,
+      "line": 100,
       "column": 134,
       "kind": "js-cjk-literal",
       "property": null,
@@ -229535,9 +229535,9 @@
       }
     },
     {
-      "id": "candidate:app/library-shell.mjs:111:609",
+      "id": "candidate:app/library-shell.mjs:113:609",
       "file": "app/library-shell.mjs",
-      "line": 111,
+      "line": 113,
       "column": 609,
       "kind": "js-attribute",
       "property": "aria-hidden",
@@ -288890,7 +288890,7 @@
     {
       "kind": "computed-member",
       "file": "app/account-tools.mjs",
-      "line": 10,
+      "line": 11,
       "expression": "id",
       "fragments": [],
       "unresolved": true
@@ -288898,15 +288898,23 @@
     {
       "kind": "computed-member",
       "file": "app/account-tools.mjs",
-      "line": 10,
+      "line": 11,
       "expression": "getUiLocale()",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "app/account-tools.mjs",
+      "line": 15,
+      "expression": "key",
       "fragments": [],
       "unresolved": true
     },
     {
       "kind": "concatenation",
       "file": "app/account-tools.mjs",
-      "line": 27,
+      "line": 28,
       "expression": "'/api/account/mcp-connectors/'+selectedID+'/call'",
       "fragments": [
         "/api/account/mcp-connectors/",
@@ -288917,7 +288925,7 @@
     {
       "kind": "concatenation",
       "file": "app/account-tools.mjs",
-      "line": 27,
+      "line": 28,
       "expression": "'/api/account/mcp-connectors/'+selectedID",
       "fragments": [
         "/api/account/mcp-connectors/"
@@ -288927,7 +288935,7 @@
     {
       "kind": "computed-member",
       "file": "app/account-tools.mjs",
-      "line": 30,
+      "line": 31,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -288935,7 +288943,7 @@
     {
       "kind": "concatenation",
       "file": "app/account-tools.mjs",
-      "line": 34,
+      "line": 35,
       "expression": "'/api/account/mcp-connectors/'+connection.id+'/tools'",
       "fragments": [
         "/api/account/mcp-connectors/",
@@ -288946,7 +288954,7 @@
     {
       "kind": "concatenation",
       "file": "app/account-tools.mjs",
-      "line": 34,
+      "line": 35,
       "expression": "'/api/account/mcp-connectors/'+connection.id",
       "fragments": [
         "/api/account/mcp-connectors/"
@@ -288956,7 +288964,7 @@
     {
       "kind": "concatenation",
       "file": "app/account-tools.mjs",
-      "line": 34,
+      "line": 35,
       "expression": "'/api/account/mcp-connectors/'+connection.id+'/remove'",
       "fragments": [
         "/api/account/mcp-connectors/",
@@ -288967,7 +288975,7 @@
     {
       "kind": "concatenation",
       "file": "app/account-tools.mjs",
-      "line": 34,
+      "line": 35,
       "expression": "'/api/account/mcp-connectors/'+connection.id",
       "fragments": [
         "/api/account/mcp-connectors/"
@@ -288977,7 +288985,7 @@
     {
       "kind": "concatenation",
       "file": "app/account-tools.mjs",
-      "line": 37,
+      "line": 38,
       "expression": "grant.bookId+' · '",
       "fragments": [
         " · "
@@ -288987,7 +288995,7 @@
     {
       "kind": "concatenation",
       "file": "app/account-tools.mjs",
-      "line": 37,
+      "line": 38,
       "expression": "'/api/library/grants/'+grant.id+'/revoke'",
       "fragments": [
         "/api/library/grants/",
@@ -288998,7 +289006,7 @@
     {
       "kind": "concatenation",
       "file": "app/account-tools.mjs",
-      "line": 37,
+      "line": 38,
       "expression": "'/api/library/grants/'+grant.id",
       "fragments": [
         "/api/library/grants/"
@@ -289008,7 +289016,7 @@
     {
       "kind": "computed-member",
       "file": "app/account-tools.mjs",
-      "line": 41,
+      "line": 42,
       "expression": "key",
       "fragments": [],
       "unresolved": true
@@ -289016,7 +289024,7 @@
     {
       "kind": "computed-member",
       "file": "app/account-tools.mjs",
-      "line": 41,
+      "line": 42,
       "expression": "key",
       "fragments": [],
       "unresolved": true
@@ -299008,7 +299016,7 @@
     {
       "kind": "computed-member",
       "file": "app/library-shell.mjs",
-      "line": 57,
+      "line": 58,
       "expression": "b.dataset.setting",
       "fragments": [],
       "unresolved": true
@@ -299016,7 +299024,7 @@
     {
       "kind": "concatenation",
       "file": "app/library-shell.mjs",
-      "line": 58,
+      "line": 59,
       "expression": "'shell.settings.tabDescription.'+name",
       "fragments": [
         "shell.settings.tabDescription."
@@ -299026,7 +299034,7 @@
     {
       "kind": "concatenation",
       "file": "app/library-shell.mjs",
-      "line": 61,
+      "line": 63,
       "expression": "'shell.settings.tab.'+name",
       "fragments": [
         "shell.settings.tab."
@@ -299036,7 +299044,7 @@
     {
       "kind": "concatenation",
       "file": "app/library-shell.mjs",
-      "line": 61,
+      "line": 63,
       "expression": "'settings-tab-'+name",
       "fragments": [
         "settings-tab-"
@@ -299046,7 +299054,7 @@
     {
       "kind": "concatenation",
       "file": "app/library-shell.mjs",
-      "line": 61,
+      "line": 63,
       "expression": "'settings-panel-'+name",
       "fragments": [
         "settings-panel-"
@@ -299056,7 +299064,7 @@
     {
       "kind": "concatenation",
       "file": "app/library-shell.mjs",
-      "line": 61,
+      "line": 63,
       "expression": "'settings-panel-'+name",
       "fragments": [
         "settings-panel-"
@@ -299066,7 +299074,7 @@
     {
       "kind": "computed-member",
       "file": "app/library-shell.mjs",
-      "line": 61,
+      "line": 63,
       "expression": "name",
       "fragments": [],
       "unresolved": true
@@ -299074,7 +299082,7 @@
     {
       "kind": "computed-member",
       "file": "app/library-shell.mjs",
-      "line": 62,
+      "line": 64,
       "expression": "index",
       "fragments": [],
       "unresolved": true
@@ -299082,7 +299090,7 @@
     {
       "kind": "computed-member",
       "file": "app/library-shell.mjs",
-      "line": 88,
+      "line": 90,
       "expression": "getUiLocale()",
       "fragments": [],
       "unresolved": true
@@ -299090,7 +299098,7 @@
     {
       "kind": "computed-member",
       "file": "app/library-shell.mjs",
-      "line": 98,
+      "line": 100,
       "expression": "getUiLocale()",
       "fragments": [],
       "unresolved": true
@@ -299098,7 +299106,7 @@
     {
       "kind": "computed-member",
       "file": "app/library-shell.mjs",
-      "line": 118,
+      "line": 120,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -299106,7 +299114,7 @@
     {
       "kind": "computed-member",
       "file": "app/library-shell.mjs",
-      "line": 132,
+      "line": 134,
       "expression": "name",
       "fragments": [],
       "unresolved": true
@@ -299114,7 +299122,7 @@
     {
       "kind": "computed-member",
       "file": "app/library-shell.mjs",
-      "line": 132,
+      "line": 134,
       "expression": "name",
       "fragments": [],
       "unresolved": true
@@ -299122,7 +299130,7 @@
     {
       "kind": "concatenation",
       "file": "app/library-shell.mjs",
-      "line": 141,
+      "line": 143,
       "expression": "'shell.settings.tab.'+b.dataset.setting",
       "fragments": [
         "shell.settings.tab."
@@ -299132,7 +299140,7 @@
     {
       "kind": "concatenation",
       "file": "app/library-shell.mjs",
-      "line": 142,
+      "line": 144,
       "expression": "'shell.settings.tabDescription.'+(tabButtons.find(b=>b.getAttribute('aria-selected')==='true')?.dataset.setting||'account')",
       "fragments": [
         "shell.settings.tabDescription."
@@ -327162,7 +327170,7 @@
     "candidatesUnreviewed": 6845,
     "candidatesProtected": 146,
     "itemsProtected": 9,
-    "dynamicConsumers": 4235,
+    "dynamicConsumers": 4236,
     "consumerReferences": 2160,
     "keysWithoutStaticConsumers": 1348,
     "reviewedLocaleValues": 32,
