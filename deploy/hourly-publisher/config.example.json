@@ -1,0 +1,15 @@
+{
+  "binding": {
+    "repository": "getyak/leafhour",
+    "team": "team_nMU4o8gjejVzBhcnMfqgUQbJ",
+    "teamSlug": "3293172751nss-1526s-projects",
+    "project": "REPLACE_WITH_VERIFIED_PROJECT_ID",
+    "projectName": "REPLACE_WITH_VERIFIED_PROJECT_NAME",
+    "publisherLogin": "REPLACE-WITH-EXISTING-LOGIN",
+    "branch": "production",
+    "url": "https://leafhour.com"
+  },
+  "mirror": "/absolute/path/to/publisher-owned/mirror.git",
+  "gh": "/absolute/path/to/existing/gh",
+  "vercel": "/absolute/path/to/existing/vercel"
+}

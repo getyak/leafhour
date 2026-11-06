@@ -1,6 +1,8 @@
 name: Production
 
 on:
+  push:
+    branches: [production]
   workflow_run:
     workflows: [CI]
     branches: [main]
@@ -11,24 +13,29 @@ permissions:
   statuses: read
 
 concurrency:
-  group: production-verification
+  group: ${{ github.event_name == 'push' && 'production-verification-publisher' || 'production-verification' }}
   cancel-in-progress: true
 
 jobs:
   verify:
-    if: github.repository == 'getyak/leafhour' && github.event.workflow_run.event == 'push' && github.event.workflow_run.conclusion == 'success'
+    if: github.repository == 'getyak/leafhour' && (github.event_name == 'push' || (github.event.workflow_run.event == 'push' && github.event.workflow_run.conclusion == 'success'))
     runs-on: ubuntu-latest
     timeout-minutes: 35
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.workflow_run.head_sha }}
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+          persist-credentials: false
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+      - name: Select the only active publication chain
+        id: trigger
+        run: node tools/production-trigger.mjs
       - name: Verify the source deployed directly from the public repository
+        if: steps.trigger.outputs.verify == 'true'
         env:
-          EXPECTED_SOURCE_COMMIT: ${{ github.event.workflow_run.head_sha }}
+          EXPECTED_SOURCE_COMMIT: ${{ github.event.workflow_run.head_sha || github.sha }}
           GH_STATUS_TOKEN: ${{ github.token }}
           # Pending builds may queue; an explicit provider rejection stops
           # the wait immediately through the exact source's commit status.

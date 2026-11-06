@@ -30,7 +30,9 @@ jobs:
         with:
           node-version: 22
       - name: Check impact selection and failure handling without installing dependencies
-        run: node --test tests/ci-resource-plan.test.mjs tests/production-status.test.mjs tests/readme-languages.test.mjs
+        run: |
+          node --test tests/ci-resource-plan.test.mjs tests/production-status.test.mjs tests/production-trigger.test.mjs tests/readme-languages.test.mjs
+          python3 -m unittest discover -s tests -p 'test_hourly_publisher*.py'
       - name: Select required areas from this event's exact commit range
         id: plan
         run: node tools/ci-resource-plan.mjs
