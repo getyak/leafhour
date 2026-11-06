@@ -2,6 +2,29 @@ import XCTest
 @testable import LeafhourCore
 
 final class CloudCoverTests: XCTestCase {
+    func testGeneratedCoverSurvivesCacheRestartAndOfflineTransport() async throws {
+        let owner = "isolated-offline-cover", config = URLSessionConfiguration.ephemeral
+        config.protocolClasses = [CoverProtocol.self]
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: root); CoverProtocol.handler = nil }
+        let client = CloudLibraryClient(baseURL: URL(string: "https://fixture.invalid")!, credential: CloudCredential(account: CloudAccount(id: owner, email: nil), token: "isolated-test"), configuration: config)
+        let path = "/api/library/books/private-txt/cover?v=source-hash", bytes = Data([1, 2, 3])
+        CoverProtocol.handler = { _ in (200, bytes) }
+        let first = try await CloudCoverCache(directory: root).data(path: path, ownerID: owner, client: client)
+        XCTAssertEqual(first, bytes)
+        CoverProtocol.handler = { _ in throw URLError(.notConnectedToInternet) }
+        let reopened = try await CloudCoverCache(directory: root).data(path: path, ownerID: owner, client: client)
+        XCTAssertEqual(reopened, bytes)
+        do { _ = try await CloudCoverCache(directory: root).data(path: path, ownerID: "another-owner", client: client); XCTFail("Another owner must not read this cover") } catch { }
+    }
+    func testLegacyTXTMetadataFindsItsGeneratedCoverWithoutChangingTheSourceVersion() throws {
+        for format in ["txt", "md", "markdown"] {
+            let metadata = try CloudJSON.decode(Data("{\"bookId\":\"private-old\",\"contentVersion\":\"original-version\",\"visibility\":\"private\",\"source\":{\"format\":\"\(format)\",\"sha256\":\"source-hash\"},\"title\":\"Old text\"}".utf8))
+            let book = try XCTUnwrap(CloudShelfBook(json: metadata))
+            XCTAssertEqual(book.coverPath, "/api/library/books/private-old/cover?v=source-hash")
+            XCTAssertEqual(book.contentVersion, "original-version")
+        }
+    }
     func testPrivateCoverAllowsTheImageProviderTimeToFinish() async throws {
         let owner = "isolated-cover-owner", config = URLSessionConfiguration.ephemeral
         config.protocolClasses = [CoverProtocol.self]

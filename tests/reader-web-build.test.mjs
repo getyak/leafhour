@@ -133,3 +133,9 @@ test('quiet chrome ships as an allowlisted render-blocking stylesheet within its
   assert.ok((await readFile(path.join(out,'reader-quiet.css'))).length<=4096);
  }finally{await rm(out,{recursive:true,force:true});}
 });
+
+test('reading guide preparation loads after the reader without expanding its fixed startup budget',async()=>{
+ const {buildReaderWeb}=await import('../tools/build-reader-web.mjs'),root=path.resolve(import.meta.dirname,'..'),out=await mkdtemp(path.join(tmpdir(),'get407-reader-budget-'));
+ try{const result=await buildReaderWeb({root,outputDir:out,html:await readFile(path.join(root,'app/index.html'),'utf8')});assert.ok(!result.inputs.includes('app/reader-reading-guide.mjs'));const script=await readFile(path.join(out,result.files.find(f=>f.endsWith('.js'))),'utf8');assert.match(script,/import\(["']\/reader-reading-guide\.mjs["']\)/);assert.ok(Buffer.byteLength(script)<=320*1024);}
+ finally{await rm(out,{recursive:true,force:true});}
+});

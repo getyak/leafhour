@@ -1,6 +1,16 @@
 // GET-192 immutable zh-Hans UI catalogue. Fixed public stateless ID→string
 // data with the same keys as app/ui-catalogs/en.mjs. No logic lives here.
 export default Object.freeze({
+"guide.title":"阅读前导",
+"guide.attribution":"AI · 开篇取样草稿",
+"guide.boundary":"依据书目信息与开篇取样；背景不足处保留未知。",
+"guide.preparing":"前导正在准备，你可以继续阅读。",
+"guide.failed":"前导暂未准备好，可以重试。",
+"guide.missing":"前导尚未准备好，原书仍可继续阅读。",
+"guide.unknown":"前导结果待确认，没有重新生成。可以稍后查看已有结果。",
+"guide.retry":"重试准备前导",
+"guide.check":"查看已有结果",
+
   "reader.settings.text": "文字",
   "reader.settings.details": "更多排版",
   "chat.back": "返回",
@@ -153,7 +163,7 @@ export default Object.freeze({
   "chat.quote.receiptMismatch": "回执与当前请求不一致，问题与引用均已保留。",
 
   "reader.dock.settings": "阅读设置",
-  "chat.entry": "阅读对话",
+  "chat.entry": "旁注",
   "chat.resize": "调整 AI 工作区宽度",
 
   "audio.voice.Sulafat.label": "温暖",
@@ -313,7 +323,7 @@ export default Object.freeze({
   "cs.interrupted": "连接中断，正在确认这次提问的进度。请先确认结果，避免重复提问。",
   "cs.noAnswer": "这次没有得到回答，问题已保留。",
   "cs.stopUncertain": "还不能确认是否已停止。请先查看进度，再决定是否重试。",
-  "open": "打开阅读对话",
+  "open": "打开页边旁注",
   "close": "收起阅读对话",
   "currentPosition": "当前阅读位置",
   "moreActions": "更多对话操作",
@@ -423,7 +433,7 @@ export default Object.freeze({
   "prefs.skipFailed": "暂不设置尚未记录。",
   "prefs.conflictReload": "阅读习惯已在另一处更新，请刷新后再试。",
   "bk": "这本书",
-  "dg": "阅读对话",
+  "dg": "旁注",
   "rd": "正在读",
   "rel": "重新载入",
   "scope.allowed": "允许查阅",
@@ -2499,5 +2509,6 @@ export default Object.freeze({
   "bookUpload.imports": "正在加入书房",
   "bookUpload.parsing": "正在整理章节 · {completed} / {total}",
   "bookUpload.tasks": "导入任务",
-  "bookUpload.saving": "正在保存章节…"
+  "bookUpload.saving": "正在保存章节…",
+  "chat.continue": "继续问…"
 });

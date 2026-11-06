@@ -82,7 +82,7 @@ import LeafhourCore
         var nativeState = "", linked = false
         NativeAppAuthProtocol.handler = { [self] request in
             switch request.url!.path {
-            case "/api/auth/session": return (200, ["user": ["id": owner, "email": "verified@example.invalid"], "nativeOAuth": ["version": 1], "providers": ["apple": true, "google": true]], [:])
+            case "/api/auth/session": return (200, ["user": ["id": owner, "email": "verified@example.invalid", "displayName": "Saved profile name"], "nativeOAuth": ["version": 1], "providers": ["apple": true, "google": true]], [:])
             case "/api/auth/identities": return (200, ["user": ["id": owner], "identities": linked ? [["provider": "email", "email": "verified@example.invalid", "emailVerified": true], ["provider": "apple", "email": "relay@example.invalid", "emailVerified": true]] : [["provider": "email", "email": "verified@example.invalid", "emailVerified": true]]], [:])
             case "/api/auth/native/start":
                 nativeState = try NativeAppAuthProtocol.body(request)["state"] as? String ?? ""
@@ -99,6 +99,7 @@ import LeafhourCore
         let window = UIWindow(); browser.setAnchor(window)
         try await model.authenticate(provider: .apple, browser: browser)
         XCTAssertEqual(model.account?.id, owner)
+        XCTAssertEqual(model.account?.displayName, "Saved profile name")
         XCTAssertTrue(model.library === library); XCTAssertTrue(model.reader === reader)
         XCTAssertEqual(model.books, [book]); XCTAssertEqual(model.notebookEntries, [.string("Existing records")])
         XCTAssertEqual(reader.state.drafts[anchor.key]?.body, "Keep this draft")

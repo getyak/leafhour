@@ -1,6 +1,16 @@
 // GET-192 immutable ja UI catalogue. Fixed public stateless ID→string
 // data with the same keys as app/ui-catalogs/en.mjs. No logic lives here.
 export default Object.freeze({
+"guide.title":"読書の手引き",
+"guide.attribution":"AI · 冒頭の抜粋に基づく下書き",
+"guide.boundary":"書誌情報と冒頭の抜粋に基づきます。不明な背景は補いません。",
+"guide.preparing":"手引きを準備中です。読書を続けられます。",
+"guide.failed":"まだ準備できていません。再試行できます。",
+"guide.missing":"手引きは未準備です。読書を続けられます。",
+"guide.unknown":"結果を確認できません。再生成せず、保存済みの結果を後で確認できます。",
+"guide.retry":"準備を再試行",
+"guide.check":"保存済みの結果を確認",
+
   "reader.settings.text": "文字",
   "reader.settings.details": "その他の文字設定",
   "chat.back": "戻る",
@@ -153,7 +163,7 @@ export default Object.freeze({
   "chat.quote.receiptMismatch": "応答がこのリクエストと一致しません。質問と引用は保持されています。",
 
   "reader.dock.settings": "読書設定",
-  "chat.entry": "読書チャット",
+  "chat.entry": "余白のメモ",
   "chat.resize": "AI ワークスペースの幅を調整",
 
   "audio.voice.Sulafat.label": "温かい声",
@@ -313,7 +323,7 @@ export default Object.freeze({
   "cs.interrupted": "接続が切れました。この質問の進捗を確認しています。二重送信を避けるため、先に結果をご確認ください。",
   "cs.noAnswer": "今回は回答を得られませんでした。質問は残っています。",
   "cs.stopUncertain": "停止したかまだ確認できません。進捗を見てから再試行を決めてください。",
-  "open": "読書の対話を開く",
+  "open": "余白のメモを開く",
   "close": "読書の対話を閉じる",
   "currentPosition": "現在の読書位置",
   "moreActions": "対話のその他の操作",
@@ -423,7 +433,7 @@ export default Object.freeze({
   "prefs.skipFailed": "「あとで設定」はまだ記録されていません。",
   "prefs.conflictReload": "読書の好みは別の場所で更新されました。再読み込みしてからお試しください。",
   "bk": "この本",
-  "dg": "読書の対話",
+  "dg": "余白のメモ",
   "rd": "読書中",
   "rel": "再読み込み",
   "scope.allowed": "閲覧範囲",
@@ -2499,5 +2509,6 @@ export default Object.freeze({
   "bookUpload.imports": "本棚に追加中",
   "bookUpload.parsing": "章を整理しています · {completed} / {total}",
   "bookUpload.tasks": "本の取り込み",
-  "bookUpload.saving": "章を保存しています…"
+  "bookUpload.saving": "章を保存しています…",
+  "chat.continue": "続きを聞く…"
 });

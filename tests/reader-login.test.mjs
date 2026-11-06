@@ -23,6 +23,27 @@ test('disposal while the shared login form is loading cannot later show a dialog
  const opening=controller.open();controller.dispose();complete(document.createElement('dialog'));await opening;assert.equal(opened,0);
 });
 
+test('a late close session response cannot leave a reopened password flow or a newer close',async()=>{
+ const {mountReaderLogin}=await import('../app/reader-login.mjs');
+ for(const closeAgain of [false,true]){
+  const {document}=fixture('<body></body>'),dialog=document.createElement('dialog'),pending=[],navigations=[];let settingPassword=false;
+  const controller=mountReaderLogin({document,session:{user:null},getReturnTo:()=>'/read?book=alice&passage=p1&action=chat',navigate:url=>navigations.push(url),request:()=>new Promise(resolve=>pending.push(resolve)),loadStyles:async()=>true,loadTemplate:async()=>dialog,mountAuth:()=>({open(){dialog.showModal();},dispose(){},isSettingPasswordFor:()=>settingPassword})});
+  await controller.open();dialog.close();await controller.open();settingPassword=!closeAgain;
+  if(closeAgain)dialog.close();
+  pending[0]({ok:true,json:async()=>({user:{id:'owner-a'}})});await new Promise(resolve=>setImmediate(resolve));
+  assert.deepEqual(navigations,[],'an older close cannot redirect a newer login round');
+  if(closeAgain){pending[1]({ok:true,json:async()=>({user:{id:'owner-a'}})});await new Promise(resolve=>setImmediate(resolve));assert.deepEqual(navigations,['/read?book=alice&passage=p1&action=chat']);}
+  controller.dispose();
+ }
+});
+
+test('closing provisional password setup does not navigate through its unresolved session',async()=>{
+ const {mountReaderLogin}=await import('../app/reader-login.mjs');
+ const {document}=fixture('<body></body>'),dialog=document.createElement('dialog'),navigations=[];
+ const controller=mountReaderLogin({document,session:{user:null},getReturnTo:()=>'/read?book=alice&passage=p1&action=chat',navigate:url=>navigations.push(url),request:async()=>({ok:true,json:async()=>({user:{id:'owner-a'}})}),loadStyles:async()=>true,loadTemplate:async()=>dialog,mountAuth:()=>({open(){dialog.showModal();},dispose(){},isSettingPasswordFor:()=>true})});
+ await controller.open();dialog.close();await new Promise(resolve=>setImmediate(resolve));assert.deepEqual(navigations,[]);controller.dispose();
+});
+
 test('validated login return retains only the current book, source paragraph and explicit chat action',async()=>{
  const {readerLoginUrl,safeReaderReturn}=await import('../app/reader-return.mjs');
  const login=new URL(readerLoginUrl({bookId:'alice',passageId:'p1',action:'chat',ui:'zh-Hans'}),'http://reader.test');

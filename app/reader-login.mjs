@@ -16,7 +16,7 @@ async function sharedForm(document,request){
 // The existing form/controller own credentials and auth flow. A fresh reader
 // document captures the new account instead of mutating the guest's identity.
 export function mountReaderLogin({document=globalThis.document,session,getReturnTo,request=globalThis.fetch,navigate=url=>document.defaultView.location.replace(url),loadStyles:styleLoader=loadStyles,loadTemplate=()=>sharedForm(document,request),mountAuth=mountAuthDialog}={}){
- let disposed=false,pending=null,dialog=null,auth=null,opener=null;const cleanup=[];
+ let disposed=false,pending=null,dialog=null,auth=null,opener=null,revision=0;const cleanup=[];
  const destination=()=>safeReaderReturn(getReturnTo());
  const resume=()=>{const target=destination();if(!disposed&&target)navigate(target);};
  const api=async(url,data)=>{
@@ -28,10 +28,10 @@ export function mountReaderLogin({document=globalThis.document,session,getReturn
   const [ready,form]=await Promise.all([styleLoader(document),loadTemplate()]);if(disposed)return;
   if(!ready)throw Error('Login styles unavailable');dialog=form;dialog.setAttribute('data-reader-login','');document.body.append(dialog);
   auth=mountAuth({dialog,api,getSession:()=>session,getReturnTo:destination,onAuthenticated:resume,onSessionSettled:async()=>{if(disposed)return;const current=await api('/api/auth/session');if(current.user?.id&&!auth.isSettingPasswordFor?.(current.user.id))resume();}});
-  const onClose=()=>{if(!disposed&&opener?.isConnected!==false)opener?.focus?.({preventScroll:true});if(!disposed)void api('/api/auth/session').then(current=>{if(current.user?.id)resume();}).catch(()=>{});};
+  const onClose=()=>{const closedAt=++revision;if(!disposed&&opener?.isConnected!==false)opener?.focus?.({preventScroll:true});if(!disposed)void api('/api/auth/session').then(current=>{if(closedAt===revision&&!dialog.open&&current.user?.id&&!auth.isSettingPasswordFor?.(current.user.id))resume();}).catch(()=>{});};
   const close=event=>{event.preventDefault();auth.close();};
   const button=dialog.querySelector('[data-close="auth-dialog"]'),sample=dialog.querySelector('.auth-skip');button?.addEventListener('click',close);sample?.addEventListener('click',close);dialog.addEventListener('close',onClose);
   cleanup.push(()=>button?.removeEventListener('click',close),()=>sample?.removeEventListener('click',close),()=>dialog.removeEventListener('close',onClose));
  })().catch(error=>{pending=null;throw error;});
- return {async open(){if(disposed)return;opener=document.activeElement;await ensure();if(!disposed)auth.open();},dispose(){if(disposed)return;disposed=true;for(const off of cleanup)off();auth?.dispose();dialog?.remove();}};
+ return {async open(){if(disposed)return;revision++;opener=document.activeElement;await ensure();if(!disposed)auth.open();},dispose(){if(disposed)return;disposed=true;revision++;for(const off of cleanup)off();auth?.dispose();dialog?.remove();}};
 }

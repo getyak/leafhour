@@ -16,13 +16,6 @@ body.has-reader-dock[data-paginated=true] #book-page{width:min(1200px,calc(100% 
 @media(max-width:600px){.reader-dock{right:max(12px,env(safe-area-inset-right));bottom:max(12px,env(safe-area-inset-bottom));width:76px}body.has-reader-dock #book-page,body.has-reader-dock[data-paginated=true] #book-page{width:calc(100% - 128px);margin-inline-start:18px;margin-inline-end:110px}}
 @media(prefers-reduced-motion:reduce){.reader-dock .library-chat-trigger::before{transition:none;transform:none!important}}
 
-/* Requested desktop popup; the source document remains available behind it. */
-dialog.reader-chat-workspace.is-reader-chat-popover{inset:auto max(18px,env(safe-area-inset-right)) max(104px,env(safe-area-inset-bottom)) auto;width:min(440px,calc(100vw - 36px));height:min(640px,calc(100dvh - 140px));max-height:calc(100dvh - 140px);border:1px solid var(--line-control);border-radius:18px;box-shadow:var(--shadow-modal)}
-.reader-chat-workspace.is-reader-chat-popover .library-chat-header{padding:12px 14px;gap:6px}
-.reader-chat-workspace.is-reader-chat-popover .library-chat-messages{padding:22px 20px}
-.reader-chat-workspace.is-reader-chat-popover .library-chat-empty{margin-block:22px}
-.reader-chat-workspace.is-reader-chat-popover .library-chat-empty h3{font-size:23px}
-.reader-chat-workspace.is-reader-chat-popover .library-chat-footer{height:12px}
 .auth-dialog .dialog-close{position:absolute}
 .auth-dialog .primary{background:var(--auth-green);color:var(--auth-paper);border-radius:var(--action-radius)}
 .auth-dialog .outline.full{width:100%;min-height:44px;border:1px solid var(--line-control);border-radius:var(--action-radius)}

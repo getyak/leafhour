@@ -38,20 +38,21 @@ struct ReaderBookmarkGestureCapture {
     private let context: () -> String?
     private let readingRect: () -> CGRect
     private let onBookmark: (ReadingAnchor) -> Void
-    private let onFeedback: (ReaderBookmarkPullFeedback) -> Void
+    private let onFeedback: (ReaderBookmarkPullVisual) -> Void
     private let onBookmarkCapture: ((ReaderBookmarkCapture) -> Void)?
     private let observer = ReaderBookmarkTouchObserver()
     private(set) var recognizer: UIPanGestureRecognizer!
     private var snapshot: ReaderBookmarkGestureCapture?
     private var pull = ReaderBookmarkPullState()
-    private var feedback = ReaderBookmarkPullFeedback.idle
+    private var feedback = ReaderBookmarkPullVisual.idle
+    private let thresholdHaptic = UISelectionFeedbackGenerator()
     private var hapticSent = false
     private var enabled = true
     private var resignObserver: NSObjectProtocol?
 
     init(view: UIView, blocked: @escaping () -> Bool, isPaged: @escaping () -> Bool, isTrueTop: @escaping (UIScrollView) -> Bool,
          capture: @escaping () -> ReaderBookmarkGestureCapture?, context: @escaping () -> String?, readingRect: @escaping () -> CGRect,
-         onBookmark: @escaping (ReadingAnchor) -> Void, onFeedback: @escaping (ReaderBookmarkPullFeedback) -> Void, onBookmarkCapture: ((ReaderBookmarkCapture) -> Void)? = nil) {
+         onBookmark: @escaping (ReadingAnchor) -> Void, onFeedback: @escaping (ReaderBookmarkPullVisual) -> Void, onBookmarkCapture: ((ReaderBookmarkCapture) -> Void)? = nil) {
         self.view = view; self.blocked = blocked; self.isPaged = isPaged; self.isTrueTop = isTrueTop
         self.capture = capture; self.context = context; self.readingRect = readingRect; self.onBookmark = onBookmark; self.onFeedback = onFeedback; self.onBookmarkCapture = onBookmarkCapture
         super.init()
@@ -94,6 +95,7 @@ struct ReaderBookmarkGestureCapture {
         guard allowed(touch), isPaged() || (scroll.map(isTrueTop) == true), let snapshot = capture() else { return }
         self.snapshot = snapshot; touchWindow = view?.window; hapticSent = false
         pull.begin(eligible: true)
+        thresholdHaptic.prepare()
     }
     private var isCurrent: Bool {
         enabled && !blocked() && !UIAccessibility.isVoiceOverRunning && UIApplication.shared.applicationState == .active
@@ -118,11 +120,14 @@ struct ReaderBookmarkGestureCapture {
     }
     @objc private func pagedPan(_ pan: UIPanGestureRecognizer) {
         guard isPaged() else { return }
-        let translation = pan.translation(in: view)
+        let translation = pan.translation(in: view?.window)
         consume(state: pan.state, down: Double(translation.y), across: Double(translation.x))
     }
     @objc private func scrollingPan(_ pan: UIPanGestureRecognizer) {
         guard !isPaged(), let scroll, pan === scroll.panGestureRecognizer else { return }
+        // Once this touch has scrolled into the document it is ordinary reading,
+        // even if it reverses and returns to the top before release.
+        guard scroll.contentOffset.y <= -scroll.adjustedContentInset.top + 1 else { cancel(); return }
         let overscroll = max(0, -scroll.adjustedContentInset.top - scroll.contentOffset.y)
         // UIScrollView applies rubber-band resistance. The observed overscroll
         // itself must reach 72pt, so an ordinary short bounce never commits.
@@ -133,8 +138,8 @@ struct ReaderBookmarkGestureCapture {
         switch state {
         case .began, .changed:
             let value = pull.change(down: down, across: across)
-            if value == .armed, !hapticSent { hapticSent = true; UISelectionFeedbackGenerator().selectionChanged() }
-            publish(value)
+            if value == .armed, !hapticSent { hapticSent = true; thresholdHaptic.selectionChanged() }
+            publish(pull.visual)
         case .ended:
             _ = pull.change(down: down, across: across)
             let value = snapshot?.value, committed = pull.end()
@@ -147,7 +152,9 @@ struct ReaderBookmarkGestureCapture {
         default: break
         }
     }
-    private func publish(_ value: ReaderBookmarkPullFeedback) {
+    private func publish(_ value: ReaderBookmarkPullVisual) {
+        // Continuous mode already rubber-bands in UIScrollView. Never move it twice.
+        let value = isPaged() ? value : ReaderBookmarkPullVisual(feedback: value.feedback, progress: value.progress, displacement: 0)
         guard feedback != value else { return }
         feedback = value
         DispatchQueue.main.async { [weak self] in

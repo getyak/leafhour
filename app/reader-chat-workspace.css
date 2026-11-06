@@ -15,19 +15,17 @@ body:has(#settings-dialog[open]) .reading-tools-panel{visibility:hidden}
 .library-chat-menu-items .library-chat-hint,.library-chat-menu-items .library-chat-menu-hint{margin:10px 0;padding:0;min-width:0;max-width:none;font:12px/1.75 var(--chat-font);white-space:normal;overflow-wrap:anywhere}
 .library-chat-menu-items .squirrel-companion-toggle{display:block;min-height:44px;width:100%;margin:10px 0 0;text-align:left;border-radius:6px}
 .library-chat-menu-items .squirrel-companion-description{margin:6px 0 0;padding:0;max-width:none}
-/* One full viewport destination; the reading document stays mounted below. */
-dialog.reader-chat-workspace{--ink:inherit;--accent:inherit;--paper:inherit;--line:inherit;--chat-panel:var(--panel);--chat-soft:var(--wash);--chat-ink:var(--ink);--chat-muted:var(--muted);--chat-accent:var(--accent);--chat-strong:var(--ink);--chat-on-strong:var(--paper);position:fixed;inset:var(--chat-viewport-top,0px) 0 auto;width:100%;height:var(--chat-viewport-height,100dvh);max-height:none;max-width:none;margin:0;padding:0;border:0;border-radius:0;box-shadow:none;overflow:hidden;background:var(--chat-panel);color:var(--chat-ink);animation:none}
+/* A half-height paper margin; the unchanged source stays visible above. */
+dialog.reader-chat-workspace{--margin-note-height:calc(var(--chat-viewport-height,100dvh) * .5);--ink:inherit;--accent:inherit;--paper:inherit;--line:inherit;--chat-panel:var(--panel);--chat-soft:var(--wash);--chat-ink:var(--ink);--chat-muted:var(--muted);--chat-accent:var(--accent);--chat-strong:var(--ink);--chat-on-strong:var(--paper);position:fixed;inset:calc(var(--chat-viewport-top,0px) + var(--chat-viewport-height,100dvh) * .5) 0 auto;width:min(780px,100%);height:var(--margin-note-height);max-height:none;max-width:none;margin:0 auto;padding:0;border:1px solid var(--line-hairline);border-bottom:0;border-radius:18px 18px 0 0;box-shadow:0 -10px 35px #0000000d;overflow:hidden;background:var(--chat-panel);color:var(--chat-ink);animation:none}
 dialog.reader-chat-workspace[open]{animation:none}
-dialog.reader-chat-workspace.is-compact-viewport{inset:var(--chat-viewport-top,0px) 0 auto;height:var(--chat-viewport-height,100dvh);overflow:hidden}
-dialog.reader-chat-workspace.is-compact-viewport .library-chat-frame{display:flex;overflow:hidden}
-dialog.reader-chat-workspace.is-compact-viewport .library-chat-messages{min-height:0;overflow:auto}
+dialog.reader-chat-workspace.is-compact-viewport{--margin-note-height:calc(var(--chat-viewport-height,100dvh) * .78);inset:calc(var(--chat-viewport-top,0px) + var(--chat-viewport-height,100dvh) * .22) 0 auto;height:var(--margin-note-height);overflow:hidden}
 .reader-chat-workspace .library-chat-frame{height:100%;width:100%;overflow:hidden;border-radius:0;display:flex;flex-direction:column;align-items:stretch}
-.reader-chat-workspace .library-chat-header{width:100%;padding:max(10px,env(safe-area-inset-top)) max(20px,calc((100vw - 780px)/2)) 10px;border-bottom:1px solid var(--line-hairline);background:var(--chat-panel);gap:12px;flex:none}
+.reader-chat-workspace .library-chat-header{width:100%;padding:8px 16px;border-bottom:1px solid var(--line-hairline);background:var(--chat-panel);gap:12px;flex:none}
 .reader-chat-workspace .library-chat-heading h2{font-size:14px;font-weight:500;letter-spacing:0}
 .reader-chat-workspace .library-chat-close{width:auto;min-width:44px;font:13px/1.5 var(--chat-font);gap:6px;display:flex;padding:8px 10px;white-space:nowrap}
 .reader-chat-workspace .library-chat-close::before{content:'←';font-size:20px}
 .reader-chat-workspace .library-chat-messages{width:min(100%,780px);margin-inline:auto;min-height:0;padding:28px 24px;flex:1 1 auto}
-.reader-chat-workspace .library-chat-answer{padding:0 0 10px;border:0;border-radius:0;background:transparent;margin-top:24px}
+.reader-chat-workspace .library-chat-answer{padding:0 0 10px;border:0;border-radius:0;background:transparent;margin-top:16px}
 .reader-chat-workspace .library-chat-answer-heading{margin-bottom:10px}
 .reader-chat-workspace .library-chat-answer .library-chat-copy{position:static;display:block;margin-inline-start:auto;padding-inline:0}
 .reader-chat-workspace :is(.library-chat-markdown,.library-chat-stream-text){font:400 16px/1.9 var(--book,var(--font-serif));letter-spacing:.01em}
@@ -37,18 +35,25 @@ dialog.reader-chat-workspace.is-compact-viewport .library-chat-messages{min-heig
 .reader-chat-workspace .library-chat-markdown p:last-child{margin-bottom:0}
 .reader-chat-workspace .library-chat-stream{padding-bottom:18px}
 .reader-chat-workspace .library-chat-context{margin:0 6px 2px}
-.reader-chat-workspace .library-chat-empty{margin:clamp(24px,9dvh,96px) auto;max-width:420px}
-.reader-chat-workspace .library-chat-empty h3{font:400 28px/1.4 var(--font-serif);letter-spacing:var(--track-heading);margin-bottom:12px}
-.reader-chat-workspace .library-chat-suggestion{font-size:14px;border-bottom:1px solid var(--line-hairline)}
+.reader-chat-workspace .library-chat-empty{margin:12px auto;max-width:420px}
+.reader-chat-workspace .library-chat-empty h3{font:400 21px/1.4 var(--font-serif);letter-spacing:var(--track-heading);margin-bottom:12px}
 .reader-chat-workspace .library-chat-status-row{width:min(100%,780px);margin-inline:auto;padding-inline:24px}
 .reader-chat-workspace .library-chat-composer{width:min(calc(100% - 48px),732px);margin:0 auto;padding:10px 14px 8px;border:1px solid var(--line-control);border-radius:14px;background:var(--chat-panel);flex:none}
 .reader-chat-workspace .library-chat-composer-bottom{margin-top:0;min-height:44px;gap:4px}
 .reader-chat-workspace .library-chat-footer{height:max(20px,env(safe-area-inset-bottom));flex:none}
 .reader-chat-workspace.library-chat-dialog .library-chat-composer textarea{height:2.2em;min-height:2.2em;max-height:8em;font-size:16px;line-height:1.65}
-.reader-chat-workspace .library-chat-menu-items{right:0;width:min(300px,calc(100vw - 32px));padding:8px;max-height:calc(var(--chat-viewport-height,100dvh) - 110px)}
+.reader-chat-workspace .library-chat-menu-items{right:0;width:min(300px,calc(100vw - 32px));padding:8px;max-height:calc(var(--margin-note-height) - 80px)}
 .reader-chat-workspace .library-chat-menu-items,.reader-chat-workspace .library-chat-messages{overscroll-behavior:contain}
-.library-chat-identity{display:block;width:42px;height:48px;margin-bottom:24px;background:var(--chat-accent);mask:url('/brand-assets/leafhour-mark.svg') center/contain no-repeat}
-@media(max-width:560px){.reader-chat-workspace .library-chat-header{padding-inline:10px;gap:6px}.reader-chat-workspace .library-chat-messages{padding:24px 20px}.reader-chat-workspace .library-chat-composer{width:calc(100% - 24px)}.reader-chat-workspace .library-chat-empty h3{font-size:25px}}
-@media(max-height:500px){.reader-chat-workspace .library-chat-header{padding-block:4px}.reader-chat-workspace .library-chat-book-row{display:none}.reader-chat-workspace .library-chat-empty{margin:12px auto}.reader-chat-workspace .library-chat-empty h3{font-size:21px}.reader-chat-workspace .library-chat-identity{display:none}.reader-chat-workspace .library-chat-messages{padding-block:12px}.reader-chat-workspace .library-chat-footer{height:8px}.reader-chat-workspace .library-chat-suggestions{margin-top:8px}}
+@media(max-width:560px){.reader-chat-workspace .library-chat-header{padding-inline:10px;gap:6px}.reader-chat-workspace .library-chat-messages{padding:24px 20px}.reader-chat-workspace .library-chat-composer{width:calc(100% - 24px)}}
 
-.library-chat-dialog.is-reader-chat-fullpage[open] + .library-chat-launcher{visibility:hidden}
+.library-chat-dialog.is-reader-margin-note[open] + .library-chat-launcher{visibility:hidden}
+
+.reader-chat-workspace .library-chat-question{width:100%;max-width:100%;margin:0;padding:0 0 14px;background:transparent;border:0;border-bottom:1px solid var(--line-hairline);border-radius:0}
+.reader-chat-workspace .library-chat-question .library-chat-attribution{position:static;width:auto;height:auto;clip-path:none;margin-bottom:6px}
+.reader-chat-workspace .library-chat-suggestions{display:none}
+
+/* Fixed sections may outgrow a keyboard viewport with a quote or long draft.
+   Keep a readable history minimum and allow the frame to reveal every action. */
+dialog.reader-chat-workspace .library-chat-frame,.library-page #library-chat.reader-chat-workspace .library-chat-frame{display:flex;overflow-y:auto}
+dialog.reader-chat-workspace .library-chat-messages,.library-page #library-chat.reader-chat-workspace .library-chat-messages{flex:1 0 64px;min-height:64px;overflow:auto}
+.reader-chat-workspace.is-compact-viewport .library-chat-book-row{display:none}

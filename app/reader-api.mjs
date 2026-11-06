@@ -56,6 +56,7 @@ export function confirmReaderIdentity(){
   if(!identityCheck)identityCheck=(async()=>{try{
     const response=await fetch('/api/auth/session');if(!response.ok)return false;
     const current=await response.json();
+    if(!readerOwner&&document.querySelector?.('dialog[data-reader-login][open]'))return false;
     if((current.user?.id||null)!==readerOwner){leaveChangedSession();return false;}
     if(readerOffline.isOffline()){location.reload();return false;}
     void adoptUiOwner(readerOwner);if(sessionCurrent)document.dispatchEvent(new Event('reader:identity-confirmed'));return sessionCurrent;

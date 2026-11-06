@@ -2,12 +2,14 @@ import SwiftUI
 import LeafhourCore
 
 struct ShelfBookCover: View {
+    @Environment(\.scenePhase) private var scenePhase
     let title: String
     let author: String
     var compact = false
     var resource: BookCoverResource? = nil
     @State private var artwork: UIImage?
     @State private var loadedKey: String?
+    @State private var retryRevision = 0
     @ScaledMetric(relativeTo: .caption) private var fallbackTitleSize = 14.0
 
     var body: some View {
@@ -22,12 +24,15 @@ struct ShelfBookCover: View {
         }
         .clipShape(RoundedRectangle(cornerRadius: compact ? 4 : 6))
         .accessibilityHidden(true)
-        .task(id: resource?.key) {
+        .task(id: (resource?.key ?? "") + ":" + String(retryRevision)) {
             artwork = nil; loadedKey = nil
             let key = resource?.key
             let image = await resource?.load()
             guard !Task.isCancelled, key == resource?.key else { return }
             artwork = image; loadedKey = key
+        }
+        .onChange(of: scenePhase) { _, phase in
+            if phase == .active && artwork == nil { retryRevision += 1 }
         }
     }
     private var fallback: some View {

@@ -208,6 +208,8 @@ struct ChatConversationView: View {
     var localOnly = false
     var isLibraryConversation = false
     var isMarginalNote = false
+    var readingGuide: ReadingGuideController? = nil
+    var onGuideFollowUp: ((ChatFollowUp) async -> Void)? = nil
     var onSignIn: (() -> Void)? = nil
     var autoLoad = true
     let load: () async -> Void
@@ -242,6 +244,13 @@ struct ChatConversationView: View {
         ScrollViewReader { proxy in
             ScrollView {
                 VStack(alignment: .leading, spacing: 24) {
+                    if let readingGuide {
+                        ReaderReadingGuideContent(controller: readingGuide, canSend: !tools.generating && !tools.loading && !tools.sendingFollowUp && tools.retry == nil, onFollowUp: { item in
+                            scrollPosition.resumeFollowing()
+                            await onGuideFollowUp?(item)
+                        }).id("reading-guide-top")
+                        Divider()
+                    }
                     if tools.turns.count > 2 {
                         LazyVStack(alignment: .leading, spacing: 24) {
                             ForEach(tools.turns.dropLast(2)) { turn in conversationTurn(turn) }
@@ -287,7 +296,9 @@ struct ChatConversationView: View {
                 }
                 .task {
                     await Task.yield()
-                    if !placeCompletedMarginalReply(proxy), scrollPosition.followsLatest { scroll(proxy, animated: false) }
+                    if readingGuide != nil {
+                        scrollPosition.pauseFollowing(); proxy.scrollTo("reading-guide-top", anchor: .top)
+                    } else if !placeCompletedMarginalReply(proxy), scrollPosition.followsLatest { scroll(proxy, animated: false) }
                 }
         }.background(Color(uiColor: .systemBackground))
             .navigationTitle(title).navigationBarTitleDisplayMode(.inline)
@@ -430,8 +441,8 @@ struct ChatConversationView: View {
     private func latestButton(compact: Bool) -> some View {
         Button(action: returnToLatest) {
             Group {
-                if compact { Image(systemName: "arrow.down").font(.system(size: 18, weight: .semibold)).frame(width: 44, height: 44) }
-                else { Label("回到最新", systemImage: "arrow.down").font(.subheadline).lineLimit(1).frame(minHeight: 44) }
+                if compact { Image(systemName: "arrow.down").font(.system(size: 18, weight: .semibold)).frame(width: 48, height: 48) }
+                else { Label("回到最新", systemImage: "arrow.down").font(.subheadline).lineLimit(1).frame(minHeight: 48) }
             }.contentShape(Rectangle())
         }.buttonStyle(.plain).foregroundStyle(Color.leafInk)
             .accessibilityLabel("回到最新").accessibilityHint("返回对话底部，继续跟随回答")
@@ -517,7 +528,7 @@ struct ChatConversationView: View {
                         Image(systemName: "square.and.pencil").font(.subheadline)
                         Text("继续问…").font(.subheadline).lineLimit(1)
                         Spacer(minLength: 0)
-                    }.frame(minHeight: 44).contentShape(Rectangle())
+                    }.frame(minHeight: 48).contentShape(Rectangle())
                 }.buttonStyle(.plain).foregroundStyle(Color.primary.opacity(0.64)).accessibilityIdentifier("chat-wake-composer")
                 if showsLatest { latestButton(compact: true) }
                 if tools.generating {
@@ -684,6 +695,7 @@ private struct ChatTurnView: View {
         VStack(alignment: .leading, spacing: 16) {
             if !turn.question.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || turn.voice != nil || turn.quote != nil {
             VStack(alignment: .leading, spacing: 5) {
+                Text("你问").font(.caption2).foregroundStyle(Color.primary.opacity(0.64))
                 if let voice = turn.voice {
                     ChatVoiceMessageView(voice: voice, resolve: { try await resolveVoice(voice) }, playbackAllowed: playbackAllowed)
                     Text("转写文字").font(.caption2).foregroundStyle(Color.primary.opacity(0.64))
@@ -709,11 +721,10 @@ private struct ChatTurnView: View {
                         .accessibilityIdentifier("chat-question-expand")
                 }
                 reactionBadge(role: "user")
-            }.padding(14)
-                .background(Color.leafInk.opacity(0.10), in: RoundedRectangle(cornerRadius: 20))
-                .overlay { RoundedRectangle(cornerRadius: 20).strokeBorder(Color.leafInk.opacity(0.08), lineWidth: 0.5) }
-                .padding(.leading, 38)
-                .frame(maxWidth: .infinity, alignment: .trailing)
+            }.padding(.vertical, 8).padding(.bottom, 8)
+                .overlay(alignment: .bottom) { Rectangle().fill(Color.primary.opacity(0.12)).frame(height: 0.5) }
+                .padding(.leading, selecting ? 38 : 0)
+                .frame(maxWidth: .infinity, alignment: .leading)
                 .overlay(alignment: .leading) { if selecting { selectionButton(role: "user") } }
                 .contextMenu { messageActions(role: "user", text: turn.question) }
                 .accessibilityAction(named: Text("引用消息")) { onReference("user") }
@@ -752,10 +763,8 @@ private struct ChatTurnView: View {
                         }
                     }.accessibilityIdentifier("reader-conversation-error")
                 }
-            }.padding(14)
-                .background(Color(uiColor: .secondarySystemBackground), in: RoundedRectangle(cornerRadius: 20))
-                .overlay { RoundedRectangle(cornerRadius: 20).strokeBorder(Color.primary.opacity(0.06), lineWidth: 0.5) }
-                .padding(.trailing, 24).padding(.leading, selecting ? 38 : 0)
+            }.padding(.vertical, 4)
+                .padding(.leading, selecting ? 38 : 0)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .overlay(alignment: .leading) { if selecting, turn.answer != nil, turn.status == "completed" { selectionButton(role: "assistant") } }
                 .contextMenu { if let answer = turn.answer, turn.status == "completed" { messageActions(role: "assistant", text: answer) } }
