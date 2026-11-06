@@ -1,3 +1,5 @@
+import {withBackendExecutionAuthority} from '../packages/domain/execution-authority.mjs';
+import {withCandidateDelivery} from '../packages/domain/execution-delivery.mjs';
 import {randomUUID} from 'node:crypto';
 import {setTimeout as delay} from 'node:timers/promises';
 import {fail} from './document-import.mjs';
@@ -45,7 +47,7 @@ export function createBookIntroductionService({library,store=library.introductio
       const timeout=new Promise((_,reject)=>{timer=setTimeout(()=>{const error=fail('AI 简介生成超时，尚未保存。可以稍后重试',504);controller.abort(error);reject(error);},ttl);});
       const job={book:{bookId:book.bookId,contentVersion:book.contentVersion,title:context.title},context,signal:controller.signal};
       let generated;
-      try{generated=await Promise.race([generator(job),timeout,interrupted]);}catch(error){check();throw fail('AI 简介未能生成，尚未保存。可以稍后重试',502);}
+      try{generated=await Promise.race([withBackendExecutionAuthority(user,authorize,()=>generator(job)),timeout,interrupted]);}catch(error){check();throw fail('AI 简介未能生成，尚未保存。可以稍后重试',502);}
       check();
       if(!await authorize())throw fail('登录已失效，未保存这次简介',401);
       book=await library.getBook(user,id);
@@ -53,7 +55,7 @@ export function createBookIntroductionService({library,store=library.introductio
       if(book.contentVersion!==input.contentVersion)throw fail('原文已更新，未保存旧版本的简介',409);
       let value;
       try{value=validateBookIntroduction({kind:'leafhour-book-introduction',schemaVersion:1,origin:'ai',status:'draft',text:generated?.text,contentVersion:book.contentVersion,createdAt:new Date(clock()).toISOString(),model:'deepseek-flash',scope:'opening-sample',sourcePassageIds:context.passages.map(p=>p.id)},book);}catch{throw fail('AI 简介未通过格式核验，尚未保存。可以稍后重试',502);}
-      const saved=await store.complete(user,book,nonce,value,clock(),()=>!controller.signal.aborted);check();return result({...book,introduction:saved});
+      const saved=await withCandidateDelivery(generated,()=>store.complete(user,book,nonce,value,clock(),()=>!controller.signal.aborted));check();return result({...book,introduction:saved});
     }finally{
       clearTimeout(timer);signal?.removeEventListener('abort',abort);let cleanupError;
       try{if(controller.signal.aborted)await discardCancelled(user,book,nonce);}catch(error){cleanupError=error;}

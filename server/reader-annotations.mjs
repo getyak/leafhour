@@ -1,3 +1,5 @@
+import {withBackendExecutionAuthority} from '../packages/domain/execution-authority.mjs';
+import {withCandidateDelivery} from '../packages/domain/execution-delivery.mjs';
 // GET-195 backend: the child chat.annotations service. One private atomic
 // wrapper per owner and book at users/<owner-digest>/annotations/<book-digest>.json
 // holds {archive,runs} so claims, cancellation fences and late publications
@@ -272,7 +274,7 @@ export function createReaderAnnotationsService({library,bookFor,identity,dataDir
    if(!dispatchRun||dispatchRun.nonce!==nonce||dispatchRun.status!=='running')return await receiptOf(user,bookId,payload,book);
    const candidate=await Promise.race([Promise.resolve().then(()=>{
     if(controller.signal.aborted||signal?.aborted||isClosed()||clock()>=dispatchRun.expiresAt)throw Object.assign(Error('请求已取消或超时'),{status:408});
-    return generator(jobFor(book,payload,thread,claim.history,nonce,controller.signal,tools));
+    return withBackendExecutionAuthority(user,async()=>{if(controller.signal.aborted||!await authorize())return false;return (await bookFor(user,bookId)).contentVersion===book.contentVersion;},()=>generator(jobFor(book,payload,thread,claim.history,nonce,controller.signal,tools)));
    }),abort]);
    phase='verify-source';
    const body=candidate&&['annotation','conversation'].includes(candidate.kind)&&typeof candidate.text==='string'?candidate.text:candidate?.summary;
@@ -286,7 +288,7 @@ export function createReaderAnnotationsService({library,bookFor,identity,dataDir
    if(fresh.contentVersion!==book.contentVersion)fail('原文版本已变化',409);
    try{validateCurrentReadingChatQuote(payload.quote,fresh);}catch{fail('所选文字已变化，解释未保存',409);}
    phase='publish';
-   const published=await mutateState(user,bookId,async data=>{
+   const published=await withCandidateDelivery(candidate,()=>mutateState(user,bookId,async data=>{
     const now2=clock();expire(data,now2);
     const run=data.runs.find(row=>row.id===payload.id);
     if(!run||run.nonce!==nonce)return {done:true,thread:threadOf(data,book,payload.threadId),request:safeRequest(data.runs.find(row=>row.id===payload.id)||claim.run)};
@@ -310,7 +312,7 @@ export function createReaderAnnotationsService({library,bookFor,identity,dataDir
     data.archive=appendAnnotationMessage(data.archive,live,payload.threadId,message);
     last.status='completed';last.error=undefined;
     return {done:true,published:true,thread:threadOf(data,book,payload.threadId),request:safeRequest(last)};
-   });
+   }),{accept:value=>value?.published===true});
    return {thread:published.thread,request:published.request};
   }catch(error){
    if(!controller.signal.aborted&&error?.status!==429)try{onError(error,{phase});}catch{}

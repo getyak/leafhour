@@ -1,0 +1,21 @@
+{
+	admin {$LEAFHOUR_CADDY_ADMIN:off}
+	auto_https off
+}
+http://:{$LEAFHOUR_WEB_PORT:18330} {
+	bind 127.0.0.1
+	root * {$LEAFHOUR_WEB_ROOT}
+	encode zstd gzip
+	header X-Content-Type-Options nosniff
+	header Referrer-Policy same-origin
+	route {
+		@private path /internal /internal/* /.env* /.git/* /local/* /node_modules/* /server/* /harness/* /packages/* /config/* /secrets/*
+		respond @private 404
+		@dynamic path / /library /read /_ui/* /api/* /mcp /mcp/* /.well-known/* /oauth/* /healthz /version /gift /gift/* /gift-preview
+		reverse_proxy @dynamic {$LEAFHOUR_API_UPSTREAM:127.0.0.1:18331}
+		@html path *.html /en /zh-hans /zh-hant /ja
+		header @html Cache-Control "no-cache"
+		try_files {path} {path}.html {path}/index.html =404
+		file_server
+	}
+}

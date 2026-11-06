@@ -1,3 +1,4 @@
+import {withCandidateDelivery} from '../packages/domain/execution-delivery.mjs';
 import {normalizeChatGuideTarget,chatGuideTarget} from '../app/chat-guide-context.mjs';
 import {normalizeChatReactionTargets,resolveChatReactions} from '../app/chat-reactions.mjs';
 import {createLocalReaderChatService} from './local-reader-chat.mjs';
@@ -51,7 +52,7 @@ function conversationHistory(turns,scope={mode:'book'},contentVersion,bounded=fa
   return pairs.flat();
 }
 
-export async function createReaderChatService({library,people=null,dataDir,dataStore=null,generator=null,clock=Date.now,onError=()=>{},companionGenerator=null,annotationGenerator=null,onCompanionOutcome=()=>{},validateVoice=null,exportVoice=null,restoreVoice=null,resolveGuide=null,conversationTimeoutMs=chatRuntimeTimeout()+30000}){
+export async function createReaderChatService({library,people=null,dataDir,dataStore=null,generator=null,clock=Date.now,onError=()=>{},companionGenerator=null,searchWeb,annotationGenerator=null,onCompanionOutcome=()=>{},validateVoice=null,exportVoice=null,restoreVoice=null,resolveGuide=null,conversationTimeoutMs=chatRuntimeTimeout()+30000}){
   if(!library?.getBook||!library?.records||!library?.addComment||!dataDir)throw new TypeError('Reader chat requires a library and data directory');
   let closed=false;const queues=new Map(),active=new Map();
   const ownerDir=user=>path.join(dataDir,'users',digest(identity(user).id),'chat');
@@ -263,7 +264,7 @@ export async function createReaderChatService({library,people=null,dataDir,dataS
           turn.activity=activities.slice(-48);return null;
         });
       };
-      const tools=createReadingAgentTools({library,user,people,allowPersonWrites:input.peopleWrites===true,authorizePeople,currentBook:book,bookId,passageId:book?input.passageId:undefined,scope:claimed.scope.mode,readOnly:libraryChat,allowPreferenceWrites:input.preferenceWrites===true,signal:controller.signal,onActivity});
+      const tools=createReadingAgentTools({library,user,people,searchWeb,allowPersonWrites:input.peopleWrites===true,authorizePeople,currentBook:book,bookId,passageId:book?input.passageId:undefined,scope:claimed.scope.mode,readOnly:libraryChat,allowPreferenceWrites:input.preferenceWrites===true,signal:controller.signal,onActivity});
       let sequence=0;
       const progress=typeof onProgress==='function'?async value=>{
         if(controller.signal.aborted||!Number.isSafeInteger(value?.sequence)||value.sequence<=sequence||typeof value.text!=='string'||!value.text.isWellFormed())return;
@@ -281,7 +282,7 @@ export async function createReaderChatService({library,people=null,dataDir,dataS
       if(fresh.contentVersion!==book.contentVersion||sourceIndex(fresh).byId.get(input.passageId)?.original!==index.byId.get(input.passageId)?.original)throw invalid('原文版本已变化',409);
       if(input.quote)validateCurrentReadingChatQuote(input.quote,fresh,{bounded:false});}
       if(controller.signal.aborted)throw invalid('回答已取消',408);
-      phase='save-answer';return await finish(user,bookId,input.id,runId,{status:'completed',answer});
+      phase='save-answer';return await withCandidateDelivery(candidate,()=>finish(user,bookId,input.id,runId,{status:'completed',answer}),{accept:value=>value?.status==='completed'});
     }catch(error){
       if(!controller.signal.aborted&&error?.status!==429)try{onError(error,{phase,requestId:input.id});}catch{}
       const code=Object.getOwnPropertyDescriptor(error||{},'code')?.value;
