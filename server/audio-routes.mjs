@@ -1,12 +1,22 @@
 import {mediaConfiguration} from './media-config.mjs';import {audioError,prepareNarrationBatch} from './audio-content.mjs';
 import {createAudioBackup} from './audio-backup.mjs';
 import {estimateAudio} from './audio-estimate.mjs';
-export function createAudioRoutes({audio,library,guides,guideGenerator}){
+export function createAudioRoutes({audio,library,guides,guideGenerator,narration}){
  const backup=audio?createAudioBackup({audio,store:audio.store,getBook:library.getBook}):null;
  let guidesPromise;
  const guideService=()=>guides?Promise.resolve(guides):(guidesPromise??=import('./listening-guide-service.mjs').then(({createListeningGuideService})=>createListeningGuideService({audio,library,generator:guideGenerator,schedule:audio.schedule})));
  return {async handle({req,res,user,bookId,action,body,send}){
-  if(action==='capabilities'&&req.method==='GET'){await library.getBook(user,bookId);send(200,audio?audio.capabilities():{...mediaConfiguration({}).public,speechAvailable:false,dialogueAvailable:false,local:false,reason:'此实例暂未开启听读，仍可继续阅读。'});return true;}
+  if(action==='capabilities'&&req.method==='GET'){
+   await library.getBook(user,bookId);
+   const capabilities = audio ? audio.capabilities() : {...mediaConfiguration({}).public,speechAvailable:false,dialogueAvailable:false,local:false,reason:'此实例暂未开启听读，仍可继续阅读。'};
+   // Add narration capabilities
+   if (narration) {
+     const narrationCaps = await narration.getCapabilities();
+     capabilities.narration = narrationCaps;
+   }
+   send(200,capabilities);
+   return true;
+  }
   if(!user?.id)throw audioError('请先进入自己的书房，再准备声音。',401,'authentication_required');
   await library.getBook(user,bookId);if(!audio)throw audioError('此实例暂未开启听读，请在本机书房使用。',503,'not_configured');
   const get=req.method==='GET',post=req.method==='POST';
@@ -32,6 +42,35 @@ export function createAudioRoutes({audio,library,guides,guideGenerator}){
   const clip=action.match(/^clips\/([A-Za-z0-9-]+)$/);if(clip&&get){const {bytes,mimeType}=await audio.getClip(user,bookId,clip[1]);res.statusCode=200;res.setHeader('Content-Type',mimeType);res.setHeader('Content-Length',bytes.length);res.setHeader('Cache-Control','private, no-store');res.setHeader('Content-Disposition','inline; filename="leafhour-audio.'+(mimeType==='audio/wav'?'wav':'mp3')+'"');res.end(bytes);return true;}
   if(action==='dialogues'&&post){send(201,await audio.createDialogue(user,bookId,body));return true;}
   const dialogue=action.match(/^dialogues\/([A-Za-z0-9-]+)$/);if(dialogue){if(get)send(200,await audio.getDialogue(user,bookId,dialogue[1]));else if(post)send(200,await audio.editDialogue(user,bookId,dialogue[1],body));else return false;return true;}
+  // Multi-voice narration endpoints
+  if(action==='narration/prepare'&&post){
+   if(!narration)throw audioError('多声部朗读功能尚未配置。',503,'narration_not_configured');
+   const prepared=await narration.prepareChapterNarration(user.id,bookId,body.chapterId,body.options||{});
+   send(200,prepared);
+   return true;
+  }
+  if(action==='narration/generate'&&post){
+   if(!narration)throw audioError('多声部朗读功能尚未配置。',503,'narration_not_configured');
+   const {segments,voiceBible}=body;
+   if(!Array.isArray(segments)||!voiceBible)throw audioError('生成参数无效。');
+   const signal=AbortSignal.timeout(180000); // 3 minute timeout
+   const clips=await narration.generateNarration(user.id,bookId,segments,voiceBible,signal);
+   send(200,{clips:clips.map(c=>({...c,bytes:undefined}))});
+   return true;
+  }
+  const narrationClip=action.match(/^narration\/clips\/([A-Za-z0-9-]+)$/);
+  if(narrationClip&&get){
+   if(!narration)throw audioError('多声部朗读功能尚未配置。',503,'narration_not_configured');
+   const clipId=narrationClip[1];
+   const bytes=await audio.store.getClip(clipId);
+   res.statusCode=200;
+   res.setHeader('Content-Type','audio/mpeg'); // Narration uses MP3
+   res.setHeader('Content-Length',bytes.length);
+   res.setHeader('Cache-Control','private, no-store');
+   res.setHeader('Content-Disposition','inline; filename="leafhour-narration.mp3"');
+   res.end(bytes);
+   return true;
+  }
   return false;
  }};
 }
