@@ -58,7 +58,7 @@ export function mountReaderConversation({bookId,session,getReader,root,request=f
       Promise.resolve(reader.goToPassage(passageId,{validate:navigationCurrent})).then(changed=>{if(changed&&navigationCurrent()&&events.activeElement===focusAtStart)events.getElementById?.(passageId)?.focus({preventScroll:true});}).catch(()=>{if(navigationCurrent())announce(t('reader.b1.chapterFailed'));});return true;
     }
   });
-  chat.quoteSelection=()=>{
+  chat.quoteSelection=({draft}={})=>{
     if(disposed)return false;if(!session?.user){openAuth();return false;}
     const reader=getReader(),book=reader?.getBook?.();let snapshot;
     try{
@@ -66,7 +66,7 @@ export function mountReaderConversation({bookId,session,getReader,root,request=f
       snapshot=reader.getExcerpt?.()||reader.getAudioSelection?.();
       if(!snapshot||reader.isQuoteVisible&&!reader.isQuoteVisible(snapshot)||snapshot.parts.some(part=>!reader.isPassageVisible?.(part.passageId)))throw Error('missing');
       const quote=readingChatQuoteFromExcerpt(snapshot,book);
-      if(!chat.quote?.(quote)){announce(t('chat.quote.busy'));return false;}
+      if(!chat.quote?.(quote,{draft})){announce(t('chat.quote.busy'));return false;}
       reader.dismissTools?.();return true;
     }catch{announce(t(snapshot?.parts?.reduce((n,part)=>n+(part.text?.length||0),0)>2000?'chat.quote.tooLong':snapshot?'chat.quote.changed':'chat.quote.unavailable'));return false;}
   };

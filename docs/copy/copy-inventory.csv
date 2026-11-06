@@ -2543,3 +2543,9 @@ bookUpload.parsing,catalogue,app/ui-catalogs/en.mjs,2511,unknown,unknown,unknown
 bookUpload.tasks,catalogue,app/ui-catalogs/en.mjs,2512,unknown,unknown,unknown,unknown,unreviewed,Book imports,导入任务,匯入任務,本の取り込み
 bookUpload.saving,catalogue,app/ui-catalogs/en.mjs,2513,unknown,unknown,unknown,unknown,unreviewed,Saving chapters…,正在保存章节…,正在儲存章節…,章を保存しています…
 chat.continue,catalogue,app/ui-catalogs/en.mjs,2514,unknown,unknown,unknown,unknown,unreviewed,Ask a follow-up…,继续问…,繼續問…,続きを聞く…
+reader.selection.explain,catalogue,app/ui-catalogs/en.mjs,2515,unknown,unknown,unknown,unknown,unreviewed,Explain this sentence,解释这句,解釋這句,この文を解説
+reader.selection.original,catalogue,app/ui-catalogs/en.mjs,2516,unknown,unknown,unknown,unknown,unreviewed,View original,看原文,看原文,原文を見る
+reader.selection.note,catalogue,app/ui-catalogs/en.mjs,2517,unknown,unknown,unknown,unknown,unreviewed,Write a note,写笔记,寫筆記,メモを書く
+reader.selection.explainPrompt,catalogue,app/ui-catalogs/en.mjs,2518,unknown,unknown,unknown,unknown,unreviewed,Please explain this passage.,请解释这段选文。,請解釋這段選文。,この引用文を解説してください。
+reader.selection.exactOriginal,catalogue,app/ui-catalogs/en.mjs,2519,unknown,unknown,unknown,unknown,unreviewed,Original · selected text,原文 · 所选句段,原文 · 所選句段,原文 · 選択した部分
+reader.selection.wholeOriginal,catalogue,app/ui-catalogs/en.mjs,2520,unknown,unknown,unknown,unknown,unreviewed,Original · corresponding passage,原文 · 对应整段,原文 · 對應整段,原文 · 対応する段落

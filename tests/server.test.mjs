@@ -17,6 +17,7 @@ test('reader service owns one book and persists records without exposing files',
   const post=(url,data,origin=base)=>fetch(base+url,{method:'POST',headers:{'Content-Type':'application/json',Origin:origin},body:JSON.stringify(data)});
   const bookResponse=await fetch(base+'/api/book');
   assert.equal((await bookResponse.json()).bookId,book.bookId);
+  for(const file of ['reader-touch-selection.mjs','reader-selection-original.mjs']){const asset=await fetch(base+'/'+file);assert.equal(asset.status,200);assert.match(asset.headers.get('content-type'),/javascript/);}
   const policy=bookResponse.headers.get('content-security-policy'),imagePolicy=policy.split(';').find(part=>part.trim().startsWith('img-src '));
   assert.match(imagePolicy,/\bblob:/,'local avatar image previews must be allowed by the real HTTP policy');
   assert.doesNotMatch(policy.split(';').find(part=>part.trim().startsWith('script-src ')),/blob:/,'image preview permission must not broaden script execution');

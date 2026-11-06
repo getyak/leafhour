@@ -2511,5 +2511,11 @@ export default Object.freeze({
   "bookUpload.parsing": "Organizing chapters · {completed} / {total}",
   "bookUpload.tasks": "Book imports",
   "bookUpload.saving": "Saving chapters…",
-  "chat.continue": "Ask a follow-up…"
+  "chat.continue": "Ask a follow-up…",
+  "reader.selection.explain": "Explain this sentence",
+  "reader.selection.original": "View original",
+  "reader.selection.note": "Write a note",
+  "reader.selection.explainPrompt": "Please explain this passage.",
+  "reader.selection.exactOriginal": "Original · selected text",
+  "reader.selection.wholeOriginal": "Original · corresponding passage",
 });
