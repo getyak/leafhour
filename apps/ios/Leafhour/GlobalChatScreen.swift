@@ -4,7 +4,6 @@ import LeafhourCore
 struct GlobalChatScreen: View {
     @Bindable var model: LibraryModel
     @Binding var bookID: String?
-    @Environment(\.dismiss) private var dismiss
     @State private var choosing = false
     @State private var query = ""
     @State private var login = false
@@ -15,7 +14,7 @@ struct GlobalChatScreen: View {
             Group {
                 if let book, let owner = model.account?.id, case let tools = model.conversationTools(bookID: book.id) {
                     ChatConversationView(tools: tools, cloud: model.cloud, title: book.title, bookTitle: book.title,
-                        source: tools.chatContext?.selection?.text ?? tools.chatContext?.original ?? "", sourceLabel: tools.chatContext.map { [$0.chapterTitle, $0.sourceLabel].filter { !$0.isEmpty }.joined(separator: " · ") } ?? "引用的原文", isMarginalNote: true,
+                        source: tools.chatContext?.selection?.text ?? tools.chatContext?.original ?? "", sourceLabel: tools.chatContext.map { [$0.chapterTitle, $0.sourceLabel].filter { !$0.isEmpty }.joined(separator: " · ") } ?? "引用的原文",
                         load: {
                             await tools.restoreConversationDraft(identity: CloudBookIdentity(ownerID: owner, bookID: book.id, contentVersion: book.contentVersion, sourceFormat: ""), library: model.library)
                             await tools.loadConversation(book: book, ownerID: owner, cloud: model.cloud)
@@ -23,8 +22,8 @@ struct GlobalChatScreen: View {
                         .id(book.id)
                 } else {
                     let tools = model.conversationTools(bookID: ReaderCloudTools.libraryChatID)
-                    ChatConversationView(tools: tools, cloud: model.cloud, title: "旁注", bookTitle: "", source: "",
-                        localOnly: model.account == nil, isLibraryConversation: true, isMarginalNote: true, onSignIn: { login = true },
+                    ChatConversationView(tools: tools, cloud: model.cloud, title: "松鼠 AI", bookTitle: "", source: "",
+                        localOnly: model.account == nil, isLibraryConversation: true, onSignIn: { login = true },
                         load: {
                             guard let owner = model.account?.id else { return }
                             await tools.restoreConversationDraft(identity: ReaderCloudTools.libraryChatIdentity(ownerID: owner), library: model.library)
@@ -35,10 +34,6 @@ struct GlobalChatScreen: View {
                         })
                 }
             }.toolbar {
-                ToolbarItem(placement: .topBarLeading) {
-                    Button("收起旁注", systemImage: "chevron.down") { dismiss() }
-                        .labelStyle(.iconOnly).frame(minWidth: 44, minHeight: 44).accessibilityIdentifier("companion-dismiss")
-                }
                 ToolbarItem(placement: .topBarTrailing) {
                     Button { if model.account == nil { login = true } else { choosing = true } } label: {
                         Image(systemName: "books.vertical").frame(width: 44, height: 44).contentShape(Rectangle())
@@ -74,7 +69,6 @@ struct GlobalChatScreen: View {
             }
             .sheet(isPresented: $login) { AccountScreen(model: model) }
         }.accessibilityIdentifier("global-chat-screen")
-            .modifier(ReaderPanelPresentation(isCompanion: true, isNoteEditor: false))
     }
 }
 
@@ -82,14 +76,17 @@ struct LeafhourRootScreen: View {
     @Bindable var model: LibraryModel
     @Environment(\.colorScheme) private var systemColorScheme
     @State private var tab = 0
-    @State private var navigationDepth = [false, false]
+    @State private var navigationDepth = [false, false, false]
+    @State private var companionBookID: String?
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     var body: some View {
         RootTabPager(selection: $tab, pages: [
             AnyView(LibraryScreen(model: model).environment(\.rootNavigationDepthChanged, { navigationDepth[0] = $0 })),
-            AnyView(MyReadingScreen(model: model).id(model.importAccountContext).environment(\.rootNavigationDepthChanged, { navigationDepth[1] = $0 }))
+            AnyView(GlobalChatScreen(model: model, bookID: $companionBookID).id(model.importAccountContext)),
+            AnyView(MyReadingScreen(model: model).id(model.importAccountContext).environment(\.rootNavigationDepthChanged, { navigationDepth[2] = $0 }))
         ], canSwipe: !navigationDepth[tab], reduceMotion: reduceMotion)
         .ignoresSafeArea()
+        .onChange(of: model.importAccountContext) { _, _ in companionBookID = nil }
         .onOpenURL { url in tab = 0; model.receiveIncomingURL(url) }
             .fullScreenCover(item: $model.reader, onDismiss: { Task { await model.reload(); await model.synchronize() } }) { session in
                 ReaderScreen(session: session, systemColorScheme: systemColorScheme, cloud: model.account == nil ? nil : model.cloud, library: model.library, positionConflict: model.syncIssues[session.book.id]?.positionConflict == true, resolvePosition: { useDevice in Task { await model.resolveActivePosition(useDevice: useDevice) } }, conversationTools: model.conversationTools(bookID: session.book.cloud?.bookID ?? session.book.id))

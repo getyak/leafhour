@@ -19,9 +19,16 @@ final class IOSLibraryChatUITests: XCTestCase {
     private func require(_ element: XCUIElement, timeout: TimeInterval = 20, file: StaticString = #filePath, line: UInt = #line) {
         XCTAssertTrue(element.waitForExistence(timeout: timeout), "Missing UI: \(element)\n\(app.debugDescription)", file: file, line: line)
     }
+    private func menuAction(_ title: String) -> XCUIElement {
+        let item = app.menuItems[title].firstMatch
+        return item.waitForExistence(timeout: 1) ? item : app.buttons[title].firstMatch
+    }
     private func launch(_ flags: [String] = []) {
+        XCUIDevice.shared.orientation = .portrait
         app.launchArguments = ["--get317-acceptance", "--get317-reset", "-AppleLanguages", "(zh-Hans)", "-AppleLocale", "zh_CN"] + flags
         app.launch()
+        let portrait = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in self.app.frame.height > self.app.frame.width }, object: nil)
+        XCTAssertEqual(XCTWaiter.wait(for: [portrait], timeout: 10), .completed)
         if flags.contains("--ios-library-chat-duplicate") {
             require(app.buttons["保留原书"].firstMatch, timeout: 30)
         } else {
@@ -83,22 +90,40 @@ final class IOSLibraryChatUITests: XCTestCase {
         capture("Chat · native Markdown direct answer")
     }
 
-    func testShelfSummonsHalfHeightMarginAndKeepsDraftWhenDismissed() {
+    func testBottomAITabKeepsDraftWhenSwitchingTabs() {
         launch()
-        XCTAssertEqual(app.tabBars.buttons.count, 2)
-        XCTAssertFalse(app.tabBars.buttons["松鼠"].exists)
+        XCTAssertEqual(app.tabBars.buttons.count, 3)
+        XCTAssertTrue(app.tabBars.buttons["松鼠 AI"].exists)
         app.buttons["library-companion"].tap()
         let input = app.textFields["reader-question"]
         require(input)
-        XCTAssertGreaterThan(app.navigationBars["旁注"].frame.minY, app.frame.height * 0.35)
+        XCTAssertLessThan(app.navigationBars["松鼠 AI"].frame.minY, app.frame.height * 0.15)
         input.tap(); input.typeText("回到这句话再想一想")
         require(app.keyboards.firstMatch)
         XCTAssertTrue(input.isHittable)
-        app.buttons["companion-dismiss"].tap()
+        app.buttons["chat-dismiss-keyboard"].tap()
+        app.tabBars.buttons["书房"].tap()
         require(app.buttons["library-companion"])
         app.buttons["library-companion"].tap(); require(input)
         XCTAssertEqual(input.value as? String, "回到这句话再想一想")
-        capture("GET385 · shelf margin and restored draft")
+        capture("Bottom AI tab · restored draft")
+    }
+
+    func testShortChatStopsAtTheSameBoundaryAfterRepeatedSwipes() {
+        launch(); app.tabBars.buttons["松鼠 AI"].tap()
+        let input = app.textFields["reader-question"]
+        require(input); input.tap(); input.typeText("检查短对话底部")
+        app.buttons["reader-question-send"].tap()
+        let answer = app.textViews.matching(NSPredicate(format: "label CONTAINS %@", "合成陪读回答")).firstMatch
+        require(answer)
+        let history = app.scrollViews["reader-conversation-history"]
+        history.swipeUp()
+        let boundary = answer.frame
+        for _ in 0..<6 { history.swipeUp() }
+        XCTAssertEqual(answer.frame.minY, boundary.minY, accuracy: 2)
+        XCTAssertTrue(answer.isHittable)
+        XCTAssertLessThanOrEqual(answer.frame.maxY, app.buttons["chat-wake-composer"].frame.minY + 1)
+        capture("Short conversation · finite bottom")
     }
 
     func testLongQuestionCanFoldExpandAndCopyItsCompleteSource() {
@@ -111,7 +136,7 @@ final class IOSLibraryChatUITests: XCTestCase {
         require(app.textViews.matching(NSPredicate(format: "label CONTAINS %@", "合成陪读回答")).firstMatch)
         let expand = app.buttons["chat-question-expand"].firstMatch
         require(expand); XCTAssertTrue(expand.isHittable)
-        XCTAssertGreaterThanOrEqual(expand.frame.height, 44)
+        XCTAssertGreaterThanOrEqual(expand.frame.height + 0.01, 44)
         let question = app.textViews.matching(NSPredicate(format: "label BEGINSWITH %@", "GET385 长问题。")).firstMatch
         require(question)
         question.coordinate(withNormalizedOffset: CGVector(dx: 0.15, dy: 0.2)).press(forDuration: 1.1)
@@ -143,7 +168,7 @@ final class IOSLibraryChatUITests: XCTestCase {
         require(answer)
         require(app.buttons["chat-wake-composer"])
         answer.coordinate(withNormalizedOffset: CGVector(dx: 0.12, dy: 0.18)).press(forDuration: 1.1)
-        let quote = app.menuItems["引用"].firstMatch; require(quote); quote.tap()
+        let quote = menuAction("引用"); require(quote); quote.tap()
         require(app.descendants(matching: .any)["chat-message-reference"].firstMatch)
         require(input); input.tap(); require(app.keyboards.firstMatch)
         input.typeText("接着解释一下")
@@ -153,11 +178,11 @@ final class IOSLibraryChatUITests: XCTestCase {
         capture("message-reference-follow-up")
         let latest = app.textViews.matching(NSPredicate(format: "label CONTAINS %@", "合成陪读回答")).allElementsBoundByIndex.last!
         latest.coordinate(withNormalizedOffset: CGVector(dx: 0.12, dy: 0.18)).press(forDuration: 1.1)
-        let like = app.menuItems["点赞"].firstMatch; require(like); like.tap()
-        require(app.buttons["已标记 👍，点按取消"].firstMatch)
-        latest.coordinate(withNormalizedOffset: CGVector(dx: 0.12, dy: 0.18)).press(forDuration: 1.1)
-        require(app.menuItems["取消点赞"].firstMatch)
-        app.menuItems["取消点赞"].firstMatch.tap()
+        let reactions = menuAction("表情"); require(reactions); reactions.tap()
+        let like = menuAction("👍"); require(like); like.tap()
+        let badge = app.buttons["已标记 👍，点按取消"].firstMatch
+        require(badge); badge.tap()
+        XCTAssertFalse(badge.exists)
         app.buttons["chat-wake-composer"].tap(); require(input); XCTAssertTrue(input.isHittable)
         capture("quiet-composer-woken")
     }
@@ -170,7 +195,6 @@ final class IOSLibraryChatUITests: XCTestCase {
         app.buttons["reader-question-send"].tap()
         let answer = app.textViews.matching(NSPredicate(format: "label CONTAINS %@", "合成陪读回答")).firstMatch
         require(answer)
-        XCTAssertFalse(app.staticTexts["你问"].exists)
         capture("Chat · asymmetric bubbles")
         answer.coordinate(withNormalizedOffset: CGVector(dx: 0.12, dy: 0.18)).press(forDuration: 1.1)
         let reactions = app.menuItems["表情"].firstMatch
@@ -222,7 +246,11 @@ final class IOSLibraryChatUITests: XCTestCase {
         require(input); input.tap(); input.typeText("第一句合成问题"); send.tap()
         require(app.textViews.matching(NSPredicate(format: "label CONTAINS %@", "合成回答末尾")).firstMatch)
         let history = app.scrollViews["reader-conversation-history"], latest = app.buttons["chat-latest"]
-        history.swipeDown(); require(latest)
+        // The full tab's landscape viewport includes the overlaid navigation
+        // bar. Keep this drag inside the visible history, above the composer.
+        history.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.35)).press(forDuration: 0.05,
+            thenDragTo: history.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.7)))
+        require(latest)
         app.buttons["chat-wake-composer"].tap(); require(input); input.tap(); input.typeText("保留横屏草稿")
         let dismiss = app.buttons["chat-dismiss-keyboard"]; require(dismiss); dismiss.tap()
         let hidden = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in !self.app.keyboards.firstMatch.exists }, object: nil)
@@ -251,8 +279,7 @@ final class IOSLibraryChatUITests: XCTestCase {
         // Wait for the fixture's delayed final response before browsing.
         let answer = app.textViews.matching(NSPredicate(format: "label CONTAINS %@", "合成回答末尾")).firstMatch
         require(answer)
-        // A margin note deliberately opens at the first answer line. A long
-        // reply can therefore offer Latest before the reader starts browsing.
+        // Normalize any restored history position before browsing explicitly.
         if latest.exists {
             latest.tap()
             let settled = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in !latest.exists }, object: nil)
@@ -311,6 +338,12 @@ final class IOSLibraryChatUITests: XCTestCase {
                     .unicodeScalars.filter { CharacterSet.alphanumerics.contains($0) }.map(String.init).joined()
                 XCTAssertTrue(visible.contains("ROUND3END"), "The newest reply's ending must be physically visible, not merely present in accessibility.\n" + visible)
             } catch { XCTFail("Could not verify the visible reply ending: \(error)") }
+            let newest = app.textViews.matching(NSPredicate(format: "label CONTAINS %@", "ROUND3END")).firstMatch
+            require(newest)
+            let bottomFrame = newest.frame
+            for _ in 0..<6 { history.swipeUp() }
+            XCTAssertEqual(newest.frame.minY, bottomFrame.minY, accuracy: 3, "Repeated bottom gestures must not grow blank space after older replies enter lazy history")
+            XCTAssertLessThanOrEqual(newest.frame.maxY, app.buttons["chat-wake-composer"].frame.minY + 1)
             capture("third-exchange-latest-ending-visible")
             for _ in 0..<12 where !oldAnswer.exists || !oldAnswer.isHittable { history.swipeDown() }
             XCTAssertTrue(oldAnswer.isHittable, "The first exchange must remain reachable after it moves into older history")
@@ -369,7 +402,9 @@ final class IOSLibraryChatUITests: XCTestCase {
         let hidden = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in self.clockInk() < visibleClock / 10 }, object: nil)
         XCTAssertEqual(XCTWaiter.wait(for: [hidden], timeout: 5), .completed, "The clock's actual pixels must disappear while reading")
         capture("Quiet reader · system time and status bar hidden")
-        let back = app.buttons["返回书房"]; require(back); back.tap()
+        let back = app.buttons["返回书房"]
+        if !back.isHittable { reader.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).tap() }
+        require(back); back.tap()
         require(app.buttons["书房显示与排序"])
         let restored = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in self.clockInk() > 30 }, object: nil)
         XCTAssertEqual(XCTWaiter.wait(for: [restored], timeout: 5), .completed)

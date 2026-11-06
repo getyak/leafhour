@@ -21,8 +21,6 @@ struct LibraryScreen: View {
     @FocusState private var searchFocused: Bool
     @State private var importing = false
     @State private var info = false
-    @State private var companion = false
-    @State private var companionBookID: String?
     @State private var path: [String] = []
     @State private var query = ""
     @State private var didLoad = false
@@ -84,7 +82,7 @@ struct LibraryScreen: View {
                 else { await model.synchronize(force: true) }
             }
             .onChange(of: scenePhase) { _, phase in if phase == .active { Task { await model.synchronize() } } }
-            .onChange(of: model.account?.id) { _, _ in selecting = false; selectedIDs = []; sharing = nil; confirmingRemoval = false; removalItems = []; companionBookID = nil }
+            .onChange(of: model.account?.id) { _, _ in selecting = false; selectedIDs = []; sharing = nil; confirmingRemoval = false; removalItems = [] }
             .onChange(of: model.accountShelf?.pinsInitialized) { _, _ in Task { await migrateCloudPinsIfNeeded() } }
             .onChange(of: visibleItems.map(\.id)) { _, ids in selectedIDs.formIntersection(Set(ids)) }
             .onChange(of: model.reader?.id) { _, current in if current == nil { Task { await loadResume() } } }
@@ -98,12 +96,11 @@ struct LibraryScreen: View {
             } message: {
                 Text("书籍会进入「已移除」，可随时恢复。原件、阅读位置、笔记、草稿和阅读时间均保留。云端书籍的移除会同步到当前账号；本机书籍只影响此设备。")
             }
-            .sheet(isPresented: $info, onDismiss: { Task { await model.cancelNativeAuthentication() } }) { AccountScreen(model: model) }
-            .sheet(isPresented: $companion) { GlobalChatScreen(model: model, bookID: $companionBookID).id(model.importAccountContext) }
+            .sheet(isPresented: $info) { AppSettingsScreen(model: model, presented: true) }
             .sheet(isPresented: $pendingAdjustments) { AccountShelfPendingScreen(model: model) }
             .sheet(item: $sharing) { selection in ShelfSharePanel(selection: selection, model: model) }
-            .sheet(item: Binding(get: { model.reader == nil && !info && !companion && !pendingAdjustments && sharing == nil ? model.incomingBookRequest : nil }, set: {
-                if $0 == nil { model.dismissIncomingBookPresentation(presentationAvailable: model.reader == nil && !info && !companion && !pendingAdjustments && sharing == nil) }
+            .sheet(item: Binding(get: { model.reader == nil && !info && !pendingAdjustments && sharing == nil ? model.incomingBookRequest : nil }, set: {
+                if $0 == nil { model.dismissIncomingBookPresentation(presentationAvailable: model.reader == nil && !info && !pendingAdjustments && sharing == nil) }
             }), onDismiss: { model.nextIncomingBook() }) { request in
                 IncomingBookImportPanel(request: request, model: model)
             }
@@ -138,14 +135,9 @@ struct LibraryScreen: View {
         .navigationBarTitleDisplayMode(.large)
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
-                Button { info = true } label: {
-                    ProfileAvatarView(owner: model.account?.id ?? "device").frame(width: 44, height: 44)
-                }.buttonStyle(.plain).accessibilityLabel(model.account == nil ? "登录书房" : "我的账号")
-                    .accessibilityIdentifier("library-avatar")
+                ProfileSettingsButton(owner: model.account?.id ?? "device", identifier: "library-avatar") { info = true }
             }
             ToolbarItemGroup(placement: .topBarTrailing) {
-                Button("旁注", systemImage: "leaf") { companion = true }
-                    .labelStyle(.iconOnly).accessibilityIdentifier("library-companion")
                 Button("搜索书房", systemImage: "magnifyingglass") { searching.toggle(); searchFocused = searching }
                     .labelStyle(.iconOnly)
                 Button("导入书籍", systemImage: "plus") { importing = true }.labelStyle(.iconOnly).disabled(model.busy)

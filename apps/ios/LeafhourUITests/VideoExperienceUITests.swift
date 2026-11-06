@@ -3002,7 +3002,7 @@ extension VideoExperienceUITests {
         app.scrollViews["reader-conversation-history"].swipeDown()
         XCTAssertTrue(app.keyboards.firstMatch.waitForNonExistence(timeout: 5))
         capture("GET357-global-chat-draft")
-        app.buttons["companion-dismiss"].tap(); app.tabBars.buttons["我的阅读"].tap(); app.tabBars.buttons["书房"].tap(); app.buttons["library-companion"].tap()
+        app.tabBars.buttons["我的阅读"].tap(); app.tabBars.buttons["书房"].tap(); app.buttons["library-companion"].tap()
         XCTAssertEqual(question.value as? String, "Keep my unfinished thought")
         coldRelaunch()
         let restored = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in
