@@ -31,12 +31,14 @@
 
 **Interfaces:** `mountSaveFeedback({document,status,retry,recover,getOwner,timers,translate})` returns `{root,set(id,params,error),clear(),refresh(),sync(),dispose()}`. It consumes existing nodes and UI messages, produces no business event or request.
 
-- [ ] Add behavior RED for same-node status/recovery, success1500ms/fade160ms, persistent503/409, stale callbacks after newer messages/owner/disposal, and locale refresh without resetting timers.
-- [ ] Run the new helper tests before implementation; preserve the expected failure.
-- [ ] Implement only presentation, inject a deterministic timer in helper tests; keep the original form debounce timer contract.
-- [ ] Attach the helper, reuse existing message IDs and connect native/choice descriptions; render actual saving instead of blank busy status.
-- [ ] Run helper, choice, settings and shell checks; record any existing dependency-blocked suites without installing shared dependencies.
-- [ ] Use the normal copy exporter and verify unchanged catalogue values/protection. Update the public source allowlist for the new runtime helper.
-- [ ] Commit locally, prepare a new frozen component artifact at the full commit, check every input/output hash.
-- [ ] Re-run natural503/409 ×1440/390 with no forced button click or manual scroll: error and retry visible, field/group associated, draft retained, read-only409 recovery. Add timer/locale/focus/reopen/late-result checks; preserve all failures and retries.
+- [x] Add behavior RED for same-node status/recovery, success1500ms/fade160ms, persistent503/409, stale callbacks after newer messages/owner/disposal, and locale refresh without resetting timers.
+- [x] Run the new helper tests before implementation; preserve the expected failure.
+- [x] Implement only presentation, inject a deterministic timer in helper tests; keep the original form debounce timer contract.
+- [x] Attach the helper, reuse existing message IDs and connect native/choice descriptions; render actual saving instead of blank busy status.
+- [x] Run helper, choice, settings and shell checks; record any existing dependency-blocked suites without installing shared dependencies.
+- [x] Use the normal copy exporter and verify unchanged catalogue values/protection. Update the public source allowlist for the new runtime helper.
+- [x] Commit locally, prepare a new frozen component artifact at the full commit, check every input/output hash.
+- [x] Re-run natural503/409 ×1440/390 with no forced button click or manual scroll: error and retry visible, field/group associated, draft retained, read-only409 recovery. Add timer/locale/focus/reopen/late-result checks; preserve all failures and retries.
 - [ ] Independently review P0/P1 and scoped visual results; fix confirmed issues with RED→GREEN. Consolidate push to a GET-201 follow-up PR; wait for the latest applicable CI and coordinate merge. Never close the whole parent from this batch.
+
+Current scoped result: normal host106/106 and frozen af7 Chrome10/10. Original failures remain recorded. Final independent visual review, consolidated PR/current-head CI and coordinator merge are pending; the full parent remains open.

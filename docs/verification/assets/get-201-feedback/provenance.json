@@ -1,0 +1,37 @@
+{
+  "screenshots": [
+    {
+      "file": "before-503-1440.png",
+      "sha256": "fded0fb6a19dfee9c71c0054e3a30a5db0acb2d52dc82453778a5cfeb6754126",
+      "sourceCommit": "0a7cae2adf371812fab32819b570e6285187592b",
+      "browser": "Installed Google Chrome 156.0.8078.80 headless",
+      "data": "Synthetic fixture only",
+      "path": "Tab to font; ArrowRight; immediately Tab; wait alert; no extra scroll"
+    },
+    {
+      "file": "after-503-1440.png",
+      "sha256": "6bd60e98d264862c5f0b7ef615608b5972125252fd8f92eb59acb480472240ec",
+      "sourceCommit": "af7e0983e88f7eeb7ef1e65ffd67fe76fbaf6bf8",
+      "browser": "Installed Google Chrome 156.0.8078.80 headless",
+      "data": "Synthetic fixture only",
+      "path": "Tab to font; ArrowRight; immediately Tab; wait alert; no extra scroll"
+    },
+    {
+      "file": "before-503-390.png",
+      "sha256": "3649df1b38cfe528e15f11e4b9783845f28b875d0a3d0e9dd51412d2038acea1",
+      "sourceCommit": "0a7cae2adf371812fab32819b570e6285187592b",
+      "browser": "Installed Google Chrome 156.0.8078.80 headless",
+      "data": "Synthetic fixture only",
+      "path": "Tab to font; ArrowRight; immediately Tab; wait alert; no extra scroll"
+    },
+    {
+      "file": "after-503-390.png",
+      "sha256": "ccb88a258640af6ab0b85c2436639a3e8acd4942f04a8b566da09136dee86720",
+      "sourceCommit": "af7e0983e88f7eeb7ef1e65ffd67fe76fbaf6bf8",
+      "browser": "Installed Google Chrome 156.0.8078.80 headless",
+      "data": "Synthetic fixture only",
+      "path": "Tab to font; ArrowRight; immediately Tab; wait alert; no extra scroll"
+    }
+  ],
+  "scope": "Targeted natural reading autosave 503 comparison; not full GET-201 acceptance."
+}
