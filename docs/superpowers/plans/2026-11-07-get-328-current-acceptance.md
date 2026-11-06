@@ -55,7 +55,7 @@
 - [ ] Freeze current app/test source and actual build/plugin path/hash. One necessary build-for-testing updates the task test bundle; no old `5e8b` binary or stale runner may stand in for current main.
 - [ ] Execute 38/41/54 at ordinary size, then at actual OS AX5 (six targets), plus the Files/PDF73 target (seven total). Preserve all raw exits, `.xcresult`, App/runner category receipts, original-page screenshots and imported manifest/state.
 - [ ] On an actual current failure, fix only its demonstrated root cause, run affected checks and independent review; do not sum selective retests into a full 56-case pass.
-- [ ] In `finally`, restore and read back **entry** system size/appearance/orientation, including after failure/cancellation. Stop only task processes, release lease and leave Primary booted. Verify task-state backup restoration if it was used; retain unique evidence before reclaiming inactive rebuildable caches.
+- [ ] In `finally`, restore and read back **entry** system size/appearance/orientation and exact **Booted/Shutdown** state, including after failure/cancellation. Record that state before this session changes it. A borrowed Booted Primary remains Booted; an entry-Shutdown Primary returns to Shutdown if this session booted it. Do not change its initial state for the next task. Stop only task processes and release the lease after restoration/readback; verify task-state backup restoration if used, and retain unique evidence before reclaiming inactive rebuildable caches.
 
 ## Task 4 — PR and distribution decision
 
