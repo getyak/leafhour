@@ -1,10 +1,11 @@
 const EDGE_GAP=12;
 const HEADER_GAP=8;
 
-export function placeFloatingToolbar({anchor,fallbackAnchor=anchor,toolbar,viewport,headerBottom,gap=10}){
+export function placeFloatingToolbar({anchor,fallbackAnchor=anchor,toolbar,viewport,headerBottom,gap=10,preferBelow=false}){
   const visible=anchor.bottom>headerBottom&&anchor.top<viewport.height;
   const left=Math.max(EDGE_GAP,Math.min(anchor.left,viewport.width-toolbar.width-EDGE_GAP));
   const above=anchor.top-gap-toolbar.height;
+  if(preferBelow&&anchor.bottom+gap+toolbar.height<=viewport.height-EDGE_GAP)return {left,top:anchor.bottom+gap,placement:'below',visible};
   const below=fallbackAnchor.bottom+gap;
   if(above>=headerBottom+HEADER_GAP)return {left,top:above,placement:'above',visible};
   if(below+toolbar.height<=viewport.height-EDGE_GAP)return {left,top:below,placement:'below',visible};
