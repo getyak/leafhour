@@ -10,7 +10,7 @@ const locales=[['en','en'],['zh-Hans','zh-hans'],['zh-Hant','zh-hant'],['ja','ja
 function assertNavigation(html,locale,slug,kind){
  const header=html.match(/<header\b[\s\S]*?<\/header>/)?.[0]||'';
  assert.match(header,/<nav class="home-navigation"/,'Support documents use the current public navigation before JavaScript');
- for(const href of ['/'+slug+'#how',locale==='en'?'/mcp':'/'+slug+'/mcp','/'+slug+'/pricing','https://github.com/getyak/leafhour','/library?ui='+locale])assert.ok(header.includes('href="'+href+'"'),href);
+ for(const href of ['/'+slug+'#how','/'+slug+'/mcp','/'+slug+'/pricing','https://github.com/getyak/leafhour','/library?ui='+locale])assert.ok(header.includes('href="'+href+'"'),href);
  assert.ok(header.indexOf('class="brand"')<header.indexOf('data-palette-open'),'Brand precedes the search action');
  assert.doesNotMatch(header,/home-languages/,'Language options belong to the shared menu');
  assert.equal((html.match(/id="home-menu"/g)||[]).length,1);

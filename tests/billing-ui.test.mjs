@@ -249,7 +249,7 @@ test('account changes between reconciliation reloads cannot return the former ac
 test('public pricing and policies share discoverable Agent, pricing and GitHub navigation with a native mobile menu',()=>{
  for(const [locale,slug]of [['en','en'],['zh-Hans','zh-hans'],['zh-Hant','zh-hant'],['ja','ja']])for(const kind of ['pricing','terms','refunds']){
   const html=pages.commercePage({kind,locale}),header=html.match(/<header[^>]*>[\s\S]*?<\/header>/)[0];
-  assert.ok(header.includes('href="'+(locale==='en'?'/mcp':'/'+slug+'/mcp')+'"'));
+  assert.ok(header.includes('href="/'+slug+'/mcp"'));
   assert.ok(header.includes('href="/'+slug+'/pricing"'));
   assert.match(header,/aria-label="GitHub"/);assert.match(header,/<svg/);
   const accountName=header.match(/id="account-button"[^>]*aria-label="([^"]+)"/)[1];

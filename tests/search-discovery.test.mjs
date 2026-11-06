@@ -63,7 +63,7 @@ test('homepages link every public language and declare hreflang alternates',asyn
     assert.ok(html.includes('hreflang="x-default" href="https://leafhour.com/"'));
     assert.ok(schemas(html).some(s=>s['@type']==='SoftwareApplication'&&s.name==='Leafhour'));
     for(const other of ['/en','/zh-hans','/zh-hant','/ja'])assert.ok(html.includes('href="'+other+'"'),route+' must link '+other);
-    const prefix=route==='/'?'':route;
+    const prefix=route==='/'?'/en':route;
     assert.ok(html.includes('href="'+prefix+'/mcp"'),route+' must link its MCP guide');
     assert.ok(html.includes('href="'+prefix+'/privacy"'),route+' must link its privacy notice');
   }

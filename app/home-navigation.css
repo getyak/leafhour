@@ -113,8 +113,32 @@ body > .public-document-header .public-search {
 .home-menu-languages a[aria-current],
 .home-menu-languages a:hover,
 .home-menu-links a:hover { color: var(--ink); }
-body:not(.library-page) > .site-footer { flex-wrap: wrap; gap: 12px 26px; }
-body:not(.library-page) > .site-footer .site-theme { margin-left: auto; flex: none; order: 2; }
+/* A small colophon: reader policies and the open project have distinct homes. */
+body:not(.library-page) > .home-footer {
+  display: grid;
+  grid-template-columns: minmax(180px, 1fr) auto auto auto;
+  align-items: start;
+  gap: 24px clamp(24px, 4vw, 64px);
+  padding: 32px 6%;
+}
+.home-footer-identity .brand { min-height: 44px; }
+.home-footer-identity p { margin: 4px 0 0; font: 400 16px/1.6 var(--serif); color: var(--muted); }
+.home-footer-group h2 { margin: 0 0 4px; font: 500 12px/1.6 var(--sans); color: var(--ink); }
+.home-footer-group nav { display: flex; flex-wrap: wrap; gap: 0 20px; }
+.home-footer-group a { display: inline-flex; align-items: center; min-height: 44px; font-size: 13px; color: var(--muted); text-decoration: none; }
+.home-footer-group a:hover { color: var(--ink); text-decoration: underline; text-underline-offset: 4px; }
+.home-footer-appearance { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--muted); }
+body > .home-footer .site-theme { flex: none; margin: 0; }
+@media (max-width: 980px) {
+  body:not(.library-page) > .home-footer { grid-template-columns: minmax(160px, 1fr) auto auto; }
+  .home-footer-appearance { grid-column: 2 / -1; justify-self: end; }
+}
+@media (max-width: 700px) {
+  body:not(.library-page) > .home-footer { grid-template-columns: minmax(0, 1fr) auto; gap: 20px 24px; padding: 28px 24px; }
+  .home-footer-identity { grid-column: 1 / -1; }
+  .home-footer-group nav { flex-direction: column; }
+  .home-footer-appearance { grid-column: 1 / -1; justify-self: start; }
+}
 #home-view .public-faq details { border-top: 1px solid var(--line-hairline); }
 #home-view .public-faq summary {
   display: flex;
@@ -146,8 +170,6 @@ body:not(.library-page) > .site-footer .site-theme { margin-left: auto; flex: no
   body:not(.library-page) > .site-header #account-button { margin-left: auto; font-size: 12px; }
   body:not(.library-page) > .site-header .home-menu-trigger { margin-left: -4px; }
   .home-menu-sheet { top: 66px; right: 16px; max-height: calc(100dvh - 82px); }
-  body:not(.library-page) > .site-footer > .brand { flex-basis: 100%; }
-  body:not(.library-page) > .site-footer > p { display: none; }
 }
 @media (max-width: 360px) {
   body:not(.library-page) > .site-header { padding-inline: 16px; gap: 8px; }

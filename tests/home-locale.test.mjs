@@ -177,9 +177,25 @@ test('public home navigation exposes localized Agent and pricing links plus a na
  for(const locale of homeLocales){
   const html=homeDocument(source,locale.code),header=html.match(/<header class="site-header"[\s\S]*?<\/header>/)[0];
   const slug=locale.code==='en'?'en':locale.route.slice(1);
-  assert.ok(header.includes('href="'+(locale.code==='en'?'/mcp':'/'+slug+'/mcp')+'"'));
+  assert.ok(header.includes('href="/'+slug+'/mcp"'));
   assert.ok(header.includes('href="/'+slug+'/pricing"'));
   assert.match(header,/<a[^>]*aria-label="GitHub"[^>]*>[\s\S]*?<svg/);
   assert.match(header,/https:\/\/github.com\/getyak\/leafhour/);
+ }
+});
+
+test('home footer keeps four reader links, clear groups and locale-specific routes before JavaScript',()=>{
+ const copy={en:['Reader information','Open source','Appearance','Privacy','Terms','Refunds'],'zh-Hans':['阅读保障','开放项目','页面外观','隐私说明','服务条款','退款政策'],'zh-Hant':['閱讀保障','開放專案','頁面外觀','隱私說明','服務條款','退款政策'],ja:['ご利用について','オープンソース','外観','プライバシー','利用規約','返金ポリシー']};
+ for(const {code,route}of homeLocales){
+  const html=homeDocument(source,code),footer=html.match(/<footer class="site-footer home-footer">[\s\S]*?<\/footer>/)?.[0];
+  assert.ok(footer,code+' footer exists on first paint');
+  const [reader,open,appearance,...policies]=copy[code],prefix=code==='en'?'/en':route;
+  const links=[...footer.matchAll(/<a\b[^>]*href="([^"]+)"/g)].map(match=>match[1]);
+  assert.deepEqual(links,[prefix,...['privacy','terms','refunds'].map(page=>prefix+'/'+page),'https://github.com/getyak/leafhour']);
+  for(const [index,kind]of ['privacy','terms','refunds'].entries())assert.ok(footer.includes('href="'+prefix+'/'+kind+'">'+policies[index]+'</a>'));
+  for(const label of [reader,open])assert.ok(footer.includes('<nav aria-label="'+label+'">'));
+  assert.ok(footer.includes('<span>'+appearance+'</span>'));
+  assert.equal((footer.match(/id="site-theme"/g)||[]).length,1);
+  assert.doesNotMatch(footer,/MCP|\/mcp|\/pricing|home-commerce-links/);
  }
 });
