@@ -4,108 +4,108 @@ candidate:api/[...path].js:30:416,js-cjk-literal,api/[...path].js,30,,unknown,re
 candidate:api/[...path].js:32:70,js-cjk-literal,api/[...path].js,32,,unknown,reviewable,,线上书房地址尚未配置
 candidate:api/[...path].js:39:37,js-cjk-literal,api/[...path].js,39,,unknown,reviewable,,找不到这个操作
 candidate:api/[...path].js:40:372,js-cjk-literal,api/[...path].js,40,,unknown,reviewable,,服务暂时无法完成操作，请重试
-candidate:app/account-tools.mjs:5:18,js-cjk-literal,app/account-tools.mjs,5,,unknown,reviewable,,导出
-candidate:app/account-tools.mjs:5:32,js-cjk-literal,app/account-tools.mjs,5,,unknown,reviewable,,导出此账号的书籍、笔记、译文、对话和阅读记录。包含此浏览器已保存的草稿，其他设备的数据需在原设备导出。
-candidate:app/account-tools.mjs:5:95,js-cjk-literal,app/account-tools.mjs,5,,unknown,reviewable,,导出设置
-candidate:app/account-tools.mjs:5:106,js-cjk-literal,app/account-tools.mjs,5,,unknown,reviewable,,导出本人数据
-candidate:app/account-tools.mjs:5:125,js-cjk-literal,app/account-tools.mjs,5,,unknown,reviewable,,包含原文件
-candidate:app/account-tools.mjs:5:139,js-cjk-literal,app/account-tools.mjs,5,,unknown,reviewable,,包含听读音频
-candidate:app/account-tools.mjs:5:157,js-cjk-literal,app/account-tools.mjs,5,,unknown,reviewable,,外部 MCP 服务器
-candidate:app/account-tools.mjs:5:183,js-cjk-literal,app/account-tools.mjs,5,,unknown,reviewable,,把外部工具连接到 Leafhour。不会自动发送书房内容。
-candidate:app/account-tools.mjs:5:222,js-cjk-literal,app/account-tools.mjs,5,,unknown,reviewable,,Leafhour MCP 服务器
-candidate:app/account-tools.mjs:5:252,js-cjk-literal,app/account-tools.mjs,5,,unknown,reviewable,,让其他应用连接 Leafhour。由对方发起 OAuth 登录，你选择一本书和允许的权限。
-candidate:app/account-tools.mjs:5:305,js-cjk-literal,app/account-tools.mjs,5,,unknown,reviewable,,名称
-candidate:app/account-tools.mjs:5:314,js-cjk-literal,app/account-tools.mjs,5,,unknown,reviewable,,MCP 服务器地址
-candidate:app/account-tools.mjs:5:332,js-cjk-literal,app/account-tools.mjs,5,,unknown,reviewable,,访问令牌（可选）
-candidate:app/account-tools.mjs:5:347,js-cjk-literal,app/account-tools.mjs,5,,unknown,reviewable,,连接
-candidate:app/account-tools.mjs:5:360,js-cjk-literal,app/account-tools.mjs,5,,unknown,reviewable,,刷新
-candidate:app/account-tools.mjs:5:372,js-cjk-literal,app/account-tools.mjs,5,,unknown,reviewable,,断开连接
-candidate:app/account-tools.mjs:5:385,js-cjk-literal,app/account-tools.mjs,5,,unknown,reviewable,,查看工具
-candidate:app/account-tools.mjs:5:397,js-cjk-literal,app/account-tools.mjs,5,,unknown,reviewable,,调用工具
-candidate:app/account-tools.mjs:5:409,js-cjk-literal,app/account-tools.mjs,5,,unknown,reviewable,,参数（JSON）
-candidate:app/account-tools.mjs:5:428,js-cjk-literal,app/account-tools.mjs,5,,unknown,reviewable,,将向此服务器发送以上参数。工具可能修改对方服务中的数据。
-candidate:app/account-tools.mjs:5:466,js-cjk-literal,app/account-tools.mjs,5,,unknown,reviewable,,撤回授权
-candidate:app/account-tools.mjs:5:481,js-cjk-literal,app/account-tools.mjs,5,,unknown,reviewable,,正在处理…
-candidate:app/account-tools.mjs:5:494,js-cjk-literal,app/account-tools.mjs,5,,unknown,reviewable,,已完成
-candidate:app/account-tools.mjs:5:506,js-cjk-literal,app/account-tools.mjs,5,,unknown,reviewable,,未能完成，请检查连接后重试。
-candidate:app/account-tools.mjs:5:529,js-cjk-literal,app/account-tools.mjs,5,,unknown,reviewable,,登录后管理自己的数据与连接。
-candidate:app/account-tools.mjs:5:551,js-cjk-literal,app/account-tools.mjs,5,,unknown,reviewable,,复制服务器地址
-candidate:app/account-tools.mjs:5:568,js-cjk-literal,app/account-tools.mjs,5,,unknown,reviewable,,已复制
-candidate:app/account-tools.mjs:5:579,js-cjk-literal,app/account-tools.mjs,5,,unknown,reviewable,,暂无有效授权
-candidate:app/account-tools.mjs:5:600,js-cjk-literal,app/account-tools.mjs,5,,unknown,reviewable,,远程 MCP 需要部署在 HTTPS 实例。
-candidate:app/account-tools.mjs:5:634,js-cjk-literal,app/account-tools.mjs,5,,unknown,reviewable,,已断开。已经开始的工具调用仍可能完成，请先核对结果再重试。
-candidate:app/account-tools.mjs:5:676,js-cjk-literal,app/account-tools.mjs,5,,unknown,reviewable,,工具调用结果尚未确认，请先在对方服务核对，再决定是否重试。
-candidate:app/account-tools.mjs:5:715,js-cjk-literal,app/account-tools.mjs,5,,unknown,reviewable,,选择工具
-candidate:app/account-tools.mjs:5:729,js-cjk-literal,app/account-tools.mjs,5,,unknown,reviewable,,参数格式
-candidate:app/account-tools.mjs:6:18,js-cjk-literal,app/account-tools.mjs,6,,unknown,reviewable,,匯出
-candidate:app/account-tools.mjs:6:32,js-cjk-literal,app/account-tools.mjs,6,,unknown,reviewable,,匯出此帳戶的書籍、筆記、譯文、對話和閱讀紀錄。包含此瀏覽器已儲存的草稿，其他裝置的資料需在原裝置匯出。
-candidate:app/account-tools.mjs:6:95,js-cjk-literal,app/account-tools.mjs,6,,unknown,reviewable,,匯出設定
-candidate:app/account-tools.mjs:6:106,js-cjk-literal,app/account-tools.mjs,6,,unknown,reviewable,,匯出本人資料
-candidate:app/account-tools.mjs:6:125,js-cjk-literal,app/account-tools.mjs,6,,unknown,reviewable,,包含原始檔
-candidate:app/account-tools.mjs:6:139,js-cjk-literal,app/account-tools.mjs,6,,unknown,reviewable,,包含聽讀音訊
-candidate:app/account-tools.mjs:6:157,js-cjk-literal,app/account-tools.mjs,6,,unknown,reviewable,,外部 MCP 伺服器
-candidate:app/account-tools.mjs:6:183,js-cjk-literal,app/account-tools.mjs,6,,unknown,reviewable,,把外部工具連接到 Leafhour。不會自動傳送書房內容。
-candidate:app/account-tools.mjs:6:222,js-cjk-literal,app/account-tools.mjs,6,,unknown,reviewable,,Leafhour MCP 伺服器
-candidate:app/account-tools.mjs:6:252,js-cjk-literal,app/account-tools.mjs,6,,unknown,reviewable,,讓其他應用程式連接 Leafhour。由對方發起 OAuth 登入，你選擇一本書和允許的權限。
-candidate:app/account-tools.mjs:6:307,js-cjk-literal,app/account-tools.mjs,6,,unknown,reviewable,,名稱
-candidate:app/account-tools.mjs:6:316,js-cjk-literal,app/account-tools.mjs,6,,unknown,reviewable,,MCP 伺服器位址
-candidate:app/account-tools.mjs:6:334,js-cjk-literal,app/account-tools.mjs,6,,unknown,reviewable,,存取權杖（選填）
-candidate:app/account-tools.mjs:6:349,js-cjk-literal,app/account-tools.mjs,6,,unknown,reviewable,,連接
-candidate:app/account-tools.mjs:6:362,js-cjk-literal,app/account-tools.mjs,6,,unknown,reviewable,,重新整理
-candidate:app/account-tools.mjs:6:376,js-cjk-literal,app/account-tools.mjs,6,,unknown,reviewable,,中斷連接
-candidate:app/account-tools.mjs:6:389,js-cjk-literal,app/account-tools.mjs,6,,unknown,reviewable,,查看工具
-candidate:app/account-tools.mjs:6:401,js-cjk-literal,app/account-tools.mjs,6,,unknown,reviewable,,呼叫工具
-candidate:app/account-tools.mjs:6:413,js-cjk-literal,app/account-tools.mjs,6,,unknown,reviewable,,參數（JSON）
-candidate:app/account-tools.mjs:6:432,js-cjk-literal,app/account-tools.mjs,6,,unknown,reviewable,,將向此伺服器傳送以上參數。工具可能修改對方服務中的資料。
-candidate:app/account-tools.mjs:6:470,js-cjk-literal,app/account-tools.mjs,6,,unknown,reviewable,,撤回授權
-candidate:app/account-tools.mjs:6:485,js-cjk-literal,app/account-tools.mjs,6,,unknown,reviewable,,正在處理…
-candidate:app/account-tools.mjs:6:498,js-cjk-literal,app/account-tools.mjs,6,,unknown,reviewable,,已完成
-candidate:app/account-tools.mjs:6:510,js-cjk-literal,app/account-tools.mjs,6,,unknown,reviewable,,未能完成，請檢查連接後重試。
-candidate:app/account-tools.mjs:6:533,js-cjk-literal,app/account-tools.mjs,6,,unknown,reviewable,,登入後管理自己的資料與連接。
-candidate:app/account-tools.mjs:6:555,js-cjk-literal,app/account-tools.mjs,6,,unknown,reviewable,,複製伺服器位址
-candidate:app/account-tools.mjs:6:572,js-cjk-literal,app/account-tools.mjs,6,,unknown,reviewable,,已複製
-candidate:app/account-tools.mjs:6:583,js-cjk-literal,app/account-tools.mjs,6,,unknown,reviewable,,暫無有效授權
-candidate:app/account-tools.mjs:6:604,js-cjk-literal,app/account-tools.mjs,6,,unknown,reviewable,,遠端 MCP 需要部署在 HTTPS 執行個體。
-candidate:app/account-tools.mjs:6:640,js-cjk-literal,app/account-tools.mjs,6,,unknown,reviewable,,已中斷。已經開始的工具呼叫仍可能完成，請先核對結果再重試。
-candidate:app/account-tools.mjs:6:682,js-cjk-literal,app/account-tools.mjs,6,,unknown,reviewable,,工具呼叫結果尚未確認，請先在對方服務核對，再決定是否重試。
-candidate:app/account-tools.mjs:6:721,js-cjk-literal,app/account-tools.mjs,6,,unknown,reviewable,,選擇工具
-candidate:app/account-tools.mjs:6:735,js-cjk-literal,app/account-tools.mjs,6,,unknown,reviewable,,參數格式
-candidate:app/account-tools.mjs:7:11,js-cjk-literal,app/account-tools.mjs,7,,unknown,reviewable,,エクスポート
-candidate:app/account-tools.mjs:7:29,js-cjk-literal,app/account-tools.mjs,7,,unknown,reviewable,,このアカウントの本、メモ、翻訳、会話と読書記録を保存します。このブラウザに保存した下書きも含みます。他の端末では個別に保存してください。
-candidate:app/account-tools.mjs:7:109,js-cjk-literal,app/account-tools.mjs,7,,unknown,reviewable,,設定を保存
-candidate:app/account-tools.mjs:7:121,js-cjk-literal,app/account-tools.mjs,7,,unknown,reviewable,,自分のデータを保存
-candidate:app/account-tools.mjs:7:143,js-cjk-literal,app/account-tools.mjs,7,,unknown,reviewable,,原本ファイルを含める
-candidate:app/account-tools.mjs:7:162,js-cjk-literal,app/account-tools.mjs,7,,unknown,reviewable,,音声を含める
-candidate:app/account-tools.mjs:7:180,js-cjk-literal,app/account-tools.mjs,7,,unknown,reviewable,,外部 MCP サーバー
-candidate:app/account-tools.mjs:7:207,js-cjk-literal,app/account-tools.mjs,7,,unknown,reviewable,,外部ツールを Leafhour に接続します。書斎の内容は自動送信されません。
-candidate:app/account-tools.mjs:7:256,js-cjk-literal,app/account-tools.mjs,7,,unknown,reviewable,,Leafhour MCP サーバー
-candidate:app/account-tools.mjs:7:287,js-cjk-literal,app/account-tools.mjs,7,,unknown,reviewable,,他のアプリから OAuth ログインを開始し、許可する本と権限を選びます。
-candidate:app/account-tools.mjs:7:332,js-cjk-literal,app/account-tools.mjs,7,,unknown,reviewable,,名前
-candidate:app/account-tools.mjs:7:341,js-cjk-literal,app/account-tools.mjs,7,,unknown,reviewable,,MCP サーバー URL
-candidate:app/account-tools.mjs:7:362,js-cjk-literal,app/account-tools.mjs,7,,unknown,reviewable,,アクセストークン（任意）
-candidate:app/account-tools.mjs:7:381,js-cjk-literal,app/account-tools.mjs,7,,unknown,reviewable,,接続
-candidate:app/account-tools.mjs:7:394,js-cjk-literal,app/account-tools.mjs,7,,unknown,reviewable,,更新
-candidate:app/account-tools.mjs:7:406,js-cjk-literal,app/account-tools.mjs,7,,unknown,reviewable,,接続解除
-candidate:app/account-tools.mjs:7:419,js-cjk-literal,app/account-tools.mjs,7,,unknown,reviewable,,ツール
-candidate:app/account-tools.mjs:7:430,js-cjk-literal,app/account-tools.mjs,7,,unknown,reviewable,,実行
-candidate:app/account-tools.mjs:7:440,js-cjk-literal,app/account-tools.mjs,7,,unknown,reviewable,,引数（JSON）
-candidate:app/account-tools.mjs:7:459,js-cjk-literal,app/account-tools.mjs,7,,unknown,reviewable,,この引数をサーバーに送信します。ツールは接続先のデータを変更する場合があります。
-candidate:app/account-tools.mjs:7:509,js-cjk-literal,app/account-tools.mjs,7,,unknown,reviewable,,権限を取り消す
-candidate:app/account-tools.mjs:7:527,js-cjk-literal,app/account-tools.mjs,7,,unknown,reviewable,,処理中…
-candidate:app/account-tools.mjs:7:539,js-cjk-literal,app/account-tools.mjs,7,,unknown,reviewable,,完了
-candidate:app/account-tools.mjs:7:550,js-cjk-literal,app/account-tools.mjs,7,,unknown,reviewable,,完了できませんでした。接続を確認してください。
-candidate:app/account-tools.mjs:7:582,js-cjk-literal,app/account-tools.mjs,7,,unknown,reviewable,,ログインしてデータと接続を管理してください。
-candidate:app/account-tools.mjs:7:612,js-cjk-literal,app/account-tools.mjs,7,,unknown,reviewable,,サーバー URL をコピー
-candidate:app/account-tools.mjs:7:635,js-cjk-literal,app/account-tools.mjs,7,,unknown,reviewable,,コピーしました
-candidate:app/account-tools.mjs:7:650,js-cjk-literal,app/account-tools.mjs,7,,unknown,reviewable,,有効な権限はありません
-candidate:app/account-tools.mjs:7:676,js-cjk-literal,app/account-tools.mjs,7,,unknown,reviewable,,リモート MCP には HTTPS が必要です。
-candidate:app/account-tools.mjs:7:712,js-cjk-literal,app/account-tools.mjs,7,,unknown,reviewable,,接続を解除しました。開始済みの呼び出しは完了する場合があります。再実行前に結果を確認してください。
-candidate:app/account-tools.mjs:7:774,js-cjk-literal,app/account-tools.mjs,7,,unknown,reviewable,,結果が未確認です。再実行前に接続先で確認してください。
-candidate:app/account-tools.mjs:7:811,js-cjk-literal,app/account-tools.mjs,7,,unknown,reviewable,,ツールを選択
-candidate:app/account-tools.mjs:7:827,js-cjk-literal,app/account-tools.mjs,7,,unknown,reviewable,,パラメータ
-candidate:app/account-tools.mjs:13:50,js-attribute,app/account-tools.mjs,13,role,unknown,reviewable,,status
-candidate:app/account-tools.mjs:13:92,js-attribute,app/account-tools.mjs,13,aria-live,unknown,reviewable,,polite
-candidate:app/account-tools.mjs:21:226,js-dom-literal,app/account-tools.mjs,21,placeholder,unknown,protected,url,https://example.com/mcp
+candidate:app/account-tools.mjs:6:18,js-cjk-literal,app/account-tools.mjs,6,,unknown,reviewable,,导出
+candidate:app/account-tools.mjs:6:32,js-cjk-literal,app/account-tools.mjs,6,,unknown,reviewable,,导出此账号的书籍、笔记、译文、对话和阅读记录。包含此浏览器已保存的草稿，其他设备的数据需在原设备导出。
+candidate:app/account-tools.mjs:6:95,js-cjk-literal,app/account-tools.mjs,6,,unknown,reviewable,,导出设置
+candidate:app/account-tools.mjs:6:106,js-cjk-literal,app/account-tools.mjs,6,,unknown,reviewable,,导出本人数据
+candidate:app/account-tools.mjs:6:125,js-cjk-literal,app/account-tools.mjs,6,,unknown,reviewable,,包含原文件
+candidate:app/account-tools.mjs:6:139,js-cjk-literal,app/account-tools.mjs,6,,unknown,reviewable,,包含听读音频
+candidate:app/account-tools.mjs:6:157,js-cjk-literal,app/account-tools.mjs,6,,unknown,reviewable,,外部 MCP 服务器
+candidate:app/account-tools.mjs:6:183,js-cjk-literal,app/account-tools.mjs,6,,unknown,reviewable,,把外部工具连接到 Leafhour。不会自动发送书房内容。
+candidate:app/account-tools.mjs:6:222,js-cjk-literal,app/account-tools.mjs,6,,unknown,reviewable,,Leafhour MCP 服务器
+candidate:app/account-tools.mjs:6:252,js-cjk-literal,app/account-tools.mjs,6,,unknown,reviewable,,让其他应用连接 Leafhour。由对方发起 OAuth 登录，你选择一本书和允许的权限。
+candidate:app/account-tools.mjs:6:305,js-cjk-literal,app/account-tools.mjs,6,,unknown,reviewable,,名称
+candidate:app/account-tools.mjs:6:314,js-cjk-literal,app/account-tools.mjs,6,,unknown,reviewable,,MCP 服务器地址
+candidate:app/account-tools.mjs:6:332,js-cjk-literal,app/account-tools.mjs,6,,unknown,reviewable,,访问令牌（可选）
+candidate:app/account-tools.mjs:6:347,js-cjk-literal,app/account-tools.mjs,6,,unknown,reviewable,,连接
+candidate:app/account-tools.mjs:6:360,js-cjk-literal,app/account-tools.mjs,6,,unknown,reviewable,,刷新
+candidate:app/account-tools.mjs:6:372,js-cjk-literal,app/account-tools.mjs,6,,unknown,reviewable,,断开连接
+candidate:app/account-tools.mjs:6:385,js-cjk-literal,app/account-tools.mjs,6,,unknown,reviewable,,查看工具
+candidate:app/account-tools.mjs:6:397,js-cjk-literal,app/account-tools.mjs,6,,unknown,reviewable,,调用工具
+candidate:app/account-tools.mjs:6:409,js-cjk-literal,app/account-tools.mjs,6,,unknown,reviewable,,参数（JSON）
+candidate:app/account-tools.mjs:6:428,js-cjk-literal,app/account-tools.mjs,6,,unknown,reviewable,,将向此服务器发送以上参数。工具可能修改对方服务中的数据。
+candidate:app/account-tools.mjs:6:466,js-cjk-literal,app/account-tools.mjs,6,,unknown,reviewable,,撤回授权
+candidate:app/account-tools.mjs:6:481,js-cjk-literal,app/account-tools.mjs,6,,unknown,reviewable,,正在处理…
+candidate:app/account-tools.mjs:6:494,js-cjk-literal,app/account-tools.mjs,6,,unknown,reviewable,,已完成
+candidate:app/account-tools.mjs:6:506,js-cjk-literal,app/account-tools.mjs,6,,unknown,reviewable,,未能完成，请检查连接后重试。
+candidate:app/account-tools.mjs:6:529,js-cjk-literal,app/account-tools.mjs,6,,unknown,reviewable,,登录后管理自己的数据与连接。
+candidate:app/account-tools.mjs:6:551,js-cjk-literal,app/account-tools.mjs,6,,unknown,reviewable,,复制服务器地址
+candidate:app/account-tools.mjs:6:568,js-cjk-literal,app/account-tools.mjs,6,,unknown,reviewable,,已复制
+candidate:app/account-tools.mjs:6:579,js-cjk-literal,app/account-tools.mjs,6,,unknown,reviewable,,暂无有效授权
+candidate:app/account-tools.mjs:6:600,js-cjk-literal,app/account-tools.mjs,6,,unknown,reviewable,,远程 MCP 需要部署在 HTTPS 实例。
+candidate:app/account-tools.mjs:6:634,js-cjk-literal,app/account-tools.mjs,6,,unknown,reviewable,,已断开。已经开始的工具调用仍可能完成，请先核对结果再重试。
+candidate:app/account-tools.mjs:6:676,js-cjk-literal,app/account-tools.mjs,6,,unknown,reviewable,,工具调用结果尚未确认，请先在对方服务核对，再决定是否重试。
+candidate:app/account-tools.mjs:6:715,js-cjk-literal,app/account-tools.mjs,6,,unknown,reviewable,,选择工具
+candidate:app/account-tools.mjs:6:729,js-cjk-literal,app/account-tools.mjs,6,,unknown,reviewable,,参数格式
+candidate:app/account-tools.mjs:7:18,js-cjk-literal,app/account-tools.mjs,7,,unknown,reviewable,,匯出
+candidate:app/account-tools.mjs:7:32,js-cjk-literal,app/account-tools.mjs,7,,unknown,reviewable,,匯出此帳戶的書籍、筆記、譯文、對話和閱讀紀錄。包含此瀏覽器已儲存的草稿，其他裝置的資料需在原裝置匯出。
+candidate:app/account-tools.mjs:7:95,js-cjk-literal,app/account-tools.mjs,7,,unknown,reviewable,,匯出設定
+candidate:app/account-tools.mjs:7:106,js-cjk-literal,app/account-tools.mjs,7,,unknown,reviewable,,匯出本人資料
+candidate:app/account-tools.mjs:7:125,js-cjk-literal,app/account-tools.mjs,7,,unknown,reviewable,,包含原始檔
+candidate:app/account-tools.mjs:7:139,js-cjk-literal,app/account-tools.mjs,7,,unknown,reviewable,,包含聽讀音訊
+candidate:app/account-tools.mjs:7:157,js-cjk-literal,app/account-tools.mjs,7,,unknown,reviewable,,外部 MCP 伺服器
+candidate:app/account-tools.mjs:7:183,js-cjk-literal,app/account-tools.mjs,7,,unknown,reviewable,,把外部工具連接到 Leafhour。不會自動傳送書房內容。
+candidate:app/account-tools.mjs:7:222,js-cjk-literal,app/account-tools.mjs,7,,unknown,reviewable,,Leafhour MCP 伺服器
+candidate:app/account-tools.mjs:7:252,js-cjk-literal,app/account-tools.mjs,7,,unknown,reviewable,,讓其他應用程式連接 Leafhour。由對方發起 OAuth 登入，你選擇一本書和允許的權限。
+candidate:app/account-tools.mjs:7:307,js-cjk-literal,app/account-tools.mjs,7,,unknown,reviewable,,名稱
+candidate:app/account-tools.mjs:7:316,js-cjk-literal,app/account-tools.mjs,7,,unknown,reviewable,,MCP 伺服器位址
+candidate:app/account-tools.mjs:7:334,js-cjk-literal,app/account-tools.mjs,7,,unknown,reviewable,,存取權杖（選填）
+candidate:app/account-tools.mjs:7:349,js-cjk-literal,app/account-tools.mjs,7,,unknown,reviewable,,連接
+candidate:app/account-tools.mjs:7:362,js-cjk-literal,app/account-tools.mjs,7,,unknown,reviewable,,重新整理
+candidate:app/account-tools.mjs:7:376,js-cjk-literal,app/account-tools.mjs,7,,unknown,reviewable,,中斷連接
+candidate:app/account-tools.mjs:7:389,js-cjk-literal,app/account-tools.mjs,7,,unknown,reviewable,,查看工具
+candidate:app/account-tools.mjs:7:401,js-cjk-literal,app/account-tools.mjs,7,,unknown,reviewable,,呼叫工具
+candidate:app/account-tools.mjs:7:413,js-cjk-literal,app/account-tools.mjs,7,,unknown,reviewable,,參數（JSON）
+candidate:app/account-tools.mjs:7:432,js-cjk-literal,app/account-tools.mjs,7,,unknown,reviewable,,將向此伺服器傳送以上參數。工具可能修改對方服務中的資料。
+candidate:app/account-tools.mjs:7:470,js-cjk-literal,app/account-tools.mjs,7,,unknown,reviewable,,撤回授權
+candidate:app/account-tools.mjs:7:485,js-cjk-literal,app/account-tools.mjs,7,,unknown,reviewable,,正在處理…
+candidate:app/account-tools.mjs:7:498,js-cjk-literal,app/account-tools.mjs,7,,unknown,reviewable,,已完成
+candidate:app/account-tools.mjs:7:510,js-cjk-literal,app/account-tools.mjs,7,,unknown,reviewable,,未能完成，請檢查連接後重試。
+candidate:app/account-tools.mjs:7:533,js-cjk-literal,app/account-tools.mjs,7,,unknown,reviewable,,登入後管理自己的資料與連接。
+candidate:app/account-tools.mjs:7:555,js-cjk-literal,app/account-tools.mjs,7,,unknown,reviewable,,複製伺服器位址
+candidate:app/account-tools.mjs:7:572,js-cjk-literal,app/account-tools.mjs,7,,unknown,reviewable,,已複製
+candidate:app/account-tools.mjs:7:583,js-cjk-literal,app/account-tools.mjs,7,,unknown,reviewable,,暫無有效授權
+candidate:app/account-tools.mjs:7:604,js-cjk-literal,app/account-tools.mjs,7,,unknown,reviewable,,遠端 MCP 需要部署在 HTTPS 執行個體。
+candidate:app/account-tools.mjs:7:640,js-cjk-literal,app/account-tools.mjs,7,,unknown,reviewable,,已中斷。已經開始的工具呼叫仍可能完成，請先核對結果再重試。
+candidate:app/account-tools.mjs:7:682,js-cjk-literal,app/account-tools.mjs,7,,unknown,reviewable,,工具呼叫結果尚未確認，請先在對方服務核對，再決定是否重試。
+candidate:app/account-tools.mjs:7:721,js-cjk-literal,app/account-tools.mjs,7,,unknown,reviewable,,選擇工具
+candidate:app/account-tools.mjs:7:735,js-cjk-literal,app/account-tools.mjs,7,,unknown,reviewable,,參數格式
+candidate:app/account-tools.mjs:8:11,js-cjk-literal,app/account-tools.mjs,8,,unknown,reviewable,,エクスポート
+candidate:app/account-tools.mjs:8:29,js-cjk-literal,app/account-tools.mjs,8,,unknown,reviewable,,このアカウントの本、メモ、翻訳、会話と読書記録を保存します。このブラウザに保存した下書きも含みます。他の端末では個別に保存してください。
+candidate:app/account-tools.mjs:8:109,js-cjk-literal,app/account-tools.mjs,8,,unknown,reviewable,,設定を保存
+candidate:app/account-tools.mjs:8:121,js-cjk-literal,app/account-tools.mjs,8,,unknown,reviewable,,自分のデータを保存
+candidate:app/account-tools.mjs:8:143,js-cjk-literal,app/account-tools.mjs,8,,unknown,reviewable,,原本ファイルを含める
+candidate:app/account-tools.mjs:8:162,js-cjk-literal,app/account-tools.mjs,8,,unknown,reviewable,,音声を含める
+candidate:app/account-tools.mjs:8:180,js-cjk-literal,app/account-tools.mjs,8,,unknown,reviewable,,外部 MCP サーバー
+candidate:app/account-tools.mjs:8:207,js-cjk-literal,app/account-tools.mjs,8,,unknown,reviewable,,外部ツールを Leafhour に接続します。書斎の内容は自動送信されません。
+candidate:app/account-tools.mjs:8:256,js-cjk-literal,app/account-tools.mjs,8,,unknown,reviewable,,Leafhour MCP サーバー
+candidate:app/account-tools.mjs:8:287,js-cjk-literal,app/account-tools.mjs,8,,unknown,reviewable,,他のアプリから OAuth ログインを開始し、許可する本と権限を選びます。
+candidate:app/account-tools.mjs:8:332,js-cjk-literal,app/account-tools.mjs,8,,unknown,reviewable,,名前
+candidate:app/account-tools.mjs:8:341,js-cjk-literal,app/account-tools.mjs,8,,unknown,reviewable,,MCP サーバー URL
+candidate:app/account-tools.mjs:8:362,js-cjk-literal,app/account-tools.mjs,8,,unknown,reviewable,,アクセストークン（任意）
+candidate:app/account-tools.mjs:8:381,js-cjk-literal,app/account-tools.mjs,8,,unknown,reviewable,,接続
+candidate:app/account-tools.mjs:8:394,js-cjk-literal,app/account-tools.mjs,8,,unknown,reviewable,,更新
+candidate:app/account-tools.mjs:8:406,js-cjk-literal,app/account-tools.mjs,8,,unknown,reviewable,,接続解除
+candidate:app/account-tools.mjs:8:419,js-cjk-literal,app/account-tools.mjs,8,,unknown,reviewable,,ツール
+candidate:app/account-tools.mjs:8:430,js-cjk-literal,app/account-tools.mjs,8,,unknown,reviewable,,実行
+candidate:app/account-tools.mjs:8:440,js-cjk-literal,app/account-tools.mjs,8,,unknown,reviewable,,引数（JSON）
+candidate:app/account-tools.mjs:8:459,js-cjk-literal,app/account-tools.mjs,8,,unknown,reviewable,,この引数をサーバーに送信します。ツールは接続先のデータを変更する場合があります。
+candidate:app/account-tools.mjs:8:509,js-cjk-literal,app/account-tools.mjs,8,,unknown,reviewable,,権限を取り消す
+candidate:app/account-tools.mjs:8:527,js-cjk-literal,app/account-tools.mjs,8,,unknown,reviewable,,処理中…
+candidate:app/account-tools.mjs:8:539,js-cjk-literal,app/account-tools.mjs,8,,unknown,reviewable,,完了
+candidate:app/account-tools.mjs:8:550,js-cjk-literal,app/account-tools.mjs,8,,unknown,reviewable,,完了できませんでした。接続を確認してください。
+candidate:app/account-tools.mjs:8:582,js-cjk-literal,app/account-tools.mjs,8,,unknown,reviewable,,ログインしてデータと接続を管理してください。
+candidate:app/account-tools.mjs:8:612,js-cjk-literal,app/account-tools.mjs,8,,unknown,reviewable,,サーバー URL をコピー
+candidate:app/account-tools.mjs:8:635,js-cjk-literal,app/account-tools.mjs,8,,unknown,reviewable,,コピーしました
+candidate:app/account-tools.mjs:8:650,js-cjk-literal,app/account-tools.mjs,8,,unknown,reviewable,,有効な権限はありません
+candidate:app/account-tools.mjs:8:676,js-cjk-literal,app/account-tools.mjs,8,,unknown,reviewable,,リモート MCP には HTTPS が必要です。
+candidate:app/account-tools.mjs:8:712,js-cjk-literal,app/account-tools.mjs,8,,unknown,reviewable,,接続を解除しました。開始済みの呼び出しは完了する場合があります。再実行前に結果を確認してください。
+candidate:app/account-tools.mjs:8:774,js-cjk-literal,app/account-tools.mjs,8,,unknown,reviewable,,結果が未確認です。再実行前に接続先で確認してください。
+candidate:app/account-tools.mjs:8:811,js-cjk-literal,app/account-tools.mjs,8,,unknown,reviewable,,ツールを選択
+candidate:app/account-tools.mjs:8:827,js-cjk-literal,app/account-tools.mjs,8,,unknown,reviewable,,パラメータ
+candidate:app/account-tools.mjs:14:50,js-attribute,app/account-tools.mjs,14,role,unknown,reviewable,,status
+candidate:app/account-tools.mjs:14:92,js-attribute,app/account-tools.mjs,14,aria-live,unknown,reviewable,,polite
+candidate:app/account-tools.mjs:22:226,js-dom-literal,app/account-tools.mjs,22,placeholder,unknown,protected,url,https://example.com/mcp
 candidate:app/arrival-catalog.mjs:5:14,js-cjk-literal,app/arrival-catalog.mjs,5,,unknown,reviewable,,伊凡·伊里奇之死
 candidate:app/arrival-catalog.mjs:6:15,js-cjk-literal,app/arrival-catalog.mjs,6,,unknown,reviewable,,Leo Tolstoy · 英译 Louise and Aylmer Maude
 candidate:app/arrival-catalog.mjs:12:16,js-cjk-literal,app/arrival-catalog.mjs,12,,unknown,reviewable,,书中一段
@@ -4021,16 +4021,16 @@ candidate:app/library-reading-preferences.mjs:59:154,js-attribute,app/library-re
 candidate:app/library-shell.mjs:33:251,js-attribute,app/library-shell.mjs,33,viewBox,unknown,reviewable,,0 0 24 24
 candidate:app/library-shell.mjs:33:295,js-attribute,app/library-shell.mjs,33,aria-hidden,unknown,reviewable,,true
 candidate:app/library-shell.mjs:54:104,js-attribute,app/library-shell.mjs,54,role,unknown,reviewable,,tablist
-candidate:app/library-shell.mjs:61:238,js-attribute,app/library-shell.mjs,61,role,unknown,reviewable,,tab
-candidate:app/library-shell.mjs:61:470,js-attribute,app/library-shell.mjs,61,role,unknown,reviewable,,tabpanel
-candidate:app/library-shell.mjs:63:270,js-attribute,app/library-shell.mjs,63,role,unknown,reviewable,,status
-candidate:app/library-shell.mjs:88:101,js-cjk-literal,app/library-shell.mjs,88,,unknown,reviewable,,额度与账单
-candidate:app/library-shell.mjs:88:119,js-cjk-literal,app/library-shell.mjs,88,,unknown,reviewable,,額度與帳單
-candidate:app/library-shell.mjs:88:132,js-cjk-literal,app/library-shell.mjs,88,,unknown,reviewable,,ポイントと請求
-candidate:app/library-shell.mjs:98:93,js-cjk-literal,app/library-shell.mjs,98,,unknown,reviewable,,备份、恢复与选定导出
-candidate:app/library-shell.mjs:98:116,js-cjk-literal,app/library-shell.mjs,98,,unknown,reviewable,,備份、還原與選定匯出
-candidate:app/library-shell.mjs:98:134,js-cjk-literal,app/library-shell.mjs,98,,unknown,reviewable,,バックアップ・復元・選択した記録の保存
-candidate:app/library-shell.mjs:111:609,js-attribute,app/library-shell.mjs,111,aria-hidden,unknown,reviewable,,true
+candidate:app/library-shell.mjs:63:238,js-attribute,app/library-shell.mjs,63,role,unknown,reviewable,,tab
+candidate:app/library-shell.mjs:63:470,js-attribute,app/library-shell.mjs,63,role,unknown,reviewable,,tabpanel
+candidate:app/library-shell.mjs:65:270,js-attribute,app/library-shell.mjs,65,role,unknown,reviewable,,status
+candidate:app/library-shell.mjs:90:101,js-cjk-literal,app/library-shell.mjs,90,,unknown,reviewable,,额度与账单
+candidate:app/library-shell.mjs:90:119,js-cjk-literal,app/library-shell.mjs,90,,unknown,reviewable,,額度與帳單
+candidate:app/library-shell.mjs:90:132,js-cjk-literal,app/library-shell.mjs,90,,unknown,reviewable,,ポイントと請求
+candidate:app/library-shell.mjs:100:93,js-cjk-literal,app/library-shell.mjs,100,,unknown,reviewable,,备份、恢复与选定导出
+candidate:app/library-shell.mjs:100:116,js-cjk-literal,app/library-shell.mjs,100,,unknown,reviewable,,備份、還原與選定匯出
+candidate:app/library-shell.mjs:100:134,js-cjk-literal,app/library-shell.mjs,100,,unknown,reviewable,,バックアップ・復元・選択した記録の保存
+candidate:app/library-shell.mjs:113:609,js-attribute,app/library-shell.mjs,113,aria-hidden,unknown,reviewable,,true
 candidate:app/library-view-state.mjs:56:65,js-cjk-literal,app/library-view-state.mjs,56,,unknown,reviewable,,overlay kind 无效
 candidate:app/library-workspace.mjs:58:43,js-cjk-literal,app/library-workspace.mjs,58,,unknown,reviewable,,找不到这段原文，请重新选择段落。
 candidate:app/library-workspace.mjs:88:52,js-cjk-literal,app/library-workspace.mjs,88,,unknown,reviewable,,日期不正确。
