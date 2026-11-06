@@ -359,7 +359,7 @@ export function mountLibraryChat({root,api,getSession,getBooks,getOwner,openAuth
     open({bookId,passageId,messageId,draft}={}){
       if(disposed)return;
       openingRevision++;
-      externalLauncher?.onOpen?.();
+      if(externalLauncher?.onOpen?.()===false)return;
       targetMessageId=messageId||null;root.dispatchEvent(new Event('reading-chat-open'));
       syncOwner();if(uploadEnabled)void addUpload();const view=state.view(),canFollow=!view.draft&&!view.quote&&!view.pending&&!view.retry?.uncertain&&!view.scopePending;
       const candidate=bookId||(!accountDefault&&canFollow?currentBookId():null)||selectedBook||LIBRARY_CHAT_ID,valid=candidate===LIBRARY_CHAT_ID||books().some(book=>book.bookId===candidate)?candidate:LIBRARY_CHAT_ID;

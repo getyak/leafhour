@@ -36,14 +36,14 @@ export function mountReaderTools({sessionRoot,immersion=null,document=globalThis
     const active=document.activeElement;
     const safe=focusableTrigger(active)&&!active.closest?.('dialog,#reading-tools-panel,#reading-header,[popover]')?active:pill;
     if(id!=='tools')toolbar.conceal({restoreFocus:false});
-    if(id!=='chat')chat?.close({focus:false});
+    if(id!=='chat')chat?.close?.({focus:false});
     for(const node of document.querySelectorAll('#settings-dialog[open],#atmosphere-dialog[open],#command-palette[open]'))if(node.id!==id)node.close();
     for(const node of document.querySelectorAll('[popover][data-popover-open]'))if(!node.closest?.('#'+id))mountPopover({document,element:node}).close({focus:false});
     return safe;
   };
   const handoffHost=sessionRoot.querySelector('#reading-tools-chat-slot');
   let unread=false;
-  const restoreChat=()=>{if(disposed||overlayOpen(document))return false;return restorePill();};
+  const restoreChat=()=>{if(disposed||overlayOpen(document))return false;const dock=document.getElementById('reader-dock'),trigger=handoffHost?.querySelector?.('.library-chat-trigger');if(dock&&!dock.hidden&&dock.contains(trigger)){trigger.focus({preventScroll:true});return true;}return restorePill();};
   const updateUnreadLabel=()=>{if(!disposed){handoffHost?.setAttribute('aria-label',t('chat.entry'));handoffHost?.setAttribute('aria-description',unread?t('reader.tools.companion'):'');}};
   const offLocale=onUiLocaleChange(updateUnreadLabel);
   handoffHost?.setAttribute('role','group');handoffHost?.classList.toggle('has-companion-message',false);updateUnreadLabel();

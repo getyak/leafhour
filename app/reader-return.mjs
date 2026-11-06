@@ -24,7 +24,7 @@ export function safeReaderReturn(value){
   const ui=parseUiParam(url.searchParams);
   if(['duplicate','conflict','unsupported','invalid'].includes(ui.status))return null;
   const query=new URLSearchParams({book}),passage=url.searchParams.get('passage'),note=url.searchParams.get('note');
-  if(passageKey(passage)){query.set('passage',passage);if(noteKey(note))query.set('note',note);else if(url.searchParams.get('action')==='translate')query.set('action','translate');}
+  if(passageKey(passage)){query.set('passage',passage);if(noteKey(note))query.set('note',note);else if(['translate','chat'].includes(url.searchParams.get('action')))query.set('action',url.searchParams.get('action'));}
   if(passageKey(passage))for(const key of ['contentVersion','layer'])if(url.searchParams.has(key))query.set(key,url.searchParams.get(key));
   if(ui.status==='valid')query.set('ui',ui.code);
   return '/read?'+query;
@@ -42,7 +42,7 @@ export function readerLoginUrl({bookId,passageId,note,action,contentVersion,laye
 export function resolveReaderEntry(book,query){
   if(query.get('book')!==book.bookId)return null;const id=query.get('passage'),version=query.get('contentVersion'),layer=query.get('layer'),cited=query.has('contentVersion')||query.has('layer');
   if(cited){for(const key of ['book','passage','contentVersion','layer'])if(query.getAll(key).length>1)throw citationError('引用参数重复，请从 Agent 重新打开引用。');if(query.has('contentVersion')&&(!versionKey(version)||version!==book.contentVersion))throw citationError('引用的来源版本与当前书籍不同，请让 Agent 重新读取当前目录后打开引用。');if(query.has('layer')&&!layerKey(layer))throw citationError('引用的文本层无效，请从 Agent 重新打开引用。');}
-  for(const section of book.sections)if(section.paragraphs.some(p=>p.id===id)){const note=noteKey(query.get('note'))?query.get('note'):null;return {chapterId:section.chapterId,passageId:id,offset:160,note,...(version?{contentVersion:version}:{}),...(layer?{layer,mode:layer==='original'?'en':'zh',...(layer==='original'?{}:{variant:layer})}:{}),...(!note&&query.get('action')==='translate'?{action:'translate'}:{})};}
+  for(const section of book.sections)if(section.paragraphs.some(p=>p.id===id)){const note=noteKey(query.get('note'))?query.get('note'):null;return {chapterId:section.chapterId,passageId:id,offset:160,note,...(version?{contentVersion:version}:{}),...(layer?{layer,mode:layer==='original'?'en':'zh',...(layer==='original'?{}:{variant:layer})}:{}),...(!note&&['translate','chat'].includes(query.get('action'))?{action:query.get('action')}:{})};}
   if(cited)throw citationError('引用段落已无法对应当前书籍，请让 Agent 重新读取当前目录。');
   return null;
 }

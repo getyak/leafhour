@@ -57,6 +57,11 @@ test('source navigation stays within the same book and a real passage',()=>{
   assert.equal(f.hooks.onNavigateToPassage('book-one','p1'),true);assert.deepEqual(visits,['dismiss','p1']);assert.equal(f.counts().closes,1);
   assert.equal(f.hooks.onNavigateToPassage('other','p1'),false);assert.equal(f.hooks.onNavigateToPassage('book-one','unknown'),false);assert.equal(visits.length,2);
 });
+test('anonymous AI entry requests login directly without opening the conversation interstitial',()=>{
+ let opened=0;const integration={companionAnchor:{},triggerHost:{},focusReturn(){},onOpen(){throw Error('must not open chat before authentication');}};
+ const f=mount({session:{user:null},integration,openLogin:()=>{opened++;return Promise.resolve();}});
+ assert.equal(f.hooks.externalLauncher.onOpen(),false);assert.equal(opened,1);assert.deepEqual(f.navigations,[]);
+});
 test('source return focuses its destination only after successful navigation and fences late completion',async()=>{
  let complete,focused=0;const current={...reader(),dismissTools(){},goToPassage:()=>new Promise(resolve=>{complete=resolve;})};
  const f=mount({getReader:()=>current});f.events.getElementById=id=>id==='p1'?{focus:()=>focused++}:null;

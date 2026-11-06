@@ -162,6 +162,7 @@ export default Object.freeze({
   "chat.quote.tooLong": "引用最多 2,000 字，请缩小选择范围。",
   "chat.quote.receiptMismatch": "回执与当前请求不一致，问题与引用均已保留。",
 
+  "reader.dock.settings": "阅读设置",
   "chat.entry": "旁注",
   "chat.resize": "调整 AI 工作区宽度",
 

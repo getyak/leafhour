@@ -35,7 +35,10 @@ export async function buildPortalWeb({root,outputDir,html,additionalEntries=[]})
  const staticFiles=await closure([entry],{staticOnly:true}),lazy=[];for(const file of staticFiles)for(const edge of await edges(file))if(edge.dynamic)lazy.push(edge.file);
  const entries=[entry,...additionalEntries.map(name=>check(path.join(app,name)))],bundles=[],allInputs=new Set(),allRetained=new Set();
  for(const current of entries){
- const retained=await closure([...scripts.filter(file=>file!==entry),...lazy,...entries.filter(file=>file!==current)],{stop:current});
+ // The reader and library use the same conversation workspace implementation.
+ // Keep its public URL rather than folding another copy into the shelf entry.
+ const shared=allowed.has('app/reader-chat-workspace.mjs')?[path.join(app,'reader-chat-workspace.mjs')]:[];
+ const retained=await closure([...scripts.filter(file=>file!==entry),...lazy,...shared,...entries.filter(file=>file!==current)],{stop:current});
  for(const file of retained)allRetained.add(relative(file));
  const result=await build({absWorkingDir:root,entryPoints:[current],bundle:true,format:'esm',platform:'browser',target:'es2022',minify:true,metafile:true,write:false,outfile:path.join(outputDir,path.basename(current)),logLevel:'silent',plugins:[{name:'portal-public-boundaries',setup(builder){builder.onResolve({filter:/.*/},args=>{
   if(!args.importer)return undefined;

@@ -412,6 +412,8 @@ export async function buildReaderWeb({root,outputDir,html}){
   'reader-progress-refresh.mjs':{kind:'dynamic-import',importer:'reader.js'},
   'atmosphere-motion.mjs':{kind:'dynamic-import',importer:'reader-atmosphere.js'},
   'reader-location.mjs':{kind:'dynamic-import',importer:'reader.js'},
+  'reader-dock.mjs':{kind:'dynamic-import',importer:'reader.js'},
+  'reader-chat-workspace.mjs':{kind:'import-statement',importers:['reader-conversation.mjs','reader-highlights.mjs']},
   // Pure canvas layout waits for Share, preserving the fixed reader budget.
   'share-model.mjs':{kind:'dynamic-import',importer:'share.js'},
   'original-download.mjs':{kind:'dynamic-import',importer:'reader-translation.js'},
@@ -493,11 +495,11 @@ export async function buildReaderWeb({root,outputDir,html}){
    if(!candidates.some(file=>file&&file.startsWith('app/ui-catalogs/')))return undefined;
    throw Error('Non-public ui-catalogue bundle edge: '+args.path);
   });
-  b.onResolve({filter:/^\.\/(?:auth-session-activity|observability-bridge|reader-account|reader-progress-refresh|atmosphere-motion|atmosphere-audio|original-download|translation-first-use|credit-client|offline-reading|offline-position|chat-book-upload|library-chat-markdown|reader-book-actions|gift-compose|book-cover-ui|arrival-catalog|share-fonts|share-model|reader-settings-choices|reader-page-inputs|reader-page-surface|reader-location|person-return-controller|reader-companion-loader|reader-reading-guide|command-palette)\.mjs(?:\?.*)?$/},args=>{
+  b.onResolve({filter:/^\.\/(?:auth-session-activity|observability-bridge|reader-account|reader-progress-refresh|atmosphere-motion|atmosphere-audio|original-download|translation-first-use|credit-client|offline-reading|offline-position|chat-book-upload|library-chat-markdown|reader-book-actions|gift-compose|book-cover-ui|arrival-catalog|share-fonts|share-model|reader-settings-choices|reader-page-inputs|reader-page-surface|reader-location|reader-dock|reader-chat-workspace|person-return-controller|reader-companion-loader|reader-reading-guide|command-palette)\.mjs(?:\?.*)?$/},args=>{
   const at=args.path.indexOf('?'),query=at<0?'':args.path.slice(at);
   if(query&&args.path!==paletteRetry&&args.path!==accountRetry)throw Error('Non-public lazy reader module: '+args.path);
   const entry=lazyModules[args.path.slice(2,query?at:undefined)];
-  if(entry&&args.kind===entry.kind&&path.resolve(args.importer)===path.join(root,'app',entry.importer)){
+  if(entry&&args.kind===entry.kind&&(entry.importers||[entry.importer]).some(importer=>path.resolve(args.importer)===path.join(root,'app',importer))){
    const file='app/'+args.path.slice(2,query?at:undefined);if(!allowed.has(file))throw Error('Non-public lazy reader module: '+file);
    return {path:'/'+args.path.slice(2),external:true};
   }

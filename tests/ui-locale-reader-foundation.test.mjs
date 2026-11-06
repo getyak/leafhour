@@ -57,7 +57,7 @@ async function executeOwner(file,overrides={},inspection=null){
  for(const n of ast.body.filter(n=>n.type==='ImportDeclaration').reverse())body=body.slice(0,n.start)+body.slice(n.end);
  const AsyncFunction=Object.getPrototypeOf(async function(){}).constructor;return await new AsyncFunction(...Object.keys(bindings),body+(inspection?'\nreturn ('+inspection+');':''))(...Object.values(bindings));
 }
-async function readerFixture(){
+async function readerFixture({recordsAvailable=true}={}){
  await locale.requestUiRoute('en');const f=fixture(await readFile(new URL('../app/index.html',import.meta.url),'utf8')),book=syntheticBook(),records={comments:[],questions:[],highlights:[],readingSessions:[],readingMilestones:[],position:null},calls=[],writes=[],pending=[];let uuid=0;
  const selection={rangeCount:0,isCollapsed:true,toString:()=>'',anchorNode:null};f.document.getSelection=()=>selection;const timeouts=new Map();let timer=0;
  globals({document:f.document,window:f.win,location:{search:'?book=synthetic-book',pathname:'/read',origin:'https://example.test'},history:{replaceState(){}},localStorage:{getItem:()=>null,setItem:(...args)=>writes.push(args),removeItem:(...args)=>writes.push(args)},innerWidth:1400,innerHeight:900,scrollY:0,crypto:{randomUUID:()=> 'synthetic-'+ ++uuid},requestAnimationFrame:f.win.requestAnimationFrame,cancelAnimationFrame:f.win.cancelAnimationFrame,setTimeout:(fn,ms)=>{timeouts.set(++timer,{fn,ms});return timer;},clearTimeout:id=>timeouts.delete(id),setInterval:()=>++timer,clearInterval(){},matchMedia:()=>({matches:false,addEventListener(){},removeEventListener(){}}),MutationObserver:class{observe(){}disconnect(){}},ResizeObserver:class{observe(){}disconnect(){}},getSelection:()=>selection,fetch:()=>assert.fail('unexpected real transport'),Node:{TEXT_NODE:3},CustomEvent:class extends Event{constructor(name,options={}){super(name);this.detail=options.detail;}}});
@@ -65,12 +65,18 @@ async function readerFixture(){
  // while every effect assertion below takes its own post-boot baseline.
  const apiSource=await readFile(new URL('../app/reader-api.mjs',import.meta.url),'utf8'),apiTree=parse(apiSource,{ecmaVersion:'latest',sourceType:'module'}),facadeInitializer=apiTree.body.find(n=>n.type==='ExportNamedDeclaration'&&n.declaration?.declarations?.some(row=>row.id.name==='readerObservability')).declaration.declarations.find(row=>row.id.name==='readerObservability').init;
  const readerObservability=new Function('crypto','return ('+apiSource.slice(facadeInitializer.start,facadeInitializer.end)+');')(globalThis.crypto);
- const readerApi={readerObservability,readerOffline:onlineReaderOffline(),selectedBookId:'synthetic-book',readerSession:{user:{id:'owner-a'}},readerStorageKey:s=>s+'|owner-a|synthetic-book',readerFetch:async(url,options={})=>{calls.push({url,options});if(options.method==='POST'&&/comments|questions/.test(url))return new Promise(resolve=>pending.push({resolve,payload:JSON.parse(options.body)}));return {ok:true,json:async()=>url==='/api/records'?records:book};}};
+ const readerApi={readerObservability,readerOffline:onlineReaderOffline(),selectedBookId:'synthetic-book',readerSession:{user:{id:'owner-a'}},readerStorageKey:s=>s+'|owner-a|synthetic-book',readerFetch:async(url,options={})=>{calls.push({url,options});if(options.method==='POST'&&/comments|questions/.test(url))return new Promise(resolve=>pending.push({resolve,payload:JSON.parse(options.body)}));return {ok:url!=='/api/records'||recordsAvailable,json:async()=>url==='/api/records'?records:book};}};
  const ownership=await executeOwner('reader.js',{'./reader-api.mjs':readerApi,'./reader-highlights.mjs':{textRange,mountReaderHighlights:options=>mountReaderHighlights({...options,loadAnnotationModule:async()=>({mountReaderAnnotations:()=>({dispose(){},annotate(){}})})})},'./reader-presence.mjs':{mountReaderPresence:()=>({refresh(){}})},'./reader-loading.mjs':{mountReaderLoading:()=>({start:()=>1,setBook(){},finish(){}})},'./reader-pagination.mjs':{mountReaderPagination:()=>({active:false,update(){},unmount(){}})},'./reader-book-actions-bootstrap.mjs':{mountReaderBookActionsBootstrap:()=>({dispose(){}})},'./reader-conversation.mjs':{mountReaderConversation:()=>({dispose(){}}),readerInteractionBlocked:()=>false}},'({listenerCount:()=>listenerDisposers.size??listenerDisposers.length,disposed:()=>readerDisposed})');
  for(let i=0;i<6;i++)await tick();assert.equal(f.document.body.dataset.ready,'true','the actual reader booted a synthetic loaded chapter');
  return {...f,ownership,session:readerApi.readerSession,book,records,calls,writes,pending,selection,timeouts,uuid:()=>uuid};
 }
 function click(document,node){const event=new Event('click');Object.defineProperties(event,{target:{value:node},clientY:{value:140}});document.dispatchEvent(event);}
+test('opening the real notes panel with unavailable records shows its recovery state without calling a boolean as a retained form',async()=>{
+ const f=await readerFixture({recordsAvailable:false});try{
+  const $=id=>f.document.getElementById(id);click(f.document,$('p1'));$('show-comment').dispatchEvent(new Event('click'));
+  assert.equal($('note-panel').hidden,false);assert.ok($('panel-content').textContent.length>0);assert.equal($('thought-text'),null);
+ }finally{f.win.dispatchEvent(new Event('pagehide'));resetGlobals();await locale.requestUiRoute('en');}
+});
 async function commitAll(document,check){for(const code of ['ja','zh-Hant','zh-Hans','en']){document.trap=true;const result=await locale.requestUiRoute(code);document.trap=false;assert.match(result.kind,/committed/);check(code);}}
 
 test('actual reader boot, source Range, note IME and deferred save survive singleton commits',async()=>{

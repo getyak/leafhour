@@ -1,3 +1,5 @@
+import {withBackendExecutionAuthority} from '../packages/domain/execution-authority.mjs';
+import {withCandidateDelivery} from '../packages/domain/execution-delivery.mjs';
 import {markUncertainGenerationCommit} from './generation-commit.mjs';
 import {translationDirection,validateTranslationLanguage,translationPair,projectTranslation,translationPayload,hasTranslations,mergeLanguageMaps} from './translation-languages.mjs';
 import {buildReadingSummary} from './reading-summary.mjs';
@@ -80,7 +82,7 @@ function validateShelfBackup(entry){
 // sample translations remain defaults, so a clean import can replace them.
 const restoreTranslationValue=(value,current,base,preserveExisting)=>preserveExisting?{contentVersion:value.contentVersion,translations:{...value.translations,...base?.translations,...(current?.contentVersion===value.contentVersion?current.translations:{})},translationsByLanguage:mergeLanguageMaps(value.translationsByLanguage,base?.translationsByLanguage,current?.contentVersion===value.contentVersion?current.translationsByLanguage:null)}:value;
 
-export async function createLibraryService({dataDir,catalogDir=path.resolve('catalog'),translator=null,dataStore=null,coverGenerator=null,schedule=null}={}){
+export async function createLibraryService({dataDir,catalogDir=path.resolve('catalog'),translator=null,dataStore=null,coverGenerator=null,schedule=null,documentExtractor=extractDocument,documentMetadata}={}){
   if(!dataStore)await mkdir(dataDir,{recursive:true,mode:0o700});
   const introductions=createBookIntroductionStore({dataDir:path.join(dataDir,'book-introductions'),dataStore});
   const publicBooks=new Map(),queues=new Map(),translationsRunning=new Set();
@@ -317,9 +319,9 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
       if(claim.data)return coverResult(Buffer.from(claim.data,'base64'));
       if(!claim.mine)throw fail('封面正在准备，请稍后再看',503);
       try{
-        const generated=await coverGenerator({title:book.title,author:book.author});
+        const generated=await withBackendExecutionAuthority(user,async()=>{const fresh=await getBook(user,book.bookId);return fresh.contentVersion===book.contentVersion;},()=>coverGenerator({bookId:book.bookId,contentVersion:book.contentVersion,title:book.title,author:book.author}));
         if(!Buffer.isBuffer(generated?.bytes)||!generated.bytes.length||generated.bytes.length>1024*1024)throw Error('Invalid cover');
-        await mutate(file,{},state=>{if(state.token!==token)throw fail('封面任务已变化，请稍后再看',503);Object.assign(state,{data:generated.bytes.toString('base64'),kind:'ai-generated',model:generated.model,prompt:generated.prompt,createdAt:new Date().toISOString(),leaseUntil:0,retryAfter:0});delete state.token;});
+        await withCandidateDelivery(generated,()=>mutate(file,{},state=>{if(state.token!==token)throw fail('封面任务已变化，请稍后再看',503);Object.assign(state,{data:generated.bytes.toString('base64'),kind:'ai-generated',model:generated.model,prompt:generated.prompt,createdAt:new Date().toISOString(),leaseUntil:0,retryAfter:0});delete state.token;}));
         return coverResult(generated.bytes);
       }catch(error){
         await mutate(file,{},state=>{if(state.token===token){state.leaseUntil=0;state.retryAfter=Date.now()+15*60*1000;state.failure=error.coverGenerationStatus==='rejected'?'rejected':'uncertain';if(state.failure==='rejected')delete state.requestedAt;delete state.token;}});
@@ -342,7 +344,7 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
         if(!info||info.size>MAX_FILE_BYTES)throw fail('找不到原文件封面',404);
         const bytes=await (dataStore?dataStore.blob(originalFile):readFile(originalFile));
         if(bytes.length>MAX_FILE_BYTES||digest(bytes)!==hash)throw fail('原文件校验失败，请重新上传',409);
-        const cover=await deriveImportedCover(bytes,book.source.format).catch(error=>{if(error.status===422)return null;throw error;});
+        const cover=await (documentMetadata?documentMetadata(bytes,{filename:book.source.filename||'',format:book.source.format}).then(result=>result.cover):deriveImportedCover(bytes,book.source.format)).catch(error=>{if(error.status===422)return null;throw error;});
         await mutate(file,{},data=>Object.assign(data,cover?{data:cover.toString('base64')}:{missing:true}));
         if(!cover)return null;
         return {mimeType:'image/webp',bytes:cover};
@@ -353,7 +355,7 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
     }
     return coverJobs.get(key);
   }
-  async function importDocument(user,input){requireUser(user);return importExtracted(user,{...input,extracted:await extractDocument(input)});}
+  async function importDocument(user,input){requireUser(user);return importExtracted(user,{...input,extracted:await documentExtractor(input)});}
   async function findDuplicate(user,{sha256}={}){
     requireUser(user);if(typeof sha256!=='string'||!/^[a-f0-9]{64}$/.test(sha256))throw fail('原件摘要无效');
     const canonical='private-'+digest(user.id+sha256).slice(0,24),first=await read(bookFile(user,canonical),null);
@@ -409,7 +411,7 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
     if(input?.baseContentVersion!==before.contentVersion)throw fail('原文版本已变化，请重新读取后校对',409);
     const original=await getOriginal(user,id);let pdfPages=null,extracted=null;
     if(before.source.format==='pdf'){const {PDFDocument}=await import('pdf-lib');try{const pdf=await PDFDocument.load(original.bytes,{updateMetadata:false});pdfPages=pdf.getPageCount();}catch{throw fail('PDF 原件无法核对，请检查是否损坏或加密',422);}}
-    if(input.operation==='reextract')extracted=await extractDocument({filename:original.filename,bytes:original.bytes});
+    if(input.operation==='reextract')extracted=await documentExtractor({filename:original.filename,bytes:original.bytes});
     const built=buildSourceRevision({book:before,input,userId:user.id,pdfPages,extracted}),book=built.book;bookCapacity(book);
     const saved=await read(recordFile(user,book.bookId),null);
     // A completed retry is read-only: never resnapshot or overwrite a later note.
@@ -636,7 +638,7 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
       // The actual provider receives the signal and aborts its network request.
       const interrupted=signal&&new Promise((_,reject)=>{stopWaiting=()=>reject(signal.reason);signal.addEventListener('abort',stopWaiting,{once:true});});
       signal?.throwIfAborted();
-      const generation=translator({passageId,sourceLanguage,targetLanguage,passages:translationContext,sourceVersion:book.contentVersion},{signal});
+      const generation=withBackendExecutionAuthority(user,async()=>{await checkPermission();const latest=await getBook(user,id);assertGenerationSource({book,fresh:latest,passage:passages[i],freshPassage:allPassages(latest).find(p=>p.id===passageId)});return true;},()=>translator({bookId:id,passageId,sourceLanguage,targetLanguage,passages:translationContext,sourceVersion:book.contentVersion},{signal}));
       const result=await (interrupted?Promise.race([generation,interrupted]):generation);
       if(!result||!['literal','interpretive'].every(k=>typeof result[k]==='string'&&result[k].trim()&&result[k].length<=12000))throw fail('翻译结果不完整，请重试；原文已保留',502);
       await checkPermission();
@@ -646,14 +648,14 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
       const fresh=await getBook(user,id),freshPassage=allPassages(fresh).find(p=>p.id===passageId);
       assertGenerationSource({book,fresh,passage:passages[i],freshPassage});
       let saved;
-      await mutate(path.join(userDir(user),'translations',digest(id)+'.json'),{},async data=>{
+      await withCandidateDelivery(result,()=>mutate(path.join(userDir(user),'translations',digest(id)+'.json'),{},async data=>{
         await checkPermission();
         const current=data[passageId]?.contentVersion===fresh.contentVersion?data[passageId]:{},existing={...translationPair(freshPassage,targetLanguage),...translationPair(current,targetLanguage)},pair=mergeGeneratedTranslations({existing,before,generated:translations});
         saved={contentVersion:fresh.contentVersion,translations:{...freshPassage.translations,...current.translations},translationsByLanguage:mergeLanguageMaps(freshPassage.translationsByLanguage,current.translationsByLanguage)};
         if(targetLanguage==='zh')saved.translations=pair;else saved.translationsByLanguage[targetLanguage]=pair;
         {const projected={...fresh,sections:fresh.sections.map(s=>({...s,paragraphs:s.paragraphs.map(p=>p.id===passageId?{...p,...translationPayload(saved)}:data[p.id]?.contentVersion===fresh.contentVersion?{...p,...translationPayload(data[p.id])}:p)}))};bookCapacity(projected);}
         data[passageId]=saved;
-      },{beforeCommit:async()=>{await checkPermission();commitAttempted=true;}});
+      },{beforeCommit:async()=>{await checkPermission();commitAttempted=true;}}));
       await chapterReads.manifest(user,id);
       await notifySourceMutation(user,id,{type:'translation-ack',bookId:id,passageId});
       return projectTranslation({...freshPassage,...translationPayload(saved)},targetLanguage);

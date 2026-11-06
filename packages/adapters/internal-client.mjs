@@ -1,0 +1,5 @@
+import http from 'node:http';
+import {executionError,encodeData,decodeData} from '../contracts/execution.mjs';
+export function createInternalClient({socketPath,token,timeoutMs=60000}={}){
+ return {call(method,body={}){return new Promise((resolve,reject)=>{const payload=Buffer.from(JSON.stringify(encodeData(body))),request=http.request({socketPath,path:'/internal/v1/'+method,method:'POST',headers:{Authorization:'Bearer '+token,'Content-Type':'application/json','Content-Length':payload.length},timeout:timeoutMs},response=>{let size=0;const chunks=[];response.on('data',chunk=>{size+=chunk.length;if(size>360*1024*1024){response.destroy();reject(executionError('internal_response_too_large',413));}else chunks.push(chunk);});response.on('error',reject);response.on('end',()=>{try{const value=decodeData(JSON.parse(Buffer.concat(chunks)));if(response.statusCode!==200)reject(executionError(value.code||'internal_request_failed',response.statusCode));else resolve(value);}catch(error){reject(error);}});});request.on('error',reject);request.on('timeout',()=>request.destroy(executionError('internal_timeout',503)));request.end(payload);});}};
+}

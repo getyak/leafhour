@@ -1,0 +1,21 @@
+/* Persistent settings and conversation entries; use the existing reading surface. */
+.reader-dock{position:fixed;right:max(24px,env(safe-area-inset-right));bottom:max(20px,env(safe-area-inset-bottom));z-index:7;width:82px;display:flex;flex-direction:column-reverse;align-items:center;gap:6px;isolation:isolate}
+.reader-dock .reading-tools-chat-slot{display:block;width:76px}
+.reader-dock .library-chat-trigger{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;width:76px;min-height:82px;padding:0;border:0;background:transparent;font-size:0;color:var(--ink);cursor:grab;touch-action:none;user-select:none}
+.reader-dock .library-chat-trigger::before{content:'';display:block;width:65px;height:68px;border:0;border-radius:0;background:url('/brand-assets/reader-companion.svg') center/contain no-repeat;filter:drop-shadow(0 2px 3px #17261918);transition:transform 180ms ease}
+.reader-dock .library-chat-trigger::after{content:'AI';font:12px/1.5 var(--interface);padding:0 8px;border-radius:8px;background:var(--panel);color:var(--ink)}
+.reader-dock .library-chat-trigger:hover::before{transform:translateY(-2px) rotate(-3deg)}
+.reader-dock[data-dragging=true] .library-chat-trigger{cursor:grabbing}
+.reader-dock[data-dragging=true] .library-chat-trigger::before{transform:rotate(-5deg)}
+.reader-dock-settings{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;width:76px;min-height:54px;padding:5px 4px;border:1px solid var(--line-control);border-radius:12px;background:var(--panel);color:var(--ink);box-shadow:var(--shadow-popover)}
+.reader-dock-settings>span:first-child{font:21px/1.1 var(--font-serif)}
+.reader-dock-settings>span:last-child{font:12px/1.35 var(--interface);max-width:100%;text-align:center;overflow-wrap:anywhere}
+.reader-dock .squirrel-companion-bubble{font-size:14px}
+body.has-reader-dock #book-page{width:min(var(--page-width),calc(100% - 144px));margin-inline-start:max(24px,min(calc((100% - var(--page-width))/2),calc(100% - var(--page-width) - 120px)));margin-inline-end:120px}
+body.has-reader-dock[data-paginated=true] #book-page{width:min(1200px,calc(100% - 144px));margin-inline-start:max(24px,min(calc((100% - 1200px)/2),calc(100% - 1200px - 120px)));margin-inline-end:120px}
+@media(max-width:600px){.reader-dock{right:max(12px,env(safe-area-inset-right));bottom:max(12px,env(safe-area-inset-bottom));width:76px}body.has-reader-dock #book-page,body.has-reader-dock[data-paginated=true] #book-page{width:calc(100% - 128px);margin-inline-start:18px;margin-inline-end:110px}}
+@media(prefers-reduced-motion:reduce){.reader-dock .library-chat-trigger::before{transition:none;transform:none!important}}
+
+.auth-dialog .dialog-close{position:absolute}
+.auth-dialog .primary{background:var(--auth-green);color:var(--auth-paper);border-radius:var(--action-radius)}
+.auth-dialog .outline.full{width:100%;min-height:44px;border:1px solid var(--line-control);border-radius:var(--action-radius)}

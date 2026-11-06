@@ -1,3 +1,5 @@
+import {withBackendExecutionAuthority} from '../packages/domain/execution-authority.mjs';
+import {withCandidateDelivery} from '../packages/domain/execution-delivery.mjs';
 import {randomUUID} from 'node:crypto';
 import {audioError,audioHash,audioPassages} from './audio-content.mjs';
 import {guideScope,guideBatches,validateGuide,guideLimits,guideTextLimits} from './listening-guide-content.mjs';
@@ -148,7 +150,7 @@ export function createListeningGuideService({audio,library,generator=createGuide
     if(store.durable&&typeof store.reserveGeneration!=='function')throw audioError('导听额度暂时无法核验。',503,'quota_unavailable');
     await store.reserveGeneration?.(owner.id,stageId,{guideJobId:id});
     const inFlight=await transition(owner,bookId,id,token,j=>{j.lease.inFlight=true;j.lease.expiresAt=Date.now()+leaseMs;});if(!inFlight||controller.signal.aborted)return;
-    let input={stage:job.stage,bookId,contentVersion:job.scope.contentVersion,intent:job.scope.intent,signal:controller.signal};
+    let input={requestId:id+':'+job.stage+':'+job.outlines.length+':'+(job.verifyIndex||0),stage:job.stage,bookId,contentVersion:job.scope.contentVersion,intent:job.scope.intent,signal:controller.signal};
     if(job.stage==='outline')input={...input,batchIndex:job.outlines.length,passages:batches[job.outlines.length]};
     else if(job.stage==='script')input={...input,outlines:job.outlines};
     else if(job.stage==='verify'){
@@ -157,18 +159,18 @@ export function createListeningGuideService({audio,library,generator=createGuide
     }else throw audioError('导听阶段记录无效。',409,'invalid_guide');
     const liveBeforeCall=await snapshot(owner,bookId,id);
     if(controller.signal.aborted||liveBeforeCall.status!=='preparing'||liveBeforeCall.lease?.token!==token)return;
-    const result=await generator(input);submitted++;
+    const result=await withBackendExecutionAuthority(owner,async()=>{const latest=await snapshot(owner,bookId,id);if(latest.status!=='preparing'||latest.lease?.token!==token||controller.signal.aborted)return false;await current(owner,bookId,job.scope);return true;},()=>generator(input));submitted++;
     if(controller.signal.aborted)return;
     const fresh=await current(owner,bookId,job.scope);
     if(job.stage==='outline'){
      const outline=verifiedOutline(batches[job.outlines.length],result);
-     if(!await transition(owner,bookId,id,token,j=>{j.outlines.push(outline);j.readPassageIds.push(...outline.passageIds);j.stage=j.outlines.length===batches.length?'script':'outline';j.lease=null;}))return;
+     if(!await withCandidateDelivery(result,()=>transition(owner,bookId,id,token,j=>{j.outlines.push(outline);j.readPassageIds.push(...outline.passageIds);j.stage=j.outlines.length===batches.length?'script':'outline';j.lease=null;}),{accept:value=>!!value}))return;
     }else if(job.stage==='script'){
      const candidate=validateGuide(fresh,job.scope,result);
-     if(!await transition(owner,bookId,id,token,j=>{j.candidate=candidate;j.stage='plan-verification';j.lease=null;}))return;
+     if(!await withCandidateDelivery(result,()=>transition(owner,bookId,id,token,j=>{j.candidate=candidate;j.stage='plan-verification';j.lease=null;}),{accept:value=>!!value}))return;
     }else{
      const checks=checkSupport(job.verifyBatches[job.verifyIndex],result);
-     if(!await transition(owner,bookId,id,token,j=>{j.verification.push(...checks);j.verifyIndex++;j.stage=j.verifyIndex===j.verifyBatches.length?'publish':'verify';j.lease=null;}))return;
+     if(!await withCandidateDelivery(result,()=>transition(owner,bookId,id,token,j=>{j.verification.push(...checks);j.verifyIndex++;j.stage=j.verifyIndex===j.verifyBatches.length?'publish':'verify';j.lease=null;}),{accept:value=>!!value}))return;
     }
    }
   }catch(error){

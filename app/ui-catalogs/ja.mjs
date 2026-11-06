@@ -162,6 +162,7 @@ export default Object.freeze({
   "chat.quote.tooLong": "引用は2,000文字までです。選択範囲を短くしてください。",
   "chat.quote.receiptMismatch": "応答がこのリクエストと一致しません。質問と引用は保持されています。",
 
+  "reader.dock.settings": "読書設定",
   "chat.entry": "余白のメモ",
   "chat.resize": "AI ワークスペースの幅を調整",
 

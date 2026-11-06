@@ -1,3 +1,7 @@
+import {withBackendExecutionAuthority} from '../packages/domain/execution-authority.mjs';
+import {normalizeReadingGuideContext} from '../packages/contracts/reading-guide-context.mjs';
+export {normalizeReadingGuideContext} from '../packages/contracts/reading-guide-context.mjs';
+import {withCandidateDelivery} from '../packages/domain/execution-delivery.mjs';
 import path from 'node:path';
 import {randomUUID} from 'node:crypto';
 import {digest,fail} from './document-import.mjs';
@@ -13,11 +17,6 @@ const id=x=>text(x,256)&&!/[\u0000-\u001f]/u.test(x);
 const bytes=x=>Buffer.byteLength(JSON.stringify(x));
 const title=x=>typeof x==='string'?x:x?.zh||x?.en||'';
 
-export function normalizeReadingGuideContext(value){
- if(!only(value,['title','author','chapters','passages'])||!text(value.title,500)||typeof value.author!=='string'||!value.author.isWellFormed()||[...value.author].length>500||!Array.isArray(value.chapters)||value.chapters.length>24||!Array.isArray(value.passages)||value.passages.length>6||!value.passages.length||bytes(value)>18000)throw fail('阅读前导的开篇取样不完整或超过范围');
- if(value.chapters.some(c=>!only(c,['id','title'])||!id(c.id)||typeof c.title!=='string'||!c.title.isWellFormed()||[...c.title].length>200)||value.passages.some(p=>!only(p,['id','chapterId','original'])||!id(p.id)||!id(p.chapterId)||!text(p.original,6000))||value.passages.reduce((n,p)=>n+[...p.original].length,0)>6000||new Set(value.passages.map(p=>p.id)).size!==value.passages.length)throw fail('阅读前导只使用当前书的目录与有限原文');
- return structuredClone(value);
-}
 
 function cloudContext(book){
  const opening=introductionContext(book),byPassage=new Map((book.sections||[]).flatMap(s=>(s.paragraphs||[]).map(p=>[p.id,s.chapterId])));
@@ -58,18 +57,19 @@ export function createReadingGuideService({dataDir,dataStore=null,library,genera
   try{
    await quota.reserve(user,nonce,clock(),timeoutMs);reserved=true;controller.signal.throwIfAborted();
    dispatched=true;
-   const generated=await Promise.race([generator({book:{bookId:value.bookId,contentVersion:value.contentVersion},context:value.context,locale:value.locale,signal:controller.signal}),interrupted]);
+   const generated=await Promise.race([withBackendExecutionAuthority(user,authorize,()=>generator({book:{bookId:value.bookId,contentVersion:value.contentVersion,source:value.sourceKind},context:value.context,locale:value.locale,signal:controller.signal})),interrupted]);
    controller.signal.throwIfAborted();completed=true;
    if(!await authorize())throw fail('登录已变化，未保存阅读前导',401);
    if(value.sourceKind==='cloud'&&(await library.getBook(user,value.bookId)).contentVersion!==value.contentVersion)throw fail('原文已变化，未保存旧导览',409);
    if(!generated||!text(generated.opening,1200)||!text(generated.method,1200)||!text(generated.readingQuestion,300)||!text(generated.model,200))throw fail('阅读前导未通过格式核验，可以稍后重试',502);
    const guide={kind:'leafhour-reading-guide',schemaVersion:1,id:'guide-'+digest(location).slice(0,32),bookId:value.bookId,contentVersion:value.contentVersion,sourceKind:value.sourceKind,locale:value.locale,origin:'ai',status:'draft',scope:'opening-sample',opening:generated.opening.trim(),method:generated.method.trim(),readingQuestion:generated.readingQuestion.trim(),sampleRanges:value.context.passages.map(p=>({passageId:p.id,chapterId:p.chapterId,charOffset:0,charEnd:[...p.original].length})),model:generated.model,createdAt:new Date(clock()).toISOString()};
-   await store.mutate(location,{},row=>{controller.signal.throwIfAborted();if(row.attempt?.nonce!==nonce||row.attempt.expiresAt<=clock())throw fail('阅读前导结果待确认，请稍后查看',409);row.value=guide;row.attempt.state='ready';});
+   await withCandidateDelivery(generated,()=>store.mutate(location,{},row=>{controller.signal.throwIfAborted();if(row.attempt?.nonce!==nonce||row.attempt.expiresAt<=clock())throw fail('阅读前导结果待确认，请稍后查看',409);row.value=guide;row.attempt.state='ready';}));
    return {guide,available:true,state:'ready'};
   }catch(error){
    if(error?.readingGuideCompleted===true||['preparation','initialize'].includes(error?.readerStage))completed=true;
    await store.mutate(location,{},row=>{if(row.attempt?.nonce===nonce&&!row.value)row.attempt.state=!dispatched||completed?'failed':'unknown';});
    throw fail(error?.status===429?'阅读前导的生成额度暂时用完，请稍后再试':!dispatched||completed?'阅读前导暂未完成，可以稍后重试':'阅读前导结果待确认，没有重新生成。可以继续阅读',error?.status||502);
+
   }finally{
    clearTimeout(timer);signal?.removeEventListener('abort',abort);
    try{if(reserved)await quota.releaseQuota(nonce);}finally{controller.abort();}

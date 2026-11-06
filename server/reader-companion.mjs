@@ -1,3 +1,5 @@
+import {withBackendExecutionAuthority} from '../packages/domain/execution-authority.mjs';
+import {withCandidateDelivery} from '../packages/domain/execution-delivery.mjs';
 import {randomUUID} from 'node:crypto';
 import {sourceIndex,invalid} from './experience-validation.mjs';
 
@@ -111,12 +113,12 @@ export function createReaderCompanionService({bookFor,mutateBook,clock,generator
       if(!mayStart||controller.signal.aborted)return await finish({status:'cancelled',answer:null});
       const interrupted=new Promise((_,reject)=>controller.signal.addEventListener('abort',()=>reject(invalid('陪读已停止',408)),{once:true}));
       phase='generation';timer=setTimeout(()=>{if(!controller.signal.aborted){timedOut=true;controller.abort();}},90000);timer.unref?.();stopWatching=watchRun(user,bookId,input.id,runId,controller);
-      const candidate=await Promise.race([Promise.resolve().then(()=>generator({kind:'companion',book:{bookId:book.bookId,contentVersion:book.contentVersion,title:book.title},passageId:input.passageId,chapterId:index.byId.get(input.passageId).chapterId,context:claimed.context,history:claimed.history,signal:controller.signal,runId})),interrupted]);
+      const candidate=await Promise.race([Promise.resolve().then(()=>withBackendExecutionAuthority(user,authorize,()=>generator({kind:'companion',book:{bookId:book.bookId,contentVersion:book.contentVersion,title:book.title},passageId:input.passageId,chapterId:index.byId.get(input.passageId).chapterId,context:claimed.context,history:claimed.history,signal:controller.signal,runId}))),interrupted]);
       phase='authorization';if(!await authorize())return await finish({status:'cancelled',answer:null});
       phase='validation';const answer=answerFor(candidate,claimed.context,bookId);
       phase='source';const fresh=await bookFor(user,bookId),freshIndex=sourceIndex(fresh);
       if(fresh.contentVersion!==book.contentVersion||claimed.context.passages.some(p=>freshIndex.byId.get(p.id)?.original!==index.byId.get(p.id)?.original))throw invalid('原文版本已变化',409);
-      phase='commit';const result=await finish({status:answer?'completed':'silent',answer});
+      phase='commit';const result=await withCandidateDelivery(candidate,()=>finish({status:answer?'completed':'silent',answer}),{accept:value=>['completed','silent'].includes(value?.status)});
       if(timedOut&&result.status==='failed')throw Object.assign(Error(),{name:'TimeoutError'});
       return result;
     }catch(error){
