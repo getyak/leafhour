@@ -288,7 +288,14 @@ export function observeNativeScroll(selector,alignment='nearest'){
     const movable=(start,end,low,high,current,max,center=false)=>{
       if(!center&&(start>=low&&end<=high||start<=low&&end>=high))return false;
       const small=end-start<=high-low,delta=center?(start+end-low-high)/2:start<low?(small?start-low:end-high):(small?end-high:start-low);
-      return Math.abs(Math.max(0,Math.min(max,current+delta))-current)>.1;
+      const destination=Math.max(0,Math.min(max,current+delta));
+      // Root center coordinates are resolved on the device-pixel grid by
+      // native scrolling. A 2469.5625px request at DPR 1 remains at 2470px;
+      // no scroll event is expected. Keep padding/edge probes strict and use
+      // the measured DPR/visual scale, not an enlarged position tolerance.
+      const dpr=Number(globalThis.devicePixelRatio),scale=(Number.isFinite(dpr)&&dpr>0?dpr:1)*(value.visualViewport?.scale||1);
+      const attainable=center&&index===0?Math.round(destination*scale)/scale:destination;
+      return Math.abs(attainable-current)>.1;
     };
     // Center can queue a smooth movement even for a currently visible target.
     // Its attainable delta must be observed before claiming unchanged. A

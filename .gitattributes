@@ -8,3 +8,6 @@ app/fonts/newsreader/OFL.txt whitespace=-blank-at-eol
 app/fonts/noto-serif-sc/OFL.txt -text whitespace=-blank-at-eol
 # Keep the independently byte-verified upstream native dependency unchanged.
 apps/ios/Vendor/ZIPFoundation/** -text whitespace=-blank-at-eol
+# Embedded upstream GLSL retains significant source text; do not reformat it.
+app/vendor/three-scene.mjs linguist-generated=true whitespace=-blank-at-eol,-space-before-tab
+app/vendor/gsap-scroll.mjs linguist-generated=true

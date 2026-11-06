@@ -1,3 +1,4 @@
+import {publicHomeDocument} from '../app/home-public-document.mjs';
 // Serve the correct public shell on the first paint, even before modules load.
 import {homeDocument,homeLocales} from '../app/home-locale.mjs';
 import {publicDocumentHeader,publicNavigationMenu} from '../app/public-navigation.mjs';
@@ -23,17 +24,19 @@ export function portalDocument(source,pathname,decision){
       .replace('<!-- public-menu -->',publicNavigationMenu({locale,languages}));
   }
   if(pathname==='/library')return libraryDocument(source,decision);
-  if(pathname==='/'){if(decision)return stampInitialUiDocument(initialNativeLinks(homeDocument(source,decision.locale),decision),decision);return homeDocument(source,'en').replace(/(<a\b[^>]*\bhref=")(\/(?:library|read)(?:[?#][^"]*)?)(")/g,(_,before,href,after)=>before+href.replace(/(?:\?|&amp;)ui=en(?=#|$)/,'')+after);}
-  if(pathname==='/en')return homeDocument(source,'en');
+  if(pathname==='/'){if(decision)return stampInitialUiDocument(initialNativeLinks(publicHomeDocument(homeDocument(source,decision.locale)),decision),decision);return publicHomeDocument(homeDocument(source,'en')).replace(/(<a\b[^>]*\bhref=")(\/(?:library|read)(?:[?#][^"]*)?)(")/g,(_,before,href,after)=>before+href.replace(/(?:\?|&amp;)ui=en(?=#|$)/,'')+after);}
+  if(pathname==='/en')return publicHomeDocument(homeDocument(source,'en'));
   const locale=homeRoutes.get(pathname);
-  return locale?homeDocument(source,locale):source;
+  return locale?publicHomeDocument(homeDocument(source,locale)):source;
 }
 // The selected language owns the initial shell before modules run. The same
 // renderer serves hosted/self-hosted HTML, with private metadata removed.
 function libraryDocument(source,decision={locale:'en',source:'browser',preference:null}){
   if(!decision)decision={locale:'en',source:'browser',preference:null};
-  const librarySource=source.replace(/<script\s+type="module"\s+src="\/home-(?:motion|atmosphere|sample)\.mjs"\s*><\/script>/g,'').replace(/<link\s+rel="stylesheet"\s+href="\/home-(?:motion|atmosphere|sample|story)\.css"\s*>/g,'');
-  const localized=homeDocument(librarySource,decision.locale);
+  const librarySource=source.replace(/<script\s+type="module"\s+src="\/home-(?:motion|atmosphere|sample|experience)\.mjs"\s*><\/script>/g,'').replace(/<link\s+rel="stylesheet"\s+href="\/home-(?:motion|atmosphere|sample|story|experience)\.css"\s*>/g,'');
+  // Hidden marketing captures must not compete with the private reading room.
+  const lazySource=librarySource.replace(/(<div id="home-view">)([\s\S]*?)(?=<div id="library-view" hidden>)/,(_,start,body)=>start+body.replace(/<img\b[^>]*>/g,tag=>tag.replace(/\s(?:loading|fetchpriority)="[^"]*"/g,'').replace('<img','<img loading="lazy"')));
+  const localized=homeDocument(lazySource,decision.locale);
   const privateMetadata=localized.replace(/<script type="application\/ld\+json">[\s\S]*?<\/script>/g,'').replace(/<link rel="alternate" hreflang="[^"]+" href="[^"]+">/g,'').replaceAll(' aria-current="true"','');
   const withRobots=privateMetadata.includes('<meta name="robots"')?privateMetadata.replace(/<meta name="robots"[^>]*>/,'<meta name="robots" content="noindex,nofollow">'):privateMetadata.replace('</head>','<meta name="robots" content="noindex,nofollow"></head>');
   const rendered=withRobots.replace(/<title>[^<]*<\/title>/,'<title>'+firstPaintCatalogue(decision.locale)['portal.title.library']+'</title>')

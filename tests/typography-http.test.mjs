@@ -51,8 +51,8 @@ test('the homepage and reader preload only the upright first-screen face',async(
     assert.equal(response.status,200,route);
     const html=await response.text();
     const preloads=[...html.matchAll(preloadRe)].map(match=>match[1]);
-    assert.deepEqual(preloads,['/fonts/newsreader/newsreader-var.woff2'],route+' must preload exactly the upright face with type and crossorigin');
-    assert.ok(html.includes('<link rel="stylesheet" href="/typography.css">'),route+' must load the shared typography module');
+    assert.deepEqual(preloads,[route==='/read'?'/fonts/newsreader/newsreader-var.woff2':'/fonts/newsreader/newsreader-home.woff2'],route+' must preload exactly the upright face with type and crossorigin');
+    assert.ok(html.includes(route==='/read'?'<link rel="stylesheet" href="/typography.css">':'<link rel="stylesheet" href="/home-public.css">'),route+' must load its typography owner');
     assert.doesNotMatch(html,/newsreader-italic-var\.woff2" as="font"/,route+' must leave italic lazy');
     assert.doesNotMatch(html,/fonts\.(?:googleapis|gstatic)\.com/,route+' must not request external fonts');
   }
