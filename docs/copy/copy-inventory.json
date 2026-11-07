@@ -106,7 +106,7 @@
       },
       {
         "file": "app/beta-channel.mjs",
-        "sha256": "8c499be58375dc737aaea8120247e534718e64b2cc21f99d00d167c6c1f962fd"
+        "sha256": "5c89c312109a28cf8d5600fda835eec9ebc108d9ea23be18c12a6e6ba25a62cd"
       },
       {
         "file": "app/beta-feedback.mjs",
@@ -1597,7 +1597,7 @@
         "sha256": "510f62256d1cf78f3efad2f5bf4f225ea6fce14bb48557ede314aaf43cd0afe2"
       }
     ],
-    "inputDigest": "f23b03e529ec14aef488f9236f3d133a0fe29669c24796365492a26781d58e81"
+    "inputDigest": "c1dc0d797fa55f2d95a37ee7472028be297498515a2f3f68423463446c634c07"
   },
   "locales": [
     "en",
