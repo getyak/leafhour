@@ -59,3 +59,10 @@
 托管翻译保留平台总量与并发保护。个人固定十段/小时的旧限制已移除，避免一个有效的十二段窗口无法完成。这不启用计费、不改变每段报价，也不会启动无人阅读的全书任务。服务容量不足时暂停，保留原文、已保存译文和必要的请求回执。
 
 单段四千 Unicode scalar 与邻近上下文二十四 KiB 的限制由共用领域服务检查，未启用计费的请求也不能跳过。超限在模型调用前拒绝，既有完整译文仍可直接读取。旧个人频次限制的移除属于本轮实现取舍，同一账号可用到平台共享容量，服务端仍保留总量和并发保护。
+## 2026-11-07: Quiet voice questions and listening controls
+
+The AI affordance remains available with sleeping reader chrome. Hold to record, release to submit and slide upward to cancel. A submitted question stays in the current book's conversation while reading continues. Completion only lights a marker; tapping opens the saved answer full screen and returning preserves the page and listening state. Reduce Motion uses a static status indicator.
+
+Listening navigation/settings and playback collapse independently. Idle hides navigation only. The transport's down arrow folds it into a mini strip with direct pause/resume and an expand action. Voice capture temporarily hands over audio and resumes only unchanged prior playback. Original voice captures are staged within the account before auth/network work and expose recovery/export on failure.
+
+Scope, actual tests and device/publication limits: [2026-11-07 verification](verification/2026-11-07-quiet-native-ai.md).

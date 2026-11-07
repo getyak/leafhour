@@ -46,6 +46,7 @@ struct ReaderSelectionDock: View {
     let onShare: () -> Void
     let onClear: () -> Void
     var showsTranslation = true
+    var quickAI: AnyView? = nil
     @State private var copied = false
     @Environment(\.dynamicTypeSize) private var typeSize
     var body: some View {
@@ -64,8 +65,8 @@ struct ReaderSelectionDock: View {
                 .accessibilityHint("点 AI 引用打开聊天，也可拖动选文引用")
                 .accessibilityIdentifier("reader-selection-drag")
             ViewThatFits(in: .horizontal) {
-                HStack(spacing: 10) { actions(compact: false); ReaderAIButton(paper: paper, quote: quote, onOpen: onAI) }.fixedSize(horizontal: true, vertical: false)
-                HStack(spacing: 10) { actions(compact: true); ReaderAIButton(paper: paper, quote: quote, onOpen: onAI) }
+                HStack(spacing: 10) { actions(compact: false); Group { if let quickAI { quickAI } else { ReaderAIButton(paper: paper, quote: quote, onOpen: onAI) } } }.fixedSize(horizontal: true, vertical: false)
+                HStack(spacing: 10) { actions(compact: true); Group { if let quickAI { quickAI } else { ReaderAIButton(paper: paper, quote: quote, onOpen: onAI) } } }
             }
 
         }.accessibilityElement(children: .contain).accessibilityIdentifier("reader-selection-dock").onChange(of: quote) { _, _ in copied = false }

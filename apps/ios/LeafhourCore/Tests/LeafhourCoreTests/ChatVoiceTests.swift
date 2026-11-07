@@ -2,6 +2,26 @@ import XCTest
 @testable import LeafhourCore
 
 final class ChatVoiceTests: XCTestCase {
+    func testPendingCaptureSurvivesRecreationAndCannotCrossAccounts() async throws {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let owner = UUID(), other = UUID(), id = UUID()
+        let library = try OfflineLibrary(root: root, scope: .account(owner))
+        let source = root.appendingPathComponent("pending.caf"), bytes = Data("caff-original-awaiting-retention".utf8)
+        try bytes.write(to: source)
+        let staged = try await library.stageChatVoiceCapture(source, id: id, ownerID: owner.uuidString, metadata: Data("frozen-context-and-transcript".utf8))
+        try FileManager.default.removeItem(at: source)
+        let reopened = try OfflineLibrary(root: root, scope: .account(owner))
+        let pending = try await reopened.pendingChatVoiceCaptures(ownerID: owner.uuidString)
+        XCTAssertEqual(pending.count, 1); XCTAssertEqual(pending.first?.id, id)
+        XCTAssertEqual(try Data(contentsOf: staged), bytes)
+        XCTAssertEqual(pending.first?.metadata, Data("frozen-context-and-transcript".utf8))
+        do { _ = try await reopened.pendingChatVoiceCaptures(ownerID: other.uuidString); XCTFail("Foreign account cannot see pending microphone originals") } catch { }
+        try await reopened.removeStagedChatVoiceCapture(id: id, ownerID: owner.uuidString)
+        let empty = try await reopened.pendingChatVoiceCaptures(ownerID: owner.uuidString)
+        XCTAssertTrue(empty.isEmpty)
+    }
+
     func testVoiceCancelRestoresDraftAndSendKeepsTranscript() {
         var state = ChatVoiceComposition()
         state.begin(draft: "原来的草稿")

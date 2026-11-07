@@ -3,7 +3,7 @@ import Speech
 import Observation
 import LeafhourCore
 
-struct ChatRecordedVoice {
+struct ChatRecordedVoice: Codable {
     let id: UUID
     let url: URL
     let durationMs: Int
@@ -31,6 +31,7 @@ final class ChatSpeechRecorder {
     @ObservationIgnored private var finalWaiter: CheckedContinuation<Void, Never>?
     @ObservationIgnored private var finalTimeout: Task<Void, Never>?
     @ObservationIgnored private var finalized = false
+    @ObservationIgnored private var audioGeneration: UInt?
     @ObservationIgnored private var update: ((String) -> Void)?
 
     func start(draft: String, update: @escaping (String) -> Void) async {
@@ -55,6 +56,7 @@ final class ChatSpeechRecorder {
             let session = AVAudioSession.sharedInstance()
             try session.setCategory(.playAndRecord, mode: .measurement, options: [.defaultToSpeaker, .allowBluetooth])
             try session.setActive(true)
+            audioGeneration = ReaderSpeech.systemAudioGeneration
             let engine = AVAudioEngine(), request = SFSpeechAudioBufferRecognitionRequest()
             request.shouldReportPartialResults = true; request.addsPunctuation = true
             request.requiresOnDeviceRecognition = recognizer.supportsOnDeviceRecognition
@@ -123,6 +125,9 @@ final class ChatSpeechRecorder {
     private func stopCapture() { engine?.stop(); engine?.inputNode.removeTap(onBus: 0); engine = nil; file = nil }
     private func releaseAudio() {
         task?.cancel(); task = nil; request = nil
-        try? AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
+        if let audioGeneration, audioGeneration == ReaderSpeech.systemAudioGeneration {
+            try? AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
+        }
+        audioGeneration = nil
     }
 }

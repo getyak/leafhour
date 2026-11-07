@@ -1279,4 +1279,134 @@ extension ReaderToolsTests {
         XCTAssertEqual(try Data(contentsOf: url), bytes)
         XCTAssertNil(recreated.consent)
     }
+    func testInterruptedCaptureRecoveryNeverUpgradesRetentionIntoSending() async throws {
+        let fixture = try await fixture(persistCloud: true), tools = ReaderCloudTools(), probe = ReaderToolsProbe()
+        probe.respond = { _, _ in XCTFail("Retry retention must not submit an interrupted voice"); return (500, [:]) }
+        ReaderToolsURLProtocol.install(probe)
+        let context = try XCTUnwrap(ReaderQuickQuestionContext(session: fixture.session, quote: nil))
+        let source = fixture.session.directory.appendingPathComponent("retain-only.caf")
+        try Data("caff-interrupted-retain-only".utf8).write(to: source)
+        await tools.submitQuickVoice(ChatRecordedVoice(id: UUID(), url: source, durationMs: 1000, transcript: "Do not send automatically"), context: context, cloud: nil, library: fixture.library, send: false)
+        let restored = ReaderCloudTools()
+        await restored.restoreQuickQuestion(fixture.session, cloud: fixture.cloud, library: fixture.library)
+        XCTAssertNotNil(restored.pendingQuickRecording)
+        await restored.retryQuickRecording(cloud: fixture.cloud)
+        XCTAssertNil(restored.pendingQuickRecording)
+        XCTAssertNotNil(restored.quickVoiceDraft, "Retaining succeeds and exposes the explicit send action")
+        XCTAssertTrue(restored.turns.isEmpty)
+        XCTAssertNil(restored.retry)
+    }
+
+    func testRetainedCaptureCanRetryTheSameDraftAfterAWriteFailure() async throws {
+        let fixture = try await fixture(persistCloud: true), tools = ReaderCloudTools(), probe = ReaderToolsProbe()
+        probe.respond = { _, _ in XCTFail("Retaining a voice is not a model submission"); return (500, [:]) }
+        ReaderToolsURLProtocol.install(probe)
+        await tools.restoreQuickQuestion(fixture.session, cloud: fixture.cloud, library: fixture.library)
+        let initialSaved = await tools.flushConversationDraft(); XCTAssertTrue(initialSaved)
+        let profile = fixture.session.directory.deletingLastPathComponent().deletingLastPathComponent()
+        let draft = try XCTUnwrap(FileManager.default.contentsOfDirectory(at: profile, includingPropertiesForKeys: nil).first { $0.lastPathComponent.hasPrefix("chat-") && $0.pathExtension == "json" })
+        let backup = profile.appendingPathComponent("draft-write-failure-backup.json")
+        try FileManager.default.moveItem(at: draft, to: backup)
+        try FileManager.default.createDirectory(at: draft, withIntermediateDirectories: false)
+        let source = fixture.session.directory.appendingPathComponent("retry-retention.caf")
+        try Data("caff-draft-write-failure".utf8).write(to: source)
+        let context = try XCTUnwrap(ReaderQuickQuestionContext(session: fixture.session, quote: nil))
+        await tools.submitQuickVoice(ChatRecordedVoice(id: UUID(), url: source, durationMs: 1000, transcript: "Retain this text"), context: context, cloud: fixture.cloud, library: fixture.library, send: false)
+        XCTAssertNotNil(tools.pendingQuickRecording); XCTAssertNotNil(tools.quickVoiceDraft); XCTAssertNotNil(tools.draftError)
+        let voice = try XCTUnwrap(tools.quickVoiceDraft?.voice)
+        let retained = try await fixture.library.chatVoiceURL(voice, ownerID: owner)
+        try FileManager.default.removeItem(at: retained)
+        try FileManager.default.removeItem(at: draft)
+        try FileManager.default.moveItem(at: backup, to: draft)
+        await tools.retryQuickRecording(cloud: fixture.cloud)
+        XCTAssertNil(tools.pendingQuickRecording, "The same retained capture must be able to finish saving")
+        XCTAssertNil(tools.draftError)
+        XCTAssertEqual(tools.quickVoiceDraft?.text, "Retain this text")
+        let recovered = try await fixture.library.chatVoiceURL(voice, ownerID: owner)
+        XCTAssertEqual(try Data(contentsOf: recovered), Data("caff-draft-write-failure".utf8))
+        XCTAssertTrue(tools.turns.isEmpty)
+    }
+
+    func testFinishedQuickVoiceRemainsIndexedAfterAuthFailureAndRelaunch() async throws {
+        let fixture = try await fixture(persistCloud: true), tools = ReaderCloudTools(), probe = ReaderToolsProbe()
+        probe.respond = { _, _ in XCTFail("Recovery must not send or load a model request"); return (500, [:]) }
+        ReaderToolsURLProtocol.install(probe)
+        let context = try XCTUnwrap(ReaderQuickQuestionContext(session: fixture.session, quote: nil))
+        let original = fixture.session.directory.appendingPathComponent("auth-interrupted.caf")
+        try Data("caff-auth-interrupted-original".utf8).write(to: original)
+        await tools.submitQuickVoice(ChatRecordedVoice(id: UUID(), url: original, durationMs: 1000, transcript: "Keep this voice"), context: context, cloud: nil, library: fixture.library)
+        XCTAssertEqual(tools.pendingQuickRecording?.recording.transcript, "Keep this voice")
+        XCTAssertFalse(tools.canStartQuickQuestion)
+        XCTAssertEqual(tools.quickQuestionStatus, .attention)
+        let recreated = ReaderCloudTools()
+        await recreated.restoreQuickQuestion(fixture.session, cloud: fixture.cloud, library: fixture.library)
+        let pending = try XCTUnwrap(recreated.pendingQuickRecording)
+        XCTAssertEqual(pending.recording.transcript, "Keep this voice")
+        XCTAssertTrue(FileManager.default.fileExists(atPath: pending.recording.url.path))
+        XCTAssertEqual(pending.context.book.chapters, fixture.session.book.chapters)
+        await recreated.discardQuickRecording()
+        XCTAssertNil(recreated.pendingQuickRecording)
+    }
+
+    func testQuickVoiceUsesFrozenQuotePreservesComposerAndRestoresUnreadTarget() async throws {
+        let fixture = try await fixture(persistCloud: true), tools = ReaderCloudTools(), probe = ReaderToolsProbe()
+        let source = fixture.session.directory.appendingPathComponent("quick-original.caf")
+        try Data("caff-synthetic-quick-original".utf8).write(to: source)
+        let selected = SelectedQuote(anchor: .init(chapterID: fixture.session.chapter.id, passageID: fixture.passage.id), text: fixture.passage.text)
+        let context = try XCTUnwrap(ReaderQuickQuestionContext(session: fixture.session, quote: selected))
+        var uploaded: [String: Any] = [:]
+        probe.respond = { [self] request, body in
+            if request.url!.path == "/api/auth/session" { return (200, metadata(enabled: false)) }
+            if request.url!.path.hasSuffix("/start") { uploaded = body; return (200, ["count": 1, "partBytes": 2097152, "received": [0]]) }
+            if request.url!.path.hasSuffix("/complete") { return (200, uploaded) }
+            if request.httpMethod == "GET" { return (200, ["available": true, "scope": ["mode": "book", "revision": 0], "turns": []]) }
+            XCTAssertEqual(body["text"] as? String, "Explain this original")
+            XCTAssertEqual(body["passageId"] as? String, context.passageID)
+            XCTAssertNotNil(body["voice"])
+            XCTAssertNil(body["replyTo"], "A quick voice must not borrow an unrelated draft reference")
+            return (200, ["id": body["id"]!, "text": body["text"]!, "contentVersion": "source-v1", "voice": body["voice"]!, "status": "completed", "answer": ["summary": "The saved quick answer"]])
+        }
+        ReaderToolsURLProtocol.install(probe)
+        tools.question = "My unsent draft"
+        tools.pendingMessageReference = ReaderMessageReference(turnId: "earlier", role: "user", text: "Unsent reference")
+        await tools.submitQuickVoice(ChatRecordedVoice(id: UUID(), url: source, durationMs: 1200, transcript: "Explain this original"), context: context, cloud: fixture.cloud, library: fixture.library)
+        XCTAssertNil(tools.error)
+        XCTAssertEqual(tools.question, "My unsent draft")
+        XCTAssertEqual(tools.pendingMessageReference?.turnId, "earlier")
+        XCTAssertEqual(tools.quickQuestionStatus, .ready)
+        let target = try XCTUnwrap(tools.quickTargetID)
+        XCTAssertEqual(tools.turns.first { $0.id == target }?.answer, "The saved quick answer")
+        let saved = await tools.flushConversationDraft(); XCTAssertTrue(saved)
+        let restored = ReaderCloudTools()
+        await restored.restoreConversationDraft(identity: try XCTUnwrap(fixture.session.book.cloud), library: fixture.library)
+        XCTAssertEqual(restored.quickTargetID, target)
+        XCTAssertEqual(restored.quickQuestionStatus, .ready)
+        restored.markQuickAnswerRead(target)
+        let readSaved = await restored.flushConversationDraft(); XCTAssertTrue(readSaved)
+        let read = ReaderCloudTools()
+        await read.restoreConversationDraft(identity: try XCTUnwrap(fixture.session.book.cloud), library: fixture.library)
+        XCTAssertEqual(read.quickQuestionStatus, .idle)
+    }
+
+    func testInterruptedQuickVoiceRetainsSeparateDraftWithoutNetworkSubmission() async throws {
+        let fixture = try await fixture(persistCloud: true), tools = ReaderCloudTools(), probe = ReaderToolsProbe()
+        probe.respond = { _, _ in XCTFail("Retaining an interrupted recording must not submit or load a model request"); return (500, [:]) }
+        ReaderToolsURLProtocol.install(probe)
+        let source = fixture.session.directory.appendingPathComponent("interrupted.caf")
+        try Data("caff-synthetic-interrupted".utf8).write(to: source)
+        let context = try XCTUnwrap(ReaderQuickQuestionContext(session: fixture.session, quote: nil))
+        tools.question = "Existing text"
+        await tools.submitQuickVoice(ChatRecordedVoice(id: UUID(), url: source, durationMs: 1200, transcript: ""), context: context, cloud: fixture.cloud, library: fixture.library, send: false)
+        XCTAssertEqual(tools.question, "Existing text")
+        XCTAssertNotNil(tools.quickVoiceDraft)
+        XCTAssertEqual(tools.quickQuestionStatus, .attention)
+        let saved = await tools.flushConversationDraft(); XCTAssertTrue(saved)
+        let restored = ReaderCloudTools()
+        await restored.restoreConversationDraft(identity: try XCTUnwrap(fixture.session.book.cloud), library: fixture.library)
+        XCTAssertNotNil(restored.quickVoiceDraft)
+        let receipt = try XCTUnwrap(restored.quickVoiceDraft?.voice)
+        let retained = try await fixture.library.chatVoiceURL(receipt, ownerID: owner)
+        XCTAssertNoThrow(try Data(contentsOf: retained))
+    }
+
 }

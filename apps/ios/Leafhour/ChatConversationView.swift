@@ -217,6 +217,11 @@ private struct ChatHistoryScrollBoundary: UIViewRepresentable {
     }
 }
 
+private struct ChatTargetFrameKey: PreferenceKey {
+    static var defaultValue: CGRect = .null
+    static func reduce(value: inout CGRect, nextValue: () -> CGRect) { let next = nextValue(); if !next.isNull { value = next } }
+}
+
 /// One conversation surface serves both global Chat and an anchored selection.
 struct ChatConversationView: View {
     @Bindable var tools: ReaderCloudTools
@@ -231,11 +236,16 @@ struct ChatConversationView: View {
     var isLibraryConversation = false
     var isMarginalNote = false
     var readingGuide: ReadingGuideController? = nil
+    var targetTurnID: String? = nil
+    var onTargetDisplayed: ((String) -> Void)? = nil
     var onGuideFollowUp: ((ChatFollowUp) async -> Void)? = nil
     var onSignIn: (() -> Void)? = nil
     var autoLoad = true
     let load: () async -> Void
     let send: () async -> Void
+    @State private var targetPlaced = false
+    @State private var historySize = CGSize.zero
+    @State private var targetFrame = CGRect.null
     @State private var composerAwake = true
     @State private var didLoad = false
     @State private var sourceExpanded = false
@@ -289,6 +299,14 @@ struct ChatConversationView: View {
                     .background(ChatHistoryScrollBoundary())
             }.modifier(ChatReadingEdges()).accessibilityIdentifier("reader-conversation-history")
                 .coordinateSpace(name: "conversation-scroll")
+                .background { GeometryReader { geometry in
+                    Color.clear.onAppear { historySize = geometry.size }.onChange(of: geometry.size) { _, size in historySize = size }
+                } }
+                .onPreferenceChange(ChatTargetFrameKey.self) { frame in targetFrame = frame; acknowledgeVisibleTarget() }
+                .onChange(of: historySize) { _, _ in acknowledgeVisibleTarget() }
+                .onChange(of: tools.quickQuestionStatus) { _, _ in acknowledgeVisibleTarget() }
+                .onChange(of: didLoad) { _, ready in if ready { placeTarget(proxy) } }
+                .onChange(of: tools.turns.count) { _, _ in placeTarget(proxy) }
                 .modifier(ChatScrollTracking(position: scrollPosition))
                 .modifier(ChatScrollAnchoring(followsLatest: scrollPosition.followsLatest, marginal: isMarginalNote))
                 .onChange(of: scrollPosition.followsLatest) { _, follows in
@@ -318,7 +336,8 @@ struct ChatConversationView: View {
                 }
                 .task {
                     await Task.yield()
-                    if readingGuide != nil {
+                    if targetTurnID != nil { placeTarget(proxy) }
+                    else if readingGuide != nil {
                         scrollPosition.pauseFollowing(); proxy.scrollTo("reading-guide-top", anchor: .top)
                     } else if !placeCompletedMarginalReply(proxy), scrollPosition.followsLatest { scroll(proxy, animated: false) }
                 }
@@ -353,7 +372,7 @@ struct ChatConversationView: View {
             .onDisappear { if speech.isActive { tools.question = speech.cancel() } }
     }
     private func conversationTurn(_ turn: ReaderConversationTurn) -> some View {
-        ChatTurnView(turn: turn,
+        ChatTurnView(turn: turn, isQuickTarget: turn.id == targetTurnID,
             responseText: turn.id == activeTurnID ? tools.responseText : "",
             responding: turn.id == activeTurnID && turn.status == "running" && (tools.generating || tools.loading),
             responseStatus: tools.responseStatus,
@@ -385,6 +404,7 @@ struct ChatConversationView: View {
             questionExpanded: Binding(get: { expandedQuestions.contains(turn.id) }, set: { expanded in
                 if expanded { scrollPosition.pauseFollowing(); expandedQuestions.insert(turn.id) } else { expandedQuestions.remove(turn.id) }
             }))
+            .id(turn.id)
     }
     private var chosenMessages: [ChatShareMessage] { ChatShareMessage.ordered(tools.turns).filter { selectedMessages.contains($0.id) } }
     private var selectionBar: some View {
@@ -440,6 +460,21 @@ struct ChatConversationView: View {
     private func retryRequest() {
         guard let retry = tools.retry else { return }
         Task { await tools.perform(retry, cloud: cloud) }
+    }
+    private func acknowledgeVisibleTarget() {
+        guard let targetTurnID, !targetFrame.isNull, historySize.height > 0,
+              targetFrame.intersects(CGRect(origin: .zero, size: historySize)),
+              tools.turns.contains(where: { $0.id == targetTurnID && $0.status == "completed" && $0.answer?.isEmpty == false }) else { return }
+        onTargetDisplayed?(targetTurnID)
+    }
+    private func placeTarget(_ proxy: ScrollViewProxy) {
+        guard !targetPlaced, let targetTurnID, tools.turns.contains(where: { $0.id == targetTurnID }) else { return }
+        targetPlaced = true; placedMarginalReply = targetTurnID; scrollPosition.pauseFollowing()
+        proxy.scrollTo(targetTurnID, anchor: .top)
+        Task { @MainActor in
+            await Task.yield()
+            proxy.scrollTo("chat-reply-" + targetTurnID, anchor: .top)
+        }
     }
     private func scroll(_ proxy: ScrollViewProxy, animated: Bool = true) {
         withAnimation(animated && !reduceMotion ? .easeOut(duration: 0.2) : nil) { proxy.scrollTo("chat-bottom", anchor: .bottom) }
@@ -513,6 +548,33 @@ struct ChatConversationView: View {
             .accessibilityElement(children: .contain).accessibilityIdentifier("chat-source-context")
     }
     @ViewBuilder private var status: some View {
+        if let pending = tools.pendingQuickRecording {
+            VStack(alignment: .leading, spacing: 8) {
+                Text("原录音尚未归档").font(.subheadline)
+                if !pending.recording.transcript.isEmpty { Text(pending.recording.transcript).font(.footnote).textSelection(.enabled) }
+                HStack {
+                    Button(pending.sendAfterRetention == true ? "重试保存并送出" : "重试保留录音") { Task { await tools.retryQuickRecording(cloud: cloud) } }.disabled(tools.quickSubmitting)
+                    Spacer()
+                    ShareLink(item: pending.recording.url) { Label("导出原录音", systemImage: "square.and.arrow.up") }
+                }.frame(minHeight: 44)
+                Button("取消这条录音") { Task { await tools.discardQuickRecording() } }.frame(minHeight: 44)
+            }.accessibilityIdentifier("quick-recording-recovery")
+        }
+
+        if let draft = tools.quickVoiceDraft {
+            VStack(alignment: .leading, spacing: 8) {
+                Text("语音已保留").font(.subheadline)
+                TextField("补充转写文字后发送", text: Binding(get: { tools.quickVoiceDraft?.text ?? "" }, set: { tools.editQuickTranscript($0) }), axis: .vertical)
+                    .textFieldStyle(.roundedBorder).accessibilityIdentifier("quick-voice-transcript")
+                HStack {
+                    Button("发送这条语音") { Task { await tools.sendQuickVoiceDraft(cloud: cloud) } }
+                        .disabled(draft.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || tools.generating || tools.quickSubmitting)
+                    Spacer()
+                    Button("取消这条语音") { tools.discardQuickVoice() }.disabled(tools.generating || tools.quickSubmitting)
+                }.frame(minHeight: 44)
+            }.padding(.vertical, 8).accessibilityIdentifier("quick-voice-recovery")
+        }
+
         if tools.generating && tools.turns.isEmpty { ProgressView(tools.responseStatus ?? "正在回答…").font(.caption).accessibilityIdentifier("chat-generating") }
         else if tools.turns.isEmpty && (tools.loading || !didLoad) { ProgressView("正在读取对话…").font(.caption) }
         else if tools.turns.isEmpty && tools.error == nil {
@@ -690,6 +752,7 @@ struct ChatConversationView: View {
 
 private struct ChatTurnView: View {
     let turn: ReaderConversationTurn
+    var isQuickTarget = false
     var responseText = ""
     var responding = false
     var responseStatus: String?
@@ -791,6 +854,9 @@ private struct ChatTurnView: View {
                 .overlay(alignment: .leading) { if selecting, turn.answer != nil, turn.status == "completed" { selectionButton(role: "assistant") } }
                 .contextMenu { if let answer = turn.answer, turn.status == "completed" { messageActions(role: "assistant", text: answer) } }
                 .id("chat-reply-" + turn.id)
+                    .background { if isQuickTarget { GeometryReader { geometry in
+                        Color.clear.preference(key: ChatTargetFrameKey.self, value: geometry.frame(in: .named("conversation-scroll")))
+                    } } }
         }.accessibilityElement(children: .contain).accessibilityIdentifier("reader-conversation-turn-" + turn.id)
     }
     private func selectionButton(role: String) -> some View {

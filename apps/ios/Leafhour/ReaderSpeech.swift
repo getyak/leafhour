@@ -42,6 +42,8 @@ final class ReaderSpeech: NSObject, AVSpeechSynthesizerDelegate {
     private(set) var activeSentence = ""
     private(set) var spokenWordRange: NSRange?
     private(set) var highlight: ReaderSpeechHighlight?
+    private(set) var playbackCommandRevision: UInt = 0
+    private var quickResumeOwnership: (revision: UInt, generation: UInt)?
     private(set) var position = 0
     private(set) var count = 0
     var following = true
@@ -154,6 +156,7 @@ final class ReaderSpeech: NSObject, AVSpeechSynthesizerDelegate {
     }
     /// Validate a transcript's immutable source before interrupting live audio.
     @discardableResult func seek(_ session: ReaderSession, to location: ReaderSpeechLocation) -> Bool {
+        playbackCommandRevision &+= 1
         guard let chapterIndex = session.book.chapters.firstIndex(where: { $0.id == location.chapterID }),
               let passageIndex = session.book.chapters[chapterIndex].passages.firstIndex(where: { $0.id == location.passageID }),
               location.layer == "original" || ReaderTranslationVariant(rawValue: location.layer) != nil else { return false }
@@ -199,9 +202,10 @@ final class ReaderSpeech: NSObject, AVSpeechSynthesizerDelegate {
         return current.layer == saved.layer && current.fingerprint == saved.textFingerprint && (0...current.source.utf16.count).contains(saved.utf16Offset)
     }
     func updateVisible(_ location: ReaderSpeechLocation) { visible = location }
-    func userNavigated() { manuallyMoved = true; if playing || paused { following = false } }
+    func userNavigated() { playbackCommandRevision &+= 1; manuallyMoved = true; if playing || paused { following = false } }
 
     func start(_ session: ReaderSession, useSavedPosition: Bool = true) {
+        playbackCommandRevision &+= 1
         stop(); self.session = session; bindPresentation(session); message = nil; following = true; markdown = nil
         let anchor = session.currentAnchor
         let location = visible.flatMap { $0.chapterID == session.chapter.id && (anchor == nil || $0.passageID == anchor?.passageID) ? $0 : nil }
@@ -253,6 +257,7 @@ final class ReaderSpeech: NSObject, AVSpeechSynthesizerDelegate {
         speakCurrent(sourceOffset: offset)
     }
     func toggle(_ session: ReaderSession) {
+        playbackCommandRevision &+= 1
         if playing { pause(); return }
         guard paused, self.session === session else { start(session); return }
         if voiceChangePending { speakCurrent(sourceOffset: content?.sourceOffset(at: spokenOffset) ?? 0); return }
@@ -264,6 +269,7 @@ final class ReaderSpeech: NSObject, AVSpeechSynthesizerDelegate {
         } catch { deactivateAudioSession(); message = "声音暂时无法继续，请检查音频设备后重试。" }
     }
     func pause() {
+        playbackCommandRevision &+= 1
         endSpeedBoost()
         guard playing else { return }
         checkpoint(force: true); paused = true; playing = false
@@ -274,6 +280,7 @@ final class ReaderSpeech: NSObject, AVSpeechSynthesizerDelegate {
         deactivateAudioSession()
     }
     func stop() {
+        playbackCommandRevision &+= 1
         endSpeedBoost()
         checkpoint(force: true)
         utterance = nil; voiceChangePending = false
@@ -283,6 +290,7 @@ final class ReaderSpeech: NSObject, AVSpeechSynthesizerDelegate {
         deactivateAudioSession()
     }
     func move(_ delta: Int) {
+        playbackCommandRevision &+= 1
         let next = position + delta
         guard passages.indices.contains(next) else { return }
         checkpoint(force: true); position = next; content = nil; following = true
@@ -298,6 +306,7 @@ final class ReaderSpeech: NSObject, AVSpeechSynthesizerDelegate {
         return session.book.chapters[passages[next].chapter].id
     }
     @discardableResult func selectChapter(_ chapterID: String) -> Bool {
+        playbackCommandRevision &+= 1
         guard playing || paused, !wasSuperseded, nowPlaying?.isCurrentOwner != false,
               let session, presentationSession === session,
               let chapter = session.book.chapters.firstIndex(where: { $0.id == chapterID }),
@@ -418,8 +427,22 @@ final class ReaderSpeech: NSObject, AVSpeechSynthesizerDelegate {
         synthesizer.speak(value)
         isOutputPlaying = synthesizer.isOutputPlaying; refreshNowPlaying()
     }
+    static var systemAudioGeneration: UInt { ReaderSpeechAudioOwnership.generation(AVAudioSession.sharedInstance()) }
+    func suspendForQuickQuestion() -> UInt? {
+        guard playing else { return nil }
+        microphoneWillStart()
+        quickResumeOwnership = (playbackCommandRevision, ReaderSpeechAudioOwnership.generation(audioSession))
+        return playbackCommandRevision
+    }
+    func resumeAfterQuickQuestion(revision: UInt, session: ReaderSession) {
+        guard revision == playbackCommandRevision, paused, !playing, self.session === session,
+              quickResumeOwnership?.revision == revision,
+              quickResumeOwnership?.generation == ReaderSpeechAudioOwnership.generation(audioSession) else { return }
+        quickResumeOwnership = nil
+        toggle(session)
+    }
     private func microphoneWillStart() {
-        guard playing || paused else { return }
+        guard !wasSuperseded, playing || paused else { return }
         pause()
         wasSuperseded = true
         utterance = nil; voiceChangePending = true
@@ -559,11 +582,14 @@ final class ReaderSpeech: NSObject, AVSpeechSynthesizerDelegate {
         init(owner: UUID, reader: ReaderSpeech) { self.owner = owner; self.reader = reader }
     }
     private static var owners: [ObjectIdentifier: Entry] = [:]
+    private static var generations: [ObjectIdentifier: UInt] = [:]
+    static func generation(_ session: any ReaderSpeechAudioSession) -> UInt { generations[ObjectIdentifier(session)] ?? 0 }
 
     static func claim(_ session: any ReaderSpeechAudioSession, owner: UUID, reader: ReaderSpeech) -> ReaderSpeech? {
         let key = ObjectIdentifier(session)
         guard owners[key]?.owner != owner else { return nil }
         let previous = owners[key]?.reader
+        generations[key, default: 0] &+= 1
         owners[key] = Entry(owner: owner, reader: reader)
         return previous
     }

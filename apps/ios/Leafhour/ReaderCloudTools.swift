@@ -83,6 +83,9 @@ private struct ReaderConversationDraft: Codable {
     var messageReference: ReaderMessageReference? = nil
     var likedMessages: Set<String>? = nil
     var messageReactions: [String: String]? = nil
+    var quickTargetID: String? = nil
+    var quickReadID: String? = nil
+    var quickVoice: ReaderQuickVoiceDraft? = nil
 }
 
 /// Read-only loading is separate from the explicitly confirmed generation path.
@@ -98,6 +101,31 @@ final class ReaderCloudTools {
         if localConversationBook?.id == bookID { return "/api/library/local-chat" }
         return bookID == Self.libraryChatID ? "/api/library/chat" : bookPath(bookID) + "/chat"
     }
+    var quickTargetID: String? { didSet { queueDraftSave() } }
+    private var quickReadID: String?
+    private(set) var quickVoiceDraft: ReaderQuickVoiceDraft?
+    private(set) var pendingQuickRecording: ReaderPendingQuickRecording?
+    var captureOwnerID: String? { draftBook?.ownerID }
+    private(set) var quickSubmitting = false
+    private var quickRetaining = false
+    var quickQuestionStatus: ReaderQuickQuestionStatus {
+        if quickSubmitting || quickRetaining { return .pending }
+        if pendingQuickRecording != nil { return .attention }
+        guard let id = quickTargetID else { return .idle }
+        if quickVoiceDraft != nil { return .attention }
+        guard let turn = turns.first(where: { $0.id == id }) else { return retry?.id == id ? .pending : .attention }
+        if turn.status == "completed", let answer = turn.answer, !answer.isEmpty { return quickReadID == id ? .idle : .ready }
+        return turn.status == "running" && generating && error == nil ? .pending : .attention
+    }
+    var canStartQuickQuestion: Bool { !loading && !generating && !quickSubmitting && !quickRetaining && retry == nil && quickVoiceDraft == nil && pendingQuickRecording == nil }
+    func markQuickAnswerRead(_ id: String) {
+        guard quickTargetID == id, quickReadID != id, let turn = turns.first(where: { $0.id == id }),
+              turn.status == "completed", turn.answer?.isEmpty == false else { return }
+        quickReadID = id; queueDraftSave()
+    }
+    func editQuickTranscript(_ text: String) { quickVoiceDraft?.text = text; queueDraftSave() }
+    func discardQuickVoice() { quickVoiceDraft = nil; if retry == nil { quickTargetID = nil }; queueDraftSave() }
+
     private(set) var generationTerminalStatus: String?
     var completedTranslation: CloudJSON?
     var translation: ReaderTranslation?
@@ -242,6 +270,12 @@ final class ReaderCloudTools {
                 likedMessages.formUnion(draft.likedMessages ?? [])
                 messageReactions.merge((draft.messageReactions ?? [:]).filter { Self.reactionChoices.contains($0.value) }) { current, _ in current }
                 if question.isEmpty { question = draft.question }
+                if quickTargetID == nil { quickTargetID = draft.quickTargetID; quickReadID = draft.quickReadID }
+                if let voice = draft.quickVoice {
+                    guard voice.context.identity.ownerID == identity.ownerID, voice.context.identity.bookID == identity.bookID,
+                          voice.voice.isValid else { throw LibraryError.invalid("已有录音的账号或书籍归属无法核对，原文件已保留。") }
+                    if quickVoiceDraft == nil { quickVoiceDraft = voice }
+                }
                 if retry == nil { retry = draft.retry }
                 if pendingVoice == nil { pendingVoice = draft.voice }
             }
@@ -258,7 +292,7 @@ final class ReaderCloudTools {
     }
     private func queueDraftSave() {
         guard draftReady, let identity = draftBook, let library else { return }
-        let snapshot = ReaderConversationDraft(question: question, retry: retry?.action == "conversation" ? retry : nil, context: chatContext, voice: pendingVoice, contextPinned: contextPinned, quoteRemoved: chatQuoteRemoved, pendingContext: pendingChatContext, turns: turns, messageReference: pendingMessageReference, likedMessages: likedMessages, messageReactions: messageReactions), previous = draftWriting
+        let snapshot = ReaderConversationDraft(question: question, retry: retry?.action == "conversation" ? retry : nil, context: chatContext, voice: pendingVoice, contextPinned: contextPinned, quoteRemoved: chatQuoteRemoved, pendingContext: pendingChatContext, turns: turns, messageReference: pendingMessageReference, likedMessages: likedMessages, messageReactions: messageReactions, quickTargetID: quickTargetID, quickReadID: quickReadID, quickVoice: quickVoiceDraft), previous = draftWriting
         let storageBookID = draftNamespace ?? identity.bookID
         draftWriting = Task {
             await previous?.value
@@ -510,6 +544,136 @@ final class ReaderCloudTools {
               let receipt = try? JSONDecoder().decode(ChatVoiceReceipt.self, from: data), receipt.isValid else { return nil }
         return receipt
     }
+    func restoreQuickQuestion(_ session: ReaderSession, cloud: CloudLibraryClient?, library: OfflineLibrary?) async {
+        guard let cloud, let owner = await cloud.activeAccount()?.id else { return }
+        let identity = session.book.cloud ?? CloudBookIdentity(ownerID: owner, bookID: session.book.id, contentVersion: session.book.sourceVersion, sourceFormat: "local")
+        guard identity.ownerID == owner else { return }
+        configure(library: library, localBookID: session.book.id)
+        if session.book.cloud == nil { localConversationBook = session.book }
+        await restoreConversationDraft(identity: identity, library: library)
+        if draftBook?.ownerID == identity.ownerID, draftBook?.bookID == identity.bookID, !generating, retry == nil { draftBook = identity }
+        guard pendingQuickRecording == nil, let library else { return }
+        do {
+            for row in try await library.pendingChatVoiceCaptures(ownerID: owner) {
+                var pending = try JSONDecoder().decode(ReaderPendingQuickRecording.self, from: row.metadata)
+                guard pending.context.ownerID == owner, pending.context.book.id == session.book.id,
+                      pending.recording.id == row.id else { continue }
+                let captureID = row.id.uuidString.lowercased()
+                let retainedVoice = quickVoiceDraft?.id == captureID ? quickVoiceDraft?.voice : turns.first(where: { $0.id == captureID })?.voice
+                if let retainedVoice, (try? await library.chatVoiceURL(retainedVoice, ownerID: owner)) != nil {
+                    try await library.removeStagedChatVoiceCapture(id: row.id, ownerID: owner); continue
+                }
+                if pending.context.book.sourceVersion == session.book.sourceVersion,
+                   pending.context.book.cloud?.contentVersion == session.book.cloud?.contentVersion { pending.context.book = session.book }
+                pending.recording = ChatRecordedVoice(id: row.id, url: row.source, durationMs: pending.recording.durationMs, transcript: pending.recording.transcript)
+                pendingQuickRecording = pending; break
+            }
+        } catch { self.error = "待归档的原录音尚未读取，请保留数据后重试。" }
+    }
+
+    func retryQuickRecording(cloud: CloudLibraryClient?) async {
+        guard let pending = pendingQuickRecording else { return }
+        await submitQuickVoice(pending.recording, context: pending.context, cloud: cloud, library: library, send: pending.sendAfterRetention == true)
+    }
+    func discardQuickRecording() async {
+        guard !quickRetaining, let pending = pendingQuickRecording, let library else { return }
+        do {
+            try await library.removeStagedChatVoiceCapture(id: pending.recording.id, ownerID: pending.context.ownerID)
+            pendingQuickRecording = nil
+        } catch { self.error = "原录音尚未移除，可以稍后重试。" }
+    }
+
+    func reconcileQuickQuestion(cloud: CloudLibraryClient?) async {
+        guard !generating, !quickSubmitting, let id = quickTargetID, let intent = retry, intent.id == id,
+              let cloud, await cloud.activeAccount()?.id == intent.ownerID else { return }
+        do {
+            let path = intent.path == "/api/library/local-chat" ? intent.path + "/" + component(id) : intent.path
+            let value = try object(await cloud.data(path: path, ownerID: intent.ownerID))
+            let row = intent.path == "/api/library/local-chat" ? value["turn"] as? [String: Any] : (value["turns"] as? [[String: Any]])?.first { $0["id"] as? String == id }
+            guard let row, row["id"] as? String == id, let status = row["status"] as? String, status != "running" else { return }
+            if let index = turns.firstIndex(where: { $0.id == id }) {
+                let answer = row["answer"] as? [String: Any]
+                turns[index] = ReaderConversationTurn(id: id, question: turns[index].question, answer: answer?["summary"] as? String,
+                    status: status, voice: turns[index].voice, quote: turns[index].quote, replyTo: turns[index].replyTo, contentVersion: turns[index].contentVersion,
+                    sourceRefs: Self.sourceReferences(answer?["sourceRefs"]), followUps: Self.suppliedFollowUps(answer?["followUps"]))
+            }
+            if status == "completed" { retry = nil; quickVoiceDraft = nil; error = nil }
+            queueDraftSave()
+        } catch { /* Preserve the original request. The marker offers explicit recovery. */ }
+    }
+
+    func submitQuickVoice(_ recording: ChatRecordedVoice, context: ReaderQuickQuestionContext, cloud: CloudLibraryClient?, library: OfflineLibrary?, send: Bool = true) async {
+        guard !quickSubmitting, !quickRetaining else { error = "上一条语音仍在送出，原录音已保留。"; return }
+        guard pendingQuickRecording == nil || pendingQuickRecording?.recording.id == recording.id else { error = "请先恢复已有录音。"; return }
+        // Own the value before ANY await/auth/draft operation. Even disk failure
+        // leaves an explicit export/retry action backed by this original URL.
+        pendingQuickRecording = ReaderPendingQuickRecording(recording: recording, context: context, sendAfterRetention: send)
+        quickRetaining = true
+        let retentionLease = ReaderQuickBackgroundLease(); retentionLease.begin()
+        defer { quickRetaining = false; retentionLease.end() }
+        self.library = library
+        guard let library else { error = "原录音尚未归档，可点开 AI 导出后重试。"; return }
+        do {
+            let pending = try JSONEncoder().encode(ReaderPendingQuickRecording(recording: recording, context: context, sendAfterRetention: send))
+            let staged = try await library.stageChatVoiceCapture(recording.url, id: recording.id, ownerID: context.ownerID, metadata: pending)
+            pendingQuickRecording?.recording = ChatRecordedVoice(id: recording.id, url: staged, durationMs: recording.durationMs, transcript: recording.transcript)
+            if staged.standardizedFileURL != recording.url.standardizedFileURL { try? FileManager.default.removeItem(at: recording.url) }
+        } catch { self.error = "原录音尚未归档，可点开 AI 导出后重试。"; return }
+        guard let cloud, let owner = await cloud.activeAccount()?.id, owner == context.ownerID else { error = "账号已变化，原录音已保留，尚未提交。"; return }
+        let identity = context.book.cloud ?? CloudBookIdentity(ownerID: owner, bookID: context.book.id, contentVersion: context.book.sourceVersion, sourceFormat: "local")
+        guard identity.ownerID == owner else { error = "账号已变化，录音尚未提交。"; return }
+        configure(library: library, localBookID: context.book.id)
+        if context.book.cloud == nil { localConversationBook = context.book }
+        await restoreConversationDraft(identity: identity, library: library)
+        let captureID = recording.id.uuidString.lowercased()
+        let target = ReaderChatContext(identity: identity, passageID: context.passageID, chapterTitle: context.chapterTitle, original: context.original, selection: context.quote)
+        guard draftBook?.ownerID == owner, draftBook?.bookID == identity.bookID,
+              quickVoiceDraft == nil || (quickVoiceDraft?.id == captureID && quickVoiceDraft?.context == target) else {
+            error = "已有语音或草稿需要先恢复，本次原录音已单独保留。"; return
+        }
+        // A previous write may have retained the voice before its draft save
+        // failed. Retrying that same capture must repair persistence rather
+        // than treating its own in-memory draft/error as a foreign conflict.
+        if draftError != nil {
+            await retryConversationDraftSave()
+            guard draftError == nil else { error = draftError; return }
+        }
+        do {
+            guard let pending = pendingQuickRecording else { return }
+            let voice = try await library.retainChatVoice(pending.recording.url, id: recording.id, ownerID: owner, durationMs: recording.durationMs)
+            if let saved = quickVoiceDraft {
+                guard saved.voice == voice else { throw LibraryError.invalid("已有录音回执不一致，原件仍保留。") }
+            } else {
+                quickVoiceDraft = ReaderQuickVoiceDraft(id: captureID, context: target, voice: voice, text: recording.transcript)
+            }
+            quickTargetID = quickVoiceDraft?.id; queueDraftSave()
+            guard await flushConversationDraft() else { error = draftError; return }
+            try await library.removeStagedChatVoiceCapture(id: recording.id, ownerID: owner)
+            pendingQuickRecording = nil; quickRetaining = false
+            if retry == nil { error = nil }
+            if send && !recording.transcript.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty { await sendQuickVoiceDraft(cloud: cloud) }
+        } catch { self.error = error.localizedDescription }
+    }
+
+    func sendQuickVoiceDraft(cloud: CloudLibraryClient?) async {
+        guard let draft = quickVoiceDraft, let cloud, !quickSubmitting, !generating, !loading,
+              retry == nil, !draft.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return }
+        guard draftBook?.contentVersion == draft.context.identity.contentVersion else { error = "原文版本已变化，录音仍保留，请核对引用后再发送。"; return }
+        guard await cloud.activeAccount()?.id == draft.context.identity.ownerID else { error = "账号已变化，语音尚未提交。"; return }
+        quickSubmitting = true
+        let lease = ReaderQuickBackgroundLease(); lease.begin()
+        defer { quickSubmitting = false; lease.end(); queueDraftSave() }
+        if localConversationBook == nil {
+            do {
+                let value = try object(await cloud.data(path: bookPath(draft.context.identity.bookID) + "/chat?passageId=" + component(draft.context.passageID), ownerID: draft.context.identity.ownerID))
+                readConversation(value)
+            } catch { self.error = error.localizedDescription; return }
+        }
+        await prepareRequest("conversation", identity: draft.context.identity, passageID: draft.context.passageID, original: draft.context.original,
+                             selection: draft.context.selection, cloud: cloud, frozenText: draft.text, frozenVoice: draft.voice, quickRequestID: draft.id, preserveComposer: true)
+        if turns.contains(where: { $0.id == draft.id }) { quickVoiceDraft = nil }
+    }
+
     func attachVoice(_ recording: ChatRecordedVoice) async throws {
         guard let identity = draftBook, let library else { throw LibraryError.invalid("请先进入自己的书房，录音仍保留在此设备。") }
         let receipt = try await library.retainChatVoice(recording.url, id: recording.id, ownerID: identity.ownerID, durationMs: recording.durationMs)
@@ -545,13 +709,13 @@ final class ReaderCloudTools {
             if action == "translation", languages != session.translationSettings { consent = nil }
         }
     }
-    private func prepareRequest(_ action: String, identity: CloudBookIdentity, passageID: String, original: String, selection: SelectedQuote? = nil, cloud: CloudLibraryClient, languages: BookTranslationSettings? = nil, detectedSource: ReadingLanguage? = nil, resuming: ReaderGenerationConsent? = nil, frozenText: String? = nil, frozenReference: ReaderMessageReference? = nil, frozenGuide: ChatGuideContext? = nil, preserveComposer: Bool = false) async {
+    private func prepareRequest(_ action: String, identity: CloudBookIdentity, passageID: String, original: String, selection: SelectedQuote? = nil, cloud: CloudLibraryClient, languages: BookTranslationSettings? = nil, detectedSource: ReadingLanguage? = nil, resuming: ReaderGenerationConsent? = nil, frozenText: String? = nil, frozenVoice: ChatVoiceReceipt? = nil, quickRequestID: String? = nil, frozenReference: ReaderMessageReference? = nil, frozenGuide: ChatGuideContext? = nil, preserveComposer: Bool = false) async {
         guard !generating, !loading else { return }
         guard retry == nil || retry?.id == resuming?.id else { error = "上一次请求的结果尚待确认，请先重试查看本次结果。"; return }
         error = nil; loading = true
         if action == "conversation" { preparingConversation = true }
         defer { loading = false; if action == "conversation" { preparingConversation = false } }
-        let requestID = resuming?.id ?? UUID().uuidString.lowercased()
+        let requestID = resuming?.id ?? quickRequestID ?? UUID().uuidString.lowercased()
         let keepsComposer = preserveComposer || resuming?.preserveComposer == true
         var body: [String: Any] = ["id": requestID, "passageId": passageID, "contentVersion": identity.contentVersion]
         if let languages {
@@ -587,7 +751,7 @@ final class ReaderCloudTools {
             }
         }
         let submittedReference = action == "conversation" ? (keepsComposer ? frozenReference : pendingMessageReference) : nil
-        let submittedVoice = action == "conversation" && !keepsComposer ? pendingVoice : nil
+        let submittedVoice = action == "conversation" ? frozenVoice ?? (!keepsComposer ? pendingVoice : nil) : nil
         if action == "conversation" {
             if let book = localConversationBook, identity.bookID == book.id {
                 body.removeValue(forKey: "scopeRevision")
@@ -787,7 +951,7 @@ final class ReaderCloudTools {
                 if status != "completed" { error = status == "cancelled" ? "已停止回答，消息仍保留。" : value["error"] as? String ?? "本次回答未完成，你的问题已经保留。" }
                 else {
                     let submitted = (try? JSONSerialization.jsonObject(with: intent.body)) as? [String: Any]
-                    if submitted?["quote"] != nil {
+                    if intent.preserveComposer != true, submitted?["quote"] != nil {
                         chatContext?.selection = nil; contextPinned = true; chatQuoteRemoved = true; queueDraftSave()
                     }
                 }
