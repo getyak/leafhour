@@ -1,8 +1,28 @@
 import XCTest
 import LeafhourCore
+import UIKit
 @testable import Leafhour
 
 @MainActor final class ReaderQuickQuestionTests: XCTestCase {
+    func testSleepingChromeMovingTheButtonDoesNotLookLikeAnUpwardCancel() {
+        let window = UIWindow(frame: CGRect(x: 0, y: 0, width: 400, height: 800))
+        let button = UIButton(frame: CGRect(x: 300, y: 400, width: 48, height: 48))
+        window.addSubview(button)
+        let gesture = WindowPositionHold(target: nil, action: nil)
+        gesture.coordinateWindow = window; button.addGestureRecognizer(gesture)
+        var cancellations: [Bool] = []
+        let input = NativeQuickAIControl(capturing: false, status: .idle, canRecord: true, onOpen: {},
+            onStart: { button.frame.origin.y += 150 }, onRelease: { cancellations.append($0) })
+        let coordinator = NativeQuickAIControl.Coordinator(input)
+        for slideUp in [false, true] {
+            button.frame.origin.y = 400; gesture.windowPoint = CGPoint(x: 324, y: 424)
+            gesture.inputState = .began; coordinator.hold(gesture)
+            if slideUp { gesture.windowPoint.y -= 80 }
+            gesture.inputState = .ended; coordinator.hold(gesture)
+        }
+        XCTAssertEqual(cancellations, [false, true], "Chrome movement is not finger movement; an actual upward slide still cancels")
+    }
+
     func testReleaseOrCancelInTheStartTurnNeverStartsTheMicrophone() async {
         for cancel in [false, true] {
             let recorder = SuspendedQuickRecorder(), capture = ReaderQuickCapture(recorder: recorder)
@@ -152,4 +172,18 @@ import LeafhourCore
         return ChatRecordedVoice(id: UUID(), url: URL(fileURLWithPath: "/tmp/synthetic-quiet-voice.caf"), durationMs: 1500, transcript: "Explain this sentence")
     }
     @discardableResult func cancel() -> String { cancelled = true; recording = false; return "" }
+}
+
+@MainActor private final class WindowPositionHold: UILongPressGestureRecognizer {
+    weak var coordinateWindow: UIWindow?
+    var windowPoint = CGPoint.zero
+    var inputState = UIGestureRecognizer.State.possible
+    override var state: UIGestureRecognizer.State {
+        get { inputState }
+        set { inputState = newValue }
+    }
+    override func location(in view: UIView?) -> CGPoint {
+        guard let view else { return windowPoint }
+        return view.convert(windowPoint, from: coordinateWindow)
+    }
 }

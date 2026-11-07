@@ -21,8 +21,8 @@ Environment: Xcode 26.4, iOS 26.4 Simulator, dedicated `Leafhour Quiet AI` simul
 | `swift test --package-path apps/ios/LeafhourCore` | 426 tests; 2 skipped, 0 failed |
 | `node --test tests/ios-*.test.mjs` | 246 passed, 0 failed |
 | `node tools/check-module-boundaries.mjs` | Passed; 15 module files and 49 Agent dependency files checked |
-| Affected native app tests | 109 passed, 0 failed, including retention-only intent, retryable write failure and recorder failure unlocking |
-| Targeted native UI tests | 6 passed, 0 failed; 112 native tests in the original UI run, followed by 109 app tests after recovery/error-path fixes |
+| Affected native app tests | 110 passed, 0 failed, including retention-only intent, retryable write failure and recorder failure unlocking |
+| Targeted native UI tests | 6 passed, 0 failed; 112 native tests in the original UI run, followed by 110 app tests after recovery/error-path fixes |
 | `git diff --check` | Passed |
 
 The native run includes `ReaderQuickQuestionTests`, `ReaderToolsTests`, `ReaderInteractionTests`, `ReaderImmersionTests` and `FollowUpRoutingTests`. UI cases cover quiet AI/full-screen return, exact saved-answer targeting and read acknowledgement, player/navigation independence, comparison/native selection, rotation/speed/pause and accessibility text size.
@@ -49,4 +49,6 @@ A separate read-only reviewer identified permission-task ownership, failed-recor
 - Physical microphone quality, first-use permission gestures on hardware, Bluetooth route changes, real-provider timing, prolonged lock-screen suspension and TestFlight installation have not been accepted in this run.
 - No production database writes, private books/notes, paid provider requests, manual deployment or Apple upload were performed. Git/CI/merge state is reported separately in the delivery; code merge is separate from app distribution.
 
-Superseded PR CI runs were cancelled when regression checks exposed required recovery/error-path fixes, to avoid finishing checks on obsolete code. The follow-up fixes are covered by the final 109-test run; current-head CI remains the merge gate. The six UI flows and screenshots predate only these recovery/error-path changes, not a later layout change. A failing recorder is now released back to idle on finger-up; the failure and any recognized transcript remain visible as an unsent, selectable notice.
+Superseded PR CI runs were cancelled when regression checks exposed required recovery/error-path fixes, to avoid finishing checks on obsolete code. The follow-up fixes are covered by the final 110-test run; current-head CI remains the merge gate. The six UI flows and screenshots predate only these recovery/error-path changes, not a later layout change. A failing recorder is now released back to idle on finger-up; the failure and any recognized transcript remain visible as an unsent, selectable notice.
+
+A gesture regression moved the native AI button downward by 150 points while the finger stayed fixed. The old local-view coordinates produced `[cancel, cancel]`; stable window coordinates now produce `[send, cancel]` for a stationary release versus a real 80-point upward slide. All 110 affected app tests passed after this correction.

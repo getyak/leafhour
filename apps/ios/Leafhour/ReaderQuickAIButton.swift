@@ -37,7 +37,7 @@ struct ReaderQuickAIButton: View {
     }
 }
 
-private struct NativeQuickAIControl: UIViewRepresentable {
+struct NativeQuickAIControl: UIViewRepresentable {
     let capturing: Bool
     let status: ReaderQuickQuestionStatus
     let canRecord: Bool
@@ -89,11 +89,11 @@ private struct NativeQuickAIControl: UIViewRepresentable {
             switch gesture.state {
             case .began:
                 guard parent.canRecord, !parent.capturing else { return }
-                holding = true; origin = gesture.location(in: gesture.view)
+                holding = true; origin = gesture.location(in: gesture.view?.window)
                 UIImpactFeedbackGenerator(style: .light).impactOccurred(); parent.onStart()
             case .ended:
                 guard holding else { return }; holding = false
-                parent.onRelease(gesture.location(in: gesture.view).y < origin.y - 60)
+                parent.onRelease(gesture.location(in: gesture.view?.window).y < origin.y - 60)
             case .cancelled, .failed:
                 if holding { holding = false; parent.onRelease(true) }
             default: break
