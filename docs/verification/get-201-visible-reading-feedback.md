@@ -62,3 +62,9 @@ PR337的328f653 / CI42315496442在真实copy-lint失败：新提示中简/繁体
 另在1440/390真实检查idle及saved淡出后：反馈computed display均为none、clientRects为0、布局height为0，完整5px焦点环保持可见且无遮挡。不是只读hidden属性；现有祖先hidden!important规则在实际渲染生效。两批均零页面/站外/HTTP/下载异常，Chrome/profile/HTTP已关闭。公开after两图已更新为新源码，before仍保留原0a7。
 
 正常依赖下106宿主逻辑再次通过、0fail/skip；扩展copy单元检查57通过、13因本机无真实Vale/textlint而明确跳过，不能当成本机真实lint通过。首轮远端T1失败保留，最新head必须完成真实CLIs和全部适用CI门禁后才能合并。最终若只补此验证文档/合成截图，组件197输入、测试、锁需再读回等价；浏览器结果仍绑定28e而非虚构重跑最终文档提交。
+
+## 第二轮CI的语言运行时边界修复
+
+3cc6f82 / CI42316398325：真实copy lint及反例检查通过，4855项完整测试为4843通过、12失败、0跳过。12项均为同一原因：新反馈helper直接导入ui-locale，不在现有明确审查过的owner图中。原生host/unsigned build通过，Web/gate失败；构建后续不能算通过。保留整份日志，本机同一真实source graph检查复现RED。
+
+修复让原有reading-preferences owner注入createUiMessage工厂；反馈helper不再直接接触mutable locale runtime，原owner白名单、源图审计、预算与失败门禁不变。不是增加新owner或关闭图检查。宿主/graph检查先轻量核对；新head的必要冻结Chrome与构建须等共享机Primary窗口归还后再执行，未重跑旧失败提交。

@@ -438,7 +438,7 @@
       },
       {
         "file": "app/library-reading-preferences.mjs",
-        "sha256": "fe7a9a5f97b84a505afc3fde0a9a8ab07c50f6d6d135340f4fb2ca983a330cdc"
+        "sha256": "8458f3377c42ca44709a7af1be11f3702d03d2392064169f1d972e440f603dd2"
       },
       {
         "file": "app/library-restore.mjs",
@@ -978,7 +978,7 @@
       },
       {
         "file": "app/settings-save-feedback.mjs",
-        "sha256": "4ab967c46e9edb0b33745db1f8b6fc475c519e8cb86cddea4f718df26082d50d"
+        "sha256": "d47ea2307ba7b804b7b36116f851a9282770eabb44f3dfca36014a76abc9fe11"
       },
       {
         "file": "app/share-fonts.mjs",
@@ -1569,7 +1569,7 @@
         "sha256": "531202f1814314b6c76bfef38b2ea66636425b1ca9b445db349e70ebb8bcd00e"
       }
     ],
-    "inputDigest": "d3945133bc527b8b0702fdf5d5c7259d64aadb7a3c17bd68ece6a2915c953010"
+    "inputDigest": "e5dde32e7dcdb00fc76488e99421b8774ec0a0251240c0b29698fc2865784b0b"
   },
   "locales": [
     "en",
@@ -27513,7 +27513,7 @@
         },
         {
           "file": "app/settings-save-feedback.mjs",
-          "line": 15,
+          "line": 13,
           "column": 11
         }
       ],
@@ -249026,10 +249026,10 @@
       }
     },
     {
-      "id": "candidate:app/settings-save-feedback.mjs:9:257",
+      "id": "candidate:app/settings-save-feedback.mjs:7:255",
       "file": "app/settings-save-feedback.mjs",
-      "line": 9,
-      "column": 257,
+      "line": 7,
+      "column": 255,
       "kind": "js-attribute",
       "property": "aria-atomic",
       "value": "true",

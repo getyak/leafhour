@@ -11,3 +11,5 @@
 对外请求、载荷、CAS、dirty draft、owner、序列化、显式重试和只读恢复不变。先用单独呈现模块测试状态与计时竞态，再接入原表单。若 sticky 在自然键盘路径中遮挡焦点，调整布局/滚动预留后复验，不能靠额外滚动或裁切制造通过。
 
 验收以原自然四条 RED 为基线，必须在新冻结提交上不 forced-click、无额外手动滚动地通过。另测成功淡出、持久错误、新编辑/owner/迟到回调、增强控件、三语言/两主题、小屏和关闭重开；所有旧失败保留。只使用已安装 Chrome headless、单页、隔离 profile 与 loopback 合成 API；不新增真实账号、授权、模型调用、native 构建或生产操作。完整 GET-201 的状态矩阵、三浏览器、参考量表和真人项仍独立保留。
+
+The existing reading-preferences owner injects its UI message factory. The feedback module has no direct import of the mutable locale runtime; reviewed graph owners and catalogue budgets remain unchanged.

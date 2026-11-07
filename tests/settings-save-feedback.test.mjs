@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {mountSaveFeedback} from '../app/settings-save-feedback.mjs';
+import {createUiMessage} from '../app/ui-locale.mjs';
 
 class Element extends EventTarget {
  constructor(tag){super();this.tagName=tag;this.children=[];this.attributes={};this.dataset={};this.hidden=false;this.textContent='';this.className='';this.classList={toggle(){}};}
@@ -8,7 +9,7 @@ class Element extends EventTarget {
  setAttribute(k,v){this.attributes[k]=String(v);}getAttribute(k){return this.attributes[k]??null;}
 }
 function clock(){let now=0,next=1;const tasks=new Map(),callbacks=[];return {callbacks,setTimeout(fn,ms){const id=next++;tasks.set(id,{at:now+ms,fn});callbacks.push(fn);return id;},clearTimeout(id){tasks.delete(id);},advance(ms){const end=now+ms;for(;;){const pair=[...tasks].sort((a,b)=>a[1].at-b[1].at).find(([,task])=>task.at<=end);if(!pair)break;tasks.delete(pair[0]);now=pair[1].at;pair[1].fn();}now=end;},count:()=>tasks.size};}
-function fixture(){const timers=clock(),status=new Element('p'),retry=new Element('button'),recover=new Element('button');status.id='habits-status';retry.hidden=recover.hidden=true;let owner='synthetic-a',locale='en',ownerReads=0;const ui=mountSaveFeedback({document:{createElement:tag=>new Element(tag)},status,retry,recover,getOwner:()=>{ownerReads++;return owner;},timers,translate:id=>locale+':'+id});return {ui,status,retry,recover,timers,setOwner:value=>{owner=value;},setLocale:value=>{locale=value;},ownerReads:()=>ownerReads};}
+function fixture(){const timers=clock(),status=new Element('p'),retry=new Element('button'),recover=new Element('button');status.id='habits-status';retry.hidden=recover.hidden=true;let owner='synthetic-a',locale='en',ownerReads=0;const ui=mountSaveFeedback({document:{createElement:tag=>new Element(tag)},status,retry,recover,getOwner:()=>{ownerReads++;return owner;},timers,createMessage:render=>createUiMessage(render,id=>locale+':'+id)});return {ui,status,retry,recover,timers,setOwner:value=>{owner=value;},setLocale:value=>{locale=value;},ownerReads:()=>ownerReads};}
 
 test('the feedback retains original live status and recovery nodes without inventing actions',()=>{
  const f=fixture();assert.deepEqual(f.ui.root.children,[f.status,f.retry,f.recover]);assert.equal(f.ui.root.hidden,true);let retries=0;f.retry.addEventListener('click',()=>retries++);

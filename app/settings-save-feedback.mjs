@@ -1,12 +1,10 @@
-import {createUiMessage,t} from './ui-locale.mjs';
-
 // Presentation only: retain the form's original live region and recovery
 // controls. These timers never dispatch work or own the autosave queue.
-export function mountSaveFeedback({document,status,retry,recover,getOwner=()=>null,timers=globalThis,translate=t}={}){
+export function mountSaveFeedback({document,status,retry,recover,getOwner=()=>null,timers=globalThis,createMessage}={}){
  const root=document.createElement('div');root.className='settings-save-feedback';root.hidden=true;root.append(status,retry,recover);
  let ticket=0,hold=null,fade=null,disposed=false;
  const sync=()=>{if(!disposed)root.hidden=!status.textContent&&retry.hidden&&recover.hidden;};
- const message=createUiMessage((text,error)=>{status.textContent=text;status.classList.toggle('error',!!error);status.setAttribute('role',error?'alert':'status');status.setAttribute('aria-live',error?'assertive':'polite');status.setAttribute('aria-atomic','true');sync();},translate);
+ const message=createMessage((text,error)=>{status.textContent=text;status.classList.toggle('error',!!error);status.setAttribute('role',error?'alert':'status');status.setAttribute('aria-live',error?'assertive':'polite');status.setAttribute('aria-atomic','true');sync();});
  const cancel=()=>{if(hold!==null)timers.clearTimeout(hold);if(fade!==null)timers.clearTimeout(fade);hold=fade=null;};
  const schedule=(fn,ms)=>{const id=timers.setTimeout(fn,ms);id?.unref?.();return id;};
  function clear(){if(disposed)return;ticket++;cancel();root.dataset.phase='idle';message.clear();}

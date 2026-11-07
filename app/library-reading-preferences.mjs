@@ -66,7 +66,7 @@ export function mountReadingPreferencesForm({root,api,getSession,onSaved=()=>{},
   // Autosave queue state: one coalescing timer, one queued follow-up marker and
   // one explicit retry surface for a failed or conflicting write.
   let scheduled=null,queued=false,retryNeeded=false;
-  const message=mountSaveFeedback({document,status,retry:save,recover,getOwner:()=>owner});
+  const message=mountSaveFeedback({document,status,retry:save,recover,getOwner:()=>owner,createMessage:createUiMessage});
   form.append(message.root,opening.root,typography.root,page.root,preview,help,guestHint);root.append(form);
   const fields=()=>[view,language,font,theme,family];
   for(const field of fields())field.setAttribute('aria-describedby',[field.getAttribute('aria-describedby'),status.id].filter(Boolean).join(' '));

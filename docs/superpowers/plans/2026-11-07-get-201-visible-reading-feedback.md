@@ -29,7 +29,7 @@
 
 **Files:** Create `app/settings-save-feedback.mjs` and `tests/settings-save-feedback.test.mjs`; modify `app/library-reading-preferences.mjs`, `app/library-shell.css`, `release-files.json`, generated copy inventory and verification docs.
 
-**Interfaces:** `mountSaveFeedback({document,status,retry,recover,getOwner,timers,translate})` returns `{root,set(id,params,error),clear(),refresh(),sync(),dispose()}`. It consumes existing nodes and UI messages, produces no business event or request.
+**Interfaces:** `mountSaveFeedback({document,status,retry,recover,getOwner,timers,createMessage})` returns `{root,set(id,params,error),clear(),refresh(),sync(),dispose()}`. It consumes existing nodes and UI messages, produces no business event or request.
 
 - [x] Add behavior RED for same-node status/recovery, success1500ms/fade160ms, persistent503/409, stale callbacks after newer messages/owner/disposal, and locale refresh without resetting timers.
 - [x] Run the new helper tests before implementation; preserve the expected failure.
