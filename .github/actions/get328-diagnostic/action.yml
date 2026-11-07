@@ -1,0 +1,5 @@
+name: GET-328 bounded read-only diagnostic
+description: Runs only a separately admitted environment diagnostic with an absolute shared deadline.
+runs:
+  using: node24
+  main: index.cjs

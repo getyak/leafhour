@@ -1,0 +1,65 @@
+{
+  "schema_version": 1,
+  "status": "pending",
+  "consumed": false,
+  "controller_sha": "PENDING_REVIEWED_DIAGNOSTIC_SHA",
+  "grant_comment_id": 6703465445,
+  "grant_issuer_id": 124379614,
+  "grant_comment_url": "https://github.com/getyak/leafhour/pull/340#issuecomment-6703465445",
+  "public_envelope": {
+    "schema_version": 1,
+    "scope": "GET-328-hosted-environment-diagnostic",
+    "repository": "getyak/leafhour",
+    "controller_sha": "PENDING_REVIEWED_DIAGNOSTIC_SHA",
+    "actor": {
+      "login": "kubbot",
+      "id": 124379614
+    },
+    "runtime": {
+      "runner_label": "macos-26-intel",
+      "machine": "x86_64",
+      "image_os": "macos26",
+      "image_version": "20260824.0517.1",
+      "xcode_version": "26.6",
+      "xcode_build": "17F113",
+      "sdk": "26.5",
+      "target_runtime": "26.5"
+    },
+    "limits": {
+      "job_seconds": 330,
+      "work_seconds": 240,
+      "final_seconds": 90,
+      "command_seconds": 20,
+      "artifact_max_bytes": 33554432,
+      "retention_days": 3,
+      "start_free_bytes": 8589934592,
+      "stop_free_bytes": 3221225472,
+      "scratch_max_bytes": 4294967296
+    },
+    "probes": [
+      "identity",
+      "runtime-files",
+      "tool-help",
+      "first-launch-status",
+      "service-status",
+      "bounded-service-log",
+      "owned-processes"
+    ],
+    "cases": [],
+    "read_only": true,
+    "status": "pending",
+    "consumed": false,
+    "nonce": null,
+    "ref": null,
+    "consumed_at": null,
+    "expires_at": null
+  },
+  "execution_authorized": false,
+  "nonce": null,
+  "ref": null,
+  "previous_consumed_runs": [
+    42341326070,
+    42344311588
+  ],
+  "scope_note": "Source preparation only; original seven remain0/7 and GET-328 In Progress."
+}
