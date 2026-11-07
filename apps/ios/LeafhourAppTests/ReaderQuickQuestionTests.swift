@@ -65,6 +65,18 @@ import LeafhourCore
         XCTAssertEqual(currentPage, "page-five")
     }
 
+    func testRecorderFailureDuringAHoldDoesNotLeaveCapturePermanentlyLocked() async {
+        let recorder = SuspendedQuickRecorder(), capture = ReaderQuickCapture(recorder: recorder)
+        capture.start { _, _ in XCTFail("A failed recording cannot be sent") }
+        await Task.yield(); recorder.completePreparation()
+        for _ in 0..<10 { await Task.yield() }
+        recorder.recording = false; recorder.error = "The microphone stopped saving"
+        capture.finish()
+        XCTAssertTrue(capture.canBegin, "A failed system capture must release the hold state")
+        XCTAssertFalse(capture.isCapturing)
+        XCTAssertEqual(capture.error, "The microphone stopped saving")
+    }
+
     func testRepeatedHoldWhileFinalizingDoesNotReplaceThePlaybackHandoff() async {
         let recorder = SuspendedQuickRecorder(), capture = ReaderQuickCapture(recorder: recorder)
         var handoffs = 0

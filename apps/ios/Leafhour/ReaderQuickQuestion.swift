@@ -35,7 +35,8 @@ extension ChatSpeechRecorder: ReaderVoiceRecording { }
         Task { [self] in
             guard identity == marker, phase == .preparing else { return }
             await recorder.start(draft: "") { [weak self] text in
-                guard self?.identity == marker else { return }; self?.transcript = text
+                guard self?.identity == marker else { return }
+                if !text.isEmpty { self?.transcript = text }
             }
             guard identity == marker else { return }
             phase = recorder.recording ? .recording : .idle
@@ -44,8 +45,13 @@ extension ChatSpeechRecorder: ReaderVoiceRecording { }
         }
     }
     func finish(send: Bool = true) {
-        guard phase == .recording, recorder.recording else {
+        guard phase == .recording else {
             if phase == .preparing { cancel() }
+            return
+        }
+        guard recorder.recording else {
+            phase = .idle; completion = nil
+            error = recorder.error ?? "录音已中断，尚未送出，请重试。"
             return
         }
         let marker = identity, callback = completion

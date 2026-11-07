@@ -20,6 +20,12 @@ struct ReaderQuickAIButton: View {
                     .font(.caption).padding(.horizontal, 12).padding(.vertical, 8)
                     .background(paper, in: Capsule()).allowsHitTesting(false)
             }
+            if !capture.isCapturing, let error = capture.error {
+                Text(error + (capture.transcript.isEmpty ? "" : "\n转写草稿（未发送）：" + capture.transcript))
+                    .font(.caption).lineLimit(3).frame(maxWidth: 220, alignment: .leading).textSelection(.enabled)
+                    .padding(10).background(paper, in: RoundedRectangle(cornerRadius: 12))
+                    .accessibilityIdentifier("quick-recording-error")
+            }
             NativeQuickAIControl(capturing: capture.isCapturing, status: capture.error == nil && (tools.error == nil || tools.quickQuestionStatus != .idle) ? tools.quickQuestionStatus : .attention,
                                  canRecord: tools.canStartQuickQuestion && capture.canBegin, onOpen: onOpen, onStart: onStart, onRelease: onRelease)
                 .frame(width: 48, height: 48)
