@@ -43,7 +43,8 @@ function createLegacyChatBudget({pricing,maxCostCny=.75,maxRequests=8,maxToolCal
 }
 
 export function createChatBudget({pricing,maxCostCny=.75,maxRequests=8,maxToolCalls=24,clock=Date.now,usdPricing}={}){
- const meter=providerMeterContext(),paid=meter&&(meter.maxCostUsd!==undefined||['credits','purchased','trial'].includes(meter.funding));
+ const meter=providerMeterContext();if(meter?.funding==='beta')return createConversationMeter();
+ const paid=meter&&(meter.maxCostUsd!==undefined||['credits','purchased','trial'].includes(meter.funding));
  const budget=paid?createProviderBudget({maxCostUsd:Math.min(meter.maxCostUsd??.12,.12),maxRequests,maxToolCalls,clock,...(usdPricing?{pricing:usdPricing}:{})}):createLegacyChatBudget({pricing,maxCostCny,maxRequests,maxToolCalls,clock});
  const attempts=[],reserve=budget.reserveRequest;let blocked=false;
  budget.reserveRequest=request=>{
@@ -150,7 +151,7 @@ export function createChatGenerator({runRoot=path.join(tmpdir(),'marginalia-read
  return async job=>{
   if(!env.DEEPSEEK_API_KEY)throw Error('尚未配置模型。');
   const meter=providerMeterContext(),paid=meter&&(meter.maxCostUsd!==undefined||['credits','purchased','trial'].includes(meter.funding));
-  const pricing=conversationAccounting||paid?undefined:JSON.parse(await readFile(path.join(project,'harness/pricing.json'),'utf8')),budget=conversationAccounting?createConversationMeter({model}):createChatBudget({pricing,maxCostCny,maxRequests,maxToolCalls});
+  const pricing=conversationAccounting||paid||meter?.funding==='beta'?undefined:JSON.parse(await readFile(path.join(project,'harness/pricing.json'),'utf8')),budget=conversationAccounting?createConversationMeter({model}):createChatBudget({pricing,maxCostCny,maxRequests,maxToolCalls});
   const sessionId=randomUUID(),providerMeter=createDshMeter({model,idPrefix:sessionId});
   await mkdir(runRoot,{recursive:true,mode:0o700});const dir=await mkdtemp(path.join(runRoot,'chat-')),controller=new AbortController(),expiresAt=Date.now()+timeoutMs;
   let bridge,harness,stopPromise,timer,abortReject,outcome,primary,stage='preparation';

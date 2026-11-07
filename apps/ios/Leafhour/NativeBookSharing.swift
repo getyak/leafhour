@@ -44,6 +44,10 @@ struct NativeShareContent {
     var contextBefore: String? = nil
     var contextAfter: String? = nil
     var plainText: String { [contextBefore.map { "前文\n" + $0 } ?? "", text, contextAfter.map { "后文\n" + $0 } ?? "", attribution, [title, author].filter { !$0.isEmpty }.joined(separator: " · "), location].filter { !$0.isEmpty }.joined(separator: "\n\n") }
+    func selectedOnly(includeCitation: Bool, verifiedPublicURL: URL?) -> NativeShareContent {
+        NativeShareContent(title: includeCitation ? title : "", author: includeCitation ? author : "", text: text,
+                           attribution: attribution, location: includeCitation ? location : "", url: verifiedPublicURL)
+    }
     static func attribution(quote: SelectedQuote, cached: ReadingTranslation?) -> String {
         guard quote.origin == "translation" else { return "作者原文" }
         guard let variant = quote.variant, ["literal", "interpretive"].contains(variant) else { return "译文 · 未核对" }
@@ -186,7 +190,7 @@ struct NativeShareCardPage {
     /// https://developer.apple.com/documentation/coreimage/cifilter-swift.class/qrcodegenerator()
     private static func shareQRCode(_ url: URL?) throws -> UIImage? {
         guard let url, url.scheme == "https", url.user == nil, url.password == nil, url.fragment == nil,
-              (url == URL(string: "https://leafhour.com") || url == URL(string: "https://leafhour.com/") || (try? NativeBookLink(url, origin: url)) != nil) else { return nil }
+              (url == URL(string: "https://leafhour.com") || url == URL(string: "https://leafhour.com/") || (try? NativeBookLink(url)) != nil) else { return nil }
         let filter = CIFilter.qrCodeGenerator(); filter.message = Data(url.absoluteString.utf8); filter.correctionLevel = "M"
         guard let output = filter.outputImage, let code = CIContext().createCGImage(output, from: output.extent) else {
             throw LibraryError.invalid("二维码暂时无法生成，请使用完整文字或链接分享。")
@@ -236,7 +240,7 @@ struct NativeActivityItems: Identifiable {
         return NativeShareContent(title: session.book.title, author: session.book.author, text: quote?.text ?? "", attribution: quote == nil ? "书籍信息" : label, location: chapter?.title ?? "", url: nil)
     }
     var body: some View {
-        NativeBookSharePanel(initial: content, cloud: cloud, cloudBookID: session.book.cloud?.bookID, passageID: quote?.anchor.passageID, allowsGift: quote == nil, embedded: true, closingBlocked: session.saving || session.saveError != nil)
+        NativeBookSharePanel(initial: content, cloud: cloud, cloudBookID: session.book.cloud?.bookID, passageID: quote?.anchor.passageID, contentVersion: session.book.cloud?.contentVersion, chapterID: quote?.anchor.chapterID, allowsGift: quote == nil, embedded: true, closingBlocked: session.saving || session.saveError != nil)
     }
 }
 
@@ -245,6 +249,8 @@ struct NativeActivityItems: Identifiable {
     let cloud: CloudLibraryClient?
     let cloudBookID: String?
     var passageID: String? = nil
+    var contentVersion: String? = nil
+    var chapterID: String? = nil
     var allowsGift = true
     var files: [URL] = []
     var fileNotice: String? = nil
@@ -265,7 +271,15 @@ struct NativeActivityItems: Identifiable {
     @State private var sharingRights = false
     @State private var gift: BookGift?
     @State private var ownerID: String?
-    private var current: NativeShareContent { content ?? initial }
+    @State private var scopeReady = false
+    @State private var includeCitation = false
+    @State private var publicVerified = false
+    private var current: NativeShareContent {
+        let value = content ?? initial
+        return initial.text.isEmpty ? value : value.selectedOnly(includeCitation: includeCitation || publicVerified, verifiedPublicURL: publicVerified ? value.url : nil)
+    }
+    private var textItems: [Any] { [current.plainText] + (current.url.map { [$0 as Any] } ?? []) }
+    private var imageItems: [Any] { pages.map { $0.image as Any } + (current.url.map { [$0 as Any] } ?? []) }
     @ViewBuilder var body: some View {
         if embedded { shareContent }
         else { NavigationStack { shareContent } }
@@ -297,12 +311,20 @@ struct NativeActivityItems: Identifiable {
                             .shadow(color: .black.opacity(0.10), radius: 12, y: 4)
                             .accessibilityLabel("完整分享长图")
                     }
+                    if !initial.text.isEmpty && !publicVerified {
+                        Toggle("附上书名与作者", isOn: $includeCitation).onChange(of: includeCitation) { _, _ in render() }
+                        Text("默认只分享所选文字；私人书籍不会生成公开试读链接。").font(.footnote).foregroundStyle(.secondary)
+                    }
+                    if publicVerified, let url = current.url {
+                        Link(destination: url) { Label("从这里试读公版原文", systemImage: "arrow.up.right") }.frame(minHeight: 44)
+                        Text("无需登录。二维码与链接只定位公版原文，不含你的笔记或译文。").font(.footnote).foregroundStyle(.secondary)
+                    }
                     DisclosureGroup("查看完整文字与出处") {
                         Text(current.plainText).font(.subheadline).textSelection(.enabled).frame(maxWidth: .infinity, alignment: .leading).padding(.top, 10)
                     }
                     VStack(spacing: 12) {
                         HStack {
-                            Button { activity = NativeActivityItems(values: [current.plainText]) } label: { Label("分享文字", systemImage: "text.quote").frame(minHeight: 44) }.accessibilityIdentifier("book-share-text")
+                            Button { Task { await presentShare(images: false) } } label: { Label("分享文字", systemImage: "text.quote").frame(minHeight: 44) }.accessibilityIdentifier("book-share-text")
                             Spacer()
                         }
                     }
@@ -329,10 +351,10 @@ struct NativeActivityItems: Identifiable {
                 }.padding(22)
             }.background(Color.shelfPaper)
                 .safeAreaInset(edge: .bottom) {
-                    Button { activity = NativeActivityItems(values: pages.map(\.image)) } label: {
+                    Button { Task { await presentShare(images: true) } } label: {
                         Label("分享长图", systemImage: "square.and.arrow.up")
                             .frame(maxWidth: .infinity, minHeight: 48)
-                    }.buttonStyle(.borderedProminent).disabled(pages.isEmpty || rendering)
+                    }.buttonStyle(.borderedProminent).disabled(pages.isEmpty || rendering || cloud != nil && !scopeReady)
                         .accessibilityIdentifier("book-share-image").padding(.horizontal, 22).padding(.vertical, 10).background(.bar)
                 }
                 .navigationTitle(initial.text.isEmpty ? "分享本书" : "分享摘录").navigationBarTitleDisplayMode(.inline)
@@ -382,9 +404,28 @@ struct NativeActivityItems: Identifiable {
         do { pages = try NativeShareCardRenderer.pages(current, format: format, style: cardStyle) }
         catch { pages = []; status = error.localizedDescription }
     }
+    private func presentShare(images: Bool) async {
+        guard cloud == nil || scopeReady else { return }
+        if let cloud, await cloud.activeAccount()?.id != ownerID {
+            pages = []; content = nil; status = "账号已切换，请回到自己的书房重新选择。"; return
+        }
+        activity = NativeActivityItems(values: images ? imageItems : textItems)
+    }
     private func loadPublicLink() async {
-        guard let cloud, let id = cloudBookID, let owner = await cloud.activeAccount()?.id else { return }
-        ownerID = owner
+        guard let cloud else { scopeReady = true; return }
+        defer { scopeReady = true }
+        let account = await cloud.activeAccount()?.id
+        ownerID = account
+        guard let id = cloudBookID else { return }
+        if let passageID, let contentVersion {
+            do {
+                let verified = try await cloud.publicReadingExcerpt(bookID: id, passageID: passageID, contentVersion: contentVersion, chapterID: chapterID)
+                guard !Task.isCancelled, await cloud.activeAccount()?.id == account else { return }
+                var next = initial; next.url = verified.url; content = next; publicVerified = true; render()
+            } catch { /* Only a local selected-text card remains; no private fallback link. */ }
+            return
+        }
+        guard let owner = account else { return }
         do {
             let remote = try await cloud.readableBook(bookID: id, ownerID: owner)
             guard !Task.isCancelled, await cloud.activeAccount()?.id == owner else { return }

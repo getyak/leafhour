@@ -1613,5 +1613,13 @@
   "app/beta-page.mjs",
   "app/beta.css",
   "tests/beta-channel.test.mjs",
-  "tests/beta-routes.test.mjs"
+  "tests/beta-routes.test.mjs",
+  "app/beta-usage.mjs",
+  "app/share-bootstrap.mjs",
+  "app/share-link.mjs",
+  "app/vendor/share-qr.LICENSE.txt",
+  "app/vendor/share-qr.mjs",
+  "server/public-excerpt.mjs",
+  "tests/reading-share-beta.test.mjs",
+  "tests/share-bootstrap.test.mjs"
 ]

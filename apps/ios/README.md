@@ -2,6 +2,12 @@
 
 This is the native iOS reader, with optional Leafhour account login and cloud synchronization. Device-local import and reading still work without a login or network connection. System listening runs locally; cloud translation and reading conversations require an explicit action. After sign-in, opening a book without a cached guide also starts a non-blocking AI reading guide from bounded opening samples; a device-local original stays on the device. See [current iPhone behavior and data boundaries](../../docs/ios-reading-experience.md) and the [November 5 verification record](../../docs/verification/2026-11-05-reading-experience/README.md). The checked-in debug identifier is for unsigned local development only; distribution must reuse the separately verified existing Leafhour App Store Connect app.
 
+## Selected reading shares and public beta
+
+Excerpt cards keep the exact selected original or translation, with its attribution. They do not append surrounding text, notes or history. Private excerpts hide the book citation by default and have no public trial link. Adding the citation is explicit. A cookie-free catalogue resolver can verify a public book's exact version/chapter/paragraph; only its original reading URL enters the QR and system share sheet. Verification failure leaves a local selected-text card. Account changes invalidate pending sharing.
+
+The server announces beta usage as statistics-only. Native AI preparation does not request a point quote or debit in that policy. Existing purchased balances and payment records remain separate from beta usage. Source permissions, bounded translation windows and cancellation still apply.
+
 ## Build and test
 
 Requires Xcode 16+ (iOS 17 minimum), Swift 5.9+, and the existing shared iOS guard on this Mac. ZIPFoundation 0.9.20 and Swift cmark 0.6.0 are vendored with upstream blob checksums. No sample books or personal data ship in the app. `node tools/verify-ios-vendor.mjs` checks both dependencies without network access.

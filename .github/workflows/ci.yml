@@ -167,6 +167,11 @@ jobs:
       - name: Build native iOS app without Apple account or signing
         run: |
           xcodebuild -project apps/ios/Leafhour.xcodeproj -scheme Leafhour -configuration Debug -sdk iphonesimulator -destination 'generic/platform=iOS Simulator' -derivedDataPath "$RUNNER_TEMP/leafhour-ios" -jobs 2 ARCHS=arm64 ONLY_ACTIVE_ARCH=YES CODE_SIGNING_ALLOWED=NO build 2>&1 | tee "$RUNNER_TEMP/leafhour-ios.log"
+      - name: Verify selected-content cards on an isolated simulator
+        run: |
+          SIMULATOR_ID=$(xcrun simctl create LeafhourShareCI 'com.apple.CoreSimulator.SimDeviceType.iPhone-16')
+          trap 'xcrun simctl delete "$SIMULATOR_ID"' EXIT
+          xcodebuild -project apps/ios/Leafhour.xcodeproj -scheme Leafhour -configuration Debug -destination "platform=iOS Simulator,id=$SIMULATOR_ID" -derivedDataPath "$RUNNER_TEMP/leafhour-ios" -resultBundlePath "$RUNNER_TEMP/leafhour-share.xcresult" -jobs 2 CODE_SIGNING_ALLOWED=NO -only-testing:LeafhourAppTests/BookShareCardTests test 2>&1 | tee "$RUNNER_TEMP/leafhour-share.log"
       - name: Preserve native validation evidence
         if: always()
         uses: actions/upload-artifact@v4
@@ -175,6 +180,8 @@ jobs:
           path: |
             ${{ runner.temp }}/leafhour-core.log
             ${{ runner.temp }}/leafhour-ios.log
+            ${{ runner.temp }}/leafhour-share.log
+            ${{ runner.temp }}/leafhour-share.xcresult
           if-no-files-found: warn
 
   ios-release-contracts:

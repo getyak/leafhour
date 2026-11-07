@@ -490,6 +490,14 @@ export async function buildReaderWeb({root,outputDir,html}){
    for(const file of UI_LOCALE_RELEASE_ENTRIES)if(!allowed.has(file))throw Error('Non-public ui-locale release backing: '+file);
    return {path:'/ui-locale.mjs',external:true};
   });
+  b.onResolve({filter:/^\.\/share\.js$/},args=>{
+   if(args.kind!=='dynamic-import'||path.resolve(args.importer)!==path.join(root,'app/share-bootstrap.mjs')||!allowed.has('app/share.js'))throw Error('Unauthorized share panel edge');
+   return {path:'/share.js',external:true};
+  });
+  b.onResolve({filter:/share-qr\.mjs/},args=>{
+   if(args.kind!=='dynamic-import'||args.path!=='./vendor/share-qr.mjs'||path.resolve(args.importer)!==path.join(root,'app/share.js')||!allowed.has('app/vendor/share-qr.mjs'))throw Error('Unauthorized share QR edge');
+   return {path:'/vendor/share-qr.mjs',external:true};
+  });
   b.onResolve({filter:/ui-catalogs/},args=>{
    const relative=path.relative(root,args.importer).replaceAll('\\','/');
    const base=targetFileOf(relative,args.path);

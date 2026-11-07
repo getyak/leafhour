@@ -9,7 +9,7 @@ function unavailable(mode,publicOrigin){
  const service=createBillingService({enabled:false,mode,publicOrigin});
  return {...service,enabled:true,readiness:async()=>({enabled:true,mode,ready:false,reason:'billing_configuration_incomplete'}),catalog:async()=>({...await service.catalog(),enabled:true,available:false})};
 }
-export async function createBillingRuntime({env=process.env,dataDir,store,creem,publicOrigin=env.READER_PUBLIC_ORIGIN||'http://localhost:3000'}={}){
+async function createFinancialRuntime({env=process.env,dataDir,store,creem,publicOrigin=env.READER_PUBLIC_ORIGIN||'http://localhost:3000'}={}){
  const enabled=env.READER_BILLING_ENABLED==='true',mode=env.CREEM_MODE||'test';
  if(!enabled)return createBillingService({enabled:false,mode:['test','live'].includes(mode)?mode:'test',publicOrigin});
  if(!['test','live'].includes(mode))return unavailable('test',publicOrigin);
@@ -20,4 +20,21 @@ export async function createBillingRuntime({env=process.env,dataDir,store,creem,
   if(!backend||mode==='live'&&(!backend.durable||env.READER_BILLING_SCHEMA_VERIFIED!=='true'))throw Error('Durable billing store required');
   return createBillingService({store:backend,creem:creem||createCreem({env}),enabled,mode,publicOrigin,trialBudgetUnits:points*CREDIT_UNITS,adminIds:(env.READER_BILLING_ADMIN_USER_IDS||'').split(',').map(v=>v.trim()).filter(Boolean)});
  }catch{return unavailable(mode,publicOrigin);}
+}
+
+// Beta usage is observed, never reserved against or debited from a reader's ledger.
+export async function createBillingRuntime(options={}){
+ const env=options.env||process.env,service=await createFinancialRuntime(options);
+ if(env.READER_USAGE_POLICY==='metered')return {...service,usagePolicy:'metered'};
+ const mode=service.mode||(['test','live'].includes(env.CREEM_MODE)?env.CREEM_MODE:'test');
+ const usageStore=options.store||(env.SUPABASE_URL&&env.SUPABASE_SECRET_KEY?createBillingPostgresStore({env}):await createBillingMemoryStore({dataDir:options.dataDir}));
+ const catalog=service.catalog.bind(service);
+ return {...service,usagePolicy:'beta',
+  catalog:async()=>({...await catalog(),enabled:false,available:false,usagePolicy:'beta',statisticsOnly:true}),
+  recordProviderCall:facts=>usageStore.command('providerCall',{...facts,mode}),
+  async summary(input){
+   if(!(env.READER_BILLING_ADMIN_USER_IDS||'').split(',').map(v=>v.trim()).includes(input.ownerId))throw Object.assign(Error('admin_required'),{status:403});
+   return usageStore.command('summary',{...input,mode});
+  },
+ };
 }

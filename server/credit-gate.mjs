@@ -92,6 +92,13 @@ export function createCreditGate({billing,library,chat,record,clock=Date.now}={}
   const {scope}=await scopeFor(user,request);return billing.quote({ownerId:user.id,action:request.action,scope});
  }
  async function run({user,action,bookId,input,execute,signal}){
+  if(billing?.usagePolicy==='beta'){
+   const body=bodyFor(input,action,bookId);
+   // Generation services still authorize and deduplicate the source-bound request.
+   // No financial operation is created: beta calls cannot be charged later.
+   if(typeof record!=='function')throw fail('用量统计暂不可用，请稍后重试',503);
+   return withProviderMeter({ownerId:user?.id,feature:action,funding:'beta',record},()=>execute(body));
+  }
   if(!enabled())return execute(input);
   const body=bodyFor(input,action,bookId);
   const cached=await cache(user,action,bookId,body);

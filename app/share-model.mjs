@@ -21,7 +21,7 @@ export function displayQuoteText(text,emphasis){
 }
 export function normaliseShareOptions(raw={}){
  const one=(v,values,fallback)=>values.includes(v)?v:fallback;
- return {language:one(raw.language,['zh','en','bilingual'],'zh'),variant:one(raw.variant,['literal','interpretive'],'interpretive'),theme:one(raw.theme,Object.keys(shareThemes),'paper'),ratio:one(raw.ratio,['portrait','square','story'],'portrait'),layout:one(raw.layout,['stack','columns'],'stack'),above:one(raw.above,['hide','fade','keep'],'fade'),below:one(raw.below,['hide','fade','keep'],'fade'),size:Number.isFinite(Number(raw.size))?Math.max(32,Math.min(56,Number(raw.size))):48,source:raw.source!==false};
+ return {language:one(raw.language,['zh','en','bilingual'],'zh'),variant:one(raw.variant,['literal','interpretive'],'interpretive'),theme:one(raw.theme,Object.keys(shareThemes),'paper'),ratio:one(raw.ratio,['portrait','square','story'],'portrait'),layout:one(raw.layout,['stack','columns'],'stack'),above:one(raw.above,['hide','fade','keep'],'hide'),below:one(raw.below,['hide','fade','keep'],'hide'),size:Number.isFinite(Number(raw.size))?Math.max(32,Math.min(56,Number(raw.size))):48,source:raw.source!==false};
 }
 export function textFor(p,language,variant='interpretive'){return language==='en'?p.original:p.translations?.[variant]?.text;}
 const validBoundary=(s,n)=>n===0||n===s.length||!(s.charCodeAt(n-1)>=0xD800&&s.charCodeAt(n-1)<=0xDBFF&&s.charCodeAt(n)>=0xDC00&&s.charCodeAt(n)<=0xDFFF);
@@ -44,27 +44,12 @@ export function buildShareModel(book,snapshot,rawOptions={},format=(_id,_params,
   // The saved text fields above keep their raw UTF-16 characters and offsets.
   const emphasisOf=(language,text,start,end)=>language==='en'&&sourceEmphasisEligible(book)?{emphasis:sliceEmphasisRanges(sourceEmphasisRanges(text),start,end)}:{};
   const selected={text:part.text,language:part.language,label:part.language==='en'?originalLabel:variantLabel(part.variant)+draftLabel,wholeCounterpart:false,...emphasisOf(part.language,source,part.start,part.end)};
-  const counterpart=(language,variant)=>{const text=textFor(p,language,variant);if(typeof text!=='string'||!text.trim())throw Error('这段对应译文尚未准备好。');const name=language==='en'?originalLabel:variantLabel(variant);return {text,language,label:name+(full?'':format('share.artifact.wholeSuffix',null,' · 对应整段'))+(language==='zh'?draftLabel:''),wholeCounterpart:!full,...emphasisOf(language,text,0,text.length)};};
-  const desired=options.language==='bilingual'?part.language:options.language;
-  const unchanged=desired===part.language&&(desired==='en'||options.variant===part.variant);
-  const primary=unchanged?selected:counterpart(desired,options.variant);
-  const secondary=options.language==='bilingual'?counterpart(part.language==='zh'?'en':'zh',options.variant):null;
-  return {passageId:p.id,primary,secondary,selectionAligned:unchanged,section:p.section,page:p.source?.printedPage,sourceStart:part.start,sourceEnd:part.end,sourceLanguage:part.language,sourceVariant:part.variant};
+  return {passageId:p.id,primary:selected,secondary:null,selectionAligned:true,section:p.section,page:p.source?.printedPage,sourceStart:part.start,sourceEnd:part.end,sourceLanguage:part.language,sourceVariant:part.variant};
  });
- const first=blocks[0],last=blocks.at(-1),a=index.get(first.passageId),z=index.get(last.passageId);
- const adjacent=(i,language)=>{const p=rows[i];return p?.chapterId===snapshot.chapterId?textFor(p,language,options.variant)||'':'';};
- const beforeSource=textFor(a.p,first.primary.language,options.variant)||'',afterSource=textFor(z.p,last.primary.language,options.variant)||'';
- const sameFirst=first.selectionAligned,sameLast=last.selectionAligned;
-  // Context presentation keeps full-source provenance: the raw before/after
-  // strings are never stripped or reparsed, and each context window gets its
-  // own independent range window into its own full original.
- const adjacentInfo=(i,language)=>{const text=adjacent(i,language);return text?{text,full:text,start:0,end:text.length}:null;};
- const beforePick=(sameFirst&&beforeSource.slice(0,first.sourceStart))?{text:beforeSource.slice(0,first.sourceStart),full:beforeSource,start:0,end:first.sourceStart}:adjacentInfo(a.i-1,first.primary.language);
- const afterPick=(sameLast&&afterSource.slice(last.sourceEnd))?{text:afterSource.slice(last.sourceEnd),full:afterSource,start:last.sourceEnd,end:afterSource.length}:adjacentInfo(z.i+1,last.primary.language);
- const before=beforePick?beforePick.text:'',after=afterPick?afterPick.text:'';
- const contextEmphasis=(pick,language)=>pick&&language==='en'&&sourceEmphasisEligible(book)?sliceEmphasisRanges(sourceEmphasisRanges(pick.full),pick.start,pick.end):undefined;
+ const first=blocks[0],last=blocks.at(-1),before='',after='';
+ const includeSource=rawOptions.source===true||(book.visibility==='public'&&rawOptions.source!==false);
  const chapter=book.chapters.find(c=>c.id===snapshot.chapterId);
- return {bookId:book.bookId,contentVersion:book.contentVersion,title:book.title?.zh||book.title?.en||format('share.artifact.title',null,'书籍摘录'),author:typeof book.author==='string'?book.author:'',location:(book.source?.structure==='automatic_groups'?format('share.artifact.segment',{number:chapter?.number||''},'阅读片段 '+(chapter?.number||'')):format('share.artifact.chapter',{number:chapter?.number||''},'第 '+(chapter?.number||'')+' 章'))+' · §'+first.section+(last.section!==first.section?'–'+last.section:'')+(first.page?format('share.artifact.pageSuffix',{page:first.page},' · 原书 '+first.page+' 页'):''),blocks,before,after,beforeEmphasis:contextEmphasis(beforePick,first.primary.language),afterEmphasis:contextEmphasis(afterPick,last.primary.language),contextLanguage:first.primary.language,attribution:first.primary.label,selectedCharacters:characters};
+ return {bookId:book.bookId,contentVersion:book.contentVersion,title:includeSource?(book.title?.zh||book.title?.en||format('share.artifact.title',null,'书籍摘录')):'',author:includeSource&&typeof book.author==='string'?book.author:'',location:includeSource?((book.source?.structure==='automatic_groups'?format('share.artifact.segment',{number:chapter?.number||''},'阅读片段 '+(chapter?.number||'')):format('share.artifact.chapter',{number:chapter?.number||''},'第 '+(chapter?.number||'')+' 章'))+' · §'+first.section+(last.section!==first.section?'–'+last.section:'')+(first.page?format('share.artifact.pageSuffix',{page:first.page},' · 原书 '+first.page+' 页'):'')):'',blocks,before,after,contextLanguage:first.primary.language,attribution:first.primary.label,selectedCharacters:characters};
 }
 export function paragraphSnapshot(book,p,chapterId,language='zh',variant='interpretive'){
  const text=textFor(p,language,variant);if(!text?.trim())throw Error('这段文字尚未准备好。');
@@ -205,9 +190,10 @@ export function layoutShareCard(model,rawOptions,measure){
   }
  }
  if(options.below!=='hide'&&model.after.trim()){y+=54;context(model.after,'below',options.below,model.afterEmphasis);y-=48;}
- const bodyHeight=y,base={portrait:1350,square:1080,story:1920}[options.ratio],footerHeight=options.source?156:66,height=Math.max(base,Math.ceil(bodyHeight+footerHeight+216));
+ const citationLines=options.source?wrapText([model.title,model.author].filter(Boolean).join(' · '),text=>measure(text,27,'zh'),rawOptions?.trialUrl?600:usable):[];
+ const bodyHeight=y,base={portrait:1350,square:1080,story:1920}[options.ratio],footerHeight=Math.max(rawOptions?.trialUrl?300:100,options.source?100+citationLines.length*39:100),height=Math.max(base,Math.ceil(bodyHeight+footerHeight+216));
  if(height>6400)throw Error('双语摘录较长，请缩小字号或减少选中的段落。');
  const top=104+Math.max(0,(height-footerHeight-208-bodyHeight)/2);
  for(const item of items)item.y+=top;
- return {width,height,items,footerY:height-footerHeight,extended:height>base,quoteCharacters:model.blocks.reduce((n,b)=>n+b.primary.text.length+(b.secondary?.text.length||0),0),options};
+ return {width,height,items,citationLines,footerY:height-footerHeight,extended:height>base,quoteCharacters:model.blocks.reduce((n,b)=>n+b.primary.text.length+(b.secondary?.text.length||0),0),options};
 }

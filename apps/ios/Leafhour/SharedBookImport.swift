@@ -63,17 +63,18 @@ struct IncomingBookRequest: Identifiable {
     func acceptIncomingBook(_ request: IncomingBookRequest) async throws {
         guard !busy, incomingBookRequest?.id == request.id, let owner = account?.id else { throw LibraryError.invalid("请先登录自己的书房，当前导入链接已保留。") }
         let marker = importAccountContext
-        let bookID: String, passageID: String?
+        let bookID: String, passageID: String?, expectedVersion: String?
         switch request.link {
         case .gift(let token):
             let accepted = try await cloud.acceptBookGift(token: token, ownerID: owner)
             guard marker == importAccountContext, incomingBookRequest?.id == request.id else { return }
-            bookID = accepted.bookID; passageID = nil
-        case .read(let id, let passage): bookID = id; passageID = passage
+            bookID = accepted.bookID; passageID = nil; expectedVersion = nil
+        case .read(let id, let passage, let version): bookID = id; passageID = passage; expectedVersion = version
         default: throw LibraryError.invalid("此链接不是可导入的书籍。")
         }
         let remote = try await cloud.readableBook(bookID: bookID, ownerID: owner)
         guard marker == importAccountContext, incomingBookRequest?.id == request.id else { return }
+        guard expectedVersion == nil || expectedVersion == remote.contentVersion else { throw LibraryError.invalid("此分享段落的公版版本已变化，请在网页中重新核对。") }
         await reload()
         guard marker == importAccountContext else { return }
         if let local = books.first(where: { $0.cloud?.ownerID == owner && $0.cloud?.bookID == bookID && $0.cloud?.contentVersion == remote.contentVersion }) { await open(local) }
@@ -153,7 +154,7 @@ struct IncomingBookRequest: Identifiable {
         do {
             switch request.link {
             case .gift(let token): gift = try await model.cloud.bookGift(token: token)
-            case .read(let id, _):
+            case .read(let id, _, _):
                 guard let owner else { return }
                 let book = try await model.cloud.readableBook(bookID: id, ownerID: owner)
                 guard owner == model.account?.id else { return }

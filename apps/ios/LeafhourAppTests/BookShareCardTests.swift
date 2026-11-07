@@ -11,6 +11,17 @@ import LeafhourCore
         return detector.features(in: exported).compactMap { ($0 as? CIQRCodeFeature)?.messageString }
     }
 
+    func testPrivateExcerptProjectionContainsOnlyExplicitSelectionAndOptInCitation() throws {
+        let initial = NativeShareContent(title: "PRIVATE FILE", author: "PRIVATE AUTHOR", text: "selected words", attribution: "作者原文", location: "PRIVATE CHAPTER", url: URL(string: "https://leafhour.com/gift/secret"), contextBefore: "PRIVATE BEFORE", contextAfter: "PRIVATE AFTER")
+        let selected = initial.selectedOnly(includeCitation: false, verifiedPublicURL: nil)
+        XCTAssertEqual(selected.text, "selected words")
+        XCTAssertFalse(selected.plainText.contains("PRIVATE")); XCTAssertNil(selected.url)
+        let card = try XCTUnwrap(NativeShareCardRenderer.pages(selected, format: .portrait).first)
+        XCTAssertNil(card.qrCodeBounds); XCTAssertEqual(try decodedLinks(in: card.image), [])
+        let cited = initial.selectedOnly(includeCitation: true, verifiedPublicURL: nil)
+        XCTAssertTrue(cited.plainText.contains("PRIVATE FILE")); XCTAssertFalse(cited.plainText.contains("PRIVATE BEFORE"))
+    }
+
     func testEveryCardStylePreservesCompleteMultilingualTextAndReadableInk() throws {
         let text = String(repeating: "阅读的片段与原文都应完整保留。 A quiet page 👩🏽‍💻 café.\n", count: 28)
         let content = NativeShareContent(title: "A real title", author: "Author", text: text, attribution: "作者原文", location: "Chapter", url: nil)
@@ -36,7 +47,7 @@ import LeafhourCore
     }
 
     func testExportedCardsDecodeToTheExactPublicOrGiftURLInEveryFormat() throws {
-        for url in [URL(string: "https://leafhour.com/read?book=gutenberg-alice&passage=ch01-p002")!, URL(string: "https://leafhour.com/gift/" + String(repeating: "a", count: 43))!] {
+        for url in [URL(string: "https://leafhour.com/read?book=gutenberg-alice&passage=ch01-p002&contentVersion=v1&layer=original")!, URL(string: "https://leafhour.com/read?book=gutenberg-alice&passage=ch01-p002")!, URL(string: "https://leafhour.com/gift/" + String(repeating: "a", count: 43))!] {
             for format in NativeShareCardFormat.allCases {
                 let content = NativeShareContent(title: "A book whose full title stays in the citation", author: String(repeating: "Long Author Name ", count: 8), text: String(repeating: "每一段所选文字都保留。Read the actual words. ", count: 12), attribution: "作者原文", location: "Chapter 1", url: url)
                 let pages = try NativeShareCardRenderer.pages(content, format: format)

@@ -3,7 +3,7 @@ import path from 'node:path';
 import {randomUUID} from 'node:crypto';
 import {audioHash,audioError} from './audio-content.mjs';
 export const emptyAudio=()=>({kind:'marginalia-audio',schemaVersion:1,sessions:[],dialogues:[],preferences:null,voiceBibles:[]});
-export async function createAudioStore({dataDir,dataStore=null}){
+export async function createAudioStore({dataDir,dataStore=null,statisticsOnly=false}){
  const durable=!!dataStore;
  if(durable&&['read','mutate','putBlob','blob'].some(k=>typeof dataStore[k]!=='function'))throw audioError('云端声音存储尚未配置。',503,'storage_unavailable');
  if(!durable)await mkdir(dataDir,{recursive:true,mode:0o700});
@@ -23,7 +23,7 @@ export async function createAudioStore({dataDir,dataStore=null}){
    data.requests=(data.requests||[]).filter(r=>now-r.time<86400000);
    if(data.requests.some(r=>r.id===requestId))throw audioError('这次生成已提交，请重新发起。',409,'already_submitted');
    const hour=data.requests.filter(r=>now-r.time<3600000),user=data.requests.filter(r=>r.owner===ownerHash);
-   if(data.requests.length>=500||hour.length>=100||user.length>=100||hour.filter(r=>r.owner===ownerHash).length>=20)throw audioError('声音生成已达到这段时间的额度，请稍后再试。',429,'rate_limited');
+   if(!statisticsOnly&&(data.requests.length>=500||hour.length>=100||user.length>=100||hour.filter(r=>r.owner===ownerHash).length>=20))throw audioError('声音生成已达到这段时间的额度，请稍后再试。',429,'rate_limited');
    data.requests.push({owner:ownerHash,id:requestId,time:now});return {id:requestId};
   });}catch(error){if(error.status)throw error;throw audioError('声音额度暂时无法核验，请稍后重试。',503,'quota_unavailable');}
  }
@@ -31,7 +31,7 @@ export async function createAudioStore({dataDir,dataStore=null}){
   if(!durable)return null;
   if(typeof owner!=='string'||!owner||typeof jobId!=='string'||!jobId||!Number.isSafeInteger(calls)||calls<1||calls>100)throw audioError('这次导听的生成范围超过额度，请缩小范围。',413,'scope_too_large');
   const now=Date.now(),ownerHash=audioHash(owner);
-  try{return await dataStore.mutate('audio/limits/guides',{reservations:[]},data=>{data.reservations=(data.reservations||[]).filter(r=>now-r.time<86400000);const prior=data.reservations.find(r=>r.id===jobId&&r.owner===ownerHash);if(prior){if(prior.calls!==calls)throw audioError('导听额度不能用于其他范围。',409,'quota_conflict');return {id:jobId,calls:prior.calls};}const user=data.reservations.filter(r=>r.owner===ownerHash),sum=rows=>rows.reduce((n,r)=>n+r.calls,0);if(sum(data.reservations)+calls>200||sum(user)+calls>100||sum(user.filter(r=>now-r.time<3600000))+calls>100)throw audioError('今天的导听生成额度不足，请缩小范围或稍后再试。',429,'rate_limited');data.reservations.push({id:jobId,owner:ownerHash,calls,time:now,stages:[]});return {id:jobId,calls};});}catch(error){if(error.status)throw error;throw audioError('导听额度暂时无法核验，请稍后重试。',503,'quota_unavailable');}
+  try{return await dataStore.mutate('audio/limits/guides',{reservations:[]},data=>{data.reservations=(data.reservations||[]).filter(r=>now-r.time<86400000);const prior=data.reservations.find(r=>r.id===jobId&&r.owner===ownerHash);if(prior){if(prior.calls!==calls)throw audioError('导听额度不能用于其他范围。',409,'quota_conflict');return {id:jobId,calls:prior.calls};}const user=data.reservations.filter(r=>r.owner===ownerHash),sum=rows=>rows.reduce((n,r)=>n+r.calls,0);if(!statisticsOnly&&(sum(data.reservations)+calls>200||sum(user)+calls>100||sum(user.filter(r=>now-r.time<3600000))+calls>100))throw audioError('今天的导听生成额度不足，请缩小范围或稍后再试。',429,'rate_limited');data.reservations.push({id:jobId,owner:ownerHash,calls,time:now,stages:[]});return {id:jobId,calls};});}catch(error){if(error.status)throw error;throw audioError('导听额度暂时无法核验，请稍后重试。',503,'quota_unavailable');}
  }
  return {durable,read,mutate,reserveGeneration,reserveGuideBudget,async putClip(key,bytes){const file=clipPath(key);if(!Buffer.isBuffer(bytes)||!bytes.length||bytes.length>4000000)throw audioError('声音格式无效。');if(durable)return dataStore.putBlob(file,bytes);const tmp=file+'.'+randomUUID()+'.pending';await writeFile(tmp,bytes,{mode:0o600});await rename(tmp,file);},async getClip(key){try{return durable?await dataStore.blob(clipPath(key)):await readFile(clipPath(key));}catch(e){if(e.code==='ENOENT'||e.status===404)throw audioError('声音文件尚未准备好。',404);throw e;}},async getVoiceBible(owner,book){const data=await read(owner,book);return (data.voiceBibles||[]).find(vb=>vb.bookId===book)||null;},async saveVoiceBible(owner,book,voiceBible){return mutate(owner,book,data=>{const bibles=data.voiceBibles||[];const index=bibles.findIndex(vb=>vb.bookId===book);if(index>=0){bibles[index]=voiceBible;}else{bibles.push(voiceBible);}data.voiceBibles=bibles;return voiceBible;});}};
 }
