@@ -113,6 +113,13 @@ const strings=[
   ['直接阅读公版样书不需要调用模型。翻译与对话需要配置模型服务，自托管时由运营者承担供应商费用。赠书信可以分享所选阅读材料；在线好友的实时共读仍是后续设想。','Reading public samples needs no model request. Translation and conversation need a configured model service; self-hosters bear provider charges. Gift letters can share selected reading material. Live reading together with online presence is a future idea.','直接閱讀公版樣書不需要調用模型。翻譯與對話需要配置模型服務，自託管時由營運者承擔供應商費用。贈書信可以分享所選閱讀材料；在線好友的實時共讀仍是後續設想。','公開サンプルを読むだけならモデルは呼び出しません。翻訳と対話にはモデルサービスの設定が必要で、セルフホストでは運営者が費用を負担します。贈り物の手紙で選んだ読書資料を共有できます。オンラインの友人とのリアルタイムな共読は、これからの構想です。'],
   ['网站支持哪些语言？','Which languages does the site support?','網站支援哪些語言？','対応言語は？'],
   ['官网、书房和阅读界面支持英文、简体中文、繁体中文和日语。界面语言可以在外观设置中切换，不会改变书籍原文或已有译文。','The website, reading room and reader support English, Simplified Chinese, Traditional Chinese and Japanese. Change the interface language in appearance settings; the book’s original text and existing translations stay unchanged.','官網、書房和閱讀介面支援英文、簡體中文、繁體中文和日語。介面語言可以在外觀設定中切換，不會改變書籍原文或既有譯文。','公式サイト、書斎、リーダーは英語・簡体字中国語・繁体字中国語・日本語に対応しています。外観設定で表示言語を変更できます。本の原文や保存済みの訳文は変わりません。'],
+  ['开源的私人阅读书房。<br>把原文、译文和自己的思考留在一起。','An open-source reading room.<br>Keep books, translations and your own thoughts together.','開源的私人閱讀書房。<br>把原文、譯文和自己的思考留在一起。','オープンソースの読書室。<br>原文も訳文も、自分の考えも、一か所に。'],
+  ['Web 书房','Web reading room','Web 書房','Web の書斎'],
+  ['iOS 内测','iOS beta','iOS 內測','iOS ベータ版'],
+  ['使用文档','Documentation','使用說明','ドキュメント'],
+  ['反馈问题','Report an issue','回報問題','問題を報告'],
+  ['联系支持','Contact support','聯絡支援','サポートに連絡'],
+  ['cubxxw 的作品','A project by cubxxw','cubxxw 的作品','cubxxw のプロジェクト'],
   // Closing and footer
   ['今天，就从几页开始。','Begin with a few pages today.','今天，就從幾頁開始。','今日は数頁から始めましょう。'],
   ['一本想读的书，一点留给自己的时间。','A book you want to read. A little time to yourself.','一本想讀的書，一點留給自己的時間。','読みたい一冊と、自分にあける少しの時間。'],
