@@ -438,7 +438,7 @@
       },
       {
         "file": "app/library-reading-preferences.mjs",
-        "sha256": "15e15f4b3fdb63d7b8ff53894210b4a8a1d8c2edceb2b8e5795813f410e9332c"
+        "sha256": "8458f3377c42ca44709a7af1be11f3702d03d2392064169f1d972e440f603dd2"
       },
       {
         "file": "app/library-restore.mjs",
@@ -977,6 +977,10 @@
         "sha256": "c914be1820dbeb7df83a2d72ae45156f2b86283417232a0d1bf0b562723f92c4"
       },
       {
+        "file": "app/settings-save-feedback.mjs",
+        "sha256": "d47ea2307ba7b804b7b36116f851a9282770eabb44f3dfca36014a76abc9fe11"
+      },
+      {
         "file": "app/share-fonts.mjs",
         "sha256": "0e880369919a45cfdc33d74e45e346f3f27863d6b37647f5108673d7622b923b"
       },
@@ -1042,19 +1046,19 @@
       },
       {
         "file": "app/ui-catalogs/en.mjs",
-        "sha256": "21c7c9b1bde9a46286a41a3636e681045b4483f284a0968be296cddec4358d15"
+        "sha256": "0f863814c4693f3da9c7bd4cbd7960c7090cced435f03bcd702d5faf910d03ea"
       },
       {
         "file": "app/ui-catalogs/ja.mjs",
-        "sha256": "f704123c15dd573fe38887b67a7b1f2bf0e34900576a2463b32112e4c7453c60"
+        "sha256": "1f0b48242213eb1b17341d4fedb072dc0a66ad28ac411f1cbcd9f7e0ae5f835b"
       },
       {
         "file": "app/ui-catalogs/zh-Hans.mjs",
-        "sha256": "67084e734e2bf6f9eec26a7e90dfa721033a61af36a27c382a893d34094255c4"
+        "sha256": "bee3d79be4e65373cab2c94445f5416b15b75f902b85a89601483b42eb7d0a49"
       },
       {
         "file": "app/ui-catalogs/zh-Hant.mjs",
-        "sha256": "01db7e1cd51f44ef3679b9672ca025d839b4d724b0ec8aa7bc8237ba8e84d3d7"
+        "sha256": "960fa085fd3c69344206615adc090f169e7650a8bbc57e3981dddf256c94471f"
       },
       {
         "file": "app/ui-first-paint-bootstrap.mjs",
@@ -1565,7 +1569,7 @@
         "sha256": "531202f1814314b6c76bfef38b2ea66636425b1ca9b445db349e70ebb8bcd00e"
       }
     ],
-    "inputDigest": "86e4b45e0cd6e3f76b36f5293f3e9e7189c6c4f86de8d67b268d079a5e0f444e"
+    "inputDigest": "e5dde32e7dcdb00fc76488e99421b8774ec0a0251240c0b29698fc2865784b0b"
   },
   "locales": [
     "en",
@@ -1579,25 +1583,25 @@
       "locale": "en",
       "file": "app/ui-catalogs/en.mjs",
       "missing": false,
-      "entries": 2506
+      "entries": 2507
     },
     {
       "locale": "zh-Hans",
       "file": "app/ui-catalogs/zh-Hans.mjs",
       "missing": false,
-      "entries": 2506
+      "entries": 2507
     },
     {
       "locale": "zh-Hant",
       "file": "app/ui-catalogs/zh-Hant.mjs",
       "missing": false,
-      "entries": 2506
+      "entries": 2507
     },
     {
       "locale": "ja",
       "file": "app/ui-catalogs/ja.mjs",
       "missing": false,
-      "entries": 2506
+      "entries": 2507
     }
   ],
   "items": [
@@ -12959,7 +12963,7 @@
       "consumers": [
         {
           "file": "app/library-reading-preferences.mjs",
-          "line": 230,
+          "line": 233,
           "column": 63
         }
       ],
@@ -26106,12 +26110,12 @@
       "consumers": [
         {
           "file": "app/library-reading-preferences.mjs",
-          "line": 42,
+          "line": 43,
           "column": 36
         },
         {
           "file": "app/library-reading-preferences.mjs",
-          "line": 211,
+          "line": 214,
           "column": 29
         }
       ],
@@ -26168,12 +26172,12 @@
       "consumers": [
         {
           "file": "app/library-reading-preferences.mjs",
-          "line": 40,
+          "line": 41,
           "column": 84
         },
         {
           "file": "app/library-reading-preferences.mjs",
-          "line": 41,
+          "line": 42,
           "column": 104
         }
       ],
@@ -26230,7 +26234,7 @@
       "consumers": [
         {
           "file": "app/library-reading-preferences.mjs",
-          "line": 40,
+          "line": 41,
           "column": 124
         }
       ],
@@ -26287,7 +26291,7 @@
       "consumers": [
         {
           "file": "app/library-reading-preferences.mjs",
-          "line": 40,
+          "line": 41,
           "column": 173
         }
       ],
@@ -26344,12 +26348,12 @@
       "consumers": [
         {
           "file": "app/library-reading-preferences.mjs",
-          "line": 42,
+          "line": 43,
           "column": 102
         },
         {
           "file": "app/library-reading-preferences.mjs",
-          "line": 211,
+          "line": 214,
           "column": 56
         }
       ],
@@ -26406,7 +26410,7 @@
       "consumers": [
         {
           "file": "app/library-reading-preferences.mjs",
-          "line": 41,
+          "line": 42,
           "column": 148
         }
       ],
@@ -26463,7 +26467,7 @@
       "consumers": [
         {
           "file": "app/library-reading-preferences.mjs",
-          "line": 50,
+          "line": 51,
           "column": 39
         }
       ],
@@ -26520,12 +26524,12 @@
       "consumers": [
         {
           "file": "app/library-reading-preferences.mjs",
-          "line": 54,
+          "line": 55,
           "column": 33
         },
         {
           "file": "app/library-reading-preferences.mjs",
-          "line": 211,
+          "line": 214,
           "column": 79
         }
       ],
@@ -26582,7 +26586,7 @@
       "consumers": [
         {
           "file": "app/library-reading-preferences.mjs",
-          "line": 53,
+          "line": 54,
           "column": 107
         }
       ],
@@ -26639,7 +26643,7 @@
       "consumers": [
         {
           "file": "app/library-reading-preferences.mjs",
-          "line": 53,
+          "line": 54,
           "column": 138
         }
       ],
@@ -26696,7 +26700,7 @@
       "consumers": [
         {
           "file": "app/library-reading-preferences.mjs",
-          "line": 53,
+          "line": 54,
           "column": 167
         }
       ],
@@ -26753,7 +26757,7 @@
       "consumers": [
         {
           "file": "app/library-reading-preferences.mjs",
-          "line": 53,
+          "line": 54,
           "column": 195
         }
       ],
@@ -26810,7 +26814,7 @@
       "consumers": [
         {
           "file": "app/library-reading-preferences.mjs",
-          "line": 53,
+          "line": 54,
           "column": 223
         }
       ],
@@ -26867,7 +26871,7 @@
       "consumers": [
         {
           "file": "app/library-reading-preferences.mjs",
-          "line": 53,
+          "line": 54,
           "column": 251
         }
       ],
@@ -26924,7 +26928,7 @@
       "consumers": [
         {
           "file": "app/library-reading-preferences.mjs",
-          "line": 53,
+          "line": 54,
           "column": 279
         }
       ],
@@ -26981,7 +26985,7 @@
       "consumers": [
         {
           "file": "app/library-reading-preferences.mjs",
-          "line": 53,
+          "line": 54,
           "column": 307
         }
       ],
@@ -27038,7 +27042,7 @@
       "consumers": [
         {
           "file": "app/library-reading-preferences.mjs",
-          "line": 53,
+          "line": 54,
           "column": 336
         }
       ],
@@ -27095,12 +27099,12 @@
       "consumers": [
         {
           "file": "app/library-reading-preferences.mjs",
-          "line": 50,
+          "line": 51,
           "column": 109
         },
         {
           "file": "app/library-reading-preferences.mjs",
-          "line": 211,
+          "line": 214,
           "column": 102
         }
       ],
@@ -27157,7 +27161,7 @@
       "consumers": [
         {
           "file": "app/library-reading-preferences.mjs",
-          "line": 48,
+          "line": 49,
           "column": 94
         }
       ],
@@ -27214,7 +27218,7 @@
       "consumers": [
         {
           "file": "app/library-reading-preferences.mjs",
-          "line": 48,
+          "line": 49,
           "column": 137
         }
       ],
@@ -27271,7 +27275,7 @@
       "consumers": [
         {
           "file": "app/library-reading-preferences.mjs",
-          "line": 48,
+          "line": 49,
           "column": 180
         }
       ],
@@ -27328,8 +27332,8 @@
       "consumers": [
         {
           "file": "app/library-reading-preferences.mjs",
-          "line": 71,
-          "column": 77
+          "line": 73,
+          "column": 91
         }
       ],
       "hints": [
@@ -27385,7 +27389,7 @@
       "consumers": [
         {
           "file": "app/library-reading-preferences.mjs",
-          "line": 58,
+          "line": 59,
           "column": 66
         }
       ],
@@ -27442,8 +27446,13 @@
       "consumers": [
         {
           "file": "app/library-reading-preferences.mjs",
-          "line": 71,
-          "column": 30
+          "line": 73,
+          "column": 44
+        },
+        {
+          "file": "app/library-reading-preferences.mjs",
+          "line": 163,
+          "column": 54
         }
       ],
       "hints": [
@@ -27499,8 +27508,13 @@
       "consumers": [
         {
           "file": "app/library-reading-preferences.mjs",
-          "line": 174,
+          "line": 177,
           "column": 19
+        },
+        {
+          "file": "app/settings-save-feedback.mjs",
+          "line": 13,
+          "column": 11
         }
       ],
       "hints": [
@@ -27556,7 +27570,7 @@
       "consumers": [
         {
           "file": "app/library-reading-preferences.mjs",
-          "line": 179,
+          "line": 182,
           "column": 64
         }
       ],
@@ -27613,7 +27627,7 @@
       "consumers": [
         {
           "file": "app/library-reading-preferences.mjs",
-          "line": 180,
+          "line": 183,
           "column": 42
         }
       ],
@@ -27721,7 +27735,7 @@
       "consumers": [
         {
           "file": "app/library-reading-preferences.mjs",
-          "line": 200,
+          "line": 203,
           "column": 91
         }
       ],
@@ -27778,7 +27792,7 @@
       "consumers": [
         {
           "file": "app/library-reading-preferences.mjs",
-          "line": 203,
+          "line": 206,
           "column": 37
         }
       ],
@@ -27835,7 +27849,7 @@
       "consumers": [
         {
           "file": "app/library-reading-preferences.mjs",
-          "line": 251,
+          "line": 254,
           "column": 34
         }
       ],
@@ -27892,7 +27906,7 @@
       "consumers": [
         {
           "file": "app/library-reading-preferences.mjs",
-          "line": 254,
+          "line": 257,
           "column": 77
         }
       ],
@@ -27949,7 +27963,7 @@
       "consumers": [
         {
           "file": "app/library-reading-preferences.mjs",
-          "line": 254,
+          "line": 257,
           "column": 36
         }
       ],
@@ -30260,7 +30274,7 @@
       "consumers": [
         {
           "file": "app/library-reading-preferences.mjs",
-          "line": 39,
+          "line": 40,
           "column": 23
         }
       ],
@@ -30317,7 +30331,7 @@
       "consumers": [
         {
           "file": "app/library-reading-preferences.mjs",
-          "line": 44,
+          "line": 45,
           "column": 26
         }
       ],
@@ -30374,7 +30388,7 @@
       "consumers": [
         {
           "file": "app/library-reading-preferences.mjs",
-          "line": 52,
+          "line": 53,
           "column": 20
         }
       ],
@@ -30431,7 +30445,7 @@
       "consumers": [
         {
           "file": "app/library-reading-preferences.mjs",
-          "line": 73,
+          "line": 75,
           "column": 27
         }
       ],
@@ -30488,8 +30502,8 @@
       "consumers": [
         {
           "file": "app/library-reading-preferences.mjs",
-          "line": 71,
-          "column": 60
+          "line": 73,
+          "column": 74
         }
       ],
       "hints": [
@@ -30545,7 +30559,7 @@
       "consumers": [
         {
           "file": "app/library-reading-preferences.mjs",
-          "line": 56,
+          "line": 57,
           "column": 72
         }
       ],
@@ -30602,7 +30616,7 @@
       "consumers": [
         {
           "file": "app/library-reading-preferences.mjs",
-          "line": 55,
+          "line": 56,
           "column": 54
         }
       ],
@@ -30689,12 +30703,12 @@
       "consumers": [
         {
           "file": "app/library-reading-preferences.mjs",
-          "line": 232,
+          "line": 235,
           "column": 34
         },
         {
           "file": "app/library-reading-preferences.mjs",
-          "line": 233,
+          "line": 236,
           "column": 20
         }
       ],
@@ -30751,7 +30765,7 @@
       "consumers": [
         {
           "file": "app/library-reading-preferences.mjs",
-          "line": 233,
+          "line": 236,
           "column": 57
         }
       ],
@@ -125316,7 +125330,7 @@
       "consumers": [
         {
           "file": "app/library-reading-preferences.mjs",
-          "line": 232,
+          "line": 235,
           "column": 93
         }
       ],
@@ -142768,6 +142782,63 @@
         {
           "kind": "key-namespace",
           "evidence": "key-namespace:reader",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unreviewed",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "prefs.reloading",
+      "kind": "catalogue",
+      "values": {
+        "en": {
+          "file": "app/ui-catalogs/en.mjs",
+          "line": 2521,
+          "column": 3,
+          "value": "Loading the latest settings…",
+          "sha256": "539cc307383a3e056cb347fa9caf1d89f4bf63ffb7351be4d37f4747d6674f6c"
+        },
+        "zh-Hans": {
+          "file": "app/ui-catalogs/zh-Hans.mjs",
+          "line": 2520,
+          "column": 3,
+          "value": "正在读取最新设置…",
+          "sha256": "c8bb6c4fa57e4a0a0b20735d85760ad130e35f70dc3e828b51242af73921545b"
+        },
+        "zh-Hant": {
+          "file": "app/ui-catalogs/zh-Hant.mjs",
+          "line": 2520,
+          "column": 3,
+          "value": "正在讀取最新設定…",
+          "sha256": "35006f7400b8d263a1fdf932782a358c087ad6f3e52889b642bb5f6005c232b1"
+        },
+        "ja": {
+          "file": "app/ui-catalogs/ja.mjs",
+          "line": 2520,
+          "column": 3,
+          "value": "最新の設定を読み込んでいます…",
+          "sha256": "70e4c54bff1ae4981b34bf3aeb0a1c4c61e69313a92ace0a79d6c2c1e8316e9a"
+        }
+      },
+      "missingLocales": [],
+      "duplicates": [],
+      "consumers": [
+        {
+          "file": "app/library-reading-preferences.mjs",
+          "line": 199,
+          "column": 54
+        }
+      ],
+      "hints": [
+        {
+          "kind": "key-namespace",
+          "evidence": "key-namespace:prefs",
           "confidence": "low"
         }
       ],
@@ -229255,9 +229326,9 @@
       }
     },
     {
-      "id": "candidate:app/library-reading-preferences.mjs:59:112",
+      "id": "candidate:app/library-reading-preferences.mjs:60:112",
       "file": "app/library-reading-preferences.mjs",
-      "line": 59,
+      "line": 60,
       "column": 112,
       "kind": "js-attribute",
       "property": "role",
@@ -229275,9 +229346,9 @@
       }
     },
     {
-      "id": "candidate:app/library-reading-preferences.mjs:59:154",
+      "id": "candidate:app/library-reading-preferences.mjs:60:154",
       "file": "app/library-reading-preferences.mjs",
-      "line": 59,
+      "line": 60,
       "column": 154,
       "kind": "js-attribute",
       "property": "aria-live",
@@ -248941,6 +249012,26 @@
       "column": 77,
       "kind": "js-attribute",
       "property": "aria-invalid",
+      "value": "true",
+      "sha256": "b5bea41b6c623f7c09f1bf24dcae58ebab3c0cdd90ad966bc43a45b44867e12b",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/settings-save-feedback.mjs:7:255",
+      "file": "app/settings-save-feedback.mjs",
+      "line": 7,
+      "column": 255,
+      "kind": "js-attribute",
+      "property": "aria-atomic",
       "value": "true",
       "sha256": "b5bea41b6c623f7c09f1bf24dcae58ebab3c0cdd90ad966bc43a45b44867e12b",
       "protected": false,
@@ -298908,7 +298999,7 @@
     {
       "kind": "concatenation",
       "file": "app/library-reading-preferences.mjs",
-      "line": 74,
+      "line": 76,
       "expression": "draft.font+'px'",
       "fragments": [
         "px"
@@ -298918,7 +299009,7 @@
     {
       "kind": "computed-member",
       "file": "app/library-reading-preferences.mjs",
-      "line": 81,
+      "line": 83,
       "expression": "select.id",
       "fragments": [],
       "unresolved": true
@@ -298926,7 +299017,7 @@
     {
       "kind": "computed-member",
       "file": "app/library-reading-preferences.mjs",
-      "line": 98,
+      "line": 101,
       "expression": "key",
       "fragments": [],
       "unresolved": true
@@ -298934,7 +299025,7 @@
     {
       "kind": "computed-member",
       "file": "app/library-reading-preferences.mjs",
-      "line": 170,
+      "line": 173,
       "expression": "key",
       "fragments": [],
       "unresolved": true
@@ -298942,7 +299033,7 @@
     {
       "kind": "computed-member",
       "file": "app/library-reading-preferences.mjs",
-      "line": 170,
+      "line": 173,
       "expression": "key",
       "fragments": [],
       "unresolved": true
@@ -298950,7 +299041,7 @@
     {
       "kind": "computed-member",
       "file": "app/library-reading-preferences.mjs",
-      "line": 170,
+      "line": 173,
       "expression": "key",
       "fragments": [],
       "unresolved": true
@@ -298958,7 +299049,7 @@
     {
       "kind": "computed-member",
       "file": "app/library-reading-preferences.mjs",
-      "line": 170,
+      "line": 173,
       "expression": "key",
       "fragments": [],
       "unresolved": true
@@ -298966,7 +299057,7 @@
     {
       "kind": "computed-member",
       "file": "app/library-reading-preferences.mjs",
-      "line": 212,
+      "line": 215,
       "expression": "select.id",
       "fragments": [],
       "unresolved": true
@@ -298974,7 +299065,7 @@
     {
       "kind": "computed-member",
       "file": "app/library-reading-preferences.mjs",
-      "line": 217,
+      "line": 220,
       "expression": "select.id",
       "fragments": [],
       "unresolved": true
@@ -298982,7 +299073,7 @@
     {
       "kind": "computed-member",
       "file": "app/library-reading-preferences.mjs",
-      "line": 223,
+      "line": 226,
       "expression": "select.id",
       "fragments": [],
       "unresolved": true
@@ -327159,22 +327250,22 @@
   },
   "counts": {
     "catalogueFiles": 4,
-    "catalogueKeys": 2506,
-    "localeValues": 10024,
-    "itemsComplete": 2506,
+    "catalogueKeys": 2507,
+    "localeValues": 10028,
+    "itemsComplete": 2507,
     "itemsWithMissingLocales": 0,
     "duplicateKeys": 0,
     "reviewedItems": 8,
-    "unreviewedItems": 2498,
-    "candidates": 6846,
-    "candidatesUnreviewed": 6845,
+    "unreviewedItems": 2499,
+    "candidates": 6847,
+    "candidatesUnreviewed": 6846,
     "candidatesProtected": 146,
     "itemsProtected": 9,
     "dynamicConsumers": 4236,
-    "consumerReferences": 2160,
+    "consumerReferences": 2163,
     "keysWithoutStaticConsumers": 1348,
     "reviewedLocaleValues": 32,
-    "unreviewedLocaleValues": 9992,
+    "unreviewedLocaleValues": 9996,
     "reviewedStaticItems": 1
   },
   "auditLedger": {
@@ -327488,6 +327579,7 @@
         "locale": "en",
         "state": "unknown",
         "reasons": [
+          "consumer locations changed",
           "source context changed or incomplete"
         ]
       },
@@ -327497,6 +327589,7 @@
         "locale": "zh-Hans",
         "state": "unknown",
         "reasons": [
+          "consumer locations changed",
           "source context changed or incomplete"
         ]
       },
@@ -327506,6 +327599,7 @@
         "locale": "zh-Hant",
         "state": "unknown",
         "reasons": [
+          "consumer locations changed",
           "source context changed or incomplete"
         ]
       },
@@ -327515,6 +327609,7 @@
         "locale": "ja",
         "state": "unknown",
         "reasons": [
+          "consumer locations changed",
           "source context changed or incomplete"
         ]
       },

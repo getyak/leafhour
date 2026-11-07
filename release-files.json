@@ -525,6 +525,7 @@
   "app/save-receipts.mjs",
   "app/settings-appearance.mjs",
   "app/settings-controls.mjs",
+  "app/settings-save-feedback.mjs",
   "app/share-fonts.mjs",
   "app/share-model.mjs",
   "app/share.css",

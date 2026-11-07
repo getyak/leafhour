@@ -2518,4 +2518,5 @@ export default Object.freeze({
   "reader.selection.explainPrompt": "Please explain this passage.",
   "reader.selection.exactOriginal": "Original · selected text",
   "reader.selection.wholeOriginal": "Original · corresponding passage",
+  "prefs.reloading": "Loading the latest settings…",
 });
