@@ -1142,7 +1142,7 @@
       },
       {
         "file": "server/audio-store.mjs",
-        "sha256": "275119a28bb3b74bdb9c261895de91fc5c09cfbc0ad5afd0cb8f743a238411a8"
+        "sha256": "a4c46459f967af838a00a6b9567fb196b2a36520064a27aa608cdf7697c8d968"
       },
       {
         "file": "server/auth-policy.mjs",
@@ -1385,6 +1385,18 @@
         "sha256": "f4f796e77a41d833f6d9a03a9d38feb796a04ae9c9accfc8d1634e748368169c"
       },
       {
+        "file": "server/narration-parser.mjs",
+        "sha256": "2cc50e59b03a2038a04535d760c9fdde96143dd5b061e24c638a8a0eb9af6e88"
+      },
+      {
+        "file": "server/narration-providers.mjs",
+        "sha256": "f379686ab467e8a553207476cf9adb46110a26654ecf8fecf40977890556c180"
+      },
+      {
+        "file": "server/narration-service.mjs",
+        "sha256": "4dce49c81a70bb756c120c535e576723cc1862699f28e426f8a91d91cc86d057"
+      },
+      {
         "file": "server/native-reading-copy.mjs",
         "sha256": "0647c8058e363dec388ab8300514cc9f6829d971a379a62cd8011c16bfa347f4"
       },
@@ -1567,9 +1579,13 @@
       {
         "file": "server/verified-source.mjs",
         "sha256": "531202f1814314b6c76bfef38b2ea66636425b1ca9b445db349e70ebb8bcd00e"
+      },
+      {
+        "file": "server/voice-casting.mjs",
+        "sha256": "510f62256d1cf78f3efad2f5bf4f225ea6fce14bb48557ede314aaf43cd0afe2"
       }
     ],
-    "inputDigest": "ae6790baaf650d3eeb4cf7b626a9a3b922cef54cea2e00f0db2cc342f87b2882"
+    "inputDigest": "5b0c3567828046df0d18191119005450a60208ab498448a45dbafd0912dd92b5"
   },
   "locales": [
     "en",
@@ -21760,6 +21776,11 @@
           "file": "server/local-reader-chat.mjs",
           "line": 28,
           "column": 26
+        },
+        {
+          "file": "server/narration-parser.mjs",
+          "line": 133,
+          "column": 10
         },
         {
           "file": "server/people-service.mjs",
@@ -279048,6 +279069,1406 @@
       }
     },
     {
+      "id": "candidate:server/narration-parser.mjs:10:8",
+      "file": "server/narration-parser.mjs",
+      "line": 10,
+      "column": 8,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "说",
+      "sha256": "ccca74461399d2a0c9e3e944d20b01dedd5fbdc49a3d136794a418b22fb49c61",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/narration-parser.mjs:10:13",
+      "file": "server/narration-parser.mjs",
+      "line": 10,
+      "column": 13,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "道",
+      "sha256": "00a9d5bd97c269b44f954c91d6a2f8afd4bcd35fa8b503c4af6fd1212f619c82",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/narration-parser.mjs:10:18",
+      "file": "server/narration-parser.mjs",
+      "line": 10,
+      "column": 18,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "问",
+      "sha256": "4628c0e06f4b378d3399ea4e6934ca40622eaaa13e2bdf722e7d5d30b26380a1",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/narration-parser.mjs:10:23",
+      "file": "server/narration-parser.mjs",
+      "line": 10,
+      "column": 23,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "答",
+      "sha256": "10ec8c161aac40d535cd9375e8c212b970f5622e9db38d78f6f38f2e183bccdf",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/narration-parser.mjs:10:28",
+      "file": "server/narration-parser.mjs",
+      "line": 10,
+      "column": 28,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "回答",
+      "sha256": "f3f512648742020fbd700fa8f0576babd8f7ec8e56d3dcd38e28be5b99287db3",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/narration-parser.mjs:10:34",
+      "file": "server/narration-parser.mjs",
+      "line": 10,
+      "column": 34,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "喊",
+      "sha256": "9c8048723a4bee676a026f2e509bba89b978bfe52090607af8bc37f714704ae2",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/narration-parser.mjs:10:39",
+      "file": "server/narration-parser.mjs",
+      "line": 10,
+      "column": 39,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "叫",
+      "sha256": "b71852847d38252f491303448c342e40457088917b43ab8ee6e375964f9d4726",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/narration-parser.mjs:10:44",
+      "file": "server/narration-parser.mjs",
+      "line": 10,
+      "column": 44,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "笑",
+      "sha256": "1d8fb5e34e43a755a3825ea9be79a152c7c4c31e80d04509bbc58fc3db0afb3b",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/narration-parser.mjs:10:49",
+      "file": "server/narration-parser.mjs",
+      "line": 10,
+      "column": 49,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "哭",
+      "sha256": "32f573b748b711c30ce9d57e0e5728aa9755c4c53ca844df23e7348146d5a819",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/narration-parser.mjs:10:54",
+      "file": "server/narration-parser.mjs",
+      "line": 10,
+      "column": 54,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "低声说",
+      "sha256": "8d1828e45c8ecef906dd37a7d80fb7ca1c9a3a0a200ac236aece484e327aa04f",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/narration-parser.mjs:10:61",
+      "file": "server/narration-parser.mjs",
+      "line": 10,
+      "column": 61,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "大声说",
+      "sha256": "945e16d1fce7bfd240504de1b12b746cc6ae3be1c1b5705452c247fb731adece",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/narration-parser.mjs:10:68",
+      "file": "server/narration-parser.mjs",
+      "line": 10,
+      "column": 68,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "轻声说",
+      "sha256": "bb01384e292fa9f2e960aadf7a9b39349d7841128b30cb12435e103418c9d27a",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/narration-parser.mjs:26:22",
+      "file": "server/narration-parser.mjs",
+      "line": 26,
+      "column": 22,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "段落文本不可用。",
+      "sha256": "1a4e22fd61e73858348da04cd1ef4b0c6e90824ec44aedf1e90c18bcaef01b10",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/narration-parser.mjs:132:10",
+      "file": "server/narration-parser.mjs",
+      "line": 132,
+      "column": 10,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "标题",
+      "sha256": "c3405f8c7d9d392aa3e2d073d5793bce795353c5f7ef0d27f3d6c1c8d2832681",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/narration-parser.mjs:132:16",
+      "file": "server/narration-parser.mjs",
+      "line": 132,
+      "column": 16,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "题目",
+      "sha256": "069c995adb7e2886c8f53bdaa9191cd68821e1597f3c70555207a850c58d9d0b",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/narration-parser.mjs:132:22",
+      "file": "server/narration-parser.mjs",
+      "line": 132,
+      "column": 22,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "写着",
+      "sha256": "77e63c49b6f75e0f8f8e85df60e519e46b4cee1f378e05b06b4e5f5090fd272d",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/narration-parser.mjs:132:28",
+      "file": "server/narration-parser.mjs",
+      "line": 132,
+      "column": 28,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "上面写",
+      "sha256": "26a079cddd69a313158744bf921376fd6b4f2b3dfd47082ed97fc2c14130ad7f",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/narration-parser.mjs:132:35",
+      "file": "server/narration-parser.mjs",
+      "line": 132,
+      "column": 35,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "想到",
+      "sha256": "c59008249c758115aee0237b065e5fc8cdc44cc7e84384229259d5f31c2ee78e",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/narration-parser.mjs:132:41",
+      "file": "server/narration-parser.mjs",
+      "line": 132,
+      "column": 41,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "心想",
+      "sha256": "309ebb76499f3a6ba2f91838d61d21ce52a643afde1f917f9e71d3fbe2e7d1e2",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/narration-parser.mjs:132:47",
+      "file": "server/narration-parser.mjs",
+      "line": 132,
+      "column": 47,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "想着",
+      "sha256": "1fe0dd44ecad97835add0def60d6c511b56de037a48dd0acb39bec30db398dba",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/narration-parser.mjs:155:22",
+      "file": "server/narration-parser.mjs",
+      "line": 155,
+      "column": 22,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "找不到这一章。",
+      "sha256": "9c7636f1dfa24c01e9a47e52c4eedeec9f08d768b52351b098f42db22c031a03",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/narration-providers.mjs:42:22",
+      "file": "server/narration-providers.mjs",
+      "line": 42,
+      "column": 22,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "中文语音服务尚未配置，请填写 QWEN_API_KEY 或 MINIMAX_API_KEY。",
+      "sha256": "5c861814296f451a0ac5a5bb6adfa7bff272cdaa0dd58598a82fcc885b7a3c58",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/narration-providers.mjs:47:20",
+      "file": "server/narration-providers.mjs",
+      "line": 47,
+      "column": 20,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "语音服务尚未配置，请填写 ELEVENLABS_API_KEY。",
+      "sha256": "eb2b3dc6397bbec970d59cd8a65d9a67ab6874ee997272fd67630c3f95ecc6ca",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/narration-providers.mjs:66:26",
+      "file": "server/narration-providers.mjs",
+      "line": 66,
+      "column": 26,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "ElevenLabs API key 未配置。",
+      "sha256": "3cb0517db0a0f849904482600fd5ca7514a5f5d2589c198d39e7780ade9fb67c",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/narration-providers.mjs:70:26",
+      "file": "server/narration-providers.mjs",
+      "line": 70,
+      "column": 26,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "场景至少需要一轮对话。",
+      "sha256": "418e3626e8ef0d6220b8e7592372cd717ed12103f3436639dfbf280a00c37ed7",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/narration-providers.mjs:76:26",
+      "file": "server/narration-providers.mjs",
+      "line": 76,
+      "column": 26,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "ElevenLabs 场景文本超过 2,000 字符限制，请分段处理。",
+      "sha256": "3d493d1fab736dc2b1f914f638a414d8f5c318b2fbef305327f5e886f91251f8",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/narration-providers.mjs:108:26",
+      "file": "server/narration-providers.mjs",
+      "line": 108,
+      "column": 26,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "ElevenLabs 连接失败或超时。",
+      "sha256": "bbbfd190b09754482c9d6ea28b785ac20664136e47b11c3f1c9768d92a5fbe40",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/narration-providers.mjs:116:28",
+      "file": "server/narration-providers.mjs",
+      "line": 116,
+      "column": 28,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "ElevenLabs API key 无效。",
+      "sha256": "383c949827412c099660c4fe6fbfe8d9b469949b2e3ec2faf5e7dfe10eb3f415",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/narration-providers.mjs:119:28",
+      "file": "server/narration-providers.mjs",
+      "line": 119,
+      "column": 28,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "ElevenLabs 额度不足。",
+      "sha256": "016ccbe6de1049c00d31a48d98cb537b9008b46c7b032be142c85b528247e40d",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/narration-providers.mjs:122:28",
+      "file": "server/narration-providers.mjs",
+      "line": 122,
+      "column": 28,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "ElevenLabs 请求过于频繁。",
+      "sha256": "90755f6ef866b883d137d31ece6d56449a735e2529744ecf9fc30a6e45a8296d",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/narration-providers.mjs:125:26",
+      "file": "server/narration-providers.mjs",
+      "line": 125,
+      "column": 26,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "ElevenLabs 生成失败。",
+      "sha256": "fbe130f9647e2083b391f3ee7043b3c9c26ac815f225d2d0c8c0404fe7123311",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/narration-providers.mjs:131:69",
+      "file": "server/narration-providers.mjs",
+      "line": 131,
+      "column": 69,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "声音文件超过存储上限，请缩短范围。",
+      "sha256": "b28f87d1fdd10ef1361feca1757e8b790affd2aaf0d1f59e2b388c494f8d5e73",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/narration-providers.mjs:134:26",
+      "file": "server/narration-providers.mjs",
+      "line": 134,
+      "column": 26,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "ElevenLabs 返回音频格式无效。",
+      "sha256": "dafb91def184d08cb781b1cf9b6c22fbdb63df0b46da3ce10cce4fbc7b9e4140",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/narration-providers.mjs:139:26",
+      "file": "server/narration-providers.mjs",
+      "line": 139,
+      "column": 26,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "ElevenLabs 返回的不是有效 MP3。",
+      "sha256": "e9d196b291431cbfa618f8773c1353492d117ae070c7f98a8fbd70103e9dd5fa",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/narration-providers.mjs:166:26",
+      "file": "server/narration-providers.mjs",
+      "line": 166,
+      "column": 26,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "Qwen API key 未配置。",
+      "sha256": "cc09814501c6760f3d28278dbb512a645bd6691ef606b6a59e26dba8bad95564",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/narration-providers.mjs:170:26",
+      "file": "server/narration-providers.mjs",
+      "line": 170,
+      "column": 26,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "单段文本超过 600 字符。",
+      "sha256": "408b2baa67b7a939febeec71238bf7f7f42dea58fe4b6da972c7593d56b67d6d",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/narration-providers.mjs:195:26",
+      "file": "server/narration-providers.mjs",
+      "line": 195,
+      "column": 26,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "Qwen 连接失败或超时。",
+      "sha256": "3e7f13023c7f5ac3794c40ec3017d51631f76fa237eb47ee3ca4006b8c1b4a7a",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/narration-providers.mjs:203:28",
+      "file": "server/narration-providers.mjs",
+      "line": 203,
+      "column": 28,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "Qwen API key 无效。",
+      "sha256": "5b377868724454cce930e00b16fd941627275fb32ffbc7c68a3efa745b5c1c2c",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/narration-providers.mjs:206:28",
+      "file": "server/narration-providers.mjs",
+      "line": 206,
+      "column": 28,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "Qwen 请求过于频繁。",
+      "sha256": "773cd008ed768df8b42e246986d9b56800bdb1dec887c5f6086267e57424f2b9",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/narration-providers.mjs:209:26",
+      "file": "server/narration-providers.mjs",
+      "line": 209,
+      "column": 26,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "Qwen 生成失败。",
+      "sha256": "02a64373433291c8d26ac645f9d147b8232e20d790df9faa763c4e8690410ee3",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/narration-providers.mjs:215:26",
+      "file": "server/narration-providers.mjs",
+      "line": 215,
+      "column": 26,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "Qwen 返回数据格式无效。",
+      "sha256": "358193eac9f196e8f60653684531d7f1ce9da538bdf96177e073b2e44af8efb1",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/narration-providers.mjs:220:168",
+      "file": "server/narration-providers.mjs",
+      "line": 220,
+      "column": 168,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "Qwen 音频地址无效。",
+      "sha256": "7e816979a16e4a4e70c99e2803b7b7d885b6f82af883f55dec4328a600bd6646",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/narration-providers.mjs:223:47",
+      "file": "server/narration-providers.mjs",
+      "line": 223,
+      "column": 47,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "Qwen 音频下载失败。",
+      "sha256": "f72fba2b4d61745a479c49a0cfe6e67612c2db282fe6738f7aa963fc1d022c23",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/narration-providers.mjs:226:69",
+      "file": "server/narration-providers.mjs",
+      "line": 226,
+      "column": 69,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "声音文件超过存储上限，请缩短范围。",
+      "sha256": "b28f87d1fdd10ef1361feca1757e8b790affd2aaf0d1f59e2b388c494f8d5e73",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/narration-providers.mjs:253:26",
+      "file": "server/narration-providers.mjs",
+      "line": 253,
+      "column": 26,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "MiniMax API 配置不完整。",
+      "sha256": "45c443869e6bee03b2ba56edfd47c36b1e99db7c0663e3786e36b161295d20e9",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/narration-providers.mjs:257:26",
+      "file": "server/narration-providers.mjs",
+      "line": 257,
+      "column": 26,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "单段文本超过 4,000 字符。",
+      "sha256": "5aafe8509954ae8e98e9f0976e284606c0e4b57df62849316b6745c4813a8b02",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/narration-providers.mjs:290:26",
+      "file": "server/narration-providers.mjs",
+      "line": 290,
+      "column": 26,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "MiniMax 连接失败或超时。",
+      "sha256": "5be84784b9276e3f589f619cdd5f7a161d837f5c6d8946d66414230d751f6ba9",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/narration-providers.mjs:298:28",
+      "file": "server/narration-providers.mjs",
+      "line": 298,
+      "column": 28,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "MiniMax API key 无效。",
+      "sha256": "4d5ad9cb8ad68e675ae234d08d97716bb47c5616c22e4dc87f20862b63f5aff6",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/narration-providers.mjs:301:28",
+      "file": "server/narration-providers.mjs",
+      "line": 301,
+      "column": 28,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "MiniMax 请求过于频繁。",
+      "sha256": "2c2fe6ae44667a8c2c29f39481d1d026023253aa735759be401273af32fd195c",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/narration-providers.mjs:304:26",
+      "file": "server/narration-providers.mjs",
+      "line": 304,
+      "column": 26,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "MiniMax 生成失败。",
+      "sha256": "b9ff9fdc0b1bdeee7b278cb47ecc4416d6bf008278a77f3144ab2b87e3f1371c",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/narration-providers.mjs:310:26",
+      "file": "server/narration-providers.mjs",
+      "line": 310,
+      "column": 26,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "MiniMax 返回数据格式无效。",
+      "sha256": "289701b5816dda1fa7b59c8daf1733e0f2ac26cc537ed4282c61d4042b63dba2",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/narration-providers.mjs:315:69",
+      "file": "server/narration-providers.mjs",
+      "line": 315,
+      "column": 69,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "声音文件超过存储上限，请缩短范围。",
+      "sha256": "b28f87d1fdd10ef1361feca1757e8b790affd2aaf0d1f59e2b388c494f8d5e73",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/narration-providers.mjs:343:26",
+      "file": "server/narration-providers.mjs",
+      "line": 343,
+      "column": 26,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "Fish Audio API key 未配置。",
+      "sha256": "fe7a07e8851ab7c2dc2084ab568cf1e7033c2e97de58edefefe42b0b85ee5771",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/narration-providers.mjs:347:26",
+      "file": "server/narration-providers.mjs",
+      "line": 347,
+      "column": 26,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "场景至少需要一轮对话。",
+      "sha256": "418e3626e8ef0d6220b8e7592372cd717ed12103f3436639dfbf280a00c37ed7",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/narration-providers.mjs:372:26",
+      "file": "server/narration-providers.mjs",
+      "line": 372,
+      "column": 26,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "Fish Audio 场景文本超过 10,000 字节。",
+      "sha256": "f6c815ab4e4f9b67955c73f5a021271da6e28cb69f164071aa7bdf78d0e4cb96",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/narration-providers.mjs:402:26",
+      "file": "server/narration-providers.mjs",
+      "line": 402,
+      "column": 26,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "Fish Audio 连接失败或超时。",
+      "sha256": "563a908b9a26f11ca3fe685f5afe6f32f4dce898c78e4820b0e3ea1af82906cd",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/narration-providers.mjs:411:28",
+      "file": "server/narration-providers.mjs",
+      "line": 411,
+      "column": 28,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "Fish Audio 模型配置错误，请确认使用 drama-3。",
+      "sha256": "e582c6f79f18d5f25043602b69d5e261e42e7dee97dabf8f22d168227cdaa29e",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/narration-providers.mjs:415:28",
+      "file": "server/narration-providers.mjs",
+      "line": 415,
+      "column": 28,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "Fish Audio API key 无效。",
+      "sha256": "7c331c181378bb49ebc189111631da5e091ae4408fa1afe91a4f77c942f875b7",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/narration-providers.mjs:418:28",
+      "file": "server/narration-providers.mjs",
+      "line": 418,
+      "column": 28,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "Fish Audio 请求过于频繁。",
+      "sha256": "eb662b9e9033692d219aa549b880de8bee6636bcf9033f43681d208887e7ad10",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/narration-providers.mjs:421:26",
+      "file": "server/narration-providers.mjs",
+      "line": 421,
+      "column": 26,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "Fish Audio 生成失败。",
+      "sha256": "5b7f62ce48aeb78dca5f492ca08eacfb10287ed1a5ae15c6b2f4d15277bdee72",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/narration-providers.mjs:426:69",
+      "file": "server/narration-providers.mjs",
+      "line": 426,
+      "column": 69,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "声音文件超过存储上限，请缩短范围。",
+      "sha256": "b28f87d1fdd10ef1361feca1757e8b790affd2aaf0d1f59e2b388c494f8d5e73",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/narration-providers.mjs:444:51",
+      "file": "server/narration-providers.mjs",
+      "line": 444,
+      "column": 51,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "音频拼接尚未实现，请分别播放片段。",
+      "sha256": "4eae90ede9798c97d091a21643cf965a7fbcd5242ce2370628516cf97ec41642",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/narration-service.mjs:61:26",
+      "file": "server/narration-service.mjs",
+      "line": 61,
+      "column": 26,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "找不到这本书。",
+      "sha256": "d6f0a6681bc7d4d70c4445c800356ed6370908405e03db4ca1672dd67bd37400",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/narration-service.mjs:71:26",
+      "file": "server/narration-service.mjs",
+      "line": 71,
+      "column": 26,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "这一章没有可朗读的内容。",
+      "sha256": "83afc69f74b7b3f58b6cf7b80af593efc2744d70f862b99991cfb5f2bd404dd2",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/narration-service.mjs:127:26",
+      "file": "server/narration-service.mjs",
+      "line": 127,
+      "column": 26,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "声音配置无效。",
+      "sha256": "db47f4a3b66a871f62cf5d3261d7d4940d0b2568640731183ad62a8cdc338ff6",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/narration-service.mjs:136:76",
+      "file": "server/narration-service.mjs",
+      "line": 136,
+      "column": 76,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "正文版本已变化，请重新准备。",
+      "sha256": "827a0a1bd0772d88f69248d5cb5ab66afda590f4a240e37e15d918b8152a77e4",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/narration-service.mjs:228:67",
+      "file": "server/narration-service.mjs",
+      "line": 228,
+      "column": 67,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "声音分段上限无效。",
+      "sha256": "5c77b5ac9b52169761fd5d3138e441193e7c14150c51b788fabafb7feb39e6c1",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/narration-service.mjs:268:9",
+      "file": "server/narration-service.mjs",
+      "line": 268,
+      "column": 9,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "低声",
+      "sha256": "cddbfc06c45fdf4e9d1337bd390ee2b31f85361e315d7b02458faae1d13bf619",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/narration-service.mjs:269:9",
+      "file": "server/narration-service.mjs",
+      "line": 269,
+      "column": 9,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "大声",
+      "sha256": "36de33f4aaf647a0bc72a80f8e4c134fcf94e87b25c8a975bab1d9d2791d84ec",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/narration-service.mjs:270:9",
+      "file": "server/narration-service.mjs",
+      "line": 270,
+      "column": 9,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "轻声",
+      "sha256": "67436511c30542f0caa80c5e487d97d60c7463e78dd3fb6541cb654b46959214",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
       "id": "candidate:server/native-reading-copy.mjs:14:22",
       "file": "server/native-reading-copy.mjs",
       "line": 14,
@@ -289476,6 +290897,546 @@
       "property": null,
       "value": "原文件引用无法核验",
       "sha256": "9b13cf4331c625ecea68bd66aab2ba23b2460119f668520d427ac58ec4a65579",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/voice-casting.mjs:24:36",
+      "file": "server/voice-casting.mjs",
+      "line": 24,
+      "column": 36,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "女声旁白",
+      "sha256": "45537f4d2a4ae547b5ad0956722414742a62c83eee97224084c7a3e6f256cf3a",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/voice-casting.mjs:25:39",
+      "file": "server/voice-casting.mjs",
+      "line": 25,
+      "column": 39,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "男声默认",
+      "sha256": "e79daef0c71277a626e07f36c96e1f1ce48a47037471c3357d508ec71afe5f27",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/voice-casting.mjs:26:42",
+      "file": "server/voice-casting.mjs",
+      "line": 26,
+      "column": 42,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "女声默认",
+      "sha256": "f0ced094158c7758d4ce8e0d7b77d731b7a6085e00750858b2b25bdd92c68eda",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/voice-casting.mjs:27:32",
+      "file": "server/voice-casting.mjs",
+      "line": 27,
+      "column": 32,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "男声角色一",
+      "sha256": "4c8985ea33542015c874318a0c5178194b24415611951925e10c1da931eebda4",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/voice-casting.mjs:28:31",
+      "file": "server/voice-casting.mjs",
+      "line": 28,
+      "column": 31,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "男声角色二",
+      "sha256": "19e01be48a74f0203cb9bfa808c7b7d2a6ad2a0616cf9e60f657aab789131135",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/voice-casting.mjs:29:37",
+      "file": "server/voice-casting.mjs",
+      "line": 29,
+      "column": 37,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "女声角色一",
+      "sha256": "2880653c209159a93e8b7322580ae0c9be7c285f573069c1e025410299605182",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/voice-casting.mjs:30:36",
+      "file": "server/voice-casting.mjs",
+      "line": 30,
+      "column": 36,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "女声角色二",
+      "sha256": "d75c0cbd1dcd4c7a96c3c69f8ed5c4cbe48d98a0e8b96f55614863d4d52bb92f",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/voice-casting.mjs:35:60",
+      "file": "server/voice-casting.mjs",
+      "line": 35,
+      "column": 60,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "中性旁白",
+      "sha256": "e9aff49401a6fac37cda19d4c2f9d17c84b9fad44e1f1641349c35503f0c9c02",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/voice-casting.mjs:36:50",
+      "file": "server/voice-casting.mjs",
+      "line": 36,
+      "column": 50,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "男声标准",
+      "sha256": "7fcbf7db7cb25d836ace0604c2120ffd9ab29df62f63940da7e78eeb64d4f092",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/voice-casting.mjs:37:49",
+      "file": "server/voice-casting.mjs",
+      "line": 37,
+      "column": 49,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "女声标准",
+      "sha256": "da29073309eeeb7218662595333d9ab6f69bc62d565c04c6b74f8dbcbb16f4e6",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/voice-casting.mjs:38:42",
+      "file": "server/voice-casting.mjs",
+      "line": 38,
+      "column": 42,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "男声青年",
+      "sha256": "43c66961a031aee543f7e34a3bbbfd45df945dd9c4c7b43ed6c89f0f07f17a36",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/voice-casting.mjs:39:40",
+      "file": "server/voice-casting.mjs",
+      "line": 39,
+      "column": 40,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "男声成熟",
+      "sha256": "30c84b5fd4c2f726f93f84b8677d8d0248ed1dac0f7db6a56b5013b777a74ade",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/voice-casting.mjs:40:44",
+      "file": "server/voice-casting.mjs",
+      "line": 40,
+      "column": 44,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "女声青年",
+      "sha256": "55c0d04440837603791299f58ee3a56b953e61654d9e9abbf1382a9669b53c36",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/voice-casting.mjs:41:42",
+      "file": "server/voice-casting.mjs",
+      "line": 41,
+      "column": 42,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "女声成熟",
+      "sha256": "6f02b2c5fff4a02005aa4addd995d41cfe9435b679a2350e67111bf40b85390b",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/voice-casting.mjs:62:24",
+      "file": "server/voice-casting.mjs",
+      "line": 62,
+      "column": 24,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "小姐",
+      "sha256": "84a5f7a062dd9a13a4dc089bf06d674e294d4fef03f79d836fde0b454bcef0c4",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/voice-casting.mjs:62:30",
+      "file": "server/voice-casting.mjs",
+      "line": 62,
+      "column": 30,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "女士",
+      "sha256": "d87cff0000c6a6950025070adaecca249091417a3f8f4eb6686eb1ba479dfe0c",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/voice-casting.mjs:62:36",
+      "file": "server/voice-casting.mjs",
+      "line": 62,
+      "column": 36,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "夫人",
+      "sha256": "092a49aa799ec7e23b1a435f76617842ca2ed822e6327982ea84c7fba37ac515",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/voice-casting.mjs:62:42",
+      "file": "server/voice-casting.mjs",
+      "line": 62,
+      "column": 42,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "母亲",
+      "sha256": "568f6dca9137594612c20ea33a37b029b7354076bc467f31c92be30a2712fc6d",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/voice-casting.mjs:62:48",
+      "file": "server/voice-casting.mjs",
+      "line": 62,
+      "column": 48,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "妈妈",
+      "sha256": "45f1364f08aed165934542d80884ffcfbcb991021f5a4ee3f077457b60e9fa80",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/voice-casting.mjs:62:54",
+      "file": "server/voice-casting.mjs",
+      "line": 62,
+      "column": 54,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "姐姐",
+      "sha256": "d25622289ef32c86a55d884b5da82ad774d4f989f53b8ce7105659cd5317a20d",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/voice-casting.mjs:62:60",
+      "file": "server/voice-casting.mjs",
+      "line": 62,
+      "column": 60,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "妹妹",
+      "sha256": "dd663fa55681eed77d0282766da4b249754e3df4f0e06be3c53a251b07599759",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/voice-casting.mjs:63:22",
+      "file": "server/voice-casting.mjs",
+      "line": 63,
+      "column": 22,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "先生",
+      "sha256": "cd98e43da31bb1b90dc152851c85c7d266d47ba97bc5ff7bd137c5920429d467",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/voice-casting.mjs:63:28",
+      "file": "server/voice-casting.mjs",
+      "line": 63,
+      "column": 28,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "父亲",
+      "sha256": "069af863e908e627e1e2c28c64cd9710605566fba39cdc27e6026df9b352ecef",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/voice-casting.mjs:63:34",
+      "file": "server/voice-casting.mjs",
+      "line": 63,
+      "column": 34,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "爸爸",
+      "sha256": "d45ce71dd359d0e71e08dcfc2946f92804659f6141180460e366871c95f0bca9",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/voice-casting.mjs:63:40",
+      "file": "server/voice-casting.mjs",
+      "line": 63,
+      "column": 40,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "哥哥",
+      "sha256": "6cf70b7c4fa3c4b4627dc02645cd03d58897b7c85ca5230b14435938e94e2acf",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/voice-casting.mjs:63:46",
+      "file": "server/voice-casting.mjs",
+      "line": 63,
+      "column": 46,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "弟弟",
+      "sha256": "cf0af76ceb03b3ad85d9591fc6f0f547779e49866b4bce44e9ebe4380bad30d5",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/voice-casting.mjs:162:22",
+      "file": "server/voice-casting.mjs",
+      "line": 162,
+      "column": 22,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "声音分配表不存在。",
+      "sha256": "21562459a88137ad5a1839583f4622bf5cd51f577f2dabf52482a334c1f9f964",
       "protected": false,
       "protectionReason": null,
       "hints": [],
@@ -315375,6 +317336,14 @@
     },
     {
       "kind": "computed-member",
+      "file": "server/audio-store.mjs",
+      "line": 36,
+      "expression": "index",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
       "file": "server/auth-session-policy.mjs",
       "line": 10,
       "expression": "client",
@@ -321555,6 +323524,260 @@
       "fragments": [
         "  语音："
       ],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/narration-parser.mjs",
+      "line": 23,
+      "expression": "variant",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/narration-parser.mjs",
+      "line": 47,
+      "expression": "language",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/narration-parser.mjs",
+      "line": 51,
+      "expression": "0",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/narration-parser.mjs",
+      "line": 52,
+      "expression": "0",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "template",
+      "file": "server/narration-parser.mjs",
+      "line": 63,
+      "expression": "`([^，。！？：\"\"''「」『』]+)${verb}`",
+      "fragments": [
+        "([^，。！？：\"\"''「」『』]+)"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/narration-parser.mjs",
+      "line": 68,
+      "expression": "beforeMatch.length - 1",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/narration-parser.mjs",
+      "line": 69,
+      "expression": "0",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/narration-parser.mjs",
+      "line": 71,
+      "expression": "0",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/narration-parser.mjs",
+      "line": 72,
+      "expression": "0",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "template",
+      "file": "server/narration-providers.mjs",
+      "line": 34,
+      "expression": "`指定的声音服务 ${override} 未配置。`",
+      "fragments": [
+        "指定的声音服务 ",
+        " 未配置。"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/narration-providers.mjs",
+      "line": 138,
+      "expression": "0",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/narration-providers.mjs",
+      "line": 138,
+      "expression": "1",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "template",
+      "file": "server/narration-providers.mjs",
+      "line": 187,
+      "expression": "`Bearer ${key}`",
+      "fragments": [
+        "Bearer "
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "template",
+      "file": "server/narration-providers.mjs",
+      "line": 279,
+      "expression": "`${env.MINIMAX_API_BASE || 'https://api.minimax.io/v1'}/t2a_v2`",
+      "fragments": [
+        "/t2a_v2"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "template",
+      "file": "server/narration-providers.mjs",
+      "line": 282,
+      "expression": "`Bearer ${key}`",
+      "fragments": [
+        "Bearer "
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "template",
+      "file": "server/narration-providers.mjs",
+      "line": 363,
+      "expression": "` [${t.audioTag}]`",
+      "fragments": [
+        " [",
+        "]"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "template",
+      "file": "server/narration-providers.mjs",
+      "line": 364,
+      "expression": "`<|speaker:${speakerIndex}|>${t.text}${direction}`",
+      "fragments": [
+        "<|speaker:",
+        "|>"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "template",
+      "file": "server/narration-providers.mjs",
+      "line": 394,
+      "expression": "`Bearer ${key}`",
+      "fragments": [
+        "Bearer "
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/narration-providers.mjs",
+      "line": 445,
+      "expression": "0",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/narration-service.mjs",
+      "line": 87,
+      "expression": "provider",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/narration-service.mjs",
+      "line": 90,
+      "expression": "provider",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/narration-service.mjs",
+      "line": 130,
+      "expression": "voiceBible.provider",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "template",
+      "file": "server/narration-service.mjs",
+      "line": 132,
+      "expression": "`声音服务 ${voiceBible.provider} 不可用。`",
+      "fragments": [
+        "声音服务 ",
+        " 不可用。"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/narration-service.mjs",
+      "line": 156,
+      "expression": "0",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/narration-service.mjs",
+      "line": 157,
+      "expression": "scene.length - 1",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/narration-service.mjs",
+      "line": 166,
+      "expression": "i",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/narration-service.mjs",
+      "line": 197,
+      "expression": "0",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/narration-service.mjs",
+      "line": 198,
+      "expression": "scene.length - 1",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/narration-service.mjs",
+      "line": 299,
+      "expression": "provider",
+      "fragments": [],
       "unresolved": true
     },
     {
@@ -328156,6 +330379,51 @@
         "<!doctype html><html lang=\""
       ],
       "unresolved": true
+    },
+    {
+      "kind": "template",
+      "file": "server/voice-casting.mjs",
+      "line": 82,
+      "expression": "`${provider}_${language}`",
+      "fragments": [
+        "_"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/voice-casting.mjs",
+      "line": 83,
+      "expression": "castKey",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "template",
+      "file": "server/voice-casting.mjs",
+      "line": 86,
+      "expression": "`不支持的声音组合: ${provider} + ${language}`",
+      "fragments": [
+        "不支持的声音组合: ",
+        " + "
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/voice-casting.mjs",
+      "line": 120,
+      "expression": "characterIndex",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/voice-casting.mjs",
+      "line": 171,
+      "expression": "speaker",
+      "fragments": [],
+      "unresolved": true
     }
   ],
   "parity": {
@@ -328171,12 +330439,12 @@
     "duplicateKeys": 0,
     "reviewedItems": 8,
     "unreviewedItems": 2499,
-    "candidates": 6887,
-    "candidatesUnreviewed": 6886,
+    "candidates": 6984,
+    "candidatesUnreviewed": 6983,
     "candidatesProtected": 147,
     "itemsProtected": 9,
-    "dynamicConsumers": 4236,
-    "consumerReferences": 2163,
+    "dynamicConsumers": 4271,
+    "consumerReferences": 2164,
     "keysWithoutStaticConsumers": 1348,
     "reviewedLocaleValues": 32,
     "unreviewedLocaleValues": 9996,

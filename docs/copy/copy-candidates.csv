@@ -6447,6 +6447,76 @@ candidate:server/model-config.mjs:14:10,js-cjk-literal,server/model-config.mjs,1
 candidate:server/model-config.mjs:14:25,js-cjk-literal,server/model-config.mjs,14,,unknown,reviewable,,"  阅读：无需 AI Key"
 candidate:server/model-config.mjs:14:42,js-cjk-literal,server/model-config.mjs,14,,unknown,reviewable,,"  AI 文字："
 candidate:server/model-config.mjs:14:58,js-cjk-literal,server/model-config.mjs,14,,unknown,reviewable,,"  语音："
+candidate:server/narration-parser.mjs:10:8,js-cjk-literal,server/narration-parser.mjs,10,,unknown,reviewable,,说
+candidate:server/narration-parser.mjs:10:13,js-cjk-literal,server/narration-parser.mjs,10,,unknown,reviewable,,道
+candidate:server/narration-parser.mjs:10:18,js-cjk-literal,server/narration-parser.mjs,10,,unknown,reviewable,,问
+candidate:server/narration-parser.mjs:10:23,js-cjk-literal,server/narration-parser.mjs,10,,unknown,reviewable,,答
+candidate:server/narration-parser.mjs:10:28,js-cjk-literal,server/narration-parser.mjs,10,,unknown,reviewable,,回答
+candidate:server/narration-parser.mjs:10:34,js-cjk-literal,server/narration-parser.mjs,10,,unknown,reviewable,,喊
+candidate:server/narration-parser.mjs:10:39,js-cjk-literal,server/narration-parser.mjs,10,,unknown,reviewable,,叫
+candidate:server/narration-parser.mjs:10:44,js-cjk-literal,server/narration-parser.mjs,10,,unknown,reviewable,,笑
+candidate:server/narration-parser.mjs:10:49,js-cjk-literal,server/narration-parser.mjs,10,,unknown,reviewable,,哭
+candidate:server/narration-parser.mjs:10:54,js-cjk-literal,server/narration-parser.mjs,10,,unknown,reviewable,,低声说
+candidate:server/narration-parser.mjs:10:61,js-cjk-literal,server/narration-parser.mjs,10,,unknown,reviewable,,大声说
+candidate:server/narration-parser.mjs:10:68,js-cjk-literal,server/narration-parser.mjs,10,,unknown,reviewable,,轻声说
+candidate:server/narration-parser.mjs:26:22,js-cjk-literal,server/narration-parser.mjs,26,,unknown,reviewable,,段落文本不可用。
+candidate:server/narration-parser.mjs:132:10,js-cjk-literal,server/narration-parser.mjs,132,,unknown,reviewable,,标题
+candidate:server/narration-parser.mjs:132:16,js-cjk-literal,server/narration-parser.mjs,132,,unknown,reviewable,,题目
+candidate:server/narration-parser.mjs:132:22,js-cjk-literal,server/narration-parser.mjs,132,,unknown,reviewable,,写着
+candidate:server/narration-parser.mjs:132:28,js-cjk-literal,server/narration-parser.mjs,132,,unknown,reviewable,,上面写
+candidate:server/narration-parser.mjs:132:35,js-cjk-literal,server/narration-parser.mjs,132,,unknown,reviewable,,想到
+candidate:server/narration-parser.mjs:132:41,js-cjk-literal,server/narration-parser.mjs,132,,unknown,reviewable,,心想
+candidate:server/narration-parser.mjs:132:47,js-cjk-literal,server/narration-parser.mjs,132,,unknown,reviewable,,想着
+candidate:server/narration-parser.mjs:155:22,js-cjk-literal,server/narration-parser.mjs,155,,unknown,reviewable,,找不到这一章。
+candidate:server/narration-providers.mjs:42:22,js-cjk-literal,server/narration-providers.mjs,42,,unknown,reviewable,,中文语音服务尚未配置，请填写 QWEN_API_KEY 或 MINIMAX_API_KEY。
+candidate:server/narration-providers.mjs:47:20,js-cjk-literal,server/narration-providers.mjs,47,,unknown,reviewable,,语音服务尚未配置，请填写 ELEVENLABS_API_KEY。
+candidate:server/narration-providers.mjs:66:26,js-cjk-literal,server/narration-providers.mjs,66,,unknown,reviewable,,ElevenLabs API key 未配置。
+candidate:server/narration-providers.mjs:70:26,js-cjk-literal,server/narration-providers.mjs,70,,unknown,reviewable,,场景至少需要一轮对话。
+candidate:server/narration-providers.mjs:76:26,js-cjk-literal,server/narration-providers.mjs,76,,unknown,reviewable,,"ElevenLabs 场景文本超过 2,000 字符限制，请分段处理。"
+candidate:server/narration-providers.mjs:108:26,js-cjk-literal,server/narration-providers.mjs,108,,unknown,reviewable,,ElevenLabs 连接失败或超时。
+candidate:server/narration-providers.mjs:116:28,js-cjk-literal,server/narration-providers.mjs,116,,unknown,reviewable,,ElevenLabs API key 无效。
+candidate:server/narration-providers.mjs:119:28,js-cjk-literal,server/narration-providers.mjs,119,,unknown,reviewable,,ElevenLabs 额度不足。
+candidate:server/narration-providers.mjs:122:28,js-cjk-literal,server/narration-providers.mjs,122,,unknown,reviewable,,ElevenLabs 请求过于频繁。
+candidate:server/narration-providers.mjs:125:26,js-cjk-literal,server/narration-providers.mjs,125,,unknown,reviewable,,ElevenLabs 生成失败。
+candidate:server/narration-providers.mjs:131:69,js-cjk-literal,server/narration-providers.mjs,131,,unknown,reviewable,,声音文件超过存储上限，请缩短范围。
+candidate:server/narration-providers.mjs:134:26,js-cjk-literal,server/narration-providers.mjs,134,,unknown,reviewable,,ElevenLabs 返回音频格式无效。
+candidate:server/narration-providers.mjs:139:26,js-cjk-literal,server/narration-providers.mjs,139,,unknown,reviewable,,ElevenLabs 返回的不是有效 MP3。
+candidate:server/narration-providers.mjs:166:26,js-cjk-literal,server/narration-providers.mjs,166,,unknown,reviewable,,Qwen API key 未配置。
+candidate:server/narration-providers.mjs:170:26,js-cjk-literal,server/narration-providers.mjs,170,,unknown,reviewable,,单段文本超过 600 字符。
+candidate:server/narration-providers.mjs:195:26,js-cjk-literal,server/narration-providers.mjs,195,,unknown,reviewable,,Qwen 连接失败或超时。
+candidate:server/narration-providers.mjs:203:28,js-cjk-literal,server/narration-providers.mjs,203,,unknown,reviewable,,Qwen API key 无效。
+candidate:server/narration-providers.mjs:206:28,js-cjk-literal,server/narration-providers.mjs,206,,unknown,reviewable,,Qwen 请求过于频繁。
+candidate:server/narration-providers.mjs:209:26,js-cjk-literal,server/narration-providers.mjs,209,,unknown,reviewable,,Qwen 生成失败。
+candidate:server/narration-providers.mjs:215:26,js-cjk-literal,server/narration-providers.mjs,215,,unknown,reviewable,,Qwen 返回数据格式无效。
+candidate:server/narration-providers.mjs:220:168,js-cjk-literal,server/narration-providers.mjs,220,,unknown,reviewable,,Qwen 音频地址无效。
+candidate:server/narration-providers.mjs:223:47,js-cjk-literal,server/narration-providers.mjs,223,,unknown,reviewable,,Qwen 音频下载失败。
+candidate:server/narration-providers.mjs:226:69,js-cjk-literal,server/narration-providers.mjs,226,,unknown,reviewable,,声音文件超过存储上限，请缩短范围。
+candidate:server/narration-providers.mjs:253:26,js-cjk-literal,server/narration-providers.mjs,253,,unknown,reviewable,,MiniMax API 配置不完整。
+candidate:server/narration-providers.mjs:257:26,js-cjk-literal,server/narration-providers.mjs,257,,unknown,reviewable,,"单段文本超过 4,000 字符。"
+candidate:server/narration-providers.mjs:290:26,js-cjk-literal,server/narration-providers.mjs,290,,unknown,reviewable,,MiniMax 连接失败或超时。
+candidate:server/narration-providers.mjs:298:28,js-cjk-literal,server/narration-providers.mjs,298,,unknown,reviewable,,MiniMax API key 无效。
+candidate:server/narration-providers.mjs:301:28,js-cjk-literal,server/narration-providers.mjs,301,,unknown,reviewable,,MiniMax 请求过于频繁。
+candidate:server/narration-providers.mjs:304:26,js-cjk-literal,server/narration-providers.mjs,304,,unknown,reviewable,,MiniMax 生成失败。
+candidate:server/narration-providers.mjs:310:26,js-cjk-literal,server/narration-providers.mjs,310,,unknown,reviewable,,MiniMax 返回数据格式无效。
+candidate:server/narration-providers.mjs:315:69,js-cjk-literal,server/narration-providers.mjs,315,,unknown,reviewable,,声音文件超过存储上限，请缩短范围。
+candidate:server/narration-providers.mjs:343:26,js-cjk-literal,server/narration-providers.mjs,343,,unknown,reviewable,,Fish Audio API key 未配置。
+candidate:server/narration-providers.mjs:347:26,js-cjk-literal,server/narration-providers.mjs,347,,unknown,reviewable,,场景至少需要一轮对话。
+candidate:server/narration-providers.mjs:372:26,js-cjk-literal,server/narration-providers.mjs,372,,unknown,reviewable,,"Fish Audio 场景文本超过 10,000 字节。"
+candidate:server/narration-providers.mjs:402:26,js-cjk-literal,server/narration-providers.mjs,402,,unknown,reviewable,,Fish Audio 连接失败或超时。
+candidate:server/narration-providers.mjs:411:28,js-cjk-literal,server/narration-providers.mjs,411,,unknown,reviewable,,Fish Audio 模型配置错误，请确认使用 drama-3。
+candidate:server/narration-providers.mjs:415:28,js-cjk-literal,server/narration-providers.mjs,415,,unknown,reviewable,,Fish Audio API key 无效。
+candidate:server/narration-providers.mjs:418:28,js-cjk-literal,server/narration-providers.mjs,418,,unknown,reviewable,,Fish Audio 请求过于频繁。
+candidate:server/narration-providers.mjs:421:26,js-cjk-literal,server/narration-providers.mjs,421,,unknown,reviewable,,Fish Audio 生成失败。
+candidate:server/narration-providers.mjs:426:69,js-cjk-literal,server/narration-providers.mjs,426,,unknown,reviewable,,声音文件超过存储上限，请缩短范围。
+candidate:server/narration-providers.mjs:444:51,js-cjk-literal,server/narration-providers.mjs,444,,unknown,reviewable,,音频拼接尚未实现，请分别播放片段。
+candidate:server/narration-service.mjs:61:26,js-cjk-literal,server/narration-service.mjs,61,,unknown,reviewable,,找不到这本书。
+candidate:server/narration-service.mjs:71:26,js-cjk-literal,server/narration-service.mjs,71,,unknown,reviewable,,这一章没有可朗读的内容。
+candidate:server/narration-service.mjs:127:26,js-cjk-literal,server/narration-service.mjs,127,,unknown,reviewable,,声音配置无效。
+candidate:server/narration-service.mjs:136:76,js-cjk-literal,server/narration-service.mjs,136,,unknown,reviewable,,正文版本已变化，请重新准备。
+candidate:server/narration-service.mjs:228:67,js-cjk-literal,server/narration-service.mjs,228,,unknown,reviewable,,声音分段上限无效。
+candidate:server/narration-service.mjs:268:9,js-cjk-literal,server/narration-service.mjs,268,,unknown,reviewable,,低声
+candidate:server/narration-service.mjs:269:9,js-cjk-literal,server/narration-service.mjs,269,,unknown,reviewable,,大声
+candidate:server/narration-service.mjs:270:9,js-cjk-literal,server/narration-service.mjs,270,,unknown,reviewable,,轻声
 candidate:server/native-reading-copy.mjs:14:22,js-cjk-literal,server/native-reading-copy.mjs,14,,unknown,reviewable,,书籍内容已更新，请重新下载阅读副本
 candidate:server/native-reading-copy.mjs:15:24,js-cjk-literal,server/native-reading-copy.mjs,15,,unknown,reviewable,,阅读副本无法核验，请重新下载
 candidate:server/native-reading-copy.mjs:27:134,js-cjk-literal,server/native-reading-copy.mjs,27,,unknown,reviewable,,云端阅读副本暂时不可用
@@ -7093,3 +7163,30 @@ const runUiFirstPaintHandoff=function runUiFirstPaintHandoff(options={}){
 };;runUiFirstPaintHandoff();})();"
 candidate:server/verified-source.mjs:6:143,js-cjk-literal,server/verified-source.mjs,6,,unknown,reviewable,,原文件引用无法核验
 candidate:server/verified-source.mjs:11:67,js-cjk-literal,server/verified-source.mjs,11,,unknown,reviewable,,原文件引用无法核验
+candidate:server/voice-casting.mjs:24:36,js-cjk-literal,server/voice-casting.mjs,24,,unknown,reviewable,,女声旁白
+candidate:server/voice-casting.mjs:25:39,js-cjk-literal,server/voice-casting.mjs,25,,unknown,reviewable,,男声默认
+candidate:server/voice-casting.mjs:26:42,js-cjk-literal,server/voice-casting.mjs,26,,unknown,reviewable,,女声默认
+candidate:server/voice-casting.mjs:27:32,js-cjk-literal,server/voice-casting.mjs,27,,unknown,reviewable,,男声角色一
+candidate:server/voice-casting.mjs:28:31,js-cjk-literal,server/voice-casting.mjs,28,,unknown,reviewable,,男声角色二
+candidate:server/voice-casting.mjs:29:37,js-cjk-literal,server/voice-casting.mjs,29,,unknown,reviewable,,女声角色一
+candidate:server/voice-casting.mjs:30:36,js-cjk-literal,server/voice-casting.mjs,30,,unknown,reviewable,,女声角色二
+candidate:server/voice-casting.mjs:35:60,js-cjk-literal,server/voice-casting.mjs,35,,unknown,reviewable,,中性旁白
+candidate:server/voice-casting.mjs:36:50,js-cjk-literal,server/voice-casting.mjs,36,,unknown,reviewable,,男声标准
+candidate:server/voice-casting.mjs:37:49,js-cjk-literal,server/voice-casting.mjs,37,,unknown,reviewable,,女声标准
+candidate:server/voice-casting.mjs:38:42,js-cjk-literal,server/voice-casting.mjs,38,,unknown,reviewable,,男声青年
+candidate:server/voice-casting.mjs:39:40,js-cjk-literal,server/voice-casting.mjs,39,,unknown,reviewable,,男声成熟
+candidate:server/voice-casting.mjs:40:44,js-cjk-literal,server/voice-casting.mjs,40,,unknown,reviewable,,女声青年
+candidate:server/voice-casting.mjs:41:42,js-cjk-literal,server/voice-casting.mjs,41,,unknown,reviewable,,女声成熟
+candidate:server/voice-casting.mjs:62:24,js-cjk-literal,server/voice-casting.mjs,62,,unknown,reviewable,,小姐
+candidate:server/voice-casting.mjs:62:30,js-cjk-literal,server/voice-casting.mjs,62,,unknown,reviewable,,女士
+candidate:server/voice-casting.mjs:62:36,js-cjk-literal,server/voice-casting.mjs,62,,unknown,reviewable,,夫人
+candidate:server/voice-casting.mjs:62:42,js-cjk-literal,server/voice-casting.mjs,62,,unknown,reviewable,,母亲
+candidate:server/voice-casting.mjs:62:48,js-cjk-literal,server/voice-casting.mjs,62,,unknown,reviewable,,妈妈
+candidate:server/voice-casting.mjs:62:54,js-cjk-literal,server/voice-casting.mjs,62,,unknown,reviewable,,姐姐
+candidate:server/voice-casting.mjs:62:60,js-cjk-literal,server/voice-casting.mjs,62,,unknown,reviewable,,妹妹
+candidate:server/voice-casting.mjs:63:22,js-cjk-literal,server/voice-casting.mjs,63,,unknown,reviewable,,先生
+candidate:server/voice-casting.mjs:63:28,js-cjk-literal,server/voice-casting.mjs,63,,unknown,reviewable,,父亲
+candidate:server/voice-casting.mjs:63:34,js-cjk-literal,server/voice-casting.mjs,63,,unknown,reviewable,,爸爸
+candidate:server/voice-casting.mjs:63:40,js-cjk-literal,server/voice-casting.mjs,63,,unknown,reviewable,,哥哥
+candidate:server/voice-casting.mjs:63:46,js-cjk-literal,server/voice-casting.mjs,63,,unknown,reviewable,,弟弟
+candidate:server/voice-casting.mjs:162:22,js-cjk-literal,server/voice-casting.mjs,162,,unknown,reviewable,,声音分配表不存在。
