@@ -1,10 +1,10 @@
-// Finite Release-equivalence proof for the reviewed d302393d -> 33bfa919
-// GET-328 preparation. These are Git blob IDs, not commit IDs. Do not turn this
+// Finite Release-equivalence proof for the reviewed GET-328 preparation and
+// DEBUG-only App trait observation. These are Git blob IDs, not commit IDs. Do not turn this
 // into a directory-wide DEBUG/project exemption or infer equivalence from a patch.
 const reviewedPairs=new Map([
   ['apps/ios/project.yml',['6f4f1640cecae45e2ee86f692df8bdeb840ac640','026bfb94225bb058ceb725147f3678cd2df3d5a8']],
   ['apps/ios/Leafhour.xcodeproj/project.pbxproj',['7020d4306d650f6d8680b77e055c213727295e03','5c0645ea7ce691dd3e98d37a4eaa48da66f66c7b']],
-  ['apps/ios/Leafhour/VideoAcceptanceFixture.swift',['352f1e568158996348fdef37d69746b2e46a07fd','d37c67f3ccfff4ab4ea6cc52d978b9f0e081fbd7']],
+  ['apps/ios/Leafhour/VideoAcceptanceFixture.swift',['352f1e568158996348fdef37d69746b2e46a07fd','8299124e331c20d8cce23db6150bcff0b0086839']],
 ]);
 const qaOnly=new Set([
   'apps/ios/Config/GET328Acceptance.xcconfig',
@@ -13,7 +13,7 @@ const qaOnly=new Set([
 ]);
 const decisionOnly=new Set(['scripts/ios/prepare.mjs','scripts/ios/release-changes.mjs']);
 const hostOnly=new Set(['tools/generate-get328-alice-pdf73.mjs',
-  'scripts/ios/get328_build_only.py','scripts/ios/build_only_budget.py']);
+  'scripts/ios/get328_build_only.py','scripts/ios/build_only_budget.py','scripts/ios/verify-get328-app-traits.mjs']);
 const statuses=new Set(['added','modified','removed','renamed','copied','changed','unchanged']);
 const isSha=value=>typeof value==='string' && /^[a-f0-9]{40}$/.test(value);
 const isPath=value=>typeof value==='string' && value.length>0 && !/[\\\0\r\n]/.test(value)

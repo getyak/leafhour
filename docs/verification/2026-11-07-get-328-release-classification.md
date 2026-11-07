@@ -18,7 +18,14 @@ The three mixed files have a **finite, reviewed before/after Git blob proof**:
 |---|---|---|
 | `apps/ios/project.yml` | `6f4f1640cecae45e2ee86f692df8bdeb840ac640` | `026bfb94225bb058ceb725147f3678cd2df3d5a8` |
 | `apps/ios/Leafhour.xcodeproj/project.pbxproj` | `7020d4306d650f6d8680b77e055c213727295e03` | `5c0645ea7ce691dd3e98d37a4eaa48da66f66c7b` |
-| `apps/ios/Leafhour/VideoAcceptanceFixture.swift` | `352f1e568158996348fdef37d69746b2e46a07fd` | `d37c67f3ccfff4ab4ea6cc52d978b9f0e081fbd7` |
+| `apps/ios/Leafhour/VideoAcceptanceFixture.swift` | `352f1e568158996348fdef37d69746b2e46a07fd` | `8299124e331c20d8cce23db6150bcff0b0086839` |
+
+The [App trait observation follow-up](2026-11-07-get-328-app-type-observation.md)
+replaced only that Swift after-blob. The prior preparation blob
+`d37c67f3ccfff4ab4ea6cc52d978b9f0e081fbd7` and its original proof remain in the
+historical evidence; it is not an additional baseline/head exemption. The
+classifier also admits the one exact pure-host verifier path, with no archive,
+upload, workflow or unknown-script exemption.
 
 Independent review and phase-A metadata readback established that these exact
 project changes preserve all ten existing Debug/Release configuration objects,

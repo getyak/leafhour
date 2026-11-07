@@ -5,11 +5,11 @@ import {readFile} from 'node:fs/promises';
 import {classifyIOSReleaseChanges} from '../scripts/ios/release-changes.mjs';
 
 const baseSha='a'.repeat(40),headSha='b'.repeat(40),otherSha='c'.repeat(40);
-// Independent literals from the reviewed d302393d -> 33bfa919 source objects.
+// Independent literals from the reviewed main baseline and DEBUG-only QA blob proofs.
 const pairs=[
   ['apps/ios/project.yml','6f4f1640cecae45e2ee86f692df8bdeb840ac640','026bfb94225bb058ceb725147f3678cd2df3d5a8'],
   ['apps/ios/Leafhour.xcodeproj/project.pbxproj','7020d4306d650f6d8680b77e055c213727295e03','5c0645ea7ce691dd3e98d37a4eaa48da66f66c7b'],
-  ['apps/ios/Leafhour/VideoAcceptanceFixture.swift','352f1e568158996348fdef37d69746b2e46a07fd','d37c67f3ccfff4ab4ea6cc52d978b9f0e081fbd7'],
+  ['apps/ios/Leafhour/VideoAcceptanceFixture.swift','352f1e568158996348fdef37d69746b2e46a07fd','8299124e331c20d8cce23db6150bcff0b0086839'],
 ];
 const file=(filename,extra={})=>({filename,status:'modified',sha:otherSha,...extra});
 const comparison=files=>({status:'ahead',base_commit:{sha:baseSha},merge_base_commit:{sha:baseSha},files});
@@ -19,7 +19,7 @@ const classify=(files,options={})=>classifyIOSReleaseChanges({comparison:compari
 test('the exact reviewed GET-328 mixed blobs and standalone test/QA changes need no binary',async()=>{
   const files=[];
   for(const [path,,expected] of pairs){
-    // These immutable historical metadata fixtures do not freeze future source
+    // These immutable reviewed metadata fixtures do not freeze future source
     // files. Unknown/new product blobs are required to remain release-relevant.
     files.push(file(path,{sha:expected}));
   }
@@ -28,7 +28,7 @@ test('the exact reviewed GET-328 mixed blobs and standalone test/QA changes need
     'apps/ios/Config/GET328Acceptance.xcconfig','apps/ios/Config/GET328Acceptance-Info.plist',
     'apps/ios/Leafhour.xcodeproj/xcshareddata/xcschemes/LeafhourGET328CurrentAcceptance.xcscheme',
     'tests/ios-prepare-changes.test.mjs','tests/test_ios_signing.py','scripts/ios/prepare.mjs','scripts/ios/release-changes.mjs',
-    'scripts/ios/get328_build_only.py','scripts/ios/build_only_budget.py',
+    'scripts/ios/get328_build_only.py','scripts/ios/build_only_budget.py','scripts/ios/verify-get328-app-traits.mjs',
     'docs/verification/2026-11-07-get-328-preparation.md']) files.push(file(path));
   const result=await classify(files);
   assert.equal(result.releaseRelevant,false);
@@ -71,6 +71,15 @@ test('a real Release-code append to the DEBUG fixture cannot inherit its old exe
   const bytes=Buffer.concat([await readFile(new URL('../'+path,import.meta.url)),Buffer.from('\nenum ReleaseBehaviorChanged { static let enabled = true }\n')]);
   const sha=createHash('sha1').update(`blob ${bytes.length}\0`).update(bytes).digest('hex');
   assert.equal((await classify([file(path,{sha})])).releaseRelevant,true);
+});
+
+test('the retired observer-free blob and lookalike host scripts are not new exemptions',async()=>{
+  const path='apps/ios/Leafhour/VideoAcceptanceFixture.swift';
+  assert.equal((await classify([file(path,{sha:'d37c67f3ccfff4ab4ea6cc52d978b9f0e081fbd7'})])).releaseRelevant,true);
+  assert.equal((await classify([file(path,{sha:pairs[2][2]})],{
+    readBaseFile:async()=>({type:'file',path,sha:'d37c67f3ccfff4ab4ea6cc52d978b9f0e081fbd7'}),
+  })).releaseRelevant,true);
+  assert.equal((await classify([file('scripts/ios/verify-get328-app-traits-future.mjs')])).releaseRelevant,true);
 });
 
 test('incomplete or non-receipt comparisons cannot establish Release equivalence',async t=>{

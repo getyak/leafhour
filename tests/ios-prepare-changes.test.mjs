@@ -13,7 +13,7 @@ const identity={appId:'123',bundleId:'example.verified'};
 const reviewedFiles=[
   {path:'apps/ios/project.yml',base:'6f4f1640cecae45e2ee86f692df8bdeb840ac640',head:'026bfb94225bb058ceb725147f3678cd2df3d5a8'},
   {path:'apps/ios/Leafhour.xcodeproj/project.pbxproj',base:'7020d4306d650f6d8680b77e055c213727295e03',head:'5c0645ea7ce691dd3e98d37a4eaa48da66f66c7b'},
-  {path:'apps/ios/Leafhour/VideoAcceptanceFixture.swift',base:'352f1e568158996348fdef37d69746b2e46a07fd',head:'d37c67f3ccfff4ab4ea6cc52d978b9f0e081fbd7'},
+  {path:'apps/ios/Leafhour/VideoAcceptanceFixture.swift',base:'352f1e568158996348fdef37d69746b2e46a07fd',head:'8299124e331c20d8cce23db6150bcff0b0086839'},
 ];
 const change=(filename,extra={})=>({filename,status:'modified',sha:otherSha,...extra});
 const qaPaths=[
@@ -34,6 +34,7 @@ const testOnlyFiles=()=>[
   change('scripts/ios/release-changes.mjs',{status:'added'}),
   change('scripts/ios/get328_build_only.py',{status:'added'}),
   change('scripts/ios/build_only_budget.py',{status:'added'}),
+  change('scripts/ios/verify-get328-app-traits.mjs',{status:'added'}),
 ];
 const docChange=()=>change('docs/verification/2026-11-07-get-328-current-acceptance/README.md');
 
