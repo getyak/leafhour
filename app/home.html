@@ -108,10 +108,22 @@
 </div>
 </main>
 <footer class="site-footer home-footer">
-  <div class="home-footer-identity"><a class="brand" href="/"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 32V20A13 13 0 0 1 21 7h11v11a14 14 0 0 1-14 14H8Z"/><path d="M16 23h7v-9"/></svg></span><span class="brand-name" lang="en">Leafhour</span></a><p lang="en">Stay with a book.</p></div>
-  <div class="home-footer-group"><h2>阅读保障</h2><nav aria-label="阅读保障"><a href="/privacy">隐私说明</a><a href="/terms">服务条款</a><a href="/refunds">退款政策</a></nav></div>
-  <div class="home-footer-group"><h2>开放项目</h2><nav aria-label="开放项目"><a href="https://github.com/getyak/leafhour">GitHub</a></nav></div>
-  <div class="home-footer-appearance"><span>页面外观</span><button class="site-theme" id="site-theme" type="button" aria-label="切换页面外观">◐</button></div>
+  <div class="home-footer-inner">
+    <div class="home-footer-top">
+      <div class="home-footer-identity">
+        <a class="brand" href="/"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 32V20A13 13 0 0 1 21 7h11v11a14 14 0 0 1-14 14H8Z"/><path d="M16 23h7v-9"/></svg></span><span class="brand-name" lang="en">Leafhour</span></a>
+        <p class="home-footer-description">开源的私人阅读书房。<br>把原文、译文和自己的思考留在一起。</p>
+        <a class="home-footer-cta" href="/read?book=gutenberg-alice"><span>先读几页</span><span aria-hidden="true">→</span></a>
+      </div>
+      <div class="home-footer-group"><h2>开始阅读</h2><nav aria-label="开始阅读"><a href="/library">Web 书房</a><a href="#how">阅读的方法</a><a href="https://github.com/getyak/leafhour/tree/main/apps/ios" target="_blank" rel="noopener noreferrer"><span>iOS 内测</span><span aria-hidden="true">↗</span></a></nav></div>
+      <div class="home-footer-group"><h2>开放项目</h2><nav aria-label="开放项目"><a href="https://github.com/getyak/leafhour" target="_blank" rel="noopener noreferrer"><span>GitHub</span><span aria-hidden="true">↗</span></a><a href="https://github.com/getyak/leafhour#readme" target="_blank" rel="noopener noreferrer"><span>使用文档</span><span aria-hidden="true">↗</span></a><a href="https://github.com/getyak/leafhour/issues" target="_blank" rel="noopener noreferrer"><span>反馈问题</span><span aria-hidden="true">↗</span></a></nav></div>
+      <div class="home-footer-group home-footer-policies"><h2>阅读保障</h2><nav aria-label="阅读保障"><a href="/privacy">隐私说明</a><a href="/terms">服务条款</a><a href="/refunds">退款政策</a><a href="mailto:support@leafhour.com"><span>联系支持</span><span aria-hidden="true">↗</span></a></nav></div>
+    </div>
+    <div class="home-footer-bottom">
+      <div class="home-footer-colophon"><span>© 2026 Leafhour</span><a href="https://github.com/getyak/leafhour/blob/main/LICENSE" target="_blank" rel="noopener noreferrer">AGPL-3.0</a><a href="https://cubxxw.com/" target="_blank" rel="noopener noreferrer">cubxxw 的作品</a></div>
+      <div class="home-footer-appearance"><span>页面外观</span><button class="site-theme" id="site-theme" type="button" aria-label="切换页面外观">◐</button></div>
+    </div>
+  </div>
 </footer>
 <dialog autofocus id="reading-history" class="reading-history-dialog" aria-label="阅读日历"></dialog>
 <dialog autofocus id="library-nav-dialog" class="library-nav-dialog" aria-label="书房导航"></dialog>
