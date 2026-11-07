@@ -93,6 +93,8 @@ struct ReaderContentsPanel: View {
                 if let locationError { Section { Text(locationError).font(.footnote).foregroundStyle(.secondary) } }
             }
             .listStyle(.plain)
+            .scrollContentBackground(.hidden)
+            .background(Color(uiColor: session.state.preferences.paperColor))
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
@@ -235,14 +237,16 @@ struct ReaderContentsOverlay: View {
                         }
                 }
                 .frame(width: min(geometry.size.width - 48, typeSize.isAccessibilitySize ? 430 : 340))
-                .background(Color(uiColor: .systemBackground))
+                .background(Color(uiColor: session.state.preferences.paperColor))
+                .toolbarBackground(Color(uiColor: session.state.preferences.paperColor), for: .navigationBar)
+                .toolbarBackground(.visible, for: .navigationBar)
                 .shadow(color: .black.opacity(0.1), radius: 12, x: 4)
                 .accessibilityAction(.escape, onClose)
                 .simultaneousGesture(DragGesture(minimumDistance: 24).onEnded { value in
                     if value.translation.width < -64 && abs(value.translation.height) < abs(value.translation.width) { onClose() }
                 })
-                .transition(.move(edge: .leading))
-            }.animation(reduceMotion ? nil : .easeOut(duration: 0.18), value: session.chapterIndex)
+                .transition(.identity)
+            }
         }
     }
 }

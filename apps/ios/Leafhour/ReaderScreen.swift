@@ -4,6 +4,7 @@ import AVFoundation
 import LeafhourCore
 
 enum ReaderChrome: Equatable { case asleep, top, progress, tools }
+
 /// Keep the native book surface alive underneath Chat. Repeated tool/status
 /// changes must not traverse TextKit/PDFKit while that surface is covered.
 /// Preserve the same content position and native view when freezing or returning.
@@ -87,6 +88,9 @@ struct ReaderScreen: View {
     @State private var chrome: ReaderChrome = .asleep
     @State private var returningToLibrary = false
     @State private var panel: ReaderPanel?
+    @State private var surfaceMode = ReaderSurfaceMode.reading
+    @State private var hasOpenedListening = false
+    @State private var listeningContentsTarget: ReaderListeningContentsTarget?
     @State private var speech = ReaderSpeech()
     @State private var autoPage = ReaderAutoPageController()
     @State private var readerIsTouching = false
@@ -142,7 +146,7 @@ struct ReaderScreen: View {
         UIEdgeInsets(top: 4, left: 22, bottom: session.state.preferences.alwaysShowReadingProgress ? quietProgressHeight + 8 : 8, right: 22)
     }
     private var presentedReader: some View {
-        ReaderBackgroundSurface(isCovered: panel?.isCompanion == true || panel?.id == "listening" || fullScreenAI || scenePhase != .active) { readingSurface }.equatable()
+        ReaderBackgroundSurface(isCovered: panel != nil || surfaceMode == .listening || fullScreenAI || scenePhase != .active) { readingSurface }.equatable()
         .preferredColorScheme(session.state.preferences.colorScheme(following: systemColorScheme))
         .statusBarHidden(true)
         .interactiveDismissDisabled(panel?.isCompanion != true && (session.saving || session.saveError != nil))
@@ -179,116 +183,121 @@ struct ReaderScreen: View {
             let showingBottom = chrome == .progress || chrome == .tools
             ZStack(alignment: .top) {
                 paper.ignoresSafeArea()
-                Group {
-                if session.book.kind == .pdf && (session.state.preferences.viewMode == .source || needsPDFSourceFallback) {
-                    PDFReadingView(session: session, pageInsets: pageInsets, selectionDismissalID: selectionDismissalID, onSelection: { quote in
-                        // PDFView can synchronously notify while its native selection is being cleared.
-                        if quote != nil || session.selection != nil { session.selection = quote }
-                        if quote != nil { speech.userNavigated() }
-                    }, onWake: wake, onReadingScroll: readingDidScroll, onPageChange: { pagePosition = $0 }, onVisiblePage: receiveVisiblePage, speechHighlight: speech.highlight, followsSpeech: speech.following && !speech.readerIsInteracting,
-                        onReadingPosition: { speech.updateVisible($0) }, onTouchActivity: readingTouchChanged,
-                        isReadingSurfaceActive: panel == nil && scenePhase == .active,
-                        pageRequest: autoPage.pageRequest, onPageRequestResult: autoPage.receive, onBookmark: addBookmark, onBookmarkPull: receiveBookmarkPull, onBookmarkViewport: { bookmarkRanges = $0 })
-                    .safeAreaInset(edge: .bottom, spacing: 0) {
-                        if needsPDFSourceFallback {
-                            Text("此页没有可对照文字，先显示原页。")
-                                .font(.footnote).foregroundStyle(.secondary).frame(maxWidth: .infinity, alignment: .leading)
-                                .padding(.horizontal, 24).padding(.vertical, 8).background(paper)
-                                .accessibilityIdentifier("reader-pdf-source-fallback")
-                        }
-                    }
-                    // PDFKit's page controller scales into its complete bounds.
-                    // Give it an unobscured page instead of covering source lines.
-                    .padding(.top, session.state.preferences.navigationMode == .paged ? pageInsets.top : 0)
-                    .padding(.bottom, session.state.preferences.navigationMode == .paged || needsPDFSourceFallback ? pageInsets.bottom : 0)
-                } else {
-                    TextReadingView(session: session, pageInsets: pageInsets, selectionDismissalID: selectionDismissalID, onNote: { showNote($0) }, onSource: { present(.source($0)) }, onExplain: { showCompanion($0) }, onWake: wake, onReadingScroll: readingDidScroll,
-                        onTranslate: { viewedTranslations.insert($0.anchor.passageID); present(.passageTranslation($0)) },
-                        onShare: { present(.share($0)) },
-                        onSelectionChange: { quote, active in session.selection = quote; hasNativeTextSelection = active; if active { speech.userNavigated() } },
-                        onPageChange: { pagePosition = $0 }, onVisiblePage: receiveVisiblePage, speechHighlight: speech.highlight, followsSpeech: speech.following && !speech.readerIsInteracting,
-                        onReadingPosition: { speech.updateVisible($0) }, onTouchActivity: readingTouchChanged,
-                        isReadingSurfaceActive: panel == nil && scenePhase == .active, translatedPassageIDs: viewedTranslations,
-                        pageRequest: autoPage.pageRequest, onPageRequestResult: autoPage.receive, onBookmark: addBookmark, onBookmarkPull: receiveBookmarkPull, onBookmarkViewport: { bookmarkRanges = $0 }, onBookmarkCapture: { addBookmark(capture: $0) })
-                }
-                }
+                bookSurface(pageInsets: pageInsets)
                 .offset(y: reduceMotion ? 0 : bookmarkPull.displacement)
-                if chrome == .asleep, activeBookmark != nil {
-                    VStack { HStack { Spacer(); bookmarkButton }.padding(.trailing, 4); Spacer() }
-                }
-                if bookmarkPull.feedback != .idle || bookmarkMessage != nil {
-                    ReaderBookmarkFeedbackView(pull: bookmarkPull, message: bookmarkMessage, canEdit: bookmarkSavedID != nil) {
-                        bookmarkConfigurationID = bookmarkSavedID; present(.bookmarks)
+                if surfaceMode == .reading {
+                    if chrome == .asleep, activeBookmark != nil {
+                        VStack { HStack { Spacer(); bookmarkButton }.padding(.trailing, 4); Spacer() }
                     }
-                    .padding(.top, showingTop ? (chromeMetrics?.top ?? 44) + 6 : 6).padding(.horizontal, 16).zIndex(2)
-                }
-                VStack(spacing: 0) {
-                    // Measure the same real controls while asleep. Hiding or waking
-                    // them changes ink, hit testing and AX, never the source margins.
-                    navigationHeader(compact: layout.compact).padding(.horizontal, 10).background(paper)
-                        .overlay(alignment: .bottom) { Divider() }
-                        .background { GeometryReader { geometry in Color.clear.preference(key: ReaderChromeHeightKey.self, value: [ReaderChromeMeasurement(layout: layout, region: .top, height: geometry.size.height)]) } }
-                        .modifier(ReaderChromeVisibility(isVisible: showingTop)).allowsHitTesting(showingTop).disabled(!showingTop).accessibilityHidden(!showingTop)
-                        .overlay {
-                            if !showingTop {
-                                Button { wake(.top) } label: { Color.clear.frame(maxWidth: .infinity).frame(height: 44) }.allowsHitTesting(false)
-                                    .accessibilityLabel("显示书名、返回与阅读设置")
-                            }
+                    if bookmarkPull.feedback != .idle || bookmarkMessage != nil {
+                        ReaderBookmarkFeedbackView(pull: bookmarkPull, message: bookmarkMessage, canEdit: bookmarkSavedID != nil) {
+                            bookmarkConfigurationID = bookmarkSavedID; present(.bookmarks)
                         }
-                    Spacer()
-                    ZStack(alignment: .bottom) {
-                        ReaderGlassGroup {
-                            VStack(spacing: layout.compact ? 0 : 4) {
-                                if let quote = session.selection {
-                                    ReaderSelectionDock(quote: quote, paper: paper, onAI: { showCompanion(quote) },
-                                        onNote: { showNote(quote) }, onTranslate: { viewedTranslations.insert(quote.anchor.passageID); present(.passageTranslation(quote)) }, onShare: { present(.share(quote)) },
-                                        onClear: { session.selection = nil; hasNativeTextSelection = false; selectionDismissalID = UUID() }, showsTranslation: session.state.preferences.viewMode != .translation, quickAI: AnyView(quickAIControl))
-                                } else {
-                                    ReaderReadingTransport(canPreviousChapter: session.chapterIndex > 0,
-                                        canNextChapter: session.chapterIndex + 1 < session.book.chapters.count,
-                                        onPreviousChapter: { jumpChapter(-1) }, onNextChapter: { jumpChapter(1) },
-                                        onTranslatePage: { present(.pageTranslation) })
-                                    ReaderBottomBar(
-                                        paper: paper, mode: .reading,
-                                        chapterAccessibilityValue: progressDescription,
-                                        listeningAccessibilityHint: speech.playing ? "正在朗读，打开听书控制" : speech.paused ? "听书已暂停，打开后可继续" : "打开听书控制，点击播放后才开始",
-                                        onContents: { present(.contents) },
-                                        onRead: { autoPage.pause(.interaction); speech.pause(); chrome = .asleep },
-                                        onListen: { present(.listening) },
-                                        onAppearance: { present(.appearance) },
-                                        onTypography: { present(.preferences) },
-                                        onInteraction: { autoPage.pause(.interaction); clockID = UUID() },
-                                        onFocusChange: { bottomBarFocused = $0; clockID = UUID() },
-                                        controlsVisible: showingBottom
-                                    )
+                        .padding(.top, showingTop ? (chromeMetrics?.top ?? 44) + 6 : 6).padding(.horizontal, 16).zIndex(2)
+                    }
+                    VStack(spacing: 0) {
+                        // Measure the same real controls while asleep. Hiding or waking
+                        // them changes ink, hit testing and AX, never the source margins.
+                        navigationHeader(compact: layout.compact).padding(.horizontal, 10).background(paper)
+                            .overlay(alignment: .bottom) { Divider() }
+                            .background { GeometryReader { geometry in Color.clear.preference(key: ReaderChromeHeightKey.self, value: [ReaderChromeMeasurement(layout: layout, region: .top, height: geometry.size.height)]) } }
+                            .modifier(ReaderChromeVisibility(isVisible: showingTop)).allowsHitTesting(showingTop).disabled(!showingTop).accessibilityHidden(!showingTop)
+                            .overlay {
+                                if !showingTop {
+                                    Button { wake(.top) } label: { Color.clear.frame(maxWidth: .infinity).frame(height: 44) }.allowsHitTesting(false)
+                                        .accessibilityLabel("显示书名、返回与阅读设置")
                                 }
                             }
+                        Spacer()
+                        ZStack(alignment: .bottom) {
+                            ReaderGlassGroup {
+                                VStack(spacing: layout.compact ? 0 : 4) {
+                                    if let quote = session.selection {
+                                        ReaderSelectionDock(quote: quote, paper: paper, onAI: { showCompanion(quote) },
+                                            onNote: { showNote(quote) }, onTranslate: { viewedTranslations.insert(quote.anchor.passageID); present(.passageTranslation(quote)) }, onShare: { present(.share(quote)) },
+                                            onClear: { session.selection = nil; hasNativeTextSelection = false; selectionDismissalID = UUID() }, showsTranslation: session.state.preferences.viewMode != .translation, quickAI: AnyView(quickAIControl))
+                                    } else {
+                                        ReaderReadingTransport(canPreviousChapter: session.chapterIndex > 0,
+                                            canNextChapter: session.chapterIndex + 1 < session.book.chapters.count,
+                                            onPreviousChapter: { jumpChapter(-1) }, onNextChapter: { jumpChapter(1) },
+                                            onTranslatePage: { present(.pageTranslation) })
+                                        ReaderBottomBar(
+                                            paper: paper, mode: .reading,
+                                            chapterAccessibilityValue: progressDescription,
+                                            listeningAccessibilityHint: speech.playing ? "正在朗读，打开听书控制" : speech.paused ? "听书已暂停，打开后可继续" : "打开听书控制，点击播放后才开始",
+                                            onContents: { present(.contents) },
+                                            onRead: { autoPage.pause(.interaction); speech.pause(); chrome = .asleep },
+                                            onListen: { present(.listening) },
+                                            onAppearance: { present(.appearance) },
+                                            onTypography: { present(.preferences) },
+                                            onInteraction: { autoPage.pause(.interaction); clockID = UUID() },
+                                            onFocusChange: { bottomBarFocused = $0; clockID = UUID() },
+                                            controlsVisible: showingBottom
+                                        )
+                                    }
+                                }
+                            }
+                            .padding(.horizontal, 12).padding(.bottom, layout.compact ? 4 : 6)
+                            .background {
+                                // Paper fades in before the floating controls so source
+                                // ink never competes through the spaces between pills.
+                                LinearGradient(stops: [.init(color: paper.opacity(0), location: 0),
+                                                       .init(color: paper, location: 0.35),
+                                                       .init(color: paper, location: 1)],
+                                               startPoint: .top, endPoint: .bottom)
+                                    .padding(.top, -8).ignoresSafeArea(edges: .bottom)
+                                    .allowsHitTesting(false).accessibilityHidden(true)
+                            }
+                            .background { GeometryReader { geometry in Color.clear.preference(key: ReaderChromeHeightKey.self, value: session.selection == nil ? [ReaderChromeMeasurement(layout: layout, region: .bottom, height: geometry.size.height)] : []) } }
+                            .modifier(ReaderChromeVisibility(isVisible: showingBottom || session.selection != nil)).allowsHitTesting(showingBottom || session.selection != nil).disabled(!showingBottom && session.selection == nil)
+                            if !showingBottom && session.selection == nil { quietReadingControl }
                         }
-                        .padding(.horizontal, 12).padding(.bottom, layout.compact ? 4 : 6)
-                        .background {
-                            // Paper fades in before the floating controls so source
-                            // ink never competes through the spaces between pills.
-                            LinearGradient(stops: [.init(color: paper.opacity(0), location: 0),
-                                                   .init(color: paper, location: 0.35),
-                                                   .init(color: paper, location: 1)],
-                                           startPoint: .top, endPoint: .bottom)
-                                .padding(.top, -8).ignoresSafeArea(edges: .bottom)
-                                .allowsHitTesting(false).accessibilityHidden(true)
-                        }
-                        .background { GeometryReader { geometry in Color.clear.preference(key: ReaderChromeHeightKey.self, value: session.selection == nil ? [ReaderChromeMeasurement(layout: layout, region: .bottom, height: geometry.size.height)] : []) } }
-                        .modifier(ReaderChromeVisibility(isVisible: showingBottom || session.selection != nil)).allowsHitTesting(showingBottom || session.selection != nil).disabled(!showingBottom && session.selection == nil)
-                        if !showingBottom && session.selection == nil { quietReadingControl }
                     }
                 }
             }
-            .overlay(alignment: .bottomTrailing) { floatingProgress(showingBottom: showingBottom) }
+            .overlay(alignment: .bottomTrailing) { if surfaceMode == .reading { floatingProgress(showingBottom: showingBottom) } }
             .overlay(alignment: .bottomTrailing) {
-                if session.selection == nil {
+                if surfaceMode == .reading && showingBottom && session.selection == nil {
                     quickAIControl.padding(.trailing, 18)
                         .padding(.bottom, showingBottom ? (chromeMetrics?.bottom ?? 160) + 8 : 28)
                 }
             }
             .onPreferenceChange(ReaderChromeHeightKey.self) { recordChrome($0, for: layout) }
+        }
+    }
+    @ViewBuilder private func bookSurface(pageInsets: UIEdgeInsets) -> some View {
+        if session.book.kind == .pdf && (session.state.preferences.viewMode == .source || needsPDFSourceFallback) {
+            PDFReadingView(session: session, pageInsets: pageInsets, selectionDismissalID: selectionDismissalID, onSelection: { quote in
+                // PDFView can synchronously notify while its native selection is being cleared.
+                if quote != nil || session.selection != nil { session.selection = quote }
+                if quote != nil { speech.userNavigated() }
+            }, onWake: wake, onReadingScroll: readingDidScroll, onPageChange: { pagePosition = $0 }, onVisiblePage: receiveVisiblePage, speechHighlight: speech.highlight, followsSpeech: speech.following && !speech.readerIsInteracting,
+                onReadingPosition: { speech.updateVisible($0) }, onTouchActivity: readingTouchChanged,
+                isReadingSurfaceActive: surfaceMode == .reading && panel == nil && !fullScreenAI && scenePhase == .active,
+                isSurfaceVisible: surfaceMode == .reading,
+                pageRequest: autoPage.pageRequest, onPageRequestResult: autoPage.receive, onBookmark: addBookmark, onBookmarkPull: receiveBookmarkPull, onBookmarkViewport: { bookmarkRanges = $0 })
+            .safeAreaInset(edge: .bottom, spacing: 0) {
+                if needsPDFSourceFallback {
+                    Text("此页没有可对照文字，先显示原页。")
+                        .font(.footnote).foregroundStyle(.secondary).frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(.horizontal, 24).padding(.vertical, 8).background(paper)
+                        .accessibilityIdentifier("reader-pdf-source-fallback")
+                }
+            }
+            // PDFKit's page controller scales into its complete bounds.
+            // Give it an unobscured page instead of covering source lines.
+            .padding(.top, session.state.preferences.navigationMode == .paged ? pageInsets.top : 0)
+            .padding(.bottom, session.state.preferences.navigationMode == .paged || needsPDFSourceFallback ? pageInsets.bottom : 0)
+        } else {
+            TextReadingView(session: session, pageInsets: pageInsets, selectionDismissalID: selectionDismissalID, onNote: { showNote($0) }, onSource: { present(.source($0)) }, onExplain: { showCompanion($0) }, onWake: wake, onReadingScroll: readingDidScroll,
+                onTranslate: { viewedTranslations.insert($0.anchor.passageID); present(.passageTranslation($0)) },
+                onShare: { present(.share($0)) },
+                onSelectionChange: { quote, active in session.selection = quote; hasNativeTextSelection = active; if active { speech.userNavigated() } },
+                onPageChange: { pagePosition = $0 }, onVisiblePage: receiveVisiblePage, speechHighlight: speech.highlight, followsSpeech: speech.following && !speech.readerIsInteracting,
+                onReadingPosition: { speech.updateVisible($0) }, onTouchActivity: readingTouchChanged,
+                isReadingSurfaceActive: surfaceMode == .reading && panel == nil && !fullScreenAI && scenePhase == .active,
+                isSurfaceVisible: surfaceMode == .reading, translatedPassageIDs: viewedTranslations,
+                pageRequest: autoPage.pageRequest, onPageRequestResult: autoPage.receive, onBookmark: addBookmark, onBookmarkPull: receiveBookmarkPull, onBookmarkViewport: { bookmarkRanges = $0 }, onBookmarkCapture: { addBookmark(capture: $0) })
         }
     }
     @ViewBuilder private func floatingProgress(showingBottom: Bool) -> some View {
@@ -303,41 +312,59 @@ struct ReaderScreen: View {
         }
     }
     private var readingRefreshKey: String {
-        let visible = scenePhase == .active && panel?.isCompanion != true
+        let visible = scenePhase == .active && surfaceMode == .reading && panel?.isCompanion != true && !fullScreenAI
         return "\(session.chapter.id):\(session.state.preferences.viewMode.rawValue):\(session.translationSettings):\(session.packageVerificationPending):\(visible)"
     }
     private var navigationReader: some View {
         NavigationStack {
-            presentedReader
-                .toolbar(.hidden, for: .navigationBar)
-                .navigationTitle("阅读")
-                .navigationDestination(isPresented: Binding(get: { panel?.id == "listening" }, set: { if !$0 && panel?.id == "listening" { panel = nil } })) {
-                    ReaderListeningPanel(session: session, speech: speech, quickAI: AnyView(quickAIControl), quickCapture: quickCapture)
-                        .preferredColorScheme(session.state.preferences.colorScheme(following: systemColorScheme))
-                        .toolbar { ToolbarItem(placement: .confirmationAction) {
-                            Button("继续读", systemImage: "book") { speech.pause(); panel = nil }.accessibilityIdentifier("reader-listening-return")
-                        } }
+            ZStack {
+                presentedReader
+                    .allowsHitTesting(surfaceMode == .reading && panel == nil)
+                    .accessibilityHidden(surfaceMode != .reading || panel?.id == "contents")
+                if hasOpenedListening {
+                    ReaderListeningPanel(session: session, speech: speech, quickAI: AnyView(quickAIControl), quickCapture: quickCapture,
+                        isActive: surfaceMode == .listening && panel == nil && !fullScreenAI,
+                        isPresented: surfaceMode == .listening, contentsTarget: listeningContentsTarget,
+                        onRead: returnToReading, onContents: { present(.contents) })
+                        .allowsHitTesting(surfaceMode == .listening && panel == nil)
+                        .accessibilityHidden(surfaceMode != .listening || panel?.id == "contents")
                 }
-
+            }
+            .background(paper.ignoresSafeArea())
+            .toolbar(.hidden, for: .navigationBar)
         }
-        .accessibilityHidden(panel?.id == "contents")
-        .allowsHitTesting(panel?.id != "contents")
+        .preferredColorScheme(session.state.preferences.colorScheme(following: systemColorScheme))
+        .statusBarHidden(true)
         .overlay {
             if panel?.id == "contents" {
                 ReaderContentsOverlay(session: session, onJump: { index, anchor in
                     reading.suspendForUserNavigation(); readingNavigationID = UUID()
-                    speech.userNavigated(); session.go(to: index, anchor: anchor); panel = nil
-                    session.setReadingVisible(scenePhase == .active && !speech.playing); session.recordReadingInteraction()
-                }, onClose: { panel = nil }, cloud: cloud, library: library)
+                    if surfaceMode == .listening {
+                        listeningContentsTarget = ReaderListeningContentsTarget(chapterIndex: index, anchor: anchor)
+                    } else {
+                        speech.userNavigated(); session.go(to: index, anchor: anchor)
+                    }
+                    closeContents()
+                    session.recordReadingInteraction()
+                }, onClose: closeContents, cloud: cloud, library: library)
             }
         }
+    }
+    private func returnToReading() {
+        speech.pause(); surfaceMode = .reading; panel = nil; chrome = .tools; clockID = UUID()
+        session.setReadingVisible(scenePhase == .active && !fullScreenAI)
+        reading.setForeground(scenePhase == .active && !fullScreenAI)
+    }
+    private func closeContents() {
+        panel = nil; chrome = .tools; clockID = UUID()
+        session.setReadingVisible(scenePhase == .active && surfaceMode == .reading && !speech.playing && !fullScreenAI)
     }
     private var trackedReader: some View {
         navigationReader
         .fullScreenCover(isPresented: $fullScreenAI, onDismiss: {
             chrome = .asleep
-            session.setReadingVisible(scenePhase == .active && panel == nil && !speech.playing)
-            reading.setForeground(scenePhase == .active && panel == nil)
+            session.setReadingVisible(scenePhase == .active && surfaceMode == .reading && panel == nil && !speech.playing)
+            reading.setForeground(scenePhase == .active && surfaceMode == .reading && panel == nil)
         }) {
             NavigationStack {
                 ReaderConversationPanel(session: session, tools: tools, cloud: cloud, selection: aiQuote, library: library,
@@ -349,7 +376,7 @@ struct ReaderScreen: View {
             }.preferredColorScheme(session.state.preferences.colorScheme(following: systemColorScheme))
                 .environment(\.readerContinueReading, { fullScreenAI = false })
         }
-        .modifier(ReaderTimeTracking(session: session, visible: scenePhase == .active && panel == nil && !fullScreenAI && !speech.playing))
+        .modifier(ReaderTimeTracking(session: session, visible: scenePhase == .active && surfaceMode == .reading && panel == nil && !fullScreenAI && !speech.playing))
         .safeAreaInset(edge: .top, spacing: 0) { remotePositionNotice }
         .onChange(of: autoPageConditions, initial: true) { _, conditions in autoPage.update(conditions, navigationID: session.navigationID) }
         .onChange(of: session.navigationID) { _, id in
@@ -381,7 +408,7 @@ struct ReaderScreen: View {
         progressTrackedReader
         .onReceive(NotificationCenter.default.publisher(for: UIAccessibility.voiceOverStatusDidChangeNotification)) { _ in voiceOverRunning = UIAccessibility.isVoiceOverRunning }
         .onChange(of: quickCapture.phase) { _, phase in
-            if phase == .idle, scenePhase == .active { resumeAfterQuickCapture() }
+            if phase == .idle, scenePhase == .active { resumeAfterQuickCapture(); clockID = UUID() }
         }
         .onChange(of: focusedControl) { _, _ in clockID = UUID() }
         .onChange(of: session.selection?.id) { _, _ in clockID = UUID() }
@@ -416,13 +443,13 @@ struct ReaderScreen: View {
             if let row { session.updateTranslations(ReaderReadingContent.translations([row], targetLanguage: session.translationSettings.targetLanguage)) }
         }
         .onChange(of: panel?.isCompanion) { _, active in
-            reading.setForeground(scenePhase == .active && active != true)
+            reading.setForeground(scenePhase == .active && surfaceMode == .reading && active != true && !fullScreenAI)
             if active == true { speech.pause() }
         }
         .sensoryFeedback(.selection, trigger: panel?.id)
         .task(id: clockID) { await settleChrome() }
         .onChange(of: scenePhase) { _, phase in
-            reading.setForeground(phase == .active && panel?.isCompanion != true)
+            reading.setForeground(phase == .active && surfaceMode == .reading && panel?.isCompanion != true && !fullScreenAI)
             if phase != .active { quickCapture.finish(send: false); recordingResumeRevision = nil }
             else { Task { await tools.reconcileQuickQuestion(cloud: cloud) } }
             if phase != .active { readerIsTouching = false; speech.readerIsInteracting = false; speech.applicationDidBackground(); session.save(); chrome = .asleep }
@@ -508,10 +535,10 @@ struct ReaderScreen: View {
         }
     }
     private func settleChrome() async {
-        guard chrome != .asleep else { return }
+        guard chrome != .asleep, surfaceMode == .reading else { return }
         do { try await Task.sleep(for: .seconds(6)) } catch { return }
         guard !Task.isCancelled, !returningToLibrary, !bottomBarFocused, focusedControl == nil, panel == nil,
-              session.selection == nil, !hasNativeTextSelection, !UIAccessibility.isVoiceOverRunning else { return }
+              session.selection == nil, !hasNativeTextSelection, quickCapture.canBegin, !UIAccessibility.isVoiceOverRunning else { return }
         sleepChrome()
     }
     private func configureReading() {
@@ -519,7 +546,7 @@ struct ReaderScreen: View {
         speech.speed = session.state.preferences.speechSpeed
         autoPage.setInterval(session.state.preferences.autoPageInterval)
         tools.configure(library: library, localBookID: session.book.id)
-        reading.setForeground(scenePhase == .active)
+        reading.setForeground(scenePhase == .active && surfaceMode == .reading && !fullScreenAI)
         reading.requestFollowingPreparation = { present(.pageTranslation) }
         let reading = reading, session = session, cloud = cloud, library = library
         reading.requestPreparation = { [weak reading] in
@@ -533,7 +560,7 @@ struct ReaderScreen: View {
         reading.confirmPreparation = { [weak reading] run in reading?.confirm(run, session: session, cloud: cloud, library: library) }
     }
     private func refreshReadingContent() async {
-        guard !session.packageVerificationPending, session.packageVerificationError == nil, scenePhase == .active, panel?.isCompanion != true else { return }
+        guard !session.packageVerificationPending, session.packageVerificationError == nil, scenePhase == .active, surfaceMode == .reading, !fullScreenAI, panel?.isCompanion != true else { return }
         await reading.refresh(session, cloud: cloud, library: library)
         guard !Task.isCancelled else { return }
         guard panel?.id != "page-translation", reading.offerFirstPassage, session.state.preferences.viewMode != .source else { return }
@@ -730,7 +757,14 @@ struct ReaderScreen: View {
         withAnimation(reduceMotion ? nil : .easeOut(duration: 0.16)) { chrome = .tools }
         clockID = UUID()
     }
-    private func present(_ value: ReaderPanel) { conversationAutoLoad = true; session.setReadingVisible(false); autoPage.pause(.panel); panel = value; chrome = .asleep }
+    private func present(_ value: ReaderPanel) {
+        conversationAutoLoad = true; session.setReadingVisible(false); autoPage.pause(.panel)
+        if value.id == "listening" {
+            session.clearTransientSelection(); hasNativeTextSelection = false; selectionDismissalID = UUID()
+            hasOpenedListening = true; surfaceMode = .listening; panel = nil; chrome = .tools
+            reading.setForeground(false)
+        } else { panel = value; chrome = value.id == "contents" ? .tools : .asleep }
+    }
     private func presentPreparedGuideConversation() -> Bool {
         guard panel?.id == "reading-guide", scenePhase == .active, session.packageVerificationError == nil else { return false }
         present(.conversation); conversationAutoLoad = false; return true
@@ -739,7 +773,7 @@ struct ReaderScreen: View {
         ReaderAutoPageConditions(isForeground: scenePhase == .active,
             isPaged: session.state.preferences.navigationMode == .paged,
             hasSelection: session.selection != nil || hasNativeTextSelection,
-            isTouching: readerIsTouching, hasPanel: panel != nil || bottomBarFocused || focusedControl != nil,
+            isTouching: readerIsTouching, hasPanel: panel != nil || surfaceMode == .listening || bottomBarFocused || focusedControl != nil,
             isListening: speech.playing, voiceOverEnabled: voiceOverRunning,
             hasAlert: session.message != nil || session.saveMessage != nil || reading.proposed != nil || tools.consent != nil || positionConflict)
     }
@@ -799,7 +833,7 @@ struct ReaderScreen: View {
             tools.error = cloud == nil ? "请先登录自己的书房，再使用语音提问。" : "此页暂时无法录音提问，点开 AI 查看已有消息。"
             return
         }
-        autoPage.pause(.interaction); chrome = .asleep
+        autoPage.pause(.interaction); clockID = UUID()
         let cloud = cloud, library = library, tools = tools
         quickCapture.start(beforeStart: { recordingResumeRevision = speech.suspendForQuickQuestion() }) { recording, submit in
             resumeAfterQuickCapture()
@@ -812,7 +846,7 @@ struct ReaderScreen: View {
     }
     private var quickQuote: SelectedQuote? {
         if let selected = session.selection { return selected }
-        if panel?.id == "listening", let location = speech.highlight?.location,
+        if surfaceMode == .listening, let location = speech.highlight?.location,
            let chapter = session.book.chapters.first(where: { $0.id == location.chapterID }),
            let passage = chapter.passages.first(where: { $0.id == location.passageID }) {
             // Quoting the author paragraph uses a truthful source anchor even

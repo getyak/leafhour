@@ -31,6 +31,7 @@ struct PDFReadingView: UIViewRepresentable {
     var onReadingPosition: ((ReaderSpeechLocation) -> Void)? = nil
     var onTouchActivity: ((Bool) -> Void)? = nil
     var isReadingSurfaceActive = true
+    var isSurfaceVisible = true
     var pageRequest: ReaderPageRequest? = nil
     var onPageRequestResult: ((UUID, ReaderPageRequestOutcome) -> Void)? = nil
     var onBookmark: ((ReadingAnchor) -> Void)? = nil
@@ -66,9 +67,15 @@ struct PDFReadingView: UIViewRepresentable {
     func updateUIView(_ view: PDFView, context: Context) {
         let coordinator = context.coordinator
         guard !coordinator.isInvalidated else { return }
+        // Native PDF callbacks must see the new lifecycle state before UIKit
+        // hides the retained surface. Do not toggle PDFKit's gesture tree.
         coordinator.parent = self
         coordinator.bookmarkGesture?.configure(enabled: onBookmark != nil && isReadingSurfaceActive)
         if !isReadingSurfaceActive { coordinator.edgeTap?.cancelPending(); coordinator.cancelQueuedUserTurns() }
+        let hidden = !isSurfaceVisible
+        let hiddenFromAccessibility = hidden || !isReadingSurfaceActive
+        if view.isHidden != hidden { view.isHidden = hidden }
+        if view.accessibilityElementsHidden != hiddenFromAccessibility { view.accessibilityElementsHidden = hiddenFromAccessibility }
         coordinator.scheduleUpdate(view)
     }
     static func dismantleUIView(_ view: PDFView, coordinator: Coordinator) {

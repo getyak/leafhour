@@ -1,5 +1,7 @@
 import Foundation
 
+enum ReaderSurfaceMode: Equatable { case reading, listening }
+
 /// Navigation may sleep automatically. Playback only folds by explicit choice.
 struct ReaderListeningControls: Equatable {
     private(set) var navigationVisible = true
