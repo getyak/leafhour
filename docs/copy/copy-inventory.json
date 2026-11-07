@@ -1046,7 +1046,7 @@
       },
       {
         "file": "app/ui-catalogs/en.mjs",
-        "sha256": "028d760a9f5c9db67d4647856aab1acc3c78d662428abd3888ed96d663523c17"
+        "sha256": "0f863814c4693f3da9c7bd4cbd7960c7090cced435f03bcd702d5faf910d03ea"
       },
       {
         "file": "app/ui-catalogs/ja.mjs",
@@ -1054,11 +1054,11 @@
       },
       {
         "file": "app/ui-catalogs/zh-Hans.mjs",
-        "sha256": "d810032f0dcb7672261ea6acc1b810a3af7069f01e1799f230cb407aca217bb5"
+        "sha256": "bee3d79be4e65373cab2c94445f5416b15b75f902b85a89601483b42eb7d0a49"
       },
       {
         "file": "app/ui-catalogs/zh-Hant.mjs",
-        "sha256": "0411d846120bbaa2269c982fe0f0cd0170c201b9d5c8c32d7a05d2cea6c0c8c9"
+        "sha256": "960fa085fd3c69344206615adc090f169e7650a8bbc57e3981dddf256c94471f"
       },
       {
         "file": "app/ui-first-paint-bootstrap.mjs",
@@ -1569,7 +1569,7 @@
         "sha256": "531202f1814314b6c76bfef38b2ea66636425b1ca9b445db349e70ebb8bcd00e"
       }
     ],
-    "inputDigest": "ba4b1f6e9113203aa4b0c8ac16af7683f978cf3e20c4bc8647753d283f11769f"
+    "inputDigest": "d3945133bc527b8b0702fdf5d5c7259d64aadb7a3c17bd68ece6a2915c953010"
   },
   "locales": [
     "en",
@@ -142801,22 +142801,22 @@
           "file": "app/ui-catalogs/en.mjs",
           "line": 2521,
           "column": 3,
-          "value": "Loading the latest version…",
-          "sha256": "69b1810710e35111af8c09aa8b555412fbafd1ad23d9c404f8fa7c06050622c0"
+          "value": "Loading the latest settings…",
+          "sha256": "539cc307383a3e056cb347fa9caf1d89f4bf63ffb7351be4d37f4747d6674f6c"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
           "line": 2520,
           "column": 3,
-          "value": "正在读取最新版本…",
-          "sha256": "d8242ccd04a4264b851f3010340bc7caa05db27eb8434ebe46291692ee884342"
+          "value": "正在读取最新设置…",
+          "sha256": "c8bb6c4fa57e4a0a0b20735d85760ad130e35f70dc3e828b51242af73921545b"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
           "line": 2520,
           "column": 3,
-          "value": "正在讀取最新版本…",
-          "sha256": "c2684ec74ff0288423d5656ea6689957237a81cd90ba769fb125e251f0c6a7ce"
+          "value": "正在讀取最新設定…",
+          "sha256": "35006f7400b8d263a1fdf932782a358c087ad6f3e52889b642bb5f6005c232b1"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",

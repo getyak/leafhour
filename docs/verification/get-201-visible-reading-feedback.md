@@ -50,3 +50,7 @@
 独审完成；集中push关联GET-201的新PR，跟进当前head适用CI并交由统筹正常合并。父issue仍In Progress/need human；其它控件完整状态、完整144张矩阵、pixel diff、token/CJK原量表、参考并排、Safari/Firefox、VoiceOver、两位真人测试及真实业务/线上验收均未由这10项补齐。原要求逐项ledger继续保留，不缩成“仅缺真人”。
 
 不新增真实账号、模型调用、原始书籍、完整导出恢复、授权或生产操作。PR335合并后的主线CI通过不等于上线：其Production来源核对失败、Vercel为Account is blocked；iOS流程Apple/Archive两job实际跳过，无新IPA。不能用本批结果补齐Safari/Firefox、真人与原GET-201全部验收。
+
+## 第一轮当前head CI及文案修复
+
+PR337的328f653 / CI42315496442在真实copy-lint失败：新提示中简/繁体“版本”各触发一项DevSpeak T1。其余当时未完成/跳过的步骤不算通过。保留原日志，不重复运行失败提交。将新提示改为“正在读取最新设置…”/“正在讀取最新設定…”，英文相应为“Loading the latest settings…”，日文原本已是設定，未改。正常exporter再生成清单；lint规则、欠债和allowances未变。新head需独立CI和受影响浏览器复验；af7证据仍只归属af7，不能因产品逻辑相同而声称全部组件输入仍相等。

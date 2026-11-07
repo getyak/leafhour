@@ -2517,5 +2517,5 @@ export default Object.freeze({
   "reader.selection.explainPrompt": "請解釋這段選文。",
   "reader.selection.exactOriginal": "原文 · 所選句段",
   "reader.selection.wholeOriginal": "原文 · 對應整段",
-  "prefs.reloading": "正在讀取最新版本…",
+  "prefs.reloading": "正在讀取最新設定…",
 });
