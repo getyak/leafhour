@@ -1,3 +1,5 @@
+import {publicHomeDocument} from '../app/home-public-document.mjs';
+import {buildHomeAssets} from './build-home-assets.mjs';
 import { cp, mkdir, rm, writeFile, readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
@@ -42,6 +44,7 @@ export async function buildCommercePages({appDir,outputDir}){
 
 export async function buildVercel({outputDir=path.join(root,'dist'),uiTemplateDir=outputDir===path.join(root,'dist')?path.join(root,'.ui-entry'):outputDir+'.ui-entry'}={}){
 const appDir = path.join(root, 'app');
+await buildHomeAssets({root});
 
 await rm(outputDir, { recursive: true, force: true });
 await mkdir(outputDir, { recursive: true });
@@ -61,7 +64,7 @@ await rm(path.join(outputDir,'library.html'),{force:true});
 await rm(path.join(outputDir,'read.html'),{force:true});
 for (const locale of homeLocales) {
   const directory = locale.route === '/' ? 'en' : locale.route.slice(1);
-  const rendered = homeDocument(home, locale.code);
+  const rendered = publicHomeDocument(homeDocument(home, locale.code));
   await mkdir(path.join(outputDir, directory), { recursive: true });
   await writeFile(path.join(outputDir, directory, 'index.html'), rendered);
   // Static hosts may resolve either the flat file or the directory index.

@@ -14,7 +14,7 @@ test('self-hosted settings modules are served as exact public JavaScript assets'
   await new Promise(r=>server.listen(0,'127.0.0.1',r));
   t.after(async()=>{server.closeAllConnections();await new Promise(r=>server.close(r));await rm(dir,{recursive:true,force:true});});
   const base='http://127.0.0.1:'+server.address().port;
-  for(const file of ['settings-controls.mjs','settings-appearance.mjs']){
+  for(const file of ['settings-controls.mjs','settings-appearance.mjs','reader-touch-selection.mjs','reader-selection-original.mjs']){
     const response=await fetch(base+'/'+file);
     assert.equal(response.status,200,file+' must load without authentication');
     assert.match(response.headers.get('content-type'),/javascript/);

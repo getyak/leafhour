@@ -1,5 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import {placeFloatingToolbar} from '../app/toolbar-placement.mjs';
+test('touch tools prefer below the actual selection, leaving native copy controls above',()=>{
+ const result=placeFloatingToolbar({anchor:{top:250,bottom:280,left:20},fallbackAnchor:{top:200,bottom:600,left:20},toolbar:{width:260,height:50},viewport:{width:390,height:844},headerBottom:60,preferBelow:true});
+ assert.equal(result.placement,'below');assert.equal(result.top,290);
+});
 
 const placementModule=await import('../app/toolbar-placement.mjs').catch(()=>({}));
 

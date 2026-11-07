@@ -1,0 +1,9 @@
+# Product captures
+
+Web captures: 2026-11-06, local Leafhour from public getyak/leafhour main a5f6bfd0, 1440 × 900 Chrome viewport. Original and parallel reading show the real bundled Project Gutenberg Alice sample, including the checked-in Chinese sample translation. Cropped only at the outside right/bottom edges to exclude browser-extension UI and transient keyboard focus. No product UI, text, AI answers or translations were composited into these captures. WebP compression preserves the captured product appearance.
+
+The surrounding browser/phone frames and dimensional paper sculpture are presentation artwork, not additional application features. The interactive AI explanation is explicitly labelled as an authored response example, not an application screenshot or a live model output. No account data, private book, personal note or credential is included.
+
+Alice’s Adventures in Wonderland: Lewis Carroll, Project Gutenberg, public domain in the United States; source and scope remain in the product catalog. The Chinese sample is Leafhour's checked-in translation sample. These images demonstrate product UI rather than certify all device/release behavior.
+
+Native iOS captures: captured 2026-11-07 on a fresh iPhone 17 Pro simulator using the retained 2026-11-04 debug build org.leafhour.get385.testing. A full 12-chapter EPUB was assembled without generated text from the exact catalog/alice.txt source (SHA-256 01b38ea4c710a84bc18d0bd41271a5a1a92b94e97b2812f4dece97d4a694725e), imported through the native document picker, and opened in the actual native app. ios-reading.webp shows reading; ios-listening.webp shows the real native listening controls before playback. No login, private data or model request was used. Screens were WebP-compressed without compositing product UI. These retained-build captures do not assert that every current iOS feature has passed device acceptance.

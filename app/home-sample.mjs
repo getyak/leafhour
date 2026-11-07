@@ -1,4 +1,4 @@
-import {homeLocale} from './home-locale.mjs';
+import {homeLocale} from './home-locale-codec.mjs';
 
 export const sampleInterpretations=[
   {code:'zh-Hans',name:'简体中文',labels:{

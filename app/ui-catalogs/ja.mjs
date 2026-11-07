@@ -2510,5 +2510,12 @@ export default Object.freeze({
   "bookUpload.parsing": "章を整理しています · {completed} / {total}",
   "bookUpload.tasks": "本の取り込み",
   "bookUpload.saving": "章を保存しています…",
-  "chat.continue": "続きを聞く…"
+  "chat.continue": "続きを聞く…",
+  "reader.selection.explain": "この文を解説",
+  "reader.selection.original": "原文を見る",
+  "reader.selection.note": "メモを書く",
+  "reader.selection.explainPrompt": "この引用文を解説してください。",
+  "reader.selection.exactOriginal": "原文 · 選択した部分",
+  "reader.selection.wholeOriginal": "原文 · 対応する段落",
+  "prefs.reloading": "最新の設定を読み込んでいます…",
 });

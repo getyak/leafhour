@@ -1,0 +1,48 @@
+{
+  "url": "local built /zh-hans, gzip, no private APIs",
+  "lighthouseVersion": "13.0.1",
+  "fetchTime": "2026-11-06T16:24:51.300Z",
+  "scores": {
+    "performance": 100,
+    "accessibility": 100,
+    "best-practices": 100,
+    "seo": 100
+  },
+  "metrics": {
+    "first-contentful-paint": {
+      "value": 386.14475,
+      "display": "0.4\u00a0s"
+    },
+    "largest-contentful-paint": {
+      "value": 586.14475,
+      "display": "0.6\u00a0s"
+    },
+    "total-blocking-time": {
+      "value": 0,
+      "display": "0\u00a0ms"
+    },
+    "cumulative-layout-shift": {
+      "value": 0,
+      "display": "0"
+    }
+  },
+  "config": {
+    "formFactor": "desktop",
+    "throttlingMethod": "simulate",
+    "throttling": {
+      "rttMs": 40,
+      "throughputKbps": 10240,
+      "requestLatencyMs": 0,
+      "downloadThroughputKbps": 0,
+      "uploadThroughputKbps": 0,
+      "cpuSlowdownMultiplier": 1
+    },
+    "screenEmulation": {
+      "mobile": false,
+      "width": 1350,
+      "height": 940,
+      "deviceScaleFactor": 1,
+      "disabled": false
+    }
+  }
+}

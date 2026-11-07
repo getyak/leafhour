@@ -4,12 +4,12 @@ const base=process.env.READER_URL||'https://leafhour.com',expected=process.env.E
 const deadline=Date.now()+Number(process.env.RELEASE_WAIT_SECONDS||600)*1000;
 const requestTimeout=Number(process.env.SMOKE_REQUEST_TIMEOUT_MS||15000);
 if(!Number.isSafeInteger(requestTimeout)||requestTimeout<1000||requestTimeout>60000)throw Error('SMOKE_REQUEST_TIMEOUT_MS must be 1000–60000');
-async function get(route){const response=await fetch(new URL(route,base),{signal:AbortSignal.timeout(requestTimeout),headers:{'Cache-Control':'no-cache'}});if(!response.ok)throw Error(route+' returned '+response.status);return response;}
+async function get(route){const response=await fetch(new URL(route,base),{signal:AbortSignal.timeout(requestTimeout),headers:{'Cache-Control':'no-cache'}});if(!response.ok)throw Object.assign(Error(route+' returned '+response.status),{httpStatus:response.status});return response;}
 if(expected){
   if(!/^[a-f0-9]{40}$/.test(expected))throw Error('Expected a full source commit');
   while(true){
     await assertDeploymentNotRejected({repository:process.env.GITHUB_REPOSITORY,commit:expected,token:process.env.GH_STATUS_TOKEN});
-    try{const release=await(await get('/release.json?source='+expected)).json();if(release.sourceCommit===expected)break;}catch{}
+    try{const release=await(await get('/release.json?source='+expected)).json();if(release.sourceCommit===expected)break;}catch(error){if(error.httpStatus===402)throw Error('Hosting is blocked (HTTP 402); recover the provider before retrying.');}
     if(Date.now()>=deadline)throw Error('Production did not reach expected source '+expected);
     await new Promise(resolve=>setTimeout(resolve,15000));
   }

@@ -58,5 +58,5 @@ test('private library metadata is idempotently excluded from indexing and uses i
   assert.equal(portalDocument(library,'/library'),library);
 });
 test('the library does not download homepage-only motion, light and sample assets',async()=>{
- const source=await readFile(new URL('../app/home.html',import.meta.url),'utf8'),library=portalDocument(source,'/library');for(const name of ['home-motion','home-atmosphere','home-sample']){assert.doesNotMatch(library,new RegExp('/'+name+'\\.(?:mjs|css)'));assert.match(portalDocument(source,'/en'),new RegExp('/'+name+'\\.mjs'));}assert.match(library,/src="\/portal\.js"/);assert.match(library,/palette-bootstrap\.mjs/);assert.match(library,/reading-arrival\.mjs/);
+ const source=await readFile(new URL('../app/home.html',import.meta.url),'utf8'),library=portalDocument(source,'/library');for(const name of ['home-motion','home-atmosphere','home-sample']){assert.doesNotMatch(library,new RegExp('/'+name+'\\.(?:mjs|css)'));if(name==='home-sample')assert.match(portalDocument(source,'/en'),new RegExp('/'+name+'\\.mjs'));else assert.doesNotMatch(portalDocument(source,'/en'),new RegExp('/'+name+'\\.mjs'));}assert.match(library,/src="\/portal\.js"/);assert.match(library,/palette-bootstrap\.mjs/);assert.match(library,/reading-arrival\.mjs/);
 });

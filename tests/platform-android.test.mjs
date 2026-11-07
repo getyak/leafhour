@@ -620,16 +620,16 @@ function fontLayoutScenario({alwaysInvisible=false,cold=false}={}){
   return {receipt,calls,session:createEvidenceSession({cdp,out:'/synthetic-unused',receipt,root:'/synthetic-unused',origin:'http://127.0.0.1',failures:[]})};
 }
 
-async function nativeScrollModel({mode='delayed',padding=0,initialOffset=0,fixed=false,headerBackdrop=false,containingBlock={},fixedClip=false,alignment='nearest',targetRect=null,visualViewport=null,rootScrollHeight=3000}={}){
+async function nativeScrollModel({mode='delayed',padding=0,initialOffset=0,fixed=false,headerBackdrop=false,containingBlock={},fixedClip=false,alignment='nearest',targetRect=null,visualViewport=null,rootScrollHeight=3000,viewportHeight=722,pixelRatio=1}={}){
   let now=0,offset=initialOffset,innerOffset=350,nextId=0,requests=0,done=false,requestedAlignment;
   const frames=new Map(),timers=new Map(),listeners=new Map();
-  const root={parentElement:null,clientLeft:0,clientTop:0,clientWidth:393,clientHeight:722,scrollWidth:393,scrollHeight:rootScrollHeight,get scrollTop(){return offset;},scrollLeft:0};
+  const root={parentElement:null,clientLeft:0,clientTop:0,clientWidth:393,clientHeight:viewportHeight,scrollWidth:393,scrollHeight:rootScrollHeight,get scrollTop(){return offset;},scrollLeft:0};
   const header={parentElement:root,clientWidth:393,clientHeight:72,scrollWidth:393,scrollHeight:72};
   const inner={parentElement:fixedClip?header:root,clientLeft:0,clientTop:0,clientWidth:393,clientHeight:200,scrollWidth:393,scrollHeight:mode==='fixed-inner'?1400:800,get scrollTop(){return innerOffset;},scrollLeft:0,getBoundingClientRect:()=>({x:0,y:fixedClip?100:1000-offset})};
   const y=()=>mode==='visible-center'?600-offset:mode==='partial-quote'?637.25-offset:mode==='fixed-inner'?1100-innerOffset:mode==='header'?14:mode==='unchanged'?116:mode==='inside-animation'?now===0?138:116:mode==='nested'?1000-innerOffset-offset:mode==='layout-shift'&&now===0?116:padding?50+initialOffset-offset:1060-offset;
   const node={parentElement:fixedClip||mode==='nested'?inner:mode==='header'?header:root,getBoundingClientRect:()=>targetRect||({x:20,y:y(),width:350,height:mode==='visible-center'?80:mode==='partial-quote'?158.386:mode==='header'?44:['nested','fixed-inner'].includes(mode)?40:84}),scrollIntoView(options){requestedAlignment=options.block;requests++;assert.ok(listeners.has('scroll'),'observation must precede the only native scroll request');}};
   const document={querySelector:()=>node,scrollingElement:root,addEventListener:(name,fn)=>listeners.set(name,fn),removeEventListener:(name,fn)=>{assert.equal(listeners.get(name),fn);listeners.delete(name);}};
-  const sandbox={document,innerWidth:393,innerHeight:722,...(visualViewport?{visualViewport}:{}),scrollX:0,get scrollY(){return offset;},performance:{now:()=>now},getComputedStyle:element=>element===root?{scrollPaddingTop:String(padding),overflowY:'auto',...containingBlock}:element===header?{position:fixed?'fixed':'static',backdropFilter:headerBackdrop?'blur(16px)':'none'}:element===inner?{overflowY:'auto'}:{},requestAnimationFrame:fn=>{const id=++nextId;frames.set(id,fn);return id;},cancelAnimationFrame:id=>frames.delete(id),setTimeout:(fn,ms)=>{const id=++nextId;timers.set(id,{fn,at:now+ms});return id;},clearTimeout:id=>timers.delete(id)};
+  const sandbox={document,innerWidth:393,innerHeight:viewportHeight,devicePixelRatio:pixelRatio,...(visualViewport?{visualViewport}:{}),scrollX:0,get scrollY(){return offset;},performance:{now:()=>now},getComputedStyle:element=>element===root?{scrollPaddingTop:String(padding),overflowY:'auto',...containingBlock}:element===header?{position:fixed?'fixed':'static',backdropFilter:headerBackdrop?'blur(16px)':'none'}:element===inner?{overflowY:'auto'}:{},requestAnimationFrame:fn=>{const id=++nextId;frames.set(id,fn);return id;},cancelAnimationFrame:id=>frames.delete(id),setTimeout:(fn,ms)=>{const id=++nextId;timers.set(id,{fn,at:now+ms});return id;},clearTimeout:id=>timers.delete(id)};
   const result=vm.runInNewContext('('+observeNativeScroll.toString()+')("#actual-target",'+JSON.stringify(alignment)+')',sandbox);result.then(()=>{done=true;});
   const step=['inside-animation','slow-scroll'].includes(mode)?1100:16;
   for(now=step;now<=10000+step+16&&!done;now+=step){
@@ -1551,4 +1551,15 @@ test('evidence shutdown drains and detaches before browser shutdown and still di
     await session.close({beforeDisconnect:async()=>{assert.equal(session.background.size,0);assert.equal(handlers.size,0);assert.ok(receipt.observationClosedAt);order.push('browser shutdown');if(failing)throw Error('actual browser close failed');}});
     assert.ok(order.indexOf('Fetch.disable')<order.indexOf('browser shutdown'));assert.ok(order.indexOf('background drained')<order.indexOf('browser shutdown'));assert.ok(order.indexOf('browser shutdown')<order.indexOf('transport close'));assert.equal(failures.some(x=>/actual browser close failed/.test(x)),failing);await session.close({beforeDisconnect:()=>{throw Error('must not run twice');}});
   }
+});
+
+// Replays the unmodified Linux/Windows receipt from PR #332. The native root
+// was already at 2470px; centering requested 2469.5625px, which rounds to the
+// same device pixel at DPR 1. It must not invent an unfinished scroll.
+test('native center observation respects the actual device-pixel destination',async()=>{
+ const geometry={mode:'unchanged',alignment:'center',padding:90,initialOffset:2470,rootScrollHeight:5888,viewportHeight:900,targetRect:{x:109.015625,y:452.3125,width:505.09375,height:84.5}};
+ const samePixel=await nativeScrollModel({...geometry,pixelRatio:1});
+ assert.equal(samePixel.status,'unchanged');assert.equal(samePixel.started,false);assert.equal(samePixel.after.scrollY,2470);
+ const attainable=await nativeScrollModel({...geometry,pixelRatio:2});
+ assert.equal(attainable.status,'timeout','a physically distinct half-pixel target must still wait for native movement');
 });

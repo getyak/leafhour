@@ -130,7 +130,7 @@ dialog.library-settings-dialog:not([open]){display:none}
 .settings-locale{display:grid;gap:8px;min-width:0;margin:0;padding:0;border:0}
 .settings-locale .ui-locale-current{margin:0;font-size:13px;line-height:1.8;color:var(--muted)} /* the group title names the group; choices name themselves */
 .settings-locale .ui-locale-choices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;min-inline-size:0;margin:0;padding:0;border:0}
-.settings-locale .ui-locale-choice{display:flex;align-items:center;gap:9px;min-width:0;min-height:44px;padding:8px 10px;border:1px solid transparent;border-radius:5px;color:var(--muted);font-size:13px;line-height:1.6;cursor:pointer}
+.settings-locale .ui-locale-choice{position:relative;display:flex;align-items:center;gap:9px;min-width:0;min-height:44px;padding:8px 10px;border:1px solid transparent;border-radius:5px;color:var(--muted);font-size:13px;line-height:1.6;cursor:pointer}
 .settings-locale .ui-locale-choice:hover{background:var(--surface-soft);color:var(--ink)}
 .settings-locale .ui-locale-choice:has(input:checked){border-color:var(--line-control);background:var(--surface);color:var(--ink)}
 .settings-locale .ui-locale-choice:focus-within{outline:var(--focus-ring-width) solid var(--focus-ring);outline-offset:var(--focus-ring-offset)}
@@ -154,3 +154,11 @@ dialog.library-settings-dialog:not([open]){display:none}
 .reading-workspace [hidden]{display:none!important}
 .workspace-load-error{max-width:600px;margin:0 auto;padding:32px 16px;text-align:center;font:14px/1.8 var(--interface,system-ui,sans-serif);color:var(--ink)}
 .workspace-load-error :is(button,a){display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:8px 16px;color:var(--accent);background:transparent;border:0;font:inherit;text-decoration:underline;text-underline-offset:4px;cursor:pointer}
+
+/* Reading save feedback stays within the independently scrolling content. */
+.settings-save-feedback{position:sticky;top:0;z-index:2;display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;padding:10px 0;background:var(--surface-raised);border-bottom:1px solid var(--line-hairline);opacity:1;transition:opacity 160ms ease}
+.settings-save-feedback .settings-status{flex:1 1 220px;min-width:0;margin:0}
+.settings-save-feedback .profile-save,.settings-save-feedback .habits-recover{flex:0 0 auto;width:auto;min-height:44px;margin:0}
+.settings-save-feedback[data-phase=dismissing]{opacity:0;pointer-events:none}
+@media(prefers-reduced-motion:reduce){.settings-save-feedback{transition:none}}
+.reading-preferences-form :is(input,select,button,[role=combobox]){scroll-margin-block:8px}

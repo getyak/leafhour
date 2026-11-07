@@ -61,3 +61,7 @@ body[data-annotations-visible=false] .reader-highlight{cursor:inherit}
 .paragraph-tools[data-excerpt=true] #show-comment{display:none}
 
 @media(max-width:767px){.book-page,body[data-paginated=true] .book-page{width:calc(100% - 64px)}.reader-annotation-controls{margin-inline:16px}.reading-tools-panel .reader-annotation-controls{margin-inline:0}}
+
+.paragraph-tools[data-touch=true]>:not(.touch-actions){display:none!important}
+.touch-actions:not([hidden]){display:flex}
+.touch-actions button{flex:1;font-size:12px}

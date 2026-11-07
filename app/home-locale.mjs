@@ -1,3 +1,4 @@
+import {experienceStrings} from './home-experience-copy.mjs';
 import {publicNavigation} from './public-navigation.mjs';
 import {withUiParam} from './ui-locale-codec.mjs';
 // Both public homepages use home.html. These are authored presentation strings,
@@ -6,6 +7,7 @@ import {withUiParam} from './ui-locale-codec.mjs';
 // other public languages next to it, so one source document serves all locales:
 // [source, English, Traditional Chinese, Japanese].
 const strings=[
+  ...experienceStrings,
   ["书架排序", "Sort books", "書架排序", "本の並び順"],
   ["最近阅读与添加", "Recently read or added", "最近閱讀與加入", "最近読んだ本・追加した本"],
   ["最近添加", "Recently added", "最近加入", "最近追加した本"],
@@ -223,7 +225,6 @@ const strings=[
   ['全部形态','All formats','全部形態','すべての形式'],
   ['原版','Original','原版','原文'],
   ['有译本','Translation available','有譯本','訳文あり'],
-  ['双语对照','Bilingual','雙語對照','対訳'],
   ['有译本也可能只有部分段落，缺译处保留原文。','Translations may cover only some passages. Untranslated passages keep the original.','有譯本也可能只有部分段落，缺譯處保留原文。','訳文があるのは一部の段落だけの場合もあります。未翻訳の箇所には原文を表示します。'],
   ['完成','Done','完成','完了'],
   ['重新打开书房','Reopen the reading room','重新打開書房','書斎を開き直す'],
@@ -317,13 +318,7 @@ const build=rows=>{
 const messages=build(strings),authMessages=build(authErrorRows);
 const escaped=value=>value.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
 const pattern=new RegExp([...strings].map(row=>row[0]).filter(Boolean).sort((a,b)=>b.length-a.length).map(escaped).join('|'),'g');
-export const homeLocale=doc=>{
-  const lang=doc?.documentElement?.lang||'';
-  if(lang.startsWith('en'))return 'en';
-  if(lang.startsWith('ja'))return 'ja';
-  if(/^zh-(?:hant|tw|hk|mo)/i.test(lang))return 'zh-Hant';
-  return 'zh-Hans';
-};
+export {homeLocale} from './home-locale-codec.mjs';
 export function homeText(value,locale){
   if(typeof value!=='string')return value;
   const map=messages[locale];

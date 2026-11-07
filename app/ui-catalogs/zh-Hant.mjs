@@ -2510,5 +2510,12 @@ export default Object.freeze({
   "bookUpload.parsing": "正在整理章節 · {completed} / {total}",
   "bookUpload.tasks": "匯入任務",
   "bookUpload.saving": "正在儲存章節…",
-  "chat.continue": "繼續問…"
+  "chat.continue": "繼續問…",
+  "reader.selection.explain": "解釋這句",
+  "reader.selection.original": "看原文",
+  "reader.selection.note": "寫筆記",
+  "reader.selection.explainPrompt": "請解釋這段選文。",
+  "reader.selection.exactOriginal": "原文 · 所選句段",
+  "reader.selection.wholeOriginal": "原文 · 對應整段",
+  "prefs.reloading": "正在讀取最新設定…",
 });

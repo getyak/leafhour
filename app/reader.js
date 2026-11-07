@@ -35,6 +35,8 @@ import {createPersonalRecordRenderer} from './personal-record-editor.mjs';
 import {personalRecordRevision} from './personal-records.mjs';
 import {activeHighlights,highlightKey} from './highlights.mjs';
 import {mountReaderHighlights,textRange} from './reader-highlights.mjs';
+import {mountReaderTouchSelection} from './reader-touch-selection.mjs';
+import {mountReaderSelectionOriginal} from './reader-selection-original.mjs';
 import {getUiLinkLocale,t,uiReady,bindUi,onUiLocaleChange,uiHref,getUiLocaleState,setUiLocale,retryUiLocale,onUiLocaleStateChange,createUiLabels} from './ui-locale.mjs';
 import {mountNativeUiLocaleControl} from './ui-locale-controls.mjs';
 await prepareReaderStyles(document);
@@ -305,7 +307,7 @@ function commitChapter(id,target=null){
 function dismissTools({preserveSelection=false}={}){
   clearTimeout(excerptTimer);excerptTimer=undefined;
   highlights.updateTools(null);
-  $('paragraph-tools').hidden=true;$('paragraph-tools').dataset.excerpt='false';$('show-share').hidden=true;$('paragraph-more').hidden=true;$('more-actions').setAttribute('aria-expanded','false');
+  $('paragraph-tools').hidden=true;$('paragraph-tools').dataset.excerpt='false';$('paragraph-tools').dataset.touch='false';$('touch-selection-actions').hidden=true;$('show-share').hidden=true;$('paragraph-more').hidden=true;$('more-actions').setAttribute('aria-expanded','false');
   if(!preserveSelection){clearPanelTextHighlight();selectedExcerpt=null;selectionKind='passage';for(const node of $('chapter-text').querySelectorAll('.is-selected,.is-panel-anchor'))node.classList.remove('is-selected','is-panel-anchor');dispatchReaderEvent('reader:selection-end');}
 }
 function selectedRangeRect(){
@@ -324,7 +326,7 @@ function positionTools(){
   const nodeRect=(pagination.active&&pagination.visibleRect(node))||node.getBoundingClientRect();tools.hidden=false;tools.inert=false;tools.style.visibility='hidden';tools.style.opacity='0';tools.style.maxWidth=Math.min(nodeRect.width,innerWidth-24)+'px';
   const rangeRect=tools.dataset.excerpt==='true'?selectedRangeRect():null,anchorRect=rangeRect||nodeRect;
   const header=$('reading-header').getBoundingClientRect().bottom;
-  const placement=placeFloatingToolbar({anchor:anchorRect,fallbackAnchor:rangeRect?nodeRect:anchorRect,toolbar:{width:tools.offsetWidth,height:tools.offsetHeight},viewport:{width:innerWidth,height:innerHeight},headerBottom:header,gap:rangeRect?10:24});
+  const placement=placeFloatingToolbar({anchor:anchorRect,fallbackAnchor:rangeRect?nodeRect:anchorRect,toolbar:{width:tools.offsetWidth,height:tools.offsetHeight},viewport:{width:innerWidth,height:innerHeight},headerBottom:header,gap:rangeRect?10:24,preferBelow:tools.dataset.touch==='true'});
   tools.style.left=placement.left+'px';tools.style.top=placement.top+'px';tools.dataset.placement=placement.placement;tools.inert=!placement.visible;tools.setAttribute('aria-hidden',String(!placement.visible));tools.style.visibility=placement.visible?'visible':'hidden';tools.style.opacity=placement.visible?'1':'0';
   const menu=$('paragraph-more');if(!menu.hidden){menu.style.maxHeight='';const at=placeFloatingMenu({toolbar:tools.getBoundingClientRect(),menu:{width:menu.offsetWidth,height:menu.scrollHeight+2},viewport:{width:innerWidth,height:innerHeight},headerBottom:header});Object.assign(menu.style,{position:'absolute',left:(at.left-tools.getBoundingClientRect().left)+'px',top:(at.top-tools.getBoundingClientRect().top)+'px',right:'auto',bottom:'auto',maxHeight:at.maxHeight+'px'});}
 }
@@ -542,6 +544,7 @@ listen($('continuous-reading'),'change',event=>{
 });
 // Track input rather than viewport width so hybrid devices retain mouse use.
 // Older Safari supplies a MouseEvent for the compatibility click after touch.
+const touchSelection=mountReaderTouchSelection({document,root:$('chapter-text'),listen,rangeForOffsets:(prose,start,end)=>textRange(document,prose,start,end)});
 let passagePointerType='';
 listen(document,'pointerdown',event=>{passagePointerType=event.pointerType||'';},{capture:true,passive:true});
 listen(document,'touchstart',()=>{passagePointerType='touch';},{capture:true,passive:true});
@@ -561,7 +564,7 @@ listen(document,'click',e=>{
   dismissTools();closePanel();
 });
 function captureExcerpt(y){
-  try{const excerpt=captureDOMSelection(getSelection(),paragraphMap,book);if(!excerpt){if(getSelection()?.toString().trim()){selectedExcerpt=null;dismissTools();}return;}if(selectionKind==='excerpt'&&!$('paragraph-tools').hidden&&selectedExcerpt&&highlightKey(selectedExcerpt)===highlightKey(excerpt))return;const first=excerpt.parts[0];choosePassage(first.passageId,y,excerpt.parts.map(part=>part.text).join('\n\n'),first.language);selectedExcerpt=excerpt;selectionKind='excerpt';for(const part of excerpt.parts)document.getElementById(part.passageId)?.classList.add('is-selected');$('show-share').hidden=false;$('paragraph-tools').dataset.excerpt='true';highlights.updateTools(excerpt);positionTools();}
+  try{const input=touchSelection.capture();if(!input.accept)return;const excerpt=captureDOMSelection(getSelection(),paragraphMap,book);if(!excerpt){if(getSelection()?.toString().trim()){selectedExcerpt=null;dismissTools();}return;}if(selectionKind==='excerpt'&&!$('paragraph-tools').hidden&&selectedExcerpt&&highlightKey(selectedExcerpt)===highlightKey(excerpt))return;const first=excerpt.parts[0];choosePassage(first.passageId,y,excerpt.parts.map(part=>part.text).join('\n\n'),first.language);selectedExcerpt=excerpt;selectionKind='excerpt';for(const part of excerpt.parts)document.getElementById(part.passageId)?.classList.add('is-selected');$('show-share').hidden=false;$('paragraph-tools').dataset.excerpt='true';$('paragraph-tools').dataset.touch=String(input.touch);$('touch-selection-actions').hidden=!input.touch;highlights.updateTools(excerpt);positionTools();}
   catch(error){selectedExcerpt=null;dismissTools();announceUi(READER_UI+'selectAgain');}
 }
 // Native long press/handle changes report selectionchange. Touch release can
@@ -610,6 +613,10 @@ listen($('settings-chapters'),'click',()=>{$('settings-dialog').close();openCont
 listen(matchMedia('(prefers-color-scheme:dark)'),'change',()=>applyAppearance());
 listen($('show-original'),'click',()=>{if(!selectedId)return;const a=anchor(),p=paragraphMap.get(selectedId),v=passageView(p);overrides[selectedId]={...overrides[selectedId],mode:v.mode==='en'?'zh':'en'};fillPassage($('chapter-text').querySelector('[data-id="'+selectedId+'"]'),p);if(!$('note-panel').hidden)renderPanel();restoreAnchor(a);label($('show-original'),v.mode==='en'?'lo':READER_UI+'translation');positionTools();});
 listen($('quote-to-ai'),'click',()=>readerConversation?.quoteSelection?.());
+const selectionOriginal=mountReaderSelectionOriginal({document,dialog:$('selection-original'),content:$('selection-original-content'),listen,write:label,getBook:()=>book,getExcerpt:()=>selectedExcerpt,isVisible:snapshot=>window.marginaliaReader?.isQuoteVisible(snapshot),onOpen:()=>dismissTools({preserveSelection:true})});
+listen($('selection-explain'),'click',()=>readerConversation?.quoteSelection?.({draft:t('reader.selection.explainPrompt')}));
+listen($('selection-view-original'),'click',()=>{try{selectionOriginal.open();}catch{announceUi(READER_UI+'selectAgain');}});
+listen($('selection-note'),'click',()=>openPanel('comment'));
 listen($('show-annotations'),'click',()=>openPanel('annotations'));listen($('show-comment'),'click',()=>openPanel('comment'));listen($('show-question'),'click',()=>openPanel('question'));
 listen($('more-actions'),'click',()=>{$('paragraph-more').hidden=!$('paragraph-more').hidden;$('more-actions').setAttribute('aria-expanded',String(!$('paragraph-more').hidden));positionTools();});
 for(const b of document.querySelectorAll('[data-passage-variant]'))listen(b,'click',()=>{if(!selectedId)return;overrides[selectedId]={mode:'zh',variant:b.dataset.passageVariant};const a=anchor();fillPassage($('chapter-text').querySelector('[data-id="'+selectedId+'"]'),paragraphMap.get(selectedId));if(!$('note-panel').hidden)renderPanel();restoreAnchor(a);dismissTools();});
@@ -676,7 +683,7 @@ boot().then(async()=>{
 listen(document,'reader:record-saved',e=>{const {type,record}=e.detail||{},field=type==='comment'?'comments':type==='question'?'questions':null;if(!field||!record||record.origin!=='user'||!paragraphMap.has(record.passageId)||record.bookId!==book?.bookId||record.contentVersion!==book?.contentVersion)return;if(!records[field].some(r=>r.id===record.id))records[field].push(record);if(!$('note-panel').hidden)renderPanel();dispatchReaderEvent('reader:records-updated');});
 listen(document,'reader:milestone-saved',e=>{const record=e.detail?.record;if(!record||record.origin!=='user'||record.bookId!==book?.bookId||record.contentVersion!==book?.contentVersion)return;records.readingMilestones??=[];if(!records.readingMilestones.some(m=>m.id===record.id))records.readingMilestones.push(record);dispatchReaderEvent('reader:records-updated');});
 
-function disposeReader(){if(readerDisposed)return;readerDisposed=true;readerObservability.dispose();ownerSubscribers.clear();for(const off of listenerDisposers)off();listenerDisposers.length=0;toolsResizeObserver.disconnect();readerEpoch++;loadGeneration++;clearTimeout(persistTimer);clearTimeout(excerptTimer);clearTimeout(flowIdle);offLocale();unbindShell();localeControls?.unmount();ownedLabels.clear();ownedLoginLinks.clear();for(const owner of [arrival,accountSurface,contents,chapterEntry,bookInfo,bookActions,readerDock,readerConversation,personalRecordsUI,highlights,settingsUI,settingsDefaults,pagination,immersion,readerTools]){if(owner?.unmount)owner.unmount();else owner?.dispose?.();}}
+function disposeReader(){if(readerDisposed)return;readerDisposed=true;readerObservability.dispose();ownerSubscribers.clear();for(const off of listenerDisposers)off();listenerDisposers.length=0;toolsResizeObserver.disconnect();readerEpoch++;loadGeneration++;clearTimeout(persistTimer);clearTimeout(excerptTimer);clearTimeout(flowIdle);offLocale();unbindShell();localeControls?.unmount();ownedLabels.clear();ownedLoginLinks.clear();for(const owner of [selectionOriginal,arrival,accountSurface,contents,chapterEntry,bookInfo,bookActions,readerDock,readerConversation,personalRecordsUI,highlights,settingsUI,settingsDefaults,pagination,immersion,readerTools]){if(owner?.unmount)owner.unmount();else owner?.dispose?.();}}
 listen(window,'pagehide',event=>{if(!event.persisted)disposeReader();});
 listen(document,'reader:session-changed',()=>{
   try{for(const subscriber of [...ownerSubscribers]){if(!ownerSubscribers.has(subscriber))continue;try{subscriber();}catch(error){globalThis.reportError?.(error);}}}
