@@ -575,6 +575,7 @@ export default Object.freeze({
   "nav.resume": "繼續閱讀",
   "nav.search": "搜尋與指令",
   "nav.agent": "Agent 接入",
+  "nav.beta": "加入內測",
   "nav.pricing": "價格",
   "nav.method": "閱讀的方法",
   "nav.ownership": "自己的書房",

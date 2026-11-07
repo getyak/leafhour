@@ -10,8 +10,22 @@ import {portalDocument} from '../server/portal-document.mjs';
 import {homeDocument,homeLocales} from '../app/home-locale.mjs';
 import {releaseCommit} from './release-policy.mjs';
 import {commercePage} from '../app/commerce-pages.mjs';
+import {betaPage} from '../app/beta-page.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+export async function buildBetaPages({outputDir}){
+  for(const [locale,slug]of [['en','en'],['zh-Hans','zh-hans'],['zh-Hant','zh-hant'],['ja','ja']]){
+    const html=betaPage({locale});
+    await mkdir(path.join(outputDir,slug,'beta'),{recursive:true});
+    await writeFile(path.join(outputDir,slug,'beta.html'),html);
+    await writeFile(path.join(outputDir,slug,'beta','index.html'),html);
+    if(locale==='en'){
+      await mkdir(path.join(outputDir,'beta'),{recursive:true});
+      await writeFile(path.join(outputDir,'beta.html'),html);
+      await writeFile(path.join(outputDir,'beta','index.html'),html);
+    }
+  }
+}
 export async function buildSupportPages({appDir,outputDir}){
   for(const directory of ['en','zh-hans','zh-hant','ja'])for(const kind of ['privacy','mcp']){
     const source=await readFile(path.join(appDir,directory,kind+'.html'),'utf8');
@@ -72,6 +86,7 @@ for (const locale of homeLocales) {
 }
 await buildSupportPages({appDir,outputDir});
 await buildCommercePages({appDir,outputDir});
+await buildBetaPages({outputDir});
 
 const evalsPath = path.join(outputDir, 'evals.html');
 await mkdir(path.join(outputDir, 'evals'), { recursive: true });

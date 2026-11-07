@@ -191,7 +191,7 @@ test('home footer keeps reader policies and real project destinations localized 
   assert.ok(footer,code+' footer exists on first paint');
   const [reader,open,appearance,...policies]=copy[code],prefix=code==='en'?'/en':route;
   const links=[...footer.matchAll(/<a\b[^>]*href="([^"]+)"/g)].map(match=>match[1]);
-  const required=[prefix,...['privacy','terms','refunds'].map(page=>prefix+'/'+page),'https://github.com/getyak/leafhour','https://github.com/getyak/leafhour#readme','https://github.com/getyak/leafhour/issues','https://github.com/getyak/leafhour/tree/main/apps/ios','mailto:support@leafhour.com','https://github.com/getyak/leafhour/blob/main/LICENSE','https://cubxxw.com/'];
+  const required=[prefix,...['privacy','terms','refunds'].map(page=>prefix+'/'+page),'https://github.com/getyak/leafhour','https://github.com/getyak/leafhour#readme','https://github.com/getyak/leafhour/issues',prefix+'/beta#ios','mailto:support@leafhour.com','https://github.com/getyak/leafhour/blob/main/LICENSE','https://cubxxw.com/'];
   for(const href of required)assert.ok(links.includes(href),code+' loses real footer destination '+href);
   for(const href of links.filter(href=>href.startsWith('/read?')||href.startsWith('/library?')))assert.equal(new URL(href.replaceAll('&amp;','&'),'https://leafhour.com').searchParams.get('ui'),code);
   assert.match(footer,/© 2026 Leafhour/);

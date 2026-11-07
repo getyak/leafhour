@@ -116,6 +116,7 @@ const strings=[
   ['开源的私人阅读书房。<br>把原文、译文和自己的思考留在一起。','An open-source reading room.<br>Keep books, translations and your own thoughts together.','開源的私人閱讀書房。<br>把原文、譯文和自己的思考留在一起。','オープンソースの読書室。<br>原文も訳文も、自分の考えも、一か所に。'],
   ['Web 书房','Web reading room','Web 書房','Web の書斎'],
   ['iOS 内测','iOS beta','iOS 內測','iOS ベータ版'],
+  ['加入内测','Join the beta','加入內測','ベータ版に参加'],
   ['使用文档','Documentation','使用說明','ドキュメント'],
   ['反馈问题','Report an issue','回報問題','問題を報告'],
   ['联系支持','Contact support','聯絡支援','サポートに連絡'],
@@ -366,7 +367,8 @@ export function homeDocument(source,locale){
     .replace('<link rel="canonical" href="https://leafhour.com/">','<link rel="canonical" href="'+meta.canonical+'">')
     .replace('<meta property="og:url" content="https://leafhour.com/">','<meta property="og:url" content="'+meta.canonical+'">')
     .replaceAll('class="brand" href="/"','class="brand" href="'+choiceRoute+'"')
-    .replace(/href="\/(mcp|privacy|terms|refunds)"/g,(_,page)=>'href="'+choiceRoute+'/'+page+'"')
+    .replace(/href="\/beta(#[^"]*)?"/g,(_,fragment)=>'href="'+choiceRoute+'/beta'+(fragment||'')+'"')
+    .replace(/href="\/(mcp|privacy|terms|refunds|beta)"/g,(_,page)=>'href="'+choiceRoute+'/'+page+'"')
     .replaceAll('href="'+choiceRoute+'" lang="'+meta.htmlLang+'"','aria-current="true" href="'+choiceRoute+'" lang="'+meta.htmlLang+'"')
     .replace(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g,(_,json)=>{
       const data=JSON.parse(json);

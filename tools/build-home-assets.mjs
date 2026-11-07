@@ -5,6 +5,7 @@ import {fileURLToPath,pathToFileURL} from 'node:url';
 import {homeDocument,homeLocales} from '../app/home-locale.mjs';
 import {publicHomeDocument} from '../app/home-public-document.mjs';
 import {sampleInterpretations} from '../app/home-sample.mjs';
+import {betaPage} from '../app/beta-page.mjs';
 import en from '../app/ui-catalogs/en.mjs';
 import hans from '../app/ui-catalogs/zh-Hans.mjs';
 import hant from '../app/ui-catalogs/zh-Hant.mjs';
@@ -18,7 +19,7 @@ const typography=(await readFile(path.join(app,'typography.css'),'utf8')).replac
 const html=await readFile(path.join(app,'home.html'),'utf8');
 const appearanceKeys=['shell.appearance.title','shell.appearance.system','shell.appearance.paper','shell.appearance.night','appearance.trigger'];
 const dynamicCopy=JSON.stringify(sampleInterpretations)+[en,hans,hant,ja].flatMap(catalog=>appearanceKeys.map(key=>catalog[key]||'')).join('');
-const publicCopy=homeLocales.map(locale=>publicHomeDocument(homeDocument(html,locale.code))).join('')+dynamicCopy;
+const publicCopy=homeLocales.map(locale=>publicHomeDocument(homeDocument(html,locale.code))+betaPage({locale:locale.code})).join('')+dynamicCopy;
 const points=[...new Set([...publicCopy].map(char=>char.codePointAt(0)).filter(point=>point>=0x2e80))].sort((a,b)=>a-b);
 const fullCjk=await readFile(path.join(app,'fonts/noto-serif-sc/font-faces.css'),'utf8');
 const cjk=[...fullCjk.matchAll(/@font-face\{[^}]+\}/g)].flatMap(([face])=>{
