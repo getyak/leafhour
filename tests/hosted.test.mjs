@@ -237,3 +237,18 @@ test('following translation retains cross-account concurrency, per-book exclusio
  }
  await assert.rejects(store.reserveTranslation(a,'book','day-capacity-exceeded'),{status:429});
 });
+
+test('hosted public excerpts reach the public catalogue without a legacy book binding',async()=>{
+ const {publicExcerpt}=await import('../server/public-excerpt.mjs');
+ const catalogue=new Map([['public-book',{bookId:'public-book',contentVersion:'edition-1',visibility:'public',sections:[{chapterId:'chapter-1',paragraphs:[{id:'paragraph-1',original:'An explicitly selected public original.'}]}]}]]);
+ const forwarded=[];
+ const handler=createHostedHandler({env,storeFactory:()=>({}),authFactory:()=>({}),portalFactory:async()=>({handle:async({url,send})=>{
+  forwarded.push(url.pathname);assert.equal(url.searchParams.has('path'),false);
+  const [, , ,bookId,passageId]=url.pathname.split('/');
+  send(200,publicExcerpt(catalogue,{bookId,passageId,contentVersion:url.searchParams.get('contentVersion')}));return true;
+ }})});
+ const invoke=async bookId=>{let body;const headers={},res={setHeader:(key,value)=>{headers[key]=value;},end:value=>{body=JSON.parse(value);}};
+  const path='public-excerpts/'+bookId+'/paragraph-1';await handler({url:'/api/service?'+new URLSearchParams({path,contentVersion:'edition-1'}),query:{path},method:'GET',headers:{}},res);return {status:res.statusCode,body,headers};};
+ const result=await invoke('public-book');assert.equal(result.status,200);assert.equal(result.body.passageId,'paragraph-1');assert.equal(result.body.chapterId,'chapter-1');assert.match(result.body.readUrl,/layer=original/);assert.match(result.headers['Cache-Control'],/no-store/);
+ const privateResult=await invoke('private-book');assert.equal(privateResult.status,404);assert.deepEqual(forwarded,['/api/public-excerpts/public-book/paragraph-1','/api/public-excerpts/private-book/paragraph-1']);
+});
