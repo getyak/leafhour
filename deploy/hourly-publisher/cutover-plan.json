@@ -1,7 +1,7 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "purpose": "review-only; not executable authorization or initialized publisher state",
-  "phase": "draft-source-and-readiness",
+  "phase": "two-phase-source-offline-draft-only",
   "binding": {
     "repository": "getyak/leafhour",
     "repositoryDatabaseId": 1415706040,
@@ -13,32 +13,24 @@
     "publisherLogin": "kubbot",
     "publisherNodeId": "U_kgDOB2nh3g"
   },
-  "legacy": {
-    "source": "f1d0981ca332f5cfc989f6655061a977ff05b029",
-    "deploymentId": "dpl_G1RQW9yT48MXb4adz1boGuhFmL51",
-    "mainCiRunId": 42320052538,
-    "createdAt": "2026-11-07T01:49:16.792Z",
-    "readyAt": "2026-11-07T02:04:46.586Z",
-    "independentHealthySourceAt": "2026-11-07T02:09:04Z",
-    "earliestLegacyFloor": "2026-11-07T03:10:04Z",
-    "latestReadOnlySourceAt": "2026-11-07T02:14:07.740435Z",
-    "earliestObservedFloor": "2026-11-07T03:15:07.740435Z",
-    "windowSeconds": 3660,
-    "firstReleaseRule": "No earlier than max(persisted latest effective legacy/publication anchor, init server clock, enable server clock) + 3660 seconds; unresolved in-flight or uncertain work blocks regardless of time. A same-source read-only verification with no new publication need not reset the anchor.",
-    "bootstrapWriteRule": "Seed/no-op main, Branch Tracking and any other write not yet proved free of publication side effects must also wait until the latest effective legacy anchor + 3660 seconds, using trusted server time. Time eligibility never grants authorization. Record intent and conclusive receipts one operation at a time.",
-    "extraEventOrUnknownRule": "Freeze on any extra push/CI/deployment or unknown outcome. Reconcile every in-flight result and recompute from new effective anchors before proceeding. Unknown outcomes never unlock merely because another hour passed. Enable still establishes its own full hold."
-  },
   "before": {
     "projectProductionBranch": "main",
-    "sourcePolicy": {"**": false, "main": true},
+    "sourcePolicy": {
+      "**": false,
+      "main": true
+    },
     "productionRefExists": false,
     "productionProtectionExists": false,
     "deployHooksCount": 0,
     "publisherInitialized": false,
     "publisherEnabled": false,
-    "schedulerInstalled": false
+    "schedulerInstalled": false,
+    "snapshotStatus": "historical identity snapshot; reverify all fields during execution"
   },
-  "candidatePolicy": {"**": false, "production": true},
+  "candidatePolicy": {
+    "**": false,
+    "production": true
+  },
   "protectionProposal": {
     "pattern": "production",
     "allowsForcePushes": false,
@@ -46,9 +38,13 @@
     "isAdminEnforced": true,
     "restrictsPushes": true,
     "blocksCreations": true,
-    "pushActorIds": ["U_kgDOB2nh3g"],
+    "pushActorIds": [
+      "U_kgDOB2nh3g"
+    ],
     "requiresStatusChecks": true,
-    "requiredStatusCheckContexts": ["CI gate"],
+    "requiredStatusCheckContexts": [
+      "CI gate"
+    ],
     "inheritAdditionalMainContextsAtExecution": true,
     "requiresStrictStatusChecks": true,
     "requiresApprovingReviews": false,
@@ -57,17 +53,16 @@
     "bypassPullRequestActorIds": []
   },
   "orderedGates": [
-    "coordinator opens a bounded cutover window and freezes other merges and deployment writers; unproven bootstrap write side effects are gated by the legacy anchor + 3660 before the write, not only by the later enable hold",
-    "reverify exact healthy legacy f1 source, current main CI, original identities, no active deployments or hooks",
-    "after authorization only: create literal production protection and read it back without changing main",
-    "after authorization only: prepare dedicated mirror and config; check-stage, seed and init require --expected-source f1d0981ca332f5cfc989f6655061a977ff05b029; reject source/seed drift before writes and pin atomic no-force CAS; do not retry unknown seed",
-    "verify seed created no CI, Preview or deployment; initialize inactive journal and independent witness without overwriting history",
-    "coordinator reviews readiness and draft diff; only then normal merge of the cutover PR",
-    "require the exact cutover merge source latest main CI; main push must create no deployment",
-    "after authorization only: change original project production branch to production; f1 seed itself disables production builds; read back no extra deployment",
-    "check the exclusive chain, source, protection, identity, no in-flight work and live f1; enable and persist a new full 3660-second hold",
-    "install the single reviewed user launchd entry; tick after the maximum hold selects only the latest eligible main source",
-    "accept two real eligible windows using useful normal changes, exact provider source and HTTP smoke; only then mark GET-314 complete"
+    "Review latest integrated cutover PR, independent review and exact-head applicable CI; normal merge main-off/production-only first. Existing healthy deployment continues; ordinary main merges may accumulate.",
+    "Prove main-off merge creates no provider request; close every known legacy/unknown request and fully paginate deployment inventory. Approve distinct M and L/D; legacy own CI/READY/public health and production-disabled source are required.",
+    "After separate execution authorization: establish/read back literal production protection without broadening actor or main permissions. Prepare dedicated mirror and existing credential paths.",
+    "check-stage and init require --expected-main M --expected-legacy-source L --legacy-deployment D. Project still tracks main; seed ref absent. Create single inactive immutable handover DB/witness BEFORE seed.",
+    "Seed rechecks pins/legacy/inventory, fsyncs intent and commits SQL, then atomic main M->M / production zero->L, force:false. M disables main and L disables production; verify no extra CI/Preview/provider request.",
+    "Unknown seed only reconciles read-only; ref L plus unchanged inventory confirms, absent ref stays unknown forever. No automatic retry or rejection classification by generic error text.",
+    "Record tracking-intent after init+3660 conservative unproven-setting floor. Save only original project Branch Tracking to production; do not Deploy. Unknown never repeats Save or unlocks by time.",
+    "Confirm tracking and unchanged legacy/inventory from durable intent. Once every legacy/bootstrap outcome settles, enable a NEW full 3660-second hold; latest M CI may still be pending.",
+    "Install sole fixed-source launchd. Tick selects only latest main with latest same-source successful CI; preserve locks/witness/no-force CAS/idempotence and block late legacy/foreign/duplicate deployments.",
+    "Accept two real useful-change windows using exact provider and public HTTP sources, without empty commits; only then Done."
   ],
   "notAuthorizedInThisPhase": [
     "create or update production ref or protection",
@@ -81,5 +76,43 @@
     "project": "restore original project tracking to main while source main deployment remains disabled; read back no deployment",
     "source": "normal reviewed PR restores only main deployment after replacement is stopped and cooldown is satisfied; no force-push or deletion of production",
     "result": "legacy chain restored means hourly control no longer active; keep GET-314 In Progress"
-  }
+  },
+  "pins": {
+    "expectedMain": null,
+    "expectedLegacySource": null,
+    "legacyDeploymentId": null,
+    "rule": "Explicitly approve current exclusive-policy main M separately from last settled healthy legacy L/D. Never auto-adopt a new source. M need not equal live or have completed CI for nonpublishing bootstrap; actual publish always requires latest-main CI success."
+  },
+  "historicalLegacy": {
+    "f1": {
+      "source": "f1d0981ca332f5cfc989f6655061a977ff05b029",
+      "deploymentId": "dpl_G1RQW9yT48MXb4adz1boGuhFmL51",
+      "createdAt": "2026-11-07T01:49:16.792Z",
+      "readyAt": "2026-11-07T02:04:46.586Z",
+      "status": "historical; no longer an executable seed pin"
+    },
+    "pr339": {
+      "source": "857721d83bd29df8cba4fc4082585310d41841fe",
+      "deploymentId": "dpl_ZA7XWokuCiq3P9PaDgQsE2MDiLFv",
+      "createdAt": "2026-11-07T02:46:07.869Z",
+      "intervalFromPreviousSeconds": 3411.077
+    },
+    "pr331": {
+      "source": "a0a858cf167fdb4aaf52f9c86726f6bd630cafdc",
+      "deploymentId": "dpl_FdeerEi2WrCjhB5XSPE8cURw1scQ",
+      "createdAt": "2026-11-07T03:01:17.306Z",
+      "intervalFromPreviousSeconds": 909.437
+    },
+    "rule": "Uncontrolled legacy intervals, not evidence of hourly enforcement; final PR338 fdc3/f1 plan and CI are historical."
+  },
+  "seedAtomicTemplate": {
+    "mainBeforeAndAfter": "<explicit M>",
+    "productionBefore": "0000000000000000000000000000000000000000",
+    "productionAfter": "<immutable L>",
+    "force": false,
+    "notExecutable": true
+  },
+  "unknownRule": "Every seed/tracking intent survives restart and DB rollback checks. Unknown never times out, follows another main, clears history or resends. Definitive atomic rejection recovery is deliberately offline/reviewed, not guessed from exceptions.",
+  "windowSeconds": 3660,
+  "trackingFloor": "init+3660 retained only for unproven Branch Tracking settings side effects; not a global main freeze, not main==live, and not a seed delay. Removal requires exact no-request evidence and reviewed code."
 }

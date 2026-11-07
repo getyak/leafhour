@@ -14,27 +14,148 @@ BINDING = {'repository': 'getyak/leafhour', 'team': 'team_nMU4o8gjejVzBhcnMfqgUQ
 
 
 class PortTest(unittest.TestCase):
-    def test_seed_rechecks_the_pinned_source_before_any_write_request(self):
-        port = RuntimePort.__new__(RuntimePort)
-        port.staging = lambda: {'ready': True, 'green': True, 'source': 'b' * 40, 'remote': None}
-        with patch('tools.hourly_publisher.ports.command', side_effect=AssertionError('unexpected write')):
-            with self.assertRaises(GateError):
-                port.seed(SHA)
-        port.staging = lambda: {'ready': True, 'green': True, 'source': SHA, 'remote': 'b' * 40}
-        with patch('tools.hourly_publisher.ports.command', side_effect=AssertionError('unexpected write')):
-            with self.assertRaises(GateError):
-                port.seed(SHA)
+    def test_dual_pin_seed_request_keeps_main_separate_from_legacy(self):
+        main = 'b' * 40
+        request = ref_request('R_synthetic', SHA, '0' * 40, create=True, expected_main=main)
+        self.assertEqual(request['variables']['input']['refUpdates'], [
+            {'name': 'refs/heads/main', 'beforeOid': main, 'afterOid': main, 'force': False},
+            {'name': 'refs/heads/production', 'beforeOid': '0' * 40, 'afterOid': SHA, 'force': False},
+        ])
 
-    def test_matching_seed_pins_both_atomic_ref_assertions(self):
+    def synthetic_stage(self):
         port = RuntimePort.__new__(RuntimePort)
-        port.staging = lambda: {'ready': True, 'green': True, 'source': SHA, 'remote': None}
-        port.clock = type('Clock', (), {'repository': {'node_id': 'R_synthetic'}, '__call__': lambda self: 100})()
-        port.gh, port.lock_fd = 'synthetic-gh', None
-        response = json.dumps({'data': {'updateRefs': {'clientMutationId': None}}})
-        with patch('tools.hourly_publisher.ports.command', return_value=response) as request:
-            self.assertEqual(port.seed(SHA)['source'], SHA)
-        refs = json.loads(request.call_args.kwargs['input_data'])['variables']['input']['refUpdates']
-        self.assertEqual(refs, ref_request('R_synthetic', SHA, '0' * 40, create=True)['variables']['input']['refUpdates'])
+        port.binding = BINDING
+        main = 'b' * 40
+        port.inspect = lambda **kwargs: {'source': main, 'remote': None, 'ready': True, 'green': False}
+        def git(*args):
+            if args[0] == 'rev-list':
+                return main
+            policy = {'**': False, 'production': True} if args[-1].startswith(main) else {'**': False, 'main': True}
+            return json.dumps({'git': {'deploymentEnabled': policy}})
+        port.git = git
+        good = {'id': 5, 'head_sha': SHA, 'head_branch': 'main', 'event': 'push', 'status': 'completed', 'conclusion': 'success', 'path': '.github/workflows/ci.yml', 'head_repository': {'full_name': 'getyak/leafhour'}}
+        port.github = lambda endpoint: {'workflow_runs': [good], 'statuses': [{'context': 'Vercel', 'state': 'success', 'target_url': 'https://vercel.com/3293172751nss-1526s-projects/synthetic/id'}]}
+        detail = {'id': 'dpl_synthetic', 'projectId': BINDING['project'], 'ownerId': BINDING['team'], 'target': 'production', 'readyState': 'READY', 'ready': 100,
+                  'gitSource': {'type': 'github', 'repoId': 1415706040, 'ref': 'main', 'sha': SHA}}
+        port.provider = lambda endpoint: detail
+        port.inventory = lambda: [{'id': 'dpl_synthetic', 'source': SHA, 'ref': 'main', 'state': 'READY'}]
+        return port, detail
+
+    def test_main_can_differ_from_live_legacy_and_have_pending_ci(self):
+        port, detail = self.synthetic_stage()
+        with patch('tools.hourly_publisher.ports.public_health', return_value=True):
+            stage = port.staging('b' * 40, SHA, 'dpl_synthetic')
+        self.assertTrue(stage['ready'])
+        self.assertTrue(stage['green'])
+        self.assertFalse(stage['mainGreen'])
+        for change in [{'ownerId': 'other'}, {'projectId': 'other'}, {'target': 'preview'}, {'readyState': 'BUILDING'}, {'gitSource': {'type': 'github', 'repoId': 1, 'ref': 'main', 'sha': SHA}}]:
+            port.provider = lambda endpoint: {**detail, **change}
+            with patch('tools.hourly_publisher.ports.public_health', return_value=True):
+                self.assertFalse(port.staging('b' * 40, SHA, 'dpl_synthetic')['ready'])
+
+    def test_pending_legacy_request_is_not_closed_by_empty_active_inventory(self):
+        port, _ = self.synthetic_stage()
+        original = port.github
+        port.github = lambda endpoint: {'statuses': [{'context': 'Vercel', 'state': 'pending', 'target_url': 'https://vercel.com/3293172751nss-1526s-projects/synthetic/id'}]} if '/status?' in endpoint else original(endpoint)
+        with patch('tools.hourly_publisher.ports.public_health', return_value=True):
+            self.assertFalse(port.staging('b' * 40, SHA, 'dpl_synthetic')['ready'])
+
+    def test_bootstrap_requires_home_and_anonymous_session_health_too(self):
+        port, _ = self.synthetic_stage()
+        with patch('tools.hourly_publisher.ports.public_release', return_value=SHA), patch('tools.hourly_publisher.ports.urllib.request.build_opener', side_effect=OSError('synthetic outage')):
+            self.assertFalse(port.staging('b' * 40, SHA, 'dpl_synthetic')['ready'])
+
+    def test_creating_seed_without_separate_main_pin_is_rejected(self):
+        with self.assertRaises(GateError):
+            ref_request('R_synthetic', SHA, '0' * 40, create=True)
+
+    def test_inventory_follows_all_pages_and_rejects_unknown_states_and_bad_cursors(self):
+        port = RuntimePort.__new__(RuntimePort)
+        port.binding, port.clock = BINDING, lambda: 100
+        def record(identity, state='READY'):
+            return {'uid': identity, 'state': state, 'meta': {'githubCommitSha': SHA, 'githubCommitRef': 'main'}}
+        calls = []
+        def page(endpoint):
+            calls.append(endpoint)
+            return {'deployments': [record('dpl_second')], 'pagination': {'next': None}} if '&until=90' in endpoint else {'deployments': [record('dpl_first')], 'pagination': {'next': 90}}
+        port.provider = page
+        self.assertEqual([row['id'] for row in port.inventory()], ['dpl_first', 'dpl_second'])
+        self.assertEqual(len(calls), 2)
+        for state in ['BUILDING', 'QUEUED', 'INITIALIZING', 'unknown', None]:
+            port.provider = lambda endpoint: {'deployments': [record('dpl_bad', state)], 'pagination': {'next': None}}
+            with self.assertRaises(GateError):
+                port.inventory()
+        port.provider = lambda endpoint: {'deployments': [], 'pagination': {'next': 90}}
+        with self.assertRaises(GateError):
+            port.inventory()
+
+    def test_late_or_duplicate_deployment_freezes_the_original_journal(self):
+        from tools.hourly_publisher.state import Journal, WINDOW
+        with tempfile.TemporaryDirectory() as root:
+            base = [{'id': 'dpl_original', 'source': SHA, 'ref': 'main', 'state': 'READY'}]
+            journal = Journal.create(Path(root)/'state.sqlite3', BINDING, SHA, 0,
+                                     bootstrap={'legacy': SHA, 'deployment': 'dpl_original', 'inventory': base, 'cutoverMain': 'b' * 40})
+            port = RuntimePort.__new__(RuntimePort)
+            port.journal, port.clock = journal, lambda: WINDOW
+            port.inventory = lambda: base
+            port.legacy_requests_settled = lambda main, legacy: True
+            port.guard_inventory('b' * 40)
+            port.inventory = lambda: base + [{'id': 'dpl_late', 'source': 'b' * 40, 'ref': 'main', 'state': 'READY'}]
+            with self.assertRaises(GateError):
+                port.guard_inventory('b' * 40)
+            self.assertEqual(journal.status()['blocked'], 'deployment-inventory-drift')
+            self.assertEqual(journal.bootstrap()['receipt']['legacy'], SHA)
+
+    def test_runtime_prepare_and_push_freeze_reopened_unknown_legacy_receipt(self):
+        from tools.hourly_publisher.state import Journal
+        for action in ('prepare', 'push'):
+            with self.subTest(action=action), tempfile.TemporaryDirectory() as root:
+                port = RuntimePort.__new__(RuntimePort)
+                port.binding = {**BINDING, 'publisherLogin': 'existing-publisher'}
+                main = 'b' * 40
+                class Clock:
+                    repository = {'full_name': 'getyak/leafhour', 'permissions': {'push': True}, 'node_id': 'R_synthetic'}
+                    def __call__(self): return 100
+                port.clock, port.gh, port.lock_fd = Clock(), 'synthetic-gh', None
+                base = [{'id': 'dpl_original', 'source': SHA, 'ref': 'main', 'state': 'READY'}]
+                port.journal = Journal.create(Path(root)/'state.sqlite3', BINDING, SHA, 100,
+                    bootstrap={'legacy': SHA, 'deployment': 'dpl_original', 'inventory': base, 'cutoverMain': main})
+                port.inventory = lambda: base
+                port.remote = lambda optional=False: SHA
+                def git(*args):
+                    if args[0] == 'rev-parse' or args[0] == 'rev-list': return main
+                    if args[0] == 'show':
+                        return json.dumps({'git': {'deploymentEnabled': {'**': False, 'main': True} if args[-1].startswith(SHA) else {'**': False, 'production': True}}})
+                    return ''
+                port.git = git
+                good = {'id': 5, 'head_sha': main, 'head_branch': 'main', 'event': 'push', 'status': 'completed', 'conclusion': 'success', 'path': '.github/workflows/ci.yml', 'head_repository': {'full_name': 'getyak/leafhour'}}
+                def github(endpoint):
+                    if '/git/ref/' in endpoint: return {'object': {'sha': main}}
+                    if '/status?' in endpoint: return {'statuses': [{'context': 'Vercel', 'state': 'pending', 'target_url': 'https://vercel.com/3293172751nss-1526s-projects/synthetic/id'}]}
+                    return {'workflow_runs': [good]}
+                port.github = github
+                def provider(endpoint):
+                    if '/domains/' in endpoint: return {'name': 'leafhour.com', 'verified': True}
+                    if '/v9/projects/' in endpoint:
+                        return {'id': BINDING['project'], 'name': BINDING['projectName'], 'accountId': BINDING['team'], 'link': {'type': 'github', 'org': 'getyak', 'repo': 'leafhour', 'repoId': 1415706040, 'deployHooks': [], 'productionBranch': 'production'}}
+                    return {'deployments': [], 'pagination': {'next': None}}
+                port.provider = provider
+                rule = {'pattern': 'production', 'blocksCreations': True, 'requiresStrictStatusChecks': True, 'bypassForcePushAllowances': {'totalCount': 0, 'pageInfo': {'hasNextPage': False}}, 'bypassPullRequestAllowances': {'totalCount': 0, 'pageInfo': {'hasNextPage': False}}, 'allowsForcePushes': False, 'allowsDeletions': False, 'isAdminEnforced': True, 'restrictsPushes': True, 'requiresStatusChecks': True, 'requiresApprovingReviews': False, 'requiredStatusCheckContexts': ['CI gate'], 'pushAllowances': {'nodes': [{'actor': {'__typename': 'User', 'login': 'existing-publisher'}}], 'pageInfo': {'hasNextPage': False}}}
+                writes = []
+                def command(args, **kwargs):
+                    if 'input_data' in kwargs:
+                        writes.append(kwargs['input_data'])
+                        return json.dumps({'data': {'updateRefs': {'clientMutationId': None}}})
+                    return json.dumps({'data': {'viewer': {'login': 'existing-publisher'}, 'repository': {'branchProtectionRules': {'nodes': [rule], 'pageInfo': {'hasNextPage': False}}}}})
+                with patch('tools.hourly_publisher.ports.command', side_effect=command), patch('tools.hourly_publisher.ports.public_release', return_value=SHA):
+                    try:
+                        port.prepare() if action == 'prepare' else port.push(main, SHA)
+                    except GateError:
+                        pass
+                    else:
+                        self.fail('reopened legacy unknown must block the actual runtime ' + action)
+                self.assertEqual(writes, [])
+                self.assertEqual(port.journal.status()['blocked'], 'legacy-request-unknown')
 
     def test_sleep_aware_os_clock_selection_and_unsupported_host_fail_closed(self):
         with patch('tools.hourly_publisher.ports.sys.platform', 'darwin'), patch('tools.hourly_publisher.ports.time.clock_gettime', return_value=42) as clock:
@@ -80,7 +201,7 @@ class PortTest(unittest.TestCase):
             with self.assertRaises(GateError):
                 clock()
     def test_production_rule_never_broadens_the_existing_push_identity_or_ci_gate(self):
-        rule = {'pattern': 'production', 'allowsForcePushes': False, 'allowsDeletions': False,
+        rule = {'pattern': 'production', 'blocksCreations': True, 'requiresStrictStatusChecks': True, 'bypassForcePushAllowances': {'totalCount': 0, 'pageInfo': {'hasNextPage': False}}, 'bypassPullRequestAllowances': {'totalCount': 0, 'pageInfo': {'hasNextPage': False}}, 'allowsForcePushes': False, 'allowsDeletions': False,
                 'isAdminEnforced': True, 'restrictsPushes': True, 'requiresStatusChecks': True,
                 'requiredStatusCheckContexts': ['CI gate'], 'requiresApprovingReviews': False,
                 'pushAllowances': {'nodes': [{'actor': {'__typename': 'User', 'login': 'existing-publisher'}}], 'pageInfo': {'hasNextPage': False}}}
@@ -88,6 +209,18 @@ class PortTest(unittest.TestCase):
         for change in [{'allowsForcePushes': True}, {'allowsDeletions': True}, {'isAdminEnforced': False}, {'restrictsPushes': False}, {'requiresStatusChecks': False}, {'requiredStatusCheckContexts': []}, {'pushAllowances': {'nodes': [], 'pageInfo': {'hasNextPage': False}}}]:
             self.assertFalse(protection_ready([{**rule, **change}], 'existing-publisher'))
         self.assertFalse(protection_ready([rule], 'different-user'))
+    def test_rule_readback_rejects_creation_strictness_or_bypass_drift(self):
+        rule = {'pattern': 'production', 'blocksCreations': True, 'requiresStrictStatusChecks': True, 'bypassForcePushAllowances': {'totalCount': 0, 'pageInfo': {'hasNextPage': False}}, 'bypassPullRequestAllowances': {'totalCount': 0, 'pageInfo': {'hasNextPage': False}}, 'allowsForcePushes': False, 'allowsDeletions': False,
+                'isAdminEnforced': True, 'restrictsPushes': True, 'requiresStatusChecks': True,
+                'requiresApprovingReviews': False, 'requiredStatusCheckContexts': ['CI gate'],
+                'pushAllowances': {'nodes': [{'actor': {'__typename': 'User', 'login': 'existing-publisher'}}], 'pageInfo': {'hasNextPage': False}}}
+        self.assertTrue(protection_ready([rule], 'existing-publisher'))
+        for change in [{'blocksCreations': False}, {'requiresStrictStatusChecks': False},
+                       {'bypassForcePushAllowances': {'totalCount': 1}},
+                       {'bypassPullRequestAllowances': {'totalCount': 0, 'pageInfo': {'hasNextPage': True}}}]:
+            with self.subTest(change=change):
+                self.assertFalse(protection_ready([{**rule, **change}], 'existing-publisher'))
+
     def test_atomic_request_checks_current_main_and_expected_production_without_force(self):
         request = ref_request('R_synthetic', SHA, 'b' * 40)
         updates = request['variables']['input']['refUpdates']
@@ -110,7 +243,7 @@ class PortTest(unittest.TestCase):
             self.assertFalse(exclusive_policy({'git': {'deploymentEnabled': enabled}}))
 
     def test_project_domain_repository_and_production_branch_all_match(self):
-        project = {'id': BINDING['project'], 'accountId': BINDING['team'], 'name': 'synthetic', 'link': {'type': 'github', 'org': 'getyak', 'repo': 'leafhour', 'productionBranch': 'production'}}
+        project = {'id': BINDING['project'], 'accountId': BINDING['team'], 'name': 'synthetic', 'link': {'type': 'github', 'org': 'getyak', 'repo': 'leafhour', 'repoId': 1415706040, 'deployHooks': [], 'productionBranch': 'production'}}
         domain = {'name': 'leafhour.com', 'verified': True}
         self.assertTrue(target_matches(project, domain, BINDING))
         for change in [{'id': 'prj_other'}, {'accountId': 'team_other'}, {'paused': True}, {'link': {**project['link'], 'productionBranch': 'main'}}]:
@@ -139,12 +272,6 @@ class PortTest(unittest.TestCase):
             # Transport itself accepts only a checked bare mirror. The runtime
             # adds the fixed public-origin validation before constructing it.
             port = GitPort(bare, 'production')
-            staged = RuntimePort.__new__(RuntimePort)
-            staged.repository = bare
-            staged.inspect = lambda staged=False: {'source': second, 'remote': first, 'green': True, 'ready': True}
-            self.assertFalse(staged.staging()['ready'], 'the seed itself still enables production even though current main is legacy')
-            with self.assertRaises(GateError):
-                staged.seed(second)
             port.push(second, first)
             self.assertEqual(port.remote(), second)
             port.push(second, first)  # uncertain ACK retry is a no-op, not another update
@@ -165,6 +292,8 @@ class PortTest(unittest.TestCase):
             port.git('fetch', '--no-tags', 'origin', 'main')
             runtime = RuntimePort.__new__(RuntimePort)
             runtime.repository, runtime.gh, runtime.lock_fd = bare, 'synthetic-gh', None
+            runtime.journal = object()  # this test isolates actual atomic Git transport
+            runtime.guard_inventory = lambda main: None
             class Clock:
                 repository = {'node_id': 'R_synthetic'}
                 def __call__(self):

@@ -25,19 +25,19 @@ PR 先做受影响检查和审阅，再集中推送一个可交付批次。保�
 
 ## 每小时集中发布的启用条件
 
-**小时入口尚未启用。** 当前切换候选的 `vercel.json` 仅允许 `production`；只有在精确legacy种子、保护、关闭态初始化和替代入口readiness均成立后，才可合并并修改原项目Branch Tracking。草稿配置不代表远端或调度器已切换；PR Preview保持关闭。Vercel 的 Ignored Build Step 发生在部署创建后，取消的构建仍计入部署额度，因此不能用它模拟配额控制。[官方 Git 配置](https://vercel.com/docs/project-configuration/git-configuration)、[Ignored Build Step](https://vercel.com/docs/project-configuration/project-settings#ignored-build-step)。
+**小时入口尚未启用。** 两阶段先正常合并经审阅且CI通过的production-only策略PR，关闭main自动部署，原健康版继续服务，普通main合并继续积累；旧请求与unknown全收敛后，分别固定main M与健康legacy L/D，先init再持久seed，切换原项目Branch Tracking并启用唯一入口。详见[两阶段切换清单](hourly-publishing-cutover.md)。本轮只做源码、离线检查和Draft准备，尚未执行真实切换；PR Preview保持关闭。Vercel 的 Ignored Build Step 发生在部署创建后，取消的构建仍计入部署额度，因此不能用它模拟配额控制。[官方 Git 配置](https://vercel.com/docs/project-configuration/git-configuration)、[Ignored Build Step](https://vercel.com/docs/project-configuration/project-settings#ignored-build-step)。
 
 启用时需要满足以下条件：
 
 1. 在实际所属团队核对 Leafhour 项目、正式域名、生产分支与当前发布源，保留恢复入口。
 2. 建立唯一的集中发布入口。每小时取最新已通过同提交 CI 的 main，持久记录成功来源和最近一次尝试；无新提交、已有发布进行中、距离上次尝试不足 60 分钟时不请求部署。时钟小时边界不能替代滚动 60 分钟限制。
-3. 验证新入口的项目身份、凭据、环境和幂等检查后，替换现有 main Git 自动部署，保持 PR Preview 关闭。不能在 main 自动部署仍开启时再叠加定时部署。
+3. main-off合并前先备齐可审阅的替代实现、适用CI、独审和回滚；合并后再执行关闭态初始化及明确双pin的非发布seed。M无需等于live或在bootstrap完成CI；真实发布只选最新main且其CI成功。全部旧请求和bootstrap结果闭合后enable另建3660秒hold，不能叠加另一发布链。
 4. 提供商限额或权限失败要记录并停止重复请求。手动执行与自动调度使用相同互斥和时间限制；紧急例外需用户明确指定。
 5. 部署创建、发布成功、`release.json` 命中来源提交、线上验收分别记录。后续 main 更新不能冒充本次已发布来源。
 
 每小时限制只约束 Leafhour 这条发布链，不能保证同一 Vercel 账号的其他项目不会消耗共享日额度。GitHub 定时任务也可能延迟，不能保证整点上线。
 
-2026-10-29连接器/旧CLI的403及11月7日早先CPU暂停均保留为历史。原团队现已恢复，已有CLI可读取原项目；经批准的唯一修复部署 `f1d0981…` 已READY，独立正式来源读回命中它。小时入口仍未启用，不能继续把旧配额/403当当前原因，也不能因恢复创建第二次同源部署。补充实现采用持久控制器与受保护的生产引用，详见 [小时发布入口](hourly-publishing.md)和[精确切换清单](hourly-publishing-cutover.md)。当前只准备源码和readiness材料；切换前远端main链仍保持原状。
+2026-10-29连接器/旧CLI的403及11月7日早先CPU暂停均保留为历史。原团队现已恢复，已有CLI可读取原项目；经批准的唯一修复部署 `f1d0981…` 已READY，独立正式来源读回命中它。小时入口仍未启用，不能继续把旧配额/403当当前原因，也不能因恢复创建第二次同源部署。补充实现采用持久控制器与受保护的生产引用，详见 [小时发布入口](hourly-publishing.md)和[精确切换清单](hourly-publishing-cutover.md)。随后外部PR339/331触发旧链的3411.077秒与909.437秒间隔，均是未限流的历史。f1不再作为可直接执行的seed pin；旧PR338/fdc3绿灯也不是新候选的验证。本轮准备两阶段源码与Draft材料，尚未操作远端链。
 
 ## Production 等待
 

@@ -1,89 +1,75 @@
-# GET-314 小时发布切换清单
+# GET-314 两阶段小时发布切换
 
-2026-11-07，基线 `f1d0981ca332f5cfc989f6655061a977ff05b029`。[PR333](https://github.com/getyak/leafhour/pull/333)的持久控制器已合并；本次只准备独立切换候选、只读readiness与执行顺序，**不授权或执行远端保护/引用创建、seed/init/enable、调度安装、Vercel设置修改或新部署**。草稿不能在协调方审完readiness前合并。正常发布的创建、成功、同源HTTP和验收分别记账。
+当前是 **source/offline/Draft PR 准备阶段**。本轮不合并 main、不建真实保护或引用、不执行真实 init/seed/enable、不安装调度、不改 Vercel 设置、不创建部署。执行窗口由协调方审阅最新候选、适用 CI、独审和现场状态后单独开放。
 
-## 当前准确对象
+## 为什么分两阶段
 
-| 对象 | 只读核对结果 |
+先把经审查、当前提交 CI 通过的 PR 正常合并，使 `vercel.json.git.deploymentEnabled` 为 `{"**":false,"production":true}`。main 后续合并不再自动发布，原健康部署继续服务。随后收敛旧请求，建立唯一发布器。普通 main 合并可以继续；停止的是旁路部署、直接 production push、重复调度、hook 和 CLI/API 发布。
+
+旧方案要求 main 与线上完全相同，并在任何 main 移动后重新等待整小时；正常合并会使它不断失效，现已替换。另一个可行顺序是先全部关闭、再用第二个 PR 开启 production，但会多一次切换、审查与 CI，因此不采用。关闭 main 之前必须已有本候选的可审阅实现、验证、回滚步骤和健康旧版证据；不要求先执行 seed 或初始化，否则又回到旧循环。
+
+[Vercel Git 配置](https://vercel.com/docs/project-configuration/git-configuration)按提交自身的配置决定触发；任一匹配的 true 都允许部署。main-off 合并的 main 仅匹配 false；当前分支候选不会因 PR 推送创建 Preview。最终仍须读取该合并之后的实际 provider 记录，证明没有新增请求，不能把本地策略测试写成平台实测。
+
+## 精确身份与两种 pin
+
+| 对象 | 固定身份 |
 | --- | --- |
-| 仓库 | 公开 `getyak/leafhour`，GitHub ID `1415706040` / node `R_kgDOVGH1uA` |
-| 现有发布身份 | `kubbot` / `U_kgDOB2nh3g`，既有 `gh` 为ADMIN；没有新增账号或授权 |
+| 仓库 | 公开 `getyak/leafhour`，ID `1415706040`，node `R_kgDOVGH1uA` |
 | 原团队 | `team_nMU4o8gjejVzBhcnMfqgUQbJ` / `3293172751nss-1526s-projects` |
-| 原项目 | `prj_yGvFacR0DlnmDASXb5vfbiRpCvhD` / `leafhour`，GitHub链接repoId精确相同 |
-| 正式域名 | `https://leafhour.com`，已验证、无redirect、无自定义环境或单独gitBranch绑定 |
-| 现有链 | Vercel Production Branch为main，远端main的策略仅开启main；production引用、分支保护与rulesets均不存在，deploy hooks为0 |
-| 唯一已批准的恢复发布 | `dpl_G1RQW9yT48MXb4adz1boGuhFmL51`，GitSource固定f1d0981/main，实际READY；不能用旧7efdf7c或另一部署替代 |
-| 最新同源CI | [42320052538](https://github.com/getyak/leafhour/actions/runs/42320052538)，main/push/CI/completed/success |
-| 原项目读取 | 已有缓存Vercel CLI65.12.1的正常登录，可执行控制器同形的GET读取；旧MCP403不等于CLI无权限 |
+| 原项目 | `prj_yGvFacR0DlnmDASXb5vfbiRpCvhD` / `leafhour` |
+| 正式域名 | `https://leafhour.com`，已验证、无重定向、无自定义环境或 Preview 绑定 |
+| 现有发布身份 | `kubbot` / `U_kgDOB2nh3g`；复用既有 gh/Vercel 登录，不新增授权 |
+| M | 操作时明确批准的**当前 main 完整 SHA**，已包含 main-off，配置只开 production |
+| L/D | 旧链全部收敛后明确固定的**最后健康 legacy SHA / 实际 READY deployment ID** |
 
-原团队已经恢复，旧Account blocked/402是恢复前事实。协调方02:09:04Z独立核对正式来源及三项静态资产精确命中f1。当前任务随后只读GET release.json也为200/f1，没有登录、书房读取或模型请求。该快照不能代替执行窗口的重新核对，也不把恢复写成小时入口已启用。
+M 可以不同于 L。init 保存不可透明更改的 L/D、完整 provider inventory 和当时 M；以后正常 main 前进只需明确传入新的 M，不重建库、不跟随新线上来源改 L。L 必须是 M 的祖先，自身禁用 production 构建，自己的 main/push CI 最新有效 run 成功，D 的 team/project/repoId/GitSource/ref=main/source/Production/READY 全部精确匹配，正式 release、首页和匿名 session 健康。
 
-## 种子与时间下限
+bootstrap 和首次 enable 都不要求 M 已上线或它的 CI 已完成。main-off PR 自己仍须合并前门禁通过；固定控制器的工具树必须已经经审阅进入 main。**真正 tick/push 始终只接受当时最新 main 的最新同源成功 CI**，不能退而发布旧绿灯。这里省掉的是非发布动作对新 main CI 的不必要依赖。
 
-| f1真实事件 | UTC | 北京时间 |
-| --- | --- | --- |
-| 供应商createdAt | 01:49:16.792 | 09:49:16.792 |
-| 供应商READY | 02:04:46.586 | 10:04:46.586 |
-| 协调方独立健康锚 | 02:09:04 | 10:09:04 |
-| 仅由上述健康锚计算的3660秒下限 | 03:10:04 | 11:10:04 |
-| 本任务随后同源200只读观察 | 02:14:07.740435 | 10:14:07.740435 |
-| 计入该更晚观察后的3660秒下限 | 03:15:07.740435 | 11:15:07.740435 |
+## 旧请求必须先收敛
 
-时间均为2026-11-07。以最晚已核对事件保守起算，不能从恢复前旧7ef的创建时间、整点、最早请求或第一次失败重试起算。实际首发条件是：
+执行时完整分页读取原项目的全部部署，不把空的 BUILDING/QUEUED 列表等同于全量完成。任何缺字段、未知状态、分页异常、INITIALIZING/BUILDING/QUEUED 都阻塞。核对 L 以及从 L 到 M 的 first-parent 主线中曾允许 main 部署的提交：最新对应 Vercel receipt 必须终态；missing/pending 也阻塞，即使当前 active 列表为空。
 
-`Tfirst >= max(已记录的最近有效legacy/发布锚, init服务时钟, enable服务时钟) + 3660秒`。
+协调方还须关闭已有操作记录中的每项已知未知结果，核对 provider 请求和 GitHub receipt；API 列表不能证明未记录的外部请求不存在。旧请求未闭合时不能 init/enable，不能把“又过一小时”当成结论。init 保存完整终态 inventory；seed、Branch Tracking 及首次 enable 前必须完全相同。之后 runtime 在预检及临发前还会重核旧 GitHub receipt，任何重新 missing/pending 都持久冻结；只接受本库已 arming 的 production 源产生的唯一新 provider receipt；迟到的旧链、外来或重复部署、历史 receipt 消失/变化都会冻结，不自动接纳新 legacy。
 
-init在健康legacy和合法种子成立后才建默认关闭库；enable在独占链检查通过后**重新**持久化完整3660秒等待。当前控制器这两个动作均保持该下限，不允许通过“早就过了一小时”缩短enable等待。迟到的旧请求、另一真实部署、新有效发布锚或晚执行只能延后，不会把03:10:04Z当成定时授权。已经证明没有新发布的同源只读复核不必反复刷新锚，避免无限推迟。任何sending/uncertain/accepted未收敛时，无论过多久都不发下一次。
+## 可执行顺序
 
-这条约束也适用于**最终enable之前**的写操作。seed/no-op main断言、Branch Tracking等尚未真实证明无发布副作用的操作，必须先满足 `T操作 >= 已记录的最近有效legacy锚 + 3660秒`；当前下限为03:15:07.740435Z，用既有GitHub服务时间核对，不用本机墙钟提前放行。到时仍须单独授权。逐个记录操作意图与真实回执，确认上一操作结论后才进行下一操作；出现额外push/CI/deployment或未知结果就冻结后续步骤，核清在途结果并按新有效锚重算。**未知结果不能只靠再等一小时解锁**，enable后的hold也不能补救之前过早发生的发布副作用。
+以下步骤均待协调方开放执行窗口，本轮只准备源码。
 
-首次种子只准 `refs/heads/production = f1d0981ca332f5cfc989f6655061a977ff05b029`，该commit自身的 `vercel.json` 禁用production，项目此时仍跟踪main。先重新验证远端main、正式来源和CI都仍为f1、无活动部署；任何一项变化就停止并更新交接记录，不改为另一个SHA继续。
+1. 审阅最新 Draft PR、独审和该完整 head 的适用 CI；只正常合并 main-off PR。保持原健康部署服务。读取合并 SHA 的配置、Production 工作流与实际 provider 记录，确认 main-off 合并没有发布请求。普通 main 合并继续积累有用变更，不造空提交。
+2. 等待旧链所有在途与已知未知结果收敛，选择并明确批准 L/D 和当前 M。重新检查原团队/项目/域名、repoId、deploy hooks=0、CI 和公共健康。不能直接沿用历史 f1/857/a0a 快照或把最新 main 自动当作 L。
+3. 创建并读回字面 `production` 保护：禁止 force/delete、enforce admins、restrict pushes/creations、只允许现有 kubbot、至少要求 `CI gate` 并继承 main 全部 required contexts，严格 checks，无 bypass。发布指针不要求另开 PR，main 正常审查不变。核对完整 allowances、重叠规则/rulesets；权限失败不放宽规则。
+4. 准备专属非临时 bare mirror/config，使用已验证现有 CLI 的绝对路径和 launchd 最小 PATH。执行 `check-stage --expected-main M --expected-legacy-source L --legacy-deployment D`。项目仍跟踪 main、main 已 exclusive、production ref 不存在、L/D 健康且旧请求全收敛才可继续。
+5. **先 init，后 seed。** 相同三个参数执行 init，创建默认关闭的单一 SQLite/witness/lock。已有 DB/witness、已存在 ref、项目已跟踪 production 都拒绝初始化；不迁移旧 enabled 库，不换目录忘记历史。init 不发送 Git/Vercel 写请求。
+6. 相同明确 pin 执行 seed。先再次核对，再把 M/L/D 的意图 fsync 到 witness、提交 SQL，最后发送一笔原子请求：`main M→M`、`production 0→L`，两项均 `force:false`。M 自身关 main，L 自身关 production，因此两条 Git 分支都不构建。GitHub [updateRefs 原子契约](https://docs.github.com/en/graphql/reference/git#updaterefs)保证任一断言失败就不修改其他 ref。真实执行后还要读回无额外同源 CI、Preview 或 provider 请求。
+7. seed 回包丢失/报错时仅 `reconcile-seed`。ref=L 且 inventory 未变可确认；ref 空仍是 unknown，ref 异常则冻结。再次 seed 也只读 reconcile，不能重发。没有按错误字符串猜“明确拒绝”的自动恢复：即使 main CAS 竞争大概率未写，也须服务端确切拒绝证据和独审的离线恢复；原 intent/witness 保留。此保守边界只影响极短 CAS 竞争窗口，不要求冻结 main 一小时。
+8. 记录 `tracking-intent` 后，在原项目 Settings → Environments → Production → Branch Tracking 只 Save 为 production，域名仍归 Production，**不点击 Deploy**。目前只有[官方后续 push 语义](https://vercel.com/docs/git#customizing-the-production-branch)，尚无本次真实操作无副作用回执；因此 tracking-intent 暂保留 init 的 3660 秒保守设置副作用下限。它不是要求 main==live、冻结 main 合并或让 seed 等一小时。若后续确切 UI/平台证据证明纯元数据且无请求，再经审阅移除这一单项下限；不能自行略过。界面如要求立即构建、新权限或目标变化，停在 Save 前交协调方。unknown 不重做 Save。
+9. `tracking-confirm` 使用明确的当前 M 和固定 L/D，只读确认原项目已跟踪 production、ref=L、旧版公共健康、inventory 未变，且原 tracking intent 存在。额外或未知结果不能靠计时闭合。所有 legacy/bootstrap 结果收敛后，first enable 同样传三 pin，**重新持久化完整 3660 秒 hold**。M 的 CI 可继续运行；hold 不能从 init 或历史创建时间扣除。
+10. 安装唯一用户 launchd，每300秒 tick；手动 tick 共用同一库/witness/锁，固定工具源码不自动跟随 main。到期后只选当时最新 main，要求该 SHA 最新 CI 成功，二次预检和原子 CAS。主线继续前进则这次不发布旧源。不得另开 cron/hook/workflow/CLI 发布链。
+11. 两个真实合格窗口各保存 main/CI、journal/witness、ref、唯一 provider 请求、READY、同源 release 和 Production HTTP smoke。正常有用变更在窗口间积累，只发布最新合格源；没有变更就等待，不空提交凑数。只有单入口启用且两窗口真实验收完成才关闭 GET-314。
 
-seed使用现有 `ref_request` 生成一份原子 `updateRefs` 数据：main的before/after均为完整f1，production的before为40个0、after为完整f1，两项均 `force:false`。这不是执行脚本。响应未知只读核对，不重复seed；已有合法f1种子只读返回。必须另外确认该no-op main断言及production创建没有触发CI、Preview或部署；出现额外事件立即停止，不能先enable再解释。
+init 无发布副作用，seed 两个 source policy 都关闭对应分支，因此不套用旧的全局 legacy+一小时 bootstrap 等待。Branch Tracking 尚无真实无副作用证据，单独保守处理；真正发布一定在所有结果闭合后的 enable+3660 之后。任何意外真实请求都会冻结并重新核算发布下限，不能用 enable 后的 hold 补救此前意外发布。
 
-## 严格保护提案
+## 持久状态与恢复
 
-精确审阅数据在 [cutover-plan.json](../deploy/hourly-publisher/cutover-plan.json)。只作用字面pattern `production`，不改main、不新增用户/App/Secret：
+单库保留 immutable handover 和 seed/tracking 各自的 uncertain/confirmed 操作。offline status 显示固定 legacy/deployment 和每个操作的状态/请求时间，不隐藏持久 unknown，也不输出请求 payload。意图先写独立 witness 并 fsync，再 SQL commit，再允许外部操作；恢复旧 DB、换 inode、改 L/D、删 witness、重复 arm 均拒绝。unknown 跨小时/重启保持，所有入口共用 OS 锁；写请求子进程继承锁，父进程退出不代表请求终止。
 
-1. 禁止force和deletion，enforce admins，restrict pushes，branch creation也受限制；唯一push actor为已有kubbot。无force/PR bypass actor。
-2. requires status checks，至少要求 `CI gate` 并继承执行时main的全部required contexts；当前main没有额外保护context。严格检查开启。该分支只是经审阅main源码的发布指针，故不要求另开PR来推进它；main正常PR审查仍保留。允许已有main merge commits，不开启linear-history限制。
-3. 创建后读取rule ID、所有字段、完整allowances及分页，核对没有宽泛重叠pattern或ruleset。不能因为创建失败而去掉enforce、放宽actor或使用bypass。现有ADMIN只是可用权限的证据，不是本阶段变更保护的授权。
-4. 保存新建rule ID及原“无此规则”快照。若在seed之前放弃且仍无production引用，可以在单独获准后只删除本次rule；seed之后保留规则和引用，不以删除分支来回滚。
+runtime 原有幂等、事务、120秒 lease、3660秒最小窗口、authenticated Date + suspend-aware continuous clock、latest-main CI、no-force CAS 和 provider/public-source 验收保留。disable 离线，不清除 cooldown、intent、ref 或未知结果。丢库/旧备份恢复须先停唯一调度、核对持锁子进程和全部请求、保留原证据，再准备独审的离线恢复；绝不透明重建 enabled 库。
 
-字段按[GitHub官方GraphQL定义](https://docs.github.com/en/graphql/reference/branches#createbranchprotectionruleinput)准备。实际创建前重读schema与目标，任何新权限需求都交协调方审阅，不能自行增加token权限。
+## 分阶段退出
 
-## 单入口执行顺序
-
-以下全部是待协调方开放执行窗口后的步骤。本阶段未执行。
-
-1. 协调方冻结常规合并、CLI/API部署与其他publication writer。只读核对精确f1、最新CI、原团队/项目/域名、所有INITIALIZING/BUILDING/QUEUED分页和deploy hooks；记录可信GitHub HTTP Date与供应商事件。执行前核对上述前置写操作的最早时刻，逐步保存意图/结论；任何未知或额外事件都冻结，而非定时继续。恢复后f1已发布，不补发它，也不以空提交制造一次发布。
-2. 建并读回上述production保护。在私有专属目录准备bare mirror与现有凭据路径；不复制凭据、不新建token或hook。独立镜像不碰用户checkout。本阶段不先创建该运行目录或状态库。精确bootstrap参数随本切换PR新增，故bootstrap工具固定到已独审且该完整SHA的适用CI通过的候选，由协调方单独批准仅check-stage/seed/init；无需为先发布工具而产生另一legacy部署。远端来源始终从镜像中的f1读取，不采用候选工作树的Vercel配置；正式enable前必须证明该工具树已经包含在通过main CI的切换合并中，且未发生变化。
-3. check-stage、seed和init均传 `--expected-source f1d0981ca332f5cfc989f6655061a977ff05b029`，禁止不固定来源的通用bootstrap。seed/init缺参数时在联网和创建状态前失败；CLI检查main及已有seed，seed内部再次读取stage并核对，再由同一完整SHA构造原子CAS。任何变化都停止，不能选另一已上线main继续。确认seed无额外事件后，init默认关闭的SQLite、独立witness和lock，保存其身份、来源与cooldown。已有库或witness不得覆盖。用同一用户和launchd最小PATH只读核对CLI；vc.js依赖env node，模板须填已验证Node目录。缓存CLI或工具摘要改变、消失时关闭并复核，不自动重装。
-4. 协调方审阅保护、seed、inactive状态和当前切换PR的CI/独审，确认替代入口确实可用。之后才将草稿转为可合并并正常合并。差异仅将Git policy从main-only变为production-only；所有其他Vercel设置不变。该main push必须没有部署。保存实际merge SHA，等待它自己的最新main CI成功；不拿f1的CI替代它。
-5. 在原项目 Settings → Environments → Production → Branch Tracking，将main改为production，域名仍归Production。此时production仍指向自身禁用production构建的f1种子；如果界面提示立即构建/另建部署、目标变化或需要新权限，先停止给协调方，不能点击试验。官方文档描述后续push触发发布，具体界面和实际无额外部署仍需读回。[Vercel官方说明](https://vercel.com/docs/git#customizing-the-production-branch)。现有MCP update_project未提供该字段，不向通用PATCH猜字段或用domain Preview绑定替代它。
-6. 运行check，重新核对原项目已跟踪production、当前main的exclusive policy、保护、身份、无在途部署和仍健康的f1。当前main须是协调方已冻结并批准的切换merge SHA；如果移动，重新审阅首发对象。成功才enable，记录新的完整3660秒hold；以更晚下限为准。
-7. 安装本任务唯一用户launchd项，每300秒tick。人工tick也共用同一状态库、witness和OS锁。保持其他cron、hook、直接Vercel发布或production push旁路关闭；现有身份不能作为旁路理由。首发推进至当时批准的最新合格main，保存原子CAS和唯一provider请求证据；仍旧线上f1不算首发成功。
-8. 两个真实合格窗口分别保存source/最新CI、journal/witness事件、ref、provider状态、同源release.json和Production HTTP smoke。在窗口间有正常有用变更时证明中间源没有各自部署；无实际变更则等待，不造空提交凑两次。只有唯一入口真正启用且两窗口验收完成才Done。
-
-仓库Git策略的匹配规则已核对：[任一匹配true可部署](https://vercel.com/docs/project-configuration/git-configuration)。因此保留 `"**":false`、只显式开启 `production`，不留main=true或任何Preview通配true。GitHub Production工作流只验收，不创建发布，也不新增CI写权限。
-
-## 状态、时钟与恢复
-
-SQLite与独立witness放同一专属非临时目录，目录700、文件600。arm先fsync witness，再SQL commit，再外部请求；每次事务核对DB inode/device及全部armed记录。锁描述符传给外部写请求子进程。主进程退出不等于请求终止，unknown不超时自动重试；远端已到目标只读确认accepted，仍在旧ref不能证明未发。
-
-时间只来自已认证GitHub响应Date，加包含系统睡眠的连续时间；往返大于30秒、快照大于120秒、时钟倒退均fail closed。Mac不能换成不含睡眠的monotonic。最小3660秒保守覆盖Date秒精度与跨进程传输误差；该约束、同源幂等和cooldown不因disable/re-enable、失败或重启重置。
-
-丢库、替换/原地覆盖旧库、损坏witness或回滚镜像都不走透明恢复。先disable并卸载本项调度、查清所有持锁子进程及在途请求，保留原库/witness和每次arm的远端证据，再准备独立审阅的离线恢复；不同时回滚DB与witness，不重建enabled库，不通过新目录忘记历史。新安全访问如确有必要，先提交具体目标、最小权限、用途、失效/撤销和回滚材料。
-
-## 分阶段回滚
-
-| 发生阶段 | 动作及边界 |
+| 阶段 | 退出方式 |
 | --- | --- |
-| 草稿未合并、未seed | 不合并即可，线上f1及main链无改变；没有发布器可停 |
-| 已seed/init但源码未切 | 默认关闭，保留库/witness/引用/保护；main链不变；不用删ref或重建库 |
-| 已合并但项目仍main | main Git已禁用，f1继续服务；不要打开另一条链来“测试”。暂停并修复readiness；若退出，用正常审阅PR恢复main-only前先确认替代入口关闭及时间下限 |
-| 项目已production或发布器已enable | 先offline disable、卸载本项launchd，核清sending/uncertain/accepted；不强推、不删ref。等待所有结果和最大冷却下限，再将项目跟踪回main（source main仍禁用），读回无新部署；最后正常PR恢复main-only，此次合并才恢复旧链 |
+| main-off 未合并 | 不合并；本次没有远端修改 |
+| main-off 已合并但未 init | 原健康版继续服务，待发布 main 可继续积累；不为恢复自动发布临时打开旁路 |
+| 已 init/seed、尚未启用 | 保持 disabled，保留库/witness/引用/保护及操作意图；unknown 只读收敛 |
+| 已跟踪 production/enable | 先 offline disable、卸载本任务调度，核清 sending/uncertain/accepted 与所有操作；保留状态 |
+| 确定恢复旧链 | 所有请求收敛且最大有效发布锚+3660后，先将项目跟回仍禁用 main 的来源，读回无新请求；最后正常审查 PR 恢复 main-only。该合并可能发布，不能在冷却内执行 |
 
-任意回滚都不能在冷却内产生第二个真实部署；项目设置若会立即部署就停在前一步交协调方。健康f1回退目标保留，不自动promote或rollback；这两类动作也可能改变发布/域名，不能当“只读恢复”。恢复legacy表示小时限制未生效，GET-314继续In Progress。紧急打破时间窗需要用户明确要求，不能从旧额度恢复推断。
+不强推、不删 production、不 promote/rollback 试验、不新增凭据或付费。恢复旧链意味着小时限制不再生效，GET-314 保持 In Progress。
 
-本次readiness与时间回执保存在任务永久证据目录 `get314-cutover/`；PR333的30项Python、61项Node、独审和两次六项CI证据不改写成本次重新执行。本候选的本地检查、独立审查和PR CI另记，不以它们冒称远端设置或真实窗口验收已完成。
+## 历史事实与验收边界
+
+2026-11-07 旧链 f1 部署 `dpl_G1RQW9yT48MXb4adz1boGuhFmL51` created 01:49:16.792Z；外部 PR339 的 857 部署 `dpl_ZA7XWokuCiq3P9PaDgQsE2MDiLFv` created 02:46:07.869Z，间隔 **3411.077秒**；外部 PR331 的 a0a 部署 `dpl_FdeerEi2WrCjhB5XSPE8cURw1scQ` created 03:01:17.306Z，间隔 **909.437秒**。它们发生在小时入口未启用时，不是成功限流证据。f1/857 的旧健康观察、旧时间下限和 fdc3 候选 CI 都是历史，不能复用为新执行授权。
+
+离线测试只证明协议和策略。provider/HTTP 无请求读回、Branch Tracking 实测、唯一调度、两个真实窗口均未完成。当前阶段不做真实账号/书房/模型/UI 验收。

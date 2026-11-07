@@ -16,12 +16,15 @@ from .state import GateError, sha
 
 REPOSITORY = 'getyak/leafhour'
 TEAM = 'team_nMU4o8gjejVzBhcnMfqgUQbJ'
+REPOSITORY_ID = 1415706040
 URL = 'https://leafhour.com'
 ORIGINS = ('https://github.com/getyak/leafhour.git', 'git@github.com:getyak/leafhour.git')
 RULE_QUERY = '''query { viewer { login } repository(owner:"getyak",name:"leafhour") {
   ref(qualifiedName:"refs/heads/main") { branchProtectionRule { requiredStatusCheckContexts } }
   branchProtectionRules(first:100) { nodes { pattern allowsForcePushes allowsDeletions isAdminEnforced restrictsPushes
-    requiresStatusChecks requiredStatusCheckContexts requiresApprovingReviews
+    requiresStatusChecks requiredStatusCheckContexts requiresApprovingReviews blocksCreations requiresStrictStatusChecks
+    bypassForcePushAllowances(first:1) { totalCount pageInfo { hasNextPage } }
+    bypassPullRequestAllowances(first:1) { totalCount pageInfo { hasNextPage } }
     pushAllowances(first:100) { nodes { actor { __typename ... on User { login } ... on Team { slug } ... on App { slug } } } pageInfo { hasNextPage } }
   } pageInfo { hasNextPage } }
 } }'''
@@ -40,8 +43,11 @@ def command(args, cwd=None, timeout=25, input_data=None, pass_fds=()):
         raise GateError('credential, command or transport unavailable; no automatic retry') from None
 
 
-def ref_request(repository_id, source, base, create=False):
+def ref_request(repository_id, source, base, create=False, expected_main=None):
     sha(source)
+    if create and expected_main is None:
+        raise GateError('seed requires a separate expected main pin')
+    main = sha(expected_main) if expected_main is not None else source
     if not (create is True and base == '0' * 40):
         sha(base)
     if not isinstance(repository_id, str) or not re.fullmatch(r'[A-Za-z0-9_=-]{3,128}', repository_id):
@@ -49,7 +55,7 @@ def ref_request(repository_id, source, base, create=False):
     return {
         'query': 'mutation($input:UpdateRefsInput!){updateRefs(input:$input){clientMutationId}}',
         'variables': {'input': {'repositoryId': repository_id, 'refUpdates': [
-            {'name': 'refs/heads/main', 'beforeOid': source, 'afterOid': source, 'force': False},
+            {'name': 'refs/heads/main', 'beforeOid': main, 'afterOid': main, 'force': False},
             {'name': 'refs/heads/production', 'beforeOid': base, 'afterOid': source, 'force': False},
         ]}},
     }
@@ -73,9 +79,13 @@ def protection_ready(rules, actor, main_checks=()):
     rule = matches[0]
     allowances = rule.get('pushAllowances') or {}
     principals = [item.get('actor') for item in allowances.get('nodes', [])]
+    no_bypass = all(rule.get(field, {}).get('totalCount') == 0
+                    and rule.get(field, {}).get('pageInfo', {}).get('hasNextPage') is False
+                    for field in ('bypassForcePushAllowances', 'bypassPullRequestAllowances'))
     return (rule.get('allowsForcePushes') is False and rule.get('allowsDeletions') is False
             and rule.get('isAdminEnforced') is True and rule.get('restrictsPushes') is True
             and rule.get('requiresStatusChecks') is True and rule.get('requiresApprovingReviews') is False
+            and rule.get('blocksCreations') is True and rule.get('requiresStrictStatusChecks') is True and no_bypass
             and set(main_checks).union({'CI gate'}) <= set(rule.get('requiredStatusCheckContexts') or [])
             and not allowances.get('pageInfo', {}).get('hasNextPage')
             and principals == [{'__typename': 'User', 'login': actor}])
@@ -94,7 +104,8 @@ def target_matches(project, domain, binding, production_branch='production'):
     return (project.get('id') == binding['project'] and project.get('accountId') == TEAM
             and project.get('name') == binding['projectName'] and project.get('paused') is not True
             and link.get('type') == 'github' and link.get('org') == 'getyak' and link.get('repo') == 'leafhour'
-            and link.get('productionBranch') == production_branch
+            and link.get('repoId') == REPOSITORY_ID and link.get('productionBranch') == production_branch
+            and link.get('deployHooks') == []
             and domain.get('name') == 'leafhour.com' and domain.get('verified') is True
             and not domain.get('redirect') and domain.get('gitBranch') in (None, production_branch)
             and not domain.get('customEnvironmentId'))
@@ -189,6 +200,21 @@ def public_release():
         return None
 
 
+def public_health(source):
+    if public_release() != source:
+        return False
+    try:
+        opener = urllib.request.build_opener(NoRedirect)
+        for path in ('/', '/api/auth/session'):
+            request = urllib.request.Request(URL + path, headers={'Cache-Control': 'no-cache'})
+            with opener.open(request, timeout=10) as response:
+                if response.status != 200:
+                    return False
+        return True
+    except OSError:
+        return False
+
+
 class RuntimePort(GitPort):
     def __init__(self, config, clock, lock_fd=None):
         self.binding = config['binding']
@@ -202,6 +228,7 @@ class RuntimePort(GitPort):
         self.gh, self.vercel = config.get('gh', 'gh'), config.get('vercel', 'vercel')
         self.clock = clock
         self.lock_fd = lock_fd
+        self.journal = None
         super().__init__(config['mirror'], 'production')
         if self.git('remote', 'get-url', 'origin') not in ORIGINS:
             raise GateError('mirror origin is not the approved public repository')
@@ -213,7 +240,7 @@ class RuntimePort(GitPort):
         # Uses normal CLI authentication. Never extracts tokens or browser state.
         return json.loads(command([self.vercel, 'api', endpoint, '--method', 'GET']))
 
-    def inspect(self, staged=False):
+    def inspect(self, staged=False, guard=True):
         info = self.clock.repository
         if info.get('full_name') != REPOSITORY or info.get('permissions', {}).get('push') is not True:
             raise GateError('existing GitHub identity lacks verified repository push access')
@@ -242,51 +269,127 @@ class RuntimePort(GitPort):
             if not isinstance(deployments.get('deployments'), list) or deployments['deployments'] or deployments.get('pagination', {}).get('next'):
                 quiet = False
         live = public_release()
-        if staged:
-            enabled = config.get('git', {}).get('deploymentEnabled')
-            legacy = (isinstance(enabled, dict) and enabled.get('**') is False and enabled.get('main') is True
-                      and set(enabled) <= {'**', 'main', 'production'} and enabled.get('production', False) is False)
-            ready = legacy and target_matches(project, domain, b, 'main') and quiet and live == source
-        else:
-            ready = exclusive_policy(config) and target_matches(project, domain, b) and quiet and live is not None
+        ready = (exclusive_policy(config) and target_matches(project, domain, b, 'main' if staged else 'production')
+                 and quiet and live is not None)
+        if not staged and guard:
+            if self.journal is None:
+                raise GateError('runtime requires the original two-phase journal')
+            self.guard_inventory(source)
         return {'source': source, 'remote': self.remote(optional=staged), 'ready': ready, 'green': green}
 
     def prepare(self):
         return Snapshot(**self.inspect())
 
-    def staging(self):
-        stage = self.inspect(staged=True)
-        if stage['remote']:
-            self.git('merge-base', '--is-ancestor', stage['remote'], stage['source'])
-            seed = json.loads(self.git('show', stage['remote'] + ':vercel.json'))
-            enabled = seed.get('git', {}).get('deploymentEnabled')
-            disabled = (enabled is False or (isinstance(enabled, dict) and enabled.get('**') is False
-                        and set(enabled) <= {'**', 'main', 'production'}
-                        and enabled.get('production', False) is False))
-            stage['ready'] = stage['ready'] and disabled
+    def inventory(self):
+        """Read every page; missing/active/unknown states never mean drained."""
+        records, cursor, seen = {}, None, set()
+        while True:
+            self.clock()
+            endpoint = ('/v6/deployments?teamId=' + quote(self.binding['team'])
+                        + '&projectId=' + quote(self.binding['project']) + '&limit=100')
+            if cursor is not None:
+                endpoint += '&until=' + str(cursor)
+            page = self.provider(endpoint)
+            if not isinstance(page.get('deployments'), list) or not isinstance(page.get('pagination'), dict):
+                raise GateError('deployment inventory is incomplete')
+            for item in page['deployments']:
+                identity = item.get('uid') or item.get('id')
+                state = item.get('readyState') or item.get('state')
+                git, meta = item.get('gitSource') or {}, item.get('meta') or {}
+                source = sha(git.get('sha') or meta.get('githubCommitSha'))
+                ref = git.get('ref') or meta.get('githubCommitRef')
+                if not isinstance(identity, str) or not re.fullmatch(r'dpl_[A-Za-z0-9]+', identity) or not ref:
+                    raise GateError('deployment identity/source is unknown')
+                if state not in ('READY', 'ERROR', 'CANCELED'):
+                    raise GateError('legacy deployments are active or unresolved')
+                record = {'id': identity, 'source': source, 'ref': ref, 'state': state}
+                if identity in records and records[identity] != record:
+                    raise GateError('deployment inventory changed during pagination')
+                records[identity] = record
+            following = page['pagination'].get('next')
+            if following is None:
+                return sorted(records.values(), key=lambda item: item['id'])
+            if (type(following) is not int or following < 0 or following in seen
+                    or (cursor is not None and following >= cursor)):
+                raise GateError('deployment inventory pagination is ambiguous')
+            seen.add(following)
+            cursor = following
+
+    def legacy_requests_settled(self, main, legacy):
+        # After main-off, inspect every formerly deployment-enabled main
+        # commit since the pinned healthy legacy. An empty provider queue
+        # cannot turn a missing/pending GitHub request receipt into success.
+        sources = [legacy, *self.git('rev-list', '--first-parent', legacy + '..' + main).split()]
+        for source in sources:
+            sha(source)
+            policy = json.loads(self.git('show', source + ':vercel.json')).get('git', {}).get('deploymentEnabled')
+            main_off = (policy is False or (isinstance(policy, dict) and policy.get('**') is False
+                        and policy.get('main', False) is False and set(policy) <= {'**', 'main', 'production'}))
+            if source == legacy or not main_off:
+                if self.provider_status(source) not in ('success', 'failure', 'error'):
+                    return False
+        return True
+
+    def staging(self, expected_main, legacy, deployment, production_branch='main'):
+        sha(expected_main), sha(legacy)
+        if not isinstance(deployment, str) or not re.fullmatch(r'dpl_[A-Za-z0-9]+', deployment):
+            raise GateError('pin the actual healthy legacy deployment')
+        stage = self.inspect(staged=production_branch == 'main', guard=False)
+        if stage['source'] != expected_main or stage['remote'] not in (None, legacy):
+            raise GateError('main or seed drifted from the explicit dual pins')
+        self.git('merge-base', '--is-ancestor', legacy, expected_main)
+        policy = json.loads(self.git('show', legacy + ':vercel.json')).get('git', {}).get('deploymentEnabled')
+        disabled = (policy is False or (isinstance(policy, dict) and policy.get('**') is False
+                    and set(policy) <= {'**', 'main', 'production'} and policy.get('production', False) is False))
+        detail = self.provider('/v13/deployments/' + quote(deployment) + '?teamId=' + quote(self.binding['team']))
+        git = detail.get('gitSource') or {}
+        healthy = (detail.get('id') == deployment and detail.get('projectId') == self.binding['project']
+                   and detail.get('ownerId') == TEAM and detail.get('target') == 'production'
+                   and detail.get('readyState') == 'READY' and type(detail.get('ready')) in (int, float)
+                   and detail['ready'] > 0 and git.get('type') == 'github' and git.get('repoId') == REPOSITORY_ID
+                   and git.get('ref') == 'main' and git.get('sha') == legacy)
+        inventory = self.inventory()
+        healthy = healthy and {'id': deployment, 'source': legacy, 'ref': 'main', 'state': 'READY'} in inventory
+        runs = self.github('/actions/workflows/ci.yml/runs?branch=main&event=push&head_sha=' + legacy + '&per_page=100')
+        main_green = stage['green']
+        stage.update(legacy=legacy, deployment=deployment, inventory=inventory, mainGreen=main_green,
+                     green=valid_ci(runs.get('workflow_runs', []), legacy),
+                     ready=stage['ready'] and disabled and healthy and public_health(legacy)
+                           and self.legacy_requests_settled(expected_main, legacy))
         return stage
 
-    def seed(self, expected_source):
-        sha(expected_source)
-        stage = self.staging()
-        if stage['source'] != expected_source or stage['remote'] not in (None, expected_source):
-            raise GateError('legacy main or seed changed from the approved expected source')
-        if not stage['ready'] or not stage['green']:
-            raise GateError('legacy branch is not healthy and verified; do not seed')
-        if stage['remote']:
-            self.git('merge-base', '--is-ancestor', stage['remote'], stage['source'])
-            return {'status': 'seed-already-exists', 'source': stage['remote']}
-        # At this stage production is disabled in the exact seed commit,
-        # main is the configured Production branch, and main is already live.
-        request = ref_request(self.clock.repository.get('node_id'), stage['source'], '0' * 40, create=True)
+    def seed(self, expected_main, legacy):
+        # Cutover has already fsynced its intent. CAS validates both pins even
+        # when normal main merges race this request. No implicit source choice.
+        request = ref_request(self.clock.repository.get('node_id'), legacy, '0' * 40,
+                              create=True, expected_main=expected_main)
         self.clock()
         result = json.loads(command([self.gh, 'api', 'graphql', '--input', '-'], input_data=json.dumps(request),
                                     pass_fds=() if self.lock_fd is None else (self.lock_fd,)))
         if result.get('errors') or not result.get('data', {}).get('updateRefs'):
-            raise GateError('seed response uncertain or rejected; inspect ref without resending')
-        return {'status': 'seed-created-disabled-for-vercel', 'source': stage['source']}
+            raise GateError('seed outcome not confirmed; reconcile without resending')
 
-    def observe(self, source):
+    def guard_inventory(self, main):
+        handover = self.journal.bootstrap()['receipt']
+        if not self.legacy_requests_settled(sha(main), handover['legacy']):
+            self.journal.freeze('legacy-request-unknown', self.clock())
+            raise GateError('a legacy request is missing or pending again; controlled recovery required')
+        baseline = {item['id']: item for item in handover['inventory']}
+        current = {item['id']: item for item in self.inventory()}
+        requested = self.journal.requested_sources()
+        counts = {}
+        bad = any(current.get(key) != record for key, record in baseline.items())
+        for key, record in current.items():
+            if key in baseline:
+                continue
+            source = record['source']
+            counts[source] = counts.get(source, 0) + 1
+            bad = bad or record['ref'] != 'production' or source not in requested or counts[source] > 1
+        if bad:
+            self.journal.freeze('deployment-inventory-drift', self.clock())
+            raise GateError('late legacy, missing receipt or extra deployment; controlled recovery required')
+
+    def provider_status(self, source):
         sha(source)
         statuses = self.github('/commits/' + source + '/status?per_page=100').get('statuses', [])
         prefix = '/' + self.binding['teamSlug'] + '/' + self.binding['projectName'] + '/'
@@ -299,7 +402,10 @@ class RuntimePort(GitPort):
             if status.get('context') == 'Vercel' and target.scheme == 'https' and target.netloc == 'vercel.com' and (project_target or team_rejection):
                 provider = status.get('state')
                 break
-        return self.remote(), provider, public_release()
+        return provider
+
+    def observe(self, source):
+        return self.remote(), self.provider_status(source), public_release()
 
     def push(self, source, base):
         # Runtime uses server-side CAS, rather than relying on a client's
@@ -308,6 +414,9 @@ class RuntimePort(GitPort):
         runs = self.github('/actions/workflows/ci.yml/runs?branch=main&event=push&head_sha=' + sha(source) + '&per_page=100')
         if not valid_ci(runs.get('workflow_runs', []), source):
             raise GateError('latest source CI is no longer successful')
+        if getattr(self, 'journal', None) is None:
+            raise GateError('runtime push requires the original journal')
+        self.guard_inventory(source)
         self.git('merge-base', '--is-ancestor', sha(base), source)
         request = ref_request(self.clock.repository.get('node_id'), source, base)
         self.clock()
