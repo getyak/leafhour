@@ -1,0 +1,22 @@
+import {mountChoiceControl} from './choice-control.mjs';
+import {t,onUiLocaleChange} from './ui-locale.mjs';
+
+// Only the nine Aa drawer selects use this on-demand enhancement. Native
+// options/value/change stay authoritative; every later write calls sync().
+const ids=['reading-purpose','preferred-language','view-mode','page-layout','translation-variant','parallelLayout','parallelStyle','parallelColor','parallelBackground'];
+export function mountReaderSettingsChoices({document}){
+  const choices={};
+  const nativeLabels=select=>{
+    for(const option of select.options){const id=option.getAttribute?.('data-ui');if(id)option.textContent=t(id);}
+    const id=select.getAttribute?.('data-ui-aria-label');
+    return id?t(id):undefined;
+  };
+  for(const id of ids){
+    const select=document.getElementById(id),control=select?mountChoiceControl({document,select,label:nativeLabels(select)}):null;
+    if(control)choices[id]=control;
+  }
+  const offLocale=onUiLocaleChange(()=>{
+    for(const control of Object.values(choices))control.updateLabels({label:nativeLabels(control.select)});
+  });
+  return {choices,sync(){for(const control of Object.values(choices))control.sync();},unmount(){offLocale();for(const control of Object.values(choices))control.destroy?.();}};
+}

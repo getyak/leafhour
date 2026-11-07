@@ -1,0 +1,13 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {build} from 'esbuild';
+import {fileURLToPath} from 'node:url';
+import {sourceDescriptionMessages,importSourceDescription} from '../app/document-source.mjs';
+import {createTranslationState,createTranslationPresentation} from '../app/translation-state.mjs';
+const compile=async(file,entry)=>{const result=await build({stdin:{contents:`import {${entry}} from ${JSON.stringify(fileURLToPath(new URL(file,import.meta.url)))};globalThis.entry=${entry};`,resolveDir:fileURLToPath(new URL('..',import.meta.url)),loader:'js'},bundle:true,format:'esm',platform:'browser',target:'es2022',minify:true,charset:'utf8',write:false,logLevel:'silent'});return result.outputFiles[0].text;};
+test('descriptor-only source UI does not retain unused legacy prose while legacy helper stays compatible',async()=>{
+ const compiled=await compile('../app/document-source.mjs','sourceDescriptionMessages');assert.ok(compiled.includes('source.description.epub'));assert.ok(!compiled.includes('EPUB 原文保留在自己的书房'));assert.ok(importSourceDescription({source:{format:'epub',structure:'epub_navigation'}}).includes('EPUB 原文保留在自己的书房'));assert.ok(sourceDescriptionMessages({source:{format:'epub'}}).includes('source.description.epub'));
+});
+test('descriptor-only translation UI excludes unused legacy prose and retains the legacy entry',async()=>{
+ const compiled=await compile('../app/translation-state.mjs','createTranslationPresentation');assert.ok(compiled.includes('translation.backgroundRunning'));assert.ok(!compiled.includes('另一段正在翻译，可以继续阅读。'));assert.equal(typeof createTranslationState().view,'function');assert.equal(typeof createTranslationPresentation().view,'function');
+});
