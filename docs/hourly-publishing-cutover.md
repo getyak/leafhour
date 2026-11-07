@@ -31,9 +31,11 @@
 
 时间均为2026-11-07。以最晚已核对事件保守起算，不能从恢复前旧7ef的创建时间、整点、最早请求或第一次失败重试起算。实际首发条件是：
 
-`Tfirst >= max(最新有效legacy观察时间, init服务时钟, enable服务时钟) + 3660秒`。
+`Tfirst >= max(已记录的最近有效legacy/发布锚, init服务时钟, enable服务时钟) + 3660秒`。
 
-init在健康legacy和合法种子成立后才建默认关闭库；enable在独占链检查通过后**重新**持久化完整3660秒等待。当前控制器这两个动作均保持该下限，不允许通过“早就过了一小时”缩短enable等待。新观察、迟到的旧请求、另一真实部署或晚执行只能延后，不会把03:10:04Z当成定时授权。任何sending/uncertain/accepted未收敛时，无论过多久都不发下一次。
+init在健康legacy和合法种子成立后才建默认关闭库；enable在独占链检查通过后**重新**持久化完整3660秒等待。当前控制器这两个动作均保持该下限，不允许通过“早就过了一小时”缩短enable等待。迟到的旧请求、另一真实部署、新有效发布锚或晚执行只能延后，不会把03:10:04Z当成定时授权。已经证明没有新发布的同源只读复核不必反复刷新锚，避免无限推迟。任何sending/uncertain/accepted未收敛时，无论过多久都不发下一次。
+
+这条约束也适用于**最终enable之前**的写操作。seed/no-op main断言、Branch Tracking等尚未真实证明无发布副作用的操作，必须先满足 `T操作 >= 已记录的最近有效legacy锚 + 3660秒`；当前下限为03:15:07.740435Z，用既有GitHub服务时间核对，不用本机墙钟提前放行。到时仍须单独授权。逐个记录操作意图与真实回执，确认上一操作结论后才进行下一操作；出现额外push/CI/deployment或未知结果就冻结后续步骤，核清在途结果并按新有效锚重算。**未知结果不能只靠再等一小时解锁**，enable后的hold也不能补救之前过早发生的发布副作用。
 
 首次种子只准 `refs/heads/production = f1d0981ca332f5cfc989f6655061a977ff05b029`，该commit自身的 `vercel.json` 禁用production，项目此时仍跟踪main。先重新验证远端main、正式来源和CI都仍为f1、无活动部署；任何一项变化就停止并更新交接记录，不改为另一个SHA继续。
 
@@ -54,7 +56,7 @@ seed使用现有 `ref_request` 生成一份原子 `updateRefs` 数据：main的b
 
 以下全部是待协调方开放执行窗口后的步骤。本阶段未执行。
 
-1. 协调方冻结常规合并、CLI/API部署与其他publication writer。只读核对精确f1、最新CI、原团队/项目/域名、所有INITIALIZING/BUILDING/QUEUED分页和deploy hooks；记录可信GitHub HTTP Date与供应商事件。恢复后f1已发布，不补发它，也不以空提交制造一次发布。
+1. 协调方冻结常规合并、CLI/API部署与其他publication writer。只读核对精确f1、最新CI、原团队/项目/域名、所有INITIALIZING/BUILDING/QUEUED分页和deploy hooks；记录可信GitHub HTTP Date与供应商事件。执行前核对上述前置写操作的最早时刻，逐步保存意图/结论；任何未知或额外事件都冻结，而非定时继续。恢复后f1已发布，不补发它，也不以空提交制造一次发布。
 2. 建并读回上述production保护。在私有专属目录准备bare mirror与现有凭据路径；不复制凭据、不新建token或hook。独立镜像不碰用户checkout。本阶段不先创建该运行目录或状态库。精确bootstrap参数随本切换PR新增，故bootstrap工具固定到已独审且该完整SHA的适用CI通过的候选，由协调方单独批准仅check-stage/seed/init；无需为先发布工具而产生另一legacy部署。远端来源始终从镜像中的f1读取，不采用候选工作树的Vercel配置；正式enable前必须证明该工具树已经包含在通过main CI的切换合并中，且未发生变化。
 3. check-stage、seed和init均传 `--expected-source f1d0981ca332f5cfc989f6655061a977ff05b029`，禁止不固定来源的通用bootstrap。seed/init缺参数时在联网和创建状态前失败；CLI检查main及已有seed，seed内部再次读取stage并核对，再由同一完整SHA构造原子CAS。任何变化都停止，不能选另一已上线main继续。确认seed无额外事件后，init默认关闭的SQLite、独立witness和lock，保存其身份、来源与cooldown。已有库或witness不得覆盖。用同一用户和launchd最小PATH只读核对CLI；vc.js依赖env node，模板须填已验证Node目录。缓存CLI或工具摘要改变、消失时关闭并复核，不自动重装。
 4. 协调方审阅保护、seed、inactive状态和当前切换PR的CI/独审，确认替代入口确实可用。之后才将草稿转为可合并并正常合并。差异仅将Git policy从main-only变为production-only；所有其他Vercel设置不变。该main push必须没有部署。保存实际merge SHA，等待它自己的最新main CI成功；不拿f1的CI替代它。
