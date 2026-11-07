@@ -316,7 +316,8 @@ class Controller:
             require(not self.cmd(['git','status','--porcelain'],stage+'-'+tag+'-clean',cwd=directory),'checkout dirty')
         require(self.cmd(['git','rev-parse','HEAD^{tree}'],stage+'-source-tree',cwd=self.source)==SOURCE_TREE,'source tree changed')
     def prepare(self):
-        self.s.phase_deadline=self.budget.start+600
+        # Stay inside the 6-minute Actions step, reserving30s for owned-command stop.
+        self.s.phase_deadline=min(self.budget.start+600,time.monotonic()+330,self.budget.end-360)
         self.identities('prepare')
         from hosted_get328_admission import fetch_json, API_ROOT
         jobs,raw,link=fetch_json(API_ROOT+'/actions/runs/'+os.environ['GITHUB_RUN_ID']+'/jobs?per_page=100')
@@ -333,12 +334,12 @@ class Controller:
         require(self.cmd(['xcrun','--sdk','iphonesimulator','--show-sdk-version'],'sdk-version')=='26.5','SDK mismatch')
         sdk=Path(self.cmd(['xcrun','--sdk','iphonesimulator','--show-sdk-path'],'sdk-path'))
         require('x86_64-ios-simulator' in (sdk/'usr/lib/libSystem.tbd').read_text(),'SDK lacks Intel support')
-        runtimes=json.loads(self.sim(['list','runtimes','--json'],'runtimes'))
+        runtimes=json.loads(self.sim(['list','runtimes','--json'],'runtimes',180))
         candidates=[r for r in runtimes['runtimes'] if r.get('version')=='26.5' and r.get('isAvailable') is True and r.get('identifier','').startswith('com.apple.CoreSimulator.SimRuntime.iOS-')]
         require(len(candidates)==1,'installed iOS26.5 unavailable/ambiguous')
         rt=candidates[0]; rtroot=Path(rt['bundlePath'])/'Contents/Resources/RuntimeRoot'
         arch=runtime_architecture(rtroot.resolve())
-        devices=json.loads(self.sim(['list','devices','--json'],'initial-devices'))
+        devices=json.loads(self.sim(['list','devices','--json'],'initial-devices',180))
         require(not any(d.get('state')=='Booted' for ds in devices['devices'].values() for d in ds),'preexisting booted device')
         fixture=Path(__file__).resolve().parents[2]/'ci/fixtures/get328/Alice-complete-GET328-20261107.pdf'
         require(fixture.stat().st_size==243472 and sha(fixture)==PDF_SHA,'canonical Alice73 differs')

@@ -14,7 +14,8 @@ concurrency:
 jobs:
   seven:
     # Prepared only for one exact dedicated push; normal PR/main cannot enter.
-    # The pinned comment is still pending/consumed=false. No grant/ref exists.
+    # The newly pinned comment is pending/consumed=false for this candidate.
+    # The old 6702281018 grant/ref remains consumed and must never be reused.
     # Coordinator must approve the final SHA before external consumption/push.
     if: >-
       github.repository == 'getyak/leafhour' &&
@@ -33,7 +34,7 @@ jobs:
         shell: bash
     env:
       DEVELOPER_DIR: /Applications/Xcode_26.6.app/Contents/Developer
-      GET328_GRANT_COMMENT_ID: '6702281018'
+      GET328_GRANT_COMMENT_ID: '6702707803'
       GET328_GRANT_ISSUER_ID: '124379614'
     steps:
       - name: Establish exclusive root and shared deadline before checkout

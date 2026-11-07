@@ -12,8 +12,9 @@ ledger are not inputs to this runner and must not be modified or retried.
 
 The prepared push workflow is limited to the dedicated once-only namespace and
 existing actor kubbot/124379614, with no PR/main/manual trigger and
-`contents: read` only. It pins public comment6702281018 and issuer124379614.
-That comment is pending/consumed=false; no nonce/ref/grant has been issued.
+`contents: read` only. It pins new public comment6702707803 and issuer124379614.
+That new comment is pending/consumed=false; no new nonce/ref/grant has been issued.
+The previous comment6702281018/ref was consumed by run42341326070 and is never reused.
 Ordinary PR CI tests this code; its existing generic arm64 Simulator build on
 Xcode16.4/SDK18.5 cannot prove the hosted iOS26 UI path. No Preview is requested:
 `vercel.json` retains `deploymentEnabled: {"**": false, "production": true}`
@@ -114,6 +115,36 @@ risk. It changes neither the PDF identity nor the real Files/OCR test oracle.
 It is staged only in the owned QA App Documents immediately before PDF73, never
 pre-imported into the library. The original evidence copy remains untouched.
 
+## First actual hosted attempt and minimal cold-inventory fix
+
+Run42341326070/attempt1 on controller0b3421c passed admission on standard
+macos-26-intel/x86_64 image20260824.0517.1, Xcode26.6/17F113 and SDK26.5.
+Its first `simctl list runtimes --json` produced no output before the30-second
+command deadline. After30.43s it was cooperatively stopped (raw-2), leader reaped
+and group absent. This does not prove runtime absence or incompatibility.
+No device was created, no build or UI case ran, and the seven remain0/7.
+The42-entry partial package was uploaded, downloaded and verified against the
+provider ZIP digest and exact run's trusted tar/manifest hashes. The consumed
+record, old comment/ref and raw receipts are retained unchanged.
+
+This candidate only gives each initial read-only CoreSimulator inventory
+(`list runtimes` and `list devices`) at most180 seconds, once each. Both can be
+CoreSimulator startup entry points, so both use the same cold-start allowance.
+The existing supervisor still clamps every command to the earliest of
+prepare-entry+330seconds, the shared bootstrap600-second deadline and global
+stop-new-work boundary. The330s self-controlled cap leaves30s before the
+unchanged6-minute Actions prepare-step timeout for owned-command termination
+and partial receipt handling; the70-minute
+job and every other resource/timeout limit stay unchanged. It never retries an
+inventory call or downloads/substitutes a runtime. Device creation/boot timeouts
+are unchanged. The final warm `list devices` cleanup readback stays30 seconds
+inside the original120-second cleanup window.
+
+The new placeholder is comment6702707803, pending/consumed=false. The earlier
+consumed comment6702281018 cannot authorize this new controller SHA. A new
+candidate ordinary CI and independent review are source evidence only; a new
+actual attempt still needs separate exact coordinator authorization.
+
 ## Execution request remains pending
 
 `activation-request.pending.json` and the pinned public comment are deliberately
@@ -126,7 +157,7 @@ CI and independent review, then approve the concrete single-use material.
 
 The implemented grant channel is a fixed public GitHub issue comment authored by
 the coordinator's pinned user ID, containing precisely the JSON envelope consumed
-by admission. The sole pending metadata placeholder is [comment6702281018](https://github.com/getyak/leafhour/pull/340#issuecomment-6702281018), created/read back as kubbot/124379614. It remains pending and cannot admit a run. At activation,
+by admission. The sole pending metadata placeholder is [comment6702707803](https://github.com/getyak/leafhour/pull/340#issuecomment-6702707803), created/read back as kubbot/124379614. It remains pending and cannot admit a run. At activation,
 the resulting actual activation commit and these exact actor/comment/issuer
 pins must be independently reviewed and pass ordinary CI. Only then may the coordinator
 publish/update the comment with that commit SHA, fresh nonce/ref, exact runtime,
