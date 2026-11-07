@@ -151,7 +151,8 @@ jobs:
     # Explicit Intel pool avoids the documented arm64 capacity abandonment.
     # The app below still builds the arm64 iOS Simulator target.
     runs-on: macos-15-intel
-    timeout-minutes: 30
+    # Cold arm64 and Intel simulator builds must finish before card assertions.
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4

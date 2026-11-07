@@ -6,6 +6,12 @@ private enum ListeningSheet: String, Identifiable {
     var id: String { rawValue }
 }
 
+struct ReaderListeningContentsTarget: Equatable {
+    let id = UUID()
+    let chapterIndex: Int
+    let anchor: ReadingAnchor?
+}
+
 /// The original player structure: identity, sentence stage, comparison, transport.
 /// The shared functional bar is independent of the selectable text surface.
 struct ReaderListeningPanel: View {
@@ -13,6 +19,11 @@ struct ReaderListeningPanel: View {
     @Bindable var speech: ReaderSpeech
     var quickAI: AnyView? = nil
     var quickCapture: ReaderQuickCapture? = nil
+    var isActive = true
+    var isPresented = true
+    var contentsTarget: ReaderListeningContentsTarget? = nil
+    var onRead: (() -> Void)? = nil
+    var onContents: (() -> Void)? = nil
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.accessibilityVoiceOverEnabled) private var voiceOver
     @Environment(\.dynamicTypeSize) private var typeSize
@@ -26,6 +37,7 @@ struct ReaderListeningPanel: View {
     @State private var activity = UUID()
     @State private var selectedLines: Set<String> = []
     @State private var rows: [ReaderListeningPassage] = []
+    @State private var projectedKey: String?
     @State private var browsingChapterID: String?
     @State private var visiblePassageID: String?
     @State private var comparisonPassageID: String?
@@ -77,49 +89,60 @@ struct ReaderListeningPanel: View {
         }
         return nil
     }
+    private var playerContent: some View {
+        VStack(spacing: 0) {
+            if controls.navigationVisible { navigationHeader }
+            GeometryReader { geometry in
+                let landscape = geometry.size.width > geometry.size.height
+                ZStack {
+                    paper.ignoresSafeArea()
+                    if landscape {
+                        HStack(alignment: .top, spacing: 24) {
+                            ScrollView {
+                                VStack(spacing: 12) {
+                                    identity
+                                    if controls.navigationVisible, let quickAI { HStack { Spacer(); quickAI } }
+                                    if controls.transportExpanded { transport.id("expanded-transport") } else { miniTransport.id("mini-transport") }; if controls.navigationVisible { commonBar } else { reveal }
+                                }.padding(.vertical, 10)
+                            }.frame(width: min(typeSize.isAccessibilitySize ? 340 : 280, geometry.size.width * (typeSize.isAccessibilitySize ? 0.44 : 0.36)))
+                            VStack(spacing: 0) {
+                                transcript
+                                comparison(maxHeight: min(125, geometry.size.height * 0.34))
+                            }
+                        }.padding(.horizontal, 24)
+                    } else {
+                        portraitPlayer(comparisonHeight: min(geometry.size.height < 560 ? 90 : 155, geometry.size.height * 0.20), stageHeight: nil)
+                    }
+                }.accessibilityElement(children: .contain)
+                    .accessibilityIdentifier(landscape ? "reader-listening-landscape" : "reader-listening-portrait")
+            }
+        }
+        .background(paper.ignoresSafeArea())
+    }
     var body: some View {
-        GeometryReader { geometry in
-            let landscape = geometry.size.width > geometry.size.height
-            ZStack {
-                paper.ignoresSafeArea()
-                if landscape {
-                    HStack(alignment: .top, spacing: 24) {
-                        ScrollView {
-                            VStack(spacing: 12) {
-                                identity
-                                if let quickAI { HStack { Spacer(); quickAI } }
-                                if controls.transportExpanded { transport.id("expanded-transport") } else { miniTransport.id("mini-transport") }; if controls.navigationVisible { commonBar } else { reveal }
-                            }.padding(.vertical, 10)
-                        }.frame(width: min(typeSize.isAccessibilitySize ? 340 : 280, geometry.size.width * (typeSize.isAccessibilitySize ? 0.44 : 0.36)))
-                        VStack(spacing: 0) {
-                            transcript
-                            comparison(maxHeight: min(125, geometry.size.height * 0.34))
-                        }
-                    }.padding(.horizontal, 24)
-                } else {
-                    portraitPlayer(comparisonHeight: min(geometry.size.height < 560 ? 90 : 155, geometry.size.height * 0.20), stageHeight: nil)
-                }
-            }.accessibilityElement(children: .contain)
-                .accessibilityIdentifier(landscape ? "reader-listening-landscape" : "reader-listening-portrait")
+        Group {
+            if isPresented { playerContent }
+            else { Color.clear }
         }
         .navigationTitle("听书").navigationBarTitleDisplayMode(.inline)
-        .toolbar(controls.navigationVisible ? .visible : .hidden, for: .navigationBar)
-        .toolbar {
-            ToolbarItem(placement: .topBarLeading) {
-                if hasPlayback {
-                    Button("结束听书", systemImage: "xmark") { speech.stop(); wake() }
-                        .accessibilityIdentifier("reader-listening-stop")
-                }
-            }
-            ToolbarItem(placement: .primaryAction) {
-                Button("声音与语速", systemImage: "slider.horizontal.3") { wake(); sheet = .settings }
-                    .accessibilityIdentifier("reader-listening-settings")
+        .toolbar(.hidden, for: .navigationBar)
+        .sheet(item: $sheet) { destination in sheetContent(destination) }
+        .task(id: "\(isActive):\(projectionKey)") {
+            guard isActive, projectedKey != projectionKey else { return }
+            projectChapter(); projectedKey = projectionKey
+        }
+        .onChange(of: isActive) { _, active in
+            if active { wake() }
+            else {
+                speech.endSpeedBoost(); selectedLines.removeAll(); selectionDismissalID = UUID()
             }
         }
-        .sheet(item: $sheet) { destination in sheetContent(destination) }
-        .task(id: projectionKey) { projectChapter() }
-        .task(id: "\(activity):\(speech.playing):\(sheet?.id ?? ""): \(selectedLines.isEmpty):\(followsTranscript):\(voiceOver):\(speech.boosting):\(controlsFocused)") {
-            guard speech.playing, sheet == nil, selectedLines.isEmpty, followsTranscript, !voiceOver, !speech.boosting, !controlsFocused else { return }
+        .onChange(of: contentsTarget) { _, request in
+            guard let request else { return }
+            changeChapter(request.chapterIndex, anchor: request.anchor)
+        }
+        .task(id: "\(activity):\(isActive):\(speech.playing):\(sheet?.id ?? ""): \(selectedLines.isEmpty):\(followsTranscript):\(voiceOver):\(speech.boosting):\(controlsFocused):\(quickCapture?.isCapturing == true)") {
+            guard isActive, quickCapture?.isCapturing != true, speech.playing, sheet == nil, selectedLines.isEmpty, followsTranscript, !voiceOver, !speech.boosting, !controlsFocused else { return }
             do { try await Task.sleep(for: .seconds(5)) } catch { return }
             guard !Task.isCancelled else { return }
             withAnimation(reduceMotion ? nil : .easeOut(duration: 0.2)) { controls.sleepNavigation() }
@@ -139,6 +162,25 @@ struct ReaderListeningPanel: View {
         .onChange(of: scenePhase) { _, phase in if phase != .active { speech.endSpeedBoost() } }
         .onDisappear { speech.endSpeedBoost() }
     }
+    private var navigationHeader: some View {
+        HStack(spacing: 12) {
+            Button(action: returnToReading) { Image(systemName: "chevron.left").frame(width: 44, height: 44).contentShape(Rectangle()) }
+                .accessibilityLabel("继续读").accessibilityIdentifier("reader-listening-return")
+            Text("听书").font(.headline).accessibilityAddTraits(.isHeader)
+            Spacer(minLength: 0)
+            if hasPlayback {
+                Button { speech.stop(); wake() } label: { Image(systemName: "xmark").frame(width: 44, height: 44).contentShape(Rectangle()) }
+                    .accessibilityLabel("结束听书").accessibilityIdentifier("reader-listening-stop")
+            }
+            Button { wake(); sheet = .settings } label: { Image(systemName: "slider.horizontal.3").frame(width: 44, height: 44).contentShape(Rectangle()) }
+                .accessibilityLabel("声音与语速").accessibilityIdentifier("reader-listening-settings")
+        }.buttonStyle(.plain).foregroundStyle(Color.leafInk).padding(.horizontal, 12).padding(.vertical, 2)
+            .background(paper).accessibilityElement(children: .contain)
+    }
+    private func returnToReading() {
+        speech.pause()
+        if let onRead { onRead() } else { dismiss() }
+    }
     private func portraitPlayer(comparisonHeight: CGFloat, stageHeight: CGFloat?) -> some View {
         VStack(spacing: 0) {
             identity.padding(.horizontal, 24).padding(.top, 8).padding(.bottom, 12)
@@ -148,7 +190,7 @@ struct ReaderListeningPanel: View {
         }
         .safeAreaInset(edge: .bottom, spacing: 0) {
             VStack(spacing: 4) {
-                if let quickAI { HStack { Spacer(); quickAI } }
+                if controls.navigationVisible, let quickAI { HStack { Spacer(); quickAI } }
                 if controls.transportExpanded { transport.id("expanded-transport") } else { miniTransport.id("mini-transport") }
                 if controls.navigationVisible { commonBar } else { reveal }
             }.padding(.horizontal, 16).padding(.top, 6).padding(.bottom, 4)
@@ -223,7 +265,10 @@ struct ReaderListeningPanel: View {
         ScrollViewReader { proxy in
             ScrollView {
                 LazyVStack(alignment: .leading, spacing: 26) {
-                    if rows.isEmpty { ContentUnavailableView("此处暂无可朗读文字", systemImage: "text.magnifyingglass", description: Text("扫描页可返回书页继续阅读。")) }
+                    if rows.isEmpty {
+                        if projectedKey == nil { ProgressView("正在准备本章听书…").padding(.vertical, 24) }
+                        else { ContentUnavailableView("此处暂无可朗读文字", systemImage: "text.magnifyingglass", description: Text("扫描页可返回书页继续阅读。")) }
+                    }
                     ForEach(rows) { row in
                         let current = row.id == speech.passageID && hasPlayback
                         let idle = !hasPlayback && row.id == focusID
@@ -281,8 +326,8 @@ struct ReaderListeningPanel: View {
     }
     private var commonBar: some View {
         ReaderBottomBar(paper: paper, mode: .listening, chapterAccessibilityValue: chapter.title,
-            onContents: { wake(); sheet = .contents },
-            onRead: { speech.pause(); dismiss() }, onListen: { wake() },
+            onContents: { wake(); if let onContents { onContents() } else { sheet = .contents } },
+            onRead: returnToReading, onListen: { wake() },
             onAppearance: { wake(); sheet = .appearance }, onTypography: { wake(); sheet = .typography },
             onInteraction: wake, onFocusChange: { controlsFocused = $0; if $0 { wake() } }, controlsVisible: controls.navigationVisible)
     }

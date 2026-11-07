@@ -61,8 +61,18 @@
 单段四千 Unicode scalar 与邻近上下文二十四 KiB 的限制由共用领域服务检查，未启用计费的请求也不能跳过。超限在模型调用前拒绝，既有完整译文仍可直接读取。旧个人频次限制的移除属于本轮实现取舍，同一账号可用到平台共享容量，服务端仍保留总量和并发保护。
 ## 2026-11-07: Quiet voice questions and listening controls
 
-The AI affordance remains available with sleeping reader chrome. Hold to record, release to submit and slide upward to cancel. A submitted question stays in the current book's conversation while reading continues. Completion only lights a marker; tapping opens the saved answer full screen and returning preserves the page and listening state. Reduce Motion uses a static status indicator.
+The AI affordance appears and disappears with the reader/listening navigation menus (updated by the later 2026-11-07 correction). Hold to record, release to submit and slide upward to cancel. A submitted question stays in the current book's conversation while reading continues. Completion only lights a marker; tapping opens the saved answer full screen and returning preserves the page and listening state. Reduce Motion uses a static status indicator.
 
 Listening navigation/settings and playback collapse independently. Idle hides navigation only. The transport's down arrow folds it into a mini strip with direct pause/resume and an expand action. Voice capture temporarily hands over audio and resumes only unchanged prior playback. Original voice captures are staged within the account before auth/network work and expose recovery/export on failure.
 
 Scope, actual tests and device/publication limits: [2026-11-07 verification](verification/2026-11-07-quiet-native-ai.md).
+
+## 2026-11-07: Menu visibility and local navigation repair
+
+The reader AI button now follows the menus. Reading with sleeping chrome leaves no floating AI button; receiving a reply does not wake the menus. Hold capture keeps its visible controls alive until release or cancellation.
+
+Reading/listening switch inside the same reader window. The native source view stays mounted with explicit visibility, touch and accessibility state, preserving the source viewport on return. Listening navigation uses an inline header rather than pushing another system navigation destination. Returning to reading reveals its menus; listening playback and its explicit mini-player collapse remain independent.
+
+Contents uses one paper-themed drawer from either mode, without a sliding system-white list surface. Closing it restores the originating mode and navigation. Choosing a listening chapter updates the listening target without overwriting the source reading position. Listening, including paused listening, does not accumulate reading time.
+
+Current verification and remaining device limits: [navigation repair](verification/2026-11-07-reader-navigation-repair.md).

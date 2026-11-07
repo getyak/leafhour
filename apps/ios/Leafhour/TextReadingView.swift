@@ -24,6 +24,7 @@ struct TextReadingView: UIViewRepresentable {
     var onReadingPosition: ((ReaderSpeechLocation) -> Void)? = nil
     var onTouchActivity: ((Bool) -> Void)? = nil
     var isReadingSurfaceActive = true
+    var isSurfaceVisible = true
     var translatedPassageIDs: Set<String> = []
     var pageRequest: ReaderPageRequest? = nil
     var onPageRequestResult: ((UUID, ReaderPageRequestOutcome) -> Void)? = nil
@@ -90,6 +91,11 @@ struct TextReadingView: UIViewRepresentable {
         coordinator.parent = self
         coordinator.configureBookmarkGesture(view)
         if !isReadingSurfaceActive { coordinator.edgeTap?.cancelPending(); coordinator.cancelQueuedUserTurns() }
+        let hidden = !isSurfaceVisible
+        let interactive = isSurfaceVisible && isReadingSurfaceActive
+        if view.isHidden != hidden { view.isHidden = hidden }
+        if view.isUserInteractionEnabled != interactive { view.isUserInteractionEnabled = interactive }
+        if view.accessibilityElementsHidden != !interactive { view.accessibilityElementsHidden = !interactive }
         coordinator.updateContent(view)
         coordinator.dismissSelection(in: view, id: selectionDismissalID)
         coordinator.updateSpeech(view)

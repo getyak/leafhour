@@ -1,10 +1,14 @@
 import XCTest
 import UIKit
+import Vision
 
 /// Isolated synthetic books; no account, paid AI or physical audio acceptance.
 final class ImmersiveReaderUITests: XCTestCase {
     private let app = XCUIApplication()
-    private var reader: XCUIElement { app.textViews["leafhour-epub-reader"] }
+    private var reader: XCUIElement {
+        let text = app.textViews["leafhour-epub-reader"]
+        return text.exists ? text : app.descendants(matching: .any)["leafhour-pdf-reader"].firstMatch
+    }
     override func setUpWithError() throws { continueAfterFailure = false; XCUIDevice.shared.orientation = .portrait }
     override func tearDownWithError() throws { capture("final"); XCUIDevice.shared.orientation = .portrait; app.terminate() }
     private func require(_ element: XCUIElement, timeout: TimeInterval = 15, file: StaticString = #filePath, line: UInt = #line) {
@@ -24,7 +28,12 @@ final class ImmersiveReaderUITests: XCTestCase {
         let search = app.textFields["library-search-field"]; require(search); search.tap(); search.typeText(title)
         if app.keyboards.buttons["搜索"].exists { app.keyboards.buttons["搜索"].tap() }
         let book = app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", "阅读，" + title)).firstMatch
-        require(book); book.tap(); require(reader)
+        require(book); book.tap()
+        // Resolve the native kind after the book opens, not while both views
+        // are still absent during the library transition.
+        let opened = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in self.reader.exists }, object: nil)
+        XCTAssertEqual(XCTWaiter.wait(for: [opened], timeout: 15), .completed)
+        require(reader)
     }
     private func wake() {
         let contents = app.buttons["reader-contents"]
@@ -606,7 +615,7 @@ final class ImmersiveReaderUITests: XCTestCase {
         wake(); app.buttons["reader-contents"].tap()
         let current = app.buttons["reader-contents-entry-0"]; require(current); current.tap()
         XCTAssertFalse(app.buttons["reader-time-capsule"].exists)
-        XCTAssertFalse(app.buttons["reader-ai"].exists)
+        XCTAssertTrue(app.buttons["reader-ai"].isHittable, "Returning from contents restores the reading menu")
         XCTAssertFalse(app.buttons["reader-speech-toggle"].exists)
         capture("listening-jump-reading-paused")
     }
@@ -706,7 +715,7 @@ final class ImmersiveReaderUITests: XCTestCase {
         capture("time-in-tools-only")
     }
     func testSavedQuickReplyOpensItsExactAnswerAndClearsOnlyAfterDisplay() {
-        open(extra: ["--quiet-ai-saved-answer"], title: "GET317 合成验收 · 双译")
+        open(extra: ["--quiet-ai-saved-answer"], title: "GET317 合成验收 · 双译"); wake()
         let ai = app.buttons["reader-ai"]; require(ai)
         XCTAssertEqual(ai.value as? String, "有新回复")
         ai.tap(); require(app.navigationBars["旁注"])
@@ -715,28 +724,128 @@ final class ImmersiveReaderUITests: XCTestCase {
         let visible = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in answer.isHittable }, object: nil)
         XCTAssertEqual(XCTWaiter.wait(for: [visible], timeout: 8), .completed)
         capture("quiet-saved-target-fullscreen")
-        app.buttons["reader-chat-return"].tap(); require(ai)
+        app.buttons["reader-chat-return"].tap(); require(reader); wake(); require(ai)
         XCTAssertEqual(ai.value as? String, "")
     }
 
-    func testQuietAIIsAvailableWithoutWakingChromeAndOpensFullScreen() throws {
+    func testAIVisibilityFollowsTheReaderAndListeningMenus() {
         open(title: "GET317 合成验收 · 双译")
-        let ai = app.buttons["reader-ai"]; require(ai)
-        XCTAssertTrue(ai.isHittable)
-        XCTAssertFalse(app.buttons["reader-contents"].isHittable)
+        XCTAssertFalse(app.buttons["reader-ai"].isHittable, "Sleeping chrome must leave the source free of a floating AI button")
+        wake(); XCTAssertTrue(app.buttons["reader-ai"].isHittable)
+        let asleep = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in
+            !(self.app.buttons["reader-contents"].exists && self.app.buttons["reader-contents"].isHittable) && !(self.app.buttons["reader-ai"].exists && self.app.buttons["reader-ai"].isHittable)
+        }, object: nil)
+        XCTAssertEqual(XCTWaiter.wait(for: [asleep], timeout: 9), .completed)
+        wake(); app.buttons["reader-listen"].tap()
+        let play = app.buttons["reader-speech-play"]; require(play); play.tap()
+        let listeningAsleep = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in
+            !(self.app.buttons["reader-contents"].exists && self.app.buttons["reader-contents"].isHittable) && !(self.app.buttons["reader-ai"].exists && self.app.buttons["reader-ai"].isHittable)
+        }, object: nil)
+        XCTAssertEqual(XCTWaiter.wait(for: [listeningAsleep], timeout: 8), .completed)
+        XCTAssertTrue(play.isHittable, "Sleeping menus must keep playback available")
+        app.buttons["reader-listening-reveal"].tap()
+        XCTAssertTrue(app.buttons["reader-ai"].isHittable)
+        capture("menus-and-ai-visible-together")
+    }
+
+    func testReadingListeningAndContentsSwitchWithoutBlankWaitOrLostMenus() throws {
+        open(title: "GET317 合成验收 · 双译"); wake()
+        capture("navigation-before-listening")
+        let originalBody = try settledBody()
+        let started = Date()
+        app.buttons["reader-listen"].tap()
+        let play = app.buttons["reader-speech-play"]; require(play, timeout: 3)
+        XCTAssertLessThan(Date().timeIntervalSince(started), 5, "Bounded readiness includes XCTest event and polling overhead")
+        capture("navigation-listening-ready")
+        let read = app.buttons["reader-read"]; require(read); read.tap(); require(reader)
+        let returnedMenu = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in
+            self.app.buttons["reader-contents"].exists && self.app.buttons["reader-contents"].isHittable
+        }, object: nil)
+        XCTAssertEqual(XCTWaiter.wait(for: [returnedMenu], timeout: 2), .completed, "Explicitly returning to reading must preserve the navigation controls")
+        XCTAssertTrue(app.buttons["reader-ai"].isHittable)
+        XCTAssertEqual(try settledBody(), originalBody, "Changing local mode must retain the actual source viewport")
+        let contentsStart = Date()
+        app.buttons["reader-contents"].tap(); require(app.navigationBars["目录"], timeout: 3)
+        require(app.buttons["reader-contents-entry-0"], timeout: 3)
+        XCTAssertLessThan(Date().timeIntervalSince(contentsStart), 5)
+        capture("navigation-contents-ready")
+        app.buttons["reader-contents-close"].tap(); require(reader)
+        XCTAssertTrue(app.buttons["reader-contents"].isHittable)
+        app.buttons["reader-listen"].tap(); require(play)
+        app.buttons["reader-contents"].tap(); require(app.navigationBars["目录"])
+        app.buttons["reader-contents-close"].tap(); require(play)
+        XCTAssertTrue(app.buttons["reader-read"].isHittable)
+        capture("navigation-contents-returns-to-listening")
+    }
+
+    func testNightPaperContentsAndListeningKeepTheirSurface() throws {
+        open(title: "GET317 合成验收 · 双译"); wake()
+        app.buttons["reader-appearance"].tap()
+        let night = app.buttons["夜读"]; require(night); night.tap()
+        app.buttons["继续读"].firstMatch.tap(); wake()
+        let original = try settledBody()
+        app.buttons["reader-listen"].tap(); require(app.buttons["reader-speech-play"], timeout: 3)
+        capture("night-listening")
+        app.buttons["reader-contents"].tap(); require(app.buttons["reader-contents-entry-0"], timeout: 3)
+        capture("night-contents")
+        // A dark paper drawer must not expose a system-white list or navigation surface.
+        let shot = try XCTUnwrap(XCUIScreen.main.screenshot().image.cgImage)
+        let context = try XCTUnwrap(CGContext(data: nil, width: 1, height: 1, bitsPerComponent: 8, bytesPerRow: 4,
+                                             space: CGColorSpaceCreateDeviceRGB(), bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue))
+        context.interpolationQuality = .high
+        context.draw(shot, in: CGRect(x: 0, y: 0, width: 1, height: 1))
+        let pixel = try XCTUnwrap(context.data).assumingMemoryBound(to: UInt8.self)
+        XCTAssertLessThan((Int(pixel[0]) + Int(pixel[1]) + Int(pixel[2])) / 3, 100, "Night contents should retain the dark paper")
+        app.buttons["reader-contents-close"].tap(); require(app.buttons["reader-read"])
+        app.buttons["reader-read"].tap(); require(reader)
+        XCTAssertTrue(app.buttons["reader-contents"].isHittable)
+        XCTAssertEqual(try settledBody(), original)
+        capture("night-returned-to-reading")
+    }
+
+    func testPDFListeningAndContentsReturnToTheSamePage() throws {
+        open(title: "GET317 合成验收 · PDF"); wake()
+        app.buttons["reader-next-chapter"].tap()
+        let marker = "GET317_SYNTHETIC_PDF_PAGE_2"
+        func renderedWords() throws -> String {
+            let image = try XCTUnwrap(XCUIScreen.main.screenshot().image.cgImage)
+            let request = VNRecognizeTextRequest(); request.recognitionLevel = .accurate
+            try VNImageRequestHandler(cgImage: image).perform([request])
+            return (request.results ?? []).compactMap { $0.topCandidates(1).first?.string }.joined(separator: " ")
+        }
+        let pageReady = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in
+            (try? renderedWords().contains(marker)) == true
+        }, object: nil)
+        XCTAssertEqual(XCTWaiter.wait(for: [pageReady], timeout: 8), .completed)
+        capture("pdf-before-local-mode-switch"); wake()
+        app.buttons["reader-listen"].tap(); require(app.buttons["reader-speech-play"], timeout: 3)
+        app.buttons["reader-contents"].tap(); require(app.buttons["reader-contents-close"], timeout: 3)
+        app.buttons["reader-contents-close"].tap(); require(app.buttons["reader-read"])
+        app.buttons["reader-read"].tap(); require(reader)
+        XCTAssertTrue(app.buttons["reader-contents"].isHittable)
+        XCTAssertTrue(app.buttons["reader-ai"].isHittable)
+        // PDFKit may refit its page by a few pixels when shown again. Verify the
+        // actual rendered source marker, rather than binary PNG identity.
+        XCTAssertTrue(try renderedWords().contains(marker), "Returning must show the actual second PDF page")
+        capture("pdf-local-mode-return")
+    }
+
+    func testQuietAIOnlyShowsWithChromeAndOpensFullScreen() throws {
+        open(title: "GET317 合成验收 · 双译")
         let before = try settledBody()
-        ai.tap()
+        XCTAssertFalse(app.buttons["reader-ai"].exists)
+        wake(); let ai = app.buttons["reader-ai"]; require(ai); ai.tap()
         require(app.navigationBars["旁注"])
         let history = app.scrollViews["reader-conversation-history"]; require(history)
         XCTAssertGreaterThan(history.frame.height, app.frame.height * 0.65)
         capture("quiet-ai-fullscreen")
         app.buttons["reader-chat-return"].tap(); require(reader)
         XCTAssertEqual(try settledBody(), before)
-        XCTAssertTrue(app.buttons["reader-ai"].isHittable)
-        XCTAssertFalse(app.buttons["reader-contents"].isHittable)
+        XCTAssertFalse(app.buttons["reader-ai"].exists)
+        wake(); XCTAssertTrue(app.buttons["reader-ai"].isHittable)
     }
 
-    func testListeningNavigationSleepsButPlayerAndAIStayAvailable() {
+    func testListeningNavigationSleepsButPlayerStaysAvailable() {
         open(title: "GET317 合成验收 · 双译"); wake(); app.buttons["reader-listen"].tap()
         let play = app.buttons["reader-speech-play"]; require(play); play.tap()
         let hidden = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in
@@ -744,7 +853,8 @@ final class ImmersiveReaderUITests: XCTestCase {
         }, object: nil)
         XCTAssertEqual(XCTWaiter.wait(for: [hidden], timeout: 10), .completed)
         XCTAssertTrue(play.isHittable)
-        XCTAssertTrue(app.buttons["reader-ai"].isHittable)
+        XCTAssertFalse(app.buttons["reader-ai"].exists)
+        app.buttons["reader-listening-reveal"].tap()
         app.buttons["reader-ai"].tap(); require(app.navigationBars["旁注"])
         app.buttons["reader-chat-return"].tap(); require(play)
         XCTAssertEqual(play.label, "暂停朗读", "Opening and closing a reply preserves live playback")
