@@ -18,7 +18,7 @@
 
 ## 实际 Chrome 定点结果
 
-已安装 Google Chrome156.0.8078.80，headless、单页、独立临时profile，静态loopback白名单与内存API。冻结来源197个Git输入摘要全部匹配、162个输出；没有修改CSS、动画时间或release marker来通过截图。以下是10个场景，不是整单完整矩阵。
+已安装 Google Chrome156.0.8078.80，headless、单页、独立临时profile，静态loopback白名单与内存API。冻结来源197个Git输入摘要全部匹配、162个输出；验收运行期间未注入或覆写CSS、动画时间或release marker。以下是10个场景，不是整单完整矩阵。
 
 | 范围 | 实际结果 |
 | --- | --- |
@@ -32,11 +32,11 @@
 
 这是修后结果，不是首次全绿。第一轮 `481e68a` 的1440/503路径实际焦点按钮底部超出内容区约0.1875px，加上5px outline被裁；保留原失败。仅增加8px scroll-margin-block后，以完全相同的立即Tab时序复验4/4通过。原自然四RED、缺依赖、旧测试预期失败与只读恢复标签RED均单独保留。
 
-原始两份ledger里 `productFix` 遗留了之前PR335的提交，不能用该字段归属本批。有效来源是其 `source`、冻结provenance和逐输入SHA，即上述af7提交；私有元数据纠正sidecar保留原文件SHA，不覆盖原件。文档与合成证据收尾提交与af7的所有197个组件输入、测试及依赖锁字节已读回相等，浏览器证据仍明确绑定af7，不能冒称在新提交重新运行。
+原始两份ledger里 `productFix` 遗留了之前PR335的提交，不能用该字段归属本批。有效来源是其 `source`、冻结provenance和逐输入SHA，即上述af7提交；私有元数据纠正sidecar保留原文件SHA，不覆盖原件。原328文档与合成证据提交与af7的所有197个组件输入、测试及依赖锁字节已读回相等，浏览器证据仍明确绑定af7，不能冒称在新提交重新运行。
 
 ## 公开的合成前后对照
 
-两宽均为真实Tab路径、相同503状态、无额外滚动；before为PR335源码0a7，after为本批af7，具体来源与原图SHA见[provenance](assets/get-201-feedback/provenance.json)。所有内容是隔离fixture的合成样本，不是真实账号数据。
+两宽均为真实Tab路径、相同503状态、无额外滚动；before为PR335源码0a7，after为文案修复后本批28e678e，具体来源与原图SHA见[provenance](assets/get-201-feedback/provenance.json)。所有内容是隔离fixture的合成样本，不是真实账号数据。
 
 | 宽度 | 修前：错误在屏外 | 修后：错误和恢复在视口 |
 | --- | --- | --- |
@@ -54,3 +54,11 @@
 ## 第一轮当前head CI及文案修复
 
 PR337的328f653 / CI42315496442在真实copy-lint失败：新提示中简/繁体“版本”各触发一项DevSpeak T1。其余当时未完成/跳过的步骤不算通过。保留原日志，不重复运行失败提交。将新提示改为“正在读取最新设置…”/“正在讀取最新設定…”，英文相应为“Loading the latest settings…”，日文原本已是設定，未改。正常exporter再生成清单；lint规则、欠债和allowances未变。新head需独立CI和受影响浏览器复验；af7证据仍只归属af7，不能因产品逻辑相同而声称全部组件输入仍相等。
+
+## 文案修复后的重新验收
+
+冻结源码 `28e678ea53bf9059f4d080ad40357aa49dc7fba6`，新197输入/162输出重新核SHA。原4自然+6生命周期全部重新通过，不借用af7代替新源码。额外四语种（EN/Hans/Hant/JA）在390px真实409后只读GET忙态通过：新设置文案在视口、retry禁用时保留重试标签、草稿保留、reading POST数不增加，共14项。新ledger移除遗留productFix字段，仅保留准确source/provenance，旧记录与纠正sidecar继续保留。
+
+另在1440/390真实检查idle及saved淡出后：反馈computed display均为none、clientRects为0、布局height为0，完整5px焦点环保持可见且无遮挡。不是只读hidden属性；现有祖先hidden!important规则在实际渲染生效。两批均零页面/站外/HTTP/下载异常，Chrome/profile/HTTP已关闭。公开after两图已更新为新源码，before仍保留原0a7。
+
+正常依赖下106宿主逻辑再次通过、0fail/skip；扩展copy单元检查57通过、13因本机无真实Vale/textlint而明确跳过，不能当成本机真实lint通过。首轮远端T1失败保留，最新head必须完成真实CLIs和全部适用CI门禁后才能合并。最终若只补此验证文档/合成截图，组件197输入、测试、锁需再读回等价；浏览器结果仍绑定28e而非虚构重跑最终文档提交。
