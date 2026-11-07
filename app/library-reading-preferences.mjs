@@ -5,6 +5,7 @@ import {t,onUiLocaleChange,uiReady,createUiLabels,createUiMessage} from './ui-lo
 import {normalizeGlobalPreferences,globalPreferencesDefaults} from './reading-preferences.mjs';
 import {mountChoiceControl} from './choice-control.mjs';
 import {settingGroup,settingRow} from './settings-controls.mjs';
+import {mountSaveFeedback} from './settings-save-feedback.mjs';
 
 const node=(tag,className,text)=>{const element=document.createElement(tag);if(className)element.className=className;if(text!==undefined)element.textContent=text;return element;};
 // The compact form shows only basic fields; every other appearance field is
@@ -57,7 +58,6 @@ export function mountReadingPreferencesForm({root,api,getSession,onSaved=()=>{},
   const save=node('button','primary profile-save');save.id='habits-save';save.type='button';save.hidden=true;
   const recover=L.text(node('button','text-link habits-recover'),'prefs.reload');recover.id='habits-recover';recover.type='button';recover.hidden=true;
   const status=node('p','settings-status profile-status');status.id='habits-status';status.setAttribute('role','status');status.setAttribute('aria-live','polite');
-  form.append(opening.root,typography.root,page.root,preview,help,guestHint,save,recover,status);root.append(form);
   // Authored state: draft (what the form shows), dirty (explicit visible edits),
   // baseline/revision (last authoritative server snapshot for this owner). The
   // portal mutates one session object in place, so authoritative updates are
@@ -66,9 +66,11 @@ export function mountReadingPreferencesForm({root,api,getSession,onSaved=()=>{},
   // Autosave queue state: one coalescing timer, one queued follow-up marker and
   // one explicit retry surface for a failed or conflicting write.
   let scheduled=null,queued=false,retryNeeded=false;
-  const message=createUiMessage((text,error)=>{status.textContent=text;status.classList.toggle('error',!!error);status.setAttribute('role',error?'alert':'status');});
+  const message=mountSaveFeedback({document,status,retry:save,recover,getOwner:()=>owner,createMessage:createUiMessage});
+  form.append(message.root,opening.root,typography.root,page.root,preview,help,guestHint);root.append(form);
   const fields=()=>[view,language,font,theme,family];
-  const saveLabel=()=>busy?t('prefs.saving'):retryNeeded?t('prefs.retry'):t('prefs.save');
+  for(const field of fields())field.setAttribute('aria-describedby',[field.getAttribute('aria-describedby'),status.id].filter(Boolean).join(' '));
+  const saveLabel=()=>busy&&!retryNeeded?t('prefs.saving'):retryNeeded?t('prefs.retry'):t('prefs.save');
   const paintPreview=()=>{
     preview.textContent=t('prefs.preview.sample',{size:draft.font});
     if(preview.style)preview.style.fontSize=draft.font+'px';
@@ -93,6 +95,7 @@ export function mountReadingPreferencesForm({root,api,getSession,onSaved=()=>{},
     recover.disabled=blocked;
     guestHint.hidden=!!user;
     form.setAttribute('aria-busy',String(busy));
+    message.sync();
     syncChoices();
   }
   const edited=()=>Object.fromEntries([...dirty].map(key=>[key,draft[key]]));
@@ -157,7 +160,7 @@ export function mountReadingPreferencesForm({root,api,getSession,onSaved=()=>{},
     }
     cancelScheduled();queued=false;retryNeeded=false;
     const expectedOwner=owner,token=++generation,sent=normalizeGlobalPreferences({...draft,onboarding:'completed'}),baseRevision=revision;
-    busy=true;busyToken=token;controls();message.clear();recover.hidden=true;
+    busy=true;busyToken=token;controls();message.set('prefs.saving');recover.hidden=true;
     let ok=false;
     try{
       const saved=await api('/api/account/reading-preferences',{baseRevision,preferences:sent});
@@ -193,7 +196,7 @@ export function mountReadingPreferencesForm({root,api,getSession,onSaved=()=>{},
     // stale account can never trigger it.
     if(user.id!==owner){update();return;}
     const expectedOwner=owner,token=++generation;
-    busy=true;busyToken=token;controls();message.clear();
+    busy=true;busyToken=token;controls();message.set('prefs.reloading');
     try{
       const latest=await api('/api/account/reading-preferences');
       if(disposed||generation!==token||getSession()?.user?.id!==expectedOwner)return;
@@ -219,7 +222,7 @@ export function mountReadingPreferencesForm({root,api,getSession,onSaved=()=>{},
   }
   const offLocale=onUiLocaleChange(updateLabels);void uiReady.then(updateLabels);
   return {update,updateLabels,dispose(){
-    if(disposed)return;disposed=true;generation++;cancelScheduled();queued=false;offLocale();L.clear();
+    if(disposed)return;disposed=true;generation++;cancelScheduled();queued=false;offLocale();L.clear();message.dispose();
     for(const select of fields())choices[select.id]?.destroy?.();
   }};
 }

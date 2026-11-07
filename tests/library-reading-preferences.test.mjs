@@ -88,13 +88,14 @@ class Element extends EventTarget{
   querySelector(selector){const id=selector.startsWith('#')?selector.slice(1):null;const matches=node=>id?node.id===id:selector==='h2'?node.tagName==='h2':selector==='p:not([id])'?node.tagName==='p'&&!node.id:false;const walk=root=>matches(root)?root:root.children.map(walk).find(Boolean);return walk(this);}
 }
 const find=(root,id)=>root.querySelector('#'+id);
+const readingForm=root=>{let node=find(root,'habits-status');while(node&&String(node.tagName).toLowerCase()!=='form')node=node.parentElement;assert.ok(node,'the status belongs to the real reading form');return node;};
 const dom=()=>{globalThis.document={createElement:tag=>new Element(tag),addEventListener(){},dispatchEvent(){}};return new Element('root');};
 
 test('logout clears account defaults even when the portal retains the old preference snapshot',async()=>{
   const root=dom(),calls=[];
   let session={user:{id:'account-a'},readingPreferences:{revision:4,preferences:snapshot({font:27,theme:'night',mode:'zh'})}};
   const ui=mountReadingPreferencesForm({root,getSession:()=>session,api:async(url,body)=>{calls.push({url,body});return {revision:body.baseRevision+1,preferences:body.preferences};}});
-  const font=find(root,'habits-font'),theme=find(root,'habits-theme'),view=find(root,'habits-view'),save=find(root,'habits-save'),form=find(root,'habits-status').parentElement;
+  const font=find(root,'habits-font'),theme=find(root,'habits-theme'),view=find(root,'habits-view'),save=find(root,'habits-save'),form=readingForm(root);
   assert.equal(font.value,'27');
   // Actual portal signOut keeps the session envelope, clearing only user.
   session={...session,user:null};ui.update();
@@ -113,7 +114,7 @@ test('the compact form saves one full snapshot, keeps hidden fields and reports 
   let session={user:{id:'account-a'},readingPreferences:{revision:2,updatedAt:'2026-10-18T00:00:00.000Z',preferences:snapshot({mode:'zh',pageLayout:'spread',parallelStyle:'reveal',lineHeight:2.2,theme:'leaf'})}};
   let responder=async(url,body)=>{calls.push({url,body});return {revision:3,updatedAt:'2026-10-18T01:00:00.000Z',preferences:body.preferences};};
   const ui=mountReadingPreferencesForm({root,api:(url,body)=>responder(url,body),getSession:()=>session,onSaved:value=>{saved.push(value);session.readingPreferences=value;}});
-  const view=find(root,'habits-view'),language=find(root,'habits-language'),font=find(root,'habits-font'),theme=find(root,'habits-theme'),family=find(root,'habits-family'),form=find(root,'habits-status').parentElement;
+  const view=find(root,'habits-view'),language=find(root,'habits-language'),font=find(root,'habits-font'),theme=find(root,'habits-theme'),family=find(root,'habits-family'),form=readingForm(root);
   assert.equal(view.value,'zh','the saved account view is the starting point');assert.equal(theme.value,'leaf');
   view.value='parallel';view.dispatchEvent(new Event('change'));font.value='25';font.dispatchEvent(new Event('input'));
   await form.dispatchEvent(new Event('submit',{cancelable:true}));await new Promise(setImmediate);
@@ -135,7 +136,7 @@ test('the compact form saves one full snapshot, keeps hidden fields and reports 
 test('a late save from a previous account never adopts into the next account',async()=>{
   const root=dom(),saved=[];let session={user:{id:'account-a'},readingPreferences:null},release;
   const ui=mountReadingPreferencesForm({root,api:async()=>{await new Promise(r=>{release=r;});return {revision:9,updatedAt:'2026-10-18T02:00:00.000Z',preferences:snapshot()};},getSession:()=>session,onSaved:value=>saved.push(value)});
-  const form=find(root,'habits-status').parentElement;
+  const form=readingForm(root);
   await form.dispatchEvent(new Event('submit',{cancelable:true}));
   session={user:{id:'account-b'},readingPreferences:null}; // account switched while the request was in flight
   release();await new Promise(setImmediate);
@@ -300,7 +301,7 @@ test('conflict recovery reads the latest version, keeps explicit edits and waits
     return postResult;
   };
   const ui=mountReadingPreferencesForm({root,api,getSession:()=>session,onSaved:value=>{saved.push(value);session.readingPreferences=value;}});
-  const view=find(root,'habits-view'),font=find(root,'habits-font'),theme=find(root,'habits-theme'),form=find(root,'habits-status').parentElement,recover=find(root,'habits-recover');
+  const view=find(root,'habits-view'),font=find(root,'habits-font'),theme=find(root,'habits-theme'),form=readingForm(root),recover=find(root,'habits-recover');
   view.value='parallel';view.dispatchEvent(new Event('change'));font.value='25';font.dispatchEvent(new Event('input'));
   await form.dispatchEvent(new Event('submit',{cancelable:true}));await new Promise(setImmediate);
   assert.equal(calls.length,1);assert.equal(calls[0].body.baseRevision,1);
@@ -331,7 +332,7 @@ test('a failed latest-version read keeps the draft and can retry',async()=>{
     throw Object.assign(Error('阅读习惯已在另一处更新，请刷新后重新保存'),{status:409});
   };
   const ui=mountReadingPreferencesForm({root,api,getSession:()=>session,onSaved(){}});
-  const view=find(root,'habits-view'),theme=find(root,'habits-theme'),form=find(root,'habits-status').parentElement,recover=find(root,'habits-recover');
+  const view=find(root,'habits-view'),theme=find(root,'habits-theme'),form=readingForm(root),recover=find(root,'habits-recover');
   await form.dispatchEvent(new Event('submit',{cancelable:true}));await new Promise(setImmediate);
   assert.equal(recover.hidden,false);
   await recover.dispatchEvent(new Event('click'));await new Promise(setImmediate);
@@ -352,7 +353,7 @@ test('a late latest-version read never adopts into another account',async()=>{
     await new Promise(resolve=>{release=resolve;});return {revision:9,updatedAt:'2026-10-18T03:00:00.000Z',preferences:snapshot({mode:'zh',font:27})};
   };
   const ui=mountReadingPreferencesForm({root,api,getSession:()=>session,onSaved(){}});
-  const form=find(root,'habits-status').parentElement;
+  const form=readingForm(root);
   await form.dispatchEvent(new Event('submit',{cancelable:true}));await new Promise(setImmediate);
   await find(root,'habits-recover').dispatchEvent(new Event('click'));
   session={user:{id:'account-b'},readingPreferences:null};ui.update();
@@ -365,7 +366,7 @@ test('same-owner session refreshes adopt new versions without losing explicit ed
   const root=dom(),calls=[];
   let session={user:{id:'account-a'},readingPreferences:{revision:1,updatedAt:'2026-10-18T00:00:00.000Z',preferences:snapshot({mode:'zh',theme:'paper',pageLayout:'spread'})}};
   const ui=mountReadingPreferencesForm({root,api:async(url,body)=>{calls.push({url,body});return {revision:4,updatedAt:'2026-10-18T02:00:00.000Z',preferences:body.preferences};},getSession:()=>session,onSaved(){}});
-  const view=find(root,'habits-view'),theme=find(root,'habits-theme'),form=find(root,'habits-status').parentElement;
+  const view=find(root,'habits-view'),theme=find(root,'habits-theme'),form=readingForm(root);
   view.value='parallel';view.dispatchEvent(new Event('change'));
   session={user:{id:'account-a'},readingPreferences:{revision:3,updatedAt:'2026-10-18T01:00:00.000Z',preferences:snapshot({mode:'en',theme:'night',pageLayout:'scroll'})}};
   ui.update();
@@ -382,7 +383,7 @@ test('a pending save releases the next account and never adopts old results',asy
     const root=dom(),calls=[],saved=[];let session={user:{id:'account-a'},readingPreferences:{revision:1,updatedAt:'2026-10-18T00:00:00.000Z',preferences:snapshot({font:27})}},release;
     const api=async(url,body)=>{calls.push({url,body});await new Promise(resolve=>{release=resolve;});if(outcome==='failure')throw Object.assign(Error('服务暂时无法连接，请稍后重试'),{status:503});return {revision:2,updatedAt:'2026-10-18T02:00:00.000Z',preferences:snapshot({font:27})};};
     const ui=mountReadingPreferencesForm({root,api,getSession:()=>session,onSaved:value=>saved.push(value)});
-    const form=find(root,'habits-status').parentElement,save=find(root,'habits-save');
+    const form=readingForm(root),save=find(root,'habits-save');
     await form.dispatchEvent(new Event('submit',{cancelable:true}));
     assert.equal(save.disabled,true,'the in-flight save disables only its own form');
     session=target==='guest'?{user:null,readingPreferences:null}:{user:{id:'account-b'},readingPreferences:null};ui.update();
@@ -437,7 +438,7 @@ test('same-owner authoritative updates arrive through the portal in-place sessio
   const root=dom(),calls=[];
   const session={user:{id:'account-a'},readingPreferences:{revision:1,updatedAt:'2026-10-18T00:00:00.000Z',preferences:snapshot({font:20,theme:'paper',pageLayout:'spread'})}};
   const ui=mountReadingPreferencesForm({root,api:async(url,body)=>{calls.push({url,body});return {revision:body.baseRevision+1,updatedAt:'2026-10-18T04:00:00.000Z',preferences:body.preferences};},getSession:()=>session,onSaved(){}});
-  const view=find(root,'habits-view'),font=find(root,'habits-font'),theme=find(root,'habits-theme'),form=find(root,'habits-status').parentElement;
+  const view=find(root,'habits-view'),font=find(root,'habits-font'),theme=find(root,'habits-theme'),form=readingForm(root);
   assert.equal(font.value,'20');
   // Pristine: the portal mutates the SAME session object in place (invite/onSaved path).
   session.readingPreferences={revision:2,updatedAt:'2026-10-18T01:00:00.000Z',preferences:snapshot({font:27,theme:'night',pageLayout:'scroll'})};
@@ -465,7 +466,7 @@ test("a refresh during this owner's request reconciles safely after it",async()=
   const session={user:{id:'account-a'},readingPreferences:{revision:1,updatedAt:'2026-10-18T00:00:00.000Z',preferences:snapshot({font:20,theme:'paper'})}};
   let release,responder=async body=>{await new Promise(resolve=>{release=resolve;});return {revision:2,updatedAt:'2026-10-18T02:00:00.000Z',preferences:body.preferences};};
   const ui=mountReadingPreferencesForm({root,api:async(url,body)=>{calls.push({url,body});return responder(body);},getSession:()=>session,onSaved(){}});
-  const view=find(root,'habits-view'),font=find(root,'habits-font'),theme=find(root,'habits-theme'),form=find(root,'habits-status').parentElement;
+  const view=find(root,'habits-view'),font=find(root,'habits-font'),theme=find(root,'habits-theme'),form=readingForm(root);
   font.value='25';font.dispatchEvent(new Event('input'));
   await form.dispatchEvent(new Event('submit',{cancelable:true})); // base1 pending
   session.readingPreferences={revision:1,updatedAt:'2026-10-18T01:00:00.000Z',preferences:snapshot({font:20,theme:'paper',parallelStyle:'quote'})};ui.update();
@@ -493,7 +494,7 @@ test('a superseded completion never releases the current account pending save',a
     let session={user:{id:'account-a'},readingPreferences:null};
     const api=async(url,body)=>{const index=calls.length;calls.push({url,body});await new Promise(resolve=>pending.push(resolve));if(outcome==='failure'&&index===0)throw Object.assign(Error('服务暂时无法连接，请稍后重试'),{status:503});return {revision:index+2,updatedAt:'2026-10-18T05:00:00.000Z',preferences:body.preferences};};
     const ui=mountReadingPreferencesForm({root,api,getSession:()=>session,onSaved:value=>saved.push(value)});
-    const form=find(root,'habits-status').parentElement,save=find(root,'habits-save');
+    const form=readingForm(root),save=find(root,'habits-save');
     await form.dispatchEvent(new Event('submit',{cancelable:true})); // account A save pending
     assert.equal(save.disabled,true);assert.equal(form.getAttribute('aria-busy'),'true');
     session={user:{id:'account-b'},readingPreferences:null};ui.update(); // releases A; B starts clean
@@ -502,11 +503,13 @@ test('a superseded completion never releases the current account pending save',a
     assert.equal(save.disabled,true);assert.equal(form.getAttribute('aria-busy'),'true');
     await form.dispatchEvent(new Event('submit',{cancelable:true})); // duplicate attempt while B pending
     assert.equal(calls.length,2,'a duplicate submit while B is pending creates no third POST');
+    const pendingMessage=find(root,'habits-status').textContent;
+    assert.match(pendingMessage,/Saving/i,'the current account has honest pending feedback');
     pending[0]();await new Promise(setImmediate); // A completes late (success or failure)
     assert.equal(save.disabled,true,'a superseded completion never releases the current pending save');
     assert.equal(form.getAttribute('aria-busy'),'true');
     assert.equal(calls.length,2);assert.equal(saved.length,0);
-    assert.equal(find(root,'habits-status').textContent,'');
+    assert.equal(find(root,'habits-status').textContent,pendingMessage,'A cannot replace or erase B\'s current feedback');
     pending[1]();await new Promise(setImmediate); // B completes
     assert.equal(save.disabled,false);assert.equal(form.getAttribute('aria-busy'),'false');
     assert.equal(saved.length,1,'B adopts exactly once');assert.equal(calls.length,2);
@@ -545,7 +548,7 @@ test('locale refresh keeps the reading-preferences request, dirty fields and nat
   const {requestUiRoute,t}=await import('../app/ui-locale.mjs');await requestUiRoute('en');
   const root=dom(),session={user:{id:'locale-owner'},readingPreferences:{revision:2,preferences:snapshot({theme:'paper'})}};
   let finish,calls=0,saved=0;const ui=mountReadingPreferencesForm({root,getSession:()=>session,api:()=>{calls++;return new Promise(resolve=>{finish=resolve;});},onSaved:()=>saved++});
-  const view=find(root,'habits-view'),font=find(root,'habits-font'),save=find(root,'habits-save'),form=find(root,'habits-status').parentElement;
+  const view=find(root,'habits-view'),font=find(root,'habits-font'),save=find(root,'habits-save'),form=readingForm(root);
   view.value='zh';view.dispatchEvent(new Event('change'));font.value='27';font.dispatchEvent(new Event('input'));const options=[...view.children];
   form.dispatchEvent(new Event('submit',{cancelable:true}));
   try{
@@ -707,7 +710,7 @@ test('a locale refresh never saves, resets or focuses while an autosave is pendi
 
 test('the reading form keeps its grouped rows, real size preview and guest explanation',()=>{
   const f=autosaveFixture({responder:async(url,body)=>({revision:body.baseRevision+1,preferences:body.preferences})});
-  const form=f.find('habits-status').parentElement;
+  const form=readingForm(f.root);
   const groups=form.children.filter(node=>String(node.className).includes('settings-group'));
   assert.ok(groups.length>=3,'view, typography and page stay separate groups');
   const preview=f.find('habits-preview');
@@ -867,4 +870,16 @@ test('after a conflict edits stay drafts and recovery never silently submits the
   assert.equal(f.find('habits-view').value,'zh');assert.equal(f.find('habits-theme').value,'leaf','the draft survives recovery');
   f.timers.run();await tick();
   assert.equal(f.calls.length,2,'editing after recovery never silently submits the conflict draft');
+});
+
+test('read-only conflict recovery keeps the retry action honest while showing loading feedback',async()=>{
+ const {requestUiRoute,t}=await import('../app/ui-locale.mjs');await requestUiRoute('en');let finish;
+ const f=autosaveFixture({responder:async(url,body)=>{if(body!==undefined)throw Object.assign(Error('conflict'),{status:409});return new Promise(resolve=>{finish=resolve;});}});
+ try{
+  f.edit('habits-font','25','input');f.timers.run();await tick();
+  f.find('habits-recover').dispatchEvent(new Event('click'));await tick();
+  assert.equal(f.find('habits-status').textContent,t('prefs.reloading'));
+  assert.equal(f.find('habits-save').disabled,true);
+  assert.equal(f.find('habits-save').textContent,t('prefs.retry'),'a read must not label the disabled retry action as an active save');
+ }finally{finish?.({revision:3,preferences:snapshot()});await tick();f.ui.dispose();}
 });

@@ -1,0 +1,15 @@
+# GET-201：阅读设置的就地反馈
+
+本批从 PR335 合并提交 `4cfdd7fc355eae5c73a5f0d654b0c2da89203892` 延续。关联 [GET-201](https://linear.app/getyak/issue/GET-201)，不代表原任务完整验收。
+
+现有 400ms 自动保存、CAS、草稿、owner fence 和串行队列已经实现；正常 Save 隐藏，只有失败重试。本批不重新设计这些行为。真实 Chrome 的自然 Tab 编辑路径在 1440/390 ×503/409 四组中，错误均位于当前内容视口之外；继续 Tab 可恢复且草稿保留。这是原“控件旁/头部可感知已保存，失败就地+重试”的软件缺口。
+
+反馈仍属于阅读内容区。复用原 status、重试和读取最新节点，以轻量的局部反馈区留在内容视口内，优先试验内容顶部 sticky；不增加全站 toast 或新的 shell 状态桥。保留当前 surface/ink/muted/accent/hairline/error token 与正文尺度。短状态配现有按钮，移动端允许换行且触控区不小于44px；不能盖住编辑控件、标题或关闭按钮，不抢焦点。
+
+保存中显示真实状态，成功停留约1.5秒后淡出；错误持续保留。旧成功计时器必须受 owner 和消息序号约束，不能清除新请求或新错误。locale 只重译既有消息。字段在 choice 增强前关联 status ID，使增强 group/combobox 也获得描述。网络错误不伪称字段值无效；实际读屏验收单独记录。
+
+对外请求、载荷、CAS、dirty draft、owner、序列化、显式重试和只读恢复不变。先用单独呈现模块测试状态与计时竞态，再接入原表单。若 sticky 在自然键盘路径中遮挡焦点，调整布局/滚动预留后复验，不能靠额外滚动或裁切制造通过。
+
+验收以原自然四条 RED 为基线，必须在新冻结提交上不 forced-click、无额外手动滚动地通过。另测成功淡出、持久错误、新编辑/owner/迟到回调、增强控件、三语言/两主题、小屏和关闭重开；所有旧失败保留。只使用已安装 Chrome headless、单页、隔离 profile 与 loopback 合成 API；不新增真实账号、授权、模型调用、native 构建或生产操作。完整 GET-201 的状态矩阵、三浏览器、参考量表和真人项仍独立保留。
+
+The existing reading-preferences owner injects its UI message factory. The feedback module has no direct import of the mutable locale runtime; reviewed graph owners and catalogue budgets remain unchanged.
