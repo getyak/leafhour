@@ -8,8 +8,8 @@
   "source_sha": "3869043f6a5cb492ee1a777d9a247d1df7d71041",
   "source_tree": "396d83fe5a8231cc14b0a76ff4348ceb2aeb71a9",
   "actor": {
-    "login": "PENDING",
-    "id": 0
+    "login": "kubbot",
+    "id": 124379614
   },
   "nonce": "PENDING_NEW_32HEX_NONCE",
   "ref": "PENDING_NO_REF_CREATED",
@@ -45,5 +45,9 @@
     "pdf73"
   ],
   "consumed_at": null,
-  "expires_at": null
+  "expires_at": null,
+  "grant_comment_id": 6702281018,
+  "grant_issuer_id": 124379614,
+  "grant_comment_url": "https://github.com/getyak/leafhour/pull/340#issuecomment-6702281018",
+  "reviewed_controller_candidate": "9691ee0adeb207db6785b8c0d1dbfe8dc9a3930a"
 }

@@ -13,16 +13,17 @@ concurrency:
 
 jobs:
   seven:
-    # Remains disabled. Activation requires reviewed implementation and a new
-    # externally consumed grant; placeholders below are not authorization.
+    # Prepared only for one exact dedicated push; normal PR/main cannot enter.
+    # The pinned comment is still pending/consumed=false. No grant/ref exists.
+    # Coordinator must approve the final SHA before external consumption/push.
     if: >-
-      false &&
       github.repository == 'getyak/leafhour' &&
       github.event_name == 'push' &&
       github.event.created == true &&
       github.event.deleted == false &&
       github.event.forced == false &&
-      github.actor == 'PENDING_REVIEWED_ACTOR_LOGIN' &&
+      github.actor == 'kubbot' &&
+      github.actor_id == '124379614' &&
       github.triggering_actor == github.actor &&
       github.run_attempt == '1'
     runs-on: macos-26-intel
@@ -32,8 +33,8 @@ jobs:
         shell: bash
     env:
       DEVELOPER_DIR: /Applications/Xcode_26.6.app/Contents/Developer
-      GET328_GRANT_COMMENT_ID: PENDING
-      GET328_GRANT_ISSUER_ID: PENDING
+      GET328_GRANT_COMMENT_ID: '6702281018'
+      GET328_GRANT_ISSUER_ID: '124379614'
     steps:
       - name: Establish exclusive root and shared deadline before checkout
         id: stamp

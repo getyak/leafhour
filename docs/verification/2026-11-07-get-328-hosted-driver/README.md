@@ -1,4 +1,4 @@
-# GET-328 hosted controller — disabled implementation candidate
+# GET-328 hosted controller — activation preparation, no execution grant
 
 This supplements GET-328 and draft PR #336. It does not change the reader or
 close native acceptance. The App and test source stays at public commit
@@ -10,16 +10,23 @@ ledger are not inputs to this runner and must not be modified or retried.
 
 ## What is implemented
 
-The dedicated push workflow has a literal `false &&` job condition, pending
-actor/issuer/comment pins, no PR/main/manual trigger and `contents: read` only.
+The prepared push workflow is limited to the dedicated once-only namespace and
+existing actor kubbot/124379614, with no PR/main/manual trigger and
+`contents: read` only. It pins public comment6702281018 and issuer124379614.
+That comment is pending/consumed=false; no nonce/ref/grant has been issued.
 Ordinary PR CI tests this code; its existing generic arm64 Simulator build on
 Xcode16.4/SDK18.5 cannot prove the hosted iOS26 UI path. No Preview is requested:
-`vercel.json` retains `deploymentEnabled: {"**": false, "main": true}`.
+`vercel.json` retains `deploymentEnabled: {"**": false, "production": true}`
+after synchronizing main74cee1e; feature/main branches do not request deployment.
 
 Before checkout the workflow exclusively creates a root and records one
 monotonic origin. Admission makes bounded anonymous public GitHub reads, checks
 the exact repository, actor IDs, source/controller/workflow/ref/nonce, first
-attempt, externally consumed grant, expiry and complete same-ref run history.
+attempt, externally consumed grant, expiry and complete same-ref run history. It first reads the fixed current run
+ID, verifies its repository/head/path/actor/attempt, and queries history by that
+verified numeric workflow_id. Filename lookup is officially supported but this
+sequence avoids depending on first-run filename resolution. History uses only
+the exact branch filter so another head/event cannot be hidden by query filters.
 An unknown response, missing current run, extra previous run, redirect or rate
 limit rejects admission without retry. History is an extra fence, not a durable
 one-use ledger. The coordinator must preserve its independent consumption record.
@@ -109,19 +116,26 @@ pre-imported into the library. The original evidence copy remains untouched.
 
 ## Execution request remains pending
 
-`activation-request.pending.json` is deliberately invalid authorization. No new
-nonce/ref/grant has been created or consumed. Before any activation the coordinator
+`activation-request.pending.json` and the pinned public comment are deliberately
+invalid authorization: status=pending and consumed=false. No new nonce/ref or
+consumed grant has been created. The existing gh login and actual comment author
+are both kubbot/124379614. The next ordinary branch push explicitly uses the
+existing gh credential helper, without exporting credentials or changing login. Before any activation the coordinator
 must review the final actual controller SHA, file manifest, this PR's exact-head
 CI and independent review, then approve the concrete single-use material.
 
 The implemented grant channel is a fixed public GitHub issue comment authored by
 the coordinator's pinned user ID, containing precisely the JSON envelope consumed
-by admission. No comment has been created by this implementation. At activation,
-the workflow's approved actor/login and comment/issuer IDs must first be pinned
-and the resulting activation commit reviewed. Only then may the coordinator
+by admission. The sole pending metadata placeholder is [comment6702281018](https://github.com/getyak/leafhour/pull/340#issuecomment-6702281018), created/read back as kubbot/124379614. It remains pending and cannot admit a run. At activation,
+the resulting actual activation commit and these exact actor/comment/issuer
+pins must be independently reviewed and pass ordinary CI. Only then may the coordinator
 publish/update the comment with that commit SHA, fresh nonce/ref, exact runtime,
-limits/cases, consumed=true and UTC expiry, preserve its independent consumed
-record, and create the exact new ref using existing ordinary git authentication.
+limits/cases, consumed=true and whole-second UTC expiry, preserve its independent consumed
+record, and read back the updated comment before creating the exact new ref
+using existing ordinary git authentication. All causal timestamps use
+YYYY-MM-DDTHH:MM:SSZ; comment.updated_at must be strictly earlier than
+run.created_at. Wait until the published comment update second has ended before
+creating the ref; same-second ambiguity is refused, never rounded or retried.
 Do not use workflow GITHUB_TOKEN push or trial dispatch to discover permissions;
 do not merge just to register the workflow. Failure, cancellation, queue expiry
 and unknown result consume that one authorization; no automatic rerun/ref remake.
@@ -138,6 +152,10 @@ Official references: [runner images](https://github.com/actions/runner-images/bl
 All local validation for this PR is bounded, off-device Python testing with
 temporary host files/processes and mocked external SDK/API boundaries. No local
 SDK, Simulator, native build or seven-case run is authorized in this phase.
+The first disabled-source commit9691ee0 passed all six ordinary CI checks in
+run42337663411, including81 Python tests; its generic native build was actually
+Xcode16.4/SDK18.5/arm64, with no UI tests. This is separate from the prepared
+activation head and its own CI.
 Actual runtime inventory/boot, x86_64 compilation, original seven, recovery and
 upload/download on GitHub are unproved. App/window content-size category direct
 readback is still absent in source386, even if these seven eventually pass.

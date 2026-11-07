@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Read-only, fail-closed admission for one disabled GET-328 hosted window.
+"""Read-only, fail-closed admission for one GET-328 hosted window.
 
 The pure validator trusts only the explicitly pinned public comment issuer.
 The CLI makes bounded anonymous GitHub reads; it never triggers Actions, writes
@@ -58,10 +58,10 @@ def _identifier(value, field, encoded=False):
 
 def _utc(value, field):
     _require(isinstance(value, str) and re.fullmatch(
-        r'\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,6})?(?:Z|\+00:00)', value),
-        'Invalid UTC timestamp: ' + field)
+        r'[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z', value),
+        'Invalid whole-second UTC timestamp: ' + field)
     try:
-        return datetime.fromisoformat(value.replace('Z', '+00:00')).timestamp()
+        return int(datetime.fromisoformat(value[:-1] + '+00:00').timestamp())
     except ValueError as error:
         raise ValueError('Invalid UTC timestamp: ' + field) from error
 
@@ -127,14 +127,48 @@ def _context(env, event):
                                             'pinned grant issuer id', encoded=True))
 
 
-def validate_admission(env, event, grant, now_epoch, history):
+def _run_identity(context, run, field):
+    _require(type(run) is dict, 'Missing ' + field)
+    _require(_identifier(run.get('id'), field + ' id') == context['run_id']
+             and type(run.get('run_attempt')) is int and run['run_attempt'] == 1,
+             field + ' does not identify this first attempt')
+    workflow_id = _identifier(run.get('workflow_id'), field + ' workflow id')
+    _require(run.get('workflow_url') == API_ROOT + '/actions/workflows/' + str(workflow_id),
+             field + ' workflow URL differs from the fixed public repository')
+    for key in ('repository', 'head_repository'):
+        repo = run.get(key)
+        _require(type(repo) is dict and repo.get('full_name') == REPOSITORY
+                 and repo.get('private') is False and type(repo.get('id')) is int
+                 and repo['id'] == REPOSITORY_ID, field + ' repository differs: ' + key)
+    _require(run.get('head_sha') == context['controller_sha']
+             and run.get('head_branch') == context['branch'] and run.get('event') == 'push',
+             field + ' belongs to another head/ref/event')
+    _require(run.get('path') in (WORKFLOW_PATH, WORKFLOW_PATH + '@' + context['branch'],
+                                WORKFLOW_PATH + '@' + context['ref']),
+             field + ' belongs to another workflow')
+    for key in ('actor', 'triggering_actor'):
+        actor = run.get(key)
+        _require(type(actor) is dict and actor.get('login') == context['actor']['login']
+                 and _identifier(actor.get('id'), field + ' actor id') == context['actor']['id'],
+                 field + ' actor differs: ' + key)
+    _utc(run.get('created_at'), field + '.created_at')
+    return dict(workflow_id=workflow_id, run_created_at=run['created_at'])
+
+
+def validate_current_run(env, event, current_run):
+    """Bind the public current-run response before using its numeric workflow ID."""
+    context = _context(env, event)
+    return {**context, **_run_identity(context, current_run, 'Current run')}
+
+
+def validate_admission(env, event, grant, now_epoch, history, *, current_run):
     """Validate raw public comment + complete run history, or raise ValueError.
 
     A consumed comment is external authorization, not a runner-created grant.
     History is an additional replay fence; it is not a permanent consumption
     ledger and must never be used to recreate a missing coordinator record.
     """
-    context = _context(env, event)
+    context = validate_current_run(env, event, current_run)
     _require(type(now_epoch) in (int, float) and math.isfinite(now_epoch), 'Unknown current time')
     _require(type(grant) is dict, 'Missing public grant comment')
     _require(_identifier(grant.get('id'), 'comment id') == context['grant_comment_id'],
@@ -176,24 +210,13 @@ def validate_admission(env, event, grant, now_epoch, history):
     _require(type(runs) is list and type(history.get('total_count')) is int
              and history['total_count'] == len(runs) == 1,
              'The exact grant ref must have one candidate run and no previous attempt')
-    run = runs[0]
-    _require(type(run) is dict, 'Invalid run history entry')
-    _require(_identifier(run.get('id'), 'history run id') == context['run_id']
-             and type(run.get('run_attempt')) is int and run['run_attempt'] == 1,
-             'Run history does not identify this first attempt')
-    _require(run.get('head_sha') == context['controller_sha']
-             and run.get('head_branch') == context['branch'] and run.get('event') == 'push',
-             'Run history belongs to another head/ref/event')
-    _require(run.get('path') in (WORKFLOW_PATH, WORKFLOW_PATH + '@' + context['branch'],
-                                WORKFLOW_PATH + '@' + context['ref']),
-             'Run history belongs to another workflow')
-    for key in ('actor', 'triggering_actor'):
-        actor = run.get(key)
-        _require(type(actor) is dict and actor.get('login') == context['actor']['login']
-                 and _identifier(actor.get('id'), 'history actor id') == context['actor']['id'],
-                 'History actor differs: ' + key)
-    run_created = _utc(run.get('created_at'), 'run.created_at')
-    _require(updated <= run_created <= now_epoch, 'Comment was edited after this run or run time is unknown')
+    history_identity = _run_identity(context, runs[0], 'History run')
+    _require(history_identity == dict(workflow_id=context['workflow_id'],
+                                      run_created_at=context['run_created_at']),
+             'Current run and history disagree on workflow identity or creation time')
+    run_created = _utc(context['run_created_at'], 'current_run.created_at')
+    _require(updated < run_created <= now_epoch,
+             'Comment must be durably published before the run creation second')
     return dict(allowed=True, schema_version=1, **context, source_sha=SOURCE_SHA,
                 source_tree=SOURCE_TREE, scope=SCOPE, cases=list(CASES), runtime=dict(RUNTIME),
                 limits=dict(LIMITS), expires_at=body['expires_at'], consumed_at=body['consumed_at'])
@@ -274,18 +297,24 @@ def main(argv=None):
         event = _json(Path(os.environ['GITHUB_EVENT_PATH']).read_bytes())
         context = _context(os.environ, event)
         _start(root, context, time.monotonic())
+        current_run, raw_current_run, _ = fetch_json(API_ROOT + '/actions/runs/' + str(context['run_id']))
+        _exclusive(receipts / 'current-run.json', raw_current_run)
+        _start(root, context, time.monotonic())
+        context = validate_current_run(os.environ, event, current_run)
         grant, raw_grant, _ = fetch_json(API_ROOT + '/issues/comments/' + str(context['grant_comment_id']))
         _exclusive(receipts / 'grant-comment.json', raw_grant)
         _start(root, context, time.monotonic())
-        query = urllib.parse.urlencode(dict(event='push', branch=context['branch'],
-                                           head_sha=context['controller_sha'], per_page=100))
-        history, raw_history, link = fetch_json(API_ROOT + '/actions/workflows/get328-seven-once.yml/runs?' + query)
+        query = urllib.parse.urlencode(dict(branch=context['branch'], per_page=100, page=1))
+        history, raw_history, link = fetch_json(
+            API_ROOT + '/actions/workflows/' + str(context['workflow_id']) + '/runs?' + query)
         _exclusive(receipts / 'history.json', raw_history)
+        _start(root, context, time.monotonic())
         _require(type(history) is dict, 'Public run history is not an object')
         result = validate_admission(os.environ, event, grant, time.time(),
-                                    {**history, 'complete': not bool(link)})
+                                    {**history, 'complete': not bool(link)}, current_run=current_run)
         _start(root, context, time.monotonic())
         result.update(admitted_monotonic=time.monotonic(),
+                      current_run_sha256=hashlib.sha256(raw_current_run).hexdigest(),
                       grant_comment_sha256=hashlib.sha256(raw_grant).hexdigest(),
                       history_sha256=hashlib.sha256(raw_history).hexdigest())
         _exclusive(receipts / 'admission.json', (json.dumps(result, sort_keys=True, indent=2) + '\n').encode())

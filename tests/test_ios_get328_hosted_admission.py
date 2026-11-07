@@ -3,6 +3,7 @@ import copy
 from contextlib import redirect_stderr, redirect_stdout
 from datetime import datetime, timezone
 import importlib.util
+import hashlib
 import io
 import json
 import os
@@ -11,7 +12,8 @@ import re
 import sys
 import tempfile
 import unittest
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
+from urllib.parse import parse_qs, urlsplit
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -66,15 +68,21 @@ class HostedAdmissionTests(unittest.TestCase):
                             url='https://api.github.com/repos/getyak/leafhour/issues/comments/3001',
                             created_at=timestamp(NOW - 300), updated_at=timestamp(NOW - 120),
                             body=json.dumps(self.body))
-        self.history = dict(complete=True, total_count=1, workflow_runs=[dict(
+        self.current_run = dict(
             id=2001, head_sha=CONTROL, head_branch=REF.removeprefix('refs/heads/'),
             event='push', run_attempt=1, actor={'login': 'synthetic-authorized', 'id': 1001},
             triggering_actor={'login': 'synthetic-authorized', 'id': 1001},
-            path=WORKFLOW + '@' + REF, created_at=timestamp(NOW - 60))])
+            path=WORKFLOW, created_at=timestamp(NOW - 60), workflow_id=5001,
+            workflow_url='https://api.github.com/repos/getyak/leafhour/actions/workflows/5001',
+            repository=copy.deepcopy(self.event['repository']),
+            head_repository=copy.deepcopy(self.event['repository']),
+            status='in_progress', conclusion=None)
+        history_run = {**copy.deepcopy(self.current_run), 'path': WORKFLOW + '@' + REF}
+        self.history = dict(complete=True, total_count=1, workflow_runs=[history_run])
 
     def validate(self, **changes):
         args = dict(env=self.env, event=self.event, grant=self.comment,
-                    now_epoch=NOW, history=self.history)
+                    now_epoch=NOW, history=self.history, current_run=self.current_run)
         args.update(changes)
         return admission.validate_admission(**args)
 
@@ -90,6 +98,65 @@ class HostedAdmissionTests(unittest.TestCase):
         self.assertEqual(result['source_tree'], TREE)
         self.assertEqual(result['nonce'], NONCE)
         self.assertEqual(result['grant_comment_id'], 3001)
+        self.assertEqual(result['workflow_id'], 5001)
+
+    def test_current_run_accepts_rich_api_metadata_and_only_exact_workflow_paths(self):
+        for path in (WORKFLOW, WORKFLOW + '@' + REF,
+                     WORKFLOW + '@' + REF.removeprefix('refs/heads/')):
+            with self.subTest(path=path):
+                run = copy.deepcopy(self.current_run)
+                run['path'] = path
+                for field in ('actor', 'triggering_actor'):
+                    run[field].update(type='User', node_id='synthetic', site_admin=False)
+                result = admission.validate_current_run(self.env, self.event, run)
+                self.assertEqual(result['workflow_id'], 5001)
+                self.assertEqual(result['run_id'], 2001)
+                self.assertEqual(result['run_created_at'], self.current_run['created_at'])
+                self.assertIs(self.validate(current_run=run)['allowed'], True)
+
+    def test_current_run_identity_cannot_be_substituted_or_omitted(self):
+        wrong = [('id', 2002), ('id', True), ('run_attempt', 2), ('run_attempt', True),
+                 ('workflow_id', True), ('workflow_id', '5001'), ('workflow_id', 0),
+                 ('workflow_id', -1), ('head_sha', 'c' * 40), ('head_branch', 'main'),
+                 ('event', 'pull_request'), ('path', WORKFLOW + '.extra'),
+                 ('path', WORKFLOW + '@refs/heads/main'),
+                 ('workflow_url', 'https://api.github.com/repos/other/repo/actions/workflows/5001'),
+                 ('workflow_url', self.current_run['workflow_url'] + '0')]
+        for field, value in wrong:
+            with self.subTest(field=field, value=value):
+                run = {**self.current_run, field: value}
+                with self.assertRaises(ValueError):
+                    admission.validate_current_run(self.env, self.event, run)
+                with self.assertRaises(ValueError):
+                    self.validate(current_run=run)
+        for field in ('id', 'run_attempt', 'workflow_id', 'workflow_url', 'head_sha',
+                      'head_branch', 'event', 'path', 'created_at', 'repository',
+                      'head_repository', 'actor', 'triggering_actor'):
+            with self.subTest(missing=field):
+                run = {key: value for key, value in self.current_run.items() if key != field}
+                with self.assertRaises(ValueError):
+                    admission.validate_current_run(self.env, self.event, run)
+        with self.assertRaises(ValueError):
+            self.validate(current_run=None)
+
+    def test_current_run_repository_and_both_actor_identities_are_bound(self):
+        for field in ('repository', 'head_repository'):
+            for key, value in [('id', 1), ('id', True), ('private', True),
+                               ('private', 0), ('full_name', 'other/leafhour')]:
+                run = copy.deepcopy(self.current_run)
+                run[field][key] = value
+                with self.subTest(field=field, key=key, value=value), self.assertRaises(ValueError):
+                    self.validate(current_run=run)
+        for field in ('actor', 'triggering_actor'):
+            for key, value in [('id', 999), ('id', True), ('login', 'other')]:
+                run = copy.deepcopy(self.current_run)
+                run[field][key] = value
+                with self.subTest(field=field, key=key, value=value), self.assertRaises(ValueError):
+                    self.validate(current_run=run)
+
+    def test_current_run_is_required_by_the_pure_admission_api(self):
+        with self.assertRaises(TypeError):
+            admission.validate_admission(self.env, self.event, self.comment, NOW, self.history)
 
     def test_private_foreign_or_wrong_repository_identity_is_rejected(self):
         for key, value in [('private', True), ('private', 'false'), ('full_name', 'other/leafhour'),
@@ -197,6 +264,50 @@ class HostedAdmissionTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             self.validate(grant={**self.comment, 'updated_at': timestamp(NOW - 1)})
 
+    def test_causal_timestamps_require_canonical_whole_utc_seconds(self):
+        for scope, field in [('body', 'consumed_at'), ('body', 'expires_at'),
+                             ('comment', 'created_at'), ('comment', 'updated_at'),
+                             ('history', 'created_at'), ('current', 'created_at')]:
+            for suffix in ('.000Z', '+00:00'):
+                with self.subTest(scope=scope, field=field, suffix=suffix):
+                    comment = copy.deepcopy(self.comment)
+                    history = copy.deepcopy(self.history)
+                    current = copy.deepcopy(self.current_run)
+                    if scope == 'body':
+                        body = {**self.body, field: self.body[field][:-1] + suffix}
+                        comment['body'] = json.dumps(body)
+                    elif scope == 'comment':
+                        comment[field] = comment[field][:-1] + suffix
+                    elif scope == 'history':
+                        run = history['workflow_runs'][0]
+                        run[field] = run[field][:-1] + suffix
+                    else:
+                        current[field] = current[field][:-1] + suffix
+                    with self.assertRaises(ValueError):
+                        self.validate(grant=comment, history=history, current_run=current)
+
+    def test_comment_update_in_the_run_creation_second_is_rejected(self):
+        comment = {**self.comment, 'updated_at': self.history['workflow_runs'][0]['created_at']}
+        with self.assertRaises(ValueError):
+            self.validate(grant=comment)
+
+    def test_one_second_publication_gap_and_fractional_now_keep_exact_expiry(self):
+        comment = {**self.comment, 'updated_at': timestamp(NOW - 61)}
+        grant = {**comment, 'body': json.dumps({**self.body, 'expires_at': timestamp(NOW + 1)})}
+        self.assertIs(self.validate(grant=grant, now_epoch=NOW + 0.999)['allowed'], True)
+        with self.assertRaises(ValueError):
+            self.validate(grant=grant, now_epoch=NOW + 1)
+        for now in (True, float('nan'), float('inf'), -float('inf')):
+            with self.subTest(now=now), self.assertRaises(ValueError):
+                self.validate(now_epoch=now)
+
+    def test_invalid_calendar_and_nonzero_fractional_grant_times_are_rejected(self):
+        for value in ('2026-02-30T04:00:00Z', '2026-11-07T04:00:60Z',
+                      timestamp(NOW - 121)[:-1] + '.1Z',
+                      timestamp(NOW - 121)[:-1] + '+01:00'):
+            with self.subTest(value=value), self.assertRaises(ValueError):
+                self.validate(grant=self.body_comment({**self.body, 'consumed_at': value}))
+
     def test_incomplete_missing_paginated_or_duplicate_history_fails_closed(self):
         for history in (None, {}, {**self.history, 'complete': False},
                         {**self.history, 'total_count': 2},
@@ -212,6 +323,14 @@ class HostedAdmissionTests(unittest.TestCase):
                            ('event', 'workflow_dispatch'), ('run_attempt', 2),
                            ('path', '.github/workflows/other.yml@' + REF)]:
             run = {**self.history['workflow_runs'][0], key: value}
+            with self.subTest(key=key), self.assertRaises(ValueError):
+                self.validate(history={**self.history, 'workflow_runs': [run]})
+
+    def test_current_run_and_history_must_agree_on_numeric_workflow_and_creation_time(self):
+        for key, value in [('workflow_id', 5002), ('created_at', timestamp(NOW - 59))]:
+            run = {**self.history['workflow_runs'][0], key: value}
+            if key == 'workflow_id':
+                run['workflow_url'] = run['workflow_url'].removesuffix('5001') + '5002'
             with self.subTest(key=key), self.assertRaises(ValueError):
                 self.validate(history={**self.history, 'workflow_runs': [run]})
 
@@ -248,6 +367,22 @@ class HostedAdmissionTests(unittest.TestCase):
     def run_cli(self, argv):
         with redirect_stdout(io.StringIO()), redirect_stderr(io.StringIO()):
             return admission.main(argv)
+
+    def cli_inputs(self, temp):
+        root = Path(temp) / 'get328-hosted'
+        self.make_root(root)
+        event_path = Path(temp) / 'event.json'
+        event_path.write_text(json.dumps(self.event))
+        output = Path(temp) / 'github-output'
+        env = {**self.env, 'GITHUB_EVENT_PATH': str(event_path), 'GITHUB_OUTPUT': str(output)}
+        return root, env, output
+
+    def api_responses(self, history=None, link=''):
+        history = self.history if history is None else history
+        public_history = {key: value for key, value in history.items() if key != 'complete'}
+        return [(self.current_run, json.dumps(self.current_run, indent=2).encode() + b'\n', ''),
+                (self.comment, json.dumps(self.comment, indent=4).encode() + b'\n', ''),
+                (public_history, json.dumps(public_history).encode() + b'\n', link)]
 
     def stamp_source(self):
         path = ROOT / '.github/workflows/get328-seven-once.yml'
@@ -299,28 +434,151 @@ class HostedAdmissionTests(unittest.TestCase):
 
     def test_cli_preserves_raw_public_material_and_only_then_emits_allowed(self):
         with tempfile.TemporaryDirectory(prefix='get328-admission-test-') as temp:
-            path = Path(temp) / 'get328-hosted'
-            self.make_root(path)
-            event_path = Path(temp) / 'event.json'
-            event_path.write_text(json.dumps(self.event))
-            output = Path(temp) / 'github-output'
-            env = {**self.env, 'GITHUB_EVENT_PATH': str(event_path), 'GITHUB_OUTPUT': str(output)}
-            raw_comment = json.dumps(self.comment, indent=2).encode()
-            raw_history = json.dumps({k: v for k, v in self.history.items() if k != 'complete'}).encode()
+            path, env, output = self.cli_inputs(temp)
+            responses = self.api_responses()
             with patch.dict(os.environ, env, clear=True), \
                     patch.object(admission.time, 'time', return_value=NOW), \
                     patch.object(admission.time, 'monotonic', return_value=100), \
-                    patch.object(admission, 'fetch_json', side_effect=[
-                        (self.comment, raw_comment, ''),
-                        (json.loads(raw_history), raw_history, '')]) as fetch:
+                    patch.object(admission, 'fetch_json', side_effect=responses) as fetch:
                 self.assertEqual(self.run_cli(['--root', str(path)]), 0)
             receipt = json.loads((path / 'receipts/admission.json').read_text())
             self.assertIs(receipt['allowed'], True)
-            self.assertEqual((path / 'receipts/grant-comment.json').read_bytes(), raw_comment)
-            self.assertEqual((path / 'receipts/history.json').read_bytes(), raw_history)
+            self.assertEqual(receipt['workflow_id'], 5001)
+            for name, response, digest_key in [
+                    ('current-run.json', responses[0], 'current_run_sha256'),
+                    ('grant-comment.json', responses[1], 'grant_comment_sha256'),
+                    ('history.json', responses[2], 'history_sha256')]:
+                self.assertEqual((path / 'receipts' / name).read_bytes(), response[1])
+                self.assertEqual(receipt[digest_key], hashlib.sha256(response[1]).hexdigest())
             self.assertIn('allowed=true', output.read_text())
-            self.assertTrue(all(call.args[0].startswith('https://api.github.com/repos/getyak/leafhour/')
-                                for call in fetch.call_args_list))
+            urls = [call.args[0] for call in fetch.call_args_list]
+            self.assertEqual(urls[:2], [admission.API_ROOT + '/actions/runs/2001',
+                                        admission.API_ROOT + '/issues/comments/3001'])
+            self.assertEqual(urlsplit(urls[2]).path,
+                             '/repos/getyak/leafhour/actions/workflows/5001/runs')
+            self.assertEqual(parse_qs(urlsplit(urls[2]).query),
+                             {'branch': [REF.removeprefix('refs/heads/')],
+                              'per_page': ['100'], 'page': ['1']})
+
+    def test_cli_stops_after_invalid_current_run_and_preserves_its_original_bytes(self):
+        with tempfile.TemporaryDirectory(prefix='get328-admission-test-') as temp:
+            path, env, output = self.cli_inputs(temp)
+            run = {**self.current_run, 'event': 'pull_request', 'path': '.github/workflows/ci.yml'}
+            raw = json.dumps(run, indent=4).encode()
+            with patch.dict(os.environ, env, clear=True), \
+                    patch.object(admission.time, 'monotonic', return_value=100), \
+                    patch.object(admission, 'fetch_json', return_value=(run, raw, '')) as fetch:
+                self.assertEqual(self.run_cli(['--root', str(path)]), 78)
+            self.assertEqual(fetch.call_count, 1)
+            self.assertEqual(fetch.call_args.args[0], admission.API_ROOT + '/actions/runs/2001')
+            self.assertEqual((path / 'receipts/current-run.json').read_bytes(), raw)
+            self.assertFalse((path / 'receipts/grant-comment.json').exists())
+            self.assertFalse((path / 'receipts/history.json').exists())
+            self.assertFalse(output.exists())
+            self.assertIs(json.loads((path / 'receipts/admission.json').read_text())['allowed'], False)
+
+    def test_cli_same_branch_previous_different_head_is_not_filtered_out(self):
+        history = copy.deepcopy(self.history)
+        previous = {**history['workflow_runs'][0], 'id': 2000, 'head_sha': 'c' * 40,
+                    'created_at': timestamp(NOW - 90), 'event': 'workflow_dispatch'}
+        history['workflow_runs'].append(previous)
+        history['total_count'] = 2
+        with tempfile.TemporaryDirectory(prefix='get328-admission-test-') as temp:
+            path, env, output = self.cli_inputs(temp)
+            with patch.dict(os.environ, env, clear=True), \
+                    patch.object(admission.time, 'time', return_value=NOW), \
+                    patch.object(admission.time, 'monotonic', return_value=100), \
+                    patch.object(admission, 'fetch_json', side_effect=self.api_responses(history)) as fetch:
+                self.assertEqual(self.run_cli(['--root', str(path)]), 78)
+            self.assertEqual(fetch.call_count, 3)
+            self.assertEqual(set(parse_qs(urlsplit(fetch.call_args.args[0]).query)),
+                             {'branch', 'per_page', 'page'})
+            self.assertFalse(output.exists())
+
+    def test_cli_each_read_failure_is_once_only_with_truthful_partial_receipts(self):
+        errors = [TimeoutError('synthetic timeout'), ValueError('synthetic invalid JSON')]
+        errors.extend(admission.urllib.error.HTTPError(admission.API_ROOT, code,
+                      'synthetic HTTP refusal', {}, None) for code in (302, 403, 404, 429))
+        for stage in range(3):
+            for error in errors:
+                with self.subTest(stage=stage, error=str(error)), \
+                        tempfile.TemporaryDirectory(prefix='get328-admission-test-') as temp:
+                    path, env, output = self.cli_inputs(temp)
+                    responses = self.api_responses()
+                    with patch.dict(os.environ, env, clear=True), \
+                            patch.object(admission.time, 'time', return_value=NOW), \
+                            patch.object(admission.time, 'monotonic', return_value=100), \
+                            patch.object(admission, 'fetch_json',
+                                         side_effect=responses[:stage] + [error]) as fetch:
+                        self.assertEqual(self.run_cli(['--root', str(path)]), 78)
+                    self.assertEqual(fetch.call_count, stage + 1)
+                    for index, name in enumerate(('current-run.json', 'grant-comment.json', 'history.json')):
+                        receipt = path / 'receipts' / name
+                        self.assertEqual(receipt.exists(), index < stage)
+                        if index < stage:
+                            self.assertEqual(receipt.read_bytes(), responses[index][1])
+                    self.assertIs(json.loads((path / 'receipts/admission.json').read_text())['allowed'], False)
+                    self.assertFalse(output.exists())
+
+    def test_cli_history_pagination_cannot_be_admitted_as_complete(self):
+        with tempfile.TemporaryDirectory(prefix='get328-admission-test-') as temp:
+            path, env, output = self.cli_inputs(temp)
+            link = '<https://api.github.com/repos/getyak/leafhour/actions/workflows/5001/runs?page=2>; rel="next"'
+            with patch.dict(os.environ, env, clear=True), \
+                    patch.object(admission.time, 'time', return_value=NOW), \
+                    patch.object(admission.time, 'monotonic', return_value=100), \
+                    patch.object(admission, 'fetch_json', side_effect=self.api_responses(link=link)) as fetch:
+                self.assertEqual(self.run_cli(['--root', str(path)]), 78)
+            self.assertEqual(fetch.call_count, 3)
+            self.assertFalse(output.exists())
+
+    def test_cli_network_time_uses_the_existing_bootstrap_deadline_at_every_stage(self):
+        for slow_stage in range(3):
+            with self.subTest(stage=slow_stage), tempfile.TemporaryDirectory(prefix='get328-admission-test-') as temp:
+                path, env, output = self.cli_inputs(temp)
+                clock = {'now': 100, 'reads': 0}
+                responses = self.api_responses()
+
+                def read(unused_url):
+                    stage = clock['reads']
+                    clock['reads'] += 1
+                    if stage == slow_stage:
+                        clock['now'] = 610  # Exactly the original bootstrap deadline.
+                    return responses[stage]
+
+                with patch.dict(os.environ, env, clear=True), \
+                        patch.object(admission.time, 'time', return_value=NOW), \
+                        patch.object(admission.time, 'monotonic', side_effect=lambda: clock['now']), \
+                        patch.object(admission, 'fetch_json', side_effect=read) as fetch:
+                    self.assertEqual(self.run_cli(['--root', str(path)]), 78)
+                self.assertEqual(fetch.call_count, slow_stage + 1)
+                self.assertFalse(output.exists())
+                self.assertIs(json.loads((path / 'receipts/admission.json').read_text())['allowed'], False)
+                for index, name in enumerate(('current-run.json', 'grant-comment.json', 'history.json')):
+                    self.assertEqual((path / 'receipts' / name).exists(), index <= slow_stage)
+
+    def test_fetch_json_remains_one_bounded_anonymous_request(self):
+        for raw in (b'{"id":2001}', b'{"id":1,"id":2}', b'{"id":NaN}', b'invalid',
+                    b'x' * (admission.MAX_RESPONSE_BYTES + 1)):
+            with self.subTest(prefix=raw[:40]):
+                response = MagicMock()
+                response.__enter__.return_value = response
+                response.read.return_value = raw
+                response.headers.get.return_value = ''
+                opener = MagicMock()
+                opener.open.return_value = response
+                with patch.object(admission.urllib.request, 'build_opener', return_value=opener):
+                    if raw == b'{"id":2001}':
+                        self.assertEqual(admission.fetch_json(admission.API_ROOT + '/actions/runs/2001'),
+                                         ({'id': 2001}, raw, ''))
+                    else:
+                        with self.assertRaises(ValueError):
+                            admission.fetch_json(admission.API_ROOT + '/actions/runs/2001')
+                opener.open.assert_called_once()
+                request = opener.open.call_args.args[0]
+                self.assertFalse(any(key.lower() == 'authorization' for key, unused in request.header_items()))
+                self.assertEqual(opener.open.call_args.kwargs, {'timeout': 5})
+                response.read.assert_called_once_with(admission.MAX_RESPONSE_BYTES + 1)
 
     def test_cli_pending_grant_or_expired_bootstrap_never_fetches_or_allows(self):
         for fault in ('pending', 'bootstrap-expired'):
