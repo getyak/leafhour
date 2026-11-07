@@ -73,3 +73,8 @@ test('beta model accounting does not impose financial, turn or tool-call quotas'
   assert.equal(meter.snapshot().requests,40);
  });
 });
+test('statistics-only AI still rejects an unauthenticated caller before dispatch',async()=>{
+ let executed=false;const gate=createCreditGate({billing:{enabled:true,usagePolicy:'beta'},record:()=>{}});
+ await assert.rejects(gate.run({user:null,action:'translation',bookId:'public',input:{passageId:'p'},execute:async()=>{executed=true;}}),error=>error.status===401);
+ assert.equal(executed,false);
+});

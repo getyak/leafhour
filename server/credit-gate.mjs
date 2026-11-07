@@ -93,6 +93,7 @@ export function createCreditGate({billing,library,chat,record,clock=Date.now}={}
  }
  async function run({user,action,bookId,input,execute,signal}){
   if(billing?.usagePolicy==='beta'){
+   if(!user?.id||user.is_anonymous)throw fail('请先进入自己的书房',401);
    const body=bodyFor(input,action,bookId);
    // Generation services still authorize and deduplicate the source-bound request.
    // No financial operation is created: beta calls cannot be charged later.
