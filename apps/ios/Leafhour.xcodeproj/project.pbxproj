@@ -31,6 +31,7 @@
 		2A7FEA7A8A8613DB9A505FB6 /* LibraryImportActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCBCD433CAA919F173FDF279 /* LibraryImportActivity.swift */; };
 		2AF3F48A8376D436C1C02364 /* ListeningWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C30AE7481A814186B386ED1 /* ListeningWidget.swift */; };
 		2B70EF47AF54AF54B76821CB /* BookShelfComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = E334FEB91510D44EC1F6609A /* BookShelfComponents.swift */; };
+		2DD35FD81BFA3B572B030204 /* ZIPFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = 4EFC5A899AE5D77223F0AB4B /* ZIPFoundation */; };
 		2E0F00781CAB3995FF510024 /* AvatarSources.json in Resources */ = {isa = PBXBuildFile; fileRef = A8521308E901A407CA3A80A8 /* AvatarSources.json */; };
 		2FA74F5C1E5CEA103B01A56F /* ReaderSettingsControls.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DB33ED242E41CB64391F093 /* ReaderSettingsControls.swift */; };
 		305F98CAF83E45C037395DC1 /* RootTabPager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0F2436505B251085FDDD302 /* RootTabPager.swift */; };
@@ -370,6 +371,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				75843C61ABCC16CE94FAF661 /* LeafhourCore in Frameworks */,
+				2DD35FD81BFA3B572B030204 /* ZIPFoundation in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -649,6 +651,7 @@
 			name = Leafhour;
 			packageProductDependencies = (
 				C6097A4216730EFB1A068F30 /* LeafhourCore */,
+				4EFC5A899AE5D77223F0AB4B /* ZIPFoundation */,
 			);
 			productName = Leafhour;
 			productReference = 546006DD160B938C9A0F4BED /* Leafhour.app */;
@@ -1564,6 +1567,10 @@
 			productName = LeafhourCore;
 		};
 		328C76F5D6D1B07F1EEE7C99 /* ZIPFoundation */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = ZIPFoundation;
+		};
+		4EFC5A899AE5D77223F0AB4B /* ZIPFoundation */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = ZIPFoundation;
 		};
