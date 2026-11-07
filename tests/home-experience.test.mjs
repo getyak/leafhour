@@ -14,7 +14,7 @@ test('all public locales offer keyboard-native demo controls and honest iOS acce
   const html=homeDocument(source,locale);
   assert.match(html,/id="product-stage"/);
   assert.equal([...html.matchAll(/data-demo-mode="(?:read|translate|ask)"/g)].length,3);
-  assert.match(html,/href="https:\/\/github.com\/getyak\/leafhour\/tree\/main\/apps\/ios"/);
+  assert.ok(html.includes('href="/'+({en:'en','zh-Hans':'zh-hans','zh-Hant':'zh-hant',ja:'ja'}[locale])+'/beta#ios"'));
   assert.doesNotMatch(html,/https:\/\/(?:apps\.apple\.com|testflight\.apple\.com)/);
   assert.match(html,/data-demo-panel="ask" hidden/);
  }

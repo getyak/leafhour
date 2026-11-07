@@ -316,6 +316,132 @@ candidate:app/atmosphere-state.mjs:5:18,js-cjk-literal,app/atmosphere-state.mjs,
 candidate:app/atmosphere-state.mjs:5:33,js-cjk-literal,app/atmosphere-state.mjs,5,,unknown,reviewable,,潮声很远，清晨很长。
 candidate:app/atmosphere-state.mjs:5:53,js-cjk-literal,app/atmosphere-state.mjs,5,,unknown,reviewable,,缓慢海浪
 candidate:app/atmosphere-state.mjs:5:66,js-cjk-literal,app/atmosphere-state.mjs,5,,unknown,reviewable,,晨光和声
+candidate:app/beta-page.mjs:5:45,js-cjk-literal,app/beta-page.mjs,5,,unknown,reviewable,,简体中文
+candidate:app/beta-page.mjs:5:62,js-cjk-literal,app/beta-page.mjs,5,,unknown,reviewable,,繁體中文
+candidate:app/beta-page.mjs:5:72,js-cjk-literal,app/beta-page.mjs,5,,unknown,reviewable,,日本語
+candidate:app/beta-page.mjs:59:14,js-cjk-literal,app/beta-page.mjs,59,,unknown,reviewable,,加入内测
+candidate:app/beta-page.mjs:60:20,js-cjk-literal,app/beta-page.mjs,60,,unknown,reviewable,,在 Web 先读几页，把 Leafhour 带到 iPhone。直接体验内测，也欢迎告诉我们读起来如何。
+candidate:app/beta-page.mjs:61:16,js-cjk-literal,app/beta-page.mjs,61,,unknown,reviewable,,"下一本书，
+一起慢慢读。"
+candidate:app/beta-page.mjs:62:14,js-cjk-literal,app/beta-page.mjs,62,,unknown,reviewable,,Leafhour 正在内测。带一本想读的书来，试试读、听和提问，也告诉我们哪些地方还不顺手。
+candidate:app/beta-page.mjs:63:12,js-cjk-literal,app/beta-page.mjs,63,,unknown,reviewable,,把书房带到 iPhone
+candidate:app/beta-page.mjs:64:16,js-cjk-literal,app/beta-page.mjs,64,,unknown,reviewable,,读原文，逐句听读，对照译文。遇到难句，就在原页问下去。
+candidate:app/beta-page.mjs:65:16,js-cjk-literal,app/beta-page.mjs,65,,unknown,reviewable,,通过 TestFlight 安装
+candidate:app/beta-page.mjs:66:20,js-cjk-literal,app/beta-page.mjs,66,,unknown,reviewable,,iOS 安装入口确认中
+candidate:app/beta-page.mjs:67:24,js-cjk-literal,app/beta-page.mjs,67,,unknown,reviewable,,公开安装链接暂未就绪。现在可以先在 Web 试读，或通过邮件联系我们。
+candidate:app/beta-page.mjs:68:20,js-cjk-literal,app/beta-page.mjs,68,,unknown,reviewable,,需要 iOS 17 或更高版本 · 内测版
+candidate:app/beta-page.mjs:70:7,js-cjk-literal,app/beta-page.mjs,70,,unknown,reviewable,,先安装 Apple 的 TestFlight。
+candidate:app/beta-page.mjs:71:7,js-cjk-literal,app/beta-page.mjs,71,,unknown,reviewable,,打开 Leafhour 邀请，选择「接受」。
+candidate:app/beta-page.mjs:72:7,js-cjk-literal,app/beta-page.mjs,72,,unknown,reviewable,,安装 Leafhour，打开第一本书。
+candidate:app/beta-page.mjs:74:19,js-cjk-literal,app/beta-page.mjs,74,,unknown,reviewable,,获取 TestFlight
+candidate:app/beta-page.mjs:75:19,js-cjk-literal,app/beta-page.mjs,75,,unknown,reviewable,,iPhone 真实阅读界面 · 公版样书
+candidate:app/beta-page.mjs:76:17,js-cjk-literal,app/beta-page.mjs,76,,unknown,reviewable,,先读几页，再决定。
+candidate:app/beta-page.mjs:77:16,js-cjk-literal,app/beta-page.mjs,77,,unknown,reviewable,,打开浏览器就能试读。在原文与译文间对照，准备好后，再把自己的书放进书房。
+candidate:app/beta-page.mjs:78:14,js-cjk-literal,app/beta-page.mjs,78,,unknown,reviewable,,在 Web 试读
+candidate:app/beta-page.mjs:79:13,js-cjk-literal,app/beta-page.mjs,79,,unknown,reviewable,,打开我的书房
+candidate:app/beta-page.mjs:80:16,js-cjk-literal,app/beta-page.mjs,80,,unknown,reviewable,,公版样书无需注册，可以直接开始。
+candidate:app/beta-page.mjs:81:19,js-cjk-literal,app/beta-page.mjs,81,,unknown,reviewable,,Web 真实阅读界面 · 公版样书
+candidate:app/beta-page.mjs:82:20,js-cjk-literal,app/beta-page.mjs,82,,unknown,reviewable,,开始之前
+candidate:app/beta-page.mjs:85:9,js-cjk-literal,app/beta-page.mjs,85,,unknown,reviewable,,还在不断打磨
+candidate:app/beta-page.mjs:86:9,js-cjk-literal,app/beta-page.mjs,86,,unknown,reviewable,,部分交互会继续调整，也可能遇到不够顺手的地方。具体的使用反馈能帮助我们确定下一步。
+candidate:app/beta-page.mjs:89:9,js-cjk-literal,app/beta-page.mjs,89,,unknown,reviewable,,阅读保持免费
+candidate:app/beta-page.mjs:90:9,js-cjk-literal,app/beta-page.mjs,90,,unknown,reviewable,,阅读、笔记和导出免费。AI 功能沿用现有阅读点规则，使用前会显示相应费用。
+candidate:app/beta-page.mjs:93:9,js-cjk-literal,app/beta-page.mjs,93,,unknown,reviewable,,同一个私人书房
+candidate:app/beta-page.mjs:94:9,js-cjk-literal,app/beta-page.mjs,94,,unknown,reviewable,,Web 与 iPhone 可以使用同一 Leafhour 账号。本机书籍留在设备上，上传由你主动选择。
+candidate:app/beta-page.mjs:97:16,js-cjk-literal,app/beta-page.mjs,97,,unknown,reviewable,,查看阅读点说明
+candidate:app/beta-page.mjs:98:22,js-cjk-literal,app/beta-page.mjs,98,,unknown,reviewable,,"读起来如何，
+想听听你的感受。"
+candidate:app/beta-page.mjs:99:22,js-cjk-literal,app/beta-page.mjs,99,,unknown,reviewable,,哪里读得不顺手，或有新的想法，都可以直接写信给我们。
+candidate:app/beta-page.mjs:100:20,js-cjk-literal,app/beta-page.mjs,100,,unknown,reviewable,,直接写邮件
+candidate:app/beta-page.mjs:101:18,js-cjk-literal,app/beta-page.mjs,101,,unknown,reviewable,,通过邮箱联系，无需加入社群，也不必公开提交问题。
+candidate:app/beta-page.mjs:102:13,js-cjk-literal,app/beta-page.mjs,102,,unknown,reviewable,,跳到正文
+candidate:app/beta-page.mjs:103:20,js-cjk-literal,app/beta-page.mjs,103,,unknown,reviewable,,隐私说明
+candidate:app/beta-page.mjs:104:14,js-cjk-literal,app/beta-page.mjs,104,,unknown,reviewable,,服务条款
+candidate:app/beta-page.mjs:105:19,js-cjk-literal,app/beta-page.mjs,105,,unknown,reviewable,,页面外观
+candidate:app/beta-page.mjs:106:18,js-cjk-literal,app/beta-page.mjs,106,,unknown,reviewable,,页面语言
+candidate:app/beta-page.mjs:107:13,js-cjk-literal,app/beta-page.mjs,107,,unknown,reviewable,,回到 Leafhour
+candidate:app/beta-page.mjs:110:14,js-cjk-literal,app/beta-page.mjs,110,,unknown,reviewable,,加入內測
+candidate:app/beta-page.mjs:111:20,js-cjk-literal,app/beta-page.mjs,111,,unknown,reviewable,,在 Web 先讀幾頁，把 Leafhour 帶到 iPhone。直接體驗內測，也歡迎告訴我們讀起來如何。
+candidate:app/beta-page.mjs:112:16,js-cjk-literal,app/beta-page.mjs,112,,unknown,reviewable,,"下一本書，
+一起慢慢讀。"
+candidate:app/beta-page.mjs:113:14,js-cjk-literal,app/beta-page.mjs,113,,unknown,reviewable,,Leafhour 正在內測。帶一本想讀的書來，試試讀、聽和提問，也告訴我們哪些地方還不順手。
+candidate:app/beta-page.mjs:114:12,js-cjk-literal,app/beta-page.mjs,114,,unknown,reviewable,,把書房帶到 iPhone
+candidate:app/beta-page.mjs:115:16,js-cjk-literal,app/beta-page.mjs,115,,unknown,reviewable,,讀原文，逐句聽讀，對照譯文。遇到難句，就在原頁問下去。
+candidate:app/beta-page.mjs:116:16,js-cjk-literal,app/beta-page.mjs,116,,unknown,reviewable,,透過 TestFlight 安裝
+candidate:app/beta-page.mjs:117:20,js-cjk-literal,app/beta-page.mjs,117,,unknown,reviewable,,iOS 安裝入口確認中
+candidate:app/beta-page.mjs:118:24,js-cjk-literal,app/beta-page.mjs,118,,unknown,reviewable,,公開安裝連結暫未就緒。現在可以先在 Web 試讀，或透過郵件聯絡我們。
+candidate:app/beta-page.mjs:119:20,js-cjk-literal,app/beta-page.mjs,119,,unknown,reviewable,,需要 iOS 17 或以上版本 · 內測版
+candidate:app/beta-page.mjs:121:7,js-cjk-literal,app/beta-page.mjs,121,,unknown,reviewable,,先安裝 Apple 的 TestFlight。
+candidate:app/beta-page.mjs:122:7,js-cjk-literal,app/beta-page.mjs,122,,unknown,reviewable,,打開 Leafhour 邀請，選擇「接受」。
+candidate:app/beta-page.mjs:123:7,js-cjk-literal,app/beta-page.mjs,123,,unknown,reviewable,,安裝 Leafhour，打開第一本書。
+candidate:app/beta-page.mjs:125:19,js-cjk-literal,app/beta-page.mjs,125,,unknown,reviewable,,取得 TestFlight
+candidate:app/beta-page.mjs:126:19,js-cjk-literal,app/beta-page.mjs,126,,unknown,reviewable,,iPhone 真實閱讀介面 · 公版範例書
+candidate:app/beta-page.mjs:127:17,js-cjk-literal,app/beta-page.mjs,127,,unknown,reviewable,,先讀幾頁，再決定。
+candidate:app/beta-page.mjs:128:16,js-cjk-literal,app/beta-page.mjs,128,,unknown,reviewable,,打開瀏覽器就能試讀。在原文與譯文間對照，準備好後，再把自己的書放進書房。
+candidate:app/beta-page.mjs:129:14,js-cjk-literal,app/beta-page.mjs,129,,unknown,reviewable,,在 Web 試讀
+candidate:app/beta-page.mjs:130:13,js-cjk-literal,app/beta-page.mjs,130,,unknown,reviewable,,打開我的書房
+candidate:app/beta-page.mjs:131:16,js-cjk-literal,app/beta-page.mjs,131,,unknown,reviewable,,公版範例書無需註冊，可以直接開始。
+candidate:app/beta-page.mjs:132:19,js-cjk-literal,app/beta-page.mjs,132,,unknown,reviewable,,Web 真實閱讀介面 · 公版範例書
+candidate:app/beta-page.mjs:133:20,js-cjk-literal,app/beta-page.mjs,133,,unknown,reviewable,,開始之前
+candidate:app/beta-page.mjs:136:9,js-cjk-literal,app/beta-page.mjs,136,,unknown,reviewable,,還在持續打磨
+candidate:app/beta-page.mjs:137:9,js-cjk-literal,app/beta-page.mjs,137,,unknown,reviewable,,部分互動會繼續調整，也可能遇到不夠順手的地方。具體的使用回饋能幫助我們決定下一步。
+candidate:app/beta-page.mjs:140:9,js-cjk-literal,app/beta-page.mjs,140,,unknown,reviewable,,閱讀保持免費
+candidate:app/beta-page.mjs:141:9,js-cjk-literal,app/beta-page.mjs,141,,unknown,reviewable,,閱讀、筆記和匯出免費。AI 功能沿用現有閱讀點規則，使用前會顯示相應費用。
+candidate:app/beta-page.mjs:144:9,js-cjk-literal,app/beta-page.mjs,144,,unknown,reviewable,,同一個私人書房
+candidate:app/beta-page.mjs:145:9,js-cjk-literal,app/beta-page.mjs,145,,unknown,reviewable,,Web 與 iPhone 可以使用同一 Leafhour 帳號。本機書籍留在裝置上，上傳由你主動選擇。
+candidate:app/beta-page.mjs:148:16,js-cjk-literal,app/beta-page.mjs,148,,unknown,reviewable,,查看閱讀點說明
+candidate:app/beta-page.mjs:149:22,js-cjk-literal,app/beta-page.mjs,149,,unknown,reviewable,,"讀起來如何，
+想聽聽你的感受。"
+candidate:app/beta-page.mjs:150:22,js-cjk-literal,app/beta-page.mjs,150,,unknown,reviewable,,哪裡讀得不順手，或有新的想法，都可以直接寫信給我們。
+candidate:app/beta-page.mjs:151:20,js-cjk-literal,app/beta-page.mjs,151,,unknown,reviewable,,直接寫郵件
+candidate:app/beta-page.mjs:152:18,js-cjk-literal,app/beta-page.mjs,152,,unknown,reviewable,,透過信箱聯絡，無需加入社群，也不必公開提交問題。
+candidate:app/beta-page.mjs:153:13,js-cjk-literal,app/beta-page.mjs,153,,unknown,reviewable,,跳到正文
+candidate:app/beta-page.mjs:154:20,js-cjk-literal,app/beta-page.mjs,154,,unknown,reviewable,,隱私說明
+candidate:app/beta-page.mjs:155:14,js-cjk-literal,app/beta-page.mjs,155,,unknown,reviewable,,服務條款
+candidate:app/beta-page.mjs:156:19,js-cjk-literal,app/beta-page.mjs,156,,unknown,reviewable,,頁面外觀
+candidate:app/beta-page.mjs:157:18,js-cjk-literal,app/beta-page.mjs,157,,unknown,reviewable,,頁面語言
+candidate:app/beta-page.mjs:158:13,js-cjk-literal,app/beta-page.mjs,158,,unknown,reviewable,,回到 Leafhour
+candidate:app/beta-page.mjs:161:14,js-cjk-literal,app/beta-page.mjs,161,,unknown,reviewable,,ベータ版に参加
+candidate:app/beta-page.mjs:162:20,js-cjk-literal,app/beta-page.mjs,162,,unknown,reviewable,,Webですぐに試し、iPhoneでもLeafhourを。ベータ版を使って、読書の感想をお聞かせください。
+candidate:app/beta-page.mjs:163:16,js-cjk-literal,app/beta-page.mjs,163,,unknown,reviewable,,"次の一冊を、
+一緒にゆっくり。"
+candidate:app/beta-page.mjs:164:14,js-cjk-literal,app/beta-page.mjs,164,,unknown,reviewable,,Leafhourはベータ版を公開しています。読みたい本を一冊持って、読む・聴く・質問する体験を試してみてください。
+candidate:app/beta-page.mjs:165:12,js-cjk-literal,app/beta-page.mjs,165,,unknown,reviewable,,書斎をiPhoneに
+candidate:app/beta-page.mjs:166:16,js-cjk-literal,app/beta-page.mjs,166,,unknown,reviewable,,原文を読み、一文ずつ聴き、訳文と見比べる。難しい箇所は、そのページで質問できます。
+candidate:app/beta-page.mjs:167:16,js-cjk-literal,app/beta-page.mjs,167,,unknown,reviewable,,TestFlightでインストール
+candidate:app/beta-page.mjs:168:20,js-cjk-literal,app/beta-page.mjs,168,,unknown,reviewable,,iOSのインストール先を確認中
+candidate:app/beta-page.mjs:169:24,js-cjk-literal,app/beta-page.mjs,169,,unknown,reviewable,,公開インストールリンクはまだ利用できません。Webで試すか、メールでお問い合わせください。
+candidate:app/beta-page.mjs:170:20,js-cjk-literal,app/beta-page.mjs,170,,unknown,reviewable,,iOS 17以降 · ベータ版
+candidate:app/beta-page.mjs:172:7,js-cjk-literal,app/beta-page.mjs,172,,unknown,reviewable,,AppleのTestFlightをインストールします。
+candidate:app/beta-page.mjs:173:7,js-cjk-literal,app/beta-page.mjs,173,,unknown,reviewable,,Leafhourの招待を開き、「承諾」を選びます。
+candidate:app/beta-page.mjs:174:7,js-cjk-literal,app/beta-page.mjs,174,,unknown,reviewable,,Leafhourをインストールして、本を開きます。
+candidate:app/beta-page.mjs:176:19,js-cjk-literal,app/beta-page.mjs,176,,unknown,reviewable,,TestFlightを入手
+candidate:app/beta-page.mjs:177:19,js-cjk-literal,app/beta-page.mjs,177,,unknown,reviewable,,実際のiPhone画面 · パブリックドメインのサンプル
+candidate:app/beta-page.mjs:178:17,js-cjk-literal,app/beta-page.mjs,178,,unknown,reviewable,,まずは数ページから。
+candidate:app/beta-page.mjs:179:16,js-cjk-literal,app/beta-page.mjs,179,,unknown,reviewable,,ブラウザでサンプルを開き、原文と訳文を見比べてください。準備ができたら、自分の本を書斎へ。
+candidate:app/beta-page.mjs:180:14,js-cjk-literal,app/beta-page.mjs,180,,unknown,reviewable,,Webで試し読み
+candidate:app/beta-page.mjs:181:13,js-cjk-literal,app/beta-page.mjs,181,,unknown,reviewable,,自分の書斎を開く
+candidate:app/beta-page.mjs:182:16,js-cjk-literal,app/beta-page.mjs,182,,unknown,reviewable,,サンプルの試し読みには登録不要です。
+candidate:app/beta-page.mjs:183:19,js-cjk-literal,app/beta-page.mjs,183,,unknown,reviewable,,実際のWeb画面 · パブリックドメインのサンプル
+candidate:app/beta-page.mjs:184:20,js-cjk-literal,app/beta-page.mjs,184,,unknown,reviewable,,始める前に
+candidate:app/beta-page.mjs:187:9,js-cjk-literal,app/beta-page.mjs,187,,unknown,reviewable,,改善を続けています
+candidate:app/beta-page.mjs:188:9,js-cjk-literal,app/beta-page.mjs,188,,unknown,reviewable,,操作が変わったり、使いづらい点が見つかったりすることがあります。具体的なご感想が改善の手がかりになります。
+candidate:app/beta-page.mjs:191:9,js-cjk-literal,app/beta-page.mjs,191,,unknown,reviewable,,読書は無料です
+candidate:app/beta-page.mjs:192:9,js-cjk-literal,app/beta-page.mjs,192,,unknown,reviewable,,読書、ノート、エクスポートは無料です。AI機能には現在のポイント規則が適用され、利用前に料金が表示されます。
+candidate:app/beta-page.mjs:195:9,js-cjk-literal,app/beta-page.mjs,195,,unknown,reviewable,,同じ自分の書斎
+candidate:app/beta-page.mjs:196:9,js-cjk-literal,app/beta-page.mjs,196,,unknown,reviewable,,WebとiPhoneで同じLeafhourアカウントを使えます。端末内の本は、アップロードを選ぶまで端末に残ります。
+candidate:app/beta-page.mjs:199:16,js-cjk-literal,app/beta-page.mjs,199,,unknown,reviewable,,ポイントについて
+candidate:app/beta-page.mjs:200:22,js-cjk-literal,app/beta-page.mjs,200,,unknown,reviewable,,"読んでみて、
+いかがでしたか。"
+candidate:app/beta-page.mjs:201:22,js-cjk-literal,app/beta-page.mjs,201,,unknown,reviewable,,読みにくかったところや、あったらうれしいこと。メールでお聞かせください。
+candidate:app/beta-page.mjs:202:20,js-cjk-literal,app/beta-page.mjs,202,,unknown,reviewable,,メールを書く
+candidate:app/beta-page.mjs:203:18,js-cjk-literal,app/beta-page.mjs,203,,unknown,reviewable,,メールで直接ご連絡ください。コミュニティへの参加や公開投稿は不要です。
+candidate:app/beta-page.mjs:204:13,js-cjk-literal,app/beta-page.mjs,204,,unknown,reviewable,,本文へスキップ
+candidate:app/beta-page.mjs:205:20,js-cjk-literal,app/beta-page.mjs,205,,unknown,reviewable,,プライバシー
+candidate:app/beta-page.mjs:206:14,js-cjk-literal,app/beta-page.mjs,206,,unknown,reviewable,,利用規約
+candidate:app/beta-page.mjs:207:19,js-cjk-literal,app/beta-page.mjs,207,,unknown,reviewable,,外観
+candidate:app/beta-page.mjs:208:18,js-cjk-literal,app/beta-page.mjs,208,,unknown,reviewable,,表示言語
+candidate:app/beta-page.mjs:209:13,js-cjk-literal,app/beta-page.mjs,209,,unknown,reviewable,,Leafhourに戻る
 candidate:app/billing.html:3:158,html-attribute,app/billing.html,3,aria-label,unknown,reviewable,,Leafhour home
 candidate:app/billing.html:3:1624,html-attribute,app/billing.html,3,aria-label,unknown,reviewable,,Policies
 candidate:app/billing.html:5:125,html-attribute,app/billing.html,5,aria-label,unknown,reviewable,,关闭登录
@@ -2186,9 +2312,9 @@ candidate:app/home-experience-copy.mjs:223:5,js-cjk-literal,app/home-experience-
 candidate:app/home-experience-copy.mjs:226:5,js-cjk-literal,app/home-experience-copy.mjs,226,,unknown,reviewable,,了解 iOS 内测
 candidate:app/home-experience-copy.mjs:228:5,js-cjk-literal,app/home-experience-copy.mjs,228,,unknown,reviewable,,了解 iOS 內測
 candidate:app/home-experience-copy.mjs:229:5,js-cjk-literal,app/home-experience-copy.mjs,229,,unknown,reviewable,,iOS ベータ版について
-candidate:app/home-experience-copy.mjs:232:5,js-cjk-literal,app/home-experience-copy.mjs,232,,unknown,reviewable,,iOS 安装与功能说明见开源项目。
-candidate:app/home-experience-copy.mjs:234:5,js-cjk-literal,app/home-experience-copy.mjs,234,,unknown,reviewable,,iOS 安裝與功能說明見開源專案。
-candidate:app/home-experience-copy.mjs:235:5,js-cjk-literal,app/home-experience-copy.mjs,235,,unknown,reviewable,,iOS の導入方法と機能は公開プロジェクトをご覧ください。
+candidate:app/home-experience-copy.mjs:232:5,js-cjk-literal,app/home-experience-copy.mjs,232,,unknown,reviewable,,iOS 安装与功能说明见内测页面。
+candidate:app/home-experience-copy.mjs:234:5,js-cjk-literal,app/home-experience-copy.mjs,234,,unknown,reviewable,,iOS 安裝與功能說明見內測頁面。
+candidate:app/home-experience-copy.mjs:235:5,js-cjk-literal,app/home-experience-copy.mjs,235,,unknown,reviewable,,iOSのインストール方法と機能はベータ版のページで確認できます。
 candidate:app/home-experience-copy.mjs:238:5,js-cjk-literal,app/home-experience-copy.mjs,238,,unknown,reviewable,,暂停视觉动效
 candidate:app/home-experience-copy.mjs:240:5,js-cjk-literal,app/home-experience-copy.mjs,240,,unknown,reviewable,,暫停視覺動效
 candidate:app/home-experience-copy.mjs:241:5,js-cjk-literal,app/home-experience-copy.mjs,241,,unknown,reviewable,,視覚効果を一時停止
@@ -2519,538 +2645,541 @@ candidate:app/home-locale.mjs:117:41,js-cjk-literal,app/home-locale.mjs,117,,unk
 candidate:app/home-locale.mjs:118:4,js-cjk-literal,app/home-locale.mjs,118,,unknown,reviewable,,iOS 内测
 candidate:app/home-locale.mjs:118:24,js-cjk-literal,app/home-locale.mjs,118,,unknown,reviewable,,iOS 內測
 candidate:app/home-locale.mjs:118:33,js-cjk-literal,app/home-locale.mjs,118,,unknown,reviewable,,iOS ベータ版
-candidate:app/home-locale.mjs:119:4,js-cjk-literal,app/home-locale.mjs,119,,unknown,reviewable,,使用文档
-candidate:app/home-locale.mjs:119:27,js-cjk-literal,app/home-locale.mjs,119,,unknown,reviewable,,使用說明
-candidate:app/home-locale.mjs:119:34,js-cjk-literal,app/home-locale.mjs,119,,unknown,reviewable,,ドキュメント
-candidate:app/home-locale.mjs:120:4,js-cjk-literal,app/home-locale.mjs,120,,unknown,reviewable,,反馈问题
-candidate:app/home-locale.mjs:120:29,js-cjk-literal,app/home-locale.mjs,120,,unknown,reviewable,,回報問題
-candidate:app/home-locale.mjs:120:36,js-cjk-literal,app/home-locale.mjs,120,,unknown,reviewable,,問題を報告
-candidate:app/home-locale.mjs:121:4,js-cjk-literal,app/home-locale.mjs,121,,unknown,reviewable,,联系支持
-candidate:app/home-locale.mjs:121:29,js-cjk-literal,app/home-locale.mjs,121,,unknown,reviewable,,聯絡支援
-candidate:app/home-locale.mjs:121:36,js-cjk-literal,app/home-locale.mjs,121,,unknown,reviewable,,サポートに連絡
-candidate:app/home-locale.mjs:122:4,js-cjk-literal,app/home-locale.mjs,122,,unknown,reviewable,,cubxxw 的作品
-candidate:app/home-locale.mjs:122:39,js-cjk-literal,app/home-locale.mjs,122,,unknown,reviewable,,cubxxw 的作品
-candidate:app/home-locale.mjs:122:52,js-cjk-literal,app/home-locale.mjs,122,,unknown,reviewable,,cubxxw のプロジェクト
-candidate:app/home-locale.mjs:124:4,js-cjk-literal,app/home-locale.mjs,124,,unknown,reviewable,,今天，就从几页开始。
-candidate:app/home-locale.mjs:124:49,js-cjk-literal,app/home-locale.mjs,124,,unknown,reviewable,,今天，就從幾頁開始。
-candidate:app/home-locale.mjs:124:62,js-cjk-literal,app/home-locale.mjs,124,,unknown,reviewable,,今日は数頁から始めましょう。
-candidate:app/home-locale.mjs:125:4,js-cjk-literal,app/home-locale.mjs,125,,unknown,reviewable,,一本想读的书，一点留给自己的时间。
-candidate:app/home-locale.mjs:125:78,js-cjk-literal,app/home-locale.mjs,125,,unknown,reviewable,,一本想讀的書，一點留給自己的時間。
-candidate:app/home-locale.mjs:125:98,js-cjk-literal,app/home-locale.mjs,125,,unknown,reviewable,,読みたい一冊と、自分にあける少しの時間。
-candidate:app/home-locale.mjs:126:4,js-cjk-literal,app/home-locale.mjs,126,,unknown,reviewable,,关于 Leafhour
-candidate:app/home-locale.mjs:126:35,js-cjk-literal,app/home-locale.mjs,126,,unknown,reviewable,,關於 Leafhour
-candidate:app/home-locale.mjs:126:49,js-cjk-literal,app/home-locale.mjs,126,,unknown,reviewable,,Leafhour について
-candidate:app/home-locale.mjs:127:4,js-cjk-literal,app/home-locale.mjs,127,,unknown,reviewable,,隐私说明
-candidate:app/home-locale.mjs:127:21,js-cjk-literal,app/home-locale.mjs,127,,unknown,reviewable,,隱私說明
-candidate:app/home-locale.mjs:127:28,js-cjk-literal,app/home-locale.mjs,127,,unknown,reviewable,,プライバシー
-candidate:app/home-locale.mjs:128:4,js-cjk-literal,app/home-locale.mjs,128,,unknown,reviewable,,阅读保障
-candidate:app/home-locale.mjs:128:32,js-cjk-literal,app/home-locale.mjs,128,,unknown,reviewable,,閱讀保障
-candidate:app/home-locale.mjs:128:39,js-cjk-literal,app/home-locale.mjs,128,,unknown,reviewable,,ご利用について
-candidate:app/home-locale.mjs:129:4,js-cjk-literal,app/home-locale.mjs,129,,unknown,reviewable,,开放项目
-candidate:app/home-locale.mjs:129:25,js-cjk-literal,app/home-locale.mjs,129,,unknown,reviewable,,開放專案
-candidate:app/home-locale.mjs:129:32,js-cjk-literal,app/home-locale.mjs,129,,unknown,reviewable,,オープンソース
-candidate:app/home-locale.mjs:130:4,js-cjk-literal,app/home-locale.mjs,130,,unknown,reviewable,,服务条款
-candidate:app/home-locale.mjs:130:19,js-cjk-literal,app/home-locale.mjs,130,,unknown,reviewable,,服務條款
-candidate:app/home-locale.mjs:130:26,js-cjk-literal,app/home-locale.mjs,130,,unknown,reviewable,,利用規約
-candidate:app/home-locale.mjs:131:4,js-cjk-literal,app/home-locale.mjs,131,,unknown,reviewable,,退款政策
-candidate:app/home-locale.mjs:131:21,js-cjk-literal,app/home-locale.mjs,131,,unknown,reviewable,,退款政策
-candidate:app/home-locale.mjs:131:28,js-cjk-literal,app/home-locale.mjs,131,,unknown,reviewable,,返金ポリシー
-candidate:app/home-locale.mjs:132:4,js-cjk-literal,app/home-locale.mjs,132,,unknown,reviewable,,页面外观
-candidate:app/home-locale.mjs:132:24,js-cjk-literal,app/home-locale.mjs,132,,unknown,reviewable,,頁面外觀
-candidate:app/home-locale.mjs:132:31,js-cjk-literal,app/home-locale.mjs,132,,unknown,reviewable,,外観
-candidate:app/home-locale.mjs:133:4,js-cjk-literal,app/home-locale.mjs,133,,unknown,reviewable,,本地运行 · 可自托管
-candidate:app/home-locale.mjs:133:49,js-cjk-literal,app/home-locale.mjs,133,,unknown,reviewable,,本地運行 · 可自託管
-candidate:app/home-locale.mjs:133:63,js-cjk-literal,app/home-locale.mjs,133,,unknown,reviewable,,ローカル実行 · セルフホスト対応
-candidate:app/home-locale.mjs:134:4,js-cjk-literal,app/home-locale.mjs,134,,unknown,reviewable,,开始阅读
-candidate:app/home-locale.mjs:134:27,js-cjk-literal,app/home-locale.mjs,134,,unknown,reviewable,,開始閱讀
-candidate:app/home-locale.mjs:134:34,js-cjk-literal,app/home-locale.mjs,134,,unknown,reviewable,,読み始める
-candidate:app/home-locale.mjs:135:4,js-cjk-literal,app/home-locale.mjs,135,,unknown,reviewable,,先读几页
-candidate:app/home-locale.mjs:135:30,js-cjk-literal,app/home-locale.mjs,135,,unknown,reviewable,,先讀幾頁
-candidate:app/home-locale.mjs:135:37,js-cjk-literal,app/home-locale.mjs,135,,unknown,reviewable,,まず数頁読む
-candidate:app/home-locale.mjs:138:4,js-cjk-literal,app/home-locale.mjs,138,,unknown,reviewable,,回到你的书房
-candidate:app/home-locale.mjs:138:49,js-cjk-literal,app/home-locale.mjs,138,,unknown,reviewable,,回到你的書房
-candidate:app/home-locale.mjs:138:58,js-cjk-literal,app/home-locale.mjs,138,,unknown,reviewable,,書斎へようこそ
-candidate:app/home-locale.mjs:139:4,js-cjk-literal,app/home-locale.mjs,139,,unknown,reviewable,,从上次停下的地方继续。
-candidate:app/home-locale.mjs:139:49,js-cjk-literal,app/home-locale.mjs,139,,unknown,reviewable,,從上次停下的地方繼續。
-candidate:app/home-locale.mjs:139:63,js-cjk-literal,app/home-locale.mjs,139,,unknown,reviewable,,前回の続きから読み進めます。
-candidate:app/home-locale.mjs:140:4,js-cjk-literal,app/home-locale.mjs,140,,unknown,reviewable,,验证你的邮箱
-candidate:app/home-locale.mjs:140:33,js-cjk-literal,app/home-locale.mjs,140,,unknown,reviewable,,驗證你的郵箱
-candidate:app/home-locale.mjs:140:42,js-cjk-literal,app/home-locale.mjs,140,,unknown,reviewable,,メールアドレスを確認
-candidate:app/home-locale.mjs:141:4,js-cjk-literal,app/home-locale.mjs,141,,unknown,reviewable,,设置登录密码
-candidate:app/home-locale.mjs:141:33,js-cjk-literal,app/home-locale.mjs,141,,unknown,reviewable,,設定登入密碼
-candidate:app/home-locale.mjs:141:42,js-cjk-literal,app/home-locale.mjs,141,,unknown,reviewable,,ログインパスワードを設定
-candidate:app/home-locale.mjs:142:4,js-cjk-literal,app/home-locale.mjs,142,,unknown,reviewable,,创建你的书房
-candidate:app/home-locale.mjs:142:40,js-cjk-literal,app/home-locale.mjs,142,,unknown,reviewable,,創建你的書房
-candidate:app/home-locale.mjs:142:49,js-cjk-literal,app/home-locale.mjs,142,,unknown,reviewable,,自分の書斎をつくる
-candidate:app/home-locale.mjs:143:4,js-cjk-literal,app/home-locale.mjs,143,,unknown,reviewable,,找回密码
-candidate:app/home-locale.mjs:143:33,js-cjk-literal,app/home-locale.mjs,143,,unknown,reviewable,,找回密碼
-candidate:app/home-locale.mjs:143:40,js-cjk-literal,app/home-locale.mjs,143,,unknown,reviewable,,パスワードを再設定
-candidate:app/home-locale.mjs:144:4,js-cjk-literal,app/home-locale.mjs,144,,unknown,reviewable,,下次，直接用密码进入。
-candidate:app/home-locale.mjs:144:59,js-cjk-literal,app/home-locale.mjs,144,,unknown,reviewable,,下次，直接用密碼進入。
-candidate:app/home-locale.mjs:144:73,js-cjk-literal,app/home-locale.mjs,144,,unknown,reviewable,,次回からパスワードで入れます。
-candidate:app/home-locale.mjs:145:4,js-cjk-literal,app/home-locale.mjs,145,,unknown,reviewable,,输入邮件中的 6 位验证码。
-candidate:app/home-locale.mjs:145:65,js-cjk-literal,app/home-locale.mjs,145,,unknown,reviewable,,輸入郵件中的 6 位驗證碼。
-candidate:app/home-locale.mjs:145:82,js-cjk-literal,app/home-locale.mjs,145,,unknown,reviewable,,メールに届いた 6 桁のコードを入力してください。
-candidate:app/home-locale.mjs:146:4,js-cjk-literal,app/home-locale.mjs,146,,unknown,reviewable,,验证邮箱后，设置你的登录密码。
-candidate:app/home-locale.mjs:146:67,js-cjk-literal,app/home-locale.mjs,146,,unknown,reviewable,,驗證郵箱後，設定你的登入密碼。
-candidate:app/home-locale.mjs:146:85,js-cjk-literal,app/home-locale.mjs,146,,unknown,reviewable,,メール確認後、ログインパスワードを設定してください。
-candidate:app/home-locale.mjs:147:4,js-cjk-literal,app/home-locale.mjs,147,,unknown,reviewable,,验证邮箱后，重新设置密码。
-candidate:app/home-locale.mjs:147:69,js-cjk-literal,app/home-locale.mjs,147,,unknown,reviewable,,驗證郵箱後，重新設定密碼。
-candidate:app/home-locale.mjs:147:85,js-cjk-literal,app/home-locale.mjs,147,,unknown,reviewable,,メール確認後、新しいパスワードを設定してください。
-candidate:app/home-locale.mjs:148:4,js-cjk-literal,app/home-locale.mjs,148,,unknown,reviewable,,不用密码，也能接着读。
-candidate:app/home-locale.mjs:148:57,js-cjk-literal,app/home-locale.mjs,148,,unknown,reviewable,,不用密碼，也能接著讀。
-candidate:app/home-locale.mjs:148:71,js-cjk-literal,app/home-locale.mjs,148,,unknown,reviewable,,パスワードなしでも、メールコードで読み続けられます。
-candidate:app/home-locale.mjs:149:4,js-cjk-literal,app/home-locale.mjs,149,,unknown,reviewable,,邮箱或密码不正确
-candidate:app/home-locale.mjs:149:52,js-cjk-literal,app/home-locale.mjs,149,,unknown,reviewable,,郵箱或密碼不正確
-candidate:app/home-locale.mjs:149:63,js-cjk-literal,app/home-locale.mjs,149,,unknown,reviewable,,メールアドレスまたはパスワードが正しくありません
-candidate:app/home-locale.mjs:150:4,js-cjk-literal,app/home-locale.mjs,150,,unknown,reviewable,,网络暂时无法连接，请稍后重试。
-candidate:app/home-locale.mjs:150:69,js-cjk-literal,app/home-locale.mjs,150,,unknown,reviewable,,網絡暫時無法連接，請稍後重試。
-candidate:app/home-locale.mjs:150:87,js-cjk-literal,app/home-locale.mjs,150,,unknown,reviewable,,ネットワークに接続できません。しばらくしてからもう一度お試しください。
-candidate:app/home-locale.mjs:151:4,js-cjk-literal,app/home-locale.mjs,151,,unknown,reviewable,,暂时无法完成，请稍后重试。
-candidate:app/home-locale.mjs:151:73,js-cjk-literal,app/home-locale.mjs,151,,unknown,reviewable,,暫時無法完成，請稍後重試。
-candidate:app/home-locale.mjs:151:89,js-cjk-literal,app/home-locale.mjs,151,,unknown,reviewable,,完了できませんでした。しばらくしてからもう一度お試しください。
-candidate:app/home-locale.mjs:152:4,js-cjk-literal,app/home-locale.mjs,152,,unknown,reviewable,,验证码已过期，请重新发送。
-candidate:app/home-locale.mjs:152:66,js-cjk-literal,app/home-locale.mjs,152,,unknown,reviewable,,驗證碼已過期，請重新發送。
-candidate:app/home-locale.mjs:152:82,js-cjk-literal,app/home-locale.mjs,152,,unknown,reviewable,,コードの有効期限が切れました。もう一度お送りしてください。
-candidate:app/home-locale.mjs:153:4,js-cjk-literal,app/home-locale.mjs,153,,unknown,reviewable,,验证码已过期
-candidate:app/home-locale.mjs:153:37,js-cjk-literal,app/home-locale.mjs,153,,unknown,reviewable,,驗證碼已過期
-candidate:app/home-locale.mjs:153:46,js-cjk-literal,app/home-locale.mjs,153,,unknown,reviewable,,コードの有効期限が切れました
-candidate:app/home-locale.mjs:154:4,js-cjk-literal,app/home-locale.mjs,154,,unknown,reviewable,,10 分钟内有效
-candidate:app/home-locale.mjs:154:39,js-cjk-literal,app/home-locale.mjs,154,,unknown,reviewable,,10 分鐘內有效
-candidate:app/home-locale.mjs:154:50,js-cjk-literal,app/home-locale.mjs,154,,unknown,reviewable,,10 分間有効
-candidate:app/home-locale.mjs:155:4,js-cjk-literal,app/home-locale.mjs,155,,unknown,reviewable,,正在发送验证码…
-candidate:app/home-locale.mjs:155:36,js-cjk-literal,app/home-locale.mjs,155,,unknown,reviewable,,正在發送驗證碼…
-candidate:app/home-locale.mjs:155:47,js-cjk-literal,app/home-locale.mjs,155,,unknown,reviewable,,コードを送信しています…
-candidate:app/home-locale.mjs:156:4,js-cjk-literal,app/home-locale.mjs,156,,unknown,reviewable,,正在进入…
-candidate:app/home-locale.mjs:156:26,js-cjk-literal,app/home-locale.mjs,156,,unknown,reviewable,,正在進入…
-candidate:app/home-locale.mjs:156:34,js-cjk-literal,app/home-locale.mjs,156,,unknown,reviewable,,ログインしています…
-candidate:app/home-locale.mjs:157:4,js-cjk-literal,app/home-locale.mjs,157,,unknown,reviewable,,正在发送…
-candidate:app/home-locale.mjs:157:23,js-cjk-literal,app/home-locale.mjs,157,,unknown,reviewable,,正在發送…
-candidate:app/home-locale.mjs:157:31,js-cjk-literal,app/home-locale.mjs,157,,unknown,reviewable,,送信しています…
-candidate:app/home-locale.mjs:158:4,js-cjk-literal,app/home-locale.mjs,158,,unknown,reviewable,,正在验证…
-candidate:app/home-locale.mjs:158:25,js-cjk-literal,app/home-locale.mjs,158,,unknown,reviewable,,正在驗證…
-candidate:app/home-locale.mjs:158:33,js-cjk-literal,app/home-locale.mjs,158,,unknown,reviewable,,確認しています…
-candidate:app/home-locale.mjs:159:4,js-cjk-literal,app/home-locale.mjs,159,,unknown,reviewable,,正在保存…
-candidate:app/home-locale.mjs:159:22,js-cjk-literal,app/home-locale.mjs,159,,unknown,reviewable,,正在保存…
-candidate:app/home-locale.mjs:159:30,js-cjk-literal,app/home-locale.mjs,159,,unknown,reviewable,,保存しています…
-candidate:app/home-locale.mjs:160:4,js-cjk-literal,app/home-locale.mjs,160,,unknown,reviewable,,保存并进入书房
-candidate:app/home-locale.mjs:160:44,js-cjk-literal,app/home-locale.mjs,160,,unknown,reviewable,,保存並進入書房
-candidate:app/home-locale.mjs:160:54,js-cjk-literal,app/home-locale.mjs,160,,unknown,reviewable,,保存して書斎へ
-candidate:app/home-locale.mjs:161:4,js-cjk-literal,app/home-locale.mjs,161,,unknown,reviewable,,验证邮箱
-candidate:app/home-locale.mjs:161:26,js-cjk-literal,app/home-locale.mjs,161,,unknown,reviewable,,驗證郵箱
-candidate:app/home-locale.mjs:161:33,js-cjk-literal,app/home-locale.mjs,161,,unknown,reviewable,,メールを確認
-candidate:app/home-locale.mjs:162:4,js-cjk-literal,app/home-locale.mjs,162,,unknown,reviewable,,发送验证码
-candidate:app/home-locale.mjs:162:24,js-cjk-literal,app/home-locale.mjs,162,,unknown,reviewable,,發送驗證碼
-candidate:app/home-locale.mjs:162:32,js-cjk-literal,app/home-locale.mjs,162,,unknown,reviewable,,コードを送信
-candidate:app/home-locale.mjs:163:4,js-cjk-literal,app/home-locale.mjs,163,,unknown,reviewable,,重新发送
-candidate:app/home-locale.mjs:163:20,js-cjk-literal,app/home-locale.mjs,163,,unknown,reviewable,,重新發送
-candidate:app/home-locale.mjs:163:27,js-cjk-literal,app/home-locale.mjs,163,,unknown,reviewable,,再送信
-candidate:app/home-locale.mjs:164:4,js-cjk-literal,app/home-locale.mjs,164,,unknown,reviewable,,登录服务暂时不可用，可以先试读。
-candidate:app/home-locale.mjs:164:90,js-cjk-literal,app/home-locale.mjs,164,,unknown,reviewable,,登入服務暫時不可用，可以先試讀。
-candidate:app/home-locale.mjs:164:109,js-cjk-literal,app/home-locale.mjs,164,,unknown,reviewable,,ログインサービスを一時的に利用できません。サンプルは読めます。
-candidate:app/home-locale.mjs:165:4,js-cjk-literal,app/home-locale.mjs,165,,unknown,reviewable,,登录服务准备中，可以先试读。
-candidate:app/home-locale.mjs:165:71,js-cjk-literal,app/home-locale.mjs,165,,unknown,reviewable,,登入服務準備中，可以先試讀。
-candidate:app/home-locale.mjs:165:88,js-cjk-literal,app/home-locale.mjs,165,,unknown,reviewable,,ログインを準備中です。サンプルは読めます。
-candidate:app/home-locale.mjs:166:4,js-cjk-literal,app/home-locale.mjs,166,,unknown,reviewable,,登录 / 注册
-candidate:app/home-locale.mjs:166:34,js-cjk-literal,app/home-locale.mjs,166,,unknown,reviewable,,登入 / 註冊
-candidate:app/home-locale.mjs:166:44,js-cjk-literal,app/home-locale.mjs,166,,unknown,reviewable,,ログイン / 登録
-candidate:app/home-locale.mjs:167:4,js-cjk-literal,app/home-locale.mjs,167,,unknown,reviewable,,我的书房
-candidate:app/home-locale.mjs:167:29,js-cjk-literal,app/home-locale.mjs,167,,unknown,reviewable,,我的書房
-candidate:app/home-locale.mjs:167:36,js-cjk-literal,app/home-locale.mjs,167,,unknown,reviewable,,自分の書斎
-candidate:app/home-locale.mjs:168:4,js-cjk-literal,app/home-locale.mjs,168,,unknown,reviewable,,新密码
-candidate:app/home-locale.mjs:168:25,js-cjk-literal,app/home-locale.mjs,168,,unknown,reviewable,,新密碼
-candidate:app/home-locale.mjs:168:31,js-cjk-literal,app/home-locale.mjs,168,,unknown,reviewable,,新しいパスワード
-candidate:app/home-locale.mjs:169:4,js-cjk-literal,app/home-locale.mjs,169,,unknown,reviewable,,登录密码
-candidate:app/home-locale.mjs:169:30,js-cjk-literal,app/home-locale.mjs,169,,unknown,reviewable,,登入密碼
-candidate:app/home-locale.mjs:169:37,js-cjk-literal,app/home-locale.mjs,169,,unknown,reviewable,,ログインパスワード
-candidate:app/home-locale.mjs:170:4,js-cjk-literal,app/home-locale.mjs,170,,unknown,reviewable,,显示新密码
-candidate:app/home-locale.mjs:170:32,js-cjk-literal,app/home-locale.mjs,170,,unknown,reviewable,,顯示新密碼
-candidate:app/home-locale.mjs:170:40,js-cjk-literal,app/home-locale.mjs,170,,unknown,reviewable,,新しいパスワードを表示
-candidate:app/home-locale.mjs:171:4,js-cjk-literal,app/home-locale.mjs,171,,unknown,reviewable,,隐藏新密码
-candidate:app/home-locale.mjs:171:32,js-cjk-literal,app/home-locale.mjs,171,,unknown,reviewable,,隱藏新密碼
-candidate:app/home-locale.mjs:171:40,js-cjk-literal,app/home-locale.mjs,171,,unknown,reviewable,,新しいパスワードを隠す
-candidate:app/home-locale.mjs:172:4,js-cjk-literal,app/home-locale.mjs,172,,unknown,reviewable,,显示登录密码
-candidate:app/home-locale.mjs:172:37,js-cjk-literal,app/home-locale.mjs,172,,unknown,reviewable,,顯示登入密碼
-candidate:app/home-locale.mjs:172:46,js-cjk-literal,app/home-locale.mjs,172,,unknown,reviewable,,ログインパスワードを表示
-candidate:app/home-locale.mjs:173:4,js-cjk-literal,app/home-locale.mjs,173,,unknown,reviewable,,隐藏登录密码
-candidate:app/home-locale.mjs:173:37,js-cjk-literal,app/home-locale.mjs,173,,unknown,reviewable,,隱藏登入密碼
-candidate:app/home-locale.mjs:173:46,js-cjk-literal,app/home-locale.mjs,173,,unknown,reviewable,,ログインパスワードを隠す
-candidate:app/home-locale.mjs:174:4,js-cjk-literal,app/home-locale.mjs,174,,unknown,reviewable,,显示
-candidate:app/home-locale.mjs:174:16,js-cjk-literal,app/home-locale.mjs,174,,unknown,reviewable,,顯示
-candidate:app/home-locale.mjs:174:21,js-cjk-literal,app/home-locale.mjs,174,,unknown,reviewable,,表示
-candidate:app/home-locale.mjs:175:4,js-cjk-literal,app/home-locale.mjs,175,,unknown,reviewable,,隐藏
-candidate:app/home-locale.mjs:175:16,js-cjk-literal,app/home-locale.mjs,175,,unknown,reviewable,,隱藏
-candidate:app/home-locale.mjs:175:21,js-cjk-literal,app/home-locale.mjs,175,,unknown,reviewable,,隠す
-candidate:app/home-locale.mjs:176:4,js-cjk-literal,app/home-locale.mjs,176,,unknown,reviewable,,至少 8 个字符。
-candidate:app/home-locale.mjs:176:45,js-cjk-literal,app/home-locale.mjs,176,,unknown,reviewable,,至少 8 個字符。
-candidate:app/home-locale.mjs:176:57,js-cjk-literal,app/home-locale.mjs,176,,unknown,reviewable,,8 文字以上。
-candidate:app/home-locale.mjs:177:4,js-cjk-literal,app/home-locale.mjs,177,,unknown,reviewable,,登录验证码
-candidate:app/home-locale.mjs:177:38,js-cjk-literal,app/home-locale.mjs,177,,unknown,reviewable,,登入驗證碼
-candidate:app/home-locale.mjs:177:46,js-cjk-literal,app/home-locale.mjs,177,,unknown,reviewable,,ログインコード
-candidate:app/home-locale.mjs:178:4,js-cjk-literal,app/home-locale.mjs,178,,unknown,reviewable,,更换邮箱
-candidate:app/home-locale.mjs:178:26,js-cjk-literal,app/home-locale.mjs,178,,unknown,reviewable,,更換郵箱
-candidate:app/home-locale.mjs:178:33,js-cjk-literal,app/home-locale.mjs,178,,unknown,reviewable,,メールアドレスを変更
-candidate:app/home-locale.mjs:179:4,js-cjk-literal,app/home-locale.mjs,179,,unknown,reviewable,,验证码登录
-candidate:app/home-locale.mjs:179:32,js-cjk-literal,app/home-locale.mjs,179,,unknown,reviewable,,驗證碼登入
-candidate:app/home-locale.mjs:179:40,js-cjk-literal,app/home-locale.mjs,179,,unknown,reviewable,,メールコードでログイン
-candidate:app/home-locale.mjs:180:4,js-cjk-literal,app/home-locale.mjs,180,,unknown,reviewable,,返回密码登录
-candidate:app/home-locale.mjs:180:30,js-cjk-literal,app/home-locale.mjs,180,,unknown,reviewable,,返回密碼登入
-candidate:app/home-locale.mjs:180:39,js-cjk-literal,app/home-locale.mjs,180,,unknown,reviewable,,パスワードでログイン
-candidate:app/home-locale.mjs:181:4,js-cjk-literal,app/home-locale.mjs,181,,unknown,reviewable,,忘记密码？
-candidate:app/home-locale.mjs:181:31,js-cjk-literal,app/home-locale.mjs,181,,unknown,reviewable,,忘記密碼？
-candidate:app/home-locale.mjs:181:39,js-cjk-literal,app/home-locale.mjs,181,,unknown,reviewable,,パスワードをお忘れですか？
-candidate:app/home-locale.mjs:182:4,js-cjk-literal,app/home-locale.mjs,182,,unknown,reviewable,,第一次来？
-candidate:app/home-locale.mjs:182:31,js-cjk-literal,app/home-locale.mjs,182,,unknown,reviewable,,第一次來？
-candidate:app/home-locale.mjs:182:39,js-cjk-literal,app/home-locale.mjs,182,,unknown,reviewable,,初めての方へ
-candidate:app/home-locale.mjs:183:4,js-cjk-literal,app/home-locale.mjs,183,,unknown,reviewable,,创建书房
-candidate:app/home-locale.mjs:183:35,js-cjk-literal,app/home-locale.mjs,183,,unknown,reviewable,,創建書房
-candidate:app/home-locale.mjs:183:42,js-cjk-literal,app/home-locale.mjs,183,,unknown,reviewable,,書斎をつくる
-candidate:app/home-locale.mjs:184:4,js-cjk-literal,app/home-locale.mjs,184,,unknown,reviewable,,先试读几页
-candidate:app/home-locale.mjs:184:34,js-cjk-literal,app/home-locale.mjs,184,,unknown,reviewable,,先試讀幾頁
-candidate:app/home-locale.mjs:184:42,js-cjk-literal,app/home-locale.mjs,184,,unknown,reviewable,,まずサンプルを読む
-candidate:app/home-locale.mjs:185:4,js-cjk-literal,app/home-locale.mjs,185,,unknown,reviewable,,关闭登录
-candidate:app/home-locale.mjs:185:27,js-cjk-literal,app/home-locale.mjs,185,,unknown,reviewable,,關閉登入
-candidate:app/home-locale.mjs:185:34,js-cjk-literal,app/home-locale.mjs,185,,unknown,reviewable,,ログインを閉じる
-candidate:app/home-locale.mjs:186:4,js-cjk-literal,app/home-locale.mjs,186,,unknown,reviewable,,使用 Google 登录
-candidate:app/home-locale.mjs:186:41,js-cjk-literal,app/home-locale.mjs,186,,unknown,reviewable,,使用 Google 登入
-candidate:app/home-locale.mjs:186:56,js-cjk-literal,app/home-locale.mjs,186,,unknown,reviewable,,Google でログイン
-candidate:app/home-locale.mjs:187:4,js-cjk-literal,app/home-locale.mjs,187,,unknown,reviewable,,使用 Apple 登录
-candidate:app/home-locale.mjs:187:39,js-cjk-literal,app/home-locale.mjs,187,,unknown,reviewable,,使用 Apple 登入
-candidate:app/home-locale.mjs:187:53,js-cjk-literal,app/home-locale.mjs,187,,unknown,reviewable,,Apple でログイン
-candidate:app/home-locale.mjs:188:4,js-cjk-literal,app/home-locale.mjs,188,,unknown,reviewable,,准备中
-candidate:app/home-locale.mjs:188:30,js-cjk-literal,app/home-locale.mjs,188,,unknown,reviewable,,準備中
-candidate:app/home-locale.mjs:188:36,js-cjk-literal,app/home-locale.mjs,188,,unknown,reviewable,,準備中
-candidate:app/home-locale.mjs:189:4,js-cjk-literal,app/home-locale.mjs,189,,unknown,reviewable,,>或</span>
-candidate:app/home-locale.mjs:189:29,js-cjk-literal,app/home-locale.mjs,189,,unknown,reviewable,,>或</span>
-candidate:app/home-locale.mjs:189:41,js-cjk-literal,app/home-locale.mjs,189,,unknown,reviewable,,>または</span>
-candidate:app/home-locale.mjs:190:4,js-cjk-literal,app/home-locale.mjs,190,,unknown,reviewable,,>邮箱</label>
-candidate:app/home-locale.mjs:190:35,js-cjk-literal,app/home-locale.mjs,190,,unknown,reviewable,,>郵箱</label>
-candidate:app/home-locale.mjs:190:49,js-cjk-literal,app/home-locale.mjs,190,,unknown,reviewable,,>メールアドレス</label>
-candidate:app/home-locale.mjs:191:4,js-cjk-literal,app/home-locale.mjs,191,,unknown,reviewable,,>密码</label>
-candidate:app/home-locale.mjs:191:38,js-cjk-literal,app/home-locale.mjs,191,,unknown,reviewable,,>密碼</label>
-candidate:app/home-locale.mjs:191:52,js-cjk-literal,app/home-locale.mjs,191,,unknown,reviewable,,>パスワード</label>
-candidate:app/home-locale.mjs:192:4,js-cjk-literal,app/home-locale.mjs,192,,unknown,reviewable,,本机使用
-candidate:app/home-locale.mjs:192:30,js-cjk-literal,app/home-locale.mjs,192,,unknown,reviewable,,本機使用
-candidate:app/home-locale.mjs:192:37,js-cjk-literal,app/home-locale.mjs,192,,unknown,reviewable,,このパソコンで
-candidate:app/home-locale.mjs:193:4,js-cjk-literal,app/home-locale.mjs,193,,unknown,reviewable,,进入本机书房
-candidate:app/home-locale.mjs:193:39,js-cjk-literal,app/home-locale.mjs,193,,unknown,reviewable,,進入本機書房
-candidate:app/home-locale.mjs:193:48,js-cjk-literal,app/home-locale.mjs,193,,unknown,reviewable,,ローカルの書斎を開く
-candidate:app/home-locale.mjs:194:4,js-cjk-literal,app/home-locale.mjs,194,,unknown,reviewable,,仅在这台电脑使用，无需邮箱；与邮箱账户分开保存。
-candidate:app/home-locale.mjs:194:122,js-cjk-literal,app/home-locale.mjs,194,,unknown,reviewable,,僅在這台電腦使用，無需郵箱；與郵箱帳戶分開保存。
-candidate:app/home-locale.mjs:194:149,js-cjk-literal,app/home-locale.mjs,194,,unknown,reviewable,,メールアカウントなしでこのパソコンを使う方法です。ローカルとメールのアカウントは別々に保存されます。
-candidate:app/home-locale.mjs:196:4,js-cjk-literal,app/home-locale.mjs,196,,unknown,reviewable,,收起侧栏
-candidate:app/home-locale.mjs:196:30,js-cjk-literal,app/home-locale.mjs,196,,unknown,reviewable,,收合側欄
-candidate:app/home-locale.mjs:196:37,js-cjk-literal,app/home-locale.mjs,196,,unknown,reviewable,,サイドバーを折りたたむ
-candidate:app/home-locale.mjs:197:4,js-cjk-literal,app/home-locale.mjs,197,,unknown,reviewable,,搜索书籍
-candidate:app/home-locale.mjs:197:26,js-cjk-literal,app/home-locale.mjs,197,,unknown,reviewable,,搜尋書籍
-candidate:app/home-locale.mjs:197:33,js-cjk-literal,app/home-locale.mjs,197,,unknown,reviewable,,本を検索
-candidate:app/home-locale.mjs:198:4,js-cjk-literal,app/home-locale.mjs,198,,unknown,reviewable,,搜索与命令
-candidate:app/home-locale.mjs:198:34,js-cjk-literal,app/home-locale.mjs,198,,unknown,reviewable,,搜尋與命令
-candidate:app/home-locale.mjs:198:42,js-cjk-literal,app/home-locale.mjs,198,,unknown,reviewable,,検索とコマンド
-candidate:app/home-locale.mjs:199:4,js-cjk-literal,app/home-locale.mjs,199,,unknown,reviewable,,我上传的
-candidate:app/home-locale.mjs:199:24,js-cjk-literal,app/home-locale.mjs,199,,unknown,reviewable,,我上傳的
-candidate:app/home-locale.mjs:199:31,js-cjk-literal,app/home-locale.mjs,199,,unknown,reviewable,,自分のアップロード
-candidate:app/home-locale.mjs:200:4,js-cjk-literal,app/home-locale.mjs,200,,unknown,reviewable,,阅读日历
-candidate:app/home-locale.mjs:200:30,js-cjk-literal,app/home-locale.mjs,200,,unknown,reviewable,,閱讀日曆
-candidate:app/home-locale.mjs:200:37,js-cjk-literal,app/home-locale.mjs,200,,unknown,reviewable,,読書カレンダー
-candidate:app/home-locale.mjs:201:4,js-cjk-literal,app/home-locale.mjs,201,,unknown,reviewable,,阅读对话
-candidate:app/home-locale.mjs:201:26,js-cjk-literal,app/home-locale.mjs,201,,unknown,reviewable,,閱讀對話
-candidate:app/home-locale.mjs:201:33,js-cjk-literal,app/home-locale.mjs,201,,unknown,reviewable,,読書の対話
-candidate:app/home-locale.mjs:202:4,js-cjk-literal,app/home-locale.mjs,202,,unknown,reviewable,,带来一本书
-candidate:app/home-locale.mjs:202:27,js-cjk-literal,app/home-locale.mjs,202,,unknown,reviewable,,帶來一本書
-candidate:app/home-locale.mjs:202:35,js-cjk-literal,app/home-locale.mjs,202,,unknown,reviewable,,本を持ち込む
-candidate:app/home-locale.mjs:203:4,js-cjk-literal,app/home-locale.mjs,203,,unknown,reviewable,,回收站
-candidate:app/home-locale.mjs:203:18,js-cjk-literal,app/home-locale.mjs,203,,unknown,reviewable,,回收站
-candidate:app/home-locale.mjs:203:24,js-cjk-literal,app/home-locale.mjs,203,,unknown,reviewable,,ゴミ箱
-candidate:app/home-locale.mjs:204:4,js-cjk-literal,app/home-locale.mjs,204,,unknown,reviewable,,阅读习惯
-candidate:app/home-locale.mjs:204:33,js-cjk-literal,app/home-locale.mjs,204,,unknown,reviewable,,閱讀習慣
-candidate:app/home-locale.mjs:204:40,js-cjk-literal,app/home-locale.mjs,204,,unknown,reviewable,,読書の好み
-candidate:app/home-locale.mjs:205:4,js-cjk-literal,app/home-locale.mjs,205,,unknown,reviewable,,设置阅读习惯
-candidate:app/home-locale.mjs:205:39,js-cjk-literal,app/home-locale.mjs,205,,unknown,reviewable,,設定閱讀習慣
-candidate:app/home-locale.mjs:205:48,js-cjk-literal,app/home-locale.mjs,205,,unknown,reviewable,,読書の好みを設定
-candidate:app/home-locale.mjs:206:4,js-cjk-literal,app/home-locale.mjs,206,,unknown,reviewable,,选好新书默认的阅读方式、译文与文字，之后打开的新书都从这里开始。每本书自己的选择仍然保留。
-candidate:app/home-locale.mjs:206:160,js-cjk-literal,app/home-locale.mjs,206,,unknown,reviewable,,選好新書預設的閱讀方式、譯文與文字，之後打開的新書都從這裡開始。每本書自己的選擇仍然保留。
-candidate:app/home-locale.mjs:206:208,js-cjk-literal,app/home-locale.mjs,206,,unknown,reviewable,,新しく開く本の表示方法、訳文、文字の見た目を選びます。本ごとの設定はそのまま残ります。
-candidate:app/home-locale.mjs:207:4,js-cjk-literal,app/home-locale.mjs,207,,unknown,reviewable,,暂不设置
-candidate:app/home-locale.mjs:207:26,js-cjk-literal,app/home-locale.mjs,207,,unknown,reviewable,,暫不設定
-candidate:app/home-locale.mjs:207:33,js-cjk-literal,app/home-locale.mjs,207,,unknown,reviewable,,あとで設定
-candidate:app/home-locale.mjs:208:4,js-cjk-literal,app/home-locale.mjs,208,,unknown,reviewable,,设置
-candidate:app/home-locale.mjs:208:20,js-cjk-literal,app/home-locale.mjs,208,,unknown,reviewable,,設定
-candidate:app/home-locale.mjs:208:25,js-cjk-literal,app/home-locale.mjs,208,,unknown,reviewable,,設定
-candidate:app/home-locale.mjs:209:4,js-cjk-literal,app/home-locale.mjs,209,,unknown,reviewable,,书籍筛选
-candidate:app/home-locale.mjs:209:26,js-cjk-literal,app/home-locale.mjs,209,,unknown,reviewable,,書籍篩選
-candidate:app/home-locale.mjs:209:33,js-cjk-literal,app/home-locale.mjs,209,,unknown,reviewable,,本の絞り込み
-candidate:app/home-locale.mjs:210:4,js-cjk-literal,app/home-locale.mjs,210,,unknown,reviewable,,打开书房导航
-candidate:app/home-locale.mjs:210:44,js-cjk-literal,app/home-locale.mjs,210,,unknown,reviewable,,打開書房導覽
-candidate:app/home-locale.mjs:210:53,js-cjk-literal,app/home-locale.mjs,210,,unknown,reviewable,,書斎メニューを開く
-candidate:app/home-locale.mjs:211:4,js-cjk-literal,app/home-locale.mjs,211,,unknown,reviewable,,筛选书架
-candidate:app/home-locale.mjs:211:34,js-cjk-literal,app/home-locale.mjs,211,,unknown,reviewable,,篩選書架
-candidate:app/home-locale.mjs:211:41,js-cjk-literal,app/home-locale.mjs,211,,unknown,reviewable,,本棚を絞り込む
-candidate:app/home-locale.mjs:212:4,js-cjk-literal,app/home-locale.mjs,212,,unknown,reviewable,,阅读状态
-candidate:app/home-locale.mjs:212:28,js-cjk-literal,app/home-locale.mjs,212,,unknown,reviewable,,閱讀狀態
-candidate:app/home-locale.mjs:212:35,js-cjk-literal,app/home-locale.mjs,212,,unknown,reviewable,,読書状態
-candidate:app/home-locale.mjs:213:4,js-cjk-literal,app/home-locale.mjs,213,,unknown,reviewable,,书架
-candidate:app/home-locale.mjs:213:21,js-cjk-literal,app/home-locale.mjs,213,,unknown,reviewable,,書架
-candidate:app/home-locale.mjs:213:26,js-cjk-literal,app/home-locale.mjs,213,,unknown,reviewable,,本棚
-candidate:app/home-locale.mjs:214:4,js-cjk-literal,app/home-locale.mjs,214,,unknown,reviewable,,阅读近况
-candidate:app/home-locale.mjs:214:28,js-cjk-literal,app/home-locale.mjs,214,,unknown,reviewable,,閱讀近況
-candidate:app/home-locale.mjs:214:35,js-cjk-literal,app/home-locale.mjs,214,,unknown,reviewable,,最近の読書
-candidate:app/home-locale.mjs:215:4,js-cjk-literal,app/home-locale.mjs,215,,unknown,reviewable,,书房导航
-candidate:app/home-locale.mjs:215:37,js-cjk-literal,app/home-locale.mjs,215,,unknown,reviewable,,書房導覽
-candidate:app/home-locale.mjs:215:44,js-cjk-literal,app/home-locale.mjs,215,,unknown,reviewable,,書斎メニュー
-candidate:app/home-locale.mjs:216:4,js-cjk-literal,app/home-locale.mjs,216,,unknown,reviewable,,全部
-candidate:app/home-locale.mjs:216:15,js-cjk-literal,app/home-locale.mjs,216,,unknown,reviewable,,全部
-candidate:app/home-locale.mjs:216:20,js-cjk-literal,app/home-locale.mjs,216,,unknown,reviewable,,すべて
-candidate:app/home-locale.mjs:217:4,js-cjk-literal,app/home-locale.mjs,217,,unknown,reviewable,,在读
-candidate:app/home-locale.mjs:217:19,js-cjk-literal,app/home-locale.mjs,217,,unknown,reviewable,,在讀
-candidate:app/home-locale.mjs:217:24,js-cjk-literal,app/home-locale.mjs,217,,unknown,reviewable,,読書中
-candidate:app/home-locale.mjs:218:4,js-cjk-literal,app/home-locale.mjs,218,,unknown,reviewable,,未读
-candidate:app/home-locale.mjs:218:18,js-cjk-literal,app/home-locale.mjs,218,,unknown,reviewable,,未讀
-candidate:app/home-locale.mjs:218:23,js-cjk-literal,app/home-locale.mjs,218,,unknown,reviewable,,未読
-candidate:app/home-locale.mjs:219:4,js-cjk-literal,app/home-locale.mjs,219,,unknown,reviewable,,读完
-candidate:app/home-locale.mjs:219:20,js-cjk-literal,app/home-locale.mjs,219,,unknown,reviewable,,讀完
-candidate:app/home-locale.mjs:219:25,js-cjk-literal,app/home-locale.mjs,219,,unknown,reviewable,,読み終えた
-candidate:app/home-locale.mjs:220:4,js-cjk-literal,app/home-locale.mjs,220,,unknown,reviewable,,搜索书名或作者
-candidate:app/home-locale.mjs:220:39,js-cjk-literal,app/home-locale.mjs,220,,unknown,reviewable,,搜尋書名或作者
-candidate:app/home-locale.mjs:220:49,js-cjk-literal,app/home-locale.mjs,220,,unknown,reviewable,,タイトル・著者を検索
-candidate:app/home-locale.mjs:221:4,js-cjk-literal,app/home-locale.mjs,221,,unknown,reviewable,,清空搜索
-candidate:app/home-locale.mjs:221:26,js-cjk-literal,app/home-locale.mjs,221,,unknown,reviewable,,清空搜尋
-candidate:app/home-locale.mjs:221:33,js-cjk-literal,app/home-locale.mjs,221,,unknown,reviewable,,検索をクリア
-candidate:app/home-locale.mjs:222:4,js-cjk-literal,app/home-locale.mjs,222,,unknown,reviewable,,筛选
-candidate:app/home-locale.mjs:222:18,js-cjk-literal,app/home-locale.mjs,222,,unknown,reviewable,,篩選
-candidate:app/home-locale.mjs:222:23,js-cjk-literal,app/home-locale.mjs,222,,unknown,reviewable,,絞り込み
-candidate:app/home-locale.mjs:223:4,js-cjk-literal,app/home-locale.mjs,223,,unknown,reviewable,,筛选书籍
-candidate:app/home-locale.mjs:223:26,js-cjk-literal,app/home-locale.mjs,223,,unknown,reviewable,,篩選書籍
-candidate:app/home-locale.mjs:223:33,js-cjk-literal,app/home-locale.mjs,223,,unknown,reviewable,,本を絞り込む
-candidate:app/home-locale.mjs:224:4,js-cjk-literal,app/home-locale.mjs,224,,unknown,reviewable,,清除筛选
-candidate:app/home-locale.mjs:224:27,js-cjk-literal,app/home-locale.mjs,224,,unknown,reviewable,,清除篩選
-candidate:app/home-locale.mjs:224:34,js-cjk-literal,app/home-locale.mjs,224,,unknown,reviewable,,絞り込みを解除
-candidate:app/home-locale.mjs:225:4,js-cjk-literal,app/home-locale.mjs,225,,unknown,reviewable,,主题
-candidate:app/home-locale.mjs:225:17,js-cjk-literal,app/home-locale.mjs,225,,unknown,reviewable,,主題
-candidate:app/home-locale.mjs:225:22,js-cjk-literal,app/home-locale.mjs,225,,unknown,reviewable,,テーマ
-candidate:app/home-locale.mjs:226:4,js-cjk-literal,app/home-locale.mjs,226,,unknown,reviewable,,全部主题
-candidate:app/home-locale.mjs:226:24,js-cjk-literal,app/home-locale.mjs,226,,unknown,reviewable,,全部主題
-candidate:app/home-locale.mjs:226:31,js-cjk-literal,app/home-locale.mjs,226,,unknown,reviewable,,すべてのテーマ
-candidate:app/home-locale.mjs:227:4,js-cjk-literal,app/home-locale.mjs,227,,unknown,reviewable,,全部来源
-candidate:app/home-locale.mjs:227:25,js-cjk-literal,app/home-locale.mjs,227,,unknown,reviewable,,全部來源
-candidate:app/home-locale.mjs:227:32,js-cjk-literal,app/home-locale.mjs,227,,unknown,reviewable,,すべての出典
-candidate:app/home-locale.mjs:228:4,js-cjk-literal,app/home-locale.mjs,228,,unknown,reviewable,,内置书
-candidate:app/home-locale.mjs:228:27,js-cjk-literal,app/home-locale.mjs,228,,unknown,reviewable,,內置書
-candidate:app/home-locale.mjs:228:33,js-cjk-literal,app/home-locale.mjs,228,,unknown,reviewable,,内蔵の本
-candidate:app/home-locale.mjs:229:4,js-cjk-literal,app/home-locale.mjs,229,,unknown,reviewable,,阅读语言
-candidate:app/home-locale.mjs:229:30,js-cjk-literal,app/home-locale.mjs,229,,unknown,reviewable,,閱讀語言
-candidate:app/home-locale.mjs:229:37,js-cjk-literal,app/home-locale.mjs,229,,unknown,reviewable,,読む言語
-candidate:app/home-locale.mjs:230:4,js-cjk-literal,app/home-locale.mjs,230,,unknown,reviewable,,全部阅读语言
-candidate:app/home-locale.mjs:230:37,js-cjk-literal,app/home-locale.mjs,230,,unknown,reviewable,,全部閱讀語言
-candidate:app/home-locale.mjs:230:46,js-cjk-literal,app/home-locale.mjs,230,,unknown,reviewable,,すべての読書言語
-candidate:app/home-locale.mjs:231:4,js-cjk-literal,app/home-locale.mjs,231,,unknown,reviewable,,阅读形态
-candidate:app/home-locale.mjs:231:28,js-cjk-literal,app/home-locale.mjs,231,,unknown,reviewable,,閱讀形態
-candidate:app/home-locale.mjs:231:35,js-cjk-literal,app/home-locale.mjs,231,,unknown,reviewable,,読む形式
-candidate:app/home-locale.mjs:232:4,js-cjk-literal,app/home-locale.mjs,232,,unknown,reviewable,,全部形态
-candidate:app/home-locale.mjs:232:25,js-cjk-literal,app/home-locale.mjs,232,,unknown,reviewable,,全部形態
-candidate:app/home-locale.mjs:232:32,js-cjk-literal,app/home-locale.mjs,232,,unknown,reviewable,,すべての形式
-candidate:app/home-locale.mjs:233:4,js-cjk-literal,app/home-locale.mjs,233,,unknown,reviewable,,原版
-candidate:app/home-locale.mjs:233:20,js-cjk-literal,app/home-locale.mjs,233,,unknown,reviewable,,原版
-candidate:app/home-locale.mjs:233:25,js-cjk-literal,app/home-locale.mjs,233,,unknown,reviewable,,原文
-candidate:app/home-locale.mjs:234:4,js-cjk-literal,app/home-locale.mjs,234,,unknown,reviewable,,有译本
-candidate:app/home-locale.mjs:234:34,js-cjk-literal,app/home-locale.mjs,234,,unknown,reviewable,,有譯本
-candidate:app/home-locale.mjs:234:40,js-cjk-literal,app/home-locale.mjs,234,,unknown,reviewable,,訳文あり
-candidate:app/home-locale.mjs:235:4,js-cjk-literal,app/home-locale.mjs,235,,unknown,reviewable,,有译本也可能只有部分段落，缺译处保留原文。
-candidate:app/home-locale.mjs:235:114,js-cjk-literal,app/home-locale.mjs,235,,unknown,reviewable,,有譯本也可能只有部分段落，缺譯處保留原文。
-candidate:app/home-locale.mjs:235:138,js-cjk-literal,app/home-locale.mjs,235,,unknown,reviewable,,訳文があるのは一部の段落だけの場合もあります。未翻訳の箇所には原文を表示します。
-candidate:app/home-locale.mjs:236:4,js-cjk-literal,app/home-locale.mjs,236,,unknown,reviewable,,完成
-candidate:app/home-locale.mjs:236:16,js-cjk-literal,app/home-locale.mjs,236,,unknown,reviewable,,完成
-candidate:app/home-locale.mjs:236:21,js-cjk-literal,app/home-locale.mjs,236,,unknown,reviewable,,完了
-candidate:app/home-locale.mjs:237:4,js-cjk-literal,app/home-locale.mjs,237,,unknown,reviewable,,重新打开书房
-candidate:app/home-locale.mjs:237:39,js-cjk-literal,app/home-locale.mjs,237,,unknown,reviewable,,重新打開書房
-candidate:app/home-locale.mjs:237:48,js-cjk-literal,app/home-locale.mjs,237,,unknown,reviewable,,書斎を開き直す
-candidate:app/home-locale.mjs:238:4,js-cjk-literal,app/home-locale.mjs,238,,unknown,reviewable,,正在打开书房…
-candidate:app/home-locale.mjs:238:42,js-cjk-literal,app/home-locale.mjs,238,,unknown,reviewable,,正在打開書房…
-candidate:app/home-locale.mjs:238:52,js-cjk-literal,app/home-locale.mjs,238,,unknown,reviewable,,書斎を開いています…
-candidate:app/home-locale.mjs:239:4,js-cjk-literal,app/home-locale.mjs,239,,unknown,reviewable,,书架上的其他书
-candidate:app/home-locale.mjs:239:41,js-cjk-literal,app/home-locale.mjs,239,,unknown,reviewable,,書架上的其他書
-candidate:app/home-locale.mjs:239:51,js-cjk-literal,app/home-locale.mjs,239,,unknown,reviewable,,本棚のその他の本
-candidate:app/home-locale.mjs:240:4,js-cjk-literal,app/home-locale.mjs,240,,unknown,reviewable,,还没有自己的书
-candidate:app/home-locale.mjs:240:41,js-cjk-literal,app/home-locale.mjs,240,,unknown,reviewable,,還沒有自己的書
-candidate:app/home-locale.mjs:240:51,js-cjk-literal,app/home-locale.mjs,240,,unknown,reviewable,,まだ自分の本がありません
-candidate:app/home-locale.mjs:241:4,js-cjk-literal,app/home-locale.mjs,241,,unknown,reviewable,,带来一份 PDF、EPUB、TXT 或 Markdown。
-candidate:app/home-locale.mjs:241:79,js-cjk-literal,app/home-locale.mjs,241,,unknown,reviewable,,帶來一份 PDF、EPUB、TXT 或 Markdown。
-candidate:app/home-locale.mjs:241:111,js-cjk-literal,app/home-locale.mjs,241,,unknown,reviewable,,PDF・EPUB・TXT・Markdown のファイルを持ち込めます。
-candidate:app/home-locale.mjs:242:4,js-cjk-literal,app/home-locale.mjs,242,,unknown,reviewable,,带来第一本书
-candidate:app/home-locale.mjs:242:37,js-cjk-literal,app/home-locale.mjs,242,,unknown,reviewable,,帶來第一本書
-candidate:app/home-locale.mjs:242:46,js-cjk-literal,app/home-locale.mjs,242,,unknown,reviewable,,最初の本を持ち込む
-candidate:app/home-locale.mjs:243:4,js-cjk-literal,app/home-locale.mjs,243,,unknown,reviewable,,自己的书与阅读记录。
-candidate:app/home-locale.mjs:243:51,js-cjk-literal,app/home-locale.mjs,243,,unknown,reviewable,,自己的書與閱讀記錄。
-candidate:app/home-locale.mjs:243:64,js-cjk-literal,app/home-locale.mjs,243,,unknown,reviewable,,自分の本と読書記録。
-candidate:app/home-locale.mjs:244:4,js-cjk-literal,app/home-locale.mjs,244,,unknown,reviewable,,先选一本书，读几页。
-candidate:app/home-locale.mjs:244:55,js-cjk-literal,app/home-locale.mjs,244,,unknown,reviewable,,先選一本書，讀幾頁。
-candidate:app/home-locale.mjs:244:68,js-cjk-literal,app/home-locale.mjs,244,,unknown,reviewable,,一冊選んで、数頁読みます。
-candidate:app/home-locale.mjs:245:4,js-cjk-literal,app/home-locale.mjs,245,,unknown,reviewable,,拖动整本书调整位置，触屏可长按后移动。键盘聚焦调整位置按钮后使用左右方向键；更多操作中也可向前或向后移动。
-candidate:app/home-locale.mjs:245:222,js-cjk-literal,app/home-locale.mjs,245,,unknown,reviewable,,拖動整本書調整位置，觸屏可長按後移動。鍵盤聚焦調整位置按鈕後使用左右方向鍵；更多操作中也可向前或向後移動。
-candidate:app/home-locale.mjs:245:278,js-cjk-literal,app/home-locale.mjs,245,,unknown,reviewable,,本をドラッグして並べ替えます。タッチ操作では長押ししてから移動します。キーボードでは位置調整ボタンにフォーカスして左右の矢印キーを使うか、その他の操作から前後に移動できます。
-candidate:app/home-locale.mjs:246:4,js-cjk-literal,app/home-locale.mjs,246,,unknown,reviewable,,这次，你想读什么？
-candidate:app/home-locale.mjs:246:47,js-cjk-literal,app/home-locale.mjs,246,,unknown,reviewable,,這次，你想讀什麼？
-candidate:app/home-locale.mjs:246:59,js-cjk-literal,app/home-locale.mjs,246,,unknown,reviewable,,今回は、何を読みますか？
-candidate:app/home-locale.mjs:247:4,js-cjk-literal,app/home-locale.mjs,247,,unknown,reviewable,,原文件保存在自己的书房，提取后即可阅读。
-candidate:app/home-locale.mjs:247:108,js-cjk-literal,app/home-locale.mjs,247,,unknown,reviewable,,原文件保存在自己的書房，提取後即可閱讀。
-candidate:app/home-locale.mjs:247:131,js-cjk-literal,app/home-locale.mjs,247,,unknown,reviewable,,元のファイルは自分の書斎に保存され、抽出できたら読み進めます。
-candidate:app/home-locale.mjs:248:4,js-cjk-literal,app/home-locale.mjs,248,,unknown,reviewable,,拖放一本书，或点击选择
-candidate:app/home-locale.mjs:248:57,js-cjk-literal,app/home-locale.mjs,248,,unknown,reviewable,,拖放一本書，或點擊選擇
-candidate:app/home-locale.mjs:248:71,js-cjk-literal,app/home-locale.mjs,248,,unknown,reviewable,,本をドロップするか、クリックして選択
-candidate:app/home-locale.mjs:249:4,js-cjk-literal,app/home-locale.mjs,249,,unknown,reviewable,,PDF 最多 256 MB · EPUB 最多 20 MB · TXT、Markdown 最多 64 MB
-candidate:app/home-locale.mjs:249:129,js-cjk-literal,app/home-locale.mjs,249,,unknown,reviewable,,PDF 最多 256 MB · EPUB 最多 20 MB · TXT、Markdown 最多 64 MB
-candidate:app/home-locale.mjs:249:185,js-cjk-literal,app/home-locale.mjs,249,,unknown,reviewable,,PDF は最大 256 MB · EPUB は最大 20 MB · TXT・Markdown は最大 64 MB
-candidate:app/home-locale.mjs:250:4,js-cjk-literal,app/home-locale.mjs,250,,unknown,reviewable,,自动整理文字版与扫描版。需要借助外部识别时，再由你确认；原文件始终保留。
-candidate:app/home-locale.mjs:250:189,js-cjk-literal,app/home-locale.mjs,250,,unknown,reviewable,,自動整理文字版與掃描版。需要藉助外部識別時，再由你確認；原文件始終保留。
-candidate:app/home-locale.mjs:250:228,js-cjk-literal,app/home-locale.mjs,250,,unknown,reviewable,,文字版とスキャン版を自動で整理します。外部の認識を使うときは確認を求めるので、元のファイルは常に残ります。
-candidate:app/home-locale.mjs:251:4,js-cjk-literal,app/home-locale.mjs,251,,unknown,reviewable,,放进我的书房
-candidate:app/home-locale.mjs:251:41,js-cjk-literal,app/home-locale.mjs,251,,unknown,reviewable,,放進我的書房
-candidate:app/home-locale.mjs:251:50,js-cjk-literal,app/home-locale.mjs,251,,unknown,reviewable,,自分の書斎に入れる
-candidate:app/home-locale.mjs:252:4,js-cjk-literal,app/home-locale.mjs,252,,unknown,reviewable,,关闭上传
-candidate:app/home-locale.mjs:252:26,js-cjk-literal,app/home-locale.mjs,252,,unknown,reviewable,,關閉上傳
-candidate:app/home-locale.mjs:252:33,js-cjk-literal,app/home-locale.mjs,252,,unknown,reviewable,,アップロードを閉じる
-candidate:app/home-locale.mjs:253:4,js-cjk-literal,app/home-locale.mjs,253,,unknown,reviewable,,选择 PDF、EPUB、TXT 或 Markdown 文件
-candidate:app/home-locale.mjs:253:79,js-cjk-literal,app/home-locale.mjs,253,,unknown,reviewable,,選擇 PDF、EPUB、TXT 或 Markdown 文件
-candidate:app/home-locale.mjs:253:111,js-cjk-literal,app/home-locale.mjs,253,,unknown,reviewable,,PDF・EPUB・TXT・Markdown ファイルを選択
-candidate:app/home-locale.mjs:255:4,js-cjk-literal,app/home-locale.mjs,255,,unknown,reviewable,,暂停光影
-candidate:app/home-locale.mjs:255:28,js-cjk-literal,app/home-locale.mjs,255,,unknown,reviewable,,暫停光影
-candidate:app/home-locale.mjs:255:35,js-cjk-literal,app/home-locale.mjs,255,,unknown,reviewable,,陽光を一時停止
-candidate:app/home-locale.mjs:256:4,js-cjk-literal,app/home-locale.mjs,256,,unknown,reviewable,,开启光影
-candidate:app/home-locale.mjs:256:29,js-cjk-literal,app/home-locale.mjs,256,,unknown,reviewable,,開啟光影
-candidate:app/home-locale.mjs:256:36,js-cjk-literal,app/home-locale.mjs,256,,unknown,reviewable,,陽光を有効にする
-candidate:app/home-locale.mjs:257:4,js-cjk-literal,app/home-locale.mjs,257,,unknown,reviewable,,系统已减少动态效果
-candidate:app/home-locale.mjs:257:44,js-cjk-literal,app/home-locale.mjs,257,,unknown,reviewable,,系統已減少動態效果
-candidate:app/home-locale.mjs:257:56,js-cjk-literal,app/home-locale.mjs,257,,unknown,reviewable,,視差効果を減らす設定です
-candidate:app/home-locale.mjs:258:4,js-cjk-literal,app/home-locale.mjs,258,,unknown,reviewable,,>光影</span>
-candidate:app/home-locale.mjs:258:36,js-cjk-literal,app/home-locale.mjs,258,,unknown,reviewable,,>光影</span>
-candidate:app/home-locale.mjs:258:49,js-cjk-literal,app/home-locale.mjs,258,,unknown,reviewable,,>陽光</span>
-candidate:app/home-locale.mjs:259:4,js-cjk-literal,app/home-locale.mjs,259,,unknown,reviewable,,切换页面外观
-candidate:app/home-locale.mjs:259:33,js-cjk-literal,app/home-locale.mjs,259,,unknown,reviewable,,切換頁面外觀
-candidate:app/home-locale.mjs:259:42,js-cjk-literal,app/home-locale.mjs,259,,unknown,reviewable,,外観を切り替える
-candidate:app/home-locale.mjs:264:4,js-cjk-literal,app/home-locale.mjs,264,,unknown,reviewable,,邮箱或密码不正确，请重试或使用验证码登录
-candidate:app/home-locale.mjs:264:97,js-cjk-literal,app/home-locale.mjs,264,,unknown,reviewable,,郵箱或密碼不正確，請重試或使用驗證碼登入
-candidate:app/home-locale.mjs:264:120,js-cjk-literal,app/home-locale.mjs,264,,unknown,reviewable,,メールアドレスまたはパスワードが正しくありません。もう一度試すか、メールコードでログインしてください。
-candidate:app/home-locale.mjs:265:4,js-cjk-literal,app/home-locale.mjs,265,,unknown,reviewable,,请先验证邮箱，也可以使用验证码登录
-candidate:app/home-locale.mjs:265:82,js-cjk-literal,app/home-locale.mjs,265,,unknown,reviewable,,請先驗證郵箱，也可以使用驗證碼登入
-candidate:app/home-locale.mjs:265:102,js-cjk-literal,app/home-locale.mjs,265,,unknown,reviewable,,先にメールアドレスを確認してください。メールコードでのログインもできます。
-candidate:app/home-locale.mjs:266:4,js-cjk-literal,app/home-locale.mjs,266,,unknown,reviewable,,验证码不正确或已过期，请重新获取
-candidate:app/home-locale.mjs:266:84,js-cjk-literal,app/home-locale.mjs,266,,unknown,reviewable,,驗證碼不正確或已過期，請重新取得
-candidate:app/home-locale.mjs:266:103,js-cjk-literal,app/home-locale.mjs,266,,unknown,reviewable,,コードが正しくないか、期限が切れています。もう一度お取得ください。
-candidate:app/home-locale.mjs:267:4,js-cjk-literal,app/home-locale.mjs,267,,unknown,reviewable,,验证码未能验证，请核对邮件里的数字
-candidate:app/home-locale.mjs:267:90,js-cjk-literal,app/home-locale.mjs,267,,unknown,reviewable,,驗證碼未能驗證，請核對郵件裡的數字
-candidate:app/home-locale.mjs:267:110,js-cjk-literal,app/home-locale.mjs,267,,unknown,reviewable,,コードを確認できませんでした。メールの数字をご確認ください。
-candidate:app/home-locale.mjs:268:4,js-cjk-literal,app/home-locale.mjs,268,,unknown,reviewable,,验证码邮件暂时无法发出，请稍后重试
-candidate:app/home-locale.mjs:268:84,js-cjk-literal,app/home-locale.mjs,268,,unknown,reviewable,,驗證碼郵件暫時無法發出，請稍後重試
-candidate:app/home-locale.mjs:268:104,js-cjk-literal,app/home-locale.mjs,268,,unknown,reviewable,,コードのメールを送信できませんでした。しばらくしてからもう一度お試しください。
-candidate:app/home-locale.mjs:269:4,js-cjk-literal,app/home-locale.mjs,269,,unknown,reviewable,,邮件暂时未能发出，请稍后再试
-candidate:app/home-locale.mjs:269:81,js-cjk-literal,app/home-locale.mjs,269,,unknown,reviewable,,郵件暫時未能發出，請稍後再試
-candidate:app/home-locale.mjs:269:98,js-cjk-literal,app/home-locale.mjs,269,,unknown,reviewable,,メールを送信できませんでした。しばらくしてからもう一度お試しください。
-candidate:app/home-locale.mjs:270:4,js-cjk-literal,app/home-locale.mjs,270,,unknown,reviewable,,邮件发送暂未确认，请稍后查看邮箱再重试
-candidate:app/home-locale.mjs:270:103,js-cjk-literal,app/home-locale.mjs,270,,unknown,reviewable,,郵件發送暫未確認，請稍後查看郵箱再重試
-candidate:app/home-locale.mjs:270:125,js-cjk-literal,app/home-locale.mjs,270,,unknown,reviewable,,メールの送信をまだ確認できていません。受信をご確認のうえ、もう一度お試しください。
-candidate:app/home-locale.mjs:271:4,js-cjk-literal,app/home-locale.mjs,271,,unknown,reviewable,,新密码与原密码相同，请换一个
-candidate:app/home-locale.mjs:271:78,js-cjk-literal,app/home-locale.mjs,271,,unknown,reviewable,,新密碼與原密碼相同，請換一個
-candidate:app/home-locale.mjs:271:95,js-cjk-literal,app/home-locale.mjs,271,,unknown,reviewable,,現在のパスワードと同じです。別のものを選んでください。
-candidate:app/home-locale.mjs:272:4,js-cjk-literal,app/home-locale.mjs,272,,unknown,reviewable,,这个密码不够安全，请换一个较长的密码
-candidate:app/home-locale.mjs:272:80,js-cjk-literal,app/home-locale.mjs,272,,unknown,reviewable,,這個密碼不夠安全，請換一個較長的密碼
-candidate:app/home-locale.mjs:272:101,js-cjk-literal,app/home-locale.mjs,272,,unknown,reviewable,,このパスワードは安全性が足りません。長いものを選んでください。
-candidate:app/home-locale.mjs:273:4,js-cjk-literal,app/home-locale.mjs,273,,unknown,reviewable,,请设置至少 8 个字符的密码
-candidate:app/home-locale.mjs:273:73,js-cjk-literal,app/home-locale.mjs,273,,unknown,reviewable,,請設定至少 8 個字符的密碼
-candidate:app/home-locale.mjs:273:90,js-cjk-literal,app/home-locale.mjs,273,,unknown,reviewable,,8 文字以上のパスワードを設定してください。
-candidate:app/home-locale.mjs:274:4,js-cjk-literal,app/home-locale.mjs,274,,unknown,reviewable,,密码暂未保存，请重试或重新验证邮箱
-candidate:app/home-locale.mjs:274:98,js-cjk-literal,app/home-locale.mjs,274,,unknown,reviewable,,密碼暫未保存，請重試或重新驗證郵箱
-candidate:app/home-locale.mjs:274:118,js-cjk-literal,app/home-locale.mjs,274,,unknown,reviewable,,パスワードはまだ保存されていません。もう一度試すか、メールを再確認してください。
-candidate:app/home-locale.mjs:275:4,js-cjk-literal,app/home-locale.mjs,275,,unknown,reviewable,,请输入密码
-candidate:app/home-locale.mjs:275:35,js-cjk-literal,app/home-locale.mjs,275,,unknown,reviewable,,請輸入密碼
-candidate:app/home-locale.mjs:275:43,js-cjk-literal,app/home-locale.mjs,275,,unknown,reviewable,,パスワードを入力してください。
-candidate:app/home-locale.mjs:276:4,js-cjk-literal,app/home-locale.mjs,276,,unknown,reviewable,,请输入有效的邮箱地址
-candidate:app/home-locale.mjs:276:48,js-cjk-literal,app/home-locale.mjs,276,,unknown,reviewable,,請輸入有效的郵箱地址
-candidate:app/home-locale.mjs:276:61,js-cjk-literal,app/home-locale.mjs,276,,unknown,reviewable,,有効なメールアドレスを入力してください。
-candidate:app/home-locale.mjs:277:4,js-cjk-literal,app/home-locale.mjs,277,,unknown,reviewable,,请输入邮件里的验证码
-candidate:app/home-locale.mjs:277:64,js-cjk-literal,app/home-locale.mjs,277,,unknown,reviewable,,請輸入郵件裡的驗證碼
-candidate:app/home-locale.mjs:277:77,js-cjk-literal,app/home-locale.mjs,277,,unknown,reviewable,,メールの認証コードを入力してください。
-candidate:app/home-locale.mjs:278:4,js-cjk-literal,app/home-locale.mjs,278,,unknown,reviewable,,请输入邮件里的六位验证码
-candidate:app/home-locale.mjs:278:63,js-cjk-literal,app/home-locale.mjs,278,,unknown,reviewable,,請輸入郵件裡的六位驗證碼
-candidate:app/home-locale.mjs:278:78,js-cjk-literal,app/home-locale.mjs,278,,unknown,reviewable,,メールの 6 桁コードを入力してください。
-candidate:app/home-locale.mjs:279:4,js-cjk-literal,app/home-locale.mjs,279,,unknown,reviewable,,请稍后再获取验证码
-candidate:app/home-locale.mjs:279:55,js-cjk-literal,app/home-locale.mjs,279,,unknown,reviewable,,請稍後再取得驗證碼
-candidate:app/home-locale.mjs:279:67,js-cjk-literal,app/home-locale.mjs,279,,unknown,reviewable,,しばらく待ってからコードを取得してください。
-candidate:app/home-locale.mjs:280:4,js-cjk-literal,app/home-locale.mjs,280,,unknown,reviewable,,请一分钟后再获取验证码
-candidate:app/home-locale.mjs:280:68,js-cjk-literal,app/home-locale.mjs,280,,unknown,reviewable,,請一分鐘後再取得驗證碼
-candidate:app/home-locale.mjs:280:82,js-cjk-literal,app/home-locale.mjs,280,,unknown,reviewable,,1 分後にコードを取得してください。
-candidate:app/home-locale.mjs:281:4,js-cjk-literal,app/home-locale.mjs,281,,unknown,reviewable,,请求较频繁，请稍后再试
-candidate:app/home-locale.mjs:281:63,js-cjk-literal,app/home-locale.mjs,281,,unknown,reviewable,,請求較頻繁，請稍後再試
-candidate:app/home-locale.mjs:281:77,js-cjk-literal,app/home-locale.mjs,281,,unknown,reviewable,,リクエストが多すぎます。しばらくしてからもう一度お試しください。
-candidate:app/home-locale.mjs:282:4,js-cjk-literal,app/home-locale.mjs,282,,unknown,reviewable,,邮件请求较多，请稍后再试
-candidate:app/home-locale.mjs:282:70,js-cjk-literal,app/home-locale.mjs,282,,unknown,reviewable,,郵件請求較多，請稍後再試
-candidate:app/home-locale.mjs:282:85,js-cjk-literal,app/home-locale.mjs,282,,unknown,reviewable,,メールのリクエストが多すぎます。しばらくしてからもう一度お試しください。
-candidate:app/home-locale.mjs:283:4,js-cjk-literal,app/home-locale.mjs,283,,unknown,reviewable,,验证码请求较多，请稍后再试
-candidate:app/home-locale.mjs:283:70,js-cjk-literal,app/home-locale.mjs,283,,unknown,reviewable,,驗證碼請求較多，請稍後再試
-candidate:app/home-locale.mjs:283:86,js-cjk-literal,app/home-locale.mjs,283,,unknown,reviewable,,コードのリクエストが多すぎます。しばらくしてからもう一度お試しください。
-candidate:app/home-locale.mjs:284:4,js-cjk-literal,app/home-locale.mjs,284,,unknown,reviewable,,登录尝试较多，请稍后再试，也可以使用验证码登录
-candidate:app/home-locale.mjs:284:97,js-cjk-literal,app/home-locale.mjs,284,,unknown,reviewable,,登入嘗試較多，請稍後再試，也可以使用驗證碼登入
-candidate:app/home-locale.mjs:284:123,js-cjk-literal,app/home-locale.mjs,284,,unknown,reviewable,,ログイン試行の回数が多すぎます。しばらくしてからもう一度試すか、メールコードをご利用ください。
-candidate:app/home-locale.mjs:285:4,js-cjk-literal,app/home-locale.mjs,285,,unknown,reviewable,,请重新验证邮箱后设置密码
-candidate:app/home-locale.mjs:285:75,js-cjk-literal,app/home-locale.mjs,285,,unknown,reviewable,,請重新驗證郵箱後設定密碼
-candidate:app/home-locale.mjs:285:90,js-cjk-literal,app/home-locale.mjs,285,,unknown,reviewable,,パスワードを設定する前に、メールを再確認してください。
-candidate:app/home-locale.mjs:286:4,js-cjk-literal,app/home-locale.mjs,286,,unknown,reviewable,,这次邮箱验证与当前账户不一致，请重新验证
-candidate:app/home-locale.mjs:286:114,js-cjk-literal,app/home-locale.mjs,286,,unknown,reviewable,,這次郵箱驗證與當前帳戶不一致，請重新驗證
-candidate:app/home-locale.mjs:286:137,js-cjk-literal,app/home-locale.mjs,286,,unknown,reviewable,,このメール確認は現在のアカウントと一致しません。もう一度確認してください。
-candidate:app/home-locale.mjs:287:4,js-cjk-literal,app/home-locale.mjs,287,,unknown,reviewable,,这次验证已用于保存密码，请尝试密码登录或重新验证邮箱
-candidate:app/home-locale.mjs:287:131,js-cjk-literal,app/home-locale.mjs,287,,unknown,reviewable,,這次驗證已用於保存密碼，請嘗試密碼登入或重新驗證郵箱
-candidate:app/home-locale.mjs:287:160,js-cjk-literal,app/home-locale.mjs,287,,unknown,reviewable,,この確認はすでに使用されています。パスワードでログインするか、メールを再確認してください。
-candidate:app/home-locale.mjs:288:4,js-cjk-literal,app/home-locale.mjs,288,,unknown,reviewable,,邮箱验证已过期，请重新验证后设置密码
-candidate:app/home-locale.mjs:288:113,js-cjk-literal,app/home-locale.mjs,288,,unknown,reviewable,,郵箱驗證已過期，請重新驗證後設定密碼
-candidate:app/home-locale.mjs:288:134,js-cjk-literal,app/home-locale.mjs,288,,unknown,reviewable,,メール確認の有効期限が切れました。再確認後にパスワードを設定してください。
-candidate:app/home-locale.mjs:289:4,js-cjk-literal,app/home-locale.mjs,289,,unknown,reviewable,,登录服务暂时无法连接，请稍后重试
-candidate:app/home-locale.mjs:289:86,js-cjk-literal,app/home-locale.mjs,289,,unknown,reviewable,,登入服務暫時無法連接，請稍後重試
-candidate:app/home-locale.mjs:289:105,js-cjk-literal,app/home-locale.mjs,289,,unknown,reviewable,,ログインサービスに接続できません。しばらくしてからもう一度お試しください。
-candidate:app/home-locale.mjs:290:4,js-cjk-literal,app/home-locale.mjs,290,,unknown,reviewable,,登录服务暂时不可用，请稍后重试
-candidate:app/home-locale.mjs:290:84,js-cjk-literal,app/home-locale.mjs,290,,unknown,reviewable,,登入服務暫時不可用，請稍後重試
-candidate:app/home-locale.mjs:290:102,js-cjk-literal,app/home-locale.mjs,290,,unknown,reviewable,,ログインサービスを一時的に利用できません。しばらくしてからもう一度お試しください。
-candidate:app/home-locale.mjs:291:4,js-cjk-literal,app/home-locale.mjs,291,,unknown,reviewable,,登录已失效，请重新进入
-candidate:app/home-locale.mjs:291:68,js-cjk-literal,app/home-locale.mjs,291,,unknown,reviewable,,登入已失效，請重新進入
-candidate:app/home-locale.mjs:291:82,js-cjk-literal,app/home-locale.mjs,291,,unknown,reviewable,,セッションの有効期限が切れました。もう一度ログインしてください。
-candidate:app/home-locale.mjs:292:4,js-cjk-literal,app/home-locale.mjs,292,,unknown,reviewable,,登录未能完成，请重新尝试
-candidate:app/home-locale.mjs:292:71,js-cjk-literal,app/home-locale.mjs,292,,unknown,reviewable,,登入未能完成，請重新嘗試
-candidate:app/home-locale.mjs:292:86,js-cjk-literal,app/home-locale.mjs,292,,unknown,reviewable,,ログインを完了できませんでした。もう一度お試しください。
-candidate:app/home-locale.mjs:293:4,js-cjk-literal,app/home-locale.mjs,293,,unknown,reviewable,,登录信息未能确认，请重新尝试
-candidate:app/home-locale.mjs:293:78,js-cjk-literal,app/home-locale.mjs,293,,unknown,reviewable,,登入信息未能確認，請重新嘗試
-candidate:app/home-locale.mjs:293:95,js-cjk-literal,app/home-locale.mjs,293,,unknown,reviewable,,ログイン情報を確認できませんでした。もう一度お試しください。
-candidate:app/home-locale.mjs:294:4,js-cjk-literal,app/home-locale.mjs,294,,unknown,reviewable,,这个登录方式正在准备中，请使用其他方式
-candidate:app/home-locale.mjs:294:93,js-cjk-literal,app/home-locale.mjs,294,,unknown,reviewable,,這個登入方式正在準備中，請使用其他方式
-candidate:app/home-locale.mjs:294:115,js-cjk-literal,app/home-locale.mjs,294,,unknown,reviewable,,このログイン方法はまだ利用できません。別の方法をお選びください。
-candidate:app/home-locale.mjs:295:4,js-cjk-literal,app/home-locale.mjs,295,,unknown,reviewable,,这个登录方式正在准备中
-candidate:app/home-locale.mjs:295:85,js-cjk-literal,app/home-locale.mjs,295,,unknown,reviewable,,這個登入方式正在準備中
-candidate:app/home-locale.mjs:295:99,js-cjk-literal,app/home-locale.mjs,295,,unknown,reviewable,,このログイン方法はまだ利用できません。
-candidate:app/home-locale.mjs:296:4,js-cjk-literal,app/home-locale.mjs,296,,unknown,reviewable,,邮箱登录正在准备中。你可以先试读公版书。
-candidate:app/home-locale.mjs:296:101,js-cjk-literal,app/home-locale.mjs,296,,unknown,reviewable,,郵箱登入正在準備中。你可以先試讀公版書。
-candidate:app/home-locale.mjs:296:124,js-cjk-literal,app/home-locale.mjs,296,,unknown,reviewable,,メールログインはまだ準備中です。公開サンプルは先にお読みいただけます。
-candidate:app/home-locale.mjs:297:4,js-cjk-literal,app/home-locale.mjs,297,,unknown,reviewable,,邮箱服务尚未配置。现在可以试读，或进入本机书房。
-candidate:app/home-locale.mjs:297:111,js-cjk-literal,app/home-locale.mjs,297,,unknown,reviewable,,郵箱服務尚未配置。現在可以試讀，或進入本機書房。
-candidate:app/home-locale.mjs:297:138,js-cjk-literal,app/home-locale.mjs,297,,unknown,reviewable,,メールサービスは未設定です。サンプルを読むか、ローカルの書斎をお使いください。
-candidate:app/home-locale.mjs:298:4,js-cjk-literal,app/home-locale.mjs,298,,unknown,reviewable,,此书房尚未开启密码登录，可以使用验证码或本机书房
-candidate:app/home-locale.mjs:298:111,js-cjk-literal,app/home-locale.mjs,298,,unknown,reviewable,,此書房尚未開啟密碼登入，可以使用驗證碼或本機書房
-candidate:app/home-locale.mjs:298:138,js-cjk-literal,app/home-locale.mjs,298,,unknown,reviewable,,この書斎ではパスワードログインが有効になっていません。メールコードかローカルの書斎をご利用ください。
-candidate:app/home-locale.mjs:299:4,js-cjk-literal,app/home-locale.mjs,299,,unknown,reviewable,,此书房尚未开启密码设置
-candidate:app/home-locale.mjs:299:73,js-cjk-literal,app/home-locale.mjs,299,,unknown,reviewable,,此書房尚未開啟密碼設定
-candidate:app/home-locale.mjs:299:87,js-cjk-literal,app/home-locale.mjs,299,,unknown,reviewable,,この書斎ではパスワード設定が有効になっていません。
-candidate:app/home-locale.mjs:303:34,js-cjk-literal,app/home-locale.mjs,303,,unknown,reviewable,,$1 秒後重發
-candidate:app/home-locale.mjs:303:44,js-cjk-literal,app/home-locale.mjs,303,,unknown,reviewable,,$1秒後に再送信
-candidate:app/home-locale.mjs:304:37,js-cjk-literal,app/home-locale.mjs,304,,unknown,reviewable,,$1 秒後重試
-candidate:app/home-locale.mjs:304:47,js-cjk-literal,app/home-locale.mjs,304,,unknown,reviewable,,$1秒後にもう一度
-candidate:app/home-locale.mjs:305:33,js-cjk-literal,app/home-locale.mjs,305,,unknown,reviewable,,$1 秒後可發送
-candidate:app/home-locale.mjs:305:44,js-cjk-literal,app/home-locale.mjs,305,,unknown,reviewable,,$1秒後に送信可能
-candidate:app/home-locale.mjs:306:63,js-cjk-literal,app/home-locale.mjs,306,,unknown,reviewable,,雙譯開篇 · $1 段
-candidate:app/home-locale.mjs:306:77,js-cjk-literal,app/home-locale.mjs,306,,unknown,reviewable,,二つの訳 · 冒頭$1段
-candidate:app/home-locale.mjs:307:37,js-cjk-literal,app/home-locale.mjs,307,,unknown,reviewable,,"自己的書 · "
-candidate:app/home-locale.mjs:307:47,js-cjk-literal,app/home-locale.mjs,307,,unknown,reviewable,,"自分の本 · "
-candidate:app/home-locale.mjs:308:29,js-cjk-literal,app/home-locale.mjs,308,,unknown,reviewable,,$1 段
-candidate:app/home-locale.mjs:308:36,js-cjk-literal,app/home-locale.mjs,308,,unknown,reviewable,,$1段
-candidate:app/home-locale.mjs:313:61,js-cjk-literal,app/home-locale.mjs,313,,unknown,reviewable,,简体中文
-candidate:app/home-locale.mjs:314:61,js-cjk-literal,app/home-locale.mjs,314,,unknown,reviewable,,繁體中文
-candidate:app/home-locale.mjs:315:46,js-cjk-literal,app/home-locale.mjs,315,,unknown,reviewable,,日本語
-candidate:app/home-locale.mjs:346:78,js-cjk-literal,app/home-locale.mjs,346,,unknown,reviewable,,ログインを完了できませんでした。もう一度試すか、別のログイン方法をお選びください。
+candidate:app/home-locale.mjs:119:4,js-cjk-literal,app/home-locale.mjs,119,,unknown,reviewable,,加入内测
+candidate:app/home-locale.mjs:119:27,js-cjk-literal,app/home-locale.mjs,119,,unknown,reviewable,,加入內測
+candidate:app/home-locale.mjs:119:34,js-cjk-literal,app/home-locale.mjs,119,,unknown,reviewable,,ベータ版に参加
+candidate:app/home-locale.mjs:120:4,js-cjk-literal,app/home-locale.mjs,120,,unknown,reviewable,,使用文档
+candidate:app/home-locale.mjs:120:27,js-cjk-literal,app/home-locale.mjs,120,,unknown,reviewable,,使用說明
+candidate:app/home-locale.mjs:120:34,js-cjk-literal,app/home-locale.mjs,120,,unknown,reviewable,,ドキュメント
+candidate:app/home-locale.mjs:121:4,js-cjk-literal,app/home-locale.mjs,121,,unknown,reviewable,,反馈问题
+candidate:app/home-locale.mjs:121:29,js-cjk-literal,app/home-locale.mjs,121,,unknown,reviewable,,回報問題
+candidate:app/home-locale.mjs:121:36,js-cjk-literal,app/home-locale.mjs,121,,unknown,reviewable,,問題を報告
+candidate:app/home-locale.mjs:122:4,js-cjk-literal,app/home-locale.mjs,122,,unknown,reviewable,,联系支持
+candidate:app/home-locale.mjs:122:29,js-cjk-literal,app/home-locale.mjs,122,,unknown,reviewable,,聯絡支援
+candidate:app/home-locale.mjs:122:36,js-cjk-literal,app/home-locale.mjs,122,,unknown,reviewable,,サポートに連絡
+candidate:app/home-locale.mjs:123:4,js-cjk-literal,app/home-locale.mjs,123,,unknown,reviewable,,cubxxw 的作品
+candidate:app/home-locale.mjs:123:39,js-cjk-literal,app/home-locale.mjs,123,,unknown,reviewable,,cubxxw 的作品
+candidate:app/home-locale.mjs:123:52,js-cjk-literal,app/home-locale.mjs,123,,unknown,reviewable,,cubxxw のプロジェクト
+candidate:app/home-locale.mjs:125:4,js-cjk-literal,app/home-locale.mjs,125,,unknown,reviewable,,今天，就从几页开始。
+candidate:app/home-locale.mjs:125:49,js-cjk-literal,app/home-locale.mjs,125,,unknown,reviewable,,今天，就從幾頁開始。
+candidate:app/home-locale.mjs:125:62,js-cjk-literal,app/home-locale.mjs,125,,unknown,reviewable,,今日は数頁から始めましょう。
+candidate:app/home-locale.mjs:126:4,js-cjk-literal,app/home-locale.mjs,126,,unknown,reviewable,,一本想读的书，一点留给自己的时间。
+candidate:app/home-locale.mjs:126:78,js-cjk-literal,app/home-locale.mjs,126,,unknown,reviewable,,一本想讀的書，一點留給自己的時間。
+candidate:app/home-locale.mjs:126:98,js-cjk-literal,app/home-locale.mjs,126,,unknown,reviewable,,読みたい一冊と、自分にあける少しの時間。
+candidate:app/home-locale.mjs:127:4,js-cjk-literal,app/home-locale.mjs,127,,unknown,reviewable,,关于 Leafhour
+candidate:app/home-locale.mjs:127:35,js-cjk-literal,app/home-locale.mjs,127,,unknown,reviewable,,關於 Leafhour
+candidate:app/home-locale.mjs:127:49,js-cjk-literal,app/home-locale.mjs,127,,unknown,reviewable,,Leafhour について
+candidate:app/home-locale.mjs:128:4,js-cjk-literal,app/home-locale.mjs,128,,unknown,reviewable,,隐私说明
+candidate:app/home-locale.mjs:128:21,js-cjk-literal,app/home-locale.mjs,128,,unknown,reviewable,,隱私說明
+candidate:app/home-locale.mjs:128:28,js-cjk-literal,app/home-locale.mjs,128,,unknown,reviewable,,プライバシー
+candidate:app/home-locale.mjs:129:4,js-cjk-literal,app/home-locale.mjs,129,,unknown,reviewable,,阅读保障
+candidate:app/home-locale.mjs:129:32,js-cjk-literal,app/home-locale.mjs,129,,unknown,reviewable,,閱讀保障
+candidate:app/home-locale.mjs:129:39,js-cjk-literal,app/home-locale.mjs,129,,unknown,reviewable,,ご利用について
+candidate:app/home-locale.mjs:130:4,js-cjk-literal,app/home-locale.mjs,130,,unknown,reviewable,,开放项目
+candidate:app/home-locale.mjs:130:25,js-cjk-literal,app/home-locale.mjs,130,,unknown,reviewable,,開放專案
+candidate:app/home-locale.mjs:130:32,js-cjk-literal,app/home-locale.mjs,130,,unknown,reviewable,,オープンソース
+candidate:app/home-locale.mjs:131:4,js-cjk-literal,app/home-locale.mjs,131,,unknown,reviewable,,服务条款
+candidate:app/home-locale.mjs:131:19,js-cjk-literal,app/home-locale.mjs,131,,unknown,reviewable,,服務條款
+candidate:app/home-locale.mjs:131:26,js-cjk-literal,app/home-locale.mjs,131,,unknown,reviewable,,利用規約
+candidate:app/home-locale.mjs:132:4,js-cjk-literal,app/home-locale.mjs,132,,unknown,reviewable,,退款政策
+candidate:app/home-locale.mjs:132:21,js-cjk-literal,app/home-locale.mjs,132,,unknown,reviewable,,退款政策
+candidate:app/home-locale.mjs:132:28,js-cjk-literal,app/home-locale.mjs,132,,unknown,reviewable,,返金ポリシー
+candidate:app/home-locale.mjs:133:4,js-cjk-literal,app/home-locale.mjs,133,,unknown,reviewable,,页面外观
+candidate:app/home-locale.mjs:133:24,js-cjk-literal,app/home-locale.mjs,133,,unknown,reviewable,,頁面外觀
+candidate:app/home-locale.mjs:133:31,js-cjk-literal,app/home-locale.mjs,133,,unknown,reviewable,,外観
+candidate:app/home-locale.mjs:134:4,js-cjk-literal,app/home-locale.mjs,134,,unknown,reviewable,,本地运行 · 可自托管
+candidate:app/home-locale.mjs:134:49,js-cjk-literal,app/home-locale.mjs,134,,unknown,reviewable,,本地運行 · 可自託管
+candidate:app/home-locale.mjs:134:63,js-cjk-literal,app/home-locale.mjs,134,,unknown,reviewable,,ローカル実行 · セルフホスト対応
+candidate:app/home-locale.mjs:135:4,js-cjk-literal,app/home-locale.mjs,135,,unknown,reviewable,,开始阅读
+candidate:app/home-locale.mjs:135:27,js-cjk-literal,app/home-locale.mjs,135,,unknown,reviewable,,開始閱讀
+candidate:app/home-locale.mjs:135:34,js-cjk-literal,app/home-locale.mjs,135,,unknown,reviewable,,読み始める
+candidate:app/home-locale.mjs:136:4,js-cjk-literal,app/home-locale.mjs,136,,unknown,reviewable,,先读几页
+candidate:app/home-locale.mjs:136:30,js-cjk-literal,app/home-locale.mjs,136,,unknown,reviewable,,先讀幾頁
+candidate:app/home-locale.mjs:136:37,js-cjk-literal,app/home-locale.mjs,136,,unknown,reviewable,,まず数頁読む
+candidate:app/home-locale.mjs:139:4,js-cjk-literal,app/home-locale.mjs,139,,unknown,reviewable,,回到你的书房
+candidate:app/home-locale.mjs:139:49,js-cjk-literal,app/home-locale.mjs,139,,unknown,reviewable,,回到你的書房
+candidate:app/home-locale.mjs:139:58,js-cjk-literal,app/home-locale.mjs,139,,unknown,reviewable,,書斎へようこそ
+candidate:app/home-locale.mjs:140:4,js-cjk-literal,app/home-locale.mjs,140,,unknown,reviewable,,从上次停下的地方继续。
+candidate:app/home-locale.mjs:140:49,js-cjk-literal,app/home-locale.mjs,140,,unknown,reviewable,,從上次停下的地方繼續。
+candidate:app/home-locale.mjs:140:63,js-cjk-literal,app/home-locale.mjs,140,,unknown,reviewable,,前回の続きから読み進めます。
+candidate:app/home-locale.mjs:141:4,js-cjk-literal,app/home-locale.mjs,141,,unknown,reviewable,,验证你的邮箱
+candidate:app/home-locale.mjs:141:33,js-cjk-literal,app/home-locale.mjs,141,,unknown,reviewable,,驗證你的郵箱
+candidate:app/home-locale.mjs:141:42,js-cjk-literal,app/home-locale.mjs,141,,unknown,reviewable,,メールアドレスを確認
+candidate:app/home-locale.mjs:142:4,js-cjk-literal,app/home-locale.mjs,142,,unknown,reviewable,,设置登录密码
+candidate:app/home-locale.mjs:142:33,js-cjk-literal,app/home-locale.mjs,142,,unknown,reviewable,,設定登入密碼
+candidate:app/home-locale.mjs:142:42,js-cjk-literal,app/home-locale.mjs,142,,unknown,reviewable,,ログインパスワードを設定
+candidate:app/home-locale.mjs:143:4,js-cjk-literal,app/home-locale.mjs,143,,unknown,reviewable,,创建你的书房
+candidate:app/home-locale.mjs:143:40,js-cjk-literal,app/home-locale.mjs,143,,unknown,reviewable,,創建你的書房
+candidate:app/home-locale.mjs:143:49,js-cjk-literal,app/home-locale.mjs,143,,unknown,reviewable,,自分の書斎をつくる
+candidate:app/home-locale.mjs:144:4,js-cjk-literal,app/home-locale.mjs,144,,unknown,reviewable,,找回密码
+candidate:app/home-locale.mjs:144:33,js-cjk-literal,app/home-locale.mjs,144,,unknown,reviewable,,找回密碼
+candidate:app/home-locale.mjs:144:40,js-cjk-literal,app/home-locale.mjs,144,,unknown,reviewable,,パスワードを再設定
+candidate:app/home-locale.mjs:145:4,js-cjk-literal,app/home-locale.mjs,145,,unknown,reviewable,,下次，直接用密码进入。
+candidate:app/home-locale.mjs:145:59,js-cjk-literal,app/home-locale.mjs,145,,unknown,reviewable,,下次，直接用密碼進入。
+candidate:app/home-locale.mjs:145:73,js-cjk-literal,app/home-locale.mjs,145,,unknown,reviewable,,次回からパスワードで入れます。
+candidate:app/home-locale.mjs:146:4,js-cjk-literal,app/home-locale.mjs,146,,unknown,reviewable,,输入邮件中的 6 位验证码。
+candidate:app/home-locale.mjs:146:65,js-cjk-literal,app/home-locale.mjs,146,,unknown,reviewable,,輸入郵件中的 6 位驗證碼。
+candidate:app/home-locale.mjs:146:82,js-cjk-literal,app/home-locale.mjs,146,,unknown,reviewable,,メールに届いた 6 桁のコードを入力してください。
+candidate:app/home-locale.mjs:147:4,js-cjk-literal,app/home-locale.mjs,147,,unknown,reviewable,,验证邮箱后，设置你的登录密码。
+candidate:app/home-locale.mjs:147:67,js-cjk-literal,app/home-locale.mjs,147,,unknown,reviewable,,驗證郵箱後，設定你的登入密碼。
+candidate:app/home-locale.mjs:147:85,js-cjk-literal,app/home-locale.mjs,147,,unknown,reviewable,,メール確認後、ログインパスワードを設定してください。
+candidate:app/home-locale.mjs:148:4,js-cjk-literal,app/home-locale.mjs,148,,unknown,reviewable,,验证邮箱后，重新设置密码。
+candidate:app/home-locale.mjs:148:69,js-cjk-literal,app/home-locale.mjs,148,,unknown,reviewable,,驗證郵箱後，重新設定密碼。
+candidate:app/home-locale.mjs:148:85,js-cjk-literal,app/home-locale.mjs,148,,unknown,reviewable,,メール確認後、新しいパスワードを設定してください。
+candidate:app/home-locale.mjs:149:4,js-cjk-literal,app/home-locale.mjs,149,,unknown,reviewable,,不用密码，也能接着读。
+candidate:app/home-locale.mjs:149:57,js-cjk-literal,app/home-locale.mjs,149,,unknown,reviewable,,不用密碼，也能接著讀。
+candidate:app/home-locale.mjs:149:71,js-cjk-literal,app/home-locale.mjs,149,,unknown,reviewable,,パスワードなしでも、メールコードで読み続けられます。
+candidate:app/home-locale.mjs:150:4,js-cjk-literal,app/home-locale.mjs,150,,unknown,reviewable,,邮箱或密码不正确
+candidate:app/home-locale.mjs:150:52,js-cjk-literal,app/home-locale.mjs,150,,unknown,reviewable,,郵箱或密碼不正確
+candidate:app/home-locale.mjs:150:63,js-cjk-literal,app/home-locale.mjs,150,,unknown,reviewable,,メールアドレスまたはパスワードが正しくありません
+candidate:app/home-locale.mjs:151:4,js-cjk-literal,app/home-locale.mjs,151,,unknown,reviewable,,网络暂时无法连接，请稍后重试。
+candidate:app/home-locale.mjs:151:69,js-cjk-literal,app/home-locale.mjs,151,,unknown,reviewable,,網絡暫時無法連接，請稍後重試。
+candidate:app/home-locale.mjs:151:87,js-cjk-literal,app/home-locale.mjs,151,,unknown,reviewable,,ネットワークに接続できません。しばらくしてからもう一度お試しください。
+candidate:app/home-locale.mjs:152:4,js-cjk-literal,app/home-locale.mjs,152,,unknown,reviewable,,暂时无法完成，请稍后重试。
+candidate:app/home-locale.mjs:152:73,js-cjk-literal,app/home-locale.mjs,152,,unknown,reviewable,,暫時無法完成，請稍後重試。
+candidate:app/home-locale.mjs:152:89,js-cjk-literal,app/home-locale.mjs,152,,unknown,reviewable,,完了できませんでした。しばらくしてからもう一度お試しください。
+candidate:app/home-locale.mjs:153:4,js-cjk-literal,app/home-locale.mjs,153,,unknown,reviewable,,验证码已过期，请重新发送。
+candidate:app/home-locale.mjs:153:66,js-cjk-literal,app/home-locale.mjs,153,,unknown,reviewable,,驗證碼已過期，請重新發送。
+candidate:app/home-locale.mjs:153:82,js-cjk-literal,app/home-locale.mjs,153,,unknown,reviewable,,コードの有効期限が切れました。もう一度お送りしてください。
+candidate:app/home-locale.mjs:154:4,js-cjk-literal,app/home-locale.mjs,154,,unknown,reviewable,,验证码已过期
+candidate:app/home-locale.mjs:154:37,js-cjk-literal,app/home-locale.mjs,154,,unknown,reviewable,,驗證碼已過期
+candidate:app/home-locale.mjs:154:46,js-cjk-literal,app/home-locale.mjs,154,,unknown,reviewable,,コードの有効期限が切れました
+candidate:app/home-locale.mjs:155:4,js-cjk-literal,app/home-locale.mjs,155,,unknown,reviewable,,10 分钟内有效
+candidate:app/home-locale.mjs:155:39,js-cjk-literal,app/home-locale.mjs,155,,unknown,reviewable,,10 分鐘內有效
+candidate:app/home-locale.mjs:155:50,js-cjk-literal,app/home-locale.mjs,155,,unknown,reviewable,,10 分間有効
+candidate:app/home-locale.mjs:156:4,js-cjk-literal,app/home-locale.mjs,156,,unknown,reviewable,,正在发送验证码…
+candidate:app/home-locale.mjs:156:36,js-cjk-literal,app/home-locale.mjs,156,,unknown,reviewable,,正在發送驗證碼…
+candidate:app/home-locale.mjs:156:47,js-cjk-literal,app/home-locale.mjs,156,,unknown,reviewable,,コードを送信しています…
+candidate:app/home-locale.mjs:157:4,js-cjk-literal,app/home-locale.mjs,157,,unknown,reviewable,,正在进入…
+candidate:app/home-locale.mjs:157:26,js-cjk-literal,app/home-locale.mjs,157,,unknown,reviewable,,正在進入…
+candidate:app/home-locale.mjs:157:34,js-cjk-literal,app/home-locale.mjs,157,,unknown,reviewable,,ログインしています…
+candidate:app/home-locale.mjs:158:4,js-cjk-literal,app/home-locale.mjs,158,,unknown,reviewable,,正在发送…
+candidate:app/home-locale.mjs:158:23,js-cjk-literal,app/home-locale.mjs,158,,unknown,reviewable,,正在發送…
+candidate:app/home-locale.mjs:158:31,js-cjk-literal,app/home-locale.mjs,158,,unknown,reviewable,,送信しています…
+candidate:app/home-locale.mjs:159:4,js-cjk-literal,app/home-locale.mjs,159,,unknown,reviewable,,正在验证…
+candidate:app/home-locale.mjs:159:25,js-cjk-literal,app/home-locale.mjs,159,,unknown,reviewable,,正在驗證…
+candidate:app/home-locale.mjs:159:33,js-cjk-literal,app/home-locale.mjs,159,,unknown,reviewable,,確認しています…
+candidate:app/home-locale.mjs:160:4,js-cjk-literal,app/home-locale.mjs,160,,unknown,reviewable,,正在保存…
+candidate:app/home-locale.mjs:160:22,js-cjk-literal,app/home-locale.mjs,160,,unknown,reviewable,,正在保存…
+candidate:app/home-locale.mjs:160:30,js-cjk-literal,app/home-locale.mjs,160,,unknown,reviewable,,保存しています…
+candidate:app/home-locale.mjs:161:4,js-cjk-literal,app/home-locale.mjs,161,,unknown,reviewable,,保存并进入书房
+candidate:app/home-locale.mjs:161:44,js-cjk-literal,app/home-locale.mjs,161,,unknown,reviewable,,保存並進入書房
+candidate:app/home-locale.mjs:161:54,js-cjk-literal,app/home-locale.mjs,161,,unknown,reviewable,,保存して書斎へ
+candidate:app/home-locale.mjs:162:4,js-cjk-literal,app/home-locale.mjs,162,,unknown,reviewable,,验证邮箱
+candidate:app/home-locale.mjs:162:26,js-cjk-literal,app/home-locale.mjs,162,,unknown,reviewable,,驗證郵箱
+candidate:app/home-locale.mjs:162:33,js-cjk-literal,app/home-locale.mjs,162,,unknown,reviewable,,メールを確認
+candidate:app/home-locale.mjs:163:4,js-cjk-literal,app/home-locale.mjs,163,,unknown,reviewable,,发送验证码
+candidate:app/home-locale.mjs:163:24,js-cjk-literal,app/home-locale.mjs,163,,unknown,reviewable,,發送驗證碼
+candidate:app/home-locale.mjs:163:32,js-cjk-literal,app/home-locale.mjs,163,,unknown,reviewable,,コードを送信
+candidate:app/home-locale.mjs:164:4,js-cjk-literal,app/home-locale.mjs,164,,unknown,reviewable,,重新发送
+candidate:app/home-locale.mjs:164:20,js-cjk-literal,app/home-locale.mjs,164,,unknown,reviewable,,重新發送
+candidate:app/home-locale.mjs:164:27,js-cjk-literal,app/home-locale.mjs,164,,unknown,reviewable,,再送信
+candidate:app/home-locale.mjs:165:4,js-cjk-literal,app/home-locale.mjs,165,,unknown,reviewable,,登录服务暂时不可用，可以先试读。
+candidate:app/home-locale.mjs:165:90,js-cjk-literal,app/home-locale.mjs,165,,unknown,reviewable,,登入服務暫時不可用，可以先試讀。
+candidate:app/home-locale.mjs:165:109,js-cjk-literal,app/home-locale.mjs,165,,unknown,reviewable,,ログインサービスを一時的に利用できません。サンプルは読めます。
+candidate:app/home-locale.mjs:166:4,js-cjk-literal,app/home-locale.mjs,166,,unknown,reviewable,,登录服务准备中，可以先试读。
+candidate:app/home-locale.mjs:166:71,js-cjk-literal,app/home-locale.mjs,166,,unknown,reviewable,,登入服務準備中，可以先試讀。
+candidate:app/home-locale.mjs:166:88,js-cjk-literal,app/home-locale.mjs,166,,unknown,reviewable,,ログインを準備中です。サンプルは読めます。
+candidate:app/home-locale.mjs:167:4,js-cjk-literal,app/home-locale.mjs,167,,unknown,reviewable,,登录 / 注册
+candidate:app/home-locale.mjs:167:34,js-cjk-literal,app/home-locale.mjs,167,,unknown,reviewable,,登入 / 註冊
+candidate:app/home-locale.mjs:167:44,js-cjk-literal,app/home-locale.mjs,167,,unknown,reviewable,,ログイン / 登録
+candidate:app/home-locale.mjs:168:4,js-cjk-literal,app/home-locale.mjs,168,,unknown,reviewable,,我的书房
+candidate:app/home-locale.mjs:168:29,js-cjk-literal,app/home-locale.mjs,168,,unknown,reviewable,,我的書房
+candidate:app/home-locale.mjs:168:36,js-cjk-literal,app/home-locale.mjs,168,,unknown,reviewable,,自分の書斎
+candidate:app/home-locale.mjs:169:4,js-cjk-literal,app/home-locale.mjs,169,,unknown,reviewable,,新密码
+candidate:app/home-locale.mjs:169:25,js-cjk-literal,app/home-locale.mjs,169,,unknown,reviewable,,新密碼
+candidate:app/home-locale.mjs:169:31,js-cjk-literal,app/home-locale.mjs,169,,unknown,reviewable,,新しいパスワード
+candidate:app/home-locale.mjs:170:4,js-cjk-literal,app/home-locale.mjs,170,,unknown,reviewable,,登录密码
+candidate:app/home-locale.mjs:170:30,js-cjk-literal,app/home-locale.mjs,170,,unknown,reviewable,,登入密碼
+candidate:app/home-locale.mjs:170:37,js-cjk-literal,app/home-locale.mjs,170,,unknown,reviewable,,ログインパスワード
+candidate:app/home-locale.mjs:171:4,js-cjk-literal,app/home-locale.mjs,171,,unknown,reviewable,,显示新密码
+candidate:app/home-locale.mjs:171:32,js-cjk-literal,app/home-locale.mjs,171,,unknown,reviewable,,顯示新密碼
+candidate:app/home-locale.mjs:171:40,js-cjk-literal,app/home-locale.mjs,171,,unknown,reviewable,,新しいパスワードを表示
+candidate:app/home-locale.mjs:172:4,js-cjk-literal,app/home-locale.mjs,172,,unknown,reviewable,,隐藏新密码
+candidate:app/home-locale.mjs:172:32,js-cjk-literal,app/home-locale.mjs,172,,unknown,reviewable,,隱藏新密碼
+candidate:app/home-locale.mjs:172:40,js-cjk-literal,app/home-locale.mjs,172,,unknown,reviewable,,新しいパスワードを隠す
+candidate:app/home-locale.mjs:173:4,js-cjk-literal,app/home-locale.mjs,173,,unknown,reviewable,,显示登录密码
+candidate:app/home-locale.mjs:173:37,js-cjk-literal,app/home-locale.mjs,173,,unknown,reviewable,,顯示登入密碼
+candidate:app/home-locale.mjs:173:46,js-cjk-literal,app/home-locale.mjs,173,,unknown,reviewable,,ログインパスワードを表示
+candidate:app/home-locale.mjs:174:4,js-cjk-literal,app/home-locale.mjs,174,,unknown,reviewable,,隐藏登录密码
+candidate:app/home-locale.mjs:174:37,js-cjk-literal,app/home-locale.mjs,174,,unknown,reviewable,,隱藏登入密碼
+candidate:app/home-locale.mjs:174:46,js-cjk-literal,app/home-locale.mjs,174,,unknown,reviewable,,ログインパスワードを隠す
+candidate:app/home-locale.mjs:175:4,js-cjk-literal,app/home-locale.mjs,175,,unknown,reviewable,,显示
+candidate:app/home-locale.mjs:175:16,js-cjk-literal,app/home-locale.mjs,175,,unknown,reviewable,,顯示
+candidate:app/home-locale.mjs:175:21,js-cjk-literal,app/home-locale.mjs,175,,unknown,reviewable,,表示
+candidate:app/home-locale.mjs:176:4,js-cjk-literal,app/home-locale.mjs,176,,unknown,reviewable,,隐藏
+candidate:app/home-locale.mjs:176:16,js-cjk-literal,app/home-locale.mjs,176,,unknown,reviewable,,隱藏
+candidate:app/home-locale.mjs:176:21,js-cjk-literal,app/home-locale.mjs,176,,unknown,reviewable,,隠す
+candidate:app/home-locale.mjs:177:4,js-cjk-literal,app/home-locale.mjs,177,,unknown,reviewable,,至少 8 个字符。
+candidate:app/home-locale.mjs:177:45,js-cjk-literal,app/home-locale.mjs,177,,unknown,reviewable,,至少 8 個字符。
+candidate:app/home-locale.mjs:177:57,js-cjk-literal,app/home-locale.mjs,177,,unknown,reviewable,,8 文字以上。
+candidate:app/home-locale.mjs:178:4,js-cjk-literal,app/home-locale.mjs,178,,unknown,reviewable,,登录验证码
+candidate:app/home-locale.mjs:178:38,js-cjk-literal,app/home-locale.mjs,178,,unknown,reviewable,,登入驗證碼
+candidate:app/home-locale.mjs:178:46,js-cjk-literal,app/home-locale.mjs,178,,unknown,reviewable,,ログインコード
+candidate:app/home-locale.mjs:179:4,js-cjk-literal,app/home-locale.mjs,179,,unknown,reviewable,,更换邮箱
+candidate:app/home-locale.mjs:179:26,js-cjk-literal,app/home-locale.mjs,179,,unknown,reviewable,,更換郵箱
+candidate:app/home-locale.mjs:179:33,js-cjk-literal,app/home-locale.mjs,179,,unknown,reviewable,,メールアドレスを変更
+candidate:app/home-locale.mjs:180:4,js-cjk-literal,app/home-locale.mjs,180,,unknown,reviewable,,验证码登录
+candidate:app/home-locale.mjs:180:32,js-cjk-literal,app/home-locale.mjs,180,,unknown,reviewable,,驗證碼登入
+candidate:app/home-locale.mjs:180:40,js-cjk-literal,app/home-locale.mjs,180,,unknown,reviewable,,メールコードでログイン
+candidate:app/home-locale.mjs:181:4,js-cjk-literal,app/home-locale.mjs,181,,unknown,reviewable,,返回密码登录
+candidate:app/home-locale.mjs:181:30,js-cjk-literal,app/home-locale.mjs,181,,unknown,reviewable,,返回密碼登入
+candidate:app/home-locale.mjs:181:39,js-cjk-literal,app/home-locale.mjs,181,,unknown,reviewable,,パスワードでログイン
+candidate:app/home-locale.mjs:182:4,js-cjk-literal,app/home-locale.mjs,182,,unknown,reviewable,,忘记密码？
+candidate:app/home-locale.mjs:182:31,js-cjk-literal,app/home-locale.mjs,182,,unknown,reviewable,,忘記密碼？
+candidate:app/home-locale.mjs:182:39,js-cjk-literal,app/home-locale.mjs,182,,unknown,reviewable,,パスワードをお忘れですか？
+candidate:app/home-locale.mjs:183:4,js-cjk-literal,app/home-locale.mjs,183,,unknown,reviewable,,第一次来？
+candidate:app/home-locale.mjs:183:31,js-cjk-literal,app/home-locale.mjs,183,,unknown,reviewable,,第一次來？
+candidate:app/home-locale.mjs:183:39,js-cjk-literal,app/home-locale.mjs,183,,unknown,reviewable,,初めての方へ
+candidate:app/home-locale.mjs:184:4,js-cjk-literal,app/home-locale.mjs,184,,unknown,reviewable,,创建书房
+candidate:app/home-locale.mjs:184:35,js-cjk-literal,app/home-locale.mjs,184,,unknown,reviewable,,創建書房
+candidate:app/home-locale.mjs:184:42,js-cjk-literal,app/home-locale.mjs,184,,unknown,reviewable,,書斎をつくる
+candidate:app/home-locale.mjs:185:4,js-cjk-literal,app/home-locale.mjs,185,,unknown,reviewable,,先试读几页
+candidate:app/home-locale.mjs:185:34,js-cjk-literal,app/home-locale.mjs,185,,unknown,reviewable,,先試讀幾頁
+candidate:app/home-locale.mjs:185:42,js-cjk-literal,app/home-locale.mjs,185,,unknown,reviewable,,まずサンプルを読む
+candidate:app/home-locale.mjs:186:4,js-cjk-literal,app/home-locale.mjs,186,,unknown,reviewable,,关闭登录
+candidate:app/home-locale.mjs:186:27,js-cjk-literal,app/home-locale.mjs,186,,unknown,reviewable,,關閉登入
+candidate:app/home-locale.mjs:186:34,js-cjk-literal,app/home-locale.mjs,186,,unknown,reviewable,,ログインを閉じる
+candidate:app/home-locale.mjs:187:4,js-cjk-literal,app/home-locale.mjs,187,,unknown,reviewable,,使用 Google 登录
+candidate:app/home-locale.mjs:187:41,js-cjk-literal,app/home-locale.mjs,187,,unknown,reviewable,,使用 Google 登入
+candidate:app/home-locale.mjs:187:56,js-cjk-literal,app/home-locale.mjs,187,,unknown,reviewable,,Google でログイン
+candidate:app/home-locale.mjs:188:4,js-cjk-literal,app/home-locale.mjs,188,,unknown,reviewable,,使用 Apple 登录
+candidate:app/home-locale.mjs:188:39,js-cjk-literal,app/home-locale.mjs,188,,unknown,reviewable,,使用 Apple 登入
+candidate:app/home-locale.mjs:188:53,js-cjk-literal,app/home-locale.mjs,188,,unknown,reviewable,,Apple でログイン
+candidate:app/home-locale.mjs:189:4,js-cjk-literal,app/home-locale.mjs,189,,unknown,reviewable,,准备中
+candidate:app/home-locale.mjs:189:30,js-cjk-literal,app/home-locale.mjs,189,,unknown,reviewable,,準備中
+candidate:app/home-locale.mjs:189:36,js-cjk-literal,app/home-locale.mjs,189,,unknown,reviewable,,準備中
+candidate:app/home-locale.mjs:190:4,js-cjk-literal,app/home-locale.mjs,190,,unknown,reviewable,,>或</span>
+candidate:app/home-locale.mjs:190:29,js-cjk-literal,app/home-locale.mjs,190,,unknown,reviewable,,>或</span>
+candidate:app/home-locale.mjs:190:41,js-cjk-literal,app/home-locale.mjs,190,,unknown,reviewable,,>または</span>
+candidate:app/home-locale.mjs:191:4,js-cjk-literal,app/home-locale.mjs,191,,unknown,reviewable,,>邮箱</label>
+candidate:app/home-locale.mjs:191:35,js-cjk-literal,app/home-locale.mjs,191,,unknown,reviewable,,>郵箱</label>
+candidate:app/home-locale.mjs:191:49,js-cjk-literal,app/home-locale.mjs,191,,unknown,reviewable,,>メールアドレス</label>
+candidate:app/home-locale.mjs:192:4,js-cjk-literal,app/home-locale.mjs,192,,unknown,reviewable,,>密码</label>
+candidate:app/home-locale.mjs:192:38,js-cjk-literal,app/home-locale.mjs,192,,unknown,reviewable,,>密碼</label>
+candidate:app/home-locale.mjs:192:52,js-cjk-literal,app/home-locale.mjs,192,,unknown,reviewable,,>パスワード</label>
+candidate:app/home-locale.mjs:193:4,js-cjk-literal,app/home-locale.mjs,193,,unknown,reviewable,,本机使用
+candidate:app/home-locale.mjs:193:30,js-cjk-literal,app/home-locale.mjs,193,,unknown,reviewable,,本機使用
+candidate:app/home-locale.mjs:193:37,js-cjk-literal,app/home-locale.mjs,193,,unknown,reviewable,,このパソコンで
+candidate:app/home-locale.mjs:194:4,js-cjk-literal,app/home-locale.mjs,194,,unknown,reviewable,,进入本机书房
+candidate:app/home-locale.mjs:194:39,js-cjk-literal,app/home-locale.mjs,194,,unknown,reviewable,,進入本機書房
+candidate:app/home-locale.mjs:194:48,js-cjk-literal,app/home-locale.mjs,194,,unknown,reviewable,,ローカルの書斎を開く
+candidate:app/home-locale.mjs:195:4,js-cjk-literal,app/home-locale.mjs,195,,unknown,reviewable,,仅在这台电脑使用，无需邮箱；与邮箱账户分开保存。
+candidate:app/home-locale.mjs:195:122,js-cjk-literal,app/home-locale.mjs,195,,unknown,reviewable,,僅在這台電腦使用，無需郵箱；與郵箱帳戶分開保存。
+candidate:app/home-locale.mjs:195:149,js-cjk-literal,app/home-locale.mjs,195,,unknown,reviewable,,メールアカウントなしでこのパソコンを使う方法です。ローカルとメールのアカウントは別々に保存されます。
+candidate:app/home-locale.mjs:197:4,js-cjk-literal,app/home-locale.mjs,197,,unknown,reviewable,,收起侧栏
+candidate:app/home-locale.mjs:197:30,js-cjk-literal,app/home-locale.mjs,197,,unknown,reviewable,,收合側欄
+candidate:app/home-locale.mjs:197:37,js-cjk-literal,app/home-locale.mjs,197,,unknown,reviewable,,サイドバーを折りたたむ
+candidate:app/home-locale.mjs:198:4,js-cjk-literal,app/home-locale.mjs,198,,unknown,reviewable,,搜索书籍
+candidate:app/home-locale.mjs:198:26,js-cjk-literal,app/home-locale.mjs,198,,unknown,reviewable,,搜尋書籍
+candidate:app/home-locale.mjs:198:33,js-cjk-literal,app/home-locale.mjs,198,,unknown,reviewable,,本を検索
+candidate:app/home-locale.mjs:199:4,js-cjk-literal,app/home-locale.mjs,199,,unknown,reviewable,,搜索与命令
+candidate:app/home-locale.mjs:199:34,js-cjk-literal,app/home-locale.mjs,199,,unknown,reviewable,,搜尋與命令
+candidate:app/home-locale.mjs:199:42,js-cjk-literal,app/home-locale.mjs,199,,unknown,reviewable,,検索とコマンド
+candidate:app/home-locale.mjs:200:4,js-cjk-literal,app/home-locale.mjs,200,,unknown,reviewable,,我上传的
+candidate:app/home-locale.mjs:200:24,js-cjk-literal,app/home-locale.mjs,200,,unknown,reviewable,,我上傳的
+candidate:app/home-locale.mjs:200:31,js-cjk-literal,app/home-locale.mjs,200,,unknown,reviewable,,自分のアップロード
+candidate:app/home-locale.mjs:201:4,js-cjk-literal,app/home-locale.mjs,201,,unknown,reviewable,,阅读日历
+candidate:app/home-locale.mjs:201:30,js-cjk-literal,app/home-locale.mjs,201,,unknown,reviewable,,閱讀日曆
+candidate:app/home-locale.mjs:201:37,js-cjk-literal,app/home-locale.mjs,201,,unknown,reviewable,,読書カレンダー
+candidate:app/home-locale.mjs:202:4,js-cjk-literal,app/home-locale.mjs,202,,unknown,reviewable,,阅读对话
+candidate:app/home-locale.mjs:202:26,js-cjk-literal,app/home-locale.mjs,202,,unknown,reviewable,,閱讀對話
+candidate:app/home-locale.mjs:202:33,js-cjk-literal,app/home-locale.mjs,202,,unknown,reviewable,,読書の対話
+candidate:app/home-locale.mjs:203:4,js-cjk-literal,app/home-locale.mjs,203,,unknown,reviewable,,带来一本书
+candidate:app/home-locale.mjs:203:27,js-cjk-literal,app/home-locale.mjs,203,,unknown,reviewable,,帶來一本書
+candidate:app/home-locale.mjs:203:35,js-cjk-literal,app/home-locale.mjs,203,,unknown,reviewable,,本を持ち込む
+candidate:app/home-locale.mjs:204:4,js-cjk-literal,app/home-locale.mjs,204,,unknown,reviewable,,回收站
+candidate:app/home-locale.mjs:204:18,js-cjk-literal,app/home-locale.mjs,204,,unknown,reviewable,,回收站
+candidate:app/home-locale.mjs:204:24,js-cjk-literal,app/home-locale.mjs,204,,unknown,reviewable,,ゴミ箱
+candidate:app/home-locale.mjs:205:4,js-cjk-literal,app/home-locale.mjs,205,,unknown,reviewable,,阅读习惯
+candidate:app/home-locale.mjs:205:33,js-cjk-literal,app/home-locale.mjs,205,,unknown,reviewable,,閱讀習慣
+candidate:app/home-locale.mjs:205:40,js-cjk-literal,app/home-locale.mjs,205,,unknown,reviewable,,読書の好み
+candidate:app/home-locale.mjs:206:4,js-cjk-literal,app/home-locale.mjs,206,,unknown,reviewable,,设置阅读习惯
+candidate:app/home-locale.mjs:206:39,js-cjk-literal,app/home-locale.mjs,206,,unknown,reviewable,,設定閱讀習慣
+candidate:app/home-locale.mjs:206:48,js-cjk-literal,app/home-locale.mjs,206,,unknown,reviewable,,読書の好みを設定
+candidate:app/home-locale.mjs:207:4,js-cjk-literal,app/home-locale.mjs,207,,unknown,reviewable,,选好新书默认的阅读方式、译文与文字，之后打开的新书都从这里开始。每本书自己的选择仍然保留。
+candidate:app/home-locale.mjs:207:160,js-cjk-literal,app/home-locale.mjs,207,,unknown,reviewable,,選好新書預設的閱讀方式、譯文與文字，之後打開的新書都從這裡開始。每本書自己的選擇仍然保留。
+candidate:app/home-locale.mjs:207:208,js-cjk-literal,app/home-locale.mjs,207,,unknown,reviewable,,新しく開く本の表示方法、訳文、文字の見た目を選びます。本ごとの設定はそのまま残ります。
+candidate:app/home-locale.mjs:208:4,js-cjk-literal,app/home-locale.mjs,208,,unknown,reviewable,,暂不设置
+candidate:app/home-locale.mjs:208:26,js-cjk-literal,app/home-locale.mjs,208,,unknown,reviewable,,暫不設定
+candidate:app/home-locale.mjs:208:33,js-cjk-literal,app/home-locale.mjs,208,,unknown,reviewable,,あとで設定
+candidate:app/home-locale.mjs:209:4,js-cjk-literal,app/home-locale.mjs,209,,unknown,reviewable,,设置
+candidate:app/home-locale.mjs:209:20,js-cjk-literal,app/home-locale.mjs,209,,unknown,reviewable,,設定
+candidate:app/home-locale.mjs:209:25,js-cjk-literal,app/home-locale.mjs,209,,unknown,reviewable,,設定
+candidate:app/home-locale.mjs:210:4,js-cjk-literal,app/home-locale.mjs,210,,unknown,reviewable,,书籍筛选
+candidate:app/home-locale.mjs:210:26,js-cjk-literal,app/home-locale.mjs,210,,unknown,reviewable,,書籍篩選
+candidate:app/home-locale.mjs:210:33,js-cjk-literal,app/home-locale.mjs,210,,unknown,reviewable,,本の絞り込み
+candidate:app/home-locale.mjs:211:4,js-cjk-literal,app/home-locale.mjs,211,,unknown,reviewable,,打开书房导航
+candidate:app/home-locale.mjs:211:44,js-cjk-literal,app/home-locale.mjs,211,,unknown,reviewable,,打開書房導覽
+candidate:app/home-locale.mjs:211:53,js-cjk-literal,app/home-locale.mjs,211,,unknown,reviewable,,書斎メニューを開く
+candidate:app/home-locale.mjs:212:4,js-cjk-literal,app/home-locale.mjs,212,,unknown,reviewable,,筛选书架
+candidate:app/home-locale.mjs:212:34,js-cjk-literal,app/home-locale.mjs,212,,unknown,reviewable,,篩選書架
+candidate:app/home-locale.mjs:212:41,js-cjk-literal,app/home-locale.mjs,212,,unknown,reviewable,,本棚を絞り込む
+candidate:app/home-locale.mjs:213:4,js-cjk-literal,app/home-locale.mjs,213,,unknown,reviewable,,阅读状态
+candidate:app/home-locale.mjs:213:28,js-cjk-literal,app/home-locale.mjs,213,,unknown,reviewable,,閱讀狀態
+candidate:app/home-locale.mjs:213:35,js-cjk-literal,app/home-locale.mjs,213,,unknown,reviewable,,読書状態
+candidate:app/home-locale.mjs:214:4,js-cjk-literal,app/home-locale.mjs,214,,unknown,reviewable,,书架
+candidate:app/home-locale.mjs:214:21,js-cjk-literal,app/home-locale.mjs,214,,unknown,reviewable,,書架
+candidate:app/home-locale.mjs:214:26,js-cjk-literal,app/home-locale.mjs,214,,unknown,reviewable,,本棚
+candidate:app/home-locale.mjs:215:4,js-cjk-literal,app/home-locale.mjs,215,,unknown,reviewable,,阅读近况
+candidate:app/home-locale.mjs:215:28,js-cjk-literal,app/home-locale.mjs,215,,unknown,reviewable,,閱讀近況
+candidate:app/home-locale.mjs:215:35,js-cjk-literal,app/home-locale.mjs,215,,unknown,reviewable,,最近の読書
+candidate:app/home-locale.mjs:216:4,js-cjk-literal,app/home-locale.mjs,216,,unknown,reviewable,,书房导航
+candidate:app/home-locale.mjs:216:37,js-cjk-literal,app/home-locale.mjs,216,,unknown,reviewable,,書房導覽
+candidate:app/home-locale.mjs:216:44,js-cjk-literal,app/home-locale.mjs,216,,unknown,reviewable,,書斎メニュー
+candidate:app/home-locale.mjs:217:4,js-cjk-literal,app/home-locale.mjs,217,,unknown,reviewable,,全部
+candidate:app/home-locale.mjs:217:15,js-cjk-literal,app/home-locale.mjs,217,,unknown,reviewable,,全部
+candidate:app/home-locale.mjs:217:20,js-cjk-literal,app/home-locale.mjs,217,,unknown,reviewable,,すべて
+candidate:app/home-locale.mjs:218:4,js-cjk-literal,app/home-locale.mjs,218,,unknown,reviewable,,在读
+candidate:app/home-locale.mjs:218:19,js-cjk-literal,app/home-locale.mjs,218,,unknown,reviewable,,在讀
+candidate:app/home-locale.mjs:218:24,js-cjk-literal,app/home-locale.mjs,218,,unknown,reviewable,,読書中
+candidate:app/home-locale.mjs:219:4,js-cjk-literal,app/home-locale.mjs,219,,unknown,reviewable,,未读
+candidate:app/home-locale.mjs:219:18,js-cjk-literal,app/home-locale.mjs,219,,unknown,reviewable,,未讀
+candidate:app/home-locale.mjs:219:23,js-cjk-literal,app/home-locale.mjs,219,,unknown,reviewable,,未読
+candidate:app/home-locale.mjs:220:4,js-cjk-literal,app/home-locale.mjs,220,,unknown,reviewable,,读完
+candidate:app/home-locale.mjs:220:20,js-cjk-literal,app/home-locale.mjs,220,,unknown,reviewable,,讀完
+candidate:app/home-locale.mjs:220:25,js-cjk-literal,app/home-locale.mjs,220,,unknown,reviewable,,読み終えた
+candidate:app/home-locale.mjs:221:4,js-cjk-literal,app/home-locale.mjs,221,,unknown,reviewable,,搜索书名或作者
+candidate:app/home-locale.mjs:221:39,js-cjk-literal,app/home-locale.mjs,221,,unknown,reviewable,,搜尋書名或作者
+candidate:app/home-locale.mjs:221:49,js-cjk-literal,app/home-locale.mjs,221,,unknown,reviewable,,タイトル・著者を検索
+candidate:app/home-locale.mjs:222:4,js-cjk-literal,app/home-locale.mjs,222,,unknown,reviewable,,清空搜索
+candidate:app/home-locale.mjs:222:26,js-cjk-literal,app/home-locale.mjs,222,,unknown,reviewable,,清空搜尋
+candidate:app/home-locale.mjs:222:33,js-cjk-literal,app/home-locale.mjs,222,,unknown,reviewable,,検索をクリア
+candidate:app/home-locale.mjs:223:4,js-cjk-literal,app/home-locale.mjs,223,,unknown,reviewable,,筛选
+candidate:app/home-locale.mjs:223:18,js-cjk-literal,app/home-locale.mjs,223,,unknown,reviewable,,篩選
+candidate:app/home-locale.mjs:223:23,js-cjk-literal,app/home-locale.mjs,223,,unknown,reviewable,,絞り込み
+candidate:app/home-locale.mjs:224:4,js-cjk-literal,app/home-locale.mjs,224,,unknown,reviewable,,筛选书籍
+candidate:app/home-locale.mjs:224:26,js-cjk-literal,app/home-locale.mjs,224,,unknown,reviewable,,篩選書籍
+candidate:app/home-locale.mjs:224:33,js-cjk-literal,app/home-locale.mjs,224,,unknown,reviewable,,本を絞り込む
+candidate:app/home-locale.mjs:225:4,js-cjk-literal,app/home-locale.mjs,225,,unknown,reviewable,,清除筛选
+candidate:app/home-locale.mjs:225:27,js-cjk-literal,app/home-locale.mjs,225,,unknown,reviewable,,清除篩選
+candidate:app/home-locale.mjs:225:34,js-cjk-literal,app/home-locale.mjs,225,,unknown,reviewable,,絞り込みを解除
+candidate:app/home-locale.mjs:226:4,js-cjk-literal,app/home-locale.mjs,226,,unknown,reviewable,,主题
+candidate:app/home-locale.mjs:226:17,js-cjk-literal,app/home-locale.mjs,226,,unknown,reviewable,,主題
+candidate:app/home-locale.mjs:226:22,js-cjk-literal,app/home-locale.mjs,226,,unknown,reviewable,,テーマ
+candidate:app/home-locale.mjs:227:4,js-cjk-literal,app/home-locale.mjs,227,,unknown,reviewable,,全部主题
+candidate:app/home-locale.mjs:227:24,js-cjk-literal,app/home-locale.mjs,227,,unknown,reviewable,,全部主題
+candidate:app/home-locale.mjs:227:31,js-cjk-literal,app/home-locale.mjs,227,,unknown,reviewable,,すべてのテーマ
+candidate:app/home-locale.mjs:228:4,js-cjk-literal,app/home-locale.mjs,228,,unknown,reviewable,,全部来源
+candidate:app/home-locale.mjs:228:25,js-cjk-literal,app/home-locale.mjs,228,,unknown,reviewable,,全部來源
+candidate:app/home-locale.mjs:228:32,js-cjk-literal,app/home-locale.mjs,228,,unknown,reviewable,,すべての出典
+candidate:app/home-locale.mjs:229:4,js-cjk-literal,app/home-locale.mjs,229,,unknown,reviewable,,内置书
+candidate:app/home-locale.mjs:229:27,js-cjk-literal,app/home-locale.mjs,229,,unknown,reviewable,,內置書
+candidate:app/home-locale.mjs:229:33,js-cjk-literal,app/home-locale.mjs,229,,unknown,reviewable,,内蔵の本
+candidate:app/home-locale.mjs:230:4,js-cjk-literal,app/home-locale.mjs,230,,unknown,reviewable,,阅读语言
+candidate:app/home-locale.mjs:230:30,js-cjk-literal,app/home-locale.mjs,230,,unknown,reviewable,,閱讀語言
+candidate:app/home-locale.mjs:230:37,js-cjk-literal,app/home-locale.mjs,230,,unknown,reviewable,,読む言語
+candidate:app/home-locale.mjs:231:4,js-cjk-literal,app/home-locale.mjs,231,,unknown,reviewable,,全部阅读语言
+candidate:app/home-locale.mjs:231:37,js-cjk-literal,app/home-locale.mjs,231,,unknown,reviewable,,全部閱讀語言
+candidate:app/home-locale.mjs:231:46,js-cjk-literal,app/home-locale.mjs,231,,unknown,reviewable,,すべての読書言語
+candidate:app/home-locale.mjs:232:4,js-cjk-literal,app/home-locale.mjs,232,,unknown,reviewable,,阅读形态
+candidate:app/home-locale.mjs:232:28,js-cjk-literal,app/home-locale.mjs,232,,unknown,reviewable,,閱讀形態
+candidate:app/home-locale.mjs:232:35,js-cjk-literal,app/home-locale.mjs,232,,unknown,reviewable,,読む形式
+candidate:app/home-locale.mjs:233:4,js-cjk-literal,app/home-locale.mjs,233,,unknown,reviewable,,全部形态
+candidate:app/home-locale.mjs:233:25,js-cjk-literal,app/home-locale.mjs,233,,unknown,reviewable,,全部形態
+candidate:app/home-locale.mjs:233:32,js-cjk-literal,app/home-locale.mjs,233,,unknown,reviewable,,すべての形式
+candidate:app/home-locale.mjs:234:4,js-cjk-literal,app/home-locale.mjs,234,,unknown,reviewable,,原版
+candidate:app/home-locale.mjs:234:20,js-cjk-literal,app/home-locale.mjs,234,,unknown,reviewable,,原版
+candidate:app/home-locale.mjs:234:25,js-cjk-literal,app/home-locale.mjs,234,,unknown,reviewable,,原文
+candidate:app/home-locale.mjs:235:4,js-cjk-literal,app/home-locale.mjs,235,,unknown,reviewable,,有译本
+candidate:app/home-locale.mjs:235:34,js-cjk-literal,app/home-locale.mjs,235,,unknown,reviewable,,有譯本
+candidate:app/home-locale.mjs:235:40,js-cjk-literal,app/home-locale.mjs,235,,unknown,reviewable,,訳文あり
+candidate:app/home-locale.mjs:236:4,js-cjk-literal,app/home-locale.mjs,236,,unknown,reviewable,,有译本也可能只有部分段落，缺译处保留原文。
+candidate:app/home-locale.mjs:236:114,js-cjk-literal,app/home-locale.mjs,236,,unknown,reviewable,,有譯本也可能只有部分段落，缺譯處保留原文。
+candidate:app/home-locale.mjs:236:138,js-cjk-literal,app/home-locale.mjs,236,,unknown,reviewable,,訳文があるのは一部の段落だけの場合もあります。未翻訳の箇所には原文を表示します。
+candidate:app/home-locale.mjs:237:4,js-cjk-literal,app/home-locale.mjs,237,,unknown,reviewable,,完成
+candidate:app/home-locale.mjs:237:16,js-cjk-literal,app/home-locale.mjs,237,,unknown,reviewable,,完成
+candidate:app/home-locale.mjs:237:21,js-cjk-literal,app/home-locale.mjs,237,,unknown,reviewable,,完了
+candidate:app/home-locale.mjs:238:4,js-cjk-literal,app/home-locale.mjs,238,,unknown,reviewable,,重新打开书房
+candidate:app/home-locale.mjs:238:39,js-cjk-literal,app/home-locale.mjs,238,,unknown,reviewable,,重新打開書房
+candidate:app/home-locale.mjs:238:48,js-cjk-literal,app/home-locale.mjs,238,,unknown,reviewable,,書斎を開き直す
+candidate:app/home-locale.mjs:239:4,js-cjk-literal,app/home-locale.mjs,239,,unknown,reviewable,,正在打开书房…
+candidate:app/home-locale.mjs:239:42,js-cjk-literal,app/home-locale.mjs,239,,unknown,reviewable,,正在打開書房…
+candidate:app/home-locale.mjs:239:52,js-cjk-literal,app/home-locale.mjs,239,,unknown,reviewable,,書斎を開いています…
+candidate:app/home-locale.mjs:240:4,js-cjk-literal,app/home-locale.mjs,240,,unknown,reviewable,,书架上的其他书
+candidate:app/home-locale.mjs:240:41,js-cjk-literal,app/home-locale.mjs,240,,unknown,reviewable,,書架上的其他書
+candidate:app/home-locale.mjs:240:51,js-cjk-literal,app/home-locale.mjs,240,,unknown,reviewable,,本棚のその他の本
+candidate:app/home-locale.mjs:241:4,js-cjk-literal,app/home-locale.mjs,241,,unknown,reviewable,,还没有自己的书
+candidate:app/home-locale.mjs:241:41,js-cjk-literal,app/home-locale.mjs,241,,unknown,reviewable,,還沒有自己的書
+candidate:app/home-locale.mjs:241:51,js-cjk-literal,app/home-locale.mjs,241,,unknown,reviewable,,まだ自分の本がありません
+candidate:app/home-locale.mjs:242:4,js-cjk-literal,app/home-locale.mjs,242,,unknown,reviewable,,带来一份 PDF、EPUB、TXT 或 Markdown。
+candidate:app/home-locale.mjs:242:79,js-cjk-literal,app/home-locale.mjs,242,,unknown,reviewable,,帶來一份 PDF、EPUB、TXT 或 Markdown。
+candidate:app/home-locale.mjs:242:111,js-cjk-literal,app/home-locale.mjs,242,,unknown,reviewable,,PDF・EPUB・TXT・Markdown のファイルを持ち込めます。
+candidate:app/home-locale.mjs:243:4,js-cjk-literal,app/home-locale.mjs,243,,unknown,reviewable,,带来第一本书
+candidate:app/home-locale.mjs:243:37,js-cjk-literal,app/home-locale.mjs,243,,unknown,reviewable,,帶來第一本書
+candidate:app/home-locale.mjs:243:46,js-cjk-literal,app/home-locale.mjs,243,,unknown,reviewable,,最初の本を持ち込む
+candidate:app/home-locale.mjs:244:4,js-cjk-literal,app/home-locale.mjs,244,,unknown,reviewable,,自己的书与阅读记录。
+candidate:app/home-locale.mjs:244:51,js-cjk-literal,app/home-locale.mjs,244,,unknown,reviewable,,自己的書與閱讀記錄。
+candidate:app/home-locale.mjs:244:64,js-cjk-literal,app/home-locale.mjs,244,,unknown,reviewable,,自分の本と読書記録。
+candidate:app/home-locale.mjs:245:4,js-cjk-literal,app/home-locale.mjs,245,,unknown,reviewable,,先选一本书，读几页。
+candidate:app/home-locale.mjs:245:55,js-cjk-literal,app/home-locale.mjs,245,,unknown,reviewable,,先選一本書，讀幾頁。
+candidate:app/home-locale.mjs:245:68,js-cjk-literal,app/home-locale.mjs,245,,unknown,reviewable,,一冊選んで、数頁読みます。
+candidate:app/home-locale.mjs:246:4,js-cjk-literal,app/home-locale.mjs,246,,unknown,reviewable,,拖动整本书调整位置，触屏可长按后移动。键盘聚焦调整位置按钮后使用左右方向键；更多操作中也可向前或向后移动。
+candidate:app/home-locale.mjs:246:222,js-cjk-literal,app/home-locale.mjs,246,,unknown,reviewable,,拖動整本書調整位置，觸屏可長按後移動。鍵盤聚焦調整位置按鈕後使用左右方向鍵；更多操作中也可向前或向後移動。
+candidate:app/home-locale.mjs:246:278,js-cjk-literal,app/home-locale.mjs,246,,unknown,reviewable,,本をドラッグして並べ替えます。タッチ操作では長押ししてから移動します。キーボードでは位置調整ボタンにフォーカスして左右の矢印キーを使うか、その他の操作から前後に移動できます。
+candidate:app/home-locale.mjs:247:4,js-cjk-literal,app/home-locale.mjs,247,,unknown,reviewable,,这次，你想读什么？
+candidate:app/home-locale.mjs:247:47,js-cjk-literal,app/home-locale.mjs,247,,unknown,reviewable,,這次，你想讀什麼？
+candidate:app/home-locale.mjs:247:59,js-cjk-literal,app/home-locale.mjs,247,,unknown,reviewable,,今回は、何を読みますか？
+candidate:app/home-locale.mjs:248:4,js-cjk-literal,app/home-locale.mjs,248,,unknown,reviewable,,原文件保存在自己的书房，提取后即可阅读。
+candidate:app/home-locale.mjs:248:108,js-cjk-literal,app/home-locale.mjs,248,,unknown,reviewable,,原文件保存在自己的書房，提取後即可閱讀。
+candidate:app/home-locale.mjs:248:131,js-cjk-literal,app/home-locale.mjs,248,,unknown,reviewable,,元のファイルは自分の書斎に保存され、抽出できたら読み進めます。
+candidate:app/home-locale.mjs:249:4,js-cjk-literal,app/home-locale.mjs,249,,unknown,reviewable,,拖放一本书，或点击选择
+candidate:app/home-locale.mjs:249:57,js-cjk-literal,app/home-locale.mjs,249,,unknown,reviewable,,拖放一本書，或點擊選擇
+candidate:app/home-locale.mjs:249:71,js-cjk-literal,app/home-locale.mjs,249,,unknown,reviewable,,本をドロップするか、クリックして選択
+candidate:app/home-locale.mjs:250:4,js-cjk-literal,app/home-locale.mjs,250,,unknown,reviewable,,PDF 最多 256 MB · EPUB 最多 20 MB · TXT、Markdown 最多 64 MB
+candidate:app/home-locale.mjs:250:129,js-cjk-literal,app/home-locale.mjs,250,,unknown,reviewable,,PDF 最多 256 MB · EPUB 最多 20 MB · TXT、Markdown 最多 64 MB
+candidate:app/home-locale.mjs:250:185,js-cjk-literal,app/home-locale.mjs,250,,unknown,reviewable,,PDF は最大 256 MB · EPUB は最大 20 MB · TXT・Markdown は最大 64 MB
+candidate:app/home-locale.mjs:251:4,js-cjk-literal,app/home-locale.mjs,251,,unknown,reviewable,,自动整理文字版与扫描版。需要借助外部识别时，再由你确认；原文件始终保留。
+candidate:app/home-locale.mjs:251:189,js-cjk-literal,app/home-locale.mjs,251,,unknown,reviewable,,自動整理文字版與掃描版。需要藉助外部識別時，再由你確認；原文件始終保留。
+candidate:app/home-locale.mjs:251:228,js-cjk-literal,app/home-locale.mjs,251,,unknown,reviewable,,文字版とスキャン版を自動で整理します。外部の認識を使うときは確認を求めるので、元のファイルは常に残ります。
+candidate:app/home-locale.mjs:252:4,js-cjk-literal,app/home-locale.mjs,252,,unknown,reviewable,,放进我的书房
+candidate:app/home-locale.mjs:252:41,js-cjk-literal,app/home-locale.mjs,252,,unknown,reviewable,,放進我的書房
+candidate:app/home-locale.mjs:252:50,js-cjk-literal,app/home-locale.mjs,252,,unknown,reviewable,,自分の書斎に入れる
+candidate:app/home-locale.mjs:253:4,js-cjk-literal,app/home-locale.mjs,253,,unknown,reviewable,,关闭上传
+candidate:app/home-locale.mjs:253:26,js-cjk-literal,app/home-locale.mjs,253,,unknown,reviewable,,關閉上傳
+candidate:app/home-locale.mjs:253:33,js-cjk-literal,app/home-locale.mjs,253,,unknown,reviewable,,アップロードを閉じる
+candidate:app/home-locale.mjs:254:4,js-cjk-literal,app/home-locale.mjs,254,,unknown,reviewable,,选择 PDF、EPUB、TXT 或 Markdown 文件
+candidate:app/home-locale.mjs:254:79,js-cjk-literal,app/home-locale.mjs,254,,unknown,reviewable,,選擇 PDF、EPUB、TXT 或 Markdown 文件
+candidate:app/home-locale.mjs:254:111,js-cjk-literal,app/home-locale.mjs,254,,unknown,reviewable,,PDF・EPUB・TXT・Markdown ファイルを選択
+candidate:app/home-locale.mjs:256:4,js-cjk-literal,app/home-locale.mjs,256,,unknown,reviewable,,暂停光影
+candidate:app/home-locale.mjs:256:28,js-cjk-literal,app/home-locale.mjs,256,,unknown,reviewable,,暫停光影
+candidate:app/home-locale.mjs:256:35,js-cjk-literal,app/home-locale.mjs,256,,unknown,reviewable,,陽光を一時停止
+candidate:app/home-locale.mjs:257:4,js-cjk-literal,app/home-locale.mjs,257,,unknown,reviewable,,开启光影
+candidate:app/home-locale.mjs:257:29,js-cjk-literal,app/home-locale.mjs,257,,unknown,reviewable,,開啟光影
+candidate:app/home-locale.mjs:257:36,js-cjk-literal,app/home-locale.mjs,257,,unknown,reviewable,,陽光を有効にする
+candidate:app/home-locale.mjs:258:4,js-cjk-literal,app/home-locale.mjs,258,,unknown,reviewable,,系统已减少动态效果
+candidate:app/home-locale.mjs:258:44,js-cjk-literal,app/home-locale.mjs,258,,unknown,reviewable,,系統已減少動態效果
+candidate:app/home-locale.mjs:258:56,js-cjk-literal,app/home-locale.mjs,258,,unknown,reviewable,,視差効果を減らす設定です
+candidate:app/home-locale.mjs:259:4,js-cjk-literal,app/home-locale.mjs,259,,unknown,reviewable,,>光影</span>
+candidate:app/home-locale.mjs:259:36,js-cjk-literal,app/home-locale.mjs,259,,unknown,reviewable,,>光影</span>
+candidate:app/home-locale.mjs:259:49,js-cjk-literal,app/home-locale.mjs,259,,unknown,reviewable,,>陽光</span>
+candidate:app/home-locale.mjs:260:4,js-cjk-literal,app/home-locale.mjs,260,,unknown,reviewable,,切换页面外观
+candidate:app/home-locale.mjs:260:33,js-cjk-literal,app/home-locale.mjs,260,,unknown,reviewable,,切換頁面外觀
+candidate:app/home-locale.mjs:260:42,js-cjk-literal,app/home-locale.mjs,260,,unknown,reviewable,,外観を切り替える
+candidate:app/home-locale.mjs:265:4,js-cjk-literal,app/home-locale.mjs,265,,unknown,reviewable,,邮箱或密码不正确，请重试或使用验证码登录
+candidate:app/home-locale.mjs:265:97,js-cjk-literal,app/home-locale.mjs,265,,unknown,reviewable,,郵箱或密碼不正確，請重試或使用驗證碼登入
+candidate:app/home-locale.mjs:265:120,js-cjk-literal,app/home-locale.mjs,265,,unknown,reviewable,,メールアドレスまたはパスワードが正しくありません。もう一度試すか、メールコードでログインしてください。
+candidate:app/home-locale.mjs:266:4,js-cjk-literal,app/home-locale.mjs,266,,unknown,reviewable,,请先验证邮箱，也可以使用验证码登录
+candidate:app/home-locale.mjs:266:82,js-cjk-literal,app/home-locale.mjs,266,,unknown,reviewable,,請先驗證郵箱，也可以使用驗證碼登入
+candidate:app/home-locale.mjs:266:102,js-cjk-literal,app/home-locale.mjs,266,,unknown,reviewable,,先にメールアドレスを確認してください。メールコードでのログインもできます。
+candidate:app/home-locale.mjs:267:4,js-cjk-literal,app/home-locale.mjs,267,,unknown,reviewable,,验证码不正确或已过期，请重新获取
+candidate:app/home-locale.mjs:267:84,js-cjk-literal,app/home-locale.mjs,267,,unknown,reviewable,,驗證碼不正確或已過期，請重新取得
+candidate:app/home-locale.mjs:267:103,js-cjk-literal,app/home-locale.mjs,267,,unknown,reviewable,,コードが正しくないか、期限が切れています。もう一度お取得ください。
+candidate:app/home-locale.mjs:268:4,js-cjk-literal,app/home-locale.mjs,268,,unknown,reviewable,,验证码未能验证，请核对邮件里的数字
+candidate:app/home-locale.mjs:268:90,js-cjk-literal,app/home-locale.mjs,268,,unknown,reviewable,,驗證碼未能驗證，請核對郵件裡的數字
+candidate:app/home-locale.mjs:268:110,js-cjk-literal,app/home-locale.mjs,268,,unknown,reviewable,,コードを確認できませんでした。メールの数字をご確認ください。
+candidate:app/home-locale.mjs:269:4,js-cjk-literal,app/home-locale.mjs,269,,unknown,reviewable,,验证码邮件暂时无法发出，请稍后重试
+candidate:app/home-locale.mjs:269:84,js-cjk-literal,app/home-locale.mjs,269,,unknown,reviewable,,驗證碼郵件暫時無法發出，請稍後重試
+candidate:app/home-locale.mjs:269:104,js-cjk-literal,app/home-locale.mjs,269,,unknown,reviewable,,コードのメールを送信できませんでした。しばらくしてからもう一度お試しください。
+candidate:app/home-locale.mjs:270:4,js-cjk-literal,app/home-locale.mjs,270,,unknown,reviewable,,邮件暂时未能发出，请稍后再试
+candidate:app/home-locale.mjs:270:81,js-cjk-literal,app/home-locale.mjs,270,,unknown,reviewable,,郵件暫時未能發出，請稍後再試
+candidate:app/home-locale.mjs:270:98,js-cjk-literal,app/home-locale.mjs,270,,unknown,reviewable,,メールを送信できませんでした。しばらくしてからもう一度お試しください。
+candidate:app/home-locale.mjs:271:4,js-cjk-literal,app/home-locale.mjs,271,,unknown,reviewable,,邮件发送暂未确认，请稍后查看邮箱再重试
+candidate:app/home-locale.mjs:271:103,js-cjk-literal,app/home-locale.mjs,271,,unknown,reviewable,,郵件發送暫未確認，請稍後查看郵箱再重試
+candidate:app/home-locale.mjs:271:125,js-cjk-literal,app/home-locale.mjs,271,,unknown,reviewable,,メールの送信をまだ確認できていません。受信をご確認のうえ、もう一度お試しください。
+candidate:app/home-locale.mjs:272:4,js-cjk-literal,app/home-locale.mjs,272,,unknown,reviewable,,新密码与原密码相同，请换一个
+candidate:app/home-locale.mjs:272:78,js-cjk-literal,app/home-locale.mjs,272,,unknown,reviewable,,新密碼與原密碼相同，請換一個
+candidate:app/home-locale.mjs:272:95,js-cjk-literal,app/home-locale.mjs,272,,unknown,reviewable,,現在のパスワードと同じです。別のものを選んでください。
+candidate:app/home-locale.mjs:273:4,js-cjk-literal,app/home-locale.mjs,273,,unknown,reviewable,,这个密码不够安全，请换一个较长的密码
+candidate:app/home-locale.mjs:273:80,js-cjk-literal,app/home-locale.mjs,273,,unknown,reviewable,,這個密碼不夠安全，請換一個較長的密碼
+candidate:app/home-locale.mjs:273:101,js-cjk-literal,app/home-locale.mjs,273,,unknown,reviewable,,このパスワードは安全性が足りません。長いものを選んでください。
+candidate:app/home-locale.mjs:274:4,js-cjk-literal,app/home-locale.mjs,274,,unknown,reviewable,,请设置至少 8 个字符的密码
+candidate:app/home-locale.mjs:274:73,js-cjk-literal,app/home-locale.mjs,274,,unknown,reviewable,,請設定至少 8 個字符的密碼
+candidate:app/home-locale.mjs:274:90,js-cjk-literal,app/home-locale.mjs,274,,unknown,reviewable,,8 文字以上のパスワードを設定してください。
+candidate:app/home-locale.mjs:275:4,js-cjk-literal,app/home-locale.mjs,275,,unknown,reviewable,,密码暂未保存，请重试或重新验证邮箱
+candidate:app/home-locale.mjs:275:98,js-cjk-literal,app/home-locale.mjs,275,,unknown,reviewable,,密碼暫未保存，請重試或重新驗證郵箱
+candidate:app/home-locale.mjs:275:118,js-cjk-literal,app/home-locale.mjs,275,,unknown,reviewable,,パスワードはまだ保存されていません。もう一度試すか、メールを再確認してください。
+candidate:app/home-locale.mjs:276:4,js-cjk-literal,app/home-locale.mjs,276,,unknown,reviewable,,请输入密码
+candidate:app/home-locale.mjs:276:35,js-cjk-literal,app/home-locale.mjs,276,,unknown,reviewable,,請輸入密碼
+candidate:app/home-locale.mjs:276:43,js-cjk-literal,app/home-locale.mjs,276,,unknown,reviewable,,パスワードを入力してください。
+candidate:app/home-locale.mjs:277:4,js-cjk-literal,app/home-locale.mjs,277,,unknown,reviewable,,请输入有效的邮箱地址
+candidate:app/home-locale.mjs:277:48,js-cjk-literal,app/home-locale.mjs,277,,unknown,reviewable,,請輸入有效的郵箱地址
+candidate:app/home-locale.mjs:277:61,js-cjk-literal,app/home-locale.mjs,277,,unknown,reviewable,,有効なメールアドレスを入力してください。
+candidate:app/home-locale.mjs:278:4,js-cjk-literal,app/home-locale.mjs,278,,unknown,reviewable,,请输入邮件里的验证码
+candidate:app/home-locale.mjs:278:64,js-cjk-literal,app/home-locale.mjs,278,,unknown,reviewable,,請輸入郵件裡的驗證碼
+candidate:app/home-locale.mjs:278:77,js-cjk-literal,app/home-locale.mjs,278,,unknown,reviewable,,メールの認証コードを入力してください。
+candidate:app/home-locale.mjs:279:4,js-cjk-literal,app/home-locale.mjs,279,,unknown,reviewable,,请输入邮件里的六位验证码
+candidate:app/home-locale.mjs:279:63,js-cjk-literal,app/home-locale.mjs,279,,unknown,reviewable,,請輸入郵件裡的六位驗證碼
+candidate:app/home-locale.mjs:279:78,js-cjk-literal,app/home-locale.mjs,279,,unknown,reviewable,,メールの 6 桁コードを入力してください。
+candidate:app/home-locale.mjs:280:4,js-cjk-literal,app/home-locale.mjs,280,,unknown,reviewable,,请稍后再获取验证码
+candidate:app/home-locale.mjs:280:55,js-cjk-literal,app/home-locale.mjs,280,,unknown,reviewable,,請稍後再取得驗證碼
+candidate:app/home-locale.mjs:280:67,js-cjk-literal,app/home-locale.mjs,280,,unknown,reviewable,,しばらく待ってからコードを取得してください。
+candidate:app/home-locale.mjs:281:4,js-cjk-literal,app/home-locale.mjs,281,,unknown,reviewable,,请一分钟后再获取验证码
+candidate:app/home-locale.mjs:281:68,js-cjk-literal,app/home-locale.mjs,281,,unknown,reviewable,,請一分鐘後再取得驗證碼
+candidate:app/home-locale.mjs:281:82,js-cjk-literal,app/home-locale.mjs,281,,unknown,reviewable,,1 分後にコードを取得してください。
+candidate:app/home-locale.mjs:282:4,js-cjk-literal,app/home-locale.mjs,282,,unknown,reviewable,,请求较频繁，请稍后再试
+candidate:app/home-locale.mjs:282:63,js-cjk-literal,app/home-locale.mjs,282,,unknown,reviewable,,請求較頻繁，請稍後再試
+candidate:app/home-locale.mjs:282:77,js-cjk-literal,app/home-locale.mjs,282,,unknown,reviewable,,リクエストが多すぎます。しばらくしてからもう一度お試しください。
+candidate:app/home-locale.mjs:283:4,js-cjk-literal,app/home-locale.mjs,283,,unknown,reviewable,,邮件请求较多，请稍后再试
+candidate:app/home-locale.mjs:283:70,js-cjk-literal,app/home-locale.mjs,283,,unknown,reviewable,,郵件請求較多，請稍後再試
+candidate:app/home-locale.mjs:283:85,js-cjk-literal,app/home-locale.mjs,283,,unknown,reviewable,,メールのリクエストが多すぎます。しばらくしてからもう一度お試しください。
+candidate:app/home-locale.mjs:284:4,js-cjk-literal,app/home-locale.mjs,284,,unknown,reviewable,,验证码请求较多，请稍后再试
+candidate:app/home-locale.mjs:284:70,js-cjk-literal,app/home-locale.mjs,284,,unknown,reviewable,,驗證碼請求較多，請稍後再試
+candidate:app/home-locale.mjs:284:86,js-cjk-literal,app/home-locale.mjs,284,,unknown,reviewable,,コードのリクエストが多すぎます。しばらくしてからもう一度お試しください。
+candidate:app/home-locale.mjs:285:4,js-cjk-literal,app/home-locale.mjs,285,,unknown,reviewable,,登录尝试较多，请稍后再试，也可以使用验证码登录
+candidate:app/home-locale.mjs:285:97,js-cjk-literal,app/home-locale.mjs,285,,unknown,reviewable,,登入嘗試較多，請稍後再試，也可以使用驗證碼登入
+candidate:app/home-locale.mjs:285:123,js-cjk-literal,app/home-locale.mjs,285,,unknown,reviewable,,ログイン試行の回数が多すぎます。しばらくしてからもう一度試すか、メールコードをご利用ください。
+candidate:app/home-locale.mjs:286:4,js-cjk-literal,app/home-locale.mjs,286,,unknown,reviewable,,请重新验证邮箱后设置密码
+candidate:app/home-locale.mjs:286:75,js-cjk-literal,app/home-locale.mjs,286,,unknown,reviewable,,請重新驗證郵箱後設定密碼
+candidate:app/home-locale.mjs:286:90,js-cjk-literal,app/home-locale.mjs,286,,unknown,reviewable,,パスワードを設定する前に、メールを再確認してください。
+candidate:app/home-locale.mjs:287:4,js-cjk-literal,app/home-locale.mjs,287,,unknown,reviewable,,这次邮箱验证与当前账户不一致，请重新验证
+candidate:app/home-locale.mjs:287:114,js-cjk-literal,app/home-locale.mjs,287,,unknown,reviewable,,這次郵箱驗證與當前帳戶不一致，請重新驗證
+candidate:app/home-locale.mjs:287:137,js-cjk-literal,app/home-locale.mjs,287,,unknown,reviewable,,このメール確認は現在のアカウントと一致しません。もう一度確認してください。
+candidate:app/home-locale.mjs:288:4,js-cjk-literal,app/home-locale.mjs,288,,unknown,reviewable,,这次验证已用于保存密码，请尝试密码登录或重新验证邮箱
+candidate:app/home-locale.mjs:288:131,js-cjk-literal,app/home-locale.mjs,288,,unknown,reviewable,,這次驗證已用於保存密碼，請嘗試密碼登入或重新驗證郵箱
+candidate:app/home-locale.mjs:288:160,js-cjk-literal,app/home-locale.mjs,288,,unknown,reviewable,,この確認はすでに使用されています。パスワードでログインするか、メールを再確認してください。
+candidate:app/home-locale.mjs:289:4,js-cjk-literal,app/home-locale.mjs,289,,unknown,reviewable,,邮箱验证已过期，请重新验证后设置密码
+candidate:app/home-locale.mjs:289:113,js-cjk-literal,app/home-locale.mjs,289,,unknown,reviewable,,郵箱驗證已過期，請重新驗證後設定密碼
+candidate:app/home-locale.mjs:289:134,js-cjk-literal,app/home-locale.mjs,289,,unknown,reviewable,,メール確認の有効期限が切れました。再確認後にパスワードを設定してください。
+candidate:app/home-locale.mjs:290:4,js-cjk-literal,app/home-locale.mjs,290,,unknown,reviewable,,登录服务暂时无法连接，请稍后重试
+candidate:app/home-locale.mjs:290:86,js-cjk-literal,app/home-locale.mjs,290,,unknown,reviewable,,登入服務暫時無法連接，請稍後重試
+candidate:app/home-locale.mjs:290:105,js-cjk-literal,app/home-locale.mjs,290,,unknown,reviewable,,ログインサービスに接続できません。しばらくしてからもう一度お試しください。
+candidate:app/home-locale.mjs:291:4,js-cjk-literal,app/home-locale.mjs,291,,unknown,reviewable,,登录服务暂时不可用，请稍后重试
+candidate:app/home-locale.mjs:291:84,js-cjk-literal,app/home-locale.mjs,291,,unknown,reviewable,,登入服務暫時不可用，請稍後重試
+candidate:app/home-locale.mjs:291:102,js-cjk-literal,app/home-locale.mjs,291,,unknown,reviewable,,ログインサービスを一時的に利用できません。しばらくしてからもう一度お試しください。
+candidate:app/home-locale.mjs:292:4,js-cjk-literal,app/home-locale.mjs,292,,unknown,reviewable,,登录已失效，请重新进入
+candidate:app/home-locale.mjs:292:68,js-cjk-literal,app/home-locale.mjs,292,,unknown,reviewable,,登入已失效，請重新進入
+candidate:app/home-locale.mjs:292:82,js-cjk-literal,app/home-locale.mjs,292,,unknown,reviewable,,セッションの有効期限が切れました。もう一度ログインしてください。
+candidate:app/home-locale.mjs:293:4,js-cjk-literal,app/home-locale.mjs,293,,unknown,reviewable,,登录未能完成，请重新尝试
+candidate:app/home-locale.mjs:293:71,js-cjk-literal,app/home-locale.mjs,293,,unknown,reviewable,,登入未能完成，請重新嘗試
+candidate:app/home-locale.mjs:293:86,js-cjk-literal,app/home-locale.mjs,293,,unknown,reviewable,,ログインを完了できませんでした。もう一度お試しください。
+candidate:app/home-locale.mjs:294:4,js-cjk-literal,app/home-locale.mjs,294,,unknown,reviewable,,登录信息未能确认，请重新尝试
+candidate:app/home-locale.mjs:294:78,js-cjk-literal,app/home-locale.mjs,294,,unknown,reviewable,,登入信息未能確認，請重新嘗試
+candidate:app/home-locale.mjs:294:95,js-cjk-literal,app/home-locale.mjs,294,,unknown,reviewable,,ログイン情報を確認できませんでした。もう一度お試しください。
+candidate:app/home-locale.mjs:295:4,js-cjk-literal,app/home-locale.mjs,295,,unknown,reviewable,,这个登录方式正在准备中，请使用其他方式
+candidate:app/home-locale.mjs:295:93,js-cjk-literal,app/home-locale.mjs,295,,unknown,reviewable,,這個登入方式正在準備中，請使用其他方式
+candidate:app/home-locale.mjs:295:115,js-cjk-literal,app/home-locale.mjs,295,,unknown,reviewable,,このログイン方法はまだ利用できません。別の方法をお選びください。
+candidate:app/home-locale.mjs:296:4,js-cjk-literal,app/home-locale.mjs,296,,unknown,reviewable,,这个登录方式正在准备中
+candidate:app/home-locale.mjs:296:85,js-cjk-literal,app/home-locale.mjs,296,,unknown,reviewable,,這個登入方式正在準備中
+candidate:app/home-locale.mjs:296:99,js-cjk-literal,app/home-locale.mjs,296,,unknown,reviewable,,このログイン方法はまだ利用できません。
+candidate:app/home-locale.mjs:297:4,js-cjk-literal,app/home-locale.mjs,297,,unknown,reviewable,,邮箱登录正在准备中。你可以先试读公版书。
+candidate:app/home-locale.mjs:297:101,js-cjk-literal,app/home-locale.mjs,297,,unknown,reviewable,,郵箱登入正在準備中。你可以先試讀公版書。
+candidate:app/home-locale.mjs:297:124,js-cjk-literal,app/home-locale.mjs,297,,unknown,reviewable,,メールログインはまだ準備中です。公開サンプルは先にお読みいただけます。
+candidate:app/home-locale.mjs:298:4,js-cjk-literal,app/home-locale.mjs,298,,unknown,reviewable,,邮箱服务尚未配置。现在可以试读，或进入本机书房。
+candidate:app/home-locale.mjs:298:111,js-cjk-literal,app/home-locale.mjs,298,,unknown,reviewable,,郵箱服務尚未配置。現在可以試讀，或進入本機書房。
+candidate:app/home-locale.mjs:298:138,js-cjk-literal,app/home-locale.mjs,298,,unknown,reviewable,,メールサービスは未設定です。サンプルを読むか、ローカルの書斎をお使いください。
+candidate:app/home-locale.mjs:299:4,js-cjk-literal,app/home-locale.mjs,299,,unknown,reviewable,,此书房尚未开启密码登录，可以使用验证码或本机书房
+candidate:app/home-locale.mjs:299:111,js-cjk-literal,app/home-locale.mjs,299,,unknown,reviewable,,此書房尚未開啟密碼登入，可以使用驗證碼或本機書房
+candidate:app/home-locale.mjs:299:138,js-cjk-literal,app/home-locale.mjs,299,,unknown,reviewable,,この書斎ではパスワードログインが有効になっていません。メールコードかローカルの書斎をご利用ください。
+candidate:app/home-locale.mjs:300:4,js-cjk-literal,app/home-locale.mjs,300,,unknown,reviewable,,此书房尚未开启密码设置
+candidate:app/home-locale.mjs:300:73,js-cjk-literal,app/home-locale.mjs,300,,unknown,reviewable,,此書房尚未開啟密碼設定
+candidate:app/home-locale.mjs:300:87,js-cjk-literal,app/home-locale.mjs,300,,unknown,reviewable,,この書斎ではパスワード設定が有効になっていません。
+candidate:app/home-locale.mjs:304:34,js-cjk-literal,app/home-locale.mjs,304,,unknown,reviewable,,$1 秒後重發
+candidate:app/home-locale.mjs:304:44,js-cjk-literal,app/home-locale.mjs,304,,unknown,reviewable,,$1秒後に再送信
+candidate:app/home-locale.mjs:305:37,js-cjk-literal,app/home-locale.mjs,305,,unknown,reviewable,,$1 秒後重試
+candidate:app/home-locale.mjs:305:47,js-cjk-literal,app/home-locale.mjs,305,,unknown,reviewable,,$1秒後にもう一度
+candidate:app/home-locale.mjs:306:33,js-cjk-literal,app/home-locale.mjs,306,,unknown,reviewable,,$1 秒後可發送
+candidate:app/home-locale.mjs:306:44,js-cjk-literal,app/home-locale.mjs,306,,unknown,reviewable,,$1秒後に送信可能
+candidate:app/home-locale.mjs:307:63,js-cjk-literal,app/home-locale.mjs,307,,unknown,reviewable,,雙譯開篇 · $1 段
+candidate:app/home-locale.mjs:307:77,js-cjk-literal,app/home-locale.mjs,307,,unknown,reviewable,,二つの訳 · 冒頭$1段
+candidate:app/home-locale.mjs:308:37,js-cjk-literal,app/home-locale.mjs,308,,unknown,reviewable,,"自己的書 · "
+candidate:app/home-locale.mjs:308:47,js-cjk-literal,app/home-locale.mjs,308,,unknown,reviewable,,"自分の本 · "
+candidate:app/home-locale.mjs:309:29,js-cjk-literal,app/home-locale.mjs,309,,unknown,reviewable,,$1 段
+candidate:app/home-locale.mjs:309:36,js-cjk-literal,app/home-locale.mjs,309,,unknown,reviewable,,$1段
+candidate:app/home-locale.mjs:314:61,js-cjk-literal,app/home-locale.mjs,314,,unknown,reviewable,,简体中文
+candidate:app/home-locale.mjs:315:61,js-cjk-literal,app/home-locale.mjs,315,,unknown,reviewable,,繁體中文
+candidate:app/home-locale.mjs:316:46,js-cjk-literal,app/home-locale.mjs,316,,unknown,reviewable,,日本語
+candidate:app/home-locale.mjs:347:78,js-cjk-literal,app/home-locale.mjs,347,,unknown,reviewable,,ログインを完了できませんでした。もう一度試すか、別のログイン方法をお選びください。
 candidate:app/home-navigation.mjs:103:158,js-attribute,app/home-navigation.mjs,103,tabindex,unknown,reviewable,,-1
 candidate:app/home-navigation.mjs:168:42,js-attribute,app/home-navigation.mjs,168,aria-expanded,unknown,reviewable,,false
 candidate:app/home-navigation.mjs:177:42,js-attribute,app/home-navigation.mjs,177,aria-expanded,unknown,reviewable,,false
@@ -3150,7 +3279,7 @@ candidate:app/home.html:48:80,html-text,app/home.html,48,,unknown,reviewable,,�
 candidate:app/home.html:48:93,html-text,app/home.html,48,,unknown,reviewable,,把想法留在原句旁。
 candidate:app/home.html:48:185,html-text,app/home.html,48,,unknown,reviewable,,先读几页
 candidate:app/home.html:48:215,html-text,app/home.html,48,,unknown,reviewable,,→
-candidate:app/home.html:48:263,html-text,app/home.html,48,,unknown,reviewable,,看看怎么读
+candidate:app/home.html:48:264,html-text,app/home.html,48,,unknown,reviewable,,加入内测
 candidate:app/home.html:48:303,html-text,app/home.html,48,,unknown,reviewable,,公版书可直接试读。登录后保存自己的书与记录。
 candidate:app/home.html:52:111,html-text,app/home.html,52,,unknown,protected,identifier,leafhour.com
 candidate:app/home.html:52:158,html-text,app/home.html,52,,unknown,reviewable,,Web 阅读器
@@ -3202,9 +3331,9 @@ candidate:app/home.html:75:162,html-text,app/home.html,75,,unknown,reviewable,,�
 candidate:app/home.html:75:184,html-text,app/home.html,75,,unknown,reviewable,,Web 留给原文、对照和长一点的思考。iPhone 把逐句听读、随读翻译与语音提问，放进随身的阅读时间。
 candidate:app/home.html:75:305,html-text,app/home.html,75,,unknown,reviewable,,打开 Web 书房
 candidate:app/home.html:75:340,html-text,app/home.html,75,,unknown,reviewable,,↗
-candidate:app/home.html:75:484,html-text,app/home.html,75,,unknown,reviewable,,了解 iOS 内测
-candidate:app/home.html:75:519,html-text,app/home.html,75,,unknown,reviewable,,↗
-candidate:app/home.html:75:562,html-text,app/home.html,75,,unknown,reviewable,,iOS 安装与功能说明见开源项目。
+candidate:app/home.html:75:398,html-text,app/home.html,75,,unknown,reviewable,,了解 iOS 内测
+candidate:app/home.html:75:433,html-text,app/home.html,75,,unknown,reviewable,,↗
+candidate:app/home.html:75:476,html-text,app/home.html,75,,unknown,reviewable,,iOS 安装与功能说明见内测页面。
 candidate:app/home.html:77:35,html-text,app/home.html,77,,unknown,reviewable,,读到难句，
 candidate:app/home.html:77:44,html-text,app/home.html,77,,unknown,reviewable,,也不用离开书页。
 candidate:app/home.html:77:60,html-text,app/home.html,77,,unknown,reviewable,,在一句话旁边停一停，用自己的话记下理解。还没想通的，就先留成问题，下一次回到原页。
@@ -3299,8 +3428,8 @@ candidate:app/home.html:116:112,html-text,app/home.html,116,,unknown,reviewable,
 candidate:app/home.html:118:42,html-text,app/home.html,118,,unknown,reviewable,,开始阅读
 candidate:app/home.html:118:93,html-text,app/home.html,118,,unknown,reviewable,,Web 书房
 candidate:app/home.html:118:118,html-text,app/home.html,118,,unknown,reviewable,,阅读的方法
-candidate:app/home.html:118:239,html-text,app/home.html,118,,unknown,reviewable,,iOS 内测
-candidate:app/home.html:118:277,html-text,app/home.html,118,,unknown,reviewable,,↗
+candidate:app/home.html:118:153,html-text,app/home.html,118,,unknown,reviewable,,加入内测
+candidate:app/home.html:118:189,html-text,app/home.html,118,,unknown,reviewable,,↗
 candidate:app/home.html:119:42,html-text,app/home.html,119,,unknown,reviewable,,开放项目
 candidate:app/home.html:119:167,html-text,app/home.html,119,,unknown,reviewable,,GitHub
 candidate:app/home.html:119:205,html-text,app/home.html,119,,unknown,reviewable,,↗
@@ -4783,33 +4912,36 @@ candidate:app/pricing-checkout.mjs:11:305,js-cjk-literal,app/pricing-checkout.mj
 candidate:app/pricing-checkout.mjs:11:322,js-cjk-literal,app/pricing-checkout.mjs,11,,unknown,reviewable,,アカウントが変わりました。プランを選び直してください。
 candidate:app/pricing-checkout.mjs:11:360,js-cjk-literal,app/pricing-checkout.mjs,11,,unknown,reviewable,,支払いを確認
 candidate:app/pricing-checkout.mjs:11:374,js-cjk-literal,app/pricing-checkout.mjs,11,,unknown,reviewable,,テスト決済です。実際の請求はありません。
-candidate:app/public-navigation.mjs:27:229,js-cjk-literal,app/public-navigation.mjs,27,,unknown,reviewable,,阅读的方法
-candidate:app/public-navigation.mjs:27:243,js-cjk-literal,app/public-navigation.mjs,27,,unknown,reviewable,,Agent 接入
-candidate:app/public-navigation.mjs:27:262,js-cjk-literal,app/public-navigation.mjs,27,,unknown,reviewable,,价格
-candidate:app/public-navigation.mjs:27:272,js-cjk-literal,app/public-navigation.mjs,27,,unknown,reviewable,,主导航
-candidate:app/public-navigation.mjs:27:284,js-cjk-literal,app/public-navigation.mjs,27,,unknown,reviewable,,关闭菜单
-candidate:app/public-navigation.mjs:27:296,js-cjk-literal,app/public-navigation.mjs,27,,unknown,reviewable,,打开导航菜单
-candidate:app/public-navigation.mjs:27:313,js-cjk-literal,app/public-navigation.mjs,27,,unknown,reviewable,,阅读点
-candidate:app/public-navigation.mjs:27:330,js-cjk-literal,app/public-navigation.mjs,27,,unknown,reviewable,,页面外观
-candidate:app/public-navigation.mjs:27:346,js-cjk-literal,app/public-navigation.mjs,27,,unknown,reviewable,,切换界面语言
-candidate:app/public-navigation.mjs:27:374,js-cjk-literal,app/public-navigation.mjs,27,,unknown,reviewable,,閱讀的方法
-candidate:app/public-navigation.mjs:27:388,js-cjk-literal,app/public-navigation.mjs,27,,unknown,reviewable,,Agent 接入
-candidate:app/public-navigation.mjs:27:407,js-cjk-literal,app/public-navigation.mjs,27,,unknown,reviewable,,價格
-candidate:app/public-navigation.mjs:27:417,js-cjk-literal,app/public-navigation.mjs,27,,unknown,reviewable,,主導覽
-candidate:app/public-navigation.mjs:27:429,js-cjk-literal,app/public-navigation.mjs,27,,unknown,reviewable,,關閉選單
-candidate:app/public-navigation.mjs:27:441,js-cjk-literal,app/public-navigation.mjs,27,,unknown,reviewable,,開啟導覽選單
-candidate:app/public-navigation.mjs:27:458,js-cjk-literal,app/public-navigation.mjs,27,,unknown,reviewable,,閱讀點
-candidate:app/public-navigation.mjs:27:475,js-cjk-literal,app/public-navigation.mjs,27,,unknown,reviewable,,頁面外觀
-candidate:app/public-navigation.mjs:27:491,js-cjk-literal,app/public-navigation.mjs,27,,unknown,reviewable,,語言
-candidate:app/public-navigation.mjs:27:508,js-cjk-literal,app/public-navigation.mjs,27,,unknown,reviewable,,読み方
-candidate:app/public-navigation.mjs:27:520,js-cjk-literal,app/public-navigation.mjs,27,,unknown,reviewable,,Agent 接続
-candidate:app/public-navigation.mjs:27:539,js-cjk-literal,app/public-navigation.mjs,27,,unknown,reviewable,,料金
-candidate:app/public-navigation.mjs:27:549,js-cjk-literal,app/public-navigation.mjs,27,,unknown,reviewable,,メインナビゲーション
-candidate:app/public-navigation.mjs:27:568,js-cjk-literal,app/public-navigation.mjs,27,,unknown,reviewable,,閉じる
-candidate:app/public-navigation.mjs:27:579,js-cjk-literal,app/public-navigation.mjs,27,,unknown,reviewable,,ナビゲーションメニューを開く
-candidate:app/public-navigation.mjs:27:604,js-cjk-literal,app/public-navigation.mjs,27,,unknown,reviewable,,ポイント
-candidate:app/public-navigation.mjs:27:622,js-cjk-literal,app/public-navigation.mjs,27,,unknown,reviewable,,外観
-candidate:app/public-navigation.mjs:27:636,js-cjk-literal,app/public-navigation.mjs,27,,unknown,reviewable,,表示言語
+candidate:app/public-navigation.mjs:27:248,js-cjk-literal,app/public-navigation.mjs,27,,unknown,reviewable,,加入内测
+candidate:app/public-navigation.mjs:27:262,js-cjk-literal,app/public-navigation.mjs,27,,unknown,reviewable,,阅读的方法
+candidate:app/public-navigation.mjs:27:276,js-cjk-literal,app/public-navigation.mjs,27,,unknown,reviewable,,Agent 接入
+candidate:app/public-navigation.mjs:27:295,js-cjk-literal,app/public-navigation.mjs,27,,unknown,reviewable,,价格
+candidate:app/public-navigation.mjs:27:305,js-cjk-literal,app/public-navigation.mjs,27,,unknown,reviewable,,主导航
+candidate:app/public-navigation.mjs:27:317,js-cjk-literal,app/public-navigation.mjs,27,,unknown,reviewable,,关闭菜单
+candidate:app/public-navigation.mjs:27:329,js-cjk-literal,app/public-navigation.mjs,27,,unknown,reviewable,,打开导航菜单
+candidate:app/public-navigation.mjs:27:346,js-cjk-literal,app/public-navigation.mjs,27,,unknown,reviewable,,阅读点
+candidate:app/public-navigation.mjs:27:363,js-cjk-literal,app/public-navigation.mjs,27,,unknown,reviewable,,页面外观
+candidate:app/public-navigation.mjs:27:379,js-cjk-literal,app/public-navigation.mjs,27,,unknown,reviewable,,切换界面语言
+candidate:app/public-navigation.mjs:27:405,js-cjk-literal,app/public-navigation.mjs,27,,unknown,reviewable,,加入內測
+candidate:app/public-navigation.mjs:27:419,js-cjk-literal,app/public-navigation.mjs,27,,unknown,reviewable,,閱讀的方法
+candidate:app/public-navigation.mjs:27:433,js-cjk-literal,app/public-navigation.mjs,27,,unknown,reviewable,,Agent 接入
+candidate:app/public-navigation.mjs:27:452,js-cjk-literal,app/public-navigation.mjs,27,,unknown,reviewable,,價格
+candidate:app/public-navigation.mjs:27:462,js-cjk-literal,app/public-navigation.mjs,27,,unknown,reviewable,,主導覽
+candidate:app/public-navigation.mjs:27:474,js-cjk-literal,app/public-navigation.mjs,27,,unknown,reviewable,,關閉選單
+candidate:app/public-navigation.mjs:27:486,js-cjk-literal,app/public-navigation.mjs,27,,unknown,reviewable,,開啟導覽選單
+candidate:app/public-navigation.mjs:27:503,js-cjk-literal,app/public-navigation.mjs,27,,unknown,reviewable,,閱讀點
+candidate:app/public-navigation.mjs:27:520,js-cjk-literal,app/public-navigation.mjs,27,,unknown,reviewable,,頁面外觀
+candidate:app/public-navigation.mjs:27:536,js-cjk-literal,app/public-navigation.mjs,27,,unknown,reviewable,,語言
+candidate:app/public-navigation.mjs:27:551,js-cjk-literal,app/public-navigation.mjs,27,,unknown,reviewable,,ベータ版に参加
+candidate:app/public-navigation.mjs:27:568,js-cjk-literal,app/public-navigation.mjs,27,,unknown,reviewable,,読み方
+candidate:app/public-navigation.mjs:27:580,js-cjk-literal,app/public-navigation.mjs,27,,unknown,reviewable,,Agent 接続
+candidate:app/public-navigation.mjs:27:599,js-cjk-literal,app/public-navigation.mjs,27,,unknown,reviewable,,料金
+candidate:app/public-navigation.mjs:27:609,js-cjk-literal,app/public-navigation.mjs,27,,unknown,reviewable,,メインナビゲーション
+candidate:app/public-navigation.mjs:27:628,js-cjk-literal,app/public-navigation.mjs,27,,unknown,reviewable,,閉じる
+candidate:app/public-navigation.mjs:27:639,js-cjk-literal,app/public-navigation.mjs,27,,unknown,reviewable,,ナビゲーションメニューを開く
+candidate:app/public-navigation.mjs:27:664,js-cjk-literal,app/public-navigation.mjs,27,,unknown,reviewable,,ポイント
+candidate:app/public-navigation.mjs:27:682,js-cjk-literal,app/public-navigation.mjs,27,,unknown,reviewable,,外観
+candidate:app/public-navigation.mjs:27:696,js-cjk-literal,app/public-navigation.mjs,27,,unknown,reviewable,,表示言語
 candidate:app/public-navigation.mjs:41:18,js-cjk-literal,app/public-navigation.mjs,41,,unknown,reviewable,,Leafhour 首页
 candidate:app/public-navigation.mjs:41:37,js-cjk-literal,app/public-navigation.mjs,41,,unknown,reviewable,,我的书房
 candidate:app/public-navigation.mjs:41:52,js-cjk-literal,app/public-navigation.mjs,41,,unknown,reviewable,,书房
@@ -6608,105 +6740,106 @@ candidate:server/people-runtime-routes.mjs:28:41,js-cjk-literal,server/people-ru
 candidate:server/portal-document.mjs:19:50,js-cjk-literal,server/portal-document.mjs,19,,unknown,reviewable,,简体中文
 candidate:server/portal-document.mjs:19:69,js-cjk-literal,server/portal-document.mjs,19,,unknown,reviewable,,繁體中文
 candidate:server/portal-document.mjs:19:83,js-cjk-literal,server/portal-document.mjs,19,,unknown,reviewable,,日本語
-candidate:server/portal.mjs:83:123,js-cjk-literal,server/portal.mjs,83,,unknown,reviewable,,请使用 JSON 请求
-candidate:server/portal.mjs:83:247,js-cjk-literal,server/portal.mjs,83,,unknown,reviewable,,这次导入内容过大，请分书恢复
-candidate:server/portal.mjs:83:387,js-cjk-literal,server/portal.mjs,83,,unknown,reviewable,,这次导入内容过大，请分书恢复
-candidate:server/portal.mjs:83:509,js-cjk-literal,server/portal.mjs,83,,unknown,reviewable,,请求格式不正确
-candidate:server/portal.mjs:86:54,js-cjk-literal,server/portal.mjs,86,,unknown,reviewable,,额外网页来源配置无效
-candidate:server/portal.mjs:88:116,js-cjk-literal,server/portal.mjs,88,,unknown,reviewable,,额外网页来源配置无效
-candidate:server/portal.mjs:89:91,js-cjk-literal,server/portal.mjs,89,,unknown,reviewable,,额外网页来源配置无效
-candidate:server/portal.mjs:123:16,js-cjk-literal,server/portal.mjs,123,,unknown,reviewable,,书架正在另一处更新，请稍后刷新
-candidate:server/portal.mjs:169:69,js-cjk-literal,server/portal.mjs,169,,unknown,reviewable,,不支持这个请求
-candidate:server/portal.mjs:170:134,js-cjk-literal,server/portal.mjs,170,,unknown,reviewable,,找不到这个操作
-candidate:server/portal.mjs:246:58,js-cjk-literal,server/portal.mjs,246,,unknown,reviewable,,不支持这个请求
-candidate:server/portal.mjs:256:61,js-cjk-literal,server/portal.mjs,256,,unknown,reviewable,,不支持这个请求
-candidate:server/portal.mjs:263:70,js-cjk-literal,server/portal.mjs,263,,unknown,reviewable,,不支持这个请求
-candidate:server/portal.mjs:264:59,js-cjk-literal,server/portal.mjs,264,,unknown,reviewable,,不支持这个请求
-candidate:server/portal.mjs:267:54,js-cjk-literal,server/portal.mjs,267,,unknown,reviewable,,请求来源未授权
-candidate:server/portal.mjs:268:85,js-cjk-literal,server/portal.mjs,268,,unknown,reviewable,,请求来源未授权
-candidate:server/portal.mjs:269:148,js-cjk-literal,server/portal.mjs,269,,unknown,reviewable,,"请在 "
-candidate:server/portal.mjs:269:167,js-cjk-literal,server/portal.mjs,269,,unknown,reviewable,," 使用 Google 或 Apple 登录。当前页面仍可使用邮箱或密码登录。"
-candidate:server/portal.mjs:276:79,js-cjk-literal,server/portal.mjs,276,,unknown,reviewable,,原生登录服务正在更新，请稍后重试。
-candidate:server/portal.mjs:277:107,js-cjk-literal,server/portal.mjs,277,,unknown,reviewable,,登录地址已失效，请重新开始。
-candidate:server/portal.mjs:282:79,js-cjk-literal,server/portal.mjs,282,,unknown,reviewable,,这个登录入口尚未开放
-candidate:server/portal.mjs:286:68,js-cjk-literal,server/portal.mjs,286,,unknown,reviewable,,原生登录服务暂不可用。
-candidate:server/portal.mjs:307:162,js-cjk-literal,server/portal.mjs,307,,unknown,reviewable,,账户已切换，请重新进入书房。原账户草稿仍留在原处。
-candidate:server/portal.mjs:309:73,js-cjk-literal,server/portal.mjs,309,,unknown,reviewable,,请先进入自己的书房
-candidate:server/portal.mjs:322:23,js-cjk-literal,server/portal.mjs,322,,unknown,reviewable,,不支持这个语音操作
-candidate:server/portal.mjs:327:27,js-cjk-literal,server/portal.mjs,327,,unknown,reviewable,,请先进入自己的书房
-candidate:server/portal.mjs:328:108,js-cjk-literal,server/portal.mjs,328,,unknown,reviewable,,账户已切换，请重新进入书房
-candidate:server/portal.mjs:329:59,js-cjk-literal,server/portal.mjs,329,,unknown,reviewable,,登录更新正在准备中，请稍后重试
-candidate:server/portal.mjs:331:30,js-cjk-literal,server/portal.mjs,331,,unknown,reviewable,,登录已失效，请重新进入
-candidate:server/portal.mjs:335:52,js-cjk-literal,server/portal.mjs,335,,unknown,reviewable,,请先进入自己的书房。
-candidate:server/portal.mjs:336:82,js-cjk-literal,server/portal.mjs,336,,unknown,reviewable,,请重新核对当前书房账户。
-candidate:server/portal.mjs:339:18,js-cjk-literal,server/portal.mjs,339,,unknown,reviewable,,找不到这个人物操作。
-candidate:server/portal.mjs:348:60,js-cjk-literal,server/portal.mjs,348,,unknown,reviewable,,账号绑定服务正在更新，请稍后重试。
-candidate:server/portal.mjs:352:63,js-cjk-literal,server/portal.mjs,352,,unknown,reviewable,,原生登录服务正在更新，请稍后重试。
-candidate:server/portal.mjs:356:66,js-cjk-literal,server/portal.mjs,356,,unknown,reviewable,,原生登录服务正在更新，请稍后重试。
-candidate:server/portal.mjs:360:64,js-cjk-literal,server/portal.mjs,360,,unknown,reviewable,,原生登录服务正在更新，请稍后重试。
-candidate:server/portal.mjs:365:27,js-cjk-literal,server/portal.mjs,365,,unknown,reviewable,,请先进入自己的书房
-candidate:server/portal.mjs:367:41,js-cjk-literal,server/portal.mjs,367,,unknown,reviewable,,不支持这个请求
-candidate:server/portal.mjs:368:61,js-cjk-literal,server/portal.mjs,368,,unknown,reviewable,,请重新核对当前书房账户
-candidate:server/portal.mjs:382:27,js-cjk-literal,server/portal.mjs,382,,unknown,reviewable,,请先进入自己的书房
-candidate:server/portal.mjs:384:94,js-cjk-literal,server/portal.mjs,384,,unknown,reviewable,,请重新核对当前书房账户
-candidate:server/portal.mjs:387:41,js-cjk-literal,server/portal.mjs,387,,unknown,reviewable,,不支持这个请求
-candidate:server/portal.mjs:388:61,js-cjk-literal,server/portal.mjs,388,,unknown,reviewable,,请重新核对当前书房账户
-candidate:server/portal.mjs:393:27,js-cjk-literal,server/portal.mjs,393,,unknown,reviewable,,请先进入自己的书房
-candidate:server/portal.mjs:395:41,js-cjk-literal,server/portal.mjs,395,,unknown,reviewable,,不支持这个请求
-candidate:server/portal.mjs:396:61,js-cjk-literal,server/portal.mjs,396,,unknown,reviewable,,请重新核对当前书房账户
-candidate:server/portal.mjs:405:40,js-cjk-literal,server/portal.mjs,405,,unknown,reviewable,,不支持这个请求
-candidate:server/portal.mjs:406:27,js-cjk-literal,server/portal.mjs,406,,unknown,reviewable,,请先登录
-candidate:server/portal.mjs:407:61,js-cjk-literal,server/portal.mjs,407,,unknown,reviewable,,请重新核对当前账号
-candidate:server/portal.mjs:413:40,js-cjk-literal,server/portal.mjs,413,,unknown,reviewable,,不支持这个请求
-candidate:server/portal.mjs:414:27,js-cjk-literal,server/portal.mjs,414,,unknown,reviewable,,请先登录
+candidate:server/portal.mjs:84:123,js-cjk-literal,server/portal.mjs,84,,unknown,reviewable,,请使用 JSON 请求
+candidate:server/portal.mjs:84:247,js-cjk-literal,server/portal.mjs,84,,unknown,reviewable,,这次导入内容过大，请分书恢复
+candidate:server/portal.mjs:84:387,js-cjk-literal,server/portal.mjs,84,,unknown,reviewable,,这次导入内容过大，请分书恢复
+candidate:server/portal.mjs:84:509,js-cjk-literal,server/portal.mjs,84,,unknown,reviewable,,请求格式不正确
+candidate:server/portal.mjs:87:54,js-cjk-literal,server/portal.mjs,87,,unknown,reviewable,,额外网页来源配置无效
+candidate:server/portal.mjs:89:116,js-cjk-literal,server/portal.mjs,89,,unknown,reviewable,,额外网页来源配置无效
+candidate:server/portal.mjs:90:91,js-cjk-literal,server/portal.mjs,90,,unknown,reviewable,,额外网页来源配置无效
+candidate:server/portal.mjs:124:16,js-cjk-literal,server/portal.mjs,124,,unknown,reviewable,,书架正在另一处更新，请稍后刷新
+candidate:server/portal.mjs:170:65,js-cjk-literal,server/portal.mjs,170,,unknown,reviewable,,不支持这个请求
+candidate:server/portal.mjs:172:69,js-cjk-literal,server/portal.mjs,172,,unknown,reviewable,,不支持这个请求
+candidate:server/portal.mjs:173:134,js-cjk-literal,server/portal.mjs,173,,unknown,reviewable,,找不到这个操作
+candidate:server/portal.mjs:250:58,js-cjk-literal,server/portal.mjs,250,,unknown,reviewable,,不支持这个请求
+candidate:server/portal.mjs:260:61,js-cjk-literal,server/portal.mjs,260,,unknown,reviewable,,不支持这个请求
+candidate:server/portal.mjs:267:70,js-cjk-literal,server/portal.mjs,267,,unknown,reviewable,,不支持这个请求
+candidate:server/portal.mjs:268:59,js-cjk-literal,server/portal.mjs,268,,unknown,reviewable,,不支持这个请求
+candidate:server/portal.mjs:271:54,js-cjk-literal,server/portal.mjs,271,,unknown,reviewable,,请求来源未授权
+candidate:server/portal.mjs:272:85,js-cjk-literal,server/portal.mjs,272,,unknown,reviewable,,请求来源未授权
+candidate:server/portal.mjs:273:148,js-cjk-literal,server/portal.mjs,273,,unknown,reviewable,,"请在 "
+candidate:server/portal.mjs:273:167,js-cjk-literal,server/portal.mjs,273,,unknown,reviewable,," 使用 Google 或 Apple 登录。当前页面仍可使用邮箱或密码登录。"
+candidate:server/portal.mjs:280:79,js-cjk-literal,server/portal.mjs,280,,unknown,reviewable,,原生登录服务正在更新，请稍后重试。
+candidate:server/portal.mjs:281:107,js-cjk-literal,server/portal.mjs,281,,unknown,reviewable,,登录地址已失效，请重新开始。
+candidate:server/portal.mjs:286:79,js-cjk-literal,server/portal.mjs,286,,unknown,reviewable,,这个登录入口尚未开放
+candidate:server/portal.mjs:290:68,js-cjk-literal,server/portal.mjs,290,,unknown,reviewable,,原生登录服务暂不可用。
+candidate:server/portal.mjs:311:162,js-cjk-literal,server/portal.mjs,311,,unknown,reviewable,,账户已切换，请重新进入书房。原账户草稿仍留在原处。
+candidate:server/portal.mjs:313:73,js-cjk-literal,server/portal.mjs,313,,unknown,reviewable,,请先进入自己的书房
+candidate:server/portal.mjs:326:23,js-cjk-literal,server/portal.mjs,326,,unknown,reviewable,,不支持这个语音操作
+candidate:server/portal.mjs:331:27,js-cjk-literal,server/portal.mjs,331,,unknown,reviewable,,请先进入自己的书房
+candidate:server/portal.mjs:332:108,js-cjk-literal,server/portal.mjs,332,,unknown,reviewable,,账户已切换，请重新进入书房
+candidate:server/portal.mjs:333:59,js-cjk-literal,server/portal.mjs,333,,unknown,reviewable,,登录更新正在准备中，请稍后重试
+candidate:server/portal.mjs:335:30,js-cjk-literal,server/portal.mjs,335,,unknown,reviewable,,登录已失效，请重新进入
+candidate:server/portal.mjs:339:52,js-cjk-literal,server/portal.mjs,339,,unknown,reviewable,,请先进入自己的书房。
+candidate:server/portal.mjs:340:82,js-cjk-literal,server/portal.mjs,340,,unknown,reviewable,,请重新核对当前书房账户。
+candidate:server/portal.mjs:343:18,js-cjk-literal,server/portal.mjs,343,,unknown,reviewable,,找不到这个人物操作。
+candidate:server/portal.mjs:352:60,js-cjk-literal,server/portal.mjs,352,,unknown,reviewable,,账号绑定服务正在更新，请稍后重试。
+candidate:server/portal.mjs:356:63,js-cjk-literal,server/portal.mjs,356,,unknown,reviewable,,原生登录服务正在更新，请稍后重试。
+candidate:server/portal.mjs:360:66,js-cjk-literal,server/portal.mjs,360,,unknown,reviewable,,原生登录服务正在更新，请稍后重试。
+candidate:server/portal.mjs:364:64,js-cjk-literal,server/portal.mjs,364,,unknown,reviewable,,原生登录服务正在更新，请稍后重试。
+candidate:server/portal.mjs:369:27,js-cjk-literal,server/portal.mjs,369,,unknown,reviewable,,请先进入自己的书房
+candidate:server/portal.mjs:371:41,js-cjk-literal,server/portal.mjs,371,,unknown,reviewable,,不支持这个请求
+candidate:server/portal.mjs:372:61,js-cjk-literal,server/portal.mjs,372,,unknown,reviewable,,请重新核对当前书房账户
+candidate:server/portal.mjs:386:27,js-cjk-literal,server/portal.mjs,386,,unknown,reviewable,,请先进入自己的书房
+candidate:server/portal.mjs:388:94,js-cjk-literal,server/portal.mjs,388,,unknown,reviewable,,请重新核对当前书房账户
+candidate:server/portal.mjs:391:41,js-cjk-literal,server/portal.mjs,391,,unknown,reviewable,,不支持这个请求
+candidate:server/portal.mjs:392:61,js-cjk-literal,server/portal.mjs,392,,unknown,reviewable,,请重新核对当前书房账户
+candidate:server/portal.mjs:397:27,js-cjk-literal,server/portal.mjs,397,,unknown,reviewable,,请先进入自己的书房
+candidate:server/portal.mjs:399:41,js-cjk-literal,server/portal.mjs,399,,unknown,reviewable,,不支持这个请求
+candidate:server/portal.mjs:400:61,js-cjk-literal,server/portal.mjs,400,,unknown,reviewable,,请重新核对当前书房账户
+candidate:server/portal.mjs:409:40,js-cjk-literal,server/portal.mjs,409,,unknown,reviewable,,不支持这个请求
+candidate:server/portal.mjs:410:27,js-cjk-literal,server/portal.mjs,410,,unknown,reviewable,,请先登录
+candidate:server/portal.mjs:411:61,js-cjk-literal,server/portal.mjs,411,,unknown,reviewable,,请重新核对当前账号
+candidate:server/portal.mjs:417:40,js-cjk-literal,server/portal.mjs,417,,unknown,reviewable,,不支持这个请求
 candidate:server/portal.mjs:418:27,js-cjk-literal,server/portal.mjs,418,,unknown,reviewable,,请先登录
-candidate:server/portal.mjs:419:61,js-cjk-literal,server/portal.mjs,419,,unknown,reviewable,,请重新核对当前账号
-candidate:server/portal.mjs:423:95,js-cjk-literal,server/portal.mjs,423,,unknown,reviewable,,不支持这个请求
-candidate:server/portal.mjs:426:30,js-cjk-literal,server/portal.mjs,426,,unknown,reviewable,,找不到这个连接
-candidate:server/portal.mjs:429:115,js-cjk-literal,server/portal.mjs,429,,unknown,reviewable,,不支持这个请求
-candidate:server/portal.mjs:433:95,js-cjk-literal,server/portal.mjs,433,,unknown,reviewable,,这个登录方式正在准备中
-candidate:server/portal.mjs:437:146,js-cjk-literal,server/portal.mjs,437,,unknown,reviewable,,此书房尚未开启密码登录，可以使用验证码或本机书房
-candidate:server/portal.mjs:438:146,js-cjk-literal,server/portal.mjs,438,,unknown,reviewable,,此书房尚未开启密码设置
-candidate:server/portal.mjs:440:151,js-cjk-literal,server/portal.mjs,440,,unknown,reviewable,,此书房尚未开启密码设置
-candidate:server/portal.mjs:444:80,js-cjk-literal,server/portal.mjs,444,,unknown,reviewable,,本机书房只在本机模式可用
-candidate:server/portal.mjs:451:50,js-cjk-literal,server/portal.mjs,451,,unknown,reviewable,,请先进入自己的书房
-candidate:server/portal.mjs:452:82,js-cjk-literal,server/portal.mjs,452,,unknown,reviewable,,请重新核对当前书房账户
-candidate:server/portal.mjs:460:51,js-cjk-literal,server/portal.mjs,460,,unknown,reviewable,,找不到这个本机对话操作
-candidate:server/portal.mjs:461:41,js-cjk-literal,server/portal.mjs,461,,unknown,reviewable,,不支持这个请求
-candidate:server/portal.mjs:462:115,js-cjk-literal,server/portal.mjs,462,,unknown,reviewable,,本机对话需要流式连接
-candidate:server/portal.mjs:479:50,js-cjk-literal,server/portal.mjs,479,,unknown,reviewable,,请先进入自己的书房
-candidate:server/portal.mjs:480:82,js-cjk-literal,server/portal.mjs,480,,unknown,reviewable,,请重新核对当前书房账户
-candidate:server/portal.mjs:485:45,js-cjk-literal,server/portal.mjs,485,,unknown,reviewable,,找不到这个对话操作
-candidate:server/portal.mjs:486:41,js-cjk-literal,server/portal.mjs,486,,unknown,reviewable,,不支持这个请求
-candidate:server/portal.mjs:522:27,js-cjk-literal,server/portal.mjs,522,,unknown,reviewable,,请先进入自己的书房
-candidate:server/portal.mjs:523:149,js-cjk-literal,server/portal.mjs,523,,unknown,reviewable,,线上版本尚未准备好，请稍后重新读取接入配置。
-candidate:server/portal.mjs:524:35,js-cjk-literal,server/portal.mjs,524,,unknown,reviewable,,本机接入配置只能在运行 Leafhour 的电脑上读取。远程接入尚未支持。
-candidate:server/portal.mjs:535:446,js-cjk-literal,server/portal.mjs,535,,unknown,reviewable,,不支持这个请求
-candidate:server/portal.mjs:537:45,js-cjk-literal,server/portal.mjs,537,,unknown,reviewable,,此书房使用本机上传
-candidate:server/portal.mjs:542:48,js-cjk-literal,server/portal.mjs,542,,unknown,reviewable,,此书房使用本机上传
-candidate:server/portal.mjs:543:92,js-cjk-literal,server/portal.mjs,543,,unknown,reviewable,,请使用即时入库处理这次重复文件选择
-candidate:server/portal.mjs:547:27,js-cjk-literal,server/portal.mjs,547,,unknown,reviewable,,请先进入自己的书房
-candidate:server/portal.mjs:547:222,js-cjk-literal,server/portal.mjs,547,,unknown,reviewable,,文件编码不正确
-candidate:server/portal.mjs:548:92,js-cjk-literal,server/portal.mjs,548,,unknown,reviewable,,请使用即时入库处理这次重复文件选择
-candidate:server/portal.mjs:563:27,js-cjk-literal,server/portal.mjs,563,,unknown,reviewable,,请先进入自己的书房
-candidate:server/portal.mjs:563:98,js-cjk-literal,server/portal.mjs,563,,unknown,reviewable,,请重新核对当前书房账户
-candidate:server/portal.mjs:565:41,js-cjk-literal,server/portal.mjs,565,,unknown,reviewable,,不支持这个请求
-candidate:server/portal.mjs:578:164,js-cjk-literal,server/portal.mjs,578,,unknown,reviewable,,这份阅读包较大，请从赠书信页面分段下载
-candidate:server/portal.mjs:584:41,js-cjk-literal,server/portal.mjs,584,,unknown,reviewable,,不支持这个请求
-candidate:server/portal.mjs:585:50,js-cjk-literal,server/portal.mjs,585,,unknown,reviewable,,请先登录以准备阅读前导
-candidate:server/portal.mjs:588:65,js-cjk-literal,server/portal.mjs,588,,unknown,reviewable,,阅读前导操作不正确
-candidate:server/portal.mjs:604:25,js-cjk-literal,server/portal.mjs,604,,unknown,reviewable,,不支持这个请求
-candidate:server/portal.mjs:621:42,js-cjk-literal,server/portal.mjs,621,,unknown,reviewable,,不支持这个请求
-candidate:server/portal.mjs:721:120,js-cjk-literal,server/portal.mjs,721,,unknown,reviewable,,本书尚未开启探索体验统计
-candidate:server/portal.mjs:722:175,js-cjk-literal,server/portal.mjs,722,,unknown,reviewable,,请选择这本书的记录包
-candidate:server/portal.mjs:723:99,js-cjk-literal,server/portal.mjs,723,,unknown,reviewable,,这本书的探索体验尚未接入，可以按段翻译并保存自己的笔记
-candidate:server/portal.mjs:730:43,js-cjk-literal,server/portal.mjs,730,,unknown,reviewable,,不支持这个请求
-candidate:server/portal.mjs:735:430,js-cjk-literal,server/portal.mjs,735,,unknown,reviewable,,找不到这个工具
-candidate:server/portal.mjs:738:30,js-cjk-literal,server/portal.mjs,738,,unknown,reviewable,,此实例暂未开启听读，请在本机书房使用。
-candidate:server/portal.mjs:744:20,js-cjk-literal,server/portal.mjs,744,,unknown,reviewable,,不支持这个听读操作
-candidate:server/portal.mjs:753:86,js-cjk-literal,server/portal.mjs,753,,unknown,reviewable,,只保存用户明确提供的原话
-candidate:server/portal.mjs:754:18,js-cjk-literal,server/portal.mjs,754,,unknown,reviewable,,不支持这个请求
-candidate:server/portal.mjs:756:16,js-cjk-literal,server/portal.mjs,756,,unknown,reviewable,,找不到这个操作
+candidate:server/portal.mjs:422:27,js-cjk-literal,server/portal.mjs,422,,unknown,reviewable,,请先登录
+candidate:server/portal.mjs:423:61,js-cjk-literal,server/portal.mjs,423,,unknown,reviewable,,请重新核对当前账号
+candidate:server/portal.mjs:427:95,js-cjk-literal,server/portal.mjs,427,,unknown,reviewable,,不支持这个请求
+candidate:server/portal.mjs:430:30,js-cjk-literal,server/portal.mjs,430,,unknown,reviewable,,找不到这个连接
+candidate:server/portal.mjs:433:115,js-cjk-literal,server/portal.mjs,433,,unknown,reviewable,,不支持这个请求
+candidate:server/portal.mjs:437:95,js-cjk-literal,server/portal.mjs,437,,unknown,reviewable,,这个登录方式正在准备中
+candidate:server/portal.mjs:441:146,js-cjk-literal,server/portal.mjs,441,,unknown,reviewable,,此书房尚未开启密码登录，可以使用验证码或本机书房
+candidate:server/portal.mjs:442:146,js-cjk-literal,server/portal.mjs,442,,unknown,reviewable,,此书房尚未开启密码设置
+candidate:server/portal.mjs:444:151,js-cjk-literal,server/portal.mjs,444,,unknown,reviewable,,此书房尚未开启密码设置
+candidate:server/portal.mjs:448:80,js-cjk-literal,server/portal.mjs,448,,unknown,reviewable,,本机书房只在本机模式可用
+candidate:server/portal.mjs:455:50,js-cjk-literal,server/portal.mjs,455,,unknown,reviewable,,请先进入自己的书房
+candidate:server/portal.mjs:456:82,js-cjk-literal,server/portal.mjs,456,,unknown,reviewable,,请重新核对当前书房账户
+candidate:server/portal.mjs:464:51,js-cjk-literal,server/portal.mjs,464,,unknown,reviewable,,找不到这个本机对话操作
+candidate:server/portal.mjs:465:41,js-cjk-literal,server/portal.mjs,465,,unknown,reviewable,,不支持这个请求
+candidate:server/portal.mjs:466:115,js-cjk-literal,server/portal.mjs,466,,unknown,reviewable,,本机对话需要流式连接
+candidate:server/portal.mjs:483:50,js-cjk-literal,server/portal.mjs,483,,unknown,reviewable,,请先进入自己的书房
+candidate:server/portal.mjs:484:82,js-cjk-literal,server/portal.mjs,484,,unknown,reviewable,,请重新核对当前书房账户
+candidate:server/portal.mjs:489:45,js-cjk-literal,server/portal.mjs,489,,unknown,reviewable,,找不到这个对话操作
+candidate:server/portal.mjs:490:41,js-cjk-literal,server/portal.mjs,490,,unknown,reviewable,,不支持这个请求
+candidate:server/portal.mjs:526:27,js-cjk-literal,server/portal.mjs,526,,unknown,reviewable,,请先进入自己的书房
+candidate:server/portal.mjs:527:149,js-cjk-literal,server/portal.mjs,527,,unknown,reviewable,,线上版本尚未准备好，请稍后重新读取接入配置。
+candidate:server/portal.mjs:528:35,js-cjk-literal,server/portal.mjs,528,,unknown,reviewable,,本机接入配置只能在运行 Leafhour 的电脑上读取。远程接入尚未支持。
+candidate:server/portal.mjs:539:446,js-cjk-literal,server/portal.mjs,539,,unknown,reviewable,,不支持这个请求
+candidate:server/portal.mjs:541:45,js-cjk-literal,server/portal.mjs,541,,unknown,reviewable,,此书房使用本机上传
+candidate:server/portal.mjs:546:48,js-cjk-literal,server/portal.mjs,546,,unknown,reviewable,,此书房使用本机上传
+candidate:server/portal.mjs:547:92,js-cjk-literal,server/portal.mjs,547,,unknown,reviewable,,请使用即时入库处理这次重复文件选择
+candidate:server/portal.mjs:551:27,js-cjk-literal,server/portal.mjs,551,,unknown,reviewable,,请先进入自己的书房
+candidate:server/portal.mjs:551:222,js-cjk-literal,server/portal.mjs,551,,unknown,reviewable,,文件编码不正确
+candidate:server/portal.mjs:552:92,js-cjk-literal,server/portal.mjs,552,,unknown,reviewable,,请使用即时入库处理这次重复文件选择
+candidate:server/portal.mjs:567:27,js-cjk-literal,server/portal.mjs,567,,unknown,reviewable,,请先进入自己的书房
+candidate:server/portal.mjs:567:98,js-cjk-literal,server/portal.mjs,567,,unknown,reviewable,,请重新核对当前书房账户
+candidate:server/portal.mjs:569:41,js-cjk-literal,server/portal.mjs,569,,unknown,reviewable,,不支持这个请求
+candidate:server/portal.mjs:582:164,js-cjk-literal,server/portal.mjs,582,,unknown,reviewable,,这份阅读包较大，请从赠书信页面分段下载
+candidate:server/portal.mjs:588:41,js-cjk-literal,server/portal.mjs,588,,unknown,reviewable,,不支持这个请求
+candidate:server/portal.mjs:589:50,js-cjk-literal,server/portal.mjs,589,,unknown,reviewable,,请先登录以准备阅读前导
+candidate:server/portal.mjs:592:65,js-cjk-literal,server/portal.mjs,592,,unknown,reviewable,,阅读前导操作不正确
+candidate:server/portal.mjs:608:25,js-cjk-literal,server/portal.mjs,608,,unknown,reviewable,,不支持这个请求
+candidate:server/portal.mjs:625:42,js-cjk-literal,server/portal.mjs,625,,unknown,reviewable,,不支持这个请求
+candidate:server/portal.mjs:725:120,js-cjk-literal,server/portal.mjs,725,,unknown,reviewable,,本书尚未开启探索体验统计
+candidate:server/portal.mjs:726:175,js-cjk-literal,server/portal.mjs,726,,unknown,reviewable,,请选择这本书的记录包
+candidate:server/portal.mjs:727:99,js-cjk-literal,server/portal.mjs,727,,unknown,reviewable,,这本书的探索体验尚未接入，可以按段翻译并保存自己的笔记
+candidate:server/portal.mjs:734:43,js-cjk-literal,server/portal.mjs,734,,unknown,reviewable,,不支持这个请求
+candidate:server/portal.mjs:739:430,js-cjk-literal,server/portal.mjs,739,,unknown,reviewable,,找不到这个工具
+candidate:server/portal.mjs:742:30,js-cjk-literal,server/portal.mjs,742,,unknown,reviewable,,此实例暂未开启听读，请在本机书房使用。
+candidate:server/portal.mjs:748:20,js-cjk-literal,server/portal.mjs,748,,unknown,reviewable,,不支持这个听读操作
+candidate:server/portal.mjs:757:86,js-cjk-literal,server/portal.mjs,757,,unknown,reviewable,,只保存用户明确提供的原话
+candidate:server/portal.mjs:758:18,js-cjk-literal,server/portal.mjs,758,,unknown,reviewable,,不支持这个请求
+candidate:server/portal.mjs:760:16,js-cjk-literal,server/portal.mjs,760,,unknown,reviewable,,找不到这个操作
 candidate:server/preference-memory.mjs:5:97,js-cjk-literal,server/preference-memory.mjs,5,,unknown,reviewable,,阅读偏好记录无法识别，已保持原样
 candidate:server/preference-memory.mjs:15:245,js-cjk-literal,server/preference-memory.mjs,15,,unknown,reviewable,,阅读偏好请求格式不正确
 candidate:server/preference-memory.mjs:16:56,js-cjk-literal,server/preference-memory.mjs,16,,unknown,reviewable,,阅读偏好已在另一处更新，请读取最新版本
