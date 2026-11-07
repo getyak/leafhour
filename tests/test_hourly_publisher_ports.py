@@ -14,6 +14,28 @@ BINDING = {'repository': 'getyak/leafhour', 'team': 'team_nMU4o8gjejVzBhcnMfqgUQ
 
 
 class PortTest(unittest.TestCase):
+    def test_seed_rechecks_the_pinned_source_before_any_write_request(self):
+        port = RuntimePort.__new__(RuntimePort)
+        port.staging = lambda: {'ready': True, 'green': True, 'source': 'b' * 40, 'remote': None}
+        with patch('tools.hourly_publisher.ports.command', side_effect=AssertionError('unexpected write')):
+            with self.assertRaises(GateError):
+                port.seed(SHA)
+        port.staging = lambda: {'ready': True, 'green': True, 'source': SHA, 'remote': 'b' * 40}
+        with patch('tools.hourly_publisher.ports.command', side_effect=AssertionError('unexpected write')):
+            with self.assertRaises(GateError):
+                port.seed(SHA)
+
+    def test_matching_seed_pins_both_atomic_ref_assertions(self):
+        port = RuntimePort.__new__(RuntimePort)
+        port.staging = lambda: {'ready': True, 'green': True, 'source': SHA, 'remote': None}
+        port.clock = type('Clock', (), {'repository': {'node_id': 'R_synthetic'}, '__call__': lambda self: 100})()
+        port.gh, port.lock_fd = 'synthetic-gh', None
+        response = json.dumps({'data': {'updateRefs': {'clientMutationId': None}}})
+        with patch('tools.hourly_publisher.ports.command', return_value=response) as request:
+            self.assertEqual(port.seed(SHA)['source'], SHA)
+        refs = json.loads(request.call_args.kwargs['input_data'])['variables']['input']['refUpdates']
+        self.assertEqual(refs, ref_request('R_synthetic', SHA, '0' * 40, create=True)['variables']['input']['refUpdates'])
+
     def test_sleep_aware_os_clock_selection_and_unsupported_host_fail_closed(self):
         with patch('tools.hourly_publisher.ports.sys.platform', 'darwin'), patch('tools.hourly_publisher.ports.time.clock_gettime', return_value=42) as clock:
             self.assertEqual(continuous_time(), 42)
@@ -122,7 +144,7 @@ class PortTest(unittest.TestCase):
             staged.inspect = lambda staged=False: {'source': second, 'remote': first, 'green': True, 'ready': True}
             self.assertFalse(staged.staging()['ready'], 'the seed itself still enables production even though current main is legacy')
             with self.assertRaises(GateError):
-                staged.seed()
+                staged.seed(second)
             port.push(second, first)
             self.assertEqual(port.remote(), second)
             port.push(second, first)  # uncertain ACK retry is a no-op, not another update

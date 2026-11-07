@@ -3,7 +3,7 @@
   "git": {
     "deploymentEnabled": {
       "**": false,
-      "main": true
+      "production": true
     }
   },
   "buildCommand": "npm run verify:hosted",

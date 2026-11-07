@@ -266,8 +266,11 @@ class RuntimePort(GitPort):
             stage['ready'] = stage['ready'] and disabled
         return stage
 
-    def seed(self):
+    def seed(self, expected_source):
+        sha(expected_source)
         stage = self.staging()
+        if stage['source'] != expected_source or stage['remote'] not in (None, expected_source):
+            raise GateError('legacy main or seed changed from the approved expected source')
         if not stage['ready'] or not stage['green']:
             raise GateError('legacy branch is not healthy and verified; do not seed')
         if stage['remote']:

@@ -34,16 +34,16 @@ class CliTest(unittest.TestCase):
         self.config.write_text(json.dumps({'binding': BINDING, 'mirror': str(root/'mirror')}))
         self.args = ['--config', str(self.config), '--state', str(self.state)]
 
-    def invoke(self, action):
+    def invoke(self, action, *extra):
         out = io.StringIO()
         with contextlib.redirect_stdout(out):
-            result = main([action, *self.args])
+            result = main([action, *self.args, *extra])
         return result, json.loads(out.getvalue())
 
     def test_bootstrap_requires_healthy_legacy_stage_and_stays_disabled(self):
         port = Stage()
         with patch('tools.hourly_publisher.cli.ServerClock', return_value=lambda: 100), patch('tools.hourly_publisher.cli.RuntimePort', return_value=port):
-            code, result = self.invoke('init')
+            code, result = self.invoke('init', '--expected-source', SOURCE)
         self.assertEqual(code, 0)
         self.assertEqual(result['status'], 'initialized-inactive')
         self.assertEqual(Journal(self.state, BINDING).status()['enabled'], 0)
@@ -51,8 +51,27 @@ class CliTest(unittest.TestCase):
     def test_paused_or_incorrect_stage_cannot_create_state(self):
         port = Stage(); port.ready = False
         with patch('tools.hourly_publisher.cli.ServerClock', return_value=lambda: 100), patch('tools.hourly_publisher.cli.RuntimePort', return_value=port):
-            self.assertEqual(self.invoke('init')[0], 1)
+            self.assertEqual(self.invoke('init', '--expected-source', SOURCE)[0], 1)
         self.assertFalse(self.state.exists())
+
+    def test_seed_and_init_require_a_pinned_source_before_network_or_state_creation(self):
+        with patch('tools.hourly_publisher.cli.ServerClock', side_effect=AssertionError('unexpected network')):
+            for action in ['seed', 'init']:
+                code, result = self.invoke(action)
+                self.assertEqual(code, 1)
+                self.assertIn('expected-source', result['reason'])
+        self.assertFalse(self.state.exists())
+        self.assertFalse(Path(str(self.state) + '.lock').exists())
+
+    def test_bootstrap_source_or_existing_seed_drift_never_creates_state(self):
+        for action in ['check-stage', 'seed', 'init']:
+            for source, remote in [('b' * 40, SOURCE), (SOURCE, 'b' * 40)]:
+                port = Stage()
+                with patch.object(port, 'staging', return_value={'ready': True, 'green': True, 'source': source, 'remote': remote}), patch('tools.hourly_publisher.cli.ServerClock', return_value=lambda: 100), patch('tools.hourly_publisher.cli.RuntimePort', return_value=port):
+                    code, result = self.invoke(action, '--expected-source', SOURCE)
+                self.assertEqual(code, 1)
+                self.assertIn('expected source', result['reason'])
+                self.assertFalse(self.state.exists())
 
     def test_inactive_tick_and_emergency_disable_do_not_need_network(self):
         journal = Journal.create(self.state, BINDING, SOURCE, 100)

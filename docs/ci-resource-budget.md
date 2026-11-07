@@ -25,7 +25,7 @@ PR 先做受影响检查和审阅，再集中推送一个可交付批次。保�
 
 ## 每小时集中发布的启用条件
 
-**当前未启用。** `vercel.json` 仍仅允许 main 自动 Production；PR Preview 保持关闭。Vercel 的 Ignored Build Step 发生在部署创建后，取消的构建仍计入部署额度，因此不能用它模拟配额控制。[官方 Git 配置](https://vercel.com/docs/project-configuration/git-configuration)、[Ignored Build Step](https://vercel.com/docs/project-configuration/project-settings#ignored-build-step)。
+**小时入口尚未启用。** 当前切换候选的 `vercel.json` 仅允许 `production`；只有在精确legacy种子、保护、关闭态初始化和替代入口readiness均成立后，才可合并并修改原项目Branch Tracking。草稿配置不代表远端或调度器已切换；PR Preview保持关闭。Vercel 的 Ignored Build Step 发生在部署创建后，取消的构建仍计入部署额度，因此不能用它模拟配额控制。[官方 Git 配置](https://vercel.com/docs/project-configuration/git-configuration)、[Ignored Build Step](https://vercel.com/docs/project-configuration/project-settings#ignored-build-step)。
 
 启用时需要满足以下条件：
 
@@ -37,11 +37,11 @@ PR 先做受影响检查和审阅，再集中推送一个可交付批次。保�
 
 每小时限制只约束 Leafhour 这条发布链，不能保证同一 Vercel 账号的其他项目不会消耗共享日额度。GitHub 定时任务也可能延迟，不能保证整点上线。
 
-2026-10-29的连接器/旧CLI查询返回403；这不是浏览器真实权限的完整结论。2026-11-07协调方已在浏览器核对原团队可访问，当前CPU额度暂停导致网站/账号API402。补充实现采用持久控制器与受保护的生产引用，详见 [小时发布入口](hourly-publishing.md)。本准备阶段保留main链；待原服务健康、既有身份/项目只读预检和种子验证完成后，再按单入口步骤切换，不能把合成验证写成已启用。
+2026-10-29连接器/旧CLI的403及11月7日早先CPU暂停均保留为历史。原团队现已恢复，已有CLI可读取原项目；经批准的唯一修复部署 `f1d0981…` 已READY，独立正式来源读回命中它。小时入口仍未启用，不能继续把旧配额/403当当前原因，也不能因恢复创建第二次同源部署。补充实现采用持久控制器与受保护的生产引用，详见 [小时发布入口](hourly-publishing.md)和[精确切换清单](hourly-publishing-cutover.md)。当前只准备源码和readiness材料；切换前远端main链仍保持原状。
 
 ## Production 等待
 
-Production 工作流只在成功的 main push CI 后执行，并只读取触发提交的 GitHub commit status。遇到 Vercel 明确的 `failure` / `error` 立即失败；尚在排队则保留原来的有界等待。读取 status 的 GitHub token 只发往固定的 GitHub API，不跟随重定向，不发给正式站或状态中的 target URL。没有该 token 的本地 smoke 保留原有行为。
+Production工作流按同源Git策略选择入口：legacy模式验证成功的main push CI；小时模式只验证production push，main CI事件便宜结束。它只验证，不创建部署。遇到Vercel明确的 `failure` / `error` 立即失败；HTTP402同样立即失败；尚在排队则保留有界等待。读取status的GitHub token只发往固定GitHub API，不跟随重定向，不发给正式站或status中的target URL。没有该token的本地smoke保留原有行为。
 
 ## 验证记录
 

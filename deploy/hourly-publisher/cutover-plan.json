@@ -1,0 +1,83 @@
+{
+  "schemaVersion": 1,
+  "purpose": "review-only; not executable authorization or initialized publisher state",
+  "phase": "draft-source-and-readiness",
+  "binding": {
+    "repository": "getyak/leafhour",
+    "repositoryDatabaseId": 1415706040,
+    "repositoryNodeId": "R_kgDOVGH1uA",
+    "team": "team_nMU4o8gjejVzBhcnMfqgUQbJ",
+    "project": "prj_yGvFacR0DlnmDASXb5vfbiRpCvhD",
+    "projectName": "leafhour",
+    "url": "https://leafhour.com",
+    "publisherLogin": "kubbot",
+    "publisherNodeId": "U_kgDOB2nh3g"
+  },
+  "legacy": {
+    "source": "f1d0981ca332f5cfc989f6655061a977ff05b029",
+    "deploymentId": "dpl_G1RQW9yT48MXb4adz1boGuhFmL51",
+    "mainCiRunId": 42320052538,
+    "createdAt": "2026-11-07T01:49:16.792Z",
+    "readyAt": "2026-11-07T02:04:46.586Z",
+    "independentHealthySourceAt": "2026-11-07T02:09:04Z",
+    "earliestLegacyFloor": "2026-11-07T03:10:04Z",
+    "latestReadOnlySourceAt": "2026-11-07T02:14:07.740435Z",
+    "earliestObservedFloor": "2026-11-07T03:15:07.740435Z",
+    "windowSeconds": 3660,
+    "firstReleaseRule": "No earlier than max(latest verified legacy observation, init server clock, enable server clock) + 3660 seconds; unresolved in-flight or uncertain work blocks regardless of time. Reverify all anchors before use."
+  },
+  "before": {
+    "projectProductionBranch": "main",
+    "sourcePolicy": {"**": false, "main": true},
+    "productionRefExists": false,
+    "productionProtectionExists": false,
+    "deployHooksCount": 0,
+    "publisherInitialized": false,
+    "publisherEnabled": false,
+    "schedulerInstalled": false
+  },
+  "candidatePolicy": {"**": false, "production": true},
+  "protectionProposal": {
+    "pattern": "production",
+    "allowsForcePushes": false,
+    "allowsDeletions": false,
+    "isAdminEnforced": true,
+    "restrictsPushes": true,
+    "blocksCreations": true,
+    "pushActorIds": ["U_kgDOB2nh3g"],
+    "requiresStatusChecks": true,
+    "requiredStatusCheckContexts": ["CI gate"],
+    "inheritAdditionalMainContextsAtExecution": true,
+    "requiresStrictStatusChecks": true,
+    "requiresApprovingReviews": false,
+    "requiresLinearHistory": false,
+    "bypassForcePushActorIds": [],
+    "bypassPullRequestActorIds": []
+  },
+  "orderedGates": [
+    "coordinator opens a bounded cutover window and freezes other merges and deployment writers",
+    "reverify exact healthy legacy f1 source, current main CI, original identities, no active deployments or hooks",
+    "after authorization only: create literal production protection and read it back without changing main",
+    "after authorization only: prepare dedicated mirror and config; check-stage, seed and init require --expected-source f1d0981ca332f5cfc989f6655061a977ff05b029; reject source/seed drift before writes and pin atomic no-force CAS; do not retry unknown seed",
+    "verify seed created no CI, Preview or deployment; initialize inactive journal and independent witness without overwriting history",
+    "coordinator reviews readiness and draft diff; only then normal merge of the cutover PR",
+    "require the exact cutover merge source latest main CI; main push must create no deployment",
+    "after authorization only: change original project production branch to production; f1 seed itself disables production builds; read back no extra deployment",
+    "check the exclusive chain, source, protection, identity, no in-flight work and live f1; enable and persist a new full 3660-second hold",
+    "install the single reviewed user launchd entry; tick after the maximum hold selects only the latest eligible main source",
+    "accept two real eligible windows using useful normal changes, exact provider source and HTTP smoke; only then mark GET-314 complete"
+  ],
+  "notAuthorizedInThisPhase": [
+    "create or update production ref or protection",
+    "seed, init, enable, recover-failure, scheduler installation or tick",
+    "merge cutover PR or change Vercel production branch/settings",
+    "new deployment, support contact, payment, account migration, new token/hook or CI write grant"
+  ],
+  "rollback": {
+    "first": "disable offline and unload only the publisher's launchd entry; preserve journal, witness, lock and every uncertain receipt",
+    "wait": "do not restore a deployment-producing chain before all in-flight outcomes settle and max(last legacy/publication/acceptance observations) + 3660 seconds has passed",
+    "project": "restore original project tracking to main while source main deployment remains disabled; read back no deployment",
+    "source": "normal reviewed PR restores only main deployment after replacement is stopped and cooldown is satisfied; no force-push or deletion of production",
+    "result": "legacy chain restored means hourly control no longer active; keep GET-314 In Progress"
+  }
+}
