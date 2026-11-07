@@ -1,5 +1,11 @@
 import Foundation
 
+public struct PendingChatVoiceCapture: Sendable {
+    public let id: UUID
+    public let source: URL
+    public let metadata: Data
+}
+
 /// The original recording and its editable transcript have separate identities.
 public struct ChatVoiceReceipt: Codable, Equatable, Sendable, Identifiable {
     public let id: String
@@ -33,6 +39,35 @@ public struct ChatVoiceComposition: Sendable {
 }
 
 extension OfflineLibrary {
+    /// Account-local outbox, sealed before auth/network/draft restoration. A
+    /// failed later retention still has an indexed original after relaunch.
+    public func stageChatVoiceCapture(_ source: URL, id: UUID, ownerID: String, metadata: Data) throws -> URL {
+        let folder = try voiceDirectory(ownerID: ownerID).appendingPathComponent("captures/" + id.uuidString.lowercased(), isDirectory: true)
+        try Disk.directory(folder)
+        let destination = folder.appendingPathComponent("original.caf")
+        if source.standardizedFileURL != destination.standardizedFileURL {
+            if Disk.fm.fileExists(atPath: destination.path) {
+                guard try Disk.hashFile(source) == Disk.hashFile(destination) else { throw LibraryError.invalid("录音标识冲突，原件未覆盖。") }
+            } else { try Disk.fm.copyItem(at: source, to: destination) }
+        }
+        try metadata.write(to: folder.appendingPathComponent("capture.json"), options: .atomic)
+        return destination
+    }
+    public func pendingChatVoiceCaptures(ownerID: String) throws -> [PendingChatVoiceCapture] {
+        let root = try voiceDirectory(ownerID: ownerID).appendingPathComponent("captures", isDirectory: true)
+        guard Disk.fm.fileExists(atPath: root.path) else { return [] }
+        return try Disk.fm.contentsOfDirectory(at: root, includingPropertiesForKeys: nil).sorted { $0.lastPathComponent < $1.lastPathComponent }.compactMap { folder in
+            guard let id = UUID(uuidString: folder.lastPathComponent) else { return nil }
+            let source = folder.appendingPathComponent("original.caf"), manifest = folder.appendingPathComponent("capture.json")
+            guard Disk.fm.fileExists(atPath: source.path), Disk.fm.fileExists(atPath: manifest.path) else { return nil }
+            return PendingChatVoiceCapture(id: id, source: source, metadata: try Data(contentsOf: manifest))
+        }
+    }
+    public func removeStagedChatVoiceCapture(id: UUID, ownerID: String) throws {
+        let folder = try voiceDirectory(ownerID: ownerID).appendingPathComponent("captures/" + id.uuidString.lowercased(), isDirectory: true)
+        if Disk.fm.fileExists(atPath: folder.path) { try Disk.fm.removeItem(at: folder) }
+    }
+
     private func voiceDirectory(ownerID: String) throws -> URL {
         guard let owner = UUID(uuidString: ownerID), root.lastPathComponent == LibraryScope.account(owner).folder else {
             throw LibraryError.invalid("这条语音不属于当前书房。")

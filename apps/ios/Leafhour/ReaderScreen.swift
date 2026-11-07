@@ -1,5 +1,6 @@
 import SwiftUI
 import UIKit
+import AVFoundation
 import LeafhourCore
 
 enum ReaderChrome: Equatable { case asleep, top, progress, tools }
@@ -98,6 +99,12 @@ struct ReaderScreen: View {
     @State private var guide = ReadingGuideController()
     @State private var readingNavigationID = UUID()
     @State private var conversationAutoLoad = true
+    @State private var quickCapture = ReaderQuickCapture()
+    @State private var fullScreenAI = false
+    @State private var aiQuote: SelectedQuote?
+    @State private var aiTargetID: String?
+    @State private var recordingResumeRevision: UInt?
+
     @State private var bookmarkRanges: [ReaderBookmarkVisibleRange] = []
     @State private var bookmarkPull: ReaderBookmarkPullVisual = .idle
     @State private var bookmarkSavedID: UUID?
@@ -135,7 +142,7 @@ struct ReaderScreen: View {
         UIEdgeInsets(top: 4, left: 22, bottom: session.state.preferences.alwaysShowReadingProgress ? quietProgressHeight + 8 : 8, right: 22)
     }
     private var presentedReader: some View {
-        ReaderBackgroundSurface(isCovered: panel?.isCompanion == true || panel?.id == "listening" || scenePhase != .active) { readingSurface }.equatable()
+        ReaderBackgroundSurface(isCovered: panel?.isCompanion == true || panel?.id == "listening" || fullScreenAI || scenePhase != .active) { readingSurface }.equatable()
         .preferredColorScheme(session.state.preferences.colorScheme(following: systemColorScheme))
         .statusBarHidden(true)
         .interactiveDismissDisabled(panel?.isCompanion != true && (session.saving || session.saveError != nil))
@@ -235,12 +242,8 @@ struct ReaderScreen: View {
                                 if let quote = session.selection {
                                     ReaderSelectionDock(quote: quote, paper: paper, onAI: { showCompanion(quote) },
                                         onNote: { showNote(quote) }, onTranslate: { viewedTranslations.insert(quote.anchor.passageID); present(.passageTranslation(quote)) }, onShare: { present(.share(quote)) },
-                                        onClear: { session.selection = nil; hasNativeTextSelection = false; selectionDismissalID = UUID() }, showsTranslation: session.state.preferences.viewMode != .translation)
+                                        onClear: { session.selection = nil; hasNativeTextSelection = false; selectionDismissalID = UUID() }, showsTranslation: session.state.preferences.viewMode != .translation, quickAI: AnyView(quickAIControl))
                                 } else {
-                                    HStack(spacing: 8) {
-                                        Spacer(minLength: 0)
-                                        ReaderAIButton(paper: paper, quote: nil, onOpen: { showCompanion(currentQuote) })
-                                    }.padding(.horizontal, 12).accessibilityHidden(!showingBottom)
                                     ReaderReadingTransport(canPreviousChapter: session.chapterIndex > 0,
                                         canNextChapter: session.chapterIndex + 1 < session.book.chapters.count,
                                         onPreviousChapter: { jumpChapter(-1) }, onNextChapter: { jumpChapter(1) },
@@ -279,6 +282,12 @@ struct ReaderScreen: View {
                 }
             }
             .overlay(alignment: .bottomTrailing) { floatingProgress(showingBottom: showingBottom) }
+            .overlay(alignment: .bottomTrailing) {
+                if session.selection == nil {
+                    quickAIControl.padding(.trailing, 18)
+                        .padding(.bottom, showingBottom ? (chromeMetrics?.bottom ?? 160) + 8 : 28)
+                }
+            }
             .onPreferenceChange(ReaderChromeHeightKey.self) { recordChrome($0, for: layout) }
         }
     }
@@ -303,7 +312,7 @@ struct ReaderScreen: View {
                 .toolbar(.hidden, for: .navigationBar)
                 .navigationTitle("阅读")
                 .navigationDestination(isPresented: Binding(get: { panel?.id == "listening" }, set: { if !$0 && panel?.id == "listening" { panel = nil } })) {
-                    ReaderListeningPanel(session: session, speech: speech)
+                    ReaderListeningPanel(session: session, speech: speech, quickAI: AnyView(quickAIControl), quickCapture: quickCapture)
                         .preferredColorScheme(session.state.preferences.colorScheme(following: systemColorScheme))
                         .toolbar { ToolbarItem(placement: .confirmationAction) {
                             Button("继续读", systemImage: "book") { speech.pause(); panel = nil }.accessibilityIdentifier("reader-listening-return")
@@ -325,7 +334,22 @@ struct ReaderScreen: View {
     }
     private var trackedReader: some View {
         navigationReader
-        .modifier(ReaderTimeTracking(session: session, visible: scenePhase == .active && panel == nil && !speech.playing))
+        .fullScreenCover(isPresented: $fullScreenAI, onDismiss: {
+            chrome = .asleep
+            session.setReadingVisible(scenePhase == .active && panel == nil && !speech.playing)
+            reading.setForeground(scenePhase == .active && panel == nil)
+        }) {
+            NavigationStack {
+                ReaderConversationPanel(session: session, tools: tools, cloud: cloud, selection: aiQuote, library: library,
+                                        readingGuide: aiTargetID == nil && tools.pendingQuickRecording == nil && tools.quickVoiceDraft == nil ? guide : nil, targetTurnID: aiTargetID)
+                    .toolbar { ToolbarItem(placement: .cancellationAction) {
+                        Button { fullScreenAI = false } label: { Image(systemName: "xmark").frame(width: 44, height: 44) }
+                            .accessibilityLabel("继续读").accessibilityIdentifier("reader-chat-return")
+                    } }
+            }.preferredColorScheme(session.state.preferences.colorScheme(following: systemColorScheme))
+                .environment(\.readerContinueReading, { fullScreenAI = false })
+        }
+        .modifier(ReaderTimeTracking(session: session, visible: scenePhase == .active && panel == nil && !fullScreenAI && !speech.playing))
         .safeAreaInset(edge: .top, spacing: 0) { remotePositionNotice }
         .onChange(of: autoPageConditions, initial: true) { _, conditions in autoPage.update(conditions, navigationID: session.navigationID) }
         .onChange(of: session.navigationID) { _, id in
@@ -356,6 +380,9 @@ struct ReaderScreen: View {
     private var synchronizedReader: some View {
         progressTrackedReader
         .onReceive(NotificationCenter.default.publisher(for: UIAccessibility.voiceOverStatusDidChangeNotification)) { _ in voiceOverRunning = UIAccessibility.isVoiceOverRunning }
+        .onChange(of: quickCapture.phase) { _, phase in
+            if phase == .idle, scenePhase == .active { resumeAfterQuickCapture() }
+        }
         .onChange(of: focusedControl) { _, _ in clockID = UUID() }
         .onChange(of: session.selection?.id) { _, _ in clockID = UUID() }
         .onChange(of: hasNativeTextSelection) { _, _ in clockID = UUID() }
@@ -396,6 +423,8 @@ struct ReaderScreen: View {
         .task(id: clockID) { await settleChrome() }
         .onChange(of: scenePhase) { _, phase in
             reading.setForeground(phase == .active && panel?.isCompanion != true)
+            if phase != .active { quickCapture.finish(send: false); recordingResumeRevision = nil }
+            else { Task { await tools.reconcileQuickQuestion(cloud: cloud) } }
             if phase != .active { readerIsTouching = false; speech.readerIsInteracting = false; speech.applicationDidBackground(); session.save(); chrome = .asleep }
         }
     }
@@ -422,7 +451,16 @@ struct ReaderScreen: View {
             guard !Task.isCancelled else { return }; bookmarkMessage = nil
         }
         .onAppear { configureReading() }
-        .onDisappear(perform: releaseReadingResources)
+        .task(id: session.book.id) {
+            await tools.restoreQuickQuestion(session, cloud: cloud, library: library)
+            await tools.reconcileQuickQuestion(cloud: cloud)
+        }
+        .onReceive(NotificationCenter.default.publisher(for: AVAudioSession.interruptionNotification)) { notification in
+            if notification.userInfo?[AVAudioSessionInterruptionTypeKey] as? UInt == AVAudioSession.InterruptionType.began.rawValue {
+                recordingResumeRevision = nil; quickCapture.finish(send: false)
+            }
+        }
+        .onDisappear { if !fullScreenAI { quickCapture.finish(send: false); recordingResumeRevision = nil; releaseReadingResources() } }
     }
     private func recoveryNotice(_ error: String) -> some View {
         VStack(alignment: .leading, spacing: 20) {
@@ -744,14 +782,56 @@ struct ReaderScreen: View {
         let visible = session.book.rendersMarkdown ? MarkdownDocument(source: source).text.trimmingCharacters(in: .whitespacesAndNewlines) : source
         return SelectedQuote(anchor: ReadingAnchor(chapterID: session.chapter.id, passageID: passage.id), text: visible, sourceText: source)
     }
+    private var quickAIControl: some View {
+        ReaderQuickAIButton(capture: quickCapture, tools: tools, paper: paper,
+                            onOpen: { showCompanion(currentQuote) }, onStart: beginQuickCapture,
+                            onRelease: { cancelled in
+                                if cancelled {
+                                    quickCapture.cancel()
+                                    resumeAfterQuickCapture()
+                                } else { quickCapture.finish() }
+                            })
+    }
+    private func beginQuickCapture() {
+        guard quickCapture.canBegin else { return }
+        guard cloud != nil, library != nil, tools.canStartQuickQuestion,
+              let context = ReaderQuickQuestionContext(session: session, quote: quickQuote, ownerID: tools.captureOwnerID) else {
+            tools.error = cloud == nil ? "请先登录自己的书房，再使用语音提问。" : "此页暂时无法录音提问，点开 AI 查看已有消息。"
+            return
+        }
+        autoPage.pause(.interaction); chrome = .asleep
+        let cloud = cloud, library = library, tools = tools
+        quickCapture.start(beforeStart: { recordingResumeRevision = speech.suspendForQuickQuestion() }) { recording, submit in
+            resumeAfterQuickCapture()
+            await tools.submitQuickVoice(recording, context: context, cloud: cloud, library: library, send: submit)
+        }
+    }
+    private func resumeAfterQuickCapture() {
+        if let revision = recordingResumeRevision { speech.resumeAfterQuickQuestion(revision: revision, session: session) }
+        recordingResumeRevision = nil
+    }
+    private var quickQuote: SelectedQuote? {
+        if let selected = session.selection { return selected }
+        if panel?.id == "listening", let location = speech.highlight?.location,
+           let chapter = session.book.chapters.first(where: { $0.id == location.chapterID }),
+           let passage = chapter.passages.first(where: { $0.id == location.passageID }) {
+            // Quoting the author paragraph uses a truthful source anchor even
+            // when listening to a translation with independent offsets.
+            return SelectedQuote(anchor: .init(chapterID: chapter.id, passageID: passage.id), text: passage.text)
+        }
+        if let page = visiblePage, page.isCurrent(session), let id = page.passageIDs.first,
+           let passage = session.chapter.passages.first(where: { $0.id == id }) {
+            return SelectedQuote(anchor: .init(chapterID: session.chapter.id, passageID: id), text: passage.text)
+        }
+        return currentQuote
+    }
     private func showCompanion(_ quote: SelectedQuote?) {
-        session.setReadingVisible(false)
-        autoPage.pause(.panel)
-        hasNativeTextSelection = false
-        session.selection = nil
-        selectionDismissalID = UUID()
-        focusedControl = nil
-        chrome = .asleep
-        panel = .companion(quote)
+        guard quickCapture.canBegin else { return }
+        session.setReadingVisible(false); autoPage.pause(.panel)
+        aiTargetID = tools.quickQuestionStatus == .idle ? nil : tools.quickTargetID
+        aiQuote = aiTargetID == nil ? quote : nil
+        quickCapture.dismissError()
+        hasNativeTextSelection = false; session.selection = nil; selectionDismissalID = UUID()
+        focusedControl = nil; chrome = .asleep; fullScreenAI = true
     }
 }

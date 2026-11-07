@@ -395,13 +395,14 @@ final class ImmersiveReaderUITests: XCTestCase {
         let sentence = app.textViews.matching(NSPredicate(format: "identifier IN %@", ["reader-listening-sentence", "reader-listening-active-sentence"])).firstMatch; require(sentence)
         sentence.tap(); require(app.buttons["暂停朗读"])
         app.buttons["reader-listening-hide"].tap()
-        let reveal = app.buttons["reader-listening-reveal"]; require(reveal)
+        require(app.buttons["reader-listening-mini-play"])
         XCTAssertFalse(app.buttons["reader-speech-play"].exists)
         capture("immersive-listening-hidden-controls")
-        reveal.tap(); require(app.buttons["暂停朗读"])
-        require(reveal, timeout: 10)
+        app.buttons["reader-listening-expand"].tap(); require(app.buttons["reader-speech-play"])
+        let reveal = app.buttons["reader-listening-reveal"]; require(reveal, timeout: 10)
+        XCTAssertTrue(app.buttons["reader-speech-play"].isHittable, "Idle hides navigation only")
         capture("listening-controls-hide-after-idle")
-        reveal.tap(); require(app.buttons["暂停朗读"])
+        reveal.tap(); require(app.buttons["reader-speech-play"])
         app.buttons["reader-speech-play"].tap(); require(app.buttons["继续朗读"])
         app.buttons["展开"].tap(); require(app.navigationBars["段落对照"])
         require(app.textViews["reader-listening-comparison"].firstMatch)
@@ -704,4 +705,64 @@ final class ImmersiveReaderUITests: XCTestCase {
         app.buttons["暂停计时"].tap(); require(app.buttons["继续计时"])
         capture("time-in-tools-only")
     }
+    func testSavedQuickReplyOpensItsExactAnswerAndClearsOnlyAfterDisplay() {
+        open(extra: ["--quiet-ai-saved-answer"], title: "GET317 合成验收 · 双译")
+        let ai = app.buttons["reader-ai"]; require(ai)
+        XCTAssertEqual(ai.value as? String, "有新回复")
+        ai.tap(); require(app.navigationBars["旁注"])
+        let answer = app.descendants(matching: .any)["chat-assistant-message-quiet-target-7"].firstMatch
+        require(answer)
+        let visible = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in answer.isHittable }, object: nil)
+        XCTAssertEqual(XCTWaiter.wait(for: [visible], timeout: 8), .completed)
+        capture("quiet-saved-target-fullscreen")
+        app.buttons["reader-chat-return"].tap(); require(ai)
+        XCTAssertEqual(ai.value as? String, "")
+    }
+
+    func testQuietAIIsAvailableWithoutWakingChromeAndOpensFullScreen() throws {
+        open(title: "GET317 合成验收 · 双译")
+        let ai = app.buttons["reader-ai"]; require(ai)
+        XCTAssertTrue(ai.isHittable)
+        XCTAssertFalse(app.buttons["reader-contents"].isHittable)
+        let before = try settledBody()
+        ai.tap()
+        require(app.navigationBars["旁注"])
+        let history = app.scrollViews["reader-conversation-history"]; require(history)
+        XCTAssertGreaterThan(history.frame.height, app.frame.height * 0.65)
+        capture("quiet-ai-fullscreen")
+        app.buttons["reader-chat-return"].tap(); require(reader)
+        XCTAssertEqual(try settledBody(), before)
+        XCTAssertTrue(app.buttons["reader-ai"].isHittable)
+        XCTAssertFalse(app.buttons["reader-contents"].isHittable)
+    }
+
+    func testListeningNavigationSleepsButPlayerAndAIStayAvailable() {
+        open(title: "GET317 合成验收 · 双译"); wake(); app.buttons["reader-listen"].tap()
+        let play = app.buttons["reader-speech-play"]; require(play); play.tap()
+        let hidden = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in
+            !self.app.buttons["reader-contents"].isHittable
+        }, object: nil)
+        XCTAssertEqual(XCTWaiter.wait(for: [hidden], timeout: 10), .completed)
+        XCTAssertTrue(play.isHittable)
+        XCTAssertTrue(app.buttons["reader-ai"].isHittable)
+        app.buttons["reader-ai"].tap(); require(app.navigationBars["旁注"])
+        app.buttons["reader-chat-return"].tap(); require(play)
+        XCTAssertEqual(play.label, "暂停朗读", "Opening and closing a reply preserves live playback")
+        capture("quiet-before-player-collapse")
+        app.buttons["reader-listening-hide"].tap()
+        capture("quiet-after-player-collapse")
+        let mini = app.buttons["reader-listening-mini-play"]; require(mini)
+        XCTAssertTrue(mini.isHittable)
+        mini.tap()
+        XCTAssertEqual(mini.label, "继续朗读")
+        XCTAssertFalse(play.exists)
+        app.buttons["reader-ai"].tap(); require(app.navigationBars["旁注"])
+        app.buttons["reader-chat-return"].tap(); require(mini)
+        XCTAssertEqual(mini.label, "继续朗读")
+        XCTAssertFalse(play.exists, "Opening a reply must preserve an explicitly folded player")
+        app.buttons["reader-listening-expand"].tap(); require(play)
+        XCTAssertEqual(play.label, "继续朗读")
+        capture("quiet-ai-listening-player")
+    }
+
 }

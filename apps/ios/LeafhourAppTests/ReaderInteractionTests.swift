@@ -8,6 +8,48 @@ import LeafhourCore
 
 @MainActor
 final class ReaderInteractionTests: XCTestCase {
+    func testQuickRecordingCannotStealAReplacementAudioOwner() async throws {
+        let session = try await session(), sharedAudio = SpeechAudioSessionProbe()
+        let first = ReaderSpeech(synthesizer: SpeechSynthesizerProbe(), audioSession: sharedAudio)
+        let second = ReaderSpeech(synthesizer: SpeechSynthesizerProbe(), audioSession: sharedAudio)
+        first.start(session)
+        let revision = try XCTUnwrap(first.suspendForQuickQuestion())
+        second.start(session)
+        first.resumeAfterQuickQuestion(revision: revision, session: session)
+        XCTAssertFalse(first.playing, "Finishing an old recording must not reclaim a newer playback owner's audio")
+        XCTAssertTrue(second.playing)
+        first.stop(); second.stop()
+    }
+
+    func testQuickRecordingHandoffResumesOnlyItsUnchangedPlayback() async throws {
+        let session = try await session(), engine = SpeechSynthesizerProbe()
+        let speech = ReaderSpeech(synthesizer: engine, audioSession: SpeechAudioSessionProbe())
+        speech.start(session)
+        let revision = try XCTUnwrap(speech.suspendForQuickQuestion())
+        XCTAssertFalse(speech.playing); XCTAssertTrue(speech.paused)
+        NotificationCenter.default.post(name: .leafhourChatMicrophoneWillStart, object: nil)
+        speech.resumeAfterQuickQuestion(revision: revision, session: session)
+        XCTAssertTrue(speech.playing, "The recorder's duplicate microphone handoff must not revoke our own lease")
+        let cancelled = try XCTUnwrap(speech.suspendForQuickQuestion())
+        speech.userNavigated()
+        speech.resumeAfterQuickQuestion(revision: cancelled, session: session)
+        XCTAssertFalse(speech.playing, "An intervening navigation must never resume old playback")
+        speech.stop()
+    }
+
+    func testQuickRecordingCannotResumeAfterStopOrAnExplicitPause() async throws {
+        let session = try await session(), engine = SpeechSynthesizerProbe()
+        let speech = ReaderSpeech(synthesizer: engine, audioSession: SpeechAudioSessionProbe())
+        for stop in [false, true] {
+            speech.start(session)
+            let revision = try XCTUnwrap(speech.suspendForQuickQuestion())
+            if stop { speech.stop() } else { speech.pause() }
+            speech.resumeAfterQuickQuestion(revision: revision, session: session)
+            XCTAssertFalse(speech.playing)
+        }
+        speech.stop()
+    }
+
     func testTranscriptSeekStartsAtTappedSentenceAndRejectsStaleText() async throws {
         let source = "First sentence. Second 🙂 sentence. Third sentence."
         let session = try await session(source: source), engine = SpeechSynthesizerProbe()

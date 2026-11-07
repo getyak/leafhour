@@ -50,6 +50,15 @@ enum VideoAcceptanceFixture {
             // Supplying both objects bypasses credential-store reads and writes.
             let model = LibraryModel(root: root.appendingPathComponent("library", isDirectory: true), cloud: cloud, credential: credential, monitorNetwork: false)
             if arguments.contains("--get317-gated-download") { observeReaderForDownloadGate(model) }
+            if arguments.contains("--quiet-ai-saved-answer") {
+                let tools = model.conversationTools(bookID: "get317-translated")
+                tools.quickTargetID = "quiet-target-7"
+                tools.turns = (0..<16).map { index in
+                    ReaderConversationTurn(id: "quiet-target-\(index)", question: "Synthetic question \(index)",
+                        answer: "SAVED_QUICK_ANSWER_\(index)\n\n" + String(repeating: "This is synthetic saved evidence, not a model request. ", count: 12),
+                        status: "completed", contentVersion: "get317-v1")
+                }
+            }
             Task { @MainActor in
                 do {
                     let marker = root.appendingPathComponent("seed-v1.complete")
@@ -414,6 +423,12 @@ private final class GET317Transport: URLProtocol, @unchecked Sendable {
         case "chat":
             var records = record(bookID)
             var turns = records["syntheticTurns"] as? [[String: Any]] ?? []
+            if turns.isEmpty, arguments.contains("--quiet-ai-saved-answer"), bookID == "get317-translated" {
+                turns = (0..<16).map { index in
+                    ["id": "quiet-target-\(index)", "text": "Synthetic question \(index)", "status": "completed", "contentVersion": "get317-v1",
+                     "answer": ["summary": "SAVED_QUICK_ANSWER_\(index)\n\n" + String(repeating: "This is synthetic saved evidence, not a model request. ", count: 12)]]
+                }
+            }
             if method == "GET" { return reply(["available": true, "bookId": bookID, "contentVersion": "get317-v1", "context": ["passageId": "c1-p1", "chapterTitle": "GET317 合成第一章", "original": "GET317 SYNTHETIC chat context. Invented acceptance text; no model was called."], "scope": ["mode": "book", "revision": 0], "turns": turns]) }
             var turn: [String: Any] = ["id": body["id"] as? String ?? "missing-id", "text": body["text"] as? String ?? "", "status": "completed", "answer": ["summary": "GET317 合成 AI 回答样本：这是离线网络夹具返回的固定测试文字，未调用任何模型。\n\n" + String(repeating: "输入框应继续可见，原文位置应保持稳定。 ", count: 18)]]
             if var context = body["guideContext"] as? [String: Any] {

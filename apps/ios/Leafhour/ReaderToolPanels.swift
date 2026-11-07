@@ -205,6 +205,7 @@ struct ReaderConversationPanel: View {
     var title = "旁注"
     var readingGuide: ReadingGuideController? = nil
     var autoLoad = true
+    var targetTurnID: String? = nil
     @State private var initialSelectionAttached = false
     private var source: String {
         let localSelection = tools.chatQuoteRemoved ? nil : selection
@@ -217,6 +218,7 @@ struct ReaderConversationPanel: View {
             source: source, sourceChapter: tools.chatContext?.chapterTitle ?? session.chapter.title,
             canRemoveSource: tools.chatContext.map { $0.selection != nil } ?? (selection != nil), sourceLabel: tools.chatQuoteRemoved ? "" : tools.chatContext?.sourceLabel ?? (selection?.origin == "translation" ? "选中的译文 · 提问时引用对应原文" : selection == nil ? "引用的原文" : "选中的原文"),
             localOnly: cloud == nil, isMarginalNote: true, readingGuide: readingGuide,
+            targetTurnID: targetTurnID, onTargetDisplayed: { tools.markQuickAnswerRead($0) },
             onGuideFollowUp: { item in
                 guard let actual = readingGuide?.guide else { return }
                 await tools.sendGuideFollowUp(item, guide: actual, cloud: cloud)
