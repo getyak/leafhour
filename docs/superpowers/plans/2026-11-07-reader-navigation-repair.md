@@ -21,3 +21,5 @@ User correction: AI appears and disappears with navigation. Repair white/blank t
 Production scope: ReaderScreen, ReaderListeningPanel, ReaderContentsPanel, ReaderListeningControls, and explicit native visibility in TextReadingView/PDFReadingView. No backend, credentials, billing, CI authorization or paid execution changes.
 
 Local results and baseline failures: [verification](../../verification/2026-11-07-reader-navigation-repair.md). The final delivery step is tracked by the PR and its current-head checks.
+
+Hosted CI follow-up: a real 30-minute timeout interrupted the simulator architecture compilation. Extend only the existing native job limit to 45 minutes, keeping every gate and the same standard runner. Validate the workflow and resource-selection contracts before the next concentrated push.
