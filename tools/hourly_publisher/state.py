@@ -27,7 +27,7 @@ def sha(value):
 
 class Journal:
     @classmethod
-    def create(cls, path, binding, baseline, now):
+    def create(cls, path, binding, baseline, now, bootstrap=None):
         sha(baseline)
         if not math.isfinite(now) or now < 0:
             raise GateError('invalid clock')
@@ -45,12 +45,16 @@ class Journal:
                 CREATE TABLE attempts (id TEXT PRIMARY KEY, source TEXT, base TEXT,
                     state TEXT, lease REAL, requested REAL, observed REAL);
                 CREATE TABLE events (seq INTEGER PRIMARY KEY, at REAL, kind TEXT, attempt TEXT);
+                CREATE TABLE bootstrap (id INTEGER PRIMARY KEY CHECK(id=1), receipt TEXT);
+                CREATE TABLE operations (kind TEXT PRIMARY KEY, payload TEXT, requested REAL, state TEXT);
             ''')
             db.execute('INSERT INTO control VALUES (1, ?, 0, ?, ?, ?, NULL)',
                        (json.dumps(binding, sort_keys=True), baseline, now + WINDOW, now))
+            if bootstrap is not None:
+                db.execute('INSERT INTO bootstrap VALUES (1, ?)', (json.dumps(bootstrap, sort_keys=True),))
         info = path.lstat()
         with os.fdopen(os.open(str(path) + '.witness', os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600), 'w') as witness:
-            witness.write(json.dumps({'inode': info.st_ino, 'device': info.st_dev, 'binding': binding}) + '\n')
+            witness.write(json.dumps({'inode': info.st_ino, 'device': info.st_dev, 'binding': binding, 'bootstrap': bootstrap}) + '\n')
             witness.flush()
             os.fsync(witness.fileno())
         return cls(path, binding)
@@ -62,6 +66,7 @@ class Journal:
         try:
             header = json.loads(self.witness.read_text().splitlines()[0])
             self.identity, self.device = header['inode'], header['device']
+            self.bootstrap_receipt = header.get('bootstrap')
             if json.dumps(header['binding'], sort_keys=True) != self.binding:
                 raise GateError('journal witness target binding changed')
             with self.tx() as db:
@@ -88,7 +93,18 @@ class Journal:
             if (records[0]['inode'] != self.identity or records[0]['device'] != self.device
                     or json.dumps(records[0]['binding'], sort_keys=True) != self.binding):
                 raise GateError('witness changed')
+            if records[0].get('bootstrap') != self.bootstrap_receipt:
+                raise GateError('bootstrap witness changed')
+            if self.bootstrap_receipt is not None:
+                row = db.execute('SELECT receipt FROM bootstrap WHERE id=1').fetchone()
+                if not row or json.loads(row['receipt']) != self.bootstrap_receipt:
+                    raise GateError('immutable legacy handover changed')
             for record in records[1:]:
+                if 'operation' in record:
+                    row = db.execute('SELECT payload,requested FROM operations WHERE kind=?', (record['operation'],)).fetchone()
+                    if not row or json.loads(row['payload']) != record['payload'] or row['requested'] != record['at']:
+                        raise GateError('restored journal lost a bootstrap operation; offline recovery required')
+                    continue
                 row = db.execute('SELECT source,requested FROM attempts WHERE id=?', (record['attempt'],)).fetchone()
                 if not row or row['source'] != record['source'] or row['requested'] != record['at']:
                     raise GateError('restored journal lost an armed request; offline recovery required')
@@ -131,11 +147,58 @@ class Journal:
             row['attempt'] = dict(active) if active else None
             return row
 
+    def requested_sources(self):
+        with self.tx() as db:
+            return {row[0] for row in db.execute('SELECT source FROM attempts WHERE requested IS NOT NULL')}
+
+    def freeze(self, reason, now):
+        with self.tx(now) as db:
+            db.execute('UPDATE control SET blocked=?', (reason,))
+            self.event(db, now, reason)
+
+    def bootstrap(self):
+        with self.tx() as db:
+            if self.bootstrap_receipt is None:
+                raise GateError('no two-phase handover; do not migrate or rebuild existing state')
+            operations = {row['kind']: {**dict(row), 'payload': json.loads(row['payload'])}
+                          for row in db.execute('SELECT * FROM operations')}
+            return {'receipt': self.bootstrap_receipt, 'operations': operations}
+
+    def arm_operation(self, kind, payload, now):
+        if kind not in ('seed', 'tracking') or self.bootstrap_receipt is None:
+            raise GateError('unsupported bootstrap operation')
+        with self.tx(now) as db:
+            control = db.execute('SELECT * FROM control').fetchone()
+            if control['enabled'] or control['blocked'] or db.execute('SELECT 1 FROM attempts').fetchone():
+                raise GateError('bootstrap requires pristine disabled state')
+            if db.execute('SELECT 1 FROM operations WHERE kind=?', (kind,)).fetchone():
+                raise GateError('bootstrap request already armed; reconcile read-only, never resend')
+            if kind == 'tracking':
+                seed = db.execute("SELECT state FROM operations WHERE kind='seed'").fetchone()
+                if not seed or seed['state'] != 'confirmed' or now < control['cooldown']:
+                    raise GateError('confirm seed and wait the unproven settings-side-effect floor')
+            db.execute("INSERT INTO operations VALUES(?,?,?,'uncertain')", (kind, json.dumps(payload, sort_keys=True), now))
+            with self.witness.open('a') as witness:
+                witness.write(json.dumps({'operation': kind, 'payload': payload, 'at': now}) + '\n')
+                witness.flush()
+                os.fsync(witness.fileno())
+            self.event(db, now, kind + '-armed')
+
+    def confirm_operation(self, kind, now):
+        with self.tx(now) as db:
+            if not db.execute('SELECT 1 FROM operations WHERE kind=?', (kind,)).fetchone():
+                raise GateError('operation has no durable intent')
+            db.execute("UPDATE operations SET state='confirmed' WHERE kind=?", (kind,))
+            self.event(db, now, kind + '-confirmed')
+
     def enable(self, now):
         with self.tx(now) as db:
             row = db.execute('SELECT * FROM control').fetchone()
             if row['blocked'] or db.execute("SELECT 1 FROM attempts WHERE state IN ('prepared','sending','uncertain','accepted')").fetchone():
                 raise GateError('resolve outstanding work before enable')
+            if self.bootstrap_receipt is not None:
+                if db.execute("SELECT count(*) FROM operations WHERE state='confirmed' AND kind IN ('seed','tracking')").fetchone()[0] != 2:
+                    raise GateError('resolve all bootstrap operations before enable')
             db.execute('UPDATE control SET enabled=1, cooldown=max(cooldown,?)', (now + WINDOW,))
             self.event(db, now, 'enabled-with-hour-hold')
 

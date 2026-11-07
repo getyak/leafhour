@@ -1604,5 +1604,9 @@
   "tests/test_hourly_publisher_cli.py",
   "tests/test_hourly_publisher.py",
   "deploy/hourly-publisher/com.leafhour.publisher.plist.in",
-  "deploy/hourly-publisher/config.example.json"
+  "deploy/hourly-publisher/config.example.json",
+  "deploy/hourly-publisher/cutover-plan.json",
+  "docs/hourly-publishing-cutover.md",
+  "tools/hourly_publisher/bootstrap.py",
+  "tests/test_hourly_publisher_bootstrap.py"
 ]
