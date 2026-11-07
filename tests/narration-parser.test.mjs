@@ -20,13 +20,13 @@ test('parsePassage: Chinese dialogue with tags', () => {
     },
     chapterId: 'c1'
   };
-  
+
   const segments = parsePassage(passage, 'zh', 'interpretive');
-  
+
   assert.ok(segments.length >= 2);
   const dialogueSegments = segments.filter(s => s.type === 'dialogue');
   assert.ok(dialogueSegments.length > 0);
-  assert.equal(dialogueSegments[0].text, '你先走。');
+  assert.equal(dialogueSegments[0].text, '「你先走。」');
 });
 
 test('parsePassage: Western quotes', () => {
@@ -36,12 +36,12 @@ test('parsePassage: Western quotes', () => {
     translations: {},
     chapterId: 'c1'
   };
-  
+
   const segments = parsePassage(passage, 'en', 'interpretive');
-  
+
   const dialogueSegments = segments.filter(s => s.type === 'dialogue');
   assert.ok(dialogueSegments.length > 0);
-  assert.equal(dialogueSegments[0].text, 'Go first.');
+  assert.equal(dialogueSegments[0].text, '"Go first."');
   assert.ok(dialogueSegments[0].speaker);
 });
 
@@ -52,9 +52,9 @@ test('parsePassage: no dialogue returns all narration', () => {
     translations: {},
     chapterId: 'c1'
   };
-  
+
   const segments = parsePassage(passage, 'en', 'interpretive');
-  
+
   assert.equal(segments.length, 1);
   assert.equal(segments[0].type, 'narration');
   assert.equal(segments[0].text, 'This is just narration without any dialogue.');
@@ -71,9 +71,9 @@ test('parsePassage: dialogue tag extraction', () => {
     },
     chapterId: 'c1'
   };
-  
+
   const segments = parsePassage(passage, 'zh', 'interpretive');
-  
+
   const dialogueSegments = segments.filter(s => s.type === 'dialogue');
   assert.equal(dialogueSegments.length, 2);
   assert.ok(dialogueSegments[0].speaker);
@@ -102,9 +102,9 @@ test('analyzeCharacters: ranks by line count', () => {
     {type: 'dialogue', speaker: 'Alice', text: 'Alice again'},
     {type: 'dialogue', speaker: 'Alice', text: 'Alice third time'}
   ];
-  
+
   const stats = analyzeCharacters(segments);
-  
+
   assert.equal(stats.get('Alice').lineCount, 3);
   assert.equal(stats.get('Bob').lineCount, 1);
   assert.ok(stats.get('Alice').characterCount > stats.get('Bob').characterCount);
@@ -115,9 +115,9 @@ test('analyzeCharacters: ignores unknown speakers', () => {
     {type: 'dialogue', speaker: 'unknown', text: 'Mystery speaker'},
     {type: 'dialogue', speaker: 'Alice', text: 'Alice speaks'}
   ];
-  
+
   const stats = analyzeCharacters(segments);
-  
+
   assert.equal(stats.has('unknown'), false);
   assert.equal(stats.has('Alice'), true);
 });
@@ -128,7 +128,7 @@ test('parseChapter: rejects missing chapter', () => {
       {chapterId: 'c1', paragraphs: []}
     ]
   };
-  
+
   assert.throws(
     () => parseChapter(book, 'c2', 'zh', 'interpretive'),
     /找不到这一章/
@@ -155,9 +155,9 @@ test('parseChapter: processes multiple paragraphs', () => {
       }
     ]
   };
-  
+
   const segments = parseChapter(book, 'c1', 'zh', 'interpretive');
-  
+
   assert.ok(segments.length >= 2);
   const passageIds = [...new Set(segments.map(s => s.passageId))];
   assert.equal(passageIds.length, 2);

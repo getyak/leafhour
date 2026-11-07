@@ -4,8 +4,8 @@
 import {audioError} from './audio-content.mjs';
 
 // Dialogue markers for speaker attribution
-const chineseQuotes = /[「『]([^」』]+)[」』]/g;
-const westernQuotes = /["']([^"']+)["']/g;
+const chineseQuotes = /「([^」]+)」|『([^』]+)』|“([^”]+)”|"([^"\n]+)"/g;
+const westernQuotes = /"([^"\n]+)"|“([^”]+)”/g;
 const dialogueVerbs = {
   zh: ['说', '道', '问', '答', '回答', '喊', '叫', '笑', '哭', '低声说', '大声说', '轻声说'],
   en: ['said', 'asked', 'replied', 'answered', 'shouted', 'whispered', 'cried', 'laughed', 'yelled']
@@ -19,19 +19,19 @@ const dialogueVerbs = {
  * @returns {Array} segments with {type: 'narration'|'dialogue', text, speaker, tag, start, end}
  */
 export function parsePassage(passage, language = 'zh', variant = 'interpretive') {
-  const text = language === 'en' ? passage.original : 
+  const text = language === 'en' ? passage.original :
                passage.translations?.[variant]?.text;
-  
+
   if (!text || typeof text !== 'string') {
     throw audioError('段落文本不可用。');
   }
 
   const segments = [];
   const quotes = language === 'zh' ? chineseQuotes : westernQuotes;
-  
+
   // Find all quoted segments
   const matches = [...text.matchAll(quotes)];
-  
+
   if (matches.length === 0) {
     // No dialogue, entire paragraph is narration
     return [{
@@ -45,25 +45,25 @@ export function parsePassage(passage, language = 'zh', variant = 'interpretive')
 
   let lastEnd = 0;
   const verbs = dialogueVerbs[language] || dialogueVerbs.en;
-  
+
   for (const match of matches) {
     const dialogueStart = match.index;
     const dialogueEnd = dialogueStart + match[0].length;
-    const dialogueText = match[1];
-    
+    const dialogueText = match[0];
+
     // Check for dialogue tag before or after
     const before = text.slice(Math.max(0, lastEnd), dialogueStart);
     const after = text.slice(dialogueEnd, Math.min(text.length, dialogueEnd + 50));
-    
+
     let tag = null;
     let speaker = null;
-    
+
     // Look for dialogue verbs nearby
     for (const verb of verbs) {
       const pattern = new RegExp(`([^，。！？：""''「」『』]+)${verb}`, 'g');
       const beforeMatch = before.match(pattern);
       const afterMatch = after.match(pattern);
-      
+
       if (beforeMatch) {
         tag = beforeMatch[beforeMatch.length - 1];
         speaker = beforeMatch[0].replace(verb, '').trim();
@@ -71,14 +71,14 @@ export function parsePassage(passage, language = 'zh', variant = 'interpretive')
         tag = afterMatch[0];
         speaker = afterMatch[0].replace(verb, '').trim();
       }
-      
+
       if (speaker) break;
     }
-    
+
     // Add narration before dialogue (including dialogue tag)
     if (lastEnd < dialogueStart || (tag && before.includes(tag))) {
-      const narrationEnd = tag ? text.indexOf(tag, lastEnd) + tag.length : dialogueStart;
-      const narrationText = text.slice(lastEnd, narrationEnd).trim();
+      const narrationEnd = dialogueStart;
+      const narrationText = text.slice(lastEnd, narrationEnd);
       if (narrationText) {
         segments.push({
           type: 'narration',
@@ -89,24 +89,24 @@ export function parsePassage(passage, language = 'zh', variant = 'interpretive')
         });
       }
     }
-    
+
     // Add dialogue
     segments.push({
       type: 'dialogue',
       text: dialogueText,
       speaker: speaker || 'unknown',
       tag,
-      start: dialogueStart + 1, // Skip opening quote
-      end: dialogueEnd - 1, // Skip closing quote
+      start: dialogueStart,
+      end: dialogueEnd,
       passageId: passage.id
     });
-    
+
     lastEnd = dialogueEnd;
   }
-  
+
   // Add remaining narration
   if (lastEnd < text.length) {
-    const remaining = text.slice(lastEnd).trim();
+    const remaining = text.slice(lastEnd);
     if (remaining) {
       segments.push({
         type: 'narration',
@@ -117,7 +117,7 @@ export function parsePassage(passage, language = 'zh', variant = 'interpretive')
       });
     }
   }
-  
+
   return segments;
 }
 
@@ -132,10 +132,10 @@ export function isNonDialogueQuote(text, quote) {
     zh: ['标题', '题目', '写着', '上面写', '想到', '心想', '想着'],
     en: ['title', 'sign', 'read', 'thought', 'thinking', 'wondered']
   };
-  
+
   // Very short quotes are usually not dialogue (interjections, signs, etc.)
   if (quote.length <= 3) return true;
-  
+
   const lower = text.toLowerCase();
   return markers.zh.some(m => text.includes(m)) ||
          markers.en.some(m => lower.includes(m));
@@ -150,25 +150,25 @@ export function isNonDialogueQuote(text, quote) {
  * @returns {Array} all segments with passage metadata
  */
 export function parseChapter(book, chapterId, language = 'zh', variant = 'interpretive') {
-  const section = book.sections?.find(s => s.chapterId === chapterId);
-  if (!section) {
+  const sections = book.sections?.filter(s => s.chapterId === chapterId) || [];
+  if (!sections.length) {
     throw audioError('找不到这一章。');
   }
-  
+
   const allSegments = [];
-  
-  for (const paragraph of section.paragraphs || []) {
+
+  for (const paragraph of sections.flatMap(s => s.paragraphs || [])) {
     const passage = {
       id: paragraph.id,
       original: paragraph.original,
       translations: paragraph.translations,
       chapterId
     };
-    
+
     const segments = parsePassage(passage, language, variant);
     allSegments.push(...segments);
   }
-  
+
   return allSegments;
 }
 
@@ -179,7 +179,7 @@ export function parseChapter(book, chapterId, language = 'zh', variant = 'interp
  */
 export function analyzeCharacters(segments) {
   const stats = new Map();
-  
+
   segments.forEach((seg, index) => {
     if (seg.type === 'dialogue' && seg.speaker && seg.speaker !== 'unknown') {
       if (!stats.has(seg.speaker)) {
@@ -195,6 +195,6 @@ export function analyzeCharacters(segments) {
       s.characterCount += seg.text.length;
     }
   });
-  
+
   return stats;
 }

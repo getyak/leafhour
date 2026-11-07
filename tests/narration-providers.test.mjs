@@ -89,17 +89,17 @@ test('createElevenLabsProvider: available with key', () => {
   const provider = createElevenLabsProvider({env});
   assert.equal(provider.available, true);
   assert.equal(provider.provider, 'elevenlabs');
-  assert.equal(provider.model, 'eleven_multilingual_v4');
+  assert.equal(provider.model, 'eleven_v3');
 });
 
 test('createElevenLabsProvider: rejects scene over 2000 chars', async () => {
   const env = {ELEVENLABS_API_KEY: 'test-key'};
   const provider = createElevenLabsProvider({env});
-  
+
   const turns = [
     {text: 'a'.repeat(2001), voiceId: 'voice1'}
   ];
-  
+
   await assert.rejects(
     provider.synthesizeScene({turns}),
     /超过 2,000 字符限制/
@@ -109,7 +109,7 @@ test('createElevenLabsProvider: rejects scene over 2000 chars', async () => {
 test('createElevenLabsProvider: validates turn structure', async () => {
   const env = {ELEVENLABS_API_KEY: 'test-key'};
   const provider = createElevenLabsProvider({env});
-  
+
   await assert.rejects(
     provider.synthesizeScene({turns: []}),
     /场景至少需要一轮对话/
@@ -126,24 +126,24 @@ test('createQwenProvider: available with key', () => {
   const provider = createQwenProvider({env});
   assert.equal(provider.available, true);
   assert.equal(provider.provider, 'qwen');
-  assert.equal(provider.model, 'qwen-audio-3.1-tts-plus');
+  assert.equal(provider.model, 'qwen3-tts-flash');
 });
 
-test('createQwenProvider: rejects text over 4000 chars', async () => {
+test('createQwenProvider: rejects text over 600 chars', async () => {
   const env = {QWEN_API_KEY: 'test-key'};
   const provider = createQwenProvider({env});
-  
+
   await assert.rejects(
-    provider.synthesizeTurn({text: 'a'.repeat(4001), voiceId: 'voice1'}),
-    /超过 4,000 字符/
+    provider.synthesizeTurn({text: 'a'.repeat(601), voiceId: 'voice1'}),
+    /超过 600 字符/
   );
 });
 
-test('createMiniMaxProvider: requires both key and group ID', () => {
+test('createMiniMaxProvider: requires key, group ID is optional', () => {
   assert.equal(createMiniMaxProvider({env: {}}).available, false);
-  assert.equal(createMiniMaxProvider({env: {MINIMAX_API_KEY: 'key'}}).available, false);
+  assert.equal(createMiniMaxProvider({env: {MINIMAX_API_KEY: 'key'}}).available, true);
   assert.equal(createMiniMaxProvider({env: {MINIMAX_GROUP_ID: 'group'}}).available, false);
-  
+
   const env = {MINIMAX_API_KEY: 'key', MINIMAX_GROUP_ID: 'group'};
   assert.equal(createMiniMaxProvider({env}).available, true);
 });
@@ -171,7 +171,7 @@ test('createFishProvider: available with key and marked experimental', () => {
 test('createFishProvider: validates scene structure', async () => {
   const env = {FISH_API_KEY: 'test-key'};
   const provider = createFishProvider({env});
-  
+
   await assert.rejects(
     provider.synthesizeScene({turns: []}),
     /场景至少需要一轮对话/
@@ -181,26 +181,26 @@ test('createFishProvider: validates scene structure', async () => {
 test('createFishProvider: builds correct speaker tags', async () => {
   const env = {FISH_API_KEY: 'test-key'};
   let capturedRequest = null;
-  
+
   const mockFetcher = async (url, options) => {
     capturedRequest = JSON.parse(options.body);
     throw new Error('test-abort'); // Abort early
   };
-  
+
   const provider = createFishProvider({env, fetcher: mockFetcher});
-  
+
   const turns = [
     {text: 'First line', voiceId: 'voice1'},
     {text: 'Second line', voiceId: 'voice2'},
     {text: 'Third line', voiceId: 'voice1'}
   ];
-  
+
   try {
     await provider.synthesizeScene({turns});
   } catch (e) {
     // Expected to abort
   }
-  
+
   assert.ok(capturedRequest);
   assert.ok(capturedRequest.text.includes('<|speaker:0|>'));
   assert.ok(capturedRequest.text.includes('<|speaker:1|>'));
