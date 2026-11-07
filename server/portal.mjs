@@ -203,7 +203,7 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
     // GET-188 authored-home mobile navigation: exactly one module and one
     // stylesheet, mounted by portal.js on the authored home routes only.
     for(const file of ['home-navigation.css','home-navigation.mjs'])files['/'+file]=file;
-    for(const file of ['beta.css','beta-feedback.mjs','beta-channel.mjs'])files['/'+file]=file;
+    for(const file of ['beta.css','beta-channel.mjs'])files['/'+file]=file;
     for(const file of ['pricing-checkout.mjs','pricing-checkout-flow.mjs','pricing-checkout-markup.mjs','checkout-embed.mjs','pricing-checkout.css'])files['/'+file]=file;
     for(const file of ['library-craft.css','book-binding.mjs','book-cover-ui.mjs','book-cover-labels.mjs','book-cover-artwork.mjs','book-binding.css','brand-assets/sage-paper.webp'])files['/'+file]=file;
     for(const url of publicCoverPaths)files[url]=url.slice(1);

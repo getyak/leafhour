@@ -2,7 +2,7 @@
 > **For agentic workers:** Use superpowers:executing-plans inline, with a fresh final reviewer.
 
 **Goal:** Publish a truthful, polished four-language beta entry with direct Web trial, verified public TestFlight installation and email feedback.
-**Architecture:** One public channel module, one authored page renderer, scoped styles and an email composer controller. Local routing and static packaging render identical pages. Existing public navigation, theme and locale behavior remain shared.
+**Architecture:** One public channel module, one authored page renderer, scoped styles and a native direct-email link. Local routing and static packaging render identical pages. Existing public navigation, theme and locale behavior remain shared.
 **Tech Stack:** Native ES modules, server-rendered HTML, CSS, node:test.
 **Spec:** docs/superpowers/specs/2026-11-07-public-beta-design.md
 
@@ -11,16 +11,16 @@ User approved direct execution/publication. Preserve unrelated work. No applicat
 
 ## Review Focus
 - Missing/invalid/credential-bearing install links cannot become install actions.
-- Mail content with Unicode, line breaks, quotes and markup remains literal and header-safe.
-- Mail app unavailable or clipboard denied retains manually copyable feedback and never claims delivery.
+- The feedback area has one direct public email action and no input fields.
+- The visible support address remains manually copyable without JavaScript or a mail handler.
 - Locale destinations, no-JS actions, mobile menu, theme and focus remain usable.
 - Local and hosted aliases, metadata and asset dependencies agree.
 
 ### Task 1: Public channel and page
-Files: app/beta-channel.mjs, app/beta-page.mjs, app/beta.css, app/beta-feedback.mjs, tests/beta-channel.test.mjs.
-- [x] Write tests for trusted public links, all locale page actions, safe email content and unavailable installation.
+Files: app/beta-channel.mjs, app/beta-page.mjs, app/beta.css, tests/beta-channel.test.mjs.
+- [x] Write tests for trusted public links, all locale page actions, the absence of form collection and unavailable installation.
 - [x] Run and observe failure because the beta entry is absent.
-- [x] Implement page and user-controlled email composition with fallback.
+- [x] Implement page and one user-controlled native email action.
 - [x] Run focused tests and record results.
 
 ### Task 2: Public integration and acceptance

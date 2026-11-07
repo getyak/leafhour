@@ -106,15 +106,11 @@
       },
       {
         "file": "app/beta-channel.mjs",
-        "sha256": "5c89c312109a28cf8d5600fda835eec9ebc108d9ea23be18c12a6e6ba25a62cd"
-      },
-      {
-        "file": "app/beta-feedback.mjs",
-        "sha256": "4e6ecc0ccc58c6bf8d5cb8931a381d5b7d61fe052f34842284ad4f536c38c49f"
+        "sha256": "10f52ce6e75e99ea4c2c78ee7d9895aec9c08bba0af1f2419aa5e8c8dec3850d"
       },
       {
         "file": "app/beta-page.mjs",
-        "sha256": "7346eaeedab4eeb4f8980602b085964fdde97b9fe4575cb5b6a71e8bcad20ef5"
+        "sha256": "0a6f3ec42991a91c77b5bc971f69fe34a6c262e2f1c9dc363c86a00f82a9b903"
       },
       {
         "file": "app/billing.html",
@@ -1478,7 +1474,7 @@
       },
       {
         "file": "server/portal.mjs",
-        "sha256": "cc0f626a7bab8f9dc4b7da84fecf0df45871fbdf8ecbf6318a3f8625c81b4a65"
+        "sha256": "32e1c51cb967d0567c901d08913e0fc2af407d6a30c9d320adb37f4fc73a36c0"
       },
       {
         "file": "server/preference-memory.mjs",
@@ -1597,7 +1593,7 @@
         "sha256": "510f62256d1cf78f3efad2f5bf4f225ea6fce14bb48557ede314aaf43cd0afe2"
       }
     ],
-    "inputDigest": "c1dc0d797fa55f2d95a37ee7472028be297498515a2f3f68423463446c634c07"
+    "inputDigest": "d2dd32e4b9d652ff59695607dfba511da4614beac65b73f98b6f8c1d2783611e"
   },
   "locales": [
     "en",
@@ -20282,6 +20278,26 @@
         {
           "file": "app/arrival-catalog.mjs",
           "line": 785,
+          "column": 5
+        },
+        {
+          "file": "app/beta-page.mjs",
+          "line": 8,
+          "column": 5
+        },
+        {
+          "file": "app/beta-page.mjs",
+          "line": 59,
+          "column": 5
+        },
+        {
+          "file": "app/beta-page.mjs",
+          "line": 110,
+          "column": 5
+        },
+        {
+          "file": "app/beta-page.mjs",
+          "line": 161,
           "column": 5
         },
         {
@@ -149277,246 +149293,6 @@
       }
     },
     {
-      "id": "candidate:app/beta-channel.mjs:10:13",
-      "file": "app/beta-channel.mjs",
-      "line": 10,
-      "column": 13,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "使用反馈",
-      "sha256": "a379b4638539e847f9e7e30495562db4663922aafd81ef7ddad095c2c6054791",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/beta-channel.mjs:10:20",
-      "file": "app/beta-channel.mjs",
-      "line": 10,
-      "column": 20,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "使用平台",
-      "sha256": "67d7aa4d4f375ae8c2f52ab41fab11e0c9b704825f5832fd49768c52c9330bc8",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/beta-channel.mjs:10:27",
-      "file": "app/beta-channel.mjs",
-      "line": 10,
-      "column": 27,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "版本 / 设备",
-      "sha256": "ccab8bba097b842f5b1ec930a1983c4cd2071e9a3565edf3448abc2f25265fba",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/beta-channel.mjs:10:37",
-      "file": "app/beta-channel.mjs",
-      "line": 10,
-      "column": 37,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "遇到的问题 / 预期的效果",
-      "sha256": "76934b04ea51dbd80634b84d81891ed5378b7bd37882b98dfd4123bd52b6651c",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/beta-channel.mjs:11:13",
-      "file": "app/beta-channel.mjs",
-      "line": 11,
-      "column": 13,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "使用回饋",
-      "sha256": "07f89d3f40db51d06be333cf893766bfb12d305e4ff079dbcd931943605c16f5",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/beta-channel.mjs:11:20",
-      "file": "app/beta-channel.mjs",
-      "line": 11,
-      "column": 20,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "使用平台",
-      "sha256": "67d7aa4d4f375ae8c2f52ab41fab11e0c9b704825f5832fd49768c52c9330bc8",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/beta-channel.mjs:11:27",
-      "file": "app/beta-channel.mjs",
-      "line": 11,
-      "column": 27,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "版本 / 裝置",
-      "sha256": "e97c6368def57b6fec2c4f825659db544f8c60a8c0ce70c8fd35b67def03c900",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/beta-channel.mjs:11:37",
-      "file": "app/beta-channel.mjs",
-      "line": 11,
-      "column": 37,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "遇到的問題 / 預期的效果",
-      "sha256": "997af00e8f6d4bf7a43cc54a437f2ef8fde426510a1405059dd9147e1205f0b2",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/beta-channel.mjs:12:6",
-      "file": "app/beta-channel.mjs",
-      "line": 12,
-      "column": 6,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "フィードバック",
-      "sha256": "ef222409da5f0958336b3258a5d62f7355be53ef98757e20fbb3398b3bbdd993",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/beta-channel.mjs:12:16",
-      "file": "app/beta-channel.mjs",
-      "line": 12,
-      "column": 16,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "利用環境",
-      "sha256": "ffd6d6eb9f6a187a5a4e32ca7e9e54874547a9d36c274f675d09aa6946c8a49a",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/beta-channel.mjs:12:23",
-      "file": "app/beta-channel.mjs",
-      "line": 12,
-      "column": 23,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "バージョン / 端末",
-      "sha256": "19c033189664a5e5277b508c0709e1a61e2326a78fc3ad863a9af3b4f74d89b4",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/beta-channel.mjs:12:36",
-      "file": "app/beta-channel.mjs",
-      "line": 12,
-      "column": 36,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "起きたこと / 期待した動作",
-      "sha256": "6ed88961f9a4d03afeb9c47d46c96212eb04d405bb04bf55c316e1fe6ae73754",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
       "id": "candidate:app/beta-page.mjs:5:45",
       "file": "app/beta-page.mjs",
       "line": 5,
@@ -149577,10 +149353,10 @@
       }
     },
     {
-      "id": "candidate:app/beta-page.mjs:8:19",
+      "id": "candidate:app/beta-page.mjs:59:14",
       "file": "app/beta-page.mjs",
-      "line": 8,
-      "column": 19,
+      "line": 59,
+      "column": 14,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "加入内测",
@@ -149597,10 +149373,10 @@
       }
     },
     {
-      "id": "candidate:app/beta-page.mjs:8:38",
+      "id": "candidate:app/beta-page.mjs:60:20",
       "file": "app/beta-page.mjs",
-      "line": 8,
-      "column": 38,
+      "line": 60,
+      "column": 20,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "在 Web 先读几页，把 Leafhour 带到 iPhone。直接体验内测，也欢迎告诉我们读起来如何。",
@@ -149617,10 +149393,10 @@
       }
     },
     {
-      "id": "candidate:app/beta-page.mjs:8:101",
+      "id": "candidate:app/beta-page.mjs:61:16",
       "file": "app/beta-page.mjs",
-      "line": 8,
-      "column": 101,
+      "line": 61,
+      "column": 16,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "下一本书，\n一起慢慢读。",
@@ -149637,10 +149413,10 @@
       }
     },
     {
-      "id": "candidate:app/beta-page.mjs:8:123",
+      "id": "candidate:app/beta-page.mjs:62:14",
       "file": "app/beta-page.mjs",
-      "line": 8,
-      "column": 123,
+      "line": 62,
+      "column": 14,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "Leafhour 正在内测。带一本想读的书来，试试读、听和提问，也告诉我们哪些地方还不顺手。",
@@ -149657,10 +149433,10 @@
       }
     },
     {
-      "id": "candidate:app/beta-page.mjs:8:176",
+      "id": "candidate:app/beta-page.mjs:63:12",
       "file": "app/beta-page.mjs",
-      "line": 8,
-      "column": 176,
+      "line": 63,
+      "column": 12,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "把书房带到 iPhone",
@@ -149677,10 +149453,10 @@
       }
     },
     {
-      "id": "candidate:app/beta-page.mjs:8:199",
+      "id": "candidate:app/beta-page.mjs:64:16",
       "file": "app/beta-page.mjs",
-      "line": 8,
-      "column": 199,
+      "line": 64,
+      "column": 16,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "读原文，逐句听读，对照译文。遇到难句，就在原页问下去。",
@@ -149697,10 +149473,10 @@
       }
     },
     {
-      "id": "candidate:app/beta-page.mjs:8:237",
+      "id": "candidate:app/beta-page.mjs:65:16",
       "file": "app/beta-page.mjs",
-      "line": 8,
-      "column": 237,
+      "line": 65,
+      "column": 16,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "通过 TestFlight 安装",
@@ -149717,10 +149493,10 @@
       }
     },
     {
-      "id": "candidate:app/beta-page.mjs:8:268",
+      "id": "candidate:app/beta-page.mjs:66:20",
       "file": "app/beta-page.mjs",
-      "line": 8,
-      "column": 268,
+      "line": 66,
+      "column": 20,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "iOS 安装入口确认中",
@@ -149737,10 +149513,10 @@
       }
     },
     {
-      "id": "candidate:app/beta-page.mjs:8:298",
+      "id": "candidate:app/beta-page.mjs:67:24",
       "file": "app/beta-page.mjs",
-      "line": 8,
-      "column": 298,
+      "line": 67,
+      "column": 24,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "公开安装链接暂未就绪。现在可以先在 Web 试读，或通过邮件联系我们。",
@@ -149757,10 +149533,10 @@
       }
     },
     {
-      "id": "candidate:app/beta-page.mjs:8:348",
+      "id": "candidate:app/beta-page.mjs:68:20",
       "file": "app/beta-page.mjs",
-      "line": 8,
-      "column": 348,
+      "line": 68,
+      "column": 20,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "需要 iOS 17 或更高版本 · 内测版",
@@ -149777,10 +149553,10 @@
       }
     },
     {
-      "id": "candidate:app/beta-page.mjs:8:379",
+      "id": "candidate:app/beta-page.mjs:70:7",
       "file": "app/beta-page.mjs",
-      "line": 8,
-      "column": 379,
+      "line": 70,
+      "column": 7,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "先安装 Apple 的 TestFlight。",
@@ -149797,10 +149573,10 @@
       }
     },
     {
-      "id": "candidate:app/beta-page.mjs:8:405",
+      "id": "candidate:app/beta-page.mjs:71:7",
       "file": "app/beta-page.mjs",
-      "line": 8,
-      "column": 405,
+      "line": 71,
+      "column": 7,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "打开 Leafhour 邀请，选择「接受」。",
@@ -149817,10 +149593,10 @@
       }
     },
     {
-      "id": "candidate:app/beta-page.mjs:8:430",
+      "id": "candidate:app/beta-page.mjs:72:7",
       "file": "app/beta-page.mjs",
-      "line": 8,
-      "column": 430,
+      "line": 72,
+      "column": 7,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "安装 Leafhour，打开第一本书。",
@@ -149837,10 +149613,10 @@
       }
     },
     {
-      "id": "candidate:app/beta-page.mjs:8:464",
+      "id": "candidate:app/beta-page.mjs:74:19",
       "file": "app/beta-page.mjs",
-      "line": 8,
-      "column": 464,
+      "line": 74,
+      "column": 19,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "获取 TestFlight",
@@ -149857,10 +149633,10 @@
       }
     },
     {
-      "id": "candidate:app/beta-page.mjs:8:491",
+      "id": "candidate:app/beta-page.mjs:75:19",
       "file": "app/beta-page.mjs",
-      "line": 8,
-      "column": 491,
+      "line": 75,
+      "column": 19,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "iPhone 真实阅读界面 · 公版样书",
@@ -149877,10 +149653,10 @@
       }
     },
     {
-      "id": "candidate:app/beta-page.mjs:8:523",
+      "id": "candidate:app/beta-page.mjs:76:17",
       "file": "app/beta-page.mjs",
-      "line": 8,
-      "column": 523,
+      "line": 76,
+      "column": 17,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "先读几页，再决定。",
@@ -149897,10 +149673,10 @@
       }
     },
     {
-      "id": "candidate:app/beta-page.mjs:8:543",
+      "id": "candidate:app/beta-page.mjs:77:16",
       "file": "app/beta-page.mjs",
-      "line": 8,
-      "column": 543,
+      "line": 77,
+      "column": 16,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "打开浏览器就能试读。在原文与译文间对照，准备好后，再把自己的书放进书房。",
@@ -149917,10 +149693,10 @@
       }
     },
     {
-      "id": "candidate:app/beta-page.mjs:8:588",
+      "id": "candidate:app/beta-page.mjs:78:14",
       "file": "app/beta-page.mjs",
-      "line": 8,
-      "column": 588,
+      "line": 78,
+      "column": 14,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "在 Web 试读",
@@ -149937,10 +149713,10 @@
       }
     },
     {
-      "id": "candidate:app/beta-page.mjs:8:604",
+      "id": "candidate:app/beta-page.mjs:79:13",
       "file": "app/beta-page.mjs",
-      "line": 8,
-      "column": 604,
+      "line": 79,
+      "column": 13,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "打开我的书房",
@@ -149957,10 +149733,10 @@
       }
     },
     {
-      "id": "candidate:app/beta-page.mjs:8:621",
+      "id": "candidate:app/beta-page.mjs:80:16",
       "file": "app/beta-page.mjs",
-      "line": 8,
-      "column": 621,
+      "line": 80,
+      "column": 16,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "公版样书无需注册，可以直接开始。",
@@ -149977,10 +149753,10 @@
       }
     },
     {
-      "id": "candidate:app/beta-page.mjs:8:651",
+      "id": "candidate:app/beta-page.mjs:81:19",
       "file": "app/beta-page.mjs",
-      "line": 8,
-      "column": 651,
+      "line": 81,
+      "column": 19,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "Web 真实阅读界面 · 公版样书",
@@ -149997,10 +149773,10 @@
       }
     },
     {
-      "id": "candidate:app/beta-page.mjs:8:683",
+      "id": "candidate:app/beta-page.mjs:82:20",
       "file": "app/beta-page.mjs",
-      "line": 8,
-      "column": 683,
+      "line": 82,
+      "column": 20,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "开始之前",
@@ -150017,10 +149793,10 @@
       }
     },
     {
-      "id": "candidate:app/beta-page.mjs:8:699",
+      "id": "candidate:app/beta-page.mjs:85:9",
       "file": "app/beta-page.mjs",
-      "line": 8,
-      "column": 699,
+      "line": 85,
+      "column": 9,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "还在不断打磨",
@@ -150037,10 +149813,10 @@
       }
     },
     {
-      "id": "candidate:app/beta-page.mjs:8:708",
+      "id": "candidate:app/beta-page.mjs:86:9",
       "file": "app/beta-page.mjs",
-      "line": 8,
-      "column": 708,
+      "line": 86,
+      "column": 9,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "部分交互会继续调整，也可能遇到不够顺手的地方。具体的使用反馈能帮助我们确定下一步。",
@@ -150057,10 +149833,10 @@
       }
     },
     {
-      "id": "candidate:app/beta-page.mjs:8:754",
+      "id": "candidate:app/beta-page.mjs:89:9",
       "file": "app/beta-page.mjs",
-      "line": 8,
-      "column": 754,
+      "line": 89,
+      "column": 9,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "阅读保持免费",
@@ -150077,10 +149853,10 @@
       }
     },
     {
-      "id": "candidate:app/beta-page.mjs:8:763",
+      "id": "candidate:app/beta-page.mjs:90:9",
       "file": "app/beta-page.mjs",
-      "line": 8,
-      "column": 763,
+      "line": 90,
+      "column": 9,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "阅读、笔记和导出免费。AI 功能沿用现有阅读点规则，使用前会显示相应费用。",
@@ -150097,10 +149873,10 @@
       }
     },
     {
-      "id": "candidate:app/beta-page.mjs:8:805",
+      "id": "candidate:app/beta-page.mjs:93:9",
       "file": "app/beta-page.mjs",
-      "line": 8,
-      "column": 805,
+      "line": 93,
+      "column": 9,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "同一个私人书房",
@@ -150117,10 +149893,10 @@
       }
     },
     {
-      "id": "candidate:app/beta-page.mjs:8:815",
+      "id": "candidate:app/beta-page.mjs:94:9",
       "file": "app/beta-page.mjs",
-      "line": 8,
-      "column": 815,
+      "line": 94,
+      "column": 9,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "Web 与 iPhone 可以使用同一 Leafhour 账号。本机书籍留在设备上，上传由你主动选择。",
@@ -150137,10 +149913,10 @@
       }
     },
     {
-      "id": "candidate:app/beta-page.mjs:8:879",
+      "id": "candidate:app/beta-page.mjs:97:16",
       "file": "app/beta-page.mjs",
-      "line": 8,
-      "column": 879,
+      "line": 97,
+      "column": 16,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "查看阅读点说明",
@@ -150157,10 +149933,10 @@
       }
     },
     {
-      "id": "candidate:app/beta-page.mjs:8:903",
+      "id": "candidate:app/beta-page.mjs:98:22",
       "file": "app/beta-page.mjs",
-      "line": 8,
-      "column": 903,
+      "line": 98,
+      "column": 22,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "读起来如何，\n想听听你的感受。",
@@ -150177,14 +149953,14 @@
       }
     },
     {
-      "id": "candidate:app/beta-page.mjs:8:936",
+      "id": "candidate:app/beta-page.mjs:99:22",
       "file": "app/beta-page.mjs",
-      "line": 8,
-      "column": 936,
+      "line": 99,
+      "column": 22,
       "kind": "js-cjk-literal",
       "property": null,
-      "value": "一个不顺手的手势，一句不够准确的译文，或一个希望增加的功能。简单说说就好。",
-      "sha256": "0053022ffb05bac71af0009b08339cce9b09858e98be971e26709c5d6ace891b",
+      "value": "哪里读得不顺手，或有新的想法，都可以直接写信给我们。",
+      "sha256": "ece99b536c947e2bea2d6d9ebe832566faa94f0472a1e1e75993420b2036e4eb",
       "protected": false,
       "protectionReason": null,
       "hints": [],
@@ -150197,10 +149973,10 @@
       }
     },
     {
-      "id": "candidate:app/beta-page.mjs:8:988",
+      "id": "candidate:app/beta-page.mjs:100:20",
       "file": "app/beta-page.mjs",
-      "line": 8,
-      "column": 988,
+      "line": 100,
+      "column": 20,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "直接写邮件",
@@ -150217,10 +149993,10 @@
       }
     },
     {
-      "id": "candidate:app/beta-page.mjs:8:1006",
+      "id": "candidate:app/beta-page.mjs:101:18",
       "file": "app/beta-page.mjs",
-      "line": 8,
-      "column": 1006,
+      "line": 101,
+      "column": 18,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "通过邮箱联系，无需加入社群，也不必公开提交问题。",
@@ -150237,290 +150013,10 @@
       }
     },
     {
-      "id": "candidate:app/beta-page.mjs:8:1042",
+      "id": "candidate:app/beta-page.mjs:102:13",
       "file": "app/beta-page.mjs",
-      "line": 8,
-      "column": 1042,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "你在哪里使用？",
-      "sha256": "1fb9ca64f35cd25fcdcf4b4560558698a1b0cf312ca98450806df7eb9957a99a",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/beta-page.mjs:8:1060",
-      "file": "app/beta-page.mjs",
-      "line": 8,
-      "column": 1060,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "版本或设备（选填）",
-      "sha256": "2fc11b444a0a7cfaf5813514ff6720c94bd3a334ff0a49a34bedbaa40cfbad0e",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/beta-page.mjs:8:1091",
-      "file": "app/beta-page.mjs",
-      "line": 8,
-      "column": 1091,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "例如：iPhone · iOS 17.5",
-      "sha256": "ff4d733c6d9668f87c0d8e47d77ffab9bb742df818f7971de9c44152fca3af29",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/beta-page.mjs:8:1121",
-      "file": "app/beta-page.mjs",
-      "line": 8,
-      "column": 1121,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "遇到了什么？你原本希望怎样？",
-      "sha256": "621d2243ee55be3718f5dfff3feb6f9f0cba0ca78dd114e18431a60d7c6df77f",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/beta-page.mjs:8:1156",
-      "file": "app/beta-page.mjs",
-      "line": 8,
-      "column": 1156,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "描述一下当时的操作和遇到的问题。截图可以在邮件应用中自行添加。",
-      "sha256": "a31c76259aa764feef80806bfa8b73722759f42aded3cbe596dd33a84ee446c2",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/beta-page.mjs:8:1198",
-      "file": "app/beta-page.mjs",
-      "line": 8,
-      "column": 1198,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "草稿只包含你在这里填写的文字，不会自动附上书籍、笔记或账号信息。本站不保存或发送这张表单。",
-      "sha256": "dabd09413829e3017b7c58fe774c8499fe04c1c0e2e9d9948d518c3cf37520cb",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/beta-page.mjs:8:1254",
-      "file": "app/beta-page.mjs",
-      "line": 8,
-      "column": 1254,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "准备反馈邮件",
-      "sha256": "f79a0ceebc8877dd0f1347cf2b73aa17d2cfc3fe378a4390b364cb16646d3777",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/beta-page.mjs:8:1272",
-      "file": "app/beta-page.mjs",
-      "line": 8,
-      "column": 1272,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "在邮件应用中打开",
-      "sha256": "37bdffb4d1b07298dfdea90905206852a02cd7dd85858a5f6b20c9237ad83bf1",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/beta-page.mjs:8:1288",
-      "file": "app/beta-page.mjs",
-      "line": 8,
-      "column": 1288,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "复制反馈内容",
-      "sha256": "5dd9c3d730a5b3233596126012d6a69308f27b914bf1a47704ce0e9b486b93ec",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/beta-page.mjs:8:1303",
-      "file": "app/beta-page.mjs",
-      "line": 8,
-      "column": 1303,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "草稿已准备好。请在邮件应用中检查后发送，本页尚未发送任何内容。",
-      "sha256": "08e0d93e3c030a97adc694eaf877cb675366ad8021fb1cabcfd8ddb904c8a31a",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/beta-page.mjs:8:1344",
-      "file": "app/beta-page.mjs",
-      "line": 8,
-      "column": 1344,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "反馈内容已复制，可粘贴到邮件并发送至 support@leafhour.com。",
-      "sha256": "395241490596757bce9e24aebffdf127050f8ba68733d4a724239b2175547dda",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/beta-page.mjs:8:1394",
-      "file": "app/beta-page.mjs",
-      "line": 8,
-      "column": 1394,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "请选中并复制下方草稿，再发送至 support@leafhour.com。",
-      "sha256": "4544dc50c5e98e023f9e6d5a84f852c4d3b81174362184b045080c051e9878ec",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/beta-page.mjs:8:1443",
-      "file": "app/beta-page.mjs",
-      "line": 8,
-      "column": 1443,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "邮件草稿",
-      "sha256": "6ac87bc66b7cf95a70d4a2b8aeacc92abca74d342f6120a26f6c19759cd03955",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/beta-page.mjs:8:1463",
-      "file": "app/beta-page.mjs",
-      "line": 8,
-      "column": 1463,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "没有邮件应用？可以把草稿复制到网页版邮箱。",
-      "sha256": "47210291bc3511e4d3069245651460d6d29b29add136127a8ee9f53e692bff4a",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/beta-page.mjs:8:1492",
-      "file": "app/beta-page.mjs",
-      "line": 8,
-      "column": 1492,
+      "line": 102,
+      "column": 13,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "跳到正文",
@@ -150537,10 +150033,10 @@
       }
     },
     {
-      "id": "candidate:app/beta-page.mjs:8:1511",
+      "id": "candidate:app/beta-page.mjs:103:20",
       "file": "app/beta-page.mjs",
-      "line": 8,
-      "column": 1511,
+      "line": 103,
+      "column": 20,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "隐私说明",
@@ -150557,10 +150053,10 @@
       }
     },
     {
-      "id": "candidate:app/beta-page.mjs:8:1524",
+      "id": "candidate:app/beta-page.mjs:104:14",
       "file": "app/beta-page.mjs",
-      "line": 8,
-      "column": 1524,
+      "line": 104,
+      "column": 14,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "服务条款",
@@ -150577,10 +150073,10 @@
       }
     },
     {
-      "id": "candidate:app/beta-page.mjs:8:1542",
+      "id": "candidate:app/beta-page.mjs:105:19",
       "file": "app/beta-page.mjs",
-      "line": 8,
-      "column": 1542,
+      "line": 105,
+      "column": 19,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "页面外观",
@@ -150597,10 +150093,10 @@
       }
     },
     {
-      "id": "candidate:app/beta-page.mjs:8:1559",
+      "id": "candidate:app/beta-page.mjs:106:18",
       "file": "app/beta-page.mjs",
-      "line": 8,
-      "column": 1559,
+      "line": 106,
+      "column": 18,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "页面语言",
@@ -150617,10 +150113,10 @@
       }
     },
     {
-      "id": "candidate:app/beta-page.mjs:8:1571",
+      "id": "candidate:app/beta-page.mjs:107:13",
       "file": "app/beta-page.mjs",
-      "line": 8,
-      "column": 1571,
+      "line": 107,
+      "column": 13,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "回到 Leafhour",
@@ -150637,10 +150133,10 @@
       }
     },
     {
-      "id": "candidate:app/beta-page.mjs:9:19",
+      "id": "candidate:app/beta-page.mjs:110:14",
       "file": "app/beta-page.mjs",
-      "line": 9,
-      "column": 19,
+      "line": 110,
+      "column": 14,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "加入內測",
@@ -150657,10 +150153,10 @@
       }
     },
     {
-      "id": "candidate:app/beta-page.mjs:9:38",
+      "id": "candidate:app/beta-page.mjs:111:20",
       "file": "app/beta-page.mjs",
-      "line": 9,
-      "column": 38,
+      "line": 111,
+      "column": 20,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "在 Web 先讀幾頁，把 Leafhour 帶到 iPhone。直接體驗內測，也歡迎告訴我們讀起來如何。",
@@ -150677,10 +150173,10 @@
       }
     },
     {
-      "id": "candidate:app/beta-page.mjs:9:101",
+      "id": "candidate:app/beta-page.mjs:112:16",
       "file": "app/beta-page.mjs",
-      "line": 9,
-      "column": 101,
+      "line": 112,
+      "column": 16,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "下一本書，\n一起慢慢讀。",
@@ -150697,10 +150193,10 @@
       }
     },
     {
-      "id": "candidate:app/beta-page.mjs:9:123",
+      "id": "candidate:app/beta-page.mjs:113:14",
       "file": "app/beta-page.mjs",
-      "line": 9,
-      "column": 123,
+      "line": 113,
+      "column": 14,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "Leafhour 正在內測。帶一本想讀的書來，試試讀、聽和提問，也告訴我們哪些地方還不順手。",
@@ -150717,10 +150213,10 @@
       }
     },
     {
-      "id": "candidate:app/beta-page.mjs:9:176",
+      "id": "candidate:app/beta-page.mjs:114:12",
       "file": "app/beta-page.mjs",
-      "line": 9,
-      "column": 176,
+      "line": 114,
+      "column": 12,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "把書房帶到 iPhone",
@@ -150737,10 +150233,10 @@
       }
     },
     {
-      "id": "candidate:app/beta-page.mjs:9:199",
+      "id": "candidate:app/beta-page.mjs:115:16",
       "file": "app/beta-page.mjs",
-      "line": 9,
-      "column": 199,
+      "line": 115,
+      "column": 16,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "讀原文，逐句聽讀，對照譯文。遇到難句，就在原頁問下去。",
@@ -150757,10 +150253,10 @@
       }
     },
     {
-      "id": "candidate:app/beta-page.mjs:9:237",
+      "id": "candidate:app/beta-page.mjs:116:16",
       "file": "app/beta-page.mjs",
-      "line": 9,
-      "column": 237,
+      "line": 116,
+      "column": 16,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "透過 TestFlight 安裝",
@@ -150777,10 +150273,10 @@
       }
     },
     {
-      "id": "candidate:app/beta-page.mjs:9:268",
+      "id": "candidate:app/beta-page.mjs:117:20",
       "file": "app/beta-page.mjs",
-      "line": 9,
-      "column": 268,
+      "line": 117,
+      "column": 20,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "iOS 安裝入口確認中",
@@ -150797,10 +150293,10 @@
       }
     },
     {
-      "id": "candidate:app/beta-page.mjs:9:298",
+      "id": "candidate:app/beta-page.mjs:118:24",
       "file": "app/beta-page.mjs",
-      "line": 9,
-      "column": 298,
+      "line": 118,
+      "column": 24,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "公開安裝連結暫未就緒。現在可以先在 Web 試讀，或透過郵件聯絡我們。",
@@ -150817,10 +150313,10 @@
       }
     },
     {
-      "id": "candidate:app/beta-page.mjs:9:348",
+      "id": "candidate:app/beta-page.mjs:119:20",
       "file": "app/beta-page.mjs",
-      "line": 9,
-      "column": 348,
+      "line": 119,
+      "column": 20,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "需要 iOS 17 或以上版本 · 內測版",
@@ -150837,10 +150333,10 @@
       }
     },
     {
-      "id": "candidate:app/beta-page.mjs:9:379",
+      "id": "candidate:app/beta-page.mjs:121:7",
       "file": "app/beta-page.mjs",
-      "line": 9,
-      "column": 379,
+      "line": 121,
+      "column": 7,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "先安裝 Apple 的 TestFlight。",
@@ -150857,10 +150353,10 @@
       }
     },
     {
-      "id": "candidate:app/beta-page.mjs:9:405",
+      "id": "candidate:app/beta-page.mjs:122:7",
       "file": "app/beta-page.mjs",
-      "line": 9,
-      "column": 405,
+      "line": 122,
+      "column": 7,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "打開 Leafhour 邀請，選擇「接受」。",
@@ -150877,10 +150373,10 @@
       }
     },
     {
-      "id": "candidate:app/beta-page.mjs:9:430",
+      "id": "candidate:app/beta-page.mjs:123:7",
       "file": "app/beta-page.mjs",
-      "line": 9,
-      "column": 430,
+      "line": 123,
+      "column": 7,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "安裝 Leafhour，打開第一本書。",
@@ -150897,10 +150393,10 @@
       }
     },
     {
-      "id": "candidate:app/beta-page.mjs:9:464",
+      "id": "candidate:app/beta-page.mjs:125:19",
       "file": "app/beta-page.mjs",
-      "line": 9,
-      "column": 464,
+      "line": 125,
+      "column": 19,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "取得 TestFlight",
@@ -150917,10 +150413,10 @@
       }
     },
     {
-      "id": "candidate:app/beta-page.mjs:9:491",
+      "id": "candidate:app/beta-page.mjs:126:19",
       "file": "app/beta-page.mjs",
-      "line": 9,
-      "column": 491,
+      "line": 126,
+      "column": 19,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "iPhone 真實閱讀介面 · 公版範例書",
@@ -150937,10 +150433,10 @@
       }
     },
     {
-      "id": "candidate:app/beta-page.mjs:9:524",
+      "id": "candidate:app/beta-page.mjs:127:17",
       "file": "app/beta-page.mjs",
-      "line": 9,
-      "column": 524,
+      "line": 127,
+      "column": 17,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "先讀幾頁，再決定。",
@@ -150957,10 +150453,10 @@
       }
     },
     {
-      "id": "candidate:app/beta-page.mjs:9:544",
+      "id": "candidate:app/beta-page.mjs:128:16",
       "file": "app/beta-page.mjs",
-      "line": 9,
-      "column": 544,
+      "line": 128,
+      "column": 16,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "打開瀏覽器就能試讀。在原文與譯文間對照，準備好後，再把自己的書放進書房。",
@@ -150977,10 +150473,10 @@
       }
     },
     {
-      "id": "candidate:app/beta-page.mjs:9:589",
+      "id": "candidate:app/beta-page.mjs:129:14",
       "file": "app/beta-page.mjs",
-      "line": 9,
-      "column": 589,
+      "line": 129,
+      "column": 14,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "在 Web 試讀",
@@ -150997,10 +150493,10 @@
       }
     },
     {
-      "id": "candidate:app/beta-page.mjs:9:605",
+      "id": "candidate:app/beta-page.mjs:130:13",
       "file": "app/beta-page.mjs",
-      "line": 9,
-      "column": 605,
+      "line": 130,
+      "column": 13,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "打開我的書房",
@@ -151017,10 +150513,10 @@
       }
     },
     {
-      "id": "candidate:app/beta-page.mjs:9:622",
+      "id": "candidate:app/beta-page.mjs:131:16",
       "file": "app/beta-page.mjs",
-      "line": 9,
-      "column": 622,
+      "line": 131,
+      "column": 16,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "公版範例書無需註冊，可以直接開始。",
@@ -151037,10 +150533,10 @@
       }
     },
     {
-      "id": "candidate:app/beta-page.mjs:9:653",
+      "id": "candidate:app/beta-page.mjs:132:19",
       "file": "app/beta-page.mjs",
-      "line": 9,
-      "column": 653,
+      "line": 132,
+      "column": 19,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "Web 真實閱讀介面 · 公版範例書",
@@ -151057,10 +150553,10 @@
       }
     },
     {
-      "id": "candidate:app/beta-page.mjs:9:686",
+      "id": "candidate:app/beta-page.mjs:133:20",
       "file": "app/beta-page.mjs",
-      "line": 9,
-      "column": 686,
+      "line": 133,
+      "column": 20,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "開始之前",
@@ -151077,10 +150573,10 @@
       }
     },
     {
-      "id": "candidate:app/beta-page.mjs:9:702",
+      "id": "candidate:app/beta-page.mjs:136:9",
       "file": "app/beta-page.mjs",
-      "line": 9,
-      "column": 702,
+      "line": 136,
+      "column": 9,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "還在持續打磨",
@@ -151097,10 +150593,10 @@
       }
     },
     {
-      "id": "candidate:app/beta-page.mjs:9:711",
+      "id": "candidate:app/beta-page.mjs:137:9",
       "file": "app/beta-page.mjs",
-      "line": 9,
-      "column": 711,
+      "line": 137,
+      "column": 9,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "部分互動會繼續調整，也可能遇到不夠順手的地方。具體的使用回饋能幫助我們決定下一步。",
@@ -151117,10 +150613,10 @@
       }
     },
     {
-      "id": "candidate:app/beta-page.mjs:9:757",
+      "id": "candidate:app/beta-page.mjs:140:9",
       "file": "app/beta-page.mjs",
-      "line": 9,
-      "column": 757,
+      "line": 140,
+      "column": 9,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "閱讀保持免費",
@@ -151137,10 +150633,10 @@
       }
     },
     {
-      "id": "candidate:app/beta-page.mjs:9:766",
+      "id": "candidate:app/beta-page.mjs:141:9",
       "file": "app/beta-page.mjs",
-      "line": 9,
-      "column": 766,
+      "line": 141,
+      "column": 9,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "閱讀、筆記和匯出免費。AI 功能沿用現有閱讀點規則，使用前會顯示相應費用。",
@@ -151157,10 +150653,10 @@
       }
     },
     {
-      "id": "candidate:app/beta-page.mjs:9:808",
+      "id": "candidate:app/beta-page.mjs:144:9",
       "file": "app/beta-page.mjs",
-      "line": 9,
-      "column": 808,
+      "line": 144,
+      "column": 9,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "同一個私人書房",
@@ -151177,10 +150673,10 @@
       }
     },
     {
-      "id": "candidate:app/beta-page.mjs:9:818",
+      "id": "candidate:app/beta-page.mjs:145:9",
       "file": "app/beta-page.mjs",
-      "line": 9,
-      "column": 818,
+      "line": 145,
+      "column": 9,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "Web 與 iPhone 可以使用同一 Leafhour 帳號。本機書籍留在裝置上，上傳由你主動選擇。",
@@ -151197,10 +150693,10 @@
       }
     },
     {
-      "id": "candidate:app/beta-page.mjs:9:882",
+      "id": "candidate:app/beta-page.mjs:148:16",
       "file": "app/beta-page.mjs",
-      "line": 9,
-      "column": 882,
+      "line": 148,
+      "column": 16,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "查看閱讀點說明",
@@ -151217,10 +150713,10 @@
       }
     },
     {
-      "id": "candidate:app/beta-page.mjs:9:906",
+      "id": "candidate:app/beta-page.mjs:149:22",
       "file": "app/beta-page.mjs",
-      "line": 9,
-      "column": 906,
+      "line": 149,
+      "column": 22,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "讀起來如何，\n想聽聽你的感受。",
@@ -151237,14 +150733,14 @@
       }
     },
     {
-      "id": "candidate:app/beta-page.mjs:9:939",
+      "id": "candidate:app/beta-page.mjs:150:22",
       "file": "app/beta-page.mjs",
-      "line": 9,
-      "column": 939,
+      "line": 150,
+      "column": 22,
       "kind": "js-cjk-literal",
       "property": null,
-      "value": "一個不順手的手勢，一句不夠準確的譯文，或一個希望增加的功能。簡單說說就好。",
-      "sha256": "526874b87459e71ef7f2c7d50650d019060bb665f3e0b9ef077feb21bad89220",
+      "value": "哪裡讀得不順手，或有新的想法，都可以直接寫信給我們。",
+      "sha256": "ece3c95e3288b70cccba5c55a6376ba197f397503cb186797f91b9b301c08233",
       "protected": false,
       "protectionReason": null,
       "hints": [],
@@ -151257,10 +150753,10 @@
       }
     },
     {
-      "id": "candidate:app/beta-page.mjs:9:991",
+      "id": "candidate:app/beta-page.mjs:151:20",
       "file": "app/beta-page.mjs",
-      "line": 9,
-      "column": 991,
+      "line": 151,
+      "column": 20,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "直接寫郵件",
@@ -151277,10 +150773,10 @@
       }
     },
     {
-      "id": "candidate:app/beta-page.mjs:9:1009",
+      "id": "candidate:app/beta-page.mjs:152:18",
       "file": "app/beta-page.mjs",
-      "line": 9,
-      "column": 1009,
+      "line": 152,
+      "column": 18,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "透過信箱聯絡，無需加入社群，也不必公開提交問題。",
@@ -151297,290 +150793,10 @@
       }
     },
     {
-      "id": "candidate:app/beta-page.mjs:9:1045",
+      "id": "candidate:app/beta-page.mjs:153:13",
       "file": "app/beta-page.mjs",
-      "line": 9,
-      "column": 1045,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "你在哪裡使用？",
-      "sha256": "92b0d98d5e65dde3826c40727ec341c7a59c20340638523a48a4620f9d9ef15d",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/beta-page.mjs:9:1063",
-      "file": "app/beta-page.mjs",
-      "line": 9,
-      "column": 1063,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "版本或裝置（選填）",
-      "sha256": "26061d0c2419e0753202c446d5a653d08257bc46842e2201aa79af587d475814",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/beta-page.mjs:9:1094",
-      "file": "app/beta-page.mjs",
-      "line": 9,
-      "column": 1094,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "例如：iPhone · iOS 17.5",
-      "sha256": "ff4d733c6d9668f87c0d8e47d77ffab9bb742df818f7971de9c44152fca3af29",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/beta-page.mjs:9:1124",
-      "file": "app/beta-page.mjs",
-      "line": 9,
-      "column": 1124,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "遇到了什麼？你原本希望怎樣？",
-      "sha256": "52733b9ebccb5e1e3a2690e67caf39d37e2ae5f95f36c14fcd2f85dec8967a7e",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/beta-page.mjs:9:1159",
-      "file": "app/beta-page.mjs",
-      "line": 9,
-      "column": 1159,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "描述一下當時的操作和遇到的問題。截圖可以在郵件應用程式中自行加入。",
-      "sha256": "1948db9fa9746679bb1fd1d9a1c289a5786ea80f91dd6b03b1c7bc7c60c3934b",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/beta-page.mjs:9:1203",
-      "file": "app/beta-page.mjs",
-      "line": 9,
-      "column": 1203,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "草稿只包含你在這裡填寫的文字，不會自動附上書籍、筆記或帳號資訊。本站不儲存或傳送這張表單。",
-      "sha256": "89e087f5c37843c74d08f48cc0e6503d7259a43e94f9933b4e295b14054ecc48",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/beta-page.mjs:9:1259",
-      "file": "app/beta-page.mjs",
-      "line": 9,
-      "column": 1259,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "準備回饋郵件",
-      "sha256": "5504212f60042cb5059703195f3a0d81315dbbd64a58582b7996b7766a34e59e",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/beta-page.mjs:9:1277",
-      "file": "app/beta-page.mjs",
-      "line": 9,
-      "column": 1277,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "在郵件應用程式中開啟",
-      "sha256": "5d92d752301edd5aa3a4ac6f5aae38a582c92a4b7913987a5a3234f14840ceb7",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/beta-page.mjs:9:1295",
-      "file": "app/beta-page.mjs",
-      "line": 9,
-      "column": 1295,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "複製回饋內容",
-      "sha256": "ca40082bdfb0321c083097aba0789da52d76a3445729e1ab5d89d1ad37d8c83c",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/beta-page.mjs:9:1310",
-      "file": "app/beta-page.mjs",
-      "line": 9,
-      "column": 1310,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "草稿已準備好。請在郵件應用程式中檢查後寄出，本頁尚未傳送任何內容。",
-      "sha256": "1722be520f383b6ebeb57112a3a1f5a1857f27b8b5a3d7600159ac9f3b8b82d2",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/beta-page.mjs:9:1353",
-      "file": "app/beta-page.mjs",
-      "line": 9,
-      "column": 1353,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "回饋內容已複製，可貼到郵件並寄至 support@leafhour.com。",
-      "sha256": "5c36913684a4e7f823799355d10d1359077bd903fe71e7b350ef625fb4acb793",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/beta-page.mjs:9:1401",
-      "file": "app/beta-page.mjs",
-      "line": 9,
-      "column": 1401,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "請選取並複製下方草稿，再寄至 support@leafhour.com。",
-      "sha256": "b5547473ea1c79b118265e8509db79c4303a46ed0a4878fef01ac56428c0af20",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/beta-page.mjs:9:1449",
-      "file": "app/beta-page.mjs",
-      "line": 9,
-      "column": 1449,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "郵件草稿",
-      "sha256": "6e0ef2fe9e6c890bb0fcc6612cd450d858644fb80e8933a696f24b4473faec0f",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/beta-page.mjs:9:1469",
-      "file": "app/beta-page.mjs",
-      "line": 9,
-      "column": 1469,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "沒有郵件應用程式？可以把草稿複製到網頁版信箱。",
-      "sha256": "33ab2a37f99701b9b21415d3b0af2537355bedf600ad1b9b99760d7f25a47e94",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/beta-page.mjs:9:1500",
-      "file": "app/beta-page.mjs",
-      "line": 9,
-      "column": 1500,
+      "line": 153,
+      "column": 13,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "跳到正文",
@@ -151597,10 +150813,10 @@
       }
     },
     {
-      "id": "candidate:app/beta-page.mjs:9:1519",
+      "id": "candidate:app/beta-page.mjs:154:20",
       "file": "app/beta-page.mjs",
-      "line": 9,
-      "column": 1519,
+      "line": 154,
+      "column": 20,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "隱私說明",
@@ -151617,10 +150833,10 @@
       }
     },
     {
-      "id": "candidate:app/beta-page.mjs:9:1532",
+      "id": "candidate:app/beta-page.mjs:155:14",
       "file": "app/beta-page.mjs",
-      "line": 9,
-      "column": 1532,
+      "line": 155,
+      "column": 14,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "服務條款",
@@ -151637,10 +150853,10 @@
       }
     },
     {
-      "id": "candidate:app/beta-page.mjs:9:1550",
+      "id": "candidate:app/beta-page.mjs:156:19",
       "file": "app/beta-page.mjs",
-      "line": 9,
-      "column": 1550,
+      "line": 156,
+      "column": 19,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "頁面外觀",
@@ -151657,10 +150873,10 @@
       }
     },
     {
-      "id": "candidate:app/beta-page.mjs:9:1567",
+      "id": "candidate:app/beta-page.mjs:157:18",
       "file": "app/beta-page.mjs",
-      "line": 9,
-      "column": 1567,
+      "line": 157,
+      "column": 18,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "頁面語言",
@@ -151677,10 +150893,10 @@
       }
     },
     {
-      "id": "candidate:app/beta-page.mjs:9:1579",
+      "id": "candidate:app/beta-page.mjs:158:13",
       "file": "app/beta-page.mjs",
-      "line": 9,
-      "column": 1579,
+      "line": 158,
+      "column": 13,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "回到 Leafhour",
@@ -151697,10 +150913,10 @@
       }
     },
     {
-      "id": "candidate:app/beta-page.mjs:10:12",
+      "id": "candidate:app/beta-page.mjs:161:14",
       "file": "app/beta-page.mjs",
-      "line": 10,
-      "column": 12,
+      "line": 161,
+      "column": 14,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "ベータ版に参加",
@@ -151717,10 +150933,10 @@
       }
     },
     {
-      "id": "candidate:app/beta-page.mjs:10:34",
+      "id": "candidate:app/beta-page.mjs:162:20",
       "file": "app/beta-page.mjs",
-      "line": 10,
-      "column": 34,
+      "line": 162,
+      "column": 20,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "Webですぐに試し、iPhoneでもLeafhourを。ベータ版を使って、読書の感想をお聞かせください。",
@@ -151737,10 +150953,10 @@
       }
     },
     {
-      "id": "candidate:app/beta-page.mjs:10:97",
+      "id": "candidate:app/beta-page.mjs:163:16",
       "file": "app/beta-page.mjs",
-      "line": 10,
-      "column": 97,
+      "line": 163,
+      "column": 16,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "次の一冊を、\n一緒にゆっくり。",
@@ -151757,10 +150973,10 @@
       }
     },
     {
-      "id": "candidate:app/beta-page.mjs:10:122",
+      "id": "candidate:app/beta-page.mjs:164:14",
       "file": "app/beta-page.mjs",
-      "line": 10,
-      "column": 122,
+      "line": 164,
+      "column": 14,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "Leafhourはベータ版を公開しています。読みたい本を一冊持って、読む・聴く・質問する体験を試してみてください。",
@@ -151777,10 +150993,10 @@
       }
     },
     {
-      "id": "candidate:app/beta-page.mjs:10:186",
+      "id": "candidate:app/beta-page.mjs:165:12",
       "file": "app/beta-page.mjs",
-      "line": 10,
-      "column": 186,
+      "line": 165,
+      "column": 12,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "書斎をiPhoneに",
@@ -151797,10 +151013,10 @@
       }
     },
     {
-      "id": "candidate:app/beta-page.mjs:10:207",
+      "id": "candidate:app/beta-page.mjs:166:16",
       "file": "app/beta-page.mjs",
-      "line": 10,
-      "column": 207,
+      "line": 166,
+      "column": 16,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "原文を読み、一文ずつ聴き、訳文と見比べる。難しい箇所は、そのページで質問できます。",
@@ -151817,10 +151033,10 @@
       }
     },
     {
-      "id": "candidate:app/beta-page.mjs:10:259",
+      "id": "candidate:app/beta-page.mjs:167:16",
       "file": "app/beta-page.mjs",
-      "line": 10,
-      "column": 259,
+      "line": 167,
+      "column": 16,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "TestFlightでインストール",
@@ -151837,10 +151053,10 @@
       }
     },
     {
-      "id": "candidate:app/beta-page.mjs:10:291",
+      "id": "candidate:app/beta-page.mjs:168:20",
       "file": "app/beta-page.mjs",
-      "line": 10,
-      "column": 291,
+      "line": 168,
+      "column": 20,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "iOSのインストール先を確認中",
@@ -151857,10 +151073,10 @@
       }
     },
     {
-      "id": "candidate:app/beta-page.mjs:10:325",
+      "id": "candidate:app/beta-page.mjs:169:24",
       "file": "app/beta-page.mjs",
-      "line": 10,
-      "column": 325,
+      "line": 169,
+      "column": 24,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "公開インストールリンクはまだ利用できません。Webで試すか、メールでお問い合わせください。",
@@ -151877,10 +151093,10 @@
       }
     },
     {
-      "id": "candidate:app/beta-page.mjs:10:385",
+      "id": "candidate:app/beta-page.mjs:170:20",
       "file": "app/beta-page.mjs",
-      "line": 10,
-      "column": 385,
+      "line": 170,
+      "column": 20,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "iOS 17以降 · ベータ版",
@@ -151897,10 +151113,10 @@
       }
     },
     {
-      "id": "candidate:app/beta-page.mjs:10:410",
+      "id": "candidate:app/beta-page.mjs:172:7",
       "file": "app/beta-page.mjs",
-      "line": 10,
-      "column": 410,
+      "line": 172,
+      "column": 7,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "AppleのTestFlightをインストールします。",
@@ -151917,10 +151133,10 @@
       }
     },
     {
-      "id": "candidate:app/beta-page.mjs:10:440",
+      "id": "candidate:app/beta-page.mjs:173:7",
       "file": "app/beta-page.mjs",
-      "line": 10,
-      "column": 440,
+      "line": 173,
+      "column": 7,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "Leafhourの招待を開き、「承諾」を選びます。",
@@ -151937,10 +151153,10 @@
       }
     },
     {
-      "id": "candidate:app/beta-page.mjs:10:468",
+      "id": "candidate:app/beta-page.mjs:174:7",
       "file": "app/beta-page.mjs",
-      "line": 10,
-      "column": 468,
+      "line": 174,
+      "column": 7,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "Leafhourをインストールして、本を開きます。",
@@ -151957,10 +151173,10 @@
       }
     },
     {
-      "id": "candidate:app/beta-page.mjs:10:508",
+      "id": "candidate:app/beta-page.mjs:176:19",
       "file": "app/beta-page.mjs",
-      "line": 10,
-      "column": 508,
+      "line": 176,
+      "column": 19,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "TestFlightを入手",
@@ -151977,10 +151193,10 @@
       }
     },
     {
-      "id": "candidate:app/beta-page.mjs:10:535",
+      "id": "candidate:app/beta-page.mjs:177:19",
       "file": "app/beta-page.mjs",
-      "line": 10,
-      "column": 535,
+      "line": 177,
+      "column": 19,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "実際のiPhone画面 · パブリックドメインのサンプル",
@@ -151997,10 +151213,10 @@
       }
     },
     {
-      "id": "candidate:app/beta-page.mjs:10:575",
+      "id": "candidate:app/beta-page.mjs:178:17",
       "file": "app/beta-page.mjs",
-      "line": 10,
-      "column": 575,
+      "line": 178,
+      "column": 17,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "まずは数ページから。",
@@ -152017,10 +151233,10 @@
       }
     },
     {
-      "id": "candidate:app/beta-page.mjs:10:596",
+      "id": "candidate:app/beta-page.mjs:179:16",
       "file": "app/beta-page.mjs",
-      "line": 10,
-      "column": 596,
+      "line": 179,
+      "column": 16,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "ブラウザでサンプルを開き、原文と訳文を見比べてください。準備ができたら、自分の本を書斎へ。",
@@ -152037,10 +151253,10 @@
       }
     },
     {
-      "id": "candidate:app/beta-page.mjs:10:650",
+      "id": "candidate:app/beta-page.mjs:180:14",
       "file": "app/beta-page.mjs",
-      "line": 10,
-      "column": 650,
+      "line": 180,
+      "column": 14,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "Webで試し読み",
@@ -152057,10 +151273,10 @@
       }
     },
     {
-      "id": "candidate:app/beta-page.mjs:10:666",
+      "id": "candidate:app/beta-page.mjs:181:13",
       "file": "app/beta-page.mjs",
-      "line": 10,
-      "column": 666,
+      "line": 181,
+      "column": 13,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "自分の書斎を開く",
@@ -152077,10 +151293,10 @@
       }
     },
     {
-      "id": "candidate:app/beta-page.mjs:10:685",
+      "id": "candidate:app/beta-page.mjs:182:16",
       "file": "app/beta-page.mjs",
-      "line": 10,
-      "column": 685,
+      "line": 182,
+      "column": 16,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "サンプルの試し読みには登録不要です。",
@@ -152097,10 +151313,10 @@
       }
     },
     {
-      "id": "candidate:app/beta-page.mjs:10:717",
+      "id": "candidate:app/beta-page.mjs:183:19",
       "file": "app/beta-page.mjs",
-      "line": 10,
-      "column": 717,
+      "line": 183,
+      "column": 19,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "実際のWeb画面 · パブリックドメインのサンプル",
@@ -152117,10 +151333,10 @@
       }
     },
     {
-      "id": "candidate:app/beta-page.mjs:10:757",
+      "id": "candidate:app/beta-page.mjs:184:20",
       "file": "app/beta-page.mjs",
-      "line": 10,
-      "column": 757,
+      "line": 184,
+      "column": 20,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "始める前に",
@@ -152137,10 +151353,10 @@
       }
     },
     {
-      "id": "candidate:app/beta-page.mjs:10:774",
+      "id": "candidate:app/beta-page.mjs:187:9",
       "file": "app/beta-page.mjs",
-      "line": 10,
-      "column": 774,
+      "line": 187,
+      "column": 9,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "改善を続けています",
@@ -152157,10 +151373,10 @@
       }
     },
     {
-      "id": "candidate:app/beta-page.mjs:10:786",
+      "id": "candidate:app/beta-page.mjs:188:9",
       "file": "app/beta-page.mjs",
-      "line": 10,
-      "column": 786,
+      "line": 188,
+      "column": 9,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "操作が変わったり、使いづらい点が見つかったりすることがあります。具体的なご感想が改善の手がかりになります。",
@@ -152177,10 +151393,10 @@
       }
     },
     {
-      "id": "candidate:app/beta-page.mjs:10:844",
+      "id": "candidate:app/beta-page.mjs:191:9",
       "file": "app/beta-page.mjs",
-      "line": 10,
-      "column": 844,
+      "line": 191,
+      "column": 9,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "読書は無料です",
@@ -152197,10 +151413,10 @@
       }
     },
     {
-      "id": "candidate:app/beta-page.mjs:10:854",
+      "id": "candidate:app/beta-page.mjs:192:9",
       "file": "app/beta-page.mjs",
-      "line": 10,
-      "column": 854,
+      "line": 192,
+      "column": 9,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "読書、ノート、エクスポートは無料です。AI機能には現在のポイント規則が適用され、利用前に料金が表示されます。",
@@ -152217,10 +151433,10 @@
       }
     },
     {
-      "id": "candidate:app/beta-page.mjs:10:913",
+      "id": "candidate:app/beta-page.mjs:195:9",
       "file": "app/beta-page.mjs",
-      "line": 10,
-      "column": 913,
+      "line": 195,
+      "column": 9,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "同じ自分の書斎",
@@ -152237,10 +151453,10 @@
       }
     },
     {
-      "id": "candidate:app/beta-page.mjs:10:923",
+      "id": "candidate:app/beta-page.mjs:196:9",
       "file": "app/beta-page.mjs",
-      "line": 10,
-      "column": 923,
+      "line": 196,
+      "column": 9,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "WebとiPhoneで同じLeafhourアカウントを使えます。端末内の本は、アップロードを選ぶまで端末に残ります。",
@@ -152257,10 +151473,10 @@
       }
     },
     {
-      "id": "candidate:app/beta-page.mjs:10:994",
+      "id": "candidate:app/beta-page.mjs:199:16",
       "file": "app/beta-page.mjs",
-      "line": 10,
-      "column": 994,
+      "line": 199,
+      "column": 16,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "ポイントについて",
@@ -152277,10 +151493,10 @@
       }
     },
     {
-      "id": "candidate:app/beta-page.mjs:10:1019",
+      "id": "candidate:app/beta-page.mjs:200:22",
       "file": "app/beta-page.mjs",
-      "line": 10,
-      "column": 1019,
+      "line": 200,
+      "column": 22,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "読んでみて、\nいかがでしたか。",
@@ -152297,14 +151513,14 @@
       }
     },
     {
-      "id": "candidate:app/beta-page.mjs:10:1052",
+      "id": "candidate:app/beta-page.mjs:201:22",
       "file": "app/beta-page.mjs",
-      "line": 10,
-      "column": 1052,
+      "line": 201,
+      "column": 22,
       "kind": "js-cjk-literal",
       "property": null,
-      "value": "使いづらい操作、不自然な訳文、あったらうれしい機能。短いご感想でも歓迎します。",
-      "sha256": "a5fdf6ed50457a92eb0b4222f8e64238241779c07cfa0a5a632cf182820a4978",
+      "value": "読みにくかったところや、あったらうれしいこと。メールでお聞かせください。",
+      "sha256": "4ed87b94374880cc76e641abfe8e504bfa9c48cd00e93c5322e8cc6b4d39aeb8",
       "protected": false,
       "protectionReason": null,
       "hints": [],
@@ -152317,10 +151533,10 @@
       }
     },
     {
-      "id": "candidate:app/beta-page.mjs:10:1106",
+      "id": "candidate:app/beta-page.mjs:202:20",
       "file": "app/beta-page.mjs",
-      "line": 10,
-      "column": 1106,
+      "line": 202,
+      "column": 20,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "メールを書く",
@@ -152337,10 +151553,10 @@
       }
     },
     {
-      "id": "candidate:app/beta-page.mjs:10:1125",
+      "id": "candidate:app/beta-page.mjs:203:18",
       "file": "app/beta-page.mjs",
-      "line": 10,
-      "column": 1125,
+      "line": 203,
+      "column": 18,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "メールで直接ご連絡ください。コミュニティへの参加や公開投稿は不要です。",
@@ -152357,290 +151573,10 @@
       }
     },
     {
-      "id": "candidate:app/beta-page.mjs:10:1172",
+      "id": "candidate:app/beta-page.mjs:204:13",
       "file": "app/beta-page.mjs",
-      "line": 10,
-      "column": 1172,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "どちらで使いましたか？",
-      "sha256": "1f2b21bf395f2bb6d49de7cbbfb61ae84d7400a92f00f4c96a66737ba82bc1cb",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/beta-page.mjs:10:1194",
-      "file": "app/beta-page.mjs",
-      "line": 10,
-      "column": 1194,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "バージョンや端末（任意）",
-      "sha256": "29281665451e4a073cf840aa6e45967d734e14df0ce285b8869cfe83794f4cfa",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/beta-page.mjs:10:1228",
-      "file": "app/beta-page.mjs",
-      "line": 10,
-      "column": 1228,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "例：iPhone · iOS 17.5",
-      "sha256": "40cd385efbc8f04e554f4f556dc37a7338ddcf2588a916632cba2a9277a87c82",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/beta-page.mjs:10:1257",
-      "file": "app/beta-page.mjs",
-      "line": 10,
-      "column": 1257,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "起きたことと、期待した動作を教えてください。",
-      "sha256": "011474b539f8516728c2d50d0362ccb67f8fc4121234c85f5412c0b293aeb5c4",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/beta-page.mjs:10:1300",
-      "file": "app/beta-page.mjs",
-      "line": 10,
-      "column": 1300,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "行った操作と困った点をお書きください。スクリーンショットはメールアプリで添付できます。",
-      "sha256": "fb8633012f6729149bb87ea3220f9e150b98d6db284ffc79f1789bc9ab8f4a80",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/beta-page.mjs:10:1354",
-      "file": "app/beta-page.mjs",
-      "line": 10,
-      "column": 1354,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "下書きに含まれるのは、ここで入力した内容だけです。本、ノート、アカウント情報は自動添付しません。このフォームをサイトが保存・送信することはありません。",
-      "sha256": "0dcddcf07e6014c325bbac8ccea7d80a8cc2fb510cfa632ae7039064a4032a53",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/beta-page.mjs:10:1440",
-      "file": "app/beta-page.mjs",
-      "line": 10,
-      "column": 1440,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "メールの下書きを作る",
-      "sha256": "da17aacb7dacc73d6db5f2c132124277a9f0e034c402a7d5d9d8383c200cd322",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/beta-page.mjs:10:1462",
-      "file": "app/beta-page.mjs",
-      "line": 10,
-      "column": 1462,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "メールアプリで開く",
-      "sha256": "e090ccf0c3b5d6d0601894b558c9038c11f6fe0abf3aca4543ba7acb3db1501a",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/beta-page.mjs:10:1479",
-      "file": "app/beta-page.mjs",
-      "line": 10,
-      "column": 1479,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "内容をコピー",
-      "sha256": "77ca14330dea5adb090360421bdc1386bbb26782936fc3a9d370571aec07c38f",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/beta-page.mjs:10:1494",
-      "file": "app/beta-page.mjs",
-      "line": 10,
-      "column": 1494,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "下書きができました。メールアプリで確認してから送信してください。このページからは送信していません。",
-      "sha256": "885343a32d7eddbd2ec8a9ccbe0ee3acf35e019e994b6149b158828fce84c3b2",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/beta-page.mjs:10:1553",
-      "file": "app/beta-page.mjs",
-      "line": 10,
-      "column": 1553,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "内容をコピーしました。メールに貼り付け、support@leafhour.comへ送信してください。",
-      "sha256": "1b74ce4aaec81dca0ae7ca6673a946603fd9fa18e4528ba46797f0cb5b81c7a9",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/beta-page.mjs:10:1613",
-      "file": "app/beta-page.mjs",
-      "line": 10,
-      "column": 1613,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "下の下書きを選択してコピーし、support@leafhour.comへメールしてください。",
-      "sha256": "280556a0ae7acb451252158d15613cc0531b3304f486333e45f374250c20f005",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/beta-page.mjs:10:1671",
-      "file": "app/beta-page.mjs",
-      "line": 10,
-      "column": 1671,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "メールの下書き",
-      "sha256": "20ea8d074e0aaf3995b3f30ddeb98c00dcfe23a80549931d56f089a2b8b2a6d1",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/beta-page.mjs:10:1694",
-      "file": "app/beta-page.mjs",
-      "line": 10,
-      "column": 1694,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "メールアプリがない場合は、Webメールにコピーできます。",
-      "sha256": "693f0d5ca04fb8e9e542689e153cd0b1e17a64739850fae70942ce8b0e225a15",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/beta-page.mjs:10:1730",
-      "file": "app/beta-page.mjs",
-      "line": 10,
-      "column": 1730,
+      "line": 204,
+      "column": 13,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "本文へスキップ",
@@ -152657,10 +151593,10 @@
       }
     },
     {
-      "id": "candidate:app/beta-page.mjs:10:1752",
+      "id": "candidate:app/beta-page.mjs:205:20",
       "file": "app/beta-page.mjs",
-      "line": 10,
-      "column": 1752,
+      "line": 205,
+      "column": 20,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "プライバシー",
@@ -152677,10 +151613,10 @@
       }
     },
     {
-      "id": "candidate:app/beta-page.mjs:10:1767",
+      "id": "candidate:app/beta-page.mjs:206:14",
       "file": "app/beta-page.mjs",
-      "line": 10,
-      "column": 1767,
+      "line": 206,
+      "column": 14,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "利用規約",
@@ -152697,10 +151633,10 @@
       }
     },
     {
-      "id": "candidate:app/beta-page.mjs:10:1785",
+      "id": "candidate:app/beta-page.mjs:207:19",
       "file": "app/beta-page.mjs",
-      "line": 10,
-      "column": 1785,
+      "line": 207,
+      "column": 19,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "外観",
@@ -152717,10 +151653,10 @@
       }
     },
     {
-      "id": "candidate:app/beta-page.mjs:10:1800",
+      "id": "candidate:app/beta-page.mjs:208:18",
       "file": "app/beta-page.mjs",
-      "line": 10,
-      "column": 1800,
+      "line": 208,
+      "column": 18,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "表示言語",
@@ -152737,10 +151673,10 @@
       }
     },
     {
-      "id": "candidate:app/beta-page.mjs:10:1812",
+      "id": "candidate:app/beta-page.mjs:209:13",
       "file": "app/beta-page.mjs",
-      "line": 10,
-      "column": 1812,
+      "line": 209,
+      "column": 13,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "Leafhourに戻る",
@@ -295931,96 +294867,8 @@
     },
     {
       "kind": "computed-member",
-      "file": "app/beta-channel.mjs",
-      "line": 17,
-      "expression": "locale",
-      "fragments": [],
-      "unresolved": true
-    },
-    {
-      "kind": "template",
-      "file": "app/beta-channel.mjs",
-      "line": 19,
-      "expression": "`[Leafhour beta] ${platform} · ${c[0]}`",
-      "fragments": [
-        "[Leafhour beta] ",
-        " · "
-      ],
-      "unresolved": true
-    },
-    {
-      "kind": "computed-member",
-      "file": "app/beta-channel.mjs",
-      "line": 19,
-      "expression": "0",
-      "fragments": [],
-      "unresolved": true
-    },
-    {
-      "kind": "template",
-      "file": "app/beta-channel.mjs",
-      "line": 20,
-      "expression": "`${c[1]}: ${platform}\\n${c[2]}: ${clean(version,80).replace(/[\\r\\n]+/g,' ')}\\n\\n${c[3]}:\\n${detail}`",
-      "fragments": [
-        ": ",
-        "\n",
-        ": ",
-        "\n\n",
-        ":\n"
-      ],
-      "unresolved": true
-    },
-    {
-      "kind": "computed-member",
-      "file": "app/beta-channel.mjs",
-      "line": 20,
-      "expression": "1",
-      "fragments": [],
-      "unresolved": true
-    },
-    {
-      "kind": "computed-member",
-      "file": "app/beta-channel.mjs",
-      "line": 20,
-      "expression": "2",
-      "fragments": [],
-      "unresolved": true
-    },
-    {
-      "kind": "computed-member",
-      "file": "app/beta-channel.mjs",
-      "line": 20,
-      "expression": "3",
-      "fragments": [],
-      "unresolved": true
-    },
-    {
-      "kind": "template",
-      "file": "app/beta-channel.mjs",
-      "line": 22,
-      "expression": "`mailto:${betaChannels.supportEmail}?subject=${encode(subject)}&body=${encode(body)}`",
-      "fragments": [
-        "mailto:",
-        "?subject=",
-        "&body="
-      ],
-      "unresolved": true
-    },
-    {
-      "kind": "template",
-      "file": "app/beta-channel.mjs",
-      "line": 22,
-      "expression": "`${betaChannels.supportEmail}\\n${subject}\\n\\n${body}`",
-      "fragments": [
-        "\n",
-        "\n\n"
-      ],
-      "unresolved": true
-    },
-    {
-      "kind": "computed-member",
       "file": "app/beta-page.mjs",
-      "line": 12,
+      "line": 212,
       "expression": "locale",
       "fragments": [],
       "unresolved": true
@@ -296028,7 +294876,7 @@
     {
       "kind": "computed-member",
       "file": "app/beta-page.mjs",
-      "line": 13,
+      "line": 213,
       "expression": "char",
       "fragments": [],
       "unresolved": true
@@ -296036,7 +294884,7 @@
     {
       "kind": "computed-member",
       "file": "app/beta-page.mjs",
-      "line": 16,
+      "line": 216,
       "expression": "locale",
       "fragments": [],
       "unresolved": true
@@ -296044,7 +294892,7 @@
     {
       "kind": "template",
       "file": "app/beta-page.mjs",
-      "line": 16,
+      "line": 216,
       "expression": "`https://leafhour.com/${slug}/beta`",
       "fragments": [
         "https://leafhour.com/",
@@ -296055,7 +294903,7 @@
     {
       "kind": "template",
       "file": "app/beta-page.mjs",
-      "line": 17,
+      "line": 217,
       "expression": "`<a href=\"/${s}/beta\" lang=\"${lang}\" hreflang=\"${lang}\"${lang===locale?' aria-current=\"true\"':''}>${languageNames[lang]}</a>`",
       "fragments": [
         "<a href=\"/",
@@ -296070,7 +294918,7 @@
     {
       "kind": "computed-member",
       "file": "app/beta-page.mjs",
-      "line": 17,
+      "line": 217,
       "expression": "lang",
       "fragments": [],
       "unresolved": true
@@ -296078,7 +294926,7 @@
     {
       "kind": "template",
       "file": "app/beta-page.mjs",
-      "line": 18,
+      "line": 218,
       "expression": "`<p id=\"beta-install-state\" class=\"beta-note\">${c.unavailableBody}</p>`",
       "fragments": [
         "<p id=\"beta-install-state\" class=\"beta-note\">",
@@ -296089,7 +294937,7 @@
     {
       "kind": "concatenation",
       "file": "app/beta-page.mjs",
-      "line": 19,
+      "line": 219,
       "expression": "canonical+'#page'",
       "fragments": [
         "#page"
@@ -296099,7 +294947,7 @@
     {
       "kind": "concatenation",
       "file": "app/beta-page.mjs",
-      "line": 19,
+      "line": 219,
       "expression": "c.title+' · Leafhour'",
       "fragments": [
         " · Leafhour"
@@ -296109,7 +294957,7 @@
     {
       "kind": "template",
       "file": "app/beta-page.mjs",
-      "line": 20,
+      "line": 220,
       "expression": "`<a class=\"primary beta-install\" data-beta-install href=\"${escape(install)}\" rel=\"noopener noreferrer\">${c.install}<span aria-hidden=\"true\">↗</span></a>`",
       "fragments": [
         "<a class=\"primary beta-install\" data-beta-install href=\"",
@@ -296121,7 +294969,7 @@
     {
       "kind": "template",
       "file": "app/beta-page.mjs",
-      "line": 20,
+      "line": 220,
       "expression": "`<button class=\"primary beta-install\" disabled data-beta-unavailable aria-describedby=\"beta-install-state\">${c.unavailable}</button>`",
       "fragments": [
         "<button class=\"primary beta-install\" disabled data-beta-unavailable aria-describedby=\"beta-install-state\">",
@@ -296132,7 +294980,7 @@
     {
       "kind": "template",
       "file": "app/beta-page.mjs",
-      "line": 21,
+      "line": 221,
       "expression": "`<!doctype html><html lang=\"${locale}\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><meta name=\"color-scheme\" ",
       "fragments": [
         "<!doctype html><html lang=\"",
@@ -296144,7 +294992,7 @@
         " · Leafhour\"><meta property=\"og:description\" content=\"",
         "\"><meta property=\"og:url\" content=\"",
         "\"><meta property=\"og:image\" content=\"https://leafhour.com/brand-assets/leafhour-social.png\"><meta name=\"twitter:card\" content=\"summary_large_image\"><script type=\"application/ld+json\">",
-        "</script><link rel=\"icon\" href=\"/brand-assets/leafhour-mark.svg\" type=\"image/svg+xml\"><link rel=\"preload\" href=\"/fonts/newsreader/newsreader-home.woff2\" as=\"font\" type=\"font/woff2\" crossorigin><link rel=\"stylesheet\" href=\"/home-public.css\"><link rel=\"stylesheet\" href=\"/beta.css\"><script type=\"module\" src=\"/home-public.mjs\"></script><script type=\"module\" src=\"/beta-feedback.mjs\"></script></head>\n<body class=\"beta-page\"><a class=\"skip\" href=\"#main\">",
+        "</script><link rel=\"icon\" href=\"/brand-assets/leafhour-mark.svg\" type=\"image/svg+xml\"><link rel=\"preload\" href=\"/fonts/newsreader/newsreader-home.woff2\" as=\"font\" type=\"font/woff2\" crossorigin><link rel=\"stylesheet\" href=\"/home-public.css\"><link rel=\"stylesheet\" href=\"/beta.css\"><script type=\"module\" src=\"/home-public.mjs\"></script></head>\n<body class=\"beta-page\"><a class=\"skip\" href=\"#main\">",
         "</a>",
         "\n<main id=\"main\" tabindex=\"-1\">\n <section class=\"beta-hero\" aria-labelledby=\"beta-title\"><div class=\"beta-intro\"><p class=\"beta-page-label\">",
         "</p><h1 id=\"beta-title\">",
@@ -296174,29 +295022,10 @@
         "/pricing\">",
         "<span aria-hidden=\"true\">↗</span></a></div></section>\n <section class=\"beta-feedback\" id=\"feedback\" aria-labelledby=\"beta-feedback-title\"><div class=\"beta-feedback-intro\"><h2 id=\"beta-feedback-title\">",
         "</h2><p>",
-        "</p><a class=\"beta-email\" href=\"mailto:",
+        "</p></div><div class=\"beta-feedback-contact\"><a class=\"beta-email\" href=\"mailto:",
         "?subject=Leafhour%20beta%20feedback\">",
         "<span aria-hidden=\"true\">↗</span></a><p class=\"beta-note\">",
-        "</p></div>\n <div class=\"beta-feedback-compose\"><form id=\"beta-feedback-form\" hidden data-draft=\"",
-        "\" data-copied=\"",
-        "\" data-manual=\"",
-        "\"><div class=\"beta-form-row\"><div><label for=\"beta-platform\">",
-        "</label><select id=\"beta-platform\" name=\"platform\"><option value=\"Web\">Web</option><option value=\"iOS\">iPhone / iOS</option></select></div><div><label for=\"beta-version\">",
-        "</label><input id=\"beta-version\" name=\"version\" maxlength=\"80\" placeholder=\"",
-        "\" autocomplete=\"off\"></div></div><label for=\"beta-description\">",
-        "</label><textarea id=\"beta-description\" name=\"description\" rows=\"5\" maxlength=\"1600\" required placeholder=\"",
-        "\" aria-describedby=\"beta-feedback-privacy\"></textarea><p id=\"beta-feedback-privacy\" class=\"beta-note\">",
-        "</p><button class=\"primary\" type=\"submit\">",
-        "</button></form><p id=\"beta-feedback-status\" role=\"status\" aria-live=\"polite\"></p><div id=\"beta-feedback-draft\" hidden><label for=\"beta-email-preview\">",
-        "</label><textarea id=\"beta-email-preview\" rows=\"7\" readonly></textarea><div class=\"beta-actions\"><a id=\"beta-email-open\" class=\"primary\" href=\"mailto:",
-        "\">",
-        "</a><button id=\"beta-feedback-copy\" class=\"beta-secondary\" type=\"button\">",
-        "</button></div><p class=\"beta-note\">",
-        "</p></div><noscript><p>",
-        "</p><a class=\"beta-secondary\" href=\"mailto:",
-        "?subject=Leafhour%20beta%20feedback\">",
-        ": ",
-        "</a></noscript></div></section>\n</main><footer class=\"site-footer beta-footer\"><div><a class=\"brand\" href=\"/",
+        "</p></div></section>\n</main><footer class=\"site-footer beta-footer\"><div><a class=\"brand\" href=\"/",
         "\" aria-label=\"",
         "\"><span class=\"brand-name\" lang=\"en\">Leafhour</span></a><p>© 2026 Leafhour</p></div><div class=\"beta-footer-links\"><a href=\"/",
         "/privacy\">",
@@ -296216,7 +295045,7 @@
     {
       "kind": "template",
       "file": "app/beta-page.mjs",
-      "line": 21,
+      "line": 221,
       "expression": "`<link rel=\"alternate\" hreflang=\"${lang}\" href=\"https://leafhour.com/${s}/beta\">`",
       "fragments": [
         "<link rel=\"alternate\" hreflang=\"",
@@ -296228,7 +295057,7 @@
     {
       "kind": "template",
       "file": "app/beta-page.mjs",
-      "line": 25,
+      "line": 225,
       "expression": "`<li>${escape(step)}</li>`",
       "fragments": [
         "<li>",
@@ -296239,7 +295068,7 @@
     {
       "kind": "template",
       "file": "app/beta-page.mjs",
-      "line": 28,
+      "line": 228,
       "expression": "`<article><h3>${escape(title)}</h3><p>${escape(body)}</p></article>`",
       "fragments": [
         "<article><h3>",
@@ -334522,12 +333351,12 @@
     "duplicateKeys": 0,
     "reviewedItems": 8,
     "unreviewedItems": 2500,
-    "candidates": 7165,
-    "candidatesUnreviewed": 7164,
+    "candidates": 7111,
+    "candidatesUnreviewed": 7110,
     "candidatesProtected": 147,
     "itemsProtected": 9,
-    "dynamicConsumers": 4303,
-    "consumerReferences": 2164,
+    "dynamicConsumers": 4294,
+    "consumerReferences": 2168,
     "keysWithoutStaticConsumers": 1349,
     "reviewedLocaleValues": 32,
     "unreviewedLocaleValues": 10000,

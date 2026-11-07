@@ -16,17 +16,16 @@ test('only genuine public TestFlight destinations can become installation action
  for(const value of ['',null,'javascript:alert(1)','https://testflight.apple.com.evil.test/join/Ab12Cd34','https://name:secret@testflight.apple.com/join/Ab12Cd34','https://testflight.apple.com/join/Ab12Cd34?token=secret','https://testflight.apple.com/join/Ab12Cd34#fragment','https://appstoreconnect.apple.com/apps/123'])assert.equal(publicTestFlightUrl(value),null);
 });
 
-test('email drafts retain literal Unicode and line breaks without allowing injected headers',async()=>{
- const {composeBetaFeedback}=await import('../app/beta-channel.mjs');
- const result=composeBetaFeedback({locale:'zh-Hans',platform:'iOS',version:'17.5\r\nBcc: somebody@example.org',description:'选中“原文”后\n<script>alert(1)</script> & 下一页 📖'});
- assert.ok(result.mailto.startsWith('mailto:support@leafhour.com?subject='));
- const params=new URLSearchParams(result.mailto.split('?')[1]);
- assert.equal(params.get('subject'),'[Leafhour beta] iOS · 使用反馈');
- assert.equal(params.has('bcc'),false);assert.equal(params.has('cc'),false);
- assert.ok(params.get('body').includes('选中“原文”后\n<script>alert(1)</script> & 下一页 📖'));
- assert.ok(result.text.includes('support@leafhour.com'));
- assert.throws(()=>composeBetaFeedback({platform:'iOS',description:'  '}),/description/);
- assert.throws(()=>composeBetaFeedback({platform:'iOS\r\nBcc: a@b.com',description:'hello'}),/platform/);
+test('feedback uses one direct email action with no form or draft preparation in any locale',async()=>{
+ const {betaPage}=await import('../app/beta-page.mjs');
+ for(const locale of ['en','zh-Hans','zh-Hant','ja']){
+  const html=betaPage({locale}),feedback=html.match(/<section class="beta-feedback"[\s\S]*?<\/section>/)?.[0];
+  assert.ok(feedback);
+  assert.doesNotMatch(feedback,/<form|<input|<select|<textarea|<button/);
+  const actions=[...feedback.matchAll(/<a\b[^>]*href="([^"]+)"/g)];assert.equal(actions.length,1);
+  assert.ok(actions[0][1].startsWith('mailto:support@leafhour.com'));
+  assert.doesNotMatch(html,/src="\/beta-feedback\.mjs"/);
+ }
 });
 
 test('missing installation eligibility stays unavailable while anonymous Web and email remain usable',async()=>{

@@ -316,186 +316,132 @@ candidate:app/atmosphere-state.mjs:5:18,js-cjk-literal,app/atmosphere-state.mjs,
 candidate:app/atmosphere-state.mjs:5:33,js-cjk-literal,app/atmosphere-state.mjs,5,,unknown,reviewable,,潮声很远，清晨很长。
 candidate:app/atmosphere-state.mjs:5:53,js-cjk-literal,app/atmosphere-state.mjs,5,,unknown,reviewable,,缓慢海浪
 candidate:app/atmosphere-state.mjs:5:66,js-cjk-literal,app/atmosphere-state.mjs,5,,unknown,reviewable,,晨光和声
-candidate:app/beta-channel.mjs:10:13,js-cjk-literal,app/beta-channel.mjs,10,,unknown,reviewable,,使用反馈
-candidate:app/beta-channel.mjs:10:20,js-cjk-literal,app/beta-channel.mjs,10,,unknown,reviewable,,使用平台
-candidate:app/beta-channel.mjs:10:27,js-cjk-literal,app/beta-channel.mjs,10,,unknown,reviewable,,版本 / 设备
-candidate:app/beta-channel.mjs:10:37,js-cjk-literal,app/beta-channel.mjs,10,,unknown,reviewable,,遇到的问题 / 预期的效果
-candidate:app/beta-channel.mjs:11:13,js-cjk-literal,app/beta-channel.mjs,11,,unknown,reviewable,,使用回饋
-candidate:app/beta-channel.mjs:11:20,js-cjk-literal,app/beta-channel.mjs,11,,unknown,reviewable,,使用平台
-candidate:app/beta-channel.mjs:11:27,js-cjk-literal,app/beta-channel.mjs,11,,unknown,reviewable,,版本 / 裝置
-candidate:app/beta-channel.mjs:11:37,js-cjk-literal,app/beta-channel.mjs,11,,unknown,reviewable,,遇到的問題 / 預期的效果
-candidate:app/beta-channel.mjs:12:6,js-cjk-literal,app/beta-channel.mjs,12,,unknown,reviewable,,フィードバック
-candidate:app/beta-channel.mjs:12:16,js-cjk-literal,app/beta-channel.mjs,12,,unknown,reviewable,,利用環境
-candidate:app/beta-channel.mjs:12:23,js-cjk-literal,app/beta-channel.mjs,12,,unknown,reviewable,,バージョン / 端末
-candidate:app/beta-channel.mjs:12:36,js-cjk-literal,app/beta-channel.mjs,12,,unknown,reviewable,,起きたこと / 期待した動作
 candidate:app/beta-page.mjs:5:45,js-cjk-literal,app/beta-page.mjs,5,,unknown,reviewable,,简体中文
 candidate:app/beta-page.mjs:5:62,js-cjk-literal,app/beta-page.mjs,5,,unknown,reviewable,,繁體中文
 candidate:app/beta-page.mjs:5:72,js-cjk-literal,app/beta-page.mjs,5,,unknown,reviewable,,日本語
-candidate:app/beta-page.mjs:8:19,js-cjk-literal,app/beta-page.mjs,8,,unknown,reviewable,,加入内测
-candidate:app/beta-page.mjs:8:38,js-cjk-literal,app/beta-page.mjs,8,,unknown,reviewable,,在 Web 先读几页，把 Leafhour 带到 iPhone。直接体验内测，也欢迎告诉我们读起来如何。
-candidate:app/beta-page.mjs:8:101,js-cjk-literal,app/beta-page.mjs,8,,unknown,reviewable,,"下一本书，
+candidate:app/beta-page.mjs:59:14,js-cjk-literal,app/beta-page.mjs,59,,unknown,reviewable,,加入内测
+candidate:app/beta-page.mjs:60:20,js-cjk-literal,app/beta-page.mjs,60,,unknown,reviewable,,在 Web 先读几页，把 Leafhour 带到 iPhone。直接体验内测，也欢迎告诉我们读起来如何。
+candidate:app/beta-page.mjs:61:16,js-cjk-literal,app/beta-page.mjs,61,,unknown,reviewable,,"下一本书，
 一起慢慢读。"
-candidate:app/beta-page.mjs:8:123,js-cjk-literal,app/beta-page.mjs,8,,unknown,reviewable,,Leafhour 正在内测。带一本想读的书来，试试读、听和提问，也告诉我们哪些地方还不顺手。
-candidate:app/beta-page.mjs:8:176,js-cjk-literal,app/beta-page.mjs,8,,unknown,reviewable,,把书房带到 iPhone
-candidate:app/beta-page.mjs:8:199,js-cjk-literal,app/beta-page.mjs,8,,unknown,reviewable,,读原文，逐句听读，对照译文。遇到难句，就在原页问下去。
-candidate:app/beta-page.mjs:8:237,js-cjk-literal,app/beta-page.mjs,8,,unknown,reviewable,,通过 TestFlight 安装
-candidate:app/beta-page.mjs:8:268,js-cjk-literal,app/beta-page.mjs,8,,unknown,reviewable,,iOS 安装入口确认中
-candidate:app/beta-page.mjs:8:298,js-cjk-literal,app/beta-page.mjs,8,,unknown,reviewable,,公开安装链接暂未就绪。现在可以先在 Web 试读，或通过邮件联系我们。
-candidate:app/beta-page.mjs:8:348,js-cjk-literal,app/beta-page.mjs,8,,unknown,reviewable,,需要 iOS 17 或更高版本 · 内测版
-candidate:app/beta-page.mjs:8:379,js-cjk-literal,app/beta-page.mjs,8,,unknown,reviewable,,先安装 Apple 的 TestFlight。
-candidate:app/beta-page.mjs:8:405,js-cjk-literal,app/beta-page.mjs,8,,unknown,reviewable,,打开 Leafhour 邀请，选择「接受」。
-candidate:app/beta-page.mjs:8:430,js-cjk-literal,app/beta-page.mjs,8,,unknown,reviewable,,安装 Leafhour，打开第一本书。
-candidate:app/beta-page.mjs:8:464,js-cjk-literal,app/beta-page.mjs,8,,unknown,reviewable,,获取 TestFlight
-candidate:app/beta-page.mjs:8:491,js-cjk-literal,app/beta-page.mjs,8,,unknown,reviewable,,iPhone 真实阅读界面 · 公版样书
-candidate:app/beta-page.mjs:8:523,js-cjk-literal,app/beta-page.mjs,8,,unknown,reviewable,,先读几页，再决定。
-candidate:app/beta-page.mjs:8:543,js-cjk-literal,app/beta-page.mjs,8,,unknown,reviewable,,打开浏览器就能试读。在原文与译文间对照，准备好后，再把自己的书放进书房。
-candidate:app/beta-page.mjs:8:588,js-cjk-literal,app/beta-page.mjs,8,,unknown,reviewable,,在 Web 试读
-candidate:app/beta-page.mjs:8:604,js-cjk-literal,app/beta-page.mjs,8,,unknown,reviewable,,打开我的书房
-candidate:app/beta-page.mjs:8:621,js-cjk-literal,app/beta-page.mjs,8,,unknown,reviewable,,公版样书无需注册，可以直接开始。
-candidate:app/beta-page.mjs:8:651,js-cjk-literal,app/beta-page.mjs,8,,unknown,reviewable,,Web 真实阅读界面 · 公版样书
-candidate:app/beta-page.mjs:8:683,js-cjk-literal,app/beta-page.mjs,8,,unknown,reviewable,,开始之前
-candidate:app/beta-page.mjs:8:699,js-cjk-literal,app/beta-page.mjs,8,,unknown,reviewable,,还在不断打磨
-candidate:app/beta-page.mjs:8:708,js-cjk-literal,app/beta-page.mjs,8,,unknown,reviewable,,部分交互会继续调整，也可能遇到不够顺手的地方。具体的使用反馈能帮助我们确定下一步。
-candidate:app/beta-page.mjs:8:754,js-cjk-literal,app/beta-page.mjs,8,,unknown,reviewable,,阅读保持免费
-candidate:app/beta-page.mjs:8:763,js-cjk-literal,app/beta-page.mjs,8,,unknown,reviewable,,阅读、笔记和导出免费。AI 功能沿用现有阅读点规则，使用前会显示相应费用。
-candidate:app/beta-page.mjs:8:805,js-cjk-literal,app/beta-page.mjs,8,,unknown,reviewable,,同一个私人书房
-candidate:app/beta-page.mjs:8:815,js-cjk-literal,app/beta-page.mjs,8,,unknown,reviewable,,Web 与 iPhone 可以使用同一 Leafhour 账号。本机书籍留在设备上，上传由你主动选择。
-candidate:app/beta-page.mjs:8:879,js-cjk-literal,app/beta-page.mjs,8,,unknown,reviewable,,查看阅读点说明
-candidate:app/beta-page.mjs:8:903,js-cjk-literal,app/beta-page.mjs,8,,unknown,reviewable,,"读起来如何，
+candidate:app/beta-page.mjs:62:14,js-cjk-literal,app/beta-page.mjs,62,,unknown,reviewable,,Leafhour 正在内测。带一本想读的书来，试试读、听和提问，也告诉我们哪些地方还不顺手。
+candidate:app/beta-page.mjs:63:12,js-cjk-literal,app/beta-page.mjs,63,,unknown,reviewable,,把书房带到 iPhone
+candidate:app/beta-page.mjs:64:16,js-cjk-literal,app/beta-page.mjs,64,,unknown,reviewable,,读原文，逐句听读，对照译文。遇到难句，就在原页问下去。
+candidate:app/beta-page.mjs:65:16,js-cjk-literal,app/beta-page.mjs,65,,unknown,reviewable,,通过 TestFlight 安装
+candidate:app/beta-page.mjs:66:20,js-cjk-literal,app/beta-page.mjs,66,,unknown,reviewable,,iOS 安装入口确认中
+candidate:app/beta-page.mjs:67:24,js-cjk-literal,app/beta-page.mjs,67,,unknown,reviewable,,公开安装链接暂未就绪。现在可以先在 Web 试读，或通过邮件联系我们。
+candidate:app/beta-page.mjs:68:20,js-cjk-literal,app/beta-page.mjs,68,,unknown,reviewable,,需要 iOS 17 或更高版本 · 内测版
+candidate:app/beta-page.mjs:70:7,js-cjk-literal,app/beta-page.mjs,70,,unknown,reviewable,,先安装 Apple 的 TestFlight。
+candidate:app/beta-page.mjs:71:7,js-cjk-literal,app/beta-page.mjs,71,,unknown,reviewable,,打开 Leafhour 邀请，选择「接受」。
+candidate:app/beta-page.mjs:72:7,js-cjk-literal,app/beta-page.mjs,72,,unknown,reviewable,,安装 Leafhour，打开第一本书。
+candidate:app/beta-page.mjs:74:19,js-cjk-literal,app/beta-page.mjs,74,,unknown,reviewable,,获取 TestFlight
+candidate:app/beta-page.mjs:75:19,js-cjk-literal,app/beta-page.mjs,75,,unknown,reviewable,,iPhone 真实阅读界面 · 公版样书
+candidate:app/beta-page.mjs:76:17,js-cjk-literal,app/beta-page.mjs,76,,unknown,reviewable,,先读几页，再决定。
+candidate:app/beta-page.mjs:77:16,js-cjk-literal,app/beta-page.mjs,77,,unknown,reviewable,,打开浏览器就能试读。在原文与译文间对照，准备好后，再把自己的书放进书房。
+candidate:app/beta-page.mjs:78:14,js-cjk-literal,app/beta-page.mjs,78,,unknown,reviewable,,在 Web 试读
+candidate:app/beta-page.mjs:79:13,js-cjk-literal,app/beta-page.mjs,79,,unknown,reviewable,,打开我的书房
+candidate:app/beta-page.mjs:80:16,js-cjk-literal,app/beta-page.mjs,80,,unknown,reviewable,,公版样书无需注册，可以直接开始。
+candidate:app/beta-page.mjs:81:19,js-cjk-literal,app/beta-page.mjs,81,,unknown,reviewable,,Web 真实阅读界面 · 公版样书
+candidate:app/beta-page.mjs:82:20,js-cjk-literal,app/beta-page.mjs,82,,unknown,reviewable,,开始之前
+candidate:app/beta-page.mjs:85:9,js-cjk-literal,app/beta-page.mjs,85,,unknown,reviewable,,还在不断打磨
+candidate:app/beta-page.mjs:86:9,js-cjk-literal,app/beta-page.mjs,86,,unknown,reviewable,,部分交互会继续调整，也可能遇到不够顺手的地方。具体的使用反馈能帮助我们确定下一步。
+candidate:app/beta-page.mjs:89:9,js-cjk-literal,app/beta-page.mjs,89,,unknown,reviewable,,阅读保持免费
+candidate:app/beta-page.mjs:90:9,js-cjk-literal,app/beta-page.mjs,90,,unknown,reviewable,,阅读、笔记和导出免费。AI 功能沿用现有阅读点规则，使用前会显示相应费用。
+candidate:app/beta-page.mjs:93:9,js-cjk-literal,app/beta-page.mjs,93,,unknown,reviewable,,同一个私人书房
+candidate:app/beta-page.mjs:94:9,js-cjk-literal,app/beta-page.mjs,94,,unknown,reviewable,,Web 与 iPhone 可以使用同一 Leafhour 账号。本机书籍留在设备上，上传由你主动选择。
+candidate:app/beta-page.mjs:97:16,js-cjk-literal,app/beta-page.mjs,97,,unknown,reviewable,,查看阅读点说明
+candidate:app/beta-page.mjs:98:22,js-cjk-literal,app/beta-page.mjs,98,,unknown,reviewable,,"读起来如何，
 想听听你的感受。"
-candidate:app/beta-page.mjs:8:936,js-cjk-literal,app/beta-page.mjs,8,,unknown,reviewable,,一个不顺手的手势，一句不够准确的译文，或一个希望增加的功能。简单说说就好。
-candidate:app/beta-page.mjs:8:988,js-cjk-literal,app/beta-page.mjs,8,,unknown,reviewable,,直接写邮件
-candidate:app/beta-page.mjs:8:1006,js-cjk-literal,app/beta-page.mjs,8,,unknown,reviewable,,通过邮箱联系，无需加入社群，也不必公开提交问题。
-candidate:app/beta-page.mjs:8:1042,js-cjk-literal,app/beta-page.mjs,8,,unknown,reviewable,,你在哪里使用？
-candidate:app/beta-page.mjs:8:1060,js-cjk-literal,app/beta-page.mjs,8,,unknown,reviewable,,版本或设备（选填）
-candidate:app/beta-page.mjs:8:1091,js-cjk-literal,app/beta-page.mjs,8,,unknown,reviewable,,例如：iPhone · iOS 17.5
-candidate:app/beta-page.mjs:8:1121,js-cjk-literal,app/beta-page.mjs,8,,unknown,reviewable,,遇到了什么？你原本希望怎样？
-candidate:app/beta-page.mjs:8:1156,js-cjk-literal,app/beta-page.mjs,8,,unknown,reviewable,,描述一下当时的操作和遇到的问题。截图可以在邮件应用中自行添加。
-candidate:app/beta-page.mjs:8:1198,js-cjk-literal,app/beta-page.mjs,8,,unknown,reviewable,,草稿只包含你在这里填写的文字，不会自动附上书籍、笔记或账号信息。本站不保存或发送这张表单。
-candidate:app/beta-page.mjs:8:1254,js-cjk-literal,app/beta-page.mjs,8,,unknown,reviewable,,准备反馈邮件
-candidate:app/beta-page.mjs:8:1272,js-cjk-literal,app/beta-page.mjs,8,,unknown,reviewable,,在邮件应用中打开
-candidate:app/beta-page.mjs:8:1288,js-cjk-literal,app/beta-page.mjs,8,,unknown,reviewable,,复制反馈内容
-candidate:app/beta-page.mjs:8:1303,js-cjk-literal,app/beta-page.mjs,8,,unknown,reviewable,,草稿已准备好。请在邮件应用中检查后发送，本页尚未发送任何内容。
-candidate:app/beta-page.mjs:8:1344,js-cjk-literal,app/beta-page.mjs,8,,unknown,reviewable,,反馈内容已复制，可粘贴到邮件并发送至 support@leafhour.com。
-candidate:app/beta-page.mjs:8:1394,js-cjk-literal,app/beta-page.mjs,8,,unknown,reviewable,,请选中并复制下方草稿，再发送至 support@leafhour.com。
-candidate:app/beta-page.mjs:8:1443,js-cjk-literal,app/beta-page.mjs,8,,unknown,reviewable,,邮件草稿
-candidate:app/beta-page.mjs:8:1463,js-cjk-literal,app/beta-page.mjs,8,,unknown,reviewable,,没有邮件应用？可以把草稿复制到网页版邮箱。
-candidate:app/beta-page.mjs:8:1492,js-cjk-literal,app/beta-page.mjs,8,,unknown,reviewable,,跳到正文
-candidate:app/beta-page.mjs:8:1511,js-cjk-literal,app/beta-page.mjs,8,,unknown,reviewable,,隐私说明
-candidate:app/beta-page.mjs:8:1524,js-cjk-literal,app/beta-page.mjs,8,,unknown,reviewable,,服务条款
-candidate:app/beta-page.mjs:8:1542,js-cjk-literal,app/beta-page.mjs,8,,unknown,reviewable,,页面外观
-candidate:app/beta-page.mjs:8:1559,js-cjk-literal,app/beta-page.mjs,8,,unknown,reviewable,,页面语言
-candidate:app/beta-page.mjs:8:1571,js-cjk-literal,app/beta-page.mjs,8,,unknown,reviewable,,回到 Leafhour
-candidate:app/beta-page.mjs:9:19,js-cjk-literal,app/beta-page.mjs,9,,unknown,reviewable,,加入內測
-candidate:app/beta-page.mjs:9:38,js-cjk-literal,app/beta-page.mjs,9,,unknown,reviewable,,在 Web 先讀幾頁，把 Leafhour 帶到 iPhone。直接體驗內測，也歡迎告訴我們讀起來如何。
-candidate:app/beta-page.mjs:9:101,js-cjk-literal,app/beta-page.mjs,9,,unknown,reviewable,,"下一本書，
+candidate:app/beta-page.mjs:99:22,js-cjk-literal,app/beta-page.mjs,99,,unknown,reviewable,,哪里读得不顺手，或有新的想法，都可以直接写信给我们。
+candidate:app/beta-page.mjs:100:20,js-cjk-literal,app/beta-page.mjs,100,,unknown,reviewable,,直接写邮件
+candidate:app/beta-page.mjs:101:18,js-cjk-literal,app/beta-page.mjs,101,,unknown,reviewable,,通过邮箱联系，无需加入社群，也不必公开提交问题。
+candidate:app/beta-page.mjs:102:13,js-cjk-literal,app/beta-page.mjs,102,,unknown,reviewable,,跳到正文
+candidate:app/beta-page.mjs:103:20,js-cjk-literal,app/beta-page.mjs,103,,unknown,reviewable,,隐私说明
+candidate:app/beta-page.mjs:104:14,js-cjk-literal,app/beta-page.mjs,104,,unknown,reviewable,,服务条款
+candidate:app/beta-page.mjs:105:19,js-cjk-literal,app/beta-page.mjs,105,,unknown,reviewable,,页面外观
+candidate:app/beta-page.mjs:106:18,js-cjk-literal,app/beta-page.mjs,106,,unknown,reviewable,,页面语言
+candidate:app/beta-page.mjs:107:13,js-cjk-literal,app/beta-page.mjs,107,,unknown,reviewable,,回到 Leafhour
+candidate:app/beta-page.mjs:110:14,js-cjk-literal,app/beta-page.mjs,110,,unknown,reviewable,,加入內測
+candidate:app/beta-page.mjs:111:20,js-cjk-literal,app/beta-page.mjs,111,,unknown,reviewable,,在 Web 先讀幾頁，把 Leafhour 帶到 iPhone。直接體驗內測，也歡迎告訴我們讀起來如何。
+candidate:app/beta-page.mjs:112:16,js-cjk-literal,app/beta-page.mjs,112,,unknown,reviewable,,"下一本書，
 一起慢慢讀。"
-candidate:app/beta-page.mjs:9:123,js-cjk-literal,app/beta-page.mjs,9,,unknown,reviewable,,Leafhour 正在內測。帶一本想讀的書來，試試讀、聽和提問，也告訴我們哪些地方還不順手。
-candidate:app/beta-page.mjs:9:176,js-cjk-literal,app/beta-page.mjs,9,,unknown,reviewable,,把書房帶到 iPhone
-candidate:app/beta-page.mjs:9:199,js-cjk-literal,app/beta-page.mjs,9,,unknown,reviewable,,讀原文，逐句聽讀，對照譯文。遇到難句，就在原頁問下去。
-candidate:app/beta-page.mjs:9:237,js-cjk-literal,app/beta-page.mjs,9,,unknown,reviewable,,透過 TestFlight 安裝
-candidate:app/beta-page.mjs:9:268,js-cjk-literal,app/beta-page.mjs,9,,unknown,reviewable,,iOS 安裝入口確認中
-candidate:app/beta-page.mjs:9:298,js-cjk-literal,app/beta-page.mjs,9,,unknown,reviewable,,公開安裝連結暫未就緒。現在可以先在 Web 試讀，或透過郵件聯絡我們。
-candidate:app/beta-page.mjs:9:348,js-cjk-literal,app/beta-page.mjs,9,,unknown,reviewable,,需要 iOS 17 或以上版本 · 內測版
-candidate:app/beta-page.mjs:9:379,js-cjk-literal,app/beta-page.mjs,9,,unknown,reviewable,,先安裝 Apple 的 TestFlight。
-candidate:app/beta-page.mjs:9:405,js-cjk-literal,app/beta-page.mjs,9,,unknown,reviewable,,打開 Leafhour 邀請，選擇「接受」。
-candidate:app/beta-page.mjs:9:430,js-cjk-literal,app/beta-page.mjs,9,,unknown,reviewable,,安裝 Leafhour，打開第一本書。
-candidate:app/beta-page.mjs:9:464,js-cjk-literal,app/beta-page.mjs,9,,unknown,reviewable,,取得 TestFlight
-candidate:app/beta-page.mjs:9:491,js-cjk-literal,app/beta-page.mjs,9,,unknown,reviewable,,iPhone 真實閱讀介面 · 公版範例書
-candidate:app/beta-page.mjs:9:524,js-cjk-literal,app/beta-page.mjs,9,,unknown,reviewable,,先讀幾頁，再決定。
-candidate:app/beta-page.mjs:9:544,js-cjk-literal,app/beta-page.mjs,9,,unknown,reviewable,,打開瀏覽器就能試讀。在原文與譯文間對照，準備好後，再把自己的書放進書房。
-candidate:app/beta-page.mjs:9:589,js-cjk-literal,app/beta-page.mjs,9,,unknown,reviewable,,在 Web 試讀
-candidate:app/beta-page.mjs:9:605,js-cjk-literal,app/beta-page.mjs,9,,unknown,reviewable,,打開我的書房
-candidate:app/beta-page.mjs:9:622,js-cjk-literal,app/beta-page.mjs,9,,unknown,reviewable,,公版範例書無需註冊，可以直接開始。
-candidate:app/beta-page.mjs:9:653,js-cjk-literal,app/beta-page.mjs,9,,unknown,reviewable,,Web 真實閱讀介面 · 公版範例書
-candidate:app/beta-page.mjs:9:686,js-cjk-literal,app/beta-page.mjs,9,,unknown,reviewable,,開始之前
-candidate:app/beta-page.mjs:9:702,js-cjk-literal,app/beta-page.mjs,9,,unknown,reviewable,,還在持續打磨
-candidate:app/beta-page.mjs:9:711,js-cjk-literal,app/beta-page.mjs,9,,unknown,reviewable,,部分互動會繼續調整，也可能遇到不夠順手的地方。具體的使用回饋能幫助我們決定下一步。
-candidate:app/beta-page.mjs:9:757,js-cjk-literal,app/beta-page.mjs,9,,unknown,reviewable,,閱讀保持免費
-candidate:app/beta-page.mjs:9:766,js-cjk-literal,app/beta-page.mjs,9,,unknown,reviewable,,閱讀、筆記和匯出免費。AI 功能沿用現有閱讀點規則，使用前會顯示相應費用。
-candidate:app/beta-page.mjs:9:808,js-cjk-literal,app/beta-page.mjs,9,,unknown,reviewable,,同一個私人書房
-candidate:app/beta-page.mjs:9:818,js-cjk-literal,app/beta-page.mjs,9,,unknown,reviewable,,Web 與 iPhone 可以使用同一 Leafhour 帳號。本機書籍留在裝置上，上傳由你主動選擇。
-candidate:app/beta-page.mjs:9:882,js-cjk-literal,app/beta-page.mjs,9,,unknown,reviewable,,查看閱讀點說明
-candidate:app/beta-page.mjs:9:906,js-cjk-literal,app/beta-page.mjs,9,,unknown,reviewable,,"讀起來如何，
+candidate:app/beta-page.mjs:113:14,js-cjk-literal,app/beta-page.mjs,113,,unknown,reviewable,,Leafhour 正在內測。帶一本想讀的書來，試試讀、聽和提問，也告訴我們哪些地方還不順手。
+candidate:app/beta-page.mjs:114:12,js-cjk-literal,app/beta-page.mjs,114,,unknown,reviewable,,把書房帶到 iPhone
+candidate:app/beta-page.mjs:115:16,js-cjk-literal,app/beta-page.mjs,115,,unknown,reviewable,,讀原文，逐句聽讀，對照譯文。遇到難句，就在原頁問下去。
+candidate:app/beta-page.mjs:116:16,js-cjk-literal,app/beta-page.mjs,116,,unknown,reviewable,,透過 TestFlight 安裝
+candidate:app/beta-page.mjs:117:20,js-cjk-literal,app/beta-page.mjs,117,,unknown,reviewable,,iOS 安裝入口確認中
+candidate:app/beta-page.mjs:118:24,js-cjk-literal,app/beta-page.mjs,118,,unknown,reviewable,,公開安裝連結暫未就緒。現在可以先在 Web 試讀，或透過郵件聯絡我們。
+candidate:app/beta-page.mjs:119:20,js-cjk-literal,app/beta-page.mjs,119,,unknown,reviewable,,需要 iOS 17 或以上版本 · 內測版
+candidate:app/beta-page.mjs:121:7,js-cjk-literal,app/beta-page.mjs,121,,unknown,reviewable,,先安裝 Apple 的 TestFlight。
+candidate:app/beta-page.mjs:122:7,js-cjk-literal,app/beta-page.mjs,122,,unknown,reviewable,,打開 Leafhour 邀請，選擇「接受」。
+candidate:app/beta-page.mjs:123:7,js-cjk-literal,app/beta-page.mjs,123,,unknown,reviewable,,安裝 Leafhour，打開第一本書。
+candidate:app/beta-page.mjs:125:19,js-cjk-literal,app/beta-page.mjs,125,,unknown,reviewable,,取得 TestFlight
+candidate:app/beta-page.mjs:126:19,js-cjk-literal,app/beta-page.mjs,126,,unknown,reviewable,,iPhone 真實閱讀介面 · 公版範例書
+candidate:app/beta-page.mjs:127:17,js-cjk-literal,app/beta-page.mjs,127,,unknown,reviewable,,先讀幾頁，再決定。
+candidate:app/beta-page.mjs:128:16,js-cjk-literal,app/beta-page.mjs,128,,unknown,reviewable,,打開瀏覽器就能試讀。在原文與譯文間對照，準備好後，再把自己的書放進書房。
+candidate:app/beta-page.mjs:129:14,js-cjk-literal,app/beta-page.mjs,129,,unknown,reviewable,,在 Web 試讀
+candidate:app/beta-page.mjs:130:13,js-cjk-literal,app/beta-page.mjs,130,,unknown,reviewable,,打開我的書房
+candidate:app/beta-page.mjs:131:16,js-cjk-literal,app/beta-page.mjs,131,,unknown,reviewable,,公版範例書無需註冊，可以直接開始。
+candidate:app/beta-page.mjs:132:19,js-cjk-literal,app/beta-page.mjs,132,,unknown,reviewable,,Web 真實閱讀介面 · 公版範例書
+candidate:app/beta-page.mjs:133:20,js-cjk-literal,app/beta-page.mjs,133,,unknown,reviewable,,開始之前
+candidate:app/beta-page.mjs:136:9,js-cjk-literal,app/beta-page.mjs,136,,unknown,reviewable,,還在持續打磨
+candidate:app/beta-page.mjs:137:9,js-cjk-literal,app/beta-page.mjs,137,,unknown,reviewable,,部分互動會繼續調整，也可能遇到不夠順手的地方。具體的使用回饋能幫助我們決定下一步。
+candidate:app/beta-page.mjs:140:9,js-cjk-literal,app/beta-page.mjs,140,,unknown,reviewable,,閱讀保持免費
+candidate:app/beta-page.mjs:141:9,js-cjk-literal,app/beta-page.mjs,141,,unknown,reviewable,,閱讀、筆記和匯出免費。AI 功能沿用現有閱讀點規則，使用前會顯示相應費用。
+candidate:app/beta-page.mjs:144:9,js-cjk-literal,app/beta-page.mjs,144,,unknown,reviewable,,同一個私人書房
+candidate:app/beta-page.mjs:145:9,js-cjk-literal,app/beta-page.mjs,145,,unknown,reviewable,,Web 與 iPhone 可以使用同一 Leafhour 帳號。本機書籍留在裝置上，上傳由你主動選擇。
+candidate:app/beta-page.mjs:148:16,js-cjk-literal,app/beta-page.mjs,148,,unknown,reviewable,,查看閱讀點說明
+candidate:app/beta-page.mjs:149:22,js-cjk-literal,app/beta-page.mjs,149,,unknown,reviewable,,"讀起來如何，
 想聽聽你的感受。"
-candidate:app/beta-page.mjs:9:939,js-cjk-literal,app/beta-page.mjs,9,,unknown,reviewable,,一個不順手的手勢，一句不夠準確的譯文，或一個希望增加的功能。簡單說說就好。
-candidate:app/beta-page.mjs:9:991,js-cjk-literal,app/beta-page.mjs,9,,unknown,reviewable,,直接寫郵件
-candidate:app/beta-page.mjs:9:1009,js-cjk-literal,app/beta-page.mjs,9,,unknown,reviewable,,透過信箱聯絡，無需加入社群，也不必公開提交問題。
-candidate:app/beta-page.mjs:9:1045,js-cjk-literal,app/beta-page.mjs,9,,unknown,reviewable,,你在哪裡使用？
-candidate:app/beta-page.mjs:9:1063,js-cjk-literal,app/beta-page.mjs,9,,unknown,reviewable,,版本或裝置（選填）
-candidate:app/beta-page.mjs:9:1094,js-cjk-literal,app/beta-page.mjs,9,,unknown,reviewable,,例如：iPhone · iOS 17.5
-candidate:app/beta-page.mjs:9:1124,js-cjk-literal,app/beta-page.mjs,9,,unknown,reviewable,,遇到了什麼？你原本希望怎樣？
-candidate:app/beta-page.mjs:9:1159,js-cjk-literal,app/beta-page.mjs,9,,unknown,reviewable,,描述一下當時的操作和遇到的問題。截圖可以在郵件應用程式中自行加入。
-candidate:app/beta-page.mjs:9:1203,js-cjk-literal,app/beta-page.mjs,9,,unknown,reviewable,,草稿只包含你在這裡填寫的文字，不會自動附上書籍、筆記或帳號資訊。本站不儲存或傳送這張表單。
-candidate:app/beta-page.mjs:9:1259,js-cjk-literal,app/beta-page.mjs,9,,unknown,reviewable,,準備回饋郵件
-candidate:app/beta-page.mjs:9:1277,js-cjk-literal,app/beta-page.mjs,9,,unknown,reviewable,,在郵件應用程式中開啟
-candidate:app/beta-page.mjs:9:1295,js-cjk-literal,app/beta-page.mjs,9,,unknown,reviewable,,複製回饋內容
-candidate:app/beta-page.mjs:9:1310,js-cjk-literal,app/beta-page.mjs,9,,unknown,reviewable,,草稿已準備好。請在郵件應用程式中檢查後寄出，本頁尚未傳送任何內容。
-candidate:app/beta-page.mjs:9:1353,js-cjk-literal,app/beta-page.mjs,9,,unknown,reviewable,,回饋內容已複製，可貼到郵件並寄至 support@leafhour.com。
-candidate:app/beta-page.mjs:9:1401,js-cjk-literal,app/beta-page.mjs,9,,unknown,reviewable,,請選取並複製下方草稿，再寄至 support@leafhour.com。
-candidate:app/beta-page.mjs:9:1449,js-cjk-literal,app/beta-page.mjs,9,,unknown,reviewable,,郵件草稿
-candidate:app/beta-page.mjs:9:1469,js-cjk-literal,app/beta-page.mjs,9,,unknown,reviewable,,沒有郵件應用程式？可以把草稿複製到網頁版信箱。
-candidate:app/beta-page.mjs:9:1500,js-cjk-literal,app/beta-page.mjs,9,,unknown,reviewable,,跳到正文
-candidate:app/beta-page.mjs:9:1519,js-cjk-literal,app/beta-page.mjs,9,,unknown,reviewable,,隱私說明
-candidate:app/beta-page.mjs:9:1532,js-cjk-literal,app/beta-page.mjs,9,,unknown,reviewable,,服務條款
-candidate:app/beta-page.mjs:9:1550,js-cjk-literal,app/beta-page.mjs,9,,unknown,reviewable,,頁面外觀
-candidate:app/beta-page.mjs:9:1567,js-cjk-literal,app/beta-page.mjs,9,,unknown,reviewable,,頁面語言
-candidate:app/beta-page.mjs:9:1579,js-cjk-literal,app/beta-page.mjs,9,,unknown,reviewable,,回到 Leafhour
-candidate:app/beta-page.mjs:10:12,js-cjk-literal,app/beta-page.mjs,10,,unknown,reviewable,,ベータ版に参加
-candidate:app/beta-page.mjs:10:34,js-cjk-literal,app/beta-page.mjs,10,,unknown,reviewable,,Webですぐに試し、iPhoneでもLeafhourを。ベータ版を使って、読書の感想をお聞かせください。
-candidate:app/beta-page.mjs:10:97,js-cjk-literal,app/beta-page.mjs,10,,unknown,reviewable,,"次の一冊を、
+candidate:app/beta-page.mjs:150:22,js-cjk-literal,app/beta-page.mjs,150,,unknown,reviewable,,哪裡讀得不順手，或有新的想法，都可以直接寫信給我們。
+candidate:app/beta-page.mjs:151:20,js-cjk-literal,app/beta-page.mjs,151,,unknown,reviewable,,直接寫郵件
+candidate:app/beta-page.mjs:152:18,js-cjk-literal,app/beta-page.mjs,152,,unknown,reviewable,,透過信箱聯絡，無需加入社群，也不必公開提交問題。
+candidate:app/beta-page.mjs:153:13,js-cjk-literal,app/beta-page.mjs,153,,unknown,reviewable,,跳到正文
+candidate:app/beta-page.mjs:154:20,js-cjk-literal,app/beta-page.mjs,154,,unknown,reviewable,,隱私說明
+candidate:app/beta-page.mjs:155:14,js-cjk-literal,app/beta-page.mjs,155,,unknown,reviewable,,服務條款
+candidate:app/beta-page.mjs:156:19,js-cjk-literal,app/beta-page.mjs,156,,unknown,reviewable,,頁面外觀
+candidate:app/beta-page.mjs:157:18,js-cjk-literal,app/beta-page.mjs,157,,unknown,reviewable,,頁面語言
+candidate:app/beta-page.mjs:158:13,js-cjk-literal,app/beta-page.mjs,158,,unknown,reviewable,,回到 Leafhour
+candidate:app/beta-page.mjs:161:14,js-cjk-literal,app/beta-page.mjs,161,,unknown,reviewable,,ベータ版に参加
+candidate:app/beta-page.mjs:162:20,js-cjk-literal,app/beta-page.mjs,162,,unknown,reviewable,,Webですぐに試し、iPhoneでもLeafhourを。ベータ版を使って、読書の感想をお聞かせください。
+candidate:app/beta-page.mjs:163:16,js-cjk-literal,app/beta-page.mjs,163,,unknown,reviewable,,"次の一冊を、
 一緒にゆっくり。"
-candidate:app/beta-page.mjs:10:122,js-cjk-literal,app/beta-page.mjs,10,,unknown,reviewable,,Leafhourはベータ版を公開しています。読みたい本を一冊持って、読む・聴く・質問する体験を試してみてください。
-candidate:app/beta-page.mjs:10:186,js-cjk-literal,app/beta-page.mjs,10,,unknown,reviewable,,書斎をiPhoneに
-candidate:app/beta-page.mjs:10:207,js-cjk-literal,app/beta-page.mjs,10,,unknown,reviewable,,原文を読み、一文ずつ聴き、訳文と見比べる。難しい箇所は、そのページで質問できます。
-candidate:app/beta-page.mjs:10:259,js-cjk-literal,app/beta-page.mjs,10,,unknown,reviewable,,TestFlightでインストール
-candidate:app/beta-page.mjs:10:291,js-cjk-literal,app/beta-page.mjs,10,,unknown,reviewable,,iOSのインストール先を確認中
-candidate:app/beta-page.mjs:10:325,js-cjk-literal,app/beta-page.mjs,10,,unknown,reviewable,,公開インストールリンクはまだ利用できません。Webで試すか、メールでお問い合わせください。
-candidate:app/beta-page.mjs:10:385,js-cjk-literal,app/beta-page.mjs,10,,unknown,reviewable,,iOS 17以降 · ベータ版
-candidate:app/beta-page.mjs:10:410,js-cjk-literal,app/beta-page.mjs,10,,unknown,reviewable,,AppleのTestFlightをインストールします。
-candidate:app/beta-page.mjs:10:440,js-cjk-literal,app/beta-page.mjs,10,,unknown,reviewable,,Leafhourの招待を開き、「承諾」を選びます。
-candidate:app/beta-page.mjs:10:468,js-cjk-literal,app/beta-page.mjs,10,,unknown,reviewable,,Leafhourをインストールして、本を開きます。
-candidate:app/beta-page.mjs:10:508,js-cjk-literal,app/beta-page.mjs,10,,unknown,reviewable,,TestFlightを入手
-candidate:app/beta-page.mjs:10:535,js-cjk-literal,app/beta-page.mjs,10,,unknown,reviewable,,実際のiPhone画面 · パブリックドメインのサンプル
-candidate:app/beta-page.mjs:10:575,js-cjk-literal,app/beta-page.mjs,10,,unknown,reviewable,,まずは数ページから。
-candidate:app/beta-page.mjs:10:596,js-cjk-literal,app/beta-page.mjs,10,,unknown,reviewable,,ブラウザでサンプルを開き、原文と訳文を見比べてください。準備ができたら、自分の本を書斎へ。
-candidate:app/beta-page.mjs:10:650,js-cjk-literal,app/beta-page.mjs,10,,unknown,reviewable,,Webで試し読み
-candidate:app/beta-page.mjs:10:666,js-cjk-literal,app/beta-page.mjs,10,,unknown,reviewable,,自分の書斎を開く
-candidate:app/beta-page.mjs:10:685,js-cjk-literal,app/beta-page.mjs,10,,unknown,reviewable,,サンプルの試し読みには登録不要です。
-candidate:app/beta-page.mjs:10:717,js-cjk-literal,app/beta-page.mjs,10,,unknown,reviewable,,実際のWeb画面 · パブリックドメインのサンプル
-candidate:app/beta-page.mjs:10:757,js-cjk-literal,app/beta-page.mjs,10,,unknown,reviewable,,始める前に
-candidate:app/beta-page.mjs:10:774,js-cjk-literal,app/beta-page.mjs,10,,unknown,reviewable,,改善を続けています
-candidate:app/beta-page.mjs:10:786,js-cjk-literal,app/beta-page.mjs,10,,unknown,reviewable,,操作が変わったり、使いづらい点が見つかったりすることがあります。具体的なご感想が改善の手がかりになります。
-candidate:app/beta-page.mjs:10:844,js-cjk-literal,app/beta-page.mjs,10,,unknown,reviewable,,読書は無料です
-candidate:app/beta-page.mjs:10:854,js-cjk-literal,app/beta-page.mjs,10,,unknown,reviewable,,読書、ノート、エクスポートは無料です。AI機能には現在のポイント規則が適用され、利用前に料金が表示されます。
-candidate:app/beta-page.mjs:10:913,js-cjk-literal,app/beta-page.mjs,10,,unknown,reviewable,,同じ自分の書斎
-candidate:app/beta-page.mjs:10:923,js-cjk-literal,app/beta-page.mjs,10,,unknown,reviewable,,WebとiPhoneで同じLeafhourアカウントを使えます。端末内の本は、アップロードを選ぶまで端末に残ります。
-candidate:app/beta-page.mjs:10:994,js-cjk-literal,app/beta-page.mjs,10,,unknown,reviewable,,ポイントについて
-candidate:app/beta-page.mjs:10:1019,js-cjk-literal,app/beta-page.mjs,10,,unknown,reviewable,,"読んでみて、
+candidate:app/beta-page.mjs:164:14,js-cjk-literal,app/beta-page.mjs,164,,unknown,reviewable,,Leafhourはベータ版を公開しています。読みたい本を一冊持って、読む・聴く・質問する体験を試してみてください。
+candidate:app/beta-page.mjs:165:12,js-cjk-literal,app/beta-page.mjs,165,,unknown,reviewable,,書斎をiPhoneに
+candidate:app/beta-page.mjs:166:16,js-cjk-literal,app/beta-page.mjs,166,,unknown,reviewable,,原文を読み、一文ずつ聴き、訳文と見比べる。難しい箇所は、そのページで質問できます。
+candidate:app/beta-page.mjs:167:16,js-cjk-literal,app/beta-page.mjs,167,,unknown,reviewable,,TestFlightでインストール
+candidate:app/beta-page.mjs:168:20,js-cjk-literal,app/beta-page.mjs,168,,unknown,reviewable,,iOSのインストール先を確認中
+candidate:app/beta-page.mjs:169:24,js-cjk-literal,app/beta-page.mjs,169,,unknown,reviewable,,公開インストールリンクはまだ利用できません。Webで試すか、メールでお問い合わせください。
+candidate:app/beta-page.mjs:170:20,js-cjk-literal,app/beta-page.mjs,170,,unknown,reviewable,,iOS 17以降 · ベータ版
+candidate:app/beta-page.mjs:172:7,js-cjk-literal,app/beta-page.mjs,172,,unknown,reviewable,,AppleのTestFlightをインストールします。
+candidate:app/beta-page.mjs:173:7,js-cjk-literal,app/beta-page.mjs,173,,unknown,reviewable,,Leafhourの招待を開き、「承諾」を選びます。
+candidate:app/beta-page.mjs:174:7,js-cjk-literal,app/beta-page.mjs,174,,unknown,reviewable,,Leafhourをインストールして、本を開きます。
+candidate:app/beta-page.mjs:176:19,js-cjk-literal,app/beta-page.mjs,176,,unknown,reviewable,,TestFlightを入手
+candidate:app/beta-page.mjs:177:19,js-cjk-literal,app/beta-page.mjs,177,,unknown,reviewable,,実際のiPhone画面 · パブリックドメインのサンプル
+candidate:app/beta-page.mjs:178:17,js-cjk-literal,app/beta-page.mjs,178,,unknown,reviewable,,まずは数ページから。
+candidate:app/beta-page.mjs:179:16,js-cjk-literal,app/beta-page.mjs,179,,unknown,reviewable,,ブラウザでサンプルを開き、原文と訳文を見比べてください。準備ができたら、自分の本を書斎へ。
+candidate:app/beta-page.mjs:180:14,js-cjk-literal,app/beta-page.mjs,180,,unknown,reviewable,,Webで試し読み
+candidate:app/beta-page.mjs:181:13,js-cjk-literal,app/beta-page.mjs,181,,unknown,reviewable,,自分の書斎を開く
+candidate:app/beta-page.mjs:182:16,js-cjk-literal,app/beta-page.mjs,182,,unknown,reviewable,,サンプルの試し読みには登録不要です。
+candidate:app/beta-page.mjs:183:19,js-cjk-literal,app/beta-page.mjs,183,,unknown,reviewable,,実際のWeb画面 · パブリックドメインのサンプル
+candidate:app/beta-page.mjs:184:20,js-cjk-literal,app/beta-page.mjs,184,,unknown,reviewable,,始める前に
+candidate:app/beta-page.mjs:187:9,js-cjk-literal,app/beta-page.mjs,187,,unknown,reviewable,,改善を続けています
+candidate:app/beta-page.mjs:188:9,js-cjk-literal,app/beta-page.mjs,188,,unknown,reviewable,,操作が変わったり、使いづらい点が見つかったりすることがあります。具体的なご感想が改善の手がかりになります。
+candidate:app/beta-page.mjs:191:9,js-cjk-literal,app/beta-page.mjs,191,,unknown,reviewable,,読書は無料です
+candidate:app/beta-page.mjs:192:9,js-cjk-literal,app/beta-page.mjs,192,,unknown,reviewable,,読書、ノート、エクスポートは無料です。AI機能には現在のポイント規則が適用され、利用前に料金が表示されます。
+candidate:app/beta-page.mjs:195:9,js-cjk-literal,app/beta-page.mjs,195,,unknown,reviewable,,同じ自分の書斎
+candidate:app/beta-page.mjs:196:9,js-cjk-literal,app/beta-page.mjs,196,,unknown,reviewable,,WebとiPhoneで同じLeafhourアカウントを使えます。端末内の本は、アップロードを選ぶまで端末に残ります。
+candidate:app/beta-page.mjs:199:16,js-cjk-literal,app/beta-page.mjs,199,,unknown,reviewable,,ポイントについて
+candidate:app/beta-page.mjs:200:22,js-cjk-literal,app/beta-page.mjs,200,,unknown,reviewable,,"読んでみて、
 いかがでしたか。"
-candidate:app/beta-page.mjs:10:1052,js-cjk-literal,app/beta-page.mjs,10,,unknown,reviewable,,使いづらい操作、不自然な訳文、あったらうれしい機能。短いご感想でも歓迎します。
-candidate:app/beta-page.mjs:10:1106,js-cjk-literal,app/beta-page.mjs,10,,unknown,reviewable,,メールを書く
-candidate:app/beta-page.mjs:10:1125,js-cjk-literal,app/beta-page.mjs,10,,unknown,reviewable,,メールで直接ご連絡ください。コミュニティへの参加や公開投稿は不要です。
-candidate:app/beta-page.mjs:10:1172,js-cjk-literal,app/beta-page.mjs,10,,unknown,reviewable,,どちらで使いましたか？
-candidate:app/beta-page.mjs:10:1194,js-cjk-literal,app/beta-page.mjs,10,,unknown,reviewable,,バージョンや端末（任意）
-candidate:app/beta-page.mjs:10:1228,js-cjk-literal,app/beta-page.mjs,10,,unknown,reviewable,,例：iPhone · iOS 17.5
-candidate:app/beta-page.mjs:10:1257,js-cjk-literal,app/beta-page.mjs,10,,unknown,reviewable,,起きたことと、期待した動作を教えてください。
-candidate:app/beta-page.mjs:10:1300,js-cjk-literal,app/beta-page.mjs,10,,unknown,reviewable,,行った操作と困った点をお書きください。スクリーンショットはメールアプリで添付できます。
-candidate:app/beta-page.mjs:10:1354,js-cjk-literal,app/beta-page.mjs,10,,unknown,reviewable,,下書きに含まれるのは、ここで入力した内容だけです。本、ノート、アカウント情報は自動添付しません。このフォームをサイトが保存・送信することはありません。
-candidate:app/beta-page.mjs:10:1440,js-cjk-literal,app/beta-page.mjs,10,,unknown,reviewable,,メールの下書きを作る
-candidate:app/beta-page.mjs:10:1462,js-cjk-literal,app/beta-page.mjs,10,,unknown,reviewable,,メールアプリで開く
-candidate:app/beta-page.mjs:10:1479,js-cjk-literal,app/beta-page.mjs,10,,unknown,reviewable,,内容をコピー
-candidate:app/beta-page.mjs:10:1494,js-cjk-literal,app/beta-page.mjs,10,,unknown,reviewable,,下書きができました。メールアプリで確認してから送信してください。このページからは送信していません。
-candidate:app/beta-page.mjs:10:1553,js-cjk-literal,app/beta-page.mjs,10,,unknown,reviewable,,内容をコピーしました。メールに貼り付け、support@leafhour.comへ送信してください。
-candidate:app/beta-page.mjs:10:1613,js-cjk-literal,app/beta-page.mjs,10,,unknown,reviewable,,下の下書きを選択してコピーし、support@leafhour.comへメールしてください。
-candidate:app/beta-page.mjs:10:1671,js-cjk-literal,app/beta-page.mjs,10,,unknown,reviewable,,メールの下書き
-candidate:app/beta-page.mjs:10:1694,js-cjk-literal,app/beta-page.mjs,10,,unknown,reviewable,,メールアプリがない場合は、Webメールにコピーできます。
-candidate:app/beta-page.mjs:10:1730,js-cjk-literal,app/beta-page.mjs,10,,unknown,reviewable,,本文へスキップ
-candidate:app/beta-page.mjs:10:1752,js-cjk-literal,app/beta-page.mjs,10,,unknown,reviewable,,プライバシー
-candidate:app/beta-page.mjs:10:1767,js-cjk-literal,app/beta-page.mjs,10,,unknown,reviewable,,利用規約
-candidate:app/beta-page.mjs:10:1785,js-cjk-literal,app/beta-page.mjs,10,,unknown,reviewable,,外観
-candidate:app/beta-page.mjs:10:1800,js-cjk-literal,app/beta-page.mjs,10,,unknown,reviewable,,表示言語
-candidate:app/beta-page.mjs:10:1812,js-cjk-literal,app/beta-page.mjs,10,,unknown,reviewable,,Leafhourに戻る
+candidate:app/beta-page.mjs:201:22,js-cjk-literal,app/beta-page.mjs,201,,unknown,reviewable,,読みにくかったところや、あったらうれしいこと。メールでお聞かせください。
+candidate:app/beta-page.mjs:202:20,js-cjk-literal,app/beta-page.mjs,202,,unknown,reviewable,,メールを書く
+candidate:app/beta-page.mjs:203:18,js-cjk-literal,app/beta-page.mjs,203,,unknown,reviewable,,メールで直接ご連絡ください。コミュニティへの参加や公開投稿は不要です。
+candidate:app/beta-page.mjs:204:13,js-cjk-literal,app/beta-page.mjs,204,,unknown,reviewable,,本文へスキップ
+candidate:app/beta-page.mjs:205:20,js-cjk-literal,app/beta-page.mjs,205,,unknown,reviewable,,プライバシー
+candidate:app/beta-page.mjs:206:14,js-cjk-literal,app/beta-page.mjs,206,,unknown,reviewable,,利用規約
+candidate:app/beta-page.mjs:207:19,js-cjk-literal,app/beta-page.mjs,207,,unknown,reviewable,,外観
+candidate:app/beta-page.mjs:208:18,js-cjk-literal,app/beta-page.mjs,208,,unknown,reviewable,,表示言語
+candidate:app/beta-page.mjs:209:13,js-cjk-literal,app/beta-page.mjs,209,,unknown,reviewable,,Leafhourに戻る
 candidate:app/billing.html:3:158,html-attribute,app/billing.html,3,aria-label,unknown,reviewable,,Leafhour home
 candidate:app/billing.html:3:1624,html-attribute,app/billing.html,3,aria-label,unknown,reviewable,,Policies
 candidate:app/billing.html:5:125,html-attribute,app/billing.html,5,aria-label,unknown,reviewable,,关闭登录

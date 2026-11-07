@@ -21,8 +21,8 @@ test('public beta routes work without an account and preserve trial language on 
   assert.ok(html.includes('href="/'+slug+'/beta" aria-current="page"'));
   if(slug==='en')assert.equal(await(await fetch(base+'/beta')).text(),html);
  }
- for(const file of ['beta.css','beta-feedback.mjs','beta-channel.mjs'])assert.equal((await fetch(base+'/'+file)).status,200,file+' must be public');
- assert.equal((await fetch(base+'/beta',{method:'POST'})).status,405,'An email composer must not accidentally accept stored feedback');
+ for(const file of ['beta.css','beta-channel.mjs'])assert.equal((await fetch(base+'/'+file)).status,200,file+' must be public');
+ assert.equal((await fetch(base+'/beta',{method:'POST'})).status,405,'The email-only page must not accept stored feedback');
 });
 
 test('hosted beta flat files and directory aliases match the local renderer',async t=>{

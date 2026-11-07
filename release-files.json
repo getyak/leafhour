@@ -1610,7 +1610,6 @@
   "tools/hourly_publisher/bootstrap.py",
   "tests/test_hourly_publisher_bootstrap.py",
   "app/beta-channel.mjs",
-  "app/beta-feedback.mjs",
   "app/beta-page.mjs",
   "app/beta.css",
   "tests/beta-channel.test.mjs",
