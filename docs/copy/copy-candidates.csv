@@ -1,6 +1,6 @@
 id,kind,file,line,property,review,protected,protectionReason,value
 candidate:api/[...path].js:19:684,js-cjk-literal,api/[...path].js,19,,unknown,reviewable,,内容超过云端传输限制，请分章节导出。原有资料仍保留。
-candidate:api/[...path].js:30:416,js-cjk-literal,api/[...path].js,30,,unknown,reviewable,,请从书房选择一本书再开始阅读
+candidate:api/[...path].js:30:440,js-cjk-literal,api/[...path].js,30,,unknown,reviewable,,请从书房选择一本书再开始阅读
 candidate:api/[...path].js:32:70,js-cjk-literal,api/[...path].js,32,,unknown,reviewable,,线上书房地址尚未配置
 candidate:api/[...path].js:39:37,js-cjk-literal,api/[...path].js,39,,unknown,reviewable,,找不到这个操作
 candidate:api/[...path].js:40:372,js-cjk-literal,api/[...path].js,40,,unknown,reviewable,,服务暂时无法完成操作，请重试
