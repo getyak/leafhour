@@ -22,6 +22,7 @@ final class VideoExperienceUITests: XCTestCase {
     override func setUpWithError() throws {
         continueAfterFailure = false
         print("GET317 native runner input: \(#filePath) | \(Bundle(for: Self.self).bundlePath)")
+        GET328CurrentAcceptance.attachRunnerTypeProfile(to: self)
     }
     override func tearDownWithError() throws {
         capture(name)

@@ -39,6 +39,7 @@ enum VideoAcceptanceFixture {
                 try FileManager.default.removeItem(at: root)
             }
             try FileManager.default.createDirectory(at: root, withIntermediateDirectories: true)
+            if currentAcceptance { GET328RuntimeTraitsRecorder.start(in: root) }
             try prepareSystemPickerDocuments(currentAcceptance: currentAcceptance)
             GET317Transport.configure(root: root, arguments: arguments)
             let configuration = URLSessionConfiguration.ephemeral
@@ -536,6 +537,169 @@ private final class GET317Transport: URLProtocol, @unchecked Sendable {
             }
         }
         return (try? JSONSerialization.jsonObject(with: bytes)) as? [String: Any] ?? [:]
+    }
+}
+#endif
+
+#if DEBUG
+private struct GET328RuntimeTraitsSample: Encodable, Sendable {
+    let sequence: Int
+    let sampledAt: String
+    let trigger: String
+    let applicationCategory: String
+    let applicationIsAccessibilityCategory: Bool
+    let windowCategory: String?
+    let windowIsAccessibilityCategory: Bool?
+    let windowIsKey: Bool
+    let sceneActivationState: String
+    let status: String
+    let issues: [String]
+
+    private enum CodingKeys: String, CodingKey {
+        case sequence, sampledAt, trigger, applicationCategory, applicationIsAccessibilityCategory
+        case windowCategory, windowIsAccessibilityCategory, windowIsKey, sceneActivationState, status, issues
+    }
+
+    func encode(to encoder: Encoder) throws {
+        var values = encoder.container(keyedBy: CodingKeys.self)
+        try values.encode(sequence, forKey: .sequence)
+        try values.encode(sampledAt, forKey: .sampledAt)
+        try values.encode(trigger, forKey: .trigger)
+        try values.encode(applicationCategory, forKey: .applicationCategory)
+        try values.encode(applicationIsAccessibilityCategory, forKey: .applicationIsAccessibilityCategory)
+        if let windowCategory { try values.encode(windowCategory, forKey: .windowCategory) }
+        else { try values.encodeNil(forKey: .windowCategory) }
+        if let windowIsAccessibilityCategory { try values.encode(windowIsAccessibilityCategory, forKey: .windowIsAccessibilityCategory) }
+        else { try values.encodeNil(forKey: .windowIsAccessibilityCategory) }
+        try values.encode(windowIsKey, forKey: .windowIsKey)
+        try values.encode(sceneActivationState, forKey: .sceneActivationState)
+        try values.encode(status, forKey: .status)
+        try values.encode(issues, forKey: .issues)
+    }
+}
+
+private struct GET328RuntimeTraitsReceipt: Encodable, Sendable {
+    let schemaVersion = 1
+    let bundleIdentifier: String
+    let processIdentifier: Int32
+    let launchIdentifier: String
+    let samples: [GET328RuntimeTraitsSample]
+}
+
+/// Observes this exact synthetic App only; it never changes traits or layout.
+@MainActor
+private final class GET328RuntimeTraitsRecorder {
+    private static var active: GET328RuntimeTraitsRecorder?
+    private let bundleIdentifier: String
+    private let processIdentifier = ProcessInfo.processInfo.processIdentifier
+    private let launchIdentifier = UUID().uuidString
+    private let destination: URL
+    private let writer = DispatchQueue(label: "org.leafhour.get328.runtime-traits", qos: .utility)
+    private var observers: [NSObjectProtocol] = []
+    private var sequence = 0
+    private var samples: [GET328RuntimeTraitsSample] = []
+
+    static func start(in root: URL) {
+        let arguments = ProcessInfo.processInfo.arguments
+        guard Bundle.main.bundleIdentifier == "org.leafhour.get328.acceptance20261107",
+              arguments.contains("--get328-current-acceptance"), arguments.contains("--get317-acceptance"),
+              !arguments.contains("--get385-live"), root.lastPathComponent == "GET328CurrentAcceptance" else { return }
+        if let active {
+            // A model can be recreated in the same process; retain this launch's
+            // identity and observer set, including after its fixture-root reset.
+            active.sampleAndSettle(trigger: "startup")
+            return
+        }
+        let recorder = GET328RuntimeTraitsRecorder(root: root)
+        active = recorder
+        recorder.observe(UIWindow.didBecomeKeyNotification, trigger: "window-became-key")
+        recorder.observe(UIApplication.didBecomeActiveNotification, trigger: "application-active")
+        recorder.observe(UIContentSizeCategory.didChangeNotification, trigger: "content-size-category-changed")
+        recorder.sampleAndSettle(trigger: "startup")
+    }
+
+    private init(root: URL) {
+        bundleIdentifier = Bundle.main.bundleIdentifier ?? ""
+        destination = root.appendingPathComponent("Diagnostics", isDirectory: true)
+            .appendingPathComponent("app-runtime-traits.json")
+    }
+
+    private func observe(_ name: Notification.Name, trigger: String) {
+        observers.append(NotificationCenter.default.addObserver(forName: name, object: nil, queue: .main) { [weak self] _ in
+            MainActor.assumeIsolated { self?.sampleAndSettle(trigger: trigger) }
+        })
+    }
+
+    private func sampleAndSettle(trigger: String) {
+        sample(trigger: trigger)
+        // Observe again after UIKit has had a chance to update window traits.
+        // Every sample reads the live values; no notification payload is used.
+        DispatchQueue.main.async { [weak self] in MainActor.assumeIsolated { self?.sample(trigger: trigger + "-settled") } }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) { [weak self] in MainActor.assumeIsolated { self?.sample(trigger: trigger + "-settled") } }
+    }
+
+    private func sample(trigger: String) {
+        let application = UIApplication.shared
+        let applicationCategory = application.preferredContentSizeCategory
+        let connected = application.connectedScenes.compactMap { $0 as? UIWindowScene }
+        let foreground = connected.filter {
+            $0.activationState == .foregroundActive || $0.activationState == .foregroundInactive
+        }
+        let activeScenes = foreground.filter { $0.activationState == .foregroundActive }
+        let scenes = activeScenes.isEmpty ? foreground : activeScenes
+        let keyWindows = scenes.flatMap(\.windows).filter(\.isKeyWindow)
+        let window = keyWindows.count == 1 ? keyWindows.first : nil
+        let scene = window?.windowScene ?? (scenes.count == 1 ? scenes.first : nil)
+            ?? (connected.count == 1 ? connected.first : nil)
+        let windowCategory = window?.traitCollection.preferredContentSizeCategory
+        var issues: [String] = []
+        if applicationCategory == .unspecified { issues.append("application-category-unspecified") }
+        if application.applicationState != .active { issues.append("application-not-active") }
+        if scenes.isEmpty { issues.append("foreground-scene-unavailable") }
+        if scene?.activationState != .foregroundActive { issues.append("foreground-scene-not-active") }
+        if keyWindows.isEmpty { issues.append("foreground-key-window-unavailable") }
+        if keyWindows.count > 1 { issues.append("foreground-key-window-ambiguous") }
+        if let windowCategory {
+            if windowCategory == .unspecified { issues.append("window-category-unspecified") }
+            if windowCategory != applicationCategory { issues.append("application-window-category-mismatch") }
+        }
+        let windowIsKey = window?.isKeyWindow ?? false
+        if window != nil && !windowIsKey { issues.append("foreground-window-not-key") }
+        let formatter = ISO8601DateFormatter()
+        formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+        sequence += 1
+        samples.append(GET328RuntimeTraitsSample(sequence: sequence, sampledAt: formatter.string(from: Date()), trigger: trigger,
+            applicationCategory: applicationCategory.rawValue, applicationIsAccessibilityCategory: applicationCategory.isAccessibilityCategory,
+            windowCategory: windowCategory?.rawValue, windowIsAccessibilityCategory: windowCategory?.isAccessibilityCategory,
+            windowIsKey: windowIsKey, sceneActivationState: Self.activationName(scene?.activationState),
+            status: issues.isEmpty ? "observed" : "unavailable", issues: issues))
+        if samples.count > 64 { samples.removeFirst(samples.count - 64) }
+        let receipt = GET328RuntimeTraitsReceipt(bundleIdentifier: bundleIdentifier, processIdentifier: processIdentifier,
+                                                launchIdentifier: launchIdentifier, samples: samples)
+        let destination = self.destination
+        writer.async {
+            do {
+                try FileManager.default.createDirectory(at: destination.deletingLastPathComponent(), withIntermediateDirectories: true)
+                let encoder = JSONEncoder()
+                encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
+                try encoder.encode(receipt).write(to: destination, options: .atomic)
+            } catch {
+                // Never write a fallback elsewhere or present an old sample as
+                // a successful write. Host validation must reject stale files.
+                NSLog("GET328 app runtime traits receipt write failed: %@", error.localizedDescription)
+            }
+        }
+    }
+
+    private static func activationName(_ value: UIScene.ActivationState?) -> String {
+        guard let value else { return "unavailable" }
+        switch value {
+        case .foregroundActive: return "foregroundActive"
+        case .foregroundInactive: return "foregroundInactive"
+        case .background: return "background"
+        case .unattached: return "unattached"
+        @unknown default: return "unknown"
+        }
     }
 }
 #endif

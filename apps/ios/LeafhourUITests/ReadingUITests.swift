@@ -7,6 +7,7 @@ final class ReadingUITests: XCTestCase {
     let app = GET328CurrentAcceptance.application(legacy: true)
     override func setUpWithError() throws {
         continueAfterFailure = false
+        GET328CurrentAcceptance.attachRunnerTypeProfile(to: self)
         // The host prepares each case while this task app is stopped. Never
         // reset here: terminate/launch inside a case must retain real records.
         app.launchArguments = ["--get317-acceptance", "-leafhour.library.layout", "list",
