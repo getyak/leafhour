@@ -31,6 +31,11 @@ def stamp(start=100):
                 initial_free_bytes=9 * GIB)
 
 
+def positive_advancing_clock(source):
+    origin = source()
+    return lambda: 1024.0 + (source() - origin)
+
+
 class DiagnosticCoreTests(unittest.TestCase):
     def setUp(self):
         self.assertIsNotNone(core, 'The bounded diagnostic core is not implemented')
@@ -39,9 +44,10 @@ class DiagnosticCoreTests(unittest.TestCase):
                        (urllib.request, 'urlopen'), (urllib.request.OpenerDirector, 'open')):
             self.stack.enter_context(mock.patch.object(*target, side_effect=AssertionError('network denied')))
 
-    def runner(self, sample=None, start=None):
+    def runner(self, sample=None, start=None, clock=None):
         root = Path(self.enterContext(tempfile.TemporaryDirectory(prefix='get328-diagnostic-unit-')))
-        budget = core.Budget(stamp(time.monotonic() if start is None else start))
+        clock = time.monotonic if clock is None else clock
+        budget = core.Budget(stamp(clock() if start is None else start), clock=clock)
         runner = core.Runner(root, budget, sample=sample or (lambda: (9 * GIB, 0, 0)), poll=.005)
         return root, budget, runner
 
@@ -194,8 +200,11 @@ class DiagnosticCoreTests(unittest.TestCase):
             self.assertEqual(runner.resources(), (9 * GIB, 3, 3))
 
     def test_earlier_global_deadline_terminates_real_child_within_reserved_tail(self):
-        now = time.monotonic()
-        root, budget, runner = self.runner(start=now - 329.2)
+        # Real VM uptime may be below 329.2s. Give the synthetic old stamp a
+        # positive origin while Budget and Runner keep the same advancing clock.
+        clock = positive_advancing_clock(time.monotonic)
+        now = clock()
+        root, budget, runner = self.runner(start=now - 329.2, clock=clock)
         budget.begin_final()
         with self.assertRaises(core.DiagnosticError):
             runner.run([sys.executable, '-c', 'import time; time.sleep(5)'], 'global', 20, final=True)
@@ -204,6 +213,26 @@ class DiagnosticCoreTests(unittest.TestCase):
         self.assertIsNotNone(record['raw_exit'])
         self.assertLessEqual(record['finished_monotonic'], budget.end)
         self.assertTrue(budget.stopped)
+
+    def test_low_uptime_fixture_keeps_a_positive_stamp_and_the_original_global_tail(self):
+        with mock.patch.object(core.subprocess, 'Popen') as spawn:
+            for origin in (0.0, .1, 100.0):
+                with self.subTest(origin=origin):
+                    ticks = [origin]
+                    clock = positive_advancing_clock(lambda: ticks[0])
+                    now = clock()
+                    root, budget, runner = self.runner(start=now - 329.2, clock=clock)
+                    self.assertGreaterEqual(budget.start, 0)
+                    self.assertAlmostEqual(budget.end - budget.start, 330)
+                    self.assertAlmostEqual(budget.end - clock(), .8)
+                    budget.begin_final()
+                    budget.check(final=True)
+                    ticks[0] = origin + .3
+                    self.assertAlmostEqual(budget.end - clock(), .5)
+                    ticks[0] = origin + 1.0
+                    with self.assertRaises(core.DiagnosticError):
+                        budget.check(final=True)
+            spawn.assert_not_called()
 
     def test_command_timeout_stops_an_ignoring_owned_group_without_extra_grace(self):
         root, budget, runner = self.runner()
