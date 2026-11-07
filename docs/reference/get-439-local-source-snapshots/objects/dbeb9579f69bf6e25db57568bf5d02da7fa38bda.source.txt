@@ -1,0 +1,95 @@
+import {t,onUiLocaleChange,onUiLocaleStateChange,getUiLocaleState,setUiLocale,retryUiLocale,uiReady} from './ui-locale.mjs';
+import {mountUiLocaleControls} from './ui-locale-controls.mjs';
+import {UI_LOCALES} from './ui-locale-codec.mjs';
+import {mountLibraryDailyReading} from './library-daily-reading.mjs';
+import {mountLibraryData} from './library-data.mjs';
+import {getSiteAppearance,setSiteAppearance} from './site-appearance.mjs';
+import {mountLibraryProfile,renderProfileAvatar} from './library-profile.mjs';
+import {mountReadingPreferencesForm} from './library-reading-preferences.mjs';
+const $=id=>document.getElementById(id);
+const node=(tag,className,text)=>{const n=document.createElement(tag);if(className)n.className=className;if(text!==undefined)n.textContent=text;return n;};
+// P2 opener safety: the settings dialog captures its opener only on first open
+// and returns focus only to a connected, visible, non-inert control outside the
+// dialog; the sidebar settings entry is the explicit fallback.
+export function settingsOpenerCandidate(document,dialog){
+  const active=document.activeElement;
+  return active&&active!==document.body&&!(dialog&&dialog.contains(active))?active:null;
+}
+export function settingsFocusTarget(dialog,candidate,fallback){
+  for(const target of [candidate,fallback]){
+    if(!target||typeof target.focus!=='function'||target.isConnected===false||target.hidden)continue;
+    if(dialog&&dialog.contains(target))continue;
+    if(typeof target.closest==='function'&&target.closest('[inert]'))continue;
+    if(typeof target.getClientRects==='function'&&target.getClientRects().length===0)continue;
+    return target;
+  }
+  return null;
+}
+export function roomIcons(root=document){for(const holder of root.querySelectorAll('[data-icon]')){const svg=document.createElementNS('http://www.w3.org/2000/svg','svg'),use=document.createElementNS(svg.namespaceURI,'use');svg.setAttribute('viewBox','0 0 24 24');svg.setAttribute('aria-hidden','true');use.setAttribute('href','/icons.svg#'+holder.dataset.icon);svg.append(use);holder.replaceChildren(svg);}}
+export function mountLibraryShell({getSession,openAuth,onLogout,onHistory,onOpenChat,api,onProfileUpdated,onRestored,onReadingPreferencesSaved=()=>{},getBooks=()=>[],getCurrentBook=()=>null,inboxRoot=null,onSettingsOpen=()=>{},onSettingsClose=()=>{},onSettingsTab=()=>{}}){
+  const header=$('library-sidebar'),navigation=$('library-nav-dialog'),settings=$('library-settings-dialog'),media=matchMedia('(max-width:980px)'),key='marginalia-library-sidebar';let collapsed=false,opener=null,navigationReturn=null;
+  for(const control of header.querySelectorAll('button[data-hint]'))if(!control.hasAttribute('aria-label'))control.setAttribute('aria-label',control.dataset.hint);
+  const accountButton=node('button','sidebar-account');accountButton.id='library-account';accountButton.type='button';
+  const accountAvatar=node('span','sidebar-avatar'),accountCopy=node('span','sidebar-account-copy'),accountName=node('span','sidebar-account-name'),accountEmail=node('span','sidebar-account-email');accountCopy.append(accountName,accountEmail);accountButton.append(accountAvatar,accountCopy);$('library-settings').insertAdjacentElement('afterend',accountButton);
+  accountButton.addEventListener('click',()=>{if(getSession()?.user)openSettings('account');else{closeNavigation();openAuth();}});
+  try{collapsed=localStorage.getItem(key)==='collapsed';}catch{}
+  const close=node('button','dialog-close','×');close.type='button';close.setAttribute('aria-label',t('shell.settings.close'));close.addEventListener('click',()=>settings.close());
+  const heading=node('h2','',t('shell.settings.title'));heading.id='settings-title';const headingRow=node('div','settings-heading');headingRow.append(heading,close);
+  const layout=node('div','settings-layout'),tabs=node('div','settings-tabs');tabs.setAttribute('role','tablist');tabs.setAttribute('aria-label',t('shell.settings.categories'));
+  const content=node('div','settings-content'),panels={},tabButtons=[];
+  function select(name,focus=false){for(const b of tabButtons){const selected=b.dataset.setting===name;b.setAttribute('aria-selected',String(selected));b.tabIndex=selected?0:-1;panels[b.dataset.setting].hidden=!selected;if(selected&&focus)b.focus();}if(settings.open)onSettingsTab(name);}
+  for(const name of ['account','reading-habits','daily-reading','appearance','data','about']){const b=node('button','',t('shell.settings.tab.'+name));b.type='button';b.dataset.setting=name;b.id='settings-tab-'+name;b.setAttribute('role','tab');b.setAttribute('aria-controls','settings-panel-'+name);b.addEventListener('click',()=>select(name));tabButtons.push(b);tabs.append(b);const p=node('section','settings-panel');p.id='settings-panel-'+name;p.setAttribute('role','tabpanel');p.setAttribute('aria-labelledby',b.id);panels[name]=p;content.append(p);}
+  tabs.addEventListener('keydown',event=>{const current=tabButtons.indexOf(document.activeElement);if(current<0)return;let index;if(['ArrowRight','ArrowDown'].includes(event.key))index=(current+1)%tabButtons.length;else if(['ArrowLeft','ArrowUp'].includes(event.key))index=(current+tabButtons.length-1)%tabButtons.length;else if(event.key==='Home')index=0;else if(event.key==='End')index=tabButtons.length-1;else return;event.preventDefault();select(tabButtons[index].dataset.setting,true);});
+  const accountTitle=node('h3'),accountDetail=node('p','settings-description'),login=node('button','primary',t('shell.account.login')),logout=node('button','outline',t('shell.account.logout')),accountStatus=node('p','settings-status');accountStatus.setAttribute('role','status');login.type=logout.type='button';
+  login.addEventListener('click',()=>{settings.close();openAuth();});
+  logout.addEventListener('click',async()=>{const hadFocus=document.activeElement===logout;let failed=false;logoutBusy=true;logout.disabled=true;logout.textContent=t('shell.account.loggingOut');accountStatus.textContent='';try{await onLogout();update();if(settings.open)login.focus();accountStatus.textContent=t('shell.account.loggedOut');}catch(error){failed=true;accountStatus.textContent=t('ui.generic.error');accountStatus.classList.add('error');}finally{logoutBusy=false;logout.disabled=false;logout.textContent=t('shell.account.logout');if(failed&&hadFocus&&settings.open&&!logout.hidden&&(document.activeElement===document.body||document.activeElement===logout))logout.focus({preventScroll:true});}});
+  let logoutBusy=false;
+  const accountActions=node('div','settings-actions'),profileRoot=node('div','account-profile-root');accountActions.append(login,logout);panels.account.append(accountTitle,accountDetail,profileRoot,accountActions,accountStatus);
+  const profile=mountLibraryProfile({root:profileRoot,getSession,api,onProfileUpdated,onRestored});
+  const habits=mountReadingPreferencesForm({root:panels['reading-habits'],api,getSession,onSaved:onReadingPreferencesSaved});
+  const daily=mountLibraryDailyReading({root:panels['daily-reading'],inboxRoot,api,getSession,getBooks,getCurrentBook});
+  const data=mountLibraryData({root:panels.data,getSession,api,onRestored});
+  const appearanceTitle=node('h3','',t('shell.appearance.title')),appearanceDescription=node('p','settings-description',t('shell.appearance.description')),choices=node('fieldset','appearance-choices'),legend=node('legend','sr-only',t('shell.appearance.title'));choices.append(legend);
+  for(const [value,icon] of [['system','monitor'],['paper','sun'],['night','moon']]){const label=t('shell.appearance.'+value),description=t('shell.appearance.'+value+'Detail');const choice=node('label','appearance-choice'),input=node('input');input.type='radio';input.name='site-appearance';input.value=value;const preview=node('span','appearance-swatch '+value),i=node('span');i.dataset.icon=icon;preview.append(i);const title=node('span','appearance-label',label),detail=node('small','',description);choice.append(input,preview,title,detail);input.addEventListener('change',()=>setSiteAppearance(input.value));choices.append(choice);}
+  const localeRoot=node('div','settings-locale');
+  const localeLabels=id=>t(id);
+  const localeControls=mountUiLocaleControls({root:localeRoot,options:UI_LOCALES,getState:getUiLocaleState,setLocale:code=>{setUiLocale(code).catch(()=>{});},retry:()=>{retryUiLocale().catch(()=>{});},subscribeState:onUiLocaleStateChange,labels:localeLabels});
+  panels.appearance.append(appearanceTitle,appearanceDescription,choices,localeRoot);
+  const aboutTitle=node('h3','settings-brand-title'),about=node('p','settings-description',t('shell.about.tagline')),license=node('p','settings-description',t('shell.about.license')),links=node('div','settings-about-links'),source=node('a','text-link',t('shell.about.source')),privacy=node('a','text-link',t('shell.about.privacy'));source.href='https://github.com/getyak/leafhour';source.target='_blank';source.rel='noopener noreferrer';privacy.href='/privacy';links.append(source,privacy);const aboutMark=node('span','settings-brand-mark');aboutMark.setAttribute('aria-hidden','true');aboutTitle.lang='en';aboutTitle.append(aboutMark,node('span','','Leafhour'));const promise=node('p','settings-brand-promise','Stay with a book.');promise.lang='en';panels.about.append(aboutTitle,promise,about,license,links);
+  layout.append(tabs,content);settings.replaceChildren(headingRow,layout);select('account');
+  function appearance(){for(const input of choices.querySelectorAll('input'))input.checked=input.value===getSiteAppearance();}
+  // Label-only account refresh: never clears status, never touches in-flight
+  // operations and never triggers a business update.
+  function accountLabels(){const user=getSession()?.user;accountTitle.textContent=user?t('shell.account.title.signedIn'):t('shell.account.title.guest');accountDetail.textContent=user?(user.kind==='local'?t('shell.account.detail.local'):t('shell.account.detail.email')):t('shell.account.detail.guest');accountName.textContent=user?.displayName||user?.email?.split('@')[0]||(user?t('shell.account.name.local'):t('shell.account.title.guest'));accountEmail.textContent=user?.email||(user?t('shell.account.email.local'):t('shell.account.login'));const accountLabel=user?t('shell.account.settingsLabel',{name:accountName.textContent}):t('shell.account.guestLabel');accountButton.setAttribute('aria-label',accountLabel);accountButton.dataset.hint=accountLabel;if(!logoutBusy)logout.textContent=t('shell.account.logout');}
+  function update(){const user=getSession()?.user;login.hidden=!!user;logout.hidden=!user;accountStatus.textContent='';accountStatus.classList.remove('error');renderProfileAvatar(accountAvatar,user);accountLabels();profile.update();habits.update();daily.update();data.update();appearance();}
+  function syncSidebar(){$('library-menu').setAttribute('aria-expanded',String(navigation.open));document.body.dataset.sidebarCollapsed=String(collapsed);$('sidebar-toggle').setAttribute('aria-expanded',String(media.matches?navigation.open:!collapsed));$('sidebar-toggle').setAttribute('aria-label',media.matches?t('shell.sidebar.closeNav'):collapsed?t('shell.sidebar.expand'):t('shell.sidebar.collapse'));$('sidebar-toggle').dataset.hint=collapsed?t('shell.sidebar.expand'):t('shell.sidebar.collapse');}
+  function closeNavigation(){if(navigation.open)navigation.close();}
+  function adapt(){closeNavigation();if(media.matches)navigation.append(header);else document.body.insertBefore(header,$('main'));syncSidebar();}
+  $('sidebar-toggle').addEventListener('click',()=>{if(media.matches){closeNavigation();return;}collapsed=!collapsed;try{localStorage.setItem(key,collapsed?'collapsed':'expanded');}catch{}syncSidebar();if(!collapsed)$('sidebar-toggle').focus();});
+  $('library-menu').addEventListener('click',()=>{navigation.showModal();syncSidebar();$('sidebar-toggle').focus();});
+  // GET-178: the sidebar entry is the single palette entry (the local
+  // #book-search input stays a filter). Closing the navigation sheet hands focus
+  // to the palette bootstrap without a stale restoration.
+  $('sidebar-search-open').addEventListener('click',()=>{if(navigation.open){navigationReturn=null;closeNavigation();}});
+  navigation.addEventListener('close',()=>{syncSidebar();if(media.matches)(navigationReturn||$('library-menu')).focus();navigationReturn=null;});media.addEventListener('change',adapt);adapt();
+  function openSettings(name='account'){if(!settings.open)opener=settingsOpenerCandidate(document,settings)||$('library-settings');closeNavigation();update();select(panels[name]?name:'account');if(name==='daily-reading')daily.refresh();if(!settings.open){settings.showModal();onSettingsOpen(panels[name]?name:'account');}tabButtons.find(b=>b.getAttribute('aria-selected')==='true')?.focus();}
+  settings.addEventListener('close',()=>{const target=settingsFocusTarget(settings,opener,$('library-settings'));opener=null;target?.focus({preventScroll:true});onSettingsClose();});
+  $('library-settings').addEventListener('click',()=>openSettings('account'));
+  $('library-calendar').addEventListener('click',()=>{closeNavigation();onHistory();});
+  $('library-chat-open').addEventListener('click',()=>{closeNavigation();onOpenChat();});
+  for(const button of document.querySelectorAll('[data-shelf]'))button.addEventListener('click',closeNavigation);
+  document.addEventListener('site:appearance',appearance);update();roomIcons();
+  function updateLabels(){
+    close.setAttribute('aria-label',t('shell.settings.close'));heading.textContent=t('shell.settings.title');tabs.setAttribute('aria-label',t('shell.settings.categories'));
+    for(const b of tabButtons)b.textContent=t('shell.settings.tab.'+b.dataset.setting);
+    login.textContent=t('shell.account.login');logout.textContent=t(logoutBusy?'shell.account.loggingOut':'shell.account.logout');
+    appearanceTitle.textContent=t('shell.appearance.title');appearanceDescription.textContent=t('shell.appearance.description');legend.textContent=t('shell.appearance.title');
+    for(const label of choices.querySelectorAll('.appearance-label')){const value=label.closest('.appearance-choice')?.querySelector('input')?.value;if(value){label.textContent=t('shell.appearance.'+value);label.parentElement.querySelector('small')?.replaceChildren(t('shell.appearance.'+value+'Detail'));}}
+    about.textContent=t('shell.about.tagline');license.textContent=t('shell.about.license');source.textContent=t('shell.about.source');privacy.textContent=t('shell.about.privacy');
+    if(localeControls)localeControls.render();
+    profile.updateLabels?.();habits.updateLabels?.();daily.updateLabels?.();data.updateLabels?.();
+    accountLabels();
+  }
+  onUiLocaleChange(updateLabels);void uiReady.then(()=>updateLabels());
+  return {openSettings,closeNavigation,update,refreshDaily:()=>daily.refresh(),clear(){daily.clear();data.clear();closeNavigation();if(settings.open)settings.close();update();}};
+}

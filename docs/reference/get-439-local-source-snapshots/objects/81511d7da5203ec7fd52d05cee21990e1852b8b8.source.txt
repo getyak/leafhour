@@ -1,0 +1,62 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {readFile} from 'node:fs/promises';
+import vm from 'node:vm';
+import {parse} from 'acorn';
+import {createOwnerScope} from '../app/owner-scope.mjs';
+import {createUploadState} from '../app/upload-state.mjs';
+import {homeText} from '../app/home-locale.mjs';
+
+// Execute the actual browser-owned functions with no network or user data.
+// Parsing boundaries avoids a second test implementation of the product logic.
+const source=await readFile(new URL('../app/portal.js',import.meta.url),'utf8');
+const ast=parse(source,{ecmaVersion:'latest',sourceType:'module'});
+const declaration=name=>{
+  const item=ast.body.find(item=>item.id?.name===name||item.declarations?.some(d=>d.id.name===name));
+  assert.ok(item,'actual declaration '+name);return source.slice(item.start,item.end);
+};
+const formatter=(id,params)=>id+(params?JSON.stringify(params):'');
+
+function uploadFixture(){
+  const nodes=new Map(),el=id=>{
+    if(!nodes.has(id))nodes.set(id,{textContent:'',value:'',open:false,disabled:false,classList:{toggle(){},remove(){}},replaceChildren(){},removeAttribute(){},close(){this.open=false;}});
+    return nodes.get(id);
+  };
+  const ownerScope=createOwnerScope();ownerScope.adopt('synthetic-a');
+  const upload=createUploadState();upload.select({name:'synthetic.pdf',size:1});upload.begin();
+  const context={document:{querySelectorAll:()=>[]},$:el,t:formatter,ownerScope,upload,createUploadState,homeMenu:null,invalidatePaletteLibraries(){},viewHistory:null,bookActions:null,shelfDrag:null,shelfRevision:0,orderOperation:null,authDialog:{reset(){}},pendingUpload:false,pendingChat:false,selectedCurrent:null,pdfOnboarding:null,followedPdfId:null,shelfControls:null,books:[],chat:null,shell:null,setupInvite:null,dashboard:null,renderBooks(){},landingBookCard(){assert.fail('no books expected');}};
+  vm.createContext(context);
+  vm.runInContext(['uploadProgressMessage','paintStatus','status','showUploadProgress','updateUploadProgressLabel','clearPrivateUI'].map(declaration).join('\n')+'\nthis.progress=showUploadProgress;this.relabel=updateUploadProgressLabel;this.replace=status;this.clear=clearPrivateUI;',context);
+  return {context,ownerScope,upload,el,ticket:ownerScope.capture()};
+}
+
+test('upload progress relabels only its current operation and never revives a replaced status',()=>{
+  for(const replacement of ['', 'completed', 'different error']){
+    const f=uploadFixture();f.context.progress({id:'pdf.upload.saved',params:{percent:73}},f.ticket,f.upload);
+    assert.match(f.el('upload-status').textContent,/73/);f.context.relabel();assert.match(f.el('upload-status').textContent,/73/);
+    f.context.replace('upload-status',replacement,true);f.context.relabel();assert.equal(f.el('upload-status').textContent,replacement);
+  }
+});
+
+test('owner reset, owner ABA and a finished upload fence cached and late progress',()=>{
+  for(const transition of ['clear','ABA','finished','new-operation']){
+    const f=uploadFixture();f.context.progress({id:'pdf.upload.saved',params:{percent:73}},f.ticket,f.upload);
+    if(transition==='clear')f.context.clear();
+    if(transition==='ABA'){f.ownerScope.adopt('synthetic-b');f.ownerScope.adopt('synthetic-a');}
+    if(transition==='finished')f.upload.finish();
+    if(transition==='new-operation')f.context.upload=createUploadState();
+    const before=f.el('upload-status').textContent;f.context.relabel();assert.equal(f.el('upload-status').textContent,before);
+    f.context.progress({id:'pdf.upload.saved',params:{percent:99}},f.ticket,f.upload);assert.equal(f.el('upload-status').textContent,before);
+    if(transition==='clear')assert.equal(before,'');
+  }
+});
+
+test('home cover title and stored resume label remain content even when equal to a UI phrase',()=>{
+  const make=(tag,className='',text)=>({tag,className,textContent:text??'',children:[],setAttribute(){},append(...children){this.children.push(...children);}});
+  const context={document:{},homeLocale:()=> 'en',homeText,isLibrary:false,make,session:{user:{id:'synthetic'}},readingBookUrl:()=>'/read?book=synthetic',t:formatter,chineseTrialUrl:()=>'/read',positionStorageKey:()=>'',localStorage:{getItem:()=>null}};
+  vm.createContext(context);vm.runInContext(declaration('landingBookCard')+'\nthis.cardFactory=landingBookCard;',context);
+  const book={bookId:'synthetic',title:{en:'阅读',zh:'阅读'},author:'Author',description:'Source description',visibility:'public',source:{format:'txt',filename:'source.txt',sha256:'v'},paragraphs:1,resume:{label:'阅读',passageId:'p1'}};
+  const card=context.cardFactory(book),all=node=>[node,...node.children.flatMap(all)],nodes=all(card);
+  assert.equal(nodes.find(x=>x.tag==='h3').textContent,'阅读');assert.equal(nodes.find(x=>x.tag==='strong').textContent,'阅读');
+  assert.equal(nodes.find(x=>x.className==='book-resume').textContent,'阅读');assert.equal(book.resume.label,'阅读');
+});
