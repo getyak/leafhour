@@ -48,6 +48,7 @@ export function createBillingRoutes({billing,publicOrigin,gate,verifyEmail}={}){
   const order=p.match(/^\/api\/billing\/orders\/([a-zA-Z0-9_-]{1,128})$/);
   if(order&&req.method==='GET'){if([...url.searchParams.keys()].some(k=>k!=='reconcile'))throw error('订单查询参数无效');send(200,await billing.order({ownerId,orderId:order[1],reconcile:url.searchParams.get('reconcile')==='1'}));return true;}
   if(p==='/api/billing/checkouts'&&req.method==='POST'){
+   if(billing.usagePolicy==='beta')throw error('内测期间免费使用，无需购买阅读点',409);
    exact(body,['productKey','intentKey']);send(201,await billing.checkout({ownerId,productKey:body.productKey,intentKey:body.intentKey}));return true;
   }
   if(p==='/api/billing/quotes'&&req.method==='POST'){

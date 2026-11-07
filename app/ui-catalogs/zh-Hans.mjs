@@ -2519,4 +2519,12 @@ export default Object.freeze({
   "reader.selection.exactOriginal": "原文 · 所选句段",
   "reader.selection.wholeOriginal": "原文 · 对应整段",
   "prefs.reloading": "正在读取最新设置…",
+  "share.linkUnavailable":"暂未核验公版链接，仍可保存所选摘录图片。",
+  "share.selectionOnly":"只分享你选中的文字，不带上私人笔记或阅读记录。",
+  "share.details":"字号与出处",
+  "share.publicTrial":"公版原文 · 无需登录",
+  "share.readHere":"从这里读 ↗",
+  "share.copyLink":"复制试读链接",
+  "share.scanRead":"扫码从这里读 · 公版原文",
+  "share.linkCopied":"已复制试读链接。",
 });

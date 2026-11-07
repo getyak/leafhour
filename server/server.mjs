@@ -77,6 +77,8 @@ for(const name of ['forest','rain','hearth','sea'])assets.set('/assets/atmospher
 for(const name of ['wind','birds','rain','fire','waves'])assets.set('/assets/atmospheres/'+name+'.mp3',['app/assets/atmospheres/'+name+'.mp3','audio/mpeg']);
 assets.set('/assets/atmospheres/NOTICE.md',['app/assets/atmospheres/NOTICE.md','text/plain']);
 for(const [url,file,type] of [['/share.js','app/share.js','text/javascript'],['/share-model.mjs','app/share-model.mjs','text/javascript'],['/share.css','app/share.css','text/css']])assets.set(url,[file,type]);
+assets.set('/share-bootstrap.mjs',['app/share-bootstrap.mjs','text/javascript']);
+assets.set('/share-link.mjs',['app/share-link.mjs','text/javascript']);assets.set('/vendor/share-qr.mjs',['app/vendor/share-qr.mjs','text/javascript']);
 assets.set('/evals',['app/evals.html','text/html']);assets.set('/evals.js',['app/evals.js','text/javascript']);assets.set('/evals.css',['app/evals.css','text/css']);
 const fail=(message,status=400)=>Object.assign(new Error(message),{status});
 

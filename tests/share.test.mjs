@@ -1,8 +1,10 @@
 import test from 'node:test';
 import {readFile} from 'node:fs/promises';
 import assert from 'node:assert/strict';
-const book={bookId:'b',contentVersion:'v1',title:{zh:'一本书',en:'A book'},author:'An Author',chapters:[{id:'c1',number:1},{id:'c2',number:2}],sections:[{chapterId:'c1',number:1,paragraphs:[{id:'p1',original:'A game continues. A new round begins.',source:{printedPage:3},translations:{interpretive:{text:'游戏继续。新的一轮开始。',review:'draft'},literal:{text:'一场游戏继续。一轮新的游戏开始。',review:'draft'}}},{id:'p2',original:'The purpose matters.',translations:{interpretive:{text:'目的很重要。'},literal:{text:'目的有其重要性。'}}}]},{chapterId:'c2',number:2,paragraphs:[{id:'p3',original:'Next chapter.',translations:{interpretive:{text:'下一章。'}}}]}],comments:[{text:'PRIVATE NOTE MUST NEVER BE EXPORTED'}]};
+const book={visibility:'public',bookId:'b',contentVersion:'v1',title:{zh:'一本书',en:'A book'},author:'An Author',chapters:[{id:'c1',number:1},{id:'c2',number:2}],sections:[{chapterId:'c1',number:1,paragraphs:[{id:'p1',original:'A game continues. A new round begins.',source:{printedPage:3},translations:{interpretive:{text:'游戏继续。新的一轮开始。',review:'draft'},literal:{text:'一场游戏继续。一轮新的游戏开始。',review:'draft'}}},{id:'p2',original:'The purpose matters.',translations:{interpretive:{text:'目的很重要。'},literal:{text:'目的有其重要性。'}}}]},{chapterId:'c2',number:2,paragraphs:[{id:'p3',original:'Next chapter.',translations:{interpretive:{text:'下一章。'}}}]}],comments:[{text:'PRIVATE NOTE MUST NEVER BE EXPORTED'}]};
 const snapshot={bookId:'b',contentVersion:'v1',chapterId:'c1',parts:[{passageId:'p1',language:'zh',variant:'interpretive',start:0,end:5,text:'游戏继续。'}]};
+const emBook={bookId:'em',contentVersion:'v1',title:{zh:'一本书',en:'A book'},author:'An Author',visibility:'public',source:{format:'txt'},chapters:[{id:'c1',number:1}],sections:[{chapterId:'c1',number:1,paragraphs:[{id:'p1',original:'She said _never_ leave.',translations:{interpretive:{text:'她说 _never_ 离开。'},literal:{text:'她说 _never_ 离开。'}}}]}]};
+const emText=emBook.sections[0].paragraphs[0].original;
 const model=()=>import('../app/share-model.mjs').catch(()=>({}));
 
 test('Chinese source excerpts keep their selected characters and original authorship',async()=>{
@@ -13,14 +15,11 @@ test('Chinese source excerpts keep their selected characters and original author
  assert.match(share.location,/^阅读片段 1/);
 });
 
-test('a shared excerpt preserves selected words and labels paragraph-level bilingual evidence',async()=>{
- const m=await model();assert.equal(typeof m.buildShareModel,'function','sharing requires a source-bound model');
- const share=m.buildShareModel(book,snapshot,{language:'bilingual',variant:'interpretive'});
- assert.equal(share.blocks[0].primary.text,'游戏继续。');assert.equal(share.blocks[0].secondary.text,book.sections[0].paragraphs[0].original);
- assert.match(share.blocks[0].secondary.label,/整段/);assert.equal(share.after,'新的一轮开始。');assert.equal(share.author,'An Author');
- assert.ok(!JSON.stringify(share).includes('PRIVATE NOTE'));
- const whole={...snapshot,parts:[{...snapshot.parts[0],end:12,text:'游戏继续。新的一轮开始。'}]};
- const aligned=m.buildShareModel(book,whole,{language:'bilingual'});assert.ok(!aligned.blocks[0].secondary.label.includes('整段'));
+test('a shared excerpt preserves only selected words even with stale bilingual preferences',async()=>{
+ const {buildShareModel}=await model();
+ const share=buildShareModel(book,snapshot,{language:'bilingual',variant:'interpretive',above:'keep',below:'keep'});
+ assert.equal(share.blocks[0].primary.text,'游戏继续。');assert.equal(share.blocks[0].secondary,null);assert.equal(share.before,'');assert.equal(share.after,'');
+ assert.equal(share.author,'An Author');assert.ok(!JSON.stringify(share).includes('PRIVATE NOTE'));
 });
 
 test('a changed source, wrong book or mixed-language range cannot silently become a quote',async()=>{
@@ -31,12 +30,10 @@ test('a changed source, wrong book or mixed-language range cannot silently becom
  assert.throws(()=>buildShareModel(book,{...snapshot,parts:[{passageId:'p3',language:'zh',variant:'interpretive',start:0,end:4,text:'下一章。'}]},{}),/章节/);
 });
 
-test('switching translation cannot fabricate a sentence-level alignment',async()=>{
- const {buildShareModel}=await model();assert.equal(typeof buildShareModel,'function');
- const english={...snapshot,parts:[{passageId:'p1',language:'en',variant:'interpretive',start:0,end:17,text:'A game continues.'}]};
- const share=buildShareModel(book,english,{language:'bilingual',variant:'literal'});
- assert.equal(share.blocks[0].primary.text,'A game continues.');assert.equal(share.blocks[0].secondary.text,book.sections[0].paragraphs[0].translations.literal.text);assert.match(share.blocks[0].secondary.label,/直译.*整段/);
- const changed=buildShareModel(book,snapshot,{language:'zh',variant:'literal'});assert.equal(changed.blocks[0].primary.text,book.sections[0].paragraphs[0].translations.literal.text);assert.match(changed.blocks[0].primary.label,/整段/);
+test('stale language and translation options cannot replace the selected sentence',async()=>{
+ const {buildShareModel}=await model();const english={...snapshot,parts:[{passageId:'p1',language:'en',start:0,end:17,text:'A game continues.'}]};
+ for(const language of ['en','zh','bilingual']){const share=buildShareModel(book,english,{language,variant:'literal'});assert.equal(share.blocks[0].primary.text,'A game continues.');assert.equal(share.blocks[0].secondary,null);}
+ const changed=buildShareModel(book,snapshot,{language:'zh',variant:'literal'});assert.equal(changed.blocks[0].primary.text,'游戏继续。');assert.match(changed.blocks[0].primary.label,/意译/);
 });
 
 test('wrapping preserves Unicode and long words without losing selected characters',async()=>{
@@ -49,7 +46,7 @@ test('wrapping preserves Unicode and long words without losing selected characte
 
 test('share preferences are bounded and long layouts extend rather than clipping the quote',async()=>{
  const {normaliseShareOptions,layoutShareCard}=await model();assert.equal(typeof normaliseShareOptions,'function');assert.equal(typeof layoutShareCard,'function');
- const opts=normaliseShareOptions({theme:'url(secret)',ratio:'wrong',size:999,above:'invalid',source:false});assert.equal(opts.theme,'paper');assert.equal(opts.ratio,'portrait');assert.ok(opts.size<=56);assert.equal(opts.above,'fade');assert.equal(opts.source,false);
+ const opts=normaliseShareOptions({theme:'url(secret)',ratio:'wrong',size:999,above:'invalid',source:false});assert.equal(opts.theme,'paper');assert.equal(opts.ratio,'portrait');assert.ok(opts.size<=56);assert.equal(opts.above,'hide');assert.equal(opts.source,false);
  const share={title:'一本书',author:'A',location:'§1',before:'上文',after:'下文',blocks:[{primary:{text:'游戏继续。'.repeat(200),language:'zh',label:'意译'},secondary:null}]};
  const layout=layoutShareCard(share,normaliseShareOptions({above:'hide',below:'hide'}),text=>[...text].length*45);
  assert.ok(layout.height>1350);assert.equal(layout.quoteCharacters,share.blocks[0].primary.text.length);assert.equal(layout.items.filter(i=>i.kind==='context').length,0);assert.ok(layout.items.every(i=>i.y+i.height<=layout.height));
@@ -64,13 +61,9 @@ test('share assets are served locally while private library and harness files re
  assert.equal((await fetch(root+'/harness/generator.mjs')).status,404);assert.equal((await fetch(root+'/local/finite-infinite-games/book.json')).status,404);
 });
 
-test('paragraph-alignment labels have drawable coordinates in exported images',async()=>{
+test('selection-only attribution does not claim an unselected whole counterpart',async()=>{
  const {buildShareModel,layoutShareCard}=await model();
- for(const language of ['en','bilingual']){
-  const share=buildShareModel(book,snapshot,{language});const layout=layoutShareCard(share,{language},text=>[...text].length*12);
-  const labels=layout.items.filter(i=>i.kind==='label');assert.ok(labels.some(i=>i.lines.join('').includes('整段')));
-  for(const label of labels)for(const [i]of label.lines.entries())assert.ok(Number.isFinite(label.y+i*label.lineHeight),'alignment label must paint rather than silently using NaN');
- }
+ for(const language of ['en','bilingual']){const share=buildShareModel(book,snapshot,{language});const layout=layoutShareCard(share,{language},text=>[...text].length*12);assert.equal(share.blocks[0].secondary,null);assert.ok(layout.items.every(item=>Number.isFinite(item.y)));assert.doesNotMatch(share.attribution,/整段/);}
 });
 
 test('Chinese closing punctuation stays with a preceding character rather than starting a line',async()=>{
@@ -78,17 +71,10 @@ test('Chinese closing punctuation stays with a preceding character rather than s
  assert.equal(lines.join(''),'游戏继续，读下去。');assert.ok(lines.every(line=>!line||!/[，。！？；：）】]/u.test(line[0])));assert.ok(lines.every(line=>[...line].length<=4));
 });
 
-test('changing a whole-paragraph translation uses neighboring context, never a tail from old offsets',async()=>{
+test('whole-paragraph sharing retains the chosen translation without adjacent context',async()=>{
  const {buildShareModel}=await model();const full={...snapshot,parts:[{...snapshot.parts[0],end:12,text:'游戏继续。新的一轮开始。'}]};
- const changed=buildShareModel(book,full,{language:'zh',variant:'literal'});
- assert.equal(changed.blocks[0].primary.text,'一场游戏继续。一轮新的游戏开始。');assert.equal(changed.before,'');assert.equal(changed.after,'目的有其重要性。');
+ const changed=buildShareModel(book,full,{language:'zh',variant:'literal'});assert.equal(changed.blocks[0].primary.text,full.parts[0].text);assert.equal(changed.before,'');assert.equal(changed.after,'');
 });
-
-// GET-190: canvas sharing presents emphasis from full immutable source
-// ranges. Canonical model text and offsets stay exact; only the drawn runs
-// omit syntax markers and use a real italic face.
-const emBook={bookId:'em',contentVersion:'v1',title:{zh:'一本书',en:'A book'},author:'An Author',visibility:'public',source:{format:'txt'},chapters:[{id:'c1',number:1}],sections:[{chapterId:'c1',number:1,paragraphs:[{id:'p1',original:'She said _never_ leave.',translations:{interpretive:{text:'她说 _never_ 离开。'},literal:{text:'她说 _never_ 离开。'}}}]}]};
-const emText=emBook.sections[0].paragraphs[0].original;
 
 test('a selected original slice keeps canonical raw text while drawing runs from full-source ranges',async()=>{
  const {buildShareModel,layoutShareCard,emphasisDisplayRuns}=await model();assert.equal(typeof buildShareModel,'function');
@@ -108,20 +94,11 @@ test('a selected original slice keeps canonical raw text while drawing runs from
  assert.ok(quote.runs.flat().some(r=>r.italic));
 });
 
-test('whole-paragraph counterparts format their own full source ranges and translations stay literal',async()=>{
+test('a translation selection cannot silently become its original counterpart',async()=>{
  const {buildShareModel,layoutShareCard}=await model();
  const snapshot={bookId:'em',contentVersion:'v1',chapterId:'c1',parts:[{passageId:'p1',language:'zh',variant:'interpretive',start:0,end:2,text:'她说'}]};
- const share=buildShareModel(emBook,snapshot,{language:'en'});
- const counterpart=share.blocks[0].primary;
- assert.equal(counterpart.text,emText);
- assert.deepEqual(counterpart.emphasis,[{start:10,end:15,open:true,close:true}]);
- const layout=layoutShareCard(share,{language:'en',size:48,theme:'paper'},text=>[...text].length*12);
- const quote=layout.items.find(i=>i.kind==='quote');
- assert.equal(quote.runs.map(line=>line.map(r=>r.text).join('')).join(''),'She said never leave.');
- assert.deepEqual(quote.runs.flat().filter(r=>r.italic).map(r=>r.text),['never']);
- const translation=buildShareModel(emBook,{...snapshot,parts:[{...snapshot.parts[0],language:'zh'}]},{language:'zh'});
- assert.equal(translation.blocks[0].primary.emphasis,undefined,'translation display never interprets underscores');
- assert.equal(translation.blocks[0].primary.text,'她说');
+ const share=buildShareModel(emBook,snapshot,{language:'en'});assert.equal(share.blocks[0].primary.text,'她说');assert.equal(share.blocks[0].primary.emphasis,undefined);assert.equal(share.blocks[0].secondary,null);
+ const layout=layoutShareCard(share,{size:48},text=>[...text].length*12);assert.equal(layout.items.find(i=>i.kind==='quote').lines.join(''),'她说');
 });
 
 test('emphasis display runs cover the visible slice exactly once without splitting surrogate pairs',async()=>{
@@ -167,43 +144,12 @@ test('presentation wrapping breaks cleanly at word boundaries without changing c
  assert.equal(styled.flat().map(r=>r.text).join(''),'foo bar baz');
 });
 
-test('canvas context keeps full-source provenance ranges and never strips model strings',async()=>{
+test('selected emphasis keeps exact source ranges without exporting neighboring source',async()=>{
  const {buildShareModel,layoutShareCard,displayQuoteText}=await model();
- const emBook={bookId:'em',contentVersion:'v1',title:{zh:'一本书',en:'A book'},author:'An Author',visibility:'public',source:{format:'txt'},chapters:[{id:'c1',number:1}],sections:[{chapterId:'c1',number:1,paragraphs:[
-  {id:'p0',original:'Earlier _context_ here.',translations:{}},
-  {id:'p1',original:'xx _never_ leave _today_.',translations:{}},
-  {id:'p2',original:'Later _tail_ text.',translations:{}}]}]};
- const full=emBook.sections[0].paragraphs[1].original,start=full.indexOf('never');
- const snapshot={bookId:'em',contentVersion:'v1',chapterId:'c1',parts:[{passageId:'p1',language:'en',variant:'interpretive',start,end:start+5,text:'never'}]};
- const share=buildShareModel(emBook,snapshot,{language:'en'});
- assert.equal(share.before,'xx _','intra-paragraph context keeps its exact raw slice');
- assert.ok(share.before.includes('_'),'raw model.before keeps syntax markers');
- assert.deepEqual(share.beforeEmphasis,[{start:4,end:4,open:true,close:false}]);
- assert.equal(share.after,'_ leave _today_.','the after window starts right after the selected content, keeping its raw characters');
- assert.equal(share.afterEmphasis.length,2,'after context formats from its own full-source window, including the trailing marker window');
- // a selection at paragraph start falls back to the adjacent paragraph window
- const adjacent=buildShareModel(emBook,{...snapshot,parts:[{...snapshot.parts[0],start:0,end:2,text:'xx'}]},{language:'en'});
- assert.equal(adjacent.before,'Earlier _context_ here.');
- assert.deepEqual(adjacent.beforeEmphasis,[{start:adjacent.before.indexOf('context'),end:adjacent.before.indexOf('context')+7,open:true,close:true}]);
- assert.equal(displayQuoteText(adjacent.before,adjacent.beforeEmphasis),'Earlier context here.');
- assert.equal(adjacent.after,full.slice(2));
- const layout=layoutShareCard(share,{language:'en',size:48,theme:'paper',above:'keep',below:'keep'},text=>[...text].length*6);
- const contexts=layout.items.filter(i=>i.kind==='context');
- assert.equal(contexts.length,2);
- assert.equal(contexts[0].runs.flat().map(r=>r.text).join(''),'xx');
- assert.equal(contexts[1].runs.flat().map(r=>r.text).join(''),'leave today.');
- assert.ok(contexts[1].runs.flat().some(r=>r.italic&&r.text==='today'));
- assert.ok(contexts.every(item=>item.runs.flat().every(r=>!r.marker)));
- // long context keeps style across the two visible lines and the ellipsis
- const longBook={bookId:'em',contentVersion:'v1',title:{zh:'一本书',en:'A book'},author:'An Author',visibility:'public',source:{format:'txt'},chapters:[{id:'c1',number:1}],sections:[{chapterId:'c1',number:1,paragraphs:[{id:'q1',original:'w1 w2 w3 w4 w5 w6 w7 w8 w9 w10 _eleven_ w12',translations:{}}]}]};
- const q=longBook.sections[0].paragraphs[0],at=q.original.indexOf('w12');
- const qShare=buildShareModel(longBook,{bookId:'em',contentVersion:'v1',chapterId:'c1',parts:[{passageId:'q1',language:'en',variant:'interpretive',start:at,end:at+3,text:'w12'}]},{language:'en'});
- const qLayout=layoutShareCard(qShare,{language:'en',size:48,theme:'paper',above:'keep',below:'hide'},text=>[...text].length*55);
- const above=qLayout.items.filter(i=>i.kind==='context');
- assert.equal(above.length,1);
- assert.equal(above[0].lines.length,2);
- assert.equal(above[0].runs[0][0].text,'…');
- assert.ok(above[0].runs.flat().some(r=>r.italic&&r.text==='eleven'),'style survives truncation and the ellipsis');
+ const raw='xx _never_ leave _today_.',source={...emBook,sections:[{chapterId:'c1',number:1,paragraphs:[{id:'p1',original:raw}]}]},start=raw.indexOf('never');
+ const selected={bookId:'em',contentVersion:'v1',chapterId:'c1',parts:[{passageId:'p1',language:'en',start,end:start+5,text:'never'}]};
+ const share=buildShareModel(source,selected,{above:'keep',below:'keep'});assert.equal(share.before,'');assert.equal(share.after,'');assert.equal(displayQuoteText(share.blocks[0].primary.text,share.blocks[0].primary.emphasis),'never');
+ const layout=layoutShareCard(share,{above:'keep',below:'keep'},text=>text.length*10);assert.equal(layout.items.filter(i=>i.kind==='context').length,0);assert.doesNotMatch(JSON.stringify(share),/today|leave/);
 });
 
 test('accessibility text uses the presented display while canonical model text stays raw',async()=>{
@@ -230,7 +176,7 @@ test('context ellipses fit the drawn width and retain the two-line clamp',async(
   const raw=styled?'_'+'a'.repeat(129)+'_':'a'.repeat(129);
   const book={bookId:'context-fit',contentVersion:'v1',visibility:'public',source:{format:'txt'},title:{en:'Context'},chapters:[{id:'c1',number:1}],sections:[{chapterId:'c1',number:1,paragraphs:[{id:'p0',original:raw},{id:'p1',original:'quote'},{id:'p2',original:raw}]}]};
   const snapshot=paragraphSnapshot(book,book.sections[0].paragraphs[1],'c1','en');
-  const share=buildShareModel(book,snapshot,{language:'en'}),before=JSON.stringify(share);
+  const share={...buildShareModel(book,snapshot,{language:'en'}),before:raw,after:raw,contextLanguage:'en'},before=JSON.stringify(share);
   const measure=(text,size,language,italic=false)=>[...text].length*(italic?21:20);
   const layout=layoutShareCard(share,{language:'en',above:'keep',below:'keep'},measure);
   const contexts=layout.items.filter(item=>item.kind==='context');
@@ -255,5 +201,5 @@ test('styled wrapping preserves consecutive, leading and trailing hard breaks',a
 
 
 test('share artifact chrome is formatted only when explicitly building a new source-bound model',async()=>{
- const {buildShareModel}=await model();const before=structuredClone(book),raw=structuredClone(snapshot),calls=[];const format=(id,params)=>{calls.push([id,params]);return id+JSON.stringify(params||{});};const first=buildShareModel(book,snapshot,{language:'bilingual'},format);assert.match(first.blocks[0].primary.label,/share.artifact.interpretive/);assert.match(first.location,/share.artifact.chapter/);assert.equal(first.blocks[0].primary.text,snapshot.parts[0].text);assert.equal(first.blocks[0].secondary.text,book.sections[0].paragraphs[0].original);assert.deepEqual(book,before);assert.deepEqual(snapshot,raw);const frozen=JSON.stringify(first);buildShareModel(book,snapshot,{language:'bilingual'},()=> 'Different UI');assert.equal(JSON.stringify(first),frozen);assert.ok(calls.length>0);
+ const {buildShareModel}=await model();const before=structuredClone(book),raw=structuredClone(snapshot),calls=[];const format=(id,params)=>{calls.push([id,params]);return id+JSON.stringify(params||{});};const first=buildShareModel(book,snapshot,{language:'bilingual'},format);assert.match(first.blocks[0].primary.label,/share.artifact.interpretive/);assert.match(first.location,/share.artifact.chapter/);assert.equal(first.blocks[0].primary.text,snapshot.parts[0].text);assert.equal(first.blocks[0].secondary,null);assert.deepEqual(book,before);assert.deepEqual(snapshot,raw);const frozen=JSON.stringify(first);buildShareModel(book,snapshot,{language:'bilingual'},()=> 'Different UI');assert.equal(JSON.stringify(first),frozen);assert.ok(calls.length>0);
 });

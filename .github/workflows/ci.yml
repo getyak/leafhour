@@ -151,7 +151,7 @@ jobs:
     # Explicit Intel pool avoids the documented arm64 capacity abandonment.
     # The app below still builds the arm64 iOS Simulator target.
     runs-on: macos-15-intel
-    timeout-minutes: 20
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -167,6 +167,21 @@ jobs:
       - name: Build native iOS app without Apple account or signing
         run: |
           xcodebuild -project apps/ios/Leafhour.xcodeproj -scheme Leafhour -configuration Debug -sdk iphonesimulator -destination 'generic/platform=iOS Simulator' -derivedDataPath "$RUNNER_TEMP/leafhour-ios" -jobs 2 ARCHS=arm64 ONLY_ACTIVE_ARCH=YES CODE_SIGNING_ALLOWED=NO build 2>&1 | tee "$RUNNER_TEMP/leafhour-ios.log"
+      - name: Verify selected-content cards on an isolated simulator
+        run: |
+          export LEAFHOUR_CI_IOS_SDK_VERSION=$(xcrun --sdk iphonesimulator --show-sdk-version)
+          SIMULATOR_RUNTIME=$(xcrun simctl list runtimes --json | node --input-type=module -e '
+            let raw="";for await(const chunk of process.stdin)raw+=chunk;
+            const sdk=process.env.LEAFHOUR_CI_IOS_SDK_VERSION.split(".").map(Number);
+            const candidates=JSON.parse(raw).runtimes.filter(r=>r.isAvailable&&r.identifier.startsWith("com.apple.CoreSimulator.SimRuntime.iOS-")&&Number(r.version.split(".")[0])===sdk[0]&&Number(r.version.split(".")[1])<=sdk[1]);
+            candidates.sort((a,b)=>Number(b.version.split(".")[1])-Number(a.version.split(".")[1]));
+            if(!candidates.length)throw Error("No installed iOS runtime matches the selected Xcode SDK");
+            console.log(candidates[0].identifier);')
+          SIMULATOR_ID=$(xcrun simctl create LeafhourShareCI 'com.apple.CoreSimulator.SimDeviceType.iPhone-16' "$SIMULATOR_RUNTIME")
+          trap 'xcrun simctl delete "$SIMULATOR_ID"' EXIT
+          xcrun simctl boot "$SIMULATOR_ID"
+          xcrun simctl bootstatus "$SIMULATOR_ID" -b
+          xcodebuild -project apps/ios/Leafhour.xcodeproj -scheme LeafhourShareCards -configuration Debug -destination "platform=iOS Simulator,id=$SIMULATOR_ID" -derivedDataPath "$RUNNER_TEMP/leafhour-ios" -resultBundlePath "$RUNNER_TEMP/leafhour-share.xcresult" -jobs 2 CODE_SIGNING_ALLOWED=NO -parallel-testing-enabled NO -only-testing:LeafhourShareCardTests/BookShareCardTests test 2>&1 | tee "$RUNNER_TEMP/leafhour-share.log"
       - name: Preserve native validation evidence
         if: always()
         uses: actions/upload-artifact@v4
@@ -175,6 +190,8 @@ jobs:
           path: |
             ${{ runner.temp }}/leafhour-core.log
             ${{ runner.temp }}/leafhour-ios.log
+            ${{ runner.temp }}/leafhour-share.log
+            ${{ runner.temp }}/leafhour-share.xcresult
           if-no-files-found: warn
 
   ios-release-contracts:

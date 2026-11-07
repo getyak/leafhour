@@ -40,7 +40,7 @@ export async function buildCommercePages({appDir,outputDir}){
     for(const kind of ['pricing','terms','refunds']){
       // Static output never claims a configured payment service is ready. The
       // browser obtains current availability from the protected runtime catalog.
-      const html=commercePage({kind,locale,billingEnabled:false});
+      const html=commercePage({kind,locale,billingEnabled:false,usagePolicy:'beta'});
       await mkdir(path.join(outputDir,directory,kind),{recursive:true});
       await writeFile(path.join(outputDir,directory,kind+'.html'),html);
       await writeFile(path.join(outputDir,directory,kind,'index.html'),html);

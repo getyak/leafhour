@@ -209,7 +209,7 @@ export function createDeepSeekGiftQuoteGenerator({env=process.env,fetcher=fetch,
     if(!candidates.length)throw new QuoteProviderError('no-eligible-candidate');
     const outputLimit=Math.min(maxTokens,400),body=JSON.stringify({model,temperature:0,max_tokens:outputLimit,stream:false,thinking:{type:'disabled'},response_format:{type:'json_object'},messages:[{role:'system',content:SYSTEM_PROMPT},{role:'user',content:JSON.stringify({candidates:candidates.map(({id,text})=>({id,text}))})}]});
     const meter=providerMeterContext();
-    if(meter)createProviderBudget({model,maxCostUsd:Math.min(meter.maxCostUsd??.015,.015),maxRequests:1,maxToolCalls:0}).reserveRequest({kind:'main',inputBytes:Buffer.byteLength(body),maxTokens:outputLimit});
+    if(meter&&meter.funding!=='beta')createProviderBudget({model,maxCostUsd:Math.min(meter.maxCostUsd??.015,.015),maxRequests:1,maxToolCalls:0}).reserveRequest({kind:'main',inputBytes:Buffer.byteLength(body),maxTokens:outputLimit});
     const id=randomUUID(),startedAt=new Date().toISOString();let status='failed',usage=normalizeDeepSeekUsage();
     await recordProviderDispatch({id,provider:'deepseek',model,startedAt});
     try{

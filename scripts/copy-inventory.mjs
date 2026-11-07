@@ -280,7 +280,7 @@ export async function collectCopy({root}={}){
   const keySet=new Set(definitions.keys());
   const candidates=[],consumers=[],dynamicReferences=[];
   const sourceFiles=[
-    ...(await listSourceFiles(base,'app',/\.mjs$/)).filter(file=>!file.startsWith('app/ui-catalogs/')&&!['app/vendor/pdf-lib.mjs','app/vendor/pdf-fontkit.mjs','app/vendor/three-scene.mjs','app/vendor/gsap-scroll.mjs'].includes(file)),
+    ...(await listSourceFiles(base,'app',/\.mjs$/)).filter(file=>!file.startsWith('app/ui-catalogs/')&&!['app/vendor/pdf-lib.mjs','app/vendor/pdf-fontkit.mjs','app/vendor/three-scene.mjs','app/vendor/gsap-scroll.mjs','app/vendor/share-qr.mjs'].includes(file)),
     ...(await listSourceFiles(base,'app',/\.js$/)),
     ...(await listSourceFiles(base,'app',/\.html$/)),
     ...(await listSourceFiles(base,'server',/\.(?:mjs|js)$/)),

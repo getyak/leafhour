@@ -2520,4 +2520,12 @@ export default Object.freeze({
   "reader.selection.exactOriginal": "Original · selected text",
   "reader.selection.wholeOriginal": "Original · corresponding passage",
   "prefs.reloading": "Loading the latest settings…",
+  "share.linkUnavailable":"Public link could not be verified. You can still save the selected excerpt locally.",
+  "share.selectionOnly":"Only the words you selected. No private notes or reading history.",
+  "share.details":"Typography and citation",
+  "share.publicTrial":"Public-domain original · no account needed",
+  "share.readHere":"Read from here ↗",
+  "share.copyLink":"Copy reading link",
+  "share.scanRead":"Scan to read from here · public-domain original",
+  "share.linkCopied":"Reading link copied.",
 });

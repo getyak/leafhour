@@ -31,6 +31,7 @@
 		2A7FEA7A8A8613DB9A505FB6 /* LibraryImportActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCBCD433CAA919F173FDF279 /* LibraryImportActivity.swift */; };
 		2AF3F48A8376D436C1C02364 /* ListeningWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C30AE7481A814186B386ED1 /* ListeningWidget.swift */; };
 		2B70EF47AF54AF54B76821CB /* BookShelfComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = E334FEB91510D44EC1F6609A /* BookShelfComponents.swift */; };
+		2DD35FD81BFA3B572B030204 /* ZIPFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = 4EFC5A899AE5D77223F0AB4B /* ZIPFoundation */; };
 		2E0F00781CAB3995FF510024 /* AvatarSources.json in Resources */ = {isa = PBXBuildFile; fileRef = A8521308E901A407CA3A80A8 /* AvatarSources.json */; };
 		2FA74F5C1E5CEA103B01A56F /* ReaderSettingsControls.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DB33ED242E41CB64391F093 /* ReaderSettingsControls.swift */; };
 		305F98CAF83E45C037395DC1 /* RootTabPager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0F2436505B251085FDDD302 /* RootTabPager.swift */; };
@@ -139,6 +140,7 @@
 		EACEAB43EF576F1E2999D808 /* ReaderPaginationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B883EF38064061434E76F52 /* ReaderPaginationTests.swift */; };
 		EB9936F75FB0FC8BB1527168 /* BookShareCardTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71352D8CFA38131215A9B67C /* BookShareCardTests.swift */; };
 		EBDD8A31ED265F0669F0B6C0 /* ReaderSelectionDock.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3B41B0B92D759449C170CB0 /* ReaderSelectionDock.swift */; };
+		EC420270654BC052071DB36F /* BookShareCardTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71352D8CFA38131215A9B67C /* BookShareCardTests.swift */; };
 		ED115D0A96AA748617D4416C /* ChatMarkdownTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD7F5C09072184F0A8D2D058 /* ChatMarkdownTests.swift */; };
 		EDABB255B4EC29596C4D47ED /* BookDetailScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CB602653F224B78330B371B /* BookDetailScreen.swift */; };
 		EDC4D5A3E43E9336BFC60FFE /* ReaderCloudTools.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCF573520407A93144E699EC /* ReaderCloudTools.swift */; };
@@ -147,12 +149,20 @@
 		F48522D668D56A3C6815517A /* MarkdownTextRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61E087460D41217FEAE7CC0B /* MarkdownTextRenderer.swift */; };
 		F5D5F9D873AE649599691B59 /* ListeningPlaybackIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C37EA6D35CFE3EA18B36832 /* ListeningPlaybackIntent.swift */; };
 		F6201F0ECE71F6719AEC7C2D /* BookCoverResource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BEE5902719B69C92EF61231 /* BookCoverResource.swift */; };
+		F6BE436C4FF8EC5B872309B7 /* LeafhourCore in Frameworks */ = {isa = PBXBuildFile; productRef = 2B7CCAFDAE8DF756A746AE88 /* LeafhourCore */; };
 		FD17998C292AF11CA440694F /* ReaderVisiblePage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95A7B403E08ABCE707696D45 /* ReaderVisiblePage.swift */; };
 		FD5562DABEFEADF16AF28795 /* LeafhourApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5BA4DE90DC37B23A3034EB2 /* LeafhourApp.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
 		2018E04443236472A496F16D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 79E56BD8B8674BE85E5B6B6D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 973CAB698F802ED0CA5FEAF8;
+			remoteInfo = Leafhour;
+		};
+		2473EA688696FAB465B33921 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 79E56BD8B8674BE85E5B6B6D /* Project object */;
 			proxyType = 1;
@@ -240,6 +250,7 @@
 		590ADE1D2BB3005D3857EF9E /* LiveSettingsEvidenceUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveSettingsEvidenceUITests.swift; sourceTree = "<group>"; };
 		5B883EF38064061434E76F52 /* ReaderPaginationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReaderPaginationTests.swift; sourceTree = "<group>"; };
 		5B990EE96A8AEB468EA6D62B /* CompanionSheetLayoutTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompanionSheetLayoutTests.swift; sourceTree = "<group>"; };
+		5C0BE5E1184153D53220E3EE /* LeafhourShareCardTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = LeafhourShareCardTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		5C7589B4E02534E97DD36795 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		5CFD5C7BB0B8E51957FFF0F8 /* ReaderGlassControls.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReaderGlassControls.swift; sourceTree = "<group>"; };
 		61652C5C0334636C53C21BA2 /* ReaderAutoPagePanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReaderAutoPagePanel.swift; sourceTree = "<group>"; };
@@ -339,6 +350,14 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		10AAA4BA55FF4E54779495B3 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F6BE436C4FF8EC5B872309B7 /* LeafhourCore in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		B9FB6CA8B46602CBAE54A776 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -352,6 +371,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				75843C61ABCC16CE94FAF661 /* LeafhourCore in Frameworks */,
+				2DD35FD81BFA3B572B030204 /* ZIPFoundation in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -415,6 +435,7 @@
 			children = (
 				546006DD160B938C9A0F4BED /* Leafhour.app */,
 				73AEEA50ADFCDF1B40F4A92F /* LeafhourAppTests.xctest */,
+				5C0BE5E1184153D53220E3EE /* LeafhourShareCardTests.xctest */,
 				38902495F2632E28241A145D /* LeafhourUITests.xctest */,
 				85C951DED8B54C767F59DE0C /* ListeningWidget.appex */,
 			);
@@ -593,6 +614,26 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		96B46A126B5BBF12E66D4F54 /* LeafhourShareCardTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 3857A3478E29BB4B4972D13B /* Build configuration list for PBXNativeTarget "LeafhourShareCardTests" */;
+			buildPhases = (
+				C59D9AC1C2C7023E47D04E1E /* Sources */,
+				10AAA4BA55FF4E54779495B3 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				2CF236703AED396E1097E163 /* PBXTargetDependency */,
+			);
+			name = LeafhourShareCardTests;
+			packageProductDependencies = (
+				2B7CCAFDAE8DF756A746AE88 /* LeafhourCore */,
+			);
+			productName = LeafhourShareCardTests;
+			productReference = 5C0BE5E1184153D53220E3EE /* LeafhourShareCardTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		973CAB698F802ED0CA5FEAF8 /* Leafhour */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 550F386A0D363384A16E5485 /* Build configuration list for PBXNativeTarget "Leafhour" */;
@@ -610,6 +651,7 @@
 			name = Leafhour;
 			packageProductDependencies = (
 				C6097A4216730EFB1A068F30 /* LeafhourCore */,
+				4EFC5A899AE5D77223F0AB4B /* ZIPFoundation */,
 			);
 			productName = Leafhour;
 			productReference = 546006DD160B938C9A0F4BED /* Leafhour.app */;
@@ -679,6 +721,9 @@
 				BuildIndependentTargetsInParallel = YES;
 				LastUpgradeCheck = 1430;
 				TargetAttributes = {
+					96B46A126B5BBF12E66D4F54 = {
+						ProvisioningStyle = Automatic;
+					};
 					973CAB698F802ED0CA5FEAF8 = {
 						ProvisioningStyle = Automatic;
 					};
@@ -712,9 +757,10 @@
 			projectRoot = "";
 			targets = (
 				973CAB698F802ED0CA5FEAF8 /* Leafhour */,
-				C533F50F3240648406E6250E /* ListeningWidget */,
-				9E20BC03224E1319D4225E3C /* LeafhourUITests */,
 				E9EBBB130A719C5DC1AA2664 /* LeafhourAppTests */,
+				96B46A126B5BBF12E66D4F54 /* LeafhourShareCardTests */,
+				9E20BC03224E1319D4225E3C /* LeafhourUITests */,
+				C533F50F3240648406E6250E /* ListeningWidget */,
 			);
 		};
 /* End PBXProject section */
@@ -854,6 +900,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		C59D9AC1C2C7023E47D04E1E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EC420270654BC052071DB36F /* BookShareCardTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		F18D0352B5C33FC8B047C96E /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -900,6 +954,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		2CF236703AED396E1097E163 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 973CAB698F802ED0CA5FEAF8 /* Leafhour */;
+			targetProxy = 2473EA688696FAB465B33921 /* PBXContainerItemProxy */;
+		};
 		57E15D91CD4B16127760C136 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 973CAB698F802ED0CA5FEAF8 /* Leafhour */;
@@ -1010,6 +1069,25 @@
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = GET328Acceptance;
+		};
+		3B1F3ED651A9A522F9996FD3 /* GET328Acceptance */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "$(LEAFHOUR_BUNDLE_ID).sharecardtests";
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Leafhour.app/Leafhour";
 			};
 			name = GET328Acceptance;
 		};
@@ -1206,6 +1284,25 @@
 			};
 			name = Debug;
 		};
+		9B8B47E41F53E00AA65AE513 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "$(LEAFHOUR_BUNDLE_ID).sharecardtests";
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Leafhour.app/Leafhour";
+			};
+			name = Release;
+		};
 		A71763056CA650D4A13C5ED0 /* GET328Acceptance */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -1281,6 +1378,25 @@
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_TARGET_NAME = Leafhour;
+			};
+			name = Debug;
+		};
+		D3013A2FFFFD4BA383E25AA8 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "$(LEAFHOUR_BUNDLE_ID).sharecardtests";
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Leafhour.app/Leafhour";
 			};
 			name = Debug;
 		};
@@ -1386,6 +1502,16 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
 		};
+		3857A3478E29BB4B4972D13B /* Build configuration list for PBXNativeTarget "LeafhourShareCardTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D3013A2FFFFD4BA383E25AA8 /* Debug */,
+				3B1F3ED651A9A522F9996FD3 /* GET328Acceptance */,
+				9B8B47E41F53E00AA65AE513 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
 		550F386A0D363384A16E5485 /* Build configuration list for PBXNativeTarget "Leafhour" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -1436,7 +1562,15 @@
 /* End XCLocalSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		2B7CCAFDAE8DF756A746AE88 /* LeafhourCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = LeafhourCore;
+		};
 		328C76F5D6D1B07F1EEE7C99 /* ZIPFoundation */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = ZIPFoundation;
+		};
+		4EFC5A899AE5D77223F0AB4B /* ZIPFoundation */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = ZIPFoundation;
 		};

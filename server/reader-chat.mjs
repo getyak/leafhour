@@ -52,7 +52,7 @@ function conversationHistory(turns,scope={mode:'book'},contentVersion,bounded=fa
   return pairs.flat();
 }
 
-export async function createReaderChatService({library,people=null,dataDir,dataStore=null,generator=null,clock=Date.now,onError=()=>{},companionGenerator=null,searchWeb,annotationGenerator=null,onCompanionOutcome=()=>{},validateVoice=null,exportVoice=null,restoreVoice=null,resolveGuide=null,conversationTimeoutMs=chatRuntimeTimeout()+30000}){
+export async function createReaderChatService({statisticsOnly=false,library,people=null,dataDir,dataStore=null,generator=null,clock=Date.now,onError=()=>{},companionGenerator=null,searchWeb,annotationGenerator=null,onCompanionOutcome=()=>{},validateVoice=null,exportVoice=null,restoreVoice=null,resolveGuide=null,conversationTimeoutMs=chatRuntimeTimeout()+30000}){
   if(!library?.getBook||!library?.records||!library?.addComment||!dataDir)throw new TypeError('Reader chat requires a library and data directory');
   let closed=false;const queues=new Map(),active=new Map();
   const ownerDir=user=>path.join(dataDir,'users',digest(identity(user).id),'chat');
@@ -168,8 +168,8 @@ export async function createReaderChatService({library,people=null,dataDir,dataS
     await mutate(path.join(ownerDir(user),'requests.json'),{requests:[]},data=>{
       data.requests=data.requests.filter(r=>Number.isFinite(r.at)&&r.at>now-HOUR_MS);
       if(data.requests.some(r=>r.id===runId))return null;
-      if(data.requests.length>=10)throw invalid('这一小时的提问次数已用完，请稍后继续',429);
-      if(kind==='companion'){const prior=data.requests.filter(r=>r.kind==='companion');if(prior.length>=3||prior.some(r=>now-r.at<300000))throw invalid('陪读稍后再来，先继续阅读',429);}
+      if(!statisticsOnly&&data.requests.length>=10)throw invalid('这一小时的提问次数已用完，请稍后继续',429);
+      if(!statisticsOnly&&kind==='companion'){const prior=data.requests.filter(r=>r.kind==='companion');if(prior.length>=3||prior.some(r=>now-r.at<300000))throw invalid('陪读稍后再来，先继续阅读',429);}
       data.requests.push({id:runId,at:now,kind});return null;
     });
   }
@@ -180,7 +180,7 @@ export async function createReaderChatService({library,people=null,dataDir,dataS
       for(const [key,lease]of Object.entries(data.active))if(!Number.isFinite(lease.expiresAt)||lease.expiresAt<=now)delete data.active[key];
       if(data.active[nonce]?.nonce===nonce)return {nonce};
       if(Object.keys(data.active).length>=2)throw invalid('阅读对话正在处理其他提问，请稍后再试',429);
-      if(data.requests.filter(r=>r.at>now-HOUR_MS).length>=100||data.requests.length>=500)throw invalid('阅读对话的共享请求额度已用完，请稍后继续',429);
+      if(!statisticsOnly&&(data.requests.filter(r=>r.at>now-HOUR_MS).length>=100||data.requests.length>=500))throw invalid('阅读对话的共享请求额度已用完，请稍后继续',429);
       data.requests.push({nonce,at:now});data.active[nonce]={nonce,expiresAt:now+RUN_MS};return {nonce};
     });
   }

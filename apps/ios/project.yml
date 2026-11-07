@@ -40,6 +40,8 @@ targets:
       - ListeningShared
     dependencies:
       - package: LeafhourCore
+      - package: LeafhourCore
+        product: ZIPFoundation
       - target: ListeningWidget
     settings:
       base:
@@ -92,7 +94,27 @@ targets:
         INFOPLIST_FILE: ""
         PRODUCT_BUNDLE_IDENTIFIER: $(LEAFHOUR_BUNDLE_ID).apptests
         CODE_SIGN_STYLE: Automatic
+  LeafhourShareCardTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources: [LeafhourAppTests/BookShareCardTests.swift]
+    dependencies:
+      - target: Leafhour
+      - package: LeafhourCore
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
+        INFOPLIST_FILE: ""
+        PRODUCT_BUNDLE_IDENTIFIER: $(LEAFHOUR_BUNDLE_ID).sharecardtests
+        CODE_SIGN_STYLE: Automatic
 schemes:
+  LeafhourShareCards:
+    build:
+      targets:
+        Leafhour: all
+    test:
+      config: Debug
+      targets: [LeafhourShareCardTests]
   LeafhourGET328CurrentAcceptance:
     build:
       targets:
