@@ -59,6 +59,18 @@ class PublisherTest(unittest.TestCase):
         self.p.provider, self.p.live = 'success', self.p.remote
         return self.pub.tick()
 
+    def test_enable_starts_full_hold_while_main_ci_is_pending_but_tick_waits(self):
+        self.p.green = False
+        self.now = 50
+        try:
+            self.pub.enable()
+        except GateError:
+            self.fail('healthy exclusive bootstrap must not depend on pending main CI')
+        self.assertEqual(self.j.status()['cooldown'], 50 + WINDOW)
+        self.now = 50 + WINDOW
+        self.assertEqual(self.pub.tick()['status'], 'unready')
+        self.assertEqual(self.p.pushes, [])
+
     def test_inactive_controller_makes_no_network_or_push(self):
         self.p.prepare = lambda: self.fail('inactive preparation')
         self.assertEqual(self.pub.tick()['status'], 'inactive')

@@ -25,23 +25,23 @@ PR 先做受影响检查和审阅，再集中推送一个可交付批次。保�
 
 ## 每小时集中发布的启用条件
 
-**当前未启用。** `vercel.json` 仍仅允许 main 自动 Production；PR Preview 保持关闭。Vercel 的 Ignored Build Step 发生在部署创建后，取消的构建仍计入部署额度，因此不能用它模拟配额控制。[官方 Git 配置](https://vercel.com/docs/project-configuration/git-configuration)、[Ignored Build Step](https://vercel.com/docs/project-configuration/project-settings#ignored-build-step)。
+**小时入口尚未启用。** 两阶段先正常合并经审阅且CI通过的production-only策略PR，关闭main自动部署，原健康版继续服务，普通main合并继续积累；旧请求与unknown全收敛后，分别固定main M与健康legacy L/D，先init再持久seed，切换原项目Branch Tracking并启用唯一入口。详见[两阶段切换清单](hourly-publishing-cutover.md)。本轮只做源码、离线检查和Draft准备，尚未执行真实切换；PR Preview保持关闭。Vercel 的 Ignored Build Step 发生在部署创建后，取消的构建仍计入部署额度，因此不能用它模拟配额控制。[官方 Git 配置](https://vercel.com/docs/project-configuration/git-configuration)、[Ignored Build Step](https://vercel.com/docs/project-configuration/project-settings#ignored-build-step)。
 
 启用时需要满足以下条件：
 
 1. 在实际所属团队核对 Leafhour 项目、正式域名、生产分支与当前发布源，保留恢复入口。
 2. 建立唯一的集中发布入口。每小时取最新已通过同提交 CI 的 main，持久记录成功来源和最近一次尝试；无新提交、已有发布进行中、距离上次尝试不足 60 分钟时不请求部署。时钟小时边界不能替代滚动 60 分钟限制。
-3. 验证新入口的项目身份、凭据、环境和幂等检查后，替换现有 main Git 自动部署，保持 PR Preview 关闭。不能在 main 自动部署仍开启时再叠加定时部署。
+3. main-off合并前先备齐可审阅的替代实现、适用CI、独审和回滚；合并后再执行关闭态初始化及明确双pin的非发布seed。M无需等于live或在bootstrap完成CI；真实发布只选最新main且其CI成功。全部旧请求和bootstrap结果闭合后enable另建3660秒hold，不能叠加另一发布链。
 4. 提供商限额或权限失败要记录并停止重复请求。手动执行与自动调度使用相同互斥和时间限制；紧急例外需用户明确指定。
 5. 部署创建、发布成功、`release.json` 命中来源提交、线上验收分别记录。后续 main 更新不能冒充本次已发布来源。
 
 每小时限制只约束 Leafhour 这条发布链，不能保证同一 Vercel 账号的其他项目不会消耗共享日额度。GitHub 定时任务也可能延迟，不能保证整点上线。
 
-2026-10-29的连接器/旧CLI查询返回403；这不是浏览器真实权限的完整结论。2026-11-07协调方已在浏览器核对原团队可访问，当前CPU额度暂停导致网站/账号API402。补充实现采用持久控制器与受保护的生产引用，详见 [小时发布入口](hourly-publishing.md)。本准备阶段保留main链；待原服务健康、既有身份/项目只读预检和种子验证完成后，再按单入口步骤切换，不能把合成验证写成已启用。
+2026-10-29连接器/旧CLI的403及11月7日早先CPU暂停均保留为历史。原团队现已恢复，已有CLI可读取原项目；经批准的唯一修复部署 `f1d0981…` 已READY，独立正式来源读回命中它。小时入口仍未启用，不能继续把旧配额/403当当前原因，也不能因恢复创建第二次同源部署。补充实现采用持久控制器与受保护的生产引用，详见 [小时发布入口](hourly-publishing.md)和[精确切换清单](hourly-publishing-cutover.md)。随后外部PR339/331触发旧链的3411.077秒与909.437秒间隔，均是未限流的历史。f1不再作为可直接执行的seed pin；旧PR338/fdc3绿灯也不是新候选的验证。本轮准备两阶段源码与Draft材料，尚未操作远端链。
 
 ## Production 等待
 
-Production 工作流只在成功的 main push CI 后执行，并只读取触发提交的 GitHub commit status。遇到 Vercel 明确的 `failure` / `error` 立即失败；尚在排队则保留原来的有界等待。读取 status 的 GitHub token 只发往固定的 GitHub API，不跟随重定向，不发给正式站或状态中的 target URL。没有该 token 的本地 smoke 保留原有行为。
+Production工作流按同源Git策略选择入口：legacy模式验证成功的main push CI；小时模式只验证production push，main CI事件便宜结束。它只验证，不创建部署。遇到Vercel明确的 `failure` / `error` 立即失败；HTTP402同样立即失败；尚在排队则保留有界等待。读取status的GitHub token只发往固定GitHub API，不跟随重定向，不发给正式站或status中的target URL。没有该token的本地smoke保留原有行为。
 
 ## 验证记录
 

@@ -1,70 +1,36 @@
 # Leafhour 的唯一小时发布入口
 
-对应 [GET-314](https://linear.app/getyak/issue/GET-314)。PR260 的 CI 分流继续保留。本补充提供可执行的控制器与切换步骤，**当前不安装调度器、不创建生产分支、不修改 Vercel 项目或 `vercel.json` 的现有 main 链**。
+[GET-314](https://linear.app/getyak/issue/GET-314) 保持 In Progress。PR260 的 CI 分流与 PR333 的默认关闭控制器已经交付；当前 Draft 准备两阶段切换，**尚未启用小时限流**。执行顺序、精确对象、未知结果、保守设置下限和退出步骤见[两阶段切换清单](hourly-publishing-cutover.md)。
 
-## 实现与权限
+先经审阅和 CI 合并 production-only Git 策略，让 main 停止自动部署，原健康版本继续服务；普通 main 合并可继续积累。旧请求全部收敛后，分别固定当前 main M、健康 legacy L/deployment D；不再要求 M==live 或全局冻结 main 一小时。bootstrap 不要求新 M CI 完成，真实发布始终要求当时最新 main 的最新同源成功 CI。
 
-控制器运行在本机专属目录，使用 Python 标准库、SQLite、已有 `gh` 与 Vercel CLI 登录。Vercel 仍通过既有 Git 集成构建；控制器只把受保护的 `production` 引用推进到当前 main 的精确 SHA。它不创建 deployment token、hook、GitHub Secret 或 CI 写权限，不导出浏览器状态，不读取书籍、私人笔记或模型。
+## 控制器
 
-候选必须是当前 main，而且该 SHA 最新有效的 `CI` push run 已完成且成功；不从旧绿灯、PR run、其他仓库或另一个工作流取候选。main 更新但 CI 未结束时等待。普通读取只更新控制器专属 bare mirror，不接触用户现有 checkout。
+Python 标准库、单一 SQLite、独立 witness 和 OS 锁运行在专属目录，复用既有 gh/Vercel CLI 登录。只有 GitHub 原子 `updateRefs` 能推进生产指针；不创建 Vercel 部署 token/hook/CI 写权限，不读取书籍、笔记或模型。Vercel 仍通过既有 Git 集成构建，GitHub Production 工作流只验收。
 
-引用更新使用 GitHub [`updateRefs`](https://docs.github.com/en/graphql/reference/git#updaterefs)：同一原子操作断言 main 仍等于已检查 SHA，并断言 production 仍等于持久记录的旧 SHA，`force:false`。main 的 before/after 相同，仅作为前置条件；production 才改变。已有保护规则拒绝时停止，不增加 bypass、换账号或扩大授权。种子阶段必须读回无多余 push CI、无新 Preview 或部署；若平台把 no-op 当成新 push，停止启用并重新审查入口。
-
-## 持久门禁
-
-`publisher.sqlite3`、独立的 `.witness` 与 `.lock` 必须放在同一个专属、非临时、权限700的目录，文件权限600，不进 Git，不存凭据。
-
-| 状态 | 可执行的下一步 |
+| 操作 | 约束 |
 | --- | --- |
-| 默认关闭 | status 可离线读取，tick 不联网、不推进引用 |
-| prepared | 120秒租约；过期、关闭或候选变化会使旧执行者失效 |
-| sending | 调用前先同步落盘，独立 witness 先于 SQLite commit 写入并 fsync |
-| uncertain | 只读核对远端；不按超时、重启或新 SHA 自动重试 |
-| accepted | production 引用已接受，仍需供应商成功与线上来源相同 |
-| succeeded | 供应商成功，且 leafhour.com/release.json 命中该完整 SHA |
-| failed / drift | 停止新请求；明确恢复原因，禁止清空历史或透明恢复旧备份 |
+| check-stage / init | 必须显式 `--expected-main M --expected-legacy-source L --legacy-deployment D`；main exclusive、原项目跟踪 main、无 seed、L/D 实际健康、旧请求终态；init 默认关闭 |
+| seed | 已有同一初始化库；先持久化 M/L/D 意图，再原子 main M→M、production 0→L，force=false。M 关 main，L 关 production，不生成 Preview |
+| reconcile-seed | 只读；ref=L 且 inventory 相同才确认，空 ref 永久 unknown，不重发 |
+| tracking-intent / tracking-confirm | 前者先持久化意图；实际 Save 由获准的协调方执行；后者核对原项目 production 跟踪和无新增请求。尚未实测的设置副作用保留 init+3660 下限 |
+| first enable | 三 pin、全部 legacy/bootstrap 结果已收敛、原独占链成立；重新建立完整3660秒 hold，M CI 可 pending |
+| tick | 到期才选当前 main；同 SHA 最新 CI 成功、二次预检、no-force CAS、无旁路/迟到请求；无变化不发布 |
+| disable / status | 可离线；保留历史、冷却和未知操作 |
+| recover-failure | 只处理已知 provider failure；不清除 unknown、来源幂等或既有冷却 |
 
-所有路径共用 SQLite `BEGIN IMMEDIATE`，手动执行与 launchd 没有绕过入口。服务时间来自现有登录的 GitHub 响应 Date，再累加包含系统睡眠的连续时间（macOS `CLOCK_MONOTONIC_RAW`，Linux `CLOCK_BOOTTIME`）；响应往返超过30秒、快照超过120秒、跨进程时间倒退都停止。不能用Mac上不包含系统睡眠的 `time.monotonic()` 替代。实际最小间隔为 **3660秒**，其中60秒保守覆盖跨进程响应延迟和 HTTP Date 的秒精度；因此满足滚动3600秒最多一次，不承诺整点上线。首次 enable 也有完整3660秒等待，避免与刚结束的旧 main 链相撞。
+`init` 必须早于 seed，从而 seed 请求未知时也有可恢复的持久意图。L/D 和初始全量 provider inventory 在 DB 与 witness 中固定；已有库或 witness 不覆盖，不能把新 main 或新线上版本悄悄选作另一个 legacy。每次重要阶段完整分页核对部署；空队列不能掩盖 pending/missing 的旧 main 请求 receipt。运行期预检和临发前重核旧 GitHub receipt，重新 missing/pending 时持久冻结。迟到旧链、外来、重复部署或历史 receipt 消失都会阻塞后续发布。offline status 显示固定 legacy/deployment 与持久操作状态/时间，unknown 可读且不输出 payload。
 
-冷却时间从持久 arming 起算，并在首次确认远端已接受时延后到确认时间加3660秒。发送中、未知结果或构建中的旧任务未消除之前，不发下一次。进程死后若远端已是目标 SHA，可只读恢复 accepted；若仍是旧引用，不能据此证明请求没有在途，继续 uncertain。已经尝试的同一源不会再自动发起部署。
+main 与 production 的 [GitHub updateRefs 原子断言](https://docs.github.com/en/graphql/reference/git#updaterefs)同属一笔事务，任一 beforeOid 不符就不修改其他 ref；真实请求未知时仍不能凭空 ref 推断拒绝。本版本不按异常文字猜服务端确定拒绝，也不自动重试 seed；短暂 main CAS 竞争需要确切回执和独审离线恢复，保留原 witness。
 
-独立 witness 保存所有已 arming 的请求。原地覆盖旧备份和替换数据库都会被检测到；新进程也不能透明接管恢复后仍 enabled 的旧库。witness 写入与 SQL commit 之间崩溃会保守阻塞。**不得同时回滚 witness、删除状态、重建 enabled 库来恢复发布。**
+## 状态、时间与资源
 
-CLI 持有独占 OS 文件锁，更新请求的子进程继承锁；父进程退出而子请求仍运行时，其他 CLI 仍返回 busy。磁盘丢失/损坏等离线修复需先卸载本任务调度、确认所有持锁执行者及在途请求已结束，保留原库和 witness，核对每条 arming 的远端回执，再准备独立审阅的恢复变更。结果不确定时保持关闭，不能用旧库覆盖后直接 enable。
+专属非临时目录700，DB/witness/lock 文件600。所有状态事务使用 `BEGIN IMMEDIATE`；外部写请求之前 fsync witness 并提交 SQL。每次事务核对 DB inode/device、immutable handover 和所有 armed 记录。旧库原地覆盖、换文件、丢 witness、intent 缺失都 fail closed；禁止同时回滚 DB/witness 或重建 enabled 库。
 
-## 启用前的具体检查
+runtime 保留 prepared 120秒 lease、sending/uncertain/accepted 只读协调、同源只尝试一次、provider success 与同源 public release 分开验收。发送未知不能按超时、重启或新 SHA 重发；父进程退出时，继承 OS 锁的请求子进程仍保护入口。所有 sending/unknown/accepted 未闭合前不发下一次。
 
-示例配置与 launchd 模板在 `deploy/hourly-publisher/`。替换所有占位符后，控制器源码固定到已正常合并且 CI 通过的版本；不要让调度器自动执行未经审阅的新 main 代码。
+服务时间来自现有认证 GitHub HTTP Date，加含系统睡眠的连续时间（macOS CLOCK_MONOTONIC_RAW，Linux CLOCK_BOOTTIME）。往返超过30秒、快照超过120秒或时间倒退停止。最小窗口 **3660秒** 保守覆盖 Date 秒精度和跨进程延迟，满足滚动3600秒最多一次，不承诺整点。enable 总是重新建立完整 hold；首次 accepted 也延长至观察时刻+3660。disable/re-enable、失败、重启不缩短。
 
-1. 恢复原团队的正常服务，确认静态 release.json 为200，最新已通过CI的 main 已在当前 Production，无排队/构建中部署。2026-11-07协调方提供的浏览器实查是：原团队可访问，网站/账号API为402，原因是 Fluid Active CPU 用量暂停。旧连接器/CLI403不能据此概括成没有团队权限。本任务未发送支持消息、升级、付费或更换团队。
-2. 在原团队核对真实 project ID/name、GitHub仓库、Production branch=main、leafhour.com正式域名及当前来源，保存读回。配置填入这些身份和现有发布 GitHub login；凭据不放配置。确认已有 `gh` 和 Vercel CLI的只读项目/域名查询正常。若重新登录将创建新 token 或需要扩大权限，先交协调方明确授权对象和回滚方案，本控制器不会执行登录或授权。
-3. 使用仓库现有权限为字面 `production` 预先配置分支保护 pattern：禁止force/deletion、enforce admins、要求 `CI gate` 及 main 的现有 required contexts，push allowance 仅现有发布用户。main保护保持原状，不新增用户、App或bypass。部署引用只复用已经进入main且CI通过的提交；若现有规则不能允许这种引用推进，不自动放宽规则。
-4. 在专属状态目录创建独立 bare mirror，origin必须是唯一公开仓库。从模板准备配置、固定 Python/gh/vercel 的绝对路径，检查模板替换结果；不自动安装大套依赖。
-5. 执行 `check-stage`。要求 exact main 的 Git配置仍仅开启main，production仍禁用；Vercel生产分支仍main，当前main已在线、CI成功、无在途部署、账号与保护符合。再执行一次 `seed`：只在 production 引用不存在时创建同一已在线SHA；已有合法种子只读返回。该种子commit本身禁用production部署，不能创建Preview。未知 seed 结果先只读查看引用，不重复seed。核对供应商和GitHub没有多余部署/CI。
-6. 执行 `init`。它只接受上述健康 legacy 阶段和已有合法种子，创建默认关闭的库、witness及完整小时等待。新库不能在已经切换的 production 链上初始化；已有历史或witness不能被覆盖。
+`deploy/hourly-publisher/` 提供无凭据配置、launchd 模板和 review-only 计划。控制器工具固定经审阅的完整来源，不自动跟随 main。现有 vc.js 依赖 env node，模板必须填已验证 Node 目录，并用相同用户/最小 PATH 只读验证；CLI 变化或消失时停止，不能自动重装/登录。仅安装一个每300秒 tick 的入口；不保留第二个 cron、hook 或 CLI 发布旁路。
 
-所有命令的形式如下；首次阶段使用 `check-stage` / `seed` / `init`，实际切换后再用 `check` / `enable` / `tick`。示例没有真实密钥：
-
-```sh
-/absolute/verified/python /pinned/controller/tools/hourly-publisher.py status \
-  --config /publisher-owned/config.json --state /publisher-owned/publisher.sqlite3
-```
-
-## 单入口切换与回滚
-
-必须在1–6项全部留下真实证据后才做，不把这份源码或合成测试当成凭据已可用。
-
-1. 协调一个切换窗口，暂停该仓库常规合并，确认旧 main 发布完全终止，记录最后来源与时间。准备**另一份经审阅的切换PR**，将 `vercel.json.git.deploymentEnabled` 改成 `{"**":false,"production":true}`，main关闭；PR仍不开Preview。通过当前CI后合并。这个main push不请求部署；既有线上版本继续服务。
-2. 等待切换提交的main CI成功。现有 Production工作流会识别小时模式，对仅main CI事件快速结束，不为每个待合并源占用30分钟runner。其production push路径保留同源smoke；与legacy组隔开，后续main CI不能取消真实发布验收。源元数据请求出现HTTP402时立即失败，不把明确的平台暂停吞成30分钟等待；其他正常排队仍有界等待。
-3. 原项目 Branch Tracking 改为 `production`，域名保持原Production。修改前核对UI关于部署的实际行为；当前种子commit仍禁用production部署。若UI会额外部署或目标/权限改变，停止交协调方处理，不能以Preview试验。读回项目、分支、Git策略和无额外部署。
-4. 执行 `check`，它会重新读取所有目标、规则、既有身份、当前main/最新CI、实际Git策略、无在途部署及网站健康。失败时先恢复前一阶段；**不会在准备PR中自动切断main链**。成功才 `enable`，至少等3660秒后首次tick可推进引用。
-5. 用已替换并审阅的plist安装本任务唯一launchd入口，每300秒轻量tick；同一库手动tick也受门禁。不要保留第二个cron、workflow部署任务、hook或手动CLI发布旁路。
-6. 两次真正符合时间窗的发布分别保存：所选main/最新CI、DB和witness事件、production引用、Vercel Production成功、同源release.json、Production HTTP smoke；在两次之间合并多个源，证明只有最新合格源发布，中间源不创建部署，PR始终无Preview。平台暂停期间只做合成验证，GET314保持IP，不能Done。
-
-回滚先 `disable` 并卸载本任务launchd；disable不依赖网站或认证可用。保留并核对所有sending/uncertain，不能因停止进程就假定请求未发。达到现有冷却时间且无在途请求后，把项目Production Branch改回main，此时main Git仍关闭；再用正常PR恢复 `{"**":false,"main":true}`，该次合并才恢复旧main发布。不要向production强推旧SHA，或在两条链同时开启时做“测试”。恢复旧链意味着小时限制撤销，任务重新保持IP；紧急打破时间窗必须有用户明确要求。
-
-## 失败恢复与验收界限
-
-`recover-failure` 只处理已知供应商失败；它要求目标、身份、独占策略、最新CI与健康检查重新通过，保持已有冷却与同源幂等。没有新合格main时不会空提交或重复部署失败SHA；同源人工重发需要另行准备有界、可审阅的恢复动作，不能旁路当前锁。ref drift、unknown、丢库或旧备份恢复不属于这个命令的绕过范围。
-
-本地验证使用临时SQLite、独立合成bare仓库、合成HTTP/命令回执和真实子进程退出。它证明控制器协议，不证明原项目当前已解除暂停、现有CLI已登录目标团队，或小时入口已启用。PR、main CI、供应商实际发布与正式来源验收分别读回。仅Leafhour这条链受此限流，其他项目仍可能消耗团队共享CPU/部署额度。
+本轮只执行有界离线宿主检查，不做大构建/UI/账号/模型调用。实际部署、同源 HTTP 与两个真实窗口分别记账；无有用变更则等待，不为空提交或重复部署制造验收。只有全部完成才 Done。

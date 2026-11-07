@@ -1,5 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
 import {shouldVerify} from '../tools/production-trigger.mjs';
 
 const legacy = {git:{deploymentEnabled:{'**':false,main:true}}};
@@ -19,4 +20,11 @@ test('a mixed or unknown deployment policy cannot silently verify the wrong chai
   for (const enabled of [true, {'**':false,main:true,production:true}, {'production':true}, {'**':false,production:true,'preview-*':true}]) {
     assert.throws(() => shouldVerify('workflow_run', run, 'refs/heads/main', {git:{deploymentEnabled:enabled}}), /single publication chain/);
   }
+});
+
+test('the actual cutover config leaves main and PR branches disabled', () => {
+  const config = JSON.parse(readFileSync(new URL('../vercel.json', import.meta.url)));
+  assert.deepEqual(config.git.deploymentEnabled, {'**':false,production:true});
+  assert.equal(shouldVerify('workflow_run', run, 'refs/heads/main', config), false);
+  assert.equal(shouldVerify('push', {}, 'refs/heads/production', legacy), false);
 });

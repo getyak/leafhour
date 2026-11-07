@@ -20,7 +20,8 @@ class Publisher:
 
     def enable(self):
         snap = self.port.prepare()
-        if not snap.valid() or snap.remote != self.journal.status()['expected_ref']:
+        sha(snap.source), sha(snap.remote)
+        if snap.ready is not True or snap.remote != self.journal.status()['expected_ref']:
             raise GateError('replacement entry is not ready')
         self.journal.enable(self.clock())
 
