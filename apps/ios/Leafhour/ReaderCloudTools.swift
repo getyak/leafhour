@@ -558,7 +558,9 @@ final class ReaderCloudTools {
                 var pending = try JSONDecoder().decode(ReaderPendingQuickRecording.self, from: row.metadata)
                 guard pending.context.ownerID == owner, pending.context.book.id == session.book.id,
                       pending.recording.id == row.id else { continue }
-                if quickVoiceDraft?.id == row.id.uuidString.lowercased() || turns.contains(where: { $0.id == row.id.uuidString.lowercased() }) {
+                let captureID = row.id.uuidString.lowercased()
+                let retainedVoice = quickVoiceDraft?.id == captureID ? quickVoiceDraft?.voice : turns.first(where: { $0.id == captureID })?.voice
+                if let retainedVoice, (try? await library.chatVoiceURL(retainedVoice, ownerID: owner)) != nil {
                     try await library.removeStagedChatVoiceCapture(id: row.id, ownerID: owner); continue
                 }
                 if pending.context.book.sourceVersion == session.book.sourceVersion,
@@ -571,7 +573,7 @@ final class ReaderCloudTools {
 
     func retryQuickRecording(cloud: CloudLibraryClient?) async {
         guard let pending = pendingQuickRecording else { return }
-        await submitQuickVoice(pending.recording, context: pending.context, cloud: cloud, library: library, send: !pending.recording.transcript.isEmpty)
+        await submitQuickVoice(pending.recording, context: pending.context, cloud: cloud, library: library, send: pending.sendAfterRetention == true)
     }
     func discardQuickRecording() async {
         guard !quickRetaining, let pending = pendingQuickRecording, let library else { return }
@@ -605,14 +607,14 @@ final class ReaderCloudTools {
         guard pendingQuickRecording == nil || pendingQuickRecording?.recording.id == recording.id else { error = "请先恢复已有录音。"; return }
         // Own the value before ANY await/auth/draft operation. Even disk failure
         // leaves an explicit export/retry action backed by this original URL.
-        pendingQuickRecording = ReaderPendingQuickRecording(recording: recording, context: context)
+        pendingQuickRecording = ReaderPendingQuickRecording(recording: recording, context: context, sendAfterRetention: send)
         quickRetaining = true
         let retentionLease = ReaderQuickBackgroundLease(); retentionLease.begin()
         defer { quickRetaining = false; retentionLease.end() }
         self.library = library
         guard let library else { error = "原录音尚未归档，可点开 AI 导出后重试。"; return }
         do {
-            let pending = try JSONEncoder().encode(ReaderPendingQuickRecording(recording: recording, context: context))
+            let pending = try JSONEncoder().encode(ReaderPendingQuickRecording(recording: recording, context: context, sendAfterRetention: send))
             let staged = try await library.stageChatVoiceCapture(recording.url, id: recording.id, ownerID: context.ownerID, metadata: pending)
             pendingQuickRecording?.recording = ChatRecordedVoice(id: recording.id, url: staged, durationMs: recording.durationMs, transcript: recording.transcript)
             if staged.standardizedFileURL != recording.url.standardizedFileURL { try? FileManager.default.removeItem(at: recording.url) }
@@ -623,18 +625,32 @@ final class ReaderCloudTools {
         configure(library: library, localBookID: context.book.id)
         if context.book.cloud == nil { localConversationBook = context.book }
         await restoreConversationDraft(identity: identity, library: library)
-        guard draftBook?.ownerID == owner, draftBook?.bookID == identity.bookID, draftError == nil, quickVoiceDraft == nil else {
+        let captureID = recording.id.uuidString.lowercased()
+        let target = ReaderChatContext(identity: identity, passageID: context.passageID, chapterTitle: context.chapterTitle, original: context.original, selection: context.quote)
+        guard draftBook?.ownerID == owner, draftBook?.bookID == identity.bookID,
+              quickVoiceDraft == nil || (quickVoiceDraft?.id == captureID && quickVoiceDraft?.context == target) else {
             error = "已有语音或草稿需要先恢复，本次原录音已单独保留。"; return
+        }
+        // A previous write may have retained the voice before its draft save
+        // failed. Retrying that same capture must repair persistence rather
+        // than treating its own in-memory draft/error as a foreign conflict.
+        if draftError != nil {
+            await retryConversationDraftSave()
+            guard draftError == nil else { error = draftError; return }
         }
         do {
             guard let pending = pendingQuickRecording else { return }
             let voice = try await library.retainChatVoice(pending.recording.url, id: recording.id, ownerID: owner, durationMs: recording.durationMs)
-            let target = ReaderChatContext(identity: identity, passageID: context.passageID, chapterTitle: context.chapterTitle, original: context.original, selection: context.quote)
-            quickVoiceDraft = ReaderQuickVoiceDraft(id: recording.id.uuidString.lowercased(), context: target, voice: voice, text: recording.transcript)
+            if let saved = quickVoiceDraft {
+                guard saved.voice == voice else { throw LibraryError.invalid("已有录音回执不一致，原件仍保留。") }
+            } else {
+                quickVoiceDraft = ReaderQuickVoiceDraft(id: captureID, context: target, voice: voice, text: recording.transcript)
+            }
             quickTargetID = quickVoiceDraft?.id; queueDraftSave()
             guard await flushConversationDraft() else { error = draftError; return }
             try await library.removeStagedChatVoiceCapture(id: recording.id, ownerID: owner)
             pendingQuickRecording = nil; quickRetaining = false
+            if retry == nil { error = nil }
             if send && !recording.transcript.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty { await sendQuickVoiceDraft(cloud: cloud) }
         } catch { self.error = error.localizedDescription }
     }

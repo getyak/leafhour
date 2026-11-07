@@ -553,7 +553,7 @@ struct ChatConversationView: View {
                 Text("原录音尚未归档").font(.subheadline)
                 if !pending.recording.transcript.isEmpty { Text(pending.recording.transcript).font(.footnote).textSelection(.enabled) }
                 HStack {
-                    Button("重试保留录音") { Task { await tools.retryQuickRecording(cloud: cloud) } }.disabled(tools.quickSubmitting)
+                    Button(pending.sendAfterRetention == true ? "重试保存并送出" : "重试保留录音") { Task { await tools.retryQuickRecording(cloud: cloud) } }.disabled(tools.quickSubmitting)
                     Spacer()
                     ShareLink(item: pending.recording.url) { Label("导出原录音", systemImage: "square.and.arrow.up") }
                 }.frame(minHeight: 44)

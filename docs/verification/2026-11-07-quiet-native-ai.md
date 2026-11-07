@@ -21,8 +21,8 @@ Environment: Xcode 26.4, iOS 26.4 Simulator, dedicated `Leafhour Quiet AI` simul
 | `swift test --package-path apps/ios/LeafhourCore` | 426 tests; 2 skipped, 0 failed |
 | `node --test tests/ios-*.test.mjs` | 246 passed, 0 failed |
 | `node tools/check-module-boundaries.mjs` | Passed; 15 module files and 49 Agent dependency files checked |
-| Affected native app tests | 106 passed, 0 failed, on the final implementation |
-| Targeted native UI tests | 6 passed, 0 failed; final selected run: 112 total native tests |
+| Affected native app tests | 108 passed, 0 failed, including retention-only intent and retryable write failure |
+| Targeted native UI tests | 6 passed, 0 failed; 112 native tests in the original UI run, followed by 108 app tests after recovery-only fixes |
 | `git diff --check` | Passed |
 
 The native run includes `ReaderQuickQuestionTests`, `ReaderToolsTests`, `ReaderInteractionTests`, `ReaderImmersionTests` and `FollowUpRoutingTests`. UI cases cover quiet AI/full-screen return, exact saved-answer targeting and read acknowledgement, player/navigation independence, comparison/native selection, rotation/speed/pause and accessibility text size.
@@ -40,7 +40,7 @@ The first UI attempt used the default development identity, which deliberately c
 
 ## Independent review
 
-A separate read-only reviewer identified permission-task ownership, failed-recording recovery, replacement playback ownership and repeated-hold handoff issues. All four were addressed with regression coverage. Subsequent checks also keep pending-capture manifests bounded and avoid repeated read acknowledgements while scrolling. No model-generated value changes account scope, source ownership or pricing authorization.
+A separate read-only reviewer identified permission-task ownership, failed-recording recovery, replacement playback ownership and repeated-hold handoff issues. All four were addressed with regression coverage. The final review then found two recovery-path issues: inferring send consent from nonempty transcription, and treating the same voice's failed draft save as a foreign pending capture. Both reproduced in two tests (three assertions failed before the fixes). Pending manifests now preserve original send intent (missing legacy intent means retain-only), and same-capture retry repairs persistence and revalidates or restores the retained original before removing staging. A regression also deletes the retained copy between failed save and retry, then verifies the exact audio bytes are restored. Subsequent checks also keep pending-capture manifests bounded and avoid repeated read acknowledgements while scrolling. No model-generated value changes account scope, source ownership or pricing authorization.
 
 ## Boundaries and publication
 
@@ -48,3 +48,5 @@ A separate read-only reviewer identified permission-task ownership, failed-recor
 - Background allowance is finite. Original request identities and account-local drafts survive uncertain delivery; reopening reconciles saved results, and explicit retry uses the same request. Device-local reading tools still need the device to run. No unlimited suspended execution is claimed.
 - Physical microphone quality, first-use permission gestures on hardware, Bluetooth route changes, real-provider timing, prolonged lock-screen suspension and TestFlight installation have not been accepted in this run.
 - No production database writes, private books/notes, paid provider requests, manual deployment or Apple upload were performed. Git/CI/merge state is reported separately in the delivery; code merge is separate from app distribution.
+
+The initial PR CI run was cancelled after final recovery review identified required fixes, to avoid finishing checks on a superseded commit. A single follow-up commit carries the combined fixes; its current-head CI remains the merge gate. The six UI flows and screenshots predate only these recovery-path changes, not a later layout change.

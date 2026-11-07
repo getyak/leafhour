@@ -97,6 +97,9 @@ struct ReaderQuickQuestionContext: Codable {
 struct ReaderPendingQuickRecording: Codable {
     var recording: ChatRecordedVoice
     var context: ReaderQuickQuestionContext
+    // Missing legacy intent is retain-only; recovery must never infer consent
+    // to send from the existence of a nonempty transcript.
+    var sendAfterRetention: Bool? = nil
 }
 
 struct ReaderQuickVoiceDraft: Codable {

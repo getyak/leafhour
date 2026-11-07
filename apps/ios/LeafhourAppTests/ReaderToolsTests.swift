@@ -1279,6 +1279,54 @@ extension ReaderToolsTests {
         XCTAssertEqual(try Data(contentsOf: url), bytes)
         XCTAssertNil(recreated.consent)
     }
+    func testInterruptedCaptureRecoveryNeverUpgradesRetentionIntoSending() async throws {
+        let fixture = try await fixture(persistCloud: true), tools = ReaderCloudTools(), probe = ReaderToolsProbe()
+        probe.respond = { _, _ in XCTFail("Retry retention must not submit an interrupted voice"); return (500, [:]) }
+        ReaderToolsURLProtocol.install(probe)
+        let context = try XCTUnwrap(ReaderQuickQuestionContext(session: fixture.session, quote: nil))
+        let source = fixture.session.directory.appendingPathComponent("retain-only.caf")
+        try Data("caff-interrupted-retain-only".utf8).write(to: source)
+        await tools.submitQuickVoice(ChatRecordedVoice(id: UUID(), url: source, durationMs: 1000, transcript: "Do not send automatically"), context: context, cloud: nil, library: fixture.library, send: false)
+        let restored = ReaderCloudTools()
+        await restored.restoreQuickQuestion(fixture.session, cloud: fixture.cloud, library: fixture.library)
+        XCTAssertNotNil(restored.pendingQuickRecording)
+        await restored.retryQuickRecording(cloud: fixture.cloud)
+        XCTAssertNil(restored.pendingQuickRecording)
+        XCTAssertNotNil(restored.quickVoiceDraft, "Retaining succeeds and exposes the explicit send action")
+        XCTAssertTrue(restored.turns.isEmpty)
+        XCTAssertNil(restored.retry)
+    }
+
+    func testRetainedCaptureCanRetryTheSameDraftAfterAWriteFailure() async throws {
+        let fixture = try await fixture(persistCloud: true), tools = ReaderCloudTools(), probe = ReaderToolsProbe()
+        probe.respond = { _, _ in XCTFail("Retaining a voice is not a model submission"); return (500, [:]) }
+        ReaderToolsURLProtocol.install(probe)
+        await tools.restoreQuickQuestion(fixture.session, cloud: fixture.cloud, library: fixture.library)
+        let initialSaved = await tools.flushConversationDraft(); XCTAssertTrue(initialSaved)
+        let profile = fixture.session.directory.deletingLastPathComponent().deletingLastPathComponent()
+        let draft = try XCTUnwrap(FileManager.default.contentsOfDirectory(at: profile, includingPropertiesForKeys: nil).first { $0.lastPathComponent.hasPrefix("chat-") && $0.pathExtension == "json" })
+        let backup = profile.appendingPathComponent("draft-write-failure-backup.json")
+        try FileManager.default.moveItem(at: draft, to: backup)
+        try FileManager.default.createDirectory(at: draft, withIntermediateDirectories: false)
+        let source = fixture.session.directory.appendingPathComponent("retry-retention.caf")
+        try Data("caff-draft-write-failure".utf8).write(to: source)
+        let context = try XCTUnwrap(ReaderQuickQuestionContext(session: fixture.session, quote: nil))
+        await tools.submitQuickVoice(ChatRecordedVoice(id: UUID(), url: source, durationMs: 1000, transcript: "Retain this text"), context: context, cloud: fixture.cloud, library: fixture.library, send: false)
+        XCTAssertNotNil(tools.pendingQuickRecording); XCTAssertNotNil(tools.quickVoiceDraft); XCTAssertNotNil(tools.draftError)
+        let voice = try XCTUnwrap(tools.quickVoiceDraft?.voice)
+        let retained = try await fixture.library.chatVoiceURL(voice, ownerID: owner)
+        try FileManager.default.removeItem(at: retained)
+        try FileManager.default.removeItem(at: draft)
+        try FileManager.default.moveItem(at: backup, to: draft)
+        await tools.retryQuickRecording(cloud: fixture.cloud)
+        XCTAssertNil(tools.pendingQuickRecording, "The same retained capture must be able to finish saving")
+        XCTAssertNil(tools.draftError)
+        XCTAssertEqual(tools.quickVoiceDraft?.text, "Retain this text")
+        let recovered = try await fixture.library.chatVoiceURL(voice, ownerID: owner)
+        XCTAssertEqual(try Data(contentsOf: recovered), Data("caff-draft-write-failure".utf8))
+        XCTAssertTrue(tools.turns.isEmpty)
+    }
+
     func testFinishedQuickVoiceRemainsIndexedAfterAuthFailureAndRelaunch() async throws {
         let fixture = try await fixture(persistCloud: true), tools = ReaderCloudTools(), probe = ReaderToolsProbe()
         probe.respond = { _, _ in XCTFail("Recovery must not send or load a model request"); return (500, [:]) }
