@@ -1621,5 +1621,6 @@
   "app/vendor/share-qr.mjs",
   "server/public-excerpt.mjs",
   "tests/reading-share-beta.test.mjs",
-  "tests/share-bootstrap.test.mjs"
+  "tests/share-bootstrap.test.mjs",
+  "apps/ios/Leafhour.xcodeproj/xcshareddata/xcschemes/LeafhourShareCards.xcscheme"
 ]
