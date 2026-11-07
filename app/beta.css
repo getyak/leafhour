@@ -1,0 +1,31 @@
+/* Installation is the feature. Real product captures and a calm reading pace. */
+.beta-page main{max-width:1160px;margin:auto;padding:0 28px}
+.beta-page .public-search{display:none}.beta-page .site-header{max-width:1280px}
+.beta-page .brand{min-height:44px}
+.beta-page-label{font-size:13px;color:var(--accent);margin-bottom:20px}
+.beta-hero{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:72px;align-items:center;padding:76px 0 84px}
+.beta-intro h1{font-size:clamp(42px,4.3vw,64px);line-height:1.22;letter-spacing:-.035em}
+.beta-lede{max-width:37em;margin:24px 0 36px;font-size:15px;line-height:1.95;color:var(--muted)}
+.beta-ios h2{font-size:23px;margin-bottom:10px}.beta-ios>p:not(.beta-note){max-width:34em;font-size:14px;line-height:1.9;color:var(--muted)}
+.beta-actions{display:flex;gap:22px;align-items:center;flex-wrap:wrap;margin:24px 0 10px}
+.beta-page .primary{border-radius:var(--action-radius);min-height:48px;gap:20px;font-size:14px;font-weight:500}
+.beta-install[disabled]{opacity:.75;cursor:default}
+.beta-secondary,.beta-small-link{display:inline-flex;align-items:center;justify-content:flex-start;gap:12px;min-height:44px;color:var(--accent);font-size:14px;text-decoration:underline;text-underline-offset:5px;text-decoration-color:var(--line-control)}
+.beta-small-link{font-size:12px}.beta-page .beta-note{font-size:12px;line-height:1.8;color:var(--muted);max-width:46em}
+.beta-steps{margin:22px 0 0;padding-left:22px;color:var(--muted);font-size:13px;line-height:2.1}.beta-steps li{padding-left:5px}
+.beta-phone{position:relative;display:grid;justify-items:center;isolation:isolate;padding:20px 0 5px}
+.beta-phone-paper{position:absolute;z-index:-1;inset:15% -2% 10%;border-radius:46% 46% 4% 4%;background:var(--surface);transform:rotate(-8deg)}
+.beta-phone img{display:block;width:min(100%,262px);height:auto;border-radius:28px;box-shadow:0 26px 65px #1d35251c,0 0 0 6px var(--panel);transform:rotate(3deg)}
+.beta-page figcaption{font-size:12px;line-height:1.8;color:var(--muted);text-align:center;margin-top:26px}
+.beta-web{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:center;gap:64px;padding:62px 0;border-top:1px solid var(--line)}
+.beta-web figure{background:var(--surface);padding:26px 22px 16px;border-radius:12px}.beta-web img{display:block;width:100%;height:auto;border-radius:5px;box-shadow:0 10px 30px #1d352512}.beta-web figcaption{margin-top:14px}
+.beta-web h2{font-size:clamp(28px,3vw,38px);line-height:1.35;margin-bottom:18px}.beta-web>div>p:not(.beta-note):not(.beta-page-label){font-size:14px;line-height:1.95;color:var(--muted)}
+.beta-expect{display:grid;grid-template-columns:1fr 2fr;gap:70px;padding:60px 0 72px;border-top:1px solid var(--line)}
+.beta-expect>h2{font-size:28px}.beta-expect article+article{margin-top:25px}.beta-expect h3{font:500 14px/1.8 var(--sans);margin-bottom:5px}.beta-expect p{font-size:13px;line-height:1.9;color:var(--muted);max-width:48em}.beta-expect .beta-small-link{margin-top:12px}
+.beta-feedback{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);gap:70px;border-top:1px solid var(--line);padding:76px 0 88px}
+.beta-feedback h2{font-size:clamp(29px,3vw,40px);line-height:1.4;letter-spacing:-.02em}.beta-feedback-intro>p:not(.beta-note){font-size:14px;color:var(--muted);line-height:1.95;margin:22px 0 20px;max-width:29em}.beta-email{display:inline-flex;align-items:center;gap:18px;min-height:44px;font-size:18px;color:var(--accent);border-bottom:1px solid var(--line-control);margin-bottom:12px;overflow-wrap:anywhere}
+.beta-feedback-contact{display:flex;flex-direction:column;justify-content:center;align-items:flex-start}.beta-feedback-contact .beta-email{font-size:clamp(23px,2.6vw,36px);line-height:1.5;min-height:60px;padding:8px 0;gap:22px}.beta-feedback-contact .beta-note{max-width:32em}
+.beta-footer{max-width:1104px;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;margin:auto;padding:32px 0 28px}.beta-footer .brand-name{font-size:24px}.beta-footer>div:first-child{display:flex;align-items:center;gap:20px}.beta-footer p{color:var(--muted);font-size:12px}.beta-footer-links,.beta-theme,.beta-languages{display:flex;align-items:center;gap:22px;flex-wrap:wrap}.beta-footer-links>a,.beta-languages a{display:inline-flex;align-items:center;min-height:44px;font-size:12px;color:var(--muted)}.beta-theme{gap:8px;color:var(--muted);font-size:12px}.beta-theme .site-theme{border:1px solid var(--line-control);border-radius:50%}.beta-languages{width:100%;gap:22px;border-top:1px solid var(--line);padding-top:10px}.beta-languages [aria-current=true]{color:var(--accent);text-decoration:underline;text-underline-offset:5px}
+@media(max-width:980px){.beta-hero{gap:35px;padding-top:48px}.beta-phone img{width:235px}.beta-phone-paper{inset-inline:12%}.beta-web{gap:35px}.beta-feedback{gap:40px}.beta-footer{margin:0 28px}}
+@media(max-width:700px){.beta-page main{padding:0 22px}.beta-hero{grid-template-columns:1fr;gap:28px;padding:34px 0 48px}.beta-page-label{margin-bottom:14px}.beta-intro h1{font-size:43px}.beta-lede{margin:20px 0 28px;font-size:14px}.beta-phone{max-width:350px;width:100%;margin:auto;padding:24px 0 0}.beta-phone img{width:215px}.beta-phone-paper{inset:12% 4% 10%}.beta-page figcaption{font-size:12px}.beta-web{grid-template-columns:1fr;gap:30px;padding:42px 0}.beta-web>figure{order:2;padding:20px 16px 12px}.beta-web h2{font-size:30px}.beta-expect{grid-template-columns:1fr;gap:26px;padding:40px 0}.beta-feedback{grid-template-columns:1fr;gap:32px;padding:44px 0 56px}.beta-feedback h2{font-size:32px}.beta-feedback-intro>p:not(.beta-note){max-width:none}.beta-footer{margin:0 22px;gap:14px;padding:26px 0}.beta-footer>div:first-child{justify-content:space-between;width:100%}.beta-footer-links{gap:18px;justify-content:space-between;width:100%}.beta-theme{margin-left:auto}.beta-languages{gap:18px}.beta-page .beta-actions{gap:16px}.beta-install{max-width:100%}}
+@media(prefers-reduced-motion:no-preference){.beta-phone img{animation:beta-arrive .7s var(--lh-ease) both}@keyframes beta-arrive{from{opacity:0;transform:translateY(12px) rotate(1deg)}to{opacity:1;transform:translateY(0) rotate(3deg)}}}

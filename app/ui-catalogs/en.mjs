@@ -576,6 +576,7 @@ export default Object.freeze({
   "nav.resume": "Continue reading",
   "nav.search": "Search and commands",
   "nav.agent": "Agent access",
+  "nav.beta": "Join the beta",
   "nav.pricing": "Pricing",
   "nav.method": "How to read",
   "nav.ownership": "A room of your own",

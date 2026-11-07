@@ -74,6 +74,7 @@ import {createBillingRoutes} from './billing-routes.mjs';
 import {createCreditGate} from './credit-gate.mjs';
 import {withProviderMeter} from './provider-metering.mjs';
 import {commercePage} from '../app/commerce-pages.mjs';
+import {betaPage} from '../app/beta-page.mjs';
 
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 // Only checked-in public artwork can become a static cover route. Never turn
@@ -165,6 +166,8 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
     const entryPath=canonicalUiEntryPath(url.pathname),internalEntry=entryPath!==null&&entryPath!==url.pathname,p=entryPath||url.pathname,documentUrl=new URL(url);if(entryPath)documentUrl.pathname=entryPath;if(internalEntry)res.setHeader('X-Robots-Tag','noindex, nofollow, noarchive');
     if((p==='/library.html'||p==='/read.html')&&['GET','HEAD'].includes(req.method)){res.statusCode=308;res.setHeader('Location',p.slice(0,-5)+url.search);res.end();return true;}
     if(p==='/api/webhooks/creem')return billingRoutes.webhook({req,send});
+    const beta=p.match(/^\/(?:(en|zh-hans|zh-hant|ja)\/)?beta$/);
+    if(beta){if(!['GET','HEAD'].includes(req.method))throw fail('不支持这个请求',405);send(200,betaPage({locale:({'zh-hans':'zh-Hans','zh-hant':'zh-Hant'})[beta[1]]||beta[1]||'en'}),'text/html');return true;}
     const commerce=p.match(/^\/(?:(en|zh-hans|zh-hant|ja)\/)?(pricing|terms|refunds)$/);
     if(commerce){if(!['GET','HEAD'].includes(req.method))throw fail('不支持这个请求',405);send(200,commercePage({kind:commerce[2],locale:({'zh-hans':'zh-Hans','zh-hant':'zh-Hant'})[commerce[1]]||commerce[1]||'en',billingEnabled:billing.enabled}),'text/html');return true;}
     if(p==='/api/internal/ingestion/wake'){if(req.method!=='POST'||!ingestionRunner.authorized(req.headers.authorization))throw fail('找不到这个操作',404);ingestionRunner.tick();send(202,{accepted:true});return true;}
@@ -200,6 +203,7 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
     // GET-188 authored-home mobile navigation: exactly one module and one
     // stylesheet, mounted by portal.js on the authored home routes only.
     for(const file of ['home-navigation.css','home-navigation.mjs'])files['/'+file]=file;
+    for(const file of ['beta.css','beta-channel.mjs'])files['/'+file]=file;
     for(const file of ['pricing-checkout.mjs','pricing-checkout-flow.mjs','pricing-checkout-markup.mjs','checkout-embed.mjs','pricing-checkout.css'])files['/'+file]=file;
     for(const file of ['library-craft.css','book-binding.mjs','book-cover-ui.mjs','book-cover-labels.mjs','book-cover-artwork.mjs','book-binding.css','brand-assets/sage-paper.webp'])files['/'+file]=file;
     for(const url of publicCoverPaths)files[url]=url.slice(1);

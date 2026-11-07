@@ -229,10 +229,10 @@ export const experienceStrings=[
     "iOS ベータ版について"
   ],
   [
-    "iOS 安装与功能说明见开源项目。",
-    "See the open-source project for iOS setup and features.",
-    "iOS 安裝與功能說明見開源專案。",
-    "iOS の導入方法と機能は公開プロジェクトをご覧ください。"
+    "iOS 安装与功能说明见内测页面。",
+    "See the beta page for iOS installation and features.",
+    "iOS 安裝與功能說明見內測頁面。",
+    "iOSのインストール方法と機能はベータ版のページで確認できます。"
   ],
   [
     "暂停视觉动效",
