@@ -1262,7 +1262,7 @@
       },
       {
         "file": "server/credit-gate.mjs",
-        "sha256": "b5aab1686216476f1424eac94b55ef2dfcb657f0eaa59cca3e32e30f8d61c602"
+        "sha256": "bbb362b8e32cf0dcb95903e5f0a6a8b8614d86a30cf70b743e3f8f8262687465"
       },
       {
         "file": "server/creem.mjs",
@@ -1609,7 +1609,7 @@
         "sha256": "510f62256d1cf78f3efad2f5bf4f225ea6fce14bb48557ede314aaf43cd0afe2"
       }
     ],
-    "inputDigest": "65b4b3a216abf6edea27f2ec8c52592b097295746c505bb6aaf5060c4dad5887"
+    "inputDigest": "552a2802ae528cf250b0759aa4988b68411cb7a4f1aa835c09806da99f1c9e6e"
   },
   "locales": [
     "en",
@@ -270996,9 +270996,29 @@
       }
     },
     {
-      "id": "candidate:server/credit-gate.mjs:99:45",
+      "id": "candidate:server/credit-gate.mjs:96:47",
       "file": "server/credit-gate.mjs",
-      "line": 99,
+      "line": 96,
+      "column": 47,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "请先进入自己的书房",
+      "sha256": "044fb479598233ce1c472b6de2d186a3c69b4e191fead797bb75191386d8f159",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/credit-gate.mjs:100:45",
+      "file": "server/credit-gate.mjs",
+      "line": 100,
       "column": 45,
       "kind": "js-cjk-literal",
       "property": null,
@@ -271016,9 +271036,9 @@
       }
     },
     {
-      "id": "candidate:server/credit-gate.mjs:106:78",
+      "id": "candidate:server/credit-gate.mjs:107:78",
       "file": "server/credit-gate.mjs",
-      "line": 106,
+      "line": 107,
       "column": 78,
       "kind": "js-cjk-literal",
       "property": null,
@@ -271036,9 +271056,9 @@
       }
     },
     {
-      "id": "candidate:server/credit-gate.mjs:107:659",
+      "id": "candidate:server/credit-gate.mjs:108:659",
       "file": "server/credit-gate.mjs",
-      "line": 107,
+      "line": 108,
       "column": 659,
       "kind": "js-cjk-literal",
       "property": null,
@@ -271056,9 +271076,9 @@
       }
     },
     {
-      "id": "candidate:server/credit-gate.mjs:110:53",
+      "id": "candidate:server/credit-gate.mjs:111:53",
       "file": "server/credit-gate.mjs",
-      "line": 110,
+      "line": 111,
       "column": 53,
       "kind": "js-cjk-literal",
       "property": null,
@@ -271076,9 +271096,9 @@
       }
     },
     {
-      "id": "candidate:server/credit-gate.mjs:120:164",
+      "id": "candidate:server/credit-gate.mjs:121:164",
       "file": "server/credit-gate.mjs",
-      "line": 120,
+      "line": 121,
       "column": 164,
       "kind": "js-cjk-literal",
       "property": null,
@@ -271096,9 +271116,9 @@
       }
     },
     {
-      "id": "candidate:server/credit-gate.mjs:136:22",
+      "id": "candidate:server/credit-gate.mjs:137:22",
       "file": "server/credit-gate.mjs",
-      "line": 136,
+      "line": 137,
       "column": 22,
       "kind": "js-cjk-literal",
       "property": null,
@@ -271116,9 +271136,9 @@
       }
     },
     {
-      "id": "candidate:server/credit-gate.mjs:152:22",
+      "id": "candidate:server/credit-gate.mjs:153:22",
       "file": "server/credit-gate.mjs",
-      "line": 152,
+      "line": 153,
       "column": 22,
       "kind": "js-cjk-literal",
       "property": null,
@@ -334108,8 +334128,8 @@
     "duplicateKeys": 0,
     "reviewedItems": 8,
     "unreviewedItems": 2508,
-    "candidates": 7121,
-    "candidatesUnreviewed": 7120,
+    "candidates": 7122,
+    "candidatesUnreviewed": 7121,
     "candidatesProtected": 147,
     "itemsProtected": 9,
     "dynamicConsumers": 4310,
