@@ -11,7 +11,7 @@
     {
       "file": "after-503-1440.png",
       "sha256": "6bd60e98d264862c5f0b7ef615608b5972125252fd8f92eb59acb480472240ec",
-      "sourceCommit": "28e678ea53bf9059f4d080ad40357aa49dc7fba6",
+      "sourceCommit": "5243d27dc9716175ac573e778370e420f286c010",
       "browser": "Installed Google Chrome 156.0.8078.80 headless",
       "data": "Synthetic fixture only",
       "path": "Tab to font; ArrowRight; immediately Tab; wait alert; no extra scroll"
@@ -26,8 +26,8 @@
     },
     {
       "file": "after-503-390.png",
-      "sha256": "c1b5f8da230d126a843d63ede9e44aa034b97e7e206f8a4852186b2e620b93cd",
-      "sourceCommit": "28e678ea53bf9059f4d080ad40357aa49dc7fba6",
+      "sha256": "ccb88a258640af6ab0b85c2436639a3e8acd4942f04a8b566da09136dee86720",
+      "sourceCommit": "5243d27dc9716175ac573e778370e420f286c010",
       "browser": "Installed Google Chrome 156.0.8078.80 headless",
       "data": "Synthetic fixture only",
       "path": "Tab to font; ArrowRight; immediately Tab; wait alert; no extra scroll"

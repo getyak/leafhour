@@ -36,7 +36,7 @@
 
 ## 公开的合成前后对照
 
-两宽均为真实Tab路径、相同503状态、无额外滚动；before为PR335源码0a7，after为文案修复后本批28e678e，具体来源与原图SHA见[provenance](assets/get-201-feedback/provenance.json)。所有内容是隔离fixture的合成样本，不是真实账号数据。
+两宽均为真实Tab路径、相同503状态、无额外滚动；before为PR335源码0a7，after为边界修复后本批5243d27，具体来源与原图SHA见[provenance](assets/get-201-feedback/provenance.json)。所有内容是隔离fixture的合成样本，不是真实账号数据。
 
 | 宽度 | 修前：错误在屏外 | 修后：错误和恢复在视口 |
 | --- | --- | --- |
@@ -68,3 +68,11 @@ PR337的328f653 / CI42315496442在真实copy-lint失败：新提示中简/繁体
 3cc6f82 / CI42316398325：真实copy lint及反例检查通过，4855项完整测试为4843通过、12失败、0跳过。12项均为同一原因：新反馈helper直接导入ui-locale，不在现有明确审查过的owner图中。原生host/unsigned build通过，Web/gate失败；构建后续不能算通过。保留整份日志，本机同一真实source graph检查复现RED。
 
 修复让原有reading-preferences owner注入createUiMessage工厂；反馈helper不再直接接触mutable locale runtime，原owner白名单、源图审计、预算与失败门禁不变。不是增加新owner或关闭图检查。宿主/graph检查先轻量核对；新head的必要冻结Chrome与构建须等共享机Primary窗口归还后再执行，未重跑旧失败提交。
+
+## 工厂注入后的冻结复验
+
+源码 `5243d27dc9716175ac573e778370e420f286c010` 新冻结组件197输入/162输出逐SHA核对，一次单页Chrome合并原全部14场景：14通过、0失败，31张截图；四语言真实消息、自然立即Tab、400ms原防抖、1500+160ms成功淡出、持续错误/旧timer/owner、idle和淡出后真实display:none/零rect/零高度及完整焦点环均保留。当前source graph检查1/1、消息helper5/5、正常reading及相关106/106、copy22/22、first-paint与allowlist检查通过。
+
+执行前事实核对原生会话锁不存在、无agent-pause、可用12.725GiB；不是按约定分钟数猜测占用结束。仅冻结本组件与一个隔离headless Chrome，每case10.5GiB守卫，未启动Simulator/native/全量本机构建。零页面/站外/HTTP/下载异常，Chrome/profile/HTTP已正常清理。公开after两图及provenance更新为5243，before仍是0a7原件。
+
+此结果不把之前两轮CI失败改写成通过。最终文档/合成图提交与5243产品输入/测试/锁需要等价读回；最新当前head的完整CI仍是合并门禁，父GET-201不关闭。
