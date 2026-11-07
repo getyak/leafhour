@@ -1,0 +1,54 @@
+{
+  "schema_version": 1,
+  "scope": "GET-328-hosted-original-seven",
+  "status": "pending",
+  "consumed": false,
+  "repository": "getyak/leafhour",
+  "controller_sha": "PENDING_COLD_INVENTORY_CANDIDATE_SHA",
+  "source_sha": "3869043f6a5cb492ee1a777d9a247d1df7d71041",
+  "source_tree": "396d83fe5a8231cc14b0a76ff4348ceb2aeb71a9",
+  "actor": {
+    "login": "kubbot",
+    "id": 124379614
+  },
+  "nonce": null,
+  "ref": null,
+  "runtime": {
+    "runner_label": "macos-26-intel",
+    "arch": "x86_64",
+    "xcode_version": "26.6",
+    "xcode_build": "17F113",
+    "sdk": "26.5",
+    "runtime": "26.5"
+  },
+  "limits": {
+    "job_seconds": 4200,
+    "bootstrap_seconds": 600,
+    "build_seconds": 1200,
+    "seven_seconds": 1800,
+    "cleanup_seconds": 120,
+    "package_seconds": 60,
+    "upload_seconds": 180,
+    "final_reserve_seconds": 360,
+    "upload_max_bytes": 268435456,
+    "start_free_bytes": 8589934592,
+    "stop_free_bytes": 3221225472,
+    "scratch_max_bytes": 4294967296
+  },
+  "cases": [
+    "normal-38",
+    "normal-41",
+    "normal-54",
+    "ax5-38",
+    "ax5-41",
+    "ax5-54",
+    "pdf73"
+  ],
+  "consumed_at": null,
+  "expires_at": null,
+  "grant_comment_id": 6702707803,
+  "grant_issuer_id": 124379614,
+  "grant_comment_url": "https://github.com/getyak/leafhour/pull/340#issuecomment-6702707803",
+  "reviewed_controller_candidate": "0b3421ce9d1d98b655a2f39d51026753cc3c694d",
+  "previous_consumed_attempt": 42341326070
+}

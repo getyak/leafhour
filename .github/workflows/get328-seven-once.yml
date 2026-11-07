@@ -1,0 +1,173 @@
+name: GET-328 original seven once
+
+on:
+  push:
+    branches: ['codex/get-328-seven-once/**']
+
+permissions:
+  contents: read
+
+concurrency:
+  group: get328-hosted-original-seven-once
+  cancel-in-progress: false
+
+jobs:
+  seven:
+    # Prepared only for one exact dedicated push; normal PR/main cannot enter.
+    # The newly pinned comment is pending/consumed=false for this candidate.
+    # The old 6702281018 grant/ref remains consumed and must never be reused.
+    # Coordinator must approve the final SHA before external consumption/push.
+    if: >-
+      github.repository == 'getyak/leafhour' &&
+      github.event_name == 'push' &&
+      github.event.created == true &&
+      github.event.deleted == false &&
+      github.event.forced == false &&
+      github.actor == 'kubbot' &&
+      github.actor_id == '124379614' &&
+      github.triggering_actor == github.actor &&
+      github.run_attempt == '1'
+    runs-on: macos-26-intel
+    timeout-minutes: 70
+    defaults:
+      run:
+        shell: bash
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_26.6.app/Contents/Developer
+      GET328_GRANT_COMMENT_ID: '6702707803'
+      GET328_GRANT_ISSUER_ID: '124379614'
+    steps:
+      - name: Establish exclusive root and shared deadline before checkout
+        id: stamp
+        timeout-minutes: 1
+        run: |
+          python3 - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+          import re
+          import shutil
+          import time
+
+          began = time.monotonic()
+          epoch = time.time()
+          def require(value, message):
+              if not value:
+                  raise ValueError(message)
+          event = json.loads(Path(os.environ['GITHUB_EVENT_PATH']).read_bytes())
+          repo = event.get('repository', {})
+          require(os.environ.get('GITHUB_EVENT_NAME') == 'push'
+                  and os.environ.get('GITHUB_REPOSITORY') == 'getyak/leafhour'
+                  and os.environ.get('GITHUB_REPOSITORY_ID') == '1415706040'
+                  and repo.get('full_name') == 'getyak/leafhour'
+                  and repo.get('private') is False
+                  and type(repo.get('id')) is int and repo['id'] == 1415706040,
+                  'Only the exact public source push is admitted')
+          require(event.get('created') is True and event.get('deleted') is False
+                  and event.get('forced') is False and os.environ.get('GITHUB_RUN_ATTEMPT') == '1',
+                  'No update, forced push, deletion, or re-run is permitted')
+          ref = os.environ.get('GITHUB_REF', '')
+          match = re.fullmatch(r'refs/heads/codex/get-328-seven-once/([0-9a-f]{40})/([0-9a-f]{32})', ref)
+          require(match is not None and event.get('ref') == ref, 'Invalid one-use ref')
+          controller = match.group(1)
+          require(event.get('after') == controller == os.environ.get('GITHUB_SHA')
+                  == os.environ.get('GITHUB_WORKFLOW_SHA'), 'Controller/workflow SHA differs')
+          require(os.environ.get('GITHUB_WORKFLOW_REF') ==
+                  'getyak/leafhour/.github/workflows/get328-seven-once.yml@' + ref,
+                  'Workflow ref differs')
+          require(os.environ.get('GITHUB_ACTOR') == os.environ.get('GITHUB_TRIGGERING_ACTOR'),
+                  'Triggering actor differs')
+          require(os.environ.get('RUNNER_ENVIRONMENT') == 'github-hosted'
+                  and os.environ.get('RUNNER_OS') == 'macOS' and os.environ.get('RUNNER_ARCH') == 'X64',
+                  'Only the standard hosted Intel environment is permitted')
+          run_id = os.environ.get('GITHUB_RUN_ID', '')
+          require(re.fullmatch(r'[1-9][0-9]{0,19}', run_id), 'Unknown run identity')
+          parent = Path(os.environ['RUNNER_TEMP'])
+          require(parent.is_absolute() and parent.is_dir(), 'Unknown runner temporary root')
+          root = parent / 'get328-hosted'
+          root.mkdir(mode=0o700)  # Exclusive; never clean/reuse a previous attempt.
+          start = dict(schema_version=1, repository='getyak/leafhour', run_id=int(run_id),
+                       run_attempt=1, controller_sha=controller, ref=ref,
+                       started_at_epoch=epoch, started_monotonic=began,
+                       deadline_monotonic=began + 4200,
+                       bootstrap_deadline_monotonic=began + 600,
+                       stop_new_work_monotonic=began + 3840,
+                       initial_free_bytes=shutil.disk_usage(root).free)
+          descriptor = os.open(root / 'start.json', os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW, 0o600)
+          with os.fdopen(descriptor, 'w', encoding='utf-8') as output:
+              json.dump(start, output, sort_keys=True)
+              output.write('\n')
+              output.flush()
+              os.fsync(output.fileno())
+          with Path(os.environ['GITHUB_OUTPUT']).open('a', encoding='utf-8') as output:
+              output.write('owned=true\n')
+          print(json.dumps(dict(root=str(root), run_id=int(run_id), native_started=False)))
+          PY
+
+      - name: Checkout reviewed controller head
+        id: controller
+        timeout-minutes: 1
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.sha }}
+          path: controller
+          fetch-depth: 1
+          persist-credentials: false
+
+      - name: Checkout immutable QA App and tests
+        timeout-minutes: 1
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: '3869043f6a5cb492ee1a777d9a247d1df7d71041'
+          path: source386
+          fetch-depth: 1
+          persist-credentials: false
+
+      - name: Verify externally consumed public grant and exact run history
+        id: admit
+        timeout-minutes: 1
+        working-directory: controller
+        run: python3 scripts/ios/hosted_get328_admission.py --root "$RUNNER_TEMP/get328-hosted"
+
+      - name: Prepare fixed fixture, inventory and one owned CI device
+        if: success() && steps.admit.outputs.allowed == 'true'
+        timeout-minutes: 6
+        working-directory: controller
+        run: python3 scripts/ios/hosted_get328.py prepare --source "$GITHUB_WORKSPACE/source386" --root "$RUNNER_TEMP/get328-hosted"
+
+      - name: Build immutable x86_64 unsigned QA products once
+        if: success() && steps.admit.outputs.allowed == 'true'
+        timeout-minutes: 21
+        working-directory: controller
+        run: python3 scripts/ios/hosted_get328.py build --source "$GITHUB_WORKSPACE/source386" --root "$RUNNER_TEMP/get328-hosted"
+
+      - name: Run exactly the original seven serial cases once
+        if: success() && steps.admit.outputs.allowed == 'true'
+        timeout-minutes: 32
+        working-directory: controller
+        run: python3 scripts/ios/hosted_get328.py seven --source "$GITHUB_WORKSPACE/source386" --root "$RUNNER_TEMP/get328-hosted"
+
+      - name: Read back and remove only admitted owned CI resources
+        if: always() && steps.stamp.outputs.owned == 'true' && steps.admit.outputs.allowed == 'true'
+        timeout-minutes: 2
+        working-directory: controller
+        run: python3 scripts/ios/hosted_get328.py cleanup --source "$GITHUB_WORKSPACE/source386" --root "$RUNNER_TEMP/get328-hosted"
+
+      - name: Package immutable partial evidence and actual new Products
+        id: package
+        if: always() && steps.stamp.outputs.owned == 'true' && steps.controller.outcome == 'success'
+        timeout-minutes: 1
+        working-directory: controller
+        run: python3 scripts/ios/hosted_get328.py package --source "$GITHUB_WORKSPACE/source386" --root "$RUNNER_TEMP/get328-hosted"
+
+      - name: Upload bounded evidence within existing storage allowance
+        if: always() && steps.package.outputs.bounded == 'true'
+        timeout-minutes: 3
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: get328-seven-${{ github.run_id }}-attempt-${{ github.run_attempt }}
+          path: ${{ steps.package.outputs.dir }}
+          if-no-files-found: error
+          retention-days: 3
+          compression-level: 6
+          include-hidden-files: false
