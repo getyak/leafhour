@@ -1,3 +1,4 @@
+import {createBetaUsageStore,mergeProviderUsage} from './beta-usage-store.mjs';
 import {createBillingService,CREDIT_UNITS} from './billing-service.mjs';
 import {createBillingMemoryStore} from './billing-memory-store.mjs';
 import {createBillingPostgresStore} from '../deploy/billing-store.mjs';
@@ -27,14 +28,18 @@ export async function createBillingRuntime(options={}){
  const env=options.env||process.env,service=await createFinancialRuntime(options);
  if(env.READER_USAGE_POLICY==='metered')return {...service,usagePolicy:'metered'};
  const mode=service.mode||(['test','live'].includes(env.CREEM_MODE)?env.CREEM_MODE:'test');
- const usageStore=options.store||(env.SUPABASE_URL&&env.SUPABASE_SECRET_KEY?createBillingPostgresStore({env}):await createBillingMemoryStore({dataDir:options.dataDir}));
+ const usageStore=options.store||createBetaUsageStore({dataDir:options.dataDir,dataStore:options.dataStore});
  const catalog=service.catalog.bind(service);
  return {...service,usagePolicy:'beta',
   catalog:async()=>({...await catalog(),enabled:false,available:false,usagePolicy:'beta',statisticsOnly:true}),
   recordProviderCall:facts=>usageStore.command('providerCall',{...facts,mode}),
   async summary(input){
    if(!(env.READER_BILLING_ADMIN_USER_IDS||'').split(',').map(v=>v.trim()).includes(input.ownerId))throw Object.assign(Error('admin_required'),{status:403});
-   return usageStore.command('summary',{...input,mode});
+   const current=await usageStore.command('summary',{...input,mode});
+   if(options.store)return current;
+   let financial={financialAvailable:false};
+   if(service.enabled){try{financial={...await service.summary(input),financialAvailable:true};}catch{/* Usage remains available independently of historical finance readiness. */}}
+   return mergeProviderUsage(financial,current);
   },
  };
 }

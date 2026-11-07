@@ -90,7 +90,7 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
     if(url.protocol!=='https:'||url.origin!==value||url.username||url.password)throw fail('额外网页来源配置无效',503);
     webOrigins.add(value);
   }
-  const billing=billingService||await createBillingRuntime({env,dataDir:path.join(dataDir,'billing'),publicOrigin:publicOrigin||'http://localhost:3000'});
+  const billing=billingService||await createBillingRuntime({env,dataStore,dataDir:path.join(dataDir,'billing'),publicOrigin:publicOrigin||'http://localhost:3000'});
   const statisticsOnly=billing.usagePolicy==='beta';
   const sponsored=(user,feature,execute,maxCostUsd=.015)=>(user?.id&&(billing.enabled||statisticsOnly))?withProviderMeter({ownerId:user?.id,feature,funding:statisticsOnly?'beta':'sponsored',...(!statisticsOnly?{maxCostUsd}:{}),record:facts=>billing.recordProviderCall(facts)},execute):execute();
   const auth=authService||await createEmailAuth({dataDir:path.join(dataDir,'auth'),sendCode:sendCode===undefined?await smtpSender():sendCode});

@@ -2,7 +2,7 @@
 
 ## Current public beta
 
-`READER_USAGE_POLICY=beta` is the default. Reading and user-triggered AI have no reading-point debit, owner/day allocation or model-cost admission cap. Provider call counts, actual reported tokens, rated costs and unknown outcomes remain statistics; beta usage never creates a financial operation and cannot be backcharged. Authentication, source permissions, selected context, cancellation, idempotency, actual context/output capacity and in-flight capacity still apply.
+`READER_USAGE_POLICY=beta` is the default. Reading and user-triggered AI have no reading-point debit, owner/day allocation or model-cost admission cap. Provider call counts, actual reported tokens, rated costs and unknown outcomes use the existing reader-document CAS store, independently of commercial-schema activation; beta usage never creates a financial operation and cannot be backcharged. Authentication, source permissions, selected context, cancellation, idempotency, actual context/output capacity and in-flight capacity still apply.
 
 New point checkout is unavailable during beta. Existing balances, payment records, subscriptions, webhook processing and billing-management access remain intact. Existing renewal schedules are not automatically cancelled; an owner can manage those through the existing billing portal. The paid rules below describe the retained metered mode and historical records, not beta usage.
 

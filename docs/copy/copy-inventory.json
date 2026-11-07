@@ -1173,6 +1173,10 @@
         "sha256": "b280e87e1de3a5db5d1327ef5466c33b5298ec4a641f2e3a2fc7fb9a415524b2"
       },
       {
+        "file": "server/beta-usage-store.mjs",
+        "sha256": "363f6a48753cbc01cdb2ebe7fb975272a24f3f95d70594247ad4ba4e3b5dc738"
+      },
+      {
         "file": "server/billing-memory-store.mjs",
         "sha256": "4ae453f174be42c7008d438657c699aee951a48f94002390aa226ad86eaeab3d"
       },
@@ -1190,7 +1194,7 @@
       },
       {
         "file": "server/billing-runtime.mjs",
-        "sha256": "b35bbfb5f01c918229f93d52c39064e71fb92a9f720a1c9f9c72e62625ad4ff8"
+        "sha256": "264b0bbca8a0df7b96eed137878d6f4dae81d1f32d8f023471e2d06609ce911d"
       },
       {
         "file": "server/billing-service.mjs",
@@ -1486,7 +1490,7 @@
       },
       {
         "file": "server/portal.mjs",
-        "sha256": "039d25309c32c354528025e01a65b147e2c2d5179e5b9056facb7ff5b234ca9a"
+        "sha256": "767cc3479050042c95babf58607dc05a77fa1a6c3a32c7a554883faad4d0db94"
       },
       {
         "file": "server/preference-memory.mjs",
@@ -1609,7 +1613,7 @@
         "sha256": "510f62256d1cf78f3efad2f5bf4f225ea6fce14bb48557ede314aaf43cd0afe2"
       }
     ],
-    "inputDigest": "552a2802ae528cf250b0759aa4988b68411cb7a4f1aa835c09806da99f1c9e6e"
+    "inputDigest": "0b74f6d4b31d6abaf561bd1a490e71b1682ef7f30f1d346df1b038ca6122156a"
   },
   "locales": [
     "en",
@@ -321008,6 +321012,268 @@
     },
     {
       "kind": "computed-member",
+      "file": "server/beta-usage-store.mjs",
+      "line": 12,
+      "expression": "k",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/beta-usage-store.mjs",
+      "line": 12,
+      "expression": "k",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/beta-usage-store.mjs",
+      "line": 13,
+      "expression": "k",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/beta-usage-store.mjs",
+      "line": 15,
+      "expression": "key",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/beta-usage-store.mjs",
+      "line": 15,
+      "expression": "key",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/beta-usage-store.mjs",
+      "line": 15,
+      "expression": "key",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/beta-usage-store.mjs",
+      "line": 17,
+      "expression": "k",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/beta-usage-store.mjs",
+      "line": 23,
+      "expression": "row[key]",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/beta-usage-store.mjs",
+      "line": 23,
+      "expression": "key",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/beta-usage-store.mjs",
+      "line": 28,
+      "expression": "key",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/beta-usage-store.mjs",
+      "line": 28,
+      "expression": "key",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/beta-usage-store.mjs",
+      "line": 28,
+      "expression": "key",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/beta-usage-store.mjs",
+      "line": 29,
+      "expression": "key",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/beta-usage-store.mjs",
+      "line": 29,
+      "expression": "key",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/beta-usage-store.mjs",
+      "line": 29,
+      "expression": "key",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/beta-usage-store.mjs",
+      "line": 29,
+      "expression": "name",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/beta-usage-store.mjs",
+      "line": 29,
+      "expression": "key",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/beta-usage-store.mjs",
+      "line": 29,
+      "expression": "metric",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/beta-usage-store.mjs",
+      "line": 29,
+      "expression": "metric",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "server/beta-usage-store.mjs",
+      "line": 39,
+      "expression": "'usage/beta/v1/'+mode",
+      "fragments": [
+        "usage/beta/v1/"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "server/beta-usage-store.mjs",
+      "line": 43,
+      "expression": "base+'/index'",
+      "fragments": [
+        "/index"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "server/beta-usage-store.mjs",
+      "line": 44,
+      "expression": "base+'/'",
+      "fragments": [
+        "/"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/beta-usage-store.mjs",
+      "line": 44,
+      "expression": "shard",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "server/beta-usage-store.mjs",
+      "line": 44,
+      "expression": "base+'/'",
+      "fragments": [
+        "/"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "server/beta-usage-store.mjs",
+      "line": 45,
+      "expression": "base+'/'",
+      "fragments": [
+        "/"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/beta-usage-store.mjs",
+      "line": 46,
+      "expression": "key",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/beta-usage-store.mjs",
+      "line": 49,
+      "expression": "k",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/beta-usage-store.mjs",
+      "line": 49,
+      "expression": "k",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/beta-usage-store.mjs",
+      "line": 51,
+      "expression": "key",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "server/beta-usage-store.mjs",
+      "line": 57,
+      "expression": "base+'/index'",
+      "fragments": [
+        "/index"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "server/beta-usage-store.mjs",
+      "line": 59,
+      "expression": "base+'/'",
+      "fragments": [
+        "/"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
       "file": "server/billing-memory-store.mjs",
       "line": 12,
       "expression": "key",
@@ -334132,7 +334398,7 @@
     "candidatesUnreviewed": 7121,
     "candidatesProtected": 147,
     "itemsProtected": 9,
-    "dynamicConsumers": 4310,
+    "dynamicConsumers": 4341,
     "consumerReferences": 2173,
     "keysWithoutStaticConsumers": 1356,
     "reviewedLocaleValues": 32,
