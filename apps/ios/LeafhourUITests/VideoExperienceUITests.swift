@@ -4,7 +4,7 @@ import UIKit
 /// GET-317 synthetic native acceptance. These tests do not establish real-cloud,
 /// paid-model, physical-device, TestFlight, or production acceptance.
 final class VideoExperienceUITests: XCTestCase {
-    private let app = XCUIApplication()
+    private let app = GET328CurrentAcceptance.application()
     private let textTitle = "GET317 合成验收 · 本机文本"
     private let markdownTitle = "GET317 合成验收 · Markdown"
     private let translatedTitle = "GET317 合成验收 · 双译"
@@ -22,6 +22,7 @@ final class VideoExperienceUITests: XCTestCase {
     override func setUpWithError() throws {
         continueAfterFailure = false
         print("GET317 native runner input: \(#filePath) | \(Bundle(for: Self.self).bundlePath)")
+        GET328CurrentAcceptance.attachRunnerTypeProfile(to: self)
     }
     override func tearDownWithError() throws {
         capture(name)
@@ -58,7 +59,7 @@ final class VideoExperienceUITests: XCTestCase {
         app.staticTexts.matching(NSPredicate(format: "label CONTAINS %@", text)).firstMatch
     }
     private func launch(_ flags: [String] = []) {
-        app.launchArguments = ["--get317-acceptance", "--get317-reset", "-AppleLanguages", "(zh-Hans)", "-AppleLocale", "zh_CN"] + flags
+        app.launchArguments = ["--get317-acceptance", "--get317-reset", "-AppleLanguages", "(zh-Hans)", "-AppleLocale", "zh_CN"] + GET328CurrentAcceptance.launchArguments + flags
         app.launch()
         let arrival = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in
             self.reader.exists || self.app.otherElements["leafhour-pdf-reader"].exists || self.app.buttons["书房显示与排序"].isHittable
@@ -1191,17 +1192,44 @@ final class VideoExperienceUITests: XCTestCase {
         try auditVisibleInterface()
 
         closePanel(); wakeTop(); app.buttons["阅读设置"].tap(); expandPanel()
-        let settings = foregroundForm()
+        let settings = app.collectionViews["reader-preferences-form"]
+        require(settings)
+        let categories = app.segmentedControls["reading-style-categories"]
+        func selectCategory(_ title: String) {
+            scrollTo(categories, in: settings, direction: .down)
+            let choice = categories.buttons[title]
+            require(choice); XCTAssertTrue(choice.isEnabled && choice.isHittable)
+            choice.tap(); XCTAssertTrue(choice.isSelected)
+        }
+        selectCategory("文字")
         scrollTo(app.sliders["正文字号"], in: settings, direction: .down)
         require(app.navigationBars["阅读风格"])
         capture("GET317-a11y-settings-foreground-top")
         try auditVisibleInterface()
 
+        // Paper choices are a separate category, not rows below text settings.
+        // Keep each raw .all audit and expose both the real text controls and
+        // preview instead of scrolling inside a category that cannot own them.
+        let preview = app.staticTexts["reading-type-preview"]
+        scrollTo(preview, in: settings)
+        capture("GET317-a11y-settings-text-preview")
+        try auditVisibleInterface()
+        selectCategory("纸面")
+        let firstPaper = app.buttons["reader-theme-paper"]
+        scrollTo(firstPaper, in: settings)
+        XCTAssertTrue(firstPaper.exists && firstPaper.isHittable)
+        capture("GET317-a11y-settings-paper-first-row")
+        try auditVisibleInterface()
         let systemTheme = app.buttons["跟随系统"]
         scrollTo(systemTheme, in: settings)
-        settings.swipeUp()
         XCTAssertTrue(systemTheme.exists && systemTheme.isHittable, "Audit the exposed theme controls in the actual foreground Form")
         capture("GET317-a11y-settings-foreground-bottom")
+        try auditVisibleInterface()
+        selectCategory("阅读")
+        let navigation = app.segmentedControls["reader-navigation-mode"]
+        scrollTo(navigation, in: settings)
+        XCTAssertTrue(navigation.exists && navigation.isHittable)
+        capture("GET317-a11y-settings-reading-controls")
         try auditVisibleInterface()
     }
 
@@ -1501,24 +1529,55 @@ final class VideoExperienceUITests: XCTestCase {
             evidence.append(["key": key, "x": Double(frame.minX), "y": Double(frame.minY), "width": Double(frame.width), "height": Double(frame.height)])
         }
         launch(); openBook(textTitle)
-        wakeTop(); app.buttons["阅读设置"].tap(); expandPanel()
+        openTool("阅读设置"); expandPanel()
         let settings = app.collectionViews["reader-preferences-form"], preview = app.staticTexts["reading-type-preview"]
-        require(settings)
+        let font = settings.sliders["正文字号"], spacing = settings.sliders["正文行间距"]
+        let reset = settings.buttons["恢复默认排版"]
+        require(settings); require(app.navigationBars["阅读风格"])
+        let categories = settings.segmentedControls["reading-style-categories"]
+        require(categories)
+        for title in ["文字", "纸面", "阅读"] { require(categories.buttons[title]) }
+        XCTAssertTrue(categories.buttons["文字"].isSelected)
         func settingsViewport() -> CGRect {
-            recordProfileContentViewport(settings, navigationTitle: "阅读设置")
+            recordProfileContentViewport(settings, navigationTitle: "阅读风格")
         }
-        func showFullText(_ element: XCUIElement) {
-            for _ in 0..<12 {
-                let viewport = settingsViewport()
-                if element.exists {
-                    let frame = element.frame
-                    if !frame.isEmpty && viewport.insetBy(dx: -1, dy: -1).contains(frame) { return }
-                    if frame.isEmpty { settings.swipeUp(); continue }
-                    let delta = frame.minY < viewport.minY ? viewport.minY - frame.minY + 6 : viewport.maxY - frame.maxY - 6
+        func positionSettingsElement(_ element: XCUIElement, previewBeginning: Bool = false, towardEndFirst: Bool = false) {
+            // A lazy Form can remove rows on either side of the viewport.
+            // Sweep in both directions when the target has no usable frame;
+            // once it exists, use its actual geometry instead of its row order.
+            for towardEnd in [towardEndFirst, !towardEndFirst] {
+                for attempt in 0...12 {
+                    let viewport = settingsViewport()
+                    var delta = viewport.height * (towardEnd ? -0.5 : 0.5)
+                    if element.exists {
+                        let frame = element.frame
+                        if !frame.isEmpty {
+                            if previewBeginning {
+                                let visible = frame.intersection(viewport)
+                                if frame.minX >= viewport.minX - 1 && frame.maxX <= viewport.maxX + 1,
+                                   frame.minY >= viewport.minY - 1 && visible.height >= min(120, frame.height) { return }
+                                delta = viewport.minY + 6 - frame.minY
+                            } else {
+                                if viewport.insetBy(dx: -1, dy: -1).contains(frame) { return }
+                                delta = frame.minY < viewport.minY ? viewport.minY - frame.minY + 6 : viewport.maxY - frame.maxY - 6
+                            }
+                        }
+                    }
+                    guard attempt < 12 else { break }
                     nudgeRecordProfileContent(settings, by: delta, inside: viewport)
-                } else { settings.swipeUp() }
+                }
             }
-            XCTFail("The complete settings text must fit in the real foreground viewport: \(element). \(app.debugDescription)")
+            if previewBeginning {
+                XCTFail("The full-size original preview must expose its beginning in the actual foreground settings viewport")
+            } else {
+                XCTFail("The complete settings text must fit in the real foreground viewport: \(element). \(app.debugDescription)")
+            }
+        }
+        func showFullText(_ element: XCUIElement, towardEndFirst: Bool = false) {
+            positionSettingsElement(element, towardEndFirst: towardEndFirst)
+        }
+        func showPreviewStart() {
+            positionSettingsElement(preview, previewBeginning: true, towardEndFirst: true)
         }
         func recordText(_ key: String, _ element: XCUIElement, style: UIFont.TextStyle, monospaced: Bool = false) {
             showFullText(element); require(element)
@@ -1550,40 +1609,69 @@ final class VideoExperienceUITests: XCTestCase {
             }
             capture("GET317-UI41-fully-visible-" + key)
         }
-        func showPreviewStart() {
-            for _ in 0..<10 {
-                if preview.exists {
-                    let frame = preview.frame
-                    let viewport = settingsViewport()
-                    if frame.minY >= viewport.minY - 1 && frame.intersection(viewport).height >= min(120, frame.height) { return }
-                }
-                settings.swipeDown()
-            }
-            XCTFail("The full-size original preview must expose its beginning in the actual foreground settings viewport")
+        func recordSlider(_ key: String, _ slider: XCUIElement, label: String, expectedValue: String? = nil) {
+            showFullText(slider); require(slider)
+            let viewport = settingsViewport(), value = slider.value as? String ?? ""
+            record(key, slider)
+            evidence.append(["key": key + ".semantics", "elementType": slider.elementType.rawValue,
+                             "label": slider.label, "value": value, "enabled": slider.isEnabled,
+                             "hittable": slider.isHittable, "fullyVisible": viewport.insetBy(dx: -1, dy: -1).contains(slider.frame)])
+            XCTAssertEqual(slider.elementType, .slider)
+            XCTAssertEqual(slider.label, label)
+            XCTAssertTrue(slider.isEnabled && slider.isHittable)
+            XCTAssertTrue(viewport.insetBy(dx: -1, dy: -1).contains(slider.frame), "The complete real slider must fit outside the navigation bar")
+            XCTAssertFalse(value.isEmpty, "The real slider must expose its current point value to accessibility")
+            if let expectedValue { XCTAssertEqual(value, expectedValue) }
         }
+        func recordReset(_ key: String) {
+            showFullText(reset, towardEndFirst: true); require(reset); record(key, reset)
+            XCTAssertTrue(reset.isEnabled && reset.isHittable)
+            XCTAssertTrue(settingsViewport().insetBy(dx: -1, dy: -1).contains(reset.frame), "The persistent reset action must remain fully visible outside the navigation bar")
+            XCTAssertGreaterThanOrEqual(reset.frame.width, 44)
+            XCTAssertGreaterThanOrEqual(reset.frame.height, 44)
+            evidence.append(["key": key + ".semantics", "label": reset.label, "enabled": reset.isEnabled,
+                             "hittable": reset.isHittable, "fullyVisible": settingsViewport().insetBy(dx: -1, dy: -1).contains(reset.frame)])
+        }
+        recordSlider("settings.font-before", font, label: "正文字号", expectedValue: "22 磅")
+        recordSlider("settings.spacing-before", spacing, label: "正文行间距", expectedValue: "9 磅")
         showPreviewStart(); record("settings.preview-before", preview)
-        let initialPreviewHeight = preview.frame.height
+        let initialPreviewHeight = preview.frame.height, initialPreviewWidth = preview.frame.width
+        let initialPreviewText = preview.label
+        XCTAssertFalse(initialPreviewText.isEmpty)
+        XCTAssertGreaterThan(initialPreviewHeight, 0)
         capture("GET317-UI41-settings-preview-before")
-        let font = app.sliders["正文字号"]
-        scrollTo(font, in: settings)
+        showFullText(font)
         XCTAssertTrue(font.isEnabled && font.isHittable)
         font.adjust(toNormalizedSliderPosition: 0.75)
+        recordSlider("settings.font-grown", font, label: "正文字号")
+        let grownFontValue = try XCTUnwrap(font.value as? String)
+        let grownFontSize = try XCTUnwrap(Int(grownFontValue.components(separatedBy: " ").first ?? ""))
+        XCTAssertGreaterThan(grownFontSize, 22)
         showPreviewStart(); record("settings.preview-after", preview)
+        XCTAssertEqual(preview.label, initialPreviewText)
         XCTAssertGreaterThan(preview.frame.height, initialPreviewHeight * 1.1, "Changing the real base-size slider must grow the rendered original-text preview")
         capture("GET317-UI41-settings-preview-grown")
-        let reset = app.buttons["恢复默认排版"]
-        scrollTo(reset, in: settings)
-        XCTAssertTrue(reset.isEnabled && reset.isHittable); reset.tap()
-        let defaults = app.sliders["正文字号"]
-        scrollTo(defaults, in: settings); require(defaults); record("settings.default-state", defaults)
-        XCTAssertFalse(reset.exists)
-        recordText("settings.body-label", settings.staticTexts["字号"], style: .body)
-        recordText("settings.body-value", settings.staticTexts["22"], style: .body, monospaced: true)
-        recordText("settings.spacing-label", settings.staticTexts["行间距"], style: .body)
-        recordText("settings.spacing-value", settings.staticTexts["9"], style: .body, monospaced: true)
-        recordText("settings.default-state", defaults, style: .body)
-        recordText("settings.system-type-footnote", settings.staticTexts["随系统大字设置缩放，调整自动保存。"], style: .subheadline)
+        showFullText(spacing)
+        XCTAssertTrue(spacing.isEnabled && spacing.isHittable)
+        spacing.adjust(toNormalizedSliderPosition: 0.8)
+        recordSlider("settings.spacing-changed", spacing, label: "正文行间距")
+        let changedSpacingValue = try XCTUnwrap(spacing.value as? String)
+        let changedSpacing = try XCTUnwrap(Int(changedSpacingValue.components(separatedBy: " ").first ?? ""))
+        XCTAssertGreaterThan(changedSpacing, 9)
+        recordReset("settings.reset-before"); reset.tap()
+        recordReset("settings.reset-after")
+        recordSlider("settings.default-state", font, label: "正文字号", expectedValue: "22 磅")
+        recordSlider("settings.spacing-value", spacing, label: "正文行间距", expectedValue: "9 磅")
+        recordText("settings.body-label", settings.staticTexts["字号"], style: .subheadline)
+        recordText("settings.body-value", settings.staticTexts["22"], style: .subheadline, monospaced: true)
+        recordText("settings.spacing-label", settings.staticTexts["行距"], style: .subheadline)
+        recordText("settings.indentation-label", settings.staticTexts["首行缩进"], style: .subheadline)
         capture("GET317-UI41-restored-default-settings")
+        showPreviewStart(); record("settings.preview-restored", preview)
+        XCTAssertEqual(preview.label, initialPreviewText, "Reset must retain the same actual original-text preview")
+        XCTAssertEqual(preview.frame.width, initialPreviewWidth, accuracy: 1)
+        XCTAssertEqual(preview.frame.height, initialPreviewHeight, accuracy: 1, "Reset must restore the actual default preview typography")
+        capture("GET317-UI41-settings-preview-restored")
         closePanel(); require(reader)
     }
 

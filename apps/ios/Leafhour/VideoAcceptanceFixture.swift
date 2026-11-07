@@ -10,25 +10,37 @@ import ZIPFoundation
 enum VideoAcceptanceFixture {
     @MainActor static func makeModelIfRequested() -> LibraryModel? {
         #if DEBUG
-        if let selected = SelectedSourceAcceptanceFixture.makeModelIfRequested() { return selected }
         let arguments = ProcessInfo.processInfo.arguments
-        guard ["org.leafhour.experience.testing", "org.leafhour.get317.testing", "org.leafhour.get341.testing", "org.leafhour.get352.testing", "org.leafhour.readingchat.testing", "org.leafhour.shelf-refinement", "org.leafhour.get358.testing", "org.leafhour.quiet.testing", "org.leafhour.craft.testing", "org.leafhour.get385.testing", "org.leafhour.get407.testing", "org.leafhour.get417.testing", "org.leafhour.get427.testing", "org.leafhour.local.get408", "org.leafhour.readingtest20261105", "com.cubxxw.leafhour.chat20261102"].contains(Bundle.main.bundleIdentifier ?? "") else { return nil }
+        let bundleIdentifier = Bundle.main.bundleIdentifier ?? ""
+        let currentAcceptance = bundleIdentifier == "org.leafhour.get328.acceptance20261107"
+        if currentAcceptance || arguments.contains("--get328-current-acceptance") {
+            // This task identity must fail closed, never falling through to a
+            // real credential store if its explicit synthetic opt-in is absent.
+            guard currentAcceptance, arguments.contains("--get328-current-acceptance"),
+                  arguments.contains("--get317-acceptance"), !arguments.contains("--get385-live") else {
+                preconditionFailure("GET-328 requires its exact DEBUG identity and synthetic acceptance flags")
+            }
+        }
+        if let selected = SelectedSourceAcceptanceFixture.makeModelIfRequested() { return selected }
+        guard ["org.leafhour.get328.acceptance20261107", "org.leafhour.experience.testing", "org.leafhour.get317.testing", "org.leafhour.get341.testing", "org.leafhour.get352.testing", "org.leafhour.readingchat.testing", "org.leafhour.shelf-refinement", "org.leafhour.get358.testing", "org.leafhour.quiet.testing", "org.leafhour.craft.testing", "org.leafhour.get385.testing", "org.leafhour.get407.testing", "org.leafhour.get417.testing", "org.leafhour.get427.testing", "org.leafhour.local.get408", "org.leafhour.readingtest20261105", "com.cubxxw.leafhour.chat20261102"].contains(bundleIdentifier) else { return nil }
         guard !arguments.contains("--get385-live") else { return nil }
         let hostedUnitTest = ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] != nil
             || NSClassFromString("XCTestCase") != nil || NSClassFromString("XCTest.XCTestCase") != nil
         guard arguments.contains("--get317-acceptance") || hostedUnitTest else { return nil }
         do {
             let support = try FileManager.default.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
-            let root = support.appendingPathComponent("GET317Acceptance", isDirectory: true)
+            let rootName = currentAcceptance ? "GET328CurrentAcceptance" : "GET317Acceptance"
+            let root = support.appendingPathComponent(rootName, isDirectory: true)
             if (arguments.contains("--get317-reset") || hostedUnitTest), FileManager.default.fileExists(atPath: root.path) {
                 // This exact child is the only location the reset flag can remove.
-                guard root.lastPathComponent == "GET317Acceptance", root.deletingLastPathComponent() == support else {
+                guard root.lastPathComponent == rootName, root.deletingLastPathComponent() == support else {
                     preconditionFailure("GET317 fixture root failed its isolation check")
                 }
                 try FileManager.default.removeItem(at: root)
             }
             try FileManager.default.createDirectory(at: root, withIntermediateDirectories: true)
-            try prepareSystemPickerDocuments()
+            if currentAcceptance { GET328RuntimeTraitsRecorder.start(in: root) }
+            try prepareSystemPickerDocuments(currentAcceptance: currentAcceptance)
             GET317Transport.configure(root: root, arguments: arguments)
             let configuration = URLSessionConfiguration.ephemeral
             configuration.protocolClasses = [GET317Transport.self]
@@ -102,10 +114,10 @@ enum VideoAcceptanceFixture {
     }
 
     #if DEBUG
-    @MainActor private static func prepareSystemPickerDocuments() throws {
+    @MainActor private static func prepareSystemPickerDocuments(currentAcceptance: Bool) throws {
         let documents = try FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
-        let sources = documents.appendingPathComponent("GET317AcceptanceSources", isDirectory: true)
-        let exports = documents.appendingPathComponent("GET317AcceptanceExports", isDirectory: true)
+        let sources = documents.appendingPathComponent(currentAcceptance ? "GET328AcceptanceSources" : "GET317AcceptanceSources", isDirectory: true)
+        let exports = documents.appendingPathComponent(currentAcceptance ? "GET328AcceptanceExports" : "GET317AcceptanceExports", isDirectory: true)
         try FileManager.default.createDirectory(at: sources, withIntermediateDirectories: true)
         try FileManager.default.createDirectory(at: exports, withIntermediateDirectories: true)
         let selectedFile = sources.appendingPathComponent("GET317-System-Picker-Import.txt")
@@ -525,6 +537,169 @@ private final class GET317Transport: URLProtocol, @unchecked Sendable {
             }
         }
         return (try? JSONSerialization.jsonObject(with: bytes)) as? [String: Any] ?? [:]
+    }
+}
+#endif
+
+#if DEBUG
+private struct GET328RuntimeTraitsSample: Encodable, Sendable {
+    let sequence: Int
+    let sampledAt: String
+    let trigger: String
+    let applicationCategory: String
+    let applicationIsAccessibilityCategory: Bool
+    let windowCategory: String?
+    let windowIsAccessibilityCategory: Bool?
+    let windowIsKey: Bool
+    let sceneActivationState: String
+    let status: String
+    let issues: [String]
+
+    private enum CodingKeys: String, CodingKey {
+        case sequence, sampledAt, trigger, applicationCategory, applicationIsAccessibilityCategory
+        case windowCategory, windowIsAccessibilityCategory, windowIsKey, sceneActivationState, status, issues
+    }
+
+    func encode(to encoder: Encoder) throws {
+        var values = encoder.container(keyedBy: CodingKeys.self)
+        try values.encode(sequence, forKey: .sequence)
+        try values.encode(sampledAt, forKey: .sampledAt)
+        try values.encode(trigger, forKey: .trigger)
+        try values.encode(applicationCategory, forKey: .applicationCategory)
+        try values.encode(applicationIsAccessibilityCategory, forKey: .applicationIsAccessibilityCategory)
+        if let windowCategory { try values.encode(windowCategory, forKey: .windowCategory) }
+        else { try values.encodeNil(forKey: .windowCategory) }
+        if let windowIsAccessibilityCategory { try values.encode(windowIsAccessibilityCategory, forKey: .windowIsAccessibilityCategory) }
+        else { try values.encodeNil(forKey: .windowIsAccessibilityCategory) }
+        try values.encode(windowIsKey, forKey: .windowIsKey)
+        try values.encode(sceneActivationState, forKey: .sceneActivationState)
+        try values.encode(status, forKey: .status)
+        try values.encode(issues, forKey: .issues)
+    }
+}
+
+private struct GET328RuntimeTraitsReceipt: Encodable, Sendable {
+    let schemaVersion = 1
+    let bundleIdentifier: String
+    let processIdentifier: Int32
+    let launchIdentifier: String
+    let samples: [GET328RuntimeTraitsSample]
+}
+
+/// Observes this exact synthetic App only; it never changes traits or layout.
+@MainActor
+private final class GET328RuntimeTraitsRecorder {
+    private static var active: GET328RuntimeTraitsRecorder?
+    private let bundleIdentifier: String
+    private let processIdentifier = ProcessInfo.processInfo.processIdentifier
+    private let launchIdentifier = UUID().uuidString
+    private let destination: URL
+    private let writer = DispatchQueue(label: "org.leafhour.get328.runtime-traits", qos: .utility)
+    private var observers: [NSObjectProtocol] = []
+    private var sequence = 0
+    private var samples: [GET328RuntimeTraitsSample] = []
+
+    static func start(in root: URL) {
+        let arguments = ProcessInfo.processInfo.arguments
+        guard Bundle.main.bundleIdentifier == "org.leafhour.get328.acceptance20261107",
+              arguments.contains("--get328-current-acceptance"), arguments.contains("--get317-acceptance"),
+              !arguments.contains("--get385-live"), root.lastPathComponent == "GET328CurrentAcceptance" else { return }
+        if let active {
+            // A model can be recreated in the same process; retain this launch's
+            // identity and observer set, including after its fixture-root reset.
+            active.sampleAndSettle(trigger: "startup")
+            return
+        }
+        let recorder = GET328RuntimeTraitsRecorder(root: root)
+        active = recorder
+        recorder.observe(UIWindow.didBecomeKeyNotification, trigger: "window-became-key")
+        recorder.observe(UIApplication.didBecomeActiveNotification, trigger: "application-active")
+        recorder.observe(UIContentSizeCategory.didChangeNotification, trigger: "content-size-category-changed")
+        recorder.sampleAndSettle(trigger: "startup")
+    }
+
+    private init(root: URL) {
+        bundleIdentifier = Bundle.main.bundleIdentifier ?? ""
+        destination = root.appendingPathComponent("Diagnostics", isDirectory: true)
+            .appendingPathComponent("app-runtime-traits.json")
+    }
+
+    private func observe(_ name: Notification.Name, trigger: String) {
+        observers.append(NotificationCenter.default.addObserver(forName: name, object: nil, queue: .main) { [weak self] _ in
+            MainActor.assumeIsolated { self?.sampleAndSettle(trigger: trigger) }
+        })
+    }
+
+    private func sampleAndSettle(trigger: String) {
+        sample(trigger: trigger)
+        // Observe again after UIKit has had a chance to update window traits.
+        // Every sample reads the live values; no notification payload is used.
+        DispatchQueue.main.async { [weak self] in MainActor.assumeIsolated { self?.sample(trigger: trigger + "-settled") } }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) { [weak self] in MainActor.assumeIsolated { self?.sample(trigger: trigger + "-settled") } }
+    }
+
+    private func sample(trigger: String) {
+        let application = UIApplication.shared
+        let applicationCategory = application.preferredContentSizeCategory
+        let connected = application.connectedScenes.compactMap { $0 as? UIWindowScene }
+        let foreground = connected.filter {
+            $0.activationState == .foregroundActive || $0.activationState == .foregroundInactive
+        }
+        let activeScenes = foreground.filter { $0.activationState == .foregroundActive }
+        let scenes = activeScenes.isEmpty ? foreground : activeScenes
+        let keyWindows = scenes.flatMap(\.windows).filter(\.isKeyWindow)
+        let window = keyWindows.count == 1 ? keyWindows.first : nil
+        let scene = window?.windowScene ?? (scenes.count == 1 ? scenes.first : nil)
+            ?? (connected.count == 1 ? connected.first : nil)
+        let windowCategory = window?.traitCollection.preferredContentSizeCategory
+        var issues: [String] = []
+        if applicationCategory == .unspecified { issues.append("application-category-unspecified") }
+        if application.applicationState != .active { issues.append("application-not-active") }
+        if scenes.isEmpty { issues.append("foreground-scene-unavailable") }
+        if scene?.activationState != .foregroundActive { issues.append("foreground-scene-not-active") }
+        if keyWindows.isEmpty { issues.append("foreground-key-window-unavailable") }
+        if keyWindows.count > 1 { issues.append("foreground-key-window-ambiguous") }
+        if let windowCategory {
+            if windowCategory == .unspecified { issues.append("window-category-unspecified") }
+            if windowCategory != applicationCategory { issues.append("application-window-category-mismatch") }
+        }
+        let windowIsKey = window?.isKeyWindow ?? false
+        if window != nil && !windowIsKey { issues.append("foreground-window-not-key") }
+        let formatter = ISO8601DateFormatter()
+        formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+        sequence += 1
+        samples.append(GET328RuntimeTraitsSample(sequence: sequence, sampledAt: formatter.string(from: Date()), trigger: trigger,
+            applicationCategory: applicationCategory.rawValue, applicationIsAccessibilityCategory: applicationCategory.isAccessibilityCategory,
+            windowCategory: windowCategory?.rawValue, windowIsAccessibilityCategory: windowCategory?.isAccessibilityCategory,
+            windowIsKey: windowIsKey, sceneActivationState: Self.activationName(scene?.activationState),
+            status: issues.isEmpty ? "observed" : "unavailable", issues: issues))
+        if samples.count > 64 { samples.removeFirst(samples.count - 64) }
+        let receipt = GET328RuntimeTraitsReceipt(bundleIdentifier: bundleIdentifier, processIdentifier: processIdentifier,
+                                                launchIdentifier: launchIdentifier, samples: samples)
+        let destination = self.destination
+        writer.async {
+            do {
+                try FileManager.default.createDirectory(at: destination.deletingLastPathComponent(), withIntermediateDirectories: true)
+                let encoder = JSONEncoder()
+                encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
+                try encoder.encode(receipt).write(to: destination, options: .atomic)
+            } catch {
+                // Never write a fallback elsewhere or present an old sample as
+                // a successful write. Host validation must reject stale files.
+                NSLog("GET328 app runtime traits receipt write failed: %@", error.localizedDescription)
+            }
+        }
+    }
+
+    private static func activationName(_ value: UIScene.ActivationState?) -> String {
+        guard let value else { return "unavailable" }
+        switch value {
+        case .foregroundActive: return "foregroundActive"
+        case .foregroundInactive: return "foregroundInactive"
+        case .background: return "background"
+        case .unattached: return "unattached"
+        @unknown default: return "unknown"
+        }
     }
 }
 #endif

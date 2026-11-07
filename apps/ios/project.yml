@@ -1,4 +1,8 @@
 name: Leafhour
+configs:
+  Debug: debug
+  GET328Acceptance: debug
+  Release: release
 options:
   minimumXcodeGenVersion: 2.44.0
   deploymentTarget:
@@ -25,6 +29,7 @@ settings:
     SWIFT_EMIT_LOC_STRINGS: YES
 configFiles:
   Debug: Config/Debug.xcconfig
+  GET328Acceptance: Config/GET328Acceptance.xcconfig
   Release: Config/Release.xcconfig
 targets:
   Leafhour:
@@ -43,6 +48,10 @@ targets:
         SUPPORTS_MACCATALYST: NO
         INFOPLIST_KEY_UIFileSharingEnabled: YES
         PROVISIONING_PROFILE_SPECIFIER: $(LEAFHOUR_MAIN_PROFILE)
+      configs:
+        GET328Acceptance:
+          INFOPLIST_FILE: Config/GET328Acceptance-Info.plist
+          INFOPLIST_KEY_CFBundleDisplayName: Leafhour GET328
   ListeningWidget:
     type: app-extension
     platform: iOS
@@ -84,6 +93,25 @@ targets:
         PRODUCT_BUNDLE_IDENTIFIER: $(LEAFHOUR_BUNDLE_ID).apptests
         CODE_SIGN_STYLE: Automatic
 schemes:
+  LeafhourGET328CurrentAcceptance:
+    build:
+      targets:
+        Leafhour: all
+    run:
+      config: GET328Acceptance
+    test:
+      config: GET328Acceptance
+      targets:
+        - name: LeafhourUITests
+          selectedTests:
+            - VideoExperienceUITests/test38SavedRecordsAndExpandedSettingsPassNativeAccessibilityAudits()
+            - VideoExperienceUITests/test41SystemTypeProfileKeepsTheRealTypographyPreviewAndResetUsable()
+            - VideoExperienceUITests/test54PagedNativeCopyAndReflowKeepTheVisibleSourceParagraph()
+            - ReadingUITests/testPDFSystemImportAndLastPage()
+      environmentVariables:
+        LEAFHOUR_GET328_CURRENT_ACCEPTANCE: '1'
+    archive:
+      config: Release
   Leafhour:
     build:
       targets:

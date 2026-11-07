@@ -1,6 +1,7 @@
 import {readFileSync,writeFileSync} from 'node:fs';
 import {releaseDecision,releaseMetadata} from './release-policy.mjs';
 import {verifyReceiptProvenance,decodeReceiptArchive} from './receipt-provenance.mjs';
+import {classifyIOSReleaseChanges} from './release-changes.mjs';
 
 export async function prepare({github,context,core,env=process.env}) {
   const repository=context.payload.repository.full_name;
@@ -31,10 +32,10 @@ export async function prepare({github,context,core,env=process.env}) {
       const proof={getRun:async id=>(await github.rest.actions.getWorkflowRun({owner,repo,run_id:Number(id)})).data};
       if(!await verifyReceiptProvenance(artifact,receipt,{appId:env.IOS_APP_ID,bundleId:env.IOS_BUNDLE_ID},proof))continue;
       const comparison=await github.rest.repos.compareCommitsWithBasehead({owner,repo,basehead:`${receipt.commitSha}...${sha}`,per_page:100});
-      const files=comparison.data.files??[];
-      const relevant=path=>/^(apps\/ios\/|scripts\/ios\/|tests\/(?:ios-|test_ios_)|\.github\/workflows\/(?:release-ios|refresh-ios-signing)\.yml$)/.test(path);
-      if(files.length<300 && !files.some(file=>relevant(file.filename) || relevant(file.previous_filename??''))) {
-        decision.publish=false;decision.reason='No iOS changes since the last trusted Apple VALID receipt';
+      const change=await classifyIOSReleaseChanges({comparison:comparison.data,baseSha:receipt.commitSha,headSha:sha,
+        readBaseFile:async path=>(await github.rest.repos.getContent({owner,repo,path,ref:receipt.commitSha})).data});
+      if(!change.releaseRelevant) {
+        decision.publish=false;decision.reason=change.reason;
       }
       break;
     }

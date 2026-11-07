@@ -1,0 +1,7 @@
+// Exact, unsigned, simulator QA identity. No local signing or real credentials.
+// This file is selected only by the dedicated DEBUG acceptance configuration.
+LEAFHOUR_BUNDLE_ID = org.leafhour.get328.acceptance20261107
+PRODUCT_BUNDLE_IDENTIFIER = $(LEAFHOUR_BUNDLE_ID)
+CODE_SIGNING_ALLOWED = NO
+SUPPORTED_PLATFORMS = iphonesimulator
+SWIFT_ACTIVE_COMPILATION_CONDITIONS = $(inherited) DEBUG
