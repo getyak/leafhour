@@ -87,13 +87,13 @@ export function createReadingWorkspaceService({library,dataDir,dataStore=null,ge
   const attemptId=randomUUID(),day=new Date().toISOString().slice(0,10),limit=Math.min(10,Math.max(1,Number(env.NOTEBOOK_DAILY_ATTEMPTS)||5));
   const existing=await mutate(file(user),fresh(),row=>{
    const cached=cachedCandidate(row,input.id,signature);if(cached)return cached;
-   if(row.candidates.length>=100||Object.values(row.requests).filter(r=>r.day===day).length>=limit)fail('Notebook sponsored daily limit reached',429);
+   if(row.candidates.length>=100||env.READER_USAGE_POLICY==='metered'&&Object.values(row.requests).filter(r=>r.day===day).length>=limit)fail('Notebook sponsored daily limit reached',429);
    if(row.revision!==input.workspaceRevision||workspace.revision!==input.workspaceRevision)fail('Workspace changed; reload selected notes',409);
    if(Object.keys(row.requests).length>=10000)fail('Workspace request capacity exceeded',413);row.requests[input.id]={attemptId,signature,day,status:'pending'};return null;
   });if(existing)return existing;
   try{
    // Durable global cap makes the per-owner sponsorship limit bounded across accounts too.
-   await mutate(path.join(root,'sponsored-quota.json'),{day,count:0},row=>{if(row.day!==day){row.day=day;row.count=0;}const cap=Math.min(200,Math.max(1,Number(env.NOTEBOOK_GLOBAL_DAILY_ATTEMPTS)||50));if(row.count>=cap)fail('Notebook sponsored daily limit reached',429);row.count++;});
+   await mutate(path.join(root,'sponsored-quota.json'),{day,count:0},row=>{if(row.day!==day){row.day=day;row.count=0;}const cap=Math.min(200,Math.max(1,Number(env.NOTEBOOK_GLOBAL_DAILY_ATTEMPTS)||50));if(env.READER_USAGE_POLICY==='metered'&&row.count>=cap)fail('Notebook sponsored daily limit reached',429);row.count++;});
    await check(user,options);const dispatchState=await read(file(user),fresh());if(dispatchState.revision!==input.workspaceRevision)fail('Workspace changed before dispatch',409);const output=await withBackendExecutionAuthority(user,async()=>{await check(user,options);return true;},()=>generator({user,requestId:input.id,context,signal:options.signal}));const items=validateNotebookItems(output,input.kind,input.noteKeys);
    const candidate={id:input.id,kind:input.kind,status:'candidate',origin:'assistant',createdAt:new Date().toISOString(),scope,items};
    return await withCandidateDelivery(output,()=>mutate(file(user),fresh(),async row=>{await check(user,options);const request=row.requests[input.id];if(!request||request.attemptId!==attemptId||request.signature!==signature||request.status!=='pending'||row.candidates.some(existing=>existing.id===candidate.id))fail('Analysis publication conflicts with restored state',409);if(row.candidates.length>=100)fail('Workspace candidate capacity exceeded',429);if(row.revision>=Number.MAX_SAFE_INTEGER)fail('Workspace revision exhausted',409);await snapshots(user,candidate,row);await check(user,options);row.candidates.push(candidate);row.requests[input.id].status='complete';row.requests[input.id].candidateProof=candidateProof(candidate);row.revision++;return structuredClone(candidate);}));

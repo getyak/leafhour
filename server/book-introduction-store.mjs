@@ -8,7 +8,7 @@ import {validateBookIntroduction} from '../app/book-introduction.mjs';
 function localStore(dataDir){
   return createLockedJsonStore({dataDir,busyMessage:'简介正在保存，请稍后重试'});
 }
-export function createBookIntroductionStore({dataDir,dataStore=null}){
+export function createBookIntroductionStore({dataDir,dataStore=null,statisticsOnly=false}){
   const store=dataStore||localStore(dataDir);
   const account=user=>{if(typeof user?.id!=='string'||!user.id||user.id.length>512||user.is_anonymous)throw fail('请先进入自己的书房',401);return digest(user.id);};
   const key=(user,book)=>path.join(dataDir,'users',account(user),'introductions',digest(book.bookId));
@@ -40,7 +40,7 @@ export function createBookIntroductionStore({dataDir,dataStore=null}){
       row.requests=row.requests.filter(r=>r.at>now-86400000);
       for(const [id,lease]of Object.entries(row.active))if(lease.expiresAt<=now)delete row.active[id];
       const hour=row.requests.filter(r=>r.at>now-3600000);
-      if(hour.filter(r=>r.owner===owner).length>=5||hour.length>=50||row.requests.length>=200||Object.keys(row.active).length>=2)throw fail('AI 简介的生成额度暂时用完，请稍后再试',429);
+      if((!statisticsOnly&&(hour.filter(r=>r.owner===owner).length>=5||hour.length>=50||row.requests.length>=200))||Object.keys(row.active).length>=2)throw fail('AI 简介的生成额度暂时用完，请稍后再试',429);
       row.requests.push({owner,nonce,at:now});row.active[nonce]={expiresAt:now+ttl};return null;
     });
   }

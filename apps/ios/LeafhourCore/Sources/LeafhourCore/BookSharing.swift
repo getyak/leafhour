@@ -6,9 +6,9 @@ import FoundationNetworking
 /// Content links are intents, never instructions to fetch a supplied URL with an account cookie.
 public enum NativeBookLink: Equatable, Sendable, Identifiable {
     case gift(String)
-    case read(bookID: String, passageID: String?)
+    case read(bookID: String, passageID: String?, contentVersion: String? = nil)
     public var id: String {
-        switch self { case .gift(let token): return "gift:" + token; case .read(let id, let passage): return "read:" + id + ":" + (passage ?? "") }
+        switch self { case .gift(let token): return "gift:" + token; case .read(let id, let passage, let version): return "read:" + id + ":" + (passage ?? "") + ":" + (version ?? "") }
     }
     public init(_ url: URL, origin: URL = URL(string: "https://leafhour.com")!) throws {
         guard let parts = URLComponents(url: url, resolvingAgainstBaseURL: false), url.user == nil, url.password == nil,
@@ -23,7 +23,7 @@ public enum NativeBookLink: Equatable, Sendable, Identifiable {
         let path = isCustom ? "/" + (parts.host ?? "") + parts.percentEncodedPath : parts.percentEncodedPath
         let query = parts.queryItems ?? []
         guard Set(query.map(\.name)).count == query.count,
-              query.allSatisfy({ ["ui", "book", "passage"].contains($0.name) }),
+              query.allSatisfy({ ["ui", "book", "passage", "contentVersion", "layer"].contains($0.name) }),
               query.first(where: { $0.name == "ui" }).map({ ["en", "zh-Hans", "zh-Hant", "ja"].contains($0.value ?? "") }) ?? true else { throw Self.invalid() }
         if path.hasPrefix("/gift/") {
             let token = String(path.dropFirst(6))
@@ -32,12 +32,18 @@ public enum NativeBookLink: Equatable, Sendable, Identifiable {
         } else if path == "/read" {
             guard let book = query.first(where: { $0.name == "book" })?.value, Self.isContentID(book) else { throw Self.invalid() }
             let passage = query.first(where: { $0.name == "passage" })?.value
-            guard query.first(where: { $0.name == "passage" }) == nil || passage.map(Self.isContentID) == true else { throw Self.invalid() }
-            self = .read(bookID: book, passageID: passage)
+            guard query.first(where: { $0.name == "passage" }) == nil || passage.map(Self.isPassageID) == true else { throw Self.invalid() }
+            let version = query.first(where: { $0.name == "contentVersion" })?.value
+            guard query.first(where: { $0.name == "contentVersion" }) == nil || version.map(Self.isContentVersion) == true,
+                  query.first(where: { $0.name == "layer" }).map({ $0.value == "original" }) ?? true,
+                  (version == nil && !query.contains(where: { $0.name == "layer" })) || passage != nil else { throw Self.invalid() }
+            self = .read(bookID: book, passageID: passage, contentVersion: version)
         } else { throw Self.invalid() }
     }
     public static func isGiftToken(_ value: String) -> Bool { value.utf8.count == 43 && value.utf8.allSatisfy(isIDByte) }
     public static func isContentID(_ value: String) -> Bool { !value.isEmpty && value.utf8.count <= 128 && value.utf8.allSatisfy(isIDByte) }
+    public static func isPassageID(_ value: String) -> Bool { !value.isEmpty && value.utf8.count <= 256 && value.utf8.allSatisfy { isIDByte($0) || $0 == 46 || $0 == 58 } }
+    public static func isContentVersion(_ value: String) -> Bool { !value.isEmpty && value.utf8.count <= 256 && !value.unicodeScalars.contains { $0.value < 32 || $0.value == 127 } }
     private static func isIDByte(_ byte: UInt8) -> Bool { (48...57).contains(byte) || (65...90).contains(byte) || (97...122).contains(byte) || byte == 45 || byte == 95 }
     private static func invalid() -> LibraryError { .invalid("此链接无法在书房中导入。请使用 Leafhour 赠书链接或支持的书籍文件。") }
 }
@@ -136,4 +142,43 @@ public extension CloudLibraryClient {
 
 private final class BookGiftRedirectPolicy: NSObject, URLSessionTaskDelegate, @unchecked Sendable {
     func urlSession(_ session: URLSession, task: URLSessionTask, willPerformHTTPRedirection response: HTTPURLResponse, newRequest request: URLRequest, completionHandler: @escaping (URLRequest?) -> Void) { completionHandler(nil) }
+}
+
+public struct PublicReadingExcerpt: Sendable {
+    public let url: URL
+    public init(json: CloudJSON, bookID: String, passageID: String, contentVersion: String, chapterID: String?) throws {
+        guard json["schemaVersion"].number == 1, json["bookId"].string == bookID,
+              json["passageId"].string == passageID, json["contentVersion"].string == contentVersion,
+              chapterID == nil || json["chapterId"].string == chapterID,
+              let raw = json["readUrl"].string, raw.hasPrefix("/read?"),
+              let url = URL(string: raw, relativeTo: URL(string: "https://leafhour.com")!)?.absoluteURL,
+              let parts = URLComponents(url: url, resolvingAgainstBaseURL: false),
+              parts.scheme == "https", parts.host == "leafhour.com", parts.port == nil,
+              parts.path == "/read", parts.fragment == nil, parts.user == nil, parts.password == nil else {
+            throw LibraryError.invalid("公版段落的分享回执无法核对。")
+        }
+        let expected = ["book": bookID, "passage": passageID, "contentVersion": contentVersion, "layer": "original"]
+        let query = parts.queryItems ?? []
+        guard query.count == expected.count, Set(query.map(\.name)).count == expected.count,
+              query.allSatisfy({ expected[$0.name] == $0.value }) else { throw LibraryError.invalid("分享链接包含未选择的信息。") }
+        self.url = url
+    }
+}
+
+public extension CloudLibraryClient {
+    /// No account credential, private source text, notes or filename enters this request.
+    func publicReadingExcerpt(bookID: String, passageID: String, contentVersion: String, chapterID: String? = nil) async throws -> PublicReadingExcerpt {
+        guard NativeBookLink.isContentID(bookID), NativeBookLink.isPassageID(passageID), NativeBookLink.isContentVersion(contentVersion), baseURL.scheme == "https" else { throw LibraryError.invalid("段落来源无法核对。") }
+        let configuration = publicPreviewConfiguration.copy() as! URLSessionConfiguration
+        let transport = URLSession(configuration: configuration, delegate: BookGiftRedirectPolicy(), delegateQueue: nil)
+        defer { transport.invalidateAndCancel() }
+        var parts = URLComponents(url: baseURL, resolvingAgainstBaseURL: false)!
+        parts.path = "/api/public-excerpts/" + bookID + "/" + passageID
+        parts.queryItems = [URLQueryItem(name: "contentVersion", value: contentVersion)]; parts.fragment = nil
+        var request = URLRequest(url: parts.url!); request.timeoutInterval = 20; request.cachePolicy = .reloadIgnoringLocalCacheData
+        let (bytes, response) = try await transport.data(for: request)
+        try Task.checkCancellation()
+        guard (response as? HTTPURLResponse)?.statusCode == 200, bytes.count <= 8192 else { throw LibraryError.invalid("此段落没有可核验的公版试读链接。") }
+        return try PublicReadingExcerpt(json: CloudJSON.decode(bytes), bookID: bookID, passageID: passageID, contentVersion: contentVersion, chapterID: chapterID)
+    }
 }

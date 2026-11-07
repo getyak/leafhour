@@ -32,6 +32,9 @@ final class BookSharingTests: XCTestCase {
     }
 
     func testPublicReaderLinkRetainsAnExactSourceAnchor() throws {
+        XCTAssertEqual(try NativeBookLink(URL(string: "https://leafhour.com/read?book=gutenberg-alice&passage=ch01-p002&contentVersion=v1&layer=original")!), .read(bookID: "gutenberg-alice", passageID: "ch01-p002", contentVersion: "v1"))
+        XCTAssertThrowsError(try NativeBookLink(URL(string: "https://leafhour.com/read?book=gutenberg-alice&passage=ch01-p002&contentVersion=v1&layer=literal")!))
+
         XCTAssertEqual(try NativeBookLink(URL(string: "https://leafhour.com/read?book=gutenberg-alice&passage=ch01-p002&ui=zh-Hans")!),
                        .read(bookID: "gutenberg-alice", passageID: "ch01-p002"))
         XCTAssertEqual(try NativeBookLink(URL(string: "leafhour://read?book=gutenberg-alice&passage=ch01-p002")!),
@@ -129,6 +132,26 @@ final class BookSharingTests: XCTestCase {
         do { _ = try await pending.value; XCTFail("A stale owner accepted the gift response") }
         catch let error as CloudRequestError { XCTAssertEqual(error.status, 409) }
     }
+    func testPublicExcerptResolverSendsNoCredentialsOrPrivateText() async throws {
+        let cloud = client()
+        BookSharingTransport.handler = { transport, request in
+            XCTAssertNil(request.value(forHTTPHeaderField: "Authorization"))
+            XCTAssertNil(request.value(forHTTPHeaderField: "Cookie"))
+            XCTAssertNil(request.httpBody)
+            XCTAssertEqual(request.url?.path, "/api/public-excerpts/gutenberg-alice/ch01-p002")
+            transport.reply(["schemaVersion": 1, "bookId": "gutenberg-alice", "passageId": "ch01-p002", "contentVersion": "v1", "chapterId": "c1", "readUrl": "/read?book=gutenberg-alice&passage=ch01-p002&contentVersion=v1&layer=original"])
+        }
+        let receipt = try await cloud.publicReadingExcerpt(bookID: "gutenberg-alice", passageID: "ch01-p002", contentVersion: "v1", chapterID: "c1")
+        XCTAssertEqual(receipt.url.host, "leafhour.com")
+        XCTAssertEqual(URLComponents(url: receipt.url, resolvingAgainstBaseURL: false)?.queryItems?.count, 4)
+    }
+    func testPublicExcerptRejectsWrongVersionPrivateParametersAndOtherHosts() throws {
+        for raw in ["/read?book=b&passage=p&contentVersion=v2&layer=original", "/read?book=b&passage=p&contentVersion=v1&layer=original&note=secret", "https://evil.invalid/read?book=b&passage=p", "/read?book=b&passage=p&contentVersion=v1&layer=literal"] {
+            let value = try CloudJSON.decode(JSONSerialization.data(withJSONObject: ["schemaVersion": 1, "bookId": "b", "passageId": "p", "contentVersion": "v1", "chapterId": "c", "readUrl": raw]))
+            XCTAssertThrowsError(try PublicReadingExcerpt(json: value, bookID: "b", passageID: "p", contentVersion: "v1", chapterID: "c"))
+        }
+    }
+
 }
 
 private final class BookSharingTransport: URLProtocol {

@@ -10,7 +10,7 @@ import {deriveImportedCover} from './imported-cover.mjs';
 import {normalizePaddlePage,PADDLE_MODEL} from './paddleocr.mjs';
 import {documentByteLimit,documentLimitMessage} from '../app/import-limits.mjs';
 const userId=user=>{if(!user?.id)throw fail('请先进入自己的书房',401);return digest(user.id);};
-export function createBookIngestion({store,library,provider,batchPages=30,maxBatchBytes=20*1024*1024,now=Date.now,nativeInspector=inspectNativePdf,documentExtractor=extractDocument,documentMetadata,pdfProcessor,onOutcome=()=>{}}={}){
+export function createBookIngestion({statisticsOnly=false,store,library,provider,batchPages=30,maxBatchBytes=20*1024*1024,now=Date.now,nativeInspector=inspectNativePdf,documentExtractor=extractDocument,documentMetadata,pdfProcessor,onOutcome=()=>{}}={}){
  let cachedDocument=null;
  const structure=async(bytes,options={})=>pdfProcessor?pdfProcessor.structure(bytes,options):{pageCount:(await PDFDocument.load(bytes,{updateMetadata:false})).getPageCount(),outline:options.outline?await nativePdfOutline(bytes).catch(()=>[]):[]};
  const split=async(bytes,indices)=>{if(pdfProcessor)return pdfProcessor.split(bytes,indices);const doc=await PDFDocument.load(bytes,{updateMetadata:false}),part=await PDFDocument.create();(await part.copyPages(doc,indices)).forEach(page=>part.addPage(page));return Buffer.from(await part.save());};
@@ -35,7 +35,7 @@ export function createBookIngestion({store,library,provider,batchPages=30,maxBat
  async function reservePages(user,job){
   const pages=job.mode==='auto'?job.batches.reduce((n,b)=>n+(b.pageMap?.length||0),0):job.totalPages;
   const day=new Date(now()).toISOString().slice(0,10);
-  await store.mutate('ingestion-budget/'+day,{pages:0,owners:{},jobs:{}},r=>{r.jobs??={};if(Object.hasOwn(r.jobs,job.id))return;const owner=userId(user);if(r.pages+pages>15000||(r.owners[owner]||0)+pages>3000)throw fail('今日识别额度已用完，原文件与进度保留，明天可以继续。',429);r.pages+=pages;r.owners[owner]=(r.owners[owner]||0)+pages;r.jobs[job.id]=pages;});
+  await store.mutate('ingestion-budget/'+day,{pages:0,owners:{},jobs:{}},r=>{r.jobs??={};if(Object.hasOwn(r.jobs,job.id))return;const owner=userId(user);if(!statisticsOnly&&(r.pages+pages>15000||(r.owners[owner]||0)+pages>3000))throw fail('今日识别额度已用完，原文件与进度保留，明天可以继续。',429);r.pages+=pages;r.owners[owner]=(r.owners[owner]||0)+pages;r.jobs[job.id]=pages;});
  }
  async function prepareDocument(user,{filename,bytes,sourceParts,assertCurrent=async()=>{}}){
   userId(user);

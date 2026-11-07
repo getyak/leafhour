@@ -36,7 +36,7 @@ const copy={
       ],
       [
         "Reading stays free",
-        "Reading, notes and export are free. AI features follow the current reading-points rules shown before use."
+        "During beta, reading and AI features are free, with no usage quota or point deductions. We record usage to improve the service."
       ],
       [
         "Your own reading room",
@@ -87,7 +87,7 @@ const copy={
       ],
       [
         "阅读保持免费",
-        "阅读、笔记和导出免费。AI 功能沿用现有阅读点规则，使用前会显示相应费用。"
+        "内测期间免费使用，不限制使用额度，也不扣阅读点。我们只统计用量，用于改进服务。"
       ],
       [
         "同一个私人书房",
@@ -138,7 +138,7 @@ const copy={
       ],
       [
         "閱讀保持免費",
-        "閱讀、筆記和匯出免費。AI 功能沿用現有閱讀點規則，使用前會顯示相應費用。"
+        "內測期間免費使用，不限制使用額度，也不扣閱讀點。我們只統計用量，用於改善服務。"
       ],
       [
         "同一個私人書房",
@@ -189,7 +189,7 @@ const copy={
       ],
       [
         "読書は無料です",
-        "読書、ノート、エクスポートは無料です。AI機能には現在のポイント規則が適用され、利用前に料金が表示されます。"
+        "ベータ期間中はAI機能も無料で、利用枠による制限やポイント消費はありません。改善のために利用量のみを記録します。"
       ],
       [
         "同じ自分の書斎",

@@ -634,7 +634,10 @@ final class ReaderCloudTools {
             var explanation = accountConversation ? "发送当前问题与对话，可按需查阅自己的书房和公开网络。" : action == "translation" ? "只处理当前段落及必要的相邻上下文。直译和意译独立保存为 AI 草稿。" : "发送当前问题与书内位置，沿用本书的对话。"
             if let languages { explanation += "\n" + (languages.resolvedSource(detected: detectedSource)?.title ?? "待选择") + " → " + languages.targetLanguage.title }
             if !accountConversation { explanation += "\n\n原文：" + String(original.prefix(120)) }
-            if billing["enabled"] as? Bool == true {
+            if billing["usagePolicy"] as? String == "beta" {
+                explanation += "\n\n内测期间不限制使用额度，不扣阅读点；仅统计实际用量。"
+            }
+            if billing["enabled"] as? Bool == true && billing["usagePolicy"] as? String != "beta" {
                 let units = action == "translation" ? 1_000_000 : 4_000_000
                 let prices = billing["prices"] as? [String: Int] ?? [:]
                 guard billing["unitsPerPoint"] as? Int == 1_000_000, prices[action] == units else { throw LibraryError.invalid("阅读点价格已变化，请重新打开书房后再试。") }

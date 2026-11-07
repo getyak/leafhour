@@ -2,8 +2,11 @@ import {buildShareModel} from './share-model.mjs';
 import {quotePanelSourceNodes} from './passage-layers.mjs';
 
 export function originalSelectionParts(book,snapshot){
- const {blocks}=buildShareModel(book,snapshot,{language:'en'});
- return blocks.map(block=>({passageId:block.passageId,language:'en',start:block.selectionAligned?block.sourceStart:0,end:block.selectionAligned?block.sourceEnd:block.primary.text.length,text:block.primary.text,wholePassage:block.sourceLanguage!=='en'}));
+ // Validate the immutable selection first. Source inspection is an explicit
+ // separate action; its full original counterpart never enters a share card.
+ const {blocks}=buildShareModel(book,snapshot);
+ const originals=new Map(book.sections.flatMap(section=>section.paragraphs.map(p=>[p.id,p.original])));
+ return blocks.map(block=>{const translated=block.sourceLanguage!=='en',text=translated?originals.get(block.passageId):block.primary.text;return {passageId:block.passageId,language:'en',start:translated?0:block.sourceStart,end:translated?text.length:block.sourceEnd,text,wholePassage:translated};});
 }
 
 export function mountReaderSelectionOriginal({document,dialog,content,listen,write,getBook,getExcerpt,isVisible,onOpen}){

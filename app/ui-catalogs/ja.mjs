@@ -2519,4 +2519,12 @@ export default Object.freeze({
   "reader.selection.exactOriginal": "原文 · 選択した部分",
   "reader.selection.wholeOriginal": "原文 · 対応する段落",
   "prefs.reloading": "最新の設定を読み込んでいます…",
+  "share.linkUnavailable":"公開リンクを確認できませんでした。選んだ文章の画像は保存できます。",
+  "share.selectionOnly":"選んだ文章だけを共有。非公開のノートや読書履歴は含まれません。",
+  "share.details":"文字サイズと出典",
+  "share.publicTrial":"パブリックドメイン原文 · ログイン不要",
+  "share.readHere":"ここから読む ↗",
+  "share.copyLink":"試し読みリンクをコピー",
+  "share.scanRead":"ここから読む · パブリックドメイン原文",
+  "share.linkCopied":"試し読みリンクをコピーしました。",
 });

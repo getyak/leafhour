@@ -1,5 +1,12 @@
 # Reading subscriptions and embedded Creem checkout
 
+## Current public beta
+
+`READER_USAGE_POLICY=beta` is the default. Reading and user-triggered AI have no reading-point debit, owner/day allocation or model-cost admission cap. Provider call counts, actual reported tokens, rated costs and unknown outcomes use the existing reader-document CAS store, independently of commercial-schema activation; beta usage never creates a financial operation and cannot be backcharged. Authentication, source permissions, selected context, cancellation, idempotency, actual context/output capacity and in-flight capacity still apply.
+
+New point checkout is unavailable during beta. Existing balances, payment records, subscriptions, webhook processing and billing-management access remain intact. Existing renewal schedules are not automatically cancelled; an owner can manage those through the existing billing portal. The paid rules below describe the retained metered mode and historical records, not beta usage.
+
+
 Leafhour has free reading, a US$5 monthly subscription delivering 100 points per successful monthly payment, and a US$50 yearly subscription delivering 1,200 points upfront per successful yearly payment. Annual pricing saves US$10 against twelve monthly payments; it is charged as one US$50 payment, not twelve installments. One-time top-ups were retired on October 22, 2026; existing orders, delivered points and refund/reconciliation facts are retained. New verified accounts receive 10 trial points once. Purchased points accumulate without expiry. Subscribers may stop future renewals in Creem's authenticated customer portal without losing delivered points. There is no automatic top-up or unlimited AI entitlement. A new single-passage dual translation costs 1 point; an explicit reading conversation or selected-text annotation costs 4 points. One point is 1,000,000 integer units. Money is stored as integer currency minor units. Products use USD with tax shown separately at checkout.
 
 Reading saved text, notes, layout changes, revisiting results and export stay free. Billing is off by default. Self-hosting does not require Creem; the operator supplies its own model service. Automatic companion messages and other automatic generation use separate sponsored budgets and never borrow purchased points. Existing model, concurrency and bounded-context limits still apply.

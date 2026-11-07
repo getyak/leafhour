@@ -2519,4 +2519,12 @@ export default Object.freeze({
   "reader.selection.exactOriginal": "原文 · 所選句段",
   "reader.selection.wholeOriginal": "原文 · 對應整段",
   "prefs.reloading": "正在讀取最新設定…",
+  "share.linkUnavailable":"暫未核驗公版連結，仍可儲存所選摘錄圖片。",
+  "share.selectionOnly":"只分享你選中的文字，不附上私人筆記或閱讀紀錄。",
+  "share.details":"字級與出處",
+  "share.publicTrial":"公版原文 · 無需登入",
+  "share.readHere":"從這裡讀 ↗",
+  "share.copyLink":"複製試讀連結",
+  "share.scanRead":"掃碼從這裡讀 · 公版原文",
+  "share.linkCopied":"已複製試讀連結。",
 });
